@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModesCreator.java,v 1.3 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: ModesCreator.java,v 1.4 2000-11-15 22:17:54 ponder Exp $*/
 
 package freemind.modes;
 
 import freemind.modes.mindmapmode.MindMapMode;
 import freemind.modes.filemode.FileMode;
+import freemind.modes.schememode.SchemeMode;
 import freemind.controller.Controller;
 import java.util.Map;
 import java.util.TreeMap;
@@ -51,6 +52,8 @@ public class ModesCreator {
 	mode = new FileMode(c);
 	modes.put(mode.toString(), mode);
 
+	mode = new SchemeMode(c);
+	modes.put(mode.toString(), mode);
 
 	return modes;
     }

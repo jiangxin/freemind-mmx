@@ -16,14 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.5 2000-11-02 17:20:11 ponder Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.6 2000-11-15 22:17:54 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.main.Tools;
 import freemind.modes.NodeAdapter;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ListIterator;
+import java.util.LinkedList;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.Color;
@@ -45,15 +45,15 @@ public class MindMapNodeModel extends NodeAdapter {
 
     public MindMapNodeModel() {
 	super();
+	children = new LinkedList();
 	setEdge(new MindMapEdgeModel(this));
-	children = new Vector();
     }
 
 	    
     public MindMapNodeModel( Object userObject ) {
 	super(userObject);
+	children = new LinkedList();
 	setEdge(new MindMapEdgeModel(this));
-	children = new Vector();
     }
 
     //
@@ -146,10 +146,8 @@ public class MindMapNodeModel extends NodeAdapter {
 	}
 
 	//recursive
-	for (Enumeration e = children.elements(); e.hasMoreElements(); ) {
-	    //call children.elements() instead of children() because a folded node doesn't 
-	    //report its children via children().
-	    MindMapNodeModel child = (MindMapNodeModel)e.nextElement();
+	for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
+	    MindMapNodeModel child = (MindMapNodeModel)e.next();
 	    child.save(doc, node);
 	}
     }

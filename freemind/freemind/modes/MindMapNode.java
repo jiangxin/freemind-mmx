@@ -16,22 +16,27 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.2 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: MindMapNode.java,v 1.3 2000-11-15 22:17:54 ponder Exp $*/
 
 package freemind.modes;
 
+import freemind.view.mindmapview.NodeView;
+import java.util.ListIterator;
+import java.net.URL;
 import java.awt.Color;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
-import freemind.view.mindmapview.NodeView;
-import java.net.URL;
 //XML Definition (Interfaces)
-import  org.w3c.dom.Document;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 public interface MindMapNode extends MutableTreeNode {
 	
+    ListIterator childrenFolded();
+
+    ListIterator childrenUnfolded();
+
     MindMapEdge getEdge();
 
     Color getColor();

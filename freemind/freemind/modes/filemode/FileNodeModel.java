@@ -16,14 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileNodeModel.java,v 1.4 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: FileNodeModel.java,v 1.5 2000-11-15 22:17:54 ponder Exp $*/
 
 package freemind.modes.filemode;
 
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.io.File;
 import java.awt.Color;
 
@@ -93,19 +93,19 @@ public class FileNodeModel extends NodeAdapter {
     /**
      * 
      */
-    public Enumeration children() {
+    public ListIterator childrenFolded() {
 	if (!isRoot()) {
 	    if (isFolded() || isLeaf()) {
-		return new Vector().elements();//Empty Enumeration
+		return null;//Empty Enumeration
 	    }
 	}
 	if (children != null) {
-	    return children.elements(); 
+	    return children.listIterator(); 
 	}
 	try {
 	    String[] files = file.list();
 	    if(files != null) {
-		children = new Vector();
+		children = new LinkedList();
 
 		String path = file.getPath();
 		for(int i = 0; i < files.length; i++) {
@@ -116,7 +116,7 @@ public class FileNodeModel extends NodeAdapter {
 		}
 	    }
 	} catch (SecurityException se) {}
-	return children.elements(); 
+	return children.listIterator(); 
     }
 
     public boolean isLeaf() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.5 2000-11-03 22:49:20 ponder Exp $*/
+/*$Id: MindMapLayout.java,v 1.6 2000-11-15 22:17:54 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -26,8 +26,8 @@ import java.awt.Container;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.lang.Math;
 import javax.swing.JLabel;
 
@@ -77,8 +77,8 @@ public class MindMapLayout implements LayoutManager {
 	placeNode(node, x,node.relYPos);
 
 	//Recursion
-	for ( Enumeration e = node.getChildrenViews().elements(); e.hasMoreElements(); ) {
-	    layout( (NodeView)e.nextElement() );
+	for ( ListIterator e = node.getChildrenViews().listIterator(); e.hasNext(); ) {
+	    layout( (NodeView)e.next() );
 	}
     }
 
@@ -177,8 +177,8 @@ public class MindMapLayout implements LayoutManager {
     }
 
     void reinitialize(NodeView node) {
-	for (Enumeration e = node.getChildrenViews().elements(); e.hasMoreElements();) {
-	    reinitialize((NodeView)e.nextElement());
+	for (ListIterator e = node.getChildrenViews().listIterator(); e.hasNext();) {
+	    reinitialize((NodeView)e.next());
 	}
 	calcTreeHeight(node);
 	calcRelYPos(node);
@@ -189,8 +189,8 @@ public class MindMapLayout implements LayoutManager {
 	if (node.isRoot()) {
 	    //first left...
 	    int pointer = -(calcTreeHeight( getRoot().getLeft() ) / 2);
-	    for ( Enumeration e = getRoot().getLeft().elements(); e.hasMoreElements(); ) {
-		NodeView child = (NodeView)e.nextElement();
+	    for ( ListIterator e = getRoot().getLeft().listIterator(); e.hasNext(); ) {
+		NodeView child = (NodeView)e.next();
 		
 		//Calculate y position in pixels relative to Root
 		pointer += (child.getTreeHeight() / 2);
@@ -202,8 +202,8 @@ public class MindMapLayout implements LayoutManager {
 	    } //for (every Node)
 	    //...then right
 	    pointer = -(calcTreeHeight( getRoot().getRight() ) / 2);
-	    for ( Enumeration e = getRoot().getRight().elements(); e.hasMoreElements(); ) {
-		NodeView child = (NodeView)e.nextElement();
+	    for ( ListIterator e = getRoot().getRight().listIterator(); e.hasNext(); ) {
+		NodeView child = (NodeView)e.next();
 		
 		//Calculate y position in pixels relative to Root
 		pointer += (child.getTreeHeight() / 2);
@@ -215,18 +215,25 @@ public class MindMapLayout implements LayoutManager {
 	    } //for (every Node)
 	} else {
 	    int pointer = -(node.getTreeHeight() / 2);
-	    for ( Enumeration e = node.getChildrenViews().elements(); e.hasMoreElements(); ) {
-		NodeView child = (NodeView)e.nextElement();
+	    ListIterator it = node.getChildrenViews().listIterator();
+	    while(it.hasNext()) {
+		NodeView child = (NodeView)it.next();
 		//Calculate y position
 		pointer += (child.getTreeHeight() / 2);
 		int y = pointer;
 	    
 		child.relYPos = pointer - 2;
+		System.out.println("NODE:"+node.getModel().toString());
+		System.out.println("YPOS:"+child.relYPos);
+		System.out.println("TREEHEIGHT:"+child.getTreeHeight());
+		
+		
+		//This point is called twice for every node. Why?
 
 		//		calcRelYPos(child);
 
 		pointer += (child.getTreeHeight() / 2);
-	    } //for (every Node)
+	    } //for every Node
 	}
     }
 
@@ -249,15 +256,18 @@ public class MindMapLayout implements LayoutManager {
     /**
      * 
      */
-    private int calcTreeHeight( Vector v ) { //Returns the height of all NodeViews in the Vector
+    private int calcTreeHeight( LinkedList v ) { //Returns the height of all NodeViews in the LinkedList
 	if ( v == null || v.size() == 0 ) {
 	    return 0;
 	}
 	int height = 0;
-	for ( Enumeration e = v.elements(); e.hasMoreElements(); ) {
-	    NodeView node = (NodeView)e.nextElement();
+	for ( ListIterator e = v.listIterator(); e.hasNext(); ) {
+	    NodeView node = (NodeView)e.next();
 	    if (node == null) {
 		break;
+	    }
+	    if(node.getTreeHeight() == 0) {
+		calcTreeHeight(node);
 	    }
 	    //	    calcTreeHeight(node);
 	    height += node.getTreeHeight();
@@ -269,14 +279,19 @@ public class MindMapLayout implements LayoutManager {
      * 
      */
     protected void calcTreeHeight(NodeView node) { //Returns the height of this subtree in pixels;
-	Vector v = node.getChildrenViews();
+	LinkedList v = node.getChildrenViews();
 	int treeheight = calcTreeHeight(v);
 
 	if (treeheight > node.getPreferredSize().height + VGAP) {
 	    node.setTreeHeight(treeheight);
+	    System.out.println("1");
+	    
 	} else {
 	    node.setTreeHeight(node.getPreferredSize().height + VGAP);
+	    System.out.println("2");
 	}
+	System.out.println("PrefSize:"+node.getPreferredSize().height);
+	
     }
 
 }//class MindMapLayout
@@ -301,8 +316,8 @@ public class MindMapLayout implements LayoutManager {
 //      */
 //     protected int getLeftTreeHeight() {
 // 	int leftTreeHeight = 0;	
-// 	for (Enumeration e = getLeft().elements(); e.hasMoreElements();) {
-// 	    leftTreeHeight +=((NodeView)e.nextElement()).getTreeHeight();
+// 	for (ListIterator e = getLeft().listIterator(); e.hasNext();) {
+// 	    leftTreeHeight +=((NodeView)e.next()).getTreeHeight();
 // 	}
 // 	return leftTreeHeight;
 //     }
@@ -312,8 +327,8 @@ public class MindMapLayout implements LayoutManager {
 //      */
 //     protected int getRightTreeHeight() {
 // 	int rightTreeHeight = 0;	
-// 	for (Enumeration e = getRight().elements(); e.hasMoreElements();) {
-// 	    rightTreeHeight +=((NodeView)e.nextElement()).getTreeHeight();
+// 	for (ListIterator e = getRight().listIterator(); e.hasNext();) {
+// 	    rightTreeHeight +=((NodeView)e.next()).getTreeHeight();
 // 	}
 // 	return rightTreeHeight;
 //     }

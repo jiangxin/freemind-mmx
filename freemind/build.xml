@@ -19,7 +19,7 @@
 		</copy>
 		<copy todir="${dist}/lib">
 			<fileset dir="${src}"
-				includes="**/xerces.jar"
+				includes="**/xerces.jar,**/silk.jar"
 			/>
 		</copy>
 	</target>

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.6 2000-11-02 17:20:11 ponder Exp $*/
+/*$Id: NodeAdapter.java,v 1.7 2000-11-15 22:17:54 ponder Exp $*/
 
 package freemind.modes;
 
@@ -25,6 +25,9 @@ import freemind.main.Tools;
 import freemind.view.mindmapview.NodeView;
 import java.util.Enumeration;
 import java.util.Vector;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.net.URL;
 import java.awt.Color;
 import javax.swing.tree.TreeNode;
@@ -52,7 +55,7 @@ public abstract class NodeAdapter implements MindMapNode {
     protected boolean italic = false;
     protected boolean underlined = false;
 
-    protected Vector children;
+    protected List children;
 
     private MutableTreeNode parent;
     private MindMapEdge edge;//the edge which leads to this node, only root has none
@@ -70,7 +73,6 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
     protected NodeAdapter(Object userObject) {
-	children = new Vector();
 	this.userObject = userObject;
     }
 
@@ -187,20 +189,27 @@ public abstract class NodeAdapter implements MindMapNode {
 	return (parent==null);
     }
 
+    public ListIterator childrenUnfolded() {
+	return children.listIterator();
+    }
+
+    public ListIterator childrenFolded() {
+	if (isFolded()) {
+	    return null;//return empty Enumeration
+	}
+	return children.listIterator();
+    }
+
     //
     //  Interface TreeNode
     //
 
     /**
-     * This causes me some headache because the children are not reported if the node is folded, which
-     * is only correct if the view asks. Otherwise the children _should_ be reported. Maybe write to different
-     * methods for folded_sensitive and not_folded_sensitive.
+     * AFAIK there is no way to get an enumeration out of a linked list. So this exception must be
+     * thrown, or we can't implement TreeNode anymore (maybe we shouldn't?)
      */
     public Enumeration children() {
-	if (isFolded()) {
-	    return new Vector().elements();//return empty Enumeration
-	}
-	return children.elements();
+	throw new UnsupportedOperationException("Use childrenFolded or childrenUnfolded instead");
     }
 	
     public boolean getAllowsChildren() {
@@ -211,7 +220,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	if (isFolded()) {
 	    return null;
 	}
-	return (TreeNode)children.elementAt( childIndex );
+	return (TreeNode)children.get( childIndex );
     }
 
     public int getChildCount() {

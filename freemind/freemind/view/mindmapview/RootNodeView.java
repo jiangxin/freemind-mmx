@@ -16,13 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.4 2000-10-17 17:20:29 ponder Exp $*/
+/*$Id: RootNodeView.java,v 1.5 2000-11-15 22:17:54 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.modes.MindMapNode;
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Point;
@@ -74,22 +74,22 @@ public class RootNodeView extends NodeView {
     void setEdge(EdgeView edge) {
     }
 
-    Vector getLeft() {
-	Vector all = getChildrenViews();
-	Vector left = new Vector();
-	for (Enumeration e = all.elements();e.hasMoreElements();) {
-	    NodeView node = (NodeView)e.nextElement();
+    LinkedList getLeft() {
+	LinkedList all = getChildrenViews();
+	LinkedList left = new LinkedList();
+	for (ListIterator e = all.listIterator();e.hasNext();) {
+	    NodeView node = (NodeView)e.next();
 	    if (node == null) continue;
 	    if (node.isLeft()) left.add(node);
 	}
 	return left;
     }
 
-    Vector getRight() {
-	Vector all = getChildrenViews();
-	Vector right = new Vector();
-	for (Enumeration e = all.elements();e.hasMoreElements();) {
-	    NodeView node = (NodeView)e.nextElement();
+    LinkedList getRight() {
+	LinkedList all = getChildrenViews();
+	LinkedList right = new LinkedList();
+	for (ListIterator e = all.listIterator();e.hasNext();) {
+	    NodeView node = (NodeView)e.next();
 	    if (node == null) continue;
 	    if (!node.isLeft()) right.add(node);
 	}
@@ -102,9 +102,12 @@ public class RootNodeView extends NodeView {
 	if ( getLeft().size() > getRight().size() ) {
 	    newView.setLeft(false);
     	}
-	for (Enumeration e = newNode.children();e.hasMoreElements();) {
-	    MindMapNode child = (MindMapNode)e.nextElement();
-	    newView.insert(child);
+	ListIterator it = newNode.childrenFolded();
+	if (it != null) {
+	    for (;it.hasNext();) {
+		MindMapNode child = (MindMapNode)it.next();
+		newView.insert(child);
+	    }
 	}
     }	
 

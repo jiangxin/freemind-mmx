@@ -16,15 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.6 2000-11-05 21:05:22 ponder Exp $*/
+/*$Id: NodeView.java,v 1.7 2000-11-15 22:17:54 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;//This should not be done.
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -43,9 +43,7 @@ public abstract class NodeView extends JLabel {
     protected MapView map;
     protected EdgeView edge;
     protected final static Color selectedColor = Color.darkGray;//the Color of the Rectangle of a selected Node
-    //caching of treeheight
     protected int treeHeight;
-//     protected boolean treeheightCurrent = true;
     private boolean left = true; //is the node left of root?
     int relYPos;//the relative Y Position to it's parent
 
@@ -161,11 +159,14 @@ public abstract class NodeView extends JLabel {
     /**
      * This method returns the NodeViews that are children of this node.
      */
-    protected Vector getChildrenViews() {
-	Vector childrenViews = new Vector();
-	for ( Enumeration e = getModel().children();e.hasMoreElements(); ) {
-	    MindMapNode child = (MindMapNode)e.nextElement();
-	    childrenViews.add( child.getViewer() );
+    protected LinkedList getChildrenViews() {
+	LinkedList childrenViews = new LinkedList();
+	ListIterator it = getModel().childrenFolded();
+	if (it != null) {
+	    while(it.hasNext()) {
+		MindMapNode child = (MindMapNode)it.next();
+		childrenViews.add( child.getViewer() );
+	    }
 	}
 	return childrenViews;
     }
@@ -208,37 +209,41 @@ public abstract class NodeView extends JLabel {
     //
 
     protected NodeView getNextSibling() {
-	Vector v = getParentView().getChildrenViews();
+	LinkedList v = null;
 	if (getParentView().isRoot()) {
 	    if (this.isLeft()) {
 		v = ((RootNodeView)getParentView()).getLeft();
 	    } else {
 		v = ((RootNodeView)getParentView()).getRight();
 	    }
-	}
+	} else {
+	    v = getParentView().getChildrenViews();
+	}	
 	NodeView sibling;
 	if (v.size()-1 == v.indexOf(this)) { //this is last, return first
-	    sibling = (NodeView)v.firstElement();
+	    sibling = (NodeView)v.getFirst();
 	} else {
-	    sibling = (NodeView)v.elementAt(v.indexOf(this)+1);
+	    sibling = (NodeView)v.get(v.indexOf(this)+1);
 	}
 	return sibling;
     }
 
     protected NodeView getPreviousSibling() {
-	Vector v = getParentView().getChildrenViews();
+	LinkedList v = null;
 	if (getParentView().isRoot()) {
 	    if (this.isLeft()) {
 		v = ((RootNodeView)getParentView()).getLeft();
 	    } else {
 		v = ((RootNodeView)getParentView()).getRight();
 	    }
+	} else {
+	    v = getParentView().getChildrenViews();
 	}
 	NodeView sibling;
 	if (v.indexOf(this) <= 0) {//this is first, return last
-	    sibling = (NodeView)v.lastElement();
+	    sibling = (NodeView)v.getLast();
 	} else {
-	    sibling = (NodeView)v.elementAt(v.indexOf(this)-1);
+	    sibling = (NodeView)v.get(v.indexOf(this)-1);
 	}
 	return sibling;
     }
@@ -248,17 +253,24 @@ public abstract class NodeView extends JLabel {
     //
 
     void insert() {
-	for (Enumeration e = getModel().children();e.hasMoreElements();) {
-	    insert((MindMapNode)e.nextElement());
+	ListIterator it = getModel().childrenFolded();
+	if (it != null) {
+	    while(it.hasNext()) {
+		insert((MindMapNode)it.next());
+	    }
 	}
     }
 
     void insert(MindMapNode newNode) {
 	NodeView newView = NodeView.newNodeView(newNode,getMap());
 	newView.setLeft(this.isLeft());
-	for (Enumeration e = newNode.children();e.hasMoreElements();) {
-	    MindMapNode child = (MindMapNode)e.nextElement();
-	    newView.insert(child);
+
+	ListIterator it = getModel().childrenFolded();
+	if (it != null) {
+	    while(it.hasNext()) {
+		MindMapNode child = (MindMapNode)it.next();
+		newView.insert(child);
+	    }
 	}
     }
     
@@ -270,8 +282,8 @@ public abstract class NodeView extends JLabel {
     void remove() {
 	getMap().remove(this);
 	getEdge().remove();
-	for(Enumeration e = getChildrenViews().elements();e.hasMoreElements();) {
-	    NodeView child = (NodeView)e.nextElement();
+	for(ListIterator e = getChildrenViews().listIterator();e.hasNext();) {
+	    NodeView child = (NodeView)e.next();
 	    child.remove();
 	}
     }
@@ -304,45 +316,11 @@ public abstract class NodeView extends JLabel {
 
     void updateAll() {
 	update();
-	for(Enumeration e = getChildrenViews().elements();e.hasMoreElements();) {
-	    NodeView child = (NodeView)e.nextElement();
+	for(ListIterator e = getChildrenViews().listIterator();e.hasNext();) {
+	    NodeView child = (NodeView)e.next();
 	    child.updateAll();
 	}
     }
-
-//     /**
-//      * THIS SHOULD BE MOVED TO MINDMAPLAYOUT
-//      */
-//     protected int getTreeHeight( Vector v ) { //Returns the height of all NodeViews in the Vector
-// 	if ( v == null || v.size() == 0 ) {
-// 	    return getPreferredSize().height + 5;
-// 	}
-// 	int height = 0;
-// 	for ( Enumeration e = v.elements(); e.hasMoreElements(); ) {
-// 	    NodeView node = (NodeView)e.nextElement();
-// 	    if (node == null) {
-// 		break;
-// 	    }
-// 	    height += node.getTreeHeight();
-// 	}
-// 	if (height > getPreferredSize().height) {
-// 	    return height;
-// 	} else {
-// 	    return getPreferredSize().height;
-// 	}
-//     }
-    
-//     /**
-//      * THIS SHOULD BE MOVED TO MINDMAPLAYOUT
-//      */
-//     protected int getTreeHeight() { //Returns the height of this subtree in pixels;
-// 	if(!isTreeheightCurrent()) {
-// 	    Vector v = getChildrenViews();
-// 	    treeheight = getTreeHeight(v);
-// 	    setTreeheightCurrent(true);
-// 	}
-// 	return treeheight;
-//     }
 }
 
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.6 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: MapView.java,v 1.7 2000-11-15 22:17:54 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -26,8 +26,8 @@ import freemind.view.MapModule;
 import freemind.controller.Controller;
 import freemind.controller.NodeMouseListener;
 import freemind.controller.NodeKeyListener;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -104,14 +104,14 @@ public class MapView extends JPanel implements Printable {
 	NodeView oldSelected = getSelected();
 	NodeView newSelected;
 	if(oldSelected.isRoot()){
-	    Vector left = ((RootNodeView)oldSelected).getLeft();
+	    LinkedList left = ((RootNodeView)oldSelected).getLeft();
 	    if (left.size() == 0) return;
-	    newSelected = (NodeView)left.firstElement();
+	    newSelected = (NodeView)left.getFirst();
 	} else if(!oldSelected.isLeft()) {
 	    newSelected = oldSelected.getParentView();
 	} else {
 	    if (oldSelected.getChildrenViews().size() == 0) return;
-	    newSelected = (NodeView)oldSelected.getChildrenViews().firstElement();
+	    newSelected = (NodeView)oldSelected.getChildrenViews().getFirst();
 	}
 	select(newSelected);
 	scrollNodeToVisible( newSelected );
@@ -121,14 +121,14 @@ public class MapView extends JPanel implements Printable {
 	NodeView oldSelected = getSelected();
 	NodeView newSelected;
 	if(oldSelected.isRoot()) {
-	    Vector right = ((RootNodeView)oldSelected).getRight();
+	    LinkedList right = ((RootNodeView)oldSelected).getRight();
 	    if (right.size() == 0) return;
-	    newSelected = (NodeView)right.firstElement();
+	    newSelected = (NodeView)right.getFirst();
 	} else if(oldSelected.isLeft()) {
 	    newSelected = oldSelected.getParentView();
 	} else {
 	    if (oldSelected.getChildrenViews().size() == 0) return;
-	    newSelected = (NodeView)oldSelected.getChildrenViews().firstElement();
+	    newSelected = (NodeView)oldSelected.getChildrenViews().getFirst();
 	}
 	select(newSelected);
 	scrollNodeToVisible(newSelected);
@@ -240,8 +240,8 @@ public class MapView extends JPanel implements Printable {
 
 
     private void paintEdges(NodeView source, Graphics2D g) {
-	for(Enumeration e = source.getChildrenViews().elements(); e.hasMoreElements(); ) {
-	    NodeView target = (NodeView)e.nextElement();
+	for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
+	    NodeView target = (NodeView)e.next();
 	    
 	    target.getEdge().paint(g);
 		
@@ -334,7 +334,7 @@ public class MapView extends JPanel implements Printable {
 	    parentView.insert( child );
 	    getMindMapLayout().calcTreeHeight( child.getViewer() );
 	    getMindMapLayout().subtreeChanged(parentView);
-	    //	    revalidate();
+	    revalidate();
 	    repaint();
 	}
 
