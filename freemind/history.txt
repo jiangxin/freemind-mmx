@@ -172,7 +172,8 @@ RC2
 
 * enhanced german translation.
 * timed out nodes are selected.
-
+* some insert menu points are put into the popup menu.
+* bin-max.zip created.
 
 Changes made in Freemind 0.7.2:
 ===============================

@@ -226,6 +226,21 @@
 				</menu_category>
 			</menu_category>
 		</menu_submenu>	
+		<menu_submenu name="insert" name_ref="menu_insert">
+			<menu_category name="clouds">
+				<menu_action field="cloud" key_ref="keystroke_node_toggle_cloud"/>
+			</menu_category>
+			<menu_category name="image">
+				<menu_action field="setImageByFileChooser" key_ref="keystroke_set_image_by_filechooser"/>			
+			</menu_category>
+			<menu_separator/>
+			<menu_category name="links">
+				<menu_action field="setLinkByFileChooser" key_ref="keystroke_set_link_by_filechooser"/>
+				<menu_action field="setLinkByTextField" key_ref="keystroke_set_link_by_textfield"/>
+				<menu_action field="addArrowLinkAction" key_ref="keystroke_add_arrow_link_action"/>
+				<menu_action field="addLocalLinkAction" key_ref="keystroke_add_local_link_action"/>
+			</menu_category>
+		</menu_submenu>	
 		<menu_separator/>
 		<menu_category name="patterns"/>
 	</menu_category>

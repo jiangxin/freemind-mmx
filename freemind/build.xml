@@ -223,6 +223,10 @@
 		<zip destfile="${post}/freemind-bin-${ver}.zip"
 			basedir="${dist}"
 			excludes="browser/,doc/javadoc/,plugins/**" />
+		<!-- fc, 14.2.2005: new max export -->
+		<zip destfile="${post}/freemind-bin-max-${ver}.zip"
+			basedir="${dist}"
+			excludes="browser/,doc/javadoc/" />
 		<zip destfile="${post}/freemind-src-${ver}.zip"
 			basedir="${src_base_for_post}"
 			includes="freemind/**,.classpath,.project" />
