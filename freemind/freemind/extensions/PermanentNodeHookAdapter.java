@@ -118,7 +118,7 @@ public class PermanentNodeHookAdapter
 	 */
 	public void save(XMLElement xml) {
 		String saveName = getName();
-		saveName.replace(File.separatorChar, '/');
+		saveName=saveName.replace(File.separatorChar, '/');
 		xml.setAttribute("name", saveName);
 	}
 

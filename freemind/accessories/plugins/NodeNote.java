@@ -11,11 +11,16 @@ import java.awt.Dimension;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 
+import freemind.controller.Controller;
 import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 
 /**
  * @author foltin
@@ -133,5 +138,41 @@ public class NodeNote extends PermanentNodeHookAdapter {
 		child.setContent(myNodeText);
 		xml.addChild(child);
 	}
+
+	public class NodeTextListener implements DocumentListener {
+		private final ModeController c;
+
+		public NodeTextListener(ModeController controller) {
+			c=controller;
+		}
+		/**
+		 * @see javax.swing.event.DocumentListener#insertUpdate(DocumentEvent)
+		 */
+		public void insertUpdate(DocumentEvent e) {
+			changedUpdate(e);
+		}
+
+		/**
+		 * @see javax.swing.event.DocumentListener#removeUpdate(DocumentEvent)
+		 */
+		public void removeUpdate(DocumentEvent e) {
+			changedUpdate(e);
+		}
+
+		/**
+		 * @see javax.swing.event.DocumentListener#changedUpdate(DocumentEvent)
+		 */
+		public void changedUpdate(DocumentEvent e) {
+			try {
+				String text = e.getDocument().getText(0, e.getDocument().getLength());
+//				MindMapNode node = c.getSelecteds();
+//				node.setNodeText(text);
+			} catch (BadLocationException ex) {
+				System.err.println("Could not fetch nodeText content"+ex.toString());
+			}
+		}
+
+	}
+
 
 }
