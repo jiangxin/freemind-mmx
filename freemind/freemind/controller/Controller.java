@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.11 2000-11-08 12:20:31 ponder Exp $*/
+/*$Id: Controller.java,v 1.12 2000-11-08 13:53:04 ponder Exp $*/
 
 package freemind.controller;
 
@@ -498,7 +498,7 @@ public class Controller {
 	public void actionPerformed(ActionEvent e) {
 	    changeToMode("MindMap");
 	    try {
-		((ControllerAdapter)getMode().getModeController()).load(new File("freemind.mm"));
+		((ControllerAdapter)getMode().getModeController()).load(new File("doc/maps/freemind.mm"));
 	    } catch (FileNotFoundException ex) {
 		JOptionPane.showMessageDialog(getFrame(), FreeMind.getResources().getString("file_not_found") + "\n Documentation Map not found.");
 	    }

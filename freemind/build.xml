@@ -11,7 +11,18 @@
 			classpath="xerces.jar:w3cdom1.jar"/>
 	</target>
 
-	<target name="dist" depends="jar,doc"/>
+	<target name="dist" depends="jar,doc">
+		<copy todir="${dist}"> 
+			<fileset dir="${src}"
+				includes="**/*.properties,**/freemind.bat,**/freemind.sh"
+			/>
+		</copy>
+		<copy todir="${dist}/lib">
+			<fileset dir="${src}"
+				includes="**/xerces.jar"
+			/>
+		</copy>
+	</target>
 
 	<target name="jar" depends="compile">
 		<mkdir dir="${dist}/lib" />
@@ -26,6 +37,9 @@
 
 	<target name="doc">
 		<mkdir dir="${dist}/doc" />
+		<copy todir="${dist}/doc/">
+			<fileset dir="${src}/doc"/>
+		</copy>
 		<javadoc sourcepath="${src}"
 		         destdir="${dist}/doc"
 		         packagenames="freemind.*" />
