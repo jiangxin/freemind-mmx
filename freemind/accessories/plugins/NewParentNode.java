@@ -47,6 +47,12 @@ public class NewParentNode extends NodeHookAdapter {
 		List selecteds = getController().getSelecteds();
 		MindMapNode selectedNode = focussed;
 		List selectedNodes = selecteds;
+		
+		if(focussed.isRoot()) {
+			getController().getController().errorMessage(
+					getResourceString("cannot_add_parent_to_root"));
+			return;
+		}
 
 		// Make sure the selected nodes all have the same parent
 		// (this restriction is to simplify the action, and could

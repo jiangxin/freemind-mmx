@@ -84,6 +84,8 @@ Changes made in Freemind 0.8.0:
 * PDF export added.
 * Startuptime reduced.
 * Little improvement for the Icon selector: the last position is restored next time it is opened.
+* Bugfix: New parent node. Export to HTML III.
+
 
 Changes made in Freemind 0.7.2:
 ===============================

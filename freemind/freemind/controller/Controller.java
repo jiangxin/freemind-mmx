@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.10.13 2004-11-13 08:28:34 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.10.14 2004-11-13 23:47:04 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -544,7 +544,19 @@ public class Controller {
        JOptionPane.showMessageDialog(component, message.toString(), "FreeMind", JOptionPane.INFORMATION_MESSAGE); }
 
     public void errorMessage(Object message) {
-       JOptionPane.showMessageDialog(getFrame().getContentPane(), message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }
+		String myMessage = "";
+
+		if (message != null) {
+			myMessage = message.toString();
+		} else {
+			myMessage = getResourceString("undefined_error");
+			if (myMessage == null) {
+				myMessage = "Undefined error";
+			}
+		}
+		JOptionPane.showMessageDialog(getFrame().getContentPane(), myMessage, "FreeMind", JOptionPane.ERROR_MESSAGE);
+
+	}
 
     public void errorMessage(Object message, JComponent component) {
        JOptionPane.showMessageDialog(component, message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }
