@@ -28,7 +28,7 @@ Changes made in Freemind 0.8.0:
 * Plugins can have registration parts that are called at each map startup.
 * UnfoldAll is mouse wheel sensitive.
 * Folding can be undone (for children too).
-* Multiple move nodes is now possible.
+* Multiple move nodes is now possible + undoable
 
 Changes made in Freemind 0.7.2:
 ===============================

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.12.10 2004-08-12 22:20:28 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.12.11 2004-08-21 07:14:13 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -626,10 +626,8 @@ public abstract class NodeAdapter implements MindMapNode {
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMapNode#getNodeId()
 	 */
-	public String getObjectId() {
-		// URGENT: This is to be implemented.
-	    throw new IllegalArgumentException("getObjectId is not implemented yet.");
-		//return "id";
+	public String getObjectId(ModeController controller) {
+	    return controller.getNodeID(this);
 	}
 
 }

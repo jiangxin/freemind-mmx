@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.25 2004-08-20 23:12:13 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.26 2004-08-21 07:14:13 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -810,6 +810,9 @@ public abstract class ControllerAdapter implements ModeController {
 	    toggleFolded.setFolded(node, folded);
 	}
 	
+	public void moveNodes(MindMapNode selected, List selecteds, int direction){
+	    nodeUp.moveNodes(selected, selecteds, direction);
+	}
 
 
 

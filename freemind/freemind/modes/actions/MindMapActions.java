@@ -8,6 +8,7 @@ package freemind.modes.actions;
 
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 import freemind.modes.MindMapNode;
 
@@ -31,6 +32,11 @@ public interface MindMapActions {
 	public void addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e);
 	public void deleteNode(MindMapNode selectedNode);
 	public Transferable cut();
+	/**
+	 * moves selected and selecteds (if they are child of the same parent and adjacent)
+	 * in the direction specified (up = -1, down = 1). 
+	 * */
+	void moveNodes(MindMapNode selected, List selecteds, int direction);
 	
 	void setFolded(MindMapNode node, boolean folded);
 	void toggleFolded();

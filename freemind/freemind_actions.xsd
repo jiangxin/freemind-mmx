@@ -20,6 +20,7 @@
 					<xs:element ref="new_node_action"/>
 					<xs:element ref="undo_xml_action"/>
 					<xs:element ref="fold_action"/>
+					<xs:element ref="move_nodes_action"/>
 				</xs:choice>
 			</xs:extension>
 		</xs:complexContent>
@@ -170,6 +171,31 @@
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
+	</xs:element>
+
+	<!-- This element is part of a node list. -->
+	<xs:element name="node_list_member">
+		<xs:complexType>
+	      <xs:attribute name="node" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- NodeUpAction and NodeDownAction:
+		   The node from node_action is the selected node. -->
+	<xs:element name="move_nodes_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+          <xs:sequence>
+						<!-- The selected nodes: -->
+    	      <xs:element ref="node_list_member" maxOccurs="unbounded" minOccurs="1"/>				
+          </xs:sequence>
+					<!-- Up = -1, Down = 1-->
+		      <xs:attribute name="direction" use="required" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+		
 	</xs:element>
 
 	<!-- ======================================================================================= 

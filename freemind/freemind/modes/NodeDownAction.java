@@ -19,7 +19,7 @@
  *
  * Created on 21.08.2004
  */
-/*$Id: NodeDownAction.java,v 1.1.2.1 2004-08-20 23:12:13 christianfoltin Exp $*/
+/*$Id: NodeDownAction.java,v 1.1.2.2 2004-08-21 07:14:14 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -36,12 +36,6 @@ class NodeDownAction extends AbstractAction {
         this.modeController = adapter;
     }
     public void actionPerformed(ActionEvent e) {
-        modeController.nodeUp.moveNodes(1, new Comparator(){
-
-            public int compare(Object o1, Object o2) {
-                int i1 = ((Integer) o1).intValue();
-                int i2 = ((Integer) o2).intValue();
-                return i2 - i1;
-            }});
+        modeController.moveNodes(modeController.getSelected(), modeController.getSelecteds(), 1);
     }
 }

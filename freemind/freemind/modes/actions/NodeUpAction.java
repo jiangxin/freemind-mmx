@@ -19,7 +19,7 @@
  *
  * Created on 21.08.2004
  */
-/*$Id: NodeUpAction.java,v 1.1.2.1 2004-08-20 23:12:13 christianfoltin Exp $*/
+/*$Id: NodeUpAction.java,v 1.1.2.2 2004-08-21 07:14:14 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -28,36 +28,65 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.TreeSet;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
+import javax.xml.bind.JAXBException;
 
+import freemind.controller.actions.ActionPair;
+import freemind.controller.actions.ActorXml;
+import freemind.controller.actions.generated.instance.CompoundAction;
+import freemind.controller.actions.generated.instance.FoldAction;
+import freemind.controller.actions.generated.instance.MoveNodesAction;
+import freemind.controller.actions.generated.instance.NodeListMember;
+import freemind.controller.actions.generated.instance.NodeListMemberType;
+import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 
 
-public class NodeUpAction extends AbstractAction {
+public class NodeUpAction extends AbstractAction implements ActorXml{
     private final ControllerAdapter modeController;
     private static Logger logger;
     public NodeUpAction(ControllerAdapter modeController) {
         super(modeController.getText("node_up"));
         this.modeController = modeController;
+        modeController.getActionFactory().registerActor(this, getDoActionClass());
         if(logger == null) {
             logger = modeController.getFrame().getLogger(this.getClass().getName());
         }
     }
     public void actionPerformed(ActionEvent e) {
-        moveNodes(-1, null);
+        moveNodes(modeController.getSelected(), modeController.getSelecteds(), -1);
     }
-    public void moveNodes(int direction, Comparator comparator) {
-        MindMapNode selected = modeController.getSelected();
+    /**
+     * @param selected
+     * @param selecteds
+     * @param i
+     */
+    public void moveNodes(MindMapNode selected, List selecteds, int direction) {
+        MoveNodesAction doAction = createMoveNodesAction(selected, selecteds, direction);
+        MoveNodesAction undoAction = createMoveNodesAction(selected, selecteds, -direction);
+        modeController.getActionFactory().startTransaction((String) getValue(NAME));
+		modeController.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
+        modeController.getActionFactory().endTransaction((String) getValue(NAME));
+    }
+    public void _moveNodes(MindMapNode selected, List selecteds, int direction) {
+        Comparator comparator =  (direction==-1)?null:new Comparator(){
+
+            public int compare(Object o1, Object o2) {
+                int i1 = ((Integer) o1).intValue();
+                int i2 = ((Integer) o2).intValue();
+                return i2 - i1;
+            }
+        };
         if(!selected.isRoot()) {
             MindMapNode parent = selected.getParentNode();
             // multiple move:
-            List selecteds = modeController.getSelecteds();
             Vector sortedChildren = getSortedSiblings(parent);
             TreeSet range = new TreeSet(comparator);
             for (Iterator i = selecteds.iterator(); i.hasNext();) {
@@ -156,5 +185,38 @@ public class NodeUpAction extends AbstractAction {
         //logger.finest("Sorted nodes "+ nodes);
         return nodes;
     }
-   
+    public void act(XmlAction action) {
+        if (action instanceof MoveNodesAction) {
+            MoveNodesAction moveAction = (MoveNodesAction) action;
+            MindMapNode selected = modeController.getNodeFromID(moveAction.getNode());
+            Vector selecteds = new Vector();
+            for (Iterator i = moveAction.getNodeListMember().iterator(); i.hasNext();) {
+                NodeListMemberType node = (NodeListMemberType) i.next();
+                selecteds.add(modeController.getNodeFromID(node.getNode()));
+            }
+            _moveNodes(selected, selecteds, moveAction.getDirection());
+        }
+    }
+    public Class getDoActionClass() {
+        return MoveNodesAction.class;
+    }
+    private MoveNodesAction createMoveNodesAction(MindMapNode selected, List selecteds, int direction) {
+        try {
+            MoveNodesAction moveAction = modeController.getActionXmlFactory().createMoveNodesAction();
+            moveAction.setDirection(direction);
+            moveAction.setNode(selected.getObjectId(modeController));
+            // selectedNodes list 
+            for (Iterator i = selecteds.iterator(); i.hasNext();) {
+                MindMapNode node = (MindMapNode) i.next();
+                NodeListMember nodeListMember = modeController.getActionXmlFactory().createNodeListMember();
+                nodeListMember.setNode(node.getObjectId(modeController));
+                moveAction.getNodeListMember().add(nodeListMember);
+            } 
+            return moveAction;
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        return null;
+        
+    }
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.12.7 2004-08-20 23:12:13 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.12.8 2004-08-21 07:14:13 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -43,7 +43,7 @@ public interface MindMapNode extends MutableTreeNode {
 	/**
 	 * @return returns the unique id of the node. It is generated using the LinkRegistry.
 	 */
-	String getObjectId();
+	String getObjectId(ModeController controller);
 	
     /** @return returns a ListIterator of all children of the node if the node is unfolded. 
      * EMPTY_LIST_ITERATOR otherwise. 
