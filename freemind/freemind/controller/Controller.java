@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.17 2001-04-06 20:50:11 ponder Exp $*/
+/*$Id: Controller.java,v 1.18 2001-04-06 21:39:19 ponder Exp $*/
 
 package freemind.controller;
 
@@ -63,7 +63,7 @@ import freemind.modes.ControllerAdapter;
 public class Controller {
 
     private Map mapmodules = new TreeMap(); //The instances of mode, ie. the Model/View pairs
-    private Set lastOpened = new OrderedSet();//A list of the pathnames of all the maps that were opened in the last time
+    private LastOpenedList lastOpened = new LastOpenedList();//A list of the pathnames of all the maps that were opened in the last time
     private MapModule mapmodule; //reference to the current mode, could be done with an index to mapmodules, too.
     private Map modes; //hash of all possible modes
     private Mode mode; //The current mode
@@ -378,6 +378,7 @@ public class Controller {
     
     private void mapModuleChanged() {
 	frame.getFreeMindMenuBar().updateMapsMenu();//to show the new map in the mindmaps menu
+	lastOpened.mapOpened(getMapModule());
 	updateNavigationActions();
 	if (getMapModule() == null) {
 	    getFrame().setTitle("FreeMind - " + getMode().toString()+" Mode");
@@ -478,6 +479,43 @@ public class Controller {
     //////////////
     // Inner Classes
     ////////////
+
+
+    /**
+     * This class manages a list of the maps that were opened last.
+     * It aims to provide persistence for the last recent maps.
+     */
+    private class LastOpenedList {
+	private int entrys = 10;
+	private List lst = new LinkedList();	
+
+	LastOpenedList() {
+	}
+
+	void mapOpened(MapModule map) {
+	    if (lst.contains(map)) {
+		lst.remove(map);
+	    }
+	    lst.add(0,map);
+
+	    while (lst.size()>entrys) {
+		lst.remove(lst.size()); //remove last elt
+	    }
+	}
+
+	void mapClosed(MapModule map) {
+	}
+
+	String save() {
+	    String str = new String();
+
+	    return str;
+	}
+
+	void load(String data) {
+	}
+    }
+
     
 
     //

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.8 2001-04-06 20:50:11 ponder Exp $*/
+/*$Id: Tools.java,v 1.9 2001-04-06 21:39:19 ponder Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -24,6 +24,9 @@ package freemind.main;
 import java.io.File;
 import java.util.Vector;
 import java.util.StringTokenizer;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.net.URL;
 import java.awt.Color;
 import java.awt.Font;
