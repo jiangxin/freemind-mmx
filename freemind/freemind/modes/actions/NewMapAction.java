@@ -22,7 +22,7 @@ public class NewMapAction extends AbstractAction {
 	private final ControllerAdapter modeController;
     ControllerAdapter c;
     public NewMapAction(ControllerAdapter modeController, ControllerAdapter controller) {
-        super(modeController.getText("new"), new ImageIcon(modeController.getResource("images/New24.gif")));
+        super(modeController.getText("new"), new ImageIcon(modeController.getResource("images/filenew.png")));
 		this.modeController = modeController;
         c = controller;
         //Workaround to get the images loaded in jar file.

@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: DeleteChildAction.java,v 1.1.4.3 2004-11-25 05:45:07 christianfoltin Exp $*/
+/*$Id: DeleteChildAction.java,v 1.1.4.4 2005-01-02 08:37:55 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -27,6 +27,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.ActionPair;
@@ -45,7 +46,8 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
     private final ControllerAdapter c;
     private String text;
     public DeleteChildAction(ControllerAdapter modeController) {
-        super(modeController.getText("remove_node"));
+        super(modeController.getText("remove_node"), new ImageIcon(
+                modeController.getResource("images/editdelete.png")));
 		text = modeController.getText("remove_node");
         this.c = modeController;
 		this.c.getActionFactory().registerActor(this, getDoActionClass());

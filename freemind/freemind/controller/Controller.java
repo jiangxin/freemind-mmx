@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.4 2004-12-19 09:00:34 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.5 2005-01-02 08:37:54 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -811,7 +811,7 @@ public class Controller {
         boolean isDlg;
         PrintAction(Controller controller, boolean isDlg) {
             super(controller.getResourceString("print"),
-                  new ImageIcon(getResource("images/Print24.gif")));
+                  new ImageIcon(getResource("images/fileprint.png")));
             this.controller = controller;
             setEnabled(false);
             this.isDlg = isDlg;
@@ -993,7 +993,7 @@ public class Controller {
     private class NavigationPreviousMapAction extends AbstractAction {
         NavigationPreviousMapAction(Controller controller) {     
             super(controller.getResourceString("previous_map"),
-                  new ImageIcon(getResource("images/Back24.gif")));
+                  new ImageIcon(getResource("images/1leftarrow.png")));
             setEnabled(false);
         }
         public void actionPerformed(ActionEvent event) {
@@ -1004,7 +1004,7 @@ public class Controller {
     private class NavigationNextMapAction extends AbstractAction {
         NavigationNextMapAction(Controller controller) {
             super(controller.getResourceString("next_map"),
-                  new ImageIcon(getResource("images/Forward24.gif")));
+                  new ImageIcon(getResource("images/1rightarrow.png")));
             setEnabled(false);
         }
         public void actionPerformed(ActionEvent event) {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.7 2004-12-19 22:25:34 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.8 2005-01-02 08:37:54 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -1488,7 +1488,7 @@ public abstract class ControllerAdapter implements ModeController {
     protected class OpenAction extends AbstractAction {
         ControllerAdapter mc;
         public OpenAction(ControllerAdapter modeController) {
-            super(getText("open"), new ImageIcon(getResource("images/Open24.gif")));
+            super(getText("open"), new ImageIcon(getResource("images/fileopen.png")));
             mc = modeController;
         }
         public void actionPerformed(ActionEvent e) {
@@ -1500,7 +1500,7 @@ public abstract class ControllerAdapter implements ModeController {
     protected class SaveAction extends AbstractAction {
         ControllerAdapter mc;
         public SaveAction(ControllerAdapter modeController) {
-            super(getText("save"), new ImageIcon(getResource("images/Save24.gif")));
+            super(getText("save"), new ImageIcon(getResource("images/filesave.png")));
             mc = modeController;
         }
         public void actionPerformed(ActionEvent e) {
@@ -1513,7 +1513,7 @@ public abstract class ControllerAdapter implements ModeController {
     protected class SaveAsAction extends AbstractAction {
         ControllerAdapter mc;
         public SaveAsAction(ControllerAdapter modeController) {
-            super(getText("save_as"), new ImageIcon(getResource("images/SaveAs24.gif")));
+            super(getText("save_as"), new ImageIcon(getResource("images/filesaveas.png")));
             mc = modeController;
         }
         public void actionPerformed(ActionEvent e) {
@@ -1543,7 +1543,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected class FindAction extends AbstractAction {
         public FindAction() {
-           super(getText("find"),new ImageIcon(getResource("images/Find16.gif"))); }
+           super(getText("find"),new ImageIcon(getResource("images/filefind.png"))); }
         public void actionPerformed(ActionEvent e) {
            String what = JOptionPane.showInputDialog(getView().getSelected(),
                                                      getText("find_what"));

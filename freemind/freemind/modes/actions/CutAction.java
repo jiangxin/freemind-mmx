@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: CutAction.java,v 1.1.4.3 2004-11-28 21:37:46 christianfoltin Exp $*/
+/*$Id: CutAction.java,v 1.1.4.4 2005-01-02 08:37:54 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -53,7 +53,7 @@ public class CutAction extends AbstractAction implements ActorXml {
     public CutAction(ControllerAdapter c) {
         super(
             c.getText("cut"),
-            new ImageIcon(c.getResource("images/Cut24.gif")));
+            new ImageIcon(c.getResource("images/editcut.png")));
         this.c = c;
         this.text = c.getText("cut");
         setEnabled(false);

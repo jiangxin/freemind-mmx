@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: CopyAction.java,v 1.1.4.1 2004-10-17 23:00:08 dpolivaev Exp $ */
+/* $Id: CopyAction.java,v 1.1.4.2 2005-01-02 08:37:54 christianfoltin Exp $ */
 package freemind.modes.actions;
 
 import java.awt.datatransfer.Transferable;
@@ -36,7 +36,7 @@ public class CopyAction extends AbstractAction {
 
 	public CopyAction(ControllerAdapter controller) {
 		super(controller.getText("copy"), new ImageIcon(controller
-				.getResource("images/Copy24.gif")));
+				.getResource("images/editcopy.png")));
 		this.controller = controller;
 		setEnabled(false);
 	}

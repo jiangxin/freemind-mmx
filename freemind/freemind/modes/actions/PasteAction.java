@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: PasteAction.java,v 1.1.4.2 2004-12-19 09:00:39 christianfoltin Exp $*/
+/*$Id: PasteAction.java,v 1.1.4.3 2005-01-02 08:37:55 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -67,7 +67,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
     public PasteAction(ControllerAdapter adapter) {
         super(
             adapter.getText("paste"),
-            new ImageIcon(adapter.getResource("images/Paste24.gif")));
+            new ImageIcon(adapter.getResource("images/editpaste.png")));
         this.c = adapter;
 		if(logger == null)
 			logger = c.getFrame().getLogger(this.getClass().getName());
