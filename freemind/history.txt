@@ -113,6 +113,8 @@ Changes made in Freemind 0.8.0:
 * Join node is undoable
 * Split node is undoable
 * Two new portugese translations (thanks to the authors).
+* New Feature: Encrypted Maps (and not only encrpyted nodes).
+* Icons for encryption improved
 
 Changes made in Freemind 0.7.2:
 ===============================

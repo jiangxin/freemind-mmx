@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.1 2004-12-19 09:00:40 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.2 2004-12-19 22:25:35 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -65,6 +65,8 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
     private static MindIcon decryptedIcon;
 
+    private boolean isShuttingDown=false;
+
     /**
      * @param userObject
      * @param frame
@@ -88,7 +90,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
             String childXml = decryptXml(encryptedContent, password);
             String[] childs = childXml.split(PasteAction.NODESEPARATOR);
             // and now? paste it:
-            for (int i = 0; i < childs.length; i++) {
+            for (int i = childs.length-1; i >=0; i--) {
                 String string = childs[i];
                 ((ControllerAdapter) getFrame().getController()
                         .getModeController()).paste.pasteXMLWithoutRedisplay(
@@ -98,6 +100,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
             isDecrypted = true;
         }
         isVisible = true;
+        setFolded(false);
     }
 
     /**
@@ -115,7 +118,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         // new password:
         String decryptedNode = decryptXml(encryptedContent, givenPassword);
         // FIXME: Better test needed.
-        if (!decryptedNode.startsWith("<node ")) {
+        if (decryptedNode == null || !decryptedNode.startsWith("<node ")) {
             logger.warning("Wrong password supplied (stored!=given).");
             return false;
         }
@@ -142,6 +145,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
     public void encrypt() {
         // FIXME: Sync.
+        setFolded(true);
         isVisible = false;
     }
 
@@ -160,7 +164,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     }
 
     public ListIterator childrenUnfolded() {
-        if (isVisible) {
+        if (isVisible || isShuttingDown) {
             return super.childrenUnfolded();
         }
         return new Vector().listIterator();
@@ -203,7 +207,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         if (isVisible) {
             return super.isFolded();
         }
-        return false;
+        return true;
     }
 
     /**
@@ -213,6 +217,8 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     public void setFolded(boolean folded) {
         if (isVisible) {
             super.setFolded(folded);
+        } else {
+            super.setFolded(true);
         }
     }
 
@@ -381,5 +387,13 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
      */
     public void setPassword(StringBuffer password) {
         this.password = password;
+    }
+    /**isShuttingDown is used to fold an encrypted node properly. 
+     * If it is encrypted, it has no children. Thus, the formely existing children can't be removed.
+     * Thus, this flag postpones the childlessness of a node until it tree structure is updated.
+     * @param isShuttingDown The isShuttingDown to set.
+     */
+    public void setShuttingDown(boolean isShuttingDown) {
+        this.isShuttingDown = isShuttingDown;
     }
 }

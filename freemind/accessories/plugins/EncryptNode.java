@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EncryptNode.java,v 1.1.2.1 2004-12-19 09:00:32 christianfoltin Exp $*/
+/*$Id: EncryptNode.java,v 1.1.2.2 2004-12-19 22:25:33 christianfoltin Exp $*/
 
 /*
  * Created on 14.12.2004
@@ -28,10 +28,14 @@ import javax.swing.JFrame;
 
 import accessories.plugins.dialogs.EnterPasswordDialog;
 import freemind.extensions.NodeHookAdapter;
+import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 import freemind.modes.mindmapmode.EncryptedMindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapController.NewNodeCreator;
+import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
@@ -48,24 +52,44 @@ public class EncryptNode extends NodeHookAdapter {
 
     public void invoke(MindMapNode node) {
         super.invoke(node);
-        String foldingType = getResourceString("action");
-        if (foldingType.equals("encrypt")) {
+        String actionType = getResourceString("action");
+        if (actionType.equals("encrypt")) {
             encrypt(node);
+            return;
+        } else if(actionType.equals("toggleCryptState")){
+            toggleCryptState(node);
+            return;
+        } else if(actionType.equals("encrypted_map")){
+            // new map
+            newEncryptedMap();
+            return;
         } else {
-            decrypt(node);
+            throw new IllegalArgumentException("Unknown action type:"+actionType);
         }
+    }
+
+    /**
+     * 
+     */
+    private void newEncryptedMap() {
+        final StringBuffer password = getUsersPassword();
+        if(password == null) {
+            return;
+        }
+        EncryptedMindMapNode encryptedMindMapNode = new EncryptedMindMapNode(
+                "Select me to continue!", getController().getFrame());
+        encryptedMindMapNode.setPassword(password);
+        MapAdapter newModel = new MindMapMapModel(encryptedMindMapNode, getController().getFrame());
+        MindMapController mindmapcontroller = (MindMapController) getController();
+        mindmapcontroller.newMap(newModel);
     }
 
     /**
      * @param node
      */
     private void encrypt(MindMapNode node) {
-        // get password:
-        final EnterPasswordDialog pwdDialog = new EnterPasswordDialog(
-                (JFrame) getController().getFrame(), getController(), true);
-        pwdDialog.setModal(true);
-        pwdDialog.show();
-        if (pwdDialog.getResult() == EnterPasswordDialog.CANCEL) {
+        final StringBuffer password = getUsersPassword();
+        if(password == null) {
             return;
         }
         MindMapController mindmapcontroller = (MindMapController) getController();
@@ -74,7 +98,7 @@ public class EncryptNode extends NodeHookAdapter {
             public MindMapNode createNode(Object userObject) {
                 EncryptedMindMapNode encryptedMindMapNode = new EncryptedMindMapNode(
                         userObject, getController().getFrame());
-                encryptedMindMapNode.setPassword(pwdDialog.getPassword());
+                encryptedMindMapNode.setPassword(password);
                 return encryptedMindMapNode;
             }
         });
@@ -88,20 +112,37 @@ public class EncryptNode extends NodeHookAdapter {
     }
 
     /**
+     * @return
+     */
+    private StringBuffer getUsersPassword() {
+        // get password:
+        final EnterPasswordDialog pwdDialog = new EnterPasswordDialog(
+                (JFrame) getController().getFrame(), getController(), true);
+        pwdDialog.setModal(true);
+        pwdDialog.show();
+        if (pwdDialog.getResult() == EnterPasswordDialog.CANCEL) {
+            return null;
+        }
+        final StringBuffer password = pwdDialog.getPassword();
+        return password;
+    }
+
+    /**
      * @param node
      */
-    private void decrypt(MindMapNode node) {
+    private void toggleCryptState(MindMapNode node) {
         if (node instanceof EncryptedMindMapNode) {
             EncryptedMindMapNode encNode = (EncryptedMindMapNode) node;
             if (encNode.isVisible()) {
-                getController().setFolded(node, true);
+                // to remove all children views:
                 encNode.encrypt();
+                encNode.setShuttingDown(true);
             } else {
                 doPasswordCheckAndDecryptNode(encNode);
-                getController().setFolded(node, true);
-                getController().setFolded(node, false);
             }
-            getController().nodeChanged(node);
+            getController().nodeStructureChanged(encNode);
+            getController().getView().selectAsTheOnlyOneSelected(encNode.getViewer());
+            encNode.setShuttingDown(false);
         }
     }
 

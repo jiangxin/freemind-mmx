@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.1 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.2 2004-12-19 22:25:34 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -416,7 +416,14 @@ public class StructuredMenuHolder {
 			for (Iterator i = menuItemHolder.iterator(); i.hasNext();) {
 				StructuredMenuItemHolder holder = (StructuredMenuItemHolder) i.next();
 				if(holder.getEnabledListener() != null) {
-					holder.getMenuItem().setEnabled(holder.getEnabledListener().isEnabled(holder.getMenuItem(), holder.getAction()));
+					boolean isEnabled = false;
+                    try {
+                        isEnabled = holder.getEnabledListener().isEnabled(
+                                holder.getMenuItem(), holder.getAction());
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    }
+                    holder.getMenuItem().setEnabled(isEnabled);
 				}
 				if(holder.getSelectedListener() != null) {
 					if (holder.getMenuItem() instanceof JCheckBoxMenuItem) {

@@ -20,6 +20,17 @@
 		class_name="accessories.plugins.EncryptNode" instanciation="Other">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/extras/crypto/EnterPassword"/>
-		<plugin_property value="decrypt" name="action"/>
+		<plugin_property value="toggleCryptState" name="action"/>
+	</plugin_action>
+	<plugin_action 
+		documentation="%accessories/plugins/NewEncryptedMap.properties_documentation" 
+		name="%accessories/plugins/NewEncryptedMap.properties_name" 
+		base="freemind.extensions.NodeHookAdapter" 
+		icon_path="accessories/plugins/icons/lock.png" 
+		label="accessories/plugins/NewEncryptedMap.properties" 
+		class_name="accessories.plugins.EncryptNode" instanciation="Other">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/file/open/NewEncryptedMap"/>
+		<plugin_property value="encrypted_map" name="action"/>
 	</plugin_action>
 </plugin>
