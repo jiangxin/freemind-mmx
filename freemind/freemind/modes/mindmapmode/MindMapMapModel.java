@@ -17,11 +17,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.5 2004-12-19 09:00:41 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.6 2005-01-08 16:21:07 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.datatransfer.Transferable;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -32,7 +33,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.channels.FileLock;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -798,29 +799,39 @@ public class MindMapMapModel extends MapAdapter  {
                 /* map was recently saved.*/
                 return;
             }
-            /* Now, it is dirty, we save it.*/
-            File tempFile;
-            if(tempFileStack.size() >= numberOfFiles)
-                tempFile = (File) tempFileStack.remove(0); // pop
-            else {
-                try {
-                    tempFile = File.createTempFile("FM_"+((model.toString()==null)?"unnamed":model.toString()), ".mm", pathToStore);
-                    if(filesShouldBeDeletedAfterShutdown) 
-                        tempFile.deleteOnExit();
-                } catch (Exception e) {
-                    System.err.println("Error in automatic MindMapMapModel.save(): "+e.getMessage());
-                    e.printStackTrace();
-                    return;
-                }
-            }
             try {
-                model.saveInternal(tempFile, true /*=internal call*/);
-                model.getFrame().out("Map was automatically saved (using the file name "+tempFile+") ...");
-            } catch (Exception e) {
-                System.err.println("Error in automatic MindMapMapModel.save(): "+e.getMessage());
+                EventQueue.invokeAndWait(new Runnable(){
+                    public void run() {
+                        /* Now, it is dirty, we save it.*/
+                        File tempFile;
+                        if(tempFileStack.size() >= numberOfFiles)
+                            tempFile = (File) tempFileStack.remove(0); // pop
+                        else {
+                            try {
+                                tempFile = File.createTempFile("FM_"+((model.toString()==null)?"unnamed":model.toString()), ".mm", pathToStore);
+                                if(filesShouldBeDeletedAfterShutdown)
+                                    tempFile.deleteOnExit();
+                            } catch (Exception e) {
+                                System.err.println("Error in automatic MindMapMapModel.save(): "+e.getMessage());
+                                e.printStackTrace();
+                                return;
+                            }
+                        }
+                        try {
+                            model.saveInternal(tempFile, true /*=internal call*/);
+                            model.getFrame().out("Map was automatically saved (using the file name "+tempFile+") ...");
+                        } catch (Exception e) {
+                            System.err.println("Error in automatic MindMapMapModel.save(): "+e.getMessage());
+                            e.printStackTrace();
+                        }
+                        tempFileStack.add(tempFile); // add at the back.
+                    }
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
                 e.printStackTrace();
             }
-            tempFileStack.add(tempFile); // add at the back.
         }
      }
     /* (non-Javadoc)

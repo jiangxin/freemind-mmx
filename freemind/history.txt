@@ -130,6 +130,9 @@ Changes made in Freemind 0.8.0:
 * Export menus revised.
 * Merged new version from Miika Nurminen. Thanks!
 * Merged the new splash screen from Marc Carson. Thanks.
+* Bug fix for: For editing long nodes I could set el__enter_confirms_by_default = false.
+* Bug fix: Show revisions in yellow. Thanks to michaelschwarz.
+
 
 Changes made in Freemind 0.7.2:
 ===============================

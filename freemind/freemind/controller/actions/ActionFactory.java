@@ -19,10 +19,11 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: ActionFactory.java,v 1.1.4.2 2004-10-28 05:24:53 christianfoltin Exp $*/
+/*$Id: ActionFactory.java,v 1.1.4.3 2005-01-08 16:21:06 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -108,15 +109,19 @@ public class ActionFactory {
 			ActionFilter filter = (ActionFilter) i.next();
 			filteredPair = filter.filterAction(filteredPair);
 		}
-		for (Iterator i = registeredHandler.iterator(); i.hasNext();) {
-			ActionHandler handler = (ActionHandler) i.next();
-			// the executer must not disturb the whole picture if they throw something:
+		Object[] aArray = registeredHandler.toArray();
+		for (int i = 0; i < aArray.length; i++) {
+            ActionHandler handler = (ActionHandler) aArray[i];
 			try {
                 handler.executeAction(filteredPair);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-		}
+        }
+//		for (Iterator i = registeredHandler.iterator(); i.hasNext();) {
+//			ActionHandler handler = (ActionHandler) i.next();
+			// the executer must not disturb the whole picture if they throw something:
+//		}
 	}
 
 	/**

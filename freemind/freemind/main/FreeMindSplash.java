@@ -64,7 +64,7 @@ class FreeMindSplash extends JFrame {
                 int xCoordinate = (int)(getSize().getWidth()/3);
         		g2.setColor(Color.black);
                 g2.drawString(frame.getFreemindVersion(), xCoordinate , yCoordinate);
-        		g2.setColor(Color.white);
+        		g2.setColor(Color.YELLOW);
         		g2.drawString(frame.getFreemindVersion(), xCoordinate+1 , yCoordinate+1);
         	}
         };

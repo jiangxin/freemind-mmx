@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.1 2004-10-17 23:00:13 dpolivaev Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2 2005-01-08 16:21:07 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -34,6 +34,7 @@ import javax.swing.text.JTextComponent;
 
 import freemind.controller.Controller;
 import freemind.main.FreeMindMain;
+import freemind.main.Tools;
 import freemind.modes.ModeController;
 
 /**
@@ -102,7 +103,7 @@ public class EditNodeBase {
     }
 
     protected boolean binOptionIsTrue(String option) {
-    	return true;
+    	return Tools.safeEquals("true", option);
     }
 
 	// this enables from outside close the edit mode
