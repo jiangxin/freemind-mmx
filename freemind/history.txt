@@ -72,6 +72,9 @@ Changes made in Freemind 0.8.0:
 * Icons improved, node background is editable now, strings extracted
 * NEW Add arrow link action added to insert menu.
 
+* Local hyperlinks enabled.
+* Link targets are shown in the status bar on mouse over.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

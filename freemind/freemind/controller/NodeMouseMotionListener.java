@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.15.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.15.10.2 2004-10-12 21:00:48 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -79,15 +79,23 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
 
     public void mouseMoved(MouseEvent e) {
         logger.finest("Event: mouseMoved");
-   //  Invoked when the mouse button has been moved on a component (with no buttons down). 
-       ((NodeView)e.getComponent()).updateCursor(e.getX());
-       // test if still in selection region:
-       if(controlRegionForDelayedSelection != null && delayedSelectionEnabled.getValue()) {
-           if(!controlRegionForDelayedSelection.contains(e.getPoint())) {
-               // point is not in the region. start timer again and adjust region to the current point:
-               createTimer(e);
-           }
-       }
+        //  Invoked when the mouse button has been moved on a component (with no
+        // buttons down).
+        NodeView node = (NodeView) e.getComponent();
+        boolean isLink = (node).updateCursor(e.getX());
+        // links are displayed in the status bar:
+        if (isLink) {
+            c.getFrame().out(node.getModel().getLink());
+        }
+        // test if still in selection region:
+        if (controlRegionForDelayedSelection != null
+                && delayedSelectionEnabled.getValue()) {
+            if (!controlRegionForDelayedSelection.contains(e.getPoint())) {
+                // point is not in the region. start timer again and adjust
+                // region to the current point:
+                createTimer(e);
+            }
+        }
     }
 
     /** Invoked when a mouse button is pressed on a component and then dragged.  */

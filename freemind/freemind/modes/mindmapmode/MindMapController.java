@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.35 2004-10-11 19:41:45 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.36 2004-10-12 21:00:49 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -109,7 +109,6 @@ public class MindMapController extends ControllerAdapter {
    public Action newPreviousSibling = new NewPreviousSiblingAction(this);
    public Action setLinkByFileChooser = new SetLinkByFileChooserAction();
    public Action setImageByFileChooser = new SetImageByFileChooserAction();
-   public Action setLinkByTextField = new SetLinkByTextFieldAction();
    public Action followLink = new FollowLinkAction();
    public Action exportBranch = new ExportBranchAction();
    public Action importBranch = new ImportBranchAction();
@@ -606,14 +605,14 @@ public class MindMapController extends ControllerAdapter {
 		if (getMindMapMapModel().getFile() != null) {
 		    try{
 			//set a link from the new root to the old map
-                       map.setLink(node, Tools.toRelativeURL(f.toURL(), getMindMapMapModel().getFile().toURL())); }
+                       setLink(node, Tools.toRelativeURL(f.toURL(), getMindMapMapModel().getFile().toURL())); }
                     catch(MalformedURLException ex) { }}
 		map.save(f);
 
 		getMindMapMapModel().insertNodeInto(newNode, parent, 0);
 		try {
 		    String linkString = Tools.toRelativeURL(getMindMapMapModel().getFile().toURL(), f.toURL());
-		    getMindMapMapModel().setLink(newNode,linkString); }
+		    setLink(newNode,linkString); }
                 catch (MalformedURLException ex) {}
 		getMindMapMapModel().save(getMindMapMapModel().getFile()); }}}
 

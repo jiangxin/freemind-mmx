@@ -37,6 +37,7 @@
 					<xs:element ref="remove_all_icons_xml_action"/>
 					<xs:element ref="add_cloud_xml_action"/>
 					<xs:element ref="add_arrow_link_xml_action"/>
+					<xs:element ref="add_link_xml_action"/>
 					<xs:element ref="remove_arrow_link_xml_action"/>
 					<xs:element ref="arrow_link_color_xml_action"/>
 					<xs:element ref="arrow_link_arrow_xml_action"/>
@@ -158,6 +159,18 @@
 		<xs:complexContent>
 			<xs:extension base="node_action">
 		      <xs:attribute name="color" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+
+	<!-- Add Link Action -->
+	<xs:element name="add_link_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="destination" use="optional" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

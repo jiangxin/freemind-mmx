@@ -90,6 +90,7 @@ public interface MindMapActions {
 	public void setArrowLinkColor(
 		MindMapLink arrowLink,
 		Color color);
+	public void setLink(MindMapNode node, String link);
 //	public void setUnderlined(MindMapNode node);
 //	public void setNormalFont(MindMapNode node);
 	public void increaseFontSize(MindMapNode node, int increment);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.10.6 2004-09-29 21:49:05 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.10.7 2004-10-12 21:00:49 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -189,11 +189,17 @@ public abstract class NodeView extends JLabel {
        return getModel().getLink() != null &&
           (getModel().isRoot() || !getModel().hasChildren() || xCoord < getSize().width/2); }
 
-    public void updateCursor(double xCoord) {
-      int requiredCursor = followLink(xCoord) ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR;
+    /**
+     * @param xCoord
+     * @return true if a link is to be displayed and the curser is the hand now.
+     */
+    public boolean updateCursor(double xCoord) {
+      boolean followLink = followLink(xCoord);
+    int requiredCursor = followLink ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR;
       if (getCursor().getType() != requiredCursor) {
         setCursor(new Cursor(requiredCursor));
       }
+      return followLink;
     }
 
     public boolean isRoot() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.10.14 2004-10-05 17:50:48 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.10.15 2004-10-12 21:00:49 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -215,11 +215,6 @@ public abstract class MapAdapter implements MindMap {
         }
     }
  
-    public void setLink( NodeAdapter node, String link ) {
-	node.setLink(link);
-	nodeChanged(node);
-    }
-
     public String getLink( MindMapNode node ) {
 	return node.getLink();
     }

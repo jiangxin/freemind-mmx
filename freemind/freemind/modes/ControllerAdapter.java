@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.39 2004-10-09 22:11:31 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.40 2004-10-12 21:00:48 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -90,6 +90,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.actions.AddArrowLinkAction;
+import freemind.modes.actions.AddLocalLinkAction;
 import freemind.modes.actions.ApplyPatternAction;
 import freemind.modes.actions.BoldAction;
 import freemind.modes.actions.ChangeArrowsInArrowLinkAction;
@@ -119,6 +120,7 @@ import freemind.modes.actions.RedoAction;
 import freemind.modes.actions.RemoveAllIconsAction;
 import freemind.modes.actions.RemoveArrowLinkAction;
 import freemind.modes.actions.RemoveLastIconAction;
+import freemind.modes.actions.SetLinkByTextFieldAction;
 import freemind.modes.actions.ToggleChildrenFoldedAction;
 import freemind.modes.actions.ToggleFoldedAction;
 import freemind.modes.actions.UnderlinedAction;
@@ -196,6 +198,9 @@ public abstract class ControllerAdapter implements ModeController {
     public IconAction unknwonIconAction = null;
     public RemoveLastIconAction removeLastIconAction = null;
     public RemoveAllIconsAction removeAllIconsAction = null;
+    public SetLinkByTextFieldAction setLinkByTextField = null;
+    public AddLocalLinkAction addLocalLinkAction = null;
+
 	/** Executes series of actions. */
 	private CompoundActionHandler compound = null;
 
@@ -291,6 +296,8 @@ public abstract class ControllerAdapter implements ModeController {
 	    colorArrowLinkAction = new ColorArrowLinkAction(this, null);
 	    changeArrowsInArrowLinkAction = new ChangeArrowsInArrowLinkAction(this, "none", null, null, true, true);
 	    nodeBackgroundColor = new NodeBackgroundColorAction(this);
+	    setLinkByTextField = new SetLinkByTextFieldAction(this);
+	    addLocalLinkAction = new AddLocalLinkAction(this);
 	    compound = new CompoundActionHandler(this);
 
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -974,6 +981,10 @@ public abstract class ControllerAdapter implements ModeController {
             boolean hasStartArrow, boolean hasEndArrow) {
         changeArrowsInArrowLinkAction.changeArrowsOfArrowLink(arrowLink, hasStartArrow, hasEndArrow);
     }
+    
+    public void setLink(MindMapNode node, String link) {
+        setLinkByTextField.setLink(node, link);
+    }
     // edit begins with home/end or typing (PN 6.2)
 	public void edit(KeyEvent e, boolean addNew, boolean editLong) {
 		edit.edit(e, addNew, editLong);
@@ -1072,21 +1083,10 @@ public abstract class ControllerAdapter implements ModeController {
 
 
 
-    protected void setLinkByTextField() {
-        // Requires J2SDK1.4.0!
-        String inputValue = JOptionPane.showInputDialog
-           (getText("edit_link_manually"), getModel().getLink(getSelected()));
-        if (inputValue != null) {
-           if (inputValue.equals("")) {
-              inputValue = null;        // In case of no entry unset link
-           }
-           getModel().setLink((NodeAdapter) getSelected(),inputValue);
-        }
-    }
-
     protected void setLinkByFileChooser() {
 		String relative = getLinkByFileChooser(getFileFilter());
-		if (relative != null) getModel().setLink((NodeAdapter) getSelected(),relative);
+		if (relative != null) 
+		    setLink((NodeAdapter) getSelected(),relative);
 	}
 	
 	protected void setImageByFileChooser() {
@@ -1209,7 +1209,20 @@ public abstract class ControllerAdapter implements ModeController {
 
               //absolute = new URL("file://"+relative); }
               absolute = new File(relative).toURL(); }
-            else {
+            else if(relative.startsWith("#")){
+                // inner map link, fc, 12.10.2004
+                logger.info("found relative link to "+relative);
+                String target = relative.substring(1);
+                try {
+                    MindMapNode node = getNodeFromID(target);
+                    getMap().displayNode(node, null);
+                    return;
+                } catch (Exception e) {
+                    // give "not found" message
+                    throw new FileNotFoundException(null);
+                }
+                
+            } else{
               absolute = new URL(getMap().getFile().toURL(), relative);
               // Remark: getMap().getFile().toURL() returns URLs like file:/C:/...
               // It seems, that it does not cause any problems.
@@ -1224,7 +1237,7 @@ public abstract class ControllerAdapter implements ModeController {
                  getFrame().setWaitingCursor(true);
                  load(file); }}
            else {                                                 // ---- Open URL in browser
-               // fc, 14.12.2003: The following code seems not very good. Imagine file names with spaces. Then they occur as %20, now the OS does not find the file, 
+               // fc, 14.12.2003: The following code seems not to be very good. Imagine file names with spaces. Then they occur as %20, now the OS does not find the file, 
                // etc. If this is necessary, this should be done in the openDocument command.
 //               if (absolute.getProtocol().equals("file")) {                 
 //                  File file = new File (Tools.urlGetFile(absolute));
@@ -1247,8 +1260,11 @@ public abstract class ControllerAdapter implements ModeController {
                 getText("repair_link"),
                 JOptionPane.YES_NO_OPTION);
             if (returnVal==JOptionPane.YES_OPTION) {
-               setLinkByTextField(); }}
-        catch (Exception e) { e.printStackTrace(); }
+                setLinkByTextField.actionPerformed(null);
+            }
+        } catch (Exception e) { 
+            e.printStackTrace(); 
+        }
         getFrame().setWaitingCursor(false);
     }
 
@@ -1499,8 +1515,8 @@ public abstract class ControllerAdapter implements ModeController {
                                                      getText("find_what"));
            if (what == null || what.equals("")) {
               return; }
-           boolean found = getView().getModel().find
-              (getView().getSelected().getModel(), what, /*caseSensitive=*/ false);
+           boolean found = getModel().find
+              (getSelected(), what, /*caseSensitive=*/ false);
            getView().repaint();
            if (!found) {
               getController().informationMessage
@@ -1602,16 +1618,6 @@ public abstract class ControllerAdapter implements ModeController {
                         getController().obtainFocusForSelected();
 		}
 	}
-
-    protected class SetLinkByTextFieldAction extends AbstractAction {
-        public SetLinkByTextFieldAction() {
-            super(getText("set_link_by_textfield"));
-        }
-        public void actionPerformed(ActionEvent e) {
-            setLinkByTextField();
-        }
-    }
-
 
     protected class FollowLinkAction extends AbstractAction {
         public FollowLinkAction() {
