@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.20 2004-01-17 23:20:58 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21 2004-01-25 22:13:55 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -382,7 +382,7 @@ public class MindMapNodeModel extends NodeAdapter {
     }
 
     //NanoXML save method
-    public void save(Writer writer) throws IOException {
+    public void save(Writer writer, MindMapMapModel model) throws IOException {
 	XMLElement node = new XMLElement();
 	node.setName("node");
 
@@ -407,7 +407,7 @@ public class MindMapNodeModel extends NodeAdapter {
 //         node.setAttribute("SCREEN_WIDTH", Integer.toString(getViewer().getWidth()));
 //     }
 
-    Vector linkVector = getFrame().getController().getModel().getLinkRegistry().getAllLinksFromMe(this); /* Puh... */
+    Vector linkVector = model.getLinkRegistry().getAllLinksFromMe(this); /* Puh... */
     for(int i = 0; i < linkVector.size(); ++i) {
         if(linkVector.get(i) instanceof MindMapArrowLinkModel) {
             XMLElement arrowLinkElement = ((MindMapArrowLinkModel) linkVector.get(i)).save();
@@ -424,7 +424,7 @@ public class MindMapNodeModel extends NodeAdapter {
         node.setAttribute("POSITION",(isLeft().getValue())?"left":"right"); 
     }
 	
-    String label = getFrame().getController().getModel().getLinkRegistry().getLabel(this); /* Puh... */
+    String label = model.getLinkRegistry().getLabel(this); /* Puh... */
 	if (label!=null) {
            node.setAttribute("id",label); }
 	
@@ -471,7 +471,7 @@ public class MindMapNodeModel extends NodeAdapter {
            //recursive
            for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
               MindMapNodeModel child = (MindMapNodeModel)e.next();
-              child.save(writer); }
+              child.save(writer, model); }
            node.writeClosingTag(writer); }
         else {
            node.write(writer); }}

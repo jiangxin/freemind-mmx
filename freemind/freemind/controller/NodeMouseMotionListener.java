@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.14 2004-01-25 16:41:08 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.15 2004-01-25 22:13:46 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -65,9 +65,9 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
         }
     }
 
-    Timer timerForDelayedSelection;
+    private Timer timerForDelayedSelection;
     /** The mouse has to stay in this region to enable the selection after a given time.*/
-    Rectangle controlRegionForDelayedSelection;
+    private Rectangle controlRegionForDelayedSelection;
 
     public NodeMouseMotionListener(Controller controller) {
        c = controller; 

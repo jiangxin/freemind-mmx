@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.33 2004-01-17 23:20:58 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.34 2004-01-25 22:13:52 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -41,6 +41,10 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+// for automatic saving:
+import java.util.TimerTask;
+import java.util.Timer;
+
 
 import java.lang.UnsatisfiedLinkError;
 import java.lang.NoClassDefFoundError;
@@ -52,8 +56,6 @@ import java.net.MalformedURLException;
 import javax.swing.JOptionPane;
 import java.nio.channels.FileLock;
 
-//temporary for unique labels:
-import java.util.Random;
 // link registry.
 import freemind.modes.LinkRegistryAdapter;
 import freemind.modes.MindMapLinkRegistry;
@@ -63,6 +65,7 @@ public class MindMapMapModel extends MapAdapter {
 
     LockManager lockManager;
     private LinkRegistryAdapter linkRegistry;
+    private Timer timerForAutomaticSaving;
 
     //
     // Constructors
@@ -81,7 +84,14 @@ public class MindMapMapModel extends MapAdapter {
         linkRegistry = new LinkRegistryAdapter();
 
         setRoot(root);
-        readOnly = false; }
+        readOnly = false; 
+        
+        // automatic save:
+        timerForAutomaticSaving = new Timer();
+        int delay = Integer.parseInt(getFrame().getProperty("time_for_automatic_save"));
+        int numberOfTempFiles = Integer.parseInt(getFrame().getProperty("number_of_different_files_for_automatic_save"));
+        timerForAutomaticSaving.schedule(new doAutomaticSave(this, numberOfTempFiles), delay, delay);
+    }
 
     // 
 
@@ -514,7 +524,12 @@ public class MindMapMapModel extends MapAdapter {
      * Return the success of saving
      */
     public boolean save(File file) {
-        if (readOnly) { // unexpected situation, yet it's better to back it up
+        return saveInternal(file, false);
+    }
+    
+    /** This method is intended to provide both normal save routines and saving of temporary (internal) files.*/
+    private boolean saveInternal(File file, boolean isInternal) {
+        if (!isInternal && readOnly) { // unexpected situation, yet it's better to back it up
             System.err.println("Attempt to save read-only map.");           
             return false; }
         try {            
@@ -522,16 +537,21 @@ public class MindMapMapModel extends MapAdapter {
             BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
             
             fileout.write("<map version=\""+getFrame().getFreemindVersion()+"\">\n");
-            ((MindMapNodeModel)getRoot()).save(fileout);
+            ((MindMapNodeModel)getRoot()).save(fileout, this);
             fileout.write("</map>\n");
             fileout.close();
 
-            setFile(file);            
-            setSaved(true);
+            if(!isInternal) {
+                setFile(file);            
+                setSaved(true);
+            }
             return true;
         } catch (FileNotFoundException e ) {
-            getFrame().getController().errorMessage(
-                Tools.expandPlaceholders(getText("save_failed"),file.getName()));
+            String message = Tools.expandPlaceholders(getText("save_failed"),file.getName());
+            if(!isInternal)
+                getFrame().getController().errorMessage(message);
+            else
+                getFrame().out(message);
             return false; 
         } catch(Exception e) {
             System.err.println("Error in MindMapMapModel.save(): ");
@@ -539,6 +559,7 @@ public class MindMapMapModel extends MapAdapter {
             return false;
         }
     }
+
 
     /**
      * Attempts to lock the map using a semaphore file
@@ -616,7 +637,7 @@ public class MindMapMapModel extends MapAdapter {
     public Transferable copy(MindMapNode node) {
        StringWriter stringWriter = new StringWriter();
        try {
-          ((MindMapNodeModel)node).save(stringWriter); }
+          ((MindMapNodeModel)node).save(stringWriter, this); }
        catch (IOException e) {}
        return new StringSelection(stringWriter.toString()); }
 
@@ -1077,5 +1098,38 @@ public class MindMapMapModel extends MapAdapter {
                
         public synchronized void run() {}
     }   
+
+    private class doAutomaticSave  extends TimerTask {
+        private MindMapMapModel model;
+        private Vector tempFileStack;
+        private int numberOfFiles;
+        doAutomaticSave(MindMapMapModel model, int numberOfTempFiles) {
+            this.model = model;
+            tempFileStack = new Vector();
+            numberOfFiles = ((numberOfTempFiles > 0)? numberOfTempFiles: 1);
+        }
+        public void run() {
+            File tempFile;
+            if(tempFileStack.size() >= numberOfFiles)
+                tempFile = (File) tempFileStack.remove(0); // pop
+            else {
+                try {
+                    tempFile = File.createTempFile("freemind", ".mm");
+                } catch (Exception e) {
+                    System.err.println("Error in automatic MindMapMapModel.save(): "+e.getMessage());
+                    e.printStackTrace();
+                    return;
+                }
+            }
+            try {
+                model.saveInternal(tempFile, true /*=internal call*/);
+                model.getFrame().out("Map was automatically saved (using the file name "+tempFile+") ...");
+            } catch (Exception e) {
+                System.err.println("Error in automatic MindMapMapModel.save(): "+e.getMessage());
+                e.printStackTrace();
+            }
+            tempFileStack.add(tempFile); // add at the back.
+        }
+     }
     
 }
