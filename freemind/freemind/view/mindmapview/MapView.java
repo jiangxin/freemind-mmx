@@ -16,7 +16,6 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.26.2.5 2004-05-27 07:31:49 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -80,6 +79,10 @@ public class MapView extends JPanel implements Printable {
     private boolean isPrinting = false; // use for remove selection from print
     private NodeView shiftSelectionOrigin = null;
     private int maxNodeWidth = 0;
+    private Color background = null;
+	private Rectangle boundingRectangle = null;
+	private boolean fitToPage = true;
+	private boolean isPreparedForPrinting = false;
     /** Used to identify a right click onto a link curve.*/
     private Vector/* of ArrowLinkViews*/ ArrowLinkViews;
     //
@@ -88,7 +91,6 @@ public class MapView extends JPanel implements Printable {
 
     public MapView( MindMap model, Controller controller ) {
         super();
-		
 		
         this.model = model;
         this.controller = controller;
@@ -307,7 +309,6 @@ public class MapView extends JPanel implements Printable {
         }
         return newSelected;
     }
-    
     
     public void move(KeyEvent e) {
         NodeView newSelected = getNeighbour(e.getKeyCode());
@@ -680,8 +681,47 @@ public class MapView extends JPanel implements Printable {
         }
         return null;
     }
-
     
+	/**
+	  * Call preparePrinting() before printing 
+	  * and  endPrinting() after printing
+	  * to minimize calculation efforts
+	  */
+	public void preparePrinting() {
+		_preparePrinting();
+		isPreparedForPrinting = true;
+	}
+	 
+	private void _preparePrinting() {
+		if (isPreparedForPrinting == false){
+			isPrinting = true;
+			/* repaint for printing:*/
+			setZoom(getZoom());        
+			background = getBackground();
+			boundingRectangle = getInnerBounds(rootView);
+		}
+	}
+
+	 /**
+	  * Call preparePrinting() before printing 
+	  * and  endPrinting() after printing
+	  * to minimize calculation efforts
+	  */
+	public void endPrinting() {
+		isPreparedForPrinting = false;
+		_endPrinting();
+	}
+	
+	 private void _endPrinting() {
+		if (isPreparedForPrinting == false){
+			setBackground(background);
+			isPrinting = false;
+			/* repaint for end printing:*/
+			setZoom(getZoom());
+			fitToPage = Tools.safeEquals(controller.getProperty("fit_to_page"),"true");
+		}
+	 }
+
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
         // TODO:
         // ask user for :
@@ -693,7 +733,6 @@ public class MapView extends JPanel implements Printable {
 
         // User parameters
 
-        boolean fitToPage = Tools.safeEquals(controller.getProperty("fit_to_page"),"true");
         double userZoomFactor = 1;
         try {
             userZoomFactor = Double.parseDouble(controller.getProperty("user_zoom")); }
@@ -706,15 +745,10 @@ public class MapView extends JPanel implements Printable {
 
         if (fitToPage && pageIndex > 0) {
             return Printable.NO_SUCH_PAGE; }
-        isPrinting = true;
-        /* repaint for printing:*/
-        setZoom(getZoom());
 
         Graphics2D graphics2D = (Graphics2D)graphics;
-        Color background = getBackground();
-        setBackground(Color.white);
 
-        Rectangle boundingRectangle = getInnerBounds(rootView);
+		_preparePrinting();
         double zoomFactor = 1;
         if (fitToPage) {
             double zoomFactorX = pageFormat.getImageableWidth()/boundingRectangle.getWidth();
@@ -740,12 +774,8 @@ public class MapView extends JPanel implements Printable {
         graphics2D.translate(-boundingRectangle.getX(), -boundingRectangle.getY());
         
 
-
         print(graphics2D);
-        setBackground(background);
-        isPrinting = false;
-        /* repaint for end printing:*/
-        setZoom(getZoom());
+		_endPrinting();
         return Printable.PAGE_EXISTS;
     }
 
@@ -761,48 +791,44 @@ public class MapView extends JPanel implements Printable {
     // private methods. Internal implementation
     /////////
 	
-	
     /**
      * Return the bounding box of all the descendants of the source view, that without BORDER.
      * Should that be implemented in LayoutManager as minimum size?
      */
     private Rectangle getInnerBounds(NodeView source) {
-        Rectangle r = source.getBounds();
+        Rectangle innerBounds = source.getBounds();
         for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
-            r.add(getInnerBounds(target));//recursive
-            
+            innerBounds.add(getInnerBounds(target));//recursive
         }
         
         // add heigth of the cloud
         int additionalCloudHeigth =  (source.getAdditionalCloudHeigth() + 1) / 2;
         if (additionalCloudHeigth != 0){
-        	r.grow(additionalCloudHeigth, additionalCloudHeigth);
+        	innerBounds.grow(additionalCloudHeigth, additionalCloudHeigth);
         }
         
-		if (source.getModel().isRoot())
-		{
-			for(int i = 0; i < ArrowLinkViews.size(); ++i) {
-				ArrowLinkView arrowView = (ArrowLinkView) ArrowLinkViews.get(i);
-				Rectangle arrowViewBounds =PathBBox.getBBox(arrowView.arrowLinkCurve).getBounds(); 
-				r.add(arrowViewBounds);
-			}        	
-		}
-        return r;
+ 		if (source.getModel().isRoot())
+ 		{
+ 			for(int i = 0; i < ArrowLinkViews.size(); ++i) {
+ 				ArrowLinkView arrowView = (ArrowLinkView) ArrowLinkViews.get(i);
+ 				Rectangle arrowViewBigBounds = arrowView.arrowLinkCurve.getBounds();
+ 				if (! innerBounds.contains(arrowViewBigBounds)){
+					Rectangle arrowViewBounds =PathBBox.getBBox(arrowView.arrowLinkCurve).getBounds(); 
+					innerBounds.add(arrowViewBounds);
+ 				}
+ 			}        	
+ 		}
+      return innerBounds;
     }
 
     private void paintEdges(NodeView source, Graphics2D g) {
         for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
-	    
-	    
             target.getEdge().paint(g);
-		
-		
             paintEdges( target, g );//recursive
         }
     }
-    
     
     protected NodeView getRoot() {
         return rootView; }
@@ -829,8 +855,6 @@ public class MapView extends JPanel implements Printable {
      * This inner class updates the Tree when the model is changed.
      */
     private class MapModelHandler implements TreeModelListener {
-	
-	
         public void treeNodesChanged( TreeModelEvent e ) {
             // must be in structureChanged instead ?
             // or in is own Listerner
@@ -848,7 +872,6 @@ public class MapView extends JPanel implements Printable {
             getMindMapLayout().layout();
             repaint();
         }
-	
 	
         public void treeNodesInserted( TreeModelEvent e ) {
             // Daniel: This is some kind of hackery implementation, which
@@ -941,7 +964,6 @@ public class MapView extends JPanel implements Printable {
         }
     }
     
-    
     // this property is used when the user navigates up/down using cursor keys (PN)
     // it will keep the level of nodes that are understand as "siblings"
 
@@ -951,4 +973,5 @@ public class MapView extends JPanel implements Printable {
     public void setSiblingMaxLevel(int level) {
         this.siblingMaxLevel = level;
     }
-}
+
+ }
