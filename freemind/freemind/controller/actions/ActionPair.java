@@ -19,7 +19,7 @@
  *
  * Created on 25.04.2004
  */
-/*$Id: ActionPair.java,v 1.1.2.1 2004-05-02 20:49:14 christianfoltin Exp $*/
+/*$Id: ActionPair.java,v 1.1.2.2 2004-05-03 20:55:21 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -52,6 +52,10 @@ public class ActionPair {
 	 */
 	public XmlAction getUndoAction() {
 		return undoAction;
+	}
+	
+	public ActionPair reverse() {
+		return new ActionPair(undoAction, doAction);
 	}
 
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.5 2004-05-02 20:49:14 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.6 2004-05-03 20:56:36 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -711,6 +711,8 @@ public class MindMapController extends ControllerAdapter {
      * whether there is a map open or not.
      */
     protected void setAllActions(boolean enabled) {
+    	undo.setEnabled(enabled);
+		redo.setEnabled(enabled);
         edit.setEnabled(enabled);
         editLong.setEnabled(enabled);
         newChildWithoutFocus.setEnabled(enabled);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.8 2004-05-03 04:41:09 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.9 2004-05-03 20:56:36 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -53,6 +53,7 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -120,8 +121,9 @@ public abstract class ControllerAdapter implements ModeController {
     private Clipboard clipboard;
     private int status;
 	private Vector undoList=new Vector();
-	private int undoListIndex = 0;
+	private Vector redoList=new Vector();
 	public UndoAction undo=null;
+	public RedoAction redo=null;
     public Action copy = null;
     public Action copySingle = null;
     public Action cut = null;
@@ -145,13 +147,24 @@ public abstract class ControllerAdapter implements ModeController {
 		getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
 		getActionFactory().registerHandler(new PrintActionHandler());
 		undo = new UndoAction();
+		redo = new RedoAction();
 		getActionFactory().registerHandler(new ActionHandler() {
 
             public void executeAction(ActionPair pair) {
-            	if(! (pair.getDoAction() instanceof UndoXmlAction)) {
-					undoList.add(0, pair);
-					undoListIndex = 0;
-					undo.setEnabled(true);
+            	if(! (undo.isUndoAction() || redo.isUndoAction())) {
+					if(! (pair.getDoAction() instanceof UndoXmlAction)) {
+						for (Iterator i = redoList.iterator();
+							i.hasNext();
+							) {
+							ActionPair redoPair = (ActionPair) i.next();
+							undoList.add(0, redoPair.reverse());                       
+							undoList.add(0, redoPair);
+						}
+						redoList.clear();
+						undoList.add(0, pair);
+						undo.setEnabled(true);
+						redo.setEnabled(false);
+					}
             	}
 				
             }
@@ -1415,44 +1428,62 @@ public abstract class ControllerAdapter implements ModeController {
 
 	public class UndoAction extends AbstractXmlAction implements ActorXml {
 
+        private boolean isUndoAction;
+
         public UndoAction() {
-            super(getText("undo"), new ImageIcon(getResource("images/undo.png")), ControllerAdapter.this);
-            addActor(this);
-            setEnabled(false);
+            this(getText("undo"), new ImageIcon(getResource("images/undo.png")), ControllerAdapter.this);
+        }
+
+		protected UndoAction(String text, Icon icon, ModeController mode) {
+			super(text, icon, mode);
+			addActor(this);
+			setEnabled(false);
+			isUndoAction = false;
+		}
+
+        /**
+         * @return
+         */
+        protected boolean isUndoAction() {
+            return isUndoAction;
         }
 
         /* (non-Javadoc)
          * @see freemind.controller.actions.AbstractXmlAction#xmlActionPerformed(java.awt.event.ActionEvent)
          */
         protected void xmlActionPerformed(ActionEvent arg0) throws JAXBException {
-			// preserve undo list index:
-			int index = undoListIndex;
-         	if(undoList.size() > index) {
-				ActionPair pair = (ActionPair) undoList.get(undoListIndex);
-	        	String doActionString = marshall(pair.getDoAction());
-				String redoActionString = marshall(pair.getUndoAction());
+         	if(undoList.size() > 0) {
+				ActionPair pair = (ActionPair) undoList.get(0);
+				redoList.add(0, pair.reverse());
+				redo.setEnabled(true);
+				undoList.remove(0);
 
-				UndoXmlAction undoAction = getActionXmlFactory().createUndoXmlAction();
-				undoAction.setDescription(redoActionString);
-				undoAction.setRemedia(doActionString);
+                undoDoAction(pair);
 
-				UndoXmlAction redoAction = getActionXmlFactory().createUndoXmlAction();
-				redoAction.setDescription(doActionString);
-				undoAction.setRemedia(redoActionString);
-
-				getActionFactory().executeAction(new ActionPair(undoAction, redoAction));
-
-				if(index+2 < undoList.size()) {
-					undoListIndex = index+2;
-					logger.info("new index:"+undoListIndex);
-				} else {
+				if(undoList.size() == 0) {
 					// disable undo
 					this.setEnabled(false);
 				}
-				
         	} else {
 				setEnabled(false);
         	}
+        }
+
+        protected void undoDoAction(ActionPair pair) throws JAXBException {
+            String doActionString = marshall(pair.getDoAction());
+            String redoActionString = marshall(pair.getUndoAction());
+            
+            UndoXmlAction undoAction = getActionXmlFactory().createUndoXmlAction();
+            undoAction.setDescription(redoActionString);
+            undoAction.setRemedia(doActionString);
+            
+            UndoXmlAction redoAction = getActionXmlFactory().createUndoXmlAction();
+            redoAction.setDescription(doActionString);
+            undoAction.setRemedia(redoActionString);
+            
+            isUndoAction = true;
+            getActionFactory().executeAction(new ActionPair(undoAction, redoAction));
+            isUndoAction = false;
         }
 
         /* (non-Javadoc)
@@ -1474,8 +1505,49 @@ public abstract class ControllerAdapter implements ModeController {
             return null;
         }
 		
+        /* (non-Javadoc)
+         * @see javax.swing.Action#setEnabled(boolean)
+         */
+        public void setEnabled(boolean arg0) {
+        	if(arg0)
+            	super.setEnabled(undoList.size() != 0);
+            else
+            	super.setEnabled(false);
+        }
+
 	}
 
+	public class RedoAction extends UndoAction {
+		public RedoAction() {
+			super(getText("redo"), new ImageIcon(getResource("images/redo.png")), ControllerAdapter.this);
+ 		}	
+
+		protected void xmlActionPerformed(ActionEvent arg0) throws JAXBException {
+			if(redoList.size() > 0) {
+				ActionPair pair = (ActionPair) redoList.get(0);
+				undoList.add(0, pair.reverse());
+				undo.setEnabled(true);
+				redoList.remove(0);
+
+				undoDoAction(pair);
+
+				if(redoList.size() == 0) {
+					// disable redo
+					this.setEnabled(false);
+				}
+			} else {
+				setEnabled(false);
+			}
+		}
+
+		public void setEnabled(boolean arg0) {
+			if(arg0)
+				super.setEnabled(redoList.size() != 0);
+			else
+				super.setEnabled(false);
+		}
+ 		
+	}
 
     //
     // Node editing
