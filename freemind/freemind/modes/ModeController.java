@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.11 2004-07-15 19:41:55 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.12 2004-07-30 18:29:29 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -65,6 +65,7 @@ public interface ModeController extends MindMapActions {
     boolean isBlocked();
     void edit(KeyEvent e, boolean addNew, boolean editLong);
     void mouseWheelMoved(MouseWheelEvent e);
+    MindMapNode getSelected();
 	List getSelecteds();
 	    /** This extends the currently selected nodes. 
         @return true, if the method changed the selection.*/
@@ -95,12 +96,16 @@ public interface ModeController extends MindMapActions {
 	//hooks, fc 28.2.2004:
 	/** 
 	 * This is the only way to instanciate new Hooks. THEY HAVE TO BE INVOKED AFTERWARDS!
+	 * The hook is equipped with the map and controller information.
+	 * Furthermore, the hook is added to the node, if it is an instance of 
+	 * the PermanentNodeHook.
 	 * If the hook policy specifies, that only one instance may exist per node,
 	 * it returns this instance if it already exists.
 	 * @param map may be null if not known. But it has to be set afterwards!
 	 * */
 	NodeHook createNodeHook(String hookName, MindMapNode node, MindMap map);
 	void invokeHook(ModeControllerHook hook);
+
 	void invokeHooksRecursively(NodeAdapter node, MindMap map);
 	//end hooks
 	FreeMindMain getFrame();

@@ -19,7 +19,7 @@
  *
  * Created on 15.07.2004
  */
-/*$Id: MenuItemEnabledListener.java,v 1.1.2.1 2004-07-15 19:41:55 christianfoltin Exp $*/
+/*$Id: MenuItemEnabledListener.java,v 1.1.2.2 2004-07-30 18:29:29 christianfoltin Exp $*/
 package freemind.controller;
 
 import javax.swing.Action;
@@ -27,5 +27,5 @@ import javax.swing.JMenuItem;
 
 
 public interface MenuItemEnabledListener {
-		boolean isEnabled(JMenuItem iten, Action action);
+		boolean isEnabled(JMenuItem item, Action action);
 }

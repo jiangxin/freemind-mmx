@@ -40,25 +40,15 @@ public class PermanentNodeHookAdapter
 //			logger = ((ControllerAdapter)getController()).getFrame().getLogger(this.getClass().getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode, java.util.List)
+	/**
+	 * @param child the child node the hook should be propagated to.
+	 * @return returns the new hook or null if there is already such a hook.
 	 */
-	public void invoke(MindMapNode focussed, List selecteds) {
-		logger.finest("invoke(selecteds) called.");
-		for (Iterator it = selecteds.iterator(); it.hasNext();) {
-			MindMapNode selected = (MindMapNode) it.next();
-			PermanentNodeHook hook = (PermanentNodeHook) getController()
-					.createNodeHook(getName(), selected, getMap());
-			// call invoke.
-			selected.invokeHook(hook);
-			// the focussed receives the focus:
-			if (selected == focussed) {
-				hook.onReceiveFocusHook();
-			}
-			// using this method, the map is dirty now. This is important to
-			// guarantee, that the hooks are saved.
-			this.nodeChanged(selected);
-		}
+	protected PermanentNodeHook propagate(MindMapNode child) {
+		PermanentNodeHook hook = (PermanentNodeHook) getController().createNodeHook(getName(), child, getMap());
+		// invocation:
+		child.invokeHook(hook);
+		return hook;
 	}
 
 

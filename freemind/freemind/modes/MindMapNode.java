@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.12.4 2004-05-09 22:31:14 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.12.5 2004-07-30 18:29:29 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -129,6 +129,12 @@ public interface MindMapNode extends MutableTreeNode {
     //hooks, fc 28.2.2004:
     List getHooks();
     Collection getActivatedHooks();
+    
+	/** Adds the hook to the list of hooks to my node.
+	 *  Does not invoke the hook!
+	 * @param hook
+	 * @return returns the input parameter hook
+	 */
 	PermanentNodeHook addHook(PermanentNodeHook hook);
 	void invokeHook(NodeHook hook);
     void removeHook(PermanentNodeHook hook); 

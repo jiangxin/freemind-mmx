@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.12.5 2004-05-02 20:49:14 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.12.6 2004-07-30 18:29:29 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -542,6 +542,8 @@ public abstract class NodeAdapter implements MindMapNode {
 	 */
 	public PermanentNodeHook addHook(PermanentNodeHook hook) {
 		// add then
+		if(hook == null) 
+			throw new IllegalArgumentException("Added null hook.");
 		hooks.add(hook);
 		return hook;
 	}
@@ -552,21 +554,23 @@ public abstract class NodeAdapter implements MindMapNode {
 		// the main invocation:
 		hook.setNode(this);
 		hook.invoke(this);
-	    activatedHooks.add(hook);
+	    if (hook instanceof PermanentNodeHook) {
+			activatedHooks.add(hook);
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMapNode#getHooks()
 	 */
 	public List getHooks() {
-		return hooks;
+		return Collections.unmodifiableList(hooks);
 	}
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMapNode#getActivatedHooks()
 	 */
 	public Collection getActivatedHooks() {
-		return activatedHooks;
+		return Collections.unmodifiableCollection(activatedHooks);
 	}
 
 	/* (non-Javadoc)

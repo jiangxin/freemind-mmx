@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeHookAdapter.java,v 1.1.2.5 2004-05-02 20:49:14 christianfoltin Exp $*/
+/*$Id: NodeHookAdapter.java,v 1.1.2.6 2004-07-30 18:29:29 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.Iterator;
@@ -46,18 +46,6 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 	 */
 	public NodeHookAdapter() {
 		super();
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode, freemind.modes.MindMapNode[])
-	 */
-	public void invoke(MindMapNode focussed, List selecteds) {
-		for (Iterator it = selecteds.iterator();it.hasNext();) {
-		   MindMapNode selected = (MindMapNode)it.next();
-		   this.setNode(selected);
-		   this.invoke(selected);
-		}								
-
 	}
 
 	/* (non-Javadoc)

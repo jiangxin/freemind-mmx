@@ -8,6 +8,7 @@ package accessories.plugins;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.Iterator;
 
 import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.modes.MindMapNode;
@@ -34,11 +35,12 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 	private void setColor(MindMapNode node) {
 		int depth = depth(node);
 		//logger.info("COLOR, depth="+(depth));
-		Color mycolor = colors[colors.length-1]; 
-		if(depth < colors.length)
+		Color mycolor = colors[colors.length - 1];
+		if (depth < colors.length)
 			mycolor = colors[depth];
 		Color nodeColor = node.getColor();
-		if(((nodeColor!=null) && (nodeColor.getRGB() != mycolor.getRGB()))|| nodeColor == null ) {
+		if (((nodeColor != null) && (nodeColor.getRGB() != mycolor.getRGB()))
+				|| nodeColor == null) {
 			node.setColor(mycolor);
 			nodeChanged(node);
 		}
@@ -81,7 +83,12 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 	 */
 	public void invoke(MindMapNode node) {
 		super.invoke(node);
-		setColor(getNode());
+		setColor(node);
+		// recurse:
+		for (Iterator i = node.childrenFolded(); i.hasNext();) {
+			MindMapNode child = (MindMapNode) i.next();
+			invoke(child);
+		}
 	}
 
 }

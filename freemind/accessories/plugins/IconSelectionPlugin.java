@@ -8,6 +8,7 @@ package accessories.plugins;
 
 import java.awt.Point;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -39,10 +40,10 @@ public class IconSelectionPlugin extends NodeHookAdapter {
 		super();
 	}
 	
-	/* (non-Javadoc)
-	 * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode, java.util.List)
-	 */
-	public void invoke(MindMapNode focussed, List selecteds) {
+	public void invoke(MindMapNode rootNode) {
+		// we dont need node. 
+		MindMapNode focussed = getController().getSelected();
+		List selecteds = getController().getSelecteds();
 		Vector items = new Vector();
 		Vector itemdescriptions = new Vector();
 		MindMapController controller = ((MindMapController) getController());
@@ -92,23 +93,24 @@ public class IconSelectionPlugin extends NodeHookAdapter {
 		selectionDialog.show();
 		// process result:
 		if (selectionDialog.getResult() >= 0) {
-            this.icon =
-                (
-                    (IconAction) iconActions.get(
-                        selectionDialog.getResult())).icon;
-			// and the super method:
-			super.invoke(focussed, selecteds);
-        }
+			this.icon = ((IconAction) iconActions.get(selectionDialog
+					.getResult())).icon;
+		}
+		for (Iterator i = selecteds.iterator(); i.hasNext();) {
+			MindMapNode selNode = (MindMapNode) i.next();
+			selNode.addIcon(icon);
+			nodeChanged(selNode);
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.extensions.NodeHook#invoke()
-	 */
-	public void invoke(MindMapNode node) {
-		setNode(node);
-		node.addIcon(icon);
-		nodeChanged(node);
-	}
+//	/* (non-Javadoc)
+//	 * @see freemind.extensions.NodeHook#invoke()
+//	 */
+//	public void invoke(MindMapNode node) {
+//		setNode(node);
+//		node.addIcon(icon);
+//		nodeChanged(node);
+//	}
 
 
 }

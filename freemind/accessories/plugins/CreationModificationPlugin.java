@@ -9,6 +9,8 @@ package accessories.plugins;
 import java.text.MessageFormat;
 import java.util.Date;
 
+import freemind.extensions.HookFactory;
+import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.main.XMLElement;
@@ -64,8 +66,7 @@ public class CreationModificationPlugin extends PermanentNodeHookAdapter {
 	 */
 	public void onAddChild(MindMapNode child) {
 		super.onAddChild(child);
-		PermanentNodeHook hook = (PermanentNodeHook) getController().createNodeHook(getName(), child, getMap());
-		child.invokeHook(hook);
+		propagate(child);
 	}
 
 	/* (non-Javadoc)
@@ -95,6 +96,10 @@ public class CreationModificationPlugin extends PermanentNodeHookAdapter {
 		super.onUpdateNodeHook();
 		modified = System.currentTimeMillis();
 		setStyle();
+	}
+	public void shutdownMapHook() {
+		setToolTip("");
+		super.shutdownMapHook();
 	}
 
 }

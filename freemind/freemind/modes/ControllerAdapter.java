@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.18 2004-07-15 19:41:55 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.19 2004-07-30 18:29:29 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -73,17 +73,21 @@ import javax.xml.transform.stream.StreamSource;
 
 import freemind.common.JaxbTools;
 import freemind.controller.Controller;
+import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.AbstractXmlAction;
 import freemind.controller.actions.ActionFactory;
 import freemind.controller.actions.ActionHandler;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
+import freemind.controller.actions.FreemindAction;
 import freemind.controller.actions.ModeControllerActionHandler;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.UndoXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookFactory;
+import freemind.extensions.HookInstanciationMethod;
+import freemind.extensions.MindMapHook;
 import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
@@ -1172,7 +1176,7 @@ public abstract class ControllerAdapter implements ModeController {
 		// and good bye.
 		hook.shutdownMapHook();
 	}
-
+	
 	/**
 	  *  
 	  */
@@ -1193,21 +1197,17 @@ public abstract class ControllerAdapter implements ModeController {
 
 	public NodeHook createNodeHook(String hookName, MindMapNode node,
 			MindMap map) {
-		NodeHook hook = (NodeHook) getFrame().getHookFactory().createNodeHook(hookName);
+		HookFactory hookFactory = getFrame().getHookFactory();
+		NodeHook hook = (NodeHook) hookFactory.createNodeHook(hookName);
 		hook.setController(this);
 		hook.setMap(map);
 		if (hook instanceof PermanentNodeHook) {
 			PermanentNodeHook permHook = (PermanentNodeHook) hook;
-			if(getFrame().getHookFactory().getInstanciationMethod(hookName)==
-			    HookFactory.HookInstanciationMethod.Once) {
+			if(hookFactory.getInstanciationMethod(hookName).isSingleton()) {
 				// search for already instanciated hooks of this type:
-				for (Iterator i = node.getActivatedHooks().iterator(); i.hasNext();) {
-					PermanentNodeHook otherHook = (PermanentNodeHook) i.next();
-					if(otherHook.getClass().getName().equals(hook.getClass().getName())) {
-						// there is already one instance. We prevent from instanciating
-						// a second one.
-						return otherHook;
-					}
+				PermanentNodeHook otherHook = hookFactory.getHookInNode(node, hookName);
+				if(otherHook != null) {
+					return otherHook;
 				}
 			}
 			node.addHook(permHook);
@@ -1250,24 +1250,6 @@ public abstract class ControllerAdapter implements ModeController {
 			getController().setTitle(); // Possible update of read-only
         }
     }
-
-	protected class NodeHookAction extends AbstractAction {
-		String hookName;
-		ModeController controller;
-		public NodeHookAction(String hookName, ModeController controller) {
-			super(hookName);
-			this.hookName = hookName;
-			this.controller = controller;
-		}
-
-		public void actionPerformed(ActionEvent arg0) {
-			HookFactory hookFactory = getFrame().getHookFactory();
-			// two different invocation methods:single or selecteds
-			NodeHook hook = controller.createNodeHook(hookName, getSelected(), getMap()); 
-			hook.invoke(getSelected(), getSelecteds());							
-		} 
-  			
-	}
 
 	protected class ModeControllerHookAction extends AbstractAction {
 		String hookName;

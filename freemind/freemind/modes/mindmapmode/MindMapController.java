@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.18 2004-07-19 05:50:36 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.19 2004-07-30 18:29:30 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -56,9 +56,7 @@ import freemind.common.JaxbTools;
 import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
-import freemind.controller.actions.generated.instance.MenuAction;
 import freemind.controller.actions.generated.instance.MenuActionBase;
-import freemind.controller.actions.generated.instance.MenuCategory;
 import freemind.controller.actions.generated.instance.MenuCategoryBase;
 import freemind.controller.actions.generated.instance.MenuCheckedAction;
 import freemind.controller.actions.generated.instance.MenuSeparator;
@@ -78,6 +76,7 @@ import freemind.modes.NodeAdapter;
 import freemind.modes.StylePattern;
 import freemind.modes.actions.NewMapAction;
 import freemind.modes.actions.NodeGeneralAction;
+import freemind.modes.actions.NodeHookAction;
 import freemind.modes.actions.SingleNodeOperation;
 
 

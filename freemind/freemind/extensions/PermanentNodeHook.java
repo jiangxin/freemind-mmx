@@ -19,6 +19,9 @@ public interface PermanentNodeHook extends NodeHook {
 	
 	void onReceiveFocusHook();
 	void onMouseOverHook();
+	/** 
+	 * If the node I belong to is changed, I get this notification.
+	 * */
 	void onUpdateNodeHook();
 
 	void onAddChild(MindMapNode newChildNode);

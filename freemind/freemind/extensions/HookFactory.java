@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.10 2004-07-15 19:41:55 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.11 2004-07-30 18:29:29 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -42,6 +42,7 @@ import freemind.controller.actions.generated.instance.PluginMenuType;
 import freemind.controller.actions.generated.instance.PluginModeType;
 import freemind.controller.actions.generated.instance.PluginPropertyType;
 import freemind.main.FreeMindMain;
+import freemind.modes.MindMapNode;
 
 /**
  * @author christianfoltin
@@ -50,76 +51,6 @@ import freemind.main.FreeMindMain;
  * @package freemind.modes
  * */
 public class HookFactory {
-	public static class HookInstanciationMethod {
-		private HookInstanciationMethod() {
-		}
-		static final public HookInstanciationMethod Once = new HookInstanciationMethod(); 
-		static final public HookInstanciationMethod Other = new HookInstanciationMethod(); 
-	}
-	private class HookDescriptor {
-		private Properties properties;
-		public Vector menuPositions;
-		private Vector modes;
-		private PluginActionType pluginAction;
-		public HookDescriptor(PluginActionType pluginAction) {
-			this.pluginAction = pluginAction;
-			if (pluginAction.getName() == null) {	
-				pluginAction.setName(pluginAction.getLabel());
-			}
-			menuPositions = new Vector();
-			for (Iterator i = pluginAction.getPluginMenu().iterator(); i.hasNext();) {
-				PluginMenuType menu = (PluginMenuType) i.next();
-				menuPositions.add(menu.getLocation());
-			}
-			properties = new Properties();
-			for (Iterator i = pluginAction.getPluginProperty().iterator(); i.hasNext();) {
-				PluginPropertyType property = (PluginPropertyType) i.next();
-				properties.put(property.getName(), property.getValue());
-			}
-			modes = new Vector();
-			for (Iterator i = pluginAction.getPluginMode().iterator(); i.hasNext();) {
-				PluginModeType mode = (PluginModeType) i.next();
-				modes.add(mode.getClassName());
-			}
-		}
-		public String toString() {
-			return "[HookDescriptor props="
-				+ properties
-				+ ", menu positions="
-				+ menuPositions
-				+ "]";
-		}
-		public HookInstanciationMethod getInstanciationMethod() {
-			if(pluginAction.getInstanciation() != null) {
-				if(pluginAction.getInstanciation().equalsIgnoreCase("Once")) {
-					return HookInstanciationMethod.Once;
-				}
-			}
-			return HookInstanciationMethod.Other;
-		}
-		public Vector getModes() {
-			return modes;
-		}
-		public String getBaseClass() {
-			return pluginAction.getBase();
-		}
-		public String getName() {
-			return pluginAction.getName();
-		}
-		public String getClassName() {
-			return pluginAction.getClassName();
-		}
-		public String getDocumentation() {
-			return pluginAction.getDocumentation();
-		}
-		public String getIconPath() {
-			return pluginAction.getIconPath();
-		}
-		public String getKeyStroke() {
-			return pluginAction.getKeyStroke();
-		}
-	}
-
 	private static final String pluginPrefix = "accessories.plugins.";
 	private FreeMindMain frame;
 	// Logging: 
@@ -275,11 +206,28 @@ public class HookFactory {
 		return (NodeHook) createJavaHook(hookName, descriptor);
 	}
 
+	/**
+	 * @param node
+	 * @param hookName
+	 * @return null if not present, the hook otherwise.
+	 */
+	public PermanentNodeHook getHookInNode(MindMapNode node, String hookName) {
+		// search for already instanciated hooks of this type:
+		for (Iterator i = node.getActivatedHooks().iterator(); i.hasNext();) {
+			PermanentNodeHook otherHook = (PermanentNodeHook) i.next();
+			if(otherHook.getName().equals(hookName)) {
+				// there is already one instance. 
+				return otherHook;
+			}
+		}
+		return null;
+	}
+	
 	private void decorateHook(
 		String hookName,
 		HookDescriptor descriptor,
 		MindMapHook hook) {
-		hook.setProperties(descriptor.properties);
+		hook.setProperties(descriptor.getProperties());
 		hook.setName(hookName);
 	}
 
@@ -295,7 +243,7 @@ public class HookFactory {
 		if(descriptor == null){
 			throw new IllegalArgumentException("The hook "+hookName + " is not defined.");
 		}
-		return descriptor.properties.getProperty(prop);	
+		return descriptor.getProperties().getProperty(prop);	
 	}
 
 	/**

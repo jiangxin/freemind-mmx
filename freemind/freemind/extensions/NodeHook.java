@@ -16,12 +16,9 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeHook.java,v 1.1.2.3 2004-04-04 11:56:31 christianfoltin Exp $*/
+/*$Id: NodeHook.java,v 1.1.2.4 2004-07-30 18:29:29 christianfoltin Exp $*/
 
 package freemind.extensions;
-
-import java.util.List;
-
 
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -32,7 +29,6 @@ public interface NodeHook extends MindMapHook {
 	void setNode(MindMapNode node);
 	
 	/* hooks */
-	void invoke(MindMapNode focussed, List selecteds);
 	/**
 	 * Is called after creation:
 	 */

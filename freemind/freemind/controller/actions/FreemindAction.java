@@ -19,7 +19,7 @@
  *
  * Created on 19.07.2004
  */
-/*$Id: FreemindAction.java,v 1.1.2.1 2004-07-19 05:50:36 christianfoltin Exp $*/
+/*$Id: FreemindAction.java,v 1.1.2.2 2004-07-30 18:29:29 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -36,7 +36,7 @@ import freemind.modes.ModeController;
  */
 public abstract class FreemindAction extends AbstractAction {
 
-    private final Icon actionItem;
+    private Icon actionIcon;
     private static Icon enabledIcon;
     private static final String ENABLED_ICON_PATH = "images/icons/button_ok.png";
     private final ModeController modeController;
@@ -47,7 +47,7 @@ public abstract class FreemindAction extends AbstractAction {
      */
     public FreemindAction(String title, Icon icon,  ModeController modeController) {
         super(title, icon);
-        this.actionItem = icon;
+        this.actionIcon = icon;
         this.modeController = modeController;
         if(enabledIcon == null){
             enabledIcon = new ImageIcon(modeController.getFrame().getResource(ENABLED_ICON_PATH));
@@ -56,10 +56,15 @@ public abstract class FreemindAction extends AbstractAction {
     }
 
     protected void setSelected(JMenuItem menuItem, boolean state) {
+    		// prevents that icons set after the construction is forgotten to
+    		// recover.
+    		if(actionIcon == null && menuItem.getIcon() != enabledIcon) {
+    			actionIcon = menuItem.getIcon();
+    		}
 		if(state) {
 		    menuItem.setIcon(enabledIcon);
 		} else {
-		    menuItem.setIcon(actionItem);
+		    menuItem.setIcon(actionIcon);
 		}
     }
     

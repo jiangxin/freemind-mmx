@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <plugin>
-    <plugin_action documentation="&lt;html&gt;Marks the background of each changed node. Has only to be invoked once on the root node.&lt;/html&gt;" name="Show revisions in yellow" base="freemind.extensions.NodeHookAdapter" label="accessories/plugins/RevisionPlugin.properties" class_name="accessories.plugins.RevisionPlugin">
-        <plugin_mode class_name="freemind.modes.mindmapmode"/>
-        <plugin_menu location="menu_bar/format/nodes/RevisionPlugin.class"/>
-    </plugin_action>
+	<plugin_action 
+		documentation="&lt;html&gt;Marks the background of each changed node.&lt;/html&gt;" 
+		name="Show revisions in yellow" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="accessories/plugins/RevisionPlugin.properties" 
+		class_name="accessories.plugins.RevisionPlugin"
+		instanciation="OnceForRoot">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/format/nodes/RevisionPlugin.class"/>
+	</plugin_action>
 </plugin>
-
