@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.10.6 2004-09-04 06:56:04 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.10.7 2004-10-18 19:56:33 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -156,7 +156,6 @@ public class MenuBar extends JMenuBar {
 		if ((c.getMode() != null)) {
 			c.getMode().getModeController().updateMenus(menuHolder);
 		}
-		//System.out.println("\n\nVorher:\n"+menuHolder+"\nEnd.\n\n");
 		menuHolder.updateMenus(this, MENU_BAR_PREFIX);
 		menuHolder.updateMenus(mapsPopupMenu, GENERAL_POPUP_PREFIX);
 	}
@@ -284,7 +283,7 @@ public class MenuBar extends JMenuBar {
 		nextMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_nextMap")));
 	
 	
-		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EXTRAS_MENU+"last/options");
+		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EXTRAS_MENU+"last/options/.");
 	
 	        if (false) {
 	           preferences.add(c.background);
