@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.12.12.5 2004-05-23 14:33:20 christianfoltin Exp $*/
+/*$Id: MindMapToolBar.java,v 1.12.12.6 2004-05-24 05:36:43 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -56,12 +56,12 @@ public class MindMapToolBar extends FreeMindToolBar {
 			InputStream in;
 			in = c.getFrame().getResource("mindmap_menus.xml").openStream();
 			MenuCollection menus = c.updateMenusFromXml(holder, in, "mode_toolbar");
-			c.processMenuCategory(holder, menus.getMenuCategory(), "");
+			c.processMenuCategory(holder, menus.getMenuCategory(), "mindmapmode_toolbar");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		holder.updateMenus(this);
+		holder.updateMenus(this, "mindmapmode_toolbar/");
 
 
 //	JButton button;

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.10.2 2004-05-23 12:39:02 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.10.3 2004-05-24 05:36:42 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -31,20 +31,23 @@ import javax.swing.*;
 /**This is the menu bar for FreeMind. Actions are defined in MenuListener. */
 public class MenuBar extends JMenuBar {
 
-	public static final String INSERT_MENU = "insert/";
-	public static final String NAVIGATE_MENU = "navigate/";
-	public static final String VIEW_MENU = "view/";
-    public static final String HELP_MENU = "help/";
-    public static final String MODES_MENU = "modes/";
-    public static final String MINDMAP_MENU = "mindmaps/";
-    public static final String EDIT_MENU = "edit/";
-    public static final String FILE_MENU = "file/";
-    public static final String POPUP_MENU = "popup/";
-	public static final String FORMAT_MENU = "format/";
-	public static final String EXTRAS_MENU = "extras/";
+	public static final String MENU_BAR_PREFIX = "menu_bar/";
+	public static final String GENERAL_POPUP_PREFIX = "popup/";
+
+	public static final String POPUP_MENU = GENERAL_POPUP_PREFIX+"popup/";
+
+	public static final String INSERT_MENU = MENU_BAR_PREFIX+"insert/";
+	public static final String NAVIGATE_MENU = MENU_BAR_PREFIX+"navigate/";
+	public static final String VIEW_MENU = MENU_BAR_PREFIX+"view/";
+    public static final String HELP_MENU = MENU_BAR_PREFIX+"help/";
+    public static final String MODES_MENU = MENU_BAR_PREFIX+"modes/";
+    public static final String MINDMAP_MENU = MENU_BAR_PREFIX+"mindmaps/";
+    public static final String EDIT_MENU = MENU_BAR_PREFIX+"edit/";
+    public static final String FILE_MENU = MENU_BAR_PREFIX+"file/";
+	public static final String FORMAT_MENU = MENU_BAR_PREFIX+"format/";
+	public static final String EXTRAS_MENU = MENU_BAR_PREFIX+"extras/";
 
 	private StructuredMenuHolder menuHolder;
-	private StructuredMenuHolder menuPopupHolder;
 	
     JPopupMenu mapsPopupMenu;
     private JMenu filemenu;
@@ -67,7 +70,6 @@ public class MenuBar extends JMenuBar {
 		this.removeAll();
 
 		menuHolder = new StructuredMenuHolder();
-		menuPopupHolder = new StructuredMenuHolder();
 
 		// filemenu
 		filemenu = menuHolder.addMenu(new JMenu(c.getResourceString("file")), FILE_MENU+".");
@@ -126,8 +128,8 @@ public class MenuBar extends JMenuBar {
 
 		// maps popup menu
 		mapsPopupMenu = new JPopupMenu(c.getResourceString("mindmaps"));
-		menuPopupHolder.addCategory(POPUP_MENU+"navigate");	
-		menuPopupHolder.addSeparator(POPUP_MENU);	
+		menuHolder.addCategory(POPUP_MENU+"navigate");	
+		menuHolder.addSeparator(POPUP_MENU);	
 	
 		//Modesmenu
 		JMenu modesmenu = menuHolder.addMenu(new JMenu(c.getResourceString("modes")), MODES_MENU+".");
@@ -143,18 +145,15 @@ public class MenuBar extends JMenuBar {
 		updateEditMenu();
 		updateModeMenu();
 		updateMapsMenu(menuHolder, MINDMAP_MENU);
-		updateMapsMenu(menuPopupHolder, POPUP_MENU);
+		updateMapsMenu(menuHolder, POPUP_MENU);
 		addAdditionalPopupActions();
 		// the modes:
 		if ((c.getMode() != null)) {
 			c.getMode().getModeController().updateMenus(menuHolder);
 		}
-
-
-		//System.out.println("\n\nNachher:\n"+menuHolder+"\nEnd.\n\n");
-		menuHolder.updateMenus(this);
-		menuPopupHolder.updateMenus(mapsPopupMenu);
-
+		//System.out.println("\n\nVorher:\n"+menuHolder+"\nEnd.\n\n");
+		menuHolder.updateMenus(this, MENU_BAR_PREFIX);
+		menuHolder.updateMenus(mapsPopupMenu, GENERAL_POPUP_PREFIX);
 	}
 
 
@@ -181,7 +180,7 @@ public class MenuBar extends JMenuBar {
 
 
     private void addAdditionalPopupActions() {
-		menuPopupHolder.addSeparator(POPUP_MENU);
+		menuHolder.addSeparator(POPUP_MENU);
         JMenuItem newPopupItem;
         
         newPopupItem = new JMenuItem(c.toggleMenubar);
@@ -190,15 +189,15 @@ public class MenuBar extends JMenuBar {
         // We have enabled hiding of menubar only in applets. It it because
         // when we hide menubar in application, the key accelerators from
         // menubar do not work.
-        menuPopupHolder.addMenuItem(newPopupItem, POPUP_MENU+"toggleMenubar");
+        menuHolder.addMenuItem(newPopupItem, POPUP_MENU+"toggleMenubar");
         
         newPopupItem = new JMenuItem(c.toggleToolbar);
         newPopupItem.setForeground(new Color(100,80,80));
-        menuPopupHolder.addMenuItem(newPopupItem, POPUP_MENU+"toggleToolbar");
+        menuHolder.addMenuItem(newPopupItem, POPUP_MENU+"toggleToolbar");
         
         newPopupItem = new JMenuItem(c.toggleLeftToolbar);
         newPopupItem.setForeground(new Color(100,80,80));
-        menuPopupHolder.addMenuItem(newPopupItem, POPUP_MENU+"toggleLeftToolbar");
+        menuHolder.addMenuItem(newPopupItem, POPUP_MENU+"toggleLeftToolbar");
     }
 	
     private void updateMapsMenu(StructuredMenuHolder holder, String basicKey) {

@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: NewChildAction.java,v 1.1.2.2 2004-05-09 22:31:15 christianfoltin Exp $*/
+/*$Id: NewChildAction.java,v 1.1.2.3 2004-05-24 05:36:42 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.ActionPair;
@@ -44,7 +45,7 @@ import freemind.view.mindmapview.NodeView;
 public class NewChildAction extends AbstractAction implements ActorXml {
     private final ControllerAdapter c;
     public NewChildAction(ControllerAdapter modeController) {
-        super(modeController.getText("new_child"));
+        super(modeController.getText("new_child"), new ImageIcon(modeController.getResource("images/newNode.png")));
         this.c = modeController;
 		this.c.getActionFactory().registerActor(this, getDoActionClass());
     }

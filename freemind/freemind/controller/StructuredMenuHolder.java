@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.2.3 2004-05-23 14:33:19 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.2.4 2004-05-24 05:36:42 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -30,6 +30,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -87,9 +88,9 @@ public class StructuredMenuHolder {
 
 	public void addCategory(String category) {
 		StringTokenizer tokens = new StringTokenizer(category+"/blank", "/");
-		addMenu(null, tokens);
-		StringTokenizer tokensII = new StringTokenizer(category+"/blank", "/");
-		removeItem(tokensII);
+		MapTokenPair categoryPair = getCategoryMap(tokens, menuMap);
+		// remove blank
+		categoryPair.order.remove(categoryPair.token);
 	}
 
 	public void addSeparator(String category) {
@@ -99,7 +100,12 @@ public class StructuredMenuHolder {
         }
 		sep += SEPARATOR_TEXT;
 		StringTokenizer tokens = new StringTokenizer(sep, "/");
-		addMenu(new SeparatorHolder(), tokens);
+		// separators can occur as doubles.
+		MapTokenPair categoryPair = getCategoryMap(tokens, menuMap);
+		if(categoryPair.order.size() == 0 || !(((String)categoryPair.order.lastElement())).equals(SEPARATOR_TEXT)) {
+			categoryPair.map.put(categoryPair.token, new SeparatorHolder());
+			categoryPair.order.add(categoryPair.token);
+		}
 	}
 	/**
 	 * @param item
@@ -112,29 +118,34 @@ public class StructuredMenuHolder {
 		return item;
 	}
 
-	private void removeItem(StringTokenizer tokens) {
-		MapTokenPair categoryPair = getCategoryMap(tokens, menuMap);
-		categoryPair.map.remove(categoryPair.token);
-	}
+//	private void removeItem(StringTokenizer tokens) {
+//		MapTokenPair categoryPair = getCategoryMap(tokens, menuMap);
+//		categoryPair.map.remove(categoryPair.token);
+//	}
 
 	private final class PrintMenuAdder implements MenuAdder {
         public void addMenuItem(JMenuItem item) {
-        	print("JMenuItem "+item.getActionCommand());
+        	print("JMenuItem '"+item.getActionCommand()+"'");
         }
         public void addSeparator() {
-        	print("Separator ");
+        	print("Separator '"+"'");
         }
         public void addAction(Action action) {
-        	print("Action    "+action.getValue(Action.NAME));
+        	print("Action    '"+action.getValue(Action.NAME)+"'");
+        }
+        public void addCategory(String category) {
+        	print("Category: '"+category+"'");
         }
     }
 
     private class MapTokenPair {
 		Map map;
 		String token;
-		MapTokenPair(Map map, String token) {
+		Vector order;
+		MapTokenPair(Map map, String token, Vector order) {
 			this.map = map;
 			this.token = token;
+			this.order = order;
 		}
 	}
 
@@ -156,8 +167,10 @@ public class StructuredMenuHolder {
 				return getCategoryMap(tokens, nextMap);
 			} else {
 				Vector order = (Vector)thisMap.get(ORDER_NAME);
-				order.add(nextToken);
-				return new MapTokenPair(thisMap, nextToken);
+				if (!order.contains(nextToken)) {
+					order.add(nextToken);
+				}
+				return new MapTokenPair(thisMap, nextToken, order);
 			}
 		}
 		// error case?
@@ -165,7 +178,10 @@ public class StructuredMenuHolder {
 	}
 
     
-    public void updateMenus(final JMenuBar myItem) {
+    public void updateMenus(final JMenuBar myItem, String prefix) {
+    	
+		MapTokenPair pair = getCategoryMap(new StringTokenizer(prefix, "/"), menuMap);
+		Map myMap = (Map) pair.map.get(pair.token);
     	updateMenus(new MenuAdder() {
 
             public void addMenuItem(JMenuItem item) {
@@ -178,10 +194,15 @@ public class StructuredMenuHolder {
 
             public void addAction(Action action) {
 				throw new NoSuchMethodError("addAction for JMenuBar");
-            }}, menuMap, new DefaultMenuAdderCreator());
+            }
+
+            public void addCategory(String category) {
+            }}, myMap, new DefaultMenuAdderCreator());
     }
 
-	public void updateMenus(final JPopupMenu myItem) {
+	public void updateMenus(final JPopupMenu myItem, String prefix) {
+		MapTokenPair pair = getCategoryMap(new StringTokenizer(prefix, "/"), menuMap);
+		Map myMap = (Map) pair.map.get(pair.token);
 		updateMenus(new MenuAdder() {
 
             public void addMenuItem(JMenuItem item) {
@@ -194,13 +215,18 @@ public class StructuredMenuHolder {
 
             public void addAction(Action action) {
             	myItem.add(action);
-            }}, menuMap, new DefaultMenuAdderCreator());
+            }
+
+            public void addCategory(String category) {
+            }}, myMap, new DefaultMenuAdderCreator());
 	}
 	
 	/**
 	 * @param bar
 	 */
-	public void updateMenus(final JToolBar bar) {
+	public void updateMenus(final JToolBar bar, String prefix) {
+		MapTokenPair pair = getCategoryMap(new StringTokenizer(prefix, "/"), menuMap);
+		Map myMap = (Map) pair.map.get(pair.token);
 		updateMenus(new MenuAdder() {
 
 			public void addMenuItem(JMenuItem item) {
@@ -208,12 +234,16 @@ public class StructuredMenuHolder {
 			}
 
 			public void addSeparator() {
-				bar.addSeparator();
+				// no separators to save place.
+				//bar.addSeparator();
 			}
 
 			public void addAction(Action action) {
 				bar.add(action);
-			}}, menuMap, new DefaultMenuAdderCreator());
+			}
+
+            public void addCategory(String category) {
+            }}, myMap, new DefaultMenuAdderCreator());
 	}
 
 
@@ -222,6 +252,7 @@ public class StructuredMenuHolder {
 		void addMenuItem(JMenuItem item);
 		void addSeparator();
 		void addAction(Action action);
+		void addCategory(String category);
 	}
 	
 	private static class MenuItemAdder implements MenuAdder {
@@ -243,6 +274,13 @@ public class StructuredMenuHolder {
 
         public void addAction(Action action) {
         	myItem.add(action);
+        }
+
+
+        /* (non-Javadoc)
+         * @see freemind.controller.StructuredMenuHolder.MenuAdder#addCategory(java.lang.String)
+         */
+        public void addCategory(String category) {
         } 
 	}
     
@@ -269,10 +307,11 @@ public class StructuredMenuHolder {
 		//System.out.println(thisMap);
 		// iterate through maps and do the changes:
 		Vector myVector = (Vector) thisMap.get(ORDER_NAME);
-		// The "." target was handled earlier.
-		myVector.remove("."); 
 		for (Iterator i = myVector.iterator(); i.hasNext();) {
 			String category = (String) i.next();
+			// The "." target was handled earlier.
+			if(category.equals("."))
+				continue;
 			Object nextObject = thisMap.get(category);
 			if(nextObject instanceof SeparatorHolder ) {
 				menuAdder.addSeparator();
@@ -283,6 +322,7 @@ public class StructuredMenuHolder {
 			}  else if(nextObject instanceof Action){
 				menuAdder.addAction((Action) nextObject);
 			} else if( nextObject instanceof Map) {
+				menuAdder.addCategory(category);
 				Map nextMap = (Map) nextObject;
 				MenuAdder nextItem ;
 				if(nextMap.containsKey(".")) {

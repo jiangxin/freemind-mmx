@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapPopupMenu.java,v 1.12.12.1 2004-05-23 14:33:20 christianfoltin Exp $*/
+/*$Id: MindMapPopupMenu.java,v 1.12.12.2 2004-05-24 05:36:42 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -25,6 +25,7 @@ import java.io.InputStream;
 
 import javax.swing.JPopupMenu;
 
+import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.MenuCollection;
 
@@ -40,11 +41,11 @@ public class MindMapPopupMenu extends JPopupMenu {
 			InputStream in;
 			in = c.getFrame().getResource("mindmap_menus.xml").openStream();
 			MenuCollection menus = c.updateMenusFromXml(holder, in, "node_popup_menu");
-			c.processMenuCategory(holder, menus.getMenuCategory(), "");
+			c.processMenuCategory(holder, menus.getMenuCategory(), "mindmapmode_popup");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		holder.updateMenus(this);
+		holder.updateMenus(this, "mindmapmode_popup/");
     }
 }
