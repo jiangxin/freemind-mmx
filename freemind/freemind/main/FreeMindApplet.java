@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.2 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: FreeMindApplet.java,v 1.3 2001-03-28 19:17:37 ponder Exp $*/
 
 package freemind.main;
 
@@ -49,7 +49,7 @@ import javax.swing.UIManager;
 
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 
-    public static final String version = "0.3";
+    public static final String version = "0.3.2";
     //    public static final String defaultPropsURL;
     public URL defaultPropsURL;
     public static Properties defaultProps;

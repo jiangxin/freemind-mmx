@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.4 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: BubbleNodeView.java,v 1.5 2001-03-28 19:17:37 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -27,6 +27,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.BasicStroke;
 
 
 /**
@@ -57,6 +58,11 @@ public class BubbleNodeView extends NodeView {
 	Graphics2D g = (Graphics2D)graphics;
 	Dimension size = getSize();
 	if (this.getModel()==null) return;
+
+	g.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
+				    BasicStroke.JOIN_MITER, 1f,
+				    new float[] {2f, 2f}, 0f));
+
 	//Draw a standard node
 	g.setColor(getEdge().getColor());
 	g.drawOval(0,0,size.width-1,size.height-1);

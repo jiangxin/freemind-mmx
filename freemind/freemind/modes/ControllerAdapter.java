@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.15 2001-03-26 20:14:01 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.16 2001-03-28 19:17:37 ponder Exp $*/
 
 package freemind.modes;
 
@@ -388,6 +388,10 @@ public abstract class ControllerAdapter implements ModeController {
 	String relative;
 	File input;
 	JFileChooser chooser = null;
+	if (getMap().getFile() == null) {
+	    getFrame().out("You must save the current map first!");
+	    save();
+	}
 	if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
 	    chooser = new JFileChooser(getMap().getFile().getParentFile());
 	} else {
@@ -421,6 +425,10 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected void loadURL(String relative) {
 	URL absolute = null;
+	if (getMap().getFile() == null) {
+	    getFrame().out("You must save the current map first!");
+	    save();
+	}
 	try {
 	    absolute = new URL(getMap().getFile().toURL(), relative);
 	} catch (MalformedURLException ex) {

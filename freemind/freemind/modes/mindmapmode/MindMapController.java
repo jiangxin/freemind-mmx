@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.14 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: MindMapController.java,v 1.15 2001-03-28 19:17:37 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -617,9 +617,7 @@ public class MindMapController extends ControllerAdapter {
 
 	public void actionPerformed(ActionEvent e) {
 	    MindMapNodeModel n = getSelected();
-	    // we assume you have true type, so +1 works
-	    getModel().setFontSize(n,n.getFont().getSize()+1);
-
+	    getModel().increaseFontSize(n,1);
 	}
     }
 
@@ -633,7 +631,7 @@ public class MindMapController extends ControllerAdapter {
 	    // we assume you have true type, so -1 works
 	    // getModel().setFontSize(n,n.getFont().getSize()-1);
 
-	    getModel().increaseBranchFontSize(n,-1);
+	    getModel().increaseFontSize(n,-1);
 	}
     }
 
@@ -644,9 +642,6 @@ public class MindMapController extends ControllerAdapter {
 
 	public void actionPerformed(ActionEvent e) {
 	    MindMapNodeModel n = getSelected();
-	    // we assume you have true type, so +1 works
-	    // getModel().setBranchFontSize(n,n.getFont().getSize()+1);
-
 	    getModel().increaseBranchFontSize(n,1);
 	}
     }
@@ -658,8 +653,7 @@ public class MindMapController extends ControllerAdapter {
 
 	public void actionPerformed(ActionEvent e) {
 	    MindMapNodeModel n = getSelected();
-	    // we assume you have true type, so -1 works
-	    getModel().setBranchFontSize(n,n.getFont().getSize()-1);
+	    getModel().increaseBranchFontSize(n,-1);
 	}
     }
 

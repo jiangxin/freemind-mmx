@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BezierEdgeView.java,v 1.5 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: BezierEdgeView.java,v 1.6 2001-03-28 19:17:37 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -33,7 +33,7 @@ public class BezierEdgeView extends EdgeView {
 
     CubicCurve2D.Float graph = new CubicCurve2D.Float();
     Point2D.Float one, two;
-    private static final int XCTRL = 7;//the distance between endpoint and controlpoint
+    private static final int XCTRL = 12;//the distance between endpoint and controlpoint
    
     public BezierEdgeView(NodeView source, NodeView target) {
 	super(source,target);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.2 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: BrowseController.java,v 1.3 2001-03-28 19:17:37 ponder Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -150,6 +150,7 @@ public class BrowseController extends ControllerAdapter {
 	    getFrame().err(getFrame().getResources().getString("url_error"));
 	    return;
 	}
+
 	//try {
 	    //	    String fileName = absolute.getFile();
 	    // File file = new File(fileName);
@@ -163,7 +164,6 @@ public class BrowseController extends ControllerAdapter {
 	    //} 
 	//}
 	String type = Tools.getExtension(absolute.getFile());
-	getFrame().out(type);
 	try {
 	    if (type.equals("mm")) {
 		load(absolute);
@@ -171,7 +171,8 @@ public class BrowseController extends ControllerAdapter {
 		getFrame().openDocument(absolute);
 	    }
 	} catch (Exception ex) {
-	    getFrame().err(getFrame().getResources().getString("url_load_error")+absolute);
+	    //	    getFrame().err(getFrame().getResources().getString("url_load_error")+absolute);
+	    //for some reason, this exception is thrown anytime...
 	} 
     }
 

@@ -1,2 +1,3 @@
 #!/bin/sh
-java -jar ./lib/freemind.jar
+echo $@
+java -jar ./lib/freemind.jar $@

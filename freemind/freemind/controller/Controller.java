@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.15 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: Controller.java,v 1.16 2001-03-28 19:17:36 ponder Exp $*/
 
 package freemind.controller;
 
@@ -535,7 +535,11 @@ public class Controller {
 	public void actionPerformed(ActionEvent e) {
 	    changeToMode("Browse");
 	    //	    try {
-		((BrowseController)getMode().getModeController()).loadURL(getFrame().getProperty("docmapurl"));  //(new File("doc/maps/freemind.mm"));
+	    String map = getFrame().getProperty("docmapurl");  //(new File("doc/maps/freemind.mm"));
+	    if (map.startsWith("."))  {
+		map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
+	    }
+	    ((BrowseController)getMode().getModeController()).loadURL(map);
 		//IMPROVE THIS!
 		//	    } catch (FileNotFoundException ex) {
 		//		JOptionPane.showMessageDialog(getView(), getFrame().getResources().getString("file_not_found") + "\n Documentation Map not found.");

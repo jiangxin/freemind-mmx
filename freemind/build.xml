@@ -23,30 +23,19 @@
 
 	<target name="post" depends="dist,browser,doc">
 		<mkdir dir="${post}" />
-		<zip zipfile="${post}/freemind-bin-ver.zip"
-			basedir="${dist}"
-			excludes="browser"
-		/>
-		<zip zipfile="${post}/freemind-src-ver.zip"
-			basedir="${src}"
-			excludes="build,post,dist"
-		/>
 		<tar tarfile="${post}/freemind-bin.tar"
 			basedir="${dist}"
 			excludes="browser"
 		/>
 		<tar tarfile="${post}/freemind-src.tar"
 			basedir="${src}"
-			excludes="build,post,dist"
+			excludes="build,post,dist,*.jar"
 		/>
 		<gzip src="${post}/freemind-bin.tar"
 			zipfile="${post}/freemind-bin-ver.tar.gz"
 		/>
 		<gzip src="${post}/freemind-src.tar"
 			zipfile="${post}/freemind-src-ver.tar.gz"
-		/>
-		<zip zipfile="${post}/freemind-browser-ver.zip"
-			basedir="${dist}/browser"
 		/>
 		<tar tarfile="${post}/freemind-browser.tar"
 			basedir="${dist}/browser"

@@ -16,15 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.9 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: FreeMind.java,v 1.10 2001-03-28 19:17:36 ponder Exp $*/
 
 package freemind.main;
 
 import freemind.view.mindmapview.MapView;
 import freemind.controller.MenuBar;
 import freemind.controller.Controller;
+import freemind.modes.ModeController;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.File;
 import java.net.URL;
 import java.util.Properties;
 import java.util.Locale;
@@ -45,7 +47,7 @@ import javax.swing.UIManager;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
-    public static final String version = "0.3";
+    public static final String version = "0.3.2";
     //    public static final String defaultPropsURL = "freemind.properties";
     public URL defaultPropsURL;
     public static Properties defaultProps;
@@ -158,10 +160,12 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     public void out (String msg) {
 	status.setText(msg);
+	//	System.out.println(msg);
     }
 
     public void err (String msg) {
 	status.setText(msg);	
+	//	System.out.println(msg);
     }
 
     public void openDocument(URL url) throws Exception {
@@ -225,8 +229,29 @@ public class FreeMind extends JFrame implements FreeMindMain {
     }
 
     public static void main(String[] args) {
-        JFrame frame = new FreeMind();
- 
+	//        JFrame frame = new FreeMind();
+
+	FreeMind frame = new FreeMind();
+	
+	ModeController ctrl = frame.c.getMode().getModeController();
+	//This could be improved.
+	try {
+	    File fin;
+	    for (int i=0; i<args.length; i++ ) {
+		if (args[i].endsWith(".mm")) {
+		    if (!args[i].startsWith(System.getProperty("file.separator"))) {
+			args[i] = System.getProperty("user.dir") + args[i];
+		    }
+		    System.out.println("Attempting to load: " + args[i]);
+		    fin = new File(args[i]);
+		    ctrl.load(fin);
+		}
+	    }
+	} catch (Exception ex) {
+	    System.err.println("File not found error");
+	    //	    System.exit(1);
+	}
+
         frame.pack();
         frame.setVisible(true);
 

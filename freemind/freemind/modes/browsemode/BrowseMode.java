@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMode.java,v 1.2 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: BrowseMode.java,v 1.3 2001-03-28 19:17:37 ponder Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -54,7 +54,12 @@ public class BrowseMode implements Mode {
     public void activate() {
 	//	getController().changeToMapOfMode(this);
 	String map = getController().getFrame().getProperty("browsemode_initial_map");
-	if (map != null  && map != "") {
+
+	if (map != null && map.startsWith("."))  {
+	    map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
+	}
+
+	if (map != "") {
 	    ((BrowseController)getModeController()).loadURL(map);
 	}
     }
