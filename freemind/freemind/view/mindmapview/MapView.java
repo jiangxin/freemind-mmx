@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.11 2001-04-06 20:50:11 ponder Exp $*/
+/*$Id: MapView.java,v 1.12 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -53,7 +53,7 @@ public class MapView extends JPanel implements Printable {
     private Vector selected = new Vector();
     private Controller controller;
     private float zoom=1F;
-
+	private boolean isPrinting = false; // use for remove selection from print
 
     //
     // Constructors
@@ -69,6 +69,8 @@ public class MapView extends JPanel implements Printable {
 
 	this.setLayout( new MindMapLayout( this ) );
 
+	setBackground(getModel().getBackgroundColor());
+	
 	initRoot();
     }
 
@@ -283,6 +285,7 @@ public class MapView extends JPanel implements Printable {
 
 
     public boolean isSelected(NodeView n) {
+	if (isPrinting) return false;
 	return selected.contains(n);
     }
 
@@ -299,24 +302,39 @@ public class MapView extends JPanel implements Printable {
 
     public void paint(Graphics graphics){
 	Graphics2D g = (Graphics2D)graphics;
-	setBackground(getModel().getBackgroundColor());
 	super.paint(g);
 	paintEdges(rootView, g);
     }
 
+	// Todo:
+	// ask user for :
+	// - center in page (in page format ?)
+	// - print zoom or maximize (in page format ?)
+	// - print selection only
+	// remember those parameters from one session to another
+	//    (as orientation & margin from pf)
     public int print(Graphics graphics, PageFormat pf, int pi) {
 	if (pi >= 1) {
 	    return Printable.NO_SUCH_PAGE;
 	}
+	isPrinting = true;
 	Graphics2D g = (Graphics2D)graphics;
-	pf.setOrientation(PageFormat.LANDSCAPE);
 	Color background = getBackground();
 	setBackground(Color.white);
 	//In future, automatically fit map to one page
-	g.scale(0.7,0.7);
-	super.paint(g);
-	paintEdges(rootView,g);
+	double zoom = 0.7;
+	// getImageable are in 1/72 inch, g.transform is also in 72 dpi for print g
+	// so nothing to do ?!?
+	int margeX = (int)(pf.getImageableX()/zoom);
+	int margeY = (int)(pf.getImageableY()/zoom);
+	// double pageW = pf.getImageableWidth(); unit ?
+	// double pageH = pf.getImageableHeight();
+	Rectangle r = getInnerBounds(rootView);
+	g.scale(zoom,zoom);
+	g.translate(-r.getX()+margeX,-r.getY()+margeY);
+	print(g);
 	setBackground(background);
+	isPrinting = false;
 	return Printable.PAGE_EXISTS;
     }
 
@@ -328,7 +346,20 @@ public class MapView extends JPanel implements Printable {
     ///////////
     // private methods. Internal implementation
     /////////
-
+	
+	/**
+	* Return the exact bounding box of children of source (without BORDER)
+	* Could be implemented in LayoutManager as Minimum size ?
+	*/
+	private Rectangle getInnerBounds(NodeView source)
+	{
+	Rectangle r = source.getBounds();
+	for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
+	    NodeView target = (NodeView)e.next();
+	    r.add(getInnerBounds(target));//recursive
+	}
+	return r;
+	}
 
     private void paintEdges(NodeView source, Graphics2D g) {
 	for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
@@ -393,6 +424,9 @@ public class MapView extends JPanel implements Printable {
     private class MapModelHandler implements TreeModelListener {
 	
 	public void treeNodesChanged( TreeModelEvent e ) {
+		// must be in structureChanged instead ?
+		// or in is own Listerner
+		setBackground(getModel().getBackgroundColor());
 	    NodeView node;
 	    try {
 		node = ( (MindMapNode)e.getChildren()[0] ).getViewer();
@@ -444,7 +478,6 @@ public class MapView extends JPanel implements Printable {
 	 * 
 	 */
 	public void treeStructureChanged( TreeModelEvent e ) {
-	    
 	    //This implementation simply rereads the whole mindmap
 	    removeAll();
 	    MindMapNode newRoot = (MindMapNode)e.getTreePath().getLastPathComponent();

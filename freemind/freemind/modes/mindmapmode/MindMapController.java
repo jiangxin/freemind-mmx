@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.16 2001-04-06 20:50:11 ponder Exp $*/
+/*$Id: MindMapController.java,v 1.17 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -29,10 +29,12 @@ import freemind.modes.Mode;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.EdgeAdapter;
+import freemind.modes.Pattern;
 import freemind.view.mindmapview.NodeView;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 import java.net.URL;
 import java.net.MalformedURLException;
@@ -108,13 +110,7 @@ public class MindMapController extends ControllerAdapter {
     Action decreaseBranchFont = new DecreaseBranchFontAction();
 
     // Extension Actions
-    Action evalPositive = new EvaluatePositiveAction();
-    Action evalNegative = new EvaluateNegativeAction();
-    Action evalNeutral = new EvaluateNeutralAction();
-
-    Action evalBranchPositive = new EvaluateBranchPositiveAction();
-    Action evalBranchNegative = new EvaluateBranchNegativeAction();
-    Action evalBranchNeutral = new EvaluateBranchNeutralAction();
+    Action patterns[];
 
     // Branch Font Actions
     Action boldifyBranch = new BoldifyBranchAction();
@@ -130,6 +126,7 @@ public class MindMapController extends ControllerAdapter {
 
     public MindMapController(Mode mode) {
 	super(mode);
+	loadPatterns(new File(getFrame().getProperty("patternsfile")));
 	popupmenu = new MindMapPopupMenu(this);
 	toolbar = new MindMapToolBar(this);
 	setAllActions(false);
@@ -141,6 +138,15 @@ public class MindMapController extends ControllerAdapter {
 
     public void save(File file) {
 	getModel().save(file);
+    }
+
+    private void loadPatterns(File file) {
+	List patternsList = Pattern.loadPatterns(file);
+	//	Action[] patternsActions = Array.newInstance(Action.class,patternsList.length());
+	patterns = new Action[patternsList.size()];
+	for (int i=0;i<patterns.length;i++) {
+	    patterns[i] = new ApplyPatternAction((Pattern)patternsList.get(i));
+	}
     }
 
     public FileFilter getFileFilter() {
@@ -206,23 +212,9 @@ public class MindMapController extends ControllerAdapter {
 
     JMenu getExtensionMenu() {
 	JMenu extensionMenu = new JMenu(getFrame().getResources().getString("extension_menu"));
-
-	JMenuItem evalNeutralItem = extensionMenu.add(evalNeutral);
-	evalNeutralItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_node_neutral")));
-	JMenuItem evalPositiveItem = extensionMenu.add(evalPositive);
-	evalPositiveItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_node_positive")));
-	JMenuItem evalNegativeItem = extensionMenu.add(evalNegative);
-	evalNegativeItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_node_negative")));
-
-	extensionMenu.addSeparator();
-
-	JMenuItem evalBranchNeutralItem = extensionMenu.add(evalBranchNeutral);
-	evalBranchNeutralItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_branch_neutral")));
-	JMenuItem evalBranchPositiveItem = extensionMenu.add(evalBranchPositive);
-	evalBranchPositiveItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_branch_positive")));
-	JMenuItem evalBranchNegativeItem = extensionMenu.add(evalBranchNegative);
-	evalBranchNegativeItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_branch_negative")));
-
+	for (int i=0; i<patterns.length; ++i) { 
+		extensionMenu.add(patterns[i]);
+	}
 	return extensionMenu;
     }
 
@@ -389,6 +381,9 @@ public class MindMapController extends ControllerAdapter {
 	bubble.setEnabled(enabled);
 	for (int i=0; i<edgeStyles.length; ++i) { 
 		edgeStyles[i].setEnabled(enabled);
+	}
+	for (int i=0; i<patterns.length; ++i) { 
+		patterns[i].setEnabled(enabled);
 	}
 	save.setEnabled(enabled);
 	saveAs.setEnabled(enabled);
@@ -779,169 +774,22 @@ public class MindMapController extends ControllerAdapter {
     // Evaluation
     //
 
-    private class EvaluatePositiveAction extends AbstractAction {
-	EvaluatePositiveAction() {
-	    super(getFrame().getResources().getString("evaluate_positive"));
+    private class ApplyPatternAction extends AbstractAction {
+	Pattern pattern;
+	ApplyPatternAction(Pattern pattern) {
+	    super(pattern.getName());
+	    this.pattern=pattern;
 	}
 	public void actionPerformed(ActionEvent e) {
-	    Color color = Color.green;
-
-	    String strcolor = getFrame().getProperty("positive_node_color");
-
-	    if (strcolor.length() == 7) {
-		color=Tools.xmlToColor(strcolor);
+	    for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+		MindMapNodeModel selected = (MindMapNodeModel)it.next();
+		getModel().setNodeColor(selected, pattern.getNodeColor());
+		System.out.println(pattern.getNodeColor());
+		
+		getModel().setNodeFont(selected, pattern.getNodeFont());
+		System.out.println(pattern.getNodeFont());
+		
 	    }
-
-	    Font f = new Font(getFrame().getProperty("positive_node_font"),
-			      Integer.parseInt(getFrame().getProperty("positive_node_font_style")),
-			      Integer.parseInt(getFrame().getProperty("positive_node_font_size")));
-
-//	    getModel().setNodeColor(getSelected(), color);
-//	    getModel().setNodeFont(getSelected(), f);
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setNodeColor(selected, color);
-			getModel().setNodeFont(selected, f);
-		}
-	}
-    }
-
-    private class EvaluateNegativeAction extends AbstractAction {
-	EvaluateNegativeAction() {
-	    super(getFrame().getResources().getString("evaluate_negative"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    Color color = Color.green;
-
-	    String strcolor = getFrame().getProperty("negative_node_color");
-
-	    if (strcolor.length() == 7) {
-		color=Tools.xmlToColor(strcolor);
-	    }
-
-	    Font f = new Font(getFrame().getProperty("negative_node_font"),
-			      Integer.parseInt(getFrame().getProperty("negative_node_font_style")),
-			      Integer.parseInt(getFrame().getProperty("negative_node_font_size")));
-
-//	    getModel().setNodeColor(getSelected(), color);
-//	    getModel().setNodeFont(getSelected(), f);
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setNodeColor(selected, color);
-			getModel().setNodeFont(selected, f);
-		}
-	}
-    }
-
-    private class EvaluateNeutralAction extends AbstractAction {
-	EvaluateNeutralAction() {
-	    super(getFrame().getResources().getString("evaluate_neutral"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    Color color = Color.green;
-
-	    String strcolor = getFrame().getProperty("standardnodecolor");
-
-	    if (strcolor.length() == 7) {
-		color=Tools.xmlToColor(strcolor);
-	    }
-
-	    Font f = new Font(getFrame().getProperty("standardfont"),
-			      Integer.parseInt("0"), // FIXME: should be changed in the implementation
-			      Integer.parseInt(getFrame().getProperty("standardfontsize")));
-
-//	    getModel().setNodeColor(getSelected(), color);
-//	    getModel().setNodeFont(getSelected(), f);
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setNodeColor(selected, color);
-			getModel().setNodeFont(selected, f);
-		}
-	}
-    }
-
-    private class EvaluateBranchPositiveAction extends AbstractAction {
-	EvaluateBranchPositiveAction() {
-	    super(getFrame().getResources().getString("evaluate_branch_positive"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    Color color = Color.green;
-
-	    String strcolor = getFrame().getProperty("positive_node_color");
-
-	    if (strcolor.length() == 7) {
-		color=Tools.xmlToColor(strcolor);
-	    }
-
-	    Font f = new Font(getFrame().getProperty("positive_node_font"),
-			      Integer.parseInt(getFrame().getProperty("positive_node_font_style").trim()),
-			      Integer.parseInt(getFrame().getProperty("positive_node_font_size").trim()));
-
-//	    getModel().setBranchColor(getSelected(), color);
-//	    getModel().setBranchFont(getSelected(), f);
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setBranchColor(selected, color);
-			getModel().setBranchFont(selected, f);
-		}
-	}
-    }
-
-    private class EvaluateBranchNegativeAction extends AbstractAction {
-	EvaluateBranchNegativeAction() {
-	    super(getFrame().getResources().getString("evaluate_branch_negative"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    Color color = Color.green;
-
-	    String strcolor = getFrame().getProperty("negative_node_color");
-
-	    if (strcolor.length() == 7) {
-		color=Tools.xmlToColor(strcolor);
-	    }
-
-	    Font f = new Font(getFrame().getProperty("negative_node_font"),
-			      Integer.parseInt(getFrame().getProperty("negative_node_font_style")),
-			      Integer.parseInt(getFrame().getProperty("negative_node_font_size")));
-
-//	    getModel().setBranchColor(getSelected(), color);
-//	    getModel().setBranchFont(getSelected(), f);
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setBranchColor(selected, color);
-			getModel().setBranchFont(selected, f);
-		}
-	}
-    }
-
-    private class EvaluateBranchNeutralAction extends AbstractAction {
-	EvaluateBranchNeutralAction() {
-	    super(getFrame().getResources().getString("evaluate_branch_neutral"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    Color color = Color.green;
-
-	    String strcolor = getFrame().getProperty("standardnodecolor");
-
-	    if (strcolor.length() == 7) {
-		color=Tools.xmlToColor(strcolor);
-	    }
-
-	    Font f = new Font(getFrame().getProperty("standardfont"),
-			      // FIXME: please use only java.awt.Font
-			      0,
-			      Integer.parseInt(getFrame().getProperty("standardfontsize")));
-
-	    //  			    Integer.parseInt(getFrame().getProperty("0")),
-	    //  			    Integer.parseInt(getFrame().getProperty("standardfontsize")));
-
-//	    getModel().setBranchColor(getSelected(), color);
-//	    getModel().setBranchFont(getSelected(), f);
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setBranchColor(selected, color);
-			getModel().setBranchFont(selected, f);
-		}
 	}
     }
 
@@ -971,10 +819,10 @@ public class MindMapController extends ControllerAdapter {
 
 	public void actionPerformed(ActionEvent e) {
 //	    getModel().setBranchNonBold(getSelected());
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setBranchNonBold(selected);
-		}
+	    for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+		MindMapNodeModel selected = (MindMapNodeModel)it.next();
+		getModel().setBranchNonBold(selected);
+	    }
 	}
     }
 
@@ -1046,7 +894,7 @@ public class MindMapController extends ControllerAdapter {
 	}
 	
 	public String getDescription() {
-	    return getFrame().getResources().getString("mindmaps");
+	    return getFrame().getResources().getString("mindmaps_desc");
 	}
     }
 }

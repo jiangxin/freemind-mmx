@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMapModel.java,v 1.2 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: BrowseMapModel.java,v 1.3 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -56,7 +56,7 @@ public class BrowseMapModel extends MapAdapter {
 
     public BrowseMapModel(FreeMindMain frame) {
 	super(frame);
-	setRoot(new BrowseNodeModel("new Mindmap", getFrame()));
+	setRoot(new BrowseNodeModel(getFrame().getResources().getString("new_mindmap"), getFrame()));
     }
     
     public BrowseMapModel( BrowseNodeModel root, FreeMindMain frame ) {

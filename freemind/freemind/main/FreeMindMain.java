@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.2 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: FreeMindMain.java,v 1.3 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.main;
 
@@ -54,6 +54,8 @@ public interface FreeMindMain {
     public String getProperty(String key);
 
     public JLayeredPane getLayeredPane();
+
+    public Container getViewport();
 
     public void setTitle(String title);
 }

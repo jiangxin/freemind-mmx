@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BezierEdgeView.java,v 1.7 2001-04-06 20:50:11 ponder Exp $*/
+/*$Id: BezierEdgeView.java,v 1.8 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -51,7 +51,9 @@ public class BezierEdgeView extends EdgeView {
 	    one = new Point2D.Float(start.x+XCTRL, start.y);
 	    two = new Point2D.Float(end.x-XCTRL, end.y);
 	}
-	graph.setCurve(start.x,start.y,one.x,one.y,two.x,two.y,end.x,end.y);
+	int dy1=getSourceShift();
+	int dy2=getTargetShift();
+	graph.setCurve(start.x,start.y+dy1,one.x,one.y+dy1,two.x,two.y+dy2,end.x,end.y+dy2);
     }
 
 

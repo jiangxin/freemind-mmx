@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.3 2001-03-28 19:17:37 ponder Exp $*/
+/*$Id: FreeMindApplet.java,v 1.4 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.main;
 
@@ -41,6 +41,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import java.awt.Button;
+import java.awt.Container;
 import javax.swing.*;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
@@ -73,6 +74,10 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
     public MenuBar getFreeMindMenuBar() {
 	return menuBar;
+    }
+
+    public Container getViewport() {
+		return scrollPane.getViewport();
     }
 
     /**

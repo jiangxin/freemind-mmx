@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.18 2001-04-06 21:39:19 ponder Exp $*/
+/*$Id: Controller.java,v 1.19 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.controller;
 
@@ -36,6 +36,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Iterator;
+import java.util.ResourceBundle;
+import java.text.MessageFormat;
 import java.net.URL;
 import java.awt.Component;
 import java.awt.Color;
@@ -50,6 +52,7 @@ import javax.swing.JColorChooser;
 import javax.swing.ImageIcon;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
 import javax.swing.JToolBar;
 //Documentation
 import java.io.File;
@@ -73,9 +76,14 @@ public class Controller {
     private NodeMouseListener nodeMouseListener;
     private NodeKeyListener nodeKeyListener;
     private ModesCreator modescreator = new ModesCreator(this);
+    private PageFormat pageFormat = PrinterJob.getPrinterJob().defaultPage();
+    private Icon bswatch = new BackgroundSwatch();//needed for BackgroundAction
+
 
     Action close; 
     Action print; 
+    Action printDirect; 
+    Action page; 
     public Action quit;
     Action background; 
     Action about;
@@ -98,7 +106,9 @@ public class Controller {
 	nodeKeyListener = new NodeKeyListener(this);
 
 	close = new CloseAction(this);
-	print = new PrintAction(this);
+	print = new PrintAction(this,true);
+	printDirect = new PrintAction(this,false);
+	page = new PageAction(this);
 	quit = new QuitAction(this);
 	background = new BackgroundAction(this);
 	about = new AboutAction(this);
@@ -178,7 +188,7 @@ public class Controller {
 	//Check if the mode is available
 	Mode newmode = (Mode)modes.get(mode);
 	if (newmode == null) {
-	    getFrame().err("Mode not available: "+mode);
+	    getFrame().err(getFrame().getResources().getString("mode_na")+": "+mode);
 	    return;
 	}
 
@@ -202,7 +212,7 @@ public class Controller {
 	
 	popupmenu = getMode().getPopupMenu();
 
-	getFrame().setTitle("FreeMind - "+mode+" Mode");
+	setTitle();
 	getMode().activate();
 
 	getFrame().getFreeMindMenuBar().updateFileMenu();
@@ -212,7 +222,12 @@ public class Controller {
 	    setAllActions(false);
 	}
 
-	getFrame().out("Mode changed to "+mode+" Mode");
+	Object[] messageArguments = {
+         getMode().toString()
+	};
+	MessageFormat formatter = new MessageFormat(
+		getFrame().getResources().getString("mode_status"));
+	getFrame().out(formatter.format(messageArguments));
     }
 
 
@@ -375,16 +390,26 @@ public class Controller {
     //
     // Multiple Views management
     //
+	
+	/** return the Frame title with mode and file if exist */
+	private void setTitle() {
+	Object[] messageArguments = {
+         getMode().toString()
+	};
+	MessageFormat formatter = new MessageFormat(
+		getFrame().getResources().getString("mode_title"));
+	String title = formatter.format(messageArguments);
+	if (getMapModule() != null) {
+	    title = title + " - " + getMapModule().toString();
+	}
+	getFrame().setTitle(title);
+	}
     
     private void mapModuleChanged() {
 	frame.getFreeMindMenuBar().updateMapsMenu();//to show the new map in the mindmaps menu
 	lastOpened.mapOpened(getMapModule());
 	updateNavigationActions();
-	if (getMapModule() == null) {
-	    getFrame().setTitle("FreeMind - " + getMode().toString()+" Mode");
-	} else {
-	    getFrame().setTitle("FreeMind - " + getMode().toString()+" Mode" + " - " + getMapModule().toString());
-	}
+	setTitle();
 	moveToRoot();
     }
 
@@ -413,6 +438,8 @@ public class Controller {
     private void setAllActions(boolean enabled) {
 	background.setEnabled(enabled);
 	print.setEnabled(enabled);
+	printDirect.setEnabled(enabled);
+	page.setEnabled(enabled);
 	close.setEnabled(enabled);
 	moveToRoot.setEnabled(enabled);
 	((MainToolBar)getToolBar()).setAllActions(enabled);
@@ -547,25 +574,40 @@ public class Controller {
 
     private class PrintAction extends AbstractAction {
 	Controller controller;
-	PrintAction(Controller controller) {
-	    super(controller.getFrame().getResources().getString("print"));
+	boolean isDlg;
+	PrintAction(Controller controller, boolean isDlg) {
+	    super(controller.getFrame().getResources().getString("print"), new ImageIcon(getResource("images/Print24.gif")));
 	    this.controller = controller;
 	    setEnabled(false);
+		this.isDlg = isDlg;
 	}
 	public void actionPerformed(ActionEvent e) {
-	    JOptionPane.showMessageDialog(getView(),"Printing doesn't work yet, it's just experimental.\n I'll implement it in a future version.");
+//	    JOptionPane.showMessageDialog(getView(),"Printing doesn't work yet, it's just experimental.\n I'll implement it in a future version.");
 	    PrinterJob printJob = PrinterJob.getPrinterJob();
-	    PageFormat pf = printJob.pageDialog(printJob.defaultPage());
 
-	    printJob.setPrintable(getView(),pf);
+	    printJob.setPrintable(getView(),pageFormat);
 
-	    if (printJob.printDialog()) {
+	    if (!isDlg || printJob.printDialog()) {
 		try {
 		    printJob.print();
 		} catch (Exception ex) {
 		    ex.printStackTrace();
 		}
 	    }
+	}
+    }
+
+    private class PageAction extends AbstractAction {
+	Controller controller;
+	PageAction(Controller controller) {
+	    super(controller.getFrame().getResources().getString("page"));
+	    this.controller = controller;
+	    setEnabled(false);
+	}
+	public void actionPerformed(ActionEvent e) {
+	    PrinterJob printJob = PrinterJob.getPrinterJob();
+		// Ask user for page format (e.g., portrait/landscape)
+		pageFormat = printJob.pageDialog(pageFormat);
 	}
     }
 
@@ -658,10 +700,17 @@ public class Controller {
     //
     // Preferences
     //
+    private class BackgroundSwatch extends ColorSwatch {
+		Color getColor() {
+			return getModel().getBackgroundColor();
+		}
+	}
 
     private class BackgroundAction extends AbstractAction {
 	BackgroundAction(Controller controller) {
-	    super(controller.getFrame().getResources().getString("background"));
+	    super(controller.getFrame().getResources().getString("background"),
+		  bswatch
+		  );
 	}
 	public void actionPerformed(ActionEvent e) {
 	    Color color = JColorChooser.showDialog(getView(),"Choose Background Color:",getView().getBackground() );

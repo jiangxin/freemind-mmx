@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModesCreator.java,v 1.6 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: ModesCreator.java,v 1.7 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.modes;
 
@@ -60,6 +60,7 @@ public class ModesCreator {
 		modes.put(mode.toString(), mode);
 	    } catch (Exception ex) {
 		System.err.println("Mode "+modename+" could not be loaded.");
+		ex.printStackTrace();
 	    }
 	}
 

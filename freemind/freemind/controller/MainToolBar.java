@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.7 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: MainToolBar.java,v 1.8 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.controller;
 
@@ -37,6 +37,8 @@ public class MainToolBar extends JToolBar {
 	button = add(c.previousMap);
 	button.setText("");
 	button = add(c.nextMap);
+	button.setText("");
+	button = add(c.printDirect);
 	button.setText("");
 	if (! c.getFrame().getProperty("mindmapview_enable_zoom").trim().equals("false")) {
 	    zoom = new JComboBox(zooms);

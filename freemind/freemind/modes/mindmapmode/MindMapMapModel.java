@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.14 2001-04-06 20:50:11 ponder Exp $*/
+/*$Id: MindMapMapModel.java,v 1.15 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -51,7 +51,7 @@ public class MindMapMapModel extends MapAdapter {
 
     public MindMapMapModel(FreeMindMain frame) {
 	super(frame);
-	setRoot(new MindMapNodeModel("new Mindmap", getFrame()));
+	setRoot(new MindMapNodeModel( getFrame().getResources().getString("new_mindmap"), getFrame()));
     }
     
     public MindMapMapModel( MindMapNodeModel root, FreeMindMain frame ) {

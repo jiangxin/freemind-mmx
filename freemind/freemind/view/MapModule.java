@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapModule.java,v 1.3 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: MapModule.java,v 1.4 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.view;
 
@@ -57,7 +57,8 @@ public class MapModule {
 	if (getModel().toString() != null) {
 	    name = getModel().toString();
 	} else {
-	    name = "mindmap"+unnamedMapsNumber++;
+	    name = mode.getController().getFrame().getResources().getString("mindmap")
+		       +unnamedMapsNumber++;
 	}
     }
 

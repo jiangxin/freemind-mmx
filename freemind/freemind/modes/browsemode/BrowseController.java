@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.3 2001-03-28 19:17:37 ponder Exp $*/
+/*$Id: BrowseController.java,v 1.4 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -176,7 +176,7 @@ public class BrowseController extends ControllerAdapter {
 	} 
     }
 
-    protected void loadURL() {
+    public void loadURL() {
 	String link = getSelected().getLink();
 	if (link != null) {
 	    loadURL(link);

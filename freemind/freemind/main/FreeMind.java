@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.11 2001-04-06 20:50:11 ponder Exp $*/
+/*$Id: FreeMind.java,v 1.12 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.main;
 
@@ -35,6 +35,7 @@ import java.util.PropertyResourceBundle;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
@@ -139,6 +140,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     }//Constructor
 
+    public Container getViewport() {
+		return scrollPane.getViewport();
+    }
+	
     public URL getResource(String name) {
 	return ClassLoader.getSystemResource(name);
     }

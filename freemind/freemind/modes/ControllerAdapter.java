@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.18 2001-04-06 20:50:11 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.19 2001-04-19 16:20:38 ponder Exp $*/
 
 package freemind.modes;
 
@@ -54,6 +54,17 @@ import javax.swing.text.DefaultEditorKit;
 import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import javax.swing.filechooser.FileFilter;
+// For Drag&Drop
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Derive from this class to implement the Controller for your mode. Overload the methods
@@ -66,8 +77,8 @@ public abstract class ControllerAdapter implements ModeController {
     private int noOfMaps = 0;//The number of currently open maps
     private MindMapNode clipboard;
 
-    public Action cut;
-    public Action paste;
+    public Action cut = null;
+    public Action paste = null;
 
     public ControllerAdapter() {
     }
@@ -78,6 +89,10 @@ public abstract class ControllerAdapter implements ModeController {
 	cut = new CutAction(this);
 	paste = new PasteAction(this);
 
+	DropTarget dropTarget = new DropTarget(
+		getFrame().getViewport(),
+		new FileOpener()
+	);
     }
 
     //
@@ -223,15 +238,21 @@ public abstract class ControllerAdapter implements ModeController {
 	    if (noOfMaps == 0) {
 		//opened the first map
 		setAllActions(true);
-		cut.setEnabled(true);
+		if (cut!=null) cut.setEnabled(true);
 	    }
+		if (getFrame().getView()!=null) {
+			DropTarget dropTarget = new DropTarget(
+				getFrame().getView(),
+				new FileOpener()
+				);
+		}
 	    noOfMaps++;
 	} else {
 	    noOfMaps--;
 	    if (noOfMaps == 0) {
 		//closed the last map
 		setAllActions(false);
-		cut.setEnabled(false);
+		if (cut!=null) cut.setEnabled(false);
 	    }
 	}
     }
@@ -428,7 +449,7 @@ public abstract class ControllerAdapter implements ModeController {
 	}
     }
 
-    protected void loadURL(String relative) {
+    public void loadURL(String relative) {
 	URL absolute = null;
 	if (getMap().getFile() == null) {
 	    getFrame().out("You must save the current map first!");
@@ -454,7 +475,7 @@ public abstract class ControllerAdapter implements ModeController {
 	}
     }
 
-    protected void loadURL() {
+    public void loadURL() {
 	String link = getSelected().getLink();
 	if (link != null) {
 	    loadURL(link);
@@ -491,7 +512,7 @@ public abstract class ControllerAdapter implements ModeController {
 	return getController().getMapModule();
     }
 
-    protected MapAdapter getMap() {
+    public MapAdapter getMap() {
 	if (getMapModule() != null) {
 	    return (MapAdapter)getMapModule().getModel();
 	} else {
@@ -499,11 +520,11 @@ public abstract class ControllerAdapter implements ModeController {
 	}
     }
 
-    protected URL getResource (String name) {
+    public URL getResource (String name) {
 	return getFrame().getResource(name);
     }
 
-    protected Controller getController() {
+    public Controller getController() {
 	return getMode().getController();
     }
 
@@ -515,7 +536,7 @@ public abstract class ControllerAdapter implements ModeController {
 	return (MapAdapter)getController().getModel();
     }
 
-    protected MapView getView() {
+    public MapView getView() {
 	return getController().getView();
     }
 
@@ -746,5 +767,52 @@ public abstract class ControllerAdapter implements ModeController {
 	    }
 	}
     }
+
+	protected class FileOpener implements DropTargetListener {
+    public void drop (DropTargetDropEvent dtde) {
+      dtde.acceptDrop(DnDConstants.ACTION_COPY);
+      try {
+        Object data = 
+          dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+        if (data == null) {
+          // Shouldn't happen because dragEnter() rejects drags w/out at least
+          // one javaFileListFlavor. But just in case it does ...
+          dtde.dropComplete(false);
+          return;
+        }
+        Iterator iterator = ((List)data).iterator();
+        while (iterator.hasNext()) {
+          File file = (File)iterator.next();
+		  load(file);
+        }
+      }
+      catch (Exception e) {
+		  JOptionPane.showMessageDialog(getView(),
+		  	"Couldn't open dropped file(s). Reason: " + e.getMessage()
+			//getFrame().getResources().getString("file_not_found")
+        );
+        dtde.dropComplete(false);
+        return;
+      }
+      dtde.dropComplete(true);
+    }
+
+    public void dragEnter (DropTargetDragEvent dtde) {
+      // check if there is at least one File Type in the list
+      DataFlavor[] flavors = dtde.getCurrentDataFlavors();
+      for (int i = 0; i < flavors.length; i++) {
+        if (flavors[i].isFlavorJavaFileListType()) {
+          dtde.acceptDrag(DnDConstants.ACTION_COPY);
+          return;
+        }
+      }
+      dtde.rejectDrag();
+    }
+
+    public void dragOver (DropTargetDragEvent e) {}
+    public void dragExit (DropTargetEvent e) {}
+    public void dragScroll (DropTargetDragEvent e) {}
+    public void dropActionChanged (DropTargetDragEvent e) {}    
+  }
 
 }
