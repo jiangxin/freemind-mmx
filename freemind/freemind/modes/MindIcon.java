@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindIcon.java,v 1.1.18.2 2005-02-18 21:17:36 christianfoltin Exp $*/
+/*$Id: MindIcon.java,v 1.1.18.3 2005-03-01 06:38:59 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -145,6 +145,13 @@ public class MindIcon {
         mAllIconNames.add("idea");
         mAllIconNames.add("button_ok");
         mAllIconNames.add("button_cancel");
+        mAllIconNames.add("full-1");
+        mAllIconNames.add("full-2");
+        mAllIconNames.add("full-3");
+        mAllIconNames.add("full-4");
+        mAllIconNames.add("full-5");
+        mAllIconNames.add("full-6");
+        mAllIconNames.add("full-7");
         mAllIconNames.add("back");
         mAllIconNames.add("forward");
         mAllIconNames.add("attach");

@@ -4,7 +4,6 @@
 		documentation="%accessories/plugins/HierarchicalIcons.properties_documentation" 
 		name="%accessories/plugins/HierarchicalIcons.properties_name" 
 		base="freemind.extensions.NodeHookAdapter" 
-		icon_path="accessories/plugins/icons/kcmsystem.png" 
 		label="accessories/plugins/HierarchicalIcons.properties" 
 		class_name="accessories.plugins.HierarchicalIcons" 
 		instanciation="OnceForRoot">

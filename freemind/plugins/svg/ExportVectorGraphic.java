@@ -19,7 +19,7 @@
  *
  * Created on 10.11.2004
  */
-/*$Id: ExportVectorGraphic.java,v 1.1.4.1 2004-11-16 16:42:38 christianfoltin Exp $*/
+/*$Id: ExportVectorGraphic.java,v 1.1.4.2 2005-03-01 06:38:59 christianfoltin Exp $*/
 package plugins.svg;
 
 import java.awt.Dimension;
@@ -56,6 +56,7 @@ public class ExportVectorGraphic extends ExportHook{
 		String namespaceURI = SVGConstants.SVG_NAMESPACE_URI;
 		Document domFactory = impl.createDocument(namespaceURI, "svg", null);
 		SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(domFactory);
+		ctx.setEmbeddedFontsOn(true);       
 		GraphicContextDefaults defaults 
 		    = new GraphicContextDefaults();
 		defaults.setFont(new Font("Arial", Font.PLAIN, 12));
