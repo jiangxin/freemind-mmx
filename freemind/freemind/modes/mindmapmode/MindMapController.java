@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.37 2004-10-17 13:01:09 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.38 2004-11-13 08:28:35 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -149,11 +149,14 @@ public class MindMapController extends ControllerAdapter {
 	if(logger == null) {
 		logger = getFrame().getLogger(this.getClass().getName());
 	}
+	logger.info("createIconActions");
         // icon actions:
         createIconActions();
+    	logger.info("createNodeHookActions");
         //node hook actions:
         createNodeHookActions();
 
+    	logger.info("mindmap_menus");
         // load menus:
         try {
             InputStream in;
@@ -164,8 +167,11 @@ public class MindMapController extends ControllerAdapter {
             e.printStackTrace();
         }
 
+    	logger.info("MindMapPopupMenu");
         popupmenu = new MindMapPopupMenu(this);
+    	logger.info("MindMapToolBar");
         toolbar = new MindMapToolBar(this);
+    	logger.info("setAllActions");
         setAllActions(false);
 
         // addAsChildMode (use old model of handling CtrN) (PN)

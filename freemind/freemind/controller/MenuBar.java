@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.10.7 2004-10-18 19:56:33 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.10.8 2004-11-13 08:28:34 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -164,7 +164,7 @@ public class MenuBar extends JMenuBar {
     private void updateModeMenu() {
         ButtonGroup group = new ButtonGroup();
         ActionListener modesMenuActionListener = new ModesMenuActionListener();
-        List keys = new LinkedList(c.getModes().keySet());
+        List keys = new LinkedList(c.getModes());
         for (ListIterator i = keys.listIterator(); i.hasNext();) {
         	String key = (String)i.next();
         	JRadioButtonMenuItem newItem = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(key), MODES_MENU+key);

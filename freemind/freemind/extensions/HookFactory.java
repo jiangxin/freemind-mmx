@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.16 2004-11-06 22:06:25 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.17 2004-11-13 08:28:34 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -61,7 +61,7 @@ public class HookFactory {
 	private Vector allPlugins;
 	/** Contains PluginRegistrationType -> PluginType relations. */
     private HashMap allRegistrations;
-
+    private ImportWizard importWizard;
 	/**
 	 * 
 	 */
@@ -123,26 +123,31 @@ public class HookFactory {
 	 * 
 	 */
 	private void actualizePlugins() {
-		ImportWizard.CLASS_LIST.clear();
-		ImportWizard.buildClassList();
+		if (importWizard==null) {
+			importWizard=new ImportWizard();
+			importWizard.CLASS_LIST.clear();
+			importWizard.buildClassList();
+		}
 		pluginInfo = new HashMap();
 		allPlugins = new Vector();
 		allRegistrations = new HashMap();
-		for (Iterator i = ImportWizard.CLASS_LIST.iterator(); i.hasNext();) {
+		// the unmarshaller:
+		Unmarshaller unmarshaller = JaxbTools.getInstance()
+				.createUnmarshaller();
+		// the loop
+		for (Iterator i = importWizard.CLASS_LIST.iterator(); i.hasNext();) {
 			String xmlPluginFile = (String) i.next();
 			if (xmlPluginFile.matches(pluginPrefixRegEx)) {
 				// make file name:
 				xmlPluginFile =
 					xmlPluginFile.replace('.', File.separatorChar)
-						+ ImportWizard.lookFor;
+						+ importWizard.lookFor;
 				// this is one of our plugins:
 				URL pluginURL = getClassLoader(Collections.EMPTY_LIST).getResource(xmlPluginFile);
 				// unmarshal xml:
 				Plugin plugin = null;
 				try {
 					InputStream in = pluginURL.openStream();
-					Unmarshaller unmarshaller = JaxbTools.getInstance()
-							.createUnmarshaller();
 					logger.finest("Reading: "+xmlPluginFile);
 					unmarshaller.setValidating(true);
 					plugin = (Plugin) unmarshaller.unmarshal(in);

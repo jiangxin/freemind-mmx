@@ -82,6 +82,7 @@ Changes made in Freemind 0.8.0:
 
 * Help and SVG Export added as Plugins.
 * PDF export added.
+* Startuptime reduced.
 
 Changes made in Freemind 0.7.2:
 ===============================
