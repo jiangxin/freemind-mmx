@@ -83,6 +83,7 @@ Changes made in Freemind 0.8.0:
 * Help and SVG Export added as Plugins.
 * PDF export added.
 * Startuptime reduced.
+* Little improvement for the Icon selector: the last position is restored next time it is opened.
 
 Changes made in Freemind 0.7.2:
 ===============================
