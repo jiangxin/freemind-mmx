@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.27 2004-09-16 16:24:39 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.28 2004-09-19 07:29:06 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -63,7 +63,6 @@ import freemind.controller.actions.generated.instance.MenuCheckedAction;
 import freemind.controller.actions.generated.instance.MenuSeparator;
 import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
-import freemind.controller.actions.generated.instance.PluginRegistrationType;
 import freemind.extensions.HookFactory;
 import freemind.extensions.HookRegistration;
 import freemind.main.Tools;
@@ -79,10 +78,10 @@ import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.StylePattern;
-import freemind.modes.actions.EdgeColorAction;
 import freemind.modes.actions.NewMapAction;
 import freemind.modes.actions.NewPreviousSiblingAction;
 import freemind.modes.actions.NewSiblingAction;
+import freemind.modes.actions.NodeColorAction;
 import freemind.modes.actions.NodeGeneralAction;
 import freemind.modes.actions.NodeHookAction;
 import freemind.modes.actions.SingleNodeOperation;
@@ -129,7 +128,6 @@ public class MindMapController extends ControllerAdapter {
 
    public Action fork = new ForkAction();
    public Action bubble = new BubbleAction();
-   public Action nodeColor = new NodeColorAction();
    public Action nodeColorBlend = new NodeGeneralAction (this, "blend_color", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.blendNodeColor(node); }});
@@ -812,17 +810,7 @@ public class MindMapController extends ControllerAdapter {
     // Color
     // __________________
 
-    private class NodeColorAction extends AbstractAction {
-       NodeColorAction() { super(getText("node_color")); }
-       public void actionPerformed(ActionEvent e) {
-          Color color = Controller.showCommonJColorChooserDialog(getView().getSelected(),"Choose Node Color:",getSelected().getColor() );
-          if (color==null) {
-             return; }
-          for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-             MindMapNodeModel selected = (MindMapNodeModel)it.next();
-             getMindMapMapModel().setNodeColor(selected, color); }}}
-
-	private class NodeBackgroundColorAction extends AbstractAction {
+    private class NodeBackgroundColorAction extends AbstractAction {
 		NodeBackgroundColorAction() { super(getText("node_background_color")); }
 	   public void actionPerformed(ActionEvent e) {
 		  Color color = Controller.showCommonJColorChooserDialog(getView().getSelected(),"Choose Node Background Color:",getSelected().getBackgroundColor() );

@@ -52,6 +52,8 @@ Changes made in Freemind 0.8.0:
 * NewParentNode is working again and is undoable
 * ImportLinked... are messaging if the node is not correct (i.e. admits no link to another mindmap).
 
+* Node color action is undoable now.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

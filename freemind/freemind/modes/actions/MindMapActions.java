@@ -47,50 +47,49 @@ public interface MindMapActions {
 	void setFolded(MindMapNode node, boolean folded);
 	void toggleFolded();
 
-//	public abstract void setNodeColor(MindMapNode node, Color color);
-//	public abstract void blendNodeColor(MindMapNode node);
-//	public abstract void setNodeFont(MindMapNode node, Font font);
-	public abstract void setEdgeColor(MindMapNode node, Color color);
-//	public abstract void setEdgeWidth(MindMapNode node, int width);
-//	public abstract void setNodeStyle(MindMapNode node, String style);
-//	public abstract void setEdgeStyle(MindMapNode node, String style);
-	public abstract void setBold(MindMapNode node, boolean bolded);
-//	public abstract void setCloud(MindMapNode node);
-//	public abstract void setCloudColor(MindMapNode node, Color color);
-//	public abstract void setCloudWidth(MindMapNode node, int width);
-//	public abstract void setCloudStyle(MindMapNode node, String style);
-//	public abstract void addIcon(MindMapNode node, MindIcon icon);
-//	public abstract int removeLastIcon(MindMapNode node);
+	public void setNodeColor(MindMapNode node, Color color);
+//	public void blendNodeColor(MindMapNode node);
+	public void setEdgeColor(MindMapNode node, Color color);
+//	public void setEdgeWidth(MindMapNode node, int width);
+//	public void setNodeStyle(MindMapNode node, String style);
+//	public void setEdgeStyle(MindMapNode node, String style);
+	public void setBold(MindMapNode node, boolean bolded);
+//	public void setCloud(MindMapNode node);
+//	public void setCloudColor(MindMapNode node, Color color);
+//	public void setCloudWidth(MindMapNode node, int width);
+//	public void setCloudStyle(MindMapNode node, String style);
+//	public void addIcon(MindMapNode node, MindIcon icon);
+//	public int removeLastIcon(MindMapNode node);
 //	/** Source holds the MindMapArrowLinkModel and points to the id placed in target.*/
-//	public abstract void addLink(
+//	public void addLink(
 //		MindMapNode source,
 //		MindMapNode target);
-//	public abstract void removeReference(
+//	public void removeReference(
 //		MindMapNode source,
 //		MindMapArrowLinkModel arrowLink);
-//	public abstract void changeArrowsOfArrowLink(
+//	public void changeArrowsOfArrowLink(
 //		MindMapNode source,
 //		MindMapArrowLinkModel arrowLink,
 //		boolean hasStartArrow,
 //		boolean hasEndArrow);
-//	public abstract void setArrowLinkColor(
+//	public void setArrowLinkColor(
 //		MindMapNode source,
 //		MindMapArrowLinkModel arrowLink,
 //		Color color);
-	public abstract void setItalic(MindMapNode node, boolean isItalic);
-//	public abstract void setUnderlined(MindMapNode node);
-//	public abstract void setNormalFont(MindMapNode node);
-	public abstract void setFontFamily(
+	public void setItalic(MindMapNode node, boolean isItalic);
+//	public void setUnderlined(MindMapNode node);
+//	public void setNormalFont(MindMapNode node);
+	public void setFontFamily(
 		MindMapNode node,
 		String fontFamily);
-	public abstract void setFontSize(MindMapNode node, String fontSizeValue);
-//	public abstract void increaseFontSize(MindMapNode node, int increment);
-//	public abstract void splitNode(
+	public void setFontSize(MindMapNode node, String fontSizeValue);
+//	public void increaseFontSize(MindMapNode node, int increment);
+//	public void splitNode(
 //		MindMapNode node,
 //		int caretPosition,
 //		String newText);
 //	//URGENT: This method needs refactoring. At least, it is at the wrong place in the model!!!!
-//	public abstract void joinNodes();
+//	public void joinNodes();
 //	/*
 //	 *
 //	 */

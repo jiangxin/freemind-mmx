@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.29 2004-09-16 16:24:39 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.30 2004-09-19 07:29:06 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -80,7 +80,6 @@ import freemind.controller.actions.ActionHandler;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.ModeControllerActionHandler;
-import freemind.controller.actions.PrintActionHandler;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.UndoXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -104,6 +103,7 @@ import freemind.modes.actions.FontFamilyAction;
 import freemind.modes.actions.FontSizeAction;
 import freemind.modes.actions.ItalicAction;
 import freemind.modes.actions.NewChildAction;
+import freemind.modes.actions.NodeColorAction;
 import freemind.modes.actions.NodeUpAction;
 import freemind.modes.actions.PasteAction;
 import freemind.modes.actions.ToggleChildrenFoldedAction;
@@ -160,6 +160,7 @@ public abstract class ControllerAdapter implements ModeController {
 	private CompoundActionHandler compound = null;
 
     private Color selectionColor = new Color(200,220,200);
+    public NodeColorAction nodeColor = null;
 
     public ControllerAdapter(Mode mode) {
         this.setMode(mode);
@@ -222,6 +223,7 @@ public abstract class ControllerAdapter implements ModeController {
 		nodeUp = new NodeUpAction(this);
 		nodeDown = new NodeDownAction(this);
 	    edgeColor = new EdgeColorAction(this);
+	    nodeColor = new NodeColorAction(this);
 		compound = new CompoundActionHandler(this);
 
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -778,7 +780,10 @@ public abstract class ControllerAdapter implements ModeController {
         fontFamily.setFontFamily(node, fontFamilyValue);
     }
 
-
+    public void setNodeColor(MindMapNode node, Color color) {
+        nodeColor.setNodeColor(node, color);
+    }
+    
 	public void setEdgeColor(MindMapNode node, Color color) {
 		edgeColor.setEdgeColor(node, color);
 	}
