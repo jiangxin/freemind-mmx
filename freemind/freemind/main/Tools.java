@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.16 2003-11-09 22:09:25 christianfoltin Exp $*/
+/*$Id: Tools.java,v 1.17 2003-12-17 21:04:52 christianfoltin Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -375,10 +375,15 @@ public class Tools {
    public static class IntHolder {
 	   private int value;
 	   public IntHolder () {}
+	   public IntHolder (int value) {this.value = value;}
 	   public void setValue(int value) {
 		  this.value = value; }
 	   public int getValue() {
-		  return value; }}
+           return value; }
+       public String toString() {
+           return new String("IntHolder(")+value+")";
+       }
+   }
 
    public static class BooleanHolder {
 	   private boolean value;

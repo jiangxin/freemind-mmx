@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.22 2003-11-30 08:33:23 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.23 2003-12-17 21:04:53 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -257,13 +257,20 @@ public abstract class NodeView extends JLabel {
 
     /**Is the node left of root?*/
     public boolean isLeft() {
-	return left;
+        if(getModel().isLeft() == null)
+            return true;
+        return getModel().isLeft().getValue();
     }
 
     protected void setLeft(boolean left) {
-	this.left = left;
+        //this.left = left;
+        getModel().setLeft(left);
     }
 	
+//     public boolean isLeftDefault() {
+//         return getModel().isLeft() == null;
+//     }
+    
     protected void setModel( MindMapNode model ) {
 	this.model = model;
     }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.16 2003-11-18 23:19:46 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.17 2003-12-17 21:04:53 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -398,6 +398,10 @@ public class MindMapNodeModel extends NodeAdapter {
         
 	if (isFolded()) {
            node.setAttribute("folded","true"); }
+	
+    // fc, 17.12.2003: Remove the left/right bug.
+	if (isLeft()!= null) {
+           node.setAttribute("POSITION",(isLeft().getValue())?"left":"right"); }
 	
     String label = getFrame().getController().getModel().getLinkRegistry().getLabel(this); /* Puh... */
 	if (label!=null) {

@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.19 2003-12-07 21:00:20 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20 2003-12-17 21:04:53 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import freemind.modes.MindIcon;
 import freemind.main.FreeMindMain;
+import freemind.main.Tools;
 import freemind.view.mindmapview.NodeView;
 import java.util.*;
 import java.awt.Color;
@@ -53,7 +54,7 @@ public abstract class NodeAdapter implements MindMapNode {
 
     protected Color color;
     protected boolean folded;
-
+    private Tools.BooleanHolder left;
 
     protected List children;
     private MindMapNode preferredChild; 
@@ -294,6 +295,8 @@ public abstract class NodeAdapter implements MindMapNode {
        copy.setColor(getColor());
        copy.setFont(getFont());
        copy.setLink(getLink());
+       if(isLeft() != null)
+           copy.setLeft(isLeft().getValue());
        Vector icons = getIcons();
        for(int i = 0; i < icons.size(); ++i) {
            copy.addIcon((MindIcon) icons.get(i));
@@ -403,6 +406,17 @@ public abstract class NodeAdapter implements MindMapNode {
 
     public boolean isLeaf() {
 	return getChildCount() == 0;
+    }
+
+    // fc, 16.12.2003 left-right bug:
+    public Tools.BooleanHolder isLeft() {
+        return left;
+    }
+    
+    public void setLeft(boolean isLeft){
+        if(left == null)
+            left = new Tools.BooleanHolder();
+        left.setValue(isLeft);
     }
 
     //

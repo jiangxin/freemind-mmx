@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.2 2003-12-07 21:00:21 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.3 2003-12-17 21:04:53 christianfoltin Exp $*/
 
 /*On doubling of code
  *
@@ -150,6 +150,9 @@ public abstract class XMLElementAdapter extends XMLElement {
          else if (name.equals("FOLDED")) {
             if (sValue.equals("true")) {
                node.setFolded(true); }}
+         else if (name.equals("POSITION")) {
+             // fc, 17.12.2003: Remove the left/right bug.
+             node.setLeft(sValue.equals("left")); }
          else if (name.equals("COLOR")) {
             if (sValue.length() == 7) {
                node.setColor(Tools.xmlToColor(sValue)); }}

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.19 2003-12-07 21:00:20 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.20 2003-12-17 21:04:53 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -323,6 +323,75 @@ public abstract class MapAdapter implements MindMap {
         // ^ Daniel: I don't understand the reason why this is here.  But it
         // is necessary, because user's action "New Node" throws
         // an exception otherwise.
+    }
+
+    /**
+     * The direction is used if side left and right are present. then the next suitable place on the same side#
+     is searched. if there is no such place, then the side is changed.
+     @return returns the new index.
+     */
+    public int moveNodeTo(MindMapNode newChild, MindMapNode parent, int index, int direction){
+        int newIndex = index;
+        if(newChild.isLeft() != null) {
+            boolean iAmLeft = newChild.isLeft().getValue();
+            int maxIndex = parent.getChildCount(); 
+            Vector sortedNodes        = new Vector();
+            Vector sortedNodesIndices = new Vector();
+            // definition of leftRightBoundary: all elements with index >= leftRightBoundary are right.
+            int leftRightBoundary=0;
+            // sort the nodes according to their direction and position:
+            // and find myself:
+            Tools.IntHolder myPositionInVector=null;
+            for(int i = 0 ; i < maxIndex; ++i) {
+                TreeNode nextItem = parent.getChildAt(i);
+                if(!(nextItem instanceof MindMapNode)){
+                    System.err.println("Strange error I in method insertNodeInto of MapAdapter.");
+                    return newIndex;
+                }
+                MindMapNode nextNode = (MindMapNode) nextItem;
+                if(nextNode.isLeft() != null && nextNode.isLeft().getValue() == true){
+                    // left
+                    sortedNodes.add       (leftRightBoundary, nextNode);
+                    sortedNodesIndices.add(leftRightBoundary, new Tools.IntHolder(i));
+                    leftRightBoundary++;
+                    if(i == index)
+                        myPositionInVector = (Tools.IntHolder) sortedNodesIndices.get(leftRightBoundary-1);
+                } else {
+                    // right
+                    sortedNodes.add(nextNode); // at the end.
+                    sortedNodesIndices.add(new Tools.IntHolder(i)); // at the end.
+                    if(i == index)
+                        myPositionInVector = (Tools.IntHolder) sortedNodesIndices.get(sortedNodesIndices.size()-1);
+                }
+            }
+            if(myPositionInVector == null){
+                System.err.println("Strange error II in method insertNodeInto of MapAdapter.");
+                return newIndex;
+            }
+            int oldPositionInVector = sortedNodesIndices.indexOf(myPositionInVector);
+            int newPositionInVector = oldPositionInVector + direction;
+            boolean passedFrontiers=false;
+            if(newPositionInVector < 0) {
+                newPositionInVector = sortedNodesIndices.size()-1;
+                passedFrontiers = true;
+            }
+            if(newPositionInVector  >= sortedNodesIndices.size()) {
+                newPositionInVector = 0;
+                passedFrontiers = true;
+            }
+            newIndex = ((Tools.IntHolder) sortedNodesIndices.get(newPositionInVector)).getValue();
+            // test if frontiers passed:
+            if(((newPositionInVector >= leftRightBoundary) && oldPositionInVector < leftRightBoundary) ||
+               ((newPositionInVector < leftRightBoundary) && oldPositionInVector >= leftRightBoundary)) {
+                newPositionInVector = oldPositionInVector;
+                passedFrontiers = true;
+            }
+            if(passedFrontiers) {
+                // flip:
+                newChild.setLeft(!iAmLeft);
+            }
+        }
+        return newIndex;
     }
 
     /**

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.11 2003-11-03 11:00:28 sviles Exp $*/
+/*$Id: RootNodeView.java,v 1.12 2003-12-17 21:04:54 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -92,18 +92,18 @@ public class RootNodeView extends NodeView {
     }
 
     void insert(MindMapNode newNode) {
-  	NodeView newView = newNodeView(newNode,getMap());
-	newView.update();
-	if ( getLeft().size() > getRight().size() ) {
-	    newView.setLeft(false);
-    	}
-	ListIterator it = newNode.childrenFolded();
-	if (it != null) {
-	    for (;it.hasNext();) {
-		MindMapNode child = (MindMapNode)it.next();
-		newView.insert(child);
-	    }
-	}
+        NodeView newView = newNodeView(newNode,getMap());
+        newView.update();
+        // decide left or right only if not actually set:
+        if(newNode.isLeft()==null)
+            newView.setLeft( getLeft().size() <= getRight().size() );
+        ListIterator it = newNode.childrenFolded();
+        if (it != null) {
+            for (;it.hasNext();) {
+                MindMapNode child = (MindMapNode)it.next();
+                newView.insert(child);
+            }
+        }
     }	
 
     public boolean dropAsSibling(double xCoord) {

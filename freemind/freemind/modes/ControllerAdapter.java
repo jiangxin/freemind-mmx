@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.34 2003-12-14 23:58:03 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.35 2003-12-17 21:04:53 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -1530,13 +1530,15 @@ public abstract class ControllerAdapter implements ModeController {
             if(!selected.isRoot()) {
                 MindMapNode parent = selected.getParentNode();
                 int index = getModel().getIndexOfChild(parent, selected);
+                int newIndex = getModel().moveNodeTo(selected,parent,index, -1);
                 getModel().removeNodeFromParent(selected);
-                int maxindex = parent.getChildCount(); // (PN)
-                if(index - 1 <0) {
-                    getModel().insertNodeInto(selected,parent,maxindex);
-                } else {
-                    getModel().insertNodeInto(selected,parent,index - 1);
-                }
+                getModel().insertNodeInto(selected,parent,newIndex);
+//                 int maxindex = parent.getChildCount(); // (PN)
+//                 if(index - 1 <0) {
+//                     getModel().insertNodeInto(selected,parent,maxindex, -1);
+//                 } else {
+//                     getModel().insertNodeInto(selected,parent,index - 1, -1);
+//                 }
                 getModel().nodeStructureChanged(parent);
                 getView().selectAsTheOnlyOneSelected(selected.getViewer());
 
@@ -1554,13 +1556,15 @@ public abstract class ControllerAdapter implements ModeController {
             if(!selected.isRoot()) {
                 MindMapNode parent = selected.getParentNode();
                 int index = getModel().getIndexOfChild(parent, selected);
+                int newIndex = getModel().moveNodeTo(selected,parent,index, 1);
                 getModel().removeNodeFromParent(selected);
-                int maxindex = parent.getChildCount(); // (PN)
-                if(index + 1 > maxindex) {
-                    getModel().insertNodeInto(selected,parent,0);
-                } else {
-                    getModel().insertNodeInto(selected,parent,index + 1);
-                }
+                getModel().insertNodeInto(selected,parent,newIndex);
+//                 int maxindex = parent.getChildCount(); // (PN)
+//                 if(index + 1 > maxindex) {
+//                     getModel().insertNodeInto(selected,parent,0, 1);
+//                 } else {
+//                     getModel().insertNodeInto(selected,parent,index + 1, 1);
+//                 }
                 getModel().nodeStructureChanged(parent);
                 getView().selectAsTheOnlyOneSelected(selected.getViewer());
                 

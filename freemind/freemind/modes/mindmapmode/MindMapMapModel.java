@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.29 2003-12-07 21:00:26 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.30 2003-12-17 21:04:53 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -900,14 +900,23 @@ public class MindMapMapModel extends MapAdapter {
                 insertNodeIntoNoEvent(node, target, asSibling); }
              nodeStructureChanged(asSibling ? target.getParent() : target); }
           else if (t.isDataFlavorSupported(MindMapNodesSelection.mindMapNodesFlavor)) {
+              //System.err.println("mindMapNodesFlavor");
              String textFromClipboard =
                 (String)t.getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
              String[] textLines = textFromClipboard.split("<nodeseparator>");
              if (textLines.length > 1) {
                 getFrame().setWaitingCursor(true); }
              for (int i = 0; i < textLines.length; ++i) {
-                pasteXMLWithoutRedisplay(textLines[i], target, asSibling); }}
+                 MindMapNodeModel newModel = pasteXMLWithoutRedisplay(textLines[i], target, asSibling);
+                // additional code for left/right decision:
+                if(asSibling && target.isLeft()!= null) {
+                    // if side is set, then the new node is on the same side.
+                    newModel.setLeft(target.isLeft().getValue());
+                }
+             }
+          }
           else if (t.isDataFlavorSupported(MindMapNodesSelection.htmlFlavor)) {
+              //System.err.println("htmlFlavor");
              String textFromClipboard =
                 (String)t.getTransferData(MindMapNodesSelection.htmlFlavor);
              // ^ This outputs transfer data to standard output. I don't know why.
@@ -961,6 +970,7 @@ public class MindMapMapModel extends MapAdapter {
                    linkNode.setLink(linkURL.toString());
                    insertNodeInto(linkNode, linkParentNode); }}}
           else if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+              //System.err.println("stringFlavor");
              String textFromClipboard = (String)t.getTransferData(DataFlavor.stringFlavor);
              pasteStringWithoutRedisplay(textFromClipboard, target, asSibling); }          
           nodeStructureChanged(asSibling ? target.getParent() : target); }
