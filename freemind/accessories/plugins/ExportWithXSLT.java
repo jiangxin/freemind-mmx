@@ -160,7 +160,9 @@ public class ExportWithXSLT extends ExportHook {
                 }
                 in.close();
                 out.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
+                logger.severe("File not found or could not be copied. " +
+                		"Was earching for " + prefix + fileName + " and should go to "+destinationDirectory);
                 e.printStackTrace();
             }
  
