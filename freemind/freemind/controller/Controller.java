@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.10.3 2004-05-02 20:49:14 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.10.4 2004-05-09 22:31:13 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -51,6 +51,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
+import freemind.modes.ModeController;
 
 import freemind.modes.ModesCreator;
 import freemind.view.MapModule;
@@ -210,6 +211,13 @@ public class Controller {
        catch (Exception ex) {
           System.err.println("Warning - resource string not found:"+resource);
           return resource; }}
+
+	/** @return the current modeController. */
+	public ModeController getModeController() {
+		return getMode().getModeController();
+	}
+
+
 
     /**Returns the current model*/
     public MindMap getModel() {
@@ -720,7 +728,7 @@ public class Controller {
 
         void changeToMapModuleWithoutHistory(MapModule map) {
         	// shut down screens of old view + frame
-        	getMode().getModeController().setVisible(false);
+        	getModeController().setVisible(false);
             if (map.getMode() != getMode()) {
                changeToMode(map.getMode().toString()); 
             }

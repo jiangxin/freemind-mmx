@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.10.6 2004-05-06 05:08:26 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.10.7 2004-05-09 22:31:14 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -227,35 +227,6 @@ public abstract class MapAdapter implements MindMap {
        return t;
     }
 
-	// URGENT : This method needs refactoring. At least, it is at the wrong place in the model!!!!
-	public final Transferable cut() {
-		Transferable t = copy();
-		// clear all recently cutted links from the registry:
-		getLinkRegistry().clearCuttedNodeBuffer();
-
-		// sort selectedNodes list by depth, in order to guarantee that sons are deleted first:
-		LinkedList sortedNodes = getFrame().getView().getSelectedsByDepth();
-		for (Iterator i = sortedNodes.iterator(); i.hasNext();) {
-			NodeView nodeView = (NodeView) i.next();
-			MindMapNode selectedNode = (nodeView).getModel();
-			// remove hooks:
-			for (Iterator j = selectedNode.getActivatedHooks().iterator();j.hasNext();) {
-				PermanentNodeHook hook = (PermanentNodeHook) j.next();
-				getFrame().getView().deselect(nodeView);
-				hook.shutdownMapHook();
-			}
-			getLinkRegistry().cutNode(selectedNode);
-			try {
-				removeNodeFromParent(selectedNode);
-			} catch (IllegalArgumentException e) {
-				System.err.println(
-					"Error occured during cut. The application was not able to cut the node "
-						+ selectedNode
-						+ ".");
-			}
-		}
-		return t;
-	}
 
    public Transferable copy(MindMapNode node) {
      return null;
@@ -281,10 +252,8 @@ public abstract class MapAdapter implements MindMap {
             else {
                forNodesFlavor += "<nodeseparator>"; }
 
-            // v This is not a smart solution. While copy() handles multiple flavors,
-            //   copy(node) handles only string flavor, but with the meaning of nodes flavor.
-            //   It does no harm apart from being not very nice and confusing.           
-            forNodesFlavor += copy(tmpNode).getTransferData(DataFlavor.stringFlavor); }
+            forNodesFlavor += copy(tmpNode).getTransferData(MindMapNodesSelection.mindMapNodesFlavor); 
+         }
 
          String plainText = inPlainText != null ? inPlainText : getAsPlainText(selectedNodes);
          return new MindMapNodesSelection
@@ -303,25 +272,6 @@ public abstract class MapAdapter implements MindMap {
     public String getAsRTF(List mindMapNodes) {
        return ""; }
 
-    public void paste(Transferable t, MindMapNode parent) {
-        boolean isLeft = false;
-        if(parent.isLeft()!= null)
-            isLeft = parent.isLeft().getValue();
-        paste(t, /*target=*/parent, /*asSibling=*/ false, isLeft); }
-
-    public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
-	if (t != null) {
-            // In MapAdapter it does basically nothing.
-            nodeStructureChanged(asSibling ? target.getParent() : target);
-	}
-    }
-
-    public void paste(MindMapNode node, MindMapNode parent) {
-		if (node != null) {
-    	    insertNodeInto(node, parent);
-	    	nodeStructureChanged(parent);
-		}
-    }
 
     public String getRestoreable() {
 	return null;

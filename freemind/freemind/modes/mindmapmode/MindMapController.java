@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.8 2004-05-06 05:24:11 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.9 2004-05-09 22:31:15 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -86,12 +86,6 @@ public class MindMapController extends ControllerAdapter {
     private MindMapToolBar toolbar;
     private boolean addAsChildMode = false;
 
-	public void setBold(MindMapNode node, boolean bolded) {
-		bold.setBold(node, bolded);
-	}
-
-	BoldAction bold   = new BoldAction (this);
-	Action deleteChild = new DeleteChildAction(this);
     Action newMap = new NewMapAction(this, this);
     Action open = new OpenAction(this);
     Action save = new SaveAction(this);
@@ -99,9 +93,7 @@ public class MindMapController extends ControllerAdapter {
     Action exportToHTML = new ExportToHTMLAction(this);
     Action exportBranchToHTML = new ExportBranchToHTMLAction(this);
 
-    Action edit = new EditAction(this);
     Action editLong = new EditLongAction();
-    Action newChild = new NewChildAction(this);
     Action newChildWithoutFocus = new NewChildWithoutFocusAction();
     Action newSibling = new NewSiblingAction();
     Action newPreviousSibling = new NewPreviousSiblingAction();
@@ -428,6 +420,7 @@ public class MindMapController extends ControllerAdapter {
        } else {
            add(leadingEditMenu, newChild, "keystroke_add_child");
        }
+       add(leadingEditMenu, deleteChild, "keystroke_delete_child");
        leadingEditMenu.addSeparator();
 
        add(leadingEditMenu, cut, "keystroke_cut");
@@ -768,7 +761,7 @@ public class MindMapController extends ControllerAdapter {
             if (returnVal==JFileChooser.APPROVE_OPTION) {
                try {
                   MindMapNodeModel node = getMindMapMapModel().loadTree(chooser.getSelectedFile());
-                  getMindMapMapModel().paste(node, parent);
+                  paste(node, parent);
  				  invokeHooksRecursively(node, getMindMapMapModel());
                }
                catch (Exception ex) {
@@ -792,7 +785,7 @@ public class MindMapController extends ControllerAdapter {
                return; }
             try {
                MindMapNodeModel node = getMindMapMapModel().loadTree(new File(absolute.getFile()));
-               getMindMapMapModel().paste(node, parent); 
+               paste(node, parent); 
 			   invokeHooksRecursively(node, getMindMapMapModel());
             }
             catch (Exception ex) {
@@ -820,7 +813,7 @@ public class MindMapController extends ControllerAdapter {
                MindMapNodeModel node = getMindMapMapModel().loadTree(new File(absolute.getFile()));
                for (ListIterator i = node.childrenUnfolded();i.hasNext();) {
                   	MindMapNodeModel importNode = (MindMapNodeModel)i.next();
-					getMindMapMapModel().paste(importNode, parent);
+					paste(importNode, parent);
 					invokeHooksRecursively(importNode, getMindMapMapModel());
                   }
                }

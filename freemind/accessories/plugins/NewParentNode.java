@@ -72,8 +72,8 @@ public class NewParentNode extends NodeHookAdapter {
 		getMap().insertNodeInto(newNode, selectedParent, childPosition);
 
 		// Move selected nodes to become children of new node
-		Transferable copy = getMap().cut();
-		getMap().paste(copy, newNode);
+		Transferable copy = getController().cut();
+		getController().paste(copy, newNode);
 		nodeChanged(selectedParent);
 
 		// Start editing new node

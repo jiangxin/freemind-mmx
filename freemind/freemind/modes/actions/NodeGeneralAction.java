@@ -20,18 +20,18 @@ import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.NodeActorXml;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
 
 public class NodeGeneralAction extends AbstractXmlAction {
-	private final MindMapController modeController;
+	private final ControllerAdapter modeController;
 	private freemind.controller.actions.NodeActorXml actor;
 	SingleNodeOperation singleNodeOperation;
-	public NodeGeneralAction(MindMapController modeController, String textID, String iconPath) {
+	protected NodeGeneralAction(ControllerAdapter modeController, String textID, String iconPath) {
 		super(
 		modeController.getText(textID),
 			iconPath != null ? new ImageIcon(modeController.getResource(iconPath)) : null,
@@ -42,14 +42,14 @@ public class NodeGeneralAction extends AbstractXmlAction {
 		this.actor = null;
 	}
 	public NodeGeneralAction(
-		MindMapController modeController, String textID,
+		ControllerAdapter modeController, String textID,
 		String iconPath,
 		SingleNodeOperation singleNodeOperation) {
 		this(modeController, textID, iconPath);
 		this.singleNodeOperation = singleNodeOperation;
 	}
 	public NodeGeneralAction(
-		MindMapController modeController, String textID,
+		ControllerAdapter modeController, String textID,
 		String iconPath,
 		freemind.controller.actions.NodeActorXml actor) {
 		this(modeController, textID, iconPath);

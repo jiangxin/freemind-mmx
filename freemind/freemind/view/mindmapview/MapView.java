@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.10.4 2004-04-08 18:54:56 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.10.5 2004-05-09 22:31:16 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -656,31 +656,6 @@ public class MapView extends JPanel implements Printable {
         return result;
     }
 
-    /** This class sortes nodes by ascending depth of their paths to root. This is useful to assure that children are cutted <b>before</b> their fathers!!!.*/
-    protected class nodesDepthComparator implements Comparator{
-        public nodesDepthComparator() {}
-        /* the < relation.*/
-        public int compare(Object p1, Object p2) {
-            MindMapNode n1 = ((NodeView) p1).getModel();
-            MindMapNode n2 = ((NodeView) p2).getModel();
-            Object[] path1 = getModel().getPathToRoot(n1);
-            Object[] path2 = getModel().getPathToRoot(n2);
-            int depth = path1.length - path2.length;
-            if(depth > 0)
-                return -1;
-            if(depth < 0)
-                return 1;
-            return 0;
-        }
-    }
-
-    /** @return a LinkedList of NodeViews ordered by depth. nodes with greater depth occur first. */
-    public LinkedList getSelectedsByDepth() {
-        // return an ArrayList of NodeViews.
-        LinkedList result = getSelecteds();
-        Collections.sort(result, new nodesDepthComparator());
-        return result;
-    }
 
     public ArrayList /*of NodeViews*/ getSelectedsSortedByY() {
         TreeMap sortedNodes = new TreeMap();

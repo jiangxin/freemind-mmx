@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.12.3 2004-05-02 20:49:14 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.12.4 2004-05-09 22:31:14 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -51,6 +51,7 @@ public interface MindMapNode extends MutableTreeNode {
 
     boolean hasChildren();
 
+	/** @return -1 if the argument childNode is not a child. */
     int getChildPosition(MindMapNode childNode);
 
     MindMapNode getPreferredChild();

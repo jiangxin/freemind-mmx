@@ -16,14 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.10 2004-05-06 05:08:26 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.11 2004-05-09 22:31:14 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import java.awt.Color;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -44,6 +43,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -64,7 +65,6 @@ import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.text.JTextComponent;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -79,9 +79,6 @@ import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.ModeControllerActionHandler;
 import freemind.controller.actions.PrintActionHandler;
-import freemind.controller.actions.generated.instance.DeleteNodeAction;
-import freemind.controller.actions.generated.instance.EditNodeAction;
-import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.UndoXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -93,12 +90,14 @@ import freemind.main.ExampleFileFilter;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
-import freemind.modes.mindmapmode.MindMapMapModel;
+import freemind.modes.actions.*;
+import freemind.modes.actions.BoldAction;
+import freemind.modes.actions.CutAction;
+import freemind.modes.actions.DeleteChildAction;
+import freemind.modes.actions.EditAction;
+import freemind.modes.actions.NewChildAction;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.view.MapModule;
-import freemind.view.mindmapview.EditNodeBase;
-import freemind.view.mindmapview.EditNodeDialog;
-import freemind.view.mindmapview.EditNodeTextField;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
@@ -117,6 +116,7 @@ public abstract class ControllerAdapter implements ModeController {
 	private HashSet nodesToBeUpdated;
 	// Logging: 
 	private static java.util.logging.Logger logger;
+	private static JAXBContext jc;
 
 	Mode mode;
     private int noOfMaps = 0; //The number of currently open maps
@@ -128,8 +128,14 @@ public abstract class ControllerAdapter implements ModeController {
 	public RedoAction redo=null;
     public Action copy = null;
     public Action copySingle = null;
-    public Action cut = null;
-    public Action paste = null;
+    public CutAction cut = null;
+    public PasteAction paste = null;
+	public BoldAction bold = null;
+	public EditAction edit = null;
+	public NewChildAction newChild = null;
+	public DeleteChildAction deleteChild = null;
+	/** Executes series of actions. */
+	private CompoundActionHandler compound = null;
 
     private Color selectionColor = new Color(200,220,200);
 
@@ -141,13 +147,20 @@ public abstract class ControllerAdapter implements ModeController {
         // for updates of nodes:
 		nodesAlreadyUpdated = new HashSet();
 		nodesToBeUpdated    = new HashSet();
+		if(jc == null) {
+            try {
+                jc = JAXBContext.newInstance(ActionFactory.JAXB_CONTEXT);
+            } catch (JAXBException e) {
+                e.printStackTrace();
+            }
+		}
 		// new object factory for xml actions:
 		actionXmlFactory = new ObjectFactory();
         // create action factory:
 		actionFactory = new ActionFactory(getController());
 		// register default action handler:
 		getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
-		getActionFactory().registerHandler(new PrintActionHandler());
+		//getActionFactory().registerHandler(new PrintActionHandler(this));
 		undo = new UndoAction();
 		redo = new RedoAction();
 		getActionFactory().registerHandler(new ActionHandler() {
@@ -181,6 +194,11 @@ public abstract class ControllerAdapter implements ModeController {
         paste = new PasteAction(this);
         copy = new CopyAction(this);
         copySingle = new CopySingleAction(this);
+		bold = new BoldAction (this);
+		edit = new EditAction(this);
+		newChild = new NewChildAction(this);
+		deleteChild = new DeleteChildAction(this);
+		compound = new CompoundActionHandler(this);
 
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
                                                new FileOpener());
@@ -242,6 +260,14 @@ public abstract class ControllerAdapter implements ModeController {
 			nodesAlreadyUpdated.clear();
 		}
     }
+
+	/**
+	 * @param parent
+	 */
+	public void nodeStructureChanged(MindMapNode node) {
+		getMap().nodeStructureChanged(node);
+	}
+
 
 	/**
 	 * @param node
@@ -361,6 +387,32 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     
+	/** This class sortes nodes by ascending depth of their paths to root. This is useful to assure that children are cutted <b>before</b> their fathers!!!.*/
+	protected class nodesDepthComparator implements Comparator{
+		public nodesDepthComparator() {}
+		/* the < relation.*/
+		public int compare(Object p1, Object p2) {
+			MindMapNode n1 = ((MindMapNode) p1);
+			MindMapNode n2 = ((MindMapNode) p2);
+			Object[] path1 = getModel().getPathToRoot(n1);
+			Object[] path2 = getModel().getPathToRoot(n2);
+			int depth = path1.length - path2.length;
+			if(depth > 0)
+				return -1;
+			if(depth < 0)
+				return 1;
+			return 0;
+		}
+	}
+
+	/** @return a LinkedList of MindMapNodes ordered by depth. nodes with greater depth occur first. */
+	public List getSelectedsByDepth() {
+		// return an ArrayList of MindMapNodes.
+		List result = getSelecteds();
+		Collections.sort(result, new nodesDepthComparator());
+		return result;
+	}
+
 
     /**
      * Return false is the action was cancelled, e.g. when
@@ -638,11 +690,6 @@ public abstract class ControllerAdapter implements ModeController {
     // this enables from outside close the edit mode
     private FocusListener textFieldListener = null;
     
-    private void closeEdit() {
-      if (this.textFieldListener != null) {
-        textFieldListener.focusLost(null); // hack to close the edit
-      }
-    }
     
     // status, currently: default, blocked  (PN)
     // (blocked to protect against particular events e.g. in edit mode)
@@ -651,209 +698,58 @@ public abstract class ControllerAdapter implements ModeController {
     public boolean isBlocked() {
       return this.isBlocked;
     }
-    private void setBlocked(boolean isBlocked) {
+    public void setBlocked(boolean isBlocked) {
       this.isBlocked = isBlocked;
     }
 
+	public void setBold(MindMapNode node, boolean bolded) {
+		bold.setBold(node, bolded);
+	}
+
+
+
 	// edit begins with home/end or typing (PN 6.2)
 	public void edit(KeyEvent e, boolean addNew, boolean editLong) {
-	  if (getView().getSelected() != null) {
-		if (e == null || !addNew) {
-		  edit(getView().getSelected(),getView().getSelected(), e, false, false, editLong);
-		}
-		else if (!isBlocked()) {
-		  addNew(getView().getSelected(), NEW_SIBLING_BEHIND, e);
-		}
-		if (e != null) {
-		  e.consume();
-		}
-	  }
+		edit.edit(e, addNew, editLong);
+	}
+
+	public Transferable cut() {
+		return cut.cut();
+	}
+
+	public void paste(Transferable t, MindMapNode parent) {
+		boolean isLeft = false;
+		if(parent.isLeft()!= null)
+			isLeft = parent.isLeft().getValue();
+		paste(t, /*target=*/parent, /*asSibling=*/ false, isLeft); }
+
+	/** @param isLeft determines, whether or not the node is placed on the left or right. **/
+	public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
+		paste.paste(t, target, asSibling, isLeft);
+	}
+
+	public void paste(MindMapNode node, MindMapNode parent) {
+		paste.paste(node, parent);
 	}
 
 
-    /**
-     * @param node
-     * @param prevSelected when new->esc: node be selected
-     * @param firstEvent
-     * @param isNewNode when new->esc: cut the node
-     * @param parentFolded when new->esc: fold prevSelected
-     * @param editLong
-     */
-    private void edit(
-        final NodeView node,
-        final NodeView prevSelected,
-        final KeyEvent firstEvent,
-        final boolean isNewNode,
-        final boolean parentFolded,
-        final boolean editLong) {
-        if (node == null) {
-            return;
-        }
-
-        closeEdit();
-        setBlocked(true); // locally "modal" stated
-
-        String text = node.getModel().toString();
-        if (node.getIsLong() || editLong) {
-            EditNodeDialog nodeEditDialog =
-                new EditNodeDialog(
-                    node,
-                    text,
-                    firstEvent,
-                    this,
-                    new EditNodeBase.EditControl() {
-
-                public void cancel() {
-                }
-
-                public void ok(String newText) {
-					changeNodeText(node.getModel(), newText);
-                }
-
-                public void split(String newText, int position) {
-                    getModel().splitNode(node.getModel(), position, newText);
-                    getController().obtainFocusForSelected(); // focus fix
-                }
-            });
-            ;
-            nodeEditDialog.show();
-            setBlocked(false);
-            return;
-        }
-        // inline editing:
-        EditNodeTextField textfield =
-            new EditNodeTextField(node, text, firstEvent, this, new EditNodeBase.EditControl(){
-
-                public void cancel() {
-                    if (isNewNode) { // delete also the node and set focus to the parent
-                        getView().selectAsTheOnlyOneSelected(node);
-                        getModel().cut();
-                        select(prevSelected);
-                        // include max level for navigation
-                        if (parentFolded) {
-                            getModel().setFolded(prevSelected.getModel(), true);
-                        }
-                    }
-					endEdit();
-                }
-
-                public void ok(String newText) {
-					changeNodeText(node.getModel(), newText);
-					endEdit();
-                }
-
-				private void endEdit() {
-					getController().obtainFocusForSelected();
-					setBlocked(false);
-				}
-
-                public void split(String newText, int position) {
-                }});
-          textfield.show();
-
-    }
-
-	public void changeNodeText(MindMapNode selected, String newText){
-		String oldText = selected.toString();
-
-        try {
-			getActionFactory().startTransaction(getText("edit"));
-            EditNodeAction EditAction = getActionXmlFactory().createEditNodeAction();
-            EditAction.setNode(getNodeID(selected));
-            EditAction.setText(newText);
-            
-            EditNodeAction undoEditAction = getActionXmlFactory().createEditNodeAction();
-            undoEditAction.setNode(getNodeID(selected));
-            undoEditAction.setText(oldText);
-            	
-            getActionFactory().executeAction(new ActionPair(EditAction, undoEditAction));
-			getActionFactory().endTransaction(getText("edit"));
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-		
-	}
-
-    public final int NEW_CHILD_WITHOUT_FOCUS = 1;  // old model of insertion
-    public final int NEW_CHILD = 2;
-    public final int NEW_SIBLING_BEHIND = 3;
-    public final int NEW_SIBLING_BEFORE = 4;
+    public static final int NEW_CHILD_WITHOUT_FOCUS = 1;  // old model of insertion
+    public static final int NEW_CHILD = 2;
+    public static final int NEW_SIBLING_BEHIND = 3;
+    public static final int NEW_SIBLING_BEFORE = 4;
 
     public void addNew(final NodeView target, final int newNodeMode, final KeyEvent e) {
-       closeEdit();
-       
-//       MindMapNode newNode = newNode();
-       final MindMapNode targetNode = target.getModel();
-
-       switch (newNodeMode) {
-         case NEW_SIBLING_BEFORE:
-         case NEW_SIBLING_BEHIND:
-           if (targetNode.isRoot()) {
-             getController().errorMessage(
-                 getText("new_node_as_sibling_not_possible_for_the_root"));
-             setBlocked(false);
-             return; 
-           }
-           MindMapNode parent = targetNode.getParentNode();
-           int childPosition = parent.getChildPosition(targetNode);
-           if (newNodeMode == NEW_SIBLING_BEHIND) {
-              childPosition++;
-           }
-//           if(targetNode.isLeft()!= null) {
-//               newNode.setLeft(targetNode.isLeft().getValue());
-//           }
-           //getModel().insertNodeInto(newNode, parent, childPosition);
-		   MindMapNode newNode = addNewNode(parent, childPosition);	
-           select(newNode.getViewer());
-                getFrame().repaint(); //  getLayeredPane().repaint();
-           edit(newNode.getViewer(), target, e, true, false, false);
-           break;
-  
-         case NEW_CHILD:
-         case NEW_CHILD_WITHOUT_FOCUS:
-           final boolean parentFolded = targetNode.isFolded();
-           if (parentFolded) {
-             getModel().setFolded(targetNode,false);
-           }
-           int position = getFrame().getProperty("placenewbranches").equals("last") ?
-              targetNode.getChildCount() : 0;
-           // Here the NodeView is created for the node. 
-//           getModel().insertNodeInto(newNode, targetNode, position);
-//           getFrame().repaint(); //  getLayeredPane().repaint();
-			MindMapNode  newChildNode = addNewNode(targetNode, position);	
-               if (newNodeMode == NEW_CHILD) {
-                 select(newChildNode.getViewer());
-               }
-              edit(newChildNode.getViewer(), target, e, true, parentFolded, false);
-           break;
-       }
+    	newChild.addNew(target, newNodeMode, e);
     }
 
-	public MindMapNode addNewNode(MindMapNode parent, int index){
-		try {
-			String pos = null;
-			if(parent.isLeft() != null) 
-				pos = parent.isLeft().getValue()?"left":"right";
-			String newId = getModel().getLinkRegistry().generateUniqueID("_");
-			System.out.println("Uniq:"+newId);
-			getActionFactory().startTransaction(getText("new_child"));
-			NewNodeAction newNodeAction = getActionXmlFactory().createNewNodeAction();
-			newNodeAction.setNode(getNodeID(parent));
-			newNodeAction.setPosition(pos);
-			newNodeAction.setIndex(index);
-			newNodeAction.setNewId(newId);
-			// Undo-action
-			DeleteNodeAction deleteAction = getActionXmlFactory().createDeleteNodeAction();
-			deleteAction.setNode(newId);
-			getActionFactory().executeAction(new ActionPair(newNodeAction, deleteAction));
-			getActionFactory().endTransaction(getText("new_child"));
-			return (MindMapNode) parent.getChildAt(index);
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+	public void deleteNode(MindMapNode selectedNode) {
+		//deleteChild.deleteNode(selectedNode);
+		// deregister node:
+		getModel().getLinkRegistry().deregisterLinkTarget(selectedNode);
+		// URGENT: Deletion of hooks, links, etc.
+		getModel().removeNodeFromParent( selectedNode);
 
+	}
 
 //     public void toggleFolded() {
 //         MindMapNode node = getSelected();
@@ -889,8 +785,8 @@ public abstract class ControllerAdapter implements ModeController {
             fold = !state.getValue();
         }
         MindMapNode lastNode = null;
-        for (ListIterator it = getView().getSelectedsByDepth().listIterator();it.hasNext();) {
-            MindMapNode node = ((NodeView)it.next()).getModel();
+        for (ListIterator it = getSelectedsByDepth().listIterator();it.hasNext();) {
+            MindMapNode node = (MindMapNode)it.next();
             // fold the node only if the node is not a leaf (PN 0.6.2)
             if (node.hasChildren() || node.isFolded() || Tools.safeEquals(getFrame().getProperty("enable_leaves_folding"),"true"))   {
                 getModel().setFolded(node, fold);
@@ -1246,7 +1142,7 @@ public abstract class ControllerAdapter implements ModeController {
         return retValue;
     }
 
-    private void select( NodeView node) {
+    public void select( NodeView node) {
         getView().selectAsTheOnlyOneSelected(node);
         getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); // this level is default
     }
@@ -1409,7 +1305,6 @@ public abstract class ControllerAdapter implements ModeController {
 	public String marshall(XmlAction action) {
         try {
             // marshall:
-            JAXBContext jc = JAXBContext.newInstance(ActionFactory.JAXB_CONTEXT);
             //marshal to StringBuffer:
             StringWriter writer = new StringWriter();
             Marshaller m = jc.createMarshaller();
@@ -1426,7 +1321,6 @@ public abstract class ControllerAdapter implements ModeController {
 	public XmlAction unMarshall(String inputString) {
 		try {
 			// unmarshall:
-			JAXBContext jc = JAXBContext.newInstance(ActionFactory.JAXB_CONTEXT);
 			Unmarshaller u = jc.createUnmarshaller();
 			StringBuffer xmlStr = new StringBuffer( inputString);
 			XmlAction doAction = (XmlAction) u.unmarshal( new StreamSource( new StringReader( xmlStr.toString() ) ) );
@@ -1485,6 +1379,7 @@ public abstract class ControllerAdapter implements ModeController {
         protected void undoDoAction(ActionPair pair) throws JAXBException {
             String doActionString = marshall(pair.getDoAction());
             String redoActionString = marshall(pair.getUndoAction());
+			//logger.info("doActionString: "+ doActionString + "\nredoActionString: "+ redoActionString);
             
             UndoXmlAction undoAction = getActionXmlFactory().createUndoXmlAction();
             undoAction.setDescription(redoActionString);
@@ -1514,10 +1409,6 @@ public abstract class ControllerAdapter implements ModeController {
             return UndoXmlAction.class;
         }
 
-        public ActionPair apply(MapAdapter model, MindMapNodeModel selected) throws JAXBException {
-            return null;
-        }
-		
         /* (non-Javadoc)
          * @see javax.swing.Action#setEnabled(boolean)
          */
@@ -1607,7 +1498,7 @@ public abstract class ControllerAdapter implements ModeController {
         }
         public void actionPerformed(ActionEvent e) {
            if (getMapModule() != null) {
-              getView().getModel().cut();
+              cut();
               getController().obtainFocusForSelected(); }}}
 
     protected class NodeUpAction extends AbstractAction {
@@ -1740,26 +1631,6 @@ public abstract class ControllerAdapter implements ModeController {
               if (copy != null) {
                  clipboard.setContents(copy,null); }}}}
 
-    protected class CutAction extends AbstractAction {
-        public CutAction(Object controller) {
-            super(getText("cut"), new ImageIcon(getResource("images/Cut24.gif")));
-            setEnabled(false);
-        }
-        public void actionPerformed(ActionEvent e) {
-           if (getMapModule() != null) {
-              Transferable copy = getView().getModel().cut();
-              if (copy != null) {
-                 clipboard.setContents(copy,null); 
-                 getController().obtainFocusForSelected(); }}}}
-
-    protected class PasteAction extends AbstractAction {
-        public PasteAction(Object controller) {
-            super(getText("paste"),new ImageIcon(getResource("images/Paste24.gif")));
-            setEnabled(false); }
-        public void actionPerformed(ActionEvent e) {
-            if(clipboard != null) {
-               getModel().paste(clipboard.getContents(this), getView().getSelected().getModel()); }}}
-
     protected class FileOpener implements DropTargetListener {
         private boolean isDragAcceptable(DropTargetDragEvent event) {
             // check if there is at least one File Type in the list
@@ -1844,5 +1715,13 @@ public abstract class ControllerAdapter implements ModeController {
     public Color getSelectionColor() {
         return selectionColor;
     }
+
+    /**
+     * @return
+     */
+    public Clipboard getClipboard() {
+        return clipboard;
+    }
+
 
 }

@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.2.1 2004-05-02 20:49:15 christianfoltin Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.2.2 2004-05-09 22:31:16 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -305,5 +305,7 @@ public class EditNodeTextField extends EditNodeBase {
         getFrame().repaint(); //  getLayeredPane().repaint();
         textFieldListener = null;
     }
+    
+
 
 }

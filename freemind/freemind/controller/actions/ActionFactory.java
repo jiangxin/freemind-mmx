@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: ActionFactory.java,v 1.1.2.1 2004-05-02 20:49:14 christianfoltin Exp $*/
+/*$Id: ActionFactory.java,v 1.1.2.2 2004-05-09 22:31:14 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -111,7 +111,7 @@ public class ActionFactory {
 		registeredActors.put(action, actor);		
 	}
 
-	ActorXml getActor(XmlAction action) {
+	public ActorXml getActor(XmlAction action) {
 		for (Iterator i = registeredActors.keySet().iterator(); i.hasNext();) {
 			Class actorClass = (Class) i.next();
 			if(actorClass.isInstance(action)) {

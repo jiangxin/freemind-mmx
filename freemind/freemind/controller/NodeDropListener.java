@@ -98,7 +98,7 @@ public class NodeDropListener implements DropTargetListener {
            if (!dtde.isLocalTransfer()) {
               //if (dtde.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
               //System.err.println("filelist");
-              c.getModel().paste (t, targetNode, 
+              c.getModeController().paste (t, targetNode, 
                                   targetNodeView.dropAsSibling(dtde.getLocation().getX()),
                                   targetNodeView.dropPosition (dtde.getLocation().getX()));
               dtde.dropComplete(true);
@@ -146,12 +146,13 @@ public class NodeDropListener implements DropTargetListener {
            }
            else {
            	  Transferable trans = dropAction == DnDConstants.ACTION_MOVE 
-									? c.getModel().cut() : c.getModel().copy();
+									? c.getModeController().cut() : c.getModel().copy();
 			  c.getView().selectAsTheOnlyOneSelected(targetNodeModel.getViewer()); 			
-              c.getModel().paste (trans,
-                                  targetNode, 
-                                  targetNode.getViewer().dropAsSibling(dtde.getLocation().getX()),
-                                  targetNode.getViewer().dropPosition (dtde.getLocation().getX())); 
+            c.getModeController().paste(
+                trans,
+                targetNode,
+                targetNode.getViewer().dropAsSibling(dtde.getLocation().getX()),
+                targetNode.getViewer().dropPosition(dtde.getLocation().getX()));
               }
            }
 	catch (Exception e) {

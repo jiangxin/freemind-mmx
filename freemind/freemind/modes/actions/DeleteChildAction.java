@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: DeleteChildAction.java,v 1.1.2.1 2004-05-06 05:08:26 christianfoltin Exp $*/
+/*$Id: DeleteChildAction.java,v 1.1.2.2 2004-05-09 22:31:15 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -28,36 +28,41 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
+import javax.xml.bind.JAXBException;
 
+import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.generated.instance.DeleteNodeAction;
+import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ControllerAdapter;
+import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 
 
 public class DeleteChildAction extends AbstractAction implements ActorXml {
-    private final ControllerAdapter modeController;
+    private final ControllerAdapter c;
+    private String text;
     public DeleteChildAction(ControllerAdapter modeController) {
-        super(modeController.getText("delete_child"));
-        this.modeController = modeController;
-		this.modeController.getActionFactory().registerActor(this, getDoActionClass());
+        super(modeController.getText("remove_node"));
+		text = modeController.getText("remove_node");
+        this.c = modeController;
+		this.c.getActionFactory().registerActor(this, getDoActionClass());
     }
 
     public void actionPerformed(ActionEvent e) {
-       this.modeController.addNew(modeController.getView().getSelected(), modeController.NEW_CHILD, null);
+    	c.cut();
+       //this.c.deleteNode(c.getSelected());
     }
     /* (non-Javadoc)
      * @see freemind.controller.actions.ActorXml#act(freemind.controller.actions.generated.instance.XmlAction)
      */
     public void act(XmlAction action) {
 		System.out.println("NewNodeAction");
-		DeleteNodeAction addNodeAction = (DeleteNodeAction) action;
-		NodeAdapter node = this.modeController.getNodeFromID(addNodeAction.getNode());
-		modeController.getModel().getLinkRegistry().deregisterLinkTarget(node);
-		// URGENT: Deletion of hooks, links, etc.
-		modeController.getModel().removeNodeFromParent((MutableTreeNode) node);
-		// deregister node:
+		DeleteNodeAction deleteNodeAction = (DeleteNodeAction) action;
+		NodeAdapter node = this.c.getNodeFromID(deleteNodeAction.getNode());
+		c.select(node.getViewer());
+		c.cut();
     }
     /* (non-Javadoc)
      * @see freemind.controller.actions.ActorXml#getDoActionClass()
@@ -65,4 +70,33 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
     public Class getDoActionClass() {
         return DeleteNodeAction.class;
     }
+    
+	public void deleteNode(MindMapNode selectedNode){
+		try {
+			String newId = c.getNodeID(selectedNode);
+			c.getActionFactory().startTransaction(text);
+			MindMapNode parent = selectedNode.getParentNode();
+			//URGENT: this is wrong: cut node would be the right here.
+            NewNodeAction newNodeAction =
+                c.newChild.getAddNodeAction(
+                    parent,
+                    parent.getChildPosition(selectedNode),
+                    newId);
+			// Undo-action
+			DeleteNodeAction deleteAction = getDeleteNodeAction(newId);
+			c.getActionFactory().executeAction(new ActionPair(deleteAction, newNodeAction));
+			c.getActionFactory().endTransaction(text);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public DeleteNodeAction getDeleteNodeAction(String newId)
+		throws JAXBException {
+		DeleteNodeAction deleteAction = c.getActionXmlFactory().createDeleteNodeAction();
+		deleteAction.setNode(newId);
+		return deleteAction;
+	}
+
+
 }

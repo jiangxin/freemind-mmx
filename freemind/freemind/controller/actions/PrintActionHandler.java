@@ -19,13 +19,11 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: PrintActionHandler.java,v 1.1.2.2 2004-05-06 05:24:11 christianfoltin Exp $*/
+/*$Id: PrintActionHandler.java,v 1.1.2.3 2004-05-09 22:31:14 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import freemind.modes.ModeController;
 
 /**
  * @author foltin
@@ -33,14 +31,21 @@ import javax.xml.bind.Marshaller;
  */
 public class PrintActionHandler implements ActionHandler {
 
-	private static JAXBContext jaxContext;
+
+    private ModeController c;
+
+
+	// Logging: 
+	private static java.util.logging.Logger logger;
 
     /**
 	 * 
 	 */
-	public PrintActionHandler() {
+	public PrintActionHandler(ModeController c) {
 		super();
-		jaxContext = null;
+		this.c = c;
+		if(logger == null)
+			logger = c.getFrame().getLogger(this.getClass().getName());
 	}
 
 	/* (non-Javadoc)
@@ -61,17 +66,8 @@ public class PrintActionHandler implements ActionHandler {
 	 * @see freemind.controller.actions.ActionHandler#executeAction(freemind.controller.actions.ActionPair)
 	 */
 	public void executeAction(ActionPair pair) {
-		try {
-			if(jaxContext == null)
-				jaxContext = JAXBContext.newInstance(ActionFactory.JAXB_CONTEXT);
-			//			marshal to System.out
-			Marshaller m = jaxContext.createMarshaller();
-			m.marshal(pair.getDoAction(), System.out);
-
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String s = c.marshall(pair.getDoAction()) + "\n" + c.marshall(pair.getUndoAction());
+		logger.info(s);
 	}
 
 }

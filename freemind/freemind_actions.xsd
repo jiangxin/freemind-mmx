@@ -3,6 +3,81 @@
 	  <xs:complexType name="xml_action">
 	  </xs:complexType>
 
+	<!-- Compound action.  -->
+	<xs:element name="compound_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="compound_action"/>
+					<xs:element ref="select_node_action"/>
+					<xs:element ref="cut_node_action"/>
+					<xs:element ref="paste_node_action"/>
+					<xs:element ref="bold_node_action"/>
+					<xs:element ref="delete_node_action"/>
+					<xs:element ref="edit_node_action"/>
+					<xs:element ref="new_node_action"/>
+					<xs:element ref="undo_xml_action"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Select action. Selects a node. -->
+	<xs:element name="select_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Node actions. These actions involve exactly one node.-->
+	<xs:element name="transferable_content">
+		<xs:complexType>
+	      <xs:attribute name="Transferable" use="optional" type="xs:string"/>
+	      <xs:attribute name="TransferableAsPlainText" use="optional" type="xs:string"/>
+	      <xs:attribute name="TransferableAsRTF" use="optional" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- cut Action 
+		The node is given in NodeCoordinates (see PasteAction).
+		 -->
+	<xs:element name="cut_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+              <xs:sequence>
+	            <xs:element ref="transferable_content" maxOccurs="1" minOccurs="1"/>				
+              </xs:sequence>
+		      <xs:attribute name="isLeft" use="required" type="xs:boolean"/>
+		      <xs:attribute name="asSibling" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Paste Action 
+		The node is given in NodeCoordinates (see PasteAction).
+		-->
+	<xs:element name="paste_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+              <xs:sequence>
+		        <xs:element ref="transferable_content" maxOccurs="1" minOccurs="1"/>				
+		      </xs:sequence>
+		      <xs:attribute name="isLeft" use="required" type="xs:boolean"/>
+		      <xs:attribute name="asSibling" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
 	<!-- Node actions. These actions involve exactly one node.-->
 	  <xs:complexType name="node_action">
 		<xs:complexContent>

@@ -12,6 +12,7 @@ import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.NodeActorXml;
 import freemind.controller.actions.generated.instance.BoldNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
@@ -20,14 +21,14 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
 
 
 public class BoldAction extends NodeGeneralAction implements NodeActorXml {
-	private final MindMapController modeController;
+	private final ControllerAdapter modeController;
 
 	/**
 	 * @param textID
 	 * @param iconPath
 	 * @param actor
 	 */
-	public BoldAction(MindMapController modeController) {
+	public BoldAction(ControllerAdapter modeController) {
 		super(modeController, "bold", "images/Bold24.gif");
 		this.modeController = modeController;
 		addActor(this);			
