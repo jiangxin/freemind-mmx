@@ -12,6 +12,8 @@ import java.util.TimerTask;
 import java.util.Timer;
 import java.util.Vector;
 
+import javax.swing.SwingUtilities;
+
 /**
  * @author christianfoltin
  *
@@ -60,13 +62,17 @@ public class BlinkingNodeHook extends PermanentNodeHookAdapter {
 		public void run() {
 			if(getController().isBlocked())
 				return;
-			Color col = getNode().getColor();
-			int index = colors.indexOf(col);
-			index++;
-			if(index >= colors.size())
-				index = 0;
-			getNode().setColor((Color) colors.get(index));
-			nodeChanged(getNode());
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					Color col = getNode().getColor();
+					int index = colors.indexOf(col);
+					index++;
+					if (index >= colors.size())
+						index = 0;
+					getNode().setColor((Color) colors.get(index));
+					nodeChanged(getNode());
+				}
+			});
 		}
 	}
 	/* (non-Javadoc)

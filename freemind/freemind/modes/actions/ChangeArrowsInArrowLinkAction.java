@@ -95,6 +95,7 @@ public class ChangeArrowsInArrowLinkAction extends FreemindAction implements
             ((ArrowLinkAdapter) link).setStartArrow(arrowAction.getStartArrow());
             ((ArrowLinkAdapter) link).setEndArrow(arrowAction.getEndArrow());
 	        controller.nodeChanged(link.getSource());
+	        controller.nodeChanged(link.getTarget());
         }
     }
 

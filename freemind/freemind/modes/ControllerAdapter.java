@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.8 2005-01-02 08:37:54 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.9 2005-01-10 07:29:06 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -93,6 +94,7 @@ import freemind.modes.actions.AddArrowLinkAction;
 import freemind.modes.actions.AddLocalLinkAction;
 import freemind.modes.actions.ApplyPatternAction;
 import freemind.modes.actions.BoldAction;
+import freemind.modes.actions.ChangeArrowLinkEndPoints;
 import freemind.modes.actions.ChangeArrowsInArrowLinkAction;
 import freemind.modes.actions.CloudAction;
 import freemind.modes.actions.ColorArrowLinkAction;
@@ -213,7 +215,7 @@ public abstract class ControllerAdapter implements ModeController {
     public JoinNodesAction joinNodes = null;
     public ImportExplorerFavoritesAction importExplorerFavorites = null;
     public ImportFolderStructureAction importFolderStructure = null;
-
+    public ChangeArrowLinkEndPoints changeArrowLinkEndPoints = null;
 
 
 
@@ -318,7 +320,7 @@ public abstract class ControllerAdapter implements ModeController {
 	    joinNodes = new JoinNodesAction(this);
 	    importExplorerFavorites = new ImportExplorerFavoritesAction(this);
 	    importFolderStructure = new ImportFolderStructureAction(this);
-
+	    changeArrowLinkEndPoints = new ChangeArrowLinkEndPoints(this);
 	    
 	    compound = new CompoundActionHandler(this);
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -1013,6 +1015,10 @@ public abstract class ControllerAdapter implements ModeController {
         changeArrowsInArrowLinkAction.changeArrowsOfArrowLink(arrowLink, hasStartArrow, hasEndArrow);
     }
     
+	public void setArrowLinkEndPoints(MindMapArrowLink link, Point startPoint,
+			Point endPoint) {
+		changeArrowLinkEndPoints.setArrowLinkEndPoints(link, startPoint, endPoint);
+	}
     public void setLink(MindMapNode node, String link) {
         setLinkByTextField.setLink(node, link);
     }

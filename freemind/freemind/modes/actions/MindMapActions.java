@@ -7,12 +7,13 @@
 package freemind.modes.actions;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 import freemind.modes.MindIcon;
+import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
 import freemind.modes.StylePattern;
@@ -100,6 +101,11 @@ public interface MindMapActions {
 	public void setArrowLinkColor(
 		MindMapLink arrowLink,
 		Color color);
+	public void setArrowLinkEndPoints(MindMapArrowLink link, Point startPoint, Point endPoint);
+	/** Adds a textual hyperlink to a node (e.g. http:/freemind.sourceforge.net)
+	 * @param node
+	 * @param link
+	 */
 	public void setLink(MindMapNode node, String link);
 //	public void setUnderlined(MindMapNode node);
 //	public void setNormalFont(MindMapNode node);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkAdapter.java,v 1.4.18.3 2004-11-03 21:16:44 christianfoltin Exp $*/
+/*$Id: ArrowLinkAdapter.java,v 1.4.18.4 2005-01-10 07:29:06 christianfoltin Exp $*/
 
 package freemind.modes;
 import freemind.modes.LinkAdapter;
@@ -43,8 +43,8 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements MindMapArr
         endArrow = "Default";
     }
 
-    public Point getStartInclination() { return startInclination; }
-    public Point getEndInclination() { return endInclination; } 
+    public Point getStartInclination() { return new Point(startInclination); }
+    public Point getEndInclination() { return new Point(endInclination); } 
     public String getStartArrow() { return startArrow; } 
     public String getEndArrow() { return endArrow; }
 

@@ -41,6 +41,7 @@
 					<xs:element ref="remove_arrow_link_xml_action"/>
 					<xs:element ref="arrow_link_color_xml_action"/>
 					<xs:element ref="arrow_link_arrow_xml_action"/>
+					<xs:element ref="arrow_link_point_xml_action"/>
 				</xs:choice>
 			</xs:extension>
 		</xs:complexContent>
@@ -222,7 +223,7 @@
 	  </xs:complexType>
 	</xs:element>
 
-	<!-- Arrow Link Arrow Action -->
+	<!-- Arrow Link Arrow Action (denotes whether or not the link has start and end arrow) -->
 	<xs:element name="arrow_link_arrow_xml_action">
 	  <xs:complexType>
 		<xs:complexContent>
@@ -230,6 +231,19 @@
 				<xs:attribute name="id" use="required" type="xs:string"/>
 				<xs:attribute name="end_arrow" use="optional" type="xs:string"/>
 				<xs:attribute name="start_arrow" use="optional" type="xs:string"/>
+			</xs:extension>	
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Arrow Link Point Action -->
+	<xs:element name="arrow_link_point_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="id" use="required" type="xs:string"/>
+				<xs:attribute name="end_point" use="optional" type="xs:string"/>
+				<xs:attribute name="start_point" use="optional" type="xs:string"/>
 			</xs:extension>	
 		</xs:complexContent>
 	  </xs:complexType>

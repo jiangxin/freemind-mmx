@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapMouseMotionListener.java,v 1.7.16.2 2004-10-17 20:22:45 dpolivaev Exp $*/
+/*$Id: MapMouseMotionListener.java,v 1.7.16.3 2005-01-10 07:29:06 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -40,6 +40,10 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
     int originX = -1;
     int originY = -1;
 	MindMapArrowLink draggedLink = null;
+
+	private Point draggedLinkOldStartPoint;
+
+	private Point draggedLinkOldEndPoint;
 
     // |=   oldX >=0 iff we are in the drag
 
@@ -100,6 +104,8 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
         originY = e.getY(); 
 		draggedLink = c.getView().detectCollision(new Point(originX, originY));
 		if(draggedLink != null){
+			draggedLinkOldStartPoint = draggedLink.getStartInclination();
+			draggedLinkOldEndPoint   = draggedLink.getEndInclination();
 			draggedLink.showControlPoints(true);
 			c.getView().repaint();
 		}
@@ -112,6 +118,15 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
        originY = -1;
        if (draggedLink != null){
 		draggedLink.showControlPoints(false);
+		// make action undoable.
+		
+		Point draggedLinkNewStartPoint = draggedLink.getStartInclination();
+		Point draggedLinkNewEndPoint = draggedLink.getEndInclination();
+		//restore old positions.
+		draggedLink.setStartInclination(draggedLinkOldStartPoint);
+		draggedLink.setEndInclination(draggedLinkOldEndPoint);
+		// and change to the new again.
+		c.getModeController().setArrowLinkEndPoints(draggedLink, draggedLinkNewStartPoint, draggedLinkNewEndPoint);
 		c.getView().repaint(); 
 		draggedLink = null;
        }

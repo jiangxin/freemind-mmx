@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapArrowLinkModel.java,v 1.5.18.3 2004-10-28 05:24:54 christianfoltin Exp $*/
+/*$Id: MindMapArrowLinkModel.java,v 1.5.18.4 2005-01-10 07:29:07 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -57,14 +57,16 @@ public class MindMapArrowLinkModel extends ArrowLinkAdapter {
 			distSqToTarget = targetLinkPoint.distanceSq(originX, originY);
 			distSqToSource = sourceLinkPoint.distanceSq(originX, originY);
 		}
-		if(targetNode == null || sourceNode != null && distSqToSource < distSqToTarget * 2.25){
+		if((targetNode == null || sourceNode != null) && distSqToSource < distSqToTarget * 2.25){
 			Point changedInclination = getStartInclination();
             changeInclination(deltaX, deltaY, sourceNode, changedInclination);
+            setStartInclination(changedInclination);
 		}
 
-		if(sourceNode == null || targetNode != null && distSqToTarget < distSqToSource * 2.25){
+		if((sourceNode == null || targetNode != null) && distSqToTarget < distSqToSource * 2.25){
 			Point changedInclination = getEndInclination();
 			changeInclination(deltaX, deltaY, targetNode, changedInclination);
+			setEndInclination(changedInclination);
 		}
         
     }
