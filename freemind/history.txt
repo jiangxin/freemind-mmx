@@ -20,6 +20,9 @@ Changes made in Freemind 0.8.0:
 * Unified JaxB usage
 * Transfer from plugin properties to XML started
 
+* Plugins are configured via XML now.
+* Checked menu items added.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

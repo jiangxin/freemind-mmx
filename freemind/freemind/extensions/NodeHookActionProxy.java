@@ -34,14 +34,7 @@ public class NodeHookActionProxy extends PermanentNodeHookAdapter {
 	}
 
 	PermanentNodeHook createHook() {
-		if(subject == null){
-			subject = (PermanentNodeHook)
-				getController().getFrame().getHookFactory().createNodeHook(
-					getProperties().getProperty("propFile"));
-			subject.setController(getController());
-			subject.setMap(getMap());
-		}
-		return subject;
+		throw new IllegalArgumentException("Method does no longer exist.");
 	}
 
 	/* (non-Javadoc)

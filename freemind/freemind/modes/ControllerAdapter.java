@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.17 2004-07-01 20:13:39 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.18 2004-07-15 19:41:55 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -56,6 +56,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -431,7 +432,17 @@ public abstract class ControllerAdapter implements ModeController {
 	   return item;
 	}
 
-    protected void add(JMenu menu, Action action) {
+	/** @return returns the new JCheckBoxMenuItem.
+	 * @param keystroke can be null, if no keystroke should be assigned. */
+	protected JMenuItem addCheckBox(StructuredMenuHolder holder, String category, Action action, String keystroke) { 
+		JCheckBoxMenuItem item = (JCheckBoxMenuItem) holder.addMenuItem(new JCheckBoxMenuItem(action), category);
+	   if(keystroke != null) {
+		item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
+	   }
+	   return item;
+	}
+
+	protected void add(JMenu menu, Action action) {
        menu.add(action); }
 
     //
@@ -1180,6 +1191,29 @@ public abstract class ControllerAdapter implements ModeController {
 
 
 
+	public NodeHook createNodeHook(String hookName, MindMapNode node,
+			MindMap map) {
+		NodeHook hook = (NodeHook) getFrame().getHookFactory().createNodeHook(hookName);
+		hook.setController(this);
+		hook.setMap(map);
+		if (hook instanceof PermanentNodeHook) {
+			PermanentNodeHook permHook = (PermanentNodeHook) hook;
+			if(getFrame().getHookFactory().getInstanciationMethod(hookName)==
+			    HookFactory.HookInstanciationMethod.Once) {
+				// search for already instanciated hooks of this type:
+				for (Iterator i = node.getActivatedHooks().iterator(); i.hasNext();) {
+					PermanentNodeHook otherHook = (PermanentNodeHook) i.next();
+					if(otherHook.getClass().getName().equals(hook.getClass().getName())) {
+						// there is already one instance. We prevent from instanciating
+						// a second one.
+						return otherHook;
+					}
+				}
+			}
+			node.addHook(permHook);
+		}
+		return hook;
+	}
     protected class OpenAction extends AbstractAction {
         ControllerAdapter mc;
         public OpenAction(ControllerAdapter modeController) {
@@ -1229,9 +1263,7 @@ public abstract class ControllerAdapter implements ModeController {
 		public void actionPerformed(ActionEvent arg0) {
 			HookFactory hookFactory = getFrame().getHookFactory();
 			// two different invocation methods:single or selecteds
-			NodeHook hook = hookFactory.createNodeHook(hookName);
-			hook.setController(controller);
-			hook.setMap(getMap());
+			NodeHook hook = controller.createNodeHook(hookName, getSelected(), getMap()); 
 			hook.invoke(getSelected(), getSelecteds());							
 		} 
   			

@@ -6,8 +6,12 @@
  */
 package freemind.modes.actions;
 
+import javax.swing.Action;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenuItem;
 import javax.xml.bind.JAXBException;
 
+import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.NodeActorXml;
 import freemind.controller.actions.generated.instance.BoldNodeAction;
@@ -16,11 +20,10 @@ import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
 
-public class BoldAction extends NodeGeneralAction implements NodeActorXml {
+public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuItemSelectedListener {
 	private final ControllerAdapter modeController;
 
 	/**
@@ -50,8 +53,8 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml {
 	}
 
 	public ActionPair apply(MapAdapter model, MindMapNodeModel selected) throws JAXBException {
-
-		boolean bold = selected.isBold();
+		// every node is set to the inverse of the focussed node.
+		boolean bold = modeController.getSelected().isBold();
 		return getActionPair(selected, bold);
 	}
 
@@ -76,6 +79,10 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean isSelected(JCheckBoxMenuItem checkItem, Action action) {
+		return modeController.getSelected().isBold();
 	}
 
 

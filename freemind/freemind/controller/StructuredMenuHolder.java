@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.2.5 2004-05-27 07:09:10 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.2.6 2004-07-15 19:41:55 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -31,11 +31,13 @@ import java.util.Vector;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
+import javax.swing.event.MenuEvent;
 
 
 /**
@@ -44,6 +46,9 @@ import javax.swing.JToolBar;
  */
 public class StructuredMenuHolder {
 
+//	 Logging: 
+	//private static java.util.logging.Logger logger = getFrame().getLogger(this.getClass().getName());
+	
 	public static final int ICON_SIZE = 16;
     private String mOutputString;
 	private static Icon blindIcon = new BlindIcon(ICON_SIZE);
@@ -59,7 +64,8 @@ public class StructuredMenuHolder {
 		Vector order = new Vector();
 		menuMap.put(ORDER_NAME, order); 
 	}
-	/**
+   
+    /**
 	 * @param item
 	 * @param category
 	 * @return
@@ -76,7 +82,11 @@ public class StructuredMenuHolder {
 	 */
 	public JMenuItem addMenuItem(JMenuItem item, String category) {
 		StringTokenizer tokens = new StringTokenizer(category, "/");
-		return (JMenuItem) addMenu(item, tokens);
+		StructuredMenuItemHolder holder = new StructuredMenuItemHolder();
+		holder.setAction(item.getAction());
+		holder.setMenuItem(item);
+		addMenu(holder, tokens);
+		return item;
 	}
 
 	/**
@@ -86,7 +96,11 @@ public class StructuredMenuHolder {
 	 */
 	public JMenuItem addAction(Action item, String category) {
 		StringTokenizer tokens = new StringTokenizer(category, "/");
-		return (JMenuItem) addMenu(new JMenuItem(item), tokens);
+		StructuredMenuItemHolder holder = new StructuredMenuItemHolder();
+		holder.setAction(item);
+		holder.setMenuItem(new JMenuItem(item));
+		addMenu(holder, tokens);
+		return holder.getMenuItem();
 	}
 
 	public void addCategory(String category) {
@@ -127,15 +141,15 @@ public class StructuredMenuHolder {
 //	}
 
 	private final class PrintMenuAdder implements MenuAdder {
-        public void addMenuItem(JMenuItem item) {
-        	print("JMenuItem '"+item.getActionCommand()+"'");
+        public void addMenuItem(StructuredMenuItemHolder holder) {
+        	print("JMenuItem '"+holder.getMenuItem().getActionCommand()+"'");
         }
         public void addSeparator() {
         	print("Separator '"+"'");
         }
-        public void addAction(Action action) {
-        	print("Action    '"+action.getValue(Action.NAME)+"'");
-        }
+//        public void addAction(Action action) {
+//        	print("Action    '"+action.getValue(Action.NAME)+"'");
+//        }
         public void addCategory(String category) {
         	print("Category: '"+category+"'");
         }
@@ -187,17 +201,17 @@ public class StructuredMenuHolder {
 		Map myMap = (Map) pair.map.get(pair.token);
     	updateMenus(new MenuAdder() {
 
-            public void addMenuItem(JMenuItem item) {
-            	myItem.add(item);
+            public void addMenuItem(StructuredMenuItemHolder holder) {
+            	myItem.add(holder.getMenuItem());
             }
 
             public void addSeparator() {
 				throw new NoSuchMethodError("addSeparator for JMenuBar");
             }
 
-            public void addAction(Action action) {
-				throw new NoSuchMethodError("addAction for JMenuBar");
-            }
+//            public void addAction(Action action) {
+//				throw new NoSuchMethodError("addAction for JMenuBar");
+//            }
 
             public void addCategory(String category) {
             }}, myMap, new DefaultMenuAdderCreator());
@@ -208,17 +222,17 @@ public class StructuredMenuHolder {
 		Map myMap = (Map) pair.map.get(pair.token);
 		updateMenus(new MenuAdder() {
 
-            public void addMenuItem(JMenuItem item) {
-            	myItem.add(item);
+            public void addMenuItem(StructuredMenuItemHolder holder) {
+            	myItem.add(holder.getMenuItem());
             }
 
             public void addSeparator() {
             	myItem.addSeparator();
             }
 
-            public void addAction(Action action) {
-            	myItem.add(action);
-            }
+//            public void addAction(Action action) {
+//            	myItem.add(action);
+//            }
 
             public void addCategory(String category) {
             }}, myMap, new DefaultMenuAdderCreator());
@@ -232,8 +246,8 @@ public class StructuredMenuHolder {
 		Map myMap = (Map) pair.map.get(pair.token);
 		updateMenus(new MenuAdder() {
 
-			public void addMenuItem(JMenuItem item) {
-				bar.add(item.getAction());
+			public void addMenuItem(StructuredMenuItemHolder holder) {
+				bar.add(holder.getAction());
 			}
 
 			public void addSeparator() {
@@ -241,9 +255,9 @@ public class StructuredMenuHolder {
 				//bar.addSeparator();
 			}
 
-			public void addAction(Action action) {
-				bar.add(action);
-			}
+//			public void addAction(Action action) {
+//				bar.add(action);
+//			}
 
             public void addCategory(String category) {
             }}, myMap, new DefaultMenuAdderCreator());
@@ -252,48 +266,49 @@ public class StructuredMenuHolder {
 
 	
 	private interface MenuAdder {
-		void addMenuItem(JMenuItem item);
+		void addMenuItem(StructuredMenuItemHolder holder);
 		void addSeparator();
-		void addAction(Action action);
+//		void addAction(Action action);
 		void addCategory(String category);
 	}
 	
 	private static class MenuItemAdder implements MenuAdder {
 
-        private JMenu myItem;
+		private JMenu myItem;
 
+		private StructuredMenuListener listener;
 
-        public MenuItemAdder(JMenu myItem) {
+		public MenuItemAdder(JMenu myItem) {
 			this.myItem = myItem;
+			listener = new StructuredMenuListener(myItem);
+			myItem.addMenuListener(listener);
 		}
 
-
-        public void addMenuItem(JMenuItem item) {
-        	if(item.getIcon() == null) {
+		public void addMenuItem(StructuredMenuItemHolder holder) {
+			JMenuItem item = holder.getMenuItem();
+			if (item.getIcon() == null) {
 				item.setIcon(blindIcon);
-        	} else {
+			} else {
 				// align
-        		if(item.getIcon().getIconWidth() < ICON_SIZE) {
-        			item.setIconTextGap(item.getIconTextGap() + (ICON_SIZE - item.getIcon().getIconWidth()));
-        		}
-        	}
-        	myItem.add(item);
-        }
+				if (item.getIcon().getIconWidth() < ICON_SIZE) {
+					item.setIconTextGap(item.getIconTextGap()
+							+ (ICON_SIZE - item.getIcon().getIconWidth()));
+				}
+			}
+			listener.addItem(holder);
+			myItem.add(item);
+		}
 
-        public void addSeparator() {
-        	myItem.addSeparator();
-        }
+		public void addSeparator() {
+			myItem.addSeparator();
+		}
 
-        public void addAction(Action action) {
-        	myItem.add(action);
-        }
+		//        public void addAction(Action action) {
+		//        	myItem.add(action);
+		//        }
 
-
-        /* (non-Javadoc)
-         * @see freemind.controller.StructuredMenuHolder.MenuAdder#addCategory(java.lang.String)
-         */
-        public void addCategory(String category) {
-        } 
+		public void addCategory(String category) {
+		}
 	}
     
     private interface MenuAdderCreator {
@@ -329,18 +344,23 @@ public class StructuredMenuHolder {
 				menuAdder.addSeparator();
 				continue;
 			}
-			if(nextObject instanceof JMenuItem) {
+			if (nextObject instanceof StructuredMenuItemHolder) {
+				StructuredMenuItemHolder holder = (StructuredMenuItemHolder) nextObject;
+				menuAdder.addMenuItem(holder);
+			}/*if(nextObject instanceof JMenuItem) {
 				menuAdder.addMenuItem((JMenuItem) nextObject);
-			}  else if(nextObject instanceof Action){
+			} */ /*else if(nextObject instanceof Action){
 				menuAdder.addAction((Action) nextObject);
-			} else if( nextObject instanceof Map) {
+			} */ else if( nextObject instanceof Map) {
 				menuAdder.addCategory(category);
 				Map nextMap = (Map) nextObject;
 				MenuAdder nextItem ;
 				if(nextMap.containsKey(".")) {
 					// add this item to the current place:
 					JMenu baseObject = (JMenu) nextMap.get(".");
-					menuAdder.addMenuItem(baseObject);
+					StructuredMenuItemHolder holder = new StructuredMenuItemHolder();
+					holder.setMenuItem(baseObject);
+					menuAdder.addMenuItem(holder);
 					nextItem = factory.createAdder(baseObject);
 				} else {
 					nextItem = menuAdder;					
@@ -381,5 +401,42 @@ public class StructuredMenuHolder {
 		}
 		mOutputString += (string)+"\n";
 	}
+
+    private static class StructuredMenuListener implements
+			javax.swing.event.MenuListener {
+    		private Vector menuItemHolder = new Vector();
+		private JMenu item;
+
+		public StructuredMenuListener(JMenu item) {
+			this.item = item;
+		}
+
+		public void menuSelected(MenuEvent arg0) {
+			System.out.println("Selected menu items " + item);
+			for (Iterator i = menuItemHolder.iterator(); i.hasNext();) {
+				StructuredMenuItemHolder holder = (StructuredMenuItemHolder) i.next();
+				if(holder.getEnabledListener() != null) {
+					holder.getMenuItem().setEnabled(holder.getEnabledListener().isEnabled(holder.getMenuItem(), holder.getAction()));
+				}
+				if(holder.getSelectedListener() != null) {
+					if (holder.getMenuItem() instanceof JCheckBoxMenuItem) {
+						JCheckBoxMenuItem checkItem = (JCheckBoxMenuItem) holder.getMenuItem();
+						checkItem.setSelected(holder.getSelectedListener().isSelected(checkItem, holder.getAction()));
+					}
+				}
+			}
+		}
+
+		public void menuDeselected(MenuEvent arg0) {
+		}
+
+		public void menuCanceled(MenuEvent arg0) {
+		}
+
+		public void addItem(StructuredMenuItemHolder holder) {
+			menuItemHolder.add(holder);
+		}
+	}
+
 
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin>
+    <plugin_action documentation="&lt;html&gt;Fixes the layout of the map. &lt;br&gt;Please, apply this action to the root of your map and try to insert some new nodes in different levels.&lt;br&gt; The first level is black, the second blue, etc.&lt;/html&gt;" name="Automatic layout" base="freemind.extensions.NodeHookAdapter" icon_path="accessories/plugins/icons/kcmsystem.png" label="accessories/plugins/AutomaticLayout.properties" class_name="accessories.plugins.AutomaticLayout" instanciation="once">
+        <plugin_mode class_name="freemind.modes.mindmapmode"/>
+        <plugin_menu location="menu_bar/format/nodes/automaticLayout"/>
+    </plugin_action>
+</plugin>
+

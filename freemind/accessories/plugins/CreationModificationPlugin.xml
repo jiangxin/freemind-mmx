@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin>
+    <plugin_action documentation="&lt;html&gt;This is a jython plugin that keeps track of node creation and modification times. The times are currently not saved.&lt;/html&gt;" name="Show modification times" base="freemind.extensions.NodeHookAdapter" icon_path="accessories/plugins/icons/kword.png" label="accessories/plugins/CreationModificationPlugin.properties" class_name="accessories.plugins.CreationModificationPlugin" instanciation="once">
+        <plugin_mode class_name="freemind.modes.mindmapmode"/>
+        <plugin_menu location="menu_bar/format/nodes/CreationModificationPlugin"/>
+    </plugin_action>
+</plugin>
+

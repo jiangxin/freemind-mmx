@@ -176,7 +176,7 @@
   </xs:element>
 
 	<!-- This is used to pass additional information to the plugin. -->
-  <xs:element name="plugin_properties">
+  <xs:element name="plugin_property">
     <xs:complexType>
 	      <xs:attribute name="name" use="required" type="xs:string"/>
 	      <xs:attribute name="value" use="optional" type="xs:string"/>
@@ -185,13 +185,20 @@
 
   <xs:element name="plugin_action">
     <xs:complexType>
-	      <xs:sequence  minOccurs="0" maxOccurs="unbounded">
-	      	<xs:choice maxOccurs="unbounded">					<xs:element ref="plugin_mode"/>
-	      		<xs:element ref="plugin_menu"/><xs:element ref="plugin_properties"/></xs:choice>
+	      <xs:sequence>
+		      <xs:choice  minOccurs="0">
+				<xs:element ref="plugin_mode" minOccurs="0" maxOccurs="unbounded"/>
+			  </xs:choice>
+		      <xs:choice  minOccurs="0">
+				<xs:element ref="plugin_menu" minOccurs="0" maxOccurs="unbounded"/>
+			  </xs:choice>
+		      <xs:choice  minOccurs="0">
+				<xs:element ref="plugin_property" minOccurs="0" maxOccurs="unbounded"/>
+			  </xs:choice>
 	      </xs:sequence>
 	      <!-- The unique label of this action (e.g. the class_name if this is unique.). -->
 	      <xs:attribute name="label" use="required" type="xs:string"/>
-	      <!-- if name is not given, script is used instead. -->
+	      <!-- name is a reference to the language bundle.  -->
 	      <xs:attribute name="name" use="optional" type="xs:string"/>
 	      <!-- The hook base class (e.g. freemind.extensions.ModeControllerHookAdapter). -->
 	      <xs:attribute name="base" use="required" type="xs:string"/>
@@ -202,6 +209,10 @@
 	      <xs:attribute name="icon_path" use="optional" type="xs:string"/>
 	      <!-- Optional key stroke (e.g. alt HOME) -->
 	      <xs:attribute name="key_stroke" use="optional" type="xs:string"/>
+		  <!-- Describe the multiplicity of the plugin (only for PermanentNodeHooks):
+			   once:  can only be associated once to a node.
+			   other or not mentioned: can be associated more than once.  -->
+		  <xs:attribute name="instanciation" type="xs:string" use="optional"/>
     </xs:complexType>
   </xs:element>
 
@@ -220,6 +231,7 @@
 	          <xs:element ref="menu_category"/>
 	          <xs:element ref="menu_submenu"/>
 	          <xs:element ref="menu_action"/>
+	          <xs:element ref="menu_checked_action"/>
 	          <xs:element ref="menu_separator"/>
        </xs:choice>
 	</xs:group>
@@ -264,14 +276,32 @@
   </xs:element>
 
 
-  <xs:element name="menu_action">
-    <xs:complexType>
+    <xs:complexType name="menu_action_base">
 	      <xs:attribute name="field" use="required" type="xs:string"/>
+		  <!-- Denots a reference to the freemind.properties and a keystroke within. -->
 	      <xs:attribute name="key_ref" use="optional" type="xs:string"/>
 	      <!-- if name is not given, field is used instead. -->
 	      <xs:attribute name="name" use="optional" type="xs:string"/>
     </xs:complexType>
+
+  <xs:element name="menu_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="menu_action_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
   </xs:element>
+
+  <xs:element name="menu_checked_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="menu_action_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+  </xs:element>
+
 
   <xs:element name="menu_separator">
     <xs:complexType>

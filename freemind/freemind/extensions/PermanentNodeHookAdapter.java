@@ -45,27 +45,27 @@ public class PermanentNodeHookAdapter
 	 */
 	public void invoke(MindMapNode focussed, List selecteds) {
 		logger.finest("invoke(selecteds) called.");
-		HookFactory hookFactory = getController().getFrame().getHookFactory();
-		for (Iterator it = selecteds.iterator();it.hasNext();) {
-    	   PermanentNodeHook hook = (PermanentNodeHook) hookFactory.createNodeHook(getName());
-    	   hook.setController(getController());
-    	   hook.setMap(getMap());
-		   MindMapNode selected = (MindMapNode)it.next();
-		   selected.addHook(hook);
-		   // call invoke.
-		   selected.invokeHook(hook);
-		   // the focussed receives the focus:
-		   if(selected == focussed) {
-		   	hook.onReceiveFocusHook();
-		   }
-		   // using this method, the map is dirty now. This is important to guarantee, that the hooks are saved.
-		   this.nodeChanged(selected);
+		for (Iterator it = selecteds.iterator(); it.hasNext();) {
+			MindMapNode selected = (MindMapNode) it.next();
+			PermanentNodeHook hook = (PermanentNodeHook) getController()
+					.createNodeHook(getName(), selected, getMap());
+			// call invoke.
+			selected.invokeHook(hook);
+			// the focussed receives the focus:
+			if (selected == focussed) {
+				hook.onReceiveFocusHook();
+			}
+			// using this method, the map is dirty now. This is important to
+			// guarantee, that the hooks are saved.
+			this.nodeChanged(selected);
 		}
 	}
 
 
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see freemind.modes.NodeHook#shutdownMapHook()
 	 */
 	public void shutdownMapHook() {

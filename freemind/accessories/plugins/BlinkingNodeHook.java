@@ -20,7 +20,7 @@ import java.util.Vector;
  * */
 public class BlinkingNodeHook extends PermanentNodeHookAdapter {
 
-	private Timer timer;
+	private Timer timer = null;
 
 	/**
 	 * @param node
@@ -34,9 +34,11 @@ public class BlinkingNodeHook extends PermanentNodeHookAdapter {
 	 */
 	public void invoke(MindMapNode node) {
 		super.invoke(node);
-		timer = new Timer();
-		timer.schedule(new timerColorChanger(), 500, 500);
-		nodeChanged(getNode());
+		if(timer == null) {
+			timer = new Timer();
+			timer.schedule(new timerColorChanger(), 500, 500);
+			nodeChanged(getNode());
+		}
 	}
 
 //  add a new node:

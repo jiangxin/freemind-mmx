@@ -84,8 +84,8 @@
 				<menu_category name="font">
 					<menu_action field="increaseNodeFont" key_ref="keystroke_node_increase_font_size"/>
 					<menu_action field="decreaseNodeFont" key_ref="keystroke_node_decrease_font_size"/>
-					<menu_action field="italic" key_ref="keystroke_node_toggle_italic"/>
-					<menu_action field="bold" key_ref="keystroke_node_toggle_boldface"/>
+					<menu_checked_action field="italic" key_ref="keystroke_node_toggle_italic"/>
+					<menu_checked_action field="bold" key_ref="keystroke_node_toggle_boldface"/>
 					<menu_action field="nodeColor" key_ref="keystroke_node_color"/>
 					<menu_action field="nodeColorBlend" key_ref="keystroke_node_color_blend"/>
 					<menu_action field="nodeBackgroundColor"/>

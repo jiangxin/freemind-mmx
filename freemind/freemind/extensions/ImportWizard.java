@@ -44,7 +44,7 @@ import java.util.zip.ZipEntry;
  */
 public class ImportWizard {
 
-	public static final String lookFor = ".properties";
+	public static final String lookFor = ".xml";
 	/** Stores the list of all classes in the classpath */
 	public static Vector CLASS_LIST = new Vector(500);
 
@@ -227,7 +227,11 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.2.1  2004-03-04 20:26:19  christianfoltin
+ * Revision 1.1.2.2  2004-07-15 19:41:55  christianfoltin
+ * plugins are referred by xml now
+ * menus support check box entries
+ *
+ * Revision 1.1.2.1  2004/03/04 20:26:19  christianfoltin
  * Plugin mechanisms added
  *
  * Revision 1.6  2003/01/18 05:48:41  andyp

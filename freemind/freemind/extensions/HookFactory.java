@@ -16,35 +16,31 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.9 2004-07-01 20:58:28 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.10 2004-07-15 19:41:55 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import freemind.common.JaxbTools;
-import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.Plugin;
-import freemind.controller.actions.generated.instance.PluginAction;
-import freemind.controller.actions.generated.instance.PluginMenu;
-import freemind.controller.actions.generated.instance.PluginMode;
+import freemind.controller.actions.generated.instance.PluginActionType;
+import freemind.controller.actions.generated.instance.PluginMenuType;
+import freemind.controller.actions.generated.instance.PluginModeType;
+import freemind.controller.actions.generated.instance.PluginPropertyType;
 import freemind.main.FreeMindMain;
 
 /**
@@ -54,32 +50,73 @@ import freemind.main.FreeMindMain;
  * @package freemind.modes
  * */
 public class HookFactory {
+	public static class HookInstanciationMethod {
+		private HookInstanciationMethod() {
+		}
+		static final public HookInstanciationMethod Once = new HookInstanciationMethod(); 
+		static final public HookInstanciationMethod Other = new HookInstanciationMethod(); 
+	}
 	private class HookDescriptor {
 		private Properties properties;
-		private String script;
-		public String fileName;
 		public Vector menuPositions;
-		HookDescriptor(String fileName, String script, Properties props, String menuPositionString) {
-			this.fileName = fileName;
-			this.script = script;
-			this.properties = props;
+		private Vector modes;
+		private PluginActionType pluginAction;
+		public HookDescriptor(PluginActionType pluginAction) {
+			this.pluginAction = pluginAction;
+			if (pluginAction.getName() == null) {	
+				pluginAction.setName(pluginAction.getLabel());
+			}
 			menuPositions = new Vector();
-			StringTokenizer to = new StringTokenizer(menuPositionString, ",");
-			while(to.hasMoreTokens()) {
-				String token = to.nextToken();
-				menuPositions.add(token.trim());
+			for (Iterator i = pluginAction.getPluginMenu().iterator(); i.hasNext();) {
+				PluginMenuType menu = (PluginMenuType) i.next();
+				menuPositions.add(menu.getLocation());
+			}
+			properties = new Properties();
+			for (Iterator i = pluginAction.getPluginProperty().iterator(); i.hasNext();) {
+				PluginPropertyType property = (PluginPropertyType) i.next();
+				properties.put(property.getName(), property.getValue());
+			}
+			modes = new Vector();
+			for (Iterator i = pluginAction.getPluginMode().iterator(); i.hasNext();) {
+				PluginModeType mode = (PluginModeType) i.next();
+				modes.add(mode.getClassName());
 			}
 		}
 		public String toString() {
-			return "[HookDescriptor fileName="
-				+ fileName
-				+ ", script="
-				+ script
-				+ ", props="
+			return "[HookDescriptor props="
 				+ properties
 				+ ", menu positions="
 				+ menuPositions
 				+ "]";
+		}
+		public HookInstanciationMethod getInstanciationMethod() {
+			if(pluginAction.getInstanciation() != null) {
+				if(pluginAction.getInstanciation().equalsIgnoreCase("Once")) {
+					return HookInstanciationMethod.Once;
+				}
+			}
+			return HookInstanciationMethod.Other;
+		}
+		public Vector getModes() {
+			return modes;
+		}
+		public String getBaseClass() {
+			return pluginAction.getBase();
+		}
+		public String getName() {
+			return pluginAction.getName();
+		}
+		public String getClassName() {
+			return pluginAction.getClassName();
+		}
+		public String getDocumentation() {
+			return pluginAction.getDocumentation();
+		}
+		public String getIconPath() {
+			return pluginAction.getIconPath();
+		}
+		public String getKeyStroke() {
+			return pluginAction.getKeyStroke();
 		}
 	}
 
@@ -89,6 +126,7 @@ public class HookFactory {
 	private java.util.logging.Logger logger;
 
 	private HashMap pluginInfo;
+	private Vector allPlugins;
 
 	/**
 	 * 
@@ -120,21 +158,23 @@ public class HookFactory {
 	private Vector searchFor(Class baseClass, Class mode) {
 		actualizePlugins();
 		Vector returnValue = new Vector();
-		for (Iterator i = pluginInfo.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Map.Entry) i.next();
-			HookDescriptor descriptor = (HookDescriptor) entry.getValue();
-			String file = (String) entry.getKey();
-			Properties prop = descriptor.properties;
+		for (Iterator i = allPlugins.iterator(); i.hasNext();) {
+			String label = (String) i.next();
+			HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(label);
+			//Properties prop = descriptor.properties;
 			try {
-				if (baseClass
-					.isAssignableFrom(
-						Class.forName(prop.getProperty("base")))) {
-					// the plugin inherits from the baseClass, we carry on to look for the mode
-					if (prop
-						.getProperty("modes")
-						.equals(mode.getPackage().getName())) {
-						// add the class:
-						returnValue.add(file);
+				logger.info("Loading: "+label);
+				if (baseClass.isAssignableFrom(Class.forName(descriptor
+						.getBaseClass()))) {
+					// the plugin inherits from the baseClass, we carry on to
+					// look for the mode
+					for (Iterator j = descriptor.getModes().iterator(); j.hasNext();) {
+						String pmode = (String) j.next();
+						if (pmode.equals(mode.getPackage().getName())) {
+								// add the class:
+								returnValue.add(label);
+						}
+						
 					}
 				}
 			} catch (ClassNotFoundException e) {
@@ -152,99 +192,51 @@ public class HookFactory {
 		ImportWizard.CLASS_LIST.clear();
 		ImportWizard.buildClassList();
 		pluginInfo = new HashMap();
+		allPlugins = new Vector();
 		for (Iterator i = ImportWizard.CLASS_LIST.iterator(); i.hasNext();) {
-			String propFile = (String) i.next();
-			if (propFile.startsWith(pluginPrefix)) {
+			String xmlPluginFile = (String) i.next();
+			if (xmlPluginFile.startsWith(pluginPrefix)) {
 				// make file name:
-				propFile =
-					propFile.replace('.', File.separatorChar)
+				xmlPluginFile =
+					xmlPluginFile.replace('.', File.separatorChar)
 						+ ImportWizard.lookFor;
 				// this is one of our plugins:
-				URL pluginURL = ClassLoader.getSystemResource(propFile);
-
-				//load properties
-				Properties def = new Properties();
+				URL pluginURL = ClassLoader.getSystemResource(xmlPluginFile);
+				// unmarshal xml:
+				Plugin plugin = null;
 				try {
 					InputStream in = pluginURL.openStream();
-					def.load(in);
-					in.close();
-				} catch (IOException e) {
-					// not correct?
-					logger.severe(e.getMessage());
+					Unmarshaller unmarshaller = JaxbTools.getInstance()
+							.createUnmarshaller();
+					logger.info("Reading: "+xmlPluginFile);
+					unmarshaller.setValidating(true);
+					plugin = (Plugin) unmarshaller.unmarshal(in);
+//					for (Iterator j = plugin.getPluginAction().iterator(); j.hasNext();) {
+//						PluginActionType action = (PluginActionType) j.next();
+//						String label = action.getLabel();
+//						label = label.replaceFirst(".class$", "").replaceFirst(".properties$","").replace('.', '/')+".properties";
+//						action.setLabel(label);
+//					}					
+//					Marshaller marshaller = JaxbTools.getInstance().createMarshaller();
+//					FileWriter filew = new FileWriter(new File(xmlPluginFile));
+//					marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, new Boolean(true));
+//					marshaller.marshal(plugin, filew);
+				} catch (Exception e) {
+					// error case
+					logger.severe(e.getLocalizedMessage());
 					e.printStackTrace();
-					def.clear();
+					continue;
 				}
-				if (!def.isEmpty()) {
-					// defs are valid:
-					String file =
-						propFile.substring(
-							0,
-							propFile.lastIndexOf(File.separator) + 1);
-					String script = def.getProperty("script");
-					file += script;
-					// set values of propFile and file into the properties:
-					def.setProperty("file", file);
-					//URGENT: Rename propFile.
-					def.setProperty("propFile", propFile);
-					String menuPos = def.getProperty("menus");
-					if(menuPos == null) {
-						menuPos = "";
-					}
-					getXmlDescription(def);
-					pluginInfo.put(
-						propFile,
-						new HookDescriptor(file, script, def, menuPos));
+				// plugin is loaded.
+				for (Iterator j = plugin.getPluginAction().iterator(); j.hasNext();) {
+					PluginActionType action = (PluginActionType) j.next();
+					pluginInfo.put(action.getLabel(), new HookDescriptor(action));
+					allPlugins.add(action.getLabel());
 				}
 			}
 		}
 	}
 
-	/**
-     * @param def
-     */
-    private void getXmlDescription(Properties def) {
-		try {
-			ObjectFactory factory = JaxbTools.getInstance().getObjectFactory();
-            Plugin plugin = factory.createPlugin();
-            PluginAction action = factory.createPluginAction();
-			action.setBase(def.getProperty("base"));
-			action.setClassName("accessories.plugins." + 
-				def.getProperty("script").replaceAll("\\.class$", ""));
-			action.setLabel(action.getClassName()); 
-			action.setDocumentation(def.getProperty("documentation"));
-			action.setIconPath(def.getProperty("icon"));
-			action.setName(def.getProperty("name"));
-			action.setKeyStroke(def.getProperty("keystroke"));
-
-			PluginMode mode = factory.createPluginMode();
-			mode.setClassName("freemind.modes.mindmapmode");
-			action.getPluginModeOrPluginMenuOrPluginProperties().add(mode);
-
-			StringTokenizer to = new StringTokenizer(def.getProperty("menus"), ",");
-			while(to.hasMoreTokens()) {
-				String token = to.nextToken();
-				PluginMenu menu = factory.createPluginMenu();
-				menu.setLocation(token.trim());
-				action.getPluginModeOrPluginMenuOrPluginProperties().add(menu);
-			}
-            plugin.getPluginAction().add(action);
-			//marshal to StringBuffer:
-//			StringWriter writer = new StringWriter();
-			FileWriter fwriter = new FileWriter(def.getProperty("script").replaceAll("\\.class$", "")+".xml");
-			Marshaller m = JaxbTools.getInstance().createMarshaller();
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, new Boolean(true));
-			m.marshal(plugin, fwriter);
-//			String result = writer.toString();
-//			logger.info(result) ;           
-        } catch (JAXBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
 
     public ModeControllerHook createModeControllerHook(String hookName) {
 		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
@@ -255,14 +247,7 @@ public class HookFactory {
 		String hookName,
 		HookDescriptor descriptor) {
 		try {
-			logger.finest("Excecuting java class: " + descriptor.fileName);
-			String className =
-				descriptor.fileName.replace(File.separatorChar, '.');
-			className = className.substring(0, className.length() - 6
-			/*length of .class */
-			);
-			logger.finest("Excecuting java class: " + className);
-			Class hookClass = Class.forName(className);
+			Class hookClass = Class.forName(descriptor.getClassName());
 			Constructor hookConstructor =
 				hookClass.getConstructor(new Class[] {
 			});
@@ -273,11 +258,14 @@ public class HookFactory {
 			return hook;
 		} catch (Exception e) {
 			logger.severe(
-				"Error occurred loading hook: " + descriptor.fileName);
+				"Error occurred loading hook: " + descriptor.getClassName());
 			return null;
 		}
 	}
 
+	/** 
+	 * Do not call this method directly. Call ModeController.createNodeHook instead.
+	 * */
 	public NodeHook createNodeHook(
 		String hookName) {
         logger.finest("CreateNodeHook: " + hookName);
@@ -318,35 +306,50 @@ public class HookFactory {
 		if(descriptor == null){
 			throw new IllegalArgumentException("The hook "+hookName + " is not defined.");
 		}
-		String name = descriptor.properties.getProperty("name");
+		String name = descriptor.getName();
 		if(name != null){
 			action.putValue(AbstractAction.NAME, name);		
 		} else {
-			action.putValue(AbstractAction.NAME, descriptor.script);		
+			action.putValue(AbstractAction.NAME, descriptor.getClassName());		
 		}
-		String docu = descriptor.properties.getProperty("documentation");
+		String docu = descriptor.getDocumentation();
 		if(docu != null)
 			action.putValue(AbstractAction.SHORT_DESCRIPTION, docu);
-		String icon = descriptor.properties.getProperty("icon");
+		String icon = descriptor.getIconPath();
 		if(icon != null) {
 			ImageIcon imageIcon = new ImageIcon(frame.getResource(icon)); 
 			action.putValue(AbstractAction.SMALL_ICON, imageIcon);
 		}
-		String key = descriptor.properties.getProperty("keystroke");
+		String key = descriptor.getKeyStroke();
 		if(key != null)
 			action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(key));
 
 	}
 
     /**
-     * @return
+     * @return returns a list of menu position strings for the StructuredMenuHolder.
      */
     public List getHookMenuPositions(String hookName) {
 		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
 		return descriptor.menuPositions;
-//    	Vector ret = new Vector();
-//    	ret.add("menu_bar/file/export/"+descriptor.script);
-//        return ret;
     }
+
+    /** This method takes into account, that there are on off hooks that need 
+     *  a special treatment for their menues like adjusting the checkbox.
+     * @param hookAction
+     * @return returns a new JMenuItem for the given hookAction.
+     */
+    public JMenuItem getHookMenuItem(String hookName, AbstractAction hookAction) {
+    		return new JMenuItem(hookAction);
+    }
+    
+	/**
+	 * @param permHook
+	 * @return
+	 */
+	public HookInstanciationMethod getInstanciationMethod(String hookName) {
+		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
+		return descriptor.getInstanciationMethod();
+	}
 
 }

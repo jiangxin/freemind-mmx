@@ -33,29 +33,6 @@ public class RevisionPlugin extends PermanentNodeHookAdapter implements ActionHa
 		super();
 	}
 
-//	/* (non-Javadoc)
-//	 * @see freemind.extensions.PermanentNodeHook#loadFrom(freemind.main.XMLElement)
-//	 */
-//	public void loadFrom(XMLElement child) {
-//		super.loadFrom(child);
-//		XMLElement paramChild = (XMLElement) child.getChildren().get(0);
-//		if(paramChild != null) {
-//			Object obj = paramChild.getAttribute("color", null);
-//			String str = (String) obj;
-//			color = Tools.xmlToColor(str);
-//		}
-//	}
-//
-//	/* (non-Javadoc)
-//	 * @see freemind.extensions.PermanentNodeHook#save(freemind.main.XMLElement)
-//	 */
-//	public void save(XMLElement xml) {
-//		super.save(xml);
-//		XMLElement child = new XMLElement();
-//		child.setName("Parameters");
-//		child.setAttribute("color", Tools.colorToXml(color));
-//		xml.addChild(child);
-//	}
 
 	/* (non-Javadoc)
 	 * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode)

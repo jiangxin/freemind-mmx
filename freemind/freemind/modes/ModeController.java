@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.10 2004-05-23 14:33:20 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.11 2004-07-15 19:41:55 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -36,6 +36,7 @@ import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.ActionFactory;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.ModeControllerHook;
+import freemind.extensions.NodeHook;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
 import freemind.modes.actions.*;
@@ -92,6 +93,13 @@ public interface ModeController extends MindMapActions {
 	String getNodeID(MindMapNode selected);
 
 	//hooks, fc 28.2.2004:
+	/** 
+	 * This is the only way to instanciate new Hooks. THEY HAVE TO BE INVOKED AFTERWARDS!
+	 * If the hook policy specifies, that only one instance may exist per node,
+	 * it returns this instance if it already exists.
+	 * @param map may be null if not known. But it has to be set afterwards!
+	 * */
+	NodeHook createNodeHook(String hookName, MindMapNode node, MindMap map);
 	void invokeHook(ModeControllerHook hook);
 	void invokeHooksRecursively(NodeAdapter node, MindMap map);
 	//end hooks

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin>
+    <plugin_action documentation="This is a simple Java class that tests the map hook possibilites" name="Zoom to fit to page" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/FitToPage.properties" class_name="accessories.plugins.FitToPage">
+        <plugin_mode class_name="freemind.modes.mindmapmode"/>
+        <plugin_menu location="menu_bar/view/zoom/FitToPage"/>
+    </plugin_action>
+</plugin>
+

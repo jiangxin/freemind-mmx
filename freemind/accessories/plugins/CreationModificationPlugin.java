@@ -64,12 +64,7 @@ public class CreationModificationPlugin extends PermanentNodeHookAdapter {
 	 */
 	public void onAddChild(MindMapNode child) {
 		super.onAddChild(child);
-		if(child.getHooks().size() > 0)
-			return;
-		PermanentNodeHook hook = (PermanentNodeHook) getController().getFrame().getHookFactory().createNodeHook(getName());
-		hook.setController(getController());
-		hook.setMap(getMap());
-		child.addHook(hook);
+		PermanentNodeHook hook = (PermanentNodeHook) getController().createNodeHook(getName(), child, getMap());
 		child.invokeHook(hook);
 	}
 

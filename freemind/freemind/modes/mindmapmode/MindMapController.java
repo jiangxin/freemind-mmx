@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.16 2004-07-01 20:13:40 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.17 2004-07-15 19:41:55 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -57,8 +57,10 @@ import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.MenuAction;
+import freemind.controller.actions.generated.instance.MenuActionBase;
 import freemind.controller.actions.generated.instance.MenuCategory;
 import freemind.controller.actions.generated.instance.MenuCategoryBase;
+import freemind.controller.actions.generated.instance.MenuCheckedAction;
 import freemind.controller.actions.generated.instance.MenuSeparator;
 import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
@@ -85,10 +87,9 @@ import freemind.modes.actions.SingleNodeOperation;
 public class MindMapController extends ControllerAdapter {
 
 	private static Logger logger;
-
-	public Vector nodeHookActions;
-	public Vector modeControllerHookActions;
-	private HashMap actionToMenuPositionMap;
+	private Vector hookActions;
+	/** Stores the menu items belonging to the given action. */
+	private HashMap actionToMenuPositions;
 	//    Mode mode;
     private MindMapPopupMenu popupmenu;
     //private JToolBar toolbar;
@@ -277,27 +278,20 @@ public class MindMapController extends ControllerAdapter {
 	 * 
 	 */
 	private void createNodeHookActions() {
-		actionToMenuPositionMap = new HashMap();
-        if (nodeHookActions == null) {
-            nodeHookActions = new Vector();
+		actionToMenuPositions = new HashMap();
+        if (hookActions == null) {
+            hookActions = new Vector();
             // HOOK TEST
             HookFactory factory = getFrame().getHookFactory();
             List list = factory.getPossibleNodeHooks(this.getClass());
             for (Iterator i = list.iterator(); i.hasNext();) {
                 String desc = (String) i.next();
                 // create hook action. 
-                //URGENT: According to its properties!!
                 NodeHookAction action = new NodeHookAction(desc, this);
                 factory.decorateAction(desc, action);
-                actionToMenuPositionMap.put(action, factory.getHookMenuPositions(desc));
-                nodeHookActions.add(action);
+                actionToMenuPositions.put(action, factory.getHookMenuPositions(desc));
+                hookActions.add(action);
             }
-        }
-        // HOOK TEST END
-        if (modeControllerHookActions == null) {
-            modeControllerHookActions = new Vector();
-            //HOOK TEST
-            HookFactory factory = getFrame().getHookFactory();
             List hooks =
                 factory.getPossibleModeControllerHooks(this.getClass());
             for (Iterator i = hooks.iterator(); i.hasNext();) {
@@ -305,8 +299,8 @@ public class MindMapController extends ControllerAdapter {
                 ModeControllerHookAction action =
                     new ModeControllerHookAction(desc, this);
                 factory.decorateAction(desc, action);
-				actionToMenuPositionMap.put(action, factory.getHookMenuPositions(desc));
-                modeControllerHookActions.add(action);
+			   actionToMenuPositions.put(action, factory.getHookMenuPositions(desc));
+                hookActions.add(action);
             }
             //HOOK TEST END       
 	    }
@@ -357,28 +351,13 @@ public class MindMapController extends ControllerAdapter {
 		processMenuCategory(holder, mMenuStructure.getMenuCategory(), ""); /*MenuBar.MENU_BAR_PREFIX*/
 		// add hook actions to this holder.
 		// hooks, fc, 1.3.2004:
-		for (int i = 0; i < modeControllerHookActions.size(); ++i) {
-			Action hookAction = (Action) modeControllerHookActions.get(i);
-			List positions = (List) actionToMenuPositionMap.get(hookAction);
+		for (int i = 0; i < hookActions.size(); ++i) {
+			Action hookAction = (Action) hookActions.get(i);
+			List positions = (List) actionToMenuPositions.get(hookAction);
 			for (Iterator j = positions.iterator(); j.hasNext();) {
-                String pos = (String) j.next();		
+                String pos = (String) j.next();
                 holder.addAction(hookAction, pos);
             }
-//			holder.addAction(
-//				hookAction,
-//				MenuBar.FILE_MENU
-//					+ "export/"
-//					+ (hookAction).getValue(Action.NAME));
-		}
-		// hooks, fc, 1.3.2004:
-		for (int i = 0; i < nodeHookActions.size(); ++i) {
-			Action action = (Action) nodeHookActions.get(i);
-			List positions = (List) actionToMenuPositionMap.get(action);
-			for (Iterator j = positions.iterator(); j.hasNext();) {
-				String pos = (String) j.next();		
-				holder.addAction(action, pos);
-			}
-			//add(holder, MenuBar.EDIT_MENU+"/plugins/"+action.getValue(Action.NAME), action, null);
 		}
 		// update popup and toolbar:
 		popupmenu.update(holder);
@@ -447,8 +426,8 @@ public class MindMapController extends ControllerAdapter {
                 	holder.addMenu(new JMenu(getText(submenu.getNameRef())), newCategory+"/.");
                 }
             	processMenuCategory(holder, cat.getMenuCategoryOrMenuSubmenuOrMenuAction(), newCategory);
-            } else if( obj instanceof MenuAction ) {
-				MenuAction action = (MenuAction) obj;            	
+            } else if( obj instanceof MenuActionBase ) {
+				MenuActionBase action = (MenuActionBase) obj;            	
 				String field = action.getField();
 				String name = action.getName();
 				if(name == null) {
@@ -457,7 +436,12 @@ public class MindMapController extends ControllerAdapter {
 				String keystroke = action.getKeyRef();
 				try {
 					Action theAction = (Action) this.getClass().getField(field).get(this);
-                    add(holder, categoryCopy+"/"+name, theAction, keystroke);
+					String theCategory = categoryCopy+"/"+name;
+					if (obj instanceof MenuCheckedAction) {
+						addCheckBox(holder, theCategory, theAction, keystroke);
+					} else {
+						add(holder, theCategory, theAction, keystroke);
+					}
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -571,9 +555,6 @@ public class MindMapController extends ControllerAdapter {
         for (int i=0; i<iconActions.size(); ++i) {          
             ((Action) iconActions.get(i)).setEnabled(enabled);
         }
-		for (int i=0; i<nodeHookActions.size(); ++i) {          
-			((Action) nodeHookActions.get(i)).setEnabled(enabled);
-		}
         for (int i=0; i<edgeWidths.length; ++i) { 
             edgeWidths[i].setEnabled(enabled);
         }
@@ -594,10 +575,9 @@ public class MindMapController extends ControllerAdapter {
         importLinkedBranch.setEnabled(enabled);
         importLinkedBranchWithoutRoot.setEnabled(enabled);
         // hooks:
-        for(Iterator i=modeControllerHookActions.iterator(); i.hasNext();) {
-            ModeControllerHookAction action = (ModeControllerHookAction) i.next();
-            action.setEnabled(enabled);
-        }
+		for (int i=0; i<hookActions.size(); ++i) {          
+			((Action) hookActions.get(i)).setEnabled(enabled);
+		}
     }
 
 
