@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.16 2003-11-03 11:00:12 sviles Exp $*/
+/*$Id: NodeAdapter.java,v 1.17 2003-11-09 22:09:26 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -46,6 +46,13 @@ public abstract class NodeAdapter implements MindMapNode {
     protected String style;
     /**stores the icons associated with this node.*/
     protected Vector/*<MindIcon>*/ icons = new Vector();
+    /**stores the label associated with this node:*/
+    protected String mLabel;
+    /** parameters of an eventually associated cloud*/
+    protected MindMapCloud cloud;
+
+    /**stores all node references associated with this node: */
+    protected Vector mNodeLinkVector  = new Vector();
     protected Color color;
     protected boolean folded;
 
@@ -121,6 +128,14 @@ public abstract class NodeAdapter implements MindMapNode {
 
     public void setEdge( MindMapEdge edge ) {
 	this.edge = edge;
+    }
+
+    public MindMapCloud getCloud() {
+        return cloud;
+    }
+
+    public void setCloud( MindMapCloud cloud ) {
+        this.cloud = cloud;
     }
 
     /**A Node-Style like MindMapNode.STYLE_FORK or MindMapNode.STYLE_BUBBLE*/
@@ -236,6 +251,22 @@ public abstract class NodeAdapter implements MindMapNode {
     public int   removeLastIcon() { if(icons.size() > 0) icons.setSize(icons.size()-1); return icons.size();};
 
     // end, fc, 24.9.2003
+
+    public     String getLabel() { return mLabel; }
+
+    public     void setLabel(String newLabel) { mLabel = newLabel; /* bad hack: registry fragen.*/ };
+
+    public Vector/* of NodeLinkStruct*/ getReferences() { return mNodeLinkVector; };
+
+    public void removeReferenceAt(int i) {
+        if(mNodeLinkVector.size() > i) {
+            mNodeLinkVector.removeElementAt(i);
+        } else {
+            /* exception. */
+        }
+    }
+    
+    public     void addReference(MindMapLink mindMapLink) { mNodeLinkVector.add(mindMapLink); };
 
 
     /**

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.12 2003-11-03 11:00:12 sviles Exp $*/
+/*$Id: ModeController.java,v 1.13 2003-11-09 22:09:26 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -54,6 +54,8 @@ public interface ModeController {
 
     public JPopupMenu getPopupMenu();
     public void showPopupMenu(MouseEvent e);
+    /** This returns a context menu for an object placed in the background pane.*/
+    public JPopupMenu getPopupForModel(java.lang.Object obj);
 
     public void nodeChanged(MindMapNode n);
     public void anotherNodeSelected(MindMapNode n);

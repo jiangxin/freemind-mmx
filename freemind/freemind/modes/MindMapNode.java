@@ -16,15 +16,22 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.12 2003-11-03 11:00:12 sviles Exp $*/
+/*$Id: MindMapNode.java,v 1.13 2003-11-09 22:09:26 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import freemind.modes.MindIcon;
 import freemind.view.mindmapview.NodeView;
+// clouds, fc, 08.11.2003:
+import freemind.modes.MindMapCloud;
+// end clouds.
+// links, fc, 08.11.2003:
+import freemind.modes.MindMapLink;
+// end links.
 import java.util.ListIterator;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Point;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.util.Vector;
@@ -102,12 +109,22 @@ public interface MindMapNode extends MutableTreeNode {
     int   removeLastIcon();
     // end, fc, 24.9.2003
 
-// (PN)
-//    /**
-//     * Returns the number of childer, whether the node is folded or not. The
-//     * method getChildCount() returns 0, if the node is folded.
-//     */
-//    int getChildCount();
+    //fc, 01.11.2003:
+    /** \@return returns the label of the node, if applicable. otherwise null.*/
+    String getLabel();
 
+    void setLabel(String newLabel); 
+
+    Vector/* of MindMapLink s*/ getReferences();
+    
+    void removeReferenceAt(int i);
+
+    void addReference(MindMapLink referenceStruct);
+    // end links, fc, 01.11.2003.
+
+    // clouds, fc, 08.11.2003:
+    MindMapCloud getCloud();
+    // end clouds.
+        
     MindMapNode shallowCopy();
 }

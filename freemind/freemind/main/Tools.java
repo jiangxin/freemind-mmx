@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.15 2003-11-03 11:00:10 sviles Exp $*/
+/*$Id: Tools.java,v 1.16 2003-11-09 22:09:25 christianfoltin Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.*;
 import java.net.URL;
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.GraphicsEnvironment;
 import java.lang.Thread;
 
@@ -61,6 +62,34 @@ public class Tools {
 	int green = Integer.parseInt(string.substring(3,5),16);
 	int blue = Integer.parseInt(string.substring(5,7),16);
 	return new Color(red,green,blue);
+    }
+
+    public static String PointToXml(Point col) {
+        if (col == null) throw new IllegalArgumentException("Point was null");
+        Vector l = new Vector();
+        l.add(Integer.toString(col.x));
+        l.add(Integer.toString(col.y));
+        return listToString((List) l);
+    }
+
+    public static Point xmlToPoint(String string) {
+        List l = stringToList(string);
+        ListIterator it = l.listIterator(0);
+        if(l.size() != 2)
+            throw new IllegalArgumentException("A point must consist of two numbers (and not: '"+ string+"').");
+        int x = Integer.parseInt((String) it.next());
+        int y = Integer.parseInt((String) it.next());
+        return new Point(x,y);
+    }
+
+    public static String BooleanToXml(boolean col) {
+        return (col)?"true":"false";
+    }
+
+    public static boolean xmlToBoolean(String string) {
+        if(string.equals("true"))
+            return true;
+        return false;
     }
 
     /**

@@ -32,6 +32,7 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.util.ListIterator;
+import javax.swing.JOptionPane;
 
 //import ublic class MindMapNodesSelection implements Transferable, ClipboardOwner {
    //   public static DataFlavor fileListFlavor = null;
@@ -122,11 +123,26 @@ public class NodeDropListener implements DropTargetListener {
               
               //MindMapNode selectedNode = c.getView().getSelected().getModel();
               MindMapMapModel mindMapMapModel = (MindMapMapModel)c.getModel();
-                 
-              for(ListIterator it = c.getView().getSelecteds().listIterator();it.hasNext();) {
-                 MindMapNodeModel selectedNodeModel = (MindMapNodeModel)((NodeView)it.next()).getModel();
-                 mindMapMapModel.setNodeColor(selectedNodeModel,targetNode.getColor());
-                 mindMapMapModel.setNodeFont(selectedNodeModel,targetNode.getFont()); }}
+              
+              // link feature continues here. fc, 01.11.2003:
+              // if there are more than 4 nodes, then ask the user:
+              int yesorno = JOptionPane.YES_OPTION;
+              if(c.getView().getSelecteds().size() >= 5)
+                  {
+                      yesorno = JOptionPane.showConfirmDialog(c.getFrame().getContentPane(),
+                                                              c.getResourceString("lots_of_links_warning"),
+                                                              Integer.toString(c.getView().getSelecteds().size())+" links to the same node",
+                                                              JOptionPane.YES_NO_OPTION);
+                  }
+              if(yesorno == JOptionPane.YES_OPTION) {
+                  for(ListIterator it = c.getView().getSelecteds().listIterator();it.hasNext();) {
+                      MindMapNodeModel selectedNodeModel = (MindMapNodeModel)((NodeView)it.next()).getModel();
+                      //                  mindMapMapModel.setNodeColor(selectedNodeModel,targetNode.getColor());
+                      //                  mindMapMapModel.setNodeFont(selectedNodeModel,targetNode.getFont()); 
+                      mindMapMapModel.addLink(selectedNodeModel, targetNodeModel);
+                  }
+              }
+           }
            else {
               c.getModel().paste (dropAction == DnDConstants.ACTION_MOVE 
                                   ? c.getModel().cut() : c.getModel().copy(),

@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.23 2003-11-03 11:00:20 sviles Exp $*/
+/*$Id: MindMapMapModel.java,v 1.24 2003-11-09 22:09:26 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -28,6 +28,9 @@ import freemind.main.Tools;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.MindIcon;
+import freemind.modes.MindMapLink;
+import freemind.modes.mindmapmode.MindMapCloudModel;
+import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -48,6 +51,9 @@ import java.net.MalformedURLException;
 
 import javax.swing.JOptionPane;
 import java.nio.channels.FileLock;
+
+//temporary for unique labels:
+import java.util.Random;
 
 public class MindMapMapModel extends MapAdapter {
 
@@ -119,6 +125,38 @@ public class MindMapMapModel extends MapAdapter {
         node.setBold(!node.isBold());
         nodeChanged(node); }
 
+    public void setCloud(MindMapNodeModel node) {
+        if(node.getCloud() == null) {
+            node.setCloud(new MindMapCloudModel(node, getFrame()));
+        } else {
+            node.setCloud(null);
+        }
+        nodeChanged(node); 
+    }
+
+    public void setCloudColor(MindMapNodeModel node, Color color) {
+        if(node.getCloud() == null) {
+            setCloud(node);
+        }
+        ((MindMapCloudModel)node.getCloud()).setColor(color);
+        nodeChanged(node); }
+
+    public void setCloudWidth(MindMapNodeModel node, int width) {
+        if(node.getCloud() == null) {
+            setCloud(node);
+        }
+        ((MindMapCloudModel)node.getCloud()).setWidth(width);
+        nodeChanged(node); }
+
+    public void setCloudStyle(MindMapNodeModel node, String style) {
+        if(node.getCloud() == null) {
+            setCloud(node);
+        }
+        MindMapCloudModel cloud = (MindMapCloudModel)node.getCloud();
+        cloud.setStyle(style);
+        nodeStructureChanged(node); }
+
+
     public void addIcon(MindMapNodeModel node, MindIcon icon) {
         node.addIcon(icon);
         nodeChanged(node); }
@@ -127,6 +165,39 @@ public class MindMapMapModel extends MapAdapter {
         int retval = node.removeLastIcon();
         nodeChanged(node); 
         return retval;
+    }
+
+    public void addLink(MindMapNodeModel source, MindMapNodeModel target) {
+        if(target.getLabel() == null) {
+            // call registry to give new label
+            // bad hack:
+            Random ran = new Random();
+            target.setLabel(Integer.toString(ran.nextInt(2000000000)));
+        }
+        MindMapArrowLinkModel linkModel = new MindMapArrowLinkModel(source, getFrame());
+        linkModel.setDestinationLabel(target.getLabel());
+        source.addReference((MindMapLink) linkModel);
+        nodeChanged(source); }
+
+    public void removeReference(MindMapNode source, MindMapArrowLinkModel arrowLink) {
+            Vector mapLinks = source.getReferences();
+            for(int i = 0; i < mapLinks.size(); ++i)
+                if(mapLinks.get(i) == arrowLink) {
+                    source.removeReferenceAt(i);
+                    nodeChanged(source);
+                    return;
+                }
+    }
+
+    public void changeArrowsOfArrowLink(MindMapNode source, MindMapArrowLinkModel arrowLink, boolean hasStartArrow, boolean hasEndArrow) {
+        arrowLink.setStartArrow(hasStartArrow);
+        arrowLink.setEndArrow(hasEndArrow);
+        nodeChanged(source);
+    }
+
+    public void setArrowLinkColor(MindMapNode source, MindMapArrowLinkModel arrowLink, Color color) {
+        arrowLink.setColor(color);
+        nodeChanged(source); 
     }
 
     public void setItalic(MindMapNodeModel node) {
@@ -516,6 +587,7 @@ public class MindMapMapModel extends MapAdapter {
            mapElement.parseFromReader(new BufferedReader(new FileReader(file))); }
         catch (Exception ex) {
            System.err.println("Error while parsing file:"+ex);
+           ex.printStackTrace();
            return null; }
         return mapElement.getMapChild(); }
 

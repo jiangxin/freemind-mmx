@@ -16,20 +16,20 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapEdge.java,v 1.8 2003-11-03 11:00:12 sviles Exp $*/
+/*$Id: MindMapEdge.java,v 1.9 2003-11-09 22:09:26 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import freemind.modes.MindMapNode;
+import freemind.modes.MindMapLine;
 import java.awt.Color;
 import java.awt.Stroke;
 
-public interface MindMapEdge {
+public interface MindMapEdge extends MindMapLine {
 
-    public Color getColor();
-    public String getStyle();
-    public Stroke getStroke();
-    public int getWidth();
-    public String toString();
-    public void setTarget(MindMapNode node);
+//     public Color getColor();
+//     public String getStyle();
+//     public Stroke getStroke();
+//     public int getWidth();
+//     public String toString();
+//     public void setTarget(MindMapNode node);
 }

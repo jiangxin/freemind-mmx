@@ -16,15 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMode.java,v 1.6 2003-11-03 11:00:13 sviles Exp $*/
+/*$Id: BrowseMode.java,v 1.7 2003-11-09 22:09:26 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
+import freemind.main.FreeMindApplet;
 import freemind.controller.Controller;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import javax.swing.JMenu;
 import javax.swing.JToolBar;
+import java.net.URL;
 
 public class BrowseMode implements Mode {
 
@@ -36,12 +38,12 @@ public class BrowseMode implements Mode {
     }
 
     public void init(Controller c) {
-	this.c = c;
-	modecontroller = new BrowseController(this);
+        this.c = c;
+        modecontroller = new BrowseController(this);
     }
 
     public String toString() {
-	return MODENAME;
+        return MODENAME;
     }
 
     /**
@@ -49,47 +51,57 @@ public class BrowseMode implements Mode {
      * (updates Actions etc.)
      */
     public void activate() {
-	//	getController().changeToMapOfMode(this);
-	String map = getController().getFrame().getProperty("browsemode_initial_map");
 
-	if (map != null && map.startsWith("."))  {
-	    map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
-	}
-
-	if (map != "") {
-	    ((BrowseController)getModeController()).loadURL(map);
-	}
+        String map = getController().getFrame().getProperty("browsemode_initial_map");
+        if (map != null && map.startsWith("."))  {
+            // old:
+            //map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
+            /* new handling for relative urls. fc, 29.10.2003.*/
+            try {
+                FreeMindApplet applet = (FreeMindApplet) getController().getFrame();
+                URL documentBaseUrl = new URL( applet.getDocumentBase(), map);
+                map = documentBaseUrl.toString();
+            }  catch (java.net.MalformedURLException e) { 
+                getController().errorMessage("Could not open relative URL "+map+". It is malformed.");
+                System.err.println(e);
+                return;
+            }
+            /* end: new handling for relative urls. fc, 29.10.2003.*/
+        }    
+        if (map != "") {
+            ((BrowseController)getModeController()).loadURL(map);
+        }
     }
 
     public void restore(String restoreable) {
     }
     
     public Controller getController() {
-	return c;
+        return c;
     }
 
 
     public ModeController getModeController() {
-	return modecontroller;
+        return modecontroller;
     }
 
     public BrowseController getBrowseController() {
-	return (BrowseController)getModeController();
+        return (BrowseController)getModeController();
     }
 
     public JToolBar getModeToolBar() {
-	return ((BrowseController)getModeController()).getToolBar();
+        return ((BrowseController)getModeController()).getToolBar();
     }
 
     public JToolBar getLeftToolBar() {
-	return null;
+        return null;
     }
 
     public JMenu getModeFileMenu() {
-	return ((BrowseController)getModeController()).getFileMenu();
+        return ((BrowseController)getModeController()).getFileMenu();
     }
 
     public JMenu getModeEditMenu() {
-	return ((BrowseController)getModeController()).getEditMenu();
+        return ((BrowseController)getModeController()).getEditMenu();
     }
 }

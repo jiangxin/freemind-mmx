@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.19 2003-11-03 11:00:27 sviles Exp $*/
+/*$Id: NodeView.java,v 1.20 2003-11-09 22:09:26 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -173,12 +173,32 @@ public abstract class NodeView extends JLabel {
     public MindMapNode getModel() {
 	return model;
     }
+
+    /** Returns the coordinates occupied by the node and its children as a vector of four point per node.*/
+    public void getCoordinates(LinkedList inList, int additionalDistanceForConvexHull) {
+        inList.addLast(new Point( -additionalDistanceForConvexHull + getX()             ,  -additionalDistanceForConvexHull + getY()              ));
+        inList.addLast(new Point( -additionalDistanceForConvexHull + getX()             ,   additionalDistanceForConvexHull + getY() + getHeight()));
+        inList.addLast(new Point(  additionalDistanceForConvexHull + getX() + getWidth(),   additionalDistanceForConvexHull + getY() + getHeight()));
+        inList.addLast(new Point(  additionalDistanceForConvexHull + getX() + getWidth(),  -additionalDistanceForConvexHull + getY()              ));
+        LinkedList childrenViews = getChildrenViews();
+        ListIterator children_it = childrenViews.listIterator();
+        while(children_it.hasNext()) {
+            NodeView child = (NodeView)children_it.next();
+            child.getCoordinates(inList, additionalDistanceForConvexHull);
+        }
+    }   
+
+
    public void requestFocus(){
       map.getController().getMode().getModeController().anotherNodeSelected(getModel());
       super. requestFocus();
    }
 
     public void paint(Graphics graphics) {
+        // background color starts here, fc. 9.11.2003: todo
+//           graphics.setColor(Color.yellow);
+//           graphics.fillRect(0,0,getWidth(), getHeight());
+          // background color ends here, fc. 9.11.2003: todo
 	super.paint(graphics);
     }
 
@@ -308,6 +328,23 @@ public abstract class NodeView extends JLabel {
 	    return new Point(getLocation().x + size.width, getLocation().y + size.height - 2);
 	} else {
 	    return new Point(getLocation().x, getLocation().y + size.height - 2);
+	} 
+    }
+
+
+    /**
+     * Returns the Point where the Links 
+     * should arrive the Node.
+     * THIS SHOULD BE DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
+     */
+    Point getLinkPoint() {
+	Dimension size = getSize();
+	if( isRoot() ) {
+	    return new Point(getLocation().x, getLocation().y + size.height / 2);
+	} else if( isLeft() ) {
+	    return new Point(getLocation().x, getLocation().y + size.height / 2);
+	} else {
+	    return new Point(getLocation().x + size.width, getLocation().y + size.height / 2);
 	} 
     }
 

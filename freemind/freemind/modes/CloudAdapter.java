@@ -16,24 +16,33 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapMouseWheelListener.java,v 1.6 2003-11-09 22:09:25 christianfoltin Exp $*/
+/*$Id: CloudAdapter.java,v 1.1 2003-11-09 22:09:26 christianfoltin Exp $*/
 
-package freemind.controller;
+package freemind.modes;
 
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import freemind.main.FreeMindMain;
+import freemind.main.Tools;
+import java.awt.Color;
+import java.awt.Stroke;
+import java.awt.BasicStroke;
 
-/**
- * The MouseListener which belongs to MapView
- */
-public class MapMouseWheelListener implements MouseWheelListener {
+public abstract class CloudAdapter extends LineAdapter implements MindMapCloud {
 
-    private final Controller c;
-
-    public MapMouseWheelListener(Controller controller) {
-       c = controller; }
-
-    public void mouseWheelMoved(MouseWheelEvent e) {
-       c.getMode().getModeController().mouseWheelMoved(e);
+    //
+    // Constructors
+    //
+    public CloudAdapter(MindMapNode target,FreeMindMain frame) {
+        this(target, frame, "standardcloudcolor", "standardcloudstyle");
     }
+
+    /** For derived classes.*/
+    protected  CloudAdapter(MindMapNode target,FreeMindMain frame, String standardColorPropertyString, String standardStylePropertyString)  {
+        super(target, frame, standardColorPropertyString, standardStylePropertyString);
+        NORMAL_WIDTH = 3;
+    }
+
+    public Color getExteriorColor() {
+        return getColor().darker();
+    }
+
 }

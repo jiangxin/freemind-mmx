@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.32 2003-11-03 11:00:05 sviles Exp $*/
+/*$Id: Controller.java,v 1.33 2003-11-09 22:09:25 christianfoltin Exp $*/
 
 package freemind.controller;
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapXMLElement.java,v 1.4 2003-11-03 11:00:21 sviles Exp $*/
+/*$Id: MindMapXMLElement.java,v 1.5 2003-11-09 22:09:26 christianfoltin Exp $*/
 
 /*On doubling of code
  *
@@ -74,7 +74,11 @@ public class MindMapXMLElement extends XMLElement {
       if (name.equals("node")) {
          userObject = new MindMapNodeModel(frame); }
       if (name.equals("edge")) {
-         userObject = new MindMapEdgeModel(null, frame); }}
+         userObject = new MindMapEdgeModel(null, frame); }
+      if (name.equals("cloud")) {
+          userObject = new MindMapCloudModel(null, frame); }
+      if (name.equals("arrowlink")) {
+          userObject = new MindMapArrowLinkModel(null, frame); }}
 
    public void addChild(XMLElement child) {
       if (getName().equals("map")) {
@@ -90,6 +94,14 @@ public class MindMapXMLElement extends XMLElement {
             MindMapEdgeModel edge = (MindMapEdgeModel)child.getUserObject();
             edge.setTarget(node);
             node.setEdge(edge); }
+         else if (child.getUserObject() instanceof MindMapCloudModel) {
+            MindMapCloudModel cloud = (MindMapCloudModel)child.getUserObject();
+            cloud.setTarget(node);
+            node.setCloud(cloud); }
+         else if (child.getUserObject() instanceof MindMapArrowLinkModel) {
+            MindMapArrowLinkModel arrowLink = (MindMapArrowLinkModel)child.getUserObject();
+            arrowLink.setTarget(node);
+            node.addReference(arrowLink); }
          else if (child.getName().equals("font")) {
             node.setFont((Font)child.getUserObject()); }
          else if (child.getName().equals("icon")) {
@@ -116,6 +128,8 @@ public class MindMapXMLElement extends XMLElement {
             node.setLink(sValue); }
          else if (name.equals("STYLE")) {
             node.setStyle(sValue); }
+         else if (name.equals("ID")) {
+             node.setLabel(sValue); }
          return; }
 
       if (userObject instanceof MindMapEdgeModel) {
@@ -129,6 +143,40 @@ public class MindMapXMLElement extends XMLElement {
                edge.setWidth(MindMapEdgeModel.WIDTH_THIN); }
             else {
                edge.setWidth(Integer.parseInt(sValue)); }}
+         return; }
+
+      if (userObject instanceof MindMapCloudModel) {
+         MindMapCloudModel cloud = (MindMapCloudModel)userObject;
+         if (name.equals("STYLE")) {
+	    cloud.setStyle(sValue); }
+         else if (name.equals("COLOR")) {
+	    cloud.setColor(Tools.xmlToColor(sValue)); }
+         else if (name.equals("WIDTH")) {
+               cloud.setWidth(Integer.parseInt(sValue)); 
+         }
+         return; }
+
+      if (userObject instanceof MindMapArrowLinkModel) {
+         MindMapArrowLinkModel arrowLink = (MindMapArrowLinkModel)userObject;
+         if (name.equals("STYLE")) {
+             arrowLink.setStyle(sValue); }
+         else if (name.equals("COLOR")) {
+             arrowLink.setColor(Tools.xmlToColor(sValue)); }
+         else if (name.equals("DESTINATION")) {
+             arrowLink.setDestinationLabel(sValue); }
+         else if (name.equals("REFERENCETEXT")) {
+             arrowLink.setReferenceText((sValue)); }
+         else if (name.equals("STARTINCLINATION")) {
+             arrowLink.setStartInclination(Tools.xmlToPoint(sValue)); }
+         else if (name.equals("ENDINCLINATION")) {
+             arrowLink.setEndInclination(Tools.xmlToPoint(sValue)); }
+         else if (name.equals("STARTHASARROW")) {
+             arrowLink.setStartArrow(Tools.xmlToBoolean(sValue)); }
+         else if (name.equals("ENDHASARROW")) {
+             arrowLink.setEndArrow(Tools.xmlToBoolean(sValue)); }
+         else if (name.equals("WIDTH")) {
+             arrowLink.setWidth(Integer.parseInt(sValue)); 
+         }
          return; }
 
       if (getName().equals("font")) {
@@ -148,8 +196,7 @@ public class MindMapXMLElement extends XMLElement {
          if (name.equals("BUILTIN")) {
             iconName = sValue; } 
       }
-      
-   }
+  }
 
    protected void completeElement() {
       if (getName().equals("font")) {

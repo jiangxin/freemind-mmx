@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapMouseMotionListener.java,v 1.5 2003-11-03 11:00:05 sviles Exp $*/
+/*$Id: MapMouseMotionListener.java,v 1.6 2003-11-09 22:09:25 christianfoltin Exp $*/
 
 package freemind.controller;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import javax.swing.JPopupMenu;
 
 import freemind.view.mindmapview.MapView;
 
@@ -44,8 +45,20 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
 
     private void handlePopup( MouseEvent e) {
        if (e.isPopupTrigger()) {
-          c.getFrame().getFreeMindMenuBar().getMapsPopupMenu().show
-             (e.getComponent(),e.getX(),e.getY()); }}
+           JPopupMenu popup;
+           // detect collision with an element placed on the root pane of the window.
+           java.lang.Object obj = c.getView().detectCollision(e.getPoint());
+           if(obj != null) {
+               // there is a collision with object obj.
+               // call the modecontroller to give a popup menu for this object
+               popup = c.getMode().getModeController().getPopupForModel(obj);
+           } else {
+               // normal popup:
+               popup = c.getFrame().getFreeMindMenuBar().getMapsPopupMenu();
+           }
+           popup.show(e.getComponent(),e.getX(),e.getY()); 
+       }
+    }
 
     public void mouseMoved(MouseEvent e) { }
     public void mouseDragged(MouseEvent e) {

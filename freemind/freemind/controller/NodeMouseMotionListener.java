@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.5 2003-11-03 11:00:06 sviles Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.6 2003-11-09 22:09:25 christianfoltin Exp $*/
 
 package freemind.controller;
 

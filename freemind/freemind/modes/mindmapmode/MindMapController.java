@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.25 2003-11-03 11:00:20 sviles Exp $*/
+/*$Id: MindMapController.java,v 1.26 2003-11-09 22:09:26 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -30,6 +30,8 @@ import freemind.modes.MapAdapter;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.StylePattern;
 import freemind.modes.MindIcon;
+import freemind.modes.MindMapCloud;
+import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.view.mindmapview.NodeView;
 
 import java.io.*;
@@ -39,6 +41,7 @@ import java.net.MalformedURLException;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
@@ -104,7 +107,7 @@ public class MindMapController extends ControllerAdapter {
        new EdgeStyleAction("sharp_linear"),
        new EdgeStyleAction("sharp_bezier")
     };
-
+    Action cloudColor = new CloudColorAction();
 
     Action italic = new NodeGeneralAction ("italic", "images/Italic24.gif",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
@@ -112,6 +115,23 @@ public class MindMapController extends ControllerAdapter {
     Action bold   = new NodeGeneralAction ("bold", "images/Bold24.gif",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.setBold(node); }});
+    Action cloud   = new NodeGeneralAction ("cloud", "images/Cloud24.gif",
+       new SingleNodeOperation() { private MindMapCloud lastCloud;
+           private MindMapNodeModel nodeOfLastCloud;
+           public void apply(MindMapMapModel map, MindMapNodeModel node) {
+               // store last color to enable if the node is switched on and off.
+               if(node.getCloud() != null) {
+                   lastCloud = node.getCloud();
+                   nodeOfLastCloud = node;
+               }
+               map.setCloud(node); 
+               // restore color:
+               if((node.getCloud() != null) && (node == nodeOfLastCloud)) {
+                   node.setCloud(lastCloud);
+               }
+
+           }
+       });
     Action normalFont = new NodeGeneralAction ("normal", "images/Normal24.gif",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.setNormalFont(node); }});
@@ -383,8 +403,27 @@ public class MindMapController extends ControllerAdapter {
 	return edgeMenu; }
 
     public JPopupMenu getPopupMenu() {
-	return popupmenu;
+        return popupmenu;
     }
+
+    /** Link implementation: If this is a link, we want to make a popup with at least removelink available.*/
+    public JPopupMenu getPopupForModel(java.lang.Object obj) {
+        if( obj instanceof MindMapArrowLinkModel) {
+            // yes, this is a link.
+            MindMapArrowLinkModel link = (MindMapArrowLinkModel) obj;
+            JPopupMenu arrowLinkPopup = new JPopupMenu();
+            arrowLinkPopup.add(new RemoveArrowLinkAction(link.getTarget(), link));
+            arrowLinkPopup.add(new ColorArrowLinkAction(link.getTarget(), link));
+            arrowLinkPopup.addSeparator();
+            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction(" - ",link.getTarget(), link, false, false));
+            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction("<- ",link.getTarget(), link, true, false));
+            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction(" ->",link.getTarget(), link, false, true));
+            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction("<->",link.getTarget(), link, true, true));
+            return arrowLinkPopup;
+        }
+        return null;
+    }
+
 
     //convenience methods
     private MindMapMapModel getModel() {
@@ -423,6 +462,7 @@ public class MindMapController extends ControllerAdapter {
 	followLink.setEnabled(enabled);
 	italic.setEnabled(enabled);
 	bold.setEnabled(enabled);
+	cloud.setEnabled(enabled);
 	normalFont.setEnabled(enabled);
 	nodeColor.setEnabled(enabled);
 	edgeColor.setEnabled(enabled);
@@ -668,6 +708,38 @@ public class MindMapController extends ControllerAdapter {
               getModel().setEdgeColor(selected,color); }}}
 
 
+    private class CloudColorAction extends AbstractAction {
+	CloudColorAction() { super(getText("cloud_color")); }
+	public void actionPerformed(ActionEvent e) {
+        Color selectedColor = null;
+        if(getSelected().getCloud() != null)
+            selectedColor = getSelected().getCloud().getColor();
+           Color color = JColorChooser.showDialog(getView().getSelected(),"Choose Cloud Color:",selectedColor);
+           if (color==null) return;
+           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+              MindMapNodeModel selected = (MindMapNodeModel)it.next();
+              getModel().setCloudColor(selected,color); }}}
+
+
+    protected class ColorArrowLinkAction extends AbstractAction {
+        MindMapNode source;
+        MindMapArrowLinkModel arrowLink;
+        public ColorArrowLinkAction(MindMapNode source, MindMapArrowLinkModel arrowLink) {
+            super(getText("arrow_link_color"));
+            this.source = source;
+            this.arrowLink = arrowLink;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            Color selectedColor = arrowLink.getColor();
+            Color color = JColorChooser.showDialog(getView().getSelected(),(String) this.getValue(Action.NAME),selectedColor);
+            if (color==null) return;
+            getModel().setArrowLinkColor(source, arrowLink, color); 
+        }
+    }
+    
+
+
     // Icons
     // __________________
 
@@ -686,6 +758,42 @@ public class MindMapController extends ControllerAdapter {
             }
         };
     }
+
+    // ArrowLinks
+    // __________________
+
+    protected class RemoveArrowLinkAction extends AbstractAction {
+        MindMapNode source;
+        MindMapArrowLinkModel arrowLink;
+        public RemoveArrowLinkAction(MindMapNode source, MindMapArrowLinkModel arrowLink) {
+            super(getText("remove_arrow_link"));
+            this.source = source;
+            this.arrowLink = arrowLink;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            getModel().removeReference(source, arrowLink);
+        }
+    }
+
+    protected class ChangeArrowsInArrowLinkAction extends AbstractAction {
+        MindMapNode source;
+        MindMapArrowLinkModel arrowLink;
+        boolean hasStartArrow;
+        boolean hasEndArrow;
+        public ChangeArrowsInArrowLinkAction(String text, MindMapNode source, MindMapArrowLinkModel arrowLink, boolean hasStartArrow, boolean hasEndArrow) {
+            super(text);
+            this.source = source;
+            this.arrowLink = arrowLink;
+            this.hasStartArrow = hasStartArrow;
+            this.hasEndArrow = hasEndArrow;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            getModel().changeArrowsOfArrowLink(source, arrowLink, hasStartArrow, hasEndArrow);
+        }
+    }
+    
 
     // NodeGeneralAction
     // __________________

@@ -16,24 +16,28 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapMouseWheelListener.java,v 1.6 2003-11-09 22:09:25 christianfoltin Exp $*/
+/*$Id: MindMapArrowLink.java,v 1.1 2003-11-09 22:09:26 christianfoltin Exp $*/
 
-package freemind.controller;
+package freemind.modes;
 
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import freemind.modes.MindMapLink;
+import freemind.modes.MindMapNode;
+import java.awt.Point;
 
-/**
- * The MouseListener which belongs to MapView
- */
-public class MapMouseWheelListener implements MouseWheelListener {
+public interface MindMapArrowLink extends MindMapLink {
 
-    private final Controller c;
+    //     public Color getColor();
+    //     public String getStyle();
+    //     public Stroke getStroke();
+    //     public int getWidth();
+    //     public String toString();
 
-    public MapMouseWheelListener(Controller controller) {
-       c = controller; }
+//     public String getDestinationLabel();
+//     public String getReferenceText();
+    /* for arrows: */
+    public Point getStartInclination(); // the zero is the start point of the line;
+    public Point getEndInclination(); // the zero is the end point of the line;
+    public boolean startHasArrow(); 
+    public boolean endHasArrow();
 
-    public void mouseWheelMoved(MouseWheelEvent e) {
-       c.getMode().getModeController().mouseWheelMoved(e);
-    }
 }

@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.10 2003-11-03 11:00:13 sviles Exp $*/
+/*$Id: BrowseController.java,v 1.11 2003-11-09 22:09:26 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -133,7 +134,7 @@ public class BrowseController extends ControllerAdapter {
 	    //	    absolute = new URL(relative);
 	    getFrame().out(absolute.toString());
 	} catch (MalformedURLException ex) {
-           getController().errorMessage(getText("url_error"));
+           getController().errorMessage(getText("url_error") + " " + ex.getMessage());
            //getFrame().err(getText("url_error"));
 	   return;
 	}

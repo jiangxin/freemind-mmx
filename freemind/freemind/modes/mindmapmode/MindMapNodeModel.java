@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.14 2003-11-03 11:00:21 sviles Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.15 2003-11-09 22:09:26 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -383,8 +383,23 @@ public class MindMapNodeModel extends NodeAdapter {
 	if (edge != null) {
            node.addChild(edge); }
 
+    if(getCloud() != null) {
+        XMLElement cloud = ((MindMapCloudModel)getCloud()).save();
+        node.addChild(cloud); 
+    }
+
+    for(int i = 0; i < getReferences().size(); ++i) {
+        if(getReferences().get(i) instanceof MindMapArrowLinkModel) {
+            XMLElement arrowLinkElement = ((MindMapArrowLinkModel) getReferences().get(i)).save();
+            node.addChild(arrowLinkElement);
+        }
+    }
+        
 	if (isFolded()) {
            node.setAttribute("folded","true"); }
+	
+	if (getLabel()!=null) {
+           node.setAttribute("id",getLabel()); }
 	
 	if (color != null) {
            node.setAttribute("color", Tools.colorToXml(getColor())); }

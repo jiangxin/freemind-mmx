@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.29 2003-11-03 11:00:12 sviles Exp $*/
+/*$Id: ControllerAdapter.java,v 1.30 2003-11-09 22:09:26 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -427,6 +427,13 @@ public abstract class ControllerAdapter implements ModeController {
         }
       }
     }
+
+    /** Default implementation: no context menu.*/
+    public JPopupMenu getPopupForModel(java.lang.Object obj) {
+        return null;
+    }
+        
+
 
     private static final int SCROLL_SKIPS = 8;
     private static final int SCROLL_SKIP = 10;
