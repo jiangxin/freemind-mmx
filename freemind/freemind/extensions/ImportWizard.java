@@ -59,16 +59,10 @@ public class ImportWizard {
 	//  }
 
 	public static void buildClassList() {
-		//String classPath = System.getProperty("java.class.path");
-	    String classPath = ".";
-		// System.out.println("classpath = " + classPath);
-
+		String classPath = System.getProperty("java.class.path");
 		String classPathSeparator = File.pathSeparator;
-
-		//    // For Java 2!
-		//    String classPath2 = System.getProperty("sun.boot.class.path");
-		//    if (classPath2 != null)
-		//      classPath += classPathSeparator + classPath2;
+        // add the current dir to find more plugins
+        classPath="."+classPathSeparator+classPath;
 
 		StringTokenizer st = new StringTokenizer(classPath, classPathSeparator);
 		while (st.hasMoreTokens()) {
@@ -228,7 +222,10 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.2.3  2004-08-29 15:18:21  christianfoltin
+ * Revision 1.1.2.4  2004-09-05 19:56:39  christianfoltin
+ * added jarbundler for mac os x. Application image added. TODO: Plugins must be packed.
+ *
+ * Revision 1.1.2.3  2004/08/29 15:18:21  christianfoltin
  * * Changed several occurences of setFolded to the undoable method.
  * * Changed the plugin class loader behaviour completely.
  *

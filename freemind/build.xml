@@ -3,6 +3,7 @@
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
 	<property name="dist" value="../bin/dist" />
+	<property name="dist_macos" value="../bin/dist_macos" />	
     <property name="FM.jar" value="${dist}/lib/freemind.jar"/>
     <property name="jython.jar" value="lib/jython.jar"/>
 	<property name="post" value="../post" />
@@ -11,20 +12,17 @@
 	<property name="ver" value="0_8_0_alpha" />
 	<property name="ant.dir" value="lib/ant/lib"/>
 
-	<!-- fc, 29.8.2004: 
-		 Add all jars present in the plugin directory to the class path. -->
-	<path id="plugin_jars">
-      <fileset dir="accessories/plugins">
-        <include name="**/*.jar"/>
-      </fileset>
-	</path>
-	<property name="plugin_jars_prop" refid="plugin_jars"/>
-	<!-- OK, the jars reside in plugin_jars_prop. -->
+    <taskdef name="jarbundler"
+               classpath="${src}/lib/jarbundler-1.2.jar"
+               classname="com.loomcom.ant.tasks.jarbundler.JarBundler" />
+
+
+	
 	
 	<!-- begin generator part -->
 	<property name="jaxb" value="${ant.dir}/jaxb-xjc.jar:${ant.dir}/jaxb-api.jar:${ant.dir}/jaxb-impl.jar:${ant.dir}/jaxb-libs.jar:${ant.dir}/namespace.jar:${ant.dir}/relaxngDatatype.jar:${ant.dir}/xsdlib.jar:${ant.dir}/jax-qname.jar"/>
 	<property name="xml" value="${ant.dir}/sax.jar:${ant.dir}/dom.jar"/> 
-	<property name="classpath" value="${jaxb}:${xml}:${plugin_jars_prop}"/>
+	<property name="classpath" value="${jaxb}:${xml}"/>
 	<property name="xsd.dir" value="." />
 	<property name="gen.dir" value="generated" />
 	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" 
@@ -122,7 +120,7 @@
 		</copy>
 		<mkdir dir="${dist}/accessories" />
 		<copy todir="${dist}/accessories"> 
-			<fileset dir="${src}/accessories" excludes="**/*.java"/>
+			<fileset dir="${src}/accessories" excludes="**/*.java"/> <!-- exclude jars too!-->
 			<fileset dir="${build}/accessories"/>
 		</copy> 
 		<!-- third party libs -->
@@ -132,6 +130,32 @@
 				<exclude name="**/jaxb-xjc.jar"/>
 			</fileset>
 		</copy>
+		<!-- Mac OS X -->
+		<delete dir="${dist_macos}"/>
+		<mkdir dir="${dist_macos}"/>
+		  <jarbundler dir="${dist_macos}"
+		                    name="FreeMind"
+		                    mainclass="freemind.main.FreeMind"
+		                    icon="${src}/images/FreeMindWindowIcon.icns"
+		                    version="${ver}"
+		                    infostring="FreeMind application (c) 2004"
+		                    aboutmenuname="FreeMind"
+		                    bundleid="freemind.main.FreeMind"
+		                    signature="FM"
+		                    jvmversion="1.4+"
+		                    liveresize="true"
+		                    screenmenu="true" 
+		  				    > 
+		  	<jarfileset dir="${dist}">
+		            <include name="**/*.jar" />
+		            <exclude name="**/CVS" />
+		          </jarfileset>
+        </jarbundler>
+		<mkdir dir="${dist_macos}/accessories" />
+		<copy todir="${dist_macos}/accessories"> 
+			<fileset dir="${dist}/accessories"/>
+		</copy> 
+		
 	</target>
 
 	<target name="post" depends="dist,browser,doc">
