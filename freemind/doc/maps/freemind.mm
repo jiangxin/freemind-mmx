@@ -616,16 +616,16 @@
 <node TEXT="You can remove this toolbar right clicking on the background of FreeMind"/>
 </node>
 <node COLOR="#338800" TEXT="Graphical links" FOLDED="true">
-<node ID="1661911453" TEXT="Mark a node and drag this node to another node holding both shift and control keys creates a graphical link between them."/>
+<node TEXT="Mark a node and drag this node to another node holding both shift and control keys creates a graphical link between them."/>
 <node TEXT="You can edit some properties of this link using right click onto the line between them."/>
 <node TEXT="You may choose the color and the arrow positions."/>
 <node TEXT="Moreover you can go directly to the other node (even if its folded) using the right click on the small part of the graphical link."/>
 <node TEXT="Example" FOLDED="true">
 <node TEXT="Link to another part">
-<arrowlink STARTHASARROW="true" COLOR="#9999ff" DESTINATION="1040405702" ENDHASARROW="true"/>
+<arrowlink STARTHASARROW="true" COLOR="#9999ff" DESTINATION="_1040405702" ENDHASARROW="true"/>
 </node>
 <node TEXT="Node with folded subnode" FOLDED="true">
-<node ID="1040405702" TEXT="Subnode"/>
+<node ID="_1040405702" TEXT="Subnode"/>
 </node>
 </node>
 </node>
@@ -633,7 +633,7 @@
 <node TEXT="Clouds are well suited for highlighting a region."/>
 <node TEXT="Highlighted are the node and all its subnodes."/>
 <node TEXT="Clouds can have different background colors.">
-<cloud COLOR="#99ff99"/>
+<cloud COLOR="#ccffcc"/>
 </node>
 </node>
 </node>
