@@ -1,3 +1,8 @@
+Changes made in Freemind 0.8.0 alpha:
+=====================================
+* Bug fix for reading arrow link inclinations.
+
+
 Changes made in Freemind 0.8.0:
 ===============================
 * From Koh (thanks): Standard Macintosh application use Command(meta) key based Keyboard shortcut. (ex. copy is Command(meta) + C). I think that mac version's freemind should allow to assign meta key based shortcut. 

@@ -20,7 +20,7 @@
 		<plugin_property name="image_type" value="jpeg"/>
 		<plugin_property name="image_description" value="Compressed image (JPEG)"/>
 	</plugin_action>
-	<plugin_action 
+<!--	<plugin_action 
 		documentation="Exports the map in the current folding to the clipboard" 
 		name="Copy map to clipboard (not under Linux)" base="freemind.extensions.ModeControllerHookAdapter" 
 		label="accessories/plugins/ExportToImage_clipboard.properties" 
@@ -29,5 +29,5 @@
 		<plugin_menu location="menu_bar/edit/paste/copyToImage"/>
 		<plugin_property name="image_type" value="clipboard"/>
 		<plugin_property name="image_description" value=""/>
-	</plugin_action>
+	</plugin_action>-->
 </plugin>

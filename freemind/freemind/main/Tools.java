@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.17.18.1 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: Tools.java,v 1.17.18.2 2004-11-03 21:16:43 christianfoltin Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -85,6 +85,12 @@ public class Tools {
     public static Point xmlToPoint(String string) {
         if(string == null)
             return null;
+    	System.out.println("old String: '"+string+"'");
+    	// fc, 3.11.2004: bug fix for alpha release of FM
+        if(string.startsWith("java.awt.Point")) {
+        	string = string.replaceAll("java\\.awt\\.Point\\[x=([0-9]*),y=([0-9]*)\\]", "$1;$2");
+        	System.out.println("new String: "+string);
+        }
         List l = stringToList(string);
         ListIterator it = l.listIterator(0);
         if(l.size() != 2)
@@ -121,7 +127,7 @@ public class Tools {
 	ListIterator it = list.listIterator(0);
 	String str = new String();
 	while (it.hasNext()) {
-	    str.concat(it.next().toString() + ";");
+	    str += it.next().toString() + ";";
 	}
 	return str;
     }
