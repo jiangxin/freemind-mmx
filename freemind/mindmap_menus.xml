@@ -9,16 +9,18 @@
 				<menu_action field="saveAs" key_ref="keystroke_saveAs"/>
 			</menu_category>
 			<menu_submenu name="export"  name_ref="menu_file_export">
+				<menu_action field="exportBranch" key_ref="keystroke_export_branch"/>
+				<menu_separator/>
 				<menu_category name="html">
 					<menu_action field="exportToHTML" key_ref="keystroke_export_to_html"/>
 				</menu_category>
-				<menu_action field="exportBranch" key_ref="keystroke_export_branch"/>
 				<menu_action field="exportBranchToHTML" key_ref="keystroke_export_branch_to_html"/>
 			</menu_submenu>
 			<menu_submenu name="import" name_ref="menu_file_import">
 				<menu_action field="importBranch"/>
 				<menu_action field="importLinkedBranch"></menu_action>
 				<menu_action field="importLinkedBranchWithoutRoot"></menu_action>
+				<menu_separator/>
 				<menu_action field="importExplorerFavorites"></menu_action>
 				<menu_action field="importFolderStructure"></menu_action>
 			</menu_submenu>

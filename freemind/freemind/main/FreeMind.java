@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.9 2004-12-21 21:38:56 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.10 2005-01-06 06:28:20 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -189,15 +189,23 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
 	    } else if (lookAndFeel.equals("metal")) {
 		UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+	    } else if (lookAndFeel.equals("gtk")) {
+	        UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
 	    } else if (lookAndFeel.equals("nothing")) {
+	    } else if (lookAndFeel.indexOf('.') != -1) { // string contains a
+                                                         // dot
+	        UIManager.setLookAndFeel(lookAndFeel);
+	        //	         we assume class name
 	    } else {
             // default.
-            System.out.println("Default (System) Look & Feel: "+UIManager.getSystemLookAndFeelClassName());
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            System.out.println("Default (System) Look & Feel: "
+                    + UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager
+                    .getSystemLookAndFeelClassName());
         }
-	} catch (Exception ex) {
-	    System.err.println("Unable to set Look & Feel.");
-	}
+        } catch (Exception ex) {
+            System.err.println("Unable to set Look & Feel.");
+        }
 
 	ImageIcon icon = new ImageIcon(getResource("images/FreeMindWindowIcon.png"));
 	setIconImage(icon.getImage());

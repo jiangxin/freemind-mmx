@@ -126,6 +126,9 @@ Changes made in Freemind 0.8.0:
 * Debugging removed from encrypted nodes.
 * Popup menu: format actions added.
 
+* GTK and free form as look and feel added
+* Export menus revised.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

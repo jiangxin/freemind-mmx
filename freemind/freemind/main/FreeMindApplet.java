@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.4 2004-11-16 16:42:35 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.5 2005-01-06 06:28:20 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -253,8 +253,15 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
               UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
            } else if (lookAndFeel.equals("metal")) {
               UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-           } else if (lookAndFeel.equals("nothing")) {
-           } else {
+           } else if (lookAndFeel.equals("gtk")) {
+	   	        UIManager
+	                    .setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+	        } else if (lookAndFeel.equals("nothing")) {
+	        } else if (lookAndFeel.indexOf('.') != -1) { // string contains a
+	            // dot
+	            UIManager.setLookAndFeel(lookAndFeel);
+	            //	         we assume class name
+	        } else {
                // default.
                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
            }
