@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.17 2001-04-19 16:20:38 ponder Exp $*/
+/*$Id: MindMapController.java,v 1.18 2001-04-22 15:02:50 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -126,7 +126,7 @@ public class MindMapController extends ControllerAdapter {
 
     public MindMapController(Mode mode) {
 	super(mode);
-	loadPatterns(new File(getFrame().getProperty("patternsfile")));
+	loadPatterns(new File(Tools.expandFileName(getFrame().getProperty("patternsfile"))));
 	popupmenu = new MindMapPopupMenu(this);
 	toolbar = new MindMapToolBar(this);
 	setAllActions(false);

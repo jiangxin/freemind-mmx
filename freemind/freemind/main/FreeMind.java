@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.12 2001-04-19 16:20:38 ponder Exp $*/
+/*$Id: FreeMind.java,v 1.13 2001-04-22 15:02:50 ponder Exp $*/
 
 package freemind.main;
 
@@ -74,11 +74,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	    in.close();
 	    userProps = new Properties(defaultProps);
 	    userPropsURL = defaultProps.getProperty("userproperties");
-	    //replace ~ with the users home dir
-	    if (userPropsURL.startsWith("~")) {
-		userPropsURL = System.getProperty("user.home") + userPropsURL.substring(1);
-	    }
-	    in = new FileInputStream(userPropsURL);
+	    in = new FileInputStream(Tools.expandFileName(userPropsURL));
 	    userProps.load(in);
 	    in.close();
 	} catch (Exception ex) {
@@ -102,7 +98,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	} catch (Exception ex) {
 	    System.err.println("Panic! Error while setting Look&Feel");
 	}
-
 
 	//Layout everything
 	getContentPane().setLayout( new BorderLayout() );

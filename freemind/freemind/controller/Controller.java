@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.20 2001-04-21 13:09:13 ponder Exp $*/
+/*$Id: Controller.java,v 1.21 2001-04-22 15:02:50 ponder Exp $*/
 
 package freemind.controller;
 
@@ -67,8 +67,7 @@ public class Controller {
 
     private Map mapmodules = new TreeMap(); //The instances of mode, ie. the Model/View pairs
     private LastOpenedList lastOpened = new LastOpenedList();//A list of the pathnames of all the maps that were opened in the last time
-    private List historyList = new LinkedList();//manages previous/next map buttons DO NOT USE THIS DIRECTLY
-    private ListIterator history = historyList.listIterator();//all work is done through this ListIterator
+    private HistoryManager history = new HistoryManager();
     private MapModule mapmodule; //reference to the current mode, could be done with an index to mapmodules, too.
     private Map modes; //hash of all possible modes
     private Mode mode; //The current mode
@@ -307,9 +306,14 @@ public class Controller {
 	    return false;
 	}
     }
-
+    
     void changeToMapModule(String mapmodule) {
 	MapModule map =  (MapModule)(getMapModules().get(mapmodule));
+	history.mapChanged(map);
+	changeToMapModuleWithoutHistory(map);
+    }
+
+    private void changeToMapModuleWithoutHistory(MapModule map) {
 	if (map.getMode() != getMode()) {
 	    changeToMode(map.getMode().toString());
 	}
@@ -317,35 +321,12 @@ public class Controller {
 	mapModuleChanged();
     }
 
-    void nextMap() {
-	/*
-	List keys = new LinkedList(getMapModules().keySet());
-	int index = keys.indexOf(getMapModule().toString());
-	ListIterator i = keys.listIterator(index+1);
-	*/
-	if (history.hasNext()) {
-	    changeToMapModule((String)history.next());
-	}
-	updateNavigationActions();
-    }
-
-    void previousMap() {
-	/*
-	List keys = new LinkedList(getMapModules().keySet());
-	int index = keys.indexOf(getMapModule().toString());
-	ListIterator i = keys.listIterator(index);
-	*/
-	if (history.hasPrevious()) {
-	    changeToMapModule((String)history.previous());
-	}
-	updateNavigationActions();
-    }
-
     public void newMapModule(MindMap map) {
 	MapModule mapmodule = new MapModule(map, new MapView(map, this), getMode());
 	setMapModule(mapmodule);
 	addToMapModules(mapmodule.toString(), mapmodule);
-	nextMap.setEnabled(false);
+	//	nextMap.setEnabled(false);
+	history.mapChanged(mapmodule);
     }
 
     public void changeToMapOfMode(Mode mode) {
@@ -401,7 +382,7 @@ public class Controller {
 	/** return the Frame title with mode and file if exist */
 	private void setTitle() {
 	Object[] messageArguments = {
-         getMode().toString()
+	    getMode().toString()
 	};
 	MessageFormat formatter = new MessageFormat(
 		getFrame().getResources().getString("mode_title"));
@@ -415,8 +396,8 @@ public class Controller {
     private void mapModuleChanged() {
 	frame.getFreeMindMenuBar().updateMapsMenu();//to show the new map in the mindmaps menu
 	lastOpened.mapOpened(getMapModule());
-	history.add(getMapModule());
-	updateNavigationActions();
+	//	history.add(getMapModule());
+	//	updateNavigationActions();
 	setTitle();
 	moveToRoot();
     }
@@ -517,10 +498,58 @@ public class Controller {
     // Inner Classes
     ////////////
 
+    /**
+     * Manages the history of visited maps.
+     */
+    private class HistoryManager {
+	private LinkedList historyList = new LinkedList();;
+	private int current;
+
+	HistoryManager() {
+	}
+
+	void nextMap() {
+	    if (current+1 < historyList.size()) {
+		changeToMapModuleWithoutHistory((MapModule)historyList.get(++current));
+		//the map is immediately added again via changeToMapModule
+		previousMap.setEnabled(true);
+		if ( current >= historyList.size()-1)
+		    nextMap.setEnabled(false);
+	    }
+	}
+
+	void previousMap() {
+	    if (current > 0) {
+		changeToMapModuleWithoutHistory((MapModule)historyList.get(--current));
+		nextMap.setEnabled(true);
+		if ( current <= 0)
+		    previousMap.setEnabled(false);
+	    }
+	}
+
+	void mapChanged(MapModule map) {
+	    while (current < historyList.size()-1) {
+		historyList.remove(historyList.size()-1);
+	    }
+	    historyList.add(map);
+	    current = historyList.indexOf(map);
+	    if (current > 0) {
+		previousMap.setEnabled(true);
+	    } else {
+		previousMap.setEnabled(false);
+	    }//closeMap will cause a bug?
+	    if (current < historyList.size()-1) {
+		nextMap.setEnabled(true);
+	    } else {
+		nextMap.setEnabled(false);
+	    }
+	}
+    }
 
     /**
      * This class manages a list of the maps that were opened last.
      * It aims to provide persistence for the last recent maps.
+     * Maps should be showed in the format:"mode:key",ie."mindmap:/home/joerg/freemind.mm"
      */
     private class LastOpenedList {
 	private int entrys = 10;
@@ -679,7 +708,7 @@ public class Controller {
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent event) {
-	    previousMap();
+	    history.previousMap();
 	}
     }
 
@@ -689,7 +718,7 @@ public class Controller {
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent event) {
-	    nextMap();
+	    history.nextMap();
 	}
     }
 

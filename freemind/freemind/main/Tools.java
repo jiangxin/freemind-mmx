@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.9 2001-04-06 21:39:19 ponder Exp $*/
+/*$Id: Tools.java,v 1.10 2001-04-22 15:02:50 ponder Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -72,6 +72,17 @@ public class Tools {
 	    str.concat(it.next().toString() + ";");
 	}
 	return str;
+    }
+
+    /**
+     * Replaces a ~ in a filename with the users home directory
+     */
+    public static String expandFileName(String file) {
+	//replace ~ with the users home dir
+	if (file.startsWith("~")) {
+	    file = System.getProperty("user.home") + file.substring(1);
+	}
+	return file;
     }
 
     public static Vector getAllFonts() {
