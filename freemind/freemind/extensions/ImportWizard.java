@@ -93,9 +93,9 @@ public class ImportWizard {
 
 		try {
 			ZipFile zipFile = new ZipFile(classPathFile);
-			Enumeration enum = zipFile.entries();
-			while (enum.hasMoreElements()) {
-				ZipEntry zipEntry = (ZipEntry) enum.nextElement();
+			Enumeration enumeration = zipFile.entries();
+			while (enumeration.hasMoreElements()) {
+				ZipEntry zipEntry = (ZipEntry) enumeration.nextElement();
 				String current = zipEntry.getName();
 				if (current.toLowerCase().endsWith(lookFor)) {
 					current =
@@ -221,7 +221,12 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.3  2005-01-09 00:05:05  christianfoltin
+ * Revision 1.1.4.4  2005-03-10 20:50:13  christianfoltin
+ * * New feature: Collaboration mode (alpha version)
+ * * Bug fix: java 1.5 compiler changes (thanks to Dimitri and to brcha)
+ * * Bug fix: Typing into the node gulps the first letter. Due to Dimitri.
+ *
+ * Revision 1.1.4.3  2005/01/09 00:05:05  christianfoltin
  * * Bug fix: Show revisions in yellow. Thanks to michaelschwarz.
  * * Bug fix: packaging under linux.
  * * Bug fix: Quit and Cancel under Macintosh.

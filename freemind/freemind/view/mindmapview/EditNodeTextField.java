@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.1 2004-10-17 23:00:13 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.2 2005-03-10 20:50:14 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -165,7 +165,7 @@ public class EditNodeTextField extends EditNodeBase {
                             KeyEvent keyEv;
                             keyEv =
                                 new KeyEvent(
-                                    firstKeyEvent.getComponent(),
+                                    textfield,	//firstKeyEvent.getComponent(),
                                     KeyEvent.KEY_TYPED,
                                     firstKeyEvent.getWhen(),
                                     firstKeyEvent.getModifiers(),

@@ -190,17 +190,17 @@ public class FormularEditor extends PermanentNodeHookAdapter {
 	}
 	private class ChoiceEntity extends FormularEntity {
 		private class ChoiceElement {
-			public String enum;
+			public String enumStr;
 			public String displayValue;
 			public ChoiceElement(XMLElement child) {
-				enum = child.getStringAttribute("ENUM");
+				enumStr = child.getStringAttribute("ENUM");
 				displayValue = child.getStringAttribute("DISPLAY");
 			}
 			/**
 			 * @param enumChild
 			 */
 			public void save(XMLElement enumChild) {
-				enumChild.setAttribute("ENUM", enum);
+				enumChild.setAttribute("ENUM", enumStr);
 				enumChild.setAttribute("DISPLAY", displayValue);
 			}
 		}
@@ -216,11 +216,11 @@ public class FormularEditor extends PermanentNodeHookAdapter {
 			final JComboBox choice = new JComboBox();
 			int found = -1;
 			for(int i = 0; i < possibles.length; ++i) {
-				String itemName = possibles[i].enum;
+				String itemName = possibles[i].enumStr;
 				if(possibles[i].displayValue!=null)
 					itemName =  possibles[i].displayValue;
 				choice.addItem(itemName);
-				if(possibles[i].enum.equals(getValue())) {
+				if(possibles[i].enumStr.equals(getValue())) {
 					found = i;
 				}
 			}
@@ -232,7 +232,7 @@ public class FormularEditor extends PermanentNodeHookAdapter {
 			panel.add(choice);
 			choice.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent e) {
-					setValue(possibles[choice.getSelectedIndex()].enum);
+					setValue(possibles[choice.getSelectedIndex()].enumStr);
 					nodeChanged(getNode());
 				}});
 		}

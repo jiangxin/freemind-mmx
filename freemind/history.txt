@@ -194,6 +194,10 @@ RC 3:
 * Bug fix: No appropiate actions are enabled when all maps are closed.
 * Bug fix: font name is copied by Format Copy.
 
+* New feature: Collaboration mode (alpha version)
+* Bug fix: java 1.5 compiler changes (thanks to Dimitri and to brcha)
+* Bug fix: Typing into the node gulps the first letter. Due to Dimitri.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added
