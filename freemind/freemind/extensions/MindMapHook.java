@@ -16,10 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapHook.java,v 1.1.2.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: MindMapHook.java,v 1.1.2.2 2004-03-11 06:28:41 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.Properties;
+
+import freemind.modes.ModeController;
 
 /**
  * @author foltin
@@ -27,21 +29,23 @@ import java.util.Properties;
  */
 public interface MindMapHook {
 	String getName();
+	void setName(String name);
 	
-	/**
-	 * @return it should return its persistent state or null if not applicable.
-	 */
-	String getPersistentState();
-
-	/**
-	 * @return it should return its persistent state or null if not applicable.
-	 */
-	void setPersistentState(String persistentState);
 
 	/**
 	 * @param properties the properties of the property file belonging to the hook are passed.
 	 */
 	void setProperties(Properties properties);
+	
+	/**looks for a property in the plugin properties file.
+	 * @param string 
+	 */
+	String getResourceString(String property);
+
+
+
+
+	void setController(ModeController controller);
 
 	/* Hooks */
 

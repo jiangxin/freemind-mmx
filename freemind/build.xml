@@ -36,8 +36,9 @@
 		</copy>
 		<mkdir dir="${dist}/accessories" />
 		<copy todir="${dist}/accessories"> 
-			<fileset dir="${src}/accessories"/>
-		</copy>
+			<fileset dir="${src}/accessories" excludes="**/*.java"/>
+			<fileset dir="${build}/accessories"/>
+		</copy> 
 		<!-- third party libs -->
 		<mkdir dir="${dist}/lib" />
 		<copy todir="${dist}/lib"> 
@@ -78,7 +79,9 @@
 		<mkdir dir="${dist}/lib" />
 		<jar jarfile="${FM.jar}"
 		     manifest="${src}/MANIFEST.MF">
-			<fileset dir="${build}"/>
+			<fileset dir="${build}">
+				<exclude name="accessories/**"/> 
+			</fileset>
 			<fileset dir="${src}">
 				<include name="images/*"/>
 				<include name="images/icons/*.png"/>
@@ -86,7 +89,6 @@
 				<include name="user.properties"/>
 				<include name="patterns.xml"/>
 				<include name="Resources*"/>
-				<include name="accessories/plugins/**"/>
 			</fileset>
 		</jar>
 	</target>
@@ -95,17 +97,20 @@
 		<mkdir dir="${dist}/browser" />
 		<jar jarfile="${dist}/browser/freemindbrowser.jar">
 			<fileset dir="${build}">
+				<include name="freemind/extensions/*"/>
 				<include name="freemind/view/*"/>
 				<include name="freemind/view/mindmapview/*"/>
 				<include name="freemind/main/*"/>
 				<include name="freemind/controller/*"/>	
 				<include name="freemind/modes/*"/>
 				<include name="freemind/modes/browsemode/*"/>
+				<include name="accessories/plugins/**"/>
 			</fileset>
 			<fileset dir="${src}">
 				<include name="images/*"/>
 				<include name="images/icons/*.png"/>
 				<include name="*.properties"/>
+				<include name="accessories/plugins/**"/>
 			</fileset>
 		</jar>
                 <copy file="${src}/freemind.properties" tofile="${src}/user.properties"/>
@@ -152,7 +157,7 @@
           dir="${dist}">
 <!--    <jvmarg value="-Djava.util.logging.config.file=logging.properties" /> -->
     <classpath>
-       <pathelement location="${src}"/>
+       <pathelement location="${dist}"/>
        <pathelement location="${FM.jar}"/>
        <pathelement location="${dist}/${jython.jar}"/>
     </classpath>

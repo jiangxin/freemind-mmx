@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.10.2 2004-03-11 06:28:41 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
+import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMind;
 import freemind.main.Tools;
 import freemind.main.FreeMindMain;
@@ -463,6 +464,13 @@ public class MindMapNodeModel extends NodeAdapter {
         iconElement.setAttribute("builtin", ((MindIcon) getIcons().get(i)).getName());
         node.addChild(iconElement);
     }
+
+	for(Iterator i = getActivatedHooks().iterator(); i.hasNext();) {
+		XMLElement hookElement = new XMLElement();
+		hookElement.setName("hook");
+		((PermanentNodeHook) i.next()).save(hookElement);
+		node.addChild(hookElement);
+	}
         
 
         if (childrenUnfolded().hasNext()) {

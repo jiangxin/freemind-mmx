@@ -16,38 +16,25 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeHook.java,v 1.1.2.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: NodeHook.java,v 1.1.2.2 2004-03-11 06:28:41 christianfoltin Exp $*/
 
 package freemind.extensions;
 
-import javax.swing.JMenu;
+import java.util.List;
 
+
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 
 public interface NodeHook extends MindMapHook {
 	
-	void nodeMenuHook(JMenu nodeMenu);
-
+	void setMap(MindMap map);
+	
 	/* hooks */
-
+	void invoke(MindMapNode focussed, List selecteds);
 	/**
 	 * Is called after creation:
 	 */
-	void invoke();
-	void onReceiveFocusHook();
-	void onMouseOverHook();
-	void onUpdateNodeHook();
-	void onAddChild(MindMapNode newChildNode);
-	/**
-	 * If any of my children is updated, I get this notification.
-	 */
-	void onUpdateChildrenHook(MindMapNode updatedNode);
-
-	/**
-	 * If any node in the map is updated, I get this notification.
-	 * To receive it, you have to subscribe yourself using any method to be written. 
-	 */
-	void onUpdateAnyNodeHook(MindMapNode updatedNode);
-	
+	void invoke(MindMapNode node);
 }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.12.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.12.2 2004-03-11 06:28:41 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -26,11 +26,11 @@ import freemind.view.mindmapview.NodeView;
 // end clouds.
 // links, fc, 08.11.2003:
 // end links.
+import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Point;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.util.Vector;
@@ -122,8 +122,10 @@ public interface MindMapNode extends MutableTreeNode {
 
     //hooks, fc 28.2.2004:
     List getHooks();
-	NodeHook addHook(NodeHook hook);
-    void removeHook(NodeHook hook); 
+    Collection getActivatedHooks();
+	PermanentNodeHook addHook(PermanentNodeHook hook);
+	void invokeHook(NodeHook hook);
+    void removeHook(PermanentNodeHook hook); 
 	//end hooks
 	
 	//tooltips,fc 29.2.2004

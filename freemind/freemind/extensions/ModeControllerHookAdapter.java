@@ -27,29 +27,17 @@ public class ModeControllerHookAdapter extends HookAdapter implements ModeContro
 
 
 	// Logging: 
-	private static java.util.logging.Logger logger;
+	// private static java.util.logging.Logger logger;
 
 	/**
 	 * @param map
 	 * @param controller
 	 */
-	public ModeControllerHookAdapter(ModeController controller) {
-		super(controller);
-		if(logger == null)
-			logger = ((ControllerAdapter)getController()).getFrame().getLogger(this.getClass().getName());
+	public ModeControllerHookAdapter() {
+		super();
+//		if(logger == null)
+//			logger = ((ControllerAdapter)getController()).getFrame().getLogger(this.getClass().getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.extensions.ModeControllerHook#enableActions(boolean)
-	 */
-	public void enableActions(boolean enable) {
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.extensions.ModeControllerHook#fileMenuHook(javax.swing.JMenu)
-	 */
-	public void fileMenuHook(JMenu fileMenu) {
-        logger.info("fileMenuHook");
-	}
 
 }

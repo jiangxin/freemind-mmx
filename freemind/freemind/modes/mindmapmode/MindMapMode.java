@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMode.java,v 1.17 2003-11-03 11:00:21 sviles Exp $*/
+/*$Id: MindMapMode.java,v 1.17.12.1 2004-03-11 06:28:41 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -58,7 +58,7 @@ public class MindMapMode implements Mode {
 	try {
 	    getModeController().load(new File(restoreable));
 	} catch (Exception e) {
-	    System.err.println("Error restoring file:"+e);
+	    c.errorMessage("An error occured on opening the file: "+restoreable + ".");
         e.printStackTrace();
 	}
     }

@@ -1,3 +1,11 @@
+Changes made in Freemind 0.7.2:
+===============================
+* Pluginmechanism added
+* Messagebox if recent file not present
+* Special key for mac insert
+* ModeControllerHookAction added.
+* Permanent Hooks can save their things as XML
+
 Changes made in Freemind 0.7.1:
 ===============================
 * Bug fix: automatic save occurs not so often (in fact, only if something has changed since the last automatic save), and uses a better filename.

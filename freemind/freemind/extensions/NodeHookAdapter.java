@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeHookAdapter.java,v 1.1.2.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: NodeHookAdapter.java,v 1.1.2.2 2004-03-11 06:28:41 christianfoltin Exp $*/
 package freemind.extensions;
 
-import javax.swing.JMenu;
+import java.util.Iterator;
+import java.util.List;
 
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMap;
@@ -40,74 +41,32 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 
 	private MindMapNode node;
 
-	// Logging: 
-	private static java.util.logging.Logger logger;
-	
 	/**
 	 * 
 	 */
-	public NodeHookAdapter(MindMapNode node, MindMap map, ModeController controller) {
-		super(controller);
-		this.node = node;
-		this.map = map;
-		if(logger == null)
-			logger = ((ControllerAdapter)getController()).getFrame().getLogger(this.getClass().getName());
+	public NodeHookAdapter() {
+		super();
 	}
 
 	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#shutdownMapHook()
+	 * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode, freemind.modes.MindMapNode[])
 	 */
-	public void shutdownMapHook() {
-		logger.info("shutdownMapHook");
-		node = null;
-        map  = null;
-		super.shutdownMapHook();
+	public void invoke(MindMapNode focussed, List selecteds) {
+		for (Iterator it = selecteds.iterator();it.hasNext();) {
+		   MindMapNode selected = (MindMapNode)it.next();
+		   this.invoke(selected);
+		}								
+
 	}
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.NodeHook#invoke()
 	 */
-	public void invoke() {
+	public void invoke(MindMapNode node) {
+		setNode(node);
+		logger.info("invoke(node) called.");
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#onReceiveFocusHook()
-	 */
-	public void onReceiveFocusHook() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#onMouseOverHook()
-	 */
-	public void onMouseOverHook() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#onUpdateNodeHook()
-	 */
-	public void onUpdateNodeHook() {
-		logger.info("onUpdateNodeHook");
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#onUpdateChildrenHook()
-	 */
-	public void onUpdateChildrenHook(MindMapNode updatedNode) {
-		logger.info("onUpdateChildrenHook");
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#onUpdateAnyNodeHook()
-	 */
-	public void onUpdateAnyNodeHook(MindMapNode updatedNode) {
-		// TODO Auto-generated method stub
-
-	}
-	
 	/**
 	 * @return
 	 */
@@ -144,21 +103,6 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 	}
 
 	/**
-	 * @param b
-	 */
-	private void setSelfUpdate(boolean b) {
-		this.selfUpdateExpected = b;
-		
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean isSelfUpdateExpected() {
-		return selfUpdateExpected;
-	}
-
-	/**
 	 * @param string
 	 */
 	protected void setToolTip(String string) {
@@ -166,17 +110,12 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#onAddChild(freemind.modes.MindMapNode)
+	/**
+	 * @param map
 	 */
-	public void onAddChild(MindMapNode newChildNode) {
-		logger.info("onAddChild");
+	public void setMap(MindMap map) {
+		this.map = map;
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.extensions.NodeHook#nodeMenuHook(javax.swing.JMenu)
-	 */
-	public void nodeMenuHook(JMenu nodeMenu) {
-	}
 
 }

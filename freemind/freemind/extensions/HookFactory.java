@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.2 2004-03-11 06:28:41 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -181,12 +181,9 @@ public class HookFactory {
 		}
 	}
 
-	public ModeControllerHook createModeControllerHook(
-		String hookName,
-		ModeController controller) {
+	public ModeControllerHook createModeControllerHook(String hookName) {
 		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
 		if (descriptor.script.endsWith("py")) {
-			this.interp.set("controller", controller);
 			logger.info("Excecuting jython script: " + descriptor.fileName);
 			interp.execfile(
 				ClassLoader.getSystemResourceAsStream(descriptor.fileName));
@@ -194,35 +191,31 @@ public class HookFactory {
 				(ModeControllerHook) interp.get(
 					"instance",
 					ModeControllerHook.class);
-			hook.setProperties(descriptor.properties);
+			decorateHook(hookName, descriptor, hook);
 			return hook;
 		}
 		return null;
 	}
 
 	public NodeHook createNodeHook(
-		String hookName,
-		MindMapNode node,
-		MindMap map,
-		ModeController controller) {
+		String hookName) {
 		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
+		if(hookName==null)
+			throw new IllegalArgumentException("Unknown hook name "+hookName);
 		// proxy support
 		if(descriptor.properties.getProperty("proxy")!=null) {
 			logger.info("Creating proxy for "+hookName);
-			NodeHook proxy = new NodeHookActionProxy(node, map, controller);
+			NodeHook proxy = new NodeHookActionProxy();
 			descriptor.properties.remove("proxy");
-			proxy.setProperties(descriptor.properties);
+			decorateHook(hookName, descriptor, proxy);
 			return proxy;
 		}
 		if (descriptor.script.endsWith("py")) {
-			this.interp.set("node", node);
-			this.interp.set("map", map);
-			this.interp.set("controller", controller);
 			logger.info("Excecuting jython script: " + descriptor.fileName);
 			interp.execfile(
 				ClassLoader.getSystemResourceAsStream(descriptor.fileName));
 			NodeHook hook = (NodeHook) interp.get("instance", NodeHook.class);
-			hook.setProperties(descriptor.properties);
+			decorateHook(hookName, descriptor, hook);
 			return hook;
 		}
 		//return new BlueNodeHook(node, map, controller);
@@ -238,14 +231,11 @@ public class HookFactory {
 			Class hookClass = Class.forName(className);
 			Constructor hookConstructor =
 				hookClass.getConstructor(
-					new Class[] {
-						MindMapNode.class,
-						MindMap.class,
-						ModeController.class });
+					new Class[] {});
 			NodeHook hook =
 				(NodeHook) hookConstructor.newInstance(
-					new Object[] { node, map, controller });
-			hook.setProperties(descriptor.properties);
+					new Object[] { });
+			decorateHook(hookName, descriptor, hook);
 			return hook;
 		} catch (Exception e) {
 			System.out.println(
@@ -255,6 +245,14 @@ public class HookFactory {
 
 	}
 
+	private void decorateHook(
+		String hookName,
+		HookDescriptor descriptor,
+		MindMapHook hook) {
+		hook.setProperties(descriptor.properties);
+		hook.setName(hookName);
+	}
+
 	/**
 	 * @return
 	 */
@@ -262,11 +260,22 @@ public class HookFactory {
 		return frame;
 	}
 
+	public String getProperty(String hookName, String prop){
+		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
+		if(descriptor == null){
+			throw new IllegalArgumentException("The hook "+hookName + " is not defined.");
+		}
+		return descriptor.properties.getProperty(prop);	
+	}
+
 	/**
 	 * @param action
 	 */
 	public void decorateAction(String hookName, AbstractAction action) {
 		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
+		if(descriptor == null){
+			throw new IllegalArgumentException("The hook "+hookName + " is not defined.");
+		}
 		action.putValue(AbstractAction.NAME, descriptor.script);		
 		String docu = descriptor.properties.getProperty("documentation");
 		if(docu != null)

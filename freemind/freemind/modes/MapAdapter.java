@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.10.2 2004-03-11 06:28:41 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -107,7 +107,7 @@ public abstract class MapAdapter implements MindMap {
 	 */
 	private void removeHooks(MindMapNode node) {
 		while(node.getHooks().size()>0) {
-			NodeHook hook = (NodeHook) node.getHooks().get(0);
+			PermanentNodeHook hook = (PermanentNodeHook) node.getHooks().get(0);
 			node.removeHook(hook);
 		}
 		// and all children:
@@ -244,8 +244,8 @@ public abstract class MapAdapter implements MindMap {
        for(Iterator i = sortedNodes.iterator();i.hasNext();) {
           MindMapNode selectedNode = ((NodeView)i.next()).getModel();
           // remove hooks:
-			for(Iterator j=  selectedNode.getHooks().iterator(); j.hasNext();) {
-				NodeHook hook = (NodeHook) j.next();
+			for(Iterator j=  selectedNode.getActivatedHooks().iterator(); j.hasNext();) {
+				PermanentNodeHook hook = (PermanentNodeHook) j.next();
 				hook.shutdownMapHook();
 			}
           getLinkRegistry().cutNode(selectedNode);
@@ -317,16 +317,15 @@ public abstract class MapAdapter implements MindMap {
     }
 
     public void paste(MindMapNode node, MindMapNode parent) {
-	if (node != null) {
-            insertNodeInto(node, parent);
-	    nodeStructureChanged(parent);
-	}
+		if (node != null) {
+    	    insertNodeInto(node, parent);
+	    	nodeStructureChanged(parent);
+		}
     }
 
     public String getRestoreable() {
 	return null;
     }
-
 
     public MindMapLinkRegistry getLinkRegistry() { return null; }
 
@@ -725,8 +724,8 @@ public abstract class MapAdapter implements MindMap {
 	private void recursiveCallUpdateHooks(MindMapNode node, MindMapNode changedNode) {
 		// Tell any node hooks that the node is changed:
 		if(node instanceof MindMapNode) {
-			for(Iterator i=  ((MindMapNode)node).getHooks().iterator(); i.hasNext();) {
-				NodeHook hook = (NodeHook) i.next();
+			for(Iterator i=  ((MindMapNode)node).getActivatedHooks().iterator(); i.hasNext();) {
+				PermanentNodeHook hook = (PermanentNodeHook) i.next();
 				if(node == changedNode)
 					hook.onUpdateNodeHook();
 				else

@@ -8,6 +8,7 @@ package freemind.extensions;
 
 import java.util.Properties;
 
+import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.ModeController;
 
@@ -19,20 +20,28 @@ import freemind.modes.ModeController;
  */
 public class HookAdapter implements MindMapHook {
 
+	private String name;
 	private Properties properties;
 	private ModeController controller;
+
+	// Logging: 
+	protected java.util.logging.Logger logger;
+
 	/**
 	 * @param map
 	 * @param controller
 	 */
-	public HookAdapter(ModeController controller) {
-		this.controller = controller;
+	public HookAdapter() {
 	}
 	/* (non-Javadoc)
 	 * @see freemind.modes.NodeHook#getName()
 	 */
 	public String getName() {
-		return this.getClass().getName();
+		return this.name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 	/* (non-Javadoc)
 	 * @see freemind.modes.NodeHook#startupMapHook(java.lang.String)
@@ -47,19 +56,6 @@ public class HookAdapter implements MindMapHook {
 	 */
 	public void shutdownMapHook() {
 		controller = null;
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#getPersistentState()
-	 */
-	public String getPersistentState() {
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#setPersistentState(java.lang.String)
-	 */
-	public void setPersistentState(String persistentState) {
 	}
 
 	/**
@@ -83,5 +79,20 @@ public class HookAdapter implements MindMapHook {
 		this.properties = properties;
 	}
 
+
+	/**
+	 * @param controller
+	 */
+	public void setController(ModeController controller) {
+		this.controller = controller;
+		if(logger == null)
+			logger = ((ControllerAdapter)getController()).getFrame().getLogger(this.getClass().getName());
+	}
+	/* (non-Javadoc)
+	 * @see freemind.extensions.MindMapHook#getResourceString(java.lang.String)
+	 */
+	public String getResourceString(String property) {
+		return properties.getProperty(property);
+	}
 
 }

@@ -15,6 +15,4 @@ import javax.swing.JMenu;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public interface ModeControllerHook extends MindMapHook {
-	void enableActions(boolean enable);
-	void fileMenuHook(JMenu fileMenu);
 }

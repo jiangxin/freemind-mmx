@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13.12.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.13.12.2 2004-03-11 06:28:41 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -205,6 +205,7 @@ public class BrowseController extends ControllerAdapter {
 	model.load(url);
 	newMap(model);
 	mapOpened(true);
+	//URGENT: Must activate hooks???
     }
 
 

@@ -1,28 +1,4 @@
 from freemind.extensions import ModeControllerHookAdapter
-from javax.swing import AbstractAction
-
-class PyExportToImageModeControllerHook(ModeControllerHookAdapter):
-    def __init__(self, controller):
-        ModeControllerHookAdapter.__init__(self, controller)
-        self.actionJPEG=None
-        self.actionPNG =None
-
-    def fileMenuHook(self, fmenu):
-        if(self.actionJPEG == None):
-            self.actionJPEG = ExportImageAction(self.getController(), "Export to jpeg", "jpeg", self)
-        if(self.actionPNG  == None):
-            self.actionPNG  = ExportImageAction(self.getController(), "Export to png" , "png" , self)
-        fmenu.add(self.actionJPEG)
-        fmenu.add(self.actionPNG )
-
-    def enableActions(self, enabled):
-        print "enableActions"+repr(enabled)
-        if(self.actionJPEG != None):
-            self.actionJPEG.setEnabled(enabled)
-        if(self.actionPNG  != None):
-            self.actionPNG.setEnabled(enabled)
-
-        
 from java.awt.image import BufferedImage
 from javax.swing import JFileChooser
 from java.io import File
@@ -30,21 +6,18 @@ from java.io import FileOutputStream
 from javax.swing.filechooser import FileFilter
 import javax.imageio.ImageIO
 
-class ExportImageAction(AbstractAction):
-    def __init__(self, mapController, label, type, hook):
-        AbstractAction.__init__(self, label)
-        self.mc = mapController
-        self.type = type
-        self.model = self.mc.getController().getModel()
-        self.hook = hook
-
-    def actionPerformed(self, e):
+class PyExportToImageModeControllerHook(ModeControllerHookAdapter):
+    def __init__(self):
+        ModeControllerHookAdapter.__init__(self)
+       
+    def startupMapHook(self):
+        self.mc = self.getController();
         self.model = self.mc.getController().getModel()
         if(self.model == None):
             return # there may be no map open
         image = self.createBufferedImage()
         if(image != None):
-            self.exportToImage(image, self.type)
+            self.exportToImage(image, "jpeg")
 
     def createBufferedImage(self):
         view = self.mc.getView()
@@ -98,6 +71,6 @@ class ImageFilter(FileFilter):
 #        methods.extend(methodsOf(eachBase))
 #    return methods
     
-instance=PyExportToImageModeControllerHook(controller)
+instance=PyExportToImageModeControllerHook()
 #print repr(methodsOf(PyExportToImageModeControllerHook)).replace(",", "\n")
 #print repr(methodsOf(ModeControllerHookAdapter)).replace(",", "\n")

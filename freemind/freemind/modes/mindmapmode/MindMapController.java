@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.2 2004-03-11 06:28:41 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -56,7 +56,8 @@ import javax.swing.JRadioButtonMenuItem;
 
 public class MindMapController extends ControllerAdapter {
 
-    public Vector nodeHookActions;
+	public Vector nodeHookActions;
+	public Vector modeControllerHookActions;
 	//    Mode mode;
     private JPopupMenu popupmenu;
     //private JToolBar toolbar;
@@ -155,7 +156,7 @@ public class MindMapController extends ControllerAdapter {
 
     // Extension Actions
     Action patterns[] = new Action[0]; // Make sure it is initialized
-    Vector iconActions = new Vector(); //fc
+    public Vector iconActions = new Vector(); //fc
     Action removeLastIcon = new NodeGeneralAction ("remove_last_icon", "images/remove.png",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.removeLastIcon(node); }});
@@ -183,14 +184,16 @@ public class MindMapController extends ControllerAdapter {
         //node hook actions:
         createNodeHookActions();
         //HOOK TEST
+        if(modeControllerHookActions == null) {
+			modeControllerHookActions = new Vector();
+        }
 		HookFactory factory = getFrame().getHookFactory();
         List hooks = factory.getPossibleModeControllerHooks(this.getClass());
 		for(Iterator i = hooks.iterator(); i.hasNext();) {
 			String desc = (String) i.next();
-			System.out.println(desc);
-			// create hook class.
-			ModeControllerHook hook = factory.createModeControllerHook(desc,  this);
-			addHook(hook);
+			ModeControllerHookAction action = new ModeControllerHookAction(desc, this);
+			factory.decorateAction(desc, action);
+			modeControllerHookActions.add(action);
 		}
 		//HOOK TEST END       
 
@@ -234,29 +237,6 @@ public class MindMapController extends ControllerAdapter {
             iconActions.add(myAction);
         }
     }
-
-	//URGENT: transport to ModeController as this is general.
-	//URGENT: Descorate with documentation (tooltip), icon, ...
-	protected class NodeHookAction extends AbstractAction {
-		String hookName;
-		ModeController controller;
-		NodeHookAction(String hookName, ModeController controller) {
-			super(hookName);
-			this.hookName = hookName;
-			this.controller = controller;
-		}
-
-		public void actionPerformed(ActionEvent arg0) {
-			for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			   MindMapNode selected = (MindMapNode)it.next();
-			   System.out.println("Associating hook to node "+ selected);
-			   //URGENT:If present, the hook must be removed (according to its properties)
-			   NodeHook hook = getFrame().getHookFactory().createNodeHook(hookName,selected,getMap(), controller);
-			   selected.addHook(hook);
-			   hook.invoke();
-			   }
-			}
-		}
 
 	/**
 	 * 
@@ -353,11 +333,10 @@ public class MindMapController extends ControllerAdapter {
         fileMenu.addSeparator();
         add(fileMenu, exportToHTML, "keystroke_export_to_html");
         // hooks: 
-        //URGENT: (should be in ModeController or Controller.java)
-        for(Iterator i=getHooks().iterator(); i.hasNext();) {
-            ModeControllerHook hook = (ModeControllerHook) i.next();
-            hook.fileMenuHook(fileMenu);
-        }
+		// hooks, fc, 1.3.2004:
+		for (int i=0; i<modeControllerHookActions.size(); ++i) {          
+			   JMenuItem item = fileMenu.add((Action) modeControllerHookActions.get(i));
+		}
         return fileMenu;
     }
 
@@ -407,7 +386,13 @@ public class MindMapController extends ControllerAdapter {
        JMenu leadingEditMenu = new JMenu();
        add(leadingEditMenu, edit, "keystroke_edit");
        add(leadingEditMenu, editLong, "keystroke_edit_long_node");
-       add(leadingEditMenu, newChild, "keystroke_add_child");
+       // as mac's do not have an insert key, it is mapped to an alternative key.
+	   String osName = System.getProperty("os.name");
+       if (osName.startsWith("Mac OS")) {
+           add(leadingEditMenu, newChild, "keystroke_add_child_mac");
+       } else {
+           add(leadingEditMenu, newChild, "keystroke_add_child");
+       }
        leadingEditMenu.addSeparator();
 
        add(leadingEditMenu, cut, "keystroke_cut");
@@ -630,9 +615,9 @@ public class MindMapController extends ControllerAdapter {
         importLinkedBranch.setEnabled(enabled);
         importLinkedBranchWithoutRoot.setEnabled(enabled);
         // hooks:
-        for(Iterator i=getHooks().iterator(); i.hasNext();) {
-            ModeControllerHook hook = (ModeControllerHook) i.next();
-            hook.enableActions(enabled);
+        for(Iterator i=modeControllerHookActions.iterator(); i.hasNext();) {
+            ModeControllerHookAction action = (ModeControllerHookAction) i.next();
+            action.setEnabled(enabled);
         }
     }
 
@@ -750,7 +735,9 @@ public class MindMapController extends ControllerAdapter {
             if (returnVal==JFileChooser.APPROVE_OPTION) {
                try {
                   MindMapNodeModel node = getModel().loadTree(chooser.getSelectedFile());
-                  getModel().paste(node, parent); }
+                  getModel().paste(node, parent);
+ 				  invokeHooksRecursively(node, getModeController(), getModel());
+               }
                catch (Exception ex) {
                   handleLoadingException(ex); }}}}
 
@@ -772,7 +759,9 @@ public class MindMapController extends ControllerAdapter {
                return; }
             try {
                MindMapNodeModel node = getModel().loadTree(new File(absolute.getFile()));
-               getModel().paste(node, parent); }
+               getModel().paste(node, parent); 
+			   invokeHooksRecursively(node, getModeController(), getModel());
+            }
             catch (Exception ex) {
                handleLoadingException(ex); }}}
 
@@ -797,7 +786,11 @@ public class MindMapController extends ControllerAdapter {
             try {
                MindMapNodeModel node = getModel().loadTree(new File(absolute.getFile()));
                for (ListIterator i = node.childrenUnfolded();i.hasNext();) {
-                  getModel().paste((MindMapNodeModel)i.next(), parent); }}
+                  	MindMapNodeModel importNode = (MindMapNodeModel)i.next();
+					getModel().paste(importNode, parent);
+					invokeHooksRecursively(importNode, getModeController(), getModel());
+                  }
+               }
                //getModel().setLink(parent, null); }
             catch (Exception ex) {
                handleLoadingException(ex); }}}
@@ -895,8 +888,8 @@ public class MindMapController extends ControllerAdapter {
     // Icons
     // __________________
 
-    private class IconAction extends AbstractAction {
-        MindIcon icon;
+    public class IconAction extends AbstractAction {
+        public MindIcon icon;
         public IconAction(MindIcon _icon) {
             super(_icon.getDescription(getFrame()), _icon.getIcon(getFrame()));
             putValue(Action.SHORT_DESCRIPTION, _icon.getDescription(getFrame()));

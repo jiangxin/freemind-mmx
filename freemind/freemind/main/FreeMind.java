@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.10.2 2004-03-11 06:28:41 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -29,6 +29,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -525,8 +526,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
               }
            }
         }
-        if (!fileLoaded && frame.getProperty("onStartIfNotSpecified") != null) {
-           frame.c.getLastOpenedList().open(frame.getProperty("onStartIfNotSpecified")); }
+			if (!fileLoaded && frame.getProperty("onStartIfNotSpecified") != null) {
+			   frame.c.getLastOpenedList().open(frame.getProperty("onStartIfNotSpecified")); }
 
         frame.pack();
 

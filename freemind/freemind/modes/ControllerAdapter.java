@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.2 2004-03-11 06:28:41 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -108,10 +108,8 @@ public abstract class ControllerAdapter implements ModeController {
     public Action paste = null;
 
     static final Color selectionColor = new Color(200,220,200);
-	private List hooks;
 
     public ControllerAdapter() {
-        hooks= new Vector();
     }
 
     public ControllerAdapter(Mode mode) {
@@ -166,8 +164,8 @@ public abstract class ControllerAdapter implements ModeController {
 
     public void anotherNodeSelected(MindMapNode n) {
     	// look for hooks:
-    	for(Iterator i= n.getHooks().iterator(); i.hasNext();){
-    		NodeHook hook = (NodeHook) i.next();
+    	for(Iterator i= n.getActivatedHooks().iterator(); i.hasNext();){
+    		PermanentNodeHook hook = (PermanentNodeHook) i.next();
     		hook.onReceiveFocusHook();
     	}
     }
@@ -241,8 +239,9 @@ public abstract class ControllerAdapter implements ModeController {
     public void load (File file) throws FileNotFoundException, IOException, XMLParseException {
         MapAdapter model = newModel();
         model.load(file);
-        getController().getMapModuleManager().newMapModule(model);
+		getController().getMapModuleManager().newMapModule(model);
         mapOpened(true);
+		invokeHooksRecursively((NodeAdapter) getModel().getRoot(), getModeController(), getModel());
     }
 
     public boolean save() {
@@ -253,7 +252,7 @@ public abstract class ControllerAdapter implements ModeController {
            return save(getModel().getFile()); }}
 
     /** fc, 24.1.2004: having two methods getSelecteds with different return values (linkedlists of models resp. views) is asking for trouble. @see MapView */
-    protected LinkedList getSelecteds() {
+    public List getSelecteds() {
 	LinkedList selecteds = new LinkedList();
 	ListIterator it = getView().getSelecteds().listIterator();
 	if (it != null) {
@@ -1389,7 +1388,12 @@ public abstract class ControllerAdapter implements ModeController {
     public FreeMindMain getFrame() {
         return getController().getFrame();
     }
-	
+
+	/** This was inserted by fc, 10.03.04 to enable all actions to refer to its controller easily.*/
+	public ControllerAdapter getModeController() {
+		return this;	
+	}
+
 	// fc, 29.2.2004: there is no sense in having this private and the controller public,
 	// because the getController().getModel() method is available anyway.
     private MapAdapter getModel() {
@@ -1460,24 +1464,32 @@ public abstract class ControllerAdapter implements ModeController {
         getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); // this level is default
     }
 
-	public ModeControllerHook addHook(ModeControllerHook hook) {
+	public void invokeHook(ModeControllerHook hook) {
+		hook.setController(this);
 		// initialize:
-		hook.startupMapHook();
-		// add then
-		hooks.add(hook);
 		// the main invocation:
-//		hook.invoke();
-		return hook;
-	}
-
-	public List getHooks() {
-		return hooks;
-	}
-
-	public void removeHook(ModeControllerHook hook) {
+		hook.startupMapHook();
+		// and good bye.
 		hook.shutdownMapHook();
-		hooks.remove(hook);
 	}
+
+	/**
+	  *  
+	  */
+	public void invokeHooksRecursively(NodeAdapter node, ModeController controller, MindMap map) {
+		 for(Iterator i = node.childrenUnfolded(); i.hasNext();) {
+			 NodeAdapter child = (NodeAdapter) i.next();
+			 invokeHooksRecursively(child, controller, map);
+		 }
+		 for(Iterator i = node.getHooks().iterator(); i.hasNext();) {
+			 PermanentNodeHook hook = (PermanentNodeHook) i.next();
+			 hook.setController(controller);
+			 hook.setMap(map);
+			 node.invokeHook(hook); 
+		 }
+	}
+
+
 
     ////////////
     //  Actions
@@ -1533,6 +1545,45 @@ public abstract class ControllerAdapter implements ModeController {
 			getController().setTitle(); // Possible update of read-only
         }
     }
+
+	protected class NodeHookAction extends AbstractAction {
+		String hookName;
+		ModeController controller;
+		public NodeHookAction(String hookName, ModeController controller) {
+			super(hookName);
+			this.hookName = hookName;
+			this.controller = controller;
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			HookFactory hookFactory = getFrame().getHookFactory();
+			// two different invocation methods:single or selecteds
+			NodeHook hook = hookFactory.createNodeHook(hookName);
+			hook.setController(controller);
+			hook.setMap(getMap());
+			hook.invoke(getSelected(), getSelecteds());							
+		} 
+  			
+	}
+
+	protected class ModeControllerHookAction extends AbstractAction {
+		String hookName;
+		ModeController controller;
+		public ModeControllerHookAction(String hookName, ModeController controller) {
+			super(hookName);
+			this.hookName = hookName;
+			this.controller = controller;
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			HookFactory hookFactory = getFrame().getHookFactory();
+			// two different invocation methods:single or selecteds
+			ModeControllerHook hook = hookFactory.createModeControllerHook(hookName);
+			hook.setController(controller);
+			invokeHook(hook);							
+		} 
+  			
+	}
 
     protected class FindAction extends AbstractAction {
         public FindAction() {

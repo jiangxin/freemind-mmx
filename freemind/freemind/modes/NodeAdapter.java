@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.12.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.12.2 2004-03-11 06:28:41 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -38,7 +38,8 @@ import java.util.Vector;
  */
 public abstract class NodeAdapter implements MindMapNode {
 	
-    private List hooks;
+    private HashSet activatedHooks;
+	private List hooks;
 	protected Object userObject = "no text";
     private String link = null; //Change this to vector in future for full graph support
     private String toolTip = null;
@@ -86,6 +87,7 @@ public abstract class NodeAdapter implements MindMapNode {
 		this.userObject = userObject;
 		this.frame = frame;
 		hooks = new Vector();
+		activatedHooks = new HashSet();
     }
 
     public String getLink() {
@@ -445,8 +447,8 @@ public abstract class NodeAdapter implements MindMapNode {
         }
     	child.setParent( this );
     	// call add child hook:
-    	for(Iterator i = this.getHooks().iterator(); i.hasNext(); ){
-    		NodeHook hook = (NodeHook) i.next();
+    	for(Iterator i = this.getActivatedHooks().iterator(); i.hasNext(); ){
+    		PermanentNodeHook hook = (PermanentNodeHook) i.next();
     		hook.onAddChild((MindMapNode)child);
     	}
     }
@@ -543,14 +545,18 @@ public abstract class NodeAdapter implements MindMapNode {
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMapNode#addHook(freemind.modes.NodeHook)
 	 */
-	public NodeHook addHook(NodeHook hook) {
-		// initialize:
-		hook.startupMapHook();
+	public PermanentNodeHook addHook(PermanentNodeHook hook) {
 		// add then
 		hooks.add(hook);
-		// the main invocation:
-		hook.invoke();
 		return hook;
+	}
+
+	public void invokeHook(NodeHook hook) {
+		// initialize:
+		hook.startupMapHook();
+		// the main invocation:
+		hook.invoke(this);
+	    activatedHooks.add(hook);
 	}
 
 	/* (non-Javadoc)
@@ -561,10 +567,18 @@ public abstract class NodeAdapter implements MindMapNode {
 	}
 
 	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#getActivatedHooks()
+	 */
+	public Collection getActivatedHooks() {
+		return activatedHooks;
+	}
+
+	/* (non-Javadoc)
 	 * @see freemind.modes.MindMapNode#removeHook(freemind.modes.NodeHook)
 	 */
-	public void removeHook(NodeHook hook) {
+	public void removeHook(PermanentNodeHook hook) {
 		hook.shutdownMapHook();
+		activatedHooks.remove(hook);
 		hooks.remove(hook);
 	}
 
@@ -581,5 +595,6 @@ public abstract class NodeAdapter implements MindMapNode {
 	public void setToolTip(String string) {
 		toolTip = string;
 	}
+
 
 }

@@ -1,13 +1,14 @@
-from freemind.extensions import NodeHookAdapter
+from freemind.extensions import PermanentNodeHookAdapter
 from java.awt import Color
 
-class PyAutomaticLayoutNodeHook(NodeHookAdapter):
-    def __init__(self, node, map, controller):
-        NodeHookAdapter.__init__(self, node, map, controller)
+class PyAutomaticLayoutNodeHook(PermanentNodeHookAdapter):
+    def __init__(self, map, controller):
+        PermanentNodeHookAdapter.__init__(self, map, controller)
         self.colors = [ Color(0x000000), Color(0x0033FF), Color(0x00b439), Color(0x990000), Color(0x111111) ]
 
-    def invoke(self):
-        NodeHookAdapter.invoke(self)
+    def invoke(self, node):
+        self.setNode(node)
+        PermanentNodeHookAdapter.invoke(self)
         self.setStyle()
         # propagate
         childIterator = self.getNode().childrenUnfolded()
@@ -19,7 +20,7 @@ class PyAutomaticLayoutNodeHook(NodeHookAdapter):
         self.setColor()
         
     def onUpdateNodeHook(self):
-        NodeHookAdapter.onUpdateNodeHook(self)
+        PermanentNodeHookAdapter.onUpdateNodeHook(self)
         print "onUpdateNodeHook?"+repr(self)
         if(self.isSelfUpdateExpected()):
             return
@@ -27,7 +28,9 @@ class PyAutomaticLayoutNodeHook(NodeHookAdapter):
         self.setStyle()
 
     def onAddChild(self, child):
-        child.addHook(PyAutomaticLayoutNodeHook(child, self.getMap(), self.getController()))
+        hook = PyAutomaticLayoutNodeHook(self.getMap(), self.getController())
+        hook.setNode(child)
+        child.addHook(hook)
 
     def setColor(self):
         depth = self.depth(self.getNode())
@@ -48,4 +51,4 @@ class PyAutomaticLayoutNodeHook(NodeHookAdapter):
 
 
 
-instance=PyAutomaticLayoutNodeHook(node,map,controller)
+instance=PyAutomaticLayoutNodeHook(map,controller)

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.2 2004-03-11 06:28:41 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -32,6 +32,7 @@ import javax.swing.JPopupMenu;
 
 import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
+import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 import freemind.extensions.ModeControllerHook;
 
@@ -54,7 +55,8 @@ public interface ModeController {
     public boolean isBlocked();
     public void edit(KeyEvent e, boolean addNew, boolean editLong);
     public void mouseWheelMoved(MouseWheelEvent e);
-    /** This extends the currently selected nodes. 
+	List getSelecteds();
+	    /** This extends the currently selected nodes. 
         @return true, if the method changed the selection.*/
     public boolean extendSelection(MouseEvent e);
 
@@ -66,10 +68,9 @@ public interface ModeController {
     public void nodeChanged(MindMapNode n);
     public void anotherNodeSelected(MindMapNode n);
 	//hooks, fc 28.2.2004:
-	List getHooks();
-	ModeControllerHook addHook(ModeControllerHook hook);
-	void removeHook(ModeControllerHook hook); 
+	void invokeHook(ModeControllerHook hook);
 	//end hooks
 	FreeMindMain getFrame();
+	MapView getView(); 
 
 }

@@ -4,8 +4,6 @@ package accessories.plugins;
 import java.awt.Color;
 
 import freemind.extensions.*;
-import freemind.modes.ControllerAdapter;
-import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
@@ -20,31 +18,24 @@ import java.util.Vector;
  * @file BlinkingNodeHook.java 
  * @package freemind.modes.mindmapmode
  * */
-public class BlinkingNodeHook extends NodeHookAdapter {
+public class BlinkingNodeHook extends PermanentNodeHookAdapter {
 
 	private Timer timer;
 
 	/**
 	 * @param node
 	 */
-	public BlinkingNodeHook(MindMapNode node, MindMap map, ModeController controller) {
-		super(node, map, controller);
-		timer = new Timer();
-		timer.schedule(new timerColorChanger(), 500, 500);
+	public BlinkingNodeHook() {
+		super();
 	}
 
 	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#getName()
-	 */
-	public String getName() {
-		return "blue";
-	}
-	/* (non-Javadoc)
 	 * @see freemind.modes.NodeHook#startupMapHook(java.lang.String)
 	 */
-	public void invoke() {
-		getNode().setColor(Color.BLUE);
-		setToolTip("<html><a href='web'>BLUE IS GEIL!</a></html>");
+	public void invoke(MindMapNode node) {
+		super.invoke(node);
+		timer = new Timer();
+		timer.schedule(new timerColorChanger(), 500, 500);
 		nodeChanged(getNode());
 	}
 
@@ -52,30 +43,7 @@ public class BlinkingNodeHook extends NodeHookAdapter {
 //	MindMapNode newNode=((ControllerAdapter)getController()).newNode();
 //	((MapAdapter) getMap()).insertNodeInto(newNode, getNode(), 0);
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#onUpdateNodeHook()
-	 */
-	public void onUpdateNodeHook() {
-// 		getNode().setColor(Color.BLUE);
-// 		nodeChanged(getNode());
-// 		System.out.println("onUpdateNodeHook"+this);
-	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#onUpdateChildrenHook(freemind.modes.MindMapNode)
-	 */
-	public void onUpdateChildrenHook(MindMapNode updatedNode) {
-		// updatedNode.setColor(Color.BLUE);
-		//don't do this: nodeChanged(updatedNode);
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#onReceiveFocusHook()
-	 */
-	public void onReceiveFocusHook() {
-// 		getNode().setColor(Color.RED);
-// 		nodeChanged(getNode());
-	}
 	static Vector colors = new Vector();
 	protected class timerColorChanger extends TimerTask {
 		timerColorChanger() {

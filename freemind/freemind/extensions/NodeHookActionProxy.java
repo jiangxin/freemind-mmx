@@ -6,16 +6,11 @@
  */
 package freemind.extensions;
 
-import java.awt.event.ActionEvent;
-import java.util.Iterator;
-
 import javax.swing.AbstractAction;
-import javax.swing.JMenu;
 
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
-import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
@@ -23,61 +18,36 @@ import freemind.view.mindmapview.NodeView;
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class NodeHookActionProxy extends NodeHookAdapter {
+public class NodeHookActionProxy extends PermanentNodeHookAdapter {
 
-	private NodeHook subject;
+	private PermanentNodeHook subject;
 	private AbstractAction action;
-
-	protected class NodeHookAction extends AbstractAction {
-		NodeHookAction(String text) {
-			super(text);
-		}
-
-		public void actionPerformed(ActionEvent arg0) {
-			NodeView view = getController().getFrame().getController().getView().getSelected();
-			setNode(view.getModel());
-			System.out.println("actionPerformed for "+getNode());
-			invoke();
-		}
-
-	}
 
 	/**
 	 * @param node
 	 * @param map
 	 * @param controller
 	 */
-	public NodeHookActionProxy(
-		MindMapNode node,
-		MindMap map,
-		ModeController controller) {
-		super(node, map, controller);
+	public NodeHookActionProxy() {
+		super();
 	}
 
-	NodeHook createHook() {
+	PermanentNodeHook createHook() {
 		if(subject == null){
-			subject =
+			subject = (PermanentNodeHook)
 				getController().getFrame().getHookFactory().createNodeHook(
-					getProperties().getProperty("propFile"),
-					getNode(),getMap(), getController());
+					getProperties().getProperty("propFile"));
+			subject.setController(getController());
+			subject.setMap(getMap());
 		}
 		return subject;
 	}
 
 	/* (non-Javadoc)
-	 * @see freemind.extensions.NodeHook#nodeMenuHook(javax.swing.JMenu)
-	 */
-	public void nodeMenuHook(JMenu nodeMenu) {
-		if(action == null)
-			this.action = new NodeHookAction(getProperties().getProperty("script"));
-		nodeMenu.add(action);
-	}
-
-	/* (non-Javadoc)
 	 * @see freemind.extensions.NodeHook#invoke()
 	 */
-	public void invoke() {
-		createHook().invoke();
+	public void invoke(MindMapNode node) {
+		createHook().invoke(node);
 	}
 
 	/* (non-Javadoc)
