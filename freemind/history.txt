@@ -25,6 +25,9 @@ Changes made in Freemind 0.8.0:
 
 * Bold menu is now checked/unchecked if bold/normal
 
+* Plugins can have registration parts that are called at each map startup.
+* UnfoldAll is mouse wheel sensitive.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

@@ -19,7 +19,7 @@
  *
  * Created on 22.07.2004
  */
-/*$Id: HookDescriptor.java,v 1.1.2.2 2004-08-08 13:03:48 christianfoltin Exp $*/
+/*$Id: HookDescriptor.java,v 1.1.2.3 2004-08-12 20:19:04 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.HashMap;
@@ -107,10 +107,4 @@ class HookDescriptor {
 	public Properties getProperties() {
 		return properties;
 	}
-    /**
-     * @return
-     */
-    public boolean isAutomaticallyInvoked() {
-        return pluginAction.isAutomaticInvocation();
-    }
 }

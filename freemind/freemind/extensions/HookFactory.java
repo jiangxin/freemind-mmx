@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.13 2004-08-08 13:03:48 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.14 2004-08-12 20:19:04 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -26,7 +26,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -38,9 +37,7 @@ import javax.xml.bind.Unmarshaller;
 import freemind.common.JaxbTools;
 import freemind.controller.actions.generated.instance.Plugin;
 import freemind.controller.actions.generated.instance.PluginActionType;
-import freemind.controller.actions.generated.instance.PluginMenuType;
-import freemind.controller.actions.generated.instance.PluginModeType;
-import freemind.controller.actions.generated.instance.PluginPropertyType;
+import freemind.controller.actions.generated.instance.PluginRegistrationType;
 import freemind.main.FreeMindMain;
 import freemind.modes.MindMapNode;
 
@@ -58,6 +55,7 @@ public class HookFactory {
 
 	private HashMap pluginInfo;
 	private Vector allPlugins;
+    private List allRegistrations;
 
 	/**
 	 * 
@@ -124,6 +122,7 @@ public class HookFactory {
 		ImportWizard.buildClassList();
 		pluginInfo = new HashMap();
 		allPlugins = new Vector();
+		allRegistrations = new Vector();
 		for (Iterator i = ImportWizard.CLASS_LIST.iterator(); i.hasNext();) {
 			String xmlPluginFile = (String) i.next();
 			if (xmlPluginFile.startsWith(pluginPrefix)) {
@@ -164,6 +163,11 @@ public class HookFactory {
 					pluginInfo.put(action.getLabel(), new HookDescriptor(action));
 					allPlugins.add(action.getLabel());
 				}
+				for (Iterator k = plugin.getPluginRegistration().iterator(); k.hasNext();) {
+                    PluginRegistrationType registration = (PluginRegistrationType) k.next();
+                    allRegistrations.add(registration);
+                    
+                }
 			}
 		}
 	}
@@ -301,12 +305,11 @@ public class HookFactory {
 	}
 
     /**
-     * @param desc
      * @return
      */
-    public boolean isAutomaticallyInvoked(String hookName) {
-		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
-		return descriptor.isAutomaticallyInvoked();
+    public List getRegistrations() {
+        actualizePlugins();
+        return allRegistrations;
     }
 
 }

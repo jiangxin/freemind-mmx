@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.22 2004-08-08 13:03:48 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.23 2004-08-12 20:19:04 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -551,7 +551,7 @@ public abstract class ControllerAdapter implements ModeController {
                boolean savingNotCancelled = save();
                if (!savingNotCancelled) {
                	  return false; }}
-			else if (returnVal==JOptionPane.CANCEL_OPTION) {
+			else if ((returnVal==JOptionPane.CANCEL_OPTION) || (returnVal == JOptionPane.CLOSED_OPTION)) {
 				return false; }}
                 
         getModel().destroy();
@@ -1776,4 +1776,16 @@ public abstract class ControllerAdapter implements ModeController {
 
     }
 
+    /**
+     *
+     */
+
+    public void shutdownController() {
+    }
+    /**
+     *
+     */
+
+    public void startupController() {
+    }
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.14 2004-08-08 13:03:48 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.15 2004-08-12 20:19:05 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -55,9 +55,13 @@ public interface ModeController extends MindMapActions {
     void open();
     //    void edit(NodeView node, NodeView toBeSelected);
     boolean close();
+    // activation methods:
+    void startupController();
+    void shutdownController();
     /** This method is used to hide the map "under" another opened map. 
      * In fact, should remove the focus, stop plugins, if necessary, etc. */
     void setVisible(boolean visible);
+    // end activation methods.
     void doubleClick(MouseEvent e);
     void plainClick(MouseEvent e);
     void toggleFolded();

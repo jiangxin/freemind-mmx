@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.2.1 2004-08-08 13:03:48 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.2.2 2004-08-12 20:19:04 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -137,6 +137,7 @@ import freemind.view.mindmapview.MapView;
             if(oldMapModule != null) {
                 // shut down screens of old view + frame
                 c.getModeController().setVisible(false);
+                c.getModeController().shutdownController();
             }
                 
         	if (mapModule != null) {
@@ -160,8 +161,9 @@ import freemind.view.mindmapview.MapView;
 	            lastOpened.mapOpened(getMapModule());
 	            c.setTitle();
                 ((MainToolBar)c.getToolbar()).setZoomComboBox(getMapModule().getView().getZoom()); 
-	            c.obtainFocusForSelected(); 
-				c.getMode().getModeController().setVisible(true);
+	            c.obtainFocusForSelected();
+	            c.getModeController().startupController();
+				c.getModeController().setVisible(true);
             }
 	    }
 

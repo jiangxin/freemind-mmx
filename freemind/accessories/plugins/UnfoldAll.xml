@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <plugin>
+	<plugin_registration class_name="accessories.plugins.UnfoldAll$Registration"/>
 	<plugin_action 
 		documentation="&lt;html&gt;Unfolds the selected nodes and all their children.&lt;/html&gt;" 
 		name="Unfold all" key_stroke="alt END" 
@@ -51,14 +52,5 @@
 		<plugin_menu location="mindmapmode_toolbar/folding/foldOneLevel"/>
 		<plugin_property value="true" name="foldingState"/>
 		<plugin_property value="OneLevel" name="foldingType"/>
-	</plugin_action>
-	<plugin_action 
-		name="Wheel support for folding" 
-		base="freemind.extensions.NodeHookAdapter" 
-		label="accessories/plugins/WheelSupportForFolding.properties" 
-		class_name="accessories.plugins.UnfoldAllForMouseWheel"
-		automatic_invocation="true"
-		instanciation="OnceForRoot">
-		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 	</plugin_action>
 </plugin>

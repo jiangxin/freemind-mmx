@@ -4,11 +4,17 @@
  */
 package accessories.plugins;
 
+import java.awt.event.InputEvent;
+import java.awt.event.MouseWheelEvent;
 import java.util.Iterator;
 
+import freemind.extensions.HookRegistration;
 import freemind.extensions.NodeHookAdapter;
 import freemind.main.Tools;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
+import freemind.modes.ModeController.MouseWheelEventHandler;
 
 /**
  * @author foltin
@@ -16,6 +22,45 @@ import freemind.modes.MindMapNode;
  */
 public class UnfoldAll extends NodeHookAdapter  {
 
+    public static class Registration implements HookRegistration, MouseWheelEventHandler {
+
+        private final ModeController controller;
+        private final MindMap mMap;
+        private final java.util.logging.Logger logger;
+        private UnfoldAll hookInstance;
+
+        public Registration(ModeController controller, MindMap map) {
+            this.controller = controller;
+            mMap = map;
+            logger = controller.getFrame().getLogger(this.getClass().getName());
+            // fc, 12.8.2004: this is a bad hack, but when time lacks...
+            hookInstance = new UnfoldAll();
+            hookInstance.setController(controller);
+            hookInstance.setMap(mMap);
+        }
+        
+        public void register() {
+            controller.registerMouseWheelEventHandler(this);
+        }
+
+        public void deRegister() {
+            controller.deRegisterMouseWheelEventHandler(this);
+        }
+
+        public boolean handleMouseWheelEvent(MouseWheelEvent e) {
+            logger.info("handleMouseWheelEvent entered.");
+            if ((e.getModifiers() & InputEvent.ALT_MASK) != 0) {
+                if(e.getWheelRotation() > 0) {
+                    hookInstance.unfoldOneStage((MindMapNode) mMap.getRoot());
+                } else {
+                    hookInstance.foldOneStage((MindMapNode) mMap.getRoot());
+                }
+                return true;
+            }
+            return false;
+        }
+    }
+    
 	/**
 	 * 
 	 */

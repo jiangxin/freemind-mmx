@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.20 2004-08-08 13:03:48 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.21 2004-08-12 20:19:05 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -62,16 +63,21 @@ import freemind.controller.actions.generated.instance.MenuCheckedAction;
 import freemind.controller.actions.generated.instance.MenuSeparator;
 import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
+import freemind.controller.actions.generated.instance.PluginRegistrationType;
 import freemind.extensions.HookFactory;
+import freemind.extensions.HookRegistration;
+import freemind.extensions.MindMapHook;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
+import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.StylePattern;
 import freemind.modes.actions.NewMapAction;
@@ -201,7 +207,7 @@ public class MindMapController extends ControllerAdapter {
     FileFilter filefilter = new MindMapFilter();
 
     private MenuStructure mMenuStructure;
-    private Vector mScheduledActions = new Vector();
+    private List pRegistrations;
 
     public MindMapController(Mode mode) {
 	super(mode);
@@ -241,22 +247,41 @@ public class MindMapController extends ControllerAdapter {
         // addAsChildMode (use old model of handling CtrN) (PN)
         addAsChildMode =
             Tools.safeEquals(getFrame().getProperty("add_as_child"), "true");
+        pRegistrations = new Vector();
     }
 
     /** This method is called after and before a change of the map module.
      * Use it to perform the actions that cannot be performed at creation time.
      * 
      */
-    public void activate() {
-        //blubbel();
-        logger.info("mScheduledActions are executed: "+mScheduledActions.size());
-        for (Iterator i = mScheduledActions.iterator(); i.hasNext();) {
-            Action action = (Action) i.next();
-            action.actionPerformed(null);
+    public void startupController() {
+        List pluginRegistratios = getFrame().getHookFactory().getRegistrations();
+        logger.info("mScheduledActions are executed: "+pluginRegistratios.size());
+        for (Iterator i = pluginRegistratios.iterator(); i.hasNext();) {
+            PluginRegistrationType registrationXmlType = (PluginRegistrationType) i.next();
+            // call constructor:
+			try {
+                Class registrationClass = Class.forName(registrationXmlType.getClassName());
+                Constructor hookConstructor = registrationClass
+                        .getConstructor(new Class[] { ModeController.class,
+                                MindMap.class });
+                HookRegistration registrationInstance = (HookRegistration) hookConstructor
+                        .newInstance(new Object[] { this, getMap() });
+                registrationInstance.register();
+                pRegistrations.add(registrationInstance);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        mScheduledActions.clear();
     }
 
+
+    public void shutdownController() {
+        for (Iterator i = pRegistrations.iterator(); i.hasNext();) {
+            HookRegistration registrationInstance = (HookRegistration) i.next();
+            registrationInstance.deRegister();
+        }
+    }
     
 	public MapAdapter newModel() {
        return new MindMapMapModel(getFrame()); }
@@ -303,10 +328,6 @@ public class MindMapController extends ControllerAdapter {
                 String desc = (String) i.next();
                 // create hook action. 
                 NodeHookAction action = new NodeHookAction(desc, this);
-                if(factory.isAutomaticallyInvoked(desc)) {
-                    // schedule for activation:
-                    mScheduledActions.add(action);
-                }
                 factory.decorateAction(desc, action);
                 actionToMenuPositions.put(action, factory.getHookMenuPositions(desc));
                 hookActions.add(action);
