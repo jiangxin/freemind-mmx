@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.3 2004-10-28 05:24:53 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.4 2004-11-16 16:42:35 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -113,6 +113,11 @@ public interface MindMapNode extends MutableTreeNode {
     boolean isFolded();
 
     freemind.main.Tools.BooleanHolder isLeft();
+    
+    /** Root is on the right side.
+     * @return
+     */
+    boolean isOneLeftSideOfRoot();
     
     void setLeft(boolean isLeft);
 

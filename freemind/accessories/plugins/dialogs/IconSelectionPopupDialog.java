@@ -42,6 +42,7 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
   private int xDimension;
   private int yDimension;
   private Position selected = new Position(0,0);
+  private static Position lastPosition = new Position(0,0);
   private Vector descriptions;
   private FreeMindMain freeMindMain;
  
@@ -90,6 +91,7 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
 	descriptionLabel = new JLabel(" ");
 	//descriptionLabel.setEnabled(false);
 	getContentPane().add(descriptionLabel, BorderLayout.SOUTH);
+	setSelectedPosition(lastPosition);
 	select(getSelectedPosition());
 	addKeyListener(this);
 	  pack();
@@ -113,6 +115,7 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
 	
   private void setSelectedPosition(Position position){
 	selected = position;
+	lastPosition = position;
   }
   
   private Position getSelectedPosition(){
@@ -250,7 +253,7 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
 	public void mouseReleased(MouseEvent arg0) {
 	}
 
-	class Position{
+	static class Position{
 		private int x, y;
 		public Position (int x, int y){
 			this.x = x;

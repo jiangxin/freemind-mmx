@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.4.1 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: HookFactory.java,v 1.1.4.2 2004-11-16 16:42:35 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -40,6 +40,7 @@ import freemind.common.JaxbTools;
 import freemind.controller.actions.generated.instance.Plugin;
 import freemind.controller.actions.generated.instance.PluginActionType;
 import freemind.controller.actions.generated.instance.PluginClasspathType;
+import freemind.controller.actions.generated.instance.PluginModeType;
 import freemind.controller.actions.generated.instance.PluginRegistrationType;
 import freemind.main.FreeMindMain;
 import freemind.modes.MindMapNode;
@@ -52,7 +53,7 @@ import freemind.modes.MindMapNode;
  * */
 public class HookFactory {
     /** Match xml files in the accessories/plugin directory and not in its subdirectories. */
-	private static final String pluginPrefixRegEx = "accessories\\.plugins\\.[^.]*";
+	private static final String pluginPrefixRegEx = "(accessories\\.|)plugins\\.[^.]*";
 	private FreeMindMain frame;
 	// Logging: 
 	private java.util.logging.Logger logger;
@@ -61,7 +62,7 @@ public class HookFactory {
 	private Vector allPlugins;
 	/** Contains PluginRegistrationType -> PluginType relations. */
     private HashMap allRegistrations;
-
+    private ImportWizard importWizard;
 	/**
 	 * 
 	 */
@@ -123,26 +124,31 @@ public class HookFactory {
 	 * 
 	 */
 	private void actualizePlugins() {
-		ImportWizard.CLASS_LIST.clear();
-		ImportWizard.buildClassList();
+		if (importWizard==null) {
+			importWizard=new ImportWizard();
+			importWizard.CLASS_LIST.clear();
+			importWizard.buildClassList();
+		}
 		pluginInfo = new HashMap();
 		allPlugins = new Vector();
 		allRegistrations = new HashMap();
-		for (Iterator i = ImportWizard.CLASS_LIST.iterator(); i.hasNext();) {
+		// the unmarshaller:
+		Unmarshaller unmarshaller = JaxbTools.getInstance()
+				.createUnmarshaller();
+		// the loop
+		for (Iterator i = importWizard.CLASS_LIST.iterator(); i.hasNext();) {
 			String xmlPluginFile = (String) i.next();
 			if (xmlPluginFile.matches(pluginPrefixRegEx)) {
 				// make file name:
 				xmlPluginFile =
 					xmlPluginFile.replace('.', File.separatorChar)
-						+ ImportWizard.lookFor;
+						+ importWizard.lookFor;
 				// this is one of our plugins:
 				URL pluginURL = getClassLoader(Collections.EMPTY_LIST).getResource(xmlPluginFile);
 				// unmarshal xml:
 				Plugin plugin = null;
 				try {
 					InputStream in = pluginURL.openStream();
-					Unmarshaller unmarshaller = JaxbTools.getInstance()
-							.createUnmarshaller();
 					logger.finest("Reading: "+xmlPluginFile);
 					unmarshaller.setValidating(true);
 					plugin = (Plugin) unmarshaller.unmarshal(in);
@@ -155,7 +161,7 @@ public class HookFactory {
 				// plugin is loaded.
 				for (Iterator j = plugin.getPluginAction().iterator(); j.hasNext();) {
 					PluginActionType action = (PluginActionType) j.next();
-					pluginInfo.put(action.getLabel(), new HookDescriptor(action, plugin));
+					pluginInfo.put(action.getLabel(), new HookDescriptor(frame, action, plugin));
 					allPlugins.add(action.getLabel());
 				}
 				for (Iterator k = plugin.getPluginRegistration().iterator(); k.hasNext();) {
@@ -188,7 +194,7 @@ public class HookFactory {
 			return hook;
 		} catch (Exception e) {
 			logger.severe(
-				"Error occurred loading hook: " + descriptor.getClassName());
+				"Error occurred loading hook: " + descriptor.getClassName() + "\nException:"+e.toString());
 			return null;
 		}
 	}
@@ -211,6 +217,7 @@ public class HookFactory {
             for (Iterator i = pluginClasspathList.iterator(); i.hasNext();) {
                 PluginClasspathType classPath = (PluginClasspathType) i.next();
                 File file = new File(classPath.getJar());
+                logger.info("file " + file.toString() + " exists = " + file.exists());
                 urls[j++] = file.toURL();
             }
             ClassLoader loader = new URLClassLoader(urls, this.getClass().getClassLoader());
@@ -331,11 +338,20 @@ public class HookFactory {
     /**
      * @return A list of Class elements that are (probably) of HookRegistration type.
      */
-    public List getRegistrations() {
+    public List getRegistrations(Class mode) {
         actualizePlugins();
         Vector returnValue = new Vector();
         for (Iterator i = allRegistrations.keySet().iterator(); i.hasNext();) {
             PluginRegistrationType registration = (PluginRegistrationType) i.next();
+			boolean modeFound=false;
+            for (Iterator j = (registration.getPluginMode()).iterator(); j.hasNext();) {
+				PluginModeType possibleMode = (PluginModeType) j.next();
+				if(mode.getPackage().getName().equals(possibleMode.getClassName())) {
+					modeFound = true;
+				}
+			}
+            if(!modeFound)
+            	continue;
             try {
                 Plugin plug = (Plugin)allRegistrations.get(registration);
 		        ClassLoader loader = getClassLoader(plug.getPluginClasspath());

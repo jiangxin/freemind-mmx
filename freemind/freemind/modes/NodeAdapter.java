@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.3 2004-10-28 05:24:54 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.4 2004-11-16 16:42:36 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -514,7 +514,22 @@ public abstract class NodeAdapter implements MindMapNode {
         return left;
     }
     
-    public void setLeft(boolean isLeft){
+    
+    
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#isOneLeftSideOfRoot()
+	 */
+	public boolean isOneLeftSideOfRoot() {
+		if(isRoot()) 
+			return false;
+		// now, the node has a parent:
+		if(getParentNode().isRoot()) {
+			return (isLeft() == null)?false:isLeft().getValue();
+		}
+		return getParentNode().isOneLeftSideOfRoot();
+	}
+
+	public void setLeft(boolean isLeft){
         if(left == null)
             left = new Tools.BooleanHolder();
         left.setValue(isLeft);

@@ -3,16 +3,18 @@
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
 	<property name="dist" value="../bin/dist" />
+	<property name="dist.lib" value="${dist}/lib" />
 	<property name="dist_macos" value="../bin/dist_macos" />	
-    <property name="FM.jar" value="${dist}/lib/freemind.jar"/>
+    <property name="FM.jar" value="${dist.lib}/freemind.jar"/>
 	<property name="post" value="../post" />
 	<property name="debug" value="on" />
 	<property name="build.compiler" value="modern" />
-	<property name="ver" value="0_8_0_alpha" />
+	<property name="ver" value="0_8_0_beta" />
 	<property name="ant.dir" value="lib/ant/lib"/>
+	<property name="jarbundler.jar" value = "lib/jarbundler-1.2.jar"/>
 
     <taskdef name="jarbundler"
-               classpath="${src}/lib/jarbundler-1.2.jar"
+               classpath="${src}/${jarbundler.jar}"
                classname="com.loomcom.ant.tasks.jarbundler.JarBundler" />
 
 
@@ -100,8 +102,11 @@
 			classpath="${classpath}"
 			debug="${debug}"> 
 	      <exclude name="${gen.dir}/**" />
+	      <exclude name="accessories/plugins/**" />
 	      <exclude name="plugins/**" />
-			</javac>
+		</javac>
+		<ant antfile="accessories/plugins/build.xml" target="build"/>
+		<ant antfile="plugins/build.xml" target="build"/>
 	</target>
 
 	<target name="dist" depends="jar">
@@ -120,22 +125,25 @@
 				includes="Freemind.exe"
 			/>
 		</copy>
-		<mkdir dir="${dist}/accessories" />
+		<!-- <mkdir dir="${dist}/accessories" />
 		<copy todir="${dist}/accessories"> 
-			<fileset dir="${src}/accessories" excludes="**/*.java"/> <!-- exclude jars too!-->
+			<fileset dir="${src}/accessories" excludes="**/*.java"/>  exclude jars too!
 			<fileset dir="${build}/accessories"/>
-		</copy> 
+		</copy> -->
 		<!-- third party libs -->
-		<mkdir dir="${dist}/lib" />
-		<copy todir="${dist}/lib"> 
+		<mkdir dir="${dist.lib}" />
+		<copy todir="${dist.lib}"> 
 			<fileset dir="${src}/lib">
 				<exclude name="**/jaxb-xjc.jar"/>
+				<exclude name="${jarbundler.jar}"/>
 			</fileset>
 		</copy>
+		<ant antfile="accessories/plugins/build.xml" target="dist"/>
+		<ant antfile="plugins/build.xml" target="dist"/>
 		<!-- Mac OS X -->
-	  <condition property="isMacOs">
-	      <os family="mac"/>
-	  </condition>
+	    <condition property="isMacOs">
+		  <os family="mac"/>
+		</condition>
 		<antcall target="dist_macos"/>
 	</target>
 
@@ -170,11 +178,14 @@
 		<mkdir dir="${post}" />
 		<tar tarfile="${post}/freemind-bin.tar"
 			basedir="${dist}"
-			excludes="browser/,doc/javadoc/" />
+			longfile="gnu"
+			excludes="browser/,doc/javadoc/,plugins/**" />
 		<tar tarfile="${post}/freemind-src.tar"
+			longfile="gnu"
 			basedir="${src_base_for_post}"
 			includes="freemind/**,.classpath,.project" />
 		<tar tarfile="${post}/freemind-browser.tar"
+			longfile="gnu"
 			basedir="${dist}/browser" />
 		<gzip src="${post}/freemind-bin.tar"
 			zipfile="${post}/freemind-bin-${ver}.tar.gz" />
@@ -187,20 +198,22 @@
 		</delete> 
 		<zip destfile="${post}/freemind-bin-${ver}.zip"
 			basedir="${dist}"
-			excludes="browser/,doc/javadoc/" />
+			excludes="browser/,doc/javadoc/,plugins/**" />
 		<zip destfile="${post}/freemind-src-${ver}.zip"
 			basedir="${src_base_for_post}"
 			includes="freemind/**,.classpath,.project" />
 		<zip destfile="${post}/freemind-browser-${ver}.zip"
 			basedir="${dist}/browser" />
+		<ant antfile="plugins/build.xml" target="post"/>
 	</target>
 
 	<target name="jar" depends="build">
-		<mkdir dir="${dist}/lib" />
+		<mkdir dir="${dist.lib}" />
 		<jar jarfile="${FM.jar}"
 		     manifest="${src}/MANIFEST.MF">
 			<fileset dir="${build}">
 				<exclude name="accessories/**"/> 
+				<exclude name="plugins/**"/> 
 			</fileset>
 			<fileset dir="${src}">
 				<include name="images/*"/>
@@ -265,12 +278,6 @@
                 <delete>
                   <fileset defaultexcludes="no" dir="${src}" includes="**/*~"/>
                 </delete>
-	</target>
-	<target name="release" depends="dist">
-		<copy todir="C:\share\freemind\lib">
-			<fileset dir="${dist}/lib">
-			</fileset>
-		</copy>
 	</target>
 
   <target name="run" depends="dist">

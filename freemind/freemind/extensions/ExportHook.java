@@ -19,11 +19,14 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: ExportHook.java,v 1.1.4.1 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: ExportHook.java,v 1.1.4.2 2004-11-16 16:42:35 christianfoltin Exp $*/
 
 package freemind.extensions;
 
 import java.awt.Container;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.text.MessageFormat;
 
@@ -32,12 +35,16 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 import freemind.main.Tools;
+import freemind.modes.NodeAdapter;
+import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
  *
  */
 public class ExportHook extends ModeControllerHookAdapter {
+	private MapView view;
+
 	/**
      * @param type
      * @param description
@@ -95,5 +102,41 @@ public class ExportHook extends ModeControllerHookAdapter {
 			return description==null?type:description;
 		}
 	}
+	
+	
+	public BufferedImage createBufferedImage() {
+		view = getController().getView();
+		if (view == null)
+			return null;
+
+		//Determine which part of the view contains the nodes of the map:
+			//(Needed to eliminate areas of whitespace around the actual rendering of the map)
+
+		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
+		Rectangle innerBounds = view.getInnerBounds(root.getViewer());
+
+		 //Create an image containing the map:
+		 BufferedImage myImage = (BufferedImage) view.createImage(view.getWidth(), view.getHeight() );
+
+		 //Render the mind map nodes on the image:
+		 Graphics g = myImage.getGraphics();
+		 g.clipRect(innerBounds.x, innerBounds.y, innerBounds.width, innerBounds.height);
+		 view.print(g);
+		 myImage = myImage.getSubimage(innerBounds.x, innerBounds.y, innerBounds.width, innerBounds.height);
+		 return myImage;
+//		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
+//		Rectangle rect = view.getInnerBounds(root.getViewer());
+//
+//		BufferedImage image =
+//			new BufferedImage(
+//				rect.width,
+//				rect.height,
+//				BufferedImage.TYPE_INT_RGB);
+//		Graphics2D g = (Graphics2D) image.createGraphics();
+//		g.translate(-rect.getMinX(), -rect.getMinY());
+//		view.update(g);
+//		return image;
+	}
+
 
 }

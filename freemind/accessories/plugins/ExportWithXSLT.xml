@@ -1,20 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0"?>
 <plugin>
-	<plugin_action 
-		documentation="This is an uniform export method using XSLT scripts." 
-		name="Export using XSLT" 
-		base="freemind.extensions.ModeControllerHookAdapter" 
-		label="accessories/plugins/ExportWithXSLT.properties" 
-		class_name="accessories.plugins.ExportWithXSLT">
+	<plugin_action documentation="%accessories/plugins/ExportWithXSLT.properties_documentation" name="%accessories/plugins/ExportWithXSLT.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithXSLT.properties" class_name="accessories.plugins.ExportWithXSLT">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/file/export/exportXslt"/>
 		<plugin_property name="file_type" value="user"/>
 	</plugin_action>
-	<plugin_action 
-		name="Export to XHTML (JavaScript version)" 
-		base="freemind.extensions.ModeControllerHookAdapter" 
-		label="accessories/plugins/ExportWithXSLT_HTML.properties" 
-		class_name="accessories.plugins.ExportWithXSLT">
+	<plugin_action name="%accessories/plugins/ExportWithXSLT_HTML.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithXSLT_HTML.properties" class_name="accessories.plugins.ExportWithXSLT">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/file/export/html/exportHTML_II"/>
 		<plugin_property name="file_type" value="html"/>
@@ -25,11 +16,7 @@
 		<plugin_property name="file_prefix" value="accessories/"/>
 		<plugin_property name="load_file" value="true"/>
 	</plugin_action>
-	<plugin_action 
-		name="Export to XHTML (next version, with clouds and links)" 
-		base="freemind.extensions.ModeControllerHookAdapter" 
-		label="accessories/plugins/ExportWithXSLT_HTML3.properties" 
-		class_name="accessories.plugins.ExportWithXSLT">
+	<plugin_action name="%accessories/plugins/ExportWithXSLT_HTML3.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithXSLT_HTML3.properties" class_name="accessories.plugins.ExportWithXSLT">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/file/export/html/exportHTML_III"/>
 		<plugin_property name="file_type" value="html"/>

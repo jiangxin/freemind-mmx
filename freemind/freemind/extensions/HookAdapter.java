@@ -93,7 +93,14 @@ public class HookAdapter implements MindMapHook {
 	 * @see freemind.extensions.MindMapHook#getResourceString(java.lang.String)
 	 */
 	public String getResourceString(String property) {
-		return properties.getProperty(property);
+		String result = properties.getProperty(property);
+		if(result == null) {
+			result = getController().getText(property);
+		}
+		if(result == null) {
+			logger.warning("The following property was not found:"+property);
+		}
+		return result;
 	}
 	
 	public URL getResource(String resourceName) {

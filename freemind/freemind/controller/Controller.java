@@ -16,46 +16,62 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.2 2004-10-17 23:00:06 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.3 2004-11-16 16:42:35 christianfoltin Exp $*/
 
 package freemind.controller;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
+import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 
-import java.net.MalformedURLException;
-
-import freemind.controller.actions.ActionFactory;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
-
 import freemind.modes.ModesCreator;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
@@ -71,7 +87,6 @@ public class Controller {
 	private LastOpenedList lastOpened;//A list of the pathnames of all the maps that were opened in the last time
     private MapModuleManager mapModuleManager;// new MapModuleManager();
     private HistoryManager history = new HistoryManager();
-    private Map modes; //hash of all possible modes
     private Mode mode; //The current mode
     private FreeMindMain frame;
     private JToolBar toolbar;
@@ -137,7 +152,6 @@ public class Controller {
         if(logger == null) {
             logger = frame.getLogger(this.getClass().getName());
         }
-        modes = modescreator.getAllModes();
         lastOpened = new LastOpenedList(this, getProperty("lastOpened"));
         mapModuleManager = new MapModuleManager(this, history, lastOpened);
 
@@ -248,8 +262,8 @@ public class Controller {
         return null;
     }
 
-    Map getModes() {
-        return modes;
+    Set getModes() {
+        return modescreator.getAllModes();
     }
 
     public Mode getMode() {
@@ -393,7 +407,7 @@ public class Controller {
         }
 
         //Check if the mode is available
-        Mode newmode = (Mode)modes.get(mode);
+        Mode newmode = modescreator.getMode(mode);
         if (newmode == null) {
             errorMessage(getResourceString("mode_na")+": "+mode);
             return false;
@@ -535,7 +549,19 @@ public class Controller {
        JOptionPane.showMessageDialog(component, message.toString(), "FreeMind", JOptionPane.INFORMATION_MESSAGE); }
 
     public void errorMessage(Object message) {
-       JOptionPane.showMessageDialog(getFrame().getContentPane(), message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }
+		String myMessage = "";
+
+		if (message != null) {
+			myMessage = message.toString();
+		} else {
+			myMessage = getResourceString("undefined_error");
+			if (myMessage == null) {
+				myMessage = "Undefined error";
+			}
+		}
+		JOptionPane.showMessageDialog(getFrame().getContentPane(), myMessage, "FreeMind", JOptionPane.ERROR_MESSAGE);
+
+	}
 
     public void errorMessage(Object message, JComponent component) {
        JOptionPane.showMessageDialog(component, message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }

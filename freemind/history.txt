@@ -85,6 +85,19 @@ Changes made in Freemind 0.8.0:
 * Export via XSLT revised. New HTML export added (java script version from Miika Nurminen, 12.7.2004. Thanks. 
 * New HTML export added from Markus Brueckner. Thanks
 
+* Help and SVG Export added as Plugins.
+* PDF export added.
+* Startuptime reduced.
+* Little improvement for the Icon selector: the last position is restored next time it is opened.
+* Bugfix: New parent node. Export to HTML III.
+
+* Repaired: Icons appear on the right side on the right side of the node.
+* Bug fix: NewParentNode and root
+* icon for "insert child node"
+* Packaging of default plugins
+
+* Plugins internationalized.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

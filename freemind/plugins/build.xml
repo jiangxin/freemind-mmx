@@ -1,0 +1,18 @@
+<project name="freemind_plugins" default="dist" basedir=".">
+	
+	<target name="build">
+		<ant antfile="plugins/build_help.xml" target="build"/>
+		<ant antfile="plugins/build_svg.xml" target="build"/>
+	</target>
+
+	<target name="dist">
+		<ant antfile="plugins/build_help.xml" target="dist"/>
+		<ant antfile="plugins/build_svg.xml" target="dist"/>
+	</target>
+
+	<target name="post">
+		<ant antfile="plugins/build_help.xml" target="post"/>
+		<ant antfile="plugins/build_svg.xml" target="post"/>
+	</target>
+
+</project>

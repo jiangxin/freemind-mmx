@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.3 2004-10-17 23:00:17 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.4 2004-11-16 16:42:36 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -842,11 +842,9 @@ public abstract class NodeView extends JLabel {
                    text+"</table></html>"); }
    		// 5) ToolTip:
    		setToolTipText(getModel().getToolTip());
-//   		// 6) icons left or right? 
-//   		//URGENT: Discuss with Dan.
-//   		if(getModel().isLeft() != null) {
-//   		    setHorizontalTextPosition((getModel().isLeft().getValue())?SwingConstants.LEADING:SwingConstants.TRAILING);
-//   		}
+   		// 6) icons left or right? 
+   		//URGENT: Discuss with Dan.
+	    setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
         // 7) Complete
         repaint(); // Because of zoom?
     }

@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: NewChildAction.java,v 1.1.4.1 2004-10-17 23:00:10 dpolivaev Exp $*/
+/*$Id: NewChildAction.java,v 1.1.4.2 2004-11-16 16:42:36 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -44,7 +44,7 @@ import freemind.modes.MindMapLinkRegistry.ID_Registered;
 public class NewChildAction extends AbstractAction implements ActorXml {
     private final ControllerAdapter c;
     public NewChildAction(ControllerAdapter modeController) {
-        super(modeController.getText("new_child"), new ImageIcon(modeController.getResource("images/newNode.png")));
+        super(modeController.getText("new_child"), new ImageIcon(modeController.getResource("images/idea.png")));
         this.c = modeController;
 		this.c.getActionFactory().registerActor(this, getDoActionClass());
     }

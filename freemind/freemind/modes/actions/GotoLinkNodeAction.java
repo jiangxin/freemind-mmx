@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: GotoLinkNodeAction.java,v 1.1.4.1 2004-10-17 23:00:10 dpolivaev Exp $*/
+/*$Id: GotoLinkNodeAction.java,v 1.1.4.2 2004-11-16 16:42:36 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -36,7 +36,7 @@ public class GotoLinkNodeAction extends FreemindAction {
     MindMapNode source;
     private final ModeController controller;
     public GotoLinkNodeAction(ModeController controller, MindMapNode source) {
-        super(null, "images/Link.png", controller);
+        super("goto_link_node_action", "images/Link.png", controller);
         this.controller = controller;
         // only display a reasonable part of the string. the rest is available via the short description (tooltip).
         this.source = source;

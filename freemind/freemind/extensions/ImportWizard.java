@@ -28,12 +28,11 @@
 package freemind.extensions;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Converts an unqualified class name to import statements by scanning
@@ -44,9 +43,9 @@ import java.util.zip.ZipEntry;
  */
 public class ImportWizard {
 
-	public static final String lookFor = ".xml";
+	public final String lookFor = ".xml";
 	/** Stores the list of all classes in the classpath */
-	public static Vector CLASS_LIST = new Vector(500);
+	public Vector CLASS_LIST = new Vector(500);
 
 	/** Build the list of classes */
 	//  static {
@@ -58,7 +57,7 @@ public class ImportWizard {
 	//
 	//  }
 
-	public static void buildClassList() {
+	public void buildClassList() {
 		String classPath = System.getProperty("java.class.path");
 		String classPathSeparator = File.pathSeparator;
         // add the current dir to find more plugins
@@ -87,7 +86,7 @@ public class ImportWizard {
 	 * @param classList the Vector to add the classes to
 	 * @param classPathFile the File to scan as a zip file
 	 */
-	public static void addClassesFromZip(
+	public void addClassesFromZip(
 		Vector classList,
 		File classPathFile) {
 		// System.out.println("Processing jar/zip file: " + classPathFile);
@@ -120,7 +119,7 @@ public class ImportWizard {
 	 * @param classList the Vector to add the classes to
 	 * @param classPathFile the File to recursively scan as a directory
 	 */
-	public static void addClassesFromDir(
+	public void addClassesFromDir(
 		Vector classList,
 		File rootDir,
 		File currentDir) {
@@ -131,7 +130,7 @@ public class ImportWizard {
 			if (current.toLowerCase().endsWith(lookFor)) {
 				String rootPath = rootDir.getPath();
 				String currentPath = currentDir.getPath();
-				if (currentPath.indexOf(rootPath) != 0) {
+				if (! currentPath.startsWith(rootPath)) {
 					System.err.println(
 						"currentPath doesn't start with rootPath!\n"
 							+ "rootPath: "
@@ -174,7 +173,7 @@ public class ImportWizard {
 	 *
 	 * @param className a value of type 'String'
 	 */
-	public static void makeImportStatement(String className) {
+	public void makeImportStatement(String className) {
 
 		String importList = "(list";
 
@@ -207,7 +206,7 @@ public class ImportWizard {
 	 *
 	 * @param args an array of strings containing class names to look up
 	 */
-	public static void main(String[] args) {
+	public void main(String[] args) {
 
 		if (args.length == 0) {
 			System.out.println("Give class names as arguments to look up");
@@ -222,8 +221,11 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.1  2004-10-17 23:00:07  dpolivaev
- * merged with buggy  fm_040228_jython 18.10.04
+ * Revision 1.1.4.2  2004-11-16 16:42:35  christianfoltin
+ * * merged from fm_040228_jython again.
+ *
+ * Revision 1.1.2.5  2004/11/13 08:28:35  christianfoltin
+ * Startuptime reduced
  *
  * Revision 1.1.2.4  2004/09/05 19:56:39  christianfoltin
  * added jarbundler for mac os x. Application image added. TODO: Plugins must be packed.

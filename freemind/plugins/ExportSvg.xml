@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin>
+	<plugin_classpath jar="plugins/svg/svg_plugin.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-awt-util.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-bridge.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-css.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-dom.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-extension.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-ext.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-gui-util.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-gvt.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-parser.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-script.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-squiggle.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-svg-dom.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-svggen.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-swing.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-transcoder.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-util.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-xml.jar"/>
+	<plugin_classpath jar="plugins/svg/js.jar"/>
+	<plugin_classpath jar="plugins/svg/pdf-transcoder.jar"/>
+	<plugin_classpath jar="plugins/svg/xerces_2_5_0.jar"/>
+	<plugin_classpath jar="plugins/svg/xml-apis.jar"/>
+	<plugin_action 
+		documentation="%plugins/ExportPdf.xml_documentation" 
+		name="%plugins/ExportPdf.xml_name" base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/ExportPdf.xml" 
+		class_name="plugins.svg.ExportPdf">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/file/export/pdf_export"/>
+	</plugin_action>
+	<plugin_action 
+		documentation="%plugins/ExportSvg.xml_documentation" 
+		name="%plugins/ExportSvg.xml_name" base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/ExportSvg.xml" 
+		class_name="plugins.svg.ExportSvg">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/file/export/svg_export"/>
+	</plugin_action>
+</plugin>
