@@ -10,7 +10,37 @@
 ;* Andrew J. Iggleden (AJI) 20/12/2003 - Version 0.7.0
 ;****************************************************************************
 
-#include "isxbb.iss"
+[Files]
+Source: isxbb.dll; DestDir: {tmp}; Flags: dontcopy
+
+[Code]
+const
+  TOPLEFT			= 1;
+  TOPRIGHT			= 2;
+  BOTTOMLEFT		= 3;
+  BOTTOMRIGHT		= 4;
+  CENTER			= 5;
+  BACKGROUND		= 6;
+  TOP				= 7;
+  BOTTOM			= 8;
+  LEFT				= 9;
+  RIGHT				= 10;
+  TIMER				= 16;
+
+
+
+function isxbb_AddImage(Image: PChar; Flags: Cardinal): Integer;
+external 'isxbb_AddImage@files:isxbb.dll stdcall';
+
+function isxbb_Init(hWnd: Integer): Integer;
+external 'isxbb_Init@files:isxbb.dll stdcall';
+
+function isxbb_StartTimer(Seconds: Integer; Flags: Cardinal): Integer;
+external 'isxbb_StartTimer@files:isxbb.dll stdcall';
+
+function isxbb_KillTimer(Flags: Cardinal): Integer;
+external 'isxbb_KillTimer@files:isxbb.dll stdcall';
+
 
 [Setup]
 AppName=FreeMind
@@ -55,13 +85,13 @@ Name: quicklaunchicon; Description: Create a &Quick Launch icon; GroupDescriptio
 Name: fileassoc; Description: &Associate FreeMind Extensions with the .mm file extension; GroupDescription: File Association:
 
 [Files]
-Source: ..\..\..\freemind\windows-launcher\Freemind.exe; DestDir: {app}; Flags: promptifolder overwritereadonly
-Source: ..\..\..\freemind\accessories\mm2xbel.xsl; DestDir: {app}\accessories; Flags: promptifolder overwritereadonly
-Source: ..\..\..\freemind\accessories\xbel2mm.xsl; DestDir: {app}\accessories; Flags: promptifolder overwritereadonly
-Source: ..\..\..\freemind\doc\freemind.mm; DestDir: {app}\doc; Flags: promptifolder overwritereadonly
-Source: ..\..\..\freemind\lib\freemind.jar; DestDir: {app}\lib; Flags: promptifolder overwritereadonly
+Source: ..\..\..\bin\dist\Freemind.exe; DestDir: {app}; Flags: promptifolder overwritereadonly
+Source: ..\..\..\bin\dist\accessories\mm2xbel.xsl; DestDir: {app}\accessories; Flags: promptifolder overwritereadonly
+Source: ..\..\..\bin\dist\accessories\xbel2mm.xsl; DestDir: {app}\accessories; Flags: promptifolder overwritereadonly
+Source: ..\..\..\bin\dist\doc\freemind.mm; DestDir: {app}\doc; Flags: promptifolder overwritereadonly
+Source: ..\..\..\bin\dist\lib\freemind.jar; DestDir: {app}\lib; Flags: promptifolder overwritereadonly
 Source: license.txt; DestDir: {app}; Flags: promptifolder overwritereadonly
-Source: ..\..\..\freemind\patterns.xml; DestDir: {app}; Flags: promptifolder overwritereadonly
+Source: ..\..\..\bin\dist\patterns.xml; DestDir: {app}; Flags: promptifolder overwritereadonly
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 Source: {app}\*.*; DestDir: {app}\backup; Flags: external skipifsourcedoesntexist uninsneveruninstall
