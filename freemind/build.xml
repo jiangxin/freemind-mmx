@@ -71,7 +71,7 @@
   </target>
 	<!-- end generator part -->
 
-	<target name="compile" depends="gen">
+	<target name="build" depends="gen">
 		<mkdir dir="${build}"/>
 	    <!-- build generated files -->
 	    <antcall target="build-generated"/>
@@ -142,7 +142,7 @@
 			basedir="${dist}/browser" />
 	</target>
 
-	<target name="jar" depends="compile">
+	<target name="jar" depends="build">
 		<mkdir dir="${dist}/lib" />
 		<jar jarfile="${FM.jar}"
 		     manifest="${src}/MANIFEST.MF">
@@ -161,7 +161,7 @@
 		</jar>
 	</target>
 
-	<target name="browser" depends="compile">
+	<target name="browser" depends="build">
 		<mkdir dir="${dist}/browser" />
 		<jar jarfile="${dist}/browser/freemindbrowser.jar">
 			<fileset dir="${build}">

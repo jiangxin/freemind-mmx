@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: ActionFactory.java,v 1.1.2.2 2004-05-09 22:31:14 christianfoltin Exp $*/
+/*$Id: ActionFactory.java,v 1.1.2.3 2004-07-01 20:13:39 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -28,24 +28,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.xml.bind.JAXBException;
-
+import freemind.common.JaxbTools;
 import freemind.controller.Controller;
-import freemind.controller.actions.generated.instance.BoldNodeActionType;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.mindmapmode.MindMapNodeModel;
 
 /**
  * @author foltin
  *
  */
 public class ActionFactory {
-	public static final String JAXB_CONTEXT =
-		"freemind.controller.actions.generated.instance";
 
 	private Controller controller;
-	private ObjectFactory factory;
 	/** This set denotes all handler of the action to be called for each action. */
 	private Set registeredHandler;
 	/** HashMap of Action class -> actor instance. */
@@ -57,7 +51,6 @@ public class ActionFactory {
 	public ActionFactory(Controller c) {
 		super();
 		this.controller = c;
-		factory = new ObjectFactory();
 		registeredHandler = new HashSet();
 		registeredActors = new HashMap();
 	}

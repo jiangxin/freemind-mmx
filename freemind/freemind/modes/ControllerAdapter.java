@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.16 2004-05-27 07:09:11 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.17 2004-07-01 20:13:39 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -65,12 +65,12 @@ import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import freemind.common.JaxbTools;
 import freemind.controller.Controller;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.AbstractXmlAction;
@@ -79,7 +79,6 @@ import freemind.controller.actions.ActionHandler;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.ModeControllerActionHandler;
-import freemind.controller.actions.PrintActionHandler;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.UndoXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -91,13 +90,13 @@ import freemind.main.ExampleFileFilter;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
-import freemind.modes.actions.*;
 import freemind.modes.actions.BoldAction;
+import freemind.modes.actions.CompoundActionHandler;
 import freemind.modes.actions.CutAction;
 import freemind.modes.actions.DeleteChildAction;
 import freemind.modes.actions.EditAction;
 import freemind.modes.actions.NewChildAction;
-import freemind.modes.mindmapmode.MindMapNodeModel;
+import freemind.modes.actions.PasteAction;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -117,7 +116,6 @@ public abstract class ControllerAdapter implements ModeController {
 	private HashSet nodesToBeUpdated;
 	// Logging: 
 	private static java.util.logging.Logger logger;
-	protected static JAXBContext jc;
 
 	Mode mode;
     private int noOfMaps = 0; //The number of currently open maps
@@ -148,15 +146,8 @@ public abstract class ControllerAdapter implements ModeController {
         // for updates of nodes:
 		nodesAlreadyUpdated = new HashSet();
 		nodesToBeUpdated    = new HashSet();
-		if(jc == null) {
-            try {
-                jc = JAXBContext.newInstance(ActionFactory.JAXB_CONTEXT);
-            } catch (JAXBException e) {
-                e.printStackTrace();
-            }
-		}
 		// new object factory for xml actions:
-		actionXmlFactory = new ObjectFactory();
+		actionXmlFactory = JaxbTools.getInstance().getObjectFactory();
         // create action factory:
 		actionFactory = new ActionFactory(getController());
 		// register default action handler:
@@ -1322,7 +1313,7 @@ public abstract class ControllerAdapter implements ModeController {
             // marshall:
             //marshal to StringBuffer:
             StringWriter writer = new StringWriter();
-            Marshaller m = jc.createMarshaller();
+            Marshaller m = JaxbTools.getInstance().createMarshaller();
             m.marshal(action, writer);
             String result = writer.toString();
             return result;
@@ -1337,7 +1328,7 @@ public abstract class ControllerAdapter implements ModeController {
 	public XmlAction unMarshall(String inputString) {
 		try {
 			// unmarshall:
-			Unmarshaller u = jc.createUnmarshaller();
+			Unmarshaller u = JaxbTools.getInstance().createUnmarshaller();
 			StringBuffer xmlStr = new StringBuffer( inputString);
 			XmlAction doAction = (XmlAction) u.unmarshal( new StreamSource( new StringReader( xmlStr.toString() ) ) );
 			return doAction;

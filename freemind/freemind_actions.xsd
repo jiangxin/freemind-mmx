@@ -1,70 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
-	<xs:group name="base">
-       <xs:choice>
-	          <xs:element ref="menu_category"/>
-	          <xs:element ref="menu_submenu"/>
-	          <xs:element ref="menu_action"/>
-	          <xs:element ref="menu_separator"/>
-       </xs:choice>
-	</xs:group>
-
-
-	<xs:element name="menu_structure">
-		<xs:complexType>
-	      <xs:sequence  minOccurs="0" maxOccurs="unbounded">
-	          <xs:element ref="menu_category"/>
-	      </xs:sequence>
-		</xs:complexType>		
-	</xs:element>
-
-    <xs:complexType name="menu_category_base">
- 	      <xs:sequence>
-	        <xs:choice minOccurs="0" maxOccurs="unbounded">
-	          <xs:group ref="base"/>
-	        </xs:choice>
-	      </xs:sequence>
-	      <xs:attribute name="name" use="required" type="xs:string"/>
-	      <xs:attribute name="setSeparatorBefore" use="optional" type="xs:boolean" default="true"/>
-    </xs:complexType>
-
-
-  <xs:element name="menu_category">
-	  <xs:complexType>
-		<xs:complexContent>
-			<xs:extension base="menu_category_base">
-			</xs:extension>
-		</xs:complexContent>
-	  </xs:complexType>
-  </xs:element>
-
-  <xs:element name="menu_submenu">
-	  <xs:complexType>
-		<xs:complexContent>
-			<xs:extension base="menu_category_base">
-		      <xs:attribute name="name_ref" use="required" type="xs:string"/>
-			</xs:extension>
-		</xs:complexContent>
-	  </xs:complexType>
-  </xs:element>
-
-
-  <xs:element name="menu_action">
-    <xs:complexType>
-	      <xs:attribute name="field" use="required" type="xs:string"/>
-	      <xs:attribute name="key_ref" use="optional" type="xs:string"/>
-	      <!-- if name is not given, field is used instead. -->
-	      <xs:attribute name="name" use="optional" type="xs:string"/>
-    </xs:complexType>
-  </xs:element>
-
-  <xs:element name="menu_separator">
-    <xs:complexType>
-    </xs:complexType>
-  </xs:element>
-
-
 	  <xs:complexType name="xml_action">
 	  </xs:complexType>
 
@@ -220,6 +156,119 @@
 		</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
+
+	<!-- ======================================================================================= 
+		 										Plugin XML
+		   ======================================================================================= -->
+	<xs:element name="plugin">
+		<xs:complexType>
+	      <xs:sequence  minOccurs="0" maxOccurs="unbounded">
+	          <xs:element ref="plugin_action"/>
+	      </xs:sequence>
+		</xs:complexType>		
+	</xs:element>
+
+  <xs:element name="plugin_mode">
+    <xs:complexType>
+				<!-- The mode class (e.g. freemind.modes.mindmapmode) -->
+	      <xs:attribute name="class_name" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="plugin_action">
+    <xs:complexType>
+	      <xs:sequence  minOccurs="0" maxOccurs="unbounded">
+	      	<xs:choice maxOccurs="unbounded">					<xs:element ref="plugin_mode"/>
+	      		<xs:element ref="plugin_menu"/></xs:choice>
+	      </xs:sequence>
+	      <!-- if name is not given, script is used instead. -->
+	      <xs:attribute name="name" use="optional" type="xs:string"/>
+	      <!-- The hook base class (e.g. freemind.extensions.ModeControllerHookAdapter). -->
+	      <xs:attribute name="base" use="required" type="xs:string"/>
+	      <!-- The hook fully qualified class (e.g. accessories.plugins.AutomaticLayout). -->
+	      <xs:attribute name="class_name" use="required" type="xs:string"/>
+	      <xs:attribute name="documentation" use="optional" type="xs:string"/>
+	      <!-- Icon path (e.g. "accessories/plugins/icons/2leftarrow.png"). -->
+	      <xs:attribute name="icon_path" use="optional" type="xs:string"/>
+	      <!-- Optional key stroke (e.g. alt HOME) -->
+	      <xs:attribute name="key_stroke" use="optional" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="plugin_menu">
+    <xs:complexType>
+	      <xs:attribute name="location" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+	<!-- ======================================================================================= 
+		 										Menu XML
+		   ======================================================================================= -->
+
+	<xs:group name="base">
+       <xs:choice>
+	          <xs:element ref="menu_category"/>
+	          <xs:element ref="menu_submenu"/>
+	          <xs:element ref="menu_action"/>
+	          <xs:element ref="menu_separator"/>
+       </xs:choice>
+	</xs:group>
+
+
+	<xs:element name="menu_structure">
+		<xs:complexType>
+	      <xs:sequence  minOccurs="0" maxOccurs="unbounded">
+	          <xs:element ref="menu_category"/>
+	      </xs:sequence>
+		</xs:complexType>		
+	</xs:element>
+
+    <xs:complexType name="menu_category_base">
+ 	      <xs:sequence>
+	        <xs:choice minOccurs="0" maxOccurs="unbounded">
+	          <xs:group ref="base"/>
+	        </xs:choice>
+	      </xs:sequence>
+	      <xs:attribute name="name" use="required" type="xs:string"/>
+	      <xs:attribute name="setSeparatorBefore" use="optional" type="xs:boolean" default="true"/>
+    </xs:complexType>
+
+
+  <xs:element name="menu_category">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="menu_category_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+  </xs:element>
+
+  <xs:element name="menu_submenu">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="menu_category_base">
+		      <xs:attribute name="name_ref" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="menu_action">
+    <xs:complexType>
+	      <xs:attribute name="field" use="required" type="xs:string"/>
+	      <xs:attribute name="key_ref" use="optional" type="xs:string"/>
+	      <!-- if name is not given, field is used instead. -->
+	      <xs:attribute name="name" use="optional" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="menu_separator">
+    <xs:complexType>
+    </xs:complexType>
+  </xs:element>
+
+
 
 
 </xs:schema>

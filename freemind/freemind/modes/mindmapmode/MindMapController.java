@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.15 2004-06-19 19:41:56 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.16 2004-07-01 20:13:40 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -52,6 +52,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import freemind.common.JaxbTools;
 import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
@@ -412,7 +413,7 @@ public class MindMapController extends ControllerAdapter {
     public MenuStructure updateMenusFromXml(InputStream in) {
         // get from resources:
         try {
-        	Unmarshaller unmarshaller = jc.createUnmarshaller();
+        	Unmarshaller unmarshaller = JaxbTools.getInstance().createUnmarshaller();
         	unmarshaller.setValidating(true);
         	MenuStructure menus = (MenuStructure) unmarshaller.unmarshal(in);
         	return menus;

@@ -17,6 +17,9 @@ Changes made in Freemind 0.8.0:
 * Plugin for "change management" introduced
 * Now, TAB is usable for insertion of nodes. This is useful for Macs.
 
+* Unified JaxB usage
+* Transfer from plugin properties to XML started
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

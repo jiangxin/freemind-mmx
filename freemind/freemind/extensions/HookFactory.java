@@ -16,18 +16,19 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.7 2004-05-26 06:01:19 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.8 2004-07-01 20:13:39 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -35,7 +36,15 @@ import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
+import freemind.common.JaxbTools;
+import freemind.controller.actions.generated.instance.ObjectFactory;
+import freemind.controller.actions.generated.instance.Plugin;
+import freemind.controller.actions.generated.instance.PluginAction;
+import freemind.controller.actions.generated.instance.PluginMenu;
+import freemind.controller.actions.generated.instance.PluginMode;
 import freemind.main.FreeMindMain;
 
 /**
@@ -76,7 +85,6 @@ public class HookFactory {
 
 	private static final String pluginPrefix = "accessories.plugins.";
 	private FreeMindMain frame;
-	private HashMap pluginCategories;
 	// Logging: 
 	private java.util.logging.Logger logger;
 
@@ -90,10 +98,16 @@ public class HookFactory {
 		logger = frame.getLogger(this.getClass().getName());
 	}
 
+	/**
+	 * @return a string vector with representatives for plugins.
+	 */
 	public Vector getPossibleNodeHooks(Class mode) {
 		return searchFor(NodeHook.class, mode);
 	}
 
+	/**
+	 * @return a string vector with representatives for plugins.
+	 */
 	public Vector getPossibleModeControllerHooks(Class mode) {
 		return searchFor(ModeControllerHook.class, mode);
 	}
@@ -101,7 +115,7 @@ public class HookFactory {
 	/**
 	 * @param class1
 	 * @param mode
-	 * @return
+	 * @return a string vector with representatives for plugins.
 	 */
 	private Vector searchFor(Class baseClass, Class mode) {
 		actualizePlugins();
@@ -176,6 +190,7 @@ public class HookFactory {
 					if(menuPos == null) {
 						menuPos = "";
 					}
+					getXmlDescription(def);
 					pluginInfo.put(
 						propFile,
 						new HookDescriptor(file, script, def, menuPos));
@@ -184,11 +199,54 @@ public class HookFactory {
 		}
 	}
 
-	public ModeControllerHook createModeControllerHook(String hookName) {
+	/**
+     * @param def
+     */
+    private void getXmlDescription(Properties def) {
+		try {
+			ObjectFactory factory = JaxbTools.getInstance().getObjectFactory();
+            Plugin plugin = factory.createPlugin();
+            PluginAction action = factory.createPluginAction();
+			action.setBase(def.getProperty("base"));
+			action.setClassName("accessories.plugins." + 
+				def.getProperty("script").replaceAll("\\.class$", "")); 
+			action.setDocumentation(def.getProperty("documentation"));
+			action.setIconPath(def.getProperty("icon"));
+			action.setName(def.getProperty("name"));
+			action.setKeyStroke(def.getProperty("keystroke"));
+
+			PluginMode mode = factory.createPluginMode();
+			mode.setClassName("freemind.modes.mindmapmode");
+			action.getPluginModeOrPluginMenu().add(mode);
+
+			StringTokenizer to = new StringTokenizer(def.getProperty("menus"), ",");
+			while(to.hasMoreTokens()) {
+				String token = to.nextToken();
+				PluginMenu menu = factory.createPluginMenu();
+				menu.setLocation(token.trim());
+				action.getPluginModeOrPluginMenu().add(menu);
+			}
+            plugin.getPluginAction().add(action);
+			//marshal to StringBuffer:
+//			StringWriter writer = new StringWriter();
+			FileWriter fwriter = new FileWriter(def.getProperty("script").replaceAll("\\.class$", "")+".xml");
+			Marshaller m = JaxbTools.getInstance().createMarshaller();
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, new Boolean(true));
+			m.marshal(plugin, fwriter);
+//			String result = writer.toString();
+//			logger.info(result) ;           
+        } catch (JAXBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    public ModeControllerHook createModeControllerHook(String hookName) {
 		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
-		if (descriptor.script.endsWith("py")) {
-			return (ModeControllerHook) createJythonHook(hookName, descriptor);
-		}
 		return (ModeControllerHook) createJavaHook(hookName, descriptor);
 	}
 
@@ -219,48 +277,12 @@ public class HookFactory {
 		}
 	}
 
-	private org.python.util.PythonInterpreter interp;
-
-	private MindMapHook createJythonHook(
-		String hookName,
-		HookDescriptor descriptor) {
-		try {
-			// Lazy initialization:
-			if(interp==null) {
-				org.python.core.PySystemState.initialize();
-				this.interp = new org.python.util.PythonInterpreter();
-			}
-			logger.finest("Excecuting jython script: " + descriptor.fileName);
-			interp.execfile(
-				ClassLoader.getSystemResourceAsStream(descriptor.fileName));
-			MindMapHook hook =
-				(MindMapHook) interp.get("instance", MindMapHook.class);
-			decorateHook(hookName, descriptor, hook);
-			return hook;
-		} catch (Exception e) {
-			logger.severe(
-				"Error occurred loading hook: " + descriptor.fileName);
-			return null;
-		}
-	}
-
 	public NodeHook createNodeHook(
 		String hookName) {
         logger.finest("CreateNodeHook: " + hookName);
 		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
 		if(hookName==null || descriptor==null)
 			throw new IllegalArgumentException("Unknown hook name "+hookName);
-		// proxy support
-		if(descriptor.properties.getProperty("proxy")!=null) {
-			logger.info("Creating proxy for "+hookName);
-			NodeHook proxy = new NodeHookActionProxy();
-			descriptor.properties.remove("proxy");
-			decorateHook(hookName, descriptor, proxy);
-			return proxy;
-		}
-		if (descriptor.script.endsWith("py")) {
-			return (NodeHook) createJythonHook(hookName, descriptor);
-		}
 		return (NodeHook) createJavaHook(hookName, descriptor);
 	}
 
