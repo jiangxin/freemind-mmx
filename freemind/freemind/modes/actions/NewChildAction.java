@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: NewChildAction.java,v 1.1.2.3 2004-05-24 05:36:42 christianfoltin Exp $*/
+/*$Id: NewChildAction.java,v 1.1.2.4 2004-07-30 20:49:48 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -51,7 +51,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
     }
 
     public void actionPerformed(ActionEvent e) {
-       this.c.addNew(c.getView().getSelected(), ControllerAdapter.NEW_CHILD, null);
+       this.c.addNew(c.getSelected(), ControllerAdapter.NEW_CHILD, null);
     }
     /* (non-Javadoc)
      * @see freemind.controller.actions.ActorXml#act(freemind.controller.actions.generated.instance.XmlAction)
@@ -81,11 +81,11 @@ public class NewChildAction extends AbstractAction implements ActorXml {
     }
     
     
-	public void addNew(final NodeView target, final int newNodeMode, final KeyEvent e) {
+	public void addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e) {
 	   //closeEdit();
        
 //		 MindMapNode newNode = newNode();
-	   final MindMapNode targetNode = target.getModel();
+	   final MindMapNode targetNode = target;
 
 	   switch (newNodeMode) {
 		 case ControllerAdapter.NEW_SIBLING_BEFORE:
@@ -108,7 +108,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		   MindMapNode newNode = addNewNode(parent, childPosition);	
 		c.select(newNode.getViewer());
 		c.getFrame().repaint(); //  getLayeredPane().repaint();
-		c.edit.edit(newNode.getViewer(), target, e, true, false, false);
+		c.edit.edit(newNode.getViewer(), target.getViewer(), e, true, false, false);
 		   break;
   
 		 case ControllerAdapter.NEW_CHILD:
@@ -126,7 +126,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 			   if (newNodeMode == ControllerAdapter.NEW_CHILD) {
 				c.select(newChildNode.getViewer());
 			   }
-		c.edit.edit(newChildNode.getViewer(), target, e, true, parentFolded, false);
+		c.edit.edit(newChildNode.getViewer(), target.getViewer(), e, true, parentFolded, false);
 		   break;
 	   }
 	}

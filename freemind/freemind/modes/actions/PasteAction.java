@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: PasteAction.java,v 1.1.2.1 2004-05-09 22:31:15 christianfoltin Exp $*/
+/*$Id: PasteAction.java,v 1.1.2.2 2004-07-30 20:49:48 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -149,6 +149,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
                 MindMapNode parentNode = target.getParentNode();
                 return (MindMapNode) parentNode.getChildAt(parentNode.getChildPosition(target) - 1);
             } else {
+                logger.finest("getChildCount = " + target.getChildCount() + ", target = "+ target);
                 return (MindMapNode) target.getChildAt(
                     target.getChildCount() - 1);
             }
@@ -197,15 +198,19 @@ public class PasteAction extends AbstractAction implements ActorXml {
 			  //System.err.println("mindMapNodesFlavor");
 			 String textFromClipboard =
 				(String)t.getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
-			 String[] textLines = textFromClipboard.split("<nodeseparator>");
-			 if (textLines.length > 1) {
-				c.getFrame().setWaitingCursor(true); }
-			 for (int i = 0; i < textLines.length; ++i) {
-			 	//logger.info(textLines[i]+", "+ target+", "+ asSibling);
-				 MindMapNodeModel newModel = pasteXMLWithoutRedisplay(textLines[i], target, asSibling);
-				// additional code for left/right decision:
-				 newModel.setLeft(isLeft);
-			 }
+			 if (textFromClipboard != null) {
+                String[] textLines = textFromClipboard.split("<nodeseparator>");
+                if (textLines.length > 1) {
+                    c.getFrame().setWaitingCursor(true);
+                }
+                for (int i = 0; i < textLines.length; ++i) {
+                    //logger.info(textLines[i]+", "+ target+", "+ asSibling);
+                    MindMapNodeModel newModel = pasteXMLWithoutRedisplay(
+                            textLines[i], target, asSibling);
+                    // additional code for left/right decision:
+                    newModel.setLeft(isLeft);
+                }
+            }
 		  }
 		  else if (t.isDataFlavorSupported(MindMapNodesSelection.htmlFlavor)) {
 			  //System.err.println("htmlFlavor");

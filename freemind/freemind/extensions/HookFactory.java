@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.11 2004-07-30 18:29:29 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.12 2004-07-30 20:49:47 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -94,7 +94,7 @@ public class HookFactory {
 			HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(label);
 			//Properties prop = descriptor.properties;
 			try {
-				logger.info("Loading: "+label);
+				logger.finest("Loading: "+label);
 				if (baseClass.isAssignableFrom(Class.forName(descriptor
 						.getBaseClass()))) {
 					// the plugin inherits from the baseClass, we carry on to
@@ -139,7 +139,7 @@ public class HookFactory {
 					InputStream in = pluginURL.openStream();
 					Unmarshaller unmarshaller = JaxbTools.getInstance()
 							.createUnmarshaller();
-					logger.info("Reading: "+xmlPluginFile);
+					logger.finest("Reading: "+xmlPluginFile);
 					unmarshaller.setValidating(true);
 					plugin = (Plugin) unmarshaller.unmarshal(in);
 //					for (Iterator j = plugin.getPluginAction().iterator(); j.hasNext();) {

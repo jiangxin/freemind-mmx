@@ -70,7 +70,7 @@ public class EditAction extends AbstractAction implements ActorXml {
 		  edit(c.getView().getSelected(),c.getView().getSelected(), e, false, false, editLong);
 		}
 		else if (!c.isBlocked()) {
-			c.addNew(c.getView().getSelected(), c.NEW_SIBLING_BEHIND, e);
+			c.addNew(c.getSelected(), c.NEW_SIBLING_BEHIND, e);
 		}
 		if (e != null) {
 		  e.consume();

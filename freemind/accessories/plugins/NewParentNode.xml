@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <plugin>
-    <plugin_action documentation="&lt;html&gt;All selected are sent to a new parent.&lt;/html&gt;" name="New parent node" key_stroke="shift INSERT" base="freemind.extensions.NodeHookAdapter" icon_path="accessories/plugins/icons/stock_text_indent.png" label="accessories/plugins/NewParentNode.properties" class_name="accessories.plugins.NewParentNode">
-        <plugin_mode class_name="freemind.modes.mindmapmode"/>
-        <plugin_menu location="menu_bar/insert/nodes/automaticLayout"/>
-    </plugin_action>
+	<plugin_action 
+		documentation="&lt;html&gt;All selected are sent to a new parent.&lt;/html&gt;" 
+		name="New parent node" key_stroke="shift INSERT" 
+		base="freemind.extensions.NodeHookAdapter" 
+		icon_path="accessories/plugins/icons/stock_text_indent.png" 
+		label="accessories/plugins/NewParentNode.properties" 
+		class_name="accessories.plugins.NewParentNode">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/insert/nodes/automaticLayout"/>
+	</plugin_action>
 </plugin>
-

@@ -5,7 +5,7 @@
 		name="Blinking node" base="freemind.extensions.NodeHookAdapter" 
 		icon_path="accessories/plugins/icons/xeyes.png" 
 		label="accessories/plugins/BlinkingNodeHook.properties" 
-		class_name="accessories.plugins.BlinkingNodeHook" instanciation="once">
+		class_name="accessories.plugins.BlinkingNodeHook" instanciation="Once">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/format/nodes/BlinkingNodeHook"/>
 	</plugin_action>

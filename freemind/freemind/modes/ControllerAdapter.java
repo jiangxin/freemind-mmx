@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.19 2004-07-30 18:29:29 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.20 2004-07-30 20:49:47 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -73,21 +73,17 @@ import javax.xml.transform.stream.StreamSource;
 
 import freemind.common.JaxbTools;
 import freemind.controller.Controller;
-import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.AbstractXmlAction;
 import freemind.controller.actions.ActionFactory;
 import freemind.controller.actions.ActionHandler;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
-import freemind.controller.actions.FreemindAction;
 import freemind.controller.actions.ModeControllerActionHandler;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.UndoXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookFactory;
-import freemind.extensions.HookInstanciationMethod;
-import freemind.extensions.MindMapHook;
 import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
@@ -284,7 +280,6 @@ public abstract class ControllerAdapter implements ModeController {
 			recursiveCallUpdateHooks(node.getParentNode(), changedNode);
 	}
 
-
     public void anotherNodeSelected(MindMapNode n) {
     }
 
@@ -407,7 +402,7 @@ public abstract class ControllerAdapter implements ModeController {
 		// return an ArrayList of MindMapNodes.
 		List result = getSelecteds();
 		Collections.sort(result, new nodesDepthComparator());
-		logger.info("Sort result: "+result);
+		logger.finest("Sort result: "+result);
 		return result;
 	}
 
@@ -759,7 +754,7 @@ public abstract class ControllerAdapter implements ModeController {
     public static final int NEW_SIBLING_BEHIND = 3;
     public static final int NEW_SIBLING_BEFORE = 4;
 
-    public void addNew(final NodeView target, final int newNodeMode, final KeyEvent e) {
+    public void addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e) {
     	newChild.addNew(target, newNodeMode, e);
     }
 
@@ -1489,7 +1484,7 @@ public abstract class ControllerAdapter implements ModeController {
             super(getText("new_node"));
         }
         public void actionPerformed(ActionEvent e) {
-            addNew(getView().getSelected(), NEW_CHILD_WITHOUT_FOCUS, null);
+            addNew(getSelected(), NEW_CHILD_WITHOUT_FOCUS, null);
         }
     }
 
@@ -1499,7 +1494,7 @@ public abstract class ControllerAdapter implements ModeController {
             super(getText("new_sibling_behind"));
         }
         public void actionPerformed(ActionEvent e) {
-            addNew(getView().getSelected(), NEW_SIBLING_BEHIND, null);
+            addNew(getSelected(), NEW_SIBLING_BEHIND, null);
         }
     }
 
@@ -1508,7 +1503,7 @@ public abstract class ControllerAdapter implements ModeController {
             super(getText("new_sibling_before"));
         }
         public void actionPerformed(ActionEvent e) {
-            addNew(getView().getSelected(), NEW_SIBLING_BEFORE, null);
+            addNew(getSelected(), NEW_SIBLING_BEFORE, null);
         }
     }
 

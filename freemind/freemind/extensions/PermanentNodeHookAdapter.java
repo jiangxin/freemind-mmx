@@ -129,5 +129,12 @@ public class PermanentNodeHookAdapter
 		logger.finest("onLooseFocusHook");
 	}
 
+    /* (non-Javadoc)
+     * @see freemind.extensions.PermanentNodeHook#onAddChildren(freemind.modes.MindMapNode)
+     */
+    public void onAddChildren(MindMapNode addedChild) {
+        logger.finest("onAddChildren");
+    }
+
 
 }

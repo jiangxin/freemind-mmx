@@ -26,6 +26,12 @@ public interface PermanentNodeHook extends NodeHook {
 
 	void onAddChild(MindMapNode newChildNode);
 
+    /** This method is called, if a child is added to me or to any of my children.
+     *  (See onUpdateChildrenHook)
+     * @param addedChild
+     */
+    void onAddChildren(MindMapNode addedChild);
+
 	void onRemoveChild(MindMapNode oldChildNode);
 	
 	/**

@@ -10,7 +10,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
 
 import freemind.modes.MindMapNode;
-import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
@@ -29,7 +28,7 @@ public interface MindMapActions {
 	 *     public final int NEW_SIBLING_BEFORE = 4;
 	 * @see freemind.modes.ControllerAdapter
 	 * */
-	public void addNew(final NodeView target, final int newNodeMode, final KeyEvent e);
+	public void addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e);
 	public void deleteNode(MindMapNode selectedNode);
 	public Transferable cut();
 

@@ -212,7 +212,17 @@
 		  <!-- Describe the multiplicity of the plugin (only for PermanentNodeHooks):
 			   once:  can only be associated once to a node.
 			   other or not mentioned: can be associated more than once.  -->
-		  <xs:attribute name="instanciation" type="xs:string" use="optional"/>
+		  <xs:attribute name="instanciation" use="optional" default="Once">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="Once"/>
+						<xs:enumeration value="OnceForRoot"/>
+						<xs:enumeration value="OnceForAllNodes"/>
+						<xs:enumeration value="Other"/>
+						<xs:enumeration value="ApplyToRoot"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
     </xs:complexType>
   </xs:element>
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13.12.5 2004-05-23 12:39:02 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.13.12.6 2004-07-30 20:49:48 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -40,7 +40,6 @@ import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
-import freemind.view.mindmapview.NodeView;
 
 public class BrowseController extends ControllerAdapter {
 
@@ -57,7 +56,7 @@ public class BrowseController extends ControllerAdapter {
 
     // disable edit in browse mode (PN)
     public void edit(KeyEvent e, boolean addNew, boolean editLong) { }
-    public void addNew(final NodeView target, 
+    public void addNew(final MindMapNode target, 
                         final int newNodeMode, 
                         final KeyEvent e) { }
 

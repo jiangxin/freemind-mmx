@@ -24,6 +24,8 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 	private Color[] colors = new Color[]{ new Color(0x000000), new Color(0x0033FF), new Color(0x00b439), 
 		new Color(0x990000), new Color(0x111111) };
 
+	private String[] fontSize = new String[]{ "36", "24", "18", "14", "12"};
+
 
 	/**
 	 * 
@@ -32,17 +34,24 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 		super();
 	}
 
-	private void setColor(MindMapNode node) {
+	private void setStyle(MindMapNode node) {
 		int depth = depth(node);
-		//logger.info("COLOR, depth="+(depth));
-		Color mycolor = colors[colors.length - 1];
+		logger.finest("COLOR, depth="+(depth));
+		int myIndex = colors.length - 1;
 		if (depth < colors.length)
-			mycolor = colors[depth];
+		    myIndex = depth;
+		Color mycolor = colors[myIndex];
 		Color nodeColor = node.getColor();
 		if (((nodeColor != null) && (nodeColor.getRGB() != mycolor.getRGB()))
 				|| nodeColor == null) {
 			node.setColor(mycolor);
 			nodeChanged(node);
+		}
+		String myFontSize = fontSize[myIndex];
+		if (((node.getFontSize() != null) && (!node.getFontSize().equals(myFontSize)) ) 
+		        || node.getFontSize() == null ) {
+		    node.setFontSize(Integer.valueOf(myFontSize).intValue());
+		    nodeChanged(node);
 		}
 	}
 
@@ -57,9 +66,10 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 	/* (non-Javadoc)
 	 * @see freemind.extensions.PermanentNodeHook#onAddChild(freemind.modes.MindMapNode)
 	 */
-	public void onAddChild(MindMapNode newChildNode) {
+	public void onAddChildren(MindMapNode newChildNode) {
+	    logger.finest("onAddChildren "+ newChildNode);
 		super.onAddChild(newChildNode);
-		setColor(newChildNode);
+		setStyleRecursive(newChildNode);
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +77,7 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 	 */
 	public void onUpdateChildrenHook(MindMapNode updatedNode) {
 		super.onUpdateChildrenHook(updatedNode);
-		setColor(updatedNode);
+		setStyleRecursive(updatedNode);
 	}
 
 	/* (non-Javadoc)
@@ -75,7 +85,7 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 	 */
 	public void onUpdateNodeHook() {
 		super.onUpdateNodeHook();
-		setColor(getNode());
+		setStyle(getNode());
 	}
 
 	/* (non-Javadoc)
@@ -83,12 +93,20 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 	 */
 	public void invoke(MindMapNode node) {
 		super.invoke(node);
-		setColor(node);
+		setStyleRecursive(node);
+	}
+
+    /**
+     * @param node
+     */
+    private void setStyleRecursive(MindMapNode node) {
+	    logger.finest("setStyle "+ node);
+        setStyle(node);
 		// recurse:
 		for (Iterator i = node.childrenFolded(); i.hasNext();) {
 			MindMapNode child = (MindMapNode) i.next();
 			invoke(child);
 		}
-	}
+    }
 
 }

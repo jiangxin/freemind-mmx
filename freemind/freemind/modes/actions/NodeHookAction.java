@@ -19,7 +19,7 @@
  *
  * Created on 26.07.2004
  */
-/*$Id: NodeHookAction.java,v 1.1.2.1 2004-07-30 18:29:30 christianfoltin Exp $*/
+/*$Id: NodeHookAction.java,v 1.1.2.2 2004-07-30 20:49:48 christianfoltin Exp $*/
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
@@ -94,12 +94,12 @@ public class NodeHookAction extends FreemindAction implements MenuItemEnabledLis
 				MindMapNode currentDestinationNode = (MindMapNode) it.next();
 				NodeHook hook = controller
 						.createNodeHook(hookName, currentDestinationNode, controller.getMap());
-				logger.info("created hook "+hookName);
+				logger.finest("created hook "+hookName);
 				// call invoke.
 				currentDestinationNode.invokeHook(hook);
 				if (hook instanceof PermanentNodeHook) {
 					PermanentNodeHook permHook = (PermanentNodeHook) hook;
-					logger.info("This is a permanent hook "+ hookName);
+					logger.finest("This is a permanent hook "+ hookName);
 					// the focussed receives the focus:
 					if (currentDestinationNode == adaptedFocussedNode) {
 						permHook.onReceiveFocusHook();

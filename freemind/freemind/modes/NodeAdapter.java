@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.12.6 2004-07-30 18:29:29 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.12.7 2004-07-30 20:49:47 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -74,6 +74,9 @@ public abstract class NodeAdapter implements MindMapNode {
     private FreeMindMain frame;
     private static final boolean ALLOWSCHILDREN = true;
     private static final boolean ISLEAF = false; //all nodes may have children
+	// Logging: 
+    static protected java.util.logging.Logger logger;
+
 
     //
     // Constructors
@@ -88,6 +91,8 @@ public abstract class NodeAdapter implements MindMapNode {
 		this.frame = frame;
 		hooks = new Vector();
 		activatedHooks = new HashSet();
+		if(logger == null)
+			logger = frame.getLogger(this.getClass().getName());
     }
 
     public String getLink() {
@@ -437,6 +442,7 @@ public abstract class NodeAdapter implements MindMapNode {
     //Garbage Collection work (Nodes in removed Sub-Trees reference each other)?
     
     public void insert( MutableTreeNode child, int index) {
+        logger.finest("Insert at " + index + " the node "+child);
         if (index < 0) { // add to the end (used in xml load) (PN) 
           index = getChildCount();
           children.add( index, child );
@@ -446,13 +452,28 @@ public abstract class NodeAdapter implements MindMapNode {
           preferredChild = (MindMapNode)child;
         }
     	child.setParent( this );
-    	// call add child hook:
-    	for(Iterator i = this.getActivatedHooks().iterator(); i.hasNext(); ){
-    		PermanentNodeHook hook = (PermanentNodeHook) i.next();
-    		hook.onAddChild((MindMapNode)child);
-    	}
+    	recursiveCallAddChildren(this, (MindMapNode) child);
     }
     
+	/**
+	 * @param node
+	 */
+	private void recursiveCallAddChildren(MindMapNode node, MindMapNode addedChild) {
+		// Tell any node hooks that the node is added:
+		if(node instanceof MindMapNode) {
+			for(Iterator i=  ((MindMapNode)node).getActivatedHooks().iterator(); i.hasNext();) {
+				PermanentNodeHook hook = (PermanentNodeHook) i.next();
+				if(addedChild.getParentNode() == node) {
+				    hook.onAddChild(addedChild);
+				}
+				hook.onAddChildren(addedChild);
+			}
+		}
+		if(!node.isRoot() && node.getParentNode()!= null)
+		    recursiveCallAddChildren(node.getParentNode(), addedChild);
+	}
+
+
     
     public void remove( int index ) {
         MutableTreeNode node = (MutableTreeNode)children.get(index);
