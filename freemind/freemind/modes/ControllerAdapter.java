@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.17 2001-03-31 22:36:59 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.18 2001-04-06 20:50:11 ponder Exp $*/
 
 package freemind.modes;
 
@@ -25,6 +25,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.controller.Controller;
 import freemind.modes.MindMap;
+import freemind.modes.Pattern;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -620,7 +621,11 @@ public abstract class ControllerAdapter implements ModeController {
 	    super(getFrame().getResources().getString("remove_node"));
 	}
 	public void actionPerformed(ActionEvent e) {
-	    delete(getView().getSelected());
+//	    delete(getView().getSelected());
+		for(ListIterator i = getView().getSelecteds().listIterator();i.hasNext();) {
+			NodeView selected = (NodeView)i.next();
+			delete(selected);
+		}
 	}
     }
 

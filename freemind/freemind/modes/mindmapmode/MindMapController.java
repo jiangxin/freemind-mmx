@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.15 2001-03-28 19:17:37 ponder Exp $*/
+/*$Id: MindMapController.java,v 1.16 2001-04-06 20:50:11 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -28,8 +28,12 @@ import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
+import freemind.modes.EdgeAdapter;
+import freemind.view.mindmapview.NodeView;
 import java.io.File;
 import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.Color;
@@ -78,8 +82,20 @@ public class MindMapController extends ControllerAdapter {
     Action bubble = new BubbleAction();
     Action nodeColor = new NodeColorAction();
     Action edgeColor = new EdgeColorAction();
-    Action linear = new LinearAction();
-    Action bezier = new BezierAction();
+    Action edgeWidths[] = {
+				new EdgeWidthAction(EdgeAdapter.WIDTH_PARENT),
+				new EdgeWidthAction(EdgeAdapter.WIDTH_THIN),
+				new EdgeWidthAction(1),
+				new EdgeWidthAction(2),
+				new EdgeWidthAction(4),
+				new EdgeWidthAction(8)
+			};
+    Action edgeStyles[] = {
+		new EdgeStyleAction("linear"),
+		new EdgeStyleAction("bezier"),
+		new EdgeStyleAction("sharp_linear"),
+		new EdgeStyleAction("sharp_bezier")
+	};
     Action italic = new ItalicAction(this);
     Action bold = new BoldAction(this);
     //    Action underline = new UnderlineAction(this);
@@ -141,11 +157,19 @@ public class MindMapController extends ControllerAdapter {
 
     //Node editing
     void setFontSize(int fontSize) {
-	getModel().setFontSize(getSelected(),fontSize);
+//	getModel().setFontSize(getSelected(),fontSize);
+	for(ListIterator e = getSelecteds().listIterator();e.hasNext();) {
+		MindMapNodeModel selected = (MindMapNodeModel)e.next();
+		getModel().setFontSize(selected,fontSize);
+	}
     }
 
     void setFont(String font) {
-	getModel().setFont(getSelected(),font);
+//	getModel().setFont(getSelected(),font);
+	for(ListIterator e = getSelecteds().listIterator();e.hasNext();) {
+		MindMapNodeModel selected = (MindMapNodeModel)e.next();
+		getModel().setFont(selected,font);
+	}
     }
 
     protected MindMapNode newNode() {
@@ -298,9 +322,15 @@ public class MindMapController extends ControllerAdapter {
 	JMenu edgeMenu = new JMenu(getFrame().getResources().getString("edge"));
 	JMenu edgeStyle = new JMenu(getFrame().getResources().getString("style"));
 	edgeMenu.add(edgeStyle);
-	edgeStyle.add(linear);
-	edgeStyle.add(bezier);
+	for (int i=0; i<edgeStyles.length; ++i) { 
+		edgeStyle.add(edgeStyles[i]);
+	}
 	edgeMenu.add(edgeColor);
+	JMenu edgeWidth = new JMenu(getFrame().getResources().getString("width"));
+	edgeMenu.add(edgeWidth);
+	for (int i=0; i<edgeWidths.length; ++i) { 
+		edgeWidth.add(edgeWidths[i]);
+	}
 	return edgeMenu;
     }
 
@@ -316,6 +346,18 @@ public class MindMapController extends ControllerAdapter {
 
     private MindMapNodeModel getSelected() {
 	return (MindMapNodeModel)getView().getSelected().getModel();
+    }
+
+    private LinkedList getSelecteds() {
+	LinkedList selecteds = new LinkedList();
+	ListIterator it = getView().getSelecteds().listIterator();
+	if (it != null) {
+	    while(it.hasNext()) {
+		NodeView selected = (NodeView)it.next();
+		selecteds.add( selected.getModel() );
+	    }
+	}
+	return selecteds;
     }
 
     MindMapToolBar getToolBar() {
@@ -340,10 +382,14 @@ public class MindMapController extends ControllerAdapter {
 	normalFont.setEnabled(enabled);
 	nodeColor.setEnabled(enabled);
 	edgeColor.setEnabled(enabled);
+	for (int i=0; i<edgeWidths.length; ++i) { 
+		edgeWidths[i].setEnabled(enabled);
+	}
 	fork.setEnabled(enabled);
 	bubble.setEnabled(enabled);
-	linear.setEnabled(enabled);
-	bezier.setEnabled(enabled);
+	for (int i=0; i<edgeStyles.length; ++i) { 
+		edgeStyles[i].setEnabled(enabled);
+	}
 	save.setEnabled(enabled);
 	saveAs.setEnabled(enabled);
 	getToolBar().setAllActions(enabled);
@@ -515,7 +561,11 @@ public class MindMapController extends ControllerAdapter {
 	    super(getFrame().getResources().getString("fork"));
 	}
 	public void actionPerformed(ActionEvent e) {
-	    getModel().setNodeStyle(getSelected(), "fork");
+//	    getModel().setNodeStyle(getSelected(), "fork");
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setNodeStyle(selected, "fork");
+		}
 	}
     }
 
@@ -524,25 +574,26 @@ public class MindMapController extends ControllerAdapter {
 	    super(getFrame().getResources().getString("bubble"));
 	}
 	public void actionPerformed(ActionEvent e) {
-	    getModel().setNodeStyle(getSelected(), "bubble");
+//	    getModel().setNodeStyle(getSelected(), "bubble");
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setNodeStyle(selected, "bubble");
+		}
 	}
     }
 
-    private class LinearAction extends AbstractAction {
-	LinearAction() {
-	    super(getFrame().getResources().getString("linear"));
+    private class EdgeStyleAction extends AbstractAction {
+	String style;
+	EdgeStyleAction(String style) {
+	    super(getFrame().getResources().getString(style));
+		this.style = style;
 	}
 	public void actionPerformed(ActionEvent e) {
-	    getModel().setEdgeStyle(getSelected(), "linear");
-	}
-    }
-
-    private class BezierAction extends AbstractAction {
-	BezierAction() {
-	    super(getFrame().getResources().getString("bezier"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    getModel().setEdgeStyle(getSelected(), "bezier");
+//	    getModel().setEdgeStyle(getSelected(), style);
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setEdgeStyle(selected, style);
+		}
 	}
     }
 
@@ -554,7 +605,11 @@ public class MindMapController extends ControllerAdapter {
 	    super(getFrame().getResources().getString("italic"), new ImageIcon(getResource("images/Italic24.gif")));
 	}
 	public void actionPerformed(ActionEvent e) {
-	    getModel().setItalic(getSelected());
+//	    getModel().setItalic(getSelected());
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setItalic(selected);
+		}
 	}
     }
 
@@ -563,7 +618,11 @@ public class MindMapController extends ControllerAdapter {
 	    super(getFrame().getResources().getString("bold"), new ImageIcon(getResource("images/Bold24.gif")));
 	}
 	public void actionPerformed(ActionEvent e) {
-	    getModel().setBold(getSelected());
+//	    getModel().setBold(getSelected());
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setBold(selected);
+		}
 	}
     }
 
@@ -571,7 +630,11 @@ public class MindMapController extends ControllerAdapter {
 	NormalFontAction(Object controller) {
 	    super(getFrame().getResources().getString("normal"), new ImageIcon(getResource("images/Normal24.gif")));	}
 	public void actionPerformed(ActionEvent e) {
-	    getModel().setNormalFont(getSelected());
+//	    getModel().setNormalFont(getSelected());
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setNormalFont(selected);
+		}
 	}
     }
 
@@ -581,7 +644,11 @@ public class MindMapController extends ControllerAdapter {
 	    super(getFrame().getResources().getString("underline"), new ImageIcon(getResource("images/Underline24.gif")));
 	}
 	public void actionPerformed(ActionEvent e) {
-	    getModel().setUnderlined(getSelected());
+//	    getModel().setUnderlined(getSelected());
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setUnderlined(selected);
+		}
 	}
     }
 
@@ -595,7 +662,12 @@ public class MindMapController extends ControllerAdapter {
 	}
 	public void actionPerformed(ActionEvent e) {
 	    Color color = JColorChooser.showDialog(getView(),"Choose Node Color:",getSelected().getColor() );
-	    getModel().setNodeColor(getSelected(), color);
+		if (color==null) return;
+//	    getModel().setNodeColor(getSelected(), color);
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setNodeColor(selected, color);
+		}
 	}
     }
 
@@ -604,9 +676,37 @@ public class MindMapController extends ControllerAdapter {
 	    super(getFrame().getResources().getString("edge_color"));
 	}
 	public void actionPerformed(ActionEvent e) {
-	    MindMapNodeModel node = getSelected();
+//	    MindMapNodeModel node = getSelected();
 	    Color color = JColorChooser.showDialog(getView(),"Choose Edge Color:",getSelected().getEdge().getColor());
-	    getModel().setEdgeColor(node,color);
+		if (color==null) return;
+//	    getModel().setEdgeColor(node,color);
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setEdgeColor(selected,color);
+		}
+	}
+    }
+
+	private String getWidthTitle(int width) {
+		if (width==EdgeAdapter.WIDTH_PARENT)
+			return getFrame().getResources().getString("edge_width_parent");
+		if (width==EdgeAdapter.WIDTH_THIN)
+			return getFrame().getResources().getString("edge_width_thin");
+		return Integer.toString(width);
+	}
+
+    private class EdgeWidthAction extends AbstractAction {
+	int width;
+	EdgeWidthAction(int width) {
+			super(getWidthTitle(width));
+			this.width = width;
+	}
+	public void actionPerformed(ActionEvent e) {
+//	    getModel().setEdgeWidth(getSelected(),width);
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setEdgeWidth(selected,width);
+		}
 	}
     }
 
@@ -614,10 +714,14 @@ public class MindMapController extends ControllerAdapter {
 	IncreaseNodeFontAction() {
 	    super(getFrame().getResources().getString("increase_node_font_size"));
 	}
-
 	public void actionPerformed(ActionEvent e) {
-	    MindMapNodeModel n = getSelected();
-	    getModel().increaseFontSize(n,1);
+//	    MindMapNodeModel n = getSelected();
+	    // we assume you have true type, so +1 works
+//	    getModel().setFontSize(n,n.getFont().getSize()+1);
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setFontSize(selected,selected.getFont().getSize()+1);
+		}
 	}
     }
 
@@ -625,13 +729,13 @@ public class MindMapController extends ControllerAdapter {
 	DecreaseNodeFontAction() {
 	    super(getFrame().getResources().getString("decrease_node_font_size"));
 	}
-
 	public void actionPerformed(ActionEvent e) {
-	    MindMapNodeModel n = getSelected();
 	    // we assume you have true type, so -1 works
-	    // getModel().setFontSize(n,n.getFont().getSize()-1);
-
-	    getModel().increaseFontSize(n,-1);
+//	    getModel().increaseBranchFontSize(getSelected(),-1);
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setFontSize(selected,selected.getFont().getSize()-1);
+		}
 	}
     }
 
@@ -639,10 +743,17 @@ public class MindMapController extends ControllerAdapter {
 	IncreaseBranchFontAction() {
 	    super(getFrame().getResources().getString("increase_branch_font_size"));
 	}
-
 	public void actionPerformed(ActionEvent e) {
 	    MindMapNodeModel n = getSelected();
-	    getModel().increaseBranchFontSize(n,1);
+		// we assume you have true type, so +1 works
+		// getModel().setBranchFontSize(n,n.getFont().getSize()+1);
+	    getModel().increaseBranchFontSize(getSelected(),1);
+/*
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().increaseBranchFontSize(selected,1);
+		}
+*/
 	}
     }
 
@@ -650,10 +761,16 @@ public class MindMapController extends ControllerAdapter {
 	DecreaseBranchFontAction() {
 	    super(getFrame().getResources().getString("decrease_branch_font_size"));
 	}
-
 	public void actionPerformed(ActionEvent e) {
 	    MindMapNodeModel n = getSelected();
-	    getModel().increaseBranchFontSize(n,-1);
+	    // we assume you have true type, so -1 works
+	    getModel().setBranchFontSize(n,n.getFont().getSize()-1);
+/*
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setBranchFontSize(selected,selected.getFont().getSize()-1);
+		}
+*/
 	}
     }
 
@@ -675,12 +792,17 @@ public class MindMapController extends ControllerAdapter {
 		color=Tools.xmlToColor(strcolor);
 	    }
 
-	    getModel().setNodeColor(getSelected(), color);
-
 	    Font f = new Font(getFrame().getProperty("positive_node_font"),
 			      Integer.parseInt(getFrame().getProperty("positive_node_font_style")),
 			      Integer.parseInt(getFrame().getProperty("positive_node_font_size")));
-	    getModel().setNodeFont(getSelected(), f);
+
+//	    getModel().setNodeColor(getSelected(), color);
+//	    getModel().setNodeFont(getSelected(), f);
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setNodeColor(selected, color);
+			getModel().setNodeFont(selected, f);
+		}
 	}
     }
 
@@ -697,12 +819,17 @@ public class MindMapController extends ControllerAdapter {
 		color=Tools.xmlToColor(strcolor);
 	    }
 
-	    getModel().setNodeColor(getSelected(), color);
-
 	    Font f = new Font(getFrame().getProperty("negative_node_font"),
 			      Integer.parseInt(getFrame().getProperty("negative_node_font_style")),
 			      Integer.parseInt(getFrame().getProperty("negative_node_font_size")));
-	    getModel().setNodeFont(getSelected(), f);
+
+//	    getModel().setNodeColor(getSelected(), color);
+//	    getModel().setNodeFont(getSelected(), f);
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setNodeColor(selected, color);
+			getModel().setNodeFont(selected, f);
+		}
 	}
     }
 
@@ -719,12 +846,17 @@ public class MindMapController extends ControllerAdapter {
 		color=Tools.xmlToColor(strcolor);
 	    }
 
-	    getModel().setNodeColor(getSelected(), color);
-
 	    Font f = new Font(getFrame().getProperty("standardfont"),
 			      Integer.parseInt("0"), // FIXME: should be changed in the implementation
 			      Integer.parseInt(getFrame().getProperty("standardfontsize")));
-	    getModel().setNodeFont(getSelected(), f);
+
+//	    getModel().setNodeColor(getSelected(), color);
+//	    getModel().setNodeFont(getSelected(), f);
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setNodeColor(selected, color);
+			getModel().setNodeFont(selected, f);
+		}
 	}
     }
 
@@ -741,12 +873,17 @@ public class MindMapController extends ControllerAdapter {
 		color=Tools.xmlToColor(strcolor);
 	    }
 
-	    getModel().setBranchColor(getSelected(), color);
-
 	    Font f = new Font(getFrame().getProperty("positive_node_font"),
 			      Integer.parseInt(getFrame().getProperty("positive_node_font_style").trim()),
 			      Integer.parseInt(getFrame().getProperty("positive_node_font_size").trim()));
-	    getModel().setBranchFont(getSelected(), f);
+
+//	    getModel().setBranchColor(getSelected(), color);
+//	    getModel().setBranchFont(getSelected(), f);
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setBranchColor(selected, color);
+			getModel().setBranchFont(selected, f);
+		}
 	}
     }
 
@@ -763,12 +900,17 @@ public class MindMapController extends ControllerAdapter {
 		color=Tools.xmlToColor(strcolor);
 	    }
 
-	    getModel().setBranchColor(getSelected(), color);
-
 	    Font f = new Font(getFrame().getProperty("negative_node_font"),
 			      Integer.parseInt(getFrame().getProperty("negative_node_font_style")),
 			      Integer.parseInt(getFrame().getProperty("negative_node_font_size")));
-	    getModel().setBranchFont(getSelected(), f);
+
+//	    getModel().setBranchColor(getSelected(), color);
+//	    getModel().setBranchFont(getSelected(), f);
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setBranchColor(selected, color);
+			getModel().setBranchFont(selected, f);
+		}
 	}
     }
 
@@ -785,8 +927,6 @@ public class MindMapController extends ControllerAdapter {
 		color=Tools.xmlToColor(strcolor);
 	    }
 
-	    getModel().setBranchColor(getSelected(), color);
-
 	    Font f = new Font(getFrame().getProperty("standardfont"),
 			      // FIXME: please use only java.awt.Font
 			      0,
@@ -794,7 +934,14 @@ public class MindMapController extends ControllerAdapter {
 
 	    //  			    Integer.parseInt(getFrame().getProperty("0")),
 	    //  			    Integer.parseInt(getFrame().getProperty("standardfontsize")));
-	    getModel().setBranchFont(getSelected(), f);
+
+//	    getModel().setBranchColor(getSelected(), color);
+//	    getModel().setBranchFont(getSelected(), f);
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setBranchColor(selected, color);
+			getModel().setBranchFont(selected, f);
+		}
 	}
     }
 
@@ -809,7 +956,11 @@ public class MindMapController extends ControllerAdapter {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-	    getModel().setBranchBold(getSelected());
+//	    getModel().setBranchBold(getSelected());
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setBranchBold(selected);
+		}
 	}
     }
 
@@ -819,7 +970,11 @@ public class MindMapController extends ControllerAdapter {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-	    getModel().setBranchNonBold(getSelected());
+//	    getModel().setBranchNonBold(getSelected());
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setBranchNonBold(selected);
+		}
 	}
     }
 
@@ -827,7 +982,6 @@ public class MindMapController extends ControllerAdapter {
 	ToggleBoldBranchAction() {
 	    super(getFrame().getResources().getString("toggle_bold_branch"));
 	}
-
 	public void actionPerformed(ActionEvent e) {
 	    getModel().setBranchToggleBold(getSelected());
 	}
@@ -841,7 +995,11 @@ public class MindMapController extends ControllerAdapter {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-	    getModel().setBranchItalic(getSelected());
+//	    getModel().setBranchItalic(getSelected());
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setBranchItalic(selected);
+		}
 	}
     }
 
@@ -851,7 +1009,11 @@ public class MindMapController extends ControllerAdapter {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-	    getModel().setBranchNonItalic(getSelected());
+//	    getModel().setBranchNonItalic(getSelected());
+		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			getModel().setBranchNonItalic(selected);
+		}
 	}
     }
 

@@ -16,13 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeView.java,v 1.4 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: EdgeView.java,v 1.5 2001-04-06 20:50:11 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.modes.MindMapEdge;
 import java.awt.Graphics2D;
 import java.awt.Color;
+import java.awt.Stroke;
+import java.awt.BasicStroke;
 import java.awt.Point;
 import java.awt.Font;
 import javax.swing.JLabel;
@@ -36,6 +38,8 @@ public abstract class EdgeView {
     protected Point start, end;
     private static int i;
 
+	static final Stroke DEF_STROKE = new BasicStroke();
+	
     protected EdgeView(NodeView source, NodeView target) {
 	this.source = source;
 	this.target = target;
@@ -69,6 +73,17 @@ public abstract class EdgeView {
 
     public abstract Color getColor();
 
+	public Stroke getStroke() {
+		Stroke result = getModel().getStroke();
+		if (result==null)
+			return DEF_STROKE;
+		return result;
+	}
+
+	public int getWidth() {
+		return getModel().getWidth();
+	}
+	
     protected MindMapEdge getModel() {
 	return target.getModel().getEdge();
     }
@@ -76,4 +91,24 @@ public abstract class EdgeView {
     protected MapView getMap() {
 	return source.getMap();
     }
+	
+	/*
+	  Get the shift due to alignement of node connexion and edge width.
+	  Bold edges are centered by Graphic. Applies this shift to change this.
+	 */
+	protected int getNodeShift(NodeView node) {
+		if(node.getAlignment()==NodeView.ALIGN_CENTER) return 0;
+		int w=getWidth();
+		if(node.getAlignment()==NodeView.ALIGN_BOTTOM) return -w/2;
+		if(node.getAlignment()==NodeView.ALIGN_TOP) return w/2;
+		return 0;
+	}
+	
+	protected int getTargetShift() {
+		return getNodeShift(target);
+	}
+	
+	protected int getSourceShift() {
+		return getNodeShift(source);
+	}
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.10 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: MapView.java,v 1.11 2001-04-06 20:50:11 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -28,6 +28,7 @@ import freemind.controller.NodeMouseListener;
 import freemind.controller.NodeKeyListener;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Vector;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -49,7 +50,7 @@ public class MapView extends JPanel implements Printable {
 
     private MindMap model;
     private NodeView rootView;
-    private NodeView selected;
+    private Vector selected = new Vector();
     private Controller controller;
     private float zoom=1F;
 
@@ -174,7 +175,23 @@ public class MapView extends JPanel implements Printable {
 	centerNode( getRoot() );
     }
 
+    /**
+     * Select a node.
+	 * If extend is false, it will be the only one.
+	 * If yes, this node will be added.
+     */
+    public void select(NodeView newSelected, boolean extend) {
+		if (extend)
+			toggleSelect(newSelected);
+		else
+			select(newSelected);
+	}
+
+    /**
+     * Select only one node.
+     */
     public void select(NodeView newSelected) {
+/*
 	NodeView oldSelected = getSelected();
 	//select new node
 	this.selected = newSelected;
@@ -184,7 +201,53 @@ public class MapView extends JPanel implements Printable {
 	if (oldSelected != null) {
 	    oldSelected.repaint();
 	}
+*/
+    LinkedList oldSelecteds = getSelecteds();
+	//select new node
+	this.selected.clear();
+	this.selected.addElement(newSelected);
+	newSelected.requestFocus();
+	//	scrollNodeToVisible(newSelected);
+	newSelected.repaint();
+
+	for(ListIterator e = oldSelecteds.listIterator();e.hasNext();) {
+	    NodeView oldSelected = (NodeView)e.next();
+		oldSelected.repaint();
+	}
     }
+
+    /**
+     * Add this onde to the selection.
+     */
+    public void toggleSelect(NodeView newSelected) {
+	NodeView oldSelected = getSelected();
+	if (isSelected(newSelected)) {
+		if (selected.size()>1) {
+			selected.remove(newSelected);
+			oldSelected=newSelected;
+		}
+	}
+	else {
+		selected.add(0,newSelected);
+	}
+	getSelected().requestFocus();
+	getSelected().repaint();
+	oldSelected.repaint();
+	}
+
+    /**
+     * Select this node and its children.
+	 * if extend is false, the past selection will be empty.
+	 * if yes, the selection will extended with this node and its children
+     */
+    public void selectBranch(NodeView newSelected, boolean extend) {
+	if (!extend || !isSelected(newSelected))
+		select(newSelected,extend);
+	for(ListIterator e = newSelected.getChildrenViews().listIterator(); e.hasNext(); ) {
+	    NodeView target = (NodeView)e.next();
+		selectBranch(target,true);
+	}
+	}
 
     //
     // get/set methods
@@ -203,7 +266,24 @@ public class MapView extends JPanel implements Printable {
     }
 
     public NodeView getSelected() {
-	return selected;
+	return (NodeView)selected.get(0);
+    }
+
+    private NodeView getSelected(int i) {
+	return (NodeView)selected.get(i);
+    }
+
+    public LinkedList getSelecteds() {
+	LinkedList result = new LinkedList();
+	for (int i=0; i<selected.size();i++) {
+		result.add( getSelected(i) );
+	}
+	return result;
+    }
+
+
+    public boolean isSelected(NodeView n) {
+	return selected.contains(n);
     }
 
     float getZoom() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapEdgeModel.java,v 1.4 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: MindMapEdgeModel.java,v 1.5 2001-04-06 20:50:11 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -38,7 +38,7 @@ public class MindMapEdgeModel extends EdgeAdapter {
 
     /*Xerces save method
     public void save(Document doc, Element xmlParent) {
-	if (style!=null || color!=null) {
+	if (style!=null || color!=null || width!=WIDTH_PARENT) {
 	    Element edge = doc.createElement("edge");
 	    xmlParent.appendChild(edge);
 	    if (style != null) {
@@ -46,6 +46,12 @@ public class MindMapEdgeModel extends EdgeAdapter {
 	    }
 	    if (color != null) {
 		edge.setAttribute("color",Tools.colorToXml(color));
+	    }
+	    if (width != WIDTH_PARENT) {
+		    if (width == WIDTH_THIN)
+			edge.setAttribute("width","thin");
+			else
+			edge.setAttribute("width",Integer.toString(width));
 	    }
 	}
     }
@@ -58,11 +64,17 @@ public class MindMapEdgeModel extends EdgeAdapter {
 	if (!edge.getAttribute("color").equals("")) {
 	    setColor(Tools.xmlToColor(edge.getAttribute("color") ) );
 	}
+	if (!edge.getAttribute("width").equals("")) {
+		if (edge.getAttribute("width").equals("thin"))
+		    setWidth(WIDTH_THIN);
+			else
+		    setWidth(Integer.parseInt(edge.getAttribute("width")));
+	}
     }
     */
 
     public XMLElement save() {
-	if (style!=null || color!=null) {
+	if (style!=null || color!=null || width!=WIDTH_PARENT) {
 	    XMLElement edge = new XMLElement();
 	    edge.setTagName("edge");
 
@@ -71,6 +83,12 @@ public class MindMapEdgeModel extends EdgeAdapter {
 	    }
 	    if (color != null) {
 		edge.addProperty("color",Tools.colorToXml(color));
+	    }
+	    if (width != WIDTH_PARENT) {
+		    if (width == WIDTH_THIN)
+				edge.addProperty("width","thin");
+			else
+				edge.addProperty("width",Integer.toString(width));
 	    }
 	    return edge;
 	}
@@ -84,10 +102,20 @@ public class MindMapEdgeModel extends EdgeAdapter {
 	if (edge.getProperty("color")!=null) {
 	    setColor(Tools.xmlToColor(edge.getProperty("color") ) );
 	}
+	if (edge.getProperty("width")!=null) {
+		if (edge.getProperty("width").equals("thin"))
+		    setWidth(WIDTH_THIN);
+		else
+		    setWidth(Integer.parseInt(edge.getProperty("width")));
+	}
     }
 
     public void setColor(Color color) {
 	super.setColor(color);
+    }
+
+    public void setWidth(int width) {
+	super.setWidth(width);
     }
 
     public void setStyle(String style) {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.10 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: NodeView.java,v 1.11 2001-04-06 20:50:11 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -47,6 +47,9 @@ public abstract class NodeView extends JLabel {
     private boolean left = true; //is the node left of root?
     int relYPos;//the relative Y Position to it's parent
 
+	final static int ALIGN_BOTTOM = -1;
+	final static int ALIGN_CENTER = 0;
+	final static int ALIGN_TOP = 1;
 
     //
     // Constructors
@@ -62,6 +65,10 @@ public abstract class NodeView extends JLabel {
 		edge = new LinearEdgeView(getParentView(),this);
 	    } else if (getModel().getEdge().getStyle().equals("bezier")) {
 		edge = new BezierEdgeView(getParentView(),this);
+	    } else if (getModel().getEdge().getStyle().equals("sharp_linear")) {
+		edge = new SharpLinearEdgeView(getParentView(),this);
+	    } else if (getModel().getEdge().getStyle().equals("sharp_bezier")) {
+		edge = new SharpBezierEdgeView(getParentView(),this);
 	    } else {
 		System.out.println("Panic! Unknown Edge Type.");
 	    }
@@ -120,7 +127,7 @@ public abstract class NodeView extends JLabel {
     }
 
     protected boolean isSelected() {
-	return (getMap().getSelected() == this);
+	return (getMap().isSelected(this));
     }
 
     /**Is the node left of root?*/
@@ -204,6 +211,16 @@ public abstract class NodeView extends JLabel {
 	} 
     }
 
+    /**
+     * Returns the relative position of the Edge.
+	 * This is used by bold edge to know how to shift the line.
+     */
+    int getAlignment() {
+	if( isRoot() )
+	    return ALIGN_CENTER;
+	return ALIGN_BOTTOM;
+    }
+	
     //
     // Navigation
     //

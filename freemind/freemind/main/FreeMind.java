@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.10 2001-03-28 19:17:36 ponder Exp $*/
+/*$Id: FreeMind.java,v 1.11 2001-04-06 20:50:11 ponder Exp $*/
 
 package freemind.main;
 
@@ -62,7 +62,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
     public FreeMind() {
         super("FreeMind");
 	
-	defaultPropsURL = ClassLoader.getSystemResource("freemind.properties");
+	String userPropsURL = "freemind.properties";
+	defaultPropsURL = ClassLoader.getSystemResource(userPropsURL);
 	//load properties
 	try {
 	    defaultProps = new Properties();
@@ -71,7 +72,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	    defaultProps.load(in);
 	    in.close();
 	    userProps = new Properties(defaultProps);
-	    String userPropsURL = defaultProps.getProperty("userproperties");
+	    userPropsURL = defaultProps.getProperty("userproperties");
 	    //replace ~ with the users home dir
 	    if (userPropsURL.startsWith("~")) {
 		userPropsURL = System.getProperty("user.home") + userPropsURL.substring(1);
@@ -80,7 +81,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	    userProps.load(in);
 	    in.close();
 	} catch (Exception ex) {
-	    System.err.println("Panic! Error while loading properties");
+	    System.err.println("Panic! Error while loading properties : "+userPropsURL);
 	}
 
 	//set Look&Feel

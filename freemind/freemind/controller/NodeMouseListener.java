@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseListener.java,v 1.5 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: NodeMouseListener.java,v 1.6 2001-04-06 20:50:11 ponder Exp $*/
 
 package freemind.controller;
 
@@ -41,10 +41,25 @@ public class NodeMouseListener implements MouseListener {
 	c = controller;
     }
 
-    private void maybeShowPopup( MouseEvent e ) {
-	if (e.isPopupTrigger()) {
-	    c.showPopupMenu(e.getComponent(),e.getX(),e.getY());
+    private boolean maybeShowPopup( MouseEvent e ) {
+	if (!e.isPopupTrigger()) return false;
+	boolean extend = e.isControlDown(); 
+	boolean branch = e.isShiftDown(); 
+	if (!branch) {
+		if (c.isSelected( (NodeView)e.getSource() )) {
+			// nothing to do. The node is already selected
+			// if not extended, we keep the selection and apply to
+			// if extended, we will not unselecte this node
+		}
+		else {
+			c.select( (NodeView)e.getSource(), extend );
+		}
 	}
+	else {
+		c.selectBranch( (NodeView)e.getSource(), extend );
+	}
+	c.showPopupMenu(e.getComponent(),e.getX(),e.getY());
+	return true;
     }
 
     //
@@ -83,15 +98,35 @@ public class NodeMouseListener implements MouseListener {
     }
 
     public void mousePressed( MouseEvent e ) {
-	c.select( (NodeView)e.getSource() );
-	maybeShowPopup(e);
+	if (maybeShowPopup(e)) {
+		e.consume();
+		return;
+	}
+	boolean extend = e.isControlDown(); 
+	boolean branch = e.isShiftDown(); 
+	if (extend) {
+		// nothing here, will be done in button up
+	}
+	else if (c.isSelected( (NodeView)e.getSource() )) {
+		// nothing here because peharps a popup on sel
+	}
+	else {
+		if (!branch) 
+			c.select( (NodeView)e.getSource(), extend );
+		else
+			c.selectBranch( (NodeView)e.getSource(), extend );
+	}
 	e.consume();
     }
     
     public void mouseReleased( MouseEvent e ) {
-	c.select( (NodeView)e.getSource() );
-	maybeShowPopup(e);
-    }
-
+	if (maybeShowPopup(e)) return;
+	boolean extend = e.isControlDown(); 
+	boolean branch = e.isShiftDown(); 
+	if (!branch)
+		c.select( (NodeView)e.getSource(), extend );
+	else
+		c.selectBranch( (NodeView)e.getSource(), extend );
+	}
 }
     

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.7 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: Tools.java,v 1.8 2001-04-06 20:50:11 ponder Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -49,11 +49,32 @@ public class Tools {
 	return new Color(red,green,blue);
     }
 
+    /**
+     * Converts a String in the format "value;value;value" to 
+     * a List with the values (as strings)
+     */
+    public static List stringToList(String string) {
+	StringTokenizer tok = new StringTokenizer(string,";");
+	List list = new LinkedList();
+	while (tok.hasMoreTokens()) {
+	    list.add(tok.nextToken());
+	}
+	return list;
+    }
+
+    public static String listToString(List list) {
+	ListIterator it = list.listIterator(0);
+	String str = new String();
+	while (it.hasNext()) {
+	    str.concat(it.next().toString() + ";");
+	}
+	return str;
+    }
+
     public static Vector getAllFonts() {
 	GraphicsEnvironment gEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	String envFonts[] = gEnv.getAvailableFontFamilyNames();
 	Vector vector = new Vector();
-	// ** Argh! please also include the 1st font - Arial (sebastian)
 	for( int i=0;i<envFonts.length;i++ ) {
 	    vector.addElement(envFonts[i]);
 	}

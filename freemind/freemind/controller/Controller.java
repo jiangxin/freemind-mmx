@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.16 2001-03-28 19:17:36 ponder Exp $*/
+/*$Id: Controller.java,v 1.17 2001-04-06 20:50:11 ponder Exp $*/
 
 package freemind.controller;
 
@@ -63,6 +63,7 @@ import freemind.modes.ControllerAdapter;
 public class Controller {
 
     private Map mapmodules = new TreeMap(); //The instances of mode, ie. the Model/View pairs
+    private Set lastOpened = new OrderedSet();//A list of the pathnames of all the maps that were opened in the last time
     private MapModule mapmodule; //reference to the current mode, could be done with an index to mapmodules, too.
     private Map modes; //hash of all possible modes
     private Mode mode; //The current mode
@@ -258,8 +259,16 @@ public class Controller {
 	}
     }
 
-    void select( NodeView node ) {
-	getView().select(node);
+    void select( NodeView node, boolean extend ) {
+	getView().select(node,extend);
+    }
+
+    void selectBranch( NodeView node, boolean extend ) {
+	getView().selectBranch(node,extend);
+    }
+	
+    boolean isSelected( NodeView node ) {
+	return getView().isSelected(node);
     }
 
     void centerNode() {

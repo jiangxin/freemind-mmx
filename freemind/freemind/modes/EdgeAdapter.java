@@ -16,22 +16,30 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeAdapter.java,v 1.6 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: EdgeAdapter.java,v 1.7 2001-04-06 20:50:11 ponder Exp $*/
 
 package freemind.modes;
 
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import java.awt.Color;
+import java.awt.Stroke;
+import java.awt.BasicStroke;
 
 public abstract class EdgeAdapter implements MindMapEdge {
 
     private MindMapNode target;
     private FreeMindMain frame;
     
+	public static final int WIDTH_PARENT = 0;
+	public static final int WIDTH_THIN = -1;
+//	public static final int WIDTH_PROPORTIONAL = -2;
+
     //recursive attributes. may be accessed directly by the save() method.
     protected Color color; 
     protected String style;
+    protected int width = WIDTH_PARENT;
+	protected Stroke stroke = null;
 
     //
     // Constructors
@@ -65,6 +73,37 @@ public abstract class EdgeAdapter implements MindMapEdge {
 
     protected void setColor(Color color) {
 	this.color = color;
+    }
+
+
+    public int getWidth() {
+	if(width==WIDTH_PARENT) {
+	    if (getTarget().isRoot()) {
+			return WIDTH_THIN;
+	    }
+	    return getSource().getEdge().getWidth();
+	}
+	return width;
+    }
+
+    public Stroke getStroke() {
+	if (width==WIDTH_THIN)
+		return null;
+	if(stroke==null) {
+	    if (getTarget().isRoot()) {
+			return null;
+	    }
+	    return getSource().getEdge().getStroke();
+	}
+	return stroke;
+    }
+		
+    protected void setWidth(int width) {
+	this.width = width;
+	if ((width==WIDTH_PARENT) || (width==WIDTH_THIN))
+		stroke=null;
+	else 
+		stroke = new BasicStroke(getWidth(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER);
     }
 
     public String getStyle() {
