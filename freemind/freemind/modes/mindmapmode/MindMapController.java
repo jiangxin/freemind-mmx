@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.26 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.27 2003-11-13 06:40:09 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -33,6 +33,8 @@ import freemind.modes.MindIcon;
 import freemind.modes.MindMapCloud;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.view.mindmapview.NodeView;
+import freemind.modes.LinkRegistryAdapter;
+import freemind.modes.MindMapLinkRegistry;
 
 import java.io.*;
 import java.util.*;
@@ -45,6 +47,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
+
+
 public class MindMapController extends ControllerAdapter {
 
     //    Mode mode;
@@ -52,6 +56,7 @@ public class MindMapController extends ControllerAdapter {
     //private JToolBar toolbar;
     private MindMapToolBar toolbar;
     private boolean addAsChildMode = false;
+    private LinkRegistryAdapter linkRegistry;
 
     Action newMap = new NewMapAction(this);
     Action open = new OpenAction(this);
@@ -178,6 +183,9 @@ public class MindMapController extends ControllerAdapter {
         // addAsChildMode (use old model of handling CtrN) (PN)
         addAsChildMode = Tools.safeEquals(
             getFrame().getProperty("add_as_child"),"true");
+
+        // register new LinkRegistryAdapter
+        linkRegistry = new LinkRegistryAdapter();
     }
 
     public MapAdapter newModel() {
@@ -428,6 +436,10 @@ public class MindMapController extends ControllerAdapter {
     //convenience methods
     private MindMapMapModel getModel() {
 	return (MindMapMapModel)getController().getModel();
+    }
+
+    public MindMapLinkRegistry getLinkRegistry() {
+        return linkRegistry;
     }
 
     private MindMapNodeModel getSelected() {
