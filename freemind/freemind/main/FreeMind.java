@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.16 2001-07-03 23:01:23 ponder Exp $*/
+/*$Id: FreeMind.java,v 1.17 2001-07-15 21:44:56 ponder Exp $*/
 
 package freemind.main;
 
@@ -50,7 +50,7 @@ import javax.swing.UIManager;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
-    public static final String version = "0.3.5";
+    public static final String version = "0.4.0";
     //    public static final String defaultPropsURL = "freemind.properties";
     public URL defaultPropsURL;
     //    public static Properties defaultProps;
@@ -165,7 +165,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
     }//Constructor
 
     public Container getViewport() {
-		return scrollPane.getViewport();
+	return scrollPane.getViewport();
     }
 	
     public URL getResource(String name) {

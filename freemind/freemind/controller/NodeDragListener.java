@@ -31,6 +31,7 @@ import java.awt.dnd.DragSourceListener;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceEvent;
+import java.awt.event.InputEvent;
 
 /**
  * The NodeDragListener which belongs to every
@@ -46,6 +47,7 @@ public class NodeDragListener implements DragGestureListener {
 
     public void dragGestureRecognized(DragGestureEvent e) {
 	if(!c.getFrame().getProperty("draganddrop").equals("true")) return;
+	if(e.getTriggerEvent().getModifiers() == InputEvent.BUTTON3_MASK) return;
 
 	MindMapNode node = ((NodeView)e.getComponent()).getModel();
 	if (node.isRoot()) return;

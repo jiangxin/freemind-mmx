@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseListener.java,v 1.6 2001-04-06 20:50:11 ponder Exp $*/
+/*$Id: NodeMouseListener.java,v 1.7 2001-07-15 21:44:56 ponder Exp $*/
 
 package freemind.controller;
 
@@ -127,6 +127,8 @@ public class NodeMouseListener implements MouseListener {
 		c.select( (NodeView)e.getSource(), extend );
 	else
 		c.selectBranch( (NodeView)e.getSource(), extend );
-	}
+	
+	e.consume();//trial
+    }
 }
     
