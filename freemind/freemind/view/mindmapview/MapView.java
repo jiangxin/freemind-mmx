@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.10.6 2004-05-27 07:32:51 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.10.7 2004-06-20 16:44:52 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -25,6 +25,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 // Clouds:
@@ -180,6 +181,12 @@ public class MapView extends JPanel implements Printable {
         addMouseListener( controller.getMapMouseMotionListener() );
         addMouseMotionListener( controller.getMapMouseMotionListener() );
         addMouseWheelListener( controller.getMapMouseWheelListener() );
+
+		// fc, 20.6.2004: to enable tab for insert.
+		setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
+		setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
+		setFocusTraversalKeys(KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS, Collections.EMPTY_SET);
+		// end change.
 
         // like in excel - write a letter means edit (PN)
         // on the other hand it doesn't allow key navigation (sdfe)

@@ -15,6 +15,7 @@ Changes made in Freemind 0.8.0:
 * NodeView selection mechanism refactored
 * Background color is changeable
 * Plugin for "change management" introduced
+* Now, TAB is usable for insertion of nodes. This is useful for Macs.
 
 Changes made in Freemind 0.7.2:
 ===============================

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeKeyListener.java,v 1.16.12.1 2004-04-24 18:44:22 christianfoltin Exp $*/
+/*$Id: NodeKeyListener.java,v 1.16.12.2 2004-06-20 16:44:52 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -77,6 +77,9 @@ public class NodeKeyListener implements KeyListener {
         case KeyEvent.VK_DELETE:
         case KeyEvent.VK_SPACE:
         case KeyEvent.VK_INSERT:
+        // fc, 20.6.2004: to enable tab for insert.
+        case KeyEvent.VK_TAB:
+		// end change.
             return; // processed by Adapters ActionListener
                      // explicitly what is not catched in e.isActionKey()
                      
