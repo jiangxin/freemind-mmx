@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.25.2.1.2.3 2004-08-28 07:07:34 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.25.2.1.2.4 2004-08-28 15:17:53 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -129,8 +129,8 @@ public abstract class NodeView extends JLabel {
 	    newView = new ForkNodeView( model, map );
 //		newView = new BubbleNodeView( model, map );
 	} else if (model.getStyle().equals(MindMapNode.STYLE_BUBBLE) ) {
-		newView = new ForkNodeView( model, map );
-//		newView = new BubbleNodeView( model, map );
+//		newView = new ForkNodeView( model, map );
+		newView = new BubbleNodeView( model, map );
 	} else {
 	    System.err.println("Tried to create a NodeView of unknown Style.");
 	    newView = new ForkNodeView(model, map);

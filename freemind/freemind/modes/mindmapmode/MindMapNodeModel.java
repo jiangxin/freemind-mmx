@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.19 2004-01-05 23:41:05 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.19.4.1 2004-08-28 15:17:53 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -54,15 +54,6 @@ public class MindMapNodeModel extends NodeAdapter {
 	super(userObject,frame);
 	children = new LinkedList();
 	setEdge(new MindMapEdgeModel(this, getFrame()));
-    }
-
-    //Overwritten get Methods
-    public String getStyle() {
-	if (isFolded()) {
-	    return MindMapNode.STYLE_BUBBLE;
-	} else {
-	    return super.getStyle();
-	}
     }
 
     protected MindMapNode basicCopy() {
