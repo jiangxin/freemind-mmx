@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.26 2004-08-29 15:18:21 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.27 2004-09-16 16:24:39 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -722,12 +722,14 @@ public class MindMapController extends ControllerAdapter {
 	ImportLinkedBranchAction() {
            super(getText("import_linked_branch")); }
 	public void actionPerformed(ActionEvent e) {
-	    MindMapNodeModel parent = (MindMapNodeModel)getSelected();
-	    if (parent == null || parent.getLink() == null) {
-               return; }
+	    MindMapNodeModel selected = (MindMapNodeModel)getSelected();
+	    if (selected == null || selected.getLink() == null) {
+	        JOptionPane.showMessageDialog(getView(),getText("import_linked_branch_no_link"));
+            return; 
+        }
             URL absolute = null;
             try {
-               String relative = parent.getLink();
+               String relative = selected.getLink();
                absolute = Tools.isAbsolutePath(relative) ? new File(relative).toURL() :
                   new URL(getMap().getFile().toURL(), relative); }
             catch (MalformedURLException ex) {
@@ -736,7 +738,7 @@ public class MindMapController extends ControllerAdapter {
                return; }
             try {
                MindMapNodeModel node = getMindMapMapModel().loadTree(new File(absolute.getFile()));
-               paste(node, parent); 
+               paste(node, selected); 
 			   invokeHooksRecursively(node, getMindMapMapModel());
             }
             catch (Exception ex) {
@@ -749,12 +751,14 @@ public class MindMapController extends ControllerAdapter {
 	ImportLinkedBranchWithoutRootAction() {
            super(getText("import_linked_branch_without_root")); }
 	public void actionPerformed(ActionEvent e) {
-	    MindMapNodeModel parent = (MindMapNodeModel)getSelected();
-	    if (parent == null || parent.getLink() == null) {
-               return; }
+	    MindMapNodeModel selected = (MindMapNodeModel)getSelected();
+	    if (selected == null || selected.getLink() == null) {
+	        JOptionPane.showMessageDialog(getView(),getText("import_linked_branch_no_link"));
+            return;
+        }
             URL absolute = null;
             try {
-               String relative = parent.getLink();
+               String relative = selected.getLink();
                absolute = Tools.isAbsolutePath(relative) ? new File(relative).toURL() :
                   new URL(getMap().getFile().toURL(), relative); }
             catch (MalformedURLException ex) {
@@ -764,7 +768,7 @@ public class MindMapController extends ControllerAdapter {
                MindMapNodeModel node = getMindMapMapModel().loadTree(new File(absolute.getFile()));
                for (ListIterator i = node.childrenUnfolded();i.hasNext();) {
                   	MindMapNodeModel importNode = (MindMapNodeModel)i.next();
-					paste(importNode, parent);
+					paste(importNode, selected);
 					invokeHooksRecursively(importNode, getMindMapMapModel());
                   }
                }

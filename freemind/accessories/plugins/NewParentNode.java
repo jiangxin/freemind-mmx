@@ -41,8 +41,10 @@ public class NewParentNode extends NodeHookAdapter {
 	/* (non-Javadoc)
 	 * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode, java.util.List)
 	 */
-	public void invoke(MindMapNode focussed, List selecteds) {
-		//super.invoke(focussed, selecteds);
+	public void invoke(MindMapNode rootNode) {
+		// we dont need node. 
+		MindMapNode focussed = getController().getSelected();
+		List selecteds = getController().getSelecteds();
 		MindMapNode selectedNode = focussed;
 		List selectedNodes = selecteds;
 
@@ -51,7 +53,6 @@ public class NewParentNode extends NodeHookAdapter {
 		//    possibly be removed in the future, when we have undo)
 		// Also make sure that none of the selected nodes are the root node
 		MindMapNode selectedParent = selectedNode.getParentNode();
-		MindMapNode rootNode = (MindMapNode) getMap().getRoot();
 		for (Iterator it = selectedNodes.iterator(); it.hasNext();) {
 			MindMapNode node = (MindMapNode) it.next();
 			if (node.getParentNode() != selectedParent) {
@@ -68,8 +69,9 @@ public class NewParentNode extends NodeHookAdapter {
 
 		// Create new node in the position of the selectedNode
 		int childPosition = selectedParent.getChildPosition(selectedNode);
-		MindMapNode newNode = getController().newNode();
-		getMap().insertNodeInto(newNode, selectedParent, childPosition);
+		MindMapNode newNode = getController().addNewNode(selectedParent, childPosition, selectedParent.isLeft());
+		//MindMapNode newNode = getController().newNode();
+		//getMap().insertNodeInto(newNode, selectedParent, childPosition);
 
 		// Move selected nodes to become children of new node
 		Transferable copy = getController().cut();

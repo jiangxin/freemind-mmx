@@ -30,7 +30,12 @@ public interface MindMapActions {
 	 *     public final int NEW_SIBLING_BEFORE = 4;
 	 * @see freemind.modes.ControllerAdapter
 	 * */
-	public void addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e);
+	public MindMapNode addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e);
+	/** Another variant of addNew. If the index of the new node as a child of parent is known,
+	 * this method is easier to use. Moreover, it does not automatically start an editor.
+	 * @param newNodeIsLeft here, normally parent.isLeft() or null is used. 
+	 * @return returns the new node. */
+	MindMapNode addNewNode(MindMapNode parent, int index, freemind.main.Tools.BooleanHolder newNodeIsLeft);
 	public void deleteNode(MindMapNode selectedNode);
 	public Transferable cut();
 	/**

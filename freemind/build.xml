@@ -91,15 +91,18 @@
 			<arg value="MacChanges.xml.not_here"/>
 			<arg value="MacChanges.xml"/>
 		</exec>
+		<!-- end mac changes. -->
 		<mkdir dir="${build}"/>
 	    <!-- build generated files -->
 	    <antcall target="build-generated"/>
 	    <!-- end build generated files -->
 		<javac	srcdir="${src}"
 			destdir="${build}"
-			excludes="${gen.dir}/**"
 			classpath="${src}/${jython.jar}:${classpath}"
-			debug="${debug}"/>
+			debug="${debug}">
+	      <exclude name="${gen.dir}/**" />
+	      <exclude name="plugins/**" />
+			</javac>
 	</target>
 
 	<target name="dist" depends="jar">
@@ -131,6 +134,13 @@
 			</fileset>
 		</copy>
 		<!-- Mac OS X -->
+	  <condition property="isMacOs">
+	      <os family="mac"/>
+	  </condition>
+		<antcall target="dist_macos"/>
+	</target>
+
+	<target name="dist_macos" if="isMacOs">
 		<delete dir="${dist_macos}"/>
 		<mkdir dir="${dist_macos}"/>
 		  <jarbundler dir="${dist_macos}"
@@ -138,7 +148,7 @@
 		                    mainclass="freemind.main.FreeMind"
 		                    icon="${src}/images/FreeMindWindowIcon.icns"
 		                    version="${ver}"
-		                    infostring="FreeMind application (c) 2004"
+		                    infostring="FreeMind ${ver} application (c) 2004"
 		                    aboutmenuname="FreeMind"
 		                    bundleid="freemind.main.FreeMind"
 		                    signature="FM"
@@ -155,7 +165,6 @@
 		<copy todir="${dist_macos}/accessories"> 
 			<fileset dir="${dist}/accessories"/>
 		</copy> 
-		
 	</target>
 
 	<target name="post" depends="dist,browser,doc">

@@ -42,7 +42,15 @@ Changes made in Freemind 0.8.0:
 * Added the help plugin
 * Changed the plugin class loader behaviour completely.
 
+* Splash screen added
+* Automatic layout layouted
+* NodeNote improved
+* Bug with zoomIn corrected
+
 * Application is more or less fit for Mac OS X
+
+* NewParentNode is working again and is undoable
+* ImportLinked... are messaging if the node is not correct (i.e. admits no link to another mindmap).
 
 Changes made in Freemind 0.7.2:
 ===============================

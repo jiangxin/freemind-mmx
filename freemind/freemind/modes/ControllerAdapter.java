@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.28 2004-08-27 21:44:19 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.29 2004-09-16 16:24:39 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -269,7 +269,7 @@ public abstract class ControllerAdapter implements ModeController {
 	
 	/** Currently, this method is called by the mapAdapter. This is buggy, and is to be changed.*/
     public void nodeChanged(MindMapNode node) {
-    	logger.fine("nodeChanged called for node "+node);
+    	logger.fine("nodeChanged called for node "+node+" parent="+node.getParentNode());
 		if(nodesAlreadyUpdated.contains(node)) {			
 			return;
 		}
@@ -812,9 +812,14 @@ public abstract class ControllerAdapter implements ModeController {
     public static final int NEW_SIBLING_BEHIND = 3;
     public static final int NEW_SIBLING_BEFORE = 4;
 
-    public void addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e) {
-    	newChild.addNew(target, newNodeMode, e);
+    public MindMapNode addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e) {
+    	return newChild.addNew(target, newNodeMode, e);
     }
+    
+    public 	MindMapNode addNewNode(MindMapNode parent, int index, freemind.main.Tools.BooleanHolder newNodeIsLeft) {
+        return newChild.addNewNode(parent, index, newNodeIsLeft);
+    }
+
 
 	public void deleteNode(MindMapNode selectedNode) {
 		//deleteChild.deleteNode(selectedNode);

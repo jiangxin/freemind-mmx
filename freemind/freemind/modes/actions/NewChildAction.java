@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: NewChildAction.java,v 1.1.2.6 2004-08-29 15:18:21 christianfoltin Exp $*/
+/*$Id: NewChildAction.java,v 1.1.2.7 2004-09-16 16:24:39 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -80,28 +80,25 @@ public class NewChildAction extends AbstractAction implements ActorXml {
     }
     
     
-	public void addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e) {
-	   //closeEdit();
-       
-//		 MindMapNode newNode = newNode();
+	public MindMapNode addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e) {
 	   final MindMapNode targetNode = target;
+	   MindMapNode newNode = null;
 
 	   boolean targetIsLeft = true;
     switch (newNodeMode) {
 		 case ControllerAdapter.NEW_SIBLING_BEFORE:
 		 case ControllerAdapter.NEW_SIBLING_BEHIND:
 		   if (targetNode.isRoot()) {
-			c.getController().errorMessage(
-			c.getText("new_node_as_sibling_not_possible_for_the_root"));
+			c.getController().errorMessage(c.getText("new_node_as_sibling_not_possible_for_the_root"));
 			c.setBlocked(false);
-			 return; 
+			 return null; 
 		   }
 		   MindMapNode parent = targetNode.getParentNode();
 		   int childPosition = parent.getChildPosition(targetNode);
 		   if (newNodeMode == ControllerAdapter.NEW_SIBLING_BEHIND) {
 			  childPosition++;
 		   }
-		   MindMapNode newNode = addNewNode(parent, childPosition, target.isLeft());	
+		   newNode = addNewNode(parent, childPosition, target.isLeft());	
 		c.select(newNode.getViewer());
 		c.getFrame().repaint(); //  getLayeredPane().repaint();
 		c.edit.edit(newNode.getViewer(), target.getViewer(), e, true, false, false);
@@ -118,13 +115,14 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		   // Here the NodeView is created for the node. 
 //			 getModel().insertNodeInto(newNode, targetNode, position);
 //			 getFrame().repaint(); //  getLayeredPane().repaint();
-			MindMapNode  newChildNode = addNewNode(targetNode, position, null);	
+			newNode = addNewNode(targetNode, position, null);	
 			   if (newNodeMode == ControllerAdapter.NEW_CHILD) {
-				c.select(newChildNode.getViewer());
+				c.select(newNode.getViewer());
 			   }
-		c.edit.edit(newChildNode.getViewer(), target.getViewer(), e, true, parentFolded, false);
+		c.edit.edit(newNode.getViewer(), target.getViewer(), e, true, parentFolded, false);
 		   break;
 	   }
+    	return newNode;
 	}
 
 	public MindMapNode addNewNode(MindMapNode parent, int index, freemind.main.Tools.BooleanHolder newNodeIsLeft){
