@@ -101,8 +101,15 @@ public class ExportWithXSLT extends ExportHook {
             StringWriter writer = new StringWriter();
             root.save(writer, getController().getMap().getLinkRegistry());
             StringReader reader = new StringReader(writer.getBuffer().toString());
-            transForm(new StreamSource(reader), new File(
-                    getResourceString("xslt_file")), saveFile, creator);
+            // search for xslt file:
+            String xsltFileName = getResourceString("xslt_file");
+            URL xsltUrl = getResource(xsltFileName);
+            if(xsltUrl == null) {
+                logger.severe("Can't find " + xsltFileName + " as resource.");
+                throw new IllegalArgumentException("Can't find " + xsltFileName + " as resource.");
+            }
+            InputStream xsltFile = xsltUrl.openStream();
+            transForm(new StreamSource(reader), xsltFile, saveFile, creator);
             // copy files from the resources to the file system:
             if(Tools.safeEquals(getResourceString("create_dir"), "true")) {
                 String directoryName = saveFile.getAbsolutePath()+"_files";
@@ -203,13 +210,13 @@ public class ExportWithXSLT extends ExportHook {
         exp.setVisible(true);
 	}
 
-    public void transForm(Source xmlSource, File xsltFile, File resultFile, ClickableImageCreator creator){
+    public void transForm(Source xmlSource, InputStream xsltStream, File resultFile, ClickableImageCreator creator){
         String areaCode="";
         if(creator!=null) {
             areaCode = creator.generateHtml();
         }
         //System.out.println("set xsl");
-       Source xsltSource =  new StreamSource(xsltFile);
+       Source xsltSource =  new StreamSource(xsltStream);
         //System.out.println("set result");
        Result result = new StreamResult(resultFile);
 
