@@ -18,6 +18,7 @@ import freemind.controller.actions.ActionFactory;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.NodeActorXml;
+import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ControllerAdapter;
@@ -71,19 +72,30 @@ public class NodeGeneralAction extends AbstractXmlAction {
 				singleNodeOperation.apply((MindMapMapModel) this.modeController.getModel(), selected);
 			}
 		} else {
-			// xml action:
-			for (ListIterator it = modeController.getSelecteds().listIterator();
-				it.hasNext();
-				) {
-				MindMapNodeModel selected = (MindMapNodeModel) it.next();
-				try {
-					ActionPair pair = actor.apply(this.modeController.getModel(), selected);
-					modeController.getActionFactory().executeAction(pair);
-				} catch (JAXBException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
+            // xml action:
+            try {
+                // Do-action
+                CompoundAction doAction =
+                    modeController.getActionXmlFactory().createCompoundAction();
+                // Undo-action
+                CompoundAction undo =
+                    modeController.getActionXmlFactory().createCompoundAction();
+                // sort selectedNodes list by depth, in order to guarantee that sons are deleted first:
+                for (ListIterator it =
+                    modeController.getSelecteds().listIterator();
+                    it.hasNext();
+                    ) {
+                    MindMapNodeModel selected = (MindMapNodeModel) it.next();
+                    ActionPair pair =
+                        actor.apply(this.modeController.getModel(), selected);
+					doAction.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(pair.getDoAction());
+					undo.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(0,pair.getUndoAction());
+                }
+				modeController.getActionFactory().executeAction(new ActionPair(doAction, undo));
+            } catch (JAXBException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
 		}
 
 	}
