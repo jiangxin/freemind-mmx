@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.10.2 2004-04-24 18:44:22 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.10.3 2004-05-02 20:49:14 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -53,7 +53,6 @@ import freemind.modes.MindMap;
 import freemind.modes.Mode;
 
 import freemind.modes.ModesCreator;
-import freemind.modes.browsemode.BrowseController;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 
@@ -624,7 +623,16 @@ public class Controller {
           catch (SecurityException ex) {
              isPrintingAllowed = false;
              return false; }}
-       pageFormat = (pageFormat == null) ? printerJob.defaultPage() : pageFormat;
+       if (pageFormat == null) {
+           pageFormat = printerJob.defaultPage();
+           if (Tools.safeEquals(getProperty("page_orientation"), "landscape")) {
+               pageFormat.setOrientation(PageFormat.LANDSCAPE);
+           } else if (Tools.safeEquals(getProperty("page_orientation"), "portrait")) {
+               pageFormat.setOrientation(PageFormat.PORTRAIT);
+           } else if (Tools.safeEquals(getProperty("page_orientation"), "reverse_landscape")) {
+               pageFormat.setOrientation(PageFormat.REVERSE_LANDSCAPE);
+           }
+       }
        return true; }
 
     //////////////
@@ -994,6 +1002,13 @@ public class Controller {
 
             // Ask user for page format (e.g., portrait/landscape)          
             pageFormat = printerJob.pageDialog(pageFormat);
+            if (pageFormat.getOrientation() == PageFormat.LANDSCAPE) {
+                setProperty("page_orientation", "landscape");
+            } else if (pageFormat.getOrientation() == PageFormat.PORTRAIT) {
+                setProperty("page_orientation", "portrait");
+            } else if (pageFormat.getOrientation() == PageFormat.REVERSE_LANDSCAPE) {
+                setProperty("page_orientation", "reverse_landscape");
+            }
         }
     }
 

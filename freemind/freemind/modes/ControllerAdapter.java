@@ -16,13 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.6 2004-04-24 18:44:23 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.7 2004-05-02 20:49:14 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -34,58 +32,70 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
-
-
-
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.JTextComponent;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 
-import freemind.main.FreeMind;
 import freemind.controller.Controller;
-import freemind.extensions.*;
+import freemind.controller.actions.AbstractXmlAction;
+import freemind.controller.actions.ActionFactory;
+import freemind.controller.actions.ActionHandler;
+import freemind.controller.actions.ActionPair;
+import freemind.controller.actions.ActorXml;
+import freemind.controller.actions.ModeControllerActionHandler;
+import freemind.controller.actions.PrintActionHandler;
+import freemind.controller.actions.generated.instance.EditNodeAction;
+import freemind.controller.actions.generated.instance.ObjectFactory;
+import freemind.controller.actions.generated.instance.UndoXmlAction;
+import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.extensions.HookFactory;
+import freemind.extensions.ModeControllerHook;
+import freemind.extensions.NodeHook;
+import freemind.extensions.PermanentNodeHook;
+import freemind.main.ExampleFileFilter;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
-import freemind.main.ExampleFileFilter;
 import freemind.main.XMLParseException;
+import freemind.modes.mindmapmode.MindMapMapModel;
+import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.view.MapModule;
+import freemind.view.mindmapview.EditNodeBase;
+import freemind.view.mindmapview.EditNodeDialog;
+import freemind.view.mindmapview.EditNodeTextField;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
@@ -97,26 +107,60 @@ import freemind.view.mindmapview.NodeView;
  */
 public abstract class ControllerAdapter implements ModeController {
 
-    Mode mode;
+    private ActionFactory actionFactory;
+	private ObjectFactory actionXmlFactory;
+	// for cascading updates.
+	private HashSet nodesAlreadyUpdated;
+	private HashSet nodesToBeUpdated;
+	// Logging: 
+	private static java.util.logging.Logger logger;
+
+	Mode mode;
     private int noOfMaps = 0; //The number of currently open maps
     private Clipboard clipboard;
     private int status;
-
+	private Vector undoList=new Vector();
+	private int undoListIndex = 0;
+	public UndoAction undo=null;
     public Action copy = null;
     public Action copySingle = null;
     public Action cut = null;
     public Action paste = null;
 
-    static final Color selectionColor = new Color(200,220,200);
-
-    public ControllerAdapter() {
-    }
+    private Color selectionColor = new Color(200,220,200);
 
     public ControllerAdapter(Mode mode) {
-        this();
-        this.mode = mode;
-        
+        this.setMode(mode);
+        if(logger==null) {
+        	logger = getFrame().getLogger(this.getClass().getName());
+        }
+        // for updates of nodes:
+		nodesAlreadyUpdated = new HashSet();
+		nodesToBeUpdated    = new HashSet();
+		// new object factory for xml actions:
+		actionXmlFactory = new ObjectFactory();
+        // create action factory:
+		actionFactory = new ActionFactory(getController());
+		// register default action handler:
+		getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
+		getActionFactory().registerHandler(new PrintActionHandler());
+		getActionFactory().registerHandler(new ActionHandler() {
 
+            public void executeAction(ActionPair pair) {
+            	if(! (pair.getDoAction() instanceof UndoXmlAction)) {
+					undoList.add(0, pair);
+					undoListIndex = 0;
+            	}
+				
+            }
+
+            public void startTransaction(String name) {
+            }
+
+            public void endTransaction(String name) {
+            }});
+
+		undo = new UndoAction();
         cut = new CutAction(this);
         paste = new PasteAction(this);
         copy = new CopyAction(this);
@@ -135,6 +179,11 @@ public abstract class ControllerAdapter implements ModeController {
            clipboard = getFrame().getViewport().getToolkit().getSystemClipboard(); }
 
     }
+
+	public ActionFactory getActionFactory() {
+		return actionFactory;
+	}
+
 
     //
     // Methods that should be overloaded
@@ -159,8 +208,43 @@ public abstract class ControllerAdapter implements ModeController {
         return null;
     }
 
-    public void nodeChanged(MindMapNode n) {
+	
+	/** Currently, this method is called by the mapAdapter. This is buggy, and is to be changed.*/
+    public void nodeChanged(MindMapNode node) {
+    	logger.fine("nodeChanged called for node "+node);
+		if(nodesAlreadyUpdated.contains(node)) {			
+			return;
+		}
+		nodesToBeUpdated.add(node);
+		nodesAlreadyUpdated.add(node);
+		// Tell any node hooks that the node is changed:
+		recursiveCallUpdateHooks((MindMapNode) node, (MindMapNode) node /* self update */);
+		getMap().nodeChangedMapInternal(node);
+		nodesToBeUpdated.remove(node);
+		if(nodesToBeUpdated.size()==0) {
+			// this is the end of all updates:
+			nodesAlreadyUpdated.clear();
+		}
     }
+
+	/**
+	 * @param node
+	 */
+	private void recursiveCallUpdateHooks(MindMapNode node, MindMapNode changedNode) {
+		// Tell any node hooks that the node is changed:
+		if(node instanceof MindMapNode) {
+			for(Iterator i=  ((MindMapNode)node).getActivatedHooks().iterator(); i.hasNext();) {
+				PermanentNodeHook hook = (PermanentNodeHook) i.next();
+				if(node == changedNode)
+					hook.onUpdateNodeHook();
+				else
+					hook.onUpdateChildrenHook(changedNode);
+			}
+		}
+		if(!node.isRoot() && node.getParentNode()!= null)
+			recursiveCallUpdateHooks(node.getParentNode(), changedNode);
+	}
+
 
     public void anotherNodeSelected(MindMapNode n) {
     }
@@ -211,7 +295,7 @@ public abstract class ControllerAdapter implements ModeController {
      * Get text identification of the map
      */
 
-    protected String getText(String textId) {
+    public String getText(String textId) {
        return getController().getResourceString(textId); }
 
     protected boolean binOptionIsTrue(String option) {
@@ -535,250 +619,6 @@ public abstract class ControllerAdapter implements ModeController {
                  SCROLL_SKIP * e.getWheelRotation()); }}
     }
 
-    // edit begins with home/end or typing (PN 6.2)
-    public void edit(KeyEvent e, boolean addNew, boolean editLong) {
-      if (getView().getSelected() != null) {
-        if (e == null || !addNew) {
-          edit(getView().getSelected(),getView().getSelected(), e, false, false, editLong);
-        }
-        else if (!isBlocked()) {
-          addNew(getView().getSelected(), NEW_SIBLING_BEHIND, e);
-        }
-        if (e != null) {
-          e.consume();
-        }
-      }
-    }
-
-   private void changeComponentHeight(JComponent component, int difference, int minimum) {
-      Dimension preferredSize = component.getPreferredSize();
-      System.out.println("pf:"+preferredSize);
-      if (preferredSize.getHeight() + difference >= minimum) {
-         System.out.println("pf:"+preferredSize);
-         component.setPreferredSize(new Dimension((int)preferredSize.getWidth(),
-                                                  (int)preferredSize.getHeight() + difference)); }}
-
-    /** Private variable to hold the last value of the "Enter confirms" state.*/
-    private static Tools.BooleanHolder booleanHolderForConfirmState;
-
-    private void editLong(final NodeView node,
-                            final String text,
-                            final KeyEvent firstEvent) {
-
-        final int BUTTON_OK     = 0;
-        final int BUTTON_CANCEL = 1;
-        final int BUTTON_SPLIT  = 2;
-
-        final JDialog dialog = new JDialog((JFrame)getFrame(), getText("edit_long_node"), /*modal=*/true);
-
-        final JTextArea textArea = new JTextArea(text);
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true); // wrap around words rather than characters
-        if (firstEvent != null) {
-          switch (firstEvent.getKeyCode()) {
-            case KeyEvent.VK_HOME:
-              textArea.setCaretPosition(0);
-              break;
-
-            default:
-              textArea.setCaretPosition(text.length());
-              break;
-          }
-        }
-        else {
-          textArea.setCaretPosition(text.length());
-        }
-
-
-        final JScrollPane editorScrollPane = new JScrollPane(textArea);
-        editorScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-        //int preferredHeight = new Integer(getFrame().getProperty("el__default_window_height")).intValue();
-        int preferredHeight = node.getHeight();
-        preferredHeight =
-           Math.max (preferredHeight, Integer.parseInt(getFrame().getProperty("el__min_default_window_height")));
-        preferredHeight =
-           Math.min (preferredHeight, Integer.parseInt(getFrame().getProperty("el__max_default_window_height")));
-
-        int preferredWidth = node.getWidth();
-        preferredWidth =
-           Math.max (preferredWidth, Integer.parseInt(getFrame().getProperty("el__min_default_window_width")));
-        preferredWidth =
-           Math.min (preferredWidth, Integer.parseInt(getFrame().getProperty("el__max_default_window_width")));
-                           
-        editorScrollPane.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
-        //textArea.setPreferredSize(new Dimension(500, 160));
-
-        final JPanel panel = new JPanel();
-
-        //String performedAction;
-        final Tools.IntHolder eventSource = new Tools.IntHolder();
-        final JButton okButton = new JButton("OK");
-        final JButton cancelButton = new JButton(getText("cancel"));
-        final JButton splitButton = new JButton(getText("split"));
-        final JCheckBox enterConfirms =
-           new JCheckBox(getText("enter_confirms"), binOptionIsTrue("el__enter_confirms_by_default"));
-
-        if(booleanHolderForConfirmState == null) {
-            booleanHolderForConfirmState = new Tools.BooleanHolder();
-            booleanHolderForConfirmState.setValue(enterConfirms.isSelected());
-        } else {
-            enterConfirms.setSelected(booleanHolderForConfirmState.getValue());
-        }            
-
-        okButton.setMnemonic(KeyEvent.VK_O);
-        enterConfirms.setMnemonic(KeyEvent.VK_E);
-        splitButton.setMnemonic(KeyEvent.VK_S);
-        cancelButton.setMnemonic(KeyEvent.VK_C);
-
-        okButton.addActionListener (new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                 eventSource.setValue(BUTTON_OK);
-                 dialog.dispose(); }});
-
-        cancelButton.addActionListener (new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                 eventSource.setValue(BUTTON_CANCEL);
-                 dialog.dispose(); }});
-
-        splitButton.addActionListener (new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                 eventSource.setValue(BUTTON_SPLIT);
-                 dialog.dispose(); }});
-
-        enterConfirms.addActionListener (new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                 textArea.requestFocus(); 
-                 booleanHolderForConfirmState.setValue(enterConfirms.isSelected());
-              }});
-
-        // On Enter act as if OK button was pressed
-
-        textArea.addKeyListener(new KeyListener() {
-              public void keyPressed(KeyEvent e) {
-                 // escape key in long text editor (PN)
-                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                   e.consume();
-                   eventSource.setValue(BUTTON_CANCEL);
-                   dialog.dispose(); 
-                 }
-                 else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    if (enterConfirms.isSelected() == ((e.getModifiers() & KeyEvent.CTRL_MASK) == 0)) {
-                       e.consume();
-                       eventSource.setValue(BUTTON_OK);
-                       dialog.dispose(); }
-                    else if (enterConfirms.isSelected() && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
-                       e.consume();
-                       textArea.insert("\n",textArea.getCaretPosition()); }}}
-
-                 /*
-                 // Daniel: I tried to make editor resizable. It worked somehow, but not
-                 // quite. When I increased the size and then decreased again to the original
-                 // size, it stopped working. The main idea here is to change the preferred
-                 // size. I also tried to change the size but it did not do anything sensible.
-                 //
-                 // One possibility would be to disable decreasing the size.
-                 //
-                 // Another thing which was far from nice was that it flickered.
-                 //
-                 // If someone wants to find a solution, let it be.
-
-                 else if (e.getKeyCode() == KeyEvent.VK_DOWN &&
-                          (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
-
-                    changeComponentHeight(editorScrollPane, 60, 180);
-                    dialog.doLayout();
-                    dialog.pack();
-                    e.consume();
-                 }
-                 else if (e.getKeyCode() == KeyEvent.VK_UP &&
-                          (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
-                    changeComponentHeight(editorScrollPane, -60, 180);
-                    dialog.doLayout();
-                    dialog.pack();
-                    e.consume(); }} */
-              public void keyTyped(KeyEvent e) {}
-              public void keyReleased(KeyEvent e) {}
-           });
-
-        textArea.addMouseListener(new MouseListener() {
-              public void mouseClicked(MouseEvent e) {}
-              public void mouseEntered( MouseEvent e ) {}
-              public void mouseExited( MouseEvent e ) {}
-
-              public void mousePressed( MouseEvent e ) {
-                 conditionallyShowPopup(e); }
-              
-              public void mouseReleased( MouseEvent e ) {
-                 conditionallyShowPopup(e); }
-
-              private void conditionallyShowPopup(MouseEvent e) {
-                 if (e.isPopupTrigger()) {
-                    JPopupMenu popupMenu = new EditPopupMenu(textArea);
-                    popupMenu.show(e.getComponent(),e.getX(),e.getY());
-                    e.consume(); }}
-           });
-
-
-        textArea.setFont(node.getFont());
-        textArea.setForeground(node.getForeground());
-
-        //panel.setPreferredSize(new Dimension(500, 160));
-        //editorScrollPane.setPreferredSize(new Dimension(500, 160));
-
-        JPanel buttonPane = new JPanel();
-        buttonPane.add(enterConfirms);
-        buttonPane.add(okButton);
-        buttonPane.add(cancelButton);
-        buttonPane.add(splitButton);
-        buttonPane.setMaximumSize(new Dimension(1000, 20));
-
-        if (getFrame().getProperty("el__buttons_position").equals("above")) {
-           panel.add(buttonPane);
-           panel.add(editorScrollPane); }
-        else {
-           panel.add(editorScrollPane);
-           panel.add(buttonPane); }
-
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-      
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.setContentPane(panel);
-        dialog.pack();  // calculate the size
-        
-        // set position
-        getView().scrollNodeToVisible(node, 0);
-        Point frameScreenLocation = getFrame().getLayeredPane().getLocationOnScreen();
-        double posX = node.getLocationOnScreen().getX() - frameScreenLocation.getX();
-        double posY = node.getLocationOnScreen().getY() - frameScreenLocation.getY()
-           + (binOptionIsTrue("el__position_window_below_node") ? node.getHeight() : 0);
-        if (posX + dialog.getWidth() > getFrame().getLayeredPane().getWidth()) {
-          posX = getFrame().getLayeredPane().getWidth() - dialog.getWidth();
-        }
-        if (posY + dialog.getHeight() > getFrame().getLayeredPane().getHeight()) {
-          posY = getFrame().getLayeredPane().getHeight() - dialog.getHeight();
-        }
-        posX = ((posX < 0) ? 0 : posX) + frameScreenLocation.getX();
-        posY = ((posY < 0) ? 0 : posY) + frameScreenLocation.getY();
-        dialog.setLocation(new Double(posX).intValue(), new Double(posY).intValue());
-
-
-        textArea.requestFocusInWindow();  // make the text area focused when the dialog comes
-        dialog.show();
-        //dialog.setVisible(true);
-
-        if (eventSource.getValue() == BUTTON_OK) {
-           getModel().changeNode(node.getModel(), textArea.getText()); }
-        if (eventSource.getValue() == BUTTON_SPLIT) {
-           //getModel().changeNode(node.getModel(), textArea.getText());
-           getModel().splitNode(node.getModel(),
-                                textArea.getCaretPosition(),
-                                textArea.getText()); 
-           getController().obtainFocusForSelected(); // focus fix
-        }
-
-    }
-
     // this enables from outside close the edit mode
     private FocusListener textFieldListener = null;
     
@@ -798,259 +638,125 @@ public abstract class ControllerAdapter implements ModeController {
     private void setBlocked(boolean isBlocked) {
       this.isBlocked = isBlocked;
     }
-    
-    private void edit(final NodeView node, 
-                        final NodeView prevSelected,   // when new->esc: node be selected
-                        final KeyEvent firstEvent,
-                        final boolean isNewNode,      // when new->esc: cut the node
-                        final boolean parentFolded,   // when new->esc: fold prevSelected
-                        final boolean editLong) {
-		if (node == null){
-			return;	}
+
+	// edit begins with home/end or typing (PN 6.2)
+	public void edit(KeyEvent e, boolean addNew, boolean editLong) {
+	  if (getView().getSelected() != null) {
+		if (e == null || !addNew) {
+		  edit(getView().getSelected(),getView().getSelected(), e, false, false, editLong);
+		}
+		else if (!isBlocked()) {
+		  addNew(getView().getSelected(), NEW_SIBLING_BEHIND, e);
+		}
+		if (e != null) {
+		  e.consume();
+		}
+	  }
+	}
+
+
+    /**
+     * @param node
+     * @param prevSelected when new->esc: node be selected
+     * @param firstEvent
+     * @param isNewNode when new->esc: cut the node
+     * @param parentFolded when new->esc: fold prevSelected
+     * @param editLong
+     */
+    private void edit(
+        final NodeView node,
+        final NodeView prevSelected,
+        final KeyEvent firstEvent,
+        final boolean isNewNode,
+        final boolean parentFolded,
+        final boolean editLong) {
+        if (node == null) {
+            return;
+        }
 
         closeEdit();
         setBlocked(true); // locally "modal" stated
 
         String text = node.getModel().toString();
         if (node.getIsLong() || editLong) {
-           editLong(node, text, firstEvent);
-           setBlocked(false);
-           return; 
-        }
+            EditNodeDialog nodeEditDialog =
+                new EditNodeDialog(
+                    node,
+                    text,
+                    firstEvent,
+                    this,
+                    new EditNodeBase.EditControl() {
 
-        //if (isNewNode) {
-        //  if (firstEvent instanceof KeyEvent
-        //      && ((KeyEvent)firstEvent).getKeyChar() != KeyEvent.CHAR_UNDEFINED) {
-        //  }
-        //  //else if (text.length() == 0) {
-        //    // new node text if the user did not press a key and the text would be empty
-        //    // text = getText("new_node");
-        //  //}
-        //}
-        
-        final JTextField textField = (text.length() < 8)
-           ? new JTextField(text,8)     //Make fields for short texts editable
-           : new JTextField(text);
-
-        // Set textFields's properties
-
-        /* fc, 12.10.2003: the following method is not correct. Even more with the zoom factors!*/
-        int linkIconWidth = 16;
-        int textFieldBorderWidth = 2;
-        int cursorWidth = 1;
-        int xOffset = -1 * textFieldBorderWidth + node.getLeftWidthOverhead() - 1;
-        int yOffset = -1; // Optimized for Windows style; basically ad hoc
-        int widthAddition = 2 * textFieldBorderWidth + cursorWidth - 2 * node.getLeftWidthOverhead() + 2;
-        int heightAddition = 2;
-        if (node.getModel().getLink() != null) {
-           xOffset += linkIconWidth;
-           widthAddition -= linkIconWidth; }
-        if (node.getModel().getIcons().size() != 0) { // fc, 24.9.2003 full ok for the moment, that an icon has the same size as the link icon.
-           xOffset += linkIconWidth * node.getModel().getIcons().size();
-           widthAddition -= linkIconWidth; }
-        /* fc, 12.10.2003: end buggy method*/
-
-        // minimal width for input field of leaf or folded node (PN)
-        final int MINIMAL_LEAF_WIDTH = 150;
-        final int MINIMAL_WIDTH = 50;
-
-        int xSize = node.getWidth() + widthAddition;
-        int xExtraWidth = 0;
-        if (MINIMAL_LEAF_WIDTH > xSize 
-            && (node.getModel().isFolded() || !node.getModel().hasChildren())) {
-          // leaf or folded node with small size
-          xExtraWidth = MINIMAL_LEAF_WIDTH - xSize;
-          xSize = MINIMAL_LEAF_WIDTH; // increase minimum size
-          if (node.isLeft()) { // left leaf
-            xExtraWidth = - xExtraWidth;
-            textField.setHorizontalAlignment(JTextField.RIGHT);
-          }
-        }
-        else if (MINIMAL_WIDTH > xSize) {
-          // opened node with small size
-          xExtraWidth = MINIMAL_WIDTH - xSize;
-          xSize = MINIMAL_WIDTH; // increase minimum size
-          if (node.isLeft()) { // left node
-            xExtraWidth = - xExtraWidth;
-            textField.setHorizontalAlignment(JTextField.RIGHT);
-          }
-        }
-
-        textField.setSize(xSize, node.getHeight() + heightAddition);
-        textField.setFont(node.getFont());
-        textField.setForeground(node.getForeground());
-        textField.setSelectedTextColor(node.getForeground());
-        textField.setSelectionColor(selectionColor);
-        // textField.selectAll(); // no selection on edit (PN)
-        
-        final int INIT   = 0;
-        final int EDIT   = 1;
-        final int CANCEL = 2;
-        final Tools.IntHolder eventSource = new Tools.IntHolder();
-        eventSource.setValue(INIT);
-
-        // listener class
-        class TextFieldListener implements KeyListener, 
-                                             FocusListener, MouseListener {
-
-          public void focusGained(FocusEvent e) {
-            // the first time the edit field gains a focus
-            // process the predefined first key (if any)
-
-            if (eventSource.getValue() == INIT) {
-              eventSource.setValue(EDIT);
-              if (firstEvent instanceof KeyEvent) {
-                KeyEvent firstKeyEvent = (KeyEvent)firstEvent;
-                if (firstKeyEvent.getKeyChar() == KeyEvent.CHAR_UNDEFINED) {
-                  // for the char_undefined the scenario with dispatching 
-                  // doesn't work => hard code dispatching :-(
-                  // // dispatch action key events as it came
-                  // textField.dispatchEvent(firstKeyEvent);
-                  
-                  // dispatch 2 known events (+ special for insert:) (hardcoded)
-                  switch (firstKeyEvent.getKeyCode()) {
-                    case KeyEvent.VK_HOME:
-                      textField.setCaretPosition(0);
-                      break;
-                    case KeyEvent.VK_END:
-                      textField.setCaretPosition(textField.getText().length());
-                      break;
-                  }
+                public void cancel() {
                 }
-                else {
-                  // or create new "key type" event for printable key
-                  KeyEvent keyEv;
-                  keyEv = new KeyEvent(
-                      firstKeyEvent.getComponent(),
-                      KeyEvent.KEY_TYPED, 
-                      firstKeyEvent.getWhen(), 
-                      firstKeyEvent.getModifiers(), 
-                      KeyEvent.VK_UNDEFINED,
-                      firstKeyEvent.getKeyChar(), 
-                      KeyEvent.KEY_LOCATION_UNKNOWN );
-                  textField.selectAll(); // to enable overwrite
-                  textField.dispatchEvent(keyEv);
+
+                public void ok(String newText) {
+					changeNodeText(node.getModel(), newText);
                 }
-              } // 1st key event defined
-            } // first focus
-          } // focus gained
 
-
-          public void focusLost(FocusEvent e) {
-            
-            // %%% open problems:
-            // - adding of a child to the rightmost node
-            // - scrolling while in editing mode (it can behave just like other viewers)
-            // - block selected events while in editing mode
-        
-            if (e == null) { // can be when called explicitly
-              getModel().changeNode(node.getModel(), textField.getText());
-              getFrame().getLayeredPane().remove(textField);
-              getFrame().repaint(); //  getLayeredPane().repaint();
-              textFieldListener = null;
-              eventSource.setValue(CANCEL); // disallow real focus lost
-            }
-            else if (eventSource.getValue() != CANCEL) {
-              // always confirm the text if not yet
-              getModel().changeNode(node.getModel(), textField.getText());
-              getFrame().getLayeredPane().remove(textField);
-              getFrame().repaint(); //  getLayeredPane().repaint();
-              setBlocked(false);
-              textFieldListener = null;
-            }
-          }
-
-          public void keyPressed(KeyEvent e) {
-
-			// add to check meta keydown by koh 2004.04.16
-			if (e.isAltDown() || e.isControlDown() || e.isMetaDown()) {
-				return;
-			}
-
-            boolean commit = true;
-
-            switch (e.getKeyCode()) {
-              case KeyEvent.VK_ESCAPE:
-                commit = false;
-              case KeyEvent.VK_ENTER:
-                e.consume();
-
-                eventSource.setValue(CANCEL); // do not process loose of focus
-                if (commit) {
-                  getModel().changeNode(node.getModel(), textField.getText());
+                public void split(String newText, int position) {
+                    getModel().splitNode(node.getModel(), position, newText);
+                    getController().obtainFocusForSelected(); // focus fix
                 }
-                else if (isNewNode) { // delete also the node and set focus to the parent
-                  getView().selectAsTheOnlyOneSelected(node);
-                  getModel().cut();
-                  select(prevSelected); // include max level for navigation
-                  if (parentFolded) {
-                    getModel().setFolded(prevSelected.getModel(), true);
-                  }
-                }
-                getFrame().getLayeredPane().remove(textField);
-                getFrame().repaint(); //  getLayeredPane().repaint();
-                setBlocked(false);
-                textFieldListener = null;
-                getController().obtainFocusForSelected(); // hack: to keep the focus
-                break;
-
-             case KeyEvent.VK_SPACE: 
-               e.consume();
-             }
-          }
-          public void keyTyped(KeyEvent e) { }
-          public void keyReleased(KeyEvent e) { }
-
-           public void mouseClicked(MouseEvent e) {}
-           public void mouseEntered( MouseEvent e ) {}
-           public void mouseExited( MouseEvent e ) {}
-
-           public void mousePressed( MouseEvent e ) {
-              conditionallyShowPopup(e); }
-              
-           public void mouseReleased( MouseEvent e ) {
-              conditionallyShowPopup(e); }
-
-           private void conditionallyShowPopup(MouseEvent e) {
-              if (e.isPopupTrigger()) {
-                 JPopupMenu popupMenu = new EditPopupMenu(textField);
-                 popupMenu.show(e.getComponent(),e.getX(),e.getY());
-                 e.consume(); }}
-
+            });
+            ;
+            nodeEditDialog.show();
+            setBlocked(false);
+            return;
         }
+        // inline editing:
+        EditNodeTextField textfield =
+            new EditNodeTextField(node, text, firstEvent, this, new EditNodeBase.EditControl(){
 
-        // create the listener
-        final TextFieldListener textFieldListener = new TextFieldListener();
-        
-        // Add listeners
-        this.textFieldListener = textFieldListener;
-        textField.addFocusListener( textFieldListener );
-        textField.addKeyListener( textFieldListener );
-        textField.addMouseListener( textFieldListener );
+                public void cancel() {
+                    if (isNewNode) { // delete also the node and set focus to the parent
+                        getView().selectAsTheOnlyOneSelected(node);
+                        getModel().cut();
+                        select(prevSelected);
+                        // include max level for navigation
+                        if (parentFolded) {
+                            getModel().setFolded(prevSelected.getModel(), true);
+                        }
+                    }
+					endEdit();
+                }
 
-        // screen positionining ---------------------------------------------
+                public void ok(String newText) {
+					changeNodeText(node.getModel(), newText);
+					endEdit();
+                }
 
-        // SCROLL if necessary
-        getView().scrollNodeToVisible(node, xExtraWidth);
+				private void endEdit() {
+					getController().obtainFocusForSelected();
+					setBlocked(false);
+				}
 
-        // NOTE: this must be calculated after scroll because the pane location changes
-        Point frameScreenLocation = getFrame().getLayeredPane().getLocationOnScreen();
-        Point nodeScreenLocation = node.getLocationOnScreen();
+                public void split(String newText, int position) {
+                }});
+          textfield.show();
 
-        int xLeft = (int)(nodeScreenLocation.getX() -  frameScreenLocation.getX() + xOffset);
-        if (xExtraWidth < 0) {
-          xLeft += xExtraWidth;
-        }
-
-        textField.setLocation(xLeft, (int)(nodeScreenLocation.getY()
-                                          - frameScreenLocation.getY() + yOffset));
-        
-        getFrame().getLayeredPane().add(textField); // 2000);
-        getFrame().repaint();
- 
-        SwingUtilities.invokeLater( new Runnable() { // PN 0.6.2
-             public void run () { textField.requestFocus(); }});
     }
+
+	private void changeNodeText(MindMapNode selected, String newText){
+		String oldText = selected.toString();
+
+        try {
+			getActionFactory().startTransaction(getText("edit"));
+            EditNodeAction EditAction = getActionXmlFactory().createEditNodeAction();
+            EditAction.setNode(getNodeID(selected));
+            EditAction.setText(newText);
+            
+            EditNodeAction undoEditAction = getActionXmlFactory().createEditNodeAction();
+            undoEditAction.setNode(getNodeID(selected));
+            undoEditAction.setText(oldText);
+            	
+            getActionFactory().executeAction(new ActionPair(EditAction, undoEditAction));
+			getActionFactory().endTransaction(getText("edit"));
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+		
+	}
 
     public final int NEW_CHILD_WITHOUT_FOCUS = 1;  // old model of insertion
     public final int NEW_CHILD = 2;
@@ -1430,6 +1136,20 @@ public abstract class ControllerAdapter implements ModeController {
         getController().getMapModuleManager().updateMapModuleName();
     }
 
+	/* ***********************************************************
+	*  Helper methods
+	* ***********************************************************/
+	public NodeAdapter getNodeFromID(String nodeID) {
+		NodeAdapter node =
+			(NodeAdapter) getMap().getLinkRegistry().getTargetForID(nodeID);
+		return node;
+	}
+	public String getNodeID(MindMapNode selected) {
+		getMap().getLinkRegistry().registerLinkTarget(selected);
+		return getMap().getLinkRegistry().getLabel(selected);
+	}
+
+
     private NodeAdapter getSelected() {
         return (NodeAdapter)getView().getSelected().getModel();
     }
@@ -1659,18 +1379,129 @@ public abstract class ControllerAdapter implements ModeController {
         }
     }
 
+	public String marshall(XmlAction action) {
+        try {
+            // marshall:
+            JAXBContext jc = JAXBContext.newInstance(ActionFactory.JAXB_CONTEXT);
+            //marshal to StringBuffer:
+            StringWriter writer = new StringWriter();
+            Marshaller m = jc.createMarshaller();
+            m.marshal(action, writer);
+            String result = writer.toString();
+            return result;
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            return "";
+        }
+
+	}
+
+	public XmlAction unMarshall(String inputString) {
+		try {
+			// unmarshall:
+			JAXBContext jc = JAXBContext.newInstance(ActionFactory.JAXB_CONTEXT);
+			Unmarshaller u = jc.createUnmarshaller();
+			StringBuffer xmlStr = new StringBuffer( inputString);
+			XmlAction doAction = (XmlAction) u.unmarshal( new StreamSource( new StringReader( xmlStr.toString() ) ) );
+			return doAction;
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+	public class UndoAction extends AbstractXmlAction implements ActorXml {
+
+        public UndoAction() {
+            super(getText("undo"), new ImageIcon(getResource("images/undo.png")), ControllerAdapter.this);
+            addActor(this);
+        }
+
+        /* (non-Javadoc)
+         * @see freemind.controller.actions.AbstractXmlAction#xmlActionPerformed(java.awt.event.ActionEvent)
+         */
+        protected void xmlActionPerformed(ActionEvent arg0) throws JAXBException {
+        	if(undoList.size() > 0) {
+				ActionPair pair = (ActionPair) undoList.get(undoListIndex);
+	        	String doActionString = marshall(pair.getDoAction());
+				String redoActionString = marshall(pair.getUndoAction());
+
+				UndoXmlAction undoAction = getActionXmlFactory().createUndoXmlAction();
+				undoAction.setDescription(redoActionString);
+				undoAction.setRemedia(doActionString);
+
+				UndoXmlAction redoAction = getActionXmlFactory().createUndoXmlAction();
+				redoAction.setDescription(doActionString);
+				undoAction.setRemedia(redoActionString);
+				
+				getActionFactory().executeAction(new ActionPair(undoAction, redoAction));
+        	}
+        }
+
+        /* (non-Javadoc)
+         * @see freemind.controller.actions.ActorXml#act(freemind.controller.actions.generated.instance.XmlAction)
+         */
+        public void act(XmlAction action) {
+        	if(undoListIndex < undoList.size())
+				undoListIndex++;
+                // unmarshall:
+                UndoXmlAction undoAction = (UndoXmlAction) action;
+				XmlAction doAction = (XmlAction) unMarshall( undoAction.getDescription() );
+				XmlAction redoAction = (XmlAction) unMarshall( undoAction.getRemedia() );
+				getActionFactory().executeAction(new ActionPair(doAction, redoAction));
+
+        }
+
+        public Class getDoActionClass() {
+            return UndoXmlAction.class;
+        }
+
+        public ActionPair apply(MindMapMapModel model, MindMapNodeModel selected) throws JAXBException {
+            return null;
+        }
+		
+	}
+
 
     //
     // Node editing
     //
 
-    protected class EditAction extends AbstractAction {
+    protected class EditAction extends AbstractAction implements ActorXml {
         public EditAction() {
             super(getText("edit"));
+			getActionFactory().registerActor(this, getDoActionClass());
         }
-        public void actionPerformed(ActionEvent e) {
-            edit(null, false, false);
-        }
+		public void actionPerformed(ActionEvent arg0) {
+			NodeAdapter selected = getSelected();
+			edit(null, false, false);
+		}
+		/* (non-Javadoc)
+		 * @see freemind.controller.actions.ActorXml#act(freemind.controller.actions.generated.instance.XmlAction)
+		 */
+		public void act(XmlAction action) {
+			System.out.println("EditNodeAction");
+			EditNodeAction editAction = (EditNodeAction) action;
+			NodeAdapter node = getNodeFromID(editAction.getNode());
+			if(!node.toString().equals(editAction.getText())) {
+				node.setUserObject(editAction.getText());
+				nodeChanged(node);
+			}
+		}
+		/* (non-Javadoc)
+		 * @see freemind.controller.actions.ActorXml#getDoActionClass()
+		 */
+		public Class getDoActionClass() {
+			return EditNodeAction.class;
+		}
+		/* (non-Javadoc)
+		 * @see freemind.controller.actions.ActorXml#apply(freemind.modes.mindmapmode.MindMapMapModel, freemind.modes.mindmapmode.MindMapNodeModel)
+		 */
+		public ActionPair apply(MindMapMapModel model, MindMapNodeModel selected) throws JAXBException {
+			return null;
+		}
     }
 
     protected class EditLongAction extends AbstractAction {
@@ -1950,23 +1781,19 @@ public abstract class ControllerAdapter implements ModeController {
         public void dropActionChanged (DropTargetDragEvent e) {}
     }
 
-   protected class EditCopyAction extends AbstractAction {
-       private JTextComponent textComponent;
-       public EditCopyAction(JTextComponent textComponent) {
-          super(getText("copy")); 
-          this.textComponent = textComponent; }
-        public void actionPerformed(ActionEvent e) {
-           String selection = textComponent.getSelectedText();
-           if (selection != null) {
-              clipboard.setContents(new StringSelection(selection),null); }}}
 
-   private class EditPopupMenu extends JPopupMenu {
-      //private JTextComponent textComponent;
+	/**
+	 * @return
+	 */
+	public ObjectFactory getActionXmlFactory() {
+		return actionXmlFactory;
+	}
 
-    public EditPopupMenu(JTextComponent textComponent) {
-       //this.textComponent = textComponent;        
-       	this.add(new EditCopyAction(textComponent));
+    /**
+     * @return
+     */
+    public Color getSelectionColor() {
+        return selectionColor;
     }
-   }
 
 }

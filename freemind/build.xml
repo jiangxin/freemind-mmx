@@ -10,11 +10,74 @@
 	<property name="build.compiler" value="modern" />
 	<property name="ver" value="0_7_2_beta" />
 
-	<target name="compile">
+	<!-- begin generator part -->
+	<property name="jaxb" value="lib/ant/lib/jaxb-api.jar:lib/ant/lib/jaxb-impl.jar:lib/ant/lib/jaxb-libs.jar:lib/ant/lib/jaxb-xjc.jar:lib/ant/lib/namespace.jar:lib/ant/lib/relaxngDatatype.jar:lib/ant/lib/xsdlib.jar:lib/ant/lib/jax-qname.jar"/>
+	<property name="xml" value="lib/ant/lib/sax.jar:lib/ant/lib/dom.jar:lib/ant/lib/xercesImpl.jar"/>
+	<property name="classpath" value="${jaxb}:${xml}"/>
+	<property name="xsd.dir" value="." />
+	<property name="gen.dir" value="generated" />
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" 
+	   classpath="${jaxb}" />
+
+  <!-- uses property ${gen.file} as the directory name of the outputs. -->
+  <target name="xmlbind.checkStatusOfGeneration">
+    <uptodate property="xmlbind.isUpToDate"
+              srcfile="${xsd.dir}/${xsd.file}"
+              targetfile="${gen.dir}/${gen.file}/freemind/controller/${gen.file}/generated/instance/jaxb.properties"/>
+  </target>
+
+  <!-- uses property ${gen.file} as the directory name of the outputs. -->
+  <target name="xmlbind" 
+          unless="xmlbind.isUpToDate" 
+          depends="xmlbind.checkStatusOfGeneration">
+    <mkdir dir="${gen.dir}/${gen.file}" />
+    <xjc schema="${xsd.dir}/${xsd.file}"
+         target="${gen.dir}/${gen.file}" 
+         package="freemind.controller.${gen.file}.generated.instance" />
+  </target>
+
+  <!-- uses property ${gen.file} as the directory name of the outputs. -->
+  <target name="-buildgen">
+    <javac srcdir="${gen.dir}/${gen.file}"
+           destdir="${build}"
+           debug="${debug}">
+      <classpath path="${classpath}" />
+      <include name="**/*.java" />
+    </javac>
+    <copy todir="${build}/freemind/controller/${gen.file}/generated" >
+      <fileset dir="${gen.dir}/${gen.file}/freemind/controller/${gen.file}/generated" >
+        <include name="**/jaxb.properties" />
+        <include name="**/*.ser" />
+      </fileset>
+    </copy>
+  </target>
+
+
+  <target name="gen">
+    <antcall target="xmlbind">
+      <param name="gen.file" value="actions"/>
+      <param name="xsd.file" value="freemind_actions.xsd"/>
+    </antcall>
+  </target>
+
+
+
+  <target name="build-generated">
+    <antcall target="-buildgen">
+      <param name="gen.file" value="actions"/>
+      <param name="xsd.file" value="freemind_actions.xsd"/>
+    </antcall>
+  </target>
+	<!-- end generator part -->
+
+	<target name="compile" depends="gen">
 		<mkdir dir="${build}"/>
+	    <!-- build generated files -->
+	    <antcall target="build-generated"/>
+	    <!-- end build generated files -->
 		<javac	srcdir="${src}"
 			destdir="${build}"
-			classpath="${src}/${jython.jar}"
+			classpath="${src}/${jython.jar}:${classpath}"
 			debug="${debug}"/>
 	</target>
 
@@ -139,6 +202,7 @@
 	<target name="clean">
 		<delete dir="${build}"  quiet="true"/>
 		<delete dir="${dist}"  quiet="true"/>
+		<delete dir="${gen.dir}"  quiet="true"/>
 		<delete dir="${post}"  quiet="true"/>
                 <delete>
                   <fileset defaultexcludes="no" dir="${src}" includes="**/*~"/>
@@ -158,6 +222,9 @@
 <!--    <jvmarg value="-Djava.util.logging.config.file=logging.properties" /> -->
     <classpath>
        <pathelement location="${dist}"/>
+       <pathelement location="${FM.jar}"/>
+       <pathelement path="${xml}"/>
+       <pathelement path="${jaxb}"/>
        <pathelement location="${FM.jar}"/>
        <pathelement location="${dist}/${jython.jar}"/>
     </classpath>

@@ -16,40 +16,58 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.4 2004-04-24 18:44:23 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.5 2004-05-02 20:49:14 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
-import freemind.main.Tools;
-import freemind.main.XMLParseException;
-import freemind.modes.MindMapNode;
-import freemind.modes.ModeController;
-import freemind.modes.NodeAdapter;
-import freemind.modes.Mode;
-import freemind.modes.ControllerAdapter;
-import freemind.modes.MapAdapter;
-import freemind.modes.EdgeAdapter;
-import freemind.modes.StylePattern;
-import freemind.modes.MindIcon;
-import freemind.modes.MindMapCloud;
-import freemind.controller.Controller;
-import freemind.extensions.*;
-import freemind.view.mindmapview.NodeView;
-// link registry.
-import freemind.modes.MindMapLinkRegistry;
-
-import java.io.*;
-import java.util.*;
-import java.util.HashSet;
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Vector;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileFilter;
+import javax.xml.bind.JAXBException;
+
+import freemind.controller.Controller;
+import freemind.controller.actions.AbstractXmlAction;
+import freemind.controller.actions.ActionPair;
+import freemind.controller.actions.ActorXml;
+import freemind.controller.actions.generated.instance.BoldNodeAction;
+import freemind.controller.actions.generated.instance.ObjectFactory;
+import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.extensions.HookFactory;
+import freemind.main.Tools;
+import freemind.main.XMLParseException;
+import freemind.modes.ControllerAdapter;
+import freemind.modes.EdgeAdapter;
+import freemind.modes.MapAdapter;
+import freemind.modes.MindIcon;
+import freemind.modes.MindMapCloud;
+import freemind.modes.MindMapNode;
+import freemind.modes.Mode;
+import freemind.modes.NodeAdapter;
+import freemind.modes.StylePattern;
 
 
 
@@ -64,6 +82,127 @@ public class MindMapController extends ControllerAdapter {
     //private JToolBar toolbar;
     private MindMapToolBar toolbar;
     private boolean addAsChildMode = false;
+
+	// NodeGeneralAction
+	// __________________
+
+	private interface SingleNodeOperation {
+	   public void apply(MindMapMapModel map, MindMapNodeModel node); }
+
+	private class NodeGeneralAction extends AbstractXmlAction {
+		private freemind.controller.actions.ActorXml actor;
+		SingleNodeOperation singleNodeOperation;
+		private NodeGeneralAction(String textID, String iconPath) {
+			super(
+				getText(textID),
+				iconPath != null ? new ImageIcon(getResource(iconPath)) : null,
+				MindMapController.this);
+			putValue(Action.SHORT_DESCRIPTION, getText(textID));
+			this.singleNodeOperation = null;
+			this.actor = null;
+		}
+		NodeGeneralAction(
+			String textID,
+			String iconPath,
+			SingleNodeOperation singleNodeOperation) {
+			this(textID, iconPath);
+			this.singleNodeOperation = singleNodeOperation;
+		}
+		NodeGeneralAction(
+			String textID,
+			String iconPath,
+			freemind.controller.actions.ActorXml actor) {
+			this(textID, iconPath);
+			addActor(actor);
+		}
+		public void addActor(ActorXml actor) {
+			this.actor = actor;
+			if (actor != null) {
+				// registration:
+				getActionFactory().registerActor(actor, actor.getDoActionClass());
+			}			
+		}
+		public void xmlActionPerformed(ActionEvent e) {
+			if(singleNodeOperation != null) {
+				for (ListIterator it = getSelecteds().listIterator();
+					it.hasNext();
+					) {
+					MindMapNodeModel selected = (MindMapNodeModel) it.next();
+					singleNodeOperation.apply(getModel(), selected);
+				}
+			} else {
+				// xml action:
+				for (ListIterator it = getSelecteds().listIterator();
+					it.hasNext();
+					) {
+					MindMapNodeModel selected = (MindMapNodeModel) it.next();
+					try {
+						ActionPair pair = actor.apply(getModel(), selected);
+						getActionFactory().executeAction(pair);
+					} catch (JAXBException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+
+		}
+		/* (non-Javadoc)
+		 * @see freemind.controller.actions.FreeMindAction#act(freemind.controller.actions.generated.instance.XmlAction)
+		 */
+		public void act(XmlAction action) {
+		}
+
+	}
+
+	// END: NodeGeneralAction
+	// __________________
+
+	public class BoldAction extends NodeGeneralAction implements ActorXml {
+
+		/**
+		 * @param textID
+		 * @param iconPath
+		 * @param actor
+		 */
+		public BoldAction() {
+			super("bold", "images/Bold24.gif");
+			addActor(this);			
+		}
+
+		public void act(XmlAction action) {
+			System.out.println("BoldActor");
+			BoldNodeAction boldact = (BoldNodeAction) action;
+			NodeAdapter node = getNodeFromID(boldact.getNode());
+			if(node.isBold() != boldact.isBold()) {
+				node.setBold(boldact.isBold());
+				nodeChanged(node);
+			}
+		}
+
+		public Class getDoActionClass() {
+			return BoldNodeAction.class;
+		}
+
+		public ActionPair apply(MindMapMapModel model, MindMapNodeModel selected) throws JAXBException {
+
+			BoldNodeAction boldAction = getActionXmlFactory().createBoldNodeAction();
+			boldAction.setNode(getNodeID(selected));
+			boldAction.setBold(!selected.isBold());
+
+			BoldNodeAction undoBoldAction = getActionXmlFactory().createBoldNodeAction();
+			undoBoldAction.setNode(getNodeID(selected));
+			undoBoldAction.setBold(selected.isBold());
+
+			return new ActionPair(boldAction, undoBoldAction);
+		}
+
+	}
+
+	Action bold   = new BoldAction ();
+
+
+
 
     Action newMap = new NewMapAction(this);
     Action open = new OpenAction(this);
@@ -124,10 +263,6 @@ public class MindMapController extends ControllerAdapter {
     Action italic = new NodeGeneralAction ("italic", "images/Italic24.gif",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.setItalic(node); }});
-    Action bold   = new NodeGeneralAction ("bold", "images/Bold24.gif",
-       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
-          map.setBold(node);
-    }});
     Action cloud   = new NodeGeneralAction ("cloud", "images/Cloud24.gif",
        new SingleNodeOperation() { private MindMapCloud lastCloud;
            private MindMapNodeModel nodeOfLastCloud;
@@ -164,6 +299,9 @@ public class MindMapController extends ControllerAdapter {
     Action removeAllIcons = new NodeGeneralAction ("remove_all_icons", "images/edittrash.png",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
            while(map.removeLastIcon(node)>0) {}; }});
+
+
+
 
     FileFilter filefilter = new MindMapFilter();
 
@@ -276,8 +414,13 @@ public class MindMapController extends ControllerAdapter {
           getModel().setFontFamily(selected,fontFamily); }}
 
     public void nodeChanged(MindMapNode n) {
-       toolbar.selectFontSize(((NodeAdapter)n).getFontSize());
-       toolbar.selectFontName(((NodeAdapter)n).getFontFamilyName()); }
+    	super.nodeChanged(n);
+    	// only for the selected node (fc, 2.5.2004)
+		if (n == getSelected()) {
+			toolbar.selectFontSize(n.getFontSize());
+			toolbar.selectFontName(n.getFontFamilyName());
+		}
+	 }
 
     public void anotherNodeSelected(MindMapNode n) {
        super.anotherNodeSelected(n);
@@ -940,22 +1083,6 @@ public class MindMapController extends ControllerAdapter {
         }
     }
     
-    // NodeGeneralAction
-    // __________________
-
-    private interface SingleNodeOperation {
-       public void apply(MindMapMapModel map, MindMapNodeModel node); }
-
-    private class NodeGeneralAction extends AbstractAction {
-        SingleNodeOperation singleNodeOperation;
-        NodeGeneralAction(String textID, String iconPath, SingleNodeOperation singleNodeOperation) {
-           super(getText(textID), iconPath != null ? new ImageIcon(getResource(iconPath)) : null );
-           putValue(Action.SHORT_DESCRIPTION, getText(textID));
-           this.singleNodeOperation = singleNodeOperation; }
-	public void actionPerformed(ActionEvent e) {
-           for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-              MindMapNodeModel selected = (MindMapNodeModel)it.next();
-              singleNodeOperation.apply(getModel(), selected); }}}
 
     // Edge width
     // __________________

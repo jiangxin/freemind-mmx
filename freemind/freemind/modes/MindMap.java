@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.14.10.2 2004-04-24 18:44:23 christianfoltin Exp $*/
+/*$Id: MindMap.java,v 1.14.10.3 2004-05-02 20:49:14 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -35,6 +35,7 @@ import java.awt.datatransfer.Transferable;
 public interface MindMap extends TreeModel {
         
     void changeNode(MindMapNode node, String newText);
+    //nodeChanged has moved to the modeController. (fc, 2.5.2004)
 	void nodeChanged(TreeNode node);
 
     Transferable cut(MindMapNode node);

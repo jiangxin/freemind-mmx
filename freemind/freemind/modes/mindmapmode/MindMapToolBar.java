@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.12.12.2 2004-03-29 18:08:10 christianfoltin Exp $*/
+/*$Id: MindMapToolBar.java,v 1.12.12.3 2004-05-02 20:49:15 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -53,6 +53,7 @@ public class MindMapToolBar extends FreeMindToolBar {
 	button = add(c.save);
 	button = add(c.saveAs);
 
+	button = add(c.undo);
 	button = add(c.cut);
 
 	button = add(c.copy);

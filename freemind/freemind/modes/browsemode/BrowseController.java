@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13.12.2 2004-03-11 06:28:41 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.13.12.3 2004-05-02 20:49:14 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -62,7 +62,7 @@ public class BrowseController extends ControllerAdapter {
                         final KeyEvent e) { }
 
     public BrowseController(Mode mode) {
-	super.setMode(mode);
+    	super(mode);
 
         // Daniel: Actions are initialized here and not above because of
         // some error it would produce. Not studied in more detail.

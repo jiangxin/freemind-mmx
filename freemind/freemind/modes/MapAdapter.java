@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.10.4 2004-04-24 18:44:23 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.10.5 2004-05-02 20:49:14 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -60,16 +60,9 @@ public abstract class MapAdapter implements MindMap {
     private LinkedList  findNodeQueue;
     private ArrayList   findNodesUnfoldedByLastFind;
 
-	// for cascading updates.
-	private HashSet nodesAlreadyUpdated;
-	private HashSet nodesToBeUpdated;
-
-
 
     public MapAdapter (FreeMindMain frame) {
 		this.frame = frame;
-		nodesAlreadyUpdated = new HashSet();
-		nodesToBeUpdated    = new HashSet();
     }
 
     //
@@ -695,60 +688,31 @@ public abstract class MapAdapter implements MindMap {
     //
 
     /**
-      * Invoke this method after you've changed how node is to be
-      * represented in the tree. 
+      * This method should not be called directly!
       */
     public void nodeChanged(TreeNode node) {
-		if(nodesAlreadyUpdated.contains(node)) {			
-			return;
-		}
-		nodesToBeUpdated.add(node);
-		nodesAlreadyUpdated.add(node);
-        // Tell the mode controller that the node was changed, for the case
-        // he is interested.
         frame.getController().getMode().getModeController().nodeChanged((MindMapNode)node);
-        // Tell any node hooks that the node is changed:
-		recursiveCallUpdateHooks((MindMapNode) node, (MindMapNode) node /* self update */);
-        if (treeModelListeners != null && node != null) {
-            TreeNode parent = node.getParent();
-
-            if (parent != null) {
-                int anIndex = parent.getIndex(node);
-                if (anIndex != -1) {
-                    int[] cIndexs = new int[1];
-
-                    cIndexs[0] = anIndex;
-                    nodesChanged(parent, cIndexs);
-                }
-		    }
-		    else if (((MindMapNode)node).isRoot()) {
-				nodesChanged(node, null);
-	    	}
-        }
-		nodesToBeUpdated.remove(node);
-		if(nodesToBeUpdated.size()==0) {
-			// this is the end of all updates:
-			nodesAlreadyUpdated.clear();
-		}
     }
 
-    /**
-	 * @param node
-	 */
-	private void recursiveCallUpdateHooks(MindMapNode node, MindMapNode changedNode) {
-		// Tell any node hooks that the node is changed:
-		if(node instanceof MindMapNode) {
-			for(Iterator i=  ((MindMapNode)node).getActivatedHooks().iterator(); i.hasNext();) {
-				PermanentNodeHook hook = (PermanentNodeHook) i.next();
-				if(node == changedNode)
-					hook.onUpdateNodeHook();
-				else
-					hook.onUpdateChildrenHook(changedNode);
+	public void nodeChangedMapInternal(TreeNode node) {
+		if (treeModelListeners != null && node != null) {
+			TreeNode parent = node.getParent();
+
+			if (parent != null) {
+				int anIndex = parent.getIndex(node);
+				if (anIndex != -1) {
+					int[] cIndexs = new int[1];
+
+					cIndexs[0] = anIndex;
+					nodesChanged(parent, cIndexs);
+				}
+			}
+			else if (((MindMapNode)node).isRoot()) {
+				nodesChanged(node, null);
 			}
 		}
-		if(!node.isRoot() && node.getParentNode()!= null)
-			recursiveCallUpdateHooks(node.getParentNode(), changedNode);
 	}
+
 
 	/**
       * Invoke this method after you've changed how the children identified by

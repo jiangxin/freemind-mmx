@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.12.4 2004-04-04 11:56:32 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.12.5 2004-05-02 20:49:14 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -592,5 +592,13 @@ public abstract class NodeAdapter implements MindMapNode {
 		toolTip = string;
 	}
 
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#getNodeId()
+	 */
+	public String getObjectId() {
+		// URGENT: This is to be implemented.
+		return "id";
+	}
 
 }

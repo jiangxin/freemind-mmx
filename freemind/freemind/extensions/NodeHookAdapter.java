@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeHookAdapter.java,v 1.1.2.4 2004-04-08 18:54:55 christianfoltin Exp $*/
+/*$Id: NodeHookAdapter.java,v 1.1.2.5 2004-05-02 20:49:14 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.Iterator;
@@ -98,7 +98,7 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 		// fc, 29.2.2004 (yes, this day exists!)
 		// this is not nice. The node should know itself, if it is updateable, but...
 		if(node.getViewer() != null)
-			getMap().nodeChanged(node);
+			getController().nodeChanged(node);
 //		setSelfUpdate(false);
 	}
 

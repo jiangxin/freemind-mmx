@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.5 2004-04-08 18:54:56 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.6 2004-05-02 20:49:14 christianfoltin Exp $*/
 
 package freemind.modes;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -30,12 +31,13 @@ import java.util.List;
 
 import javax.swing.JPopupMenu;
 
+import freemind.controller.Controller;
+import freemind.controller.actions.ActionFactory;
+import freemind.extensions.ModeControllerHook;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
-import freemind.controller.Controller;
-import freemind.extensions.ModeControllerHook;
 
 public interface ModeController {
 
@@ -69,8 +71,19 @@ public interface ModeController {
     /** This returns a context menu for an object placed in the background pane.*/
     JPopupMenu getPopupForModel(java.lang.Object obj);
 
+	/**
+	  * Invoke this method after you've changed how a node is to be
+	  * represented in the tree. 
+	  */
     void nodeChanged(MindMapNode n);
     void anotherNodeSelected(MindMapNode n);
+    // node identifier (fc, 2.5.2004):
+	/** Given a node identifier, this method returns the corresponding node. */
+	NodeAdapter getNodeFromID(String nodeID);
+	/** Calling this method the map-unique identifier of the node is returned 
+	 * (and created before, if not present)*/
+	String getNodeID(MindMapNode selected);
+
 	//hooks, fc 28.2.2004:
 	void invokeHook(ModeControllerHook hook);
 	void invokeHooksRecursively(NodeAdapter node, MindMap map);
@@ -79,5 +92,7 @@ public interface ModeController {
 	MapView getView(); 
 	MapAdapter getMap();
 	Controller getController();
+	ActionFactory getActionFactory();
+	Color getSelectionColor();
 
 }
