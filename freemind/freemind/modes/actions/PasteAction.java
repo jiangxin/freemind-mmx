@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: PasteAction.java,v 1.1.4.3 2005-01-02 08:37:55 christianfoltin Exp $*/
+/*$Id: PasteAction.java,v 1.1.4.4 2005-02-02 21:23:24 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -413,7 +413,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 
 	public MindMapNodeModel pasteXMLWithoutRedisplay(String pasted, MindMapNode target, boolean asSibling)
 	   throws XMLParseException {
-	   // Call nodeStructureChanged(parent) after this function.
+	   // Call nodeStructureChanged(target) after this function.
 	   try {
 		  MindMapXMLElement element = new MindMapXMLElement(c.getFrame());
 		  element.parseFromReader(new StringReader(pasted));
@@ -424,7 +424,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 			 MindMapNode parent = target.getParentNode();
 			 insertNodeInto(node, parent, parent.getChildPosition(target)); }
 		  else {
-			 insertNodeIntoNoEvent(node, target); }
+			 insertNodeInto(node, target); }
 		  c.invokeHooksRecursively(node, c.getModel());
 		  return node; }
 	   catch (IOException ee) { ee.printStackTrace(); return null; }}

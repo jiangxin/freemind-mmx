@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.14.3 2004-12-19 09:00:37 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.14.4 2005-02-02 21:23:23 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -215,7 +215,6 @@ public abstract class MapAdapter implements MindMap {
         }
         if (node.isFolded() != folded) {
             node.setFolded(folded);
-            getFrame().getView().selectAsTheOnlyOneSelected(node.getViewer());
             fireTreeStructureChanged(this, getPathToRoot(node), null, null);
         }
     }
@@ -308,12 +307,15 @@ public abstract class MapAdapter implements MindMap {
 
         // The default position is after the last node
         if (asSibling) {
-           MindMapNode oldpa = parent.getParentNode();
-           //insertNodeInto(node, parent, parent.getChildPosition(target)); //}
-           oldpa.insert(newChild, oldpa.getChildPosition(parent)); } //     parent.getRealChildCount()); }
-        // } 
+            MindMapNode oldpa = parent.getParentNode();
+            oldpa.insert(newChild, oldpa.getChildPosition(parent));
+            recursiveCallAddChildren(oldpa, newChild);
+        } 
         else {
-           parent.insert(newChild, parent.getChildCount()); }
+            parent.insert(newChild, parent.getChildCount());
+            recursiveCallAddChildren(parent, newChild);
+        }
+        
     }
 
     public void insertNodeInto(MindMapNode newChild,

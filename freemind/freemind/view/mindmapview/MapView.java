@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.5 2005-01-02 07:57:27 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.16.6 2005-02-02 21:23:24 christianfoltin Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -1124,6 +1124,12 @@ public class MapView extends JPanel implements Printable {
 
             MindMapNode subtreeRoot = (MindMapNode)e.getTreePath().getLastPathComponent();
 
+            // fc,14.1.2005: no viewer -> no update.
+            if(subtreeRoot.getViewer() == null) {
+                return;
+            }
+            
+            
 			boolean nodeIsLeft = subtreeRoot.getViewer().isLeft();
 			NodeView oldNodeView = subtreeRoot.getViewer();
 			int x = oldNodeView.getX();

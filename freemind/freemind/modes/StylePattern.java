@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePattern.java,v 1.5.18.1 2004-10-17 23:00:08 dpolivaev Exp $*/
+/*$Id: StylePattern.java,v 1.5.18.2 2005-02-02 21:23:24 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -340,13 +340,11 @@ public class StylePattern {
                  setNodeColor(Tools.xmlToColor(child.getStringAttribute("color") ) ); }
               if (child.getStringAttribute("style")!=null) {
                  setNodeStyle(child.getStringAttribute("style")); }
-              if (child.getStringAttribute("icon")!=null) {
-                 appliesToNodeIcon = true;
-                 if (child.getStringAttribute("icon").equals("none")) {
+              if (child.getStringAttribute("icon") != null) {
                     appliesToNodeIcon = true;
-                    setNodeIcon( child.getStringAttribute("icon").equals("none") ?
-                                 null :
-                                 new MindIcon(child.getStringAttribute("icon")) ); }}
+                    setNodeIcon(child.getStringAttribute("icon").equals("none") ? null
+                            : new MindIcon(child.getStringAttribute("icon")));
+                }
               setText(child.getStringAttribute("text"));
 
               for (Iterator j=child.getChildren().iterator(); j.hasNext();) {
