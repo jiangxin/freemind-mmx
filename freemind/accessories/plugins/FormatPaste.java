@@ -19,7 +19,7 @@
  *
  * Created on 06.10.2004
  */
-/*$Id: FormatPaste.java,v 1.1.2.1 2004-10-06 08:25:51 christianfoltin Exp $*/
+/*$Id: FormatPaste.java,v 1.1.2.2 2004-11-14 22:15:06 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -56,7 +56,7 @@ public class FormatPaste extends NodeHookAdapter {
     private void pasteFormat(MindMapNode node) {
         if(pattern==null) {
             JOptionPane.showMessageDialog(getController().getFrame().getContentPane(),
-                    "no_format_copy_before_format_paste","" /*=Title*/,
+                    getResourceString("no_format_copy_before_format_paste"),"" /*=Title*/,
                     JOptionPane.ERROR_MESSAGE);
             return;
         }

@@ -86,6 +86,10 @@ Changes made in Freemind 0.8.0:
 * Little improvement for the Icon selector: the last position is restored next time it is opened.
 * Bugfix: New parent node. Export to HTML III.
 
+* Repaired: Icons appear on the right side on the right side of the node.
+* Bug fix: NewParentNode and root
+* icon for "insert child node"
+* Packaging of default plugins
 
 Changes made in Freemind 0.7.2:
 ===============================

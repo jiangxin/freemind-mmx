@@ -75,7 +75,7 @@ public class NewParentNode extends NodeHookAdapter {
 
 		// Create new node in the position of the selectedNode
 		int childPosition = selectedParent.getChildPosition(selectedNode);
-		MindMapNode newNode = getController().addNewNode(selectedParent, childPosition, selectedParent.isLeft());
+		MindMapNode newNode = getController().addNewNode(selectedParent, childPosition, selectedNode.isLeft());
 		//MindMapNode newNode = getController().newNode();
 		//getMap().insertNodeInto(newNode, selectedParent, childPosition);
 
