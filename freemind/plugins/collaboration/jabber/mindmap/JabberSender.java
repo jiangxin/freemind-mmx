@@ -6,15 +6,21 @@
  */
 package plugins.collaboration.jabber.mindmap;
 
+import java.io.StringWriter;
+
 import javax.xml.bind.JAXBException;
 
+import com.echomine.common.ParseException;
+import com.echomine.common.SendMessageFailedException;
 import com.echomine.jabber.JID;
 import com.echomine.jabber.JabberChatService;
 import com.echomine.jabber.JabberSession;
 
 import freemind.controller.actions.ActionFilter;
 import freemind.controller.actions.ActionPair;
+import freemind.controller.actions.generated.instance.CollaborationAction;
 import freemind.controller.actions.generated.instance.CompoundAction;
+import freemind.controller.actions.generated.instance.XmlAction;
 
 /**
  * @author RReppel
@@ -24,8 +30,6 @@ import freemind.controller.actions.generated.instance.CompoundAction;
  */
 public class JabberSender implements ActionFilter {
 
-    public final static String KEYSTROKE_NEWMAP = "keystroke_newMap";
-
     public final static String REQUEST_MAP_SHARING = "request_map_sharing";
 
     public final static String ACCEPT_MAP_SHARING = "accept_map_sharing";
@@ -33,8 +37,6 @@ public class JabberSender implements ActionFilter {
     public final static String DECLINE_MAP_SHARING = "decline_map_sharing";
 
     public final static String STOP_MAP_SHARING = "stop_map_sharing";
-
-    public final static String LOAD_MAP = "load_map";
 
     // Logging:
     private static java.util.logging.Logger logger;
@@ -67,48 +69,6 @@ public class JabberSender implements ActionFilter {
     }
 
     /**
-     * Sends a FreeMind command consisting of a single key to the Jabber server.
-     * Examples: INSERT, F2, ALT-H, .... The valid parameters are a subset of
-     * the command names which are defined in the freemind.properties file, for
-     * example "keystroke_add_child"
-     * 
-     * @param key
-     */
-    public void sendCommand(String key) {
-        if (mapShared) {
-            String message = "<fmcmd cmd=\"" + key + "\" user=\""
-                    + session.getContext().getUsername() + "@"
-                    + session.getContext().getServerName() + "\"/>";
-            sendMessage(message);
-        }
-    }
-
-    //	/**
-    //	 * Updates the text of the currently selected node.
-    //	 * @param text
-    //	 */
-    //    /**
-    //     * @param text
-    //     */
-    //    public void setNodeText(String text) {
-    //		if(mapShared) {
-    //	  		// Example: <fmcmd cmd="set_node_text" param="This is the text for the
-    // node."/>
-    //			try {
-    //				if(sendToUser == null)
-    //					throw new Exception("sendToUser is null.");
-    //				else
-    //					chat.sendPrivateMessage(new JID(sendToUser), "<fmcmd cmd=\"" +
-    // SET_NODE_TEXT + "\" param=\"" + text + "\"/>", false);
-    //			}
-    //			catch(Exception e) {
-    //				e.printStackTrace();
-    //			}
-    //		} //endif
-    //    	   
-    //    }
-
-    /**
      * Sends a request to share a map. The receiving user can either accept or
      * decline the request.
      * 
@@ -120,12 +80,52 @@ public class JabberSender implements ActionFilter {
     public void sendMapSharingRequest(String requestingUser,
             String requestReceiverUser) {
         try {
-            String message = "<fmcmd cmd=\"" + REQUEST_MAP_SHARING
-                    + "\" user=\"" + requestingUser + "\"/>";
-            chat.sendPrivateMessage(new JID(requestReceiverUser), message,
-                    false); //Wait until there is a reply.
+            CollaborationAction action = createCollaborationAction(
+                    requestingUser, REQUEST_MAP_SHARING);
+            // populate action with filename and map content
+            String mapName = controller.getController().getMap().getFile().getName();
+            action.setFilename(mapName);
+            StringWriter stringWriter = new StringWriter();
+            controller.getController().getMap().getXml(stringWriter);
+            action.setMap(stringWriter.getBuffer().toString());
+            sendMessage(requestReceiverUser, action);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Sends a request to stop sharing a map.
+     *  
+     */
+    public void sendMapSharingStopRequest() {
+        try {
+            CollaborationAction action = createCollaborationAction(sendToUser,
+                    STOP_MAP_SHARING);
+            String message = marshal(action);
+            sendMessage(sendToUser, action);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @param requestingUser
+     * @param command
+     * @throws JAXBException
+     */
+    private CollaborationAction createCollaborationAction(
+            String requestingUser, String command) {
+        try {
+            CollaborationAction collaboration = controller.getController()
+                    .getActionXmlFactory().createCollaborationAction();
+            collaboration.setCmd(command);
+            collaboration.setUser(requestingUser);
+            collaboration.setTimestamp(String.valueOf(System
+                    .currentTimeMillis()));
+            return collaboration;
+        } catch (JAXBException e) {
+            return null;
         }
     }
 
@@ -145,75 +145,62 @@ public class JabberSender implements ActionFilter {
         try {
             this.sendToUser = sendToUser;
             String message;
+            CollaborationAction action;
             if (accepted) {
-                message = "<fmcmd cmd=\"" + ACCEPT_MAP_SHARING + "\" user=\""
-                        + sentFromUser + "\"/>";
+                action = createCollaborationAction(sentFromUser,
+                        ACCEPT_MAP_SHARING);
+                //                message = "<fmcmd cmd=\"" + ACCEPT_MAP_SHARING + "\" user=\""
+                //                        + sentFromUser + "\"/>";
                 mapShared = true;
             } else {
-                message = "<fmcmd cmd=\"" + DECLINE_MAP_SHARING + "\" user=\""
-                        + sentFromUser + "\"/>";
+                action = createCollaborationAction(sentFromUser,
+                        DECLINE_MAP_SHARING);
+                //                message = "<fmcmd cmd=\"" + DECLINE_MAP_SHARING + "\"
+                // user=\""
+                //                        + sentFromUser + "\"/>";
                 mapShared = false;
             }
-            chat.sendPrivateMessage(new JID(sendToUser), message, false); //Wait
-            // until
-            // there
-            // is a
-            // reply.
+            sendMessage(sendToUser, action);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //	/**
-    //	 * Sends the location of a selected node.
-    //	 * Example: <fmcmd cmd="select_single_node" x="260" y="1582" />
-    //	 * @param x
-    //	 * @param y
-    //	 */
-    //	public void sendSelectedNodeLocation(int x, int y) {
-    //		if(mapShared) {
-    //			try {
-    //				String message = "<fmcmd cmd=\"" + SELECT_SINGLE_NODE + "\" x=\"" + x +
-    // "\" y=\"" + y + "\"/>";
-    //				chat.sendPrivateMessage(new JID(sendToUser), message , false);
-    //			}
-    //			catch(Exception e) {
-    //				e.printStackTrace();
-    //			}
-    //		} //endif
-    //	}
-
-    public void sendMap(String mapXml) {
-        if (mapShared) {
-            try {
-                String message = "<fmcmd cmd=\"" + LOAD_MAP + "\">" + mapXml
-                        + "</fmcmd>";
-                chat.sendPrivateMessage(new JID(sendToUser), message, false);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } //endif
+    /**
+     * @param action
+     * @return
+     */
+    private String marshal(XmlAction action) {
+        return controller.getController().marshall(action);
     }
 
-    private void sendMessage(String message) {
-        try {
-            if (!controller.isSendingEnabled()) {
-                return;
-            }
-            if (sendToUser == null)
-                throw new Exception(
-                        "sendToUser is null. (Did you specify the user to share with by calling 'setMapShareUser'?");
-            else {
-                logger.info("Sending message:"
-                        + ((message.length() < 50) ? message : (message
-                                .substring(0, 25)
-                                + "..." + message
-                                .substring(message.length() - 25))));
-                chat.sendPrivateMessage(new JID(sendToUser), message, false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    /** Sends commands to the other user(s?).
+     * @param requestReceiverUser
+     * @param action
+     * @throws SendMessageFailedException
+     * @throws ParseException
+     */
+    private void sendMessage(String requestReceiverUser, XmlAction action)
+            throws SendMessageFailedException, ParseException {
+        String message = marshal(action);
+        if (!controller.isSendingEnabled()) {
+            logger
+                    .warning("JabberSender should not send messages. In particular the following messages is not sent:"
+                            + message);
+            return;
         }
+        if (requestReceiverUser == null)
+            throw new IllegalArgumentException(
+                    "sendToUser is null. (Did you specify the user to share with by calling 'setMapShareUser'?)");
+        logger.info("Sending message:"
+                + ((message.length() < 50) ? message : (message
+                        .substring(0, 25)
+                        + "..." + message.substring(message.length() - 25))));
+        /*
+         * Wait until there is a reply.
+         */
+        chat.sendPrivateMessage(new JID(requestReceiverUser), message, false);
+
     }
 
     /**
@@ -235,6 +222,10 @@ public class JabberSender implements ActionFilter {
         this.sendToUser = username;
     }
 
+    /**
+     * The overloaded filter action. Each action comes here along and is sent to the other 
+     * participants.
+     */
     public ActionPair filterAction(ActionPair pair) {
         try {
             CompoundAction eAction = controller.getController()
@@ -245,8 +236,12 @@ public class JabberSender implements ActionFilter {
                     pair.getUndoAction());
             String marshalledString = controller.getController().marshall(
                     eAction);
-            sendMessage(marshalledString);
+            sendMessage(sendToUser, eAction);
         } catch (JAXBException e) {
+            e.printStackTrace();
+        } catch (SendMessageFailedException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return pair;

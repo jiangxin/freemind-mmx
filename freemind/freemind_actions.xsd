@@ -511,6 +511,34 @@
 	</xs:element>
 
 
+	<!-- Collaboration actions (not usable inside FreeMind but only in between different 
+		 instances (and thus not contained in compound_action). -->
+	<xs:element name="collaboration_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+		      <xs:attribute name="user" use="optional" type="xs:string"/>
+		      <xs:attribute name="timestamp" use="optional" type="xs:string"/>
+			  <!-- The command -->
+		      <xs:attribute name="cmd" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="request_map_sharing"/>
+						<xs:enumeration value="accept_map_sharing"/>
+						<xs:enumeration value="stop_map_sharing"/>
+						<xs:enumeration value="decline_map_sharing"/>
+					</xs:restriction>
+				</xs:simpleType>
+			  </xs:attribute>
+			  <!-- If the command is "request_map_sharing" the entire map is sent with the command.-->
+		      <xs:attribute name="map" use="optional" type="xs:string"/>
+		      <xs:attribute name="filename" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+		
+
 
 	<!-- ======================================================================================= 
 		 										Plugin XML

@@ -9,7 +9,11 @@ package plugins.collaboration.jabber.mindmap;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.xml.bind.JAXBException;
+
 import plugins.collaboration.jabber.view.MapSharingWizardView;
+import freemind.controller.actions.ActionPair;
+import freemind.controller.actions.generated.instance.RevertXmlAction;
 import freemind.modes.mindmapmode.MindMapController;
 
 /**
@@ -27,12 +31,8 @@ public class MapSharingController {
 
     private final int STATE_SENT_SHARE_REQUEST_PENDING = 3;
 
-    private final int STATE_RECEIVED_SHARE_REQUEST_PENDING = 4; //Waiting for a
-                                                                // user to
-                                                                // accept or
-                                                                // decline the
-                                                                // sharing of a
-                                                                // map.
+    /** Waiting for a user to accept or decline the sharing of a map. */
+    private final int STATE_RECEIVED_SHARE_REQUEST_PENDING = 4;
 
     private final int STATE_SHARING_MAP = 5;
 
@@ -60,13 +60,21 @@ public class MapSharingController {
     //frameTitle is used to re-set the title to its original value later.
     private boolean isSendingEnabled = true;
 
+    /**
+     * mapContent is the marshalled map of the others party. If we accept
+     * sharing, this map is displayed.
+     */
+    private String mapContent;
+
+    private String mapFileName;
+
     public MapSharingController(
             MapSharingWizardView jabberConnectionWizardView,
             MindMapController controller) {
         this.jabberConnectionWizardView = jabberConnectionWizardView;
         this.controller = controller;
         this.mapSharingWizardController = this; //Need an instance of this in
-                                                // the listener classes,
+        // the listener classes,
         //to enable JabberListener to react to accepting/declining map share
         // invitations.
         setState(STATE_NOT_CONNECTED);
@@ -270,7 +278,16 @@ public class MapSharingController {
                 sender.setShareMapUser(mapSharingRequestingUser);
                 sender.isMapShared(true);
                 jabberConnectionWizardView.hide();
-                //TODO: Send map to for display on other user's FreeMind.
+                try {
+                    RevertXmlAction action = controller.revertAction
+                            .createRevertXmlAction(mapContent, null,
+                                    mapFileName);
+                    // no undo possible.
+                    ActionPair pair = new ActionPair(action, null);
+                    controller.getActionFactory().executeAction(pair);
+                } catch (JAXBException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -394,9 +411,12 @@ public class MapSharingController {
         } //endif
     }
 
-    public void setMapSharingRequested(String username) {
+    public void setMapSharingRequested(String username, String mapContent,
+            String mapFileName) {
         setState(STATE_RECEIVED_SHARE_REQUEST_PENDING);
         mapSharingRequestingUser = username;
+        this.mapContent = mapContent;
+        this.mapFileName = mapFileName;
         jabberConnectionWizardView
                 .showMapShareAcceptDeclineMessage(mapSharingRequestingUser);
     }
@@ -404,7 +424,7 @@ public class MapSharingController {
     public void showMapSharingDialogue() {
         if (state == STATE_SHARING_MAP || state == STATE_CONNECTED) {
             //TODO: Ask "Are you sure you want to stop sharing?"
-            sender.sendCommand(JabberSender.STOP_MAP_SHARING);
+            sender.sendMapSharingStopRequest();
             stopSharing();
         } else {
             jabberConnectionWizardView.showConnectToServerDialog();

@@ -35,17 +35,17 @@ import com.echomine.jabber.JabberMessageListener;
 import com.echomine.jabber.JabberSession;
 
 import freemind.controller.actions.ActionPair;
+import freemind.controller.actions.generated.instance.CollaborationAction;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.XMLElement;
 import freemind.modes.mindmapmode.MindMapController;
 
 /**
- * @author RReppel
- * 
- *  - Connects to a jabber server. - Establishes a private chat with another
- * user. - Listens to a limited number of FreeMind commands sent by the other
- * user. - Performs the FreeMind actions corresponding to the commands sent.
+ * @author RReppel - Connects to a jabber server. - Establishes a private chat
+ *         with another user. - Listens to a limited number of FreeMind commands
+ *         sent by the other user. - Performs the FreeMind actions corresponding
+ *         to the commands sent.
  *  
  */
 public class JabberListener {
@@ -76,7 +76,7 @@ public class JabberListener {
         try {
             session.connect(jabberServer, port);
             session.getUserService().login();
-            System.out.println("User logged in.\n");
+            logger.info("User logged in.\n");
             session.getPresenceService().setToAvailable("FreeMind Session",
                     null, false);
 
@@ -144,92 +144,87 @@ public class JabberListener {
                     || latestMsg.getType()
                             .equals(JabberChatMessage.TYPE_NORMAL)) {
                 commandQueue.addLast(latestMsg); //Add the message to the end
-                                                 // of the list of commands to
-                                                 // be applied.
+                // of the list of commands to
+                // be applied.
                 logger.info("Queue has " + commandQueue.size() + " items.");
 
                 JabberChatMessage msg = (JabberChatMessage) commandQueue
                         .removeFirst(); //Process the first command in the
-                                        // list.
+                // list.
                 logger.info("message " + msg + " from "
                         + msg.getFrom().getUsername() + " is reply required:"
                         + msg.isReplyRequired());
 
                 String msgString = msg.getBody();
-                //TODO: Should really use a validating parser here...
-                if (msgString.startsWith("<fmcmd") && msgString.endsWith("/>")) {
-                    XMLElement xml = new XMLElement();
-                    xml.parseString(msg.getBody());
-                    String cmd = xml.getStringAttribute("cmd");
-                    if (cmd != null) {
-                        try {
-                            if (cmd.compareTo(JabberSender.REQUEST_MAP_SHARING) == 0) {
-                                String username = xml
-                                        .getStringAttribute("user");
-                                sharingWizardController
-                                        .setMapSharingRequested(username);
-                            } else if (cmd
-                                    .compareTo(JabberSender.ACCEPT_MAP_SHARING) == 0) {
-                                String username = xml
-                                        .getStringAttribute("user");
-                                sharingWizardController
-                                        .setMapShareRequestAccepted(username,
-                                                true);
-                            } else if (cmd
-                                    .compareTo(JabberSender.DECLINE_MAP_SHARING) == 0) {
-                                String username = xml
-                                        .getStringAttribute("user");
-                                sharingWizardController
-                                        .setMapShareRequestAccepted(username,
-                                                false);
-                            } else if (cmd
-                                    .compareTo(JabberSender.STOP_MAP_SHARING) == 0) {
-                                String username = xml
-                                        .getStringAttribute("user");
-                                sharingWizardController
-                                        .setSharingStopped(username);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        } //end catch
-                    } //endif
-                    // } //endfor
-                } else {
-                    CompoundAction pair = (CompoundAction) sharingWizardController
-                            .getController().unMarshall(msgString);
+                XmlAction action = controller.unMarshall(msgString);
+                if (action instanceof CollaborationAction) {
+                    CollaborationAction xml = (CollaborationAction) action;
+                    String cmd = xml.getCmd();
+                    String username = xml.getUser();
+                    try {
+                        if (cmd.compareTo(JabberSender.REQUEST_MAP_SHARING) == 0) {
+                            sharingWizardController
+                                    .setMapSharingRequested(username, xml.getMap(), xml.getFilename());
+                        } else if (cmd
+                                .compareTo(JabberSender.ACCEPT_MAP_SHARING) == 0) {
+                            sharingWizardController.setMapShareRequestAccepted(
+                                    username, true);
+                        } else if (cmd
+                                .compareTo(JabberSender.DECLINE_MAP_SHARING) == 0) {
+                            sharingWizardController.setMapShareRequestAccepted(
+                                    username, false);
+                        } else if (cmd.compareTo(JabberSender.STOP_MAP_SHARING) == 0) {
+                            sharingWizardController.setSharingStopped(username);
+                        } else {
+                            logger.warning("Unknown command:" + cmd);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } //end catch
+                } else if (action instanceof CompoundAction) {
+                    CompoundAction pair = (CompoundAction) action;
                     if (pair
                             .getCompoundActionOrSelectNodeActionOrCutNodeAction()
                             .size() != 2) {
                         //FIXME: Warn the user
-                        System.out.println("Cannot process the message "
+                        logger.warning("Cannot process the message "
                                 + msgString);
                         return;
                     }
-                    XmlAction doAction = (XmlAction) pair
-                            .getCompoundActionOrSelectNodeActionOrCutNodeAction()
-                            .get(0);
-                    XmlAction undoAction = (XmlAction) pair
-                            .getCompoundActionOrSelectNodeActionOrCutNodeAction()
-                            .get(1);
-                    final ActionPair ePair = new ActionPair(doAction,
-                            undoAction);
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            sharingWizardController.setSendingEnabled(false);
-                            try {
-                                sharingWizardController.getController()
-                                        .getActionFactory()
-                                        .executeAction(ePair);
-                            } catch (Exception e) {
-                                // TODO: handle exception
-                                e.printStackTrace();
-                            }
-                            sharingWizardController.setSendingEnabled(true);
-                        }
-                    });
+                    executeRemoteCommand(pair);
+                } else {
+                    logger.warning("Unknown collaboration message:"+msgString);
                 }//endif
             } //endif
         } //end messageReceived
+
+        /** Executes a command that was received via the jabber channel.
+         * @param pair
+         */
+        private void executeRemoteCommand(CompoundAction pair) {
+            XmlAction doAction = (XmlAction) pair
+                    .getCompoundActionOrSelectNodeActionOrCutNodeAction()
+                    .get(0);
+            XmlAction undoAction = (XmlAction) pair
+                    .getCompoundActionOrSelectNodeActionOrCutNodeAction()
+                    .get(1);
+            final ActionPair ePair = new ActionPair(doAction,
+                    undoAction);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    sharingWizardController.setSendingEnabled(false);
+                    try {
+                        sharingWizardController.getController()
+                                .getActionFactory()
+                                .executeAction(ePair);
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        e.printStackTrace();
+                    }
+                    sharingWizardController.setSendingEnabled(true);
+                }
+            });
+        }
     }
 
 }

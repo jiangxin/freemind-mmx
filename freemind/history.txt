@@ -201,6 +201,9 @@ RC 3:
 * New feature: Revert map.
 * Started to write down a scheme of the mm format.
 
+* Collaboration: The map is sent to the invited user.
+* New translation into korean. Thanks to the author.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

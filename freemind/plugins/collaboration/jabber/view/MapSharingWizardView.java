@@ -99,7 +99,7 @@ public class MapSharingWizardView extends JFrame {
     //SelectUser GUI UI Components:
     JLabel mapShareUserNameLbl = new JLabel("Username:");
 
-    JTextField mapShareUserName = new JTextField("", TEXTFIELD_CHARACTERS);
+    JTextField mapShareUserName = new JTextField("@amessage.de", TEXTFIELD_CHARACTERS);
 
     JPanel selectUserPanel = new JPanel(new BorderLayout());
 
@@ -181,10 +181,10 @@ public class MapSharingWizardView extends JFrame {
         shareMap.setSelected(true);
         shareMap.setBackground(BACKGROUNDCOLOR);
         waitForMapSharing.setBackground(BACKGROUNDCOLOR);
-        group.add(shareMap);
         group.add(waitForMapSharing);
-        shareMapEditPanel.add(shareMap);
+        group.add(shareMap);
         shareMapEditPanel.add(waitForMapSharing);
+        shareMapEditPanel.add(shareMap);
 
         SpringUtilities.makeCompactGrid(shareMapEditPanel, //parent
                 2, 1, //rows, cols
