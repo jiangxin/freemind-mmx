@@ -19,24 +19,24 @@
  *
  * Created on 01.11.2004
  */
-/*$Id: ExportSvg.java,v 1.1.2.1 2004-11-06 22:06:26 christianfoltin Exp $*/
+/*$Id: ExportSvg.java,v 1.1.2.2 2004-11-07 09:30:21 christianfoltin Exp $*/
 
 package plugins.svg;
 
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.svggen.SVGGeneratorContext;
 import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.svggen.SVGGeneratorContext.GraphicContextDefaults;
+import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
@@ -58,35 +58,31 @@ public class ExportSvg extends ExportHook {
             return;
         }
         try {
-            getController().getFrame().setWaitingCursor(true);
-            FileWriter out = new FileWriter(chosenFile);
-            //		  Get a DOMImplementation
-            DOMImplementation domImpl = GenericDOMImplementation
-                    .getDOMImplementation();
-
-            // Create an instance of org.w3c.dom.Document
-            Document document = domImpl.createDocument(null, "svg", null);
-
-            // Create an instance of the SVG Generator
-            SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
-
             MapView view = getController().getView();
             if (view == null)
                 return;
 
-            //Determine which part of the view contains the nodes of the map:
-            //(Needed to eliminate areas of whitespace around the actual
-            // rendering of the map)
-
+            getController().getFrame().setWaitingCursor(true);
+            
             NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
             Rectangle innerBounds = view.getInnerBounds(root.getViewer());
 
-            svgGenerator.clipRect(innerBounds.x, innerBounds.y,
-                    innerBounds.width, innerBounds.height);
-            view.print(svgGenerator);
+            SVGGraphics2D g2d = buildSVGGraphics2D();
+            g2d.setSVGCanvasSize(new Dimension(innerBounds.width, innerBounds.height));
+            g2d.translate(-innerBounds.x, -innerBounds.y);
+            //
+            // Generate SVG content
+            //
+            FileOutputStream bos = new FileOutputStream(chosenFile);
+            OutputStreamWriter osw = new OutputStreamWriter(bos, "UTF-8");
+            view.print(g2d);
+            g2d.stream(osw);
+            osw.flush();
+            bos.flush();
+            bos.close();
 
-            boolean useCSS = true; // we want to use CSS style attribute
-            svgGenerator.stream(out, useCSS);
+            
+            
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(getController().getFrame().getContentPane(), e.getLocalizedMessage(), null, JOptionPane.ERROR_MESSAGE);
@@ -94,4 +90,24 @@ public class ExportSvg extends ExportHook {
         getController().getFrame().setWaitingCursor(false);
 
     }
+    
+    /**
+     * Builds an <tt>SVGGraphics2D</tt> with a default
+     * configuration.
+     */
+    protected SVGGraphics2D buildSVGGraphics2D() {
+        // CSSDocumentHandler.setParserClassName(CSS_PARSER_CLASS_NAME);
+        DOMImplementation impl = GenericDOMImplementation.getDOMImplementation();
+        String namespaceURI = SVGConstants.SVG_NAMESPACE_URI;
+        Document domFactory = impl.createDocument(namespaceURI, "svg", null);
+        SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(domFactory);
+        GraphicContextDefaults defaults 
+            = new GraphicContextDefaults();
+        defaults.setFont(new Font("Arial", Font.PLAIN, 12));
+        ctx.setGraphicContextDefaults(defaults);
+        ctx.setPrecision(12);
+        return new SVGGraphics2D(ctx, false);
+    }
+
+
 }

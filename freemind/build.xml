@@ -176,7 +176,7 @@
 		<tar tarfile="${post}/freemind-bin.tar"
 			basedir="${dist}"
 			longfile="gnu"
-			excludes="browser/,doc/javadoc/" />
+			excludes="browser/,doc/javadoc/,plugins/**" />
 		<tar tarfile="${post}/freemind-src.tar"
 			longfile="gnu"
 			basedir="${src_base_for_post}"
@@ -195,7 +195,7 @@
 		</delete> 
 		<zip destfile="${post}/freemind-bin-${ver}.zip"
 			basedir="${dist}"
-			excludes="browser/,doc/javadoc/" />
+			excludes="browser/,doc/javadoc/,plugins/**" />
 		<zip destfile="${post}/freemind-src-${ver}.zip"
 			basedir="${src_base_for_post}"
 			includes="freemind/**,.classpath,.project" />
