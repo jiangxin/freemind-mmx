@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.17 2003-12-17 21:04:53 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.18 2003-12-20 16:12:51 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -328,12 +328,23 @@ public class MindMapNodeModel extends NodeAdapter {
              case '}':
                 result.append("\\}");
                 break;                
+			case '\n':
+				result.append(" \\line ");
+				break;                
              default:
                 result.append(myChar); }}}
        return result.toString(); }
 
     public void saveRTF(Writer fileout, int depth, HashMap colorTable) throws IOException {
-        String pre="{"+"\\li"+depth*400;
+        String pre="{"+"\\li"+depth*350;
+        String level;
+        if (depth <= 8){
+           level = "\\outlinelevel" + depth;
+        }
+        else
+        { 
+           level = "";
+        }
         String fontsize="";
 	if (color != null) {
            pre += "\\cf"+((Integer)colorTable.get(getColor())).intValue(); }
@@ -348,7 +359,7 @@ public class MindMapNodeModel extends NodeAdapter {
 
         pre += "{}"; // make sure setting of properties is separated from the text itself
 
-        fileout.write("\\li"+depth*400+"{}");
+        fileout.write("\\li"+depth*350+level+"{}");
         if (this.toString().matches(" *")) {
            fileout.write("o"); }
         else {

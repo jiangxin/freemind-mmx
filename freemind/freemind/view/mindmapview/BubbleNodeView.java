@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.11 2003-11-03 11:00:23 sviles Exp $*/
+/*$Id: BubbleNodeView.java,v 1.12 2003-12-20 16:12:51 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -61,7 +61,6 @@ public class BubbleNodeView extends NodeView {
           graphics.fillRoundRect(0,0,size.width-1,size.height-1,10,10);
        }
     }
-
 
     /**
      * Paints the node

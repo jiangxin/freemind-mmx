@@ -16,13 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.36 2003-12-14 23:58:03 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.37 2003-12-20 16:12:51 christianfoltin Exp $*/
 
 package freemind.controller;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.print.PageFormat;
@@ -666,7 +668,17 @@ public class Controller {
             frame.setView(mapModule != null ? mapModule.getView() : null); }
 
         private void addToMapModules(String key, MapModule value) {
-            mapModules.put(key,value);
+            // begin bug fix, 20.12.2003, fc.
+            // check, if already present:
+            String extension = "";
+            int count = 1;
+            while (mapModules.containsKey(key+extension)) {
+                extension = "<"+(++count)+">";
+            }
+            // rename map:
+            value.setName(key+extension);
+            mapModules.put(key+extension,value);
+            // end bug fix, 20.12.2003, fc.
             setAllActions(true);
             moveToRoot();                // Only for the new modules move to root
             mapModuleChanged(); }
@@ -845,11 +857,12 @@ public class Controller {
                return; }
 
             // Ask about custom printing settings
-            final JDialog dialog = new JDialog((JFrame)getFrame(), "Printing settings", /*modal=*/true);
-            JCheckBox fitToPage = new JCheckBox("fitToPage");
-            JLabel userZoomL = new JLabel("User zoom ");
-            JTextField userZoom = new JTextField(getProperty("user_zoom"),3);
-            final JButton okButton = new JButton("OK");
+            final JDialog dialog = new JDialog((JFrame)getFrame(), getResourceString("printing_settings"), /*modal=*/true);
+            final JCheckBox fitToPage = new JCheckBox(getResourceString("fit_to_page"), Tools.safeEquals("true", getProperty("fit_to_page")));
+            final JLabel userZoomL = new JLabel(getResourceString("user_zoom"));
+            final JTextField userZoom = new JTextField(getProperty("user_zoom"),3);
+            userZoom.setEditable(!fitToPage.isSelected());
+            final JButton okButton = new JButton(getResourceString("ok"));
             final Tools.IntHolder eventSource = new Tools.IntHolder();
             JPanel panel = new JPanel();
 
@@ -861,6 +874,11 @@ public class Controller {
                   public void actionPerformed(ActionEvent e) {
                      eventSource.setValue(1);
                      dialog.dispose(); }});
+            fitToPage.addItemListener (new ItemListener() {
+                public void itemStateChanged(ItemEvent e) {
+                    userZoom.setEditable(e.getStateChange() == ItemEvent.DESELECTED);
+                }
+            });
 
             //c.weightx = 0.5;
             c.gridx = 0;
@@ -886,6 +904,7 @@ public class Controller {
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setContentPane(panel);
             dialog.setLocationRelativeTo((JFrame)getFrame());
+            dialog.getRootPane().setDefaultButton(okButton);
             dialog.pack();  // calculate the size
             dialog.show();
 

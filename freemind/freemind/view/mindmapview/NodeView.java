@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.23 2003-12-17 21:04:53 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.24 2003-12-20 16:12:51 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -592,6 +592,12 @@ public abstract class NodeView extends JLabel {
                                             "images/Link.png")));
                 iconImages.addImage(icon); 
             }
+        /* Folded icon by Matthias Schade (mascha2), fc, 20.12.2003*/
+        if (((NodeAdapter)getModel()).isFolded()) {
+            iconPresent = true;
+            ImageIcon icon = new ImageIcon(((NodeAdapter)getModel()).getFrame().getResource("images/Folded.png"));
+            iconImages.addImage(icon); 
+        }
         // DanielPolansky: set icon only if icon is present, because
         // we don't want to insert any additional white space.        
         setIcon(iconPresent?iconImages:null);

@@ -1,11 +1,11 @@
 <map>
 <node COLOR="#993300" TEXT="FreeMind">
 <font NAME="dialog" BOLD="true" SIZE="18"/>
-<node TEXT="   ">
+<node TEXT="   " POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
-<node COLOR="#006633" TEXT="FreeMind">
+<node COLOR="#006633" TEXT="FreeMind" POSITION="right">
 <font NAME="SansSerif" SIZE="17"/>
-<node COLOR="#006633" TEXT="Installation" FOLDED="true">
+<node COLOR="#006633" TEXT="Installation" FOLDED="true" POSITION="right">
 <node COLOR="#006633" TEXT="Download">
 <node LINK="http://java.sun.com/j2se" TEXT="Download the Java Runtime Environment">
 <font NAME="Lucida Sans" SIZE="12"/>
@@ -20,94 +20,94 @@
 <node TEXT="On Unix, run freemind.sh. On both Windows and Mac OS X, you can also simply double click the file freemind.jar located at the folder lib."/>
 </node>
 </node>
-<node COLOR="#006633" TEXT="Creating mind maps">
+<node COLOR="#006633" TEXT="Creating mind maps" POSITION="right">
 <font NAME="SansSerif" SIZE="16"/>
-<node TEXT="You create mind maps in so called mind map mode. This is the default mode FreeMind is started with. If the word mode troubles you, just forget about it."/>
-<node COLOR="#669900" TEXT="Operations on node or edge">
+<node TEXT="You create mind maps in so called mind map mode. This is the default mode FreeMind is started with. If the word mode troubles you, just forget about it." POSITION="right"/>
+<node COLOR="#669900" TEXT="Operations on node or edge" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="Right click on node and select from menu.  Most should be self explanatory.">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
-<node COLOR="#669900" TEXT="Quickly change to different already opened mind map">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="Right click on the background and select a different map from the menu">
+<node TEXT="Right click on node and select from menu.  Most should be self explanatory." POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Selecting multiple nodes">
+<node COLOR="#669900" TEXT="Quickly change to different already opened mind map" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="To select multiple nodes hold control or shift while clicking.">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="Control lets you add single nodes to a set of already selected nodes.">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="Shift lets you select continuous ranges of nodes or whole subtrees of nodes.">
+<node TEXT="Right click on the background and select a different map from the menu" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Editing by drag and drop" FOLDED="true">
+<node COLOR="#669900" TEXT="Selecting multiple nodes" POSITION="right">
+<font NAME="sansserif" SIZE="12"/>
+<node TEXT="To select multiple nodes hold control or shift while clicking." POSITION="right">
+<font NAME="sansserif" SIZE="12"/>
+</node>
+<node TEXT="Control lets you add single nodes to a set of already selected nodes." POSITION="right">
+<font NAME="sansserif" SIZE="12"/>
+</node>
+<node TEXT="Shift lets you select continuous ranges of nodes or whole subtrees of nodes." POSITION="right">
+<font NAME="sansserif" SIZE="12"/>
+</node>
+</node>
+<node COLOR="#669900" TEXT="Editing by drag and drop" FOLDED="true" POSITION="right">
 <font NAME="sansserif" SIZE="14"/>
-<node TEXT="You can move nodes around using Drag And Drop">
+<node TEXT="You can move nodes around using Drag And Drop" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 </node>
-<node TEXT="Drag and Drop enables you to drop node">
+<node TEXT="Drag and Drop enables you to drop node" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="as a child">
+<node TEXT="as a child" POSITION="right">
 <font NAME="SansSerif" SIZE="12"/>
-<node COLOR="#666666" TEXT="destination node highlights to the right">
+<node COLOR="#666666" TEXT="destination node highlights to the right" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node TEXT="as a sibling.">
+<node TEXT="as a sibling." POSITION="right">
 <font NAME="SansSerif" SIZE="12"/>
-<node COLOR="#666666" TEXT="destination node highlights on top">
+<node COLOR="#666666" TEXT="destination node highlights on top" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#999999" TEXT="The distintion between child and sibling is similar to distinction between following links and toggle folded">
+<node COLOR="#999999" TEXT="The distintion between child and sibling is similar to distinction between following links and toggle folded" POSITION="right">
 <font NAME="sansserif" SIZE="10"/>
 </node>
 </node>
-<node TEXT="If you hold control while dragging, nodes are copied instead of moved. You can achieve the same by dragging with middle mouse">
+<node TEXT="If you hold control while dragging, nodes are copied instead of moved. You can achieve the same by dragging with middle mouse" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 </node>
-<node COLOR="#339900" TEXT="if you hold control and shift while dragging, the color and font of the target node is copied to source node." FOLDED="true">
+<node COLOR="#339900" TEXT="Before Version 0.7: &#xa;&#xa;if you hold control and shift while dragging, the color and font of the target node is copied to source node." POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="You can achieve the same by dragging with right mouse">
+<node TEXT="You can achieve the same by dragging with right mouse" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 </node>
-<node COLOR="#000000" TEXT="Target node to source node!!">
+<node COLOR="#000000" TEXT="Target node to source node!!" POSITION="right">
 <font NAME="dialog" BOLD="true" SIZE="12"/>
-<node COLOR="#000000" TEXT="This is contraintuitive!!">
+<node COLOR="#000000" TEXT="This is contraintuitive!!" POSITION="right">
 <font NAME="dialog" BOLD="true" SIZE="12"/>
 </node>
-<node TEXT="But this enables you to change color of multiple nodes in one Drag and Drop">
+<node TEXT="But this enables you to change color of multiple nodes in one Drag and Drop" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
 </node>
-<node TEXT="If you have selected multiple nodes, all are being moved / copied">
+<node TEXT="If you have selected multiple nodes, all are being moved / copied" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 </node>
-<node TEXT="You can drop sources from external applications">
-<node TEXT="Files">
-<node COLOR="#999999" TEXT="(on Windows)">
+<node TEXT="You can drop sources from external applications" POSITION="right">
+<node TEXT="Files" POSITION="right">
+<node COLOR="#999999" TEXT="(on Windows)" POSITION="right">
 <font NAME="sansserif" SIZE="10"/>
 </node>
 </node>
-<node TEXT="Pieces of text">
-<node COLOR="#999999" TEXT="(works with dropping of text selection in MS Internet Explorer)">
+<node TEXT="Pieces of text" POSITION="right">
+<node COLOR="#999999" TEXT="(works with dropping of text selection in MS Internet Explorer)" POSITION="right">
 <font NAME="sansserif" SIZE="10"/>
 </node>
 </node>
 </node>
 </node>
-<node COLOR="#669900" TEXT="You can edit a new map by dragging and dropping its file into the background of FreeMind">
+<node COLOR="#669900" TEXT="You can edit a new map by dragging and dropping its file into the background of FreeMind" POSITION="right">
 <font NAME="Default" SIZE="10"/>
 </node>
-<node COLOR="#669900" TEXT="Copying and pasting" FOLDED="true">
+<node COLOR="#669900" TEXT="Copying and pasting" FOLDED="true" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="You can copy and paste (multiple) nodes between mindmaps as expected.">
 <font NAME="sansserif" SIZE="12"/>
@@ -263,33 +263,33 @@
 <node COLOR="#996600" TEXT="Ctrl + Y"/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Splitting nodes">
+<node COLOR="#669900" TEXT="Splitting nodes" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="It is possible to split long nodes">
-<node COLOR="#999999" TEXT="use button Split or key mnemonic with Alt">
+<node TEXT="It is possible to split long nodes" POSITION="right">
+<node COLOR="#999999" TEXT="use button Split or key mnemonic with Alt" POSITION="right">
 <font NAME="sansserif" SIZE="10"/>
 </node>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Scrolling">
+<node COLOR="#669900" TEXT="Scrolling" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
-<node COLOR="#339900" TEXT="You can scroll the map by dragging the background and moving around">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="You can scroll the map using mouse wheel">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="To scroll horizontally, hold shift or one of the mouse buttons">
+<node COLOR="#339900" TEXT="You can scroll the map by dragging the background and moving around" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 </node>
-</node>
-</node>
-<node COLOR="#669900" TEXT="Fast switching between maps">
+<node TEXT="You can scroll the map using mouse wheel" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="With rightclick on the map, you can select from popup menu from already loaded maps">
+<node TEXT="To scroll horizontally, hold shift or one of the mouse buttons" POSITION="right">
+<font NAME="sansserif" SIZE="12"/>
+</node>
+</node>
+</node>
+<node COLOR="#669900" TEXT="Fast switching between maps" POSITION="right">
+<font NAME="sansserif" SIZE="12"/>
+<node TEXT="With rightclick on the map, you can select from popup menu from already loaded maps" POSITION="right">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Searching" FOLDED="true">
+<node COLOR="#669900" TEXT="Searching" FOLDED="true" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="Popup &gt; Node &gt; Find">
 <font NAME="SansSerif" SIZE="12"/>
@@ -304,7 +304,7 @@
 </node>
 <node TEXT="The search is breadth-first search. That corresponds to the idea, that the deeper the node, the greater the detail described."/>
 </node>
-<node COLOR="#669900" TEXT="Using the keyboard" FOLDED="true">
+<node COLOR="#669900" TEXT="Using the keyboard" FOLDED="true" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="You can do most of the navigation using keyboard. You can see the keyboard shortcuts in the popup menu of the node. Some of the shortcuts which you do not see that way follow.">
 <font NAME="SansSerif" SIZE="12"/>
@@ -342,10 +342,10 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Keyboard while editing a long node" FOLDED="true">
+<node COLOR="#669900" TEXT="Keyboard while editing a long node" FOLDED="true" POSITION="right">
 <node TEXT="By default, *enter* finishes editing of a long node, and *control enter* enters a new line. By unchecking the check box &quot;Enter confirms&quot; you can reverse the function of the mentioned key combinations, i.e. *enter* enters new line and *control enter* finishes editing. You can set the default value of that check box in user.properties. Moreover the value of the box is saved during a session of FreeMind."/>
 </node>
-<node COLOR="#669900" TEXT="Exporting into HTML" FOLDED="true">
+<node COLOR="#669900" TEXT="Exporting into HTML" FOLDED="true" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="It is possible to export mind map or branch to HTML">
 <font NAME="sansserif" SIZE="12"/>
@@ -360,7 +360,7 @@
 </node>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Importing folder structure" FOLDED="true">
+<node COLOR="#669900" TEXT="Importing folder structure" FOLDED="true" POSITION="right">
 <font NAME="Default" SIZE="12"/>
 <node TEXT="To import folder structure into FreeMind, use Popup &gt; Branch &gt; Import folder structure. You will be asked for the folder whose structure you want to import. By structure we mean the tree of all, and not necessary direct, subfolders with the links to the files in these subfolders. An example of inserted structure follows."/>
 <node COLOR="#996600" TEXT="Example">
@@ -396,11 +396,11 @@
 </node>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Importing MS Internet Explorer favorites" FOLDED="true">
+<node COLOR="#669900" TEXT="Importing MS Internet Explorer favorites" FOLDED="true" POSITION="right">
 <font NAME="Default" SIZE="10"/>
 <node TEXT="To import MS Explorer favorites into FreeMind, use Popup &gt; Branch &gt; Import Explorer Favorites. You&apos;ll be asked to enter the path to the folder where the favorites are stored. The folder&apos;s name is &quot;Favorites&quot; and you can find on your disk. On Windows 2000, the path is C:\Documents and Settings\&lt;user&gt;\Favorites."/>
 </node>
-<node COLOR="#669900" TEXT="Integration with Microsoft tools like Word or Outlook" FOLDED="true">
+<node COLOR="#669900" TEXT="Integration with Microsoft tools like Word or Outlook" FOLDED="true" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="You can paste maps or branches into MS Work, MS Wordpad or MS Outlook messages. In general, you can paste it into any application that understands RTF - rich text format. The text formatting and links are pasted too.">
 <font NAME="sansserif" SIZE="12"/>
@@ -413,7 +413,7 @@
 </node>
 <node LINK="mailto:dan.polansky@seznam.cz?subject=Thank you for the FreeMind" TEXT="You can use subject in mail link"/>
 </node>
-<node COLOR="#669900" TEXT="Preferences" FOLDED="true">
+<node COLOR="#669900" TEXT="Preferences" FOLDED="true" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="Only a small subset of preferences is editable using graphical using interface; these you can change in menu: Edit &gt; Preferences. At the time, the following preferences can be changed:"/>
 <node TEXT="You can set full antialiasing or antialiasing of edges only. Antialiasing of edges is the default option.">
@@ -424,7 +424,7 @@
 </node>
 <node TEXT="&lt;html&gt;Other preferences can be changed by more technical users in user.properties, &lt;b&gt;which you have to copy into the folder freemind in your home folder&lt;/b&gt;.&lt;/html&gt;"/>
 </node>
-<node COLOR="#669900" TEXT="Printing" FOLDED="true">
+<node COLOR="#669900" TEXT="Printing" FOLDED="true" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="You can print either by fitting the whole map into one page, or by printing the map to several sheets of paper. This choice you can set in menu: File &gt; Page Setup &gt; ... ."/>
 <node TEXT="Choose page setup landscape. That way it looks better and you have a better utilization of space.">
@@ -435,7 +435,7 @@
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#006600" TEXT="Tips" FOLDED="true">
+<node COLOR="#006600" TEXT="Tips" FOLDED="true" POSITION="right">
 <font NAME="dialog" SIZE="15"/>
 <icon BUILTIN="knotify"/>
 <node COLOR="#669900" TEXT="Use anonymous nodes">
@@ -532,7 +532,7 @@
 <node TEXT="To be able to enter newlines in long nodes, uncheck the check box &quot;Enter confirms&quot; when editing the long node.&#xa;&#xa;You see?&#xa;&#xa;There are newlines here, make no mistake about it."/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Pictures and HTML in nodes" FOLDED="true">
+<node COLOR="#669900" TEXT="Pictures and HTML in nodes" FOLDED="true" POSITION="right">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="An easy way to insert pictures into FreeMind is with Popup &gt; Node &gt; Set Image. You lose all the text you had in the node. Be aware that those images are not correctly pasted outside FreeMind and they need not to be correctly exported to HTML. Pictures in FreeMind are preliminary feature."/>
 <node TEXT="This way, you can turn images contained into the links on nodes into the images themselves. As a result, you can drag and drop several image files into FreeMind, select them as multiple nodes, and them turn them into images in one step, i.e. by choosing Set Image."/>
@@ -581,22 +581,22 @@
 <node TEXT="&lt;html&gt;&#xa;There are several items:&#xa;&lt;ul&gt;&#xa;&lt;li&gt; Item one&#xa;&lt;li&gt; Item two&#xa;&lt;/ul&gt;&#xa;And we have &lt;b&gt;boldface&lt;/b&gt; or &lt;i&gt;italics&lt;/i&gt;. We can even have table:&#xa;&lt;table&gt;&#xa;&lt;tr&gt;&lt;td&gt;a&lt;td&gt;b&#xa;&lt;tr&gt;&lt;td&gt;-----------&lt;td&gt;.............&#xa;&lt;/table&gt;"/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Physical style - patterns" FOLDED="true">
+<node COLOR="#669900" TEXT="Physical style - patterns" FOLDED="true" POSITION="right">
 <node TEXT="There is a set of physical styles also called patterns. They are stored in the file &quot;patterns.xml&quot; located at the folder &quot;freemind&quot; in your home directory."/>
 <node TEXT="Application">
 <node TEXT="MenuBar &gt; Edit &gt; Physical Style &gt; .."/>
 </node>
 <node TEXT="You can create or change patterns by editing &quot;patterns.xml&quot;. Pattern applies to node, if there is a &lt;node&gt; tag, it applies to edge, if there is an &lt;edge&gt; tag. &lt;node&gt; tag can have &lt;font&gt; tag as a child. Study the file &quot;patterns.xml&quot; supplied with FreeMind."/>
 </node>
-<node COLOR="#669900" TEXT="Zoom" FOLDED="true">
-<node TEXT="It is possible to change the zoom from toolbar. It is possible to zoom in / out from Menubar &gt; Edit."/>
-<node TEXT="As of version 0.7.1 you can change the zoom holding the control button and move the mouse wheel."/>
+<node COLOR="#669900" TEXT="Zoom" FOLDED="true" POSITION="right">
+<node TEXT="It is possible to change the zoom from toolbar. It is possible to zoom in / out from Menubar &gt; Edit." POSITION="right"/>
+<node TEXT="As of version 0.7.0 you can change the zoom holding the control button and move the mouse wheel." POSITION="right"/>
 </node>
-<node COLOR="#669900" TEXT="File locking" FOLDED="true">
+<node COLOR="#669900" TEXT="File locking" FOLDED="true" POSITION="right">
 <node TEXT="Current version of FreeMind has experimental file locking, which is disabled by default. Current implementation does not really prevent race conditions, but it should be fine for the most of practical purposes. What does file locking mean? It makes sure that more users do not edit the same map at the same time, preventing them from incidentally overwriting the information from each other."/>
 <node TEXT="You can enable experimental file locking, if you are a technical user and are willing to edit user.properties, as described above."/>
 </node>
-<node COLOR="#669900" TEXT="Changes in user interface of recent version" FOLDED="true">
+<node COLOR="#669900" TEXT="Changes in user interface of recent version" FOLDED="true" POSITION="right">
 <node TEXT="Some of the key settings have been redefined so that they align themselves with what we consider shared standard or intuitive use. Some of the new key settings are modelled on Microsoft tools. New key settings include enter for creating of new siblings below the node, insert for creating new children, F2 for editing nodes - here the Microsoft influence is apparent while there is no intuitive reason to have F2 for node editing. But once you get used to it in all the applications you use, you want to have that one in FreeMind too of course.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -604,10 +604,10 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="To copy your selection to clipboard when you are editing a node, press right mouse button and choose copy">
+<node COLOR="#669900" TEXT="To copy your selection to clipboard when you are editing a node, press right mouse button and choose copy" POSITION="right">
 <font NAME="Default" SIZE="10"/>
 </node>
-<node COLOR="#338800" TEXT="Icons" FOLDED="true">
+<node COLOR="#338800" TEXT="Icons" FOLDED="true" POSITION="right">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node TEXT="There exist some predefined icons in the toolbar on the left hand side of the window.">
@@ -615,21 +615,24 @@
 </node>
 <node TEXT="You can remove this toolbar right clicking on the background of FreeMind"/>
 </node>
-<node COLOR="#338800" TEXT="Graphical links" FOLDED="true">
-<node TEXT="Mark a node and drag this node to another node holding both shift and control keys creates a graphical link between them."/>
-<node TEXT="You can edit some properties of this link using right click onto the line between them."/>
-<node TEXT="You may choose the color and the arrow positions."/>
-<node TEXT="Moreover you can go directly to the other node (even if its folded) using the right click on the small part of the graphical link."/>
-<node TEXT="Example" FOLDED="true">
-<node TEXT="Link to another part">
-<arrowlink STARTHASARROW="true" COLOR="#9999ff" DESTINATION="_1040405702" ENDHASARROW="true"/>
+<node COLOR="#338800" TEXT="Graphical links" FOLDED="true" POSITION="right">
+<node TEXT="Mark a node and drag this node to another node holding both shift and control keys creates a graphical link between them." POSITION="right"/>
+<node TEXT="You can edit some properties of this link using right click onto the line between them." POSITION="right"/>
+<node TEXT="You may choose the color and the arrow positions." POSITION="right"/>
+<node TEXT="Moreover you can go directly to the other node (even if its folded) using the right click on the small part of the graphical link." POSITION="right"/>
+<node TEXT="Example" POSITION="right">
+<node ID="_" TEXT="Link to another part" POSITION="right">
+<arrowlink COLOR="#9999ff" ENDARROW="Default" DESTINATION="_1040405702" STARTARROW="Default"/>
 </node>
-<node TEXT="Node with folded subnode" FOLDED="true">
+<node TEXT="Node with folded subnode" FOLDED="true" POSITION="right">
 <node ID="_1040405702" TEXT="Subnode"/>
 </node>
+<node TEXT="Another link" POSITION="right">
+<arrowlink ENDARROW="Default" DESTINATION="_" STARTARROW="None"/>
 </node>
 </node>
-<node COLOR="#338800" TEXT="Clouds" FOLDED="true">
+</node>
+<node COLOR="#338800" TEXT="Clouds" FOLDED="true" POSITION="right">
 <node TEXT="Clouds are well suited for highlighting a region."/>
 <node TEXT="Highlighted are the node and all its subnodes."/>
 <node TEXT="Clouds can have different background colors.">
@@ -637,15 +640,15 @@
 </node>
 </node>
 </node>
-<node COLOR="#006633" TEXT="Browsing mind maps" FOLDED="true">
+<node COLOR="#006633" TEXT="Browsing mind maps" FOLDED="true" POSITION="right">
 <node TEXT="You can browse the mind maps in browse mode. Why is there a separate mode for browsing? That&apos;s because browsing is the only thing you can do in FreeMind applet, which can be put to your website. Normally, you would not use browse mode in FreeMind."/>
 </node>
-<node COLOR="#006633" TEXT="Browsing the files on your computer" FOLDED="true">
+<node COLOR="#006633" TEXT="Browsing the files on your computer" FOLDED="true" POSITION="right">
 <node TEXT="You can browse the files on your computer using file mode. To enter file mode, in menu: Modes &gt; File."/>
 <node TEXT="You can then browse the file tree as if it was a mind map. You can make any folder the root of the map by chosing &quot;Center&quot; from the node menu. To view or execute a file, follow the link of the node."/>
 <node TEXT="The file mode is currently not very useful; it is a demonstration that it&apos;s not too difficult to feed data into the tree from other source than mind map. There is no evidence that people would really use this mode."/>
 </node>
-<node COLOR="#669900" TEXT="There is a concept of mode in FreeMind" FOLDED="true">
+<node COLOR="#669900" TEXT="There is a concept of mode in FreeMind" FOLDED="true" POSITION="right">
 <font NAME="SansSerif" SIZE="10"/>
 <node TEXT="Although Freemind is primarily a tool for editing Mind Maps, it is designed to be able to view data coming from different data sources.  To make a specific data source available for viewing in FreeMind, a programmer has to write a so called mode for that data source. In the standard, there is an example of such a mode, namely file mode. We do not know of any other modes implemented. It is not clear if anyone would really want to make use of this architecture, but it&apos;s here to be exploited if someone wants to.">
 <font NAME="sansserif" SIZE="12"/>
@@ -654,7 +657,7 @@
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#996600" TEXT="Demonstration of some features" FOLDED="true">
+<node COLOR="#996600" TEXT="Demonstration of some features" FOLDED="true" POSITION="right">
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#669900" TEXT="Appearance">
 <font NAME="sansserif" SIZE="12"/>
@@ -834,7 +837,7 @@
 <icon BUILTIN="back"/>
 </node>
 </node>
-<node COLOR="#006633" TEXT="Customizing FreeMind" FOLDED="true">
+<node COLOR="#006633" TEXT="Customizing FreeMind" FOLDED="true" POSITION="right">
 <node TEXT="Ideally, you don&apos;t need any customizing at all. But if you really want to customize FreeMind, copy the file &quot;user.properties&quot; to the folder &quot;freemind&quot; in your home directory and edit the properties in the text file using your favorite text editor, e.g. notepad, Vim or Emacs.">
 <font NAME="sansserif" SIZE="12"/>
 </node>
@@ -842,7 +845,7 @@
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#006699" TEXT="Answered questions" FOLDED="true">
+<node COLOR="#006699" TEXT="Answered questions" FOLDED="true" POSITION="right">
 <icon BUILTIN="help"/>
 <node COLOR="#669900" TEXT="To create multiline node, insert a new and press alt + enter">
 <font NAME="SansSerif" SIZE="10"/>
@@ -857,47 +860,47 @@
 </node>
 </node>
 </node>
-<node COLOR="#006633" TEXT="Installation of FreeMind applet at your web site" FOLDED="true">
+<node COLOR="#006633" TEXT="Installation of FreeMind applet at your web site" FOLDED="true" POSITION="right">
 <node COLOR="#000000" TEXT="You can install the applet at your website so that other users can browse your mind maps.">
 <font NAME="dialog" SIZE="12"/>
 </node>
 <node LINK="http://sourceforge.net/project/showfiles.php?group_id=7118" TEXT="Download the applet, that is freemind-browser."/>
 <node TEXT="The downloaded archive contains freemindbrowser.jar and freemindbrowser.html. Create a link from your page to freemindbrowser.html. Edit freemindbrowser.html, especially change the path inside so that it points to your mind map. Beware that the applet&apos;s jar file must be located at the same server as the map itself, this is for java security reasons. Of course, you have to upload the files to your web site."/>
 </node>
-<node COLOR="#006633" TEXT="Using the FreeMind applet" FOLDED="true">
+<node COLOR="#006633" TEXT="Using the FreeMind applet" FOLDED="true" POSITION="right">
 <font NAME="SansSerif" SIZE="12"/>
 <node TEXT="In applet, you can only use the browse mode, that is, you cannot edit the remote maps. Click the nodes to toggle the folding or follow the links. Drag the background to move the map. You can also search the map, using node popup menu.">
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
 </node>
-<node TEXT="   ">
+<node TEXT="   " POSITION="left">
 <font NAME="sansserif" SIZE="12"/>
-<node LINK="http://freemind.sourceforge.net" TEXT="Home page of FreeMind">
+<node LINK="http://freemind.sourceforge.net" TEXT="Home page of FreeMind" POSITION="left">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#006699" TEXT="Smaller contributors">
+<node COLOR="#006699" TEXT="Smaller contributors" POSITION="left">
 <font NAME="dialog" SIZE="12"/>
 </node>
-<node COLOR="#006699" TEXT="Authors">
+<node COLOR="#006699" TEXT="Authors" POSITION="left">
 <font NAME="dialog" SIZE="12"/>
-<node COLOR="#996600" TEXT="Joerg Mueller">
+<node COLOR="#996600" TEXT="Joerg Mueller" POSITION="left">
 <font NAME="SansSerif" SIZE="12"/>
-<node LINK="mailto:ponders@t-online.de" TEXT="ponders@t-online.de">
+<node LINK="mailto:ponders@t-online.de" TEXT="ponders@t-online.de" POSITION="left">
 <font NAME="sansserif" SIZE="12"/>
 </node>
-<node COLOR="#999999" TEXT="University of Freiburg, Germany">
+<node COLOR="#999999" TEXT="University of Freiburg, Germany" POSITION="left">
 <font NAME="Default" SIZE="10"/>
 </node>
 </node>
-<node LINK="http://mujweb.cz/www/danielpolansky" COLOR="#996600" TEXT="Daniel Polansky">
+<node LINK="http://mujweb.cz/www/danielpolansky" COLOR="#996600" TEXT="Daniel Polansky" POSITION="left">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#996600" TEXT="Petr Novak"/>
-<node TEXT="Christian Foltin">
+<node COLOR="#996600" TEXT="Petr Novak" POSITION="left"/>
+<node TEXT="Christian Foltin" POSITION="left">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
-<node LINK="mailto:christian.foltin@gmx.de" TEXT="christian.foltin@gmx.de"/>
+<node LINK="mailto:christian.foltin@gmx.de" TEXT="christian.foltin@gmx.de" POSITION="left"/>
 </node>
 </node>
 </node>

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.8 2003-12-07 21:00:20 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.9 2003-12-20 16:12:51 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -119,8 +119,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
                 // this string is tried only once:
                 myProposedID="";
             } else {
-                /* The under score is to enable the id to be an ID in the sense of XML/DTD.*/
-                returnValue = "_" + Integer.toString(ran.nextInt(2000000000));
+                /* The prefix is to enable the id to be an ID in the sense of XML/DTD.*/
+                returnValue = "Freemind_Link_" + Integer.toString(ran.nextInt(2000000000));
             }
         } while (IDToLinks.containsKey(returnValue));
         return returnValue;

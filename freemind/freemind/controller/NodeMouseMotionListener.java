@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.8 2003-12-07 21:00:18 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.9 2003-12-20 16:12:51 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -142,9 +142,9 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
       // OK, but Right mouse <i>press</i> <i>is</i> a popup trigger on Linux.
       c.getMode().getModeController().showPopupMenu(e);
       if (!e.isConsumed()) {
-        // unified selection (PN) %%% (unify with mouse enntered above!!!
-        c.getView().extendSelection((NodeView)e.getSource(), e);
-        e.consume();
+          // unified selection (PN) %%% (unify with mouse enntered above!!!
+          c.getView().extendSelection((NodeView)e.getSource(), e);
+          e.consume();
       }
     }
 
