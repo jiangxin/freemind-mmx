@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.11 2001-04-06 20:50:11 ponder Exp $*/
+/*$Id: NodeView.java,v 1.12 2001-05-05 13:58:46 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -32,6 +32,11 @@ import java.awt.Point;
 import java.awt.Font;
 import java.awt.Graphics;
 import javax.swing.JLabel;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetListener;
 
 /**
  * This class represents a single Node of a MindMap
@@ -75,7 +80,19 @@ public abstract class NodeView extends JLabel {
 	}
 	addMouseListener( map.getNodeMouseListener() );
 	addKeyListener( map.getNodeKeyListener() );
+	addDragListener( map.getNodeDragListener() );
+	addDropListener( map.getNodeDropListener() );
     }
+
+	void addDragListener(DragGestureListener dgl) {
+		DragSource dragSource = DragSource.getDefaultDragSource();
+		dragSource.createDefaultDragGestureRecognizer(
+			this, DnDConstants.ACTION_MOVE,dgl);
+	}
+
+	void addDropListener(DropTargetListener dtl) {
+		DropTarget dropTarget = new DropTarget(this,dtl);
+	}
 
     /**
      * Factory method which creates the right NodeView for the model.

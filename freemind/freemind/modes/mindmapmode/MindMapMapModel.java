@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.15 2001-04-19 16:20:38 ponder Exp $*/
+/*$Id: MindMapMapModel.java,v 1.16 2001-05-05 13:58:46 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -27,6 +27,7 @@ import java.awt.Font;
 import java.io.FileNotFoundException;
 import java.io.File;
 import java.io.StringWriter;
+import java.io.StringReader;
 import java.io.FileOutputStream;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
@@ -42,6 +43,13 @@ import freemind.main.XMLElement;
 //import org.apache.xerces.dom.DocumentImpl;
 //import org.apache.xml.serialize.OutputFormat;
 //import org.apache.xml.serialize.XMLSerializer;
+// Clipboard
+import freemind.modes.MindMapNode;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 
 public class MindMapMapModel extends MapAdapter {
 
@@ -386,5 +394,34 @@ public class MindMapMapModel extends MapAdapter {
 	root.load(rootElement);
 
 	return root;
+    }
+
+    //
+    // cut'n'paste
+    //
+    public Transferable cut(MindMapNode node) {
+		super.cut(node);
+		return copy(node);
+    }
+
+    public Transferable copy(MindMapNode node) {
+		XMLElement element = ((MindMapNodeModel)node).save();
+		StringSelection text = new StringSelection(element.toString());
+		return text;
+    }
+
+    public void paste(Transferable t, MindMapNode parent) {
+	try {
+		if (t != null && t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+		String text = (String)t.getTransferData(DataFlavor.stringFlavor);
+		XMLElement element = new XMLElement();
+		element.parseFromReader(new StringReader(text));
+		MindMapNodeModel node = new MindMapNodeModel(getFrame());
+		node.load(element);
+		paste(node,parent);
+		}
+	}
+	catch (UnsupportedFlavorException e) { e.printStackTrace(); }
+	catch (IOException e) { e.printStackTrace(); }
     }
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.12 2001-04-19 16:20:38 ponder Exp $*/
+/*$Id: MapView.java,v 1.13 2001-05-05 13:58:46 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -40,6 +40,8 @@ import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeModelEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DropTargetListener;
 
 
 /**
@@ -266,6 +268,14 @@ public class MapView extends JPanel implements Printable {
     NodeKeyListener getNodeKeyListener() {
   	return getController().getNodeKeyListener();
     }
+
+	DragGestureListener getNodeDragListener() {
+		return getController().getNodeDragListener();
+	}
+
+	DropTargetListener getNodeDropListener() {
+		return getController().getNodeDropListener();
+	}
 
     public NodeView getSelected() {
 	return (NodeView)selected.get(0);

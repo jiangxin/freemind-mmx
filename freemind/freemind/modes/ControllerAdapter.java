@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.19 2001-04-19 16:20:38 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.20 2001-05-05 13:58:46 ponder Exp $*/
 
 package freemind.modes;
 
@@ -65,6 +65,8 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.util.Iterator;
 import java.util.List;
+// For Clipboard
+import java.awt.datatransfer.Clipboard;
 
 /**
  * Derive from this class to implement the Controller for your mode. Overload the methods
@@ -75,7 +77,9 @@ public abstract class ControllerAdapter implements ModeController {
 
     Mode mode;
     private int noOfMaps = 0;//The number of currently open maps
-    private MindMapNode clipboard;
+//	private MindMapNode clipboard;
+//	private Clipboard clipboard = new Clipboard("principal");
+	private Clipboard clipboard;
 
     public Action cut = null;
     public Action paste = null;
@@ -93,6 +97,9 @@ public abstract class ControllerAdapter implements ModeController {
 		getFrame().getViewport(),
 		new FileOpener()
 	);
+
+	clipboard = getFrame().getViewport().getToolkit().getSystemClipboard();
+
     }
 
     //
@@ -747,10 +754,10 @@ public abstract class ControllerAdapter implements ModeController {
 	}
 	public void actionPerformed(ActionEvent e) {
 	    if(getController().getMapModule() != null) {
-		MindMapNode node = getView().getSelected().getModel();
-		if (node.isRoot()) return;
-		paste.setEnabled(true);
-		clipboard = getModel().cut(node);
+			MindMapNode node = getView().getSelected().getModel();
+			if (node.isRoot()) return;
+			clipboard.setContents(getModel().cut(node),null);
+			paste.setEnabled(true);
 	    }
 	}
     }
@@ -763,7 +770,7 @@ public abstract class ControllerAdapter implements ModeController {
 	public void actionPerformed(ActionEvent e) {
 	    setEnabled(false);
 	    if(clipboard != null) {
-		getModel().paste(clipboard, getView().getSelected().getModel());
+		getModel().paste(clipboard.getContents(this), getView().getSelected().getModel());
 	    }
 	}
     }

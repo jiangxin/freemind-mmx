@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.21 2001-04-22 15:02:50 ponder Exp $*/
+/*$Id: Controller.java,v 1.22 2001-05-05 13:58:46 ponder Exp $*/
 
 package freemind.controller;
 
@@ -76,6 +76,8 @@ public class Controller {
     private JPopupMenu popupmenu;
     private NodeMouseListener nodeMouseListener;
     private NodeKeyListener nodeKeyListener;
+    private NodeDragListener nodeDragListener;
+    private NodeDropListener nodeDropListener;
     private ModesCreator modescreator = new ModesCreator(this);
     private PageFormat pageFormat = PrinterJob.getPrinterJob().defaultPage();
     private Icon bswatch = new BackgroundSwatch();//needed for BackgroundAction
@@ -105,13 +107,15 @@ public class Controller {
 
   	nodeMouseListener = new NodeMouseListener(this);
 	nodeKeyListener = new NodeKeyListener(this);
+	nodeDragListener = new NodeDragListener(this);
+	nodeDropListener = new NodeDropListener(this);
 
 	close = new CloseAction(this);
 	print = new PrintAction(this,true);
 	printDirect = new PrintAction(this,false);
 	page = new PageAction(this);
 	quit = new QuitAction(this);
-	background = new BackgroundAction(this);
+	background = new BackgroundAction(this,bswatch);
 	about = new AboutAction(this);
 	documentation = new DocumentationAction(this);
 	license = new LicenseAction(this);
@@ -238,6 +242,14 @@ public class Controller {
 
     public NodeMouseListener getNodeMouseListener() {
 	return nodeMouseListener;
+    }
+
+    public NodeDragListener getNodeDragListener() {
+	return nodeDragListener;
+    }
+
+    public NodeDropListener getNodeDropListener() {
+	return nodeDropListener;
     }
 
     public void setFrame(FreeMindMain frame) {
@@ -746,10 +758,8 @@ public class Controller {
 	}
 
     private class BackgroundAction extends AbstractAction {
-	BackgroundAction(Controller controller) {
-	    super(controller.getFrame().getResources().getString("background"),
-		  bswatch
-		  );
+	BackgroundAction(Controller controller, Icon icon) {
+	    super(controller.getFrame().getResources().getString("background"),icon);
 	}
 	public void actionPerformed(ActionEvent e) {
 	    Color color = JColorChooser.showDialog(getView(),"Choose Background Color:",getView().getBackground() );

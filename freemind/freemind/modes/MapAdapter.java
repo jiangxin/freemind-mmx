@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.8 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: MapAdapter.java,v 1.9 2001-05-05 13:58:46 ponder Exp $*/
 
 package freemind.modes;
 
@@ -33,6 +33,8 @@ import javax.swing.tree.TreePath;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.EventListenerList;
+// Clipboard
+import java.awt.datatransfer.Transferable;
 
 
 public abstract class MapAdapter implements MindMap {
@@ -142,9 +144,20 @@ public abstract class MapAdapter implements MindMap {
     //
     // cut'n'paste
     //
-    public MindMapNode cut(MindMapNode node) {
+    public Transferable cut(MindMapNode node) {
 	removeNodeFromParent(node);
-	return node;
+	return null;
+    }
+
+    public Transferable copy(MindMapNode node) {
+	return null;
+    }
+
+    public void paste(Transferable t, MindMapNode parent) {
+	if (t != null) {
+//	    insertNodeInto(node,parent,0);
+	    nodeStructureChanged(parent);
+	}
     }
 
     public void paste(MindMapNode node, MindMapNode parent) {
@@ -153,7 +166,6 @@ public abstract class MapAdapter implements MindMap {
 	    nodeStructureChanged(parent);
 	}
     }
-
 
     /**
      * Use this method to add children because it will cause the appropriate event.

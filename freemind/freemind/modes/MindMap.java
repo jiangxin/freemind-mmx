@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.5 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: MindMap.java,v 1.6 2001-05-05 13:58:46 ponder Exp $*/
 
 package freemind.modes;
 
@@ -26,12 +26,18 @@ import java.awt.Color;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.MutableTreeNode;
+// Clipboard
+import java.awt.datatransfer.Transferable;
 
 public interface MindMap extends TreeModel {
         
     void changeNode(MindMapNode node, String newText);
 
-    MindMapNode cut(MindMapNode node);
+    Transferable cut(MindMapNode node);
+
+    Transferable copy(MindMapNode node);
+
+    void paste(Transferable t, MindMapNode parent);
 
     void paste(MindMapNode node, MindMapNode parent);
 
