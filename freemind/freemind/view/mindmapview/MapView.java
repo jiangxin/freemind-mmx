@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30 2004-01-25 16:41:26 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.12.1 2004-08-27 20:57:02 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -985,3 +985,4 @@ public class MapView extends JPanel implements Printable {
         this.siblingMaxLevel = level;
     }
 }
+
