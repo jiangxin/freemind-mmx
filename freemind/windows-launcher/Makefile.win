@@ -1,0 +1,22 @@
+# Project: Freemind
+# Makefile created by Dev-C++ 4.9.1.0
+
+CC   = g++.exe
+WINDRES = windres.exe
+OBJ  = "freemind.o"  "Icon1.o"
+LIBS =  -L"C:\Dev-C++\lib" 
+INCS =  -I"C:\Dev-C++\include"  -I"C:\Dev-C++\include\g++-3"  -I"C:\Dev-C++\include" 
+BIN  = "C:\share\My-Installation-Files\freemind-src-0_4\windows-launcher\Freemind.exe"
+CFLAGS = $(INCS)  -s -mwindows
+
+clean :
+	cmd /C del $(OBJ) $(BIN)
+
+all : $(OBJ)
+	$(CC) $(OBJ) -o $(BIN) $(RES) $(LIBS) $(CFLAGS)
+
+"freemind.o" :
+	$(CC) -c "freemind.c" $(CFLAGS)
+
+"Icon1.o" :
+	$(WINDRES) -i "Icon1.rc" -I rc -o "Icon1.o"
