@@ -16,14 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapCloud.java,v 1.1 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: MindMapCloud.java,v 1.1.12.1 2004-10-17 21:22:55 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import freemind.modes.MindMapLine;
-import freemind.modes.MindMapNode;
 import java.awt.Color;
-import java.awt.Stroke;
+
+import freemind.main.XMLElement;
 
 public interface MindMapCloud extends MindMapLine {
 
@@ -34,4 +33,5 @@ public interface MindMapCloud extends MindMapLine {
 //     public String toString();
     /** Describes the color of the exterior of the cloud. Normally, this color is derived from the interior color. */
     public Color getExteriorColor();
+    public XMLElement save();
 }

@@ -16,13 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapArrowLink.java,v 1.2 2003-12-07 21:00:20 christianfoltin Exp $*/
+/*$Id: MindMapArrowLink.java,v 1.2.12.1 2004-10-17 21:22:55 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import freemind.modes.MindMapLink;
-import freemind.modes.MindMapNode;
 import java.awt.Point;
+
+import freemind.main.XMLElement;
 
 public interface MindMapArrowLink extends MindMapLink {
 
@@ -41,5 +41,6 @@ public interface MindMapArrowLink extends MindMapLink {
     public String getStartArrow(); 
     /** the type of the end arrow: currently "None" and "Default". */
     public String getEndArrow();
+    public XMLElement save();
 
 }

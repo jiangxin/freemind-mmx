@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapArrowLinkModel.java,v 1.5.12.1 2004-10-08 21:34:36 christianfoltin Exp $*/
+/*$Id: MindMapArrowLinkModel.java,v 1.5.12.2 2004-10-17 21:22:55 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -37,38 +37,6 @@ public class MindMapArrowLinkModel extends ArrowLinkAdapter {
     /* maybe this method is wrong here, but ...*/
     public Object clone() {
         return super.clone();
-    }
-
-    public XMLElement save() {
-	    XMLElement arrowLink = new XMLElement();
-	    arrowLink.setName("arrowlink");
-
-	    if (style != null) {
-            arrowLink.setAttribute("style",style);
-	    }
-	    if (getUniqueID() != null) {
-            arrowLink.setAttribute("ID",getUniqueID());
-	    }
-	    if (color != null) {
-            arrowLink.setAttribute("color",Tools.colorToXml(color));
-	    }
-        if(getDestinationLabel() != null) {
-            arrowLink.setAttribute("destination",getDestinationLabel());
-        }
-        if(getReferenceText() != null) {
-            arrowLink.setAttribute("referenceText",getReferenceText());
-        }
-        if(getStartInclination() != null) {
-            arrowLink.setAttribute("startInclination",getStartInclination().toString());
-        }
-        if(getEndInclination() != null) {
-            arrowLink.setAttribute("endInclination",getEndInclination().toString());
-        }
-        if(getStartArrow() != null)
-            arrowLink.setAttribute("startArrow",(getStartArrow()));
-        if(getEndArrow() != null)
-            arrowLink.setAttribute("endArrow",(getEndArrow()));
-	    return arrowLink;
     }
 
     public String toString() { return "Source="+getSource()+", target="+getTarget()+", "+save().toString(); }

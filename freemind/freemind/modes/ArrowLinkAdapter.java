@@ -16,11 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkAdapter.java,v 1.4 2003-12-07 21:00:19 christianfoltin Exp $*/
+/*$Id: ArrowLinkAdapter.java,v 1.4.12.1 2004-10-17 21:22:54 christianfoltin Exp $*/
 
 package freemind.modes;
 import freemind.modes.LinkAdapter;
 import freemind.main.FreeMindMain;
+import freemind.main.Tools;
+import freemind.main.XMLElement;
 
 import java.awt.Point;
 
@@ -77,6 +79,38 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements MindMapArr
         arrowLink.endInclination = (endInclination==null)?null:new Point(endInclination.x, endInclination.y);
         arrowLink.startArrow = (startArrow==null)?null:new String(startArrow);
         arrowLink.endArrow = (endArrow==null)?null:new String(endArrow);
+        return arrowLink;
+    }
+
+    public XMLElement save() {
+        XMLElement arrowLink = new XMLElement();
+        arrowLink.setName("arrowlink");
+    
+        if (style != null) {
+            arrowLink.setAttribute("STYLE",style);
+        }
+        if (getUniqueID() != null) {
+            arrowLink.setAttribute("ID",getUniqueID());
+        }
+        if (color != null) {
+            arrowLink.setAttribute("COLOR",Tools.colorToXml(color));
+        }
+        if(getDestinationLabel() != null) {
+            arrowLink.setAttribute("DESTINATION",getDestinationLabel());
+        }
+        if(getReferenceText() != null) {
+            arrowLink.setAttribute("REFERENCETEXT",getReferenceText());
+        }
+        if(getStartInclination() != null) {
+            arrowLink.setAttribute("STARTINCLINATION",getStartInclination().toString());
+        }
+        if(getEndInclination() != null) {
+            arrowLink.setAttribute("ENDINCLINATION",getEndInclination().toString());
+        }
+        if(getStartArrow() != null)
+            arrowLink.setAttribute("STARTARROW",(getStartArrow()));
+        if(getEndArrow() != null)
+            arrowLink.setAttribute("ENDARROW",(getEndArrow()));
         return arrowLink;
     }
 

@@ -8,5 +8,20 @@
 		class_name="accessories.plugins.ExportWithXSLT">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/file/export/exportXslt"/>
+		<plugin_property name="file_type" value="user"/>
+	</plugin_action>
+	<plugin_action 
+		name="Export to XHTML (JavaScript version)" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="accessories/plugins/ExportWithXSLT_HTML.properties" 
+		class_name="accessories.plugins.ExportWithXSLT">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/file/export/html/exportHTML_II"/>
+		<plugin_property name="file_type" value="html"/>
+		<plugin_property name="file_description" value="Webside"/>
+		<plugin_property name="xslt_file" value="accessories/toxhtml.xsl"/>
+		<plugin_property name="create_dir" value="true"/>
+		<plugin_property name="files_to_copy" value="marktree.js,minus.png,plus.png,treestyles.css"/>
+		<plugin_property name="file_prefix" value="accessories/"/>
 	</plugin_action>
 </plugin>

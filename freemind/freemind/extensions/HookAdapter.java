@@ -6,6 +6,7 @@
  */
 package freemind.extensions;
 
+import java.net.URL;
 import java.util.Properties;
 
 import freemind.modes.ControllerAdapter;
@@ -93,6 +94,10 @@ public class HookAdapter implements MindMapHook {
 	 */
 	public String getResourceString(String property) {
 		return properties.getProperty(property);
+	}
+	
+	public URL getResource(String resourceName) {
+	    return this.getClass().getClassLoader().getResource(resourceName);
 	}
 
 }

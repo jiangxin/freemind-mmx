@@ -16,13 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapEdge.java,v 1.9 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: MindMapEdge.java,v 1.9.12.1 2004-10-17 21:22:55 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import freemind.modes.MindMapLine;
-import java.awt.Color;
-import java.awt.Stroke;
+import freemind.main.XMLElement;
 
 public interface MindMapEdge extends MindMapLine {
 
@@ -32,4 +30,5 @@ public interface MindMapEdge extends MindMapLine {
 //     public int getWidth();
 //     public String toString();
 //     public void setTarget(MindMapNode node);
+    public XMLElement save();
 }

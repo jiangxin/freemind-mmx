@@ -6,16 +6,6 @@
  */
 package freemind.extensions;
 
-import java.awt.image.RenderedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import javax.imageio.ImageIO;
-import javax.swing.JMenu;
-
-import freemind.modes.MindMap;
-import freemind.modes.ControllerAdapter;
-import freemind.modes.ModeController;
 
 /**
  * @author foltin

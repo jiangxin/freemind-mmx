@@ -16,12 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeAdapter.java,v 1.14.12.1 2004-10-05 22:23:57 christianfoltin Exp $*/
+/*$Id: EdgeAdapter.java,v 1.14.12.2 2004-10-17 21:22:54 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.main.XMLElement;
+
 import java.awt.Color;
 import java.awt.Stroke;
 import java.awt.BasicStroke;
@@ -106,5 +108,27 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
 
     private MindMapNode getSource() {
         return target.getParentNode();
+    }
+
+    public XMLElement save() {
+    if (style!=null || color!=null || width!=WIDTH_PARENT) {
+        XMLElement edge = new XMLElement();
+        edge.setName("edge");
+    
+        if (style != null) {
+    	edge.setAttribute("STYLE",style);
+        }
+        if (color != null) {
+    	edge.setAttribute("COLOR",Tools.colorToXml(color));
+        }
+        if (width != WIDTH_PARENT) {
+    	    if (width == WIDTH_THIN)
+    			edge.setAttribute("WIDTH","thin");
+    		else
+    			edge.setAttribute("WIDTH",Integer.toString(width));
+        }
+        return edge;
+    }
+    return null;
     }
 }

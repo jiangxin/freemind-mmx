@@ -16,21 +16,33 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.12.14 2004-10-17 13:01:08 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.12.15 2004-10-17 21:22:55 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import freemind.extensions.*;
-import freemind.main.FreeMindMain;
-import freemind.main.Tools;
-import freemind.view.mindmapview.NodeView;
-import java.util.*;
 import java.awt.Color;
 import java.awt.Font;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreePath;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Vector;
+
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+
+import freemind.extensions.NodeHook;
+import freemind.extensions.PermanentNodeHook;
+import freemind.main.FreeMindMain;
+import freemind.main.Tools;
+import freemind.main.XMLElement;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * This class represents a single Node of a Tree. It contains direct handles 
@@ -620,5 +632,103 @@ public abstract class NodeAdapter implements MindMapNode {
 	public String getObjectId(ModeController controller) {
 	    return controller.getNodeID(this);
 	}
+
+    public void save(Writer writer, MindMapLinkRegistry registry) throws IOException {
+    	XMLElement node = new XMLElement();
+    	node.setName("node");
+    
+    	node.setAttribute("TEXT",this.toString());
+    
+    	//	((MindMapEdgeModel)getEdge()).save(doc,node);
+    
+    	XMLElement edge = (getEdge()).save();
+    	if (edge != null) {
+               node.addChild(edge); }
+    
+        if(getCloud() != null) {
+            XMLElement cloud = (getCloud()).save();
+            node.addChild(cloud); 
+        }
+    
+        Vector linkVector = registry.getAllLinksFromMe(this); /* Puh... */
+        for(int i = 0; i < linkVector.size(); ++i) {
+            if(linkVector.get(i) instanceof ArrowLinkAdapter) {
+                XMLElement arrowLinkElement = ((ArrowLinkAdapter) linkVector.get(i)).save();
+                node.addChild(arrowLinkElement);
+            }
+        }
+            
+    	if (isFolded()) {
+               node.setAttribute("FOLDED","true"); }
+    	
+        // fc, 17.12.2003: Remove the left/right bug.
+        //                       VVV  save if and only if parent is root.
+    	if ((isLeft()!= null) && !(isRoot()) && (getParentNode().isRoot())) {
+            node.setAttribute("POSITION",(isLeft().getValue())?"left":"right"); 
+        }
+    	
+        String label = registry.getLabel(this); /* Puh... */
+    	if (label!=null) {
+               node.setAttribute("ID",label); }
+    	
+    	if (color != null) {
+               node.setAttribute("COLOR", Tools.colorToXml(getColor())); }
+    
+    	// new background color.
+    	if (getBackgroundColor() != null) {
+    		   node.setAttribute("BACKGROUND_COLOR", Tools.colorToXml(getBackgroundColor())); }
+    
+    
+    	if (style != null) {
+               node.setAttribute("STYLE", this.getStyle()); }
+    	    //  ^ Here cannot be just getStyle() without super. This is because
+    	    //  getStyle's style depends on folded / unfolded. For example, when
+    	    //  real style is fork and node is folded, getStyle returns
+    	    //  MindMapNode.STYLE_BUBBLE, which is not what we want to save.
+    
+    	//link
+    	if (getLink() != null) {
+               node.setAttribute("LINK", getLink()); }
+    
+    	//font
+    	if (font!=null) {
+    	    XMLElement fontElement = new XMLElement();
+    	    fontElement.setName("font");
+    
+    	    if (font != null) {
+                   fontElement.setAttribute("NAME",font.getFamily()); }
+    	    if (font.getSize() != 0) {
+                   fontElement.setAttribute("SIZE",Integer.toString(font.getSize())); }
+    	    if (isBold()) {
+                   fontElement.setAttribute("BOLD","true"); }
+    	    if (isItalic()) {
+                   fontElement.setAttribute("ITALIC","true"); }
+    	    if (isUnderlined()) {
+                   fontElement.setAttribute("UNDERLINE","true"); }
+    	    node.addChild(fontElement); }
+        for(int i = 0; i < getIcons().size(); ++i) {
+    	    XMLElement iconElement = new XMLElement();
+    	    iconElement.setName("icon");
+            iconElement.setAttribute("BUILTIN", ((MindIcon) getIcons().get(i)).getName());
+            node.addChild(iconElement);
+        }
+    
+    	for(Iterator i = getActivatedHooks().iterator(); i.hasNext();) {
+    		XMLElement hookElement = new XMLElement();
+    		hookElement.setName("hook");
+    		((PermanentNodeHook) i.next()).save(hookElement);
+    		node.addChild(hookElement);
+    	}
+            
+    
+            if (childrenUnfolded().hasNext()) {
+               node.writeWithoutClosingTag(writer);
+               //recursive
+               for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
+                  NodeAdapter child = (NodeAdapter)e.next();
+                  child.save(writer, registry); }
+               node.writeClosingTag(writer); }
+            else {
+               node.write(writer); }}
 
 }

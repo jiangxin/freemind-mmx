@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.10.17 2004-10-09 22:11:32 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.10.18 2004-10-17 21:22:55 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -409,7 +409,7 @@ public class MindMapMapModel extends MapAdapter  {
             BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
             fileout.write("<map version=\""+getFrame().getFreemindVersion()+"\">\n");
             fileout.write("<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->\n");
-            ((MindMapNodeModel)getRoot()).save(fileout, this);
+            ((MindMapNodeModel)getRoot()).save(fileout, this.getLinkRegistry());
             fileout.write("</map>\n");
             fileout.close();
 
@@ -515,7 +515,7 @@ public class MindMapMapModel extends MapAdapter  {
     public Transferable copy(MindMapNode node) {
        StringWriter stringWriter = new StringWriter();
        try {
-          ((MindMapNodeModel)node).save(stringWriter, this); }
+          ((MindMapNodeModel)node).save(stringWriter, this.getLinkRegistry()); }
        catch (IOException e) {}
        return new MindMapNodesSelection(stringWriter.toString(), null, null, null, null, null); }
 
