@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapMouseMotionListener.java,v 1.6 2003-11-09 22:09:25 christianfoltin Exp $*/
+/*$Id: MapMouseMotionListener.java,v 1.7 2003-12-02 22:50:22 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -45,14 +45,15 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
 
     private void handlePopup( MouseEvent e) {
        if (e.isPopupTrigger()) {
-           JPopupMenu popup;
+           JPopupMenu popup = null;
            // detect collision with an element placed on the root pane of the window.
            java.lang.Object obj = c.getView().detectCollision(e.getPoint());
            if(obj != null) {
                // there is a collision with object obj.
                // call the modecontroller to give a popup menu for this object
                popup = c.getMode().getModeController().getPopupForModel(obj);
-           } else {
+           } 
+           if(popup == null) { // no context popup found:
                // normal popup:
                popup = c.getFrame().getFreeMindMenuBar().getMapsPopupMenu();
            }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.11 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.12 2003-12-02 22:50:22 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -31,6 +31,9 @@ import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
+
+import java.util.HashSet;
+import java.util.Vector;
 
 import freemind.main.Tools;
 import freemind.modes.ControllerAdapter;
@@ -108,6 +111,38 @@ public class BrowseController extends ControllerAdapter {
     public JPopupMenu getPopupMenu() {
 	return popupmenu;
     }
+
+    /** Link implementation: If this is a link, we want to make a popup with at least removelink available.*/
+    public JPopupMenu getPopupForModel(java.lang.Object obj) {
+        if( obj instanceof BrowseArrowLinkModel) {
+            // yes, this is a link.
+            BrowseArrowLinkModel link = (BrowseArrowLinkModel) obj;
+            JPopupMenu arrowLinkPopup = new JPopupMenu();
+
+            arrowLinkPopup.add(new GotoLinkNodeAction(link.getSource().toString(), link.getSource())); 
+            arrowLinkPopup.add(new GotoLinkNodeAction(link.getTarget().toString(), link.getTarget())); 
+
+            arrowLinkPopup.addSeparator();
+            // add all links from target and from source:
+            HashSet NodeAlreadyVisited = new HashSet();
+            NodeAlreadyVisited.add(link.getSource());
+            NodeAlreadyVisited.add(link.getTarget());
+            Vector links = getModel().getLinkRegistry().getAllLinks(link.getSource());
+            links.addAll(getModel().getLinkRegistry().getAllLinks(link.getTarget()));
+            for(int i = 0; i < links.size(); ++i) {
+                BrowseArrowLinkModel foreign_link = (BrowseArrowLinkModel) links.get(i);
+                if(NodeAlreadyVisited.add(foreign_link.getTarget())) {
+                    arrowLinkPopup.add(new GotoLinkNodeAction(foreign_link.getTarget().toString(), foreign_link.getTarget())); 
+                }
+                if(NodeAlreadyVisited.add(foreign_link.getSource())) {
+                    arrowLinkPopup.add(new GotoLinkNodeAction(foreign_link.getSource().toString(), foreign_link.getSource())); 
+                }
+            }
+            return arrowLinkPopup;
+        }
+        return null;
+    }
+
 
     //convenience methods
     private BrowseMapModel getModel() {

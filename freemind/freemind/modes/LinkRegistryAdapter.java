@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.6 2003-11-29 17:12:33 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.7 2003-12-02 22:50:22 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -221,12 +221,11 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         Vector vec = getAssignedLinksVector(state);
         // already present?
         for(int i = 0 ; i < vec.size(); ++i) {
-            if(vec.get(i) == source)
+            if(vec.get(i) == link)
                 return;
         }
         vec.add(link);
         logger.info("Register link ("+link+") from source node:"+source+" to target " + target);
-
     };
 
         

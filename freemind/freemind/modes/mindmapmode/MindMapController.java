@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.31 2003-11-30 12:15:49 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.32 2003-12-02 22:50:22 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -838,27 +838,6 @@ public class MindMapController extends ControllerAdapter {
         }
     }
     
-    protected class GotoLinkNodeAction extends AbstractAction {
-        MindMapNode source;
-        public GotoLinkNodeAction(String text, MindMapNode source) {
-            super("", new ImageIcon(getResource("images/Link.png")));
-            // only display a reasonable part of the string. the rest is available via the short description (tooltip).
-            String adaptedText = new String(text);
-            adaptedText = adaptedText.replaceAll("<html>", "");
-            if(adaptedText.length() > 40)
-                adaptedText = adaptedText.substring(0,40) + " ...";
-            putValue(Action.NAME, getText("follow_link") + adaptedText );
-            putValue(Action.SHORT_DESCRIPTION, text);
-            this.source = source;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            getMap().displayNode(source, null);
-        }
-    }
-
-
-
     // NodeGeneralAction
     // __________________
 

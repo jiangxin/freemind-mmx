@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMode.java,v 1.7 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: BrowseMode.java,v 1.8 2003-12-02 22:50:22 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -54,13 +54,15 @@ public class BrowseMode implements Mode {
 
         String map = getController().getFrame().getProperty("browsemode_initial_map");
         if (map != null && map.startsWith("."))  {
-            // old:
-            //map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
             /* new handling for relative urls. fc, 29.10.2003.*/
             try {
-                FreeMindApplet applet = (FreeMindApplet) getController().getFrame();
-                URL documentBaseUrl = new URL( applet.getDocumentBase(), map);
-                map = documentBaseUrl.toString();
+                if(getController().getFrame() instanceof FreeMindApplet) {
+                    FreeMindApplet applet = (FreeMindApplet) getController().getFrame();
+                    URL documentBaseUrl = new URL( applet.getDocumentBase(), map);
+                    map = documentBaseUrl.toString();
+                } else {
+                    map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
+                }
             }  catch (java.net.MalformedURLException e) { 
                 getController().errorMessage("Could not open relative URL "+map+". It is malformed.");
                 System.err.println(e);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMapModel.java,v 1.8 2003-11-03 11:00:13 sviles Exp $*/
+/*$Id: BrowseMapModel.java,v 1.9 2003-12-02 22:50:22 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -28,27 +28,41 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessControlException;
 
+
+// link registry.
+import freemind.modes.LinkRegistryAdapter;
+import freemind.modes.MindMapLinkRegistry;
+
+
 public class BrowseMapModel extends MapAdapter {
 
     private URL url;
+    private LinkRegistryAdapter linkRegistry;
 
     //
     // Constructors
     //
-
     public BrowseMapModel(FreeMindMain frame) {
-	super(frame);
-	setRoot(new BrowseNodeModel(getFrame().getResources().getString("new_mindmap"), getFrame()));
+        this(null, frame);
     }
-    
+
     public BrowseMapModel( BrowseNodeModel root, FreeMindMain frame ) {
-	super(frame);
-	setRoot(root);
+        super(frame);
+        if(root != null)
+            setRoot(root);
+        else
+           setRoot(new BrowseNodeModel(getFrame().getResources().getString("new_mindmap"), getFrame())); 
+        // register new LinkRegistryAdapter
+        linkRegistry = new LinkRegistryAdapter();
     }
 
     //
     // Other methods
     //
+    public MindMapLinkRegistry getLinkRegistry() {
+        return linkRegistry;
+    }
+
     public String toString() {
 	if (getURL() == null) {
 	    return null;
@@ -131,7 +145,9 @@ public class BrowseMapModel extends MapAdapter {
 	    System.err.println(ex);
 	    return null;
 	}
-        root = mapElement.getMapChild();
+    // complete the arrow links:
+    mapElement.processUnfinishedLinks(getLinkRegistry());
+    root = (BrowseNodeModel) mapElement.getMapChild();
 	return root;
     }
 }

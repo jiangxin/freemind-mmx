@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.25 2003-11-30 08:33:23 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.26 2003-12-02 22:50:23 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -604,6 +604,9 @@ public class MapView extends JPanel implements Printable {
 
     /** collect all existing labels in the current map.*/
     protected void collectLabels(NodeView source, HashMap labels) {
+        // check for existing registry:
+        if(getModel().getLinkRegistry()==null)
+            return;
         // apply own label:
         String label = getModel().getLinkRegistry().getLabel(source.getModel());
         if(label != null) 
@@ -615,6 +618,9 @@ public class MapView extends JPanel implements Printable {
     }
 
     protected void paintLinks(NodeView source, Graphics2D graphics, HashMap labels, HashSet /* MindMapLink s*/ LinkAlreadyVisited) {
+        // check for existing registry:
+        if(getModel().getLinkRegistry()==null)
+            return;
         if(LinkAlreadyVisited == null)
             LinkAlreadyVisited = new HashSet();
         // references first

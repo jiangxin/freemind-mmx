@@ -16,7 +16,57 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseXMLElement.java,v 1.4 2003-11-03 11:00:13 sviles Exp $*/
+/*$Id: BrowseXMLElement.java,v 1.5 2003-12-02 22:50:22 christianfoltin Exp $*/
+
+
+package freemind.modes.browsemode;
+
+import freemind.main.XMLElement;
+import freemind.main.FreeMindMain;
+import freemind.main.Tools;
+import freemind.modes.NodeAdapter;
+import freemind.modes.EdgeAdapter;
+import freemind.modes.CloudAdapter;
+import freemind.modes.ArrowLinkAdapter;
+import freemind.modes.MindIcon;
+import freemind.modes.XMLElementAdapter;
+import freemind.modes.browsemode.BrowseEdgeModel;
+import freemind.modes.browsemode.BrowseCloudModel;
+
+import java.awt.Font;
+import java.util.Vector;
+import java.util.HashMap;
+
+public class BrowseXMLElement extends XMLElementAdapter {
+
+   public BrowseXMLElement(FreeMindMain frame) {
+       super(frame);
+   }
+
+    protected BrowseXMLElement(FreeMindMain frame, Vector ArrowLinkAdapters, HashMap IDToTarget) {
+        super(frame, ArrowLinkAdapters, IDToTarget);
+    }
+
+    /** abstract method to create elements of my type (factory).*/
+    protected XMLElement  createAnotherElement(){
+    // We do not need to initialize the things of XMLElement.
+        return new BrowseXMLElement(getFrame(), ArrowLinkAdapters, IDToTarget);
+    }
+    protected NodeAdapter createNodeAdapter(FreeMindMain     frame){
+        return new BrowseNodeModel(frame);
+    }
+    protected EdgeAdapter createEdgeAdapter(NodeAdapter node, FreeMindMain frame){
+        return new BrowseEdgeModel(node, frame); 
+    }
+    protected CloudAdapter createCloudAdapter(NodeAdapter node, FreeMindMain frame){
+        return new BrowseCloudModel(node, frame); 
+    }
+    protected ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter source, NodeAdapter target, FreeMindMain frame) {
+        return new BrowseArrowLinkModel(source,target,frame);
+    }
+
+}
+
 
 /*On doubling of code
  *
@@ -25,138 +75,128 @@
  *MindMapMode and BrowseMode with no reasonable common ground.
  *I am not going to fix it now, it does no great harm anyway.
  */
-
-package freemind.modes.browsemode;
-
-import freemind.main.XMLElement;
-import freemind.main.FreeMindMain;
-import freemind.main.Tools;
-import freemind.modes.MindIcon;
-
-import java.awt.Font;
-
-public class BrowseXMLElement extends XMLElement {
-
-   private Object           userObject = null;
-   private FreeMindMain     frame;
-   private BrowseNodeModel mapChild   = null;
-
-   //   Font attributes
-
-   private String fontName; 
-   private int    fontStyle = 0;
-   private int    fontSize = 0;
-
-   //   Icon attributes
-
-   private String iconName; 
-
-   //   Overhead methods
-
-   public BrowseXMLElement(FreeMindMain frame) {
-      this.frame = frame; }
-
-   protected XMLElement createAnotherElement() {
-      // We do not need to initialize the things of XMLElement.
-      return new BrowseXMLElement(frame); }
-
-   public Object getUserObject() {
-      return userObject; }
-
-   public BrowseNodeModel getMapChild() {
-      return mapChild; }
-
-   //   Real parsing methods
-
-   public void setName(String name)  {
-      super.setName(name);
-      // Create user object based on name
-      if (name.equals("node")) {
-         userObject = new BrowseNodeModel(frame); }
-      if (name.equals("edge")) {
-         userObject = new BrowseEdgeModel(null, frame); }}
-
-   public void addChild(XMLElement child) {
-      if (getName().equals("map")) {
-         mapChild = (BrowseNodeModel)child.getUserObject();
-         return; }
-      if (userObject instanceof BrowseNodeModel) {
-         BrowseNodeModel node = (BrowseNodeModel)userObject;
-         if (child.getUserObject() instanceof BrowseNodeModel) {
-            node.insert((BrowseNodeModel)child.getUserObject(),
-                        node.getChildCount());}
-         else if (child.getUserObject() instanceof BrowseEdgeModel) {
-            BrowseEdgeModel edge = (BrowseEdgeModel)child.getUserObject();
-            edge.setTarget(node);
-            node.setEdge(edge); }
-         else if (child.getName().equals("font")) {
-            node.setFont((Font)child.getUserObject()); }
-         else if (child.getName().equals("icon")) {
-             node.addIcon((MindIcon)child.getUserObject()); }}}
-
-   public void setAttribute(String name, Object value) {
-      // We take advantage of precondition that value != null.
-      String sValue = value.toString();
-      if (ignoreCase) {
-         name = name.toUpperCase(); }
-
-      if (userObject instanceof BrowseNodeModel) {
-         // 
-         BrowseNodeModel node = (BrowseNodeModel)userObject;
-         if (name.equals("TEXT")) {
-            node.setUserObject(sValue); }
-         else if (name.equals("FOLDED")) {
-            if (sValue.equals("true")) {
-               node.setFolded(true); }}
-         else if (name.equals("COLOR")) {
-            if (sValue.length() == 7) {
-               node.setColor(Tools.xmlToColor(sValue)); }}
-         else if (name.equals("LINK")) {
-            node.setLink(sValue); }
-         else if (name.equals("STYLE")) {
-            node.setStyle(sValue); }
-         return; }
-
-      if (userObject instanceof BrowseEdgeModel) {
-         BrowseEdgeModel edge = (BrowseEdgeModel)userObject;
-         if (name.equals("STYLE")) {
-	    edge.setStyle(sValue); }
-         else if (name.equals("COLOR")) {
-	    edge.setColor(Tools.xmlToColor(sValue)); }
-         else if (name.equals("WIDTH")) {
-            if (sValue.equals("thin")) {
-               edge.setWidth(BrowseEdgeModel.WIDTH_THIN); }
-            else {
-               edge.setWidth(Integer.parseInt(sValue)); }}
-         return; }
-
-      if (getName().equals("font")) {
-         if (name.equals("SIZE")) {
-            fontSize = Integer.parseInt(sValue); }
-         else if (name.equals("NAME")) {
-            fontName = sValue; }             
-
-         // Styling
-         else if (sValue.equals("true")) {
-            if (name.equals("BOLD")) {
-               fontStyle+=Font.BOLD; }
-            else if (name.equals("ITALIC")) {
-               fontStyle+=Font.ITALIC; }}}
-      /* icons */
-      if (getName().equals("icon")) {
-         if (name.equals("BUILTIN")) {
-            iconName = sValue; } 
-      }
-      
-   }
-
-   protected void completeElement() {
-      if (getName().equals("font")) {
-         userObject =  frame.getController().getFontThroughMap
-            (new Font(fontName, fontStyle, fontSize)); }
-      /* icons */
-            if (getName().equals("icon")) {
-         userObject =  new MindIcon(iconName); }
-   }
-
-}
+//public class BrowseXMLElement extends XMLElement {
+//
+//   private Object           userObject = null;
+//   private FreeMindMain     frame;
+//   private BrowseNodeModel mapChild   = null;
+//
+//   //   Font attributes
+//
+//   private String fontName; 
+//   private int    fontStyle = 0;
+//   private int    fontSize = 0;
+//
+//   //   Icon attributes
+//
+//   private String iconName; 
+//
+//   //   Overhead methods
+//
+//   public BrowseXMLElement(FreeMindMain frame) {
+//      this.frame = frame; }
+//
+//   protected XMLElement createAnotherElement() {
+//      // We do not need to initialize the things of XMLElement.
+//      return new BrowseXMLElement(frame); }
+//
+//   public Object getUserObject() {
+//      return userObject; }
+//
+//   public BrowseNodeModel getMapChild() {
+//      return mapChild; }
+//
+//   //   Real parsing methods
+//
+//   public void setName(String name)  {
+//      super.setName(name);
+//      // Create user object based on name
+//      if (name.equals("node")) {
+//         userObject = new BrowseNodeModel(frame); }
+//      if (name.equals("edge")) {
+//         userObject = new BrowseEdgeModel(null, frame); }}
+//
+//   public void addChild(XMLElement child) {
+//      if (getName().equals("map")) {
+//         mapChild = (BrowseNodeModel)child.getUserObject();
+//         return; }
+//      if (userObject instanceof BrowseNodeModel) {
+//         BrowseNodeModel node = (BrowseNodeModel)userObject;
+//         if (child.getUserObject() instanceof BrowseNodeModel) {
+//            node.insert((BrowseNodeModel)child.getUserObject(),
+//                        node.getChildCount());}
+//         else if (child.getUserObject() instanceof BrowseEdgeModel) {
+//            BrowseEdgeModel edge = (BrowseEdgeModel)child.getUserObject();
+//            edge.setTarget(node);
+//            node.setEdge(edge); }
+//         else if (child.getName().equals("font")) {
+//            node.setFont((Font)child.getUserObject()); }
+//         else if (child.getName().equals("icon")) {
+//             node.addIcon((MindIcon)child.getUserObject()); }}}
+//
+//   public void setAttribute(String name, Object value) {
+//      // We take advantage of precondition that value != null.
+//      String sValue = value.toString();
+//      if (ignoreCase) {
+//         name = name.toUpperCase(); }
+//
+//      if (userObject instanceof BrowseNodeModel) {
+//         // 
+//         BrowseNodeModel node = (BrowseNodeModel)userObject;
+//         if (name.equals("TEXT")) {
+//            node.setUserObject(sValue); }
+//         else if (name.equals("FOLDED")) {
+//            if (sValue.equals("true")) {
+//               node.setFolded(true); }}
+//         else if (name.equals("COLOR")) {
+//            if (sValue.length() == 7) {
+//               node.setColor(Tools.xmlToColor(sValue)); }}
+//         else if (name.equals("LINK")) {
+//            node.setLink(sValue); }
+//         else if (name.equals("STYLE")) {
+//            node.setStyle(sValue); }
+//         return; }
+//
+//      if (userObject instanceof BrowseEdgeModel) {
+//         BrowseEdgeModel edge = (BrowseEdgeModel)userObject;
+//         if (name.equals("STYLE")) {
+//	    edge.setStyle(sValue); }
+//         else if (name.equals("COLOR")) {
+//	    edge.setColor(Tools.xmlToColor(sValue)); }
+//         else if (name.equals("WIDTH")) {
+//            if (sValue.equals("thin")) {
+//               edge.setWidth(BrowseEdgeModel.WIDTH_THIN); }
+//            else {
+//               edge.setWidth(Integer.parseInt(sValue)); }}
+//         return; }
+//
+//      if (getName().equals("font")) {
+//         if (name.equals("SIZE")) {
+//            fontSize = Integer.parseInt(sValue); }
+//         else if (name.equals("NAME")) {
+//            fontName = sValue; }             
+//
+//         // Styling
+//         else if (sValue.equals("true")) {
+//            if (name.equals("BOLD")) {
+//               fontStyle+=Font.BOLD; }
+//            else if (name.equals("ITALIC")) {
+//               fontStyle+=Font.ITALIC; }}}
+//      /* icons */
+//      if (getName().equals("icon")) {
+//         if (name.equals("BUILTIN")) {
+//            iconName = sValue; } 
+//      }
+//      
+//   }
+//
+//   protected void completeElement() {
+//      if (getName().equals("font")) {
+//         userObject =  frame.getController().getFontThroughMap
+//            (new Font(fontName, fontStyle, fontSize)); }
+//      /* icons */
+//            if (getName().equals("icon")) {
+//         userObject =  new MindIcon(iconName); }
+//   }
+//
+//}
