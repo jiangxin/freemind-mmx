@@ -24,7 +24,7 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 	private Color[] colors = new Color[]{ new Color(0x000000), new Color(0x0033FF), new Color(0x00b439), 
 		new Color(0x990000), new Color(0x111111) };
 
-	private String[] fontSize = new String[]{ "36", "24", "18", "14", "12"};
+	private String[] fontSize = new String[]{ "24", "18", "16", "14", "12"};
 
 
 	/**

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.13 2004-07-30 20:49:47 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.14 2004-08-08 13:03:48 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -64,6 +64,12 @@ public interface ModeController extends MindMapActions {
 
     boolean isBlocked();
     void edit(KeyEvent e, boolean addNew, boolean editLong);
+    public interface  MouseWheelEventHandler {
+        /** @return true if the event was sucessfully processed and false if the event did not apply.*/
+        boolean handleMouseWheelEvent(MouseWheelEvent e);
+    }
+    void registerMouseWheelEventHandler(MouseWheelEventHandler handler);
+    void deRegisterMouseWheelEventHandler(MouseWheelEventHandler handler);
     void mouseWheelMoved(MouseWheelEvent e);
     MindMapNode getSelected();
 	List getSelecteds();

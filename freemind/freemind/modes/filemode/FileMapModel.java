@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMapModel.java,v 1.7 2003-11-03 11:00:13 sviles Exp $*/
+/*$Id: FileMapModel.java,v 1.7.12.1 2004-08-08 13:03:48 christianfoltin Exp $*/
 
 package freemind.modes.filemode;
 
@@ -48,6 +48,15 @@ public class FileMapModel extends MapAdapter {
     	return true;
     }
     
+    /**
+     *
+     */
+
+    public void destroy() {
+        /* fc, 8.8.2004: don't call super.destroy as this method tries to remove the hooks recursively.
+         * This must fail. */
+        //super.destroy();
+    }
     public void load(File file) {
     }
     

@@ -14,7 +14,7 @@ import freemind.modes.MindMapNode;
  * @author foltin
  *
  */
-public class UnfoldAll extends NodeHookAdapter {
+public class UnfoldAll extends NodeHookAdapter  {
 
 	/**
 	 * 
@@ -35,21 +35,35 @@ public class UnfoldAll extends NodeHookAdapter {
 			} 
 		} else {
 			if(foldState) {
-				foldStageN(node, getMaxDepth(node)-1);
+				foldOneStage(node);
 			} else {
-				int minDepth = getMinDepth(node);
-				if(minDepth < Integer.MAX_VALUE) 
-					minDepth++;
-				unfoldStageN(node, minDepth);
+				unfoldOneStage(node);
 			} 
 		}
 		getController().getView().selectAsTheOnlyOneSelected(node.getViewer());
 	}
 		
 	/**
+     * @param node
+     */
+    protected void unfoldOneStage(MindMapNode node) {
+        int minDepth = getMinDepth(node);
+        if(minDepth < Integer.MAX_VALUE) 
+        	minDepth++;
+        unfoldStageN(node, minDepth);
+    }
+
+    /**
+     * @param node
+     */
+    protected void foldOneStage(MindMapNode node) {
+        foldStageN(node, getMaxDepth(node)-1);
+    }
+
+    /**
 	 * @param node
 	 */
-	private void foldAll(MindMapNode node) {
+	protected void foldAll(MindMapNode node) {
 		for(Iterator i = node.childrenUnfolded(); i.hasNext();) {
 			foldAll((MindMapNode) i.next());
 		}
@@ -63,7 +77,7 @@ public class UnfoldAll extends NodeHookAdapter {
 		}
 	}
 
-	private void setFolded(MindMapNode node, boolean state) {
+	protected void setFolded(MindMapNode node, boolean state) {
 		if(node.hasChildren() && (node.isFolded()!=state)) {
 			if(node.getViewer() != null) {
 				getMap().setFolded(node, state);
@@ -115,7 +129,7 @@ public class UnfoldAll extends NodeHookAdapter {
 	 * @param node
 	 * @return
 	 */
-	private int getMaxDepth(MindMapNode node) {
+	protected int getMaxDepth(MindMapNode node) {
 		if(node.isFolded() || !node.hasChildren())
 			return depth(node);
 		int k = 0;
@@ -129,11 +143,10 @@ public class UnfoldAll extends NodeHookAdapter {
 
 
 
-	private int depth(MindMapNode node){
+	protected int depth(MindMapNode node){
 		if(node.isRoot())
 			return 0;
 		return depth((MindMapNode) node.getParent()) + 1;
 	}
-
 
 }

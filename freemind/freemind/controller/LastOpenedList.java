@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LastOpenedList.java,v 1.8 2003-11-09 22:09:25 christianfoltin Exp $*/
+/*$Id: LastOpenedList.java,v 1.8.12.1 2004-08-08 13:03:48 christianfoltin Exp $*/
 package freemind.controller;
 
 import freemind.view.MapModule;
@@ -59,6 +59,7 @@ public class LastOpenedList {
 	//not needed
     }
 
+    /** fc, 8.8.2004: This method returns a string representation of this class. */
     String save() {
  	String str = new String();
 	for(ListIterator it=listIterator();it.hasNext();) {

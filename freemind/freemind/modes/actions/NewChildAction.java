@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: NewChildAction.java,v 1.1.2.4 2004-07-30 20:49:48 christianfoltin Exp $*/
+/*$Id: NewChildAction.java,v 1.1.2.5 2004-08-08 13:03:48 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -39,7 +39,6 @@ import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.MindMapLinkRegistry.ID_Registered;
-import freemind.view.mindmapview.NodeView;
 
 
 public class NewChildAction extends AbstractAction implements ActorXml {
@@ -87,7 +86,8 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 //		 MindMapNode newNode = newNode();
 	   final MindMapNode targetNode = target;
 
-	   switch (newNodeMode) {
+	   boolean targetIsLeft = true;
+    switch (newNodeMode) {
 		 case ControllerAdapter.NEW_SIBLING_BEFORE:
 		 case ControllerAdapter.NEW_SIBLING_BEHIND:
 		   if (targetNode.isRoot()) {
@@ -101,11 +101,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		   if (newNodeMode == ControllerAdapter.NEW_SIBLING_BEHIND) {
 			  childPosition++;
 		   }
-//			 if(targetNode.isLeft()!= null) {
-//				 newNode.setLeft(targetNode.isLeft().getValue());
-//			 }
-		   //getModel().insertNodeInto(newNode, parent, childPosition);
-		   MindMapNode newNode = addNewNode(parent, childPosition);	
+		   MindMapNode newNode = addNewNode(parent, childPosition, target.isLeft());	
 		c.select(newNode.getViewer());
 		c.getFrame().repaint(); //  getLayeredPane().repaint();
 		c.edit.edit(newNode.getViewer(), target.getViewer(), e, true, false, false);
@@ -122,7 +118,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		   // Here the NodeView is created for the node. 
 //			 getModel().insertNodeInto(newNode, targetNode, position);
 //			 getFrame().repaint(); //  getLayeredPane().repaint();
-			MindMapNode  newChildNode = addNewNode(targetNode, position);	
+			MindMapNode  newChildNode = addNewNode(targetNode, position, null);	
 			   if (newNodeMode == ControllerAdapter.NEW_CHILD) {
 				c.select(newChildNode.getViewer());
 			   }
@@ -131,13 +127,13 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 	   }
 	}
 
-	public MindMapNode addNewNode(MindMapNode parent, int index){
+	public MindMapNode addNewNode(MindMapNode parent, int index, freemind.main.Tools.BooleanHolder newNodeIsLeft){
 		try {
 			String newId = c.getModel().getLinkRegistry().generateUniqueID("_");
 			System.out.println("Uniq:"+newId);
 			c.getActionFactory().startTransaction(c.getText("new_child"));
             NewNodeAction newNodeAction =
-                getAddNodeAction(parent, index, newId);
+                getAddNodeAction(parent, index, newId, newNodeIsLeft);
 			// Undo-action
 			DeleteNodeAction deleteAction = c.deleteChild.getDeleteNodeAction(newId);
 			c.getActionFactory().executeAction(new ActionPair(newNodeAction, deleteAction));
@@ -153,11 +149,14 @@ public class NewChildAction extends AbstractAction implements ActorXml {
     public NewNodeAction getAddNodeAction(
         MindMapNode parent,
         int index,
-        String newId)
+        String newId,
+        freemind.main.Tools.BooleanHolder newNodeIsLeft)
         throws JAXBException {
         String pos = null;
-        if(parent.isLeft() != null) 
-        	pos = parent.isLeft().getValue()?"left":"right";
+        
+      	if (newNodeIsLeft!= null) {
+            pos = newNodeIsLeft.getValue() ? "left" : "right";
+        }
         NewNodeAction newNodeAction = c.getActionXmlFactory().createNewNodeAction();
         newNodeAction.setNode(c.getNodeID(parent));
         newNodeAction.setPosition(pos);

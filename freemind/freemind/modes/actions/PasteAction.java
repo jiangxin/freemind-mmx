@@ -19,12 +19,13 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: PasteAction.java,v 1.1.2.2 2004-07-30 20:49:48 christianfoltin Exp $*/
+/*$Id: PasteAction.java,v 1.1.2.3 2004-08-08 13:03:48 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +47,7 @@ import javax.xml.bind.JAXBException;
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
+import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.CutNodeAction;
 import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -124,15 +125,34 @@ public class PasteAction extends AbstractAction implements ActorXml {
 	public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
 		try {
 			PasteNodeAction pasteAction = getPasteNodeAction(t,new NodeCoordinate(target,asSibling, isLeft));
-			CutNodeAction cutNodeAction = c.cut.getCutNodeAction(t, new NodeCoordinate(target,asSibling, isLeft));
+			long amountOfCuts = 1;
+    	   	DataFlavorHandler[] dataFlavorHandlerList = getFlavorHandlers();
+    	   	for (int i = 0; i < dataFlavorHandlerList.length; i++) {
+                DataFlavorHandler handler = dataFlavorHandlerList[i];
+                DataFlavor 		  flavor  = handler.getDataFlavor();
+                if(t.isDataFlavorSupported(flavor)) {
+                    amountOfCuts = handler.getNumberOfObjects(t.getTransferData(flavor), t);
+                    break;
+                }
+            }
+            CompoundAction compound = c.getActionXmlFactory().createCompoundAction();
+    	   	for(long i = 0; i < amountOfCuts; ++i) {
+    			CutNodeAction cutNodeAction = c.cut.getCutNodeAction(t, new NodeCoordinate(target,asSibling, isLeft));
+    			compound.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(cutNodeAction);
+    	   	}
+
 				
 			// Undo-action
 			c.getActionFactory().startTransaction(text);
-			c.getActionFactory().executeAction(new ActionPair(pasteAction, cutNodeAction));
+			c.getActionFactory().executeAction(new ActionPair(pasteAction, compound));
 			c.getActionFactory().endTransaction(text);
 		} catch (JAXBException e) {
 			e.printStackTrace();
-		}
+		} catch (UnsupportedFlavorException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 	}
 
 	public static class NodeCoordinate {
@@ -169,6 +189,186 @@ public class PasteAction extends AbstractAction implements ActorXml {
         }
 	}
 
+	private interface DataFlavorHandler {
+	    void paste(Object TransferData, MindMapNode target, boolean asSibling, boolean isLeft, Transferable t) throws UnsupportedFlavorException, IOException;
+	    long getNumberOfObjects(Object TransferData, Transferable transfer) throws UnsupportedFlavorException, IOException;
+	    DataFlavor getDataFlavor();
+	}
+	
+	
+	
+	private class FileListFlavorHandler implements DataFlavorHandler {
+
+        public void paste(Object TransferData, MindMapNode target,
+                boolean asSibling, boolean isLeft, Transferable t) {
+            // TODO: Does not correctly interpret asSibling.
+            List fileList = (List) TransferData;
+            for (ListIterator it = fileList.listIterator(); it.hasNext();) {
+                File file = (File) it.next();
+                MindMapNodeModel node = new MindMapNodeModel(file.getName(), c
+                        .getFrame());
+                node.setLink(file.getAbsolutePath());
+                insertNodeIntoNoEvent(node, target, asSibling);
+            }
+            c.nodeStructureChanged((MindMapNode) (asSibling ? target
+                    .getParent() : target));
+        }
+        
+
+        public long getNumberOfObjects(Object TransferData, Transferable transfer) {
+            return ((List) TransferData).size();
+        }
+
+
+        public DataFlavor getDataFlavor() {
+            return MindMapNodesSelection.fileListFlavor;
+        }
+	    
+	}
+	
+	private class MindMapNodesFlavorHandler implements DataFlavorHandler {
+
+        public void paste(Object TransferData, MindMapNode target, boolean asSibling, boolean isLeft, Transferable t) {
+			  //System.err.println("mindMapNodesFlavor");
+			 String textFromClipboard =
+				(String)TransferData;
+			 if (textFromClipboard != null) {
+               String[] textLines = textFromClipboard.split("<nodeseparator>");
+               if (textLines.length > 1) {
+                   c.getFrame().setWaitingCursor(true);
+               }
+               for (int i = 0; i < textLines.length; ++i) {
+                   //logger.info(textLines[i]+", "+ target+", "+ asSibling);
+                   MindMapNodeModel newModel = pasteXMLWithoutRedisplay(
+                           textLines[i], target, asSibling);
+                   // additional code for left/right decision:
+                   newModel.setLeft(isLeft);
+               }
+           }
+        }
+
+        public long getNumberOfObjects(Object TransferData, Transferable transfer) {
+            String textFromClipboard = (String) TransferData;
+            if (textFromClipboard != null) {
+                String[] textLines = textFromClipboard.split("<nodeseparator>");
+                return textLines.length;
+            }
+            return 0;
+        }
+
+        public DataFlavor getDataFlavor() {
+            return MindMapNodesSelection.mindMapNodesFlavor;
+        }
+    }
+	private class HtmlFlavorHandler implements DataFlavorHandler {
+
+        public void paste(Object TransferData, MindMapNode target,
+                boolean asSibling, boolean isLeft, Transferable t)
+                throws UnsupportedFlavorException, IOException {
+            //System.err.println("htmlFlavor");
+            String textFromClipboard = (String) TransferData;
+            // ^ This outputs transfer data to standard output. I don't know
+            // why.
+            MindMapNode pastedNode = pasteStringWithoutRedisplay((String) t
+                    .getTransferData(DataFlavor.stringFlavor), target,
+                    asSibling);
+
+            textFromClipboard = textFromClipboard.replaceAll("<!--.*?-->", ""); // remove
+                                                                                // HTML
+                                                                                // comment
+            String[] links = textFromClipboard
+                    .split("<[aA][^>]*[hH][rR][eE][fF]=\"");
+
+            MindMapNodeModel linkParentNode = null;
+            URL referenceURL = null;
+            boolean baseUrlCanceled = false;
+
+            for (int i = 1; i < links.length; i++) {
+                String link = links[i].substring(0, links[i].indexOf("\""));
+                String textWithHtml = links[i].replaceAll("^[^>]*>", "")
+                        .replaceAll("</[aA]>[\\s\\S]*", "");
+                String text = Tools.toXMLUnescapedText(textWithHtml.replaceAll(
+                        "\\n", "").replaceAll("<[^>]*>", "").trim());
+                if (text.equals("")) {
+                    text = link;
+                }
+                URL linkURL = null;
+                try {
+                    linkURL = new URL(link);
+                } catch (MalformedURLException ex) {
+                    try {
+                        // Either invalid URL or relative URL
+                        if (referenceURL == null && !baseUrlCanceled) {
+                            String referenceURLString = JOptionPane
+                                    .showInputDialog(c
+                                            .getText("enter_base_url"));
+                            if (referenceURLString == null) {
+                                baseUrlCanceled = true;
+                            } else {
+                                referenceURL = new URL(referenceURLString);
+                            }
+                        }
+                        linkURL = new URL(referenceURL, link);
+                    } catch (MalformedURLException ex2) {
+                    }
+                }
+                if (linkURL != null) {
+                    if (links.length == 2 & pastedNode != null) {
+                        // pastedNode != null iff the number of pasted lines is
+                        // one
+                        // The firts element in links[] array is never a link, therefore
+                        // the condition links.length == 2 actually says "there is one link".
+                        // Set link directly into node
+                        ((MindMapNodeModel) pastedNode).setLink(linkURL
+                                .toString());
+                        break;
+                    }
+                    if (linkParentNode == null) {
+                        linkParentNode = new MindMapNodeModel("Links", c
+                                .getFrame());
+                        // Here we cannot set bold, because linkParentNode.font is null
+                        insertNodeInto(linkParentNode, target);
+                        linkParentNode.setBold(true);
+                    }
+                    MindMapNodeModel linkNode = new MindMapNodeModel(text, c
+                            .getFrame());
+                    linkNode.setLink(linkURL.toString());
+                    insertNodeInto(linkNode, linkParentNode);
+                }
+            }
+        }
+
+        public long getNumberOfObjects(Object TransferData, Transferable transfer) throws UnsupportedFlavorException, IOException {
+            return ((String) (String) transfer
+                    .getTransferData(DataFlavor.stringFlavor)).split("\n").length;
+        }
+
+        public DataFlavor getDataFlavor() {
+            return MindMapNodesSelection.htmlFlavor;
+        }
+	    
+	}
+	
+	private class StringFlavorHandler implements DataFlavorHandler {
+
+        public void paste(Object TransferData, MindMapNode target,
+                boolean asSibling, boolean isLeft, Transferable t)
+                throws UnsupportedFlavorException, IOException {
+            //System.err.println("stringFlavor");
+            String textFromClipboard = (String) t
+                    .getTransferData(DataFlavor.stringFlavor);
+            pasteStringWithoutRedisplay(textFromClipboard, target, asSibling);
+        }
+
+        public long getNumberOfObjects(Object TransferData, Transferable transfer) {
+            return ((String) TransferData).split("\n").length;
+        }
+
+        public DataFlavor getDataFlavor() {
+            return DataFlavor.stringFlavor;
+        }
+	    
+	}
 	/*
 	 *
 	 */
@@ -184,97 +384,30 @@ public class PasteAction extends AbstractAction implements ActorXml {
 			  System.out.println(fl[i]); }
 		   */
 
-		  if (t.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
-			 // TODO: Does not correctly interpret asSibling.
-			 System.err.println("flflpas");
-			 List fileList = (List)t.getTransferData(MindMapNodesSelection.fileListFlavor);
-			 for(ListIterator it=fileList.listIterator();it.hasNext();) {
-				File file = (File)it.next();
-				MindMapNodeModel node = new MindMapNodeModel(file.getName(), c.getFrame());
-				node.setLink(file.getAbsolutePath());
-				insertNodeIntoNoEvent(node, target, asSibling); }
-			 c.nodeStructureChanged((MindMapNode) (asSibling ? target.getParent() : target)); }
-		  else if (t.isDataFlavorSupported(MindMapNodesSelection.mindMapNodesFlavor)) {
-			  //System.err.println("mindMapNodesFlavor");
-			 String textFromClipboard =
-				(String)t.getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
-			 if (textFromClipboard != null) {
-                String[] textLines = textFromClipboard.split("<nodeseparator>");
-                if (textLines.length > 1) {
-                    c.getFrame().setWaitingCursor(true);
-                }
-                for (int i = 0; i < textLines.length; ++i) {
-                    //logger.info(textLines[i]+", "+ target+", "+ asSibling);
-                    MindMapNodeModel newModel = pasteXMLWithoutRedisplay(
-                            textLines[i], target, asSibling);
-                    // additional code for left/right decision:
-                    newModel.setLeft(isLeft);
-                }
+	   	DataFlavorHandler[] dataFlavorHandlerList = getFlavorHandlers();
+	   	for (int i = 0; i < dataFlavorHandlerList.length; i++) {
+            DataFlavorHandler handler = dataFlavorHandlerList[i];
+            DataFlavor 		  flavor  = handler.getDataFlavor();
+            if(t.isDataFlavorSupported(flavor)) {
+                handler.paste(t.getTransferData(flavor), target, asSibling, isLeft, t);
+                break;
             }
-		  }
-		  else if (t.isDataFlavorSupported(MindMapNodesSelection.htmlFlavor)) {
-			  //System.err.println("htmlFlavor");
-			 String textFromClipboard =
-				(String)t.getTransferData(MindMapNodesSelection.htmlFlavor);
-			 // ^ This outputs transfer data to standard output. I don't know why.
-			 MindMapNode pastedNode = 
-			pasteStringWithoutRedisplay
-				((String)t.getTransferData(DataFlavor.stringFlavor), target, asSibling);
-
-			 textFromClipboard = textFromClipboard.replaceAll("<!--.*?-->",""); // remove HTML comment
-			 String[] links = textFromClipboard.split("<[aA][^>]*[hH][rR][eE][fF]=\"");
-
-			 MindMapNodeModel linkParentNode = null;
-			 URL referenceURL = null;
-			 boolean baseUrlCanceled = false;
-
-			 for (int i = 1; i < links.length; i++) {
-				String link =  links[i].substring(0, links[i].indexOf("\""));
-				String textWithHtml = links[i].replaceAll("^[^>]*>","").replaceAll("</[aA]>[\\s\\S]*","");
-				String text = Tools.toXMLUnescapedText
-				   (textWithHtml.replaceAll("\\n","").replaceAll("<[^>]*>","").trim());
-				if (text.equals("")) {
-				   text = link; }
-				URL linkURL = null;
-				try {
-				   linkURL = new URL(link); }
-				catch (MalformedURLException ex) {
-				   try {
-					  // Either invalid URL or relative URL
-					  if (referenceURL == null && !baseUrlCanceled) {
-						 String referenceURLString = JOptionPane.showInputDialog(c.getText("enter_base_url"));
-						 if (referenceURLString == null) {
-							baseUrlCanceled = true; }
-						 else {
-							referenceURL = new URL(referenceURLString); }}
-					  linkURL = new URL(referenceURL, link); }
-				   catch (MalformedURLException ex2) { } }
-				if (linkURL != null) {
-				   if (links.length == 2 & pastedNode != null) {
-					  // pastedNode != null iff the number of pasted lines is one
-					  // The firts element in links[] array is never a link, therefore
-					  // the condition links.length == 2 actually says "there is one link".
-					  // Set link directly into node
-					  ((MindMapNodeModel)pastedNode).setLink(linkURL.toString());
-					  break; }
-				   if (linkParentNode == null) {
-					  linkParentNode = new MindMapNodeModel("Links", c.getFrame());
-					  // Here we cannot set bold, because linkParentNode.font is null
-					insertNodeInto(linkParentNode, target);
-					  linkParentNode.setBold(true);
-				   }
-				   MindMapNodeModel linkNode = new MindMapNodeModel(text, c.getFrame());
-				   linkNode.setLink(linkURL.toString());
-				   insertNodeInto(linkNode, linkParentNode); }}}
-		  else if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-			  //System.err.println("stringFlavor");
-			 String textFromClipboard = (String)t.getTransferData(DataFlavor.stringFlavor);
-			pasteStringWithoutRedisplay(textFromClipboard, target, asSibling); }          
-		  c.nodeStructureChanged((MindMapNode) (asSibling ? target.getParent() : target)); }
+        }
+  	   c.nodeStructureChanged((MindMapNode) (asSibling ? target.getParent() : target)); }
 	   catch (Exception e) { e.printStackTrace(); }
 	   c.getFrame().setWaitingCursor(false);        
 	}
 
+    /**
+     * @return
+     */
+    private DataFlavorHandler[] getFlavorHandlers() {
+        DataFlavorHandler[] dataFlavorHandlerList = new DataFlavorHandler[] {
+                    new FileListFlavorHandler(),
+                    new MindMapNodesFlavorHandler(), new HtmlFlavorHandler(),
+                    new StringFlavorHandler() };
+        return dataFlavorHandlerList;
+    }
     private MindMapNodeModel pasteXMLWithoutRedisplay(String pasted, MindMapNode target)
 	   throws XMLParseException  {
 	   return pasteXMLWithoutRedisplay(pasted, target, /*asSibling=*/false); }

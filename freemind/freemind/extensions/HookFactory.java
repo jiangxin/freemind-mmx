@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.12 2004-07-30 20:49:47 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.13 2004-08-08 13:03:48 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -299,5 +299,14 @@ public class HookFactory {
 		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
 		return descriptor.getInstanciationMethod();
 	}
+
+    /**
+     * @param desc
+     * @return
+     */
+    public boolean isAutomaticallyInvoked(String hookName) {
+		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
+		return descriptor.isAutomaticallyInvoked();
+    }
 
 }

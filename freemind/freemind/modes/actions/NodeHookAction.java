@@ -19,7 +19,7 @@
  *
  * Created on 26.07.2004
  */
-/*$Id: NodeHookAction.java,v 1.1.2.2 2004-07-30 20:49:48 christianfoltin Exp $*/
+/*$Id: NodeHookAction.java,v 1.1.2.3 2004-08-08 13:03:48 christianfoltin Exp $*/
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
@@ -51,13 +51,14 @@ public class NodeHookAction extends FreemindAction implements MenuItemEnabledLis
 		this.controller = controller;
 		if(logger == null)
 			logger = controller.getFrame().getLogger(this.getClass().getName());
-
 	}
 
 	public void actionPerformed(ActionEvent arg0) {
 		// check, which method of invocation:
-		// 
+		//
+	    controller.getFrame().setWaitingCursor(true);
 		invoke(controller.getSelected(), controller.getSelecteds());							
+	    controller.getFrame().setWaitingCursor(false);
 	}
 
 	

@@ -1,32 +1,64 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <plugin>
-    <plugin_action documentation="&lt;html&gt;Unfolds the selected nodes and all their children.&lt;/html&gt;" name="Unfold all" key_stroke="alt END" base="freemind.extensions.NodeHookAdapter" icon_path="accessories/plugins/icons/2rightarrow.png" label="accessories/plugins/UnfoldAll.properties" class_name="accessories.plugins.UnfoldAll">
-        <plugin_mode class_name="freemind.modes.mindmapmode"/>
-        <plugin_menu location="menu_bar/navigate/folding/unfoldAll"/>
-        <plugin_menu location="mindmapmode_toolbar/folding/unfoldAll"/>
-        <plugin_property value="false" name="foldingState"/>
-        <plugin_property value="All" name="foldingType"/>
-    </plugin_action>
-    <plugin_action documentation="&lt;html&gt;Folds the selected nodes and all their children.&lt;/html&gt;" name="Folds all" key_stroke="alt HOME" base="freemind.extensions.NodeHookAdapter" icon_path="accessories/plugins/icons/2leftarrow.png" label="accessories/plugins/FoldAll.properties" class_name="accessories.plugins.UnfoldAll">
-        <plugin_mode class_name="freemind.modes.mindmapmode"/>
-        <plugin_menu location="menu_bar/navigate/folding/foldAll"/>
-        <plugin_menu location="mindmapmode_toolbar/folding/foldAll"/>
-        <plugin_property value="true" name="foldingState"/>
-        <plugin_property value="All" name="foldingType"/>
-    </plugin_action>
-    <plugin_action documentation="&lt;html&gt;Unfolds the selected nodes by one level.&lt;/html&gt;" name="Unfolds one level" key_stroke="alt PAGE_DOWN" base="freemind.extensions.NodeHookAdapter" icon_path="accessories/plugins/icons/1rightarrow.png" label="accessories/plugins/UnfoldOneLevel.properties" class_name="accessories.plugins.UnfoldAll">
-        <plugin_mode class_name="freemind.modes.mindmapmode"/>
-        <plugin_menu location="menu_bar/navigate/folding/unfoldOneLevel"/>
-        <plugin_menu location="mindmapmode_toolbar/folding/unfoldOneLevel"/>
-        <plugin_property value="false" name="foldingState"/>
-        <plugin_property value="OneLevel" name="foldingType"/>
-    </plugin_action>
-    <plugin_action documentation="&lt;html&gt;Folds the selected nodes by one level.&lt;/html&gt;" name="Folds one level" key_stroke="alt PAGE_UP" base="freemind.extensions.NodeHookAdapter" icon_path="accessories/plugins/icons/1leftarrow.png" label="accessories/plugins/FoldOneLevel.properties" class_name="accessories.plugins.UnfoldAll">
-        <plugin_mode class_name="freemind.modes.mindmapmode"/>
-        <plugin_menu location="menu_bar/navigate/folding/foldOneLevel"/>
-        <plugin_menu location="mindmapmode_toolbar/folding/foldOneLevel"/>
-        <plugin_property value="true" name="foldingState"/>
-        <plugin_property value="OneLevel" name="foldingType"/>
-    </plugin_action>
+	<plugin_action 
+		documentation="&lt;html&gt;Unfolds the selected nodes and all their children.&lt;/html&gt;" 
+		name="Unfold all" key_stroke="alt END" 
+		base="freemind.extensions.NodeHookAdapter" 
+		icon_path="accessories/plugins/icons/2rightarrow.png" 
+		label="accessories/plugins/UnfoldAll.properties" 
+		class_name="accessories.plugins.UnfoldAll">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/navigate/folding/unfoldAll"/>
+		<plugin_menu location="mindmapmode_toolbar/folding/unfoldAll"/>
+		<plugin_property value="false" name="foldingState"/>
+		<plugin_property value="All" name="foldingType"/>
+	</plugin_action>
+	<plugin_action 
+		documentation="&lt;html&gt;Folds the selected nodes and all their children.&lt;/html&gt;" 
+		name="Folds all" key_stroke="alt HOME" 
+		base="freemind.extensions.NodeHookAdapter" 
+		icon_path="accessories/plugins/icons/2leftarrow.png" 
+		label="accessories/plugins/FoldAll.properties" 
+		class_name="accessories.plugins.UnfoldAll">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/navigate/folding/foldAll"/>
+		<plugin_menu location="mindmapmode_toolbar/folding/foldAll"/>
+		<plugin_property value="true" name="foldingState"/>
+		<plugin_property value="All" name="foldingType"/>
+	</plugin_action>
+	<plugin_action 
+		documentation="&lt;html&gt;Unfolds the selected nodes by one level.&lt;/html&gt;" 
+		name="Unfolds one level" key_stroke="alt PAGE_DOWN" 
+		base="freemind.extensions.NodeHookAdapter" 
+		icon_path="accessories/plugins/icons/1rightarrow.png" 
+		label="accessories/plugins/UnfoldOneLevel.properties" 
+		class_name="accessories.plugins.UnfoldAll">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/navigate/folding/unfoldOneLevel"/>
+		<plugin_menu location="mindmapmode_toolbar/folding/unfoldOneLevel"/>
+		<plugin_property value="false" name="foldingState"/>
+		<plugin_property value="OneLevel" name="foldingType"/>
+	</plugin_action>
+	<plugin_action 
+		documentation="&lt;html&gt;Folds the selected nodes by one level.&lt;/html&gt;" 
+		name="Folds one level" key_stroke="alt PAGE_UP" 
+		base="freemind.extensions.NodeHookAdapter" 
+		icon_path="accessories/plugins/icons/1leftarrow.png" 
+		label="accessories/plugins/FoldOneLevel.properties" 
+		class_name="accessories.plugins.UnfoldAll">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/navigate/folding/foldOneLevel"/>
+		<plugin_menu location="mindmapmode_toolbar/folding/foldOneLevel"/>
+		<plugin_property value="true" name="foldingState"/>
+		<plugin_property value="OneLevel" name="foldingType"/>
+	</plugin_action>
+	<plugin_action 
+		name="Wheel support for folding" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="accessories/plugins/WheelSupportForFolding.properties" 
+		class_name="accessories.plugins.UnfoldAllForMouseWheel"
+		automatic_invocation="true"
+		instanciation="OnceForRoot">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+	</plugin_action>
 </plugin>
-

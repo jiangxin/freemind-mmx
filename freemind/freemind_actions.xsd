@@ -41,6 +41,8 @@
 	      <xs:attribute name="Transferable" use="optional" type="xs:string"/>
 	      <xs:attribute name="TransferableAsPlainText" use="optional" type="xs:string"/>
 	      <xs:attribute name="TransferableAsRTF" use="optional" type="xs:string"/>
+	      <xs:attribute name="TransferableAsDrop" use="optional" type="xs:string"/>
+	      <xs:attribute name="TransferableAsHtml" use="optional" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 
@@ -223,6 +225,8 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
+			<!-- Setting automatic_invocation true, the hook is called when the map gets opened.-->
+			<xs:attribute name="automatic_invocation" use="optional" type="xs:boolean" default="false"/>
     </xs:complexType>
   </xs:element>
 

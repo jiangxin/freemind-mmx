@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.21 2004-08-01 07:26:25 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.22 2004-08-08 13:03:48 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -91,6 +91,7 @@ import freemind.main.ExampleFileFilter;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
+import freemind.modes.ModeController.MouseWheelEventHandler;
 import freemind.modes.actions.BoldAction;
 import freemind.modes.actions.CompoundActionHandler;
 import freemind.modes.actions.CutAction;
@@ -115,6 +116,8 @@ public abstract class ControllerAdapter implements ModeController {
 	// for cascading updates.
 	private HashSet nodesAlreadyUpdated;
 	private HashSet nodesToBeUpdated;
+	// for MouseEventHandlers 
+	private HashSet mRegisteredMouseWheelEventHandler = new HashSet();
 	// Logging: 
 	private static java.util.logging.Logger logger;
 
@@ -679,9 +682,17 @@ public abstract class ControllerAdapter implements ModeController {
       // |=   oldX >=0 iff we are in the drag
 
     public void mouseWheelMoved(MouseWheelEvent e) {
-       if (isBlocked()) {
-         return; // block the scroll during edit (PN)
-       }
+        if (isBlocked()) {
+            return; // block the scroll during edit (PN)
+       }	
+       for (Iterator i = mRegisteredMouseWheelEventHandler.iterator(); i.hasNext();) {
+        MouseWheelEventHandler handler = (MouseWheelEventHandler) i.next();
+        boolean result = handler.handleMouseWheelEvent(e);
+        if(result) {
+            // event was consumed:
+            return;
+        }
+    }
         
        if ((e.getModifiers() & ZOOM_MASK) != 0) {
            // fc, 18.11.2003: when control pressed, then the zoom is changed.
@@ -703,6 +714,14 @@ public abstract class ControllerAdapter implements ModeController {
                  SCROLL_SKIP * e.getWheelRotation()); }}
     }
 
+    public void registerMouseWheelEventHandler(MouseWheelEventHandler handler) {
+        logger.info("Registered   MouseWheelEventHandler "+handler);
+        mRegisteredMouseWheelEventHandler.add(handler);
+    }
+    public void deRegisterMouseWheelEventHandler(MouseWheelEventHandler handler) {
+        logger.info("Deregistered MouseWheelEventHandler "+handler);
+        mRegisteredMouseWheelEventHandler.remove(handler);
+    }
     // this enables from outside close the edit mode
     private FocusListener textFieldListener = null;
     

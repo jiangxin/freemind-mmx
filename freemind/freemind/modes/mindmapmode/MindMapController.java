@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.19 2004-07-30 18:29:30 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.20 2004-08-08 13:03:48 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -201,6 +201,7 @@ public class MindMapController extends ControllerAdapter {
     FileFilter filefilter = new MindMapFilter();
 
     private MenuStructure mMenuStructure;
+    private Vector mScheduledActions = new Vector();
 
     public MindMapController(Mode mode) {
 	super(mode);
@@ -242,6 +243,21 @@ public class MindMapController extends ControllerAdapter {
             Tools.safeEquals(getFrame().getProperty("add_as_child"), "true");
     }
 
+    /** This method is called after and before a change of the map module.
+     * Use it to perform the actions that cannot be performed at creation time.
+     * 
+     */
+    public void activate() {
+        //blubbel();
+        logger.info("mScheduledActions are executed: "+mScheduledActions.size());
+        for (Iterator i = mScheduledActions.iterator(); i.hasNext();) {
+            Action action = (Action) i.next();
+            action.actionPerformed(null);
+        }
+        mScheduledActions.clear();
+    }
+
+    
 	public MapAdapter newModel() {
        return new MindMapMapModel(getFrame()); }
 
@@ -287,6 +303,10 @@ public class MindMapController extends ControllerAdapter {
                 String desc = (String) i.next();
                 // create hook action. 
                 NodeHookAction action = new NodeHookAction(desc, this);
+                if(factory.isAutomaticallyInvoked(desc)) {
+                    // schedule for activation:
+                    mScheduledActions.add(action);
+                }
                 factory.decorateAction(desc, action);
                 actionToMenuPositions.put(action, factory.getHookMenuPositions(desc));
                 hookActions.add(action);
@@ -1006,4 +1026,6 @@ public class MindMapController extends ControllerAdapter {
 	      return getText("mindmaps_desc");
 	   }
     }
+
+
 }

@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.10.7 2004-06-19 19:41:56 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.10.8 2004-08-08 13:03:49 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -666,7 +666,7 @@ public class MindMapMapModel extends MapAdapter  {
        try {
           ((MindMapNodeModel)node).save(stringWriter, this); }
        catch (IOException e) {}
-       return new MindMapNodesSelection(stringWriter.toString(), "", "", null); }
+       return new MindMapNodesSelection(stringWriter.toString(), null, null, null, null, null); }
 
    public void splitNode(MindMapNode node, int caretPosition, String newText) {
       //If there are children, they go to the node below

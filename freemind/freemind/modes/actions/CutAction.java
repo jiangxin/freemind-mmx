@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: CutAction.java,v 1.1.2.3 2004-08-01 07:26:25 christianfoltin Exp $*/
+/*$Id: CutAction.java,v 1.1.2.4 2004-08-08 13:03:48 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -150,8 +150,14 @@ public class CutAction extends AbstractAction implements ActorXml {
 				trans.setTransferableAsPlainText(textFromClipboard);
 			}
 			if (t.isDataFlavorSupported(MindMapNodesSelection.rtfFlavor)) {
-				// byte[] textFromClipboard = (byte[]) t.getTransferData(MindMapNodesSelection.rtfFlavor);
-				//trans.setTransferableAsRTF(textFromClipboard);
+//				byte[] textFromClipboard = (byte[]) t.getTransferData(MindMapNodesSelection.rtfFlavor);
+//				trans.setTransferableAsRTF(textFromClipboard.toString());
+			}
+			if(t.isDataFlavorSupported(MindMapNodesSelection.htmlFlavor)) {
+				String textFromClipboard;
+				textFromClipboard =
+					(String) t.getTransferData(MindMapNodesSelection.htmlFlavor);
+				trans.setTransferableAsHtml(textFromClipboard);
 			}
 			return trans;
 		} catch (UnsupportedFlavorException e) {
@@ -164,12 +170,14 @@ public class CutAction extends AbstractAction implements ActorXml {
 
     public Transferable getTransferable(TransferableContentType trans) {
         // create Transferable:
+        //URGENT: Add file list to this selection.
         Transferable copy =
             new MindMapNodesSelection(
                 trans.getTransferable(),
         		trans.getTransferableAsPlainText(),
                 trans.getTransferableAsRTF(),
-                "");
+                trans.getTransferableAsDrop(), 
+                trans.getTransferableAsHtml(), null);
         return copy;
     }
     /* (non-Javadoc)

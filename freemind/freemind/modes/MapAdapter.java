@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.10.8 2004-05-21 21:49:11 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.10.9 2004-08-08 13:03:48 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -263,7 +263,7 @@ public abstract class MapAdapter implements MindMap {
 
          String plainText = inPlainText != null ? inPlainText : getAsPlainText(selectedNodes);
          return new MindMapNodesSelection
-            (forNodesFlavor, plainText, getAsRTF(selectedNodes), ""); }
+            (forNodesFlavor, plainText, getAsRTF(selectedNodes), null, null, null); }
          //return new StringSelection(forClipboard); }
 
 

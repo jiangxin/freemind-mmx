@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: DeleteChildAction.java,v 1.1.2.2 2004-05-09 22:31:15 christianfoltin Exp $*/
+/*$Id: DeleteChildAction.java,v 1.1.2.3 2004-08-08 13:03:48 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -81,7 +81,8 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
                 c.newChild.getAddNodeAction(
                     parent,
                     parent.getChildPosition(selectedNode),
-                    newId);
+                    newId,
+                    null);
 			// Undo-action
 			DeleteNodeAction deleteAction = getDeleteNodeAction(newId);
 			c.getActionFactory().executeAction(new ActionPair(deleteAction, newNodeAction));
