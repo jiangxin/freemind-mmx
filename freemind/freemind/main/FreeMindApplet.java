@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.13 2003-11-30 08:33:23 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.14 2003-12-22 11:14:51 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -76,6 +76,10 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
     public Container getViewport() {
 		return scrollPane.getViewport();
+    }
+
+    public String getFreemindVersion() {
+        return version;
     }
 
     // "dummy" implementation of the interface (PN)

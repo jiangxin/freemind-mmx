@@ -1,6 +1,8 @@
 Changes made in Freemind 0.7.0:
 ===============================
 
+* Selection method changed and simplified: double click is now for editing and single for mark and fold. 
+* Browser is working again.
 * Folded nodes have now an arc on their outer side, where the edge comes into.
 * Solved the left/right problem of Freemind.
 * Patches for PrintSetup, RTF and FoldedIcons added. Thanks to the contributors.

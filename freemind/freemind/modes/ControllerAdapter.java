@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.35 2003-12-17 21:04:53 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.36 2003-12-22 11:14:51 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -163,7 +163,7 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public void doubleClick(MouseEvent e) {
-        toggleFolded();
+        edit(null, false, false); //toggleFolded();
     }
 
     public void plainClick(MouseEvent e) {

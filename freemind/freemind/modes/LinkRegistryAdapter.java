@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.9 2003-12-20 16:12:51 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.10 2003-12-22 11:14:52 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -89,8 +89,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     /** The map the registry belongs to.*/
 //     protected MindMap map;
 
-    // Logging:
-    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger("freemind.modes.LinkRegistryAdapter");
+    // Logging: for applets the logging must be anonymously. This will be generalized later. fc, 22.12.2003.
+    private static java.util.logging.Logger logger = java.util.logging.Logger.getAnonymousLogger(); //getLogger("freemind.modes.LinkRegistryAdapter");
 
     ////////////////////////////////////////////////////////////////////////////////////////
     ////   Methods                                                                     /////

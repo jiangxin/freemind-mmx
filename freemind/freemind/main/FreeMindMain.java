@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.9 2003-11-03 11:00:10 sviles Exp $*/
+/*$Id: FreeMindMain.java,v 1.10 2003-12-22 11:14:51 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -81,4 +81,7 @@ public interface FreeMindMain {
     public int getWinHeight();
     public int getWinWidth();
     public int getWinState();
+
+    // version info:
+    public String getFreemindVersion();
 }

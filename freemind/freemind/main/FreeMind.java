@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.27 2003-12-20 16:12:51 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.28 2003-12-22 11:14:51 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -245,6 +245,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     public Container getViewport() {
 	return scrollPane.getViewport();
+    }
+
+
+    public String getFreemindVersion() {
+        return version;
     }
 
      // maintain this methods to keep the last state/size of the window (PN)

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.37 2003-12-20 16:12:51 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.38 2003-12-22 11:12:55 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -1105,7 +1105,10 @@ public class Controller {
           if (e.getActionCommand().equals("antialias_all")) {
              setAntialiasEdges(false);
              setAntialiasAll(true); }
-          getView().repaint(); }}
+          if(getView() != null)
+              getView().repaint(); 
+       }
+    }
 
     private class OptionHTMLExportFoldingAction extends AbstractAction {
        OptionHTMLExportFoldingAction(Controller controller) {}

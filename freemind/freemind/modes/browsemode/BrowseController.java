@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.12 2003-12-02 22:50:22 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.13 2003-12-22 11:15:18 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -158,35 +158,36 @@ public class BrowseController extends ControllerAdapter {
     }
 
     public void loadURL(String relative) {
-	URL absolute = null;
-	try {
-	    BrowseMapModel map = (BrowseMapModel)getMap();
-	    if (map != null) {
-		absolute = new URL( map.getURL(), relative);	
-	    } else {
-		absolute = new URL( relative );
-	    }
-	    //	    absolute = new URL(relative);
-	    getFrame().out(absolute.toString());
-	} catch (MalformedURLException ex) {
-           getController().errorMessage(getText("url_error") + " " + ex.getMessage());
-           //getFrame().err(getText("url_error"));
-	   return;
-	}
+        URL absolute = null;
+        try {
+            BrowseMapModel map = (BrowseMapModel)getMap();
+            if (map != null) {
+                absolute = new URL( map.getURL(), relative);	
+            } else {
+                absolute = new URL( relative );
+            }
+            //	    absolute = new URL(relative);
+            getFrame().out(absolute.toString());
+        } catch (MalformedURLException ex) {
+            getController().errorMessage(getText("url_error") + " " + ex.getMessage());
+            //getFrame().err(getText("url_error"));
+            return;
+        }
 
-	String type = Tools.getExtension(absolute.getFile());
-	try {
-	    if (type.equals("mm")) {
-               getFrame().setWaitingCursor(true);
-               load(absolute);
-	    } else {
-		getFrame().openDocument(absolute);
-	    }
-	} catch (Exception ex) {
-	    //	    getFrame().err(getText("url_load_error")+absolute);
-	    //for some reason, this exception is thrown anytime...
-	} finally {
-           getFrame().setWaitingCursor(false);
+        String type = Tools.getExtension(absolute.getFile());
+        try {
+            if (type.equals("mm")) {
+                getFrame().setWaitingCursor(true);
+                load(absolute);
+            } else {
+                getFrame().openDocument(absolute);
+            }
+        } catch (Exception ex) {
+            getController().errorMessage(getText("url_load_error")+absolute);
+            ex.printStackTrace();
+            //for some reason, this exception is thrown anytime...
+        } finally {
+            getFrame().setWaitingCursor(false);
         }
         
     }

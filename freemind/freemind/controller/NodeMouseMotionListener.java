@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.9 2003-12-20 16:12:51 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.10 2003-12-22 11:12:55 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -53,14 +53,6 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
     /** The mouse has to stay in this region to enable the selection after a given time.*/
     Rectangle controlRegionForDelayedSelection;
 
-    private boolean ignoreNextDoubleClick = false; 
-    private boolean ignoreNextPlainClick = false;
-    /** fc, 30.11.2003: This method is currently not used.*/
-    public void ignoreNextDoubleClick() {
-      ignoreNextDoubleClick = true; }
-    public void ignoreNextPlainClick() {
-       ignoreNextPlainClick = true; }
-
     public NodeMouseMotionListener(Controller controller) {
        c = controller; 
        if(timeForDelayedSelection == null)
@@ -93,16 +85,33 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
     //
 
     public void mouseClicked(MouseEvent e) {
-      if (!e.isAltDown() 
-          && !e.isControlDown() 
-          && !e.isShiftDown() 
-          && !e.isPopupTrigger()
-          && e.getButton() == MouseEvent.BUTTON1
-          && ((NodeView)(e.getComponent())).getModel().getLink() == null) {
-        c.getMode().getModeController().edit(null, false, false);
-      }
-    }
+        // handling click in mouseReleased rather than in mouseClicked
+        // provides better interaction. If mouse was slightly moved
+        // between pressed and released events, the event clicked
+        // is not triggered.
+        // The behavior is not tested on Linux.
 
+        // first stop the timer and select the node:
+        stopTimerForDelayedSelection();
+        c.getView().extendSelection((NodeView)e.getSource(), e);
+        // Right mouse <i>press</i> is <i>not</i> a popup trigger for Windows.
+        // Only Right mouse release is a popup trigger!
+        // OK, but Right mouse <i>press</i> <i>is</i> a popup trigger on Linux.
+        c.getMode().getModeController().showPopupMenu(e);
+        if (e.isConsumed()) {
+            return;
+        }
+       
+        if (e.getModifiers() == MouseEvent.BUTTON1_MASK ) {
+            if (e.getClickCount() % 2 == 0) {
+                c.getMode().getModeController().doubleClick(e); 
+            } else {
+                c.getMode().getModeController().plainClick(e); 
+            }
+            e.consume();
+        }
+    }
+       
     public void mouseEntered( MouseEvent e ) {
         createTimer(e);
         //c.getMode().getModeController().select(e);
@@ -117,7 +126,6 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
         timerForDelayedSelection.schedule(new timeDelayedSelection(c, e), 
                                           /*if the new selection method is not enabled we put 0 to get direct selection.*/
                                           (delayedSelectionEnabled.getValue())?timeForDelayedSelection.getValue():0);
-        //c.getMode().getModeController().select(e);
     }
 
 
@@ -134,57 +142,11 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
     }
 
     public void mousePressed( MouseEvent e ) {
-        // first stop the timer and select the node:
-      stopTimerForDelayedSelection();
-      c.getView().extendSelection((NodeView)e.getSource(), e);
-      // Right mouse <i>press</i> is <i>not</i> a popup trigger for Windows.
-      // Only Right mouse release is a popup trigger!
-      // OK, but Right mouse <i>press</i> <i>is</i> a popup trigger on Linux.
-      c.getMode().getModeController().showPopupMenu(e);
-      if (!e.isConsumed()) {
-          // unified selection (PN) %%% (unify with mouse enntered above!!!
-          c.getView().extendSelection((NodeView)e.getSource(), e);
-          e.consume();
-      }
+        // for Linux
+        c.getMode().getModeController().showPopupMenu(e);
     }
 
     public void mouseReleased( MouseEvent e ) {
-       // handling click in mouseReleased rather than in mouseClicked
-       // provides better interaction. If mouse was slightly moved
-       // between pressed and released events, the event clicked
-       // is not triggered.
-       // The behavior is not tested on Linux.
-
-       c.getMode().getModeController().showPopupMenu(e);
-       if (e.isConsumed()) {
-         return;
-       }
-       
-       if (e.getModifiers() == MouseEvent.BUTTON1_MASK ) {
-          if (e.getClickCount() == 1) {
-             ignoreNextDoubleClick = false; 
-          }
-          if (e.getClickCount() % 2 == 0) {
-             if (ignoreNextDoubleClick) {
-                ignoreNextDoubleClick = false; 
-             } else {
-                c.getMode().getModeController().doubleClick(e); 
-             }
-          } else {
-             if (ignoreNextPlainClick) {
-                ignoreNextPlainClick = false; 
-             }
-             else {
-                c.getMode().getModeController().plainClick(e); 
-             }
-          }
-       } else {
-          ignoreNextDoubleClick = false; 
-          ignoreNextPlainClick = false; 
-       }
-
-       e.consume();
-       stopTimerForDelayedSelection();
     }
 
     protected Rectangle getControlRegion(Point2D p) {
