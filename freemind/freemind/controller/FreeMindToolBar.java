@@ -44,6 +44,7 @@ public class FreeMindToolBar extends JToolBar {
 	public FreeMindToolBar(String arg0, int arg1) {
 		super(arg0, arg1);
 		this.setMargin(nullInsets);
+
 	}
 
 	/* (non-Javadoc)
@@ -55,6 +56,11 @@ public class FreeMindToolBar extends JToolBar {
 		returnValue.setText("");
 		returnValue.setMargin(nullInsets);
 		returnValue.setFocusable(false);
+
+		// fc, 20.6.2004: try to make the toolbar looking good under Mac OS X.
+//		returnValue.setBorderPainted     (false);
+		returnValue.setContentAreaFilled (false);
+		
 		return returnValue;
 	}
 

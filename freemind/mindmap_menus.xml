@@ -47,7 +47,6 @@
 		</menu_category>
 		<menu_category name="insert" setSeparatorBefore="false">
 			<menu_category name="nodes">
-				<!--<menu_action name="newChild" field="newChild" key_ref="keystroke_add_child_mac"/>-->
 				<menu_action name="newChild" field="newChild" key_ref="keystroke_add_child"/>
 				<menu_action field="newSibling" key_ref="keystroke_add"/>
 				<menu_action name="newPreviousSibling" field="newPreviousSibling" key_ref="keystroke_add_sibling_before"/>
@@ -177,8 +176,7 @@
 				<menu_action name="paste" field="paste" key_ref="keystroke_paste"/>
 			</menu_category>
 			<menu_category name="insert">
-				<!--<menu_action name="newChild" field="newChild" key_ref="keystroke_add_child_mac"/>-->
-				<menu_action name="newChild" field="newChild" key_ref="keystroke_add_child"/>
+				<menu_action name="newChild" field="newChild"/>
 			</menu_category>
 			<menu_category name="font">
 				<menu_action field="italic" key_ref="keystroke_node_toggle_italic"/>
