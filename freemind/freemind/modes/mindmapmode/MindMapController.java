@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.34 2004-10-09 22:11:32 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.35 2004-10-11 19:41:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -404,12 +404,16 @@ public class MindMapController extends ControllerAdapter {
             arrowLinkPopup.addSeparator();
             /* The arrow state as radio buttons: */
             JRadioButtonMenuItem itemnn = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction(this, "none", "images/arrow-mode-none.gif",link, false, false) );
-            arrowLinkPopup.add( itemnn );
             JRadioButtonMenuItem itemnt = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction(this, "forward", "images/arrow-mode-forward.gif",link, false, true) );
-            arrowLinkPopup.add( itemnt );
             JRadioButtonMenuItem itemtn = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction(this, "backward", "images/arrow-mode-backward.gif",link, true, false) );
-            arrowLinkPopup.add( itemtn );
             JRadioButtonMenuItem itemtt = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction(this, "both", "images/arrow-mode-both.gif",link, true, true) );
+            itemnn.setText(null);
+            itemnt.setText(null);
+            itemtn.setText(null);
+            itemtt.setText(null);
+            arrowLinkPopup.add( itemnn );
+            arrowLinkPopup.add( itemnt );
+            arrowLinkPopup.add( itemtn );
             arrowLinkPopup.add( itemtt );
             // select the right one:
             boolean a = !link.getStartArrow().equals("None");
