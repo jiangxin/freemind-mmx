@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EncryptNode.java,v 1.1.2.3 2005-01-03 18:02:01 christianfoltin Exp $*/
+/*$Id: EncryptNode.java,v 1.1.2.4 2005-01-09 00:05:05 christianfoltin Exp $*/
 
 /*
  * Created on 14.12.2004
@@ -24,7 +24,6 @@
  */
 package accessories.plugins;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -77,7 +76,8 @@ public class EncryptNode extends NodeHookAdapter {
             return;
         }
         EncryptedMindMapNode encryptedMindMapNode = new EncryptedMindMapNode(
-                "Select me to continue!", getController().getFrame());
+                getController().getText("accessories/plugins/EncryptNode.properties_select_me"), 
+                getController().getFrame());
         encryptedMindMapNode.setPassword(password);
         MapAdapter newModel = new MindMapMapModel(encryptedMindMapNode, getController().getFrame());
         MindMapController mindmapcontroller = (MindMapController) getController();
@@ -143,6 +143,15 @@ public class EncryptNode extends NodeHookAdapter {
             getController().nodeStructureChanged(encNode);
             getController().getView().selectAsTheOnlyOneSelected(encNode.getViewer());
             encNode.setShuttingDown(false);
+        } else {
+            // box:
+            JOptionPane
+                    .showMessageDialog(
+                            getController().getFrame().getContentPane(),
+                            getController()
+                                    .getText(
+                                            "accessories/plugins/EncryptNode.properties_insert_encrypted_node_first"),
+                            "Freemind", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

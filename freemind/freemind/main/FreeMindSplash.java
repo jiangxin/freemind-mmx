@@ -58,13 +58,13 @@ class FreeMindSplash extends JFrame {
         		super.paint(g);
         		Graphics2D g2 = (Graphics2D) g;
         		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        		Font font = new Font("Arial", Font.BOLD + Font.ITALIC, 14);
+        		Font font = new Font("Arial", Font.BOLD, 16);
         		g2.setFont(font);
         		int yCoordinate = (int)(getSize().getHeight())-14;
                 int xCoordinate = (int)(getSize().getWidth()/3);
-        		g2.setColor(Color.black);
-                g2.drawString(frame.getFreemindVersion(), xCoordinate , yCoordinate);
         		g2.setColor(Color.YELLOW);
+                g2.drawString(frame.getFreemindVersion(), xCoordinate , yCoordinate);
+        		g2.setColor(Color.WHITE);
         		g2.drawString(frame.getFreemindVersion(), xCoordinate+1 , yCoordinate+1);
         	}
         };

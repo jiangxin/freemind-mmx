@@ -19,11 +19,10 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: ActionFactory.java,v 1.1.4.3 2005-01-08 16:21:06 christianfoltin Exp $*/
+/*$Id: ActionFactory.java,v 1.1.4.4 2005-01-09 00:05:05 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;

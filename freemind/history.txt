@@ -132,7 +132,9 @@ Changes made in Freemind 0.8.0:
 * Merged the new splash screen from Marc Carson. Thanks.
 * Bug fix for: For editing long nodes I could set el__enter_confirms_by_default = false.
 * Bug fix: Show revisions in yellow. Thanks to michaelschwarz.
-
+* Bug fix: packaging under linux.
+* Bug fix: Quit and Cancel under Macintosh.
+* Bug fix: Toggle encrypted nodes for unencrypted nodes give an error message.
 
 Changes made in Freemind 0.7.2:
 ===============================

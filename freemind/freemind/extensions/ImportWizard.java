@@ -61,7 +61,7 @@ public class ImportWizard {
 		String classPath = System.getProperty("java.class.path");
 		String classPathSeparator = File.pathSeparator;
         // add the current dir to find more plugins
-        classPath="."+classPathSeparator+classPath;
+        classPath=HookFactory.getFreemindBaseDir()+classPathSeparator+classPath;
 
 		StringTokenizer st = new StringTokenizer(classPath, classPathSeparator);
 		while (st.hasMoreTokens()) {
@@ -221,7 +221,13 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.2  2004-11-16 16:42:35  christianfoltin
+ * Revision 1.1.4.3  2005-01-09 00:05:05  christianfoltin
+ * * Bug fix: Show revisions in yellow. Thanks to michaelschwarz.
+ * * Bug fix: packaging under linux.
+ * * Bug fix: Quit and Cancel under Macintosh.
+ * * Bug fix: Toggle encrypted nodes for unencrypted nodes give an error message.
+ *
+ * Revision 1.1.4.2  2004/11/16 16:42:35  christianfoltin
  * * merged from fm_040228_jython again.
  *
  * Revision 1.1.2.5  2004/11/13 08:28:35  christianfoltin

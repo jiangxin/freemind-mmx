@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.4.3 2004-11-18 21:43:33 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.4.4 2005-01-09 00:05:05 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -212,11 +212,12 @@ public class HookFactory {
         try {
             URL[] urls = new URL[pluginClasspathList.size() + 1];
             int j = 0;
-            urls[j++] = new File(".")
+            //logger.info("freemind.base.dir is " + getFreemindBaseDir());
+            urls[j++] = new File(getFreemindBaseDir())
                     .toURL();
             for (Iterator i = pluginClasspathList.iterator(); i.hasNext();) {
                 PluginClasspathType classPath = (PluginClasspathType) i.next();
-                File file = new File(classPath.getJar());
+                File file = new File(getFreemindBaseDir()+File.separator+classPath.getJar());
                 logger.info("file " + file.toString() + " exists = " + file.exists());
                 urls[j++] = file.toURL();
             }
@@ -227,6 +228,13 @@ public class HookFactory {
             logger.severe(e.getMessage());
             return this.getClass().getClassLoader();
         }
+    }
+
+    /**
+     * @return
+     */
+    public static String getFreemindBaseDir() {
+        return System.getProperty("freemind.base.dir", ".");
     }
 
     /** 
