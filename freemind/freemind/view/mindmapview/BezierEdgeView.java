@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BezierEdgeView.java,v 1.8 2001-04-19 16:20:38 ponder Exp $*/
+/*$Id: BezierEdgeView.java,v 1.9 2003-11-03 10:15:46 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -25,6 +25,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.CubicCurve2D;
+import java.lang.Math;
 
 /**
  * This class represents a single Edge of a MindMap.
@@ -32,8 +33,8 @@ import java.awt.geom.CubicCurve2D;
 public class BezierEdgeView extends EdgeView {
 
     CubicCurve2D.Float graph = new CubicCurve2D.Float();
-    Point2D.Float one, two;
     private static final int XCTRL = 12;//the distance between endpoint and controlpoint
+    private static final int CHILD_XCTRL = 20; // -||- at the child's end
    
     public BezierEdgeView(NodeView source, NodeView target) {
 	super(source,target);
@@ -41,24 +42,29 @@ public class BezierEdgeView extends EdgeView {
     }
 
     public void update() {
-	super.update();
+        super.update();
 
 	//YCTRL could be implemented but then we had to check whether target is above or below source.
-	if(target.isLeft()) {
-	    one = new Point2D.Float(start.x-XCTRL, start.y);
-	    two = new Point2D.Float(end.x+XCTRL, end.y);
-	} else {
-	    one = new Point2D.Float(start.x+XCTRL, start.y);
-	    two = new Point2D.Float(end.x-XCTRL, end.y);
-	}
+
+        int xctrl = target.isLeft() ? -XCTRL : XCTRL;
+        int childXctrl = target.isLeft() ? CHILD_XCTRL : -CHILD_XCTRL;
+
 	int dy1=getSourceShift();
 	int dy2=getTargetShift();
-	graph.setCurve(start.x,start.y+dy1,one.x,one.y+dy1,two.x,two.y+dy2,end.x,end.y+dy2);
+
+        int endXCorrection = target.isLeft() ? -1 : 0; // This is a workaround, which
+                                                       // makes sure, that egde touches
+                                                       // the node.
+
+	graph.setCurve(start.x,                   start.y + dy1,
+                       start.x + xctrl,           start.y + dy1,
+                       end.x   + childXctrl,      end.y   + dy2,
+                       end.x   + endXCorrection,  end.y   + dy2);
     }
 
 
     public void paint(Graphics2D g) {
-	update();
+        update();
 	g.setColor(getColor());
 	g.setStroke(getStroke());
 	g.draw(graph);

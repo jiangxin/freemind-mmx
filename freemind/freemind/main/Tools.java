@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.10 2001-04-22 15:02:50 ponder Exp $*/
+/*$Id: Tools.java,v 1.11 2003-11-03 10:15:45 sviles Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -31,6 +31,7 @@ import java.net.URL;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import javax.swing.JOptionPane;
 
 public class Tools {
     
@@ -99,16 +100,81 @@ public class Tools {
 	return getAllFonts().contains(font);
     }
 
-    public static String getExtension(String s) {
-	String ext = null;
-	int i = s.lastIndexOf('.');
+    /**
+     * Returns the lowercase of the extension of a file. Example: getExtension("fork.pork.MM") == "mm"
+     */
+    public static String getExtension(File f) {
+       return getExtension(f.toString()); }
 
-	if (i>0 && i<s.length()-1) {
-	    ext = s.substring(i+1).toLowerCase();
-	}
-	if (ext==null) ext="";
-	return ext.trim();
+    /**
+     * Returns the lowercase of the extension of a file name. Example: getExtension("fork.pork.MM") == "mm"
+     */
+    public static String getExtension(String s) {
+	int i = s.lastIndexOf('.');
+        return (i>0 && i<s.length()-1) ? s.substring(i+1).toLowerCase().trim() :  "";
     }
+
+    public static String removeExtension(String s) {
+        int i = s.lastIndexOf('.');
+	return (i>0 && i<s.length()-1) ? s.substring(0,i) : "";
+    }
+
+    public static String toXMLEscapedText (String text) {
+       return text.
+          replaceAll("&","&amp;").
+          replaceAll("<","&lt;").
+          replaceAll(">","&gt;").
+          replaceAll("\"","&quot;");
+    }
+   public static String toXMLUnescapedText (String text) {
+      return text.
+         replaceAll("&lt;","<").
+         replaceAll("&gt;",">").
+         replaceAll("&quot;","\"").
+         replaceAll("&amp;","&");
+    }
+
+    public static boolean isAbsolutePath(String path) {
+       // On Windows, we cannot just ask if the file name starts with file separator.
+       // If path contains ":" at the second position, then it is not relative, I guess.
+       // However, if it starts with separator, then it is absolute too.
+     
+       // Possible problems: Not tested on Macintosh, but should work.
+
+       String osNameStart = System.getProperty("os.name").substring(0,3);
+       String fileSeparator = System.getProperty("file.separator");
+       if (osNameStart.equals("Win")) {
+          return path.substring(1,2).equals(":") || path.startsWith(fileSeparator+fileSeparator);
+       } else if (osNameStart.equals("Mac")) {
+          return !path.startsWith(fileSeparator);
+       } else {
+          return path.startsWith(fileSeparator);
+       }
+    }
+
+    /**
+     * This is a correction of a method getFile of a class URL.  Namely, on Windows it
+     * returned file paths like /C: etc., which are not valid on Windows. This correction
+     * is heuristic to a great extend. One of the reasons is, that file:// is basically no
+     * protocol at all, but rather something every browser and every system uses slightly
+     * differently.
+     */
+    public static String urlGetFile(URL url) {
+       String osNameStart = System.getProperty("os.name").substring(0,3);
+       String fileSeparator = System.getProperty("file.separator");
+       if (osNameStart.equals("Win") && url.getProtocol().equals("file")) {
+          String fileName = url.getFile();
+          
+          if (fileName.startsWith(fileSeparator) && fileName.substring(2,3).equals(":")) {
+             fileName = fileName.substring(1); }
+          if (!url.getHost().equals("")) {
+             fileName = "//" + url.getHost() + fileName; }
+          // ^ This condition is necessary for URLs like
+          // "file://winnthost/folder/file.txt".  In a situation like that, the getFile()
+          // returns "/folder/file.txt" and getHost() returns "winnthost".
+          return fileName; }
+       else {
+          return url.getFile(); }}
 
     /**
      * This method converts an absolute url to an url relative to a given base-url.
@@ -118,6 +184,7 @@ public class Tools {
      * "new URL(URL context, URL relative)".
      */
     public static String toRelativeURL(URL base, URL target) {
+        // Precondition: If URL is a path to folder, then it must end with '/' character. 
 	if( (base.getProtocol().equals(target.getProtocol())) &&
 	    (base.getHost().equals(target.getHost()))) {
 
@@ -125,16 +192,12 @@ public class Tools {
 	    String targetString = target.getFile();
 	    String result = "";
 
-	    if (baseString.endsWith(".mm")) {
 		//remove filename from URL
 		baseString = baseString.substring(0, baseString.lastIndexOf("/")+1);
-	    }
 
-	    if (targetString.endsWith(".mm")) {
 		//remove filename from URL
 		targetString = targetString.substring(0, targetString.lastIndexOf("/")+1);
-	    }
-	    
+
 	    StringTokenizer baseTokens = new StringTokenizer(baseString,"/");//Maybe this causes problems under windows
 	    StringTokenizer targetTokens = new StringTokenizer(targetString,"/");//Maybe this causes problems under windows
 
@@ -182,5 +245,8 @@ public class Tools {
 	}
 	return target.toString();
     }
+   public static void errorMessage(Object message) {
+      JOptionPane.showMessageDialog(null, message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }
+
 }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.14 2001-07-03 23:01:23 ponder Exp $*/
+/*$Id: NodeView.java,v 1.15 2003-11-03 10:15:46 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -25,18 +25,15 @@ import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;//This should not be done.
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.awt.Dimension;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Point;
-import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.dnd.*;
+import java.awt.datatransfer.*;
+
 import javax.swing.JLabel;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetListener;
+import javax.swing.JOptionPane;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 /**
  * This class represents a single Node of a MindMap
@@ -47,10 +44,21 @@ public abstract class NodeView extends JLabel {
     protected MindMapNode model;
     protected MapView map;
     protected EdgeView edge;
-    protected final static Color selectedColor = Color.darkGray;//the Color of the Rectangle of a selected Node
+    protected final static Color selectedColor = new Color(210,210,210); //Color.lightGray; //the Color of the Rectangle of a selected Node
+    protected final static Color dragColor = Color.lightGray; //the Color of appearing GradientBox on drag over
     protected int treeHeight;
     private boolean left = true; //is the node left of root?
     int relYPos;//the relative Y Position to it's parent
+
+    final static int DRAGGED_OVER_NO = 0;
+    final static int DRAGGED_OVER_SON = 1;
+    final static int DRAGGED_OVER_SIBLING = 2;
+
+    protected int isDraggedOver = 0;
+    public void setDraggedOver(int draggedOver) {
+       isDraggedOver = draggedOver; }
+    public int getDraggedOver() {
+       return isDraggedOver; }
 
 	final static int ALIGN_BOTTOM = -1;
 	final static int ALIGN_CENTER = 0;
@@ -75,10 +83,11 @@ public abstract class NodeView extends JLabel {
 	    } else if (getModel().getEdge().getStyle().equals("sharp_bezier")) {
 		edge = new SharpBezierEdgeView(getParentView(),this);
 	    } else {
-		System.out.println("Panic! Unknown Edge Type.");
+		System.err.println("Unknown Edge Type.");
 	    }
 	}
-	addMouseListener( map.getNodeMouseListener() );
+	addMouseListener( map.getNodeMouseMotionListener() );
+	addMouseMotionListener( map.getNodeMouseMotionListener() );
 	addKeyListener( map.getNodeKeyListener() );
 	addDragListener( map.getNodeDragListener() );
 	addDropListener( map.getNodeDropListener() );
@@ -86,8 +95,8 @@ public abstract class NodeView extends JLabel {
 
     void addDragListener(DragGestureListener dgl) {
 	DragSource dragSource = DragSource.getDefaultDragSource();
-	dragSource.createDefaultDragGestureRecognizer(
-						      this, DnDConstants.ACTION_MOVE,dgl);
+	dragSource.createDefaultDragGestureRecognizer 
+           (this, DnDConstants.ACTION_COPY | DnDConstants.ACTION_MOVE | DnDConstants.ACTION_LINK ,dgl);
     }
 
     void addDropListener(DropTargetListener dtl) {
@@ -107,7 +116,7 @@ public abstract class NodeView extends JLabel {
 	} else if (model.getStyle().equals("bubble") ) {
 	    newView = new BubbleNodeView( model, map );
 	} else {
-	    System.err.println("Panic! Tried to create a NodeView of unknown Style!");
+	    System.err.println("Tried to create a NodeView of unknown Style.");
 	    newView = new ForkNodeView(model, map);
 	}
 	model.setViewer(newView);
@@ -120,9 +129,26 @@ public abstract class NodeView extends JLabel {
     // public methods
     //
 
+    public boolean dropAsSibling(double xCoord) {
+       return isLeft() ?
+          xCoord > getSize().width*2/3 :
+          xCoord < getSize().width/3; }
+
+    public boolean followLink(double xCoord) {
+       return getModel().getLink() != null &&
+          (getModel().isRoot() || !getModel().hasChildren() || xCoord < getSize().width/2); }
+
+    public void updateCursor(double xCoord) {
+       int requiredCursor = followLink(xCoord) ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR;
+       if (getCursor().getType() != requiredCursor) {
+          setCursor(new Cursor(requiredCursor)); }}
+
     public boolean isRoot() {
 	return model.isRoot();
     }
+
+    public boolean isSibling(NodeView myNodeView) { 
+       return getParentView() == myNodeView.getParentView(); }
 
     public MindMapNode getModel() {
 	return model;
@@ -131,6 +157,32 @@ public abstract class NodeView extends JLabel {
     public void paint(Graphics graphics) {
 	super.paint(graphics);
     }
+
+   public void paintSelected(Graphics2D graphics, Dimension size) {
+       if( this.isSelected() ) {
+          graphics.setColor(selectedColor);
+          graphics.fillRect(0,0,size.width, size.height);
+          //g.drawRect(0,0,size.width-1, size.height-2);
+       }
+    }
+
+   public void paintDragOver(Graphics2D graphics, Dimension size) {
+        if (isDraggedOver == DRAGGED_OVER_SON) {
+           if (isLeft()) {
+              graphics.setPaint( new GradientPaint(size.width*3/4,0,map.getBackground(), size.width/4, 0, dragColor));
+              graphics.fillRect(0, 0, size.width*3/4, size.height-1); }
+           else {
+              graphics.setPaint( new GradientPaint(size.width/4,0,map.getBackground(), size.width*3/4, 0, dragColor));
+              graphics.fillRect(size.width/4, 0, size.width-1, size.height-1); }       
+	}
+
+        if (isDraggedOver == DRAGGED_OVER_SIBLING) {
+            graphics.setPaint( new GradientPaint(0,size.height*3/5,map.getBackground(), 0, size.height/5, dragColor));
+            graphics.fillRect(0, 0, size.width-1, size.height-1);
+	}
+    }
+
+
 
     //
     // get/set methods
@@ -178,7 +230,7 @@ public abstract class NodeView extends JLabel {
     }
 
     protected NodeView getParentView() {
-	return ( (MindMapNode)getModel().getParent() ).getViewer();
+	return getModel().getParentNode().getViewer();
     }
 
     /**
@@ -196,6 +248,9 @@ public abstract class NodeView extends JLabel {
 	return childrenViews;
     }
     
+    protected LinkedList getSiblingViews() {
+	return getParentView().getChildrenViews();
+    }
 
     /**
      * Returns the Point where the OutEdge
@@ -290,7 +345,7 @@ public abstract class NodeView extends JLabel {
     void insert() {
 	ListIterator it = getModel().childrenFolded();
 	if (it != null) {
-	    while(it.hasNext()) {
+	    while(it.hasNext()) {               
 		insert((MindMapNode)it.next());
 	    }
 	}
@@ -324,11 +379,23 @@ public abstract class NodeView extends JLabel {
     }
 
     void update() {
-	setText(getModel().toString());
-	setForeground(getModel().getColor());
-	if (((NodeAdapter)getModel()).getLink() != null) {//THIS IS NO GOOD!
-	    setCursor(new Cursor(Cursor.HAND_CURSOR));//getCursor() is int
-	}
+        if (getModel().toString().length() > 100) {
+           // This is a slightly strange feature, as the long texts
+           // interpret html tags, while short do not.  Let's follow the
+           // logic "get something not that perfect <b>now</b>".
+           setText("<html><table><tr><td width=\"600\">"+getModel().toString()+"</td></tr></html>"); }
+        else {
+           setText(getModel().toString()); }
+
+        setForeground(getModel().getColor());
+        String link = ((NodeAdapter)getModel()).getLink();
+	if ( link != null ) {
+           Icon icon = new ImageIcon(((NodeAdapter)getModel()).getFrame().getResource
+                                     (link.startsWith("mailto:") ? "images/Mail.png" : "images/Link.png"));
+           setIcon(icon); }
+	else {
+           setIcon(null); }
+
 	int style=getModel().getFont().getStyle();
 //  	if(getModel().isBold()) {
 //  	    style=Font.BOLD;

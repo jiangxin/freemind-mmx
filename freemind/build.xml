@@ -5,18 +5,25 @@
 	<property name="post" value="post" />
 	<property name="debug" value="on" />
 	<property name="build.compiler" value="modern" />
+	<property name="ver" value="0_5" />
 
 	<target name="compile">
 		<mkdir dir="${build}"/>
 		<javac	srcdir="${src}"
 			destdir="${build}"
+
 			debug="${debug}"/>
 	</target>
 
 	<target name="dist" depends="jar">
 		<copy todir="${dist}"> 
 			<fileset dir="${src}"
-				includes="freemind.props,freemind.bat,freemind.sh,license,patterns.xml"
+				includes="user.properties,freemind.bat,freemind.sh,license,patterns.xml"
+			/>
+		</copy>
+		<copy todir="${dist}"> 
+			<fileset dir="${src}/windows-launcher"
+				includes="Freemind.exe"
 			/>
 		</copy>
 	</target>
@@ -29,19 +36,19 @@
 		/>
 		<tar tarfile="${post}/freemind-src.tar"
 			basedir="${src}"
-			excludes="build,post,dist,*.jar"
+			excludes="build/**,post/**,dist/**,*.jar"
 		/>
 		<gzip src="${post}/freemind-bin.tar"
-			zipfile="${post}/freemind-bin-ver.tar.gz"
+			zipfile="${post}/freemind-bin-${ver}.tar.gz"
 		/>
 		<gzip src="${post}/freemind-src.tar"
-			zipfile="${post}/freemind-src-ver.tar.gz"
+			zipfile="${post}/freemind-src-${ver}.tar.gz"
 		/>
 		<tar tarfile="${post}/freemind-browser.tar"
 			basedir="${dist}/browser"
 		/>
 		<gzip src="${post}/freemind-browser.tar"
-			zipfile="${post}/freemind-browser-ver.tar.gz"
+			zipfile="${post}/freemind-browser-${ver}.tar.gz"
 		/>
 		<delete>
 			<fileset dir="${post}" includes="*.tar" />
@@ -76,6 +83,7 @@
 				<include name="images/Back24.gif"/>
 				<include name="images/Forward24.gif"/>
 				<include name="images/Print24.gif"/>
+				<include name="images/Link.png"/>
 				<include name="*.properties"/>
 			</fileset>
 		</jar>
@@ -105,5 +113,11 @@
 		<delete dir="${build}" />
 		<delete dir="${dist}" />
 		<delete dir="${post}" />
+	</target>
+	<target name="release">
+		<copy todir="C:\share\freemind\lib">
+			<fileset dir="${dist}/lib">
+			</fileset>
+		</copy>
 	</target>
 </project>

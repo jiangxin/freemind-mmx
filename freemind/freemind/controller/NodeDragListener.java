@@ -22,16 +22,12 @@ package freemind.controller;
 import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.NodeView;
 // Drag & Drop
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DnDConstants;
+import java.awt.dnd.*;
 import java.awt.datatransfer.Transferable;
-import java.awt.dnd.DragSourceListener;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceEvent;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
+import java.awt.Cursor;
 
 /**
  * The NodeDragListener which belongs to every
@@ -39,43 +35,68 @@ import java.awt.event.InputEvent;
  */
 public class NodeDragListener implements DragGestureListener {
 
-    private final Controller c;
+   private final Controller c;
+   
+   public NodeDragListener(Controller controller) {
+      c = controller;
+   }
 
-    public NodeDragListener(Controller controller) {
-	c = controller;
-    }
+   public Cursor getCursorByAction(int dragAction) {
+      switch (dragAction) {
+      case DnDConstants.ACTION_COPY:
+         return DragSource.DefaultCopyDrop;
+      case DnDConstants.ACTION_LINK:
+         return DragSource.DefaultLinkDrop;
+      default:
+         return DragSource.DefaultMoveDrop;
+      }
+   }
 
-    public void dragGestureRecognized(DragGestureEvent e) {
-	if(!c.getFrame().getProperty("draganddrop").equals("true")) return;
-	if(e.getTriggerEvent().getModifiers() == InputEvent.BUTTON3_MASK) return;
+   public void dragGestureRecognized(DragGestureEvent e) {
+      if(!c.getFrame().getProperty("draganddrop").equals("true")) return;
 
-	MindMapNode node = ((NodeView)e.getComponent()).getModel();
-	if (node.isRoot()) return;
-	Transferable t = c.getModel().copy(node);
-	// starts the dragging
-	//	DragSource dragSource = DragSource.getDefaultDragSource();
-	e.startDrag (DragSource.DefaultMoveDrop, t,
-			      new DragSourceListener() {
-				      public void	dragDropEnd(DragSourceDropEvent dsde) {
-					  // if not ok, go back
-					  if ( !dsde.getDropSuccess()){
-					      //					      c.getModel().paste(oldnode,(MindMapNode)oldnode.getParent());
-					  } else if (dsde.getDropAction()==DnDConstants.ACTION_MOVE) {
-					      //successful
-					      MindMapNode oldnode = ((NodeView)dsde.getDragSourceContext().getComponent()).getModel();
-					      c.getModel().cut(oldnode);
-					  }
-				      }
-				      public void	dragEnter(DragSourceDragEvent dsde) {
-				      }
-				      public void	dragExit(DragSourceEvent dse) {
-				      }
-				      public void	dragOver(DragSourceDragEvent dsde) {
-				      }
-				      public void	dropActionChanged(DragSourceDragEvent dsde) {
-				      }
-				  }
-			      );
-    }
+      MindMapNode node = ((NodeView)e.getComponent()).getModel();
+      if (node.isRoot()) return;
+
+      Transferable t = new StringSelection("");
+
+      Cursor cursor = getCursorByAction(e.getDragAction());
+
+      if ((e.getTriggerEvent().getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) != 0) {
+         // Change drag action
+         cursor = DragSource.DefaultLinkDrop;
+         t = new StringSelection("LINK");
+      }
+
+      if ((e.getTriggerEvent().getModifiersEx() & InputEvent.BUTTON2_DOWN_MASK) != 0) {
+         // Change drag action
+         cursor = DragSource.DefaultCopyDrop;
+         t = new StringSelection("COPY");
+      }
+     
+      // starts the dragging
+      //	DragSource dragSource = DragSource.getDefaultDragSource();
+
+      e.startDrag
+         ( cursor , t,
+          new DragSourceListener() {
+             public void	dragDropEnd(DragSourceDropEvent dsde) {
+
+             }
+
+             public void dragEnter(DragSourceDragEvent e) {
+             }
+             public void	dragExit(DragSourceEvent dse) {
+             }
+             public void	dragOver(DragSourceDragEvent dsde) {
+             }
+             public void	dropActionChanged(DragSourceDragEvent dsde) {
+                   dsde.getDragSourceContext().setCursor(getCursorByAction(dsde.getUserAction()));
+             }
+          }
+       );
+   }
 }
+
+
 

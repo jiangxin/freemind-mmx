@@ -16,35 +16,22 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMapModel.java,v 1.3 2001-04-19 16:20:38 ponder Exp $*/
+/*$Id: BrowseMapModel.java,v 1.4 2003-11-03 10:15:46 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
+
 import freemind.main.FreeMindMain;
+import freemind.main.XMLElement;
+import freemind.main.Tools;
 import freemind.modes.MapAdapter;
 import java.awt.Color;
 import java.awt.Font;
-import java.io.FileNotFoundException;
-import java.io.File;
-import java.io.StringWriter;
-import java.io.FileOutputStream;
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
-import freemind.modes.MapAdapter;
-import java.awt.Color; 
-import freemind.main.XMLElement;
-//XML Specification (Interfaces)
-//import  org.w3c.dom.Document;
-//import org.w3c.dom.Element;
-// //XML Parser, actually apache xerces
-//import org.apache.xerces.parsers.DOMParser;
-//import org.apache.xerces.dom.DocumentImpl;
-//import org.apache.xml.serialize.OutputFormat;
-//import org.apache.xml.serialize.XMLSerializer;
+import java.net.URLConnection;
+import java.security.AccessControlException;
+import javax.swing.JOptionPane;
 
 public class BrowseMapModel extends MapAdapter {
 
@@ -99,6 +86,10 @@ public class BrowseMapModel extends MapAdapter {
     public void save(File file) {
     }
     
+    public boolean isSaved() {
+	return true;
+    }
+
     public void load(File file) throws FileNotFoundException {
 	throw new FileNotFoundException();
     }
@@ -117,35 +108,28 @@ public class BrowseMapModel extends MapAdapter {
     BrowseNodeModel loadTree(URL url) {
 	BrowseNodeModel root = null;
 
-	/*
-	try {
-	    //Generating Parser
-	              DOMParser parser = new DOMParser();
-	    //	    try {
-		//		parser.setFeature("http://apache.org/xml/features/dom/include-ignorable-whitespace",false);
-		parser.parse(file.getPath());
-		//	    } catch(Exception e) {
-		//		return null;
-		//	    }
-	    Document doc = parser.getDocument();
-
-	    //Throw away old map
-	    Element map = doc.getDocumentElement();
-	    Element rootElement = (Element)map.getChildNodes().item(0);
-	    root = new BrowseNodeModel();
-	    root.load(rootElement);
-	} catch(Exception e) {
-	    return null;
-	    }*/
-
-
-
 	//NanoXML Code
 	XMLElement parser = new XMLElement();
+        InputStreamReader urlStreamReader = null;
+        URLConnection uc = null;
+
+        try {
+           urlStreamReader = new InputStreamReader( url.openStream() ); }
+        catch (AccessControlException ex) {
+           Tools.errorMessage("Could not open URL "+url.toString()+". Access Denied.");
+           System.err.println(ex);
+           return null; }
+        catch (Exception ex) {
+           Tools.errorMessage("Could not open URL "+url.toString()+".");
+           System.err.println(ex);
+           // ex.printStackTrace();
+           return null;
+        }
+
 	try {
-	    parser.parseFromReader(new InputStreamReader( url.openStream() ));
+	    parser.parseFromReader(urlStreamReader);
 	} catch (Exception ex) {
-	    System.err.println("Help! Error while parsing!");
+	    System.err.println(ex);
 	    return null;
 	}
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.6 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: MindMapToolBar.java,v 1.7 2003-11-03 10:15:46 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -53,6 +53,10 @@ public class MindMapToolBar extends JToolBar {
 
 	button = add(c.cut);
 	button.setText("");
+
+	button = add(c.copy);
+	button.setText("");
+
 	button = add(c.paste);
 	button.setText("");
 

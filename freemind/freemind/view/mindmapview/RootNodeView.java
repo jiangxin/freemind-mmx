@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.6 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: RootNodeView.java,v 1.7 2003-11-03 10:15:47 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -134,6 +134,13 @@ public class RootNodeView extends NodeView {
 	return new Dimension(width,height);
     }	
 
+    public void paintSelected(Graphics2D graphics, Dimension size) {
+       if( this.isSelected() ) {
+          graphics.setColor(selectedColor);
+          graphics.fillOval(0,0,size.width-1,size.height-1);
+       }
+    }
+
 
     /**
      * Paints the node
@@ -142,16 +149,17 @@ public class RootNodeView extends NodeView {
 	Graphics2D g = (Graphics2D)graphics;
 	Dimension size = getSize();
 	if (this.getModel()==null) return;
+
+        paintSelected(g, size);
+        //paintDragOver(g, size);
+
 	//Draw a root node
 	setHorizontalAlignment(CENTER);
+
 	g.setColor(Color.red);
 	g.setStroke(new BasicStroke(2.0f));
 	g.drawOval(0,0,size.width-2,size.height-1);
 
-	if( this.isSelected() ) {
-	    g.setColor(selectedColor);
-	    g.drawRect(0,0,size.width-1, size.height-1);
-	}
 	super.paint(g);
     }
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Pattern.java,v 1.2 2001-06-24 20:59:47 ponder Exp $*/
+/*$Id: Pattern.java,v 1.3 2003-11-03 10:15:45 sviles Exp $*/
 
 package freemind.modes;
 
@@ -380,7 +380,7 @@ public class Pattern {
 	    fileout.close();
 	    
 	} catch(Exception e) {
-	    System.out.println("Error in MindMapMapModel.saveXML(): ");
+	    System.err.println("Error in MindMapMapModel.saveXML(): ");
 	    e.printStackTrace();
 	}
     }

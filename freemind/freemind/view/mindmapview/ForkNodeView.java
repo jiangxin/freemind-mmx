@@ -16,17 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ForkNodeView.java,v 1.5 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: ForkNodeView.java,v 1.6 2003-11-03 10:15:46 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.modes.NodeAdapter;//This should not be done.
-import java.awt.Dimension;
-import java.awt.Color;
-import java.awt.Point;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import freemind.modes.MindMapNode;
+import java.awt.*;
+import javax.swing.ImageIcon;
+import javax.swing.Icon;
 
 
 /**
@@ -44,6 +42,9 @@ public class ForkNodeView extends NodeView {
 	super(model,map);
     }
 
+    public Dimension getPreferredSize() {
+	return new Dimension(super.getPreferredSize().width, super.getPreferredSize().height+3);
+    }	
   
     /**
      * Paints the node
@@ -51,20 +52,15 @@ public class ForkNodeView extends NodeView {
     public void paint(Graphics graphics) {
 	Graphics2D g = (Graphics2D)graphics;
 	Dimension size = getSize();
+
 	if (this.getModel()==null) return;
+
+        paintSelected(g, size);
+        paintDragOver(g, size);
+
 	//Draw a standard node
 	g.setColor(getEdge().getColor());
-	g.drawLine(0,size.height-2,size.width,size.height-2);
-
-	if( this.isSelected() ) {
-	    g.setColor(selectedColor);
-	    g.drawRect(0,0,size.width-1, size.height-1);
-	}
-
-	if (((NodeAdapter)getModel()).getLink() != null) {//THIS IS NO GOOD! NodeAdapter is too special.
-	    graphics.setColor(Color.red);
-	    graphics.drawLine(0,getSize().height-3,getSize().width,getSize().height-3);
-	}
+	g.drawLine(0,size.height-1,size.width,size.height-1);
    
 	super.paint(g);
     }

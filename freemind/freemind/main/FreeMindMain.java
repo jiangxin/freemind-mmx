@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.4 2001-06-22 20:35:14 ponder Exp $*/
+/*$Id: FreeMindMain.java,v 1.5 2003-11-03 10:15:45 sviles Exp $*/
 
 package freemind.main;
 
@@ -25,12 +25,16 @@ import freemind.controller.MenuBar;
 import java.util.ResourceBundle;
 import java.awt.Container;
 import java.net.URL;
+import java.io.File;
 import javax.swing.JLayeredPane;
 
 public interface FreeMindMain {
     public MapView getView();
 
     public void setView(MapView view);
+
+    public void setWaitingCursor(boolean waiting);
+    public File getPatternsFile();
 
     public MenuBar getFreeMindMenuBar();
 
@@ -43,7 +47,9 @@ public interface FreeMindMain {
 
     public void err (String msg);
 
-    /**Try to open the document in an external application*/
+    /**
+     * Open url in WWW browser. This method hides some differences between operating systems.
+     */
     public void openDocument(URL location) throws Exception;
 
     /**remove this!*/

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapPopupMenu.java,v 1.7 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: MindMapPopupMenu.java,v 1.8 2003-11-03 10:15:46 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -31,10 +31,14 @@ public class MindMapPopupMenu extends JPopupMenu {
     private MindMapController c;
 
     public MindMapPopupMenu(MindMapController c) {
-	this.c = c;
-	this.add(c.getNodeMenu());
-	this.add(c.getBranchMenu());
-	this.add(c.getEdgeMenu());
-	this.add(c.getExtensionMenu());
+       	this.c = c;
+       	this.add(c.getNodeMenu());
+       	this.add(c.getBranchMenu());
+       	this.add(c.getEdgeMenu());
+       	this.add(c.getExtensionMenu());
+        this.addSeparator();
+	this.add(c.cut).setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_cut")));
+        this.add(c.copy).setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_copy")));
+	this.add(c.paste).setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_paste")));
     }
 }

@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.27 2001-07-03 23:01:23 ponder Exp $*/
+/*$Id: Controller.java,v 1.28 2003-11-03 10:15:44 sviles Exp $*/
 
 package freemind.controller;
 
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
+import freemind.main.Tools;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -30,14 +31,7 @@ import freemind.modes.Mode;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.browsemode.BrowseController;//this isn't good
-import java.util.List;
-import java.util.ListIterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.text.MessageFormat;
 import java.net.URL;
 import java.awt.Component;
@@ -46,15 +40,7 @@ import java.awt.BorderLayout;
 import java.awt.print.PrinterJob;
 import java.awt.print.PageFormat;
 import java.awt.event.ActionEvent;
-import javax.swing.JPopupMenu;
-import javax.swing.JMenu;
-import javax.swing.JOptionPane;
-import javax.swing.JColorChooser;
-import javax.swing.ImageIcon;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JToolBar;
+import javax.swing.*;
 //Documentation
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,10 +60,12 @@ public class Controller {
     private FreeMindMain frame;
     private JToolBar toolbar;
     private JPopupMenu popupmenu;
-    private NodeMouseListener nodeMouseListener;
+    private NodeMouseMotionListener nodeMouseMotionListener;
     private NodeKeyListener nodeKeyListener;
     private NodeDragListener nodeDragListener;
     private NodeDropListener nodeDropListener;
+    private MapMouseMotionListener mapMouseMotionListener;
+    private MapMouseWheelListener mapMouseWheelListener;
     private ModesCreator modescreator = new ModesCreator(this);
     private PageFormat pageFormat;
     boolean isPrintingAllowed=true;
@@ -110,10 +98,13 @@ public class Controller {
 	mapModuleManager=new MapModuleManager(this);
 	lastOpened=new LastOpenedList(this, getFrame().getProperty("lastOpened"));
 
-  	nodeMouseListener = new NodeMouseListener(this);
+  	nodeMouseMotionListener = new NodeMouseMotionListener(this);
 	nodeKeyListener = new NodeKeyListener(this);
 	nodeDragListener = new NodeDragListener(this);
 	nodeDropListener = new NodeDropListener(this);
+
+  	mapMouseMotionListener = new MapMouseMotionListener(this);
+  	mapMouseWheelListener = new MapMouseWheelListener(this);
 
 	try {
 	    pageFormat = PrinterJob.getPrinterJob().defaultPage();
@@ -160,7 +151,10 @@ public class Controller {
 
     /**Returns the current model*/
     public MindMap getModel() {
-	return getMapModule().getModel();
+       if (getMapModule() != null) {
+          return getMapModule().getModel();
+       }
+       return null;
     }
 
     public MapView getView() {
@@ -202,15 +196,14 @@ public class Controller {
 	//Check if the mode is available
 	Mode newmode = (Mode)modes.get(mode);
 	if (newmode == null) {
-	    getFrame().err(getFrame().getResources().getString("mode_na")+": "+mode);
+            Tools.errorMessage(getFrame().getResources().getString("mode_na")+": "+mode);
 	    return false;
 	}
 
-	if (getMode() != null) {
-	    if (getMode().getModeToolBar() != null) {
-		toolbar.remove(getMode().getModeToolBar());
-	    }
-	}
+	if (getMode() != null && getMode().getModeToolBar() != null) {
+            toolbar.remove(getMode().getModeToolBar());
+        }
+
 	if (getMapModule() != null) {
 	    getMapModuleManager().setMapModule(null);
 	    getMapModuleManager().mapModuleChanged();
@@ -251,8 +244,16 @@ public class Controller {
 	return nodeKeyListener;
     }
 
-    public NodeMouseListener getNodeMouseListener() {
-	return nodeMouseListener;
+    public NodeMouseMotionListener getNodeMouseMotionListener() {
+	return nodeMouseMotionListener;
+    }
+
+    public MapMouseMotionListener getMapMouseMotionListener() {
+	return mapMouseMotionListener;
+    }
+
+    public MapMouseWheelListener getMapMouseWheelListener() {
+	return mapMouseWheelListener;
     }
 
     public NodeDragListener getNodeDragListener() {
@@ -399,6 +400,8 @@ public class Controller {
     //
 
     private void quit() {
+        // Restoreable is not an English word, while Restorable is. We will leave the rest of the code as it is anyway,
+        String currentMapRestorable = (getModel()!=null) ? getModel().getRestoreable() : null;
 	while (getView() != null) {
 	    try {
 		getMapModuleManager().close();
@@ -410,6 +413,8 @@ public class Controller {
 
 	String lastOpenedString=lastOpened.save();
 	getFrame().setProperty("lastOpened",lastOpenedString);
+        if (currentMapRestorable != null) {
+           getFrame().setProperty("onStartIfNotSpecified",currentMapRestorable); }
 	getFrame().saveProperties();
 	//save to properties
 	System.exit(0);
@@ -682,7 +687,6 @@ public class Controller {
 		this.isDlg = isDlg;
 	}
 	public void actionPerformed(ActionEvent e) {
-//	    JOptionPane.showMessageDialog(getView(),"Printing doesn't work yet, it's just experimental.\n I'll implement it in a future version.");
 	    PrinterJob printJob = PrinterJob.getPrinterJob();
 
 	    printJob.setPrintable(getView(),pageFormat);
@@ -836,3 +840,4 @@ public class Controller {
 	}
     }
 }//Class Controller
+

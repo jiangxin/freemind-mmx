@@ -22,6 +22,8 @@ package freemind.controller;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.MapView;
 import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.MindMapNodeModel;
+import freemind.modes.mindmapmode.MindMapMapModel;
 // For Drag&Drop
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -31,6 +33,7 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.util.ListIterator;
 
 public class NodeDropListener implements DropTargetListener {
 
@@ -66,15 +69,61 @@ public class NodeDropListener implements DropTargetListener {
 
 	
     public void drop (DropTargetDropEvent dtde) {
-	if(!isDropAcceptable(dtde)) {
-	    dtde.rejectDrop();
-	    return;
-	}
-	dtde.acceptDrop(DnDConstants.ACTION_MOVE);
-	try {
-	    Transferable t = dtde.getTransferable();
-	    MindMapNode node = ((NodeView)dtde.getDropTargetContext().getComponent()).getModel();
-	    c.getModel().paste(t,node);
+        try {
+           int dropAction = dtde.getDropAction();
+	   Transferable t = dtde.getTransferable();
+           String sourceAction = (String)t.getTransferData(DataFlavor.stringFlavor);
+           if (sourceAction.equals("LINK")) {
+              dropAction = DnDConstants.ACTION_LINK; }
+           if (sourceAction.equals("COPY")) {
+              dropAction = DnDConstants.ACTION_COPY; }
+
+           NodeView targetNodeView = (NodeView)dtde.getDropTargetContext().getComponent();
+           targetNodeView.setDraggedOver(0);
+           targetNodeView.repaint();
+
+           if((dropAction == DnDConstants.ACTION_MOVE) && !isDropAcceptable(dtde)) {
+             dtde.rejectDrop();
+             return;
+           }
+           dtde.acceptDrop(dtde.getDropAction());
+
+           // This all is specific to MindMap model. Needs rewrite to work for other modes.
+           // We ignore data transfer in dtde. We take selected nodes as drag sources.
+           // <problem>
+           // The behaviour is not so fine, when some of selected nodes is an ancestor of other selected nodes.
+           // Ideally, we would first unselect all nodes, which have an ancestor among selected nodes.
+           // I don't have time/lust to do this. This is just a minor problem.
+           // </problem>
+           
+           // By transferable object we only transfer source action. This will be a problem, when we want
+           // to implement extra application dnd or dnd between different Java Virtual Machines.
+
+           MindMapNode targetNode = targetNodeView.getModel();
+           MindMapNodeModel targetNodeModel = (MindMapNodeModel)targetNode;
+
+           if (dropAction == DnDConstants.ACTION_LINK) {
+              // ACTION_LINK means for us change the color, style and font.
+
+              // This is not very clean. This all should probably be
+              // implemented on the mindMapMapModel level. On the other
+              // hand, one would have to downcast to MindMapMapModel anyway.
+
+              //MindMapNode selectedNode = c.getView().getSelected().getModel();
+              MindMapMapModel mindMapMapModel = (MindMapMapModel)c.getModel();
+
+              for(ListIterator it = c.getView().getSelecteds().listIterator();it.hasNext();) {
+                 MindMapNodeModel selectedNodeModel = (MindMapNodeModel)((NodeView)it.next()).getModel();
+                 mindMapMapModel.setNodeColor(selectedNodeModel,targetNode.getColor());
+                 mindMapMapModel.setNodeFont(selectedNodeModel,targetNode.getFont()); }
+           }
+           else {
+              c.getModel().paste (dropAction == DnDConstants.ACTION_MOVE 
+                                  ? c.getModel().cut() : c.getModel().copy(),
+                                  targetNode, 
+                                  targetNodeView.dropAsSibling(dtde.getLocation().getX())); //}
+           }
+           c.getView().select(targetNodeModel.getViewer(),false);
 	}
 	catch (Exception e) {
 	    System.out.println("Drop exception:"+e);
@@ -85,17 +134,32 @@ public class NodeDropListener implements DropTargetListener {
     }
 
     public void dragEnter (DropTargetDragEvent dtde) {
-	// TODO: check DataFlavor before say ok
-	// then dtde.rejectDrag(); if not
-	if(isDragAcceptable(dtde))
-	    dtde.acceptDrag(DnDConstants.ACTION_MOVE);
-	else
-	    dtde.rejectDrag();
+       // TODO: check DataFlavor before say ok
+       // then dtde.rejectDrag(); if not
+       if(isDragAcceptable(dtde)) {
+          dtde.acceptDrag(DnDConstants.ACTION_MOVE); }
+       else {
+          dtde.rejectDrag(); }
     }
 
-    public void dragOver (DropTargetDragEvent e) {}
-    public void dragExit (DropTargetEvent e) {}
+    public void dragOver (DropTargetDragEvent e) {
+       NodeView draggedNode = (NodeView)e.getDropTargetContext().getComponent();
+       int newDraggedOver = (draggedNode.dropAsSibling(e.getLocation().getX())) ? 2 : 1;
+       boolean repaint = newDraggedOver != draggedNode.getDraggedOver();
+       draggedNode.setDraggedOver(newDraggedOver);
+       if (repaint) {
+          draggedNode.repaint(); }
+    }
+   public void dragExit (DropTargetEvent e) {
+       NodeView draggedNode = (NodeView)e.getDropTargetContext().getComponent();
+       draggedNode.setDraggedOver(0);
+       draggedNode.repaint();
+   }
     public void dragScroll (DropTargetDragEvent e) {}
     public void dropActionChanged (DropTargetDragEvent e) {}    
 }
+
+
+
+
 

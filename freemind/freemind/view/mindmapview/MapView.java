@@ -16,33 +16,29 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.14 2001-06-22 20:35:14 ponder Exp $*/
+/*$Id: MapView.java,v 1.15 2003-11-03 10:15:46 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.MindMap;
 import freemind.view.MapModule;
 import freemind.controller.Controller;
-import freemind.controller.NodeMouseListener;
+import freemind.controller.NodeMouseMotionListener;
 import freemind.controller.NodeKeyListener;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.Vector;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Color;
-import java.awt.Rectangle;
+import java.util.*;
+import java.awt.*;
 import java.awt.print.Printable;
 import java.awt.print.PageFormat;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DropTargetListener;
+
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeModelEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DropTargetListener;
-
+import javax.swing.JOptionPane;
 
 /**
  * This class represents the view of a whole MindMap
@@ -76,6 +72,11 @@ public class MapView extends JPanel implements Printable {
 	initRoot();
 
 	setBackground(getModel().getBackgroundColor());
+
+        addMouseListener( controller.getMapMouseMotionListener() );
+        addMouseMotionListener( controller.getMapMouseMotionListener() );
+        addMouseWheelListener( controller.getMapMouseWheelListener() );
+
     }
 
     public void initRoot() {
@@ -102,11 +103,12 @@ public class MapView extends JPanel implements Printable {
 	JViewport viewPort = (JViewport)getParent();
 
 	Dimension d = viewPort.getExtentSize();
-	Rectangle scrollTo = new Rectangle(node.getLocation().x + (node.getPreferredSize().width/2) - (d.width/2), node.getLocation().y + (node.getPreferredSize().height/2) - (d.height/2), d.width, d.height);
-	scrollRectToVisible(scrollTo);
-
-	Rectangle scrollTo2 = new Rectangle(node.getLocation().x + (node.getPreferredSize().width/2) - (d.width/2), node.getLocation().y + (node.getPreferredSize().height/2) - (d.height/2), d.width, d.height);
-	scrollRectToVisible(scrollTo2);
+        scrollRectToVisible(new Rectangle(node.getLocation().x + (node.getPreferredSize().width/2) - (d.width/2),
+                                          node.getLocation().y + (node.getPreferredSize().height/2) - (d.height/2),
+                                          d.width, d.height));
+        scrollRectToVisible(new Rectangle(node.getLocation().x + (node.getPreferredSize().width/2) - (d.width/2),
+                                          node.getLocation().y + (node.getPreferredSize().height/2) - (d.height/2),
+                                          d.width, d.height));
     }
 
     public void scrollNodeToVisible( NodeView node ) {
@@ -116,6 +118,29 @@ public class MapView extends JPanel implements Printable {
   	    scrollRectToVisible( new Rectangle(node.getLocation().x-20, node.getLocation().y,node.getSize().width+20,node.getSize().height) );
   	    scrollRectToVisible( new Rectangle(node.getLocation().x-20, node.getLocation().y,node.getSize().width+20,node.getSize().height) );
   	}
+    }
+
+    /**
+      * Scroll the view of the map to the south-west, i.e. scroll the map itself to the north-east.
+      */
+    public void scrollBy(int x, int y) {
+       JViewport mapViewport = (JViewport)getParent();
+       Point currentPoint = mapViewport.getViewPosition();                 // Get View Position
+       currentPoint.translate(x, y);                                       // Add the difference to it
+       // Watch for the boundaries
+       //    Low boundaries
+       if (currentPoint.getX()<0) {
+          currentPoint.setLocation(0, currentPoint.getY()); }
+       if (currentPoint.getY()<0) {
+          currentPoint.setLocation(currentPoint.getX(), 0); }
+       //    High boundaries
+       double maxX = getSize().getWidth() - mapViewport.getExtentSize().getWidth();     // getView() gets viewed area - JPanel
+       double maxY = getSize().getHeight() - mapViewport.getExtentSize().getHeight();
+       if (currentPoint.getX()>maxX) {
+          currentPoint.setLocation(maxX, currentPoint.getY()); }
+       if (currentPoint.getY()>maxY) {
+          currentPoint.setLocation(currentPoint.getX(), maxY); }
+       mapViewport.setViewPosition(currentPoint);                          // Set It Back
     }
 
     public void moveLeft() {
@@ -208,7 +233,7 @@ public class MapView extends JPanel implements Printable {
 	    oldSelected.repaint();
 	}
 */
-    LinkedList oldSelecteds = getSelecteds();
+       LinkedList oldSelecteds = getSelecteds();
 	//select new node
 	this.selected.clear();
 	this.selected.addElement(newSelected);
@@ -217,13 +242,13 @@ public class MapView extends JPanel implements Printable {
 	newSelected.repaint();
 
 	for(ListIterator e = oldSelecteds.listIterator();e.hasNext();) {
-	    NodeView oldSelected = (NodeView)e.next();
-		oldSelected.repaint();
+           NodeView oldSelected = (NodeView)e.next();
+           oldSelected.repaint();
 	}
     }
 
     /**
-     * Add this onde to the selection.
+     * Add this node to the selection.
      */
     public void toggleSelect(NodeView newSelected) {
 	NodeView oldSelected = getSelected();
@@ -253,7 +278,22 @@ public class MapView extends JPanel implements Printable {
 	    NodeView target = (NodeView)e.next();
 		selectBranch(target,true);
 	}
-	}
+    }
+
+    public void selectContinuous(NodeView newSelected) {
+       // Precondition: newSelected != getSelected()
+       NodeView oldSelected = getSelected();
+       ListIterator i = newSelected.getSiblingViews().listIterator();
+       while (i.hasNext()) {
+          NodeView nodeView = (NodeView)i.next();
+          if ( nodeView == newSelected || nodeView == oldSelected ) {
+             select(nodeView,false);
+             break; }}
+       while (i.hasNext()) {
+          NodeView nodeView = (NodeView)i.next();
+          select(nodeView,true);
+          if ( nodeView == newSelected || nodeView == oldSelected ) {
+             break; }}}
 
     //
     // get/set methods
@@ -263,8 +303,8 @@ public class MapView extends JPanel implements Printable {
 	return model;
     }
 
-    NodeMouseListener getNodeMouseListener() {
-	return getController().getNodeMouseListener();
+    NodeMouseMotionListener getNodeMouseMotionListener() {
+	return getController().getNodeMouseMotionListener();
     }
 
     NodeKeyListener getNodeKeyListener() {
@@ -288,6 +328,7 @@ public class MapView extends JPanel implements Printable {
     }
 
     public LinkedList getSelecteds() {
+        // return an ArrayList of NodeViews.
 	LinkedList result = new LinkedList();
 	for (int i=0; i<selected.size();i++) {
 		result.add( getSelected(i) );
@@ -295,6 +336,29 @@ public class MapView extends JPanel implements Printable {
 	return result;
     }
 
+    public ArrayList /*of NodeViews*/ getSelectedsSortedByY() {
+        TreeMap sortedNodes = new TreeMap();
+	for (int i=0; i<selected.size();i++) {
+           sortedNodes.put(new Integer(getSelected(i).getY()), getSelected(i)); }
+
+        ArrayList selectedNodes = new ArrayList();
+        for(Iterator it = sortedNodes.entrySet().iterator();it.hasNext();) {
+           selectedNodes.add( ((Map.Entry)it.next()).getValue() ); }
+
+        return selectedNodes;
+   }
+
+    public ArrayList /*of MindMapNodes*/ getSelectedNodesSortedByY() {
+        TreeMap sortedNodes = new TreeMap();
+	for (int i=0; i<selected.size();i++) {
+           sortedNodes.put(new Integer(getSelected(i).getY()), getSelected(i).getModel()); }
+
+        ArrayList selectedNodes = new ArrayList();
+        for(Iterator it = sortedNodes.entrySet().iterator();it.hasNext();) {
+           selectedNodes.add( ((Map.Entry)it.next()).getValue() ); }
+
+        return selectedNodes;
+   }
 
     public boolean isSelected(NodeView n) {
 	if (isPrinting) return false;
@@ -468,8 +532,10 @@ public class MapView extends JPanel implements Printable {
 	    NodeView parentView = parent.getViewer();
 	    //works only with one child
 	    MindMapNode child = (MindMapNode)e.getChildren()[0];
-	    parentView.insert( child );
-	    getMindMapLayout().calcTreeHeight( child.getViewer() );
+
+            if (child != null) {  // if a node is folded, child is null.
+               parentView.insert( child );
+               getMindMapLayout().calcTreeHeight( child.getViewer() ); } 
 	    getMindMapLayout().subtreeChanged(parentView);
 	    //revalidate();
 	    repaint();
@@ -489,18 +555,30 @@ public class MapView extends JPanel implements Printable {
 	/**
 	 * 
 	 */
+
+
 	public void treeStructureChanged( TreeModelEvent e ) {
 	    //This implementation simply rereads the whole mindmap
-	    removeAll();
-	    MindMapNode newRoot = (MindMapNode)e.getTreePath().getLastPathComponent();
-	    if(!newRoot.isRoot()) {
-		newRoot=getRoot().getModel();
-	    }
-	    NodeView newRootView = NodeView.newNodeView(newRoot,getMap());
-	    rootView=newRootView;
+
+            ArrayList selectedNodes = new ArrayList();
+            for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+               selectedNodes.add(((NodeView)it.next()).getModel()); }
+            MindMapNode selectedNode = getSelected().getModel();
+
+            removeAll();
+
+            rootView = NodeView.newNodeView(getRoot().getModel(),getMap());
 	    rootView.insert();
+
 	    getMindMapLayout().reinitialize();
 	    revalidate();
+
+            // Warning, the old views still exist, because JVM has not deleted them. But don't use them!
+            selected.clear();
+            for (ListIterator it = selectedNodes.listIterator();it.hasNext();) {
+               selected.addElement(((MindMapNode)it.next()).getViewer()); }
+            selectedNode.getViewer().requestFocus();
+
 	    repaint();
 	}
 

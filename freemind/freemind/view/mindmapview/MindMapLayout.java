@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.9 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: MindMapLayout.java,v 1.10 2003-11-03 10:15:46 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.lang.Math;
 import javax.swing.JLabel;
+import javax.swing.JViewport;
 
 /**
  * This class will Layout the Nodes and Edges of an MapView.
@@ -38,7 +39,7 @@ import javax.swing.JLabel;
 public class MindMapLayout implements LayoutManager {
 
     private int BORDER = 30;//width of the border around the map.
-    private int hgap = 15;//width of the horizontal gap that contains the edges
+    private int hgap = 20;//width of the horizontal gap that contains the edges
     private int VGAP = 3;//height of the vertical gap between nodes
     private MapView map;
     private int ySize;
@@ -70,6 +71,10 @@ public class MindMapLayout implements LayoutManager {
      * position of every node to its parent is known.
      */
     private void layout(NodeView node) {
+        // Relative Y positions of nodes are already calculated.  Here we
+        // only calculate relative x positions of nodes.  Whenever we talk
+        // about relative coordinates / positions, we always mean relative to
+        // the coordinates of node's parent.
 
 	int x = 0;
 	if ( node.isRoot() ) {
@@ -80,7 +85,7 @@ public class MindMapLayout implements LayoutManager {
 	    x = node.getParentView().getPreferredSize().width + hgap;
 	}
 	
-	placeNode(node, x,node.relYPos);
+	placeNode(node, x, node.relYPos);
 
 	//Recursion
 	for ( ListIterator e = node.getChildrenViews().listIterator(); e.hasNext(); ) {
@@ -92,6 +97,7 @@ public class MindMapLayout implements LayoutManager {
      * Place a node relative to its parent.
      */
     private void placeNode( NodeView node, int relativeX, int relativeY) {
+        // relativeX, relativeY - already calculated coordinates of node relative to its parent.
 	int x, y;
 	if(node.isRoot()) {
 	    x = totalXSize/2 - node.getPreferredSize().width/2;
@@ -104,7 +110,7 @@ public class MindMapLayout implements LayoutManager {
 		y = node.getParentView().getLocation().y + relativeY;
 
 	    //check if the map is to small
-	    if ( x<0 || x + node.getPreferredSize().width > map.getSize().width ) {
+	    if ( x < 0 || x + node.getPreferredSize().width > map.getSize().width ) {
 		if (node.isLeft()) {
 		    resizeMap(x);
 		} else {
@@ -132,7 +138,7 @@ public class MindMapLayout implements LayoutManager {
 	    int relX = (start.x - end.x) / 2;
 	    int absX = start.x - relX;
 	    
-	    int relY = (start.y - end.y) /2;
+	    int relY = (start.y - end.y) / 2;
 	    int absY = start.y - relY;
 	    
 	    Point loc = new Point(absX - label.getPreferredSize().width / 2, absY - label.getPreferredSize().height / 2);
@@ -143,19 +149,21 @@ public class MindMapLayout implements LayoutManager {
 
 
     /**
-     * This is buggy!
+     *
      */
     private void resizeMap( int outmostX ) {
-	int newXSize = totalXSize;
-	if (outmostX < 0) {
-	    newXSize = totalXSize + -outmostX + BORDER*2;
-	} else {
-	    newXSize = outmostX + BORDER*2;
-	}
+        // In principle, resize can be caused by:
+        // 1) Unfold
+        // 2) Insertion of a node
+        // 3) Modification of a node in an enlarging way
 
-	totalXSize = newXSize;
-	getMap().setSize(new Dimension(totalXSize, ySize));
-	//	layoutContainer(getMap());
+        int oldTotalXSize = totalXSize;
+	totalXSize = BORDER*2 + (outmostX < 0 ? totalXSize + -outmostX  : outmostX );
+
+	getMapView().setSize(new Dimension(totalXSize, ySize));
+        // Scroll by the amount, by which the Root node was shifted
+        getMapView().scrollBy((totalXSize - oldTotalXSize) / 2 , 0);
+
 	layout(map.getRoot());
 	//	getMap().validate();
     }
@@ -174,7 +182,7 @@ public class MindMapLayout implements LayoutManager {
 	} else {
 	    calcRelYPos(parent);
 	}
-	layout(map.getRoot());//inefficient!
+	layout(map.getRoot());//inefficient! Possible rewrite for performance reasons.
     }
 
 
@@ -190,6 +198,11 @@ public class MindMapLayout implements LayoutManager {
 	calcRelYPos(node);
     }
 	
+
+   /**
+    *   Determine relative Y position of a node. Relative means relative to
+    *   the position of its parent.
+    */
 
     private void calcRelYPos( NodeView node ) {
 	if (node.isRoot()) {
@@ -210,7 +223,6 @@ public class MindMapLayout implements LayoutManager {
 	    pointer = -(calcTreeHeight( getRoot().getRight() ) / 2);
 	    for ( ListIterator e = getRoot().getRight().listIterator(); e.hasNext(); ) {
 		NodeView child = (NodeView)e.next();
-		
 		//Calculate y position in pixels relative to Root
 		pointer += (child.getTreeHeight() / 2);
 		
@@ -218,23 +230,20 @@ public class MindMapLayout implements LayoutManager {
 
 		//		calcRelYPos( child );
 		pointer += (child.getTreeHeight() / 2);
+
 	    } //for (every Node)
 	} else {
-	    int pointer = -(node.getTreeHeight() / 2);
+            int pointer = (node.getPreferredSize().height - node.getTreeHeight()) / 2;
 	    ListIterator it = node.getChildrenViews().listIterator();
 	    while(it.hasNext()) {
 		NodeView child = (NodeView)it.next();
 		//Calculate y position
-		pointer += (child.getTreeHeight() / 2);
-		int y = pointer;
 	    
-		child.relYPos = pointer - 2;
+		child.relYPos = pointer + (child.getTreeHeight() - child.getPreferredSize().height) / 2 - 2;
 		
 		//This point is called twice for every node. Why?
 
-		//		calcRelYPos(child);
-
-		pointer += (child.getTreeHeight() / 2);
+		pointer += child.getTreeHeight();
 	    } //for every Node
 	}
     }
@@ -243,7 +252,7 @@ public class MindMapLayout implements LayoutManager {
 	return (RootNodeView)map.getRoot();
     }
 
-    private MapView getMap() {
+    private MapView getMapView() {
 	return map;
     }
 

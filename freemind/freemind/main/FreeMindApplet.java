@@ -16,16 +16,16 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.7 2001-07-15 21:44:56 ponder Exp $*/
+/*$Id: FreeMindApplet.java,v 1.8 2003-11-03 10:15:45 sviles Exp $*/
 
 package freemind.main;
 
-import freemind.main.FreeMindApplet;
 import freemind.view.mindmapview.MapView;
 import freemind.controller.MenuBar;
 import freemind.controller.Controller;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.File;
 import java.net.URL;
 import java.util.Properties;
 import java.util.Locale;
@@ -42,6 +42,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import java.awt.Button;
 import java.awt.Container;
+import java.awt.Cursor;
 import javax.swing.*;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
@@ -50,7 +51,7 @@ import javax.swing.UIManager;
 
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 
-    public static final String version = "0.4.0";
+    public static final String version = "0.5.0";
     //    public static final String defaultPropsURL;
     public URL defaultPropsURL;
     public static Properties defaultProps;
@@ -63,6 +64,9 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
     public FreeMindApplet() {
     }//Constructor
+
+    public File getPatternsFile() {
+       return null; }
 
     public MapView getView() {
 	return c.getView();
@@ -123,16 +127,32 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
     public void openDocument(URL doc) throws Exception {
 	getAppletContext().showDocument(doc,"_blank");
     }
-    /*
+
     public void start() {
+       // Make sure the map is centered at the very beginning.
+       try {
+          if (getView() != null) {
+             getView().moveToRoot(); }
+          else {
+             System.err.println("View is null."); }}
+       catch (Exception e) { e.printStackTrace(); }
     }
 
+   /*
     public void stop() {
     }
 
     public void destroy() {
     }
     */
+
+    public void setWaitingCursor(boolean waiting) {
+       if (waiting) {
+          getRootPane().getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+          getRootPane().getGlassPane().setVisible(true); }
+       else {
+          getRootPane().getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+          getRootPane().getGlassPane().setVisible(false); }}
 
     public URL getResource(String name) {
 	return this.getClass().getResource("/"+name);
@@ -150,39 +170,37 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
  	    in.close();
 	    userProps = defaultProps;
  	} catch (Exception ex) {
- 	    System.err.println("Panic! Error while loading properties");
+           System.err.println("Could not load properties.");
  	}
 
-	//try to overload some properties with given command-line (html tag) Arguments
-	Enumeration allKeys = userProps.propertyNames();
-	while (allKeys.hasMoreElements()) {
-	    String key = (String)allKeys.nextElement();
-	    String val = getParameter(key);
-	    //	    System.out.println("Got prop:"+key+":"+val);
-	    if (val != null  &&  val != "") {
-		userProps.setProperty(key,val);
-	    }
-	}
-
-
-	//set Look&Feel
-	try {
-	    String lookAndFeel = userProps.getProperty("lookandfeel");
-	    if (lookAndFeel.equals("windows")) {
-		UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-	    } else if (lookAndFeel.equals("motif")) {
-		UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-	    } else if (lookAndFeel.equals("mac")) {
-		//Only available on macOS
-		UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
-	    } else {
-		//Metal is default
-		UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-	    }
-	} catch (Exception ex) {
-	    System.err.println("Panic! Error while setting Look&Feel");
-	}
-
+        //try to overload some properties with given command-line (html tag) Arguments
+        Enumeration allKeys = userProps.propertyNames();
+        while (allKeys.hasMoreElements()) {
+           String key = (String)allKeys.nextElement();
+           String val = getParameter(key);
+           //	    System.out.println("Got prop:"+key+":"+val);
+           if (val != null  &&  val != "") {
+              userProps.setProperty(key,val);
+           }
+        }
+            
+        //set Look&Feel
+        try {
+           String lookAndFeel = userProps.getProperty("lookandfeel");
+           if (lookAndFeel.equals("windows")) {
+              UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+           } else if (lookAndFeel.equals("motif")) {
+              UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+           } else if (lookAndFeel.equals("mac")) {
+              //Only available on macOS
+              UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
+           } else {
+              //Metal is default
+              UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+           }
+        } catch (Exception ex) {
+           System.err.println("Error while setting Look&Feel");
+        }
 
  	//Layout everything
  	getContentPane().setLayout( new BorderLayout() );

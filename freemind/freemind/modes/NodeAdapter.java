@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.11 2001-06-22 20:35:14 ponder Exp $*/
+/*$Id: NodeAdapter.java,v 1.12 2003-11-03 10:15:45 sviles Exp $*/
 
 package freemind.modes;
 
@@ -64,7 +64,7 @@ public abstract class NodeAdapter implements MindMapNode {
 //      protected boolean italic = false;
 
 
-    private MutableTreeNode parent;
+    private MindMapNode parent;
     private MindMapEdge edge;//the edge which leads to this node, only root has none
     //In future it has to hold more than one view, maybe with a Vector in which the index specifies
     //the MapView which contains the NodeViews
@@ -137,7 +137,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	    if(this.isRoot()) {
 		return getFrame().getProperty("standardnodestyle");
 	    }
-	    return ( (MindMapNode)getParent() ).getStyle();
+	    return getParentNode().getStyle();
 	}
 	return style;
     }
@@ -196,7 +196,9 @@ public abstract class NodeAdapter implements MindMapNode {
 	this.font = font;
     }
 
-     
+    public MindMapNode getParentNode() {
+       return parent;
+    }     
 
     // **
     // ** font handling
@@ -248,7 +250,22 @@ public abstract class NodeAdapter implements MindMapNode {
 	return folded;
     }
 
+    public boolean hasFoldedStrictDescendant() {
+       /**
+        *  True iff one of node's <i>strict</i> descendants is folded. A node N is not its strict descendant - 
+        *  the fact that node itself is folded is not sufficient to return true.
+        */
+       
+       for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
+          NodeAdapter child = (NodeAdapter)e.next();
+          if (child.isFolded() || child.hasFoldedStrictDescendant()) {
+             return true; }}
+
+	return false;
+    }
+
     public void setFolded(boolean folded) {
+
 	this.folded = folded;
     }
 	
@@ -273,10 +290,10 @@ public abstract class NodeAdapter implements MindMapNode {
     public boolean isDescendantOf(MindMapNode node) {
 	if(this.isRoot())
 	    return false;
-	else if (node == getParent())
+	else if (node == getParentNode())
 	    return true;
 	else
-	    return ((MindMapNode)getParent()).isDescendantOf(node);
+	    return getParentNode().isDescendantOf(node);
     }	    
 	 
     public boolean isRoot() {
@@ -285,6 +302,17 @@ public abstract class NodeAdapter implements MindMapNode {
 
     public ListIterator childrenUnfolded() {
 	return children.listIterator();
+    }
+
+    public boolean hasChildren() {
+       return !children.isEmpty(); }
+
+    public int getChildPosition(MindMapNode childNode) {
+       int position = 0;
+       for (ListIterator i=children.listIterator(); i.hasNext(); ++position) {
+          if (((MindMapNode)i.next()) == childNode) {
+             return position; }}
+       return -1;
     }
 
     public ListIterator childrenFolded() {
@@ -317,12 +345,18 @@ public abstract class NodeAdapter implements MindMapNode {
 	return (TreeNode)children.get( childIndex );
     }
 
+    public int getRealChildCount() {
+	return children.size();
+    }
+
     public int getChildCount() {
 	if (isFolded()) {
 	    return 0;
 	}
 	return children.size();
     }
+    // Daniel: ^ The name of this method is confusing. It does nto convey
+    // the meaning, at least not to me.
 
     public int getIndex( TreeNode node ) {
 	return children.indexOf( (MindMapNode)node ); //uses equals()
@@ -344,7 +378,7 @@ public abstract class NodeAdapter implements MindMapNode {
     //Garbage Collection work (Nodes in removed Sub-Trees reference each other)?
     
     public void insert( MutableTreeNode child, int index) {
-      	children.add( index, child );
+        children.add( index, child );
     	child.setParent( this );
     }
     
@@ -361,6 +395,10 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
     public void setParent( MutableTreeNode newParent ) {
+        parent = (MindMapNode) newParent;
+    }
+
+    public void setParent( MindMapNode newParent ) {
     	parent = newParent;
     }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.12 2001-06-22 20:35:14 ponder Exp $*/
+/*$Id: MenuBar.java,v 1.13 2003-11-03 10:15:44 sviles Exp $*/
 
 package freemind.controller;
 
@@ -30,6 +30,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
@@ -39,6 +40,7 @@ import javax.swing.KeyStroke;
 public class MenuBar extends JMenuBar {
 
     JMenu mapsmenu;
+    JPopupMenu mapsPopupMenu;
     private JMenu filemenu;
     private JMenu editmenu;
     Controller c;
@@ -55,6 +57,7 @@ public class MenuBar extends JMenuBar {
 
 	//Mapsmenu
 	mapsmenu = new JMenu(c.getFrame().getResources().getString("mindmaps"));
+	mapsPopupMenu = new JPopupMenu(c.getFrame().getResources().getString("mindmaps"));
 	this.add(mapsmenu);
 
 	//Modesmenu
@@ -90,6 +93,7 @@ public class MenuBar extends JMenuBar {
     }//Constructor
 
     public void updateMapsMenu() {
+        mapsPopupMenu.removeAll();
 	mapsmenu.removeAll();
 	if (c.getMapModuleManager().getMapModules() == null) {
 	    return;
@@ -98,14 +102,20 @@ public class MenuBar extends JMenuBar {
 	for (ListIterator i = keys.listIterator(); i.hasNext();) {
 	    String key = (String)i.next();
 	    JMenuItem newItem = new JMenuItem(key);
-	    mapsmenu.add(newItem);
+	    JMenuItem newPopupItem = new JMenuItem(key);
+
 	    newItem.addActionListener(mapsMenuActionListener);
+            newPopupItem.addActionListener(mapsMenuActionListener);
+
 	    if (c.getMapModuleManager().getMapModule() != null) {
 		if (key.equals(c.getMapModuleManager().getMapModule().toString())) {
 		    //This could be done more elegant
-		    newItem.setBackground(Color.blue);
+		    newItem.setBackground(Color.lightGray);
+                    newPopupItem.setBackground(Color.lightGray);
 		}
 	    }
+            mapsPopupMenu.add(newItem);
+	    mapsmenu.add(newPopupItem);
 	}
     }
 
@@ -137,7 +147,7 @@ public class MenuBar extends JMenuBar {
 	lastOpenedItems.clear();
 	LastOpenedList lst = c.getLastOpenedList();
 	for(ListIterator it=lst.listIterator();it.hasNext();) {
-	    JMenuItem item = new JMenuItem((String)it.next());
+            JMenuItem item = new JMenuItem((String)it.next());
 	    item.addActionListener(lastOpenedActionListener);
 	    lastOpenedItems.add(item);
 	    filemenu.add(item);
@@ -165,12 +175,6 @@ public class MenuBar extends JMenuBar {
 	JMenuItem historyPreviousMap = editmenu.add(c.historyPreviousMap);
 	JMenuItem historyNextMap = editmenu.add(c.historyNextMap);
 
-// 	JMenuItem cut = editmenu.add(c.cut);
-// 	cut.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_cut")));
-	
-// 	JMenuItem paste = editmenu.add(c.paste);
-// 	paste.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_paste")));
-
 	editmenu.addSeparator();
 
 	JMenu preferences = new JMenu(c.getFrame().getResources().getString("preferences"));
@@ -178,6 +182,10 @@ public class MenuBar extends JMenuBar {
 
 	preferences.add(c.background);
     }
+
+    JPopupMenu getMapsPopupMenu()  { // visible only in controller package
+       return mapsPopupMenu; }
+
 
     /**
      * This method simpy copy's all elements of the source Menu

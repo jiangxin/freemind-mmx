@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.5 2001-05-06 18:47:57 ponder Exp $*/
+/*$Id: BrowseController.java,v 1.6 2003-11-03 10:15:45 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -55,6 +55,7 @@ public class BrowseController extends ControllerAdapter {
 
     Action toggleFolded;
     Action toggleChildrenFolded;
+    Action find;
     Action followLink;
     Action nodeUp;
     Action nodeDown;
@@ -62,7 +63,8 @@ public class BrowseController extends ControllerAdapter {
     public BrowseController(Mode mode) {
 	super.setMode(mode);
 	toggleFolded  = new ToggleFoldedAction();
-	toggleChildrenFolded  = new toggleChildrenFoldedAction();
+	toggleChildrenFolded  = new ToggleChildrenFoldedAction();
+	find = new FindAction();
 	followLink  = new FollowLinkAction();
 	nodeUp  = new NodeUpAction();
 	nodeDown  = new NodeDownAction();
@@ -80,15 +82,15 @@ public class BrowseController extends ControllerAdapter {
     }
 
     public void doubleClick() {
-	if (getFrame().getProperty("mindmap_doubleclick").equals("toggle_folded")) {
-	    toggleFolded();
-	} else {
-	    loadURL();
-	}
+         if (getSelected().getLink() == null) { // If link exists, follow the link; toggle folded otherwise
+             toggleFolded();
+         } else { 
+	        loadURL();
+        }
     }
 
     protected MindMapNode newNode() {
-	return new BrowseNodeModel(getFrame().getResources().getString("new_node"),getFrame());
+	return new BrowseNodeModel(getText("new_node"),getFrame());
     }
 
     //get/set methods
@@ -106,14 +108,14 @@ public class BrowseController extends ControllerAdapter {
 
 
     JMenu getNodeMenu() {
-	JMenu nodeMenu = new JMenu(getFrame().getResources().getString("node"));
-	JMenuItem followLinkItem = nodeMenu.add(followLink);
- 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_follow_link")));
+	JMenu nodeMenu = new JMenu(getText("node"));
+        add(nodeMenu, find, "keystroke_find");
+	add(nodeMenu, followLink, "keystroke_follow_link");
 
-	JMenuItem toggleFoldedItem = nodeMenu.add(toggleFolded);
- 	toggleFoldedItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_toggle_folded")));
-	JMenuItem toggleChildrenFoldedItem = nodeMenu.add(toggleChildrenFolded);
-	toggleChildrenFoldedItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_toggle_children_folded")));
+        nodeMenu.addSeparator();
+
+ 	add(nodeMenu, toggleFolded, "keystroke_toggle_folded");
+	add(nodeMenu, toggleChildrenFolded, "keystroke_toggle_children_folded");
 
 	return nodeMenu;
     }
@@ -147,8 +149,9 @@ public class BrowseController extends ControllerAdapter {
 	    //	    absolute = new URL(relative);
 	    getFrame().out(absolute.toString());
 	} catch (MalformedURLException ex) {
-	    getFrame().err(getFrame().getResources().getString("url_error"));
-	    return;
+           Tools.errorMessage(getText("url_error"));
+           //getFrame().err(getText("url_error"));
+	   return;
 	}
 
 	//try {
@@ -158,7 +161,7 @@ public class BrowseController extends ControllerAdapter {
 	    //	load(file);
 	    //}
 	    //	} catch (FileNotFoundException e) {
-	    //int returnVal = JOptionPane.showConfirmDialog(getView(), getFrame().getResources().getString("repair_link_question"), getFrame().getResources().getString("repair_link"),JOptionPane.YES_NO_OPTION);
+	    //int returnVal = JOptionPane.showConfirmDialog(getView(), getText("repair_link_question"), getText("repair_link"),JOptionPane.YES_NO_OPTION);
 	    //if (returnVal==JOptionPane.YES_OPTION) {
 	    //	setLink();
 	    //} 
@@ -166,14 +169,18 @@ public class BrowseController extends ControllerAdapter {
 	String type = Tools.getExtension(absolute.getFile());
 	try {
 	    if (type.equals("mm")) {
-		load(absolute);
+               getFrame().setWaitingCursor(true);
+               load(absolute);
 	    } else {
 		getFrame().openDocument(absolute);
 	    }
 	} catch (Exception ex) {
-	    //	    getFrame().err(getFrame().getResources().getString("url_load_error")+absolute);
+	    //	    getFrame().err(getText("url_load_error")+absolute);
 	    //for some reason, this exception is thrown anytime...
-	} 
+	} finally {
+           getFrame().setWaitingCursor(false);
+        }
+        
     }
 
     public void loadURL() {
@@ -210,7 +217,7 @@ public class BrowseController extends ControllerAdapter {
 
     private class FollowLinkAction extends AbstractAction {
 	FollowLinkAction() {
-	    super(getFrame().getResources().getString("follow_link"));
+	    super(getText("follow_link"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    loadURL();
