@@ -166,6 +166,10 @@ public class PermanentNodeHookAdapter
 	
 	}
 
+    public void onRemoveChildren(MindMapNode oldChildNode) {
+		logger.finest("onRemoveChildren");
+    }
+
 
 
 }

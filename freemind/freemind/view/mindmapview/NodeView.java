@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.6 2005-02-17 20:53:44 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.7 2005-02-18 21:17:37 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -41,7 +41,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -750,8 +749,8 @@ public abstract class NodeView extends JLabel {
         for (Iterator i = stateIcons.keySet().iterator(); i.hasNext();) {
             String key = (String) i.next();
             iconPresent = true;
-            MindIcon myicon = (MindIcon) stateIcons.get(key);
-            iconImages.addImage((ImageIcon) myicon.getIcon(frame));  
+            ImageIcon myIcon = (ImageIcon) stateIcons.get(key);
+            iconImages.addImage(myIcon);  
             
         }
 

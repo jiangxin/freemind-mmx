@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindIcon.java,v 1.1.18.1 2004-10-28 05:24:53 christianfoltin Exp $*/
+/*$Id: MindIcon.java,v 1.1.18.2 2005-02-18 21:17:36 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -35,9 +35,9 @@ import freemind.main.FreeMindMain;
 public class MindIcon {
     private String name;
     private String description;
-    private Icon   associatedIcon;
+    private ImageIcon   associatedIcon;
     private static Vector mAllIconNames;
-    private static Icon iconNotFound;
+    private static ImageIcon iconNotFound;
 
     public MindIcon(String name) {
        setName(name); 
@@ -113,7 +113,7 @@ public class MindIcon {
         return "images/icons/";
     }
 
-    public Icon getIcon(FreeMindMain frame) {
+    public ImageIcon getIcon(FreeMindMain frame) {
         // We need the frame to be able to obtain the resource URL of the icon.
         if (iconNotFound == null) {
            iconNotFound = new ImageIcon(frame.getResource("images/IconNotFound.png")); }
@@ -122,7 +122,7 @@ public class MindIcon {
             return associatedIcon;
         if ( name != null ) {
            URL imageURL = frame.getResource(getIconFileName());
-           Icon icon = imageURL == null ? iconNotFound : new ImageIcon(imageURL);
+           ImageIcon icon = imageURL == null ? iconNotFound : new ImageIcon(imageURL);
            setIcon(icon);
            return icon; }
         else {
@@ -133,7 +133,7 @@ public class MindIcon {
        * Set the value of icon.
        * @param v  Value to assign to icon.
        */
-    protected void setIcon(Icon  _associatedIcon) {
+    protected void setIcon(ImageIcon  _associatedIcon) {
        this.associatedIcon = _associatedIcon; }
 
     public static Vector getAllIconNames () {

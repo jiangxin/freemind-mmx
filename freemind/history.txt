@@ -178,6 +178,8 @@ RC2
 RC 3;
 -----
 * Bug fix: dot removed.
+* New feature: hierarchical icons.
+* Bug fix: icon from encrypted node corrected.
 
 Changes made in Freemind 0.7.2:
 ===============================

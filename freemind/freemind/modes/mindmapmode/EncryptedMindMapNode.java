@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.6 2005-02-10 23:01:23 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.7 2005-02-18 21:17:37 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -36,6 +36,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import javax.swing.ImageIcon;
 
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
@@ -60,9 +61,9 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
     private String encryptedContent;
 
-    private static MindIcon encryptedIcon;
+    private static ImageIcon encryptedIcon;
 
-    private static MindIcon decryptedIcon;
+    private static ImageIcon decryptedIcon;
 
     private boolean isShuttingDown=false;
 
@@ -73,10 +74,10 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     public EncryptedMindMapNode(Object userObject, FreeMindMain frame) {
         super(userObject, frame);
         if (encryptedIcon == null) {
-            encryptedIcon = new MindIcon("encrypted");
+            encryptedIcon = new MindIcon("encrypted").getIcon(frame);
         }
         if (decryptedIcon == null) {
-            decryptedIcon = new MindIcon("decrypted");
+            decryptedIcon = new MindIcon("decrypted").getIcon(frame);
         }
 
     }

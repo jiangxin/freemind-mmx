@@ -16,11 +16,9 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.6 2005-02-10 23:01:23 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.7 2005-02-18 21:17:37 christianfoltin Exp $*/
 
 package freemind.modes;
-
-import java.util.Map;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -38,6 +36,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -587,13 +586,27 @@ public abstract class NodeAdapter implements MindMapNode {
           }
         }
 		// call remove child hook:
-		for(Iterator i = this.getActivatedHooks().iterator(); i.hasNext(); ){
-			PermanentNodeHook hook = (PermanentNodeHook) i.next();
-			hook.onRemoveChild((MindMapNode)node);
-		}
+        recursiveCallRemoveChildren(this, (MindMapNode) node);
         node.setParent(null);
     	children.remove( node );
     }
+
+	/**
+	 * @param node
+	 */
+	private void recursiveCallRemoveChildren(MindMapNode node, MindMapNode removedChild) {
+		for(Iterator i=  node.getActivatedHooks().iterator(); i.hasNext();) {
+        	PermanentNodeHook hook = (PermanentNodeHook) i.next();
+            if (removedChild.getParentNode() == node) {
+                hook.onRemoveChild(removedChild);
+            }
+            hook.onRemoveChildren(removedChild);
+        }
+		if(!node.isRoot() && node.getParentNode()!= null)
+		    recursiveCallRemoveChildren(node.getParentNode(), removedChild);
+	}
+
+
     
     public MindMapNode getPreferredChild() { // mind preferred child :-) (PN) 
       if (this.children.contains(this.preferredChild)) {
@@ -862,7 +875,7 @@ public abstract class NodeAdapter implements MindMapNode {
     }
     
     
-    public void addStateIcon(String key, MindIcon icon) {
+    public void addStateIcon(String key, ImageIcon icon) {
         stateIcons.put(key, icon);
     }
     public SortedMap getStateIcons() {

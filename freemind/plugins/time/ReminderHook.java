@@ -19,7 +19,7 @@
  *
  * Created on 06.02.2005
  */
-/*$Id: ReminderHook.java,v 1.1.2.4 2005-02-14 21:10:04 christianfoltin Exp $*/
+/*$Id: ReminderHook.java,v 1.1.2.5 2005-02-18 21:17:37 christianfoltin Exp $*/
 package plugins.time;
 
 import java.text.MessageFormat;
@@ -27,8 +27,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -50,7 +50,7 @@ public class ReminderHook extends PermanentNodeHookAdapter {
 
     private Timer timer;
 
-    private static MindIcon clockIcon=null;
+    private static ImageIcon clockIcon=null;
 
     //private Vector dateVector = new Vector();
     
@@ -115,7 +115,7 @@ public class ReminderHook extends PermanentNodeHookAdapter {
         getController().setToolTip(node, getName(), message);
         // icon
         if (clockIcon == null) {
-            clockIcon = new MindIcon("clock");
+            clockIcon = new MindIcon("clock").getIcon(getController().getFrame());
         }
         node.addStateIcon(getName(), clockIcon);
         getController().nodeRefresh(node);

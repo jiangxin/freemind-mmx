@@ -17,33 +17,31 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MultipleImage.java,v 1.1 2003-11-03 11:02:44 sviles Exp $*/
+/*$Id: MultipleImage.java,v 1.1.18.1 2005-02-18 21:17:37 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.Component;
 import java.awt.Graphics;
-import javax.swing.ImageIcon; 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.util.Iterator;
 import java.util.Vector;
-import java.net.URL;
+
+import javax.swing.ImageIcon;
 
 public class MultipleImage extends ImageIcon {
     private Vector mImages = new Vector();
     private double zoomFactor=1;
-    MultipleImage(double zoom) 
+    private boolean isDirty;
+    public MultipleImage(double zoom) 
     { 
         zoomFactor = zoom;
+        isDirty = true;
     };
-//     MultipleImage(URL location) 
-//     { 
-//         ImageIcon firstIcon = new ImageIcon(location); 
-//         mImages.add(firstIcon ); 
-//     };
-//     MultipleImage(String filename) 
-//     {
-//         ImageIcon firstIcon = new ImageIcon(filename); 
-//         mImages.add(firstIcon );  
-//     };
+
     public int getImageCount() {
         return mImages.size();
     };
@@ -51,32 +49,68 @@ public class MultipleImage extends ImageIcon {
     public void addImage(ImageIcon image) 
     { 
         mImages.add(image); 
+        setImage(image.getImage());
+        isDirty = true;
     };
 
+    public Image getImage()
+    {
+        if(!isDirty)
+            return super.getImage();
+        int w = getIconWidth();
+        int h = getIconHeight();
+        BufferedImage outImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);                
+        Graphics2D g = outImage.createGraphics();
+        double myX = 0;
+        for (Iterator i = mImages.iterator(); i.hasNext();)
+        {
+            ImageIcon currentIcon = (ImageIcon) i.next();
+//             py =  /* center: */  ( myHeight - (int)(currentIcon.getIconHeight()* zoomFactor)) /2;
+//            int pheight = (int) (currentIcon.getIconHeight() * zoomFactor);
+            double pwidth = (currentIcon.getIconWidth() * zoomFactor);
+            AffineTransform inttrans = AffineTransform.getScaleInstance(zoomFactor, zoomFactor);
+            g.drawImage(currentIcon.getImage(), inttrans, null);
+            g.translate(pwidth, 0);
+            myX += pwidth;
+        }
+        g.dispose();
+        setImage(outImage);
+        isDirty = false;
+        return super.getImage();
+    }
+    
     public void paintIcon(Component c,
                           Graphics g,
                           int x,
                           int y) 
     { 
-        int myX = x;
-        int myHeight = getIconHeight();
-        for(int i = 0 ; i < mImages.size(); i++) {
-            ImageIcon currentIcon = ((ImageIcon) mImages.get(i));
-            int px,py,pwidth, pheight;
-            px = myX;
-            py = y /* center: */ + ( myHeight - (int)(currentIcon.getIconHeight()* zoomFactor)) /2;
-            pwidth = (int) (currentIcon.getIconWidth() * zoomFactor);
-            pheight = (int) (currentIcon.getIconHeight() * zoomFactor);
-            /* code from ImageIcon.*/
-            if(currentIcon.getImageObserver() == null) {
-                g.drawImage(currentIcon.getImage(), px, py, pwidth, pheight, c);
-            } else {
-                g.drawImage(currentIcon.getImage(), px, py, pwidth, pheight, currentIcon.getImageObserver());
-            }
-            /* end code*/
-            myX += pwidth;
-        }
-    };
+        getImage();
+        super.paintIcon(c, g, x, y);
+    }
+//    public void paintIcon(Component c,
+//                          Graphics g,
+//                          int x,
+//                          int y) 
+//    { 
+//        int myX = x;
+//        int myHeight = getIconHeight();
+//        for(int i = 0 ; i < mImages.size(); i++) {
+//            ImageIcon currentIcon = ((ImageIcon) mImages.get(i));
+//            int px,py,pwidth, pheight;
+//            px = myX;
+//            py = y /* center: */ + ( myHeight - (int)(currentIcon.getIconHeight()* zoomFactor)) /2;
+//            pwidth = (int) (currentIcon.getIconWidth() * zoomFactor);
+//            pheight = (int) (currentIcon.getIconHeight() * zoomFactor);
+//            /* code from ImageIcon.*/
+//            if(currentIcon.getImageObserver() == null) {
+//                g.drawImage(currentIcon.getImage(), px, py, pwidth, pheight, c);
+//            } else {
+//                g.drawImage(currentIcon.getImage(), px, py, pwidth, pheight, currentIcon.getImageObserver());
+//            }
+//            /* end code*/
+//            myX += pwidth;
+//        }
+//    };
 
     public int getIconWidth() 
     {
