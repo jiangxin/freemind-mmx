@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.26.2.1 2004-02-28 12:48:11 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.26.2.2 2004-04-18 19:49:49 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -204,7 +204,7 @@ public class MapView extends JPanel implements Printable {
     /**
      * Scroll the viewport of the map to the south-west, i.e. scroll the map itself to the north-east.
      */
-    public void scrollBy(int x, int y) {
+    public void scrollBy(int x, int y, boolean repaint) {
         JViewport mapViewport = (JViewport)getParent();
 		if(mapViewport != null){
         Point currentPoint = mapViewport.getViewPosition();                 // Get View Position
@@ -222,7 +222,14 @@ public class MapView extends JPanel implements Printable {
             currentPoint.setLocation(maxX, currentPoint.getY()); }
         if (currentPoint.getY()>maxY) {
             currentPoint.setLocation(currentPoint.getX(), maxY); }
-        mapViewport.setViewPosition(currentPoint);                          // Set It Back
+		int oldScrollMode = mapViewport.getScrollMode();
+		if (repaint) {
+			mapViewport.setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+		}
+		mapViewport.setViewPosition(currentPoint);
+		if (repaint) {
+			mapViewport.setScrollMode(oldScrollMode);
+		}
     }
     }
 

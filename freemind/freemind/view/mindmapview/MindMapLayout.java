@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.14.2.1 2004-02-28 12:48:11 christianfoltin Exp $*/
+/*$Id: MindMapLayout.java,v 1.14.2.2 2004-04-18 19:49:49 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -102,7 +102,7 @@ public class MindMapLayout implements LayoutManager {
 			getRoot().getLocationOnScreen();
 			int rootX = getRootX();
 			int rootY = getRootY();
-			getMapView().scrollBy(rootX - oldRootX, rootY - oldRootY);
+			getMapView().scrollBy(rootX - oldRootX, rootY - oldRootY, true /* according to Dimitri. */);
 		}
 		catch(IllegalComponentStateException e){
 		}

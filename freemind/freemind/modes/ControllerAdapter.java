@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.36.2.1 2004-02-28 12:48:11 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.36.2.2 2004-04-18 19:49:49 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -466,11 +466,11 @@ public abstract class ControllerAdapter implements ModeController {
        } else if ((e.getModifiers() & HORIZONTAL_SCROLL_MASK) != 0) {
           for (int i=0; i < SCROLL_SKIPS; i++) {
              ((MapView)e.getComponent()).scrollBy(
-                 SCROLL_SKIP * e.getWheelRotation(), 0); }}
+                 SCROLL_SKIP * e.getWheelRotation(), 0, false); }}
        else {
           for (int i=0; i < SCROLL_SKIPS; i++) {
              ((MapView)e.getComponent()).scrollBy(0, 
-                 SCROLL_SKIP * e.getWheelRotation()); }}
+                 SCROLL_SKIP * e.getWheelRotation(), false); }}
     }
 
     // edit begins with home/end or typing (PN 6.2)
