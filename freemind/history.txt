@@ -136,6 +136,9 @@ Changes made in Freemind 0.8.0:
 * Bug fix: Quit and Cancel under Macintosh.
 * Bug fix: Toggle encrypted nodes for unencrypted nodes give an error message.
 
+* New freemind.sh from Eric.
+* Arrow moves with the mouse are undoable now.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

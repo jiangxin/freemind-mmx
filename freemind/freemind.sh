@@ -2,8 +2,11 @@
 # 2004-02-13, modified for Debian by deb@zorglub.s.bawue.de
 # 2004-06-19, rewritten for Linux/UN*X by deb@zorglub.s.bawue.de
 #             (based on Jan Schulz's input)
-function _debug() {
-	if [[ -n ${DEBUG} ]]
+# 2004-11-28, minor changes for version 0.8.0 by deb@zorglub.s.bawue.de
+# 2005-01-08, removed bashims to make script POSIX conform
+
+_debug() {
+	if [ -n "${DEBUG}" ]
 	then
 		echo "DEBUG:   $1" >&2 
 		shift
@@ -13,7 +16,8 @@ function _debug() {
 		done
 	fi
 }
-function _error() {
+
+_error() {
 	echo "ERROR:   $1" >&2
 	shift
 	for text in "$@"
@@ -22,25 +26,25 @@ function _error() {
 	done
 }
 
-function findjava(){
+findjava() {
 	# We try hard to find the proper 'java' command
-	if [[ -n "${JAVACMD}" && -x "${JAVACMD}" ]]
+	if [ -n "${JAVACMD}" ] && [ -x "${JAVACMD}" ]
 	then
 		_debug "Using \$JAVACMD to find java virtual machine."
-	elif [[ -n "${JAVA_BINDIR}" && -x "${JAVA_BINDIR}/java" ]]
+	elif [ -n "${JAVA_BINDIR}" ] && [ -x "${JAVA_BINDIR}/java" ]
 	then
 		JAVACMD="${JAVA_BINDIR}/java"
 		_debug "Using \$JAVA_BINDIR to find java virtual machine."
-	elif [[ -n "${JAVA_HOME}" && -x "${JAVA_HOME}/bin/java" ]]
+	elif [ -n "${JAVA_HOME}" ] && [ -x "${JAVA_HOME}/bin/java" ]
 	then
 		JAVACMD="${JAVA_HOME}/bin/java"
 		_debug "Using \$JAVA_HOME to find java virtual machine."
 	else
 		JAVACMD=$(which java)
-		if [[ -n "${JAVACMD}" && -x "${JAVACMD}" ]]
+		if [ -n "${JAVACMD}" ] && [ -x "${JAVACMD}" ]
 		then
 			_debug "Using \$PATH to find java virtual machine."
-		elif [[ -x /usr/bin/java ]]
+		elif [ -x /usr/bin/java ]
 		then
 			_debug "Using /usr/bin/java to find java virtual machine."
 			JAVACMD=/usr/bin/java
@@ -48,7 +52,7 @@ function findjava(){
 	fi
 
 	# if we were successful, we return 0 else we complain and return 1
-	if [[ -n "${JAVACMD}" && -x "${JAVACMD}" ]]
+	if [ -n "${JAVACMD}" ] && [ -x "${JAVACMD}" ]
 	then
 		_debug "Using '$JAVACMD' as java virtual machine..."
 		return 0
@@ -58,8 +62,9 @@ function findjava(){
 		return 1
 	fi
 }
-function _source() {
-	if [[ -f "$1" ]]
+
+_source() {
+	if [ -f "$1" ]
 	then
 		_debug "Sourcing '$1'."
 		. "$1"
@@ -72,7 +77,7 @@ _source /etc/freemind/freemindrc
 _source ~/.freemind/freemindrc
 
 findjava
-if [[ $? -ne 0 ]]
+if [ $? -ne 0 ]
 then
 	exit 1
 fi
@@ -84,7 +89,7 @@ freepath="${freepath%/bin}" # nothing happens if freemind is not installed
 # we try different possibilities to find freemind.jar
 for jar in "${freepath}" "${freepath}/share/freemind" "${freepath}/freemind"
 do
-	if [[ -f "${jar}/lib/freemind.jar" ]]
+	if [ -f "${jar}/lib/freemind.jar" ]
 	then
 		freedir="${jar}"
 		_debug "Freemind Directory is '${jar}'."
@@ -92,15 +97,15 @@ do
 	fi
 done
 
-if [[ -z "${freedir}" ]]
+if [ -z "${freedir}" ]
 then
 	_error "Couldn't find freemind under '${freepath}'."
 	exit 1
 fi
 
-if [[ ! -f ~/.freemind/patterns.xml && -f /etc/freemind/patterns.xml ]]
+if [ ! -f ~/.freemind/patterns.xml ] && [ -f /etc/freemind/patterns.xml ]
 then
-	if [[ ! -d ~/.freemind ]]
+	if [ ! -d ~/.freemind ]
 	then
 		_debug "Creating directory ~/.freemind."
 		mkdir -p ~/.freemind
@@ -112,7 +117,7 @@ fi
 # The CLASSPATH also lets one specify additional jars, which is good, if
 # you want to add a new Look&Feel jar (the motif one is so ugly...).
 # 
-CLASSPATH=".:${ADD_JARS}:${CLASSPATH}:${freedir}/lib/freemind.jar:\
+CLASSPATH="${ADD_JARS}:${CLASSPATH}:${freedir}/lib/freemind.jar:\
 ${freedir}/lib/ant/lib/jaxb-api.jar:\
 ${freedir}/lib/ant/lib/jaxb-impl.jar:\
 ${freedir}/lib/ant/lib/jaxb-libs.jar:\
@@ -121,7 +126,7 @@ ${freedir}/lib/ant/lib/relaxngDatatype.jar:\
 ${freedir}/lib/ant/lib/xsdlib.jar:\
 ${freedir}/lib/ant/lib/jax-qname.jar:\
 ${freedir}/lib/ant/lib/sax.jar:\
-${freedir}/lib/ant/lib/dom.jar"
-echo ${CLASSPATH}
+${freedir}/lib/ant/lib/dom.jar:\
+${freedir}"
+_debug "CLASSPATH=${CLASSPATH}"
 ${JAVACMD} -cp ${CLASSPATH} freemind.main.FreeMind  $@
-# ${JAVACMD} -jar "${freedir}/lib/freemind.jar" $@ # original alternative
