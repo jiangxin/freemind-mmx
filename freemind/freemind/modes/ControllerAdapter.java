@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.14 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.15 2001-03-26 20:14:01 ponder Exp $*/
 
 package freemind.modes;
 
@@ -39,6 +39,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusAdapter;
+import java.awt.event.FocusListener;
 import javax.swing.Action;
 import javax.swing.AbstractAction;
 import javax.swing.JColorChooser;
@@ -263,8 +264,20 @@ public abstract class ControllerAdapter implements ModeController {
 
     void edit() {
 	if (getView().getSelected() != null) {
-	    edit(getView().getSelected(), getView().getSelected());
+	    edit(getView().getSelected(),getView().getSelected());
 	}
+    }
+
+    void edit(final NodeView node, NodeView toBeSelected) {
+	String text = node.getModel().toString();
+	final JTextField input = new JTextField(text);
+	FocusListener whenEdited = new FocusAdapter() {
+		public void focusLost(FocusEvent e) {
+		    getModel().changeNode(node.getModel(),input.getText());
+		    getFrame().getLayeredPane().remove(input);
+		}
+	    };
+	edit(node, toBeSelected,input,whenEdited);
     }
 
 //     void edit(final NodeView node) {
@@ -289,14 +302,12 @@ public abstract class ControllerAdapter implements ModeController {
 	}
     }
 
-    public void edit(final NodeView node,final NodeView toBeSelected) {
+    public void edit( NodeView node,final NodeView toBeSelected, JTextField input, FocusListener whenEdited) {
 	getView().scrollNodeToVisible(node);
-	final JTextField input = new JTextField(node.getModel().toString());
 	//	Keymap keymap = input.addKeymap("My",input.getKeymap());
 	//	Action act = input.getActions()[0];//DefaultEditorKit.InsertContentAction;
 	//	KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_A,0);
 	//	keymap.addActionForKeyStroke(key,act);
-
 	Point position = getAbsoluteNodePosition(node);
 	input.setBounds(position.x,position.y,input.getPreferredSize().width,15);
 	input.selectAll();
@@ -306,12 +317,7 @@ public abstract class ControllerAdapter implements ModeController {
 		    //Focus is lost, so focusLost() is called, which does the work
 		}
 	    });
-	input.addFocusListener(new FocusAdapter() {
-		public void focusLost(FocusEvent e) {
-  		    getModel().changeNode(node.getModel(),input.getText());
-  		    getFrame().getLayeredPane().remove(input);
-		}
-	    });
+	input.addFocusListener( whenEdited );
 		
 	getFrame().getLayeredPane().add(input,2000);
 	getFrame().repaint();
@@ -363,14 +369,18 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected void setLinkByTextField() {
 	String old = getModel().getLink(getSelected());
-	if (old != null && old != "") {
-	    getFrame().out("Old link is: "+old);
-	}
-	String link = JOptionPane.showInputDialog("Link:");
-	if (link != null) {
-	    getModel().setLink(getSelected(),link);
-	    getFrame().out("Set Link to: "+link);
-	}
+	final JTextField input = new JTextField(old);
+	FocusListener whenEdited = new FocusAdapter() {
+		public void focusLost(FocusEvent e) {
+		    String link = input.getText();
+		    if (link != null) {
+			getModel().setLink(getSelected(),link);
+			getFrame().out("Set Link to: "+link);
+		    }
+		    getFrame().getLayeredPane().remove(input);
+		}
+	    };
+	edit(getView().getSelected(),getView().getSelected(),input,whenEdited);
     }
 
     protected void setLinkByFileChooser() {

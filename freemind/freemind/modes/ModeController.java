@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.6 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: ModeController.java,v 1.7 2001-03-26 20:14:01 ponder Exp $*/
 
 package freemind.modes;
 
@@ -34,7 +34,7 @@ public interface ModeController {
     public void save();
     public void saveAs();
     public void open();
-    public void edit(NodeView node, NodeView toBeSelected);
+    //    public void edit(NodeView node, NodeView toBeSelected);
     public void close() throws Exception;
     public void doubleClick();
 }

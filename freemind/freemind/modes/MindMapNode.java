@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.5 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: MindMapNode.java,v 1.6 2001-03-26 20:14:01 ponder Exp $*/
 
 package freemind.modes;
 
@@ -27,10 +27,6 @@ import java.awt.Color;
 import java.awt.Font;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
-//XML Definition (Interfaces)
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
 
 public interface MindMapNode extends MutableTreeNode {
 	

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeNodeModel.java,v 1.4 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: SchemeNodeModel.java,v 1.5 2001-03-26 20:14:01 ponder Exp $*/
 
 package freemind.modes.schememode;
 
@@ -53,13 +53,13 @@ public class SchemeNodeModel extends NodeAdapter {
 	}
     }
 
-    public String getCode() {
+    public String getCodeMathStyle() {
 	String code="";
 	if (this.isRoot()) {
 	    ListIterator it = childrenUnfolded();
 	    if (it != null) {
 		while (it.hasNext()) {
-		    code = code + ((SchemeNodeModel)it.next()).getCode() + ",";
+		    code = code + ((SchemeNodeModel)it.next()).getCodeMathStyle() + ",";
 		}
 	    }
 	} else {
@@ -69,7 +69,32 @@ public class SchemeNodeModel extends NodeAdapter {
 		ListIterator it = childrenUnfolded();
 		if (it != null) {
 		    while (it.hasNext()) {
-			code = code + ((SchemeNodeModel)it.next()).getCode() + " ";
+			code = code + ((SchemeNodeModel)it.next()).getCodeMathStyle() + " ";
+		    }
+		}
+		code = code +")";
+	    }
+	}
+	return code;
+    }
+
+    public String getCodeClassicStyle() {
+	String code="";
+	if (this.isRoot()) {
+	    ListIterator it = childrenUnfolded();
+	    if (it != null) {
+		while (it.hasNext()) {
+		    code = code + ((SchemeNodeModel)it.next()).getCodeClassicStyle() + ",";
+		}
+	    }
+	} else {
+	    code = toString().trim();
+	    if(code.equals("")) {
+		code = "(";
+		ListIterator it = childrenUnfolded();
+		if (it != null) {
+		    while (it.hasNext()) {
+			code = code + ((SchemeNodeModel)it.next()).getCodeClassicStyle() + " ";
 		    }
 		}
 		code = code +")";
