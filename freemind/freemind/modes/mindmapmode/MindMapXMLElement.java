@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapXMLElement.java,v 1.1 2003-11-03 10:33:10 sviles Exp $*/
+/*$Id: MindMapXMLElement.java,v 1.2 2003-11-03 10:39:53 sviles Exp $*/
 
 /*On doubling of code
  *
@@ -37,6 +37,7 @@ import java.util.Map;
 import java.io.IOException;
 import java.io.Reader;
 import java.awt.Font;
+import java.awt.Color;
 
 public class MindMapXMLElement extends XMLElement {
 

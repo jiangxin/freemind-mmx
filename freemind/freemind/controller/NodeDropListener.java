@@ -91,6 +91,7 @@ public class NodeDropListener implements DropTargetListener {
            if (dtde.isLocalTransfer() && (dropAction == DnDConstants.ACTION_MOVE) && !isDropAcceptable(dtde)) {
               dtde.rejectDrop();
               return; }
+
            dtde.acceptDrop(dtde.getDropAction());
 
            if (!dtde.isLocalTransfer()) {

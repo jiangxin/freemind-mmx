@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePattern.java,v 1.1 2003-11-03 10:33:09 sviles Exp $*/
+/*$Id: StylePattern.java,v 1.2 2003-11-03 10:39:51 sviles Exp $*/
 
 package freemind.modes;
 
@@ -57,6 +57,8 @@ public class StylePattern {
     private String edgeStyle;
     private int    edgeWidth;
     
+    private boolean appliesToNodeFont = false;
+
     public StylePattern() {}
 
     public StylePattern(String name) {
@@ -77,6 +79,9 @@ public class StylePattern {
 
     public boolean getAppliesToNode() {
        return appliesToNode; }
+
+    public boolean getAppliesToNodeFont() {
+       return appliesToNodeFont; }
 
     /**
        * Get the value of name.
@@ -260,6 +265,8 @@ public class StylePattern {
                  XMLElement nodeChild = (XMLElement)j.next();
                  //FONT
                  if (nodeChild.getTagName().equals("font")) {
+                    appliesToNodeFont = true;
+
                     String name = nodeChild.getProperty("name"); 
                     int style=0;
                     int size=0;
@@ -274,6 +281,10 @@ public class StylePattern {
                        size = Integer.parseInt(nodeChild.getProperty("size")); }
                     
                     setNodeFont(new Font(name, style, size));
+
+                    if (size == 0) {
+                       setNodeFont(null); }
+
                  }}}
            
            //EDGE

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.12 2003-11-03 10:28:53 sviles Exp $*/
+/*$Id: MapAdapter.java,v 1.13 2003-11-03 10:39:51 sviles Exp $*/
 
 package freemind.modes;
 
@@ -356,7 +356,9 @@ public abstract class MapAdapter implements MindMap {
               node.setUserObject(pattern.getText()); }
            node.setColor(pattern.getNodeColor());
            node.setStyle(pattern.getNodeStyle());
-           node.setFont(pattern.getNodeFont()); }
+           if (pattern.getAppliesToNodeFont()) {
+              node.setFont(pattern.getNodeFont());
+              node.estabilishOwnFont(); }}
 
         if (pattern.getAppliesToEdge()) {
            EdgeAdapter edge = (EdgeAdapter)node.getEdge();

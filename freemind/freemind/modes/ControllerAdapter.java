@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.26 2003-11-03 10:28:53 sviles Exp $*/
+/*$Id: ControllerAdapter.java,v 1.27 2003-11-03 10:39:51 sviles Exp $*/
 
 package freemind.modes;
 
@@ -63,6 +63,8 @@ public abstract class ControllerAdapter implements ModeController {
     public Action cut = null;
     public Action paste = null;
 
+    static final Color selectionColor = new Color(200,220,200);
+
     public ControllerAdapter() {
     }
 
@@ -78,6 +80,7 @@ public abstract class ControllerAdapter implements ModeController {
                                                new FileOpener());
 
         clipboard = getFrame().getViewport().getToolkit().getSystemSelection();
+
         // SystemSelection is a strange clipboard used for instance on
         // Linux. To get data into this clipboard user just selects the area
         // without pressing Ctrl+C like on Windows.
@@ -333,12 +336,20 @@ public abstract class ControllerAdapter implements ModeController {
 */
 
     private class IntHolder {
-       private int integer;
+       private int value;
        public IntHolder () {}
-       public void setValue(int integer) {
-          this.integer = integer; }
+       public void setValue(int value) {
+          this.value = value; }
        public int getValue() {
-          return integer; }}
+          return value; }}
+
+   private class BooleanHolder {
+       private boolean value;
+       public BooleanHolder () {}
+       public void setValue(boolean value) {
+          this.value = value; }
+       public boolean getValue() {
+          return value; }}
 
    private void changeComponentHeight(JComponent component, int difference, int minimum) {
       Dimension preferredSize = component.getPreferredSize();
@@ -473,74 +484,80 @@ public abstract class ControllerAdapter implements ModeController {
 
     }
 
-    void edit(final NodeView node, NodeView toBeSelected) {
+    void edit(final NodeView node, final NodeView toBeSelected) {
         String text = node.getModel().toString();
         if (text.length() > 100) {
            editLong(node,toBeSelected);
            return; }
 
-        final JTextField input = (text.length() < 8)
+        final JTextField textField = (text.length() < 8)
            ? new JTextField(text,8)     //Make fields for short texts editable
            : new JTextField(text);
 
-        FocusListener whenEdited = new FocusAdapter() {
-              public void focusLost(FocusEvent e) {
-                 getModel().changeNode(node.getModel(),input.getText());
-                 getFrame().getLayeredPane().remove(input);
-              }
-           };
-        
-        edit(node, toBeSelected,input,whenEdited);
-    }
-
-    public void edit(NodeView node, final NodeView toBeSelected, JTextField input, FocusListener whenEdited) {
         getView().scrollNodeToVisible(node);
-        //      Keymap keymap = input.addKeymap("My",input.getKeymap());
-        //      Action act = input.getActions()[0];//DefaultEditorKit.InsertContentAction;
-        //      KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_A,0);
-        //      keymap.addActionForKeyStroke(key,act);
-        
+
+        // Set textFields's properties
         Point frameScreenLocation = getFrame().getLayeredPane().getLocationOnScreen();
         Point nodeScreenLocation = node.getLocationOnScreen();
 
         int linkIconWidth = 16;
-        int inputBorderWidth = 2;
+        int textFieldBorderWidth = 2;
         int cursorWidth = 1;
-        int xOffset = -1 * inputBorderWidth + node.getLeftWidthOverhead() - 1;
+        int xOffset = -1 * textFieldBorderWidth + node.getLeftWidthOverhead() - 1;
         int yOffset = -2; // Optimized for Windows style; basically ad hoc
-        int widthAddition = 2 * inputBorderWidth + cursorWidth - 2 * node.getLeftWidthOverhead() + 2;
+        int widthAddition = 2 * textFieldBorderWidth + cursorWidth - 2 * node.getLeftWidthOverhead() + 2;
         int heightAddition = 2;
         if (node.getModel().getLink() != null) {
            xOffset += linkIconWidth;
            widthAddition -= linkIconWidth; }
 
-        input.setLocation((int)(nodeScreenLocation.getX() - frameScreenLocation.getX() + xOffset),
+        textField.setLocation((int)(nodeScreenLocation.getX() - frameScreenLocation.getX() + xOffset),
                           (int)(nodeScreenLocation.getY() - frameScreenLocation.getY() + yOffset));
 
-        input.setSize(node.getWidth() + widthAddition, node.getHeight() + heightAddition);
-        input.setFont(node.getFont());
-        input.setForeground(node.getForeground());
-        input.setSelectedTextColor(node.getForeground());
-        input.setSelectionColor(new Color(200,220,200));
-        input.selectAll();
-        input.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    getView().select(toBeSelected);
-                    //Focus is lost, so focusLost() is called, which does the work
-                }
-            });
-        input.addFocusListener( whenEdited );
+        textField.setSize(node.getWidth() + widthAddition, node.getHeight() + heightAddition);
+        textField.setFont(node.getFont());
+        textField.setForeground(node.getForeground());
+        textField.setSelectedTextColor(node.getForeground());
+        textField.setSelectionColor(selectionColor);
+        textField.selectAll();
 
-        getFrame().getLayeredPane().add(input,2000);
+        final BooleanHolder changesAccepted = new BooleanHolder();
+        changesAccepted.setValue(false);
+
+        // Add listeners
+        textField.addFocusListener( new FocusAdapter() {
+              public void focusLost(FocusEvent e) {                 
+                 boolean discardChanges = true;
+                 if (!changesAccepted.getValue() && 
+                     !node.getModel().toString().equals(textField.getText())) {
+                    int discardChangesOption = JOptionPane.showConfirmDialog
+                       (node, getText("node_changed_discard_changes"), "FreeMind",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                    discardChanges = (discardChangesOption == JOptionPane.YES_OPTION); }
+
+                 getModel().changeNode(node.getModel(),
+                                       discardChanges ? node.getModel().toString() 
+                                       : textField.getText() );
+                 getFrame().getLayeredPane().remove(textField); }
+           });
+        textField.addKeyListener( new KeyListener() {
+              public void keyPressed(KeyEvent e) {
+                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    e.consume();
+                    getView().select(toBeSelected); }
+                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    getModel().changeNode(node.getModel(), textField.getText());
+                    changesAccepted.setValue(true);
+                    e.consume();
+                    getView().select(toBeSelected); }}
+              public void keyTyped(KeyEvent e) {}
+              public void keyReleased(KeyEvent e) {}
+           });
+
+        getFrame().getLayeredPane().add(textField,2000);
         getFrame().repaint();
-        input.requestFocus();
+        textField.requestFocus();
     }
-
-//     void edit(final NodeView node) {
-//      getMode().getModeController().edit(node,node);
-//     }
-
-
 
     public void addNew(NodeView parent) {
         MindMapNode newNode = newNode();

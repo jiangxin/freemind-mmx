@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.11 2003-11-03 10:28:55 sviles Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.12 2003-11-03 10:39:53 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -56,7 +56,6 @@ public class MindMapNodeModel extends NodeAdapter {
 	children = new LinkedList();
 	setEdge(new MindMapEdgeModel(this, getFrame()));
     }
-
 
     //Overwritten get Methods
     public String getStyle() {

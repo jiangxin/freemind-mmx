@@ -3,8 +3,8 @@
 <font NAME="dialog" BOLD="true" SIZE="18"/>
 <node TEXT="   ">
 <font NAME="sansserif" SIZE="12"/>
-<node COLOR="#000000" TEXT="User manual">
-<font NAME="dialog" SIZE="16"/>
+<node COLOR="#006633" TEXT="User manual">
+<font NAME="SansSerif" SIZE="14"/>
 <node COLOR="#006633" TEXT="FreeMind Applet" FOLDED="true">
 <font NAME="SansSerif" SIZE="15"/>
 <node COLOR="#000000" TEXT="Install the Applet on your Website so that other users can browse your mind maps">
@@ -43,7 +43,7 @@
 </node>
 </node>
 </node>
-<node COLOR="#006633" TEXT="FreeMind Application">
+<node COLOR="#006633" TEXT="FreeMind Application" FOLDED="true">
 <font NAME="SansSerif" SIZE="17"/>
 <node COLOR="#006633" TEXT="Installation">
 <node COLOR="#006633" TEXT="Download">
@@ -600,7 +600,7 @@
 </node>
 </node>
 </node>
-<node COLOR="#006600" TEXT="Tips" FOLDED="true">
+<node COLOR="#006600" TEXT="Tips">
 <font ITALIC="true" NAME="dialog" SIZE="15"/>
 <node COLOR="#669900" TEXT="Printing">
 <font NAME="sansserif" SIZE="12"/>
@@ -959,6 +959,15 @@
 </node>
 </node>
 </node>
+</node>
+</node>
+<node COLOR="#006699" TEXT="Asked Questions">
+<font NAME="SansSerif" SIZE="14"/>
+<node COLOR="#999900" TEXT="How do I create multiline nodes?">
+<node TEXT="When the text is long enough, it will automatically become multiline. When you press enter on such a multiline node, a larger editing window will be opened."/>
+</node>
+<node COLOR="#999900" TEXT="How do I create nodes with newlines / carriage returns? I cannot find any check box for new lines.">
+<node TEXT="To be able to edit node with newlines, it must be multiline (or long if you wish) first. That is, first write text, which is long enough, then finish editing, then press enter again and you find yourself in the larger editing window. It is only that window which contains the check box &quot;Enter confirms&quot;."/>
 </node>
 </node>
 </node>

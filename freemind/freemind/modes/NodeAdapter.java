@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.13 2003-11-03 10:28:53 sviles Exp $*/
+/*$Id: NodeAdapter.java,v 1.14 2003-11-03 10:39:51 sviles Exp $*/
 
 package freemind.modes;
 
@@ -323,7 +323,7 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
     public int getRealChildCount() {
-	return children.size();
+       return children == null ? 0 : children.size();
     }
 
     public int getChildCount() {

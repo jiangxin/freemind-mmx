@@ -1,9 +1,17 @@
 <!-- Default patterns supplied with FreeMind -->
 <patterns>
-   <pattern name="Normal"/>
+   <pattern name="Default">
+      <node>
+         <font/>
+      </node>
+      <edge/>
+   </pattern>
+   <pattern name="Normal">
+      <node color="#000000"/>
+   </pattern>
    <!-- task -->
    <pattern name="OK">
-      <node color="#006600"/>
+      <node color="#338800"/>
    </pattern>
    <pattern name="Needs action">
       <node color="#990000"/>
@@ -23,15 +31,52 @@
    <pattern name="Topic">
       <node color="#669900"/>
    </pattern>
+   <pattern name="Larger Topic">
+      <node color="#008844"/>
+   </pattern>
    <pattern name="Waiting Topic">
       <node color="#B3B95C"/>
    </pattern>
    <pattern name="Object / Keyword">
       <node color="#996600"/>
    </pattern>
+   <pattern name="Object of Code">
+      <!-- that is function name, database table name, class name etc.-->
+      <node color="#CC6600"/>
+   </pattern>
+   <pattern name="Question">
+      <node color="#999900"/>
+   </pattern>
+   <pattern name="Open Question">
+      <node color="#CC3300"/>
+   </pattern>
+   <pattern name="Bad">
+      <node color="#990099"/>
+   </pattern>
+   <pattern name="Blue">
+      <node color="#0033FF"/>
+   </pattern>
+   <pattern name="Pink">
+      <node color="#FF6666"/>
+   </pattern>
+   <pattern name="Cyan">
+      <node color="#009999"/>
+   </pattern>
+
+
+   <!-- These two examples are not really meant for serious use -->
    <!-- example of edges -->
    <pattern name="Blue with edges">
       <node color="#000099"/>
-      <edge color="#000099"/>
+      <edge color="#009999" width="4"/>
    </pattern>
+   <!-- example with text
+        Because this we have no undo, this example is dangerous.
+        We'd better comment it out.
+   <pattern name="Program">
+      <node color="#996600" italic="true"  text="Program">
+         <font size="16" italic="true"/>
+      </node>
+   </pattern>
+   -->
 </patterns>
