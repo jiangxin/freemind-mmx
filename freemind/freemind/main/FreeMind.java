@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.22 2003-11-03 11:00:10 sviles Exp $*/
+/*$Id: FreeMind.java,v 1.23 2003-11-26 21:30:10 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -40,6 +40,7 @@ import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import java.text.MessageFormat;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -291,17 +292,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
        if (System.getProperty("os.name").substring(0,3).equals("Win")) {
        //if (false) {
-          String explorer_command = "explorer";
-          if (System.getProperty("os.name").equals("Windows NT")) {
-             explorer_command = "C:\\Program Files\\Internet Explorer\\iexplore.exe"; }
-
+          String browser_command;
             // Here we introduce " around the parameter of explorer
             // command. This is not because of possible spaces in this
             // parameter - it is because of "=" character, which causes
             // problems. My understanding of MSDOS is not so good, but at
             // least I can say, that "=" is used in general for the purpose
             // of variable assignment.
-	    //String[] call = { explorer_command, "\""+url.toString()+"\"" };
+	    //String[] call = { browser_command, "\""+url.toString()+"\"" };
             try  {
                // This is working fine on Windows 2000 and NT as well
                Process p;
@@ -317,15 +315,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
                // asking before executing remote executable does not solve the
                // problem. You click the link and there you are running evil executable.
 
-               // p = Runtime.getRuntime().exec( "rundll32 url.dll,FileProtocolHandler "+url.toString()); }}
-
+               // ask for property about browser: fc, 26.11.2003.
+               Object[] messageArguments = { url.toString() };
+               MessageFormat formatter = new MessageFormat(getProperty("default_browser_command_windows"));
+               browser_command = formatter.format(messageArguments);
+        
                if (url.getProtocol().equals("file")) {
                   String command = "rundll32 url.dll,FileProtocolHandler "+Tools.urlGetFile(url);
                   Runtime.getRuntime().exec(command); }
                else if (url.toString().startsWith("mailto:")) {
                   Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+url.toString()); }
                else {
-                  Runtime.getRuntime().exec(explorer_command+" \""+url.toString()+"\""); }}
+                  Runtime.getRuntime().exec(browser_command); }}
             catch(IOException x) {
                c.errorMessage("Could not invoke browser.");
                System.err.println("Caught: " + x); }
@@ -342,8 +343,13 @@ public class FreeMind extends JFrame implements FreeMindMain {
             // System.out.println("Opening URL "+urlString);
 
             try {
-               Runtime.getRuntime().exec(new String [] {"konqueror", urlString }); }
+               // ask for property about browser: fc, 26.11.2003.
+               Object[] messageArguments = { url.toString() };
+               MessageFormat formatter = new MessageFormat(getProperty("default_browser_command_other_os"));
+               String browser_command = formatter.format(messageArguments);
+               Runtime.getRuntime().exec(browser_command); }
             catch(IOException ex) {
+                System.err.println("Could not invoke browser. Caught: " + ex); 
                try {
                   Process np = Runtime.getRuntime().exec 
                      (new String [] {"netscape","-remote","openURL("+urlString+")" }); 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.31 2003-11-24 08:09:04 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.32 2003-11-26 21:30:10 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -484,14 +484,6 @@ public abstract class ControllerAdapter implements ModeController {
       }
     }
 
-    private class IntHolder {
-       private int value;
-       public IntHolder () {}
-       public void setValue(int value) {
-          this.value = value; }
-       public int getValue() {
-          return value; }}
-
    private void changeComponentHeight(JComponent component, int difference, int minimum) {
       Dimension preferredSize = component.getPreferredSize();
       System.out.println("pf:"+preferredSize);
@@ -499,6 +491,9 @@ public abstract class ControllerAdapter implements ModeController {
          System.out.println("pf:"+preferredSize);
          component.setPreferredSize(new Dimension((int)preferredSize.getWidth(),
                                                   (int)preferredSize.getHeight() + difference)); }}
+
+    /** Private variable to hold the last value of the "Enter confirms" state.*/
+    private static Tools.BooleanHolder booleanHolderForConfirmState;
 
     private void editLong(final NodeView node,
                             final String text,
@@ -551,12 +546,19 @@ public abstract class ControllerAdapter implements ModeController {
         final JPanel panel = new JPanel();
 
         //String performedAction;
-        final IntHolder eventSource = new IntHolder();
+        final Tools.IntHolder eventSource = new Tools.IntHolder();
         final JButton okButton = new JButton("OK");
         final JButton cancelButton = new JButton(getText("cancel"));
         final JButton splitButton = new JButton(getText("split"));
         final JCheckBox enterConfirms =
            new JCheckBox(getText("enter_confirms"), binOptionIsTrue("el__enter_confirms_by_default"));
+
+        if(booleanHolderForConfirmState == null) {
+            booleanHolderForConfirmState = new Tools.BooleanHolder();
+            booleanHolderForConfirmState.setValue(enterConfirms.isSelected());
+        } else {
+            enterConfirms.setSelected(booleanHolderForConfirmState.getValue());
+        }            
 
         okButton.setMnemonic(KeyEvent.VK_O);
         enterConfirms.setMnemonic(KeyEvent.VK_E);
@@ -580,7 +582,9 @@ public abstract class ControllerAdapter implements ModeController {
 
         enterConfirms.addActionListener (new ActionListener() {
               public void actionPerformed(ActionEvent e) {
-                 textArea.requestFocus(); }});
+                 textArea.requestFocus(); 
+                 booleanHolderForConfirmState.setValue(enterConfirms.isSelected());
+              }});
 
         // On Enter act as if OK button was pressed
 
@@ -816,7 +820,7 @@ public abstract class ControllerAdapter implements ModeController {
         final int INIT   = 0;
         final int EDIT   = 1;
         final int CANCEL = 2;
-        final IntHolder eventSource = new IntHolder();
+        final Tools.IntHolder eventSource = new Tools.IntHolder();
         eventSource.setValue(INIT);
 
         // listener class
