@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.5 2005-02-10 23:01:28 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.6 2005-02-17 20:53:44 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -858,7 +858,9 @@ public abstract class NodeView extends JLabel {
         Map tooltips = getModel().getToolTip();
         if(tooltips.size() == 1) {
             setToolTipText((String) tooltips.values().iterator().next());
-        } else {
+        } else if (tooltips.size()==0) {
+																setToolTipText(null);
+								} else {
             // html table
             StringBuffer text = new StringBuffer("<html><table>");
             Set keySet = tooltips.keySet();

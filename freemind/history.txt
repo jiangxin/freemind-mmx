@@ -175,6 +175,10 @@ RC2
 * some insert menu points are put into the popup menu.
 * bin-max.zip created.
 
+RC 3;
+-----
+* Bug fix: dot removed.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added
