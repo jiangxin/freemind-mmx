@@ -14,6 +14,8 @@ Changes made in Freemind 0.7.2:
 * setNode is now called automatically.
 * Jython is substituted by an attrappe 
 * Fold and Unfold one stage is available now.
+* From Koh (thanks): Standard Macintosh application use Command(meta) key based Keyboard shortcut. (ex. copy is Command(meta) + C). I think that mac version's freemind should allow to assign meta key based shortcut. 
+* Bug fix: AutomaticLayout.java
 
 Changes made in Freemind 0.7.1:
 ===============================

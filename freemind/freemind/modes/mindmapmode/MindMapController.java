@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.3 2004-04-04 11:56:32 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.4 2004-04-24 18:44:23 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -32,6 +32,7 @@ import freemind.modes.EdgeAdapter;
 import freemind.modes.StylePattern;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapCloud;
+import freemind.controller.Controller;
 import freemind.extensions.*;
 import freemind.view.mindmapview.NodeView;
 // link registry.
@@ -834,7 +835,7 @@ public class MindMapController extends ControllerAdapter {
     private class NodeColorAction extends AbstractAction {
        NodeColorAction() { super(getText("node_color")); }
        public void actionPerformed(ActionEvent e) {
-          Color color = JColorChooser.showDialog(getView().getSelected(),"Choose Node Color:",getSelected().getColor() );
+          Color color = Controller.showCommonJColorChooserDialog(getView().getSelected(),"Choose Node Color:",getSelected().getColor() );
           if (color==null) {
              return; }
           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
@@ -844,7 +845,7 @@ public class MindMapController extends ControllerAdapter {
     private class EdgeColorAction extends AbstractAction {
 	EdgeColorAction() { super(getText("edge_color")); }
 	public void actionPerformed(ActionEvent e) {
-           Color color = JColorChooser.showDialog(getView().getSelected(),"Choose Edge Color:",getSelected().getEdge().getColor());
+           Color color = Controller.showCommonJColorChooserDialog(getView().getSelected(),"Choose Edge Color:",getSelected().getEdge().getColor());
            if (color==null) return;
            for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
               MindMapNodeModel selected = (MindMapNodeModel)it.next();
@@ -859,7 +860,7 @@ public class MindMapController extends ControllerAdapter {
         Color selectedColor = null;
         if(getSelected().getCloud() != null)
             selectedColor = getSelected().getCloud().getColor();
-           Color color = JColorChooser.showDialog(getView().getSelected(),"Choose Cloud Color:",selectedColor);
+           Color color = Controller.showCommonJColorChooserDialog(getView().getSelected(),"Choose Cloud Color:",selectedColor);
            if (color==null) return;
            for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
               MindMapNodeModel selected = (MindMapNodeModel)it.next();
@@ -877,7 +878,7 @@ public class MindMapController extends ControllerAdapter {
 
         public void actionPerformed(ActionEvent e) {
             Color selectedColor = arrowLink.getColor();
-            Color color = JColorChooser.showDialog(getView().getSelected(),(String) this.getValue(Action.NAME),selectedColor);
+            Color color = Controller.showCommonJColorChooserDialog(getView().getSelected(),(String) this.getValue(Action.NAME),selectedColor);
             if (color==null) return;
             getModel().setArrowLinkColor(source, arrowLink, color); 
         }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.5 2004-04-08 18:54:56 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.6 2004-04-24 18:44:23 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -962,9 +962,10 @@ public abstract class ControllerAdapter implements ModeController {
 
           public void keyPressed(KeyEvent e) {
 
-            if (e.isAltDown() || e.isControlDown()) {
-                return;
-            }
+			// add to check meta keydown by koh 2004.04.16
+			if (e.isAltDown() || e.isControlDown() || e.isMetaDown()) {
+				return;
+			}
 
             boolean commit = true;
 

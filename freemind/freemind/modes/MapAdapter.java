@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.10.3 2004-04-08 18:54:56 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.10.4 2004-04-24 18:44:23 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -367,6 +367,13 @@ public abstract class MapAdapter implements MindMap {
         // The default position is after the last node
         insertNodeInto(newChild, parent, parent.getChildCount());
     }
+
+	public void insertNodeInto(
+		MindMapNode newChild,
+		MindMapNode parent,
+		int index) {
+		insertNodeInto((MutableTreeNode) newChild, (MutableTreeNode) parent, index);
+	}
 
     /**
      * Use this method to add children because it will cause the appropriate event.

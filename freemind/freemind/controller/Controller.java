@@ -16,19 +16,24 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.10.1 2004-04-08 18:54:55 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.10.2 2004-04-24 18:44:22 christianfoltin Exp $*/
 
 package freemind.controller;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
+import java.io.Serializable;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -38,6 +43,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import javax.swing.*;
+
 import java.net.MalformedURLException;
 
 import freemind.main.FreeMind;
@@ -57,7 +63,8 @@ import freemind.view.mindmapview.MapView;
  */
 public class Controller {
 
-    private LastOpenedList lastOpened;//A list of the pathnames of all the maps that were opened in the last time
+    private static JColorChooser colorChooser = new JColorChooser();
+	private LastOpenedList lastOpened;//A list of the pathnames of all the maps that were opened in the last time
     private MapModuleManager mapModuleManager;// new MapModuleManager();
     private HistoryManager history = new HistoryManager();
     private Map modes; //hash of all possible modes
@@ -281,6 +288,60 @@ public class Controller {
        String fontFamily = getProperty("defaultfont");
 
        return getFontThroughMap (new Font(fontFamily, fontStyle, fontSize)); }
+
+	/** Static JColorChooser to have  the recent colors feature. */
+	static public JColorChooser getCommonJColorChooser() {
+		return colorChooser;
+	}
+	
+	public static Color showCommonJColorChooserDialog(Component component,
+		String title, Color initialColor) throws HeadlessException {
+
+		final JColorChooser pane = getCommonJColorChooser();
+		pane.setColor(initialColor);
+
+		ColorTracker ok = new ColorTracker(pane);
+		JDialog dialog = JColorChooser.createDialog(component, title, true, pane, ok, null);
+		dialog.addWindowListener(new Closer());
+		dialog.addComponentListener(new DisposeOnClose());
+
+		dialog.show(); // blocks until user brings dialog down...
+
+		return ok.getColor();
+	}
+
+
+	private static class ColorTracker implements ActionListener, Serializable {
+		JColorChooser chooser;
+		Color color;
+
+		public ColorTracker(JColorChooser c) {
+			chooser = c;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			color = chooser.getColor();
+		}
+
+		public Color getColor() {
+			return color;
+		}
+	}
+
+	static class Closer extends WindowAdapter implements Serializable{
+		 public void windowClosing(WindowEvent e) {
+			 Window w = e.getWindow();
+			 w.hide();
+		 }
+	 }
+
+	 static class DisposeOnClose extends ComponentAdapter implements Serializable{
+		 public void componentHidden(ComponentEvent e) {
+			 Window w = (Window)e.getComponent();
+			 w.dispose();
+		 }
+	 }
+
 
 
     public boolean changeToMode(String mode) {
@@ -1105,7 +1166,7 @@ public class Controller {
             super(controller.getResourceString("background"),icon);
         }
         public void actionPerformed(ActionEvent e) {
-            Color color = JColorChooser.showDialog(getView(),"Choose Background Color:",getView().getBackground() );
+            Color color = showCommonJColorChooserDialog(getView(),"Choose Background Color:",getView().getBackground() );
             getModel().setBackgroundColor(color);
         }
     }

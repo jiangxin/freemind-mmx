@@ -58,6 +58,8 @@ public class PermanentNodeHookAdapter
 		   if(selected == focussed) {
 		   	hook.onReceiveFocusHook();
 		   }
+		   // using this method, the map is dirty now. This is important to guarantee, that the hooks are saved.
+		   this.nodeChanged(selected);
 		}
 	}
 

@@ -38,7 +38,7 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 		if(depth < colors.length)
 			mycolor = colors[depth];
 		Color nodeColor = node.getColor();
-		if((nodeColor!=null) || (nodeColor.getRGB() != mycolor.getRGB())) {
+		if(((nodeColor!=null) && (nodeColor.getRGB() != mycolor.getRGB()))|| nodeColor == null ) {
 			node.setColor(mycolor);
 			nodeChanged(node);
 		}
