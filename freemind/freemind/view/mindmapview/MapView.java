@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.4 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: MapView.java,v 1.5 2000-10-17 17:20:29 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -66,19 +66,18 @@ public class MapView extends JPanel implements Printable {
 
 	getModel().addTreeModelListener( new MapModelHandler() );
 
-	init();
-
 	this.setLayout( new MindMapLayout( this ) );
+
+	initRoot();
     }
 
-    public void init() {
-	removeAll();
-	//Initialize MindMap
+    public void initRoot() {
 	rootView = NodeView.newNodeView( (MindMapNode)getModel().getRoot(), this );
  	rootView.insert();
-	rootView.setPosition(0,0);
+	
+	getMindMapLayout().reinitialize();
 
-	layoutAll();
+	revalidate();
     }
 
 
@@ -90,14 +89,15 @@ public class MapView extends JPanel implements Printable {
 	JViewport viewPort = (JViewport)getParent();
 
 	Dimension d = viewPort.getExtentSize();
-	Rectangle scrollTo = new Rectangle(node.getLocation().x - d.width/2, node.getLocation().y - d.height/2, d.width, d.height);
+	Rectangle scrollTo = new Rectangle(node.getLocation().x + node.getPreferredSize().width/2 - d.width/2, node.getLocation().y + node.getPreferredSize().height/2 - d.height/2, d.width, d.height);
 	scrollRectToVisible(scrollTo);
     }
 
     public void scrollNodeToVisible( NodeView node ) {
+	//this is buggy!
 	if (node != null) {
-	    scrollRectToVisible( new Rectangle(node.getLocation().x-20, node.getLocation().y,node.getSize().width+20,node.getSize().height) );
-	}
+  	    scrollRectToVisible( new Rectangle(node.getLocation().x-20, node.getLocation().y,node.getSize().width+20,node.getSize().height) );
+  	}
     }
 
     public void moveLeft() {
@@ -201,7 +201,7 @@ public class MapView extends JPanel implements Printable {
 
     public void setZoom(float zoom) {
 	this.zoom = zoom;
-	updateAll();
+	revalidate();
     }
 
     public void paint(Graphics graphics){
@@ -241,35 +241,39 @@ public class MapView extends JPanel implements Printable {
 	for(Enumeration e = source.getChildrenViews().elements(); e.hasMoreElements(); ) {
 	    NodeView target = (NodeView)e.nextElement();
 	    
-	    target.getEdge().update();
 	    target.getEdge().paint(g);
 		
 	    paintEdges( target, g );//recursive
 	}
     }
     
-    private NodeView getRoot() {
+    protected NodeView getRoot() {
 	return rootView;
     }
 
-
-    private void layoutAll() {
-	getRoot().layoutChildren();
-	setPreferredSize(getLayout().preferredLayoutSize(this));
-	validate();
-	//scrollNodeToVisible(getSelected());
-	repaint();
+    private MindMapLayout getMindMapLayout() {
+	return (MindMapLayout)getLayout();
     }
 
-    private void updateAll() {
-	getRoot().updateAll();
-	getRoot().layoutChildren();
-	revalidate();
-	repaint();
-    }
+
+//     private void layoutAll() {
+// 	System.out.println("layoutAll()");
+	
+// 	//	setPreferredSize(getLayout().preferredLayoutSize(this));
+// 	((MindMapLayout)getLayout()).calcRelYPos(getRoot());
+// 	revalidate();
+// 	scrollNodeToVisible(getSelected());
+// 	repaint();
+//     }
+
+//     private void updateAll() {
+// 	getRoot().updateAll();
+// 	revalidate();
+// 	repaint();
+//     }
 
     /**
-     * This class is a workaround to allow the inner class access to "this".
+     * This method is a workaround to allow the inner class access to "this".
      * Change it as soon the correct syntax is known
      */
     private MapView getMap() {
@@ -303,7 +307,20 @@ public class MapView extends JPanel implements Printable {
 		node = ( (MindMapNode)e.getTreePath().getLastPathComponent() ).getViewer();
 	    } //This is not a good solution, but it works
 	    node.update();
-	    repaint();//length of the node changes, so whole map has to be repainted
+	    //	    ((MindMapLayout)getLayout()).layoutChildren(node);//layout the node and its children,
+	    //because length has changed. But maybe height has changed, too! Fix that.
+	    //MapWidth
+	    if (node.isLeft()) {
+	    } else {
+	    }
+	    getMindMapLayout().calcTreeHeight( node );
+	    if (!node.isRoot()) {
+		getMindMapLayout().subtreeChanged( node.getParentView() );
+	    } else {
+		getMindMapLayout().subtreeChanged( node );
+	    }
+	    //	    revalidate();//length of the node changes, so whole map has to be repainted
+	    repaint();
 	}
 
 	
@@ -313,10 +330,28 @@ public class MapView extends JPanel implements Printable {
 	    //works only with one child
 	    MindMapNode child = (MindMapNode)e.getChildren()[0];
 	    parentView.insert( child );
-	    layoutAll();
+	    getMindMapLayout().calcTreeHeight( child.getViewer() );
+	    getMindMapLayout().subtreeChanged(parentView);
+	    //	    revalidate();
+	    repaint();
 	}
 
+	public void treeNodesRemoved( TreeModelEvent e ) {
+	    //This is called once for each removed node, with just one child (the removed)
+	    NodeView node = ( (MindMapNode)e.getChildren()[0] ).getViewer();//Take care not to remove root in Controller
+	    NodeView parent = ( (MindMapNode)e.getTreePath().getLastPathComponent() ).getViewer();
+	    node.remove();//Just that one
+	    select(parent);
+	    getMindMapLayout().subtreeChanged( parent );
+	    //	    revalidate();
+	    repaint();
+	}
+
+	/**
+	 * 
+	 */
 	public void treeStructureChanged( TreeModelEvent e ) {
+	    
 	    //This implementation simply rereads the whole mindmap
 	    removeAll();
 	    MindMapNode newRoot = (MindMapNode)e.getTreePath().getLastPathComponent();
@@ -326,17 +361,10 @@ public class MapView extends JPanel implements Printable {
 	    NodeView newRootView = NodeView.newNodeView(newRoot,getMap());
 	    rootView=newRootView;
 	    rootView.insert();
-	    rootView.setPosition(0,0);
-	    layoutAll();
+	    getMindMapLayout().reinitialize();
+	    revalidate();
+	    repaint();
 	}
 
-	public void treeNodesRemoved( TreeModelEvent e ) {
-	    //This is called once for each removed node, with just one child (the removed)
-	    NodeView node = ( (MindMapNode)e.getChildren()[0] ).getViewer();//Take care not to remove root in Controller
-	    NodeView parent = ( (MindMapNode)e.getTreePath().getLastPathComponent() ).getViewer();
-	    node.remove();//Just that one
-	    select(parent);
-	    layoutAll();
-	}
     }
 }

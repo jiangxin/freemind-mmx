@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.4 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.5 2000-10-17 17:20:28 ponder Exp $*/
 
 package freemind.modes;
 
@@ -54,8 +54,9 @@ import javax.swing.filechooser.FileFilter;
 public abstract class ControllerAdapter implements ModeController {
 
     Mode mode;
-    Action setLink = new SetLinkAction();
-    Action followLink = new FollowLinkAction();
+
+    public Action cut = new CutAction(this);
+    public Action paste = new PasteAction(this);
 
     public ControllerAdapter(Mode mode) {
 	this.mode = mode;
@@ -176,6 +177,24 @@ public abstract class ControllerAdapter implements ModeController {
     // Node editing
     //
 
+//     void addNew(NodeView parent) {
+// 	getMode().getModeController().addNew(parent);
+//     }
+
+    void delete(NodeView node) {
+	getMode().getModeController().remove(node);
+    }
+
+    void edit() {
+	if (getView().getSelected() != null) {
+	    edit(getView().getSelected(), getView().getSelected());
+	}
+    }
+
+//     void edit(final NodeView node) {
+// 	getMode().getModeController().edit(node,node);
+//     }
+
     public void addNew(NodeView parent) {
 	MindMapNode newNode = newNode();
 	int place;
@@ -291,6 +310,7 @@ public abstract class ControllerAdapter implements ModeController {
      */
     protected Point getAbsoluteNodePosition(NodeView node) {
 	Point loc = node.getLocation();
+	
 	Point scroll = ((JViewport)getView().getParent()).getViewPosition();
 	Point content = getFrame().getContentPane().getLocation();
 	Point position = new Point();
@@ -353,9 +373,39 @@ public abstract class ControllerAdapter implements ModeController {
 	}
     }
 
+    //
+    // Node editing
+    //
 
-    private class SetLinkAction extends AbstractAction {
-	SetLinkAction() {
+    protected class EditAction extends AbstractAction {
+	protected EditAction() {
+	    super(FreeMind.getResources().getString("edit"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    edit();
+	}
+    }
+
+    protected class AddNewAction extends AbstractAction {
+	protected AddNewAction() {
+	    super(FreeMind.getResources().getString("new_node"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    addNew(getView().getSelected());
+	}
+    }
+
+    protected class RemoveAction extends AbstractAction {
+	protected RemoveAction() {
+	    super(FreeMind.getResources().getString("remove_node"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    delete(getView().getSelected());
+	}
+    }
+
+    protected class SetLinkAction extends AbstractAction {
+	protected SetLinkAction() {
 	    super(FreeMind.getResources().getString("set_link"));
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -363,12 +413,39 @@ public abstract class ControllerAdapter implements ModeController {
 	}
     }
 
-    private class FollowLinkAction extends AbstractAction {
-	FollowLinkAction() {
+    protected class FollowLinkAction extends AbstractAction {
+	protected FollowLinkAction() {
 	    super(FreeMind.getResources().getString("follow_link"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    loadURL();
 	}
     }
+
+    protected class CutAction extends AbstractAction {
+	protected CutAction(Object controller) {
+	    super(FreeMind.getResources().getString("cut"), new ImageIcon(controller.getClass().getResource("/images/Cut24.gif")));
+	    setEnabled(false);
+	}
+	public void actionPerformed(ActionEvent e) {
+	    if(getController().getMapModule() != null) {
+		MindMapNode node = getView().getSelected().getModel();
+		if (node.isRoot()) return;
+		paste.setEnabled(true);
+		getModel().cut(node);
+	    }
+	}
+    }
+
+    protected class PasteAction extends AbstractAction {
+	protected PasteAction(Object controller) {
+	    super(FreeMind.getResources().getString("paste"),new ImageIcon(controller.getClass().getResource("/images/Paste24.gif")));
+	    setEnabled(false);
+	}
+	public void actionPerformed(ActionEvent e) {
+	    setEnabled(false);
+	    getModel().paste(getView().getSelected().getModel());
+	}
+    }
+
 }

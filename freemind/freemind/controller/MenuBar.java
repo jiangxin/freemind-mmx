@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.3 2000-08-11 10:22:37 ponder Exp $*/
+/*$Id: MenuBar.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
 
 package freemind.controller;
 
@@ -72,11 +72,11 @@ public class MenuBar extends JMenuBar {
 	JMenuItem nextMap = editmenu.add(c.nextMap);
 	nextMap.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_nextMap")));
 
-	JMenuItem cut = editmenu.add(c.cut);
-	cut.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_cut")));
+// 	JMenuItem cut = editmenu.add(c.cut);
+// 	cut.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_cut")));
 	
-	JMenuItem paste = editmenu.add(c.paste);
-	paste.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_paste")));
+// 	JMenuItem paste = editmenu.add(c.paste);
+// 	paste.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_paste")));
 
 	editmenu.addSeparator();
 
@@ -108,6 +108,10 @@ public class MenuBar extends JMenuBar {
 	//Helpmenu
 	JMenu helpmenu = new JMenu(FreeMind.getResources().getString("help"));
 	this.add(helpmenu);
+
+	helpmenu.add(c.documentation);
+
+	helpmenu.add(c.license);
 	
 	helpmenu.add(c.about);
 	

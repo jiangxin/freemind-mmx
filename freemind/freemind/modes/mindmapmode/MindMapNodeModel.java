@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.3 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -106,6 +106,10 @@ public class MindMapNodeModel extends NodeAdapter {
 	xmlParent.appendChild(node);
 	((MindMapEdgeModel)getEdge()).save(doc,node);
 	node.setAttribute("text",this.toString());
+
+	if (isFolded()) {
+	    node.setAttribute("folded","true");
+	}
 	
 	if (color != null) {
 	    node.setAttribute("color", Tools.colorToXml(getColor()));
@@ -142,7 +146,9 @@ public class MindMapNodeModel extends NodeAdapter {
 	}
 
 	//recursive
-	for (Enumeration e = children(); e.hasMoreElements(); ) {
+	for (Enumeration e = children.elements(); e.hasMoreElements(); ) {
+	    //call children.elements() instead of children() because a folded node doesn't 
+	    //report its children via children().
 	    MindMapNodeModel child = (MindMapNodeModel)e.nextElement();
 	    child.save(doc, node);
 	}
@@ -151,6 +157,10 @@ public class MindMapNodeModel extends NodeAdapter {
     public void load(Node node_) {
 	Element node = (Element)node_;
 	setUserObject( node.getAttribute("text") );
+
+	if (node.getAttribute("folded").equals("true")) {
+	    setFolded(true);
+	}
 	if (node.getAttribute("color").length() == 7) {
 	    setColor(Tools.xmlToColor(node.getAttribute("color") ) );
 	}

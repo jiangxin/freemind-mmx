@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.4 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: NodeAdapter.java,v 1.5 2000-10-17 17:20:28 ponder Exp $*/
 
 package freemind.modes;
 
@@ -130,14 +130,11 @@ public abstract class NodeAdapter implements MindMapNode {
     /**The Foreground/Font Color*/
     public Color getColor() {
 	if(color==null) {
-	    if(this.isRoot()) {
-		String stdcolor = FreeMind.userProps.getProperty("standardnodecolor");
-		if (stdcolor.length() == 7) {
-		    return Tools.xmlToColor(stdcolor);
-		}
-		return Color.blue;
+	    String stdcolor = FreeMind.userProps.getProperty("standardnodecolor");
+	    if (stdcolor.length() == 7) {
+		return Tools.xmlToColor(stdcolor);
 	    }
-	    return ( (MindMapNode)getParent() ).getColor();
+	    return Color.blue;
 	}
 	return color;
     }

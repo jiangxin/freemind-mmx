@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.3 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: RootNodeView.java,v 1.4 2000-10-17 17:20:29 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -99,16 +99,14 @@ public class RootNodeView extends NodeView {
     void insert(MindMapNode newNode) {
   	NodeView newView = newNodeView(newNode,getMap());
 	newView.update();
-	//balancing should depend from Treeheight, not simply size
-	if ( getRight().size() > getLeft().size() ) {
-	    newView.setPosition(-1,0);
-	    //Set it to be recognized left on next layout... bad solution
+	if ( getLeft().size() > getRight().size() ) {
+	    newView.setLeft(false);
     	}
 	for (Enumeration e = newNode.children();e.hasMoreElements();) {
 	    MindMapNode child = (MindMapNode)e.nextElement();
 	    newView.insert(child);
 	}
-      }	
+    }	
 
     //
     // Navigation
@@ -127,19 +125,12 @@ public class RootNodeView extends NodeView {
     // Layout
     //
 
-    /**
-     * Determines the logical Position of all of its direct children.
-     */
-    public void layoutChildren() {
-	if (getChildrenViews().size() == 0) return;//nothing to do
-	layoutRoot();
-    } 
-  
     public Dimension getPreferredSize() {
 	int width = (int)(super.getPreferredSize().width*1.3);
 	int height = (int)(super.getPreferredSize().height*1.6);
 	return new Dimension(width,height);
     }	
+
 
     /**
      * Paints the node
@@ -160,23 +151,6 @@ public class RootNodeView extends NodeView {
 	}
 	super.paint(g);
     }
-	
-
-
-
-
-    ////////
-    // Private methods. Internal implementation.
-    //////
-
-    /**
-     * Places all the direct children of root, including left/right balancing
-     */
-    private void layoutRoot() {
-	    layout(getRight(),false);
-	    layout(getLeft(),true);
-    }
-
 }
 
 
@@ -187,3 +161,11 @@ public class RootNodeView extends NodeView {
 
 
 
+//     /**
+//      * Determines the logical Position of all of its direct children.
+//      */
+//     public void layoutChildren() {
+// 	if (getChildrenViews().size() == 0) return;//nothing to do
+// 	layoutRoot();
+    //    } 
+  

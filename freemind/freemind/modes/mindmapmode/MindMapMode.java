@@ -16,16 +16,19 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMode.java,v 1.4 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: MindMapMode.java,v 1.5 2000-10-17 17:20:28 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
+import freemind.main.FreeMind;
 import freemind.controller.Controller;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 
 public class MindMapMode implements Mode {
 
@@ -56,7 +59,14 @@ public class MindMapMode implements Mode {
 	menu.add(getMindMapController().open);
 	menu.add(getMindMapController().save);
 	menu.add(getMindMapController().saveAs);
-	getController().cut.setEnabled(true);
+	JMenuItem edit = menu.add(getMindMapController().edit);
+ 	edit.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_edit")));
+ 	JMenuItem addNew = menu.add(getMindMapController().addNew);
+ 	addNew.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_add")));
+ 	JMenuItem remove = menu.add(getMindMapController().remove);
+ 	remove.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_remove")));
+
+	getMindMapController().cut.setEnabled(true);
     }
     
     public Controller getController() {

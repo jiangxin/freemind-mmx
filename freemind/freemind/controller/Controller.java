@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.5 2000-08-09 22:12:25 ponder Exp $*/
+/*$Id: Controller.java,v 1.6 2000-10-17 17:20:28 ponder Exp $*/
 
 package freemind.controller;
 
@@ -47,6 +47,9 @@ import javax.swing.ImageIcon;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JToolBar;
+//Documentation
+import java.io.File;
+import freemind.modes.ControllerAdapter;
 
 /**
  * Provides the methods to edit/change a Node.
@@ -71,10 +74,11 @@ public class Controller {
     public Action quit = new QuitAction(this);
     Action background = new BackgroundAction();
     Action about = new AboutAction();
+    Action documentation = new DocumentationAction();
+    Action license = new LicenseAction();
     Action previousMap = new PreviousMapAction(this);
     Action nextMap = new NextMapAction(this);
-    public Action cut = new CutAction(this);
-    public Action paste = new PasteAction(this);
+
     Action moveToRoot = new MoveToRootAction(this);
 
     //
@@ -229,28 +233,6 @@ public class Controller {
 	getView().centerNode(getView().getSelected());
     }
 
-    //
-    //  Node Editing
-    //
-
-    void addNew(NodeView parent) {
-	getMode().getModeController().addNew(parent);
-    }
-
-    void delete(NodeView node) {
-	getMode().getModeController().remove(node);
-    }
-
-    void edit() {
-	if (getView().getSelected() != null) {
-	    edit(getView().getSelected());
-	}
-    }
-
-    void edit(final NodeView node) {
-	getMode().getModeController().edit(node,node);
-    }
-
     void toggleFolded() {
 	if (getSelected().isFolded()) {
 	    getModel().setFolded(getSelected(),false);
@@ -300,7 +282,6 @@ public class Controller {
 	MapModule mapmodule = new MapModule(map, new MapView(map, this), getMode());
 	setMapModule(mapmodule);
 	addToMapModules(mapmodule.toString(), mapmodule);
-	getView().init();
 	mapModuleChanged();
     }
 
@@ -363,6 +344,7 @@ public class Controller {
 	    getFrame().setTitle("FreeMind - " + getMode().toString()+" Mode" + " - " + getMapModule().toString());
 	}
 	moveToRoot();
+	//??	getView().repaint();
     }
 
     private void addToMapModules(String key, MapModule value) {
@@ -390,7 +372,6 @@ public class Controller {
     private void setAllActions(boolean enabled) {
 	background.setEnabled(enabled);
 	print.setEnabled(enabled);
-	cut.setEnabled(enabled);
 	close.setEnabled(enabled);
 	moveToRoot.setEnabled(enabled);
     }
@@ -438,6 +419,7 @@ public class Controller {
 	changeToAnotherMap(toBeClosed);
 	removeFromMapModules(toBeClosed);
     }
+
     private void changeToAnotherMap(String toBeClosed) {
 	List keys = new LinkedList(getMapModules().keySet());
 	int index = keys.indexOf(getMapModule().toString());
@@ -502,6 +484,20 @@ public class Controller {
 	}
     }
 
+    //
+    // Help
+    //
+
+    private class DocumentationAction extends AbstractAction {
+	DocumentationAction() {
+	    super(FreeMind.getResources().getString("documentation"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    changeToMode("MindMap");
+	    ((ControllerAdapter)getMode().getModeController()).load(new File("freemind.mm"));
+	}
+    }
+
     private class AboutAction extends AbstractAction {
 	AboutAction() {
 	    super(FreeMind.getResources().getString("about"));
@@ -510,6 +506,16 @@ public class Controller {
 	    JOptionPane.showMessageDialog(getView(),FreeMind.getResources().getString("about_text")+FreeMind.version);
 	}
     }
+
+    private class LicenseAction extends AbstractAction {
+	LicenseAction() {
+	    super(FreeMind.getResources().getString("license"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    JOptionPane.showMessageDialog(getView(),FreeMind.getResources().getString("license_text"));
+	}
+    }
+
 
     //
     // Map navigation
@@ -560,33 +566,6 @@ public class Controller {
 	public void actionPerformed(ActionEvent e) {
 	    Color color = JColorChooser.showDialog(getView(),"Choose Background Color:",getView().getBackground() );
 	    getModel().setBackgroundColor(color);
-	}
-    }
-
-    //
-    // Node editing
-    //
-
-    private class CutAction extends AbstractAction {
-	CutAction(Object controller) {
-	    super(FreeMind.getResources().getString("cut"), new ImageIcon(controller.getClass().getResource("/images/Cut24.gif")));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    MindMapNode node = getView().getSelected().getModel();
-	    if (node.isRoot()) return;
-	    paste.setEnabled(true);
-	    getModel().cut(node);
-	}
-    }
-
-    private class PasteAction extends AbstractAction {
-	PasteAction(Object controller) {
-	    super(FreeMind.getResources().getString("paste"),new ImageIcon(controller.getClass().getResource("/images/Paste24.gif")));
-	    setEnabled(false);
-	}
-	public void actionPerformed(ActionEvent e) {
-	    setEnabled(false);
-	    getModel().paste(getView().getSelected().getModel());
 	}
     }
 }//Class Controller

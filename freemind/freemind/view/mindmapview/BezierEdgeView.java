@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BezierEdgeView.java,v 1.3 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: BezierEdgeView.java,v 1.4 2000-10-17 17:20:29 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -32,25 +32,16 @@ import java.awt.geom.CubicCurve2D;
 public class BezierEdgeView extends EdgeView {
 
     CubicCurve2D.Float graph = new CubicCurve2D.Float();
-    NodeView source,target;
-    Point2D.Float start, end, one, two;
+    Point2D.Float one, two;
     private static final int XCTRL = 7;//the distance between endpoint and controlpoint
    
     public BezierEdgeView(NodeView source, NodeView target) {
-	this.source = source;
-	this.target = target;
-	update();
+	super(source,target);
+	//	update();
     }
 
     public void update() {
-	start = new Point2D.Float(source.getOutPoint().x, source.getOutPoint().y);
-	end = new Point2D.Float(target.getInPoint().x, target.getInPoint().y);
-
-	if(source.isRoot()) {
-	    if( target.isLeft() ) {
-		start = new Point2D.Float(source.getInPoint().x, source.getInPoint().y);
-	    }
-	}
+	super.update();
 
 	//YCTRL could be implemented but then we had to check whether target is above or below source.
 	if(target.isLeft()) {
@@ -68,18 +59,10 @@ public class BezierEdgeView extends EdgeView {
 	g.setColor(getColor());
 	graph.setCurve(start.x,start.y,one.x,one.y,two.x,two.y,end.x,end.y);
 	g.draw(graph);
+	super.paint(g);
     }
 
     public Color getColor() {
 	return getModel().getColor();
     }
-
-    ///////////
-    // Private Methods. Internal Implementation
-    /////////
-
-    private MindMapEdge getModel() {
-	return target.getModel().getEdge();
-    }
-    
 }

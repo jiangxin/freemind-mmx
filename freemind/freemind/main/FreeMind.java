@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.3 2000-08-09 22:12:25 ponder Exp $*/
+/*$Id: FreeMind.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
 
 package freemind.main;
 
@@ -39,7 +39,7 @@ import javax.swing.UIManager;
 
 public class FreeMind extends JFrame {
 
-    public static final String version = "0.1.0 build 1";
+    public static final String version = "0.1.1 pre 24";
     public static final String defaultPropsURL = "freemind.properties";
     public static Properties defaultProps;
     public static Properties userProps;
@@ -93,7 +93,7 @@ public class FreeMind extends JFrame {
 	menuBar = new MenuBar(c);
 	setJMenuBar(menuBar);
 	
-        //Create the scroll pane and add the tree to it. 
+        //Create the scroll pane.
 	scrollPane.setPreferredSize( new Dimension( 600, 400 ) );
 	
 	getContentPane().add( scrollPane, BorderLayout.CENTER );

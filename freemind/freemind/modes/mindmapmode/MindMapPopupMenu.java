@@ -16,13 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapPopupMenu.java,v 1.3 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: MindMapPopupMenu.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.main.FreeMind;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 public class MindMapPopupMenu extends JPopupMenu {
 
@@ -31,13 +33,20 @@ public class MindMapPopupMenu extends JPopupMenu {
     public MindMapPopupMenu(MindMapController c) {
 	this.c = c;
 
-	this.add(c.followLink);
-	this.add(c.setLink);
-	
 	//Node menu
 	JMenu nodeMenu = new JMenu(FreeMind.getResources().getString("node"));
 	this.add(nodeMenu);
 
+	JMenuItem edit = nodeMenu.add(c.edit);
+ 	edit.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_edit")));
+ 	JMenuItem addNew = nodeMenu.add(c.addNew);
+ 	addNew.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_add")));
+ 	JMenuItem remove = nodeMenu.add(c.remove);
+ 	remove.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_remove")));
+
+	nodeMenu.add(c.followLink);
+	nodeMenu.add(c.setLink);
+	
 	JMenu nodeStyle = new JMenu(FreeMind.getResources().getString("style"));
 	nodeMenu.add(nodeStyle);
 

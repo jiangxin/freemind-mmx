@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.3 2000-08-11 10:22:37 ponder Exp $*/
+/*$Id: MainToolBar.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
 
 package freemind.controller;
 
@@ -38,10 +38,10 @@ public class MainToolBar extends JToolBar {
 	button.setText("");
 	button = add(c.nextMap);
 	button.setText("");
-	button = add(c.cut);
-	button.setText("");
-	button = add(c.paste);
-	button.setText("");
+// 	button = add(c.cut);
+// 	button.setText("");
+// 	button = add(c.paste);
+// 	button.setText("");
 
 	zoom = new JComboBox(zooms);
 	zoom.setSelectedItem("100%");

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMode.java,v 1.4 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: FileMode.java,v 1.5 2000-10-17 17:20:28 ponder Exp $*/
 
 package freemind.modes.filemode;
 
@@ -62,8 +62,8 @@ public class FileMode implements Mode {
 	    getController().changeToMapOfMode(this);
 	}
 	menu.add( ((FileController)getModeController()).center );
-	getController().cut.setEnabled(false);
-	getController().paste.setEnabled(false);
+// 	getController().cut.setEnabled(false);
+// 	getController().paste.setEnabled(false);
     }
     
     public Controller getController() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.2 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: NodeView.java,v 1.3 2000-10-17 17:20:29 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -40,9 +40,13 @@ public abstract class NodeView extends JLabel {
 
     protected MindMapNode model;
     protected MapView map;
-    protected Point position = new Point();//The position in the logical raster of MapView
     protected EdgeView edge;
     protected final static Color selectedColor = Color.darkGray;//the Color of the Rectangle of a selected Node
+    //caching of treeheight
+    protected int treeHeight;
+//     protected boolean treeheightCurrent = true;
+    private boolean left = true; //is the node left of root?
+    int relYPos;//the relative Y Position to it's parent
 
 
     //
@@ -108,27 +112,38 @@ public abstract class NodeView extends JLabel {
     // get/set methods
     //
 
+//     protected boolean isTreeheightCurrent() {
+// 	return treeheightCurrent;
+//     }
+
+//     protected void setTreeheightCurrent(boolean current) {
+// 	treeheightCurrent = current;
+// 	if(!current) {
+// 	    getParentView().setTreeheightCurrent(false);
+// 	}
+//     }
+
+    int getTreeHeight() {
+	return treeHeight;
+    }
+
+    void setTreeHeight(int treeHeight) {
+	this.treeHeight = treeHeight;
+    }
+
     protected boolean isSelected() {
 	return (getMap().getSelected() == this);
     }
 
     /**Is the node left of root?*/
     protected boolean isLeft() {
-	return (getPosition().x < 0);
+	return left;
     }
 
-    Point getPosition() {
-	return position;
+    protected void setLeft(boolean left) {
+	this.left = left;
     }
-
-    void setPosition( int x, int y ) {
-	setPosition( new Point(x,y) );
-    }
-
-    protected void setPosition( Point position ) {
-	this.position = position;
-    }
-
+	
     protected void setModel( MindMapNode model ) {
 	this.model = model;
     }
@@ -169,6 +184,7 @@ public abstract class NodeView extends JLabel {
     /**
      * Returns the Point where the OutEdge
      * should leave the Node.
+     * THIS SHOULD BE DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
      */
     Point getOutPoint() {
 	Dimension size = getSize();
@@ -184,6 +200,7 @@ public abstract class NodeView extends JLabel {
     /**
      * Returns the Point where the InEdge
      * should arrive the Node.
+     * THIS SHOULD BE DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
      */
     Point getInPoint() {
 	Dimension size = getSize();
@@ -248,6 +265,7 @@ public abstract class NodeView extends JLabel {
 
     void insert(MindMapNode newNode) {
 	NodeView newView = NodeView.newNodeView(newNode,getMap());
+	newView.setLeft(this.isLeft());
 	for (Enumeration e = newNode.children();e.hasMoreElements();) {
 	    MindMapNode child = (MindMapNode)e.nextElement();
 	    newView.insert(child);
@@ -261,13 +279,14 @@ public abstract class NodeView extends JLabel {
      */
     void remove() {
 	getMap().remove(this);
+	getEdge().remove();
 	for(Enumeration e = getChildrenViews().elements();e.hasMoreElements();) {
 	    NodeView child = (NodeView)e.nextElement();
 	    child.remove();
 	}
     }
 
-    void update() {	
+    void update() {
 	setText(getModel().toString());
 	setForeground(getModel().getColor());
 	//setCursor(new Cursor(getModel().getCursor()));//getCursor() is int
@@ -299,68 +318,39 @@ public abstract class NodeView extends JLabel {
 	}
     }
 
-    //
-    // Layout
-    //
-
-    /**
-     * Determines the logical Position of all of its direct children.
-     */
-    protected void layoutChildren() {
-	if (getChildrenViews().size() == 0) return;//nothing to do
-
-	if (this.isLeft()) { //Node is left
-	    layout( getChildrenViews(), true );
-	} else { //Node is right
-	    layout( getChildrenViews(), false );
-	} 
-    }
-
-
-    /**
-     * Places all children contained in the Vector, dependent whether they are left or right
-     */
-    protected void layout( Vector v, boolean isLeft ) {
-	int pointer = -(getTreeHeight(v) / 2);
-	for ( Enumeration e = v.elements(); e.hasMoreElements(); ) {
-	    NodeView child = (NodeView)e.nextElement();
-	    
-	    //Calculate y position
-	    pointer += (child.getTreeHeight() / 2);
-	    int y = this.getPosition().y + pointer;
-	    
-	    //Calculate |x|
-	    int x = child.getModel().getPath().getPathCount() - 1;
-
-	    if (isLeft) x = (-x);
-
-	    child.setPosition( x,y );
-	    child.layoutChildren(); //Work recursively
-	    pointer += (child.getTreeHeight() / 2);
-	} //for (every Node)
-    }		
-
-    protected int getTreeHeight( Vector v ) { //Returns the height of all NodeViews in the Vector
-	if ( v.size() == 0 ) {
-	    return getPreferredSize().height + 5;
-	}
-	int height = 0;
-	for ( Enumeration e = v.elements(); e.hasMoreElements(); ) {
-	    NodeView node = (NodeView)e.nextElement();
-	    height += node.getTreeHeight();
-	}
-	if (height > getPreferredSize().height + Math.abs(getPosition().x) * 5) {
-	    return height;
-	} else {
-	    return getPreferredSize().height + Math.abs(getPosition().x) * 5;
-	}
-    }
+//     /**
+//      * THIS SHOULD BE MOVED TO MINDMAPLAYOUT
+//      */
+//     protected int getTreeHeight( Vector v ) { //Returns the height of all NodeViews in the Vector
+// 	if ( v == null || v.size() == 0 ) {
+// 	    return getPreferredSize().height + 5;
+// 	}
+// 	int height = 0;
+// 	for ( Enumeration e = v.elements(); e.hasMoreElements(); ) {
+// 	    NodeView node = (NodeView)e.nextElement();
+// 	    if (node == null) {
+// 		break;
+// 	    }
+// 	    height += node.getTreeHeight();
+// 	}
+// 	if (height > getPreferredSize().height) {
+// 	    return height;
+// 	} else {
+// 	    return getPreferredSize().height;
+// 	}
+//     }
     
-    protected int getTreeHeight() { //Returns the height of this subtree in cells
-	Vector v = getChildrenViews();
-	return getTreeHeight(v);
-    }
-
+//     /**
+//      * THIS SHOULD BE MOVED TO MINDMAPLAYOUT
+//      */
+//     protected int getTreeHeight() { //Returns the height of this subtree in pixels;
+// 	if(!isTreeheightCurrent()) {
+// 	    Vector v = getChildrenViews();
+// 	    treeheight = getTreeHeight(v);
+// 	    setTreeheightCurrent(true);
+// 	}
+// 	return treeheight;
+//     }
 }
 
 
@@ -370,4 +360,50 @@ public abstract class NodeView extends JLabel {
 
 
 
+
+
+
+
+
+
+    //
+    // Layout   >>>> This must be moved to MindMapLayout <<<<
+    //
+
+//     /**
+//      * Determines the logical Position of all of its direct children.
+//      */
+//     protected void layoutChildren() {
+// 	if (getChildrenViews().size() == 0) return;//nothing to do
+
+// 	if (this.isLeft()) { //Node is left
+// 	    layout( getChildrenViews(), true );
+// 	} else { //Node is right
+// 	    layout( getChildrenViews(), false );
+// 	} 
+//     }
+
+
+//     /**
+//      * Places all children contained in the Vector, dependent whether they are left or right
+//      */
+//     protected void layout( Vector v, boolean isLeft ) {
+// 	int pointer = -(getTreeHeight(v) / 2);
+// 	for ( Enumeration e = v.elements(); e.hasMoreElements(); ) {
+// 	    NodeView child = (NodeView)e.nextElement();
+	    
+// 	    //Calculate y position
+// 	    pointer += (child.getTreeHeight() / 2);
+// 	    int y = this.getPosition().y + pointer;
+	    
+// 	    //Calculate |x|
+// 	    int x = child.getModel().getPath().getPathCount() - 1;
+
+// 	    if (isLeft) x = (-x);
+
+// 	    child.setPosition( x,y );
+// 	    child.layoutChildren(); //Work recursively
+// 	    pointer += (child.getTreeHeight() / 2);
+// 	} //for (every Node)
+//     }		
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeAdapter.java,v 1.3 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: EdgeAdapter.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
 
 package freemind.modes;
 
@@ -76,7 +76,7 @@ public abstract class EdgeAdapter implements MindMapEdge {
     }
 
     public String toString() {
-	return null;
+	return "";
     }
 
     ///////////

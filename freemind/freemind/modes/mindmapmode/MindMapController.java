@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.4 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: MindMapController.java,v 1.5 2000-10-17 17:20:28 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -43,6 +43,12 @@ public class MindMapController extends ControllerAdapter {
     Action save = new SaveAction(this);
     Action saveAs = new SaveAsAction(this);
 
+    Action edit = new EditAction();
+    Action addNew = new AddNewAction();
+    Action remove = new RemoveAction();
+    Action setLink = new SetLinkAction();
+    Action followLink = new FollowLinkAction();
+
     Action fork = new ForkAction();
     Action bubble = new BubbleAction();
     Action nodeColor = new NodeColorAction();
@@ -53,8 +59,6 @@ public class MindMapController extends ControllerAdapter {
     Action bold = new BoldAction(this);
     //    Action underline = new UnderlineAction(this);
     Action normalFont = new NormalFontAction(this);
-    Action setLink = new SetLinkAction();
-    Action followLink = new FollowLinkAction();
 
     FileFilter filefilter = new MindMapFilter();
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinearEdgeView.java,v 1.3 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: LinearEdgeView.java,v 1.4 2000-10-17 17:20:29 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -30,36 +30,25 @@ import java.awt.Color;
  */
 public class LinearEdgeView extends EdgeView {
 
-    NodeView source, target;
     Point start, end;
 
     public LinearEdgeView(NodeView source, NodeView target) {
-	this.source = source;
-	this.target = target;
+	super(source,target);
 	update();
     }
 
     public void update() {
-	start = source.getOutPoint();
-	end = target.getInPoint();
-	if(source.isRoot()) {
-	    if( target.isLeft() ) {
-		start = source.getInPoint();
-	    }
-	}
+	super.update();
     }
 
     public void paint(Graphics2D g) {
 	update();
 	g.setColor(getColor());
 	g.drawLine(start.x,start.y,end.x,end.y);
+	super.paint(g);
     }
     
     public Color getColor() {
 	return getModel().getColor();
-    }
-
-    private MindMapEdge getModel() {
-	return target.getModel().getEdge();
     }
 }
