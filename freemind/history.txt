@@ -97,6 +97,7 @@ Changes made in Freemind 0.8.0:
 * Packaging of default plugins
 
 * Plugins internationalized.
+* Bug fix: Plugins under Windows.
 
 Changes made in Freemind 0.7.2:
 ===============================

@@ -1,18 +1,23 @@
 <project name="freemind_plugins" default="dist" basedir=".">
 	
+	<macrodef name="callant">
+		<attribute name="task"/>
+		<sequential>
+			<ant antfile="plugins/build_help.xml" target="@{task}"/>
+			<ant antfile="plugins/build_svg.xml" target="@{task}"/>
+		</sequential>
+	</macrodef>
+	
 	<target name="build">
-		<ant antfile="plugins/build_help.xml" target="build"/>
-		<ant antfile="plugins/build_svg.xml" target="build"/>
+		<callant task="build"/>
 	</target>
 
 	<target name="dist">
-		<ant antfile="plugins/build_help.xml" target="dist"/>
-		<ant antfile="plugins/build_svg.xml" target="dist"/>
+		<callant task="dist"/>
 	</target>
 
 	<target name="post">
-		<ant antfile="plugins/build_help.xml" target="post"/>
-		<ant antfile="plugins/build_svg.xml" target="post"/>
+		<callant task="post"/>
 	</target>
 
 </project>

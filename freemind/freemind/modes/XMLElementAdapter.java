@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.1 2004-10-17 23:00:08 dpolivaev Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.2 2004-11-18 21:43:33 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -148,7 +148,7 @@ public abstract class XMLElementAdapter extends XMLElement {
          	 XMLElement xml = (XMLElement) child/*.getUserObject()*/;
              try {
              String loadName = (String)xml.getAttribute("NAME");
-			 loadName=loadName.replace('/', File.separatorChar);
+			 //loadName=loadName.replace('/', File.separatorChar);
 			 /* The next code snippet is an exception. Normally, hooks 
 			  * have to be created via the ModeController. 
 			  * DO NOT COPY. */

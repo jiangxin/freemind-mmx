@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.4.2 2004-11-16 16:42:35 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.4.3 2004-11-18 21:43:33 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -141,15 +141,15 @@ public class HookFactory {
 			if (xmlPluginFile.matches(pluginPrefixRegEx)) {
 				// make file name:
 				xmlPluginFile =
-					xmlPluginFile.replace('.', File.separatorChar)
+					xmlPluginFile.replace('.', '/') /* Here, this is not the File.separatorChar!!! */
 						+ importWizard.lookFor;
 				// this is one of our plugins:
 				URL pluginURL = getClassLoader(Collections.EMPTY_LIST).getResource(xmlPluginFile);
 				// unmarshal xml:
 				Plugin plugin = null;
 				try {
+					logger.finest("Reading: "+xmlPluginFile + " from "+ pluginURL);
 					InputStream in = pluginURL.openStream();
-					logger.finest("Reading: "+xmlPluginFile);
 					unmarshaller.setValidating(true);
 					plugin = (Plugin) unmarshaller.unmarshal(in);
 				} catch (Exception e) {
