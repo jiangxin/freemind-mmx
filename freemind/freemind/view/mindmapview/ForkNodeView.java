@@ -56,7 +56,7 @@ public class ForkNodeView extends NodeView {
 
 	if( this.isSelected() ) {
 	    g.setColor(selectedColor);
-	    g.drawRect(0,2,size.width-1, size.height-5);
+	    g.drawRect(0,0,size.width-1, size.height-1);
 	}
 
 	super.paint(g);

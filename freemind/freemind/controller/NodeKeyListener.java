@@ -129,10 +129,10 @@ public class NodeKeyListener implements KeyListener {
 	    e.consume();
 	    return;
 
-	case KeyEvent.VK_N:
-	    c.addNew( (NodeView)e.getSource() );
-	    e.consume();
-	    return;
+ 	case KeyEvent.VK_N:
+ 	    c.addNew( (NodeView)e.getSource() );
+ 	    e.consume();
+ 	    return;
 
 
 	case KeyEvent.VK_ESCAPE:
@@ -155,16 +155,6 @@ public class NodeKeyListener implements KeyListener {
 	    e.consume();
 	    return;
 	}
-	//Workaround because KeyCodes for these characters are 0
-// 	if (e.getKeyChar() == '>') {
-// 	    c.nextMap();
-// 	    e.consume();
-// 	    return;
-// 	} else if (e.getKeyChar() == '<') {
-// 	    c.previousMap();
-// 	    e.consume();
-// 	    return;
-// 	}
     }
 
     public void keyReleased( KeyEvent e ) {

@@ -76,6 +76,8 @@ public abstract class ControllerAdapter implements ModeController {
 
     /**
      * You may want to implement this...
+     * It returns the FileFilter that is used by the open() and save()
+     * JFileChoosers.
      */
     protected FileFilter getFileFilter() {
 	return null;
@@ -89,6 +91,10 @@ public abstract class ControllerAdapter implements ModeController {
 	getController().newMapModule(newModel());
     }
 
+    /**
+     * You may decide to overload this or take the default
+     * and implement the functionality in your MapModel (implements MindMap)
+     */
     public void load(File file) {
  	MapAdapter model = newModel();
  	model.load(file);
@@ -104,13 +110,18 @@ public abstract class ControllerAdapter implements ModeController {
 	}
     }
 
+    /**
+     * See load()
+     */
     public void save(File file) {
 	getModel().save(file);
     }
 
+
     //
     // Dialogs with user
     //
+
     public void open() {
 	JFileChooser chooser = new JFileChooser();
 	//chooser.setLocale(currentLocale);
@@ -154,9 +165,7 @@ public abstract class ControllerAdapter implements ModeController {
 	    } else if (returnVal==JOptionPane.NO_OPTION) {
 	    } else if (returnVal==JOptionPane.CANCEL_OPTION) {
 		throw new Exception();
-		//How should I do this? quitAction must be notified, but if I throw an Exception,
-		// i can't catch it (its an action)
-		//		System.err.println("I'm sorry, cancel is currently not supported.");
+		//do this because quit() must terminate (and _not_ quit the prog)
 	    }
 	}
     }
@@ -165,6 +174,7 @@ public abstract class ControllerAdapter implements ModeController {
     //
     // Node editing
     //
+
     public void addNew(NodeView parent) {
 	MindMapNode newNode = newNode();
 	int place;
@@ -186,11 +196,8 @@ public abstract class ControllerAdapter implements ModeController {
     public void edit(final NodeView node,final NodeView toBeSelected) {
 	getView().scrollNodeToVisible(node);
 	final JTextField input = new JTextField(node.getModel().toString());
-	Point loc = node.getLocation();
-	Point scroll = ((JViewport)getView().getParent()).getViewPosition();
-	Point content = getFrame().getContentPane().getLocation();
-	//Todo: Remove the constant(40) (the menubar) from this calc
-	input.setBounds(loc.x-scroll.x+content.x,loc.y-scroll.y+content.y+40,input.getPreferredSize().width,15);
+	Point position = getAbsoluteNodePosition(node);
+	input.setBounds(position.x,position.y,input.getPreferredSize().width,15);
 	input.selectAll();
 	input.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -273,6 +280,25 @@ public abstract class ControllerAdapter implements ModeController {
 
     private NodeAdapter getSelected() {
 	return (NodeAdapter)getView().getSelected().getModel();
+    }
+
+    /**
+     * Calculates the absolute position of a node on the layered pane.
+     * Used in edit() to place a Textfield right above the node.
+     * useful if you overload edit() to use something else than a
+     * JTextfield (eg. two JTextfields for key/value)
+     */
+    protected Point getAbsoluteNodePosition(NodeView node) {
+	Point loc = node.getLocation();
+	Point scroll = ((JViewport)getView().getParent()).getViewPosition();
+	Point content = getFrame().getContentPane().getLocation();
+	Point position = new Point();
+
+	position.x = loc.x-scroll.x+content.x;
+	//Todo: Remove the constant(40) (the menubar?) from this calc
+	position.y = loc.y-scroll.y+content.y+40;
+
+	return position;
     }
 
     ////////////

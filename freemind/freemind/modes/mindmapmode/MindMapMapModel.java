@@ -139,7 +139,6 @@ public class MindMapMapModel extends MapAdapter {
 	    doc.appendChild(map);
 	    ( (MindMapNodeModel)getRoot() ).save(doc,map);
 	    String encoding = FreeMind.userProps.getProperty("mindmap_encoding");
-	    System.out.println(encoding);
 	    
 	    OutputFormat format = new OutputFormat(doc, encoding, false);//Serialize Document
             StringWriter  stringOut = new StringWriter();        //Writer will be a String
