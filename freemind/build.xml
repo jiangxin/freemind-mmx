@@ -1,5 +1,5 @@
 <project name="freemind" default="dist" basedir=".">
-	<property name="ver" value="0_8_0_beta5" />
+	<property name="ver" value="0_8_0_rc1" />
 	<property name="src" value="." />
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
@@ -290,7 +290,7 @@
 	<target name="doc">
 		<mkdir dir="${dist}/doc" />
 		<mkdir dir="${dist}/doc/javadoc" />
-		<copy todir="${dist}/doc" file="${src}/doc/freemind.doc"/>
+		<copy todir="${dist}/doc" file="${src}/doc/freemind.mm"/>
 		<javadoc sourcepath="${src}"
 		         destdir="${dist}/doc/javadoc"
 		         packagenames="freemind.*" />
