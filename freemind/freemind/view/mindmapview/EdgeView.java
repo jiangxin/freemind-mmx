@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeView.java,v 1.10 2003-11-03 11:00:24 sviles Exp $*/
+/*$Id: EdgeView.java,v 1.11 2003-12-21 08:40:36 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -57,6 +57,12 @@ public abstract class EdgeView {
 
     public void paint(Graphics2D g) {
 	//	label.repaint();
+        // if node is folded, then add a plus sign:
+        if(target.getModel().isFolded()) {
+            int height = target.getSize().height/2;
+            g.drawArc( end.x - height/2 , end.y - height/2, height,   height,(target.isLeft())?270:90,180);
+        }
+        
     }
 
     public JLabel getLabel() {

@@ -597,10 +597,10 @@
 <node TEXT="You can enable experimental file locking, if you are a technical user and are willing to edit user.properties, as described above."/>
 </node>
 <node COLOR="#669900" TEXT="Changes in user interface of recent version" FOLDED="true" POSITION="right">
-<node TEXT="Some of the key settings have been redefined so that they align themselves with what we consider shared standard or intuitive use. Some of the new key settings are modelled on Microsoft tools. New key settings include enter for creating of new siblings below the node, insert for creating new children, F2 for editing nodes - here the Microsoft influence is apparent while there is no intuitive reason to have F2 for node editing. But once you get used to it in all the applications you use, you want to have that one in FreeMind too of course.">
+<node TEXT="Some of the key settings have been redefined so that they align themselves with what we consider shared standard or intuitive use. Some of the new key settings are modelled on Microsoft tools. New key settings include enter for creating of new siblings below the node, insert for creating new children, F2 for editing nodes - here the Microsoft influence is apparent while there is no intuitive reason to have F2 for node editing. But once you get used to it in all the applications you use, you want to have that one in FreeMind too of course." POSITION="right">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node TEXT="The changes we have made in the user interface are customizable in user.properties to an extent. If you are a technical user and you do not like the changes, change the settings in user.properties.">
+<node TEXT="The changes we have made in the user interface are customizable in user.properties to an extent. If you are a technical user and you do not like the changes, change the settings in user.properties." POSITION="right">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
@@ -847,16 +847,16 @@
 </node>
 <node COLOR="#006699" TEXT="Answered questions" FOLDED="true" POSITION="right">
 <icon BUILTIN="help"/>
-<node COLOR="#669900" TEXT="To create multiline node, insert a new and press alt + enter">
+<node COLOR="#669900" TEXT="To create multiline node, insert a new and press alt + enter" POSITION="right">
 <font NAME="SansSerif" SIZE="10"/>
 </node>
-<node COLOR="#669900" TEXT="To create nodes with newlines / carriage returns, when you cannot find any check box for new lines" FOLDED="true">
+<node COLOR="#669900" TEXT="To create nodes with newlines / carriage returns, when you cannot find any check box for new lines" FOLDED="true" POSITION="right">
 <font NAME="SansSerif" SIZE="10"/>
 <node TEXT="To be able to edit node with newlines, it must be multiline (or long if you wish) first. That is, first write text that is long enough, then finish editing, then press enter again and you find yourself in the larger editing window. It is only that window which contains the check box &quot;Enter confirms&quot;."/>
 </node>
-<node COLOR="#669900" TEXT="To remove a link" FOLDED="true">
+<node COLOR="#669900" TEXT="To remove a link" FOLDED="true" POSITION="right">
 <font NAME="SansSerif" SIZE="10"/>
-<node TEXT="In the pop up menu of a node, edit the link by the menu item &quot;Node &gt; Set Link (Textfield)&quot; and set the links as an empty string."/>
+<node TEXT="In the pop up menu of a node, edit the link by the menu item &quot;Node &gt; Set Link (Textfield)&quot; and set the links as an empty string." POSITION="right"/>
 </node>
 </node>
 </node>
@@ -901,6 +901,54 @@
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node LINK="mailto:christian.foltin@gmx.de" TEXT="christian.foltin@gmx.de" POSITION="left"/>
+</node>
+<node COLOR="#111111" TEXT="Recent Contributions" FOLDED="true" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#111111" TEXT="Andrew Iggleden" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#111111" TEXT="Installer Windows" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+</node>
+</node>
+<node COLOR="#111111" TEXT="Bob Alexander" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#111111" TEXT="Italian translation" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+</node>
+<node COLOR="#111111" TEXT="Eclipse howto" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+</node>
+</node>
+<node COLOR="#111111" TEXT="Knud Riish&#xf8;jg&#xe5;rd" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#111111" TEXT="Danish translation" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+</node>
+</node>
+<node COLOR="#111111" TEXT="David Butt" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#111111" TEXT="Tutorial flash" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+</node>
+</node>
+<node COLOR="#111111" TEXT="David Low" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#111111" TEXT="Helpful" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+</node>
+</node>
+<node COLOR="#111111" TEXT="Dimitri Polivaev" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#111111" TEXT="Bug removal" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+</node>
+</node>
+<node COLOR="#111111" TEXT="Takeshi Kakeda" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#111111" TEXT="Japanese translation" POSITION="left">
+<edge COLOR="#111111" WIDTH="thin"/>
+</node>
+</node>
 </node>
 </node>
 </node>

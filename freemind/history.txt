@@ -1,0 +1,46 @@
+Changes made in Freemind 0.7.0:
+===============================
+
+* Folded nodes have now an arc on their outer side, where the edge comes into.
+* Solved the left/right problem of Freemind.
+* Patches for PrintSetup, RTF and FoldedIcons added. Thanks to the contributors.
+* Japanese traduction added
+* Corrected the browser call statement. Hopefully, it is right now. 
+* Changed behaviour of user.porperties. It is now created if not present.
+* Moreover, added a FAQ menu item. 
+* Two maps with same name bug solved.
+*
+* Add new files for the browse mode.
+* Browse mode is working again. Some structural improvements. Deleted doc/pics and doc/compile.
+* Bug in printing routine removed
+* Copy&Paste works now even with links (they are properly removed)
+* Delay in node selection introduced.
+* Changed version number to 0.7.0. 
+* Introduced Dimitris patch for nodes starting with /.
+* German translation revised.
+* Documentation enhanced.
+* First not integrated version of the link registry
+* First version with clouds and arrow links.
+* Images corrected. Now they display correctly (at least under Linux).
+* Internal link handling entierly improved. Now there is a goto on right click onto a link.
+* Moreover, it is possible to zoom the map using shift + mouse wheel.
+* Link feature matured.
+* Mouse wheel zoom support using control key.
+* Lots of bugs removed.
+* The selection method is now changeable.
+* freemind.sh is now better (thanks to Peter Torngaard).
+* Now arrow links can be cut and pasted right.
+* Moreover, we have to new translations (dk and it).
+* Now the directory structure is as of version 0.6.7
+* Now, right clicking an arrow link, a list of all link targets is presented.
+* Build corrected.
+* Pasting link sources works now good. Link targets are removed from paste.
+* Pattern can also affect it sons, selection method improved.
+* Clouds are now better drawn.
+* Registry is starting to work.
+* Now, hidden links can be reached via right click.
+* Removed historic text files
+* Some structural changes
+* Two nice features: choose the default browser
+* Long node dialog remembers the enter-confirm-state
+* adapted the standard color of a cloud to a brighter value (f0f0f0)

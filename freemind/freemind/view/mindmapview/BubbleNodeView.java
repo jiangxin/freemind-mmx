@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.12 2003-12-20 16:12:51 christianfoltin Exp $*/
+/*$Id: BubbleNodeView.java,v 1.13 2003-12-21 08:40:36 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -76,16 +76,17 @@ public class BubbleNodeView extends NodeView {
 	// change to bold stroke
 	//g.setStroke(BOLD_STROKE);                     // Changed by Daniel
 
-	//Draw a standard node
         setRendering(g);
+
+	//Draw a standard node
 	g.setColor(getEdge().getColor());
 	//g.drawOval(0,0,size.width-1,size.height-1);   // Changed by Daniel
 
         if (map.getController().getAntialiasEdges()) {
            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
         g.drawRoundRect(0,0,size.width-1,size.height-1,10,10);
-        if (map.getController().getAntialiasEdges()) {
-           g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); }
+        // return to old rendering, fc, 21.12.2003.
+        setRendering(g);
 
 	// return to std stroke
 	g.setStroke(DEF_STROKE);

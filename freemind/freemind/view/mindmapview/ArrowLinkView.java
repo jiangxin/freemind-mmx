@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.6 2003-12-20 16:12:51 christianfoltin Exp $*/
+/*$Id: ArrowLinkView.java,v 1.7 2003-12-21 08:40:36 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -178,7 +178,7 @@ public class ArrowLinkView {
 
     protected Rectangle2D getControlPoint(Point2D p) {
         // Create a small square around the given point.
-        int side = 4; // fc, 20.12.2003: reduced width such that it is possible to reach more links.
+        int side = 8; 
         return new Rectangle2D.Double(p.getX() - side / 2, p.getY() - side / 2,
                                       side, side);
     }
