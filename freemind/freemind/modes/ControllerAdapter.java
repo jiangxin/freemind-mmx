@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.7 2004-05-02 20:49:14 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.8 2004-05-03 04:41:09 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -144,12 +144,14 @@ public abstract class ControllerAdapter implements ModeController {
 		// register default action handler:
 		getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
 		getActionFactory().registerHandler(new PrintActionHandler());
+		undo = new UndoAction();
 		getActionFactory().registerHandler(new ActionHandler() {
 
             public void executeAction(ActionPair pair) {
             	if(! (pair.getDoAction() instanceof UndoXmlAction)) {
 					undoList.add(0, pair);
 					undoListIndex = 0;
+					undo.setEnabled(true);
             	}
 				
             }
@@ -160,7 +162,6 @@ public abstract class ControllerAdapter implements ModeController {
             public void endTransaction(String name) {
             }});
 
-		undo = new UndoAction();
         cut = new CutAction(this);
         paste = new PasteAction(this);
         copy = new CopyAction(this);
@@ -1417,13 +1418,16 @@ public abstract class ControllerAdapter implements ModeController {
         public UndoAction() {
             super(getText("undo"), new ImageIcon(getResource("images/undo.png")), ControllerAdapter.this);
             addActor(this);
+            setEnabled(false);
         }
 
         /* (non-Javadoc)
          * @see freemind.controller.actions.AbstractXmlAction#xmlActionPerformed(java.awt.event.ActionEvent)
          */
         protected void xmlActionPerformed(ActionEvent arg0) throws JAXBException {
-        	if(undoList.size() > 0) {
+			// preserve undo list index:
+			int index = undoListIndex;
+         	if(undoList.size() > index) {
 				ActionPair pair = (ActionPair) undoList.get(undoListIndex);
 	        	String doActionString = marshall(pair.getDoAction());
 				String redoActionString = marshall(pair.getUndoAction());
@@ -1435,8 +1439,19 @@ public abstract class ControllerAdapter implements ModeController {
 				UndoXmlAction redoAction = getActionXmlFactory().createUndoXmlAction();
 				redoAction.setDescription(doActionString);
 				undoAction.setRemedia(redoActionString);
-				
+
 				getActionFactory().executeAction(new ActionPair(undoAction, redoAction));
+
+				if(index+2 < undoList.size()) {
+					undoListIndex = index+2;
+					logger.info("new index:"+undoListIndex);
+				} else {
+					// disable undo
+					this.setEnabled(false);
+				}
+				
+        	} else {
+				setEnabled(false);
         	}
         }
 
@@ -1444,14 +1459,11 @@ public abstract class ControllerAdapter implements ModeController {
          * @see freemind.controller.actions.ActorXml#act(freemind.controller.actions.generated.instance.XmlAction)
          */
         public void act(XmlAction action) {
-        	if(undoListIndex < undoList.size())
-				undoListIndex++;
-                // unmarshall:
-                UndoXmlAction undoAction = (UndoXmlAction) action;
-				XmlAction doAction = (XmlAction) unMarshall( undoAction.getDescription() );
-				XmlAction redoAction = (XmlAction) unMarshall( undoAction.getRemedia() );
-				getActionFactory().executeAction(new ActionPair(doAction, redoAction));
-
+           // unmarshall:
+            UndoXmlAction undoAction = (UndoXmlAction) action;
+			XmlAction doAction = (XmlAction) unMarshall( undoAction.getDescription() );
+			XmlAction redoAction = (XmlAction) unMarshall( undoAction.getRemedia() );
+			getActionFactory().executeAction(new ActionPair(doAction, redoAction));
         }
 
         public Class getDoActionClass() {
