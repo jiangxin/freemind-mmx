@@ -62,6 +62,10 @@ Changes made in Freemind 0.8.0:
 //commented out: * Icons appear on the right side on the right side of the node.
 * More Undo: icon adding and removing and node blend action.
 
+* icon selection and other MindMapHooks (like unfold all) are undoable now 
+  (here, no undo- or redoaction are performed, the undo information is given by the actions
+   the hook performs).
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

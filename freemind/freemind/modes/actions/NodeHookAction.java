@@ -19,7 +19,7 @@
  *
  * Created on 26.07.2004
  */
-/*$Id: NodeHookAction.java,v 1.1.2.7 2004-10-01 07:38:33 christianfoltin Exp $*/
+/*$Id: NodeHookAction.java,v 1.1.2.8 2004-10-05 09:10:55 christianfoltin Exp $*/
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
@@ -93,9 +93,14 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
             undoAction = createHookNodeAction(focussed,
                     selecteds, hookName);
         } 
-        getController().getActionFactory().startTransaction((String) getValue(NAME));
-		getController().getActionFactory().executeAction(new ActionPair(doAction, undoAction));
-        getController().getActionFactory().endTransaction((String) getValue(NAME));
+	    if (getInstanciationMethod(hookName).isUndoable()) {
+	        getController().getActionFactory().startTransaction((String) getValue(NAME));
+			getController().getActionFactory().executeAction(new ActionPair(doAction, undoAction));
+	        getController().getActionFactory().endTransaction((String) getValue(NAME));            
+        } else {
+            // direct invocation without undo and such stuff.
+            invoke(focussed, selecteds, hookName);
+        }
 	}
 
 	public void invoke(MindMapNode focussed, List selecteds) {

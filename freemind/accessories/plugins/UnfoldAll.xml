@@ -7,7 +7,8 @@
 		base="freemind.extensions.NodeHookAdapter" 
 		icon_path="accessories/plugins/icons/2rightarrow.png" 
 		label="accessories/plugins/UnfoldAll.properties" 
-		class_name="accessories.plugins.UnfoldAll">
+		class_name="accessories.plugins.UnfoldAll"
+		instanciation="Other">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/navigate/folding/unfoldAll"/>
 		<plugin_menu location="mindmapmode_toolbar/folding/unfoldAll"/>
@@ -20,7 +21,8 @@
 		base="freemind.extensions.NodeHookAdapter" 
 		icon_path="accessories/plugins/icons/2leftarrow.png" 
 		label="accessories/plugins/FoldAll.properties" 
-		class_name="accessories.plugins.UnfoldAll">
+		class_name="accessories.plugins.UnfoldAll"
+		instanciation="Other">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/navigate/folding/foldAll"/>
 		<plugin_menu location="mindmapmode_toolbar/folding/foldAll"/>
@@ -33,7 +35,8 @@
 		base="freemind.extensions.NodeHookAdapter" 
 		icon_path="accessories/plugins/icons/1rightarrow.png" 
 		label="accessories/plugins/UnfoldOneLevel.properties" 
-		class_name="accessories.plugins.UnfoldAll">
+		class_name="accessories.plugins.UnfoldAll"
+		instanciation="Other">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/navigate/folding/unfoldOneLevel"/>
 		<plugin_menu location="mindmapmode_toolbar/folding/unfoldOneLevel"/>
@@ -46,7 +49,8 @@
 		base="freemind.extensions.NodeHookAdapter" 
 		icon_path="accessories/plugins/icons/1leftarrow.png" 
 		label="accessories/plugins/FoldOneLevel.properties" 
-		class_name="accessories.plugins.UnfoldAll">
+		class_name="accessories.plugins.UnfoldAll"
+		instanciation="Other">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/navigate/folding/foldOneLevel"/>
 		<plugin_menu location="mindmapmode_toolbar/folding/foldOneLevel"/>
