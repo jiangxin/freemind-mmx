@@ -8,8 +8,10 @@
 
 <body>
 <h1>Using CVS from within Eclipse</h1>
-This tutorial want to show some basic usage of CVS from within the Eclipse development environment.
-The scenario we will be using is the following:
+<h3>Introduction</h3>
+<p>This tutorial want to show some basic usage of CVS from within the Eclipse development environment.
+  The scenario we will be using is the following:
+</p>
 <ol>
 <li>We will build a local copy of a branch of the Freemind project CVS tree from Sourceforge repository.</li>
 <li>We will make some modifications on our local machine</li>
@@ -17,7 +19,7 @@ The scenario we will be using is the following:
 </ol>
 <p>For this example we will use a branch of the project which contains documentation, so that if I manage to break something while writing this tutorial I will not be chased by the police 8->
 </p>
-<p>We will also need to assume that you have registered on Sourceforge and that the project managers have granted you with the permission to write on the CVS tree. The read/write connection to the CVS server is done via the <em>extssh</em> protocol</p>
+<p>We will also need to assume that you have registered on Sourceforge and that the project managers have granted you with the permission to write on the CVS tree. The read/write connection with <em>uploading</em> to the CVS server is done via the <em>extssh</em> protocol</p>
 <p>Please note that the CVS repository can also be accessed anonymously (with a protocol called <em>pserver</em>) without requiring registration but only to <em>download</em> files.</p>
 <p>We will use the <em>update</em> verb to indicate downloading files from CVS to your local machine and <em>commit</em> to indicate upload.
 </p>
