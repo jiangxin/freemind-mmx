@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.14 2003-12-22 11:14:51 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.15 2004-01-06 13:04:16 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -208,8 +208,9 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
         }
             
         //set Look&Feel
+        String lookAndFeel = "";
         try {
-           String lookAndFeel = userProps.getProperty("lookandfeel");
+           lookAndFeel = userProps.getProperty("lookandfeel");
            if (lookAndFeel.equals("windows")) {
               UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
            } else if (lookAndFeel.equals("motif")) {
@@ -217,12 +218,14 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
            } else if (lookAndFeel.equals("mac")) {
               //Only available on macOS
               UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
-           } else {
-              //Metal is default
+           } else if (lookAndFeel.equals("metal")) {
               UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+           } else {
+               // nothing is default.
+               //System.out.println("No Look & Feel.");
            }
         } catch (Exception ex) {
-           System.err.println("Error while setting Look&Feel");
+           System.err.println("Error while setting Look&Feel"+lookAndFeel);
         }
 
  	//Layout everything

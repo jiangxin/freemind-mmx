@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.28 2003-12-22 11:14:51 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.29 2004-01-06 13:04:16 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -177,10 +177,12 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	    } else if (lookAndFeel.equals("mac")) {
 		//Only available on macOS
 		UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
-	    } else {
-		//Metal is default
+	    } else if (lookAndFeel.equals("metal")) {
 		UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-	    }
+	    } else {
+            // nothing is default.
+            //System.out.println("No Look & Feel.");
+        }
 	} catch (Exception ex) {
 	    System.err.println("Unable to set Look & Feel.");
 	}
