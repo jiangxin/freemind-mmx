@@ -81,6 +81,7 @@ Changes made in Freemind 0.8.0:
 * New HTML export added from Markus Brueckner. Thanks
 
 * Help and SVG Export added as Plugins.
+* PDF export added.
 
 Changes made in Freemind 0.7.2:
 ===============================

@@ -11,6 +11,7 @@
 	<plugin_classpath jar="plugins/svg/batik-gvt.jar"/>
 	<plugin_classpath jar="plugins/svg/batik-parser.jar"/>
 	<plugin_classpath jar="plugins/svg/batik-script.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-squiggle.jar"/>
 	<plugin_classpath jar="plugins/svg/batik-svg-dom.jar"/>
 	<plugin_classpath jar="plugins/svg/batik-svggen.jar"/>
 	<plugin_classpath jar="plugins/svg/batik-swing.jar"/>
@@ -22,11 +23,19 @@
 	<plugin_classpath jar="plugins/svg/xerces_2_5_0.jar"/>
 	<plugin_classpath jar="plugins/svg/xml-apis.jar"/>
 	<plugin_action 
-		documentation="SVG Export" 
-		name="SVG Export" base="freemind.extensions.ModeControllerHookAdapter" 
+		documentation="PDF-Export" 
+		name="PDF-Export" base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/ExportPdf.xml" 
+		class_name="plugins.svg.ExportPdf">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/file/export/pdf_export"/>
+	</plugin_action>
+	<plugin_action 
+		documentation="SVG-Export" 
+		name="SVG-Export" base="freemind.extensions.ModeControllerHookAdapter" 
 		label="plugins/ExportSvg.xml" 
 		class_name="plugins.svg.ExportSvg">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/file/export/svg_help"/>
+		<plugin_menu location="menu_bar/file/export/svg_export"/>
 	</plugin_action>
 </plugin>
