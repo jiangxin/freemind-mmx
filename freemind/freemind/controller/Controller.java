@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.26 2001-06-24 20:59:46 ponder Exp $*/
+/*$Id: Controller.java,v 1.27 2001-07-03 23:01:23 ponder Exp $*/
 
 package freemind.controller;
 
@@ -403,8 +403,8 @@ public class Controller {
 	    try {
 		getMapModuleManager().close();
 	    } catch (Exception ex) {
-		System.out.println("Error: "+ex);
-		//		return;
+		//		System.out.println("Error: "+ex);
+		return;
 	    }
 	}
 
@@ -565,7 +565,7 @@ public class Controller {
 	}
 
 	private void close() throws Exception {
-	    getMode().getModeController().close();
+	    getMode().getModeController().close();//exception is thrown here if user cancels operation
 	    String toBeClosed = getMapModule().toString();
 	    changeToAnotherMap(toBeClosed);
 	    removeFromMapModules(toBeClosed);

@@ -45,6 +45,8 @@ public class NodeDragListener implements DragGestureListener {
     }
 
     public void dragGestureRecognized(DragGestureEvent e) {
+	if(!c.getFrame().getProperty("draganddrop").equals("true")) return;
+
 	MindMapNode node = ((NodeView)e.getComponent()).getModel();
 	if (node.isRoot()) return;
 	Transferable t = c.getModel().copy(node);
@@ -56,7 +58,7 @@ public class NodeDragListener implements DragGestureListener {
 					  // if not ok, go back
 					  if ( !dsde.getDropSuccess()){
 					      //					      c.getModel().paste(oldnode,(MindMapNode)oldnode.getParent());
-					  } else {
+					  } else if (dsde.getDropAction()==DnDConstants.ACTION_MOVE) {
 					      //successful
 					      MindMapNode oldnode = ((NodeView)dsde.getDragSourceContext().getComponent()).getModel();
 					      c.getModel().cut(oldnode);

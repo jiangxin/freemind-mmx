@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.22 2001-06-22 20:35:14 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.23 2001-07-03 23:01:23 ponder Exp $*/
 
 package freemind.modes;
 
@@ -93,10 +93,10 @@ public abstract class ControllerAdapter implements ModeController {
 	cut = new CutAction(this);
 	paste = new PasteAction(this);
 
-	//	DropTarget dropTarget = new DropTarget(
-	//		getFrame().getViewport(),
-	//		new FileOpener()
-	//	);
+	DropTarget dropTarget = new DropTarget(
+					       getFrame().getViewport(),
+					       new FileOpener()
+						   );
 
 	clipboard = getFrame().getViewport().getToolkit().getSystemClipboard();
 
@@ -252,12 +252,12 @@ public abstract class ControllerAdapter implements ModeController {
 		setAllActions(true);
 		if (cut!=null) cut.setEnabled(true);
 	    }
-		if (getFrame().getView()!=null) {
-			DropTarget dropTarget = new DropTarget(
-				getFrame().getView(),
-				new FileOpener()
-				);
-		}
+	    //if (getFrame().getView()!=null) {
+	    //			DropTarget dropTarget = new DropTarget(
+	    //				getFrame().getView(),
+	    //				new FileOpener()
+	    //				);
+	    //		}
 	    noOfMaps++;
 	} else {
 	    noOfMaps--;

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.13 2001-06-22 20:35:14 ponder Exp $*/
+/*$Id: NodeView.java,v 1.14 2001-07-03 23:01:23 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -87,7 +87,7 @@ public abstract class NodeView extends JLabel {
     void addDragListener(DragGestureListener dgl) {
 	DragSource dragSource = DragSource.getDefaultDragSource();
 	dragSource.createDefaultDragGestureRecognizer(
-						      this, DnDConstants.ACTION_COPY,dgl);
+						      this, DnDConstants.ACTION_MOVE,dgl);
     }
 
     void addDropListener(DropTargetListener dtl) {

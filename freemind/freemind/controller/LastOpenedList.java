@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LastOpenedList.java,v 1.1 2001-06-22 20:54:45 ponder Exp $*/
+/*$Id: LastOpenedList.java,v 1.2 2001-07-03 23:01:23 ponder Exp $*/
 package freemind.controller;
 
 import freemind.view.MapModule;
@@ -87,7 +87,7 @@ public class LastOpenedList {
 	    StringTokenizer token = new StringTokenizer(restoreable,":");
 	    String mode = token.nextToken();
 	    if(c.changeToMode(mode)) {
-		c.getMode().restore(token.nextToken());
+		c.getMode().restore(token.nextToken("").substring(1));//fix for windows
 	    }
 	}
     }

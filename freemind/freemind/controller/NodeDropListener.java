@@ -52,7 +52,8 @@ public class NodeDropListener implements DropTargetListener {
 
     private boolean isDropAcceptable(DropTargetDropEvent event) {
 	MindMapNode node = ((NodeView)event.getDropTargetContext().getComponent()).getModel();
-	if(!node.isDescendantOf(c.getView().getSelected().getModel())){
+	MindMapNode selected = c.getView().getSelected().getModel();
+	if((node!=selected) && !node.isDescendantOf(selected)){//I think (node!=selected) is a hack for windows
 	    DataFlavor[] flavors = event.getCurrentDataFlavors();
 	    for (int i = 0; i < flavors.length; i++) {
 		if (flavors[i].equals(DataFlavor.stringFlavor)) {
@@ -69,7 +70,7 @@ public class NodeDropListener implements DropTargetListener {
 	    dtde.rejectDrop();
 	    return;
 	}
-	dtde.acceptDrop(DnDConstants.ACTION_COPY);
+	dtde.acceptDrop(DnDConstants.ACTION_MOVE);
 	try {
 	    Transferable t = dtde.getTransferable();
 	    MindMapNode node = ((NodeView)dtde.getDropTargetContext().getComponent()).getModel();
