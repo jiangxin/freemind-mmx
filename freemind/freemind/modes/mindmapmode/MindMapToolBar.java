@@ -16,20 +16,25 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.12.12.4 2004-05-03 20:56:36 christianfoltin Exp $*/
+/*$Id: MindMapToolBar.java,v 1.12.12.5 2004-05-23 14:33:20 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
-import freemind.controller.FreeMindToolBar;
-import freemind.main.Tools;
-
-import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JToolBar;
-import javax.swing.JButton;
-import javax.swing.Action;
-import javax.swing.plaf.basic.BasicComboBoxEditor; 
+import javax.swing.plaf.basic.BasicComboBoxEditor;
+
+import freemind.controller.FreeMindToolBar;
+import freemind.controller.StructuredMenuHolder;
+import freemind.controller.actions.generated.instance.MenuCollection;
+import freemind.main.Tools;
 
 
 public class MindMapToolBar extends FreeMindToolBar {
@@ -46,27 +51,40 @@ public class MindMapToolBar extends FreeMindToolBar {
 	this.c=controller;
         this.setRollover(true);
 
-	JButton button;
+		StructuredMenuHolder holder = new StructuredMenuHolder();
+		try {
+			InputStream in;
+			in = c.getFrame().getResource("mindmap_menus.xml").openStream();
+			MenuCollection menus = c.updateMenusFromXml(holder, in, "mode_toolbar");
+			c.processMenuCategory(holder, menus.getMenuCategory(), "");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		holder.updateMenus(this);
 
-	button = add(c.newMap);
-	button = add(c.open);
-	button = add(c.save);
-	button = add(c.saveAs);
 
-	button = add(c.undo);
-	button = add(c.redo);
-	button = add(c.cut);
-
-	button = add(c.copy);
-
-	button = add(c.paste);
-
-	button = add(c.italic);
-	button = add(c.bold);
-	//	button = add(c.underlined);
-	//	button = add(c.normalFont);
-	button = add(c.cloud);
-	button = add(c.cloudColor);
+//	JButton button;
+//
+//	button = add(c.newMap);
+//	button = add(c.open);
+//	button = add(c.save);
+//	button = add(c.saveAs);
+//
+//	button = add(c.undo);
+//	button = add(c.redo);
+//	button = add(c.cut);
+//
+//	button = add(c.copy);
+//
+//	button = add(c.paste);
+//
+//	button = add(c.italic);
+//	button = add(c.bold);
+//	//	button = add(c.underlined);
+//	//	button = add(c.normalFont);
+//	button = add(c.cloud);
+//	button = add(c.cloudColor);
 	// hooks, fc, 3.3.2004:
 	for (int i=0; i<c.nodeHookActions.size(); ++i) {          
 		   add((Action) c.nodeHookActions.get(i));
@@ -116,11 +134,11 @@ public class MindMapToolBar extends FreeMindToolBar {
         // button tool bar.
         buttonToolBar = new FreeMindToolBar();
         buttonToolBar.setRollover(true);
-        button = buttonToolBar.add(c.removeLastIcon);
-        button = buttonToolBar.add(c.removeAllIcons);
+        buttonToolBar.add(c.removeLastIcon);
+        buttonToolBar.add(c.removeAllIcons);
         buttonToolBar.addSeparator();
         for(int i = 0; i < c.iconActions.size(); ++i) {
-            button = buttonToolBar.add((Action) c.iconActions.get(i));
+            buttonToolBar.add((Action) c.iconActions.get(i));
         }
         buttonToolBar.setOrientation(JToolBar.VERTICAL);
         //c.getFrame().getContentPane().add( buttonToolBar, BorderLayout.WEST );

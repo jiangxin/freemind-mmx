@@ -14,8 +14,17 @@
 	<xs:element name="menu_structure">
 		<xs:complexType>
 	      <xs:sequence  minOccurs="0" maxOccurs="unbounded">
+	          <xs:element ref="menu_collection"/>
+	      </xs:sequence>
+		</xs:complexType>		
+	</xs:element>
+
+	<xs:element name="menu_collection">
+		<xs:complexType>
+	      <xs:sequence  minOccurs="0" maxOccurs="unbounded">
 	          <xs:element ref="menu_category"/>
 	      </xs:sequence>
+	      <xs:attribute name="type" use="required" type="xs:string"/>
 		</xs:complexType>		
 	</xs:element>
 

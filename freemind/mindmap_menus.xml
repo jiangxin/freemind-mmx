@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu_structure>
+	<menu_collection type="main_menu">
+		<menu_category name="file">
+			<menu_category name="open">
+				<menu_action field="newMap" key_ref="keystroke_newMap"/>
+				<menu_action field="open" key_ref="keystroke_open"/>
+				<menu_action field="save" key_ref="keystroke_save"/>
+				<menu_action field="saveAs" key_ref="keystroke_saveAs"/>
+				<menu_action field="exportToHTML" key_ref="keystroke_export_to_html"/>
+			</menu_category>
+			<menu_category name="export">
+				<menu_action field="exportBranch" key_ref="keystroke_export_branch"/>
+				<menu_action field="exportBranchToHTML" key_ref="keystroke_export_branch_to_html"/>
+			</menu_category>
+			<menu_submenu name="import" name_ref="menu_file_import">
+				<menu_action field="importBranch"/>
+				<menu_action field="importLinkedBranch"></menu_action>
+				<menu_action field="importLinkedBranchWithoutRoot"></menu_action>
+				<menu_action field="importExplorerFavorites"></menu_action>
+				<menu_action field="importFolderStructure"></menu_action>
+			</menu_submenu>
+		</menu_category>
+	
+		<menu_category name="edit" setSeparatorBefore="false">
+			<menu_category name="undo">
+				<menu_action name="undo" field="undo" key_ref="keystroke_undo"/>
+				<menu_action name="redo" field="redo" key_ref="keystroke_redo"/>
+			</menu_category>
+			<menu_category name="edit">
+				<menu_action name="edit" field="edit" key_ref="keystroke_edit"/>
+				<menu_action name="editLong" field="editLong" key_ref="keystroke_edit_long"/>
+				<menu_action name="deleteChild" field="deleteChild" key_ref="keystroke_delete_child"/>
+				<!-- <menu_action field="remove" key_ref="keystroke_remove"/> -->
+			</menu_category>
+			<menu_category name="paste">
+				<menu_action name="cut" field="cut" key_ref="keystroke_cut"/>
+				<menu_action name="copy" field="copy" key_ref="keystroke_copy"/>
+				<menu_action name="copySingle" field="copySingle" key_ref="keystroke_copy_single"/>
+				<menu_action name="paste" field="paste" key_ref="keystroke_paste"/>
+			</menu_category>
+			<menu_category name="find">
+				<menu_action field="find" key_ref="keystroke_find"/>
+				<menu_action field="findNext" key_ref="keystroke_find_next"/>
+			</menu_category>
+	
+		</menu_category>
+		<menu_category name="insert" setSeparatorBefore="false">
+			<menu_category name="nodes">
+				<!--<menu_action name="newChild" field="newChild" key_ref="keystroke_add_child_mac"/>-->
+				<menu_action name="newChild" field="newChild" key_ref="keystroke_add_child"/>
+				<menu_action field="newSibling" key_ref="keystroke_add"/>
+				<menu_action name="newPreviousSibling" field="newPreviousSibling" key_ref="keystroke_add_sibling_before"/>
+			</menu_category>
+			<menu_category name="image">
+				<menu_action field="setImageByFileChooser" key_ref="keystroke_set_image_by_filechooser"/>			
+			</menu_category>
+			<menu_category name="links">
+				<menu_action field="setLinkByFileChooser" key_ref="keystroke_set_link_by_filechooser"/>
+			</menu_category>
+			<menu_category name="clouds">
+				<menu_action field="cloud" key_ref="keystroke_node_toggle_cloud"/>
+			</menu_category>
+		</menu_category>	
+	
+	
+		<menu_category name="navigate" setSeparatorBefore="false">
+			<menu_category name="nodes">
+				<menu_action field="nodeUp" key_ref="keystroke_node_up"/>
+				<menu_action field="nodeDown" key_ref="keystroke_node_down"/>
+			</menu_category>
+			<menu_category name="folding">
+				<menu_action field="toggleFolded" key_ref="keystroke_toggle_folded"/>
+				<menu_action field="toggleChildrenFolded" key_ref="keystroke_toggle_children_folded"/>
+			</menu_category>
+		</menu_category>	
+	
+		<menu_category name="format" setSeparatorBefore="false">
+			<menu_category name="nodes">
+				<menu_category name="style">
+					<menu_action field="fork"/>
+					<menu_action field="bubble"/>
+				</menu_category>
+				<menu_category name="font">
+					<menu_action field="increaseNodeFont" key_ref="keystroke_node_increase_font_size"/>
+					<menu_action field="decreaseNodeFont" key_ref="keystroke_node_decrease_font_size"/>
+					<menu_action field="italic" key_ref="keystroke_node_toggle_italic"/>
+					<menu_action field="bold" key_ref="keystroke_node_toggle_boldface"/>
+					<menu_action field="nodeColor" key_ref="keystroke_node_color"/>
+					<menu_action field="nodeColorBlend" key_ref="keystroke_node_color_blend"/>
+				</menu_category>
+			</menu_category>
+			<menu_category name="clouds">
+				<menu_action field="cloudColor"/>
+			</menu_category>
+			<menu_category name="edges">
+				<menu_action field="edgeColor" key_ref="keystroke_edge_color"></menu_action>
+				<menu_category name="styles">
+					<menu_action field="EdgeStyle_linear"/>
+					<menu_action field="EdgeStyle_bezier"/>
+					<menu_action field="EdgeStyle_sharp_linear"/>
+					<menu_action field="EdgeStyle_sharp_bezier"/>
+				</menu_category>
+				<menu_category name="widths">
+					<menu_action field="EdgeWidth_WIDTH_PARENT"/>
+					<menu_action field="EdgeWidth_WIDTH_THIN"/>
+					<menu_action field="EdgeWidth_1"/>
+					<menu_action field="EdgeWidth_2"/>
+					<menu_action field="EdgeWidth_4"/>
+					<menu_action field="EdgeWidth_8"/>
+				</menu_category>
+			</menu_category>
+		</menu_category>	
+	
+	
+		<menu_category name="extras" setSeparatorBefore="false">
+			<menu_category name="nodes">
+				<menu_action field="joinNodes" key_ref="keystroke_join_nodes"/>
+			</menu_category>
+			<menu_category name="links">
+				<menu_action field="followLink" key_ref="keystroke_follow_link"/>
+				<menu_action field="setLinkByFileChooser" key_ref="keystroke_set_link_by_filechooser"/>
+				<menu_action field="setLinkByTextField" key_ref="keystroke_set_link_by_textfield"/>
+			</menu_category>
+		</menu_category>	
+	
+	</menu_collection>
+	<menu_collection type="node_popup_menu">
+			<menu_category name="undo">
+				<menu_action name="undo" field="undo" key_ref="keystroke_undo"/>
+				<menu_action name="redo" field="redo" key_ref="keystroke_redo"/>
+			</menu_category>
+			<menu_category name="edit">
+				<menu_action name="edit" field="edit" key_ref="keystroke_edit"/>
+				<menu_action name="editLong" field="editLong" key_ref="keystroke_edit_long"/>
+				<menu_action name="deleteChild" field="deleteChild" key_ref="keystroke_delete_child"/>
+				<!-- <menu_action field="remove" key_ref="keystroke_remove"/> -->
+			</menu_category>
+			<menu_category name="paste">
+				<menu_action name="cut" field="cut" key_ref="keystroke_cut"/>
+				<menu_action name="copy" field="copy" key_ref="keystroke_copy"/>
+				<menu_action name="copySingle" field="copySingle" key_ref="keystroke_copy_single"/>
+				<menu_action name="paste" field="paste" key_ref="keystroke_paste"/>
+			</menu_category>
+			<menu_category name="new_nodes">
+				<!--<menu_action name="newChild" field="newChild" key_ref="keystroke_add_child_mac"/>-->
+				<menu_action name="newChild" field="newChild" key_ref="keystroke_add_child"/>
+				<menu_action field="newSibling" key_ref="keystroke_add"/>
+				<menu_action name="newPreviousSibling" field="newPreviousSibling" key_ref="keystroke_add_sibling_before"/>
+			</menu_category>
+			<menu_category name="navigate_nodes">
+				<menu_action field="nodeUp" key_ref="keystroke_node_up"/>
+				<menu_action field="nodeDown" key_ref="keystroke_node_down"/>
+			</menu_category>
+			<menu_category name="folding">
+				<menu_action field="toggleFolded" key_ref="keystroke_toggle_folded"/>
+			</menu_category>
+
+	</menu_collection>
+	<menu_collection type="mode_toolbar">
+			<menu_category name="open">
+				<menu_action field="newMap" key_ref="keystroke_newMap"/>
+				<menu_action field="open" key_ref="keystroke_open"/>
+				<menu_action field="save" key_ref="keystroke_save"/>
+				<menu_action field="saveAs" key_ref="keystroke_saveAs"/>
+			</menu_category>
+			<menu_category name="undo">
+				<menu_action name="undo" field="undo" key_ref="keystroke_undo"/>
+				<menu_action name="redo" field="redo" key_ref="keystroke_redo"/>
+			</menu_category>
+			<menu_category name="paste">
+				<menu_action name="cut" field="cut" key_ref="keystroke_cut"/>
+				<menu_action name="copy" field="copy" key_ref="keystroke_copy"/>
+				<menu_action name="paste" field="paste" key_ref="keystroke_paste"/>
+			</menu_category>
+			<menu_category name="font">
+				<menu_action field="italic" key_ref="keystroke_node_toggle_italic"/>
+				<menu_action field="bold" key_ref="keystroke_node_toggle_boldface"/>
+			</menu_category>
+			<menu_category name="clouds">
+				<menu_action field="cloud" key_ref="keystroke_node_toggle_cloud"/>
+			</menu_category>
+	</menu_collection>
+</menu_structure>

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.14 2004-05-23 12:39:02 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.15 2004-05-23 14:33:19 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -1739,5 +1739,12 @@ public abstract class ControllerAdapter implements ModeController {
         return clipboard;
     }
 
+
+    /* (non-Javadoc)
+     * @see freemind.modes.ModeController#updatePopupMenu(freemind.controller.StructuredMenuHolder)
+     */
+    public void updatePopupMenu(StructuredMenuHolder holder) {
+
+    }
 
 }

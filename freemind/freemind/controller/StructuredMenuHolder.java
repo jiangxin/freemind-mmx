@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.2.2 2004-05-23 12:39:02 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.2.3 2004-05-23 14:33:19 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -34,6 +34,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JToolBar;
+
+import freemind.modes.mindmapmode.MindMapToolBar;
 
 /**
  * @author foltin
@@ -194,6 +197,27 @@ public class StructuredMenuHolder {
             }}, menuMap, new DefaultMenuAdderCreator());
 	}
 	
+	/**
+	 * @param bar
+	 */
+	public void updateMenus(final JToolBar bar) {
+		updateMenus(new MenuAdder() {
+
+			public void addMenuItem(JMenuItem item) {
+				bar.add(item.getAction());
+			}
+
+			public void addSeparator() {
+				bar.addSeparator();
+			}
+
+			public void addAction(Action action) {
+				bar.add(action);
+			}}, menuMap, new DefaultMenuAdderCreator());
+	}
+
+
+	
 	private interface MenuAdder {
 		void addMenuItem(JMenuItem item);
 		void addSeparator();
@@ -305,6 +329,5 @@ public class StructuredMenuHolder {
 		}
 		mOutputString += (string)+"\n";
 	}
-
 
 }

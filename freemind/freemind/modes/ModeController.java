@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.9 2004-05-23 12:39:02 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.10 2004-05-23 14:33:20 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -71,7 +71,7 @@ public interface ModeController extends MindMapActions {
 
 	/** Use this method to get menus to the screen. */
 	public void updateMenus(StructuredMenuHolder holder);
-
+	public void updatePopupMenu(StructuredMenuHolder holder);
 
     JPopupMenu getPopupMenu();
     void showPopupMenu(MouseEvent e);

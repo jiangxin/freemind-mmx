@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.11 2004-05-23 12:39:02 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.12 2004-05-23 14:33:20 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -55,8 +55,8 @@ import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.MenuAction;
-import freemind.controller.actions.generated.instance.MenuCategory;
 import freemind.controller.actions.generated.instance.MenuCategoryBase;
+import freemind.controller.actions.generated.instance.MenuCollection;
 import freemind.controller.actions.generated.instance.MenuSeparator;
 import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
@@ -334,21 +334,15 @@ public class MindMapController extends ControllerAdapter {
 	 */
     public void updateMenus(StructuredMenuHolder holder) {
 
-		// get from resources:
-		try {
-            InputStream in = this.getFrame().getResource("mindmap_menus.xml").openStream();
-			Unmarshaller unmarshaller = jc.createUnmarshaller();
-			unmarshaller.setValidating(true);
-			MenuStructure menus = (MenuStructure) unmarshaller.unmarshal(in);
+        try {
+			InputStream in;
+            in = this.getFrame().getResource("mindmap_menus.xml").openStream();
+			MenuCollection menus = updateMenusFromXml(holder, in, "main_menu");
 			processMenuCategory(holder, menus.getMenuCategory(), "");
-        } catch (IOException e2) {
+        } catch (IOException e) {
             // TODO Auto-generated catch block
-            e2.printStackTrace();
-		} catch (JAXBException e) {
-			logger.severe(e.getCause() + e.getLocalizedMessage() + e.getMessage());
-			e.printStackTrace();
-			throw new IllegalArgumentException("Menu structure could not be read.");
-		}
+            e.printStackTrace();
+        }
         
 //		editMenu.add(getExtensionMenu());
 		JMenu extensionMenu = holder.addMenu(new JMenu(getText("extension_menu")), MenuBar.FORMAT_MENU+"patterns/.");
@@ -391,11 +385,31 @@ public class MindMapController extends ControllerAdapter {
 
     }
 
+    public MenuCollection updateMenusFromXml(StructuredMenuHolder holder, InputStream in, String collectionName) {
+        // get from resources:
+        try {
+        	Unmarshaller unmarshaller = jc.createUnmarshaller();
+        	unmarshaller.setValidating(true);
+        	MenuStructure menus = (MenuStructure) unmarshaller.unmarshal(in);
+        	for (Iterator i = menus.getMenuCollection().iterator(); i.hasNext();) {
+                MenuCollection collection = (MenuCollection) i.next();
+     			if(collection.getType().equals(collectionName)) {
+     				return collection;           
+     			}
+            }
+		} catch (JAXBException e) {
+        	logger.severe(e.getCause() + e.getLocalizedMessage() + e.getMessage());
+        	e.printStackTrace();
+        	throw new IllegalArgumentException("Menu structure could not be read.");
+        }
+		throw new IllegalArgumentException("The collection named "+collectionName+" was not found.");
+    }
+
 
     /**
      * @param type
      */
-    private void processMenuCategory(StructuredMenuHolder holder, List list, String category) {
+    public void processMenuCategory(StructuredMenuHolder holder, List list, String category) {
     	for (Iterator i = list.iterator(); i.hasNext();) {
             Object obj = (Object) i.next();
             if(obj instanceof MenuCategoryBase) {
@@ -429,153 +443,6 @@ public class MindMapController extends ControllerAdapter {
             } /* else exception */
          }
     }
-
-    JMenu getExtensionMenu() {
-	JMenu extensionMenu = new JMenu(getText("extension_menu"));
-	for (int i=0; i<patterns.length; ++i) {          
-           JMenuItem item = extensionMenu.add(patterns[i]);
-           item.setAccelerator
-              (KeyStroke.getKeyStroke
-               (getFrame().getProperty("keystroke_apply_pattern_"+(i+1)))); }
-	return extensionMenu; }
-
-    /* fc, 12.10.2003.*/
-    JMenu getIconMenu() {
-	JMenu iconMenu = new JMenu(getText("icon_menu"));
-    iconMenu.add(removeLastIcon);
-    iconMenu.add(removeAllIcons);
-    iconMenu.addSeparator();
-	for (int i=0; i<iconActions.size(); ++i) {          
-           JMenuItem item = iconMenu.add((Action) iconActions.get(i));
-    }
-	return iconMenu; }
-
-    JMenu getBranchMenu() {
-	JMenu branchMenu = new JMenu(getText("branch"));
-
-	add(branchMenu, exportBranch, "keystroke_export_branch");
-        add(branchMenu, exportBranchToHTML, "keystroke_export_branch_to_html");
-
-
-
-	branchMenu.addSeparator();
-
-	add(branchMenu, importBranch);
-	add(branchMenu, importLinkedBranch);
-	add(branchMenu, importLinkedBranchWithoutRoot);
-
-        branchMenu.addSeparator();
-
-        add(branchMenu, importExplorerFavorites);
-        add(branchMenu, importFolderStructure);
-
-	return branchMenu;
-    }
-
-    JMenu getLeadingNodeMenu() {
-       JMenu leadingEditMenu = new JMenu();
-       add(leadingEditMenu, edit, "keystroke_edit");
-       add(leadingEditMenu, editLong, "keystroke_edit_long_node");
-       // as mac's do not have an insert key, it is mapped to an alternative key.
-	   String osName = System.getProperty("os.name");
-       if (osName.startsWith("Mac OS")) {
-           add(leadingEditMenu, newChild, "keystroke_add_child_mac");
-       } else {
-           add(leadingEditMenu, newChild, "keystroke_add_child");
-       }
-       add(leadingEditMenu, deleteChild, "keystroke_delete_child");
-       leadingEditMenu.addSeparator();
-
-       add(leadingEditMenu, cut, "keystroke_cut");
-       add(leadingEditMenu, copy, "keystroke_copy");
-       add(leadingEditMenu, copySingle, "keystroke_copy_single");
-       add(leadingEditMenu, paste, "keystroke_paste");
-       return leadingEditMenu; }
-
-    JMenu getNodeMenu() {
-	JMenu nodeMenu = new JMenu(getText("node"));
-
-// currently only hidden feature - needs debugging %%%   
-//#  if the property "add_as_child = true" is set,
-//#  the old logic of inserting of a new node with Ctrl+N is used.
-   
-        if (addAsChildMode) {
-          add(nodeMenu, newChildWithoutFocus, "keystroke_add_sibling_before");
-        }
-        else {
-          add(nodeMenu, newPreviousSibling, "keystroke_add_sibling_before");
-        }
-        add(nodeMenu, newSibling, "keystroke_add");
- 	add(nodeMenu, remove, "keystroke_remove");
-        add(nodeMenu, joinNodes, "keystroke_join_nodes");
-
-	nodeMenu.addSeparator();
-
-        add(nodeMenu, find, "keystroke_find");
-        add(nodeMenu, findNext, "keystroke_find_next");
-
-	nodeMenu.addSeparator();
-
- 	add(nodeMenu, nodeUp, "keystroke_node_up");
- 	add(nodeMenu, nodeDown, "keystroke_node_down");
-
-	nodeMenu.addSeparator();
-
-	add(nodeMenu, followLink, "keystroke_follow_link");
-	add(nodeMenu, setLinkByFileChooser, "keystroke_set_link_by_filechooser");
-	add(nodeMenu, setLinkByTextField, "keystroke_set_link_by_textfield");
-
-	nodeMenu.addSeparator();
-
-	add(nodeMenu, setImageByFileChooser, "keystroke_set_image_by_filechooser");
-
-	nodeMenu.addSeparator();
-
-	add(nodeMenu, toggleFolded, "keystroke_toggle_folded");
-	add(nodeMenu, toggleChildrenFolded, "keystroke_toggle_children_folded");
-
-	nodeMenu.addSeparator();
-
-	JMenu nodeStyle = new JMenu(getText("style"));
-	nodeMenu.add(nodeStyle);
-
-	add(nodeStyle, fork);
-	add(nodeStyle, bubble);
-    // and the clouds:
-	nodeStyle.addSeparator();
-	add(nodeStyle, cloud, "keystroke_node_toggle_cloud");
-	add(nodeStyle, cloudColor);
-    
-    
-
-	JMenu nodeFont = new JMenu(getText("font"));
-	add(nodeFont, increaseNodeFont, "keystroke_node_increase_font_size");
-	add(nodeFont, decreaseNodeFont, "keystroke_node_decrease_font_size");
-
-	nodeFont.addSeparator();
-
-	add(nodeFont, italic,"keystroke_node_toggle_italic"); 
-	add(nodeFont, bold,"keystroke_node_toggle_boldface");
-	nodeMenu.add(nodeFont);
-	//	nodeFont.add(underline);
-	add(nodeMenu, nodeColor, "keystroke_node_color"); 
-        add(nodeMenu, nodeColorBlend, "keystroke_node_color_blend");
-
-	return nodeMenu;
-    }
-
-    JMenu getEdgeMenu() {
-	JMenu edgeMenu = new JMenu(getText("edge"));
-	JMenu edgeStyle = new JMenu(getText("style"));
-	edgeMenu.add(edgeStyle);
-	for (int i=0; i<edgeStyles.length; ++i) { 
-           edgeStyle.add(edgeStyles[i]); }
- 	add(edgeMenu, edgeColor, "keystroke_edge_color");
-	JMenu edgeWidth = new JMenu(getText("width"));
-	edgeMenu.add(edgeWidth);
-	for (int i=0; i<edgeWidths.length; ++i) { 
-           edgeWidth.add(edgeWidths[i]); }
-	return edgeMenu; }
 
     public JPopupMenu getPopupMenu() {
         return popupmenu;
