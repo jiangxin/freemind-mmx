@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.18 2003-11-18 23:19:46 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.19 2003-12-07 21:00:20 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -51,8 +51,6 @@ public abstract class NodeAdapter implements MindMapNode {
     /** parameters of an eventually associated cloud*/
     protected MindMapCloud cloud;
 
-//     /**stores all node references associated with this node: */
-//     protected Vector mNodeLinkVector  = new Vector();
     protected Color color;
     protected boolean folded;
 

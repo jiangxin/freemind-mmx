@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.32 2003-12-02 22:50:22 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.33 2003-12-07 21:00:24 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -380,6 +380,12 @@ public class MindMapController extends ControllerAdapter {
 
 	add(nodeStyle, fork);
 	add(nodeStyle, bubble);
+    // and the clouds:
+	nodeStyle.addSeparator();
+	add(nodeStyle, cloud, "keystroke_node_toggle_cloud");
+	add(nodeStyle, cloudColor);
+    
+    
 
 	JMenu nodeFont = new JMenu(getText("font"));
 	add(nodeFont, increaseNodeFont, "keystroke_node_increase_font_size");
@@ -433,8 +439,8 @@ public class MindMapController extends ControllerAdapter {
             JRadioButtonMenuItem itemtt = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction("both", "images/arrow-mode-both.gif",link.getSource(), link, true, true) );
             arrowLinkPopup.add( itemtt );
             // select the right one:
-            boolean a = link.startHasArrow();
-            boolean b = link.endHasArrow();
+            boolean a = !link.getStartArrow().equals("None");
+            boolean b = !link.getEndArrow().equals("None");
             itemtt.setSelected(a&&b);
             itemnt.setSelected(!a&&b);
             itemtn.setSelected(a&&!b);

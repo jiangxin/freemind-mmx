@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkAdapter.java,v 1.3 2003-11-29 17:12:33 christianfoltin Exp $*/
+/*$Id: ArrowLinkAdapter.java,v 1.4 2003-12-07 21:00:19 christianfoltin Exp $*/
 
 package freemind.modes;
 import freemind.modes.LinkAdapter;
@@ -30,31 +30,53 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements MindMapArr
     protected Point startInclination; 
     /** the zero is the start point of the line;*/
     protected Point endInclination; 
-    protected boolean startHasArrow; 
-    protected boolean endHasArrow;
+    protected String startArrow; 
+    protected String endArrow;
 
 
     public ArrowLinkAdapter(MindMapNode source,MindMapNode target,FreeMindMain frame)  {
         super(source, target, frame, "standardlinkcolor", "standardlinkstyle");
-        startHasArrow = false;
-        endHasArrow = true;
+        startArrow = "None";
+        endArrow = "Default";
     }
 
     public Point getStartInclination() { return startInclination; }
     public Point getEndInclination() { return endInclination; } 
-    public boolean startHasArrow() { return startHasArrow; } 
-    public boolean endHasArrow() { return endHasArrow; }
+    public String getStartArrow() { return startArrow; } 
+    public String getEndArrow() { return endArrow; }
 
     public void  setStartInclination(Point startInclination) {  this.startInclination=startInclination; }
     public void  setEndInclination(Point endInclination) {  this.endInclination=endInclination; } 
-    public void  setStartArrow(boolean startHasArrow) {  this.startHasArrow=startHasArrow; } 
-    public void  setEndArrow(boolean endHasArrow) {  this.endHasArrow=endHasArrow; }
+    public void  setStartArrow(String startArrow) {  
+        if(startArrow == null || startArrow.toUpperCase().equals("NONE")) {
+            this.startArrow = "None";
+            return;
+        } else if(startArrow.toUpperCase().equals("DEFAULT")) {
+            this.startArrow = "Default";
+            return;
+        }
+        // dont change:
+        System.err.println("Cannot set the start arrow type to " + startArrow);
+    } 
+    public void  setEndArrow(String endArrow) {  
+        if(endArrow == null || endArrow.toUpperCase().equals("NONE")) {
+            this.endArrow = "None";
+            return;
+        } else if(endArrow.toUpperCase().equals("DEFAULT")) {
+            this.endArrow = "Default";
+            return;
+        }
+        // dont change:
+        System.err.println("Cannot set the end arrow type to " + endArrow);
+    }
 
     public Object clone() {
         ArrowLinkAdapter arrowLink = (ArrowLinkAdapter) super.clone();
         // now replace the points:
         arrowLink.startInclination = (startInclination==null)?null:new Point(startInclination.x, startInclination.y);
         arrowLink.endInclination = (endInclination==null)?null:new Point(endInclination.x, endInclination.y);
+        arrowLink.startArrow = (startArrow==null)?null:new String(startArrow);
+        arrowLink.endArrow = (endArrow==null)?null:new String(endArrow);
         return arrowLink;
     }
 

@@ -38,9 +38,10 @@ public class ConvexHull {
         int dx1, dx2, dy1,dy2;
         dx1 = p1.x - p0.x;         dy1 = p1.y - p0.y;  
         dx2 = p2.x - p0.x;         dy2 = p2.y - p0.y;
-        if( dx1 * dy2 > dy1 * dx2 ) 
+        int comp = dx1 * dy2 - dy1 * dx2;
+        if( comp > 0 ) 
             return 1;
-        if ( dx1 * dy2 < dy1 * dx2 ) 
+        if ( comp < 0 ) 
             return -1;
         if((dx1 * dx2 < 0) || (dy1*dy2 < 0))
             return -1;
@@ -54,16 +55,28 @@ public class ConvexHull {
         Point p0;
         
         public thetaComparator(Point p0) {
-            this.p0 = p0;
+            this.p0 = new Point(p0);
         }
 
         /* the < relation.*/
         public int compare(Object p1, Object p2) {
-            double comp = (theta (p0,(Point)p1) - theta (p0,(Point)p2));
+            double comp = theta (p0,(Point)p1) - theta (p0,(Point)p2);
+            if(((Point) p1).equals(p2))
+                return 0;
             if(comp > 0) 
                 return 1;
             if(comp < 0)
                 return -1;
+            // here, the points are collinear with p0 (i.e. p0,p1,p2 are on one line). So we reverse the compare relation to get that nearer points are greater.
+            // we take the point that is nearer to p0:
+            int dx1, dx2, dy1,dy2;
+            dx1 = ((Point) p1).x - ((Point) p0).x;         dy1 = ((Point) p1).y - ((Point) p0).y;  
+            dx2 = ((Point) p2).x - ((Point) p0).x;         dy2 = ((Point) p2).y - ((Point) p0).y;
+            int comp2 = (dx1 * dx1 + dy1 * dy1) - (dx2 * dx2 + dy2 * dy2);
+            if (comp2 > 0) 
+                return -1;
+            if (comp2 < 0) 
+                return 1;
             return 0;
         }
         
@@ -82,11 +95,11 @@ public class ConvexHull {
                 if(dy < 0)
                     t = 4f+t;
             }
-            //System.out.println("Theta: " + (t * 90f));
             return t * 90f;
         }
     }
 
+    
     Vector doGraham(Vector p) {
         int i,j,min,M;
         Point t;
@@ -99,12 +112,13 @@ public class ConvexHull {
         // continue along the values with same y component
         for(i=0; i < p.size(); ++i) {
             if(( ((Point) p.get(i)).y == ((Point) p.get(min)).y ) && ( ((Point) p.get(i)).x > ((Point) p.get(min)).x ))
-                min = i;
+                {  min = i; }
         }
         // swap:
         t = (Point) p.get(0);         p.set(0, p.get(min));         p.set(min,  t);
-        Collections.sort(p, new thetaComparator((Point) p.get(0)));
-        p.add(0,  p.get(p.size()-1)); // the first is the last.
+        thetaComparator comp = new thetaComparator((Point) p.get(0));
+        Collections.sort(p, comp);
+        p.add(0,  new Point((Point) p.get(p.size()-1))); // the first is the last.
         M = 3;
         for(i=4; i < p.size(); ++i) {
             while(ccw((Point)p.get(M), (Point)p.get(M-1), (Point)p.get(i)) >= 0) {
@@ -129,6 +143,6 @@ public class ConvexHull {
         Vector res = doGraham(q);
         return res;
     }
-        
+
 
 }

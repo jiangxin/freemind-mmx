@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapArrowLinkModel.java,v 1.4 2003-11-29 17:12:33 christianfoltin Exp $*/
+/*$Id: MindMapArrowLinkModel.java,v 1.5 2003-12-07 21:00:23 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -61,8 +61,10 @@ public class MindMapArrowLinkModel extends ArrowLinkAdapter {
         if(getEndInclination() != null) {
             arrowLink.setAttribute("endInclination",getEndInclination().toString());
         }
-        arrowLink.setAttribute("startHasArrow",Boolean.toString(startHasArrow()));
-        arrowLink.setAttribute("endHasArrow",Boolean.toString(endHasArrow()));
+        if(getStartArrow() != null)
+            arrowLink.setAttribute("startArrow",(getStartArrow()));
+        if(getEndArrow() != null)
+            arrowLink.setAttribute("endArrow",(getEndArrow()));
 	    return arrowLink;
     }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.7 2003-12-02 22:50:22 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.8 2003-12-07 21:00:20 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -108,6 +108,9 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     protected String generateUniqueID(String proposedID) {
         Random ran = new Random();
         String myProposedID = new String((proposedID != null)?proposedID:"");
+        /* The under score is to enable the id to be an ID in the sense of XML/DTD.*/
+        if(!myProposedID.startsWith("_"))
+            myProposedID = "_" + myProposedID;
         String returnValue;
         do {
             if(!myProposedID.equals("")) {
@@ -116,7 +119,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
                 // this string is tried only once:
                 myProposedID="";
             } else {
-                returnValue = Integer.toString(ran.nextInt(2000000000));
+                /* The under score is to enable the id to be an ID in the sense of XML/DTD.*/
+                returnValue = "_" + Integer.toString(ran.nextInt(2000000000));
             }
         } while (IDToLinks.containsKey(returnValue));
         return returnValue;

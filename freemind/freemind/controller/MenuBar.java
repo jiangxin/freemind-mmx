@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.18 2003-11-09 22:09:25 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.19 2003-12-07 21:00:18 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -233,6 +233,12 @@ public class MenuBar extends JMenuBar {
                                        "html_export_based_on_headings" },
                       preferences, c.getProperty("html_export_folding") );
 
+	preferences.addSeparator();
+    addOptionSet( c.optionSelectionMechanismAction,
+                  new String[]{ "selection_method_delayed",
+                                "selection_method_direct"},
+                  preferences, c.getProperty("selection_method") );
+
     }
 
    private void addOptionSet(Action action, String[] textIDs, JMenu menu, String selectedTextID) {
@@ -244,7 +250,14 @@ public class MenuBar extends JMenuBar {
          group.add(item);
          menu.add(item);
          if (selectedTextID != null) {
-            item.setSelected(selectedTextID.equals(textIDs[optionIdx])); }}}
+            item.setSelected(selectedTextID.equals(textIDs[optionIdx])); 
+         }
+         // keystroke present?
+         String keystroke = c.getFrame().getProperty("keystroke_"+textIDs[optionIdx]);
+         if(keystroke != null)
+             item.setAccelerator(KeyStroke.getKeyStroke(keystroke));
+      }
+   }
 
     JPopupMenu getMapsPopupMenu()  { // visible only in controller package
        return mapsPopupMenu; }

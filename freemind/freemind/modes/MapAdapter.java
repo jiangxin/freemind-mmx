@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.18 2003-11-29 17:12:33 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.19 2003-12-07 21:00:20 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -387,6 +387,10 @@ public abstract class MapAdapter implements MindMap {
     }
 
     public void applyPattern(NodeAdapter node, StylePattern pattern) {
+        applyPattern(node, pattern, true /* = visible */);
+    }
+
+    protected void applyPattern(NodeAdapter node, StylePattern pattern, boolean visible) {
         if (pattern.getAppliesToNode()) {
            if (pattern.getText() != null) {
               node.setUserObject(pattern.getText()); }
@@ -394,7 +398,6 @@ public abstract class MapAdapter implements MindMap {
            node.setStyle(pattern.getNodeStyle());
            if (pattern.getAppliesToNodeIcon()) {
               if (pattern.getNodeIcon() == null) {
-                 System.err.println("removing");
                  while (node.removeLastIcon()>0) {}}
               else {
                  node.addIcon(pattern.getNodeIcon()); }} // fc, 28.9.2003
@@ -406,9 +409,18 @@ public abstract class MapAdapter implements MindMap {
            EdgeAdapter edge = (EdgeAdapter)node.getEdge();
            edge.setColor(pattern.getEdgeColor());
            edge.setStyle(pattern.getEdgeStyle());
-           edge.setWidth(pattern.getEdgeWidth());}
-
-        nodeChanged(node); }
+           edge.setWidth(pattern.getEdgeWidth());
+        }
+        
+        if(pattern.getAppliesToChildren()) {
+             for (ListIterator i = node.childrenUnfolded(); i.hasNext(); ) {
+                 NodeAdapter child = (NodeAdapter) i.next();
+                 applyPattern(child, pattern.getChildrenStylePattern(), (visible)?(!node.isFolded()):false);
+             }
+        }
+        if(visible)
+            nodeChanged(node); 
+    }
 
     // find
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePattern.java,v 1.4 2003-11-03 11:00:12 sviles Exp $*/
+/*$Id: StylePattern.java,v 1.5 2003-12-07 21:00:21 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -62,16 +62,21 @@ public class StylePattern {
     private boolean appliesToNodeFont = false;
     private boolean appliesToNodeIcon = false;
 
-    public StylePattern() {}
+    /** Inhertitable patterns, fc, 3.12.2003.*/
+    private boolean appliesToChildren = false;    
+    private StylePattern  ChildrenStylePattern;
+    // the following three constructors are not useful, or not well designed. fc, 3.12.2003.
+//     public StylePattern() {}
 
-    public StylePattern(String name) {
-       setName(name); }
+//     public StylePattern(String name) {
+//        setName(name); }
 
-    public StylePattern(File file) throws Exception {
-       loadPatterns(file); }
+//     public StylePattern(File file) throws Exception {
+//        loadPatterns(file); }
 
-    public StylePattern(XMLElement elm) {
-       loadPattern(elm); }
+    public StylePattern(XMLElement elm, List justConstructedPatterns) {
+       loadPattern(elm, justConstructedPatterns); 
+    }
 
     public String toString() {
         return "node: "+nodeColor+", "+nodeStyle+", "+nodeFont+", "+nodeIcon+", "+
@@ -88,6 +93,9 @@ public class StylePattern {
 
     public boolean getAppliesToNodeIcon() {
        return appliesToNodeIcon; }
+
+    public boolean getAppliesToChildren() {
+       return appliesToChildren; }
 
     /**
        * Get the value of name.
@@ -250,18 +258,34 @@ public class StylePattern {
     public void setEdgeWidth(int edgeWidth) {
        this.edgeWidth = edgeWidth;}
     
+    /**
+       * Get the value of ChildrenStylePattern.
+       * @return Value of ChildrenStylePattern.
+       */
+    public StylePattern getChildrenStylePattern() {
+       return ChildrenStylePattern; }
+    
+    /**
+       * Set the value of ChildrenStylePattern.
+       * @param v  Value to assign to ChildrenStylePattern.
+       */
+    public void setChildrenStylePattern(StylePattern ChildrenStylePattern) {
+       this.ChildrenStylePattern = ChildrenStylePattern;}
+    
+
     public static List loadPatterns(File file) throws Exception {
        return loadPatterns(new BufferedReader(new FileReader(file))); }
+
 
     public static List loadPatterns(Reader reader) throws Exception {
         List list = new LinkedList();
         XMLElement parser = new XMLElement();
         parser.parseFromReader(reader);
         for (Enumeration e = parser.enumerateChildren();e.hasMoreElements();){
-           list.add(new StylePattern((XMLElement)e.nextElement())); }
+           list.add(new StylePattern((XMLElement)e.nextElement(), list)); }
         return list; }
 
-    public void loadPattern(XMLElement pattern) {
+    protected void loadPattern(XMLElement pattern, List justConstructedPatterns) {
         //PATTERN
         if (pattern.getStringAttribute("name")!=null) {
            setName(pattern.getStringAttribute("name")); }
@@ -325,7 +349,37 @@ public class StylePattern {
                  if (child.getStringAttribute("width").equals("thin")) {
                     setEdgeWidth(freemind.modes.EdgeAdapter.WIDTH_THIN); }
                  else {
-                    setEdgeWidth(Integer.parseInt(child.getStringAttribute("width"))); }}}}}}
+                    setEdgeWidth(Integer.parseInt(child.getStringAttribute("width"))); }
+              }
+           }
+
+           //CHILD
+           if (child.getName().equals("child")) {
+               appliesToChildren = true;
+               if (child.getStringAttribute("pattern")!=null) {
+                   // find name in list of justConstructedPatterns:
+                   String searchName = child.getStringAttribute("pattern");
+                   boolean anythingFound = false;
+                   for ( ListIterator e = justConstructedPatterns.listIterator(); e.hasNext(); ) {
+                       StylePattern patternFound = (StylePattern) e.next(); 
+                       if(patternFound.getName().equals(searchName)) {
+                           setChildrenStylePattern(patternFound);
+                           anythingFound = true;
+                           break;
+                       }
+                   }
+                   // perhaps our own pattern?
+                   if(getName().equals(searchName)) {
+                       setChildrenStylePattern(this);
+                       anythingFound = true;
+                   }
+                   if(anythingFound == false)
+                       System.err.println("Cannot find the children " + searchName + " to the pattern " + getName());
+               }
+           }
+        }
+    }
+}
 
 
 

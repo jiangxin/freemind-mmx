@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.4 2003-11-24 08:09:04 christianfoltin Exp $*/
+/*$Id: ArrowLinkView.java,v 1.5 2003-12-07 21:00:27 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -141,35 +141,32 @@ public class ArrowLinkView {
         arrowLinkCurve.setCurve(p1,p3,p4,p2);
         g.draw(arrowLinkCurve);
         // arrow source:
-        if(source != null && arrowLinkModel.startHasArrow()) {
-            double dx, dy, dxn, dyn;
-            dx = p3.x - p1.x; /* direction of p1 -> p3*/
-            dy = p3.y - p1.y;
-            double length = Math.sqrt(dx*dx + dy*dy) / (getZoom() * 10/*=zoom factor for arrows*/);
-            dxn = dx/length; /* normalized direction of p1 -> p3 */
-            dyn = dy/length;
-            Polygon p = new Polygon();
-            p.addPoint((int) (p1.x),(int) (p1.y));
-            p.addPoint((int) (p1.x + dxn + dyn),(int) (p1.y +dyn -dxn));
-            p.addPoint((int) (p1.x + dxn - dyn),(int) (p1.y +dyn +dxn));
-            p.addPoint((int) (p1.x),(int) (p1.y));
-            g.fillPolygon(p);
+        if(source != null && !arrowLinkModel.getStartArrow().equals("None")) {
+            paintArrow(p1, p3, g);
         }
         // arrow target:
-        if(target != null && arrowLinkModel.endHasArrow()) {
-            double dx, dy, dxn, dyn;
-            dx = p4.x - p2.x; /* direction of p2 -> p4*/
-            dy = p4.y - p2.y;
-            double length = Math.sqrt(dx*dx + dy*dy) / (getZoom() * 10/*=zoom factor for arrows*/);
-            dxn = dx/length; /* normalized direction of p2 -> p4 */
-            dyn = dy/length;
-            Polygon p = new Polygon();
-            p.addPoint((int) (p2.x),(int) (p2.y));
-            p.addPoint((int) (p2.x + dxn + dyn),(int) (p2.y +dyn -dxn));
-            p.addPoint((int) (p2.x + dxn - dyn),(int) (p2.y +dyn +dxn));
-            p.addPoint((int) (p2.x),(int) (p2.y));
-            g.fillPolygon(p);
+        if(target != null && !arrowLinkModel.getEndArrow().equals("None")) {
+            paintArrow(p2, p4, g);
         }
+    }
+
+    /** @param p1 is the start point 
+        @param p3 is the another point indicating the direction of the arrow.*/
+    private void paintArrow(Point p1, Point p3, Graphics2D g) {
+        double dx, dy, dxn, dyn;
+        dx = p3.x - p1.x; /* direction of p1 -> p3*/
+        dy = p3.y - p1.y;
+        double length = Math.sqrt(dx*dx + dy*dy) / (getZoom() * 10/*=zoom factor for arrows*/);
+        dxn = dx/length; /* normalized direction of p1 -> p3 */
+        dyn = dy/length;
+        // suggestion of daniel to have arrows that are not so wide open. fc, 7.12.2003.
+        double width = .5f;
+        Polygon p = new Polygon();
+        p.addPoint((int) (p1.x),(int) (p1.y));
+        p.addPoint((int) (p1.x + dxn + width * dyn),(int) (p1.y +dyn - width * dxn));
+        p.addPoint((int) (p1.x + dxn - width * dyn),(int) (p1.y +dyn + width * dxn));
+        p.addPoint((int) (p1.x),(int) (p1.y));
+        g.fillPolygon(p);
     }
 
     /** Determines, whether or not a given point p is in an epsilon-neighbourhood for the cubic curve.*/

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.7 2003-11-30 08:33:23 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.8 2003-12-07 21:00:18 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -39,7 +39,16 @@ import freemind.main.Tools;
 public class NodeMouseMotionListener implements MouseMotionListener, MouseListener {
 
     private final Controller c;
-    private static Tools.IntHolder timeForDelayedSelection; /*ms, overwritten by property time_for_delayed_selection*/
+    /** time in ms, overwritten by property time_for_delayed_selection*/
+    private static Tools.IntHolder timeForDelayedSelection; 
+    /** overwritten by property delayed_selection_enabled*/
+    private static Tools.BooleanHolder delayedSelectionEnabled; 
+    /** And a static method to reread this holder. This is used when the selection method is changed via the option menu. */
+    static public void updateSelectionMethod(Controller c) {
+        delayedSelectionEnabled = new Tools.BooleanHolder();
+        delayedSelectionEnabled.setValue(c.getFrame().getProperty("selection_method").equals("selection_method_delayed")?true:false);
+    }
+
     Timer timerForDelayedSelection;
     /** The mouse has to stay in this region to enable the selection after a given time.*/
     Rectangle controlRegionForDelayedSelection;
@@ -58,7 +67,9 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
            {
                timeForDelayedSelection = new Tools.IntHolder();
                timeForDelayedSelection.setValue(Integer.parseInt(c.getFrame().getProperty("time_for_delayed_selection")));
-           }        
+           }     
+       if(delayedSelectionEnabled == null)
+           updateSelectionMethod(c);
     }
 
     public void mouseDragged(MouseEvent e) {}
@@ -68,7 +79,7 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
    //  Invoked when the mouse button has been moved on a component (with no buttons down). 
        ((NodeView)e.getComponent()).updateCursor(e.getX());
        // test if still in selection region:
-       if(controlRegionForDelayedSelection != null) {
+       if(controlRegionForDelayedSelection != null && delayedSelectionEnabled.getValue()) {
            if(!controlRegionForDelayedSelection.contains(e.getPoint())) {
                // point is not in the region. start timer again and adjust region to the current point:
                createTimer(e);
@@ -103,7 +114,9 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
         /* Region to check for in the sequel. */
         controlRegionForDelayedSelection = getControlRegion(e.getPoint());
         timerForDelayedSelection = new Timer();
-        timerForDelayedSelection.schedule(new timeDelayedSelection(c, e), timeForDelayedSelection.getValue());
+        timerForDelayedSelection.schedule(new timeDelayedSelection(c, e), 
+                                          /*if the new selection method is not enabled we put 0 to get direct selection.*/
+                                          (delayedSelectionEnabled.getValue())?timeForDelayedSelection.getValue():0);
         //c.getMode().getModeController().select(e);
     }
 
@@ -121,16 +134,18 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
     }
 
     public void mousePressed( MouseEvent e ) {
+        // first stop the timer and select the node:
+      stopTimerForDelayedSelection();
+      c.getView().extendSelection((NodeView)e.getSource(), e);
       // Right mouse <i>press</i> is <i>not</i> a popup trigger for Windows.
       // Only Right mouse release is a popup trigger!
       // OK, but Right mouse <i>press</i> <i>is</i> a popup trigger on Linux.
       c.getMode().getModeController().showPopupMenu(e);
       if (!e.isConsumed()) {
-        // unified selection (PN) %%% (unify with mose enntered above!!!
+        // unified selection (PN) %%% (unify with mouse enntered above!!!
         c.getView().extendSelection((NodeView)e.getSource(), e);
         e.consume();
       }
-      stopTimerForDelayedSelection();
     }
 
     public void mouseReleased( MouseEvent e ) {
@@ -188,7 +203,8 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
         }
         /** TimerTask method to enable the selection after a given time.*/
         public void run() {
-            c.getView().extendSelection((NodeView)e.getSource(), e);
+            c.getMode().getModeController().select(e);
+            //c.getView().extendSelection((NodeView)e.getSource(), e);
         }
     }
 

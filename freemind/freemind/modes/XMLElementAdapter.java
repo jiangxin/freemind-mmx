@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.1 2003-12-03 07:15:55 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.2 2003-12-07 21:00:21 christianfoltin Exp $*/
 
 /*On doubling of code
  *
@@ -202,10 +202,10 @@ public abstract class XMLElementAdapter extends XMLElement {
              arrowLink.setStartInclination(Tools.xmlToPoint(sValue)); }
          else if (name.equals("ENDINCLINATION")) {
              arrowLink.setEndInclination(Tools.xmlToPoint(sValue)); }
-         else if (name.equals("STARTHASARROW")) {
-             arrowLink.setStartArrow(Tools.xmlToBoolean(sValue)); }
-         else if (name.equals("ENDHASARROW")) {
-             arrowLink.setEndArrow(Tools.xmlToBoolean(sValue)); }
+         else if (name.equals("STARTARROW")) {
+             arrowLink.setStartArrow(sValue); }
+         else if (name.equals("ENDARROW")) {
+             arrowLink.setEndArrow(sValue); }
          else if (name.equals("WIDTH")) {
              arrowLink.setWidth(Integer.parseInt(sValue)); 
          }

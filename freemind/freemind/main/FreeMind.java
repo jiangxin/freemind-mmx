@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.24 2003-11-30 08:33:23 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.25 2003-12-07 21:00:19 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -291,8 +291,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
        // As a result, the only thing we do here, is to open URL in WWW browser.
 
        if (System.getProperty("os.name").substring(0,3).equals("Win")) {
-       //if (false) {
-          String browser_command;
+          String browser_command=new String();
+          String command=new String();
             // Here we introduce " around the parameter of explorer
             // command. This is not because of possible spaces in this
             // parameter - it is because of "=" character, which causes
@@ -302,7 +302,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	    //String[] call = { browser_command, "\""+url.toString()+"\"" };
             try  {
                // This is working fine on Windows 2000 and NT as well
-               Process p;
                // Below is a piece of code showing how to run executables directly
                // without asking. However, we don't want to do that. Explorer will run
                // executable, but ask before it actually runs it.
@@ -315,20 +314,30 @@ public class FreeMind extends JFrame implements FreeMindMain {
                // asking before executing remote executable does not solve the
                // problem. You click the link and there you are running evil executable.
 
+                // build string for default browser:
+                String correctedUrl = new String(url.toExternalForm());
+                // info from http://www.winnetmag.com/Windows/Article/ArticleID/22197/22197.html
+                correctedUrl = transpose(correctedUrl, '^',"^^");
+                correctedUrl = transpose(correctedUrl, '&',"^&");
+                correctedUrl = transpose(correctedUrl, '%',"^%");
+                correctedUrl = transpose(correctedUrl, '$',"^$");
                // ask for property about browser: fc, 26.11.2003.
-               Object[] messageArguments = { url.toString() };
+               Object[] messageArguments = { url.toString(), correctedUrl  };
                MessageFormat formatter = new MessageFormat(getProperty("default_browser_command_windows"));
                browser_command = formatter.format(messageArguments);
         
                if (url.getProtocol().equals("file")) {
-                  String command = "rundll32 url.dll,FileProtocolHandler "+Tools.urlGetFile(url);
-                  Runtime.getRuntime().exec(command); }
-               else if (url.toString().startsWith("mailto:")) {
-                  Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+url.toString()); }
-               else {
-                  Runtime.getRuntime().exec(browser_command); }}
+                  command = "rundll32 url.dll,FileProtocolHandler "+Tools.urlGetFile(url);
+               } else if (url.toString().startsWith("mailto:")) {
+                  command = "rundll32 url.dll,FileProtocolHandler "+url.toString(); 
+               } else {
+                  command = browser_command; 
+               }
+               System.out.println("Starting browser with "+command);
+               Runtime.getRuntime().exec(command); 
+            }
             catch(IOException x) {
-               c.errorMessage("Could not invoke browser.");
+               c.errorMessage("Could not invoke browser.\n\nFreemind excecuted the following statement on a command line:\n\""+command+"\".\n\nYou may look at the user or default property called 'default_browser_command_windows'.");
                System.err.println("Caught: " + x); }
         } else {
             // There is no '"' character around url.toString (compare to Windows code
@@ -341,12 +350,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
             // ^ This is more of a heuristic than a "logical" code
 
             // System.out.println("Opening URL "+urlString);
-
+            String browser_command=new String();
             try {
+                // build string for default browser:
+                String correctedUrl = new String(url.toExternalForm());
                // ask for property about browser: fc, 26.11.2003.
-               Object[] messageArguments = { url.toString() };
+               Object[] messageArguments = { correctedUrl, url.toString() };
                MessageFormat formatter = new MessageFormat(getProperty("default_browser_command_other_os"));
-               String browser_command = formatter.format(messageArguments);
+               browser_command = formatter.format(messageArguments);
                Runtime.getRuntime().exec(browser_command); }
             catch(IOException ex) {
                 System.err.println("Could not invoke browser. Caught: " + ex); 
@@ -359,10 +370,23 @@ public class FreeMind extends JFrame implements FreeMindMain {
                      np = Runtime.getRuntime().exec 
                         (new String [] {"netscape", urlString }); }}
                catch(IOException ex2) {
-                  c.errorMessage("Could not invoke browser.");
+                  c.errorMessage("Could not invoke browser.\n\nFreemind excecuted the following statement on a command line:\n\""+browser_command+"\".\n\nYou may look at the user or default property called 'default_browser_command_other_os'.\nMoreover, Freemind tried to call netscape, but without success.");
                   System.err.println("Caught: " + ex2); }}
         }
     }
+
+    private String transpose(String input, char findChar, String replaceString) {
+        String res = new String();
+        for(int i = 0; i < input.length(); ++i) {
+            char d = input.charAt(i);
+            if(d == findChar) 
+                res += replaceString;
+            else
+                res += d;
+        }
+        return res;
+    }
+
     public void setWaitingCursor(boolean waiting) {
        if (waiting) {
           getRootPane().getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.34 2003-11-24 08:09:04 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.35 2003-12-07 21:00:18 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -87,7 +87,7 @@ public class Controller {
 
     Action optionAntialiasAction;
     Action optionHTMLExportFoldingAction;
-    Action optionEnterConfirmsByDefault;
+    Action optionSelectionMechanismAction;
 
     Action about;
     Action documentation;
@@ -146,7 +146,7 @@ public class Controller {
         toggleLeftToolbar = new ToggleLeftToolbarAction(this);
         optionAntialiasAction = new OptionAntialiasAction(this);
         optionHTMLExportFoldingAction = new OptionHTMLExportFoldingAction(this);
-        //optionEnterConfirmsByDefault; = new OptionEnterConfirmsByDefault(this);
+        optionSelectionMechanismAction = new OptionSelectionMechanismAction(this);
 
         zoomIn = new ZoomInAction(this);
         zoomOut = new ZoomOutAction(this);
@@ -210,7 +210,7 @@ public class Controller {
         if (getMapModule() != null) {
             return getMapModule().getView();
         } else {
-           System.err.println("Warning: Tried to get view without being able to get map module.");
+           System.err.println("[Freemind-Developer-Internal-Warning (do not write a bug report, please)]: Tried to get view without being able to get map module.");
         }
         return null;
     }
@@ -1088,13 +1088,22 @@ public class Controller {
        public void actionPerformed(ActionEvent e) {
           setProperty("html_export_folding", e.getActionCommand()); }}
 
-   //private class OptionEnterConfirmsByDefault extends AbstractAction {
-   //    OptionEnterConfirmsByDefault(Controller controller) {}
-   //    public void actionPerformed(ActionEvent e) {
-   //       setProperty("edit_long_enter_confirms_by_default",  html_export_folding", e.getActionCommand()); }}
+    // switch auto properties for selection mechanism fc, 7.12.2003.
+    private class OptionSelectionMechanismAction extends AbstractAction {
+        Controller c;
+       OptionSelectionMechanismAction(Controller controller) {
+           c = controller;
+       }
+       public void actionPerformed(ActionEvent e) {
+          setProperty("selection_method", e.getActionCommand());
+          // and update the selection method in the NodeMouseMotionListener
+          freemind.controller.NodeMouseMotionListener.updateSelectionMethod(c);
+          String statusBarString = c.getResourceString(e.getActionCommand());
+          if(statusBarString != null) // should not happen
+              c.getFrame().out(statusBarString);
+       }
+    }
 
-
-   //OptionEnterConfirmsByDefault(this);
 
 }//Class Controller
 
