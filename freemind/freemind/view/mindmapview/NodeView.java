@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.10.3 2004-06-19 19:42:12 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.10.4 2004-07-19 05:50:36 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -41,6 +41,8 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+
+import sun.nio.cs.StandardCharsets;
 
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
@@ -748,25 +750,25 @@ public abstract class NodeView extends JLabel {
      * @return returns the color that should used to select the node.
      */
     protected Color getSelectedColor() {
-		Color backgroundColor = getModel().getBackgroundColor();
-//        if(backgroundColor != null) {
-//			Color backBrighter = backgroundColor.brighter();
-//			// white?
-//			if(backBrighter.getRGB() == Color.WHITE.getRGB()) {
-//				return standardSelectColor;
-//			}
-//			// == standard??
-//            if (backBrighter.equals (standardSelectColor) ) {
-//                return backgroundColor.darker();
-//            }
-//            return backBrighter;
-//		}
-		// == standard??
-		  if (backgroundColor != null /*&& backgroundColor.equals(standardSelectColor)*/ ) {
-		  	// bad hack:
-		  	return getAntiColor1(backgroundColor);
-//			  return new Color(0xFFFFFF - backgroundColor.getRGB());
-		  }
+//		Color backgroundColor = getModel().getBackgroundColor();
+////        if(backgroundColor != null) {
+////			Color backBrighter = backgroundColor.brighter();
+////			// white?
+////			if(backBrighter.getRGB() == Color.WHITE.getRGB()) {
+////				return standardSelectColor;
+////			}
+////			// == standard??
+////            if (backBrighter.equals (standardSelectColor) ) {
+////                return backgroundColor.darker();
+////            }
+////            return backBrighter;
+////		}
+//		// == standard??
+//		  if (backgroundColor != null /*&& backgroundColor.equals(standardSelectColor)*/ ) {
+//		  	// bad hack:
+//		  	return getAntiColor1(backgroundColor);
+////			  return new Color(0xFFFFFF - backgroundColor.getRGB());
+//		  }
         return standardSelectColor;
     }
 

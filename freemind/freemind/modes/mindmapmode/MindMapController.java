@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.17 2004-07-15 19:41:55 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.18 2004-07-19 05:50:36 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -156,7 +156,7 @@ public class MindMapController extends ControllerAdapter {
     };
     public Action cloudColor = new CloudColorAction();
 
-    public Action italic = new NodeGeneralAction (this, "italic", "images/Italic24.gif",
+    public Action italic = new NodeGeneralAction (this, "italic", "images/Italic16.gif",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.setItalic(node); }});
     public Action cloud   = new NodeGeneralAction (this, "cloud", "images/Cloud24.gif",

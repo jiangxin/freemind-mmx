@@ -19,13 +19,12 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: AbstractXmlAction.java,v 1.1.2.1 2004-05-02 20:49:14 christianfoltin Exp $*/
+/*$Id: AbstractXmlAction.java,v 1.1.2.2 2004-07-19 05:50:36 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
 import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.xml.bind.JAXBException;
@@ -36,7 +35,7 @@ import freemind.modes.ModeController;
  * @author foltin
  *
  */
-public abstract class AbstractXmlAction extends AbstractAction {
+public abstract class AbstractXmlAction extends FreemindAction {
 
 	private ActorXml actor;
 
@@ -44,7 +43,7 @@ public abstract class AbstractXmlAction extends AbstractAction {
 
 
 	public AbstractXmlAction(String name, Icon icon, ModeController controller) {
-		super(name, icon);
+		super(name, icon, controller);
 		this.controller = controller;
 	}
 

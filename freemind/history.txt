@@ -23,6 +23,8 @@ Changes made in Freemind 0.8.0:
 * Plugins are configured via XML now.
 * Checked menu items added.
 
+* Bold menu is now checked/unchecked if bold/normal
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.2.6 2004-07-15 19:41:55 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.2.7 2004-07-19 05:50:36 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -412,7 +412,7 @@ public class StructuredMenuHolder {
 		}
 
 		public void menuSelected(MenuEvent arg0) {
-			System.out.println("Selected menu items " + item);
+			//System.out.println("Selected menu items " + item);
 			for (Iterator i = menuItemHolder.iterator(); i.hasNext();) {
 				StructuredMenuItemHolder holder = (StructuredMenuItemHolder) i.next();
 				if(holder.getEnabledListener() != null) {

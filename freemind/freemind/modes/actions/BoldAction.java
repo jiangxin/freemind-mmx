@@ -7,10 +7,12 @@
 package freemind.modes.actions;
 
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.xml.bind.JAXBException;
 
+import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.NodeActorXml;
@@ -23,16 +25,17 @@ import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
 
-public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuItemSelectedListener {
+public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuItemEnabledListener{
 	private final ControllerAdapter modeController;
-
+	private final ImageIcon myIcon;
 	/**
 	 * @param textID
 	 * @param iconPath
 	 * @param actor
 	 */
 	public BoldAction(ControllerAdapter modeController) {
-		super(modeController, "bold", "images/Bold24.gif");
+		super(modeController, "bold", "images/Bold16.gif");
+		myIcon = (ImageIcon) getValue(Action.SMALL_ICON); 
 		this.modeController = modeController;
 		addActor(this);			
 	}
@@ -81,9 +84,11 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuI
 		}
 	}
 
-	public boolean isSelected(JCheckBoxMenuItem checkItem, Action action) {
-		return modeController.getSelected().isBold();
-	}
+    public boolean isEnabled(JMenuItem item, Action action) {
+		boolean bold = modeController.getSelected().isBold();
+		setSelected(item, bold);
+        return true;
+    }
 
 
 }
