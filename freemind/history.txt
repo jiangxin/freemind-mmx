@@ -16,10 +16,14 @@ Changes made in Freemind 0.7.2:
 * Fold and Unfold one stage is available now.
 * From Koh (thanks): Standard Macintosh application use Command(meta) key based Keyboard shortcut. (ex. copy is Command(meta) + C). I think that mac version's freemind should allow to assign meta key based shortcut. 
 * Bug fix: AutomaticLayout.java
-* Undo action added. Currently only one undo action is working.
+* Undo action added. 
+* Added edit node to the undo-actions.
 * Added addNode/deleteNode to the undo-actions.
+* Added cut/paste/del to undo-actions.
 * no root folding.
-* Started to rearrange the menus.
+* Rearranged the menus.
+* Bug fix: icon selection can be canceled.
+* Plugins are now well distributed over the menus.
 
 Changes made in Freemind 0.7.1:
 ===============================

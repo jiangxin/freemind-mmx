@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu_structure>
-	<menu_collection type="main_menu">
+	<menu_category name="menu_bar">
 		<menu_category name="file">
 			<menu_category name="open">
 				<menu_action field="newMap" key_ref="keystroke_newMap"/>
@@ -9,10 +9,10 @@
 				<menu_action field="saveAs" key_ref="keystroke_saveAs"/>
 				<menu_action field="exportToHTML" key_ref="keystroke_export_to_html"/>
 			</menu_category>
-			<menu_category name="export">
+			<menu_submenu name="export"  name_ref="menu_file_export">
 				<menu_action field="exportBranch" key_ref="keystroke_export_branch"/>
 				<menu_action field="exportBranchToHTML" key_ref="keystroke_export_branch_to_html"/>
-			</menu_category>
+			</menu_submenu>
 			<menu_submenu name="import" name_ref="menu_file_import">
 				<menu_action field="importBranch"/>
 				<menu_action field="importLinkedBranch"></menu_action>
@@ -90,6 +90,8 @@
 					<menu_action field="nodeColorBlend" key_ref="keystroke_node_color_blend"/>
 				</menu_category>
 			</menu_category>
+			<menu_category name="icons">
+			</menu_category>
 			<menu_category name="clouds">
 				<menu_action field="cloudColor"/>
 			</menu_category>
@@ -112,20 +114,25 @@
 			</menu_category>
 		</menu_category>	
 	
+		<menu_category name="view">
+						
+		</menu_category>
 	
 		<menu_category name="extras" setSeparatorBefore="false">
-			<menu_category name="nodes">
-				<menu_action field="joinNodes" key_ref="keystroke_join_nodes"/>
-			</menu_category>
-			<menu_category name="links">
-				<menu_action field="followLink" key_ref="keystroke_follow_link"/>
-				<menu_action field="setLinkByFileChooser" key_ref="keystroke_set_link_by_filechooser"/>
-				<menu_action field="setLinkByTextField" key_ref="keystroke_set_link_by_textfield"/>
+			<menu_category name="first">
+				<menu_category name="nodes">
+					<menu_action field="joinNodes" key_ref="keystroke_join_nodes"/>
+				</menu_category>
+				<menu_category name="links">
+					<menu_action field="followLink" key_ref="keystroke_follow_link"/>
+					<menu_action field="setLinkByFileChooser" key_ref="keystroke_set_link_by_filechooser"/>
+					<menu_action field="setLinkByTextField" key_ref="keystroke_set_link_by_textfield"/>
+				</menu_category>
 			</menu_category>
 		</menu_category>	
 	
-	</menu_collection>
-	<menu_collection type="node_popup_menu">
+	</menu_category>
+	<menu_category name="mindmapmode_popup">
 			<menu_category name="undo">
 				<menu_action name="undo" field="undo" key_ref="keystroke_undo"/>
 				<menu_action name="redo" field="redo" key_ref="keystroke_redo"/>
@@ -156,8 +163,8 @@
 				<menu_action field="toggleFolded" key_ref="keystroke_toggle_folded"/>
 			</menu_category>
 
-	</menu_collection>
-	<menu_collection type="mode_toolbar">
+	</menu_category>
+	<menu_category name="mindmapmode_toolbar">
 			<menu_category name="open">
 				<menu_action field="newMap" key_ref="keystroke_newMap"/>
 				<menu_action field="open" key_ref="keystroke_open"/>
@@ -181,8 +188,12 @@
 				<menu_action field="italic" key_ref="keystroke_node_toggle_italic"/>
 				<menu_action field="bold" key_ref="keystroke_node_toggle_boldface"/>
 			</menu_category>
+			<menu_category name="icons">
+			</menu_category>
 			<menu_category name="clouds">
 				<menu_action field="cloud" key_ref="keystroke_node_toggle_cloud"/>
 			</menu_category>
-	</menu_collection>
+			<menu_category name="folding">
+			</menu_category>
+	</menu_category>
 </menu_structure>

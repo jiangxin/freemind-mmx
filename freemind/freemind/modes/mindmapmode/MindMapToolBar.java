@@ -16,24 +16,20 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.12.12.6 2004-05-24 05:36:43 christianfoltin Exp $*/
+/*$Id: MindMapToolBar.java,v 1.12.12.7 2004-05-26 06:01:20 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.IOException;
-import java.io.InputStream;
 
 import javax.swing.Action;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JToolBar;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 
 import freemind.controller.FreeMindToolBar;
 import freemind.controller.StructuredMenuHolder;
-import freemind.controller.actions.generated.instance.MenuCollection;
 import freemind.main.Tools;
 
 
@@ -47,51 +43,21 @@ public class MindMapToolBar extends FreeMindToolBar {
     private boolean fontFamily_IgnoreChangeEvent = false;
 
     public MindMapToolBar(MindMapController controller) {
-	super();
-	this.c=controller;
+		super();
+		this.c=controller;
         this.setRollover(true);
-
-		StructuredMenuHolder holder = new StructuredMenuHolder();
-		try {
-			InputStream in;
-			in = c.getFrame().getResource("mindmap_menus.xml").openStream();
-			MenuCollection menus = c.updateMenusFromXml(holder, in, "mode_toolbar");
-			c.processMenuCategory(holder, menus.getMenuCategory(), "mindmapmode_toolbar");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		fonts = new JComboBox(Tools.getAvailableFontFamilyNamesAsVector());
+		size = new JComboBox(sizes);
+		buttonToolBar = new FreeMindToolBar();
+    }
+    
+    public void update(StructuredMenuHolder holder) {
+		this.removeAll();
 		holder.updateMenus(this, "mindmapmode_toolbar/");
 
 
-//	JButton button;
-//
-//	button = add(c.newMap);
-//	button = add(c.open);
-//	button = add(c.save);
-//	button = add(c.saveAs);
-//
-//	button = add(c.undo);
-//	button = add(c.redo);
-//	button = add(c.cut);
-//
-//	button = add(c.copy);
-//
-//	button = add(c.paste);
-//
-//	button = add(c.italic);
-//	button = add(c.bold);
-//	//	button = add(c.underlined);
-//	//	button = add(c.normalFont);
-//	button = add(c.cloud);
-//	button = add(c.cloudColor);
-	// hooks, fc, 3.3.2004:
-	for (int i=0; i<c.nodeHookActions.size(); ++i) {          
-		   add((Action) c.nodeHookActions.get(i));
-	}
 
 
-	fonts = new JComboBox(Tools.getAvailableFontFamilyNamesAsVector());
 	fonts.setMaximumRowCount(9);
 	add(fonts);
 	fonts.addItemListener(new ItemListener(){
@@ -107,7 +73,6 @@ public class MindMapToolBar extends FreeMindToolBar {
               }
            });
 
-	size = new JComboBox(sizes);
 	size.setEditor(new BasicComboBoxEditor());
 	size.setEditable(true);
 	add(size);
@@ -132,7 +97,7 @@ public class MindMapToolBar extends FreeMindToolBar {
            });
         
         // button tool bar.
-        buttonToolBar = new FreeMindToolBar();
+        buttonToolBar.removeAll();
         buttonToolBar.setRollover(true);
         buttonToolBar.add(c.removeLastIcon);
         buttonToolBar.add(c.removeAllIcons);

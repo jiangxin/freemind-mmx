@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.6 2004-05-23 12:39:02 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.7 2004-05-26 06:01:19 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -25,9 +25,11 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -47,10 +49,17 @@ public class HookFactory {
 		private Properties properties;
 		private String script;
 		public String fileName;
-		HookDescriptor(String fileName, String script, Properties props) {
+		public Vector menuPositions;
+		HookDescriptor(String fileName, String script, Properties props, String menuPositionString) {
 			this.fileName = fileName;
 			this.script = script;
 			this.properties = props;
+			menuPositions = new Vector();
+			StringTokenizer to = new StringTokenizer(menuPositionString, ",");
+			while(to.hasMoreTokens()) {
+				String token = to.nextToken();
+				menuPositions.add(token.trim());
+			}
 		}
 		public String toString() {
 			return "[HookDescriptor fileName="
@@ -59,6 +68,8 @@ public class HookFactory {
 				+ script
 				+ ", props="
 				+ properties
+				+ ", menu positions="
+				+ menuPositions
 				+ "]";
 		}
 	}
@@ -161,9 +172,13 @@ public class HookFactory {
 					def.setProperty("file", file);
 					//URGENT: Rename propFile.
 					def.setProperty("propFile", propFile);
+					String menuPos = def.getProperty("menus");
+					if(menuPos == null) {
+						menuPos = "";
+					}
 					pluginInfo.put(
 						propFile,
-						new HookDescriptor(file, script, def));
+						new HookDescriptor(file, script, def, menuPos));
 				}
 			}
 		}
@@ -299,5 +314,16 @@ public class HookFactory {
 			action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(key));
 
 	}
+
+    /**
+     * @return
+     */
+    public List getHookMenuPositions(String hookName) {
+		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
+		return descriptor.menuPositions;
+//    	Vector ret = new Vector();
+//    	ret.add("menu_bar/file/export/"+descriptor.script);
+//        return ret;
+    }
 
 }

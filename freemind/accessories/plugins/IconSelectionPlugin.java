@@ -14,22 +14,17 @@ import java.util.Vector;
 import javax.swing.Action;
 
 import accessories.plugins.dialogs.IconSelectionPopupDialog;
-
 import freemind.extensions.NodeHookAdapter;
 import freemind.main.FreeMind;
 import freemind.modes.MindIcon;
-import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
-import freemind.modes.ModeController;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapController.IconAction;
 import freemind.view.mindmapview.NodeView;
 
 /**
- * @author ganzer
+ * @author adapted to the plugin mechanism by ganzer
  *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class IconSelectionPlugin extends NodeHookAdapter {
 
@@ -96,9 +91,14 @@ public class IconSelectionPlugin extends NodeHookAdapter {
 		selectionDialog.setModal(true);
 		selectionDialog.show();
 		// process result:
-		this.icon = ((IconAction) iconActions.get(selectionDialog.getResult())).icon;
-		// and the super method:
-		super.invoke(focussed, selecteds);
+		if (selectionDialog.getResult() >= 0) {
+            this.icon =
+                (
+                    (IconAction) iconActions.get(
+                        selectionDialog.getResult())).icon;
+			// and the super method:
+			super.invoke(focussed, selecteds);
+        }
 	}
 
 	/* (non-Javadoc)

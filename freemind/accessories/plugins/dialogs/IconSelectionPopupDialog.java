@@ -183,6 +183,7 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
 				break;
 			case KeyEvent.VK_ESCAPE:
 				arg0.consume();
+				result = -1;
 				this.dispose();
 			break;
 			case KeyEvent.VK_ENTER:

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.13 2004-05-24 05:36:42 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.14 2004-05-26 06:01:20 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -29,6 +29,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -55,8 +56,8 @@ import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.MenuAction;
+import freemind.controller.actions.generated.instance.MenuCategory;
 import freemind.controller.actions.generated.instance.MenuCategoryBase;
-import freemind.controller.actions.generated.instance.MenuCollection;
 import freemind.controller.actions.generated.instance.MenuSeparator;
 import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
@@ -86,8 +87,9 @@ public class MindMapController extends ControllerAdapter {
 
 	public Vector nodeHookActions;
 	public Vector modeControllerHookActions;
+	private HashMap actionToMenuPositionMap;
 	//    Mode mode;
-    private JPopupMenu popupmenu;
+    private MindMapPopupMenu popupmenu;
     //private JToolBar toolbar;
     private MindMapToolBar toolbar;
     private boolean addAsChildMode = false;
@@ -196,6 +198,8 @@ public class MindMapController extends ControllerAdapter {
 
     FileFilter filefilter = new MindMapFilter();
 
+    private MenuStructure mMenuStructure;
+
     public MindMapController(Mode mode) {
 	super(mode);
 	if(logger == null) {
@@ -217,14 +221,23 @@ public class MindMapController extends ControllerAdapter {
         //node hook actions:
         createNodeHookActions();
 
-      	popupmenu = new MindMapPopupMenu(this);
-	toolbar = new MindMapToolBar(this);
+        // load menus:
+        try {
+            InputStream in;
+            in = this.getFrame().getResource("mindmap_menus.xml").openStream();
+            mMenuStructure = updateMenusFromXml(in);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-	setAllActions(false); 
-   
+        popupmenu = new MindMapPopupMenu(this);
+        toolbar = new MindMapToolBar(this);
+        setAllActions(false);
+
         // addAsChildMode (use old model of handling CtrN) (PN)
-        addAsChildMode = Tools.safeEquals(
-            getFrame().getProperty("add_as_child"),"true");
+        addAsChildMode =
+            Tools.safeEquals(getFrame().getProperty("add_as_child"), "true");
     }
 
 	public MapAdapter newModel() {
@@ -262,6 +275,7 @@ public class MindMapController extends ControllerAdapter {
 	 * 
 	 */
 	private void createNodeHookActions() {
+		actionToMenuPositionMap = new HashMap();
         if (nodeHookActions == null) {
             nodeHookActions = new Vector();
             // HOOK TEST
@@ -273,6 +287,7 @@ public class MindMapController extends ControllerAdapter {
                 //URGENT: According to its properties!!
                 NodeHookAction action = new NodeHookAction(desc, this);
                 factory.decorateAction(desc, action);
+                actionToMenuPositionMap.put(action, factory.getHookMenuPositions(desc));
                 nodeHookActions.add(action);
             }
         }
@@ -288,6 +303,7 @@ public class MindMapController extends ControllerAdapter {
                 ModeControllerHookAction action =
                     new ModeControllerHookAction(desc, this);
                 factory.decorateAction(desc, action);
+				actionToMenuPositionMap.put(action, factory.getHookMenuPositions(desc));
                 modeControllerHookActions.add(action);
             }
             //HOOK TEST END       
@@ -336,15 +352,35 @@ public class MindMapController extends ControllerAdapter {
 	 */
     public void updateMenus(StructuredMenuHolder holder) {
 
-        try {
-			InputStream in;
-            in = this.getFrame().getResource("mindmap_menus.xml").openStream();
-			MenuCollection menus = updateMenusFromXml(holder, in, "main_menu");
-			processMenuCategory(holder, menus.getMenuCategory(), MenuBar.MENU_BAR_PREFIX);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+		processMenuCategory(holder, mMenuStructure.getMenuCategory(), ""); /*MenuBar.MENU_BAR_PREFIX*/
+		// add hook actions to this holder.
+		// hooks, fc, 1.3.2004:
+		for (int i = 0; i < modeControllerHookActions.size(); ++i) {
+			Action hookAction = (Action) modeControllerHookActions.get(i);
+			List positions = (List) actionToMenuPositionMap.get(hookAction);
+			for (Iterator j = positions.iterator(); j.hasNext();) {
+                String pos = (String) j.next();		
+                holder.addAction(hookAction, pos);
+            }
+//			holder.addAction(
+//				hookAction,
+//				MenuBar.FILE_MENU
+//					+ "export/"
+//					+ (hookAction).getValue(Action.NAME));
+		}
+		// hooks, fc, 1.3.2004:
+		for (int i = 0; i < nodeHookActions.size(); ++i) {
+			Action action = (Action) nodeHookActions.get(i);
+			List positions = (List) actionToMenuPositionMap.get(action);
+			for (Iterator j = positions.iterator(); j.hasNext();) {
+				String pos = (String) j.next();		
+				holder.addAction(action, pos);
+			}
+			//add(holder, MenuBar.EDIT_MENU+"/plugins/"+action.getValue(Action.NAME), action, null);
+		}
+		// update popup and toolbar:
+		popupmenu.update(holder);
+		toolbar.update(holder);
         
 //		editMenu.add(getExtensionMenu());
 		JMenu extensionMenu = holder.addMenu(new JMenu(getText("extension_menu")), MenuBar.FORMAT_MENU+"patterns/.");
@@ -369,42 +405,21 @@ public class MindMapController extends ControllerAdapter {
 		for (int i=0; i<iconActions.size(); ++i) {          
 			   JMenuItem item = holder.addAction((Action) iconActions.get(i), iconMenuString+"/"+i);
 		}
-		// hooks: 
-		// hooks, fc, 1.3.2004:
-		for (int i = 0; i < modeControllerHookActions.size(); ++i) {
-			Action hookAction = (Action) modeControllerHookActions.get(i);
-			holder.addAction(
-				hookAction,
-				MenuBar.FILE_MENU
-					+ "export/"
-					+ (hookAction).getValue(Action.NAME));
-		}
-        // hooks, fc, 1.3.2004:
-        for (int i = 0; i < nodeHookActions.size(); ++i) {
-        	Action action = (Action) nodeHookActions.get(i);
-            add(holder, MenuBar.EDIT_MENU+"/plugins/"+action.getValue(Action.NAME), action, null);
-        }
 
     }
 
-    public MenuCollection updateMenusFromXml(StructuredMenuHolder holder, InputStream in, String collectionName) {
+    public MenuStructure updateMenusFromXml(InputStream in) {
         // get from resources:
         try {
         	Unmarshaller unmarshaller = jc.createUnmarshaller();
         	unmarshaller.setValidating(true);
         	MenuStructure menus = (MenuStructure) unmarshaller.unmarshal(in);
-        	for (Iterator i = menus.getMenuCollection().iterator(); i.hasNext();) {
-                MenuCollection collection = (MenuCollection) i.next();
-     			if(collection.getType().equals(collectionName)) {
-     				return collection;           
-     			}
-            }
+        	return menus;
 		} catch (JAXBException e) {
         	logger.severe(e.getCause() + e.getLocalizedMessage() + e.getMessage());
         	e.printStackTrace();
         	throw new IllegalArgumentException("Menu structure could not be read.");
         }
-		throw new IllegalArgumentException("The collection named "+collectionName+" was not found.");
     }
 
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.10.3 2004-05-24 05:36:42 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.10.4 2004-05-26 06:01:19 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -28,7 +28,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
 
-/**This is the menu bar for FreeMind. Actions are defined in MenuListener. */
+/**This is the menu bar for FreeMind. Actions are defined in MenuListener.
+ * Moreover, the StructuredMenuHolder of all menus are hold here.
+ *  */
 public class MenuBar extends JMenuBar {
 
 	public static final String MENU_BAR_PREFIX = "menu_bar/";
@@ -119,6 +121,9 @@ public class MenuBar extends JMenuBar {
 
 		//extras menu
 		menuHolder.addMenu(new JMenu(c.getResourceString("menu_extras")), EXTRAS_MENU+".");
+		menuHolder.addCategory(EXTRAS_MENU+"first");	
+		menuHolder.addSeparator(EXTRAS_MENU);	
+		menuHolder.addCategory(EXTRAS_MENU+"last");	
 
 		//Mapsmenu
 		mapsmenu = menuHolder.addMenu(new JMenu(c.getResourceString("mindmaps")), MINDMAP_MENU+".");
@@ -279,7 +284,7 @@ public class MenuBar extends JMenuBar {
 		nextMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_nextMap")));
 	
 	
-		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EDIT_MENU+"options");
+		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EXTRAS_MENU+"last/options");
 	
 	        if (false) {
 	           preferences.add(c.background);
@@ -366,5 +371,12 @@ public class MenuBar extends JMenuBar {
 		}
     }
     
+
+    /**
+     * @return
+     */
+    public StructuredMenuHolder getMenuHolder() {
+        return menuHolder;
+    }
 
 }
