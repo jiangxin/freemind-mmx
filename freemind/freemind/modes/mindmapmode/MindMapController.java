@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.27 2003-11-13 06:40:09 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.28 2003-11-16 22:15:15 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -33,8 +33,6 @@ import freemind.modes.MindIcon;
 import freemind.modes.MindMapCloud;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.view.mindmapview.NodeView;
-import freemind.modes.LinkRegistryAdapter;
-import freemind.modes.MindMapLinkRegistry;
 
 import java.io.*;
 import java.util.*;
@@ -56,7 +54,6 @@ public class MindMapController extends ControllerAdapter {
     //private JToolBar toolbar;
     private MindMapToolBar toolbar;
     private boolean addAsChildMode = false;
-    private LinkRegistryAdapter linkRegistry;
 
     Action newMap = new NewMapAction(this);
     Action open = new OpenAction(this);
@@ -183,9 +180,6 @@ public class MindMapController extends ControllerAdapter {
         // addAsChildMode (use old model of handling CtrN) (PN)
         addAsChildMode = Tools.safeEquals(
             getFrame().getProperty("add_as_child"),"true");
-
-        // register new LinkRegistryAdapter
-        linkRegistry = new LinkRegistryAdapter();
     }
 
     public MapAdapter newModel() {
@@ -420,13 +414,18 @@ public class MindMapController extends ControllerAdapter {
             // yes, this is a link.
             MindMapArrowLinkModel link = (MindMapArrowLinkModel) obj;
             JPopupMenu arrowLinkPopup = new JPopupMenu();
-            arrowLinkPopup.add(new RemoveArrowLinkAction(link.getTarget(), link));
-            arrowLinkPopup.add(new ColorArrowLinkAction(link.getTarget(), link));
+            arrowLinkPopup.add(new RemoveArrowLinkAction(link.getSource(), link));
+            arrowLinkPopup.add(new ColorArrowLinkAction(link.getSource(), link));
             arrowLinkPopup.addSeparator();
-            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction(" - ",link.getTarget(), link, false, false));
-            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction("<- ",link.getTarget(), link, true, false));
-            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction(" ->",link.getTarget(), link, false, true));
-            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction("<->",link.getTarget(), link, true, true));
+            /* better as radio buttons: */
+            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction(" - ",link.getSource(), link, false, false));
+            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction("<- ",link.getSource(), link, true, false));
+            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction(" ->",link.getSource(), link, false, true));
+            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction("<->",link.getSource(), link, true, true));
+            arrowLinkPopup.addSeparator();
+            
+            arrowLinkPopup.add(new GotoLinkNodeAction(link.getSource().toString(), link.getSource())); 
+            arrowLinkPopup.add(new GotoLinkNodeAction(link.getTarget().toString(), link.getTarget())); 
             return arrowLinkPopup;
         }
         return null;
@@ -436,10 +435,6 @@ public class MindMapController extends ControllerAdapter {
     //convenience methods
     private MindMapMapModel getModel() {
 	return (MindMapMapModel)getController().getModel();
-    }
-
-    public MindMapLinkRegistry getLinkRegistry() {
-        return linkRegistry;
     }
 
     private MindMapNodeModel getSelected() {
@@ -806,6 +801,19 @@ public class MindMapController extends ControllerAdapter {
         }
     }
     
+    protected class GotoLinkNodeAction extends AbstractAction {
+        MindMapNode source;
+        public GotoLinkNodeAction(String text, MindMapNode source) {
+            super(getText("follow_link") + text);
+            this.source = source;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            getMap().displayNode(source, null);
+        }
+    }
+
+
 
     // NodeGeneralAction
     // __________________

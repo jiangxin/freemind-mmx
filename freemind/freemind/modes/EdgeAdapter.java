@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeAdapter.java,v 1.13 2003-11-13 06:39:30 christianfoltin Exp $*/
+/*$Id: EdgeAdapter.java,v 1.14 2003-11-16 22:15:15 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -28,8 +28,8 @@ import java.awt.BasicStroke;
 
 public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
 
-	public static final int WIDTH_PARENT = 0;
-	public static final int WIDTH_THIN = -1;
+	public static final int WIDTH_PARENT = -1;
+	public static final int WIDTH_THIN = 0;
 
     public EdgeAdapter(MindMapNode target,FreeMindMain frame) {
         this(target, frame, "standardedgecolor", "standardedgestyle");

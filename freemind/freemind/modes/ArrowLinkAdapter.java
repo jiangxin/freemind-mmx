@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkAdapter.java,v 1.1 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: ArrowLinkAdapter.java,v 1.2 2003-11-16 22:15:15 christianfoltin Exp $*/
 
 package freemind.modes;
 import freemind.modes.LinkAdapter;
@@ -34,8 +34,8 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements MindMapArr
     protected boolean endHasArrow;
 
 
-    public ArrowLinkAdapter(MindMapNode target,FreeMindMain frame)  {
-        super(target, frame, "standardlinkcolor", "standardlinkstyle");
+    public ArrowLinkAdapter(MindMapNode source,MindMapNode target,FreeMindMain frame)  {
+        super(source, target, frame, "standardlinkcolor", "standardlinkstyle");
         startHasArrow = false;
         endHasArrow = true;
     }

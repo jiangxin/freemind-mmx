@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.1 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: ArrowLinkView.java,v 1.2 2003-11-16 22:15:16 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -61,6 +61,7 @@ public class ArrowLinkView {
     protected CubicCurve2D arrowLinkCurve;
     static final Stroke DEF_STROKE = new BasicStroke(1);
 
+    /* Note, that source and target are nodeviews and not nodemodels!.*/
     protected ArrowLinkView(MindMapArrowLink arrowLinkModel, NodeView source, NodeView target) {
         this.arrowLinkModel = arrowLinkModel;
         this.source = source;
@@ -70,42 +71,70 @@ public class ArrowLinkView {
     /** \param iterativeLevel describes the n-th nested arrowLink that is to be painted.*/
     public void paint(Graphics graphics) {
         Point p1, p2, p3, p4;
+        boolean targetIsLeft;
+        boolean sourceIsLeft;
         Graphics2D g = (Graphics2D) graphics.create();
         /* antialias */  setRendering(g);
         g.setColor(getColor());
-        /* set a bigger stroke to prevent not filled areas.*/
+        /* set stroke.*/
         g.setStroke(getStroke());
-        // determine, whether destination exists:
-        if(target == null)
-            return;
+        // if one of the nodes is not present then draw a dashed line:
+        if(source == null || target == null)
+            g.setStroke(new BasicStroke(getWidth(), BasicStroke.CAP_ROUND,
+                                        BasicStroke.JOIN_ROUND, 0, new float[]{0,12,0,12}, 0));
 
-        p1 = source.getLinkPoint();
-        p2 = target.getLinkPoint();
+        // determine, whether destination exists:
+        if(source == null) {
+            p1 = new Point(target.getLinkPoint());
+            p1.translate(100,0);
+            sourceIsLeft = true;
+        } else {
+            p1 = source.getLinkPoint();
+            sourceIsLeft = source.isLeft();
+        }
+        if(target == null) {
+            p2 = new Point(p1);
+            p2.translate(100,0);
+            targetIsLeft = true;
+        } else {
+            p2 = target.getLinkPoint();
+            targetIsLeft = target.isLeft();
+        }
         // determine point 2 and 3:
-        p3 = new Point( p1 );
         double delx, dely;
         delx = p2.x - p1.x; /* direction of p1 -> p3*/
         dely = p2.y - p1.y;
         double dellength = Math.sqrt(delx*delx + dely*dely);
         int deltax = (int) (getZoom() * dellength);
+        p3 = new Point( p1 );
         if(arrowLinkModel.getStartInclination() != null) {
             p3.translate( arrowLinkModel.getStartInclination().x, arrowLinkModel.getStartInclination().y);
         } else {
             // automatic translation in outside direction:
-            p3.translate(((source.isLeft())?-1:1) * deltax, 0);
+            p3.translate(((sourceIsLeft)?-1:1) * deltax, 0);
         }            
         p4 = new Point( p2 );
         if(arrowLinkModel.getEndInclination() != null) {
             p4.translate( arrowLinkModel.getEndInclination().x, arrowLinkModel.getEndInclination().y);
         } else {
             // automatic translation in outside direction:
-            p4.translate(((target.isLeft())?-1:1) * deltax, 0);
-        }            
+            p4.translate(((targetIsLeft)?-1:1) * deltax, 0);
+        }
+        //
+        if(source == null) {
+            p1 = p4;
+            p3 = p2;
+        }
+        if(target == null) {
+            p2 = p3;
+            p4 = p1;
+        }
+        //
         arrowLinkCurve = new CubicCurve2D.Double();
         arrowLinkCurve.setCurve(p1,p3,p4,p2);
         g.draw(arrowLinkCurve);
         // arrow source:
-        if(arrowLinkModel.startHasArrow()) {
+        if(source != null && arrowLinkModel.startHasArrow()) {
             double dx, dy, dxn, dyn;
             dx = p3.x - p1.x; /* direction of p1 -> p3*/
             dy = p3.y - p1.y;
@@ -120,7 +149,7 @@ public class ArrowLinkView {
             g.fillPolygon(p);
         }
         // arrow target:
-        if(arrowLinkModel.endHasArrow()) {
+        if(target != null && arrowLinkModel.endHasArrow()) {
             double dx, dy, dxn, dyn;
             dx = p4.x - p2.x; /* direction of p2 -> p4*/
             dy = p4.y - p2.y;
@@ -173,7 +202,7 @@ public class ArrowLinkView {
        return (width < 1) ? 1 : width; }
 
     protected MapView getMap() {
-       return source.getMap(); }
+       return (source == null)?target.getMap():source.getMap(); }
 
     /** fc: This getter is public, because the view gets the model by click on the curve.*/
     public MindMapArrowLink getModel() {

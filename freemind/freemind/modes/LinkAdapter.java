@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkAdapter.java,v 1.1 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: LinkAdapter.java,v 1.2 2003-11-16 22:15:15 christianfoltin Exp $*/
 
 package freemind.modes;
 import freemind.modes.LineAdapter;
@@ -26,21 +26,25 @@ public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
 
     String destinationLabel;
     String referenceText;
+    MindMapNode source;
 
-    public LinkAdapter(MindMapNode target,FreeMindMain frame)  {
-        this(target, frame, "standardlinkcolor", "standardlinkstyle");
+    public LinkAdapter(MindMapNode source,MindMapNode target,FreeMindMain frame)  {
+        this(source,target, frame, "standardlinkcolor", "standardlinkstyle");
     }
 
     /** For derived classes.*/
-    protected  LinkAdapter(MindMapNode target,FreeMindMain frame, String standardColorPropertyString, String standardStylePropertyString)  {
+    protected  LinkAdapter(MindMapNode source,MindMapNode target,FreeMindMain frame, String standardColorPropertyString, String standardStylePropertyString)  {
         super(target, frame, standardColorPropertyString, standardStylePropertyString);
+        this.source=source;
         destinationLabel = null;
         referenceText = null;
     }
 
     public String getDestinationLabel() { return destinationLabel; }
     public String getReferenceText(){ return referenceText; }
-
+    public MindMapNode getSource() { return source;}
+    
+    public void setSource(MindMapNode source) {this.source=source;}
     public void setDestinationLabel(String destinationLabel) { this.destinationLabel = destinationLabel; }
     public void setReferenceText(String referenceText) { this.referenceText = referenceText; }
 

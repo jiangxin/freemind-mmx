@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLinkRegistry.java,v 1.1 2003-11-13 06:36:59 christianfoltin Exp $*/
+/*$Id: MindMapLinkRegistry.java,v 1.2 2003-11-16 22:15:15 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -39,35 +39,36 @@ public interface MindMapLinkRegistry {
     public interface ID_Blank extends ID_BasicState {};
     /** This state interface expresses the state that a node has an ID, but is abstract.*/
     public interface ID_UsedState extends ID_BasicState {
-        public MindMapNode getSource();
+        public MindMapNode getTarget();
     };
     /** This state interface expresses the state that a node has an ID.*/
     public interface ID_Registered extends ID_UsedState {
     };
-    /** This state interface expresses the state that a node was recently cutted and waits to be inserted at another place.
-        After inserting the states changes to ID_Registered.
-    */
-    public interface ID_Pending extends ID_UsedState {
-    };
+//     /** This state interface expresses the state that a node was recently cutted and waits to be inserted at another place.
+//         After inserting the states changes to ID_Registered.
+//     */
+//     public interface ID_Pending extends ID_UsedState {
+//     };
 
     /** The main method. Registeres a node with a new (or an existing) node-id. If the state of the id is pending,
      then it is set to registered again.
     */
-    public ID_Registered registerLinkSource(MindMapNode source);
-    public ID_BasicState getState(MindMapNode node);
-    /** Method to keep track of the targets associated to a source node. This method also sets the new id to the target. 
-        Moreover, it is not required that the source node is already registered. This will be done on the fly.*/
-    public void registerLinkTarget(MindMapNode source, MindMapNode target);
-
-    public void deregisterLinkSource(MindMapNode source)
+    public ID_Registered registerLinkTarget(MindMapNode target);
+    /** The second variant of the main method. The difference is that here an ID is proposed, but has not to be taken, though.
+    */
+    public ID_Registered registerLinkTarget(MindMapNode target, String proposedID);
+    public void        deregisterLinkTarget(MindMapNode target)
         throws java.lang.IllegalArgumentException;
-
-    /** Sets all nodes beginning from source with its children to ID_Pending for later paste action.*/
-    public ID_Pending cutLinkSource(MindMapNode source);
-    public void deregisterLinkTarget(MindMapNode source, MindMapNode target);
+    public ID_BasicState getState(MindMapNode node);
+//     /** Method to keep track of the targets associated to a target node. This method also sets the new id to the target. 
+//         Moreover, it is not required that the target node is already registered. This will be done on the fly.*/
+//     /** Sets all nodes beginning from target with its children to ID_Pending for later paste action.*/
+//     public ID_Pending cutLinkTarget(MindMapNode target);
+    public void   registerLink(MindMapNode target, MindMapNode source);
+    public void deregisterLink(MindMapNode target, MindMapNode source);
 
     /** Returns a Vector of Nodes that point to the given node.*/
-    public Vector /* of MindMapNode s */ getAllTargets(MindMapNode source);
+    public Vector /* of MindMapNode s */ getAllSources(MindMapNode target);
 
 
 }

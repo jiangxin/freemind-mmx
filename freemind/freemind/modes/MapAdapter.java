@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.15 2003-11-03 11:00:12 sviles Exp $*/
+/*$Id: MapAdapter.java,v 1.16 2003-11-16 22:15:15 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -276,6 +276,9 @@ public abstract class MapAdapter implements MindMap {
     }
 
 
+    public MindMapLinkRegistry getLinkRegistry() { return null; }
+
+
     public void insertNodeIntoNoEvent(MindMapNode newChild, MindMapNode parent) {
        insertNodeIntoNoEvent(newChild, parent, false); }
 
@@ -460,20 +463,8 @@ public abstract class MapAdapter implements MindMap {
           String nodeText = caseSensitive ?
              node.toString() : node.toString().toLowerCase();
           if (nodeText.indexOf(what) >= 0) {             // Found
-             // Unfold the path to the node
-             Object[] path = getPathToRoot(node); 
-             // Iterate the path with the exception of the last node
-             for (int i = 0; i < path.length - 1; i++) {
-                MindMapNode nodeOnPath = (MindMapNode)path[i];
-                if (nodeOnPath.isFolded()) {
-                   findNodesUnfoldedByLastFind.add(nodeOnPath);
-                   setFolded(nodeOnPath, false); }}
-
-             // Select the node and scroll to it.
-             getFrame().getView().centerNode(node.getViewer());
-             getFrame().getView().selectAsTheOnlyOneSelected(node.getViewer());
-             frame.getController().obtainFocusForSelected();
-
+              displayNode(node, findNodesUnfoldedByLastFind);
+              
              // Save the state for find next
              findWhat          = what;
              findCaseSensitive = caseSensitive;
@@ -489,6 +480,24 @@ public abstract class MapAdapter implements MindMap {
        frame.getController().obtainFocusForSelected();
 
        return false; }
+
+    public void displayNode(MindMapNode node, ArrayList NodesUnfoldedByDisplay) {
+             // Unfold the path to the node
+             Object[] path = getPathToRoot(node); 
+             // Iterate the path with the exception of the last node
+             for (int i = 0; i < path.length - 1; i++) {
+                MindMapNode nodeOnPath = (MindMapNode)path[i];
+                System.out.println(nodeOnPath);
+                if (nodeOnPath.isFolded()) {
+                    if(findNodesUnfoldedByLastFind != null) 
+                        findNodesUnfoldedByLastFind.add(nodeOnPath);
+                   setFolded(nodeOnPath, false); }}
+
+             // Select the node and scroll to it.
+             getFrame().getView().centerNode(node.getViewer());
+             getFrame().getView().selectAsTheOnlyOneSelected(node.getViewer());
+             frame.getController().obtainFocusForSelected();
+    }
 
     //
     // API for updating the view.

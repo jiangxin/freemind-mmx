@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.12 2003-11-03 11:00:12 sviles Exp $*/
+/*$Id: MindMap.java,v 1.13 2003-11-16 22:15:15 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -25,8 +25,10 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.Color;
 import java.util.List;
+import java.util.ArrayList;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
+import freemind.modes.MindMapLinkRegistry;
 // Clipboard
 import java.awt.datatransfer.Transferable;
 
@@ -56,6 +58,10 @@ public interface MindMap extends TreeModel {
     boolean findNext();
     String getFindWhat();
     String getFindFromText();
+
+    /** Display a node in the display (used by find and the goto action by arrow link actions).*/
+    void displayNode(MindMapNode node, ArrayList NodesUnfoldedByDisplay);
+
     
     /**
      * Returns the file name of the map edited or null if not possible.
@@ -82,6 +88,9 @@ public interface MindMap extends TreeModel {
     void setBackgroundColor(Color color);
 
     void setFolded(MindMapNode node, boolean folded);
+
+    /** @return returns the link registry associated with this mode, or null, if no registry is present.*/
+    MindMapLinkRegistry getLinkRegistry();
     
     /**
      * Destroy everything you have created upon opening.  

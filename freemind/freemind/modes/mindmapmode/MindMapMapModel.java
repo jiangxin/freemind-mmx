@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.24 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.25 2003-11-16 22:15:16 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -54,31 +54,40 @@ import java.nio.channels.FileLock;
 
 //temporary for unique labels:
 import java.util.Random;
+// link registry.
+import freemind.modes.LinkRegistryAdapter;
+import freemind.modes.MindMapLinkRegistry;
+
 
 public class MindMapMapModel extends MapAdapter {
 
     LockManager lockManager;
+    private LinkRegistryAdapter linkRegistry;
 
     //
     // Constructors
     //
 
     public MindMapMapModel(FreeMindMain frame) {
-        super(frame);
-        lockManager = frame.getProperty("experimental_file_locking_on").equals("true") ? 
-           new LockManager() : new DummyLockManager();
-        setRoot(new MindMapNodeModel
-                ( getFrame().getResources().getString("new_mindmap"), getFrame()));
-        readOnly = false; }
+        this(new MindMapNodeModel( frame.getResources().getString("new_mindmap"), frame), frame);
+    }
     
     public MindMapMapModel( MindMapNodeModel root, FreeMindMain frame ) {
         super(frame);
         lockManager = frame.getProperty("experimental_file_locking_on").equals("true") ? 
            new LockManager() : new DummyLockManager();
+
+        // register new LinkRegistryAdapter
+        linkRegistry = new LinkRegistryAdapter();
+
         setRoot(root);
         readOnly = false; }
 
     // 
+
+    public MindMapLinkRegistry getLinkRegistry() {
+        return linkRegistry;
+    }
 
     public String getRestoreable() {
        return getFile()==null ? null : "MindMap:"+getFile().getAbsolutePath(); }
@@ -167,26 +176,34 @@ public class MindMapMapModel extends MapAdapter {
         return retval;
     }
 
+    /** Source holds the MindMapArrowLinkModel and points to the id placed in target.*/
     public void addLink(MindMapNodeModel source, MindMapNodeModel target) {
         if(target.getLabel() == null) {
             // call registry to give new label
-            // bad hack:
-            Random ran = new Random();
-            target.setLabel(Integer.toString(ran.nextInt(2000000000)));
+            getLinkRegistry().registerLinkTarget(target);
         }
-        MindMapArrowLinkModel linkModel = new MindMapArrowLinkModel(source, getFrame());
+        MindMapArrowLinkModel linkModel = new MindMapArrowLinkModel(source, target, getFrame());
         linkModel.setDestinationLabel(target.getLabel());
+        // register link.
+        getLinkRegistry().registerLink(source, target);
         source.addReference((MindMapLink) linkModel);
-        nodeChanged(source); }
+        nodeChanged(target); 
+        nodeChanged(source); 
+    }
 
     public void removeReference(MindMapNode source, MindMapArrowLinkModel arrowLink) {
-            Vector mapLinks = source.getReferences();
-            for(int i = 0; i < mapLinks.size(); ++i)
-                if(mapLinks.get(i) == arrowLink) {
-                    source.removeReferenceAt(i);
-                    nodeChanged(source);
-                    return;
-                }
+        Vector mapLinks = source.getReferences();
+        for(int i = 0; i < mapLinks.size(); ++i) {
+            if(mapLinks.get(i) == arrowLink) {
+                source.removeReferenceAt(i);
+//                 System.out.println("Deregister?");
+                // deregister link.
+                getLinkRegistry().deregisterLink(source, arrowLink.getTarget());
+                nodeChanged(source);
+                nodeChanged(arrowLink.getTarget());
+                return;
+            }
+        }
     }
 
     public void changeArrowsOfArrowLink(MindMapNode source, MindMapArrowLinkModel arrowLink, boolean hasStartArrow, boolean hasEndArrow) {
@@ -589,7 +606,10 @@ public class MindMapMapModel extends MapAdapter {
            System.err.println("Error while parsing file:"+ex);
            ex.printStackTrace();
            return null; }
-        return mapElement.getMapChild(); }
+        // complete the arrow links:
+        mapElement.processUnfinishedLinks(mapElement.getMapChild(), getLinkRegistry());
+        return mapElement.getMapChild(); 
+    }
 
     
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.21 2003-11-13 06:38:23 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.22 2003-11-16 22:15:16 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -49,6 +49,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.HashSet;
 
 import javax.swing.JPanel;
 import javax.swing.JViewport;
@@ -580,13 +581,13 @@ public class MapView extends JPanel implements Printable {
         HashMap labels = new HashMap();
         ArrowLinkViews = new Vector();
         collectLabels(rootView, labels);
-        paintLinks(rootView, (Graphics2D)graphics, labels);
+        paintLinks(rootView, (Graphics2D)graphics, labels, null);
         super.paintChildren(graphics);
         paintEdges(rootView, (Graphics2D)graphics);
     }
 
-    /** \param iterativeLevel describes the n-th nested cloud that is to be painted.*/
-    public void paintClouds(NodeView source, Graphics graphics, int iterativeLevel){
+    /** @param iterativeLevel describes the n-th nested cloud that is to be painted.*/
+    protected void paintClouds(NodeView source, Graphics graphics, int iterativeLevel){
         for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
             if(target.getModel().getCloud() != null) {
@@ -602,7 +603,7 @@ public class MapView extends JPanel implements Printable {
     }
 
     /** collect all existing labels in the current map.*/
-    public void collectLabels(NodeView source, HashMap labels) {
+    protected void collectLabels(NodeView source, HashMap labels) {
         // apply own label:
         if(source.getModel().getLabel() != null) 
             labels.put(source.getModel().getLabel(), source);
@@ -611,9 +612,26 @@ public class MapView extends JPanel implements Printable {
             collectLabels(target, labels);
         }
     }
-        
 
-    public void paintLinks(NodeView source, Graphics2D graphics, HashMap labels) {
+    private class MindMapNodePair {
+        public MindMapNode source;
+        public MindMapNode target;
+        public MindMapNodePair(MindMapNode source, MindMapNode target) {
+            this.source = source;
+            this.target = target;
+        }
+        public boolean equals(Object obj) {
+            if( ! (obj instanceof MindMapNodePair)) 
+                return false;
+            MindMapNodePair pair = (MindMapNodePair) obj;
+            return (pair.source.equals(source) && pair.target.equals(target));
+        }
+    };
+
+    protected void paintLinks(NodeView source, Graphics2D graphics, HashMap labels, HashSet /* MindMapNodePair s*/ SourceDestinationPairAlreadyVisited) {
+        if(SourceDestinationPairAlreadyVisited == null)
+            SourceDestinationPairAlreadyVisited = new HashSet();
+        // references first
         // paint own labels:
         for(int i = 0; i< source.getModel().getReferences().size(); ++i) {
             MindMapLink ref = (MindMapLink) source.getModel().getReferences().get(i);
@@ -622,6 +640,9 @@ public class MapView extends JPanel implements Printable {
             if(labels.containsKey(ref.getDestinationLabel()) == true)
                 { // found:
                     destination = (NodeView) labels.get(ref.getDestinationLabel());
+                    // already present?
+                    if(!SourceDestinationPairAlreadyVisited.add(new MindMapNodePair(source.getModel(), destination.getModel())))
+                        break;
                 }
             // determine type of link
             if(ref  instanceof MindMapArrowLink) {
@@ -630,9 +651,37 @@ public class MapView extends JPanel implements Printable {
                 ArrowLinkViews.add(arrowLink);
             }
         }
+        // my own as a target of others:
+        NodeView rDestination = source;
+        if(getModel().getLinkRegistry() != null) {
+            Vector allSources = getModel().getLinkRegistry().getAllSources(rDestination.getModel());
+            // traverse the vector and search for new pairs:
+            for(int j = 0; j< allSources.size(); ++j) {
+                MindMapNode rSourceModel = (MindMapNode) allSources.get(j);
+                // already present?
+                if(!SourceDestinationPairAlreadyVisited.add(new MindMapNodePair(rSourceModel, rDestination.getModel())))
+                    break;
+                // search for the NodeView:
+                NodeView rSource = rSourceModel.getViewer();
+                // search for the MindMapLink associated with this combination:
+                for(int i = 0; i< rSourceModel.getReferences().size(); ++i) {
+                    MindMapLink ref = (MindMapLink) rSourceModel.getReferences().get(i);
+                    if(ref.getDestinationLabel().equals(rDestination.getModel().getLabel()))
+                        { // found:
+                            // determine type of link
+                            if(ref  instanceof MindMapArrowLink) {
+                                ArrowLinkView arrowLink = new ArrowLinkView((MindMapArrowLink) ref, rSource, rDestination);
+                                arrowLink.paint(graphics);
+                                ArrowLinkViews.add(arrowLink);
+                            }
+                        }
+                }
+            }
+            
+        }
         for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
-            paintLinks(target, graphics, labels);
+            paintLinks(target, graphics, labels, SourceDestinationPairAlreadyVisited);
         }
     }
 
