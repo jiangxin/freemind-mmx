@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.1 2000-11-15 22:27:20 ponder Exp $*/
+/*$Id: SchemeController.java,v 1.2 2000-11-16 20:43:25 ponder Exp $*/
 
 package freemind.modes.schememode;
 
@@ -26,8 +26,10 @@ import freemind.modes.MindMap;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.ControllerAdapter;
+import silk.SI;
 import java.io.File;
 import java.awt.event.ActionEvent;
+import java.util.StringTokenizer;
 import javax.swing.Action;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -74,7 +76,13 @@ public class SchemeController extends ControllerAdapter {
 	    super(FreeMind.getResources().getString("scheme_evaluate"));
 	}
 	public void actionPerformed(ActionEvent e) {
-	    JOptionPane.showMessageDialog(getView(),((SchemeMapModel)getMap()).getCode());
+	    String rawCode = ((SchemeMapModel)getMap()).getCode().trim();
+	    StringTokenizer code = new StringTokenizer(rawCode,",");
+	    String output = "Output: \n";
+	    while(code.hasMoreTokens()) {
+		output = output + (SI.eval(code.nextToken()).toString())+"\n";
+	    }
+	    JOptionPane.showMessageDialog(getView(),output);
 	}
     }
 }

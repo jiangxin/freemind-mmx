@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMapModel.java,v 1.1 2000-11-15 22:27:20 ponder Exp $*/
+/*$Id: SchemeMapModel.java,v 1.2 2000-11-16 20:43:25 ponder Exp $*/
 
 package freemind.modes.schememode;
 
@@ -59,8 +59,5 @@ public class SchemeMapModel extends MapAdapter {
 
     public String toString() {
 	return "Scheme";
-    }
-
-    public void changeNode(MindMapNode node, String newText) {
     }
 }

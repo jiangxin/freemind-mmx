@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.7 2000-11-15 22:17:54 ponder Exp $*/
+/*$Id: NodeView.java,v 1.8 2000-11-16 20:43:26 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -159,7 +159,7 @@ public abstract class NodeView extends JLabel {
     /**
      * This method returns the NodeViews that are children of this node.
      */
-    protected LinkedList getChildrenViews() {
+    public LinkedList getChildrenViews() {
 	LinkedList childrenViews = new LinkedList();
 	ListIterator it = getModel().childrenFolded();
 	if (it != null) {
@@ -265,7 +265,7 @@ public abstract class NodeView extends JLabel {
 	NodeView newView = NodeView.newNodeView(newNode,getMap());
 	newView.setLeft(this.isLeft());
 
-	ListIterator it = getModel().childrenFolded();
+	ListIterator it = newNode.childrenFolded();// getModel().childrenFolded();
 	if (it != null) {
 	    while(it.hasNext()) {
 		MindMapNode child = (MindMapNode)it.next();

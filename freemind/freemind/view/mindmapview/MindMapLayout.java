@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.6 2000-11-15 22:17:54 ponder Exp $*/
+/*$Id: MindMapLayout.java,v 1.7 2000-11-16 20:43:26 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -223,10 +223,6 @@ public class MindMapLayout implements LayoutManager {
 		int y = pointer;
 	    
 		child.relYPos = pointer - 2;
-		System.out.println("NODE:"+node.getModel().toString());
-		System.out.println("YPOS:"+child.relYPos);
-		System.out.println("TREEHEIGHT:"+child.getTreeHeight());
-		
 		
 		//This point is called twice for every node. Why?
 
@@ -266,9 +262,9 @@ public class MindMapLayout implements LayoutManager {
 	    if (node == null) {
 		break;
 	    }
-	    if(node.getTreeHeight() == 0) {
-		calcTreeHeight(node);
-	    }
+	    //	    if(node.getTreeHeight() == 0) {
+	    //	calcTreeHeight(node);
+	    //}
 	    //	    calcTreeHeight(node);
 	    height += node.getTreeHeight();
 	}
@@ -284,14 +280,9 @@ public class MindMapLayout implements LayoutManager {
 
 	if (treeheight > node.getPreferredSize().height + VGAP) {
 	    node.setTreeHeight(treeheight);
-	    System.out.println("1");
-	    
 	} else {
 	    node.setTreeHeight(node.getPreferredSize().height + VGAP);
-	    System.out.println("2");
 	}
-	System.out.println("PrefSize:"+node.getPreferredSize().height);
-	
     }
 
 }//class MindMapLayout

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeNodeModel.java,v 1.1 2000-11-15 22:27:20 ponder Exp $*/
+/*$Id: SchemeNodeModel.java,v 1.2 2000-11-16 20:43:25 ponder Exp $*/
 
 package freemind.modes.schememode;
 
@@ -34,8 +34,6 @@ import java.awt.Color;
  */
 public class SchemeNodeModel extends NodeAdapter {
 
-    private Color color;
-	
     //
     //  Constructors
     //
@@ -46,17 +44,35 @@ public class SchemeNodeModel extends NodeAdapter {
 	setEdge(new SchemeEdgeModel(this));
     }
 
+    public String toString() {
+	if (this.isRoot()) {
+	    return "Scheme";
+	} else {
+	    return super.toString();
+	}
+    }
+
     public String getCode() {
-	String code = toString().trim();
-	if(code.equals("")) {
-	    code = "(";
+	String code="";
+	if (this.isRoot()) {
 	    ListIterator it = childrenUnfolded();
 	    if (it != null) {
 		while (it.hasNext()) {
-		    code.concat(((SchemeNodeModel)it.next()).getCode() + " ");
+		    code = code + ((SchemeNodeModel)it.next()).getCode() + ",";
 		}
 	    }
-	    code.concat(")");
+	} else {
+	    code = toString().trim();
+	    if(code.equals("")) {
+		code = "(";
+		ListIterator it = childrenUnfolded();
+		if (it != null) {
+		    while (it.hasNext()) {
+			code = code + ((SchemeNodeModel)it.next()).getCode() + " ";
+		    }
+		}
+		code = code +")";
+	    }
 	}
 	return code;
     }
