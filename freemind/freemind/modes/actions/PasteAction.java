@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: PasteAction.java,v 1.1.2.3 2004-08-08 13:03:48 christianfoltin Exp $*/
+/*$Id: PasteAction.java,v 1.1.2.4 2004-08-20 23:12:13 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -237,12 +237,18 @@ public class PasteAction extends AbstractAction implements ActorXml {
                if (textLines.length > 1) {
                    c.getFrame().setWaitingCursor(true);
                }
+//               boolean isFirst = true;
                for (int i = 0; i < textLines.length; ++i) {
                    //logger.info(textLines[i]+", "+ target+", "+ asSibling);
                    MindMapNodeModel newModel = pasteXMLWithoutRedisplay(
                            textLines[i], target, asSibling);
                    // additional code for left/right decision:
                    newModel.setLeft(isLeft);
+//                   if(isFirst) {
+//                       c.getView().selectAsTheOnlyOneSelected(newModel.getViewer());
+//                   } else {
+//                       c.getView().makeTheSelected(newModel.getViewer());
+//                   }
                }
            }
         }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.24 2004-08-12 22:20:28 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.25 2004-08-20 23:12:13 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -97,7 +97,9 @@ import freemind.modes.actions.CutAction;
 import freemind.modes.actions.DeleteChildAction;
 import freemind.modes.actions.EditAction;
 import freemind.modes.actions.NewChildAction;
+import freemind.modes.actions.NodeUpAction;
 import freemind.modes.actions.PasteAction;
+import freemind.modes.actions.ToggleChildrenFoldedAction;
 import freemind.modes.actions.ToggleFoldedAction;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
@@ -138,6 +140,9 @@ public abstract class ControllerAdapter implements ModeController {
 	public NewChildAction newChild = null;
 	public DeleteChildAction deleteChild = null;
 	public ToggleFoldedAction toggleFolded = null;
+    public ToggleChildrenFoldedAction toggleChildrenFolded = null;
+    public NodeUpAction nodeUp = null;
+    public NodeDownAction nodeDown = null;
 	/** Executes series of actions. */
 	private CompoundActionHandler compound = null;
 
@@ -196,6 +201,9 @@ public abstract class ControllerAdapter implements ModeController {
 		newChild = new NewChildAction(this);
 		deleteChild = new DeleteChildAction(this);
 		toggleFolded = new ToggleFoldedAction(this);
+		toggleChildrenFolded = new ToggleChildrenFoldedAction(this);
+		nodeUp = new NodeUpAction(this);
+		nodeDown = new NodeDownAction(this);
 		compound = new CompoundActionHandler(this);
 
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -1472,93 +1480,6 @@ public abstract class ControllerAdapter implements ModeController {
            if (getMapModule() != null) {
               cut();
               getController().obtainFocusForSelected(); }}}
-
-    protected class NodeUpAction extends AbstractAction {
-        public NodeUpAction() {
-            super(getText("node_up"));
-        }
-        public void actionPerformed(ActionEvent e) {
-            MindMapNode selected = getView().getSelected().getModel();
-            if(!selected.isRoot()) {
-                MindMapNode parent = selected.getParentNode();
-                int index = getModel().getIndexOfChild(parent, selected);
-                int newIndex = getModel().moveNodeTo(selected,parent,index, -1);
-                getModel().removeNodeFromParent(selected);
-                getModel().insertNodeInto(selected,parent,newIndex);
-//                 int maxindex = parent.getChildCount(); // (PN)
-//                 if(index - 1 <0) {
-//                     getModel().insertNodeInto(selected,parent,maxindex, -1);
-//                 } else {
-//                     getModel().insertNodeInto(selected,parent,index - 1, -1);
-//                 }
-                getModel().nodeStructureChanged(parent);
-                getView().selectAsTheOnlyOneSelected(selected.getViewer());
-
-                getController().obtainFocusForSelected(); // focus fix
-            }
-        }
-    }
-
-    protected class NodeDownAction extends AbstractAction {
-        public NodeDownAction() {
-            super(getText("node_down"));
-        }
-        public void actionPerformed(ActionEvent e) {
-            MindMapNode selected = getView().getSelected().getModel();
-            if(!selected.isRoot()) {
-                MindMapNode parent = selected.getParentNode();
-                int index = getModel().getIndexOfChild(parent, selected);
-                int newIndex = getModel().moveNodeTo(selected,parent,index, 1);
-                getModel().removeNodeFromParent(selected);
-                getModel().insertNodeInto(selected,parent,newIndex);
-//                 int maxindex = parent.getChildCount(); // (PN)
-//                 if(index + 1 > maxindex) {
-//                     getModel().insertNodeInto(selected,parent,0, 1);
-//                 } else {
-//                     getModel().insertNodeInto(selected,parent,index + 1, 1);
-//                 }
-                getModel().nodeStructureChanged(parent);
-                getView().selectAsTheOnlyOneSelected(selected.getViewer());
-                
-                getController().obtainFocusForSelected(); // focus fix
-            }
-        }
-    }
-
-    protected class ToggleChildrenFoldedAction extends AbstractAction {
-        public ToggleChildrenFoldedAction() {
-            super(getText("toggle_children_folded"));
-        }
-        public void actionPerformed(ActionEvent e) {
-            MindMapNode parent = getSelected();
-            ListIterator children_it = parent.getViewer().getChildrenViews().listIterator();
-            boolean areAnyFolded = false;
-            while(children_it.hasNext() && !areAnyFolded) {
-                NodeView child = (NodeView)children_it.next();
-                if(child.getModel().isFolded()) {
-                    areAnyFolded = true;
-                }
-            }
-            
-            // fold the node only if the node is not a leaf (PN 0.6.2)
-            boolean enableLeavesFolding = 
-                Tools.safeEquals(getFrame().
-                   getProperty("enable_leaves_folding"),"true");
-            
-            children_it = parent.getViewer().getChildrenViews().listIterator();
-            while(children_it.hasNext()) {
-                MindMapNode child = ((NodeView)children_it.next()).getModel();
-                if (child.hasChildren() 
-                    || enableLeavesFolding
-                    || child.isFolded()) {
-                  getModel().setFolded(child, !areAnyFolded); // (PN 0.6.2)
-                }
-            }
-            getView().selectAsTheOnlyOneSelected(parent.getViewer());
-            
-            getController().obtainFocusForSelected();
-        }
-    }
 
     protected class SetLinkByFileChooserAction extends AbstractAction {
         public SetLinkByFileChooserAction() {

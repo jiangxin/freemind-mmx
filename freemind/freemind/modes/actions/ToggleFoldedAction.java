@@ -19,7 +19,7 @@
  *
  * Created on 12.08.2004
  */
-/*$Id: ToggleFoldedAction.java,v 1.1.2.1 2004-08-12 22:20:29 christianfoltin Exp $*/
+/*$Id: ToggleFoldedAction.java,v 1.1.2.2 2004-08-20 23:12:13 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -53,22 +53,32 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
         toggleFolded();
     }
     public void toggleFolded() {
-        boolean fold = getFoldingState();
-        CompoundAction doAction = createFoldAction(fold, false);
-        CompoundAction undoAction = createFoldAction(!fold, true);
+        toggleFolded(modeController.getSelecteds().listIterator());
+    }
+    public void toggleFolded(ListIterator listIterator) {
+        
+        boolean fold = getFoldingState(reset(listIterator));
+        CompoundAction doAction = createFoldAction(reset(listIterator), fold, false);
+        CompoundAction undoAction = createFoldAction(reset(listIterator), !fold, true);
         modeController.getActionFactory().startTransaction((String) getValue(NAME));
 		modeController.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
         modeController.getActionFactory().endTransaction((String) getValue(NAME));
     }
     
+    ListIterator reset(ListIterator iterator) {
+        while(iterator.hasPrevious()) {
+            iterator.previous();
+        }
+        return iterator;
+    }
     /**
      * @return
      */
-    private boolean getFoldingState() {
+    private boolean getFoldingState(ListIterator iterator) {
         /* Retrieve the information whether or not all nodes have the same folding state. */
         Tools.BooleanHolder state = null; 
         boolean allNodeHaveSameFoldedStatus = true;
-        for (ListIterator it = modeController.getSelecteds().listIterator();it.hasNext();) {
+        for (ListIterator it = iterator;it.hasNext();) {
             MindMapNode node = (MindMapNode)it.next();
             if(state == null) {
                 state = new Tools.BooleanHolder();
@@ -87,13 +97,13 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
         }
         return fold;
     }
-    private CompoundAction createFoldAction(boolean fold , boolean undo) {
+    private CompoundAction createFoldAction(ListIterator iterator, boolean fold , boolean undo) {
         try {
             CompoundAction comp = modeController.getActionXmlFactory().createCompoundAction();
             MindMapNode lastNode = null;
             // sort selectedNodes list by depth, in order to guarantee that sons are deleted first:
             for (ListIterator it =
-                modeController.getSelectedsByDepth().listIterator();
+                iterator;
                 it.hasNext();
                 ) {
                 MindMapNode node = (MindMapNode) it.next();
@@ -108,7 +118,7 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
                     lastNode = node;
                 }
             }
-            logger.info("Compound contains " + comp.getCompoundActionOrSelectNodeActionOrCutNodeAction().size() + " elements." );
+            logger.finest("Compound contains " + comp.getCompoundActionOrSelectNodeActionOrCutNodeAction().size() + " elements." );
             return comp;
         } catch (JAXBException e) {
             e.printStackTrace();

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.12.6 2004-08-01 07:26:25 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.12.7 2004-08-20 23:12:13 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -45,8 +45,13 @@ public interface MindMapNode extends MutableTreeNode {
 	 */
 	String getObjectId();
 	
+    /** @return returns a ListIterator of all children of the node if the node is unfolded. 
+     * EMPTY_LIST_ITERATOR otherwise. 
+     * */
     ListIterator childrenFolded();
 
+    /** @return returns a ListIterator of all (and not only the unfolded ones!!) children of the node. 
+     * */
     ListIterator childrenUnfolded();
 
     boolean hasChildren();
