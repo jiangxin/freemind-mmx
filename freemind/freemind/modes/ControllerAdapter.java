@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.36 2003-12-22 11:14:51 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.37 2004-01-10 18:22:25 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -163,7 +163,18 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public void doubleClick(MouseEvent e) {
-        edit(null, false, false); //toggleFolded();
+        MindMapNode node = ((NodeView)(e.getComponent())).getModel();
+        // edit the node only if the node is a leaf (fc 0.7.1)
+        if (node.hasChildren())
+            return;
+        if (!e.isAltDown() 
+            && !e.isControlDown() 
+            && !e.isShiftDown() 
+            && !e.isPopupTrigger()
+            && e.getButton() == MouseEvent.BUTTON1
+            && (node.getLink() == null)) {
+            edit(null, false, false);
+        }
     }
 
     public void plainClick(MouseEvent e) {

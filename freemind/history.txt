@@ -1,7 +1,15 @@
+Changes made in Freemind 0.7.1:
+===============================
+* Bug fix: nodes with arc and bubble nodes have antialiased text when the antialiasing  of edges is on
+* Removed the arc, that distinguished bubble nodes from folded nodes. More discussion is needed.
+* Selection method changed: double click is now only for editing if the node is *not* an inner node.
+* Documentation enhanced: Creation of graphical links is better described
+* Bug fix: Zoom in/out uses step one again.
+* Bug fix: System default look and feel is set if so stated in the freemind.properties or user.properties.
+
 Changes made in Freemind 0.7.0:
 ===============================
 
-* Bug fix: No default look and feel is set if not stated in the user.properties.
 * Bug fix: Open and Quit are working if no map is present
 * The last closed map can be reopend using a key stroke.
 * Bug fix: Context menu is back.

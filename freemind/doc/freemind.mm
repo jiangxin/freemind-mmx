@@ -1,4 +1,4 @@
-<map>
+<map version="0.7.1">
 <node COLOR="#993300" TEXT="FreeMind">
 <font NAME="dialog" BOLD="true" SIZE="18"/>
 <node TEXT="   " POSITION="right">
@@ -616,7 +616,7 @@
 <node TEXT="You can remove this toolbar right clicking on the background of FreeMind"/>
 </node>
 <node COLOR="#338800" TEXT="Graphical links" FOLDED="true" POSITION="right">
-<node TEXT="Mark a node and drag this node to another node holding both shift and control keys creates a graphical link between them." POSITION="right"/>
+<node TEXT="&lt;html&gt;&lt;body&gt;&lt;table width=&quot;15cm&quot;&gt;&lt;tr&gt;&lt;td&gt;&#xa;Mark a node and drag this node to another node&#xa;&lt;b&gt;holding both shift and control keys and release the mouse button first&lt;/b&gt; &#xa;creates a graphical link between them.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;" POSITION="right"/>
 <node TEXT="You can edit some properties of this link using right click onto the line between them." POSITION="right"/>
 <node TEXT="You may choose the color and the arrow positions." POSITION="right"/>
 <node TEXT="Moreover you can go directly to the other node (even if its folded) using the right click on the small part of the graphical link." POSITION="right"/>
@@ -897,56 +897,56 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 <node COLOR="#996600" TEXT="Petr Novak" POSITION="left"/>
-<node TEXT="Christian Foltin" POSITION="left">
-<edge WIDTH="thin"/>
+<node COLOR="#996600" TEXT="Christian Foltin" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
-<node LINK="mailto:christian.foltin@gmx.de" TEXT="christian.foltin@gmx.de" POSITION="left"/>
+<node LINK="mailto:christian.foltin@gmx.de" COLOR="#996600" TEXT="christian.foltin@gmx.de" POSITION="left"/>
 </node>
-<node COLOR="#111111" TEXT="Recent Contributions" FOLDED="true" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
-<node COLOR="#111111" TEXT="Andrew Iggleden" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
-<node COLOR="#111111" TEXT="Installer Windows" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
-</node>
-</node>
-<node COLOR="#111111" TEXT="Bob Alexander" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
-<node COLOR="#111111" TEXT="Italian translation" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
-</node>
-<node COLOR="#111111" TEXT="Eclipse howto" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="Recent Contributions" FOLDED="true" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="Andrew Iggleden" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="Installer Windows" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
 </node>
 </node>
-<node COLOR="#111111" TEXT="Knud Riish&#xf8;jg&#xe5;rd" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
-<node COLOR="#111111" TEXT="Danish translation" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="Bob Alexander" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="Italian translation" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
+</node>
+<node COLOR="#996600" TEXT="Eclipse howto" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
 </node>
 </node>
-<node COLOR="#111111" TEXT="David Butt" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
-<node COLOR="#111111" TEXT="Tutorial flash" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="Knud Riish&#xf8;jg&#xe5;rd" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="Danish translation" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
 </node>
 </node>
-<node COLOR="#111111" TEXT="David Low" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
-<node COLOR="#111111" TEXT="Helpful" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="David Butt" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="Tutorial flash" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
 </node>
 </node>
-<node COLOR="#111111" TEXT="Dimitri Polivaev" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
-<node COLOR="#111111" TEXT="Bug removal" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="David Low" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="Helpful" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
 </node>
 </node>
-<node COLOR="#111111" TEXT="Takeshi Kakeda" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
-<node COLOR="#111111" TEXT="Japanese translation" POSITION="left">
-<edge COLOR="#111111" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="Dimitri Polivaev" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="Bug removal" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
+</node>
+</node>
+<node COLOR="#996600" TEXT="Takeshi Kakeda" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
+<node COLOR="#996600" TEXT="Japanese translation" POSITION="left">
+<edge COLOR="#996600" WIDTH="thin"/>
 </node>
 </node>
 </node>

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.15 2004-01-06 13:04:16 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.16 2004-01-10 18:22:25 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -37,7 +37,7 @@ import javax.swing.*;
 
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 
-    public static final String version = "0.7.0";
+    public static final String version = "0.7.1";
     //    public static final String defaultPropsURL;
     public URL defaultPropsURL;
     public static Properties defaultProps;
@@ -220,9 +220,10 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
               UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
            } else if (lookAndFeel.equals("metal")) {
               UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+           } else if (lookAndFeel.equals("nothing")) {
            } else {
-               // nothing is default.
-               //System.out.println("No Look & Feel.");
+               // default.
+               UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
            }
         } catch (Exception ex) {
            System.err.println("Error while setting Look&Feel"+lookAndFeel);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.15 2003-11-24 08:09:04 christianfoltin Exp $*/
+/*$Id: MainToolBar.java,v 1.16 2004-01-10 18:22:25 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -65,12 +65,12 @@ public class MainToolBar extends JToolBar {
     public void zoomOut() {
        if (zoom.getSelectedIndex() > 0) {
           setZoomByItem(zoom.getItemAt(zoom.getSelectedIndex() - 1));
-          zoom.setSelectedItem(zoom.getItemAt(zoom.getSelectedIndex() - 1)); }}
+          /*zoom.setSelectedItem(zoom.getItemAt(zoom.getSelectedIndex() - 1));*/ }}
 
     public void zoomIn() {
        if (zoom.getSelectedIndex() < zoom.getItemCount() - 1) {
           setZoomByItem(zoom.getItemAt(zoom.getSelectedIndex() + 1));
-          zoom.setSelectedItem(zoom.getItemAt(zoom.getSelectedIndex() + 1)); }}
+          /*zoom.setSelectedItem(zoom.getItemAt(zoom.getSelectedIndex() + 1));*/ }}
 
     public String getItemForZoom(float f) {
        return (int)(f*100F)+"%"; }

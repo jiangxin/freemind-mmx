@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.13 2003-12-21 08:40:36 christianfoltin Exp $*/
+/*$Id: BubbleNodeView.java,v 1.14 2004-01-10 18:22:25 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -85,8 +85,9 @@ public class BubbleNodeView extends NodeView {
         if (map.getController().getAntialiasEdges()) {
            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
         g.drawRoundRect(0,0,size.width-1,size.height-1,10,10);
-        // return to old rendering, fc, 21.12.2003.
-        setRendering(g);
+        // this disables the font antialias if only AntialiasEdges is requested.
+        if (map.getController().getAntialiasEdges()) {
+           g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); }
 
 	// return to std stroke
 	g.setStroke(DEF_STROKE);

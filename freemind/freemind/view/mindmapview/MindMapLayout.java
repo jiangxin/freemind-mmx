@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.14 2003-11-03 11:00:27 sviles Exp $*/
+/*$Id: MindMapLayout.java,v 1.15 2004-01-10 18:22:25 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -245,7 +245,13 @@ public class MindMapLayout implements LayoutManager {
                 pointer += (child.getTreeHeight() / 2); }}
         else {
             int pointer = (node.getPreferredSize().height - node.getTreeHeight()) / 2;
-            ListIterator it = node.getChildrenViews().listIterator();
+            // begin patch dimitri polivaev. Bad hack. Must corrected as soon as possible.
+			if(node.getModel().getCloud() != null)
+			{ 
+                pointer = (int) (pointer + 15 * getMapView().getZoom());
+			}
+            // End bad hack
+             ListIterator it = node.getChildrenViews().listIterator();
             while(it.hasNext()) {
                 NodeView child = (NodeView)it.next();
                 child.relYPos = pointer + (child.getTreeHeight() - child.getPreferredSize().height) / 2 - 2;
@@ -263,8 +269,15 @@ public class MindMapLayout implements LayoutManager {
        return height; }
 
     protected void updateTreeHeightFromChildren(NodeView node) {
-       node.setTreeHeight(Math.max(sumOfAlreadyComputedTreeHeights(node.getChildrenViews()),
-                                   node.getPreferredSize().height + VGAP)); }
+        int iHeight = Math.max(sumOfAlreadyComputedTreeHeights(node.getChildrenViews()),
+                               node.getPreferredSize().height + VGAP);
+        // begin patch dimitri polivaev. Bad hack. Must corrected as soon as possible.
+        if(node.getModel().getCloud() != null) { 
+            iHeight = (int) (iHeight + 30 * getMapView().getZoom());
+        }
+        // End bad hack
+       node.setTreeHeight(iHeight); 
+    }
 
 
     //

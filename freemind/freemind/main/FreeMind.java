@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.29 2004-01-06 13:04:16 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.30 2004-01-10 18:22:25 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -60,7 +60,7 @@ import freemind.view.mindmapview.MapView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
-    public static final String version = "0.7.0";
+    public static final String version = "0.7.1";
     //    public static final String defaultPropsURL = "freemind.properties";
     public URL defaultPropsURL;
     //    public static Properties defaultProps;
@@ -179,9 +179,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
 	    } else if (lookAndFeel.equals("metal")) {
 		UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+	    } else if (lookAndFeel.equals("nothing")) {
 	    } else {
-            // nothing is default.
-            //System.out.println("No Look & Feel.");
+            // default.
+            System.out.println("Default (System) Look & Feel: "+UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         }
 	} catch (Exception ex) {
 	    System.err.println("Unable to set Look & Feel.");
