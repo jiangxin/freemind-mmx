@@ -19,24 +19,16 @@
 
 package freemind.modes;
 
-import java.awt.Color;
-import freemind.modes.MindMapEdge;
-import freemind.modes.MindMapNode;
-import freemind.view.mindmapview.NodeView;
+import freemind.main.FreeMind;
 import freemind.main.Tools;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreePath;
+import freemind.view.mindmapview.NodeView;
 import java.util.Enumeration;
 import java.util.Vector;
 import java.net.URL;
-import java.net.MalformedURLException;
-import freemind.main.FreeMind;
-//XML Definition (Interfaces)
-import  org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
+import java.awt.Color;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreePath;
 
 /**
  * This class represents a single Node of a Tree. It contains direct handles 

@@ -50,9 +50,10 @@ public class MenuBar extends JMenuBar {
 	filemenu.addSeparator();
 
 	JMenuItem close = filemenu.add(c.close);
+	close.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_close")));
 	
 	JMenuItem quit = filemenu.add(c.quit);
-	quit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+	quit.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_quit")));
 
 	//Modemenu
 	this.add(c.getModeMenu());
@@ -61,11 +62,20 @@ public class MenuBar extends JMenuBar {
 	JMenu editmenu = new JMenu(FreeMind.getResources().getString("edit"));
 	this.add(editmenu);
 
+	JMenuItem moveToRoot = editmenu.add(c.moveToRoot);
+	moveToRoot.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_moveToRoot")));
+
+	JMenuItem previousMap = editmenu.add(c.previousMap);
+	previousMap.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_previousMap")));
+
+	JMenuItem nextMap = editmenu.add(c.nextMap);
+	nextMap.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_nextMap")));
+
 	JMenuItem cut = editmenu.add(c.cut);
-	cut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
+	cut.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_cut")));
 	
 	JMenuItem paste = editmenu.add(c.paste);
-     	paste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
+	paste.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_paste")));
 
 	editmenu.addSeparator();
 

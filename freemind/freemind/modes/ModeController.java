@@ -19,9 +19,8 @@
 
 package freemind.modes;
 
-import java.io.File;
-import javax.swing.filechooser.FileFilter;
 import freemind.view.mindmapview.NodeView;
+import java.io.File;
 
 public interface ModeController {
 

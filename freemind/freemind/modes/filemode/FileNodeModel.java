@@ -19,21 +19,12 @@
 
 package freemind.modes.filemode;
 
-import java.awt.Color;
-import freemind.modes.MindMapEdge;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import freemind.view.mindmapview.NodeView;
-import freemind.main.Tools;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreePath;
 import java.util.Enumeration;
 import java.util.Vector;
-import java.net.URL;
-import java.net.MalformedURLException;
-import freemind.main.FreeMind;
 import java.io.File;
+import java.awt.Color;
 
 
 /**

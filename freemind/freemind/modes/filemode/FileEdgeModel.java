@@ -21,11 +21,6 @@ package freemind.modes.filemode;
 
 import freemind.modes.MindMapNode;
 import freemind.modes.EdgeAdapter;
-import freemind.main.Tools;
-import java.awt.Color;
-
-import  org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 
 public class FileEdgeModel extends EdgeAdapter {

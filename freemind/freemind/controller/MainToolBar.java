@@ -33,7 +33,7 @@ public class MainToolBar extends JToolBar {
 	JComboBox zoom;	
 	JButton button;
 
-	button = add(c.lastMap);
+	button = add(c.previousMap);
 	button.setText("");
 	button = add(c.nextMap);
 	button.setText("");

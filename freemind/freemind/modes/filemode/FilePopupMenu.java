@@ -19,9 +19,7 @@
 
 package freemind.modes.filemode;
 
-import freemind.main.FreeMind;
 import javax.swing.JPopupMenu;
-import javax.swing.JMenu;
 
 public class FilePopupMenu extends JPopupMenu {
 
@@ -31,7 +29,6 @@ public class FilePopupMenu extends JPopupMenu {
 	this.c = c;
 	
 	//Node menu
-	//	JMenu nodeMenu = new JMenu(FreeMind.getResources().getString("node"));
 	this.add(c.center);
     }
 }

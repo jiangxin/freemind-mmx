@@ -63,7 +63,6 @@ public class FileMode implements Mode {
 	menu.add( ((FileController)getModeController()).center );
 	getController().cut.setEnabled(false);
 	getController().paste.setEnabled(false);
-	//	menu.add(new JMenuItem("test"));
     }
     
     public Controller getController() {

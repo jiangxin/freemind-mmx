@@ -51,7 +51,7 @@ public class MindMapPopupMenu extends JPopupMenu {
 
 	nodeFont.add(c.bold);
 
-	nodeFont.add(c.underline);
+	//	nodeFont.add(c.underline);
 
 	nodeMenu.add(c.nodeColor);
 

@@ -21,11 +21,8 @@ package freemind.modes.mindmapmode;
 
 import freemind.controller.Controller;
 import freemind.modes.Mode;
-import freemind.modes.MindMap;
 import freemind.modes.ModeController;
-import freemind.view.mindmapview.MapView;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.JPopupMenu;
 
@@ -59,7 +56,6 @@ public class MindMapMode implements Mode {
 	menu.add(getMindMapController().save);
 	menu.add(getMindMapController().saveAs);
 	getController().cut.setEnabled(true);
-	getController().paste.setEnabled(true);
     }
     
     public Controller getController() {

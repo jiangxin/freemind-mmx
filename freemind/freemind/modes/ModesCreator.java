@@ -40,11 +40,11 @@ public class ModesCreator {
     }
 
     public Map getAllModes() {
-
+	Mode mode;
 	//Copy these two lines for every new Mode,
 	//and replace MindMapMode(c) with YourNewMode(c)
 
-	Mode mode = new MindMapMode(c);
+	mode = new MindMapMode(c);
 	modes.put(mode.toString(), mode);
 
 	mode = new FileMode(c);

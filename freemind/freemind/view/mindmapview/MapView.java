@@ -59,6 +59,7 @@ public class MapView extends JPanel implements Printable {
 
     public MapView( MindMap model, Controller controller ) {
 	super();
+		
 	this.model = model;
 	this.controller = controller;
 

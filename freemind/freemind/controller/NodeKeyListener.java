@@ -156,15 +156,15 @@ public class NodeKeyListener implements KeyListener {
 	    return;
 	}
 	//Workaround because KeyCodes for these characters are 0
-	if (e.getKeyChar() == '>') {
-	    c.nextMap();
-	    e.consume();
-	    return;
-	} else if (e.getKeyChar() == '<') {
-	    c.previousMap();
-	    e.consume();
-	    return;
-	}
+// 	if (e.getKeyChar() == '>') {
+// 	    c.nextMap();
+// 	    e.consume();
+// 	    return;
+// 	} else if (e.getKeyChar() == '<') {
+// 	    c.previousMap();
+// 	    e.consume();
+// 	    return;
+// 	}
     }
 
     public void keyReleased( KeyEvent e ) {

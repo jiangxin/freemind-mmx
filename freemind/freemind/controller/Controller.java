@@ -70,10 +70,11 @@ public class Controller {
     public Action quit = new QuitAction(this);
     Action background = new BackgroundAction();
     Action about = new AboutAction();
-    Action lastMap = new LastMapAction(this);
+    Action previousMap = new PreviousMapAction(this);
     Action nextMap = new NextMapAction(this);
     public Action cut = new CutAction(this);
     public Action paste = new PasteAction(this);
+    Action moveToRoot = new MoveToRootAction(this);
 
     //
     // Constructors
@@ -159,10 +160,15 @@ public class Controller {
 	    getMode().getModeToolBar().repaint();
 	}
 	toolbar.validate();
+	toolbar.repaint();
+	
 	popupmenu = getMode().getPopupMenu();
 	getModeMenu().removeAll();
-	getMode().activate(getModeMenu());
 	getFrame().setTitle("FreeMind - "+mode+" Mode");
+	getMode().activate(getModeMenu());
+	if (getMapModule() == null) {
+	    setAllActions(false);
+	}
     }
 
 
@@ -202,9 +208,16 @@ public class Controller {
     void moveRight() {
 	getView().moveRight();
     }
-
+    
+    /**
+     * I don't understand how this works now (it's called twice etc.)
+     * but it _works_ now. So let it alone or fix it to be understandable,
+     * if you have the time ;-)
+     */
     void moveToRoot() {
-	getView().moveToRoot();
+	if (getMapModule() != null) {
+	    getView().moveToRoot();
+	}
     }
 
     void select( NodeView node ) {
@@ -287,6 +300,7 @@ public class Controller {
 	setMapModule(mapmodule);
 	addToMapModules(mapmodule.toString(), mapmodule);
 	getView().init();
+	mapModuleChanged();
     }
 
     public void changeToMapOfMode(Mode mode) {
@@ -347,6 +361,7 @@ public class Controller {
 	} else {
 	    getFrame().setTitle("FreeMind - " + getMode().toString()+" Mode" + " - " + getMapModule().toString());
 	}
+	moveToRoot();
     }
 
     private void addToMapModules(String key, MapModule value) {
@@ -376,6 +391,7 @@ public class Controller {
 	print.setEnabled(enabled);
 	cut.setEnabled(enabled);
 	close.setEnabled(enabled);
+	moveToRoot.setEnabled(enabled);
     }
 
     private void updateNavigationActions() {
@@ -386,9 +402,9 @@ public class Controller {
 	int index = keys.indexOf(getMapModule().toString());
 	ListIterator i = keys.listIterator(index);
 	if (i.hasPrevious()) {
-	    lastMap.setEnabled(true);
+	    previousMap.setEnabled(true);
 	} else {
-	    lastMap.setEnabled(false);
+	    previousMap.setEnabled(false);
 	}
 	if (i.hasNext()) {
 	    i.next();
@@ -498,9 +514,9 @@ public class Controller {
     // Map navigation
     //
 
-    private class LastMapAction extends AbstractAction {
-	LastMapAction(Controller controller) {
-	    super("Last Map", new ImageIcon(controller.getClass().getResource("/images/Back24.gif")));
+    private class PreviousMapAction extends AbstractAction {
+	PreviousMapAction(Controller controller) {	 
+	    super(FreeMind.getResources().getString("previous_map"), new ImageIcon(controller.getClass().getResource("/images/Back24.gif")));
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent event) {
@@ -510,11 +526,25 @@ public class Controller {
 
     private class NextMapAction extends AbstractAction {
 	NextMapAction(Controller controller) {
-	    super("Next Map", new ImageIcon(controller.getClass().getResource("/images/Forward24.gif")));
+	    super(FreeMind.getResources().getString("next_map"), new ImageIcon(controller.getClass().getResource("/images/Forward24.gif")));
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent event) {
 	    nextMap();
+	}
+    }
+
+    //
+    // Node navigation
+    //
+    
+    private class MoveToRootAction extends AbstractAction {
+	MoveToRootAction(Controller controller) {
+	    super(FreeMind.getResources().getString("move_to_root"));
+	    setEnabled(false);
+	}
+	public void actionPerformed(ActionEvent event) {
+	    moveToRoot();
 	}
     }
 

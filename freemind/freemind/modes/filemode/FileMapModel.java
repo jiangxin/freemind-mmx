@@ -27,7 +27,6 @@ import java.io.File;
 
 public class FileMapModel extends MapAdapter {
     
-    int i = 0;
     //
     // Constructors
     //
@@ -58,24 +57,17 @@ public class FileMapModel extends MapAdapter {
     }
 
     public void changeNode(MindMapNode node, String newText) {
-	System.out.println(i++);
-	if (i>10) System.exit(i);
+// 	File file = ((FileNodeModel)node).getFile();
+// 	File newFile = new File(file.getParentFile(), newText);
+// 	file.renameTo(newFile);
+// 	System.out.println(file);
+// 	FileNodeModel parent = (FileNodeModel)node.getParent();
+// 	//	removeNodeFromParent(node);
 	
-	File file = ((FileNodeModel)node).getFile();
-	File newFile = new File(file.getParentFile(), newText);
-	file.renameTo(newFile);
-	System.out.println(file);
-	FileNodeModel parent = (FileNodeModel)node.getParent();
-	System.out.println("A");
-	//	removeNodeFromParent(node);
-	System.out.println("B");
-	
-	insertNodeInto(new FileNodeModel(newFile),parent,0);
+// 	insertNodeInto(new FileNodeModel(newFile),parent,0);
 
 
-	nodeChanged(node);
-	System.out.println("end");
-	
+// 	nodeChanged(node);
     }
 }
 

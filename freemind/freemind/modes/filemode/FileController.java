@@ -20,24 +20,15 @@
 package freemind.modes.filemode;
 
 import freemind.main.FreeMind;
-import freemind.controller.Controller;
-import freemind.view.MapModule;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
-import freemind.modes.MindMapEdge;
 import freemind.modes.Mode;
-import freemind.modes.ControllerAdapter;
+import freemind.modes.MindMap;
 import freemind.modes.MapAdapter;
-import freemind.view.mindmapview.MapView;
+import freemind.modes.MindMapNode;
+import freemind.modes.ControllerAdapter;
+import java.io.File;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.Action;
 import javax.swing.AbstractAction;
-import java.awt.Color;
-import javax.swing.JColorChooser;
-import javax.swing.ImageIcon;
-import java.io.File;
-import javax.swing.filechooser.FileFilter;
 
 public class FileController extends ControllerAdapter {
 

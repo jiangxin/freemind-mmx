@@ -21,28 +21,18 @@ package freemind.modes.mindmapmode;
 
 import freemind.main.FreeMind;
 import freemind.main.Tools;
-import freemind.controller.Controller;
-import freemind.view.MapModule;
-import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
-import freemind.modes.MindMapEdge;
 import freemind.modes.Mode;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
-import freemind.view.mindmapview.MapView;
+import java.io.File;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.Action;
 import javax.swing.AbstractAction;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.JFileChooser;
-import java.awt.Color;
 import javax.swing.JColorChooser;
 import javax.swing.ImageIcon;
-import java.io.File;
-import java.net.URL;
-import java.net.MalformedURLException;
-import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 public class MindMapController extends ControllerAdapter {
 
@@ -60,7 +50,7 @@ public class MindMapController extends ControllerAdapter {
     Action bezier = new BezierAction();
     Action italic = new ItalicAction(this);
     Action bold = new BoldAction(this);
-    Action underline = new UnderlineAction(this);
+    //    Action underline = new UnderlineAction(this);
     Action normalFont = new NormalFontAction(this);
     Action setLink = new SetLinkAction();
     Action followLink = new FollowLinkAction();
