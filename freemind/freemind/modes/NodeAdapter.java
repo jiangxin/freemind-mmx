@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.12.7 2004-07-30 20:49:47 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.12.8 2004-08-01 07:26:25 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -598,8 +598,10 @@ public abstract class NodeAdapter implements MindMapNode {
 	 * @see freemind.modes.MindMapNode#removeHook(freemind.modes.NodeHook)
 	 */
 	public void removeHook(PermanentNodeHook hook) {
-		hook.shutdownMapHook();
+	    // the order is crucial here: the shutdown method should be able to perform "nodeChanged" 
+	    // calls without having its own updateNodeHook method to be called again.
 		activatedHooks.remove(hook);
+		hook.shutdownMapHook();
 		hooks.remove(hook);
 	}
 

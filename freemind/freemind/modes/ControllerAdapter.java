@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.20 2004-07-30 20:49:47 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.21 2004-08-01 07:26:25 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -762,7 +762,17 @@ public abstract class ControllerAdapter implements ModeController {
 		//deleteChild.deleteNode(selectedNode);
 		// deregister node:
 		getModel().getLinkRegistry().deregisterLinkTarget(selectedNode);
-		// URGENT: Deletion of hooks, links, etc.
+        // remove hooks:
+		long currentRun = 0;
+		// determine timeout:
+		long timeout = selectedNode.getActivatedHooks().size() * 2 + 2;
+        while(selectedNode.getActivatedHooks().size() > 0) {
+            PermanentNodeHook hook = (PermanentNodeHook) selectedNode.getActivatedHooks().iterator().next();
+            selectedNode.removeHook(hook);
+            if(currentRun++ > timeout) {
+                throw new IllegalStateException("Timeout reached shutting down the hooks.");
+            }
+        }
 		getModel().removeNodeFromParent( selectedNode);
 
 	}

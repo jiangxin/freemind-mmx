@@ -98,7 +98,8 @@ public class CreationModificationPlugin extends PermanentNodeHookAdapter {
 		setStyle();
 	}
 	public void shutdownMapHook() {
-		setToolTip("");
+		setToolTip(null);
+		nodeChanged(getNode());
 		super.shutdownMapHook();
 	}
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.10.4 2004-07-19 05:50:36 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.10.5 2004-08-01 07:26:25 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -723,9 +723,7 @@ public abstract class NodeView extends JLabel {
                    (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
                    text+"</table></html>"); }
    		// 5) ToolTip:
-   		String tip = getModel().getToolTip();
-   		if(tip != null)
-   			setToolTipText(tip);
+   		setToolTipText(getModel().getToolTip());
         // 6) Complete
         repaint(); // Because of zoom?
     }

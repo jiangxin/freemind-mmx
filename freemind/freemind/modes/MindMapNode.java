@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.12.5 2004-07-30 18:29:29 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.12.6 2004-08-01 07:26:25 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -137,6 +137,8 @@ public interface MindMapNode extends MutableTreeNode {
 	 */
 	PermanentNodeHook addHook(PermanentNodeHook hook);
 	void invokeHook(NodeHook hook);
+	/** Removes the hook from the activated hooks, calls shutdown method of the hook and removes the
+	 * hook from allHook belonging to the node afterwards. */
     void removeHook(PermanentNodeHook hook); 
 	//end hooks
 	
