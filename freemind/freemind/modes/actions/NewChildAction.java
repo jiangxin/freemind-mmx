@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: NewChildAction.java,v 1.1.2.5 2004-08-08 13:03:48 christianfoltin Exp $*/
+/*$Id: NewChildAction.java,v 1.1.2.6 2004-08-29 15:18:21 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -111,7 +111,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		 case ControllerAdapter.NEW_CHILD_WITHOUT_FOCUS:
 		   final boolean parentFolded = targetNode.isFolded();
 		   if (parentFolded) {
-			c.getModel().setFolded(targetNode,false);
+			c.setFolded(targetNode,false);
 		   }
 		   int position = c.getFrame().getProperty("placenewbranches").equals("last") ?
 			  targetNode.getChildCount() : 0;

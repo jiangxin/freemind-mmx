@@ -10,11 +10,21 @@
 	<property name="build.compiler" value="modern" />
 	<property name="ver" value="0_8_0_alpha" />
 	<property name="ant.dir" value="lib/ant/lib"/>
+
+	<!-- fc, 29.8.2004: 
+		 Add all jars present in the plugin directory to the class path. -->
+	<path id="plugin_jars">
+      <fileset dir="accessories/plugins">
+        <include name="**/*.jar"/>
+      </fileset>
+	</path>
+	<property name="plugin_jars_prop" refid="plugin_jars"/>
+	<!-- OK, the jars reside in plugin_jars_prop. -->
 	
 	<!-- begin generator part -->
 	<property name="jaxb" value="${ant.dir}/jaxb-xjc.jar:${ant.dir}/jaxb-api.jar:${ant.dir}/jaxb-impl.jar:${ant.dir}/jaxb-libs.jar:${ant.dir}/namespace.jar:${ant.dir}/relaxngDatatype.jar:${ant.dir}/xsdlib.jar:${ant.dir}/jax-qname.jar"/>
 	<property name="xml" value="${ant.dir}/sax.jar:${ant.dir}/dom.jar"/> 
-	<property name="classpath" value="${jaxb}:${xml}"/>
+	<property name="classpath" value="${jaxb}:${xml}:${plugin_jars_prop}"/>
 	<property name="xsd.dir" value="." />
 	<property name="gen.dir" value="generated" />
 	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" 
@@ -226,7 +236,7 @@
           dir="${dist}">
 <!--    <jvmarg value="-Djava.util.logging.config.file=logging.properties" /> -->
     <classpath>
-       <pathelement location="${dist}"/>
+       <!--<pathelement location="${dist}"/>-->
        <pathelement location="${FM.jar}"/>
        <pathelement path="${xml}"/>
        <pathelement path="${jaxb}"/>

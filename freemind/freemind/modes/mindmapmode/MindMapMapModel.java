@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.10.10 2004-08-27 21:44:20 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.10.11 2004-08-29 15:18:21 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -140,10 +140,6 @@ public class MindMapMapModel extends MapAdapter  {
                                    (3*mapColor.getBlue() + nodeColor.getBlue()) / 4));
         nodeChanged(node); }
 
-    public void setNodeFont(MindMapNodeModel node, Font font) {
-        node.setFont(font);
-        nodeChanged(node); }
-
     public void setEdgeWidth(MindMapNodeModel node, int width) {
         ((MindMapEdgeModel)node.getEdge()).setWidth(width);
         nodeChanged(node); }
@@ -156,10 +152,6 @@ public class MindMapMapModel extends MapAdapter  {
         MindMapEdgeModel edge = (MindMapEdgeModel)node.getEdge();
         edge.setStyle(style);
         nodeStructureChanged(node); }
-
-//    public void setBold(MindMapNodeModel node) {
-//        node.setBold(!node.isBold());
-//        nodeChanged(node); }
 
     public void setCloud(MindMapNodeModel node) {
         if(node.getCloud() == null) {
@@ -233,20 +225,6 @@ public class MindMapMapModel extends MapAdapter  {
         arrowLink.setColor(color);
         nodeChanged(source); 
     }
-
-    public void setItalic(MindMapNodeModel node) {
-        node.setItalic(!node.isItalic());
-        nodeChanged(node); }
-
-    public void setUnderlined(MindMapNodeModel node) {
-        node.setUnderlined(!node.isUnderlined());
-        nodeChanged(node); }
-
-    public void setNormalFont(MindMapNodeModel node) {
-        node.setItalic(false);
-        node.setBold(false);
-        node.setUnderlined(false);
-        nodeChanged(node); }
 
     public void increaseFontSize(MindMapNodeModel node, int increment) {
         node.estabilishOwnFont();

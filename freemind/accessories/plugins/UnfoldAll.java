@@ -124,11 +124,7 @@ public class UnfoldAll extends NodeHookAdapter  {
 
 	protected void setFolded(MindMapNode node, boolean state) {
 		if(node.hasChildren() && (node.isFolded()!=state)) {
-			if(node.getViewer() != null) {
-				getMap().setFolded(node, state);
-			} else {
-				node.setFolded(state);
-			}
+		    getController().setFolded(node, state);
 		}
 	}
 

@@ -38,6 +38,10 @@ Changes made in Freemind 0.8.0:
 
 * Font family and font size are undoable now.
 
+* Changed several occurences of setFolded to the undoable method.
+* Added the help plugin
+* Changed the plugin class loader behaviour completely.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

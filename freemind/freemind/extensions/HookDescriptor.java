@@ -19,7 +19,7 @@
  *
  * Created on 22.07.2004
  */
-/*$Id: HookDescriptor.java,v 1.1.2.3 2004-08-12 20:19:04 christianfoltin Exp $*/
+/*$Id: HookDescriptor.java,v 1.1.2.4 2004-08-29 15:18:21 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.HashMap;
@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
+import freemind.controller.actions.generated.instance.Plugin;
 import freemind.controller.actions.generated.instance.PluginActionType;
 import freemind.controller.actions.generated.instance.PluginMenuType;
 import freemind.controller.actions.generated.instance.PluginModeType;
@@ -38,8 +39,10 @@ class HookDescriptor {
 	public Vector menuPositions;
 	private Vector modes;
 	private PluginActionType pluginAction;
-	public HookDescriptor(PluginActionType pluginAction) {
+    private final Plugin pluginBase;
+	public HookDescriptor(PluginActionType pluginAction, Plugin pluginBase) {
 		this.pluginAction = pluginAction;
+        this.pluginBase = pluginBase;
 		if (pluginAction.getName() == null) {	
 			pluginAction.setName(pluginAction.getLabel());
 		}
@@ -100,6 +103,9 @@ class HookDescriptor {
 	}
 	public String getKeyStroke() {
 		return pluginAction.getKeyStroke();
+	}
+	public Plugin getPluginBase(){
+	    return pluginBase;
 	}
 	/**
 	 * @return

@@ -139,7 +139,7 @@ public class EditAction extends AbstractAction implements ActorXml {
 						c.select(prevSelected);
 						// include max level for navigation
 						if (parentFolded) {
-							c.getModel().setFolded(prevSelected.getModel(), true);
+							c.setFolded(prevSelected.getModel(), true);
 						}
 					}
 					endEdit();

@@ -59,7 +59,8 @@ public class ImportWizard {
 	//  }
 
 	public static void buildClassList() {
-		String classPath = System.getProperty("java.class.path");
+		//String classPath = System.getProperty("java.class.path");
+	    String classPath = ".";
 		// System.out.println("classpath = " + classPath);
 
 		String classPathSeparator = File.pathSeparator;
@@ -227,7 +228,11 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.2.2  2004-07-15 19:41:55  christianfoltin
+ * Revision 1.1.2.3  2004-08-29 15:18:21  christianfoltin
+ * * Changed several occurences of setFolded to the undoable method.
+ * * Changed the plugin class loader behaviour completely.
+ *
+ * Revision 1.1.2.2  2004/07/15 19:41:55  christianfoltin
  * plugins are referred by xml now
  * menus support check box entries
  *

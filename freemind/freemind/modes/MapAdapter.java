@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.10.11 2004-08-20 23:12:13 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.10.12 2004-08-29 15:18:21 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -484,6 +484,7 @@ public abstract class MapAdapter implements MindMap {
           while (i.hasPrevious()) {
              MindMapNode node = (MindMapNode)i.previous();
              try {
+                 //URGENT: Change to controller.setFolded.
                 setFolded(node, true); }
              catch (Exception e) {}}
           findNodesUnfoldedByLastFind = new ArrayList(); }
@@ -526,6 +527,7 @@ public abstract class MapAdapter implements MindMap {
                 if (nodeOnPath.isFolded()) {
                     if(findNodesUnfoldedByLastFind != null) 
                         findNodesUnfoldedByLastFind.add(nodeOnPath);
+                    //URGENT: Change to controller setFolded.
                    setFolded(nodeOnPath, false); }}
 
              // Select the node and scroll to it.

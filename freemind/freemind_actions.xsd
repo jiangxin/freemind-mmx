@@ -273,6 +273,9 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:choice minOccurs="0">
+					<xs:element ref="plugin_classpath" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:choice>
+				<xs:choice minOccurs="0">
 					<xs:element ref="plugin_registration" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:choice>
 				<xs:choice minOccurs="0">
@@ -281,6 +284,13 @@
 			</xs:sequence>
 		</xs:complexType>		
 	</xs:element>
+
+  <xs:element name="plugin_classpath">
+    <xs:complexType>
+				<!-- The path values are added to the classpath dynamically.  -->
+	      <xs:attribute name="jar" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
 
   <xs:element name="plugin_registration">
     <xs:complexType>
