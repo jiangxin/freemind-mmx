@@ -1,9 +1,116 @@
 <map version="0.7.1">
 <node COLOR="#993300" TEXT="FreeMind">
 <font NAME="dialog" BOLD="true" SIZE="18"/>
-<node TEXT="   " POSITION="right">
-<font NAME="sansserif" SIZE="12"/>
-<node COLOR="#006633" TEXT="FreeMind">
+<node LINK="http://freemind.sourceforge.net" TEXT="Home page of FreeMind" POSITION="left">
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node COLOR="#006699" TEXT="Credits" FOLDED="true" POSITION="left">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="15"/>
+<node COLOR="#006699" TEXT="Authors">
+<node COLOR="#996600" TEXT="Joerg Mueller">
+<font NAME="SansSerif" SIZE="15"/>
+<node LINK="mailto:ponders@t-online.de" COLOR="#558000" TEXT="ponders@t-online.de">
+<font NAME="Default" SIZE="10"/>
+</node>
+<node COLOR="#999999" TEXT="University of Freiburg, Germany">
+<font NAME="Default" SIZE="10"/>
+</node>
+</node>
+<node LINK="http://mujweb.cz/www/danielpolansky" COLOR="#996600" TEXT="Daniel Polansky">
+<font NAME="SansSerif" SIZE="15"/>
+</node>
+<node COLOR="#996600" TEXT="Petr Novak">
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+<node COLOR="#996600" TEXT="Christian Foltin">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="15"/>
+<node LINK="mailto:christian.foltin@gmx.de" COLOR="#558000" TEXT="christian.foltin@gmx.de">
+<font NAME="Default" SIZE="10"/>
+</node>
+</node>
+</node>
+<node COLOR="#006699" TEXT="Smaller contributions">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#996600" TEXT="David Butt">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#999999" TEXT="Tutorial flash">
+<edge WIDTH="thin"/>
+<font NAME="Default" SIZE="10"/>
+</node>
+</node>
+<node COLOR="#996600" TEXT="David Low">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#999999" TEXT="Helpful">
+<edge WIDTH="thin"/>
+<font NAME="Default" SIZE="10"/>
+</node>
+</node>
+<node COLOR="#996600" TEXT="Andrew Iggleden">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#999999" TEXT="Installer Windows">
+<edge WIDTH="thin"/>
+<font NAME="Default" SIZE="10"/>
+</node>
+</node>
+<node COLOR="#996600" TEXT="Dimitri Polivaev">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="14"/>
+<node COLOR="#999999" TEXT="Bug removal">
+<edge WIDTH="thin"/>
+<font NAME="Default" SIZE="10"/>
+</node>
+</node>
+<node COLOR="#996600" TEXT="Bob Alexander">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#999999" TEXT="Eclipse howto">
+<edge WIDTH="thin"/>
+<font NAME="Default" SIZE="10"/>
+</node>
+</node>
+</node>
+<node COLOR="#006699" TEXT="Translations">
+<node COLOR="#996600" TEXT="Bob Alexander">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#999999" TEXT="Italian translation">
+<edge WIDTH="thin"/>
+<font NAME="Default" SIZE="10"/>
+</node>
+</node>
+<node COLOR="#996600" TEXT="Knud Riish&#xf8;jg&#xe5;rd">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#999999" TEXT="Danish translation">
+<edge WIDTH="thin"/>
+<font NAME="Default" SIZE="10"/>
+</node>
+</node>
+<node COLOR="#996600" TEXT="Takeshi Kakeda">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#999999" TEXT="Japanese translation">
+<edge WIDTH="thin"/>
+<font NAME="Default" SIZE="10"/>
+</node>
+</node>
+<node COLOR="#996600" TEXT="Alex Dukal">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#999999" TEXT="Spanish translation">
+<edge WIDTH="thin"/>
+<font NAME="Default" SIZE="10"/>
+</node>
+</node>
+</node>
+</node>
+<node COLOR="#006633" TEXT="FreeMind" POSITION="right">
 <font NAME="SansSerif" SIZE="17"/>
 <node COLOR="#006633" TEXT="Installation" FOLDED="true">
 <node COLOR="#006633" TEXT="Download">
@@ -462,45 +569,6 @@
 </node>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Order of main branches">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="If you want to ensure two main branches appear on the same side, make them childern of an anonymous node.">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="Bad">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="N1">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="N2">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
-<node TEXT="Good">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="   ">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="N1">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="N2">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
-</node>
-</node>
-<node COLOR="#669900" TEXT="Searching">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="If you want to find more than the first occurrence of a piece of text">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="export mpa to HTML and search in a browser">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="or copy the root node of a map by pressing Ctrl+C and paste it into a text editor and then search in your text editor">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
-</node>
 <node COLOR="#669900" TEXT="Following links">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="You can follow link by simply clicking the node">
@@ -621,14 +689,14 @@
 <node TEXT="You may choose the color and the arrow positions."/>
 <node TEXT="Moreover you can go directly to the other node (even if its folded) using the right click on the small part of the graphical link."/>
 <node TEXT="Example">
-<node ID="_" TEXT="Link to another part">
-<arrowlink COLOR="#9999ff" ENDARROW="Default" DESTINATION="_1040405702" STARTARROW="Default"/>
+<node ID="_Freemind_Link_1611668623" TEXT="Link to another part">
+<arrowlink COLOR="#9999ff" ENDARROW="Default" DESTINATION="_Freemind_Link_941943009" STARTARROW="Default"/>
 </node>
 <node TEXT="Node with folded subnode" FOLDED="true">
-<node ID="_1040405702" TEXT="Subnode"/>
+<node ID="_Freemind_Link_941943009" TEXT="Subnode"/>
 </node>
 <node TEXT="Another link">
-<arrowlink ENDARROW="Default" DESTINATION="_" STARTARROW="None"/>
+<arrowlink ENDARROW="Default" DESTINATION="_Freemind_Link_1611668623" STARTARROW="None"/>
 </node>
 </node>
 </node>
@@ -860,102 +928,17 @@
 </node>
 </node>
 </node>
-<node COLOR="#006633" TEXT="Installation of FreeMind applet at your web site" FOLDED="true">
+<node COLOR="#006633" TEXT="Installation of FreeMind applet at your web site" FOLDED="true" POSITION="right">
 <node COLOR="#000000" TEXT="You can install the applet at your website so that other users can browse your mind maps.">
 <font NAME="dialog" SIZE="12"/>
 </node>
 <node LINK="http://sourceforge.net/project/showfiles.php?group_id=7118" TEXT="Download the applet, that is freemind-browser."/>
 <node TEXT="The downloaded archive contains freemindbrowser.jar and freemindbrowser.html. Create a link from your page to freemindbrowser.html. Edit freemindbrowser.html, especially change the path inside so that it points to your mind map. Beware that the applet&apos;s jar file must be located at the same server as the map itself, this is for java security reasons. Of course, you have to upload the files to your web site."/>
 </node>
-<node COLOR="#006633" TEXT="Using the FreeMind applet" FOLDED="true">
+<node COLOR="#006633" TEXT="Using the FreeMind applet" FOLDED="true" POSITION="right">
 <font NAME="SansSerif" SIZE="12"/>
 <node TEXT="In applet, you can only use the browse mode, that is, you cannot edit the remote maps. Click the nodes to toggle the folding or follow the links. Drag the background to move the map. You can also search the map, using node popup menu.">
 <font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
-</node>
-<node TEXT="   " POSITION="left">
-<font NAME="sansserif" SIZE="12"/>
-<node LINK="http://freemind.sourceforge.net" TEXT="Home page of FreeMind">
-<font NAME="SansSerif" SIZE="12"/>
-</node>
-<node COLOR="#006699" TEXT="Smaller contributors">
-<font NAME="dialog" SIZE="12"/>
-</node>
-<node COLOR="#006699" TEXT="Authors">
-<font NAME="dialog" SIZE="12"/>
-<node COLOR="#996600" TEXT="Joerg Mueller">
-<font NAME="SansSerif" SIZE="12"/>
-<node LINK="mailto:ponders@t-online.de" TEXT="ponders@t-online.de">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node COLOR="#999999" TEXT="University of Freiburg, Germany">
-<font NAME="Default" SIZE="10"/>
-</node>
-</node>
-<node LINK="http://mujweb.cz/www/danielpolansky" COLOR="#996600" TEXT="Daniel Polansky">
-<font NAME="SansSerif" SIZE="12"/>
-</node>
-<node COLOR="#996600" TEXT="Petr Novak"/>
-<node COLOR="#996600" TEXT="Christian Foltin">
-<edge COLOR="#996600" WIDTH="thin"/>
-<font NAME="SansSerif" SIZE="12"/>
-<node LINK="mailto:christian.foltin@gmx.de" COLOR="#996600" TEXT="christian.foltin@gmx.de"/>
-</node>
-<node COLOR="#996600" TEXT="Recent Contributions" FOLDED="true">
-<edge COLOR="#996600" WIDTH="thin"/>
-<node COLOR="#996600" TEXT="Andrew Iggleden">
-<edge COLOR="#996600" WIDTH="thin"/>
-<node COLOR="#996600" TEXT="Installer Windows">
-<edge COLOR="#996600" WIDTH="thin"/>
-</node>
-</node>
-<node COLOR="#996600" TEXT="Bob Alexander">
-<edge COLOR="#996600" WIDTH="thin"/>
-<node COLOR="#996600" TEXT="Italian translation">
-<edge COLOR="#996600" WIDTH="thin"/>
-</node>
-<node COLOR="#996600" TEXT="Eclipse howto">
-<edge COLOR="#996600" WIDTH="thin"/>
-</node>
-</node>
-<node COLOR="#996600" TEXT="Knud Riish&#xf8;jg&#xe5;rd">
-<edge COLOR="#996600" WIDTH="thin"/>
-<node COLOR="#996600" TEXT="Danish translation">
-<edge COLOR="#996600" WIDTH="thin"/>
-</node>
-</node>
-<node COLOR="#996600" TEXT="David Butt">
-<edge COLOR="#996600" WIDTH="thin"/>
-<node COLOR="#996600" TEXT="Tutorial flash">
-<edge COLOR="#996600" WIDTH="thin"/>
-</node>
-</node>
-<node COLOR="#996600" TEXT="David Low">
-<edge COLOR="#996600" WIDTH="thin"/>
-<node COLOR="#996600" TEXT="Helpful">
-<edge COLOR="#996600" WIDTH="thin"/>
-</node>
-</node>
-<node COLOR="#996600" TEXT="Dimitri Polivaev">
-<edge COLOR="#996600" WIDTH="thin"/>
-<node COLOR="#996600" TEXT="Bug removal">
-<edge COLOR="#996600" WIDTH="thin"/>
-</node>
-</node>
-<node COLOR="#996600" TEXT="Takeshi Kakeda">
-<edge COLOR="#996600" WIDTH="thin"/>
-<node COLOR="#996600" TEXT="Japanese translation">
-<edge COLOR="#996600" WIDTH="thin"/>
-</node>
-</node>
-<node COLOR="#996600" TEXT="Alex Dukal">
-<edge COLOR="#996600" WIDTH="thin"/>
-<node COLOR="#996600" TEXT="Spanish translation">
-<edge COLOR="#996600" WIDTH="thin"/>
-</node>
-</node>
-</node>
 </node>
 </node>
 </node>

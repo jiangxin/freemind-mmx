@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.39 2004-01-05 23:41:05 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40 2004-01-28 20:36:09 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -940,16 +940,16 @@ public class Controller {
         }
         public void actionPerformed(ActionEvent e) {
             changeToMode("Browse");
-            //      try {
-            String map = getProperty("docmapurl_since_version_0_7_0");
-            if (map.startsWith("."))  {
-                map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
-            }
-            ((BrowseController)getMode().getModeController()).loadURL(map);
-                //IMPROVE THIS!
-                // } catch (FileNotFoundException ex) {
-                //   JOptionPane.showMessageDialog(getView(), getResourceString("file_not_found") + "\n Documentation Map not found.");
-                // }
+//             //      try {
+//             String map = getProperty("docmapurl_since_version_0_7_0");
+//             if (map.startsWith("."))  {
+//                 map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
+//             }
+//             ((BrowseController)getMode().getModeController()).loadURL(map);
+//                 //IMPROVE THIS!
+//                 // } catch (FileNotFoundException ex) {
+//                 //   JOptionPane.showMessageDialog(getView(), getResourceString("file_not_found") + "\n Documentation Map not found.");
+//                 // }
         }
     }
 
