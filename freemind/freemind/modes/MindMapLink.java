@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLink.java,v 1.1 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: MindMapLink.java,v 1.2 2003-11-18 23:19:46 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -33,7 +33,10 @@ public interface MindMapLink extends MindMapLine {
     //     public int getWidth();
     //     public String toString();
 
-    public String getDestinationLabel();
-    public String getReferenceText();
+    String getDestinationLabel();
+    String getReferenceText();
+
+    MindMapNode getTarget();
+    MindMapNode getSource();
 
 }

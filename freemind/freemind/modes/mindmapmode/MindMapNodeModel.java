@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.15 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.16 2003-11-18 23:19:46 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -388,9 +388,10 @@ public class MindMapNodeModel extends NodeAdapter {
         node.addChild(cloud); 
     }
 
-    for(int i = 0; i < getReferences().size(); ++i) {
-        if(getReferences().get(i) instanceof MindMapArrowLinkModel) {
-            XMLElement arrowLinkElement = ((MindMapArrowLinkModel) getReferences().get(i)).save();
+    Vector linkVector = getFrame().getController().getModel().getLinkRegistry().getAllLinksFromMe(this); /* Puh... */
+    for(int i = 0; i < linkVector.size(); ++i) {
+        if(linkVector.get(i) instanceof MindMapArrowLinkModel) {
+            XMLElement arrowLinkElement = ((MindMapArrowLinkModel) linkVector.get(i)).save();
             node.addChild(arrowLinkElement);
         }
     }
@@ -398,8 +399,9 @@ public class MindMapNodeModel extends NodeAdapter {
 	if (isFolded()) {
            node.setAttribute("folded","true"); }
 	
-	if (getLabel()!=null) {
-           node.setAttribute("id",getLabel()); }
+    String label = getFrame().getController().getModel().getLinkRegistry().getLabel(this); /* Puh... */
+	if (label!=null) {
+           node.setAttribute("id",label); }
 	
 	if (color != null) {
            node.setAttribute("color", Tools.colorToXml(getColor())); }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapArrowLinkModel.java,v 1.2 2003-11-16 22:15:15 christianfoltin Exp $*/
+/*$Id: MindMapArrowLinkModel.java,v 1.3 2003-11-18 23:19:46 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -61,6 +61,6 @@ public class MindMapArrowLinkModel extends ArrowLinkAdapter {
 	    return arrowLink;
     }
 
-    public String toString() { return save().toString(); }
+    public String toString() { return "Source="+getSource()+", target="+getTarget()+", "+save().toString(); }
 
 }

@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.25 2003-11-16 22:15:16 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.26 2003-11-18 23:19:46 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -178,32 +178,22 @@ public class MindMapMapModel extends MapAdapter {
 
     /** Source holds the MindMapArrowLinkModel and points to the id placed in target.*/
     public void addLink(MindMapNodeModel source, MindMapNodeModel target) {
-        if(target.getLabel() == null) {
+        if(getLinkRegistry().getLabel(target) == null) {
             // call registry to give new label
             getLinkRegistry().registerLinkTarget(target);
         }
         MindMapArrowLinkModel linkModel = new MindMapArrowLinkModel(source, target, getFrame());
-        linkModel.setDestinationLabel(target.getLabel());
+        linkModel.setDestinationLabel(getLinkRegistry().getLabel(target));
         // register link.
-        getLinkRegistry().registerLink(source, target);
-        source.addReference((MindMapLink) linkModel);
+        getLinkRegistry().registerLink(linkModel);
         nodeChanged(target); 
         nodeChanged(source); 
     }
 
     public void removeReference(MindMapNode source, MindMapArrowLinkModel arrowLink) {
-        Vector mapLinks = source.getReferences();
-        for(int i = 0; i < mapLinks.size(); ++i) {
-            if(mapLinks.get(i) == arrowLink) {
-                source.removeReferenceAt(i);
-//                 System.out.println("Deregister?");
-                // deregister link.
-                getLinkRegistry().deregisterLink(source, arrowLink.getTarget());
-                nodeChanged(source);
-                nodeChanged(arrowLink.getTarget());
-                return;
-            }
-        }
+        getLinkRegistry().deregisterLink(arrowLink);
+        nodeChanged(source);
+        nodeChanged(arrowLink.getTarget());
     }
 
     public void changeArrowsOfArrowLink(MindMapNode source, MindMapArrowLinkModel arrowLink, boolean hasStartArrow, boolean hasEndArrow) {

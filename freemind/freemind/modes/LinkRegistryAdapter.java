@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.2 2003-11-16 22:15:15 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.3 2003-11-18 23:19:46 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -83,17 +83,22 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     ////////////////////////////////////////////////////////////////////////////////////////
 
     protected HashMap /* MindMapNode = Target -> ID_BasicState. */ TargetToID;
-    protected HashMap /* id -> vector of sources */  IDToSources;
+    protected HashMap /* id -> vector of links whose TargetToID.get(target) == id.*/  IDToLinks;
     /** The map the registry belongs to.*/
 //     protected MindMap map;
+
+    // Logging:
+    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger("freemind.modes.LinkRegistryAdapter");
+
     ////////////////////////////////////////////////////////////////////////////////////////
     ////   Methods                                                                     /////
     ////////////////////////////////////////////////////////////////////////////////////////
     public LinkRegistryAdapter(/*MindMap map*/) {
 //         this.map = map;
         TargetToID = new HashMap();
-        IDToSources = new HashMap();
-//         System.out.println("New Registry");
+        IDToLinks = new HashMap();
+        logger.setLevel(java.util.logging.Level.WARNING);
+         logger.info("New Registry");
     };
 
     protected String generateUniqueID(String proposedID) {
@@ -109,7 +114,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
             } else {
                 returnValue = Integer.toString(ran.nextInt(2000000000));
             }
-        } while (IDToSources.containsKey(returnValue));
+        } while (IDToLinks.containsKey(returnValue));
         return returnValue;
     };
 
@@ -126,12 +131,6 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         // id already exists?
         if(TargetToID.containsKey(target)) {
             ID_BasicState state = (ID_BasicState) TargetToID.get(target);
-//             if(state instanceof ID_Pending) {
-//                 // the node is pending. set to registered again:
-//                 ID_RegisteredAdapter reg = new ID_RegisteredAdapter((ID_PendingAdapter) state);
-//                 TargetToID.put(target,reg);
-//                 return reg;
-//             }
             if(state instanceof ID_Registered) 
                 return (ID_Registered) state;
             // blank state.
@@ -141,8 +140,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         String newID = generateUniqueID(proposedID);
         ID_Registered state = new ID_RegisteredAdapter(target, newID);
         TargetToID.put(target,state);
-        target.setLabel(state.getID());
-//         System.out.println("Register target node:"+target+", with ID="+newID);
+         logger.info("Register target node:"+target+", with ID="+newID);
         return state;
     };
         
@@ -160,33 +158,20 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         return null;
     }
         
-    private Vector getAssignedLinksVector(ID_Registered state) {
+    
+    private Vector  /* of MindMapLink s */ getAssignedLinksVector(ID_Registered state) {
         String id = state.getID();
         // look, if target is already present:
         Vector vec;
-        if(IDToSources.containsKey(id) ) {
-            vec = (Vector) IDToSources.get(id);
+        if(IDToLinks.containsKey(id) ) {
+            vec = (Vector) IDToLinks.get(id);
         } else { 
             vec = new Vector();
-            IDToSources.put(id,vec);
+            IDToLinks.put(id,vec);
         }
-//         System.out.println("getAssignedLinksVector "+vec);
+        logger.fine("getAssignedLinksVector "+vec);
         return vec;
     }
-
-    /** Method to keep track of the sources associated to a target node. This method also sets the new id to the target. 
-        Moreover, it is not required that the target node is already registered. This will be done on the fly.*/
-    public void registerLink(MindMapNode source, MindMapNode target) {
-        ID_Registered state = registerLinkTarget(target);
-        Vector vec = getAssignedLinksVector(state);
-        for(int i = 0 ; i < vec.size(); ++i) {
-            if(vec.get(i) == source)
-                return;
-        }
-        vec.add(source);
-//         System.out.println("Register link from source node:"+source+" to target " + target);
-
-    };
 
     /** Exception if there are still targets registered.*/
     public void deregisterLinkTarget(MindMapNode target)
@@ -194,36 +179,113 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     {
         ID_Registered state = registerLinkTarget(target);
         Vector vec = getAssignedLinksVector(state);
-        if(vec.size() != 0)
-            throw new java.lang.IllegalArgumentException("Cannot remove a link target, if there are sources pointing to.");
-//         System.out.println("Register target node:"+target);
-        target.setLabel(null);
+        for(int i = 0 ; i < vec.size(); ++i) {
+            deregisterLink((MindMapLink) vec.get(i));
+        }
+//         if(vec.size() != 0)
+//             throw new java.lang.IllegalArgumentException("Cannot remove a link target, if there are sources pointing to.");
+         logger.info("Register target node:"+target);
         TargetToID.remove(target);
     }
                 
-        
-//     /** Sets all nodes beginning from source with its children to ID_Pending for later paste action.*/
-//     public ID_Pending cutLinkTarget(MindMapNode target) { return null;};
+    /** Method to keep track of the sources associated to a target node. This method also sets the new id to the target. 
+        Moreover, it is not required that the target node is already registered. This will be done on the fly.*/
+    public void registerLink(MindMapLink link) 
+        throws java.lang.IllegalArgumentException
+    {
+        if((link.getSource()==null)||(link.getTarget()==null)||(link.getDestinationLabel()==null))
+            throw new java.lang.IllegalArgumentException("Illegal link specification."+link);
+        MindMapNode source = link.getSource();
+        MindMapNode target = link.getTarget();
+        ID_Registered state = registerLinkTarget(target);
+        Vector vec = getAssignedLinksVector(state);
+        // already present?
+        for(int i = 0 ; i < vec.size(); ++i) {
+            if(vec.get(i) == source)
+                return;
+        }
+        vec.add(link);
+        logger.info("Register link ("+link+") from source node:"+source+" to target " + target);
 
-    public void deregisterLink(MindMapNode source, MindMapNode target){
+    };
+
+        
+    public void deregisterLink(MindMapLink link){
+        MindMapNode source = link.getSource();
+        MindMapNode target = link.getTarget();
         ID_Registered state = registerLinkTarget(target);
         Vector vec = getAssignedLinksVector(state);
         for(int i = 0 ; i < vec.size(); ++i) {
-//             System.out.println("Test for equal node:"+source+" to vector(i) " + vec.get(i));
-            if(vec.get(i) == source)
+            logger.info("Test for equal node:"+source+" to vector(i) " + vec.get(i));
+            if(vec.get(i) == link)
                 {
                     vec.removeElementAt(i);
-//                     System.out.println("Deregister source node:"+source+" to target " + target);
+                    logger.info("Deregister link  ("+link+") from source node:"+source+" to target " + target);
                 }
         }
     };
 
     /** Returns a Vector of Nodes that point to the given target node.*/
     public Vector /* of MindMapNode s */ getAllSources(MindMapNode target) { 
-        ID_Registered state = registerLinkTarget(target);
-        Vector vec = getAssignedLinksVector(state);
-        return vec;
+        Vector returnValue;
+        returnValue = new Vector();
+        ID_BasicState state = getState(target);
+        if(getState(target) instanceof ID_Registered)
+            {
+                Vector vec = getAssignedLinksVector((ID_Registered) state);
+                for(int i = 0 ; i < vec.size(); ++i) {
+                    returnValue.add( ((MindMapLink) vec.get(i)).getSource() );
+                }
+            }
+        return returnValue;
     };
+
+    public Vector /* of MindMapLink s */ getAllLinks(MindMapNode node) { 
+        Vector returnValue = new Vector();
+        returnValue.addAll(getAllLinksIntoMe( node ));
+        returnValue.addAll(getAllLinksFromMe( node ));
+        logger.info("All links  ("+returnValue+") from  node:"+node);
+        return returnValue;
+    };
+
+    /** @return returns all links to this node.*/
+    public Vector /* of MindMapLink s */ getAllLinksIntoMe(MindMapNode target){
+        Vector returnValue = new Vector();
+        ID_BasicState state = getState(target);
+        if(getState(target) instanceof ID_Registered)
+            {
+                Vector vec = getAssignedLinksVector((ID_Registered) state);
+                /* clone */
+                for(int i = 0 ; i < vec.size(); ++i) {
+                    returnValue.add( vec.get(i) );
+                }
+            }
+        return returnValue;
+    }
+
+    /** @return returns all links from this node.*/
+    public Vector /* of MindMapLink s */ getAllLinksFromMe(MindMapNode source){
+        Vector returnValue = new Vector();
+        Collection values = IDToLinks.values();
+        for(Iterator i = values.iterator(); i.hasNext();) {
+            Vector linkVector = (Vector) i.next();
+            for(int j = 0; j < linkVector.size(); ++j) {
+                MindMapLink link = (MindMapLink) linkVector.get(j);
+                if(link.getSource() == source)
+                    returnValue.add(link);
+            }
+        }
+        return returnValue;
+    }
+
+    public String getLabel(MindMapNode target) { 
+        ID_BasicState state = getState(target);
+        if(getState(target) instanceof ID_Registered)
+            {
+                return ((ID_Registered) state).getID();
+            }
+        return null;
+    }
 
 
 }

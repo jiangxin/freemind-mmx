@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.28 2003-11-16 22:15:15 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.29 2003-11-18 23:19:46 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -44,6 +44,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.JRadioButtonMenuItem;
+
+
 
 
 
@@ -417,11 +420,23 @@ public class MindMapController extends ControllerAdapter {
             arrowLinkPopup.add(new RemoveArrowLinkAction(link.getSource(), link));
             arrowLinkPopup.add(new ColorArrowLinkAction(link.getSource(), link));
             arrowLinkPopup.addSeparator();
-            /* better as radio buttons: */
-            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction(" - ",link.getSource(), link, false, false));
-            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction("<- ",link.getSource(), link, true, false));
-            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction(" ->",link.getSource(), link, false, true));
-            arrowLinkPopup.add(new ChangeArrowsInArrowLinkAction("<->",link.getSource(), link, true, true));
+            /* The arrow state as radio buttons: */
+            JRadioButtonMenuItem itemnn = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction("none", "images/arrow-mode-none.gif",link.getSource(), link, false, false) );
+            arrowLinkPopup.add( itemnn );
+            JRadioButtonMenuItem itemnt = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction("forward", "images/arrow-mode-forward.gif",link.getSource(), link, false, true) );
+            arrowLinkPopup.add( itemnt );
+            JRadioButtonMenuItem itemtn = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction("backward", "images/arrow-mode-backward.gif",link.getSource(), link, true, false) );
+            arrowLinkPopup.add( itemtn );
+            JRadioButtonMenuItem itemtt = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction("both", "images/arrow-mode-both.gif",link.getSource(), link, true, true) );
+            arrowLinkPopup.add( itemtt );
+            // select the right one:
+            boolean a = link.startHasArrow();
+            boolean b = link.endHasArrow();
+            itemtt.setSelected(a&&b);
+            itemnt.setSelected(!a&&b);
+            itemtn.setSelected(a&&!b);
+            itemnn.setSelected(!a&&!b);
+
             arrowLinkPopup.addSeparator();
             
             arrowLinkPopup.add(new GotoLinkNodeAction(link.getSource().toString(), link.getSource())); 
@@ -716,7 +731,9 @@ public class MindMapController extends ControllerAdapter {
 
 
     private class CloudColorAction extends AbstractAction {
-	CloudColorAction() { super(getText("cloud_color")); }
+	CloudColorAction() { 
+        super(getText("cloud_color"), new ImageIcon(getResource("images/Colors24.gif"))); 
+        putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));}
 	public void actionPerformed(ActionEvent e) {
         Color selectedColor = null;
         if(getSelected().getCloud() != null)
@@ -788,8 +805,8 @@ public class MindMapController extends ControllerAdapter {
         MindMapArrowLinkModel arrowLink;
         boolean hasStartArrow;
         boolean hasEndArrow;
-        public ChangeArrowsInArrowLinkAction(String text, MindMapNode source, MindMapArrowLinkModel arrowLink, boolean hasStartArrow, boolean hasEndArrow) {
-            super(text);
+        public ChangeArrowsInArrowLinkAction(String text, String iconPath, MindMapNode source, MindMapArrowLinkModel arrowLink, boolean hasStartArrow, boolean hasEndArrow) {
+            super("", iconPath != null ? new ImageIcon(getResource(iconPath)) : null);
             this.source = source;
             this.arrowLink = arrowLink;
             this.hasStartArrow = hasStartArrow;

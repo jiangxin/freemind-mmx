@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.13 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.14 2003-11-18 23:19:46 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -109,18 +109,18 @@ public interface MindMapNode extends MutableTreeNode {
     int   removeLastIcon();
     // end, fc, 24.9.2003
 
-    //fc, 01.11.2003:
-    /** \@return returns the label of the node, if applicable. otherwise null.*/
-    String getLabel();
+//     //fc, 01.11.2003:
+//     /** \@return returns the label of the node, if applicable. otherwise null.*/
+//     String getLabel();
 
-    void setLabel(String newLabel); 
+//     void setLabel(String newLabel); 
 
-    Vector/* of MindMapLink s*/ getReferences();
+//     Vector/* of MindMapLink s*/ getReferences();
     
-    void removeReferenceAt(int i);
+//     void removeReferenceAt(int i);
 
-    void addReference(MindMapLink referenceStruct);
-    // end links, fc, 01.11.2003.
+//     void addReference(MindMapLink referenceStruct);
+//     // end links, fc, 01.11.2003.
 
     // clouds, fc, 08.11.2003:
     MindMapCloud getCloud();

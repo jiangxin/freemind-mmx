@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLinkRegistry.java,v 1.2 2003-11-16 22:15:15 christianfoltin Exp $*/
+/*$Id: MindMapLinkRegistry.java,v 1.3 2003-11-18 23:19:46 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import freemind.modes.MindMapNode;
+import freemind.modes.MindMapLink;
 import java.util.Vector;
 
 /** Interface for the registry, which manages the ids of nodes and the existing links in a map.
@@ -60,15 +61,22 @@ public interface MindMapLinkRegistry {
     public void        deregisterLinkTarget(MindMapNode target)
         throws java.lang.IllegalArgumentException;
     public ID_BasicState getState(MindMapNode node);
+    public String getLabel(MindMapNode target);
 //     /** Method to keep track of the targets associated to a target node. This method also sets the new id to the target. 
 //         Moreover, it is not required that the target node is already registered. This will be done on the fly.*/
 //     /** Sets all nodes beginning from target with its children to ID_Pending for later paste action.*/
 //     public ID_Pending cutLinkTarget(MindMapNode target);
-    public void   registerLink(MindMapNode target, MindMapNode source);
-    public void deregisterLink(MindMapNode target, MindMapNode source);
+    public void   registerLink(MindMapLink link);
+    public void deregisterLink(MindMapLink link);
 
     /** Returns a Vector of Nodes that point to the given node.*/
     public Vector /* of MindMapNode s */ getAllSources(MindMapNode target);
+    /** @return returns all links from or to this node.*/
+    public Vector /* of MindMapLink s */ getAllLinks(MindMapNode node);
+    /** @return returns all links to this node.*/
+    public Vector /* of MindMapLink s */ getAllLinksIntoMe(MindMapNode target);
+    /** @return returns all links from this node.*/
+    public Vector /* of MindMapLink s */ getAllLinksFromMe(MindMapNode source);
 
 
 }

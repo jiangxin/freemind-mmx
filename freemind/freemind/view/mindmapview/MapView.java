@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.22 2003-11-16 22:15:16 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.23 2003-11-18 23:19:46 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -605,83 +605,35 @@ public class MapView extends JPanel implements Printable {
     /** collect all existing labels in the current map.*/
     protected void collectLabels(NodeView source, HashMap labels) {
         // apply own label:
-        if(source.getModel().getLabel() != null) 
-            labels.put(source.getModel().getLabel(), source);
+        String label = getModel().getLinkRegistry().getLabel(source.getModel());
+        if(label != null) 
+            labels.put(label, source);
         for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
             collectLabels(target, labels);
         }
     }
 
-    private class MindMapNodePair {
-        public MindMapNode source;
-        public MindMapNode target;
-        public MindMapNodePair(MindMapNode source, MindMapNode target) {
-            this.source = source;
-            this.target = target;
-        }
-        public boolean equals(Object obj) {
-            if( ! (obj instanceof MindMapNodePair)) 
-                return false;
-            MindMapNodePair pair = (MindMapNodePair) obj;
-            return (pair.source.equals(source) && pair.target.equals(target));
-        }
-    };
-
-    protected void paintLinks(NodeView source, Graphics2D graphics, HashMap labels, HashSet /* MindMapNodePair s*/ SourceDestinationPairAlreadyVisited) {
-        if(SourceDestinationPairAlreadyVisited == null)
-            SourceDestinationPairAlreadyVisited = new HashSet();
+    protected void paintLinks(NodeView source, Graphics2D graphics, HashMap labels, HashSet /* MindMapLink s*/ LinkAlreadyVisited) {
+        if(LinkAlreadyVisited == null)
+            LinkAlreadyVisited = new HashSet();
         // references first
         // paint own labels:
-        for(int i = 0; i< source.getModel().getReferences().size(); ++i) {
-            MindMapLink ref = (MindMapLink) source.getModel().getReferences().get(i);
-            // search for destination:
-            NodeView destination = null;
-            if(labels.containsKey(ref.getDestinationLabel()) == true)
-                { // found:
-                    destination = (NodeView) labels.get(ref.getDestinationLabel());
-                    // already present?
-                    if(!SourceDestinationPairAlreadyVisited.add(new MindMapNodePair(source.getModel(), destination.getModel())))
-                        break;
-                }
-            // determine type of link
-            if(ref  instanceof MindMapArrowLink) {
-                ArrowLinkView arrowLink = new ArrowLinkView((MindMapArrowLink) ref, source, destination);
-                arrowLink.paint(graphics);
-                ArrowLinkViews.add(arrowLink);
-            }
-        }
-        // my own as a target of others:
-        NodeView rDestination = source;
-        if(getModel().getLinkRegistry() != null) {
-            Vector allSources = getModel().getLinkRegistry().getAllSources(rDestination.getModel());
-            // traverse the vector and search for new pairs:
-            for(int j = 0; j< allSources.size(); ++j) {
-                MindMapNode rSourceModel = (MindMapNode) allSources.get(j);
-                // already present?
-                if(!SourceDestinationPairAlreadyVisited.add(new MindMapNodePair(rSourceModel, rDestination.getModel())))
-                    break;
-                // search for the NodeView:
-                NodeView rSource = rSourceModel.getViewer();
-                // search for the MindMapLink associated with this combination:
-                for(int i = 0; i< rSourceModel.getReferences().size(); ++i) {
-                    MindMapLink ref = (MindMapLink) rSourceModel.getReferences().get(i);
-                    if(ref.getDestinationLabel().equals(rDestination.getModel().getLabel()))
-                        { // found:
-                            // determine type of link
-                            if(ref  instanceof MindMapArrowLink) {
-                                ArrowLinkView arrowLink = new ArrowLinkView((MindMapArrowLink) ref, rSource, rDestination);
-                                arrowLink.paint(graphics);
-                                ArrowLinkViews.add(arrowLink);
-                            }
-                        }
+        Vector vec = getModel().getLinkRegistry().getAllLinks(source.getModel());
+        for(int i = 0; i< vec.size(); ++i) {
+            MindMapLink ref = (MindMapLink) vec.get(i);
+            if(LinkAlreadyVisited.add(ref)) {
+                // determine type of link
+                if(ref  instanceof MindMapArrowLink) {
+                    ArrowLinkView arrowLink = new ArrowLinkView((MindMapArrowLink) ref, ref.getSource().getViewer(), ref.getTarget().getViewer());
+                    arrowLink.paint(graphics);
+                    ArrowLinkViews.add(arrowLink);
                 }
             }
-            
         }
         for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
-            paintLinks(target, graphics, labels, SourceDestinationPairAlreadyVisited);
+            paintLinks(target, graphics, labels, LinkAlreadyVisited);
         }
     }
 

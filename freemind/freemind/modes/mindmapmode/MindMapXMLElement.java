@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapXMLElement.java,v 1.6 2003-11-16 22:15:16 christianfoltin Exp $*/
+/*$Id: MindMapXMLElement.java,v 1.7 2003-11-18 23:19:46 christianfoltin Exp $*/
 
 /*On doubling of code
  *
@@ -234,7 +234,7 @@ public class MindMapXMLElement extends XMLElement {
     /** Completes the links within the map. They are registered in the registry.*/
     public void processUnfinishedLinks(MindMapNodeModel root, MindMapLinkRegistry registry) {
         // add labels to the nodes:
-        setIDs(root, IDToTarget, registry);
+        setIDs(IDToTarget, registry);
         // complete arrow links with right labels:
         for(int i = 0; i < MindMapArrowLinkModels.size(); ++i) {
             MindMapArrowLinkModel arrowLink = (MindMapArrowLinkModel) MindMapArrowLinkModels.get(i);
@@ -242,14 +242,14 @@ public class MindMapXMLElement extends XMLElement {
             // find oldID in target list:
             if(IDToTarget.containsKey(oldID)) {
                 MindMapNodeModel target = (MindMapNodeModel) IDToTarget.get(oldID);
-                String newID = target.getLabel();
+                String newID = registry.getLabel(target);
                 // set the new ID:
                 arrowLink.setDestinationLabel(newID);
                 // set the target:
                 arrowLink.setTarget(target);
                 // add the arrowLink:
-                arrowLink.getSource().addReference(arrowLink);
-                registry.registerLink(arrowLink.getSource(), target);
+                //System.out.println("Node = " + target+ ", oldID="+oldID+", newID="+newID);
+                registry.registerLink(arrowLink);
             } else {
                 System.err.println("Cannot find the label " + oldID + " in the map. This arrow is not restored.");
             }
@@ -258,18 +258,11 @@ public class MindMapXMLElement extends XMLElement {
 
 
     /**Recursive method to set the ids of the nodes.*/
-    private void setIDs(MindMapNodeModel target, HashMap IDToTarget, MindMapLinkRegistry registry) {
+    private void setIDs(HashMap IDToTarget, MindMapLinkRegistry registry) {
         for(Iterator i = IDToTarget.keySet().iterator(); i.hasNext();) {
             String key = (String) i.next();
-            if(IDToTarget.get(key) == target) {
-                registry.registerLinkTarget(target, key /* Proposed name for the target, is changed by the registry, if already present.*/);
-                break;
-            }
-        }
-        for(int i = 0 ; i < target.getChildCount(); ++i ) {
-            MindMapNodeModel child = (MindMapNodeModel)target.getChildAt(i);
-            if(child != null) /* fc, 16.11.2003: I do not understand the case that child == null, but it seems that it occurs...*/
-                setIDs(child, IDToTarget, registry);//recursive
+            MindMapNodeModel target = (MindMapNodeModel) IDToTarget.get(key);
+            registry.registerLinkTarget(target, key /* Proposed name for the target, is changed by the registry, if already present.*/);
         }
     }
 
