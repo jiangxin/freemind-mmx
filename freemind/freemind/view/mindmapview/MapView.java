@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.6 2005-02-02 21:23:24 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.16.7 2005-02-02 21:33:10 christianfoltin Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -312,8 +312,12 @@ public class MapView extends JPanel implements Printable {
         // %%% and therefore is the scrollRectToVisible called twice ? (PN)
         //     I don't think so and therefore I'll comment one call out... (PN)
         if (node != null) {
+    		JViewport mapViewport = (JViewport)getParent();
+          int viewPortScrollMode = mapViewport.getScrollMode();
+           mapViewport.setScrollMode(JViewport.SIMPLE_SCROLL_MODE );
             scrollRectToVisible( new Rectangle(x - HORIZ_SPACE, node.getLocation().y - VERT_SPACE,
                                                width + HORIZ_SPACE2, node.getSize().height + VERT_SPACE2) );
+            mapViewport.setScrollMode(viewPortScrollMode);
             // (PN)   scrollRectToVisible( new Rectangle(xLeft, node.getLocation().y - VERT_SPACE,
             //                                           xRight, node.getSize().height + VERT_SPACE2) );
         }
@@ -517,7 +521,7 @@ public class MapView extends JPanel implements Printable {
             newSelected.getModel().getParentNode().setPreferredChild(newSelected.getModel());
         }
 
-        // scrollNodeToVisible(newSelected);
+        scrollNodeToVisible(newSelected);
         newSelected.repaint();
 
         for(ListIterator e = oldSelecteds.listIterator();e.hasNext();) {

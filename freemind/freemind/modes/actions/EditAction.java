@@ -6,6 +6,7 @@
  */
 package freemind.modes.actions;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -82,16 +83,55 @@ public class EditAction extends AbstractAction implements ActorXml {
 	 * @param parentFolded when new->esc: fold prevSelected
 	 * @param editLong
 	 */
-	public void edit(
+	public void editLater(
 		final NodeView node,
 		final NodeView prevSelected,
 		final KeyEvent firstEvent,
 		final boolean isNewNode,
 		final boolean parentFolded,
 		final boolean editLong) {
-		if (node == null) {
-			return;
+		class DelayedEditor implements Runnable {
+
+			/* (non-Javadoc)
+			 * @see java.lang.Runnable#run()
+			 */
+			final NodeView node;
+			final NodeView prevSelected;
+			final KeyEvent firstEvent;
+			final boolean isNewNode;
+			final boolean parentFolded;
+			final boolean editLong;
+			DelayedEditor(
+					final NodeView node,
+					final NodeView prevSelected,
+					final KeyEvent firstEvent,
+					final boolean isNewNode,
+					final boolean parentFolded,
+					final boolean editLong){
+				this.node = node;
+				this.prevSelected = prevSelected;
+				this.firstEvent = firstEvent;
+				this.isNewNode = isNewNode;
+				this.parentFolded = parentFolded;
+				this.editLong = editLong;
+			}
+			public void run() {
+				edit(node, prevSelected, firstEvent, isNewNode, parentFolded, editLong);				
+			}
+		};
+		EventQueue.invokeLater(new DelayedEditor(node, prevSelected, firstEvent, isNewNode, parentFolded, editLong));
 		}
+
+		public void edit(
+				final NodeView node,
+				final NodeView prevSelected,
+				final KeyEvent firstEvent,
+				final boolean isNewNode,
+				final boolean parentFolded,
+				final boolean editLong) {
+				if (node == null) {
+					return;
+				}
 
 		//EditNodeBase.closeEdit();
 		c.setBlocked(true); // locally "modal" stated

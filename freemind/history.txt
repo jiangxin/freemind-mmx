@@ -100,6 +100,9 @@ Changes made in Freemind 0.8.0:
 * Icon selector has remove actions
 * Japanese translation merged (thanks to Koh for the fast reaction).
 * Fixed the proposed file names of all export hooks
+
+RC 1
+----
 * Bug fix: Cut/Paste
 * New translations chinese and russian.
 
@@ -136,13 +139,15 @@ Changes made in Freemind 0.8.0:
 * Bug fix: Quit and Cancel under Macintosh.
 * Bug fix: Toggle encrypted nodes for unencrypted nodes give an error message.
 
+RC2
+---
 * New freemind.sh from Eric.
 * Arrow moves with the mouse are undoable now.
-
 * mm files can be associated with FM under Mac OSX now.
 * Patch for icons integrated. Thanks to the community.
 * Bug fix: FoldAll bug removed.
 * Delayed selection is back (due to Dimitris wish).
+* Introduced Dimitris patch on not synchronized Edit-Boxes. Thanks to Dimitri.
 
 Changes made in Freemind 0.7.2:
 ===============================

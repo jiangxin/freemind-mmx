@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: NewChildAction.java,v 1.1.4.3 2004-12-19 09:00:39 christianfoltin Exp $*/
+/*$Id: NewChildAction.java,v 1.1.4.4 2005-02-02 21:33:10 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -99,8 +99,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		   }
 		   newNode = addNewNode(parent, childPosition, target.isLeft());	
 		c.select(newNode.getViewer());
-		c.getFrame().repaint(); //  getLayeredPane().repaint();
-		c.edit.edit(newNode.getViewer(), target.getViewer(), e, true, false, false);
+		c.edit.editLater(newNode.getViewer(), target.getViewer(), e, true, false, false);
 		   break;
   
 		 case ControllerAdapter.NEW_CHILD:
@@ -118,7 +117,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 			   if (newNodeMode == ControllerAdapter.NEW_CHILD) {
 				c.select(newNode.getViewer());
 			   }
-		c.edit.edit(newNode.getViewer(), target.getViewer(), e, true, parentFolded, false);
+		c.edit.editLater(newNode.getViewer(), target.getViewer(), e, true, parentFolded, false);
 		   break;
 	   }
     	return newNode;

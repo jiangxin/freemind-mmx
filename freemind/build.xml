@@ -1,5 +1,5 @@
 <project name="freemind" default="dist" basedir=".">
-	<property name="ver" value="0_8_0_rc1" />
+	<property name="ver" value="0_8_0_rc2" />
 	<property name="src" value="." />
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
