@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.12.13 2004-09-29 21:49:04 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.12.14 2004-10-17 13:01:08 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -97,6 +97,14 @@ public abstract class NodeAdapter implements MindMapNode {
 
     public String getLink() {
  	return link;
+    }
+    
+    public String getShortText(ModeController controller) {
+	    String adaptedText = toString();
+        adaptedText = adaptedText.replaceAll("<html>", "");
+        if (adaptedText.length() > 40)
+            adaptedText = adaptedText.substring(0, 40) + " ...";
+        return adaptedText;
     }
     
     public void setLink(String link) {

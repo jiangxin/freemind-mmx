@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13.12.9 2004-09-16 16:24:39 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.13.12.10 2004-10-17 13:01:09 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -29,7 +29,6 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
@@ -40,6 +39,7 @@ import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
+import freemind.modes.actions.GotoLinkNodeAction;
 
 public class BrowseController extends ControllerAdapter {
 
@@ -99,8 +99,8 @@ public class BrowseController extends ControllerAdapter {
             BrowseArrowLinkModel link = (BrowseArrowLinkModel) obj;
             JPopupMenu arrowLinkPopup = new JPopupMenu();
 
-            arrowLinkPopup.add(new GotoLinkNodeAction(link.getSource().toString(), link.getSource())); 
-            arrowLinkPopup.add(new GotoLinkNodeAction(link.getTarget().toString(), link.getTarget())); 
+            arrowLinkPopup.add(getGotoLinkNodeAction(link.getSource())); 
+            arrowLinkPopup.add(getGotoLinkNodeAction(link.getTarget())); 
 
             arrowLinkPopup.addSeparator();
             // add all links from target and from source:
@@ -112,10 +112,10 @@ public class BrowseController extends ControllerAdapter {
             for(int i = 0; i < links.size(); ++i) {
                 BrowseArrowLinkModel foreign_link = (BrowseArrowLinkModel) links.get(i);
                 if(NodeAlreadyVisited.add(foreign_link.getTarget())) {
-                    arrowLinkPopup.add(new GotoLinkNodeAction(foreign_link.getTarget().toString(), foreign_link.getTarget())); 
+                    arrowLinkPopup.add(getGotoLinkNodeAction(foreign_link.getTarget())); 
                 }
                 if(NodeAlreadyVisited.add(foreign_link.getSource())) {
-                    arrowLinkPopup.add(new GotoLinkNodeAction(foreign_link.getSource().toString(), foreign_link.getSource())); 
+                    arrowLinkPopup.add(getGotoLinkNodeAction(foreign_link.getSource())); 
                 }
             }
             return arrowLinkPopup;
@@ -125,6 +125,13 @@ public class BrowseController extends ControllerAdapter {
 
 
 
+    /**
+     * @param destination
+     * @return
+     */
+    private GotoLinkNodeAction getGotoLinkNodeAction(MindMapNode destination) {
+        return new GotoLinkNodeAction(this, destination);
+    }
     BrowseToolBar getToolBar() {
 	return (BrowseToolBar)toolbar;
     }

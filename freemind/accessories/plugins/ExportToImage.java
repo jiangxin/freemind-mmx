@@ -6,22 +6,18 @@ package accessories.plugins;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
-
-import freemind.extensions.ModeControllerHookAdapter;
-import freemind.main.Tools;
+import freemind.extensions.ExportHook;
 import freemind.modes.NodeAdapter;
 import freemind.view.mindmapview.MapView;
 
@@ -31,7 +27,7 @@ import freemind.view.mindmapview.MapView;
  * @author rreppel
  *
  */
-public class ExportToImage extends ModeControllerHookAdapter {
+public class ExportToImage extends ExportHook {
 
 	private MapView view;
 
@@ -51,8 +47,16 @@ public class ExportToImage extends ModeControllerHookAdapter {
 		if (view == null)
 			return;
 		BufferedImage image = createBufferedImage();
-		if (image != null)
-			exportToImage(image, getResourceString("image_type"));
+		if (image != null) {
+			String imageType = getResourceString("image_type");
+			
+            if (!imageType.equals("clipboard")) {
+                exportToImage(image, imageType,
+                        getResourceString("image_description"));
+            } else {
+                setClipboard(image);
+            }
+		}
 
 	}
 
@@ -89,41 +93,14 @@ public class ExportToImage extends ModeControllerHookAdapter {
 	 * Export image.
 	 * @return
 	 */
-	public boolean exportToImage(BufferedImage image, String type) {
-		JFileChooser chooser = null;
-		chooser = new JFileChooser();
-		String imageName = getController().getMap().getFile().getName() +"."+ type;
-		chooser.setSelectedFile(new File(imageName));
-
-		chooser.addChoosableFileFilter(new ImageFilter(type));
-		//    	String label = MessageFormat.format(
-		//                        getText("export_to_image"),
-		//                        new Object[] {type.getUpperTypeString()});
-		//
-		//    	chooser.setDialogTitle(label);
-		int returnVal = chooser.showSaveDialog(view);
-		if (returnVal != JFileChooser.APPROVE_OPTION) { // not ok pressed
-			return false;
-		}
-
-		// |= Pressed O.K.
-		File f = chooser.getSelectedFile();
-		//Force the extension to be .mm
-		String ext = Tools.getExtension(f.getName());
-		if (!ext.equals(type)) {
-			f = new File(f.getParent(), f.getName() + "." + type);
-		}
-
-		if (f.exists()) { // If file exists, ask before overwriting.
-			int overwriteMap = JOptionPane.showConfirmDialog(view, /*getText*/
-			 ("map_already_exists"), "FreeMind", JOptionPane.YES_NO_OPTION);
-			if (overwriteMap != JOptionPane.YES_OPTION) {
-				return false;
-			}
-		}
-
+	public boolean exportToImage(BufferedImage image, String type, String description) {
+	    File chosenFile = chooseFile(type, description);
+	    if(chosenFile==null) {
+	        return false;
+	    }
 		try {
-			FileOutputStream out = new FileOutputStream(f);
+		    getController().getFrame().setWaitingCursor(true);
+			FileOutputStream out = new FileOutputStream(chosenFile);
 			ImageIO.write(image, type, out);
 //			OutputStream out = new FileOutputStream(f);
 //			JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
@@ -132,9 +109,10 @@ public class ExportToImage extends ModeControllerHookAdapter {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
+	    getController().getFrame().setWaitingCursor(false);
 		return true;
 	}
+
 
 
 //	Hi all !
@@ -161,34 +139,49 @@ public class ExportToImage extends ModeControllerHookAdapter {
 //	-        }
 //	-        return result;
 //	-    } //KR
-
-	private class ImageFilter extends FileFilter {
-		private String type;
-		public ImageFilter(String type) {
-			this.type = type;
-		}
-
-		public boolean accept(File f) {
-			if (f.isDirectory()) {
-				return true;
-			}
-			String extension = Tools.getExtension(f.getName());
-			if (extension != null) {
-				if (extension.equals(type)) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-			return false;
-		}
-
-		public String getDescription() {
-			return type;
-			//    	   MessageFormat.format(
-			//               getText("image_desc"),
-			//               new Object[] {type.getUpperTypeString()});
-		}
-	}
+	
+	// adapted from http://javaalmanac.com/egs/java.awt.datatransfer/ToClipImg.html:
+	
+//	 This method writes a image to the system clipboard.
+    // otherwise it returns null.
+    public void setClipboard(BufferedImage image) {
+        ImageSelection imgSel = new ImageSelection(image);
+        getController().getClipboard().setContents(imgSel, null);
+    }
+    
+    // This class is used to hold an image while on the clipboard.
+    public static class ImageSelection implements Transferable {
+        private BufferedImage image;
+        private DataFlavor imageFlavor;
+    
+        public ImageSelection(BufferedImage image) {
+            this.image = image;
+            try {
+                imageFlavor = new DataFlavor("image/jpeg");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    
+        // Returns supported flavors
+        public DataFlavor[] getTransferDataFlavors() {
+            return new DataFlavor[]{imageFlavor};
+        }
+    
+        // Returns true if flavor is supported
+        public boolean isDataFlavorSupported(DataFlavor flavor) {
+            return imageFlavor.equals(flavor);
+        }
+    
+        // Returns image
+        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+            if (!imageFlavor.equals(flavor)) {
+                throw new UnsupportedFlavorException(flavor);
+            }
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+			ImageIO.write(image, "JPEG", out);
+            return out;
+        }
+    }
 
 }

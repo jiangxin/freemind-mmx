@@ -74,6 +74,9 @@ Changes made in Freemind 0.8.0:
 
 * Local hyperlinks enabled.
 * Link targets are shown in the status bar on mouse over.
+* Text of the status bar content improved.
+
+* Export to image reactivated. Export to clipboard added but not tested.
 
 Changes made in Freemind 0.7.2:
 ===============================

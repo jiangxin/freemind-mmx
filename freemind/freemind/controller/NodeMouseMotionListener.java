@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.15.10.2 2004-10-12 21:00:48 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.15.10.3 2004-10-17 13:01:07 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -85,7 +85,7 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
         boolean isLink = (node).updateCursor(e.getX());
         // links are displayed in the status bar:
         if (isLink) {
-            c.getFrame().out(node.getModel().getLink());
+            c.getFrame().out(c.getModeController().getLinkShortText(node.getModel()));
         }
         // test if still in selection region:
         if (controlRegionForDelayedSelection != null

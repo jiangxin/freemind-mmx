@@ -26,7 +26,6 @@ import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 public interface MindMapActions {
 	public void nodeStructureChanged(MindMapNode node);
 	//  All these methods do redisplay, because they are offered to controller for use.
-	public void edit(KeyEvent e, boolean addNew, boolean editLong);
 	/** The following modes are present: 
 	 *     public final int NEW_CHILD_WITHOUT_FOCUS = 1;  // old model of insertion
 	 *     public final int NEW_CHILD = 2;
@@ -34,6 +33,7 @@ public interface MindMapActions {
 	 *     public final int NEW_SIBLING_BEFORE = 4;
 	 * @see freemind.modes.ControllerAdapter
 	 * */
+	public void edit(KeyEvent e, boolean addNew, boolean editLong);
 	public void setNodeText(MindMapNode selected, String newText);
 	public MindMapNode addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e);
 	/** Another variant of addNew. If the index of the new node as a child of parent is known,
@@ -51,6 +51,9 @@ public interface MindMapActions {
 	
 	void setFolded(MindMapNode node, boolean folded);
 	void toggleFolded();
+	
+	void displayNode(MindMapNode node);
+	String getLinkShortText(MindMapNode node);
 
 	public void setBold(MindMapNode node, boolean bolded);
 	public void setItalic(MindMapNode node, boolean isItalic);

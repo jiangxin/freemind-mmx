@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.18 2004-09-27 19:49:52 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.19 2004-10-17 13:01:08 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import java.awt.Color;
+import java.awt.datatransfer.Clipboard;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -124,6 +125,7 @@ public interface ModeController extends MindMapActions {
 	MapView getView(); 
 	MapAdapter getMap();
 	Controller getController();
+	Clipboard getClipboard();
 	ActionFactory getActionFactory();
 	ObjectFactory getActionXmlFactory();
 	Color getSelectionColor();

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.36 2004-10-12 21:00:49 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.37 2004-10-17 13:01:09 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -71,11 +71,11 @@ import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.actions.ChangeArrowsInArrowLinkAction;
 import freemind.modes.actions.ColorArrowLinkAction;
+import freemind.modes.actions.GotoLinkNodeAction;
 import freemind.modes.actions.IconAction;
 import freemind.modes.actions.NewMapAction;
 import freemind.modes.actions.NewPreviousSiblingAction;
 import freemind.modes.actions.NewSiblingAction;
-import freemind.modes.actions.NodeBackgroundColorAction;
 import freemind.modes.actions.NodeGeneralAction;
 import freemind.modes.actions.NodeHookAction;
 import freemind.modes.actions.RemoveArrowLinkAction;
@@ -424,8 +424,8 @@ public class MindMapController extends ControllerAdapter {
 
             arrowLinkPopup.addSeparator();
             
-            arrowLinkPopup.add(new GotoLinkNodeAction(link.getSource().toString(), link.getSource())); 
-            arrowLinkPopup.add(new GotoLinkNodeAction(link.getTarget().toString(), link.getTarget())); 
+            arrowLinkPopup.add(new GotoLinkNodeAction(this, link.getSource())); 
+            arrowLinkPopup.add(new GotoLinkNodeAction(this, link.getTarget())); 
 
             arrowLinkPopup.addSeparator();
             // add all links from target and from source:
@@ -437,10 +437,10 @@ public class MindMapController extends ControllerAdapter {
             for(int i = 0; i < links.size(); ++i) {
                 MindMapArrowLinkModel foreign_link = (MindMapArrowLinkModel) links.get(i);
                 if(NodeAlreadyVisited.add(foreign_link.getTarget())) {
-                    arrowLinkPopup.add(new GotoLinkNodeAction(foreign_link.getTarget().toString(), foreign_link.getTarget())); 
+                    arrowLinkPopup.add(new GotoLinkNodeAction(this, foreign_link.getTarget())); 
                 }
                 if(NodeAlreadyVisited.add(foreign_link.getSource())) {
-                    arrowLinkPopup.add(new GotoLinkNodeAction(foreign_link.getSource().toString(), foreign_link.getSource())); 
+                    arrowLinkPopup.add(new GotoLinkNodeAction(this, foreign_link.getSource())); 
                 }
             }
             return arrowLinkPopup;

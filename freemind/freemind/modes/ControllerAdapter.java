@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.40 2004-10-12 21:00:48 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.41 2004-10-17 13:01:08 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -76,6 +76,7 @@ import freemind.common.JaxbTools;
 import freemind.controller.Controller;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.ActionFactory;
+import freemind.controller.actions.FreemindAction;
 import freemind.controller.actions.ModeControllerActionHandler;
 import freemind.controller.actions.UndoActionHandler;
 import freemind.controller.actions.generated.instance.ObjectFactory;
@@ -107,6 +108,7 @@ import freemind.modes.actions.EdgeWidthAction;
 import freemind.modes.actions.EditAction;
 import freemind.modes.actions.FontFamilyAction;
 import freemind.modes.actions.FontSizeAction;
+import freemind.modes.actions.GotoLinkNodeAction;
 import freemind.modes.actions.IconAction;
 import freemind.modes.actions.ItalicAction;
 import freemind.modes.actions.NewChildAction;
@@ -200,6 +202,7 @@ public abstract class ControllerAdapter implements ModeController {
     public RemoveAllIconsAction removeAllIconsAction = null;
     public SetLinkByTextFieldAction setLinkByTextField = null;
     public AddLocalLinkAction addLocalLinkAction = null;
+    public GotoLinkNodeAction gotoLinkNodeAction = null;
 
 	/** Executes series of actions. */
 	private CompoundActionHandler compound = null;
@@ -298,8 +301,9 @@ public abstract class ControllerAdapter implements ModeController {
 	    nodeBackgroundColor = new NodeBackgroundColorAction(this);
 	    setLinkByTextField = new SetLinkByTextFieldAction(this);
 	    addLocalLinkAction = new AddLocalLinkAction(this);
-	    compound = new CompoundActionHandler(this);
+	    gotoLinkNodeAction = new GotoLinkNodeAction(this, null);
 
+	    compound = new CompoundActionHandler(this);
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
                                                new FileOpener());
 
@@ -1077,6 +1081,13 @@ public abstract class ControllerAdapter implements ModeController {
 	    toggleFolded.setFolded(node, folded);
 	}
 	
+	public void displayNode(MindMapNode node){
+	    getMap().displayNode(node, null);
+	}
+	public String getLinkShortText(MindMapNode node) {
+	    return gotoLinkNodeAction.getShortTextForLink(node);
+	}
+	
 	public void moveNodes(MindMapNode selected, List selecteds, int direction){
 	    nodeUp.moveNodes(selected, selecteds, direction);
 	}
@@ -1211,11 +1222,11 @@ public abstract class ControllerAdapter implements ModeController {
               absolute = new File(relative).toURL(); }
             else if(relative.startsWith("#")){
                 // inner map link, fc, 12.10.2004
-                logger.info("found relative link to "+relative);
+                logger.finest("found relative link to "+relative);
                 String target = relative.substring(1);
                 try {
                     MindMapNode node = getNodeFromID(target);
-                    getMap().displayNode(node, null);
+                    displayNode(node);
                     return;
                 } catch (Exception e) {
                     // give "not found" message
@@ -1540,26 +1551,7 @@ public abstract class ControllerAdapter implements ModeController {
                   replaceAll("\\$2", getView().getModel().getFindFromText()),
                   getView().getSelected()); }}}
 
-    protected class GotoLinkNodeAction extends AbstractAction {
-        MindMapNode source;
-        public GotoLinkNodeAction(String text, MindMapNode source) {
-            super("", new ImageIcon(getResource("images/Link.png")));
-            // only display a reasonable part of the string. the rest is available via the short description (tooltip).
-            String adaptedText = new String(text);
-            adaptedText = adaptedText.replaceAll("<html>", "");
-            if(adaptedText.length() > 40)
-                adaptedText = adaptedText.substring(0,40) + " ...";
-            putValue(Action.NAME, getText("follow_link") + adaptedText );
-            putValue(Action.SHORT_DESCRIPTION, text);
-            this.source = source;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            getMap().displayNode(source, null);
-        }
-    }
-
-	public String marshall(XmlAction action) {
+    public String marshall(XmlAction action) {
         try {
             // marshall:
             //marshal to StringBuffer:

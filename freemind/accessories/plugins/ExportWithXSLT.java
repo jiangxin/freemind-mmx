@@ -35,7 +35,7 @@ public class ExportWithXSLT extends ModeControllerHookAdapter {
 	public void startupMapHook() {
 		super.startupMapHook();
 		ModeController mc = getController();
-		MindMap model = getController().getController().getModel();
+		MindMap model = getController().getMap();
 		 if(model == null) 
 			 return; // there may be no map open
 		 if((model.getFile() == null) || model.isReadOnly()) {

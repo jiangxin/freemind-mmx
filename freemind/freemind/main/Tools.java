@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.17.12.6 2004-10-08 21:34:35 christianfoltin Exp $*/
+/*$Id: Tools.java,v 1.17.12.7 2004-10-17 13:01:07 christianfoltin Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -336,6 +336,9 @@ public class Tools {
 
    public static boolean safeEquals(String string1, String string2) {
       return (string1 != null && string2 != null && string1.equals(string2)) || (string1 == null && string2 == null); }
+
+   public static boolean safeEqualsIgnoreCase(String string1, String string2) {
+       return (string1 != null && string2 != null && string1.toLowerCase().equals(string2.toLowerCase())) || (string1 == null && string2 == null); }
 
    public static boolean safeEquals(Color color1, Color color2) {
        return (color1 != null && color2 != null && color1.equals(color2)) || (color1 ==null && color2==null); 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.12.10 2004-10-06 15:12:40 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.12.11 2004-10-17 13:01:08 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -65,6 +65,9 @@ public interface MindMapNode extends MutableTreeNode {
     int getNodeLevel();
 
     String getLink();
+    /** returns a short textual description of the text contained in the node. 
+     *  Html is filtered out. */
+    String getShortText(ModeController controller);
 
     MindMapEdge getEdge();
 
