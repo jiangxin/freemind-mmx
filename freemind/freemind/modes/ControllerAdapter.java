@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.11 2000-11-15 22:17:54 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.12 2000-11-16 20:05:36 ponder Exp $*/
 
 package freemind.modes;
 
@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.util.ListIterator;
 import java.awt.Point;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -307,6 +308,40 @@ public abstract class ControllerAdapter implements ModeController {
 	} else {
 	    getModel().setFolded(node,true);
 	}
+	getView().select(node.getViewer());
+    }
+
+    /**
+     * If any children are folded, unfold all folded children.
+     * Otherwise, fold all children.
+     */
+    protected void toggleChildrenFolded() {
+	// have NodeAdapter; need NodeView
+	MindMapNode parent = getSelected();
+	ListIterator children_it = parent.getViewer().getChildrenViews().listIterator();
+	boolean areAnyFolded = false;
+	while(children_it.hasNext() && !areAnyFolded) {
+	    NodeView child = (NodeView)children_it.next();
+	    if(child.getModel().isFolded()) {
+		areAnyFolded = true;
+	    }
+	}
+
+	children_it = parent.getViewer().getChildrenViews().listIterator();
+	if(areAnyFolded) {
+	    while(children_it.hasNext()) {
+		NodeView child = (NodeView)children_it.next();
+		if(child.getModel().isFolded()) {
+		    getModel().setFolded(child.getModel(), false);
+		}
+	    }
+	} else {
+	    while(children_it.hasNext()) {
+		NodeView child = (NodeView)children_it.next();
+		getModel().setFolded(child.getModel(), true);
+	    }
+	}
+	getView().select(parent.getViewer());
     }
 
     protected void setLink() {
@@ -540,6 +575,15 @@ public abstract class ControllerAdapter implements ModeController {
 	}
 	public void actionPerformed(ActionEvent e) {
 	    toggleFolded();
+	}
+    }
+
+    protected class toggleChildrenFoldedAction extends AbstractAction {
+	public toggleChildrenFoldedAction() {
+	    super(FreeMind.getResources().getString("toggle_children_folded"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    toggleChildrenFolded();
 	}
     }
 

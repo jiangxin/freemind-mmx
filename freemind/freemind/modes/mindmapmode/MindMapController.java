@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.9 2000-11-08 12:20:31 ponder Exp $*/
+/*$Id: MindMapController.java,v 1.10 2000-11-16 20:05:36 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -61,6 +61,7 @@ public class MindMapController extends ControllerAdapter {
     Action addNew = new AddNewAction();
     Action remove = new RemoveAction();
     Action toggleFolded = new ToggleFoldedAction();
+    Action toggleChildrenFolded = new toggleChildrenFoldedAction();
     Action setLink = new SetLinkAction();
     Action followLink = new FollowLinkAction();
     Action exportBranch = new ExportBranchAction();
@@ -170,6 +171,8 @@ public class MindMapController extends ControllerAdapter {
  	setLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_set_link")));
 	JMenuItem toggleFoldedItem = nodeMenu.add(toggleFolded);
  	toggleFoldedItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_toggle_folded")));
+	JMenuItem toggleChildrenFoldedItem = nodeMenu.add(toggleChildrenFolded);
+	toggleChildrenFoldedItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_toggle_children_folded")));
 	JMenu nodeStyle = new JMenu(FreeMind.getResources().getString("style"));
 	nodeMenu.add(nodeStyle);
 	nodeStyle.add(fork);
@@ -220,6 +223,7 @@ public class MindMapController extends ControllerAdapter {
 	addNew.setEnabled(enabled);
 	remove.setEnabled(enabled);
 	toggleFolded.setEnabled(enabled);
+	toggleChildrenFolded.setEnabled(enabled);
 	setLink.setEnabled(enabled);
 	followLink.setEnabled(enabled);
 	italic.setEnabled(enabled);
