@@ -16,15 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapMouseMotionListener.java,v 1.7.16.1 2004-10-17 20:01:05 dpolivaev Exp $*/
+/*$Id: MapMouseMotionListener.java,v 1.7.16.2 2004-10-17 20:22:45 dpolivaev Exp $*/
 
 package freemind.controller;
 
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.JPopupMenu;
 
+import freemind.modes.MindMapArrowLink;
 import freemind.view.mindmapview.MapView;
 
 
@@ -37,6 +39,7 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
 
     int originX = -1;
     int originY = -1;
+	MindMapArrowLink draggedLink = null;
 
     // |=   oldX >=0 iff we are in the drag
 
@@ -65,7 +68,18 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
     public void mouseDragged(MouseEvent e) {
        // Always try to get mouse to the original position in the Map.
        if (originX >=0) {
-          ((MapView)e.getComponent()).scrollBy(originX - e.getX(), originY - e.getY(), false);
+    	  if(draggedLink != null){
+    		int deltaX = (int)((e.getX()-originX)/c.getView().getZoom());
+    		int deltaY = (int)((e.getY()-originY)/c.getView().getZoom());
+    		draggedLink.changeInclination(originX, originY , deltaX, deltaY);
+    		c.getModel().setLinkInclinationChanged();
+    		originX = e.getX();
+    		originY = e.getY();
+    		c.getView().repaint();
+    	  }
+    	  else{
+    		((MapView)e.getComponent()).scrollBy(originX - e.getX(), originY - e.getY(), false);
+    	  }
        // } else { // do the init in the mouse press
        }
     } 
@@ -84,12 +98,23 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
         c.getView().setMoveCursor(true);
         originX = e.getX();
         originY = e.getY(); 
+		draggedLink = c.getView().detectCollision(new Point(originX, originY));
+		if(draggedLink != null){
+			draggedLink.showControlPoints(true);
+			c.getView().repaint();
+		}
+
       }
       e.consume(); 
     }
     public void mouseReleased( MouseEvent e ) {
        originX = -1;
        originY = -1;
+       if (draggedLink != null){
+		draggedLink.showControlPoints(false);
+		c.getView().repaint(); 
+		draggedLink = null;
+       }
        handlePopup(e);
        e.consume(); 
        c.getView().setMoveCursor(false); // release the cursor to default (PN)

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkAdapter.java,v 1.4 2003-12-07 21:00:19 christianfoltin Exp $*/
+/*$Id: ArrowLinkAdapter.java,v 1.4.18.1 2004-10-17 20:22:45 dpolivaev Exp $*/
 
 package freemind.modes;
 import freemind.modes.LinkAdapter;
@@ -32,6 +32,7 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements MindMapArr
     protected Point endInclination; 
     protected String startArrow; 
     protected String endArrow;
+    protected boolean showControlPointsFlag;
 
 
     public ArrowLinkAdapter(MindMapNode source,MindMapNode target,FreeMindMain frame)  {
@@ -79,5 +80,13 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements MindMapArr
         arrowLink.endArrow = (endArrow==null)?null:new String(endArrow);
         return arrowLink;
     }
+    
+	public void showControlPoints(boolean bShowControlPointsFlag){
+		showControlPointsFlag = bShowControlPointsFlag;
+	}
+	
+	public boolean getShowControlPointsFlag(){
+		return showControlPointsFlag;
+	}
 
 }

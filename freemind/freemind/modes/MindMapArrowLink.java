@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapArrowLink.java,v 1.2 2003-12-07 21:00:20 christianfoltin Exp $*/
+/*$Id: MindMapArrowLink.java,v 1.2.18.1 2004-10-17 20:22:45 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -37,9 +37,19 @@ public interface MindMapArrowLink extends MindMapLink {
     /* for arrows: */
     public Point getStartInclination(); // the zero is the start point of the line;
     public Point getEndInclination(); // the zero is the end point of the line;
-    /** the type of the start arrow: currently "None" and "Default". */
+	public void  setStartInclination(Point startInclination);
+	public void  setEndInclination(Point endInclination); 
+        /** the type of the start arrow: currently "None" and "Default". */
     public String getStartArrow(); 
     /** the type of the end arrow: currently "None" and "Default". */
     public String getEndArrow();
-
+    /**
+     * @param originX
+     * @param originY
+     * @param deltaX
+     * @param deltaY
+     */
+    public void changeInclination(int originX, int originY, int deltaX, int deltaY);
+    public void showControlPoints(boolean bShowControlPointsFlag);
+	public boolean getShowControlPointsFlag();
 }

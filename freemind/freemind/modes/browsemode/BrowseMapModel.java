@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMapModel.java,v 1.9 2003-12-02 22:50:22 christianfoltin Exp $*/
+/*$Id: BrowseMapModel.java,v 1.9.18.1 2004-10-17 20:22:45 dpolivaev Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -149,5 +149,11 @@ public class BrowseMapModel extends MapAdapter {
     mapElement.processUnfinishedLinks(getLinkRegistry());
     root = (BrowseNodeModel) mapElement.getMapChild();
 	return root;
+    }
+
+    /* (non-Javadoc)
+     * @see freemind.modes.MindMap#setLinkInclinationChanged()
+     */
+    public void setLinkInclinationChanged() {
     }
 }

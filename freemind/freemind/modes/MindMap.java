@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.14 2004-01-17 23:20:58 christianfoltin Exp $*/
+/*$Id: MindMap.java,v 1.14.14.1 2004-10-17 20:22:45 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -99,6 +99,11 @@ public interface MindMap extends TreeModel {
     void destroy();
 
     boolean isReadOnly();
+
+    /**
+     * call this function to notify the map
+     */
+    void setLinkInclinationChanged();
 
 // (PN)
 //    void close();
