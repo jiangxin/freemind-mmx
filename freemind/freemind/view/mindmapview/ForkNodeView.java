@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ForkNodeView.java,v 1.10.16.1 2004-08-22 14:28:12 dpolivaev Exp $*/
+/*$Id: ForkNodeView.java,v 1.10.16.2 2004-08-27 21:01:33 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -39,9 +39,57 @@ public class ForkNodeView extends NodeView {
     }
 
     public Dimension getPreferredSize() {
-	return new Dimension(super.getPreferredSize().width,
+		Dimension result =  new Dimension(super.getPreferredSize().width,
                              super.getPreferredSize().height + 3 + getEdge().getRealWidth());
+		if (getModel().isFolded()){
+			result.width +=  FOLDING_SYMBOL_WIDTH ;
+			result.height +=  FOLDING_SYMBOL_WIDTH / 2 ;
+		}
+		
+        return result;
     }	
+    
+	public void setExtendedLocation(int x,	int y){
+		if(getModel().isFolded() && isLeft()){
+				x += FOLDING_SYMBOL_WIDTH;
+		}
+		setLocation(x, y);
+	}
+    
+	public void setExtendedSize(int width,	int height){
+		if(getModel().isFolded()){
+			height -= FOLDING_SYMBOL_WIDTH / 2;
+			width -= FOLDING_SYMBOL_WIDTH;
+		}
+		setSize(width, height);
+	}
+    
+    public int getExtendedX(){
+    	int x = getX();
+		if(getModel().isFolded() && isLeft()){
+			x -= FOLDING_SYMBOL_WIDTH;
+		}
+		return x;
+    }
+    
+	public int getExtendedWidth()
+	{
+		int width = getWidth();
+		if(getModel().isFolded()){
+			width += FOLDING_SYMBOL_WIDTH;
+		}
+		return width;
+	}
+  
+	public int getExtendedHeight()
+	{
+		int height = getHeight();
+		if(getModel().isFolded()){
+			height += FOLDING_SYMBOL_WIDTH / 2;
+		}
+		return height;
+	}
+  
   
     /**
      * Paints the node

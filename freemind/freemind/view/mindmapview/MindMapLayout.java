@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.14.2.5 2004-08-21 19:09:15 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.14.2.5.2.1 2004-08-27 21:01:33 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -157,15 +157,15 @@ public class MindMapLayout implements LayoutManager {
 
         // relativeX, relativeY - already calculated coordinates of node relative to its parent.;
         if (node.isRoot()) {
-            node.setBounds(getRootX(),
+            node.setExtendedBounds(getRootX(),
                            getRootY(),
                            node.getPreferredSize().width,
                            node.getPreferredSize().height); }
         else {
             //place the node-label
-            int x = node.getParentView().getLocation().x + relativeX;
-            int y = node.getParentView().getLocation().y + relativeY;
-            node.setBounds(x, y, node.getPreferredSize().width, node.getPreferredSize().height);
+            int x = node.getParentView().getExtendedX() + relativeX;
+            int y = node.getParentView().getExtendedY() + relativeY;
+            node.setExtendedBounds(x, y, node.getPreferredSize().width, node.getPreferredSize().height);
             
             // It seems that there is a piece of coding ready for having labelled edges.
             // Having labelled edges is a nice thing, as sure as hell, but we do not

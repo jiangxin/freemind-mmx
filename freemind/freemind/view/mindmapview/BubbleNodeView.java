@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.13.4.1 2004-08-22 14:28:11 dpolivaev Exp $*/
+/*$Id: BubbleNodeView.java,v 1.13.4.2 2004-08-27 21:01:33 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -58,6 +58,38 @@ public class BubbleNodeView extends NodeView {
 		return result; 
     }	  
 
+	public void setExtendedLocation(int x,	int y){
+		if(getModel().isFolded() && isLeft()){
+				x += FOLDING_SYMBOL_WIDTH / 2;
+		}
+		setLocation(x, y);
+	}
+  
+	public void setExtendedSize(int width,	int height){
+		if(getModel().isFolded()){
+			width -= FOLDING_SYMBOL_WIDTH / 2;
+		}
+		setSize(width, height);
+	}
+	
+	public int getExtendedWidth()
+	{
+		int width = getWidth();
+		if(getModel().isFolded()){
+			width += FOLDING_SYMBOL_WIDTH / 2;
+		}
+		return width;
+	}
+  
+	public int getExtendedX()
+	{
+		int x = getX();
+		if(getModel().isFolded() && isLeft()){
+				x -= FOLDING_SYMBOL_WIDTH / 2;
+		}
+		return x;
+	}
+  
     public void paintSelected(Graphics2D graphics, Dimension size) {
        if( this.isSelected() ) {
           graphics.setColor(selectedColor);

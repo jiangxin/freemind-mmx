@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.25.2.1.2.1 2004-08-22 14:28:12 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.25.2.1.2.2 2004-08-27 21:01:33 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -129,8 +129,8 @@ public abstract class NodeView extends JLabel {
 	    newView = new ForkNodeView( model, map );
 //		newView = new BubbleNodeView( model, map );
 	} else if (model.getStyle().equals(MindMapNode.STYLE_BUBBLE) ) {
-//		newView = new ForkNodeView( model, map );
-		newView = new BubbleNodeView( model, map );
+		newView = new ForkNodeView( model, map );
+//		newView = new BubbleNodeView( model, map );
 	} else {
 	    System.err.println("Tried to create a NodeView of unknown Style.");
 	    newView = new ForkNodeView(model, map);
@@ -194,10 +194,10 @@ public abstract class NodeView extends JLabel {
 			cloudView = new CloudView(cloud, this);
 			additionalDistanceForConvexHull  += cloudView.getAdditionalHeigth() / 2; 
 		}
-        inList.addLast(new Point( -additionalDistanceForConvexHull + getX()             ,  -additionalDistanceForConvexHull + getY()              ));
-        inList.addLast(new Point( -additionalDistanceForConvexHull + getX()             ,   additionalDistanceForConvexHull + getY() + getHeight()));
-        inList.addLast(new Point(  additionalDistanceForConvexHull + getX() + getWidth(),   additionalDistanceForConvexHull + getY() + getHeight()));
-        inList.addLast(new Point(  additionalDistanceForConvexHull + getX() + getWidth(),  -additionalDistanceForConvexHull + getY()              ));
+        inList.addLast(new Point( -additionalDistanceForConvexHull + getExtendedX()             ,  -additionalDistanceForConvexHull + getExtendedY()              ));
+        inList.addLast(new Point( -additionalDistanceForConvexHull + getExtendedX()             ,   additionalDistanceForConvexHull + getExtendedY() + getExtendedHeight()));
+        inList.addLast(new Point(  additionalDistanceForConvexHull + getExtendedX() + getExtendedWidth(),   additionalDistanceForConvexHull + getExtendedY() + getExtendedHeight()));
+        inList.addLast(new Point(  additionalDistanceForConvexHull + getExtendedX() + getExtendedWidth(),  -additionalDistanceForConvexHull + getExtendedY()              ));
 		
 		if (cloudView != null){
 		}
@@ -218,7 +218,38 @@ public abstract class NodeView extends JLabel {
             return super.getPreferredSize();
         }
     }	
+	public int getExtendedWidth()
+	{
+		return getWidth();
+	}
+  
+	public int getExtendedHeight()
+	{
+		return getHeight();
+	}
+  
+	public int getExtendedX()
+	{
+		return getX();
+	}
+  
+	public int getExtendedY()
+	{
+		return getY();
+	}
 
+	public void setExtendedLocation(int x,	int y){
+		setLocation(x, y);
+	}
+  
+	public void setExtendedSize(int width,	int height){
+		setSize(width, height);
+	}
+	  
+	public void setExtendedBounds(int x,	int y,	int width,	int height){
+		setExtendedLocation(x, y);
+		setExtendedSize(width, height);
+	}
 
    public void requestFocus(){
       map.getController().getMode().getModeController().anotherNodeSelected(getModel());
