@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21.10.2 2004-03-11 06:28:41 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.10.3 2004-06-19 19:42:12 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -430,6 +430,11 @@ public class MindMapNodeModel extends NodeAdapter {
 	
 	if (color != null) {
            node.setAttribute("color", Tools.colorToXml(getColor())); }
+
+	// new background color.
+	if (getBackgroundColor() != null) {
+		   node.setAttribute("BACKGROUND_COLOR", Tools.colorToXml(getBackgroundColor())); }
+
 
 	if (style != null) {
            node.setAttribute("style", super.getStyle()); }

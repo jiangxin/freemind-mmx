@@ -12,6 +12,10 @@ Changes made in Freemind 0.8.0:
 * Plugins are now well distributed over the menus.
 * Blind icons to align the menus (in development)
 
+* NodeView selection mechanism refactored
+* Background color is changeable
+* Plugin for "change management" introduced
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

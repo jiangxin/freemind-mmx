@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.10.4 2004-05-26 06:01:19 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.10.5 2004-06-19 19:41:56 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -100,6 +100,9 @@ public class MenuBar extends JMenuBar {
 		menuHolder.addCategory(EDIT_MENU+"find");	
 		menuHolder.addSeparator(EDIT_MENU);	
 
+		//view menu
+		menuHolder.addMenu(new JMenu(c.getResourceString("menu_view")), VIEW_MENU+".");
+
 		//insert menu
 		menuHolder.addMenu(new JMenu(c.getResourceString("menu_insert")), INSERT_MENU+".");
 		menuHolder.addCategory(INSERT_MENU+"nodes");	
@@ -115,9 +118,6 @@ public class MenuBar extends JMenuBar {
 		//navigate menu
 		menuHolder.addMenu(new JMenu(c.getResourceString("menu_navigate")), NAVIGATE_MENU+".");
 
-
-		//view menu
-		menuHolder.addMenu(new JMenu(c.getResourceString("menu_view")), VIEW_MENU+".");
 
 		//extras menu
 		menuHolder.addMenu(new JMenu(c.getResourceString("menu_extras")), EXTRAS_MENU+".");
@@ -273,7 +273,7 @@ public class MenuBar extends JMenuBar {
 		JMenuItem zoomOut = menuHolder.addAction(c.zoomOut, VIEW_MENU+"zoom/zoomOut");
 		zoomIn.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_zoom_out")));
 	
-		JMenuItem moveToRoot = menuHolder.addAction(c.moveToRoot, VIEW_MENU+"zoom/moveToRoot");
+		JMenuItem moveToRoot = menuHolder.addAction(c.moveToRoot, NAVIGATE_MENU+"nodes/moveToRoot");
 		moveToRoot.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_moveToRoot")));
 	
 

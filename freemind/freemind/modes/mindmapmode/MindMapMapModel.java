@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.10.6 2004-05-09 22:31:15 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.10.7 2004-06-19 19:41:56 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -125,6 +125,10 @@ public class MindMapMapModel extends MapAdapter  {
     public void setNodeColor(MindMapNodeModel node, Color color) {
         node.setColor(color);
         nodeChanged(node); }
+
+	public void setNodeBackgroundColor(MindMapNodeModel node, Color color) {
+		node.setBackgroundColor(color);
+		nodeChanged(node); }
 
     public void blendNodeColor(MindMapNodeModel node) {
         Color mapColor = getBackgroundColor();
@@ -552,8 +556,8 @@ public class MindMapMapModel extends MapAdapter  {
         try {            
             //Generating output Stream            
             BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
-            
             fileout.write("<map version=\""+getFrame().getFreemindVersion()+"\">\n");
+            fileout.write("<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->\n");
             ((MindMapNodeModel)getRoot()).save(fileout, this);
             fileout.write("</map>\n");
             fileout.close();

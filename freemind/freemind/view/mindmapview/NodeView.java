@@ -16,26 +16,36 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.10.2 2004-03-29 18:08:10 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.10.3 2004-06-19 19:42:12 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
-import freemind.main.FreeMind;
-import freemind.main.Tools;
-import freemind.modes.MindMapNode;
-import freemind.modes.NodeAdapter;//This should not be done.
-import freemind.modes.MindIcon;
-
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.RenderingHints;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetListener;
+import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.awt.*;
-import java.awt.dnd.*;
-import java.net.MalformedURLException;
-
-import javax.swing.JLabel;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import java.util.Vector;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+
+import freemind.main.Tools;
+import freemind.modes.MindIcon;
+import freemind.modes.MindMapNode;
+import freemind.modes.NodeAdapter;
 
 
 /**
@@ -48,7 +58,6 @@ public abstract class NodeView extends JLabel {
     protected MapView map;
     protected EdgeView edge;
     /** the Color of the Rectangle of a selected Node */
-    protected static Color selectedColor; 
     protected final static Color dragColor = Color.lightGray; //the Color of appearing GradientBox on drag over
     protected int treeHeight;
     private boolean left = true; //is the node left of root?
@@ -80,16 +89,25 @@ public abstract class NodeView extends JLabel {
     // Constructors
     //
     
+    private static Color standardSelectColor;
+    private static Color standardNodeColor;
     protected NodeView(MindMapNode model, MapView map) {
 	this.model = model;
 	setMap(map);
+
+	// initialize the standard node color.
+	if (standardNodeColor == null) {
+        standardNodeColor =
+            Tools.xmlToColor(
+                map.getController().getProperty("standardnodecolor"));
+    }
 	// initialize the selectedColor:
-	if(selectedColor== null) {
+	if(standardSelectColor== null) {
 		String stdcolor = map.getController().getFrame().getProperty("standardselectednodecolor");
 		if (stdcolor.length() == 7) {
-			selectedColor = Tools.xmlToColor(stdcolor);
+			standardSelectColor = Tools.xmlToColor(stdcolor);
 		} else {
-			selectedColor = new Color(210,210,210);
+			standardSelectColor = new Color(210,210,210);
 		}
 	}
 
@@ -227,25 +245,34 @@ public abstract class NodeView extends JLabel {
       map.getController().getMode().getModeController().anotherNodeSelected(getModel());
       super. requestFocus();
    }
+	public void paint(Graphics graphics) {
+	    super.paint(graphics);
+	}
 
-    public void paint(Graphics graphics) {
-        // background color starts here, fc. 9.11.2003: todo
-//           graphics.setColor(Color.yellow);
-//           graphics.fillRect(0,0,getWidth(), getHeight());
-          // background color ends here, fc. 9.11.2003: todo
-	super.paint(graphics);
+    public void paintSelected(Graphics2D graphics, Dimension size) {
+		if (this.isSelected()) {
+			paintBackground(graphics, size, getSelectedColor());
+			//g.drawRect(0,0,size.width-1, size.height-2);
+		} else if (getModel().getBackgroundColor() != null) {
+			paintBackground(graphics, size, getModel().getBackgroundColor());
+		}
+//		if (this.isSelected()) {
+//			paintBackground(graphics, size, getSelectedColor());
+//			//g.drawRect(0,0,size.width-1, size.height-2);
+//		} /*else*/
+//		if  (true){
+//			Dimension newSize = size;
+//			newSize.height -= 5;
+//			newSize.width -= 5;
+//			paintBackground(graphics, newSize, (getModel().getBackgroundColor() != null)?getModel().getBackgroundColor():Color.WHITE);
+//		}
     }
 
-   public void paintSelected(Graphics2D graphics, Dimension size) {
-       if( this.isSelected() ) {
-          graphics.setColor(selectedColor);
-          graphics.fillRect(0,0,size.width, size.height);
-          //g.drawRect(0,0,size.width-1, size.height-2);
-       } else if( getModel().getBackgroundColor() != null) {
-          graphics.setColor(getModel().getBackgroundColor());
-          graphics.fillRect(0,0,size.width, size.height);
-       }
-    }
+	protected void paintBackground(Graphics2D graphics, Dimension size, Color color) {
+		graphics.setColor(color);
+		graphics.fillRect(0,0,size.width, size.height);		
+	}
+
 
    public void paintDragOver(Graphics2D graphics, Dimension size) {
         if (isDraggedOver == DRAGGED_OVER_SON) {
@@ -591,18 +618,9 @@ public abstract class NodeView extends JLabel {
         // 1) Set color
         Color color = getModel().getColor();
         if (color==null) {
-           String stdcolor = map.getController().getProperty("standardnodecolor");
-           if (stdcolor.length() == 7) {
-              color = Tools.xmlToColor(stdcolor); }
-           else {
-              color = Color.black; }}
+        	color = standardNodeColor;
+        }
         setForeground(color);
-//         // 1b) set background color:
-//         Color bgcolor = getModel().getBackgroundColor();
-//         if (bgcolor!=null) {
-//             setOpaque(true);
-//             setBackground(bgcolor);
-//         }
 
         // 2) Create the icons:
         MultipleImage iconImages = new MultipleImage(map.getZoom());
@@ -725,5 +743,67 @@ public abstract class NodeView extends JLabel {
 //          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); 
 
    }
+
+    /**
+     * @return returns the color that should used to select the node.
+     */
+    protected Color getSelectedColor() {
+		Color backgroundColor = getModel().getBackgroundColor();
+//        if(backgroundColor != null) {
+//			Color backBrighter = backgroundColor.brighter();
+//			// white?
+//			if(backBrighter.getRGB() == Color.WHITE.getRGB()) {
+//				return standardSelectColor;
+//			}
+//			// == standard??
+//            if (backBrighter.equals (standardSelectColor) ) {
+//                return backgroundColor.darker();
+//            }
+//            return backBrighter;
+//		}
+		// == standard??
+		  if (backgroundColor != null /*&& backgroundColor.equals(standardSelectColor)*/ ) {
+		  	// bad hack:
+		  	return getAntiColor1(backgroundColor);
+//			  return new Color(0xFFFFFF - backgroundColor.getRGB());
+		  }
+        return standardSelectColor;
+    }
+
+/* http://groups.google.de/groups?hl=de&lr=&ie=UTF-8&threadm=9i5bbo%24h1kmi%243%40ID-77081.news.dfncis.de&rnum=1&prev=/groups%3Fq%3Djava%2520komplement%25C3%25A4rfarbe%2520helligkeit%26hl%3Dde%26lr%3D%26ie%3DUTF-8%26sa%3DN%26as_qdr%3Dall%26tab%3Dwg */
+	/**
+	 * Ermittelt zu einer Farbe eine andere Farbe, die sich möglichst gut von
+	 * dieser abhebt.
+	 * Diese Farbe unterscheidet sich auch von {@link #getAntiColor2}.
+	 * @since PPS 1.1.1
+	 */
+   protected static Color getAntiColor1(Color c)
+   {
+	float[] hsb = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
+	hsb[0] += 0.40;
+	if (hsb[0] > 1)
+	 hsb[0]--;
+	hsb[1] = 1;
+	hsb[2] = 0.7f;
+	return Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
+   }
+
+   /**
+	* Ermittelt zu einer Farbe eine andere Farbe, die sich möglichst gut von
+	* dieser abhebt.
+	* Diese Farbe unterscheidet sich von {@link #getAntiColor1}.
+	* @since PPS 1.1.1
+	*/
+  protected static Color getAntiColor2(Color c)
+  {
+   float[] hsb = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
+   hsb[0] -= 0.40;
+   if (hsb[0] < 0)
+	hsb[0]++;
+   hsb[1] = 1;
+   hsb[2] = (float)0.8;
+   return Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
+  }
+
 
 }

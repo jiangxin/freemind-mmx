@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.14 2004-05-26 06:01:20 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.15 2004-06-19 19:41:56 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -130,6 +130,7 @@ public class MindMapController extends ControllerAdapter {
    public Action nodeColorBlend = new NodeGeneralAction (this, "blend_color", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.blendNodeColor(node); }});
+	public Action nodeBackgroundColor = new NodeBackgroundColorAction();
 
     public Action edgeColor = new EdgeColorAction();
     public Action EdgeWidth_WIDTH_PARENT = new EdgeWidthAction(EdgeAdapter.WIDTH_PARENT);
@@ -817,6 +818,16 @@ public class MindMapController extends ControllerAdapter {
           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
              MindMapNodeModel selected = (MindMapNodeModel)it.next();
              getMindMapMapModel().setNodeColor(selected, color); }}}
+
+	private class NodeBackgroundColorAction extends AbstractAction {
+		NodeBackgroundColorAction() { super(getText("node_background_color")); }
+	   public void actionPerformed(ActionEvent e) {
+		  Color color = Controller.showCommonJColorChooserDialog(getView().getSelected(),"Choose Node Background Color:",getSelected().getBackgroundColor() );
+		  if (color==null) {
+			 return; }
+		  for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			 MindMapNodeModel selected = (MindMapNodeModel)it.next();
+			 getMindMapMapModel().setNodeBackgroundColor(selected, color); }}}
 
     private class EdgeColorAction extends AbstractAction {
 	EdgeColorAction() { super(getText("edge_color")); }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.10.6 2004-05-23 12:39:02 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.10.7 2004-06-19 19:41:56 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -46,6 +46,7 @@ import javax.swing.*;
 
 import java.net.MalformedURLException;
 
+import freemind.controller.actions.ActionFactory;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
@@ -1251,9 +1252,6 @@ public class Controller {
             }
         }
     }
-
-
-
 
 
 }//Class Controller

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.17.12.1 2004-04-04 11:56:31 christianfoltin Exp $*/
+/*$Id: Tools.java,v 1.17.12.2 2004-06-19 19:41:56 christianfoltin Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -58,10 +58,16 @@ public class Tools {
     }
 
     public static Color xmlToColor(String string) {
-	int red = Integer.parseInt(string.substring(1,3),16);
-	int green = Integer.parseInt(string.substring(3,5),16);
-	int blue = Integer.parseInt(string.substring(5,7),16);
-	return new Color(red,green,blue);
+    	string = string.trim();
+		if (string.length() == 7) {
+
+			int red = Integer.parseInt(string.substring(1,3),16);
+			int green = Integer.parseInt(string.substring(3,5),16);
+			int blue = Integer.parseInt(string.substring(5,7),16);
+			return new Color(red,green,blue);
+		} else {
+			throw new IllegalArgumentException("No xml color given by '"+ string+"'.");
+		}
     }
 
     public static String PointToXml(Point col) {

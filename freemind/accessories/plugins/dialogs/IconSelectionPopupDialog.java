@@ -52,7 +52,15 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
 		this.descriptions = descriptions;
 	this.freeMindMain = freeMindMain;
 	this.icons = icons;
- 
+
+	setDefaultCloseOperation(
+		JDialog.DO_NOTHING_ON_CLOSE);
+	addWindowListener(new WindowAdapter() {
+		public void windowClosing(WindowEvent we) {
+			close();
+		}
+	});
+
 	//we will build a button-matrix which is closest to quadratical
 	numOfIcons = icons.size();
 	xDimension = new Double(Math.ceil(Math.sqrt(numOfIcons))).intValue();
@@ -183,9 +191,8 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
 				break;
 			case KeyEvent.VK_ESCAPE:
 				arg0.consume();
-				result = -1;
-				this.dispose();
-			break;
+                close();
+				break;
 			case KeyEvent.VK_ENTER:
 			case KeyEvent.VK_SPACE:
 				arg0.consume();
@@ -193,6 +200,11 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
 				break;
 		}
 	}
+
+    private void close() {
+        result = -1;
+        this.dispose();
+    }
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
