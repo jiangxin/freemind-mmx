@@ -1,0 +1,4 @@
+Manifest-Version: 2.0
+Main-Class: freemind.main.FreeMind
+Created-By: Joerg Mueller
+
