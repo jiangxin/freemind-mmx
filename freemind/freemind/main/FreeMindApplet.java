@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.10.2 2004-03-18 06:44:33 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -272,6 +272,13 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 			nodeHookFactory = new HookFactory(this);
 		}
 		return nodeHookFactory;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.main.FreeMindMain#getSouthPanel()
+	 */
+	public JPanel getSouthPanel() {
+		return null;
 	}
 
 }

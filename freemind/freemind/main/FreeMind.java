@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.10.2 2004-03-11 06:28:41 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.10.3 2004-03-18 06:44:33 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -50,6 +50,7 @@ import java.text.MessageFormat;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -77,7 +78,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     Controller c;//the one and only controller
     
-    public FreeMind() {
+    private JPanel southPanel;
+	public FreeMind() {
         super("FreeMind");
 	
 	String propsLoc = "freemind.properties";
@@ -221,9 +223,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	getContentPane().add( scrollPane, BorderLayout.CENTER );
 
+//	status = new JLabel();
+//	getContentPane().add( status, BorderLayout.SOUTH );
+	// taken from Lukasz Pekacki, NodeText version:
+	southPanel = new JPanel(new BorderLayout());
+	
+	
 	status = new JLabel();
-	getContentPane().add( status, BorderLayout.SOUTH );
-
+	southPanel.add( status, BorderLayout.SOUTH );
+	
+	getContentPane().add( southPanel, BorderLayout.SOUTH );
+	// end taken.
+	
 	//Disable the default close button, instead use windowListener
 	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -568,4 +579,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		}
 		return nodeHookFactory;
 	}
+	/**
+	 * @return
+	 */
+	public JPanel getSouthPanel() {
+		return southPanel;
+	}
+
 }

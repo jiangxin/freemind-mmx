@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.12.2 2004-03-11 06:28:41 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.12.3 2004-03-18 06:44:34 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -456,17 +456,7 @@ public abstract class NodeAdapter implements MindMapNode {
     
     public void remove( int index ) {
         MutableTreeNode node = (MutableTreeNode)children.get(index);
-        if (node == this.preferredChild) { // mind preferred child :-) (PN) 
-          if (children.size() > index + 1) {
-            this.preferredChild = (MindMapNode)(children.get(index + 1));
-          }
-          else {
-            this.preferredChild = (index > 0) ? 
-                (MindMapNode)(children.get(index - 1)) : null;
-          }
-        }
-        node.setParent(null);
-        children.remove( index );
+		remove(node);
     }
     
     public void remove( MutableTreeNode node ) {
@@ -480,6 +470,11 @@ public abstract class NodeAdapter implements MindMapNode {
                 (MindMapNode)(children.get(index - 1)) : null;
           }
         }
+		// call remove child hook:
+		for(Iterator i = this.getActivatedHooks().iterator(); i.hasNext(); ){
+			PermanentNodeHook hook = (PermanentNodeHook) i.next();
+			hook.onRemoveChild((MindMapNode)node);
+		}
         node.setParent(null);
     	children.remove( node );
     }

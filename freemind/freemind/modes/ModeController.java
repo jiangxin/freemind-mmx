@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.2 2004-03-11 06:28:41 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.3 2004-03-18 06:44:34 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -34,6 +34,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
+import freemind.controller.Controller;
 import freemind.extensions.ModeControllerHook;
 
 public interface ModeController {
@@ -72,5 +73,7 @@ public interface ModeController {
 	//end hooks
 	FreeMindMain getFrame();
 	MapView getView(); 
+	MapAdapter getMap();
+	Controller getController();
 
 }

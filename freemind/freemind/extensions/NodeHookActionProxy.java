@@ -8,6 +8,7 @@ package freemind.extensions;
 
 import javax.swing.AbstractAction;
 
+import freemind.main.XMLElement;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
@@ -72,13 +73,6 @@ public class NodeHookActionProxy extends PermanentNodeHookAdapter {
 	}
 
 	/* (non-Javadoc)
-	 * @see freemind.extensions.NodeHook#onUpdateAnyNodeHook(freemind.modes.MindMapNode)
-	 */
-	public void onUpdateAnyNodeHook(MindMapNode updatedNode) {
-		createHook().onUpdateAnyNodeHook(updatedNode);
-	}
-
-	/* (non-Javadoc)
 	 * @see freemind.extensions.NodeHook#onUpdateChildrenHook(freemind.modes.MindMapNode)
 	 */
 	public void onUpdateChildrenHook(MindMapNode updatedNode) {
@@ -112,6 +106,27 @@ public class NodeHookActionProxy extends PermanentNodeHookAdapter {
 	 */
 	public void startupMapHook() {
 		createHook().startupMapHook();
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#onRemoveChild(freemind.modes.MindMapNode)
+	 */
+	public void onRemoveChild(MindMapNode oldChildNode) {
+		createHook().onRemoveChild(oldChildNode);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#loadFrom(freemind.main.XMLElement)
+	 */
+	public void loadFrom(XMLElement child) {
+		createHook().loadFrom(child);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#save(freemind.main.XMLElement)
+	 */
+	public void save(XMLElement xml) {
+		createHook().save(xml);
 	}
 
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.2 2004-03-11 06:28:41 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.3 2004-03-18 06:44:34 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -163,7 +163,7 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public void anotherNodeSelected(MindMapNode n) {
-    	// look for hooks:
+	   	// look for hooks:
     	for(Iterator i= n.getActivatedHooks().iterator(); i.hasNext();){
     		PermanentNodeHook hook = (PermanentNodeHook) i.next();
     		hook.onReceiveFocusHook();

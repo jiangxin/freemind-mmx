@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.10.2 2004-03-18 06:44:34 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 
 import freemind.controller.Controller;
 import freemind.controller.MenuBar;
@@ -96,4 +97,6 @@ public interface FreeMindMain {
 	 * @return
 	 */
 	public HookFactory getHookFactory();
+	
+	public JPanel getSouthPanel();
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.10.2 2004-03-11 06:28:41 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.10.3 2004-03-18 06:44:34 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -26,6 +26,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 
 import java.awt.Font;
+import java.io.File;
 import java.util.Vector;
 import java.util.HashMap;
 import java.util.Collection;
@@ -145,9 +146,15 @@ public abstract class XMLElementAdapter extends XMLElement {
              node.addIcon((MindIcon)child.getUserObject()); }
          else if (child.getName().equals("hook")) {
          	 XMLElement xml = (XMLElement) child/*.getUserObject()*/;
- 			 PermanentNodeHook hook = (PermanentNodeHook) frame.getHookFactory().createNodeHook((String)xml.getAttribute("NAME"));
+             try {
+             String loadName = (String)xml.getAttribute("NAME");
+             loadName.replace('/', File.separatorChar);
+ 			 PermanentNodeHook hook = (PermanentNodeHook) frame.getHookFactory().createNodeHook(loadName);
  			 hook.loadFrom(xml);
- 			 node.addHook(hook); 			 
+ 			 node.addHook(hook);
+             } catch(Exception e) {
+                 e.printStackTrace();
+             }
  		 }
       }
    }

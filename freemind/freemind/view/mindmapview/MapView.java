@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.10.1 2004-03-04 20:26:20 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.10.2 2004-03-18 06:44:34 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -28,7 +28,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 // Clouds:
-import freemind.view.mindmapview.CloudView;
 // End Clouds
 // links:
 import freemind.modes.MindMapArrowLink;
@@ -61,6 +60,7 @@ import javax.swing.event.TreeModelListener;
 import freemind.controller.Controller;
 import freemind.controller.NodeKeyListener;
 import freemind.controller.NodeMouseMotionListener;
+import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -73,9 +73,70 @@ import freemind.modes.MindMapLink;
  */
 public class MapView extends JPanel implements Printable {
 
+	private class Selected {
+		private Vector mySelected = new Vector();
+		public Selected() {};
+		public void clear() {
+			if(size() >0 ) {
+				triggerHooks(get(0)); 
+			}
+			mySelected.clear();
+			logger.info("Cleared selected.");
+		}
+		public int size() { return mySelected.size();
+		}
+		public void remove(NodeView node) { 
+			if(mySelected.indexOf(node)==0) {
+				triggerHooks(node);
+			}
+			mySelected.remove(node); 
+			logger.info("Removed selected "+node);
+		}
+		public void add(NodeView node) {
+			if(size() >0 ) {
+				triggerHooks(get(0)); 
+			}
+			mySelected.add(0, node); 
+			logger.info("Added selected "+node + "\nAll="+mySelected);
+		}
+		private void triggerHooks(NodeView node) {
+			// deselect the old node:
+			for(Iterator i= node.getModel().getActivatedHooks().iterator(); i.hasNext();){
+				PermanentNodeHook hook = (PermanentNodeHook) i.next();
+				hook.onLooseFocusHook();
+			}
+		}
+		public NodeView get(int i) { return (NodeView) mySelected.get(i); 
+		}
+		public boolean contains(NodeView node) { return mySelected.contains(node);
+		}
+		/**
+		 * @param newSelected
+		 */
+		public void moveToFirst(NodeView newSelected) {
+			if(contains(newSelected)) {
+				int pos = mySelected.indexOf(newSelected);
+				if( pos > 0 ){ // move
+					if(size() >0 ) {
+						triggerHooks(get(0)); 
+					}
+					mySelected.remove(newSelected);
+					mySelected.add(0, newSelected);
+				}
+			} else {
+				add(newSelected);
+			}
+			logger.info("MovedToFront selected "+newSelected + "\nAll="+mySelected);
+		}
+	}
+
+	//	Logging: 
+	private static java.util.logging.Logger logger;
+
+
     private MindMap model;
     private NodeView rootView;
-    private Vector selected = new Vector();
+    private Selected selected = new Selected();
     private Controller controller;
     private float zoom=1F;
     private boolean disableMoveCursor = true;
@@ -94,6 +155,8 @@ public class MapView extends JPanel implements Printable {
 		
         this.model = model;
         this.controller = controller;
+		if(logger == null)
+			logger = controller.getFrame().getLogger(this.getClass().getName());
 
         this.setAutoscrolls(true); //For some reason this doesn't work.
 
@@ -369,7 +432,7 @@ public class MapView extends JPanel implements Printable {
         LinkedList oldSelecteds = getSelecteds();
         //select new node
         this.selected.clear();
-        this.selected.add(0,newSelected);
+        this.selected.add(newSelected);
         newSelected.requestFocus();
 
         // set last focused as preferred (PN) 
@@ -399,7 +462,7 @@ public class MapView extends JPanel implements Printable {
             }
         }
         else {
-            selected.add(0,newSelected);
+            selected.add(newSelected);
         }
         getSelected().requestFocus();
         getSelected().repaint();
@@ -413,8 +476,10 @@ public class MapView extends JPanel implements Printable {
 
     public void makeTheSelected(NodeView newSelected) {
         if (isSelected(newSelected)) {
-            selected.remove(newSelected); }
-        selected.add(0,newSelected);
+            selected.moveToFirst(newSelected); 
+        } else {
+			selected.add(newSelected);
+        }           
         getSelected().requestFocus();
         getSelected().repaint(); }
 
@@ -969,7 +1034,7 @@ public class MapView extends JPanel implements Printable {
             // Warning, the old views still exist, because JVM has not deleted them. But don't use them!
             selected.clear();
             for (ListIterator it = selectedNodes.listIterator();it.hasNext();) {
-                selected.add(0,((MindMapNode)it.next()).getViewer()); }
+                selected.add(((MindMapNode)it.next()).getViewer()); }
             selectedNode.getViewer().requestFocus();
             repaint();
         }

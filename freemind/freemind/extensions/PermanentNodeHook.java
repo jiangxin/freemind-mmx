@@ -20,17 +20,16 @@ public interface PermanentNodeHook extends NodeHook {
 	void onReceiveFocusHook();
 	void onMouseOverHook();
 	void onUpdateNodeHook();
+
 	void onAddChild(MindMapNode newChildNode);
+
+	void onRemoveChild(MindMapNode oldChildNode);
+	
 	/**
 	 * If any of my children is updated, I get this notification.
 	 */
 	void onUpdateChildrenHook(MindMapNode updatedNode);
 
-	/**
-	 * If any node in the map is updated, I get this notification.
-	 * To receive it, you have to subscribe yourself using any method to be written. 
-	 */
-	void onUpdateAnyNodeHook(MindMapNode updatedNode);
 	/**
 	 * @param hookElement
 	 */
@@ -39,6 +38,10 @@ public interface PermanentNodeHook extends NodeHook {
 	 * @param child
 	 */
 	void loadFrom(XMLElement child);
+	/**
+	 * 
+	 */
+	void onLooseFocusHook();
 	
 
 }

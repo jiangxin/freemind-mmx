@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.2 2004-03-11 06:28:41 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.3 2004-03-18 06:44:33 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -194,13 +195,41 @@ public class HookFactory {
 			decorateHook(hookName, descriptor, hook);
 			return hook;
 		}
-		return null;
+		return (ModeControllerHook) createJavaHook(hookName, descriptor);
+	}
+
+	private MindMapHook createJavaHook(
+		String hookName,
+		HookDescriptor descriptor) {
+		try {
+			logger.info("Excecuting java class: " + descriptor.fileName);
+			String className =
+				descriptor.fileName.replace(File.separatorChar, '.');
+			className = className.substring(0, className.length() - 6
+			/*length of .class */
+			);
+			logger.info("Excecuting java class: " + className);
+			Class hookClass = Class.forName(className);
+			Constructor hookConstructor =
+				hookClass.getConstructor(new Class[] {
+			});
+			MindMapHook hook =
+				(MindMapHook) hookConstructor.newInstance(new Object[] {
+			});
+			decorateHook(hookName, descriptor, hook);
+			return hook;
+		} catch (Exception e) {
+			System.out.println(
+				"Error occurred loading hook: " + descriptor.fileName);
+			return null;
+		}
 	}
 
 	public NodeHook createNodeHook(
 		String hookName) {
+        logger.info("CreateNodeHook: " + hookName);
 		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
-		if(hookName==null)
+		if(hookName==null || descriptor==null)
 			throw new IllegalArgumentException("Unknown hook name "+hookName);
 		// proxy support
 		if(descriptor.properties.getProperty("proxy")!=null) {
@@ -218,31 +247,7 @@ public class HookFactory {
 			decorateHook(hookName, descriptor, hook);
 			return hook;
 		}
-		//return new BlueNodeHook(node, map, controller);
-		// from /usr/share/doc/packages/java2/demo/jfc/SwingSet2/src/SwingSet2.java
-		try {
-			String className =
-				descriptor.fileName.replace(File.separatorChar, '.');
-			className =
-				className.substring(0, className.length() - 6
-			/*length of .class */
-			);
-			logger.info("Excecuting java class: " + className);
-			Class hookClass = Class.forName(className);
-			Constructor hookConstructor =
-				hookClass.getConstructor(
-					new Class[] {});
-			NodeHook hook =
-				(NodeHook) hookConstructor.newInstance(
-					new Object[] { });
-			decorateHook(hookName, descriptor, hook);
-			return hook;
-		} catch (Exception e) {
-			System.out.println(
-				"Error occurred loading hook: " + descriptor.fileName);
-			return null;
-		}
-
+		return (NodeHook) createJavaHook(hookName, descriptor);
 	}
 
 	private void decorateHook(

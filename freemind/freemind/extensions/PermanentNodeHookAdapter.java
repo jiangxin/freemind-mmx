@@ -6,6 +6,7 @@
  */
 package freemind.extensions;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
@@ -72,7 +73,7 @@ public class PermanentNodeHookAdapter
 	 * @see freemind.modes.NodeHook#onReceiveFocusHook()
 	 */
 	public void onReceiveFocusHook() {
-		// TODO Auto-generated method stub
+		logger.info("onReceiveFocusHook");
 
 	}
 
@@ -99,14 +100,6 @@ public class PermanentNodeHookAdapter
 	}
 
 	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#onUpdateAnyNodeHook()
-	 */
-	public void onUpdateAnyNodeHook(MindMapNode updatedNode) {
-		// TODO Auto-generated method stub
-
-	}
-	
-	/* (non-Javadoc)
 	 * @see freemind.modes.NodeHook#onAddChild(freemind.modes.MindMapNode)
 	 */
 	public void onAddChild(MindMapNode newChildNode) {
@@ -114,16 +107,32 @@ public class PermanentNodeHookAdapter
 	}
 
 	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#onRemoveChild(freemind.modes.MindMapNode)
+	 */
+	public void onRemoveChild(MindMapNode oldChildNode) {
+		logger.info("onRemoveChild");
+	}
+
+	/* (non-Javadoc)
 	 * @see freemind.extensions.PermanentNodeHook#save(freemind.main.XMLElement)
 	 */
 	public void save(XMLElement xml) {
-		xml.setAttribute("name", getName());
+		String saveName = getName();
+		saveName.replace(File.separatorChar, '/');
+		xml.setAttribute("name", saveName);
 	}
 
 	/* (non-Javadoc)
 	 * @see freemind.extensions.PermanentNodeHook#loadFrom(freemind.main.XMLElement)
 	 */
 	public void loadFrom(XMLElement child) {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#onLooseFocusHook()
+	 */
+	public void onLooseFocusHook() {
+		logger.info("onLooseFocusHook");
 	}
 
 
