@@ -15,7 +15,7 @@ AppUpdatesURL=http://freemind.sourceforge.net
 DefaultDirName={pf}\FreeMind
 DefaultGroupName=FreeMind
 AllowNoIcons=true
-LicenseFile=..\license.txt
+LicenseFile=license.txt
 WindowVisible=true
 
 
@@ -49,12 +49,13 @@ Name: quicklaunchicon; Description: Create a &Quick Launch icon; GroupDescriptio
 Name: fileassoc; Description: &Associate FreeMind Extensions with the .mm file extension; GroupDescription: File Association:
 
 [Files]
-Source: ..\Freemind.exe; DestDir: {app}; Flags: promptifolder overwritereadonly
-Source: ..\accessories\*.*; DestDir: {app}\accessories; Flags: promptifolder overwritereadonly
-Source: ..\doc\*.*; DestDir: {app}\doc; Flags: promptifolder overwritereadonly
-Source: ..\lib\*.*; DestDir: {app}\lib; Flags: promptifolder overwritereadonly
-Source: ..\license.txt; DestDir: {app}; Flags: promptifolder overwritereadonly
-Source: ..\patterns.xml; DestDir: {app}; Flags: promptifolder overwritereadonly
+Source: ..\..\..\freemind\windows-launcher\Freemind.exe; DestDir: {app}; Flags: promptifolder overwritereadonly
+Source: ..\..\..\freemind\accessories\mm2xbel.xsl; DestDir: {app}\accessories; Flags: promptifolder overwritereadonly
+Source: ..\..\..\freemind\accessories\xbel2mm.xsl; DestDir: {app}\accessories; Flags: promptifolder overwritereadonly
+Source: ..\..\..\freemind\doc\freemind.mm; DestDir: {app}\doc; Flags: promptifolder overwritereadonly
+Source: ..\..\..\freemind\lib\freemind.jar; DestDir: {app}\lib; Flags: promptifolder overwritereadonly
+Source: license.txt; DestDir: {app}; Flags: promptifolder overwritereadonly
+Source: ..\..\..\freemind\patterns.xml; DestDir: {app}; Flags: promptifolder overwritereadonly
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 Source: {app}\*.*; DestDir: {app}\backup; Flags: external skipifsourcedoesntexist uninsneveruninstall
