@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.11 2005-02-10 23:01:20 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.12 2005-02-13 22:39:56 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -54,7 +54,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -121,6 +120,7 @@ import freemind.modes.actions.NewChildAction;
 import freemind.modes.actions.NodeBackgroundColorAction;
 import freemind.modes.actions.NodeColorAction;
 import freemind.modes.actions.NodeColorBlendAction;
+import freemind.modes.actions.NodeHookAction;
 import freemind.modes.actions.NodeStyleAction;
 import freemind.modes.actions.NodeUpAction;
 import freemind.modes.actions.PasteAction;
@@ -221,6 +221,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     public FindAction find=null;
     public FindNextAction findNext=null;
+    public NodeHookAction nodeHookAction = null;
 
 
 	/** Executes series of actions. */
@@ -327,6 +328,8 @@ public abstract class ControllerAdapter implements ModeController {
 	    changeArrowLinkEndPoints = new ChangeArrowLinkEndPoints(this);
 	    find = new FindAction(this);
 	    findNext = new FindNextAction(this,find);
+	    nodeHookAction = new NodeHookAction("no_title", this); 
+	    
 	    
 	    compound = new CompoundActionHandler(this);
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -404,18 +407,23 @@ public abstract class ControllerAdapter implements ModeController {
 	/** Currently, this method is called by the mapAdapter. This is buggy, and is to be changed.*/
     public void nodeChanged(MindMapNode node) {
         getMap().setSaved(false);
-        nodeRefresh(node);
+        nodeRefresh(node,true);
     }
 
     public void nodeRefresh(MindMapNode node) {
+        nodeRefresh(node,false);
+    }
+    private void nodeRefresh(MindMapNode node, boolean isUpdate) {
     	logger.finest("nodeChanged called for node "+node+" parent="+node.getParentNode());
 		if(nodesAlreadyUpdated.contains(node)) {			
 			return;
 		}
 		nodesToBeUpdated.add(node);
 		nodesAlreadyUpdated.add(node);
-		// Tell any node hooks that the node is changed:
-		recursiveCallUpdateHooks((MindMapNode) node, (MindMapNode) node /* self update */);
+		if (isUpdate) {
+            // Tell any node hooks that the node is changed:
+            recursiveCallUpdateHooks((MindMapNode) node, (MindMapNode) node /* self update */);
+        }
 		getMap().nodeChangedMapInternal(node);
 		nodesToBeUpdated.remove(node);
 		if(nodesToBeUpdated.size()==0) {
@@ -1510,6 +1518,12 @@ public abstract class ControllerAdapter implements ModeController {
 		}
 		return hook;
 	}
+	
+	public void addHook(MindMapNode focussed, List selecteds, String hookName) {
+	    nodeHookAction.addHook(focussed, selecteds, hookName);
+	}
+	
+	
     protected class OpenAction extends AbstractAction {
         ControllerAdapter mc;
         public OpenAction(ControllerAdapter modeController) {

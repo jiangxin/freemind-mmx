@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.4 2005-02-10 23:01:23 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.5 2005-02-13 22:39:56 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import freemind.extensions.PermanentNodeHook;
+import freemind.extensions.PermanentNodeHookSubstituteUnknown;
 import freemind.main.XMLElement;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
@@ -160,18 +161,20 @@ public abstract class XMLElementAdapter extends XMLElement {
              node.addIcon((MindIcon)child.getUserObject()); }
          else if (child.getName().equals("hook")) {
          	 XMLElement xml = (XMLElement) child/*.getUserObject()*/;
-             try {
              String loadName = (String)xml.getAttribute("NAME");
-			 //loadName=loadName.replace('/', File.separatorChar);
-			 /* The next code snippet is an exception. Normally, hooks 
-			  * have to be created via the ModeController. 
-			  * DO NOT COPY. */
- 			 PermanentNodeHook hook = (PermanentNodeHook) frame.getHookFactory().createNodeHook(loadName);
- 			 hook.loadFrom(xml);
- 			 node.addHook(hook);
+ 			 PermanentNodeHook hook = null;
+             try {
+				 //loadName=loadName.replace('/', File.separatorChar);
+				 /* The next code snippet is an exception. Normally, hooks 
+				  * have to be created via the ModeController. 
+				  * DO NOT COPY. */
+                hook = (PermanentNodeHook) frame.getHookFactory().createNodeHook(loadName);
              } catch(Exception e) {
                  e.printStackTrace();
+                 hook = new PermanentNodeHookSubstituteUnknown(loadName);
              }
+ 			 hook.loadFrom(xml);
+ 			 node.addHook(hook);
  		 }
       }
    }

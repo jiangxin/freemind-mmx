@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.8 2005-02-10 23:01:25 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.16.9 2005-02-13 22:39:56 christianfoltin Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -854,6 +854,8 @@ public class MapView extends JPanel implements Printable {
     }
 
     public MindMapArrowLink detectCollision(Point p) {
+        if(ArrowLinkViews == null)
+            return null;
         for(int i = 0; i < ArrowLinkViews.size(); ++i) {
             ArrowLinkView arrowView = (ArrowLinkView) ArrowLinkViews.get(i);
             if(arrowView.detectCollision(p))

@@ -164,6 +164,11 @@ RC2
 * bug fix: upper case and xml (for the turkish version)
 * bug fix: Find and Find Next work again.
 
+* plugin data survive even when the plugin is not present.
+* bug fix: reminders can be deleted and changed.
+* Reminder have hours and minutes now.
+* bug fix: reminders are undoable now.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

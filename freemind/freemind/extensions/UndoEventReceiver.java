@@ -19,12 +19,16 @@
  *
  * Created on 21.09.2004
  */
-/*$Id: UndoEventReceiver.java,v 1.1.4.1 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: UndoEventReceiver.java,v 1.1.4.2 2005-02-13 22:39:56 christianfoltin Exp $*/
 
 package freemind.extensions;
 
 /** This is a marker interface for hooks. If a PermanentNodeHook implements 
- *  this interface (which is easy), it receives onUpdateNodeHook, onUpdateChildrenHook.
+ *  this interface (which is easy), it receives onUpdateNodeHook, onUpdateChildrenHook,
+ *  even when the action issuing this update is caused by an undo action.
+ * 
+ * Normally, on undo, no event are generated. 
+ * 
  *  The onAddChild, onAddChildren events are not implemented yet. They are generated in any case. 
  * @author foltin
  *

@@ -19,7 +19,7 @@
  *
  * Created on 06.02.2005
  */
-/*$Id: ReminderHook.java,v 1.1.2.2 2005-02-10 23:01:30 christianfoltin Exp $*/
+/*$Id: ReminderHook.java,v 1.1.2.3 2005-02-13 22:39:57 christianfoltin Exp $*/
 package plugins.time;
 
 import java.text.MessageFormat;
@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -36,8 +37,6 @@ import freemind.main.XMLElement;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
 
-//FIXME: Strings externalisieren.
-//FIXME: Dialog mu§ node anzeigen.
 
 /**
  * @author foltin
@@ -53,6 +52,8 @@ public class ReminderHook extends PermanentNodeHookAdapter {
 
     private static MindIcon clockIcon=null;
 
+    //private Vector dateVector = new Vector();
+    
     /**
      *  
      */
@@ -64,7 +65,8 @@ public class ReminderHook extends PermanentNodeHookAdapter {
         super.loadFrom(child);
         HashMap hash = loadNameValuePairs(child);
         if (hash.containsKey(REMINDUSERAT)) {
-            setRemindUserAt(new Long((String) hash.get(REMINDUSERAT))
+            String remindAt = (String) hash.get(REMINDUSERAT);
+            setRemindUserAt(new Long(remindAt)
                     .longValue());
         }
 
@@ -79,6 +81,8 @@ public class ReminderHook extends PermanentNodeHookAdapter {
 
     public void shutdownMapHook() {
         getController().setToolTip(getNode(), getName(), null);
+        getNode().removeStateIcon(getName());
+        getController().nodeRefresh(getNode());
         if (timer != null) {
             timer.cancel();
         }
@@ -88,7 +92,7 @@ public class ReminderHook extends PermanentNodeHookAdapter {
     public void invoke(MindMapNode node) {
         super.invoke(node);
         if (remindUserAt == 0) {
-            throw new IllegalArgumentException("nothing to do");
+            return;
         }
         if (timer == null) {
             timer = new Timer();
@@ -99,15 +103,14 @@ public class ReminderHook extends PermanentNodeHookAdapter {
                     getResourceString("plugins/TimeManagement.xml_reminderNode_tooltip"));
             String message = formatter.format(messageArguments);
 
-            getController().setToolTip(node, getName(),
-                    message);
+            getController().setToolTip(node, getName(), message);
+            // icon
+            if (clockIcon == null) {
+                clockIcon = new MindIcon("clock");
+            }
+            node.addStateIcon(getName(), clockIcon);
+            getController().nodeRefresh(node);
         }
-        // icon
-        if(clockIcon==null) {
-            clockIcon = new MindIcon("clock");
-        }
-        node.addStateIcon(getName(), clockIcon);
-        getController().nodeRefresh(node);
     }
 
     protected class CheckReminder extends TimerTask {
@@ -125,7 +128,7 @@ public class ReminderHook extends PermanentNodeHookAdapter {
                     int result = JOptionPane
                             .showConfirmDialog(
                                     getController().getFrame().getJFrame(),
-                                    "Time has elapsed. Do you want to snooze for ten minutes?",
+                                    getResourceString("plugins/TimeManagement.xml_reminderNode_showNode"),
                                     "Freemind", JOptionPane.YES_NO_OPTION);
                     if (result == JOptionPane.YES_OPTION) {
                         setRemindUserAt(System.currentTimeMillis() + 10 * 60 * 1000);

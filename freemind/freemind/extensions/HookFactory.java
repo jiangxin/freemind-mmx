@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.4.5 2005-02-06 22:15:12 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.4.6 2005-02-13 22:39:56 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -318,8 +318,10 @@ public class HookFactory {
 			action.putValue(AbstractAction.NAME, descriptor.getClassName());		
 		}
 		String docu = descriptor.getDocumentation();
-		if(docu != null)
+		if(docu != null) {
 			action.putValue(AbstractAction.SHORT_DESCRIPTION, docu);
+			action.putValue(AbstractAction.LONG_DESCRIPTION, docu);
+		}
 		String icon = descriptor.getIconPath();
 		if(icon != null) {
 			ImageIcon imageIcon = new ImageIcon(getClassLoader(Collections.EMPTY_LIST).getResource(icon)); 
