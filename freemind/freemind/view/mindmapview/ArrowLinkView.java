@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.7 2003-12-21 08:40:36 christianfoltin Exp $*/
+/*$Id: ArrowLinkView.java,v 1.8 2004-01-17 23:20:58 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -31,6 +31,8 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.FlatteningPathIterator;
+import java.awt.geom.PathIterator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -169,16 +171,46 @@ public class ArrowLinkView {
         g.fillPolygon(p);
     }
 
+
+    /** MAXIMAL_RECTANGLE_SIZE_FOR_COLLISION_DETECTION describes itself. */
+    private final int MAXIMAL_RECTANGLE_SIZE_FOR_COLLISION_DETECTION = 16; 
+
+
     /** Determines, whether or not a given point p is in an epsilon-neighbourhood for the cubic curve.*/
     public boolean detectCollision(Point p) {
         if(arrowLinkCurve == null)
             return false;
-        return arrowLinkCurve.intersects(getControlPoint(p)); 
+        Rectangle2D rec=getControlPoint(p);
+        // flatten the curve and test for intersection (bug fix, fc, 16.1.2004).
+        FlatteningPathIterator pi = new FlatteningPathIterator(arrowLinkCurve.getPathIterator(null),MAXIMAL_RECTANGLE_SIZE_FOR_COLLISION_DETECTION/4,10/*=maximal 2^10=1024 points.*/);
+        double oldCoordinateX=0, oldCoordinateY=0;
+        while (pi.isDone() == false) {
+            double[] coordinates = new double[6];
+            int type = pi.currentSegment(coordinates);
+            switch(type) {
+            case PathIterator.SEG_LINETO:
+                if(rec.intersectsLine(oldCoordinateX, oldCoordinateY, coordinates[0], coordinates[1]))
+                    return true;
+                /* this case needs the same action as the next case, thus no "break" */
+            case PathIterator.SEG_MOVETO:
+                oldCoordinateX=coordinates[0];
+                oldCoordinateY=coordinates[1];
+                break;
+            case PathIterator.SEG_QUADTO:
+            case PathIterator.SEG_CUBICTO:
+            case PathIterator.SEG_CLOSE:
+            default:
+                break;
+            }
+            pi.next();
+        }
+        return false;
     }
+
 
     protected Rectangle2D getControlPoint(Point2D p) {
         // Create a small square around the given point.
-        int side = 8; 
+        int side = MAXIMAL_RECTANGLE_SIZE_FOR_COLLISION_DETECTION;
         return new Rectangle2D.Double(p.getX() - side / 2, p.getY() - side / 2,
                                       side, side);
     }

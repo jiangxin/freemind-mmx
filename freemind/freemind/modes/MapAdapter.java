@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.20 2003-12-17 21:04:53 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.21 2004-01-17 23:20:58 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -208,7 +208,12 @@ public abstract class MapAdapter implements MindMap {
        for(Iterator i = getFrame().getView().getSelecteds().iterator();i.hasNext();) {
           MindMapNode selectedNode = ((NodeView)i.next()).getModel();
           getLinkRegistry().cutNode(selectedNode);
-          removeNodeFromParent(selectedNode); }
+          try {
+              removeNodeFromParent(selectedNode); 
+          } catch(IllegalArgumentException e) {
+              System.err.println("Error occured during cut. The application was not able to cut the node " + selectedNode + ". I will try to continue. Typically, this is an error if you have selected a whole branch and try to move or cut it. Please do so only with the root of the tree you want to change.");
+          }
+       }
        return t; }
 
    public Transferable copy(MindMapNode node) {
@@ -258,9 +263,12 @@ public abstract class MapAdapter implements MindMap {
        return ""; }
 
     public void paste(Transferable t, MindMapNode parent) {
-       paste(t, /*target=*/parent, /*asSibling=*/ false); }
+        boolean isLeft = false;
+        if(parent.isLeft()!= null)
+            isLeft = parent.isLeft().getValue();
+        paste(t, /*target=*/parent, /*asSibling=*/ false, isLeft); }
 
-    public void paste(Transferable t, MindMapNode target, boolean asSibling) {
+    public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
 	if (t != null) {
             // In MapAdapter it does basically nothing.
             nodeStructureChanged(asSibling ? target.getParent() : target);

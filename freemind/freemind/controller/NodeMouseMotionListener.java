@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.11 2003-12-31 14:10:24 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.12 2004-01-17 23:20:57 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -32,6 +32,9 @@ import java.util.Timer;
 import freemind.view.mindmapview.NodeView;
 import freemind.main.Tools;
 
+// 
+import java.lang.Integer;
+
 /**
  * The MouseMotionListener which belongs to every
  * NodeView
@@ -45,8 +48,18 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
     private static Tools.BooleanHolder delayedSelectionEnabled; 
     /** And a static method to reread this holder. This is used when the selection method is changed via the option menu. */
     static public void updateSelectionMethod(Controller c) {
+       if(timeForDelayedSelection == null)
+           {
+               timeForDelayedSelection = new Tools.IntHolder();
+           }     
         delayedSelectionEnabled = new Tools.BooleanHolder();
-        delayedSelectionEnabled.setValue(c.getFrame().getProperty("selection_method").equals("selection_method_delayed")?true:false);
+        delayedSelectionEnabled.setValue(c.getFrame().getProperty("selection_method").equals("selection_method_direct")?false:true);
+        /* set time for delay to infinity, if selection_method equals selection_method_by_click. */
+        if(c.getFrame().getProperty("selection_method").equals("selection_method_by_click")) {
+            timeForDelayedSelection.setValue(Integer.MAX_VALUE);
+        } else {
+            timeForDelayedSelection.setValue(Integer.parseInt(c.getFrame().getProperty("time_for_delayed_selection")));
+        }
     }
 
     Timer timerForDelayedSelection;
@@ -55,17 +68,16 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
 
     public NodeMouseMotionListener(Controller controller) {
        c = controller; 
-       if(timeForDelayedSelection == null)
-           {
-               timeForDelayedSelection = new Tools.IntHolder();
-               timeForDelayedSelection.setValue(Integer.parseInt(c.getFrame().getProperty("time_for_delayed_selection")));
-           }     
        if(delayedSelectionEnabled == null)
            updateSelectionMethod(c);
     }
 
-    public void mouseDragged(MouseEvent e) {}
-   // Invoked when a mouse button is pressed on a component and then dragged. 
+    /** Invoked when a mouse button is pressed on a component and then dragged.  */
+    public void mouseDragged(MouseEvent e) {
+        // first stop the timer and select the node:
+        stopTimerForDelayedSelection();
+        c.getView().extendSelection((NodeView)e.getSource(), e);
+    }
 
     public void mouseMoved(MouseEvent e) {
    //  Invoked when the mouse button has been moved on a component (with no buttons down). 

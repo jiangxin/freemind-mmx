@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.37 2004-01-10 18:22:25 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.38 2004-01-17 23:20:57 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -165,8 +165,11 @@ public abstract class ControllerAdapter implements ModeController {
     public void doubleClick(MouseEvent e) {
         MindMapNode node = ((NodeView)(e.getComponent())).getModel();
         // edit the node only if the node is a leaf (fc 0.7.1)
-        if (node.hasChildren())
+        if (node.hasChildren()) {
+            // the emulate the plain click. 
+            plainClick(e);
             return;
+        }
         if (!e.isAltDown() 
             && !e.isControlDown() 
             && !e.isShiftDown() 
@@ -178,10 +181,18 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public void plainClick(MouseEvent e) {
-       if (getView().getSelected().followLink(e.getX())) {
-          loadURL(); }
-       else {
-          toggleFolded(); }}
+        MindMapNode node = ((NodeView)(e.getComponent())).getModel();
+        if (getView().getSelected().followLink(e.getX())) {
+            loadURL(); }
+        else {
+            if (!node.hasChildren()) {
+                // the emulate the plain click. 
+                doubleClick(e);
+                return;
+            }
+            toggleFolded(); 
+        }
+    }
 
     //
     // Map Management
@@ -244,9 +255,12 @@ public abstract class ControllerAdapter implements ModeController {
     public boolean save(File file) {
        return getModel().save(file); }      
 
-    protected void add(JMenu menu, Action action, String keystroke) { 
+    /** @return returns the new JMenuItem.*/
+    protected JMenuItem add(JMenu menu, Action action, String keystroke) { 
        JMenuItem item = menu.add(action);
-       item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke))); }
+       item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
+       return item;
+    }
 
     protected void add(JMenu menu, Action action) {
        menu.add(action); }
@@ -1020,6 +1034,9 @@ public abstract class ControllerAdapter implements ModeController {
            int childPosition = parent.getChildPosition(targetNode);
            if (newNodeMode == NEW_SIBLING_BEHIND) {
               childPosition++;
+           }
+           if(targetNode.isLeft()!= null) {
+               newNode.setLeft(targetNode.isLeft().getValue());
            }
            getModel().insertNodeInto(newNode, parent, childPosition);
            select(newNode.getViewer());

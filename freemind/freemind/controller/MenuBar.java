@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.21 2004-01-05 23:41:05 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.22 2004-01-17 23:20:57 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -243,7 +243,8 @@ public class MenuBar extends JMenuBar {
 	preferences.addSeparator();
     addOptionSet( c.optionSelectionMechanismAction,
                   new String[]{ "selection_method_delayed",
-                                "selection_method_direct"},
+                                "selection_method_direct",
+                                "selection_method_by_click"},
                   preferences, c.getProperty("selection_method") );
 
     }

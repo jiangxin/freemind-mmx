@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.25 2003-12-21 08:40:36 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.26 2004-01-17 23:20:58 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -54,13 +54,17 @@ public abstract class NodeView extends JLabel {
     int relYPos;//the relative Y Position to it's parent
     private boolean isLong = false;
 
-    final static int DRAGGED_OVER_NO = 0;
-    final static int DRAGGED_OVER_SON = 1;
-    final static int DRAGGED_OVER_SIBLING = 2;
+    public final static int DRAGGED_OVER_NO = 0;
+    public final static int DRAGGED_OVER_SON = 1;
+    public final static int DRAGGED_OVER_SIBLING = 2;
+    /** For RootNodeView.*/
+    public final static int DRAGGED_OVER_SON_LEFT = 3;
 
-    protected int isDraggedOver = 0;
+    protected int isDraggedOver = DRAGGED_OVER_NO;
     public void setDraggedOver(int draggedOver) {
        isDraggedOver = draggedOver; }
+    public void setDraggedOver(Point p) {
+       setDraggedOver( (dropAsSibling(p.getX())) ? NodeView.DRAGGED_OVER_SIBLING : NodeView.DRAGGED_OVER_SON) ; }
     public int getDraggedOver() {
        return isDraggedOver; }
 
@@ -141,7 +145,14 @@ public abstract class NodeView extends JLabel {
     public boolean dropAsSibling(double xCoord) {
        return isLeft() ?
           xCoord > getSize().width*2/3 :
-          xCoord < getSize().width/3; }
+          xCoord < getSize().width/3; 
+    }
+
+    /** @return true if should be on the left, false otherwise.*/
+    public boolean dropPosition (double xCoord) {
+        /* here it is the same as me. */
+       return isLeft(); 
+    }
 
     public boolean followLink(double xCoord) {
        return getModel().getLink() != null &&

@@ -1,5 +1,22 @@
 Changes made in Freemind 0.7.1:
 ===============================
+RC2:
+----
+* Bug fix: the context menu for graphical links appears not only in the neighbourhood of the link line, but appears in the *FILLED* arc, that is surrounded by the arc. Fixed.
+* Selection method added: selection via mouse click as in office programs.
+* Click method: 
+  - inner node
+    + single click: fold
+    + double click: fold
+  - leaf (node without childs)
+    + single click: edit
+    + double click: edit
+* POSITION is only saved if the node is son of root. This prevents having lots of POSITION tags in the saved XML.
+* POSITION is chosen right if dropped onto root. (left half, pasted to left, right half, pasted to - you guess it? - right!)
+* Left and Right is respected with ENTER.
+
+RC1:
+----
 * Bug fix: nodes with arc and bubble nodes have antialiased text when the antialiasing  of edges is on
 * Removed the arc, that distinguished bubble nodes from folded nodes. More discussion is needed.
 * Selection method changed: double click is now only for editing if the node is *not* an inner node.

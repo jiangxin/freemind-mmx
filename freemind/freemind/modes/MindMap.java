@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.13 2003-11-16 22:15:15 christianfoltin Exp $*/
+/*$Id: MindMap.java,v 1.14 2004-01-17 23:20:58 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -50,7 +50,8 @@ public interface MindMap extends TreeModel {
     void splitNode(MindMapNode node, int caretPosition, String newText);
 
     void paste(Transferable t, MindMapNode parent);
-    void paste(Transferable t, MindMapNode target, boolean asSibling);
+    /** @param isLeft determines, whether or not the node is placed on the left or right. **/
+    void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft);
 
     //    void paste(MindMapNode node, MindMapNode parent);
 

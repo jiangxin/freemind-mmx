@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.12 2003-12-17 21:04:54 christianfoltin Exp $*/
+/*$Id: RootNodeView.java,v 1.13 2004-01-17 23:20:58 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -106,8 +106,18 @@ public class RootNodeView extends NodeView {
         }
     }	
 
-    public boolean dropAsSibling(double xCoord) {
-       return false; }
+    public boolean dropAsSibling (double xCoord) {
+        return false;
+    }
+
+    /** @return true if should be on the left, false otherwise.*/
+    public boolean dropPosition (double xCoord) {
+       return xCoord < getSize().width*1/2 ; 
+    }
+
+    public void setDraggedOver(Point p) {
+        setDraggedOver ((dropPosition(p.getX())) ? NodeView.DRAGGED_OVER_SON_LEFT : NodeView.DRAGGED_OVER_SON); 
+    }
 
     //
     // Navigation
@@ -149,7 +159,7 @@ public class RootNodeView extends NodeView {
 	if (this.getModel()==null) return;
 
         paintSelected(g, size);
-        //paintDragOver(g, size);
+        paintDragOver(g, size);
 
 	//Draw a root node
 	setHorizontalAlignment(CENTER);
@@ -163,6 +173,17 @@ public class RootNodeView extends NodeView {
 
 	super.paint(g);
     }
+
+   public void paintDragOver(Graphics2D graphics, Dimension size) {
+        if (getDraggedOver() == DRAGGED_OVER_SON) {
+              graphics.setPaint( new GradientPaint(size.width/2,0,dragColor, size.width, 0, map.getBackground()));
+              graphics.fillRect(size.width/2, 0, size.width-1, size.height-1); 
+        } else if (getDraggedOver() == DRAGGED_OVER_SON_LEFT) {
+              graphics.setPaint( new GradientPaint(0,0,map.getBackground(), size.width/2, 0, dragColor));
+              graphics.fillRect(0,0, size.width/2, size.height-1); 
+        }
+    }
+
 
    protected void setRendering(Graphics2D g) {
       if (getMap().getController().getAntialiasEdges() || getMap().getController().getAntialiasAll()) {

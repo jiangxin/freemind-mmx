@@ -86,7 +86,7 @@ public class NodeDropListener implements DropTargetListener {
               if (sourceAction.equals("COPY")) {
                  dropAction = DnDConstants.ACTION_COPY; }}
 
-           targetNodeView.setDraggedOver(0);
+           targetNodeView.setDraggedOver(NodeView.DRAGGED_OVER_NO);
            targetNodeView.repaint();
 
            if (dtde.isLocalTransfer() && (dropAction == DnDConstants.ACTION_MOVE) && !isDropAcceptable(dtde)) {
@@ -99,7 +99,8 @@ public class NodeDropListener implements DropTargetListener {
               //if (dtde.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
               //System.err.println("filelist");
               c.getModel().paste (t, targetNode, 
-                                  targetNodeView.dropAsSibling(dtde.getLocation().getX()));
+                                  targetNodeView.dropAsSibling(dtde.getLocation().getX()),
+                                  targetNodeView.dropPosition (dtde.getLocation().getX()));
               dtde.dropComplete(true);
               return; }
 
@@ -147,10 +148,12 @@ public class NodeDropListener implements DropTargetListener {
               c.getModel().paste (dropAction == DnDConstants.ACTION_MOVE 
                                   ? c.getModel().cut() : c.getModel().copy(),
                                   targetNode, 
-                                  targetNodeView.dropAsSibling(dtde.getLocation().getX())); }
+                                  targetNodeView.dropAsSibling(dtde.getLocation().getX()),
+                                  targetNodeView.dropPosition (dtde.getLocation().getX())); }
            c.getView().selectAsTheOnlyOneSelected(targetNodeModel.getViewer()); }
 	catch (Exception e) {
 	    System.err.println("Drop exception:"+e);
+        e.printStackTrace();
 	    dtde.dropComplete(false);
 	    return; }
 	dtde.dropComplete(true); }
@@ -175,15 +178,17 @@ public class NodeDropListener implements DropTargetListener {
 
     public void dragOver (DropTargetDragEvent e) {
        NodeView draggedNode = (NodeView)e.getDropTargetContext().getComponent();
-       int newDraggedOver = (draggedNode.dropAsSibling(e.getLocation().getX())) ? 2 : 1;
-       boolean repaint = newDraggedOver != draggedNode.getDraggedOver();
-       draggedNode.setDraggedOver(newDraggedOver);
+       int oldDraggedOver = draggedNode.getDraggedOver();
+       // let the node decide, which dragged over type it is:
+       draggedNode.setDraggedOver(e.getLocation());
+       int newDraggedOver = draggedNode.getDraggedOver();
+       boolean repaint = newDraggedOver != oldDraggedOver;
        if (repaint) {
           draggedNode.repaint(); }
     }
    public void dragExit (DropTargetEvent e) {
        NodeView draggedNode = (NodeView)e.getDropTargetContext().getComponent();
-       draggedNode.setDraggedOver(0);
+       draggedNode.setDraggedOver(NodeView.DRAGGED_OVER_NO);
        draggedNode.repaint();
    }
     public void dragScroll (DropTargetDragEvent e) {}

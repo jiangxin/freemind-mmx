@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.32 2004-01-04 22:22:49 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.33 2004-01-17 23:20:58 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -873,11 +873,11 @@ public class MindMapMapModel extends MapAdapter {
        // when all the lines are inserted.
        return pastedNode;
     }
-
+    
     /*
      *
      */
-    public void paste(Transferable t, MindMapNode target, boolean asSibling) {
+    public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
        if (t == null) {
           return; }
        try {
@@ -909,10 +909,7 @@ public class MindMapMapModel extends MapAdapter {
              for (int i = 0; i < textLines.length; ++i) {
                  MindMapNodeModel newModel = pasteXMLWithoutRedisplay(textLines[i], target, asSibling);
                 // additional code for left/right decision:
-                if(asSibling && target.isLeft()!= null) {
-                    // if side is set, then the new node is on the same side.
-                    newModel.setLeft(target.isLeft().getValue());
-                }
+                 newModel.setLeft(isLeft);
              }
           }
           else if (t.isDataFlavorSupported(MindMapNodesSelection.htmlFlavor)) {
