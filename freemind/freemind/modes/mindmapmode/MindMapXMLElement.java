@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapXMLElement.java,v 1.8 2003-11-19 20:36:30 christianfoltin Exp $*/
+/*$Id: MindMapXMLElement.java,v 1.9 2003-11-20 07:01:59 christianfoltin Exp $*/
 
 /*On doubling of code
  *
@@ -239,21 +239,36 @@ public class MindMapXMLElement extends XMLElement {
         for(int i = 0; i < MindMapArrowLinkModels.size(); ++i) {
             MindMapArrowLinkModel arrowLink = (MindMapArrowLinkModel) MindMapArrowLinkModels.get(i);
             String oldID = arrowLink.getDestinationLabel();
+            MindMapNodeModel target = null;
+            String newID = null;
             // find oldID in target list:
-            // wrong: also as registry, if link is present in the map (paste).
             if(IDToTarget.containsKey(oldID)) {
-                MindMapNodeModel target = (MindMapNodeModel) IDToTarget.get(oldID);
-                String newID = registry.getLabel(target);
-                // set the new ID:
-                arrowLink.setDestinationLabel(newID);
-                // set the target:
-                arrowLink.setTarget(target);
-                // add the arrowLink:
-                //System.out.println("Node = " + target+ ", oldID="+oldID+", newID="+newID);
-                registry.registerLink(arrowLink);
-            } else {
-                System.err.println("Cannot find the label " + oldID + " in the map. This arrow is not restored.");
+                // link present in the xml text
+                target = (MindMapNodeModel) IDToTarget.get(oldID);
+                newID = registry.getLabel(target);
+            } else if(registry.getTargetForID(oldID) != null) {
+                // link is already present in the map (paste).
+                target = (MindMapNodeModel) registry.getTargetForID(oldID);
+                if(target == null)
+                    continue;
+                newID = registry.getLabel(target);
+                if( ! newID.equals(oldID) ) {
+                    System.err.println("Servere internal error. Looked for id " + oldID + " but found "+newID + " in the node " + target+".");
+                    continue;
+                }
+            } else {                
+                // link target is in nowhere-land
+                System.err.println("Cannot find the label " + oldID + " in the map. The link "+arrowLink+" is not restored.");
+                continue;
             }
+            // set the new ID:
+            arrowLink.setDestinationLabel(newID);
+            // set the target:
+            arrowLink.setTarget(target);
+            // add the arrowLink:
+            //System.out.println("Node = " + target+ ", oldID="+oldID+", newID="+newID);
+            registry.registerLink(arrowLink);
+
         }
     }
 

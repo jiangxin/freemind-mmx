@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.4 2003-11-19 20:36:29 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.5 2003-11-20 07:01:58 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -141,7 +141,9 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         String newID = generateUniqueID(proposedID);
         ID_Registered state = new ID_RegisteredAdapter(target, newID);
         TargetToID.put(target,state);
-         logger.info("Register target node:"+target+", with ID="+newID);
+        
+        logger.info("Register target node:"+target+", with ID="+newID);
+        getAssignedLinksVector(state);/* This is to allocate the link target in the IDToLinks map!.*/
         return state;
     };
         
@@ -159,6 +161,17 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         return null;
     }
         
+
+    public MindMapNode getTargetForID(String ID){
+        for(Iterator i = TargetToID.keySet().iterator(); i.hasNext();) {
+            MindMapNode target = (MindMapNode) i.next();
+            ID_BasicState state = (ID_BasicState) TargetToID.get(target);
+            if((state instanceof ID_Registered) && (state.getID().equals(ID)))
+                return target;
+        }
+        return null;
+    }
+
     
     private Vector  /* of MindMapLink s */ getAssignedLinksVector(ID_Registered state) {
         String id = state.getID();
@@ -182,7 +195,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         if(state instanceof ID_Registered)
             {
                 Vector vec = getAssignedLinksVector((ID_Registered) state);
-                for(int i = 0 ; i < vec.size(); ++i) {
+                for(int i = vec.size()-1 ; i >= 0 ; --i) {
                     deregisterLink((MindMapLink) vec.get(i));
                 }
                 //         if(vec.size() != 0)
@@ -219,8 +232,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         MindMapNode target = link.getTarget();
         ID_Registered state = registerLinkTarget(target);
         Vector vec = getAssignedLinksVector(state);
-        for(int i = 0 ; i < vec.size(); ++i) {
-            logger.info("Test for equal node:"+source+" to vector(i) " + vec.get(i));
+        for(int i = vec.size() -1 ; i >= 0 ; --i) {
+            logger.fine("Test for equal node:"+source+" to vector(i) " + vec.get(i));
             if(vec.get(i) == link)
                 {
                     vec.removeElementAt(i);
@@ -293,7 +306,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 
     public void        cutNode(MindMapNode target) {
         Vector links = getAllLinksFromMe(target);
-        for(int i = 0; i  < links.size(); ++i) {
+        for(int i = links.size() - 1; i >= 0 ; --i) {
             deregisterLink((MindMapLink) links.get(i));
         }
         deregisterLinkTarget(target);

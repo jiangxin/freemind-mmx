@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLinkRegistry.java,v 1.4 2003-11-19 20:36:29 christianfoltin Exp $*/
+/*$Id: MindMapLinkRegistry.java,v 1.5 2003-11-20 07:01:58 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -62,6 +62,8 @@ public interface MindMapLinkRegistry {
         throws java.lang.IllegalArgumentException;
     public ID_BasicState getState(MindMapNode node);
     public String getLabel(MindMapNode target);
+    /** Reverses the getLabel method: searches for a node with the id given as the argument.*/
+    public MindMapNode getTargetForID(String ID);
 //     /** Method to keep track of the targets associated to a target node. This method also sets the new id to the target. 
 //         Moreover, it is not required that the target node is already registered. This will be done on the fly.*/
     /** Removes links to all nodes beginning from target with its children.*/

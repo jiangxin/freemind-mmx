@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.2 2003-11-16 22:15:16 christianfoltin Exp $*/
+/*$Id: ArrowLinkView.java,v 1.3 2003-11-20 07:02:00 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -81,7 +81,7 @@ public class ArrowLinkView {
         // if one of the nodes is not present then draw a dashed line:
         if(source == null || target == null)
             g.setStroke(new BasicStroke(getWidth(), BasicStroke.CAP_ROUND,
-                                        BasicStroke.JOIN_ROUND, 0, new float[]{0,12,0,12}, 0));
+                                        BasicStroke.JOIN_ROUND, 0, new float[]{0,3,0,3}, 0));
 
         // determine, whether destination exists:
         if(source == null) {
