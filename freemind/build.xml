@@ -9,10 +9,11 @@
 	<property name="debug" value="on" />
 	<property name="build.compiler" value="modern" />
 	<property name="ver" value="0_7_2_beta" />
-
+	<property name="ant.dir" value="lib/ant/lib"/>
+	
 	<!-- begin generator part -->
-	<property name="jaxb" value="lib/ant/lib/jaxb-api.jar:lib/ant/lib/jaxb-impl.jar:lib/ant/lib/jaxb-libs.jar:lib/ant/lib/jaxb-xjc.jar:lib/ant/lib/namespace.jar:lib/ant/lib/relaxngDatatype.jar:lib/ant/lib/xsdlib.jar:lib/ant/lib/jax-qname.jar"/>
-	<property name="xml" value="lib/ant/lib/sax.jar:lib/ant/lib/dom.jar:lib/ant/lib/xercesImpl.jar"/>
+	<property name="jaxb" value="${ant.dir}/jaxb-xjc.jar:${ant.dir}/jaxb-api.jar:${ant.dir}/jaxb-impl.jar:${ant.dir}/jaxb-libs.jar:${ant.dir}/namespace.jar:${ant.dir}/relaxngDatatype.jar:${ant.dir}/xsdlib.jar:${ant.dir}/jax-qname.jar"/>
+	<property name="xml" value="${ant.dir}/sax.jar:${ant.dir}/dom.jar"/> 
 	<property name="classpath" value="${jaxb}:${xml}"/>
 	<property name="xsd.dir" value="." />
 	<property name="gen.dir" value="generated" />
@@ -105,7 +106,9 @@
 		<!-- third party libs -->
 		<mkdir dir="${dist}/lib" />
 		<copy todir="${dist}/lib"> 
-			<fileset dir="${src}/lib"/>
+			<fileset dir="${src}/lib">
+				<exclude name="**/jaxb-xjc.jar"/>
+			</fileset>
 		</copy>
 	</target>
 
