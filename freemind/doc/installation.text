@@ -1,0 +1,14 @@
+<html>
+<head>
+<title>FreeMind Guide</title>
+</head>
+<body>
+<h1>Installation</h1>
+I have written FreeMind in Java, so you will need the Java Runtime Environment for your Operating System. That shouldn't be a problem at all, because Java is available for Linux, Windows, Macintosh, Solaris and even PDA's. Just Download it at <a href=http://java.sun.com/j2se>java.sun.com/j2se</a>. You need at least Java 2 Version 1.2 . If you can manage to install the JRE, your half on your way to install FreeMind (congratulations ;-).<BR><BR>
+FreeMind is packaged as a zip, and new versions are also available as tgz. Create a directory where you want to install FreeMind into, and unpack the freemind-bin_x_x_x.zip into it. If you can't unpack the file, you need a compression utility. For windows you can take <a href=http://www.ozemail.com.au/~nulifetv/freezip/>freezip</a>. For Linux there should be such a utility on every distribution. <BR><BR>
+Once you have unpacked FreeMind, you can type "java -jar freemind.jar" on the shell if you are in the directory where freemind.jar is located. Alternatively, you can copy a link to freemind.bat (on windows) or freemind.sh (on unix) to your desktop. If FreeMind runs, open the file "freemind.mm", which explains the usage of FreeMind.
+<BR><BR>
+Previous: <a href=introduction.html>Introduction</a><BR>
+Next: <a href=usage.html>Usage</a>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<H2>Roadmap</H2>
+<H3>0.0.1</H3>
+Initial Release, running program with a nice view (Mind map style).<BR>
+Released: 15.06.00
+<H3>0.0.2</H3>
+Automatically resizing Mind map, better node editor, better node-positioning algorithm.<BR>
+Released: 27.06.00
+<H3>0.0.3</H3>
+Hyperlinking between Mind maps, more than one Mind map opened at the same time. Basic printing functionality, internationalization, properties files.<BR>
+Released: 09.07.00
+<H3>0.1.0</H3>
+Modular Design. Mindmap-Mode and experimental File-Mode as samples.<BR>
+Released: 05.08.00
+<H3>0.2.0</H3>
+Internal possibility for named edges (not yet used), nearly completely rewritten view, better user interface, many improvements.<BR>
+Status: working...
+<H3>0.2.1</H3>
+As long as this list exists, future nearly never brought what I awaited it to bring ;-). So I give up making any predictions now. (Maybe this makes the roadmap needless? However... ;-)<BR>
+Status: planning...

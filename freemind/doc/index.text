@@ -1,0 +1,8 @@
+<H2>The FreeMind Project</H2>
+<H5>FreeMind is a tool for editing tree structured data</H5>
+If you are not interested in the internals, you can see FreeMind as a Mindmapping tool. All FreeMind users currently use it as a Mindmapping tool. But keep in mind that FreeMind is even more than that.<BR><BR>
+Because FreeMind is written in Java, it will run on virtually any computer. Just try it! :-) <BR><BR>
+A bit more technically speaking, FreeMind is a general tool for editing tree-structured data. That means, FreeMind is intended for editing Mind maps, XML/HTML Documents, Directory trees etc. In future, even network-structures will be supported, ie. Topic Maps (ISO) etc. All these data is represented to the user as a Mind map. This is achived with a modular design, which makes it possible to easily write modules, only designing the model of the problem (the data structure), without caring for the visual representation at all. Currently a Mind Mapping and a File Mode are implemented. Other modes should follow soon.<BR><BR>
+Have a look at the <a href="http://sourceforge.net/projects/freemind/">project page at Sourceforge</a><BR><BR>
+<a href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=7118&type=1" width="88" height="31" border="0"></A>
+

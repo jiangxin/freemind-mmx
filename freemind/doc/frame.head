@@ -1,0 +1,24 @@
+<HTML>
+
+<HEAD>
+<TITLE>FreeMind</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<TABLE>
+	<TR>
+		<TD><IMG SRC="pics/butterfly.gif" WIDTH="170" HEIGHT="123"></TD>
+		<TD><IMG SRC="pics/freemind.gif" WIDTH="370" HEIGHT="88">
+</TD>
+	</TR>
+	<TR>
+		<TD valign="top"><UL>
+	<LI><A HREF="index.html">Home</A></LI>
+	<LI><A HREF="vision.html">Vision</A></LI>
+	<LI><A HREF="screenshots.html">Screenshots</A></LI>
+	<LI><A HREF="guide.html">Guide</A></LI>
+	<LI><A HREF="development.html">Development</A></LI>
+	<LI><A HREF="author.html">Authors</A></LI>
+	<LI><A HREF="maillist.html">Mailing Lists</A></LI>
+	<LI><A HREF="download.html">Download</A></LI>
+	</UL></TD>
+		<TD valign="top">
