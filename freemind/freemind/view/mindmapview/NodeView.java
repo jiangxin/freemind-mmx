@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.20 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.21 2003-11-13 06:38:23 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -187,6 +187,16 @@ public abstract class NodeView extends JLabel {
             child.getCoordinates(inList, additionalDistanceForConvexHull);
         }
     }   
+
+    /** Changed to remove the printing bug of java.*/
+    public Dimension getPreferredSize() {
+        if(map.isPrinting()) {
+            return new Dimension(super.getPreferredSize().width + (int)(10f*map.getZoom()),
+                                 super.getPreferredSize().height);
+        } else {
+            return super.getPreferredSize();
+        }
+    }	
 
 
    public void requestFocus(){

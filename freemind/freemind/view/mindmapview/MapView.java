@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.20 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.21 2003-11-13 06:38:23 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -670,6 +670,9 @@ public class MapView extends JPanel implements Printable {
         if (fitToPage && pageIndex > 0) {
             return Printable.NO_SUCH_PAGE; }
         isPrinting = true;
+        /* repaint for printing:*/
+        setZoom(getZoom());
+
         Graphics2D graphics2D = (Graphics2D)graphics;
         Color background = getBackground();
         setBackground(Color.white);
@@ -698,12 +701,18 @@ public class MapView extends JPanel implements Printable {
         graphics2D.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
         graphics2D.scale(zoomFactor, zoomFactor);
         graphics2D.translate(-boundingRectangle.getX(), -boundingRectangle.getY());
+        
 
         print(graphics2D);
         setBackground(background);
         isPrinting = false;
+        /* repaint for end printing:*/
+        setZoom(getZoom());
         return Printable.PAGE_EXISTS;
     }
+
+    /** For nodes, they can ask, whether or not the width must be bigger to prevent the "..." at the output. (Bug of java).*/
+    public boolean isPrinting() { return isPrinting;};
 
     public Dimension getPreferredSize() {
         return getLayout().preferredLayoutSize(this);
