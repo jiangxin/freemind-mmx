@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.29 2004-09-29 21:49:05 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.30 2004-10-05 17:50:48 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -25,8 +25,6 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -66,7 +64,6 @@ import freemind.controller.actions.generated.instance.MenuSubmenu;
 import freemind.extensions.HookFactory;
 import freemind.extensions.HookRegistration;
 import freemind.main.Tools;
-import freemind.main.XMLParseException;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MapAdapter;
@@ -77,12 +74,10 @@ import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
-import freemind.modes.StylePattern;
 import freemind.modes.actions.IconAction;
 import freemind.modes.actions.NewMapAction;
 import freemind.modes.actions.NewPreviousSiblingAction;
 import freemind.modes.actions.NewSiblingAction;
-import freemind.modes.actions.NodeColorAction;
 import freemind.modes.actions.NodeGeneralAction;
 import freemind.modes.actions.NodeHookAction;
 import freemind.modes.actions.SingleNodeOperation;
@@ -180,7 +175,6 @@ public class MindMapController extends ControllerAdapter {
           map.increaseFontSize(node,-1); }});
 
     // Extension Actions
-    public Action patterns[] = new Action[0]; // Make sure it is initialized
     public Vector iconActions = new Vector(); //fc
 
 
@@ -196,17 +190,6 @@ public class MindMapController extends ControllerAdapter {
 	if(logger == null) {
 		logger = getFrame().getLogger(this.getClass().getName());
 	}
-	try {
-           File patternsFile = getFrame().getPatternsFile();
-           if (patternsFile != null && patternsFile.exists()) {
-              loadPatterns(patternsFile); }
-           else {
-              System.out.println("User patterns file "+patternsFile+" not found.");
-              loadPatterns(new InputStreamReader(getResource("patterns.xml").openStream())); }}
-        catch (XMLParseException e) {
-           System.err.println("In patterns:"+e); }
-	catch (Exception ex) {
-           System.err.println("Patterns not loaded:"+ex); }
         // icon actions:
         createIconActions();
         //node hook actions:
@@ -266,24 +249,6 @@ public class MindMapController extends ControllerAdapter {
     
 	public MapAdapter newModel() {
        return new MindMapMapModel(getFrame()); }
-
-    private void loadPatterns(File file) throws Exception {
-       createPatterns(StylePattern.loadPatterns(file)); }
-
-    private void loadPatterns(Reader reader) throws Exception {
-       createPatterns(StylePattern.loadPatterns(reader)); }
-
-    private void createPatterns(List patternsList) throws Exception {
-	patterns = new Action[patternsList.size()];
-	for (int i=0;i<patterns.length;i++) {
-        patterns[i] = new ApplyPatternAction((StylePattern)patternsList.get(i));
-
-        // search icons for patterns:
-        MindIcon patternIcon = ((StylePattern)patternsList.get(i)).getNodeIcon();
-        if (patternIcon != null) {
-            patterns[i].putValue(Action.SMALL_ICON, patternIcon.getIcon(getFrame()));
-        }
-    }}
 
     private void createIconActions() {
         Vector iconNames = MindIcon.getAllIconNames();
@@ -953,22 +918,6 @@ public class MindMapController extends ControllerAdapter {
           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
              MindMapNodeModel selected = (MindMapNodeModel)it.next();
              getMindMapMapModel().setEdgeStyle(selected, style); }}}
-
-    private class ApplyPatternAction extends AbstractAction {
-        StylePattern pattern;
-	ApplyPatternAction(StylePattern pattern) {
-	    super(pattern.getName());
-	    this.pattern=pattern; }
-	public void actionPerformed(ActionEvent e) {
-	    for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-		MindMapNodeModel selected = (MindMapNodeModel)it.next();
-                ((MindMapMapModel)getMindMapMapModel()).applyPattern(selected, pattern); }}}
-
-
-
-
-    // Nonaction classes
-    // ________________________________________________________________________
 
     private class MindMapFilter extends FileFilter {
       public boolean accept(File f) {

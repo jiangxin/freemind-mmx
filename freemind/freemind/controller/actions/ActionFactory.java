@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: ActionFactory.java,v 1.1.2.6 2004-09-27 19:49:52 christianfoltin Exp $*/
+/*$Id: ActionFactory.java,v 1.1.2.7 2004-10-05 17:50:48 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -103,6 +103,8 @@ public class ActionFactory {
 	 * @param undoAction
 	 */
 	public void executeAction(ActionPair pair) {
+	    if(pair == null)
+	        return;
 		ActionPair filteredPair = pair;
 		// first filter:
 		for (Iterator i = registeredFilters.iterator(); i.hasNext();) {

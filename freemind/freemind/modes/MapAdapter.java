@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.10.13 2004-09-27 19:49:52 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.10.14 2004-10-05 17:50:48 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -424,42 +424,6 @@ public abstract class MapAdapter implements MindMap {
 	( (MutableTreeNode)path.getLastPathComponent() ).setUserObject( newValue );
     }
 
-    public void applyPattern(NodeAdapter node, StylePattern pattern) {
-        applyPattern(node, pattern, true /* = visible */);
-    }
-
-    protected void applyPattern(NodeAdapter node, StylePattern pattern, boolean visible) {
-        if (pattern.getAppliesToNode()) {
-           if (pattern.getText() != null) {
-              node.setUserObject(pattern.getText()); }
-           node.setColor(pattern.getNodeColor());
-           node.setStyle(pattern.getNodeStyle());
-           if (pattern.getAppliesToNodeIcon()) {
-              if (pattern.getNodeIcon() == null) {
-                 while (node.removeLastIcon()>0) {}}
-              else {
-                 node.addIcon(pattern.getNodeIcon()); }} // fc, 28.9.2003
-           if (pattern.getAppliesToNodeFont()) {
-              node.setFont(pattern.getNodeFont());
-              node.estabilishOwnFont(); }}
-
-        if (pattern.getAppliesToEdge()) {
-           EdgeAdapter edge = (EdgeAdapter)node.getEdge();
-           edge.setColor(pattern.getEdgeColor());
-           edge.setStyle(pattern.getEdgeStyle());
-           edge.setWidth(pattern.getEdgeWidth());
-        }
-        
-        if(pattern.getAppliesToChildren()) {
-             for (ListIterator i = node.childrenUnfolded(); i.hasNext(); ) {
-                 NodeAdapter child = (NodeAdapter) i.next();
-                 applyPattern(child, pattern.getChildrenStylePattern(), (visible)?(!node.isFolded()):false);
-             }
-        }
-        if(visible)
-            nodeChanged(node); 
-    }
-
     // find
 
     public boolean find(MindMapNode node, String what, boolean caseSensitive) {
@@ -791,74 +755,3 @@ public abstract class MapAdapter implements MindMap {
 
 }
 
-
-
-
-
-
-
-
-//     private void setFont(NodeModel node, String font) {
-// 	node.setFont(font);
-// 	nodeStructureChanged(node);
-//     }
-
-//     private void setFontSize(NodeModel node, int fontSize) {
-// 	node.setFontSize(fontSize);
-// 	nodeStructureChanged(node);
-//     }
-
-//     private void setUnderlined(NodeModel node) {
-// 	if (isUnderlined(node)) {
-// 	    node.setUnderlined(false);
-// 	} else {
-// 	    node.setUnderlined(true);
-// 	}
-// 	nodeChanged(node);
-//     }
-
-//     private void setNormalFont(NodeModel node) {
-// 	node.setItalic(false);
-// 	node.setBold(false);
-// 	node.setUnderlined(false);
-// 	nodeChanged(node);
-//     }
-
-//     private void setBold(NodeModel node) {
-// 	if (isBold(node)) {
-// 	    node.setBold(false);
-// 	} else {
-// 	    node.setBold(true);
-// 	}
-// 	nodeChanged(node);
-//     }
-
-//     private void setItalic(NodeModel node) {
-// 	if (isItalic(node)) {
-// 	    node.setItalic(false);
-// 	} else {
-// 	    node.setItalic(true);
-// 	}
-// 	nodeChanged(node);
-//     }
-
-//     private void setEdgeStyle(NodeModel node, String style) {
-// 	EdgeModel edge = (EdgeModel)node.getEdge();
-// 	edge.setStyle(style);
-// 	nodeStructureChanged(node);
-//     }
-
-//     private void setNodeStyle(NodeModel node, String style) {
-// 	node.setStyle(style);
-// 	nodeStructureChanged(node);
-//     }
-
-//     private void setNodeColor(NodeModel node, Color color) {
-// 	node.setColor(color);
-// 	nodeChanged(node);
-//     }
-
-//     private void setEdgeColor(NodeModel node, Color color) {
-// 	((EdgeModel)node.getEdge()).setColor(color);
-// 	nodeChanged(node);
-//     }

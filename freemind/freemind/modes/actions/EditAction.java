@@ -58,10 +58,6 @@ public class EditAction extends AbstractAction implements ActorXml {
 		return EditNodeAction.class;
 	}
 	
-	public void setNodeText(MindMapNode node, String text) {
-		changeNodeText(node, text);
-	}
-	
 	// edit begins with home/end or typing (PN 6.2)
 	public void edit(KeyEvent e, boolean addNew, boolean editLong) {
 	  if (c.getView().getSelected() != null) {
@@ -114,7 +110,7 @@ public class EditAction extends AbstractAction implements ActorXml {
 				}
 
 				public void ok(String newText) {
-					changeNodeText(node.getModel(), newText);
+					setNodeText(node.getModel(), newText);
 				}
 
 				public void split(String newText, int position) {
@@ -145,7 +141,7 @@ public class EditAction extends AbstractAction implements ActorXml {
 				}
 
 				public void ok(String newText) {
-					changeNodeText(node.getModel(), newText);
+					setNodeText(node.getModel(), newText);
 					endEdit();
 				}
 
@@ -160,7 +156,7 @@ public class EditAction extends AbstractAction implements ActorXml {
 
 	}
 
-	public void changeNodeText(MindMapNode selected, String newText){
+	public void setNodeText(MindMapNode selected, String newText){
 		String oldText = selected.toString();
 
 		try {

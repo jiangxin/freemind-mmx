@@ -13,6 +13,7 @@ import java.util.List;
 
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
+import freemind.modes.StylePattern;
 
 /**
  * @author foltin
@@ -31,6 +32,7 @@ public interface MindMapActions {
 	 *     public final int NEW_SIBLING_BEFORE = 4;
 	 * @see freemind.modes.ControllerAdapter
 	 * */
+	public void setNodeText(MindMapNode selected, String newText);
 	public MindMapNode addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e);
 	/** Another variant of addNew. If the index of the new node as a child of parent is known,
 	 * this method is easier to use. Moreover, it does not automatically start an editor.
@@ -60,6 +62,11 @@ public interface MindMapActions {
 	public void addIcon(MindMapNode node, MindIcon icon);
 	public int removeLastIcon(MindMapNode node);
 	public void removeAllIcons(MindMapNode node);
+	/** @param patternName is one of the names. They can be received using 
+	 * the patterns list of ApplyPatternActions from the ControllerAdapter. Each action
+	 * has a getPattern() method and the pattern has a getName() method ... */
+	public void applyPattern(MindMapNode node, String patternName);
+	public void applyPattern(MindMapNode node, StylePattern pattern);
 //	public void setNodeStyle(MindMapNode node, String style);
 	public void setEdgeColor(MindMapNode node, Color color);
 //	public void setEdgeWidth(MindMapNode node, int width);

@@ -35,11 +35,13 @@ public class NodeGeneralAction extends AbstractXmlAction {
 	protected static Logger logger;
 	protected NodeGeneralAction(ModeController modeController, String textID, String iconPath) {
 		super(
-		modeController.getText(textID),
+		    textID != null? modeController.getText(textID) : null,
 			iconPath != null ? new ImageIcon(modeController.getController().getResource(iconPath)) : null,
 		modeController);
 		this.modeController = modeController;
-		putValue(Action.SHORT_DESCRIPTION, modeController.getText(textID));
+		if (textID != null) {
+            putValue(Action.SHORT_DESCRIPTION, modeController.getText(textID));
+        }
 		this.singleNodeOperation = null;
 		this.actor = null;
 		if(logger==null) {
@@ -68,6 +70,12 @@ public class NodeGeneralAction extends AbstractXmlAction {
 			modeController.getActionFactory().registerActor(actor, actor.getDoActionClass());
 		}			
 	}
+    /**
+     * @param singleNodeOperation The singleNodeOperation to set.
+     */
+    public void setSingleNodeOperation(SingleNodeOperation singleNodeOperation) {
+        this.singleNodeOperation = singleNodeOperation;
+    }
 	public void xmlActionPerformed(ActionEvent e) {
 		if(singleNodeOperation != null) {
 			for (ListIterator it = modeController.getSelecteds().listIterator();

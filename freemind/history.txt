@@ -65,6 +65,7 @@ Changes made in Freemind 0.8.0:
 * icon selection and other MindMapHooks (like unfold all) are undoable now 
   (here, no undo- or redoaction are performed, the undo information is given by the actions
    the hook performs).
+* Apply patterns is nearly undoable
 
 Changes made in Freemind 0.7.2:
 ===============================

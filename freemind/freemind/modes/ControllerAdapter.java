@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.34 2004-10-05 09:10:55 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.35 2004-10-05 17:50:48 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -39,6 +39,8 @@ import java.awt.event.MouseWheelEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
@@ -50,6 +52,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -86,6 +89,7 @@ import freemind.main.ExampleFileFilter;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
+import freemind.modes.actions.ApplyPatternAction;
 import freemind.modes.actions.BoldAction;
 import freemind.modes.actions.CompoundActionHandler;
 import freemind.modes.actions.CopyAction;
@@ -110,7 +114,6 @@ import freemind.modes.actions.ToggleChildrenFoldedAction;
 import freemind.modes.actions.ToggleFoldedAction;
 import freemind.modes.actions.UnderlinedAction;
 import freemind.modes.actions.UndoAction;
-import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -132,8 +135,9 @@ public abstract class ControllerAdapter implements ModeController {
 	private HashSet mRegisteredMouseWheelEventHandler = new HashSet();
 	// Logging: 
 	private static java.util.logging.Logger logger;
+    public ApplyPatternAction patterns[] = new ApplyPatternAction[0]; // Make sure it is initialized
 
-	Mode mode;
+	private Mode mode;
     private int noOfMaps = 0; //The number of currently open maps
     private Clipboard clipboard;
     private int status;
@@ -165,6 +169,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     private Color selectionColor = new Color(200,220,200);
     public NodeColorAction nodeColor = null;
+    private Set globalPatternList;
 
     public ControllerAdapter(Mode mode) {
         this.setMode(mode);
@@ -185,8 +190,7 @@ public abstract class ControllerAdapter implements ModeController {
 		// the executor must be the first here, because it is executed last then.
 		getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
 		getActionFactory().registerHandler(new UndoActionHandler(this, undo, redo));
-		//debug:
-		getActionFactory().registerHandler(new freemind.controller.actions.PrintActionHandler(this));
+		//debug:		getActionFactory().registerHandler(new freemind.controller.actions.PrintActionHandler(this));
 
         cut = new CutAction(this);
         paste = new PasteAction(this);
@@ -214,6 +218,18 @@ public abstract class ControllerAdapter implements ModeController {
                 .getAllIconNames().get(0)), removeLastIconAction);
 	    removeLastIconAction.setIconAction(unknwonIconAction);
 	    removeAllIconsAction = new RemoveAllIconsAction(this, unknwonIconAction);
+	    // load pattern actions:
+		try {
+	           File patternsFile = getFrame().getPatternsFile();
+	           if (patternsFile != null && patternsFile.exists()) {
+	              loadPatterns(patternsFile); }
+	           else {
+	              System.out.println("User patterns file "+patternsFile+" not found.");
+	              loadPatterns(new InputStreamReader(getResource("patterns.xml").openStream())); }}
+	        catch (XMLParseException e) {
+	           System.err.println("In patterns:"+e); }
+		catch (Exception ex) {
+	           System.err.println("Patterns not loaded:"+ex); }
 	    compound = new CompoundActionHandler(this);
 
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -230,9 +246,35 @@ public abstract class ControllerAdapter implements ModeController {
 
     }
 
-	public ActionFactory getActionFactory() {
-		return actionFactory;
-	}
+    private void loadPatterns(File file) throws Exception {
+        createPatterns(StylePattern.loadPatterns(file));
+    }
+
+    private void loadPatterns(Reader reader) throws Exception {
+        createPatterns(StylePattern.loadPatterns(reader));
+    }
+
+    private void createPatterns(List patternsList) throws Exception {
+        globalPatternList = new HashSet();
+        globalPatternList.addAll(patternsList);
+        patterns = new ApplyPatternAction[patternsList.size()];
+        for (int i = 0; i < patterns.length; i++) {
+            patterns[i] = new ApplyPatternAction(this,
+                    (StylePattern) patternsList.get(i));
+
+            // search icons for patterns:
+            MindIcon patternIcon = ((StylePattern) patternsList.get(i))
+                    .getNodeIcon();
+            if (patternIcon != null) {
+                patterns[i].putValue(Action.SMALL_ICON, patternIcon
+                        .getIcon(getFrame()));
+            }
+        }
+    }
+
+    public ActionFactory getActionFactory() {
+        return actionFactory;
+    }
 
 
     //
@@ -796,6 +838,26 @@ public abstract class ControllerAdapter implements ModeController {
     public void setEdgeColor(MindMapNode node, Color color) {
 		edgeColor.setEdgeColor(node, color);
     }
+
+	public void applyPattern(MindMapNode node, String patternName){
+        for (int i = 0; i < patterns.length; i++) {
+            ApplyPatternAction patternAction = patterns[i];
+            if(patternAction.getPattern().getName().equals(patternName)){
+                patternAction.applyPattern(node, patternAction.getPattern());
+                break;
+            }
+        }
+	}
+
+    
+
+    public void applyPattern(MindMapNode node, StylePattern pattern) {
+	    if(patterns.length > 0) {
+	        patterns[0].applyPattern(node, pattern);
+	    } else {
+	        throw new IllegalArgumentException("No pattern defined.");
+	    }
+    }
     
     public void addIcon(MindMapNode node, MindIcon icon) {
         unknwonIconAction.addIcon(node, icon);
@@ -814,7 +876,12 @@ public abstract class ControllerAdapter implements ModeController {
 		edit.edit(e, addNew, editLong);
 	}
 
-	public Transferable cut() {
+	
+    public void setNodeText(MindMapNode selected, String newText) {
+        edit.setNodeText(selected, newText);
+    }
+
+     public Transferable cut() {
 		return cut.cut();
 	}
 
