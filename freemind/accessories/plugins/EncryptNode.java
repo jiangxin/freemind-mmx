@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EncryptNode.java,v 1.1.2.2 2004-12-19 22:25:33 christianfoltin Exp $*/
+/*$Id: EncryptNode.java,v 1.1.2.3 2005-01-03 18:02:01 christianfoltin Exp $*/
 
 /*
  * Created on 14.12.2004
@@ -24,18 +24,18 @@
  */
 package accessories.plugins;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import accessories.plugins.dialogs.EnterPasswordDialog;
 import freemind.extensions.NodeHookAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
-import freemind.modes.ModeController;
 import freemind.modes.mindmapmode.EncryptedMindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapController.NewNodeCreator;
-import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
@@ -150,15 +150,28 @@ public class EncryptNode extends NodeHookAdapter {
      * @param encNode
      */
     private void doPasswordCheckAndDecryptNode(EncryptedMindMapNode encNode) {
-        // get password:
-        final EnterPasswordDialog pwdDialog = new EnterPasswordDialog(
-                (JFrame) getController().getFrame(), getController(), false);
-        pwdDialog.setModal(true);
-        pwdDialog.show();
-        if (pwdDialog.getResult() == EnterPasswordDialog.CANCEL) {
-            return;
+        while (true) {
+            // get password:
+            final EnterPasswordDialog pwdDialog = new EnterPasswordDialog(
+                    (JFrame) getController().getFrame(), getController(), false);
+            pwdDialog.setModal(true);
+            pwdDialog.show();
+            if (pwdDialog.getResult() == EnterPasswordDialog.CANCEL) {
+                return;
+            }
+            if (!encNode.decrypt(pwdDialog.getPassword())) {
+                // box:
+                JOptionPane
+                        .showMessageDialog(
+                                getController().getFrame().getContentPane(),
+                                getController()
+                                        .getText(
+                                                "accessories/plugins/EncryptNode.properties_wrong_password"),
+                                "Freemind", JOptionPane.ERROR_MESSAGE);
+            } else {
+                return; // correct password.
+            }
         }
-        encNode.decrypt(pwdDialog.getPassword());
     }
 
 }

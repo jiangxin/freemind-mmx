@@ -119,6 +119,9 @@ Changes made in Freemind 0.8.0:
 * Bug fix for the moving node bug provided by Dimitri. Thanks!
 * Icons revised. Now, mostly come along in 16x16 format and are taken from /usr/share/icons/crystalsvg/16x16/...
 
+* Encrypted nodes store their randomly generated salt. This salt is changed each time the map is saved.
+* Wrong passwords produce a dialog.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

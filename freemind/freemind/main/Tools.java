@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.17.18.2 2004-11-03 21:16:43 christianfoltin Exp $*/
+/*$Id: Tools.java,v 1.17.18.3 2005-01-03 18:02:01 christianfoltin Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -439,5 +439,25 @@ public class Tools {
 	   public Object getSecond() {
 	     return second; }}
 
+   
+   /**
+    * @param byteBuffer
+    * @return
+    */
+   public static String toBase64(byte[] byteBuffer) {
+       return (new sun.misc.BASE64Encoder()).encode(byteBuffer);
+   }
+
+   /**
+    * @param base64String
+    * @return
+    * @throws IOException
+    */
+   public static byte[] fromBase64(String base64String) throws IOException {
+       return new sun.misc.BASE64Decoder().decodeBuffer(base64String);
+   }
 }
+
+   
+
 

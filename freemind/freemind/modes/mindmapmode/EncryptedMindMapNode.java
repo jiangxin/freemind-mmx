@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.3 2004-12-30 20:31:21 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.4 2005-01-03 18:02:02 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -38,6 +38,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
 import freemind.main.FreeMindMain;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindIcon;
@@ -82,9 +83,13 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
     }
 
-    public void decrypt(StringBuffer givenPassword) {
+    /**
+     * @param givenPassword
+     * @return true, if the password was correct.
+     */
+    public boolean  decrypt(StringBuffer givenPassword) {
         if (!checkPassword(givenPassword)) {
-            return;
+            return false;
         }
         if (!isDecrypted) {
             String childXml = decryptXml(encryptedContent, password);
@@ -101,6 +106,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         }
         isVisible = true;
         setFolded(false);
+        return true;
     }
 
     /**
@@ -296,7 +302,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
     /**
      * @param encryptedString
-     * @return
+     * @return null if the password is wrong.
      */
     private String decryptXml(String encryptedString, StringBuffer pwd) {
         DesEncrypter encrypter = new DesEncrypter(pwd);
@@ -307,8 +313,20 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         return decrypted;
     }
 
+    /**isShuttingDown is used to fold an encrypted node properly. 
+     * If it is encrypted, it has no children. Thus, the formely existing children can't be removed.
+     * Thus, this flag postpones the childlessness of a node until it tree structure is updated.
+     * @param isShuttingDown The isShuttingDown to set.
+     */
+    public void setShuttingDown(boolean isShuttingDown) {
+        this.isShuttingDown = isShuttingDown;
+    }
+ 
     // from: http://javaalmanac.com/egs/javax.crypto/PassKey.html
     public class DesEncrypter {
+        private static final String SALT_PRESENT_INDICATOR = " ";
+        private static final int SALT_LENGTH=8;
+        
         Cipher ecipher;
 
         Cipher dcipher;
@@ -328,7 +346,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         }
 
         /**
-		 * @param passPhrase
+		 * @param mSalt
 		 */
 		private void init(byte[] mSalt) {
             if(mSalt!=null) {
@@ -364,13 +382,22 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
             try {
                 // Encode the string into bytes using utf-8
                 byte[] utf8 = str.getBytes("UTF8");
+                // determine salt by random:
+                byte[] newSalt = new byte[SALT_LENGTH];
+                for (int i = 0; i < newSalt.length; i++) {
+                    newSalt[i] = (byte)(Math.random()*256l-128l);
+                    System.out.print("Random"+newSalt[i]);
+                }
 
-				init(null);
+				init(newSalt);
                 // Encrypt
                 byte[] enc = ecipher.doFinal(utf8);
 
+                logger.info("salt is "+Tools.toBase64(newSalt));
                 // Encode bytes to base64 to get a string
-                return new sun.misc.BASE64Encoder().encode(enc);
+                return Tools.toBase64(newSalt)
+                        + SALT_PRESENT_INDICATOR
+                        + Tools.toBase64(enc);
             } catch (javax.crypto.BadPaddingException e) {
             } catch (IllegalBlockSizeException e) {
             } catch (UnsupportedEncodingException e) {
@@ -379,11 +406,21 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
             return null;
         }
 
+
         public String decrypt(String str) {
             try {
+                byte[] salt = null;
+                // test if salt exists:
+                int indexOfSaltIndicator = str.indexOf(SALT_PRESENT_INDICATOR);
+                if(indexOfSaltIndicator>=0) {
+                    String saltString = str.substring(0, indexOfSaltIndicator);
+                    str = str.substring(indexOfSaltIndicator+1);
+                    logger.info("salt (for decrypt) is "+saltString);
+                    salt = Tools.fromBase64(saltString);
+                }
                 // Decode base64 to get bytes
-                byte[] dec = new sun.misc.BASE64Decoder().decodeBuffer(str);
-				init(null);
+                byte[] dec = Tools.fromBase64(str);
+				init(salt);
 				               
 				// Decrypt
                 byte[] utf8 = dcipher.doFinal(dec);
@@ -397,14 +434,5 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
             }
             return null;
         }
-   }
-
-    /**isShuttingDown is used to fold an encrypted node properly. 
-     * If it is encrypted, it has no children. Thus, the formely existing children can't be removed.
-     * Thus, this flag postpones the childlessness of a node until it tree structure is updated.
-     * @param isShuttingDown The isShuttingDown to set.
-     */
-    public void setShuttingDown(boolean isShuttingDown) {
-        this.isShuttingDown = isShuttingDown;
     }
 }
