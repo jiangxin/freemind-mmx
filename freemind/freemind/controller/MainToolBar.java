@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.8 2001-04-19 16:20:38 ponder Exp $*/
+/*$Id: MainToolBar.java,v 1.9 2001-05-09 21:21:49 ponder Exp $*/
 
 package freemind.controller;
 
@@ -34,9 +34,9 @@ public class MainToolBar extends JToolBar {
     public MainToolBar(final Controller c) {
 	JButton button;
 
-	button = add(c.previousMap);
+	button = add(c.navigationPreviousMap);
 	button.setText("");
-	button = add(c.nextMap);
+	button = add(c.navigationNextMap);
 	button.setText("");
 	button = add(c.printDirect);
 	button.setText("");

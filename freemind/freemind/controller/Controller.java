@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.23 2001-05-06 18:47:56 ponder Exp $*/
+/*$Id: Controller.java,v 1.24 2001-05-09 21:21:49 ponder Exp $*/
 
 package freemind.controller;
 
@@ -91,8 +91,10 @@ public class Controller {
     Action about;
     Action documentation;
     Action license;
-    Action previousMap;
-    Action nextMap;
+    Action historyPreviousMap;
+    Action historyNextMap;
+    Action navigationPreviousMap;
+    Action navigationNextMap;
 
     Action moveToRoot;
 
@@ -119,8 +121,10 @@ public class Controller {
 	about = new AboutAction(this);
 	documentation = new DocumentationAction(this);
 	license = new LicenseAction(this);
-	previousMap = new PreviousMapAction(this);
-	nextMap = new NextMapAction(this);
+	historyPreviousMap = new HistoryPreviousMapAction(this);
+	historyNextMap = new HistoryNextMapAction(this);
+	navigationPreviousMap = new NavigationPreviousMapAction(this);
+	navigationNextMap = new NavigationNextMapAction(this);
 	
 	moveToRoot = new MoveToRootAction(this);
 
@@ -366,30 +370,6 @@ public class Controller {
 	((MainToolBar)getToolBar()).setAllActions(enabled);
     }
 
-    /*
-    private void updateNavigationActions() {
-	List keys = new LinkedList(getMapModules().keySet());
-	if (getMapModule() == null) {
-	    return;
-	}
-	int index = keys.indexOf(getMapModule().toString());
-	ListIterator i = keys.listIterator(index);
-	if (i.hasPrevious()) {
-	    previousMap.setEnabled(true);
-	} else {
-	    previousMap.setEnabled(false);
-	}
-	if (i.hasNext()) {
-	    i.next();
-	    if (i.hasNext()) {
-		nextMap.setEnabled(true);
-	    } else {
-		nextMap.setEnabled(false);
-	    }
-	}
-    }
-    */
-
     //
     // program/map control
     //
@@ -418,6 +398,8 @@ public class Controller {
     public class MapModuleManager {
 	private Map mapmodules = new TreeMap(); //The instances of mode, ie. the Model/View pairs
 	private MapModule mapmodule; //reference to the current mapmodule, could be done with an index to mapmodules, too.
+	//	private String current;
+	
 	private Controller c;
 
 	MapModuleManager(Controller c) {
@@ -430,6 +412,99 @@ public class Controller {
 	
 	public MapModule getMapModule() {
 	    return mapmodule;
+	}
+
+	public void newMapModule(MindMap map) {
+	    MapModule mapmodule = new MapModule(map, new MapView(map, c), getMode());
+	    setMapModule(mapmodule);
+	    addToMapModules(mapmodule.toString(), mapmodule);
+	    navigationNextMap.setEnabled(false);
+	    history.mapChanged(mapmodule);
+	}
+
+	public void updateMapModuleName() {
+	    getMapModules().remove(getMapModule().toString());//removeFromViews() doesn't work because MapModuleChanged()
+	    //must not be called at this state
+	    getMapModule().rename();
+	    addToMapModules(getMapModule().toString(),getMapModule());
+	}
+
+	void nextMapModule() {
+	    List keys = new LinkedList(getMapModules().keySet());
+	    int index = keys.indexOf(getMapModule().toString());
+	    ListIterator i = keys.listIterator(index+1);
+	    if (i.hasNext()) {
+		changeToMapModule((String)i.next());
+	    }
+	}
+
+	void previousMapModule() {
+	    List keys = new LinkedList(getMapModules().keySet());
+	    int index = keys.indexOf(getMapModule().toString());
+	    ListIterator i = keys.listIterator(index);
+	    if (i.hasPrevious()) {
+		changeToMapModule((String)i.previous());
+	    }
+	}
+
+	//Change MapModules
+
+	public boolean tryToChangeToMapModule(String mapmodule) {
+	    if (getMapModules().containsKey(mapmodule)) {
+		changeToMapModule(mapmodule);
+		return true;
+	    } else {
+		return false;
+	    }
+	}
+    
+	void changeToMapModule(String mapmodule) {
+	    MapModule map = (MapModule)(getMapModules().get(mapmodule));
+	    history.mapChanged(map);
+	    changeToMapModuleWithoutHistory(map);
+	}
+
+	void changeToMapModuleWithoutHistory(MapModule map) {
+	    if (map.getMode() != getMode()) {
+		changeToMode(map.getMode().toString());
+	    }
+	    setMapModule(map);
+	    mapModuleChanged();
+	}
+
+	public void changeToMapOfMode(Mode mode) {
+	    for (Iterator i = getMapModules().keySet().iterator(); i.hasNext(); ) {
+		String next = (String)i.next();
+		if ( ((MapModule)getMapModules().get(next)).getMode() == mode ) {
+		    changeToMapModule(next);
+		    return;
+		}
+	    }
+	}
+
+	//private
+
+	private void changeToAnotherMap(String toBeClosed) {
+	    List keys = new LinkedList(getMapModules().keySet());
+	    int index = keys.indexOf(getMapModule().toString());
+	    for (ListIterator i = keys.listIterator(); i.hasNext();) {
+		String key = (String)i.next();
+		if (!key.equals(toBeClosed)) {
+		    changeToMapModule(key);
+		    return;
+		}
+	    }
+	    //What to do if no other maps are available?
+	    setMapModule(null);
+	}
+
+	private void mapModuleChanged() {
+	    frame.getFreeMindMenuBar().updateMapsMenu();//to show the new map in the mindmaps menu
+	    lastOpened.mapOpened(getMapModule());
+	    //	history.add(getMapModule());
+	    updateNavigationActions();
+	    setTitle();
+	    moveToRoot();
 	}
 
 	private void setMapModule(MapModule mapmodule) {
@@ -455,92 +530,35 @@ public class Controller {
 	    }
 	}
 
-	public void newMapModule(MindMap map) {
-	    MapModule mapmodule = new MapModule(map, new MapView(map, c), getMode());
-	    setMapModule(mapmodule);
-	    addToMapModules(mapmodule.toString(), mapmodule);
-	    //	nextMap.setEnabled(false);
-	    history.mapChanged(mapmodule);
-	}
-
-	public void updateMapModuleName() {
-	    getMapModules().remove(getMapModule().toString());//removeFromViews() doesn't work because MapModuleChanged()
-	    //must not be called at this state
-	    getMapModule().rename();
-	    addToMapModules(getMapModule().toString(),getMapModule());
-	}
-
 	private void close() throws Exception {
 	    getMode().getModeController().close();
 	    String toBeClosed = getMapModule().toString();
 	    changeToAnotherMap(toBeClosed);
 	    removeFromMapModules(toBeClosed);
-	}
-	
-	void nextMapModule() {
+	    updateNavigationActions();//is this needed here?
 	}
 
-	void previousMapModule() {
-	}
-
-	private void changeToAnotherMap(String toBeClosed) {
+	private void updateNavigationActions() {
 	    List keys = new LinkedList(getMapModules().keySet());
+	    if (getMapModule() == null) {
+		return;
+	    }
 	    int index = keys.indexOf(getMapModule().toString());
-	    for (ListIterator i = keys.listIterator(); i.hasNext();) {
-		String key = (String)i.next();
-		if (!key.equals(toBeClosed)) {
-		    changeToMapModule(key);
-		    return;
-		}
-	    }
-	    //What to do if no other maps are available?
-	    setMapModule(null);
-	}
-
-	//Change MapModules
-
-	public boolean tryToChangeToMapModule(String mapmodule) {
-	    if (getMapModules().containsKey(mapmodule)) {
-		changeToMapModule(mapmodule);
-		return true;
+	    ListIterator i = keys.listIterator(index);
+	    if (i.hasPrevious()) {
+		navigationPreviousMap.setEnabled(true);
 	    } else {
-		return false;
+		navigationPreviousMap.setEnabled(false);
 	    }
-	}
-    
-	void changeToMapModule(String mapmodule) {
-	    MapModule map =  (MapModule)(getMapModules().get(mapmodule));
-	    history.mapChanged(map);
-	    changeToMapModuleWithoutHistory(map);
-	}
-
-	void changeToMapModuleWithoutHistory(MapModule map) {
-	    if (map.getMode() != getMode()) {
-		changeToMode(map.getMode().toString());
-	    }
-	    setMapModule(map);
-	    mapModuleChanged();
-	}
-
-	public void changeToMapOfMode(Mode mode) {
-	    for (Iterator i = getMapModules().keySet().iterator(); i.hasNext(); ) {
-		String next = (String)i.next();
-		if ( ((MapModule)getMapModules().get(next)).getMode() == mode ) {
-		    changeToMapModule(next);
-		    return;
+	    if (i.hasNext()) {
+		i.next();
+		if (i.hasNext()) {
+		    navigationNextMap.setEnabled(true);
+		} else {
+		    navigationNextMap.setEnabled(false);
 		}
 	    }
 	}
-
-	private void mapModuleChanged() {
-	    frame.getFreeMindMenuBar().updateMapsMenu();//to show the new map in the mindmaps menu
-	    lastOpened.mapOpened(getMapModule());
-	    //	history.add(getMapModule());
-	    //	updateNavigationActions();
-	    setTitle();
-	    moveToRoot();
-	}
-
     }
 
     /**
@@ -559,18 +577,18 @@ public class Controller {
 	    if (current+1 < historyList.size()) {
 		getMapModuleManager().changeToMapModuleWithoutHistory((MapModule)historyList.get(++current));
 		//the map is immediately added again via changeToMapModule
-		previousMap.setEnabled(true);
+		historyPreviousMap.setEnabled(true);
 		if ( current >= historyList.size()-1)
-		    nextMap.setEnabled(false);
+		    historyNextMap.setEnabled(false);
 	    }
 	}
 
 	void previousMap() {
 	    if (current > 0) {
 		getMapModuleManager().changeToMapModuleWithoutHistory((MapModule)historyList.get(--current));
-		nextMap.setEnabled(true);
+		historyNextMap.setEnabled(true);
 		if ( current <= 0)
-		    previousMap.setEnabled(false);
+		    historyPreviousMap.setEnabled(false);
 	    }
 	}
 
@@ -581,14 +599,14 @@ public class Controller {
 	    historyList.add(map);
 	    current = historyList.indexOf(map);
 	    if (current > 0) {
-		previousMap.setEnabled(true);
+		historyPreviousMap.setEnabled(true);
 	    } else {
-		previousMap.setEnabled(false);
+		historyPreviousMap.setEnabled(false);
 	    }//closeMap will cause a bug?
 	    if (current < historyList.size()-1) {
-		nextMap.setEnabled(true);
+		historyNextMap.setEnabled(true);
 	    } else {
-		nextMap.setEnabled(false);
+		historyNextMap.setEnabled(false);
 	    }
 	}
     }
@@ -749,8 +767,8 @@ public class Controller {
     // Map navigation
     //
 
-    private class PreviousMapAction extends AbstractAction {
-	PreviousMapAction(Controller controller) {	 
+    private class HistoryPreviousMapAction extends AbstractAction {
+	HistoryPreviousMapAction(Controller controller) {	 
 	    super(controller.getFrame().getResources().getString("previous_map"), new ImageIcon(getResource("images/Back24.gif")));
 	    setEnabled(false);
 	}
@@ -759,13 +777,33 @@ public class Controller {
 	}
     }
 
-    private class NextMapAction extends AbstractAction {
-	NextMapAction(Controller controller) {
+    private class HistoryNextMapAction extends AbstractAction {
+	HistoryNextMapAction(Controller controller) {
 	    super(controller.getFrame().getResources().getString("next_map"), new ImageIcon(getResource("images/Forward24.gif")));
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent event) {
 	    history.nextMap();
+	}
+    }
+
+    private class NavigationPreviousMapAction extends AbstractAction {
+	NavigationPreviousMapAction(Controller controller) {	 
+	    super(controller.getFrame().getResources().getString("previous_map"), new ImageIcon(getResource("images/Back24.gif")));
+	    setEnabled(false);
+	}
+	public void actionPerformed(ActionEvent event) {
+	    mapModuleManager.previousMapModule();
+	}
+    }
+
+    private class NavigationNextMapAction extends AbstractAction {
+	NavigationNextMapAction(Controller controller) {
+	    super(controller.getFrame().getResources().getString("next_map"), new ImageIcon(getResource("images/Forward24.gif")));
+	    setEnabled(false);
+	}
+	public void actionPerformed(ActionEvent event) {
+	    mapModuleManager.nextMapModule();
 	}
     }
 

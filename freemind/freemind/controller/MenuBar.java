@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.10 2001-05-06 18:47:56 ponder Exp $*/
+/*$Id: MenuBar.java,v 1.11 2001-05-09 21:21:49 ponder Exp $*/
 
 package freemind.controller;
 
@@ -138,11 +138,14 @@ public class MenuBar extends JMenuBar {
 	JMenuItem moveToRoot = editmenu.add(c.moveToRoot);
 	moveToRoot.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_moveToRoot")));
 
-	JMenuItem previousMap = editmenu.add(c.previousMap);
+	JMenuItem previousMap = editmenu.add(c.navigationPreviousMap);
 	previousMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_previousMap")));
 
-	JMenuItem nextMap = editmenu.add(c.nextMap);
+	JMenuItem nextMap = editmenu.add(c.navigationNextMap);
 	nextMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_nextMap")));
+
+	JMenuItem historyPreviousMap = editmenu.add(c.historyPreviousMap);
+	JMenuItem historyNextMap = editmenu.add(c.historyNextMap);
 
 // 	JMenuItem cut = editmenu.add(c.cut);
 // 	cut.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_cut")));
