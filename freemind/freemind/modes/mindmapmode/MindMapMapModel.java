@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.31 2003-12-22 11:15:18 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.32 2004-01-04 22:22:49 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -268,17 +268,17 @@ public class MindMapMapModel extends MapAdapter {
 "    span.foldopened { color: white; font-size: xx-small;"+el+
 "    border-width: 1; font-family: monospace; padding: 0em 0.25em 0em 0.25em; background: #e0e0e0;"+el+
 "    VISIBILITY: visible;"+el+
-"    cursor:hand; }"+el+
+"    cursor:pointer; }"+el+
 ""+el+
 ""+el+
 "    span.foldclosed { color: #666666; font-size: xx-small;"+el+
 "    border-width: 1; font-family: monospace; padding: 0em 0.25em 0em 0.25em; background: #e0e0e0;"+el+
 "    VISIBILITY: hidden;"+el+
-"    cursor:hand; }"+el+
+"    cursor:pointer; }"+el+
 ""+el+
 "    span.foldspecial { color: #666666; font-size: xx-small; border-style: none solid solid none;"+el+
 "    border-color: #CCCCCC; border-width: 1; font-family: sans-serif; padding: 0em 0.1em 0em 0.1em; background: #e0e0e0;"+el+
-"    cursor:hand; }"+el+
+"    cursor:pointer; }"+el+
 ""+el+
 "    li { list-style: none; }"+el+
 ""+el+
