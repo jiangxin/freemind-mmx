@@ -1,5 +1,14 @@
 Changes made in Freemind 0.7.1:
 ===============================
+RC3:
+----
+* Bug fix: select sons of root with shift now gives only sons on the correct side.
+* Removed the delayed selection from the menu, it is deprecated now, and will be removed completely at the next release.
+* Corrected shading of the rood node for drag&drop
+* Little feature: folding of many selected nodes is working.
+* Bug fix: Selection mechanism: if drag&drop is started, the node under the cursor is selected. This removes a bug
+* Mac change: the browser call is changed according to Nick. Thanks.
+
 RC2:
 ----
 * Bug fix: the context menu for graphical links appears not only in the neighbourhood of the link line, but appears in the *FILLED* arc, that is surrounded by the arc. Fixed.

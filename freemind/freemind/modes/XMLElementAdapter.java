@@ -16,15 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.3 2003-12-17 21:04:53 christianfoltin Exp $*/
-
-/*On doubling of code
- *
- *You've got basically doubled code in XMLElementAdapter.java and
- *BrowseXMLElement.java. This goes together with the split to
- *MindMapMode and BrowseMode with no reasonable common ground.
- *I am not going to fix it now, it does no great harm anyway.
- */
+/*$Id: XMLElementAdapter.java,v 1.4 2004-01-24 22:36:48 christianfoltin Exp $*/
 
 package freemind.modes;
 

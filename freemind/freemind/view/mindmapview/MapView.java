@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.28 2004-01-18 08:16:41 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.29 2004-01-24 22:36:48 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -50,6 +50,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.HashSet;
+import java.util.Comparator;
+import java.util.Collections;
 
 import javax.swing.JPanel;
 import javax.swing.JViewport;
@@ -63,6 +65,7 @@ import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.MindMapLink;
+
 
 /**
  * This class represents the view of a whole MindMap
@@ -354,8 +357,13 @@ public class MapView extends JPanel implements Printable {
             selectAsTheOnlyOneSelected(newlySelectedNodeView); }}
 
     public void extendSelection(NodeView newlySelectedNodeView, InputEvent e) {
+        extendSelection(newlySelectedNodeView,  e, true);
+    }
+
+    /** @param selectBranchIfApplicable Bad hack, to avoid, that creating a graphical links leads to a selection of a whole branch. fc, 23.1.2004.*/
+    public void extendSelection(NodeView newlySelectedNodeView, InputEvent e, boolean selectBranchIfApplicable) {
         boolean extend = e.isControlDown(); 
-        boolean branch = e.isShiftDown(); 
+        boolean branch = e.isShiftDown()   &&  selectBranchIfApplicable; 
 
         if (extend || branch || !isSelected(newlySelectedNodeView)) {
             if (!branch) {
@@ -464,7 +472,10 @@ public class MapView extends JPanel implements Printable {
 
     public void selectContinuous(NodeView newSelected) {
         // Precondition: newSelected != getSelected()
+        // fc, bug fix: only select the nodes on the same side:
         NodeView oldSelected = getSelected();
+        boolean oldPositionLeft = oldSelected.isLeft();
+        boolean newPositionLeft = newSelected.isLeft();
         ListIterator i = newSelected.getSiblingViews().listIterator();
         while (i.hasNext()) {
             NodeView nodeView = (NodeView)i.next();
@@ -473,6 +484,7 @@ public class MapView extends JPanel implements Printable {
                 break; }}
         while (i.hasNext()) {
             NodeView nodeView = (NodeView)i.next();
+            if(nodeView.isLeft() == oldPositionLeft || nodeView.isLeft() == newPositionLeft)
             toggleSelected(nodeView);
             if ( nodeView == newSelected || nodeView == oldSelected ) {
                 break; }}}
@@ -524,6 +536,32 @@ public class MapView extends JPanel implements Printable {
         for (int i=0; i<selected.size();i++) {
             result.add( getSelected(i) );
         }
+        return result;
+    }
+
+    /** This class sortes nodes by ascending depth of their paths to root. This is useful to assure that children are cutted <b>before</b> their fathers!!!.*/
+    protected class nodesDepthComparator implements Comparator{
+        public nodesDepthComparator() {}
+        /* the < relation.*/
+        public int compare(Object p1, Object p2) {
+            MindMapNode n1 = ((NodeView) p1).getModel();
+            MindMapNode n2 = ((NodeView) p2).getModel();
+            Object[] path1 = getModel().getPathToRoot(n1);
+            Object[] path2 = getModel().getPathToRoot(n2);
+            int depth = path1.length - path2.length;
+            if(depth > 0)
+                return -1;
+            if(depth < 0)
+                return 1;
+            return 0;
+        }
+    }
+
+    /** @return a LinkedList of NodeViews ordered by depth. nodes with greater depth occur first. */
+    public LinkedList getSelectedsByDepth() {
+        // return an ArrayList of NodeViews.
+        LinkedList result = getSelecteds();
+        Collections.sort(result, new nodesDepthComparator());
         return result;
     }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.13 2004-01-17 23:20:58 christianfoltin Exp $*/
+/*$Id: RootNodeView.java,v 1.14 2004-01-24 22:36:48 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -176,11 +176,11 @@ public class RootNodeView extends NodeView {
 
    public void paintDragOver(Graphics2D graphics, Dimension size) {
         if (getDraggedOver() == DRAGGED_OVER_SON) {
-              graphics.setPaint( new GradientPaint(size.width/2,0,dragColor, size.width, 0, map.getBackground()));
-              graphics.fillRect(size.width/2, 0, size.width-1, size.height-1); 
+              graphics.setPaint( new GradientPaint(size.width/4,0,map.getBackground(), size.width*3/4, 0, dragColor));
+              graphics.fillRect(size.width/4, 0, size.width-1, size.height-1); 
         } else if (getDraggedOver() == DRAGGED_OVER_SON_LEFT) {
-              graphics.setPaint( new GradientPaint(0,0,map.getBackground(), size.width/2, 0, dragColor));
-              graphics.fillRect(0,0, size.width/2, size.height-1); 
+              graphics.setPaint( new GradientPaint(size.width*3/4,0,map.getBackground(), size.width/4, 0, dragColor));
+              graphics.fillRect(0, 0, size.width*3/4, size.height-1);
         }
     }
 

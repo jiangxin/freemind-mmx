@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.12 2004-01-17 23:20:57 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.13 2004-01-24 22:36:48 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -72,13 +72,6 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
            updateSelectionMethod(c);
     }
 
-    /** Invoked when a mouse button is pressed on a component and then dragged.  */
-    public void mouseDragged(MouseEvent e) {
-        // first stop the timer and select the node:
-        stopTimerForDelayedSelection();
-        c.getView().extendSelection((NodeView)e.getSource(), e);
-    }
-
     public void mouseMoved(MouseEvent e) {
    //  Invoked when the mouse button has been moved on a component (with no buttons down). 
        ((NodeView)e.getComponent()).updateCursor(e.getX());
@@ -91,10 +84,16 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
        }
     }
 
+    /** Invoked when a mouse button is pressed on a component and then dragged.  */
+    public void mouseDragged(MouseEvent e) {
+        // first stop the timer and select the node:
+        stopTimerForDelayedSelection();
+        NodeView nodeV = (NodeView)e.getSource();
 
-    //
-    // Interface MouseListener
-    //
+        // if dragged for the first time, select the node:
+        if(!c.getView().isSelected(nodeV))
+            c.getView().extendSelection(nodeV, e, false /* This means: do not select a whole branch.*/);
+    }
 
     public void mouseClicked(MouseEvent e) {
     }
@@ -104,33 +103,14 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
         //c.getMode().getModeController().select(e);
     }
 
-    public void createTimer( MouseEvent e ) {
-        // stop old timer if present.*/
-        stopTimerForDelayedSelection();
-        /* Region to check for in the sequel. */
-        controlRegionForDelayedSelection = getControlRegion(e.getPoint());
-        timerForDelayedSelection = new Timer();
-        timerForDelayedSelection.schedule(new timeDelayedSelection(c, e), 
-                                          /*if the new selection method is not enabled we put 0 to get direct selection.*/
-                                          (delayedSelectionEnabled.getValue())?timeForDelayedSelection.getValue():0);
-    }
-
-
-    protected void stopTimerForDelayedSelection() {
-        // stop timer.
-        if(timerForDelayedSelection != null)
-            timerForDelayedSelection.cancel();
-        timerForDelayedSelection = null;
-        controlRegionForDelayedSelection = null;
-    }
-
-    public void mouseExited( MouseEvent e ) {
-        stopTimerForDelayedSelection();
-    }
 
     public void mousePressed( MouseEvent e ) {
         // for Linux
         c.getMode().getModeController().showPopupMenu(e);
+    }
+
+    public void mouseExited( MouseEvent e ) {
+        stopTimerForDelayedSelection();
     }
 
     public void mouseReleased( MouseEvent e ) {
@@ -166,6 +146,25 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
         int side = 8;
         return new Rectangle((int)(p.getX() - side / 2), (int)(p.getY() - side / 2),
                              side, side);
+    }
+
+    public void createTimer( MouseEvent e ) {
+        // stop old timer if present.*/
+        stopTimerForDelayedSelection();
+        /* Region to check for in the sequel. */
+        controlRegionForDelayedSelection = getControlRegion(e.getPoint());
+        timerForDelayedSelection = new Timer();
+        timerForDelayedSelection.schedule(new timeDelayedSelection(c, e), 
+                                          /*if the new selection method is not enabled we put 0 to get direct selection.*/
+                                          (delayedSelectionEnabled.getValue())?timeForDelayedSelection.getValue():0);
+    }
+
+    protected void stopTimerForDelayedSelection() {
+        // stop timer.
+        if(timerForDelayedSelection != null)
+            timerForDelayedSelection.cancel();
+        timerForDelayedSelection = null;
+        controlRegionForDelayedSelection = null;
     }
 
     protected class timeDelayedSelection extends TimerTask {

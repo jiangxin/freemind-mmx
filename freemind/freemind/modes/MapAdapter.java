@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.22 2004-01-18 08:16:41 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.23 2004-01-24 22:36:48 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -201,37 +201,15 @@ public abstract class MapAdapter implements MindMap {
        return t;
     }
 
-    /** This class sortes nodes by ascending depth of their paths to root. This is useful to assure that children are cutted <b>before</b> their fathers!!!.*/
-    protected class nodesDepthComparator implements Comparator{
-        public nodesDepthComparator() {}
-        /* the < relation.*/
-        public int compare(Object p1, Object p2) {
-            MindMapNode n1 = (MindMapNode) p1;
-            MindMapNode n2 = (MindMapNode) p2;
-            Object[] path1 = getPathToRoot(n1);
-            Object[] path2 = getPathToRoot(n2);
-            int depth = path1.length - path2.length;
-            if(depth > 0)
-                return -1;
-            if(depth < 0)
-                return 1;
-            return 0;
-        }
-    }
-
     public final Transferable cut() {
        Transferable t = copy();
        // clear all recently cutted links from the registry:
        getLinkRegistry().clearCuttedNodeBuffer();
 
        // sort selectedNodes list by depth, in order to guarantee that sons are deleted first:
-       LinkedList selList = getFrame().getView().getSelecteds();
-       ArrayList sortedNodes = new ArrayList();
-       for (Iterator it=selList.iterator(); it.hasNext();) {
-           sortedNodes.add( ((NodeView) it.next() ).getModel() ); }
-       Collections.sort(sortedNodes, new nodesDepthComparator());
+       LinkedList sortedNodes = getFrame().getView().getSelectedsByDepth();
        for(Iterator i = sortedNodes.iterator();i.hasNext();) {
-          MindMapNode selectedNode = ((MindMapNode)i.next());
+          MindMapNode selectedNode = ((NodeView)i.next()).getModel();
           getLinkRegistry().cutNode(selectedNode);
           try {
               removeNodeFromParent(selectedNode); 

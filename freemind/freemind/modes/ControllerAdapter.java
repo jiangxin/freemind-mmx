@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.38 2004-01-17 23:20:57 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.39 2004-01-24 22:36:48 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -236,6 +236,7 @@ public abstract class ControllerAdapter implements ModeController {
         else {
            return save(getModel().getFile()); }}
 
+    /** fc, 24.1.2004: having two methods getSelecteds with different return values (linkedlists of models resp. views) is asking for trouble. @see MapView */
     protected LinkedList getSelecteds() {
 	LinkedList selecteds = new LinkedList();
 	ListIterator it = getView().getSelecteds().listIterator();
@@ -247,6 +248,8 @@ public abstract class ControllerAdapter implements ModeController {
 	}
 	return selecteds;
     }
+
+    
 
     /**
      * Return false is the action was cancelled, e.g. when
@@ -1064,17 +1067,52 @@ public abstract class ControllerAdapter implements ModeController {
        }
     }
 
+//     public void toggleFolded() {
+//         MindMapNode node = getSelected();
+//         // fold the node only if the node is not a leaf (PN 0.6.2)
+//         if (node.hasChildren()
+//             || node.isFolded()
+//             || Tools.safeEquals(getFrame()
+//                 .getProperty("enable_leaves_folding"),"true")) {
+//           getModel().setFolded(node, !node.isFolded());
+//         }
+//         getView().selectAsTheOnlyOneSelected(node.getViewer());
+//     }
+
     public void toggleFolded() {
-        MindMapNode node = getSelected();
-        // fold the node only if the node is not a leaf (PN 0.6.2)
-        if (node.hasChildren()
-            || node.isFolded()
-            || Tools.safeEquals(getFrame()
-                .getProperty("enable_leaves_folding"),"true")) {
-          getModel().setFolded(node, !node.isFolded());
+        /* Retrieve the information whether or not all nodes have the same folding state. */
+        Tools.BooleanHolder state = null; 
+        boolean allNodeHaveSameFoldedStatus = true;
+        for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+            MindMapNode node = (MindMapNode)it.next();
+            if(state == null) {
+                state = new Tools.BooleanHolder();
+                state.setValue(node.isFolded());
+            } else {
+                if(node.isFolded() != state.getValue()) {
+                    allNodeHaveSameFoldedStatus = false;
+                    break;
+                }
+            }
         }
-        getView().selectAsTheOnlyOneSelected(node.getViewer());
+        /* if the folding state is ambiguous, the nodes are folded. */
+        boolean fold = true;
+        if(allNodeHaveSameFoldedStatus && state != null) {
+            fold = !state.getValue();
+        }
+        MindMapNode lastNode = null;
+        for (ListIterator it = getView().getSelectedsByDepth().listIterator();it.hasNext();) {
+            MindMapNode node = ((NodeView)it.next()).getModel();
+            // fold the node only if the node is not a leaf (PN 0.6.2)
+            if (node.hasChildren() || node.isFolded() || Tools.safeEquals(getFrame().getProperty("enable_leaves_folding"),"true"))   {
+                getModel().setFolded(node, fold);
+            }
+            lastNode = node;
+        }
+        if(lastNode != null)
+            getView().selectAsTheOnlyOneSelected(lastNode.getViewer());
     }
+
 
     /**
      * If any children are folded, unfold all folded children.
