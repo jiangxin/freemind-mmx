@@ -135,7 +135,9 @@ public class RootNodeView extends NodeView {
     } 
   
     public Dimension getPreferredSize() {
-	return new Dimension((int)(super.getPreferredSize().width*1.2),(int)(super.getPreferredSize().height*1.5));
+	int width = (int)(super.getPreferredSize().width*1.3);
+	int height = (int)(super.getPreferredSize().height*1.6);
+	return new Dimension(width,height);
     }	
 
     /**
@@ -153,7 +155,7 @@ public class RootNodeView extends NodeView {
 
 	if( this.isSelected() ) {
 	    g.setColor(selectedColor);
-	    g.drawRect(0,2,size.width-1, size.height-5);
+	    g.drawRect(0,0,size.width-1, size.height-1);
 	}
 	super.paint(g);
     }

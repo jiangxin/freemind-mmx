@@ -178,7 +178,11 @@ public abstract class NodeAdapter implements MindMapNode {
     //
 
     public String toString() {
-	return userObject.toString();
+	String string = userObject.toString();
+	if (string.equals("")) {
+	    string = "   ";
+	}
+	return string;
     }
 	 
     public boolean isRoot() {

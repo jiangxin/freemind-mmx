@@ -109,6 +109,11 @@ public class NodeKeyListener implements KeyListener {
 	    return;
 
 	    //Easy access keybindings
+
+	    //I tried a simple "n" to add a new node, but the keyEvent was fired
+	    //twice and the n was posted to the editor as the first char.
+	    //That was to annoying
+
 	case KeyEvent.VK_E:
 	    c.moveUp();
 	    e.consume();
@@ -128,12 +133,6 @@ public class NodeKeyListener implements KeyListener {
 	    c.moveRight();
 	    e.consume();
 	    return;
-
- 	case KeyEvent.VK_N:
- 	    c.addNew( (NodeView)e.getSource() );
- 	    e.consume();
- 	    return;
-
 
 	case KeyEvent.VK_ESCAPE:
 	    c.moveToRoot();
