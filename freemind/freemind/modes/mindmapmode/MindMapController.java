@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.30 2003-11-24 08:09:04 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.31 2003-11-30 12:15:49 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -33,9 +33,12 @@ import freemind.modes.MindIcon;
 import freemind.modes.MindMapCloud;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.view.mindmapview.NodeView;
+// link registry.
+import freemind.modes.MindMapLinkRegistry;
 
 import java.io.*;
 import java.util.*;
+import java.util.HashSet;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.Color;
@@ -441,6 +444,23 @@ public class MindMapController extends ControllerAdapter {
             
             arrowLinkPopup.add(new GotoLinkNodeAction(link.getSource().toString(), link.getSource())); 
             arrowLinkPopup.add(new GotoLinkNodeAction(link.getTarget().toString(), link.getTarget())); 
+
+            arrowLinkPopup.addSeparator();
+            // add all links from target and from source:
+            HashSet NodeAlreadyVisited = new HashSet();
+            NodeAlreadyVisited.add(link.getSource());
+            NodeAlreadyVisited.add(link.getTarget());
+            Vector links = getModel().getLinkRegistry().getAllLinks(link.getSource());
+            links.addAll(getModel().getLinkRegistry().getAllLinks(link.getTarget()));
+            for(int i = 0; i < links.size(); ++i) {
+                MindMapArrowLinkModel foreign_link = (MindMapArrowLinkModel) links.get(i);
+                if(NodeAlreadyVisited.add(foreign_link.getTarget())) {
+                    arrowLinkPopup.add(new GotoLinkNodeAction(foreign_link.getTarget().toString(), foreign_link.getTarget())); 
+                }
+                if(NodeAlreadyVisited.add(foreign_link.getSource())) {
+                    arrowLinkPopup.add(new GotoLinkNodeAction(foreign_link.getSource().toString(), foreign_link.getSource())); 
+                }
+            }
             return arrowLinkPopup;
         }
         return null;
@@ -821,7 +841,14 @@ public class MindMapController extends ControllerAdapter {
     protected class GotoLinkNodeAction extends AbstractAction {
         MindMapNode source;
         public GotoLinkNodeAction(String text, MindMapNode source) {
-            super(getText("follow_link") + text, new ImageIcon(getResource("images/Link.png")));
+            super("", new ImageIcon(getResource("images/Link.png")));
+            // only display a reasonable part of the string. the rest is available via the short description (tooltip).
+            String adaptedText = new String(text);
+            adaptedText = adaptedText.replaceAll("<html>", "");
+            if(adaptedText.length() > 40)
+                adaptedText = adaptedText.substring(0,40) + " ...";
+            putValue(Action.NAME, getText("follow_link") + adaptedText );
+            putValue(Action.SHORT_DESCRIPTION, text);
             this.source = source;
         }
 

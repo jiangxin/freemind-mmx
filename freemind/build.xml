@@ -42,7 +42,7 @@
 			excludes="browser/,doc/javadoc/" />
 		<tar tarfile="${post}/freemind-src.tar"
 			basedir="${src_base_for_post}"
-			includes="src/**,.classpath,.project" />
+			includes="freemind/**,.classpath,.project" />
 		<tar tarfile="${post}/freemind-browser.tar"
 			basedir="${dist}/browser" />
 		<gzip src="${post}/freemind-bin.tar"
@@ -53,13 +53,13 @@
 			zipfile="${post}/freemind-browser-${ver}.tar.gz" />
 		<delete>
 			<fileset dir="${post}" includes="*.tar" />
-		</delete>
+		</delete> 
 		<zip destfile="${post}/freemind-bin-${ver}.zip"
 			basedir="${dist}"
 			excludes="browser/,doc/javadoc/" />
 		<zip destfile="${post}/freemind-src-${ver}.zip"
 			basedir="${src_base_for_post}"
-			includes="src/**,.classpath,.project" />
+			includes="freemind/**,.classpath,.project" />
 		<zip destfile="${post}/freemind-browser-${ver}.zip"
 			basedir="${dist}/browser" />
 	</target>
