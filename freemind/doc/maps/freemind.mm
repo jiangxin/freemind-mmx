@@ -343,7 +343,7 @@
 </node>
 </node>
 <node COLOR="#669900" TEXT="Keyboard while editing a long node" FOLDED="true">
-<node TEXT="By default, *enter* finishes editing of a long node, and *control enter* enters a new line. By unchecking the check box &quot;Enter confirms&quot; you can reverse the function of the mentioned key combinations, i.e. *enter* enters new line and *control enter* finishes editing. You can set the default value of that check box in user.properties."/>
+<node TEXT="By default, *enter* finishes editing of a long node, and *control enter* enters a new line. By unchecking the check box &quot;Enter confirms&quot; you can reverse the function of the mentioned key combinations, i.e. *enter* enters new line and *control enter* finishes editing. You can set the default value of that check box in user.properties. Moreover the value of the box is saved during a session of FreeMind."/>
 </node>
 <node COLOR="#669900" TEXT="Exporting into HTML" FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
@@ -422,7 +422,7 @@
 <node TEXT="You can set a kind of HTML export in preferences.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node TEXT="Other preferences can be changed by more technical users in user.properties, which you have to copy into the folder freemind in your home folder."/>
+<node TEXT="&lt;html&gt;Other preferences can be changed by more technical users in user.properties, &lt;b&gt;which you have to copy into the folder freemind in your home folder&lt;/b&gt;.&lt;/html&gt;"/>
 </node>
 <node COLOR="#669900" TEXT="Printing" FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
@@ -590,6 +590,7 @@
 </node>
 <node COLOR="#669900" TEXT="Zoom" FOLDED="true">
 <node TEXT="It is possible to change the zoom from toolbar. It is possible to zoom in / out from Menubar &gt; Edit."/>
+<node TEXT="As of version 0.7.1 you can change the zoom holding the control button and move the mouse wheel."/>
 </node>
 <node COLOR="#669900" TEXT="File locking" FOLDED="true">
 <node TEXT="Current version of FreeMind has experimental file locking, which is disabled by default. Current implementation does not really prevent race conditions, but it should be fine for the most of practical purposes. What does file locking mean? It makes sure that more users do not edit the same map at the same time, preventing them from incidentally overwriting the information from each other."/>
@@ -605,6 +606,35 @@
 </node>
 <node COLOR="#669900" TEXT="To copy your selection to clipboard when you are editing a node, press right mouse button and choose copy">
 <font NAME="Default" SIZE="10"/>
+</node>
+<node COLOR="#338800" TEXT="Icons" FOLDED="true">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node TEXT="There exist some predefined icons in the toolbar on the left hand side of the window.">
+<icon BUILTIN="ksmiletris"/>
+</node>
+<node TEXT="You can remove this toolbar right clicking on the background of FreeMind"/>
+</node>
+<node COLOR="#338800" TEXT="Graphical links" FOLDED="true">
+<node ID="1661911453" TEXT="Mark a node and drag this node to another node holding both shift and control keys creates a graphical link between them."/>
+<node TEXT="You can edit some properties of this link using right click onto the line between them."/>
+<node TEXT="You may choose the color and the arrow positions."/>
+<node TEXT="Moreover you can go directly to the other node (even if its folded) using the right click on the small part of the graphical link."/>
+<node TEXT="Example" FOLDED="true">
+<node TEXT="Link to another part">
+<arrowlink STARTHASARROW="true" COLOR="#9999ff" DESTINATION="1040405702" ENDHASARROW="true"/>
+</node>
+<node TEXT="Node with folded subnode" FOLDED="true">
+<node ID="1040405702" TEXT="Subnode"/>
+</node>
+</node>
+</node>
+<node COLOR="#338800" TEXT="Clouds" FOLDED="true">
+<node TEXT="Clouds are well suited for highlighting a region."/>
+<node TEXT="Highlighted are the node and all its subnodes."/>
+<node TEXT="Clouds can have different background colors.">
+<cloud COLOR="#99ff99"/>
+</node>
 </node>
 </node>
 <node COLOR="#006633" TEXT="Browsing mind maps" FOLDED="true">
@@ -673,13 +703,13 @@
 <node TEXT="Different font may be used">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="This">
-<font NAME="Batang" SIZE="16"/>
+<font NAME="dialog" SIZE="16"/>
 </node>
 <node TEXT="Or that">
-<font NAME="Georgia" SIZE="12"/>
+<font NAME="dialog" SIZE="12"/>
 </node>
 <node TEXT="Or that one">
-<font NAME="Haettenschweiler" SIZE="21"/>
+<font NAME="dialog" SIZE="21"/>
 </node>
 </node>
 </node>
@@ -864,6 +894,11 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 <node COLOR="#996600" TEXT="Petr Novak"/>
+<node TEXT="Christian Foltin">
+<edge WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node LINK="mailto:christian.foltin@gmx.de" TEXT="christian.foltin@gmx.de"/>
+</node>
 </node>
 </node>
 </node>

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.21 2003-11-13 06:38:23 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.22 2003-11-30 08:33:23 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -645,16 +645,17 @@ public abstract class NodeView extends JLabel {
                  Tools.toXMLEscapedText(lines[line]).replaceAll("\t","<td style=\"border-color: white\">"); }
            setText(text); }
         else if (isLong) {
-           String text = "";              
+           String text = "<tr><td>";              
            int maximumLineLength = 0;
            for (int line = 0; line < lines.length; line++) {
               text += Tools.toXMLEscapedTextWithNBSPizedSpaces(lines[line]) + "<p>";
               if (lines[line].length() > maximumLineLength) {
                  maximumLineLength = lines[line].length(); }}
            
+			text += "</td></tr>";
            setText("<html><table"+
                    (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
-                   text+"</table>"); }
+                   text+"</table></html>"); }
    
         // 5) Complete
         repaint(); // Because of zoom?

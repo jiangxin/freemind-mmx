@@ -16,15 +16,21 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.6 2003-11-09 22:09:25 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.7 2003-11-30 08:33:23 christianfoltin Exp $*/
 
 package freemind.controller;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
+import java.awt.Point;
+import java.awt.geom.Point2D;
+import java.util.TimerTask;
+import java.util.Timer;
 import freemind.view.mindmapview.NodeView;
+import freemind.main.Tools;
 
 /**
  * The MouseMotionListener which belongs to every
@@ -33,17 +39,27 @@ import freemind.view.mindmapview.NodeView;
 public class NodeMouseMotionListener implements MouseMotionListener, MouseListener {
 
     private final Controller c;
-   //    Timer timer;
+    private static Tools.IntHolder timeForDelayedSelection; /*ms, overwritten by property time_for_delayed_selection*/
+    Timer timerForDelayedSelection;
+    /** The mouse has to stay in this region to enable the selection after a given time.*/
+    Rectangle controlRegionForDelayedSelection;
 
     private boolean ignoreNextDoubleClick = false; 
     private boolean ignoreNextPlainClick = false;
+    /** fc, 30.11.2003: This method is currently not used.*/
     public void ignoreNextDoubleClick() {
       ignoreNextDoubleClick = true; }
     public void ignoreNextPlainClick() {
        ignoreNextPlainClick = true; }
 
     public NodeMouseMotionListener(Controller controller) {
-       c = controller; }
+       c = controller; 
+       if(timeForDelayedSelection == null)
+           {
+               timeForDelayedSelection = new Tools.IntHolder();
+               timeForDelayedSelection.setValue(Integer.parseInt(c.getFrame().getProperty("time_for_delayed_selection")));
+           }        
+    }
 
     public void mouseDragged(MouseEvent e) {}
    // Invoked when a mouse button is pressed on a component and then dragged. 
@@ -51,6 +67,13 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
     public void mouseMoved(MouseEvent e) {
    //  Invoked when the mouse button has been moved on a component (with no buttons down). 
        ((NodeView)e.getComponent()).updateCursor(e.getX());
+       // test if still in selection region:
+       if(controlRegionForDelayedSelection != null) {
+           if(!controlRegionForDelayedSelection.contains(e.getPoint())) {
+               // point is not in the region. start timer again and adjust region to the current point:
+               createTimer(e);
+           }
+       }
     }
 
 
@@ -70,10 +93,31 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
     }
 
     public void mouseEntered( MouseEvent e ) {
-       c.getMode().getModeController().select(e);
+        createTimer(e);
+        //c.getMode().getModeController().select(e);
+    }
+
+    public void createTimer( MouseEvent e ) {
+        // stop old timer if present.*/
+        stopTimerForDelayedSelection();
+        /* Region to check for in the sequel. */
+        controlRegionForDelayedSelection = getControlRegion(e.getPoint());
+        timerForDelayedSelection = new Timer();
+        timerForDelayedSelection.schedule(new timeDelayedSelection(c, e), timeForDelayedSelection.getValue());
+        //c.getMode().getModeController().select(e);
+    }
+
+
+    protected void stopTimerForDelayedSelection() {
+        // stop timer.
+        if(timerForDelayedSelection != null)
+            timerForDelayedSelection.cancel();
+        timerForDelayedSelection = null;
+        controlRegionForDelayedSelection = null;
     }
 
     public void mouseExited( MouseEvent e ) {
+        stopTimerForDelayedSelection();
     }
 
     public void mousePressed( MouseEvent e ) {
@@ -81,10 +125,13 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
       // Only Right mouse release is a popup trigger!
       // OK, but Right mouse <i>press</i> <i>is</i> a popup trigger on Linux.
       c.getMode().getModeController().showPopupMenu(e);
-      if (!e.isConsumed()) {        // unified selection (PN) %%% (unify with mose enntered above!!!
+      if (!e.isConsumed()) {
+        // unified selection (PN) %%% (unify with mose enntered above!!!
         c.getView().extendSelection((NodeView)e.getSource(), e);
         e.consume();
-      }    }
+      }
+      stopTimerForDelayedSelection();
+    }
 
     public void mouseReleased( MouseEvent e ) {
        // handling click in mouseReleased rather than in mouseClicked
@@ -100,21 +147,49 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
        
        if (e.getModifiers() == MouseEvent.BUTTON1_MASK ) {
           if (e.getClickCount() == 1) {
-             ignoreNextDoubleClick = false; }
+             ignoreNextDoubleClick = false; 
+          }
           if (e.getClickCount() % 2 == 0) {
              if (ignoreNextDoubleClick) {
-                ignoreNextDoubleClick = false; }
-             else {
-                c.getMode().getModeController().doubleClick(e); }}
-          else {
+                ignoreNextDoubleClick = false; 
+             } else {
+                c.getMode().getModeController().doubleClick(e); 
+             }
+          } else {
              if (ignoreNextPlainClick) {
-                ignoreNextPlainClick = false; }
+                ignoreNextPlainClick = false; 
+             }
              else {
-                c.getMode().getModeController().plainClick(e); }}}
-       else {
+                c.getMode().getModeController().plainClick(e); 
+             }
+          }
+       } else {
           ignoreNextDoubleClick = false; 
-          ignoreNextPlainClick = false; }
+          ignoreNextPlainClick = false; 
+       }
 
        e.consume();
+       stopTimerForDelayedSelection();
     }
+
+    protected Rectangle getControlRegion(Point2D p) {
+        // Create a small square around the given point.
+        int side = 8;
+        return new Rectangle((int)(p.getX() - side / 2), (int)(p.getY() - side / 2),
+                             side, side);
+    }
+
+    protected class timeDelayedSelection extends TimerTask {
+        private final Controller c;
+        private final MouseEvent e;
+        timeDelayedSelection(Controller c, MouseEvent e) {
+            this.c = c;
+            this.e = e;
+        }
+        /** TimerTask method to enable the selection after a given time.*/
+        public void run() {
+            c.getView().extendSelection((NodeView)e.getSource(), e);
+        }
+    }
+
 }
