@@ -19,25 +19,26 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: DeleteChildAction.java,v 1.1.4.1 2004-10-17 23:00:09 dpolivaev Exp $*/
+/*$Id: DeleteChildAction.java,v 1.1.4.2 2004-11-19 21:46:51 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
 import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.generated.instance.DeleteNodeAction;
-import freemind.controller.actions.generated.instance.NewNodeAction;
+import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.extensions.PermanentNodeHook;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
+import freemind.modes.actions.PasteAction.NodeCoordinate;
 
 
 public class DeleteChildAction extends AbstractAction implements ActorXml {
@@ -51,6 +52,7 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
     }
 
     public void actionPerformed(ActionEvent e) {
+        // because of multiple selection, cut is better.
     	c.cut();
        //this.c.deleteNode(c.getSelected());
     }
@@ -60,9 +62,23 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
     public void act(XmlAction action) {
 		//System.out.println("DeleteChildAction");
 		DeleteNodeAction deleteNodeAction = (DeleteNodeAction) action;
-		NodeAdapter node = this.c.getNodeFromID(deleteNodeAction.getNode());
-		c.select(node.getViewer());
-		c.cut();
+		NodeAdapter selectedNode = this.c.getNodeFromID(deleteNodeAction.getNode());
+//		c.select(node.getViewer());
+//		c.cut();
+		// deregister node:
+		c.getModel().getLinkRegistry().deregisterLinkTarget(selectedNode);
+        // remove hooks:
+		long currentRun = 0;
+		// determine timeout:
+		long timeout = selectedNode.getActivatedHooks().size() * 2 + 2;
+        while(selectedNode.getActivatedHooks().size() > 0) {
+            PermanentNodeHook hook = (PermanentNodeHook) selectedNode.getActivatedHooks().iterator().next();
+            selectedNode.removeHook(hook);
+            if(currentRun++ > timeout) {
+                throw new IllegalStateException("Timeout reached shutting down the hooks.");
+            }
+        }
+		c.getModel().removeNodeFromParent( selectedNode);
     }
     /* (non-Javadoc)
      * @see freemind.controller.actions.ActorXml#getDoActionClass()
@@ -76,16 +92,15 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
 			String newId = c.getNodeID(selectedNode);
 			c.getActionFactory().startTransaction(text);
 			MindMapNode parent = selectedNode.getParentNode();
-			//URGENT: this is wrong: cut node would be the right here.
-            NewNodeAction newNodeAction =
-                c.newChild.getAddNodeAction(
-                    parent,
-                    parent.getChildPosition(selectedNode),
-                    newId,
-                    null);
+
+			Transferable copy = c.getModel().copy(selectedNode);
+			NodeCoordinate coord = new NodeCoordinate(selectedNode, selectedNode.isLeft().getValue());
+			PasteNodeAction pasteNodeAction=null;
+            pasteNodeAction = c.paste.getPasteNodeAction(copy, coord);
+
 			// Undo-action
 			DeleteNodeAction deleteAction = getDeleteNodeAction(newId);
-			c.getActionFactory().executeAction(new ActionPair(deleteAction, newNodeAction));
+			c.getActionFactory().executeAction(new ActionPair(deleteAction, pasteNodeAction));
 			c.getActionFactory().endTransaction(text);
 		} catch (JAXBException e) {
 			e.printStackTrace();

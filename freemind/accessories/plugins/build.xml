@@ -1,6 +1,6 @@
 <project name="automatic_plugins" basedir="." default="dist">
 	<property name="plugin.xml" value="accessories/plugins/*.xml" />
-	<property name="plugin.dir" value="accessories"/>
+	<property name="plugin.dir" value="accessories/plugins"/>
 	<property name="plugin.jar" value="${FM.jar}" />
 	<property name="plugin.zip" value="builtin_plugins-${ver}.zip" />
 	<property name="additional.lib" value=""/>
@@ -12,7 +12,7 @@
 		<mkdir dir="${build}" />
 		<javac	srcdir="${src}"
 			destdir="${build}"
-			includes="${plugin.dir}/plugins/**.java"
+			includes="${plugin.dir}/**.java"
 			debug="${debug}"> 
 			<classpath>
 				<path path="${classpath}"/>

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModesCreator.java,v 1.9.18.1 2004-11-16 16:42:36 christianfoltin Exp $*/
+/*$Id: ModesCreator.java,v 1.9.18.2 2004-11-19 21:46:51 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -54,7 +54,7 @@ public class ModesCreator {
 		if (modes == null) {
 			modes = new TreeMap();
 			modesTranslation = new HashMap();
-			String modestring = c.getFrame().getProperty("modes");
+			String modestring = c.getFrame().getProperty("modes_since_0_8_0");
 
 			StringTokenizer tokens = new StringTokenizer(modestring, ",");
 

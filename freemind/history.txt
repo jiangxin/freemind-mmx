@@ -98,6 +98,8 @@ Changes made in Freemind 0.8.0:
 
 * Plugins internationalized.
 * Bug fix: Plugins under Windows.
+* Bug fix: Export to XHTML
+* Bug fix: Export branch.
 
 Changes made in Freemind 0.7.2:
 ===============================

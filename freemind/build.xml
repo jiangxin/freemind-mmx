@@ -9,12 +9,12 @@
 	<property name="post" value="../post" />
 	<property name="debug" value="on" />
 	<property name="build.compiler" value="modern" />
-	<property name="ver" value="0_8_0_beta2" />
+	<property name="ver" value="0_8_0_beta3" />
 	<property name="ant.dir" value="lib/ant/lib"/>
-	<property name="jarbundler.jar" value = "lib/jarbundler-1.2.jar"/>
+	<property name="jarbundler.jar" value = "jarbundler-1.2.jar"/>
 
     <taskdef name="jarbundler"
-               classpath="${src}/${jarbundler.jar}"
+               classpath="${src}/lib/${jarbundler.jar}"
                classname="com.loomcom.ant.tasks.jarbundler.JarBundler" />
 
 
@@ -125,11 +125,13 @@
 				includes="Freemind.exe"
 			/>
 		</copy>
-		<!-- <mkdir dir="${dist}/accessories" />
-		<copy todir="${dist}/accessories"> 
-			<fileset dir="${src}/accessories" excludes="**/*.java"/>  exclude jars too!
-			<fileset dir="${build}/accessories"/>
-		</copy> -->
+		<mkdir dir="${dist}/accessories" />
+		<mkdir dir="${dist}/plugins" />
+		<copy todir="${dist}/accessories" > 
+			<fileset dir="${src}/accessories" excludes="plugins" includes="*"/>
+			<!-- exclude jars too!
+			<fileset dir="${build}/accessories"/> -->
+		</copy> 
 		<!-- third party libs -->
 		<mkdir dir="${dist.lib}" />
 		<copy todir="${dist.lib}"> 

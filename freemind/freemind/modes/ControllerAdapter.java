@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.3 2004-10-28 05:24:53 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.4 2004-11-19 21:46:51 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -161,7 +161,7 @@ public abstract class ControllerAdapter implements ModeController {
     private int status;
 	public UndoAction undo=null;
 	public RedoAction redo=null;
-    public Action copy = null;
+    public CopyAction copy = null;
     public Action copySingle = null;
     public CutAction cut = null;
     public PasteAction paste = null;
@@ -1061,22 +1061,7 @@ public abstract class ControllerAdapter implements ModeController {
 
 
 	public void deleteNode(MindMapNode selectedNode) {
-		//deleteChild.deleteNode(selectedNode);
-		// deregister node:
-		getModel().getLinkRegistry().deregisterLinkTarget(selectedNode);
-        // remove hooks:
-		long currentRun = 0;
-		// determine timeout:
-		long timeout = selectedNode.getActivatedHooks().size() * 2 + 2;
-        while(selectedNode.getActivatedHooks().size() > 0) {
-            PermanentNodeHook hook = (PermanentNodeHook) selectedNode.getActivatedHooks().iterator().next();
-            selectedNode.removeHook(hook);
-            if(currentRun++ > timeout) {
-                throw new IllegalStateException("Timeout reached shutting down the hooks.");
-            }
-        }
-		getModel().removeNodeFromParent( selectedNode);
-
+		deleteChild.deleteNode(selectedNode);
 	}
 
 	public void toggleFolded() {
