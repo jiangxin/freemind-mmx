@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.31 2004-10-05 22:23:58 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.32 2004-10-06 15:12:40 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -124,25 +124,6 @@ public class MindMapController extends ControllerAdapter {
 
 	public Action nodeBackgroundColor = new NodeBackgroundColorAction();
 
-    public Action cloudColor = new CloudColorAction();
-
-    public Action cloud   = new NodeGeneralAction (this, "cloud", "images/Cloud24.gif",
-       new SingleNodeOperation() { private MindMapCloud lastCloud;
-           private MindMapNodeModel nodeOfLastCloud;
-           public void apply(MindMapMapModel map, MindMapNodeModel node) {
-               // store last color to enable if the node is switched on and off.
-               if(node.getCloud() != null) {
-                   lastCloud = node.getCloud();
-                   nodeOfLastCloud = node;
-               }
-               map.setCloud(node); 
-               // restore color:
-               if((node.getCloud() != null) && (node == nodeOfLastCloud)) {
-                   node.setCloud(lastCloud);
-               }
-
-           }
-       });
 //    public Action normalFont = new NodeGeneralAction (this, "normal", "images/Normal24.gif",
 //       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
 //          map.setNormalFont(node); }});
@@ -755,29 +736,6 @@ public class MindMapController extends ControllerAdapter {
 		  for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
 			 MindMapNodeModel selected = (MindMapNodeModel)it.next();
 			 getMindMapMapModel().setNodeBackgroundColor(selected, color); }}}
-
-    private class CloudColorAction extends AbstractAction {
-		CloudColorAction() {
-			super(getText("cloud_color"), new ImageIcon(
-					getResource("images/Colors24.gif")));
-			putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			Color selectedColor = null;
-			if (getSelected().getCloud() != null)
-				selectedColor = getSelected().getCloud().getColor();
-			Color color = Controller.showCommonJColorChooserDialog(getView()
-					.getSelected(), "Choose Cloud Color:", selectedColor);
-			if (color == null)
-				return;
-			for (ListIterator it = getSelecteds().listIterator(); it.hasNext();) {
-				MindMapNodeModel selected = (MindMapNodeModel) it.next();
-				getMindMapMapModel().setCloudColor(selected, color);
-			}
-		}
-	}
-
 
     protected class ColorArrowLinkAction extends AbstractAction {
         MindMapNode source;

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePattern.java,v 1.5.12.2 2004-10-06 08:25:51 christianfoltin Exp $*/
+/*$Id: StylePattern.java,v 1.5.12.3 2004-10-06 15:12:40 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -94,8 +94,9 @@ public class StylePattern {
         nodeFontItalic = new Boolean(node.isItalic());
         nodeFontSize = node.getFontSize()==null?null:Integer.valueOf(node.getFontSize());
 
-        appliesToNodeIcon = node.getIcons().size()>0;
-        nodeIcon = (MindIcon) (node.getIcons().size()==0?null:node.getIcons().get(0));
+        appliesToNodeIcon = false; // no icons.
+//        appliesToNodeIcon = node.getIcons().size()>0;
+//        nodeIcon = (MindIcon) (node.getIcons().size()==0?null:node.getIcons().get(0));
         
         appliesToEdge=true;
         edgeColor = node.getEdge().getColor();

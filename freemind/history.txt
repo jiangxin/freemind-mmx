@@ -67,6 +67,7 @@ Changes made in Freemind 0.8.0:
    the hook performs).
 * Apply patterns, edge width, edge style and node styles are undoable
 * Format copy introduced.
+* Cloud actions undoable. (Color treatment for new clouds is missing).
 
 Changes made in Freemind 0.7.2:
 ===============================

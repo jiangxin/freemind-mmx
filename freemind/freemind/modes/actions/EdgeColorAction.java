@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: EdgeColorAction.java,v 1.1.2.3 2004-10-05 22:23:58 christianfoltin Exp $ */
+/* $Id: EdgeColorAction.java,v 1.1.2.4 2004-10-06 15:12:40 christianfoltin Exp $ */
 package freemind.modes.actions;
 
 import java.awt.Color;
@@ -68,9 +68,8 @@ public class EdgeColorAction extends AbstractAction implements ActorXml {
 		try {
 			EdgeColorFormatAction doAction = createEdgeColorFormatAction(node, color);
 			EdgeColorFormatAction undoAction = createEdgeColorFormatAction(node, ((EdgeAdapter) node.getEdge()).getRealColor());
-			ActionPair pair = new ActionPair(doAction, undoAction);
 			controller.getActionFactory().startTransaction(this.getClass().getName());
-			controller.getActionFactory().executeAction(pair);
+			controller.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
 			controller.getActionFactory().endTransaction(this.getClass().getName());
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.36 2004-10-05 22:23:57 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.37 2004-10-06 15:12:40 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -91,6 +91,7 @@ import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.actions.ApplyPatternAction;
 import freemind.modes.actions.BoldAction;
+import freemind.modes.actions.CloudAction;
 import freemind.modes.actions.CompoundActionHandler;
 import freemind.modes.actions.CopyAction;
 import freemind.modes.actions.CopySingleAction;
@@ -178,6 +179,8 @@ public abstract class ControllerAdapter implements ModeController {
     public NodeColorBlendAction nodeColorBlend = null;
     public NodeStyleAction fork = null;
     public NodeStyleAction bubble = null;
+    public CloudAction cloud = null;
+    public freemind.modes.actions.CloudColorAction cloudColor = null;
 
     public IconAction unknwonIconAction = null;
     public RemoveLastIconAction removeLastIconAction = null;
@@ -269,6 +272,8 @@ public abstract class ControllerAdapter implements ModeController {
 			EdgeStyle_sharp_linear,
 			EdgeStyle_sharp_bezier
 	    };
+	    cloud = new CloudAction(this);
+	    cloudColor = new freemind.modes.actions.CloudColorAction(this);
 	    compound = new CompoundActionHandler(this);
 
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -847,6 +852,12 @@ public abstract class ControllerAdapter implements ModeController {
 		italic.setItalic(node, isItalic);
 	}
 
+    public void setCloud(MindMapNode node, boolean enable) {
+        cloud.setCloud(node, enable);
+    }
+    public void setCloudColor(MindMapNode node, Color color) {
+        cloudColor.setCloudColor(node, color);
+    }
     //Node editing
     public void setFontSize(MindMapNode node, String fontSizeValue) {
         fontSize.setFontSize(node, fontSizeValue);
@@ -1268,8 +1279,8 @@ public abstract class ControllerAdapter implements ModeController {
 
 
     public MindMapNode getSelected() {
-    	if(getView() != null)
-        	return (NodeAdapter)getView().getSelected().getModel();
+    	if(getView() != null && getView().getSelected()!=null)
+        	return (MindMapNode)getView().getSelected().getModel();
 		return null;        	
     }
 

@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.10.14 2004-10-05 22:23:58 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.10.15 2004-10-06 15:12:41 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -125,38 +125,6 @@ public class MindMapMapModel extends MapAdapter  {
 	public void setNodeBackgroundColor(MindMapNodeModel node, Color color) {
 		node.setBackgroundColor(color);
 		nodeChanged(node); }
-
-    public void setCloud(MindMapNodeModel node) {
-        if(node.getCloud() == null) {
-            node.setCloud(new MindMapCloudModel(node, getFrame()));
-        } else {
-            node.setCloud(null);
-        }
-        nodeChanged(node); 
-    }
-
-    public void setCloudColor(MindMapNodeModel node, Color color) {
-        if(node.getCloud() == null) {
-            setCloud(node);
-        }
-        ((MindMapCloudModel)node.getCloud()).setColor(color);
-        nodeChanged(node); }
-
-    public void setCloudWidth(MindMapNodeModel node, int width) {
-        if(node.getCloud() == null) {
-            setCloud(node);
-        }
-        ((MindMapCloudModel)node.getCloud()).setWidth(width);
-        nodeChanged(node); }
-
-    public void setCloudStyle(MindMapNodeModel node, String style) {
-        if(node.getCloud() == null) {
-            setCloud(node);
-        }
-        MindMapCloudModel cloud = (MindMapCloudModel)node.getCloud();
-        cloud.setStyle(style);
-        nodeStructureChanged(node); }
-
 
     /** Source holds the MindMapArrowLinkModel and points to the id placed in target.*/
     public void addLink(MindMapNodeModel source, MindMapNodeModel target) {

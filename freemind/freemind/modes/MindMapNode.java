@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.12.9 2004-10-05 22:23:57 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.12.10 2004-10-06 15:12:40 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -127,6 +127,7 @@ public interface MindMapNode extends MutableTreeNode {
 
     // clouds, fc, 08.11.2003:
     MindMapCloud getCloud();
+    void setCloud( MindMapCloud cloud );
     // end clouds.
         
     //fc, 24.2.2004: background color:

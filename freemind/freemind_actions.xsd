@@ -34,6 +34,7 @@
 					<xs:element ref="add_icon_action"/>
 					<xs:element ref="remove_last_icon_xml_action"/>
 					<xs:element ref="remove_all_icons_xml_action"/>
+					<xs:element ref="add_cloud_xml_action"/>
 				</xs:choice>
 			</xs:extension>
 		</xs:complexContent>
@@ -130,6 +131,29 @@
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="node_action"/>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Add Cloud Action -->
+	<xs:element name="add_cloud_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="enabled" use="required" type="xs:boolean"/>
+		      <!-- <xs:attribute name="color" use="optional" type="xs:string"/>-->
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Cloud Color Action -->
+	<xs:element name="cloud_color_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="color" use="required" type="xs:string"/>
+			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>

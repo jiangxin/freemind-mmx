@@ -20,7 +20,7 @@
  * 
  * Created on 19.09.2004
  */
-/* $Id: NodeColorAction.java,v 1.1.2.5 2004-10-06 15:12:40 christianfoltin Exp $ */
+/* $Id: CloudColorAction.java,v 1.1.2.1 2004-10-06 15:12:40 christianfoltin Exp $ */
 
 package freemind.modes.actions;
 
@@ -28,48 +28,54 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.ListIterator;
 
+import javax.swing.Action;
+import javax.swing.JMenuItem;
 import javax.xml.bind.JAXBException;
 
 import freemind.controller.Controller;
+import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.FreemindAction;
-import freemind.controller.actions.generated.instance.EdgeColorFormatAction;
-import freemind.controller.actions.generated.instance.NodeColorFormatAction;
+import freemind.controller.actions.generated.instance.CloudColorXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
+import freemind.modes.LineAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
-import freemind.modes.mindmapmode.MindMapEdgeModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
-public class NodeColorAction extends FreemindAction implements ActorXml {
+public class CloudColorAction extends FreemindAction implements ActorXml , MenuItemEnabledListener{
     private final ModeController controller;
 
-    public NodeColorAction(ModeController controller) {
-        super("node_color", (String)null, controller);
+    public CloudColorAction(ModeController controller) {
+        super("cloud_color", "images/Colors24.gif", controller);
         this.controller = controller;
         controller.getActionFactory().registerActor(this, getDoActionClass());
     }
 
     public void actionPerformed(ActionEvent e) {
+        Color selectedColor =  null;
+        if(controller.getSelected().getCloud() != null) {
+            selectedColor = controller.getSelected().getCloud().getColor();
+        }
         Color color = Controller.showCommonJColorChooserDialog(controller
-                .getView().getSelected(), "Choose Node Color:", controller.getSelected()
-                .getColor());
+                .getView().getSelected(), "Choose Cloud Color:", selectedColor);
         if (color == null) {
             return;
         }
         for (ListIterator it = controller.getSelecteds().listIterator(); it
                 .hasNext();) {
             MindMapNodeModel selected = (MindMapNodeModel) it.next();
-            setNodeColor(selected, color); 
+            setCloudColor(selected, color); 
         }
     }
     
-    public void setNodeColor(MindMapNode node, Color color) {
+    public void setCloudColor(MindMapNode node, Color color) {
 		try {
-			NodeColorFormatAction doAction = createNodeColorFormatAction(node, color);
-			NodeColorFormatAction undoAction = createNodeColorFormatAction(node, node.getColor());
+			CloudColorXmlAction doAction = createCloudColorXmlAction(node, color);
+			CloudColorXmlAction undoAction = createCloudColorXmlAction(node, 
+			        (node.getCloud()==null)?null:node.getCloud().getColor());
 			controller.getActionFactory().startTransaction(this.getClass().getName());
 			controller.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
 			controller.getActionFactory().endTransaction(this.getClass().getName());
@@ -79,28 +85,42 @@ public class NodeColorAction extends FreemindAction implements ActorXml {
 		}
     }
 
-    public NodeColorFormatAction createNodeColorFormatAction(MindMapNode node, Color color) throws JAXBException {
-		NodeColorFormatAction nodeAction = controller.getActionXmlFactory().createNodeColorFormatAction();
+    public CloudColorXmlAction createCloudColorXmlAction(MindMapNode node, Color color) throws JAXBException {
+		CloudColorXmlAction nodeAction = controller.getActionXmlFactory().createCloudColorXmlAction();
 		nodeAction.setNode(node.getObjectId(controller));
 	    nodeAction.setColor(Tools.colorToXml(color));
 		return nodeAction;
     }
     
     public void act(XmlAction action) {
-		if (action instanceof NodeColorFormatAction) {
-			NodeColorFormatAction nodeColorAction = (NodeColorFormatAction) action;
+		if (action instanceof CloudColorXmlAction) {
+			CloudColorXmlAction nodeColorAction = (CloudColorXmlAction) action;
 			Color color = Tools.xmlToColor(nodeColorAction.getColor());
 			MindMapNode node = controller.getNodeFromID(nodeColorAction.getNode());
-			Color oldColor = node.getColor() ;
-			if (!Tools.safeEquals(color, oldColor)) {
-                node.setColor(color); // null
+			// this is not necessary, as this action is not enabled if there is no cloud.
+			if(node.getCloud()==null) {
+			    controller.setCloud(node, true);
+			}
+	        Color selectedColor =  null;
+	        if(node.getCloud() != null) {
+	            selectedColor = node.getCloud().getColor();
+	        }
+			if (!Tools.safeEquals(color, selectedColor)) {
+                ((LineAdapter) node.getCloud()).setColor(color); // null
                 controller.nodeChanged(node);
             }
 		}
    }
 
     public Class getDoActionClass() {
-        return NodeColorFormatAction.class;
+        return CloudColorXmlAction.class;
+    }
+    /**
+     *
+     */
+
+    public boolean isEnabled(JMenuItem item, Action action) {
+        return (controller != null) &&(controller.getSelected() != null) && (controller.getSelected().getCloud() != null);
     }
 
 }
