@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/*$Id: MacChanges.java.not_here,v 1.1.4.1 2004-10-17 23:00:05 dpolivaev Exp $*/
+/*$Id: MacChanges.java.not_here,v 1.1.4.2 2004-11-21 22:40:42 christianfoltin Exp $*/
 package accessories.plugins;
 
 import java.io.File;
@@ -32,6 +32,7 @@ import com.apple.eawt.ApplicationAdapter;
 import com.apple.eawt.ApplicationEvent;
 
 import freemind.extensions.HookRegistration;
+import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
 import freemind.modes.MindMap;
 import freemind.modes.ModeController;
@@ -52,12 +53,14 @@ public class MacChanges extends ApplicationAdapter implements HookRegistration {
 	public MacChanges(ModeController controller, MindMap map) {
 		this.controller = controller;
 		mMap = map;
-		logger = controller.getFrame().getLogger(this.getClass().getName());
+		FreeMindMain frame = controller.getFrame();
+		logger = frame.getLogger(this.getClass().getName());
 		if(fmMacApplication==null){
 			fmMacApplication = Application.getApplication();
 			fmMacApplication.addApplicationListener(this);
 			fmMacApplication.removePreferencesMenuItem();
 		}
+		frame.setProperty("keystroke_add_child", frame.getProperty("keystroke_add_child_mac"));
 	}
 
 	public void register() {

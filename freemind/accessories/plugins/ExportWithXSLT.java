@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -147,8 +148,12 @@ public class ExportWithXSLT extends ExportHook {
         // If the dst file does not exist, it is created
             try {
                 logger.finest("searching for " + prefix + fileName);
-                InputStream in = getResource(
-                        prefix + fileName).openStream();
+                URL resource = getResource(prefix + fileName);
+                if(resource==null){
+                		logger.severe("Cannot find resource: "+ prefix+fileName);
+                		return;
+                }
+                InputStream in = resource.openStream();
                 OutputStream out = new FileOutputStream(destinationDirectory
                         + "/" + fileName);
 

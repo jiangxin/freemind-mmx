@@ -100,6 +100,7 @@ Changes made in Freemind 0.8.0:
 * Bug fix: Plugins under Windows.
 * Bug fix: Export to XHTML
 * Bug fix: Export branch.
+* Bug fix: Classpath and Mac OS X
 
 Changes made in Freemind 0.7.2:
 ===============================
