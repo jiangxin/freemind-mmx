@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapMouseMotionListener.java,v 1.7.14.1 2004-05-23 10:44:44 dpolivaev Exp $*/
+/*$Id: MapMouseMotionListener.java,v 1.7.14.2 2004-05-23 22:19:20 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -68,9 +68,6 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
     public void mouseDragged(MouseEvent e) {
        // Always try to get mouse to the original position in the Map.
        if (originX >=0) {
-    	  if(draggedLink == null){
-    	    draggedLink = c.getView().detectCollision(new Point(originX, originY));
-    	  }
     	  if(draggedLink != null){
     		int deltaX = (int)((e.getX()-originX)/c.getView().getZoom());
     		int deltaY = (int)((e.getY()-originY)/c.getView().getZoom());
@@ -101,13 +98,23 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
         c.getView().setMoveCursor(true);
         originX = e.getX();
         originY = e.getY(); 
+		draggedLink = c.getView().detectCollision(new Point(originX, originY));
+		if(draggedLink != null){
+			draggedLink.showControlPoints(true);
+			c.getView().repaint();
+		}
+
       }
       e.consume(); 
     }
     public void mouseReleased( MouseEvent e ) {
        originX = -1;
        originY = -1;
-	   draggedLink = null;
+       if (draggedLink != null){
+		draggedLink.showControlPoints(false);
+		c.getView().repaint(); 
+		draggedLink = null;
+       }
        handlePopup(e);
        e.consume(); 
        c.getView().setMoveCursor(false); // release the cursor to default (PN)
