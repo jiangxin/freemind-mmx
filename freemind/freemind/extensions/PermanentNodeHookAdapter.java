@@ -47,9 +47,7 @@ public class PermanentNodeHookAdapter
 		return hook;
 	}
 
-
-
-	/*
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see freemind.modes.NodeHook#shutdownMapHook()
@@ -88,6 +86,9 @@ public class PermanentNodeHookAdapter
 		logger.finest("onAddChild");
 	}
 
+    public void onNewChild(MindMapNode newChildNode) {
+		logger.finest("onNewChild");
+    }
 	/* (non-Javadoc)
 	 * @see freemind.extensions.PermanentNodeHook#onRemoveChild(freemind.modes.MindMapNode)
 	 */
@@ -132,27 +133,18 @@ public class PermanentNodeHookAdapter
         logger.finest("onAddChildren");
     }
 
-	public static final String NAMEVALUEPAIR_VALUE = "value";
-	public static final String NAMEVALUEPAIR_NAME = "name";
-	public static final String NAMEVALUEPAIR = "NameValuePair";
 	public static final String PARAMETERS = "Parameters";
 
 	/**
 	 * @param child
 	 */
-	protected HashMap loadNameValuePairs(XMLElement child) {
+	protected HashMap loadNameValuePairs(XMLElement xml) {
 		HashMap result = new HashMap();
-		XMLElement paramChild = (XMLElement) child.getChildren().get(0);
-		if (paramChild != null && PARAMETERS.equals(paramChild.getName())) {
-			for (Iterator i = paramChild.getChildren().iterator(); i.hasNext();) {
-				XMLElement nameValuePair = (XMLElement) i.next();
-				if (NAMEVALUEPAIR.equals(nameValuePair.getName())) {
-					String name = (String) nameValuePair
-							.getAttribute(NAMEVALUEPAIR_NAME);
-					String value = (String) nameValuePair
-							.getAttribute(NAMEVALUEPAIR_VALUE);
-					result.put(name, value);
-				}
+		XMLElement child = (XMLElement) xml.getChildren().get(0);
+		if (child != null && PARAMETERS.equals(child.getName())) {
+			for (Iterator i = child.enumerateAttributeNames(); i.hasNext();) {
+				String name = (String) i.next();
+				result.put(name, child.getStringAttribute(name));
 			}
 		}
 		return result;
@@ -165,18 +157,15 @@ public class PermanentNodeHookAdapter
 	protected void saveNameValuePairs(HashMap nameValuePairs, XMLElement xml) {
 		XMLElement child = new XMLElement();
 		child.setName(PARAMETERS);
-		XMLElement nameValue = new XMLElement();
 		for (Iterator i = nameValuePairs.keySet().iterator(); i.hasNext();) {
 			String key = (String) i.next();
 			Object value = nameValuePairs.get(key);
-			nameValue.setName(NAMEVALUEPAIR);
-			nameValue.setAttribute(NAMEVALUEPAIR_NAME, key);
-			nameValue.setAttribute(NAMEVALUEPAIR_VALUE, value);
-			child.addChild(nameValue);
+			child.setAttribute(key, value);
 		}
 		xml.addChild(child);
 	
 	}
+
 
 
 }

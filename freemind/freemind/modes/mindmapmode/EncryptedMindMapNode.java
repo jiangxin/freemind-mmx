@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.5 2005-01-04 10:39:41 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.6 2005-02-10 23:01:23 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -60,8 +60,6 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
     private String encryptedContent;
 
-    private boolean isNodeCurrentlySaved = false;
-
     private static MindIcon encryptedIcon;
 
     private static MindIcon decryptedIcon;
@@ -104,7 +102,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
             }
             isDecrypted = true;
         }
-        isVisible = true;
+        setVisible(true);
         setFolded(false);
         return true;
     }
@@ -152,32 +150,32 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     public void encrypt() {
         // FIXME: Sync.
         setFolded(true);
-        isVisible = false;
+        setVisible(false);
     }
 
     public int getChildCount() {
-        if (isVisible) {
+        if (isVisible()) {
             return super.getChildCount();
         }
         return 0;
     }
 
     public ListIterator childrenFolded() {
-        if (isVisible) {
+        if (isVisible()) {
             return super.childrenFolded();
         }
         return new Vector().listIterator();
     }
 
     public ListIterator childrenUnfolded() {
-        if (isVisible || isShuttingDown) {
+        if (isVisible() || isShuttingDown) {
             return super.childrenUnfolded();
         }
         return new Vector().listIterator();
     }
 
     public boolean hasChildren() {
-        if (isVisible) {
+        if (isVisible()) {
             return super.hasChildren();
         }
         return false;
@@ -188,32 +186,20 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
      * 
      * @see freemind.modes.MindMapNode#getIcons()
      */
-    public Vector getIcons() {
-        Vector ret = new Vector();
-        ret.addAll(super.getIcons());
-        // the icon should not be saved.
-        if (!isNodeCurrentlySaved) {
-            ret.add(0, (isVisible) ? decryptedIcon : encryptedIcon);
-        }
-        return ret;
+    public void updateIcon() {
+        addStateIcon("encryptedNode", (isVisible()) ? decryptedIcon : encryptedIcon);
     }
 
 	public void setPassword(StringBuffer password) {
 		this.password = password;
 	}
-    /**
-     * @return Returns the isDecrpyted.
-     */
-    public boolean isVisible() {
-        return isVisible;
-    }
 
     /**
      *  
      */
 
     public boolean isFolded() {
-        if (isVisible) {
+        if (isVisible()) {
             return super.isFolded();
         }
         return true;
@@ -224,7 +210,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
      */
 
     public void setFolded(boolean folded) {
-        if (isVisible) {
+        if (isVisible()) {
             super.setFolded(folded);
         } else {
             super.setFolded(true);
@@ -237,7 +223,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
     public void setAdditionalInfo(String info) {
         encryptedContent = info;
-        isVisible = false;
+        setVisible(false);
         isDecrypted = false;
     }
 
@@ -267,17 +253,15 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
             StringBuffer childXml = sWriter.getBuffer();
             encryptedContent = encryptXml(childXml);
         }
-        isNodeCurrentlySaved = true;
-        boolean oldIsVisible = isVisible;
-        isVisible = false;
+        boolean oldIsVisible = isVisible();
+        setVisible(false);
         XMLElement ret = null;
         try {
             ret = super.save(writer, registry);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        isNodeCurrentlySaved = false;
-        isVisible = oldIsVisible;
+        setVisible(oldIsVisible);
         return ret;
     }
 
@@ -322,6 +306,21 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         this.isShuttingDown = isShuttingDown;
     }
  
+    /**
+     * @param isVisible The isVisible to set.
+     */
+    private void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
+        updateIcon();
+    }
+
+    /**
+     * @return Returns the isVisible.
+     */
+    public boolean isVisible() {
+        return isVisible;
+    }
+
     // from: http://javaalmanac.com/egs/javax.crypto/PassKey.html
     public class DesEncrypter {
         private static final String SALT_PRESENT_INDICATOR = " ";

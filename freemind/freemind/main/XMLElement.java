@@ -1,7 +1,7 @@
 /* XMLElement.java
  *
- * $Revision: 1.7.18.2 $
- * $Date: 2004-12-19 09:00:35 $
+ * $Revision: 1.7.18.3 $
+ * $Date: 2005-02-10 23:01:20 $
  * $Name:  $
  *
  * This file is part of NanoXML 2 Lite.
@@ -28,6 +28,7 @@
  
 /*
  * This version of XMLElement has been *altered* for the purposes of FreeMind
+ * toUpperCase(Locale.ENGLISH) for turkish added.
  */
 
 package freemind.main;
@@ -42,6 +43,7 @@ import java.io.Writer;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -102,7 +104,7 @@ import java.util.Vector;
  *
  * @author Marc De Scheemaecker
  *         &lt;<A href="mailto:cyberelf@mac.com">cyberelf@mac.com</A>&gt;
- * @version $Name:  $, $Revision: 1.7.18.2 $
+ * @version $Name:  $, $Revision: 1.7.18.3 $
  */
 public class XMLElement
 {
@@ -581,7 +583,7 @@ public class XMLElement
                              Object value)
     {
         if (this.ignoreCase) {
-            name = name.toUpperCase();
+            name = name.toUpperCase(Locale.ENGLISH);
         }
         this.attributes.put(name, value.toString());
     }
@@ -644,7 +646,7 @@ public class XMLElement
                                 int    value)
     {
         if (this.ignoreCase) {
-            name = name.toUpperCase();
+            name = name.toUpperCase(Locale.ENGLISH);
         }
         this.attributes.put(name, Integer.toString(value));
     }
@@ -707,7 +709,7 @@ public class XMLElement
                                    double value)
     {
         if (this.ignoreCase) {
-            name = name.toUpperCase();
+            name = name.toUpperCase(Locale.ENGLISH);
         }
         this.attributes.put(name, Double.toString(value));
     }
@@ -965,7 +967,7 @@ public class XMLElement
                                Object defaultValue)
     {
         if (this.ignoreCase) {
-            name = name.toUpperCase();
+            name = name.toUpperCase(Locale.ENGLISH);
         }
         Object value = this.attributes.get(name);
         if (value == null) {
@@ -1018,7 +1020,7 @@ public class XMLElement
                                boolean   allowLiterals)
     {
         if (this.ignoreCase) {
-            name = name.toUpperCase();
+            name = name.toUpperCase(Locale.ENGLISH);
         }
         Object key = this.attributes.get(name);
         Object result;
@@ -1200,7 +1202,7 @@ public class XMLElement
                                int    defaultValue)
     {
         if (this.ignoreCase) {
-            name = name.toUpperCase();
+            name = name.toUpperCase(Locale.ENGLISH);
         }
         String value = (String) this.attributes.get(name);
         if (value == null) {
@@ -1258,7 +1260,7 @@ public class XMLElement
                                boolean   allowLiteralNumbers)
     {
         if (this.ignoreCase) {
-            name = name.toUpperCase();
+            name = name.toUpperCase(Locale.ENGLISH);
         }
         Object key = this.attributes.get(name);
         Integer result;
@@ -1337,7 +1339,7 @@ public class XMLElement
                                      double defaultValue)
     {
         if (this.ignoreCase) {
-            name = name.toUpperCase();
+            name = name.toUpperCase(Locale.ENGLISH);
         }
         String value = (String) this.attributes.get(name);
         if (value == null) {
@@ -1396,7 +1398,7 @@ public class XMLElement
                                      boolean   allowLiteralNumbers)
     {
         if (this.ignoreCase) {
-            name = name.toUpperCase();
+            name = name.toUpperCase(Locale.ENGLISH);
         }
         Object key = this.attributes.get(name);
         Double result;
@@ -1456,7 +1458,7 @@ public class XMLElement
                                        boolean defaultValue)
     {
         if (this.ignoreCase) {
-            name = name.toUpperCase();
+            name = name.toUpperCase(Locale.ENGLISH);
         }
         Object value = this.attributes.get(name);
         if (value == null) {
@@ -2030,7 +2032,7 @@ public class XMLElement
     public void removeAttribute(String name)
     {
         if (this.ignoreCase) {
-            name = name.toUpperCase();
+            name = name.toUpperCase(Locale.ENGLISH);
         }
         this.attributes.remove(name);
     }

@@ -24,8 +24,24 @@ public interface PermanentNodeHook extends NodeHook {
 	 * */
 	void onUpdateNodeHook();
 
-	void onAddChild(MindMapNode newChildNode);
+	/** Is called if the addedChildNode is inserted as a direct child of the node,
+	 * this hook is attached to.
+	 * The cases in which this method is called contain new nodes, paste, move, etc.
+	 * 
+	 * Ah, don't call propagate in this method, as paste introduces nodes with the 
+	 * hook and you'll have them twice, ...
+	 * @see onNewChild
+	 * @param addedChildNode
+	 */
+	void onAddChild(MindMapNode addedChildNode);
 
+	/** Is only called, if a new nodes is inserted as a child.
+	 * Remark: In this case onAddChild is called too and moreover *before* this method.
+	 * @see onAddChild.
+	 * @param newChildNode
+	 */
+	void onNewChild(MindMapNode newChildNode);
+	
     /** This method is called, if a child is added to me or to any of my children.
      *  (See onUpdateChildrenHook)
      * @param addedChild

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.3 2004-12-19 09:00:39 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.4 2005-02-10 23:01:23 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -33,6 +33,10 @@ import java.util.Collection;
 import java.util.Iterator;
 
 public abstract class XMLElementAdapter extends XMLElement {
+
+    
+	// Logging: 
+	protected static java.util.logging.Logger logger;
 
    private Object           userObject = null;
    private FreeMindMain     frame;
@@ -63,6 +67,9 @@ public abstract class XMLElementAdapter extends XMLElement {
       this.frame = frame; 
       this.ArrowLinkAdapters = new Vector();
       this.IDToTarget = new HashMap();
+      if(logger==null) {
+          logger = frame.getLogger(this.getClass().getName());
+      }
    }
 
     protected XMLElementAdapter(FreeMindMain frame, Vector ArrowLinkAdapters, HashMap IDToTarget) {

@@ -19,12 +19,13 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: NewChildAction.java,v 1.1.4.5 2005-02-02 22:16:21 christianfoltin Exp $*/
+/*$Id: NewChildAction.java,v 1.1.4.6 2005-02-10 23:01:23 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -36,6 +37,7 @@ import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.generated.instance.DeleteNodeAction;
 import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.extensions.PermanentNodeHook;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
@@ -76,6 +78,12 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 			newNode.setLeft(addNodeAction.getPosition().equals("left"));
 		}
 		c.getModel().insertNodeInto(newNode, parent, index);
+		// call hooks:
+		for (Iterator i = parent.getActivatedHooks().iterator(); i.hasNext();) {
+            PermanentNodeHook hook = (PermanentNodeHook) i.next();
+            hook.onNewChild(newNode);
+        }
+		// done.
 		c.getFrame().repaint(); 
     }
     /* (non-Javadoc)

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapMouseMotionListener.java,v 1.7.16.3 2005-01-10 07:29:06 christianfoltin Exp $*/
+/*$Id: MapMouseMotionListener.java,v 1.7.16.4 2005-02-10 23:01:18 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -76,7 +76,6 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
     		int deltaX = (int)((e.getX()-originX)/c.getView().getZoom());
     		int deltaY = (int)((e.getY()-originY)/c.getView().getZoom());
     		draggedLink.changeInclination(originX, originY , deltaX, deltaY);
-    		c.getModel().setLinkInclinationChanged();
     		originX = e.getX();
     		originY = e.getY();
     		c.getView().repaint();

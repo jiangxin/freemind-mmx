@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.6 2005-01-08 16:21:07 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.7 2005-02-10 23:01:24 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -834,12 +834,4 @@ public class MindMapMapModel extends MapAdapter  {
             }
         }
      }
-    /* (non-Javadoc)
-     * @see freemind.modes.MindMap#setLinkInclinationChanged()
-     */
-    public void setLinkInclinationChanged() {
-        setSaved(false);
-        
-    }
-    
 }

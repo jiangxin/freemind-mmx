@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.14.4 2005-02-02 21:23:23 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.14.5 2005-02-10 23:01:22 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -30,9 +30,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.logging.Logger;
 
 import javax.swing.event.EventListenerList;
@@ -60,12 +58,6 @@ public abstract class MapAdapter implements MindMap {
     private FreeMindMain frame;
     static protected Logger logger;
 
-    // For find next
-    private String      findWhat;
-    private MindMapNode findFromNode;
-    private boolean     findCaseSensitive;
-    private LinkedList  findNodeQueue;
-    private ArrayList   findNodesUnfoldedByLastFind;
 
 
     public MapAdapter (FreeMindMain frame) {
@@ -147,14 +139,6 @@ public abstract class MapAdapter implements MindMap {
         return changesPerformedSinceLastSave;
     }
 
-    public String getFindWhat() {
-       return findWhat;
-    }
-
-    public String getFindFromText() {
-       return findFromNode.toString();
-    }
-
     public Color getBackgroundColor() {
 	if (backgroundColor==null) {
 	    return Tools.xmlToColor(getFrame().getProperty("standardbackgroundcolor"));
@@ -206,23 +190,7 @@ public abstract class MapAdapter implements MindMap {
     // Node editing
     //
 
-    public void setFolded(MindMapNode node, boolean folded) {
-        if(node == null)
-            throw new IllegalArgumentException("setFolded was called with a null node.");
-        // no root folding, fc, 16.5.2004
-        if (node.isRoot()) {
-            return;
-        }
-        if (node.isFolded() != folded) {
-            node.setFolded(folded);
-            fireTreeStructureChanged(this, getPathToRoot(node), null, null);
-        }
-    }
  
-    public String getLink( MindMapNode node ) {
-	return node.getLink();
-    }
-
     public Object[] getPathToRoot( TreeNode node ) {
 	return ( ((MindMapNode)node).getPath() ).getPath();//Create Object[] from TreePath
     }
@@ -424,99 +392,6 @@ public abstract class MapAdapter implements MindMap {
 	( (MutableTreeNode)path.getLastPathComponent() ).setUserObject( newValue );
     }
 
-    // find
-
-    public boolean find(MindMapNode node, String what, boolean caseSensitive) {
-       findNodesUnfoldedByLastFind = new ArrayList();
-       LinkedList nodes = new LinkedList();
-       nodes.addFirst(node);
-       findFromNode = node;
-       if (!caseSensitive) {
-          what = what.toLowerCase(); }
-       return find(nodes, what, caseSensitive); }
-
-    public boolean findNext() {
-       // Precodition: findWhat != null. We check the precodition but give no message.
-
-       // The logic of find next is vulnerable. find next relies on the queue
-       // of nodes from previous find / find next. However, between previous
-       // find / find next and this find next, nodes could have been deleted
-       // or moved. The logic expects that no changes happened, even that no
-       // node has been folded / unfolded.
-
-       // You may want to come with more correct solution, but this one
-       // works for most uses, and does not cause any big trouble except
-       // perhaps for some uncaught exceptions. As a result, it is not very
-       // nice, but far from critical and working quite fine.
-
-       if (findWhat != null) {
-          return find(findNodeQueue, findWhat, findCaseSensitive); }
-       return false; }
-
-    private boolean find(LinkedList /*queue of MindMapNode*/ nodes, String what, boolean caseSensitive) {
-       // Precondition: if !caseSensitive then >>what<< is in lowercase.
-
-       // Fold the path of previously found node
-       boolean thereWereNodesToBeFolded = !findNodesUnfoldedByLastFind.isEmpty();
-       if (!findNodesUnfoldedByLastFind.isEmpty()) {
-
-          //if (false) {
-          ListIterator i = findNodesUnfoldedByLastFind.listIterator
-             (findNodesUnfoldedByLastFind.size());
-          while (i.hasPrevious()) {
-             MindMapNode node = (MindMapNode)i.previous();
-             try {
-                 //URGENT: Change to controller.setFolded.
-                setFolded(node, true); }
-             catch (Exception e) {}}
-          findNodesUnfoldedByLastFind = new ArrayList(); }
-
-       // We implement width-first search.
-       while (!nodes.isEmpty()) {
-          MindMapNode node = (MindMapNode)nodes.removeFirst();
-          // Add children to the queue
-          for (ListIterator i = node.childrenUnfolded(); i.hasNext(); ) {
-             nodes.addLast(i.next()); }
-
-          String nodeText = caseSensitive ?
-             node.toString() : node.toString().toLowerCase();
-          if (nodeText.indexOf(what) >= 0) {             // Found
-              displayNode(node, findNodesUnfoldedByLastFind);
-              
-             // Save the state for find next
-             findWhat          = what;
-             findCaseSensitive = caseSensitive;
-             findNodeQueue     = nodes;
-
-             return true; }}
-
-       if (thereWereNodesToBeFolded) {
-          getFrame().getView().centerNode(findFromNode.getViewer()); }
-       else {
-          getFrame().getView().scrollNodeToVisible(findFromNode.getViewer()); }
-       getFrame().getView().selectAsTheOnlyOneSelected(findFromNode.getViewer());
-       frame.getController().obtainFocusForSelected();
-
-       return false; }
-
-    public void displayNode(MindMapNode node, ArrayList NodesUnfoldedByDisplay) {
-             // Unfold the path to the node
-             Object[] path = getPathToRoot(node); 
-             // Iterate the path with the exception of the last node
-             for (int i = 0; i < path.length - 1; i++) {
-                MindMapNode nodeOnPath = (MindMapNode)path[i];
-                //System.out.println(nodeOnPath);
-                if (nodeOnPath.isFolded()) {
-                    if(findNodesUnfoldedByLastFind != null) 
-                        findNodesUnfoldedByLastFind.add(nodeOnPath);
-                    //URGENT: Change to controller setFolded.
-                   setFolded(nodeOnPath, false); }}
-
-             // Select the node and scroll to it.
-             getFrame().getView().centerNode(node.getViewer());
-             getFrame().getView().selectAsTheOnlyOneSelected(node.getViewer());
-             frame.getController().obtainFocusForSelected();
-    }
 
     //
     // API for updating the view.
@@ -599,7 +474,6 @@ public abstract class MapAdapter implements MindMap {
       * childIndicies are to be represented in the tree.
       */
     protected void nodesChanged(TreeNode node, int[] childIndices) {
-       setSaved(false);
 
        if (node != null) {
           if (childIndices != null) {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13.18.2 2004-12-19 09:00:39 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.13.18.3 2005-02-10 23:01:23 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -39,6 +39,7 @@ import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
+import freemind.modes.actions.FindAction;
 import freemind.modes.actions.GotoLinkNodeAction;
 
 public class BrowseController extends ControllerAdapter {
@@ -46,8 +47,6 @@ public class BrowseController extends ControllerAdapter {
     private JPopupMenu popupmenu;
     private JToolBar toolbar;
 
-    Action find;
-    Action findNext;
     Action followLink;
     Action nodeUp;
     Action nodeDown;
@@ -63,8 +62,6 @@ public class BrowseController extends ControllerAdapter {
 
         // Daniel: Actions are initialized here and not above because of
         // some error it would produce. Not studied in more detail.
-        find = new FindAction();
-        findNext = new FindNextAction();
         followLink = new FollowLinkAction();
 
 	popupmenu = new BrowsePopupMenu(this);

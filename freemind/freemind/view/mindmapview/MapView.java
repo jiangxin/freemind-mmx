@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.7 2005-02-02 21:33:10 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.16.8 2005-02-10 23:01:25 christianfoltin Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -28,32 +28,23 @@ import java.awt.Graphics2D;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
-// Clouds:
-// End Clouds
-// links:
-import freemind.modes.MindMapArrowLink;
-import java.awt.Polygon;
-import java.util.HashMap;
-import java.awt.geom.CubicCurve2D;
-// end links.
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
-import java.util.HashSet;
-import java.util.Comparator;
-import java.util.Collections;
 
 import javax.swing.JPanel;
 import javax.swing.JViewport;
@@ -66,8 +57,9 @@ import freemind.controller.NodeMouseMotionListener;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
+import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
+import freemind.modes.MindMapNode;
 
 
 /**
@@ -104,6 +96,8 @@ public class MapView extends JPanel implements Printable {
 			logger.finest("Added selected "+node + "\nAll="+mySelected);
 		}
 		private void removeSelectionForHooks(NodeView node) {
+		    if(node.getModel() == null) 
+		        return;
 			// deselect the old node:
 			for(Iterator i= node.getModel().getActivatedHooks().iterator(); i.hasNext();){
 				PermanentNodeHook hook = (PermanentNodeHook) i.next();
@@ -385,7 +379,8 @@ public class MapView extends JPanel implements Printable {
             } else {
                 if (oldSelected.getModel().isFolded()) { // If folded in the direction, unfold
 //                  URGENT: Change to controller setFolded.
-                    getModel().setFolded(oldSelected.getModel(), false); 
+//                    getModel().setFolded(oldSelected.getModel(), false);
+                    getController().getModeController().setFolded(oldSelected.getModel(), false);
                     return null;
                 }
 
@@ -409,7 +404,8 @@ public class MapView extends JPanel implements Printable {
             } else {
                 if (oldSelected.getModel().isFolded()) { // If folded in the direction, unfold
 //                  URGENT: Change to controller setFolded.
-                    getModel().setFolded(oldSelected.getModel(), false); 
+//                    getModel().setFolded(oldSelected.getModel(), false); 
+                    getController().getModeController().setFolded(oldSelected.getModel(), false);
                     return null;
                 }
 
@@ -526,7 +522,9 @@ public class MapView extends JPanel implements Printable {
 
         for(ListIterator e = oldSelecteds.listIterator();e.hasNext();) {
             NodeView oldSelected = (NodeView)e.next();
-            oldSelected.repaint();
+            if (oldSelected != null) {
+                oldSelected.repaint();
+            }
         }
     }
 
@@ -1043,15 +1041,21 @@ public class MapView extends JPanel implements Printable {
             setBackground(getModel().getBackgroundColor());
             // Daniel: Why would I want to change background because some
             // nodes have changed? That's really strange.
-            NodeView node;
+            NodeView nodeView;
             try {
-                node = ( (MindMapNode)e.getChildren()[0] ).getViewer(); }
+                nodeView = ( (MindMapNode)e.getChildren()[0] ).getViewer(); }
             catch (Exception ex) {    //thrown if changed is root
-                node = ( (MindMapNode)e.getTreePath().getLastPathComponent() ).getViewer(); }
+                nodeView = ( (MindMapNode)e.getTreePath().getLastPathComponent() ).getViewer(); }
             // ^ This is not a good solution, but it works
-            logger.finest("The update node is "+node + " with treemodelevent="+e);
-            node.update();
-            getMindMapLayout().updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(node);
+            // here, the nodeView is checked for existence.
+            if (nodeView != null) {
+                logger.finest("The update node is " + nodeView
+                        + " with treemodelevent=" + e);
+                nodeView.update();
+                getMindMapLayout()
+                        .updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(
+                                nodeView);
+            }
             getMindMapLayout().layout(true);
             repaint();
         }
@@ -1112,56 +1116,86 @@ public class MapView extends JPanel implements Printable {
         }
 
         /**
-         *
+         * Assures that every and at least one selected node is visible. If this is not the case,
+         * the node is deselected. 
+         * If every selected node is hidden, the first visible part in the path of the selected
+         * node to the root is selected.
          */
-
         public void treeStructureChanged (TreeModelEvent e) {
 
             // Keep selected nodes
 
             ArrayList selectedNodes = new ArrayList();
             for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-                selectedNodes.add(((NodeView)it.next()).getModel()); }
-            MindMapNode selectedNode = getSelected().getModel();
+                NodeView nodeView = (NodeView)it.next();
+                if (nodeView != null) {
+                    selectedNodes.add((nodeView).getModel()); 
+                } 
+            }
+//          if the focussed is deleted:
+            MindMapNode focussedNode = null;
+            if (getSelected()!=null) {
+                focussedNode = getSelected().getModel();
+            }
 
             // Update everything
 
             MindMapNode subtreeRoot = (MindMapNode)e.getTreePath().getLastPathComponent();
 
-            // fc,14.1.2005: no viewer -> no update.
-            if(subtreeRoot.getViewer() == null) {
-                return;
+            if(subtreeRoot == null || subtreeRoot.getViewer() == null) {
+	            // fc,14.1.2005: no viewer -> no update.
+            } else {
+	            
+	            
+				boolean nodeIsLeft = subtreeRoot.getViewer().isLeft();
+				NodeView oldNodeView = subtreeRoot.getViewer();
+				int x = oldNodeView.getX();
+				int y = oldNodeView.getY();
+				subtreeRoot.getViewer().remove();
+				NodeView nodeView = null;
+	            if (subtreeRoot.isRoot()) {
+					nodeView = NodeView.newNodeView(getRoot().getModel(), getMap());
+	                rootView = nodeView; 
+	            }
+	            else {
+	                nodeView = NodeView.newNodeView(subtreeRoot, getMap());
+	            }
+				nodeView.setLocation(x, y);
+	            nodeView.setLeft(nodeIsLeft);
+	            nodeView.insert(); 
+	            getMindMapLayout().updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(subtreeRoot.getViewer());
+	            // the layout function will be called later by AWT framework itself
+	            // comment it out
+	            // getMindMapLayout().layout();
             }
-            
-            
-			boolean nodeIsLeft = subtreeRoot.getViewer().isLeft();
-			NodeView oldNodeView = subtreeRoot.getViewer();
-			int x = oldNodeView.getX();
-			int y = oldNodeView.getY();
-			subtreeRoot.getViewer().remove();
-			NodeView nodeView = null;
-            if (subtreeRoot.isRoot()) {
-				nodeView = NodeView.newNodeView(getRoot().getModel(), getMap());
-                rootView = nodeView; 
-            }
-            else {
-                nodeView = NodeView.newNodeView(subtreeRoot, getMap());
-            }
-			nodeView.setLocation(x, y);
-            nodeView.setLeft(nodeIsLeft);
-            nodeView.insert(); 
-            getMindMapLayout().updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(subtreeRoot.getViewer());
-            // the layout function will be called later by AWT framework itself
-            // comment it out
-            // getMindMapLayout().layout();
-
             // Restore selected nodes
 
             // Warning, the old views still exist, because JVM has not deleted them. But don't use them!
             selected.clear();
             for (ListIterator it = selectedNodes.listIterator();it.hasNext();) {
-                selected.add(((MindMapNode)it.next()).getViewer()); }
-            selectedNode.getViewer().requestFocus();
+                MindMapNode mindMapNode = ((MindMapNode)it.next());
+//              test, whether or not the node is still visible:
+                if (mindMapNode.getViewer() != null) {
+                    selected.add(mindMapNode.getViewer()); 
+                } 
+            }
+            // determine focussed node:
+            if(focussedNode == null) {
+//              if the focussed is deleted:
+                focussedNode = getRoot().getModel();
+            } 
+//          test for visibility of the focussed:
+            while(focussedNode.getParentNode()!= null && focussedNode.getViewer()==null) {
+                focussedNode = focussedNode.getParentNode();
+            }
+            if(focussedNode.getParentNode()==null) {
+//              test, whether or not the node still belongs to the map:
+                if(!focussedNode.equals(getRoot().getModel())) {
+	                focussedNode = getRoot().getModel();
+                }
+            }
+//          now select focussed:
+            focussedNode.getViewer().requestFocus();
             repaint();
         }
     }

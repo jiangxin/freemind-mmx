@@ -19,12 +19,12 @@
  *
  * Created on 06.02.2005
  */
-/*$Id: ReminderHook.java,v 1.1.2.1 2005-02-06 22:15:12 christianfoltin Exp $*/
+/*$Id: ReminderHook.java,v 1.1.2.2 2005-02-10 23:01:30 christianfoltin Exp $*/
 package plugins.time;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,6 +33,7 @@ import javax.swing.SwingUtilities;
 
 import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.main.XMLElement;
+import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
 
 //FIXME: Strings externalisieren.
@@ -44,94 +45,106 @@ import freemind.modes.MindMapNode;
  */
 public class ReminderHook extends PermanentNodeHookAdapter {
 
-	private static final String REMINDUSERAT = "remindUserAt";
+    private static final String REMINDUSERAT = "REMINDUSERAT";
 
-	private long remindUserAt=0;
+    private long remindUserAt = 0;
 
-	private Timer timer;
+    private Timer timer;
 
-	/**
-	 *  
-	 */
-	public ReminderHook() {
-		super();
-	}
+    private static MindIcon clockIcon=null;
 
-	public void loadFrom(XMLElement child) {
-		super.loadFrom(child);
-		HashMap hash = loadNameValuePairs(child);
-		if (hash.containsKey(REMINDUSERAT)) {
-			setRemindUserAt(new Long((String) hash.get(REMINDUSERAT))
-					.longValue());
-		}
+    /**
+     *  
+     */
+    public ReminderHook() {
+        super();
+    }
 
-	}
+    public void loadFrom(XMLElement child) {
+        super.loadFrom(child);
+        HashMap hash = loadNameValuePairs(child);
+        if (hash.containsKey(REMINDUSERAT)) {
+            setRemindUserAt(new Long((String) hash.get(REMINDUSERAT))
+                    .longValue());
+        }
 
-	public void save(XMLElement xml) {
-		super.save(xml);
-		HashMap nameValuePairs = new HashMap();
-		nameValuePairs.put(REMINDUSERAT, new Long(remindUserAt));
-		saveNameValuePairs(nameValuePairs, xml);
-	}
+    }
 
-	public void shutdownMapHook() {
-		if (timer!=null) {
-			timer.cancel();
-		}
-		super.shutdownMapHook();
-	}
+    public void save(XMLElement xml) {
+        super.save(xml);
+        HashMap nameValuePairs = new HashMap();
+        nameValuePairs.put(REMINDUSERAT, new Long(remindUserAt));
+        saveNameValuePairs(nameValuePairs, xml);
+    }
 
-	public void invoke(MindMapNode node) {
-		super.invoke(node);
-		if(remindUserAt==0) {
-			throw new IllegalArgumentException("nothing to do");
-		}
-		if (timer == null) {
-			timer = new Timer();
-			Date date = new Date(remindUserAt);
-			timer.schedule(new CheckReminder(), date);
-			getNode().setToolTip("Reminder scheduled at "+date);
-			nodeChanged(getNode());
-		}
-	}
+    public void shutdownMapHook() {
+        getController().setToolTip(getNode(), getName(), null);
+        if (timer != null) {
+            timer.cancel();
+        }
+        super.shutdownMapHook();
+    }
 
-	protected class CheckReminder extends TimerTask {
-		CheckReminder() {
+    public void invoke(MindMapNode node) {
+        super.invoke(node);
+        if (remindUserAt == 0) {
+            throw new IllegalArgumentException("nothing to do");
+        }
+        if (timer == null) {
+            timer = new Timer();
+            Date date = new Date(remindUserAt);
+            timer.schedule(new CheckReminder(), date);
+            Object[] messageArguments = { date };
+            MessageFormat formatter = new MessageFormat(
+                    getResourceString("plugins/TimeManagement.xml_reminderNode_tooltip"));
+            String message = formatter.format(messageArguments);
 
-		}
+            getController().setToolTip(node, getName(),
+                    message);
+        }
+        // icon
+        if(clockIcon==null) {
+            clockIcon = new MindIcon("clock");
+        }
+        node.addStateIcon(getName(), clockIcon);
+        getController().nodeRefresh(node);
+    }
 
-		/** TimerTask method to enable the selection after a given time. */
-		public void run() {
-			if (getController().isBlocked())
-				return;
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					// yes, the time is over:
-					getController().displayNode(getNode());
+    protected class CheckReminder extends TimerTask {
+        CheckReminder() {
 
-					int result = JOptionPane
-							.showConfirmDialog(
-									getController().getFrame().getJFrame(),
-									"Time has elapsed. Do you want to snooze for ten minutes?",
-									"Freemind",
-									JOptionPane.YES_NO_OPTION);
-					if(result == JOptionPane.YES_OPTION){
-						setRemindUserAt(System.currentTimeMillis()+10*60*1000);
-						timer.schedule(CheckReminder.this, new Date(getRemindUserAt()));
-					}
-					nodeChanged(getNode());
-					// remove the hook (suicide)
-					getNode().removeHook(ReminderHook.this);
-				}
-			});
-		}
-	}
+        }
 
-	public long getRemindUserAt() {
-		return remindUserAt;
-	}
+        /** TimerTask method to enable the selection after a given time. */
+        public void run() {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    // yes, the time is over:
+                    getController().displayNode(getNode());
 
-	public void setRemindUserAt(long remindUserAt) {
-		this.remindUserAt = remindUserAt;
-	}
+                    int result = JOptionPane
+                            .showConfirmDialog(
+                                    getController().getFrame().getJFrame(),
+                                    "Time has elapsed. Do you want to snooze for ten minutes?",
+                                    "Freemind", JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION) {
+                        setRemindUserAt(System.currentTimeMillis() + 10 * 60 * 1000);
+                        timer.schedule(CheckReminder.this, new Date(
+                                getRemindUserAt()));
+                    }
+                    nodeChanged(getNode());
+                    // remove the hook (suicide)
+                    getNode().removeHook(ReminderHook.this);
+                }
+            });
+        }
+    }
+
+    public long getRemindUserAt() {
+        return remindUserAt;
+    }
+
+    public void setRemindUserAt(long remindUserAt) {
+        this.remindUserAt = remindUserAt;
+    }
 }

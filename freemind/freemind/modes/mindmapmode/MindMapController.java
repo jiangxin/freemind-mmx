@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.7 2005-01-04 10:39:41 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.8 2005-02-10 23:01:23 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -71,9 +71,9 @@ import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.actions.ChangeArrowsInArrowLinkAction;
 import freemind.modes.actions.ColorArrowLinkAction;
+import freemind.modes.actions.FindAction;
 import freemind.modes.actions.GotoLinkNodeAction;
 import freemind.modes.actions.IconAction;
-import freemind.modes.actions.ImportFolderStructureAction;
 import freemind.modes.actions.NewMapAction;
 import freemind.modes.actions.NewPreviousSiblingAction;
 import freemind.modes.actions.NewSiblingAction;
@@ -114,8 +114,6 @@ public class MindMapController extends ControllerAdapter {
    public Action importBranch = new ImportBranchAction();
    public Action importLinkedBranch = new ImportLinkedBranchAction();
    public Action importLinkedBranchWithoutRoot = new ImportLinkedBranchWithoutRootAction();
-   public Action find = new FindAction();
-   public Action findNext = new FindNextAction();
 
 
     public Action increaseNodeFont = new NodeGeneralAction (this, "increase_node_font_size", null,

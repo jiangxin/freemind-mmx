@@ -16,27 +16,29 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileController.java,v 1.11.18.2 2004-12-19 09:00:40 christianfoltin Exp $*/
+/*$Id: FileController.java,v 1.11.18.3 2005-02-10 23:01:23 christianfoltin Exp $*/
 
 package freemind.modes.filemode;
 
+import java.awt.event.ActionEvent;
+import java.io.File;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
-import freemind.modes.Mode;
-import freemind.modes.MindMap;
-import freemind.modes.MapAdapter;
-import freemind.modes.MindMapNode;
 import freemind.modes.ControllerAdapter;
+import freemind.modes.MapAdapter;
+import freemind.modes.MindMap;
+import freemind.modes.MindMapNode;
+import freemind.modes.Mode;
 import freemind.modes.actions.NewMapAction;
-
-import java.io.File;
-import java.awt.event.ActionEvent;
-import javax.swing.*;
 
 public class FileController extends ControllerAdapter {
 
-    Action find = new FindAction();
-    Action findNext = new FindNextAction();
 
     Action newMap = new NewMapAction(this, this);
     Action center = new CenterAction();

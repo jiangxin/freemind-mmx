@@ -16,9 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.5 2004-12-19 09:00:38 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.6 2005-02-10 23:01:23 christianfoltin Exp $*/
 
 package freemind.modes;
+
+import java.util.Map;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -27,10 +29,13 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.tree.MutableTreeNode;
@@ -54,7 +59,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	private List hooks;
 	protected Object userObject = "no text";
     private String link = null; //Change this to vector in future for full graph support
-    private String toolTip = null;
+    private HashMap toolTip = new HashMap();
 
     //these Attributes have default values, so it can be useful to directly access them in
     //the save() method instead of using getXXX(). This way the stored file is smaller and looks better.
@@ -62,6 +67,8 @@ public abstract class NodeAdapter implements MindMapNode {
     protected String style;
     /**stores the icons associated with this node.*/
     protected Vector/*<MindIcon>*/ icons = new Vector();
+    
+    protected TreeMap /* of String to MindIcon s*/ stateIcons = new TreeMap();
 //     /**stores the label associated with this node:*/
 //     protected String mLabel;
     /** parameters of an eventually associated cloud*/
@@ -699,15 +706,22 @@ public abstract class NodeAdapter implements MindMapNode {
 	/**
 	 * @return
 	 */
-	public String getToolTip() {
-		return toolTip;
+	public java.util.Map getToolTip() {
+		return Collections.unmodifiableMap(toolTip);
 	}
 
 	/**
 	 * @param string
 	 */
-	public void setToolTip(String string) {
-		toolTip = string;
+	public void setToolTip(String key, String string) {
+		if (string == null) {
+		    if (toolTip.containsKey(key)) {
+                toolTip.remove(key);
+            }
+        } else {
+            
+            toolTip.put(key, string);
+        }
 	}
 
 
@@ -845,5 +859,18 @@ public abstract class NodeAdapter implements MindMapNode {
     }
     public boolean isNodeClassToBeSaved() {
         return false;
+    }
+    
+    
+    public void addStateIcon(String key, MindIcon icon) {
+        stateIcons.put(key, icon);
+    }
+    public SortedMap getStateIcons() {
+        return Collections.unmodifiableSortedMap(stateIcons);
+    }
+    public void removeStateIcon(String key) {
+        if(stateIcons.containsKey(key)) {
+            stateIcons.remove(key);
+        }
     }
 }

@@ -16,16 +16,9 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.4 2004-11-16 16:42:36 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.5 2005-02-10 23:01:28 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
-
-import freemind.main.FreeMind;
-import freemind.main.Tools;
-import freemind.modes.MindMapCloud;
-import freemind.modes.MindMapNode;
-import freemind.modes.NodeAdapter;//This should not be done.
-import freemind.modes.MindIcon;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -42,19 +35,24 @@ import java.awt.dnd.DragSource;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
 import java.net.MalformedURLException;
-
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import sun.nio.cs.StandardCharsets;
-
+import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
+import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 
@@ -746,18 +744,29 @@ public abstract class NodeView extends JLabel {
         MultipleImage iconImages = new MultipleImage(map.getZoom());
         boolean iconPresent = false;
         /* fc, 06.10.2003: images?*/
-        Vector icons = ((NodeAdapter)getModel()).getIcons();
+        
+        FreeMindMain frame = map.getController().getFrame();
+        SortedMap stateIcons = (getModel()).getStateIcons();
+        for (Iterator i = stateIcons.keySet().iterator(); i.hasNext();) {
+            String key = (String) i.next();
+            iconPresent = true;
+            MindIcon myicon = (MindIcon) stateIcons.get(key);
+            iconImages.addImage((ImageIcon) myicon.getIcon(frame));  
+            
+        }
+
+        Vector icons = (getModel()).getIcons();
         for(int i = 0; i < icons.size(); ++i) {
             iconPresent = true;
             MindIcon myicon = (MindIcon) icons.get(i);
             //System.out.println("print the icon " + myicon.toString());
-            iconImages.addImage((ImageIcon) myicon.getIcon(map.getController().getFrame()));  
+            iconImages.addImage((ImageIcon) myicon.getIcon(frame));  
         }
         String link = ((NodeAdapter)getModel()).getLink();
         if ( link != null ) 
             {
                 iconPresent = true;
-                ImageIcon icon = new ImageIcon(((NodeAdapter)getModel()).getFrame().getResource
+                ImageIcon icon = new ImageIcon(frame.getResource
                                           (link.startsWith("mailto:") ? "images/Mail.png" :
                                            (Tools.executableByExtension(link) ? "images/Executable.png" :
                                             "images/Link.png")));
@@ -799,13 +808,18 @@ public abstract class NodeView extends JLabel {
         boolean widthMustBeRestricted = false;
 
         lines = nodeText.split("\n");           
-        for (int line = 0; line < lines.length; line++) {
-           // Compute the width the node would spontaneously take,
-           // by preliminarily setting the text.
-           setText(lines[line]);
-           if (widthMustBeRestricted = getPreferredSize().width > 
-               map.getZoomed(map.getMaxNodeWidth())) {
-              break; }}
+        for (int line = 0; line < lines.length; line++)
+        {
+            // Compute the width the node would spontaneously take,
+            // by preliminarily setting the text.
+            setText(lines[line]);
+            widthMustBeRestricted = getPreferredSize().width > map
+                    .getZoomed(map.getMaxNodeWidth());
+            if (widthMustBeRestricted)
+            {
+                break;
+            }
+        }
 
         isLong = widthMustBeRestricted || lines.length > 1;
    
@@ -840,8 +854,26 @@ public abstract class NodeView extends JLabel {
            setText("<html><table"+
                    (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
                    text+"</table></html>"); }
-   		// 5) ToolTip:
-   		setToolTipText(getModel().getToolTip());
+   		// 5) ToolTips:
+        Map tooltips = getModel().getToolTip();
+        if(tooltips.size() == 1) {
+            setToolTipText((String) tooltips.values().iterator().next());
+        } else {
+            // html table
+            StringBuffer text = new StringBuffer("<html><table>");
+            Set keySet = tooltips.keySet();
+            TreeSet sortedKeySet = new TreeSet();
+            sortedKeySet.addAll(keySet);
+            for (Iterator i = sortedKeySet.iterator(); i.hasNext();) {
+                String key = (String) i.next();
+                String value = (String) tooltips.get(key);
+                text.append("<tr><td>");
+                text.append(value);
+                text.append("</td></tr>");
+            }
+            text.append("</table></html>");
+            setToolTipText(text.toString());
+        }
    		// 6) icons left or right? 
    		//URGENT: Discuss with Dan.
 	    setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);

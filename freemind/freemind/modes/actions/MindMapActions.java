@@ -26,6 +26,14 @@ import freemind.modes.mindmapmode.MindMapArrowLinkModel;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public interface MindMapActions {
+    /** Call this method, if you changed anything at a node. This method makes the map dirty.
+     * @param node
+     */
+    public void nodeChanged(MindMapNode node);
+    /** This is nodeChanged without making the map dirty.
+     * @param node
+     */
+    public void nodeRefresh(MindMapNode node);
 	public void nodeStructureChanged(MindMapNode node);
 	//  All these methods do redisplay, because they are offered to controller for use.
 	/** The following modes are present: 
@@ -52,6 +60,10 @@ public interface MindMapActions {
 	 * */
 	void moveNodes(MindMapNode selected, List selecteds, int direction);
 	
+	/**
+	 * @param node
+	 * @param folded
+	 */
 	void setFolded(MindMapNode node, boolean folded);
 	/**
 	 * Switches the folding state of all selected nodes. In fact, 
@@ -122,4 +134,11 @@ public interface MindMapActions {
 	
 	//public void addHook(MindMapNode focussed, List selecteds, String hookName);
 	public MindMapNode getRootNode();
+	
+	/**
+	 * @param node
+	 * @param key key value patterns is used to ensure, that more than one tooltip can be displayed.
+	 * @param value null if you want to delete this tooltip.
+	 */
+	public void setToolTip(MindMapNode node, String key, String value);
 }

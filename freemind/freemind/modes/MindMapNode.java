@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.5 2004-12-19 09:00:38 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.6 2005-02-10 23:01:23 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -27,6 +27,7 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.SortedMap;
 import java.util.Vector;
 
 import javax.swing.tree.MutableTreeNode;
@@ -166,8 +167,8 @@ public interface MindMapNode extends MutableTreeNode {
 	//end hooks
 	
 	//tooltips,fc 29.2.2004
-	void setToolTip(String tip);
-	String getToolTip();
+	void setToolTip(String key, String tip);
+	java.util.Map getToolTip();
 	
 	//additional info, fc, 15.12.2004
 	
@@ -185,4 +186,16 @@ public interface MindMapNode extends MutableTreeNode {
         
     MindMapNode shallowCopy();
     public XMLElement save(Writer writer, MindMapLinkRegistry registry) throws IOException;
+    
+    // fc, 10.2.2005:
+    /** State icons are icons that are not saved. They indicate that 
+     *  this node is special.
+     * @return
+     */
+    SortedMap getStateIcons();
+
+    void   addStateIcon(String key, MindIcon icon);
+
+    void removeStateIcon(String key);
+    
 }

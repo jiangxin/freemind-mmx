@@ -60,12 +60,15 @@ public class BlinkingNodeHook extends PermanentNodeHookAdapter {
 		}
 		/** TimerTask method to enable the selection after a given time.*/
 		public void run() {
-			if(getController().isBlocked())
+			if(getController().isBlocked()||getNode()==null /*before invocation*/)
 				return;
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					Color col = getNode().getColor();
-					int index = colors.indexOf(col);
+					int index = -1;
+                    if (col != null && colors.contains(col)) {
+                        index = colors.indexOf(col);
+                    }
 					index++;
 					if (index >= colors.size())
 						index = 0;

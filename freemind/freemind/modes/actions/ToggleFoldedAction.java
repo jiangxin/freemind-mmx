@@ -19,7 +19,7 @@
  *
  * Created on 12.08.2004
  */
-/*$Id: ToggleFoldedAction.java,v 1.1.4.3 2005-01-04 10:39:41 christianfoltin Exp $*/
+/*$Id: ToggleFoldedAction.java,v 1.1.4.4 2005-02-10 23:01:23 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -161,7 +161,7 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
             FoldAction foldAction = (FoldAction) action;
             MindMapNode node = modeController.getNodeFromID(foldAction.getNode());
             boolean fold = foldAction.isFolded();
-            modeController.getMap().setFolded(node, fold);
+            _setFolded(node, fold);
         }
     }
     public Class getDoActionClass() {
@@ -181,5 +181,19 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
 		modeController.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
         modeController.getActionFactory().endTransaction((String) getValue(NAME));
     }
+    
+    private void _setFolded(MindMapNode node, boolean folded) {
+        if(node == null)
+            throw new IllegalArgumentException("setFolded was called with a null node.");
+        // no root folding, fc, 16.5.2004
+        if (node.isRoot()) {
+            return;
+        }
+        if (node.isFolded() != folded) {
+            node.setFolded(folded);
+            modeController.nodeStructureChanged(node);
+        }
+    }
+
     
 }

@@ -8,6 +8,7 @@ package accessories.plugins;
 
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import freemind.extensions.HookFactory;
 import freemind.extensions.NodeHook;
@@ -24,7 +25,9 @@ import freemind.modes.MindMapNode;
  */
 public class CreationModificationPlugin extends PermanentNodeHookAdapter {
 
-	private long created;
+	private static final String CREATED = "CREATED";
+    private static final String MODIFIED = "MODIFIED";
+    private long created;
 	private long modified;
 
 	/**
@@ -42,9 +45,9 @@ public class CreationModificationPlugin extends PermanentNodeHookAdapter {
 			(new Date(modified))
 		};
 		MessageFormat formatter = new MessageFormat(getResourceString("tooltip_format"));
-		setToolTip(formatter.format(messageArguments));
-		//fc, 4.2.2005: The following does not make sense, as the node was not effectively changed.
-		//nodeChanged(getNode());
+		String message = formatter.format(messageArguments);
+		setToolTip(getName(),message);
+		logger.finest(this+"Tooltiop for "+getNode()+" with parent " + getNode().getParentNode()+" is "+message);
 	}
 
 	/* (non-Javadoc)
@@ -53,19 +56,29 @@ public class CreationModificationPlugin extends PermanentNodeHookAdapter {
 	public void loadFrom(XMLElement child) {
 		super.loadFrom(child);
 		XMLElement paramChild = (XMLElement) child.getChildren().get(0);
-		if(paramChild != null) {
-			Object obj = paramChild.getAttribute("created", new Long(created));
-			String str = (String) obj;
-			created = Long.valueOf(str).longValue();
-			modified = Long.valueOf((String) paramChild.getAttribute("modified", new Long(modified))).longValue();
-		}
+
+	    HashMap hash = loadNameValuePairs(child);
+        created = toLong((String) hash.get(CREATED));
+	    modified = toLong((String) hash.get(MODIFIED));
 	}
 
-	/* (non-Javadoc)
+	/**
+     * @param createdString
+     * @return
+     */
+    private long toLong(String createdString) {
+        try {
+            return Long.valueOf(createdString).longValue();
+        } catch (Exception e) {
+            return System.currentTimeMillis();
+        }
+    }
+
+    /* (non-Javadoc)
 	 * @see freemind.extensions.PermanentNodeHook#onAddChild(freemind.modes.MindMapNode)
 	 */
-	public void onAddChild(MindMapNode child) {
-		super.onAddChild(child);
+	public void onNewChild(MindMapNode child) {
+		super.onNewChild(child);
 		propagate(child);
 	}
 
@@ -74,14 +87,26 @@ public class CreationModificationPlugin extends PermanentNodeHookAdapter {
 	 */
 	public void save(XMLElement xml) {
 		super.save(xml);
-		XMLElement child = new XMLElement();
-		child.setName("Parameters");
-		child.setAttribute("CREATED", new Long(created));
-		child.setAttribute("MODIFIED", new Long(modified));
-		xml.addChild(child);
+		HashMap hash = new HashMap();
+		hash.put(CREATED, toString(created));
+		hash.put(MODIFIED, toString(modified));
+        saveNameValuePairs(hash, xml);
+//		XMLElement child = new XMLElement();
+//		child.setName("Parameters");
+//		child.setAttribute("CREATED", new Long(created));
+//		child.setAttribute("MODIFIED", new Long(modified));
+//		xml.addChild(child);
 	}
 
-	/* (non-Javadoc)
+	/**
+     * @param modified2
+     * @return
+     */
+    private String toString(long longValue) {
+        return new Long(longValue).toString();
+    }
+
+    /* (non-Javadoc)
 	 * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode)
 	 */
 	public void invoke(MindMapNode node) {
@@ -98,7 +123,7 @@ public class CreationModificationPlugin extends PermanentNodeHookAdapter {
 		setStyle();
 	}
 	public void shutdownMapHook() {
-		setToolTip(null);
+		setToolTip(getName(), null);
 		nodeChanged(getNode());
 		super.shutdownMapHook();
 	}

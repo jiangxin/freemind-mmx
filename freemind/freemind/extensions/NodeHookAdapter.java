@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeHookAdapter.java,v 1.1.4.1 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: NodeHookAdapter.java,v 1.1.4.2 2005-02-10 23:01:18 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.Collection;
@@ -90,10 +90,10 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 	}
 
 	/**
-	 * @param string
+	 * @param value
 	 */
-	protected void setToolTip(String string) {
-		getNode().setToolTip(string);
+	protected void setToolTip(String key, String value) {
+		getController().setToolTip(getNode(), key, value);
 	}
 
 

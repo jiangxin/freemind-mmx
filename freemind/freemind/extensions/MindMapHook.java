@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapHook.java,v 1.1.4.1 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: MindMapHook.java,v 1.1.4.2 2005-02-10 23:01:18 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.Properties;
@@ -28,6 +28,9 @@ import freemind.modes.ModeController;
  *
  */
 public interface MindMapHook {
+	/**
+	 * @return The name of the hook. In the xml description, this is the unique label.
+	 */
 	String getName();
 	void setName(String name);
 	

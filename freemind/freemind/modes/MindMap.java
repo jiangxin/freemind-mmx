@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.14.14.4 2004-12-19 09:00:38 christianfoltin Exp $*/
+/*$Id: MindMap.java,v 1.14.14.5 2005-02-10 23:01:23 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -25,7 +25,6 @@ import java.awt.datatransfer.Transferable;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.tree.TreeModel;
@@ -64,14 +63,8 @@ public interface MindMap extends TreeModel {
 //
     //    void paste(MindMapNode node, MindMapNode parent);
 
-    boolean find(MindMapNode node, String what, boolean caseSensitive);
-    boolean findNext();
-    String getFindWhat();
-    String getFindFromText();
 
-    /** Display a node in the display (used by find and the goto action by arrow link actions).*/
-    void displayNode(MindMapNode node, ArrayList NodesUnfoldedByDisplay);
-
+ 
     
     /**
      * Returns the file name of the map edited or null if not possible.
@@ -97,7 +90,6 @@ public interface MindMap extends TreeModel {
     
     void setBackgroundColor(Color color);
 
-    void setFolded(MindMapNode node, boolean folded);
 
     /** @return returns the link registry associated with this mode, or null, if no registry is present.*/
     MindMapLinkRegistry getLinkRegistry();
@@ -109,11 +101,6 @@ public interface MindMap extends TreeModel {
     void destroy();
 
     boolean isReadOnly();
-
-    /**
-     * call this function to notify the map
-     */
-    void setLinkInclinationChanged();
 
 // (PN)
 //    void close();

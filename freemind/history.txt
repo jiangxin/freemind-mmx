@@ -101,6 +101,7 @@ Changes made in Freemind 0.8.0:
 * Japanese translation merged (thanks to Koh for the fast reaction).
 * Fixed the proposed file names of all export hooks
 
+
 RC 1
 ----
 * Bug fix: Cut/Paste
@@ -155,6 +156,13 @@ RC2
 * New external plugin: time management. It is now possible to add dates to nodes and
   to schedule resubmissions, which remind at a certain date to a given node. 
 
+* japanese traduction introduced.
+* new state icons (look for reminders)
+* tooltips may occur more than one
+* bug fix: move of nodes with created/modified information
+* bug fix: created/modified info appears directly.
+* bug fix: upper case and xml (for the turkish version)
+* bug fix: Find and Find Next work again.
 
 Changes made in Freemind 0.7.2:
 ===============================

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.10 2005-02-06 22:15:12 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.11 2005-02-10 23:01:20 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -54,6 +54,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -107,6 +108,7 @@ import freemind.modes.actions.EdgeColorAction;
 import freemind.modes.actions.EdgeStyleAction;
 import freemind.modes.actions.EdgeWidthAction;
 import freemind.modes.actions.EditAction;
+import freemind.modes.actions.FindAction;
 import freemind.modes.actions.FontFamilyAction;
 import freemind.modes.actions.FontSizeAction;
 import freemind.modes.actions.GotoLinkNodeAction;
@@ -131,8 +133,8 @@ import freemind.modes.actions.ToggleChildrenFoldedAction;
 import freemind.modes.actions.ToggleFoldedAction;
 import freemind.modes.actions.UnderlinedAction;
 import freemind.modes.actions.UndoAction;
+import freemind.modes.actions.FindAction.FindNextAction;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
-import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.MindMapLayout;
@@ -217,6 +219,8 @@ public abstract class ControllerAdapter implements ModeController {
     public ImportFolderStructureAction importFolderStructure = null;
     public ChangeArrowLinkEndPoints changeArrowLinkEndPoints = null;
 
+    public FindAction find=null;
+    public FindNextAction findNext=null;
 
 
 	/** Executes series of actions. */
@@ -321,6 +325,8 @@ public abstract class ControllerAdapter implements ModeController {
 	    importExplorerFavorites = new ImportExplorerFavoritesAction(this);
 	    importFolderStructure = new ImportFolderStructureAction(this);
 	    changeArrowLinkEndPoints = new ChangeArrowLinkEndPoints(this);
+	    find = new FindAction(this);
+	    findNext = new FindNextAction(this,find);
 	    
 	    compound = new CompoundActionHandler(this);
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -397,6 +403,11 @@ public abstract class ControllerAdapter implements ModeController {
 	
 	/** Currently, this method is called by the mapAdapter. This is buggy, and is to be changed.*/
     public void nodeChanged(MindMapNode node) {
+        getMap().setSaved(false);
+        nodeRefresh(node);
+    }
+
+    public void nodeRefresh(MindMapNode node) {
     	logger.finest("nodeChanged called for node "+node+" parent="+node.getParentNode());
 		if(nodesAlreadyUpdated.contains(node)) {			
 			return;
@@ -1022,6 +1033,14 @@ public abstract class ControllerAdapter implements ModeController {
     public void setLink(MindMapNode node, String link) {
         setLinkByTextField.setLink(node, link);
     }
+    /**
+     *
+     */
+
+    public void setToolTip(MindMapNode node, String key, String value) {
+        node.setToolTip(key, value);
+        nodeRefresh(node);
+    }
     // edit begins with home/end or typing (PN 6.2)
 	public void edit(KeyEvent e, boolean addNew, boolean editLong) {
 		edit.edit(e, addNew, editLong);
@@ -1105,7 +1124,7 @@ public abstract class ControllerAdapter implements ModeController {
 	}
 	
 	public void displayNode(MindMapNode node){
-	    getMap().displayNode(node, null);
+	    find.displayNode(node, null);
 	}
 	public String getLinkShortText(MindMapNode node) {
 	    return gotoLinkNodeAction.getShortTextForLink(node);
@@ -1547,38 +1566,6 @@ public abstract class ControllerAdapter implements ModeController {
   			
 	}
 
-    protected class FindAction extends AbstractAction {
-        public FindAction() {
-           super(getText("find"),new ImageIcon(getResource("images/filefind.png"))); }
-        public void actionPerformed(ActionEvent e) {
-           String what = JOptionPane.showInputDialog(getView().getSelected(),
-                                                     getText("find_what"));
-           if (what == null || what.equals("")) {
-              return; }
-           boolean found = getModel().find
-              (getSelected(), what, /*caseSensitive=*/ false);
-           getView().repaint();
-           if (!found) {
-              getController().informationMessage
-                 (getText("no_found_from").replaceAll("\\$1",what).
-                  replaceAll("\\$2", getView().getModel().getFindFromText()),
-                  getView().getSelected()); }}}
-
-    protected class FindNextAction extends AbstractAction {
-        public FindNextAction() {
-           super(getText("find_next")); }
-        public void actionPerformed(ActionEvent e) {
-           String what = getView().getModel().getFindWhat();
-           if (what == null) {
-              getController().informationMessage(getText("no_previous_find"), getView().getSelected());
-              return; }
-           boolean found = getView().getModel().findNext();
-           getView().repaint();
-           if (!found) {
-              getController().informationMessage
-                 (getText("no_more_found_from").replaceAll("\\$1",what).
-                  replaceAll("\\$2", getView().getModel().getFindFromText()),
-                  getView().getSelected()); }}}
 
     public String marshall(XmlAction action) {
         try {
@@ -1788,4 +1775,6 @@ public abstract class ControllerAdapter implements ModeController {
         
     }
 
+    
+    
 }
