@@ -8,7 +8,7 @@
 
 <body>
 <h1>Creating a local copy from the CVS server</h1>
-<p>We are going to use the facilities provided by the great <em><a href="<h1>Using CVS from within Eclipse</h1>">Freemind</a></em> open source project. Like many other open source project Freemind uses the resources provided by Sourceforge amongst which it's <a href="http://sourceforge.net/cvs/?group_id=7118">CVS server</a> which is used to provide versioning, contributor and changes tracking.
+<p>We are going to use the facilities provided by the great  <a href="http://freemind.sourceforge.net/">Freemind</a> open source project. Like many other open source project Freemind uses the resources provided by Sourceforge amongst which it's <a href="http://sourceforge.net/cvs/?group_id=7118">CVS server</a> which is used to provide versioning, contributor and changes tracking.
 </p>
 <p>You can browse this CVS server tree for Freemind (remember that the web view is not updated in real time) by clicking <a href="http://cvs.sourceforge.net/viewcvs.py/freemind">here</a> and by navigating a little I can show you some the screen about a previous document I wrote:</p>
 <p><img src="images/EclipseCVS001.jpg" width="749" height="380" /> </p>
@@ -31,6 +31,15 @@
 <p>Remember that your network must permit an outbound SSH connection to cvs.sourceforge.net and that if you do not succeed you should check any personal or network firewalling rules (or ask your friendly network administrator).</p>
 <h3>Creating a local copy of the files</h3>
 <p>If we click on the CVS entry we have just created it will unfold. You will see a <em>HEAD</em> entry. Expand it and also expand &quot;admin&quot;, &quot;docs&quot; and &quot;Using CVS via Eclipse&quot;.</p>
+<p>At a given point in time here is what you could see (you will surely see something different but it is not important):</p>
+<p><img src="images/EclipseCVS004.jpg" width="580" height="468" /> </p>
+<p>The <em>Using CVS via Eclipse</em> is the subtree of the Freemind project we are interested in for this document and that we are going to download on our local workstation. </p>
+<p>Right click on this entry and choose &quot;Check Out As ...&quot; , select the &quot;Check out as a project in the workspace&quot; radio button, accept or tailor the Project name, click on the Next button.</p>
+<p>In this panel I prefer to deselect the Use default workspace location check box and enter a folder outside of Eclipse's workspace directory and into one of my data directories.</p>
+<p>Click on finish.</p>
+<p>&nbsp;  </p>
+<p>&nbsp;</p>
 <p><a href="index.html">Back to the main page </a></p>
+<p> <font size="-2">Robert Alexander &copy; 2003 bob at ngi.it</font></p>
 </body>
 </html>
