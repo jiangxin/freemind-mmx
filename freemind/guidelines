@@ -1,0 +1,19 @@
+This file collects guidelines and aims of the FreeMind project to avoid possible conflicts.
+
+Coding style
+-Each class is imported on its own, no "import javax.swing.*" imports.
+
+General
+-FreeMind is a generic editor for tree-structured data and doesn't prefer any special kind of data.
+-All code specific to any special kind of data is contained in a special Mode for that data.
+
+View
+-The data is represented as a Mind Map, as described by Tony Buzan.
+-A modular design for the view may be implemented to make other views possible (JTree-like, top-down hierarchy etc.)
+
+Controller
+-Every command should be available both with the keyboard and the mouse.
+
+***ToDo***
+-Drag'n'drop style cutting and pasting. (by moving a square around)
+-Named edges (edges with text).
