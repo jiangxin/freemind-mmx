@@ -192,6 +192,7 @@ RC 3:
 * With permission of Dan, the NodeNotes are back.
 * Bug fix: Node background colour in bubble nodes.
 * Bug fix: No appropiate actions are enabled when all maps are closed.
+* Bug fix: font name is copied by Format Copy.
 
 Changes made in Freemind 0.7.2:
 ===============================
