@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.13 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14 2004-01-25 16:41:15 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -50,7 +50,9 @@ public interface ModeController {
     public boolean isBlocked();
     public void edit(KeyEvent e, boolean addNew, boolean editLong);
     public void mouseWheelMoved(MouseWheelEvent e);
-    public void select(MouseEvent e);
+    /** This extends the currently selected nodes. 
+        @return true, if the method changed the selection.*/
+    public boolean extendSelection(MouseEvent e);
 
     public JPopupMenu getPopupMenu();
     public void showPopupMenu(MouseEvent e);

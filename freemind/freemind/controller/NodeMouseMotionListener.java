@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.13 2004-01-24 22:36:48 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.14 2004-01-25 16:41:08 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -42,6 +42,9 @@ import java.lang.Integer;
 public class NodeMouseMotionListener implements MouseMotionListener, MouseListener {
 
     private final Controller c;
+    // Logging: 
+    private static java.util.logging.Logger logger;
+
     /** time in ms, overwritten by property time_for_delayed_selection*/
     private static Tools.IntHolder timeForDelayedSelection; 
     /** overwritten by property delayed_selection_enabled*/
@@ -68,11 +71,14 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
 
     public NodeMouseMotionListener(Controller controller) {
        c = controller; 
+       if(logger == null)
+           logger = c.getFrame().getLogger("freemind.controller.NodeMouseMotionListener");
        if(delayedSelectionEnabled == null)
            updateSelectionMethod(c);
     }
 
     public void mouseMoved(MouseEvent e) {
+        logger.finest("Event: mouseMoved");
    //  Invoked when the mouse button has been moved on a component (with no buttons down). 
        ((NodeView)e.getComponent()).updateCursor(e.getX());
        // test if still in selection region:
@@ -86,34 +92,39 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
 
     /** Invoked when a mouse button is pressed on a component and then dragged.  */
     public void mouseDragged(MouseEvent e) {
+        logger.fine("Event: mouseDragged");
         // first stop the timer and select the node:
         stopTimerForDelayedSelection();
         NodeView nodeV = (NodeView)e.getSource();
 
         // if dragged for the first time, select the node:
         if(!c.getView().isSelected(nodeV))
-            c.getView().extendSelection(nodeV, e, false /* This means: do not select a whole branch.*/);
+            c.getMode().getModeController().extendSelection(e);
     }
 
     public void mouseClicked(MouseEvent e) {
     }
        
     public void mouseEntered( MouseEvent e ) {
+        logger.finest("Event: mouseEntered");
         createTimer(e);
         //c.getMode().getModeController().select(e);
     }
 
 
     public void mousePressed( MouseEvent e ) {
+        logger.fine("Event: mousePressed");
         // for Linux
         c.getMode().getModeController().showPopupMenu(e);
     }
 
     public void mouseExited( MouseEvent e ) {
+        logger.finest("Event: mouseExited");
         stopTimerForDelayedSelection();
     }
 
     public void mouseReleased( MouseEvent e ) {
+        logger.fine("Event: mouseReleased");
         // handling click in mouseReleased rather than in mouseClicked
         // provides better interaction. If mouse was slightly moved
         // between pressed and released events, the event clicked
@@ -122,7 +133,7 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
 
         // first stop the timer and select the node:
         stopTimerForDelayedSelection();
-        c.getView().extendSelection((NodeView)e.getSource(), e);
+        c.getMode().getModeController().extendSelection(e);
         // Right mouse <i>press</i> is <i>not</i> a popup trigger for Windows.
         // Only Right mouse release is a popup trigger!
         // OK, but Right mouse <i>press</i> <i>is</i> a popup trigger on Linux.
@@ -176,8 +187,12 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
         }
         /** TimerTask method to enable the selection after a given time.*/
         public void run() {
-            c.getMode().getModeController().select(e);
-            //c.getView().extendSelection((NodeView)e.getSource(), e);
+            /* formerly in ControllerAdapter. To guarantee, that point-to-select does not change selection if any meta key is pressed.*/
+            if (e.getModifiers() == 0
+                && !c.getMode().getModeController().isBlocked()
+                && c.getView().getSelecteds().size() <= 1) {
+                c.getMode().getModeController().extendSelection(e);
+            }
         }
     }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.16 2004-01-10 18:22:25 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.17 2004-01-25 16:41:11 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -179,6 +179,11 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
     public URL getResource(String name) {
 	return this.getClass().getResource("/"+name);
+    }
+
+    public java.util.logging.Logger getLogger(String forClass) {
+        /* Applet logging is anonymous due to security reasons. (Calling a named logger is answered with a security exception).*/
+        return java.util.logging.Logger.getAnonymousLogger();
     }
 
     public void init() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.26 2004-01-17 23:20:58 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27 2004-01-25 16:41:28 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -172,12 +172,15 @@ public abstract class NodeView extends JLabel {
     public boolean getIsLong() {
         return isLong; }
 
+    /* fc, 25.1.2004: Refactoring necessary: should call the model. */
     public boolean isSiblingOf(NodeView myNodeView) { 
        return getParentView() == myNodeView.getParentView(); }
 
+    /* fc, 25.1.2004: Refactoring necessary: should call the model. */
     public boolean isChildOf(NodeView myNodeView) { 
        return getParentView() == myNodeView; }
 
+    /* fc, 25.1.2004: Refactoring necessary: should call the model. */
     public boolean isParentOf(NodeView myNodeView) { 
        return (this == myNodeView.getParentView()); }
 

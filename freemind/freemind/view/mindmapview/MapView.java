@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.29 2004-01-24 22:36:48 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30 2004-01-25 16:41:26 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -356,35 +356,6 @@ public class MapView extends JPanel implements Printable {
             shiftSelectionOrigin = null;
             selectAsTheOnlyOneSelected(newlySelectedNodeView); }}
 
-    public void extendSelection(NodeView newlySelectedNodeView, InputEvent e) {
-        extendSelection(newlySelectedNodeView,  e, true);
-    }
-
-    /** @param selectBranchIfApplicable Bad hack, to avoid, that creating a graphical links leads to a selection of a whole branch. fc, 23.1.2004.*/
-    public void extendSelection(NodeView newlySelectedNodeView, InputEvent e, boolean selectBranchIfApplicable) {
-        boolean extend = e.isControlDown(); 
-        boolean branch = e.isShiftDown()   &&  selectBranchIfApplicable; 
-
-        if (extend || branch || !isSelected(newlySelectedNodeView)) {
-            if (!branch) {
-                if (extend)
-                    toggleSelected(newlySelectedNodeView);
-                else
-                    selectAsTheOnlyOneSelected(newlySelectedNodeView); }
-            //select( newlySelectedNodeView, extend ); }
-            else {
-                if (newlySelectedNodeView != getSelected() &&
-                    newlySelectedNodeView.isSiblingOf(getSelected())) {
-                    selectContinuous(newlySelectedNodeView); 
-                }
-                else {
-                    selectBranch(newlySelectedNodeView, extend); 
-                }
-            }
-            e.consume();
-        }
-    }
-
     public void moveToRoot() {
         selectAsTheOnlyOneSelected( getRoot() );
         centerNode( getRoot() );
@@ -398,7 +369,7 @@ public class MapView extends JPanel implements Printable {
         LinkedList oldSelecteds = getSelecteds();
         //select new node
         this.selected.clear();
-        this.selected.addElement(newSelected);
+        this.selected.add(0,newSelected);
         newSelected.requestFocus();
 
         // set last focused as preferred (PN) 
@@ -432,7 +403,8 @@ public class MapView extends JPanel implements Printable {
         }
         getSelected().requestFocus();
         getSelected().repaint();
-        oldSelected.repaint();
+        if(oldSelected != null)
+            oldSelected.repaint();
     }
 
     /**
@@ -447,8 +419,11 @@ public class MapView extends JPanel implements Printable {
         getSelected().repaint(); }
 
     public void deselect(NodeView newSelected) {
-        selected.remove(newSelected);
-        newSelected.repaint(); }
+        if (isSelected(newSelected)) {
+            selected.remove(newSelected);
+            newSelected.repaint();
+        }
+    }
 
 
     /**
@@ -470,24 +445,89 @@ public class MapView extends JPanel implements Printable {
         }
     }
 
-    public void selectContinuous(NodeView newSelected) {
-        // Precondition: newSelected != getSelected()
+    public boolean selectContinuous(NodeView newSelected) {
+        /* fc, 25.1.2004: corrected due to completely inconsistent behaviour.*/
+        NodeView oldSelected = null;
+        // search for the last already selected item among the siblings:
+        LinkedList selList = getSelecteds();
+        ListIterator j = selList.listIterator(/*selList.size()*/);
+        while(j.hasNext()) {
+            NodeView selectedNode = (NodeView)j.next();
+            if(selectedNode != newSelected && newSelected.isSiblingOf(selectedNode)) {
+                oldSelected = selectedNode;
+                break;
+            }
+        }
+        // no such sibling found. select the new one, and good bye.
+        if(oldSelected == null) {
+            if(!isSelected(newSelected)) {
+                toggleSelected(newSelected);
+                return true;
+            }
+            return false;
+        }
         // fc, bug fix: only select the nodes on the same side:
-        NodeView oldSelected = getSelected();
         boolean oldPositionLeft = oldSelected.isLeft();
         boolean newPositionLeft = newSelected.isLeft();
+        /* find old starting point. */
         ListIterator i = newSelected.getSiblingViews().listIterator();
         while (i.hasNext()) {
             NodeView nodeView = (NodeView)i.next();
-            if ( nodeView == newSelected || nodeView == oldSelected ) {
-                selectAsTheOnlyOneSelected(nodeView);
-                break; }}
+            if ( nodeView == oldSelected ) {
+                break; 
+            }
+        }
+        /* Remove all selections for the siblings in the connected component between old and new.*/
+        ListIterator i_backup = i;
         while (i.hasNext()) {
             NodeView nodeView = (NodeView)i.next();
-            if(nodeView.isLeft() == oldPositionLeft || nodeView.isLeft() == newPositionLeft)
-            toggleSelected(nodeView);
+            if((nodeView.isLeft() == oldPositionLeft || nodeView.isLeft() == newPositionLeft)) {
+                if ( isSelected(nodeView) ) 
+                    deselect(nodeView);
+                else
+                    break;
+            }
+        }
+        /* other direction. */
+        i = i_backup;
+        if(i.hasPrevious()) {
+            i.previous(); /* this is old selected! */
+            while (i.hasPrevious()) {
+                NodeView nodeView = (NodeView)i.previous();
+                if(nodeView.isLeft() == oldPositionLeft || nodeView.isLeft() == newPositionLeft){
+                    if ( isSelected(nodeView) ) 
+                        deselect(nodeView);
+                    else
+                        break;
+                }
+            }
+        }
+        /* reset iterator */
+        i = newSelected.getSiblingViews().listIterator();
+        /* find starting point. */
+        i = newSelected.getSiblingViews().listIterator();
+        while (i.hasNext()) {
+            NodeView nodeView = (NodeView)i.next();
             if ( nodeView == newSelected || nodeView == oldSelected ) {
-                break; }}}
+                if( ! isSelected(nodeView) )
+                    toggleSelected(nodeView);
+                break; 
+            }
+        }
+        /* select all up to the end point.*/
+        while (i.hasNext()) {
+            NodeView nodeView = (NodeView)i.next();
+            if( (nodeView.isLeft() == oldPositionLeft || nodeView.isLeft() == newPositionLeft) && ! isSelected(nodeView) )
+                toggleSelected(nodeView);
+            if ( nodeView == newSelected || nodeView == oldSelected ) {
+                break; 
+            }
+        }
+        // now, make oldSelected the last of the list in order to make this repeatable:
+        toggleSelected(oldSelected);
+        toggleSelected(oldSelected);
+        return true;
+    }
 
     //
     // get/set methods
@@ -523,7 +563,10 @@ public class MapView extends JPanel implements Printable {
     }
 
     public NodeView getSelected() {
-        return (NodeView)selected.get(0);
+        if(selected.size() > 0)
+            return (NodeView)selected.get(0);
+        else
+            return null;
     }
 
     private NodeView getSelected(int i) {
@@ -926,7 +969,7 @@ public class MapView extends JPanel implements Printable {
             // Warning, the old views still exist, because JVM has not deleted them. But don't use them!
             selected.clear();
             for (ListIterator it = selectedNodes.listIterator();it.hasNext();) {
-                selected.addElement(((MindMapNode)it.next()).getViewer()); }
+                selected.add(0,((MindMapNode)it.next()).getViewer()); }
             selectedNode.getViewer().requestFocus();
             repaint();
         }

@@ -5,9 +5,12 @@ RC3:
 * Bug fix: select sons of root with shift now gives only sons on the correct side.
 * Removed the delayed selection from the menu, it is deprecated now, and will be removed completely at the next release.
 * Corrected shading of the rood node for drag&drop
-* Little feature: folding of many selected nodes is working.
-* Bug fix: Selection mechanism: if drag&drop is started, the node under the cursor is selected. This removes a bug
+* Bug fix: Selection mechanism: if drag&drop is started, the node under the cursor is selected. Branches are not selected on MouseDragged but on MouseReleased.
 * Mac change: the browser call is changed according to Nick. Thanks.
+* Bug fix: If more than one selection, folding and editing with mouse disabled. The old behaviour was not useful as the last selected was opened in the editor or was folded even if one pressed on another node.
+* Little feature: folding of many selected nodes is working.
+* Bug fix: Continuous selection with Shift key corrected. Now, more than one of these selection ranges can be used.
+
 
 RC2:
 ----

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.10 2003-12-22 11:14:51 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.11 2004-01-25 16:41:11 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -84,4 +84,7 @@ public interface FreeMindMain {
 
     // version info:
     public String getFreemindVersion();
+
+    /* To obtain a logging element, ask here. */
+    public java.util.logging.Logger getLogger(String forClass);
 }

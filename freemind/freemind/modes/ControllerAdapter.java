@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.39 2004-01-24 22:36:48 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.40 2004-01-25 16:41:12 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -163,6 +163,9 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public void doubleClick(MouseEvent e) {
+        /* perform action only if one selected node.*/
+        if(getSelecteds().size() != 1)
+            return;
         MindMapNode node = ((NodeView)(e.getComponent())).getModel();
         // edit the node only if the node is a leaf (fc 0.7.1)
         if (node.hasChildren()) {
@@ -181,6 +184,9 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public void plainClick(MouseEvent e) {
+        /* perform action only if one selected node.*/
+        if(getSelecteds().size() != 1)
+            return;
         MindMapNode node = ((NodeView)(e.getComponent())).getModel();
         if (getView().getSelected().followLink(e.getX())) {
             loadURL(); }
@@ -1388,20 +1394,51 @@ public abstract class ControllerAdapter implements ModeController {
         return (NodeAdapter)getView().getSelected().getModel();
     }
 
-    public void select(MouseEvent e) {
-       if (e.getModifiers() == 0  
-           && !isBlocked()
-           && getView().getSelecteds().size() <= 1) {
+    public boolean extendSelection(MouseEvent e) {
+        NodeView newlySelectedNodeView = (NodeView)e.getSource();
+        //MindMapNode newlySelectedNode = newlySelectedNodeView.getModel();
+        boolean extend = e.isControlDown(); 
+        boolean range = e.isShiftDown(); 
+        boolean branch = e.isAltGraphDown() || e.isAltDown(); /* windows alt, linux altgraph .... */ 
+        boolean retValue = false;
 
-          select( (NodeView)e.getSource());
-       }
-                                                              
-       // Display link in status line
-       String link = ((NodeView)e.getSource()).getModel().getLink();
-       link = (link != null ? link : " ");
-       getController().getFrame().out(link); 
+        if (extend || range || branch || !getView().isSelected(newlySelectedNodeView)) {
+            if (!range) {
+                if (extend)
+                    getView().toggleSelected(newlySelectedNodeView);
+                else
+                    select(newlySelectedNodeView);
+                retValue = true;
+            }
+            else {
+                retValue = getView().selectContinuous(newlySelectedNodeView); 
+//                 /* fc, 25.1.2004: replace getView by controller methods.*/
+//                 if (newlySelectedNodeView != getView().getSelected() &&
+//                     newlySelectedNodeView.isSiblingOf(getView().getSelected())) {
+//                     getView().selectContinuous(newlySelectedNodeView); 
+//                     retValue = true;
+//                 } else {
+//                     /* if shift was down, but no range can be selected, then the new node is simply selected: */
+//                     if(!getView().isSelected(newlySelectedNodeView)) {
+//                         getView().toggleSelected(newlySelectedNodeView);
+//                         retValue = true;
+//                     }
+            }
+            if(branch) {
+                getView().selectBranch(newlySelectedNodeView, extend); 
+                retValue = true;
+            }    
+        }
 
-       e.consume();
+        if(retValue) {
+            e.consume();
+        
+            // Display link in status line
+            String link = newlySelectedNodeView.getModel().getLink();
+            link = (link != null ? link : " ");
+            getController().getFrame().out(link); 
+        }
+        return retValue;
     }
 
     private void select( NodeView node) {

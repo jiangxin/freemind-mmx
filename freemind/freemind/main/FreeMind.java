@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.30 2004-01-10 18:22:25 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.31 2004-01-25 16:41:09 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -481,6 +481,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	    return null;
 	}
 	//	return ResourceBundle.getBundle("Resources",locale);
+    }
+
+    public java.util.logging.Logger getLogger(String forClass) {
+        return java.util.logging.Logger.getLogger(forClass);
     }
 
     public static void main(String[] args) {
