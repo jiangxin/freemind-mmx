@@ -101,8 +101,8 @@
 			<!-- place image -->
 			<div style="width:96%; 	padding:2%; 	margin-bottom:10px; 	border: 0px; 	text-align:center; 	vertical-align:center;">
 					<xsl:element name="img">
-						<xsl:attribute name="src"><xsl:value-of select="$destination_dir"/>image.jpg</xsl:attribute>
-						<xsl:attribute name="style">max-width:96%; 	padding:2%; 	margin-bottom:10px; 	border: 0px; 	text-align:center; 	vertical-align:center;</xsl:attribute>
+						<xsl:attribute name="src"><xsl:value-of select="$destination_dir"/>image.png</xsl:attribute>
+						<xsl:attribute name="style">margin-bottom:10px; 	border: 0px; 	text-align:center; 	vertical-align:center;</xsl:attribute>
 						<xsl:attribute name="alt">Imagemap</xsl:attribute>
 						<xsl:attribute name="usemap">#fm_imagemap</xsl:attribute>
 					</xsl:element>

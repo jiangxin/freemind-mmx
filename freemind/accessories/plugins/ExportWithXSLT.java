@@ -142,8 +142,8 @@ public class ExportWithXSLT extends ExportHook {
                     // create image:
             		BufferedImage image = createBufferedImage();
             		try {
-            			FileOutputStream out = new FileOutputStream(directoryName+File.separator+"image.jpg");
-            			ImageIO.write(image, "jpeg", out);
+            			FileOutputStream out = new FileOutputStream(directoryName+File.separator+"image.png");
+            			ImageIO.write(image, "png", out);
             			out.close();
             		} catch (IOException e1) {
             			e1.printStackTrace();

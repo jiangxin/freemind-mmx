@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.2 2004-12-19 22:25:35 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.3 2004-12-30 20:31:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -192,6 +192,9 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         return ret;
     }
 
+	public void setPassword(StringBuffer password) {
+		this.password = password;
+	}
     /**
      * @return Returns the isDecrpyted.
      */
@@ -277,11 +280,10 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
      * @return
      */
     private String encryptXml(StringBuffer childXml) {
-        // Here is an example that uses the class
         try {
             // Create encrypter/decrypter class
             //FIXME: Use char[] instead of toString.
-            DesEncrypter encrypter = new DesEncrypter(password.toString());
+            DesEncrypter encrypter = new DesEncrypter(password);
 
             // Encrypt
             String encrypted = encrypter.encrypt(childXml.toString());
@@ -297,8 +299,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
      * @return
      */
     private String decryptXml(String encryptedString, StringBuffer pwd) {
-        // Create encrypter/decrypter class
-        DesEncrypter encrypter = new DesEncrypter(pwd.toString());
+        DesEncrypter encrypter = new DesEncrypter(pwd);
 
         //        // Decrypt
         String decrypted = encrypter.decrypt(encryptedString);
@@ -312,43 +313,59 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
         Cipher dcipher;
 
-        // 8-byte Salt
+        // 8-byte default Salt
         byte[] salt = { (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
                 (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03 };
 
         // Iteration count
         int iterationCount = 19;
 
-        DesEncrypter(String passPhrase) {
-            try {
-                // Create the key
-                KeySpec keySpec = new PBEKeySpec(passPhrase.toCharArray(),
-                        salt, iterationCount);
-                SecretKey key = SecretKeyFactory.getInstance(
-                        "PBEWithMD5AndTripleDES").generateSecret(keySpec);
-                ecipher = Cipher.getInstance(key.getAlgorithm());
-                dcipher = Cipher.getInstance(key.getAlgorithm());
+		private final char[] passPhrase;
 
-                // Prepare the parameter to the ciphers
-                AlgorithmParameterSpec paramSpec = new PBEParameterSpec(salt,
-                        iterationCount);
-
-                // Create the ciphers
-                ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
-                dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
-            } catch (java.security.InvalidAlgorithmParameterException e) {
-            } catch (java.security.spec.InvalidKeySpecException e) {
-            } catch (javax.crypto.NoSuchPaddingException e) {
-            } catch (java.security.NoSuchAlgorithmException e) {
-            } catch (java.security.InvalidKeyException e) {
-            }
+        DesEncrypter(StringBuffer pPassPhrase) {
+        		passPhrase = new char[pPassPhrase.length()];
+        		pPassPhrase.getChars(0, passPhrase.length, passPhrase, 0);
         }
 
-        public String encrypt(String str) {
+        /**
+		 * @param passPhrase
+		 */
+		private void init(byte[] mSalt) {
+            if(mSalt!=null) {
+            		this.salt = mSalt;
+            }
+			if (ecipher==null) {
+				try {
+					// Create the key
+					KeySpec keySpec = new PBEKeySpec(passPhrase,
+							salt, iterationCount);
+					SecretKey key = SecretKeyFactory.getInstance(
+							"PBEWithMD5AndTripleDES").generateSecret(keySpec);
+					ecipher = Cipher.getInstance(key.getAlgorithm());
+					dcipher = Cipher.getInstance(key.getAlgorithm());
+
+					// Prepare the parameter to the ciphers
+					AlgorithmParameterSpec paramSpec = new PBEParameterSpec(
+							salt, iterationCount);
+
+					// Create the ciphers
+					ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
+					dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
+				} catch (java.security.InvalidAlgorithmParameterException e) {
+				} catch (java.security.spec.InvalidKeySpecException e) {
+				} catch (javax.crypto.NoSuchPaddingException e) {
+				} catch (java.security.NoSuchAlgorithmException e) {
+				} catch (java.security.InvalidKeyException e) {
+				}
+			}
+		}
+
+		public String encrypt(String str) {
             try {
                 // Encode the string into bytes using utf-8
                 byte[] utf8 = str.getBytes("UTF8");
 
+				init(null);
                 // Encrypt
                 byte[] enc = ecipher.doFinal(utf8);
 
@@ -366,8 +383,9 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
             try {
                 // Decode base64 to get bytes
                 byte[] dec = new sun.misc.BASE64Decoder().decodeBuffer(str);
-
-                // Decrypt
+				init(null);
+				               
+				// Decrypt
                 byte[] utf8 = dcipher.doFinal(dec);
 
                 // Decode using utf-8
@@ -379,15 +397,8 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
             }
             return null;
         }
-    }
+   }
 
-    /**
-     * @param password
-     *            The password to set.
-     */
-    public void setPassword(StringBuffer password) {
-        this.password = password;
-    }
     /**isShuttingDown is used to fold an encrypted node properly. 
      * If it is encrypted, it has no children. Thus, the formely existing children can't be removed.
      * Thus, this flag postpones the childlessness of a node until it tree structure is updated.
