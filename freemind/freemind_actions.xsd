@@ -150,7 +150,7 @@
 				<!-- description contains the marshalled doAction for this undoAction. The doAction is performed by undo. -->
 		      <xs:attribute name="description" use="required" type="xs:string"/>
 				<!-- remedia contains the marshalled redoAction for this undoAction. The redoAction is performed by redo following undo. -->
-		      <xs:attribute name="remedia" use="required" type="xs:string"/>
+		      <xs:attribute name="remedia" use="optional" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
