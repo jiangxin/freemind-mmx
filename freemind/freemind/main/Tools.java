@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.14 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: Tools.java,v 1.15 2003-11-03 11:00:10 sviles Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -153,21 +153,37 @@ public class Tools {
          replaceAll("&amp;","&");
     }
 
-
-    public static String replaceLeadingSpaceWithNBSP (String text) {
-       //
-       int nonZeroPosition = 0;
-       while (nonZeroPosition < text.length() &&
-              text.charAt(nonZeroPosition) == ' ') {
-          nonZeroPosition++; }
-       
-       String result = "";
-       for (int i = 0; i < nonZeroPosition; i++) {
-          result += "&nbsp;"; }
-
-       result += text.substring(nonZeroPosition);
-       return result;
-    }
+    public static String toXMLEscapedTextWithNBSPizedSpaces(String text) {
+       int len = text.length();
+       StringBuffer result = new StringBuffer(len);
+       int intValue;
+       char myChar;
+       boolean previousSpace = false;
+       boolean spaceOccured = false;
+       for (int i = 0; i < len; ++i) {
+          myChar = text.charAt(i);
+          spaceOccured = false;
+          switch (myChar) {
+          case '&':
+             result.append("&amp;");
+             break;
+          case '<':
+             result.append("&lt;");
+             break;
+          case '>':
+             result.append("&gt;");
+             break;
+          case ' ':
+             spaceOccured  = true;
+             if (previousSpace) {
+                result.append("&nbsp;"); }
+             else { 
+                result.append(" "); }
+             break;                
+          default:
+             result.append(myChar); }
+          previousSpace = spaceOccured; }
+       return result.toString(); }
 
     public static boolean isAbsolutePath(String path) {
        // On Windows, we cannot just ask if the file name starts with file separator.
@@ -299,19 +315,23 @@ public class Tools {
                        timeOut--; }}
                  catch (Exception e) {e.printStackTrace(); }}}
 
-	public static String expandPlaceholders(String message, String s1) {
-	   String result = message;
-	   if (s1 != null) {
-		  result = result.replaceAll("\\$1",s1); }
-	   return result; }
+   /**
+    * Example: expandPlaceholders("Hello $1.","Dolly");  =>  "Hello Dolly."
+    */
+   public static String expandPlaceholders(String message, String s1) {
+      String result = message;
+      if (s1 != null) {
+         s1 = s1.replaceAll("\\\\","\\\\\\\\");    // Replace \ with \\
+         result = result.replaceAll("\\$1",s1); }
+      return result; }
 	   
-	public static String expandPlaceholders(String message, String s1, String s2) {
-	   String result = message;
-	   if (s1 != null) {
-		  result = result.replaceAll("\\$1",s1); }
-	   if (s2 != null) {
-		  result = result.replaceAll("\\$2",s2); }
-	   return result; }
+   public static String expandPlaceholders(String message, String s1, String s2) {
+      String result = message;
+      if (s1 != null) {
+         result = result.replaceAll("\\$1",s1); }
+      if (s2 != null) {
+         result = result.replaceAll("\\$2",s2); }
+      return result; }
 	   
    public static String expandPlaceholders(String message, String s1, String s2, String s3) {
    	  String result = message;

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMode.java,v 1.16 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: MindMapMode.java,v 1.17 2003-11-03 11:00:21 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -59,6 +59,7 @@ public class MindMapMode implements Mode {
 	    getModeController().load(new File(restoreable));
 	} catch (Exception e) {
 	    System.err.println("Error restoring file:"+e);
+        e.printStackTrace();
 	}
     }
     
@@ -76,6 +77,10 @@ public class MindMapMode implements Mode {
 
     public JToolBar getModeToolBar() {
 	return ((MindMapController)getModeController()).getToolBar();
+    }
+
+    public JToolBar getLeftToolBar() {
+	return ((MindMapController)getModeController()).getLeftToolBar();
     }
 
     public JMenu getModeFileMenu() {

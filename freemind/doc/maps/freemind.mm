@@ -104,6 +104,9 @@
 </node>
 </node>
 </node>
+<node COLOR="#669900" TEXT="You can edit a new map by dragging and dropping its file into the background of FreeMind">
+<font NAME="Default" SIZE="10"/>
+</node>
 <node COLOR="#669900" TEXT="Copying and pasting" FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="You can copy and paste (multiple) nodes between mindmaps as expected.">
@@ -339,6 +342,9 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
+<node COLOR="#669900" TEXT="Keyboard while editing a long node" FOLDED="true">
+<node TEXT="By default, *enter* finishes editing of a long node, and *control enter* enters a new line. By unchecking the check box &quot;Enter confirms&quot; you can reverse the function of the mentioned key combinations, i.e. *enter* enters new line and *control enter* finishes editing. You can set the default value of that check box in user.properties."/>
+</node>
 <node COLOR="#669900" TEXT="Exporting into HTML" FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="It is possible to export mind map or branch to HTML">
@@ -354,112 +360,47 @@
 </node>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Importing favorites or folder structure" FOLDED="true">
+<node COLOR="#669900" TEXT="Importing folder structure" FOLDED="true">
+<font NAME="Default" SIZE="12"/>
+<node TEXT="To import folder structure into FreeMind, use Popup &gt; Branch &gt; Import folder structure. You will be asked for the folder whose structure you want to import. By structure we mean the tree of all, and not necessary direct, subfolders with the links to the files in these subfolders. An example of inserted structure follows."/>
+<node COLOR="#996600" TEXT="Example">
 <font NAME="sansserif" SIZE="12"/>
-<node COLOR="#996600" TEXT="Where?">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="Node poup menu menu &gt; Branch &gt; Import &gt; ..">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
-<node TEXT="Import of Explorer favorites">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="You are asked for the folder from which you want to import favorites">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="It is typically ">
-<font NAME="sansserif" SIZE="12"/>
-<node LINK="file://C:\Users\Favorites" TEXT="C:\Users\Favorites">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
-</node>
-<node TEXT="The favorites are imported, the tree structure corresponds to structure of your favorites">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
-<node TEXT="Import of folder structure">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="You are asked for the folder whose structure you want to import">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="By structure we mean the tree of all (not necessary direct) subfolders with the links to files in these subfolders">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="Example" FOLDED="true">
-<font NAME="sansserif" SIZE="12"/>
-<node COLOR="#009999" TEXT="Selected folder">
+<node COLOR="#996600" TEXT="Selected folder">
 <font NAME="sansserif" SIZE="12"/>
 <node LINK="C:\Program Files\Microsoft Office\Office\Bitmaps" TEXT="C:\Program Files\Microsoft Office\Office\Bitmaps">
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node TEXT="Dbwiz">
-<font NAME="sansserif" SIZE="12"/>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/ASSETS.GIF" TEXT="ASSETS.GIF">
-<font NAME="sansserif" SIZE="12"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/" TEXT="Dbwiz">
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/ASSETS.GIF" TEXT="ASSETS.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/CONTACTS.GIF" TEXT="CONTACTS.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/EVTMGMT.GIF" TEXT="EVTMGMT.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/EXPENSES.GIF" TEXT="EXPENSES.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/INVENTRY.GIF" TEXT="INVENTRY.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/LEDGER.GIF" TEXT="LEDGER.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/ORDPROC.GIF" TEXT="ORDPROC.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/RESOURCE.GIF" TEXT="RESOURCE.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/SERVICE.GIF" TEXT="SERVICE.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/TIMEBILL.GIF" TEXT="TIMEBILL.GIF"/>
 </node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/CONTACTS.GIF" TEXT="CONTACTS.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/EVTMGMT.GIF" TEXT="EVTMGMT.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/EXPENSES.GIF" TEXT="EXPENSES.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/INVENTRY.GIF" TEXT="INVENTRY.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/LEDGER.GIF" TEXT="LEDGER.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/ORDPROC.GIF" TEXT="ORDPROC.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/RESOURCE.GIF" TEXT="RESOURCE.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/SERVICE.GIF" TEXT="SERVICE.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/TIMEBILL.GIF" TEXT="TIMEBILL.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
-<node TEXT="Styles">
-<font NAME="sansserif" SIZE="12"/>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLENDS.GIF" TEXT="ACBLENDS.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLUPRT.GIF" TEXT="ACBLUPRT.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACEXPDTN.GIF" TEXT="ACEXPDTN.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACINDSTR.GIF" TEXT="ACINDSTR.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACRICEPR.GIF" TEXT="ACRICEPR.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSNDSTN.GIF" TEXT="ACSNDSTN.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSUMIPT.GIF" TEXT="ACSUMIPT.GIF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/GLOBE.WMF" TEXT="GLOBE.WMF">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/STONE.BMP" TEXT="STONE.BMP">
-<font NAME="sansserif" SIZE="12"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/" TEXT="Styles">
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLENDS.GIF" TEXT="ACBLENDS.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLUPRT.GIF" TEXT="ACBLUPRT.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACEXPDTN.GIF" TEXT="ACEXPDTN.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACINDSTR.GIF" TEXT="ACINDSTR.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACRICEPR.GIF" TEXT="ACRICEPR.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSNDSTN.GIF" TEXT="ACSNDSTN.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSUMIPT.GIF" TEXT="ACSUMIPT.GIF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/GLOBE.WMF" TEXT="GLOBE.WMF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/STONE.BMP" TEXT="STONE.BMP"/>
 </node>
 </node>
 </node>
+<node COLOR="#669900" TEXT="Importing MS Internet Explorer favorites" FOLDED="true">
+<font NAME="Default" SIZE="10"/>
+<node TEXT="To import MS Explorer favorites into FreeMind, use Popup &gt; Branch &gt; Import Explorer Favorites. You&apos;ll be asked to enter the path to the folder where the favorites are stored. The folder&apos;s name is &quot;Favorites&quot; and you can find on your disk. On Windows 2000, the path is C:\Documents and Settings\&lt;user&gt;\Favorites."/>
 </node>
-</node>
-<node COLOR="#669900" TEXT="Cooperation with Microsoft tools like Word or Outlook" FOLDED="true">
+<node COLOR="#669900" TEXT="Integration with Microsoft tools like Word or Outlook" FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="You can paste maps or branches into MS Work, MS Wordpad or MS Outlook messages. In general, you can paste it into any application that understands RTF - rich text format. The text formatting and links are pasted too.">
 <font NAME="sansserif" SIZE="12"/>
@@ -495,7 +436,8 @@
 </node>
 </node>
 <node COLOR="#006600" TEXT="Tips" FOLDED="true">
-<font ITALIC="true" NAME="dialog" SIZE="15"/>
+<font NAME="dialog" SIZE="15"/>
+<icon BUILTIN="knotify"/>
 <node COLOR="#669900" TEXT="Use anonymous nodes">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="   ">
@@ -590,23 +532,22 @@
 <node TEXT="To be able to enter newlines in long nodes, uncheck the check box &quot;Enter confirms&quot; when editing the long node.&#xa;&#xa;You see?&#xa;&#xa;There are newlines here, make no mistake about it."/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="HTML and Pictures" FOLDED="true">
+<node COLOR="#669900" TEXT="Pictures and HTML in nodes" FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="It is possible to include HTML in nodes. You have to start the node content with the tag &lt;html&gt;.">
-<font NAME="SansSerif" SIZE="12"/>
-</node>
-<node COLOR="#000000" TEXT="This way, you can have pictures in the nodes.">
+<node TEXT="An easy way to insert pictures into FreeMind is with Popup &gt; Node &gt; Set Image. You lose all the text you had in the node. Be aware that those images are not correctly pasted outside FreeMind and they need not to be correctly exported to HTML. Pictures in FreeMind are preliminary feature."/>
+<node TEXT="This way, you can turn images contained into the links on nodes into the images themselves. As a result, you can drag and drop several image files into FreeMind, select them as multiple nodes, and them turn them into images in one step, i.e. by choosing Set Image."/>
+<node COLOR="#000000" TEXT="A more technical and not so user friendly way to do it follows. It is possible to include HTML in nodes. You have to start the node content with the tag &lt;html&gt;. This way, you can have pictures in the nodes.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 <node TEXT="E.g:">
 <font NAME="SansSerif" SIZE="12"/>
-<node TEXT=" &lt;html&gt;&lt;img href=&quot;linked/Apple.png&quot;&gt;">
+<node TEXT=" &lt;html&gt;&lt;img src=&quot;linked/Apple.png&quot;&gt;">
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#999999" TEXT="The space at the beginning makes sure that the html is not rendered in this node.">
 <font NAME="SansSerif" SIZE="10"/>
 </node>
 </node>
-<node TEXT=" &lt;html&gt;&lt;img href=&quot;file://C:/Users/My Documents/Mind Maps/Linked/Apple.png&quot;&gt;">
+<node TEXT=" &lt;html&gt;&lt;img src=&quot;file://C:/Users/My Documents/Mind Maps/Linked/Apple.png&quot;&gt;">
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#999999" TEXT="The space at the beginning makes sure that the html is not rendered in this node.">
 <font NAME="SansSerif" SIZE="10"/>
@@ -616,14 +557,28 @@
 <font NAME="SansSerif" SIZE="10"/>
 </node>
 </node>
-<node TEXT="Formats:">
-<font NAME="SansSerif" SIZE="12"/>
-<node TEXT="On Java1.4.1 on Windows, png, jpg and gif work fine.">
+<node TEXT="Formats: On Java1.4.1 on Windows, png, jpg and gif work fine.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-</node>
-<node TEXT="This all is possible, but completely unsupported. There is no support for HTML nodes (and pictures) in exporting to text, HTML or RTF (Word, Wordpad). However, it is convenient for publication on the Web using Freemind&apos;s Applet.">
+<node TEXT="There is no support for HTML nodes and pictures in exporting to text, HTML or RTF (Word, Wordpad). At least, it is convenient for publication on the Web using Freemind&apos;s Applet.">
 <font NAME="SansSerif" SIZE="12"/>
+</node>
+<node COLOR="#996600" TEXT="Example of pictures, working on some Windows distributions" FOLDED="true">
+<node TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLENDS.GIF&quot;&gt;"/>
+<node TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLUPRT.GIF&quot;&gt;"/>
+<node TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACEXPDTN.GIF&quot;&gt;">
+<node TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACINDSTR.GIF&quot;&gt;"/>
+</node>
+<node TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACRICEPR.GIF&quot;&gt;">
+<node TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSNDSTN.GIF&quot;&gt;">
+<node TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSUMIPT.GIF&quot;&gt;"/>
+</node>
+</node>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/GLOBE.WMF" TEXT="GLOBE.WMF"/>
+<node LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/STONE.BMP" TEXT="STONE.BMP"/>
+</node>
+<node COLOR="#996600" TEXT="Example of HTML" FOLDED="true">
+<node TEXT="&lt;html&gt;&#xa;There are several items:&#xa;&lt;ul&gt;&#xa;&lt;li&gt; Item one&#xa;&lt;li&gt; Item two&#xa;&lt;/ul&gt;&#xa;And we have &lt;b&gt;boldface&lt;/b&gt; or &lt;i&gt;italics&lt;/i&gt;. We can even have table:&#xa;&lt;table&gt;&#xa;&lt;tr&gt;&lt;td&gt;a&lt;td&gt;b&#xa;&lt;tr&gt;&lt;td&gt;-----------&lt;td&gt;.............&#xa;&lt;/table&gt;"/>
 </node>
 </node>
 <node COLOR="#669900" TEXT="Physical style - patterns" FOLDED="true">
@@ -662,10 +617,10 @@
 </node>
 <node COLOR="#669900" TEXT="There is a concept of mode in FreeMind" FOLDED="true">
 <font NAME="SansSerif" SIZE="10"/>
-<node TEXT="Although Freemind is primarily a tool for editing Mind Maps, it is designed to be able to view data coming from different data sources.  To make a specific data source available for viewing in FreeMind, a programmer has to write a so called mode for that data source. In the standard, there is an example of such a mode, namely file mode. We do not know of any other modes implemented. It is not clear if anyone would really want to make use of this architecture, but it&apos;s here to be exploited you someone wants to.">
+<node TEXT="Although Freemind is primarily a tool for editing Mind Maps, it is designed to be able to view data coming from different data sources.  To make a specific data source available for viewing in FreeMind, a programmer has to write a so called mode for that data source. In the standard, there is an example of such a mode, namely file mode. We do not know of any other modes implemented. It is not clear if anyone would really want to make use of this architecture, but it&apos;s here to be exploited if someone wants to.">
 <font NAME="sansserif" SIZE="12"/>
 </node>
-<node TEXT="Furthermore, there is code almost ready for Scheme Mode which enables you to edit scheme programs. Again, the usefullnes is far from clear. While the mind map mode is clearly a real thing, other modes seem to be more a demonstration of what is possible than something really used by people.">
+<node TEXT="Furthermore, there is code almost ready for Scheme Mode which enables you to edit scheme programs. Again, the usefulness is far from clear. While the mind map mode is clearly a real thing, other modes seem to be more a demonstration of what is possible than something really used by people.">
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
@@ -751,7 +706,7 @@
 </node>
 <node COLOR="#669900" TEXT="Nodes can contain followable links to ... ">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="Web pages">
+<node COLOR="#006699" TEXT="Web pages">
 <font NAME="sansserif" SIZE="12"/>
 <node LINK="http://www.google.com/" TEXT="http://www.google.com/">
 <font NAME="sansserif" SIZE="12"/>
@@ -763,7 +718,7 @@
 </node>
 </node>
 </node>
-<node TEXT="Local folders">
+<node COLOR="#006699" TEXT="Local folders">
 <font NAME="sansserif" SIZE="12"/>
 <node LINK="C:/Program Files/" TEXT="C:/Program Files/">
 <font NAME="sansserif" SIZE="12"/>
@@ -772,7 +727,7 @@
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node TEXT="Executables">
+<node COLOR="#006699" TEXT="Executables">
 <font NAME="sansserif" SIZE="12"/>
 <node LINK="C:\WINNT\regedit.exe" TEXT="C:\WINNT\regedit.exe">
 <font NAME="sansserif" SIZE="12"/>
@@ -799,6 +754,9 @@
 <node TEXT="The birth of a new fact is always a wonderful thing to experience. It&apos;s dualistically called a ``discovery&apos;&apos; because of the presumption that it has an existence independent of anyone&apos;s awareness of it. When it comes along, it always has, at first, a low value. Then, depending on the value-looseness of the observer and the potential quality of the fact, its value increases, either slowly or rapidly, or the value wanes and the fact disappears.">
 <font NAME="sansserif" SIZE="12"/>
 </node>
+</node>
+<node COLOR="#669900" TEXT="Short multiline nodes with newlines">
+<node TEXT="Line,&#xa;and second,&#xa;&#xa;and yet another will&#xa;do, so what do you think of that?"/>
 </node>
 <node COLOR="#669900" TEXT="You can emulate labelled edges">
 <node TEXT="Tree">
@@ -838,23 +796,30 @@
 </node>
 </node>
 </node>
+<node COLOR="#669900" TEXT="You can have icons in a node">
+<icon BUILTIN="knotify"/>
+<icon BUILTIN="flag"/>
+<icon BUILTIN="button_cancel"/>
+<icon BUILTIN="button_ok"/>
+<icon BUILTIN="back"/>
+</node>
 </node>
 <node COLOR="#006633" TEXT="Customizing FreeMind" FOLDED="true">
 <node TEXT="Ideally, you don&apos;t need any customizing at all. But if you really want to customize FreeMind, copy the file &quot;user.properties&quot; to the folder &quot;freemind&quot; in your home directory and edit the properties in the text file using your favorite text editor, e.g. notepad, Vim or Emacs.">
 <font NAME="sansserif" SIZE="12"/>
 </node>
-<node TEXT="You sure know your home directory, if you&apos;re working on Linux. On Windows 2000, it&apos;s typically &quot;C:\Documents and Settings\&lt;UserName&gt;\&quot;, on Windows 95, it&apos;s &quot;C:\WINDOWS\&quot;. Edit &quot;user.properties&quot; in the folder &quot;freemind&quot; of your home directory. On Windows, you can additionally configure file type of extension mm to open with FreeMind.">
+<node TEXT="You sure know your home directory if you&apos;re working on Linux. On Windows 2000, it&apos;s typically &quot;C:\Documents and Settings\&lt;UserName&gt;\&quot;, on Windows 95, it&apos;s &quot;C:\WINDOWS\&quot;. Edit &quot;user.properties&quot; in the folder &quot;freemind&quot; of your home directory. On Windows, you can additionally configure file type of extension mm to open with FreeMind.">
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
 <node COLOR="#006699" TEXT="Answered questions" FOLDED="true">
-<node COLOR="#669900" TEXT="To create multiline nodes" FOLDED="true">
+<icon BUILTIN="help"/>
+<node COLOR="#669900" TEXT="To create multiline node, insert a new and press alt + enter">
 <font NAME="SansSerif" SIZE="10"/>
-<node TEXT="When the text is long enough, it will automatically become multiline. When you press enter on such a multiline node, a larger editing window will be opened."/>
 </node>
 <node COLOR="#669900" TEXT="To create nodes with newlines / carriage returns, when you cannot find any check box for new lines" FOLDED="true">
 <font NAME="SansSerif" SIZE="10"/>
-<node TEXT="To be able to edit node with newlines, it must be multiline (or long if you wish) first. That is, first write text, which is long enough, then finish editing, then press enter again and you find yourself in the larger editing window. It is only that window which contains the check box &quot;Enter confirms&quot;."/>
+<node TEXT="To be able to edit node with newlines, it must be multiline (or long if you wish) first. That is, first write text that is long enough, then finish editing, then press enter again and you find yourself in the larger editing window. It is only that window which contains the check box &quot;Enter confirms&quot;."/>
 </node>
 <node COLOR="#669900" TEXT="To remove a link" FOLDED="true">
 <font NAME="SansSerif" SIZE="10"/>
@@ -867,7 +832,7 @@
 <font NAME="dialog" SIZE="12"/>
 </node>
 <node LINK="http://sourceforge.net/project/showfiles.php?group_id=7118" TEXT="Download the applet, that is freemind-browser."/>
-<node TEXT="The downloaded archive contains freemind-browser.ajr and freemindbrowser.html. Create a link from your page to freemindbrowser.html. Edit freemindbrowser.html, especially change the path inside so that it points your mind map. Beware that the applet&apos;s jar file must be located at the same server as the map itself, this is for java security reasons. Of course, you have to upload the files to your web site."/>
+<node TEXT="The downloaded archive contains freemindbrowser.jar and freemindbrowser.html. Create a link from your page to freemindbrowser.html. Edit freemindbrowser.html, especially change the path inside so that it points to your mind map. Beware that the applet&apos;s jar file must be located at the same server as the map itself, this is for java security reasons. Of course, you have to upload the files to your web site."/>
 </node>
 <node COLOR="#006633" TEXT="Using the FreeMind applet" FOLDED="true">
 <font NAME="SansSerif" SIZE="12"/>

@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.15 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: NodeAdapter.java,v 1.16 2003-11-03 11:00:12 sviles Exp $*/
 
 package freemind.modes;
 
+import freemind.modes.MindIcon;
 import freemind.main.FreeMindMain;
 import freemind.view.mindmapview.NodeView;
 import java.util.*;
@@ -28,6 +29,7 @@ import java.awt.Font;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
+import java.util.Vector;
 
 /**
  * This class represents a single Node of a Tree. It contains direct handles 
@@ -42,6 +44,8 @@ public abstract class NodeAdapter implements MindMapNode {
     //the save() method instead of using getXXX(). This way the stored file is smaller and looks better.
     //(if the default is used, it is not stored) Look at mindmapmode for an example.
     protected String style;
+    /**stores the icons associated with this node.*/
+    protected Vector/*<MindIcon>*/ icons = new Vector();
     protected Color color;
     protected boolean folded;
 
@@ -198,6 +202,20 @@ public abstract class NodeAdapter implements MindMapNode {
     public Font getFont() {
        return font; }
 
+    public String getFontSize(){
+       if (getFont() != null){
+          return new Integer (getFont().getSize()).toString();}
+       else {
+          return getFrame().getProperty("defaultfontsize");}
+    }
+
+    public String getFontFamilyName(){
+       if (getFont() != null){
+          return getFont().getFamily();}
+       else {
+          return getFrame().getProperty("defaultfont");}
+    }
+
     public boolean isBold() {
        return font != null ? font.isBold() : false; }
 
@@ -210,10 +228,15 @@ public abstract class NodeAdapter implements MindMapNode {
     public boolean isFolded() {
        return folded; }
 
-    public boolean isLong() {
-       // Because we do not what kind of user object there is, we have no
-       // reasonable general way of testing, whether the node is long;
-       return false; }
+    // fc, 24.9.2003:
+    public Vector/*<MindIcon>*/ getIcons() { return icons;};
+
+    public void   addIcon(MindIcon _icon) { icons.add(_icon); };
+
+    public int   removeLastIcon() { if(icons.size() > 0) icons.setSize(icons.size()-1); return icons.size();};
+
+    // end, fc, 24.9.2003
+
 
     /**
      *  True iff one of node's <i>strict</i> descendants is folded. A node N
@@ -242,6 +265,10 @@ public abstract class NodeAdapter implements MindMapNode {
        copy.setColor(getColor());
        copy.setFont(getFont());
        copy.setLink(getLink());
+       Vector icons = getIcons();
+       for(int i = 0; i < icons.size(); ++i) {
+           copy.addIcon((MindIcon) icons.get(i));
+       }
        return copy; }
 
     //
@@ -370,8 +397,8 @@ public abstract class NodeAdapter implements MindMapNode {
     
     
     public void remove( int index ) {
-        MutableTreeNode node = (MutableTreeNode)children.get(index); 
-        if (node == this.preferredChild) { // mind preferred child :-) (PN) 
+        MutableTreeNode node = (MutableTreeNode)children.get(index);
+        if (node == this.preferredChild) { // mind preferred child :-) (PN) 
           if (children.size() > index + 1) {
             this.preferredChild = (MindMapNode)(children.get(index + 1));
           }
@@ -385,7 +412,7 @@ public abstract class NodeAdapter implements MindMapNode {
     }
     
     public void remove( MutableTreeNode node ) {
-        if (node == this.preferredChild) { // mind preferred child :-) (PN) 
+        if (node == this.preferredChild) { // mind preferred child :-) (PN) 
           int index = children.indexOf(node);
           if (children.size() > index + 1) {
             this.preferredChild = (MindMapNode)(children.get(index + 1));
@@ -449,7 +476,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	}
     }
 
-    public int getNodeLevel() {  //for cursor navigation within a level (PN)  
+    public int getNodeLevel() {  //for cursor navigation within a level (PN)  
       int level = 0;
       MindMapNode parent;
       for (parent = this; !parent.isRoot(); parent = parent.getParentNode()) {

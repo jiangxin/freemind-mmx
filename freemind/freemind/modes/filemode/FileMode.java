@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMode.java,v 1.13 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: FileMode.java,v 1.14 2003-11-03 11:00:13 sviles Exp $*/
 
 package freemind.modes.filemode;
 
@@ -86,5 +86,9 @@ public class FileMode implements Mode {
 
     public JToolBar getModeToolBar() {
 	return toolbar;
+    }
+
+    public JToolBar getLeftToolBar() {
+	return null;
     }
 }

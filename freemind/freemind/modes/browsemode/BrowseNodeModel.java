@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseNodeModel.java,v 1.6 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: BrowseNodeModel.java,v 1.7 2003-11-03 11:00:13 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -50,9 +50,6 @@ public class BrowseNodeModel extends NodeAdapter {
     //Overwritten get Methods
     public String getStyle() {
        return isFolded() ? MindMapNode.STYLE_BUBBLE : super.getStyle(); }
-
-    public boolean isLong() {
-       return toString().length() > 100; }
 
     //
     // The mandatory load and save methods

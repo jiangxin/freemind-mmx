@@ -16,15 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.13 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.14 2003-11-03 11:00:21 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
+import freemind.main.FreeMind;
 import freemind.main.Tools;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
+import freemind.modes.MindIcon;
 
 import java.util.*;
 //import java.io.BufferedWriter;
@@ -63,10 +65,6 @@ public class MindMapNodeModel extends NodeAdapter {
 	}
     }
 
-    public boolean isLong() {
-       return toString().length() > 100; }
-
-
     protected MindMapNode basicCopy() {
        return new MindMapNodeModel(userObject, getFrame()); }
 
@@ -74,7 +72,7 @@ public class MindMapNodeModel extends NodeAdapter {
     // The mandatory load and save methods
     //
 
-    private String saveHTML_escapeUnicodeAndSpecialCharacters(String text) {
+    public String saveHTML_escapeUnicodeAndSpecialCharacters(String text) {
        int len = text.length();
        StringBuffer result = new StringBuffer(len);
        int intValue;
@@ -181,8 +179,18 @@ public class MindMapNodeModel extends NodeAdapter {
         if (!fontStyle.equals("")) {
            fileout.write("<span style=\""+fontStyle+"\">"); }
 
+        if (getFrame().getProperty("export_icons_in_html").equals("true")) {
+           for (int i = 0; i < getIcons().size(); ++i) {
+              fileout.write("<img src=\"" + ((MindIcon) getIcons().get(i)).getIconFileName() +
+                            "\" alt=\""+((MindIcon) getIcons().get(i)).getDescription(getFrame())+"\">"); }}
+
         if (this.toString().matches(" *")) {
            fileout.write("&nbsp;"); }
+        else if (this.toString().startsWith("<html>")) {
+           String output = this.toString().substring(6); // do not write <html>
+           if (output.endsWith("</html>")) {
+              output = output.substring(0,output.length()-7); }
+           fileout.write(output); }
         else {
            fileout.write(saveHTML_escapeUnicodeAndSpecialCharacters(toString())); }
 
@@ -201,12 +209,9 @@ public class MindMapNodeModel extends NodeAdapter {
         
         boolean treatChildrenAsParagraph = false;
         for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
-           if (((MindMapNodeModel)e.next()).isLong()) {
+           if (((MindMapNodeModel)e.next()).toString().length() > 100) { // TODO: replace heuristic constant
               treatChildrenAsParagraph = true;
               break; }}
-
-
-
 
         // Write the children
 
@@ -411,6 +416,13 @@ public class MindMapNodeModel extends NodeAdapter {
 	    if (isUnderlined()) {
                fontElement.setAttribute("underline","true"); }
 	    node.addChild(fontElement); }
+    for(int i = 0; i < getIcons().size(); ++i) {
+	    XMLElement iconElement = new XMLElement();
+	    iconElement.setName("icon");
+        iconElement.setAttribute("builtin", ((MindIcon) getIcons().get(i)).getName());
+        node.addChild(iconElement);
+    }
+        
 
         if (childrenUnfolded().hasNext()) {
            node.writeWithoutClosingTag(writer);

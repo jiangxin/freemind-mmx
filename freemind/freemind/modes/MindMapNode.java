@@ -16,16 +16,18 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.11 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: MindMapNode.java,v 1.12 2003-11-03 11:00:12 sviles Exp $*/
 
 package freemind.modes;
 
+import freemind.modes.MindIcon;
 import freemind.view.mindmapview.NodeView;
 import java.util.ListIterator;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
+import java.util.Vector;
 
 public interface MindMapNode extends MutableTreeNode {
    
@@ -59,11 +61,13 @@ public interface MindMapNode extends MutableTreeNode {
 
     boolean isItalic();
 
-    boolean isLong();
-    
     boolean isUnderlined();
 
     Font getFont();
+    
+	String getFontSize();
+    
+	String getFontFamilyName();
     
     NodeView getViewer();
 
@@ -88,6 +92,15 @@ public interface MindMapNode extends MutableTreeNode {
     void setFontSize(int fontSize);
 
     void setColor(Color color);
+
+    // fc, 06.10.2003:
+    Vector/*of MindIcon s*/ getIcons();
+
+    void   addIcon(MindIcon icon);
+
+    /* @return returns the new amount of icons.*/
+    int   removeLastIcon();
+    // end, fc, 24.9.2003
 
 // (PN)
 //    /**

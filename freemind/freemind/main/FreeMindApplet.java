@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.11 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: FreeMindApplet.java,v 1.12 2003-11-03 11:00:10 sviles Exp $*/
 
 package freemind.main;
 
@@ -37,7 +37,7 @@ import javax.swing.*;
 
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 
-    public static final String version = "0.6.5";
+    public static final String version = "0.6.7";
     //    public static final String defaultPropsURL;
     public URL defaultPropsURL;
     public static Properties defaultProps;
@@ -113,6 +113,20 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
     }
     
     public void setProperty(String key, String value) {
+    }
+
+    static int iMaxNodeWidth = 0;
+	
+    static public int getMaxNodeWidth(){
+       if (iMaxNodeWidth == 0){
+          try{
+             iMaxNodeWidth = Integer.parseInt(userProps.getProperty("max_node_width"));	
+          }
+          catch (NumberFormatException nfe) {
+             iMaxNodeWidth = Integer.parseInt(userProps.getProperty("el__max_default_window_width"));
+          }
+       }
+       return iMaxNodeWidth;
     }
 
     public void saveProperties() {
@@ -216,7 +230,6 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
            c.setAntialiasEdges(true); }
 	if (Tools.safeEquals(getProperty("antialiasAll"), "true")) {
            c.setAntialiasAll(true); }
-
 
  	//Create the MenuBar
 	menuBar = new MenuBar(c); //new MenuBar(c);

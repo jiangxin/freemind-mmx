@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.14 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: MapAdapter.java,v 1.15 2003-11-03 11:00:12 sviles Exp $*/
 
 package freemind.modes;
 
@@ -45,8 +45,8 @@ public abstract class MapAdapter implements MindMap {
 
     private MindMapNode root;
     private EventListenerList treeModelListeners = new EventListenerList();
-    private boolean saved = true;
-	protected boolean readOnly = true;
+    protected boolean saved = false;
+    protected boolean readOnly = true;
     private Color backgroundColor;
     private File file;
     private FreeMindMain frame;
@@ -57,7 +57,7 @@ public abstract class MapAdapter implements MindMap {
     private boolean     findCaseSensitive;
     private LinkedList  findNodeQueue;
     private ArrayList   findNodesUnfoldedByLastFind;
-      
+
 
     public MapAdapter (FreeMindMain frame) {
 	this.frame = frame;
@@ -87,9 +87,9 @@ public abstract class MapAdapter implements MindMap {
 		// e.g. remove file locks.
 	}
 
-// (PN)
-//    public void close() {
-//    }
+    // (PN)
+    //    public void close() {
+    //    }
 
     public FreeMindMain getFrame() {
 	return frame;
@@ -315,8 +315,8 @@ public abstract class MapAdapter implements MindMap {
         parent.insert(newChild, index);
 	nodesWereInserted(parent, new int[]{ index });
         // ^ Daniel: I don't understand the reason why this is here.  But it
-        // is necessary, because otherwise user's action "New Node" throws
-        // an exception.
+        // is necessary, because user's action "New Node" throws
+        // an exception otherwise.
     }
 
     /**
@@ -326,19 +326,22 @@ public abstract class MapAdapter implements MindMap {
      * for you.
      */
     public void removeNodeFromParent(MutableTreeNode node) {
+        removeNodeFromParent(node, /*notify=*/ true); }
+
+    public void removeNodeFromParent(MutableTreeNode node, boolean notify) {
 	MutableTreeNode parent = (MutableTreeNode)node.getParent();
 	    
-	if(parent == null)
-	    throw new IllegalArgumentException("node does not have a parent.");
+	if (parent == null)
+           throw new IllegalArgumentException("node does not have a parent.");
 
-	int[]            childIndex = new int[1];
-	Object[]         removedArray = new Object[1];
+	int[] childIndex = new int[1];
+	Object[] removedArray = new Object[1];
 	    
 	childIndex[0] = parent.getIndex(node);
 	parent.remove(node);
-	removedArray[0] = node;
-	nodesWereRemoved(parent, childIndex, removedArray);
-    }
+        if (notify) {
+           removedArray[0] = node;
+           nodesWereRemoved(parent, childIndex, removedArray); }}
 
     public void changeNode(MindMapNode node, String newText) {
 	node.setUserObject(newText);
@@ -383,6 +386,12 @@ public abstract class MapAdapter implements MindMap {
               node.setUserObject(pattern.getText()); }
            node.setColor(pattern.getNodeColor());
            node.setStyle(pattern.getNodeStyle());
+           if (pattern.getAppliesToNodeIcon()) {
+              if (pattern.getNodeIcon() == null) {
+                 System.err.println("removing");
+                 while (node.removeLastIcon()>0) {}}
+              else {
+                 node.addIcon(pattern.getNodeIcon()); }} // fc, 28.9.2003
            if (pattern.getAppliesToNodeFont()) {
               node.setFont(pattern.getNodeFont());
               node.estabilishOwnFont(); }}
@@ -532,16 +541,21 @@ public abstract class MapAdapter implements MindMap {
 
     /**
       * Invoke this method after you've changed how node is to be
-      * represented in the tree.
+      * represented in the tree. 
       */
     protected void nodeChanged(TreeNode node) {
-        if(treeModelListeners != null && node != null) {
+
+        // Tell the mode controller that the node was changed, for the case
+        // he is interested.
+        frame.getController().getMode().getModeController().nodeChanged((MindMapNode)node); 
+
+        if (treeModelListeners != null && node != null) {
             TreeNode parent = node.getParent();
 
-            if(parent != null) {
-                int        anIndex = parent.getIndex(node);
-                if(anIndex != -1) {
-                    int[]        cIndexs = new int[1];
+            if (parent != null) {
+                int anIndex = parent.getIndex(node);
+                if (anIndex != -1) {
+                    int[] cIndexs = new int[1];
 
                     cIndexs[0] = anIndex;
                     nodesChanged(parent, cIndexs);
@@ -558,25 +572,25 @@ public abstract class MapAdapter implements MindMap {
       * childIndicies are to be represented in the tree.
       */
     protected void nodesChanged(TreeNode node, int[] childIndices) {
-	setSaved(false);
-        if(node != null) {
-	    if (childIndices != null) {
-		int            cCount = childIndices.length;
+       setSaved(false);
 
-		if(cCount > 0) {
-		    Object[]       cChildren = new Object[cCount];
-
-		    for(int counter = 0; counter < cCount; counter++)
-			cChildren[counter] = node.getChildAt
-			    (childIndices[counter]);
-		    fireTreeNodesChanged(this, getPathToRoot(node),
-					 childIndices, cChildren);
-		}
-	    }
-	    else if (((MindMapNode)node).isRoot()) {
-		fireTreeNodesChanged(this, getPathToRoot(node), null, null);
-	    }
-        }
+       if (node != null) {
+          if (childIndices != null) {
+             int cCount = childIndices.length;
+             
+             if (cCount > 0) {
+                Object[] cChildren = new Object[cCount];
+                
+                for(int counter = 0; counter < cCount; counter++)
+                   cChildren[counter] = node.getChildAt
+                      (childIndices[counter]);
+                fireTreeNodesChanged(this, getPathToRoot(node), childIndices, cChildren);
+             }
+          }
+          else if (((MindMapNode)node).isRoot()) {
+             fireTreeNodesChanged(this, getPathToRoot(node), null, null);
+          }
+       }
     }
 
     //

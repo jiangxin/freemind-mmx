@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.11 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: ModeController.java,v 1.12 2003-11-03 11:00:12 sviles Exp $*/
 
 package freemind.modes;
 
@@ -54,4 +54,7 @@ public interface ModeController {
 
     public JPopupMenu getPopupMenu();
     public void showPopupMenu(MouseEvent e);
+
+    public void nodeChanged(MindMapNode n);
+    public void anotherNodeSelected(MindMapNode n);
 }

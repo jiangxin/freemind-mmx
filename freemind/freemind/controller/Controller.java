@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.31 2003-11-03 10:49:16 sviles Exp $*/
+/*$Id: Controller.java,v 1.32 2003-11-03 11:00:05 sviles Exp $*/
 
 package freemind.controller;
 
@@ -76,6 +76,7 @@ public class Controller {
     boolean isPrintingAllowed=true;     
     boolean menubarVisible=true;
     boolean toolbarVisible=true;
+    boolean leftToolbarVisible=true;
 
     Action close; 
     Action print; 
@@ -99,6 +100,7 @@ public class Controller {
     Action moveToRoot;
     Action toggleMenubar;
     Action toggleToolbar;
+    Action toggleLeftToolbar;
 
     Action zoomIn;
     Action zoomOut;
@@ -141,6 +143,7 @@ public class Controller {
         navigationNextMap = new NavigationNextMapAction(this);
         toggleMenubar = new ToggleMenubarAction(this);
         toggleToolbar = new ToggleToolbarAction(this);
+        toggleLeftToolbar = new ToggleLeftToolbarAction(this);
         optionAntialiasAction = new OptionAntialiasAction(this);
         optionHTMLExportFoldingAction = new OptionHTMLExportFoldingAction(this);
         //optionEnterConfirmsByDefault; = new OptionEnterConfirmsByDefault(this);
@@ -205,6 +208,8 @@ public class Controller {
     public MapView getView() {
         if (getMapModule() != null) {
             return getMapModule().getView();
+        } else {
+           System.err.println("Warning: Tried to get view without being able to get map module.");
         }
         return null;
     }
@@ -285,6 +290,10 @@ public class Controller {
         if (getMode() != null && getMode().getModeToolBar() != null) {
             toolbar.remove(getMode().getModeToolBar());
         }
+        /*  other toolbars are to be removed too.*/
+        if (getMode() != null && getMode().getLeftToolBar() != null) {
+            getFrame().getContentPane().remove(getMode().getLeftToolBar());
+        }
 
         if (getMapModule() != null) {
             getMapModuleManager().setMapModule(null);
@@ -295,6 +304,11 @@ public class Controller {
         if (getMode().getModeToolBar() != null) {
             toolbar.add(getMode().getModeToolBar());
             getMode().getModeToolBar().repaint();
+        }
+        /* new left toolbar.*/
+        if (getMode().getLeftToolBar() != null) {
+            getFrame().getContentPane().add(getMode().getLeftToolBar(), BorderLayout.WEST );
+            getMode().getLeftToolBar().repaint();
         }
         toolbar.validate();
         toolbar.repaint();
@@ -312,8 +326,7 @@ public class Controller {
         Object[] messageArguments = {
          getMode().toString()
         };
-        MessageFormat formatter = new MessageFormat(
-        getResourceString("mode_status"));
+        MessageFormat formatter = new MessageFormat(getResourceString("mode_status"));
         getFrame().out(formatter.format(messageArguments));
         
         return true;
@@ -330,6 +343,12 @@ public class Controller {
         toolbar.setVisible(toolbarVisible);
     }
 
+    public void setLeftToolbarVisible(boolean visible) {
+        if (getMode() != null && getMode().getLeftToolBar() != null) {
+           leftToolbarVisible = visible;
+           getMode().getLeftToolBar().setVisible(leftToolbarVisible);
+        }
+    }
 
     public NodeKeyListener getNodeKeyListener() {
         return nodeKeyListener;
@@ -390,7 +409,7 @@ public class Controller {
 //
 //    private MindMapNode getSelected() {
 //        return getView().getSelected().getModel();
-//    }
+//    }    
 
     public void informationMessage(Object message) {
        JOptionPane.showMessageDialog(getFrame().getContentPane(), message.toString(), "FreeMind", JOptionPane.INFORMATION_MESSAGE); }
@@ -502,6 +521,7 @@ public class Controller {
         // getFrame().setProperty("menubarVisible",menubarVisible ? "true" : "false");
         // ^ Not allowed in application because of problems with not working key shortcuts
         setProperty("toolbarVisible", toolbarVisible ? "true" : "false");
+        setProperty("leftToolbarVisible", leftToolbarVisible ? "true" : "false");
         setProperty("antialiasEdges", antialiasEdges ? "true" : "false");
         setProperty("antialiasAll", antialiasAll ? "true" : "false");
         setProperty("appwindow_width", String.valueOf(getFrame().getWinWidth()));
@@ -880,7 +900,7 @@ public class Controller {
         public void actionPerformed(ActionEvent e) {
             changeToMode("Browse");
             //      try {
-            String map = getProperty("docmapurl");  //(new File("doc/maps/freemind.mm"));
+            String map = getProperty("docmapurl");
             if (map.startsWith("."))  {
                 map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
             }
@@ -996,6 +1016,17 @@ public class Controller {
         public void actionPerformed(ActionEvent event) {
            toolbarVisible=!toolbarVisible;
            setToolbarVisible(toolbarVisible);
+        }
+    }
+
+    private class ToggleLeftToolbarAction extends AbstractAction {
+        ToggleLeftToolbarAction(Controller controller) {
+           super(controller.getResourceString("toggle_left_toolbar"));
+           setEnabled(true);
+        }
+        public void actionPerformed(ActionEvent event) {
+           leftToolbarVisible=!leftToolbarVisible;
+           setLeftToolbarVisible(leftToolbarVisible);
         }
     }
 

@@ -16,18 +16,20 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.24 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: MindMapController.java,v 1.25 2003-11-03 11:00:20 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.MindMapNode;
+import freemind.modes.NodeAdapter;
 import freemind.modes.Mode;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.StylePattern;
+import freemind.modes.MindIcon;
 import freemind.view.mindmapview.NodeView;
 
 import java.io.*;
@@ -44,7 +46,8 @@ public class MindMapController extends ControllerAdapter {
 
     //    Mode mode;
     private JPopupMenu popupmenu;
-    private JToolBar toolbar;
+    //private JToolBar toolbar;
+    private MindMapToolBar toolbar;
     private boolean addAsChildMode = false;
 
     Action newMap = new NewMapAction(this);
@@ -64,6 +67,7 @@ public class MindMapController extends ControllerAdapter {
     Action toggleFolded = new ToggleFoldedAction();
     Action toggleChildrenFolded = new ToggleChildrenFoldedAction();
     Action setLinkByFileChooser = new SetLinkByFileChooserAction();
+	Action setImageByFileChooser = new SetImageByFileChooserAction();
     Action setLinkByTextField = new SetLinkByTextFieldAction();
     Action followLink = new FollowLinkAction();
     Action exportBranch = new ExportBranchAction();
@@ -120,6 +124,13 @@ public class MindMapController extends ControllerAdapter {
 
     // Extension Actions
     Action patterns[] = new Action[0]; // Make sure it is initialized
+    Vector iconActions = new Vector(); //fc
+    Action removeLastIcon = new NodeGeneralAction ("remove_last_icon", "images/remove.png",
+       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
+          map.removeLastIcon(node); }});
+    Action removeAllIcons = new NodeGeneralAction ("remove_all_icons", "images/edittrash.png",
+       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
+           while(map.removeLastIcon(node)>0) {}; }});
 
     FileFilter filefilter = new MindMapFilter();
 
@@ -127,7 +138,7 @@ public class MindMapController extends ControllerAdapter {
 	super(mode);
 	try {
            File patternsFile = getFrame().getPatternsFile();
-           if (patternsFile.exists()) {
+           if (patternsFile != null && patternsFile.exists()) {
               loadPatterns(patternsFile); }
            else {
               System.out.println("User patterns file "+patternsFile+" not found.");
@@ -136,8 +147,12 @@ public class MindMapController extends ControllerAdapter {
            System.err.println("In patterns:"+e); }
 	catch (Exception ex) {
            System.err.println("Patterns not loaded:"+ex); }
+        // icon actions:
+        createIconActions();
+
       	popupmenu = new MindMapPopupMenu(this);
 	toolbar = new MindMapToolBar(this);
+
 	setAllActions(false); 
    
         // addAsChildMode (use old model of handling CtrN) (PN)
@@ -157,7 +172,24 @@ public class MindMapController extends ControllerAdapter {
     private void createPatterns(List patternsList) throws Exception {
 	patterns = new Action[patternsList.size()];
 	for (int i=0;i<patterns.length;i++) {
-           patterns[i] = new ApplyPatternAction((StylePattern)patternsList.get(i)); }}
+        patterns[i] = new ApplyPatternAction((StylePattern)patternsList.get(i));
+
+        // search icons for patterns:
+        MindIcon patternIcon = ((StylePattern)patternsList.get(i)).getNodeIcon();
+        if (patternIcon != null) {
+            patterns[i].putValue(Action.SMALL_ICON, patternIcon.getIcon(getFrame()));
+        }
+    }}
+
+    private void createIconActions() {
+        Vector iconNames = MindIcon.getAllIconNames();
+        for ( int i = 0 ; i < iconNames.size(); ++i ) {
+            String iconName = ((String) iconNames.get(i));
+            MindIcon myIcon     = new MindIcon(iconName);
+            Action myAction = new IconAction(myIcon);
+            iconActions.add(myAction);
+        }
+    }
 
     public FileFilter getFileFilter() {
        return filefilter; }
@@ -172,6 +204,14 @@ public class MindMapController extends ControllerAdapter {
        for(ListIterator e = getSelecteds().listIterator();e.hasNext();) {
           MindMapNodeModel selected = (MindMapNodeModel)e.next();
           getModel().setFontFamily(selected,fontFamily); }}
+
+    public void nodeChanged(MindMapNode n) {
+       toolbar.selectFontSize(((NodeAdapter)n).getFontSize());
+       toolbar.selectFontName(((NodeAdapter)n).getFontFamilyName()); }
+
+    public void anotherNodeSelected(MindMapNode n) {
+       toolbar.selectFontSize(((NodeAdapter)n).getFontSize());
+       toolbar.selectFontName(((NodeAdapter)n).getFontFamilyName()); }
 
     protected MindMapNode newNode() {
        return new MindMapNodeModel("" // getText("new_node") (PN) nicer when created
@@ -192,6 +232,7 @@ public class MindMapController extends ControllerAdapter {
 	editMenu.add(getBranchMenu());
 	editMenu.add(getEdgeMenu());
 	editMenu.add(getExtensionMenu());
+	editMenu.add(getIconMenu());
 
 	return editMenu;
     }
@@ -216,22 +257,35 @@ public class MindMapController extends ControllerAdapter {
                (getFrame().getProperty("keystroke_apply_pattern_"+(i+1)))); }
 	return extensionMenu; }
 
+    /* fc, 12.10.2003.*/
+    JMenu getIconMenu() {
+	JMenu iconMenu = new JMenu(getText("icon_menu"));
+    iconMenu.add(removeLastIcon);
+    iconMenu.add(removeAllIcons);
+    iconMenu.addSeparator();
+	for (int i=0; i<iconActions.size(); ++i) {          
+           JMenuItem item = iconMenu.add((Action) iconActions.get(i));
+    }
+	return iconMenu; }
+
     JMenu getBranchMenu() {
 	JMenu branchMenu = new JMenu(getText("branch"));
 
 	add(branchMenu, exportBranch, "keystroke_export_branch");
         add(branchMenu, exportBranchToHTML, "keystroke_export_branch_to_html");
-	JMenu importMenu = new JMenu(getText("import"));
-	branchMenu.add(importMenu);
 
-	add(importMenu, importBranch);
-	add(importMenu, importLinkedBranch);
-	add(importMenu, importLinkedBranchWithoutRoot);
 
-        importMenu.addSeparator();
 
-        add(importMenu, importExplorerFavorites);
-        add(importMenu, importFolderStructure);
+	branchMenu.addSeparator();
+
+	add(branchMenu, importBranch);
+	add(branchMenu, importLinkedBranch);
+	add(branchMenu, importLinkedBranchWithoutRoot);
+
+        branchMenu.addSeparator();
+
+        add(branchMenu, importExplorerFavorites);
+        add(branchMenu, importFolderStructure);
 
 	return branchMenu;
     }
@@ -281,6 +335,10 @@ public class MindMapController extends ControllerAdapter {
 	add(nodeMenu, followLink, "keystroke_follow_link");
 	add(nodeMenu, setLinkByFileChooser, "keystroke_set_link_by_filechooser");
 	add(nodeMenu, setLinkByTextField, "keystroke_set_link_by_textfield");
+
+	nodeMenu.addSeparator();
+
+	add(nodeMenu, setImageByFileChooser, "keystroke_set_image_by_filechooser");
 
 	nodeMenu.addSeparator();
 
@@ -337,20 +395,12 @@ public class MindMapController extends ControllerAdapter {
 	return (MindMapNodeModel)getView().getSelected().getModel();
     }
 
-    private LinkedList getSelecteds() {
-	LinkedList selecteds = new LinkedList();
-	ListIterator it = getView().getSelecteds().listIterator();
-	if (it != null) {
-	    while(it.hasNext()) {
-		NodeView selected = (NodeView)it.next();
-		selecteds.add( selected.getModel() );
-	    }
-	}
-	return selecteds;
-    }
-
     MindMapToolBar getToolBar() {
 	return (MindMapToolBar)toolbar;
+    }
+
+    JToolBar getLeftToolBar() {
+	return ((MindMapToolBar)toolbar).getLeftToolBar();
     }
 
     /**
@@ -369,6 +419,7 @@ public class MindMapController extends ControllerAdapter {
 	toggleChildrenFolded.setEnabled(enabled);
 	setLinkByTextField.setEnabled(enabled);
 	setLinkByFileChooser.setEnabled(enabled);
+	setImageByFileChooser.setEnabled(enabled);
 	followLink.setEnabled(enabled);
 	italic.setEnabled(enabled);
 	bold.setEnabled(enabled);
@@ -457,7 +508,7 @@ public class MindMapController extends ControllerAdapter {
 	    //chooser.setLocale(currentLocale);
 	    if (getFileFilter() != null) {
                chooser.addChoosableFileFilter(getFileFilter()); }
-	    int returnVal = chooser.showSaveDialog(getView());
+	    int returnVal = chooser.showSaveDialog(getSelected().getViewer());
 	    if (returnVal==JFileChooser.APPROVE_OPTION) {
 		File f = chooser.getSelectedFile();
 		URL link;
@@ -505,7 +556,7 @@ public class MindMapController extends ControllerAdapter {
             //chooser.setLocale(currentLocale);
             if (getFileFilter() != null) {
                chooser.addChoosableFileFilter(getFileFilter()); }
-            int returnVal = chooser.showOpenDialog(getView());
+            int returnVal = chooser.showOpenDialog(getFrame().getContentPane());
             if (returnVal==JFileChooser.APPROVE_OPTION) {
                try {
                   MindMapNodeModel node = getModel().loadTree(chooser.getSelectedFile());
@@ -522,9 +573,12 @@ public class MindMapController extends ControllerAdapter {
                return; }
             URL absolute = null;
             try {
-               absolute = new URL(getMap().getFile().toURL(), parent.getLink()); }
+               String relative = parent.getLink();
+               absolute = Tools.isAbsolutePath(relative) ? new File(relative).toURL() :
+                  new URL(getMap().getFile().toURL(), relative); }
             catch (MalformedURLException ex) {
-               JOptionPane.showMessageDialog(getView(),"couldn't create valid URL!");
+               JOptionPane.showMessageDialog(getView(),"Couldn't create valid URL for:"+getMap().getFile());
+               ex.printStackTrace();
                return; }
             try {
                MindMapNodeModel node = getModel().loadTree(new File(absolute.getFile()));
@@ -544,15 +598,17 @@ public class MindMapController extends ControllerAdapter {
                return; }
             URL absolute = null;
             try {
-               absolute = new URL(getMap().getFile().toURL(), parent.getLink()); }
+               String relative = parent.getLink();
+               absolute = Tools.isAbsolutePath(relative) ? new File(relative).toURL() :
+                  new URL(getMap().getFile().toURL(), relative); }
             catch (MalformedURLException ex) {
-               JOptionPane.showMessageDialog(getView(),"couldn't create valid URL!");
+               JOptionPane.showMessageDialog(getView(),"Couldn't create valid URL.");
                return; }
             try {
                MindMapNodeModel node = getModel().loadTree(new File(absolute.getFile()));
-               for (Enumeration enum=node.children();enum.hasMoreElements();) {
-                  getModel().paste((MindMapNodeModel)enum.nextElement(), parent); }
-               getModel().setLink(parent, null); }
+               for (ListIterator i = node.childrenUnfolded();i.hasNext();) {
+                  getModel().paste((MindMapNodeModel)i.next(), parent); }}
+               //getModel().setLink(parent, null); }
             catch (Exception ex) {
                handleLoadingException(ex); }}}
 
@@ -562,7 +618,7 @@ public class MindMapController extends ControllerAdapter {
            JFileChooser chooser = new JFileChooser();
            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
            chooser.setDialogTitle(getText("select_favorites_folder"));
-           int returnVal = chooser.showOpenDialog(getView());
+           int returnVal = chooser.showOpenDialog(getFrame().getContentPane());
            if (returnVal == JFileChooser.APPROVE_OPTION) {
               File folder = chooser.getSelectedFile();
               getFrame().out("Importing Favorites ...");
@@ -578,7 +634,7 @@ public class MindMapController extends ControllerAdapter {
            JFileChooser chooser = new JFileChooser();
            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
            chooser.setDialogTitle(getText("select_folder_for_importing"));
-           int returnVal = chooser.showOpenDialog(getView());
+           int returnVal = chooser.showOpenDialog(getFrame().getContentPane());
            if (returnVal == JFileChooser.APPROVE_OPTION) {
               File folder = chooser.getSelectedFile();
               getFrame().out("Importing folder structure ...");
@@ -612,6 +668,25 @@ public class MindMapController extends ControllerAdapter {
               getModel().setEdgeColor(selected,color); }}}
 
 
+    // Icons
+    // __________________
+
+    private class IconAction extends AbstractAction {
+        MindIcon icon;
+        public IconAction(MindIcon _icon) {
+            super(_icon.getDescription(getFrame()), _icon.getIcon(getFrame()));
+            putValue(Action.SHORT_DESCRIPTION, _icon.getDescription(getFrame()));
+            this.icon = _icon;
+        };
+        
+        public void actionPerformed(ActionEvent e) {
+           for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+              MindMapNodeModel selected = (MindMapNodeModel)it.next();
+              (getModel()).addIcon(selected, icon); 
+            }
+        };
+    }
+
     // NodeGeneralAction
     // __________________
 
@@ -622,6 +697,7 @@ public class MindMapController extends ControllerAdapter {
         SingleNodeOperation singleNodeOperation;
         NodeGeneralAction(String textID, String iconPath, SingleNodeOperation singleNodeOperation) {
            super(getText(textID), iconPath != null ? new ImageIcon(getResource(iconPath)) : null );
+           putValue(Action.SHORT_DESCRIPTION, getText(textID));
            this.singleNodeOperation = singleNodeOperation; }
 	public void actionPerformed(ActionEvent e) {
            for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
@@ -647,6 +723,7 @@ public class MindMapController extends ControllerAdapter {
           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
              MindMapNodeModel selected = (MindMapNodeModel)it.next();
              getModel().setEdgeWidth(selected,width); }}}
+
 
     // Miscelaneous
     // _________________

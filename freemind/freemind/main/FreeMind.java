@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.21 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: FreeMind.java,v 1.22 2003-11-03 11:00:10 sviles Exp $*/
 
 package freemind.main;
 
@@ -55,7 +55,7 @@ import freemind.view.mindmapview.MapView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
-    public static final String version = "0.6.5";
+    public static final String version = "0.6.7";
     //    public static final String defaultPropsURL = "freemind.properties";
     public URL defaultPropsURL;
     //    public static Properties defaultProps;
@@ -346,7 +346,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
             catch(IOException ex) {
                try {
                   Process np = Runtime.getRuntime().exec 
-                     (new String [] {"netscape","-remote","openURL", urlString }); 
+                     (new String [] {"netscape","-remote","openURL("+urlString+")" }); 
 
                   int exitCode = np.waitFor();
                   if (exitCode != 0) {
@@ -444,8 +444,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
         //   frame.c.setMenubarVisible(false); }
         // ^ Not allowed in application because of problems with not working key shortcuts
 
-        if (frame.getProperty("toolbarVisible") != null && frame.getProperty("toolbarVisible").equals("false")) {
+        if (Tools.safeEquals(frame.getProperty("toolbarVisible"),"false")) {
            frame.c.setToolbarVisible(false); }
+
+        if (Tools.safeEquals(frame.getProperty("leftToolbarVisible"),"false")) {
+           frame.c.setLeftToolbarVisible(false); }
 
         frame.setVisible(true);
 

@@ -33,6 +33,10 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.util.ListIterator;
 
+//import ublic class MindMapNodesSelection implements Transferable, ClipboardOwner {
+   //   public static DataFlavor fileListFlavor = null;
+
+
 public class NodeDropListener implements DropTargetListener {
 
     private final Controller c;
@@ -41,15 +45,13 @@ public class NodeDropListener implements DropTargetListener {
 	c = controller;
     }
 
-    private boolean isDragAcceptable(DropTargetDragEvent event) {
-	DataFlavor[] flavors = event.getCurrentDataFlavors();
-	for (int i = 0; i < flavors.length; i++) {
-	    if (flavors[i].equals(DataFlavor.stringFlavor)) {
-		return true;
-	    }
-	}
-	return false;
-    }
+    // See DropTargetListener for the meaning.
+    private boolean isDragAcceptable(DropTargetDragEvent ev) {
+       if (ev.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+          return true; }
+       if (ev.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
+          return true; }
+       return false; }
 
     private boolean isDropAcceptable(DropTargetDropEvent event) {
         MindMapNode node = ((NodeView)event.getDropTargetContext().getComponent()).getModel();
@@ -137,9 +139,18 @@ public class NodeDropListener implements DropTargetListener {
 	    return; }
 	dtde.dropComplete(true); }
 
+    /**
+     * The method is called when the cursor carrying the dragged item enteres
+     * the area of the node. The name "dragEnter" seems to be confusing to me.
+     *
+     * I think the difference between dragAcceptable and dropAcceptable is
+     * that in dragAcceptable, you tell if the type of the thing being dragged
+     * is OK, where in dropAcceptable, you tell if your really willing to
+     * accept the item.
+     */
     public void dragEnter (DropTargetDragEvent dtde) {
-       // TODO: check DataFlavor before say ok
-       // then dtde.rejectDrag(); if not
+       // TODO: Accepting the action ACTION_MOVE is false, because we cannot
+       // know if the action is really ACTION_MOVE.
        if(isDragAcceptable(dtde)) {
           dtde.acceptDrag(DnDConstants.ACTION_MOVE); }
        else {

@@ -1,7 +1,7 @@
 <!-- Default patterns supplied with FreeMind -->
 <patterns>
    <pattern name="Default">
-      <node>
+      <node icon="none">
          <font/>
       </node>
       <edge/>
@@ -70,11 +70,11 @@
       <node color="#000099"/>
       <edge color="#009999" width="4"/>
    </pattern>
-   <!-- example with text
+   <!-- example with text and icon
         Because this we have no undo, this example is dangerous.
         We'd better comment it out.
-   <pattern name="Program">
-      <node color="#996600" italic="true"  text="Program">
+   <pattern name="Program with icon">
+      <node color="#996600" italic="true" text="Program" icon="stop">
          <font size="16" italic="true"/>
       </node>
    </pattern>

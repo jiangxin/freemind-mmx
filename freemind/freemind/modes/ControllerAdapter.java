@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.28 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: ControllerAdapter.java,v 1.29 2003-11-03 11:00:12 sviles Exp $*/
 
 package freemind.modes;
 
@@ -48,9 +48,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
+
+
+
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -77,9 +78,11 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.JTextComponent;
 
+import freemind.main.FreeMind;
 import freemind.controller.Controller;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.main.ExampleFileFilter;
 import freemind.main.XMLParseException;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
@@ -153,6 +156,12 @@ public abstract class ControllerAdapter implements ModeController {
         return null;
     }
 
+    public void nodeChanged(MindMapNode n) {
+    }
+
+    public void anotherNodeSelected(MindMapNode n) {
+    }
+
     public void doubleClick(MouseEvent e) {
         toggleFolded();
     }
@@ -166,6 +175,10 @@ public abstract class ControllerAdapter implements ModeController {
     //
     // Map Management
     //
+
+    /**
+     * Get text identification of the map
+     */
 
     protected String getText(String textId) {
        return getController().getResourceString(textId); }
@@ -187,7 +200,7 @@ public abstract class ControllerAdapter implements ModeController {
      * You may decide to overload this or take the default
      * and implement the functionality in your MapModel (implements MindMap)
      */
-    public void load(File file) throws FileNotFoundException, IOException, XMLParseException {
+    public void load (File file) throws FileNotFoundException, IOException, XMLParseException {
         MapAdapter model = newModel();
         model.load(file);
         getController().getMapModuleManager().newMapModule(model);
@@ -200,6 +213,18 @@ public abstract class ControllerAdapter implements ModeController {
            return saveAs(); }
         else {
            return save(getModel().getFile()); }}
+
+    protected LinkedList getSelecteds() {
+	LinkedList selecteds = new LinkedList();
+	ListIterator it = getView().getSelecteds().listIterator();
+	if (it != null) {
+	    while(it.hasNext()) {
+		NodeView selected = (NodeView)it.next();
+		selecteds.add( selected.getModel() );
+	    }
+	}
+	return selecteds;
+    }
 
     /**
      * Return false is the action was cancelled, e.g. when
@@ -249,7 +274,7 @@ public abstract class ControllerAdapter implements ModeController {
           if (showDetail==JOptionPane.YES_OPTION) {
              getController().errorMessage(ex); }}
        else if (exceptionType.equals("java.io.FileNotFoundException")) {
-          getController().errorMessage(getText("file_not_found"));}
+          getController().errorMessage(ex.getMessage()); }
        else {
           getController().errorMessage(ex); }
     }
@@ -262,7 +287,9 @@ public abstract class ControllerAdapter implements ModeController {
         if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
             chooser = new JFileChooser(getMap().getFile().getParentFile()); }
         else {
-            chooser = new JFileChooser(); }
+           chooser = new JFileChooser();
+           chooser.setSelectedFile(new File(((MindMapNode)getMap().getRoot()).toString()+".mm"));
+        }
         //chooser.setLocale(currentLocale);
         if (getFileFilter() != null) {
             chooser.addChoosableFileFilter(getFileFilter()); }
@@ -493,7 +520,13 @@ public abstract class ControllerAdapter implements ModeController {
         preferredHeight =
            Math.min (preferredHeight, Integer.parseInt(getFrame().getProperty("el__max_default_window_height")));
 
-        editorScrollPane.setPreferredSize(new Dimension(600, preferredHeight));
+        int preferredWidth = node.getWidth();
+        preferredWidth =
+           Math.max (preferredWidth, Integer.parseInt(getFrame().getProperty("el__min_default_window_width")));
+        preferredWidth =
+           Math.min (preferredWidth, Integer.parseInt(getFrame().getProperty("el__max_default_window_width")));
+                           
+        editorScrollPane.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
         //textArea.setPreferredSize(new Dimension(500, 160));
 
         final JPanel panel = new JPanel();
@@ -534,16 +567,21 @@ public abstract class ControllerAdapter implements ModeController {
 
         textArea.addKeyListener(new KeyListener() {
               public void keyPressed(KeyEvent e) {
-                 // escape key in long text editor (PN)                               
+                 // escape key in long text editor (PN)
                  if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                    e.consume();
                    eventSource.setValue(BUTTON_CANCEL);
                    dialog.dispose(); 
                  }
-                 else if (e.getKeyCode() == KeyEvent.VK_ENTER && enterConfirms.isSelected()) {
-                    e.consume();
-                    eventSource.setValue(BUTTON_OK);
-                    dialog.dispose(); }}
+                 else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if (enterConfirms.isSelected() == ((e.getModifiers() & KeyEvent.CTRL_MASK) == 0)) {
+                       e.consume();
+                       eventSource.setValue(BUTTON_OK);
+                       dialog.dispose(); }
+                    else if (enterConfirms.isSelected() && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+                       e.consume();
+                       textArea.insert("\n",textArea.getCaretPosition()); }}}
+
                  /*
                  // Daniel: I tried to make editor resizable. It worked somehow, but not
                  // quite. When I increased the size and then decreased again to the original
@@ -678,11 +716,14 @@ public abstract class ControllerAdapter implements ModeController {
                         final boolean isNewNode,      // when new->esc: cut the node
                         final boolean parentFolded,   // when new->esc: fold prevSelected
                         final boolean editLong) {
+		if (node == null){
+			return;	}
+
         closeEdit();
-        setBlocked(true); // locally "modal" state
+        setBlocked(true); // locally "modal" stated
 
         String text = node.getModel().toString();
-        if (text.length() > 100 || editLong) {
+        if (node.getIsLong() || editLong) {
            editLong(node, text, firstEvent);
            setBlocked(false);
            return; 
@@ -704,6 +745,7 @@ public abstract class ControllerAdapter implements ModeController {
 
         // Set textFields's properties
 
+        /* fc, 12.10.2003: the following method is not correct. Even more with the zoom factors!*/
         int linkIconWidth = 16;
         int textFieldBorderWidth = 2;
         int cursorWidth = 1;
@@ -714,6 +756,10 @@ public abstract class ControllerAdapter implements ModeController {
         if (node.getModel().getLink() != null) {
            xOffset += linkIconWidth;
            widthAddition -= linkIconWidth; }
+        if (node.getModel().getIcons().size() != 0) { // fc, 24.9.2003 full ok for the moment, that an icon has the same size as the link icon.
+           xOffset += linkIconWidth * node.getModel().getIcons().size();
+           widthAddition -= linkIconWidth; }
+        /* fc, 12.10.2003: end buggy method*/
 
         // minimal width for input field of leaf or folded node (PN)
         final int MINIMAL_LEAF_WIDTH = 150;
@@ -803,10 +849,10 @@ public abstract class ControllerAdapter implements ModeController {
 
           public void focusLost(FocusEvent e) {
             
-            // %%% otevrene problemy s timto:
-            // - pridani potomka do nejpravejsiho uzlu
-            // - scroll pri editmodu (vzdyt se to muze chovat jak jine viewery)
-            // - blokovani udalosti, pokud jsu v editmodu
+            // %%% open problems:
+            // - adding of a child to the rightmost node
+            // - scrolling while in editing mode (it can behave just like other viewers)
+            // - block selected events while in editing mode
         
             if (e == null) { // can be when called explicitly
               getModel().changeNode(node.getModel(), textField.getText());
@@ -1027,14 +1073,66 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     protected void setLinkByFileChooser() {
+		String relative = getLinkByFileChooser(getFileFilter());
+		if (relative != null) getModel().setLink(getSelected(),relative);
+	}
+	
+	protected void setImageByFileChooser() {
+		ExampleFileFilter filter = new ExampleFileFilter();
+		filter.addExtension("jpg");
+		filter.addExtension("jpeg");
+		filter.addExtension("png");
+		filter.addExtension("gif");
+		filter.setDescription("JPG, PNG and GIF Images");
+
+                // Are there any selected nodes with pictures?                
+                boolean picturesAmongSelecteds = false;
+                for (ListIterator e = getSelecteds().listIterator();e.hasNext();) {
+                   String link = ((MindMapNode)e.next()).getLink();
+                   if (link != null) {
+                      if (filter.accept(new File(link))) {
+                         picturesAmongSelecteds = true;
+                         break;
+                      }
+                   }
+                }
+
+                try {
+                   if (picturesAmongSelecteds) {
+                      for (ListIterator e = getSelecteds().listIterator();e.hasNext();) {
+                         MindMapNode node = (MindMapNode)e.next();
+                         if (node.getLink() != null) {
+                            String possiblyRelative = node.getLink();
+                            String relative = Tools.isAbsolutePath(possiblyRelative) ?
+                               new File(possiblyRelative).toURL().toString() : possiblyRelative;
+                            if (relative != null) {
+                               String strText = "<html><img src=\"" + relative + "\">"; 
+                               node.setLink(null);
+                               getModel().changeNode(node,strText);
+                            }
+                         }
+                      }
+                   }
+                   else {
+                      String relative = getLinkByFileChooser(filter);
+                      if (relative != null) {
+                         String strText = "<html><img src=\"" + relative + "\">"; 
+                         getModel().changeNode((MindMapNode)getSelected(),strText);
+                      } 
+                   }
+                }
+                catch (MalformedURLException e) {e.printStackTrace(); }
+	}
+   
+	protected String getLinkByFileChooser(FileFilter fileFilter) {
         URL link;
-        String relative;
+		String relative = null;
         File input;
         JFileChooser chooser = null;
         if (getMap().getFile() == null) {
-            JOptionPane.showMessageDialog(getView(), getText("not_saved_for_link_error"), 
+            JOptionPane.showMessageDialog(getFrame().getContentPane(), getText("not_saved_for_link_error"), 
                                           "FreeMind", JOptionPane.WARNING_MESSAGE);
-            return;
+			return null;
             // In the previous version Freemind automatically displayed save
             // dialog. It happened very often, that user took this save
             // dialog to be an open link dialog; as a result, the new map
@@ -1046,13 +1144,15 @@ public abstract class ControllerAdapter implements ModeController {
         } else {
             chooser = new JFileChooser();
         }
-        if (getFileFilter() != null) {
+
+		if (fileFilter != null) {
            // Set filters, make sure AcceptAll filter comes first
-           chooser.setFileFilter(getFileFilter());
-           chooser.addChoosableFileFilter(chooser.getAcceptAllFileFilter());
+		   chooser.setFileFilter(fileFilter);
+		} else {
+			chooser.setFileFilter(chooser.getAcceptAllFileFilter());
+		}
  
-        }
-        int returnVal = chooser.showOpenDialog(getView());
+        int returnVal = chooser.showOpenDialog(getFrame().getContentPane());
         if (returnVal==JFileChooser.APPROVE_OPTION) {
             input = chooser.getSelectedFile();
             try {
@@ -1060,7 +1160,7 @@ public abstract class ControllerAdapter implements ModeController {
                 relative = link.toString();
             } catch (MalformedURLException ex) {
                 getController().errorMessage(getText("url_error"));
-                return;
+                return null;
             }
             if (getFrame().getProperty("links").equals("relative")) {
                 //Create relative URL
@@ -1068,11 +1168,11 @@ public abstract class ControllerAdapter implements ModeController {
                     relative = Tools.toRelativeURL(getMap().getFile().toURL(), link);
                 } catch (MalformedURLException ex) {
                     getController().errorMessage(getText("url_error"));
-                    return;
+                    return null;
                 }
             }
-            getModel().setLink(getSelected(),relative);
         }
+		return relative;
     }
 
     public void loadURL(String relative) {
@@ -1450,6 +1550,16 @@ public abstract class ControllerAdapter implements ModeController {
             setLinkByFileChooser();
         }
     }
+
+	protected class SetImageByFileChooserAction extends AbstractAction {
+		public SetImageByFileChooserAction() {
+			super(getText("set_image_by_filechooser"));
+		}
+		public void actionPerformed(ActionEvent e) {
+                       setImageByFileChooser();
+                        getController().obtainFocusForSelected();
+		}
+	}
 
     protected class SetLinkByTextFieldAction extends AbstractAction {
         public SetLinkByTextFieldAction() {

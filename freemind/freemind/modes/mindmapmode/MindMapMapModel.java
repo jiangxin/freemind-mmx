@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.22 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: MindMapMapModel.java,v 1.23 2003-11-03 11:00:20 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -27,6 +27,7 @@ import freemind.main.XMLParseException;
 import freemind.main.Tools;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
+import freemind.modes.MindIcon;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -61,13 +62,15 @@ public class MindMapMapModel extends MapAdapter {
         lockManager = frame.getProperty("experimental_file_locking_on").equals("true") ? 
            new LockManager() : new DummyLockManager();
         setRoot(new MindMapNodeModel
-                ( getFrame().getResources().getString("new_mindmap"), getFrame())); }
+                ( getFrame().getResources().getString("new_mindmap"), getFrame()));
+        readOnly = false; }
     
     public MindMapMapModel( MindMapNodeModel root, FreeMindMain frame ) {
         super(frame);
         lockManager = frame.getProperty("experimental_file_locking_on").equals("true") ? 
            new LockManager() : new DummyLockManager();
-        setRoot(root); }
+        setRoot(root);
+        readOnly = false; }
 
     // 
 
@@ -115,6 +118,16 @@ public class MindMapMapModel extends MapAdapter {
     public void setBold(MindMapNodeModel node) {
         node.setBold(!node.isBold());
         nodeChanged(node); }
+
+    public void addIcon(MindMapNodeModel node, MindIcon icon) {
+        node.addIcon(icon);
+        nodeChanged(node); }
+
+    public int removeLastIcon(MindMapNodeModel node) {
+        int retval = node.removeLastIcon();
+        nodeChanged(node); 
+        return retval;
+    }
 
     public void setItalic(MindMapNodeModel node) {
         node.setItalic(!node.isItalic());
@@ -171,6 +184,8 @@ public class MindMapMapModel extends MapAdapter {
             fileout.write(
 "<html>"+el+
 "<head>"+el+
+"<title>"+rootNodeOfBranch.saveHTML_escapeUnicodeAndSpecialCharacters(rootNodeOfBranch.toString())+
+"</title>"+el+
 "<style type=\"text/css\">"+el+
 "    span.foldopened { color: white; font-size: xx-small;"+el+
 "    border-width: 1; font-family: monospace; padding: 0em 0.25em 0em 0.25em; background: #e0e0e0;"+el+
@@ -465,6 +480,8 @@ public class MindMapMapModel extends MapAdapter {
         return lockingUser; }
                 
     public void load(File file) throws FileNotFoundException, IOException, XMLParseException {
+       if (!file.exists()) {
+          throw new FileNotFoundException(Tools.expandPlaceholders(getText("file_not_found"), file.getPath())); }
        if (!file.canWrite()) {
           readOnly = true; }
        else {
@@ -574,7 +591,7 @@ public class MindMapMapModel extends MapAdapter {
       if (folder.isDirectory()) {
          File[] list = folder.listFiles();
          // Go recursively to subfolders
-         for (int i = 0; i < list.length; i++){
+         for (int i = 0; i < list.length; i++) {
             if (list[i].isDirectory()) {
                // Insert a new node
                MindMapNodeModel node = new MindMapNodeModel(list[i].getName(), getFrame());
@@ -584,7 +601,7 @@ public class MindMapMapModel extends MapAdapter {
                if (favoritesFoundInSubfolder) {
                   favoritesFound = true; }
                else {
-                  removeNodeFromParent(node); }}}
+                  removeNodeFromParent(node, /*notify=*/false); }}}
          
          // For each .url file: add it
          for (int i = 0; i < list.length; i++) {

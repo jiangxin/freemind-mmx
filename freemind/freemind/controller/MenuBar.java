@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.16 2003-11-03 10:49:16 sviles Exp $*/
+/*$Id: MenuBar.java,v 1.17 2003-11-03 11:00:05 sviles Exp $*/
 
 package freemind.controller;
 
@@ -130,6 +130,10 @@ public class MenuBar extends JMenuBar {
         newPopupItem = new JMenuItem(c.toggleToolbar);
         newPopupItem.setForeground(new Color(100,80,80));
         mapsPopupMenu.add(newPopupItem);
+
+        newPopupItem = new JMenuItem(c.toggleLeftToolbar);
+        newPopupItem.setForeground(new Color(100,80,80));
+        mapsPopupMenu.add(newPopupItem);
     }
 
     public void updateFileMenu() {
@@ -141,6 +145,7 @@ public class MenuBar extends JMenuBar {
 	filemenu.addSeparator();
 	JMenuItem page = filemenu.add(c.page);
 	JMenuItem print = filemenu.add(c.print);
+	print.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_print")));
 
 	filemenu.addSeparator();
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMode.java,v 1.7 2003-11-03 10:49:18 sviles Exp $*/
+/*$Id: SchemeMode.java,v 1.8 2003-11-03 11:00:22 sviles Exp $*/
 
 package freemind.modes.schememode;
 
@@ -101,6 +101,10 @@ public class SchemeMode implements Mode {
 
     public JToolBar getModeToolBar() {
 	return toolbar;
+    }
+
+    public JToolBar getLeftToolBar() {
+	return null;
     }
 
     public FreeMindMain getFrame() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapXMLElement.java,v 1.3 2003-11-03 10:49:18 sviles Exp $*/
+/*$Id: MindMapXMLElement.java,v 1.4 2003-11-03 11:00:21 sviles Exp $*/
 
 /*On doubling of code
  *
@@ -31,6 +31,7 @@ package freemind.modes.mindmapmode;
 import freemind.main.XMLElement;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.modes.MindIcon;
 
 import java.awt.Font;
 
@@ -45,6 +46,10 @@ public class MindMapXMLElement extends XMLElement {
    private String fontName; 
    private int    fontStyle = 0;
    private int    fontSize = 0;
+
+   //   Icon attributes
+
+   private String iconName; 
 
    //   Overhead methods
 
@@ -86,7 +91,9 @@ public class MindMapXMLElement extends XMLElement {
             edge.setTarget(node);
             node.setEdge(edge); }
          else if (child.getName().equals("font")) {
-            node.setFont((Font)child.getUserObject()); }}}
+            node.setFont((Font)child.getUserObject()); }
+         else if (child.getName().equals("icon")) {
+             node.addIcon((MindIcon)child.getUserObject()); }}}
 
    public void setAttribute(String name, Object value) {
       // We take advantage of precondition that value != null.
@@ -135,11 +142,22 @@ public class MindMapXMLElement extends XMLElement {
             if (name.equals("BOLD")) {
                fontStyle+=Font.BOLD; }
             else if (name.equals("ITALIC")) {
-               fontStyle+=Font.ITALIC; }}}}
+               fontStyle+=Font.ITALIC; }}}
+      /* icons */
+      if (getName().equals("icon")) {
+         if (name.equals("BUILTIN")) {
+            iconName = sValue; } 
+      }
+      
+   }
 
    protected void completeElement() {
       if (getName().equals("font")) {
          userObject =  frame.getController().getFontThroughMap
-            (new Font(fontName, fontStyle, fontSize)); }}
+            (new Font(fontName, fontStyle, fontSize)); }
+      /* icons */
+            if (getName().equals("icon")) {
+         userObject =  new MindIcon(iconName); }
+   }
 
 }

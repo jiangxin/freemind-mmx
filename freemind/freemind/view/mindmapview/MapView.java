@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.18 2003-11-03 10:49:18 sviles Exp $*/
+/*$Id: MapView.java,v 1.19 2003-11-03 11:00:26 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -68,6 +68,7 @@ public class MapView extends JPanel implements Printable {
     private int siblingMaxLevel;
     private boolean isPrinting = false; // use for remove selection from print
     private NodeView shiftSelectionOrigin = null;
+    private int maxNodeWidth = 0;
 
     //
     // Constructors
@@ -96,18 +97,23 @@ public class MapView extends JPanel implements Printable {
         // like in excel - write a letter means edit (PN)
         // on the other hand it doesn't allow key navigation (sdfe)
         disableMoveCursor = Tools.safeEquals(
-            controller.getFrame().getProperty("disable_cursor_move_paper"),"true");
+            controller.getProperty("disable_cursor_move_paper"),"true");
     }
 
     public void initRoot() {
 	rootView = NodeView.newNodeView( (MindMapNode)getModel().getRoot(), this );
  	rootView.insert();
-	
 	getMindMapLayout().updateTreeHeightsAndRelativeYOfWholeMap();
-
 	revalidate();
     }
 
+    public int getMaxNodeWidth() {
+       if (maxNodeWidth == 0) {
+          try {
+             maxNodeWidth = Integer.parseInt(controller.getProperty("max_node_width")); }
+          catch (NumberFormatException e) {
+             maxNodeWidth = Integer.parseInt(controller.getProperty("el__max_default_window_width")); }}
+       return maxNodeWidth; }
 
     //
     // Navigation

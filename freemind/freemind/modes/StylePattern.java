@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePattern.java,v 1.3 2003-11-03 10:49:17 sviles Exp $*/
+/*$Id: StylePattern.java,v 1.4 2003-11-03 11:00:12 sviles Exp $*/
 
 package freemind.modes;
 
@@ -26,6 +26,7 @@ import java.util.*;
 import java.io.*;
 import freemind.main.XMLElement;
 import freemind.main.Tools;
+import freemind.modes.MindIcon;
 
 // Daniel: this seems like a description of what pattern should do rather
 // than of that what it actually does.
@@ -51,6 +52,7 @@ public class StylePattern {
     private Color  nodeColor;
     private String nodeStyle;
     private Font   nodeFont;
+    private MindIcon   nodeIcon;
 
     private boolean appliesToEdge = false;    
     private Color  edgeColor;
@@ -58,6 +60,7 @@ public class StylePattern {
     private int    edgeWidth;
     
     private boolean appliesToNodeFont = false;
+    private boolean appliesToNodeIcon = false;
 
     public StylePattern() {}
 
@@ -71,7 +74,7 @@ public class StylePattern {
        loadPattern(elm); }
 
     public String toString() {
-        return "node: "+nodeColor+", "+nodeStyle+", "+nodeFont+", "+
+        return "node: "+nodeColor+", "+nodeStyle+", "+nodeFont+", "+nodeIcon+", "+
            "\nedge: "+edgeColor+", "+edgeStyle+", "+edgeWidth; }
 
     public boolean getAppliesToEdge() {
@@ -82,6 +85,9 @@ public class StylePattern {
 
     public boolean getAppliesToNodeFont() {
        return appliesToNodeFont; }
+
+    public boolean getAppliesToNodeIcon() {
+       return appliesToNodeIcon; }
 
     /**
        * Get the value of name.
@@ -188,6 +194,20 @@ public class StylePattern {
        this.nodeFont = nodeFont; }
 
     /**
+       * Get the value of icon.
+       * @return Value of icon.
+       */
+    public MindIcon getNodeIcon() {
+       return nodeIcon;}
+
+    /**
+       * Set the value of icon.
+       * @param v  Value to assign to icon.
+       */
+    public void setNodeIcon(MindIcon  nodeIcon) {
+       this.nodeIcon = nodeIcon; }
+
+    /**
        * Get the value of edgeColor.
        * @return Value of edgeColor.
        */
@@ -259,6 +279,13 @@ public class StylePattern {
                  setNodeColor(Tools.xmlToColor(child.getStringAttribute("color") ) ); }
               if (child.getStringAttribute("style")!=null) {
                  setNodeStyle(child.getStringAttribute("style")); }
+              if (child.getStringAttribute("icon")!=null) {
+                 appliesToNodeIcon = true;
+                 if (child.getStringAttribute("icon").equals("none")) {
+                    appliesToNodeIcon = true;
+                    setNodeIcon( child.getStringAttribute("icon").equals("none") ?
+                                 null :
+                                 new MindIcon(child.getStringAttribute("icon")) ); }}
               setText(child.getStringAttribute("text"));
 
               for (Iterator j=child.getChildren().iterator(); j.hasNext();) {
