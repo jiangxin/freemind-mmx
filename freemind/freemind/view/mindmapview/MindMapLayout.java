@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.1 2004-10-17 20:01:08 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.2 2005-01-02 07:57:28 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -71,7 +71,7 @@ public class MindMapLayout implements LayoutManager {
     public void removeLayoutComponent(Component comp) {  }
 
     public void layoutContainer(Container parent) {
-       layout(); }
+       layout(true); }
    
 
 
@@ -92,17 +92,16 @@ public class MindMapLayout implements LayoutManager {
      * This funcion resizes the map and do the layout.
      * All tree heights, widths and shifts should be already calculated.
      */
-	public void layout() {
+	public void layout(boolean holdSelected) {
 		NodeView selected = map.getSelected();
-		boolean holdSelected =  (selected != null 
-								&& selected.getX() != 0 && selected.getY() != 0);
+		 holdSelected =  holdSelected &&  
+		    (selected != null && selected.getX() != 0 && selected.getY() != 0);
 		int oldRootX = getRoot().getX();
 		int oldRootY = holdSelected ? selected.getY() : getRoot().getY();
 		resizeMap(getRoot().getTreeWidth(), getRoot().getTreeHeight());
 		calcNewRootCoord();
         layout(map.getRoot());
 		try{
-//			getRoot().getLocationOnScreen();
 			int rootX = getRoot().getX();
 			int rootY = holdSelected ? selected.getY() : getRoot().getY();
 			getMapView().scrollBy(rootX - oldRootX, rootY - oldRootY, true );
@@ -315,7 +314,7 @@ public class MindMapLayout implements LayoutManager {
 
     void updateTreeHeightsAndRelativeYOfWholeMap() {
         updateTreeHeightsAndRelativeYOfDescendants(getRoot()); 
-		layout();
+		layout(false);
         }
 
    
