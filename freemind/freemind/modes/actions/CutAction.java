@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: CutAction.java,v 1.1.2.1 2004-05-09 22:31:15 christianfoltin Exp $*/
+/*$Id: CutAction.java,v 1.1.2.2 2004-05-09 23:11:34 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -104,7 +104,8 @@ public class CutAction extends AbstractAction implements ActorXml {
 				
 				PasteNodeAction pasteNodeAction=null;
                 pasteNodeAction = c.paste.getPasteNodeAction(copy, coord);
-				undo.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(pasteNodeAction);
+                // The paste actions are reversed because of the strange coordinates.
+				undo.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(0,pasteNodeAction);
                 
             }
 

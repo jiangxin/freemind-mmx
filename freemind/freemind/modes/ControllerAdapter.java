@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.11 2004-05-09 22:31:14 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.12 2004-05-09 23:11:30 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -160,7 +160,7 @@ public abstract class ControllerAdapter implements ModeController {
 		actionFactory = new ActionFactory(getController());
 		// register default action handler:
 		getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
-		//getActionFactory().registerHandler(new PrintActionHandler(this));
+		getActionFactory().registerHandler(new PrintActionHandler(this));
 		undo = new UndoAction();
 		redo = new RedoAction();
 		getActionFactory().registerHandler(new ActionHandler() {
@@ -401,7 +401,7 @@ public abstract class ControllerAdapter implements ModeController {
 				return -1;
 			if(depth < 0)
 				return 1;
-			return 0;
+			return n1.getParentNode().getChildPosition(n1) - n2.getParentNode().getChildPosition(n2);
 		}
 	}
 
@@ -410,6 +410,7 @@ public abstract class ControllerAdapter implements ModeController {
 		// return an ArrayList of MindMapNodes.
 		List result = getSelecteds();
 		Collections.sort(result, new nodesDepthComparator());
+		logger.info("Sort result: "+result);
 		return result;
 	}
 
@@ -1312,6 +1313,7 @@ public abstract class ControllerAdapter implements ModeController {
             String result = writer.toString();
             return result;
         } catch (JAXBException e) {
+			logger.severe(e.toString());
             e.printStackTrace();
             return "";
         }
