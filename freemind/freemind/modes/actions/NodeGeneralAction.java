@@ -8,6 +8,7 @@ package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
 import java.util.ListIterator;
+import java.util.logging.Logger;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -29,9 +30,10 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
 
 
 public class NodeGeneralAction extends AbstractXmlAction {
-	private final ControllerAdapter modeController;
+	protected final ControllerAdapter modeController;
 	private freemind.controller.actions.NodeActorXml actor;
 	SingleNodeOperation singleNodeOperation;
+	protected static Logger logger;
 	protected NodeGeneralAction(ControllerAdapter modeController, String textID, String iconPath) {
 		super(
 		modeController.getText(textID),
@@ -41,6 +43,9 @@ public class NodeGeneralAction extends AbstractXmlAction {
 		putValue(Action.SHORT_DESCRIPTION, modeController.getText(textID));
 		this.singleNodeOperation = null;
 		this.actor = null;
+		if(logger==null) {
+		    logger = modeController.getFrame().getLogger(this.getClass().getName());
+		}
 	}
 	public NodeGeneralAction(
 		ControllerAdapter modeController, String textID,
@@ -88,8 +93,14 @@ public class NodeGeneralAction extends AbstractXmlAction {
                     MindMapNodeModel selected = (MindMapNodeModel) it.next();
                     ActionPair pair =
                         actor.apply(this.modeController.getModel(), selected);
-					doAction.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(pair.getDoAction());
-					undo.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(0,pair.getUndoAction());
+					if (pair != null) {
+                        doAction
+                                .getCompoundActionOrSelectNodeActionOrCutNodeAction()
+                                .add(pair.getDoAction());
+                        undo
+                                .getCompoundActionOrSelectNodeActionOrCutNodeAction()
+                                .add(0, pair.getUndoAction());
+                    }
                 }
                 modeController.getActionFactory().startTransaction((String) getValue(NAME));
 				modeController.getActionFactory().executeAction(new ActionPair(doAction, undo));

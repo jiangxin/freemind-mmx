@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.27 2004-08-25 20:40:03 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.28 2004-08-27 21:44:19 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -80,6 +80,7 @@ import freemind.controller.actions.ActionHandler;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.ModeControllerActionHandler;
+import freemind.controller.actions.PrintActionHandler;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.UndoXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -99,12 +100,15 @@ import freemind.modes.actions.CutAction;
 import freemind.modes.actions.DeleteChildAction;
 import freemind.modes.actions.EdgeColorAction;
 import freemind.modes.actions.EditAction;
+import freemind.modes.actions.FontFamilyAction;
+import freemind.modes.actions.FontSizeAction;
 import freemind.modes.actions.ItalicAction;
 import freemind.modes.actions.NewChildAction;
 import freemind.modes.actions.NodeUpAction;
 import freemind.modes.actions.PasteAction;
 import freemind.modes.actions.ToggleChildrenFoldedAction;
 import freemind.modes.actions.ToggleFoldedAction;
+import freemind.modes.actions.UnderlinedAction;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -141,6 +145,9 @@ public abstract class ControllerAdapter implements ModeController {
     public PasteAction paste = null;
 	public BoldAction bold = null;
 	public ItalicAction italic = null;
+	public UnderlinedAction underlined = null;
+	public FontSizeAction fontSize = null;
+	public FontFamilyAction fontFamily = null;
 	public EditAction edit = null;
 	public NewChildAction newChild = null;
 	public DeleteChildAction deleteChild = null;
@@ -204,6 +211,9 @@ public abstract class ControllerAdapter implements ModeController {
         copySingle = new CopySingleAction(this);
 		bold = new BoldAction (this);
 		italic = new ItalicAction(this);
+		underlined = new UnderlinedAction(this);
+		fontSize = new FontSizeAction(this);
+		fontFamily = new FontFamilyAction(this);
 		edit = new EditAction(this);
 		newChild = new NewChildAction(this);
 		deleteChild = new DeleteChildAction(this);
@@ -758,6 +768,15 @@ public abstract class ControllerAdapter implements ModeController {
 	public void setItalic(MindMapNode node, boolean isItalic) {
 		italic.setItalic(node, isItalic);
 	}
+
+    //Node editing
+    public void setFontSize(MindMapNode node, String fontSizeValue) {
+        fontSize.setFontSize(node, fontSizeValue);
+	}
+
+    public void setFontFamily(MindMapNode node, String fontFamilyValue) {
+        fontFamily.setFontFamily(node, fontFamilyValue);
+    }
 
 
 	public void setEdgeColor(MindMapNode node, Color color) {

@@ -86,6 +86,8 @@
 					<menu_action field="decreaseNodeFont" key_ref="keystroke_node_decrease_font_size"/>
 					<menu_action field="italic" key_ref="keystroke_node_toggle_italic"/>
 					<menu_action field="bold" key_ref="keystroke_node_toggle_boldface"/>
+					<!-- Underlined is not implemented in the view yet.
+						<menu_action field="underlined" key_ref="keystroke_node_toggle_underlined"/>-->
 					<menu_action field="nodeColor" key_ref="keystroke_node_color"/>
 					<menu_action field="nodeColorBlend" key_ref="keystroke_node_color_blend"/>
 					<menu_action field="nodeBackgroundColor"/>

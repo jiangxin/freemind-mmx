@@ -75,10 +75,10 @@ public interface MindMapActions {
 	public abstract void setItalic(MindMapNode node, boolean isItalic);
 //	public abstract void setUnderlined(MindMapNode node);
 //	public abstract void setNormalFont(MindMapNode node);
-//	public abstract void setFontFamily(
-//		MindMapNode node,
-//		String fontFamily);
-//	public abstract void setFontSize(MindMapNode node, int fontSize);
+	public abstract void setFontFamily(
+		MindMapNode node,
+		String fontFamily);
+	public abstract void setFontSize(MindMapNode node, String fontSizeValue);
 //	public abstract void increaseFontSize(MindMapNode node, int increment);
 //	public abstract void splitNode(
 //		MindMapNode node,

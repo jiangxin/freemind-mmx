@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.24 2004-08-25 20:40:03 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.25 2004-08-27 21:44:20 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -173,9 +173,9 @@ public class MindMapController extends ControllerAdapter {
 
            }
        });
-    public Action normalFont = new NodeGeneralAction (this, "normal", "images/Normal24.gif",
-       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
-          map.setNormalFont(node); }});
+//    public Action normalFont = new NodeGeneralAction (this, "normal", "images/Normal24.gif",
+//       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
+//          map.setNormalFont(node); }});
     public Action increaseNodeFont = new NodeGeneralAction (this, "increase_node_font_size", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.increaseFontSize(node,1); }});
@@ -341,17 +341,6 @@ public class MindMapController extends ControllerAdapter {
 
     public FileFilter getFileFilter() {
        return filefilter; }
-
-    //Node editing
-    void setFontSize(int fontSize) {
-	for(ListIterator e = getSelecteds().listIterator();e.hasNext();) {
-           MindMapNodeModel selected = (MindMapNodeModel)e.next();
-           getMindMapMapModel().setFontSize(selected,fontSize); }}
-
-    void setFontFamily(String fontFamily) {
-       for(ListIterator e = getSelecteds().listIterator();e.hasNext();) {
-          MindMapNodeModel selected = (MindMapNodeModel)e.next();
-          getMindMapMapModel().setFontFamily(selected,fontFamily); }}
 
     public void nodeChanged(MindMapNode n) {
     	super.nodeChanged(n);
@@ -577,7 +566,7 @@ public class MindMapController extends ControllerAdapter {
         bold.setEnabled(enabled);
         cloud.setEnabled(enabled);
         cloudColor.setEnabled(enabled);
-        normalFont.setEnabled(enabled);
+//        normalFont.setEnabled(enabled);
         nodeColor.setEnabled(enabled);
         edgeColor.setEnabled(enabled);
         removeLastIcon.setEnabled(enabled);

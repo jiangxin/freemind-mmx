@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.10.9 2004-08-25 20:40:04 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.10.10 2004-08-27 21:44:20 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -246,17 +246,6 @@ public class MindMapMapModel extends MapAdapter  {
         node.setItalic(false);
         node.setBold(false);
         node.setUnderlined(false);
-        nodeChanged(node); }
-
-    public void setFontFamily(MindMapNodeModel node, String fontFamily) {
-        node.estabilishOwnFont();
-        node.setFont(getFrame().getController().getFontThroughMap
-                     (new Font(fontFamily,node.getFont().getStyle(),node.getFont().getSize())));
-        nodeChanged(node); }
-
-    public void setFontSize(MindMapNodeModel node, int fontSize) {
-        node.estabilishOwnFont();
-        node.setFont(node.getFont().deriveFont((float)fontSize));
         nodeChanged(node); }
 
     public void increaseFontSize(MindMapNodeModel node, int increment) {

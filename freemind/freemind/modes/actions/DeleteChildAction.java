@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: DeleteChildAction.java,v 1.1.2.3 2004-08-08 13:03:48 christianfoltin Exp $*/
+/*$Id: DeleteChildAction.java,v 1.1.2.4 2004-08-27 21:44:20 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -58,7 +58,7 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
      * @see freemind.controller.actions.ActorXml#act(freemind.controller.actions.generated.instance.XmlAction)
      */
     public void act(XmlAction action) {
-		System.out.println("NewNodeAction");
+		//System.out.println("DeleteChildAction");
 		DeleteNodeAction deleteNodeAction = (DeleteNodeAction) action;
 		NodeAdapter node = this.c.getNodeFromID(deleteNodeAction.getNode());
 		c.select(node.getViewer());

@@ -23,7 +23,6 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
 
 
 public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuItemEnabledListener{
-	private final ControllerAdapter modeController;
 	/**
 	 * @param textID
 	 * @param iconPath
@@ -31,7 +30,6 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuI
 	 */
 	public BoldAction(ControllerAdapter modeController) {
 		super(modeController, "bold", "images/Bold16.gif");
-		this.modeController = modeController;
 		addActor(this);			
 	}
 
@@ -40,7 +38,7 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuI
 		NodeAdapter node = getNodeFromID(boldact.getNode());
 		if(node.isBold() != boldact.isBold()) {
 			node.setBold(boldact.isBold());
-			this.modeController.nodeChanged(node);
+			modeController.nodeChanged(node);
 		}
 	}
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.12.12.7 2004-05-26 06:01:20 christianfoltin Exp $*/
+/*$Id: MindMapToolBar.java,v 1.12.12.8 2004-08-27 21:44:22 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -41,6 +41,8 @@ public class MindMapToolBar extends FreeMindToolBar {
     private JToolBar buttonToolBar;    
     private boolean fontSize_IgnoreChangeEvent = false;
     private boolean fontFamily_IgnoreChangeEvent = false;
+    private ItemListener fontsListener;
+    private ItemListener sizeListener;
 
     public MindMapToolBar(MindMapController controller) {
 		super();
@@ -49,52 +51,50 @@ public class MindMapToolBar extends FreeMindToolBar {
 		fonts = new JComboBox(Tools.getAvailableFontFamilyNamesAsVector());
 		size = new JComboBox(sizes);
 		buttonToolBar = new FreeMindToolBar();
+		fontsListener = new ItemListener(){
+        	        public void itemStateChanged(ItemEvent e) {
+        	            if (e.getStateChange() != ItemEvent.SELECTED) {
+        	               return; }
+        	            // TODO: this is super-dirty, why doesn't the toolbar know the model?
+        	            if (fontFamily_IgnoreChangeEvent) {
+        	               //fc, 27.8.2004: I don't understand, why the ignore type is resetted here. 
+        	                // let's see: fontFamily_IgnoreChangeEvent = false;
+        	               return; }
+        	            c.fontFamily.actionPerformed((String)e.getItem());
+        	         }
+        	      };
+		fonts.addItemListener(fontsListener);
+        sizeListener = new ItemListener(){
+            public void itemStateChanged(ItemEvent e) {
+                //System.err.println("ce:"+e);
+                if (e.getStateChange() != ItemEvent.SELECTED) {
+                   return; }
+                // change the font size                 
+                // TODO: this is super-dirty, why doesn't the toolbar know the model?
+                if (fontSize_IgnoreChangeEvent) {
+                    //fc, 27.8.2004: I don't understand, why the ignore type is resetted here. 
+                    // let's see: fontSize_IgnoreChangeEvent = false;
+                   return; 
+                }
+                // call action:
+                c.fontSize.actionPerformed((String) e.getItem());
+             }
+          };
+		size.addItemListener(sizeListener);
     }
     
     public void update(StructuredMenuHolder holder) {
 		this.removeAll();
 		holder.updateMenus(this, "mindmapmode_toolbar/");
 
-
-
-
-	fonts.setMaximumRowCount(9);
-	add(fonts);
-	fonts.addItemListener(new ItemListener(){
-              public void itemStateChanged(ItemEvent e) {
-                 if (e.getStateChange() != ItemEvent.SELECTED) {
-                    return; }
-                 // TODO: this is super-dirty, why doesn't the toolbar know the model?
-                 if (fontFamily_IgnoreChangeEvent) {
-                    fontFamily_IgnoreChangeEvent = false;
-                    return; }
-                 
-                 c.setFontFamily((String)e.getItem());
-              }
-           });
-
-	size.setEditor(new BasicComboBoxEditor());
-	size.setEditable(true);
-	add(size);
-	size.addItemListener(new ItemListener(){
-              public void itemStateChanged(ItemEvent e) {
-                 //System.err.println("ce:"+e);
-                 if (e.getStateChange() != ItemEvent.SELECTED) {
-                    return; }
-                 // change the font size                 
-                 // TODO: this is super-dirty, why doesn't the toolbar know the model?
-                 if (fontSize_IgnoreChangeEvent) {
-                    fontSize_IgnoreChangeEvent = false;
-                    return; }
-                 try {
-		    c.setFontSize(Integer.parseInt((String)e.getItem(),10));
-                 }
-                 catch (NumberFormatException nfe) {
-                 }
-                 //  		    c.setFont(c.getFont()
-                 //  			      .deriveFont((float)Integer.parseInt((String)e.getItem(),10)));
-              }
-           });
+		fonts.setMaximumRowCount(9);
+		add(fonts);
+		fonts.setFocusable(false);
+	
+		size.setEditor(new BasicComboBoxEditor());
+		size.setEditable(true);
+		add(size);
+		size.setFocusable(false);
         
         // button tool bar.
         buttonToolBar.removeAll();

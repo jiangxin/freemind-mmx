@@ -36,6 +36,8 @@ Changes made in Freemind 0.8.0:
 * There is a filter possibility for XmlActions
 * Selection corrected after execution of NodeHookActions.
 
+* Font family and font size are undoable now.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added
