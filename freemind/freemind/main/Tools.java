@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.17.12.2 2004-06-19 19:41:56 christianfoltin Exp $*/
+/*$Id: Tools.java,v 1.17.12.3 2004-09-20 21:20:46 christianfoltin Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -29,6 +29,8 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.GraphicsEnvironment;
 import java.lang.Thread;
+
+import freemind.modes.mindmapmode.MindMapEdgeModel;
 
 public class Tools {
 
@@ -47,7 +49,8 @@ public class Tools {
        return executableExtensions.contains(getExtension(file)); }
 
     public static String colorToXml(Color col) {
-	if (col == null) throw new IllegalArgumentException("Color was null");
+//	if (col == null) throw new IllegalArgumentException("Color was null");
+   	if (col == null) return null;
 	String red = Integer.toHexString(col.getRed());
 	if (col.getRed()<16) red = "0"+red;
 	String green = Integer.toHexString(col.getGreen());
@@ -58,7 +61,8 @@ public class Tools {
     }
 
     public static Color xmlToColor(String string) {
-    	string = string.trim();
+        if(string == null) return null;
+     	string = string.trim();
 		if (string.length() == 7) {
 
 			int red = Integer.parseInt(string.substring(1,3),16);
@@ -331,6 +335,19 @@ public class Tools {
    public static boolean safeEquals(String string1, String string2) {
       return (string1 != null && string2 != null && string1.equals(string2)); }
 
+   public static boolean safeEquals(Color color1, Color color2) {
+		if (color1 != null) {
+            if ((color2 == null) || (color2 != null && !color2.equals(color1))) {
+                return false;
+            }
+        } else {
+            if(color2 != null) {
+                return false;
+            }
+        }
+       return true;
+   }
+   
    public static String firstLetterCapitalized(String text) {
       if (text == null || text.length() == 0) {
          return text; }

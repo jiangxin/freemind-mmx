@@ -143,7 +143,7 @@
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="format_node_action">
-		      <xs:attribute name="color" use="required" type="xs:string"/>
+		      <xs:attribute name="color" use="optional" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
@@ -154,7 +154,7 @@
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="format_node_action">
-		      <xs:attribute name="color" use="required" type="xs:string"/>
+		      <xs:attribute name="color" use="optional" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: EdgeColorAction.java,v 1.1.2.1 2004-08-25 20:40:03 christianfoltin Exp $ */
+/* $Id: EdgeColorAction.java,v 1.1.2.2 2004-09-20 21:20:46 christianfoltin Exp $ */
 package freemind.modes.actions;
 
 import java.awt.Color;
@@ -87,17 +87,19 @@ public class EdgeColorAction extends AbstractAction implements ActorXml {
 			Color color = Tools.xmlToColor(edgeAction.getColor());
 			MindMapNode node = controller.getNodeFromID(edgeAction.getNode());
 			Color oldColor = node.getEdge().getColor() ;
-			if (oldColor != null && !oldColor.equals(color)) {
+			if (!Tools.safeEquals(color, oldColor)) {
 				((MindMapEdgeModel) node.getEdge()).setColor(color);
-				controller.nodeChanged(node);
-			}
+                controller.nodeChanged(node);
+            }
 		}
 	}
 
 	public EdgeColorFormatAction createEdgeColorFormatAction(MindMapNode node, Color color) throws JAXBException {
 		EdgeColorFormatAction edgeAction = controller.getActionXmlFactory().createEdgeColorFormatAction();
 		edgeAction.setNode(node.getObjectId(controller));
-		edgeAction.setColor(Tools.colorToXml(color));
+		if (color != null) {
+            edgeAction.setColor(Tools.colorToXml(color));
+        }
 		return edgeAction;
 	}
 	

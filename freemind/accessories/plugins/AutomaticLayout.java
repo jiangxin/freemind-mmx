@@ -7,7 +7,6 @@
 package accessories.plugins;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.util.Iterator;
 
 import freemind.extensions.PermanentNodeHookAdapter;
@@ -44,14 +43,14 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 		Color nodeColor = node.getColor();
 		if (((nodeColor != null) && (nodeColor.getRGB() != mycolor.getRGB()))
 				|| nodeColor == null) {
-			node.setColor(mycolor);
-			nodeChanged(node);
+			getController().setNodeColor(node, mycolor);
+//			nodeChanged(node);
 		}
 		String myFontSize = fontSize[myIndex];
 		if (((node.getFontSize() != null) && (!node.getFontSize().equals(myFontSize)) ) 
 		        || node.getFontSize() == null ) {
-		    node.setFontSize(Integer.valueOf(myFontSize).intValue());
-		    nodeChanged(node);
+		    getController().setFontSize(node, myFontSize);
+//		    nodeChanged(node);
 		}
 	}
 
