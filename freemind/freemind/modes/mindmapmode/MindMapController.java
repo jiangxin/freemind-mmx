@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.7 2004-05-06 05:08:27 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.8 2004-05-06 05:24:11 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -323,6 +323,9 @@ public class MindMapController extends ControllerAdapter {
 
     JMenu getEditMenu() {
 	JMenu editMenu = new JMenu();
+	add(editMenu,undo,"keystroke_undo");
+	add(editMenu,redo,"keystroke_redo");
+	editMenu.addSeparator();
 
         JMenu leading = getLeadingNodeMenu();
         Component[] mc = leading.getMenuComponents();

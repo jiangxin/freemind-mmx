@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: PrintActionHandler.java,v 1.1.2.1 2004-05-02 20:49:14 christianfoltin Exp $*/
+/*$Id: PrintActionHandler.java,v 1.1.2.2 2004-05-06 05:24:11 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -33,12 +33,14 @@ import javax.xml.bind.Marshaller;
  */
 public class PrintActionHandler implements ActionHandler {
 
-	/**
+	private static JAXBContext jaxContext;
+
+    /**
 	 * 
 	 */
 	public PrintActionHandler() {
 		super();
-		// TODO Auto-generated constructor stub
+		jaxContext = null;
 	}
 
 	/* (non-Javadoc)
@@ -59,11 +61,11 @@ public class PrintActionHandler implements ActionHandler {
 	 * @see freemind.controller.actions.ActionHandler#executeAction(freemind.controller.actions.ActionPair)
 	 */
 	public void executeAction(ActionPair pair) {
-		JAXBContext jc;
 		try {
-			jc = JAXBContext.newInstance(ActionFactory.JAXB_CONTEXT);
+			if(jaxContext == null)
+				jaxContext = JAXBContext.newInstance(ActionFactory.JAXB_CONTEXT);
 			//			marshal to System.out
-			Marshaller m = jc.createMarshaller();
+			Marshaller m = jaxContext.createMarshaller();
 			m.marshal(pair.getDoAction(), System.out);
 
 		} catch (JAXBException e) {
