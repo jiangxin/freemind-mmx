@@ -78,6 +78,7 @@
 	    <!-- end build generated files -->
 		<javac	srcdir="${src}"
 			destdir="${build}"
+			excludes="${gen.dir}/**"
 			classpath="${src}/${jython.jar}:${classpath}"
 			debug="${debug}"/>
 	</target>
