@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.11 2004-01-25 16:41:11 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.12 2004-02-02 21:25:24 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -70,6 +70,9 @@ public interface FreeMindMain {
     public void setProperty(String key, String value);
 
     public void saveProperties();
+
+    /** Returns the path to the directory the freemind auto properties are in, or null, if not present.*/
+    public String getFreemindDirectory();
 
     public JLayeredPane getLayeredPane();
 

@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.35 2004-01-28 20:09:33 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36 2004-02-02 21:25:24 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -90,7 +90,26 @@ public class MindMapMapModel extends MapAdapter {
         timerForAutomaticSaving = new Timer();
         int delay = Integer.parseInt(getFrame().getProperty("time_for_automatic_save"));
         int numberOfTempFiles = Integer.parseInt(getFrame().getProperty("number_of_different_files_for_automatic_save"));
-        timerForAutomaticSaving.schedule(new doAutomaticSave(this, numberOfTempFiles), delay, delay);
+        boolean filesShouldBeDeletedAfterShutdown = Tools.safeEquals(getFrame().getProperty("delete_automatic_saves_at_exit"),"true");
+        String path = getFrame().getProperty("path_to_automatic_saves");
+        /* two standard values: */
+        if(Tools.safeEquals(path, "default")) {
+            path = null;
+        }
+        if(Tools.safeEquals(path, "freemind_home")) {
+            path = getFrame().getFreemindDirectory();
+        }
+        File dirToStore = null;
+        if(path!=null) {
+            dirToStore = new File(path);
+            /* existence? */
+            if(! dirToStore.isDirectory()) {
+                dirToStore = null;
+                System.err.println("Temporary directory " + path + " not found. Disabling automatic store.");
+                delay = Integer.MAX_VALUE;
+            }
+        }
+        timerForAutomaticSaving.schedule(new doAutomaticSave(this, numberOfTempFiles, filesShouldBeDeletedAfterShutdown, dirToStore), delay, delay);
     }
 
     // 
@@ -605,9 +624,13 @@ public class MindMapMapModel extends MapAdapter {
        setFile(file);
        setSaved(true); } 
     
+    /** When a map is closed, this method is called. */
     public void destroy() {
        lockManager.releaseLock();
-       lockManager.releaseTimer(); }
+       lockManager.releaseTimer(); 
+       /* cancel the timer, if map is closed. */
+       timerForAutomaticSaving.cancel(); 
+    }
 
     MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
         MindMapXMLElement mapElement = new MindMapXMLElement(getFrame());
@@ -1103,13 +1126,17 @@ public class MindMapMapModel extends MapAdapter {
         private MindMapMapModel model;
         private Vector tempFileStack;
         private int numberOfFiles;
+        private boolean filesShouldBeDeletedAfterShutdown;
+        private File pathToStore;
         /** This value is compared with the result of getNumberOfChangesSinceLastSave(). If the values coincide, no further automatic
             saving is performed until the value changes again.*/
         private int changeState;
-        doAutomaticSave(MindMapMapModel model, int numberOfTempFiles) {
+        doAutomaticSave(MindMapMapModel model, int numberOfTempFiles, boolean filesShouldBeDeletedAfterShutdown, File pathToStore) {
             this.model = model;
             tempFileStack = new Vector();
             numberOfFiles = ((numberOfTempFiles > 0)? numberOfTempFiles: 1);
+            this.filesShouldBeDeletedAfterShutdown = filesShouldBeDeletedAfterShutdown;
+            this.pathToStore = pathToStore;
             changeState = 0;
         }
         public void run() {
@@ -1127,7 +1154,9 @@ public class MindMapMapModel extends MapAdapter {
                 tempFile = (File) tempFileStack.remove(0); // pop
             else {
                 try {
-                    tempFile = File.createTempFile("FM_"+((model.toString()==null)?"unnamed":model.toString()), ".mm");
+                    tempFile = File.createTempFile("FM_"+((model.toString()==null)?"unnamed":model.toString()), ".mm", pathToStore);
+                    if(filesShouldBeDeletedAfterShutdown) 
+                        tempFile.deleteOnExit();
                 } catch (Exception e) {
                     System.err.println("Error in automatic MindMapMapModel.save(): "+e.getMessage());
                     e.printStackTrace();

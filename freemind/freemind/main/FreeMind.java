@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.31 2004-01-25 16:41:09 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32 2004-02-02 21:25:24 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -93,11 +93,12 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	    } finally {
 		in.close();
 	    }
+        
+        props = def;
 
 	    //Users Properties, with highest priority (overwrite both other)
 	    Properties user = new Properties(def);
-            File userPropertiesFolder = new File (System.getProperty("user.home")+System.getProperty("file.separator")
-                                                  +def.getProperty("properties_folder"));
+            File userPropertiesFolder = new File (getFreemindDirectory());
             File userProperties = new File (userPropertiesFolder,def.getProperty("userproperties"));
             autoPropertiesFile = new File (userPropertiesFolder,def.getProperty("autoproperties"));
             patternsFile = new File (userPropertiesFolder,def.getProperty("patternsfile"));
@@ -277,6 +278,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     public void setProperty(String key, String value) {
 	props.setProperty(key,value);
+    }
+
+    public String getFreemindDirectory() {
+        return System.getProperty("user.home")+System.getProperty("file.separator")+getProperty("properties_folder");
     }
     
     public void saveProperties() {

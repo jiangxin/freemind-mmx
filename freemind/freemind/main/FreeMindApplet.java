@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.17 2004-01-25 16:41:11 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18 2004-02-02 21:25:24 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -118,6 +118,8 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
     
     public void setProperty(String key, String value) {
     }
+
+    public String getFreemindDirectory() {return null;};
 
     static int iMaxNodeWidth = 0;
 	

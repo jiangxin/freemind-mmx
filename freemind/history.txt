@@ -3,6 +3,8 @@ Changes made in Freemind 0.7.1:
 * Bug fix: automatic save occurs not so often (in fact, only if something has changed since the last automatic save), and uses a better filename.
 * Daniel changed the documentation.
 * Bug fix: Documentation opened twice.
+* Security fix: path for auto save is changeable and points to the freemind user properties directory by default
+* At normal shutdown, the auto saves are deleted, but this is configurable.
 
 RC3:
 ----
