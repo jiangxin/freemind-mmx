@@ -129,6 +129,7 @@ Changes made in Freemind 0.8.0:
 * GTK and free form as look and feel added
 * Export menus revised.
 * Merged new version from Miika Nurminen. Thanks!
+* Merged the new splash screen from Marc Carson. Thanks.
 
 Changes made in Freemind 0.7.2:
 ===============================
