@@ -51,13 +51,25 @@ Or try to start the batch "freemind.bat", read the messages and react.
 
 <a name="faqU_0"><h2>Usage</h2></a> 
 <a name="faqU_1"><h3>How can I create a graphical link?</h3></a>
-This is done by Drag&amp;Drop using the mouse, click on a node, hold the Shift and the Control keys and don't release them now,
+<!-- This is done by Drag&amp;Drop using the mouse, click on a node, hold the Shift and the Control keys and don't release them now,
 move this node to the destination node, release the mouse button (and now you may also release the keys, but not earlier), 
-and there is your link.
+and there is your link. -->
+<ol>
+<li>Go to the source node. </li>
+<li>Mark it with the mouse. </li>
+<li>Press the left mouse button. </li>
+<li>Hold this button. </li>
+<li>Press Ctrl+Shift buttons. </li>
+<li>Continue to hold all these buttons.</li>
+<li>Go to the destination node. </li>
+<li>Release the mouse button, first. </li>
+<li>Then release the keybord buttons. </li>
+<li>You have your link.</li>
+</ol>
 
 <a name="faqU_2"><h3>How can I embed images into freemind?</h3></a>
 This is contained in a context menu using right click (or whatever this is on a MAC) on a node. Or type the following:<p>
-&lt;html&gt;&lt;img src=&quot;image.jpg&quot;&gt; <p> where image.jpg is the reference to an image.
+&lt;html&gt;&lt;img src=&quot;image.jpg&quot;&gt;&lt;/html&gt; <p> where image.jpg is the reference to an image.
 
 <!-- next section -->
 <a name="faqC_0"><h2>Customization</h2></a> 
@@ -84,11 +96,13 @@ As an example, under Windows 2000, the file is normally in:
 </ul>
 
 <a name="faqP_0"><h2>Common Problems</h2></a> 
+<!-- Not necessary any more.
 <a name="faqD_1"><h3>Cannot open the Documentation in the Help menu</h3></a> 
 The path doc/maps/freemind.mm is not found. This is due to your own user.properties file which contains the wrong path
 from the last version 0.6.7 of freemind. Yust delete the entry <b>docmapurl = ./doc/freemind.mm</b> from the user.properties.
+-->
 
-<a name="faqD_1"><h3>If there are more than one link in the same area, I cannot change the properties of the link</h3></a> 
+<a name="faqP_0"><h3>If there are more than one link in the same area, I cannot change the properties of the link</h3></a> 
 The reason is that right clicking these links, the first link is taken that intersects a rectangle around the cursor. 
 To get the other link(s), you have to find a place without other interfering links or you have to fold other links, such that they do not disturb. 
 
@@ -111,6 +125,21 @@ Thanks to Bob Alexander, we have a <a href="docs/Using CVS via Eclipse/index.htm
 But remember that it is difficult to change directory and file names under CVS. Moreover, it not easy to remove files completely.
 So, take care checking files in. The project manager thanks a lot.
 
+<a name="faqD_4"><h3>What do I need to do to become a developer?</h3></a> 
+
+Due to project reasons, we cannot make you a developer with CVS access of FreeMind directly. You have to follow the following steps:
+<ul>
+<li>Generate a Sourceforge account.</li>
+
+<li>Then, start to discuss the change/feature/bug in our <a href="https://sourceforge.net/forum/forum.php?forum_id=22101"> open discussion forum</a>. </li>
+
+<li>If the topic is discussed and hopefully accepted, start to change the actual CVS code (see on this page, how to compile Freemind from CVS).</li>
+
+<li>At an early stage of your implementation (and testing), put a version into the patch section of sourceforge and/or send it directly to the current project manager. As this is an open project it may be the case that you have to wait a little time for the first responses, but you should get support, comments and help from the project members soon. </li>
+
+<li>After having successfully developed and integrated some items, you get the developer rights at the sourceforge page to continue our good work. But this should not change the steps described above.</li>
+
+</ul>
 
 </td>
 </tr></table>

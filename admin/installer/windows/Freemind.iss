@@ -8,6 +8,7 @@
 ;****************************************************************************
 ;* Andrew J. Iggleden (AJI) 8/12/2003 - Initial Release
 ;* Andrew J. Iggleden (AJI) 20/12/2003 - Version 0.7.0
+;* Christian Foltin   (FC ) 10/01/2004 - Version 0.7.1
 ;****************************************************************************
 
 [Files]
@@ -44,7 +45,7 @@ external 'isxbb_KillTimer@files:isxbb.dll stdcall';
 
 [Setup]
 AppName=FreeMind
-AppVerName=FreeMind 0.7.0
+AppVerName=FreeMind 0.7.1
 AppPublisherURL=http://freemind.sourceforge.net
 AppSupportURL=http://freemind.sourceforge.net
 AppUpdatesURL=http://freemind.sourceforge.net
@@ -57,7 +58,7 @@ WindowVisible=true
 
 AppCopyright=Copyright © 2003
 ;AppCopyright=Copyright © {code:InstallationDate}
-AppVersion=0.7.0
+AppVersion=0.7.1
 InfoAfterFile=after.txt
 InfoBeforeFile=before.txt
 PrivilegesRequired=admin
