@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.12.15 2004-10-17 21:22:55 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.12.16 2004-10-18 05:46:01 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -105,6 +105,21 @@ public abstract class NodeAdapter implements MindMapNode {
 		activatedHooks = new HashSet();
 		if(logger == null)
 			logger = frame.getLogger(this.getClass().getName());
+    }
+
+    /**
+     *
+     */
+
+    public String getText() {
+        return toString();
+    }
+    /**
+     *
+     */
+
+    public void setText(String text) {
+        setUserObject(text);
     }
 
     public String getLink() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.12.12 2004-10-17 21:22:55 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.12.13 2004-10-18 05:46:01 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -42,6 +42,9 @@ public interface MindMapNode extends MutableTreeNode {
     public static final String STYLE_BUBBLE = "bubble";
     public static final String STYLE_FORK = "fork";
 	
+    String getText();
+    void setText(String text);
+    
 	/**
 	 * @return returns the unique id of the node. It is generated using the LinkRegistry.
 	 */

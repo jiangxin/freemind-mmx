@@ -15,6 +15,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.StringTokenizer;
 
+import javax.swing.JOptionPane;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -86,7 +87,12 @@ public class ExportWithXSLT extends ExportHook {
             // copy files from the resources to the file system:
             if(Tools.safeEquals(getResourceString("create_dir"), "true")) {
                 String directoryName = saveFile.getAbsolutePath()+"_files";
-                boolean success = (new File(directoryName)).mkdir();
+                boolean success = true;
+                File dir = new File(directoryName);
+                // create directory, if not exists:
+                if (!dir.exists()) {
+                    success = dir.mkdir();
+                }
                 if(success) {
                     String files = getResourceString("files_to_copy");
                     String filePrefix = getResourceString("file_prefix");
@@ -95,9 +101,14 @@ public class ExportWithXSLT extends ExportHook {
                         String next = tokenizer.nextToken();
                         copyFromResource(filePrefix, next, directoryName); 
                     }
+                } else {
+                    JOptionPane.showMessageDialog(null, getResourceString("error_creating_directory"), "Freemind", JOptionPane.ERROR_MESSAGE);
                 }
             }
-        } catch (IOException e) {
+            if(Tools.safeEquals(getResourceString("load_file"), "true")) {
+                getController().getFrame().openDocument(saveFile.toURL());
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
