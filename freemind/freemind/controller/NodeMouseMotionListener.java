@@ -16,24 +16,20 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.15.10.3 2004-10-17 13:01:07 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.15.10.4 2004-10-24 06:54:00 christianfoltin Exp $*/
 
 package freemind.controller;
 
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
-import java.awt.Point;
 import java.awt.geom.Point2D;
-import java.util.TimerTask;
 import java.util.Timer;
-import freemind.view.mindmapview.NodeView;
-import freemind.main.Tools;
+import java.util.TimerTask;
 
-// 
-import java.lang.Integer;
+import freemind.main.Tools;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * The MouseMotionListener which belongs to every

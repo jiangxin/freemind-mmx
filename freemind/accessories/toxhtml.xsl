@@ -30,7 +30,7 @@ Output is valid (possibly apart HTML entered by user in Freemind).
             omit-xml-declaration="no"
 />
 <!-- fc, 17.10.2004: The following parameter is set by freemind. -->
-<xsl:param name="destination_dir">.</xsl:param>
+<xsl:param name="destination_dir">./</xsl:param>
 <xsl:strip-space elements="*"/>
 <!-- note! nonempty links are required for opera! (tested with opera 7).
      #160 is non-breaking space.  / mn, 11.12.2003 

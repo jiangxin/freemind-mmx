@@ -13,7 +13,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 import javax.xml.transform.Result;
@@ -26,9 +28,12 @@ import javax.xml.transform.stream.StreamSource;
 import accessories.plugins.util.xslt.ExportDialog;
 import freemind.extensions.ExportHook;
 import freemind.main.Tools;
+import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
+import freemind.modes.actions.IconAction;
+import freemind.modes.mindmapmode.MindMapController;
 /**
  * @author foltin
  *
@@ -100,6 +105,24 @@ public class ExportWithXSLT extends ExportHook {
                     while(tokenizer.hasMoreTokens()) {
                         String next = tokenizer.nextToken();
                         copyFromResource(filePrefix, next, directoryName); 
+                    }
+                    // copy icons?
+                    if(Tools.safeEquals(getResourceString("copy_icons"),"true")) {
+                        String directoryName2 = directoryName + File.separatorChar + "icons";
+                        boolean success2 = true;
+                        File dir2 = new File(directoryName2);
+                        // create directory, if not exists:
+                        if (!dir2.exists()) {
+                            success2 = dir2.mkdir();
+                        }
+                        if(success2) {
+	                        Vector iconNames = MindIcon.getAllIconNames();
+	                        for ( int i = 0 ; i < iconNames.size(); ++i ) {
+	                            String iconName = ((String) iconNames.get(i));
+	                            MindIcon myIcon     = new MindIcon(iconName);
+	                            copyFromResource(MindIcon.getIconsPath(), myIcon.getIconBaseFileName(), directoryName2); 
+	                        }
+                        }
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, getResourceString("error_creating_directory"), "Freemind", JOptionPane.ERROR_MESSAGE);

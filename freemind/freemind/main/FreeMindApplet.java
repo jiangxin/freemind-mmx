@@ -16,26 +16,33 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.10.5 2004-05-27 07:09:11 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.10.6 2004-10-24 06:54:00 christianfoltin Exp $*/
 
 package freemind.main;
 
-import freemind.view.mindmapview.MapView;
-import freemind.controller.MenuBar;
-import freemind.controller.Controller;
-import freemind.extensions.HookFactory;
-
-import java.io.InputStream;
-import java.io.File;
-import java.net.URL;
-import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.PropertyResourceBundle;
-import java.util.Enumeration;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Cursor;
-import javax.swing.*;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
+
+import javax.swing.JApplet;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+import freemind.controller.Controller;
+import freemind.controller.MenuBar;
+import freemind.extensions.HookFactory;
+import freemind.view.mindmapview.MapView;
 
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 

@@ -5,7 +5,6 @@
 	<property name="dist" value="../bin/dist" />
 	<property name="dist_macos" value="../bin/dist_macos" />	
     <property name="FM.jar" value="${dist}/lib/freemind.jar"/>
-    <property name="jython.jar" value="lib/jython.jar"/>
 	<property name="post" value="../post" />
 	<property name="debug" value="on" />
 	<property name="build.compiler" value="modern" />
@@ -98,8 +97,8 @@
 	    <!-- end build generated files -->
 		<javac	srcdir="${src}"
 			destdir="${build}"
-			classpath="${src}/${jython.jar}:${classpath}"
-			debug="${debug}">
+			classpath="${classpath}"
+			debug="${debug}"> 
 	      <exclude name="${gen.dir}/**" />
 	      <exclude name="plugins/**" />
 			</javac>
@@ -285,7 +284,6 @@
        <pathelement path="${xml}"/>
        <pathelement path="${jaxb}"/>
        <pathelement location="${FM.jar}"/>
-       <pathelement location="${dist}/${jython.jar}"/>
     </classpath>
     </java>
   </target>

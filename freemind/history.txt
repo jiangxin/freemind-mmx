@@ -78,6 +78,7 @@ Changes made in Freemind 0.8.0:
 
 * Export to image reactivated. Export to clipboard added but not tested.
 * Export via XSLT revised. New HTML export added (java script version from Miika Nurminen, 12.7.2004. Thanks. 
+* New HTML export added from Markus Brueckner. Thanks
 
 Changes made in Freemind 0.7.2:
 ===============================

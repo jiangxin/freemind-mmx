@@ -25,4 +25,20 @@
 		<plugin_property name="file_prefix" value="accessories/"/>
 		<plugin_property name="load_file" value="true"/>
 	</plugin_action>
+	<plugin_action 
+		name="Export to XHTML (next version, with clouds and links)" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="accessories/plugins/ExportWithXSLT_HTML3.properties" 
+		class_name="accessories.plugins.ExportWithXSLT">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/file/export/html/exportHTML_III"/>
+		<plugin_property name="file_type" value="html"/>
+		<plugin_property name="file_description" value="Webside"/>
+		<plugin_property name="xslt_file" value="accessories/freemind2html.xsl"/>
+		<plugin_property name="create_dir" value="true"/>
+		<plugin_property name="files_to_copy" value="freemind2html.css,freemind2html.js,hide.png,leaf.png,show.png,ilink.png"/>
+		<plugin_property name="file_prefix" value="accessories/"/>
+		<plugin_property name="copy_icons" value="true"/>
+		<plugin_property name="load_file" value="true"/>
+	</plugin_action>
 </plugin>
