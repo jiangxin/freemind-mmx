@@ -16,6 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+/*$Id: MindMapLayout.java,v 1.2 2000-08-11 10:22:38 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
