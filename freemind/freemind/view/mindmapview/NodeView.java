@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27 2004-01-25 16:41:28 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.1 2004-10-17 20:01:08 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.main.FreeMind;
 import freemind.main.Tools;
+import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;//This should not be done.
 import freemind.modes.MindIcon;
@@ -49,9 +50,11 @@ public abstract class NodeView extends JLabel {
     protected EdgeView edge;
     protected final static Color selectedColor = new Color(210,210,210); //Color.lightGray; //the Color of the Rectangle of a selected Node
     protected final static Color dragColor = Color.lightGray; //the Color of appearing GradientBox on drag over
-    protected int treeHeight;
+	protected int treeHeight = 0;
+	protected int treeWidth = 0;
+	protected int treeShift = 0;
     private boolean left = true; //is the node left of root?
-    int relYPos;//the relative Y Position to it's parent
+    int relYPos = 0;//the relative Y Position to it's parent
     private boolean isLong = false;
 
     public final static int DRAGGED_OVER_NO = 0;
@@ -74,7 +77,7 @@ public abstract class NodeView extends JLabel {
 
     public final int LEFT_WIDTH_OVERHEAD = 0;
     public final int LEFT_HEIGHT_OVERHEAD = 0;
-
+    
     //
     // Constructors
     //
@@ -126,8 +129,10 @@ public abstract class NodeView extends JLabel {
 	    newView = new RootNodeView( model, map );
 	} else if (model.getStyle().equals(MindMapNode.STYLE_FORK) ) {
 	    newView = new ForkNodeView( model, map );
+//		newView = new BubbleNodeView( model, map );
 	} else if (model.getStyle().equals(MindMapNode.STYLE_BUBBLE) ) {
-	    newView = new BubbleNodeView( model, map );
+//		newView = new ForkNodeView( model, map );
+		newView = new BubbleNodeView( model, map );
 	} else {
 	    System.err.println("Tried to create a NodeView of unknown Style.");
 	    newView = new ForkNodeView(model, map);
@@ -189,16 +194,30 @@ public abstract class NodeView extends JLabel {
     }
 
     /** Returns the coordinates occupied by the node and its children as a vector of four point per node.*/
-    public void getCoordinates(LinkedList inList, int additionalDistanceForConvexHull) {
-        inList.addLast(new Point( -additionalDistanceForConvexHull + getX()             ,  -additionalDistanceForConvexHull + getY()              ));
-        inList.addLast(new Point( -additionalDistanceForConvexHull + getX()             ,   additionalDistanceForConvexHull + getY() + getHeight()));
-        inList.addLast(new Point(  additionalDistanceForConvexHull + getX() + getWidth(),   additionalDistanceForConvexHull + getY() + getHeight()));
-        inList.addLast(new Point(  additionalDistanceForConvexHull + getX() + getWidth(),  -additionalDistanceForConvexHull + getY()              ));
+	public void getCoordinates(LinkedList inList) {
+		getCoordinates(inList, 0, false);
+	}
+	private void getCoordinates(LinkedList inList, int additionalDistanceForConvexHull, boolean byChildren) {
+		MindMapCloud cloud = getModel().getCloud();
+		CloudView cloudView = null;
+
+		// consider existing clouds of children
+		if (byChildren && cloud != null){
+			cloudView = new CloudView(cloud, this);
+			additionalDistanceForConvexHull  += cloudView.getAdditionalHeigth() / 2; 
+		}
+        inList.addLast(new Point( -additionalDistanceForConvexHull + getExtendedX()             ,  -additionalDistanceForConvexHull + getExtendedY()              ));
+        inList.addLast(new Point( -additionalDistanceForConvexHull + getExtendedX()             ,   additionalDistanceForConvexHull + getExtendedY() + getExtendedHeight()));
+        inList.addLast(new Point(  additionalDistanceForConvexHull + getExtendedX() + getExtendedWidth(),   additionalDistanceForConvexHull + getExtendedY() + getExtendedHeight()));
+        inList.addLast(new Point(  additionalDistanceForConvexHull + getExtendedX() + getExtendedWidth(),  -additionalDistanceForConvexHull + getExtendedY()              ));
+		
+		if (cloudView != null){
+		}
         LinkedList childrenViews = getChildrenViews();
         ListIterator children_it = childrenViews.listIterator();
         while(children_it.hasNext()) {
             NodeView child = (NodeView)children_it.next();
-            child.getCoordinates(inList, additionalDistanceForConvexHull);
+	        child.getCoordinates(inList, additionalDistanceForConvexHull, true);
         }
     }   
 
@@ -210,13 +229,55 @@ public abstract class NodeView extends JLabel {
         } else {
             return super.getPreferredSize();
         }
-    }	
+    }
+    /** get width including folding symbol*/	
+	public int getExtendedWidth()
+	{
+		return getWidth();
+	}
+  
+	/** get height including folding symbol*/	
+	public int getExtendedHeight()
+	{
+		return getHeight();
+	}
+  
+	/** get x coordinate including folding symbol*/	
+	public int getExtendedX()
+	{
+		return getX();
+	}
+  
+	/** get y coordinate including folding symbol*/	
+	public int getExtendedY()
+	{
+		return getY();
+	}
 
+	/** set x and y coordinate including folding symbol*/	
+	public void setExtendedLocation(int x,	int y){
+		setLocation(x, y);
+	}
+  
+	/** set size including folding symbol*/	
+	public void setExtendedSize(int width,	int height){
+		setSize(width, height);
+	}
+	  
+	/** set bounds including folding symbol*/	
+	public void setExtendedBounds(int x,	int y,	int width,	int height){
+		setExtendedLocation(x, y);
+		setExtendedSize(width, height);
+	}
 
    public void requestFocus(){
       map.getController().getMode().getModeController().anotherNodeSelected(getModel());
       super. requestFocus();
    }
+
+   /** draw folding symbol*/	
+	public void paintFoldingMark(Graphics2D g){ 
+	}
 
     public void paint(Graphics graphics) {
         // background color starts here, fc. 9.11.2003: todo
@@ -257,12 +318,26 @@ public abstract class NodeView extends JLabel {
     // get/set methods
     //
 
+    /**
+    * Calculates the tree height increment because of the clouds.
+    */
+	public int getAdditionalCloudHeigth() {
+		MindMapCloud cloud = getModel().getCloud();
+		if( cloud!= null) { 
+			CloudView cloudView = new CloudView(cloud, this);
+			return cloudView.getAdditionalHeigth();
+		} else {           
+			return 0;
+		}
+	}
+
     int getTreeHeight() {
 	return treeHeight;
     }
 
     void setTreeHeight(int treeHeight) {
 	this.treeHeight = treeHeight;
+
     }
 
     protected boolean isSelected() {
@@ -703,5 +778,36 @@ public abstract class NodeView extends JLabel {
 //          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); 
 
    }
+
+    /**
+     * @return the shift of the tree root node
+     * relative to the middle of the tree
+     * because of the light shift of the children nodes
+     */
+    public int getTreeShift() {
+        return treeShift;
+    }
+
+	/**
+	 * sets the shift of the tree root node
+	 * relative to the middle of the tree
+	 * because of the light shift of the children nodes.
+	 */
+    public void setTreeShift(int i) {
+        treeShift = i;
+    }
+
+    public int getTreeWidth() {
+        return treeWidth;
+    }
+
+    public void setTreeWidth(int i) {
+        treeWidth = i;
+    }
+
+    public int getZoomedFoldingSymbolHalfWidth() {
+    	int preferredFoldingSymbolHalfWidth = map.getZoomedFoldingSymbolHalfWidth();
+        return Math.min(preferredFoldingSymbolHalfWidth, super.getPreferredSize().height / 2);
+    }
 
 }

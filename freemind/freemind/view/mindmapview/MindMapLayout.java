@@ -16,11 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15 2004-01-10 18:22:25 christianfoltin Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.1 2004-10-17 20:01:08 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.main.FreeMindMain;
+import freemind.modes.MindMapCloud;
+
+import java.awt.IllegalComponentStateException;
 import java.awt.LayoutManager;
 import java.awt.Container;
 import java.awt.Component;
@@ -28,7 +31,8 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.lang.Math;
+import java.util.NoSuchElementException;
+
 import javax.swing.JLabel;
 
 /**
@@ -36,24 +40,38 @@ import javax.swing.JLabel;
  */
 public class MindMapLayout implements LayoutManager {
 
-    private final int BORDER = 30;//width of the border around the map.
-    private final int HGAP_BASE = 20;//width of the horizontal gap that contains the edges
-    private final int VGAP = 3;//height of the vertical gap between nodes
+    private final static int BORDER = 30;//width of the border around the map.
+    private final static int HGAP_BASE = 20;//width of the horizontal gap that contains the edges
+	private final static int VGAP = 3;//height of the vertical gap between nodes
+	private final static int SHIFT = 2;//height of the vertical shift between node and its closest child
+	// minimal width for input field of leaf or folded node (PN)
+	
+	// the MINIMAL_LEAF_WIDTH is reserved by calculation of the map width
+	public final static int MINIMAL_LEAF_WIDTH = 150;
+	public final static int MINIMAL_WIDTH = 50;
+
+
     private MapView map;
     private int ySize;
-    private int totalXSize;
+    
+    // Call xSize and ySize in the same manner
+    private int xSize;
+    
+    // save root node coordinates
+	private int rootX = 0;
+	private int rootY = 0;
 
     public MindMapLayout(MapView map) {
         this.map = map;
-        ySize = Integer.parseInt(getFrame().getProperty("mapysize"));
-        totalXSize = Integer.parseInt(getFrame().getProperty("mapxsize")); }    
+    // properties "mapxsize" and "mapysize" are ignored
+    }
 
     public void addLayoutComponent(String name, Component comp){ }
 
     public void removeLayoutComponent(Component comp) {  }
 
     public void layoutContainer(Container parent) {
-       layout( map.getRoot() ); }
+       layout(); }
    
 
 
@@ -64,12 +82,35 @@ public class MindMapLayout implements LayoutManager {
     //
 
     /**
-     * Make abolute positioning for all nodes providing that relative and heights
-     * are up to date.
+	* placeNode throws this exception 
+	* if the map size changes require new layout calculations 
      */
+	private class NewLayoutIterationNeeded extends Exception {
+	}
 
-    public void layout() {
-       layout(map.getRoot()); }
+    /**
+     * This funcion resizes the map and do the layout.
+     * All tree heights, widths and shifts should be already calculated.
+     */
+	public void layout() {
+		NodeView selected = map.getSelected();
+		boolean holdSelected =  (selected != null 
+								&& selected.getX() != 0 && selected.getY() != 0);
+		int oldRootX = getRoot().getX();
+		int oldRootY = holdSelected ? selected.getY() : getRoot().getY();
+		resizeMap(getRoot().getTreeWidth(), getRoot().getTreeHeight());
+		calcNewRootCoord();
+        layout(map.getRoot());
+		try{
+//			getRoot().getLocationOnScreen();
+			int rootX = getRoot().getX();
+			int rootY = holdSelected ? selected.getY() : getRoot().getY();
+			getMapView().scrollBy(rootX - oldRootX, rootY - oldRootY, true );
+		}
+		catch(IllegalComponentStateException e){
+		}
+
+	}
 
     /**
      * This places the node's subtree if the relative
@@ -95,7 +136,7 @@ public class MindMapLayout implements LayoutManager {
         
         placeNode(node, x, node.relYPos);
 
-        //Recursion
+        //Iterations
         for ( ListIterator e = node.getChildrenViews().listIterator(); e.hasNext(); ) {
            layout( (NodeView)e.next() ); }
     }
@@ -116,30 +157,15 @@ public class MindMapLayout implements LayoutManager {
 
         // relativeX, relativeY - already calculated coordinates of node relative to its parent.;
         if (node.isRoot()) {
-            node.setBounds(totalXSize / 2 - node.getPreferredSize().width/2,
-                           ySize / 2      - node.getPreferredSize().height/2,
+            node.setExtendedBounds(getRootX(),
+                           getRootY(),
                            node.getPreferredSize().width,
                            node.getPreferredSize().height); }
         else {
             //place the node-label
-            int x = node.getParentView().getLocation().x + relativeX;
-            int y = node.getParentView().getLocation().y + relativeY;
-
-            //check if the map is to small
-            if ( x < 0 || x + node.getPreferredSize().width > map.getSize().width ) {
-                if (node.isLeft()) {
-                   resizeMap(x); }
-                else {
-                  resizeMap(x + node.getPreferredSize().width); }
-                  // Daniel: why do we return??
-                  // Petr: perhaps: extension to the right needs no move 
-                  //       of the already placed objects to place the new node.
-                  //       The boundary is just bigger enough and that's it.
-                  //       Perhaps the following code makes the move...
-                  return; 
-                }
-
-            node.setBounds(x, y, node.getPreferredSize().width, node.getPreferredSize().height);
+            int x = node.getParentView().getExtendedX() + relativeX;
+            int y = node.getParentView().getExtendedY() + relativeY;
+            node.setExtendedBounds(x, y, node.getPreferredSize().width, node.getPreferredSize().height);
             
             // It seems that there is a piece of coding ready for having labelled edges.
             // Having labelled edges is a nice thing, as sure as hell, but we do not
@@ -169,28 +195,100 @@ public class MindMapLayout implements LayoutManager {
         }
     }
 
+	/** returns the y coordinate of the root node. */
+    private int getRootY() {
+		return rootY;
+    }
+
+	/** returns the x coordinate of the root node. */
+    private int getRootX() {
+		return rootX;
+    }
+
+	private void calcNewRootCoord() {
+		int middleX = (getXSize() - getRoot().getPreferredSize().width)/ 2; 
+		rootX = calcXBorderSize()/2 + getRoot().getLeftTreeWidth();
+
+		if (middleX > rootX){
+			rootX = middleX;
+			int freeWidth = getXSize() + getRoot().getLeftTreeWidth()
+			 - rootX - getRoot().getTreeWidth() - calcXBorderSize()/2;				
+			if (freeWidth < 0){
+				rootX += freeWidth;
+			}
+		}
+		
+		rootY = (getYSize() - getRoot().getPreferredSize().height)/ 2;
+
+		int freeHeigth = getYSize() - getRoot().getTreeHeight() - getRoot().getTreeShift() - calcYBorderSize();
+		if (freeHeigth < 0){
+			rootY -= freeHeigth;
+		}
+		
+	}
 
     /**
      *
      */
-    public void resizeMap( int outmostX ) {
+        private void resizeMap(int width, int height) {
         // (public to reuse from MapView.scrollNodeToVisible  ...)
 
         // In principle, resize can be caused by:
         // 1) Unfold
         // 2) Insertion of a node
         // 3) Modification of a node in an enlarging way
+            boolean bResized = false;
+        	int oldXSize = getXSize();
+        	int oldYSize = getYSize();
+        
+			int minXSize = width + calcXBorderSize();
+            int minYSize = height  +  calcYBorderSize();
 
-        int oldTotalXSize = totalXSize;
-        totalXSize = BORDER*2 + (outmostX < 0 ? totalXSize + -outmostX  : outmostX );
+         	if (minXSize != getXSize()) {
+        		setXSize(minXSize);
+        		bResized = true;
+        	}
 
-        getMapView().setSize(totalXSize, ySize);
-        // Scroll by the amount, by which the Root node was shifted
-        getMapView().scrollBy((totalXSize - oldTotalXSize) / 2 , 0);
+        	if (minYSize != getYSize()) {
+        		setYSize(minYSize);
+        		bResized = true;
+        	}
 
-        layout(map.getRoot());
-        //      getMap().validate();
+        	if (bResized){
+        		getMapView().setSize(getXSize(), getYSize());
+        	}
     }
+
+    private int calcYBorderSize() {
+        int yBorderSize;
+        	{
+        	Dimension visibleSize = map.getViewportSize();
+        	if (visibleSize != null){
+        		yBorderSize = Math.max(visibleSize.height, 2 *  BORDER);
+        	}
+        	else{
+        		yBorderSize = 2 *  BORDER;
+        		
+        	}
+        }
+        return yBorderSize;
+    }
+
+    private int calcXBorderSize() {
+        int xBorderSize;
+        {
+        	Dimension visibleSize = map.getViewportSize();
+        	if (visibleSize != null){
+        		xBorderSize = Math.max(visibleSize.width, 2 *(BORDER + MINIMAL_LEAF_WIDTH));
+        	}
+        	else{
+        		xBorderSize = 2 *(BORDER + MINIMAL_LEAF_WIDTH);
+        		
+        	}
+        }
+        return xBorderSize;
+    }
+
 
     void updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(NodeView node) {
        updateTreeHeightsAndRelativeYOfDescendants(node);       
@@ -203,12 +301,11 @@ public class MindMapLayout implements LayoutManager {
      */
 
     void updateTreeHeightsAndRelativeYOfAncestors(NodeView node) {
-       if (node.isRoot()) {
-          updateRelativeYOfChildren(node); }
-       else {
-          updateTreeHeightFromChildren(node);
+		updateTreeHeightWidthShiftFromChildren(node);
           updateRelativeYOfChildren(node);
-          updateTreeHeightsAndRelativeYOfAncestors(node.getParentView()); }}
+       if ( !node.isRoot()){
+          updateTreeHeightsAndRelativeYOfAncestors(node.getParentView()); }
+    }
 
     //
     // Relative positioning
@@ -217,68 +314,150 @@ public class MindMapLayout implements LayoutManager {
     // Definiton: relative vertical is either relative Y coord or Treeheight.
 
     void updateTreeHeightsAndRelativeYOfWholeMap() {
-        updateTreeHeightsAndRelativeYOfDescendants(getRoot()); }
+        updateTreeHeightsAndRelativeYOfDescendants(getRoot()); 
+		layout();
+        }
 
    
     void updateTreeHeightsAndRelativeYOfDescendants(NodeView node) {
         for (ListIterator e = node.getChildrenViews().listIterator(); e.hasNext();) {
            updateTreeHeightsAndRelativeYOfDescendants((NodeView)e.next()); }
-        updateTreeHeightFromChildren(node);
+        updateTreeHeightWidthShiftFromChildren(node);
         updateRelativeYOfChildren(node); } // The order of the two lines is irrelevant.
 
     private void updateRelativeYOfChildren(NodeView node) {
        // Current clients: updateTreeHeightsAndRelativePositions, subtreeChanged
         if (node.isRoot()) {
             // Left children
-            int pointer = -(sumOfAlreadyComputedTreeHeights( getRoot().getLeft() ) / 2);
-            for ( ListIterator e = getRoot().getLeft().listIterator(); e.hasNext(); ) {
-                NodeView child = (NodeView)e.next();
-                pointer += (child.getTreeHeight() / 2);
-                child.relYPos = pointer - 2;
-                pointer += (child.getTreeHeight() / 2); } 
-            // Right children
-            pointer = -(sumOfAlreadyComputedTreeHeights( getRoot().getRight() ) / 2);
-            for ( ListIterator e = getRoot().getRight().listIterator(); e.hasNext(); ) {
-                NodeView child = (NodeView)e.next();
-                pointer += (child.getTreeHeight() / 2);
-                child.relYPos = pointer - 2;
-                pointer += (child.getTreeHeight() / 2); }}
-        else {
-            int pointer = (node.getPreferredSize().height - node.getTreeHeight()) / 2;
-            // begin patch dimitri polivaev. Bad hack. Must corrected as soon as possible.
-			if(node.getModel().getCloud() != null)
-			{ 
-                pointer = (int) (pointer + 15 * getMapView().getZoom());
+            int pointer =  (node.getPreferredSize().height - sumOfAlreadyComputedTreeHeights( getRoot().getLeft()))/ 2;
+			if (pointer < 0) {
+			   pointer -= node.getTreeShift(); 
 			}
-            // End bad hack
-             ListIterator it = node.getChildrenViews().listIterator();
+            for ( ListIterator e = getRoot().getLeft().listIterator(); e.hasNext(); ) {
+				pointer = updateRelativeYofChild(pointer, e, node.getTreeShift());
+            } 
+            // Right children
+			pointer = (node.getPreferredSize().height - sumOfAlreadyComputedTreeHeights( getRoot().getRight()))/ 2;
+			if (pointer < 0) {
+				pointer -= node.getTreeShift(); 
+			}
+            for ( ListIterator e = getRoot().getRight().listIterator(); e.hasNext(); ) {
+				pointer = updateRelativeYofChild(pointer, e, node.getTreeShift());
+            }
+        }
+        else {
+			int pointer  = (node.getPreferredSize().height - node.getTreeHeight()) / 2 - node.getTreeShift();
+            ListIterator it = node.getChildrenViews().listIterator();
             while(it.hasNext()) {
-                NodeView child = (NodeView)it.next();
-                child.relYPos = pointer + (child.getTreeHeight() - child.getPreferredSize().height) / 2 - 2;
-                //This point is called twice for every node. Why?
-                pointer += child.getTreeHeight(); }}}
+				pointer = updateRelativeYofChild(pointer, it, node.getTreeShift());
+		}}}
+
+        private int getZoomedShift() {
+            return (int )(SHIFT * getMapView().getZoom());
+        }
+
+        private int updateRelativeYofChild(int pointer, ListIterator e, int parentShift) {
+			int vgap = (int) ( VGAP * getMapView().getZoom());
+               NodeView child = (NodeView)e.next();
+			   int iAdditionalCloudHeigth = child.getAdditionalCloudHeigth();
+                child.relYPos = pointer  
+                + (child.getTreeHeight() + iAdditionalCloudHeigth
+                    - child.getPreferredSize().height                      
+                ) / 2 + child.getTreeShift();
+                return pointer + child.getTreeHeight() + vgap + iAdditionalCloudHeigth; 
+        }
 
     private int sumOfAlreadyComputedTreeHeights( LinkedList v ) {
        if ( v == null || v.size() == 0 ) {
           return 0; }
        int height = 0;
+       int vgap = (int) ( VGAP * getMapView().getZoom());
        for (ListIterator e = v.listIterator(); e.hasNext(); ) {
            NodeView node = (NodeView)e.next();
            if (node != null) {
-              height += node.getTreeHeight(); }}
-       return height; }
+              height += node.getTreeHeight() + vgap + node.getAdditionalCloudHeigth(); }}
+       return height - vgap; }
 
-    protected void updateTreeHeightFromChildren(NodeView node) {
-        int iHeight = Math.max(sumOfAlreadyComputedTreeHeights(node.getChildrenViews()),
-                               node.getPreferredSize().height + VGAP);
-        // begin patch dimitri polivaev. Bad hack. Must corrected as soon as possible.
-        if(node.getModel().getCloud() != null) { 
-            iHeight = (int) (iHeight + 30 * getMapView().getZoom());
-        }
-        // End bad hack
-       node.setTreeHeight(iHeight); 
-    }
+    // renamed from updateTreeHeightAndShiftFromChildren
+    protected void updateTreeHeightWidthShiftFromChildren(NodeView node) {
+    	int sumHeights; 
+		int preferredHeight = node.getPreferredSize().height;
+		int preferredWidth = node.getPreferredSize().width;
+    	int treeHeight;
+    	int treeWidth;
+    	int wholeShift;
+    	if (node.isRoot()){
+    		LinkedList leftNodeViews = getRoot().getLeft();
+			LinkedList rightNodeViews = getRoot().getRight();
+			int heightLeft = sumOfAlreadyComputedTreeHeights(leftNodeViews);
+			int heightRight = sumOfAlreadyComputedTreeHeights(rightNodeViews);
 
+			int widthLeft = calcTreeWidth(leftNodeViews);
+			getRoot().setLeftTreeWidth(widthLeft);
+			int widthRight = calcTreeWidth(rightNodeViews);
+			treeWidth = widthLeft + widthRight + node.getPreferredSize().width;
+
+			if (heightLeft > heightRight){
+				wholeShift = calcShift(leftNodeViews);
+				sumHeights = heightLeft; 
+			}
+			else {
+				wholeShift = calcShift(rightNodeViews);
+				sumHeights = heightRight;
+			}
+    	}
+    	else{
+			LinkedList childrenViews = node.getChildrenViews();
+    		wholeShift = calcShift(childrenViews);
+    		sumHeights = sumOfAlreadyComputedTreeHeights(childrenViews);
+			treeWidth = node.getPreferredSize().width 
+			+ node.getAdditionalCloudHeigth() 
+			+ calcTreeWidth(childrenViews);
+    	}
+
+    	int shift = getZoomedShift();
+    	if(preferredHeight >= sumHeights + shift){
+    		treeHeight = preferredHeight;
+    	}
+    	else {
+			wholeShift += shift;
+    		if (preferredHeight + 2 * wholeShift > sumHeights){
+				treeHeight = preferredHeight + wholeShift + (sumHeights-preferredHeight)/2;
+	    	}
+	    	else {
+	    		treeHeight = sumHeights;
+	    	}
+		}
+		node.setTreeHeight(treeHeight); 
+		node.setTreeWidth(treeWidth); 
+    	node.setTreeShift(wholeShift); }
+
+	private int calcTreeWidth(LinkedList childrenViews) {
+		int treeWidth = 0;
+		for (ListIterator e = childrenViews.listIterator(); e.hasNext(); ) {
+			NodeView childNode = (NodeView)e.next();
+			if (childNode != null) {
+				int childWidth = childNode.getTreeWidth();
+				if(childWidth > treeWidth){
+					treeWidth = childWidth;
+				}
+			}
+		}
+		int hgap = (int) ( HGAP_BASE * getMapView().getZoom());		
+		return treeWidth + hgap;
+	}
+	
+	private int calcShift(LinkedList childrenViews) {
+		int iShift;
+		try{ 
+			NodeView nodeFirstChild = (NodeView)childrenViews.getFirst();
+			iShift = nodeFirstChild.getTreeShift();
+		}
+		catch(NoSuchElementException e){
+			iShift = 0;
+		}
+		return iShift;
+	}
 
     //
     // Get Methods
@@ -299,8 +478,33 @@ public class MindMapLayout implements LayoutManager {
         return new Dimension(200,200); } //For testing Purposes
 
     public Dimension preferredLayoutSize(Container parent) {
-        return new Dimension(totalXSize, ySize); }
+        return new Dimension(getXSize(), getYSize()); }
 
+
+    private int getXSize() {
+        return xSize;
+    }
+
+    /**
+     * @return
+     */
+    private int getYSize() {
+        return ySize;
+    }
+
+    /**
+     * @param i
+     */
+    private void setXSize(int i) {
+        xSize = i;
+    }
+
+    /**
+     * @param i
+     */
+    private void setYSize(int i) {
+        ySize = i;
+    }
 
 }//class MindMapLayout
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapCloud.java,v 1.1 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: MindMapCloud.java,v 1.1.16.1 2004-10-17 20:01:06 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -34,4 +34,18 @@ public interface MindMapCloud extends MindMapLine {
 //     public String toString();
     /** Describes the color of the exterior of the cloud. Normally, this color is derived from the interior color. */
     public Color getExteriorColor();
+	/**  gets iterative level which is required for painting and layout.
+	 *  
+	 *  Cloud iterative level is kept in CloudAdapter object. 
+	 *  It is automatically calculated during the first call 
+	 *  of this Method (delayed initialisation). 
+	 * */
+    public int getIterativeLevel();
+    
+	/**  changes the iterative level.
+	 * 
+	 * When some parent node gets or loses its cloud, 
+	 * it should call this Method, 
+	 * with deltaLevel equal to  1 or -1.*/
+	public void changeIterativeLevel(int deltaLevel);
 }

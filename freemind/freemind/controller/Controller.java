@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40 2004-01-28 20:36:09 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.1 2004-10-17 20:01:04 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -111,7 +111,9 @@ public class Controller {
     Action zoomIn;
     Action zoomOut;
 
-    private static final String[] zooms = {"25%","40%","60%","75%","100%","125%","150%","200%"};
+	// this values better suit at least the test purposes
+    private static final String[] zooms = {"25%","50%","75%","100%","150%","200%","300%","400%"};
+//    private static final String[] zooms = {"25%","40%","60%","75%","100%","125%","150%","200%"};
 
     //
     // Constructors
@@ -184,8 +186,11 @@ public class Controller {
           System.err.println(message);
           JOptionPane.showMessageDialog(null, message, "FreeMind", JOptionPane.WARNING_MESSAGE); }}
 
-    public String getProperty(String property) {
-       return frame.getProperty(property); }
+	public String getProperty(String property) {
+	   return frame.getProperty(property); }
+
+	public int getIntProperty(String property, int defaultValue) {
+	   return frame.getIntProperty(property, defaultValue); }
 
     public void setProperty(String property, String value) {
        frame.setProperty(property, value); }
@@ -602,7 +607,8 @@ public class Controller {
             setMapModule(mapModule);
             addToMapModules(mapModule.toString(), mapModule);
             history.mapChanged(mapModule);
-            updateNavigationActions(); }
+            updateNavigationActions(); 
+            }
 
         public void updateMapModuleName() {
             getMapModules().remove(getMapModule().toString());
@@ -844,11 +850,13 @@ public class Controller {
             printerJob.setPrintable(getView(),pageFormat);
 
             if (!isDlg || printerJob.printDialog()) {
+				getView().preparePrinting();
                 try {
                     printerJob.print();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+				getView().endPrinting();
             }
         }
     }

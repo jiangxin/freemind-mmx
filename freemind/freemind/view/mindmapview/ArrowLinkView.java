@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.8 2004-01-17 23:20:58 christianfoltin Exp $*/
+/*$Id: ArrowLinkView.java,v 1.8.14.1 2004-10-17 20:01:07 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -106,7 +106,7 @@ public class ArrowLinkView {
             p2.translate(100,0);
             targetIsLeft = true;
         } else {
-            p2 = target.getLinkPoint();
+            p2 = target.getInPoint();
             targetIsLeft = target.isLeft();
         }
         // determine point 2 and 3:
@@ -127,7 +127,7 @@ public class ArrowLinkView {
             p4.translate( arrowLinkModel.getEndInclination().x, arrowLinkModel.getEndInclination().y);
         } else {
             // automatic translation in outside direction:
-            p4.translate(((targetIsLeft)?-1:1) * deltax, 0);
+            p4.translate(((targetIsLeft)?1:-1) * deltax, 0);
         }
         //
         if(source == null) {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapMouseMotionListener.java,v 1.7 2003-12-02 22:50:22 christianfoltin Exp $*/
+/*$Id: MapMouseMotionListener.java,v 1.7.16.1 2004-10-17 20:01:05 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -65,7 +65,7 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
     public void mouseDragged(MouseEvent e) {
        // Always try to get mouse to the original position in the Map.
        if (originX >=0) {
-          ((MapView)e.getComponent()).scrollBy(originX - e.getX(), originY - e.getY());
+          ((MapView)e.getComponent()).scrollBy(originX - e.getX(), originY - e.getY(), false);
        // } else { // do the init in the mouse press
        }
     } 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41 2004-02-06 06:04:25 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.1 2004-10-17 20:01:05 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -86,6 +86,7 @@ import freemind.main.ExampleFileFilter;
 import freemind.main.XMLParseException;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
+import freemind.view.mindmapview.MindMapLayout;
 import freemind.view.mindmapview.NodeView;
 
 
@@ -95,6 +96,9 @@ import freemind.view.mindmapview.NodeView;
  * to use for easy editing of your model. Take MindMapController as a sample.
  */
 public abstract class ControllerAdapter implements ModeController {
+
+	private final static int MINIMAL_LEAF_WIDTH = MindMapLayout.MINIMAL_LEAF_WIDTH;
+	private final static int MINIMAL_WIDTH = MindMapLayout.MINIMAL_WIDTH;
 
     Mode mode;
     private int noOfMaps = 0; //The number of currently open maps
@@ -498,11 +502,11 @@ public abstract class ControllerAdapter implements ModeController {
        } else if ((e.getModifiers() & HORIZONTAL_SCROLL_MASK) != 0) {
           for (int i=0; i < SCROLL_SKIPS; i++) {
              ((MapView)e.getComponent()).scrollBy(
-                 SCROLL_SKIP * e.getWheelRotation(), 0); }}
+                 SCROLL_SKIP * e.getWheelRotation(), 0, false); }}
        else {
           for (int i=0; i < SCROLL_SKIPS; i++) {
              ((MapView)e.getComponent()).scrollBy(0, 
-                 SCROLL_SKIP * e.getWheelRotation()); }}
+                 SCROLL_SKIP * e.getWheelRotation(), false); }}
     }
 
     // edit begins with home/end or typing (PN 6.2)
@@ -819,10 +823,6 @@ public abstract class ControllerAdapter implements ModeController {
            xOffset += linkIconWidth * node.getModel().getIcons().size();
            widthAddition -= linkIconWidth; }
         /* fc, 12.10.2003: end buggy method*/
-
-        // minimal width for input field of leaf or folded node (PN)
-        final int MINIMAL_LEAF_WIDTH = 150;
-        final int MINIMAL_WIDTH = 50;
 
         int xSize = node.getWidth() + widthAddition;
         int xExtraWidth = 0;

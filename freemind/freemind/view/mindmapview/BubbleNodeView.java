@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.14 2004-01-10 18:22:25 christianfoltin Exp $*/
+/*$Id: BubbleNodeView.java,v 1.14.14.1 2004-10-17 20:01:07 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -51,16 +51,77 @@ public class BubbleNodeView extends NodeView {
 
 
     public Dimension getPreferredSize() {
-	return new Dimension(super.getPreferredSize().width+2*LEFT_WIDTH_OVERHEAD,
-                             super.getPreferredSize().height+4);
+    	Dimension result = new Dimension(super.getPreferredSize().width+2*LEFT_WIDTH_OVERHEAD,
+			super.getPreferredSize().height+4); 
+    	if (getModel().isFolded())
+			result.width +=  getZoomedFoldingSymbolHalfWidth() * 2 ;
+		return result; 
     }	  
 
+	public void setExtendedLocation(int x,	int y){
+		if(getModel().isFolded() && isLeft()){
+				x += getZoomedFoldingSymbolHalfWidth() * 2;
+		}
+		setLocation(x, y);
+	}
+  
+	public void setExtendedSize(int width,	int height){
+		if(getModel().isFolded()){
+			width -= getZoomedFoldingSymbolHalfWidth() * 2;
+		}
+		setSize(width, height);
+	}
+	
+	public int getExtendedWidth()
+	{
+		int width = getWidth();
+		if(getModel().isFolded()){
+			width += getZoomedFoldingSymbolHalfWidth() * 2;
+		}
+		return width;
+	}
+  
+	public int getExtendedX()
+	{
+		int x = getX();
+		if(getModel().isFolded() && isLeft()){
+				x -= getZoomedFoldingSymbolHalfWidth() * 2;
+		}
+		return x;
+	}
+  
     public void paintSelected(Graphics2D graphics, Dimension size) {
        if( this.isSelected() ) {
           graphics.setColor(selectedColor);
           graphics.fillRoundRect(0,0,size.width-1,size.height-1,10,10);
        }
     }
+
+	public void paintFoldingMark(Graphics2D g){ 
+		if(getModel().isFolded()) {
+            int height = getSize().height/2;
+			// implement a maximum:
+			final int MAX_HEIGHT = 50;
+			if(height > MAX_HEIGHT)
+				height = MAX_HEIGHT;
+
+			Point ovalStartPoint = getOutPoint(); 
+			if (isLeft())
+			{
+				ovalStartPoint.translate(- getZoomedFoldingSymbolHalfWidth() * 2 , - getZoomedFoldingSymbolHalfWidth());
+			}
+			else
+			{
+				ovalStartPoint.translate(0 , - getZoomedFoldingSymbolHalfWidth());
+			}
+			Color actualColor = g.getColor();
+			g.setColor(model.getBackgroundColor());
+			g.fillOval(ovalStartPoint.x + 1 , ovalStartPoint.y + 1, getZoomedFoldingSymbolHalfWidth() * 2 - 2, getZoomedFoldingSymbolHalfWidth() * 2 - 2);
+			g.setColor(actualColor);
+			g.drawOval(ovalStartPoint.x , ovalStartPoint.y , getZoomedFoldingSymbolHalfWidth() * 2, getZoomedFoldingSymbolHalfWidth() * 2);
+		}
+        
+	}
 
     /**
      * Paints the node

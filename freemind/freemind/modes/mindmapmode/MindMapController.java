@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35 2004-02-06 06:04:25 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.1 2004-10-17 20:01:07 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -93,8 +93,11 @@ public class MindMapController extends ControllerAdapter {
     Action find = new FindAction();
     Action findNext = new FindNextAction();
 
-    Action fork = new ForkAction();
-    Action bubble = new BubbleAction();
+    Action forkStyle = new NodeViewStyleAction(MindMapNode.STYLE_FORK);
+	Action bubbleStyle = new NodeViewStyleAction(MindMapNode.STYLE_BUBBLE);
+	Action combinedStyle = new NodeViewStyleAction(MindMapNode.STYLE_COMBINED);
+	Action parentStyle = new NodeViewStyleAction(MindMapNode.STYLE_AS_PARENT);
+	
     Action nodeColor = new NodeColorAction();
     Action nodeColorBlend = new NodeGeneralAction ("blend_color", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
@@ -132,7 +135,10 @@ public class MindMapController extends ControllerAdapter {
                    lastCloud = node.getCloud();
                    nodeOfLastCloud = node;
                }
+            // the root node must not have a cloud
+			if (node.isRoot() == false) {
                map.setCloud(node); 
+			} 
                // restore color:
                if((node.getCloud() != null) && (node == nodeOfLastCloud)) {
                    node.setCloud(lastCloud);
@@ -378,8 +384,11 @@ public class MindMapController extends ControllerAdapter {
 	JMenu nodeStyle = new JMenu(getText("style"));
 	nodeMenu.add(nodeStyle);
 
-	add(nodeStyle, fork);
-	add(nodeStyle, bubble);
+	add(nodeStyle, forkStyle);
+	add(nodeStyle, bubbleStyle);
+	add(nodeStyle, combinedStyle);
+	add(nodeStyle, parentStyle);
+	
     // and the clouds:
 	nodeStyle.addSeparator();
 	add(nodeStyle, cloud, "keystroke_node_toggle_cloud");
@@ -525,8 +534,8 @@ public class MindMapController extends ControllerAdapter {
 	for (int i=0; i<edgeWidths.length; ++i) { 
 		edgeWidths[i].setEnabled(enabled);
 	}
-	fork.setEnabled(enabled);
-	bubble.setEnabled(enabled);
+	forkStyle.setEnabled(enabled);
+	bubbleStyle.setEnabled(enabled);
 	for (int i=0; i<edgeStyles.length; ++i) { 
 		edgeStyles[i].setEnabled(enabled);
 	}
@@ -904,19 +913,13 @@ public class MindMapController extends ControllerAdapter {
 	public void actionPerformed(ActionEvent e) {
            loadURL(); }}
 
-    private class ForkAction extends AbstractAction {
-       ForkAction() { super(getText(MindMapNode.STYLE_FORK)); }
+    private class NodeViewStyleAction extends AbstractAction {
+       NodeViewStyleAction(final String style) { super(getText(style)); m_style = style; }
        public void actionPerformed(ActionEvent e) {
           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
              MindMapNodeModel selected = (MindMapNodeModel)it.next();
-             getModel().setNodeStyle(selected, MindMapNode.STYLE_FORK); }}}
-
-    private class BubbleAction extends AbstractAction {
-	BubbleAction() { super(getText(MindMapNode.STYLE_BUBBLE)); }
-       public void actionPerformed(ActionEvent e) {
-          for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-             MindMapNodeModel selected = (MindMapNodeModel)it.next();
-             getModel().setNodeStyle(selected, MindMapNode.STYLE_BUBBLE); }}}
+             getModel().setNodeStyle(selected, m_style); }}
+       private String m_style;}
 
     private class EdgeStyleAction extends AbstractAction {
 	String style;

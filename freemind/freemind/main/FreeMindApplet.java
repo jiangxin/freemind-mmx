@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18 2004-02-02 21:25:24 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.1 2004-10-17 20:01:05 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -25,10 +25,12 @@ import freemind.controller.MenuBar;
 import freemind.controller.Controller;
 import java.io.InputStream;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.PropertyResourceBundle;
+import java.awt.EventQueue;
 import java.util.Enumeration;
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -116,6 +118,15 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 	return userProps.getProperty(key);
     }
     
+	public int getIntProperty(String key, int defaultValue){
+		try{
+			return Integer.parseInt(getProperty(key));
+		}
+		catch(NumberFormatException nfe){
+			return defaultValue;
+		}
+	}
+
     public void setProperty(String key, String value) {
     }
 
@@ -259,6 +270,16 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
         SwingUtilities.updateComponentTreeUI(this); // Propagate LookAndFeel to JComponents
 
+       	// wait until AWT thread starts
+		if (! EventQueue.isDispatchThread()){
+			try {
+                EventQueue.invokeAndWait(new Runnable() {public void run(){};});
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+		}
 	c.changeToMode(getProperty("initial_mode"));
     }
 }
