@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.6 2005-03-03 21:11:26 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.7 2005-03-11 22:27:28 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -109,7 +109,7 @@ public class Controller {
     boolean toolbarVisible=true;
     boolean leftToolbarVisible=true;
 
-    public Action close; 
+    public CloseAction close; 
     public Action print; 
     public Action printDirect; 
     public Action page; 
@@ -447,7 +447,6 @@ public class Controller {
         setTitle();
         getMode().activate();
 
-        // FIXME: this is already done in mapModuleChanged in MapModuleManager. 
         getFrame().getFreeMindMenuBar().updateMenus();
 
         if (getMapModule() == null) {
@@ -526,6 +525,15 @@ public class Controller {
         }
     }
 
+    /** Closes the actual map.
+     * @param force true= without save.
+     */
+    public void close(boolean force) {
+		getMapModuleManager().close(force);
+	}
+
+
+    
 // (PN) %%%
 //    public void select( NodeView node) {
 //        getView().select(node,false);
@@ -675,7 +683,7 @@ public class Controller {
     private void quit() {
         String currentMapRestorable = (getModel()!=null) ? getModel().getRestoreable() : null;
         while (getView() != null) {
-        	boolean closingNotCancelled = getMapModuleManager().close();
+        	boolean closingNotCancelled = getMapModuleManager().close(false);
         	if  (!closingNotCancelled) {
         	   return; }}
 
@@ -803,12 +811,14 @@ public class Controller {
     }
 
     /**This closes only the current map*/
-    private class CloseAction extends AbstractAction {
-        CloseAction(Controller controller) {
+    public static class CloseAction extends AbstractAction {
+        private final Controller controller;
+		CloseAction(Controller controller) {
             super(controller.getResourceString("close"));
+			this.controller = controller;
         }
         public void actionPerformed(ActionEvent e) {
-            getMapModuleManager().close();
+            controller.close(false);
         }
     }
 

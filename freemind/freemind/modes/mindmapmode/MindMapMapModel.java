@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.7 2005-02-10 23:01:24 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.8 2005-03-11 22:27:29 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -33,6 +33,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.channels.FileLock;
 import java.util.HashMap;
@@ -556,11 +557,7 @@ public class MindMapMapModel extends MapAdapter  {
         try {            
             //Generating output Stream            
             BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
-            fileout.write("<map version=\""+getFrame().getFreemindVersion()+"\">\n");
-            fileout.write("<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->\n");
-            ((MindMapNodeModel)getRoot()).save(fileout, this.getLinkRegistry());
-            fileout.write("</map>\n");
-            fileout.close();
+            getXml(fileout);
 
             if(!isInternal) {
                 setFile(file);            
@@ -582,7 +579,19 @@ public class MindMapMapModel extends MapAdapter  {
     }
 
 
-    /**
+    /** writes the content of the map to a writer.
+	 * @param fileout
+	 * @throws IOException
+	 */
+	public void getXml(Writer fileout) throws IOException {
+		fileout.write("<map version=\""+getFrame().getFreemindVersion()+"\">\n");
+		fileout.write("<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->\n");
+		((MindMapNodeModel)getRoot()).save(fileout, this.getLinkRegistry());
+		fileout.write("</map>\n");
+		fileout.close();
+	}
+
+	/**
      * Attempts to lock the map using a semaphore file
      * @param file
      * @return If the map is locked, return the name of the locking user, otherwise return null.

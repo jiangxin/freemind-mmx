@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMapModel.java,v 1.9.18.2 2004-10-17 23:00:12 dpolivaev Exp $*/
+/*$Id: BrowseMapModel.java,v 1.9.18.3 2005-03-11 22:27:29 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -157,4 +157,13 @@ public class BrowseMapModel extends MapAdapter {
      */
     public void setLinkInclinationChanged() {
     }
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#getXml(java.io.Writer)
+	 */
+	public void getXml(Writer fileout) throws IOException {
+		// nothing. 
+		//FIXME: Implement me if you need me.
+		throw new RuntimeException("Unimplemented method called.");
+	}
 }

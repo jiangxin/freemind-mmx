@@ -16,13 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.14.14.5 2005-02-10 23:01:23 christianfoltin Exp $*/
+/*$Id: MindMap.java,v 1.14.14.6 2005-03-11 22:27:29 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import java.awt.Color;
 import java.awt.datatransfer.Transferable;
 import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -75,6 +77,12 @@ public interface MindMap extends TreeModel {
      * Return URL of the map (whether as local file or a web location)
      */
     URL getURL() throws MalformedURLException;
+    
+    /** writes the content of the map to a writer.
+	 * @param fileout
+	 * @throws IOException
+	 */
+	void getXml(Writer fileout) throws IOException;
 
     /**
      * Returns a string that may be given to the modes restore()

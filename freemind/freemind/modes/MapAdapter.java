@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.14.5 2005-02-10 23:01:22 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.14.6 2005-03-11 22:27:28 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -26,6 +26,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -128,6 +129,9 @@ public abstract class MapAdapter implements MindMap {
 		return readOnly; 
 	}
 
+    /** Counts the amount of actions performed. 
+     * @param saved true if the file was saved recently. False otherwise.
+     */
     protected void setSaved(boolean saved) {
         if(saved)
             changesPerformedSinceLastSave = 0;

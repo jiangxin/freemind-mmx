@@ -87,10 +87,9 @@ public class ExportWithXSLT extends ExportHook {
     private void transform() {
         try {
             File saveFile = chooseFile();
-            // get XML
-            MindMapNode root = (MindMapNode) getController().getMap().getRoot();
             // get AREA:
             // create HTML image?
+            MindMapNode root = (MindMapNode) getController().getMap().getRoot();
             ClickableImageCreator creator=null;
             boolean create_image = Tools.safeEquals(getResourceString("create_html_linked_image"), "true");
             if(create_image) {
@@ -99,7 +98,8 @@ public class ExportWithXSLT extends ExportHook {
             }
             // get output:
             StringWriter writer = new StringWriter();
-            root.save(writer, getController().getMap().getLinkRegistry());
+            // get XML
+            getController().getMap().getXml(writer);
             StringReader reader = new StringReader(writer.getBuffer().toString());
             // search for xslt file:
             String xsltFileName = getResourceString("xslt_file");

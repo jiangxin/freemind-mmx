@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMapModel.java,v 1.11.18.2 2004-10-17 23:00:13 dpolivaev Exp $*/
+/*$Id: SchemeMapModel.java,v 1.11.18.3 2005-03-11 22:27:30 christianfoltin Exp $*/
 
 package freemind.modes.schememode;
 
@@ -35,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.StreamTokenizer;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.Writer;
 
 public class SchemeMapModel extends MapAdapter {
     
@@ -154,4 +155,11 @@ public class SchemeMapModel extends MapAdapter {
      */
     public void setLinkInclinationChanged() {
     }
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#getXml(java.io.Writer)
+	 */
+	public void getXml(Writer fileout) throws IOException {
+		fileout.write(getCode());
+	}
+
 }

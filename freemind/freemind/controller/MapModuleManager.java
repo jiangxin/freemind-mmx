@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.2 2005-03-03 21:11:26 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.3 2005-03-11 22:27:28 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -132,41 +132,53 @@ import freemind.view.mindmapview.MapView;
                     changeToMapModule(next);
                     return; }}}
 
-        void setMapModule(MapModule mapModule) {
-            MapModule oldMapModule = this.mapModule;
-            if(oldMapModule != null) {
-                // shut down screens of old view + frame
-                c.getModeController().setVisible(false);
-                c.getModeController().shutdownController();
-            }
-                
-        	if (mapModule != null) {
-                // change mode ?
-                if (mapModule.getMode() != c.getMode()) {
-	                // create mode 
-                    c.changeToMode(mapModule.getMode().toString());
-                }
-            }
-            this.mapModule = mapModule;
-            c.getFrame().setView(mapModule != null ? mapModule.getView() : null);
-            c.getFrame().getFreeMindMenuBar().updateMenus();//to show the new map in the mindmaps menu
-            List keys = new LinkedList(getMapModules().keySet());
-            c.navigationPreviousMap.setEnabled(keys.size() > 1);
-            c.navigationNextMap.setEnabled(keys.size() > 1);
-            if(mapModule != null) {
-	            c.setAllActions(true);
-	            if (c.getView().getSelected() == null) {
-                    // Only for the new modules move to root
-                    c.moveToRoot(); 
-                } 
-	            lastOpened.mapOpened(getMapModule());
-	            c.setTitle();
-                ((MainToolBar)c.getToolbar()).setZoomComboBox(getMapModule().getView().getZoom()); 
-	            c.obtainFocusForSelected();
-	            c.getModeController().startupController();
-				c.getModeController().setVisible(true);
-            }
-	    }
+    /**
+	 * @param mapModule
+	 *            is null if the old mode should be closed.
+	 */
+	void setMapModule(MapModule mapModule) {
+		MapModule oldMapModule = this.mapModule;
+		if (oldMapModule != null) {
+			// shut down screens of old view + frame
+			c.getModeController().setVisible(false);
+			c.getModeController().shutdownController();
+		}
+
+		if (mapModule != null) {
+			// change mode ?
+			if (mapModule.getMode() != c.getMode()) {
+				// create mode
+				c.changeToMode(mapModule.getMode().toString());
+			}
+		}
+		this.mapModule = mapModule;
+		List keys = new LinkedList(getMapModules().keySet());
+		c.navigationPreviousMap.setEnabled(keys.size() > 1);
+		c.navigationNextMap.setEnabled(keys.size() > 1);
+		// FIXME: This is done twice (the first time was in changeToMode above),
+		// but we need it to update the maps menus
+		c.getFrame().getFreeMindMenuBar().updateMenus();
+
+		if (mapModule != null) {
+			//FIXME: This is controller code and has to be moved.
+			c.getFrame().setView(mapModule.getView());
+			c.setAllActions(true);
+			if (c.getView().getSelected() == null) {
+				// Only for the new modules move to root
+				c.moveToRoot();
+			}
+			lastOpened.mapOpened(getMapModule());
+			c.setTitle();
+			((MainToolBar) c.getToolbar()).setZoomComboBox(getMapModule()
+					.getView().getZoom());
+			c.obtainFocusForSelected();
+			c.getModeController().startupController();
+			c.getModeController().setVisible(true);
+		} else {
+			c.getFrame().setView(null);
+
+		}
+	}
 
 
         //private
@@ -195,10 +207,11 @@ import freemind.view.mindmapview.MapView;
 
         /**
         *  Close the currently active map, return false if closing cancelled.
+         * @param force forces the closing without any save actions.
         */
-       public boolean close() {
+       public boolean close(boolean force) {
        	    // (DP) The mode controller does not close the map
-            boolean closingNotCancelled = c.getMode().getModeController().close();
+            boolean closingNotCancelled = c.getMode().getModeController().close(force);
             if (!closingNotCancelled) {
                return false; }	
             

@@ -7,6 +7,7 @@
 				<menu_action field="open" key_ref="keystroke_open"/>
 				<menu_action field="save" key_ref="keystroke_save"/>
 				<menu_action field="saveAs" key_ref="keystroke_saveAs"/>
+				<menu_action field="revertAction"/>
 			</menu_category>
 			<menu_submenu name="export"  name_ref="menu_file_export">
 				<menu_action field="exportBranch" key_ref="keystroke_export_branch"/>

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.14 2005-03-03 21:11:26 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.15 2005-03-11 22:27:28 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -128,6 +128,7 @@ import freemind.modes.actions.RedoAction;
 import freemind.modes.actions.RemoveAllIconsAction;
 import freemind.modes.actions.RemoveArrowLinkAction;
 import freemind.modes.actions.RemoveLastIconAction;
+import freemind.modes.actions.RevertAction;
 import freemind.modes.actions.SetLinkByTextFieldAction;
 import freemind.modes.actions.ToggleChildrenFoldedAction;
 import freemind.modes.actions.ToggleFoldedAction;
@@ -221,6 +222,7 @@ public abstract class ControllerAdapter implements ModeController {
     public FindAction find=null;
     public FindNextAction findNext=null;
     public NodeHookAction nodeHookAction = null;
+    public RevertAction revertAction = null;
 
 
 	/** Executes series of actions. */
@@ -328,7 +330,7 @@ public abstract class ControllerAdapter implements ModeController {
 	    find = new FindAction(this);
 	    findNext = new FindNextAction(this,find);
 	    nodeHookAction = new NodeHookAction("no_title", this); 
-	    
+	    revertAction = new RevertAction(this);
 	    
 	    compound = new CompoundActionHandler(this);
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -529,10 +531,12 @@ public abstract class ControllerAdapter implements ModeController {
      */
     public void load (File file) throws FileNotFoundException, IOException, XMLParseException {
         MapAdapter model = newModel();
-        model.load(file);
+		model.load(file);
 		getController().getMapModuleManager().newMapModule(model);
+		//FIXME: This must be done in the mapModuleManager. Ojo: The
+		// ModeController has changed.
 		getController().getModeController().invokeHooksRecursively(
-                (NodeAdapter) getModel().getRoot(), getModel());
+				(NodeAdapter) getModel().getRoot(), getModel());
     }
 
     public boolean save() {
@@ -717,11 +721,11 @@ public abstract class ControllerAdapter implements ModeController {
     /**
      * Return false if user has canceled. 
      */
-    public boolean close() {
+    public boolean close(boolean force) {
         String[] options = {getText("yes"),
                             getText("no"),
                             getText("cancel")};
-        if (!getModel().isSaved()) {
+        if (!force && !getModel().isSaved()) {
             String text = getText("save_unsaved")+"\n"+getMapModule().toString();
             String title = getText("save");
             int returnVal = JOptionPane.showOptionDialog(getFrame().getContentPane(),text,title,JOptionPane.YES_NO_CANCEL_OPTION,

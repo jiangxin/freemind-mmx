@@ -14,6 +14,7 @@
 					<xs:element ref="select_node_action"/>
 					<xs:element ref="cut_node_action"/>
 					<xs:element ref="paste_node_action"/>
+					<xs:element ref="revert_xml_action"/>
 					<xs:element ref="bold_node_action"/>
 					<xs:element ref="italic_node_action"/>
 					<xs:element ref="underlined_node_action"/>
@@ -99,6 +100,26 @@
 		      </xs:sequence>
 		      <xs:attribute name="isLeft" use="required" type="xs:boolean"/>
 		      <xs:attribute name="asSibling" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Revert Action 
+		 Reloads the map from the file system (or via collaboration)
+		-->
+	<xs:element name="revert_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+		      <xs:attribute name="map" use="required" type="xs:string"/>
+			  <!-- As this attribute does not make sense on 
+				   distributed environments, it must not be used
+				   apart from local. -->
+		      <xs:attribute name="localFileName" use="optional" type="xs:string"/>
+			  <!-- Is used when the map should 
+					be stored with a given name prefix. -->
+		      <xs:attribute name="filePrefix" use="optional" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
