@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: DeleteChildAction.java,v 1.1.4.4 2005-01-02 08:37:55 christianfoltin Exp $*/
+/*$Id: DeleteChildAction.java,v 1.1.4.5 2005-02-02 22:16:21 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -101,10 +101,10 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
 
 			Transferable copy = c.getModel().copy(selectedNode);
 			NodeCoordinate coord = new NodeCoordinate(selectedNode, selectedNode.isLeft().getValue());
+			// Undo-action
 			PasteNodeAction pasteNodeAction=null;
             pasteNodeAction = c.paste.getPasteNodeAction(copy, coord);
 
-			// Undo-action
 			DeleteNodeAction deleteAction = getDeleteNodeAction(newId);
 			c.getActionFactory().executeAction(new ActionPair(deleteAction, pasteNodeAction));
 			c.getActionFactory().endTransaction(text);

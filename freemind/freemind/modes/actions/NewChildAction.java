@@ -19,12 +19,13 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: NewChildAction.java,v 1.1.4.4 2005-02-02 21:33:10 christianfoltin Exp $*/
+/*$Id: NewChildAction.java,v 1.1.4.5 2005-02-02 22:16:21 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -39,14 +40,20 @@ import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.MindMapLinkRegistry.ID_Registered;
+import freemind.view.mindmapview.NodeView;
 
 
 public class NewChildAction extends AbstractAction implements ActorXml {
     private final ControllerAdapter c;
+    private static Logger logger=null;
     public NewChildAction(ControllerAdapter modeController) {
         super(modeController.getText("new_child"), new ImageIcon(modeController.getResource("images/idea.png")));
         this.c = modeController;
 		this.c.getActionFactory().registerActor(this, getDoActionClass());
+		if(logger == null) {
+		    logger = c.getFrame().getLogger(NewChildAction.class.getName());
+		}
+		
     }
 
     public void actionPerformed(ActionEvent e) {

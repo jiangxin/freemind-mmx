@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.6 2005-02-02 21:17:38 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.7 2005-02-02 22:16:20 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -139,7 +139,7 @@ public class MenuBar extends JMenuBar {
 		// maps popup menu
 		mapsPopupMenu = new JPopupMenu(c.getResourceString("mindmaps"));
 		menuHolder.addCategory(POPUP_MENU+"navigate");	
-		menuHolder.addSeparator(POPUP_MENU);	
+		//menuHolder.addSeparator(POPUP_MENU);	
 	
 		//Modesmenu
 		JMenu modesmenu = menuHolder.addMenu(new JMenu(c.getResourceString("modes")), MODES_MENU+".");

@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.4 2005-01-04 10:39:41 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.5 2005-02-02 22:16:21 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -225,7 +225,9 @@ public class StructuredMenuHolder {
 		updateMenus(new MenuAdder() {
 
             public void addMenuItem(StructuredMenuItemHolder holder) {
-            	myItem.add(holder.getMenuItem());
+            	JMenuItem menuItem = holder.getMenuItem();
+            	adjustMenuItem(menuItem);
+                myItem.add(menuItem);
             }
 
             public void addSeparator() {
@@ -290,20 +292,12 @@ public class StructuredMenuHolder {
 
 		public void addMenuItem(StructuredMenuItemHolder holder) {
 			JMenuItem item = holder.getMenuItem();
-			if (item.getIcon() == null) {
-				item.setIcon(blindIcon);
-			} else {
-				// align
-				if (item.getIcon().getIconWidth() < ICON_SIZE) {
-					item.setIconTextGap(item.getIconTextGap()
-							+ (ICON_SIZE - item.getIcon().getIconWidth()));
-				}
-			}
+			adjustMenuItem(item);
 			listener.addItem(holder);
 			myItem.add(item);
 		}
 
-		public void addSeparator() {
+        public void addSeparator() {
 		    if(lastItemIsASeparator(myItem)) {
 		        return;
 		    }
@@ -318,7 +312,23 @@ public class StructuredMenuHolder {
 		}
 	}
     
-    private interface MenuAdderCreator {
+	/**
+     * @param item
+     */
+    static private void adjustMenuItem(JMenuItem item) {
+        if (item.getIcon() == null) {
+			item.setIcon(blindIcon);
+		} else {
+			// align
+			if (item.getIcon().getIconWidth() < ICON_SIZE) {
+				item.setIconTextGap(item.getIconTextGap()
+						+ (ICON_SIZE - item.getIcon().getIconWidth()));
+			}
+		}
+    }
+
+
+	private interface MenuAdderCreator {
 		MenuAdder createAdder(JMenu baseObject);
     }
 
