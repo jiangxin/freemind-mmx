@@ -20,9 +20,12 @@
 
 		<copy todir="${dist}"> 
 			<fileset dir="${src}"
-				includes="user.properties,freemind.bat,freemind.sh,license,patterns.xml"
+				includes="freemind.bat,freemind.sh,license,patterns.xml"
 			/>
 		</copy>
+        <!-- user.properties are placed in the documents folder. To avoid trouble, make a short comment here.  -->
+        <copy file="${src}/user_comment.properties" tofile="${dist}/user.properties"/>
+
         <chmod file="${dist}/freemind.sh" perm="u+rx"/>
 		<copy todir="${dist}"> 
 			<fileset dir="${src}/windows-launcher"
@@ -73,6 +76,7 @@
 				<include name="images/*"/>
 				<include name="images/icons/*.png"/>
 				<include name="freemind.properties"/>
+				<include name="user.properties"/>
 				<include name="patterns.xml"/>
 				<include name="Resources*"/>
 			</fileset>

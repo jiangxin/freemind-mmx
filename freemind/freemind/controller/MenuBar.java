@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.19 2003-12-07 21:00:18 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.20 2003-12-14 23:58:03 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -81,8 +81,10 @@ public class MenuBar extends JMenuBar {
 	this.add(helpmenu);
 
 	helpmenu.add(c.documentation);
+	helpmenu.add(c.faq);
 	helpmenu.add(c.license);
 	helpmenu.add(c.about);
+
 	
     }//Constructor
 

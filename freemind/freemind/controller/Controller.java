@@ -16,13 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.35 2003-12-07 21:00:18 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.36 2003-12-14 23:58:03 christianfoltin Exp $*/
 
 package freemind.controller;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.net.URL;
@@ -34,6 +36,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import javax.swing.*;
+import java.net.MalformedURLException;
 
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
@@ -90,6 +93,7 @@ public class Controller {
     Action optionSelectionMechanismAction;
 
     Action about;
+    Action faq;
     Action documentation;
     Action license;
     Action historyPreviousMap;
@@ -135,6 +139,7 @@ public class Controller {
         quit = new QuitAction(this);
         background = new BackgroundAction(this,bswatch);
         about = new AboutAction(this);
+        faq = new OpenFAQAction(this);
         documentation = new DocumentationAction(this);
         license = new LicenseAction(this);
         historyPreviousMap = new HistoryPreviousMapAction(this);
@@ -1103,6 +1108,27 @@ public class Controller {
               c.getFrame().out(statusBarString);
        }
     }
+
+    // open faq url from freeminds page:
+    private class OpenFAQAction extends AbstractAction {
+        Controller c;
+        OpenFAQAction(Controller controller) {
+            super(controller.getResourceString("FAQ"), new ImageIcon(controller.getResource("images/Link.png")));
+            c = controller;
+        }
+        public void actionPerformed(ActionEvent e) {
+            try {
+                c.getFrame().openDocument(new URL("http://freemind.sourceforge.net/faq.html"));
+            } catch (MalformedURLException ex) {
+                c.errorMessage(c.getResourceString("url_error")+"\n"+ex);
+            } catch (Exception ex) {
+                c.errorMessage(ex);
+            }
+        }
+    }
+
+
+
 
 
 }//Class Controller

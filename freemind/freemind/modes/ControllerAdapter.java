@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.33 2003-12-02 22:50:22 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.34 2003-12-14 23:58:03 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -1235,16 +1235,18 @@ public abstract class ControllerAdapter implements ModeController {
                  getFrame().setWaitingCursor(true);
                  load(file); }}
            else {                                                 // ---- Open URL in browser
-              if (absolute.getProtocol().equals("file")) {                 
-                 File file = new File (Tools.urlGetFile(absolute));
-                 // If file does not exist, try http protocol (but only if it is reasonable)
-                 if (!file.exists()) {
-                    if (relative.matches("^[-\\.a-z0-9]*/?$")) {
-                       absolute = new URL("http://"+relative); }
-                    else {
-                       // This cannot be a base, to which http:// may be added.
-                       getController().errorMessage("File \""+file+"\" does not exist.");
-                       return; }}}
+               // fc, 14.12.2003: The following code seems not very good. Imagine file names with spaces. Then they occur as %20, now the OS does not find the file, 
+               // etc. If this is necessary, this should be done in the openDocument command.
+//               if (absolute.getProtocol().equals("file")) {                 
+//                  File file = new File (Tools.urlGetFile(absolute));
+//                  // If file does not exist, try http protocol (but only if it is reasonable)
+//                  if (!file.exists()) {
+//                     if (relative.matches("^[-\\.a-z0-9]*/?$")) {
+//                        absolute = new URL("http://"+relative); }
+//                     else {
+//                        // This cannot be a base, to which http:// may be added.
+//                        getController().errorMessage("File \""+file+"\" does not exist.");
+//                        return; }}}
               getFrame().openDocument(absolute); }}
         catch (MalformedURLException ex) {
             getController().errorMessage(getText("url_error")+"\n"+ex);

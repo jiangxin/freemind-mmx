@@ -1,4 +1,8 @@
 <!-- Default patterns supplied with FreeMind -->
+<!-- If you want to change them, take care that Freemind searches
+     in you user home directory, 
+     i.e. C:/My Documents/<username>/Freemind/patterns.xml. 
+     -->
 <patterns>
    <pattern name="Default">
       <node icon="none">
@@ -64,6 +68,10 @@
    </pattern>
 
    <!-- Mind map styles -->
+   <!-- Experimental. 
+        If you want to try them, apply AutomaticMindMapRoot 
+        to the root of a mindmap. Take care, the whole map changes it colors -->
+   <!--        
    <pattern name="MindMapDefault">
       <node color="#111111"/>
       <edge color="#111111" width="thin"/>
@@ -93,7 +101,7 @@
       <edge color="#000000" width="8"/>
       <child pattern="MindMap1"/>
    </pattern>
-
+   -->
 
    <!-- These two examples are not really meant for serious use -->
    <!-- example of edges -->
