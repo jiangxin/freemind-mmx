@@ -19,7 +19,7 @@
  *
  * Created on 22.07.2004
  */
-/*$Id: HookInstanciationMethod.java,v 1.1.2.1 2004-07-30 18:29:29 christianfoltin Exp $*/
+/*$Id: HookInstanciationMethod.java,v 1.1.2.2 2004-10-01 07:38:33 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.Collection;
@@ -76,21 +76,31 @@ public class HookInstanciationMethod {
 	}
 	private boolean isSingleton;
 	private DestinationNodesGetter getter;
+    private final boolean isPermanent;
+    
 	public boolean isSingleton() {
 		return isSingleton;
 	}
-	private HookInstanciationMethod(boolean isSingleton, DestinationNodesGetter getter){
-		this.isSingleton = isSingleton;
+    /**
+     * @return Returns the isPermanent.
+     */
+    public boolean isPermanent() {
+        return isPermanent;
+    }
+	private HookInstanciationMethod(boolean isPermanent, boolean isSingleton, DestinationNodesGetter getter){
+		this.isPermanent = isPermanent;
+        this.isSingleton = isSingleton;
 		this.getter = getter;
 	}
-	static final public HookInstanciationMethod Once = new HookInstanciationMethod(true, new DefaultDestinationNodesGetter());
+	static final public HookInstanciationMethod Once = new HookInstanciationMethod(true, true, new DefaultDestinationNodesGetter());
 	/** The hook should only be added/removed to the root node. */
-	static final public HookInstanciationMethod OnceForRoot = new HookInstanciationMethod(true, new RootDestinationNodesGetter());
+	static final public HookInstanciationMethod OnceForRoot = new HookInstanciationMethod(true, true, new RootDestinationNodesGetter());
 	/** Each (or none) node should have the hook. */
-	static final public HookInstanciationMethod OnceForAllNodes = new HookInstanciationMethod(true, new AllDestinationNodesGetter()); 
-	static final public HookInstanciationMethod Other = new HookInstanciationMethod(false, new DefaultDestinationNodesGetter());
+	static final public HookInstanciationMethod OnceForAllNodes = new HookInstanciationMethod(true, true, new AllDestinationNodesGetter());
+	/** This is for MindMapHooks in general.*/
+	static final public HookInstanciationMethod Other = new HookInstanciationMethod(false, false, new DefaultDestinationNodesGetter());
 	/** This is for MindMapHooks that wish to be applied to root, whereevery they are called from.*/
-	static final public HookInstanciationMethod ApplyToRoot = new HookInstanciationMethod(false, new RootDestinationNodesGetter());
+	static final public HookInstanciationMethod ApplyToRoot = new HookInstanciationMethod(false, false, new RootDestinationNodesGetter());
 	static final public HashMap getAllInstanciationMethods() {
 		HashMap res = new HashMap();
 		res.put("Once", Once);

@@ -97,8 +97,7 @@ public class IconSelectionPlugin extends NodeHookAdapter {
 					.getResult())).icon;
 			for (Iterator i = selecteds.iterator(); i.hasNext();) {
 				MindMapNode selNode = (MindMapNode) i.next();
-				selNode.addIcon(icon);
-				nodeChanged(selNode);
+				controller.addIcon(selNode, icon);
 			}
 		}
 	}
