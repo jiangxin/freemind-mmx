@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.25 2001-06-22 20:35:14 ponder Exp $*/
+/*$Id: Controller.java,v 1.26 2001-06-24 20:59:46 ponder Exp $*/
 
 package freemind.controller;
 
@@ -35,6 +35,7 @@ import java.util.ListIterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.text.MessageFormat;
@@ -78,7 +79,8 @@ public class Controller {
     private NodeDragListener nodeDragListener;
     private NodeDropListener nodeDropListener;
     private ModesCreator modescreator = new ModesCreator(this);
-    private PageFormat pageFormat = PrinterJob.getPrinterJob().defaultPage();
+    private PageFormat pageFormat;
+    boolean isPrintingAllowed=true;
     private Icon bswatch = new BackgroundSwatch();//needed for BackgroundAction
  
 
@@ -113,7 +115,14 @@ public class Controller {
 	nodeDragListener = new NodeDragListener(this);
 	nodeDropListener = new NodeDropListener(this);
 
+	try {
+	    pageFormat = PrinterJob.getPrinterJob().defaultPage();
+	} catch (SecurityException ex) {
+	    isPrintingAllowed=false;
+	}
+
 	close = new CloseAction(this);
+
 	print = new PrintAction(this,true);
 	printDirect = new PrintAction(this,false);
 	page = new PageAction(this);
@@ -369,9 +378,17 @@ public class Controller {
      */
     private void setAllActions(boolean enabled) {
 	background.setEnabled(enabled);
-	print.setEnabled(enabled);
-	printDirect.setEnabled(enabled);
-	page.setEnabled(enabled);
+
+	if(isPrintingAllowed) {
+	    print.setEnabled(enabled);
+	    printDirect.setEnabled(enabled);
+	    page.setEnabled(enabled);
+	} else {
+	    //should only be done once, or?
+	    print.setEnabled(false);
+	    printDirect.setEnabled(false);
+	    page.setEnabled(false);
+	}
 	close.setEnabled(enabled);
 	moveToRoot.setEnabled(enabled);
 	((MainToolBar)getToolBar()).setAllActions(enabled);
@@ -409,7 +426,8 @@ public class Controller {
      * simple.
      */
     public class MapModuleManager {
-	private Map mapmodules = new TreeMap(); //The instances of mode, ie. the Model/View pairs
+	private Map mapmodules = new HashMap(); //The instances of mode, ie. the Model/View pairs. Normally, the order should
+	//be the order of insertion, but such a Map is not available...
 	private MapModule mapmodule; //reference to the current mapmodule, could be done with an index to mapmodules, too.
 	//	private String current;
 	

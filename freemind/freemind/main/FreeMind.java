@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.14 2001-06-22 20:35:14 ponder Exp $*/
+/*$Id: FreeMind.java,v 1.15 2001-06-24 20:59:47 ponder Exp $*/
 
 package freemind.main;
 
@@ -88,7 +88,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		in = new FileInputStream(Tools.expandFileName(def.getProperty("autoproperties")));
 		auto.load(in);
 	    } catch (Exception ex) {
-		System.err.println("Panic! Error while loading auto properties.");
+		//		System.err.println("No auto properties loaded.");
 	    } finally {
 		in.close();
 	    }

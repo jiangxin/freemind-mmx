@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.19 2001-05-05 13:58:46 ponder Exp $*/
+/*$Id: MindMapController.java,v 1.20 2001-06-24 20:59:47 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -126,7 +126,12 @@ public class MindMapController extends ControllerAdapter {
 
     public MindMapController(Mode mode) {
 	super(mode);
-	loadPatterns(new File(Tools.expandFileName(getFrame().getProperty("patternsfile"))));
+	//what to do if no patterns file is available?
+	try {
+	    loadPatterns(new File(Tools.expandFileName(getFrame().getProperty("patternsfile"))));
+	} catch (Exception ex) {
+	    System.out.println("No Patterns loaded.");
+	}
 	popupmenu = new MindMapPopupMenu(this);
 	toolbar = new MindMapToolBar(this);
 	setAllActions(false);
@@ -140,7 +145,7 @@ public class MindMapController extends ControllerAdapter {
 	getModel().save(file);
     }
 
-    private void loadPatterns(File file) {
+    private void loadPatterns(File file) throws Exception {
 	List patternsList = Pattern.loadPatterns(file);
 	//	Action[] patternsActions = Array.newInstance(Action.class,patternsList.length());
 	patterns = new Action[patternsList.size()];

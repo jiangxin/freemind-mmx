@@ -16,7 +16,7 @@
 	<target name="dist" depends="jar">
 		<copy todir="${dist}"> 
 			<fileset dir="${src}"
-				includes="freemind.props,freemind.bat,freemind.sh,license"
+				includes="freemind.props,freemind.bat,freemind.sh,license,patterns.xml"
 			/>
 		</copy>
 	</target>
@@ -75,6 +75,7 @@
 			<fileset dir="${src}">
 				<include name="images/Back24.gif"/>
 				<include name="images/Forward24.gif"/>
+				<include name="images/Print24.gif"/>
 				<include name="*.properties"/>
 			</fileset>
 		</jar>

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Pattern.java,v 1.1 2001-04-19 16:20:38 ponder Exp $*/
+/*$Id: Pattern.java,v 1.2 2001-06-24 20:59:47 ponder Exp $*/
 
 package freemind.modes;
 
@@ -60,7 +60,7 @@ public class Pattern {
 	setName(name);
     }
 
-    public Pattern(File file) {
+    public Pattern(File file) throws Exception {
 	loadPatterns(file);
     }
 
@@ -198,16 +198,16 @@ public class Pattern {
        */
     public void setEdgeWidth(int  v) {this.edgeWidth = v;}
     
-    public static List loadPatterns(File file) {
+    public static List loadPatterns(File file) throws Exception {
 	List list = new LinkedList();
 	//NanoXML Code
 	XMLElement parser = new XMLElement();
-	try {
-	    parser.parseFromReader(new InputStreamReader(new FileInputStream(file)));
-	} catch (Exception ex) {
-	    System.err.println("Error while parsing file.");
-	    return null;
-	}
+	//	try {
+	parser.parseFromReader(new InputStreamReader(new FileInputStream(file)));
+	//	} catch (Exception ex) {
+	//	    System.err.println("Error while parsing file.");
+	//	    return null;
+	//	}
 	
 	//	XMLElement map = 
 	for(Enumeration e = parser.enumerateChildren();e.hasMoreElements();){
