@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.14.2.4 2004-05-17 00:52:21 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.14.2.5 2004-08-21 19:09:15 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -205,25 +205,26 @@ public class MindMapLayout implements LayoutManager {
 		return rootX;
     }
 
-	/** returns the y coordinate of the root node. */
 	private void calcNewRootCoord() {
 		int middleX = (getXSize() - getRoot().getPreferredSize().width)/ 2; 
-		rootX = (BORDER + MINIMAL_LEAF_WIDTH) + getRoot().getLeftTreeWidth();
+		rootX = calcXBorderSize()/2 + getRoot().getLeftTreeWidth();
+
 		if (middleX > rootX){
 			rootX = middleX;
 			int freeWidth = getXSize() + getRoot().getLeftTreeWidth()
-			 - rootX - getRoot().getTreeWidth() - (BORDER + MINIMAL_LEAF_WIDTH);				
+			 - rootX - getRoot().getTreeWidth() - calcXBorderSize()/2;				
 			if (freeWidth < 0){
 				rootX += freeWidth;
 			}
 		}
 		
-		
 		rootY = (getYSize() - getRoot().getPreferredSize().height)/ 2;
-		int freeHeigth = getYSize() - getRoot().getTreeHeight() - getRoot().getTreeShift() - BORDER * 2;
+
+		int freeHeigth = getYSize() - getRoot().getTreeHeight() - getRoot().getTreeShift() - calcYBorderSize();
 		if (freeHeigth < 0){
 			rootY -= freeHeigth;
 		}
+		
 	}
 
     /**
@@ -240,13 +241,8 @@ public class MindMapLayout implements LayoutManager {
         	int oldXSize = getXSize();
         	int oldYSize = getYSize();
         
-        	Dimension visibleSize = map.getViewportSize();
-        	int minXSize = width  + 2 *(BORDER + MINIMAL_LEAF_WIDTH);
-        	int minYSize = height  + 2 *  BORDER;
-        	if (visibleSize != null){
-        		minXSize = Math.max(minXSize, visibleSize.width * 3 / 2);
-        		minYSize = Math.max(minYSize, visibleSize.height * 3 / 2);
-        	}
+			int minXSize = width + calcXBorderSize();
+            int minYSize = height  +  calcYBorderSize();
 
          	if (minXSize != getXSize()) {
         		setXSize(minXSize);
@@ -261,6 +257,36 @@ public class MindMapLayout implements LayoutManager {
         	if (bResized){
         		getMapView().setSize(getXSize(), getYSize());
         	}
+    }
+
+    private int calcYBorderSize() {
+        int yBorderSize;
+        	{
+        	Dimension visibleSize = map.getViewportSize();
+        	if (visibleSize != null){
+        		yBorderSize = Math.max(visibleSize.height, 2 *  BORDER);
+        	}
+        	else{
+        		yBorderSize = 2 *  BORDER;
+        		
+        	}
+        }
+        return yBorderSize;
+    }
+
+    private int calcXBorderSize() {
+        int xBorderSize;
+        {
+        	Dimension visibleSize = map.getViewportSize();
+        	if (visibleSize != null){
+        		xBorderSize = Math.max(visibleSize.width, 2 *(BORDER + MINIMAL_LEAF_WIDTH));
+        	}
+        	else{
+        		xBorderSize = 2 *(BORDER + MINIMAL_LEAF_WIDTH);
+        		
+        	}
+        }
+        return xBorderSize;
     }
 
 
