@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.8 2003-11-03 10:15:45 sviles Exp $*/
+/*$Id: MindMap.java,v 1.10 2003-11-03 10:39:51 sviles Exp $*/
 
 package freemind.modes;
 
 import java.io.File;
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.awt.Color;
 import java.util.List;
 import javax.swing.tree.TreeModel;
@@ -41,8 +42,11 @@ public interface MindMap extends TreeModel {
     // ^ Is copy with node really needed? It seems to me, that no.
     Transferable cut();
     Transferable copy(); 
+    Transferable copySingle(); 
     String getAsPlainText(List mindMapNodes);
     String getAsRTF(List mindMapNodes);
+
+    void splitNode(MindMapNode node, int caretPosition, String newText);
 
     void paste(Transferable t, MindMapNode parent);
     void paste(Transferable t, MindMapNode target, boolean asSibling);
@@ -50,7 +54,20 @@ public interface MindMap extends TreeModel {
     //    void paste(MindMapNode node, MindMapNode parent);
 
     boolean find(MindMapNode node, String what, boolean caseSensitive);
+    boolean findNext();
+    String getFindWhat();
+    String getFindFromText();
     
+    /**
+     * Returns the file name of the map edited or null if not possible.
+     */
+    File getFile();
+
+    /**
+     * Return URL of the map (whether as local file or a web location)
+     */
+    URL getURL() throws MalformedURLException;
+
     /**
      * Returns a string that may be given to the modes restore()
      * to get this map again. The Mode must take care that

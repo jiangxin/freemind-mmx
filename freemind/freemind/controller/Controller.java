@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.28 2003-11-03 10:15:44 sviles Exp $*/
+/*$Id: Controller.java,v 1.30 2003-11-03 10:39:51 sviles Exp $*/
 
 package freemind.controller;
 
@@ -37,6 +37,7 @@ import java.net.URL;
 import java.awt.Component;
 import java.awt.Color;
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.print.PrinterJob;
 import java.awt.print.PageFormat;
 import java.awt.event.ActionEvent;
@@ -67,10 +68,16 @@ public class Controller {
     private MapMouseMotionListener mapMouseMotionListener;
     private MapMouseWheelListener mapMouseWheelListener;
     private ModesCreator modescreator = new ModesCreator(this);
-    private PageFormat pageFormat;
-    boolean isPrintingAllowed=true;
+    private PageFormat pageFormat = null;
+    private PrinterJob printerJob = null;
     private Icon bswatch = new BackgroundSwatch();//needed for BackgroundAction
- 
+    private boolean antialiasEdges = false;
+    private boolean antialiasAll = false;
+    private Map fontMap = new HashMap();
+
+    boolean isPrintingAllowed=true;     
+    boolean menubarVisible=true;
+    boolean toolbarVisible=true;
 
     Action close; 
     Action print; 
@@ -78,6 +85,10 @@ public class Controller {
     Action page; 
     public Action quit;
     Action background; 
+
+    Action optionAntialiasAction;
+    Action optionHTMLExportFoldingAction;
+
     Action about;
     Action documentation;
     Action license;
@@ -87,67 +98,101 @@ public class Controller {
     Action navigationNextMap;
 
     Action moveToRoot;
+    Action toggleMenubar;
+    Action toggleToolbar;
+
+    Action zoomIn;
+    Action zoomOut;
+
+    private static final String[] zooms = {"25%","40%","60%","75%","100%","125%","150%","200%"};
 
     //
     // Constructors
     //
 
     public Controller(FreeMindMain frame) {
-	this.frame = frame;
-	modes = modescreator.getAllModes();
-	mapModuleManager=new MapModuleManager(this);
-	lastOpened=new LastOpenedList(this, getFrame().getProperty("lastOpened"));
+        checkJavaVersion();
 
-  	nodeMouseMotionListener = new NodeMouseMotionListener(this);
-	nodeKeyListener = new NodeKeyListener(this);
-	nodeDragListener = new NodeDragListener(this);
-	nodeDropListener = new NodeDropListener(this);
+        this.frame = frame;
+        modes = modescreator.getAllModes();
+        mapModuleManager = new MapModuleManager(this);
+        lastOpened = new LastOpenedList(this, getProperty("lastOpened"));
 
-  	mapMouseMotionListener = new MapMouseMotionListener(this);
-  	mapMouseWheelListener = new MapMouseWheelListener(this);
+        nodeMouseMotionListener = new NodeMouseMotionListener(this);
+        nodeKeyListener = new NodeKeyListener(this);
+        nodeDragListener = new NodeDragListener(this);
+        nodeDropListener = new NodeDropListener(this);
 
-	try {
-	    pageFormat = PrinterJob.getPrinterJob().defaultPage();
-	} catch (SecurityException ex) {
-	    isPrintingAllowed=false;
-	}
+        mapMouseMotionListener = new MapMouseMotionListener(this);
+        mapMouseWheelListener = new MapMouseWheelListener(this);
 
-	close = new CloseAction(this);
+        close = new CloseAction(this);
 
-	print = new PrintAction(this,true);
-	printDirect = new PrintAction(this,false);
-	page = new PageAction(this);
-	quit = new QuitAction(this);
-	background = new BackgroundAction(this,bswatch);
-	about = new AboutAction(this);
-	documentation = new DocumentationAction(this);
-	license = new LicenseAction(this);
-	historyPreviousMap = new HistoryPreviousMapAction(this);
-	historyNextMap = new HistoryNextMapAction(this);
-	navigationPreviousMap = new NavigationPreviousMapAction(this);
-	navigationNextMap = new NavigationNextMapAction(this);
-	
-	moveToRoot = new MoveToRootAction(this);
+        print = new PrintAction(this,true);
+        printDirect = new PrintAction(this,false);
+        page = new PageAction(this);
+        quit = new QuitAction(this);
+        background = new BackgroundAction(this,bswatch);
+        about = new AboutAction(this);
+        documentation = new DocumentationAction(this);
+        license = new LicenseAction(this);
+        historyPreviousMap = new HistoryPreviousMapAction(this);
+        historyNextMap = new HistoryNextMapAction(this);
+        navigationPreviousMap = new NavigationPreviousMapAction(this);
+        navigationNextMap = new NavigationNextMapAction(this);
+        toggleMenubar = new ToggleMenubarAction(this);
+        toggleToolbar = new ToggleToolbarAction(this);
+        optionAntialiasAction = new OptionAntialiasAction(this);
+        optionHTMLExportFoldingAction = new OptionHTMLExportFoldingAction(this);
 
-	//Create the ToolBar
-	toolbar = new MainToolBar(this);
-	getFrame().getContentPane().add( toolbar, BorderLayout.NORTH );
+        zoomIn = new ZoomInAction(this);
+        zoomOut = new ZoomOutAction(this);
 
-	setAllActions(false);
+        moveToRoot = new MoveToRootAction(this);
+
+        //Create the ToolBar
+        toolbar = new MainToolBar(this);
+        getFrame().getContentPane().add( toolbar, BorderLayout.NORTH );
+
+        setAllActions(false);
+
+        if (!Tools.isAvailableFontFamily(getProperty("standardfont"))) {
+           System.out.println("Warning: the font you have set as standard - "+getProperty("standardfont")+
+                              " - is not available.");
+           frame.setProperty("standardfont","SansSerif"); }
     }
 
     //
     // get/set methods
     //
 
+    public void checkJavaVersion() {
+       if (System.getProperty("java.version").compareTo("1.4.0") < 0) {
+          String message = "Warning: FreeMind requires version Java 1.4.0 or higher (your version: "+
+             System.getProperty("java.version")+").";
+          System.err.println(message);
+          JOptionPane.showMessageDialog(null, message, "FreeMind", JOptionPane.WARNING_MESSAGE); }}
+
+    public String getProperty(String property) {
+       return frame.getProperty(property); }
+
+    public void setProperty(String property, String value) {
+       frame.setProperty(property, value); }
+
     public FreeMindMain getFrame() {
-	return frame;
+        return frame;
     }
 
     public URL getResource(String resource) {
-	return getFrame().getResource(resource);
+        return getFrame().getResource(resource);
     }
-					    
+                                            
+    public String getResourceString(String resource) {
+       try {
+          return frame.getResources().getString(resource); }
+       catch (Exception ex) {
+          System.err.println("Warning - resource string not found:"+resource);
+          return resource; }}
 
     /**Returns the current model*/
     public MindMap getModel() {
@@ -158,114 +203,164 @@ public class Controller {
     }
 
     public MapView getView() {
-	if (getMapModule() != null) {
-	    return getMapModule().getView();
-	}
-	return null;
+        if (getMapModule() != null) {
+            return getMapModule().getView();
+        }
+        return null;
     }
 
     Map getModes() {
-	return modes;
+        return modes;
     }
 
     public Mode getMode() {
-	return mode;
+        return mode;
     }
 
+    public String[] getZooms() {
+       return zooms; }
+
     public MapModuleManager getMapModuleManager() {
-	return mapModuleManager;
+        return mapModuleManager;
     }
 
     public LastOpenedList getLastOpenedList() {
-	return lastOpened;
+        return lastOpened;
     }
 
+    // 
+   
     private MapModule getMapModule() {
-	return getMapModuleManager().getMapModule();
+        return getMapModuleManager().getMapModule();
     }
 
     private JToolBar getToolBar() {
-	return toolbar;
+        return toolbar;
     }
 
+    //
+
+    public Font getFontThroughMap(Font font) {
+       if (!fontMap.containsKey(font.toString())) {
+          fontMap.put(font.toString(),font); }
+       return (Font)fontMap.get(font.toString()); }
+
+    //
+
+    public void setAntialiasEdges(boolean antialiasEdges) {
+       this.antialiasEdges = antialiasEdges; }
+
+    public void setAntialiasAll(boolean antialiasAll) {
+       this.antialiasAll = antialiasAll; }
+
+    public boolean getAntialiasEdges() {
+       return antialiasEdges; }
+
+    public boolean getAntialiasAll() {
+       return antialiasAll; }
+
+    public Font getDefaultFont() {
+       // Maybe implement handling for cases when the font is not
+       // available on this system.
+
+       int fontSize = Integer.parseInt(getFrame().getProperty("defaultfontsize"));
+       int fontStyle = Integer.parseInt(getFrame().getProperty("defaultfontstyle"));
+       String fontFamily = getProperty("defaultfont");
+
+       return getFontThroughMap (new Font(fontFamily, fontStyle, fontSize)); }
+
+
     public boolean changeToMode(String mode) {
-	if (getMode() != null && mode.equals(getMode().toString())) {
-	    return true;
-	}
+        if (getMode() != null && mode.equals(getMode().toString())) {
+            return true;
+        }
 
-	//Check if the mode is available
-	Mode newmode = (Mode)modes.get(mode);
-	if (newmode == null) {
-            Tools.errorMessage(getFrame().getResources().getString("mode_na")+": "+mode);
-	    return false;
-	}
+        //Check if the mode is available
+        Mode newmode = (Mode)modes.get(mode);
+        if (newmode == null) {
+            errorMessage(getResourceString("mode_na")+": "+mode);
+            return false;
+        }
 
-	if (getMode() != null && getMode().getModeToolBar() != null) {
+        if (getMode() != null && getMode().getModeToolBar() != null) {
             toolbar.remove(getMode().getModeToolBar());
         }
 
-	if (getMapModule() != null) {
-	    getMapModuleManager().setMapModule(null);
-	    getMapModuleManager().mapModuleChanged();
-	}
-	this.mode = newmode;
-		
-	if (getMode().getModeToolBar() != null) {
-	    toolbar.add(getMode().getModeToolBar());
-	    getMode().getModeToolBar().repaint();
-	}
-	toolbar.validate();
-	toolbar.repaint();
-	
-	popupmenu = getMode().getPopupMenu();
+        if (getMapModule() != null) {
+            getMapModuleManager().setMapModule(null);
+            getMapModuleManager().mapModuleChanged();
+        }
+        this.mode = newmode;
+                
+        if (getMode().getModeToolBar() != null) {
+            toolbar.add(getMode().getModeToolBar());
+            getMode().getModeToolBar().repaint();
+        }
+        toolbar.validate();
+        toolbar.repaint();
 
-	setTitle();
-	getMode().activate();
+        popupmenu = getMode().getPopupMenu();
+        //System.err.println("pp:"+popupmenu);
+        //getFrame().getView().add(popupmenu);
 
-	getFrame().getFreeMindMenuBar().updateFileMenu();
-	getFrame().getFreeMindMenuBar().updateEditMenu();
+        setTitle();
+        getMode().activate();
 
-	if (getMapModule() == null) {
-	    setAllActions(false);
-	}
+        getFrame().getFreeMindMenuBar().updateFileMenu();
+        getFrame().getFreeMindMenuBar().updateEditMenu();
 
-	Object[] messageArguments = {
+        if (getMapModule() == null) {
+            setAllActions(false);
+        }
+
+        Object[] messageArguments = {
          getMode().toString()
-	};
-	MessageFormat formatter = new MessageFormat(
-		getFrame().getResources().getString("mode_status"));
-	getFrame().out(formatter.format(messageArguments));
-	
-	return true;
+        };
+        MessageFormat formatter = new MessageFormat(
+        getResourceString("mode_status"));
+        getFrame().out(formatter.format(messageArguments));
+        
+        return true;
+    }
+
+
+    public void setMenubarVisible(boolean visible) {
+        menubarVisible = visible;
+        getFrame().getFreeMindMenuBar().setVisible(menubarVisible);
+    }
+
+    public void setToolbarVisible(boolean visible) {
+        toolbarVisible = visible;
+        toolbar.setVisible(toolbarVisible);
     }
 
 
     public NodeKeyListener getNodeKeyListener() {
-	return nodeKeyListener;
+        return nodeKeyListener;
     }
 
     public NodeMouseMotionListener getNodeMouseMotionListener() {
-	return nodeMouseMotionListener;
+        return nodeMouseMotionListener;
     }
 
     public MapMouseMotionListener getMapMouseMotionListener() {
-	return mapMouseMotionListener;
+        return mapMouseMotionListener;
     }
 
     public MapMouseWheelListener getMapMouseWheelListener() {
-	return mapMouseWheelListener;
+        return mapMouseWheelListener;
     }
 
     public NodeDragListener getNodeDragListener() {
-	return nodeDragListener;
+        return nodeDragListener;
     }
 
     public NodeDropListener getNodeDropListener() {
-	return nodeDropListener;
+        return nodeDropListener;
     }
 
     public void setFrame(FreeMindMain frame) {
-	this.frame = frame;
+        this.frame = frame;
     }
 
     //
@@ -273,19 +368,19 @@ public class Controller {
     //
 
     void moveUp() {
-	getView().moveUp();
+        getView().moveUp();
     }
 
     void moveDown() {
-	getView().moveDown();
+        getView().moveDown();
     }
 
     void moveLeft() {
-	getView().moveLeft();
+        getView().moveLeft();
     }
 
     void moveRight() {
-	getView().moveRight();
+        getView().moveRight();
     }
     
     /**
@@ -294,30 +389,48 @@ public class Controller {
      * if you have the time ;-)
      */
     void moveToRoot() {
-	if (getMapModule() != null) {
-	    getView().moveToRoot();
-	}
+        if (getMapModule() != null) {
+            getView().moveToRoot();
+        }
     }
 
     void select( NodeView node, boolean extend ) {
-	getView().select(node,extend);
+        getView().select(node,extend);
     }
 
     void selectBranch( NodeView node, boolean extend ) {
-	getView().selectBranch(node,extend);
+        getView().selectBranch(node,extend);
     }
-	
+        
     boolean isSelected( NodeView node ) {
-	return getView().isSelected(node);
+        return getView().isSelected(node);
     }
 
     void centerNode() {
-	getView().centerNode(getView().getSelected());
+        getView().centerNode(getView().getSelected());
     }
 
     private MindMapNode getSelected() {
-	return getView().getSelected().getModel();
+        return getView().getSelected().getModel();
     }
+
+    public void informationMessage(Object message) {
+       JOptionPane.showMessageDialog(getView(), message.toString(), "FreeMind", JOptionPane.INFORMATION_MESSAGE); }
+
+    public void informationMessage(Object message, JComponent component) {
+       JOptionPane.showMessageDialog(component, message.toString(), "FreeMind", JOptionPane.INFORMATION_MESSAGE); }
+
+    public void errorMessage(Object message) {
+       JOptionPane.showMessageDialog(getView(), message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }
+
+    public void errorMessage(Object message, JComponent component) {
+       JOptionPane.showMessageDialog(component, message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }
+
+    public void obtainFocusForSelected() {
+       SwingUtilities.invokeLater( new Runnable() {
+             public void run () {
+                if (getView() != null) { // is null if the last map was closed.
+                   getView().getSelected().requestFocus(); }}}); }
 
     //
     // Map Navigation
@@ -328,13 +441,13 @@ public class Controller {
     //
 
     void showPopupMenu(Component c, int x, int y) {
-	if (popupmenu != null) {
-	    popupmenu.show(c,x,y);
-	}
+        if (popupmenu != null) {
+            popupmenu.show(c,x,y);
+        }
     }
 
     void setZoom(float zoom) {
-	getView().setZoom(zoom);
+        getView().setZoom(zoom);
     }
 
 
@@ -348,25 +461,25 @@ public class Controller {
     //
 
     private void getFocus() {
-	getView().getSelected().requestFocus();
+        getView().getSelected().requestFocus();
     }
 
     //
     // Multiple Views management
     //
-	
-	/** return the Frame title with mode and file if exist */
+        
+        /** return the Frame title with mode and file if exist */
     private void setTitle() {
-	Object[] messageArguments = {
-	    getMode().toString()
-	};
-	MessageFormat formatter = new MessageFormat(
-		getFrame().getResources().getString("mode_title"));
-	String title = formatter.format(messageArguments);
-	if (getMapModule() != null) {
-	    title = title + " - " + getMapModule().toString();
-	}
-	getFrame().setTitle(title);
+        Object[] messageArguments = {
+            getMode().toString()
+        };
+        MessageFormat formatter = new MessageFormat
+           (getResourceString("mode_title"));
+        String title = formatter.format(messageArguments);
+        if (getMapModule() != null) {
+            title = title + " - " + getMapModule().toString();
+        }
+        getFrame().setTitle(title);
     }
     
     //
@@ -378,21 +491,21 @@ public class Controller {
      * of whether there is a map or not
      */
     private void setAllActions(boolean enabled) {
-	background.setEnabled(enabled);
+        background.setEnabled(enabled);
 
-	if(isPrintingAllowed) {
-	    print.setEnabled(enabled);
-	    printDirect.setEnabled(enabled);
-	    page.setEnabled(enabled);
-	} else {
-	    //should only be done once, or?
-	    print.setEnabled(false);
-	    printDirect.setEnabled(false);
-	    page.setEnabled(false);
-	}
-	close.setEnabled(enabled);
-	moveToRoot.setEnabled(enabled);
-	((MainToolBar)getToolBar()).setAllActions(enabled);
+        if(isPrintingAllowed) {
+            print.setEnabled(enabled);
+            printDirect.setEnabled(enabled);
+            page.setEnabled(enabled);
+        } else {
+            //should only be done once, or?
+            print.setEnabled(false);
+            printDirect.setEnabled(false);
+            page.setEnabled(false);
+        }
+        close.setEnabled(enabled);
+        moveToRoot.setEnabled(enabled);
+        ((MainToolBar)getToolBar()).setAllActions(enabled);
     }
 
     //
@@ -400,25 +513,40 @@ public class Controller {
     //
 
     private void quit() {
-        // Restoreable is not an English word, while Restorable is. We will leave the rest of the code as it is anyway,
         String currentMapRestorable = (getModel()!=null) ? getModel().getRestoreable() : null;
-	while (getView() != null) {
-	    try {
-		getMapModuleManager().close();
-	    } catch (Exception ex) {
-		//		System.out.println("Error: "+ex);
-		return;
-	    }
-	}
+        while (getView() != null) {
+            try {
+                getMapModuleManager().close();
+            } catch (Exception ex) {
+                System.err.println("Error: "+ex);
+                ex.printStackTrace();
+                return;
+            }
+        }
 
-	String lastOpenedString=lastOpened.save();
-	getFrame().setProperty("lastOpened",lastOpenedString);
+        String lastOpenedString=lastOpened.save();
+        getFrame().setProperty("lastOpened",lastOpenedString);
         if (currentMapRestorable != null) {
            getFrame().setProperty("onStartIfNotSpecified",currentMapRestorable); }
-	getFrame().saveProperties();
-	//save to properties
-	System.exit(0);
+        // getFrame().setProperty("menubarVisible",menubarVisible ? "true" : "false");
+        // ^ Not allowed in application because of problems with not working key shortcuts
+        getFrame().setProperty("toolbarVisible", toolbarVisible ? "true" : "false");
+        getFrame().setProperty("antialiasEdges", antialiasEdges ? "true" : "false");
+        getFrame().setProperty("antialiasAll", antialiasAll ? "true" : "false");
+        getFrame().saveProperties();
+        //save to properties
+        System.exit(0);
     }
+
+    private boolean acquirePrinterJobAndPageFormat() {
+       if (printerJob == null) {
+          try {
+             printerJob = PrinterJob.getPrinterJob(); }
+          catch (SecurityException ex) {
+             isPrintingAllowed = false;
+             return false; }}
+       pageFormat = (pageFormat == null) ? printerJob.defaultPage() : pageFormat;
+       return true; }
 
     //////////////
     // Inner Classes
@@ -431,173 +559,149 @@ public class Controller {
      * simple.
      */
     public class MapModuleManager {
-	private Map mapmodules = new HashMap(); //The instances of mode, ie. the Model/View pairs. Normally, the order should
-	//be the order of insertion, but such a Map is not available...
-	private MapModule mapmodule; //reference to the current mapmodule, could be done with an index to mapmodules, too.
-	//	private String current;
-	
-	private Controller c;
+        // Variable below: The instances of mode, ie. the Model/View pairs. Normally, the
+        // order should be the order of insertion, but such a Map is not
+        // available.
+        private Map mapModules = new HashMap();
 
-	MapModuleManager(Controller c) {
-	    this.c=c;
-	}
+        private MapModule mapModule; //reference to the current mapmodule, could be done
+                                     //with an index to mapModules, too.
+        // private String current;
+        
+        private Controller c;
 
-	Map getMapModules() {
-	    return mapmodules;
-	}
-	
-	public MapModule getMapModule() {
-	    return mapmodule;
-	}
+        MapModuleManager(Controller c) {
+           this.c=c; }
 
-	public void newMapModule(MindMap map) {
-	    MapModule mapmodule = new MapModule(map, new MapView(map, c), getMode());
-	    setMapModule(mapmodule);
-	    addToMapModules(mapmodule.toString(), mapmodule);
-	    navigationNextMap.setEnabled(false);
-	    history.mapChanged(mapmodule);
-	}
+        Map getMapModules() {
+           return mapModules; }
+        
+        public MapModule getMapModule() {
+           return mapModule; }
 
-	public void updateMapModuleName() {
-	    getMapModules().remove(getMapModule().toString());//removeFromViews() doesn't work because MapModuleChanged()
-	    //must not be called at this state
-	    getMapModule().rename();
-	    addToMapModules(getMapModule().toString(),getMapModule());
-	}
+        public void newMapModule(MindMap map) {
+            MapModule mapModule = new MapModule(map, new MapView(map, c), getMode());
+            setMapModule(mapModule);
+            addToMapModules(mapModule.toString(), mapModule);
+            history.mapChanged(mapModule);
+            updateNavigationActions(); }
 
-	void nextMapModule() {
-	    List keys = new LinkedList(getMapModules().keySet());
-	    int index = keys.indexOf(getMapModule().toString());
-	    ListIterator i = keys.listIterator(index+1);
-	    if (i.hasNext()) {
-		changeToMapModule((String)i.next());
-	    }
-	}
+        public void updateMapModuleName() {
+            getMapModules().remove(getMapModule().toString());
+            //removeFromViews() doesn't work because MapModuleChanged()
+            //must not be called at this state
+            getMapModule().rename();
+            addToMapModules(getMapModule().toString(),getMapModule());
+        }
 
-	void previousMapModule() {
-	    List keys = new LinkedList(getMapModules().keySet());
-	    int index = keys.indexOf(getMapModule().toString());
-	    ListIterator i = keys.listIterator(index);
-	    if (i.hasPrevious()) {
-		changeToMapModule((String)i.previous());
-	    }
-	}
+        void nextMapModule() {
+            List keys = new LinkedList(getMapModules().keySet());
+            int index = keys.indexOf(getMapModule().toString());
+            ListIterator i = keys.listIterator(index+1);
+            if (i.hasNext()) {
+               changeToMapModule((String)i.next()); }
+            else if (keys.iterator().hasNext()) {
+               // Change to the first in the list
+               changeToMapModule((String)keys.iterator().next()); }}
 
-	//Change MapModules
+        void previousMapModule() {
+            List keys = new LinkedList(getMapModules().keySet());
+            int index = keys.indexOf(getMapModule().toString());
+            ListIterator i = keys.listIterator(index);
+            if (i.hasPrevious()) {
+               changeToMapModule((String)i.previous()); }
+            else {
+               Iterator last = keys.listIterator(keys.size()-1);
+               if (last.hasNext()) {
+                  changeToMapModule((String)last.next()); }}}
 
-	public boolean tryToChangeToMapModule(String mapmodule) {
-	    if (mapmodule != null && getMapModules().containsKey(mapmodule)) {
-		changeToMapModule(mapmodule);
-		return true;
-	    } else {
-		return false;
-	    }
-	}
+        //Change MapModules
+
+        public boolean tryToChangeToMapModule(String mapModule) {
+            if (mapModule != null && getMapModules().containsKey(mapModule)) {
+                changeToMapModule(mapModule);
+                return true; }
+            else {
+               return false; }}
     
-	void changeToMapModule(String mapmodule) {
-	    MapModule map = (MapModule)(getMapModules().get(mapmodule));
-	    history.mapChanged(map);
-	    changeToMapModuleWithoutHistory(map);
-	}
+        void changeToMapModule(String mapModule) {
+            MapModule map = (MapModule)(getMapModules().get(mapModule));
+            history.mapChanged(map);
+            changeToMapModuleWithoutHistory(map); }
 
-	void changeToMapModuleWithoutHistory(MapModule map) {
-	    if (map.getMode() != getMode()) {
-		changeToMode(map.getMode().toString());
-	    }
-	    setMapModule(map);
-	    mapModuleChanged();
-	}
+        void changeToMapModuleWithoutHistory(MapModule map) {
+            if (map.getMode() != getMode()) {
+               changeToMode(map.getMode().toString()); }
+            setMapModule(map);
+            mapModuleChanged(); }
 
-	public void changeToMapOfMode(Mode mode) {
-	    for (Iterator i = getMapModules().keySet().iterator(); i.hasNext(); ) {
-		String next = (String)i.next();
-		if ( ((MapModule)getMapModules().get(next)).getMode() == mode ) {
-		    changeToMapModule(next);
-		    return;
-		}
-	    }
-	}
+        public void changeToMapOfMode(Mode mode) {
+            for (Iterator i = getMapModules().keySet().iterator(); i.hasNext(); ) {
+                String next = (String)i.next();
+                if ( ((MapModule)getMapModules().get(next)).getMode() == mode ) {
+                    changeToMapModule(next);
+                    return; }}}
 
-	//private
+        //private
 
-	private void changeToAnotherMap(String toBeClosed) {
-	    if(!(getMapModules().size() > 1)) {
-		setMapModule(null);
-		return;
-	    }
-	    List keys = new LinkedList(getMapModules().keySet());
-	    //	    int index = keys.indexOf(getMapModule().toString());
-	    for (ListIterator i = keys.listIterator(); i.hasNext();) {
-		String key = (String)i.next();
-		if (!key.equals(toBeClosed)) {
-		    changeToMapModule(key);
-		    return;
-		}
-	    }
-	}
+        private void mapModuleChanged() {
+            frame.getFreeMindMenuBar().updateMapsMenu();//to show the new map in the mindmaps menu
+            lastOpened.mapOpened(getMapModule());
+            frame.getFreeMindMenuBar().updateLastOpenedList();//to show the new map in the file menu
+            //  history.add(getMapModule());
+            //updateNavigationActions();
+            setTitle();
+            updateZoomBar();
+            c.obtainFocusForSelected(); }
+       
+        private void setMapModule(MapModule mapModule) {
+            this.mapModule = mapModule;
+            frame.setView(mapModule != null ? mapModule.getView() : null); }
 
-	private void mapModuleChanged() {
-	    frame.getFreeMindMenuBar().updateMapsMenu();//to show the new map in the mindmaps menu
-	    lastOpened.mapOpened(getMapModule());
-	    frame.getFreeMindMenuBar().updateLastOpenedList();//to show the new map in the file menu
-	    //	history.add(getMapModule());
-	    updateNavigationActions();
-	    setTitle();
-	    moveToRoot();
-	}
+        private void addToMapModules(String key, MapModule value) {
+            mapModules.put(key,value);
+            setAllActions(true);
+            moveToRoot();                // Only for the new modules move to root
+            mapModuleChanged(); }
 
-	private void setMapModule(MapModule mapmodule) {
-	    this.mapmodule = mapmodule;
-	    if (mapmodule != null) {
-		frame.setView(mapmodule.getView());
-	    } else {
-		frame.setView(null);
-	    }
-	}
+       private void changeToAnotherMap(String toBeClosed) {
+          List keys = new LinkedList(getMapModules().keySet());
+          for (ListIterator i = keys.listIterator(); i.hasNext();) {
+             String key = (String)i.next();
+             if (!key.equals(toBeClosed)) {
+                changeToMapModule(key);
+                return; }}}
 
-	private void addToMapModules(String key, MapModule value) {
-	    mapmodules.put(key,value);
-	    setAllActions(true);
-	    mapModuleChanged();
-	}
-	
-	private void removeFromMapModules(String key) {
-	    mapmodules.remove(key);
-	    mapModuleChanged();
-	    if(getMapModules().isEmpty()) {
-		setAllActions(false);
-	    }
-	}
+        private void updateNavigationActions() {
+           List keys = new LinkedList(getMapModules().keySet());
+           navigationPreviousMap.setEnabled(keys.size() > 1);
+           navigationNextMap.setEnabled(keys.size() > 1); }
 
-	private void close() throws Exception {
-	    getMode().getModeController().close();//exception is thrown here if user cancels operation
-	    String toBeClosed = getMapModule().toString();
-	    changeToAnotherMap(toBeClosed);
-	    removeFromMapModules(toBeClosed);
-	    updateNavigationActions();//is this needed here?
-	}
+        private void updateZoomBar() {
+           if (getMapModule()!=null) {
+              ((MainToolBar)c.toolbar).setZoomComboBox(getMapModule().getView().getZoom()); }}
 
-	private void updateNavigationActions() {
-	    List keys = new LinkedList(getMapModules().keySet());
-	    if (getMapModule() == null) {
-		return;
-	    }
-	    int index = keys.indexOf(getMapModule().toString());
-	    ListIterator i = keys.listIterator(index);
-	    if (i.hasPrevious()) {
-		navigationPreviousMap.setEnabled(true);
-	    } else {
-		navigationPreviousMap.setEnabled(false);
-	    }
-	    if (i.hasNext()) {
-		i.next();
-		if (i.hasNext()) {
-		    navigationNextMap.setEnabled(true);
-		} else {
-		    navigationNextMap.setEnabled(false);
-		}
-	    }
-	}
+        
+        //
+        // Closing of a map
+        // _________________
+
+
+       private void close() throws Exception {
+            getMode().getModeController().close();  //exception is thrown here if user cancels operation
+            String toBeClosed = getMapModule().toString();
+            mapModules.remove(toBeClosed);
+            if (mapModules.isEmpty()) {
+               setAllActions(false);
+               setMapModule(null);
+               frame.setView(null); }
+            else {
+               changeToMapModule((String)mapModules.keySet().iterator().next());
+               updateNavigationActions(); }
+            mapModuleChanged(); }
+
+       // }}
+
     }
 
     /**
@@ -605,49 +709,68 @@ public class Controller {
      * Maybe explicitly closed maps should be removed from
      * History too?
      */
+
+    // Daniel: To the best of my knowledge, history does not serve any
+    // purpose which would not already be covered. I am disabling the
+    // history. If you want to enable history and get it working, you have
+    // to consider that every map module stored in history knows of the map
+    // view. If you close the map, but it is not removed from history,
+    // complete view together with all the models and views of nodes and
+    // edges will remain in memory and cannot be collected.
+    //
+    // One of the solution which comes to mind is to store string names in
+    // history instead of map modules. Another option is to remove maps from
+    // history upon closing the maps.
+
     private class HistoryManager {
-	private LinkedList historyList = new LinkedList();;
-	private int current;
+        private LinkedList /* of map modules */ historyList = new LinkedList();
+        private int current;
 
-	HistoryManager() {
-	}
+        HistoryManager() {
+        }
 
-	void nextMap() {
-	    if (current+1 < historyList.size()) {
-		getMapModuleManager().changeToMapModuleWithoutHistory((MapModule)historyList.get(++current));
-		//the map is immediately added again via changeToMapModule
-		historyPreviousMap.setEnabled(true);
-		if ( current >= historyList.size()-1)
-		    historyNextMap.setEnabled(false);
-	    }
-	}
+        void nextMap() {
+           if (false) {
+           if (current+1 < historyList.size()) {
+              getMapModuleManager().changeToMapModuleWithoutHistory((MapModule)historyList.get(++current));
+              //the map is immediately added again via changeToMapModule
+              historyPreviousMap.setEnabled(true);
+              if ( current >= historyList.size()-1)
+                 historyNextMap.setEnabled(false);
+           }
+           }
+        }
 
-	void previousMap() {
-	    if (current > 0) {
-		getMapModuleManager().changeToMapModuleWithoutHistory((MapModule)historyList.get(--current));
-		historyNextMap.setEnabled(true);
-		if ( current <= 0)
-		    historyPreviousMap.setEnabled(false);
-	    }
-	}
+        void previousMap() {
+           if (false) {
+           if (current > 0) {
+              getMapModuleManager().changeToMapModuleWithoutHistory((MapModule)historyList.get(--current));
+              historyNextMap.setEnabled(true);
+              if ( current <= 0)
+                 historyPreviousMap.setEnabled(false);
+           }
+           }
+        }
 
-	void mapChanged(MapModule map) {
-	    while (current < historyList.size()-1) {
-		historyList.remove(historyList.size()-1);
-	    }
-	    historyList.add(map);
-	    current = historyList.indexOf(map);
-	    if (current > 0) {
-		historyPreviousMap.setEnabled(true);
-	    } else {
-		historyPreviousMap.setEnabled(false);
-	    }//closeMap will cause a bug?
-	    if (current < historyList.size()-1) {
-		historyNextMap.setEnabled(true);
-	    } else {
-		historyNextMap.setEnabled(false);
-	    }
-	}
+        void mapChanged(MapModule map) {
+           if (false) {
+           while (current < historyList.size()-1) {
+              historyList.remove(historyList.size()-1);
+           }
+           historyList.add(map);
+           current = historyList.indexOf(map);
+           if (current > 0) {
+              historyPreviousMap.setEnabled(true);
+           } else {
+              historyPreviousMap.setEnabled(false);
+           }//closeMap will cause a bug?
+           if (current < historyList.size()-1) {
+              historyNextMap.setEnabled(true);
+           } else {
+              historyNextMap.setEnabled(false);
+           }
+           }
+        }
     }
 
     //
@@ -655,64 +778,67 @@ public class Controller {
     //
 
     private class QuitAction extends AbstractAction {
-	QuitAction(Controller controller) {
-	    super(controller.getFrame().getResources().getString("quit"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    quit();
-	}
+        QuitAction(Controller controller) {
+            super(controller.getResourceString("quit"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            quit();
+        }
     }
 
     /**This closes only the current map*/
     private class CloseAction extends AbstractAction {
-	CloseAction(Controller controller) {
-	    super(controller.getFrame().getResources().getString("close"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    try {
-		getMapModuleManager().close();
-	    } catch (Exception ex) {
-		return;
-	    }
-	}
+        CloseAction(Controller controller) {
+            super(controller.getResourceString("close"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            try {
+                getMapModuleManager().close();
+            } catch (Exception ex) {
+                return;
+            }
+        }
     }
 
     private class PrintAction extends AbstractAction {
-	Controller controller;
-	boolean isDlg;
-	PrintAction(Controller controller, boolean isDlg) {
-	    super(controller.getFrame().getResources().getString("print"), new ImageIcon(getResource("images/Print24.gif")));
-	    this.controller = controller;
-	    setEnabled(false);
-		this.isDlg = isDlg;
-	}
-	public void actionPerformed(ActionEvent e) {
-	    PrinterJob printJob = PrinterJob.getPrinterJob();
+        Controller controller;
+        boolean isDlg;
+        PrintAction(Controller controller, boolean isDlg) {
+            super(controller.getResourceString("print"),
+                  new ImageIcon(getResource("images/Print24.gif")));
+            this.controller = controller;
+            setEnabled(false);
+            this.isDlg = isDlg;
+        }
+        public void actionPerformed(ActionEvent e) {
+            if (!acquirePrinterJobAndPageFormat()) {
+               return; }
 
-	    printJob.setPrintable(getView(),pageFormat);
+            printerJob.setPrintable(getView(),pageFormat);
 
-	    if (!isDlg || printJob.printDialog()) {
-		try {
-		    printJob.print();
-		} catch (Exception ex) {
-		    ex.printStackTrace();
-		}
-	    }
-	}
+            if (!isDlg || printerJob.printDialog()) {
+                try {
+                    printerJob.print();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
     private class PageAction extends AbstractAction {
-	Controller controller;
-	PageAction(Controller controller) {
-	    super(controller.getFrame().getResources().getString("page"));
-	    this.controller = controller;
-	    setEnabled(false);
-	}
-	public void actionPerformed(ActionEvent e) {
-	    PrinterJob printJob = PrinterJob.getPrinterJob();
-		// Ask user for page format (e.g., portrait/landscape)
-		pageFormat = printJob.pageDialog(pageFormat);
-	}
+        Controller controller;
+        PageAction(Controller controller) {
+            super(controller.getResourceString("page"));
+            this.controller = controller;
+            setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent e) {
+            if (!acquirePrinterJobAndPageFormat()) {
+               return; }
+            // Ask user for page format (e.g., portrait/landscape)          
+            pageFormat = printerJob.pageDialog(pageFormat);
+        }
     }
 
     //
@@ -720,46 +846,46 @@ public class Controller {
     //
 
     private class DocumentationAction extends AbstractAction {
-	Controller controller;
-	DocumentationAction(Controller controller) {
-	    super(controller.getFrame().getResources().getString("documentation"));
-	    this.controller = controller;
-	}
-	public void actionPerformed(ActionEvent e) {
-	    changeToMode("Browse");
-	    //	    try {
-	    String map = getFrame().getProperty("docmapurl");  //(new File("doc/maps/freemind.mm"));
-	    if (map.startsWith("."))  {
-		map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
-	    }
-	    ((BrowseController)getMode().getModeController()).loadURL(map);
-		//IMPROVE THIS!
-		//	    } catch (FileNotFoundException ex) {
-		//		JOptionPane.showMessageDialog(getView(), getFrame().getResources().getString("file_not_found") + "\n Documentation Map not found.");
-		//	    }
-	}
+        Controller controller;
+        DocumentationAction(Controller controller) {
+            super(controller.getResourceString("documentation"));
+            this.controller = controller;
+        }
+        public void actionPerformed(ActionEvent e) {
+            changeToMode("Browse");
+            //      try {
+            String map = getProperty("docmapurl");  //(new File("doc/maps/freemind.mm"));
+            if (map.startsWith("."))  {
+                map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
+            }
+            ((BrowseController)getMode().getModeController()).loadURL(map);
+                //IMPROVE THIS!
+                //          } catch (FileNotFoundException ex) {
+                //              JOptionPane.showMessageDialog(getView(), getResourceString("file_not_found") + "\n Documentation Map not found.");
+                //          }
+        }
     }
 
     private class AboutAction extends AbstractAction {
-	Controller controller;
-	AboutAction(Controller controller) {
-	    super(controller.getFrame().getResources().getString("about"));
-	    this.controller = controller;
-	}
-	public void actionPerformed(ActionEvent e) {
-	    JOptionPane.showMessageDialog(getView(),controller.getFrame().getResources().getString("about_text")+FreeMind.version);
-	}
+        Controller controller;
+        AboutAction(Controller controller) {
+            super(controller.getResourceString("about"));
+            this.controller = controller;
+        }
+        public void actionPerformed(ActionEvent e) {
+           JOptionPane.showMessageDialog(getFrame().getViewport(),controller.getResourceString("about_text")+FreeMind.version);
+        }
     }
 
     private class LicenseAction extends AbstractAction {
-	Controller controller;
-	LicenseAction(Controller controller) {
-	    super(controller.getFrame().getResources().getString("license"));
-	    this.controller = controller;
-	}
-	public void actionPerformed(ActionEvent e) {
-	    JOptionPane.showMessageDialog(getView(),controller.getFrame().getResources().getString("license_text"));
-	}
+        Controller controller;
+        LicenseAction(Controller controller) {
+            super(controller.getResourceString("license"));
+            this.controller = controller;
+        }
+        public void actionPerformed(ActionEvent e) {
+            JOptionPane.showMessageDialog(getView(),controller.getResourceString("license_text"));
+        }
     }
 
 
@@ -768,43 +894,47 @@ public class Controller {
     //
 
     private class HistoryPreviousMapAction extends AbstractAction {
-	HistoryPreviousMapAction(Controller controller) {	 
-	    super(controller.getFrame().getResources().getString("previous_map"), new ImageIcon(getResource("images/Back24.gif")));
-	    setEnabled(false);
-	}
-	public void actionPerformed(ActionEvent event) {
-	    history.previousMap();
-	}
+        HistoryPreviousMapAction(Controller controller) {        
+            super(controller.getResourceString("previous_map"),
+                  new ImageIcon(getResource("images/Back24.gif")));
+            setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent event) {
+            history.previousMap();
+        }
     }
 
     private class HistoryNextMapAction extends AbstractAction {
-	HistoryNextMapAction(Controller controller) {
-	    super(controller.getFrame().getResources().getString("next_map"), new ImageIcon(getResource("images/Forward24.gif")));
-	    setEnabled(false);
-	}
-	public void actionPerformed(ActionEvent event) {
-	    history.nextMap();
-	}
+        HistoryNextMapAction(Controller controller) {
+            super(controller.getResourceString("next_map"),
+                  new ImageIcon(getResource("images/Forward24.gif")));
+            setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent event) {
+            history.nextMap();
+        }
     }
 
     private class NavigationPreviousMapAction extends AbstractAction {
-	NavigationPreviousMapAction(Controller controller) {	 
-	    super(controller.getFrame().getResources().getString("previous_map"), new ImageIcon(getResource("images/Back24.gif")));
-	    setEnabled(false);
-	}
-	public void actionPerformed(ActionEvent event) {
-	    mapModuleManager.previousMapModule();
-	}
+        NavigationPreviousMapAction(Controller controller) {     
+            super(controller.getResourceString("previous_map"),
+                  new ImageIcon(getResource("images/Back24.gif")));
+            setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent event) {
+            mapModuleManager.previousMapModule();
+        }
     }
 
     private class NavigationNextMapAction extends AbstractAction {
-	NavigationNextMapAction(Controller controller) {
-	    super(controller.getFrame().getResources().getString("next_map"), new ImageIcon(getResource("images/Forward24.gif")));
-	    setEnabled(false);
-	}
-	public void actionPerformed(ActionEvent event) {
-	    mapModuleManager.nextMapModule();
-	}
+        NavigationNextMapAction(Controller controller) {
+            super(controller.getResourceString("next_map"),
+                  new ImageIcon(getResource("images/Forward24.gif")));
+            setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent event) {
+            mapModuleManager.nextMapModule();
+        }
     }
 
     //
@@ -812,32 +942,86 @@ public class Controller {
     //
     
     private class MoveToRootAction extends AbstractAction {
-	MoveToRootAction(Controller controller) {
-	    super(controller.getFrame().getResources().getString("move_to_root"));
-	    setEnabled(false);
-	}
-	public void actionPerformed(ActionEvent event) {
-	    moveToRoot();
-	}
+        MoveToRootAction(Controller controller) {
+            super(controller.getResourceString("move_to_root"));
+            setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent event) {
+            moveToRoot();
+        }
     }
+            
+    private class ToggleMenubarAction extends AbstractAction {
+        ToggleMenubarAction(Controller controller) {
+           super(controller.getResourceString("toggle_menubar"));
+           setEnabled(true);
+        }
+        public void actionPerformed(ActionEvent event) {
+           menubarVisible=!menubarVisible;
+           setMenubarVisible(menubarVisible);
+        }
+    }
+
+    private class ToggleToolbarAction extends AbstractAction {
+        ToggleToolbarAction(Controller controller) {
+           super(controller.getResourceString("toggle_toolbar"));
+           setEnabled(true);
+        }
+        public void actionPerformed(ActionEvent event) {
+           toolbarVisible=!toolbarVisible;
+           setToolbarVisible(toolbarVisible);
+        }
+    }
+
+    protected class ZoomInAction extends AbstractAction {
+        public ZoomInAction(Controller controller) {
+           super(controller.getResourceString("zoom_in")); }
+        public void actionPerformed(ActionEvent e) {
+           ((MainToolBar)toolbar).zoomIn(); }}
+
+    protected class ZoomOutAction extends AbstractAction {
+        public ZoomOutAction(Controller controller) {
+           super(controller.getResourceString("zoom_out")); }
+        public void actionPerformed(ActionEvent e) {
+           ((MainToolBar)toolbar).zoomOut(); }}
 
     //
     // Preferences
     //
     private class BackgroundSwatch extends ColorSwatch {
-	Color getColor() {
-	    return getModel().getBackgroundColor();
-	}
+        Color getColor() {
+            return getModel().getBackgroundColor();
+        }
     }
 
     private class BackgroundAction extends AbstractAction {
-	BackgroundAction(Controller controller, Icon icon) {
-	    super(controller.getFrame().getResources().getString("background"),icon);
-	}
-	public void actionPerformed(ActionEvent e) {
-	    Color color = JColorChooser.showDialog(getView(),"Choose Background Color:",getView().getBackground() );
-	    getModel().setBackgroundColor(color);
-	}
+        BackgroundAction(Controller controller, Icon icon) {
+            super(controller.getResourceString("background"),icon);
+        }
+        public void actionPerformed(ActionEvent e) {
+            Color color = JColorChooser.showDialog(getView(),"Choose Background Color:",getView().getBackground() );
+            getModel().setBackgroundColor(color);
+        }
     }
+
+    private class OptionAntialiasAction extends AbstractAction {
+       OptionAntialiasAction(Controller controller) {}
+       public void actionPerformed(ActionEvent e) {
+          if (e.getActionCommand().equals("antialias_none")) {
+             setAntialiasEdges(false);
+             setAntialiasAll(false); }
+          if (e.getActionCommand().equals("antialias_edges")) {
+             setAntialiasEdges(true);
+             setAntialiasAll(false); }
+          if (e.getActionCommand().equals("antialias_all")) {
+             setAntialiasEdges(false);
+             setAntialiasAll(true); }
+          getView().repaint(); }}
+
+    private class OptionHTMLExportFoldingAction extends AbstractAction {
+       OptionHTMLExportFoldingAction(Controller controller) {}
+       public void actionPerformed(ActionEvent e) {
+          setProperty("html_export_folding", e.getActionCommand()); }}
+
 }//Class Controller
 

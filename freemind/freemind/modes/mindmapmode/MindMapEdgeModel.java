@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapEdgeModel.java,v 1.5 2001-04-06 20:50:11 ponder Exp $*/
+/*$Id: MindMapEdgeModel.java,v 1.7 2003-11-03 10:39:53 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -26,8 +26,6 @@ import freemind.modes.EdgeAdapter;
 import freemind.main.Tools;
 import java.awt.Color;
 
-//import  org.w3c.dom.Document;
-//import org.w3c.dom.Element;
 import freemind.main.XMLElement;
 
 public class MindMapEdgeModel extends EdgeAdapter {
@@ -35,43 +33,6 @@ public class MindMapEdgeModel extends EdgeAdapter {
     public MindMapEdgeModel(MindMapNode node,FreeMindMain frame) {
 	super(node,frame);
     }
-
-    /*Xerces save method
-    public void save(Document doc, Element xmlParent) {
-	if (style!=null || color!=null || width!=WIDTH_PARENT) {
-	    Element edge = doc.createElement("edge");
-	    xmlParent.appendChild(edge);
-	    if (style != null) {
-		edge.setAttribute("style",style);
-	    }
-	    if (color != null) {
-		edge.setAttribute("color",Tools.colorToXml(color));
-	    }
-	    if (width != WIDTH_PARENT) {
-		    if (width == WIDTH_THIN)
-			edge.setAttribute("width","thin");
-			else
-			edge.setAttribute("width",Integer.toString(width));
-	    }
-	}
-    }
-    */
-    /*
-    public void load(Element edge) {
-	if (!edge.getAttribute("style").equals("")) {
-	    setStyle(edge.getAttribute("style"));
-	}
-	if (!edge.getAttribute("color").equals("")) {
-	    setColor(Tools.xmlToColor(edge.getAttribute("color") ) );
-	}
-	if (!edge.getAttribute("width").equals("")) {
-		if (edge.getAttribute("width").equals("thin"))
-		    setWidth(WIDTH_THIN);
-			else
-		    setWidth(Integer.parseInt(edge.getAttribute("width")));
-	}
-    }
-    */
 
     public XMLElement save() {
 	if (style!=null || color!=null || width!=WIDTH_PARENT) {
@@ -93,21 +54,6 @@ public class MindMapEdgeModel extends EdgeAdapter {
 	    return edge;
 	}
 	return null;
-    }
-
-    public void load(XMLElement edge) {
-	if (edge.getProperty("style")!=null) {
-	    setStyle(edge.getProperty("style"));
-	}
-	if (edge.getProperty("color")!=null) {
-	    setColor(Tools.xmlToColor(edge.getProperty("color") ) );
-	}
-	if (edge.getProperty("width")!=null) {
-		if (edge.getProperty("width").equals("thin"))
-		    setWidth(WIDTH_THIN);
-		else
-		    setWidth(Integer.parseInt(edge.getProperty("width")));
-	}
     }
 
     public void setColor(Color color) {

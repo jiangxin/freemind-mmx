@@ -1,14 +1,37 @@
+<!-- Default patterns supplied with FreeMind -->
 <patterns>
-	<pattern name="positive">
-		<node color="#00FF00"/>
-		<edge color="#00FF00"/>
-	</pattern>
-	<pattern name="negative">
-		<node color="#FF0000"/>
-		<edge color="#FF0000"/>
-	</pattern>
-	<pattern name="neutral">
-		<node color="#0000FF"/>
-		<edge color="#0000FF"/>
-	</pattern>
+   <pattern name="Normal"/>
+   <!-- task -->
+   <pattern name="OK">
+      <node color="#006600"/>
+   </pattern>
+   <pattern name="Needs action">
+      <node color="#990000"/>
+   </pattern>
+   <pattern name="Hot">
+      <node color="#ff0000"/>
+   </pattern>
+   <!-- document -->
+   <pattern name="Detail">
+      <node color="#999999">
+         <font size="10"/>
+      </node>
+   </pattern>
+   <pattern name="Folder">
+      <node color="#006699"/>
+   </pattern>
+   <pattern name="Topic">
+      <node color="#669900"/>
+   </pattern>
+   <pattern name="Waiting Topic">
+      <node color="#B3B95C"/>
+   </pattern>
+   <pattern name="Object / Keyword">
+      <node color="#996600"/>
+   </pattern>
+   <!-- example of edges -->
+   <pattern name="Blue with edges">
+      <node color="#000099"/>
+      <edge color="#000099"/>
+   </pattern>
 </patterns>

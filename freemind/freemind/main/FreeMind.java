@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.18 2003-11-03 10:15:45 sviles Exp $*/
+/*$Id: FreeMind.java,v 1.19 2003-11-03 10:28:52 sviles Exp $*/
 
 package freemind.main;
 
@@ -50,10 +50,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.ImageIcon;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
-    public static final String version = "0.5.0";
+    public static final String version = "0.6.0";
     //    public static final String defaultPropsURL = "freemind.properties";
     public URL defaultPropsURL;
     //    public static Properties defaultProps;
@@ -97,7 +99,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	    try {
                 if (!userPropertiesFolder.exists()) {
                    userPropertiesFolder.mkdir(); }
-
 
                 System.out.println();
                 System.out.println("Looking for user properties:");
@@ -148,13 +149,21 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 	    }
 	} catch (Exception ex) {
-	    System.err.println("Panic! Error while setting Look&Feel");
+	    System.err.println("Unable to set Look & Feel.");
 	}
+
+	ImageIcon icon = new ImageIcon(getResource("images/FreeMindWindowIcon.png"));
+	setIconImage(icon.getImage());
 
 	//Layout everything
 	getContentPane().setLayout( new BorderLayout() );
 
 	c = new Controller(this);
+
+	if (Tools.safeEquals(getProperty("antialiasEdges"),"true")) {
+           c.setAntialiasEdges(true); }
+        if (Tools.safeEquals(getProperty("antialiasAll"),"true")) {
+           c.setAntialiasAll(true); }
 
 	//Create the MenuBar
 	menuBar = new MenuBar(c);
@@ -183,9 +192,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
               }
         });  
 
+        SwingUtilities.updateComponentTreeUI(this); // Propagate LookAndFeel to JComponents
+
 	c.changeToMode(getProperty("initial_mode"));
 
     }//Constructor
+
+    public boolean isApplet() {
+       return false; }
 
     public File getPatternsFile() {
        return patternsFile; }
@@ -220,8 +234,12 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	return c.getView();
     }
 
+    public Controller getController() {
+	return c;
+    }
+
     public void setView(MapView view) {
-	scrollPane.setViewportView(view);
+        scrollPane.setViewportView(view);
 	if(view != null) 
 	    view.setAutoscrolls(true);//for some reason this doesn't work
     }
@@ -256,9 +274,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
        if (System.getProperty("os.name").substring(0,3).equals("Win")) {
        //if (false) {
-            String explorer_command = "explorer";
-            if (System.getProperty("os.name").equals("Windows NT")) {
-               explorer_command = "C:\\Program Files\\Internet Explorer\\iexplore.exe"; }
+          String explorer_command = "explorer";
+          if (System.getProperty("os.name").equals("Windows NT")) {
+             explorer_command = "C:\\Program Files\\Internet Explorer\\iexplore.exe"; }
 
             // Here we introduce " around the parameter of explorer
             // command. This is not because of possible spaces in this
@@ -266,34 +284,33 @@ public class FreeMind extends JFrame implements FreeMindMain {
             // problems. My understanding of MSDOS is not so good, but at
             // least I can say, that "=" is used in general for the purpose
             // of variable assignment.
-	    String[] call = { explorer_command, "\""+url.toString()+"\"" };
+	    //String[] call = { explorer_command, "\""+url.toString()+"\"" };
             try  {
                // This is working fine on Windows 2000 and NT as well
-               // It does not work fine with all links :-(
-               // Does not work for links ending with .html or .htm
-               //String command = "rundll32 url.dll,FileProtocolHandler "+url.toString();
-               //Process p = Runtime.getRuntime().exec( command );  }
                Process p;
-               // Below is a peace of code showing, how to run executables directly
+               // Below is a piece of code showing how to run executables directly
                // without asking. However, we don't want to do that. Explorer will run
                // executable, but ask before it actually runs it.
                //
                // Imagine you download a package of maps containing also nasty
                // executable. Let's say there is a map "index.mm". This map contains a
                // link to that nasty executable, but the name of the link appearing to the
-               // user does not indicate at all, that clicking the link leads to execution
+               // user does not indicate at all that clicking the link leads to execution
                // of a programm.  This executable is located on your local computer, so
                // asking before executing remote executable does not solve the
                // problem. You click the link and there you are running evil executable.
 
                // p = Runtime.getRuntime().exec( "rundll32 url.dll,FileProtocolHandler "+url.toString()); }}
 
-               if (url.toString().startsWith("mailto:")) {
-                  Runtime.getRuntime().exec( "rundll32 url.dll,FileProtocolHandler "+url.toString()); }
+               if (url.getProtocol().equals("file")) {
+                  String command = "rundll32 url.dll,FileProtocolHandler "+Tools.urlGetFile(url);
+                  Runtime.getRuntime().exec(command); }
+               else if (url.toString().startsWith("mailto:")) {
+                  Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+url.toString()); }
                else {
-                  Runtime.getRuntime().exec( call ); }}
+                  Runtime.getRuntime().exec(explorer_command+" \""+url.toString()+"\""); }}
             catch(IOException x) {
-               Tools.errorMessage("Could not invoke browser.");
+               c.errorMessage("Could not invoke browser.");
                System.err.println("Caught: " + x); }
         } else {
             // There is no '"' character around url.toString (compare to Windows code
@@ -319,7 +336,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
                      np = Runtime.getRuntime().exec 
                         (new String [] {"netscape", urlString }); }}
                catch(IOException ex2) {
-                  Tools.errorMessage("Could not invoke browser.");
+                  c.errorMessage("Could not invoke browser.");
                   System.err.println("Caught: " + ex2); }}
         }
     }
@@ -366,6 +383,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     public static void main(String[] args) {
 	FreeMind frame = new FreeMind();
+
+        // First check version of Java
+        frame.c.checkJavaVersion();
 	
 	ModeController ctrl = frame.c.getMode().getModeController();
 	//This could be improved.
@@ -392,18 +412,25 @@ public class FreeMind extends JFrame implements FreeMindMain {
               }
            }
         }
-        if (!fileLoaded) {
-           frame.c.getLastOpenedList().open(frame.getProperty("onStartIfNotSpecified"));
-        }
+        if (!fileLoaded && frame.getProperty("onStartIfNotSpecified") != null) {
+           frame.c.getLastOpenedList().open(frame.getProperty("onStartIfNotSpecified")); }
 
         frame.pack();
 
 	try {
-           frame.getView().moveToRoot();
-	} catch (Exception e) { e.printStackTrace(); }
+           if (frame.getView() != null) {
+              frame.getView().moveToRoot(); }}
+        catch (Exception e) { 
+           e.printStackTrace(); }
+
+        //if (frame.getProperty("menubarVisible").equals("false")) {
+        //   frame.c.setMenubarVisible(false); }
+        // ^ Not allowed in application because of problems with not working key shortcuts
+
+        if (frame.getProperty("toolbarVisible") != null && frame.getProperty("toolbarVisible").equals("false")) {
+           frame.c.setToolbarVisible(false); }
 
         frame.setVisible(true);
-
 
     }//main()
 }

@@ -16,17 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.11 2003-11-03 10:15:45 sviles Exp $*/
+/*$Id: Tools.java,v 1.13 2003-11-03 10:39:51 sviles Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
 
 import java.io.File;
-import java.util.Vector;
-import java.util.StringTokenizer;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.ListIterator;
+import java.util.*;
 import java.net.URL;
 import java.awt.Color;
 import java.awt.Font;
@@ -34,7 +30,21 @@ import java.awt.GraphicsEnvironment;
 import javax.swing.JOptionPane;
 
 public class Tools {
+
+   //public static final Set executableExtensions = new HashSet ({ "exe", "com", "vbs" });
+
+
+   //The Java programming language provides a shortcut syntax for creating and initializing an array. Here's an example of this syntax: 
+   //boolean[] answers = { true, false, true, true, false };
+
+    public static final Set executableExtensions = new HashSet
+      (Arrays.asList(new String[]{ "exe", "com", "vbs", "bat", "lnk" }));
+
+    private static Set availableFontFamilyNames  = null; // Keep set of platform fonts
     
+    public static boolean executableByExtension(String file) {
+       return executableExtensions.contains(getExtension(file)); }
+
     public static String colorToXml(Color col) {
 	if (col == null) throw new IllegalArgumentException("Color was null");
 	String red = Integer.toHexString(col.getRed());
@@ -86,19 +96,28 @@ public class Tools {
 	return file;
     }
 
-    public static Vector getAllFonts() {
-	GraphicsEnvironment gEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	String envFonts[] = gEnv.getAvailableFontFamilyNames();
-	Vector vector = new Vector();
-	for( int i=0;i<envFonts.length;i++ ) {
-	    vector.addElement(envFonts[i]);
-	}
-	return vector;
-    }
+    public static Set getAvailableFontFamilyNames() {
+       if (availableFontFamilyNames == null) {
+          GraphicsEnvironment gEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+          String envFonts[] = gEnv.getAvailableFontFamilyNames();
+          availableFontFamilyNames = new HashSet();
+          for (int i=0; i<envFonts.length; i++) {
+             availableFontFamilyNames.add(envFonts[i]); }
+          // Add this one explicitly, Java defaults to it if the font is not
+          availableFontFamilyNames.add("dialog"); }
+       return availableFontFamilyNames; }
 
-    public static boolean isValidFont(String font) {
-	return getAllFonts().contains(font);
-    }
+    public static Vector getAvailableFontFamilyNamesAsVector() {
+       GraphicsEnvironment gEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+       String envFonts[] = gEnv.getAvailableFontFamilyNames();
+       Vector availableFontFamilyNames = new Vector();
+       for (int i=0; i<envFonts.length; i++) {
+          availableFontFamilyNames.add(envFonts[i]); }
+       return availableFontFamilyNames; }
+
+    public static boolean isAvailableFontFamily(String fontFamilyName) {
+       return getAvailableFontFamilyNames().contains(fontFamilyName); }
+
 
     /**
      * Returns the lowercase of the extension of a file. Example: getExtension("fork.pork.MM") == "mm"
@@ -144,7 +163,7 @@ public class Tools {
        String osNameStart = System.getProperty("os.name").substring(0,3);
        String fileSeparator = System.getProperty("file.separator");
        if (osNameStart.equals("Win")) {
-          return path.substring(1,2).equals(":") || path.startsWith(fileSeparator+fileSeparator);
+          return ((path.length() > 1) && path.substring(1,2).equals(":")) || path.startsWith(fileSeparator);
        } else if (osNameStart.equals("Mac")) {
           return !path.startsWith(fileSeparator);
        } else {
@@ -162,17 +181,11 @@ public class Tools {
     public static String urlGetFile(URL url) {
        String osNameStart = System.getProperty("os.name").substring(0,3);
        String fileSeparator = System.getProperty("file.separator");
-       if (osNameStart.equals("Win") && url.getProtocol().equals("file")) {
-          String fileName = url.getFile();
-          
-          if (fileName.startsWith(fileSeparator) && fileName.substring(2,3).equals(":")) {
-             fileName = fileName.substring(1); }
-          if (!url.getHost().equals("")) {
-             fileName = "//" + url.getHost() + fileName; }
-          // ^ This condition is necessary for URLs like
-          // "file://winnthost/folder/file.txt".  In a situation like that, the getFile()
-          // returns "/folder/file.txt" and getHost() returns "winnthost".
-          return fileName; }
+       if (osNameStart.equals("Win") && url.getProtocol().equals("file")) {          
+          String fileName = url.toString().replaceFirst("^file:","").replace('/','\\');
+          return (fileName.indexOf(':') >= 0) ?
+             fileName.replaceFirst("^\\\\*","") :
+             fileName; } // Network path
        else {
           return url.getFile(); }}
 
@@ -245,8 +258,14 @@ public class Tools {
 	}
 	return target.toString();
     }
-   public static void errorMessage(Object message) {
-      JOptionPane.showMessageDialog(null, message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }
+
+   public static boolean safeEquals(String string1, String string2) {
+      return (string1 != null && string2 != null && string1.equals(string2)); }
+
+   public static String firstLetterCapitalized(String text) {
+      if (text == null || text.length() == 0) {
+         return text; }
+      return text.substring(0,1).toUpperCase() + text.substring(1,text.length()); }
 
 }
 

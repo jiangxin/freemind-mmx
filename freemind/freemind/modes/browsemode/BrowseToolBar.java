@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseToolBar.java,v 1.2 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: BrowseToolBar.java,v 1.4 2003-11-03 10:39:52 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -43,6 +43,7 @@ public class BrowseToolBar extends JToolBar {
     public BrowseToolBar(BrowseController controller) {
 	
 	this.c=controller;
+        this.setRollover(true);
 
 	urlfield.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {

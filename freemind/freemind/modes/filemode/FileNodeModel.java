@@ -16,15 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileNodeModel.java,v 1.7 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: FileNodeModel.java,v 1.9 2003-11-03 10:39:52 sviles Exp $*/
 
 package freemind.modes.filemode;
 
 import freemind.main.FreeMindMain;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import java.util.LinkedList;
-import java.util.ListIterator;
+import java.util.*;
 import java.io.File;
 import java.awt.Color;
 
@@ -45,24 +44,35 @@ public class FileNodeModel extends NodeAdapter {
 	super(frame);
 	setEdge(new FileEdgeModel(this,getFrame()));
 	this.file = file;
-	setFolded(true);
+	setFolded(!file.isFile());
     }
 
     //Overwritten get Methods
     public String getStyle() {
-	if(file.isFile()) {
+        // This condition shows the code is not quite logical:
+        // ordinary file should not be considered folded and 
+        // therefore the clause !isLeaf() should not be necessary.       
+       if (isFolded()) { // && !isLeaf()) {
 	    return "bubble";
 	} else {
-	    return "fork";
+ 	    return "fork";
 	}
     }
+    /*
+	if (file.isFile()) {
+	    return "fork";
+	} else {
+	    return "bubble";
+	}
+    }
+    */
 
     File getFile() {
 	return file;
     }
 
     /**
-     * This could be a nice feat. Improve it!
+     * This could be a nice feature. Improve it!
      */
     public Color getColor() {
 	if (color == null) {
@@ -75,7 +85,7 @@ public class FileNodeModel extends NodeAdapter {
 	    //	    color = Color.getHSBColor(hue,0.5F, 0.5F);
 // 	    int red = (int)(1 / (getFile().length()+1) * 255);
 // 	    color = new Color(red,0,0);
-	    color = Color.blue;
+	    color = isLeaf() ? Color.BLACK: Color.GRAY;
 	}
 	return color;
     }
@@ -92,21 +102,30 @@ public class FileNodeModel extends NodeAdapter {
 	return name;
     }
 
+    public boolean hasChildren() {
+        return !file.isFile() || (children != null && !children.isEmpty()); }
+
     /**
      * 
      */
     public ListIterator childrenFolded() {
 	if (!isRoot()) {
 	    if (isFolded() || isLeaf()) {
-		return null;//Empty Enumeration
+                return Collections.EMPTY_LIST.listIterator();
+		//return null;//Empty Enumeration
 	    }
 	}
-	if (children != null) {
+        return childrenUnfolded();
+    }
+   
+    public ListIterator childrenUnfolded() {
+        if (children != null) {
 	    return children.listIterator(); 
 	}
+        // Create new nodes by reading children from file system
 	try {
 	    String[] files = file.list();
-	    if(files != null) {
+	    if (files != null) {
 		children = new LinkedList();
 
 		String path = file.getPath();
@@ -118,43 +137,16 @@ public class FileNodeModel extends NodeAdapter {
 		}
 	    }
 	} catch (SecurityException se) {}
-	return children.listIterator(); 
-    }
+	//return children.listIterator(); 
+        return children != null ? children.listIterator() 
+           : Collections.EMPTY_LIST.listIterator(); }
 
     public boolean isLeaf() {
 	return file.isFile();
     }
 
+    public String getLink() {
+	return file.toString();
+    }
+
 }
-
-// /* A FileNode is a derivative of the File class - though we delegate to 
-//  * the File object rather than subclassing it. It is used to maintain a 
-//  * cache of a directory's children and therefore avoid repeated access 
-//  * to the underlying file system during rendering. 
-//  */
-// class FileNode { 
-//     File     file; 
-//     Object[] children; 
-
-//     public FileNode(File file) { 
-// 	this.file = file; 
-//     }
-
-//     // Used to sort the file names.
-//     static private MergeSort  fileMS = new MergeSort() {
-// 	public int compareElementsAt(int a, int b) {
-// 	    return ((String)toSort[a]).compareTo((String)toSort[b]);
-// 	}
-//     };
-
-//     /**
-//      * Returns the the string to be used to display this leaf in the JTree.
-//      */
-//     public String toString() { 
-// 	return file.getName();
-//     }
-
-//     public File getFile() {
-// 	return file; 
-//     }
-// }

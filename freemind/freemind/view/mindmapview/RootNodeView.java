@@ -16,19 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.7 2003-11-03 10:15:47 sviles Exp $*/
+/*$Id: RootNodeView.java,v 1.8 2003-11-03 10:28:55 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.modes.MindMapNode;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.awt.Dimension;
-import java.awt.Color;
-import java.awt.Point;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.BasicStroke;
+import java.awt.*;
 
 /**
  * This is a RootNode with different placing of children
@@ -129,15 +124,15 @@ public class RootNodeView extends NodeView {
     //
 
     public Dimension getPreferredSize() {
-	int width = (int)(super.getPreferredSize().width*1.3);
-	int height = (int)(super.getPreferredSize().height*1.6);
+	int width = (int)(super.getPreferredSize().width*1.1);
+	int height = (int)(super.getPreferredSize().height*2);
 	return new Dimension(width,height);
     }	
 
     public void paintSelected(Graphics2D graphics, Dimension size) {
        if( this.isSelected() ) {
           graphics.setColor(selectedColor);
-          graphics.fillOval(0,0,size.width-1,size.height-1);
+          graphics.fillOval(1,1,size.width-1,size.height-1);
        }
     }
 
@@ -156,19 +151,22 @@ public class RootNodeView extends NodeView {
 	//Draw a root node
 	setHorizontalAlignment(CENTER);
 
-	g.setColor(Color.red);
-	g.setStroke(new BasicStroke(2.0f));
-	g.drawOval(0,0,size.width-2,size.height-1);
+	g.setColor(Color.gray);
+	g.setStroke(new BasicStroke(1.0f));
+        setRendering(g);
+	g.drawOval(1,1,size.width-2,size.height-2);
+        if (!getMap().getController().getAntialiasAll()) {
+           g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); }
 
 	super.paint(g);
     }
+
+   protected void setRendering(Graphics2D g) {
+      if (getMap().getController().getAntialiasEdges() || getMap().getController().getAntialiasAll()) {
+         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
+
+
 }
-
-
-
-
-
-
 
 
 

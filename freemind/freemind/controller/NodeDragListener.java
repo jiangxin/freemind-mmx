@@ -58,27 +58,31 @@ public class NodeDragListener implements DragGestureListener {
       MindMapNode node = ((NodeView)e.getComponent()).getModel();
       if (node.isRoot()) return;
 
-      Transferable t = new StringSelection("");
+      //Transferable t; // = new StringSelection("");
+      String dragAction = "MOVE";
 
       Cursor cursor = getCursorByAction(e.getDragAction());
 
       if ((e.getTriggerEvent().getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) != 0) {
          // Change drag action
          cursor = DragSource.DefaultLinkDrop;
-         t = new StringSelection("LINK");
-      }
+         dragAction = "LINK"; }
 
       if ((e.getTriggerEvent().getModifiersEx() & InputEvent.BUTTON2_DOWN_MASK) != 0) {
          // Change drag action
          cursor = DragSource.DefaultCopyDrop;
-         t = new StringSelection("COPY");
-      }
-     
+         dragAction = "COPY"; }
+
+      Transferable t = c.getModel().copy();
+      //new MindMapNodesSelection("Ahoj","Ahoj","Ahoj", dragAction);
+      ((MindMapNodesSelection)t).setDropAction(dragAction);
+      //public void setDropAction(String dropActionContent) {     
+
       // starts the dragging
       //	DragSource dragSource = DragSource.getDefaultDragSource();
 
       e.startDrag
-         ( cursor , t,
+         ( cursor , t, //new MindMapNodesSelection("Ahoj","Ahoj","Ahoj", dragAction),
           new DragSourceListener() {
              public void	dragDropEnd(DragSourceDropEvent dsde) {
 

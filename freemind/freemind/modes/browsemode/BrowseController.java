@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.6 2003-11-03 10:15:45 sviles Exp $*/
+/*$Id: BrowseController.java,v 1.8 2003-11-03 10:39:52 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -56,20 +56,26 @@ public class BrowseController extends ControllerAdapter {
     Action toggleFolded;
     Action toggleChildrenFolded;
     Action find;
+    Action findNext;
     Action followLink;
     Action nodeUp;
     Action nodeDown;
 
     public BrowseController(Mode mode) {
 	super.setMode(mode);
-	toggleFolded  = new ToggleFoldedAction();
-	toggleChildrenFolded  = new ToggleChildrenFoldedAction();
-	find = new FindAction();
-	followLink  = new FollowLinkAction();
-	nodeUp  = new NodeUpAction();
-	nodeDown  = new NodeDownAction();
+
+        // Daniel: Actions are initialized here and not above because of
+        // some error it would produce. Not studied in more detail.
+        toggleFolded = new ToggleFoldedAction();
+        toggleChildrenFolded = new ToggleChildrenFoldedAction();
+        find = new FindAction();
+        findNext = new FindNextAction();
+        followLink = new FollowLinkAction();
+        nodeUp = new NodeUpAction();
+        nodeDown = new NodeDownAction();
+
 	popupmenu = new BrowsePopupMenu(this);
-	toolbar = new BrowseToolBar(this);
+        toolbar = new BrowseToolBar(this);
 	setAllActions(false);
     }
 
@@ -110,6 +116,7 @@ public class BrowseController extends ControllerAdapter {
     JMenu getNodeMenu() {
 	JMenu nodeMenu = new JMenu(getText("node"));
         add(nodeMenu, find, "keystroke_find");
+        add(nodeMenu, findNext, "keystroke_find_next");
 	add(nodeMenu, followLink, "keystroke_follow_link");
 
         nodeMenu.addSeparator();
@@ -149,23 +156,11 @@ public class BrowseController extends ControllerAdapter {
 	    //	    absolute = new URL(relative);
 	    getFrame().out(absolute.toString());
 	} catch (MalformedURLException ex) {
-           Tools.errorMessage(getText("url_error"));
+           getController().errorMessage(getText("url_error"));
            //getFrame().err(getText("url_error"));
 	   return;
 	}
 
-	//try {
-	    //	    String fileName = absolute.getFile();
-	    // File file = new File(fileName);
-	    //if(!getController().tryToChangeToMapModule(file.getName())) {//this can lead to confusion if the user handles multiple maps with the same name.
-	    //	load(file);
-	    //}
-	    //	} catch (FileNotFoundException e) {
-	    //int returnVal = JOptionPane.showConfirmDialog(getView(), getText("repair_link_question"), getText("repair_link"),JOptionPane.YES_NO_OPTION);
-	    //if (returnVal==JOptionPane.YES_OPTION) {
-	    //	setLink();
-	    //} 
-	//}
 	String type = Tools.getExtension(absolute.getFile());
 	try {
 	    if (type.equals("mm")) {

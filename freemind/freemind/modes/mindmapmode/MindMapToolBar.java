@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.7 2003-11-03 10:15:46 sviles Exp $*/
+/*$Id: MindMapToolBar.java,v 1.9 2003-11-03 10:39:53 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -25,6 +25,7 @@ import freemind.controller.Controller;
 import java.lang.Integer;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.util.*;
 import javax.swing.JComboBox;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
@@ -40,6 +41,8 @@ public class MindMapToolBar extends JToolBar {
     public MindMapToolBar(MindMapController controller) {
 	
 	this.c=controller;
+        this.setRollover(true);
+
 	JButton button;
 
 	button = add(c.newMap);
@@ -69,13 +72,13 @@ public class MindMapToolBar extends JToolBar {
 	button = add(c.normalFont);
 	button.setText("");
 
-	fonts = new JComboBox(Tools.getAllFonts());
+	fonts = new JComboBox(Tools.getAvailableFontFamilyNamesAsVector());
 	fonts.setMaximumRowCount(9);
 	add(fonts);
 	fonts.addItemListener(new ItemListener(){
 		public void itemStateChanged(ItemEvent e) {
 		    // ** this is super-dirty, why doesn't the toolbar know the model?
-		    c.setFont((String)e.getItem());
+		    c.setFontFamily((String)e.getItem());
 		}
 	    });
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.8 2003-11-03 10:15:45 sviles Exp $*/
+/*$Id: FreeMindApplet.java,v 1.9 2003-11-03 10:28:52 sviles Exp $*/
 
 package freemind.main;
 
@@ -48,10 +48,11 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
 
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 
-    public static final String version = "0.5.0";
+    public static final String version = "0.6.0";
     //    public static final String defaultPropsURL;
     public URL defaultPropsURL;
     public static Properties defaultProps;
@@ -62,11 +63,19 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
     private JLabel status = new JLabel();
     Controller c;//the one and only controller
 
+
     public FreeMindApplet() {
     }//Constructor
 
+    public boolean isApplet() {
+       return true; }
+
     public File getPatternsFile() {
        return null; }
+
+    public Controller getController() {
+	return c;
+    }
 
     public MapView getView() {
 	return c.getView();
@@ -207,14 +216,24 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
 	c = new Controller(this);
 
+	if (Tools.safeEquals(getProperty("antialiasEdges"), "true")) {
+           c.setAntialiasEdges(true); }
+	if (Tools.safeEquals(getProperty("antialiasAll"), "true")) {
+           c.setAntialiasAll(true); }
+
+
  	//Create the MenuBar
 	menuBar = new MenuBar(c); //new MenuBar(c);
  	setJMenuBar(menuBar);
+        c.setToolbarVisible(false);
+        c.setMenubarVisible(false);
 
 	//Create the scroll pane.
 		
 	getContentPane().add( scrollPane, BorderLayout.CENTER );
 	getContentPane().add( status, BorderLayout.SOUTH );
+
+        SwingUtilities.updateComponentTreeUI(this); // Propagate LookAndFeel to JComponents
 
 	c.changeToMode(getProperty("initial_mode"));
     }

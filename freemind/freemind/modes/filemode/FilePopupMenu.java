@@ -16,21 +16,29 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FilePopupMenu.java,v 1.4 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: FilePopupMenu.java,v 1.8 2003-11-03 11:00:13 sviles Exp $*/
 
 package freemind.modes.filemode;
 
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 
 public class FilePopupMenu extends JPopupMenu {
 
     private FileController c;
+
+    protected void add(Action action, String keystroke) { 
+       JMenuItem item = add(action);
+       item.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty(keystroke))); }
 
     public FilePopupMenu(FileController c) {
 	this.c = c;
 	
 	//Node menu
 	this.add(c.center);
+        this.addSeparator();
+        this.add(c.find, "keystroke_find");
+        this.add(c.findNext, "keystroke_find_next");
+
     }
 }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.8 2003-11-03 10:15:45 sviles Exp $*/
+/*$Id: MindMapNode.java,v 1.10 2003-11-03 10:39:51 sviles Exp $*/
 
 package freemind.modes;
 
@@ -51,6 +51,8 @@ public interface MindMapNode extends MutableTreeNode {
     boolean isBold();
 
     boolean isItalic();
+
+    boolean isLong();
     
     boolean isUnderlined();
 
@@ -72,10 +74,19 @@ public interface MindMapNode extends MutableTreeNode {
 
     void setFolded(boolean folded);
 
+    void setFont(Font font);
+
+    void setLink(String link);
+
+    void setFontSize(int fontSize);
+
+    void setColor(Color color);
+
     /**
      * Returns the number of childer, whether the node is folded or not. The
      * method getChildCount() returns 0, if the node is folded.
      */
     int getRealChildCount();
 
+    MindMapNode shallowCopy();
 }

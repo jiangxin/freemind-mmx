@@ -1,22 +1,28 @@
 # Project: Freemind
-# Makefile created by Dev-C++ 4.9.1.0
+# Makefile created by Dev-C++ 4.9.6.0
 
 CC   = g++.exe
 WINDRES = windres.exe
-OBJ  = "freemind.o"  "Icon1.o"
-LIBS =  -L"C:\Dev-C++\lib" 
-INCS =  -I"C:\Dev-C++\include"  -I"C:\Dev-C++\include\g++-3"  -I"C:\Dev-C++\include" 
-BIN  = "C:\share\My-Installation-Files\freemind-src-0_4\windows-launcher\Freemind.exe"
+RES  = Freemind_private.res
+OBJ  = freemind.o $(RES)
+LIBS =  -L"C:/Program Files/Dev-Cpp/lib" 
+INCS =  -I"C:/Program Files/Dev-Cpp/include"  -I"C:/Program Files/Dev-Cpp/include/g++-3"  -I"C:/Program Files/Dev-Cpp/include" 
+BIN  = Freemind.exe
 CFLAGS = $(INCS)  -s -mwindows
 
-clean :
-	cmd /C del $(OBJ) $(BIN)
+.PHONY: all all-before all-after clean clean-custom
 
-all : $(OBJ)
-	$(CC) $(OBJ) -o $(BIN) $(RES) $(LIBS) $(CFLAGS)
+all: all-before Freemind.exe all-after
 
-"freemind.o" :
-	$(CC) -c "freemind.c" $(CFLAGS)
 
-"Icon1.o" :
-	$(WINDRES) -i "Icon1.rc" -I rc -o "Icon1.o"
+clean: clean-custom
+	rm -f $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $(OBJ) -o "Freemind.exe" $(LIBS) $(CFLAGS)
+
+freemind.o: freemind.c
+	$(CC) -c freemind.c -o freemind.o $(CFLAGS)
+
+Freemind_private.res: 
+	$(WINDRES) -i FREEMI~1.RC -I rc -o Freemind_private.res -O coff 

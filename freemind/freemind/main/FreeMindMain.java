@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.5 2003-11-03 10:15:45 sviles Exp $*/
+/*$Id: FreeMindMain.java,v 1.7 2003-11-03 10:39:51 sviles Exp $*/
 
 package freemind.main;
 
 import freemind.view.mindmapview.MapView;
 import freemind.controller.MenuBar;
+import freemind.controller.Controller;
 import java.util.ResourceBundle;
 import java.awt.Container;
 import java.net.URL;
@@ -29,11 +30,16 @@ import java.io.File;
 import javax.swing.JLayeredPane;
 
 public interface FreeMindMain {
+    public boolean isApplet();
+
     public MapView getView();
 
     public void setView(MapView view);
 
+    public Controller getController();
+
     public void setWaitingCursor(boolean waiting);
+
     public File getPatternsFile();
 
     public MenuBar getFreeMindMenuBar();

@@ -12,7 +12,23 @@ Linker=
 IsCpp=1
 Icon=
 UnitCount=1
+PrivateResource=Freemind_private.rc
+ResourceIncludes=
+MakeIncludes=
+ExeOutput=
+ObjectOutput=
+OverrideOutput=0
+OverrideOutputName=
+Folders=
+CommandLine=
+Order=
 
 [Unit1]
 FileName=freemind.c
+Open=0
+Folder=
+Top=0
+
+[Views]
+ProjectView=1
 

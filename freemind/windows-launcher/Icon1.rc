@@ -1,3 +1,3 @@
 #include <windows.h>
 
-allegro_icon ICON "Candle.ico"
+allegro_icon ICON "FreeMind.ico"

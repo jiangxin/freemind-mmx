@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LastOpenedList.java,v 1.3 2003-11-03 10:15:44 sviles Exp $*/
+/*$Id: LastOpenedList.java,v 1.5 2003-11-03 10:39:51 sviles Exp $*/
 package freemind.controller;
 
 import freemind.view.MapModule;
@@ -34,7 +34,7 @@ import java.util.HashMap;
  */
 public class LastOpenedList {
     private Controller c;
-    private int entrys = 10;
+    private int maxEntries = 15;
     private List lst = new LinkedList();
     private Map hash = new HashMap();
 
@@ -53,7 +53,7 @@ public class LastOpenedList {
 	lst.add(0,rest);
 	hash.put(rest,map.toString());
 
-	while (lst.size()>entrys) {
+	while (lst.size()>maxEntries) {
 	    lst.remove(lst.size()-1); //remove last elt
 	}
     }

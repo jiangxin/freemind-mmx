@@ -1,4 +1,4 @@
-/*FreeMind - A Program for creating and viewing Mindmaps
+/*FreeMindget - A Program for creating and viewing Mindmaps
  *Copyright (C) 2000-2001  Joerg Mueller <joergmueller@bigfoot.com>
  *See COPYING for Details
  *
@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.19 2003-11-03 10:15:46 sviles Exp $*/
+/*$Id: MindMapMapModel.java,v 1.21 2003-11-03 10:39:53 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -27,6 +27,7 @@ import freemind.main.XMLElement;
 import freemind.main.Tools;
 import freemind.modes.MapAdapter;
 import freemind.modes.NodeAdapter;
+import freemind.modes.EdgeAdapter;
 import freemind.modes.MindMapNode;
 
 import java.awt.Color;
@@ -38,6 +39,7 @@ import java.io.*;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import java.net.URL;
 import java.net.URLConnection;
@@ -48,292 +50,224 @@ import javax.swing.JOptionPane;
 
 public class MindMapMapModel extends MapAdapter {
 
+
     //
     // Constructors
     //
 
+
     public MindMapMapModel(FreeMindMain frame) {
         super(frame);
-        setRoot(new MindMapNodeModel( getFrame().getResources().getString("new_mindmap"), getFrame()));
-    }
+        setRoot(new MindMapNodeModel
+                ( getFrame().getResources().getString("new_mindmap"), getFrame())); }
     
     public MindMapMapModel( MindMapNodeModel root, FreeMindMain frame ) {
         super(frame);
-        setRoot(root);
-    }
+        setRoot(root); }
+
+    // 
 
     public String getRestoreable() {
-        if (getFile()==null) {
-            return null;
-        } else {
-            return "MindMap:"+getFile().getAbsolutePath();
-        }
-    }
+       return getFile()==null ? null : "MindMap:"+getFile().getAbsolutePath(); }
+
 
     //
-    // Methods for editing of the Nodes
+    // Branch modifying general methods together with required interface
     //
-    
-    public void setNodeColor(MindMapNodeModel node, Color color) {
-        node.setColor(color);
-        nodeChanged(node);
-    }
 
-    public void setBranchFont(MindMapNodeModel node, Font f) {
-        setNodeFont(node,f);
-        for(int i=0;i<node.getChildCount();i++) {
-            setBranchFont((MindMapNodeModel)node.getChildAt(i),f);
-        }
-        nodeChanged(node);
-    }
+    public interface NodeModifier {
+       public void modify(MindMapNodeModel node); }
 
+    public void modifyBranch(MindMapNodeModel node, NodeModifier modifier) {
+       modifyBranchRecursively(node, modifier);
+       nodeStructureChanged(node); }
+          
+    protected void modifyBranchRecursively(MindMapNodeModel node, NodeModifier modifier) {
+       modifier.modify(node);
+       for (Iterator i = node.childrenUnfolded();i.hasNext();) {
+          modifyBranchRecursively((MindMapNodeModel)i.next(), modifier); }}
 
-    public void setBranchColor(MindMapNodeModel node, Color color) {
-        setNodeColor(node,color);
-        for(int i=0;i<node.getChildCount();i++) {
-            setBranchColor((MindMapNodeModel)node.getChildAt(i),color);
-        }
-        nodeChanged(node);
-    }
+    // Methods for editing the Nodes    
+    // _________________________________________________________________________________
+
+    public void setBranchFont(MindMapNodeModel node, final Font font) {
+       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
+          node.setFont(font);; }}); }
+
+    public void setBranchColor(MindMapNodeModel node, final Color color) {
+       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
+          node.setColor(color); }}); }
 
     public void setBranchBold(MindMapNodeModel node) {
-        Font f = node.getFont();
-        if(!f.isBold()) {
-            // make bold
-            node.setFont(f.deriveFont(f.getStyle()+Font.BOLD));
-        }
-
-        for(int i=0;i<node.getChildCount();i++) {
-            setBranchBold((MindMapNodeModel)node.getChildAt(i));
-        }
-        nodeChanged(node);
-    }
+       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
+          node.setBold(true); }}); }
 
     public void setBranchNonBold(MindMapNodeModel node) {
-        Font f = node.getFont();
-        if(f.isBold()) {
-            // make normal
-            node.setFont(f.deriveFont(f.getStyle()-Font.BOLD));
-        }
-
-        for(int i=0;i<node.getChildCount();i++) {
-            setBranchNonBold((MindMapNodeModel)node.getChildAt(i));
-        }
-        nodeChanged(node);
-    }
+       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
+          node.setBold(false); }}); }
 
     public void setBranchToggleBold(MindMapNodeModel node) {
-        Font f = node.getFont();
-        if(f.isBold()) {
-            // make normal
-            node.setFont(f.deriveFont(f.getStyle()-Font.BOLD));
-        } else {
-            node.setFont(f.deriveFont(f.getStyle()+Font.BOLD));
-        }
-
-        for(int i=0;i<node.getChildCount();i++) {
-            setBranchToggleBold((MindMapNodeModel)node.getChildAt(i));
-        }
-        nodeChanged(node);
-    }
-
+       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
+          node.toggleBold(); }}); }
 
     public void setBranchItalic(MindMapNodeModel node) {
-        Font f = node.getFont();
-        if(!f.isItalic()) {
-            // make italic
-            node.setFont(f.deriveFont(f.getStyle()+Font.ITALIC));
-        }
-
-        for(int i=0;i<node.getChildCount();i++) {
-            setBranchItalic((MindMapNodeModel)node.getChildAt(i));
-        }
-        nodeChanged(node);
-    }
+       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
+          node.setItalic(true); }}); }
 
     public void setBranchNonItalic(MindMapNodeModel node) {
-        Font f = node.getFont();
-        if(f.isItalic()) {
-            // make normal
-            node.setFont(f.deriveFont(f.getStyle()-Font.ITALIC));
-        }
-
-        for(int i=0;i<node.getChildCount();i++) {
-            setBranchNonItalic((MindMapNodeModel)node.getChildAt(i));
-        }
-        nodeChanged(node);
-    }
+       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
+          node.setItalic(false); }}); }
 
     public void setBranchToggleItalic(MindMapNodeModel node) {
-        Font f = node.getFont();
-        if(f.isItalic()) {
-            // make normal
-            node.setFont(f.deriveFont(f.getStyle()-Font.ITALIC));
-        } else {
-            node.setFont(f.deriveFont(f.getStyle()+Font.ITALIC));
-        }
+       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
+          node.toggleItalic(); }}); }
 
-        for(int i=0;i<node.getChildCount();i++) {
-            setBranchToggleItalic((MindMapNodeModel)node.getChildAt(i));
-        }
-        nodeChanged(node);
-    }
+    public void setBranchFontSize(MindMapNodeModel node, final int fontSize) {
+       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
+          node.estabilishOwnFont();
+          node.setFontSize(fontSize); }}); }
 
+    public void increaseBranchFontSize(MindMapNodeModel node, final int increment) {
+       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
+          node.estabilishOwnFont();
+          node.setFontSize(node.getFont().getSize() + increment); }}); }
 
 
+    //  All these methods do redisplay, because they are offered to controller for use.
+    // __________________________________________________________________________
 
-    public void setNodeFont(MindMapNodeModel node, Font f) {
-        node.setFont(f);
-//      node.setFontSize(f.getSize());
-//      node.setFont(f.getFontName());
-        // FIXME: the implementation should be changed to only use java.awt.Font
-        // node.setStyle(f.getStyle());
-        nodeChanged(node);
-    }
+    public void setNodeColor(MindMapNodeModel node, Color color) {
+        node.setColor(color);
+        nodeChanged(node); }
+
+    public void blendNodeColor(MindMapNodeModel node) {
+        Color mapColor = getBackgroundColor();
+        Color nodeColor = node.getColor();
+        if (nodeColor == null) {
+           nodeColor = Tools.xmlToColor(getFrame().getProperty("standardnodecolor")); }
+        node.setColor( new Color ( (3*mapColor.getRed() + nodeColor.getRed()) / 4,
+                                   (3*mapColor.getGreen() + nodeColor.getGreen()) / 4,
+                                   (3*mapColor.getBlue() + nodeColor.getBlue()) / 4));
+        nodeChanged(node); }
+
+    public void setNodeFont(MindMapNodeModel node, Font font) {
+        node.setFont(font);
+        nodeChanged(node); }
 
     public void setEdgeColor(MindMapNodeModel node, Color color) {
         ((MindMapEdgeModel)node.getEdge()).setColor(color);
-        nodeChanged(node);
-    }
+        nodeChanged(node); }
 
     public void setEdgeWidth(MindMapNodeModel node, int width) {
         ((MindMapEdgeModel)node.getEdge()).setWidth(width);
-        nodeChanged(node);
-    }
+        nodeChanged(node); }
 
     public void setNodeStyle(MindMapNodeModel node, String style) {
         node.setStyle(style);
-        nodeStructureChanged(node);
-    }
+        nodeStructureChanged(node); }
 
     public void setEdgeStyle(MindMapNodeModel node, String style) {
         MindMapEdgeModel edge = (MindMapEdgeModel)node.getEdge();
         edge.setStyle(style);
-        nodeStructureChanged(node);
-    }
+        nodeStructureChanged(node); }
 
     public void setBold(MindMapNodeModel node) {
-        if (node.isBold()) {
-            node.setBold(false);
-        } else {
-            node.setBold(true);
-        }
-        nodeChanged(node);
-    }
+        node.setBold(!node.isBold());
+        nodeChanged(node); }
 
     public void setItalic(MindMapNodeModel node) {
-        if (node.isItalic()) {
-            node.setItalic(false);
-        } else {
-            node.setItalic(true);
-        }
-        nodeChanged(node);
-    }
+        node.setItalic(!node.isItalic());
+        nodeChanged(node); }
 
     public void setUnderlined(MindMapNodeModel node) {
-        if (node.isUnderlined()) {
-            node.setUnderlined(false);
-        } else {
-            node.setUnderlined(true);
-        }
-        nodeChanged(node);
-    }
+        node.setUnderlined(!node.isUnderlined());
+        nodeChanged(node); }
 
     public void setNormalFont(MindMapNodeModel node) {
         node.setItalic(false);
         node.setBold(false);
         node.setUnderlined(false);
-        nodeChanged(node);
-    }
+        nodeChanged(node); }
+
+    public void setFontFamily(MindMapNodeModel node, String fontFamily) {
+        node.estabilishOwnFont();
+        node.setFont(getFrame().getController().getFontThroughMap
+                     (new Font(fontFamily,node.getFont().getStyle(),node.getFont().getSize())));
+        nodeChanged(node); }
 
     public void setFontSize(MindMapNodeModel node, int fontSize) {
-        // ** change the font size
+        node.estabilishOwnFont();
         node.setFont(node.getFont().deriveFont((float)fontSize));
-        nodeStructureChanged(node);
-    }
+        nodeChanged(node); }
 
     public void increaseFontSize(MindMapNodeModel node, int increment) {
-       // This is not called !!!!
-        Font f = node.getFont();
-        float newSize = f.getSize()+increment;
-        node.setFont(f.deriveFont(newSize));
-        nodeStructureChanged(node);
-    }
-
-    public void setFont(MindMapNodeModel node, String font) {
-        node.setFont(new Font(font,node.getFont().getStyle(),node.getFont().getSize()));
-        nodeStructureChanged(node);
-    }
-
-    public void setBranchFontSize(MindMapNodeModel node, int fontSize) {
-        // ** change the font size
-        node.setFont(node.getFont().deriveFont((float)fontSize));
-
-        for(int i=0;i<node.getChildCount();i++) {
-            setBranchFontSize((MindMapNodeModel)node.getChildAt(i),fontSize);
-        }
-
-        nodeStructureChanged(node);
-    }
-
-    public void increaseBranchFontSize(MindMapNodeModel node, int increment) {
-        Font f = node.getFont();
-        float newSize = f.getSize()+increment;
-
-        node.setFont(f.deriveFont(newSize));
-
-        for(int i=0;i<node.getChildCount();i++) {
-            increaseBranchFontSize((MindMapNodeModel)node.getChildAt(i),increment);
-        }
-
-        nodeStructureChanged(node);
-    }
+        node.estabilishOwnFont();
+        node.setFontSize(node.getFont().getSize() + increment);
+        nodeChanged(node); }
 
     //
     // Other methods
     //
+
     public String toString() {
-        if (getFile() == null) {
-            return null;
-        } else {
-            return getFile().getName();
-        }
-    }
+       return getFile() == null ? null : getFile().getName(); }
+
+    //
+    // Export and saving
+    //
+
 
    public boolean saveHTML(MindMapNodeModel rootNodeOfBranch, File file) { 
-        // When isRoot is true, rootNodeOfBranch will be exported as folded regardless his isFolded state in the mindmap
+        // When isRoot is true, rootNodeOfBranch will be exported as folded
+        // regardless his isFolded state in the mindmap.
         try {
             // We do all the HTML saving using just ordinary output.
 
             //Generating output Stream
             BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
 
-            //            fileout.write( stringOut.toString() ); *///Spit out DOM as a String  */
             String el = System.getProperty("line.separator");
             fileout.write(
 "<html>"+el+
 "<head>"+el+
 "<style type=\"text/css\">"+el+
-"    span.foldopened { color: black; font-size: 12px; border-style: dotted;"+el+
+"    span.foldopened { color: white; font-size: xx-small;"+el+
 "    border-width: 1; font-family: monospace; padding: 0em 0.25em 0em 0.25em; background: #e0e0e0;"+el+
 "    VISIBILITY: visible;"+el+
 "    cursor:hand; }"+el+
 ""+el+
 ""+el+
-"    span.foldclosed { color: black; font-size: 12px; border-style: solid;"+el+
+"    span.foldclosed { color: #666666; font-size: xx-small;"+el+
 "    border-width: 1; font-family: monospace; padding: 0em 0.25em 0em 0.25em; background: #e0e0e0;"+el+
 "    VISIBILITY: hidden;"+el+
 "    cursor:hand; }"+el+
 ""+el+
-"    span.foldspecial { color: black; font-size: 12px; border-style: none solid solid none;"+el+
-"    border-width: 1; font-family: Arial, sans-serif; padding: 0em 0.1em 0em 0.1em; background: #e0e0e0;"+el+
+"    span.foldspecial { color: #666666; font-size: xx-small; border-style: none solid solid none;"+el+
+"    border-color: #CCCCCC; border-width: 1; font-family: sans-serif; padding: 0em 0.1em 0em 0.1em; background: #e0e0e0;"+el+
 "    cursor:hand; }"+el+
 ""+el+
-" }"+el+
+"    li { list-style: none; }"+el+
+""+el+
+"    span.l { color: red; font-weight: bold; }"+el+
+""+el+
+"    a:link {text-decoration: none; color: black; }"+el+
+"    a:visited {text-decoration: none; color: black; }"+el+
+"    a:active {text-decoration: none; color: black; }"+el+
+"    a:hover {text-decoration: none; color: black; background: #eeeee0; }"+el+
+""+el+
 "</style>"+el+
 "<!-- ^ Position is not set to relative / absolute here because of Mozilla -->"+el+
 "</head>"+el+
-"<body>"+el+
+"<body>"+el);
+
+            String htmlExportFoldingOption = getFrame().getProperty("html_export_folding");
+            boolean writeFoldingCode =
+               ( htmlExportFoldingOption.equals("html_export_fold_currently_folded") &&
+                 rootNodeOfBranch.hasFoldedStrictDescendant() ) ||
+               htmlExportFoldingOption.equals("html_export_fold_all") ;
+
+            if (writeFoldingCode) { 
+               fileout.write(
 ""+el+
 "<script language=\"JavaScript\">"+el+
 "   // Here we implement folding. It works fine with MSIE5.5, MSIE6.0 and"+el+
@@ -431,20 +365,20 @@ public class MindMapMapModel extends MapAdapter {
 "}"+el+
 ""+el+
 "</script>"+el);
+               
+               fileout.write("<SPAN class=foldspecial onclick=\"fold_document()\">All +</SPAN>"+el);
+               fileout.write("<SPAN class=foldspecial onclick=\"unfold_document()\">All -</SPAN>"+el); }
 
-            if (rootNodeOfBranch.hasFoldedStrictDescendant()) {
-               fileout.write("<SPAN class=foldspecial onclick=\"fold_document()\">Hide all</SPAN>"+el);
-               fileout.write("<SPAN class=foldspecial onclick=\"unfold_document()\">Show all</SPAN>"+el); }
+            //fileout.write("<ul>");
 
-            fileout.write("<ul>");
+            rootNodeOfBranch.saveHTML(fileout, "1", 0, /*isRoot*/true, /*treatAsParagraph*/true);
 
-            rootNodeOfBranch.saveHTML(fileout,"1",0,/*isRoot=*/true);
+            //fileout.write("</ul>");
 
-            fileout.write("</ul>");
-
-            fileout.write("<SCRIPT language=JavaScript>"+el);
-            fileout.write("fold_document();"+el);
-            fileout.write("</SCRIPT>"+el);
+            if (writeFoldingCode) {
+               fileout.write("<SCRIPT language=JavaScript>"+el);
+               fileout.write("fold_document();"+el);
+               fileout.write("</SCRIPT>"+el); }
             fileout.write("</body>"+el);
             fileout.write("</html>"+el);
             fileout.close();
@@ -497,26 +431,6 @@ public class MindMapMapModel extends MapAdapter {
             BufferedWriter fileout = new BufferedWriter(stringWriter);
             saveRTF(mindMapNodes, fileout);
             fileout.close();
-            //System.out.println(stringWriter.toString());
-
-            /*
-return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}}"+
-"\\viewkind4\\uc1\\pard\\b\\f0\\fs18 Test\\b0\\fs20\\par"+
-"\\pard\\li400\\fs18\\u283?\\'9a\\u269?\\u345?\\'9e\\'fd\\'e1\\'ed\\'e9\\fs20\\par"+
-"\\fs18\\'f6\\'fc\\'e4\\'d6\\'dc\\'c4\\'df\\fs20\\par"+
-"\\pard\\par"+
-   "}";
-
-return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}{"+
-"\\colortbl;\\red0\\green0\\blue255;}}\\viewkind4\\uc1\\pard\\f0\\fs20\\ud{}\\li0{}{\\li0\\b \\fs18{}Test}\\par"+
-"\\li400{}{\\li400\\fs18{}\\u283?\\u353?\\u269?\\u345?\\u382?\\u253?\\u225?\\u237?\\u233?}\\par"+
-"\\li400{}{\\li400\\fs18{}\\u246?\\u252?\\u228?\\u214?\\u220?\\u196?\\u223?}\\par"+
-   "}";
-
-            */
-
-
-            //            return JOptionPane.showInputDialog ("RTF", "");      
 
             return stringWriter.toString();
         } catch(Exception e) {
@@ -535,12 +449,15 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
               ((MindMapNodeModel)it.next()).collectColors(colors); }
 
            // Prepare table of colors containing indices to color table
-           String colorTableString="{\\colortbl;\\red0\\green0\\blue255;";   // 0 - Automatic, 1 - blue for links
+           String colorTableString="{\\colortbl;\\red0\\green0\\blue255;";
+           // 0 - Automatic, 1 - blue for links
+
            HashMap colorTable = new HashMap();
            int colorPosition = 2;
            for(Iterator it=colors.iterator();it.hasNext();++colorPosition) {
               Color color = (Color)it.next();
-              colorTableString += "\\red"+color.getRed()+"\\green"+color.getGreen()+"\\blue"+color.getBlue()+";";
+              colorTableString += "\\red"+color.getRed()+"\\green"+color.getGreen()+
+                 "\\blue"+color.getBlue()+";";
               colorTable.put(color,new Integer(colorPosition)); }
            colorTableString += "}";
 
@@ -565,36 +482,19 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
             setFile(file);
             setSaved(true);
 
-
-            /*   CODE FOR XERCES (DOM)
-                 Document doc = new DocumentImpl();
-            Element map = doc.createElement("map");
-            doc.appendChild(map);
-            ( (MindMapNodeModel)getRoot() ).save(doc,map);
-            String encoding = FreeMind.userProps.getProperty("mindmap_encoding");
-            
-            OutputFormat format = new OutputFormat(doc, encoding, false);//Serialize Document
-            StringWriter  stringOut = new StringWriter();        //Writer will be a String
-            XMLSerializer    serial = new XMLSerializer( stringOut, format );
-            serial.asDOMSerializer();                            // As a DOM Serializer
-
-            serial.serialize( doc.getDocumentElement() );
-            */
-
             //CODE FOR NANOXML
-            XMLElement map = new XMLElement();
-            map.setTagName("map");
-            map.addChild(((MindMapNodeModel)getRoot()).save());
 
-
+            //XMLElement map = new XMLElement();
+            //map.setTagName("map");
+            //map.addChild(((MindMapNodeModel)getRoot()).save());
 
             //Generating output Stream
             BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
-
-            //            fileout.write( stringOut.toString() ); *///Spit out DOM as a String  */
-            
-            map.write(fileout);
-
+            //  fileout.write( stringOut.toString() ); *///Spit out DOM as a String  */
+            //map.write(fileout);
+            fileout.write("<map>\n");
+            ((MindMapNodeModel)getRoot()).save(fileout);
+            fileout.write("</map>\n");
             fileout.close();
 
         } catch(Exception e) {
@@ -610,24 +510,15 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
        setFile(file);
        setSaved(true); 
     }
-
+    
     MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
-        MindMapNodeModel root = null;
-
-	XMLElement parser = new XMLElement();
+        MindMapXMLElement mapElement = new MindMapXMLElement(getFrame());
 	try {
-            parser.parseFromReader(new BufferedReader(new FileReader(file)));
-	} catch (Exception ex) {
-	    System.err.println("Error while parsing file:"+ex);
-	    return null;
-	}
-
-	XMLElement rootElement = (XMLElement)parser.getChildren().firstElement();
-	root = new MindMapNodeModel(getFrame());
-	root.load(rootElement);
-
-	return root;
-    }
+           mapElement.parseFromReader(new BufferedReader(new FileReader(file))); }
+        catch (Exception ex) {
+           System.err.println("Error while parsing file:"+ex);
+           return null; }
+        return mapElement.getMapChild(); }
 
     //
     // cut'n'paste
@@ -639,16 +530,28 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
     }
 
     public Transferable copy(MindMapNode node) {
-                XMLElement element = ((MindMapNodeModel)node).save();
-                StringSelection text = new StringSelection(element.toString());
-                return text;
-    }
+       StringWriter stringWriter = new StringWriter();
+       try {
+          ((MindMapNodeModel)node).save(stringWriter); }
+       catch (IOException e) {}
+       return new StringSelection(stringWriter.toString()); }
 
-   //public void find() {
-   //   Tools.errorMessage("find");
-   //   MindMapNode selectedNode = getFrame().getView().getSelected().getModel();
-   //   
-   //}
+   public void splitNode(MindMapNode node, int caretPosition, String newText) {
+      //If there are children, they go to the node below
+      String currentText = newText != null ? newText : node.toString();
+
+      String newContent = currentText.substring(caretPosition, currentText.length());
+      MindMapNodeModel upperNode =
+         new MindMapNodeModel(currentText.substring(0,caretPosition), getFrame());
+
+      upperNode.setColor(node.getColor());
+      upperNode.setFont(node.getFont());
+
+      node.setUserObject(newContent);
+      MindMapNode parent = node.getParentNode();
+      insertNodeInto(upperNode, parent, parent.getChildPosition(node));
+      nodeStructureChanged(parent);
+   }
 
    public void joinNodes() {
       MindMapNode selectedNode = getFrame().getView().getSelected().getModel();
@@ -658,8 +561,11 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
 
       // Make sure the selected node do not have children
       for(Iterator it = selectedNodes.iterator();it.hasNext();) {
-         if (((MindMapNode)it.next()).hasChildren()) {
-            Tools.errorMessage(getText("cannot_join_nodes_with_children"));
+         MindMapNode node = (MindMapNode)it.next();
+         if (node.hasChildren()) {
+            JOptionPane.showMessageDialog
+               (node.getViewer(), getText("cannot_join_nodes_with_children"),
+                "FreeMind", JOptionPane.WARNING_MESSAGE);
             return; }}
 
       // Join
@@ -680,7 +586,7 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
    public boolean importExplorerFavorites(File folder, MindMapNode target, boolean redisplay) {
       // Returns true iff any favorites found
       boolean favoritesFound = false;
-      if ( folder.isDirectory() ) {
+      if (folder.isDirectory()) {
          File[] list = folder.listFiles();
          // Go recursively to subfolders
          for (int i = 0; i < list.length; i++){
@@ -751,14 +657,14 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
        throws XMLParseException  {
        return pasteXMLWithoutRedisplay(pasted, target, /*asSibling=*/false); }
 
-    private MindMapNodeModel pasteXMLWithoutRedisplay(String pasted, MindMapNode target, boolean asSibling) 
+    private MindMapNodeModel pasteXMLWithoutRedisplay(String pasted, MindMapNode target, boolean asSibling)
        throws XMLParseException {
        // Call nodeStructureChanged(parent) after this function.
        try {
-          XMLElement element = new XMLElement();
+          MindMapXMLElement element = new MindMapXMLElement(getFrame());
           element.parseFromReader(new StringReader(pasted));
-          MindMapNodeModel node = new MindMapNodeModel(getFrame());
-          node.load(element);
+          MindMapNodeModel node = (MindMapNodeModel)element.getUserObject();
+
           if (asSibling) {
              MindMapNode parent = target.getParentNode();
              insertNodeInto(node, parent, parent.getChildPosition(target)); }
@@ -767,18 +673,36 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
           return node; }
        catch (IOException ee) { ee.printStackTrace(); return null; }}
 
+    static final Pattern nonLinkCharacter = Pattern.compile("[ \n()'\",;]");
 
-    private void pasteStringWithoutRedisplay(String textFromClipboard, MindMapNode parent) {
-       // Paste String content
+    /**
+     * Paste String (as opposed to other flavours)
+     *
+     * Split the text into lines; determine the new tree structure
+     * by the number of leading spaces in lines.  In case that
+     * trimmed line starts with protocol (http:, https:, ftp:),
+     * create a link with the same content.
+     *
+     * If there was only one line to be pasted, return the pasted node, null otherwise.
+     */
 
-       // Split the text into lines; determine the new tree structure
-       // by the number of leading spaces in lines.  In case that
-       // trimed line starts with protocol (http:, https:, ftp:),
-       // create a link with the same content.
+    private MindMapNode pasteStringWithoutRedisplay(String textFromClipboard, MindMapNode parent,
+                                                    boolean asSibling) {
+
+       Pattern mailPattern = Pattern.compile("([^@ <>\\*']+@[^@ <>\\*']+)");
+
        String[] textLines = textFromClipboard.split("\n");
               
        if (textLines.length > 1) {
           getFrame().setWaitingCursor(true); }
+
+       MindMapNode realParent = null;
+       if (asSibling) {
+          // When pasting as sibling, we use virtual node as parent. When the pasting to
+          // virtual node is completed, we insert the children of that virtual node to
+          // the parrent of real parent.
+          realParent = parent;
+          parent = new MindMapNodeModel(getFrame()); }
 
        ArrayList parentNodes = new ArrayList();
        ArrayList parentNodesDepths = new ArrayList();
@@ -787,7 +711,8 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
        parentNodesDepths.add(new Integer(-1));
 
        String[] linkPrefixes = { "http://", "ftp://", "https://" };
-       Pattern nonLinkCharacter = Pattern.compile("[ \n()'\",;]");
+
+       MindMapNodeModel pastedNode = null;
 
        for (int i = 0; i < textLines.length; ++i) {
           String text = textLines[i];
@@ -800,13 +725,30 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
              ++depth; }
           String visibleText = text.trim();
 
-          // If the text is a plain link (e.g. http://www.google.com/), make
-          // it nicer by cutting off obvious prefix and suffix.
+          // If the text is a recognizable link (e.g. http://www.google.com/index.html),
+          // make it more readable by look nicer by cutting off obvious prefix and other
+          // transforamtions.
 
-          if (visibleText.matches("^http://(www\\.)?[^/]*/?$")) {
-             visibleText = visibleText.replaceAll("^http://(www\\.)?","").replaceAll("/$",""); }
+          if (visibleText.matches("^http://(www\\.)?[^ ]*$")) {
+             visibleText = visibleText.replaceAll("^http://(www\\.)?","").
+                replaceAll("(/|\\.[^\\./\\?]*)$","").replaceAll("((\\.[^\\./]*\\?)|\\?)[^/]*$"," ? ...").replaceAll("_|%20"," ");
+             String[] textParts = visibleText.split("/");
+             visibleText = "";
+             for (int textPartIdx = 0; textPartIdx < textParts.length; textPartIdx++) {
+                if (textPartIdx > 0 ) {
+                   visibleText += " > "; }
+                visibleText += textPartIdx == 0 ? textParts[textPartIdx] : 
+                   Tools.firstLetterCapitalized(textParts[textPartIdx].replaceAll("^~*","")); }}
 
           MindMapNodeModel node = new MindMapNodeModel(visibleText, getFrame());
+          if (textLines.length == 1) {
+             pastedNode = node; }
+
+          // Heuristically determine, if there is a mail.
+
+          Matcher mailMatcher = mailPattern.matcher(visibleText);
+          if (mailMatcher.find()) {
+             node.setLink("mailto:"+mailMatcher.group()); }
 
           // Heuristically determine, if there is a link. Because this is
           // heuristic, it is probable that it can be improved to include
@@ -835,31 +777,58 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
                 parentNodes.add(node);
                 parentNodesDepths.add(new Integer(depth));
                 break; }}}
-      
-       nodeStructureChanged(parent);
+
+       if (asSibling) {
+          for (Iterator i=parent.childrenUnfolded(); /*children.iterator()*/ i.hasNext(); ) {
+             insertNodeIntoNoEvent((MindMapNode)i.next(), realParent, asSibling); }
+          nodeStructureChanged(realParent.getParentNode()); }
+       else {
+          nodeStructureChanged(parent); }
        // ^ Do not fire any event when inserting single lines. Fire the event
        // when all the lines are inserted.
+       return pastedNode;
     }
 
+    /*
+     *
+     */
     public void paste(Transferable t, MindMapNode target, boolean asSibling) {
        if (t == null) {
           return; }
        try {
            // Uncomment to print obtained data flavours
-           //DataFlavor[] fl = t.getTransferDataFlavors(); 
-           //  for (int i = 0; i < fl.length; i++) {
-           //     System.out.println(fl[i]); }
-          if (t.isDataFlavorSupported(MindMapNodesSelection.mindMapNodesFlavor)) {
-             String textFromClipboard = (String)t.getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
+
+           /*
+           DataFlavor[] fl = t.getTransferDataFlavors(); 
+           for (int i = 0; i < fl.length; i++) {
+              System.out.println(fl[i]); }
+           */
+
+          if (t.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
+             // TODO: Does not correctly interpret asSibling.
+             System.err.println("flflpas");
+             List fileList = (List)t.getTransferData(MindMapNodesSelection.fileListFlavor);
+             for(ListIterator it=fileList.listIterator();it.hasNext();) {
+                File file = (File)it.next();
+                MindMapNodeModel node = new MindMapNodeModel(file.getName(), getFrame());
+                node.setLink(file.getAbsolutePath());
+                insertNodeIntoNoEvent(node, target, asSibling); }
+             nodeStructureChanged(asSibling ? target.getParent() : target); }
+          else if (t.isDataFlavorSupported(MindMapNodesSelection.mindMapNodesFlavor)) {
+             String textFromClipboard =
+                (String)t.getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
              String[] textLines = textFromClipboard.split("<nodeseparator>");
              if (textLines.length > 1) {
                 getFrame().setWaitingCursor(true); }
              for (int i = 0; i < textLines.length; ++i) {
                 pasteXMLWithoutRedisplay(textLines[i], target, asSibling); }}
           else if (t.isDataFlavorSupported(MindMapNodesSelection.htmlFlavor)) {
-             String textFromClipboard = (String)t.getTransferData(MindMapNodesSelection.htmlFlavor);
+             String textFromClipboard =
+                (String)t.getTransferData(MindMapNodesSelection.htmlFlavor);
              // ^ This outputs transfer data to standard output. I don't know why.
-             pasteStringWithoutRedisplay((String)t.getTransferData(DataFlavor.stringFlavor), target);
+             MindMapNode pastedNode = 
+                pasteStringWithoutRedisplay
+                ((String)t.getTransferData(DataFlavor.stringFlavor), target, asSibling);
 
              textFromClipboard = textFromClipboard.replaceAll("<!--.*?-->",""); // remove HTML comment
              String[] links = textFromClipboard.split("<[aA][^>]*[hH][rR][eE][fF]=\"");
@@ -867,6 +836,7 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
              MindMapNodeModel linkParentNode = null;
              URL referenceURL = null;
              boolean baseUrlCanceled = false;
+
              for (int i = 1; i < links.length; i++) {
                 String link =  links[i].substring(0, links[i].indexOf("\""));
                 String textWithHtml = links[i].replaceAll("^[^>]*>","").replaceAll("</[aA]>[\\s\\S]*","");
@@ -882,8 +852,6 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
                       // Either invalid URL or relative URL
                       if (referenceURL == null && !baseUrlCanceled) {
                          String referenceURLString = JOptionPane.showInputDialog(getText("enter_base_url"));
-                         //("I want to paste relative links. Enter please base URL.");
-                         //""getModel().getLink(getSelected()));
                          if (referenceURLString == null) {
                             baseUrlCanceled = true; }
                          else {
@@ -891,6 +859,13 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
                       linkURL = new URL(referenceURL, link); }
                    catch (MalformedURLException ex2) { } }
                 if (linkURL != null) {
+                   if (links.length == 2 & pastedNode != null) {
+                      // pastedNode != null iff the number of pasted lines is one
+                      // The firts element in links[] array is never a link, therefore
+                      // the condition links.length == 2 actually says "there is one link".
+                      // Set link directly into node
+                      ((MindMapNodeModel)pastedNode).setLink(linkURL.toString());
+                      break; }
                    if (linkParentNode == null) {
                       linkParentNode = new MindMapNodeModel("Links", getFrame());
                       // Here we cannot set bold, because linkParentNode.font is null
@@ -902,8 +877,8 @@ return "{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\f
                    insertNodeInto(linkNode, linkParentNode); }}}
           else if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
              String textFromClipboard = (String)t.getTransferData(DataFlavor.stringFlavor);
-             pasteStringWithoutRedisplay(textFromClipboard, target); }
-          nodeStructureChanged(target); }
+             pasteStringWithoutRedisplay(textFromClipboard, target, asSibling); }          
+          nodeStructureChanged(asSibling ? target.getParent() : target); }
        catch (Exception e) { e.printStackTrace(); }
        getFrame().setWaitingCursor(false);        
     }

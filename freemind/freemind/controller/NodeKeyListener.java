@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeKeyListener.java,v 1.11 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: NodeKeyListener.java,v 1.13 2003-11-03 10:39:51 sviles Exp $*/
 
 package freemind.controller;
 
@@ -25,6 +25,7 @@ import freemind.view.mindmapview.NodeView;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import javax.swing.KeyStroke;
+import javax.swing.*;
 
 /**
  * The KeyListener which belongs to the node and cares for
@@ -86,19 +87,23 @@ public class NodeKeyListener implements KeyListener {
 
 	}
 
-	if ( KeyStroke.getKeyStroke(up) != null && e.getKeyCode() == KeyStroke.getKeyStroke(up).getKeyCode()) {
+	if ( KeyStroke.getKeyStroke(up) != null &&
+             e.getKeyCode() == KeyStroke.getKeyStroke(up).getKeyCode()) {
 	    c.moveUp();
 	    e.consume();
 	    return;
-	} else if ( KeyStroke.getKeyStroke(down) != null && e.getKeyCode() == KeyStroke.getKeyStroke(down).getKeyCode()) {
+	} else if ( KeyStroke.getKeyStroke(down) != null &&
+                    e.getKeyCode() == KeyStroke.getKeyStroke(down).getKeyCode()) {
 	    c.moveDown();
 	    e.consume();
 	    return;
-	} else if ( KeyStroke.getKeyStroke(left) != null && e.getKeyCode() == KeyStroke.getKeyStroke(left).getKeyCode()) {
+	} else if ( KeyStroke.getKeyStroke(left) != null &&
+                    e.getKeyCode() == KeyStroke.getKeyStroke(left).getKeyCode()) {
 	    c.moveLeft();
 	    e.consume();
 	    return;
-	} else if ( KeyStroke.getKeyStroke(right) != null && e.getKeyCode() == KeyStroke.getKeyStroke(right).getKeyCode()) {
+	} else if ( KeyStroke.getKeyStroke(right) != null &&
+                    e.getKeyCode() == KeyStroke.getKeyStroke(right).getKeyCode()) {
 	    c.moveRight();
 	    e.consume();
 	    return;

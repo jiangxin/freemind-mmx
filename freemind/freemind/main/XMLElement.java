@@ -1,7 +1,7 @@
 /* XMLElement.java
  *
- * $Revision: 1.3 $
- * $Date: 2003-11-03 10:15:45 $
+ * $Revision: 1.7 $
+ * $Date: 2003-11-03 11:00:10 $
  * $Name:  $
  *
  * This file is part of NanoXML 2 Lite.
@@ -25,14 +25,12 @@
  *
  *  3. This notice may not be removed or altered from any source distribution.
  *****************************************************************************/
+ 
+/*
+ * This version of XMLElement has been *altered* for the purposes of FreeMind
+ */
 
-
-//<delete>
-//package nanoxml;
-//</delete>
-//<insert>
 package freemind.main;
-//</insert>
 
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayReader;
@@ -102,7 +100,7 @@ import java.util.Vector;
  *
  * @author Marc De Scheemaecker
  *         &lt;<A href="mailto:cyberelf@mac.com">cyberelf@mac.com</A>&gt;
- * @version $Name:  $, $Revision: 1.3 $
+ * @version $Name:  $, $Revision: 1.7 $
  */
 public class XMLElement
 {
@@ -217,7 +215,7 @@ public class XMLElement
      * <code>true</code> if the case of the element and attribute names
      * are case insensitive.
      */
-    private boolean ignoreCase;
+    protected boolean ignoreCase;
 
 
     /**
@@ -500,6 +498,9 @@ public class XMLElement
         }
     }
 
+    // We may expect that some subclass would like to have its own object
+    public Object getUserObject() {
+       return null; }
 
     /**
      * Adds a child element.
@@ -2076,6 +2077,10 @@ public class XMLElement
                               this.ignoreCase);
     }
 
+    // You should override this method when subclassing XMLElement.
+    protected void completeElement() {
+    }
+
 
     /**
      * Changes the content string.
@@ -2161,6 +2166,27 @@ public class XMLElement
     public void write(Writer writer)
         throws IOException
     {
+      write(writer, true);
+    }
+
+    public void writeWithoutClosingTag(Writer writer)
+        throws IOException
+    {
+       write(writer, false);
+    }
+
+    public void writeClosingTag(Writer writer)
+        throws IOException
+    {
+       writer.write('<'); writer.write('/');
+       writer.write(this.name);
+       writer.write('>');
+       writer.write('\n');
+    }
+
+    public void write(Writer writer, boolean withClosingTag)
+        throws IOException
+    {
         if (this.name == null) {
             this.writeEncoded(writer, this.contents);
             return;
@@ -2181,25 +2207,36 @@ public class XMLElement
         }
         if ((this.contents != null) && (this.contents.length() > 0)) {
             writer.write('>');
+            writer.write('\n');
             this.writeEncoded(writer, this.contents);
-            writer.write('<'); writer.write('/');
-            writer.write(this.name);
-            writer.write('>');
+            if (withClosingTag) {
+               writer.write('<'); writer.write('/');
+               writer.write(this.name);
+               writer.write('>');
+               writer.write('\n');
+            }
         } else if (this.children.isEmpty()) {
-            writer.write('/'); writer.write('>');
+           if (withClosingTag) {
+              writer.write('/'); 
+           }
+           writer.write('>');
+           writer.write('\n');
         } else {
             writer.write('>');
+            writer.write('\n');
             Enumeration enum = this.enumerateChildren();
             while (enum.hasMoreElements()) {
                 XMLElement child = (XMLElement) enum.nextElement();
                 child.write(writer);
             }
-            writer.write('<'); writer.write('/');
-            writer.write(this.name);
-            writer.write('>');
+            if (withClosingTag) {
+               writer.write('<'); writer.write('/');
+               writer.write(this.name);
+               writer.write('>');
+               writer.write('\n');
+            }
         }
     }
-
 
     /**
      * Writes a string encoded to a writer.
@@ -2611,7 +2648,10 @@ public class XMLElement
         String name = buf.toString();
         elt.setName(name);
         char ch = this.scanWhitespace();
-        while ((ch != '>') && (ch != '/')) {
+
+        // Scan the attributes of opening tag
+
+        while ((ch != '>') && (ch != '/')) { // Not the end of the tag
             buf.setLength(0);
             this.unreadChar(ch);
             this.scanIdentifier(buf);
@@ -2626,20 +2666,24 @@ public class XMLElement
             elt.setAttribute(key, buf);
             ch = this.scanWhitespace();
         }
-        if (ch == '/') {
+        if (ch == '/') { // Case of self ending tag
             ch = this.readChar();
             if (ch != '>') {
                 throw this.expectedInput(">");
             }
+            elt.completeElement();
             return;
         }
+
+        // This part is unclear - probing for PCDATA
+
         buf.setLength(0);
         ch = this.scanWhitespace(buf);
-        if (ch != '<') {
+        if (ch != '<') {                // Either: PCDATA
             this.unreadChar(ch);
             this.scanPCData(buf);
-        } else {
-            for (;;) {
+        } else {                        // Or:     Maybe sequence of children tags
+            for (;;) {                  // This is a loop, after all
                 ch = this.readChar();
                 if (ch == '!') {
                     if (this.checkCDATA(buf)) {
@@ -2659,9 +2703,13 @@ public class XMLElement
                 }
             }
         }
+
         if (buf.length() == 0) {
+
+            // Not PCDATA, '<' already read
+
             while (ch != '/') {
-                if (ch == '!') {
+                if (ch == '!') {               // Comment
                     ch = this.readChar();
                     if (ch != '-') {
                         throw this.expectedInput("Comment or Element");
@@ -2671,9 +2719,10 @@ public class XMLElement
                         throw this.expectedInput("Comment or Element");
                     }
                     this.skipComment();
-                } else {
+                } else {                       // Not Comment
                     this.unreadChar(ch);
                     XMLElement child = this.createAnotherElement();
+                    // Here goes the recursion.
                     this.scanElement(child);
                     elt.addChild(child);
                 }
@@ -2685,12 +2734,18 @@ public class XMLElement
             }
             this.unreadChar(ch);
         } else {
+
+            // PCDATA         
+ 
             if (this.ignoreWhitespace) {
                 elt.setContent(buf.toString().trim());
             } else {
                 elt.setContent(buf.toString());
             }
         }
+
+        // 
+
         ch = this.readChar();
         if (ch != '/') {
             throw this.expectedInput("/");
@@ -2702,6 +2757,7 @@ public class XMLElement
         if (this.scanWhitespace() != '>') {
             throw this.expectedInput(">");
         }
+        elt.completeElement();
     }
 
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SharpBezierEdgeView.java,v 1.1 2001-04-19 09:52:22 ponder Exp $*/
+/*$Id: SharpBezierEdgeView.java,v 1.3 2003-11-03 10:39:53 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -26,6 +26,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
+import java.awt.*;
 
 /**
  * This class represents a sharp Edge of a MindMap.

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.13 2003-11-03 10:15:44 sviles Exp $*/
+/*$Id: MenuBar.java,v 1.15 2003-11-03 10:39:51 sviles Exp $*/
 
 package freemind.controller;
 
@@ -29,11 +29,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JMenu;
-import javax.swing.JPopupMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 
 /**This is the menu bar for FreeMind. Actions are defined in MenuListener. */
@@ -50,18 +46,19 @@ public class MenuBar extends JMenuBar {
 
     public MenuBar(Controller controller) {
 	this.c = controller;
-	filemenu = new JMenu(c.getFrame().getResources().getString("file"));
-	editmenu = new JMenu(c.getFrame().getResources().getString("edit"));
+	filemenu = new JMenu(c.getResourceString("file"));
+	editmenu = new JMenu(c.getResourceString("edit"));
 	this.add(filemenu);
 	this.add(editmenu);
 
 	//Mapsmenu
-	mapsmenu = new JMenu(c.getFrame().getResources().getString("mindmaps"));
-	mapsPopupMenu = new JPopupMenu(c.getFrame().getResources().getString("mindmaps"));
+	mapsmenu = new JMenu(c.getResourceString("mindmaps"));
+        //mapsmenu.setMnemonic(KeyEvent.VK_M);
+	mapsPopupMenu = new JPopupMenu(c.getResourceString("mindmaps"));
 	this.add(mapsmenu);
 
 	//Modesmenu
-	JMenu modesmenu = new JMenu(c.getFrame().getResources().getString("modes"));
+	JMenu modesmenu = new JMenu(c.getResourceString("modes"));
 	this.add(modesmenu);
 
 	ActionListener modesMenuActionListener = new ModesMenuActionListener();
@@ -80,14 +77,15 @@ public class MenuBar extends JMenuBar {
 		//}
 	}
 
+        filemenu.setMnemonic(KeyEvent.VK_F);
+        mapsmenu.setMnemonic(KeyEvent.VK_M);
+
 	//Helpmenu
-	JMenu helpmenu = new JMenu(c.getFrame().getResources().getString("help"));
+	JMenu helpmenu = new JMenu(c.getResourceString("help"));
 	this.add(helpmenu);
 
 	helpmenu.add(c.documentation);
-
 	helpmenu.add(c.license);
-	
 	helpmenu.add(c.about);
 	
     }//Constructor
@@ -107,6 +105,9 @@ public class MenuBar extends JMenuBar {
 	    newItem.addActionListener(mapsMenuActionListener);
             newPopupItem.addActionListener(mapsMenuActionListener);
 
+            newItem.setMnemonic(key.charAt(0));
+            newPopupItem.setMnemonic(key.charAt(0));
+
 	    if (c.getMapModuleManager().getMapModule() != null) {
 		if (key.equals(c.getMapModuleManager().getMapModule().toString())) {
 		    //This could be done more elegant
@@ -114,9 +115,24 @@ public class MenuBar extends JMenuBar {
                     newPopupItem.setBackground(Color.lightGray);
 		}
 	    }
-            mapsPopupMenu.add(newItem);
-	    mapsmenu.add(newPopupItem);
+            mapsPopupMenu.add(newPopupItem);
+	    mapsmenu.add(newItem);
 	}
+        mapsPopupMenu.addSeparator();
+
+        JMenuItem newPopupItem;
+
+        newPopupItem = new JMenuItem(c.toggleMenubar);
+        newPopupItem.setForeground(new Color(100,80,80));
+        newPopupItem.setEnabled(c.getFrame().isApplet());
+        // We have enabled hiding of menubar only in applets. It it because
+        // when we hide menubar in application, the key accelerators from
+        // menubar do not work.
+        mapsPopupMenu.add(newPopupItem);
+
+        newPopupItem = new JMenuItem(c.toggleToolbar);
+        newPopupItem.setForeground(new Color(100,80,80));
+        mapsPopupMenu.add(newPopupItem);
     }
 
     public void updateFileMenu() {
@@ -163,6 +179,14 @@ public class MenuBar extends JMenuBar {
 
 	editmenu.addSeparator();
 
+	JMenuItem zoomIn = editmenu.add(c.zoomIn);
+	zoomIn.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_zoom_in")));
+
+	JMenuItem zoomOut = editmenu.add(c.zoomOut);
+	zoomOut.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_zoom_out")));
+
+	editmenu.addSeparator();
+
 	JMenuItem moveToRoot = editmenu.add(c.moveToRoot);
 	moveToRoot.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_moveToRoot")));
 
@@ -172,16 +196,52 @@ public class MenuBar extends JMenuBar {
 	JMenuItem nextMap = editmenu.add(c.navigationNextMap);
 	nextMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_nextMap")));
 
-	JMenuItem historyPreviousMap = editmenu.add(c.historyPreviousMap);
-	JMenuItem historyNextMap = editmenu.add(c.historyNextMap);
+	//JMenuItem historyPreviousMap = editmenu.add(c.historyPreviousMap);
+	//JMenuItem historyNextMap = editmenu.add(c.historyNextMap);
+        // ^ Daniel: This does not work as expected.
 
 	editmenu.addSeparator();
 
-	JMenu preferences = new JMenu(c.getFrame().getResources().getString("preferences"));
+	JMenu preferences = new JMenu(c.getResourceString("preferences"));
 	editmenu.add(preferences);
 
-	preferences.add(c.background);
+        if (false) {
+           preferences.add(c.background);
+           // Background is disabled from preferences, because it has no real function.
+           // To complete the function, one would either make sure that the color is
+           // saved and read from auto.properties or think about storing the background
+           // color into map (just like <map backgroud="#eeeee0">).
+        }
+
+        // Daniel: The way antialias option is represented now is not nice,
+        // there should be only one variable controlling it. Fix it if you
+        // have time, this kind of classical quality is low pri now.
+        String antialiasSelected = c.getAntialiasAll() ? "antialias_all" : 
+           ( c.getAntialiasEdges() ? "antialias_edges" : "antialias_none" );
+        addOptionSet( c.optionAntialiasAction,
+                      new String[]{ "antialias_none",
+                                       "antialias_edges",
+                                       "antialias_all" },
+                      preferences, antialiasSelected );
+	preferences.addSeparator();
+        addOptionSet( c.optionHTMLExportFoldingAction,
+                      new String[]{ "html_export_no_folding",
+                                       "html_export_fold_currently_folded",
+                                       "html_export_fold_all" },
+                      preferences, c.getProperty("html_export_folding") );
+
     }
+
+   private void addOptionSet(Action action, String[] textIDs, JMenu menu, String selectedTextID) {
+      ButtonGroup group = new ButtonGroup();
+      for (int optionIdx = 0; optionIdx < textIDs.length; optionIdx++) {
+         JRadioButtonMenuItem item = new JRadioButtonMenuItem(action);
+         item.setText(c.getResourceString(textIDs[optionIdx]));
+         item.setActionCommand(textIDs[optionIdx]);
+         group.add(item);
+         menu.add(item);
+         if (selectedTextID != null) {
+            item.setSelected(selectedTextID.equals(textIDs[optionIdx])); }}}
 
     JPopupMenu getMapsPopupMenu()  { // visible only in controller package
        return mapsPopupMenu; }

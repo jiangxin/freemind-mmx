@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseNodeModel.java,v 1.3 2003-11-03 10:15:46 sviles Exp $*/
+/*$Id: BrowseNodeModel.java,v 1.5 2003-11-03 10:39:52 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -30,11 +30,7 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.Color;
 import java.awt.Font;
-// //XML Definition (Interfaces)
-//import org.w3c.dom.Document;
-//import org.w3c.dom.Element;
-//import org.w3c.dom.NodeList;
-//import org.w3c.dom.Node;
+
 import freemind.main.XMLElement;
 
 /**
@@ -50,24 +46,19 @@ public class BrowseNodeModel extends NodeAdapter {
     public BrowseNodeModel(FreeMindMain frame) {
 	super(frame);
 	children = new LinkedList();
-	setEdge(new BrowseEdgeModel(this,getFrame()));
-    }
-
+	setEdge(new BrowseEdgeModel(this,getFrame())); }
 	    
     public BrowseNodeModel( Object userObject, FreeMindMain frame ) {
 	super(userObject,frame);
 	children = new LinkedList();
-	setEdge(new BrowseEdgeModel(this,getFrame()));
-    }
+	setEdge(new BrowseEdgeModel(this,getFrame())); }
 
     //Overwritten get Methods
     public String getStyle() {
-	if(isFolded()) {
-	    return "bubble";
-	} else {
-	    return super.getStyle();
-	}
-    }
+       return isFolded() ? "bubble" : super.getStyle(); }
+
+    public boolean isLong() {
+       return toString().length() > 100; }
 
     //
     // The mandatory load and save methods
@@ -77,136 +68,4 @@ public class BrowseNodeModel extends NodeAdapter {
     public XMLElement save() {
 	return null;
     }
-
-
-    /*
-    public void load(Node node_) {
-	Element node = (Element)node_;
-	setUserObject( node.getAttribute("text") );
-
-	if (node.getAttribute("folded").equals("true")) {
-	    setFolded(true);
-	}
-	if (node.getAttribute("color").length() == 7) {
-	    setColor(Tools.xmlToColor(node.getAttribute("color") ) );
-	}
-	if (!node.getAttribute("style").equals("")) {
-	    setStyle(node.getAttribute("style"));
-	}
-	if (!node.getAttribute("link").equals("")) {
-	    setLink(node.getAttribute("link"));
-	}
-	NodeList childNodes = node.getChildNodes();
-	for(int i=0; i < childNodes.getLength(); i++) {
-	    //this has to be improved!
-	    //edge
-	    if ( ((Node)childNodes.item(i)).getNodeName().equals("edge")) {
-		Element edge = (Element)childNodes.item(i);
-		setEdge(new BrowseEdgeModel(this) );
-		((BrowseEdgeModel)getEdge()).load(edge);
-	    }
-	    //font
-	    if ( ((Node)childNodes.item(i)).getNodeName().equals("font")) {
-		Element font =((Element)childNodes.item(i));
-		String name = font.getAttribute("name"); 
-		int style=0;
-		int size=0;
-
-		if (!Tools.isValidFont(name)) {
-		    name = "Sans Serif";
-		}
-
-		if (font.getAttribute("bold").equals("true")) style+=Font.BOLD;;
-		if (font.getAttribute("italic").equals("true")) style+=Font.ITALIC;
-		if (font.getAttribute("underline").equals("true")) setUnderlined(true);
-
-		if (font.getAttribute("size")!="") {
-		    size = Integer.parseInt(font.getAttribute("size"));
-		    // getFont().setSize(Integer.parseInt(font.getAttribute("size")));
-		}
-
-		setFont(new Font(name, style, size));
-
-	    }
-	    //node
-	    if ( ((Node)childNodes.item(i)).getNodeName().equals("node")) {
-		BrowseNodeModel child = new BrowseNodeModel(getFrame());
-		insert(child,getChildCount());
-		child.load( (Node)childNodes.item(i) );//recursive
-	    }
-	}
-    }
-    */
-
-    public void load(XMLElement node) {
-        // Design antipattern: this load method is basically a copy of load
-        // method of MindMapNodeModel.
-	setUserObject( node.getProperty("text") );
-
-	if (node.getProperty("color")!=null && node.getProperty("color").length() == 7) {
-	    setColor(Tools.xmlToColor(node.getProperty("color") ) );
-	}
-	if (node.getProperty("style")!=null) {
-	    setStyle(node.getProperty("style"));
-	}
-	if (node.getProperty("link")!=null) {
-	    setLink(node.getProperty("link"));
-	}
-
-	Vector childNodes = node.getChildren();
-	for(int i=0; i < childNodes.size(); i++) {
-	    //this has to be improved!
-            XMLElement childElement = (XMLElement)childNodes.elementAt(i);
-            String tagName = childElement.getTagName();
-	    //node
-	    if ( ((XMLElement)childNodes.elementAt(i)).getTagName().equals("node")) {
-		BrowseNodeModel child = new BrowseNodeModel(getFrame());
-		insert(child,getChildCount());
-		child.load( (XMLElement)childNodes.elementAt(i) );//recursive
-                continue;
-	    }
-	    //edge
-	    if ( ((XMLElement)childNodes.elementAt(i)).getTagName().equals("edge")) {
-		XMLElement edge = (XMLElement)childNodes.elementAt(i);
-		setEdge(new BrowseEdgeModel(this,getFrame()) );
-		((BrowseEdgeModel)getEdge()).load(edge);
-                continue;
-	    }
-	    //font
-	    if ( ((XMLElement)childNodes.elementAt(i)).getTagName().equals("font")) {
-		XMLElement font =((XMLElement)childNodes.elementAt(i));
-		String name = font.getProperty("name"); 
-		int style=0;
-		int size=0;
-
-		//if (!Tools.isValidFont(name)) {
-                //    name = "Sans Serif";
-                //}
-                //     ^ This is absolutely unnecessary and it extremely slows down loading
-
-		if (font.getProperty("bold")!=null && font.getProperty("bold").equals("true")) style+=Font.BOLD;;
-		if (font.getProperty("italic")!=null && font.getProperty("italic").equals("true")) style+=Font.ITALIC;
-		if (font.getProperty("underline")!=null && font.getProperty("underline").equals("true")) setUnderlined(true);
-
-		if (font.getProperty("size")!=null) {
-		    size = Integer.parseInt(font.getProperty("size"));
-		    // getFont().setSize(Integer.parseInt(font.getProperty("size")));
-		}
-
-		setFont(new Font(name, style, size));
-
-	    }
-
-	}
-	if (node.getProperty("folded")!=null && node.getProperty("folded").equals("true")) {
-	    setFolded(true);
-	}
-    // ^ When this condition was at the beginning of the function, children of folded nodes were
-    // inserted into map in reverse order.
-    }
 }
-
-
-
-
-

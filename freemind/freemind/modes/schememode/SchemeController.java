@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.6 2001-05-06 18:47:57 ponder Exp $*/
+/*$Id: SchemeController.java,v 1.8 2003-11-03 10:39:53 sviles Exp $*/
 
 package freemind.modes.schememode;
 
@@ -105,7 +105,7 @@ public class SchemeController extends ControllerAdapter {
 
     private class EvaluateAction extends AbstractAction {
 	EvaluateAction() {
-	    super(getFrame().getResources().getString("scheme_evaluate"));
+	    super(getController().getResourceString("scheme_evaluate"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    String rawCode = ((SchemeMapModel)getMap()).getCode().trim();

@@ -54,17 +54,10 @@ public class NodeDropListener implements DropTargetListener {
     }
 
     private boolean isDropAcceptable(DropTargetDropEvent event) {
-	MindMapNode node = ((NodeView)event.getDropTargetContext().getComponent()).getModel();
+        MindMapNode node = ((NodeView)event.getDropTargetContext().getComponent()).getModel();
 	MindMapNode selected = c.getView().getSelected().getModel();
-	if((node!=selected) && !node.isDescendantOf(selected)){//I think (node!=selected) is a hack for windows
-	    DataFlavor[] flavors = event.getCurrentDataFlavors();
-	    for (int i = 0; i < flavors.length; i++) {
-		if (flavors[i].equals(DataFlavor.stringFlavor)) {
-		    return true;
-		}
-	    }
-	}
-	return false;
+	return ((node!=selected) && !node.isDescendantOf(selected));
+        // I think (node!=selected) is a hack for windows
     }
 
 	
@@ -72,21 +65,41 @@ public class NodeDropListener implements DropTargetListener {
         try {
            int dropAction = dtde.getDropAction();
 	   Transferable t = dtde.getTransferable();
-           String sourceAction = (String)t.getTransferData(DataFlavor.stringFlavor);
-           if (sourceAction.equals("LINK")) {
-              dropAction = DnDConstants.ACTION_LINK; }
-           if (sourceAction.equals("COPY")) {
-              dropAction = DnDConstants.ACTION_COPY; }
 
            NodeView targetNodeView = (NodeView)dtde.getDropTargetContext().getComponent();
+           MindMapNode targetNode = targetNodeView.getModel();
+           MindMapNodeModel targetNodeModel = (MindMapNodeModel)targetNode;          
+
+           // Intra application DnD
+
+           // For some reason, getting sourceAction is only possible for local
+           // transfer. When I try to remove clause dtde.isLocalTransfer, I get an answer
+           // like "no drop current". One hypothesis is that with nonlocal transfers, I
+           // have to accept drop action before I can get transfer data. However, this is
+           // not what I want in this particular situation. A part of the problem lies in
+           // the hackery of sending source action using data flavour too.
+           if (dtde.isLocalTransfer() && t.isDataFlavorSupported(MindMapNodesSelection.dropActionFlavor)) {
+              String sourceAction = (String)t.getTransferData(MindMapNodesSelection.dropActionFlavor);
+              if (sourceAction.equals("LINK")) {
+                 dropAction = DnDConstants.ACTION_LINK; }
+              if (sourceAction.equals("COPY")) {
+                 dropAction = DnDConstants.ACTION_COPY; }}
+
            targetNodeView.setDraggedOver(0);
            targetNodeView.repaint();
 
-           if((dropAction == DnDConstants.ACTION_MOVE) && !isDropAcceptable(dtde)) {
-             dtde.rejectDrop();
-             return;
-           }
+           if (dtde.isLocalTransfer() && (dropAction == DnDConstants.ACTION_MOVE) && !isDropAcceptable(dtde)) {
+              dtde.rejectDrop();
+              return; }
            dtde.acceptDrop(dtde.getDropAction());
+
+           if (!dtde.isLocalTransfer()) {
+              //if (dtde.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
+              //System.err.println("filelist");
+              c.getModel().paste (t, targetNode, 
+                                  targetNodeView.dropAsSibling(dtde.getLocation().getX()));
+              dtde.dropComplete(true);
+              return; }
 
            // This all is specific to MindMap model. Needs rewrite to work for other modes.
            // We ignore data transfer in dtde. We take selected nodes as drag sources.
@@ -99,39 +112,31 @@ public class NodeDropListener implements DropTargetListener {
            // By transferable object we only transfer source action. This will be a problem, when we want
            // to implement extra application dnd or dnd between different Java Virtual Machines.
 
-           MindMapNode targetNode = targetNodeView.getModel();
-           MindMapNodeModel targetNodeModel = (MindMapNodeModel)targetNode;
-
            if (dropAction == DnDConstants.ACTION_LINK) {
               // ACTION_LINK means for us change the color, style and font.
-
+              
               // This is not very clean. This all should probably be
               // implemented on the mindMapMapModel level. On the other
               // hand, one would have to downcast to MindMapMapModel anyway.
-
+              
               //MindMapNode selectedNode = c.getView().getSelected().getModel();
               MindMapMapModel mindMapMapModel = (MindMapMapModel)c.getModel();
-
+                 
               for(ListIterator it = c.getView().getSelecteds().listIterator();it.hasNext();) {
                  MindMapNodeModel selectedNodeModel = (MindMapNodeModel)((NodeView)it.next()).getModel();
                  mindMapMapModel.setNodeColor(selectedNodeModel,targetNode.getColor());
-                 mindMapMapModel.setNodeFont(selectedNodeModel,targetNode.getFont()); }
-           }
+                 mindMapMapModel.setNodeFont(selectedNodeModel,targetNode.getFont()); }}
            else {
               c.getModel().paste (dropAction == DnDConstants.ACTION_MOVE 
                                   ? c.getModel().cut() : c.getModel().copy(),
                                   targetNode, 
-                                  targetNodeView.dropAsSibling(dtde.getLocation().getX())); //}
-           }
-           c.getView().select(targetNodeModel.getViewer(),false);
-	}
+                                  targetNodeView.dropAsSibling(dtde.getLocation().getX())); }
+           c.getView().select(targetNodeModel.getViewer(),false); }
 	catch (Exception e) {
-	    System.out.println("Drop exception:"+e);
+	    System.err.println("Drop exception:"+e);
 	    dtde.dropComplete(false);
-	    return;
-	}
-	dtde.dropComplete(true);
-    }
+	    return; }
+	dtde.dropComplete(true); }
 
     public void dragEnter (DropTargetDragEvent dtde) {
        // TODO: check DataFlavor before say ok

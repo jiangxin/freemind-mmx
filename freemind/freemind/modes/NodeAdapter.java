@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.12 2003-11-03 10:15:45 sviles Exp $*/
+/*$Id: NodeAdapter.java,v 1.13 2003-11-03 10:28:53 sviles Exp $*/
 
 package freemind.modes;
 
@@ -25,11 +25,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.controller.Controller;
 import freemind.view.mindmapview.NodeView;
-import java.util.Enumeration;
-import java.util.Vector;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.ListIterator;
+import java.util.*;
 import java.net.URL;
 import java.awt.Color;
 import java.awt.Font;
@@ -43,8 +39,8 @@ import javax.swing.tree.TreePath;
  */
 public abstract class NodeAdapter implements MindMapNode {
 	
-    private Object userObject = "no text";
-    private String link;//Change this to vector in future for full graph support
+    protected Object userObject = "no text";
+    private String link = null; //Change this to vector in future for full graph support
 
     //these Attributes have default values, so it can be useful to directly access them in
     //the save() method instead of using getXXX(). This way the stored file is smaller and looks better.
@@ -58,17 +54,12 @@ public abstract class NodeAdapter implements MindMapNode {
 
     protected Font font;
     protected boolean underlined = false;
-//      protected int fontSize;
-//      protected String font;
-//      protected boolean bold = false;
-//      protected boolean italic = false;
-
 
     private MindMapNode parent;
     private MindMapEdge edge;//the edge which leads to this node, only root has none
     //In future it has to hold more than one view, maybe with a Vector in which the index specifies
     //the MapView which contains the NodeViews
-    private NodeView viewer;
+    private NodeView viewer = null;
     private FreeMindMain frame;
     private static final boolean ALLOWSCHILDREN = true;
     private static final boolean ISLEAF = false; //all nodes may have children
@@ -133,7 +124,7 @@ public abstract class NodeAdapter implements MindMapNode {
 
     /**A Node-Style like "fork" or "bubble"*/
     public String getStyle() {
-	if(style==null) {
+	if (style==null) {
 	    if(this.isRoot()) {
 		return getFrame().getProperty("standardnodestyle");
 	    }
@@ -145,15 +136,7 @@ public abstract class NodeAdapter implements MindMapNode {
 
     /**The Foreground/Font Color*/
     public Color getColor() {
-	if(color==null) {
-	    String stdcolor = getFrame().getProperty("standardnodecolor");
-	    if (stdcolor.length() == 7) {
-		return Tools.xmlToColor(stdcolor);
-	    }
-	    return Color.blue;
-	}
-	return color;
-    }
+       return color; }
 
     //////
     // The set methods. I'm not sure if they should be here or in the implementing class.
@@ -166,95 +149,81 @@ public abstract class NodeAdapter implements MindMapNode {
     public void setColor(Color color) {
 	this.color = color;
     }
-    
-    public void setBold(boolean bold) {
-	// ** use font object
-	// this.bold = bold;
-	if(bold && font.isBold()) return;
-	if(!bold && !font.isBold()) return;
 
-	if(bold) setFont(font.deriveFont(font.getStyle()+Font.BOLD));
-	if(!bold) setFont(font.deriveFont(font.getStyle()-Font.BOLD));
-    }
+    //   
+    //  font handling
+    // 
+
+    
+    //   Remark to setBold and setItalic implemetation
+    //
+    // Using deriveFont() is a bad idea, because it does not really choose
+    // the appropriate face. For example, instead of choosing face
+    // "Arial Bold", it derives the bold face from "Arial".
+
+    // Node holds font only in the case that the font is not default.
+
+    public void estabilishOwnFont() {
+       font = (font != null) ? font : getFrame().getController().getDefaultFont(); }
+
+    public void setBold(boolean bold) {
+	if (bold != isBold()) {
+           toggleBold(); }}
+
+    public void toggleBold() {
+       estabilishOwnFont();
+       setFont(getFrame().getController().getFontThroughMap
+               (new Font(font.getFamily(), font.getStyle() ^ Font.BOLD, font.getSize()))); }
 
     public void setItalic(boolean italic) {
-	// ** use font object
-	// this.italic = italic;
+        if (italic != isItalic()) {
+           toggleItalic(); }}
 
-	if(italic && font.isItalic()) return;
-	if(!italic && !font.isItalic()) return;
-
-	if(italic) setFont(font.deriveFont(font.getStyle()+Font.ITALIC));
-	if(!italic) setFont(font.deriveFont(font.getStyle()-Font.ITALIC));
-    }
+    public void toggleItalic() {
+       estabilishOwnFont();
+       setFont(getFrame().getController().getFontThroughMap
+               (new Font(font.getFamily(), font.getStyle() ^ Font.ITALIC, font.getSize()))); }
 
     public void setUnderlined(boolean underlined) {
-	this.underlined = underlined;
-    }
+       this.underlined = underlined; }
 
     public void setFont(Font font) {
-	this.font = font;
-    }
+       this.font = font; }
 
     public MindMapNode getParentNode() {
-       return parent;
-    }     
+       return parent; }
 
-    // **
-    // ** font handling
-    // **
+    public void setFontSize(int fontSize) {
+       estabilishOwnFont();
+       setFont(getFrame().getController().getFontThroughMap
+               (new Font(font.getFamily(), font.getStyle(), fontSize))); }
 
     public Font getFont() {
-	if(font == null) {
-	    // ** Maybe implement handling for cases when
-	    //    the font is not available on this system
-
-	    int fontSize = Integer.parseInt(getFrame().getProperty("standardfontsize"));
-	    int fontStyle = Integer.parseInt(getFrame().getProperty("standardfontstyle"));
-	    String fontName = getFrame().getProperty("standardfont");
-
-	    font = new Font(fontName, fontStyle, fontSize);
-	}
-	return font;
-    }
+       return font; }
 
     public boolean isBold() {
-	if(font == null) getFont(); // ** initialize font
-	return font.isBold();
-    }
+       return font != null ? font.isBold() : false; }
 
     public boolean isItalic() {
-	if(font == null) getFont(); // ** initialize font
-	return font.isItalic();
-    }
+       return font != null ? font.isItalic() : false; }
 
-    public boolean isUnderlined() {
-	return underlined;
-    }
-
-
-    // ** much better to use the java.awt.Font object (Sebastian)
-
-//      public int getFontSize() {
-//  	if (fontSize==0) return Integer.parseInt(getFrame().getProperty("standardfontsize"));
-//  	return fontSize;
-//      }
-
-    /**Maybe implement handling for cases when the font is not available on this system*/
-//      public String getFont() {
-//  	if (font==null) return getFrame().getProperty("standardfont");
-//  	return font;
-//      }
+    public boolean isUnderlined() {        // not implemented
+       return underlined; }
 
     public boolean isFolded() {
-	return folded;
-    }
+       return folded; }
 
+    public boolean isLong() {
+       // Because we do not what kind of user object there is, we have no
+       // reasonable general way of testing, whether the node is long;
+       return false; }
+
+    /**
+     *  True iff one of node's <i>strict</i> descendants is folded. A node N
+     *  is not its strict descendant - the fact that node itself is folded
+     *  is not sufficient to return true.
+     */
     public boolean hasFoldedStrictDescendant() {
-       /**
-        *  True iff one of node's <i>strict</i> descendants is folded. A node N is not its strict descendant - 
-        *  the fact that node itself is folded is not sufficient to return true.
-        */
        
        for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
           NodeAdapter child = (NodeAdapter)e.next();
@@ -265,10 +234,18 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
     public void setFolded(boolean folded) {
-
 	this.folded = folded;
     }
+
+    protected MindMapNode basicCopy() {
+       return null; }
 	
+    public MindMapNode shallowCopy() {
+       MindMapNode copy = basicCopy();
+       copy.setColor(getColor());
+       copy.setFont(getFont());
+       copy.setLink(getLink());
+       return copy; }
 
     //
     // other
@@ -300,12 +277,8 @@ public abstract class NodeAdapter implements MindMapNode {
 	return (parent==null);
     }
 
-    public ListIterator childrenUnfolded() {
-	return children.listIterator();
-    }
-
     public boolean hasChildren() {
-       return !children.isEmpty(); }
+        return children != null && !children.isEmpty(); }
 
     public int getChildPosition(MindMapNode childNode) {
        int position = 0;
@@ -315,11 +288,15 @@ public abstract class NodeAdapter implements MindMapNode {
        return -1;
     }
 
+    public ListIterator childrenUnfolded() {
+        return children != null ? children.listIterator() :
+           Collections.EMPTY_LIST.listIterator(); }
+
     public ListIterator childrenFolded() {
-	if (isFolded()) {
-	    return null;//return empty Enumeration
-	}
-	return children.listIterator();
+       if (isFolded()) {
+          return Collections.EMPTY_LIST.listIterator();
+       }
+       return childrenUnfolded();
     }
 
     //

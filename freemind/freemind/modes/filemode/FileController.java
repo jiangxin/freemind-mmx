@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileController.java,v 1.7 2001-05-06 18:47:57 ponder Exp $*/
+/*$Id: FileController.java,v 1.9 2003-11-03 10:39:52 sviles Exp $*/
 
 package freemind.modes.filemode;
 
@@ -29,14 +29,16 @@ import freemind.modes.MindMapNode;
 import freemind.modes.ControllerAdapter;
 import java.io.File;
 import java.awt.event.ActionEvent;
-import javax.swing.Action;
-import javax.swing.AbstractAction;
+import javax.swing.*;
 
 public class FileController extends ControllerAdapter {
 
-    Action newMap = new NewMapAction(this);
+    Action find = new FindAction();
+    Action findNext = new FindNextAction();
 
+    Action newMap = new NewMapAction(this);
     Action center = new CenterAction();
+
 
     public FileController(Mode mode) {
 	super(mode);
@@ -52,10 +54,17 @@ public class FileController extends ControllerAdapter {
 	return new FileNodeModel(newNode,getFrame());
     }
 
+    public JMenu getEditMenu() {
+	JMenu editMenu = new JMenu();
+        add(editMenu, find, "keystroke_find");
+        add(editMenu, findNext, "keystroke_find_next"); 
+        return editMenu; }
 
+    //-----------------------------------------------------------------------------------
 
+    // Private
+    // 
 
-    //private
     private MindMap getModel() {
  	return (MindMap)getController().getModel();
     }
@@ -70,7 +79,7 @@ public class FileController extends ControllerAdapter {
     
     private class CenterAction extends AbstractAction {
 	CenterAction() {
-	    super(getFrame().getResources().getString("center"));
+	    super(getController().getResourceString("center"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    if (getSelected() != null) {
@@ -79,4 +88,5 @@ public class FileController extends ControllerAdapter {
 	    }
 	}
     }
+
 }

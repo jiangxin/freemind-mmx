@@ -16,13 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BezierEdgeView.java,v 1.9 2003-11-03 10:15:46 sviles Exp $*/
+/*$Id: BezierEdgeView.java,v 1.11 2003-11-03 10:39:53 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.modes.MindMapEdge;
+import freemind.modes.EdgeAdapter;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.CubicCurve2D;
 import java.lang.Math;
@@ -46,8 +48,8 @@ public class BezierEdgeView extends EdgeView {
 
 	//YCTRL could be implemented but then we had to check whether target is above or below source.
 
-        int xctrl = target.isLeft() ? -XCTRL : XCTRL;
-        int childXctrl = target.isLeft() ? CHILD_XCTRL : -CHILD_XCTRL;
+        int xctrl = getMap().getZoomed(target.isLeft() ? -XCTRL : XCTRL);
+        int childXctrl = getMap().getZoomed(target.isLeft() ? CHILD_XCTRL : -CHILD_XCTRL);
 
 	int dy1=getSourceShift();
 	int dy2=getTargetShift();
@@ -67,6 +69,7 @@ public class BezierEdgeView extends EdgeView {
         update();
 	g.setColor(getColor());
 	g.setStroke(getStroke());
+        setRendering(g);
 	g.draw(graph);
 	super.paint(g);
     }

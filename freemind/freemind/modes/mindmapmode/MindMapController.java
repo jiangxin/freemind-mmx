@@ -16,43 +16,31 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.21 2003-11-03 10:15:46 sviles Exp $*/
+/*$Id: MindMapController.java,v 1.23 2003-11-03 10:39:52 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.main.XMLParseException;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.EdgeAdapter;
-import freemind.modes.Pattern;
+import freemind.modes.StylePattern;
 import freemind.view.mindmapview.NodeView;
-import java.io.File;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
+
+import java.io.*;
+import java.util.*;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
-import javax.swing.JToolBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JOptionPane;
-import javax.swing.JFileChooser;
-import javax.swing.JColorChooser;
-import javax.swing.ImageIcon;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
 public class MindMapController extends ControllerAdapter {
@@ -86,10 +74,15 @@ public class MindMapController extends ControllerAdapter {
     Action nodeUp = new NodeUpAction();
     Action nodeDown = new NodeDownAction();
     Action find = new FindAction();
+    Action findNext = new FindNextAction();
 
     Action fork = new ForkAction();
     Action bubble = new BubbleAction();
     Action nodeColor = new NodeColorAction();
+    Action nodeColorBlend = new NodeGeneralAction ("blend_color", null,
+       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
+          map.blendNodeColor(node); }});
+
     Action edgeColor = new EdgeColorAction();
     Action edgeWidths[] = {
        new EdgeWidthAction(EdgeAdapter.WIDTH_PARENT),
@@ -105,13 +98,23 @@ public class MindMapController extends ControllerAdapter {
        new EdgeStyleAction("sharp_linear"),
        new EdgeStyleAction("sharp_bezier")
     };
-    Action italic = new ItalicAction(this);
-    Action bold = new BoldAction(this);
-    //    Action underline = new UnderlineAction(this);
-    Action normalFont = new NormalFontAction(this);
 
-    Action increaseNodeFont = new IncreaseNodeFontAction();
-    Action decreaseNodeFont = new DecreaseNodeFontAction();
+
+    Action italic = new NodeGeneralAction ("italic", "images/Italic24.gif",
+       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
+          map.setItalic(node); }});
+    Action bold   = new NodeGeneralAction ("bold", "images/Bold24.gif",
+       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
+          map.setBold(node); }});
+    Action normalFont = new NodeGeneralAction ("normal", "images/Normal24.gif",
+       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
+          map.setNormalFont(node); }});
+    Action increaseNodeFont = new NodeGeneralAction ("increase_node_font_size", null,
+       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
+          map.increaseFontSize(node,1); }});
+    Action decreaseNodeFont = new NodeGeneralAction ("decrease_node_font_size", null,
+       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
+          map.increaseFontSize(node,-1); }});
 
     Action increaseBranchFont = new IncreaseBranchFontAction();
     Action decreaseBranchFont = new DecreaseBranchFontAction();
@@ -133,61 +136,54 @@ public class MindMapController extends ControllerAdapter {
 
     public MindMapController(Mode mode) {
 	super(mode);
-	//what to do if no patterns file is available?
 	try {
-           //loadPatterns(new File(Tools.expandFileName(getFrame().getProperty("patternsfile"))));
            File patternsFile = getFrame().getPatternsFile();
            if (patternsFile.exists()) {
               loadPatterns(patternsFile); }
            else {
-              System.err.println("Patterns file "+patternsFile+" not found."); }
-	} catch (Exception ex) {
-	    System.err.println("Patterns not loaded.");
-	}
-	popupmenu = new MindMapPopupMenu(this);
+              System.out.println("User patterns file "+patternsFile+" not found.");
+              loadPatterns(new InputStreamReader(getResource("patterns.xml").openStream())); }}
+        catch (XMLParseException e) {
+           System.err.println("In patterns:"+e); }
+	catch (Exception ex) {
+           System.err.println("Patterns not loaded:"+ex); }
+      	popupmenu = new MindMapPopupMenu(this);
 	toolbar = new MindMapToolBar(this);
-	setAllActions(false);
-    }
+	setAllActions(false); }
 
     public MapAdapter newModel() {
-	return new MindMapMapModel(getFrame());
-    }
+       return new MindMapMapModel(getFrame()); }
 
     public void save(File file) {
-	getModel().save(file);
-    }
+       getModel().save(file); }
 
     private void loadPatterns(File file) throws Exception {
-	List patternsList = Pattern.loadPatterns(file);
-	//	Action[] patternsActions = Array.newInstance(Action.class,patternsList.length());
+       createPatterns(StylePattern.loadPatterns(file)); }
+
+    private void loadPatterns(Reader reader) throws Exception {
+       createPatterns(StylePattern.loadPatterns(reader)); }
+
+    private void createPatterns(List patternsList) throws Exception {
 	patterns = new Action[patternsList.size()];
 	for (int i=0;i<patterns.length;i++) {
-	    patterns[i] = new ApplyPatternAction((Pattern)patternsList.get(i));
-	}
-    }
+           patterns[i] = new ApplyPatternAction((StylePattern)patternsList.get(i)); }}
 
     public FileFilter getFileFilter() {
-	return filefilter;
-    }
+       return filefilter; }
 
     //Node editing
     void setFontSize(int fontSize) {
 	for(ListIterator e = getSelecteds().listIterator();e.hasNext();) {
-		MindMapNodeModel selected = (MindMapNodeModel)e.next();
-		getModel().setFontSize(selected,fontSize);
-	}
-    }
+           MindMapNodeModel selected = (MindMapNodeModel)e.next();
+           getModel().setFontSize(selected,fontSize); }}
 
-    void setFont(String font) {
-	for(ListIterator e = getSelecteds().listIterator();e.hasNext();) {
-		MindMapNodeModel selected = (MindMapNodeModel)e.next();
-		getModel().setFont(selected,font);
-	}
-    }
+    void setFontFamily(String fontFamily) {
+       for(ListIterator e = getSelecteds().listIterator();e.hasNext();) {
+          MindMapNodeModel selected = (MindMapNodeModel)e.next();
+          getModel().setFontFamily(selected,fontFamily); }}
 
     protected MindMapNode newNode() {
-	return new MindMapNodeModel(getText("new_node"),getFrame());
-    }
+       return new MindMapNodeModel(getText("new_node"),getFrame()); }
 
     //get/set methods
 
@@ -202,6 +198,7 @@ public class MindMapController extends ControllerAdapter {
 
  	add(editMenu, cut, "keystroke_cut");
         add(editMenu, copy, "keystroke_copy");
+        add(editMenu, copySingle, "keystroke_copy_single");
 	add(editMenu, paste, "keystroke_paste");
 	return editMenu;
     }
@@ -220,10 +217,11 @@ public class MindMapController extends ControllerAdapter {
     JMenu getExtensionMenu() {
 	JMenu extensionMenu = new JMenu(getText("extension_menu"));
 	for (int i=0; i<patterns.length; ++i) {          
-		extensionMenu.add(patterns[i]);
-	}
-	return extensionMenu;
-    }
+           JMenuItem item = extensionMenu.add(patterns[i]);
+           item.setAccelerator
+              (KeyStroke.getKeyStroke
+               (getFrame().getProperty("keystroke_apply_pattern_"+(i+1)))); }
+	return extensionMenu; }
 
     JMenu getBranchMenu() {
 	JMenu branchMenu = new JMenu(getText("branch"));
@@ -273,6 +271,7 @@ public class MindMapController extends ControllerAdapter {
 	nodeMenu.addSeparator();
 
         add(nodeMenu, find, "keystroke_find");
+        add(nodeMenu, findNext, "keystroke_find_next");
 
 	nodeMenu.addSeparator();
 
@@ -304,11 +303,12 @@ public class MindMapController extends ControllerAdapter {
 
 	nodeFont.addSeparator();
 
-	add(nodeFont,italic,"keystroke_node_toggle_italic"); 
-	add(nodeFont,bold,"keystroke_node_toggle_boldface");
+	add(nodeFont, italic,"keystroke_node_toggle_italic"); 
+	add(nodeFont, bold,"keystroke_node_toggle_boldface");
 	nodeMenu.add(nodeFont);
 	//	nodeFont.add(underline);
-	add(nodeMenu,nodeColor,"keystroke_node_color"); 
+	add(nodeMenu, nodeColor, "keystroke_node_color"); 
+        add(nodeMenu, nodeColorBlend, "keystroke_node_color_blend");
 
 	return nodeMenu;
     }
@@ -318,17 +318,13 @@ public class MindMapController extends ControllerAdapter {
 	JMenu edgeStyle = new JMenu(getText("style"));
 	edgeMenu.add(edgeStyle);
 	for (int i=0; i<edgeStyles.length; ++i) { 
-		edgeStyle.add(edgeStyles[i]);
-	}
-	edgeMenu.add(edgeColor);
+           edgeStyle.add(edgeStyles[i]); }
+ 	add(edgeMenu, edgeColor, "keystroke_edge_color");
 	JMenu edgeWidth = new JMenu(getText("width"));
 	edgeMenu.add(edgeWidth);
 	for (int i=0; i<edgeWidths.length; ++i) { 
-		edgeWidth.add(edgeWidths[i]);
-	}
-	return edgeMenu;
-    }
-
+           edgeWidth.add(edgeWidths[i]); }
+	return edgeMenu; }
 
     JPopupMenu getPopupMenu() {
 	return popupmenu;
@@ -397,37 +393,41 @@ public class MindMapController extends ControllerAdapter {
 	importLinkedBranchWithoutRoot.setEnabled(enabled);
     }
 
-    //////////
-    // Actions
-    /////////
+
+
+
+    //
+    //      Actions
+    //_______________________________________________________________________________
+
+
+
+    // Export and Import
+    // _________________
+
 
     // This may later be moved to ControllerAdapter. So far there is no reason for it.
     protected class ExportToHTMLAction extends AbstractAction {
 	MindMapController c;
 	public ExportToHTMLAction(MindMapController controller) {
 	    super(getText("export_to_html"));
-	    c = controller;
-	}
+	    c = controller; }
 	public void actionPerformed(ActionEvent e) {
            File file = new File(c.getModel().getFile()+".html");
            if (c.getModel().saveHTML((MindMapNodeModel)c.getModel().getRoot(),file)) {
-              loadURL(file.toString()); }
-	}
-    }
+              loadURL(file.toString()); }}}
+
     protected class ExportBranchToHTMLAction extends AbstractAction {
 	MindMapController c;
 	public ExportBranchToHTMLAction(MindMapController controller) {
 	    super(getText("export_branch_to_html"));
-	    c = controller;
-	}
+	    c = controller; }
 	public void actionPerformed(ActionEvent e) {
            try {
               File file = File.createTempFile("tmm", ".html");
               if (c.getModel().saveHTML((MindMapNodeModel)getSelected(),file)) {
                  loadURL(file.toString()); }}
-           catch (IOException ex) {}
-	}
-    }
+           catch (IOException ex) {}}}
 
     private class ExportBranchAction extends AbstractAction {
 	ExportBranchAction() {
@@ -437,28 +437,24 @@ public class MindMapController extends ControllerAdapter {
 	    MindMapNodeModel node = (MindMapNodeModel)getSelected();
 
 	    //if something is wrong, abort.
-	    if(getMap() == null || node == null || node.isRoot()) {
+	    if (getMap() == null || node == null || node.isRoot()) {
 		getFrame().err("Could not export branch.");
-		return;
-	    }
+		return; }
 	    //If the current map is not saved yet, save it first.
 	    if (getMap().getFile() == null) {
 		getFrame().out("You must save the current map first!");
-		save();
-	    }
+		save(); }
 
 	    //Open FileChooser to choose in which file the exported
 	    //branch should be stored
 	    JFileChooser chooser;
 	    if (getMap().getFile().getParentFile() != null) {
-		chooser = new JFileChooser(getMap().getFile().getParentFile());
-	    } else {
-		chooser = new JFileChooser();
-	    }
+               chooser = new JFileChooser(getMap().getFile().getParentFile()); }
+            else {
+               chooser = new JFileChooser(); }
 	    //chooser.setLocale(currentLocale);
 	    if (getFileFilter() != null) {
-		chooser.addChoosableFileFilter(getFileFilter());
-	    }
+               chooser.addChoosableFileFilter(getFileFilter()); }
 	    int returnVal = chooser.showSaveDialog(getView());
 	    if (returnVal==JFileChooser.APPROVE_OPTION) {
 		File f = chooser.getSelectedFile();
@@ -466,14 +462,12 @@ public class MindMapController extends ControllerAdapter {
 		//Force the extension to be .mm
 		String ext = Tools.getExtension(f.getName());
 		if(!ext.equals("mm")) {
-		    f = new File(f.getParent(),f.getName()+".mm");
-		}
+                   f = new File(f.getParent(),f.getName()+".mm"); }
 		try {
-		    link = f.toURL();
-		} catch (MalformedURLException ex) {
+                   link = f.toURL(); }
+                catch (MalformedURLException ex) {
 		    JOptionPane.showMessageDialog(getView(),"couldn't create valid URL!");
-		    return;
-		}
+		    return; }
 
 		//Now make a copy from the node, remove the node from the map and create a new
 		//Map with the node as root, store the new Map, add the copy of the node to the parent,
@@ -487,106 +481,81 @@ public class MindMapController extends ControllerAdapter {
 		if (getModel().getFile() != null) {
 		    try{
 			//set a link from the new root to the old map
-			map.setLink(node, Tools.toRelativeURL(f.toURL(), getModel().getFile().toURL()));
-		    } catch(MalformedURLException ex) {
-		    }
-		}
-		//		getController().newMapModule(map);
+                       map.setLink(node, Tools.toRelativeURL(f.toURL(), getModel().getFile().toURL())); }
+                    catch(MalformedURLException ex) { }}
 		map.save(f);
 
 		getModel().insertNodeInto(newNode, parent, 0);
 		try {
 		    String linkString = Tools.toRelativeURL(getModel().getFile().toURL(), f.toURL());
-		    getModel().setLink(newNode,linkString);
-		} catch (MalformedURLException ex) {
-		}
-		getModel().save(getModel().getFile());
-	    }
-	}
-    }
+		    getModel().setLink(newNode,linkString); }
+                catch (MalformedURLException ex) {}
+		getModel().save(getModel().getFile()); }}}
 
     private class ImportBranchAction extends AbstractAction {
 	ImportBranchAction() {
-	    super(getText("import_branch"));
-	}
+           super(getText("import_branch")); }
 	public void actionPerformed(ActionEvent e) {
 	    MindMapNodeModel parent = (MindMapNodeModel)getSelected();
-	    if(parent != null) {
-		JFileChooser chooser = new JFileChooser();
-		//chooser.setLocale(currentLocale);
-		if (getFileFilter() != null) {
-		    chooser.addChoosableFileFilter(getFileFilter());
-		}
-		int returnVal = chooser.showOpenDialog(getView());
-		if (returnVal==JFileChooser.APPROVE_OPTION) {
-                    try {
-                       MindMapNodeModel node = getModel().loadTree(chooser.getSelectedFile());
-                       getModel().paste(node, parent); }
-                    catch (Exception ex) {
-                       handleLoadingException(ex);
-                    }
-		}
-	    }
-	}
-    }
+	    if (parent == null) {
+               return; }
+            JFileChooser chooser = new JFileChooser();
+            //chooser.setLocale(currentLocale);
+            if (getFileFilter() != null) {
+               chooser.addChoosableFileFilter(getFileFilter()); }
+            int returnVal = chooser.showOpenDialog(getView());
+            if (returnVal==JFileChooser.APPROVE_OPTION) {
+               try {
+                  MindMapNodeModel node = getModel().loadTree(chooser.getSelectedFile());
+                  getModel().paste(node, parent); }
+               catch (Exception ex) {
+                  handleLoadingException(ex); }}}}
 
     private class ImportLinkedBranchAction extends AbstractAction {
 	ImportLinkedBranchAction() {
-	    super(getText("import_linked_branch"));
-	}
+           super(getText("import_linked_branch")); }
 	public void actionPerformed(ActionEvent e) {
 	    MindMapNodeModel parent = (MindMapNodeModel)getSelected();
-	    if((parent != null)&&(parent.getLink() != null)) {
-		URL absolute = null;
-		try {
-		    absolute = new URL(getMap().getFile().toURL(), parent.getLink());
-		} catch (MalformedURLException ex) {
-		    JOptionPane.showMessageDialog(getView(),"couldn't create valid URL!");
-		    return;
-		}
-                try {
-                   MindMapNodeModel node = getModel().loadTree(new File(absolute.getFile()));
-                   getModel().paste(node, parent); }
-                catch (Exception ex) {
-                   handleLoadingException(ex);}
-	    }
-	}
-    }
-
+	    if (parent == null || parent.getLink() == null) {
+               return; }
+            URL absolute = null;
+            try {
+               absolute = new URL(getMap().getFile().toURL(), parent.getLink()); }
+            catch (MalformedURLException ex) {
+               JOptionPane.showMessageDialog(getView(),"couldn't create valid URL!");
+               return; }
+            try {
+               MindMapNodeModel node = getModel().loadTree(new File(absolute.getFile()));
+               getModel().paste(node, parent); }
+            catch (Exception ex) {
+               handleLoadingException(ex); }}}
 
     /**
      * This is exactly the opposite of exportBranch.
      */
     private class ImportLinkedBranchWithoutRootAction extends AbstractAction {
 	ImportLinkedBranchWithoutRootAction() {
-	    super(getText("import_linked_branch_without_root"));
-	}
+           super(getText("import_linked_branch_without_root")); }
 	public void actionPerformed(ActionEvent e) {
 	    MindMapNodeModel parent = (MindMapNodeModel)getSelected();
-	    if((parent != null)&&(parent.getLink() != null)) {
-		URL absolute = null;
-		try {
-		    absolute = new URL(getMap().getFile().toURL(), parent.getLink());
-		} catch (MalformedURLException ex) {
-		    JOptionPane.showMessageDialog(getView(),"couldn't create valid URL!");
-		    return;
-		}
-                try {
-                   MindMapNodeModel node = getModel().loadTree(new File(absolute.getFile()));
-                   for (Enumeration enum=node.children();enum.hasMoreElements();) {
-                      getModel().paste((MindMapNodeModel)enum.nextElement(), parent);
-                   }
-                   getModel().setLink(parent, null); }
-                catch (Exception ex) {
-                   handleLoadingException(ex); }
-	    }
-	}
-    }
+	    if (parent == null || parent.getLink() == null) {
+               return; }
+            URL absolute = null;
+            try {
+               absolute = new URL(getMap().getFile().toURL(), parent.getLink()); }
+            catch (MalformedURLException ex) {
+               JOptionPane.showMessageDialog(getView(),"couldn't create valid URL!");
+               return; }
+            try {
+               MindMapNodeModel node = getModel().loadTree(new File(absolute.getFile()));
+               for (Enumeration enum=node.children();enum.hasMoreElements();) {
+                  getModel().paste((MindMapNodeModel)enum.nextElement(), parent); }
+               getModel().setLink(parent, null); }
+            catch (Exception ex) {
+               handleLoadingException(ex); }}}
 
     private class ImportExplorerFavoritesAction extends AbstractAction {
-	ImportExplorerFavoritesAction() {
-	    super(getText("import_explorer_favorites"));
-	}
+	ImportExplorerFavoritesAction() { super(getText("import_explorer_favorites")); }
 	public void actionPerformed(ActionEvent e) {
            JFileChooser chooser = new JFileChooser();
            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -599,15 +568,10 @@ public class MindMapController extends ControllerAdapter {
               //getView().updateUI();
               // Problem: the frame should be refreshed here, but I don't know how to do it
               getModel().importExplorerFavorites(folder,getSelected(),/*redisplay=*/true);
-              getFrame().out("Favorites imported.");
-           }
-	}
-    }
+              getFrame().out("Favorites imported."); }}}
 
     private class ImportFolderStructureAction extends AbstractAction {
-	ImportFolderStructureAction() {
-            super(getText("import_folder_structure"));
-	}
+	ImportFolderStructureAction() { super(getText("import_folder_structure")); }
 	public void actionPerformed(ActionEvent e) {
            JFileChooser chooser = new JFileChooser();
            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -620,354 +584,181 @@ public class MindMapController extends ControllerAdapter {
               //getView().updateUI();
               // Problem: the frame should be refreshed here, but I don't know how to do it
               getModel().importFolderStructure(folder,getSelected(),/*redisplay=*/true);
-              getFrame().out("Folder structure imported.");
-           }
-	}
-    }
+              getFrame().out("Folder structure imported."); }}}
+
+
+    // Color
+    // __________________
+
+    private class NodeColorAction extends AbstractAction {
+       NodeColorAction() { super(getText("node_color")); }
+       public void actionPerformed(ActionEvent e) {
+          Color color = JColorChooser.showDialog(getView().getSelected(),"Choose Node Color:",getSelected().getColor() );
+          if (color==null) {
+             return; }
+          for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+             MindMapNodeModel selected = (MindMapNodeModel)it.next();
+             getModel().setNodeColor(selected, color); }}}
+
+    private class EdgeColorAction extends AbstractAction {
+	EdgeColorAction() { super(getText("edge_color")); }
+	public void actionPerformed(ActionEvent e) {
+           Color color = JColorChooser.showDialog(getView().getSelected(),"Choose Edge Color:",getSelected().getEdge().getColor());
+           if (color==null) return;
+           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+              MindMapNodeModel selected = (MindMapNodeModel)it.next();
+              getModel().setEdgeColor(selected,color); }}}
+
+
+    // NodeGeneralAction
+    // __________________
+
+    private interface SingleNodeOperation {
+       public void apply(MindMapMapModel map, MindMapNodeModel node); }
+
+    private class NodeGeneralAction extends AbstractAction {
+        SingleNodeOperation singleNodeOperation;
+        NodeGeneralAction(String textID, String iconPath, SingleNodeOperation singleNodeOperation) {
+           super(getText(textID), iconPath != null ? new ImageIcon(getResource(iconPath)) : null );
+           this.singleNodeOperation = singleNodeOperation; }
+	public void actionPerformed(ActionEvent e) {
+           for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+              MindMapNodeModel selected = (MindMapNodeModel)it.next();
+              singleNodeOperation.apply(getModel(), selected); }}}
+
+    // Edge width
+    // __________________
+
+    private String getWidthTitle(int width) {
+       if (width==EdgeAdapter.WIDTH_PARENT)
+          return getText("edge_width_parent");
+       if (width==EdgeAdapter.WIDTH_THIN)
+          return getText("edge_width_thin");
+       return Integer.toString(width); }
+
+    private class EdgeWidthAction extends AbstractAction {
+       int width;
+       EdgeWidthAction(int width) {
+          super(getWidthTitle(width));
+          this.width = width; }
+       public void actionPerformed(ActionEvent e) {
+          for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+             MindMapNodeModel selected = (MindMapNodeModel)it.next();
+             getModel().setEdgeWidth(selected,width); }}}
+
+
+    // Branch Font size
+    // __________________
+
+    private class IncreaseBranchFontAction extends AbstractAction {
+	IncreaseBranchFontAction() { super(getText("increase_branch_font_size")); }
+	public void actionPerformed(ActionEvent e) {
+           getModel().increaseBranchFontSize(getSelected(), 1); }}
+
+    private class DecreaseBranchFontAction extends AbstractAction {
+	DecreaseBranchFontAction() { super(getText("decrease_branch_font_size")); }
+	public void actionPerformed(ActionEvent e) {
+           getModel().increaseBranchFontSize(getSelected(), -1); }}
+
+
+    // Branch Font
+    // __________________
+
+    private class BoldifyBranchAction extends AbstractAction {
+	BoldifyBranchAction() {
+           super(getText("boldify_branch"), new ImageIcon(getResource("images/Bold24.gif"))); }
+	public void actionPerformed(ActionEvent e) {
+           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+              MindMapNodeModel selected = (MindMapNodeModel)it.next();
+              getModel().setBranchBold(selected); }}}
+
+    private class NonBoldifyBranchAction extends AbstractAction {
+	NonBoldifyBranchAction() { super(getText("nonboldify_branch")); }
+	public void actionPerformed(ActionEvent e) {
+           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+              MindMapNodeModel selected = (MindMapNodeModel)it.next();
+              getModel().setBranchNonBold(selected); }}}
+
+    private class ToggleBoldBranchAction extends AbstractAction {
+	ToggleBoldBranchAction() { super(getText("toggle_bold_branch")); }
+	public void actionPerformed(ActionEvent e) {
+           getModel().setBranchToggleBold(getSelected()); }}
+
+    private class ItaliciseBranchAction extends AbstractAction {
+	ItaliciseBranchAction() { super(getText("italicise_branch"),
+		  new ImageIcon(getResource("images/Italic24.gif"))); }
+	public void actionPerformed(ActionEvent e) {
+           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+              MindMapNodeModel selected = (MindMapNodeModel)it.next();
+              getModel().setBranchItalic(selected); }}}
+
+    private class NonItaliciseBranchAction extends AbstractAction {
+	NonItaliciseBranchAction() { super(getText("nonitalicise_branch")); }
+	public void actionPerformed(ActionEvent e) {
+           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+              MindMapNodeModel selected = (MindMapNodeModel)it.next();
+              getModel().setBranchNonItalic(selected); }}}
+
+    private class ToggleItalicBranchAction extends AbstractAction {
+       ToggleItalicBranchAction() { super(getText("toggle_italic_branch")); }
+       public void actionPerformed(ActionEvent e) {
+          getModel().setBranchToggleItalic(getSelected()); }}
+
+
+    // Miscelaneous
+    // _________________
+
 
     private class JoinNodesAction extends AbstractAction {
-	JoinNodesAction() {
-	    super(getText("join_nodes"));
-	}
+	JoinNodesAction() { super(getText("join_nodes")); }
 	public void actionPerformed(ActionEvent e) {
-           ((MindMapMapModel)getView().getModel()).joinNodes();
-	}
-    }
+           ((MindMapMapModel)getView().getModel()).joinNodes(); }}
 
     private class FollowLinkAction extends AbstractAction {
-	FollowLinkAction() {
-	    super(getText("follow_link"));
-	}
+	FollowLinkAction() { super(getText("follow_link")); }
 	public void actionPerformed(ActionEvent e) {
-	    loadURL();
-	}
-    }
+           loadURL(); }}
 
     private class ForkAction extends AbstractAction {
-	ForkAction() {
-	    super(getText("fork"));
-	}
-	public void actionPerformed(ActionEvent e) {
-//	    getModel().setNodeStyle(getSelected(), "fork");
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setNodeStyle(selected, "fork");
-		}
-	}
-    }
+       ForkAction() { super(getText("fork")); }
+       public void actionPerformed(ActionEvent e) {
+          for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+             MindMapNodeModel selected = (MindMapNodeModel)it.next();
+             getModel().setNodeStyle(selected, "fork"); }}}
 
     private class BubbleAction extends AbstractAction {
-	BubbleAction() {
-	    super(getText("bubble"));
-	}
-	public void actionPerformed(ActionEvent e) {
-//	    getModel().setNodeStyle(getSelected(), "bubble");
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setNodeStyle(selected, "bubble");
-		}
-	}
-    }
+	BubbleAction() { super(getText("bubble")); }
+       public void actionPerformed(ActionEvent e) {
+          for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+             MindMapNodeModel selected = (MindMapNodeModel)it.next();
+             getModel().setNodeStyle(selected, "bubble"); }}}
 
     private class EdgeStyleAction extends AbstractAction {
 	String style;
 	EdgeStyleAction(String style) {
 	    super(getText(style));
-		this.style = style;
-	}
-	public void actionPerformed(ActionEvent e) {
-//	    getModel().setEdgeStyle(getSelected(), style);
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setEdgeStyle(selected, style);
-		}
-	}
-    }
-
-    //
-    // Fonts
-    //
-    private class ItalicAction extends AbstractAction {
-	ItalicAction(Object controller) {
-	    super(getText("italic"), new ImageIcon(getResource("images/Italic24.gif")));
-	}
-	public void actionPerformed(ActionEvent e) {
-//	    getModel().setItalic(getSelected());
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setItalic(selected);
-		}
-	}
-    }
-
-    private class BoldAction extends AbstractAction {
-	BoldAction(Object controller) {
-	    super(getText("bold"), new ImageIcon(getResource("images/Bold24.gif")));
-	}
-	public void actionPerformed(ActionEvent e) {
-//	    getModel().setBold(getSelected());
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setBold(selected);
-		}
-	}
-    }
-
-    private class NormalFontAction extends AbstractAction {
-	NormalFontAction(Object controller) {
-	    super(getText("normal"), new ImageIcon(getResource("images/Normal24.gif")));	}
-	public void actionPerformed(ActionEvent e) {
-//	    getModel().setNormalFont(getSelected());
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setNormalFont(selected);
-		}
-	}
-    }
-
-    /**Not yet implemented*/
-    private class UnderlineAction extends AbstractAction {
-	UnderlineAction(Object controller) {
-	    super(getText("underline"), new ImageIcon(getResource("images/Underline24.gif")));
-	}
-	public void actionPerformed(ActionEvent e) {
-//	    getModel().setUnderlined(getSelected());
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setUnderlined(selected);
-		}
-	}
-    }
-
-    //
-    // Color
-    //
-
-    private class NodeColorAction extends AbstractAction {
-	NodeColorAction() {
-	    super(getText("node_color"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    Color color = JColorChooser.showDialog(getView(),"Choose Node Color:",getSelected().getColor() );
-		if (color==null) return;
-//	    getModel().setNodeColor(getSelected(), color);
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setNodeColor(selected, color);
-		}
-	}
-    }
-
-    private class EdgeColorAction extends AbstractAction {
-	EdgeColorAction() {
-	    super(getText("edge_color"));
-	}
-	public void actionPerformed(ActionEvent e) {
-//	    MindMapNodeModel node = getSelected();
-	    Color color = JColorChooser.showDialog(getView(),"Choose Edge Color:",getSelected().getEdge().getColor());
-		if (color==null) return;
-//	    getModel().setEdgeColor(node,color);
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setEdgeColor(selected,color);
-		}
-	}
-    }
-
-	private String getWidthTitle(int width) {
-		if (width==EdgeAdapter.WIDTH_PARENT)
-			return getText("edge_width_parent");
-		if (width==EdgeAdapter.WIDTH_THIN)
-			return getText("edge_width_thin");
-		return Integer.toString(width);
-	}
-
-    private class EdgeWidthAction extends AbstractAction {
-	int width;
-	EdgeWidthAction(int width) {
-			super(getWidthTitle(width));
-			this.width = width;
-	}
-	public void actionPerformed(ActionEvent e) {
-//	    getModel().setEdgeWidth(getSelected(),width);
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setEdgeWidth(selected,width);
-		}
-	}
-    }
-
-    private class IncreaseNodeFontAction extends AbstractAction {
-	IncreaseNodeFontAction() {
-	    super(getText("increase_node_font_size"));
-	}
-	public void actionPerformed(ActionEvent e) {
-//	    MindMapNodeModel n = getSelected();
-	    // we assume you have true type, so +1 works
-//	    getModel().setFontSize(n,n.getFont().getSize()+1);
-
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setFontSize(selected,selected.getFont().getSize()+1);
-		}
-	}
-    }
-
-    private class DecreaseNodeFontAction extends AbstractAction {
-	DecreaseNodeFontAction() {
-	    super(getText("decrease_node_font_size"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    // we assume you have true type, so -1 works
-//	    getModel().increaseBranchFontSize(getSelected(),-1);
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setFontSize(selected,selected.getFont().getSize()-1);
-		}
-	}
-    }
-
-    private class IncreaseBranchFontAction extends AbstractAction {
-	IncreaseBranchFontAction() {
-	    super(getText("increase_branch_font_size"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    MindMapNodeModel n = getSelected();
-		// we assume you have true type, so +1 works
-		// getModel().setBranchFontSize(n,n.getFont().getSize()+1);
-	    getModel().increaseBranchFontSize(getSelected(),1);
-/*
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().increaseBranchFontSize(selected,1);
-		}
-*/
-	}
-    }
-
-    private class DecreaseBranchFontAction extends AbstractAction {
-	DecreaseBranchFontAction() {
-	    super(getText("decrease_branch_font_size"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    MindMapNodeModel n = getSelected();
-	    // we assume you have true type, so -1 works
-	    getModel().setBranchFontSize(n,n.getFont().getSize()-1);
-/*
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setBranchFontSize(selected,selected.getFont().getSize()-1);
-		}
-*/
-	}
-    }
-
-
-    //
-    // Evaluation
-    //
+            this.style = style; }	
+       public void actionPerformed(ActionEvent e) {          
+          for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+             MindMapNodeModel selected = (MindMapNodeModel)it.next();
+             getModel().setEdgeStyle(selected, style); }}}
 
     private class ApplyPatternAction extends AbstractAction {
-	Pattern pattern;
-	ApplyPatternAction(Pattern pattern) {
+        StylePattern pattern;
+	ApplyPatternAction(StylePattern pattern) {
 	    super(pattern.getName());
-	    this.pattern=pattern;
-	}
+	    this.pattern=pattern; }
 	public void actionPerformed(ActionEvent e) {
 	    for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
 		MindMapNodeModel selected = (MindMapNodeModel)it.next();
-		getModel().setNodeColor(selected, pattern.getNodeColor());		
-		getModel().setNodeFont(selected, pattern.getNodeFont());
-	    }
-	}
-    }
-
-    //
-    // Branch Format Actions
-    //
-
-    private class BoldifyBranchAction extends AbstractAction {
-	BoldifyBranchAction() {
-	    super(getText("boldify_branch"),
-		  new ImageIcon(getResource("images/Bold24.gif")));
-	}
-
-	public void actionPerformed(ActionEvent e) {
-//	    getModel().setBranchBold(getSelected());
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setBranchBold(selected);
-		}
-	}
-    }
-
-    private class NonBoldifyBranchAction extends AbstractAction {
-	NonBoldifyBranchAction() {
-	    super(getText("nonboldify_branch"));
-	}
-
-	public void actionPerformed(ActionEvent e) {
-//	    getModel().setBranchNonBold(getSelected());
-	    for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-		MindMapNodeModel selected = (MindMapNodeModel)it.next();
-		getModel().setBranchNonBold(selected);
-	    }
-	}
-    }
-
-    private class ToggleBoldBranchAction extends AbstractAction {
-	ToggleBoldBranchAction() {
-	    super(getText("toggle_bold_branch"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    getModel().setBranchToggleBold(getSelected());
-	}
-    }
+                ((MindMapMapModel)getModel()).applyPattern(selected, pattern); }}}
 
 
-    private class ItaliciseBranchAction extends AbstractAction {
-	ItaliciseBranchAction() {
-	    super(getText("italicise_branch"),
-		  new ImageIcon(getResource("images/Italic24.gif")));
-	}
-
-	public void actionPerformed(ActionEvent e) {
-//	    getModel().setBranchItalic(getSelected());
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setBranchItalic(selected);
-		}
-	}
-    }
-
-    private class NonItaliciseBranchAction extends AbstractAction {
-	NonItaliciseBranchAction() {
-	    super(getText("nonitalicise_branch"));
-	}
-
-	public void actionPerformed(ActionEvent e) {
-//	    getModel().setBranchNonItalic(getSelected());
-		for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			getModel().setBranchNonItalic(selected);
-		}
-	}
-    }
-
-    private class ToggleItalicBranchAction extends AbstractAction {
-	ToggleItalicBranchAction() {
-	    super(getText("toggle_italic_branch"));
-	}
-
-	public void actionPerformed(ActionEvent e) {
-	    getModel().setBranchToggleItalic(getSelected());
-	}
-    }
 
 
-    //
-    // Other classes
-    //
+    // Nonaction classes
+    // ________________________________________________________________________
+
     private class MindMapFilter extends FileFilter {
 	public boolean accept(File f) {
 	    if (f.isDirectory()) return true;

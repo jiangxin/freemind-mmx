@@ -16,19 +16,21 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.15 2003-11-03 10:15:46 sviles Exp $*/
+/*$Id: NodeView.java,v 1.17 2003-11-03 10:39:53 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;//This should not be done.
+
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.dnd.*;
 import java.awt.datatransfer.*;
+import java.net.MalformedURLException;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -63,6 +65,9 @@ public abstract class NodeView extends JLabel {
 	final static int ALIGN_BOTTOM = -1;
 	final static int ALIGN_CENTER = 0;
 	final static int ALIGN_TOP = 1;
+
+    public final int LEFT_WIDTH_OVERHEAD = 0;
+    public final int LEFT_HEIGHT_OVERHEAD = 0;
 
     //
     // Constructors
@@ -182,7 +187,8 @@ public abstract class NodeView extends JLabel {
 	}
     }
 
-
+    public int getLeftWidthOverhead() {
+       return LEFT_WIDTH_OVERHEAD; }
 
     //
     // get/set methods
@@ -238,14 +244,16 @@ public abstract class NodeView extends JLabel {
      */
     public LinkedList getChildrenViews() {
 	LinkedList childrenViews = new LinkedList();
-	ListIterator it = getModel().childrenFolded();
+	ListIterator it = getModel().childrenUnfolded();
 	if (it != null) {
-	    while(it.hasNext()) {
-		MindMapNode child = (MindMapNode)it.next();
-		childrenViews.add( child.getViewer() );
-	    }
-	}
-	return childrenViews;
+           while(it.hasNext()) {
+              NodeView view = ((MindMapNode)it.next()).getViewer();
+              if (view != null) { // Visible view
+                 childrenViews.add(view); // child.getViewer() );
+              }
+           }
+        }
+        return childrenViews;
     }
     
     protected LinkedList getSiblingViews() {
@@ -371,52 +379,57 @@ public abstract class NodeView extends JLabel {
      */
     void remove() {
 	getMap().remove(this);
-	getEdge().remove();
+	if (getEdge()!=null) {
+           getEdge().remove(); }
+        getModel().setViewer(null); // Let the model know he is invisible
 	for(ListIterator e = getChildrenViews().listIterator();e.hasNext();) {
-	    NodeView child = (NodeView)e.next();
-	    child.remove();
-	}
-    }
+           ((NodeView)e.next()).remove(); }}
 
     void update() {
-        if (getModel().toString().length() > 100) {
-           // This is a slightly strange feature, as the long texts
-           // interpret html tags, while short do not.  Let's follow the
-           // logic "get something not that perfect <b>now</b>".
-           setText("<html><table><tr><td width=\"600\">"+getModel().toString()+"</td></tr></html>"); }
-        else {
-           setText(getModel().toString()); }
+       // Right now, this implementation is quite logical, although it allows
+       // for nonconvex feature of nodes starting with <html>.
 
-        setForeground(getModel().getColor());
+        String nodeText = getModel().toString();
+        if (nodeText.startsWith("<html>")) {
+           // Make it possible to use relative img references in HTML using tag <base>.
+           if (nodeText.indexOf("<img")>=0 && nodeText.indexOf("<base ") < 0 ) {
+              try {
+                 nodeText = "<html><base href=\""+
+                    map.getModel().getURL()+"\">"+nodeText.substring(6); }
+              catch (MalformedURLException e) {} }
+           setText(nodeText); }
+        else if (getModel().isLong()) {
+           setText("<html><table><tr><td width=\""+map.getZoomed(600)+"\">"+
+                   Tools.toXMLEscapedText(nodeText).replaceAll("\n","<p>") + 
+                   "</td></tr></html>"); }
+        else {
+           setText(nodeText); }
+
+        Color color = getModel().getColor();
+        if (color==null) {
+           String stdcolor = map.getController().getProperty("standardnodecolor");
+           if (stdcolor.length() == 7) {
+              color = Tools.xmlToColor(stdcolor); }
+           else {
+              color = Color.black; }}
+        setForeground(color);
+
         String link = ((NodeAdapter)getModel()).getLink();
 	if ( link != null ) {
            Icon icon = new ImageIcon(((NodeAdapter)getModel()).getFrame().getResource
-                                     (link.startsWith("mailto:") ? "images/Mail.png" : "images/Link.png"));
+                                     (link.startsWith("mailto:") ? "images/Mail.png" :
+                                      (Tools.executableByExtension(link) ? "images/Executable.png" :
+                                       "images/Link.png")));
            setIcon(icon); }
 	else {
            setIcon(null); }
 
-	int style=getModel().getFont().getStyle();
-//  	if(getModel().isBold()) {
-//  	    style=Font.BOLD;
-//  	    if(getModel().isItalic()) {
-//  		style=Font.BOLD|Font.ITALIC;
-//  	    }
-//  	} else if (getModel().isItalic()) {
-//  	    style=Font.ITALIC;
-//  	}
-	// ** simply use the font object (sebastian)
-//  	String font = getModel().getFont().getFontName();
-//  	int size = (int)( getModel().getFont().getSize()*getMap().getZoom() );
-
-  	if(Tools.isValidFont(getModel().getFont().getFamily())) {
-	    setFont(getModel().getFont());
-  	} else {
-  	    setFont(new Font("sans serif",
-  			     getModel().getFont().getStyle(),
-  			     getModel().getFont().getSize()));
-	}
-	repaint();
+        Font font = getModel().getFont();
+        font = font == null ? map.getController().getDefaultFont() : font;
+        if (map.getZoom() != 1F) {
+           font = font.deriveFont(font.getSize()*map.getZoom()); }
+        setFont(font);
+        repaint(); // Because of zoom?
     }
 
     void updateAll() {
@@ -426,6 +439,11 @@ public abstract class NodeView extends JLabel {
 	    child.updateAll();
 	}
     }
+
+   protected void setRendering(Graphics2D g) {
+      if (map.getController().getAntialiasAll()) {
+         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
+
 }
 
 

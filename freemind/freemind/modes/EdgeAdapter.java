@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeAdapter.java,v 1.8 2003-11-03 10:15:45 sviles Exp $*/
+/*$Id: EdgeAdapter.java,v 1.12 2003-11-03 11:00:12 sviles Exp $*/
 
 package freemind.modes;
 
@@ -77,14 +77,11 @@ public abstract class EdgeAdapter implements MindMapEdge {
 
 
     public int getWidth() {
-	if(width==WIDTH_PARENT) {
-	    if (getTarget().isRoot()) {
-			return WIDTH_THIN;
-	    }
-	    return getSource().getEdge().getWidth();
-	}
-	return width;
-    }
+	if (width==WIDTH_PARENT) {
+           if (getTarget().isRoot()) {
+              return WIDTH_THIN; }
+           return getSource().getEdge().getWidth(); }
+	return width; }
 
     public Stroke getStroke() {
 	if (width==WIDTH_THIN)
@@ -98,13 +95,10 @@ public abstract class EdgeAdapter implements MindMapEdge {
 	return stroke;
     }
 		
-    protected void setWidth(int width) {
+    public void setWidth(int width) {
 	this.width = width;
-	if ((width==WIDTH_PARENT) || (width==WIDTH_THIN))
-		stroke=null;
-	else 
-		stroke = new BasicStroke(getWidth(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER);
-    }
+        stroke = ((width==WIDTH_PARENT) || (width==WIDTH_THIN)) ? null :
+           new BasicStroke(getWidth(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER); }
 
     public String getStyle() {
 	if(style==null) {
@@ -122,6 +116,10 @@ public abstract class EdgeAdapter implements MindMapEdge {
 
     public String toString() {
 	return "";
+    }
+
+    public void setTarget(MindMapNode target) {
+       this.target = target; 
     }
 
     ///////////

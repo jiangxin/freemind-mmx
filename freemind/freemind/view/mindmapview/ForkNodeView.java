@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ForkNodeView.java,v 1.6 2003-11-03 10:15:46 sviles Exp $*/
+/*$Id: ForkNodeView.java,v 1.8 2003-11-03 10:39:53 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -43,7 +43,8 @@ public class ForkNodeView extends NodeView {
     }
 
     public Dimension getPreferredSize() {
-	return new Dimension(super.getPreferredSize().width, super.getPreferredSize().height+3);
+	return new Dimension(super.getPreferredSize().width,
+                             super.getPreferredSize().height + 3 + getEdge().getRealWidth());
     }	
   
     /**
@@ -52,15 +53,21 @@ public class ForkNodeView extends NodeView {
     public void paint(Graphics graphics) {
 	Graphics2D g = (Graphics2D)graphics;
 	Dimension size = getSize();
+	//Dimension size = getPreferredSize();
 
 	if (this.getModel()==null) return;
 
         paintSelected(g, size);
         paintDragOver(g, size);
 
+        int edgeWidth = getEdge().getRealWidth();
+
 	//Draw a standard node
+        setRendering(g);
 	g.setColor(getEdge().getColor());
-	g.drawLine(0,size.height-1,size.width,size.height-1);
+	g.setStroke(getEdge().getStroke());
+	g.drawLine(0,          size.height-edgeWidth/2-1,
+                   size.width, size.height-edgeWidth/2-1);
    
 	super.paint(g);
     }

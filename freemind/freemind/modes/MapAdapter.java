@@ -16,17 +16,19 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.11 2003-11-03 10:15:45 sviles Exp $*/
+/*$Id: MapAdapter.java,v 1.12 2003-11-03 10:28:53 sviles Exp $*/
 
 package freemind.modes;
 
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
+import freemind.modes.StylePattern;
 import freemind.view.mindmapview.NodeView;
 import freemind.controller.MindMapNodesSelection;
 
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.awt.Color;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
@@ -43,11 +45,18 @@ import java.util.*;
 public abstract class MapAdapter implements MindMap {
 
     private MindMapNode root;
-    private EventListenerList treeModelListeners  = new EventListenerList();
-    private boolean saved=true;
+    private EventListenerList treeModelListeners = new EventListenerList();
+    private boolean saved = true;
     private Color backgroundColor;
     private File file;
     private FreeMindMain frame;
+
+    // For find next
+    private String      findWhat;
+    private MindMapNode findFromNode;
+    private boolean     findCaseSensitive;
+    private LinkedList  findNodeQueue;
+    private ArrayList   findNodesUnfoldedByLastFind;
 
     public MapAdapter (FreeMindMain frame) {
 	this.frame = frame;
@@ -80,6 +89,14 @@ public abstract class MapAdapter implements MindMap {
 	this.saved = saved;
     }
 
+    public String getFindWhat() {
+       return findWhat;
+    }
+
+    public String getFindFromText() {
+       return findFromNode.toString();
+    }
+
     public Color getBackgroundColor() {
 	if (backgroundColor==null) {
 	    return Tools.xmlToColor(getFrame().getProperty("standardbackgroundcolor"));
@@ -107,6 +124,14 @@ public abstract class MapAdapter implements MindMap {
 	return file;
     }
 
+    /**
+     * Return URL of the map (whether as local file or a web location)
+     */
+    public URL getURL() throws MalformedURLException {
+       return getFile() != null ? getFile().toURL() : null;
+    }
+
+
     protected void setFile(File file) {
 	this.file = file;
     }
@@ -119,21 +144,11 @@ public abstract class MapAdapter implements MindMap {
     //
 
     public void setFolded( MindMapNode node, boolean folded ) {
-	if (node.isFolded()) {
-	    if (!folded) {
-		//unfold the node
-		node.setFolded(false);
-		nodeStructureChanged(node);
-	    }
-	} else {
-	    if (folded) {
-		//fold the node
-		node.setFolded(true);
-		nodeStructureChanged(node);
-	    }
-	}
-    }
-
+       if (node.isFolded() != folded) {
+          node.setFolded(folded);
+          getFrame().getView().select(node.getViewer());
+          fireTreeStructureChanged(this, getPathToRoot(node), null, null); }}
+ 
     public void setLink( NodeAdapter node, String link ) {
 	node.setLink(link);
 	nodeChanged(node);
@@ -146,6 +161,8 @@ public abstract class MapAdapter implements MindMap {
     public Object[] getPathToRoot( TreeNode node ) {
 	return ( ((MindMapNode)node).getPath() ).getPath();//Create Object[] from TreePath
     }
+
+    public void splitNode(MindMapNode node, int caretPosition, String newText) {}
     
     //
     // cut'n'paste
@@ -163,18 +180,24 @@ public abstract class MapAdapter implements MindMap {
 
     public Transferable cut() {
        Transferable t = copy();
-
-       for(ListIterator it = getFrame().getView().getSelecteds().listIterator();it.hasNext();) {
-          MindMapNode selectedNode = ((NodeView)it.next()).getModel();
+       for(Iterator i = getFrame().getView().getSelecteds().iterator();i.hasNext();) {
+          MindMapNode selectedNode = ((NodeView)i.next()).getModel();
           removeNodeFromParent(selectedNode); }
-
        return t; }
 
    public Transferable copy() {
+      return copy(getFrame().getView().getSelectedNodesSortedByY(), null); }
+
+   public Transferable copySingle() {
+      MindMapNode selectedNode = (MindMapNode)getFrame().getView().getSelected().getModel();
+      ArrayList selectedNodes  = new ArrayList();
+      selectedNodes.add(selectedNode.shallowCopy());
+      return copy(selectedNodes, selectedNode.toString()); }
+
+   private Transferable copy(ArrayList selectedNodes, String inPlainText) {
       try {
          String forNodesFlavor = "";
          boolean firstLoop = true;
-         ArrayList selectedNodes = getFrame().getView().getSelectedNodesSortedByY();
 
          for(Iterator it = selectedNodes.iterator();it.hasNext();) {
             if (firstLoop) {
@@ -187,9 +210,11 @@ public abstract class MapAdapter implements MindMap {
             //   It does no harm apart from being not very nice and confusing.           
             forNodesFlavor += copy((MindMapNode)it.next()).getTransferData(DataFlavor.stringFlavor); }
 
+         String plainText = inPlainText != null ? inPlainText : getAsPlainText(selectedNodes);
          return new MindMapNodesSelection
-            (forNodesFlavor, getAsPlainText(selectedNodes), getAsRTF(selectedNodes)); }
+            (forNodesFlavor, plainText, getAsRTF(selectedNodes), ""); }
          //return new StringSelection(forClipboard); }
+
 
       catch (UnsupportedFlavorException ex) { ex.printStackTrace(); }
       catch (IOException ex) { ex.printStackTrace(); }
@@ -208,7 +233,7 @@ public abstract class MapAdapter implements MindMap {
     public void paste(Transferable t, MindMapNode target, boolean asSibling) {
 	if (t != null) {
             // In MapAdapter it does basically nothing.
-	    nodeStructureChanged(target);
+            nodeStructureChanged(asSibling ? target.getParent() : target);
 	}
     }
 
@@ -224,9 +249,12 @@ public abstract class MapAdapter implements MindMap {
     }
 
 
-    public void insertNodeIntoNoEvent(MindMapNode newChild,
-			       MindMapNode parent){
-        // Daniel: This is a hackery in a sense that I don't
+    public void insertNodeIntoNoEvent(MindMapNode newChild, MindMapNode parent) {
+       insertNodeIntoNoEvent(newChild, parent, false); }
+
+    public void insertNodeIntoNoEvent(MindMapNode newChild, MindMapNode parent,
+                                      boolean asSibling){
+        // Daniel: This is a hackery in the sense that I don't
         // understand the method "nodesWereInserted".
 
         // This code is based on empirical observation that in
@@ -237,9 +265,14 @@ public abstract class MapAdapter implements MindMap {
         // method "nodesWereInserted" dramatically lowers the performance.
 
         // The default position is after the last node
-        parent.insert(newChild, parent.getRealChildCount());
+        if (asSibling) {
+           MindMapNode oldpa = parent.getParentNode();
+           //insertNodeInto(node, parent, parent.getChildPosition(target)); //}
+           oldpa.insert(newChild, oldpa.getChildPosition(parent)); } //     parent.getRealChildCount()); }
+        // } 
+        else {
+           parent.insert(newChild, parent.getRealChildCount()); }
     }
-
 
     public void insertNodeInto(MindMapNode newChild,
 			       MindMapNode parent){
@@ -260,7 +293,7 @@ public abstract class MapAdapter implements MindMap {
     }
 
     /**
-     * Message this to remove node from its parent. This will message
+     * Joerg: Message this to remove node from its parent. This will message
      * nodesWereRemoved to create the appropriate event. This is the
      * preferred way to remove a node as it handles the event creation
      * for you.
@@ -317,23 +350,77 @@ public abstract class MapAdapter implements MindMap {
 	( (MutableTreeNode)path.getLastPathComponent() ).setUserObject( newValue );
     }
 
+    public void applyPattern(NodeAdapter node, StylePattern pattern) {
+        if (pattern.getAppliesToNode()) {
+           if (pattern.getText() != null) {
+              node.setUserObject(pattern.getText()); }
+           node.setColor(pattern.getNodeColor());
+           node.setStyle(pattern.getNodeStyle());
+           node.setFont(pattern.getNodeFont()); }
+
+        if (pattern.getAppliesToEdge()) {
+           EdgeAdapter edge = (EdgeAdapter)node.getEdge();
+           //System.err.println("edge:"+edge);
+           //System.err.println("edge width:"+pattern.getEdgeWidth());
+           edge.setColor(pattern.getEdgeColor());
+           edge.setStyle(pattern.getEdgeStyle());
+           edge.setWidth(pattern.getEdgeWidth());}
+
+        nodeChanged(node); }
+
     // find
 
     public boolean find(MindMapNode node, String what, boolean caseSensitive) {
+       findNodesUnfoldedByLastFind = new ArrayList();
        LinkedList nodes = new LinkedList();
        nodes.addFirst(node);
+       findFromNode = node;
        if (!caseSensitive) {
           what = what.toLowerCase(); }
-       return find(nodes, what, caseSensitive); 
-    }
+       return find(nodes, what, caseSensitive); }
+
+    public boolean findNext() {
+       // Precodition: findWhat != null. We check the precodition but give no message.
+
+       // The logic of find next is vulnerable. find next relies on the queue
+       // of nodes from previous find / find next. However, between previous
+       // find / find next and this find next, nodes could have been deleted
+       // or moved. The logic expects that no changes happened, even that no
+       // node has been folded / unfolded.
+
+       // You may want to come with more correct solution, but this one
+       // works for most uses, and does not cause any big trouble except
+       // perhaps for some uncaught exceptions. As a result, it is not very
+       // nice, but far from critical and working quite fine.
+
+       if (findWhat != null) {
+          return find(findNodeQueue, findWhat, findCaseSensitive); }
+       return false; }
 
     private boolean find(LinkedList /*queue of MindMapNode*/ nodes, String what, boolean caseSensitive) {
        // Precondition: if !caseSensitive then >>what<< is in lowercase.
 
+       // Fold the path of previously found node
+       boolean thereWereNodesToBeFolded = !findNodesUnfoldedByLastFind.isEmpty();
+       if (!findNodesUnfoldedByLastFind.isEmpty()) {
+
+          //if (false) {
+          ListIterator i = findNodesUnfoldedByLastFind.listIterator
+             (findNodesUnfoldedByLastFind.size());
+          while (i.hasPrevious()) {
+             MindMapNode node = (MindMapNode)i.previous();
+             try {
+                setFolded(node, true); }
+             catch (Exception e) {}}
+          findNodesUnfoldedByLastFind = new ArrayList(); }
+
        // We implement width-first search.
        while (!nodes.isEmpty()) {
           MindMapNode node = (MindMapNode)nodes.removeFirst();
-          
+          // Add children to the queue
+          for (ListIterator i = node.childrenUnfolded(); i.hasNext(); ) {
+             nodes.addLast(i.next()); }
+
           String nodeText = caseSensitive ?
              node.toString() : node.toString().toLowerCase();
           if (nodeText.indexOf(what) >= 0) {             // Found
@@ -343,22 +430,29 @@ public abstract class MapAdapter implements MindMap {
              for (int i = 0; i < path.length - 1; i++) {
                 MindMapNode nodeOnPath = (MindMapNode)path[i];
                 if (nodeOnPath.isFolded()) {
-                   nodeOnPath.setFolded(false);
-                   nodeStructureChanged(nodeOnPath); }}
+                   findNodesUnfoldedByLastFind.add(nodeOnPath);
+                   setFolded(nodeOnPath, false); }}
 
              // Select the node and scroll to it.
              getFrame().getView().centerNode(node.getViewer());
              getFrame().getView().select(node.getViewer());
+             frame.getController().obtainFocusForSelected();
 
-             return true; }
+             // Save the state for find next
+             findWhat          = what;
+             findCaseSensitive = caseSensitive;
+             findNodeQueue     = nodes;
 
-          // Add children to the queue
-          for (ListIterator i = node.childrenUnfolded(); i.hasNext(); ) {
-             nodes.addLast(i.next()); }}
+             return true; }}
 
-       return false;
-    }
+       if (thereWereNodesToBeFolded) {
+          getFrame().getView().centerNode(findFromNode.getViewer()); }
+       else {
+          getFrame().getView().scrollNodeToVisible(findFromNode.getViewer()); }
+       getFrame().getView().select(findFromNode.getViewer());
+       frame.getController().obtainFocusForSelected();
 
+       return false; }
 
     //
     // API for updating the view.
@@ -468,11 +562,9 @@ public abstract class MapAdapter implements MindMap {
       * treeStructureChanged event.
       */
     protected void nodeStructureChanged(TreeNode node) {
-	setSaved(false);
-        if(node != null) {
-           fireTreeStructureChanged(this, getPathToRoot(node), null, null);
-        }
-    }
+        setSaved(false);
+        if (node != null) {
+           fireTreeStructureChanged(this, getPathToRoot(node), null, null); }}
 
     /**
      * Invoke this method if you've modified the TreeNodes upon which this
@@ -480,12 +572,8 @@ public abstract class MapAdapter implements MindMap {
      * model has changed below the node <code>node</code> (PENDING).
      */
     protected void reload(TreeNode node) {
-        if(node != null) {
-            fireTreeStructureChanged(this, getPathToRoot(node), null, null);
-        }
-    }
-
-
+        if (node != null) {
+           fireTreeStructureChanged(this, getPathToRoot(node), null, null); }}
 
 
     /////////
@@ -589,8 +677,7 @@ public abstract class MapAdapter implements MindMap {
             if (listeners[i]==TreeModelListener.class) {
                 // Lazily create the event:
                 if (e == null)
-                    e = new TreeModelEvent(source, path, 
-                                           childIndices, children);
+                    e = new TreeModelEvent(source, path, childIndices, children);
                 ((TreeModelListener)listeners[i+1]).treeStructureChanged(e);
             }          
         }
@@ -668,14 +755,3 @@ public abstract class MapAdapter implements MindMap {
 // 	((EdgeModel)node.getEdge()).setColor(color);
 // 	nodeChanged(node);
 //     }
-
-
-
-
-
-
-
-
-
-
-

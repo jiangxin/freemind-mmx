@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.9 2001-05-09 21:21:49 ponder Exp $*/
+/*$Id: MainToolBar.java,v 1.10 2003-11-03 10:28:52 sviles Exp $*/
 
 package freemind.controller;
 
@@ -28,10 +28,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 
 public class MainToolBar extends JToolBar {
-    private static final String[] zooms = {"50%","75%","100%","125%","150%"};
     JComboBox zoom;	    
+    Controller c;
 
     public MainToolBar(final Controller c) {
+        this.setRollover(true);
+        this.c = c;
 	JButton button;
 
 	button = add(c.navigationPreviousMap);
@@ -40,26 +42,39 @@ public class MainToolBar extends JToolBar {
 	button.setText("");
 	button = add(c.printDirect);
 	button.setText("");
-	if (! c.getFrame().getProperty("mindmapview_enable_zoom").trim().equals("false")) {
-	    zoom = new JComboBox(zooms);
-	    zoom.setSelectedItem("100%");
-	    add(zoom);
-	    zoom.addItemListener(new ItemListener(){
-		    public void itemStateChanged(ItemEvent e) {
-			//remove '%' sign
-			String dirty = (String)e.getItem();
-			String cleaned = dirty.substring(0,dirty.length()-1);
-			//change representation ("125" to 1.25)
-			c.setZoom(Integer.parseInt(cleaned,10)/100F);
-		    }
-		});
-	}
 
-    }
+        zoom = new JComboBox(c.getZooms());
+        zoom.setSelectedItem("100%");
+        add(zoom);
+        zoom.addItemListener(new ItemListener(){
+              public void itemStateChanged(ItemEvent e) {
+                 setZoomByItem(e.getItem()); }}); }
+
+    private void setZoomByItem(Object item) {
+       //remove '%' sign
+      String dirty = (String)item;
+      String cleaned = dirty.substring(0,dirty.length()-1);
+      //change representation ("125" to 1.25)
+      c.setZoom(Integer.parseInt(cleaned,10)/100F); }
+
+    public void zoomIn() {
+       if (zoom.getSelectedIndex() > 0) {
+          setZoomByItem(zoom.getItemAt(zoom.getSelectedIndex() - 1));
+          zoom.setSelectedItem(zoom.getItemAt(zoom.getSelectedIndex() - 1)); }}
+
+    public void zoomOut() {
+       if (zoom.getSelectedIndex() < zoom.getItemCount() - 1) {
+          setZoomByItem(zoom.getItemAt(zoom.getSelectedIndex() + 1));
+          zoom.setSelectedItem(zoom.getItemAt(zoom.getSelectedIndex() + 1)); }}
+
+    public String getItemForZoom(float f) {
+       return (int)(f*100F)+"%"; }
+
+    public void setZoomComboBox(float f) {
+       // Todo: checking
+       zoom.setSelectedItem(getItemForZoom(f)); }
 
     public void setAllActions(boolean enabled) {
 	if (zoom != null) {
-	    zoom.setEnabled(enabled);
-	}
-    }
+           zoom.setEnabled(enabled); }}
 }

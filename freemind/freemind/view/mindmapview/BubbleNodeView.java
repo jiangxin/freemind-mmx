@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.7 2003-11-03 10:15:46 sviles Exp $*/
+/*$Id: BubbleNodeView.java,v 1.9 2003-11-03 10:39:53 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -30,10 +30,14 @@ import java.awt.*;
  */
 public class BubbleNodeView extends NodeView {
 
-	private final static Stroke BOLD_STROKE =
-			new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
-						1f, new float[] {2f, 2f}, 0f);  
-	private final static Stroke DEF_STROKE = new BasicStroke();
+    private final static Stroke BOLD_STROKE =
+		new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
+					1f, new float[] {2f, 2f}, 0f);  
+    private final static Stroke DEF_STROKE = new BasicStroke();
+
+
+    public final int LEFT_WIDTH_OVERHEAD = 5;
+    public final int LEFT_HEIGHT_OVERHEAD = 2;
 
     //
     // Constructors
@@ -45,12 +49,14 @@ public class BubbleNodeView extends NodeView {
 	setVerticalAlignment(CENTER);
     }
 
-    public Dimension getPreferredSize() {
-	return new Dimension(super.getPreferredSize().width+10, super.getPreferredSize().height+4);
-    }	
-  
 
-   public void paintSelected(Graphics2D graphics, Dimension size) {
+
+    public Dimension getPreferredSize() {
+	return new Dimension(super.getPreferredSize().width+2*LEFT_WIDTH_OVERHEAD,
+                             super.getPreferredSize().height+4);
+    }	  
+
+    public void paintSelected(Graphics2D graphics, Dimension size) {
        if( this.isSelected() ) {
           graphics.setColor(selectedColor);
           graphics.fillRoundRect(0,0,size.width-1,size.height-1,10,10);
@@ -73,6 +79,7 @@ public class BubbleNodeView extends NodeView {
 	//g.setStroke(BOLD_STROKE);                     // Changed by Daniel
 
 	//Draw a standard node
+        setRendering(g);
 	g.setColor(getEdge().getColor());
 	//g.drawOval(0,0,size.width-1,size.height-1);   // Changed by Daniel
         g.drawRoundRect(0,0,size.width-1,size.height-1,10,10);
@@ -82,6 +89,10 @@ public class BubbleNodeView extends NodeView {
 
 	super.paint(g);
     }
+
+    public int getLeftWidthOverhead() {
+       return LEFT_WIDTH_OVERHEAD; }
+
     /**
      * Returns the Point where the OutEdge
      * should leave the Node.

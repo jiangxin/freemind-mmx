@@ -16,17 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeView.java,v 1.6 2003-11-03 10:15:46 sviles Exp $*/
+/*$Id: EdgeView.java,v 1.8 2003-11-03 10:39:53 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.modes.MindMapEdge;
-import java.awt.Graphics2D;
-import java.awt.Color;
-import java.awt.Stroke;
-import java.awt.BasicStroke;
-import java.awt.Point;
-import java.awt.Font;
+import freemind.modes.EdgeAdapter;
+import java.awt.*;
 import javax.swing.JLabel;
 
 /**
@@ -43,7 +39,8 @@ public abstract class EdgeView {
     protected EdgeView(NodeView source, NodeView target) {
 	this.source = source;
 	this.target = target;
-	label.setFont(new Font("Sans Serif",0,10));
+	label.setFont(getMap().getController().getFontThroughMap
+                      (new Font("Sans Serif",0,10)));
 
 	label.setText(getModel().toString());//Calling update() crashes BezierEdgeView
 
@@ -73,34 +70,37 @@ public abstract class EdgeView {
 
     public abstract Color getColor();
 
-   public Stroke getStroke() {
-      Stroke result = getModel().getStroke();
-      if (result==null)
-         return DEF_STROKE;
-      return result;
-   }
+    public Stroke getStroke() {
+       Stroke result = getModel().getStroke();
+       if (result==null)
+          return DEF_STROKE;
+       return result; }
 
-   public int getWidth() {
-      return getModel().getWidth();
-   }
-	
+    public int getWidth() {
+       return getModel().getWidth(); }
+
+    /**
+     * Get the width in pixels rather than in width constant (like -1)
+     */
+    public int getRealWidth() {
+       int width = getWidth();
+       return (width < 1) ? 1 : width; }
+
     protected MindMapEdge getModel() {
-	return target.getModel().getEdge();
-    }
+       return target.getModel().getEdge(); }
 
     protected MapView getMap() {
-	return source.getMap();
-    }
+       return source.getMap(); }
+
 	
    /**
     *  Get the vertical shift due to alignment of node connexion and edge width.
     *  Bold edges are centered by Graphic. Applies this shift to change this.
     */
    protected int getNodeShift(NodeView node) {
-      if(node.getAlignment()==NodeView.ALIGN_CENTER) return 0;
-      //int w=getWidth();
-      // ALIGN_BOTTOM is a case of fork style nodes.
-      if(node.getAlignment()==NodeView.ALIGN_BOTTOM) return 1; // return -w/2;
+      if (node.getAlignment()==NodeView.ALIGN_CENTER) return 0;
+      // ALIGN_BOTTOM is the case of fork style nodes.
+      if (node.getAlignment()==NodeView.ALIGN_BOTTOM) return -getRealWidth()/2+1;
       //if(node.getAlignment()==NodeView.ALIGN_TOP) return w/2; // Daniel: probably never used
       return 0;
    }
@@ -112,4 +112,8 @@ public abstract class EdgeView {
    protected int getSourceShift() {
       return getNodeShift(source);
    }
+
+   protected void setRendering(Graphics2D g) {
+      if (getMap().getController().getAntialiasEdges() || getMap().getController().getAntialiasAll()) {
+         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMapModel.java,v 1.4 2003-11-03 10:15:46 sviles Exp $*/
+/*$Id: BrowseMapModel.java,v 1.6 2003-11-03 10:39:52 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -74,7 +74,8 @@ public class BrowseMapModel extends MapAdapter {
        * Get the value of url.
        * @return Value of url.
        */
-    public URL getURL() {return url;}
+    public URL getURL() {
+       return url;}
     
     /**
        * Set the value of url.
@@ -109,36 +110,32 @@ public class BrowseMapModel extends MapAdapter {
 	BrowseNodeModel root = null;
 
 	//NanoXML Code
-	XMLElement parser = new XMLElement();
+	//XMLElement parser = new XMLElement();
+        BrowseXMLElement mapElement = new BrowseXMLElement(getFrame());
+
         InputStreamReader urlStreamReader = null;
         URLConnection uc = null;
 
         try {
            urlStreamReader = new InputStreamReader( url.openStream() ); }
         catch (AccessControlException ex) {
-           Tools.errorMessage("Could not open URL "+url.toString()+". Access Denied.");
+           getFrame().getController().errorMessage("Could not open URL "+url.toString()+". Access Denied.");
            System.err.println(ex);
            return null; }
         catch (Exception ex) {
-           Tools.errorMessage("Could not open URL "+url.toString()+".");
+           getFrame().getController().errorMessage("Could not open URL "+url.toString()+".");
            System.err.println(ex);
            // ex.printStackTrace();
            return null;
         }
 
 	try {
-	    parser.parseFromReader(urlStreamReader);
+	    mapElement.parseFromReader(urlStreamReader);
 	} catch (Exception ex) {
 	    System.err.println(ex);
 	    return null;
 	}
-
-	//	XMLElement map = 
-
-	XMLElement rootElement = (XMLElement)parser.getChildren().firstElement();
-	root = new BrowseNodeModel(getFrame());
-	root.load(rootElement);
-
+        root = mapElement.getMapChild();
 	return root;
     }
 }

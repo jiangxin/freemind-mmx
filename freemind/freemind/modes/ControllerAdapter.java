@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.25 2003-11-03 10:15:45 sviles Exp $*/
+/*$Id: ControllerAdapter.java,v 1.26 2003-11-03 10:28:53 sviles Exp $*/
 
 package freemind.modes;
 
@@ -26,7 +26,6 @@ import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.controller.Controller;
 import freemind.modes.MindMap;
-import freemind.modes.Pattern;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -56,12 +55,11 @@ import javax.swing.filechooser.FileFilter;
 public abstract class ControllerAdapter implements ModeController {
 
     Mode mode;
-    private int noOfMaps = 0;//The number of currently open maps
-//	private MindMapNode clipboard;
-//	private Clipboard clipboard = new Clipboard("principal");
-	private Clipboard clipboard;
+    private int noOfMaps = 0; //The number of currently open maps
+    private Clipboard clipboard;
 
     public Action copy = null;
+    public Action copySingle = null;
     public Action cut = null;
     public Action paste = null;
 
@@ -69,18 +67,17 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public ControllerAdapter(Mode mode) {
-	this.mode = mode;
+        this.mode = mode;
 
-	cut = new CutAction(this);
-	paste = new PasteAction(this);
+        cut = new CutAction(this);
+        paste = new PasteAction(this);
         copy = new CopyAction(this);
+        copySingle = new CopySingleAction(this);
 
-	DropTarget dropTarget = new DropTarget(
-					       getFrame().getViewport(),
-					       new FileOpener()
-						   );
+        DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
+                                               new FileOpener());
 
-	clipboard = getFrame().getViewport().getToolkit().getSystemSelection();
+        clipboard = getFrame().getViewport().getToolkit().getSystemSelection();
         // SystemSelection is a strange clipboard used for instance on
         // Linux. To get data into this clipboard user just selects the area
         // without pressing Ctrl+C like on Windows.
@@ -100,7 +97,7 @@ public abstract class ControllerAdapter implements ModeController {
      * OpenAction, NewMapAction.
      */
     public MapAdapter newModel() {
-	throw new java.lang.UnsupportedOperationException();
+        throw new java.lang.UnsupportedOperationException();
     }
 
     /**
@@ -109,22 +106,15 @@ public abstract class ControllerAdapter implements ModeController {
      * JFileChoosers.
      */
     protected FileFilter getFileFilter() {
-	return null;
+        return null;
     }
 
     public void doubleClick(MouseEvent e) {
-	toggleFolded();
+        toggleFolded();
     }
 
     public void plainClick(MouseEvent e) {
        if (getView().getSelected().followLink(e.getX())) {
-          /*
-          if (getView().getSelected().getModel().getLink() != null
-           public boolean onConflictToggleFolded(double xCoord) {
-       return xCoord < getSize().width/2; }
-
-           && e.getX() < getView().getSelected().getSize().width/2) {
-          */
           loadURL(); }
        else {
           toggleFolded(); }}
@@ -134,16 +124,16 @@ public abstract class ControllerAdapter implements ModeController {
     //
 
     protected String getText(String textId) {
-       return getFrame().getResources().getString(textId); }
+       return getController().getResourceString(textId); }
 
     public void newMap() {
-	getController().getMapModuleManager().newMapModule(newModel());
-	mapOpened(true);
+        getController().getMapModuleManager().newMapModule(newModel());
+        mapOpened(true);
     }
 
     protected void newMap(MindMap map) {
-	getController().getMapModuleManager().newMapModule(map);
-	mapOpened(true);
+        getController().getMapModuleManager().newMapModule(map);
+        mapOpened(true);
     }
 
     /**
@@ -151,28 +141,24 @@ public abstract class ControllerAdapter implements ModeController {
      * and implement the functionality in your MapModel (implements MindMap)
      */
     public void load(File file) throws FileNotFoundException, IOException, XMLParseException {
-	MapAdapter model = newModel();
-	model.load(file);
-	getController().getMapModuleManager().newMapModule(model);
-	mapOpened(true);
+        MapAdapter model = newModel();
+        model.load(file);
+        getController().getMapModuleManager().newMapModule(model);
+        mapOpened(true);
     }
 
     public void save() {
-	if (getModel().isSaved()) return;
-	if (getModel().getFile()==null) {
-	    saveAs();
-	} else {
-	    save(getModel().getFile());
-	}
-    }
+        if (getModel().isSaved()) return;
+        if (getModel().getFile()==null) {
+           saveAs(); }
+        else {
+           save(getModel().getFile()); }}
 
     /**
      * See load()
      */
     public void save(File file) {
-	getModel().save(file);
-    }
-
+       getModel().save(file); }
 
     protected void add(JMenu menu, Action action, String keystroke) { 
        JMenuItem item = menu.add(action);
@@ -186,24 +172,24 @@ public abstract class ControllerAdapter implements ModeController {
     //
 
     public void open() {
-	JFileChooser chooser = null;
-	if ((getMap() != null) && (getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
-	    chooser = new JFileChooser(getMap().getFile().getParentFile());
-	} else {
-	    chooser = new JFileChooser();
-	}
-	//chooser.setLocale(currentLocale);
-	if (getFileFilter() != null) {
-	    chooser.addChoosableFileFilter(getFileFilter());
-	}
-	int returnVal = chooser.showOpenDialog(getView());
-	if (returnVal==JFileChooser.APPROVE_OPTION) {
-	    try {
-		load(chooser.getSelectedFile());
-	    } catch (Exception ex) {
+        JFileChooser chooser = null;
+        if ((getMap() != null) && (getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
+            chooser = new JFileChooser(getMap().getFile().getParentFile());
+        } else {
+            chooser = new JFileChooser();
+        }
+        //chooser.setLocale(currentLocale);
+        if (getFileFilter() != null) {
+            chooser.addChoosableFileFilter(getFileFilter());
+        }
+        int returnVal = chooser.showOpenDialog(getView());
+        if (returnVal==JFileChooser.APPROVE_OPTION) {
+            try {
+                load(chooser.getSelectedFile());
+            } catch (Exception ex) {
                handleLoadingException (ex); } {
-	    }
-	}
+            }
+        }
     }
 
     public void handleLoadingException (Exception ex) {
@@ -212,32 +198,32 @@ public abstract class ControllerAdapter implements ModeController {
           int showDetail = JOptionPane.showConfirmDialog
              (getView(), getText("map_corrupted"),"FreeMind",JOptionPane.YES_NO_OPTION,JOptionPane.ERROR_MESSAGE);
           if (showDetail==JOptionPane.YES_OPTION) {
-             Tools.errorMessage(ex); }}
+             getController().errorMessage(ex); }}
        else if (exceptionType.equals("java.io.FileNotFoundException")) {
-          Tools.errorMessage(getText("file_not_found"));}
+          getController().errorMessage(getText("file_not_found"));}
        else {
-          Tools.errorMessage(ex); }
+          getController().errorMessage(ex); }
     }
 
     public void saveAs() {
-	JFileChooser chooser = null;
-	if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
-	    chooser = new JFileChooser(getMap().getFile().getParentFile());
-	} else {
-	    chooser = new JFileChooser();
-	}
-	//chooser.setLocale(currentLocale);
-	if (getFileFilter() != null) {
-	    chooser.addChoosableFileFilter(getFileFilter());
-	}
-	int returnVal = chooser.showSaveDialog(getView());
-	if (returnVal==JFileChooser.APPROVE_OPTION) {//ok pressed
-	    File f = chooser.getSelectedFile();
-	    //Force the extension to be .mm
-	    String ext = Tools.getExtension(f.getName());
-	    if(!ext.equals("mm")) {
-		f = new File(f.getParent(),f.getName()+".mm");
-	    }
+        JFileChooser chooser = null;
+        if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
+            chooser = new JFileChooser(getMap().getFile().getParentFile());
+        } else {
+            chooser = new JFileChooser();
+        }
+        //chooser.setLocale(currentLocale);
+        if (getFileFilter() != null) {
+            chooser.addChoosableFileFilter(getFileFilter());
+        }
+        int returnVal = chooser.showSaveDialog(getView());
+        if (returnVal==JFileChooser.APPROVE_OPTION) {//ok pressed
+            File f = chooser.getSelectedFile();
+            //Force the extension to be .mm
+            String ext = Tools.getExtension(f.getName());
+            if(!ext.equals("mm")) {
+                f = new File(f.getParent(),f.getName()+".mm");
+            }
             // If file exists, ask before overwriting.
             int overWriteMap = JOptionPane.YES_OPTION;
             if (f.exists()) {
@@ -247,26 +233,27 @@ public abstract class ControllerAdapter implements ModeController {
                save(f);
                //Update the name of the map
                getController().getMapModuleManager().updateMapModuleName(); }
-	}
+        }
     }
 
     public void close() throws Exception {
-	String[] options = {getText("yes"),
+        String[] options = {getText("yes"),
                             getText("no"),
                             getText("cancel")};
-	if (!getModel().isSaved()) {
-	    String text = getText("save_unsaved")+"\n"+getMapModule().toString();
-	    String title = getText("save");
-	    int returnVal = JOptionPane.showOptionDialog( getView(),text,title,JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,options[0]);
-	    if (returnVal==JOptionPane.YES_OPTION) {
-		save();
-	    } else if (returnVal==JOptionPane.NO_OPTION) {
-	    } else if (returnVal==JOptionPane.CANCEL_OPTION) {
-		throw new Exception();
-		//do this because quit() must terminate (and _not_ quit the prog)
-	    }
-	}
-	mapOpened(false);
+        if (!getModel().isSaved()) {
+            String text = getText("save_unsaved")+"\n"+getMapModule().toString();
+            String title = getText("save");
+            int returnVal = JOptionPane.showOptionDialog(getView(),text,title,JOptionPane.YES_NO_CANCEL_OPTION,
+                                                         JOptionPane.QUESTION_MESSAGE,null,options,options[0]);
+            if (returnVal==JOptionPane.YES_OPTION) {
+               save(); }
+            else if (returnVal==JOptionPane.NO_OPTION) {}
+            else if (returnVal==JOptionPane.CANCEL_OPTION) {
+                throw new Exception();
+                //do this because quit() must terminate (and _not_ quit the prog)
+            }
+        }
+        mapOpened(false);
     }
 
     /**
@@ -276,32 +263,32 @@ public abstract class ControllerAdapter implements ModeController {
      * --> What to do if either newMap or load or close are overwritten by a concrete
      * implementation? uups.
      */
-    public void mapOpened(boolean open) {
-	if (open) {
-	    if (noOfMaps == 0) {
-		//opened the first map
-		setAllActions(true);
-		if (cut!=null) cut.setEnabled(true);
-		if (copy!=null) copy.setEnabled(true);
-		if (paste!=null) paste.setEnabled(true);
-	    }
-	    if (getFrame().getView()!=null) {
-		DropTarget dropTarget = new DropTarget(
-						       getFrame().getView(),
-						       new FileOpener()
-							   );
-	    }
-	    noOfMaps++;
-	} else {
-	    noOfMaps--;
-	    if (noOfMaps == 0) {
-		//closed the last map
-		setAllActions(false);
-		if (cut!=null) cut.setEnabled(false);
-		if (copy!=null) copy.setEnabled(false);
-		if (paste!=null) paste.setEnabled(false);
-	    }
-	}
+     public void mapOpened(boolean open) {
+        if (open) {
+           if (noOfMaps == 0) {
+              //opened the first map
+              setAllActions(true);
+              if (cut!=null) cut.setEnabled(true);
+              if (copy!=null) copy.setEnabled(true);
+              if (copySingle!=null) copySingle.setEnabled(true);
+              if (paste!=null) paste.setEnabled(true);
+           }
+           if (getFrame().getView()!=null) {
+              DropTarget dropTarget = new DropTarget
+                 (getFrame().getView(), new FileOpener() );
+           }
+           noOfMaps++;
+        } else {
+           noOfMaps--;
+           if (noOfMaps == 0) {
+              //closed the last map
+              setAllActions(false);
+              if (cut!=null) cut.setEnabled(false);
+              if (copy!=null) copy.setEnabled(false);
+              if (copySingle!=null) copySingle.setEnabled(true);
+              if (paste!=null) paste.setEnabled(false);
+           }
+        }
     }
 
     /**
@@ -315,70 +302,154 @@ public abstract class ControllerAdapter implements ModeController {
      * Returns the number of maps currently opened for this mode.
      */
     public int getNoOfMaps() {
-	return noOfMaps;
-    }
-
+       return noOfMaps; }
 
     //
     // Node editing
     //
 
 //     void addNew(NodeView parent) {
-// 	getMode().getModeController().addNew(parent);
+//      getMode().getModeController().addNew(parent);
 //     }
 
     void delete(NodeView node) {
-	getMode().getModeController().remove(node);
+        getMode().getModeController().remove(node);
     }
 
     void edit() {
-	if (getView().getSelected() != null) {
-	    edit(getView().getSelected(),getView().getSelected());
-	}
+        if (getView().getSelected() != null) {
+            edit(getView().getSelected(),getView().getSelected());
+        }
     }
 
+/*
+    private class ObjectHolder {
+       Object object;
+       public ObjectHolder () {}
+       public void setObject(Object object) {
+          this.object = object; }
+       public Object getObject() {
+          return object; }}
+*/
+
+    private class IntHolder {
+       private int integer;
+       public IntHolder () {}
+       public void setValue(int integer) {
+          this.integer = integer; }
+       public int getValue() {
+          return integer; }}
+
+   private void changeComponentHeight(JComponent component, int difference, int minimum) {
+      Dimension preferredSize = component.getPreferredSize();
+      System.out.println("pf:"+preferredSize);
+      if (preferredSize.getHeight() + difference >= minimum) {
+         System.out.println("pf:"+preferredSize);
+         component.setPreferredSize(new Dimension((int)preferredSize.getWidth(),
+                                                  (int)preferredSize.getHeight() + difference)); }}
+
     void editLong(final NodeView node, NodeView toBeSelected) {
-	String text = node.getModel().toString();
+        String text = node.getModel().toString();
+
+        final int BUTTON_OK     = 0;
+        final int BUTTON_CANCEL = 1;
+        final int BUTTON_SPLIT  = 2;
 
         final JDialog dialog = new JDialog((JFrame)getFrame(), getText("edit_long_node"), true);
 
-        JTextArea textArea = new JTextArea(text);
+        final JTextArea textArea = new JTextArea(text);
         textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true); // wrap around words rather tham characters
+        textArea.setWrapStyleWord(true); // wrap around words rather than characters
 
 
-        JScrollPane editorScrollPane = new JScrollPane(textArea);
+        final JScrollPane editorScrollPane = new JScrollPane(textArea);
         editorScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         editorScrollPane.setPreferredSize(new Dimension(500, 160));
+        //textArea.setPreferredSize(new Dimension(500, 160));
 
+        final JPanel panel = new JPanel();
+
+        //String performedAction;
+        final IntHolder eventSource = new IntHolder();
         final JButton okButton = new JButton("OK");
-        JButton cancelButton = new JButton(getText("cancel"));
+        final JButton cancelButton = new JButton(getText("cancel"));
+        final JButton splitButton = new JButton(getText("split"));
+        final JCheckBox enterConfirms = new JCheckBox(getText("enter_confirms"),true);
+
+        okButton.setMnemonic(KeyEvent.VK_O);
+        enterConfirms.setMnemonic(KeyEvent.VK_E);
+        splitButton.setMnemonic(KeyEvent.VK_S);
+        cancelButton.setMnemonic(KeyEvent.VK_C);
+
         okButton.addActionListener (new ActionListener() {
               public void actionPerformed(ActionEvent e) {
-                 okButton.setEnabled(false);
+                 eventSource.setValue(BUTTON_OK);
                  dialog.dispose(); }});
 
         cancelButton.addActionListener (new ActionListener() {
               public void actionPerformed(ActionEvent e) {
+                 eventSource.setValue(BUTTON_CANCEL);
                  dialog.dispose(); }});
 
+        splitButton.addActionListener (new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                 eventSource.setValue(BUTTON_SPLIT);
+                 dialog.dispose(); }});
+
+        enterConfirms.addActionListener (new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                 textArea.requestFocus(); }});
+
+
+
         // On Enter act as if OK button was pressed
+
         textArea.addKeyListener(new KeyListener() {
               public void keyPressed(KeyEvent e) {
-                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                 if (e.getKeyCode() == KeyEvent.VK_ENTER && enterConfirms.isSelected()) {
                     e.consume();
-                    okButton.setEnabled(false);
+                    eventSource.setValue(BUTTON_OK);
                     dialog.dispose(); }}
+                 /*
+                 // Daniel: I tried to make editor resizable. It worked somehow, but not
+                 // quite. When I increased size and then decreased again to the original
+                 // size, it stopped working. The main idea here is to change the preferred
+                 // size. I also tried to change size but it did not do anything sensible.
+                 //
+                 // One possibility would be to disable decreasing the size.
+                 //
+                 // Another thing which was far from nice was that it flickered.
+                 //
+                 // If someone wants to find a solution, let it be.
+
+                 else if (e.getKeyCode() == KeyEvent.VK_DOWN &&
+                          (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+
+                    changeComponentHeight(editorScrollPane, 60, 180);
+                    dialog.doLayout();
+                    dialog.pack();
+                    e.consume();
+                 }
+                 else if (e.getKeyCode() == KeyEvent.VK_UP &&
+                          (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+                    changeComponentHeight(editorScrollPane, -60, 180);
+                    dialog.doLayout();
+                    dialog.pack();
+                    e.consume(); }} */
               public void keyTyped(KeyEvent e) {}
               public void keyReleased(KeyEvent e) {}
            });
 
-        JPanel panel = new JPanel();
         panel.add(editorScrollPane);
+        //panel.setPreferredSize(new Dimension(500, 160));
+        //editorScrollPane.setPreferredSize(new Dimension(500, 160));
 
         JPanel buttonPane = new JPanel();
+        buttonPane.add(enterConfirms);
         buttonPane.add(okButton);
         buttonPane.add(cancelButton);
+        buttonPane.add(splitButton);
+        //        buttonPane.add(performedAction);
         buttonPane.setMaximumSize(new Dimension(1000, 20));
 
         panel.add(buttonPane);
@@ -389,122 +460,142 @@ public abstract class ControllerAdapter implements ModeController {
         //dialog.setLocationRelativeTo(node);
         dialog.setLocation(node.getLocationOnScreen());
         dialog.pack();
-        dialog.setVisible(true);
+        dialog.show();
+        //dialog.setVisible(true);
 
-        // We use isEnables property to communicate the fact, that OK button
-        // was pressed.
-        if (!okButton.isEnabled()) {
+        if (eventSource.getValue() == BUTTON_OK) {
            getModel().changeNode(node.getModel(), textArea.getText()); }
+        if (eventSource.getValue() == BUTTON_SPLIT) {
+           //getModel().changeNode(node.getModel(), textArea.getText());
+           getModel().splitNode(node.getModel(),
+                                textArea.getCaretPosition(),
+                                textArea.getText()); }
+
     }
 
     void edit(final NodeView node, NodeView toBeSelected) {
-	String text = node.getModel().toString();
+        String text = node.getModel().toString();
         if (text.length() > 100) {
            editLong(node,toBeSelected);
            return; }
 
-	final JTextField input = (text.length() < 8)
-           ? new JTextField(text,8) 	//Make fields for short texts editable
+        final JTextField input = (text.length() < 8)
+           ? new JTextField(text,8)     //Make fields for short texts editable
            : new JTextField(text);
 
-	FocusListener whenEdited = new FocusAdapter() {
+        FocusListener whenEdited = new FocusAdapter() {
               public void focusLost(FocusEvent e) {
                  getModel().changeNode(node.getModel(),input.getText());
                  getFrame().getLayeredPane().remove(input);
               }
            };
         
-	edit(node, toBeSelected,input,whenEdited);
+        edit(node, toBeSelected,input,whenEdited);
     }
 
-    public void edit( NodeView node,final NodeView toBeSelected, JTextField input, FocusListener whenEdited) {
-	getView().scrollNodeToVisible(node);
-	//	Keymap keymap = input.addKeymap("My",input.getKeymap());
-	//	Action act = input.getActions()[0];//DefaultEditorKit.InsertContentAction;
-	//	KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_A,0);
-	//	keymap.addActionForKeyStroke(key,act);
-	Point position = getAbsoluteNodePosition(node);
-	input.setBounds(position.x,position.y + 5,input.getPreferredSize().width,18); // offset 5 is heuristic workaround
-        //input.setLocation(node.getLocation());
-	input.selectAll();
-	input.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    getView().select(toBeSelected);
-		    //Focus is lost, so focusLost() is called, which does the work
-		}
-	    });
-	input.addFocusListener( whenEdited );
+    public void edit(NodeView node, final NodeView toBeSelected, JTextField input, FocusListener whenEdited) {
+        getView().scrollNodeToVisible(node);
+        //      Keymap keymap = input.addKeymap("My",input.getKeymap());
+        //      Action act = input.getActions()[0];//DefaultEditorKit.InsertContentAction;
+        //      KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_A,0);
+        //      keymap.addActionForKeyStroke(key,act);
+        
+        Point frameScreenLocation = getFrame().getLayeredPane().getLocationOnScreen();
+        Point nodeScreenLocation = node.getLocationOnScreen();
 
-	getFrame().getLayeredPane().add(input,2000);
-	getFrame().repaint();
-	input.requestFocus();
+        int linkIconWidth = 16;
+        int inputBorderWidth = 2;
+        int cursorWidth = 1;
+        int xOffset = -1 * inputBorderWidth + node.getLeftWidthOverhead() - 1;
+        int yOffset = -2; // Optimized for Windows style; basically ad hoc
+        int widthAddition = 2 * inputBorderWidth + cursorWidth - 2 * node.getLeftWidthOverhead() + 2;
+        int heightAddition = 2;
+        if (node.getModel().getLink() != null) {
+           xOffset += linkIconWidth;
+           widthAddition -= linkIconWidth; }
+
+        input.setLocation((int)(nodeScreenLocation.getX() - frameScreenLocation.getX() + xOffset),
+                          (int)(nodeScreenLocation.getY() - frameScreenLocation.getY() + yOffset));
+
+        input.setSize(node.getWidth() + widthAddition, node.getHeight() + heightAddition);
+        input.setFont(node.getFont());
+        input.setForeground(node.getForeground());
+        input.setSelectedTextColor(node.getForeground());
+        input.setSelectionColor(new Color(200,220,200));
+        input.selectAll();
+        input.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    getView().select(toBeSelected);
+                    //Focus is lost, so focusLost() is called, which does the work
+                }
+            });
+        input.addFocusListener( whenEdited );
+
+        getFrame().getLayeredPane().add(input,2000);
+        getFrame().repaint();
+        input.requestFocus();
     }
 
 //     void edit(final NodeView node) {
-// 	getMode().getModeController().edit(node,node);
+//      getMode().getModeController().edit(node,node);
 //     }
 
 
 
     public void addNew(NodeView parent) {
-	MindMapNode newNode = newNode();
-	int place;
-	if (getFrame().getProperty("placenewbranches").equals("last")) {
-	    place = parent.getModel().getChildCount();
-	} else {
-	    place = 0;
-	}
-	getModel().insertNodeInto(newNode,parent.getModel(), place);
-	edit(newNode.getViewer(),parent);
+        MindMapNode newNode = newNode();
+        int place;
+        if (getFrame().getProperty("placenewbranches").equals("last")) {
+            place = parent.getModel().getChildCount();
+        } else {
+            place = 0;
+        }
+        getModel().insertNodeInto(newNode,parent.getModel(), place);
+        edit(newNode.getViewer(),parent);
     }
 
     public void remove(NodeView node) {
-	if (!node.isRoot()) {
-	    getModel().removeNodeFromParent(node.getModel());
-	}
+        if (!node.isRoot()) {
+            getModel().removeNodeFromParent(node.getModel());
+        }
     }
 
     protected void toggleFolded() {
-	MindMapNode node = getSelected();
-	if (node.isFolded()) {
-	    getModel().setFolded(node,false);
-	} else {
-	    getModel().setFolded(node,true);
-	}
-	getView().select(node.getViewer());
-    }
+        MindMapNode node = getSelected();
+        getModel().setFolded(node, !node.isFolded());
+        getView().select(node.getViewer()); }
 
     /**
      * If any children are folded, unfold all folded children.
      * Otherwise, fold all children.
      */
     protected void toggleChildrenFolded() {
-	// have NodeAdapter; need NodeView
-	MindMapNode parent = getSelected();
-	ListIterator children_it = parent.getViewer().getChildrenViews().listIterator();
-	boolean areAnyFolded = false;
-	while(children_it.hasNext() && !areAnyFolded) {
-	    NodeView child = (NodeView)children_it.next();
-	    if(child.getModel().isFolded()) {
-		areAnyFolded = true;
-	    }
-	}
+        // have NodeAdapter; need NodeView
+        MindMapNode parent = getSelected();
+        ListIterator children_it = parent.getViewer().getChildrenViews().listIterator();
+        boolean areAnyFolded = false;
+        while(children_it.hasNext() && !areAnyFolded) {
+            NodeView child = (NodeView)children_it.next();
+            if(child.getModel().isFolded()) {
+                areAnyFolded = true;
+            }
+        }
 
-	children_it = parent.getViewer().getChildrenViews().listIterator();
-	if(areAnyFolded) {
-	    while(children_it.hasNext()) {
-		NodeView child = (NodeView)children_it.next();
-		if(child.getModel().isFolded()) {
-		    getModel().setFolded(child.getModel(), false);
-		}
-	    }
-	} else {
-	    while(children_it.hasNext()) {
-		NodeView child = (NodeView)children_it.next();
-		getModel().setFolded(child.getModel(), true);
-	    }
-	}
-	getView().select(parent.getViewer());
+        children_it = parent.getViewer().getChildrenViews().listIterator();
+        if(areAnyFolded) {
+            while(children_it.hasNext()) {
+                NodeView child = (NodeView)children_it.next();
+                if(child.getModel().isFolded()) {
+                    getModel().setFolded(child.getModel(), false);
+                }
+            }
+        } else {
+            while(children_it.hasNext()) {
+                NodeView child = (NodeView)children_it.next();
+                getModel().setFolded(child.getModel(), true);
+            }
+        }
+        getView().select(parent.getViewer());
     }
 
     protected void setLinkByTextField() {
@@ -520,11 +611,11 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     protected void setLinkByFileChooser() {
-	URL link;
-	String relative;
-	File input;
-	JFileChooser chooser = null;
-	if (getMap().getFile() == null) {
+        URL link;
+        String relative;
+        File input;
+        JFileChooser chooser = null;
+        if (getMap().getFile() == null) {
             JOptionPane.showMessageDialog(getView(), getText("not_saved_for_link_error"), 
                                           "FreeMind", JOptionPane.WARNING_MESSAGE);
             return;
@@ -533,44 +624,47 @@ public abstract class ControllerAdapter implements ModeController {
             // dialog to be an open link dialog; as a result, the new map
             // overwrote the linked map.
 
-	}
-	if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
-	    chooser = new JFileChooser(getMap().getFile().getParentFile());
-	} else {
-	    chooser = new JFileChooser();
-	}
-	if (getFileFilter() != null) {
-	    chooser.addChoosableFileFilter(getFileFilter());
-	}
-	int returnVal = chooser.showOpenDialog(getView());
-	if (returnVal==JFileChooser.APPROVE_OPTION) {
-	    input = chooser.getSelectedFile();
-	    try {
-		link = input.toURL();
-		relative = link.toString();
-	    } catch (MalformedURLException ex) {
-                Tools.errorMessage(getText("url_error"));
-		return;
-	    }
-	    if (getFrame().getProperty("links").equals("relative")) {
-		//Create relative URL
-		try {
-		    relative = Tools.toRelativeURL(getMap().getFile().toURL(), link);
-		} catch (MalformedURLException ex) {
-                    Tools.errorMessage(getText("url_error"));
-		    return;
-		}
-	    }
-	    getModel().setLink(getSelected(),relative);
-	}
+        }
+        if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
+            chooser = new JFileChooser(getMap().getFile().getParentFile());
+        } else {
+            chooser = new JFileChooser();
+        }
+        if (getFileFilter() != null) {
+           // Set filters, make sure AcceptAll filter comes first
+           chooser.setFileFilter(getFileFilter());
+           chooser.addChoosableFileFilter(chooser.getAcceptAllFileFilter());
+ 
+        }
+        int returnVal = chooser.showOpenDialog(getView());
+        if (returnVal==JFileChooser.APPROVE_OPTION) {
+            input = chooser.getSelectedFile();
+            try {
+                link = input.toURL();
+                relative = link.toString();
+            } catch (MalformedURLException ex) {
+                getController().errorMessage(getText("url_error"));
+                return;
+            }
+            if (getFrame().getProperty("links").equals("relative")) {
+                //Create relative URL
+                try {
+                    relative = Tools.toRelativeURL(getMap().getFile().toURL(), link);
+                } catch (MalformedURLException ex) {
+                    getController().errorMessage(getText("url_error"));
+                    return;
+                }
+            }
+            getModel().setLink(getSelected(),relative);
+        }
     }
 
     public void loadURL(String relative) {
-	URL absolute = null;
-	if (getMap().getFile() == null) {
-	    getFrame().out("You must save the current map first!");
-	    save(); }
-	try {
+        URL absolute = null;
+        if (getMap().getFile() == null) {
+            getFrame().out("You must save the current map first!");
+            save(); }
+        try {
            if (Tools.isAbsolutePath(relative)) {
               // Protocol can be identified by rexep pattern "[a-zA-Z]://.*".
               // This should distinguish a protocol path from a file path on most platforms.
@@ -610,119 +704,85 @@ public abstract class ControllerAdapter implements ModeController {
                        absolute = new URL("http://"+relative); }
                     else {
                        // This cannot be a base, to which http:// may be added.
-                       Tools.errorMessage("File \""+file+"\" does not exist.");
+                       getController().errorMessage("File \""+file+"\" does not exist.");
                        return; }}}
               getFrame().openDocument(absolute); }}
         catch (MalformedURLException ex) {
-            Tools.errorMessage(getText("url_error")+"\n"+ex);
-	    return; }
+            getController().errorMessage(getText("url_error")+"\n"+ex);
+            return; }
         catch (FileNotFoundException e) {
-	    int returnVal = JOptionPane.showConfirmDialog
+            int returnVal = JOptionPane.showConfirmDialog
                (getView(),
                 getText("repair_link_question"),
                 getText("repair_link"),
                 JOptionPane.YES_NO_OPTION);
-	    if (returnVal==JOptionPane.YES_OPTION) {
+            if (returnVal==JOptionPane.YES_OPTION) {
                setLinkByTextField(); }}
         catch (Exception e) { e.printStackTrace(); }
         getFrame().setWaitingCursor(false);
     }
 
     public void loadURL() {
-	String link = getSelected().getLink();
-	if (link != null) {
-	    loadURL(link);
-	}
+        String link = getSelected().getLink();
+        if (link != null) {
+            loadURL(link);
+        }
     }
-
-    public void applyPattern(NodeAdapter node, Pattern pattern) {
-	if (pattern.getText() != null) {
-	    node.setUserObject(pattern.getText());
-	}
-	node.setColor(pattern.getNodeColor());
-	node.setStyle(pattern.getNodeStyle());
-	node.setFont(pattern.getNodeFont());
-
-	EdgeAdapter edge = (EdgeAdapter)node.getEdge();
-	edge.setColor(pattern.getEdgeColor());
-	edge.setStyle(pattern.getEdgeStyle());
-    }
-
 
     //
     // Convenience methods
     //
 
     protected Mode getMode() {
-	return mode;
+        return mode;
     }
 
     protected void setMode(Mode mode) {
-	this.mode = mode;
+        this.mode = mode;
     }
 
     protected MapModule getMapModule() {
-	return getController().getMapModuleManager().getMapModule();
+        return getController().getMapModuleManager().getMapModule();
     }
 
     public MapAdapter getMap() {
-	if (getMapModule() != null) {
-	    return (MapAdapter)getMapModule().getModel();
-	} else {
-	    return null;
-	}
+        if (getMapModule() != null) {
+            return (MapAdapter)getMapModule().getModel();
+        } else {
+            return null;
+        }
     }
 
     public URL getResource (String name) {
-	return getFrame().getResource(name);
+        return getFrame().getResource(name);
     }
 
     public Controller getController() {
-	return getMode().getController();
+        return getMode().getController();
     }
 
     public FreeMindMain getFrame() {
-	return getController().getFrame();
+        return getController().getFrame();
     }
 
     private MapAdapter getModel() {
-	return (MapAdapter)getController().getModel();
+        return (MapAdapter)getController().getModel();
     }
 
     public MapView getView() {
-	return getController().getView();
+        return getController().getView();
     }
 
     protected void updateMapModuleName() {
-	getController().getMapModuleManager().updateMapModuleName();
+        getController().getMapModuleManager().updateMapModuleName();
     }
 
     private NodeAdapter getSelected() {
-	return (NodeAdapter)getView().getSelected().getModel();
+        return (NodeAdapter)getView().getSelected().getModel();
     }
 
     public void changeToMapOfMode(Mode mode) {
-	getController().getMapModuleManager().changeToMapOfMode(mode);
-    }
-
-    /**
-     * Calculates the absolute position of a node on the layered pane.
-     * Used in edit() to place a Textfield right above the node.
-     * useful if you overload edit() to use something else than a
-     * JTextfield (eg. two JTextfields for key/value)
-     */
-    protected Point getAbsoluteNodePosition(NodeView node) {
-	Point loc = node.getLocation();
-
-	Point scroll = ((JViewport)getView().getParent()).getViewPosition();
-	Point content = getFrame().getContentPane().getLocation();
-	Point position = new Point();
-
-	position.x = loc.x-scroll.x+content.x;
-	//Todo: Remove the constant(40) (the menubar?) from this calc
-	position.y = loc.y-scroll.y+content.y+40;
-
-	return position;
+        getController().getMapModuleManager().changeToMapOfMode(mode);
     }
 
     ////////////
@@ -730,288 +790,316 @@ public abstract class ControllerAdapter implements ModeController {
     ///////////
 
     protected class NewMapAction extends AbstractAction {
-	ControllerAdapter c;
-	public NewMapAction(ControllerAdapter controller) {
-	    super(getText("new"), new ImageIcon(getResource("images/New24.gif")));
-	    c = controller;
-	    //Workaround to get the images loaded in jar file.
-	    //they have to be added to jar manually with full path from root
-	    //I really don't like this, but it's a bug of java
-	}
-	public void actionPerformed(ActionEvent e) {
-	    c.newMap();
-	}
+        ControllerAdapter c;
+        public NewMapAction(ControllerAdapter controller) {
+            super(getText("new"), new ImageIcon(getResource("images/New24.gif")));
+            c = controller;
+            //Workaround to get the images loaded in jar file.
+            //they have to be added to jar manually with full path from root
+            //I really don't like this, but it's a bug of java
+        }
+        public void actionPerformed(ActionEvent e) {
+            c.newMap();
+        }
     }
 
     protected class OpenAction extends AbstractAction {
-	ControllerAdapter c;
-	public OpenAction(ControllerAdapter controller) {
-	    super(getText("open"), new ImageIcon(getResource("images/Open24.gif")));
-	    c = controller;
-	}
-	public void actionPerformed(ActionEvent e) {
-	    c.open();
-	}
+        ControllerAdapter c;
+        public OpenAction(ControllerAdapter controller) {
+            super(getText("open"), new ImageIcon(getResource("images/Open24.gif")));
+            c = controller;
+        }
+        public void actionPerformed(ActionEvent e) {
+            c.open();
+        }
     }
 
     protected class SaveAction extends AbstractAction {
-	ControllerAdapter c;
-	public SaveAction(ControllerAdapter controller) {
-	    super(getText("save"), new ImageIcon(getResource("images/Save24.gif")));
-	    c = controller;
-	}
-	public void actionPerformed(ActionEvent e) {
-	    c.save();
-	}
+        ControllerAdapter c;
+        public SaveAction(ControllerAdapter controller) {
+            super(getText("save"), new ImageIcon(getResource("images/Save24.gif")));
+            c = controller;
+        }
+        public void actionPerformed(ActionEvent e) {
+            c.save();
+        }
     }
 
     protected class SaveAsAction extends AbstractAction {
-	ControllerAdapter c;
-	public SaveAsAction(ControllerAdapter controller) {
-	    super(getText("save_as"), new ImageIcon(getResource("images/SaveAs24.gif")));
-	    c = controller;
-	}
-	public void actionPerformed(ActionEvent e) {
-	    c.saveAs();
-	}
+        ControllerAdapter c;
+        public SaveAsAction(ControllerAdapter controller) {
+            super(getText("save_as"), new ImageIcon(getResource("images/SaveAs24.gif")));
+            c = controller;
+        }
+        public void actionPerformed(ActionEvent e) {
+            c.saveAs();
+        }
     }
 
     protected class FindAction extends AbstractAction {
-	public FindAction() {
+        public FindAction() {
            super(getText("find")); }
-	public void actionPerformed(ActionEvent e) {
-           String what = JOptionPane.showInputDialog(getText("find_what"));
+        public void actionPerformed(ActionEvent e) {
+           String what = JOptionPane.showInputDialog(getView().getSelected(),
+                                                     getText("find_what"));
+           if (what == null || what.equals("")) {
+              return; }
+           boolean found = getView().getModel().find
+              (getView().getSelected().getModel(), what, /*caseSensitive=*/ false);
+           getView().repaint();
+           if (!found) {
+              getController().informationMessage
+                 (getText("no_found_from").replaceAll("\\$1",what).
+                  replaceAll("\\$2", getView().getModel().getFindFromText()),
+                  getView().getSelected()); }}}
 
-           if (what != null && !what.equals("")) {
-              boolean found = getView().getModel().find
-                 (getView().getSelected().getModel(), what, /*caseSensitive=*/ false);
-              if (!found) {
-                 JOptionPane.showMessageDialog(null, "\""+what+"\" "+getText("not_found")); }}}}
+    protected class FindNextAction extends AbstractAction {
+        public FindNextAction() {
+           super(getText("find_next")); }
+        public void actionPerformed(ActionEvent e) {
+           String what = getView().getModel().getFindWhat();
+           if (what == null) {
+              getController().informationMessage(getText("no_previous_find"), getView().getSelected());
+              return; }
+           boolean found = getView().getModel().findNext();
+           getView().repaint();
+           if (!found) {
+              getController().informationMessage
+                 (getText("no_more_found_from").replaceAll("\\$1",what).
+                  replaceAll("\\$2", getView().getModel().getFindFromText()),
+                  getView().getSelected()); }}}
 
     //
     // Node editing
     //
 
     protected class EditAction extends AbstractAction {
-	public EditAction() {
-	    super(getText("edit"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    edit();
-	}
+        public EditAction() {
+            super(getText("edit"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            edit();
+        }
     }
 
     protected class AddNewAction extends AbstractAction {
-	public AddNewAction() {
-	    super(getText("new_node"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    addNew(getView().getSelected());
-	}
+        public AddNewAction() {
+            super(getText("new_node"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            addNew(getView().getSelected());
+        }
     }
 
     protected class RemoveAction extends AbstractAction {
-	public RemoveAction() {
-	    super(getText("remove_node"));
-	}
-	public void actionPerformed(ActionEvent e) {
-//	    delete(getView().getSelected());
-		for(ListIterator i = getView().getSelecteds().listIterator();i.hasNext();) {
-			NodeView selected = (NodeView)i.next();
-			delete(selected);
-		}
-	}
-    }
+        public RemoveAction() {
+            super(getText("remove_node"));
+        }
+        public void actionPerformed(ActionEvent e) {
+           if (getMapModule() != null) {
+              getView().getModel().cut();
+              getController().obtainFocusForSelected(); }}}
 
     protected class NodeUpAction extends AbstractAction {
-	public NodeUpAction() {
-	    super(getText("node_up"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    MindMapNode selected = getView().getSelected().getModel();
-	    if(!selected.isRoot()) {
-		MindMapNode parent = selected.getParentNode();
-		int index = getModel().getIndexOfChild(parent, selected);
-		delete(getView().getSelected());
-		int maxindex = getModel().getChildCount(parent);
-		if(index - 1 <0) {
-		    getModel().insertNodeInto(selected,parent,maxindex);
-		} else {
-		    getModel().insertNodeInto(selected,parent,index - 1);
-		}
-		getModel().nodeStructureChanged(parent);
-		getView().select(selected.getViewer());
-	    }
-	}
+        public NodeUpAction() {
+            super(getText("node_up"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            MindMapNode selected = getView().getSelected().getModel();
+            if(!selected.isRoot()) {
+                MindMapNode parent = selected.getParentNode();
+                int index = getModel().getIndexOfChild(parent, selected);
+                delete(getView().getSelected());
+                int maxindex = getModel().getChildCount(parent);
+                if(index - 1 <0) {
+                    getModel().insertNodeInto(selected,parent,maxindex);
+                } else {
+                    getModel().insertNodeInto(selected,parent,index - 1);
+                }
+                getModel().nodeStructureChanged(parent);
+                getView().select(selected.getViewer());
+            }
+        }
     }
 
     protected class NodeDownAction extends AbstractAction {
-	public NodeDownAction() {
-	    super(getText("node_down"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    MindMapNode selected = getView().getSelected().getModel();
-	    if(!selected.isRoot()) {
-		MindMapNode parent = selected.getParentNode();
-		int index = getModel().getIndexOfChild(parent, selected);
-		delete(getView().getSelected());
-		int maxindex = getModel().getChildCount(parent);
-		if(index + 1 > maxindex) {
-		    getModel().insertNodeInto(selected,parent,0);
-		} else {
-		    getModel().insertNodeInto(selected,parent,index + 1);
-		}
-		getModel().nodeStructureChanged(parent);
-		getView().select(selected.getViewer());
-	    }
-	}
+        public NodeDownAction() {
+            super(getText("node_down"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            MindMapNode selected = getView().getSelected().getModel();
+            if(!selected.isRoot()) {
+                MindMapNode parent = selected.getParentNode();
+                int index = getModel().getIndexOfChild(parent, selected);
+                delete(getView().getSelected());
+                int maxindex = getModel().getChildCount(parent);
+                if(index + 1 > maxindex) {
+                    getModel().insertNodeInto(selected,parent,0);
+                } else {
+                    getModel().insertNodeInto(selected,parent,index + 1);
+                }
+                getModel().nodeStructureChanged(parent);
+                getView().select(selected.getViewer());
+            }
+        }
     }
 
     protected class ToggleFoldedAction extends AbstractAction {
-	public ToggleFoldedAction() {
+        public ToggleFoldedAction() {
             super(getText("toggle_folded"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    toggleFolded();
-	}
+        }
+        public void actionPerformed(ActionEvent e) {
+            toggleFolded();
+        }
     }
 
     protected class ToggleChildrenFoldedAction extends AbstractAction {
-	public ToggleChildrenFoldedAction() {
-	    super(getText("toggle_children_folded"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    toggleChildrenFolded();
-	}
+        public ToggleChildrenFoldedAction() {
+            super(getText("toggle_children_folded"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            toggleChildrenFolded();
+        }
     }
 
     protected class SetLinkByFileChooserAction extends AbstractAction {
-	public SetLinkByFileChooserAction() {
-	    super(getText("set_link_by_filechooser"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    setLinkByFileChooser();
-	}
+        public SetLinkByFileChooserAction() {
+            super(getText("set_link_by_filechooser"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            setLinkByFileChooser();
+        }
     }
 
     protected class SetLinkByTextFieldAction extends AbstractAction {
-	public SetLinkByTextFieldAction() {
-	    super(getText("set_link_by_textfield"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    setLinkByTextField();
-	}
+        public SetLinkByTextFieldAction() {
+            super(getText("set_link_by_textfield"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            setLinkByTextField();
+        }
     }
 
 
     protected class FollowLinkAction extends AbstractAction {
-	public FollowLinkAction() {
-	    super(getText("follow_link"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    loadURL();
-	}
+        public FollowLinkAction() {
+            super(getText("follow_link"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            loadURL();
+        }
     }
 
     protected class CopyAction extends AbstractAction {
-	public CopyAction(Object controller) {
-	    super(getText("copy"), new ImageIcon(getResource("images/Copy24.gif")));
-	    setEnabled(false);
-	}
-	public void actionPerformed(ActionEvent e) {
+        public CopyAction(Object controller) {
+            super(getText("copy"), new ImageIcon(getResource("images/Copy24.gif")));
+            setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent e) {
            if(getMapModule() != null) {
               Transferable copy = getView().getModel().copy();
               if (copy != null) {
                  clipboard.setContents(copy,null); }}}}
 
-    protected class CutAction extends AbstractAction {
-	public CutAction(Object controller) {
-	    super(getText("cut"), new ImageIcon(getResource("images/Cut24.gif")));
-	    setEnabled(false);
-	}
-	public void actionPerformed(ActionEvent e) {
+    protected class CopySingleAction extends AbstractAction {
+        public CopySingleAction(Object controller) {
+           super(getText("copy_single"));
+           setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent e) {
            if(getMapModule() != null) {
-              Transferable copy = getView().getModel().cut();
+              Transferable copy = getView().getModel().copySingle();
               if (copy != null) {
                  clipboard.setContents(copy,null); }}}}
 
+    protected class CutAction extends AbstractAction {
+        public CutAction(Object controller) {
+            super(getText("cut"), new ImageIcon(getResource("images/Cut24.gif")));
+            setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent e) {
+           if (getMapModule() != null) {
+              Transferable copy = getView().getModel().cut();
+              if (copy != null) {
+                 clipboard.setContents(copy,null); 
+                 getController().obtainFocusForSelected(); }}}}
+
     protected class PasteAction extends AbstractAction {
-	public PasteAction(Object controller) {
-	    super(getText("paste"),new ImageIcon(getResource("images/Paste24.gif")));
-	    setEnabled(false);
-	}
-	public void actionPerformed(ActionEvent e) {
-	    if(clipboard != null) {
+        public PasteAction(Object controller) {
+            super(getText("paste"),new ImageIcon(getResource("images/Paste24.gif")));
+            setEnabled(false); }
+        public void actionPerformed(ActionEvent e) {
+            if(clipboard != null) {
                getModel().paste(clipboard.getContents(this), getView().getSelected().getModel()); }}}
 
     protected class FileOpener implements DropTargetListener {
-	private boolean isDragAcceptable(DropTargetDragEvent event) {
-	    // check if there is at least one File Type in the list
-	    DataFlavor[] flavors = event.getCurrentDataFlavors();
-	    for (int i = 0; i < flavors.length; i++) {
-		if (flavors[i].isFlavorJavaFileListType()) {
-		    //		    event.acceptDrag(DnDConstants.ACTION_COPY);
-		    return true;
-		}
-	    }
-	    //	    event.rejectDrag();
-	    return false;
-	}
+        private boolean isDragAcceptable(DropTargetDragEvent event) {
+            // check if there is at least one File Type in the list
+            DataFlavor[] flavors = event.getCurrentDataFlavors();
+            for (int i = 0; i < flavors.length; i++) {
+                if (flavors[i].isFlavorJavaFileListType()) {
+                    //              event.acceptDrag(DnDConstants.ACTION_COPY);
+                    return true;
+                }
+            }
+            //      event.rejectDrag();
+            return false;
+        }
 
-	private boolean isDropAcceptable(DropTargetDropEvent event) {
-	    // check if there is at least one File Type in the list
-	    DataFlavor[] flavors = event.getCurrentDataFlavors();
-	    for (int i = 0; i < flavors.length; i++) {
-		if (flavors[i].isFlavorJavaFileListType()) {
-		    return true;
-		}
-	    }
-	    return false;
-	}
+        private boolean isDropAcceptable(DropTargetDropEvent event) {
+            // check if there is at least one File Type in the list
+            DataFlavor[] flavors = event.getCurrentDataFlavors();
+            for (int i = 0; i < flavors.length; i++) {
+                if (flavors[i].isFlavorJavaFileListType()) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
-	public void drop (DropTargetDropEvent dtde) {
-	    if(!isDropAcceptable(dtde)) {
-		dtde.rejectDrop();
-		return;
-	    }
-	    dtde.acceptDrop(DnDConstants.ACTION_COPY);
-	    try {
-		Object data =
-		    dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-		if (data == null) {
-		    // Shouldn't happen because dragEnter() rejects drags w/out at least
-		    // one javaFileListFlavor. But just in case it does ...
-		    dtde.dropComplete(false);
-		    return;
-		}
-		Iterator iterator = ((List)data).iterator();
-		while (iterator.hasNext()) {
-		    File file = (File)iterator.next();
-		    load(file);
-		}
-	    }
-	    catch (Exception e) {
-		JOptionPane.showMessageDialog(getView(),
-					      "Couldn't open dropped file(s). Reason: " + e.getMessage()
-					      //getText("file_not_found")
-					      );
-		dtde.dropComplete(false);
-		return;
-	    }
-	    dtde.dropComplete(true);
-	}
+        public void drop (DropTargetDropEvent dtde) {
+            if(!isDropAcceptable(dtde)) {
+                dtde.rejectDrop();
+                return;
+            }
+            dtde.acceptDrop(DnDConstants.ACTION_COPY);
+            try {
+                Object data =
+                    dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                if (data == null) {
+                    // Shouldn't happen because dragEnter() rejects drags w/out at least
+                    // one javaFileListFlavor. But just in case it does ...
+                    dtde.dropComplete(false);
+                    return;
+                }
+                Iterator iterator = ((List)data).iterator();
+                while (iterator.hasNext()) {
+                    File file = (File)iterator.next();
+                    load(file);
+                }
+            }
+            catch (Exception e) {
+                JOptionPane.showMessageDialog(getView(),
+                                              "Couldn't open dropped file(s). Reason: " + e.getMessage()
+                                              //getText("file_not_found")
+                                              );
+                dtde.dropComplete(false);
+                return;
+            }
+            dtde.dropComplete(true);
+        }
 
-	public void dragEnter (DropTargetDragEvent dtde) {
-	    if(!isDragAcceptable(dtde)) {
-		dtde.rejectDrag();
-		return;
-	    }
-	}
+        public void dragEnter (DropTargetDragEvent dtde) {
+            if(!isDragAcceptable(dtde)) {
+                dtde.rejectDrag();
+                return;
+            }
+        }
 
-	public void dragOver (DropTargetDragEvent e) {}
-	public void dragExit (DropTargetEvent e) {}
-	public void dragScroll (DropTargetDragEvent e) {}
-	public void dropActionChanged (DropTargetDragEvent e) {}
+        public void dragOver (DropTargetDragEvent e) {}
+        public void dragExit (DropTargetEvent e) {}
+        public void dragScroll (DropTargetDragEvent e) {}
+        public void dropActionChanged (DropTargetDragEvent e) {}
     }
 
 }
