@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: ActionFactory.java,v 1.1.2.4 2004-08-25 20:40:02 christianfoltin Exp $*/
+/*$Id: ActionFactory.java,v 1.1.2.5 2004-09-04 06:56:04 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import freemind.common.JaxbTools;
 import freemind.controller.Controller;
@@ -102,7 +103,12 @@ public class ActionFactory {
 		}
 		for (Iterator i = registeredHandler.iterator(); i.hasNext();) {
 			ActionHandler handler = (ActionHandler) i.next();
-			handler.executeAction(filteredPair);
+			// the executer must not disturb the whole picture if they throw something:
+			try {
+                handler.executeAction(filteredPair);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 		}
 	}
 

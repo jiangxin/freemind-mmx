@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.10.7 2004-05-27 07:09:10 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.10.8 2004-09-04 06:56:04 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -81,7 +81,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
     private JPanel southPanel;
 	public FreeMind() {
         super("FreeMind");
-	
+        FreeMindSplash splash = new FreeMindSplash(this);
+        splash.setVisible(true);
 	String propsLoc = "freemind.properties";
 	defaultPropsURL = ClassLoader.getSystemResource(propsLoc);
 
@@ -253,6 +254,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
         SwingUtilities.updateComponentTreeUI(this); // Propagate LookAndFeel to JComponents
 
 	c.changeToMode(getProperty("initial_mode"));
+    splash.setVisible(false);
 
     }//Constructor
 

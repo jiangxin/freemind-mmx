@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.10.5 2004-06-19 19:41:56 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.10.6 2004-09-04 06:56:04 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -271,7 +271,7 @@ public class MenuBar extends JMenuBar {
 		zoomIn.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_zoom_in")));
 	
 		JMenuItem zoomOut = menuHolder.addAction(c.zoomOut, VIEW_MENU+"zoom/zoomOut");
-		zoomIn.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_zoom_out")));
+		zoomOut.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_zoom_out")));
 	
 		JMenuItem moveToRoot = menuHolder.addAction(c.moveToRoot, NAVIGATE_MENU+"nodes/moveToRoot");
 		moveToRoot.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_moveToRoot")));

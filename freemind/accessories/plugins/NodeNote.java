@@ -8,6 +8,8 @@ package accessories.plugins;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -62,9 +64,26 @@ public class NodeNote extends PermanentNodeHookAdapter {
 	
 			text = new JTextArea(5,50);
 			text.setText(getMyNodeText());
+			
+			text.addKeyListener(new KeyListener(){
+
+                public void keyPressed(KeyEvent e) {
+                	switch ( e.getKeyCode() ) {
+                    	// the space event must not reach the parent frames, as folding would result.
+                        case KeyEvent.VK_SPACE:
+                            e.consume();
+                        	break;
+                	}
+                }
+
+                public void keyReleased(KeyEvent e) {
+                }
+
+                public void keyTyped(KeyEvent e) {
+                }});
 	
 			listener = new NodeTextListener();
-			listener.setN(this);				
+			listener.setNote(this);				
 			text.getDocument().addDocumentListener(listener);
 			
 			scroller = new JScrollPane(text);
@@ -95,7 +114,7 @@ public class NodeNote extends PermanentNodeHookAdapter {
 	public void onLooseFocusHook() {
 		super.onLooseFocusHook();
 		if (text != null) {
-			listener.setN(null);
+			listener.setNote(null);
 			// shut down the display:
 			scroller.setVisible(false);
 			FreeMindMain frame = getController().getFrame();
@@ -131,10 +150,10 @@ public class NodeNote extends PermanentNodeHookAdapter {
 	}
 
 	public class NodeTextListener implements DocumentListener {
-		private NodeNote n;
+		private NodeNote pNote;
 
 		public NodeTextListener() {
-			n=null;
+			pNote=null;
 		}
 		/**
 		 * @see javax.swing.event.DocumentListener#insertUpdate(DocumentEvent)
@@ -155,10 +174,10 @@ public class NodeNote extends PermanentNodeHookAdapter {
 		 */
 		public void changedUpdate(DocumentEvent e) {
 			try {
-				if(n!=null) {
+				if(pNote!=null) {
 					String text = e.getDocument().getText(0, e.getDocument().getLength());
-					n.setMyNodeText(text);
-					n.nodeChanged(n.getNode());
+					pNote.setMyNodeText(text);
+					pNote.nodeChanged(pNote.getNode());
 				}
 			} catch (BadLocationException ex) {
 				System.err.println("Could not fetch nodeText content"+ex.toString());
@@ -168,8 +187,8 @@ public class NodeNote extends PermanentNodeHookAdapter {
 		/**
 		 * @param note
 		 */
-		public void setN(NodeNote note) {
-			n = note;
+		public void setNote(NodeNote note) {
+			pNote = note;
 		}
 
 	}

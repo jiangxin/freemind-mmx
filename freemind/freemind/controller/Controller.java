@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.10.8 2004-08-08 13:03:47 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.10.9 2004-09-04 06:56:04 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -42,6 +42,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.logging.Logger;
+
 import javax.swing.*;
 
 import java.net.MalformedURLException;
@@ -64,6 +66,7 @@ import freemind.view.mindmapview.MapView;
  */
 public class Controller {
 
+    private static Logger logger;
     private static JColorChooser colorChooser = new JColorChooser();
 	private LastOpenedList lastOpened;//A list of the pathnames of all the maps that were opened in the last time
     private MapModuleManager mapModuleManager;// new MapModuleManager();
@@ -129,6 +132,9 @@ public class Controller {
         checkJavaVersion();
 
         this.frame = frame;
+        if(logger == null) {
+            logger = frame.getLogger(this.getClass().getName());
+        }
         modes = modescreator.getAllModes();
         lastOpened = new LastOpenedList(this, getProperty("lastOpened"));
         mapModuleManager = new MapModuleManager(this, history, lastOpened);
@@ -1000,12 +1006,14 @@ public class Controller {
         public ZoomInAction(Controller controller) {
            super(controller.getResourceString("zoom_in")); }
         public void actionPerformed(ActionEvent e) {
+            logger.info("ZoomInAction actionPerformed");
            ((MainToolBar)toolbar).zoomIn(); }}
 
     protected class ZoomOutAction extends AbstractAction {
         public ZoomOutAction(Controller controller) {
            super(controller.getResourceString("zoom_out")); }
         public void actionPerformed(ActionEvent e) {
+            logger.info("ZoomOutAction actionPerformed");
            ((MainToolBar)toolbar).zoomOut(); }}
 
     //
