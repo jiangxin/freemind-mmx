@@ -68,6 +68,7 @@ Changes made in Freemind 0.8.0:
 * Apply patterns, edge width, edge style and node styles are undoable
 * Format copy introduced.
 * Cloud actions undoable. (Color treatment for new clouds is missing).
+* Arrows are undoable now (including color, remove, heads).
 
 Changes made in Freemind 0.7.2:
 ===============================

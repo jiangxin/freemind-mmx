@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLink.java,v 1.3 2003-11-29 17:12:33 christianfoltin Exp $*/
+/*$Id: MindMapLink.java,v 1.3.12.1 2004-10-08 21:34:36 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -38,6 +38,9 @@ public interface MindMapLink extends MindMapLine {
 
     MindMapNode getTarget();
     MindMapNode getSource();
+    
+    /** The id is automatically set on creation. Is saved and restored. */
+    String getUniqueID();
     
 //     public Object clone();
 

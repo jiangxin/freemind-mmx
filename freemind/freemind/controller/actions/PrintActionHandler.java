@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: PrintActionHandler.java,v 1.1.2.6 2004-09-27 19:49:52 christianfoltin Exp $*/
+/*$Id: PrintActionHandler.java,v 1.1.2.7 2004-10-08 21:34:35 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -66,7 +66,7 @@ public class PrintActionHandler implements ActionHandler {
 	 * @see freemind.controller.actions.ActionHandler#executeAction(freemind.controller.actions.ActionPair)
 	 */
 	public void executeAction(ActionPair pair) {
-		String s = c.marshall(pair.getDoAction()) ;//+ "\n" + c.marshall(pair.getUndoAction());
+		String s = c.marshall(pair.getDoAction()) + "\n" + c.marshall(pair.getUndoAction());
 		logger.info(s);
 	}
 

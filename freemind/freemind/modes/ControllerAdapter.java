@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.37 2004-10-06 15:12:40 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.38 2004-10-08 21:34:35 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -89,9 +89,12 @@ import freemind.main.ExampleFileFilter;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
+import freemind.modes.actions.AddArrowLinkAction;
 import freemind.modes.actions.ApplyPatternAction;
 import freemind.modes.actions.BoldAction;
+import freemind.modes.actions.ChangeArrowsInArrowLinkAction;
 import freemind.modes.actions.CloudAction;
+import freemind.modes.actions.ColorArrowLinkAction;
 import freemind.modes.actions.CompoundActionHandler;
 import freemind.modes.actions.CopyAction;
 import freemind.modes.actions.CopySingleAction;
@@ -113,11 +116,13 @@ import freemind.modes.actions.NodeUpAction;
 import freemind.modes.actions.PasteAction;
 import freemind.modes.actions.RedoAction;
 import freemind.modes.actions.RemoveAllIconsAction;
+import freemind.modes.actions.RemoveArrowLinkAction;
 import freemind.modes.actions.RemoveLastIconAction;
 import freemind.modes.actions.ToggleChildrenFoldedAction;
 import freemind.modes.actions.ToggleFoldedAction;
 import freemind.modes.actions.UnderlinedAction;
 import freemind.modes.actions.UndoAction;
+import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -181,6 +186,10 @@ public abstract class ControllerAdapter implements ModeController {
     public NodeStyleAction bubble = null;
     public CloudAction cloud = null;
     public freemind.modes.actions.CloudColorAction cloudColor = null;
+    public AddArrowLinkAction addArrowLinkAction = null; 
+    public RemoveArrowLinkAction removeArrowLinkAction = null;
+    public ColorArrowLinkAction colorArrowLinkAction = null;
+    public ChangeArrowsInArrowLinkAction changeArrowsInArrowLinkAction = null;
 
     public IconAction unknwonIconAction = null;
     public RemoveLastIconAction removeLastIconAction = null;
@@ -274,6 +283,11 @@ public abstract class ControllerAdapter implements ModeController {
 	    };
 	    cloud = new CloudAction(this);
 	    cloudColor = new freemind.modes.actions.CloudColorAction(this);
+	    addArrowLinkAction = new AddArrowLinkAction(this);
+	    removeArrowLinkAction = new RemoveArrowLinkAction(this, null);
+	    addArrowLinkAction.setRemoveAction(removeArrowLinkAction);
+	    colorArrowLinkAction = new ColorArrowLinkAction(this, null);
+	    changeArrowsInArrowLinkAction = new ChangeArrowsInArrowLinkAction(this, "none", null, null, true, true);
 	    compound = new CompoundActionHandler(this);
 
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -921,7 +935,31 @@ public abstract class ControllerAdapter implements ModeController {
     public int removeLastIcon(MindMapNode node) {
         return removeLastIconAction.removeLastIcon(node);
     }
-	// edit begins with home/end or typing (PN 6.2)
+    /**
+     *
+     */
+
+    public void addLink(MindMapNode source, MindMapNode target) {
+        addArrowLinkAction.addLink(source, target);
+    }
+
+	public void removeReference(MindMapLink arrowLink){
+	    removeArrowLinkAction.removeReference(arrowLink);
+	}
+
+    public void setArrowLinkColor(MindMapLink arrowLink, Color color) {
+        colorArrowLinkAction.setArrowLinkColor(arrowLink, color);
+    }
+    
+    /**
+     *
+     */
+
+    public void changeArrowsOfArrowLink(MindMapArrowLinkModel arrowLink,
+            boolean hasStartArrow, boolean hasEndArrow) {
+        changeArrowsInArrowLinkAction.changeArrowsOfArrowLink(arrowLink, hasStartArrow, hasEndArrow);
+    }
+    // edit begins with home/end or typing (PN 6.2)
 	public void edit(KeyEvent e, boolean addNew, boolean editLong) {
 		edit.edit(e, addNew, editLong);
 	}

@@ -16,19 +16,18 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.10.12.1 2004-05-06 05:08:26 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.10.12.2 2004-10-08 21:34:36 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import freemind.modes.MindMapNode;
-import freemind.modes.mindmapmode.MindMapNodeModel;
-import freemind.modes.mindmapmode.MindMapArrowLinkModel;
-import java.util.HashMap; 
-import java.util.Random;
-import java.util.Vector;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Random;
+import java.util.Vector;
+
+import freemind.modes.mindmapmode.MindMapNodeModel;
 
 
 
@@ -86,6 +85,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     protected HashMap /* MindMapNode = Target -> ID_BasicState. */ TargetToID;
     protected HashMap /* id -> vector of links whose TargetToID.get(target) == id.*/  IDToLinks;
     protected HashMap /* id -> vector of links whose TargetToID.get(target) == id and who are cutted recently.*/  IDToCuttedLinks;
+    protected HashMap /* id -> link */ IDToLink;
     /** The map the registry belongs to.*/
 //     protected MindMap map;
 
@@ -100,12 +100,21 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         TargetToID      = new HashMap();
         IDToLinks       = new HashMap();
         IDToCuttedLinks = new HashMap();
+        IDToLink 		= new HashMap();
         logger.setLevel(java.util.logging.Level.WARNING);
         //logger.setLevel(java.util.logging.Level.FINEST);
         logger.info("New Registry");
     };
 
     public String generateUniqueID(String proposedID) {
+        return generateID(proposedID, IDToLinks, "Freemind_Link_");
+    }
+    
+    public String generateUniqueLinkID(String proposedID) {
+        return generateID(proposedID, IDToLink, "Freemind_Arrow_Link_");
+    };
+
+    private String generateID(String proposedID, HashMap hashMap, String prefix) {
         Random ran = new Random();
         String myProposedID = new String((proposedID != null)?proposedID:"");
         String returnValue;
@@ -117,12 +126,13 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
                 myProposedID="";
             } else {
                 /* The prefix is to enable the id to be an ID in the sense of XML/DTD.*/
-                returnValue = "Freemind_Link_" + Integer.toString(ran.nextInt(2000000000));
+                returnValue = prefix + Integer.toString(ran.nextInt(2000000000));
             }
-        } while (IDToLinks.containsKey(returnValue));
+        } while (hashMap.containsKey(returnValue));
         return returnValue;
     };
 
+    
     
 
     /** The main method. Registeres a node with a new (or an existing) node-id. If the state of the id is pending,
@@ -219,6 +229,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
                 return;
         }
         vec.add(link);
+        IDToLink.put(link.getUniqueID(), link);
         logger.info("Register link ("+link+") from source node:"+source+" to target " + target);
     };
 
@@ -236,8 +247,18 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
                     logger.info("Deregister link  ("+link+") from source node:"+source+" to target " + target);
                 }
         }
+        IDToLink.remove(link.getUniqueID());
     };
 
+    public MindMapLink getLinkForID(String ID) {
+        if(IDToLink.containsKey(ID)) {
+            return (MindMapLink) IDToLink.get(ID);
+        }
+        return null;
+    }
+
+
+    
     /** Returns a Vector of Nodes that point to the given target node.*/
     public Vector /* of MindMapNode s */ getAllSources(MindMapNode target) { 
         Vector returnValue;
@@ -356,6 +377,5 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         }
         return vec;
     }
-
 
 }

@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.10.15 2004-10-06 15:12:41 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.10.16 2004-10-08 21:34:36 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -125,37 +125,6 @@ public class MindMapMapModel extends MapAdapter  {
 	public void setNodeBackgroundColor(MindMapNodeModel node, Color color) {
 		node.setBackgroundColor(color);
 		nodeChanged(node); }
-
-    /** Source holds the MindMapArrowLinkModel and points to the id placed in target.*/
-    public void addLink(MindMapNodeModel source, MindMapNodeModel target) {
-        if(getLinkRegistry().getLabel(target) == null) {
-            // call registry to give new label
-            getLinkRegistry().registerLinkTarget(target);
-        }
-        MindMapArrowLinkModel linkModel = new MindMapArrowLinkModel(source, target, getFrame());
-        linkModel.setDestinationLabel(getLinkRegistry().getLabel(target));
-        // register link.
-        getLinkRegistry().registerLink(linkModel);
-        nodeChanged(target); 
-        nodeChanged(source); 
-    }
-
-    public void removeReference(MindMapNode source, MindMapArrowLinkModel arrowLink) {
-        getLinkRegistry().deregisterLink(arrowLink);
-        nodeChanged(source);
-        nodeChanged(arrowLink.getTarget());
-    }
-
-    public void changeArrowsOfArrowLink(MindMapNode source, MindMapArrowLinkModel arrowLink, boolean hasStartArrow, boolean hasEndArrow) {
-        arrowLink.setStartArrow((hasStartArrow)?"Default":"None");
-        arrowLink.setEndArrow((hasEndArrow)?"Default":"None");
-        nodeChanged(source);
-    }
-
-    public void setArrowLinkColor(MindMapNode source, MindMapArrowLinkModel arrowLink, Color color) {
-        arrowLink.setColor(color);
-        nodeChanged(source); 
-    }
 
     public void increaseFontSize(MindMapNodeModel node, int increment) {
         node.estabilishOwnFont();

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLinkRegistry.java,v 1.6.12.1 2004-05-06 05:08:26 christianfoltin Exp $*/
+/*$Id: MindMapLinkRegistry.java,v 1.6.12.2 2004-10-08 21:34:36 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -66,6 +66,10 @@ public interface MindMapLinkRegistry {
 	public String generateUniqueID(String proposedID);
     /** Reverses the getLabel method: searches for a node with the id given as the argument.*/
     public MindMapNode getTargetForID(String ID);
+    /** This can be used, if the id has to be known, before a link can be labled. */
+	public String generateUniqueLinkID(String proposedID);
+    /** Reverses the getUniqueID method: searches for a link with the id given as the argument.*/
+    public MindMapLink getLinkForID(String ID);
 //     /** Method to keep track of the targets associated to a target node. This method also sets the new id to the target. 
 //         Moreover, it is not required that the target node is already registered. This will be done on the fly.*/
     /** Removes links to all nodes beginning from target with its children.*/

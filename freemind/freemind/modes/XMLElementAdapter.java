@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.10.5 2004-07-15 19:41:55 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.10.6 2004-10-08 21:34:36 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -229,6 +229,8 @@ public void setAttribute(String name, Object value) {
          ArrowLinkAdapter arrowLink = (ArrowLinkAdapter)userObject;
          if (name.equals("STYLE")) {
              arrowLink.setStyle(sValue); }
+         else if (name.equals("ID")) {
+             arrowLink.setUniqueID(sValue); }
          else if (name.equals("COLOR")) {
              arrowLink.setColor(Tools.xmlToColor(sValue)); }
          else if (name.equals("DESTINATION")) {

@@ -12,8 +12,10 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 
 import freemind.modes.MindIcon;
+import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
 import freemind.modes.StylePattern;
+import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 
 /**
  * @author foltin
@@ -77,21 +79,17 @@ public interface MindMapActions {
 //	public void setCloudWidth(MindMapNode node, int width);
 //	public void setCloudStyle(MindMapNode node, String style);
 //	/** Source holds the MindMapArrowLinkModel and points to the id placed in target.*/
-//	public void addLink(
-//		MindMapNode source,
-//		MindMapNode target);
-//	public void removeReference(
-//		MindMapNode source,
-//		MindMapArrowLinkModel arrowLink);
-//	public void changeArrowsOfArrowLink(
-//		MindMapNode source,
-//		MindMapArrowLinkModel arrowLink,
-//		boolean hasStartArrow,
-//		boolean hasEndArrow);
-//	public void setArrowLinkColor(
-//		MindMapNode source,
-//		MindMapArrowLinkModel arrowLink,
-//		Color color);
+	public void addLink(
+		MindMapNode source,
+		MindMapNode target);
+	public void removeReference(MindMapLink arrowLink);
+	public void changeArrowsOfArrowLink(
+	    MindMapArrowLinkModel arrowLink,
+		boolean hasStartArrow,
+		boolean hasEndArrow);
+	public void setArrowLinkColor(
+		MindMapLink arrowLink,
+		Color color);
 //	public void setUnderlined(MindMapNode node);
 //	public void setNormalFont(MindMapNode node);
 //	public void increaseFontSize(MindMapNode node, int increment);

@@ -81,8 +81,7 @@ public class NodeGeneralAction extends AbstractXmlAction {
 	public void addActor(NodeActorXml actor) {
 		this.actor = actor;
 		if (actor != null) {
-			// registration:
-			modeController.getActionFactory().registerActor(actor, actor.getDoActionClass());
+			super.addActor(actor);
 		}			
 	}
     /**

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.32 2004-10-06 15:12:40 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.33 2004-10-08 21:34:36 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -38,7 +38,6 @@ import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -68,18 +67,19 @@ import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
-import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
-import freemind.modes.actions.EdgeStyleAction;
+import freemind.modes.actions.ChangeArrowsInArrowLinkAction;
+import freemind.modes.actions.ColorArrowLinkAction;
 import freemind.modes.actions.IconAction;
 import freemind.modes.actions.NewMapAction;
 import freemind.modes.actions.NewPreviousSiblingAction;
 import freemind.modes.actions.NewSiblingAction;
 import freemind.modes.actions.NodeGeneralAction;
 import freemind.modes.actions.NodeHookAction;
+import freemind.modes.actions.RemoveArrowLinkAction;
 import freemind.modes.actions.SingleNodeOperation;
 
 
@@ -398,17 +398,18 @@ public class MindMapController extends ControllerAdapter {
             JPopupMenu arrowLinkPopup = new JPopupMenu();
             // block the screen while showing popup.
             arrowLinkPopup.addPopupMenuListener( this.popupListenerSingleton );
-            arrowLinkPopup.add(new RemoveArrowLinkAction(link.getSource(), link));
-            arrowLinkPopup.add(new ColorArrowLinkAction(link.getSource(), link));
+            removeArrowLinkAction.setArrowLink(link);
+            arrowLinkPopup.add(new RemoveArrowLinkAction(this, link));
+            arrowLinkPopup.add(new ColorArrowLinkAction(this, link));
             arrowLinkPopup.addSeparator();
             /* The arrow state as radio buttons: */
-            JRadioButtonMenuItem itemnn = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction("none", "images/arrow-mode-none.gif",link.getSource(), link, false, false) );
+            JRadioButtonMenuItem itemnn = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction(this, "none", "images/arrow-mode-none.gif",link, false, false) );
             arrowLinkPopup.add( itemnn );
-            JRadioButtonMenuItem itemnt = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction("forward", "images/arrow-mode-forward.gif",link.getSource(), link, false, true) );
+            JRadioButtonMenuItem itemnt = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction(this, "forward", "images/arrow-mode-forward.gif",link, false, true) );
             arrowLinkPopup.add( itemnt );
-            JRadioButtonMenuItem itemtn = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction("backward", "images/arrow-mode-backward.gif",link.getSource(), link, true, false) );
+            JRadioButtonMenuItem itemtn = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction(this, "backward", "images/arrow-mode-backward.gif",link, true, false) );
             arrowLinkPopup.add( itemtn );
-            JRadioButtonMenuItem itemtt = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction("both", "images/arrow-mode-both.gif",link.getSource(), link, true, true) );
+            JRadioButtonMenuItem itemtt = new JRadioButtonMenuItem( new ChangeArrowsInArrowLinkAction(this, "both", "images/arrow-mode-both.gif",link, true, true) );
             arrowLinkPopup.add( itemtt );
             // select the right one:
             boolean a = !link.getStartArrow().equals("None");
@@ -736,64 +737,6 @@ public class MindMapController extends ControllerAdapter {
 		  for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
 			 MindMapNodeModel selected = (MindMapNodeModel)it.next();
 			 getMindMapMapModel().setNodeBackgroundColor(selected, color); }}}
-
-    protected class ColorArrowLinkAction extends AbstractAction {
-        MindMapNode source;
-        MindMapArrowLinkModel arrowLink;
-        public ColorArrowLinkAction(MindMapNode source, MindMapArrowLinkModel arrowLink) {
-            super(getText("arrow_link_color"), new ImageIcon(getResource("images/Colors24.gif")));
-            this.source = source;
-            this.arrowLink = arrowLink;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            Color selectedColor = arrowLink.getColor();
-            Color color = Controller.showCommonJColorChooserDialog(getView().getSelected(),(String) this.getValue(Action.NAME),selectedColor);
-            if (color==null) return;
-            getMindMapMapModel().setArrowLinkColor(source, arrowLink, color); 
-        }
-    }
-    
-
-
-    // Icons
-    // __________________
-
-    protected class RemoveArrowLinkAction extends AbstractAction {
-        MindMapNode source;
-        MindMapArrowLinkModel arrowLink;
-        public RemoveArrowLinkAction(MindMapNode source, MindMapArrowLinkModel arrowLink) {
-            super(getText("remove_arrow_link"), new ImageIcon(getResource("images/edittrash.png")));
-            this.source = source;
-            this.arrowLink = arrowLink;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            getMindMapMapModel().removeReference(source, arrowLink);
-        }
-    }
-
-    protected class ChangeArrowsInArrowLinkAction extends AbstractAction {
-        MindMapNode source;
-        MindMapArrowLinkModel arrowLink;
-        boolean hasStartArrow;
-        boolean hasEndArrow;
-        public ChangeArrowsInArrowLinkAction(String text, String iconPath, MindMapNode source, MindMapArrowLinkModel arrowLink, boolean hasStartArrow, boolean hasEndArrow) {
-            super("", iconPath != null ? new ImageIcon(getResource(iconPath)) : null);
-            this.source = source;
-            this.arrowLink = arrowLink;
-            this.hasStartArrow = hasStartArrow;
-            this.hasEndArrow = hasEndArrow;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            getMindMapMapModel().changeArrowsOfArrowLink(source, arrowLink, hasStartArrow, hasEndArrow);
-        }
-    }
-    
-
-    // Edge width
-    // __________________
 
     private class JoinNodesAction extends AbstractAction {
 	JoinNodesAction() { super(getText("join_nodes")); }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapArrowLinkModel.java,v 1.5 2003-12-07 21:00:23 christianfoltin Exp $*/
+/*$Id: MindMapArrowLinkModel.java,v 1.5.12.1 2004-10-08 21:34:36 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -45,6 +45,9 @@ public class MindMapArrowLinkModel extends ArrowLinkAdapter {
 
 	    if (style != null) {
             arrowLink.setAttribute("style",style);
+	    }
+	    if (getUniqueID() != null) {
+            arrowLink.setAttribute("ID",getUniqueID());
 	    }
 	    if (color != null) {
             arrowLink.setAttribute("color",Tools.colorToXml(color));

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.17.12.5 2004-10-05 22:23:57 christianfoltin Exp $*/
+/*$Id: Tools.java,v 1.17.12.6 2004-10-08 21:34:35 christianfoltin Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -75,7 +75,7 @@ public class Tools {
     }
 
     public static String PointToXml(Point col) {
-        if (col == null) throw new IllegalArgumentException("Point was null");
+        if (col == null) return null; //throw new IllegalArgumentException("Point was null");
         Vector l = new Vector();
         l.add(Integer.toString(col.x));
         l.add(Integer.toString(col.y));
@@ -83,6 +83,8 @@ public class Tools {
     }
 
     public static Point xmlToPoint(String string) {
+        if(string == null)
+            return null;
         List l = stringToList(string);
         ListIterator it = l.listIterator(0);
         if(l.size() != 2)

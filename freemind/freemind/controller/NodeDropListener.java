@@ -140,7 +140,7 @@ public class NodeDropListener implements DropTargetListener {
                       MindMapNodeModel selectedNodeModel = (MindMapNodeModel)((NodeView)it.next()).getModel();
                       //                  mindMapMapModel.setNodeColor(selectedNodeModel,targetNode.getColor());
                       //                  mindMapMapModel.setNodeFont(selectedNodeModel,targetNode.getFont()); 
-                      mindMapMapModel.addLink(selectedNodeModel, targetNodeModel);
+                      c.getModeController().addLink(selectedNodeModel, targetNodeModel);
                   }
               }
            }
