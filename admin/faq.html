@@ -23,6 +23,7 @@
           <a href="#faqI_0"         class="toc2">Installation</a><br>
           <a href="#faqU_0"         class="toc2">Usage</a><br>
           <a href="#faqC_0"         class="toc2">Customization</a><br>
+          <a href="#faqP_0"         class="toc2">Common Problems</a><br>
           <a href="#faqD_0"         class="toc2">Development</a><br>
         </div>
         <a href="essays.html"   class="toc1">Essays and pieces</a><br>
@@ -44,6 +45,11 @@ If Java is not installed, please abort the installation and download the JRE - J
 <a href="http://java.sun.com/j2se/1.4.2/download.html">here.</a>
 
 <a name="faqU_0"><h2>Usage</h2></a> 
+<a name="faqI_1"><h3>How can I create a graphical link?</h3></a>
+This is done by Drag&amp;Drop using the mouse, click on a node, hold the Shift and the Control keys and don't release them now,
+move this node to the destination node, release the mouse button (and now you may also release the keys, but not earlier), 
+and there is your link.
+
 <a name="faqC_0"><h2>Customization</h2></a> 
 <a name="faqC_1"><h3>Using another browser</h3></a> 
 
@@ -55,6 +61,9 @@ change the following property according to your operation system:
 <li>default_browser_command_mac</li> 
 <li>default_browser_command_other_os</li> 
 </ul>
+You have to write something like 
+<ul><li>default_browser_command_windows_nt = C:\Program Files\Internet Explorer\iexplore.exe "{0}"</li></ul>
+
 
 <a name="faqC_2"><h3>Editing the user properties</h3></a> 
 
@@ -64,11 +73,20 @@ As an example, under Windows 2000, the file is normally in:
 <li>C:\Documents and Settings\&lt;username&gt;\freemind</li> 
 </ul>
 
+<a name="faqP_0"><h2>Common Problems</h2></a> 
+<a name="faqD_1"><h3>Cannot open the Documentation in the Help menu</h3></a> 
+The path doc/maps/freemind.mm is not found. This is due to your own user.properties file which contains the wrong path
+from the last version 0.6.7 of freemind. Yust delete the entry <b>docmapurl = ./doc/freemind.mm</b> from the user.properties.
+
+<a name="faqD_1"><h3>If there are more than one link in the same area, I cannot change the properties of the link</h3></a> 
+The reason is that right clicking these links, the first link is taken that intersects a rectangle around the cursor. 
+To get the other link(s), you have to find a place without other interfering links or you have to fold other links, such that they do not disturb. 
+
 <a name="faqD_0"><h2>Development</h2></a> 
 <a name="faqD_1"><h3>How to compile Freemind on my own?</h3></a> 
 
 This is a longer story as you need some prerequisites. Thanks to Bob Alexander, we have a 
-<a href="faq/compile/windows/index.html">website</a> explaining the issue.
+<a href="docs/compile/windows/Quick%20guide%20to%20compiling%20Freemind%20on%20an%20XP%20system.html">website</a> explaining the issue.
 
 <a name="faqD_2"><h3>How to get the sources from Sourceforge?</h3></a> 
 
@@ -76,9 +94,11 @@ See <a href="#faqD_1">How to compile Freemind on my own?</a>.
 
 <a name="faqD_3"><h3>How to use CVS with Eclipse?</h3></a> 
 
-Thanks to Bob Alexander, we have a <a href="faq/Using CVS via Eclipse/index.html">website</a> explaining the issue.
+Thanks to Bob Alexander, we have a <a href="docs/Using CVS via Eclipse/index.html">website</a> explaining the issue.
 But remember that it is difficult to change directory and file names under CVS. Moreover, it not easy to remove files completely.
 So, take care checking files in. The project manager thanks a lot.
+
+
 </td>
 </tr></table>
 </body>
