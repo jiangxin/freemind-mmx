@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.17 2003-12-17 21:04:52 christianfoltin Exp $*/
+/*$Id: Tools.java,v 1.17.18.1 2004-10-17 23:00:07 dpolivaev Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -29,6 +29,8 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.GraphicsEnvironment;
 import java.lang.Thread;
+
+import freemind.modes.mindmapmode.MindMapEdgeModel;
 
 public class Tools {
 
@@ -47,7 +49,8 @@ public class Tools {
        return executableExtensions.contains(getExtension(file)); }
 
     public static String colorToXml(Color col) {
-	if (col == null) throw new IllegalArgumentException("Color was null");
+//	if (col == null) throw new IllegalArgumentException("Color was null");
+   	if (col == null) return null;
 	String red = Integer.toHexString(col.getRed());
 	if (col.getRed()<16) red = "0"+red;
 	String green = Integer.toHexString(col.getGreen());
@@ -58,14 +61,21 @@ public class Tools {
     }
 
     public static Color xmlToColor(String string) {
-	int red = Integer.parseInt(string.substring(1,3),16);
-	int green = Integer.parseInt(string.substring(3,5),16);
-	int blue = Integer.parseInt(string.substring(5,7),16);
-	return new Color(red,green,blue);
+        if(string == null) return null;
+     	string = string.trim();
+		if (string.length() == 7) {
+
+			int red = Integer.parseInt(string.substring(1,3),16);
+			int green = Integer.parseInt(string.substring(3,5),16);
+			int blue = Integer.parseInt(string.substring(5,7),16);
+			return new Color(red,green,blue);
+		} else {
+			throw new IllegalArgumentException("No xml color given by '"+ string+"'.");
+		}
     }
 
     public static String PointToXml(Point col) {
-        if (col == null) throw new IllegalArgumentException("Point was null");
+        if (col == null) return null; //throw new IllegalArgumentException("Point was null");
         Vector l = new Vector();
         l.add(Integer.toString(col.x));
         l.add(Integer.toString(col.y));
@@ -73,6 +83,8 @@ public class Tools {
     }
 
     public static Point xmlToPoint(String string) {
+        if(string == null)
+            return null;
         List l = stringToList(string);
         ListIterator it = l.listIterator(0);
         if(l.size() != 2)
@@ -220,13 +232,15 @@ public class Tools {
        // However, if it starts with separator, then it is absolute too.
      
        // Possible problems: Not tested on Macintosh, but should work.
+	   // Koh, 1.4.2004: Resolved problem: I tested on Mac OS X 10.3.3 and worked.
 
        String osNameStart = System.getProperty("os.name").substring(0,3);
        String fileSeparator = System.getProperty("file.separator");
        if (osNameStart.equals("Win")) {
           return ((path.length() > 1) && path.substring(1,2).equals(":")) || path.startsWith(fileSeparator);
        } else if (osNameStart.equals("Mac")) {
-          return !path.startsWith(fileSeparator);
+       	  //Koh:Panther (or Java 1.4.2) may change file path rule
+          return path.startsWith(fileSeparator);
        } else {
           return path.startsWith(fileSeparator);
        }
@@ -321,8 +335,15 @@ public class Tools {
     }
 
    public static boolean safeEquals(String string1, String string2) {
-      return (string1 != null && string2 != null && string1.equals(string2)); }
+      return (string1 != null && string2 != null && string1.equals(string2)) || (string1 == null && string2 == null); }
 
+   public static boolean safeEqualsIgnoreCase(String string1, String string2) {
+       return (string1 != null && string2 != null && string1.toLowerCase().equals(string2.toLowerCase())) || (string1 == null && string2 == null); }
+
+   public static boolean safeEquals(Color color1, Color color2) {
+       return (color1 != null && color2 != null && color1.equals(color2)) || (color1 ==null && color2==null); 
+   }
+   
    public static String firstLetterCapitalized(String text) {
       if (text == null || text.length() == 0) {
          return text; }

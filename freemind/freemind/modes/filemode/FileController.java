@@ -16,15 +16,19 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileController.java,v 1.11 2003-11-03 11:00:13 sviles Exp $*/
+/*$Id: FileController.java,v 1.11.18.1 2004-10-17 23:00:12 dpolivaev Exp $*/
 
 package freemind.modes.filemode;
 
+import freemind.controller.MenuBar;
+import freemind.controller.StructuredMenuHolder;
 import freemind.modes.Mode;
 import freemind.modes.MindMap;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.ControllerAdapter;
+import freemind.modes.actions.NewMapAction;
+
 import java.io.File;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
@@ -34,7 +38,7 @@ public class FileController extends ControllerAdapter {
     Action find = new FindAction();
     Action findNext = new FindNextAction();
 
-    Action newMap = new NewMapAction(this);
+    Action newMap = new NewMapAction(this, this);
     Action center = new CenterAction();
     Action openPath = new OpenPathAction();
 
@@ -55,13 +59,6 @@ public class FileController extends ControllerAdapter {
 	return new FileNodeModel(newNode,getFrame());
     }
 
-    public JMenu getEditMenu() {
-	JMenu editMenu = new JMenu();
-        add(editMenu, find, "keystroke_find");
-        add(editMenu, findNext, "keystroke_find_next"); 
-        add(editMenu, openPath);
-        return editMenu; }
-
     public JPopupMenu getPopupMenu() {
       return this.popupmenu;
     }
@@ -70,18 +67,11 @@ public class FileController extends ControllerAdapter {
     // Private
     // 
 
-    private MindMap getModel() {
- 	return (MindMap)getController().getModel();
-    }
+//    private MindMap getModel() {
+// 	return (MindMap)getController().getModel();
+//    }
 
-    private MindMapNode getSelected() {
-	if (getView() != null) {
-	    return (MindMapNode)getView().getSelected().getModel();
-	} else {
-	    return null;
-	}
-    }
-    
+   
     private class CenterAction extends AbstractAction {
 	CenterAction() {
 	    super(getController().getResourceString("center"));
@@ -109,6 +99,15 @@ public class FileController extends ControllerAdapter {
               }
            }
         }
+    }
+
+    /* (non-Javadoc)
+     * @see freemind.modes.ModeController#updateMenus(freemind.controller.StructuredMenuHolder)
+     */
+    public void updateMenus(StructuredMenuHolder holder) {
+    	add(holder, MenuBar.EDIT_MENU+"/find", find, "keystroke_find");
+		add(holder, MenuBar.EDIT_MENU+"/findNext", findNext, "keystroke_find_next");
+		add(holder, MenuBar.EDIT_MENU+"/openPath", openPath, null);
     }
 
 }

@@ -16,16 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapPopupMenu.java,v 1.12 2003-11-03 11:00:21 sviles Exp $*/
+/*$Id: MindMapPopupMenu.java,v 1.12.18.1 2004-10-17 23:00:13 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import javax.swing.JPopupMenu;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.MenuElement;
-import javax.swing.KeyStroke;
-import java.awt.Component;
+
+import freemind.controller.StructuredMenuHolder;
+import freemind.controller.actions.generated.instance.MenuStructure;
 
 
 public class MindMapPopupMenu extends JPopupMenu {
@@ -34,17 +32,13 @@ public class MindMapPopupMenu extends JPopupMenu {
 
     public MindMapPopupMenu(MindMapController c) {
        	this.c = c;
-        JMenu leading = c.getLeadingNodeMenu();
-        Component[] mc = leading.getMenuComponents();
-        for (int i = 0; i < mc.length; i++) {
-           this.add(mc[i]); }
+    }
 
-        this.addSeparator();
-        
-       	this.add(c.getNodeMenu());
-       	this.add(c.getBranchMenu());
-       	this.add(c.getEdgeMenu());
-       	this.add(c.getExtensionMenu());
-       	this.add(c.getIconMenu());
+    /**
+     * @param holder
+     */
+    public void update(StructuredMenuHolder holder) {
+    	this.removeAll();
+		holder.updateMenus(this, "mindmapmode_popup/");
     }
 }

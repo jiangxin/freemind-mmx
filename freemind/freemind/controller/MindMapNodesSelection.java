@@ -1,6 +1,29 @@
+/*FreeMind - A Program for creating and viewing Mindmaps
+ *Copyright (C) 2000-2004  Joerg Mueller, Daniel Polansky, Christian Foltin and others.
+ *
+ *See COPYING for Details
+ *
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * Created on ???
+ */
+/*$Id: MindMapNodesSelection.java,v 1.2.18.1 2004-10-17 23:00:07 dpolivaev Exp $*/
 package freemind.controller;
 import java.awt.datatransfer.*;
 import java.io.*;
+import java.util.List;
 
 public class MindMapNodesSelection implements Transferable, ClipboardOwner {
 
@@ -8,12 +31,16 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
    private String stringContent;
    private String rtfContent;
    private String dropActionContent;
+   private final String htmlContent;
+   private final List fileList;
 
    public static DataFlavor mindMapNodesFlavor = null;
    public static DataFlavor rtfFlavor = null;
    public static DataFlavor htmlFlavor = null;
    public static DataFlavor fileListFlavor = null;
+   /** fc, 7.8.2004: This is a quite interisting flavor, but how does it works???*/
    public static DataFlavor dropActionFlavor = null;
+
    static {
       try {
          mindMapNodesFlavor = new DataFlavor("text/freemind-nodes; class=java.lang.String");
@@ -28,11 +55,16 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
 
    //
 
-   public MindMapNodesSelection(String nodesContent, String stringContent, String rtfContent, String dropActionContent) {
-      this.nodesContent = nodesContent;
-      this.rtfContent = rtfContent;
-      this.stringContent = stringContent;
-      this.dropActionContent = dropActionContent; }
+   public MindMapNodesSelection(String nodesContent, String stringContent,
+            String rtfContent, String dropActionContent, String htmlContent,
+            List fileList) {
+        this.nodesContent = nodesContent;
+        this.rtfContent = rtfContent;
+        this.stringContent = stringContent;
+        this.dropActionContent = dropActionContent;
+        this.htmlContent = htmlContent;
+        this.fileList = fileList;
+    }
 
    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
       if (flavor.equals(DataFlavor.stringFlavor)) {
@@ -47,14 +79,32 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
          //   System.out.println(byteArray[i]); }
 
          return new ByteArrayInputStream(byteArray); }
+      if(flavor.equals(htmlFlavor)) {
+          return htmlContent;
+      }
+      if(flavor.equals(fileListFlavor)) {
+          return fileList;
+      }
       throw new UnsupportedFlavorException(flavor); }
 
    public DataFlavor[] getTransferDataFlavors() {
       return new DataFlavor[] { DataFlavor.stringFlavor, mindMapNodesFlavor, rtfFlavor, dropActionFlavor}; }
 
    public boolean isDataFlavorSupported(DataFlavor flavor) {
-      return flavor.equals(DataFlavor.stringFlavor) || flavor.equals(mindMapNodesFlavor)
-         || flavor.equals(rtfFlavor) || flavor.equals(dropActionFlavor); }
+       if(flavor.equals(DataFlavor.stringFlavor) && stringContent != null) 
+           return true;
+       if(flavor.equals(mindMapNodesFlavor) && nodesContent != null) 
+           return true;
+       if(flavor.equals(rtfFlavor) && rtfContent != null) 
+           return true;
+       if(flavor.equals(dropActionFlavor) && dropActionContent != null) 
+           return true;
+       if(flavor.equals(htmlFlavor) && htmlContent != null) 
+           return true;
+       if(flavor.equals(fileListFlavor) && fileList != null) 
+           return true;
+       return false;
+   }
 
    public void lostOwnership(Clipboard clipboard, Transferable contents) {}
 

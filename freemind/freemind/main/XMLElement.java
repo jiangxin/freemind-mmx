@@ -1,7 +1,7 @@
 /* XMLElement.java
  *
- * $Revision: 1.7 $
- * $Date: 2003-11-03 11:00:10 $
+ * $Revision: 1.7.18.1 $
+ * $Date: 2004-10-17 23:00:07 $
  * $Name:  $
  *
  * This file is part of NanoXML 2 Lite.
@@ -65,9 +65,9 @@ import java.util.Vector;
  * The following example shows how to list the attributes of an element:
  * <UL><CODE>
  * XMLElement element = ...;<BR>
- * Enumeration enum = element.getAttributeNames();<BR>
- * while (enum.hasMoreElements()) {<BR>
- * &nbsp;&nbsp;&nbsp;&nbsp;String key = (String) enum.nextElement();<BR>
+ * Enumeration enumerator = element.getAttributeNames();<BR>
+ * while (enumerator.hasMoreElements()) {<BR>
+ * &nbsp;&nbsp;&nbsp;&nbsp;String key = (String) enumerator.nextElement();<BR>
  * &nbsp;&nbsp;&nbsp;&nbsp;String value = element.getStringAttribute(key);<BR>
  * &nbsp;&nbsp;&nbsp;&nbsp;System.out.println(key + " = " + value);<BR>
  * }
@@ -100,7 +100,7 @@ import java.util.Vector;
  *
  * @author Marc De Scheemaecker
  *         &lt;<A href="mailto:cyberelf@mac.com">cyberelf@mac.com</A>&gt;
- * @version $Name:  $, $Revision: 1.7 $
+ * @version $Name:  $, $Revision: 1.7.18.1 $
  */
 public class XMLElement
 {
@@ -480,9 +480,9 @@ public class XMLElement
         this.children = new Vector();
         this.entities = entities;
         this.lineNr = 0;
-        Enumeration enum = this.entities.keys();
-        while (enum.hasMoreElements()) {
-            Object key = enum.nextElement();
+        Enumeration enumerator = this.entities.keys();
+        while (enumerator.hasMoreElements()) {
+            Object key = enumerator.nextElement();
             Object value = this.entities.get(key);
             if (value instanceof String) {
                 value = ((String) value).toCharArray();
@@ -2194,10 +2194,10 @@ public class XMLElement
         writer.write('<');
         writer.write(this.name);
         if (! this.attributes.isEmpty()) {
-            Enumeration enum = this.attributes.keys();
-            while (enum.hasMoreElements()) {
+            Enumeration enumerator = this.attributes.keys();
+            while (enumerator.hasMoreElements()) {
                 writer.write(' ');
-                String key = (String) enum.nextElement();
+                String key = (String) enumerator.nextElement();
                 String value = (String) this.attributes.get(key);
                 writer.write(key);
                 writer.write('='); writer.write('"');
@@ -2207,7 +2207,7 @@ public class XMLElement
         }
         if ((this.contents != null) && (this.contents.length() > 0)) {
             writer.write('>');
-            writer.write('\n');
+            //writer.write('\n');
             this.writeEncoded(writer, this.contents);
             if (withClosingTag) {
                writer.write('<'); writer.write('/');
@@ -2224,9 +2224,9 @@ public class XMLElement
         } else {
             writer.write('>');
             writer.write('\n');
-            Enumeration enum = this.enumerateChildren();
-            while (enum.hasMoreElements()) {
-                XMLElement child = (XMLElement) enum.nextElement();
+            Enumeration enumerator = this.enumerateChildren();
+            while (enumerator.hasMoreElements()) {
+                XMLElement child = (XMLElement) enumerator.nextElement();
                 child.write(writer);
             }
             if (withClosingTag) {

@@ -1,3 +1,100 @@
+Changes made in Freemind 0.8.0:
+===============================
+* From Koh (thanks): Standard Macintosh application use Command(meta) key based Keyboard shortcut. (ex. copy is Command(meta) + C). I think that mac version's freemind should allow to assign meta key based shortcut. 
+* Bug fix: AutomaticLayout.java
+* Undo action added. 
+* Added edit node to the undo-actions.
+* Added addNode/deleteNode to the undo-actions.
+* Added cut/paste/del to undo-actions.
+* no root folding.
+* Rearranged the menus.
+* Bug fix: icon selection can be canceled.
+* Plugins are now well distributed over the menus.
+* Blind icons to align the menus (in development)
+
+* NodeView selection mechanism refactored
+* Background color is changeable
+* Plugin for "change management" introduced
+* Now, TAB is usable for insertion of nodes. This is useful for Macs.
+
+* Unified JaxB usage
+* Transfer from plugin properties to XML started
+
+* Plugins are configured via XML now.
+* Checked menu items added.
+
+* Bold menu is now checked/unchecked if bold/normal
+
+* Plugins can have registration parts that are called at each map startup.
+* UnfoldAll is mouse wheel sensitive.
+* Folding can be undone (for children too).
+* Multiple move nodes is now possible + undoable
+
+* More undoables: Edge color, italic, underline
+* Format of new nodes is now automatically taken from the last format changes
+* Find has an icon, such that it is more visible.
+* There is a filter possibility for XmlActions
+* Selection corrected after execution of NodeHookActions.
+
+* Font family and font size are undoable now.
+
+* Changed several occurences of setFolded to the undoable method.
+* Added the help plugin
+* Changed the plugin class loader behaviour completely.
+
+* Splash screen added
+* Automatic layout layouted
+* NodeNote improved
+* Bug with zoomIn corrected
+
+* Application is more or less fit for Mac OS X
+
+* NewParentNode is working again and is undoable
+* ImportLinked... are messaging if the node is not correct (i.e. admits no link to another mindmap).
+
+* Node color action is undoable now.
+
+* Undo respects bundle of changes as a single change now.
+* Undo refactored.
+
+* Hooks are undoable now, tested with AutomaticLayout.
+
+//commented out: * Icons appear on the right side on the right side of the node.
+* More Undo: icon adding and removing and node blend action.
+
+* icon selection and other MindMapHooks (like unfold all) are undoable now 
+  (here, no undo- or redoaction are performed, the undo information is given by the actions
+   the hook performs).
+* Apply patterns, edge width, edge style and node styles are undoable
+* Format copy introduced.
+* Cloud actions undoable. (Color treatment for new clouds is missing).
+* Arrows are undoable now (including color, remove, heads).
+* Icons improved, node background is editable now, strings extracted
+* NEW Add arrow link action added to insert menu.
+
+* Local hyperlinks enabled.
+* Link targets are shown in the status bar on mouse over.
+* Text of the status bar content improved.
+
+* Export to image reactivated. Export to clipboard added but not tested.
+
+Changes made in Freemind 0.7.2:
+===============================
+* Pluginmechanism added
+* Messagebox if recent file not present
+* Special key for mac insert
+* ModeControllerHookAction added.
+* Permanent Hooks can save their things as XML
+* Toolbar size reduced by Stefan Zechmeister
+* FitToPage corrected by Dimitri
+* Lazy initialization of Jython to increase startup speed.
+* Icon size reduced
+* Unfold all added
+* Bug fix: XMLWriter addes additional \n for contents.
+* setNode is now called automatically.
+* Jython is substituted by an attrappe 
+* Fold and Unfold one stage is available now.
+
 Changes made in Freemind 0.7.1:
 ===============================
 * Bug fix: automatic save occurs not so often (in fact, only if something has changed since the last automatic save), and uses a better filename.

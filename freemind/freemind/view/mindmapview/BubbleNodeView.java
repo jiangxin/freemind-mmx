@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.14.14.1 2004-10-17 20:01:07 dpolivaev Exp $*/
+/*$Id: BubbleNodeView.java,v 1.14.14.2 2004-10-17 23:00:13 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -191,5 +191,14 @@ public class BubbleNodeView extends NodeView {
     int getAlignment() {
 	    return ALIGN_CENTER;
 	}
+ 
+    protected void paintBackground(
+        Graphics2D graphics,
+        Dimension size,
+        Color color) {
+			graphics.setColor(color);
+			graphics.fillRoundRect(0,0,size.width-1,size.height-1,10,10);
+    }
+
 }
 

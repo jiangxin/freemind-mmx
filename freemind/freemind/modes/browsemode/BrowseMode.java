@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMode.java,v 1.8 2003-12-02 22:50:22 christianfoltin Exp $*/
+/*$Id: BrowseMode.java,v 1.8.18.1 2004-10-17 23:00:12 dpolivaev Exp $*/
 
 package freemind.modes.browsemode;
 
 import freemind.main.FreeMindApplet;
 import freemind.controller.Controller;
+import freemind.controller.StructuredMenuHolder;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import javax.swing.JMenu;
@@ -99,11 +100,4 @@ public class BrowseMode implements Mode {
         return null;
     }
 
-    public JMenu getModeFileMenu() {
-        return ((BrowseController)getModeController()).getFileMenu();
-    }
-
-    public JMenu getModeEditMenu() {
-        return ((BrowseController)getModeController()).getEditMenu();
-    }
 }

@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMode.java,v 1.17 2003-11-03 11:00:21 sviles Exp $*/
+/*$Id: MindMapMode.java,v 1.17.18.1 2004-10-17 23:00:13 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.controller.Controller;
+import freemind.controller.StructuredMenuHolder;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 
@@ -58,7 +59,7 @@ public class MindMapMode implements Mode {
 	try {
 	    getModeController().load(new File(restoreable));
 	} catch (Exception e) {
-	    System.err.println("Error restoring file:"+e);
+	    c.errorMessage("An error occured on opening the file: "+restoreable + ".");
         e.printStackTrace();
 	}
     }
@@ -83,11 +84,5 @@ public class MindMapMode implements Mode {
 	return ((MindMapController)getModeController()).getLeftToolBar();
     }
 
-    public JMenu getModeFileMenu() {
-	return ((MindMapController)getModeController()).getFileMenu();
-    }
 
-    public JMenu getModeEditMenu() {
-	return ((MindMapController)getModeController()).getEditMenu();
-    }
 }

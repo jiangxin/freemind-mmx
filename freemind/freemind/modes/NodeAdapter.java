@@ -16,11 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.1 2004-10-17 20:01:06 dpolivaev Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.2 2004-10-17 23:00:08 dpolivaev Exp $*/
 
 package freemind.modes;
 
-import freemind.modes.MindIcon;
+import freemind.extensions.*;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.view.mindmapview.NodeView;
@@ -38,8 +38,11 @@ import java.util.Vector;
  */
 public abstract class NodeAdapter implements MindMapNode {
 	
-    protected Object userObject = "no text";
+    private HashSet activatedHooks;
+	private List hooks;
+	protected Object userObject = "no text";
     private String link = null; //Change this to vector in future for full graph support
+    private String toolTip = null;
 
     //these Attributes have default values, so it can be useful to directly access them in
     //the save() method instead of using getXXX(). This way the stored file is smaller and looks better.
@@ -53,6 +56,7 @@ public abstract class NodeAdapter implements MindMapNode {
     protected MindMapCloud cloud;
 
     protected Color color;
+    protected Color backgroundColor;
     protected boolean folded;
     private Tools.BooleanHolder left;
 
@@ -70,22 +74,37 @@ public abstract class NodeAdapter implements MindMapNode {
     private FreeMindMain frame;
     private static final boolean ALLOWSCHILDREN = true;
     private static final boolean ISLEAF = false; //all nodes may have children
+	// Logging: 
+    static protected java.util.logging.Logger logger;
+
 
     //
     // Constructors
     //
 
     protected NodeAdapter(FreeMindMain frame) {
-	this.frame = frame;
+		this(null, frame);
     }
 
     protected NodeAdapter(Object userObject, FreeMindMain frame) {
-	this.userObject = userObject;
-	this.frame = frame;
+		this.userObject = userObject;
+		this.frame = frame;
+		hooks = new Vector();
+		activatedHooks = new HashSet();
+		if(logger == null)
+			logger = frame.getLogger(this.getClass().getName());
     }
 
     public String getLink() {
  	return link;
+    }
+    
+    public String getShortText(ModeController controller) {
+	    String adaptedText = toString();
+        adaptedText = adaptedText.replaceAll("<html>", "");
+        if (adaptedText.length() > 40)
+            adaptedText = adaptedText.substring(0, 40) + " ...";
+        return adaptedText;
     }
     
     public void setLink(String link) {
@@ -202,15 +221,6 @@ public abstract class NodeAdapter implements MindMapNode {
     public Color getColor() {
        return color; }
 
-	public Color getBackgroundColor(){
-		if (isRoot()){
-			return Color.WHITE;
-		}
-		if(getCloud() != null){
-			return getCloud().getColor();
-		}
-		return parent.getBackgroundColor();
-	}
 	
     //////
     // The set methods. I'm not sure if they should be here or in the implementing class.
@@ -223,6 +233,10 @@ public abstract class NodeAdapter implements MindMapNode {
     public void setColor(Color color) {
 	this.color = color;
     }
+
+    //fc, 24.2.2004: background color:
+    public Color getBackgroundColor(           ) { return backgroundColor; };
+    public void  setBackgroundColor(Color color) { this.backgroundColor = color; };
 
     //   
     //  font handling
@@ -306,6 +320,7 @@ public abstract class NodeAdapter implements MindMapNode {
 
     public void   addIcon(MindIcon _icon) { icons.add(_icon); };
 
+    /** @return returns the number of remaining icons. */
     public int   removeLastIcon() { if(icons.size() > 0) icons.setSize(icons.size()-1); return icons.size();};
 
     // end, fc, 24.9.2003
@@ -486,6 +501,7 @@ public abstract class NodeAdapter implements MindMapNode {
     //Garbage Collection work (Nodes in removed Sub-Trees reference each other)?
     
     public void insert( MutableTreeNode child, int index) {
+        logger.finest("Insert at " + index + " the node "+child);
         if (index < 0) { // add to the end (used in xml load) (PN) 
           index = getChildCount();
           children.add( index, child );
@@ -497,20 +513,12 @@ public abstract class NodeAdapter implements MindMapNode {
     	child.setParent( this );
     }
     
+
+
     
     public void remove( int index ) {
         MutableTreeNode node = (MutableTreeNode)children.get(index);
-        if (node == this.preferredChild) { // mind preferred child :-) (PN) 
-          if (children.size() > index + 1) {
-            this.preferredChild = (MindMapNode)(children.get(index + 1));
-          }
-          else {
-            this.preferredChild = (index > 0) ? 
-                (MindMapNode)(children.get(index - 1)) : null;
-          }
-        }
-        node.setParent(null);
-        children.remove( index );
+		remove(node);
     }
     
     public void remove( MutableTreeNode node ) {
@@ -524,6 +532,11 @@ public abstract class NodeAdapter implements MindMapNode {
                 (MindMapNode)(children.get(index - 1)) : null;
           }
         }
+		// call remove child hook:
+		for(Iterator i = this.getActivatedHooks().iterator(); i.hasNext(); ){
+			PermanentNodeHook hook = (PermanentNodeHook) i.next();
+			hook.onRemoveChild((MindMapNode)node);
+		}
         node.setParent(null);
     	children.remove( node );
     }
@@ -586,4 +599,76 @@ public abstract class NodeAdapter implements MindMapNode {
       }
       return level;
     }
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#addHook(freemind.modes.NodeHook)
+	 */
+	public PermanentNodeHook addHook(PermanentNodeHook hook) {
+		// add then
+		if(hook == null) 
+			throw new IllegalArgumentException("Added null hook.");
+		hooks.add(hook);
+		return hook;
+	}
+
+	public void invokeHook(NodeHook hook) {
+		// initialize:
+		hook.startupMapHook();
+		// the main invocation:
+		hook.setNode(this);
+		hook.invoke(this);
+	    if (hook instanceof PermanentNodeHook) {
+			activatedHooks.add(hook);
+		} else {
+		    // end of its short life:
+		    hook.shutdownMapHook();
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#getHooks()
+	 */
+	public List getHooks() {
+		return Collections.unmodifiableList(hooks);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#getActivatedHooks()
+	 */
+	public Collection getActivatedHooks() {
+		return Collections.unmodifiableCollection(activatedHooks);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#removeHook(freemind.modes.NodeHook)
+	 */
+	public void removeHook(PermanentNodeHook hook) {
+	    // the order is crucial here: the shutdown method should be able to perform "nodeChanged" 
+	    // calls without having its own updateNodeHook method to be called again.
+		activatedHooks.remove(hook);
+		hook.shutdownMapHook();
+		hooks.remove(hook);
+	}
+
+	/**
+	 * @return
+	 */
+	public String getToolTip() {
+		return toolTip;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setToolTip(String string) {
+		toolTip = string;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#getNodeId()
+	 */
+	public String getObjectId(ModeController controller) {
+	    return controller.getNodeID(this);
+	}
+
 }

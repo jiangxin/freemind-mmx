@@ -16,19 +16,24 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.1 2004-10-17 20:01:04 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.2 2004-10-17 23:00:06 dpolivaev Exp $*/
 
 package freemind.controller;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
+import java.io.Serializable;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -37,17 +42,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.logging.Logger;
+
 import javax.swing.*;
+
 import java.net.MalformedURLException;
 
+import freemind.controller.actions.ActionFactory;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
+import freemind.modes.ModeController;
 
 import freemind.modes.ModesCreator;
-import freemind.modes.browsemode.BrowseController;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 
@@ -57,7 +66,9 @@ import freemind.view.mindmapview.MapView;
  */
 public class Controller {
 
-    private LastOpenedList lastOpened;//A list of the pathnames of all the maps that were opened in the last time
+    private static Logger logger;
+    private static JColorChooser colorChooser = new JColorChooser();
+	private LastOpenedList lastOpened;//A list of the pathnames of all the maps that were opened in the last time
     private MapModuleManager mapModuleManager;// new MapModuleManager();
     private HistoryManager history = new HistoryManager();
     private Map modes; //hash of all possible modes
@@ -94,7 +105,7 @@ public class Controller {
     Action optionHTMLExportFoldingAction;
     Action optionSelectionMechanismAction;
 
-    Action about;
+    public Action about;
     Action faq;
     Action documentation;
     Action license;
@@ -123,9 +134,12 @@ public class Controller {
         checkJavaVersion();
 
         this.frame = frame;
+        if(logger == null) {
+            logger = frame.getLogger(this.getClass().getName());
+        }
         modes = modescreator.getAllModes();
-        mapModuleManager = new MapModuleManager(this);
         lastOpened = new LastOpenedList(this, getProperty("lastOpened"));
+        mapModuleManager = new MapModuleManager(this, history, lastOpened);
 
         nodeMouseMotionListener = new NodeMouseMotionListener(this);
         nodeKeyListener = new NodeKeyListener(this);
@@ -210,6 +224,13 @@ public class Controller {
           System.err.println("Warning - resource string not found:"+resource);
           return resource; }}
 
+	/** @return the current modeController. */
+	public ModeController getModeController() {
+		return getMode().getModeController();
+	}
+
+
+
     /**Returns the current model*/
     public MindMap getModel() {
        if (getMapModule() != null) {
@@ -281,11 +302,89 @@ public class Controller {
        // Maybe implement handling for cases when the font is not
        // available on this system.
 
-       int fontSize = Integer.parseInt(getFrame().getProperty("defaultfontsize"));
-       int fontStyle = Integer.parseInt(getFrame().getProperty("defaultfontstyle"));
-       String fontFamily = getProperty("defaultfont");
+       int fontSize = getDefaultFontSize();
+       int fontStyle = getDefaultFontStyle();
+       String fontFamily = getDefaultFontFamilyName();
 
        return getFontThroughMap (new Font(fontFamily, fontStyle, fontSize)); }
+
+	/**
+     * @return
+     */
+    public String getDefaultFontFamilyName() {
+        String fontFamily = getProperty("defaultfont");
+        return fontFamily;
+    }
+
+    /**
+     * @return
+     */
+    public int getDefaultFontStyle() {
+        int fontStyle = Integer.parseInt(getFrame().getProperty("defaultfontstyle"));
+        return fontStyle;
+    }
+
+    /**
+     * @return
+     */
+    public int getDefaultFontSize() {
+        int fontSize = Integer.parseInt(getFrame().getProperty("defaultfontsize"));
+        return fontSize;
+    }
+
+    /** Static JColorChooser to have  the recent colors feature. */
+	static public JColorChooser getCommonJColorChooser() {
+		return colorChooser;
+	}
+	
+	public static Color showCommonJColorChooserDialog(Component component,
+		String title, Color initialColor) throws HeadlessException {
+
+		final JColorChooser pane = getCommonJColorChooser();
+		pane.setColor(initialColor);
+
+		ColorTracker ok = new ColorTracker(pane);
+		JDialog dialog = JColorChooser.createDialog(component, title, true, pane, ok, null);
+		dialog.addWindowListener(new Closer());
+		dialog.addComponentListener(new DisposeOnClose());
+
+		dialog.show(); // blocks until user brings dialog down...
+
+		return ok.getColor();
+	}
+
+
+	private static class ColorTracker implements ActionListener, Serializable {
+		JColorChooser chooser;
+		Color color;
+
+		public ColorTracker(JColorChooser c) {
+			chooser = c;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			color = chooser.getColor();
+		}
+
+		public Color getColor() {
+			return color;
+		}
+	}
+
+	static class Closer extends WindowAdapter implements Serializable{
+		 public void windowClosing(WindowEvent e) {
+			 Window w = e.getWindow();
+			 w.hide();
+		 }
+	 }
+
+	 static class DisposeOnClose extends ComponentAdapter implements Serializable{
+		 public void componentHidden(ComponentEvent e) {
+			 Window w = (Window)e.getComponent();
+			 w.dispose();
+		 }
+	 }
+
 
 
     public boolean changeToMode(String mode) {
@@ -310,7 +409,6 @@ public class Controller {
 
         if (getMapModule() != null) {
             getMapModuleManager().setMapModule(null);
-            getMapModuleManager().mapModuleChanged();
         }
         this.mode = newmode;
                 
@@ -329,8 +427,8 @@ public class Controller {
         setTitle();
         getMode().activate();
 
-        getFrame().getFreeMindMenuBar().updateFileMenu();
-        getFrame().getFreeMindMenuBar().updateEditMenu();
+        // this is already done in mapModuleChanged: 
+        getFrame().getFreeMindMenuBar().updateMenus();
 
         if (getMapModule() == null) {
             setAllActions(false);
@@ -356,6 +454,12 @@ public class Controller {
         toolbar.setVisible(toolbarVisible);
     }
 
+    /**
+     * @return Returns the main toolbar.
+     */
+    public JToolBar getToolbar() {
+        return toolbar;
+    }
     public void setLeftToolbarVisible(boolean visible) {
         if (getMode() != null && getMode().getLeftToolBar() != null) {
            leftToolbarVisible = visible;
@@ -514,7 +618,7 @@ public class Controller {
      * Manage the availabilty of all Actions dependend 
      * of whether there is a map or not
      */
-    private void setAllActions(boolean enabled) {
+    public void setAllActions(boolean enabled) {
         background.setEnabled(enabled);
 
         if(isPrintingAllowed) {
@@ -568,178 +672,21 @@ public class Controller {
           catch (SecurityException ex) {
              isPrintingAllowed = false;
              return false; }}
-       pageFormat = (pageFormat == null) ? printerJob.defaultPage() : pageFormat;
+       if (pageFormat == null) {
+           pageFormat = printerJob.defaultPage();
+           if (Tools.safeEquals(getProperty("page_orientation"), "landscape")) {
+               pageFormat.setOrientation(PageFormat.LANDSCAPE);
+           } else if (Tools.safeEquals(getProperty("page_orientation"), "portrait")) {
+               pageFormat.setOrientation(PageFormat.PORTRAIT);
+           } else if (Tools.safeEquals(getProperty("page_orientation"), "reverse_landscape")) {
+               pageFormat.setOrientation(PageFormat.REVERSE_LANDSCAPE);
+           }
+       }
        return true; }
 
     //////////////
     // Inner Classes
     ////////////
-
-    /**
-     * Manages the list of MapModules.
-     * As this task is very complex, I exported it
-     * from Controller to this class to keep Controller
-     * simple.
-     */
-    public class MapModuleManager {
-        // Variable below: The instances of mode, ie. the Model/View pairs. Normally, the
-        // order should be the order of insertion, but such a Map is not
-        // available.
-        private Map mapModules = new HashMap();
-
-        private MapModule mapModule; //reference to the current mapmodule, could be done
-                                     //with an index to mapModules, too.
-        // private String current;
-        
-        private Controller c;
-
-        MapModuleManager(Controller c) {
-           this.c=c; }
-
-        Map getMapModules() {
-           return mapModules; }
-        
-        public MapModule getMapModule() {
-           return mapModule; }
-
-        public void newMapModule(MindMap map) {
-            MapModule mapModule = new MapModule(map, new MapView(map, c), getMode());
-            setMapModule(mapModule);
-            addToMapModules(mapModule.toString(), mapModule);
-            history.mapChanged(mapModule);
-            updateNavigationActions(); 
-            }
-
-        public void updateMapModuleName() {
-            getMapModules().remove(getMapModule().toString());
-            //removeFromViews() doesn't work because MapModuleChanged()
-            //must not be called at this state
-            getMapModule().rename();
-            addToMapModules(getMapModule().toString(),getMapModule());
-        }
-
-        void nextMapModule() {
-            List keys = new LinkedList(getMapModules().keySet());
-            int index = keys.indexOf(getMapModule().toString());
-            ListIterator i = keys.listIterator(index+1);
-            if (i.hasNext()) {
-               changeToMapModule((String)i.next()); }
-            else if (keys.iterator().hasNext()) {
-               // Change to the first in the list
-               changeToMapModule((String)keys.iterator().next()); }}
-
-        void previousMapModule() {
-            List keys = new LinkedList(getMapModules().keySet());
-            int index = keys.indexOf(getMapModule().toString());
-            ListIterator i = keys.listIterator(index);
-            if (i.hasPrevious()) {
-               changeToMapModule((String)i.previous()); }
-            else {
-               Iterator last = keys.listIterator(keys.size()-1);
-               if (last.hasNext()) {
-                  changeToMapModule((String)last.next()); }}}
-
-        //Change MapModules
-
-        public boolean tryToChangeToMapModule(String mapModule) {
-            if (mapModule != null && getMapModules().containsKey(mapModule)) {
-                changeToMapModule(mapModule);
-                return true; }
-            else {
-               return false; }}
-    
-        void changeToMapModule(String mapModule) {
-            MapModule map = (MapModule)(getMapModules().get(mapModule));
-            history.mapChanged(map);
-            changeToMapModuleWithoutHistory(map); }
-
-        void changeToMapModuleWithoutHistory(MapModule map) {
-            if (map.getMode() != getMode()) {
-               changeToMode(map.getMode().toString()); }
-            setMapModule(map);
-            mapModuleChanged(); }
-
-        public void changeToMapOfMode(Mode mode) {
-            for (Iterator i = getMapModules().keySet().iterator(); i.hasNext(); ) {
-                String next = (String)i.next();
-                if ( ((MapModule)getMapModules().get(next)).getMode() == mode ) {
-                    changeToMapModule(next);
-                    return; }}}
-
-        //private
-
-        private void mapModuleChanged() {
-            frame.getFreeMindMenuBar().updateMapsMenu();//to show the new map in the mindmaps menu
-            lastOpened.mapOpened(getMapModule());
-            frame.getFreeMindMenuBar().updateLastOpenedList();//to show the new map in the file menu
-            //  history.add(getMapModule());
-            //updateNavigationActions();
-            setTitle();
-            updateZoomBar();
-            c.obtainFocusForSelected(); }
-       
-        private void setMapModule(MapModule mapModule) {
-            this.mapModule = mapModule;
-            frame.setView(mapModule != null ? mapModule.getView() : null); }
-
-        private void addToMapModules(String key, MapModule value) {
-            // begin bug fix, 20.12.2003, fc.
-            // check, if already present:
-            String extension = "";
-            int count = 1;
-            while (mapModules.containsKey(key+extension)) {
-                extension = "<"+(++count)+">";
-            }
-            // rename map:
-            value.setName(key+extension);
-            mapModules.put(key+extension,value);
-            // end bug fix, 20.12.2003, fc.
-            setAllActions(true);
-            moveToRoot();                // Only for the new modules move to root
-            mapModuleChanged(); }
-
-       private void changeToAnotherMap(String toBeClosed) {
-          List keys = new LinkedList(getMapModules().keySet());
-          for (ListIterator i = keys.listIterator(); i.hasNext();) {
-             String key = (String)i.next();
-             if (!key.equals(toBeClosed)) {
-                changeToMapModule(key);
-                return; }}}
-
-        private void updateNavigationActions() {
-           List keys = new LinkedList(getMapModules().keySet());
-           navigationPreviousMap.setEnabled(keys.size() > 1);
-           navigationNextMap.setEnabled(keys.size() > 1); }
-
-        private void updateZoomBar() {
-           if (getMapModule()!=null) {
-              ((MainToolBar)c.toolbar).setZoomComboBox(getMapModule().getView().getZoom()); }}
-
-        
-       /**
-        *  Close the currently active map, return false if closing cancelled.
-        */
-       private boolean close() {
-       	    // (DP) The mode controller does not close the map
-            boolean closingNotCancelled = getMode().getModeController().close();
-            if (!closingNotCancelled) {
-               return false; }	
-            
-            String toBeClosed = getMapModule().toString();
-            mapModules.remove(toBeClosed);
-            if (mapModules.isEmpty()) {
-               setAllActions(false);
-               setMapModule(null);
-               frame.setView(null); }
-            else {
-               changeToMapModule((String)mapModules.keySet().iterator().next());
-               updateNavigationActions(); }
-            mapModuleChanged();
-            return true; }
-
-       // }}
-
-    }
 
     /**
      * Manages the history of visited maps.
@@ -759,7 +706,7 @@ public class Controller {
     // history instead of map modules. Another option is to remove maps from
     // history upon closing the maps.
 
-    private class HistoryManager {
+    protected class HistoryManager {
         private LinkedList /* of map modules */ historyList = new LinkedList();
         private int current;
 
@@ -769,7 +716,7 @@ public class Controller {
         void nextMap() {
            if (false) {
            if (current+1 < historyList.size()) {
-              getMapModuleManager().changeToMapModuleWithoutHistory((MapModule)historyList.get(++current));
+              getMapModuleManager().setMapModule((MapModule)historyList.get(++current));
               //the map is immediately added again via changeToMapModule
               historyPreviousMap.setEnabled(true);
               if ( current >= historyList.size()-1)
@@ -781,7 +728,7 @@ public class Controller {
         void previousMap() {
            if (false) {
            if (current > 0) {
-              getMapModuleManager().changeToMapModuleWithoutHistory((MapModule)historyList.get(--current));
+              getMapModuleManager().setMapModule((MapModule)historyList.get(--current));
               historyNextMap.setEnabled(true);
               if ( current <= 0)
                  historyPreviousMap.setEnabled(false);
@@ -933,6 +880,13 @@ public class Controller {
 
             // Ask user for page format (e.g., portrait/landscape)          
             pageFormat = printerJob.pageDialog(pageFormat);
+            if (pageFormat.getOrientation() == PageFormat.LANDSCAPE) {
+                setProperty("page_orientation", "landscape");
+            } else if (pageFormat.getOrientation() == PageFormat.PORTRAIT) {
+                setProperty("page_orientation", "portrait");
+            } else if (pageFormat.getOrientation() == PageFormat.REVERSE_LANDSCAPE) {
+                setProperty("page_orientation", "reverse_landscape");
+            }
         }
     }
 
@@ -1083,12 +1037,14 @@ public class Controller {
         public ZoomInAction(Controller controller) {
            super(controller.getResourceString("zoom_in")); }
         public void actionPerformed(ActionEvent e) {
+            logger.info("ZoomInAction actionPerformed");
            ((MainToolBar)toolbar).zoomIn(); }}
 
     protected class ZoomOutAction extends AbstractAction {
         public ZoomOutAction(Controller controller) {
            super(controller.getResourceString("zoom_out")); }
         public void actionPerformed(ActionEvent e) {
+            logger.info("ZoomOutAction actionPerformed");
            ((MainToolBar)toolbar).zoomOut(); }}
 
     //
@@ -1105,7 +1061,7 @@ public class Controller {
             super(controller.getResourceString("background"),icon);
         }
         public void actionPerformed(ActionEvent e) {
-            Color color = JColorChooser.showDialog(getView(),"Choose Background Color:",getView().getBackground() );
+            Color color = showCommonJColorChooserDialog(getView(),getResourceString("choose_background_color"),getView().getBackground() );
             getModel().setBackgroundColor(color);
         }
     }
@@ -1165,9 +1121,6 @@ public class Controller {
             }
         }
     }
-
-
-
 
 
 }//Class Controller

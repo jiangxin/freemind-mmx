@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.15 2004-01-25 22:13:46 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.15.14.1 2004-10-17 23:00:07 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -72,22 +72,30 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
     public NodeMouseMotionListener(Controller controller) {
        c = controller; 
        if(logger == null)
-           logger = c.getFrame().getLogger("freemind.controller.NodeMouseMotionListener");
+           logger = c.getFrame().getLogger(this.getClass().getName());
        if(delayedSelectionEnabled == null)
            updateSelectionMethod(c);
     }
 
     public void mouseMoved(MouseEvent e) {
         logger.finest("Event: mouseMoved");
-   //  Invoked when the mouse button has been moved on a component (with no buttons down). 
-       ((NodeView)e.getComponent()).updateCursor(e.getX());
-       // test if still in selection region:
-       if(controlRegionForDelayedSelection != null && delayedSelectionEnabled.getValue()) {
-           if(!controlRegionForDelayedSelection.contains(e.getPoint())) {
-               // point is not in the region. start timer again and adjust region to the current point:
-               createTimer(e);
-           }
-       }
+        //  Invoked when the mouse button has been moved on a component (with no
+        // buttons down).
+        NodeView node = (NodeView) e.getComponent();
+        boolean isLink = (node).updateCursor(e.getX());
+        // links are displayed in the status bar:
+        if (isLink) {
+            c.getFrame().out(c.getModeController().getLinkShortText(node.getModel()));
+        }
+        // test if still in selection region:
+        if (controlRegionForDelayedSelection != null
+                && delayedSelectionEnabled.getValue()) {
+            if (!controlRegionForDelayedSelection.contains(e.getPoint())) {
+                // point is not in the region. start timer again and adjust
+                // region to the current point:
+                createTimer(e);
+            }
+        }
     }
 
     /** Invoked when a mouse button is pressed on a component and then dragged.  */

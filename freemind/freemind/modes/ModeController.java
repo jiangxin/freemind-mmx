@@ -16,49 +16,128 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14 2004-01-25 16:41:15 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.14.1 2004-10-17 23:00:08 dpolivaev Exp $*/
 
 package freemind.modes;
 
+import java.awt.Color;
+import java.awt.datatransfer.Clipboard;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JPopupMenu;
 
+import freemind.controller.Controller;
+import freemind.controller.StructuredMenuHolder;
+import freemind.controller.actions.ActionFactory;
+import freemind.controller.actions.generated.instance.ObjectFactory;
+import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.extensions.ModeControllerHook;
+import freemind.extensions.NodeHook;
+import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
+import freemind.modes.actions.*;
+import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
-public interface ModeController {
+public interface ModeController extends MindMapActions {
 
-    public void load(File file) throws FileNotFoundException, IOException, XMLParseException;
-    public boolean save(File file);
-    public void addNew(NodeView target, int newNodeMode, KeyEvent e);
-    public void newMap();
-    public boolean save();
-    public boolean saveAs();
-    public void open();
-    //    public void edit(NodeView node, NodeView toBeSelected);
-    public boolean close();
-    public void doubleClick(MouseEvent e);
-    public void plainClick(MouseEvent e);
-    public void toggleFolded();
+    void load(File file) throws FileNotFoundException, IOException, XMLParseException;
+    boolean save(File file);
+    //void addNew(NodeView target, int newNodeMode, KeyEvent e);
+	MindMapNode newNode();
+    void newMap();
+    boolean save();
+    boolean saveAs();
+    void open();
+    //    void edit(NodeView node, NodeView toBeSelected);
+    boolean close();
+    // activation methods:
+    void startupController();
+    void shutdownController();
+    /** This method is used to hide the map "under" another opened map. 
+     * In fact, should remove the focus, stop plugins, if necessary, etc. */
+    void setVisible(boolean visible);
+    // end activation methods.
+    void doubleClick(MouseEvent e);
+    void plainClick(MouseEvent e);
 
-    public boolean isBlocked();
-    public void edit(KeyEvent e, boolean addNew, boolean editLong);
-    public void mouseWheelMoved(MouseWheelEvent e);
-    /** This extends the currently selected nodes. 
+    boolean isBlocked();
+    void edit(KeyEvent e, boolean addNew, boolean editLong);
+    public interface  MouseWheelEventHandler {
+        /** @return true if the event was sucessfully processed and false if the event did not apply.*/
+        boolean handleMouseWheelEvent(MouseWheelEvent e);
+    }
+    void registerMouseWheelEventHandler(MouseWheelEventHandler handler);
+    void deRegisterMouseWheelEventHandler(MouseWheelEventHandler handler);
+    void mouseWheelMoved(MouseWheelEvent e);
+    MindMapNode getSelected();
+	List getSelecteds();
+	/** @return a LinkedList of MindMapNodes ordered by depth. nodes with greater depth occur first. */
+    List getSelectedsByDepth();
+	    /** This extends the currently selected nodes. 
         @return true, if the method changed the selection.*/
-    public boolean extendSelection(MouseEvent e);
+    boolean extendSelection(MouseEvent e);
 
-    public JPopupMenu getPopupMenu();
-    public void showPopupMenu(MouseEvent e);
+	/** Use this method to get menus to the screen. */
+	public void updateMenus(StructuredMenuHolder holder);
+	public void updatePopupMenu(StructuredMenuHolder holder);
+
+    JPopupMenu getPopupMenu();
+    void showPopupMenu(MouseEvent e);
     /** This returns a context menu for an object placed in the background pane.*/
-    public JPopupMenu getPopupForModel(java.lang.Object obj);
+    JPopupMenu getPopupForModel(java.lang.Object obj);
 
-    public void nodeChanged(MindMapNode n);
-    public void anotherNodeSelected(MindMapNode n);
+	/**
+	  * Invoke this method after you've changed how a node is to be
+	  * represented in the tree. 
+	  */
+    void nodeChanged(MindMapNode n);
+    void anotherNodeSelected(MindMapNode n);
+    // node identifier (fc, 2.5.2004):
+	/** Given a node identifier, this method returns the corresponding node. */
+	NodeAdapter getNodeFromID(String nodeID);
+	/** Calling this method the map-unique identifier of the node is returned 
+	 * (and created before, if not present)*/
+	String getNodeID(MindMapNode selected);
+
+	//hooks, fc 28.2.2004:
+	/** 
+	 * This is the only way to instanciate new Hooks. THEY HAVE TO BE INVOKED AFTERWARDS!
+	 * The hook is equipped with the map and controller information.
+	 * Furthermore, the hook is added to the node, if it is an instance of 
+	 * the PermanentNodeHook.
+	 * If the hook policy specifies, that only one instance may exist per node,
+	 * it returns this instance if it already exists.
+	 * @param map may be null if not known. But it has to be set afterwards!
+	 * */
+	NodeHook createNodeHook(String hookName, MindMapNode node, MindMap map);
+	void invokeHook(ModeControllerHook hook);
+
+	void invokeHooksRecursively(NodeAdapter node, MindMap map);
+	//end hooks
+	FreeMindMain getFrame();
+	MapView getView(); 
+	MapAdapter getMap();
+	Controller getController();
+	Clipboard getClipboard();
+	ActionFactory getActionFactory();
+	ObjectFactory getActionXmlFactory();
+	Color getSelectionColor();
+    /**
+     * Get text from resource file
+     */
+    String getText(String textId);
+
+	// XML Actions:
+	public String marshall(XmlAction action);	
+	public XmlAction unMarshall(String inputString);
+	
+	/** undo in progress? */
+	boolean isUndoAction();
 }

@@ -98,7 +98,7 @@ public class NodeDropListener implements DropTargetListener {
            if (!dtde.isLocalTransfer()) {
               //if (dtde.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
               //System.err.println("filelist");
-              c.getModel().paste (t, targetNode, 
+              c.getModeController().paste (t, targetNode, 
                                   targetNodeView.dropAsSibling(dtde.getLocation().getX()),
                                   targetNodeView.dropPosition (dtde.getLocation().getX()));
               dtde.dropComplete(true);
@@ -140,17 +140,21 @@ public class NodeDropListener implements DropTargetListener {
                       MindMapNodeModel selectedNodeModel = (MindMapNodeModel)((NodeView)it.next()).getModel();
                       //                  mindMapMapModel.setNodeColor(selectedNodeModel,targetNode.getColor());
                       //                  mindMapMapModel.setNodeFont(selectedNodeModel,targetNode.getFont()); 
-                      mindMapMapModel.addLink(selectedNodeModel, targetNodeModel);
+                      c.getModeController().addLink(selectedNodeModel, targetNodeModel);
                   }
               }
            }
            else {
-              c.getModel().paste (dropAction == DnDConstants.ACTION_MOVE 
-                                  ? c.getModel().cut() : c.getModel().copy(),
-                                  targetNode, 
-                                  targetNodeView.dropAsSibling(dtde.getLocation().getX()),
-                                  targetNodeView.dropPosition (dtde.getLocation().getX())); }
-           c.getView().selectAsTheOnlyOneSelected(targetNodeModel.getViewer()); }
+           	  Transferable trans = dropAction == DnDConstants.ACTION_MOVE 
+									? c.getModeController().cut() : c.getModel().copy();
+			  c.getView().selectAsTheOnlyOneSelected(targetNodeModel.getViewer()); 			
+            c.getModeController().paste(
+                trans,
+                targetNode,
+                targetNode.getViewer().dropAsSibling(dtde.getLocation().getX()),
+                targetNode.getViewer().dropPosition(dtde.getLocation().getX()));
+              }
+           }
 	catch (Exception e) {
 	    System.err.println("Drop exception:"+e);
         e.printStackTrace();

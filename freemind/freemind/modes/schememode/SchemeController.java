@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.10 2003-11-03 11:00:21 sviles Exp $*/
+/*$Id: SchemeController.java,v 1.10.18.1 2004-10-17 23:00:13 dpolivaev Exp $*/
 
 package freemind.modes.schememode;
 
@@ -27,26 +27,28 @@ import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 
+import freemind.controller.MenuBar;
+import freemind.controller.StructuredMenuHolder;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
-import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
+import freemind.modes.actions.EditAction;
+import freemind.modes.actions.NewMapAction;
 
 public class SchemeController extends ControllerAdapter {
 
-    Action newMap = new NewMapAction(this);
+    Action newMap = new NewMapAction(this, this);
     Action open = new OpenAction(this);
     Action save = new SaveAction(this);
     Action saveAs = new SaveAsAction(this);
     Action evaluate = new EvaluateAction();
-    Action edit = new EditAction();
-    Action addNew = new NewChildWithoutFocusAction();
-    Action remove = new RemoveAction();
-    Action toggleFolded = new ToggleFoldedAction();
+    Action edit = new EditAction(this);
     private JPopupMenu popupmenu = new SchemePopupMenu(this);
 
     public SchemeController(Mode mode) {
@@ -61,18 +63,10 @@ public class SchemeController extends ControllerAdapter {
 	return new SchemeNodeModel(getFrame());
     }
 
-    //private
-    private MindMap getModel() {
- 	return (MindMap)getController().getModel();
-    }
-
-    private MindMapNode getSelected() {
-	if (getView() != null) {
-	    return (MindMapNode)getView().getSelected().getModel();
-	} else {
-	    return null;
-	}
-    }
+//    //private
+//    private MindMap getModel() {
+// 	return (MindMap)getController().getModel();
+//    }
 
 
 	public boolean saveAs() {
@@ -121,5 +115,25 @@ public class SchemeController extends ControllerAdapter {
 	    //	    }
 	    JOptionPane.showMessageDialog(getView(),output);
 	}
+    }
+    /* (non-Javadoc)
+     * @see freemind.modes.ModeController#updateMenus(freemind.controller.StructuredMenuHolder)
+     */
+    public void updateMenus(StructuredMenuHolder holder) {
+		holder.addAction(newMap, MenuBar.FILE_MENU+"open/new");
+		holder.addAction(open, MenuBar.FILE_MENU+"open/open");
+		holder.addAction(save, MenuBar.FILE_MENU+"open/save");
+		holder.addAction(saveAs, MenuBar.FILE_MENU+"open/saveAs");
+
+		JMenuItem editItem = holder.addAction(edit, MenuBar.EDIT_MENU+"edit/editItem");
+		editItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_edit")));
+//		JMenuItem addNewItem = holder.addAction(addNew, MenuBar.EDIT_MENU+"edit/newItem");
+//		addNewItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_add")));
+		//JMenuItem removeItem = holder.addAction(remove, MenuBar.EDIT_MENU+"edit/removeItem");
+		//removeItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_remove")));
+		holder.addAction(evaluate, MenuBar.EDIT_MENU+"edit/evaluate");
+		holder.addAction(toggleFolded, MenuBar.EDIT_MENU+"edit/toggleFolded");
+
+
     }
 }

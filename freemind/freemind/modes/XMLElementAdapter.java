@@ -16,18 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4 2004-01-24 22:36:48 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.1 2004-10-17 23:00:08 dpolivaev Exp $*/
 
 package freemind.modes;
 
+import freemind.extensions.PermanentNodeHook;
 import freemind.main.XMLElement;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
-import freemind.modes.MindIcon;
-import freemind.modes.MindMapLinkRegistry;
-import freemind.modes.NodeAdapter;
 
 import java.awt.Font;
+import java.io.File;
 import java.util.Vector;
 import java.util.HashMap;
 import java.util.Collection;
@@ -87,21 +86,39 @@ public abstract class XMLElementAdapter extends XMLElement {
    //   Real parsing methods
 
    public void setName(String name)  {
-      super.setName(name);
-      // Create user object based on name
-      if (name.equals("node")) {
-         userObject = createNodeAdapter(frame); }
-      if (name.equals("edge")) {
-         userObject = createEdgeAdapter(null, frame); }
-      if (name.equals("cloud")) {
-          userObject = createCloudAdapter(null, frame); }
-      if (name.equals("arrowlink")) {
-          userObject = createArrowLinkAdapter(null, null, frame); }}
+		super.setName(name);
+		// Create user object based on name
+		if (name.equals("node")) {
+			userObject = createNodeAdapter(frame);
+		} else if (name.equals("edge")) {
+			userObject = createEdgeAdapter(null, frame);
+		} else if (name.equals("cloud")) {
+			userObject = createCloudAdapter(null, frame);
+		} else if (name.equals("arrowlink")) {
+			userObject = createArrowLinkAdapter(null, null, frame);
+		} else if (name.equals("font")) {
+			userObject = null;
+		} else if (name.equals("map")) {
+			userObject = null;
+		} else if (name.equals("icon")) {
+			userObject = null;
+		} else if (name.equals("hook")) {
+			// we gather the xml element and send it to the hook after completion.
+			userObject = new XMLElement();
+		} else {
+			userObject = new XMLElement(); // for childs of hooks
+		}
+   }
 
    public void addChild(XMLElement child) {
       if (getName().equals("map")) {
          mapChild = (NodeAdapter)child.getUserObject();
          return; }
+      if( userObject instanceof XMLElement ) {
+      	 //((XMLElement) userObject).addChild(child);
+      	 super.addChild(child);
+      	 return;
+      }
       if (userObject instanceof NodeAdapter) {
          NodeAdapter node = (NodeAdapter)userObject;
          if (child.getUserObject() instanceof NodeAdapter) {
@@ -126,13 +143,35 @@ public abstract class XMLElementAdapter extends XMLElement {
          else if (child.getName().equals("font")) {
             node.setFont((Font)child.getUserObject()); }
          else if (child.getName().equals("icon")) {
-             node.addIcon((MindIcon)child.getUserObject()); }}}
+             node.addIcon((MindIcon)child.getUserObject()); }
+         else if (child.getName().equals("hook")) {
+         	 XMLElement xml = (XMLElement) child/*.getUserObject()*/;
+             try {
+             String loadName = (String)xml.getAttribute("NAME");
+			 loadName=loadName.replace('/', File.separatorChar);
+			 /* The next code snippet is an exception. Normally, hooks 
+			  * have to be created via the ModeController. 
+			  * DO NOT COPY. */
+ 			 PermanentNodeHook hook = (PermanentNodeHook) frame.getHookFactory().createNodeHook(loadName);
+ 			 hook.loadFrom(xml);
+ 			 node.addHook(hook);
+             } catch(Exception e) {
+                 e.printStackTrace();
+             }
+ 		 }
+      }
+   }
 
-   public void setAttribute(String name, Object value) {
+public void setAttribute(String name, Object value) {
       // We take advantage of precondition that value != null.
       String sValue = value.toString();
       if (ignoreCase) {
          name = name.toUpperCase(); }
+	  if(userObject instanceof XMLElement) {
+		//((XMLElement) userObject).setAttribute(name, value);
+		super.setAttribute(name, value); // and to myself, as I am also an xml element.
+		return;
+	  }
 
       if (userObject instanceof NodeAdapter) {
          // 
@@ -148,6 +187,9 @@ public abstract class XMLElementAdapter extends XMLElement {
          else if (name.equals("COLOR")) {
             if (sValue.length() == 7) {
                node.setColor(Tools.xmlToColor(sValue)); }}
+         else if (name.equals("BACKGROUND_COLOR")) {
+            if (sValue.length() == 7) {
+               node.setBackgroundColor(Tools.xmlToColor(sValue)); }}
          else if (name.equals("LINK")) {
             node.setLink(sValue); }
          else if (name.equals("STYLE")) {
@@ -187,6 +229,8 @@ public abstract class XMLElementAdapter extends XMLElement {
          ArrowLinkAdapter arrowLink = (ArrowLinkAdapter)userObject;
          if (name.equals("STYLE")) {
              arrowLink.setStyle(sValue); }
+         else if (name.equals("ID")) {
+             arrowLink.setUniqueID(sValue); }
          else if (name.equals("COLOR")) {
              arrowLink.setColor(Tools.xmlToColor(sValue)); }
          else if (name.equals("DESTINATION")) {

@@ -16,13 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMapModel.java,v 1.11.18.1 2004-10-17 20:22:45 dpolivaev Exp $*/
+/*$Id: SchemeMapModel.java,v 1.11.18.2 2004-10-17 23:00:13 dpolivaev Exp $*/
 
 package freemind.modes.schememode;
 
 import freemind.main.FreeMindMain;
 
 import freemind.modes.MapAdapter;
+import freemind.modes.MindMapNode;
+
 import java.io.File;
 import java.io.Reader;
 import java.io.BufferedWriter;

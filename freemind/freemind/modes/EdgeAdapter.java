@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeAdapter.java,v 1.14 2003-11-16 22:15:15 christianfoltin Exp $*/
+/*$Id: EdgeAdapter.java,v 1.14.18.1 2004-10-17 23:00:08 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -59,6 +59,9 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
         return color;
     }
 
+    public Color getRealColor() {
+        return color;
+    }
     public int getWidth() {
         if (width==WIDTH_PARENT) {
             if (getTarget().isRoot()) {
@@ -82,6 +85,10 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
         this.width = width;
         stroke = ((width==WIDTH_PARENT) || (width==WIDTH_THIN)) ? null :
             new BasicStroke(getWidth(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER); }
+
+    public int getRealWidth() {
+        return width;
+    }
 
     public String getStyle() {
         if(style==null) {

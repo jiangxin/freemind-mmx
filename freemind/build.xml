@@ -3,18 +3,106 @@
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
 	<property name="dist" value="../bin/dist" />
+	<property name="dist_macos" value="../bin/dist_macos" />	
     <property name="FM.jar" value="${dist}/lib/freemind.jar"/>
+    <property name="jython.jar" value="lib/jython.jar"/>
 	<property name="post" value="../post" />
 	<property name="debug" value="on" />
 	<property name="build.compiler" value="modern" />
-	<property name="ver" value="0_7_1" />
+	<property name="ver" value="0_8_0_alpha" />
+	<property name="ant.dir" value="lib/ant/lib"/>
 
-	<target name="compile">
+    <taskdef name="jarbundler"
+               classpath="${src}/lib/jarbundler-1.2.jar"
+               classname="com.loomcom.ant.tasks.jarbundler.JarBundler" />
+
+
+	
+	
+	<!-- begin generator part -->
+	<property name="jaxb" value="${ant.dir}/jaxb-xjc.jar:${ant.dir}/jaxb-api.jar:${ant.dir}/jaxb-impl.jar:${ant.dir}/jaxb-libs.jar:${ant.dir}/namespace.jar:${ant.dir}/relaxngDatatype.jar:${ant.dir}/xsdlib.jar:${ant.dir}/jax-qname.jar"/>
+	<property name="xml" value="${ant.dir}/sax.jar:${ant.dir}/dom.jar"/> 
+	<property name="classpath" value="${jaxb}:${xml}"/>
+	<property name="xsd.dir" value="." />
+	<property name="gen.dir" value="generated" />
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" 
+	   classpath="${jaxb}" />
+
+  <!-- uses property ${gen.file} as the directory name of the outputs. -->
+  <target name="xmlbind.checkStatusOfGeneration">
+    <uptodate property="xmlbind.isUpToDate"
+              srcfile="${xsd.dir}/${xsd.file}"
+              targetfile="${gen.dir}/${gen.file}/freemind/controller/${gen.file}/generated/instance/jaxb.properties"/>
+  </target>
+
+  <!-- uses property ${gen.file} as the directory name of the outputs. -->
+  <target name="xmlbind" 
+          unless="xmlbind.isUpToDate" 
+          depends="xmlbind.checkStatusOfGeneration">
+    <mkdir dir="${gen.dir}/${gen.file}" />
+    <xjc schema="${xsd.dir}/${xsd.file}"
+         target="${gen.dir}/${gen.file}" 
+         package="freemind.controller.${gen.file}.generated.instance" />
+  </target>
+
+  <!-- uses property ${gen.file} as the directory name of the outputs. -->
+  <target name="-buildgen">
+    <javac srcdir="${gen.dir}/${gen.file}"
+           destdir="${build}"
+           debug="${debug}">
+      <classpath path="${classpath}" />
+      <include name="**/*.java" />
+    </javac>
+    <copy todir="${build}/freemind/controller/${gen.file}/generated" >
+      <fileset dir="${gen.dir}/${gen.file}/freemind/controller/${gen.file}/generated" >
+        <include name="**/jaxb.properties" />
+        <include name="**/*.ser" />
+      </fileset>
+    </copy>
+  </target>
+
+
+  <target name="gen">
+    <antcall target="xmlbind">
+      <param name="gen.file" value="actions"/>
+      <param name="xsd.file" value="freemind_actions.xsd"/>
+    </antcall>
+  </target>
+
+
+
+  <target name="build-generated">
+    <antcall target="-buildgen">
+      <param name="gen.file" value="actions"/>
+      <param name="xsd.file" value="freemind_actions.xsd"/>
+    </antcall>
+  </target>
+	<!-- end generator part -->
+
+	<target name="build" depends="gen">
+		<!-- Perform Mac Changes as a plugin. -->
+		<exec dir="${src}/accessories/plugins" executable="ln" os="Mac OS X">
+			<arg value="-s"/>
+			<arg value="MacChanges.java.not_here"/>
+			<arg value="MacChanges.java"/>
+		</exec>
+		<exec dir="${src}/accessories/plugins" executable="ln" os="Mac OS X">
+			<arg value="-s"/>
+			<arg value="MacChanges.xml.not_here"/>
+			<arg value="MacChanges.xml"/>
+		</exec>
+		<!-- end mac changes. -->
 		<mkdir dir="${build}"/>
+	    <!-- build generated files -->
+	    <antcall target="build-generated"/>
+	    <!-- end build generated files -->
 		<javac	srcdir="${src}"
 			destdir="${build}"
-
-			debug="${debug}"/>
+			classpath="${src}/${jython.jar}:${classpath}"
+			debug="${debug}">
+	      <exclude name="${gen.dir}/**" />
+	      <exclude name="plugins/**" />
+			</javac>
 	</target>
 
 	<target name="dist" depends="jar">
@@ -35,8 +123,48 @@
 		</copy>
 		<mkdir dir="${dist}/accessories" />
 		<copy todir="${dist}/accessories"> 
-			<fileset dir="${src}/accessories"/>
+			<fileset dir="${src}/accessories" excludes="**/*.java"/> <!-- exclude jars too!-->
+			<fileset dir="${build}/accessories"/>
+		</copy> 
+		<!-- third party libs -->
+		<mkdir dir="${dist}/lib" />
+		<copy todir="${dist}/lib"> 
+			<fileset dir="${src}/lib">
+				<exclude name="**/jaxb-xjc.jar"/>
+			</fileset>
 		</copy>
+		<!-- Mac OS X -->
+	  <condition property="isMacOs">
+	      <os family="mac"/>
+	  </condition>
+		<antcall target="dist_macos"/>
+	</target>
+
+	<target name="dist_macos" if="isMacOs">
+		<delete dir="${dist_macos}"/>
+		<mkdir dir="${dist_macos}"/>
+		  <jarbundler dir="${dist_macos}"
+		                    name="FreeMind"
+		                    mainclass="freemind.main.FreeMind"
+		                    icon="${src}/images/FreeMindWindowIcon.icns"
+		                    version="${ver}"
+		                    infostring="FreeMind ${ver} application (c) 2004"
+		                    aboutmenuname="FreeMind"
+		                    bundleid="freemind.main.FreeMind"
+		                    signature="FM"
+		                    jvmversion="1.4+"
+		                    liveresize="true"
+		                    screenmenu="true" 
+		  				    > 
+		  	<jarfileset dir="${dist}">
+		            <include name="**/*.jar" />
+		            <exclude name="**/CVS" />
+		          </jarfileset>
+        </jarbundler>
+		<mkdir dir="${dist_macos}/accessories" />
+		<copy todir="${dist_macos}/accessories"> 
+			<fileset dir="${dist}/accessories"/>
+		</copy> 
 	</target>
 
 	<target name="post" depends="dist,browser,doc">
@@ -68,11 +196,13 @@
 			basedir="${dist}/browser" />
 	</target>
 
-	<target name="jar" depends="compile">
+	<target name="jar" depends="build">
 		<mkdir dir="${dist}/lib" />
 		<jar jarfile="${FM.jar}"
 		     manifest="${src}/MANIFEST.MF">
-			<fileset dir="${build}"/>
+			<fileset dir="${build}">
+				<exclude name="accessories/**"/> 
+			</fileset>
 			<fileset dir="${src}">
 				<include name="images/*"/>
 				<include name="images/icons/*.png"/>
@@ -80,25 +210,29 @@
 				<include name="user.properties"/>
 				<include name="patterns.xml"/>
 				<include name="Resources*"/>
+				<include name="mindmap_menus.xml"/>
 			</fileset>
 		</jar>
 	</target>
 
-	<target name="browser" depends="compile">
+	<target name="browser" depends="build">
 		<mkdir dir="${dist}/browser" />
 		<jar jarfile="${dist}/browser/freemindbrowser.jar">
 			<fileset dir="${build}">
+				<include name="freemind/extensions/*"/>
 				<include name="freemind/view/*"/>
 				<include name="freemind/view/mindmapview/*"/>
 				<include name="freemind/main/*"/>
 				<include name="freemind/controller/*"/>	
 				<include name="freemind/modes/*"/>
 				<include name="freemind/modes/browsemode/*"/>
+				<include name="accessories/plugins/**"/>
 			</fileset>
 			<fileset dir="${src}">
 				<include name="images/*"/>
 				<include name="images/icons/*.png"/>
 				<include name="*.properties"/>
+				<include name="accessories/plugins/**"/>
 			</fileset>
 		</jar>
                 <copy file="${src}/freemind.properties" tofile="${src}/user.properties"/>
@@ -125,9 +259,10 @@
 	</target>
 
 	<target name="clean">
-		<delete dir="${build}" />
-		<delete dir="${dist}" />
-		<delete dir="${post}" />
+		<delete dir="${build}"  quiet="true"/>
+		<delete dir="${dist}"  quiet="true"/>
+		<delete dir="${gen.dir}"  quiet="true"/>
+		<delete dir="${post}"  quiet="true"/>
                 <delete>
                   <fileset defaultexcludes="no" dir="${src}" includes="**/*~"/>
                 </delete>
@@ -145,8 +280,12 @@
           dir="${dist}">
 <!--    <jvmarg value="-Djava.util.logging.config.file=logging.properties" /> -->
     <classpath>
+       <!--<pathelement location="${dist}"/>-->
        <pathelement location="${FM.jar}"/>
-       <pathelement location="${dist}"/>
+       <pathelement path="${xml}"/>
+       <pathelement path="${jaxb}"/>
+       <pathelement location="${FM.jar}"/>
+       <pathelement location="${dist}/${jython.jar}"/>
     </classpath>
     </java>
   </target>

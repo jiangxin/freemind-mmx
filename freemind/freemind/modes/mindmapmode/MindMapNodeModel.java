@@ -16,15 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21.14.1 2004-10-17 20:01:07 dpolivaev Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.14.2 2004-10-17 23:00:13 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
+import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMind;
 import freemind.main.Tools;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.MindIcon;
 
@@ -43,17 +45,15 @@ public class MindMapNodeModel extends NodeAdapter {
     //  Constructors
     //
 
-    public MindMapNodeModel(FreeMindMain frame) {
-	super(frame);
-	children = new LinkedList();
-	setEdge(new MindMapEdgeModel(this, getFrame()));
+	public MindMapNodeModel(FreeMindMain frame) {
+		this(null,frame);
     }
 
 	    
     public MindMapNodeModel( Object userObject, FreeMindMain frame ) {
-	super(userObject,frame);
-	children = new LinkedList();
-	setEdge(new MindMapEdgeModel(this, getFrame()));
+		super(userObject,frame);
+		children = new LinkedList();
+		setEdge(new MindMapEdgeModel(this, getFrame()));
     }
 
     protected MindMapNode basicCopy() {
@@ -422,6 +422,11 @@ public class MindMapNodeModel extends NodeAdapter {
 	if (color != null) {
            node.setAttribute("color", Tools.colorToXml(getColor())); }
 
+	// new background color.
+	if (getBackgroundColor() != null) {
+		   node.setAttribute("BACKGROUND_COLOR", Tools.colorToXml(getBackgroundColor())); }
+
+
 	if (style != null) {
            node.setAttribute("style", super.getStyle()); }
 	    //  ^ Here cannot be just getStyle() without super. This is because
@@ -455,6 +460,13 @@ public class MindMapNodeModel extends NodeAdapter {
         iconElement.setAttribute("builtin", ((MindIcon) getIcons().get(i)).getName());
         node.addChild(iconElement);
     }
+
+	for(Iterator i = getActivatedHooks().iterator(); i.hasNext();) {
+		XMLElement hookElement = new XMLElement();
+		hookElement.setName("hook");
+		((PermanentNodeHook) i.next()).save(hookElement);
+		node.addChild(hookElement);
+	}
         
 
         if (childrenUnfolded().hasNext()) {

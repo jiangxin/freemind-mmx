@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.14.14.1 2004-10-17 20:22:45 dpolivaev Exp $*/
+/*$Id: MindMap.java,v 1.14.14.2 2004-10-17 23:00:08 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -28,31 +28,37 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
-import freemind.modes.MindMapLinkRegistry;
+
 // Clipboard
 import java.awt.datatransfer.Transferable;
 
 public interface MindMap extends TreeModel {
         
     void changeNode(MindMapNode node, String newText);
+    //nodeChanged has moved to the modeController. (fc, 2.5.2004)
+	void nodeChanged(TreeNode node);
 
     Transferable cut(MindMapNode node);
 
     Transferable copy(MindMapNode node);
 
     // ^ Is copy with node really needed? It seems to me, that no.
-    Transferable cut();
     Transferable copy(); 
     Transferable copySingle(); 
     String getAsPlainText(List mindMapNodes);
     String getAsRTF(List mindMapNodes);
 
+	void insertNodeInto(
+			MindMapNode newChild,
+			MindMapNode parent,
+			int index);
+
     void splitNode(MindMapNode node, int caretPosition, String newText);
 
-    void paste(Transferable t, MindMapNode parent);
-    /** @param isLeft determines, whether or not the node is placed on the left or right. **/
-    void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft);
-
+//    void paste(Transferable t, MindMapNode parent);
+//    /** @param isLeft determines, whether or not the node is placed on the left or right. **/
+//    void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft);
+//
     //    void paste(MindMapNode node, MindMapNode parent);
 
     boolean find(MindMapNode node, String what, boolean caseSensitive);
@@ -92,7 +98,8 @@ public interface MindMap extends TreeModel {
 
     /** @return returns the link registry associated with this mode, or null, if no registry is present.*/
     MindMapLinkRegistry getLinkRegistry();
-    
+
+   
     /**
      * Destroy everything you have created upon opening.  
      */

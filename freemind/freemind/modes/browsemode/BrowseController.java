@@ -16,39 +16,36 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13 2003-12-22 11:15:18 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.13.18.1 2004-10-17 23:00:12 dpolivaev Exp $*/
 
 package freemind.modes.browsemode;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JMenu;
-import javax.swing.JPopupMenu;
-import javax.swing.JToolBar;
-
 import java.util.HashSet;
 import java.util.Vector;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JPopupMenu;
+import javax.swing.JToolBar;
+
+import freemind.controller.MenuBar;
+import freemind.controller.StructuredMenuHolder;
 import freemind.main.Tools;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
-import freemind.view.mindmapview.NodeView;
+import freemind.modes.actions.GotoLinkNodeAction;
 
 public class BrowseController extends ControllerAdapter {
 
     private JPopupMenu popupmenu;
     private JToolBar toolbar;
 
-    Action toggleFolded;
-    Action toggleChildrenFolded;
     Action find;
     Action findNext;
     Action followLink;
@@ -57,22 +54,18 @@ public class BrowseController extends ControllerAdapter {
 
     // disable edit in browse mode (PN)
     public void edit(KeyEvent e, boolean addNew, boolean editLong) { }
-    public void addNew(final NodeView target, 
+    public MindMapNode addNew(final MindMapNode target, 
                         final int newNodeMode, 
-                        final KeyEvent e) { }
+                        final KeyEvent e) { return null;}
 
     public BrowseController(Mode mode) {
-	super.setMode(mode);
+    	super(mode);
 
         // Daniel: Actions are initialized here and not above because of
         // some error it would produce. Not studied in more detail.
-        toggleFolded = new ToggleFoldedAction();
-        toggleChildrenFolded = new ToggleChildrenFoldedAction();
         find = new FindAction();
         findNext = new FindNextAction();
         followLink = new FollowLinkAction();
-        nodeUp = new NodeUpAction();
-        nodeDown = new NodeDownAction();
 
 	popupmenu = new BrowsePopupMenu(this);
         toolbar = new BrowseToolBar(this);
@@ -85,27 +78,14 @@ public class BrowseController extends ControllerAdapter {
 
     public void doubleClick() {
          if (getSelected().getLink() == null) { // If link exists, follow the link; toggle folded otherwise
-             toggleFolded();
+             toggleFolded.toggleFolded();
          } else { 
 	        loadURL();
         }
     }
 
-    protected MindMapNode newNode() {
+    public MindMapNode newNode() {
 	return new BrowseNodeModel(getText("new_node"), getFrame());
-    }
-
-    //get/set methods
-
-    JMenu getEditMenu() {
-	JMenu editMenu = new JMenu();
-	editMenu.add(getPopupMenu());
-	return editMenu;
-    }
-
-    JMenu getFileMenu() {
-	JMenu fileMenu = new JMenu();
-	return fileMenu;
     }
 
     public JPopupMenu getPopupMenu() {
@@ -119,8 +99,8 @@ public class BrowseController extends ControllerAdapter {
             BrowseArrowLinkModel link = (BrowseArrowLinkModel) obj;
             JPopupMenu arrowLinkPopup = new JPopupMenu();
 
-            arrowLinkPopup.add(new GotoLinkNodeAction(link.getSource().toString(), link.getSource())); 
-            arrowLinkPopup.add(new GotoLinkNodeAction(link.getTarget().toString(), link.getTarget())); 
+            arrowLinkPopup.add(getGotoLinkNodeAction(link.getSource())); 
+            arrowLinkPopup.add(getGotoLinkNodeAction(link.getTarget())); 
 
             arrowLinkPopup.addSeparator();
             // add all links from target and from source:
@@ -132,10 +112,10 @@ public class BrowseController extends ControllerAdapter {
             for(int i = 0; i < links.size(); ++i) {
                 BrowseArrowLinkModel foreign_link = (BrowseArrowLinkModel) links.get(i);
                 if(NodeAlreadyVisited.add(foreign_link.getTarget())) {
-                    arrowLinkPopup.add(new GotoLinkNodeAction(foreign_link.getTarget().toString(), foreign_link.getTarget())); 
+                    arrowLinkPopup.add(getGotoLinkNodeAction(foreign_link.getTarget())); 
                 }
                 if(NodeAlreadyVisited.add(foreign_link.getSource())) {
-                    arrowLinkPopup.add(new GotoLinkNodeAction(foreign_link.getSource().toString(), foreign_link.getSource())); 
+                    arrowLinkPopup.add(getGotoLinkNodeAction(foreign_link.getSource())); 
                 }
             }
             return arrowLinkPopup;
@@ -144,15 +124,14 @@ public class BrowseController extends ControllerAdapter {
     }
 
 
-    //convenience methods
-    private BrowseMapModel getModel() {
-	return (BrowseMapModel)getController().getModel();
-    }
 
-    private BrowseNodeModel getSelected() {
-	return (BrowseNodeModel)getView().getSelected().getModel();
+    /**
+     * @param destination
+     * @return
+     */
+    private GotoLinkNodeAction getGotoLinkNodeAction(MindMapNode destination) {
+        return new GotoLinkNodeAction(this, destination);
     }
-
     BrowseToolBar getToolBar() {
 	return (BrowseToolBar)toolbar;
     }
@@ -205,6 +184,7 @@ public class BrowseController extends ControllerAdapter {
 	model.load(url);
 	newMap(model);
 	mapOpened(true);
+	//URGENT: Must activate hooks???
     }
 
 
@@ -231,5 +211,16 @@ public class BrowseController extends ControllerAdapter {
 	public void actionPerformed(ActionEvent e) {
 	    loadURL();
 	}
+    }
+    /* (non-Javadoc)
+     * @see freemind.modes.ModeController#updateMenus(freemind.controller.StructuredMenuHolder)
+     */
+    public void updateMenus(StructuredMenuHolder holder) {
+		add(holder, MenuBar.EDIT_MENU+"/find/find", find, "keystroke_find");
+		add(holder, MenuBar.EDIT_MENU+"/find/findNext", findNext, "keystroke_find_next");
+		add(holder, MenuBar.EDIT_MENU+"/find/followLink", followLink, "keystroke_follow_link");
+		holder.addSeparator(MenuBar.EDIT_MENU+"/find");
+		add(holder, MenuBar.EDIT_MENU+"/find/toggleFolded", toggleFolded, "keystroke_toggle_folded");
+		add(holder, MenuBar.EDIT_MENU+"/find/toggleChildrenFolded", toggleChildrenFolded, "keystroke_toggle_children_folded");
     }
 }

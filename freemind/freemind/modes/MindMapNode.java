@@ -16,22 +16,21 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.1 2004-10-17 20:01:06 dpolivaev Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.2 2004-10-17 23:00:08 dpolivaev Exp $*/
 
 package freemind.modes;
 
-import freemind.modes.MindIcon;
+import freemind.extensions.*;
 import freemind.view.mindmapview.NodeView;
 // clouds, fc, 08.11.2003:
-import freemind.modes.MindMapCloud;
 // end clouds.
 // links, fc, 08.11.2003:
-import freemind.modes.MindMapLink;
 // end links.
+import java.util.Collection;
+import java.util.List;
 import java.util.ListIterator;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Point;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.util.Vector;
@@ -43,12 +42,23 @@ public interface MindMapNode extends MutableTreeNode {
 	public static final String STYLE_COMBINED = "combined";
 	public static final String STYLE_AS_PARENT = "as_parent";
 	
+	/**
+	 * @return returns the unique id of the node. It is generated using the LinkRegistry.
+	 */
+	String getObjectId(ModeController controller);
+	
+    /** @return returns a ListIterator of all children of the node if the node is unfolded. 
+     * EMPTY_LIST_ITERATOR otherwise. 
+     * */
     ListIterator childrenFolded();
 
+    /** @return returns a ListIterator of all (and not only the unfolded ones!!) children of the node. 
+     * */
     ListIterator childrenUnfolded();
 
     boolean hasChildren();
 
+	/** @return -1 if the argument childNode is not a child. */
     int getChildPosition(MindMapNode childNode);
 
     MindMapNode getPreferredChild();
@@ -57,12 +67,17 @@ public interface MindMapNode extends MutableTreeNode {
     int getNodeLevel();
 
     String getLink();
+    /** returns a short textual description of the text contained in the node. 
+     *  Html is filtered out. */
+    String getShortText(ModeController controller);
 
     MindMapEdge getEdge();
 
     Color getColor();
 
     String getStyle();
+    /** currently the style may be one of MindMapNode.STYLE_BUBBLE or MindMapNode.STYLE_FORK.*/
+    void setStyle(String style);
 
     MindMapNode getParentNode();
 
@@ -115,27 +130,34 @@ public interface MindMapNode extends MutableTreeNode {
     int   removeLastIcon();
     // end, fc, 24.9.2003
 
-//     //fc, 01.11.2003:
-//     /** \@return returns the label of the node, if applicable. otherwise null.*/
-//     String getLabel();
-
-//     void setLabel(String newLabel); 
-
-//     Vector/* of MindMapLink s*/ getReferences();
-    
-//     void removeReferenceAt(int i);
-
-//     void addReference(MindMapLink referenceStruct);
-//     // end links, fc, 01.11.2003.
-
     // clouds, fc, 08.11.2003:
     MindMapCloud getCloud();
+    void setCloud( MindMapCloud cloud );
     // end clouds.
         
-    MindMapNode shallowCopy();
+    //fc, 24.2.2004: background color:
+    Color getBackgroundColor(           );
+    void  setBackgroundColor(Color color);
 
-    /**
-     * @return
-     */
-    Color getBackgroundColor();
+    //hooks, fc 28.2.2004:
+    List getHooks();
+    Collection getActivatedHooks();
+    
+	/** Adds the hook to the list of hooks to my node.
+	 *  Does not invoke the hook!
+	 * @param hook
+	 * @return returns the input parameter hook
+	 */
+	PermanentNodeHook addHook(PermanentNodeHook hook);
+	void invokeHook(NodeHook hook);
+	/** Removes the hook from the activated hooks, calls shutdown method of the hook and removes the
+	 * hook from allHook belonging to the node afterwards. */
+    void removeHook(PermanentNodeHook hook); 
+	//end hooks
+	
+	//tooltips,fc 29.2.2004
+	void setToolTip(String tip);
+	String getToolTip();
+        
+    MindMapNode shallowCopy();
 }

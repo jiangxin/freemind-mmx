@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin>
+	<plugin_action 
+		documentation="&lt;html&gt;Associates a simple formular editor to the current note.&lt;/html&gt;" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="accessories/plugins/FormularEditor.properties" 
+		class_name="accessories.plugins.FormularEditor"
+		instanciation="Once">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+	</plugin_action>
+</plugin>

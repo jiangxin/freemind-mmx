@@ -16,30 +16,24 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.12 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: MindMapToolBar.java,v 1.12.18.1 2004-10-17 23:00:13 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
-import freemind.main.Tools;
-import freemind.modes.MindIcon;
-
-import java.lang.Integer;
-import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
-import java.awt.BorderLayout;
+import java.awt.event.ItemListener;
+
+import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JToolBar;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.Icon;
-import javax.swing.Action;
-import javax.swing.plaf.basic.BasicComboBoxEditor; 
-import java.util.List;
-import java.util.Vector;
-import java.util.Enumeration;
+import javax.swing.plaf.basic.BasicComboBoxEditor;
+
+import freemind.controller.FreeMindToolBar;
+import freemind.controller.StructuredMenuHolder;
+import freemind.main.Tools;
 
 
-public class MindMapToolBar extends JToolBar {
+public class MindMapToolBar extends FreeMindToolBar {
 
     private static final String[] sizes = {"8","10","12","14","16","18","20","24","28"};
     private MindMapController c;
@@ -47,94 +41,69 @@ public class MindMapToolBar extends JToolBar {
     private JToolBar buttonToolBar;    
     private boolean fontSize_IgnoreChangeEvent = false;
     private boolean fontFamily_IgnoreChangeEvent = false;
+    private ItemListener fontsListener;
+    private ItemListener sizeListener;
 
     public MindMapToolBar(MindMapController controller) {
-	
-	this.c=controller;
+		super();
+		this.c=controller;
         this.setRollover(true);
+		fonts = new JComboBox(Tools.getAvailableFontFamilyNamesAsVector());
+		size = new JComboBox(sizes);
+		buttonToolBar = new FreeMindToolBar();
+		fontsListener = new ItemListener(){
+        	        public void itemStateChanged(ItemEvent e) {
+        	            if (e.getStateChange() != ItemEvent.SELECTED) {
+        	               return; }
+        	            // TODO: this is super-dirty, why doesn't the toolbar know the model?
+        	            if (fontFamily_IgnoreChangeEvent) {
+        	               //fc, 27.8.2004: I don't understand, why the ignore type is resetted here. 
+        	                // let's see: fontFamily_IgnoreChangeEvent = false;
+        	               return; }
+        	            c.fontFamily.actionPerformed((String)e.getItem());
+        	         }
+        	      };
+		fonts.addItemListener(fontsListener);
+        sizeListener = new ItemListener(){
+            public void itemStateChanged(ItemEvent e) {
+                //System.err.println("ce:"+e);
+                if (e.getStateChange() != ItemEvent.SELECTED) {
+                   return; }
+                // change the font size                 
+                // TODO: this is super-dirty, why doesn't the toolbar know the model?
+                if (fontSize_IgnoreChangeEvent) {
+                    //fc, 27.8.2004: I don't understand, why the ignore type is resetted here. 
+                    // let's see: fontSize_IgnoreChangeEvent = false;
+                   return; 
+                }
+                // call action:
+                c.fontSize.actionPerformed((String) e.getItem());
+             }
+          };
+		size.addItemListener(sizeListener);
+    }
+    
+    public void update(StructuredMenuHolder holder) {
+		this.removeAll();
+		holder.updateMenus(this, "mindmapmode_toolbar/");
 
-	JButton button;
-
-	button = add(c.newMap);
-	button.setText("");
-	button = add(c.open);
-	button.setText("");
-	button = add(c.save);
-	button.setText("");
-	button = add(c.saveAs);
-	button.setText("");
-
-	button = add(c.cut);
-	button.setText("");
-
-	button = add(c.copy);
-	button.setText("");
-
-	button = add(c.paste);
-	button.setText("");
-
-	button = add(c.italic);
-	button.setText("");
-	button = add(c.bold);
-	button.setText("");
-	//	button = add(c.underlined);
-	//	button.setText("");
-	button = add(c.normalFont);
-	button.setText("");
-	button = add(c.cloud);
-	button.setText("");
-	button = add(c.cloudColor);
-
-	fonts = new JComboBox(Tools.getAvailableFontFamilyNamesAsVector());
-	fonts.setMaximumRowCount(9);
-	add(fonts);
-	fonts.addItemListener(new ItemListener(){
-              public void itemStateChanged(ItemEvent e) {
-                 if (e.getStateChange() != ItemEvent.SELECTED) {
-                    return; }
-                 // TODO: this is super-dirty, why doesn't the toolbar know the model?
-                 if (fontFamily_IgnoreChangeEvent) {
-                    fontFamily_IgnoreChangeEvent = false;
-                    return; }
-                 
-                 c.setFontFamily((String)e.getItem());
-              }
-           });
-
-	size = new JComboBox(sizes);
-	size.setEditor(new BasicComboBoxEditor());
-	size.setEditable(true);
-	add(size);
-	size.addItemListener(new ItemListener(){
-              public void itemStateChanged(ItemEvent e) {
-                 //System.err.println("ce:"+e);
-                 if (e.getStateChange() != ItemEvent.SELECTED) {
-                    return; }
-                 // change the font size                 
-                 // TODO: this is super-dirty, why doesn't the toolbar know the model?
-                 if (fontSize_IgnoreChangeEvent) {
-                    fontSize_IgnoreChangeEvent = false;
-                    return; }
-                 try {
-		    c.setFontSize(Integer.parseInt((String)e.getItem(),10));
-                 }
-                 catch (NumberFormatException nfe) {
-                 }
-                 //  		    c.setFont(c.getFont()
-                 //  			      .deriveFont((float)Integer.parseInt((String)e.getItem(),10)));
-              }
-           });
+		fonts.setMaximumRowCount(9);
+		add(fonts);
+		fonts.setFocusable(false);
+	
+		size.setEditor(new BasicComboBoxEditor());
+		size.setEditable(true);
+		add(size);
+		size.setFocusable(false);
         
         // button tool bar.
-        buttonToolBar = new JToolBar();
+        buttonToolBar.removeAll();
         buttonToolBar.setRollover(true);
-        button = buttonToolBar.add(c.removeLastIcon);
-        button.setText("");
-        button = buttonToolBar.add(c.removeAllIcons);
+        buttonToolBar.add(c.removeLastIconAction);
+        buttonToolBar.add(c.removeAllIconsAction);
         buttonToolBar.addSeparator();
-        button.setText("");
         for(int i = 0; i < c.iconActions.size(); ++i) {
-            button = buttonToolBar.add((Action) c.iconActions.get(i));
+            buttonToolBar.add((Action) c.iconActions.get(i));
         }
         buttonToolBar.setOrientation(JToolBar.VERTICAL);
         //c.getFrame().getContentPane().add( buttonToolBar, BorderLayout.WEST );

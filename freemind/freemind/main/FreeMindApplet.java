@@ -16,13 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.1 2004-10-17 20:01:05 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.2 2004-10-17 23:00:07 dpolivaev Exp $*/
 
 package freemind.main;
 
 import freemind.view.mindmapview.MapView;
 import freemind.controller.MenuBar;
 import freemind.controller.Controller;
+import freemind.extensions.HookFactory;
+
 import java.io.InputStream;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -39,7 +41,8 @@ import javax.swing.*;
 
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 
-    public static final String version = "0.7.1";
+    private HookFactory nodeHookFactory;
+	public static final String version = "0.8.0_alpha";
     //    public static final String defaultPropsURL;
     public URL defaultPropsURL;
     public static Properties defaultProps;
@@ -127,6 +130,11 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 		}
 	}
 
+ 
+	public Properties getProperties() {
+		return userProps;
+	}
+   
     public void setProperty(String key, String value) {
     }
 
@@ -282,4 +290,21 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 		}
 	c.changeToMode(getProperty("initial_mode"));
     }
+	/* (non-Javadoc)
+	 * @see freemind.main.FreeMindMain#getHookFactory()
+	 */
+	public HookFactory getHookFactory() {
+		if(nodeHookFactory == null) {
+			nodeHookFactory = new HookFactory(this);
+		}
+		return nodeHookFactory;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.main.FreeMindMain#getSouthPanel()
+	 */
+	public JPanel getSouthPanel() {
+		return null;
+	}
+
 }

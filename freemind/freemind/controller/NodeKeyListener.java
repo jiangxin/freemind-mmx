@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeKeyListener.java,v 1.16 2003-11-09 22:09:25 christianfoltin Exp $*/
+/*$Id: NodeKeyListener.java,v 1.16.18.1 2004-10-17 23:00:07 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -62,10 +62,11 @@ public class NodeKeyListener implements KeyListener {
     public void keyTyped( KeyEvent e ) {
     }
 
-    public void keyPressed( KeyEvent e ) {
+	public void keyPressed(KeyEvent e) {
 
-	if (e.isAltDown() || e.isControlDown()) {
-	    return;
+	//		add to check meta keydown by koh 2004.04.16
+	if (e.isAltDown() || e.isControlDown() || e.isMetaDown()) {
+		return;
 	}
 
 	switch ( e.getKeyCode() ) {
@@ -76,6 +77,9 @@ public class NodeKeyListener implements KeyListener {
         case KeyEvent.VK_DELETE:
         case KeyEvent.VK_SPACE:
         case KeyEvent.VK_INSERT:
+        // fc, 20.6.2004: to enable tab for insert.
+        case KeyEvent.VK_TAB:
+		// end change.
             return; // processed by Adapters ActionListener
                      // explicitly what is not catched in e.isActionKey()
                      

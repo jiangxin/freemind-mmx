@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMode.java,v 1.14 2003-11-03 11:00:13 sviles Exp $*/
+/*$Id: FileMode.java,v 1.14.18.1 2004-10-17 23:00:12 dpolivaev Exp $*/
 
 package freemind.modes.filemode;
 
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.controller.Controller;
+import freemind.controller.StructuredMenuHolder;
 
 import javax.swing.JMenu;
 import javax.swing.JToolBar;
@@ -54,15 +55,12 @@ public class FileMode implements Mode {
      * (updates Actions etc.)
      */
     public void activate() {
-	if (!isRunning) {
-	    getModeController().newMap();
-	    isRunning = true;
-	} else {
+        if (!isRunning) {
+            getModeController().newMap();
+            isRunning = true;
+        } else {
             c.getMapModuleManager().changeToMapOfMode(this);
-	}
-	//	menu.add( ((FileController)getModeController()).center );
-// 	getController().cut.setEnabled(false);
-// 	getController().paste.setEnabled(false);
+        }
     }
     
     public void restore(String restoreable) {
@@ -80,10 +78,6 @@ public class FileMode implements Mode {
 	return null;
     }
 
-    public JMenu getModeEditMenu() {
-       return ((FileController)getModeController()).getEditMenu();
-    }
-
     public JToolBar getModeToolBar() {
 	return toolbar;
     }
@@ -91,4 +85,5 @@ public class FileMode implements Mode {
     public JToolBar getLeftToolBar() {
 	return null;
     }
+
 }

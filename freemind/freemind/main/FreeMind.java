@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.1 2004-10-17 20:01:05 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.2 2004-10-17 23:00:07 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -30,6 +30,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,18 +51,21 @@ import java.text.MessageFormat;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import freemind.controller.Controller;
 import freemind.controller.MenuBar;
+import freemind.extensions.HookFactory;
 import freemind.modes.ModeController;
 import freemind.view.mindmapview.MapView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
-    public static final String version = "0.7.1";
+    private HookFactory nodeHookFactory;
+	public static final String version = "0.8.0_alpha";
     //    public static final String defaultPropsURL = "freemind.properties";
     public URL defaultPropsURL;
     //    public static Properties defaultProps;
@@ -75,9 +79,13 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     Controller c;//the one and only controller
     
-    public FreeMind() {
+    private JPanel southPanel;
+	public FreeMind() {
         super("FreeMind");
-	
+        FreeMindSplash splash = new FreeMindSplash(this);
+        splash.setVisible(true);
+        /* This is only for apple but does not harm for the others. */
+        System.setProperty("apple.laf.useScreenMenuBar", "true");			
 	String propsLoc = "freemind.properties";
 	defaultPropsURL = ClassLoader.getSystemResource(propsLoc);
 
@@ -219,9 +227,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	getContentPane().add( scrollPane, BorderLayout.CENTER );
 
+//	status = new JLabel();
+//	getContentPane().add( status, BorderLayout.SOUTH );
+	// taken from Lukasz Pekacki, NodeText version:
+	southPanel = new JPanel(new BorderLayout());
+	
+	
 	status = new JLabel();
-	getContentPane().add( status, BorderLayout.SOUTH );
-
+	southPanel.add( status, BorderLayout.SOUTH );
+	
+	getContentPane().add( southPanel, BorderLayout.SOUTH );
+	// end taken.
+	
 	//Disable the default close button, instead use windowListener
 	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -240,6 +257,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
         SwingUtilities.updateComponentTreeUI(this); // Propagate LookAndFeel to JComponents
 
 	c.changeToMode(getProperty("initial_mode"));
+    splash.setVisible(false);
 
     }//Constructor
 
@@ -285,6 +303,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			return defaultValue;
 		}
 	}
+
+	public Properties getProperties() {
+		return props;
+	}
+
 
     public void setProperty(String key, String value) {
 	props.setProperty(key,value);
@@ -517,10 +540,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
            if (args[i].toLowerCase().endsWith(".mm")) {
 
               if (!Tools.isAbsolutePath(args[i])) {
-                 // <problem description="This will not work on Mac. Please fix it">
                  args[i] = System.getProperty("user.dir") + 
                     System.getProperty("file.separator") + args[i];
-                 // </problem>
               }
               //fin = ;
               try {
@@ -533,8 +554,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
               }
            }
         }
-        if (!fileLoaded && frame.getProperty("onStartIfNotSpecified") != null) {
-           frame.c.getLastOpenedList().open(frame.getProperty("onStartIfNotSpecified")); }
+			if (!fileLoaded && frame.getProperty("onStartIfNotSpecified") != null) {
+			   frame.c.getLastOpenedList().open(frame.getProperty("onStartIfNotSpecified")); }
 
         frame.pack();
 
@@ -568,5 +589,22 @@ public class FreeMind extends JFrame implements FreeMindMain {
         win_state = ((win_state & ICONIFIED) != 0) ? NORMAL : win_state;
         frame.setExtendedState(win_state);
 
-    }//main()
+    }
+
+	/* (non-Javadoc)
+	 * @see freemind.main.FreeMindMain#getHookFactory()
+	 */
+	public HookFactory getHookFactory() {
+		if(nodeHookFactory == null) {
+			nodeHookFactory = new HookFactory(this);
+		}
+		return nodeHookFactory;
+	}
+	/**
+	 * @return
+	 */
+	public JPanel getSouthPanel() {
+		return southPanel;
+	}
+
 }

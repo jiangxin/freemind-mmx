@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMapModel.java,v 1.9.18.1 2004-10-17 20:22:45 dpolivaev Exp $*/
+/*$Id: BrowseMapModel.java,v 1.9.18.2 2004-10-17 23:00:12 dpolivaev Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -32,6 +32,7 @@ import java.security.AccessControlException;
 // link registry.
 import freemind.modes.LinkRegistryAdapter;
 import freemind.modes.MindMapLinkRegistry;
+import freemind.modes.MindMapNode;
 
 
 public class BrowseMapModel extends MapAdapter {

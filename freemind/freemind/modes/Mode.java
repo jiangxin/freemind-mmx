@@ -16,13 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Mode.java,v 1.8 2003-11-03 11:00:12 sviles Exp $*/
+/*$Id: Mode.java,v 1.8.18.1 2004-10-17 23:00:08 dpolivaev Exp $*/
 
 package freemind.modes;
 
-import freemind.controller.Controller;
-import javax.swing.JMenu;
 import javax.swing.JToolBar;
+
+import freemind.controller.Controller;
 
 public interface Mode {
 
@@ -32,8 +32,6 @@ public interface Mode {
     public void restore(String restorable);
     public ModeController getModeController();
     public Controller getController();
-    public JMenu getModeFileMenu();
-    public JMenu getModeEditMenu();
     public JToolBar getModeToolBar();
     /** For the toolbar on the left hand side of the window.*/
     public JToolBar getLeftToolBar();
