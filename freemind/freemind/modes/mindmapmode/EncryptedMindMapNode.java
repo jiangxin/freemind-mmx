@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.4 2005-01-03 18:02:02 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.5 2005-01-04 10:39:41 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -386,14 +386,12 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
                 byte[] newSalt = new byte[SALT_LENGTH];
                 for (int i = 0; i < newSalt.length; i++) {
                     newSalt[i] = (byte)(Math.random()*256l-128l);
-                    System.out.print("Random"+newSalt[i]);
                 }
 
 				init(newSalt);
                 // Encrypt
                 byte[] enc = ecipher.doFinal(utf8);
 
-                logger.info("salt is "+Tools.toBase64(newSalt));
                 // Encode bytes to base64 to get a string
                 return Tools.toBase64(newSalt)
                         + SALT_PRESENT_INDICATOR
@@ -415,7 +413,6 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
                 if(indexOfSaltIndicator>=0) {
                     String saltString = str.substring(0, indexOfSaltIndicator);
                     str = str.substring(indexOfSaltIndicator+1);
-                    logger.info("salt (for decrypt) is "+saltString);
                     salt = Tools.fromBase64(saltString);
                 }
                 // Decode base64 to get bytes

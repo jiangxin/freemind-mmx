@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.6 2005-01-03 22:49:56 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.7 2005-01-04 10:39:41 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -320,17 +320,8 @@ public class MindMapController extends ControllerAdapter {
 		toolbar.update(holder);
         
 //		editMenu.add(getExtensionMenu());
-		JMenu extensionMenu = holder.addMenu(new JMenu(getText("extension_menu")), MenuBar.FORMAT_MENU+"patterns/.");
-        for (int i = 0; i < patterns.length; ++i) {
-            JMenuItem item =
-                holder.addAction(
-                    patterns[i],
-                    MenuBar.FORMAT_MENU + "patterns/" + i);
-            item.setAccelerator(
-                KeyStroke.getKeyStroke(
-                    getFrame().getProperty(
-                        "keystroke_apply_pattern_" + (i + 1))));
-        }
+		String formatMenuString = MenuBar.FORMAT_MENU;
+        createPatternSubMenu(holder, formatMenuString);
 
 
 //        editMenu.add(getIconMenu());
@@ -343,6 +334,25 @@ public class MindMapController extends ControllerAdapter {
 			   JMenuItem item = holder.addAction((Action) iconActions.get(i), iconMenuString+"/"+i);
 		}
 
+    }
+
+    /**
+     * @param holder
+     * @param formatMenuString
+     */
+    public JMenu createPatternSubMenu(StructuredMenuHolder holder, String formatMenuString) {
+        JMenu extensionMenu = holder.addMenu(new JMenu(getText("extension_menu")), formatMenuString+"patterns/.");
+        for (int i = 0; i < patterns.length; ++i) {
+            JMenuItem item =
+                holder.addAction(
+                    patterns[i],
+                    formatMenuString + "patterns/" + i);
+            item.setAccelerator(
+                KeyStroke.getKeyStroke(
+                    getFrame().getProperty(
+                        "keystroke_apply_pattern_" + (i + 1))));
+        }
+        return extensionMenu;
     }
 
     public MenuStructure updateMenusFromXml(InputStream in) {

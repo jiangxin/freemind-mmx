@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapPopupMenu.java,v 1.12.18.1 2004-10-17 23:00:13 dpolivaev Exp $*/
+/*$Id: MindMapPopupMenu.java,v 1.12.18.2 2005-01-04 10:39:41 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -28,6 +28,7 @@ import freemind.controller.actions.generated.instance.MenuStructure;
 
 public class MindMapPopupMenu extends JPopupMenu {
 
+    private static final String MINDMAPMODE_POPUP = "mindmapmode_popup/";
     private MindMapController c;
 
     public MindMapPopupMenu(MindMapController c) {
@@ -39,6 +40,7 @@ public class MindMapPopupMenu extends JPopupMenu {
      */
     public void update(StructuredMenuHolder holder) {
     	this.removeAll();
-		holder.updateMenus(this, "mindmapmode_popup/");
+		c.createPatternSubMenu(holder, MINDMAPMODE_POPUP);
+		holder.updateMenus(this, MINDMAPMODE_POPUP);
     }
 }

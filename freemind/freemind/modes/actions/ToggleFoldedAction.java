@@ -19,7 +19,7 @@
  *
  * Created on 12.08.2004
  */
-/*$Id: ToggleFoldedAction.java,v 1.1.4.2 2004-12-19 09:00:39 christianfoltin Exp $*/
+/*$Id: ToggleFoldedAction.java,v 1.1.4.3 2005-01-04 10:39:41 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -81,6 +81,10 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
         boolean allNodeHaveSameFoldedStatus = true;
         for (ListIterator it = iterator;it.hasNext();) {
             MindMapNode node = (MindMapNode)it.next();
+            if(node.getChildCount()==0) {
+                // no folding state change for unfoldable nodes.
+                continue;
+            }
             if(state == null) {
                 state = new Tools.BooleanHolder();
                 state.setValue(node.isFolded());

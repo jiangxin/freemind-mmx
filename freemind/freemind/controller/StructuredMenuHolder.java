@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.3 2005-01-03 22:49:56 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.4 2005-01-04 10:39:41 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -229,6 +229,8 @@ public class StructuredMenuHolder {
             }
 
             public void addSeparator() {
+                if(lastItemIsASeparator(myItem))
+                    return;
             	myItem.addSeparator();
             }
 
@@ -302,16 +304,13 @@ public class StructuredMenuHolder {
 		}
 
 		public void addSeparator() {
-		    if(myItem.getItemCount() >0){
-		        if(myItem.getMenuComponents()[myItem.getItemCount()-1] instanceof JSeparator) {
-		            // no separator, if the last was such.
-		            return;
-		        }
+		    if(lastItemIsASeparator(myItem)) {
+		        return;
 		    }
 			myItem.addSeparator();
 		}
 
-		//        public void addAction(Action action) {
+        //        public void addAction(Action action) {
 		//        	myItem.add(action);
 		//        }
 
@@ -452,6 +451,27 @@ public class StructuredMenuHolder {
 			menuItemHolder.add(holder);
 		}
 	}
+
+    public static boolean lastItemIsASeparator(JMenu menu) {
+	    if(menu.getItemCount() >0){
+	        if(menu.getMenuComponents()[menu.getItemCount()-1] instanceof JSeparator) {
+	            // no separator, if the last was such.
+	            return true;
+	        }
+	    }
+        return false;
+    }
+
+    public static boolean lastItemIsASeparator(JPopupMenu menu) {
+	    if(menu.getComponentCount() >0){
+	        if(menu.getComponent(menu.getComponentCount()-1) instanceof JPopupMenu.Separator) {
+	            // no separator, if the last was such.
+	            return true;
+	        }
+	    }
+        return false;
+    }
+
 
 
 }

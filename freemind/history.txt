@@ -122,6 +122,9 @@ Changes made in Freemind 0.8.0:
 * Encrypted nodes store their randomly generated salt. This salt is changed each time the map is saved.
 * Wrong passwords produce a dialog.
 * Menu structure revised.
+* Bug fix: Toggle children corrected
+* Debugging removed from encrypted nodes.
+* Popup menu: format actions added.
 
 Changes made in Freemind 0.7.2:
 ===============================

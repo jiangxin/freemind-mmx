@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.4 2005-01-03 22:49:56 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.5 2005-01-04 10:39:40 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -59,6 +59,7 @@ public class MenuBar extends JMenuBar {
     Controller c;
     ActionListener mapsMenuActionListener = new MapsMenuActionListener();
     ActionListener lastOpenedActionListener = new LastOpenedActionListener();
+    private JMenu formatmenu;
 
     public MenuBar(Controller controller) {
 		this.c = controller;
@@ -115,7 +116,7 @@ public class MenuBar extends JMenuBar {
 		menuHolder.addSeparator(INSERT_MENU);	
 
 		//format menu
-		menuHolder.addMenu(new JMenu(c.getResourceString("menu_format")), FORMAT_MENU+".");
+		formatmenu = menuHolder.addMenu(new JMenu(c.getResourceString("menu_format")), FORMAT_MENU+".");
 		menuHolder.addCategory(FORMAT_MENU+"patterns");	
 		menuHolder.addSeparator(FORMAT_MENU);	
 
