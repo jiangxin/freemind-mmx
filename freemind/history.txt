@@ -7,6 +7,7 @@ Changes made in Freemind 0.7.1:
 * At normal shutdown, the auto saves are deleted, but this is configurable.
 * Bug fix: When a map is closed, the saving stops (Thanks to Karim).
 * Bug fix: Blocking is enabled for graphical link popup menu.
+* Ant task (development only): ant run is working.
 
 RC3:
 ----
