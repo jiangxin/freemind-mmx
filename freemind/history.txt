@@ -66,6 +66,7 @@ Changes made in Freemind 0.8.0:
   (here, no undo- or redoaction are performed, the undo information is given by the actions
    the hook performs).
 * Apply patterns, edge width, edge style and node styles are undoable
+* Format copy introduced.
 
 Changes made in Freemind 0.7.2:
 ===============================

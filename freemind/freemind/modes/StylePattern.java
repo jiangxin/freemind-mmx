@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePattern.java,v 1.5.12.1 2004-10-05 22:23:57 christianfoltin Exp $*/
+/*$Id: StylePattern.java,v 1.5.12.2 2004-10-06 08:25:51 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -57,34 +57,14 @@ public class StylePattern {
     private boolean appliesToNode = false;
     private Color  nodeColor;
     private String nodeStyle;
+
+    private boolean appliesToNodeFont = false;
     private String   nodeFontFamily=null;
     private Integer  nodeFontSize=null;
     private Boolean  nodeFontBold=null;
     private Boolean  nodeFontItalic=null;
-    /**
-     * @return Returns the nodeFontBold.
-     */
-    public Boolean getNodeFontBold() {
-        return nodeFontBold;
-    }
-    /**
-     * @param nodeFontBold The nodeFontBold to set.
-     */
-    public void setNodeFontBold(Boolean nodeFontBold) {
-        this.nodeFontBold = nodeFontBold;
-    }
-    /**
-     * @return Returns the nodeFontItalic.
-     */
-    public Boolean getNodeFontItalic() {
-        return nodeFontItalic;
-    }
-    /**
-     * @param nodeFontItalic The nodeFontItalic to set.
-     */
-    public void setNodeFontItalic(Boolean nodeFontItalic) {
-        this.nodeFontItalic = nodeFontItalic;
-    }
+
+    private boolean appliesToNodeIcon = false;
     private MindIcon   nodeIcon;
 
     private boolean appliesToEdge = false;    
@@ -92,25 +72,38 @@ public class StylePattern {
     private String edgeStyle;
     private int    edgeWidth;
     
-    private boolean appliesToNodeFont = false;
-    private boolean appliesToNodeIcon = false;
 
     /** Inhertitable patterns, fc, 3.12.2003.*/
     private boolean appliesToChildren = false;    
     private StylePattern  ChildrenStylePattern;
-    // the following three constructors are not useful, or not well designed. fc, 3.12.2003.
-//     public StylePattern() {}
-
-//     public StylePattern(String name) {
-//        setName(name); }
-
-//     public StylePattern(File file) throws Exception {
-//        loadPatterns(file); }
 
     public StylePattern(XMLElement elm, List justConstructedPatterns) {
        loadPattern(elm, justConstructedPatterns); 
     }
 
+    /** Constructs a style pattern from a node:
+     * @param node
+     */
+    public StylePattern(MindMapNode node) {
+        appliesToNode = true;
+        nodeColor = node.getColor();
+        nodeStyle = node.getStyle();
+
+        appliesToNodeFont = true;
+        nodeFontBold = new Boolean(node.isBold());
+        nodeFontItalic = new Boolean(node.isItalic());
+        nodeFontSize = node.getFontSize()==null?null:Integer.valueOf(node.getFontSize());
+
+        appliesToNodeIcon = node.getIcons().size()>0;
+        nodeIcon = (MindIcon) (node.getIcons().size()==0?null:node.getIcons().get(0));
+        
+        appliesToEdge=true;
+        edgeColor = node.getEdge().getColor();
+        edgeStyle = node.getEdge().getStyle();
+        edgeWidth = node.getEdge().getWidth();
+        
+    }
+    
     public String toString() {
         return "node: "+nodeColor+", "+nodeStyle+", "+nodeFontFamily+", "+nodeFontSize+", "+nodeIcon+", "+
            "\nedge: "+edgeColor+", "+edgeStyle+", "+edgeWidth; }
@@ -419,6 +412,30 @@ public class StylePattern {
                }
            }
         }
+    }
+    /**
+     * @return Returns the nodeFontBold.
+     */
+    public Boolean getNodeFontBold() {
+        return nodeFontBold;
+    }
+    /**
+     * @param nodeFontBold The nodeFontBold to set.
+     */
+    public void setNodeFontBold(Boolean nodeFontBold) {
+        this.nodeFontBold = nodeFontBold;
+    }
+    /**
+     * @return Returns the nodeFontItalic.
+     */
+    public Boolean getNodeFontItalic() {
+        return nodeFontItalic;
+    }
+    /**
+     * @param nodeFontItalic The nodeFontItalic to set.
+     */
+    public void setNodeFontItalic(Boolean nodeFontItalic) {
+        this.nodeFontItalic = nodeFontItalic;
     }
 }
 
