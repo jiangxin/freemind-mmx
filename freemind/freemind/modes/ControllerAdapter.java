@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.9 2000-11-03 22:49:20 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.10 2000-11-08 12:20:31 ponder Exp $*/
 
 package freemind.modes;
 
@@ -441,7 +441,7 @@ public abstract class ControllerAdapter implements ModeController {
     protected class NewMapAction extends AbstractAction {
 	ControllerAdapter c;
 	protected NewMapAction(ControllerAdapter controller) {
-	    super(FreeMind.getResources().getString("new"), new ImageIcon(controller.getClass().getResource("/images/New24.gif")));
+	    super(FreeMind.getResources().getString("new"), new ImageIcon(ClassLoader.getSystemResource("images/New24.gif")));
 	    c = controller;
 	    //Workaround to get the images loaded in jar file.
 	    //they have to be added to jar manually with full path from root
@@ -455,7 +455,7 @@ public abstract class ControllerAdapter implements ModeController {
     protected class OpenAction extends AbstractAction {
 	ControllerAdapter c;
 	protected OpenAction(ControllerAdapter controller) {
-	    super(FreeMind.getResources().getString("open"), new ImageIcon(controller.getClass().getResource("/images/Open24.gif")));
+	    super(FreeMind.getResources().getString("open"), new ImageIcon(ClassLoader.getSystemResource("images/Open24.gif")));
 	    c = controller;
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -466,7 +466,7 @@ public abstract class ControllerAdapter implements ModeController {
     protected class SaveAction extends AbstractAction {
 	ControllerAdapter c;
 	protected SaveAction(ControllerAdapter controller) {
-	    super(FreeMind.getResources().getString("save"), new ImageIcon(controller.getClass().getResource("/images/Save24.gif")));
+	    super(FreeMind.getResources().getString("save"), new ImageIcon(ClassLoader.getSystemResource("images/Save24.gif")));
 	    c = controller;
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -477,7 +477,7 @@ public abstract class ControllerAdapter implements ModeController {
     protected class SaveAsAction extends AbstractAction {
 	ControllerAdapter c;
 	protected SaveAsAction(ControllerAdapter controller) {
-	    super(FreeMind.getResources().getString("save_as"), new ImageIcon(controller.getClass().getResource("/images/SaveAs24.gif")));
+	    super(FreeMind.getResources().getString("save_as"), new ImageIcon(ClassLoader.getSystemResource("images/SaveAs24.gif")));
 	    c = controller;
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -545,7 +545,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected class CutAction extends AbstractAction {
 	protected CutAction(Object controller) {
-	    super(FreeMind.getResources().getString("cut"), new ImageIcon(controller.getClass().getResource("/images/Cut24.gif")));
+	    super(FreeMind.getResources().getString("cut"), new ImageIcon(ClassLoader.getSystemResource("images/Cut24.gif")));
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -560,7 +560,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected class PasteAction extends AbstractAction {
 	protected PasteAction(Object controller) {
-	    super(FreeMind.getResources().getString("paste"),new ImageIcon(controller.getClass().getResource("/images/Paste24.gif")));
+	    super(FreeMind.getResources().getString("paste"),new ImageIcon(ClassLoader.getSystemResource("images/Paste24.gif")));
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent e) {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.8 2000-11-03 22:49:20 ponder Exp $*/
+/*$Id: MindMapController.java,v 1.9 2000-11-08 12:20:31 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -435,7 +435,7 @@ public class MindMapController extends ControllerAdapter {
     //
     private class ItalicAction extends AbstractAction {
 	ItalicAction(Object controller) {
-	    super(FreeMind.getResources().getString("italic"), new ImageIcon(controller.getClass().getResource("/images/Italic24.gif")));
+	    super(FreeMind.getResources().getString("italic"), new ImageIcon(ClassLoader.getSystemResource("images/Italic24.gif")));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    getModel().setItalic(getSelected());
@@ -444,7 +444,7 @@ public class MindMapController extends ControllerAdapter {
 
     private class BoldAction extends AbstractAction {
 	BoldAction(Object controller) {
-	    super(FreeMind.getResources().getString("bold"), new ImageIcon(controller.getClass().getResource("/images/Bold24.gif")));
+	    super(FreeMind.getResources().getString("bold"), new ImageIcon(ClassLoader.getSystemResource("images/Bold24.gif")));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    getModel().setBold(getSelected());
@@ -453,7 +453,7 @@ public class MindMapController extends ControllerAdapter {
 
     private class NormalFontAction extends AbstractAction {
 	NormalFontAction(Object controller) {
-	    super(FreeMind.getResources().getString("normal"), new ImageIcon(controller.getClass().getResource("/images/Normal24.gif")));	}
+	    super(FreeMind.getResources().getString("normal"), new ImageIcon(ClassLoader.getSystemResource("images/Normal24.gif")));	}
 	public void actionPerformed(ActionEvent e) {
 	    getModel().setNormalFont(getSelected());
 	}
@@ -462,7 +462,7 @@ public class MindMapController extends ControllerAdapter {
     /**Not yet implemented*/
     private class UnderlineAction extends AbstractAction {
 	UnderlineAction(Object controller) {
-	    super(FreeMind.getResources().getString("underline"), new ImageIcon(controller.getClass().getResource("/images/Underline24.gif")));
+	    super(FreeMind.getResources().getString("underline"), new ImageIcon(ClassLoader.getSystemResource("images/Underline24.gif")));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    getModel().setUnderlined(getSelected());

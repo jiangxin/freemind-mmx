@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.10 2000-11-03 22:49:20 ponder Exp $*/
+/*$Id: Controller.java,v 1.11 2000-11-08 12:20:31 ponder Exp $*/
 
 package freemind.controller;
 
@@ -530,7 +530,7 @@ public class Controller {
 
     private class PreviousMapAction extends AbstractAction {
 	PreviousMapAction(Controller controller) {	 
-	    super(FreeMind.getResources().getString("previous_map"), new ImageIcon(controller.getClass().getResource("/images/Back24.gif")));
+	    super(FreeMind.getResources().getString("previous_map"), new ImageIcon(ClassLoader.getSystemResource("images/Back24.gif")));
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent event) {
@@ -540,7 +540,7 @@ public class Controller {
 
     private class NextMapAction extends AbstractAction {
 	NextMapAction(Controller controller) {
-	    super(FreeMind.getResources().getString("next_map"), new ImageIcon(controller.getClass().getResource("/images/Forward24.gif")));
+	    super(FreeMind.getResources().getString("next_map"), new ImageIcon(ClassLoader.getSystemResource("images/Forward24.gif")));
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent event) {
