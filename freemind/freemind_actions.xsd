@@ -20,6 +20,7 @@
 					<xs:element ref="font_size_node_action"/>
 					<xs:element ref="font_node_action"/>
 					<xs:element ref="node_color_format_action"/>
+					<xs:element ref="node_background_color_format_action"/>
 					<xs:element ref="node_style_format_action"/>
 					<xs:element ref="edge_color_format_action"/>
 					<xs:element ref="edge_width_format_action"/>
@@ -264,6 +265,17 @@
 
 	<!-- Sets the color of the nodes Action -->
 	<xs:element name="node_color_format_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="color" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Sets the color of the node's background Action -->
+	<xs:element name="node_background_color_format_action">
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="format_node_action">

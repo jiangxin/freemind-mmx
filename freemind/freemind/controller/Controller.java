@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.10.11 2004-10-05 22:23:57 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.10.12 2004-10-09 22:11:31 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -1054,7 +1054,7 @@ public class Controller {
             super(controller.getResourceString("background"),icon);
         }
         public void actionPerformed(ActionEvent e) {
-            Color color = showCommonJColorChooserDialog(getView(),"Choose Background Color:",getView().getBackground() );
+            Color color = showCommonJColorChooserDialog(getView(),getResourceString("choose_background_color"),getView().getBackground() );
             getModel().setBackgroundColor(color);
         }
     }

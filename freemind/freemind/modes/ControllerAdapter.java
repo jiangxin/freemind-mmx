@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.38 2004-10-08 21:34:35 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.39 2004-10-09 22:11:31 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -109,6 +109,7 @@ import freemind.modes.actions.FontSizeAction;
 import freemind.modes.actions.IconAction;
 import freemind.modes.actions.ItalicAction;
 import freemind.modes.actions.NewChildAction;
+import freemind.modes.actions.NodeBackgroundColorAction;
 import freemind.modes.actions.NodeColorAction;
 import freemind.modes.actions.NodeColorBlendAction;
 import freemind.modes.actions.NodeStyleAction;
@@ -190,6 +191,7 @@ public abstract class ControllerAdapter implements ModeController {
     public RemoveArrowLinkAction removeArrowLinkAction = null;
     public ColorArrowLinkAction colorArrowLinkAction = null;
     public ChangeArrowsInArrowLinkAction changeArrowsInArrowLinkAction = null;
+	public NodeBackgroundColorAction nodeBackgroundColor = null;
 
     public IconAction unknwonIconAction = null;
     public RemoveLastIconAction removeLastIconAction = null;
@@ -288,6 +290,7 @@ public abstract class ControllerAdapter implements ModeController {
 	    addArrowLinkAction.setRemoveAction(removeArrowLinkAction);
 	    colorArrowLinkAction = new ColorArrowLinkAction(this, null);
 	    changeArrowsInArrowLinkAction = new ChangeArrowsInArrowLinkAction(this, "none", null, null, true, true);
+	    nodeBackgroundColor = new NodeBackgroundColorAction(this);
 	    compound = new CompoundActionHandler(this);
 
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -877,6 +880,18 @@ public abstract class ControllerAdapter implements ModeController {
         fontSize.setFontSize(node, fontSizeValue);
 	}
 
+    /**
+     *
+     */
+
+    public void increaseFontSize(MindMapNode node, int increment) {
+        int newSize = Integer.valueOf(node.getFontSize()).intValue()+increment;
+        
+        if (newSize > 0) {
+            setFontSize(node, Integer.toString(newSize));
+        }
+    }
+    
     public void setFontFamily(MindMapNode node, String fontFamilyValue) {
         fontFamily.setFontFamily(node, fontFamilyValue);
     }

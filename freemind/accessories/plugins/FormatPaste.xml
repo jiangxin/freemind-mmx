@@ -2,9 +2,9 @@
 <plugin>
 	<plugin_action 
 		documentation="&lt;html&gt;Copies the format of a node.&lt;/html&gt;" 
-		name="Copy format" key_stroke="control shift alt C" 
+		name="Copy format" key_stroke="alt C" 
 		base="freemind.extensions.NodeHookAdapter" 
-		icon_path="accessories/plugins/icons/2rightarrow.png" 
+		icon_path="accessories/plugins/icons/colorpicker.png" 
 		label="accessories/plugins/FormatCopy.properties" 
 		class_name="accessories.plugins.FormatPaste"
 		instanciation="Other">
@@ -14,9 +14,9 @@
 	</plugin_action>
 	<plugin_action 
 		documentation="&lt;html&gt;Pastes the format of a node.&lt;/html&gt;" 
-		name="Paste format" key_stroke="control shift alt V" 
+		name="Paste format" key_stroke="alt V" 
 		base="freemind.extensions.NodeHookAdapter" 
-		icon_path="accessories/plugins/icons/2rightarrow.png" 
+		icon_path="accessories/plugins/icons/color_fill.png" 
 		label="accessories/plugins/FormatPaste.properties" 
 		class_name="accessories.plugins.FormatPaste"
 		instanciation="Other">

@@ -5,7 +5,7 @@
 		documentation="&lt;html&gt;Unfolds the selected nodes and all their children.&lt;/html&gt;" 
 		name="Unfold all" key_stroke="alt END" 
 		base="freemind.extensions.NodeHookAdapter" 
-		icon_path="accessories/plugins/icons/2rightarrow.png" 
+		icon_path="accessories/plugins/icons/hotlistadd.png" 
 		label="accessories/plugins/UnfoldAll.properties" 
 		class_name="accessories.plugins.UnfoldAll"
 		instanciation="Other">
@@ -19,7 +19,7 @@
 		documentation="&lt;html&gt;Folds the selected nodes and all their children.&lt;/html&gt;" 
 		name="Folds all" key_stroke="alt HOME" 
 		base="freemind.extensions.NodeHookAdapter" 
-		icon_path="accessories/plugins/icons/2leftarrow.png" 
+		icon_path="accessories/plugins/icons/hotlistdel.png" 
 		label="accessories/plugins/FoldAll.properties" 
 		class_name="accessories.plugins.UnfoldAll"
 		instanciation="Other">
@@ -33,7 +33,7 @@
 		documentation="&lt;html&gt;Unfolds the selected nodes by one level.&lt;/html&gt;" 
 		name="Unfolds one level" key_stroke="alt PAGE_DOWN" 
 		base="freemind.extensions.NodeHookAdapter" 
-		icon_path="accessories/plugins/icons/1rightarrow.png" 
+		icon_path="accessories/plugins/icons/edit_add.png" 
 		label="accessories/plugins/UnfoldOneLevel.properties" 
 		class_name="accessories.plugins.UnfoldAll"
 		instanciation="Other">
@@ -47,7 +47,7 @@
 		documentation="&lt;html&gt;Folds the selected nodes by one level.&lt;/html&gt;" 
 		name="Folds one level" key_stroke="alt PAGE_UP" 
 		base="freemind.extensions.NodeHookAdapter" 
-		icon_path="accessories/plugins/icons/1leftarrow.png" 
+		icon_path="accessories/plugins/icons/edit_remove.png" 
 		label="accessories/plugins/FoldOneLevel.properties" 
 		class_name="accessories.plugins.UnfoldAll"
 		instanciation="Other">

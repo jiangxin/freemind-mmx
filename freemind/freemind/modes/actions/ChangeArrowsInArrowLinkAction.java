@@ -55,7 +55,7 @@ public class ChangeArrowsInArrowLinkAction extends FreemindAction implements
     public ChangeArrowsInArrowLinkAction(ModeController controller,
             String text, String iconPath, MindMapArrowLinkModel arrowLink,
             boolean hasStartArrow, boolean hasEndArrow) {
-        super("", iconPath, controller);
+        super("change_arrows_in_arrow_link", iconPath, controller);
         this.controller = controller;
         this.arrowLink = arrowLink;
         this.hasStartArrow = hasStartArrow;

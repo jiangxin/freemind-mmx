@@ -16,11 +16,10 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.33 2004-10-08 21:34:36 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.34 2004-10-09 22:11:32 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +50,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import freemind.common.JaxbTools;
-import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.MenuActionBase;
@@ -77,6 +75,7 @@ import freemind.modes.actions.IconAction;
 import freemind.modes.actions.NewMapAction;
 import freemind.modes.actions.NewPreviousSiblingAction;
 import freemind.modes.actions.NewSiblingAction;
+import freemind.modes.actions.NodeBackgroundColorAction;
 import freemind.modes.actions.NodeGeneralAction;
 import freemind.modes.actions.NodeHookAction;
 import freemind.modes.actions.RemoveArrowLinkAction;
@@ -122,17 +121,18 @@ public class MindMapController extends ControllerAdapter {
    public Action find = new FindAction();
    public Action findNext = new FindNextAction();
 
-	public Action nodeBackgroundColor = new NodeBackgroundColorAction();
 
 //    public Action normalFont = new NodeGeneralAction (this, "normal", "images/Normal24.gif",
 //       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
 //          map.setNormalFont(node); }});
     public Action increaseNodeFont = new NodeGeneralAction (this, "increase_node_font_size", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
-          map.increaseFontSize(node,1); }});
+           increaseFontSize(node, 1);
+    }});
     public Action decreaseNodeFont = new NodeGeneralAction (this, "decrease_node_font_size", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
-          map.increaseFontSize(node,-1); }});
+           increaseFontSize(node, -1);
+    }});
 
     // Extension Actions
     public Vector iconActions = new Vector(); //fc
@@ -724,19 +724,6 @@ public class MindMapController extends ControllerAdapter {
               getMindMapMapModel().importFolderStructure(folder,getSelected(),/*redisplay=*/true);
               getFrame().out("Folder structure imported."); }}}
 
-
-    // Color
-    // __________________
-
-    private class NodeBackgroundColorAction extends AbstractAction {
-		NodeBackgroundColorAction() { super(getText("node_background_color")); }
-	   public void actionPerformed(ActionEvent e) {
-		  Color color = Controller.showCommonJColorChooserDialog(getView().getSelected(),"Choose Node Background Color:",getSelected().getBackgroundColor() );
-		  if (color==null) {
-			 return; }
-		  for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-			 MindMapNodeModel selected = (MindMapNodeModel)it.next();
-			 getMindMapMapModel().setNodeBackgroundColor(selected, color); }}}
 
     private class JoinNodesAction extends AbstractAction {
 	JoinNodesAction() { super(getText("join_nodes")); }

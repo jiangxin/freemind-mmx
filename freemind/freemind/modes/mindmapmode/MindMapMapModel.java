@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.10.16 2004-10-08 21:34:36 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.10.17 2004-10-09 22:11:32 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -118,18 +118,6 @@ public class MindMapMapModel extends MapAdapter  {
 
     public String getRestoreable() {
        return getFile()==null ? null : "MindMap:"+getFile().getAbsolutePath(); }
-
-    //  All these methods do redisplay, because they are offered to controller for use.
-    // __________________________________________________________________________
-
-	public void setNodeBackgroundColor(MindMapNodeModel node, Color color) {
-		node.setBackgroundColor(color);
-		nodeChanged(node); }
-
-    public void increaseFontSize(MindMapNodeModel node, int increment) {
-        node.estabilishOwnFont();
-        node.setFontSize(node.getFont().getSize() + increment);
-        nodeChanged(node); }
 
     //
     // Other methods

@@ -19,11 +19,12 @@
  *
  * Created on 07.10.2004
  */
-/*$Id: AddArrowLinkAction.java,v 1.1.2.1 2004-10-08 21:34:36 christianfoltin Exp $*/
+/*$Id: AddArrowLinkAction.java,v 1.1.2.2 2004-10-09 22:11:32 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
@@ -60,14 +61,21 @@ public class AddArrowLinkAction extends FreemindAction  implements ActorXml{
      * @param modeController
      */
     public AddArrowLinkAction(ModeController modeController) {
-        super("add_link", (String) null,  modeController);
-        // TODO Auto-generated constructor stub
+        super("add_link", "images/designer.png",  modeController);
         this.modeController = modeController;
         addActor(this);
     }
 
     public void actionPerformed(ActionEvent e) {
-        // assert that exactly two nodes are selected. draw an arrow link in between.
+        // assert that at least two nodes are selected. draw an arrow link in between.
+        List selecteds = modeController.getSelecteds();
+        if(selecteds.size()< 2) {
+            modeController.getController().errorMessage(modeController.getText("less_than_two_selected_nodes"));
+            return;
+        }
+        for (int i = 1; i < selecteds.size(); i++) {
+            addLink((MindMapNode) selecteds.get(i), (MindMapNode) selecteds.get(0));
+        }
     }
 
     public void act(XmlAction action) {

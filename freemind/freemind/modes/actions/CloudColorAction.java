@@ -20,7 +20,7 @@
  * 
  * Created on 19.09.2004
  */
-/* $Id: CloudColorAction.java,v 1.1.2.1 2004-10-06 15:12:40 christianfoltin Exp $ */
+/* $Id: CloudColorAction.java,v 1.1.2.2 2004-10-09 22:11:32 christianfoltin Exp $ */
 
 package freemind.modes.actions;
 
@@ -60,7 +60,7 @@ public class CloudColorAction extends FreemindAction implements ActorXml , MenuI
             selectedColor = controller.getSelected().getCloud().getColor();
         }
         Color color = Controller.showCommonJColorChooserDialog(controller
-                .getView().getSelected(), "Choose Cloud Color:", selectedColor);
+                .getView().getSelected(), controller.getText("choose_cloud_color"), selectedColor);
         if (color == null) {
             return;
         }

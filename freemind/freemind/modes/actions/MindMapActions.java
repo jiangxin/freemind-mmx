@@ -92,7 +92,7 @@ public interface MindMapActions {
 		Color color);
 //	public void setUnderlined(MindMapNode node);
 //	public void setNormalFont(MindMapNode node);
-//	public void increaseFontSize(MindMapNode node, int increment);
+	public void increaseFontSize(MindMapNode node, int increment);
 //	public void splitNode(
 //		MindMapNode node,
 //		int caretPosition,

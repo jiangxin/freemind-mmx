@@ -20,7 +20,7 @@
  * 
  * Created on 19.09.2004
  */
-/* $Id: NodeColorAction.java,v 1.1.2.6 2004-10-09 22:11:32 christianfoltin Exp $ */
+/* $Id: NodeBackgroundColorAction.java,v 1.1.2.1 2004-10-09 22:11:32 christianfoltin Exp $ */
 
 package freemind.modes.actions;
 
@@ -34,27 +34,25 @@ import freemind.controller.Controller;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.FreemindAction;
-import freemind.controller.actions.generated.instance.EdgeColorFormatAction;
-import freemind.controller.actions.generated.instance.NodeColorFormatAction;
+import freemind.controller.actions.generated.instance.NodeBackgroundColorFormatAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
-import freemind.modes.mindmapmode.MindMapEdgeModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
-public class NodeColorAction extends FreemindAction implements ActorXml {
+public class NodeBackgroundColorAction extends FreemindAction implements ActorXml {
     private final ModeController controller;
 
-    public NodeColorAction(ModeController controller) {
-        super("node_color", (String)null, controller);
+    public NodeBackgroundColorAction(ModeController controller) {
+        super("node_background_color", (String)null, controller);
         this.controller = controller;
-        controller.getActionFactory().registerActor(this, getDoActionClass());
+        addActor(this);
     }
 
     public void actionPerformed(ActionEvent e) {
         Color color = Controller.showCommonJColorChooserDialog(controller
-                .getView().getSelected(), controller.getText("choose_node_color"), controller.getSelected()
+                .getView().getSelected(), controller.getText("choose_node_background_color"), controller.getSelected()
                 .getColor());
         if (color == null) {
             return;
@@ -62,14 +60,14 @@ public class NodeColorAction extends FreemindAction implements ActorXml {
         for (ListIterator it = controller.getSelecteds().listIterator(); it
                 .hasNext();) {
             MindMapNodeModel selected = (MindMapNodeModel) it.next();
-            setNodeColor(selected, color); 
+            setNodeBackgroundColor(selected, color); 
         }
     }
     
-    public void setNodeColor(MindMapNode node, Color color) {
+    public void setNodeBackgroundColor(MindMapNode node, Color color) {
 		try {
-			NodeColorFormatAction doAction = createNodeColorFormatAction(node, color);
-			NodeColorFormatAction undoAction = createNodeColorFormatAction(node, node.getColor());
+			NodeBackgroundColorFormatAction doAction = createNodeBackgroundColorFormatAction(node, color);
+			NodeBackgroundColorFormatAction undoAction = createNodeBackgroundColorFormatAction(node, node.getBackgroundColor());
 			controller.getActionFactory().startTransaction(this.getClass().getName());
 			controller.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
 			controller.getActionFactory().endTransaction(this.getClass().getName());
@@ -79,28 +77,28 @@ public class NodeColorAction extends FreemindAction implements ActorXml {
 		}
     }
 
-    public NodeColorFormatAction createNodeColorFormatAction(MindMapNode node, Color color) throws JAXBException {
-		NodeColorFormatAction nodeAction = controller.getActionXmlFactory().createNodeColorFormatAction();
+    public NodeBackgroundColorFormatAction createNodeBackgroundColorFormatAction(MindMapNode node, Color color) throws JAXBException {
+		NodeBackgroundColorFormatAction nodeAction = controller.getActionXmlFactory().createNodeBackgroundColorFormatAction();
 		nodeAction.setNode(node.getObjectId(controller));
 	    nodeAction.setColor(Tools.colorToXml(color));
 		return nodeAction;
     }
     
     public void act(XmlAction action) {
-		if (action instanceof NodeColorFormatAction) {
-			NodeColorFormatAction nodeColorAction = (NodeColorFormatAction) action;
+		if (action instanceof NodeBackgroundColorFormatAction) {
+			NodeBackgroundColorFormatAction nodeColorAction = (NodeBackgroundColorFormatAction) action;
 			Color color = Tools.xmlToColor(nodeColorAction.getColor());
 			MindMapNode node = controller.getNodeFromID(nodeColorAction.getNode());
-			Color oldColor = node.getColor() ;
+			Color oldColor = node.getBackgroundColor() ;
 			if (!Tools.safeEquals(color, oldColor)) {
-                node.setColor(color); // null
+                node.setBackgroundColor(color); // null
                 controller.nodeChanged(node);
             }
 		}
    }
 
     public Class getDoActionClass() {
-        return NodeColorFormatAction.class;
+        return NodeBackgroundColorFormatAction.class;
     }
 
 }
