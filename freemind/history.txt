@@ -168,6 +168,11 @@ RC2
 * bug fix: reminders can be deleted and changed.
 * Reminder have hours and minutes now.
 * bug fix: reminders are undoable now.
+* bug fix: Time Management Window has a title now.
+
+* enhanced german translation.
+* timed out nodes are selected.
+
 
 Changes made in Freemind 0.7.2:
 ===============================

@@ -197,9 +197,7 @@ public class FindAction extends AbstractAction {
      */
     private void centerNode(MindMapNode node) {
         // Select the node and scroll to it.
-        controller.getView().centerNode(node.getViewer());
-        controller.getView().selectAsTheOnlyOneSelected(node.getViewer());
-        controller.getController().obtainFocusForSelected();
+        controller.centerNode(node);
     }
 
 }

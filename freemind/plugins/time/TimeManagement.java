@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/*$Id: TimeManagement.java,v 1.1.2.2 2005-02-13 22:39:57 christianfoltin Exp $*/
+/*$Id: TimeManagement.java,v 1.1.2.3 2005-02-14 21:10:04 christianfoltin Exp $*/
 package plugins.time;
 
 import java.awt.Container;
@@ -83,6 +83,7 @@ public class TimeManagement extends ModeControllerHookAdapter implements
     public void startupMapHook() {
         super.startupMapHook();
         dialog = new JDialog(getController().getFrame().getJFrame(), true /* modal */);
+        dialog.setTitle(getResourceString("plugins/TimeManagement.xml_WindowTitle"));
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         Action action = new AbstractAction() {
 

@@ -19,7 +19,7 @@
  *
  * Created on 06.02.2005
  */
-/*$Id: ReminderHook.java,v 1.1.2.3 2005-02-13 22:39:57 christianfoltin Exp $*/
+/*$Id: ReminderHook.java,v 1.1.2.4 2005-02-14 21:10:04 christianfoltin Exp $*/
 package plugins.time;
 
 import java.text.MessageFormat;
@@ -95,22 +95,30 @@ public class ReminderHook extends PermanentNodeHookAdapter {
             return;
         }
         if (timer == null) {
-            timer = new Timer();
-            Date date = new Date(remindUserAt);
-            timer.schedule(new CheckReminder(), date);
-            Object[] messageArguments = { date };
-            MessageFormat formatter = new MessageFormat(
-                    getResourceString("plugins/TimeManagement.xml_reminderNode_tooltip"));
-            String message = formatter.format(messageArguments);
-
-            getController().setToolTip(node, getName(), message);
-            // icon
-            if (clockIcon == null) {
-                clockIcon = new MindIcon("clock");
-            }
-            node.addStateIcon(getName(), clockIcon);
-            getController().nodeRefresh(node);
+            scheduleTimer(node);
         }
+    }
+
+    /**
+     * @param node
+     */
+    private void scheduleTimer(MindMapNode node)
+    {
+        timer = new Timer();
+        Date date = new Date(remindUserAt);
+        timer.schedule(new CheckReminder(), date);
+        Object[] messageArguments = { date };
+        MessageFormat formatter = new MessageFormat(
+                getResourceString("plugins/TimeManagement.xml_reminderNode_tooltip"));
+        String message = formatter.format(messageArguments);
+
+        getController().setToolTip(node, getName(), message);
+        // icon
+        if (clockIcon == null) {
+            clockIcon = new MindIcon("clock");
+        }
+        node.addStateIcon(getName(), clockIcon);
+        getController().nodeRefresh(node);
     }
 
     protected class CheckReminder extends TimerTask {
@@ -124,16 +132,23 @@ public class ReminderHook extends PermanentNodeHookAdapter {
                 public void run() {
                     // yes, the time is over:
                     getController().displayNode(getNode());
+                    // select the node.
+                    getController().centerNode(getNode());
+                    // format message:
+                    Object[] messageArguments = { getNode().getShortText(getController()) };
+                    MessageFormat formatter = new MessageFormat(
+                            getResourceString("plugins/TimeManagement.xml_reminderNode_showNode"));
+                    String message = formatter.format(messageArguments);
 
                     int result = JOptionPane
                             .showConfirmDialog(
                                     getController().getFrame().getJFrame(),
-                                    getResourceString("plugins/TimeManagement.xml_reminderNode_showNode"),
+                                    message,
                                     "Freemind", JOptionPane.YES_NO_OPTION);
                     if (result == JOptionPane.YES_OPTION) {
                         setRemindUserAt(System.currentTimeMillis() + 10 * 60 * 1000);
-                        timer.schedule(CheckReminder.this, new Date(
-                                getRemindUserAt()));
+                        scheduleTimer(getNode());
+                        return;
                     }
                     nodeChanged(getNode());
                     // remove the hook (suicide)

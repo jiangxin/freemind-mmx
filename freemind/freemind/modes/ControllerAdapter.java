@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.12 2005-02-13 22:39:56 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.13 2005-02-14 21:10:03 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -1134,6 +1134,14 @@ public abstract class ControllerAdapter implements ModeController {
 	public void displayNode(MindMapNode node){
 	    find.displayNode(node, null);
 	}
+	
+	public void centerNode(MindMapNode node){
+	        // Select the node and scroll to it.
+	        getView().centerNode(node.getViewer());
+	        getView().selectAsTheOnlyOneSelected(node.getViewer());
+	        getController().obtainFocusForSelected();
+	}
+	
 	public String getLinkShortText(MindMapNode node) {
 	    return gotoLinkNodeAction.getShortTextForLink(node);
 	}

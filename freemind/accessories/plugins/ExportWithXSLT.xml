@@ -11,6 +11,7 @@
 		<plugin_property name="file_type" value="user"/>
 	</plugin_action>
 	<plugin_action 
+		documentation="%accessories/plugins/ExportWithXSLT_HTML.properties_documentation"
 		name="%accessories/plugins/ExportWithXSLT_HTML.properties_name" 
 		base="freemind.extensions.ModeControllerHookAdapter" 
 		label="accessories/plugins/ExportWithXSLT_HTML.properties" 
@@ -28,6 +29,7 @@
 		<plugin_property name="load_file" value="true"/>
 	</plugin_action>
 	<plugin_action 
+		documentation="%accessories/plugins/ExportWithXSLT_HTML3.properties_documentation"
 		name="%accessories/plugins/ExportWithXSLT_HTML3.properties_name" 
 		base="freemind.extensions.ModeControllerHookAdapter" 
 		label="accessories/plugins/ExportWithXSLT_HTML3.properties" 

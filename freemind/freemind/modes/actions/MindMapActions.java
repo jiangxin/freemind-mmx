@@ -73,6 +73,7 @@ public interface MindMapActions {
 	void toggleFolded();
 	
 	void displayNode(MindMapNode node);
+	void centerNode(MindMapNode node);
 	String getLinkShortText(MindMapNode node);
 
 	public void setBold(MindMapNode node, boolean bolded);
