@@ -635,7 +635,6 @@
 	        </xs:choice>
 	      </xs:sequence>
 	      <xs:attribute name="name" use="required" type="xs:string"/>
-	      <xs:attribute name="setSeparatorBefore" use="optional" type="xs:boolean" default="true"/>
     </xs:complexType>
 
 

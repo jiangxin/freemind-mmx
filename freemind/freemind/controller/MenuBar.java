@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.3 2004-11-16 16:42:35 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.4 2005-01-03 22:49:56 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -33,6 +33,7 @@ import javax.swing.*;
  *  */
 public class MenuBar extends JMenuBar {
 
+    private static java.util.logging.Logger logger ;
 	public static final String MENU_BAR_PREFIX = "menu_bar/";
 	public static final String GENERAL_POPUP_PREFIX = "popup/";
 
@@ -61,7 +62,10 @@ public class MenuBar extends JMenuBar {
 
     public MenuBar(Controller controller) {
 		this.c = controller;
-		updateMenus();
+		if(logger==null) {
+		    logger = controller.getFrame().getLogger(this.getClass().getName());
+		}
+		//updateMenus();
     }//Constructor
 
 
@@ -78,6 +82,7 @@ public class MenuBar extends JMenuBar {
 		filemenu.setMnemonic(KeyEvent.VK_F);
 
 		menuHolder.addCategory(FILE_MENU+"open");	
+		menuHolder.addCategory(FILE_MENU+"close");	
 		menuHolder.addSeparator(FILE_MENU);	
 		menuHolder.addCategory(FILE_MENU+"export");	
 		menuHolder.addSeparator(FILE_MENU);	
@@ -98,7 +103,6 @@ public class MenuBar extends JMenuBar {
 		menuHolder.addCategory(EDIT_MENU+"edit");	
 		menuHolder.addSeparator(EDIT_MENU);	
 		menuHolder.addCategory(EDIT_MENU+"find");	
-		menuHolder.addSeparator(EDIT_MENU);	
 
 		//view menu
 		menuHolder.addMenu(new JMenu(c.getResourceString("menu_view")), VIEW_MENU+".");
@@ -142,8 +146,8 @@ public class MenuBar extends JMenuBar {
 		menuHolder.addMenu(new JMenu(c.getResourceString("help")), HELP_MENU+".");
 		menuHolder.addAction(c.documentation, HELP_MENU+"doc/documentation");
 		menuHolder.addAction(c.faq, HELP_MENU+"doc/faq");
+		menuHolder.addSeparator(HELP_MENU);
 		menuHolder.addAction(c.license, HELP_MENU+"about/license");
-		menuHolder.addSeparator(HELP_MENU+"about");
 		menuHolder.addAction(c.about, HELP_MENU+"about/about");
 
 		updateFileMenu();
@@ -158,6 +162,7 @@ public class MenuBar extends JMenuBar {
 		}
 		menuHolder.updateMenus(this, MENU_BAR_PREFIX);
 		menuHolder.updateMenus(mapsPopupMenu, GENERAL_POPUP_PREFIX);
+		
 	}
 
 
@@ -237,7 +242,7 @@ public class MenuBar extends JMenuBar {
 		JMenuItem print = menuHolder.addAction(c.print, FILE_MENU+"print/print");
 		print.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_print")));
 	
-		JMenuItem close = menuHolder.addAction(c.close, FILE_MENU+"quit/close");
+		JMenuItem close = menuHolder.addAction(c.close, FILE_MENU+"close/close");
 		close.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_close")));
 		
 		JMenuItem quit = menuHolder.addAction(c.quit, FILE_MENU+"quit/quit");

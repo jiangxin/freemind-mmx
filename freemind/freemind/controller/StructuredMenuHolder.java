@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.2 2004-12-19 22:25:34 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.3 2005-01-03 22:49:56 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -36,6 +36,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 import javax.swing.event.MenuEvent;
 
@@ -119,7 +120,8 @@ public class StructuredMenuHolder {
 		StringTokenizer tokens = new StringTokenizer(sep, "/");
 		// separators can occur as doubles.
 		MapTokenPair categoryPair = getCategoryMap(tokens, menuMap);
-		if(categoryPair.order.size() == 0 || !(((String)categoryPair.order.lastElement())).equals(SEPARATOR_TEXT)) {
+		if(true /*categoryPair.order.size() == 0 ||
+		   !(((String)categoryPair.order.lastElement())).equals(SEPARATOR_TEXT)*/) {
 			categoryPair.map.put(categoryPair.token, new SeparatorHolder());
 			categoryPair.order.add(categoryPair.token);
 		}
@@ -300,6 +302,12 @@ public class StructuredMenuHolder {
 		}
 
 		public void addSeparator() {
+		    if(myItem.getItemCount() >0){
+		        if(myItem.getMenuComponents()[myItem.getItemCount()-1] instanceof JSeparator) {
+		            // no separator, if the last was such.
+		            return;
+		        }
+		    }
 			myItem.addSeparator();
 		}
 

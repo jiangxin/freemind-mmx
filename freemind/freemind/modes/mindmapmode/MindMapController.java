@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.5 2004-12-19 09:00:40 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.6 2005-01-03 22:49:56 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -365,17 +365,11 @@ public class MindMapController extends ControllerAdapter {
      */
     public void processMenuCategory(StructuredMenuHolder holder, List list, String category) {
 		String categoryCopy = category;
-		if(categoryCopy.endsWith("/")) {
-			categoryCopy = categoryCopy.substring(0, categoryCopy.length()-1);
-		}
     	for (Iterator i = list.iterator(); i.hasNext();) {
             Object obj = (Object) i.next();
             if(obj instanceof MenuCategoryBase) {
 				MenuCategoryBase cat = (MenuCategoryBase) obj;
             	String newCategory = categoryCopy+"/"+cat.getName();
-            	if (cat.isSetSeparatorBefore()) {
-                    holder.addSeparator(categoryCopy);
-                }
 				holder.addCategory(newCategory);
                 if(cat instanceof MenuSubmenu) {
                 	MenuSubmenu submenu = (MenuSubmenu) cat;

@@ -57,7 +57,11 @@ public class ApplyPatternAction extends NodeGeneralAction implements
                 getModeController().setNodeText(node, pattern.getText());
             }
             getModeController().setNodeColor(node, pattern.getNodeColor());
-            getModeController().setNodeStyle(node, pattern.getNodeStyle());
+            //FIXME: fc, 3.1.2004: setting the style to "null" causes strange behaviour. 
+            // see https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1094623&group_id=7118
+            if (pattern.getNodeStyle() != null) {
+                getModeController().setNodeStyle(node, pattern.getNodeStyle());
+            }
             if (pattern.getAppliesToNodeIcon()) {
                 if (pattern.getNodeIcon() == null) {
                     while (getModeController().removeLastIcon(node) > 0) {

@@ -8,7 +8,7 @@
 		label="accessories/plugins/EncryptNode.properties" 
 		class_name="accessories.plugins.EncryptNode" instanciation="Other">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/extras/crypto/EncryptNode"/>
+		<plugin_menu location="menu_bar/extras/first/crypto/EncryptNode"/>
 		<plugin_property value="encrypt" name="action"/>
 	</plugin_action>
 	<plugin_action 
@@ -19,7 +19,7 @@
 		label="accessories/plugins/EnterPassword.properties" 
 		class_name="accessories.plugins.EncryptNode" instanciation="Other">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/extras/crypto/EnterPassword"/>
+		<plugin_menu location="menu_bar/extras/first/crypto/EnterPassword"/>
 		<plugin_property value="toggleCryptState" name="action"/>
 	</plugin_action>
 	<plugin_action 

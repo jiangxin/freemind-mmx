@@ -20,7 +20,7 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: NodeStyleAction.java,v 1.1.4.1 2004-10-17 23:00:10 dpolivaev Exp $ */
+/* $Id: NodeStyleAction.java,v 1.1.4.2 2005-01-03 22:49:56 christianfoltin Exp $ */
 
 package freemind.modes.actions;
 
@@ -68,10 +68,10 @@ public class NodeStyleAction extends NodeGeneralAction implements NodeActorXml {
         
     }
 
-    private ActionPair getActionPair(MindMapNode selected, String style)
+    private ActionPair getActionPair(MindMapNode targetNode, String style)
             throws JAXBException {
-        NodeStyleFormatAction styleAction = createNodeStyleFormatAction(selected, style);
-        NodeStyleFormatAction undoStyleAction = createNodeStyleFormatAction(selected, selected.getStyle());
+        NodeStyleFormatAction styleAction = createNodeStyleFormatAction(targetNode, style);
+        NodeStyleFormatAction undoStyleAction = createNodeStyleFormatAction(targetNode, targetNode.getStyle());
         return new ActionPair(styleAction, undoStyleAction);
     }
 
@@ -90,6 +90,7 @@ public class NodeStyleAction extends NodeGeneralAction implements NodeActorXml {
             MindMapNode node = getNodeFromID(nodeStyleAction.getNode());
             String style = nodeStyleAction.getStyle();
             if(!Tools.safeEquals(node.getStyle(), style)) {
+                logger.info("Setting style of " + node + " to "+ style);
                 node.setStyle(style);
                 modeController.nodeStructureChanged(node);
             }
