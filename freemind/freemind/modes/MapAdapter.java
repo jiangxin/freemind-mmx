@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.21 2004-01-17 23:20:58 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.22 2004-01-18 08:16:41 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -201,17 +201,42 @@ public abstract class MapAdapter implements MindMap {
        return t;
     }
 
+    /** This class sortes nodes by ascending depth of their paths to root. This is useful to assure that children are cutted <b>before</b> their fathers!!!.*/
+    protected class nodesDepthComparator implements Comparator{
+        public nodesDepthComparator() {}
+        /* the < relation.*/
+        public int compare(Object p1, Object p2) {
+            MindMapNode n1 = (MindMapNode) p1;
+            MindMapNode n2 = (MindMapNode) p2;
+            Object[] path1 = getPathToRoot(n1);
+            Object[] path2 = getPathToRoot(n2);
+            int depth = path1.length - path2.length;
+            if(depth > 0)
+                return -1;
+            if(depth < 0)
+                return 1;
+            return 0;
+        }
+    }
+
     public final Transferable cut() {
        Transferable t = copy();
        // clear all recently cutted links from the registry:
        getLinkRegistry().clearCuttedNodeBuffer();
-       for(Iterator i = getFrame().getView().getSelecteds().iterator();i.hasNext();) {
-          MindMapNode selectedNode = ((NodeView)i.next()).getModel();
+
+       // sort selectedNodes list by depth, in order to guarantee that sons are deleted first:
+       LinkedList selList = getFrame().getView().getSelecteds();
+       ArrayList sortedNodes = new ArrayList();
+       for (Iterator it=selList.iterator(); it.hasNext();) {
+           sortedNodes.add( ((NodeView) it.next() ).getModel() ); }
+       Collections.sort(sortedNodes, new nodesDepthComparator());
+       for(Iterator i = sortedNodes.iterator();i.hasNext();) {
+          MindMapNode selectedNode = ((MindMapNode)i.next());
           getLinkRegistry().cutNode(selectedNode);
           try {
               removeNodeFromParent(selectedNode); 
           } catch(IllegalArgumentException e) {
-              System.err.println("Error occured during cut. The application was not able to cut the node " + selectedNode + ". I will try to continue. Typically, this is an error if you have selected a whole branch and try to move or cut it. Please do so only with the root of the tree you want to change.");
+              System.err.println("Error occured during cut. The application was not able to cut the node " + selectedNode + ".");
           }
        }
        return t; }
@@ -233,8 +258,8 @@ public abstract class MapAdapter implements MindMap {
       try {
          String forNodesFlavor = "";
          boolean firstLoop = true;
-
          for(Iterator it = selectedNodes.iterator();it.hasNext();) {
+            MindMapNode tmpNode =  (MindMapNode)it.next();
             if (firstLoop) {
                firstLoop = false; }
             else {
@@ -243,7 +268,7 @@ public abstract class MapAdapter implements MindMap {
             // v This is not a smart solution. While copy() handles multiple flavors,
             //   copy(node) handles only string flavor, but with the meaning of nodes flavor.
             //   It does no harm apart from being not very nice and confusing.           
-            forNodesFlavor += copy((MindMapNode)it.next()).getTransferData(DataFlavor.stringFlavor); }
+            forNodesFlavor += copy(tmpNode).getTransferData(DataFlavor.stringFlavor); }
 
          String plainText = inPlainText != null ? inPlainText : getAsPlainText(selectedNodes);
          return new MindMapNodesSelection

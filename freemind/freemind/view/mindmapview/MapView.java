@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.27 2004-01-17 23:20:58 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.28 2004-01-18 08:16:41 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -835,7 +835,7 @@ public class MapView extends JPanel implements Printable {
             //Take care not to remove root in Controller
             NodeView parent = ( (MindMapNode)e.getTreePath().getLastPathComponent() ).getViewer();
             if(node == null) {
-                System.err.println("treeNodesRemoved tried to delete null as node. Typically, this is an error if you have selected a whole branch and try to move or cut it. Please do so only with the root of the tree you want to change.");
+                System.err.println("MapView.treeNodesRemoved tried to delete null as node.");
                 return;
             }
             node.remove();   //Just that one

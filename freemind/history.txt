@@ -14,6 +14,7 @@ RC2:
 * POSITION is only saved if the node is son of root. This prevents having lots of POSITION tags in the saved XML.
 * POSITION is chosen right if dropped onto root. (left half, pasted to left, right half, pasted to - you guess it? - right!)
 * Left and Right is respected with ENTER.
+* Bug fix: cutting nodes including any of their children or grant-children works now. This removes the bug with a moved tree that is completely marked.
 
 RC1:
 ----
