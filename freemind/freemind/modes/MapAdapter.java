@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.23 2004-01-24 22:36:48 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24 2004-01-28 20:09:27 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -45,7 +45,8 @@ public abstract class MapAdapter implements MindMap {
 
     private MindMapNode root;
     private EventListenerList treeModelListeners = new EventListenerList();
-    protected boolean saved = false;
+    /** denotes the amount of changes since the last save. The initial value is one, to ensure, that the model is dirty.*/
+    protected int changesPerformedSinceLastSave = 1; 
     protected boolean readOnly = true;
     private Color backgroundColor;
     private File file;
@@ -100,7 +101,7 @@ public abstract class MapAdapter implements MindMap {
     //
 
     public boolean isSaved() {
-	return saved;
+	return (changesPerformedSinceLastSave==0);
     }
 
 	public boolean isReadOnly() {
@@ -108,7 +109,14 @@ public abstract class MapAdapter implements MindMap {
 	}
 
     protected void setSaved(boolean saved) {
-	this.saved = saved;
+        if(saved)
+            changesPerformedSinceLastSave = 0;
+        else
+            ++changesPerformedSinceLastSave;
+    }
+
+    protected int getNumberOfChangesSinceLastSave() {
+        return changesPerformedSinceLastSave;
     }
 
     public String getFindWhat() {

@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.34 2004-01-25 22:13:52 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.35 2004-01-28 20:09:33 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -1103,18 +1103,31 @@ public class MindMapMapModel extends MapAdapter {
         private MindMapMapModel model;
         private Vector tempFileStack;
         private int numberOfFiles;
+        /** This value is compared with the result of getNumberOfChangesSinceLastSave(). If the values coincide, no further automatic
+            saving is performed until the value changes again.*/
+        private int changeState;
         doAutomaticSave(MindMapMapModel model, int numberOfTempFiles) {
             this.model = model;
             tempFileStack = new Vector();
             numberOfFiles = ((numberOfTempFiles > 0)? numberOfTempFiles: 1);
+            changeState = 0;
         }
         public void run() {
+            /* Map is dirty enough? */
+            if(model.getNumberOfChangesSinceLastSave() == changeState)
+                return;
+            changeState = model.getNumberOfChangesSinceLastSave();
+            if(model.getNumberOfChangesSinceLastSave() == 0) {
+                /* map was recently saved.*/
+                return;
+            }
+            /* Now, it is dirty, we save it.*/
             File tempFile;
             if(tempFileStack.size() >= numberOfFiles)
                 tempFile = (File) tempFileStack.remove(0); // pop
             else {
                 try {
-                    tempFile = File.createTempFile("freemind", ".mm");
+                    tempFile = File.createTempFile("FM_"+((model.toString()==null)?"unnamed":model.toString()), ".mm");
                 } catch (Exception e) {
                     System.err.println("Error in automatic MindMapMapModel.save(): "+e.getMessage());
                     e.printStackTrace();
