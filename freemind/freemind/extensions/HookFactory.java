@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.4 2004-03-29 18:08:10 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.5 2004-04-08 18:54:55 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -32,11 +32,9 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.KeyStroke;
 
 import freemind.main.FreeMindMain;
-// jython:
-import org.python.core.*;
-import org.python.util.*;
 
 /**
  * @author christianfoltin
@@ -67,7 +65,6 @@ public class HookFactory {
 
 	private static final String pluginPrefix = "accessories.plugins.";
 	private FreeMindMain frame;
-	private PythonInterpreter interp;
 	private HashMap pluginCategories;
 	// Logging: 
 	private java.util.logging.Logger logger;
@@ -187,13 +184,13 @@ public class HookFactory {
 		String hookName,
 		HookDescriptor descriptor) {
 		try {
-			logger.info("Excecuting java class: " + descriptor.fileName);
+			logger.finest("Excecuting java class: " + descriptor.fileName);
 			String className =
 				descriptor.fileName.replace(File.separatorChar, '.');
 			className = className.substring(0, className.length() - 6
 			/*length of .class */
 			);
-			logger.info("Excecuting java class: " + className);
+			logger.finest("Excecuting java class: " + className);
 			Class hookClass = Class.forName(className);
 			Constructor hookConstructor =
 				hookClass.getConstructor(new Class[] {
@@ -204,11 +201,13 @@ public class HookFactory {
 			decorateHook(hookName, descriptor, hook);
 			return hook;
 		} catch (Exception e) {
-			System.out.println(
+			logger.severe(
 				"Error occurred loading hook: " + descriptor.fileName);
 			return null;
 		}
 	}
+
+	private org.python.util.PythonInterpreter interp;
 
 	private MindMapHook createJythonHook(
 		String hookName,
@@ -216,10 +215,10 @@ public class HookFactory {
 		try {
 			// Lazy initialization:
 			if(interp==null) {
-				PySystemState.initialize();
-				this.interp = new PythonInterpreter();
+				org.python.core.PySystemState.initialize();
+				this.interp = new org.python.util.PythonInterpreter();
 			}
-			logger.info("Excecuting jython script: " + descriptor.fileName);
+			logger.finest("Excecuting jython script: " + descriptor.fileName);
 			interp.execfile(
 				ClassLoader.getSystemResourceAsStream(descriptor.fileName));
 			MindMapHook hook =
@@ -227,7 +226,7 @@ public class HookFactory {
 			decorateHook(hookName, descriptor, hook);
 			return hook;
 		} catch (Exception e) {
-			System.out.println(
+			logger.severe(
 				"Error occurred loading hook: " + descriptor.fileName);
 			return null;
 		}
@@ -235,7 +234,7 @@ public class HookFactory {
 
 	public NodeHook createNodeHook(
 		String hookName) {
-        logger.info("CreateNodeHook: " + hookName);
+        logger.finest("CreateNodeHook: " + hookName);
 		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
 		if(hookName==null || descriptor==null)
 			throw new IllegalArgumentException("Unknown hook name "+hookName);
@@ -298,6 +297,10 @@ public class HookFactory {
 			ImageIcon imageIcon = new ImageIcon(frame.getResource(icon)); 
 			action.putValue(AbstractAction.SMALL_ICON, imageIcon);
 		}
+		String key = descriptor.properties.getProperty("keystroke");
+		if(key != null)
+			action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(key));
+
 	}
 
 }

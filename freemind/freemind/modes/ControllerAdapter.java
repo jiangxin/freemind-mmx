@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.4 2004-04-04 11:56:31 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.5 2004-04-08 18:54:56 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -163,11 +163,6 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public void anotherNodeSelected(MindMapNode n) {
-	   	// look for hooks:
-    	for(Iterator i= n.getActivatedHooks().iterator(); i.hasNext();){
-    		PermanentNodeHook hook = (PermanentNodeHook) i.next();
-    		hook.onReceiveFocusHook();
-    	}
     }
 
     public void doubleClick(MouseEvent e) {
@@ -251,7 +246,8 @@ public abstract class ControllerAdapter implements ModeController {
         else {
            return save(getModel().getFile()); }}
 
-    /** fc, 24.1.2004: having two methods getSelecteds with different return values (linkedlists of models resp. views) is asking for trouble. @see MapView */
+    /** fc, 24.1.2004: having two methods getSelecteds with different return values 
+     * (linkedlists of models resp. views) is asking for trouble. @see MapView */
     public List getSelecteds() {
 	LinkedList selecteds = new LinkedList();
 	ListIterator it = getView().getSelecteds().listIterator();
@@ -394,6 +390,31 @@ public abstract class ControllerAdapter implements ModeController {
         mapOpened(false);
         return true; }
     
+
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ModeController#setVisible(boolean)
+	 */
+	public void setVisible(boolean visible) {
+		if (visible) {
+			NodeAdapter node = getSelected();
+			for (Iterator j = node.getActivatedHooks().iterator();
+				j.hasNext();
+				) {
+				PermanentNodeHook hook = (PermanentNodeHook) j.next();
+				hook.onReceiveFocusHook();
+			}
+		} else {
+			NodeAdapter node = getSelected();
+			for (Iterator j = node.getActivatedHooks().iterator();
+				j.hasNext();
+				) {
+				PermanentNodeHook hook = (PermanentNodeHook) j.next();
+				hook.onLooseFocusHook();
+			}
+		}
+	}
+
 
     /**
      * Call this method if you have opened a map for this mode with true,
@@ -1946,8 +1967,5 @@ public abstract class ControllerAdapter implements ModeController {
        	this.add(new EditCopyAction(textComponent));
     }
    }
-
-
-
 
 }

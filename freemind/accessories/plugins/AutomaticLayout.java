@@ -37,8 +37,11 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 		Color mycolor = colors[colors.length-1]; 
 		if(depth < colors.length)
 			mycolor = colors[depth];
-		node.setColor(mycolor);
-		nodeChanged(node);
+		Color nodeColor = node.getColor();
+		if((nodeColor!=null) || (nodeColor.getRGB() != mycolor.getRGB())) {
+			node.setColor(mycolor);
+			nodeChanged(node);
+		}
 	}
 
 	private int depth(MindMapNode node){

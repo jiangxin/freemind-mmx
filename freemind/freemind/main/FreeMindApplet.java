@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.10.2 2004-03-18 06:44:33 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.10.3 2004-04-08 18:54:56 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -40,7 +40,7 @@ import javax.swing.*;
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 
     private HookFactory nodeHookFactory;
-	public static final String version = "0.7.1";
+	public static final String version = "0.7.2";
     //    public static final String defaultPropsURL;
     public URL defaultPropsURL;
     public static Properties defaultProps;

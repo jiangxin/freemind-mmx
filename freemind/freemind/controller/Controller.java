@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40 2004-01-28 20:36:09 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.10.1 2004-04-08 18:54:55 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -634,24 +634,32 @@ public class Controller {
                   changeToMapModule((String)last.next()); }}}
 
         //Change MapModules
-
+		/** This is the question whether the map is already opened. If this is the case,
+		 * the map is automatically opened + returns true. Otherwise does nothing + returns false.*/
         public boolean tryToChangeToMapModule(String mapModule) {
             if (mapModule != null && getMapModules().containsKey(mapModule)) {
                 changeToMapModule(mapModule);
                 return true; }
             else {
                return false; }}
-    
+
+    	/** adds the mapModule to the history and calls changeToMapModuleWithoutHistory. */
         void changeToMapModule(String mapModule) {
             MapModule map = (MapModule)(getMapModules().get(mapModule));
             history.mapChanged(map);
             changeToMapModuleWithoutHistory(map); }
 
         void changeToMapModuleWithoutHistory(MapModule map) {
+        	// shut down screens of old view + frame
+        	getMode().getModeController().setVisible(false);
             if (map.getMode() != getMode()) {
-               changeToMode(map.getMode().toString()); }
+               changeToMode(map.getMode().toString()); 
+            }
+            // activates the new view + frame
             setMapModule(map);
-            mapModuleChanged(); }
+            mapModuleChanged(); 
+			getMode().getModeController().setVisible(true);
+        }
 
         public void changeToMapOfMode(Mode mode) {
             for (Iterator i = getMapModules().keySet().iterator(); i.hasNext(); ) {

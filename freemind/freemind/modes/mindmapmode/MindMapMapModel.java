@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.10.3 2004-04-04 11:56:32 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.10.4 2004-04-08 18:54:56 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -684,6 +684,7 @@ public class MindMapMapModel extends MapAdapter {
       nodeStructureChanged(parent);
    }
 
+	//URGENT: This method needs refactoring. At least, it is at the wrong place in the model!!!!
    public void joinNodes() {
       MindMapNode selectedNode = getFrame().getView().getSelected().getModel();
       ArrayList selectedNodes = getFrame().getView().getSelectedNodesSortedByY();

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.4 2004-04-04 11:56:32 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.5 2004-04-08 18:54:56 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -39,35 +39,38 @@ import freemind.extensions.ModeControllerHook;
 
 public interface ModeController {
 
-    public void load(File file) throws FileNotFoundException, IOException, XMLParseException;
-    public boolean save(File file);
-    public void addNew(NodeView target, int newNodeMode, KeyEvent e);
-	public MindMapNode newNode();
-    public void newMap();
-    public boolean save();
-    public boolean saveAs();
-    public void open();
-    //    public void edit(NodeView node, NodeView toBeSelected);
-    public boolean close();
-    public void doubleClick(MouseEvent e);
-    public void plainClick(MouseEvent e);
-    public void toggleFolded();
+    void load(File file) throws FileNotFoundException, IOException, XMLParseException;
+    boolean save(File file);
+    void addNew(NodeView target, int newNodeMode, KeyEvent e);
+	MindMapNode newNode();
+    void newMap();
+    boolean save();
+    boolean saveAs();
+    void open();
+    //    void edit(NodeView node, NodeView toBeSelected);
+    boolean close();
+    /** This method is used to hide the map "under" another opened map. 
+     * In fact, should remove the focus, stop plugins, if necessary, etc. */
+    void setVisible(boolean visible);
+    void doubleClick(MouseEvent e);
+    void plainClick(MouseEvent e);
+    void toggleFolded();
 
-    public boolean isBlocked();
-    public void edit(KeyEvent e, boolean addNew, boolean editLong);
-    public void mouseWheelMoved(MouseWheelEvent e);
+    boolean isBlocked();
+    void edit(KeyEvent e, boolean addNew, boolean editLong);
+    void mouseWheelMoved(MouseWheelEvent e);
 	List getSelecteds();
 	    /** This extends the currently selected nodes. 
         @return true, if the method changed the selection.*/
-    public boolean extendSelection(MouseEvent e);
+    boolean extendSelection(MouseEvent e);
 
-    public JPopupMenu getPopupMenu();
-    public void showPopupMenu(MouseEvent e);
+    JPopupMenu getPopupMenu();
+    void showPopupMenu(MouseEvent e);
     /** This returns a context menu for an object placed in the background pane.*/
-    public JPopupMenu getPopupForModel(java.lang.Object obj);
+    JPopupMenu getPopupForModel(java.lang.Object obj);
 
-    public void nodeChanged(MindMapNode n);
-    public void anotherNodeSelected(MindMapNode n);
+    void nodeChanged(MindMapNode n);
+    void anotherNodeSelected(MindMapNode n);
 	//hooks, fc 28.2.2004:
 	void invokeHook(ModeControllerHook hook);
 	void invokeHooksRecursively(NodeAdapter node, MindMap map);

@@ -5,6 +5,8 @@
 package freemind.controller;
 
 import java.awt.Insets;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -53,6 +55,7 @@ public class FreeMindToolBar extends JToolBar {
 		JButton returnValue = super.add(arg0);
 		returnValue.setText("");
 		returnValue.setMargin(nullInsets);
+		returnValue.setFocusable(false);
 		return returnValue;
 	}
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.10.4 2004-04-04 11:56:31 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.10.5 2004-04-08 18:54:55 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -64,7 +64,7 @@ import freemind.view.mindmapview.MapView;
 public class FreeMind extends JFrame implements FreeMindMain {
 
     private HookFactory nodeHookFactory;
-	public static final String version = "0.7.1";
+	public static final String version = "0.7.2";
     //    public static final String defaultPropsURL = "freemind.properties";
     public URL defaultPropsURL;
     //    public static Properties defaultProps;

@@ -44,7 +44,7 @@ public class PermanentNodeHookAdapter
 	 * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode, java.util.List)
 	 */
 	public void invoke(MindMapNode focussed, List selecteds) {
-		logger.info("invoke(selecteds) called.");
+		logger.finest("invoke(selecteds) called.");
 		HookFactory hookFactory = getController().getFrame().getHookFactory();
 		for (Iterator it = selecteds.iterator();it.hasNext();) {
     	   PermanentNodeHook hook = (PermanentNodeHook) hookFactory.createNodeHook(getName());
@@ -67,54 +67,44 @@ public class PermanentNodeHookAdapter
 	 * @see freemind.modes.NodeHook#shutdownMapHook()
 	 */
 	public void shutdownMapHook() {
-		logger.info("shutdownMapHook");
+		logger.finest("shutdownMapHook");
 		setNode(null);
 		setMap(null);
 		super.shutdownMapHook();
 	}
 
 	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#onReceiveFocusHook()
-	 */
-	public void onReceiveFocusHook() {
-		logger.info("onReceiveFocusHook");
-
-	}
-
-	/* (non-Javadoc)
 	 * @see freemind.modes.NodeHook#onMouseOverHook()
 	 */
 	public void onMouseOverHook() {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.NodeHook#onUpdateNodeHook()
 	 */
 	public void onUpdateNodeHook() {
-		logger.info("onUpdateNodeHook");
+		logger.finest("onUpdateNodeHook");
 	}
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.NodeHook#onUpdateChildrenHook()
 	 */
 	public void onUpdateChildrenHook(MindMapNode updatedNode) {
-		logger.info("onUpdateChildrenHook");
+		logger.finest("onUpdateChildrenHook");
 	}
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.NodeHook#onAddChild(freemind.modes.MindMapNode)
 	 */
 	public void onAddChild(MindMapNode newChildNode) {
-		logger.info("onAddChild");
+		logger.finest("onAddChild");
 	}
 
 	/* (non-Javadoc)
 	 * @see freemind.extensions.PermanentNodeHook#onRemoveChild(freemind.modes.MindMapNode)
 	 */
 	public void onRemoveChild(MindMapNode oldChildNode) {
-		logger.info("onRemoveChild");
+		logger.finest("onRemoveChild");
 	}
 
 	/* (non-Javadoc)
@@ -133,10 +123,18 @@ public class PermanentNodeHookAdapter
 	}
 
 	/* (non-Javadoc)
+	 * @see freemind.modes.NodeHook#onReceiveFocusHook()
+	 */
+	public void onReceiveFocusHook() {
+		logger.finest("onReceiveFocusHook");
+
+	}
+
+	/* (non-Javadoc)
 	 * @see freemind.extensions.PermanentNodeHook#onLooseFocusHook()
 	 */
 	public void onLooseFocusHook() {
-		logger.info("onLooseFocusHook");
+		logger.finest("onLooseFocusHook");
 	}
 
 

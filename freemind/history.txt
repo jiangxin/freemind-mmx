@@ -12,7 +12,8 @@ Changes made in Freemind 0.7.2:
 * Unfold all added
 * Bug fix: XMLWriter addes additional \n for contents.
 * setNode is now called automatically.
-
+* Jython is substituted by an attrappe 
+* Fold and Unfold one stage is available now.
 
 Changes made in Freemind 0.7.1:
 ===============================

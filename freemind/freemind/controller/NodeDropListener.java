@@ -145,12 +145,15 @@ public class NodeDropListener implements DropTargetListener {
               }
            }
            else {
-              c.getModel().paste (dropAction == DnDConstants.ACTION_MOVE 
-                                  ? c.getModel().cut() : c.getModel().copy(),
+           	  Transferable trans = dropAction == DnDConstants.ACTION_MOVE 
+									? c.getModel().cut() : c.getModel().copy();
+			  c.getView().selectAsTheOnlyOneSelected(targetNodeModel.getViewer()); 			
+              c.getModel().paste (trans,
                                   targetNode, 
-                                  targetNodeView.dropAsSibling(dtde.getLocation().getX()),
-                                  targetNodeView.dropPosition (dtde.getLocation().getX())); }
-           c.getView().selectAsTheOnlyOneSelected(targetNodeModel.getViewer()); }
+                                  targetNode.getViewer().dropAsSibling(dtde.getLocation().getX()),
+                                  targetNode.getViewer().dropPosition (dtde.getLocation().getX())); 
+              }
+           }
 	catch (Exception e) {
 	    System.err.println("Drop exception:"+e);
         e.printStackTrace();

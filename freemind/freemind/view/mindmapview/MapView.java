@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.10.3 2004-03-29 18:08:10 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.10.4 2004-04-08 18:54:56 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -78,7 +78,7 @@ public class MapView extends JPanel implements Printable {
 		public Selected() {};
 		public void clear() {
 			if(size() >0 ) {
-				triggerHooks(get(0)); 
+				removeSelectionForHooks(get(0)); 
 			}
 			mySelected.clear();
 			logger.finest("Cleared selected.");
@@ -87,23 +87,31 @@ public class MapView extends JPanel implements Printable {
 		}
 		public void remove(NodeView node) { 
 			if(mySelected.indexOf(node)==0) {
-				triggerHooks(node);
+				removeSelectionForHooks(node);
 			}
 			mySelected.remove(node); 
 			logger.finest("Removed selected "+node);
 		}
 		public void add(NodeView node) {
 			if(size() >0 ) {
-				triggerHooks(get(0)); 
+				removeSelectionForHooks(get(0)); 
 			}
-			mySelected.add(0, node); 
+			mySelected.add(0, node);
+			addSelectionForHooks(node); 
 			logger.finest("Added selected "+node + "\nAll="+mySelected);
 		}
-		private void triggerHooks(NodeView node) {
+		private void removeSelectionForHooks(NodeView node) {
 			// deselect the old node:
 			for(Iterator i= node.getModel().getActivatedHooks().iterator(); i.hasNext();){
 				PermanentNodeHook hook = (PermanentNodeHook) i.next();
 				hook.onLooseFocusHook();
+			}
+		}
+		private void addSelectionForHooks(NodeView node) {
+			// deselect the old node:
+			for(Iterator i= node.getModel().getActivatedHooks().iterator(); i.hasNext();){
+				PermanentNodeHook hook = (PermanentNodeHook) i.next();
+				hook.onReceiveFocusHook();
 			}
 		}
 		public NodeView get(int i) { return (NodeView) mySelected.get(i); 
@@ -118,7 +126,7 @@ public class MapView extends JPanel implements Printable {
 				int pos = mySelected.indexOf(newSelected);
 				if( pos > 0 ){ // move
 					if(size() >0 ) {
-						triggerHooks(get(0)); 
+						removeSelectionForHooks(get(0)); 
 					}
 					mySelected.remove(newSelected);
 					mySelected.add(0, newSelected);
@@ -126,6 +134,7 @@ public class MapView extends JPanel implements Printable {
 			} else {
 				add(newSelected);
 			}
+			addSelectionForHooks(newSelected);
 			logger.finest("MovedToFront selected "+newSelected + "\nAll="+mySelected);
 		}
 	}
@@ -995,7 +1004,8 @@ public class MapView extends JPanel implements Printable {
             }
             getMindMapLayout().updateTreeHeightsAndRelativeYOfAncestors(parent);
             getMindMapLayout().layout();
-            parent.requestFocus();
+            //fc, 5.4.2004. is already done by selectAsTheOnlyOneSelected:
+            //parent.requestFocus();
             repaint();
         }
 

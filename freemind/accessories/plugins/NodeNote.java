@@ -46,6 +46,8 @@ public class NodeNote extends PermanentNodeHookAdapter {
 	 */
 	public void invoke(MindMapNode node) {
 		super.invoke(node);
+		// select to get focus on it.
+        getController().getView().selectAsTheOnlyOneSelected(node.getViewer());
 	}
 
 	/* (non-Javadoc)
@@ -68,7 +70,8 @@ public class NodeNote extends PermanentNodeHookAdapter {
 			scroller = new JScrollPane(text);
 			scroller.setPreferredSize( new Dimension( 600, 150 ) );
 			frame.getSouthPanel().add(scroller, BorderLayout.CENTER);
-			frame.getSouthPanel().validate();
+			scroller.setVisible(true);
+			frame.getSouthPanel().revalidate();
 		}
 	}
 
@@ -94,6 +97,7 @@ public class NodeNote extends PermanentNodeHookAdapter {
 		if (text != null) {
 			listener.setN(null);
 			// shut down the display:
+			scroller.setVisible(false);
 			FreeMindMain frame = getController().getFrame();
 			frame.getSouthPanel().remove(scroller);
 			frame.getSouthPanel().validate();
