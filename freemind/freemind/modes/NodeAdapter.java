@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.7 2000-11-15 22:17:54 ponder Exp $*/
+/*$Id: NodeAdapter.java,v 1.8 2000-12-05 17:32:56 ponder Exp $*/
 
 package freemind.modes;
 
@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.net.URL;
 import java.awt.Color;
+import java.awt.Font;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -49,13 +50,17 @@ public abstract class NodeAdapter implements MindMapNode {
     protected String style;
     protected Color color;
     protected boolean folded;
-    protected int fontSize;
-    protected String font;
-    protected boolean bold = false;
-    protected boolean italic = false;
-    protected boolean underlined = false;
+
 
     protected List children;
+
+    protected Font font;
+    protected boolean underlined = false;
+//      protected int fontSize;
+//      protected String font;
+//      protected boolean bold = false;
+//      protected boolean italic = false;
+
 
     private MutableTreeNode parent;
     private MindMapEdge edge;//the edge which leads to this node, only root has none
@@ -141,28 +146,51 @@ public abstract class NodeAdapter implements MindMapNode {
 	return color;
     }
 
+    // **
+    // ** font handling
+    // **
+
+    public Font getFont() {
+	if(font == null) {
+	    // ** Maybe implement handling for cases when
+	    //    the font is not available on this system
+
+	    int fontSize = Integer.parseInt(FreeMind.userProps.getProperty("standardfontsize"));
+	    int fontStyle = Integer.parseInt(FreeMind.userProps.getProperty("standardfontstyle"));
+	    String fontName = FreeMind.userProps.getProperty("standardfont");
+
+	    font = new Font(fontName, fontStyle, fontSize);
+	}
+	return font;
+    }
+
     public boolean isBold() {
-	return bold;
+	if(font == null) getFont(); // ** initialize font
+	return font.isBold();
     }
 
     public boolean isItalic() {
-	return italic;
+	if(font == null) getFont(); // ** initialize font
+	return font.isItalic();
     }
 
     public boolean isUnderlined() {
 	return underlined;
     }
 
-    public int getFontSize() {
-	if (fontSize==0) return Integer.parseInt(FreeMind.userProps.getProperty("standardfontsize"));
-	return fontSize;
-    }
+
+    // ** much better to use the java.awt.Font object (Sebastian)
+
+//      public int getFontSize() {
+//  	if (fontSize==0) return Integer.parseInt(FreeMind.userProps.getProperty("standardfontsize"));
+//  	return fontSize;
+//      }
 
     /**Maybe implement handling for cases when the font is not available on this system*/
-    public String getFont() {
-	if (font==null) return FreeMind.userProps.getProperty("standardfont");
-	return font;
-    }
+//      public String getFont() {
+//  	if (font==null) return FreeMind.userProps.getProperty("standardfont");
+//  	return font;
+//      }
 
     public boolean isFolded() {
 	return folded;
@@ -286,10 +314,3 @@ public abstract class NodeAdapter implements MindMapNode {
 	}
     }
 }
-
-	
-
-
-
-
-

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapPopupMenu.java,v 1.5 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: MindMapPopupMenu.java,v 1.6 2000-12-05 17:32:56 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -33,10 +33,8 @@ public class MindMapPopupMenu extends JPopupMenu {
     public MindMapPopupMenu(MindMapController c) {
 	this.c = c;
 	this.add(c.getNodeMenu());
+	this.add(c.getBranchMenu());
 	this.add(c.getEdgeMenu());
+	this.add(c.getExtensionMenu());
     }
 }
-
-			   
-			   
-			   

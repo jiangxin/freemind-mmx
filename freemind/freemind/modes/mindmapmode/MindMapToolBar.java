@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.4 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: MindMapToolBar.java,v 1.5 2000-12-05 17:32:56 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -70,6 +70,7 @@ public class MindMapToolBar extends JToolBar {
 	add(fonts);
 	fonts.addItemListener(new ItemListener(){
 		public void itemStateChanged(ItemEvent e) {
+		    // ** this is super-dirty, why doesn't the toolbar know the model?
 		    c.setFont((String)e.getItem());
 		}
 	    });
@@ -78,7 +79,12 @@ public class MindMapToolBar extends JToolBar {
 	add(size);
 	size.addItemListener(new ItemListener(){
 		public void itemStateChanged(ItemEvent e) {
+		    // ** change the font size
+
+		    // ** this is super-dirty, why doesn't the toolbar know the model?
 		    c.setFontSize(Integer.parseInt((String)e.getItem(),10));
+//  		    c.setFont(c.getFont()
+//  			      .deriveFont((float)Integer.parseInt((String)e.getItem(),10)));
 		}
 	    });
 

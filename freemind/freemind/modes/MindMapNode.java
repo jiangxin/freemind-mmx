@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.3 2000-11-15 22:17:54 ponder Exp $*/
+/*$Id: MindMapNode.java,v 1.4 2000-12-05 17:32:56 ponder Exp $*/
 
 package freemind.modes;
 
@@ -24,6 +24,7 @@ import freemind.view.mindmapview.NodeView;
 import java.util.ListIterator;
 import java.net.URL;
 import java.awt.Color;
+import java.awt.Font;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 //XML Definition (Interfaces)
@@ -49,9 +50,11 @@ public interface MindMapNode extends MutableTreeNode {
     
     boolean isUnderlined();
 
-    int getFontSize();
+    Font getFont();
     
-    String getFont();
+//      int getFontSize();
+
+//      String getFont();
 
     NodeView getViewer();
 
@@ -67,12 +70,3 @@ public interface MindMapNode extends MutableTreeNode {
 
     void setFolded(boolean folded);
 }
-
-	
-
-
-
-
-
-
-

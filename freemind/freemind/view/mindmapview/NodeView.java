@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.8 2000-11-16 20:43:26 ponder Exp $*/
+/*$Id: NodeView.java,v 1.9 2000-12-05 17:32:56 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -294,22 +294,25 @@ public abstract class NodeView extends JLabel {
 	if (((NodeAdapter)getModel()).getLink() != null) {//THIS IS NO GOOD!
 	    setCursor(new Cursor(Cursor.HAND_CURSOR));//getCursor() is int
 	}
-	int style=0;
-	if(getModel().isBold()) {
-	    style=Font.BOLD;
-	    if(getModel().isItalic()) {
-		style=Font.BOLD|Font.ITALIC;
-	    } 
-	} else if (getModel().isItalic()) {
-	    style=Font.ITALIC;
-	}
-	String font = getModel().getFont();
-	int size = (int)( getModel().getFontSize()*getMap().getZoom() );
-	
-	if(Tools.isValidFont(font)) {
-	    setFont(new Font(font,style,size));
-	} else {
-	    setFont(new Font("sans serif",style,size));
+	int style=getModel().getFont().getStyle();
+//  	if(getModel().isBold()) {
+//  	    style=Font.BOLD;
+//  	    if(getModel().isItalic()) {
+//  		style=Font.BOLD|Font.ITALIC;
+//  	    }
+//  	} else if (getModel().isItalic()) {
+//  	    style=Font.ITALIC;
+//  	}
+	// ** simply use the font object (sebastian)
+//  	String font = getModel().getFont().getFontName();
+//  	int size = (int)( getModel().getFont().getSize()*getMap().getZoom() );
+
+  	if(Tools.isValidFont(getModel().getFont().getFamily())) {
+	    setFont(getModel().getFont());
+  	} else {
+  	    setFont(new Font("sans serif",
+  			     getModel().getFont().getStyle(),
+  			     getModel().getFont().getSize()));
 	}
 	repaint();
     }

@@ -1,14 +1,15 @@
 <project name="freemind" default="dist" basedir=".">
 	<property name="src" value="." />
 	<property name="build" value="build" />
-	<property name="build.compiler" value="jikes" />
+	<property name="build.compiler" value="modern" />
 	<property name="dist" value="dist" />
 
 	<target name="compile">
 		<mkdir dir="${build}"/>
 		<javac	srcdir="${src}"
 			destdir="${build}"
-			classpath="xerces.jar:w3cdom1.jar"/>
+			classpath="xerces.jar:w3cdom1.jar"
+		        debug="on"/>
 	</target>
 
 	<target name="dist" depends="jar,doc">

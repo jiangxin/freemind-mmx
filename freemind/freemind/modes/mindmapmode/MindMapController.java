@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.10 2000-11-16 20:05:36 ponder Exp $*/
+/*$Id: MindMapController.java,v 1.11 2000-12-05 17:32:56 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -32,6 +32,7 @@ import java.util.Enumeration;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import javax.swing.Action;
 import javax.swing.AbstractAction;
@@ -80,6 +81,31 @@ public class MindMapController extends ControllerAdapter {
     //    Action underline = new UnderlineAction(this);
     Action normalFont = new NormalFontAction(this);
 
+    Action increaseNodeFont = new IncreaseNodeFontAction();
+    Action decreaseNodeFont = new DecreaseNodeFontAction();
+
+    Action increaseBranchFont = new IncreaseBranchFontAction();
+    Action decreaseBranchFont = new DecreaseBranchFontAction();
+
+    // Extension Actions
+    Action evalPositive = new EvaluatePositiveAction();
+    Action evalNegative = new EvaluateNegativeAction();
+    Action evalNeutral = new EvaluateNeutralAction();
+
+    Action evalBranchPositive = new EvaluateBranchPositiveAction();
+    Action evalBranchNegative = new EvaluateBranchNegativeAction();
+    Action evalBranchNeutral = new EvaluateBranchNeutralAction();
+
+    // Branch Font Actions
+    Action boldifyBranch = new BoldifyBranchAction();
+    Action nonBoldifyBranch = new NonBoldifyBranchAction();
+    Action toggleBoldBranch = new ToggleBoldBranchAction();
+
+    Action italiciseBranch = new ItaliciseBranchAction();
+    Action nonItaliciseBranch = new NonItaliciseBranchAction();
+    Action toggleItalicBranch = new ToggleItalicBranchAction();
+
+
     FileFilter filefilter = new MindMapFilter();
 
     public MindMapController(Mode mode) {
@@ -127,7 +153,9 @@ public class MindMapController extends ControllerAdapter {
     JMenu getEditMenu() {
 	JMenu editMenu = new JMenu();
 	editMenu.add(getNodeMenu());
+	editMenu.add(getBranchMenu());
 	editMenu.add(getEdgeMenu());
+	editMenu.add(getExtensionMenu());
 	JMenuItem cutItem = editMenu.add(cut);
  	cutItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_cut")));
 	JMenuItem pasteItem = editMenu.add(paste);
@@ -148,6 +176,66 @@ public class MindMapController extends ControllerAdapter {
 	return fileMenu;
     }
 
+    JMenu getExtensionMenu() {
+	JMenu extensionMenu = new JMenu(FreeMind.getResources().getString("extension_menu"));
+
+	JMenuItem evalNeutralItem = extensionMenu.add(evalNeutral);
+	evalNeutralItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_node_neutral")));
+	JMenuItem evalPositiveItem = extensionMenu.add(evalPositive);
+	evalPositiveItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_node_positive")));
+	JMenuItem evalNegativeItem = extensionMenu.add(evalNegative);
+	evalNegativeItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_node_negative")));
+
+	extensionMenu.addSeparator();
+
+	JMenuItem evalBranchNeutralItem = extensionMenu.add(evalBranchNeutral);
+	evalBranchNeutralItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_branch_neutral")));
+	JMenuItem evalBranchPositiveItem = extensionMenu.add(evalBranchPositive);
+	evalBranchPositiveItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_branch_positive")));
+	JMenuItem evalBranchNegativeItem = extensionMenu.add(evalBranchNegative);
+	evalBranchNegativeItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_branch_negative")));
+
+	return extensionMenu;
+    }
+
+    JMenu getBranchMenu() {
+	JMenu branchMenu = new JMenu(FreeMind.getResources().getString("branch"));
+
+	JMenuItem exportBranchItem = branchMenu.add(exportBranch);
+	// 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
+	JMenu importMenu = new JMenu(FreeMind.getResources().getString("import"));
+	branchMenu.add(importMenu);
+
+	JMenuItem importBranchItem = importMenu.add(importBranch);
+	// 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
+	JMenuItem importLinkedBranchItem = importMenu.add(importLinkedBranch);
+	// 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
+	JMenuItem importLinkedBranchWithoutRootItem = importMenu.add(importLinkedBranchWithoutRoot);
+
+	branchMenu.addSeparator();
+
+	JMenuItem boldifyBranchItem = branchMenu.add(boldifyBranch);
+	JMenuItem nonBoldifyBranchItem = branchMenu.add(nonBoldifyBranch);
+	JMenuItem toggleBoldBranchItem = branchMenu.add(toggleBoldBranch);
+
+	branchMenu.addSeparator();
+
+	JMenuItem italiciseBranchItem = branchMenu.add(italiciseBranch);
+	JMenuItem nonItaliciseBranchItem = branchMenu.add(nonItaliciseBranch);
+	JMenuItem toggleItalicBranchItem = branchMenu.add(toggleItalicBranch);
+
+	branchMenu.addSeparator();
+
+	JMenuItem increaseBranchFontItem = branchMenu.add(increaseBranchFont);
+  	increaseBranchFontItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_branch_increase_font_size")));
+
+	JMenuItem decreaseBranchFontItem = branchMenu.add(decreaseBranchFont);
+	decreaseBranchFontItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_branch_decrease_font_size")));
+
+	return branchMenu;
+    }
+
+
     JMenu getNodeMenu() {
 	JMenu nodeMenu = new JMenu(FreeMind.getResources().getString("node"));
 	JMenuItem editItem = nodeMenu.add(edit);
@@ -156,33 +244,42 @@ public class MindMapController extends ControllerAdapter {
  	addNewItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_add")));
  	JMenuItem removeItem = nodeMenu.add(remove);
  	removeItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_remove")));
-	JMenuItem exportBranchItem = nodeMenu.add(exportBranch);
-	// 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
-	JMenu importMenu = new JMenu(FreeMind.getResources().getString("import"));
-	nodeMenu.add(importMenu);
-	JMenuItem importBranchItem = importMenu.add(importBranch);
-	// 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
-	JMenuItem importLinkedBranchItem = importMenu.add(importLinkedBranch);
-	// 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
-	JMenuItem importLinkedBranchWithoutRootItem = importMenu.add(importLinkedBranchWithoutRoot);
+
+	nodeMenu.addSeparator();
+
 	JMenuItem followLinkItem = nodeMenu.add(followLink);
  	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
 	JMenuItem setLinkItem = nodeMenu.add(setLink);
  	setLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_set_link")));
+
+	nodeMenu.addSeparator();
+
 	JMenuItem toggleFoldedItem = nodeMenu.add(toggleFolded);
  	toggleFoldedItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_toggle_folded")));
 	JMenuItem toggleChildrenFoldedItem = nodeMenu.add(toggleChildrenFolded);
 	toggleChildrenFoldedItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_toggle_children_folded")));
+
+	nodeMenu.addSeparator();
+
 	JMenu nodeStyle = new JMenu(FreeMind.getResources().getString("style"));
 	nodeMenu.add(nodeStyle);
 	nodeStyle.add(fork);
 	nodeStyle.add(bubble);
 	JMenu nodeFont = new JMenu(FreeMind.getResources().getString("font"));
-	nodeMenu.add(nodeFont);
+	JMenuItem increaseNodeFontItem = nodeFont.add(increaseNodeFont);
+  	increaseNodeFontItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_node_increase_font_size")));
+
+	JMenuItem decreaseNodeFontItem = nodeFont.add(decreaseNodeFont);
+	decreaseNodeFontItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_node_decrease_font_size")));
+
+	nodeFont.addSeparator();
+
 	nodeFont.add(italic);
 	nodeFont.add(bold);
+	nodeMenu.add(nodeFont);
 	//	nodeFont.add(underline);
 	nodeMenu.add(nodeColor);
+
 	return nodeMenu;
     }
 
@@ -497,6 +594,265 @@ public class MindMapController extends ControllerAdapter {
 	    getModel().setEdgeColor(node,color);
 	}
     }
+
+    private class IncreaseNodeFontAction extends AbstractAction {
+	IncreaseNodeFontAction() {
+	    super(FreeMind.getResources().getString("increase_node_font_size"));
+	}
+
+	public void actionPerformed(ActionEvent e) {
+	    MindMapNodeModel n = getSelected();
+	    // we assume you have true type, so +1 works
+	    getModel().setFontSize(n,n.getFont().getSize()+1);
+
+	}
+    }
+
+    private class DecreaseNodeFontAction extends AbstractAction {
+	DecreaseNodeFontAction() {
+	    super(FreeMind.getResources().getString("decrease_node_font_size"));
+	}
+
+	public void actionPerformed(ActionEvent e) {
+	    MindMapNodeModel n = getSelected();
+	    // we assume you have true type, so -1 works
+	    getModel().setFontSize(n,n.getFont().getSize()-1);
+	}
+    }
+
+    private class IncreaseBranchFontAction extends AbstractAction {
+	IncreaseBranchFontAction() {
+	    super(FreeMind.getResources().getString("increase_branch_font_size"));
+	}
+
+	public void actionPerformed(ActionEvent e) {
+	    MindMapNodeModel n = getSelected();
+	    // we assume you have true type, so +1 works
+	    getModel().setBranchFontSize(n,n.getFont().getSize()+1);
+
+	}
+    }
+
+    private class DecreaseBranchFontAction extends AbstractAction {
+	DecreaseBranchFontAction() {
+	    super(FreeMind.getResources().getString("decrease_branch_font_size"));
+	}
+
+	public void actionPerformed(ActionEvent e) {
+	    MindMapNodeModel n = getSelected();
+	    // we assume you have true type, so -1 works
+	    getModel().setBranchFontSize(n,n.getFont().getSize()-1);
+	}
+    }
+
+
+    //
+    // Evaluation
+    //
+
+    private class EvaluatePositiveAction extends AbstractAction {
+	EvaluatePositiveAction() {
+	    super(FreeMind.getResources().getString("evaluate_positive"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    Color color = Color.green;
+
+	    String strcolor = FreeMind.userProps.getProperty("positive_node_color");
+
+	    if (strcolor.length() == 7) {
+		color=Tools.xmlToColor(strcolor);
+	    }
+
+	    getModel().setNodeColor(getSelected(), color);
+
+	    Font f = new Font(FreeMind.userProps.getProperty("positive_node_font"),
+			      Integer.parseInt(FreeMind.userProps.getProperty("positive_node_font_style")),
+			      Integer.parseInt(FreeMind.userProps.getProperty("positive_node_font_size")));
+	    getModel().setNodeFont(getSelected(), f);
+	}
+    }
+
+    private class EvaluateNegativeAction extends AbstractAction {
+	EvaluateNegativeAction() {
+	    super(FreeMind.getResources().getString("evaluate_negative"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    Color color = Color.green;
+
+	    String strcolor = FreeMind.userProps.getProperty("negative_node_color");
+
+	    if (strcolor.length() == 7) {
+		color=Tools.xmlToColor(strcolor);
+	    }
+
+	    getModel().setNodeColor(getSelected(), color);
+
+	    Font f = new Font(FreeMind.userProps.getProperty("negative_node_font"),
+			      Integer.parseInt(FreeMind.userProps.getProperty("negative_node_font_style")),
+			      Integer.parseInt(FreeMind.userProps.getProperty("negative_node_font_size")));
+	    getModel().setNodeFont(getSelected(), f);
+	}
+    }
+
+    private class EvaluateNeutralAction extends AbstractAction {
+	EvaluateNeutralAction() {
+	    super(FreeMind.getResources().getString("evaluate_neutral"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    Color color = Color.green;
+
+	    String strcolor = FreeMind.userProps.getProperty("standardnodecolor");
+
+	    if (strcolor.length() == 7) {
+		color=Tools.xmlToColor(strcolor);
+	    }
+
+	    getModel().setNodeColor(getSelected(), color);
+
+	    Font f = new Font(FreeMind.userProps.getProperty("standardfont"),
+			      Integer.parseInt("0"), // FIXME: should be changed in the implementation
+			      Integer.parseInt(FreeMind.userProps.getProperty("standardfontsize")));
+	    getModel().setNodeFont(getSelected(), f);
+	}
+    }
+
+    private class EvaluateBranchPositiveAction extends AbstractAction {
+	EvaluateBranchPositiveAction() {
+	    super(FreeMind.getResources().getString("evaluate_branch_positive"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    Color color = Color.green;
+
+	    String strcolor = FreeMind.userProps.getProperty("positive_node_color");
+
+	    if (strcolor.length() == 7) {
+		color=Tools.xmlToColor(strcolor);
+	    }
+
+	    getModel().setBranchColor(getSelected(), color);
+
+	    Font f = new Font(FreeMind.userProps.getProperty("positive_node_font"),
+			      Integer.parseInt(FreeMind.userProps.getProperty("positive_node_font_style")),
+			      Integer.parseInt(FreeMind.userProps.getProperty("positive_node_font_size")));
+	    getModel().setBranchFont(getSelected(), f);
+	}
+    }
+
+    private class EvaluateBranchNegativeAction extends AbstractAction {
+	EvaluateBranchNegativeAction() {
+	    super(FreeMind.getResources().getString("evaluate_branch_negative"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    Color color = Color.green;
+
+	    String strcolor = FreeMind.userProps.getProperty("negative_node_color");
+
+	    if (strcolor.length() == 7) {
+		color=Tools.xmlToColor(strcolor);
+	    }
+
+	    getModel().setBranchColor(getSelected(), color);
+
+	    Font f = new Font(FreeMind.userProps.getProperty("negative_node_font"),
+			      Integer.parseInt(FreeMind.userProps.getProperty("negative_node_font_style")),
+			      Integer.parseInt(FreeMind.userProps.getProperty("negative_node_font_size")));
+	    getModel().setBranchFont(getSelected(), f);
+	}
+    }
+
+    private class EvaluateBranchNeutralAction extends AbstractAction {
+	EvaluateBranchNeutralAction() {
+	    super(FreeMind.getResources().getString("evaluate_branch_neutral"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    Color color = Color.green;
+
+	    String strcolor = FreeMind.userProps.getProperty("standardnodecolor");
+
+	    if (strcolor.length() == 7) {
+		color=Tools.xmlToColor(strcolor);
+	    }
+
+	    getModel().setBranchColor(getSelected(), color);
+
+	    Font f = new Font(FreeMind.userProps.getProperty("standardfont"),
+			      // FIXME: please use only java.awt.Font
+			      0,
+			      Integer.parseInt(FreeMind.userProps.getProperty("standardfontsize")));
+
+	    //  			    Integer.parseInt(FreeMind.userProps.getProperty("0")),
+	    //  			    Integer.parseInt(FreeMind.userProps.getProperty("standardfontsize")));
+	    getModel().setBranchFont(getSelected(), f);
+	}
+    }
+
+    //
+    // Branch Format Actions
+    //
+
+    private class BoldifyBranchAction extends AbstractAction {
+	BoldifyBranchAction() {
+	    super(FreeMind.getResources().getString("boldify_branch"),
+		  new ImageIcon(ClassLoader.getSystemResource("images/Bold24.gif")));
+	}
+
+	public void actionPerformed(ActionEvent e) {
+	    getModel().setBranchBold(getSelected());
+	}
+    }
+
+    private class NonBoldifyBranchAction extends AbstractAction {
+	NonBoldifyBranchAction() {
+	    super(FreeMind.getResources().getString("nonboldify_branch"));
+	}
+
+	public void actionPerformed(ActionEvent e) {
+	    getModel().setBranchNonBold(getSelected());
+	}
+    }
+
+    private class ToggleBoldBranchAction extends AbstractAction {
+	ToggleBoldBranchAction() {
+	    super(FreeMind.getResources().getString("toggle_bold_branch"));
+	}
+
+	public void actionPerformed(ActionEvent e) {
+	    getModel().setBranchToggleBold(getSelected());
+	}
+    }
+
+
+    private class ItaliciseBranchAction extends AbstractAction {
+	ItaliciseBranchAction() {
+	    super(FreeMind.getResources().getString("italicise_branch"),
+		  new ImageIcon(ClassLoader.getSystemResource("images/Italic24.gif")));
+	}
+
+	public void actionPerformed(ActionEvent e) {
+	    getModel().setBranchItalic(getSelected());
+	}
+    }
+
+    private class NonItaliciseBranchAction extends AbstractAction {
+	NonItaliciseBranchAction() {
+	    super(FreeMind.getResources().getString("nonitalicise_branch"));
+	}
+
+	public void actionPerformed(ActionEvent e) {
+	    getModel().setBranchNonItalic(getSelected());
+	}
+    }
+
+    private class ToggleItalicBranchAction extends AbstractAction {
+	ToggleItalicBranchAction() {
+	    super(FreeMind.getResources().getString("toggle_italic_branch"));
+	}
+
+	public void actionPerformed(ActionEvent e) {
+	    getModel().setBranchToggleItalic(getSelected());
+	}
+    }
+
 
     //
     // Other classes

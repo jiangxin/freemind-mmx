@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.6 2000-11-15 22:17:54 ponder Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.7 2000-12-05 17:32:56 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.Color;
+import java.awt.Font;
 // //XML Definition (Interfaces)
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -69,24 +70,41 @@ public class MindMapNodeModel extends NodeAdapter {
     }
 
     void setBold(boolean bold) {
-	super.bold = bold;
+	// ** use font object
+	// super.bold = bold;
+	if(bold && font.isBold()) return;
+	if(!bold && !font.isBold()) return;
+
+	if(bold) setFont(font.deriveFont(font.getStyle()+Font.BOLD));
+	if(!bold) setFont(font.deriveFont(font.getStyle()-Font.BOLD));
     }
 
     void setItalic(boolean italic) {
-	super.italic = italic;
+	// ** use font object
+	// super.italic = italic;
+
+	if(italic && font.isItalic()) return;
+	if(!italic && !font.isItalic()) return;
+
+	if(italic) setFont(font.deriveFont(font.getStyle()+Font.ITALIC));
+	if(!italic) setFont(font.deriveFont(font.getStyle()-Font.ITALIC));
     }
 
     void setUnderlined(boolean underlined) {
 	super.underlined = underlined;
     }
 
-    void setFontSize(int fontSize) {
-	super.fontSize = fontSize;
+    void setFont(Font font) {
+	this.font = font;
     }
     
-    void setFont(String font) {
-	super.font = font;
-    }
+//      void setFontSize(int fontSize) {
+//  	super.fontSize = fontSize;
+//      }
+
+//      void setFont(String font) {
+//  	super.font = font;
+//      }
 
     //Overwritten get Methods
     public String getStyle() {
@@ -125,13 +143,13 @@ public class MindMapNodeModel extends NodeAdapter {
 	}
 
 	//font
-	if (font!=null || fontSize!=0 || isBold() || isItalic() || isUnderlined() ) {
+	if (font!=null || font.getSize()!=0 || isBold() || isItalic() || isUnderlined() ) {
 	    Element fontElement = doc.createElement( "font" );
 	    if (font != null) {
-		fontElement.setAttribute("name",getFont());
+		fontElement.setAttribute("name",getFont().getFontName());
 	    }
-	    if (fontSize != 0) {
-		fontElement.setAttribute("size",Integer.toString(getFontSize()));
+	    if (font.getSize() != 0) {
+		fontElement.setAttribute("size",Integer.toString(getFont().getSize()));
 	    }
 	    if (isBold()) {
 		fontElement.setAttribute("bold","true");
@@ -181,15 +199,24 @@ public class MindMapNodeModel extends NodeAdapter {
 	    if ( ((Node)childNodes.item(i)).getNodeName().equals("font")) {
 		Element font =((Element)childNodes.item(i));
 		String name = font.getAttribute("name"); 
-		if (Tools.isValidFont(name)) {
-		    setFont(name);
+		int style=0;
+		int size=0;
+
+		if (!Tools.isValidFont(name)) {
+		    name = "Sans Serif";
 		}
-		if (font.getAttribute("bold").equals("true")) setBold(true);
-		if (font.getAttribute("italic").equals("true")) setItalic(true);
+
+		if (font.getAttribute("bold").equals("true")) style+=Font.BOLD;;
+		if (font.getAttribute("italic").equals("true")) style+=Font.ITALIC;
 		if (font.getAttribute("underline").equals("true")) setUnderlined(true);
+
 		if (font.getAttribute("size")!="") {
-		    setFontSize(Integer.parseInt(font.getAttribute("size")));
+		    size = Integer.parseInt(font.getAttribute("size"));
+		    // getFont().setSize(Integer.parseInt(font.getAttribute("size")));
 		}
+
+		setFont(new Font(name, style, size));
+
 	    }
 	    //node
 	    if ( ((Node)childNodes.item(i)).getNodeName().equals("node")) {

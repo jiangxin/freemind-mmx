@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.12 2000-11-08 13:53:04 ponder Exp $*/
+/*$Id: Controller.java,v 1.13 2000-12-05 17:32:56 ponder Exp $*/
 
 package freemind.controller;
 
@@ -38,6 +38,7 @@ import java.awt.Component;
 import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.print.PrinterJob;
+import java.awt.print.PageFormat;
 import java.awt.event.ActionEvent;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenu;
@@ -476,7 +477,10 @@ public class Controller {
 	public void actionPerformed(ActionEvent e) {
 	    JOptionPane.showMessageDialog(getView(),"Printing doesn't work yet, it's just experimental.\n I'll implement it in a future version.");
 	    PrinterJob printJob = PrinterJob.getPrinterJob();
-	    printJob.setPrintable(getView());
+	    PageFormat pf = printJob.pageDialog(printJob.defaultPage());
+
+	    printJob.setPrintable(getView(),pf);
+
 	    if (printJob.printDialog()) {
 		try {
 		    printJob.print();

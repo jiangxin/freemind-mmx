@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.7 2000-11-03 22:49:20 ponder Exp $*/
+/*$Id: MindMapMapModel.java,v 1.8 2000-12-05 17:32:56 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.main.FreeMind;
 import freemind.modes.MapAdapter;
 import java.awt.Color;
+import java.awt.Font;
 import java.io.FileNotFoundException;
 import java.io.File;
 import java.io.StringWriter;
@@ -58,6 +59,118 @@ public class MindMapMapModel extends MapAdapter {
 
     public void setNodeColor(MindMapNodeModel node, Color color) {
 	node.setColor(color);
+	nodeChanged(node);
+    }
+
+    public void setBranchFont(MindMapNodeModel node, Font f) {
+	setNodeFont(node,f);
+	for(int i=0;i<node.getChildCount();i++) {
+	    setBranchFont((MindMapNodeModel)node.getChildAt(i),f);
+	}
+	nodeChanged(node);
+    }
+
+
+    public void setBranchColor(MindMapNodeModel node, Color color) {
+	setNodeColor(node,color);
+	for(int i=0;i<node.getChildCount();i++) {
+	    setBranchColor((MindMapNodeModel)node.getChildAt(i),color);
+	}
+	nodeChanged(node);
+    }
+
+    public void setBranchBold(MindMapNodeModel node) {
+	Font f = node.getFont();
+	if(!f.isBold()) {
+	    // make bold
+	    node.setFont(f.deriveFont(f.getStyle()+Font.BOLD));
+	}
+
+	for(int i=0;i<node.getChildCount();i++) {
+	    setBranchBold((MindMapNodeModel)node.getChildAt(i));
+	}
+	nodeChanged(node);
+    }
+
+    public void setBranchNonBold(MindMapNodeModel node) {
+	Font f = node.getFont();
+	if(f.isBold()) {
+	    // make normal
+	    node.setFont(f.deriveFont(f.getStyle()-Font.BOLD));
+	}
+
+	for(int i=0;i<node.getChildCount();i++) {
+	    setBranchNonBold((MindMapNodeModel)node.getChildAt(i));
+	}
+	nodeChanged(node);
+    }
+
+    public void setBranchToggleBold(MindMapNodeModel node) {
+	Font f = node.getFont();
+	if(f.isBold()) {
+	    // make normal
+	    node.setFont(f.deriveFont(f.getStyle()-Font.BOLD));
+	} else {
+	    node.setFont(f.deriveFont(f.getStyle()+Font.BOLD));
+	}
+
+	for(int i=0;i<node.getChildCount();i++) {
+	    setBranchToggleBold((MindMapNodeModel)node.getChildAt(i));
+	}
+	nodeChanged(node);
+    }
+
+
+    public void setBranchItalic(MindMapNodeModel node) {
+	Font f = node.getFont();
+	if(!f.isItalic()) {
+	    // make italic
+	    node.setFont(f.deriveFont(f.getStyle()+Font.ITALIC));
+	}
+
+	for(int i=0;i<node.getChildCount();i++) {
+	    setBranchItalic((MindMapNodeModel)node.getChildAt(i));
+	}
+	nodeChanged(node);
+    }
+
+    public void setBranchNonItalic(MindMapNodeModel node) {
+	Font f = node.getFont();
+	if(f.isItalic()) {
+	    // make normal
+	    node.setFont(f.deriveFont(f.getStyle()-Font.ITALIC));
+	}
+
+	for(int i=0;i<node.getChildCount();i++) {
+	    setBranchNonItalic((MindMapNodeModel)node.getChildAt(i));
+	}
+	nodeChanged(node);
+    }
+
+    public void setBranchToggleItalic(MindMapNodeModel node) {
+	Font f = node.getFont();
+	if(f.isItalic()) {
+	    // make normal
+	    node.setFont(f.deriveFont(f.getStyle()-Font.ITALIC));
+	} else {
+	    node.setFont(f.deriveFont(f.getStyle()+Font.ITALIC));
+	}
+
+	for(int i=0;i<node.getChildCount();i++) {
+	    setBranchToggleItalic((MindMapNodeModel)node.getChildAt(i));
+	}
+	nodeChanged(node);
+    }
+
+
+
+
+    public void setNodeFont(MindMapNodeModel node, Font f) {
+	node.setFont(f);
+//  	node.setFontSize(f.getSize());
+//  	node.setFont(f.getFontName());
+	// FIXME: the implementation should be changed to only use java.awt.Font
+	// node.setStyle(f.getStyle());
 	nodeChanged(node);
     }
 
@@ -112,12 +225,24 @@ public class MindMapMapModel extends MapAdapter {
     }
 
     public void setFontSize(MindMapNodeModel node, int fontSize) {
-	node.setFontSize(fontSize);
+	// ** change the font size
+	node.setFont(node.getFont().deriveFont((float)fontSize));
 	nodeStructureChanged(node);
     }
 
     public void setFont(MindMapNodeModel node, String font) {
-	node.setFont(font);
+	node.setFont(new Font(font,node.getFont().getStyle(),node.getFont().getSize()));
+	nodeStructureChanged(node);
+    }
+
+    public void setBranchFontSize(MindMapNodeModel node, int fontSize) {
+	// ** change the font size
+	node.setFont(node.getFont().deriveFont((float)fontSize));
+
+	for(int i=0;i<node.getChildCount();i++) {
+	    setBranchFontSize((MindMapNodeModel)node.getChildAt(i),fontSize);
+	}
+
 	nodeStructureChanged(node);
     }
 
