@@ -1,0 +1,38 @@
+<project name="freemind" default="dist" basedir=".">
+	<property name="src" value="." />
+	<property name="build" value="build" />
+	<property name="build.compiler" value="jikes" />
+	<property name="dist" value="dist" />
+
+	<target name="compile">
+		<mkdir dir="${build}"/>
+		<javac	srcdir="${src}"
+			destdir="${build}"
+			classpath="xerces.jar:w3cdom1.jar"/>
+	</target>
+
+	<target name="dist" depends="jar,doc"/>
+
+	<target name="jar" depends="compile">
+		<mkdir dir="${dist}/lib" />
+		<jar jarfile="${dist}/lib/freemind.jar"
+		     manifest="${src}/MANIFEST.MF">
+			<fileset dir="${build}"/>
+			<fileset dir="${src}">
+				<include name="images/*"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="doc">
+		<mkdir dir="${dist}/doc" />
+		<javadoc sourcepath="${src}"
+		         destdir="${dist}/doc"
+		         packagenames="freemind.*" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+	</target>
+</project>
