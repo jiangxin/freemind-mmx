@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.12 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.13 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -25,10 +25,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.awt.Color;
-import java.awt.Font;
+
 import java.util.*;
 //import java.io.BufferedWriter;
 import java.io.IOException;
@@ -60,7 +57,7 @@ public class MindMapNodeModel extends NodeAdapter {
     //Overwritten get Methods
     public String getStyle() {
 	if (isFolded()) {
-	    return "bubble";
+	    return MindMapNode.STYLE_BUBBLE;
 	} else {
 	    return super.getStyle();
 	}
@@ -108,28 +105,32 @@ public class MindMapNodeModel extends NodeAdapter {
                 else { 
                    result.append(" "); }
                 break;                
+             case '\n':
+                result.append("\n<br>\n");
+                break;
              default:
                 result.append(myChar); }
              previousSpace = spaceOccured; }}
        return result.toString(); };
 
     public int saveHTML(Writer fileout, String parentID, int lastChildNumber,
-                        boolean isRoot, boolean treatAsParagraph) throws IOException {
+                        boolean isRoot, boolean treatAsParagraph, int depth) throws IOException {
         // return lastChildNumber 
         // Not very beautiful solution, but working at least and logical too.
 
         final String el = System.getProperty("line.separator");
+        
+        boolean basedOnHeadings = (getFrame().getProperty("html_export_folding").
+                                   equals("html_export_based_on_headings"));
 
         boolean createFolding = isFolded();
-        if (getFrame().getProperty("html_export_folding").equals("html_export_no_folding")) {
-           createFolding = false; }
         if (getFrame().getProperty("html_export_folding").equals("html_export_fold_all")) {
            createFolding = hasChildren(); }
-        if (isRoot) {
+        if (getFrame().getProperty("html_export_folding").equals("html_export_no_folding") ||
+            basedOnHeadings || isRoot) {
            createFolding = false; }
 
-
-        fileout.write(treatAsParagraph ? "<p>" : "<li>");
+        fileout.write(treatAsParagraph || basedOnHeadings ? "<p>" : "<li>");
 
         String localParentID = parentID;
 	if (createFolding) {
@@ -144,6 +145,9 @@ public class MindMapNodeModel extends NodeAdapter {
                "')\">-</Span>");
 
            fileout.write("\n"); }
+        
+        if (basedOnHeadings && hasChildren() && depth <= 5) {
+           fileout.write("<h"+depth+">"); }
 
 	if (getLink() != null) {
            String link = getLink();
@@ -189,6 +193,9 @@ public class MindMapNodeModel extends NodeAdapter {
 
         if (getLink() != null) {
            fileout.write("</a>"+el); }
+
+        if (basedOnHeadings && hasChildren() && depth <= 5) {
+           fileout.write("</h"+depth+">"); }
         
         // Are the children to be treated as paragraphs?
         
@@ -198,10 +205,31 @@ public class MindMapNodeModel extends NodeAdapter {
               treatChildrenAsParagraph = true;
               break; }}
 
+
+
+
         // Write the children
 
+        //   Export based on headings
+
+        if (getFrame().getProperty("html_export_folding").equals("html_export_based_on_headings")) {
+           for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
+              MindMapNodeModel child = (MindMapNodeModel)e.next();            
+              lastChildNumber =
+                 child.saveHTML(fileout,parentID,lastChildNumber,/*isRoot=*/false,
+                                treatChildrenAsParagraph, depth + 1); }
+           return lastChildNumber; }
+       
+        //   Export not based on headings
+
         if (hasChildren()) {
-           if (createFolding) {
+           if (getFrame().getProperty("html_export_folding").equals("html_export_based_on_headings")) {
+              for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
+                 MindMapNodeModel child = (MindMapNodeModel)e.next();            
+                 lastChildNumber =
+                    child.saveHTML(fileout,parentID,lastChildNumber,/*isRoot=*/false,
+                                   treatChildrenAsParagraph, depth + 1); }}              
+           else if (createFolding) {
               fileout.write("<ul id=\"fold"+localParentID+
                             "\" style=\"POSITION: relative; VISIBILITY: visible;\">");
               if (treatChildrenAsParagraph) {
@@ -211,7 +239,7 @@ public class MindMapNodeModel extends NodeAdapter {
                  MindMapNodeModel child = (MindMapNodeModel)e.next();            
                  localLastChildNumber =
                     child.saveHTML(fileout,localParentID,localLastChildNumber,/*isRoot=*/false, 
-                                   treatChildrenAsParagraph); }}
+                                   treatChildrenAsParagraph, depth + 1); }}
            else {
               fileout.write("<ul>"); 
               if (treatChildrenAsParagraph) {
@@ -220,7 +248,7 @@ public class MindMapNodeModel extends NodeAdapter {
                  MindMapNodeModel child = (MindMapNodeModel)e.next();            
                  lastChildNumber =
                     child.saveHTML(fileout,parentID,lastChildNumber,/*isRoot=*/false,
-                                   treatChildrenAsParagraph); }}
+                                   treatChildrenAsParagraph, depth + 1); }}
            if (treatChildrenAsParagraph) {
               fileout.write("</li>"); }
            fileout.write(el);
@@ -340,9 +368,9 @@ public class MindMapNodeModel extends NodeAdapter {
     //NanoXML save method
     public void save(Writer writer) throws IOException {
 	XMLElement node = new XMLElement();
-	node.setTagName("node");
+	node.setName("node");
 
-	node.addProperty("text",this.toString());
+	node.setAttribute("text",this.toString());
 
 	//	((MindMapEdgeModel)getEdge()).save(doc,node);
 
@@ -351,37 +379,37 @@ public class MindMapNodeModel extends NodeAdapter {
            node.addChild(edge); }
 
 	if (isFolded()) {
-           node.addProperty("folded","true"); }
+           node.setAttribute("folded","true"); }
 	
 	if (color != null) {
-           node.addProperty("color", Tools.colorToXml(getColor())); }
+           node.setAttribute("color", Tools.colorToXml(getColor())); }
 
 	if (style != null) {
-           node.addProperty("style", super.getStyle()); }
+           node.setAttribute("style", super.getStyle()); }
 	    //  ^ Here cannot be just getStyle() without super. This is because
 	    //  getStyle's style depends on folded / unfolded. For example, when
 	    //  real style is fork and node is folded, getStyle returns
-	    //  "Bubble", which is not what we want to save.
+	    //  MindMapNode.STYLE_BUBBLE, which is not what we want to save.
 
 	//link
 	if (getLink() != null) {
-           node.addProperty("link", getLink()); }
+           node.setAttribute("link", getLink()); }
 
 	//font
 	if (font!=null) {
 	    XMLElement fontElement = new XMLElement();
-	    fontElement.setTagName("font");
+	    fontElement.setName("font");
 
 	    if (font != null) {
-               fontElement.addProperty("name",font.getFamily()); }
+               fontElement.setAttribute("name",font.getFamily()); }
 	    if (font.getSize() != 0) {
-               fontElement.addProperty("size",Integer.toString(font.getSize())); }
+               fontElement.setAttribute("size",Integer.toString(font.getSize())); }
 	    if (isBold()) {
-               fontElement.addProperty("bold","true"); }
+               fontElement.setAttribute("bold","true"); }
 	    if (isItalic()) {
-               fontElement.addProperty("italic","true"); }
+               fontElement.setAttribute("italic","true"); }
 	    if (isUnderlined()) {
-               fontElement.addProperty("underline","true"); }
+               fontElement.setAttribute("underline","true"); }
 	    node.addChild(fontElement); }
 
         if (childrenUnfolded().hasNext()) {

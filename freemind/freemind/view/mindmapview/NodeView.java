@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.17 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: NodeView.java,v 1.18 2003-11-03 10:49:18 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -27,13 +27,10 @@ import freemind.modes.NodeAdapter;//This should not be done.
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.awt.*;
-import java.awt.event.InputEvent;
 import java.awt.dnd.*;
-import java.awt.datatransfer.*;
 import java.net.MalformedURLException;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
@@ -116,9 +113,9 @@ public abstract class NodeView extends JLabel {
 	NodeView newView;
 	if (model.isRoot()) {
 	    newView = new RootNodeView( model, map );
-	} else if (model.getStyle().equals("fork") ) {
+	} else if (model.getStyle().equals(MindMapNode.STYLE_FORK) ) {
 	    newView = new ForkNodeView( model, map );
-	} else if (model.getStyle().equals("bubble") ) {
+	} else if (model.getStyle().equals(MindMapNode.STYLE_BUBBLE) ) {
 	    newView = new BubbleNodeView( model, map );
 	} else {
 	    System.err.println("Tried to create a NodeView of unknown Style.");
@@ -144,16 +141,24 @@ public abstract class NodeView extends JLabel {
           (getModel().isRoot() || !getModel().hasChildren() || xCoord < getSize().width/2); }
 
     public void updateCursor(double xCoord) {
-       int requiredCursor = followLink(xCoord) ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR;
-       if (getCursor().getType() != requiredCursor) {
-          setCursor(new Cursor(requiredCursor)); }}
+      int requiredCursor = followLink(xCoord) ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR;
+      if (getCursor().getType() != requiredCursor) {
+        setCursor(new Cursor(requiredCursor));
+      }
+    }
 
     public boolean isRoot() {
 	return model.isRoot();
     }
 
-    public boolean isSibling(NodeView myNodeView) { 
+    public boolean isSiblingOf(NodeView myNodeView) { 
        return getParentView() == myNodeView.getParentView(); }
+
+    public boolean isChildOf(NodeView myNodeView) { 
+       return getParentView() == myNodeView; }
+
+    public boolean isParentOf(NodeView myNodeView) { 
+       return (this == myNodeView.getParentView()); }
 
     public MindMapNode getModel() {
 	return model;
@@ -207,7 +212,7 @@ public abstract class NodeView extends JLabel {
     }
 
     /**Is the node left of root?*/
-    protected boolean isLeft() {
+    public boolean isLeft() {
 	return left;
     }
 
@@ -305,8 +310,105 @@ public abstract class NodeView extends JLabel {
     //
     // Navigation
     //
-
+    protected NodeView getNextPage() {
+      if (isRoot()) {
+        return this; // I'm root
+      }
+      NodeView sibling = getNextSibling();
+      if (sibling == this) {
+        return this; // at the end
+      }
+//      if (sibling.getParentView() != this.getParentView()) {
+//        return sibling; // sibling on another page (has different parent)
+//      }
+      NodeView nextSibling = sibling.getNextSibling();
+      while (nextSibling != sibling 
+              && sibling.getParentView() == nextSibling.getParentView()) {
+        sibling = nextSibling;
+        nextSibling = nextSibling.getNextSibling();
+      }
+      return sibling; // last on the page
+    }
+      
+    protected NodeView getPreviousPage() {
+      if (isRoot()) {
+        return this; // I'm root
+      }
+      NodeView sibling = getPreviousSibling();
+      if (sibling == this) {
+        return this; // at the end
+      }
+//      if (sibling.getParentView() != this.getParentView()) {
+//        return sibling; // sibling on another page (has different parent)
+//      }
+      NodeView previousSibling = sibling.getPreviousSibling();
+      while (previousSibling != sibling 
+              && sibling.getParentView() == previousSibling.getParentView()) {
+        sibling = previousSibling;
+        previousSibling = previousSibling.getPreviousSibling();
+      }
+      return sibling; // last on the page
+    }
+    
     protected NodeView getNextSibling() {
+      NodeView sibling;
+      NodeView nextSibling = this;
+      
+      // get next sibling even in higher levels
+      for (sibling = this; !sibling.isRoot(); sibling = sibling.getParentView()) { 
+        nextSibling = sibling.getNextSiblingSingle();
+        if (sibling != nextSibling) {
+          break; // found sibling
+        }
+      }
+      
+      if (sibling.isRoot()) {
+        return this;  // didn't find (we are at the end)
+      }
+      
+      // we have the nextSibling, search in childs
+      // untill: leaf, closed node, max level
+      sibling = nextSibling;
+      while (sibling.getModel().getNodeLevel() < getMap().getSiblingMaxLevel()) {
+        // can we drill down?
+        if (sibling.getChildrenViews().size() <= 0) {
+          break; // no
+        }
+        sibling = (NodeView)(sibling.getChildrenViews().getFirst());
+      }
+      return sibling;
+    }
+
+    protected NodeView getPreviousSibling() {
+      NodeView sibling;
+      NodeView previousSibling = this;
+      
+      // get Previous sibling even in higher levels
+      for (sibling = this; !sibling.isRoot(); sibling = sibling.getParentView()) { 
+        previousSibling = sibling.getPreviousSiblingSingle();
+        if (sibling != previousSibling) {
+          break; // found sibling
+        }
+      }
+      
+      if (sibling.isRoot()) {
+        return this;  // didn't find (we are at the end)
+      }
+      
+      // we have the PreviousSibling, search in childs
+      // untill: leaf, closed node, max level
+      sibling = previousSibling;
+      while (sibling.getModel().getNodeLevel() < getMap().getSiblingMaxLevel()) {
+        // can we drill down?
+        if (sibling.getChildrenViews().size() <= 0) {
+          break; // no
+        }
+        sibling = (NodeView)(sibling.getChildrenViews().getLast());
+      }
+      return sibling;
+    }
+
+    protected NodeView getNextSiblingSingle() {
 	LinkedList v = null;
 	if (getParentView().isRoot()) {
 	    if (this.isLeft()) {
@@ -319,14 +421,15 @@ public abstract class NodeView extends JLabel {
 	}	
 	NodeView sibling;
 	if (v.size()-1 == v.indexOf(this)) { //this is last, return first
-	    sibling = (NodeView)v.getFirst();
+//	    sibling = (NodeView)v.getFirst(); // loop
+            sibling = this;
 	} else {
 	    sibling = (NodeView)v.get(v.indexOf(this)+1);
 	}
 	return sibling;
     }
 
-    protected NodeView getPreviousSibling() {
+    protected NodeView getPreviousSiblingSingle() {
 	LinkedList v = null;
 	if (getParentView().isRoot()) {
 	    if (this.isLeft()) {
@@ -339,7 +442,8 @@ public abstract class NodeView extends JLabel {
 	}
 	NodeView sibling;
 	if (v.indexOf(this) <= 0) {//this is first, return last
-	    sibling = (NodeView)v.getLast();
+//	    sibling = (NodeView)v.getLast(); // loop
+          sibling = this;
 	} else {
 	    sibling = (NodeView)v.get(v.indexOf(this)-1);
 	}
@@ -351,25 +455,27 @@ public abstract class NodeView extends JLabel {
     //
 
     void insert() {
-	ListIterator it = getModel().childrenFolded();
-	if (it != null) {
-	    while(it.hasNext()) {               
-		insert((MindMapNode)it.next());
-	    }
-	}
+       ListIterator it = getModel().childrenFolded();
+       while(it.hasNext()) {               
+          insert((MindMapNode)it.next());
+       }
     }
 
-    void insert(MindMapNode newNode) {
-	NodeView newView = NodeView.newNodeView(newNode,getMap());
-	newView.setLeft(this.isLeft());
+    /**
+     * Create views for the newNode and all his descendants, set their
+     * isLeft attribute according to this view. Observe that views know
+     * about their parents only through their models.
+     */
 
-	ListIterator it = newNode.childrenFolded();// getModel().childrenFolded();
-	if (it != null) {
-	    while(it.hasNext()) {
-		MindMapNode child = (MindMapNode)it.next();
-		newView.insert(child);
-	    }
-	}
+    void insert(MindMapNode newNode) {
+       NodeView newView = NodeView.newNodeView(newNode,getMap());
+       newView.setLeft(this.isLeft());
+
+       ListIterator it = newNode.childrenFolded();
+       while (it.hasNext()) {
+          MindMapNode child = (MindMapNode)it.next();
+          newView.insert(child);
+       }
     }
     
     /**
@@ -390,6 +496,10 @@ public abstract class NodeView extends JLabel {
        // for nonconvex feature of nodes starting with <html>.
 
         String nodeText = getModel().toString();
+        if (nodeText.length() < 4) { // (PN)
+          nodeText = nodeText + new String("   ").substring(nodeText.length());
+        }
+
         if (nodeText.startsWith("<html>")) {
            // Make it possible to use relative img references in HTML using tag <base>.
            if (nodeText.indexOf("<img")>=0 && nodeText.indexOf("<base ") < 0 ) {
@@ -399,9 +509,30 @@ public abstract class NodeView extends JLabel {
               catch (MalformedURLException e) {} }
            setText(nodeText); }
         else if (getModel().isLong()) {
-           setText("<html><table><tr><td width=\""+map.getZoomed(600)+"\">"+
-                   Tools.toXMLEscapedText(nodeText).replaceAll("\n","<p>") + 
-                   "</td></tr></html>"); }
+           if (nodeText.startsWith("<table>")) {           	             	  
+			  String[] lines = nodeText.substring(7,nodeText.length()-7).split("\n");
+			  int startingLine = lines[0].matches("^\\s*$") ? 1 : 0;
+              // ^ If the remaining first line is empty, do not draw it
+
+              String text = "<html><table border=1 style=\"border-color: white\">";
+              //String[] lines = nodeText.split("\n");
+              for (int line = startingLine; line < lines.length; line++) {
+                 text += "<tr><td style=\"border-color: white;\">"+
+                    Tools.toXMLEscapedText(lines[line]).replaceAll("\t","<td style=\"border-color: white\">"); }
+              setText(text);
+           }
+           else {
+			  String[] lines = nodeText.split("\n");   
+              String text = "";              
+			  int maximumLineLength = 0;
+              for (int line = 0; line < lines.length; line++) {
+                 text += Tools.replaceLeadingSpaceWithNBSP(Tools.toXMLEscapedText(lines[line])) + "<p>";
+                 if (lines[line].length() > maximumLineLength) {
+					maximumLineLength = lines[line].length(); }}
+                         
+              setText("<html><table"+
+                (maximumLineLength < 100?">":" width=\""+map.getZoomed(600)+"\">")+
+                 text+"</table>"); }}
         else {
            setText(nodeText); }
 
@@ -429,6 +560,7 @@ public abstract class NodeView extends JLabel {
         if (map.getZoom() != 1F) {
            font = font.deriveFont(font.getSize()*map.getZoom()); }
         setFont(font);
+
         repaint(); // Because of zoom?
     }
 
@@ -445,19 +577,6 @@ public abstract class NodeView extends JLabel {
          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     //
     // Layout   >>>> This must be moved to MindMapLayout <<<<

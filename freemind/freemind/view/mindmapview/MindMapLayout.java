@@ -16,11 +16,10 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.12 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: MindMapLayout.java,v 1.14 2003-11-03 11:00:27 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
-import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import java.awt.LayoutManager;
 import java.awt.Container;
@@ -31,8 +30,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.lang.Math;
 import javax.swing.JLabel;
-import javax.swing.JViewport;
-import java.lang.Math;
 
 /**
  * This class will Layout the Nodes and Edges of an MapView.
@@ -133,9 +130,14 @@ public class MindMapLayout implements LayoutManager {
                 if (node.isLeft()) {
                    resizeMap(x); }
                 else {
-                   resizeMap(x + node.getPreferredSize().width); }
-                // Daniel: why do we return??
-                return; }
+                  resizeMap(x + node.getPreferredSize().width); }
+                  // Daniel: why do we return??
+                  // Petr: perhaps: extension to the right needs no move 
+                  //       of the already placed objects to place the new node.
+                  //       The boundary is just bigger enough and that's it.
+                  //       Perhaps the following code makes the move...
+                  return; 
+                }
 
             node.setBounds(x, y, node.getPreferredSize().width, node.getPreferredSize().height);
             
@@ -171,7 +173,9 @@ public class MindMapLayout implements LayoutManager {
     /**
      *
      */
-    private void resizeMap( int outmostX ) {
+    public void resizeMap( int outmostX ) {
+        // (public to reuse from MapView.scrollNodeToVisible  ...)
+
         // In principle, resize can be caused by:
         // 1) Unfold
         // 2) Insertion of a node

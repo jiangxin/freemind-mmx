@@ -16,20 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMode.java,v 1.15 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: MindMapMode.java,v 1.16 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
-import freemind.main.FreeMind;
 import freemind.controller.Controller;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
-import freemind.modes.ControllerAdapter;
+
 import java.io.File;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
-import javax.swing.JPopupMenu;
 
 public class MindMapMode implements Mode {
 
@@ -54,7 +51,7 @@ public class MindMapMode implements Mode {
      * (updates Actions etc.)
      */
     public void activate() {
-	((ControllerAdapter)getModeController()).changeToMapOfMode(this);
+       c.getMapModuleManager().changeToMapOfMode(this);
     }
 
     public void restore(String restoreable) {
@@ -87,9 +84,5 @@ public class MindMapMode implements Mode {
 
     public JMenu getModeEditMenu() {
 	return ((MindMapController)getModeController()).getEditMenu();
-    }
-
-    public JPopupMenu getPopupMenu() {
-	return ((MindMapController)getModeController()).getPopupMenu();
     }
 }

@@ -16,14 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.3 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.5 2003-11-03 11:00:06 sviles Exp $*/
 
 package freemind.controller;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+
 import freemind.view.mindmapview.NodeView;
-import freemind.view.mindmapview.MapView;
-import java.awt.event.*;
-import javax.swing.Timer;
 
 /**
  * The MouseMotionListener which belongs to every
@@ -45,86 +46,45 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
        c = controller; }
 
     public void mouseDragged(MouseEvent e) {}
-   //          Invoked when a mouse button is pressed on a component and then dragged. 
+   // Invoked when a mouse button is pressed on a component and then dragged. 
+
     public void mouseMoved(MouseEvent e) {
+   //  Invoked when the mouse button has been moved on a component (with no buttons down). 
        ((NodeView)e.getComponent()).updateCursor(e.getX());
-       //   System.out.println("mm:"+e.getComponent());
-       //c.getMode().getModeController().mouseMoved(e); }}       
     }
-   //       Invoked when the mouse button has been moved on a component (with no buttons down). 
 
-
-    private void handlePopup( MouseEvent e) {
-       if (e.isPopupTrigger()) {
-          c.showPopupMenu(e.getComponent(),e.getX(),e.getY()); }}
 
     //
     // Interface MouseListener
     //
 
     public void mouseClicked(MouseEvent e) {
+      if (!e.isAltDown() 
+          && !e.isControlDown() 
+          && !e.isShiftDown() 
+          && !e.isPopupTrigger()
+          && e.getButton() == MouseEvent.BUTTON1
+          && ((NodeView)(e.getComponent())).getModel().getLink() == null) {
+        c.getMode().getModeController().edit(null, false, false);
+      }
     }
-   /*
-       if (e.getModifiers() == MouseEvent.BUTTON1_MASK ) {
-          if (e.getClickCount() == 1) {
-             ignoreNextDoubleClick = false; }
-          if (e.getClickCount() % 2 == 0) {
-             if (ignoreNextDoubleClick) {
-                ignoreNextDoubleClick = false; }
-             else {
-                c.getMode().getModeController().doubleClick(); }}
-          else {
-             if (ignoreNextPlainClick) {
-                ignoreNextPlainClick = false; }
-             else {
-                c.getMode().getModeController().plainClick(); }}}
-       else {
-          ignoreNextDoubleClick = false; 
-          ignoreNextPlainClick = false; }}
-   */
 
     public void mouseEntered( MouseEvent e ) {
-       //System.out.println("modif:"+e.getModifiers());
-       if (e.getModifiers() == 0  && 
-           c.getView().getSelecteds().size() <= 1) {
-          c.select( (NodeView)e.getSource(), /*extend=*/false ); }
-       // Display link in status line
-       String link = ((NodeView)e.getSource()).getModel().getLink();
-       link = (link != null ? link : " ");
-       c.getFrame().out(link); 
-
-       e.consume();
+       c.getMode().getModeController().select(e);
     }
 
     public void mouseExited( MouseEvent e ) {
     }
 
     public void mousePressed( MouseEvent e ) {
-        // Right mouse <i>press</i> is <i>not</i> a popup trigger for Windows.
-        // Only Right mouse release is a popup trigger!
-        // OK, but Right mouse <i>press</i> <i>is</i> a popup trigger on Linux.
-        handlePopup(e);
-
-	boolean extend = e.isControlDown(); 
-	boolean branch = e.isShiftDown(); 
-        NodeView nodeView = (NodeView)e.getSource();
-
-        if (extend || branch || !c.isSelected(nodeView)) {
-           if (c.getView().getSelecteds().size() > 1) {
-              //ignoreNextPlainClick = true; }
-           }
-           if (!branch) {
-              c.select( nodeView, extend ); }
-           else {
-              if (nodeView != c.getView().getSelected() &&
-                  nodeView.isSibling(c.getView().getSelected())) {
-                 c.getView().selectContinuous(nodeView); }
-              else {
-                 c.getView().selectBranch(nodeView,extend); }}}
-           //c.selectBranch( (NodeView)e.getSource(), extend ); }
-
+      // Right mouse <i>press</i> is <i>not</i> a popup trigger for Windows.
+      // Only Right mouse release is a popup trigger!
+      // OK, but Right mouse <i>press</i> <i>is</i> a popup trigger on Linux.
+      c.getMode().getModeController().showPopupMenu(e);
+      if (!e.isConsumed()) {        // unified selection (PN) %%% (unify with mose enntered above!!!
+        c.getView().extendSelection((NodeView)e.getSource(), e);
         e.consume();
-    }
+      }    }
 
     public void mouseReleased( MouseEvent e ) {
        // handling click in mouseReleased rather than in mouseClicked
@@ -133,8 +93,11 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
        // is not triggered.
        // The behavior is not tested on Linux.
 
-       handlePopup(e);
-
+       c.getMode().getModeController().showPopupMenu(e);
+       if (e.isConsumed()) {
+         return;
+       }
+       
        if (e.getModifiers() == MouseEvent.BUTTON1_MASK ) {
           if (e.getClickCount() == 1) {
              ignoreNextDoubleClick = false; }

@@ -16,15 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapPopupMenu.java,v 1.10 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: MindMapPopupMenu.java,v 1.11 2003-11-03 10:49:18 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
-import freemind.main.FreeMind;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.MenuElement;
 import javax.swing.KeyStroke;
+import java.awt.Component;
+
 
 public class MindMapPopupMenu extends JPopupMenu {
 
@@ -32,18 +34,16 @@ public class MindMapPopupMenu extends JPopupMenu {
 
     public MindMapPopupMenu(MindMapController c) {
        	this.c = c;
+        JMenu leading = c.getLeadingNodeMenu();
+        Component[] mc = leading.getMenuComponents();
+        for (int i = 0; i < mc.length; i++) {
+           this.add(mc[i]); }
+
+        this.addSeparator();
+        
        	this.add(c.getNodeMenu());
        	this.add(c.getBranchMenu());
        	this.add(c.getEdgeMenu());
        	this.add(c.getExtensionMenu());
-        this.addSeparator();
-	this.add(c.cut).setAccelerator
-           (KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_cut")));
-        this.add(c.copy).setAccelerator
-           (KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_copy")));
-        this.add(c.copySingle).setAccelerator
-           (KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_copy_single")));
-	this.add(c.paste).setAccelerator
-           (KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_paste")));
     }
 }

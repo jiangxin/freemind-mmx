@@ -16,46 +16,46 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.20 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: FreeMind.java,v 1.21 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.main;
 
-import freemind.view.mindmapview.MapView;
-import freemind.controller.MenuBar;
-import freemind.controller.Controller;
-import freemind.modes.ModeController;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Properties;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.PropertyResourceBundle;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.StringTokenizer;
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
+import java.util.StringTokenizer;
+
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.UIManager;
-import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import javax.swing.ImageIcon;
+import javax.swing.UIManager;
+
+import freemind.controller.Controller;
+import freemind.controller.MenuBar;
+import freemind.modes.ModeController;
+import freemind.view.mindmapview.MapView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
-    public static final String version = "0.6.1";
+    public static final String version = "0.6.5";
     //    public static final String defaultPropsURL = "freemind.properties";
     public URL defaultPropsURL;
     //    public static Properties defaultProps;
@@ -169,9 +169,15 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	menuBar = new MenuBar(c);
 	setJMenuBar(menuBar);
 
-        //Create the scroll pane.
-	scrollPane.setPreferredSize( new Dimension( 600, 400 ) );
-	
+        //Create the scroll pane
+        
+        // set the default size (PN)
+        int win_width  = Integer.parseInt(props.getProperty("appwindow_width","0"));
+        int win_height = Integer.parseInt(props.getProperty("appwindow_height","0"));
+        win_width  = (win_width  > 0) ? win_width  : 640;
+        win_height = (win_height > 0) ? win_height : 440;
+        getRootPane().setPreferredSize(new Dimension( win_width, win_height ));
+
 	getContentPane().add( scrollPane, BorderLayout.CENTER );
 
 	status = new JLabel();
@@ -207,7 +213,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
     public Container getViewport() {
 	return scrollPane.getViewport();
     }
-	
+
+     // maintain this methods to keep the last state/size of the window (PN)
+    public int getWinHeight() {
+      return getRootPane().getHeight();
+    }
+    public int getWinWidth() {
+      return getRootPane().getWidth();
+    }
+    public int getWinState() {
+      return getExtendedState();
+    }
+
     public URL getResource(String name) {
 	return ClassLoader.getSystemResource(name);
     }
@@ -431,6 +448,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
            frame.c.setToolbarVisible(false); }
 
         frame.setVisible(true);
+
+        // set the default state (normal/maximized) (PN)
+        // (note: this must be done later when partucular 
+        //        initalizations of the windows are ready,
+        //        perhaps after setVisible is it enough... :-?
+        int win_state  = Integer.parseInt(FreeMind.props.getProperty("appwindow_state","0"));
+        win_state = ((win_state & ICONIFIED) != 0) ? NORMAL : win_state;
+        frame.setExtendedState(win_state);
 
     }//main()
 }

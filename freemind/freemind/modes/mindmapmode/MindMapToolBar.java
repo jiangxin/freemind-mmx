@@ -16,21 +16,18 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.9 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: MindMapToolBar.java,v 1.10 2003-11-03 10:49:18 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.main.Tools;
-import freemind.controller.Controller;
+
 import java.lang.Integer;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
-import java.util.*;
 import javax.swing.JComboBox;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
-import javax.swing.ImageIcon;
-import javax.swing.BorderFactory;
 
 public class MindMapToolBar extends JToolBar {
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.13 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: MapAdapter.java,v 1.14 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.modes;
 
@@ -30,7 +30,6 @@ import freemind.controller.MindMapNodesSelection;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.Color;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -47,6 +46,7 @@ public abstract class MapAdapter implements MindMap {
     private MindMapNode root;
     private EventListenerList treeModelListeners = new EventListenerList();
     private boolean saved = true;
+	protected boolean readOnly = true;
     private Color backgroundColor;
     private File file;
     private FreeMindMain frame;
@@ -57,6 +57,7 @@ public abstract class MapAdapter implements MindMap {
     private boolean     findCaseSensitive;
     private LinkedList  findNodeQueue;
     private ArrayList   findNodesUnfoldedByLastFind;
+      
 
     public MapAdapter (FreeMindMain frame) {
 	this.frame = frame;
@@ -66,12 +67,29 @@ public abstract class MapAdapter implements MindMap {
     // Abstract methods that _must_ be implemented.
     //
 
-    public abstract void save(File file); 
+    public abstract boolean save(File file); 
     
     public abstract void load(File file) throws FileNotFoundException, IOException, XMLParseException ;
 
-    public void close() {
-    }
+	/**
+	 * Attempts to lock the map using semaphore file.
+	 * @param file
+	 * @return If the map is locked, return the name of the locking user, return null
+	 * otherwise.
+	 * @throws Exception
+	 */
+	public String tryToLock(File file) throws Exception { 
+	   return null;
+	}
+
+	public void destroy() {
+		// Do all the necessary destructions in your model,
+		// e.g. remove file locks.
+	}
+
+// (PN)
+//    public void close() {
+//    }
 
     public FreeMindMain getFrame() {
 	return frame;
@@ -84,6 +102,10 @@ public abstract class MapAdapter implements MindMap {
     public boolean isSaved() {
 	return saved;
     }
+
+	public boolean isReadOnly() {
+		return readOnly; 
+	}
 
     protected void setSaved(boolean saved) {
 	this.saved = saved;
@@ -137,7 +159,12 @@ public abstract class MapAdapter implements MindMap {
     }
 
     protected String getText(String textId) {
-       return getFrame().getResources().getString(textId); }
+	  String result;
+      try {
+		result = getFrame().getResources().getString(textId); }
+      catch (Exception e) {
+      	return textId; }
+      return result; } 
 
     //
     // Node editing
@@ -146,7 +173,7 @@ public abstract class MapAdapter implements MindMap {
     public void setFolded( MindMapNode node, boolean folded ) {
        if (node.isFolded() != folded) {
           node.setFolded(folded);
-          getFrame().getView().select(node.getViewer());
+          getFrame().getView().selectAsTheOnlyOneSelected(node.getViewer());
           fireTreeStructureChanged(this, getPathToRoot(node), null, null); }}
  
     public void setLink( NodeAdapter node, String link ) {
@@ -167,23 +194,23 @@ public abstract class MapAdapter implements MindMap {
     //
     // cut'n'paste
     //
-    public Transferable cut(MindMapNode node) {
+    public final Transferable cut(MindMapNode node) {
        // This cut does not need any reimplementation in child Classes!
        Transferable t = copy(node);
        removeNodeFromParent(node);
        return t;
     }
 
-   public Transferable copy(MindMapNode node) {
-	return null;
-    }
-
-    public Transferable cut() {
+    public final Transferable cut() {
        Transferable t = copy();
        for(Iterator i = getFrame().getView().getSelecteds().iterator();i.hasNext();) {
           MindMapNode selectedNode = ((NodeView)i.next()).getModel();
           removeNodeFromParent(selectedNode); }
        return t; }
+
+   public Transferable copy(MindMapNode node) {
+     return null;
+   }
 
    public Transferable copy() {
       return copy(getFrame().getView().getSelectedNodesSortedByY(), null); }
@@ -271,13 +298,13 @@ public abstract class MapAdapter implements MindMap {
            oldpa.insert(newChild, oldpa.getChildPosition(parent)); } //     parent.getRealChildCount()); }
         // } 
         else {
-           parent.insert(newChild, parent.getRealChildCount()); }
+           parent.insert(newChild, parent.getChildCount()); }
     }
 
     public void insertNodeInto(MindMapNode newChild,
 			       MindMapNode parent){
         // The default position is after the last node
-        insertNodeInto(newChild, parent, parent.getRealChildCount());
+        insertNodeInto(newChild, parent, parent.getChildCount());
     }
 
     /**
@@ -362,8 +389,6 @@ public abstract class MapAdapter implements MindMap {
 
         if (pattern.getAppliesToEdge()) {
            EdgeAdapter edge = (EdgeAdapter)node.getEdge();
-           //System.err.println("edge:"+edge);
-           //System.err.println("edge width:"+pattern.getEdgeWidth());
            edge.setColor(pattern.getEdgeColor());
            edge.setStyle(pattern.getEdgeStyle());
            edge.setWidth(pattern.getEdgeWidth());}
@@ -437,7 +462,7 @@ public abstract class MapAdapter implements MindMap {
 
              // Select the node and scroll to it.
              getFrame().getView().centerNode(node.getViewer());
-             getFrame().getView().select(node.getViewer());
+             getFrame().getView().selectAsTheOnlyOneSelected(node.getViewer());
              frame.getController().obtainFocusForSelected();
 
              // Save the state for find next
@@ -451,7 +476,7 @@ public abstract class MapAdapter implements MindMap {
           getFrame().getView().centerNode(findFromNode.getViewer()); }
        else {
           getFrame().getView().scrollNodeToVisible(findFromNode.getViewer()); }
-       getFrame().getView().select(findFromNode.getViewer());
+       getFrame().getView().selectAsTheOnlyOneSelected(findFromNode.getViewer());
        frame.getController().obtainFocusForSelected();
 
        return false; }

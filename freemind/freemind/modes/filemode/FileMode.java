@@ -16,27 +16,22 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMode.java,v 1.12 2003-11-03 10:39:52 sviles Exp $*/
+/*$Id: FileMode.java,v 1.13 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.modes.filemode;
 
 import freemind.modes.Mode;
-import freemind.modes.MindMap;
 import freemind.modes.ModeController;
-import freemind.modes.ControllerAdapter;
 import freemind.controller.Controller;
-import freemind.view.mindmapview.MapView;
+
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
-import javax.swing.JPopupMenu;
 
 public class FileMode implements Mode {
 
     private Controller c;
     private FileController modecontroller;
     private JToolBar toolbar;
-    private JPopupMenu popupmenu;
     private static final String MODENAME = "File";
     private static boolean isRunning = false;
 
@@ -47,7 +42,6 @@ public class FileMode implements Mode {
 	this.c = c;
 	modecontroller = new FileController(this);
 	toolbar = new FileToolBar(modecontroller);
-	popupmenu = new FilePopupMenu(modecontroller);
     }
     
 
@@ -64,7 +58,7 @@ public class FileMode implements Mode {
 	    getModeController().newMap();
 	    isRunning = true;
 	} else {
-	    ((ControllerAdapter)getModeController()).changeToMapOfMode(this);
+            c.getMapModuleManager().changeToMapOfMode(this);
 	}
 	//	menu.add( ((FileController)getModeController()).center );
 // 	getController().cut.setEnabled(false);
@@ -92,9 +86,5 @@ public class FileMode implements Mode {
 
     public JToolBar getModeToolBar() {
 	return toolbar;
-    }
-
-    public JPopupMenu getPopupMenu() {
-	return popupmenu;
     }
 }

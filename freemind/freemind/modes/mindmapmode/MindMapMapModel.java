@@ -1,3 +1,4 @@
+
 /*FreeMindget - A Program for creating and viewing Mindmaps
  *Copyright (C) 2000-2001  Joerg Mueller <joergmueller@bigfoot.com>
  *See COPYING for Details
@@ -16,23 +17,19 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.21 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: MindMapMapModel.java,v 1.22 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.main.FreeMindMain;
 import freemind.controller.MindMapNodesSelection;
 import freemind.main.XMLParseException;
-import freemind.main.XMLElement;
 import freemind.main.Tools;
 import freemind.modes.MapAdapter;
-import freemind.modes.NodeAdapter;
-import freemind.modes.EdgeAdapter;
 import freemind.modes.MindMapNode;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Cursor;
 import java.awt.datatransfer.*;
 
 import java.io.*;
@@ -41,97 +38,41 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import java.lang.UnsatisfiedLinkError;
+import java.lang.NoClassDefFoundError;
+
 import java.net.URL;
-import java.net.URLConnection;
+//import java.net.URLConnection;
 import java.net.MalformedURLException;
 
 import javax.swing.JOptionPane;
-
+import java.nio.channels.FileLock;
 
 public class MindMapMapModel extends MapAdapter {
 
+    LockManager lockManager;
 
     //
     // Constructors
     //
 
-
     public MindMapMapModel(FreeMindMain frame) {
         super(frame);
+        lockManager = frame.getProperty("experimental_file_locking_on").equals("true") ? 
+           new LockManager() : new DummyLockManager();
         setRoot(new MindMapNodeModel
                 ( getFrame().getResources().getString("new_mindmap"), getFrame())); }
     
     public MindMapMapModel( MindMapNodeModel root, FreeMindMain frame ) {
         super(frame);
+        lockManager = frame.getProperty("experimental_file_locking_on").equals("true") ? 
+           new LockManager() : new DummyLockManager();
         setRoot(root); }
 
     // 
 
     public String getRestoreable() {
        return getFile()==null ? null : "MindMap:"+getFile().getAbsolutePath(); }
-
-
-    //
-    // Branch modifying general methods together with required interface
-    //
-
-    public interface NodeModifier {
-       public void modify(MindMapNodeModel node); }
-
-    public void modifyBranch(MindMapNodeModel node, NodeModifier modifier) {
-       modifyBranchRecursively(node, modifier);
-       nodeStructureChanged(node); }
-          
-    protected void modifyBranchRecursively(MindMapNodeModel node, NodeModifier modifier) {
-       modifier.modify(node);
-       for (Iterator i = node.childrenUnfolded();i.hasNext();) {
-          modifyBranchRecursively((MindMapNodeModel)i.next(), modifier); }}
-
-    // Methods for editing the Nodes    
-    // _________________________________________________________________________________
-
-    public void setBranchFont(MindMapNodeModel node, final Font font) {
-       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
-          node.setFont(font);; }}); }
-
-    public void setBranchColor(MindMapNodeModel node, final Color color) {
-       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
-          node.setColor(color); }}); }
-
-    public void setBranchBold(MindMapNodeModel node) {
-       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
-          node.setBold(true); }}); }
-
-    public void setBranchNonBold(MindMapNodeModel node) {
-       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
-          node.setBold(false); }}); }
-
-    public void setBranchToggleBold(MindMapNodeModel node) {
-       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
-          node.toggleBold(); }}); }
-
-    public void setBranchItalic(MindMapNodeModel node) {
-       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
-          node.setItalic(true); }}); }
-
-    public void setBranchNonItalic(MindMapNodeModel node) {
-       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
-          node.setItalic(false); }}); }
-
-    public void setBranchToggleItalic(MindMapNodeModel node) {
-       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
-          node.toggleItalic(); }}); }
-
-    public void setBranchFontSize(MindMapNodeModel node, final int fontSize) {
-       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
-          node.estabilishOwnFont();
-          node.setFontSize(fontSize); }}); }
-
-    public void increaseBranchFontSize(MindMapNodeModel node, final int increment) {
-       modifyBranch(node, new NodeModifier() { public void modify(MindMapNodeModel node) {
-          node.estabilishOwnFont();
-          node.setFontSize(node.getFont().getSize() + increment); }}); }
-
 
     //  All these methods do redisplay, because they are offered to controller for use.
     // __________________________________________________________________________
@@ -371,7 +312,7 @@ public class MindMapMapModel extends MapAdapter {
 
             //fileout.write("<ul>");
 
-            rootNodeOfBranch.saveHTML(fileout, "1", 0, /*isRoot*/true, /*treatAsParagraph*/true);
+            rootNodeOfBranch.saveHTML(fileout, "1", 0, /*isRoot*/true, /*treatAsParagraph*/true, /*depth*/1);
 
             //fileout.write("</ul>");
 
@@ -476,58 +417,102 @@ public class MindMapMapModel extends MapAdapter {
         catch(Exception e) {
             e.printStackTrace();
             return false; }}
-
-    public void save(File file) {
-        try {
-            setFile(file);
-            setSaved(true);
-
-            //CODE FOR NANOXML
-
-            //XMLElement map = new XMLElement();
-            //map.setTagName("map");
-            //map.addChild(((MindMapNodeModel)getRoot()).save());
-
-            //Generating output Stream
+    /**
+     * Return the success of saving
+     */
+    public boolean save(File file) {
+        if (readOnly) { // unexpected situation, yet it's better to back it up
+            System.err.println("Attempt to save read-only map.");           
+            return false; }
+        try {            
+            //Generating output Stream            
             BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
-            //  fileout.write( stringOut.toString() ); *///Spit out DOM as a String  */
-            //map.write(fileout);
+            
             fileout.write("<map>\n");
             ((MindMapNodeModel)getRoot()).save(fileout);
             fileout.write("</map>\n");
             fileout.close();
 
+            setFile(file);            
+            setSaved(true);
+            return true;
+        } catch (FileNotFoundException e ) {
+            getFrame().getController().errorMessage(
+                Tools.expandPlaceholders(getText("save_failed"),file.getName()));
+            return false; 
         } catch(Exception e) {
             System.err.println("Error in MindMapMapModel.save(): ");
             e.printStackTrace();
+            return false;
         }
     }
-    
+
+    /**
+     * Attempts to lock the map using a semaphore file
+     * @param file
+     * @return If the map is locked, return the name of the locking user, otherwise return null.
+     * @throws Exception, when the locking failed for other reasons than that the
+     * file is being edited.
+     */
+    public String tryToLock(File file) throws Exception {       
+        String lockingUser = lockManager.tryToLock(file);
+        String lockingUserOfOldLock = lockManager.popLockingUserOfOldLock(); 
+        if (lockingUserOfOldLock != null) {     
+          getFrame().getController().informationMessage(
+            Tools.expandPlaceholders(getText("locking_old_lock_removed"), file.getName(), lockingUserOfOldLock)); }
+        if (lockingUser == null) {          
+          readOnly = false; } // The map sure is not read only when the locking suceeded.                   
+        return lockingUser; }
+                
     public void load(File file) throws FileNotFoundException, IOException, XMLParseException {
+       if (!file.canWrite()) {
+          readOnly = true; }
+       else {
+          // try to lock the map
+          try {
+             String lockingUser = tryToLock(file);
+             if (lockingUser != null) {          
+               getFrame().getController().informationMessage(
+                 Tools.expandPlaceholders(getText("map_locked_by_open"), file.getName(), lockingUser));
+               readOnly = true; }
+             else {
+               readOnly = false; }}            
+          catch (Exception e){ // Throwed by tryToLock
+             e.printStackTrace();
+             getFrame().getController().informationMessage(
+               Tools.expandPlaceholders(getText("locking_failed_by_open"), file.getName()));   
+             readOnly = true; }}
+       
        MindMapNodeModel root = loadTree(file);
        if (root != null) {
           setRoot(root); }
        setFile(file);
-       setSaved(true); 
-    }
+       setSaved(true); } 
     
+    public void destroy() {
+       lockManager.releaseLock();
+       lockManager.releaseTimer(); }
+
     MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
         MindMapXMLElement mapElement = new MindMapXMLElement(getFrame());
-	try {
+        try {
            mapElement.parseFromReader(new BufferedReader(new FileReader(file))); }
         catch (Exception ex) {
            System.err.println("Error while parsing file:"+ex);
            return null; }
         return mapElement.getMapChild(); }
 
+    
+
     //
     // cut'n'paste
     //
-    public Transferable cut(MindMapNode node) {
-       Transferable transfer = copy(node);
-       super.cut(node);
-       return transfer;
-    }
+// (PN) see: super.cut(node) ... it does exactly the same!!!
+//    public Transferable cut(MindMapNode node) {
+//       Transferable transfer = copy(node);
+//       super.cut(node);
+//       return transfer;
+//    }
 
     public Transferable copy(MindMapNode node) {
        StringWriter stringWriter = new StringWriter();
@@ -579,7 +564,7 @@ public class MindMapMapModel extends MapAdapter {
          if (node != selectedNode) {
             removeNodeFromParent(node); }}
 
-      getFrame().getView().select(selectedNode.getViewer());
+      getFrame().getView().selectAsTheOnlyOneSelected(selectedNode.getViewer());
       changeNode(selectedNode, newContent);
    }
 
@@ -882,4 +867,108 @@ public class MindMapMapModel extends MapAdapter {
        catch (Exception e) { e.printStackTrace(); }
        getFrame().setWaitingCursor(false);        
     }
+    
+    private class LockManager extends TimerTask {
+        File lockedSemaphoreFile = null;        
+        Timer lockTimer = null;
+        final long lockUpdatePeriod = 4*60*1000; // four minutes
+        final long lockSafetyPeriod = 5*60*1000; // five minutes
+        String lockingUserOfOldLock = null;    
+                
+        private File getSemaphoreFile(File mapFile) {       
+            return new File(mapFile.getParent()+System.getProperty("file.separator")+
+                            "$~"+mapFile.getName()+"~"); }
+                            
+        public synchronized String popLockingUserOfOldLock() {
+            String toReturn = lockingUserOfOldLock;
+            lockingUserOfOldLock = null;
+            return toReturn; }  
+
+        private void writeSemaphoreFile(File inSemaphoreFile) throws Exception {
+            FileOutputStream semaphoreOutputStream = new FileOutputStream(inSemaphoreFile);
+            FileLock lock = null;
+            try {
+               lock = semaphoreOutputStream.getChannel().tryLock(); 
+               if (lock == null) {
+                  semaphoreOutputStream.close();
+                  System.err.println("Locking failed.");                  
+                  throw new Exception(); }} // locking failed
+            catch (UnsatisfiedLinkError eUle) {}  // This may come with Windows95. We don't insist on detailed locking in that case.
+            catch (NoClassDefFoundError eDcdf) {} // ^ just like above.
+            // ^ On Windows95, the necessary libraries are missing.
+            semaphoreOutputStream.write(System.getProperty("user.name").getBytes());
+            semaphoreOutputStream.write('\n');
+            semaphoreOutputStream.write(String.valueOf(System.currentTimeMillis()).getBytes());         
+            semaphoreOutputStream.close();
+            semaphoreOutputStream = null;
+            Tools.setHidden(inSemaphoreFile, true, /*synchro=*/false); // Exception free  
+            if (lock != null) lock.release(); }
+                                    
+        public synchronized String tryToLock(File file) throws Exception {
+            // Locking should work for opening as well as for saving as.
+            // We are especially carefull when it comes to exclusivity of writing.
+                 
+            File semaphoreFile = getSemaphoreFile(file);
+            if (semaphoreFile == lockedSemaphoreFile) {
+                return null ; }
+            try {
+               BufferedReader semaphoreReader = new BufferedReader(new FileReader(semaphoreFile));
+               String lockingUser = semaphoreReader.readLine();
+
+               long lockTime = new Long (semaphoreReader.readLine()).longValue();
+               long timeDifference = System.currentTimeMillis() - lockTime;
+               //catch (NumberFormatException enf) {} // This means that the time was not written at all - lock is corrupt
+               if (timeDifference > lockSafetyPeriod) { // the lock is old
+                  semaphoreReader.close();
+                  lockingUserOfOldLock = lockingUser;
+                  semaphoreFile.delete(); }
+               else return lockingUser; }
+            catch (FileNotFoundException e) {}
+
+            writeSemaphoreFile(semaphoreFile);
+
+            if (lockTimer == null) {
+              lockTimer = new Timer();
+              lockTimer.schedule(this, lockUpdatePeriod, lockUpdatePeriod); }                   
+            releaseLock();
+            lockedSemaphoreFile = semaphoreFile;
+            return null; }
+               
+        public synchronized void releaseLock() {
+           if (lockedSemaphoreFile != null) {
+              lockedSemaphoreFile.delete();
+              lockedSemaphoreFile = null; }} // this may fail, TODO: ensure real deletion
+
+        public synchronized void releaseTimer() {
+            if (lockTimer != null) {
+              lockTimer.cancel();
+              lockTimer = null; }}
+               
+        public synchronized void run() { // update semaphore file           
+            if (lockedSemaphoreFile == null) {
+                System.err.println("unexpected: lockedSemaphoreFile is null upon lock update");
+                return; }           
+            try {
+               Tools.setHidden(lockedSemaphoreFile, false, /*synchro=*/true); // Exception free
+               // ^ We unhide the file before overwriting because JavaRE1.4.2 does
+               // not let us open hidden files for writing. This is a workaround for Java bug,
+               // I guess.
+
+               writeSemaphoreFile(lockedSemaphoreFile); }
+            catch (Exception e) {e.printStackTrace();}}         
+    }   
+    private class DummyLockManager extends LockManager {
+        public synchronized String popLockingUserOfOldLock() {
+            return null; }  
+                                    
+        public synchronized String tryToLock(File file) throws Exception {
+            return null; }
+               
+        public synchronized void releaseLock() {}
+            
+        public synchronized void releaseTimer() {}
+               
+        public synchronized void run() {}
+    }   
+    
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.11 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: MainToolBar.java,v 1.13 2003-11-03 11:00:05 sviles Exp $*/
 
 package freemind.controller;
 
@@ -24,7 +24,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 
 public class MainToolBar extends JToolBar {

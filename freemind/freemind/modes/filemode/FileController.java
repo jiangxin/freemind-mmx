@@ -16,12 +16,10 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileController.java,v 1.9 2003-11-03 10:39:52 sviles Exp $*/
+/*$Id: FileController.java,v 1.11 2003-11-03 11:00:13 sviles Exp $*/
 
 package freemind.modes.filemode;
 
-import freemind.main.FreeMind;
-import freemind.main.FreeMindMain;
 import freemind.modes.Mode;
 import freemind.modes.MindMap;
 import freemind.modes.MapAdapter;
@@ -38,6 +36,9 @@ public class FileController extends ControllerAdapter {
 
     Action newMap = new NewMapAction(this);
     Action center = new CenterAction();
+    Action openPath = new OpenPathAction();
+
+    private JPopupMenu popupmenu = new FilePopupMenu(this);
 
 
     public FileController(Mode mode) {
@@ -49,7 +50,7 @@ public class FileController extends ControllerAdapter {
     }
 
     public MindMapNode newNode() {
-	File newNode = new File(((FileNodeModel)getSelected()).getFile(), "new_Directory");
+	File newNode = new File(((FileNodeModel)getSelected()).getFile(),"new_Directory");
 	newNode.mkdir();
 	return new FileNodeModel(newNode,getFrame());
     }
@@ -58,8 +59,12 @@ public class FileController extends ControllerAdapter {
 	JMenu editMenu = new JMenu();
         add(editMenu, find, "keystroke_find");
         add(editMenu, findNext, "keystroke_find_next"); 
+        add(editMenu, openPath);
         return editMenu; }
 
+    public JPopupMenu getPopupMenu() {
+      return this.popupmenu;
+    }
     //-----------------------------------------------------------------------------------
 
     // Private
@@ -87,6 +92,23 @@ public class FileController extends ControllerAdapter {
 		newMap(map);
 	    }
 	}
+    }
+
+    private class OpenPathAction extends AbstractAction {
+	OpenPathAction() {
+	    super(getController().getResourceString("open"));
+	}
+	public void actionPerformed(ActionEvent e) {
+           String inputValue = JOptionPane.showInputDialog
+              (getText("open"), "");
+           if (inputValue != null) {
+              File newCenter = new File(inputValue);
+              if (newCenter.exists()) { // and is a folder
+		MindMap map = new FileMapModel(newCenter, getFrame());
+		newMap(map);
+              }
+           }
+        }
     }
 
 }

@@ -16,14 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseEdgeModel.java,v 1.4 2003-11-03 10:39:52 sviles Exp $*/
+/*$Id: BrowseEdgeModel.java,v 1.6 2003-11-03 11:00:13 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
 import freemind.main.FreeMindMain;
 import freemind.modes.MindMapNode;
 import freemind.modes.EdgeAdapter;
-import freemind.main.Tools;
 import java.awt.Color;
 
 import freemind.main.XMLElement;

@@ -16,19 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeNodeModel.java,v 1.6 2001-03-31 22:37:00 ponder Exp $*/
+/*$Id: SchemeNodeModel.java,v 1.8 2003-11-03 11:00:22 sviles Exp $*/
 
 package freemind.modes.schememode;
 
 import freemind.main.FreeMindMain;
-import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.io.File;
-import java.io.StreamTokenizer;
-import java.awt.Color;
-
 
 /**
  * This class represents a single Node of a Tree. It contains direct handles 

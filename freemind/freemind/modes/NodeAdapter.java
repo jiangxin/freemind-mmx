@@ -16,17 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.14 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: NodeAdapter.java,v 1.15 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.modes;
 
-import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
-import freemind.main.Tools;
-import freemind.controller.Controller;
 import freemind.view.mindmapview.NodeView;
 import java.util.*;
-import java.net.URL;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.tree.TreeNode;
@@ -51,6 +47,7 @@ public abstract class NodeAdapter implements MindMapNode {
 
 
     protected List children;
+    private MindMapNode preferredChild; 
 
     protected Font font;
     protected boolean underlined = false;
@@ -122,7 +119,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	this.edge = edge;
     }
 
-    /**A Node-Style like "fork" or "bubble"*/
+    /**A Node-Style like MindMapNode.STYLE_FORK or MindMapNode.STYLE_BUBBLE*/
     public String getStyle() {
 	if (style==null) {
 	    if(this.isRoot()) {
@@ -253,9 +250,13 @@ public abstract class NodeAdapter implements MindMapNode {
 
     public String toString() {
 	String string = userObject.toString();
-	if (string.equals("")) {
-	    string = "   ";
-	}
+// (PN) %%%
+// Why? If because of presentation, this level shall be self responsible... 
+// Model shall NOT change the real data!!!
+//
+//	if (string.equals("")) {
+//	    string = "   ";
+//	}
 	return string;
     }
 
@@ -322,18 +323,19 @@ public abstract class NodeAdapter implements MindMapNode {
 	return (TreeNode)children.get( childIndex );
     }
 
-    public int getRealChildCount() {
+    public int getChildCount() {
        return children == null ? 0 : children.size();
     }
 
-    public int getChildCount() {
-	if (isFolded()) {
-	    return 0;
-	}
-	return children.size();
-    }
-    // Daniel: ^ The name of this method is confusing. It does nto convey
-    // the meaning, at least not to me.
+// (PN)
+//    public int getChildCount() {
+//	if (isFolded()) {
+//	    return 0;
+//	}
+//	return children.size();
+//    }
+//    // Daniel: ^ The name of this method is confusing. It does nto convey
+//    // the meaning, at least not to me.
 
     public int getIndex( TreeNode node ) {
 	return children.indexOf( (MindMapNode)node ); //uses equals()
@@ -355,16 +357,68 @@ public abstract class NodeAdapter implements MindMapNode {
     //Garbage Collection work (Nodes in removed Sub-Trees reference each other)?
     
     public void insert( MutableTreeNode child, int index) {
-        children.add( index, child );
+        if (index < 0) { // add to the end (used in xml load) (PN) 
+          index = getChildCount();
+          children.add( index, child );
+        }
+        else {           // mind preferred child :-)
+          children.add( index, child );
+          preferredChild = (MindMapNode)child;
+        }
     	child.setParent( this );
     }
     
+    
     public void remove( int index ) {
-	children.remove( index );
+        MutableTreeNode node = (MutableTreeNode)children.get(index); 
+        if (node == this.preferredChild) { // mind preferred child :-) (PN) 
+          if (children.size() > index + 1) {
+            this.preferredChild = (MindMapNode)(children.get(index + 1));
+          }
+          else {
+            this.preferredChild = (index > 0) ? 
+                (MindMapNode)(children.get(index - 1)) : null;
+          }
+        }
+        node.setParent(null);
+        children.remove( index );
     }
     
     public void remove( MutableTreeNode node ) {
+        if (node == this.preferredChild) { // mind preferred child :-) (PN) 
+          int index = children.indexOf(node);
+          if (children.size() > index + 1) {
+            this.preferredChild = (MindMapNode)(children.get(index + 1));
+          }
+          else {
+            this.preferredChild = (index > 0) ? 
+                (MindMapNode)(children.get(index - 1)) : null;
+          }
+        }
+        node.setParent(null);
     	children.remove( node );
+    }
+    
+    public MindMapNode getPreferredChild() { // mind preferred child :-) (PN) 
+      if (this.children.contains(this.preferredChild)) {
+        return this.preferredChild;
+      }
+      else if (!isLeaf()) {
+        return (MindMapNode)(this.children.get((getChildCount() + 1) / 2 - 1));
+      }
+      else {
+        return null;
+      }
+    }
+    public void setPreferredChild(MindMapNode node) {
+      this.preferredChild = node;
+      if (node == null) {
+        return;
+      }
+      else if (this.parent != null) {
+        // set also preffered child of parents...
+        this.parent.setPreferredChild(this);
+      }
     }
 
     public void removeFromParent() {
@@ -393,5 +447,14 @@ public abstract class NodeAdapter implements MindMapNode {
 	if ( parent != null ) {
 	    ( (NodeAdapter)parent ).addToPathVector( pathVector );
 	}
+    }
+
+    public int getNodeLevel() {  //for cursor navigation within a level (PN)  
+      int level = 0;
+      MindMapNode parent;
+      for (parent = this; !parent.isRoot(); parent = parent.getParentNode()) {
+        level++;
+      }
+      return level;
     }
 }

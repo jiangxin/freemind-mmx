@@ -16,12 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeView.java,v 1.8 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: EdgeView.java,v 1.10 2003-11-03 11:00:24 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.modes.MindMapEdge;
-import freemind.modes.EdgeAdapter;
 import java.awt.*;
 import javax.swing.JLabel;
 
@@ -116,4 +115,11 @@ public abstract class EdgeView {
    protected void setRendering(Graphics2D g) {
       if (getMap().getController().getAntialiasEdges() || getMap().getController().getAntialiasAll()) {
          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
+
+   public boolean isAntialiasAll() {
+      return true; }
+
+   public boolean isAntialiasEdges() {
+      return true; }
+
 }

@@ -16,19 +16,21 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.10 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: MindMapNode.java,v 1.11 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.modes;
 
 import freemind.view.mindmapview.NodeView;
 import java.util.ListIterator;
-import java.net.URL;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 
 public interface MindMapNode extends MutableTreeNode {
+   
+    public static final String STYLE_BUBBLE = "bubble";
+    public static final String STYLE_FORK = "fork";
 	
     ListIterator childrenFolded();
 
@@ -37,6 +39,11 @@ public interface MindMapNode extends MutableTreeNode {
     boolean hasChildren();
 
     int getChildPosition(MindMapNode childNode);
+
+    MindMapNode getPreferredChild();
+    void setPreferredChild(MindMapNode node);
+    
+    int getNodeLevel();
 
     String getLink();
 
@@ -82,11 +89,12 @@ public interface MindMapNode extends MutableTreeNode {
 
     void setColor(Color color);
 
-    /**
-     * Returns the number of childer, whether the node is folded or not. The
-     * method getChildCount() returns 0, if the node is folded.
-     */
-    int getRealChildCount();
+// (PN)
+//    /**
+//     * Returns the number of childer, whether the node is folded or not. The
+//     * method getChildCount() returns 0, if the node is folded.
+//     */
+//    int getChildCount();
 
     MindMapNode shallowCopy();
 }

@@ -16,35 +16,74 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.27 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: ControllerAdapter.java,v 1.28 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.modes;
 
-import freemind.main.FreeMind;
-import freemind.main.FreeMindMain;
-import freemind.main.Tools;
-import freemind.main.XMLParseException;
-import freemind.controller.Controller;
-import freemind.modes.MindMap;
-import freemind.view.MapModule;
-import freemind.view.mindmapview.MapView;
-import freemind.view.mindmapview.NodeView;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 import java.net.MalformedURLException;
-import java.util.ListIterator;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.datatransfer.*;
-import java.awt.dnd.*;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
-import javax.swing.*;
-import javax.swing.text.Keymap;
-import javax.swing.text.DefaultEditorKit;
+import java.util.ListIterator;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.text.JTextComponent;
+
+import freemind.controller.Controller;
+import freemind.main.FreeMindMain;
+import freemind.main.Tools;
+import freemind.main.XMLParseException;
+import freemind.view.MapModule;
+import freemind.view.mindmapview.MapView;
+import freemind.view.mindmapview.NodeView;
 
 
 /**
@@ -57,6 +96,7 @@ public abstract class ControllerAdapter implements ModeController {
     Mode mode;
     private int noOfMaps = 0; //The number of currently open maps
     private Clipboard clipboard;
+    private int status;
 
     public Action copy = null;
     public Action copySingle = null;
@@ -87,6 +127,7 @@ public abstract class ControllerAdapter implements ModeController {
         
         if (clipboard == null) {
            clipboard = getFrame().getViewport().getToolkit().getSystemClipboard(); }
+
     }
 
     //
@@ -129,6 +170,9 @@ public abstract class ControllerAdapter implements ModeController {
     protected String getText(String textId) {
        return getController().getResourceString(textId); }
 
+    protected boolean binOptionIsTrue(String option) {
+       return getFrame().getProperty(option).equals("true");}
+
     public void newMap() {
         getController().getMapModuleManager().newMapModule(newModel());
         mapOpened(true);
@@ -150,18 +194,19 @@ public abstract class ControllerAdapter implements ModeController {
         mapOpened(true);
     }
 
-    public void save() {
-        if (getModel().isSaved()) return;
-        if (getModel().getFile()==null) {
-           saveAs(); }
+    public boolean save() {
+        if (getModel().isSaved()) return true;
+        if (getModel().getFile() == null || getModel().isReadOnly()) {
+           return saveAs(); }
         else {
-           save(getModel().getFile()); }}
+           return save(getModel().getFile()); }}
 
     /**
-     * See load()
+     * Return false is the action was cancelled, e.g. when
+     * it has to lead to saving as.
      */
-    public void save(File file) {
-       getModel().save(file); }
+    public boolean save(File file) {
+       return getModel().save(file); }      
 
     protected void add(JMenu menu, Action action, String keystroke) { 
        JMenuItem item = menu.add(action);
@@ -193,6 +238,7 @@ public abstract class ControllerAdapter implements ModeController {
                handleLoadingException (ex); } {
             }
         }
+        getController().setTitle();
     }
 
     public void handleLoadingException (Exception ex) {
@@ -208,56 +254,76 @@ public abstract class ControllerAdapter implements ModeController {
           getController().errorMessage(ex); }
     }
 
-    public void saveAs() {
+    /**
+     * Save as; return false is the action was cancelled
+     */
+    public boolean saveAs() {
         JFileChooser chooser = null;
         if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
-            chooser = new JFileChooser(getMap().getFile().getParentFile());
-        } else {
-            chooser = new JFileChooser();
-        }
+            chooser = new JFileChooser(getMap().getFile().getParentFile()); }
+        else {
+            chooser = new JFileChooser(); }
         //chooser.setLocale(currentLocale);
         if (getFileFilter() != null) {
-            chooser.addChoosableFileFilter(getFileFilter());
-        }
+            chooser.addChoosableFileFilter(getFileFilter()); }
+        
+        chooser.setDialogTitle(getText("save_as"));
         int returnVal = chooser.showSaveDialog(getView());
-        if (returnVal==JFileChooser.APPROVE_OPTION) {//ok pressed
-            File f = chooser.getSelectedFile();
-            //Force the extension to be .mm
-            String ext = Tools.getExtension(f.getName());
-            if(!ext.equals("mm")) {
-                f = new File(f.getParent(),f.getName()+".mm");
-            }
-            // If file exists, ask before overwriting.
-            int overWriteMap = JOptionPane.YES_OPTION;
-            if (f.exists()) {
-               overWriteMap = JOptionPane.showConfirmDialog
-                  (getView(), getText("map_already_exists"), "FreeMind", JOptionPane.YES_NO_OPTION ); }
-            if (overWriteMap == JOptionPane.YES_OPTION) {
-               save(f);
-               //Update the name of the map
-               getController().getMapModuleManager().updateMapModuleName(); }
-        }
-    }
+        if (returnVal != JFileChooser.APPROVE_OPTION) {// not ok pressed
+        	return false; }
+        
+        // |= Pressed O.K.    
+        File f = chooser.getSelectedFile();
+        //Force the extension to be .mm
+        String ext = Tools.getExtension(f.getName());
+        if(!ext.equals("mm")) {
+           f = new File(f.getParent(),f.getName()+".mm"); }        
+                
+        if (f.exists()) { // If file exists, ask before overwriting.
+			int overwriteMap = JOptionPane.showConfirmDialog
+			   (getView(), getText("map_already_exists"), "FreeMind", JOptionPane.YES_NO_OPTION );
+			if (overwriteMap != JOptionPane.YES_OPTION) {
+			   return false; }}
 
-    public void close() throws Exception {
+		try { // We have to lock the file of the map even when it does not exist yet
+		   String lockingUser = getModel().tryToLock(f);
+		   if (lockingUser != null) {          
+		      getFrame().getController().informationMessage(
+			    Tools.expandPlaceholders(getText("map_locked_by_save_as"), f.getName(), lockingUser));
+		      return false; }}
+		catch (Exception e){ // Throwed by tryToLock
+		  getFrame().getController().informationMessage(
+		    Tools.expandPlaceholders(getText("locking_failed_by_save_as"), f.getName()));	 
+		  return false; } 	        	                              
+              
+        save(f);
+        //Update the name of the map
+        getController().getMapModuleManager().updateMapModuleName();        
+        return true;
+    }
+    /**
+     * Return false if user has canceled. 
+     */
+    public boolean close() {
         String[] options = {getText("yes"),
                             getText("no"),
                             getText("cancel")};
         if (!getModel().isSaved()) {
             String text = getText("save_unsaved")+"\n"+getMapModule().toString();
             String title = getText("save");
-            int returnVal = JOptionPane.showOptionDialog(getView(),text,title,JOptionPane.YES_NO_CANCEL_OPTION,
+            int returnVal = JOptionPane.showOptionDialog(getFrame().getContentPane(),text,title,JOptionPane.YES_NO_CANCEL_OPTION,
                                                          JOptionPane.QUESTION_MESSAGE,null,options,options[0]);
             if (returnVal==JOptionPane.YES_OPTION) {
-               save(); }
-            else if (returnVal==JOptionPane.NO_OPTION) {}
-            else if (returnVal==JOptionPane.CANCEL_OPTION) {
-                throw new Exception();
-                //do this because quit() must terminate (and _not_ quit the prog)
-            }
-        }
+               boolean savingNotCancelled = save();
+               if (!savingNotCancelled) {
+               	  return false; }}
+			else if (returnVal==JOptionPane.CANCEL_OPTION) {
+				return false; }}
+                
+        getModel().destroy();
         mapOpened(false);
-    }
+        return true; }
+    
 
     /**
      * Call this method if you have opened a map for this mode with true,
@@ -301,39 +367,76 @@ public abstract class ControllerAdapter implements ModeController {
     protected void setAllActions(boolean enabled) {
     }
 
-    /**
-     * Returns the number of maps currently opened for this mode.
-     */
-    public int getNoOfMaps() {
-       return noOfMaps; }
-
     //
     // Node editing
     //
 
-//     void addNew(NodeView parent) {
-//      getMode().getModeController().addNew(parent);
-//     }
+    private JPopupMenu popupmenu;
 
-    void delete(NodeView node) {
-        getMode().getModeController().remove(node);
+    // listener, that blocks the controler if the menu is active (PN)
+    private class ControllerPopupMenuListener implements PopupMenuListener  {
+      public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+        setBlocked(true);         // block controller
+      }
+      public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+        setBlocked(false);        // unblock controller
+      }
+      public void popupMenuCanceled(PopupMenuEvent e) {
+        setBlocked(false);        // unblock controller
+      }
+
     }
-
-    void edit() {
-        if (getView().getSelected() != null) {
-            edit(getView().getSelected(),getView().getSelected());
+    private final ControllerPopupMenuListener popupListenerSingleton
+        = new ControllerPopupMenuListener();
+    
+    public void showPopupMenu(MouseEvent e) {
+      if (e.isPopupTrigger()) {
+        JPopupMenu popupmenu = getPopupMenu();
+        if (popupmenu != null) {
+          // adding listener could be optimized but without much profit...
+          popupmenu.addPopupMenuListener( this.popupListenerSingleton );
+          popupmenu.show(e.getComponent(),e.getX(),e.getY());
+          e.consume();
         }
+      }
     }
 
-/*
-    private class ObjectHolder {
-       Object object;
-       public ObjectHolder () {}
-       public void setObject(Object object) {
-          this.object = object; }
-       public Object getObject() {
-          return object; }}
-*/
+    private static final int SCROLL_SKIPS = 8;
+    private static final int SCROLL_SKIP = 10;
+    private static final int HORIZONTAL_SCROLL_MASK 
+       = InputEvent.SHIFT_MASK | InputEvent.BUTTON1_MASK 
+         | InputEvent.BUTTON2_MASK | InputEvent.BUTTON3_MASK;
+      // |=   oldX >=0 iff we are in the drag
+
+    public void mouseWheelMoved(MouseWheelEvent e) {
+       if (isBlocked()) {
+         return; // block the scroll during edit (PN)
+       }
+        
+       if ((e.getModifiers() & HORIZONTAL_SCROLL_MASK) != 0) {
+          for (int i=0; i < SCROLL_SKIPS; i++) {
+             ((MapView)e.getComponent()).scrollBy(
+                 SCROLL_SKIP * e.getWheelRotation(), 0); }}
+       else {
+          for (int i=0; i < SCROLL_SKIPS; i++) {
+             ((MapView)e.getComponent()).scrollBy(0, 
+                 SCROLL_SKIP * e.getWheelRotation()); }}
+    }
+
+    // edit begins with home/end or typing (PN 6.2)
+    public void edit(KeyEvent e, boolean addNew, boolean editLong) {
+      if (getView().getSelected() != null) {
+        if (e == null || !addNew) {
+          edit(getView().getSelected(),getView().getSelected(), e, false, false, editLong);
+        }
+        else if (!isBlocked()) {
+          addNew(getView().getSelected(), NEW_SIBLING_BEHIND, e);
+        }
+        if (e != null) {
+          e.consume();
+        }
+      }
+    }
 
     private class IntHolder {
        private int value;
@@ -341,14 +444,6 @@ public abstract class ControllerAdapter implements ModeController {
        public void setValue(int value) {
           this.value = value; }
        public int getValue() {
-          return value; }}
-
-   private class BooleanHolder {
-       private boolean value;
-       public BooleanHolder () {}
-       public void setValue(boolean value) {
-          this.value = value; }
-       public boolean getValue() {
           return value; }}
 
    private void changeComponentHeight(JComponent component, int difference, int minimum) {
@@ -359,23 +454,46 @@ public abstract class ControllerAdapter implements ModeController {
          component.setPreferredSize(new Dimension((int)preferredSize.getWidth(),
                                                   (int)preferredSize.getHeight() + difference)); }}
 
-    void editLong(final NodeView node, NodeView toBeSelected) {
-        String text = node.getModel().toString();
+    private void editLong(final NodeView node,
+                            final String text,
+                            final KeyEvent firstEvent) {
 
         final int BUTTON_OK     = 0;
         final int BUTTON_CANCEL = 1;
         final int BUTTON_SPLIT  = 2;
 
-        final JDialog dialog = new JDialog((JFrame)getFrame(), getText("edit_long_node"), true);
+        final JDialog dialog = new JDialog((JFrame)getFrame(), getText("edit_long_node"), /*modal=*/true);
 
         final JTextArea textArea = new JTextArea(text);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true); // wrap around words rather than characters
+        if (firstEvent != null) {
+          switch (firstEvent.getKeyCode()) {
+            case KeyEvent.VK_HOME:
+              textArea.setCaretPosition(0);
+              break;
+
+            default:
+              textArea.setCaretPosition(text.length());
+              break;
+          }
+        }
+        else {
+          textArea.setCaretPosition(text.length());
+        }
 
 
         final JScrollPane editorScrollPane = new JScrollPane(textArea);
         editorScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        editorScrollPane.setPreferredSize(new Dimension(500, 160));
+
+        //int preferredHeight = new Integer(getFrame().getProperty("el__default_window_height")).intValue();
+        int preferredHeight = node.getHeight();
+        preferredHeight =
+           Math.max (preferredHeight, Integer.parseInt(getFrame().getProperty("el__min_default_window_height")));
+        preferredHeight =
+           Math.min (preferredHeight, Integer.parseInt(getFrame().getProperty("el__max_default_window_height")));
+
+        editorScrollPane.setPreferredSize(new Dimension(600, preferredHeight));
         //textArea.setPreferredSize(new Dimension(500, 160));
 
         final JPanel panel = new JPanel();
@@ -385,7 +503,8 @@ public abstract class ControllerAdapter implements ModeController {
         final JButton okButton = new JButton("OK");
         final JButton cancelButton = new JButton(getText("cancel"));
         final JButton splitButton = new JButton(getText("split"));
-        final JCheckBox enterConfirms = new JCheckBox(getText("enter_confirms"),true);
+        final JCheckBox enterConfirms =
+           new JCheckBox(getText("enter_confirms"), binOptionIsTrue("el__enter_confirms_by_default"));
 
         okButton.setMnemonic(KeyEvent.VK_O);
         enterConfirms.setMnemonic(KeyEvent.VK_E);
@@ -411,21 +530,25 @@ public abstract class ControllerAdapter implements ModeController {
               public void actionPerformed(ActionEvent e) {
                  textArea.requestFocus(); }});
 
-
-
         // On Enter act as if OK button was pressed
 
         textArea.addKeyListener(new KeyListener() {
               public void keyPressed(KeyEvent e) {
-                 if (e.getKeyCode() == KeyEvent.VK_ENTER && enterConfirms.isSelected()) {
+                 // escape key in long text editor (PN)                               
+                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                   e.consume();
+                   eventSource.setValue(BUTTON_CANCEL);
+                   dialog.dispose(); 
+                 }
+                 else if (e.getKeyCode() == KeyEvent.VK_ENTER && enterConfirms.isSelected()) {
                     e.consume();
                     eventSource.setValue(BUTTON_OK);
                     dialog.dispose(); }}
                  /*
                  // Daniel: I tried to make editor resizable. It worked somehow, but not
-                 // quite. When I increased size and then decreased again to the original
+                 // quite. When I increased the size and then decreased again to the original
                  // size, it stopped working. The main idea here is to change the preferred
-                 // size. I also tried to change size but it did not do anything sensible.
+                 // size. I also tried to change the size but it did not do anything sensible.
                  //
                  // One possibility would be to disable decreasing the size.
                  //
@@ -451,7 +574,28 @@ public abstract class ControllerAdapter implements ModeController {
               public void keyReleased(KeyEvent e) {}
            });
 
-        panel.add(editorScrollPane);
+        textArea.addMouseListener(new MouseListener() {
+              public void mouseClicked(MouseEvent e) {}
+              public void mouseEntered( MouseEvent e ) {}
+              public void mouseExited( MouseEvent e ) {}
+
+              public void mousePressed( MouseEvent e ) {
+                 conditionallyShowPopup(e); }
+              
+              public void mouseReleased( MouseEvent e ) {
+                 conditionallyShowPopup(e); }
+
+              private void conditionallyShowPopup(MouseEvent e) {
+                 if (e.isPopupTrigger()) {
+                    JPopupMenu popupMenu = new EditPopupMenu(textArea);
+                    popupMenu.show(e.getComponent(),e.getX(),e.getY());
+                    e.consume(); }}
+           });
+
+
+        textArea.setFont(node.getFont());
+        textArea.setForeground(node.getForeground());
+
         //panel.setPreferredSize(new Dimension(500, 160));
         //editorScrollPane.setPreferredSize(new Dimension(500, 160));
 
@@ -460,17 +604,39 @@ public abstract class ControllerAdapter implements ModeController {
         buttonPane.add(okButton);
         buttonPane.add(cancelButton);
         buttonPane.add(splitButton);
-        //        buttonPane.add(performedAction);
         buttonPane.setMaximumSize(new Dimension(1000, 20));
 
-        panel.add(buttonPane);
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        if (getFrame().getProperty("el__buttons_position").equals("above")) {
+           panel.add(buttonPane);
+           panel.add(editorScrollPane); }
+        else {
+           panel.add(editorScrollPane);
+           panel.add(buttonPane); }
 
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+      
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setContentPane(panel);
-        //dialog.setLocationRelativeTo(node);
-        dialog.setLocation(node.getLocationOnScreen());
-        dialog.pack();
+        dialog.pack();  // calculate the size
+        
+        // set position
+        getView().scrollNodeToVisible(node, 0);
+        Point frameScreenLocation = getFrame().getLayeredPane().getLocationOnScreen();
+        double posX = node.getLocationOnScreen().getX() - frameScreenLocation.getX();
+        double posY = node.getLocationOnScreen().getY() - frameScreenLocation.getY()
+           + (binOptionIsTrue("el__position_window_below_node") ? node.getHeight() : 0);
+        if (posX + dialog.getWidth() > getFrame().getLayeredPane().getWidth()) {
+          posX = getFrame().getLayeredPane().getWidth() - dialog.getWidth();
+        }
+        if (posY + dialog.getHeight() > getFrame().getLayeredPane().getHeight()) {
+          posY = getFrame().getLayeredPane().getHeight() - dialog.getHeight();
+        }
+        posX = ((posX < 0) ? 0 : posX) + frameScreenLocation.getX();
+        posY = ((posY < 0) ? 0 : posY) + frameScreenLocation.getY();
+        dialog.setLocation(new Double(posX).intValue(), new Double(posY).intValue());
+
+
+        textArea.requestFocusInWindow();  // make the text area focused when the dialog comes
         dialog.show();
         //dialog.setVisible(true);
 
@@ -480,107 +646,338 @@ public abstract class ControllerAdapter implements ModeController {
            //getModel().changeNode(node.getModel(), textArea.getText());
            getModel().splitNode(node.getModel(),
                                 textArea.getCaretPosition(),
-                                textArea.getText()); }
+                                textArea.getText()); 
+           getController().obtainFocusForSelected(); // focus fix
+        }
 
     }
 
-    void edit(final NodeView node, final NodeView toBeSelected) {
-        String text = node.getModel().toString();
-        if (text.length() > 100) {
-           editLong(node,toBeSelected);
-           return; }
+    // this enables from outside close the edit mode
+    private FocusListener textFieldListener = null;
+    
+    private void closeEdit() {
+      if (this.textFieldListener != null) {
+        textFieldListener.focusLost(null); // hack to close the edit
+      }
+    }
+    
+    // status, currently: default, blocked  (PN)
+    // (blocked to protect against particular events e.g. in edit mode)
+    private boolean isBlocked = false;
 
+    public boolean isBlocked() {
+      return this.isBlocked;
+    }
+    private void setBlocked(boolean isBlocked) {
+      this.isBlocked = isBlocked;
+    }
+    
+    private void edit(final NodeView node, 
+                        final NodeView prevSelected,   // when new->esc: node be selected
+                        final KeyEvent firstEvent,
+                        final boolean isNewNode,      // when new->esc: cut the node
+                        final boolean parentFolded,   // when new->esc: fold prevSelected
+                        final boolean editLong) {
+        closeEdit();
+        setBlocked(true); // locally "modal" state
+
+        String text = node.getModel().toString();
+        if (text.length() > 100 || editLong) {
+           editLong(node, text, firstEvent);
+           setBlocked(false);
+           return; 
+        }
+
+        //if (isNewNode) {
+        //  if (firstEvent instanceof KeyEvent
+        //      && ((KeyEvent)firstEvent).getKeyChar() != KeyEvent.CHAR_UNDEFINED) {
+        //  }
+        //  //else if (text.length() == 0) {
+        //    // new node text if the user did not press a key and the text would be empty
+        //    // text = getText("new_node");
+        //  //}
+        //}
+        
         final JTextField textField = (text.length() < 8)
            ? new JTextField(text,8)     //Make fields for short texts editable
            : new JTextField(text);
 
-        getView().scrollNodeToVisible(node);
-
         // Set textFields's properties
-        Point frameScreenLocation = getFrame().getLayeredPane().getLocationOnScreen();
-        Point nodeScreenLocation = node.getLocationOnScreen();
 
         int linkIconWidth = 16;
         int textFieldBorderWidth = 2;
         int cursorWidth = 1;
         int xOffset = -1 * textFieldBorderWidth + node.getLeftWidthOverhead() - 1;
-        int yOffset = -2; // Optimized for Windows style; basically ad hoc
+        int yOffset = -1; // Optimized for Windows style; basically ad hoc
         int widthAddition = 2 * textFieldBorderWidth + cursorWidth - 2 * node.getLeftWidthOverhead() + 2;
         int heightAddition = 2;
         if (node.getModel().getLink() != null) {
            xOffset += linkIconWidth;
            widthAddition -= linkIconWidth; }
 
-        textField.setLocation((int)(nodeScreenLocation.getX() - frameScreenLocation.getX() + xOffset),
-                          (int)(nodeScreenLocation.getY() - frameScreenLocation.getY() + yOffset));
+        // minimal width for input field of leaf or folded node (PN)
+        final int MINIMAL_LEAF_WIDTH = 150;
+        final int MINIMAL_WIDTH = 50;
 
-        textField.setSize(node.getWidth() + widthAddition, node.getHeight() + heightAddition);
+        int xSize = node.getWidth() + widthAddition;
+        int xExtraWidth = 0;
+        if (MINIMAL_LEAF_WIDTH > xSize 
+            && (node.getModel().isFolded() || !node.getModel().hasChildren())) {
+          // leaf or folded node with small size
+          xExtraWidth = MINIMAL_LEAF_WIDTH - xSize;
+          xSize = MINIMAL_LEAF_WIDTH; // increase minimum size
+          if (node.isLeft()) { // left leaf
+            xExtraWidth = - xExtraWidth;
+            textField.setHorizontalAlignment(JTextField.RIGHT);
+          }
+        }
+        else if (MINIMAL_WIDTH > xSize) {
+          // opened node with small size
+          xExtraWidth = MINIMAL_WIDTH - xSize;
+          xSize = MINIMAL_WIDTH; // increase minimum size
+          if (node.isLeft()) { // left node
+            xExtraWidth = - xExtraWidth;
+            textField.setHorizontalAlignment(JTextField.RIGHT);
+          }
+        }
+
+        textField.setSize(xSize, node.getHeight() + heightAddition);
         textField.setFont(node.getFont());
         textField.setForeground(node.getForeground());
         textField.setSelectedTextColor(node.getForeground());
         textField.setSelectionColor(selectionColor);
-        textField.selectAll();
+        // textField.selectAll(); // no selection on edit (PN)
+        
+        final int INIT   = 0;
+        final int EDIT   = 1;
+        final int CANCEL = 2;
+        final IntHolder eventSource = new IntHolder();
+        eventSource.setValue(INIT);
 
-        final BooleanHolder changesAccepted = new BooleanHolder();
-        changesAccepted.setValue(false);
+        // listener class
+        class TextFieldListener implements KeyListener, 
+                                             FocusListener, MouseListener {
 
+          public void focusGained(FocusEvent e) {
+            // the first time the edit field gains a focus
+            // process the predefined first key (if any)
+
+            if (eventSource.getValue() == INIT) {
+              eventSource.setValue(EDIT);
+              if (firstEvent instanceof KeyEvent) {
+                KeyEvent firstKeyEvent = (KeyEvent)firstEvent;
+                if (firstKeyEvent.getKeyChar() == KeyEvent.CHAR_UNDEFINED) {
+                  // for the char_undefined the scenario with dispatching 
+                  // doesn't work => hard code dispatching :-(
+                  // // dispatch action key events as it came
+                  // textField.dispatchEvent(firstKeyEvent);
+                  
+                  // dispatch 2 known events (+ special for insert:) (hardcoded)
+                  switch (firstKeyEvent.getKeyCode()) {
+                    case KeyEvent.VK_HOME:
+                      textField.setCaretPosition(0);
+                      break;
+                    case KeyEvent.VK_END:
+                      textField.setCaretPosition(textField.getText().length());
+                      break;
+                  }
+                }
+                else {
+                  // or create new "key type" event for printable key
+                  KeyEvent keyEv;
+                  keyEv = new KeyEvent(
+                      firstKeyEvent.getComponent(),
+                      KeyEvent.KEY_TYPED, 
+                      firstKeyEvent.getWhen(), 
+                      firstKeyEvent.getModifiers(), 
+                      KeyEvent.VK_UNDEFINED,
+                      firstKeyEvent.getKeyChar(), 
+                      KeyEvent.KEY_LOCATION_UNKNOWN );
+                  textField.selectAll(); // to enable overwrite
+                  textField.dispatchEvent(keyEv);
+                }
+              } // 1st key event defined
+            } // first focus
+          } // focus gained
+
+
+          public void focusLost(FocusEvent e) {
+            
+            // %%% otevrene problemy s timto:
+            // - pridani potomka do nejpravejsiho uzlu
+            // - scroll pri editmodu (vzdyt se to muze chovat jak jine viewery)
+            // - blokovani udalosti, pokud jsu v editmodu
+        
+            if (e == null) { // can be when called explicitly
+              getModel().changeNode(node.getModel(), textField.getText());
+              getFrame().getLayeredPane().remove(textField);
+              getFrame().repaint(); //  getLayeredPane().repaint();
+              textFieldListener = null;
+              eventSource.setValue(CANCEL); // disallow real focus lost
+            }
+            else if (eventSource.getValue() != CANCEL) {
+              // always confirm the text if not yet
+              getModel().changeNode(node.getModel(), textField.getText());
+              getFrame().getLayeredPane().remove(textField);
+              getFrame().repaint(); //  getLayeredPane().repaint();
+              setBlocked(false);
+              textFieldListener = null;
+            }
+          }
+
+          public void keyPressed(KeyEvent e) {
+
+            if (e.isAltDown() || e.isControlDown()) {
+                return;
+            }
+
+            boolean commit = true;
+
+            switch (e.getKeyCode()) {
+              case KeyEvent.VK_ESCAPE:
+                commit = false;
+              case KeyEvent.VK_ENTER:
+                e.consume();
+
+                eventSource.setValue(CANCEL); // do not process loose of focus
+                if (commit) {
+                  getModel().changeNode(node.getModel(), textField.getText());
+                }
+                else if (isNewNode) { // delete also the node and set focus to the parent
+                  getView().selectAsTheOnlyOneSelected(node);
+                  getModel().cut();
+                  select(prevSelected); // include max level for navigation
+                  if (parentFolded) {
+                    getModel().setFolded(prevSelected.getModel(), true);
+                  }
+                }
+                getFrame().getLayeredPane().remove(textField);
+                getFrame().repaint(); //  getLayeredPane().repaint();
+                setBlocked(false);
+                textFieldListener = null;
+                getController().obtainFocusForSelected(); // hack: to keep the focus
+                break;
+
+             case KeyEvent.VK_SPACE: 
+               e.consume();
+             }
+          }
+          public void keyTyped(KeyEvent e) { }
+          public void keyReleased(KeyEvent e) { }
+
+           public void mouseClicked(MouseEvent e) {}
+           public void mouseEntered( MouseEvent e ) {}
+           public void mouseExited( MouseEvent e ) {}
+
+           public void mousePressed( MouseEvent e ) {
+              conditionallyShowPopup(e); }
+              
+           public void mouseReleased( MouseEvent e ) {
+              conditionallyShowPopup(e); }
+
+           private void conditionallyShowPopup(MouseEvent e) {
+              if (e.isPopupTrigger()) {
+                 JPopupMenu popupMenu = new EditPopupMenu(textField);
+                 popupMenu.show(e.getComponent(),e.getX(),e.getY());
+                 e.consume(); }}
+
+        }
+
+        // create the listener
+        final TextFieldListener textFieldListener = new TextFieldListener();
+        
         // Add listeners
-        textField.addFocusListener( new FocusAdapter() {
-              public void focusLost(FocusEvent e) {                 
-                 boolean discardChanges = true;
-                 if (!changesAccepted.getValue() && 
-                     !node.getModel().toString().equals(textField.getText())) {
-                    int discardChangesOption = JOptionPane.showConfirmDialog
-                       (node, getText("node_changed_discard_changes"), "FreeMind",
-                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-                    discardChanges = (discardChangesOption == JOptionPane.YES_OPTION); }
+        this.textFieldListener = textFieldListener;
+        textField.addFocusListener( textFieldListener );
+        textField.addKeyListener( textFieldListener );
+        textField.addMouseListener( textFieldListener );
 
-                 getModel().changeNode(node.getModel(),
-                                       discardChanges ? node.getModel().toString() 
-                                       : textField.getText() );
-                 getFrame().getLayeredPane().remove(textField); }
-           });
-        textField.addKeyListener( new KeyListener() {
-              public void keyPressed(KeyEvent e) {
-                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    e.consume();
-                    getView().select(toBeSelected); }
-                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    getModel().changeNode(node.getModel(), textField.getText());
-                    changesAccepted.setValue(true);
-                    e.consume();
-                    getView().select(toBeSelected); }}
-              public void keyTyped(KeyEvent e) {}
-              public void keyReleased(KeyEvent e) {}
-           });
+        // screen positionining ---------------------------------------------
 
-        getFrame().getLayeredPane().add(textField,2000);
+        // SCROLL if necessary
+        getView().scrollNodeToVisible(node, xExtraWidth);
+
+        // NOTE: this must be calculated after scroll because the pane location changes
+        Point frameScreenLocation = getFrame().getLayeredPane().getLocationOnScreen();
+        Point nodeScreenLocation = node.getLocationOnScreen();
+
+        int xLeft = (int)(nodeScreenLocation.getX() -  frameScreenLocation.getX() + xOffset);
+        if (xExtraWidth < 0) {
+          xLeft += xExtraWidth;
+        }
+
+        textField.setLocation(xLeft, (int)(nodeScreenLocation.getY()
+                                          - frameScreenLocation.getY() + yOffset));
+        
+        getFrame().getLayeredPane().add(textField); // 2000);
         getFrame().repaint();
-        textField.requestFocus();
+ 
+        SwingUtilities.invokeLater( new Runnable() { // PN 0.6.2
+             public void run () { textField.requestFocus(); }});
     }
 
-    public void addNew(NodeView parent) {
-        MindMapNode newNode = newNode();
-        int place;
-        if (getFrame().getProperty("placenewbranches").equals("last")) {
-            place = parent.getModel().getChildCount();
-        } else {
-            place = 0;
-        }
-        getModel().insertNodeInto(newNode,parent.getModel(), place);
-        edit(newNode.getViewer(),parent);
+    public final int NEW_CHILD_WITHOUT_FOCUS = 1;  // old model of insertion
+    public final int NEW_CHILD = 2;
+    public final int NEW_SIBLING_BEHIND = 3;
+    public final int NEW_SIBLING_BEFORE = 4;
+
+    public void addNew(final NodeView target, final int newNodeMode, final KeyEvent e) {
+       closeEdit();
+       
+       MindMapNode newNode = newNode();
+       final MindMapNode targetNode = target.getModel();
+
+       switch (newNodeMode) {
+         case NEW_SIBLING_BEFORE:
+         case NEW_SIBLING_BEHIND:
+           if (targetNode.isRoot()) {
+             getController().errorMessage(
+                 getText("new_node_as_sibling_not_possible_for_the_root"));
+             setBlocked(false);
+             return; 
+           }
+           MindMapNode parent = targetNode.getParentNode();
+           int childPosition = parent.getChildPosition(targetNode);
+           if (newNodeMode == NEW_SIBLING_BEHIND) {
+              childPosition++;
+           }
+           getModel().insertNodeInto(newNode, parent, childPosition);
+           select(newNode.getViewer());
+                getFrame().repaint(); //  getLayeredPane().repaint();
+           edit(newNode.getViewer(), target, e, true, false, false);
+           break;
+  
+         case NEW_CHILD:
+         case NEW_CHILD_WITHOUT_FOCUS:
+           final boolean parentFolded = targetNode.isFolded();
+           if (parentFolded) {
+             getModel().setFolded(targetNode,false);
+           }
+           int position = getFrame().getProperty("placenewbranches").equals("last") ?
+              targetNode.getChildCount() : 0;
+           // Here the NodeView is created for the node. }
+           getModel().insertNodeInto(newNode, targetNode, position);
+                getFrame().repaint(); //  getLayeredPane().repaint();
+           if (newNodeMode == NEW_CHILD) {
+             select(newNode.getViewer());
+           }
+           final NodeView editView = newNode.getViewer();
+           edit(editView, targetNode.getViewer(), e, true, parentFolded, false);
+           break;
+       }
     }
 
-    public void remove(NodeView node) {
-        if (!node.isRoot()) {
-            getModel().removeNodeFromParent(node.getModel());
-        }
-    }
-
-    protected void toggleFolded() {
+    public void toggleFolded() {
         MindMapNode node = getSelected();
-        getModel().setFolded(node, !node.isFolded());
-        getView().select(node.getViewer()); }
+        // fold the node only if the node is not a leaf (PN 0.6.2)
+        if (node.hasChildren()
+            || node.isFolded()
+            || Tools.safeEquals(getFrame()
+                .getProperty("enable_leaves_folding"),"true")) {
+          getModel().setFolded(node, !node.isFolded());
+        }
+        getView().selectAsTheOnlyOneSelected(node.getViewer());
+    }
 
     /**
      * If any children are folded, unfold all folded children.
@@ -598,21 +995,23 @@ public abstract class ControllerAdapter implements ModeController {
             }
         }
 
+        // fold the node only if the node is not a leaf (PN 0.6.2)
+        boolean enableLeavesFolding = 
+            Tools.safeEquals(getFrame().
+               getProperty("enable_leaves_folding"),"true");
+
         children_it = parent.getViewer().getChildrenViews().listIterator();
-        if(areAnyFolded) {
-            while(children_it.hasNext()) {
-                NodeView child = (NodeView)children_it.next();
-                if(child.getModel().isFolded()) {
-                    getModel().setFolded(child.getModel(), false);
-                }
-            }
-        } else {
-            while(children_it.hasNext()) {
-                NodeView child = (NodeView)children_it.next();
-                getModel().setFolded(child.getModel(), true);
+        while(children_it.hasNext()) {
+            MindMapNode child = ((NodeView)children_it.next()).getModel();
+            if (child.hasChildren() 
+                || enableLeavesFolding
+                || child.isFolded()) {
+              getModel().setFolded(child, !areAnyFolded); // (PN 0.6.2)
             }
         }
-        getView().select(parent.getViewer());
+        getView().selectAsTheOnlyOneSelected(parent.getViewer());
+
+        getController().obtainFocusForSelected(); // focus fix
     }
 
     protected void setLinkByTextField() {
@@ -798,8 +1197,25 @@ public abstract class ControllerAdapter implements ModeController {
         return (NodeAdapter)getView().getSelected().getModel();
     }
 
-    public void changeToMapOfMode(Mode mode) {
-        getController().getMapModuleManager().changeToMapOfMode(mode);
+    public void select(MouseEvent e) {
+       if (e.getModifiers() == 0  
+           && !isBlocked()
+           && getView().getSelecteds().size() <= 1) {
+
+          select( (NodeView)e.getSource());
+       }
+                                                              
+       // Display link in status line
+       String link = ((NodeView)e.getSource()).getModel().getLink();
+       link = (link != null ? link : " ");
+       getController().getFrame().out(link); 
+
+       e.consume();
+    }
+
+    private void select( NodeView node) {
+        getView().selectAsTheOnlyOneSelected(node);
+        getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); // this level is default
     }
 
     ////////////
@@ -821,35 +1237,39 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     protected class OpenAction extends AbstractAction {
-        ControllerAdapter c;
-        public OpenAction(ControllerAdapter controller) {
+        ControllerAdapter mc;
+        public OpenAction(ControllerAdapter modeController) {
             super(getText("open"), new ImageIcon(getResource("images/Open24.gif")));
-            c = controller;
+            mc = modeController;
         }
         public void actionPerformed(ActionEvent e) {
-            c.open();
+            mc.open();
+			getController().setTitle(); // Possible update of read-only
         }
     }
 
     protected class SaveAction extends AbstractAction {
-        ControllerAdapter c;
-        public SaveAction(ControllerAdapter controller) {
+        ControllerAdapter mc;
+        public SaveAction(ControllerAdapter modeController) {
             super(getText("save"), new ImageIcon(getResource("images/Save24.gif")));
-            c = controller;
+            mc = modeController;
         }
         public void actionPerformed(ActionEvent e) {
-            c.save();
+            mc.save();
+            getFrame().out(getText("saved")); // perhaps... (PN)
+			getController().setTitle(); // Possible update of read-only
         }
     }
 
     protected class SaveAsAction extends AbstractAction {
-        ControllerAdapter c;
-        public SaveAsAction(ControllerAdapter controller) {
+        ControllerAdapter mc;
+        public SaveAsAction(ControllerAdapter modeController) {
             super(getText("save_as"), new ImageIcon(getResource("images/SaveAs24.gif")));
-            c = controller;
+            mc = modeController;
         }
         public void actionPerformed(ActionEvent e) {
-            c.saveAs();
+            mc.saveAs();
+			getController().setTitle(); // Possible update of read-only
         }
     }
 
@@ -895,18 +1315,57 @@ public abstract class ControllerAdapter implements ModeController {
             super(getText("edit"));
         }
         public void actionPerformed(ActionEvent e) {
-            edit();
+            edit(null, false, false);
         }
     }
 
-    protected class AddNewAction extends AbstractAction {
-        public AddNewAction() {
+    protected class EditLongAction extends AbstractAction {
+        public EditLongAction() {
+            super(getText("edit_long_node"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            edit(null, false, true);
+        }
+    }
+
+    // old model of inserting node
+    protected class NewChildWithoutFocusAction extends AbstractAction {
+        public NewChildWithoutFocusAction() {
             super(getText("new_node"));
         }
         public void actionPerformed(ActionEvent e) {
-            addNew(getView().getSelected());
+            addNew(getView().getSelected(), NEW_CHILD_WITHOUT_FOCUS, null);
         }
     }
+
+    // new model of inserting node
+    protected class NewSiblingAction extends AbstractAction {
+        public NewSiblingAction() {
+            super(getText("new_sibling_behind"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            addNew(getView().getSelected(), NEW_SIBLING_BEHIND, null);
+        }
+    }
+
+    protected class NewChildAction extends AbstractAction {
+        public NewChildAction() {
+            super(getText("new_child"));
+        }
+        public void actionPerformed(ActionEvent e) {
+           addNew(getView().getSelected(), NEW_CHILD, null);
+        }
+    }
+
+    protected class NewPreviousSiblingAction extends AbstractAction {
+        public NewPreviousSiblingAction() {
+            super(getText("new_sibling_before"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            addNew(getView().getSelected(), NEW_SIBLING_BEFORE, null);
+        }
+    }
+
 
     protected class RemoveAction extends AbstractAction {
         public RemoveAction() {
@@ -926,15 +1385,17 @@ public abstract class ControllerAdapter implements ModeController {
             if(!selected.isRoot()) {
                 MindMapNode parent = selected.getParentNode();
                 int index = getModel().getIndexOfChild(parent, selected);
-                delete(getView().getSelected());
-                int maxindex = getModel().getChildCount(parent);
+                getModel().removeNodeFromParent(selected);
+                int maxindex = parent.getChildCount(); // (PN)
                 if(index - 1 <0) {
                     getModel().insertNodeInto(selected,parent,maxindex);
                 } else {
                     getModel().insertNodeInto(selected,parent,index - 1);
                 }
                 getModel().nodeStructureChanged(parent);
-                getView().select(selected.getViewer());
+                getView().selectAsTheOnlyOneSelected(selected.getViewer());
+
+                getController().obtainFocusForSelected(); // focus fix
             }
         }
     }
@@ -948,15 +1409,17 @@ public abstract class ControllerAdapter implements ModeController {
             if(!selected.isRoot()) {
                 MindMapNode parent = selected.getParentNode();
                 int index = getModel().getIndexOfChild(parent, selected);
-                delete(getView().getSelected());
-                int maxindex = getModel().getChildCount(parent);
+                getModel().removeNodeFromParent(selected);
+                int maxindex = parent.getChildCount(); // (PN)
                 if(index + 1 > maxindex) {
                     getModel().insertNodeInto(selected,parent,0);
                 } else {
                     getModel().insertNodeInto(selected,parent,index + 1);
                 }
                 getModel().nodeStructureChanged(parent);
-                getView().select(selected.getViewer());
+                getView().selectAsTheOnlyOneSelected(selected.getViewer());
+                
+                getController().obtainFocusForSelected(); // focus fix
             }
         }
     }
@@ -1118,5 +1581,27 @@ public abstract class ControllerAdapter implements ModeController {
         public void dragScroll (DropTargetDragEvent e) {}
         public void dropActionChanged (DropTargetDragEvent e) {}
     }
+
+   protected class EditCopyAction extends AbstractAction {
+       private JTextComponent textComponent;
+       public EditCopyAction(JTextComponent textComponent) {
+          super(getText("copy")); 
+          this.textComponent = textComponent; }
+        public void actionPerformed(ActionEvent e) {
+           String selection = textComponent.getSelectedText();
+           if (selection != null) {
+              clipboard.setContents(new StringSelection(selection),null); }}}
+
+   private class EditPopupMenu extends JPopupMenu {
+      //private JTextComponent textComponent;
+
+    public EditPopupMenu(JTextComponent textComponent) {
+       //this.textComponent = textComponent;        
+       	this.add(new EditCopyAction(textComponent));
+    }
+   }
+
+
+
 
 }

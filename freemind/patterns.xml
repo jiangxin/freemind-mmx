@@ -32,7 +32,7 @@
       <node color="#669900"/>
    </pattern>
    <pattern name="Larger Topic">
-      <node color="#008844"/>
+      <node color="#006633"/>
    </pattern>
    <pattern name="Waiting Topic">
       <node color="#B3B95C"/>

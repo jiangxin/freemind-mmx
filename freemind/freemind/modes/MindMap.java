@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.10 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: MindMap.java,v 1.12 2003-11-03 11:00:12 sviles Exp $*/
 
 package freemind.modes;
 
@@ -27,7 +27,6 @@ import java.awt.Color;
 import java.util.List;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.MutableTreeNode;
 // Clipboard
 import java.awt.datatransfer.Transferable;
 
@@ -83,6 +82,14 @@ public interface MindMap extends TreeModel {
     void setBackgroundColor(Color color);
 
     void setFolded(MindMapNode node, boolean folded);
+    
+    /**
+     * Destroy everything you have created upon opening.  
+     */
+    void destroy();
 
-    void close();
+    boolean isReadOnly();
+
+// (PN)
+//    void close();
 }

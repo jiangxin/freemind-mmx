@@ -16,18 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMode.java,v 1.4 2001-06-22 20:35:14 ponder Exp $*/
+/*$Id: BrowseMode.java,v 1.5 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
-import freemind.main.FreeMind;
 import freemind.controller.Controller;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
-import javax.swing.JPopupMenu;
 
 public class BrowseMode implements Mode {
 
@@ -90,9 +87,5 @@ public class BrowseMode implements Mode {
 
     public JMenu getModeEditMenu() {
 	return ((BrowseController)getModeController()).getEditMenu();
-    }
-
-    public JPopupMenu getPopupMenu() {
-	return ((BrowseController)getModeController()).getPopupMenu();
     }
 }

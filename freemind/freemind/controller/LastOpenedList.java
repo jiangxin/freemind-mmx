@@ -16,16 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LastOpenedList.java,v 1.5 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: LastOpenedList.java,v 1.7 2003-11-03 11:00:05 sviles Exp $*/
 package freemind.controller;
 
 import freemind.view.MapModule;
-import java.util.StringTokenizer;
-import java.util.ListIterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * This class manages a list of the maps that were opened last.
@@ -34,19 +29,20 @@ import java.util.HashMap;
  */
 public class LastOpenedList {
     private Controller c;
-    private int maxEntries = 15;
+    private int maxEntries = 25; // is rewritten from property anyway
     private List lst = new LinkedList();
     private Map hash = new HashMap();
 
     LastOpenedList(Controller c, String restored) {
-	this.c=c;
+        this.c=c;
+        maxEntries = new Integer(c.getFrame().getProperty("last_opened_list_length")).intValue();
 	load(restored);
     }
 
     void mapOpened(MapModule map) {
 	if (map==null || map.getModel()==null) return;
 	String rest = map.getModel().getRestoreable();
-	if(rest==null) return;
+	if (rest==null) return;
 	if (lst.contains(rest)) {
 	    lst.remove(rest);
 	}
@@ -72,13 +68,14 @@ public class LastOpenedList {
     }
 
     /**
-     * Take care that there are no ";" in restorable names!
+     * 
      */
     void load(String data) {
-	if(data!=null) {
+        // Take care that there are no ";" in restorable names!
+	if (data != null) {
 	    StringTokenizer token = new StringTokenizer(data,";");
 	    while (token.hasMoreTokens())
-		lst.add(0,token.nextToken());
+		lst.add(token.nextToken());
 	}
     }
 

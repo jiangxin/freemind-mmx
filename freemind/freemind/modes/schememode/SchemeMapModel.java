@@ -16,14 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMapModel.java,v 1.9 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: SchemeMapModel.java,v 1.11 2003-11-03 11:00:22 sviles Exp $*/
 
 package freemind.modes.schememode;
 
 import freemind.main.FreeMindMain;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
-import freemind.modes.MindMapEdge;
+
 import freemind.modes.MapAdapter;
 import java.io.File;
 import java.io.Reader;
@@ -50,7 +48,7 @@ public class SchemeMapModel extends MapAdapter {
     //
     // Other methods
     //
-    public void save(File file) {
+    public boolean save(File file) {
 	try {
 	    setFile(file);
 	    setSaved(true);
@@ -59,12 +57,13 @@ public class SchemeMapModel extends MapAdapter {
 	    BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
 
 	    fileout.write( getCode() );
-
 	    fileout.close();
+        return true;
 
 	} catch(Exception e) {
 	    System.err.println("Error in SchemeMapModel.save: ");
 	    e.printStackTrace();
+	    return false;
 	}
     }
     
@@ -93,7 +92,7 @@ public class SchemeMapModel extends MapAdapter {
 	//	quoteChar('\'');	//	tok.eolIsSignificant(true);
 
 	SchemeNodeModel node = (SchemeNodeModel)getRoot();
-	while (tok.nextToken() != tok.TT_EOF) {
+	while (tok.nextToken() != StreamTokenizer.TT_EOF) {
 	    if (tok.ttype == 40) {    //"("
 		//		System.out.println("Token starts with (");
 		SchemeNodeModel newNode = new SchemeNodeModel(getFrame());
@@ -104,7 +103,7 @@ public class SchemeMapModel extends MapAdapter {
 		if (node.getParent() != null) {//this should not be necessary, if this happens, the code is wrong
 		    node = (SchemeNodeModel)node.getParent();
 		}
-	    } else if (tok.ttype == tok.TT_WORD) {
+	    } else if (tok.ttype == StreamTokenizer.TT_WORD) {
 		String token = tok.sval.trim();
 
 		if (node.toString().equals(" ") && node.getChildCount() == 0) {

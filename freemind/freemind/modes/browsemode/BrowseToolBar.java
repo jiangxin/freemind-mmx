@@ -16,24 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseToolBar.java,v 1.4 2003-11-03 10:39:52 sviles Exp $*/
+/*$Id: BrowseToolBar.java,v 1.6 2003-11-03 11:00:13 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
-import freemind.main.Tools;
-import freemind.controller.Controller;
-import java.lang.Integer;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JComboBox;
 import javax.swing.JToolBar;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.ImageIcon;
-import javax.swing.BorderFactory;
 
 public class BrowseToolBar extends JToolBar {
 

@@ -20,7 +20,6 @@
 package freemind.controller;
 
 import freemind.view.mindmapview.NodeView;
-import freemind.view.mindmapview.MapView;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.MindMapMapModel;
@@ -28,7 +27,6 @@ import freemind.modes.mindmapmode.MindMapMapModel;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
@@ -132,7 +130,7 @@ public class NodeDropListener implements DropTargetListener {
                                   ? c.getModel().cut() : c.getModel().copy(),
                                   targetNode, 
                                   targetNodeView.dropAsSibling(dtde.getLocation().getX())); }
-           c.getView().select(targetNodeModel.getViewer(),false); }
+           c.getView().selectAsTheOnlyOneSelected(targetNodeModel.getViewer()); }
 	catch (Exception e) {
 	    System.err.println("Drop exception:"+e);
 	    dtde.dropComplete(false);

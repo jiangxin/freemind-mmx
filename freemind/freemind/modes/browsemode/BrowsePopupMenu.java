@@ -16,22 +16,32 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowsePopupMenu.java,v 1.2 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: BrowsePopupMenu.java,v 1.4 2003-11-03 11:00:13 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
-import freemind.main.FreeMind;
-import javax.swing.JPopupMenu;
-import javax.swing.JMenu;
+import javax.swing.Action;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 
 public class BrowsePopupMenu extends JPopupMenu {
 
     private BrowseController c;
 
+    protected void add(Action action, String keystroke) { 
+       JMenuItem item = add(action);
+       item.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty(keystroke))); }
+
     public BrowsePopupMenu(BrowseController c) {
 	this.c = c;
-	this.add(c.getNodeMenu());
+        add(c.find, "keystroke_find");
+        add(c.findNext, "keystroke_find_next");
+        add(c.followLink, "keystroke_follow_link");
+
+        addSeparator();
+      
+        add(c.toggleFolded, "keystroke_toggle_folded");
+        add(c.toggleChildrenFolded, "keystroke_toggle_children_folded");
     }
 }

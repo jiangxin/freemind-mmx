@@ -16,29 +16,25 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMode.java,v 1.6 2001-06-22 20:35:14 ponder Exp $*/
+/*$Id: SchemeMode.java,v 1.7 2003-11-03 10:49:18 sviles Exp $*/
 
 package freemind.modes.schememode;
 
-import freemind.main.FreeMindMain;
-import freemind.modes.Mode;
-import freemind.modes.MindMap;
-import freemind.modes.ModeController;
-import freemind.modes.ControllerAdapter;
-import freemind.controller.Controller;
-import freemind.view.mindmapview.MapView;
 import javax.swing.JMenu;
-import javax.swing.KeyStroke;
 import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
-import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
+
+import freemind.controller.Controller;
+import freemind.main.FreeMindMain;
+import freemind.modes.Mode;
+import freemind.modes.ModeController;
 
 public class SchemeMode implements Mode {
 
     private Controller c;
     private SchemeController modecontroller;
     private JToolBar toolbar;
-    private JPopupMenu popupmenu;
     private static final String MODENAME = "Scheme";
     private static boolean isRunning = false;
 
@@ -49,7 +45,6 @@ public class SchemeMode implements Mode {
 	this.c = c;
 	modecontroller = new SchemeController(this);
 	toolbar = new SchemeToolBar(modecontroller);
-	popupmenu = new SchemePopupMenu(modecontroller);
     }
 
     public String toString() {
@@ -65,7 +60,7 @@ public class SchemeMode implements Mode {
 	    getModeController().newMap();
 	    isRunning = true;
 	} else {
-	    ((ControllerAdapter)getModeController()).changeToMapOfMode(this);
+            c.getMapModuleManager().changeToMapOfMode(this);
 	}
     }
 
@@ -110,9 +105,5 @@ public class SchemeMode implements Mode {
 
     public FreeMindMain getFrame() {
 	return c.getFrame();
-    }
-
-    public JPopupMenu getPopupMenu() {
-	return popupmenu;
     }
 }

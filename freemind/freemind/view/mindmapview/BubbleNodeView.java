@@ -16,11 +16,10 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.9 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: BubbleNodeView.java,v 1.11 2003-11-03 11:00:23 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
-import freemind.modes.NodeAdapter;//This should not be done.
 import freemind.modes.MindMapNode;
 import java.awt.*;
 
@@ -82,7 +81,12 @@ public class BubbleNodeView extends NodeView {
         setRendering(g);
 	g.setColor(getEdge().getColor());
 	//g.drawOval(0,0,size.width-1,size.height-1);   // Changed by Daniel
+
+        if (map.getController().getAntialiasEdges()) {
+           g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
         g.drawRoundRect(0,0,size.width-1,size.height-1,10,10);
+        if (map.getController().getAntialiasEdges()) {
+           g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); }
 
 	// return to std stroke
 	g.setStroke(DEF_STROKE);

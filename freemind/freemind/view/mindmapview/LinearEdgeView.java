@@ -16,12 +16,10 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinearEdgeView.java,v 1.7 2001-04-06 20:50:11 ponder Exp $*/
+/*$Id: LinearEdgeView.java,v 1.9 2003-11-03 11:00:25 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
-import freemind.modes.MindMapEdge;
-import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.Color;
 
@@ -43,6 +41,7 @@ public class LinearEdgeView extends EdgeView {
 	update();
 	g.setColor(getColor());
 	g.setStroke(getStroke());
+        setRendering(g);
 	int w=getWidth();
 	if (w<=1) {
 		g.drawLine(start.x,start.y,end.x,end.y);

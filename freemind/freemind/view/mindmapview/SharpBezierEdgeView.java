@@ -16,17 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SharpBezierEdgeView.java,v 1.3 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: SharpBezierEdgeView.java,v 1.5 2003-11-03 11:00:29 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
-import freemind.modes.MindMapEdge;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
-import java.awt.*;
 
 /**
  * This class represents a sharp Edge of a MindMap.
@@ -72,6 +70,7 @@ public class SharpBezierEdgeView extends EdgeView {
 	g.setColor(getColor());
 	g.setPaint(getColor());
 	g.setStroke(DEF_STROKE);
+        setRendering(g);
 	g.fill(graph);
 	g.draw(graph);
 	super.paint(g);

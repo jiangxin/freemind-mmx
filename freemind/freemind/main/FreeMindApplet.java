@@ -16,43 +16,28 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.10 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: FreeMindApplet.java,v 1.11 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.main;
 
 import freemind.view.mindmapview.MapView;
 import freemind.controller.MenuBar;
 import freemind.controller.Controller;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.File;
 import java.net.URL;
 import java.util.Properties;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.PropertyResourceBundle;
 import java.util.Enumeration;
-import java.awt.Dimension;
 import java.awt.BorderLayout;
-import java.awt.Graphics;
-import java.applet.Applet;
-import java.applet.AppletContext;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.ActionEvent;
-import java.awt.Button;
 import java.awt.Container;
 import java.awt.Cursor;
 import javax.swing.*;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JFrame;
-import javax.swing.UIManager;
-import javax.swing.SwingUtilities;
 
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 
-    public static final String version = "0.6.1";
+    public static final String version = "0.6.5";
     //    public static final String defaultPropsURL;
     public URL defaultPropsURL;
     public static Properties defaultProps;
@@ -91,6 +76,17 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
     public Container getViewport() {
 		return scrollPane.getViewport();
+    }
+
+    // "dummy" implementation of the interface (PN)
+    public int getWinHeight() {
+      return getRootPane().getHeight();
+    }
+    public int getWinWidth() {
+      return getRootPane().getWidth();
+    }
+    public int getWinState() {
+      return 6;  
     }
 
     /**

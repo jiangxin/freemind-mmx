@@ -16,22 +16,16 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseNodeModel.java,v 1.5 2003-11-03 10:39:52 sviles Exp $*/
+/*$Id: BrowseNodeModel.java,v 1.6 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
-import freemind.main.Tools;
-import freemind.main.FreeMindMain;
-import freemind.modes.NodeAdapter;
-import java.util.ListIterator;
 import java.util.LinkedList;
-import java.util.Vector;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.awt.Color;
-import java.awt.Font;
 
+import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
+import freemind.modes.MindMapNode;
+import freemind.modes.NodeAdapter;
 
 /**
  * This class represents a single Node of a Tree. It contains direct handles 
@@ -55,7 +49,7 @@ public class BrowseNodeModel extends NodeAdapter {
 
     //Overwritten get Methods
     public String getStyle() {
-       return isFolded() ? "bubble" : super.getStyle(); }
+       return isFolded() ? MindMapNode.STYLE_BUBBLE : super.getStyle(); }
 
     public boolean isLong() {
        return toString().length() > 100; }

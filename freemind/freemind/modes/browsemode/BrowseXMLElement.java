@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseXMLElement.java,v 1.2 2003-11-03 10:39:52 sviles Exp $*/
+/*$Id: BrowseXMLElement.java,v 1.3 2003-11-03 10:49:17 sviles Exp $*/
 
 /*On doubling of code
  *
@@ -29,13 +29,9 @@
 package freemind.modes.browsemode;
 
 import freemind.main.XMLElement;
-import freemind.main.XMLParseException;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
-import java.util.Hashtable;
-import java.util.Map;
-import java.io.IOException;
-import java.io.Reader;
+
 import java.awt.Font;
 
 public class BrowseXMLElement extends XMLElement {
@@ -83,7 +79,7 @@ public class BrowseXMLElement extends XMLElement {
          BrowseNodeModel node = (BrowseNodeModel)userObject;
          if (child.getUserObject() instanceof BrowseNodeModel) {
             node.insert((BrowseNodeModel)child.getUserObject(),
-                        node.getRealChildCount());}
+                        node.getChildCount());}
          else if (child.getUserObject() instanceof BrowseEdgeModel) {
             BrowseEdgeModel edge = (BrowseEdgeModel)child.getUserObject();
             edge.setTarget(node);

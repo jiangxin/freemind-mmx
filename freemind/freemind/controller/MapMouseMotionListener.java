@@ -16,18 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapMouseMotionListener.java,v 1.3 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: MapMouseMotionListener.java,v 1.5 2003-11-03 11:00:05 sviles Exp $*/
 
 package freemind.controller;
 
-import freemind.view.mindmapview.NodeView;
-import freemind.view.mindmapview.MapView;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
-import java.awt.Rectangle;
-import java.awt.event.*;
-import javax.swing.Timer;
-import javax.swing.JViewport;
-import javax.swing.JPanel;
+import freemind.view.mindmapview.MapView;
 
 
 /**
@@ -54,21 +51,34 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
     public void mouseDragged(MouseEvent e) {
        // Always try to get mouse to the original position in the Map.
        if (originX >=0) {
-          ((MapView)e.getComponent()).scrollBy(originX - e.getX(), originY - e.getY()); }
-       else {
-          originX = e.getX();
-          originY = e.getY(); }} 
+          ((MapView)e.getComponent()).scrollBy(originX - e.getX(), originY - e.getY());
+       // } else { // do the init in the mouse press
+       }
+    } 
 
-    public void mouseClicked(MouseEvent e) { }
+    public void mouseClicked(MouseEvent e) {
+      c.getView().selectAsTheOnlyOneSelected(c.getView().getSelected()); // to loose the focus in edit
+    }
     public void mouseEntered( MouseEvent e ) { }
     public void mouseExited( MouseEvent e ) { }
     public void mousePressed( MouseEvent e ) {
-       handlePopup(e);
-       e.consume(); }
+      if (e.isPopupTrigger()) { // start the move, when the user press the mouse (PN)
+        handlePopup(e);
+      }                         
+      else if (!c.getMode().getModeController().isBlocked()
+               && e.getButton() == MouseEvent.BUTTON1) {
+        c.getView().setMoveCursor(true);
+        originX = e.getX();
+        originY = e.getY(); 
+      }
+      e.consume(); 
+    }
     public void mouseReleased( MouseEvent e ) {
        originX = -1;
        originY = -1;
        handlePopup(e);
-       e.consume(); }
+       e.consume(); 
+       c.getView().setMoveCursor(false); // release the cursor to default (PN)
+    }                                    
 }
     

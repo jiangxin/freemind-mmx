@@ -24,8 +24,6 @@ import freemind.view.mindmapview.NodeView;
 // Drag & Drop
 import java.awt.dnd.*;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
 import java.awt.Cursor;
 

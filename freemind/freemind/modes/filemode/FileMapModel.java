@@ -16,14 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMapModel.java,v 1.5 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: FileMapModel.java,v 1.7 2003-11-03 11:00:13 sviles Exp $*/
 
 package freemind.modes.filemode;
 
 import freemind.main.FreeMindMain;
-import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
-import freemind.modes.MindMapEdge;
 import freemind.modes.MapAdapter;
 import java.io.File;
 
@@ -46,7 +44,8 @@ public class FileMapModel extends MapAdapter {
     //
     // Other methods
     //
-    public void save(File file) {
+    public boolean save(File file) {
+    	return true;
     }
     
     public void load(File file) {

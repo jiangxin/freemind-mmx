@@ -16,18 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModesCreator.java,v 1.7 2001-04-19 16:20:38 ponder Exp $*/
+/*$Id: ModesCreator.java,v 1.9 2003-11-03 11:00:12 sviles Exp $*/
 
 package freemind.modes;
 
-import freemind.modes.mindmapmode.MindMapMode;
-import freemind.modes.browsemode.BrowseMode;
-import freemind.modes.filemode.FileMode;
-import freemind.modes.schememode.SchemeMode;
-import freemind.controller.Controller;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
+
+import freemind.controller.Controller;
 
 
 /**

@@ -16,18 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BezierEdgeView.java,v 1.11 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: BezierEdgeView.java,v 1.13 2003-11-03 11:00:22 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
-import freemind.modes.MindMapEdge;
-import freemind.modes.EdgeAdapter;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.geom.CubicCurve2D;
-import java.lang.Math;
+
 
 /**
  * This class represents a single Edge of a MindMap.

@@ -1,11 +1,12 @@
 <project name="freemind" default="dist" basedir=".">
 	<property name="src" value="." />
-	<property name="build" value="build" />
-	<property name="dist" value="dist" />
-	<property name="post" value="post" />
+	<property name="src_base_for_post" value="../" />
+	<property name="build" value="../bin/classes" />
+	<property name="dist" value="../bin/dist" />
+	<property name="post" value="../post" />
 	<property name="debug" value="on" />
 	<property name="build.compiler" value="modern" />
-	<property name="ver" value="0_6_1" />
+	<property name="ver" value="0_6_5" />
 
 	<target name="compile">
 		<mkdir dir="${build}"/>
@@ -35,8 +36,8 @@
 			basedir="${dist}"
 			excludes="browser" />
 		<tar tarfile="${post}/freemind-src.tar"
-			basedir="${src}"
-			excludes="build/**,post/**,dist/**,*.jar" />
+			basedir="${src_base_for_post}"
+			includes="src/**,.classpath,.project" />
 		<tar tarfile="${post}/freemind-browser.tar"
 			basedir="${dist}/browser" />
 		<gzip src="${post}/freemind-bin.tar"
@@ -52,8 +53,8 @@
 			basedir="${dist}"
 			excludes="browser" />
 		<zip destfile="${post}/freemind-src-${ver}.zip"
-			basedir="${src}"
-			excludes="build/**,post/**,dist/**,*.jar" />
+			basedir="${src_base_for_post}"
+			includes="src/**,.classpath,.project" />
 		<zip destfile="${post}/freemind-browser-${ver}.zip"
 			basedir="${dist}/browser" />
 	</target>
@@ -111,7 +112,7 @@
 				<exclude name="frame*"/>
 			</fileset>
 		</copy>
-		<javadoc sourcepath="${src}/.."
+		<javadoc sourcepath="${src}"
 		         destdir="${dist}/doc/javadoc"
 		         packagenames="freemind.*" />
 	</target>
@@ -124,10 +125,11 @@
                   <fileset defaultexcludes="no" dir="${src}" includes="**/*~"/>
                 </delete>
 	</target>
-	<target name="release">
+	<target name="release" depends="dist">
 		<copy todir="C:\share\freemind\lib">
 			<fileset dir="${dist}/lib">
 			</fileset>
 		</copy>
 	</target>
 </project>
+

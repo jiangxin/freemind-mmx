@@ -1,51 +1,11 @@
 <map>
-<node TEXT="FreeMind">
+<node COLOR="#993300" TEXT="FreeMind">
 <font NAME="dialog" BOLD="true" SIZE="18"/>
 <node TEXT="   ">
 <font NAME="sansserif" SIZE="12"/>
-<node COLOR="#006633" TEXT="User manual">
-<font NAME="SansSerif" SIZE="14"/>
-<node COLOR="#006633" TEXT="FreeMind Applet" FOLDED="true">
-<font NAME="SansSerif" SIZE="15"/>
-<node COLOR="#000000" TEXT="Install the Applet on your Website so that other users can browse your mind maps">
-<font NAME="dialog" SIZE="12"/>
-<node COLOR="#006633" TEXT="Download">
-<node LINK="http://sourceforge.net/project/showfiles.php?group_id=7118" TEXT="Download the Applet"/>
-</node>
-<node COLOR="#006633" TEXT="Installation">
-<node TEXT="Simply unpack the archive to a place on your website"/>
-<node TEXT="Create a link from your page to freemindbrowser.html"/>
-</node>
-<node COLOR="#006633" TEXT="Configuration">
-<node TEXT="Edit freemindbrowser.html to fit your needs">
-<node TEXT="Set browsemode_initial_map to your first map"/>
-</node>
-</node>
-<node COLOR="#006633" TEXT="Make it useful">
-<node TEXT="Create some Mindmaps with the freemind application"/>
-<node TEXT="Copy them to your webserver"/>
-</node>
-<node COLOR="#006633" TEXT="Congratulations! You have installed FreeMind to your website."/>
-</node>
-<node TEXT="Use the Applet">
-<font NAME="dialog" SIZE="12"/>
-<node TEXT="In Applet, you can only use the browse mode">
-<font NAME="dialog" SIZE="12"/>
-</node>
-<node TEXT="The browsing is done by simple clicking">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="Clicking on a link follows the link">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="Clicking on nonlink folds / unfolds">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
-</node>
-</node>
-<node COLOR="#006633" TEXT="FreeMind Application" FOLDED="true">
+<node COLOR="#006633" TEXT="FreeMind">
 <font NAME="SansSerif" SIZE="17"/>
-<node COLOR="#006633" TEXT="Installation">
+<node COLOR="#006633" TEXT="Installation" FOLDED="true">
 <node COLOR="#006633" TEXT="Download">
 <node LINK="http://java.sun.com/j2se" TEXT="Download the Java Runtime Environment">
 <font NAME="Lucida Sans" SIZE="12"/>
@@ -56,79 +16,22 @@
 </node>
 </node>
 <node COLOR="#006633" TEXT="Installation">
-<node TEXT="Install Java"/>
-<node TEXT="Unpack FreeMind"/>
-<node TEXT="Execute">
-<node TEXT="Windows">
-<node TEXT="Double click FreeMind.exe"/>
-<node TEXT="or">
-<node TEXT="Link FreeMind.exe to your desktop"/>
-<node TEXT="Just execute it."/>
+<node TEXT="1) Install Java. 2) Unpack FreeMind. 3) On Windows, run FreeMind.exe; you&apos;ll probably want to create a folder called freemind in &quot;c:\Program Files\&quot; and copy the contents of unpacked directory there. If you want, create shortcut of FreeMind.exe on your desktop."/>
+<node TEXT="On Unix, run freemind.sh. On both Windows and Mac OS X, you can also simply double click the file freemind.jar located at the folder lib."/>
 </node>
 </node>
-<node TEXT="Unix">
-<node TEXT="Call freemind.sh"/>
-</node>
-</node>
-</node>
-</node>
-<node COLOR="#006633" TEXT="Configuration">
-<node COLOR="#009900" TEXT="Ideally, you don&apos;t need any configuration at all">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="But if you really want to configure FreeMind">
-<node TEXT="Copy file user.properties to a folder freemind in your home directory">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="You sure know your home directory, if you&apos;re working on Linux">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="On Windows 2000, it&apos;s typically">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="C:\Documents and Settings\UserName\">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
-</node>
-<node TEXT="Edit user.properties in the folder freemind of your home directory">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="On Windows, you can additionally ..">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="configure file type .mm to open with FreeMind">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
-</node>
-</node>
-<node COLOR="#006633" TEXT="Modes">
+<node COLOR="#006633" TEXT="Creating mind maps">
 <font NAME="SansSerif" SIZE="16"/>
-<node COLOR="#006633" TEXT="Browse Mode" FOLDED="true">
-<node TEXT="Browse mode is basically a read only version of MindMap mode.">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="This is the mode in which FreeMind applet is started in.">
-<font NAME="SansSerif" SIZE="12"/>
-</node>
-</node>
-<node COLOR="#006633" TEXT="File Mode" FOLDED="true">
-<node TEXT="File Mode enables you to browse the files on your computer just like mind map."/>
-<node TEXT="You can make any folder the root of the map by chosing &quot;Center&quot; from the node menu."/>
-<node TEXT="To view / execute a file, follow the link of the node."/>
-</node>
-<node COLOR="#006633" TEXT="MindMap Mode">
-<font NAME="SansSerif" SIZE="16"/>
+<node TEXT="You create mind maps in so called mind map mode. This is the default mode FreeMind is started with. If the word mode troubles you, just forget about it."/>
 <node COLOR="#669900" TEXT="Operations on node or edge">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="Right click on node and select from menu. ">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="Most should be self explanatory.">
+<node TEXT="Right click on node and select from menu.  Most should be self explanatory.">
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Quick change to different already opened MindMap">
+<node COLOR="#669900" TEXT="Quickly change to different already opened mind map">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="Right click on background and select different map from menu">
+<node TEXT="Right click on the background and select a different map from the menu">
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
@@ -144,7 +47,7 @@
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Editing by drag and drop">
+<node COLOR="#669900" TEXT="Editing by drag and drop" FOLDED="true">
 <font NAME="sansserif" SIZE="14"/>
 <node TEXT="You can move nodes around using Drag And Drop">
 <font NAME="sansserif" SIZE="12"/>
@@ -167,11 +70,8 @@
 <font NAME="sansserif" SIZE="10"/>
 </node>
 </node>
-<node TEXT="If you hold control while dragging, nodes are copied instead of moved.">
+<node TEXT="If you hold control while dragging, nodes are copied instead of moved. You can achieve the same by dragging with middle mouse">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="You can achieve the same by dragging with middle mouse">
-<font NAME="sansserif" SIZE="12"/>
-</node>
 </node>
 <node COLOR="#339900" TEXT="if you hold control and shift while dragging, the color and font of the target node is copied to source node." FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
@@ -204,7 +104,7 @@
 </node>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Copying and pasting">
+<node COLOR="#669900" TEXT="Copying and pasting" FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="You can copy and paste (multiple) nodes between mindmaps as expected.">
 <font NAME="sansserif" SIZE="12"/>
@@ -386,7 +286,7 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Searching">
+<node COLOR="#669900" TEXT="Searching" FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="Popup &gt; Node &gt; Find">
 <font NAME="SansSerif" SIZE="12"/>
@@ -406,10 +306,6 @@
 <node TEXT="You can do most of the navigation using keyboard. You can see the keyboard shortcuts in the popup menu of the node. Some of the shortcuts which you do not see that way follow.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node TEXT="   ">
-<font NAME="SansSerif" SIZE="12"/>
-<node TEXT="   ">
-<font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#996600" TEXT="PgUp and PgDown">
 <font NAME="SansSerif" SIZE="12"/>
 <node TEXT="scroll by a large skip up and down">
@@ -425,7 +321,6 @@
 <node COLOR="#999999" TEXT="Nice for having a quick glance above and then continue below again">
 <font NAME="SansSerif" SIZE="10"/>
 </node>
-</node>
 <node COLOR="#996600" TEXT="Escape">
 <font NAME="SansSerif" SIZE="12"/>
 <node TEXT="Move to root">
@@ -438,14 +333,13 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-</node>
-<node TEXT="In principle, it is possible to change keyboard mappings in user.properties.">
+<node TEXT="You can select a range of nodes by holding shift and moving around with arrows or page up and down."/>
+<node TEXT="You can replace the text in current node and start editing by typing letters. You can also edit node by pressing home or end key, as well as F2."/>
+<node TEXT="Technical users can change the keyboard settings in user.properties.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="   ">
-<font NAME="sansserif" SIZE="12"/>
-<node COLOR="#669900" TEXT="Export into HTML">
+<node COLOR="#669900" TEXT="Exporting into HTML" FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="It is possible to export mind map or branch to HTML">
 <font NAME="sansserif" SIZE="12"/>
@@ -460,11 +354,11 @@
 </node>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Import" FOLDED="true">
+<node COLOR="#669900" TEXT="Importing favorites or folder structure" FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
 <node COLOR="#996600" TEXT="Where?">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="Node menu &gt; Branch &gt; Import &gt; ..">
+<node TEXT="Node poup menu menu &gt; Branch &gt; Import &gt; ..">
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
@@ -565,22 +459,10 @@
 </node>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Cooperation with Microsoft tools">
+<node COLOR="#669900" TEXT="Cooperation with Microsoft tools like Word or Outlook" FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="You can paste maps or branches into">
+<node TEXT="You can paste maps or branches into MS Work, MS Wordpad or MS Outlook messages. In general, you can paste it into any application that understands RTF - rich text format. The text formatting and links are pasted too.">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="Word">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="Wordpad">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="Outlook message">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node COLOR="#006600" TEXT="Text Formatting and links are pasted!">
-<font NAME="sansserif" SIZE="12"/>
-</node>
 </node>
 <node LINK="mailto:dan.polansky@seznam.cz" TEXT="Clicking a mail link (mailto:dan.polansky@seznam.cz) will open Outlook for creating a new message">
 <font NAME="sansserif" SIZE="12"/>
@@ -590,39 +472,30 @@
 </node>
 <node LINK="mailto:dan.polansky@seznam.cz?subject=Thank you for the FreeMind" TEXT="You can use subject in mail link"/>
 </node>
-</node>
-<node COLOR="#669900" TEXT="Preferences">
+<node COLOR="#669900" TEXT="Preferences" FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="You can set full antialiasing or antialiasing of edges only">
+<node TEXT="Only a small subset of preferences is editable using graphical using interface; these you can change in menu: Edit &gt; Preferences. At the time, the following preferences can be changed:"/>
+<node TEXT="You can set full antialiasing or antialiasing of edges only. Antialiasing of edges is the default option.">
 <font NAME="SansSerif" SIZE="12"/>
-<node TEXT="Antialiasing of edges is set by default">
+</node>
+<node TEXT="You can set a kind of HTML export in preferences.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
+<node TEXT="Other preferences can be changed by more technical users in user.properties, which you have to copy into the folder freemind in your home folder."/>
+</node>
+<node COLOR="#669900" TEXT="Printing" FOLDED="true">
+<font NAME="sansserif" SIZE="12"/>
+<node TEXT="You can print either by fitting the whole map into one page, or by printing the map to several sheets of paper. This choice you can set in menu: File &gt; Page Setup &gt; ... ."/>
+<node TEXT="Choose page setup landscape. That way it looks better and you have a better utilization of space.">
+<font NAME="sansserif" SIZE="12"/>
+</node>
+<node TEXT="If you want to preview your map before you print it and have a postscript printer or generic postsript driver, you can print the map into file and view the postscript file view ghostview or similar software. Beware that if you try to print the map with printer that does not understand postscript, the resulting file will not be postscript but probably PCL, which is unusable for you."/>
+<node TEXT="You can also print from your browser after exporting map to HTML, or from Word or Wordpad after copying and pasting the map into it. You can also export the map into HTML with headings, copy and paste it into MS Word and print it from there. That way you can change styles as you want.">
+<font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#006600" TEXT="Tips">
+<node COLOR="#006600" TEXT="Tips" FOLDED="true">
 <font ITALIC="true" NAME="dialog" SIZE="15"/>
-<node COLOR="#669900" TEXT="Printing">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="   ">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="Choose page setup">
-<font NAME="sansserif" SIZE="12"/>
-<node TEXT="landscape">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
-</node>
-<node TEXT="That way it looks better and you have better utilization of space">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="From browser after exporting map to HTML">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="From Word or Wordpad - copy a map and paste it into one of these editors.">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
 <node COLOR="#669900" TEXT="Use anonymous nodes">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="   ">
@@ -649,10 +522,9 @@
 </node>
 <node COLOR="#669900" TEXT="Order of main branches">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="If you want to ensure two main branches appear on the same side">
+<node TEXT="If you want to ensure two main branches appear on the same side, make them childern of an anonymous node.">
 <font NAME="sansserif" SIZE="12"/>
-<node TEXT="make them childern of an anonymous node">
-<font NAME="sansserif" SIZE="12"/>
+</node>
 <node TEXT="Bad">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="N1">
@@ -671,8 +543,6 @@
 </node>
 <node TEXT="N2">
 <font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
 </node>
 </node>
 </node>
@@ -720,9 +590,9 @@
 <node TEXT="To be able to enter newlines in long nodes, uncheck the check box &quot;Enter confirms&quot; when editing the long node.&#xa;&#xa;You see?&#xa;&#xa;There are newlines here, make no mistake about it."/>
 </node>
 </node>
-<node COLOR="#006600" TEXT="HTML and Pictures" FOLDED="true">
-<font ITALIC="true" NAME="dialog" SIZE="15"/>
-<node TEXT="It is possible to include HTML in nodes. You have to start node content with tag &lt;html&gt;.">
+<node COLOR="#669900" TEXT="HTML and Pictures" FOLDED="true">
+<font NAME="sansserif" SIZE="12"/>
+<node TEXT="It is possible to include HTML in nodes. You have to start the node content with the tag &lt;html&gt;.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 <node COLOR="#000000" TEXT="This way, you can have pictures in the nodes.">
@@ -756,42 +626,52 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#669900" TEXT="Physical style - patterns">
-<node TEXT="There is a set of physical styles also called patterns. They are stored in a file &quot;patterns.xml&quot; located at the folder &quot;freemind&quot; in f your home directory."/>
+<node COLOR="#669900" TEXT="Physical style - patterns" FOLDED="true">
+<node TEXT="There is a set of physical styles also called patterns. They are stored in the file &quot;patterns.xml&quot; located at the folder &quot;freemind&quot; in your home directory."/>
 <node TEXT="Application">
 <node TEXT="MenuBar &gt; Edit &gt; Physical Style &gt; .."/>
 </node>
-<node COLOR="#669900" TEXT="Creation" FOLDED="true">
+<node TEXT="You can create or change patterns by editing &quot;patterns.xml&quot;. Pattern applies to node, if there is a &lt;node&gt; tag, it applies to edge, if there is an &lt;edge&gt; tag. &lt;node&gt; tag can have &lt;font&gt; tag as a child. Study the file &quot;patterns.xml&quot; supplied with FreeMind."/>
+</node>
+<node COLOR="#669900" TEXT="Zoom" FOLDED="true">
+<node TEXT="It is possible to change the zoom from toolbar. It is possible to zoom in / out from Menubar &gt; Edit."/>
+</node>
+<node COLOR="#669900" TEXT="File locking" FOLDED="true">
+<node TEXT="Current version of FreeMind has experimental file locking, which is disabled by default. Current implementation does not really prevent race conditions, but it should be fine for the most of practical purposes. What does file locking mean? It makes sure that more users do not edit the same map at the same time, preventing them from incidentally overwriting the information from each other."/>
+<node TEXT="You can enable experimental file locking, if you are a technical user and are willing to edit user.properties, as described above."/>
+</node>
+<node COLOR="#669900" TEXT="Changes in user interface of recent version" FOLDED="true">
+<node TEXT="Some of the key settings have been redefined so that they align themselves with what we consider shared standard or intuitive use. Some of the new key settings are modelled on Microsoft tools. New key settings include enter for creating of new siblings below the node, insert for creating new children, F2 for editing nodes - here the Microsoft influence is apparent while there is no intuitive reason to have F2 for node editing. But once you get used to it in all the applications you use, you want to have that one in FreeMind too of course.">
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node TEXT="The changes we have made in the user interface are customizable in user.properties to an extent. If you are a technical user and you do not like the changes, change the settings in user.properties.">
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+</node>
+<node COLOR="#669900" TEXT="To copy your selection to clipboard when you are editing a node, press right mouse button and choose copy">
+<font NAME="Default" SIZE="10"/>
+</node>
+</node>
+<node COLOR="#006633" TEXT="Browsing mind maps" FOLDED="true">
+<node TEXT="You can browse the mind maps in browse mode. Why is there a separate mode for browsing? That&apos;s because browsing is the only thing you can do in FreeMind applet, which can be put to your website. Normally, you would not use browse mode in FreeMind."/>
+</node>
+<node COLOR="#006633" TEXT="Browsing the files on your computer" FOLDED="true">
+<node TEXT="You can browse the files on your computer using file mode. To enter file mode, in menu: Modes &gt; File."/>
+<node TEXT="You can then browse the file tree as if it was a mind map. You can make any folder the root of the map by chosing &quot;Center&quot; from the node menu. To view or execute a file, follow the link of the node."/>
+<node TEXT="The file mode is currently not very useful; it is a demonstration that it&apos;s not too difficult to feed data into the tree from other source than mind map. There is no evidence that people would really use this mode."/>
+</node>
+<node COLOR="#669900" TEXT="There is a concept of mode in FreeMind" FOLDED="true">
 <font NAME="SansSerif" SIZE="10"/>
-<node TEXT="You can create or change patterns by editing &quot;patterns.xml&quot;."/>
-<node TEXT="Pattern applies to node, if there is a &lt;node&gt; tag, it applies to edge, if there is an &lt;edge&gt; tag."/>
-<node TEXT="&lt;node&gt; tag can have &lt;font&gt; tag as a child."/>
-<node TEXT="Study &quot;patterns.xml&quot; supplied with FreeMind."/>
-</node>
-</node>
-<node COLOR="#669900" TEXT="Zoom">
-<node TEXT="It is possible to change zoom from toolbar"/>
-<node TEXT="It is possible to zoom in / out from Menubar &gt; Edit"/>
-</node>
-</node>
-<node COLOR="#669900" TEXT="On Modes" FOLDED="true">
-<node TEXT="Although Freemind is primarily a tool for editing Mind Maps, it is  designed to be able to do more things than just editing Mind Maps.  There is an architecture avaliable to have more so called modes.">
+<node TEXT="Although Freemind is primarily a tool for editing Mind Maps, it is designed to be able to view data coming from different data sources.  To make a specific data source available for viewing in FreeMind, a programmer has to write a so called mode for that data source. In the standard, there is an example of such a mode, namely file mode. We do not know of any other modes implemented. It is not clear if anyone would really want to make use of this architecture, but it&apos;s here to be exploited you someone wants to.">
 <font NAME="sansserif" SIZE="12"/>
 </node>
-<node TEXT="The most important mode is MindMap Mode - this is the mode you should started with.">
+<node TEXT="Furthermore, there is code almost ready for Scheme Mode which enables you to edit scheme programs. Again, the usefullnes is far from clear. While the mind map mode is clearly a real thing, other modes seem to be more a demonstration of what is possible than something really used by people.">
 <font NAME="sansserif" SIZE="12"/>
-</node>
-<node TEXT="Detail on modes">
-<font NAME="sansserif" SIZE="10"/>
-<node TEXT="There is code almost ready for Scheme Mode which enables you to edit scheme programs.">
-<font NAME="sansserif" SIZE="12"/>
-</node>
-</node>
 </node>
 </node>
 <node COLOR="#996600" TEXT="Demonstration of some features" FOLDED="true">
-<font NAME="dialog" SIZE="16"/>
-<node TEXT="Appearance">
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#669900" TEXT="Appearance">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="Nodes can have different colors.">
 <font NAME="sansserif" SIZE="12"/>
@@ -848,7 +728,7 @@
 </node>
 </node>
 </node>
-<node TEXT="Nodes can be folded">
+<node COLOR="#669900" TEXT="Nodes can be folded">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="Fold" FOLDED="true">
 <font NAME="sansserif" SIZE="12"/>
@@ -869,7 +749,7 @@
 </node>
 </node>
 </node>
-<node TEXT="Nodes can contain followable links to ... ">
+<node COLOR="#669900" TEXT="Nodes can contain followable links to ... ">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="Web pages">
 <font NAME="sansserif" SIZE="12"/>
@@ -905,7 +785,7 @@
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node TEXT="Multiline nodes">
+<node COLOR="#669900" TEXT="Multiline nodes">
 <font NAME="sansserif" SIZE="12"/>
 <node TEXT="Of the value traps, the most widespread and pernicious is value rigidity. This is an inability to revalue what one sees because of commitment to previous values. In motorcycle maintenance, you must rediscover what you do as you go. Rigid values make this impossible.">
 <font NAME="sansserif" SIZE="12"/>
@@ -920,7 +800,7 @@
 <font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node TEXT="You can emulate labelled edges">
+<node COLOR="#669900" TEXT="You can emulate labelled edges">
 <node TEXT="Tree">
 <font NAME="sansserif" SIZE="12"/>
 <node COLOR="#999999" TEXT="is a">
@@ -959,40 +839,66 @@
 </node>
 </node>
 </node>
+<node COLOR="#006633" TEXT="Customizing FreeMind" FOLDED="true">
+<node TEXT="Ideally, you don&apos;t need any customizing at all. But if you really want to customize FreeMind, copy the file &quot;user.properties&quot; to the folder &quot;freemind&quot; in your home directory and edit the properties in the text file using your favorite text editor, e.g. notepad, Vim or Emacs.">
+<font NAME="sansserif" SIZE="12"/>
+</node>
+<node TEXT="You sure know your home directory, if you&apos;re working on Linux. On Windows 2000, it&apos;s typically &quot;C:\Documents and Settings\&lt;UserName&gt;\&quot;, on Windows 95, it&apos;s &quot;C:\WINDOWS\&quot;. Edit &quot;user.properties&quot; in the folder &quot;freemind&quot; of your home directory. On Windows, you can additionally configure file type of extension mm to open with FreeMind.">
+<font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#006699" TEXT="Asked Questions">
-<font NAME="SansSerif" SIZE="14"/>
-<node COLOR="#999900" TEXT="How do I create multiline nodes?">
+<node COLOR="#006699" TEXT="Answered questions" FOLDED="true">
+<node COLOR="#669900" TEXT="To create multiline nodes" FOLDED="true">
+<font NAME="SansSerif" SIZE="10"/>
 <node TEXT="When the text is long enough, it will automatically become multiline. When you press enter on such a multiline node, a larger editing window will be opened."/>
 </node>
-<node COLOR="#999900" TEXT="How do I create nodes with newlines / carriage returns? I cannot find any check box for new lines.">
+<node COLOR="#669900" TEXT="To create nodes with newlines / carriage returns, when you cannot find any check box for new lines" FOLDED="true">
+<font NAME="SansSerif" SIZE="10"/>
 <node TEXT="To be able to edit node with newlines, it must be multiline (or long if you wish) first. That is, first write text, which is long enough, then finish editing, then press enter again and you find yourself in the larger editing window. It is only that window which contains the check box &quot;Enter confirms&quot;."/>
+</node>
+<node COLOR="#669900" TEXT="To remove a link" FOLDED="true">
+<font NAME="SansSerif" SIZE="10"/>
+<node TEXT="In the pop up menu of a node, edit the link by the menu item &quot;Node &gt; Set Link (Textfield)&quot; and set the links as an empty string."/>
+</node>
+</node>
+</node>
+<node COLOR="#006633" TEXT="Installation of FreeMind applet at your web site" FOLDED="true">
+<node COLOR="#000000" TEXT="You can install the applet at your website so that other users can browse your mind maps.">
+<font NAME="dialog" SIZE="12"/>
+</node>
+<node LINK="http://sourceforge.net/project/showfiles.php?group_id=7118" TEXT="Download the applet, that is freemind-browser."/>
+<node TEXT="The downloaded archive contains freemind-browser.ajr and freemindbrowser.html. Create a link from your page to freemindbrowser.html. Edit freemindbrowser.html, especially change the path inside so that it points your mind map. Beware that the applet&apos;s jar file must be located at the same server as the map itself, this is for java security reasons. Of course, you have to upload the files to your web site."/>
+</node>
+<node COLOR="#006633" TEXT="Using the FreeMind applet" FOLDED="true">
+<font NAME="SansSerif" SIZE="12"/>
+<node TEXT="In applet, you can only use the browse mode, that is, you cannot edit the remote maps. Click the nodes to toggle the folding or follow the links. Drag the background to move the map. You can also search the map, using node popup menu.">
+<font NAME="sansserif" SIZE="12"/>
 </node>
 </node>
 </node>
 <node TEXT="   ">
 <font NAME="sansserif" SIZE="12"/>
-<node LINK="http://freemind.sourceforge.net" COLOR="#000000" TEXT="Home page of FreeMind" STYLE="fork">
-<font NAME="Lucida Sans" SIZE="12"/>
+<node LINK="http://freemind.sourceforge.net" TEXT="Home page of FreeMind">
+<font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#336600" TEXT="Author">
+<node COLOR="#006699" TEXT="Smaller contributors">
 <font NAME="dialog" SIZE="12"/>
-<node TEXT="Joerg Mueller">
-<font NAME="Lucida Sans" SIZE="12"/>
 </node>
-<node TEXT="University of Freiburg, Germany">
-<font NAME="Lucida Sans" SIZE="12"/>
-</node>
+<node COLOR="#006699" TEXT="Authors">
+<font NAME="dialog" SIZE="12"/>
+<node COLOR="#996600" TEXT="Joerg Mueller">
+<font NAME="SansSerif" SIZE="12"/>
 <node LINK="mailto:ponders@t-online.de" TEXT="ponders@t-online.de">
 <font NAME="sansserif" SIZE="12"/>
 </node>
+<node COLOR="#999999" TEXT="University of Freiburg, Germany">
+<font NAME="Default" SIZE="10"/>
 </node>
-<node COLOR="#336600" TEXT="Second author">
-<font NAME="dialog" SIZE="12"/>
-<node LINK="http://mujweb.cz/www/danielpolansky" TEXT="Daniel Polansky">
+</node>
+<node LINK="http://mujweb.cz/www/danielpolansky" COLOR="#996600" TEXT="Daniel Polansky">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
+<node COLOR="#996600" TEXT="Petr Novak"/>
 </node>
 </node>
 </node>

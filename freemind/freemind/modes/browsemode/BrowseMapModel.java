@@ -16,22 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMapModel.java,v 1.6 2003-11-03 10:39:52 sviles Exp $*/
+/*$Id: BrowseMapModel.java,v 1.8 2003-11-03 11:00:13 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
 
 import freemind.main.FreeMindMain;
-import freemind.main.XMLElement;
-import freemind.main.Tools;
 import freemind.modes.MapAdapter;
-import java.awt.Color;
-import java.awt.Font;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessControlException;
-import javax.swing.JOptionPane;
 
 public class BrowseMapModel extends MapAdapter {
 
@@ -84,7 +79,8 @@ public class BrowseMapModel extends MapAdapter {
     public void setURL(URL  v) {this.url = v;}
     
 
-    public void save(File file) {
+    public boolean save(File file) {
+    	return true;
     }
     
     public boolean isSaved() {

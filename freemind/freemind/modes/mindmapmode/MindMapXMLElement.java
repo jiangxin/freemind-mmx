@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapXMLElement.java,v 1.2 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: MindMapXMLElement.java,v 1.3 2003-11-03 10:49:18 sviles Exp $*/
 
 /*On doubling of code
  *
@@ -29,15 +29,10 @@
 package freemind.modes.mindmapmode;
 
 import freemind.main.XMLElement;
-import freemind.main.XMLParseException;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
-import java.util.Hashtable;
-import java.util.Map;
-import java.io.IOException;
-import java.io.Reader;
+
 import java.awt.Font;
-import java.awt.Color;
 
 public class MindMapXMLElement extends XMLElement {
 
@@ -84,7 +79,8 @@ public class MindMapXMLElement extends XMLElement {
          MindMapNodeModel node = (MindMapNodeModel)userObject;
          if (child.getUserObject() instanceof MindMapNodeModel) {
             node.insert((MindMapNodeModel)child.getUserObject(),
-                        node.getRealChildCount()); }
+                        -1); } // to the end without preferable... (PN)
+                     // node.getRealChildCount()); }
          else if (child.getUserObject() instanceof MindMapEdgeModel) {
             MindMapEdgeModel edge = (MindMapEdgeModel)child.getUserObject();
             edge.setTarget(node);

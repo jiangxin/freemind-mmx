@@ -16,18 +16,18 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.13 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: Tools.java,v 1.14 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.net.URL;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GraphicsEnvironment;
-import javax.swing.JOptionPane;
+import java.lang.Thread;
 
 public class Tools {
 
@@ -153,6 +153,22 @@ public class Tools {
          replaceAll("&amp;","&");
     }
 
+
+    public static String replaceLeadingSpaceWithNBSP (String text) {
+       //
+       int nonZeroPosition = 0;
+       while (nonZeroPosition < text.length() &&
+              text.charAt(nonZeroPosition) == ' ') {
+          nonZeroPosition++; }
+       
+       String result = "";
+       for (int i = 0; i < nonZeroPosition; i++) {
+          result += "&nbsp;"; }
+
+       result += text.substring(nonZeroPosition);
+       return result;
+    }
+
     public static boolean isAbsolutePath(String path) {
        // On Windows, we cannot just ask if the file name starts with file separator.
        // If path contains ":" at the second position, then it is not relative, I guess.
@@ -174,7 +190,7 @@ public class Tools {
     /**
      * This is a correction of a method getFile of a class URL.  Namely, on Windows it
      * returned file paths like /C: etc., which are not valid on Windows. This correction
-     * is heuristic to a great extend. One of the reasons is, that file:// is basically no
+     * is heuristic to a great extend. One of the reasons is that file:// is basically no
      * protocol at all, but rather something every browser and every system uses slightly
      * differently.
      */
@@ -266,6 +282,81 @@ public class Tools {
       if (text == null || text.length() == 0) {
          return text; }
       return text.substring(0,1).toUpperCase() + text.substring(1,text.length()); }
+
+   public static void setHidden(File file, boolean hidden, boolean synchronously) {
+   	  // According to Web articles, UNIX systems do not have attribute hidden
+   	  // in general, rather, they consider files starting with . as hidden. 
+	  String osNameStart = System.getProperty("os.name").substring(0,3);
+	  if (osNameStart.equals("Win")) {
+	  	 try {                    
+                    Runtime.getRuntime().exec("attrib "+(hidden?"+":"-")+"H \""+file.getAbsolutePath()+"\"");
+                    // Synchronize the effect, because it is asynchronous in general.
+                    if (!synchronously) {
+                       return; }
+                    int timeOut = 10;
+                    while (file.isHidden() != hidden && timeOut > 0) {
+                       Thread.sleep(10/*miliseconds*/);
+                       timeOut--; }}
+                 catch (Exception e) {e.printStackTrace(); }}}
+
+	public static String expandPlaceholders(String message, String s1) {
+	   String result = message;
+	   if (s1 != null) {
+		  result = result.replaceAll("\\$1",s1); }
+	   return result; }
+	   
+	public static String expandPlaceholders(String message, String s1, String s2) {
+	   String result = message;
+	   if (s1 != null) {
+		  result = result.replaceAll("\\$1",s1); }
+	   if (s2 != null) {
+		  result = result.replaceAll("\\$2",s2); }
+	   return result; }
+	   
+   public static String expandPlaceholders(String message, String s1, String s2, String s3) {
+   	  String result = message;
+   	  if (s1 != null) {
+   	  	 result = result.replaceAll("\\$1",s1); }
+      if (s2 != null) {
+	     result = result.replaceAll("\\$2",s2); }
+	  if (s3 != null) {
+	     result = result.replaceAll("\\$3",s3); }
+	  return result; }
+
+   public static class IntHolder {
+	   private int value;
+	   public IntHolder () {}
+	   public void setValue(int value) {
+		  this.value = value; }
+	   public int getValue() {
+		  return value; }}
+
+   public static class BooleanHolder {
+	   private boolean value;
+	   public BooleanHolder () {}
+	   public void setValue(boolean value) {
+		  this.value = value; }
+	   public boolean getValue() {
+		  return value; }}
+
+   public static class ObjectHolder {
+	   Object object;
+	   public ObjectHolder () {}
+	   public void setObject(Object object) {
+		  this.object = object; }
+	   public Object getObject() {
+		  return object; }}
+		  
+   public static class Pair {
+   	   Object first;
+	   Object second;
+	   public Pair (Object first, Object second) {
+	   	 this.first = first;
+		 this.second = second; }
+	   public Object getFirst() {
+	   	 return first; }
+	   public Object getSecond() {
+	     return second; }}
 
 }
 

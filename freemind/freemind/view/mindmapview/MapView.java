@@ -16,28 +16,42 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.17 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: MapView.java,v 1.18 2003-11-03 10:49:18 sviles Exp $*/
 
 package freemind.view.mindmapview;
 
-import freemind.main.Tools;
-import freemind.modes.MindMapNode;
-import freemind.modes.MindMap;
-import freemind.controller.Controller;
-import freemind.controller.NodeMouseMotionListener;
-import freemind.controller.NodeKeyListener;
-import java.util.*;
-import java.awt.*;
-import java.awt.print.Printable;
-import java.awt.print.PageFormat;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Vector;
 
 import javax.swing.JPanel;
 import javax.swing.JViewport;
-import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeModelEvent;
-import javax.swing.JOptionPane;
+import javax.swing.event.TreeModelListener;
+
+import freemind.controller.Controller;
+import freemind.controller.NodeKeyListener;
+import freemind.controller.NodeMouseMotionListener;
+import freemind.main.Tools;
+import freemind.modes.MindMap;
+import freemind.modes.MindMapNode;
 
 /**
  * This class represents the view of a whole MindMap
@@ -50,7 +64,10 @@ public class MapView extends JPanel implements Printable {
     private Vector selected = new Vector();
     private Controller controller;
     private float zoom=1F;
+    private boolean disableMoveCursor = true;
+    private int siblingMaxLevel;
     private boolean isPrinting = false; // use for remove selection from print
+    private NodeView shiftSelectionOrigin = null;
 
     //
     // Constructors
@@ -76,6 +93,10 @@ public class MapView extends JPanel implements Printable {
         addMouseMotionListener( controller.getMapMouseMotionListener() );
         addMouseWheelListener( controller.getMapMouseWheelListener() );
 
+        // like in excel - write a letter means edit (PN)
+        // on the other hand it doesn't allow key navigation (sdfe)
+        disableMoveCursor = Tools.safeEquals(
+            controller.getFrame().getProperty("disable_cursor_move_paper"),"true");
     }
 
     public void initRoot() {
@@ -110,15 +131,49 @@ public class MapView extends JPanel implements Printable {
                                           d.width, d.height));
     }
 
+    // scroll with extension (PN 6.2)
     public void scrollNodeToVisible( NodeView node ) {
-	//this is buggy!
-	//see centerNode()
-	if (node != null) {
-  	    scrollRectToVisible( new Rectangle(node.getLocation().x-20, node.getLocation().y,node.getSize().width+20,
-                                               node.getSize().height) );
-  	    scrollRectToVisible( new Rectangle(node.getLocation().x-20, node.getLocation().y,node.getSize().width+20,
-                                               node.getSize().height) );
-  	}
+      scrollNodeToVisible( node, 0);
+    }
+
+    // scroll with extension (PN)
+    // e.g. the input field is bigger than the node view => scroll in order to
+    //      fit the input field into the screen
+    public void scrollNodeToVisible( NodeView node, int extraWidth) {
+      //see centerNode()
+
+      final int HORIZ_SPACE  = 10;
+      final int HORIZ_SPACE2 = 20;
+      final int VERT_SPACE   = 5; 
+      final int VERT_SPACE2  = 10;
+
+      // get left/right dimension
+      int xLeft  = node.getLocation().x - HORIZ_SPACE;
+      int xRight = node.getSize().width + HORIZ_SPACE2;
+      if (extraWidth < 0) { // extra left width
+        xLeft += extraWidth;
+      }
+      else {                // extra right width
+        xRight += extraWidth; 
+      }
+      
+      // adjust container size
+      if (xLeft < 0) {
+        getMindMapLayout().resizeMap(xLeft);
+      }
+      else if (xRight > getSize().width) {
+        getMindMapLayout().resizeMap(xRight);
+      }
+
+      //this is buggy! 
+      // %%% and therefore is the scrollRectToVisible called twice ? (PN)
+      //     I don't think so and therefore I'll comment one call out... (PN)
+      if (node != null) {
+        scrollRectToVisible( new Rectangle(xLeft, node.getLocation().y - VERT_SPACE,
+                                           xRight, node.getSize().height + VERT_SPACE2) );
+// (PN)   scrollRectToVisible( new Rectangle(xLeft, node.getLocation().y - VERT_SPACE,
+//                                           xRight, node.getSize().height + VERT_SPACE2) );
+      }
     }
 
     /**
@@ -144,102 +199,189 @@ public class MapView extends JPanel implements Printable {
        mapViewport.setViewPosition(currentPoint);                          // Set It Back
     }
 
-    public void moveLeft() {
-	NodeView oldSelected = getSelected();
-	NodeView newSelected;
-	if(oldSelected.isRoot()){
-	    LinkedList left = ((RootNodeView)oldSelected).getLeft();
-	    if (left.size() == 0) return;
-	    newSelected = (NodeView)left.getFirst();
-	} else if(!oldSelected.isLeft()) {
-	    newSelected = oldSelected.getParentView();
-	} else {
-	    if (oldSelected.getChildrenViews().size() == 0) return;
-	    newSelected = (NodeView)oldSelected.getChildrenViews().getFirst();
-	}
-	select(newSelected);
-	scrollNodeToVisible( newSelected );
+    //
+    // Node Navigation
+    //
+
+    private NodeView getNeighbour(int directionCode) {
+      NodeView oldSelected = getSelected();
+      NodeView newSelected = null;
+
+      switch (directionCode) {
+        case KeyEvent.VK_LEFT:
+          setSiblingMaxLevel(oldSelected.getModel().getNodeLevel()); // for case of return
+          if(oldSelected.isRoot()){
+              LinkedList left = ((RootNodeView)oldSelected).getLeft();
+              if (left.size() == 0) return null;
+              newSelected = oldSelected.getModel().getPreferredChild().getViewer();
+              if (!left.contains(newSelected)) {
+                newSelected = (NodeView)left.getFirst();
+              }
+          } else if(!oldSelected.isLeft()) {
+              newSelected = oldSelected.getParentView();
+          } else {
+              if (oldSelected.getModel().isFolded()) { // If folded in the direction, unfold
+                getModel().setFolded(oldSelected.getModel(), false); 
+                return null;
+              }
+
+              if (oldSelected.getChildrenViews().size() == 0) return null;
+              newSelected = oldSelected.getModel().getPreferredChild().getViewer();
+          }
+          setSiblingMaxLevel(newSelected.getModel().getNodeLevel());
+          break;
+
+        case KeyEvent.VK_RIGHT:
+          setSiblingMaxLevel(oldSelected.getModel().getNodeLevel()); // for case of return
+          if(oldSelected.isRoot()) {
+              LinkedList right = ((RootNodeView)oldSelected).getRight();
+              if (right.size() == 0) return null;
+              newSelected = oldSelected.getModel().getPreferredChild().getViewer();
+              if (!right.contains(newSelected)) {
+                newSelected = (NodeView)right.getFirst();
+              }
+          } else if(oldSelected.isLeft()) {
+              newSelected = oldSelected.getParentView();
+          } else {
+              if (oldSelected.getModel().isFolded()) { // If folded in the direction, unfold
+                getModel().setFolded(oldSelected.getModel(), false); 
+                return null;
+              }
+
+              if (oldSelected.getChildrenViews().size() == 0) return null;
+              newSelected = oldSelected.getModel().getPreferredChild().getViewer();
+          }
+          setSiblingMaxLevel(newSelected.getModel().getNodeLevel());
+          break;
+
+        case KeyEvent.VK_UP:
+          newSelected = oldSelected.getPreviousSibling();
+          break;
+
+        case KeyEvent.VK_DOWN:
+          newSelected = oldSelected.getNextSibling();
+          break;
+
+        case KeyEvent.VK_PAGE_UP:
+          newSelected = oldSelected.getPreviousPage();
+          break;
+
+        case KeyEvent.VK_PAGE_DOWN:
+          newSelected = oldSelected.getNextPage();
+          break;
+      }
+      return newSelected;
+    }
+    
+    public void move(KeyEvent e) {
+      NodeView newSelected = getNeighbour(e.getKeyCode());
+      if (newSelected != null) {
+        extendSelectionWithKeyMove(newSelected, e);
+        scrollNodeToVisible( newSelected );
+        e.consume();
+      }
     }
 
-    public void moveRight() {
-	NodeView oldSelected = getSelected();
-	NodeView newSelected;
-	if(oldSelected.isRoot()) {
-	    LinkedList right = ((RootNodeView)oldSelected).getRight();
-	    if (right.size() == 0) return;
-	    newSelected = (NodeView)right.getFirst();
-	} else if(oldSelected.isLeft()) {
-	    newSelected = oldSelected.getParentView();
-	} else {
-	    if (oldSelected.getChildrenViews().size() == 0) return;
-	    newSelected = (NodeView)oldSelected.getChildrenViews().getFirst();
-	}
-	select(newSelected);
-	scrollNodeToVisible(newSelected);
-    }
+    private void extendSelectionWithKeyMove(NodeView newlySelectedNodeView, KeyEvent e) {
+       if (e.isShiftDown()) {
+          // left or right
+          if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+             shiftSelectionOrigin = null;
+             NodeView toBeNewSelected = newlySelectedNodeView.isParentOf(getSelected()) ?
+                newlySelectedNodeView : getSelected();
 
-    public void moveUp() {
-	NodeView oldSelected = getSelected();
-	NodeView newSelected;
-	if(oldSelected.isRoot()){
-	    return;
-	} else {
-	    newSelected = oldSelected.getPreviousSibling();
-	}
-	select(newSelected);
-	scrollNodeToVisible(newSelected);
-    }
+             selectBranch(toBeNewSelected, false);
+             makeTheSelected(toBeNewSelected);
+             return; }
 
-    public void moveDown() {
-	NodeView oldSelected = getSelected();
-	NodeView newSelected;
-	if(oldSelected.isRoot()){
-	    return;
-	} else {
-	    newSelected = oldSelected.getNextSibling();
-	}
-	select(newSelected);
-	scrollNodeToVisible(newSelected);
+          if (shiftSelectionOrigin == null) {
+             shiftSelectionOrigin = getSelected(); }
+
+          int deltaY = newlySelectedNodeView.getY() - shiftSelectionOrigin.getY();
+
+          // page up and page down
+          NodeView currentSelected = getSelected();
+          if (e.getKeyCode() == KeyEvent.VK_PAGE_UP) {
+             for (;;) {
+                if (currentSelected.getY() > shiftSelectionOrigin.getY())
+                   deselect(currentSelected); 
+                else
+                   makeTheSelected(currentSelected);                
+                if (currentSelected.getY() <= newlySelectedNodeView.getY())
+                   break;
+                currentSelected = currentSelected.getPreviousSibling(); }
+             return; }
+
+          if (e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
+             for (;;) {
+                if (currentSelected.getY() < shiftSelectionOrigin.getY())
+                   deselect(currentSelected); 
+                else
+                   makeTheSelected(currentSelected);
+                if (currentSelected.getY() >= newlySelectedNodeView.getY())
+                   break;
+                currentSelected = currentSelected.getNextSibling(); }
+             return; }
+
+          boolean enlargingMove = (deltaY > 0) && (e.getKeyCode() == KeyEvent.VK_DOWN) ||
+             (deltaY < 0) && (e.getKeyCode() == KeyEvent.VK_UP);
+
+          if (enlargingMove) {
+             toggleSelected(newlySelectedNodeView); }
+          else {
+             toggleSelected(getSelected());
+             makeTheSelected(newlySelectedNodeView); }}
+       else {
+          shiftSelectionOrigin = null;
+          selectAsTheOnlyOneSelected(newlySelectedNodeView); }}
+
+    public void extendSelection(NodeView newlySelectedNodeView, InputEvent e) {
+      boolean extend = e.isControlDown(); 
+      boolean branch = e.isShiftDown(); 
+
+      if (extend || branch || !isSelected(newlySelectedNodeView)) {
+         if (!branch) {
+            if (extend)
+               toggleSelected(newlySelectedNodeView);
+            else
+               selectAsTheOnlyOneSelected(newlySelectedNodeView); }
+            //select( newlySelectedNodeView, extend ); }
+         else {
+            if (newlySelectedNodeView != getSelected() &&
+                newlySelectedNodeView.isSiblingOf(getSelected())) {
+               selectContinuous(newlySelectedNodeView); 
+            }
+            else {
+               selectBranch(newlySelectedNodeView, extend); 
+            }
+         }
+         e.consume();
+      }
     }
 
     public void moveToRoot() {
-	select( getRoot() );
+	selectAsTheOnlyOneSelected( getRoot() );
 	centerNode( getRoot() );
     }
 
-    /**
-     * Select a node.
-     * If extend is false, it will be the only one.
-     * If yes, this node will be added.
-     */
-    public void select(NodeView newSelected, boolean extend) {
-	if (extend)
-	    toggleSelect(newSelected);
-	else
-	    select(newSelected);
-    }
 
     /**
-     * Select only one node.
+     * Select the node, resulting in only that one being selected.
      */
-    public void select(NodeView newSelected) {
-/*
-	NodeView oldSelected = getSelected();
-	//select new node
-	this.selected = newSelected;
-	newSelected.requestFocus();
-	//	scrollNodeToVisible(newSelected);
-	newSelected.repaint();
-	if (oldSelected != null) {
-	    oldSelected.repaint();
-	}
-*/
-       LinkedList oldSelecteds = getSelecteds();
+    public void selectAsTheOnlyOneSelected(NodeView newSelected) {
+        LinkedList oldSelecteds = getSelecteds();
 	//select new node
 	this.selected.clear();
 	this.selected.addElement(newSelected);
 	newSelected.requestFocus();
-	//	scrollNodeToVisible(newSelected);
+
+        // set last focused as preferred (PN) 
+        if (newSelected.getModel().getParentNode() != null) {
+          newSelected.getModel().getParentNode().setPreferredChild(
+              newSelected.getModel());
+        }
+
+	// scrollNodeToVisible(newSelected);
 	newSelected.repaint();
 
 	for(ListIterator e = oldSelecteds.listIterator();e.hasNext();) {
@@ -249,36 +391,57 @@ public class MapView extends JPanel implements Printable {
     }
 
     /**
-     * Add this node to the selection.
+     * Add the node to the selection if it is not yet there, remove it otherwise.
      */
-    public void toggleSelect(NodeView newSelected) {
-	NodeView oldSelected = getSelected();
-	if (isSelected(newSelected)) {
-		if (selected.size()>1) {
-			selected.remove(newSelected);
-			oldSelected=newSelected;
-		}
-	}
-	else {
-		selected.add(0,newSelected);
-	}
-	getSelected().requestFocus();
-	getSelected().repaint();
-	oldSelected.repaint();
-	}
+    public void toggleSelected(NodeView newSelected) {
+      NodeView oldSelected = getSelected();
+      if (isSelected(newSelected)) {
+        if (selected.size() > 1) {
+          selected.remove(newSelected);
+          oldSelected=newSelected;
+        }
+      }
+      else {
+        selected.add(0,newSelected);
+      }
+      getSelected().requestFocus();
+      getSelected().repaint();
+      oldSelected.repaint();
+    }
 
     /**
-     * Select this node and its children.
-	 * if extend is false, the past selection will be empty.
-	 * if yes, the selection will extended with this node and its children
+     * Add the node to the selection if it is not yet there, making it the focused selected node.
      */
-    public void selectBranch(NodeView newSelected, boolean extend) {
-	if (!extend || !isSelected(newSelected))
-		select(newSelected,extend);
-	for(ListIterator e = newSelected.getChildrenViews().listIterator(); e.hasNext(); ) {
-	    NodeView target = (NodeView)e.next();
-		selectBranch(target,true);
-	}
+
+    public void makeTheSelected(NodeView newSelected) {
+       if (isSelected(newSelected)) {
+          selected.remove(newSelected); }
+       selected.add(0,newSelected);
+       getSelected().requestFocus();
+       getSelected().repaint(); }
+
+    public void deselect(NodeView newSelected) {
+       selected.remove(newSelected);
+       newSelected.repaint(); }
+
+
+    /**
+     * Select the node and his descendants. On extend = false clear up the previous selection.
+     * if extend is false, the past selection will be empty.
+     * if yes, the selection will extended with this node and its children
+     */
+    public void selectBranch(NodeView newlySelectedNodeView, boolean extend) {
+       //if (!extend || !isSelected(newlySelectedNodeView))
+       //    toggleSelected(newlySelectedNodeView);
+       if (!extend) {
+          selectAsTheOnlyOneSelected(newlySelectedNodeView); }
+       else if (!isSelected(newlySelectedNodeView)) {
+          toggleSelected(newlySelectedNodeView); }
+       //select(newSelected,extend);
+       for (ListIterator e = newlySelectedNodeView.getChildrenViews().listIterator(); e.hasNext(); ) {
+          NodeView target = (NodeView)e.next();
+          selectBranch(target,true);
+       }
     }
 
     public void selectContinuous(NodeView newSelected) {
@@ -288,11 +451,11 @@ public class MapView extends JPanel implements Printable {
        while (i.hasNext()) {
           NodeView nodeView = (NodeView)i.next();
           if ( nodeView == newSelected || nodeView == oldSelected ) {
-             select(nodeView,false);
+             selectAsTheOnlyOneSelected(nodeView);
              break; }}
        while (i.hasNext()) {
           NodeView nodeView = (NodeView)i.next();
-          select(nodeView,true);
+          toggleSelected(nodeView);
           if ( nodeView == newSelected || nodeView == oldSelected ) {
              break; }}}
 
@@ -302,6 +465,15 @@ public class MapView extends JPanel implements Printable {
 
     public MindMap getModel() {
 	return model;
+    }
+
+    // e.g. for dragging cursor (PN)
+    public void setMoveCursor(boolean isHand) {
+      int requiredCursor = (isHand && !disableMoveCursor) 
+          ? Cursor.MOVE_CURSOR : Cursor.DEFAULT_CURSOR;
+      if (getCursor().getType() != requiredCursor) {
+        setCursor(new Cursor(requiredCursor));
+      }
     }
 
     NodeMouseMotionListener getNodeMouseMotionListener() {
@@ -387,33 +559,61 @@ public class MapView extends JPanel implements Printable {
 	paintEdges(rootView, g);
     }
 
-	// Todo:
-	// ask user for :
-	// - center in page (in page format ?)
-	// - print zoom or maximize (in page format ?)
-	// - print selection only
-	// remember those parameters from one session to another
-	//    (as orientation & margin from pf)
-    public int print(Graphics graphics, PageFormat pf, int pi) {
-	if (pi >= 1) {
-	    return Printable.NO_SUCH_PAGE;
-	}
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
+       // TODO:
+       // ask user for :
+       // - center in page (in page format ?)
+       // - print zoom or maximize (in page format ?)
+       // - print selection only
+       // remember those parameters from one session to another
+       //    (as orientation & margin from pf)
+
+        // User parameters
+
+        boolean fitToPage = Tools.safeEquals(controller.getProperty("fit_to_page"),"true");
+        double userZoomFactor = 1;
+        try {
+           userZoomFactor = Double.parseDouble(controller.getProperty("user_zoom")); }
+        catch (Exception e) {}
+        userZoomFactor = Math.max(0,userZoomFactor);
+        userZoomFactor = Math.min(2,userZoomFactor);
+
+        // TODO: read user parameters from properties, make sure the multiple page
+        // printing really works, have look at Book class.
+
+	if (fitToPage && pageIndex > 0) {
+           return Printable.NO_SUCH_PAGE; }
 	isPrinting = true;
-	Graphics2D g = (Graphics2D)graphics;
+	Graphics2D graphics2D = (Graphics2D)graphics;
 	Color background = getBackground();
 	setBackground(Color.white);
-	//In future, automatically fit map to one page
-	double zoom = 0.7;
-	// getImageable are in 1/72 inch, g.transform is also in 72 dpi for print g
-	// so nothing to do ?!?
-	int margeX = (int)(pf.getImageableX()/zoom);
-	int margeY = (int)(pf.getImageableY()/zoom);
-	// double pageW = pf.getImageableWidth(); unit ?
-	// double pageH = pf.getImageableHeight();
-	Rectangle r = getInnerBounds(rootView);
-	g.scale(zoom,zoom);
-	g.translate(-r.getX()+margeX,-r.getY()+margeY);
-	print(g);
+
+        Rectangle boundingRectangle = getInnerBounds(rootView);
+        double zoomFactor = 1;
+        if (fitToPage) {
+           double zoomFactorX = pageFormat.getImageableWidth()/boundingRectangle.getWidth();
+           double zoomFactorY = pageFormat.getImageableHeight()/boundingRectangle.getHeight();
+           zoomFactor = Math.min (zoomFactorX, zoomFactorY); }
+        else {
+           zoomFactor = userZoomFactor;
+
+           int nrPagesInWidth = (int)Math.ceil(zoomFactor * boundingRectangle.getWidth() /
+              pageFormat.getImageableWidth());
+           int nrPagesInHeight = (int)Math.ceil(zoomFactor *boundingRectangle.getHeight() / 
+              pageFormat.getImageableHeight());
+           if (pageIndex >= nrPagesInWidth * nrPagesInHeight) {
+              return Printable.NO_SUCH_PAGE; }
+           int yPageCoord = (int)Math.floor(pageIndex / nrPagesInWidth);
+           int xPageCoord = pageIndex - yPageCoord * nrPagesInWidth;
+
+           graphics2D.translate(- pageFormat.getImageableWidth() * xPageCoord,
+                                - pageFormat.getImageableHeight() * yPageCoord); }
+
+        graphics2D.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+        graphics2D.scale(zoomFactor, zoomFactor);
+        graphics2D.translate(-boundingRectangle.getX(), -boundingRectangle.getY());
+
+	print(graphics2D);
 	setBackground(background);
 	isPrinting = false;
 	return Printable.PAGE_EXISTS;
@@ -429,9 +629,9 @@ public class MapView extends JPanel implements Printable {
     /////////
 	
     /**
-    * Return the exact bounding box of children of source (without BORDER)
-    * Could be implemented in LayoutManager as Minimum size ?
-        */
+     * Return the bounding box of all the descendants of the source view, that without BORDER.
+     * Should that be implemented in LayoutManager as minimum size?
+     */
     private Rectangle getInnerBounds(NodeView source) {
        Rectangle r = source.getBounds();
        for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
@@ -496,15 +696,22 @@ public class MapView extends JPanel implements Printable {
 	}
 	
 	public void treeNodesInserted( TreeModelEvent e ) {
+           // Daniel: This is some kind of hackery implementation, which
+           // does not keep the semantics of the method defined in
+           // TreeModelListerer. This implementation does only that which
+           // FreeMind actually needs, which I find dubious.
+
 	    MindMapNode parent = (MindMapNode)e.getTreePath().getLastPathComponent();
 	    NodeView parentView = parent.getViewer();
-	    //works only with one child
+	    // Works only with one child
 	    MindMapNode child = (MindMapNode)e.getChildren()[0];
 
             if (child != null) {  // if a node is folded, child is null.
+               // Here, the view will be created if it does no exist already
                parentView.insert(child);
-               getMindMapLayout().updateTreeHeightFromChildren(child.getViewer()); } 
+               getMindMapLayout().updateTreeHeightFromChildren(child.getViewer()); }
 	    getMindMapLayout().updateTreeHeightsAndRelativeYOfAncestors(parentView);
+            // Here, the view of child gets its size and position
             getMindMapLayout().layout();
             parentView.requestFocus();
 	    repaint();
@@ -516,7 +723,13 @@ public class MapView extends JPanel implements Printable {
             //Take care not to remove root in Controller
 	    NodeView parent = ( (MindMapNode)e.getTreePath().getLastPathComponent() ).getViewer();
 	    node.remove();   //Just that one
-	    select(parent);
+            MindMapNode preferred = parent.getModel().getPreferredChild();
+            if (preferred != null) { // after delete focus on a brother (PN)
+              selectAsTheOnlyOneSelected(preferred.getViewer());
+            }
+            else {
+              selectAsTheOnlyOneSelected(parent);
+            }
 	    getMindMapLayout().updateTreeHeightsAndRelativeYOfAncestors(parent);
             getMindMapLayout().layout();
             parent.requestFocus();
@@ -563,5 +776,15 @@ public class MapView extends JPanel implements Printable {
             selectedNode.getViewer().requestFocus();
 	    repaint();
 	}
+    }
+    
+    // this property is used when the user navigates up/down using cursor keys (PN)
+    // it will keep the level of nodes that are understand as "siblings"
+
+    public int getSiblingMaxLevel() {
+      return this.siblingMaxLevel;
+    }
+    public void setSiblingMaxLevel(int level) {
+      this.siblingMaxLevel = level;
     }
 }

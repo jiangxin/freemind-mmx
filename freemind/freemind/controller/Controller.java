@@ -16,36 +16,35 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.30 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: Controller.java,v 1.31 2003-11-03 10:49:16 sviles Exp $*/
 
 package freemind.controller;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.print.PageFormat;
+import java.awt.print.PrinterJob;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import javax.swing.*;
 
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.modes.MindMap;
+import freemind.modes.Mode;
+
+import freemind.modes.ModesCreator;
+import freemind.modes.browsemode.BrowseController;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
-import freemind.view.mindmapview.NodeView;
-import freemind.modes.ModesCreator;
-import freemind.modes.Mode;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
-import freemind.modes.browsemode.BrowseController;//this isn't good
-import java.util.*;
-import java.text.MessageFormat;
-import java.net.URL;
-import java.awt.Component;
-import java.awt.Color;
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.print.PrinterJob;
-import java.awt.print.PageFormat;
-import java.awt.event.ActionEvent;
-import javax.swing.*;
-//Documentation
-import java.io.File;
-import java.io.FileNotFoundException;
-import freemind.modes.ControllerAdapter;
 
 /**
  * Provides the methods to edit/change a Node.
@@ -60,7 +59,6 @@ public class Controller {
     private Mode mode; //The current mode
     private FreeMindMain frame;
     private JToolBar toolbar;
-    private JPopupMenu popupmenu;
     private NodeMouseMotionListener nodeMouseMotionListener;
     private NodeKeyListener nodeKeyListener;
     private NodeDragListener nodeDragListener;
@@ -88,6 +86,7 @@ public class Controller {
 
     Action optionAntialiasAction;
     Action optionHTMLExportFoldingAction;
+    Action optionEnterConfirmsByDefault;
 
     Action about;
     Action documentation;
@@ -144,6 +143,7 @@ public class Controller {
         toggleToolbar = new ToggleToolbarAction(this);
         optionAntialiasAction = new OptionAntialiasAction(this);
         optionHTMLExportFoldingAction = new OptionHTMLExportFoldingAction(this);
+        //optionEnterConfirmsByDefault; = new OptionEnterConfirmsByDefault(this);
 
         zoomIn = new ZoomInAction(this);
         zoomOut = new ZoomOutAction(this);
@@ -299,10 +299,6 @@ public class Controller {
         toolbar.validate();
         toolbar.repaint();
 
-        popupmenu = getMode().getPopupMenu();
-        //System.err.println("pp:"+popupmenu);
-        //getFrame().getView().add(popupmenu);
-
         setTitle();
         getMode().activate();
 
@@ -363,26 +359,6 @@ public class Controller {
         this.frame = frame;
     }
 
-    //
-    // Node Navigation
-    //
-
-    void moveUp() {
-        getView().moveUp();
-    }
-
-    void moveDown() {
-        getView().moveDown();
-    }
-
-    void moveLeft() {
-        getView().moveLeft();
-    }
-
-    void moveRight() {
-        getView().moveRight();
-    }
-    
     /**
      * I don't understand how this works now (it's called twice etc.)
      * but it _works_ now. So let it alone or fix it to be understandable,
@@ -394,34 +370,36 @@ public class Controller {
         }
     }
 
-    void select( NodeView node, boolean extend ) {
-        getView().select(node,extend);
-    }
-
-    void selectBranch( NodeView node, boolean extend ) {
-        getView().selectBranch(node,extend);
-    }
-        
-    boolean isSelected( NodeView node ) {
-        return getView().isSelected(node);
-    }
-
-    void centerNode() {
-        getView().centerNode(getView().getSelected());
-    }
-
-    private MindMapNode getSelected() {
-        return getView().getSelected().getModel();
-    }
+// (PN) %%%
+//    public void select( NodeView node) {
+//        getView().select(node,false);
+//        getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); // this level is default
+//    }
+//
+//    void selectBranch( NodeView node, boolean extend ) {
+//        getView().selectBranch(node,extend);
+//    }
+//        
+//    boolean isSelected( NodeView node ) {
+//        return getView().isSelected(node);
+//    }
+//
+//    void centerNode() {
+//        getView().centerNode(getView().getSelected());
+//    }
+//
+//    private MindMapNode getSelected() {
+//        return getView().getSelected().getModel();
+//    }
 
     public void informationMessage(Object message) {
-       JOptionPane.showMessageDialog(getView(), message.toString(), "FreeMind", JOptionPane.INFORMATION_MESSAGE); }
+       JOptionPane.showMessageDialog(getFrame().getContentPane(), message.toString(), "FreeMind", JOptionPane.INFORMATION_MESSAGE); }
 
     public void informationMessage(Object message, JComponent component) {
        JOptionPane.showMessageDialog(component, message.toString(), "FreeMind", JOptionPane.INFORMATION_MESSAGE); }
 
     public void errorMessage(Object message) {
-       JOptionPane.showMessageDialog(getView(), message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }
+       JOptionPane.showMessageDialog(getFrame().getContentPane(), message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }
 
     public void errorMessage(Object message, JComponent component) {
        JOptionPane.showMessageDialog(component, message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }
@@ -440,12 +418,6 @@ public class Controller {
     // other
     //
 
-    void showPopupMenu(Component c, int x, int y) {
-        if (popupmenu != null) {
-            popupmenu.show(c,x,y);
-        }
-    }
-
     void setZoom(float zoom) {
         getView().setZoom(zoom);
     }
@@ -459,29 +431,33 @@ public class Controller {
     //
     // Node editing
     //
-
-    private void getFocus() {
-        getView().getSelected().requestFocus();
-    }
+// (PN)
+//    private void getFocus() {
+//        getView().getSelected().requestFocus();
+//    }
 
     //
     // Multiple Views management
     //
         
-        /** return the Frame title with mode and file if exist */
-    private void setTitle() {
-        Object[] messageArguments = {
-            getMode().toString()
-        };
-        MessageFormat formatter = new MessageFormat
-           (getResourceString("mode_title"));
-        String title = formatter.format(messageArguments);
-        if (getMapModule() != null) {
-            title = title + " - " + getMapModule().toString();
-        }
-        getFrame().setTitle(title);
-    }
-    
+
+	/**
+	 * Set the Frame title with mode and file if exist
+	 */
+	public void setTitle() {
+		Object[] messageArguments = {
+			getMode().toString()
+		};
+		MessageFormat formatter = new MessageFormat
+		   (getResourceString("mode_title"));
+		String title = formatter.format(messageArguments);        
+		if (getMapModule() != null) {
+			title += " - " + getMapModule().toString() +               
+			  ( getMapModule().getModel().isReadOnly() ?
+				" ("+getResourceString("read_only")+")" : ""); 
+		}
+		getFrame().setTitle(title);
+	}   
     //
     // Actions management
     //
@@ -515,24 +491,22 @@ public class Controller {
     private void quit() {
         String currentMapRestorable = (getModel()!=null) ? getModel().getRestoreable() : null;
         while (getView() != null) {
-            try {
-                getMapModuleManager().close();
-            } catch (Exception ex) {
-                System.err.println("Error: "+ex);
-                ex.printStackTrace();
-                return;
-            }
-        }
+        	boolean closingNotCancelled = getMapModuleManager().close();
+        	if  (!closingNotCancelled) {
+        	   return; }}
 
         String lastOpenedString=lastOpened.save();
-        getFrame().setProperty("lastOpened",lastOpenedString);
+        setProperty("lastOpened",lastOpenedString);
         if (currentMapRestorable != null) {
            getFrame().setProperty("onStartIfNotSpecified",currentMapRestorable); }
         // getFrame().setProperty("menubarVisible",menubarVisible ? "true" : "false");
         // ^ Not allowed in application because of problems with not working key shortcuts
-        getFrame().setProperty("toolbarVisible", toolbarVisible ? "true" : "false");
-        getFrame().setProperty("antialiasEdges", antialiasEdges ? "true" : "false");
-        getFrame().setProperty("antialiasAll", antialiasAll ? "true" : "false");
+        setProperty("toolbarVisible", toolbarVisible ? "true" : "false");
+        setProperty("antialiasEdges", antialiasEdges ? "true" : "false");
+        setProperty("antialiasAll", antialiasAll ? "true" : "false");
+        setProperty("appwindow_width", String.valueOf(getFrame().getWinWidth()));
+        setProperty("appwindow_height", String.valueOf(getFrame().getWinHeight()));
+        setProperty("appwindow_state", String.valueOf(getFrame().getWinState()));
         getFrame().saveProperties();
         //save to properties
         System.exit(0);
@@ -682,13 +656,15 @@ public class Controller {
               ((MainToolBar)c.toolbar).setZoomComboBox(getMapModule().getView().getZoom()); }}
 
         
-        //
-        // Closing of a map
-        // _________________
-
-
-       private void close() throws Exception {
-            getMode().getModeController().close();  //exception is thrown here if user cancels operation
+       /**
+        *  Close the currently active map, return false if closing cancelled.
+        */
+       private boolean close() {
+       	    // (DP) The mode controller does not close the map
+            boolean closingNotCancelled = getMode().getModeController().close();
+            if (!closingNotCancelled) {
+               return false; }	
+            
             String toBeClosed = getMapModule().toString();
             mapModules.remove(toBeClosed);
             if (mapModules.isEmpty()) {
@@ -698,7 +674,8 @@ public class Controller {
             else {
                changeToMapModule((String)mapModules.keySet().iterator().next());
                updateNavigationActions(); }
-            mapModuleChanged(); }
+            mapModuleChanged();
+            return true; }
 
        // }}
 
@@ -792,11 +769,7 @@ public class Controller {
             super(controller.getResourceString("close"));
         }
         public void actionPerformed(ActionEvent e) {
-            try {
-                getMapModuleManager().close();
-            } catch (Exception ex) {
-                return;
-            }
+            getMapModuleManager().close();
         }
     }
 
@@ -826,6 +799,7 @@ public class Controller {
         }
     }
 
+
     private class PageAction extends AbstractAction {
         Controller controller;
         PageAction(Controller controller) {
@@ -836,6 +810,58 @@ public class Controller {
         public void actionPerformed(ActionEvent e) {
             if (!acquirePrinterJobAndPageFormat()) {
                return; }
+
+            // Ask about custom printing settings
+            final JDialog dialog = new JDialog((JFrame)getFrame(), "Printing settings", /*modal=*/true);
+            JCheckBox fitToPage = new JCheckBox("fitToPage");
+            JLabel userZoomL = new JLabel("User zoom ");
+            JTextField userZoom = new JTextField(getProperty("user_zoom"),3);
+            final JButton okButton = new JButton("OK");
+            final Tools.IntHolder eventSource = new Tools.IntHolder();
+            JPanel panel = new JPanel();
+
+            GridBagLayout gridbag = new GridBagLayout();
+            GridBagConstraints c = new GridBagConstraints();
+
+            eventSource.setValue(0);
+            okButton.addActionListener (new ActionListener() {
+                  public void actionPerformed(ActionEvent e) {
+                     eventSource.setValue(1);
+                     dialog.dispose(); }});
+
+            //c.weightx = 0.5;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.gridwidth = 2;
+            gridbag.setConstraints(fitToPage, c);
+            panel.add(fitToPage);
+            c.gridy = 1;
+            c.gridwidth = 1;
+            gridbag.setConstraints(userZoomL, c);
+            panel.add(userZoomL);
+            c.gridx = 1;
+            c.gridwidth = 1;
+            gridbag.setConstraints(userZoom, c);
+            panel.add(userZoom);
+            c.gridy = 2;
+            c.gridx = 0;
+            c.gridwidth = 3;
+            c.insets = new Insets(10,0,0,0);
+            gridbag.setConstraints(okButton, c);
+            panel.add(okButton);
+            panel.setLayout(gridbag);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.setContentPane(panel);
+            dialog.setLocationRelativeTo((JFrame)getFrame());
+            dialog.pack();  // calculate the size
+            dialog.show();
+
+            if (eventSource.getValue() == 1) {
+               setProperty("user_zoom", userZoom.getText());
+               setProperty("fit_to_page", fitToPage.isSelected() ? "true" : "false"); }
+            else
+               return;
+
             // Ask user for page format (e.g., portrait/landscape)          
             pageFormat = printerJob.pageDialog(pageFormat);
         }
@@ -860,9 +886,9 @@ public class Controller {
             }
             ((BrowseController)getMode().getModeController()).loadURL(map);
                 //IMPROVE THIS!
-                //          } catch (FileNotFoundException ex) {
-                //              JOptionPane.showMessageDialog(getView(), getResourceString("file_not_found") + "\n Documentation Map not found.");
-                //          }
+                // } catch (FileNotFoundException ex) {
+                //   JOptionPane.showMessageDialog(getView(), getResourceString("file_not_found") + "\n Documentation Map not found.");
+                // }
         }
     }
 
@@ -1022,6 +1048,14 @@ public class Controller {
        OptionHTMLExportFoldingAction(Controller controller) {}
        public void actionPerformed(ActionEvent e) {
           setProperty("html_export_folding", e.getActionCommand()); }}
+
+   //private class OptionEnterConfirmsByDefault extends AbstractAction {
+   //    OptionEnterConfirmsByDefault(Controller controller) {}
+   //    public void actionPerformed(ActionEvent e) {
+   //       setProperty("edit_long_enter_confirms_by_default",  html_export_folding", e.getActionCommand()); }}
+
+
+   //OptionEnterConfirmsByDefault(this);
 
 }//Class Controller
 

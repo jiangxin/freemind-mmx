@@ -16,25 +16,25 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.8 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: SchemeController.java,v 1.10 2003-11-03 11:00:21 sviles Exp $*/
 
 package freemind.modes.schememode;
 
-import freemind.main.FreeMind;
-import freemind.main.FreeMindMain;
-import freemind.modes.Mode;
-import freemind.modes.MindMap;
-import freemind.modes.MapAdapter;
-import freemind.modes.MindMapNode;
-import freemind.modes.ControllerAdapter;
-//import silk.SI;
-import java.io.File;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.StringTokenizer;
-import javax.swing.Action;
+
 import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
+import javax.swing.Action;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+
+import freemind.modes.ControllerAdapter;
+import freemind.modes.MapAdapter;
+import freemind.modes.MindMap;
+import freemind.modes.MindMapNode;
+import freemind.modes.Mode;
 
 public class SchemeController extends ControllerAdapter {
 
@@ -44,9 +44,10 @@ public class SchemeController extends ControllerAdapter {
     Action saveAs = new SaveAsAction(this);
     Action evaluate = new EvaluateAction();
     Action edit = new EditAction();
-    Action addNew = new AddNewAction();
+    Action addNew = new NewChildWithoutFocusAction();
     Action remove = new RemoveAction();
     Action toggleFolded = new ToggleFoldedAction();
+    private JPopupMenu popupmenu = new SchemePopupMenu(this);
 
     public SchemeController(Mode mode) {
 	super(mode);
@@ -59,9 +60,6 @@ public class SchemeController extends ControllerAdapter {
     public MindMapNode newNode() {
 	return new SchemeNodeModel(getFrame());
     }
-
-
-
 
     //private
     private MindMap getModel() {
@@ -77,31 +75,37 @@ public class SchemeController extends ControllerAdapter {
     }
 
 
-    public void saveAs() {
-	JFileChooser chooser = null;
-	if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
-	    chooser = new JFileChooser(getMap().getFile().getParentFile());
-	} else {
-	    chooser = new JFileChooser();
+	public boolean saveAs() {
+		JFileChooser chooser = null;
+		if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
+			chooser = new JFileChooser(getMap().getFile().getParentFile());
+		} else {
+			chooser = new JFileChooser();
+		}
+		//chooser.setLocale(currentLocale);
+		if (getFileFilter() != null) {
+			chooser.addChoosableFileFilter(getFileFilter());
+		}
+		int returnVal = chooser.showSaveDialog(getView());
+		if (returnVal==JFileChooser.APPROVE_OPTION) {//ok pressed
+			File f = chooser.getSelectedFile();
+			//Force the extension to be .mm
+			//      String ext = Tools.getExtension(f.getName());
+			//      if(!ext.equals("mm")) {
+			//          f = new File(f.getParent(),f.getName()+".mm");
+			//      }
+			save(f);
+			//Update the name of the map
+			updateMapModuleName();
+			return true;
+		}
+		return false;
 	}
-	//chooser.setLocale(currentLocale);
-	if (getFileFilter() != null) {
-	    chooser.addChoosableFileFilter(getFileFilter());
-	}
-	int returnVal = chooser.showSaveDialog(getView());
-	if (returnVal==JFileChooser.APPROVE_OPTION) {//ok pressed
-	    File f = chooser.getSelectedFile();
-	    //Force the extension to be .mm
-	    //	    String ext = Tools.getExtension(f.getName());
-	    //	    if(!ext.equals("mm")) {
-	    //		f = new File(f.getParent(),f.getName()+".mm");
-	    //	    }
-	    save(f);
-	    //Update the name of the map
-	    updateMapModuleName();
-	}
-    }
 
+
+    public JPopupMenu getPopupMenu() {
+      return this.popupmenu;
+    }
 
     private class EvaluateAction extends AbstractAction {
 	EvaluateAction() {

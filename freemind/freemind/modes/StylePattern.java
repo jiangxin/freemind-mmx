@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePattern.java,v 1.2 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: StylePattern.java,v 1.3 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.modes;
 
@@ -243,42 +243,42 @@ public class StylePattern {
 
     public void loadPattern(XMLElement pattern) {
         //PATTERN
-        if (pattern.getProperty("name")!=null) {
-           setName(pattern.getProperty("name")); }
-        if (Tools.safeEquals(pattern.getProperty("recursive"),"true")) {
+        if (pattern.getStringAttribute("name")!=null) {
+           setName(pattern.getStringAttribute("name")); }
+        if (Tools.safeEquals(pattern.getStringAttribute("recursive"),"true")) {
            setRecursive(true); }
 
         for (Iterator i=pattern.getChildren().iterator(); i.hasNext(); ) {
             //this has to be improved!
             //NODE
            XMLElement child = (XMLElement)i.next();
-           if (child.getTagName().equals("node")) {
+           if (child.getName().equals("node")) {
               appliesToNode = true;
-              if (child.getProperty("color")!=null && 
-                  child.getProperty("color").length() == 7) {
-                 setNodeColor(Tools.xmlToColor(child.getProperty("color") ) ); }
-              if (child.getProperty("style")!=null) {
-                 setNodeStyle(child.getProperty("style")); }
-              setText(child.getProperty("text"));
+              if (child.getStringAttribute("color")!=null && 
+                  child.getStringAttribute("color").length() == 7) {
+                 setNodeColor(Tools.xmlToColor(child.getStringAttribute("color") ) ); }
+              if (child.getStringAttribute("style")!=null) {
+                 setNodeStyle(child.getStringAttribute("style")); }
+              setText(child.getStringAttribute("text"));
 
               for (Iterator j=child.getChildren().iterator(); j.hasNext();) {
                  XMLElement nodeChild = (XMLElement)j.next();
                  //FONT
-                 if (nodeChild.getTagName().equals("font")) {
+                 if (nodeChild.getName().equals("font")) {
                     appliesToNodeFont = true;
 
-                    String name = nodeChild.getProperty("name"); 
+                    String name = nodeChild.getStringAttribute("name"); 
                     int style=0;
                     int size=0;
                                             
-                    if (Tools.safeEquals(nodeChild.getProperty("bold"),"true")) {
+                    if (Tools.safeEquals(nodeChild.getStringAttribute("bold"),"true")) {
                        style+=Font.BOLD; }
-                    if (Tools.safeEquals(nodeChild.getProperty("italic"),"true")) {
+                    if (Tools.safeEquals(nodeChild.getStringAttribute("italic"),"true")) {
                        style+=Font.ITALIC; }
                     // if (font.getProperty("underline")!=null && 
                     // nodeChild.getProperty("underline").equals("true")) setUnderlined(true);                    
-                    if (nodeChild.getProperty("size")!=null) {
-                       size = Integer.parseInt(nodeChild.getProperty("size")); }
+                    if (nodeChild.getStringAttribute("size")!=null) {
+                       size = Integer.parseInt(nodeChild.getStringAttribute("size")); }
                     
                     setNodeFont(new Font(name, style, size));
 
@@ -288,17 +288,17 @@ public class StylePattern {
                  }}}
            
            //EDGE
-           if (child.getTagName().equals("edge")) {
+           if (child.getName().equals("edge")) {
               appliesToEdge = true;
-              if (child.getProperty("style")!=null) {
-                 setEdgeStyle(child.getProperty("style")); }
-              if (child.getProperty("color")!=null) {
-                 setEdgeColor(Tools.xmlToColor(child.getProperty("color") ) ); }
-              if (child.getProperty("width")!=null) {
-                 if (child.getProperty("width").equals("thin")) {
+              if (child.getStringAttribute("style")!=null) {
+                 setEdgeStyle(child.getStringAttribute("style")); }
+              if (child.getStringAttribute("color")!=null) {
+                 setEdgeColor(Tools.xmlToColor(child.getStringAttribute("color") ) ); }
+              if (child.getStringAttribute("width")!=null) {
+                 if (child.getStringAttribute("width").equals("thin")) {
                     setEdgeWidth(freemind.modes.EdgeAdapter.WIDTH_THIN); }
                  else {
-                    setEdgeWidth(Integer.parseInt(child.getProperty("width"))); }}}}}}
+                    setEdgeWidth(Integer.parseInt(child.getStringAttribute("width"))); }}}}}}
 
 
 

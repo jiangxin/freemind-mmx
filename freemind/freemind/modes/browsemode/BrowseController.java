@@ -16,37 +16,27 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.8 2003-11-03 10:39:52 sviles Exp $*/
+/*$Id: BrowseController.java,v 1.10 2003-11-03 11:00:13 sviles Exp $*/
 
 package freemind.modes.browsemode;
 
-import freemind.main.FreeMind;
-import freemind.main.FreeMindMain;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
+import javax.swing.JToolBar;
+
 import freemind.main.Tools;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
-import freemind.modes.Mode;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
-import java.io.File;
-import java.util.Enumeration;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
-import javax.swing.JToolBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JOptionPane;
-import javax.swing.JFileChooser;
-import javax.swing.JColorChooser;
-import javax.swing.ImageIcon;
-import javax.swing.filechooser.FileFilter;
+import freemind.modes.MindMapNode;
+import freemind.modes.Mode;
+import freemind.view.mindmapview.NodeView;
 
 public class BrowseController extends ControllerAdapter {
 
@@ -60,6 +50,12 @@ public class BrowseController extends ControllerAdapter {
     Action followLink;
     Action nodeUp;
     Action nodeDown;
+
+    // disable edit in browse mode (PN)
+    public void edit(KeyEvent e, boolean addNew, boolean editLong) { }
+    public void addNew(final NodeView target, 
+                        final int newNodeMode, 
+                        final KeyEvent e) { }
 
     public BrowseController(Mode mode) {
 	super.setMode(mode);
@@ -83,10 +79,6 @@ public class BrowseController extends ControllerAdapter {
 	return new BrowseMapModel(getFrame());
     }
 
-    public void save(File file) {
-	getModel().save(file);
-    }
-
     public void doubleClick() {
          if (getSelected().getLink() == null) { // If link exists, follow the link; toggle folded otherwise
              toggleFolded();
@@ -96,14 +88,14 @@ public class BrowseController extends ControllerAdapter {
     }
 
     protected MindMapNode newNode() {
-	return new BrowseNodeModel(getText("new_node"),getFrame());
+	return new BrowseNodeModel(getText("new_node"), getFrame());
     }
 
     //get/set methods
 
     JMenu getEditMenu() {
 	JMenu editMenu = new JMenu();
-	editMenu.add(getNodeMenu());
+	editMenu.add(getPopupMenu());
 	return editMenu;
     }
 
@@ -112,22 +104,7 @@ public class BrowseController extends ControllerAdapter {
 	return fileMenu;
     }
 
-
-    JMenu getNodeMenu() {
-	JMenu nodeMenu = new JMenu(getText("node"));
-        add(nodeMenu, find, "keystroke_find");
-        add(nodeMenu, findNext, "keystroke_find_next");
-	add(nodeMenu, followLink, "keystroke_follow_link");
-
-        nodeMenu.addSeparator();
-
- 	add(nodeMenu, toggleFolded, "keystroke_toggle_folded");
-	add(nodeMenu, toggleChildrenFolded, "keystroke_toggle_children_folded");
-
-	return nodeMenu;
-    }
-
-    JPopupMenu getPopupMenu() {
+    public JPopupMenu getPopupMenu() {
 	return popupmenu;
     }
 

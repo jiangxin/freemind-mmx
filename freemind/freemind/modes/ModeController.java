@@ -16,28 +16,42 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.10 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: ModeController.java,v 1.11 2003-11-03 10:49:17 sviles Exp $*/
 
 package freemind.modes;
 
-import freemind.view.mindmapview.NodeView;
-import freemind.main.XMLParseException;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.awt.event.MouseEvent;
+
+import javax.swing.JPopupMenu;
+
+import freemind.main.XMLParseException;
+import freemind.view.mindmapview.NodeView;
 
 public interface ModeController {
+
     public void load(File file) throws FileNotFoundException, IOException, XMLParseException;
-    public void save(File file);
-    public void addNew(NodeView parent);
-    public void remove(NodeView node);
+    public boolean save(File file);
+    public void addNew(NodeView target, int newNodeMode, KeyEvent e);
     public void newMap();
-    public void save();
-    public void saveAs();
+    public boolean save();
+    public boolean saveAs();
     public void open();
     //    public void edit(NodeView node, NodeView toBeSelected);
-    public void close() throws Exception;
+    public boolean close();
     public void doubleClick(MouseEvent e);
     public void plainClick(MouseEvent e);
+    public void toggleFolded();
+
+    public boolean isBlocked();
+    public void edit(KeyEvent e, boolean addNew, boolean editLong);
+    public void mouseWheelMoved(MouseWheelEvent e);
+    public void select(MouseEvent e);
+
+    public JPopupMenu getPopupMenu();
+    public void showPopupMenu(MouseEvent e);
 }

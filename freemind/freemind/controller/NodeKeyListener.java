@@ -16,16 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeKeyListener.java,v 1.13 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: NodeKeyListener.java,v 1.15 2003-11-03 11:00:06 sviles Exp $*/
 
 package freemind.controller;
 
-import freemind.view.mindmapview.MapView;
-import freemind.view.mindmapview.NodeView;
-import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.Externalizable;
+
 import javax.swing.KeyStroke;
-import javax.swing.*;
+
+import freemind.main.Tools;
 
 /**
  * The KeyListener which belongs to the node and cares for
@@ -36,6 +37,8 @@ public class NodeKeyListener implements KeyListener {
 
     private Controller c;
     private String up, down, left, right;
+    private boolean disabledKeyType = true;
+    private boolean keyTypeAddsNew  = false;
 
     public NodeKeyListener(Controller controller ) {
 	c = controller;
@@ -43,6 +46,13 @@ public class NodeKeyListener implements KeyListener {
 	down = c.getFrame().getProperty("keystroke_move_down");
 	left = c.getFrame().getProperty("keystroke_move_left");
 	right = c.getFrame().getProperty("keystroke_move_right");
+
+      // like in excel - write a letter means edit (PN)
+      // on the other hand it doesn't allow key navigation (sdfe)
+      disabledKeyType = Tools.safeEquals(
+          c.getFrame().getProperty("disable_key_type"),"true");
+      keyTypeAddsNew = Tools.safeEquals(
+          c.getFrame().getProperty("key_type_adds_new"),"true");
     }
 
     //
@@ -59,55 +69,70 @@ public class NodeKeyListener implements KeyListener {
 	}
 
 	switch ( e.getKeyCode() ) {
+    
+        case KeyEvent.VK_ENTER:
+        case KeyEvent.VK_ESCAPE:
+        case KeyEvent.VK_SHIFT:
+        case KeyEvent.VK_DELETE:
+        case KeyEvent.VK_SPACE:
+        case KeyEvent.VK_INSERT:
+            return; // processed by Adapters ActionListener
+                     // explicitly what is not catched in e.isActionKey()
+                     
 	case KeyEvent.VK_UP:
-	    c.moveUp();
-	    e.consume();
-	    return;
-
 	case KeyEvent.VK_DOWN:
-	    c.moveDown();
-	    e.consume();
-	    return;
-
 	case KeyEvent.VK_LEFT:
-	    c.moveLeft();
-	    e.consume();
-	    return;
-
 	case KeyEvent.VK_RIGHT:
-	    c.moveRight();
-	    e.consume();
-	    return;
+        case KeyEvent.VK_PAGE_UP: 
+        case KeyEvent.VK_PAGE_DOWN: 
+            c.getView().move(e);
+            return;
 
-	    //Easy access keybindings
+        case KeyEvent.VK_HOME:
+        case KeyEvent.VK_END:
+        case KeyEvent.VK_BACK_SPACE:
+            c.getMode().getModeController().edit(e, false, false);
+            return;
 
-	    //I tried a simple "n" to add a new node, but the keyEvent was fired
-	    //twice and the n was posted to the editor as the first char.
-	    //That was to annoying
-
+//        case KeyEvent.VK_SPACE:
+//	    c.getMode().getModeController().toggleFolded();
+//            e.consume();
+//	    return;
 	}
-
+  
+        // printable key creates new node in edit mode (PN)
+        if (!disabledKeyType) {
+          if (!e.isActionKey() 
+               && e.getKeyChar() != KeyEvent.CHAR_UNDEFINED) {
+            c.getMode().getModeController().edit(e, keyTypeAddsNew, false);
+            return; // do not process the (sdfe) navigation
+          }
+        }
+        
+        // printable key used for navigation
+        boolean doMove = false; // unified call of the move method (PN)
 	if ( KeyStroke.getKeyStroke(up) != null &&
              e.getKeyCode() == KeyStroke.getKeyStroke(up).getKeyCode()) {
-	    c.moveUp();
-	    e.consume();
-	    return;
+            e.setKeyCode(KeyEvent.VK_UP);
+            doMove = true;
 	} else if ( KeyStroke.getKeyStroke(down) != null &&
                     e.getKeyCode() == KeyStroke.getKeyStroke(down).getKeyCode()) {
-	    c.moveDown();
-	    e.consume();
-	    return;
+            e.setKeyCode(KeyEvent.VK_DOWN);
+            doMove = true;
 	} else if ( KeyStroke.getKeyStroke(left) != null &&
                     e.getKeyCode() == KeyStroke.getKeyStroke(left).getKeyCode()) {
-	    c.moveLeft();
-	    e.consume();
-	    return;
+            e.setKeyCode(KeyEvent.VK_LEFT);
+            doMove = true;
 	} else if ( KeyStroke.getKeyStroke(right) != null &&
                     e.getKeyCode() == KeyStroke.getKeyStroke(right).getKeyCode()) {
-	    c.moveRight();
-	    e.consume();
-	    return;
+            e.setKeyCode(KeyEvent.VK_RIGHT);
+            doMove = true;
 	}
+        if (doMove) {
+          c.getView().move(e);
+          e.consume();
+          return;
+        }
     }
 
     public void keyReleased( KeyEvent e ) {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapEdgeModel.java,v 1.7 2003-11-03 10:39:53 sviles Exp $*/
+/*$Id: MindMapEdgeModel.java,v 1.9 2003-11-03 11:00:20 sviles Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -37,19 +37,19 @@ public class MindMapEdgeModel extends EdgeAdapter {
     public XMLElement save() {
 	if (style!=null || color!=null || width!=WIDTH_PARENT) {
 	    XMLElement edge = new XMLElement();
-	    edge.setTagName("edge");
+	    edge.setName("edge");
 
 	    if (style != null) {
-		edge.addProperty("style",style);
+		edge.setAttribute("style",style);
 	    }
 	    if (color != null) {
-		edge.addProperty("color",Tools.colorToXml(color));
+		edge.setAttribute("color",Tools.colorToXml(color));
 	    }
 	    if (width != WIDTH_PARENT) {
 		    if (width == WIDTH_THIN)
-				edge.addProperty("width","thin");
+				edge.setAttribute("width","thin");
 			else
-				edge.addProperty("width",Integer.toString(width));
+				edge.setAttribute("width",Integer.toString(width));
 	    }
 	    return edge;
 	}

@@ -16,21 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.15 2003-11-03 10:39:51 sviles Exp $*/
+/*$Id: MenuBar.java,v 1.16 2003-11-03 10:49:16 sviles Exp $*/
 
 package freemind.controller;
 
-import freemind.main.FreeMind;
-import java.util.ListIterator;
-import java.util.List;
-import java.util.LinkedList;
+import java.util.*;
 import java.awt.Component;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
-
 
 /**This is the menu bar for FreeMind. Actions are defined in MenuListener. */
 public class MenuBar extends JMenuBar {
@@ -97,6 +93,7 @@ public class MenuBar extends JMenuBar {
 	    return;
 	}
 	List keys = new LinkedList(c.getMapModuleManager().getMapModules().keySet());
+        Collections.sort(keys);
 	for (ListIterator i = keys.listIterator(); i.hasNext();) {
 	    String key = (String)i.next();
 	    JMenuItem newItem = new JMenuItem(key);
@@ -227,7 +224,8 @@ public class MenuBar extends JMenuBar {
         addOptionSet( c.optionHTMLExportFoldingAction,
                       new String[]{ "html_export_no_folding",
                                        "html_export_fold_currently_folded",
-                                       "html_export_fold_all" },
+                                       "html_export_fold_all",
+                                       "html_export_based_on_headings" },
                       preferences, c.getProperty("html_export_folding") );
 
     }

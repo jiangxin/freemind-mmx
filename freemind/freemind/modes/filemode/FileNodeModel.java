@@ -16,16 +16,19 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileNodeModel.java,v 1.9 2003-11-03 10:39:52 sviles Exp $*/
+/*$Id: FileNodeModel.java,v 1.11 2003-11-03 11:00:13 sviles Exp $*/
 
 package freemind.modes.filemode;
+
+import java.awt.Color;
+import java.io.File;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 import freemind.main.FreeMindMain;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import java.util.*;
-import java.io.File;
-import java.awt.Color;
 
 
 /**
@@ -53,16 +56,16 @@ public class FileNodeModel extends NodeAdapter {
         // ordinary file should not be considered folded and 
         // therefore the clause !isLeaf() should not be necessary.       
        if (isFolded()) { // && !isLeaf()) {
-	    return "bubble";
+	    return MindMapNode.STYLE_BUBBLE;
 	} else {
- 	    return "fork";
+ 	    return MindMapNode.STYLE_FORK;
 	}
     }
     /*
 	if (file.isFile()) {
-	    return "fork";
+	    return MindMapNode.STYLE_FORK;
 	} else {
-	    return "bubble";
+	    return MindMapNode.STYLE_BUBBLE;
 	}
     }
     */
