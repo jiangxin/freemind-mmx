@@ -5,8 +5,7 @@ echo $@
 #
 full=$(dirname $0)
 echo ${full}/lib/freemind.jar
-java -cp ${full}/lib/jython.jar:\
-${full}/lib/freemind.jar:\
+java -cp ${full}/lib/freemind.jar:\
 ${full}/lib/ant/lib/jaxb-api.jar:\
 ${full}/lib/ant/lib/jaxb-impl.jar:\
 ${full}/lib/ant/lib/jaxb-libs.jar:\

@@ -2,16 +2,26 @@
 
 package accessories.plugins.util.xslt;
 
-import java.util.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Enumeration;
+import java.util.Properties;
 
-import accessories.plugins.util.window.*;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
-import java.io.*;
+import accessories.plugins.util.window.WindowClosingAdapter;
 import freemind.main.ExampleFileFilter;
-import freemind.main.FreeMind;
 
 public class ExportDialog extends JFrame {
     protected JTextField field = null;

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapCloudModel.java,v 1.1 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: MindMapCloudModel.java,v 1.1.18.1 2004-10-28 05:24:54 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -32,22 +32,6 @@ public class MindMapCloudModel extends CloudAdapter {
 
     public MindMapCloudModel(MindMapNode node,FreeMindMain frame) {
         super(node,frame);
-    }
-
-    public XMLElement save() {
-	    XMLElement cloud = new XMLElement();
-	    cloud.setName("cloud");
-
-	    if (style != null) {
-            cloud.setAttribute("style",style);
-	    }
-	    if (color != null) {
-            cloud.setAttribute("color",Tools.colorToXml(color));
-	    }
-        if(width != DEFAULT_WIDTH) {
-            cloud.setAttribute("width",Integer.toString(width));
-        }
-	    return cloud;
     }
 
 }

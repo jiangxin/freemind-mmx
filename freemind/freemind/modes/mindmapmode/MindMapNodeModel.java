@@ -16,24 +16,22 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21.14.2 2004-10-17 23:00:13 dpolivaev Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.14.3 2004-10-28 05:24:54 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
-import freemind.extensions.PermanentNodeHook;
-import freemind.main.FreeMind;
-import freemind.main.Tools;
-import freemind.main.FreeMindMain;
-import freemind.main.XMLElement;
-import freemind.modes.MindMapNode;
-import freemind.modes.ModeController;
-import freemind.modes.NodeAdapter;
-import freemind.modes.MindIcon;
-
-import java.util.*;
-//import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.ListIterator;
+
+import freemind.main.FreeMindMain;
+import freemind.main.Tools;
+import freemind.modes.MindIcon;
+import freemind.modes.MindMapNode;
+import freemind.modes.NodeAdapter;
 
 /**
  * This class represents a single Node of a Tree. It contains direct handles 
@@ -371,112 +369,5 @@ public class MindMapNodeModel extends NodeAdapter {
         for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
            ((MindMapNodeModel)e.next()).saveRTF(fileout,depth + 1,colorTable); }
     }
-
-    //NanoXML save method
-    public void save(Writer writer, MindMapMapModel model) throws IOException {
-	XMLElement node = new XMLElement();
-	node.setName("node");
-
-	node.setAttribute("text",this.toString());
-
-	//	((MindMapEdgeModel)getEdge()).save(doc,node);
-
-	XMLElement edge = ((MindMapEdgeModel)getEdge()).save();
-	if (edge != null) {
-           node.addChild(edge); }
-
-    if(getCloud() != null) {
-        XMLElement cloud = ((MindMapCloudModel)getCloud()).save();
-        node.addChild(cloud); 
-    }
-
-//     // fc, 31.12.2003: For SVG export
-//     if(getViewer() != null) {
-//         node.setAttribute("SCREEN_POSITION_X", Integer.toString(getViewer().getX()));
-//         node.setAttribute("SCREEN_POSITION_Y", Integer.toString(getViewer().getY()));
-//         node.setAttribute("SCREEN_HEIGHT", Integer.toString(getViewer().getHeight()));
-//         node.setAttribute("SCREEN_WIDTH", Integer.toString(getViewer().getWidth()));
-//     }
-
-    Vector linkVector = model.getLinkRegistry().getAllLinksFromMe(this); /* Puh... */
-    for(int i = 0; i < linkVector.size(); ++i) {
-        if(linkVector.get(i) instanceof MindMapArrowLinkModel) {
-            XMLElement arrowLinkElement = ((MindMapArrowLinkModel) linkVector.get(i)).save();
-            node.addChild(arrowLinkElement);
-        }
-    }
-        
-	if (isFolded()) {
-           node.setAttribute("folded","true"); }
-	
-    // fc, 17.12.2003: Remove the left/right bug.
-    //                       VVV  save if and only if parent is root.
-	if ((isLeft()!= null) && !(isRoot()) && (getParentNode().isRoot())) {
-        node.setAttribute("POSITION",(isLeft().getValue())?"left":"right"); 
-    }
-	
-    String label = model.getLinkRegistry().getLabel(this); /* Puh... */
-	if (label!=null) {
-           node.setAttribute("id",label); }
-	
-	if (color != null) {
-           node.setAttribute("color", Tools.colorToXml(getColor())); }
-
-	// new background color.
-	if (getBackgroundColor() != null) {
-		   node.setAttribute("BACKGROUND_COLOR", Tools.colorToXml(getBackgroundColor())); }
-
-
-	if (style != null) {
-           node.setAttribute("style", super.getStyle()); }
-	    //  ^ Here cannot be just getStyle() without super. This is because
-	    //  getStyle's style depends on folded / unfolded. For example, when
-	    //  real style is fork and node is folded, getStyle returns
-	    //  MindMapNode.STYLE_BUBBLE, which is not what we want to save.
-
-	//link
-	if (getLink() != null) {
-           node.setAttribute("link", getLink()); }
-
-	//font
-	if (font!=null) {
-	    XMLElement fontElement = new XMLElement();
-	    fontElement.setName("font");
-
-	    if (font != null) {
-               fontElement.setAttribute("name",font.getFamily()); }
-	    if (font.getSize() != 0) {
-               fontElement.setAttribute("size",Integer.toString(font.getSize())); }
-	    if (isBold()) {
-               fontElement.setAttribute("bold","true"); }
-	    if (isItalic()) {
-               fontElement.setAttribute("italic","true"); }
-	    if (isUnderlined()) {
-               fontElement.setAttribute("underline","true"); }
-	    node.addChild(fontElement); }
-    for(int i = 0; i < getIcons().size(); ++i) {
-	    XMLElement iconElement = new XMLElement();
-	    iconElement.setName("icon");
-        iconElement.setAttribute("builtin", ((MindIcon) getIcons().get(i)).getName());
-        node.addChild(iconElement);
-    }
-
-	for(Iterator i = getActivatedHooks().iterator(); i.hasNext();) {
-		XMLElement hookElement = new XMLElement();
-		hookElement.setName("hook");
-		((PermanentNodeHook) i.next()).save(hookElement);
-		node.addChild(hookElement);
-	}
-        
-
-        if (childrenUnfolded().hasNext()) {
-           node.writeWithoutClosingTag(writer);
-           //recursive
-           for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
-              MindMapNodeModel child = (MindMapNodeModel)e.next();
-              child.save(writer, model); }
-           node.writeClosingTag(writer); }
-        else {
-           node.write(writer); }}
 
 }

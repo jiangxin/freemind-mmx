@@ -16,18 +16,18 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMode.java,v 1.8.18.1 2004-10-17 23:00:12 dpolivaev Exp $*/
+/*$Id: BrowseMode.java,v 1.8.18.2 2004-10-28 05:24:54 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
-import freemind.main.FreeMindApplet;
+import java.net.URL;
+
+import javax.swing.JToolBar;
+
 import freemind.controller.Controller;
-import freemind.controller.StructuredMenuHolder;
+import freemind.main.FreeMindApplet;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
-import javax.swing.JMenu;
-import javax.swing.JToolBar;
-import java.net.URL;
 
 public class BrowseMode implements Mode {
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.2 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.3 2004-10-28 05:24:53 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -1316,6 +1316,10 @@ public abstract class ControllerAdapter implements ModeController {
         }
     }
 
+    public MindMapNode getRootNode(){
+        return (MindMapNode) getMap().getRoot();
+    }
+    
     public URL getResource (String name) {
         return getFrame().getResource(name);
     }

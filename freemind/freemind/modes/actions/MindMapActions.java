@@ -112,4 +112,5 @@ public interface MindMapActions {
 	public void paste(MindMapNode node, MindMapNode parent);
 	
 	//public void addHook(MindMapNode focussed, List selecteds, String hookName);
+	public MindMapNode getRootNode();
 }

@@ -16,15 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: CloudAdapter.java,v 1.1.16.1 2004-10-17 20:01:05 dpolivaev Exp $*/
+/*$Id: CloudAdapter.java,v 1.1.16.2 2004-10-28 05:24:53 christianfoltin Exp $*/
 
 package freemind.modes;
 
+import java.awt.Color;
+
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
-import java.awt.Color;
-import java.awt.Stroke;
-import java.awt.BasicStroke;
+import freemind.main.XMLElement;
 
 public abstract class CloudAdapter extends LineAdapter implements MindMapCloud {
 
@@ -86,4 +86,20 @@ public abstract class CloudAdapter extends LineAdapter implements MindMapCloud {
 	
 	private int iterativeLevel;
 	
+    public XMLElement save() {
+        XMLElement cloud = new XMLElement();
+        cloud.setName("cloud");
+    
+        if (style != null) {
+            cloud.setAttribute("STYLE",style);
+        }
+        if (color != null) {
+            cloud.setAttribute("COLOR",Tools.colorToXml(color));
+        }
+        if(width != DEFAULT_WIDTH) {
+            cloud.setAttribute("WIDTH",Integer.toString(width));
+        }
+        return cloud;
+    }
+
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.2 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.3 2004-10-28 05:24:53 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -359,6 +359,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
      * Open url in WWW browser. This method hides some differences between operating systems.
      */
     public void openDocument(URL url) throws Exception {
+        // build string for default browser:
+        String correctedUrl = new String(url.toExternalForm());
+         if (url.getProtocol().equals("file")) {
+             correctedUrl = correctedUrl.replace('\\','/').replaceAll(" ","%20"); 
+             // ^ This is more of a heuristic than a "logical" code
+             // and due to a java bug: 
+             // http://forum.java.sun.com/thread.jsp?forum=31&thread=363990
+         }
         // Originally, this method determined external application, with which the document
         // should be opened. Which application should open which document type was
         // configured in FreeMind properties file. As a result, FreeMind tried to solve the
@@ -422,16 +430,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
                 System.err.println("Caught: " + x); 
             }
         } else if (osName.startsWith("Mac OS")) {
-//             String urlString = url.toString();
-//             if (url.getProtocol().equals("file")) {
-//                 urlString = urlString.replace('\\','/').replaceAll(" ","%20"); }
-//             // ^ This is more of a heuristic than a "logical" code
 
             // System.out.println("Opening URL "+urlString);
             String browser_command=new String();
             try {
-                // build string for default browser:
-                String correctedUrl = new String(url.toExternalForm());
                 // ask for property about browser: fc, 26.11.2003.
                 Object[] messageArguments = { correctedUrl, url.toString() };
                 MessageFormat formatter = new MessageFormat(getProperty("default_browser_command_mac"));
@@ -446,16 +448,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
             // above). Putting '"' around does not work on Linux - instead, the '"'
             // becomes part of URL, which is malformed, as a result.	 
 
-//             String urlString = url.toString();
-//             if (url.getProtocol().equals("file")) {
-//                 urlString = urlString.replace('\\','/').replaceAll(" ","%20"); }
-//             // ^ This is more of a heuristic than a "logical" code
-
-            // System.out.println("Opening URL "+urlString);
             String browser_command=new String();
             try {
-                // build string for default browser:
-                String correctedUrl = new String(url.toExternalForm());
                 // ask for property about browser: fc, 26.11.2003.
                 Object[] messageArguments = { correctedUrl, url.toString() };
                 MessageFormat formatter = new MessageFormat(getProperty("default_browser_command_other_os"));

@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: ActionFactory.java,v 1.1.4.1 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: ActionFactory.java,v 1.1.4.2 2004-10-28 05:24:53 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -28,11 +28,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Logger;
 
-import freemind.common.JaxbTools;
 import freemind.controller.Controller;
-import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.XmlAction;
 
 /**

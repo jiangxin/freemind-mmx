@@ -1,0 +1,32 @@
+body { 
+  background-color: #FFFFFF;
+}
+
+div.node { 
+  padding-bottom:     1ex;
+  padding-left:       2em;
+}
+
+div.cloud { 
+  padding-bottom:     1ex;
+  padding-left:       2em;
+  background-color:   #C0C0FF;
+  border-width:       2px;
+  border-style:       solid;
+  border-color:       #A0A0FF;
+}
+
+div.content { 
+  border-width:       1px;
+  border-style:   dashed;
+  border-color:       #C0C0C0;
+}
+
+img.hideshow { 
+  padding-right: 1ex;
+}
+
+img.ilink { 
+  border-width: 0px;
+  padding-left: 1ex;
+}

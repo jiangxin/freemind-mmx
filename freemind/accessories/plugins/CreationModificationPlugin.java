@@ -76,8 +76,8 @@ public class CreationModificationPlugin extends PermanentNodeHookAdapter {
 		super.save(xml);
 		XMLElement child = new XMLElement();
 		child.setName("Parameters");
-		child.setAttribute("created", new Long(created));
-		child.setAttribute("modified", new Long(modified));
+		child.setAttribute("CREATED", new Long(created));
+		child.setAttribute("MODIFIED", new Long(modified));
 		xml.addChild(child);
 	}
 

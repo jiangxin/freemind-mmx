@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindIcon.java,v 1.1 2003-11-03 11:02:44 sviles Exp $*/
+/*$Id: MindIcon.java,v 1.1.18.1 2004-10-28 05:24:53 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -102,7 +102,15 @@ public class MindIcon {
     }
     
     public String getIconFileName() {
-        return "images/icons/"+getName()+".png";
+        return getIconsPath()+getIconBaseFileName();
+    }
+
+    public String getIconBaseFileName() {
+        return getName()+".png";
+    }
+
+    public static String getIconsPath() {
+        return "images/icons/";
     }
 
     public Icon getIcon(FreeMindMain frame) {

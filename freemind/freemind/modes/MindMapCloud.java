@@ -16,14 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapCloud.java,v 1.1.16.1 2004-10-17 20:01:06 dpolivaev Exp $*/
+/*$Id: MindMapCloud.java,v 1.1.16.2 2004-10-28 05:24:53 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import freemind.modes.MindMapLine;
-import freemind.modes.MindMapNode;
 import java.awt.Color;
-import java.awt.Stroke;
+
+import freemind.main.XMLElement;
 
 public interface MindMapCloud extends MindMapLine {
 
@@ -48,4 +47,5 @@ public interface MindMapCloud extends MindMapLine {
 	 * it should call this Method, 
 	 * with deltaLevel equal to  1 or -1.*/
 	public void changeIterativeLevel(int deltaLevel);
+    public XMLElement save();
 }

@@ -16,24 +16,26 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.2 2004-10-17 23:00:08 dpolivaev Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.3 2004-10-28 05:24:53 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import freemind.extensions.*;
-import freemind.view.mindmapview.NodeView;
-// clouds, fc, 08.11.2003:
-// end clouds.
-// links, fc, 08.11.2003:
-// end links.
+import java.awt.Color;
+import java.awt.Font;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
-import java.awt.Color;
-import java.awt.Font;
+import java.util.Vector;
+
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
-import java.util.Vector;
+
+import freemind.extensions.NodeHook;
+import freemind.extensions.PermanentNodeHook;
+import freemind.main.XMLElement;
+import freemind.view.mindmapview.NodeView;
 
 public interface MindMapNode extends MutableTreeNode {
    
@@ -42,6 +44,9 @@ public interface MindMapNode extends MutableTreeNode {
 	public static final String STYLE_COMBINED = "combined";
 	public static final String STYLE_AS_PARENT = "as_parent";
 	
+    String getText();
+    void setText(String text);
+    
 	/**
 	 * @return returns the unique id of the node. It is generated using the LinkRegistry.
 	 */
@@ -160,4 +165,5 @@ public interface MindMapNode extends MutableTreeNode {
 	String getToolTip();
         
     MindMapNode shallowCopy();
+    public void save(Writer writer, MindMapLinkRegistry registry) throws IOException;
 }
