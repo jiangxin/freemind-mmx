@@ -23,12 +23,45 @@
 	  </xs:complexType>
 	</xs:element>
 
+	<!-- Delete node Action 
+		 This is done via the parent and its index, because at creation time of the node, the id was not present. -->
+	<xs:element name="delete_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Text node Action (Base for edit and "new node" actions) -->
+	  <xs:complexType name="text_node_action">
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="text" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+
 	<!-- Edit node Action -->
 	<xs:element name="edit_node_action">
 	  <xs:complexType>
 		<xs:complexContent>
+			<xs:extension base="text_node_action"/>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- New node Action -->
+	<xs:element name="new_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
 			<xs:extension base="node_action">
-		      <xs:attribute name="text" use="required" type="xs:string"/>
+				<!--  for childs of root this denotes "left" or "right". -->
+				<xs:attribute name="position"    use="optional" type="xs:string"/>
+				<xs:attribute name="index"       use="optional" type="xs:int"/>
+				<!-- This is the id the new node should have. Hopefully it is unique. -->
+				<xs:attribute name="newId"    use="optional" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.6 2004-05-03 20:56:36 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.7 2004-05-06 05:08:27 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -50,11 +50,9 @@ import javax.swing.filechooser.FileFilter;
 import javax.xml.bind.JAXBException;
 
 import freemind.controller.Controller;
-import freemind.controller.actions.AbstractXmlAction;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.generated.instance.BoldNodeAction;
-import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookFactory;
 import freemind.main.Tools;
@@ -68,6 +66,11 @@ import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.StylePattern;
+import freemind.modes.actions.*;
+import freemind.modes.actions.EditAction;
+import freemind.modes.actions.NewMapAction;
+import freemind.modes.actions.NodeGeneralAction;
+import freemind.modes.actions.SingleNodeOperation;
 
 
 
@@ -83,137 +86,22 @@ public class MindMapController extends ControllerAdapter {
     private MindMapToolBar toolbar;
     private boolean addAsChildMode = false;
 
-	// NodeGeneralAction
-	// __________________
-
-	private interface SingleNodeOperation {
-	   public void apply(MindMapMapModel map, MindMapNodeModel node); }
-
-	private class NodeGeneralAction extends AbstractXmlAction {
-		private freemind.controller.actions.ActorXml actor;
-		SingleNodeOperation singleNodeOperation;
-		private NodeGeneralAction(String textID, String iconPath) {
-			super(
-				getText(textID),
-				iconPath != null ? new ImageIcon(getResource(iconPath)) : null,
-				MindMapController.this);
-			putValue(Action.SHORT_DESCRIPTION, getText(textID));
-			this.singleNodeOperation = null;
-			this.actor = null;
-		}
-		NodeGeneralAction(
-			String textID,
-			String iconPath,
-			SingleNodeOperation singleNodeOperation) {
-			this(textID, iconPath);
-			this.singleNodeOperation = singleNodeOperation;
-		}
-		NodeGeneralAction(
-			String textID,
-			String iconPath,
-			freemind.controller.actions.ActorXml actor) {
-			this(textID, iconPath);
-			addActor(actor);
-		}
-		public void addActor(ActorXml actor) {
-			this.actor = actor;
-			if (actor != null) {
-				// registration:
-				getActionFactory().registerActor(actor, actor.getDoActionClass());
-			}			
-		}
-		public void xmlActionPerformed(ActionEvent e) {
-			if(singleNodeOperation != null) {
-				for (ListIterator it = getSelecteds().listIterator();
-					it.hasNext();
-					) {
-					MindMapNodeModel selected = (MindMapNodeModel) it.next();
-					singleNodeOperation.apply(getModel(), selected);
-				}
-			} else {
-				// xml action:
-				for (ListIterator it = getSelecteds().listIterator();
-					it.hasNext();
-					) {
-					MindMapNodeModel selected = (MindMapNodeModel) it.next();
-					try {
-						ActionPair pair = actor.apply(getModel(), selected);
-						getActionFactory().executeAction(pair);
-					} catch (JAXBException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-			}
-
-		}
-		/* (non-Javadoc)
-		 * @see freemind.controller.actions.FreeMindAction#act(freemind.controller.actions.generated.instance.XmlAction)
-		 */
-		public void act(XmlAction action) {
-		}
-
+	public void setBold(MindMapNode node, boolean bolded) {
+		bold.setBold(node, bolded);
 	}
 
-	// END: NodeGeneralAction
-	// __________________
-
-	public class BoldAction extends NodeGeneralAction implements ActorXml {
-
-		/**
-		 * @param textID
-		 * @param iconPath
-		 * @param actor
-		 */
-		public BoldAction() {
-			super("bold", "images/Bold24.gif");
-			addActor(this);			
-		}
-
-		public void act(XmlAction action) {
-			System.out.println("BoldActor");
-			BoldNodeAction boldact = (BoldNodeAction) action;
-			NodeAdapter node = getNodeFromID(boldact.getNode());
-			if(node.isBold() != boldact.isBold()) {
-				node.setBold(boldact.isBold());
-				nodeChanged(node);
-			}
-		}
-
-		public Class getDoActionClass() {
-			return BoldNodeAction.class;
-		}
-
-		public ActionPair apply(MindMapMapModel model, MindMapNodeModel selected) throws JAXBException {
-
-			BoldNodeAction boldAction = getActionXmlFactory().createBoldNodeAction();
-			boldAction.setNode(getNodeID(selected));
-			boldAction.setBold(!selected.isBold());
-
-			BoldNodeAction undoBoldAction = getActionXmlFactory().createBoldNodeAction();
-			undoBoldAction.setNode(getNodeID(selected));
-			undoBoldAction.setBold(selected.isBold());
-
-			return new ActionPair(boldAction, undoBoldAction);
-		}
-
-	}
-
-	Action bold   = new BoldAction ();
-
-
-
-
-    Action newMap = new NewMapAction(this);
+	BoldAction bold   = new BoldAction (this);
+	Action deleteChild = new DeleteChildAction(this);
+    Action newMap = new NewMapAction(this, this);
     Action open = new OpenAction(this);
     Action save = new SaveAction(this);
     Action saveAs = new SaveAsAction(this);
     Action exportToHTML = new ExportToHTMLAction(this);
     Action exportBranchToHTML = new ExportBranchToHTMLAction(this);
 
-    Action edit = new EditAction();
+    Action edit = new EditAction(this);
     Action editLong = new EditLongAction();
-    Action newChild = new NewChildAction();
+    Action newChild = new NewChildAction(this);
     Action newChildWithoutFocus = new NewChildWithoutFocusAction();
     Action newSibling = new NewSiblingAction();
     Action newPreviousSibling = new NewPreviousSiblingAction();
@@ -239,7 +127,7 @@ public class MindMapController extends ControllerAdapter {
     Action fork = new ForkAction();
     Action bubble = new BubbleAction();
     Action nodeColor = new NodeColorAction();
-    Action nodeColorBlend = new NodeGeneralAction ("blend_color", null,
+    Action nodeColorBlend = new NodeGeneralAction (this, "blend_color", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.blendNodeColor(node); }});
 
@@ -260,10 +148,10 @@ public class MindMapController extends ControllerAdapter {
     };
     Action cloudColor = new CloudColorAction();
 
-    Action italic = new NodeGeneralAction ("italic", "images/Italic24.gif",
+    Action italic = new NodeGeneralAction (this, "italic", "images/Italic24.gif",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.setItalic(node); }});
-    Action cloud   = new NodeGeneralAction ("cloud", "images/Cloud24.gif",
+    Action cloud   = new NodeGeneralAction (this, "cloud", "images/Cloud24.gif",
        new SingleNodeOperation() { private MindMapCloud lastCloud;
            private MindMapNodeModel nodeOfLastCloud;
            public void apply(MindMapMapModel map, MindMapNodeModel node) {
@@ -280,23 +168,23 @@ public class MindMapController extends ControllerAdapter {
 
            }
        });
-    Action normalFont = new NodeGeneralAction ("normal", "images/Normal24.gif",
+    Action normalFont = new NodeGeneralAction (this, "normal", "images/Normal24.gif",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.setNormalFont(node); }});
-    Action increaseNodeFont = new NodeGeneralAction ("increase_node_font_size", null,
+    Action increaseNodeFont = new NodeGeneralAction (this, "increase_node_font_size", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.increaseFontSize(node,1); }});
-    Action decreaseNodeFont = new NodeGeneralAction ("decrease_node_font_size", null,
+    Action decreaseNodeFont = new NodeGeneralAction (this, "decrease_node_font_size", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.increaseFontSize(node,-1); }});
 
     // Extension Actions
     Action patterns[] = new Action[0]; // Make sure it is initialized
     public Vector iconActions = new Vector(); //fc
-    Action removeLastIcon = new NodeGeneralAction ("remove_last_icon", "images/remove.png",
+    Action removeLastIcon = new NodeGeneralAction (this, "remove_last_icon", "images/remove.png",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.removeLastIcon(node); }});
-    Action removeAllIcons = new NodeGeneralAction ("remove_all_icons", "images/edittrash.png",
+    Action removeAllIcons = new NodeGeneralAction (this, "remove_all_icons", "images/edittrash.png",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
            while(map.removeLastIcon(node)>0) {}; }});
 
@@ -406,12 +294,12 @@ public class MindMapController extends ControllerAdapter {
     void setFontSize(int fontSize) {
 	for(ListIterator e = getSelecteds().listIterator();e.hasNext();) {
            MindMapNodeModel selected = (MindMapNodeModel)e.next();
-           getModel().setFontSize(selected,fontSize); }}
+           getMindMapMapModel().setFontSize(selected,fontSize); }}
 
     void setFontFamily(String fontFamily) {
        for(ListIterator e = getSelecteds().listIterator();e.hasNext();) {
           MindMapNodeModel selected = (MindMapNodeModel)e.next();
-          getModel().setFontFamily(selected,fontFamily); }}
+          getMindMapMapModel().setFontFamily(selected,fontFamily); }}
 
     public void nodeChanged(MindMapNode n) {
     	super.nodeChanged(n);
@@ -672,8 +560,8 @@ public class MindMapController extends ControllerAdapter {
             HashSet NodeAlreadyVisited = new HashSet();
             NodeAlreadyVisited.add(link.getSource());
             NodeAlreadyVisited.add(link.getTarget());
-            Vector links = getModel().getLinkRegistry().getAllLinks(link.getSource());
-            links.addAll(getModel().getLinkRegistry().getAllLinks(link.getTarget()));
+            Vector links = getMindMapMapModel().getLinkRegistry().getAllLinks(link.getSource());
+            links.addAll(getMindMapMapModel().getLinkRegistry().getAllLinks(link.getTarget()));
             for(int i = 0; i < links.size(); ++i) {
                 MindMapArrowLinkModel foreign_link = (MindMapArrowLinkModel) links.get(i);
                 if(NodeAlreadyVisited.add(foreign_link.getTarget())) {
@@ -690,12 +578,8 @@ public class MindMapController extends ControllerAdapter {
 
 
     //convenience methods
-    private MindMapMapModel getModel() {
+    private MindMapMapModel getMindMapMapModel() {
 	return (MindMapMapModel)getController().getModel();
-    }
-
-    private MindMapNodeModel getSelected() {
-	return (MindMapNodeModel)getView().getSelected().getModel();
     }
 
     MindMapToolBar getToolBar() {
@@ -787,8 +671,8 @@ public class MindMapController extends ControllerAdapter {
 	    super(getText("export_to_html"));
 	    c = controller; }
 	public void actionPerformed(ActionEvent e) {
-           File file = new File(c.getModel().getFile()+".html");
-           if (c.getModel().saveHTML((MindMapNodeModel)c.getModel().getRoot(),file)) {
+           File file = new File(c.getMindMapMapModel().getFile()+".html");
+           if (c.getMindMapMapModel().saveHTML((MindMapNodeModel)c.getMindMapMapModel().getRoot(),file)) {
               loadURL(file.toString()); }}}
 
     protected class ExportBranchToHTMLAction extends AbstractAction {
@@ -799,7 +683,7 @@ public class MindMapController extends ControllerAdapter {
 	public void actionPerformed(ActionEvent e) {
            try {
               File file = File.createTempFile("tmm", ".html");
-              if (c.getModel().saveHTML((MindMapNodeModel)getSelected(),file)) {
+              if (c.getMindMapMapModel().saveHTML((MindMapNodeModel)getSelected(),file)) {
                  loadURL(file.toString()); }}
            catch (IOException ex) {}}}
 
@@ -849,22 +733,22 @@ public class MindMapController extends ControllerAdapter {
 
 		MindMapNodeModel parent = (MindMapNodeModel)node.getParentNode();
 		MindMapNodeModel newNode = new MindMapNodeModel(node.toString(),getFrame());
-		getModel().removeNodeFromParent(node);
+		getMindMapMapModel().removeNodeFromParent(node);
 		node.setParent(null);
 		MindMapMapModel map = new MindMapMapModel(node,getFrame());
-		if (getModel().getFile() != null) {
+		if (getMindMapMapModel().getFile() != null) {
 		    try{
 			//set a link from the new root to the old map
-                       map.setLink(node, Tools.toRelativeURL(f.toURL(), getModel().getFile().toURL())); }
+                       map.setLink(node, Tools.toRelativeURL(f.toURL(), getMindMapMapModel().getFile().toURL())); }
                     catch(MalformedURLException ex) { }}
 		map.save(f);
 
-		getModel().insertNodeInto(newNode, parent, 0);
+		getMindMapMapModel().insertNodeInto(newNode, parent, 0);
 		try {
-		    String linkString = Tools.toRelativeURL(getModel().getFile().toURL(), f.toURL());
-		    getModel().setLink(newNode,linkString); }
+		    String linkString = Tools.toRelativeURL(getMindMapMapModel().getFile().toURL(), f.toURL());
+		    getMindMapMapModel().setLink(newNode,linkString); }
                 catch (MalformedURLException ex) {}
-		getModel().save(getModel().getFile()); }}}
+		getMindMapMapModel().save(getMindMapMapModel().getFile()); }}}
 
     private class ImportBranchAction extends AbstractAction {
 	ImportBranchAction() {
@@ -880,9 +764,9 @@ public class MindMapController extends ControllerAdapter {
             int returnVal = chooser.showOpenDialog(getFrame().getContentPane());
             if (returnVal==JFileChooser.APPROVE_OPTION) {
                try {
-                  MindMapNodeModel node = getModel().loadTree(chooser.getSelectedFile());
-                  getModel().paste(node, parent);
- 				  invokeHooksRecursively(node, getModel());
+                  MindMapNodeModel node = getMindMapMapModel().loadTree(chooser.getSelectedFile());
+                  getMindMapMapModel().paste(node, parent);
+ 				  invokeHooksRecursively(node, getMindMapMapModel());
                }
                catch (Exception ex) {
                   handleLoadingException(ex); }}}}
@@ -904,9 +788,9 @@ public class MindMapController extends ControllerAdapter {
                ex.printStackTrace();
                return; }
             try {
-               MindMapNodeModel node = getModel().loadTree(new File(absolute.getFile()));
-               getModel().paste(node, parent); 
-			   invokeHooksRecursively(node, getModel());
+               MindMapNodeModel node = getMindMapMapModel().loadTree(new File(absolute.getFile()));
+               getMindMapMapModel().paste(node, parent); 
+			   invokeHooksRecursively(node, getMindMapMapModel());
             }
             catch (Exception ex) {
                handleLoadingException(ex); }}}
@@ -930,11 +814,11 @@ public class MindMapController extends ControllerAdapter {
                JOptionPane.showMessageDialog(getView(),"Couldn't create valid URL.");
                return; }
             try {
-               MindMapNodeModel node = getModel().loadTree(new File(absolute.getFile()));
+               MindMapNodeModel node = getMindMapMapModel().loadTree(new File(absolute.getFile()));
                for (ListIterator i = node.childrenUnfolded();i.hasNext();) {
                   	MindMapNodeModel importNode = (MindMapNodeModel)i.next();
-					getModel().paste(importNode, parent);
-					invokeHooksRecursively(importNode, getModel());
+					getMindMapMapModel().paste(importNode, parent);
+					invokeHooksRecursively(importNode, getMindMapMapModel());
                   }
                }
                //getModel().setLink(parent, null); }
@@ -954,7 +838,7 @@ public class MindMapController extends ControllerAdapter {
               //getFrame().repaint(); // Refresh the frame, namely hide dialog and show status
               //getView().updateUI();
               // Problem: the frame should be refreshed here, but I don't know how to do it
-              getModel().importExplorerFavorites(folder,getSelected(),/*redisplay=*/true);
+              getMindMapMapModel().importExplorerFavorites(folder,getSelected(),/*redisplay=*/true);
               getFrame().out("Favorites imported."); }}}
 
     private class ImportFolderStructureAction extends AbstractAction {
@@ -970,7 +854,7 @@ public class MindMapController extends ControllerAdapter {
               //getFrame().repaint(); // Refresh the frame, namely hide dialog and show status
               //getView().updateUI();
               // Problem: the frame should be refreshed here, but I don't know how to do it
-              getModel().importFolderStructure(folder,getSelected(),/*redisplay=*/true);
+              getMindMapMapModel().importFolderStructure(folder,getSelected(),/*redisplay=*/true);
               getFrame().out("Folder structure imported."); }}}
 
 
@@ -985,7 +869,7 @@ public class MindMapController extends ControllerAdapter {
              return; }
           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
              MindMapNodeModel selected = (MindMapNodeModel)it.next();
-             getModel().setNodeColor(selected, color); }}}
+             getMindMapMapModel().setNodeColor(selected, color); }}}
 
     private class EdgeColorAction extends AbstractAction {
 	EdgeColorAction() { super(getText("edge_color")); }
@@ -994,7 +878,7 @@ public class MindMapController extends ControllerAdapter {
            if (color==null) return;
            for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
               MindMapNodeModel selected = (MindMapNodeModel)it.next();
-              getModel().setEdgeColor(selected,color); }}}
+              getMindMapMapModel().setEdgeColor(selected,color); }}}
 
 
     private class CloudColorAction extends AbstractAction {
@@ -1009,7 +893,7 @@ public class MindMapController extends ControllerAdapter {
            if (color==null) return;
            for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
               MindMapNodeModel selected = (MindMapNodeModel)it.next();
-              getModel().setCloudColor(selected,color); }}}
+              getMindMapMapModel().setCloudColor(selected,color); }}}
 
 
     protected class ColorArrowLinkAction extends AbstractAction {
@@ -1025,7 +909,7 @@ public class MindMapController extends ControllerAdapter {
             Color selectedColor = arrowLink.getColor();
             Color color = Controller.showCommonJColorChooserDialog(getView().getSelected(),(String) this.getValue(Action.NAME),selectedColor);
             if (color==null) return;
-            getModel().setArrowLinkColor(source, arrowLink, color); 
+            getMindMapMapModel().setArrowLinkColor(source, arrowLink, color); 
         }
     }
     
@@ -1045,7 +929,7 @@ public class MindMapController extends ControllerAdapter {
         public void actionPerformed(ActionEvent e) {
            for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
               MindMapNodeModel selected = (MindMapNodeModel)it.next();
-              (getModel()).addIcon(selected, icon); 
+              (getMindMapMapModel()).addIcon(selected, icon); 
             }
         };
     }
@@ -1063,7 +947,7 @@ public class MindMapController extends ControllerAdapter {
         }
 
         public void actionPerformed(ActionEvent e) {
-            getModel().removeReference(source, arrowLink);
+            getMindMapMapModel().removeReference(source, arrowLink);
         }
     }
 
@@ -1081,7 +965,7 @@ public class MindMapController extends ControllerAdapter {
         }
 
         public void actionPerformed(ActionEvent e) {
-            getModel().changeArrowsOfArrowLink(source, arrowLink, hasStartArrow, hasEndArrow);
+            getMindMapMapModel().changeArrowsOfArrowLink(source, arrowLink, hasStartArrow, hasEndArrow);
         }
     }
     
@@ -1104,7 +988,7 @@ public class MindMapController extends ControllerAdapter {
        public void actionPerformed(ActionEvent e) {
           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
              MindMapNodeModel selected = (MindMapNodeModel)it.next();
-             getModel().setEdgeWidth(selected,width); }}}
+             getMindMapMapModel().setEdgeWidth(selected,width); }}}
 
 
     // Miscelaneous
@@ -1126,14 +1010,14 @@ public class MindMapController extends ControllerAdapter {
        public void actionPerformed(ActionEvent e) {
           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
              MindMapNodeModel selected = (MindMapNodeModel)it.next();
-             getModel().setNodeStyle(selected, MindMapNode.STYLE_FORK); }}}
+             getMindMapMapModel().setNodeStyle(selected, MindMapNode.STYLE_FORK); }}}
 
     private class BubbleAction extends AbstractAction {
 	BubbleAction() { super(getText(MindMapNode.STYLE_BUBBLE)); }
        public void actionPerformed(ActionEvent e) {
           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
              MindMapNodeModel selected = (MindMapNodeModel)it.next();
-             getModel().setNodeStyle(selected, MindMapNode.STYLE_BUBBLE); }}}
+             getMindMapMapModel().setNodeStyle(selected, MindMapNode.STYLE_BUBBLE); }}}
 
     private class EdgeStyleAction extends AbstractAction {
 	String style;
@@ -1143,7 +1027,7 @@ public class MindMapController extends ControllerAdapter {
        public void actionPerformed(ActionEvent e) {          
           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
              MindMapNodeModel selected = (MindMapNodeModel)it.next();
-             getModel().setEdgeStyle(selected, style); }}}
+             getMindMapMapModel().setEdgeStyle(selected, style); }}}
 
     private class ApplyPatternAction extends AbstractAction {
         StylePattern pattern;
@@ -1153,7 +1037,7 @@ public class MindMapController extends ControllerAdapter {
 	public void actionPerformed(ActionEvent e) {
 	    for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
 		MindMapNodeModel selected = (MindMapNodeModel)it.next();
-                ((MindMapMapModel)getModel()).applyPattern(selected, pattern); }}}
+                ((MindMapMapModel)getMindMapMapModel()).applyPattern(selected, pattern); }}}
 
 
 

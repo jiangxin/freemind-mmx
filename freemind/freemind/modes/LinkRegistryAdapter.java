@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.10 2003-12-22 11:14:52 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.10.12.1 2004-05-06 05:08:26 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -105,12 +105,9 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         logger.info("New Registry");
     };
 
-    protected String generateUniqueID(String proposedID) {
+    public String generateUniqueID(String proposedID) {
         Random ran = new Random();
         String myProposedID = new String((proposedID != null)?proposedID:"");
-        /* The under score is to enable the id to be an ID in the sense of XML/DTD.*/
-        if(!myProposedID.startsWith("_"))
-            myProposedID = "_" + myProposedID;
         String returnValue;
         do {
             if(!myProposedID.equals("")) {
@@ -160,14 +157,6 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         return new ID_BlankAdapter();
     };
 
-    protected String getIDString(MindMapNode node) { 
-        if(TargetToID.containsKey(node)) {
-            ID_BasicState state =  (ID_BasicState) TargetToID.get(node);
-            return state.getID();
-        }
-        return null;
-    }
-        
 
     public MindMapNode getTargetForID(String ID){
         for(Iterator i = TargetToID.keySet().iterator(); i.hasNext();) {
@@ -209,6 +198,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
                 //             throw new java.lang.IllegalArgumentException("Cannot remove a link target, if there are sources pointing to.");
                 logger.info("Deregister target node:"+target);
                 TargetToID.remove(target);
+                IDToLinks.remove(state.getID());
             }
     }
                 
@@ -313,7 +303,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         ID_BasicState state = getState(target);
         if(state instanceof ID_Registered) {
             // there is a registered target id.
-            String id = getIDString(target);
+            String id = getLabel(target);
             // create new vector to the links:
             Vector vec;
             if(IDToCuttedLinks.containsKey(id) ) {

@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.10.4 2004-04-08 18:54:56 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.10.5 2004-05-06 05:08:34 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -29,8 +29,7 @@ import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapLink;
-import freemind.modes.mindmapmode.MindMapCloudModel;
-import freemind.modes.mindmapmode.MindMapArrowLinkModel;
+import freemind.modes.actions.*;
 import freemind.extensions.*;
 
 import java.awt.Color;
@@ -47,8 +46,6 @@ import java.util.TimerTask;
 import java.util.Timer;
 
 
-import java.lang.UnsatisfiedLinkError;
-import java.lang.NoClassDefFoundError;
 
 import java.net.URL;
 //import java.net.URLConnection;
@@ -62,7 +59,7 @@ import freemind.modes.LinkRegistryAdapter;
 import freemind.modes.MindMapLinkRegistry;
 
 
-public class MindMapMapModel extends MapAdapter {
+public class MindMapMapModel extends MapAdapter  {
 
     LockManager lockManager;
     private LinkRegistryAdapter linkRegistry;
@@ -160,9 +157,9 @@ public class MindMapMapModel extends MapAdapter {
         edge.setStyle(style);
         nodeStructureChanged(node); }
 
-    public void setBold(MindMapNodeModel node) {
-        node.setBold(!node.isBold());
-        nodeChanged(node); }
+//    public void setBold(MindMapNodeModel node) {
+//        node.setBold(!node.isBold());
+//        nodeChanged(node); }
 
     public void setCloud(MindMapNodeModel node) {
         if(node.getCloud() == null) {

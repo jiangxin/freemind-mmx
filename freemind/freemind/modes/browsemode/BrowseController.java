@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13.12.3 2004-05-02 20:49:14 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.13.12.4 2004-05-06 05:08:26 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -38,6 +38,7 @@ import java.util.Vector;
 import freemind.main.Tools;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.view.mindmapview.NodeView;
@@ -144,14 +145,6 @@ public class BrowseController extends ControllerAdapter {
     }
 
 
-    //convenience methods
-    private BrowseMapModel getModel() {
-	return (BrowseMapModel)getController().getModel();
-    }
-
-    private BrowseNodeModel getSelected() {
-	return (BrowseNodeModel)getView().getSelected().getModel();
-    }
 
     BrowseToolBar getToolBar() {
 	return (BrowseToolBar)toolbar;

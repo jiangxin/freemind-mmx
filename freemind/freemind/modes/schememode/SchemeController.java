@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.10.12.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: SchemeController.java,v 1.10.12.2 2004-05-06 05:08:34 christianfoltin Exp $*/
 
 package freemind.modes.schememode;
 
@@ -35,15 +35,17 @@ import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
+import freemind.modes.actions.EditAction;
+import freemind.modes.actions.NewMapAction;
 
 public class SchemeController extends ControllerAdapter {
 
-    Action newMap = new NewMapAction(this);
+    Action newMap = new NewMapAction(this, this);
     Action open = new OpenAction(this);
     Action save = new SaveAction(this);
     Action saveAs = new SaveAsAction(this);
     Action evaluate = new EvaluateAction();
-    Action edit = new EditAction();
+    Action edit = new EditAction(this);
     Action addNew = new NewChildWithoutFocusAction();
     Action remove = new RemoveAction();
     Action toggleFolded = new ToggleFoldedAction();
@@ -65,14 +67,6 @@ public class SchemeController extends ControllerAdapter {
 //    private MindMap getModel() {
 // 	return (MindMap)getController().getModel();
 //    }
-
-    private MindMapNode getSelected() {
-	if (getView() != null) {
-	    return (MindMapNode)getView().getSelected().getModel();
-	} else {
-	    return null;
-	}
-    }
 
 
 	public boolean saveAs() {

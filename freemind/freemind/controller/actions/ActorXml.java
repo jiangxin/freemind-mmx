@@ -19,13 +19,14 @@
  *
  * Created on 25.04.2004
  */
-/*$Id: ActorXml.java,v 1.1.2.1 2004-05-02 20:49:14 christianfoltin Exp $*/
+/*$Id: ActorXml.java,v 1.1.2.2 2004-05-06 05:08:25 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
 import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.modes.MapAdapter;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
@@ -43,10 +44,4 @@ public interface ActorXml {
 	 */
 	Class getDoActionClass();
 
-	/**
-	 * @param model
-	 * @param selected
-	 * @return
-	 */
-	ActionPair apply(MindMapMapModel model, MindMapNodeModel selected) throws JAXBException;
 }

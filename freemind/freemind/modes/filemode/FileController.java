@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileController.java,v 1.11.12.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: FileController.java,v 1.11.12.2 2004-05-06 05:08:26 christianfoltin Exp $*/
 
 package freemind.modes.filemode;
 
@@ -25,6 +25,8 @@ import freemind.modes.MindMap;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.ControllerAdapter;
+import freemind.modes.actions.NewMapAction;
+
 import java.io.File;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
@@ -34,7 +36,7 @@ public class FileController extends ControllerAdapter {
     Action find = new FindAction();
     Action findNext = new FindNextAction();
 
-    Action newMap = new NewMapAction(this);
+    Action newMap = new NewMapAction(this, this);
     Action center = new CenterAction();
     Action openPath = new OpenPathAction();
 
@@ -74,14 +76,7 @@ public class FileController extends ControllerAdapter {
 // 	return (MindMap)getController().getModel();
 //    }
 
-    private MindMapNode getSelected() {
-	if (getView() != null) {
-	    return (MindMapNode)getView().getSelected().getModel();
-	} else {
-	    return null;
-	}
-    }
-    
+   
     private class CenterAction extends AbstractAction {
 	CenterAction() {
 	    super(getController().getResourceString("center"));

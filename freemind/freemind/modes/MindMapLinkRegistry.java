@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLinkRegistry.java,v 1.6 2003-11-29 17:12:33 christianfoltin Exp $*/
+/*$Id: MindMapLinkRegistry.java,v 1.6.12.1 2004-05-06 05:08:26 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -62,6 +62,8 @@ public interface MindMapLinkRegistry {
         throws java.lang.IllegalArgumentException;
     public ID_BasicState getState(MindMapNode node);
     public String getLabel(MindMapNode target);
+    /** This can be used, if the id has to be known, before a node can be labled. */
+	public String generateUniqueID(String proposedID);
     /** Reverses the getLabel method: searches for a node with the id given as the argument.*/
     public MindMapNode getTargetForID(String ID);
 //     /** Method to keep track of the targets associated to a target node. This method also sets the new id to the target. 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.9 2004-05-03 20:56:36 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.10 2004-05-06 05:08:26 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -79,7 +79,9 @@ import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.ModeControllerActionHandler;
 import freemind.controller.actions.PrintActionHandler;
+import freemind.controller.actions.generated.instance.DeleteNodeAction;
 import freemind.controller.actions.generated.instance.EditNodeAction;
+import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.UndoXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -153,13 +155,13 @@ public abstract class ControllerAdapter implements ModeController {
             public void executeAction(ActionPair pair) {
             	if(! (undo.isUndoAction() || redo.isUndoAction())) {
 					if(! (pair.getDoAction() instanceof UndoXmlAction)) {
-						for (Iterator i = redoList.iterator();
-							i.hasNext();
-							) {
-							ActionPair redoPair = (ActionPair) i.next();
-							undoList.add(0, redoPair.reverse());                       
-							undoList.add(0, redoPair);
-						}
+//						for (Iterator i = redoList.iterator();
+//							i.hasNext();
+//							) {
+//							ActionPair redoPair = (ActionPair) i.next();
+//							undoList.add(0, redoPair.reverse());                       
+//							undoList.add(0, redoPair);
+//						}
 						redoList.clear();
 						undoList.add(0, pair);
 						undo.setEnabled(true);
@@ -495,7 +497,7 @@ public abstract class ControllerAdapter implements ModeController {
 	 */
 	public void setVisible(boolean visible) {
 		if (visible) {
-			NodeAdapter node = getSelected();
+			MindMapNode node = getSelected();
 			for (Iterator j = node.getActivatedHooks().iterator();
 				j.hasNext();
 				) {
@@ -503,7 +505,7 @@ public abstract class ControllerAdapter implements ModeController {
 				hook.onReceiveFocusHook();
 			}
 		} else {
-			NodeAdapter node = getSelected();
+			MindMapNode node = getSelected();
 			for (Iterator j = node.getActivatedHooks().iterator();
 				j.hasNext();
 				) {
@@ -751,7 +753,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     }
 
-	private void changeNodeText(MindMapNode selected, String newText){
+	public void changeNodeText(MindMapNode selected, String newText){
 		String oldText = selected.toString();
 
         try {
@@ -780,7 +782,7 @@ public abstract class ControllerAdapter implements ModeController {
     public void addNew(final NodeView target, final int newNodeMode, final KeyEvent e) {
        closeEdit();
        
-       MindMapNode newNode = newNode();
+//       MindMapNode newNode = newNode();
        final MindMapNode targetNode = target.getModel();
 
        switch (newNodeMode) {
@@ -797,10 +799,11 @@ public abstract class ControllerAdapter implements ModeController {
            if (newNodeMode == NEW_SIBLING_BEHIND) {
               childPosition++;
            }
-           if(targetNode.isLeft()!= null) {
-               newNode.setLeft(targetNode.isLeft().getValue());
-           }
-           getModel().insertNodeInto(newNode, parent, childPosition);
+//           if(targetNode.isLeft()!= null) {
+//               newNode.setLeft(targetNode.isLeft().getValue());
+//           }
+           //getModel().insertNodeInto(newNode, parent, childPosition);
+		   MindMapNode newNode = addNewNode(parent, childPosition);	
            select(newNode.getViewer());
                 getFrame().repaint(); //  getLayeredPane().repaint();
            edit(newNode.getViewer(), target, e, true, false, false);
@@ -814,17 +817,43 @@ public abstract class ControllerAdapter implements ModeController {
            }
            int position = getFrame().getProperty("placenewbranches").equals("last") ?
               targetNode.getChildCount() : 0;
-           // Here the NodeView is created for the node. }
-           getModel().insertNodeInto(newNode, targetNode, position);
-                getFrame().repaint(); //  getLayeredPane().repaint();
-           if (newNodeMode == NEW_CHILD) {
-             select(newNode.getViewer());
-           }
-           final NodeView editView = newNode.getViewer();
-           edit(editView, targetNode.getViewer(), e, true, parentFolded, false);
+           // Here the NodeView is created for the node. 
+//           getModel().insertNodeInto(newNode, targetNode, position);
+//           getFrame().repaint(); //  getLayeredPane().repaint();
+			MindMapNode  newChildNode = addNewNode(targetNode, position);	
+               if (newNodeMode == NEW_CHILD) {
+                 select(newChildNode.getViewer());
+               }
+              edit(newChildNode.getViewer(), target, e, true, parentFolded, false);
            break;
        }
     }
+
+	public MindMapNode addNewNode(MindMapNode parent, int index){
+		try {
+			String pos = null;
+			if(parent.isLeft() != null) 
+				pos = parent.isLeft().getValue()?"left":"right";
+			String newId = getModel().getLinkRegistry().generateUniqueID("_");
+			System.out.println("Uniq:"+newId);
+			getActionFactory().startTransaction(getText("new_child"));
+			NewNodeAction newNodeAction = getActionXmlFactory().createNewNodeAction();
+			newNodeAction.setNode(getNodeID(parent));
+			newNodeAction.setPosition(pos);
+			newNodeAction.setIndex(index);
+			newNodeAction.setNewId(newId);
+			// Undo-action
+			DeleteNodeAction deleteAction = getActionXmlFactory().createDeleteNodeAction();
+			deleteAction.setNode(newId);
+			getActionFactory().executeAction(new ActionPair(newNodeAction, deleteAction));
+			getActionFactory().endTransaction(getText("new_child"));
+			return (MindMapNode) parent.getChildAt(index);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 //     public void toggleFolded() {
 //         MindMapNode node = getSelected();
@@ -916,13 +945,13 @@ public abstract class ControllerAdapter implements ModeController {
            if (inputValue.equals("")) {
               inputValue = null;        // In case of no entry unset link
            }
-           getModel().setLink(getSelected(),inputValue);
+           getModel().setLink((NodeAdapter) getSelected(),inputValue);
         }
     }
 
     protected void setLinkByFileChooser() {
 		String relative = getLinkByFileChooser(getFileFilter());
-		if (relative != null) getModel().setLink(getSelected(),relative);
+		if (relative != null) getModel().setLink((NodeAdapter) getSelected(),relative);
 	}
 	
 	protected void setImageByFileChooser() {
@@ -1138,7 +1167,7 @@ public abstract class ControllerAdapter implements ModeController {
 
 	// fc, 29.2.2004: there is no sense in having this private and the controller public,
 	// because the getController().getModel() method is available anyway.
-    private MapAdapter getModel() {
+    public MapAdapter getModel() {
         return (MapAdapter)getController().getModel();
     }
 
@@ -1164,8 +1193,10 @@ public abstract class ControllerAdapter implements ModeController {
 	}
 
 
-    private NodeAdapter getSelected() {
-        return (NodeAdapter)getView().getSelected().getModel();
+    public MindMapNode getSelected() {
+    	if(getView() != null)
+        	return (NodeAdapter)getView().getSelected().getModel();
+		return null;        	
     }
 
     public boolean extendSelection(MouseEvent e) {
@@ -1246,24 +1277,6 @@ public abstract class ControllerAdapter implements ModeController {
 	}
 
 
-
-    ////////////
-    //  Actions
-    ///////////
-
-    protected class NewMapAction extends AbstractAction {
-        ControllerAdapter c;
-        public NewMapAction(ControllerAdapter controller) {
-            super(getText("new"), new ImageIcon(getResource("images/New24.gif")));
-            c = controller;
-            //Workaround to get the images loaded in jar file.
-            //they have to be added to jar manually with full path from root
-            //I really don't like this, but it's a bug of java
-        }
-        public void actionPerformed(ActionEvent e) {
-            c.newMap();
-        }
-    }
 
     protected class OpenAction extends AbstractAction {
         ControllerAdapter mc;
@@ -1501,7 +1514,7 @@ public abstract class ControllerAdapter implements ModeController {
             return UndoXmlAction.class;
         }
 
-        public ActionPair apply(MindMapMapModel model, MindMapNodeModel selected) throws JAXBException {
+        public ActionPair apply(MapAdapter model, MindMapNodeModel selected) throws JAXBException {
             return null;
         }
 		
@@ -1549,45 +1562,6 @@ public abstract class ControllerAdapter implements ModeController {
  		
 	}
 
-    //
-    // Node editing
-    //
-
-    protected class EditAction extends AbstractAction implements ActorXml {
-        public EditAction() {
-            super(getText("edit"));
-			getActionFactory().registerActor(this, getDoActionClass());
-        }
-		public void actionPerformed(ActionEvent arg0) {
-			NodeAdapter selected = getSelected();
-			edit(null, false, false);
-		}
-		/* (non-Javadoc)
-		 * @see freemind.controller.actions.ActorXml#act(freemind.controller.actions.generated.instance.XmlAction)
-		 */
-		public void act(XmlAction action) {
-			System.out.println("EditNodeAction");
-			EditNodeAction editAction = (EditNodeAction) action;
-			NodeAdapter node = getNodeFromID(editAction.getNode());
-			if(!node.toString().equals(editAction.getText())) {
-				node.setUserObject(editAction.getText());
-				nodeChanged(node);
-			}
-		}
-		/* (non-Javadoc)
-		 * @see freemind.controller.actions.ActorXml#getDoActionClass()
-		 */
-		public Class getDoActionClass() {
-			return EditNodeAction.class;
-		}
-		/* (non-Javadoc)
-		 * @see freemind.controller.actions.ActorXml#apply(freemind.modes.mindmapmode.MindMapMapModel, freemind.modes.mindmapmode.MindMapNodeModel)
-		 */
-		public ActionPair apply(MindMapMapModel model, MindMapNodeModel selected) throws JAXBException {
-			return null;
-		}
-    }
-
     protected class EditLongAction extends AbstractAction {
         public EditLongAction() {
             super(getText("edit_long_node"));
@@ -1614,15 +1588,6 @@ public abstract class ControllerAdapter implements ModeController {
         }
         public void actionPerformed(ActionEvent e) {
             addNew(getView().getSelected(), NEW_SIBLING_BEHIND, null);
-        }
-    }
-
-    protected class NewChildAction extends AbstractAction {
-        public NewChildAction() {
-            super(getText("new_child"));
-        }
-        public void actionPerformed(ActionEvent e) {
-           addNew(getView().getSelected(), NEW_CHILD, null);
         }
     }
 
