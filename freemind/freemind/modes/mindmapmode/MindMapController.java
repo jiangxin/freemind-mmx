@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.29 2003-11-18 23:19:46 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.30 2003-11-24 08:09:04 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -749,7 +749,7 @@ public class MindMapController extends ControllerAdapter {
         MindMapNode source;
         MindMapArrowLinkModel arrowLink;
         public ColorArrowLinkAction(MindMapNode source, MindMapArrowLinkModel arrowLink) {
-            super(getText("arrow_link_color"));
+            super(getText("arrow_link_color"), new ImageIcon(getResource("images/Colors24.gif")));
             this.source = source;
             this.arrowLink = arrowLink;
         }
@@ -790,7 +790,7 @@ public class MindMapController extends ControllerAdapter {
         MindMapNode source;
         MindMapArrowLinkModel arrowLink;
         public RemoveArrowLinkAction(MindMapNode source, MindMapArrowLinkModel arrowLink) {
-            super(getText("remove_arrow_link"));
+            super(getText("remove_arrow_link"), new ImageIcon(getResource("images/edittrash.png")));
             this.source = source;
             this.arrowLink = arrowLink;
         }
@@ -821,7 +821,7 @@ public class MindMapController extends ControllerAdapter {
     protected class GotoLinkNodeAction extends AbstractAction {
         MindMapNode source;
         public GotoLinkNodeAction(String text, MindMapNode source) {
-            super(getText("follow_link") + text);
+            super(getText("follow_link") + text, new ImageIcon(getResource("images/Link.png")));
             this.source = source;
         }
 

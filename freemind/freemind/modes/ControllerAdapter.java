@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.30 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.31 2003-11-24 08:09:04 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -440,6 +440,8 @@ public abstract class ControllerAdapter implements ModeController {
     private static final int HORIZONTAL_SCROLL_MASK 
        = InputEvent.SHIFT_MASK | InputEvent.BUTTON1_MASK 
          | InputEvent.BUTTON2_MASK | InputEvent.BUTTON3_MASK;
+    private static final int ZOOM_MASK 
+       = InputEvent.CTRL_MASK;
       // |=   oldX >=0 iff we are in the drag
 
     public void mouseWheelMoved(MouseWheelEvent e) {
@@ -447,7 +449,17 @@ public abstract class ControllerAdapter implements ModeController {
          return; // block the scroll during edit (PN)
        }
         
-       if ((e.getModifiers() & HORIZONTAL_SCROLL_MASK) != 0) {
+       if ((e.getModifiers() & ZOOM_MASK) != 0) {
+           // fc, 18.11.2003: when control pressed, then the zoom is changed.
+           float newZoomFactor = 1f + Math.abs((float) e.getWheelRotation())/10f;
+           if(e.getWheelRotation() < 0)
+               newZoomFactor = 1 / newZoomFactor;
+           float newZoom = ((MapView)e.getComponent()).getZoom() * newZoomFactor;
+           // round the value due to possible rounding problems.
+           newZoom =  (float) Math.rint(newZoom*1000f)/1000f;
+           getController().setZoom(newZoom);
+           // end zoomchange
+       } else if ((e.getModifiers() & HORIZONTAL_SCROLL_MASK) != 0) {
           for (int i=0; i < SCROLL_SKIPS; i++) {
              ((MapView)e.getComponent()).scrollBy(
                  SCROLL_SKIP * e.getWheelRotation(), 0); }}

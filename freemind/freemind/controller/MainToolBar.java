@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.14 2003-11-09 22:09:25 christianfoltin Exp $*/
+/*$Id: MainToolBar.java,v 1.15 2003-11-24 08:09:04 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -29,10 +29,12 @@ import javax.swing.JComboBox;
 public class MainToolBar extends JToolBar {
     JComboBox zoom;	    
     Controller c;
+    String userDefinedZoom;
 
     public MainToolBar(final Controller c) {
         this.setRollover(true);
         this.c = c;
+        userDefinedZoom = c.getResourceString("user_defined_zoom");
 	JButton button;
 
 	button = add(c.navigationPreviousMap);
@@ -44,12 +46,16 @@ public class MainToolBar extends JToolBar {
 
         zoom = new JComboBox(c.getZooms());
         zoom.setSelectedItem("100%");
+        zoom.addItem(userDefinedZoom);
         add(zoom);
         zoom.addItemListener(new ItemListener(){
               public void itemStateChanged(ItemEvent e) {
+                  // todo: dialog with user zoom value, if user zoom is chosen.
                  setZoomByItem(e.getItem()); }}); }
 
     private void setZoomByItem(Object item) {
+        if(((String) item).equals(userDefinedZoom))
+            return; // nothing to do...
        //remove '%' sign
       String dirty = (String)item;
       String cleaned = dirty.substring(0,dirty.length()-1);
@@ -70,8 +76,16 @@ public class MainToolBar extends JToolBar {
        return (int)(f*100F)+"%"; }
 
     public void setZoomComboBox(float f) {
-       // Todo: checking
-       zoom.setSelectedItem(getItemForZoom(f)); }
+        String toBeFound = getItemForZoom(f);
+        for(int i = 0; i < zoom.getItemCount(); ++i) {
+            if(toBeFound.equals((String) zoom.getItemAt(i))) {
+                // found
+                zoom.setSelectedItem(toBeFound);
+                return;
+            }
+        }
+        zoom.setSelectedItem(userDefinedZoom);
+    }
 
     public void setAllActions(boolean enabled) {
 	if (zoom != null) {

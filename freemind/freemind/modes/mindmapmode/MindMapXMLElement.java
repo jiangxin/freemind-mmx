@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapXMLElement.java,v 1.9 2003-11-20 07:01:59 christianfoltin Exp $*/
+/*$Id: MindMapXMLElement.java,v 1.10 2003-11-24 08:09:04 christianfoltin Exp $*/
 
 /*On doubling of code
  *
@@ -249,8 +249,11 @@ public class MindMapXMLElement extends XMLElement {
             } else if(registry.getTargetForID(oldID) != null) {
                 // link is already present in the map (paste).
                 target = (MindMapNodeModel) registry.getTargetForID(oldID);
-                if(target == null)
+                if(target == null) {
+                    // link target is in nowhere-land
+                    System.err.println("Cannot find the label " + oldID + " in the map. The link "+arrowLink+" is not restored.");
                     continue;
+                }
                 newID = registry.getLabel(target);
                 if( ! newID.equals(oldID) ) {
                     System.err.println("Servere internal error. Looked for id " + oldID + " but found "+newID + " in the node " + target+".");

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.3 2003-11-20 07:02:00 christianfoltin Exp $*/
+/*$Id: ArrowLinkView.java,v 1.4 2003-11-24 08:09:04 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -43,6 +43,7 @@ import java.util.Vector;
 // Convex Hull:
 import freemind.view.mindmapview.ConvexHull;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.BasicStroke;
 import java.awt.Stroke;
 import java.awt.Shape;
@@ -66,6 +67,12 @@ public class ArrowLinkView {
         this.arrowLinkModel = arrowLinkModel;
         this.source = source;
         this.target = target;
+    }
+    
+    public Rectangle getBounds() {
+        if(arrowLinkCurve == null)
+            return new Rectangle();
+        return arrowLinkCurve.getBounds();
     }
 
     /** \param iterativeLevel describes the n-th nested arrowLink that is to be painted.*/

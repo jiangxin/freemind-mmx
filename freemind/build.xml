@@ -23,6 +23,7 @@
 				includes="user.properties,freemind.bat,freemind.sh,license,patterns.xml"
 			/>
 		</copy>
+        <chmod file="${dist}/freemind.sh" perm="u+rx"/>
 		<copy todir="${dist}"> 
 			<fileset dir="${src}/windows-launcher"
 				includes="Freemind.exe"

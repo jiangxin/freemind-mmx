@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.33 2003-11-09 22:09:25 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.34 2003-11-24 08:09:04 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -150,6 +150,7 @@ public class Controller {
 
         zoomIn = new ZoomInAction(this);
         zoomOut = new ZoomOutAction(this);
+
 
         moveToRoot = new MoveToRootAction(this);
 
@@ -437,8 +438,15 @@ public class Controller {
     // other
     //
 
-    void setZoom(float zoom) {
+    public void setZoom(float zoom) {
         getView().setZoom(zoom);
+        ((MainToolBar)toolbar).setZoomComboBox(zoom);
+        // show text in status bar:
+        Object[] messageArguments = {
+         String.valueOf(zoom*100f) 
+        };
+        MessageFormat formatter = new MessageFormat(getResourceString("user_defined_zoom_status_bar"));
+        getFrame().out(formatter.format(messageArguments));
     }
 
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.23 2003-11-18 23:19:46 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.24 2003-11-24 08:09:04 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -628,6 +628,16 @@ public class MapView extends JPanel implements Printable {
                     ArrowLinkView arrowLink = new ArrowLinkView((MindMapArrowLink) ref, ref.getSource().getViewer(), ref.getTarget().getViewer());
                     arrowLink.paint(graphics);
                     ArrowLinkViews.add(arrowLink);
+                    // resize map?
+                    // adjust container size
+                    Rectangle rec = arrowLink.getBounds();
+                    // the following does not work correctly. fc, 23.10.2003:
+//                     if (rec.x < 0) {
+//                         getMindMapLayout().resizeMap(rec.x);
+//                     } else if (rec.x+rec.width > getSize().width) {
+//                         getMindMapLayout().resizeMap(rec.x+rec.width);
+//                     }
+
                 }
             }
         }
