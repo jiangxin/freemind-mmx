@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.10.9 2004-08-08 13:03:48 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.10.10 2004-08-12 22:20:28 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -197,6 +197,8 @@ public abstract class MapAdapter implements MindMap {
     //
 
     public void setFolded(MindMapNode node, boolean folded) {
+        if(node == null)
+            throw new IllegalArgumentException("setFolded was called with a null node.");
         // no root folding, fc, 16.5.2004
         if (node.isRoot()) {
             return;

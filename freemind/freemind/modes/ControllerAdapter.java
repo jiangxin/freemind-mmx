@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.23 2004-08-12 20:19:04 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.24 2004-08-12 22:20:28 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -91,7 +91,6 @@ import freemind.main.ExampleFileFilter;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
-import freemind.modes.ModeController.MouseWheelEventHandler;
 import freemind.modes.actions.BoldAction;
 import freemind.modes.actions.CompoundActionHandler;
 import freemind.modes.actions.CutAction;
@@ -99,6 +98,7 @@ import freemind.modes.actions.DeleteChildAction;
 import freemind.modes.actions.EditAction;
 import freemind.modes.actions.NewChildAction;
 import freemind.modes.actions.PasteAction;
+import freemind.modes.actions.ToggleFoldedAction;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -137,6 +137,7 @@ public abstract class ControllerAdapter implements ModeController {
 	public EditAction edit = null;
 	public NewChildAction newChild = null;
 	public DeleteChildAction deleteChild = null;
+	public ToggleFoldedAction toggleFolded = null;
 	/** Executes series of actions. */
 	private CompoundActionHandler compound = null;
 
@@ -194,6 +195,7 @@ public abstract class ControllerAdapter implements ModeController {
 		edit = new EditAction(this);
 		newChild = new NewChildAction(this);
 		deleteChild = new DeleteChildAction(this);
+		toggleFolded = new ToggleFoldedAction(this);
 		compound = new CompoundActionHandler(this);
 
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -328,10 +330,6 @@ public abstract class ControllerAdapter implements ModeController {
     // Map Management
     //
 
-    /**
-     * Get text identification of the map
-     */
-
     public String getText(String textId) {
        return getController().getResourceString(textId); }
 
@@ -368,7 +366,8 @@ public abstract class ControllerAdapter implements ModeController {
            return save(getModel().getFile()); }}
 
     /** fc, 24.1.2004: having two methods getSelecteds with different return values 
-     * (linkedlists of models resp. views) is asking for trouble. @see MapView */
+     * (linkedlists of models resp. views) is asking for trouble. @see MapView
+     * @return returns a list of MindMapNode s. */
     public List getSelecteds() {
 	LinkedList selecteds = new LinkedList();
 	ListIterator it = getView().getSelecteds().listIterator();
@@ -400,7 +399,6 @@ public abstract class ControllerAdapter implements ModeController {
 		}
 	}
 
-	/** @return a LinkedList of MindMapNodes ordered by depth. nodes with greater depth occur first. */
 	public List getSelectedsByDepth() {
 		// return an ArrayList of MindMapNodes.
 		List result = getSelecteds();
@@ -796,87 +794,16 @@ public abstract class ControllerAdapter implements ModeController {
 
 	}
 
-//     public void toggleFolded() {
-//         MindMapNode node = getSelected();
-//         // fold the node only if the node is not a leaf (PN 0.6.2)
-//         if (node.hasChildren()
-//             || node.isFolded()
-//             || Tools.safeEquals(getFrame()
-//                 .getProperty("enable_leaves_folding"),"true")) {
-//           getModel().setFolded(node, !node.isFolded());
-//         }
-//         getView().selectAsTheOnlyOneSelected(node.getViewer());
-//     }
-
-    public void toggleFolded() {
-        /* Retrieve the information whether or not all nodes have the same folding state. */
-        Tools.BooleanHolder state = null; 
-        boolean allNodeHaveSameFoldedStatus = true;
-        for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-            MindMapNode node = (MindMapNode)it.next();
-            if(state == null) {
-                state = new Tools.BooleanHolder();
-                state.setValue(node.isFolded());
-            } else {
-                if(node.isFolded() != state.getValue()) {
-                    allNodeHaveSameFoldedStatus = false;
-                    break;
-                }
-            }
-        }
-        /* if the folding state is ambiguous, the nodes are folded. */
-        boolean fold = true;
-        if(allNodeHaveSameFoldedStatus && state != null) {
-            fold = !state.getValue();
-        }
-        MindMapNode lastNode = null;
-        for (ListIterator it = getSelectedsByDepth().listIterator();it.hasNext();) {
-            MindMapNode node = (MindMapNode)it.next();
-            // fold the node only if the node is not a leaf (PN 0.6.2)
-            if (node.hasChildren() || node.isFolded() || Tools.safeEquals(getFrame().getProperty("enable_leaves_folding"),"true"))   {
-				getModel().setFolded(node, fold);
-            }
-            lastNode = node;
-        }
-        if(lastNode != null)
-            getView().selectAsTheOnlyOneSelected(lastNode.getViewer());
-    }
+	public void toggleFolded() {
+	    toggleFolded.toggleFolded();
+	}
+	
+	public void setFolded(MindMapNode node, boolean folded) {
+	    toggleFolded.setFolded(node, folded);
+	}
+	
 
 
-    /**
-     * If any children are folded, unfold all folded children.
-     * Otherwise, fold all children.
-     */
-    protected void toggleChildrenFolded() {
-        // have NodeAdapter; need NodeView
-        MindMapNode parent = getSelected();
-        ListIterator children_it = parent.getViewer().getChildrenViews().listIterator();
-        boolean areAnyFolded = false;
-        while(children_it.hasNext() && !areAnyFolded) {
-            NodeView child = (NodeView)children_it.next();
-            if(child.getModel().isFolded()) {
-                areAnyFolded = true;
-            }
-        }
-
-        // fold the node only if the node is not a leaf (PN 0.6.2)
-        boolean enableLeavesFolding = 
-            Tools.safeEquals(getFrame().
-               getProperty("enable_leaves_folding"),"true");
-
-        children_it = parent.getViewer().getChildrenViews().listIterator();
-        while(children_it.hasNext()) {
-            MindMapNode child = ((NodeView)children_it.next()).getModel();
-            if (child.hasChildren() 
-                || enableLeavesFolding
-                || child.isFolded()) {
-              getModel().setFolded(child, !areAnyFolded); // (PN 0.6.2)
-            }
-        }
-        getView().selectAsTheOnlyOneSelected(parent.getViewer());
-
-        getController().obtainFocusForSelected(); // focus fix
-    }
 
     protected void setLinkByTextField() {
         // Requires J2SDK1.4.0!
@@ -1598,21 +1525,38 @@ public abstract class ControllerAdapter implements ModeController {
         }
     }
 
-    protected class ToggleFoldedAction extends AbstractAction {
-        public ToggleFoldedAction() {
-            super(getText("toggle_folded"));
-        }
-        public void actionPerformed(ActionEvent e) {
-            toggleFolded();
-        }
-    }
-
     protected class ToggleChildrenFoldedAction extends AbstractAction {
         public ToggleChildrenFoldedAction() {
             super(getText("toggle_children_folded"));
         }
         public void actionPerformed(ActionEvent e) {
-            toggleChildrenFolded();
+            MindMapNode parent = getSelected();
+            ListIterator children_it = parent.getViewer().getChildrenViews().listIterator();
+            boolean areAnyFolded = false;
+            while(children_it.hasNext() && !areAnyFolded) {
+                NodeView child = (NodeView)children_it.next();
+                if(child.getModel().isFolded()) {
+                    areAnyFolded = true;
+                }
+            }
+            
+            // fold the node only if the node is not a leaf (PN 0.6.2)
+            boolean enableLeavesFolding = 
+                Tools.safeEquals(getFrame().
+                   getProperty("enable_leaves_folding"),"true");
+            
+            children_it = parent.getViewer().getChildrenViews().listIterator();
+            while(children_it.hasNext()) {
+                MindMapNode child = ((NodeView)children_it.next()).getModel();
+                if (child.hasChildren() 
+                    || enableLeavesFolding
+                    || child.isFolded()) {
+                  getModel().setFolded(child, !areAnyFolded); // (PN 0.6.2)
+                }
+            }
+            getView().selectAsTheOnlyOneSelected(parent.getViewer());
+            
+            getController().obtainFocusForSelected();
         }
     }
 

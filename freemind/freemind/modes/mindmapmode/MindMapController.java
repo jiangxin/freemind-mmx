@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.21 2004-08-12 20:19:05 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.22 2004-08-12 22:20:29 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -113,7 +113,6 @@ public class MindMapController extends ControllerAdapter {
    public Action newSibling = new NewSiblingAction();
    public Action newPreviousSibling = new NewPreviousSiblingAction();
    public Action remove = new RemoveAction();
-   public Action toggleFolded = new ToggleFoldedAction();
    public Action toggleChildrenFolded = new ToggleChildrenFoldedAction();
    public Action setLinkByFileChooser = new SetLinkByFileChooserAction();
    public Action setImageByFileChooser = new SetImageByFileChooserAction();

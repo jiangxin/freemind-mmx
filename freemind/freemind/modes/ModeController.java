@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.15 2004-08-12 20:19:05 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.16 2004-08-12 22:20:28 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -64,7 +64,6 @@ public interface ModeController extends MindMapActions {
     // end activation methods.
     void doubleClick(MouseEvent e);
     void plainClick(MouseEvent e);
-    void toggleFolded();
 
     boolean isBlocked();
     void edit(KeyEvent e, boolean addNew, boolean editLong);
@@ -77,6 +76,8 @@ public interface ModeController extends MindMapActions {
     void mouseWheelMoved(MouseWheelEvent e);
     MindMapNode getSelected();
 	List getSelecteds();
+	/** @return a LinkedList of MindMapNodes ordered by depth. nodes with greater depth occur first. */
+    List getSelectedsByDepth();
 	    /** This extends the currently selected nodes. 
         @return true, if the method changed the selection.*/
     boolean extendSelection(MouseEvent e);
@@ -124,6 +125,10 @@ public interface ModeController extends MindMapActions {
 	Controller getController();
 	ActionFactory getActionFactory();
 	Color getSelectionColor();
+    /**
+     * Get text from resource file
+     */
+    String getText(String textId);
 
 	// XML Actions:
 	public String marshall(XmlAction action);	

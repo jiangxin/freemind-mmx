@@ -31,6 +31,9 @@ public interface MindMapActions {
 	public void addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e);
 	public void deleteNode(MindMapNode selectedNode);
 	public Transferable cut();
+	
+	void setFolded(MindMapNode node, boolean folded);
+	void toggleFolded();
 
 //	public abstract void setNodeColor(MindMapNode node, Color color);
 //	public abstract void blendNodeColor(MindMapNode node);

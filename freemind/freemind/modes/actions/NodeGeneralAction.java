@@ -91,7 +91,9 @@ public class NodeGeneralAction extends AbstractXmlAction {
 					doAction.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(pair.getDoAction());
 					undo.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(0,pair.getUndoAction());
                 }
+                modeController.getActionFactory().startTransaction((String) getValue(NAME));
 				modeController.getActionFactory().executeAction(new ActionPair(doAction, undo));
+                modeController.getActionFactory().endTransaction((String) getValue(NAME));
             } catch (JAXBException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.10.12.3 2004-05-23 12:39:03 christianfoltin Exp $*/
+/*$Id: SchemeController.java,v 1.10.12.4 2004-08-12 22:20:29 christianfoltin Exp $*/
 
 package freemind.modes.schememode;
 
@@ -51,7 +51,6 @@ public class SchemeController extends ControllerAdapter {
     Action edit = new EditAction(this);
     Action addNew = new NewChildWithoutFocusAction();
     Action remove = new RemoveAction();
-    Action toggleFolded = new ToggleFoldedAction();
     private JPopupMenu popupmenu = new SchemePopupMenu(this);
 
     public SchemeController(Mode mode) {
