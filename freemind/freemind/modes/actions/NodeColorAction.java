@@ -20,7 +20,7 @@
  * 
  * Created on 19.09.2004
  */
-/* $Id: NodeColorAction.java,v 1.1.2.2 2004-09-20 21:20:46 christianfoltin Exp $ */
+/* $Id: NodeColorAction.java,v 1.1.2.3 2004-09-27 19:49:52 christianfoltin Exp $ */
 
 package freemind.modes.actions;
 
@@ -83,9 +83,7 @@ public class NodeColorAction extends FreemindAction implements ActorXml {
     public NodeColorFormatAction createNodeColorFormatAction(MindMapNode node, Color color) throws JAXBException {
 		NodeColorFormatAction nodeAction = controller.getActionXmlFactory().createNodeColorFormatAction();
 		nodeAction.setNode(node.getObjectId(controller));
-		if(color != null) {
-		    nodeAction.setColor(Tools.colorToXml(color));
-		}
+	    nodeAction.setColor(Tools.colorToXml(color));
 		return nodeAction;
     }
     

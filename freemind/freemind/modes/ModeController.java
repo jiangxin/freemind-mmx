@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.17 2004-08-25 20:40:03 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.18 2004-09-27 19:49:52 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -135,4 +135,7 @@ public interface ModeController extends MindMapActions {
 	// XML Actions:
 	public String marshall(XmlAction action);	
 	public XmlAction unMarshall(String inputString);
+	
+	/** undo in progress? */
+	boolean isUndoAction();
 }

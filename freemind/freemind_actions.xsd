@@ -27,6 +27,7 @@
 					<xs:element ref="undo_xml_action"/>
 					<xs:element ref="fold_action"/>
 					<xs:element ref="move_nodes_action"/>
+					<xs:element ref="hook_node_action"/>
 				</xs:choice>
 			</xs:extension>
 		</xs:complexContent>
@@ -277,6 +278,23 @@
 	  </xs:complexType>
 		
 	</xs:element>
+
+	<!-- Add a permanent hook to a node -->
+	<xs:element name="hook_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+          <xs:sequence>
+						<!-- The selected nodes: -->
+    	      <xs:element ref="node_list_member" maxOccurs="unbounded" minOccurs="1"/>				
+          </xs:sequence>
+		      <xs:attribute name="hook_name" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+
 
 	<!-- ======================================================================================= 
 		 										Plugin XML

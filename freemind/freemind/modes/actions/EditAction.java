@@ -44,7 +44,6 @@ public class EditAction extends AbstractAction implements ActorXml {
 	 * @see freemind.controller.actions.ActorXml#act(freemind.controller.actions.generated.instance.XmlAction)
 	 */
 	public void act(XmlAction action) {
-		System.out.println("EditNodeAction");
 		EditNodeAction editAction = (EditNodeAction) action;
 		NodeAdapter node = this.c.getNodeFromID(editAction.getNode());
 		if(!node.toString().equals(editAction.getText())) {

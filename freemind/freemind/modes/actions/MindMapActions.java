@@ -97,4 +97,6 @@ public interface MindMapActions {
 	/** @param isLeft determines, whether or not the node is placed on the left or right. **/
 	public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft);
 	public void paste(MindMapNode node, MindMapNode parent);
+	
+	//public void addHook(MindMapNode focussed, List selecteds, String hookName);
 }

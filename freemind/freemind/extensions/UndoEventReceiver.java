@@ -17,35 +17,18 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * Created on 20.09.2004
+ * Created on 21.09.2004
  */
-/*$Id: RedoAction.java,v 1.1.2.2 2004-09-27 19:49:52 christianfoltin Exp $*/
+/*$Id: UndoEventReceiver.java,v 1.1.2.1 2004-09-27 19:49:52 christianfoltin Exp $*/
 
-package freemind.modes.actions;
+package freemind.extensions;
 
-import java.awt.event.ActionEvent;
+/** This is a marker interface for hooks. If a PermanentNodeHook implements 
+ *  this interface (which is easy), it receives onUpdateNodeHook, onUpdateChildrenHook.
+ *  The onAddChild, onAddChildren events are not implemented yet. They are generated in any case. 
+ * @author foltin
+ *
+ */
+public interface UndoEventReceiver {
 
-import javax.swing.ImageIcon;
-import javax.xml.bind.JAXBException;
-
-import freemind.controller.actions.ActionPair;
-import freemind.modes.ControllerAdapter;
-
-
-public class RedoAction extends UndoAction {
-	private ControllerAdapter controller;
-
-    public RedoAction(ControllerAdapter controller) {
-		super(controller, controller.getText("redo"), new ImageIcon(controller.getResource("images/redo.png")), controller);
-        this.controller = controller;
-	}	
-
-    /**
-     * @param pair
-     */
-    protected void informUndoPartner(ActionPair pair) {
-		this.controller.undo.add(pair.reverse());
-		this.controller.undo.setEnabled(true);
-    }
-	
 }

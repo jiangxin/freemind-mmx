@@ -19,20 +19,29 @@
  *
  * Created on 26.07.2004
  */
-/*$Id: NodeHookAction.java,v 1.1.2.4 2004-08-25 20:40:03 christianfoltin Exp $*/
+/*$Id: NodeHookAction.java,v 1.1.2.5 2004-09-27 19:49:52 christianfoltin Exp $*/
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.swing.Action;
 import javax.swing.JMenuItem;
+import javax.xml.bind.JAXBException;
 
 import freemind.controller.MenuItemEnabledListener;
+import freemind.controller.actions.ActionPair;
+import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.FreemindAction;
+import freemind.controller.actions.generated.instance.HookNodeAction;
+import freemind.controller.actions.generated.instance.MoveNodesAction;
+import freemind.controller.actions.generated.instance.NodeListMember;
+import freemind.controller.actions.generated.instance.NodeListMemberType;
+import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookFactory;
 import freemind.extensions.HookInstanciationMethod;
 import freemind.extensions.NodeHook;
@@ -41,8 +50,8 @@ import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 
 
-public class NodeHookAction extends FreemindAction implements MenuItemEnabledListener {
-	String hookName;
+public class NodeHookAction extends FreemindAction implements ActorXml, MenuItemEnabledListener {
+	String _hookName;
 	ModeController controller;
 	public ModeController getController() {
 		return controller;
@@ -50,10 +59,11 @@ public class NodeHookAction extends FreemindAction implements MenuItemEnabledLis
 	private static Logger logger;
 	public NodeHookAction(String hookName, ModeController controller) {
 		super(hookName, null, null);
-		this.hookName = hookName;
+		this._hookName = hookName;
 		this.controller = controller;
 		if(logger == null)
 			logger = controller.getFrame().getLogger(this.getClass().getName());
+		controller.getActionFactory().registerActor(this, getDoActionClass());
 	}
 
 	public void actionPerformed(ActionEvent arg0) {
@@ -65,9 +75,23 @@ public class NodeHookAction extends FreemindAction implements MenuItemEnabledLis
 	}
 
 	
+	
+	public void addHook(MindMapNode focussed, List selecteds, String hookName) {
+	    HookNodeAction doAction = createHookNodeAction(focussed, selecteds, hookName);
+	    // double application = remove.
+	    HookNodeAction undoAction = createHookNodeAction(focussed, selecteds, hookName);
+        getController().getActionFactory().startTransaction((String) getValue(NAME));
+		getController().getActionFactory().executeAction(new ActionPair(doAction, undoAction));
+        getController().getActionFactory().endTransaction((String) getValue(NAME));
+	}
+
 	public void invoke(MindMapNode focussed, List selecteds) {
+	    addHook(focussed, selecteds, _hookName);
+	}
+	
+	private void invoke(MindMapNode focussed, List selecteds, String hookName) {
 		logger.finest("invoke(selecteds) called.");
-		HookInstanciationMethod instMethod = getInstanciationMethod();
+		HookInstanciationMethod instMethod = getInstanciationMethod(hookName);
 		// get destination nodes
 		Collection destinationNodes = instMethod.getDestinationNodes(controller, focussed, selecteds);
 		MindMapNode adaptedFocussedNode = instMethod.getCenterNode(controller, focussed, selecteds);
@@ -125,7 +149,7 @@ public class NodeHookAction extends FreemindAction implements MenuItemEnabledLis
 	 * the hook should apply to root, then this is the root node).
 	 * @param destinationNodes The calculated list of selected nodes (see last)
 	 */
-	public void finishInvocation(MindMapNode focussed, List selecteds,
+	private void finishInvocation(MindMapNode focussed, List selecteds,
 			MindMapNode adaptedFocussedNode, Collection destinationNodes) {
 			// select all destination nodes:
 			// fc, 25.8.2004: The following code snippet should be moved to a more general place.
@@ -148,7 +172,7 @@ public class NodeHookAction extends FreemindAction implements MenuItemEnabledLis
 	/**
 	 * @return
 	 */
-	private HookInstanciationMethod getInstanciationMethod() {
+	private HookInstanciationMethod getInstanciationMethod(String hookName) {
 		HookFactory factory = controller.getFrame().getHookFactory();
 		// determine instanciation method
 		HookInstanciationMethod instMethod = factory.getInstanciationMethod(hookName);
@@ -161,15 +185,53 @@ public class NodeHookAction extends FreemindAction implements MenuItemEnabledLis
 	public boolean isEnabled(JMenuItem item, Action action) {
 		MindMapNode focussed = controller.getSelected();
 		List selecteds = controller.getSelecteds();
-		HookInstanciationMethod instMethod = getInstanciationMethod();
+		HookInstanciationMethod instMethod = getInstanciationMethod(_hookName);
 		// get destination nodes
 		Collection destinationNodes = instMethod.getDestinationNodes(controller, focussed, selecteds);
 		MindMapNode adaptedFocussedNode = instMethod.getCenterNode(controller, focussed, selecteds);
 		// test if hook already present
-		boolean isActionSelected = instMethod.isAlreadyPresent(controller, hookName, adaptedFocussedNode, destinationNodes);
+		boolean isActionSelected = instMethod.isAlreadyPresent(controller, _hookName, adaptedFocussedNode, destinationNodes);
 		setSelected(item, isActionSelected);
 		
 		return true;
-	} 
+	}
+
+	public HookNodeAction createHookNodeAction(MindMapNode focussed, List selecteds, String hookName) {
+	    try {
+            HookNodeAction hookNodeAction = getController()
+                    .getActionXmlFactory().createHookNodeAction();
+            hookNodeAction.setNode(focussed.getObjectId(getController()));
+            hookNodeAction.setHookName(hookName);
+            // selectedNodes list 
+            for (Iterator i = selecteds.iterator(); i.hasNext();) {
+                MindMapNode node = (MindMapNode) i.next();
+                NodeListMember nodeListMember = getController()
+                        .getActionXmlFactory().createNodeListMember();
+                nodeListMember.setNode(node.getObjectId(getController()));
+                hookNodeAction.getNodeListMember().add(nodeListMember);
+            }
+            return hookNodeAction;
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            return null;
+        }
+	}
+	
+	public void act(XmlAction action) {
+        if (action instanceof HookNodeAction) {
+            HookNodeAction hookNodeAction = (HookNodeAction) action;
+            MindMapNode selected = getController().getNodeFromID(hookNodeAction.getNode());
+            Vector selecteds = new Vector();
+            for (Iterator i = hookNodeAction.getNodeListMember().iterator(); i.hasNext();) {
+                NodeListMemberType node = (NodeListMemberType) i.next();
+                selecteds.add(getController().getNodeFromID(node.getNode()));
+            }
+            invoke(selected, selecteds, hookNodeAction.getHookName());
+        }
+    }
+
+    public Class getDoActionClass() {
+        return HookNodeAction.class;
+    } 
 		
 }

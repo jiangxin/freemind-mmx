@@ -19,7 +19,7 @@
  *
  * Created on 01.05.2004
  */
-/*$Id: ModeControllerActionHandler.java,v 1.1.2.1 2004-05-02 20:49:14 christianfoltin Exp $*/
+/*$Id: ModeControllerActionHandler.java,v 1.1.2.2 2004-09-27 19:49:52 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -39,7 +39,11 @@ public class ModeControllerActionHandler implements ActionHandler {
 	 */
 	public void executeAction(ActionPair pair) {
 		ActorXml actor = factory.getActor(pair.getDoAction());
-		actor.act(pair.getDoAction());
+		try {
+            actor.act(pair.getDoAction());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 
 	/* (non-Javadoc)

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.10.9 2004-08-29 15:18:21 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.10.10 2004-09-27 19:49:52 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -940,6 +940,7 @@ public class MapView extends JPanel implements Printable {
             catch (Exception ex) {    //thrown if changed is root
                 node = ( (MindMapNode)e.getTreePath().getLastPathComponent() ).getViewer(); }
             // ^ This is not a good solution, but it works
+            logger.finest("The update node is "+node + " with treemodelevent="+e);
             node.update();
             getMindMapLayout().updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(node);
             getMindMapLayout().layout();

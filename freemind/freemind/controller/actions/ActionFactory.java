@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: ActionFactory.java,v 1.1.2.5 2004-09-04 06:56:04 christianfoltin Exp $*/
+/*$Id: ActionFactory.java,v 1.1.2.6 2004-09-27 19:49:52 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import freemind.common.JaxbTools;
@@ -41,8 +42,8 @@ import freemind.controller.actions.generated.instance.XmlAction;
 public class ActionFactory {
 
 	private Controller controller;
-	/** This set denotes all handler of the action to be called for each action. */
-	private Set registeredHandler;
+	/** This Vector denotes all handler of the action to be called for each action. */
+	private Vector registeredHandler;
 	/** This set denotes all filters for XmlActions.*/
 	private Set registeredFilters;
 	/** HashMap of Action class -> actor instance. */
@@ -54,13 +55,20 @@ public class ActionFactory {
 	public ActionFactory(Controller c) {
 		super();
 		this.controller = c;
-		registeredHandler = new HashSet();
+		registeredHandler = new Vector();
 		registeredFilters = new HashSet();
 		registeredActors = new HashMap();
 	}
 
+	/** The handler is put in front. Thus it is called before others are called.
+	 * @param newHandler
+	 */
 	public void registerHandler(ActionHandler newHandler) {
-		registeredHandler.add(newHandler);
+	    // if it is present, put it in front:
+		if (!registeredHandler.contains(newHandler)) {
+		    registeredHandler.remove(newHandler);
+        }
+        registeredHandler.add(0, newHandler);
 	}
 
 	public void deregisterHandler(ActionHandler newHandler) {

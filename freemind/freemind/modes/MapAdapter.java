@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.10.12 2004-08-29 15:18:21 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.10.13 2004-09-27 19:49:52 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -329,6 +329,7 @@ public abstract class MapAdapter implements MindMap {
 		MindMapNode parent,
 		int index) {
 		insertNodeInto((MutableTreeNode) newChild, (MutableTreeNode) parent, index);
+		recursiveCallAddChildren(parent, newChild);
 	}
 
     /**
@@ -343,6 +344,23 @@ public abstract class MapAdapter implements MindMap {
         // an exception otherwise.
     }
 
+	/**URGENT: This method must be moved to the ControllerAdapter.
+	 * @param node
+	 */
+	private void recursiveCallAddChildren(MindMapNode node, MindMapNode addedChild) {
+		// Tell any node hooks that the node is added:
+		if(node instanceof MindMapNode) {
+			for(Iterator i=  ((MindMapNode)node).getActivatedHooks().iterator(); i.hasNext();) {
+				PermanentNodeHook hook = (PermanentNodeHook) i.next();
+                if (addedChild.getParentNode() == node) {
+                    hook.onAddChild(addedChild);
+                }
+                hook.onAddChildren(addedChild);
+			}
+		}
+		if(!node.isRoot() && node.getParentNode()!= null)
+		    recursiveCallAddChildren(node.getParentNode(), addedChild);
+	}
 
     
     /**
@@ -626,9 +644,11 @@ public abstract class MapAdapter implements MindMap {
              if (cCount > 0) {
                 Object[] cChildren = new Object[cCount];
                 
-                for(int counter = 0; counter < cCount; counter++)
+                for(int counter = 0; counter < cCount; counter++) {
                    cChildren[counter] = node.getChildAt
                       (childIndices[counter]);
+                   logger.finest("Children array at "+counter+" = "+ cChildren[counter]);
+                }
                 fireTreeNodesChanged(this, getPathToRoot(node), childIndices, cChildren);
              }
           }

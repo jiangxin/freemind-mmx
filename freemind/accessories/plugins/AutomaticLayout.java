@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.util.Iterator;
 
 import freemind.extensions.PermanentNodeHookAdapter;
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 
 /**
@@ -34,15 +35,14 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 	}
 
 	private void setStyle(MindMapNode node) {
+	    logger.finest("updating node id="+node.getObjectId(getController())+" and text:"+node);
 		int depth = depth(node);
 		logger.finest("COLOR, depth="+(depth));
 		int myIndex = colors.length - 1;
 		if (depth < colors.length)
 		    myIndex = depth;
 		Color mycolor = colors[myIndex];
-		Color nodeColor = node.getColor();
-		if (((nodeColor != null) && (nodeColor.getRGB() != mycolor.getRGB()))
-				|| nodeColor == null) {
+		if (!Tools.safeEquals(mycolor, node.getColor())) {
 			getController().setNodeColor(node, mycolor);
 //			nodeChanged(node);
 		}

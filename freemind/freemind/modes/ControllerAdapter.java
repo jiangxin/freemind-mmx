@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.31 2004-09-20 21:20:46 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.32 2004-09-27 19:49:52 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -73,16 +73,15 @@ import freemind.common.JaxbTools;
 import freemind.controller.Controller;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.ActionFactory;
-import freemind.controller.actions.ActionHandler;
-import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ModeControllerActionHandler;
+import freemind.controller.actions.UndoActionHandler;
 import freemind.controller.actions.generated.instance.ObjectFactory;
-import freemind.controller.actions.generated.instance.UndoXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookFactory;
 import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
+import freemind.extensions.UndoEventReceiver;
 import freemind.main.ExampleFileFilter;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
@@ -170,31 +169,14 @@ public abstract class ControllerAdapter implements ModeController {
 		actionXmlFactory = JaxbTools.getInstance().getObjectFactory();
         // create action factory:
 		actionFactory = new ActionFactory(getController());
-		// register default action handler:
-		getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
-		//debug: getActionFactory().registerHandler(new PrintActionHandler(this));
+		// prepare undo:
 		undo = new UndoAction(this);
 		redo = new RedoAction(this);
-		//URGENT: This should be refactored.
-		getActionFactory().registerHandler(new ActionHandler() {
-
-            public void executeAction(ActionPair pair) {
-            	if(! (undo.isUndoAction() || redo.isUndoAction())) {
-					if(! (pair.getDoAction() instanceof UndoXmlAction)) {
-						redo.clear();
-						undo.add(pair);
-						undo.setEnabled(true);
-						redo.setEnabled(false);
-					}
-            	}
-				
-            }
-
-            public void startTransaction(String name) {
-            }
-
-            public void endTransaction(String name) {
-            }});
+		// register default action handler:
+		// the executor must be the first here, because it is executed last then.
+		getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
+		getActionFactory().registerHandler(new UndoActionHandler(this, undo, redo));
+		//debug:		getActionFactory().registerHandler(new freemind.controller.actions.PrintActionHandler(this));
 
         cut = new CutAction(this);
         paste = new PasteAction(this);
@@ -261,7 +243,7 @@ public abstract class ControllerAdapter implements ModeController {
 	
 	/** Currently, this method is called by the mapAdapter. This is buggy, and is to be changed.*/
     public void nodeChanged(MindMapNode node) {
-    	logger.fine("nodeChanged called for node "+node+" parent="+node.getParentNode());
+    	logger.finest("nodeChanged called for node "+node+" parent="+node.getParentNode());
 		if(nodesAlreadyUpdated.contains(node)) {			
 			return;
 		}
@@ -284,19 +266,24 @@ public abstract class ControllerAdapter implements ModeController {
 		getMap().nodeStructureChanged(node);
 	}
 
+	public boolean isUndoAction() {
+	    return undo.isUndoAction() || redo.isUndoAction();
+	}
 
 	/**
 	 * @param node
 	 */
 	private void recursiveCallUpdateHooks(MindMapNode node, MindMapNode changedNode) {
-		// Tell any node hooks that the node is changed:
+	    // Tell any node hooks that the node is changed:
 		if(node instanceof MindMapNode) {
 			for(Iterator i=  ((MindMapNode)node).getActivatedHooks().iterator(); i.hasNext();) {
 				PermanentNodeHook hook = (PermanentNodeHook) i.next();
-				if(node == changedNode)
-					hook.onUpdateNodeHook();
-				else
-					hook.onUpdateChildrenHook(changedNode);
+				if ( (! isUndoAction())  || hook instanceof UndoEventReceiver) {
+                    if (node == changedNode)
+                        hook.onUpdateNodeHook();
+                    else
+                        hook.onUpdateChildrenHook(changedNode);
+                }
 			}
 		}
 		if(!node.isRoot() && node.getParentNode()!= null)
@@ -1097,6 +1084,9 @@ public abstract class ControllerAdapter implements ModeController {
 	public NodeAdapter getNodeFromID(String nodeID) {
 		NodeAdapter node =
 			(NodeAdapter) getMap().getLinkRegistry().getTargetForID(nodeID);
+		if(node == null) {
+		    throw new IllegalArgumentException("Node belonging to the node id "+ nodeID + " not found.");
+		}
 		return node;
 	}
 	public String getNodeID(MindMapNode selected) {

@@ -19,12 +19,14 @@
  *
  * Created on 20.09.2004
  */
-/*$Id: UndoAction.java,v 1.1.2.1 2004-09-20 21:20:47 christianfoltin Exp $*/
+/*$Id: UndoAction.java,v 1.1.2.2 2004-09-27 19:49:52 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
+import java.util.Iterator;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -48,10 +50,15 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
 	protected Vector actionPairList=new Vector();
 	private long timeOfLastAdd = 0;
     private static final long TIME_TO_BEGIN_NEW_ACTION = 100;
+    protected static Logger logger;
 
     public UndoAction(ControllerAdapter controller) {
         this(controller, controller.getText("undo"), new ImageIcon(controller.getResource("images/undo.png")), controller);
         this.controller = controller;
+        if (logger==null) {
+            logger = controller.getFrame()
+                    .getLogger(this.getClass().toString());
+        }
     }
 
 	protected UndoAction(ControllerAdapter adapter, String text, Icon icon, ModeController mode) {
@@ -100,7 +107,8 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
     protected void undoDoAction(ActionPair pair) throws JAXBException {
         String doActionString = this.controller.marshall(pair.getDoAction());
         String redoActionString = this.controller.marshall(pair.getUndoAction());
-		//logger.info("doActionString: "+ doActionString + "\nredoActionString: "+ redoActionString);
+		//logger.info("doActionString: "+ doActionString ); 
+		//logger.info("\nredoActionString: "+ redoActionString);
         
         UndoXmlAction undoAction = this.controller.getActionXmlFactory().createUndoXmlAction();
         undoAction.setDescription(redoActionString);
@@ -121,8 +129,8 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
     public void act(XmlAction action) {
        // unmarshall:
         UndoXmlAction undoAction = (UndoXmlAction) action;
-		XmlAction doAction = (XmlAction) this.controller.unMarshall( undoAction.getDescription() );
-		XmlAction redoAction = (XmlAction) this.controller.unMarshall( undoAction.getRemedia() );
+		XmlAction doAction = this.controller.unMarshall( undoAction.getDescription() );
+		XmlAction redoAction = this.controller.unMarshall( undoAction.getRemedia() );
 		this.controller.getActionFactory().executeAction(new ActionPair(doAction, redoAction));
     }
 
@@ -175,4 +183,12 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
         actionPairList.clear();
     }
 
+    public void print() {
+        logger.info("Undo list:");
+        int j=0;
+        for (Iterator i = actionPairList.iterator(); i.hasNext();) {
+            ActionPair pair = (ActionPair) i.next();
+            logger.info("line "+(j++)+" = " + controller.marshall(pair.getDoAction()));
+        }
+    }
 }

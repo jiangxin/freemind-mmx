@@ -57,6 +57,8 @@ Changes made in Freemind 0.8.0:
 * Undo respects bundle of changes as a single change now.
 * Undo refactored.
 
+* Hooks are undoable now, tested with AutomaticLayout.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

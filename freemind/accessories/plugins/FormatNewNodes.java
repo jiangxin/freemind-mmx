@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/*$Id: FormatNewNodes.java,v 1.1.2.1 2004-08-25 20:40:01 christianfoltin Exp $*/
+/*$Id: FormatNewNodes.java,v 1.1.2.2 2004-09-27 19:49:52 christianfoltin Exp $*/
 package accessories.plugins;
 
 import java.util.HashMap;
@@ -115,8 +115,10 @@ public class FormatNewNodes implements ActionHandler, ActionFilter,
 				compound.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(newNodeAction);
 				for (Iterator i = formatActions.values().iterator(); i.hasNext();) {
 					NodeAction formatAction = (NodeAction) i.next();
-					formatAction.setNode(newNodeAction.getNewId());
-					compound.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(formatAction);
+					// deep copy:
+					FormatNodeAction copiedFormatAction = (FormatNodeAction) controller.unMarshall(controller.marshall(formatAction));
+					copiedFormatAction.setNode(newNodeAction.getNewId());
+					compound.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(copiedFormatAction);
 				}
 				ActionPair newPair = new ActionPair(compound, pair.getUndoAction());
 				return newPair;
