@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21 2004-01-25 22:13:55 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -25,6 +25,7 @@ import freemind.main.Tools;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.MindIcon;
 
@@ -43,17 +44,15 @@ public class MindMapNodeModel extends NodeAdapter {
     //  Constructors
     //
 
-    public MindMapNodeModel(FreeMindMain frame) {
-	super(frame);
-	children = new LinkedList();
-	setEdge(new MindMapEdgeModel(this, getFrame()));
+	public MindMapNodeModel(FreeMindMain frame) {
+		this(null,frame);
     }
 
 	    
     public MindMapNodeModel( Object userObject, FreeMindMain frame ) {
-	super(userObject,frame);
-	children = new LinkedList();
-	setEdge(new MindMapEdgeModel(this, getFrame()));
+		super(userObject,frame);
+		children = new LinkedList();
+		setEdge(new MindMapEdgeModel(this, getFrame()));
     }
 
     //Overwritten get Methods

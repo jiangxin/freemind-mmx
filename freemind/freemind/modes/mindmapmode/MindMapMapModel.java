@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36 2004-02-02 21:25:24 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -31,6 +31,7 @@ import freemind.modes.MindIcon;
 import freemind.modes.MindMapLink;
 import freemind.modes.mindmapmode.MindMapCloudModel;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
+import freemind.extensions.*;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -626,6 +627,7 @@ public class MindMapMapModel extends MapAdapter {
     
     /** When a map is closed, this method is called. */
     public void destroy() {
+       super.destroy();
        lockManager.releaseLock();
        lockManager.releaseTimer(); 
        /* cancel the timer, if map is closed. */

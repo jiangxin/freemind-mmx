@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30 2004-01-25 16:41:26 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.10.1 2004-03-04 20:26:20 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -825,7 +825,7 @@ public class MapView extends JPanel implements Printable {
      * Return the bounding box of all the descendants of the source view, that without BORDER.
      * Should that be implemented in LayoutManager as minimum size?
      */
-    private Rectangle getInnerBounds(NodeView source) {
+    public Rectangle getInnerBounds(NodeView source) {
         Rectangle r = source.getBounds();
         for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();

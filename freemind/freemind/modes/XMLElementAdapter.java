@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4 2004-01-24 22:36:48 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -148,6 +148,9 @@ public abstract class XMLElementAdapter extends XMLElement {
          else if (name.equals("COLOR")) {
             if (sValue.length() == 7) {
                node.setColor(Tools.xmlToColor(sValue)); }}
+         else if (name.equals("BACKGROUND_COLOR")) {
+            if (sValue.length() == 7) {
+               node.setBackgroundColor(Tools.xmlToColor(sValue)); }}
          else if (name.equals("LINK")) {
             node.setLink(sValue); }
          else if (name.equals("STYLE")) {

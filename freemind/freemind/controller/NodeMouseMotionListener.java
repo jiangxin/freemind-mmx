@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.15 2004-01-25 22:13:46 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.15.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -72,7 +72,7 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
     public NodeMouseMotionListener(Controller controller) {
        c = controller; 
        if(logger == null)
-           logger = c.getFrame().getLogger("freemind.controller.NodeMouseMotionListener");
+           logger = c.getFrame().getLogger(this.getClass().getName());
        if(delayedSelectionEnabled == null)
            updateSelectionMethod(c);
     }

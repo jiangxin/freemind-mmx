@@ -4,6 +4,7 @@
 	<property name="build" value="../bin/classes" />
 	<property name="dist" value="../bin/dist" />
     <property name="FM.jar" value="${dist}/lib/freemind.jar"/>
+    <property name="jython.jar" value="lib/jython.jar"/>
 	<property name="post" value="../post" />
 	<property name="debug" value="on" />
 	<property name="build.compiler" value="modern" />
@@ -13,7 +14,7 @@
 		<mkdir dir="${build}"/>
 		<javac	srcdir="${src}"
 			destdir="${build}"
-
+			classpath="${src}/${jython.jar}"
 			debug="${debug}"/>
 	</target>
 
@@ -36,6 +37,11 @@
 		<mkdir dir="${dist}/accessories" />
 		<copy todir="${dist}/accessories"> 
 			<fileset dir="${src}/accessories"/>
+		</copy>
+		<!-- third party libs -->
+		<mkdir dir="${dist}/lib" />
+		<copy todir="${dist}/lib"> 
+			<fileset dir="${src}/lib"/>
 		</copy>
 	</target>
 
@@ -80,6 +86,7 @@
 				<include name="user.properties"/>
 				<include name="patterns.xml"/>
 				<include name="Resources*"/>
+				<include name="accessories/plugins/**"/>
 			</fileset>
 		</jar>
 	</target>
@@ -125,9 +132,9 @@
 	</target>
 
 	<target name="clean">
-		<delete dir="${build}" />
-		<delete dir="${dist}" />
-		<delete dir="${post}" />
+		<delete dir="${build}"  quiet="true"/>
+		<delete dir="${dist}"  quiet="true"/>
+		<delete dir="${post}"  quiet="true"/>
                 <delete>
                   <fileset defaultexcludes="no" dir="${src}" includes="**/*~"/>
                 </delete>
@@ -145,8 +152,9 @@
           dir="${dist}">
 <!--    <jvmarg value="-Djava.util.logging.config.file=logging.properties" /> -->
     <classpath>
+       <pathelement location="${src}"/>
        <pathelement location="${FM.jar}"/>
-       <pathelement location="${dist}"/>
+       <pathelement location="${dist}/${jython.jar}"/>
     </classpath>
     </java>
   </target>

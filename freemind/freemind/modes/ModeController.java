@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14 2004-01-25 16:41:15 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -26,17 +26,21 @@ import java.awt.event.MouseWheelEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JPopupMenu;
 
+import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
 import freemind.view.mindmapview.NodeView;
+import freemind.extensions.ModeControllerHook;
 
 public interface ModeController {
 
     public void load(File file) throws FileNotFoundException, IOException, XMLParseException;
     public boolean save(File file);
     public void addNew(NodeView target, int newNodeMode, KeyEvent e);
+	public MindMapNode newNode();
     public void newMap();
     public boolean save();
     public boolean saveAs();
@@ -61,4 +65,11 @@ public interface ModeController {
 
     public void nodeChanged(MindMapNode n);
     public void anotherNodeSelected(MindMapNode n);
+	//hooks, fc 28.2.2004:
+	List getHooks();
+	ModeControllerHook addHook(ModeControllerHook hook);
+	void removeHook(ModeControllerHook hook); 
+	//end hooks
+	FreeMindMain getFrame();
+
 }

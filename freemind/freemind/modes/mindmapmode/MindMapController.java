@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35 2004-02-06 06:04:25 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.Mode;
 import freemind.modes.ControllerAdapter;
@@ -31,7 +32,7 @@ import freemind.modes.EdgeAdapter;
 import freemind.modes.StylePattern;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapCloud;
-import freemind.modes.mindmapmode.MindMapArrowLinkModel;
+import freemind.extensions.*;
 import freemind.view.mindmapview.NodeView;
 // link registry.
 import freemind.modes.MindMapLinkRegistry;
@@ -55,7 +56,8 @@ import javax.swing.JRadioButtonMenuItem;
 
 public class MindMapController extends ControllerAdapter {
 
-    //    Mode mode;
+    public Vector nodeHookActions;
+	//    Mode mode;
     private JPopupMenu popupmenu;
     //private JToolBar toolbar;
     private MindMapToolBar toolbar;
@@ -122,7 +124,8 @@ public class MindMapController extends ControllerAdapter {
           map.setItalic(node); }});
     Action bold   = new NodeGeneralAction ("bold", "images/Bold24.gif",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
-          map.setBold(node); }});
+          map.setBold(node);
+    }});
     Action cloud   = new NodeGeneralAction ("cloud", "images/Cloud24.gif",
        new SingleNodeOperation() { private MindMapCloud lastCloud;
            private MindMapNodeModel nodeOfLastCloud;
@@ -177,6 +180,19 @@ public class MindMapController extends ControllerAdapter {
            System.err.println("Patterns not loaded:"+ex); }
         // icon actions:
         createIconActions();
+        //node hook actions:
+        createNodeHookActions();
+        //HOOK TEST
+		HookFactory factory = getFrame().getHookFactory();
+        List hooks = factory.getPossibleModeControllerHooks(this.getClass());
+		for(Iterator i = hooks.iterator(); i.hasNext();) {
+			String desc = (String) i.next();
+			System.out.println(desc);
+			// create hook class.
+			ModeControllerHook hook = factory.createModeControllerHook(desc,  this);
+			addHook(hook);
+		}
+		//HOOK TEST END       
 
       	popupmenu = new MindMapPopupMenu(this);
 	toolbar = new MindMapToolBar(this);
@@ -188,7 +204,7 @@ public class MindMapController extends ControllerAdapter {
             getFrame().getProperty("add_as_child"),"true");
     }
 
-    public MapAdapter newModel() {
+	public MapAdapter newModel() {
        return new MindMapMapModel(getFrame()); }
 
     private void loadPatterns(File file) throws Exception {
@@ -219,6 +235,51 @@ public class MindMapController extends ControllerAdapter {
         }
     }
 
+	//URGENT: transport to ModeController as this is general.
+	//URGENT: Descorate with documentation (tooltip), icon, ...
+	protected class NodeHookAction extends AbstractAction {
+		String hookName;
+		ModeController controller;
+		NodeHookAction(String hookName, ModeController controller) {
+			super(hookName);
+			this.hookName = hookName;
+			this.controller = controller;
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+			   MindMapNode selected = (MindMapNode)it.next();
+			   System.out.println("Associating hook to node "+ selected);
+			   //URGENT:If present, the hook must be removed (according to its properties)
+			   NodeHook hook = getFrame().getHookFactory().createNodeHook(hookName,selected,getMap(), controller);
+			   selected.addHook(hook);
+			   hook.invoke();
+			   }
+			}
+		}
+
+	/**
+	 * 
+	 */
+	private void createNodeHookActions() {
+		if(nodeHookActions!= null)
+			return;
+		nodeHookActions = new Vector();
+		// HOOK TEST
+		HookFactory factory = getFrame().getHookFactory();
+		  List list = factory.getPossibleNodeHooks(this.getClass());
+		  for(Iterator i=list.iterator(); i.hasNext();){
+			  String desc = (String) i.next();
+			  // create hook action. 
+			  //URGENT: According to its properties!!
+			  NodeHookAction action = new NodeHookAction(desc, this);
+			  factory.decorateAction(desc, action);
+			  nodeHookActions.add(action);			
+		  }
+	  // HOOK TEST END
+	}
+
+
     public FileFilter getFileFilter() {
        return filefilter; }
 
@@ -238,10 +299,11 @@ public class MindMapController extends ControllerAdapter {
        toolbar.selectFontName(((NodeAdapter)n).getFontFamilyName()); }
 
     public void anotherNodeSelected(MindMapNode n) {
+       super.anotherNodeSelected(n);
        toolbar.selectFontSize(((NodeAdapter)n).getFontSize());
        toolbar.selectFontName(((NodeAdapter)n).getFontFamilyName()); }
 
-    protected MindMapNode newNode() {
+    public MindMapNode newNode() {
        return new MindMapNodeModel("" // getText("new_node") (PN) nicer when created
                                   , getFrame()); }
 
@@ -261,19 +323,42 @@ public class MindMapController extends ControllerAdapter {
 	editMenu.add(getEdgeMenu());
 	editMenu.add(getExtensionMenu());
 	editMenu.add(getIconMenu());
+	// hooks, fc, 1.3.2004:
+	for (int i=0; i<nodeHookActions.size(); ++i) {          
+		   JMenuItem item = editMenu.add((Action) nodeHookActions.get(i));
+	}
+
+//	List list = getFrame().getHookFactory().getPossibleNodeHooks(this.getClass());
+//	for(Iterator i=list.iterator(); i.hasNext();){
+//		String desc = (String) i.next();
+//		// create hook class.
+//		HookFactory factory = getFrame().getHookFactory();
+//		NodeHook hook = factory.createNodeHook(desc, null, 
+//			getMap(), 
+//			this);
+//		hook.nodeMenuHook(editMenu);
+//	}
+//	// end hook generation.
+
 
 	return editMenu;
     }
 
     JMenu getFileMenu() {
-	JMenu fileMenu = new JMenu();
-	add(fileMenu, newMap, "keystroke_newMap");
-	add(fileMenu, open, "keystroke_open");
-	add(fileMenu, save, "keystroke_save");
-	add(fileMenu, saveAs, "keystroke_saveAs");
+        JMenu fileMenu = new JMenu();
+        add(fileMenu, newMap, "keystroke_newMap");
+        add(fileMenu, open, "keystroke_open");
+        add(fileMenu, save, "keystroke_save");
+        add(fileMenu, saveAs, "keystroke_saveAs");
         fileMenu.addSeparator();
         add(fileMenu, exportToHTML, "keystroke_export_to_html");
-	return fileMenu;
+        // hooks: 
+        //URGENT: (should be in ModeController or Controller.java)
+        for(Iterator i=getHooks().iterator(); i.hasNext();) {
+            ModeControllerHook hook = (ModeControllerHook) i.next();
+            hook.fileMenuHook(fileMenu);
+        }
+        return fileMenu;
     }
 
     JMenu getExtensionMenu() {
@@ -497,49 +582,58 @@ public class MindMapController extends ControllerAdapter {
      * whether there is a map open or not.
      */
     protected void setAllActions(boolean enabled) {
-	edit.setEnabled(enabled);
-    editLong.setEnabled(enabled);
-    newChildWithoutFocus.setEnabled(enabled);
-    newSibling.setEnabled(enabled);
-    newPreviousSibling.setEnabled(enabled);
-	newChild.setEnabled(enabled);
-	remove.setEnabled(enabled);
-	toggleFolded.setEnabled(enabled);
-	toggleChildrenFolded.setEnabled(enabled);
-	setLinkByTextField.setEnabled(enabled);
-	setLinkByFileChooser.setEnabled(enabled);
-	setImageByFileChooser.setEnabled(enabled);
-	followLink.setEnabled(enabled);
-	italic.setEnabled(enabled);
-	bold.setEnabled(enabled);
-	cloud.setEnabled(enabled);
-    cloudColor.setEnabled(enabled);
-	normalFont.setEnabled(enabled);
-	nodeColor.setEnabled(enabled);
-	edgeColor.setEnabled(enabled);
-    removeLastIcon.setEnabled(enabled);
-    removeAllIcons.setEnabled(enabled);
-	for (int i=0; i<iconActions.size(); ++i) {          
-        ((Action) iconActions.get(i)).setEnabled(enabled);
-    }
-	for (int i=0; i<edgeWidths.length; ++i) { 
-		edgeWidths[i].setEnabled(enabled);
-	}
-	fork.setEnabled(enabled);
-	bubble.setEnabled(enabled);
-	for (int i=0; i<edgeStyles.length; ++i) { 
-		edgeStyles[i].setEnabled(enabled);
-	}
-	for (int i=0; i<patterns.length; ++i) { 
-		patterns[i].setEnabled(enabled);
-	}
-	save.setEnabled(enabled);
-	saveAs.setEnabled(enabled);
-	getToolBar().setAllActions(enabled);
-	exportBranch.setEnabled(enabled);
-	importBranch.setEnabled(enabled);
-	importLinkedBranch.setEnabled(enabled);
-	importLinkedBranchWithoutRoot.setEnabled(enabled);
+        edit.setEnabled(enabled);
+        editLong.setEnabled(enabled);
+        newChildWithoutFocus.setEnabled(enabled);
+        newSibling.setEnabled(enabled);
+        newPreviousSibling.setEnabled(enabled);
+        newChild.setEnabled(enabled);
+        remove.setEnabled(enabled);
+        toggleFolded.setEnabled(enabled);
+        toggleChildrenFolded.setEnabled(enabled);
+        setLinkByTextField.setEnabled(enabled);
+        setLinkByFileChooser.setEnabled(enabled);
+        setImageByFileChooser.setEnabled(enabled);
+        followLink.setEnabled(enabled);
+        italic.setEnabled(enabled);
+        bold.setEnabled(enabled);
+        cloud.setEnabled(enabled);
+        cloudColor.setEnabled(enabled);
+        normalFont.setEnabled(enabled);
+        nodeColor.setEnabled(enabled);
+        edgeColor.setEnabled(enabled);
+        removeLastIcon.setEnabled(enabled);
+        removeAllIcons.setEnabled(enabled);
+        for (int i=0; i<iconActions.size(); ++i) {          
+            ((Action) iconActions.get(i)).setEnabled(enabled);
+        }
+		for (int i=0; i<nodeHookActions.size(); ++i) {          
+			((Action) nodeHookActions.get(i)).setEnabled(enabled);
+		}
+        for (int i=0; i<edgeWidths.length; ++i) { 
+            edgeWidths[i].setEnabled(enabled);
+        }
+        fork.setEnabled(enabled);
+        bubble.setEnabled(enabled);
+        for (int i=0; i<edgeStyles.length; ++i) { 
+            edgeStyles[i].setEnabled(enabled);
+        }
+        for (int i=0; i<patterns.length; ++i) { 
+            patterns[i].setEnabled(enabled);
+        }
+        save.setEnabled(enabled);
+        saveAs.setEnabled(enabled);
+        getToolBar().setAllActions(enabled);
+        exportBranch.setEnabled(enabled);
+        exportToHTML.setEnabled(enabled);
+        importBranch.setEnabled(enabled);
+        importLinkedBranch.setEnabled(enabled);
+        importLinkedBranchWithoutRoot.setEnabled(enabled);
+        // hooks:
+        for(Iterator i=getHooks().iterator(); i.hasNext();) {
+            ModeControllerHook hook = (ModeControllerHook) i.next();
+            hook.enableActions(enabled);
+        }
     }
 
 

@@ -16,16 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24 2004-01-28 20:09:27 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
-import freemind.modes.StylePattern;
 import freemind.view.mindmapview.NodeView;
 import freemind.controller.MindMapNodesSelection;
+import freemind.extensions.*;
+
 
 import java.net.URL;
 import java.net.MalformedURLException;
@@ -59,9 +60,16 @@ public abstract class MapAdapter implements MindMap {
     private LinkedList  findNodeQueue;
     private ArrayList   findNodesUnfoldedByLastFind;
 
+	// for cascading updates.
+	private HashSet nodesAlreadyUpdated;
+	private HashSet nodesToBeUpdated;
+
+
 
     public MapAdapter (FreeMindMain frame) {
-	this.frame = frame;
+		this.frame = frame;
+		nodesAlreadyUpdated = new HashSet();
+		nodesToBeUpdated    = new HashSet();
     }
 
     //
@@ -86,13 +94,30 @@ public abstract class MapAdapter implements MindMap {
 	public void destroy() {
 		// Do all the necessary destructions in your model,
 		// e.g. remove file locks.
+		// and remove all hooks:
+		removeHooks((MindMapNode) getRoot());
 	}
 
     // (PN)
     //    public void close() {
     //    }
 
-    public FreeMindMain getFrame() {
+	/**
+	 * @param node
+	 */
+	private void removeHooks(MindMapNode node) {
+		while(node.getHooks().size()>0) {
+			NodeHook hook = (NodeHook) node.getHooks().get(0);
+			node.removeHook(hook);
+		}
+		// and all children:
+		for(Iterator i= node.childrenUnfolded(); i.hasNext();) {
+			MindMapNode child = (MindMapNode) i.next();
+		    removeHooks(child);
+		}
+	}
+
+	public FreeMindMain getFrame() {
 	return frame;
     }
 
@@ -218,6 +243,11 @@ public abstract class MapAdapter implements MindMap {
        LinkedList sortedNodes = getFrame().getView().getSelectedsByDepth();
        for(Iterator i = sortedNodes.iterator();i.hasNext();) {
           MindMapNode selectedNode = ((NodeView)i.next()).getModel();
+          // remove hooks:
+			for(Iterator j=  selectedNode.getHooks().iterator(); j.hasNext();) {
+				NodeHook hook = (NodeHook) j.next();
+				hook.shutdownMapHook();
+			}
           getLinkRegistry().cutNode(selectedNode);
           try {
               removeNodeFromParent(selectedNode); 
@@ -655,12 +685,17 @@ public abstract class MapAdapter implements MindMap {
       * Invoke this method after you've changed how node is to be
       * represented in the tree. 
       */
-    protected void nodeChanged(TreeNode node) {
-
+    public void nodeChanged(TreeNode node) {
+		if(nodesAlreadyUpdated.contains(node)) {			
+			return;
+		}
+		nodesToBeUpdated.add(node);
+		nodesAlreadyUpdated.add(node);
         // Tell the mode controller that the node was changed, for the case
         // he is interested.
-        frame.getController().getMode().getModeController().nodeChanged((MindMapNode)node); 
-
+        frame.getController().getMode().getModeController().nodeChanged((MindMapNode)node);
+        // Tell any node hooks that the node is changed:
+		recursiveCallUpdateHooks((MindMapNode) node, (MindMapNode) node /* self update */);
         if (treeModelListeners != null && node != null) {
             TreeNode parent = node.getParent();
 
@@ -672,14 +707,37 @@ public abstract class MapAdapter implements MindMap {
                     cIndexs[0] = anIndex;
                     nodesChanged(parent, cIndexs);
                 }
-	    }
-	    else if (((MindMapNode)node).isRoot()) {
-		nodesChanged(node, null);
-	    }
+		    }
+		    else if (((MindMapNode)node).isRoot()) {
+				nodesChanged(node, null);
+	    	}
         }
+		nodesToBeUpdated.remove(node);
+		if(nodesToBeUpdated.size()==0) {
+			// this is the end of all updates:
+			nodesAlreadyUpdated.clear();
+		}
     }
 
     /**
+	 * @param node
+	 */
+	private void recursiveCallUpdateHooks(MindMapNode node, MindMapNode changedNode) {
+		// Tell any node hooks that the node is changed:
+		if(node instanceof MindMapNode) {
+			for(Iterator i=  ((MindMapNode)node).getHooks().iterator(); i.hasNext();) {
+				NodeHook hook = (NodeHook) i.next();
+				if(node == changedNode)
+					hook.onUpdateNodeHook();
+				else
+					hook.onUpdateChildrenHook(changedNode);
+			}
+		}
+		if(!node.isRoot() && node.getParentNode()!= null)
+			recursiveCallUpdateHooks(node.getParentNode(), changedNode);
+	}
+
+	/**
       * Invoke this method after you've changed how the children identified by
       * childIndicies are to be represented in the tree.
       */
@@ -835,6 +893,7 @@ public abstract class MapAdapter implements MindMap {
             }          
         }
     }
+
 }
 
 

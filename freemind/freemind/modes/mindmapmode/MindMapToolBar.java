@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.12 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: MindMapToolBar.java,v 1.12.12.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -84,6 +84,11 @@ public class MindMapToolBar extends JToolBar {
 	button = add(c.cloud);
 	button.setText("");
 	button = add(c.cloudColor);
+	// hooks, fc, 3.3.2004:
+	for (int i=0; i<c.nodeHookActions.size(); ++i) {          
+		   add((Action) c.nodeHookActions.get(i));
+	}
+
 
 	fonts = new JComboBox(Tools.getAvailableFontFamilyNamesAsVector());
 	fonts.setMaximumRowCount(9);

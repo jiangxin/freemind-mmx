@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12 2004-02-02 21:25:24 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -29,6 +29,7 @@ import javax.swing.JLayeredPane;
 
 import freemind.controller.Controller;
 import freemind.controller.MenuBar;
+import freemind.extensions.HookFactory;
 import freemind.view.mindmapview.MapView;
 
 public interface FreeMindMain {
@@ -90,4 +91,9 @@ public interface FreeMindMain {
 
     /* To obtain a logging element, ask here. */
     public java.util.logging.Logger getLogger(String forClass);
+
+	/**
+	 * @return
+	 */
+	public HookFactory getHookFactory();
 }

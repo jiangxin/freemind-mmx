@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13 2003-12-22 11:15:18 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.13.12.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -91,7 +91,7 @@ public class BrowseController extends ControllerAdapter {
         }
     }
 
-    protected MindMapNode newNode() {
+    public MindMapNode newNode() {
 	return new BrowseNodeModel(getText("new_node"), getFrame());
     }
 

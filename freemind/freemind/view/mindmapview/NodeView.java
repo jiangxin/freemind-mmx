@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27 2004-01-25 16:41:28 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.10.1 2004-03-04 20:26:20 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -231,6 +231,9 @@ public abstract class NodeView extends JLabel {
           graphics.setColor(selectedColor);
           graphics.fillRect(0,0,size.width, size.height);
           //g.drawRect(0,0,size.width-1, size.height-2);
+       } else if( getModel().getBackgroundColor() != null) {
+          graphics.setColor(getModel().getBackgroundColor());
+          graphics.fillRect(0,0,size.width, size.height);
        }
     }
 
@@ -584,6 +587,12 @@ public abstract class NodeView extends JLabel {
            else {
               color = Color.black; }}
         setForeground(color);
+//         // 1b) set background color:
+//         Color bgcolor = getModel().getBackgroundColor();
+//         if (bgcolor!=null) {
+//             setOpaque(true);
+//             setBackground(bgcolor);
+//         }
 
         // 2) Create the icons:
         MultipleImage iconImages = new MultipleImage(map.getZoom());
@@ -683,8 +692,11 @@ public abstract class NodeView extends JLabel {
            setText("<html><table"+
                    (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
                    text+"</table></html>"); }
-   
-        // 5) Complete
+   		// 5) ToolTip:
+   		String tip = getModel().getToolTip();
+   		if(tip != null)
+   			setToolTipText(tip);
+        // 6) Complete
         repaint(); // Because of zoom?
     }
 

@@ -16,13 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18 2004-02-02 21:25:24 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.main;
 
 import freemind.view.mindmapview.MapView;
 import freemind.controller.MenuBar;
 import freemind.controller.Controller;
+import freemind.extensions.HookFactory;
+
 import java.io.InputStream;
 import java.io.File;
 import java.net.URL;
@@ -37,7 +39,8 @@ import javax.swing.*;
 
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 
-    public static final String version = "0.7.1";
+    private HookFactory nodeHookFactory;
+	public static final String version = "0.7.1";
     //    public static final String defaultPropsURL;
     public URL defaultPropsURL;
     public static Properties defaultProps;
@@ -261,4 +264,14 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
 	c.changeToMode(getProperty("initial_mode"));
     }
+	/* (non-Javadoc)
+	 * @see freemind.main.FreeMindMain#getHookFactory()
+	 */
+	public HookFactory getHookFactory() {
+		if(nodeHookFactory == null) {
+			nodeHookFactory = new HookFactory(this);
+		}
+		return nodeHookFactory;
+	}
+
 }

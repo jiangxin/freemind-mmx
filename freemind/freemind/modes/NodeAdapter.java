@@ -16,11 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20 2003-12-17 21:04:53 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.12.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import freemind.modes.MindIcon;
+import freemind.extensions.*;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.view.mindmapview.NodeView;
@@ -38,8 +38,10 @@ import java.util.Vector;
  */
 public abstract class NodeAdapter implements MindMapNode {
 	
-    protected Object userObject = "no text";
+    private List hooks;
+	protected Object userObject = "no text";
     private String link = null; //Change this to vector in future for full graph support
+    private String toolTip = null;
 
     //these Attributes have default values, so it can be useful to directly access them in
     //the save() method instead of using getXXX(). This way the stored file is smaller and looks better.
@@ -53,6 +55,7 @@ public abstract class NodeAdapter implements MindMapNode {
     protected MindMapCloud cloud;
 
     protected Color color;
+    protected Color backgroundColor;
     protected boolean folded;
     private Tools.BooleanHolder left;
 
@@ -76,12 +79,13 @@ public abstract class NodeAdapter implements MindMapNode {
     //
 
     protected NodeAdapter(FreeMindMain frame) {
-	this.frame = frame;
+		this(null, frame);
     }
 
     protected NodeAdapter(Object userObject, FreeMindMain frame) {
-	this.userObject = userObject;
-	this.frame = frame;
+		this.userObject = userObject;
+		this.frame = frame;
+		hooks = new Vector();
     }
 
     public String getLink() {
@@ -164,6 +168,10 @@ public abstract class NodeAdapter implements MindMapNode {
     public void setColor(Color color) {
 	this.color = color;
     }
+
+    //fc, 24.2.2004: background color:
+    public Color getBackgroundColor(           ) { return backgroundColor; };
+    public void  setBackgroundColor(Color color) { this.backgroundColor = color; };
 
     //   
     //  font handling
@@ -436,6 +444,11 @@ public abstract class NodeAdapter implements MindMapNode {
           preferredChild = (MindMapNode)child;
         }
     	child.setParent( this );
+    	// call add child hook:
+    	for(Iterator i = this.getHooks().iterator(); i.hasNext(); ){
+    		NodeHook hook = (NodeHook) i.next();
+    		hook.onAddChild((MindMapNode)child);
+    	}
     }
     
     
@@ -527,4 +540,46 @@ public abstract class NodeAdapter implements MindMapNode {
       }
       return level;
     }
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#addHook(freemind.modes.NodeHook)
+	 */
+	public NodeHook addHook(NodeHook hook) {
+		// initialize:
+		hook.startupMapHook();
+		// add then
+		hooks.add(hook);
+		// the main invocation:
+		hook.invoke();
+		return hook;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#getHooks()
+	 */
+	public List getHooks() {
+		return hooks;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#removeHook(freemind.modes.NodeHook)
+	 */
+	public void removeHook(NodeHook hook) {
+		hook.shutdownMapHook();
+		hooks.remove(hook);
+	}
+
+	/**
+	 * @return
+	 */
+	public String getToolTip() {
+		return toolTip;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setToolTip(String string) {
+		toolTip = string;
+	}
+
 }

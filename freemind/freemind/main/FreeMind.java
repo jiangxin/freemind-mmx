@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32 2004-02-02 21:25:24 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -55,12 +55,14 @@ import javax.swing.UIManager;
 
 import freemind.controller.Controller;
 import freemind.controller.MenuBar;
+import freemind.extensions.HookFactory;
 import freemind.modes.ModeController;
 import freemind.view.mindmapview.MapView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
-    public static final String version = "0.7.1";
+    private HookFactory nodeHookFactory;
+	public static final String version = "0.7.1";
     //    public static final String defaultPropsURL = "freemind.properties";
     public URL defaultPropsURL;
     //    public static Properties defaultProps;
@@ -554,5 +556,15 @@ public class FreeMind extends JFrame implements FreeMindMain {
         win_state = ((win_state & ICONIFIED) != 0) ? NORMAL : win_state;
         frame.setExtendedState(win_state);
 
-    }//main()
+    }
+
+	/* (non-Javadoc)
+	 * @see freemind.main.FreeMindMain#getHookFactory()
+	 */
+	public HookFactory getHookFactory() {
+		if(nodeHookFactory == null) {
+			nodeHookFactory = new HookFactory(this);
+		}
+		return nodeHookFactory;
+	}
 }

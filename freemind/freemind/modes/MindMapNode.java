@@ -16,18 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15 2003-12-17 21:04:53 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.12.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import freemind.modes.MindIcon;
+import freemind.extensions.*;
 import freemind.view.mindmapview.NodeView;
 // clouds, fc, 08.11.2003:
-import freemind.modes.MindMapCloud;
 // end clouds.
 // links, fc, 08.11.2003:
-import freemind.modes.MindMapLink;
 // end links.
+import java.util.List;
 import java.util.ListIterator;
 import java.awt.Color;
 import java.awt.Font;
@@ -113,22 +112,23 @@ public interface MindMapNode extends MutableTreeNode {
     int   removeLastIcon();
     // end, fc, 24.9.2003
 
-//     //fc, 01.11.2003:
-//     /** \@return returns the label of the node, if applicable. otherwise null.*/
-//     String getLabel();
-
-//     void setLabel(String newLabel); 
-
-//     Vector/* of MindMapLink s*/ getReferences();
-    
-//     void removeReferenceAt(int i);
-
-//     void addReference(MindMapLink referenceStruct);
-//     // end links, fc, 01.11.2003.
-
     // clouds, fc, 08.11.2003:
     MindMapCloud getCloud();
     // end clouds.
+        
+    //fc, 24.2.2004: background color:
+    Color getBackgroundColor(           );
+    void  setBackgroundColor(Color color);
+
+    //hooks, fc 28.2.2004:
+    List getHooks();
+	NodeHook addHook(NodeHook hook);
+    void removeHook(NodeHook hook); 
+	//end hooks
+	
+	//tooltips,fc 29.2.2004
+	void setToolTip(String tip);
+	String getToolTip();
         
     MindMapNode shallowCopy();
 }

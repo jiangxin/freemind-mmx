@@ -5,5 +5,4 @@ echo $@
 #
 full=$(dirname $0)
 echo ${full}/lib/freemind.jar
-java -jar ${full}/lib/freemind.jar $@
-
+java -cp ${full}/:${full}/lib/jython.jar:${full}/lib/freemind.jar freemind.main.FreeMind $@

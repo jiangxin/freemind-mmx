@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileController.java,v 1.11 2003-11-03 11:00:13 sviles Exp $*/
+/*$Id: FileController.java,v 1.11.12.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.modes.filemode;
 
@@ -70,9 +70,9 @@ public class FileController extends ControllerAdapter {
     // Private
     // 
 
-    private MindMap getModel() {
- 	return (MindMap)getController().getModel();
-    }
+//    private MindMap getModel() {
+// 	return (MindMap)getController().getModel();
+//    }
 
     private MindMapNode getSelected() {
 	if (getView() != null) {

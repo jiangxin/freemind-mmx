@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41 2004-02-06 06:04:25 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.1 2004-03-04 20:26:19 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -80,6 +80,7 @@ import javax.swing.text.JTextComponent;
 
 import freemind.main.FreeMind;
 import freemind.controller.Controller;
+import freemind.extensions.*;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.ExampleFileFilter;
@@ -107,12 +108,16 @@ public abstract class ControllerAdapter implements ModeController {
     public Action paste = null;
 
     static final Color selectionColor = new Color(200,220,200);
+	private List hooks;
 
     public ControllerAdapter() {
+        hooks= new Vector();
     }
 
     public ControllerAdapter(Mode mode) {
+        this();
         this.mode = mode;
+        
 
         cut = new CutAction(this);
         paste = new PasteAction(this);
@@ -137,7 +142,7 @@ public abstract class ControllerAdapter implements ModeController {
     // Methods that should be overloaded
     //
 
-    protected abstract MindMapNode newNode();
+    public abstract MindMapNode newNode();
 
     /**
      * You _must_ implement this if you use one of the following actions:
@@ -160,6 +165,11 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public void anotherNodeSelected(MindMapNode n) {
+    	// look for hooks:
+    	for(Iterator i= n.getHooks().iterator(); i.hasNext();){
+    		NodeHook hook = (NodeHook) i.next();
+    		hook.onReceiveFocusHook();
+    	}
     }
 
     public void doubleClick(MouseEvent e) {
@@ -1379,7 +1389,9 @@ public abstract class ControllerAdapter implements ModeController {
     public FreeMindMain getFrame() {
         return getController().getFrame();
     }
-
+	
+	// fc, 29.2.2004: there is no sense in having this private and the controller public,
+	// because the getController().getModel() method is available anyway.
     private MapAdapter getModel() {
         return (MapAdapter)getController().getModel();
     }
@@ -1447,6 +1459,25 @@ public abstract class ControllerAdapter implements ModeController {
         getView().selectAsTheOnlyOneSelected(node);
         getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); // this level is default
     }
+
+	public ModeControllerHook addHook(ModeControllerHook hook) {
+		// initialize:
+		hook.startupMapHook();
+		// add then
+		hooks.add(hook);
+		// the main invocation:
+//		hook.invoke();
+		return hook;
+	}
+
+	public List getHooks() {
+		return hooks;
+	}
+
+	public void removeHook(ModeControllerHook hook) {
+		hook.shutdownMapHook();
+		hooks.remove(hook);
+	}
 
     ////////////
     //  Actions
