@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ForkNodeView.java,v 1.10.16.2 2004-08-27 21:01:33 dpolivaev Exp $*/
+/*$Id: ForkNodeView.java,v 1.10.16.3 2004-08-28 07:07:34 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -42,8 +42,8 @@ public class ForkNodeView extends NodeView {
 		Dimension result =  new Dimension(super.getPreferredSize().width,
                              super.getPreferredSize().height + 3 + getEdge().getRealWidth());
 		if (getModel().isFolded()){
-			result.width +=  FOLDING_SYMBOL_WIDTH ;
-			result.height +=  FOLDING_SYMBOL_WIDTH / 2 ;
+			result.width +=  getZoomedFoldingSymbolWidth() ;
+			result.height +=  getZoomedFoldingSymbolWidth() / 2 ;
 		}
 		
         return result;
@@ -51,15 +51,15 @@ public class ForkNodeView extends NodeView {
     
 	public void setExtendedLocation(int x,	int y){
 		if(getModel().isFolded() && isLeft()){
-				x += FOLDING_SYMBOL_WIDTH;
+				x += getZoomedFoldingSymbolWidth();
 		}
 		setLocation(x, y);
 	}
     
 	public void setExtendedSize(int width,	int height){
 		if(getModel().isFolded()){
-			height -= FOLDING_SYMBOL_WIDTH / 2;
-			width -= FOLDING_SYMBOL_WIDTH;
+			height -= getZoomedFoldingSymbolWidth() / 2;
+			width -= getZoomedFoldingSymbolWidth();
 		}
 		setSize(width, height);
 	}
@@ -67,7 +67,7 @@ public class ForkNodeView extends NodeView {
     public int getExtendedX(){
     	int x = getX();
 		if(getModel().isFolded() && isLeft()){
-			x -= FOLDING_SYMBOL_WIDTH;
+			x -= getZoomedFoldingSymbolWidth();
 		}
 		return x;
     }
@@ -76,7 +76,7 @@ public class ForkNodeView extends NodeView {
 	{
 		int width = getWidth();
 		if(getModel().isFolded()){
-			width += FOLDING_SYMBOL_WIDTH;
+			width += getZoomedFoldingSymbolWidth();
 		}
 		return width;
 	}
@@ -85,7 +85,7 @@ public class ForkNodeView extends NodeView {
 	{
 		int height = getHeight();
 		if(getModel().isFolded()){
-			height += FOLDING_SYMBOL_WIDTH / 2;
+			height += getZoomedFoldingSymbolWidth() / 2;
 		}
 		return height;
 	}
@@ -99,11 +99,11 @@ public class ForkNodeView extends NodeView {
 			final Point out = getOutPoint(); 
 			if (isLeft())
 			{
-				g.drawOval(out.x - FOLDING_SYMBOL_WIDTH , out.y - FOLDING_SYMBOL_WIDTH/2, FOLDING_SYMBOL_WIDTH, FOLDING_SYMBOL_WIDTH);
+				g.drawOval(out.x - getZoomedFoldingSymbolWidth() , out.y - getZoomedFoldingSymbolWidth()/2, getZoomedFoldingSymbolWidth(), getZoomedFoldingSymbolWidth());
 			}
 			else
 			{
-				g.drawOval(out.x, out.y - FOLDING_SYMBOL_WIDTH/2, FOLDING_SYMBOL_WIDTH, FOLDING_SYMBOL_WIDTH);
+				g.drawOval(out.x, out.y - getZoomedFoldingSymbolWidth()/2, getZoomedFoldingSymbolWidth(), getZoomedFoldingSymbolWidth());
 			}
 		}        
 	}

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.25.2.1.2.2 2004-08-27 21:01:33 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.25.2.1.2.3 2004-08-28 07:07:34 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -61,7 +61,7 @@ public abstract class NodeView extends JLabel {
     final static int DRAGGED_OVER_SON = 1;
     final static int DRAGGED_OVER_SIBLING = 2;
 
-	public final int FOLDING_SYMBOL_WIDTH = 8;
+	private final int FOLDING_SYMBOL_WIDTH = 8;
 
     protected int isDraggedOver = 0;
     public void setDraggedOver(int draggedOver) {
@@ -217,35 +217,42 @@ public abstract class NodeView extends JLabel {
         } else {
             return super.getPreferredSize();
         }
-    }	
+    }
+    /** get width including folding symbol*/	
 	public int getExtendedWidth()
 	{
 		return getWidth();
 	}
   
+	/** get height including folding symbol*/	
 	public int getExtendedHeight()
 	{
 		return getHeight();
 	}
   
+	/** get x coordinate including folding symbol*/	
 	public int getExtendedX()
 	{
 		return getX();
 	}
   
+	/** get y coordinate including folding symbol*/	
 	public int getExtendedY()
 	{
 		return getY();
 	}
 
+	/** set x and y coordinate including folding symbol*/	
 	public void setExtendedLocation(int x,	int y){
 		setLocation(x, y);
 	}
   
+	/** set size including folding symbol*/	
 	public void setExtendedSize(int width,	int height){
 		setSize(width, height);
 	}
 	  
+	/** set bounds including folding symbol*/	
 	public void setExtendedBounds(int x,	int y,	int width,	int height){
 		setExtendedLocation(x, y);
 		setExtendedSize(width, height);
@@ -256,6 +263,7 @@ public abstract class NodeView extends JLabel {
       super. requestFocus();
    }
 
+   /** draw folding symbol*/	
 	public void paintFoldingMark(Graphics2D g){ 
 	}
 
@@ -783,6 +791,10 @@ public abstract class NodeView extends JLabel {
 
     public void setTreeWidth(int i) {
         treeWidth = i;
+    }
+
+    public int getZoomedFoldingSymbolWidth() {
+        return 2 * (int) (FOLDING_SYMBOL_WIDTH * map.getZoom() / 2);
     }
 
 }

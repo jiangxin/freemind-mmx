@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.13.4.2 2004-08-27 21:01:33 dpolivaev Exp $*/
+/*$Id: BubbleNodeView.java,v 1.13.4.3 2004-08-28 07:07:34 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -54,20 +54,20 @@ public class BubbleNodeView extends NodeView {
     	Dimension result = new Dimension(super.getPreferredSize().width+2*LEFT_WIDTH_OVERHEAD,
 			super.getPreferredSize().height+4); 
     	if (getModel().isFolded())
-			result.width +=  FOLDING_SYMBOL_WIDTH / 2 ;
+			result.width +=  getZoomedFoldingSymbolWidth() / 2 ;
 		return result; 
     }	  
 
 	public void setExtendedLocation(int x,	int y){
 		if(getModel().isFolded() && isLeft()){
-				x += FOLDING_SYMBOL_WIDTH / 2;
+				x += getZoomedFoldingSymbolWidth() / 2;
 		}
 		setLocation(x, y);
 	}
   
 	public void setExtendedSize(int width,	int height){
 		if(getModel().isFolded()){
-			width -= FOLDING_SYMBOL_WIDTH / 2;
+			width -= getZoomedFoldingSymbolWidth() / 2;
 		}
 		setSize(width, height);
 	}
@@ -76,7 +76,7 @@ public class BubbleNodeView extends NodeView {
 	{
 		int width = getWidth();
 		if(getModel().isFolded()){
-			width += FOLDING_SYMBOL_WIDTH / 2;
+			width += getZoomedFoldingSymbolWidth() / 2;
 		}
 		return width;
 	}
@@ -85,7 +85,7 @@ public class BubbleNodeView extends NodeView {
 	{
 		int x = getX();
 		if(getModel().isFolded() && isLeft()){
-				x -= FOLDING_SYMBOL_WIDTH / 2;
+				x -= getZoomedFoldingSymbolWidth() / 2;
 		}
 		return x;
 	}
@@ -111,18 +111,18 @@ public class BubbleNodeView extends NodeView {
 			if (isLeft())
 			{
 				g.drawArc( arcStartPoint.x , arcStartPoint.y , height,   height, 270,180);
-				ovalStartPoint.translate(- FOLDING_SYMBOL_WIDTH/2 + 1 , - FOLDING_SYMBOL_WIDTH/2);
+				ovalStartPoint.translate(- getZoomedFoldingSymbolWidth()/2 + 1 , - getZoomedFoldingSymbolWidth()/2);
 			}
 			else
 			{
 				g.drawArc( arcStartPoint.x , arcStartPoint.y, height,   height,90,180);
-				ovalStartPoint.translate(- FOLDING_SYMBOL_WIDTH/2 - 1 , - FOLDING_SYMBOL_WIDTH/2);
+				ovalStartPoint.translate(- getZoomedFoldingSymbolWidth()/2 - 1 , - getZoomedFoldingSymbolWidth()/2);
 			}
 			Color actualColor = g.getColor();
 			g.setColor(model.getBackgroundColor());
-			g.fillOval(ovalStartPoint.x + 1 , ovalStartPoint.y + 1, FOLDING_SYMBOL_WIDTH - 2, FOLDING_SYMBOL_WIDTH - 2);
+			g.fillOval(ovalStartPoint.x + 1 , ovalStartPoint.y + 1, getZoomedFoldingSymbolWidth() - 2, getZoomedFoldingSymbolWidth() - 2);
 			g.setColor(actualColor);
-			g.drawOval(ovalStartPoint.x , ovalStartPoint.y , FOLDING_SYMBOL_WIDTH, FOLDING_SYMBOL_WIDTH);
+			g.drawOval(ovalStartPoint.x , ovalStartPoint.y , getZoomedFoldingSymbolWidth(), getZoomedFoldingSymbolWidth());
 		}
         
 	}
