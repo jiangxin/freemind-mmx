@@ -19,7 +19,7 @@
  *
  * Created on 27.08.2004
  */
-/*$Id: FontSizeAction.java,v 1.1.2.1 2004-08-27 21:44:20 christianfoltin Exp $*/
+/*$Id: FontSizeAction.java,v 1.1.2.2 2004-09-29 21:49:04 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -35,7 +35,6 @@ import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
-import freemind.modes.mindmapmode.MindMapNodeModel;
 
 /**
  * @author foltin
@@ -63,7 +62,7 @@ public class FontSizeAction extends NodeGeneralAction implements NodeActorXml {
         super.actionPerformed(null);
     }
     
-    public ActionPair apply(MapAdapter model, MindMapNodeModel selected) throws JAXBException {
+    public ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException {
         return getActionPair(selected, actionSize);
     }
 

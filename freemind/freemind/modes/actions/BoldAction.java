@@ -19,7 +19,6 @@ import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import freemind.modes.mindmapmode.MindMapNodeModel;
 
 
 public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuItemEnabledListener{
@@ -47,7 +46,7 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuI
 		return BoldNodeAction.class;
 	}
 
-	public ActionPair apply(MapAdapter model, MindMapNodeModel selected) throws JAXBException {
+	public ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException {
 		// every node is set to the inverse of the focussed node.
 		boolean bold = modeController.getSelected().isBold();
 		return getActionPair(selected, bold);

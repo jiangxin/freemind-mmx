@@ -59,6 +59,9 @@ Changes made in Freemind 0.8.0:
 
 * Hooks are undoable now, tested with AutomaticLayout.
 
+//commented out: * Icons appear on the right side on the right side of the node.
+* More Undo: icon adding and removing and node blend action.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

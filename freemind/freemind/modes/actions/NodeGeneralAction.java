@@ -15,29 +15,28 @@ import javax.swing.ImageIcon;
 import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.AbstractXmlAction;
-import freemind.controller.actions.ActionFactory;
 import freemind.controller.actions.ActionPair;
-import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.NodeActorXml;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
 
 public class NodeGeneralAction extends AbstractXmlAction {
-	protected final ControllerAdapter modeController;
+	protected final ModeController modeController;
 	private freemind.controller.actions.NodeActorXml actor;
 	SingleNodeOperation singleNodeOperation;
 	protected static Logger logger;
-	protected NodeGeneralAction(ControllerAdapter modeController, String textID, String iconPath) {
+	protected NodeGeneralAction(ModeController modeController, String textID, String iconPath) {
 		super(
 		modeController.getText(textID),
-			iconPath != null ? new ImageIcon(modeController.getResource(iconPath)) : null,
+			iconPath != null ? new ImageIcon(modeController.getController().getResource(iconPath)) : null,
 		modeController);
 		this.modeController = modeController;
 		putValue(Action.SHORT_DESCRIPTION, modeController.getText(textID));
@@ -47,15 +46,16 @@ public class NodeGeneralAction extends AbstractXmlAction {
 		    logger = modeController.getFrame().getLogger(this.getClass().getName());
 		}
 	}
+
 	public NodeGeneralAction(
-		ControllerAdapter modeController, String textID,
+	        ModeController modeController, String textID,
 		String iconPath,
 		SingleNodeOperation singleNodeOperation) {
 		this(modeController, textID, iconPath);
 		this.singleNodeOperation = singleNodeOperation;
 	}
 	public NodeGeneralAction(
-		ControllerAdapter modeController, String textID,
+	        ModeController modeController, String textID,
 		String iconPath,
 		freemind.controller.actions.NodeActorXml actor) {
 		this(modeController, textID, iconPath);
@@ -74,7 +74,7 @@ public class NodeGeneralAction extends AbstractXmlAction {
 				it.hasNext();
 				) {
 				MindMapNodeModel selected = (MindMapNodeModel) it.next();
-				singleNodeOperation.apply((MindMapMapModel) this.modeController.getModel(), selected);
+				singleNodeOperation.apply((MindMapMapModel) this.modeController.getMap(), selected);
 			}
 		} else {
             // xml action:
@@ -92,7 +92,7 @@ public class NodeGeneralAction extends AbstractXmlAction {
                     ) {
                     MindMapNodeModel selected = (MindMapNodeModel) it.next();
                     ActionPair pair =
-                        actor.apply(this.modeController.getModel(), selected);
+                        actor.apply(this.modeController.getMap(), selected);
 					if (pair != null) {
                         doAction
                                 .getCompoundActionOrSelectNodeActionOrCutNodeAction()

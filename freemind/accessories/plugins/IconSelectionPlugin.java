@@ -19,8 +19,8 @@ import freemind.extensions.NodeHookAdapter;
 import freemind.main.FreeMind;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
+import freemind.modes.actions.IconAction;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.MindMapController.IconAction;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -50,7 +50,7 @@ public class IconSelectionPlugin extends NodeHookAdapter {
 		Vector iconActions = controller.iconActions;
 		for (Enumeration e = iconActions.elements(); e.hasMoreElements();) {
 			IconAction action =
-				((MindMapController.IconAction) e.nextElement());
+				((IconAction) e.nextElement());
 			items.add(action.getValue(Action.SMALL_ICON));
 			itemdescriptions.add(action.getValue(Action.SHORT_DESCRIPTION));
 		}

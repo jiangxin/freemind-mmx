@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.32 2004-09-27 19:49:52 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.33 2004-09-29 21:49:04 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -96,16 +96,21 @@ import freemind.modes.actions.EdgeColorAction;
 import freemind.modes.actions.EditAction;
 import freemind.modes.actions.FontFamilyAction;
 import freemind.modes.actions.FontSizeAction;
+import freemind.modes.actions.IconAction;
 import freemind.modes.actions.ItalicAction;
 import freemind.modes.actions.NewChildAction;
 import freemind.modes.actions.NodeColorAction;
+import freemind.modes.actions.NodeColorBlendAction;
 import freemind.modes.actions.NodeUpAction;
 import freemind.modes.actions.PasteAction;
 import freemind.modes.actions.RedoAction;
+import freemind.modes.actions.RemoveAllIconsAction;
+import freemind.modes.actions.RemoveLastIconAction;
 import freemind.modes.actions.ToggleChildrenFoldedAction;
 import freemind.modes.actions.ToggleFoldedAction;
 import freemind.modes.actions.UnderlinedAction;
 import freemind.modes.actions.UndoAction;
+import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -151,6 +156,10 @@ public abstract class ControllerAdapter implements ModeController {
     public NodeUpAction nodeUp = null;
     public NodeDownAction nodeDown = null;
     public EdgeColorAction edgeColor = null;
+    public NodeColorBlendAction nodeColorBlend = null;
+    public IconAction unknwonIconAction = null;
+    public RemoveLastIconAction removeLastIconAction = null;
+    public RemoveAllIconsAction removeAllIconsAction = null;
 	/** Executes series of actions. */
 	private CompoundActionHandler compound = null;
 
@@ -196,7 +205,15 @@ public abstract class ControllerAdapter implements ModeController {
 		nodeDown = new NodeDownAction(this);
 	    edgeColor = new EdgeColorAction(this);
 	    nodeColor = new NodeColorAction(this);
-		compound = new CompoundActionHandler(this);
+	    nodeColorBlend = new NodeColorBlendAction(this);
+	    // this is an unknown icon and thus corrected by mindicon:
+	    removeLastIconAction = new RemoveLastIconAction(this);
+	    // this action handles the xml stuff: (undo etc.)
+	    unknwonIconAction = new IconAction(this, new MindIcon((String) MindIcon
+                .getAllIconNames().get(0)), removeLastIconAction);
+	    removeLastIconAction.setIconAction(unknwonIconAction);
+	    removeAllIconsAction = new RemoveAllIconsAction(this, unknwonIconAction);
+	    compound = new CompoundActionHandler(this);
 
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
                                                new FileOpener());
@@ -761,9 +778,36 @@ public abstract class ControllerAdapter implements ModeController {
         nodeColor.setNodeColor(node, color);
     }
     
-	public void setEdgeColor(MindMapNode node, Color color) {
+    public void blendNodeColor(MindMapNode node) {
+        Color mapColor = getMap().getBackgroundColor();
+        Color nodeColor = node.getColor();
+        if (nodeColor == null) {
+            nodeColor = Tools.xmlToColor(getFrame().getProperty(
+                    "standardnodecolor"));
+        }
+        setNodeColor(node, new Color(
+                (3 * mapColor.getRed() + nodeColor.getRed()) / 4, (3 * mapColor
+                        .getGreen() + nodeColor.getGreen()) / 4, (3 * mapColor
+                        .getBlue() + nodeColor.getBlue()) / 4));
+    }
+
+
+    public void setEdgeColor(MindMapNode node, Color color) {
 		edgeColor.setEdgeColor(node, color);
-	}
+    }
+    
+    public void addIcon(MindMapNode node, MindIcon icon) {
+        unknwonIconAction.addIcon(node, icon);
+    }
+
+
+    public void removeAllIcons(MindMapNode node) {
+        removeAllIconsAction.removeAllIcons(node);
+    }
+
+    public int removeLastIcon(MindMapNode node) {
+        return removeLastIconAction.removeLastIcon(node);
+    }
 	// edit begins with home/end or typing (PN 6.2)
 	public void edit(KeyEvent e, boolean addNew, boolean editLong) {
 		edit.edit(e, addNew, editLong);
@@ -1499,4 +1543,8 @@ public abstract class ControllerAdapter implements ModeController {
 
     public void startupController() {
     }
+    /**
+     *
+     */
+
 }

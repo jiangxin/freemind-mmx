@@ -11,6 +11,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
 
 /**
@@ -47,19 +48,26 @@ public interface MindMapActions {
 	void setFolded(MindMapNode node, boolean folded);
 	void toggleFolded();
 
+	public void setBold(MindMapNode node, boolean bolded);
+	public void setItalic(MindMapNode node, boolean isItalic);
 	public void setNodeColor(MindMapNode node, Color color);
-//	public void blendNodeColor(MindMapNode node);
+	public void blendNodeColor(MindMapNode node);
+	public void setFontFamily(
+		MindMapNode node,
+		String fontFamily);
+	public void setFontSize(MindMapNode node, String fontSizeValue);
+	/** This method is nice, but how to get a MindIcon ? */
+	public void addIcon(MindMapNode node, MindIcon icon);
+	public int removeLastIcon(MindMapNode node);
+	public void removeAllIcons(MindMapNode node);
+//	public void setNodeStyle(MindMapNode node, String style);
 	public void setEdgeColor(MindMapNode node, Color color);
 //	public void setEdgeWidth(MindMapNode node, int width);
-//	public void setNodeStyle(MindMapNode node, String style);
 //	public void setEdgeStyle(MindMapNode node, String style);
-	public void setBold(MindMapNode node, boolean bolded);
 //	public void setCloud(MindMapNode node);
 //	public void setCloudColor(MindMapNode node, Color color);
 //	public void setCloudWidth(MindMapNode node, int width);
 //	public void setCloudStyle(MindMapNode node, String style);
-//	public void addIcon(MindMapNode node, MindIcon icon);
-//	public int removeLastIcon(MindMapNode node);
 //	/** Source holds the MindMapArrowLinkModel and points to the id placed in target.*/
 //	public void addLink(
 //		MindMapNode source,
@@ -76,13 +84,8 @@ public interface MindMapActions {
 //		MindMapNode source,
 //		MindMapArrowLinkModel arrowLink,
 //		Color color);
-	public void setItalic(MindMapNode node, boolean isItalic);
 //	public void setUnderlined(MindMapNode node);
 //	public void setNormalFont(MindMapNode node);
-	public void setFontFamily(
-		MindMapNode node,
-		String fontFamily);
-	public void setFontSize(MindMapNode node, String fontSizeValue);
 //	public void increaseFontSize(MindMapNode node, int increment);
 //	public void splitNode(
 //		MindMapNode node,

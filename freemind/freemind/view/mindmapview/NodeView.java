@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.10.5 2004-08-01 07:26:25 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.10.6 2004-09-29 21:49:05 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -41,6 +41,7 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import sun.nio.cs.StandardCharsets;
 
@@ -724,7 +725,12 @@ public abstract class NodeView extends JLabel {
                    text+"</table></html>"); }
    		// 5) ToolTip:
    		setToolTipText(getModel().getToolTip());
-        // 6) Complete
+//   		// 6) icons left or right? 
+//   		//URGENT: Discuss with Dan.
+//   		if(getModel().isLeft() != null) {
+//   		    setHorizontalTextPosition((getModel().isLeft().getValue())?SwingConstants.LEADING:SwingConstants.TRAILING);
+//   		}
+        // 7) Complete
         repaint(); // Because of zoom?
     }
 

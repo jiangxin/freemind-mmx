@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.28 2004-09-19 07:29:06 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.29 2004-09-29 21:49:05 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -78,6 +78,7 @@ import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.StylePattern;
+import freemind.modes.actions.IconAction;
 import freemind.modes.actions.NewMapAction;
 import freemind.modes.actions.NewPreviousSiblingAction;
 import freemind.modes.actions.NewSiblingAction;
@@ -128,9 +129,6 @@ public class MindMapController extends ControllerAdapter {
 
    public Action fork = new ForkAction();
    public Action bubble = new BubbleAction();
-   public Action nodeColorBlend = new NodeGeneralAction (this, "blend_color", null,
-       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
-          map.blendNodeColor(node); }});
 	public Action nodeBackgroundColor = new NodeBackgroundColorAction();
 
     public Action EdgeWidth_WIDTH_PARENT = new EdgeWidthAction(EdgeAdapter.WIDTH_PARENT);
@@ -184,12 +182,6 @@ public class MindMapController extends ControllerAdapter {
     // Extension Actions
     public Action patterns[] = new Action[0]; // Make sure it is initialized
     public Vector iconActions = new Vector(); //fc
-    public Action removeLastIcon = new NodeGeneralAction (this, "remove_last_icon", "images/remove.png",
-       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
-          map.removeLastIcon(node); }});
-    public Action removeAllIcons = new NodeGeneralAction (this, "remove_all_icons", "images/edittrash.png",
-       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
-           while(map.removeLastIcon(node)>0) {}; }});
 
 
 
@@ -298,7 +290,7 @@ public class MindMapController extends ControllerAdapter {
         for ( int i = 0 ; i < iconNames.size(); ++i ) {
             String iconName = ((String) iconNames.get(i));
             MindIcon myIcon     = new MindIcon(iconName);
-            Action myAction = new IconAction(myIcon);
+            IconAction myAction = new IconAction(this, myIcon,removeLastIconAction);
             iconActions.add(myAction);
         }
     }
@@ -398,8 +390,8 @@ public class MindMapController extends ControllerAdapter {
 //        editMenu.add(getIconMenu());
 		String iconMenuString = MenuBar.INSERT_MENU + "icons";
 		JMenu iconMenu = holder.addMenu(new JMenu(getText("icon_menu")), iconMenuString+"/.") ;
-		holder.addAction(removeLastIcon, iconMenuString+"/removeLastIcon");
-		holder.addAction(removeAllIcons, iconMenuString+"/removeAllIcons");
+		holder.addAction(removeLastIconAction, iconMenuString+"/removeLastIcon");
+		holder.addAction(removeAllIconsAction, iconMenuString+"/removeAllIcons");
 		holder.addSeparator(iconMenuString);
 		for (int i=0; i<iconActions.size(); ++i) {          
 			   JMenuItem item = holder.addAction((Action) iconActions.get(i), iconMenuString+"/"+i);
@@ -566,8 +558,8 @@ public class MindMapController extends ControllerAdapter {
 //        normalFont.setEnabled(enabled);
         nodeColor.setEnabled(enabled);
         edgeColor.setEnabled(enabled);
-        removeLastIcon.setEnabled(enabled);
-        removeAllIcons.setEnabled(enabled);
+        removeLastIconAction.setEnabled(enabled);
+        removeAllIconsAction.setEnabled(enabled);
         for (int i=0; i<iconActions.size(); ++i) {          
             ((Action) iconActions.get(i)).setEnabled(enabled);
         }
@@ -863,25 +855,6 @@ public class MindMapController extends ControllerAdapter {
 
 
     // Icons
-    // __________________
-
-    public class IconAction extends AbstractAction {
-        public MindIcon icon;
-        public IconAction(MindIcon _icon) {
-            super(_icon.getDescription(getFrame()), _icon.getIcon(getFrame()));
-            putValue(Action.SHORT_DESCRIPTION, _icon.getDescription(getFrame()));
-            this.icon = _icon;
-        };
-        
-        public void actionPerformed(ActionEvent e) {
-           for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-              MindMapNodeModel selected = (MindMapNodeModel)it.next();
-              (getMindMapMapModel()).addIcon(selected, icon); 
-            }
-        };
-    }
-
-    // ArrowLinks
     // __________________
 
     protected class RemoveArrowLinkAction extends AbstractAction {

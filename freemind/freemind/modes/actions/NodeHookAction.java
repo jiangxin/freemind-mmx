@@ -19,7 +19,7 @@
  *
  * Created on 26.07.2004
  */
-/*$Id: NodeHookAction.java,v 1.1.2.5 2004-09-27 19:49:52 christianfoltin Exp $*/
+/*$Id: NodeHookAction.java,v 1.1.2.6 2004-09-29 21:49:04 christianfoltin Exp $*/
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
@@ -30,6 +30,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.xml.bind.JAXBException;
 
@@ -38,7 +39,6 @@ import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.FreemindAction;
 import freemind.controller.actions.generated.instance.HookNodeAction;
-import freemind.controller.actions.generated.instance.MoveNodesAction;
 import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.controller.actions.generated.instance.NodeListMemberType;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -58,7 +58,8 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 	}
 	private static Logger logger;
 	public NodeHookAction(String hookName, ModeController controller) {
-		super(hookName, null, null);
+	    //URGENT: hookName must be translated!!
+		super(hookName, (ImageIcon) null, null);
 		this._hookName = hookName;
 		this.controller = controller;
 		if(logger == null)

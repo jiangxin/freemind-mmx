@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.12.12 2004-09-27 19:49:52 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.12.13 2004-09-29 21:49:04 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -262,6 +262,7 @@ public abstract class NodeAdapter implements MindMapNode {
 
     public void   addIcon(MindIcon _icon) { icons.add(_icon); };
 
+    /** @return returns the number of remaining icons. */
     public int   removeLastIcon() { if(icons.size() > 0) icons.setSize(icons.size()-1); return icons.size();};
 
     // end, fc, 24.9.2003

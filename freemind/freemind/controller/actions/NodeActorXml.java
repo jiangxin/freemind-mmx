@@ -9,7 +9,7 @@ package freemind.controller.actions;
 import javax.xml.bind.JAXBException;
 
 import freemind.modes.MapAdapter;
-import freemind.modes.mindmapmode.MindMapNodeModel;
+import freemind.modes.MindMapNode;
 
 /**
  * @author foltin
@@ -23,6 +23,6 @@ public interface NodeActorXml extends ActorXml {
 	 * @param selected
 	 * @return
 	 */
-	ActionPair apply(MapAdapter model, MindMapNodeModel selected) throws JAXBException;
+	ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException;
 
 }

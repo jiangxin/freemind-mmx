@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.12.12.8 2004-08-27 21:44:22 christianfoltin Exp $*/
+/*$Id: MindMapToolBar.java,v 1.12.12.9 2004-09-29 21:49:05 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -99,8 +99,8 @@ public class MindMapToolBar extends FreeMindToolBar {
         // button tool bar.
         buttonToolBar.removeAll();
         buttonToolBar.setRollover(true);
-        buttonToolBar.add(c.removeLastIcon);
-        buttonToolBar.add(c.removeAllIcons);
+        buttonToolBar.add(c.removeLastIconAction);
+        buttonToolBar.add(c.removeAllIconsAction);
         buttonToolBar.addSeparator();
         for(int i = 0; i < c.iconActions.size(); ++i) {
             buttonToolBar.add((Action) c.iconActions.get(i));

@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: UnderlinedAction.java,v 1.1.2.1 2004-08-25 20:40:03 christianfoltin Exp $ */
+/* $Id: UnderlinedAction.java,v 1.1.2.2 2004-09-29 21:49:04 christianfoltin Exp $ */
 package freemind.modes.actions;
 
 import javax.swing.Action;
@@ -36,7 +36,6 @@ import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import freemind.modes.mindmapmode.MindMapNodeModel;
 
 
 public class UnderlinedAction extends NodeGeneralAction implements NodeActorXml, MenuItemEnabledListener{
@@ -66,7 +65,7 @@ public class UnderlinedAction extends NodeGeneralAction implements NodeActorXml,
 		return UnderlinedNodeAction.class;
 	}
 
-	public ActionPair apply(MapAdapter model, MindMapNodeModel selected) throws JAXBException {
+	public ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException {
 		// every node is set to the inverse of the focussed node.
 		boolean underlined = modeController.getSelected().isUnderlined();
 		return getActionPair(selected, underlined);

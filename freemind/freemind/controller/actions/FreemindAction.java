@@ -19,7 +19,7 @@
  *
  * Created on 19.07.2004
  */
-/*$Id: FreemindAction.java,v 1.1.2.2 2004-07-30 18:29:29 christianfoltin Exp $*/
+/*$Id: FreemindAction.java,v 1.1.2.3 2004-09-29 21:49:04 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -34,6 +34,10 @@ import freemind.modes.ModeController;
  * @author foltin
  *
  */
+/**
+ * @author foltin
+ *
+ */
 public abstract class FreemindAction extends AbstractAction {
 
     private Icon actionIcon;
@@ -42,8 +46,9 @@ public abstract class FreemindAction extends AbstractAction {
     private final ModeController modeController;
 
     /**
-     * @param title
+     * @param title is a fixed title (no translation is done via resources)
      * @param icon
+     * @param modeController
      */
     public FreemindAction(String title, Icon icon,  ModeController modeController) {
         super(title, icon);
@@ -53,6 +58,17 @@ public abstract class FreemindAction extends AbstractAction {
             enabledIcon = new ImageIcon(modeController.getFrame().getResource(ENABLED_ICON_PATH));
         }
         
+    }
+
+    /**
+     * @param title Title is a resource.
+     * @param iconPath is a path to an icon.
+     * @param modeController
+     */
+    public FreemindAction(String title, String iconPath, ModeController modeController) {
+        this(modeController.getController().getResourceString(title), 
+            (iconPath==null)?null: new ImageIcon(modeController.getController().getResource(iconPath)), 
+                modeController);
     }
 
     protected void setSelected(JMenuItem menuItem, boolean state) {

@@ -20,7 +20,7 @@
  * 
  * Created on 19.09.2004
  */
-/* $Id: NodeColorAction.java,v 1.1.2.3 2004-09-27 19:49:52 christianfoltin Exp $ */
+/* $Id: NodeColorAction.java,v 1.1.2.4 2004-09-29 21:49:04 christianfoltin Exp $ */
 
 package freemind.modes.actions;
 
@@ -47,7 +47,7 @@ public class NodeColorAction extends FreemindAction implements ActorXml {
     private final ModeController controller;
 
     public NodeColorAction(ModeController controller) {
-        super(controller.getText("node_color"), null, controller);
+        super("node_color", (String)null, controller);
         this.controller = controller;
         controller.getActionFactory().registerActor(this, getDoActionClass());
     }
