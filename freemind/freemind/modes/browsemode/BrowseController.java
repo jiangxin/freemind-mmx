@@ -16,15 +16,16 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13.12.4 2004-05-06 05:08:26 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.13.12.5 2004-05-23 12:39:02 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -32,13 +33,11 @@ import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
-import java.util.HashSet;
-import java.util.Vector;
-
+import freemind.controller.MenuBar;
+import freemind.controller.StructuredMenuHolder;
 import freemind.main.Tools;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
-import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.view.mindmapview.NodeView;
@@ -94,19 +93,6 @@ public class BrowseController extends ControllerAdapter {
 
     public MindMapNode newNode() {
 	return new BrowseNodeModel(getText("new_node"), getFrame());
-    }
-
-    //get/set methods
-
-    JMenu getEditMenu() {
-	JMenu editMenu = new JMenu();
-	editMenu.add(getPopupMenu());
-	return editMenu;
-    }
-
-    JMenu getFileMenu() {
-	JMenu fileMenu = new JMenu();
-	return fileMenu;
     }
 
     public JPopupMenu getPopupMenu() {
@@ -225,5 +211,16 @@ public class BrowseController extends ControllerAdapter {
 	public void actionPerformed(ActionEvent e) {
 	    loadURL();
 	}
+    }
+    /* (non-Javadoc)
+     * @see freemind.modes.ModeController#updateMenus(freemind.controller.StructuredMenuHolder)
+     */
+    public void updateMenus(StructuredMenuHolder holder) {
+		add(holder, MenuBar.EDIT_MENU+"/find/find", find, "keystroke_find");
+		add(holder, MenuBar.EDIT_MENU+"/find/findNext", findNext, "keystroke_find_next");
+		add(holder, MenuBar.EDIT_MENU+"/find/followLink", followLink, "keystroke_follow_link");
+		holder.addSeparator(MenuBar.EDIT_MENU+"/find");
+		add(holder, MenuBar.EDIT_MENU+"/find/toggleFolded", toggleFolded, "keystroke_toggle_folded");
+		add(holder, MenuBar.EDIT_MENU+"/find/toggleChildrenFolded", toggleChildrenFolded, "keystroke_toggle_children_folded");
     }
 }

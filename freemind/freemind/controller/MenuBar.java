@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.10.1 2004-05-21 21:49:11 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.10.2 2004-05-23 12:39:02 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -31,12 +31,17 @@ import javax.swing.*;
 /**This is the menu bar for FreeMind. Actions are defined in MenuListener. */
 public class MenuBar extends JMenuBar {
 
+	public static final String INSERT_MENU = "insert/";
+	public static final String NAVIGATE_MENU = "navigate/";
+	public static final String VIEW_MENU = "view/";
     public static final String HELP_MENU = "help/";
     public static final String MODES_MENU = "modes/";
     public static final String MINDMAP_MENU = "mindmaps/";
     public static final String EDIT_MENU = "edit/";
     public static final String FILE_MENU = "file/";
     public static final String POPUP_MENU = "popup/";
+	public static final String FORMAT_MENU = "format/";
+	public static final String EXTRAS_MENU = "extras/";
 
 	private StructuredMenuHolder menuHolder;
 	private StructuredMenuHolder menuPopupHolder;
@@ -64,40 +69,68 @@ public class MenuBar extends JMenuBar {
 		menuHolder = new StructuredMenuHolder();
 		menuPopupHolder = new StructuredMenuHolder();
 
-
+		// filemenu
 		filemenu = menuHolder.addMenu(new JMenu(c.getResourceString("file")), FILE_MENU+".");
+		filemenu.setMnemonic(KeyEvent.VK_F);
+
+		menuHolder.addCategory(FILE_MENU+"open");	
+		menuHolder.addSeparator(FILE_MENU);	
+		menuHolder.addCategory(FILE_MENU+"export");	
+		menuHolder.addSeparator(FILE_MENU);	
+		menuHolder.addCategory(FILE_MENU+"import");	
+		menuHolder.addSeparator(FILE_MENU);	
+		menuHolder.addCategory(FILE_MENU+"print");	
+		menuHolder.addSeparator(FILE_MENU);	
+		menuHolder.addCategory(FILE_MENU+"last");	
+		menuHolder.addSeparator(FILE_MENU);	
+		menuHolder.addCategory(FILE_MENU+"quit");	
+
+		// editmenu
 		editmenu = menuHolder.addMenu(new JMenu(c.getResourceString("edit")), EDIT_MENU+".");
-	
+		menuHolder.addCategory(EDIT_MENU+"undo");	
+		menuHolder.addSeparator(EDIT_MENU);	
+		menuHolder.addCategory(EDIT_MENU+"paste");	
+		menuHolder.addSeparator(EDIT_MENU);	
+		menuHolder.addCategory(EDIT_MENU+"edit");	
+		menuHolder.addSeparator(EDIT_MENU);	
+		menuHolder.addCategory(EDIT_MENU+"find");	
+		menuHolder.addSeparator(EDIT_MENU);	
+
+		//insert menu
+		menuHolder.addMenu(new JMenu(c.getResourceString("menu_insert")), INSERT_MENU+".");
+		menuHolder.addCategory(INSERT_MENU+"nodes");	
+		menuHolder.addSeparator(INSERT_MENU);	
+		menuHolder.addCategory(INSERT_MENU+"icons");	
+		menuHolder.addSeparator(INSERT_MENU);	
+
+		//format menu
+		menuHolder.addMenu(new JMenu(c.getResourceString("menu_format")), FORMAT_MENU+".");
+		menuHolder.addCategory(FORMAT_MENU+"patterns");	
+		menuHolder.addSeparator(FORMAT_MENU);	
+
+		//navigate menu
+		menuHolder.addMenu(new JMenu(c.getResourceString("menu_navigate")), NAVIGATE_MENU+".");
+
+
+		//view menu
+		menuHolder.addMenu(new JMenu(c.getResourceString("menu_view")), VIEW_MENU+".");
+
+		//extras menu
+		menuHolder.addMenu(new JMenu(c.getResourceString("menu_extras")), EXTRAS_MENU+".");
+
 		//Mapsmenu
 		mapsmenu = menuHolder.addMenu(new JMenu(c.getResourceString("mindmaps")), MINDMAP_MENU+".");
-
-		//mapsPopupMenu = menuPopupHolder.addPopupMenu(new JPopupMenu(c.getResourceString("mindmaps")), POPUP_MENU+".");
-		mapsPopupMenu = new JPopupMenu(c.getResourceString("mindmaps"));
-
-		filemenu.setMnemonic(KeyEvent.VK_F);
 		mapsmenu.setMnemonic(KeyEvent.VK_M);
+		menuHolder.addCategory(MINDMAP_MENU+"navigate");	
+		menuHolder.addSeparator(MINDMAP_MENU);	
+
+		// maps popup menu
+		mapsPopupMenu = new JPopupMenu(c.getResourceString("mindmaps"));
+		menuPopupHolder.addCategory(POPUP_MENU+"navigate");	
+		menuPopupHolder.addSeparator(POPUP_MENU);	
 	
 		//Modesmenu
 		JMenu modesmenu = menuHolder.addMenu(new JMenu(c.getResourceString("modes")), MODES_MENU+".");
-
-		ButtonGroup group = new ButtonGroup();
-		ActionListener modesMenuActionListener = new ModesMenuActionListener();
-		List keys = new LinkedList(c.getModes().keySet());
-		for (ListIterator i = keys.listIterator(); i.hasNext();) {
-			String key = (String)i.next();
-			JRadioButtonMenuItem newItem = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(key), MODES_MENU+key);
-			group.add(newItem);
-			if (c.getMode() != null) {
-                newItem.setSelected(c.getMode().toString().equals(key));
-            } else  {
-            	newItem.setSelected(false);
-            }
-			String keystroke = c.getFrame().getProperty("keystroke_mode_"+key);
-			if (keystroke != null) {
-				newItem.setAccelerator(KeyStroke.getKeyStroke(keystroke));
-			}
-			newItem.addActionListener(modesMenuActionListener);
-		}
 	
 		menuHolder.addMenu(new JMenu(c.getResourceString("help")), HELP_MENU+".");
 		menuHolder.addAction(c.documentation, HELP_MENU+"doc/documentation");
@@ -106,17 +139,45 @@ public class MenuBar extends JMenuBar {
 		menuHolder.addSeparator(HELP_MENU+"about");
 		menuHolder.addAction(c.about, HELP_MENU+"about/about");
 
-
 		updateFileMenu();
 		updateEditMenu();
+		updateModeMenu();
 		updateMapsMenu(menuHolder, MINDMAP_MENU);
 		updateMapsMenu(menuPopupHolder, POPUP_MENU);
 		addAdditionalPopupActions();
+		// the modes:
+		if ((c.getMode() != null)) {
+			c.getMode().getModeController().updateMenus(menuHolder);
+		}
 
+
+		//System.out.println("\n\nNachher:\n"+menuHolder+"\nEnd.\n\n");
 		menuHolder.updateMenus(this);
 		menuPopupHolder.updateMenus(mapsPopupMenu);
 
 	}
+
+
+    private void updateModeMenu() {
+        ButtonGroup group = new ButtonGroup();
+        ActionListener modesMenuActionListener = new ModesMenuActionListener();
+        List keys = new LinkedList(c.getModes().keySet());
+        for (ListIterator i = keys.listIterator(); i.hasNext();) {
+        	String key = (String)i.next();
+        	JRadioButtonMenuItem newItem = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(key), MODES_MENU+key);
+        	group.add(newItem);
+        	if (c.getMode() != null) {
+                newItem.setSelected(c.getMode().toString().equals(key));
+            } else  {
+            	newItem.setSelected(false);
+            }
+        	String keystroke = c.getFrame().getProperty("keystroke_mode_"+key);
+        	if (keystroke != null) {
+        		newItem.setAccelerator(KeyStroke.getKeyStroke(keystroke));
+        	}
+        	newItem.addActionListener(modesMenuActionListener);
+        }
+    }
 
 
     private void addAdditionalPopupActions() {
@@ -168,17 +229,11 @@ public class MenuBar extends JMenuBar {
 
 
     private void updateFileMenu() {
-		if ((c.getMode() != null)) {
-			c.getMode().updateMenus(menuHolder);
-		}
 	
-    	menuHolder.addSeparator(FILE_MENU);	
 		menuHolder.addAction(c.page, FILE_MENU+"print/pageSetup");
 		JMenuItem print = menuHolder.addAction(c.print, FILE_MENU+"print/print");
 		print.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_print")));
 	
-		menuHolder.addSeparator(FILE_MENU);	
-		menuHolder.addCategory(FILE_MENU+"last");	
 		JMenuItem close = menuHolder.addAction(c.close, FILE_MENU+"quit/close");
 		close.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_close")));
 		
@@ -188,7 +243,7 @@ public class MenuBar extends JMenuBar {
     }
 
     private void updateLastOpenedList() {
-		menuHolder.addMenu(new JMenu("last files"), FILE_MENU+"last/.");
+		menuHolder.addMenu(new JMenu(c.getResourceString("most_recent_files")), FILE_MENU+"last/.");
         boolean firstElement = true;
         LastOpenedList lst = c.getLastOpenedList();
         for (ListIterator it = lst.listIterator(); it.hasNext();) {
@@ -208,39 +263,24 @@ public class MenuBar extends JMenuBar {
     }
 
     private void updateEditMenu() {
-		editmenu.removeAll();
-	
-		if ((c.getMode() != null) && (c.getMode().getModeEditMenu() != null)) {
-		    copyMenuItems(c.getMode().getModeEditMenu(), editmenu);
-		}
-	
-		editmenu.addSeparator();
-	
-		JMenuItem zoomIn = editmenu.add(c.zoomIn);
+		JMenuItem zoomIn = menuHolder.addAction(c.zoomIn, VIEW_MENU+"zoom/zoomIn");
 		zoomIn.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_zoom_in")));
 	
-		JMenuItem zoomOut = editmenu.add(c.zoomOut);
-		zoomOut.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_zoom_out")));
+		JMenuItem zoomOut = menuHolder.addAction(c.zoomOut, VIEW_MENU+"zoom/zoomOut");
+		zoomIn.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_zoom_out")));
 	
-		editmenu.addSeparator();
-	
-		JMenuItem moveToRoot = editmenu.add(c.moveToRoot);
+		JMenuItem moveToRoot = menuHolder.addAction(c.moveToRoot, VIEW_MENU+"zoom/moveToRoot");
 		moveToRoot.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_moveToRoot")));
 	
-		JMenuItem previousMap = editmenu.add(c.navigationPreviousMap);
+
+		JMenuItem previousMap = menuHolder.addAction(c.navigationPreviousMap, MINDMAP_MENU+"navigate/navigationPreviousMap");
 		previousMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_previousMap")));
 	
-		JMenuItem nextMap = editmenu.add(c.navigationNextMap);
+		JMenuItem nextMap = menuHolder.addAction(c.navigationNextMap, MINDMAP_MENU+"navigate/navigationNextMap");
 		nextMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_nextMap")));
 	
-		//JMenuItem historyPreviousMap = editmenu.add(c.historyPreviousMap);
-		//JMenuItem historyNextMap = editmenu.add(c.historyNextMap);
-	        // ^ Daniel: This does not work as expected.
 	
-		editmenu.addSeparator();
-	
-		JMenu preferences = new JMenu(c.getResourceString("preferences"));
-		editmenu.add(preferences);
+		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EDIT_MENU+"options");
 	
 	        if (false) {
 	           preferences.add(c.background);

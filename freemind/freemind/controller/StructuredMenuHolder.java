@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.2.1 2004-05-21 21:49:11 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.2.2 2004-05-23 12:39:02 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -41,11 +41,13 @@ import javax.swing.JPopupMenu;
  */
 public class StructuredMenuHolder {
 
-	private static final String SEPARATOR_TEXT = "000";
+	private String mOutputString;
+    private static final String SEPARATOR_TEXT = "000";
     private static final String ORDER_NAME = "/order";
 	Map menuMap; 
 
-	public StructuredMenuHolder() {
+	private int mIndent;
+    public StructuredMenuHolder() {
 		menuMap = new HashMap();
 		Vector order = new Vector();
 		menuMap.put(ORDER_NAME, order); 
@@ -88,7 +90,13 @@ public class StructuredMenuHolder {
 	}
 
 	public void addSeparator(String category) {
-		addMenu((JMenu)null, category+"/"+SEPARATOR_TEXT);
+		String sep = category;
+		if (!sep.endsWith("/")) {
+            sep += "/";
+        }
+		sep += SEPARATOR_TEXT;
+		StringTokenizer tokens = new StringTokenizer(sep, "/");
+		addMenu(new SeparatorHolder(), tokens);
 	}
 	/**
 	 * @param item
@@ -106,7 +114,19 @@ public class StructuredMenuHolder {
 		categoryPair.map.remove(categoryPair.token);
 	}
 
-	private class MapTokenPair {
+	private final class PrintMenuAdder implements MenuAdder {
+        public void addMenuItem(JMenuItem item) {
+        	print("JMenuItem "+item.getActionCommand());
+        }
+        public void addSeparator() {
+        	print("Separator ");
+        }
+        public void addAction(Action action) {
+        	print("Action    "+action.getValue(Action.NAME));
+        }
+    }
+
+    private class MapTokenPair {
 		Map map;
 		String token;
 		MapTokenPair(Map map, String token) {
@@ -155,7 +175,7 @@ public class StructuredMenuHolder {
 
             public void addAction(Action action) {
 				throw new NoSuchMethodError("addAction for JMenuBar");
-            }}, menuMap);
+            }}, menuMap, new DefaultMenuAdderCreator());
     }
 
 	public void updateMenus(final JPopupMenu myItem) {
@@ -171,7 +191,7 @@ public class StructuredMenuHolder {
 
             public void addAction(Action action) {
             	myItem.add(action);
-            }}, menuMap);
+            }}, menuMap, new DefaultMenuAdderCreator());
 	}
 	
 	private interface MenuAdder {
@@ -202,7 +222,26 @@ public class StructuredMenuHolder {
         } 
 	}
     
-	private void updateMenus(MenuAdder menuAdder, Map thisMap) {
+    private interface MenuAdderCreator {
+		MenuAdder createAdder(JMenu baseObject);
+    }
+
+	private class DefaultMenuAdderCreator implements MenuAdderCreator {
+
+        /* (non-Javadoc)
+         * @see freemind.controller.StructuredMenuHolder.MenuAdderCreator#createAdder(javax.swing.JMenu)
+         */
+        public MenuAdder createAdder(JMenu baseObject) {
+            return new MenuItemAdder(baseObject);
+        }
+	}
+
+	private class SeparatorHolder {
+		public SeparatorHolder() {
+		}
+	}
+    
+	private void updateMenus(MenuAdder menuAdder, Map thisMap, MenuAdderCreator factory) {
 		//System.out.println(thisMap);
 		// iterate through maps and do the changes:
 		Vector myVector = (Vector) thisMap.get(ORDER_NAME);
@@ -211,7 +250,7 @@ public class StructuredMenuHolder {
 		for (Iterator i = myVector.iterator(); i.hasNext();) {
 			String category = (String) i.next();
 			Object nextObject = thisMap.get(category);
-			if(nextObject == null ) {
+			if(nextObject instanceof SeparatorHolder ) {
 				menuAdder.addSeparator();
 				continue;
 			}
@@ -226,13 +265,45 @@ public class StructuredMenuHolder {
 					// add this item to the current place:
 					JMenu baseObject = (JMenu) nextMap.get(".");
 					menuAdder.addMenuItem(baseObject);
-					nextItem = new MenuItemAdder(baseObject);
+					nextItem = factory.createAdder(baseObject);
 				} else {
 					nextItem = menuAdder;					
 				}
-				updateMenus(nextItem, nextMap);
+				mIndent++;
+				updateMenus(nextItem, nextMap, factory);
+				mIndent--;
 			}
 		}
+	}
+
+	/* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        mIndent = 0;
+        mOutputString = "";
+		updateMenus(new PrintMenuAdder(), menuMap, new PrintMenuAdderCreator());
+    	
+        return mOutputString;
+    }
+
+	private class PrintMenuAdderCreator implements MenuAdderCreator {
+
+		/* (non-Javadoc)
+		 * @see freemind.controller.StructuredMenuHolder.MenuAdderCreator#createAdder(javax.swing.JMenu)
+		 */
+		public MenuAdder createAdder(JMenu baseObject) {
+			return new PrintMenuAdder();
+		}
+	}
+    
+
+
+	private void print(String string) {
+		for(int i=0; i < mIndent; ++i) {
+			mOutputString+=("  ");
+		}
+		mOutputString += (string)+"\n";
 	}
 
 

@@ -16,10 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileController.java,v 1.11.12.2 2004-05-06 05:08:26 christianfoltin Exp $*/
+/*$Id: FileController.java,v 1.11.12.3 2004-05-23 12:39:02 christianfoltin Exp $*/
 
 package freemind.modes.filemode;
 
+import freemind.controller.MenuBar;
+import freemind.controller.StructuredMenuHolder;
 import freemind.modes.Mode;
 import freemind.modes.MindMap;
 import freemind.modes.MapAdapter;
@@ -56,13 +58,6 @@ public class FileController extends ControllerAdapter {
 	newNode.mkdir();
 	return new FileNodeModel(newNode,getFrame());
     }
-
-    public JMenu getEditMenu() {
-	JMenu editMenu = new JMenu();
-        add(editMenu, find, "keystroke_find");
-        add(editMenu, findNext, "keystroke_find_next"); 
-        add(editMenu, openPath);
-        return editMenu; }
 
     public JPopupMenu getPopupMenu() {
       return this.popupmenu;
@@ -104,6 +99,15 @@ public class FileController extends ControllerAdapter {
               }
            }
         }
+    }
+
+    /* (non-Javadoc)
+     * @see freemind.modes.ModeController#updateMenus(freemind.controller.StructuredMenuHolder)
+     */
+    public void updateMenus(StructuredMenuHolder holder) {
+    	add(holder, MenuBar.EDIT_MENU+"/find", find, "keystroke_find");
+		add(holder, MenuBar.EDIT_MENU+"/findNext", findNext, "keystroke_find_next");
+		add(holder, MenuBar.EDIT_MENU+"/openPath", openPath, null);
     }
 
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.10.12.2 2004-05-06 05:08:34 christianfoltin Exp $*/
+/*$Id: SchemeController.java,v 1.10.12.3 2004-05-23 12:39:03 christianfoltin Exp $*/
 
 package freemind.modes.schememode;
 
@@ -27,12 +27,15 @@ import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 
+import freemind.controller.MenuBar;
+import freemind.controller.StructuredMenuHolder;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
-import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.actions.EditAction;
@@ -115,5 +118,25 @@ public class SchemeController extends ControllerAdapter {
 	    //	    }
 	    JOptionPane.showMessageDialog(getView(),output);
 	}
+    }
+    /* (non-Javadoc)
+     * @see freemind.modes.ModeController#updateMenus(freemind.controller.StructuredMenuHolder)
+     */
+    public void updateMenus(StructuredMenuHolder holder) {
+		holder.addAction(newMap, MenuBar.FILE_MENU+"open/new");
+		holder.addAction(open, MenuBar.FILE_MENU+"open/open");
+		holder.addAction(save, MenuBar.FILE_MENU+"open/save");
+		holder.addAction(saveAs, MenuBar.FILE_MENU+"open/saveAs");
+
+		JMenuItem editItem = holder.addAction(edit, MenuBar.EDIT_MENU+"edit/editItem");
+		editItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_edit")));
+		JMenuItem addNewItem = holder.addAction(addNew, MenuBar.EDIT_MENU+"edit/newItem");
+		addNewItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_add")));
+		JMenuItem removeItem = holder.addAction(remove, MenuBar.EDIT_MENU+"edit/removeItem");
+		removeItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_remove")));
+		holder.addAction(evaluate, MenuBar.EDIT_MENU+"edit/evaluate");
+		holder.addAction(toggleFolded, MenuBar.EDIT_MENU+"edit/toggleFolded");
+
+
     }
 }

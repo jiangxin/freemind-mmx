@@ -16,15 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Mode.java,v 1.8.12.1 2004-05-21 21:49:11 christianfoltin Exp $*/
+/*$Id: Mode.java,v 1.8.12.2 2004-05-23 12:39:02 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import freemind.controller.Controller;
-import freemind.controller.StructuredMenuHolder;
-
-import javax.swing.JMenu;
 import javax.swing.JToolBar;
+
+import freemind.controller.Controller;
 
 public interface Mode {
 
@@ -34,10 +32,6 @@ public interface Mode {
     public void restore(String restorable);
     public ModeController getModeController();
     public Controller getController();
-    /** Use this method to get menus to the screen. */
-    public void updateMenus(StructuredMenuHolder holder);
-    public JMenu getModeFileMenu();
-    public JMenu getModeEditMenu();
     public JToolBar getModeToolBar();
     /** For the toolbar on the left hand side of the window.*/
     public JToolBar getLeftToolBar();

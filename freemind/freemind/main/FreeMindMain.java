@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12.10.2 2004-03-18 06:44:34 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.10.3 2004-05-23 12:39:02 christianfoltin Exp $*/
 
 package freemind.main;
 
 import java.awt.Container;
 import java.io.File;
 import java.net.URL;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.swing.JLayeredPane;
@@ -66,6 +67,9 @@ public interface FreeMindMain {
     public void repaint();
 
     public URL getResource(String name);
+
+	/** @return returns the list of all properties. */
+	public Properties getProperties();
 
     public String getProperty(String key);
 

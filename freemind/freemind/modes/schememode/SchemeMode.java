@@ -16,18 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMode.java,v 1.8.12.1 2004-05-21 21:49:12 christianfoltin Exp $*/
+/*$Id: SchemeMode.java,v 1.8.12.2 2004-05-23 12:39:03 christianfoltin Exp $*/
 
 package freemind.modes.schememode;
 
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 
 import freemind.controller.Controller;
-import freemind.controller.MenuBar;
-import freemind.controller.StructuredMenuHolder;
 import freemind.main.FreeMindMain;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
@@ -77,29 +72,6 @@ public class SchemeMode implements Mode {
 	return modecontroller;
     }
 
-    public JMenu getModeFileMenu() {
-	JMenu filemenu = new JMenu();
-	filemenu.add(((SchemeController)getModeController()).newMap);
-	filemenu.add(((SchemeController)getModeController()).open);
-	filemenu.add(((SchemeController)getModeController()).save);
-	filemenu.add(((SchemeController)getModeController()).saveAs);
-
-	return filemenu;
-    }
-
-    public JMenu getModeEditMenu() {
-	JMenu editmenu = new JMenu();
-	JMenuItem editItem = editmenu.add(((SchemeController)getModeController()).edit);
- 	editItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_edit")));
- 	JMenuItem addNewItem = editmenu.add(((SchemeController)getModeController()).addNew);
- 	addNewItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_add")));
- 	JMenuItem removeItem = editmenu.add(((SchemeController)getModeController()).remove);
- 	removeItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_remove")));
-	editmenu.add(((SchemeController)getModeController()).evaluate);
-	editmenu.add(((SchemeController)getModeController()).toggleFolded);
-
-	return editmenu;
-    }
 
     public JToolBar getModeToolBar() {
 	return toolbar;
@@ -113,14 +85,4 @@ public class SchemeMode implements Mode {
 	return c.getFrame();
     }
 
-    /* (non-Javadoc)
-     * @see freemind.modes.Mode#updateMenus(freemind.controller.StructuredMenuHolder)
-     */
-    public void updateMenus(StructuredMenuHolder holder) {
-		SchemeController controller = ((SchemeController)getModeController());
-    	holder.addAction(controller.newMap, MenuBar.FILE_MENU+"open/new");
-		holder.addAction(controller.open, MenuBar.FILE_MENU+"open/open");
-		holder.addAction(controller.save, MenuBar.FILE_MENU+"open/save");
-		holder.addAction(controller.saveAs, MenuBar.FILE_MENU+"open/saveAs");
-    }
 }

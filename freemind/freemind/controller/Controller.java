@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.10.5 2004-05-21 21:49:10 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.10.6 2004-05-23 12:39:02 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -392,6 +392,7 @@ public class Controller {
         setTitle();
         getMode().activate();
 
+        // this is already done in mapModuleChanged: 
         getFrame().getFreeMindMenuBar().updateMenus();
 
         if (getMapModule() == null) {

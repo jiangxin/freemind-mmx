@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMode.java,v 1.8.12.1 2004-05-21 21:49:11 christianfoltin Exp $*/
+/*$Id: BrowseMode.java,v 1.8.12.2 2004-05-23 12:39:02 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -100,17 +100,4 @@ public class BrowseMode implements Mode {
         return null;
     }
 
-    public JMenu getModeFileMenu() {
-        return ((BrowseController)getModeController()).getFileMenu();
-    }
-
-    public JMenu getModeEditMenu() {
-        return ((BrowseController)getModeController()).getEditMenu();
-    }
-
-    /* (non-Javadoc)
-     * @see freemind.modes.Mode#updateMenus(freemind.controller.StructuredMenuHolder)
-     */
-    public void updateMenus(StructuredMenuHolder holder) {
-    }
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMode.java,v 1.17.12.2 2004-05-21 21:49:12 christianfoltin Exp $*/
+/*$Id: MindMapMode.java,v 1.17.12.3 2004-05-23 12:39:03 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -84,15 +84,5 @@ public class MindMapMode implements Mode {
 	return ((MindMapController)getModeController()).getLeftToolBar();
     }
 
-    public JMenu getModeFileMenu() {
-	return ((MindMapController)getModeController()).getFileMenu();
-    }
 
-    public JMenu getModeEditMenu() {
-	return ((MindMapController)getModeController()).getEditMenu();
-    }
-
-    public void updateMenus(StructuredMenuHolder holder) {
-		((MindMapController)getModeController()).updateMenus(holder);
-    }
 }

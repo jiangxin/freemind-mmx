@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.13 2004-05-21 21:49:11 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.14 2004-05-23 12:39:02 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -117,7 +117,7 @@ public abstract class ControllerAdapter implements ModeController {
 	private HashSet nodesToBeUpdated;
 	// Logging: 
 	private static java.util.logging.Logger logger;
-	private static JAXBContext jc;
+	protected static JAXBContext jc;
 
 	Mode mode;
     private int noOfMaps = 0; //The number of currently open maps
@@ -430,10 +430,13 @@ public abstract class ControllerAdapter implements ModeController {
        return item;
     }
 
-	/** @return returns the new JMenuItem.*/
+	/** @return returns the new JMenuItem.
+	 * @param keystroke can be null, if no keystroke should be assigned. */
 	protected JMenuItem add(StructuredMenuHolder holder, String category, Action action, String keystroke) { 
 	   JMenuItem item = holder.addMenuItem(new JMenuItem(action), category);
-	   item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
+	   if(keystroke != null) {
+		item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
+	   }
 	   return item;
 	}
 

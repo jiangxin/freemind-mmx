@@ -16,15 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.10 2004-05-21 21:49:12 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.11 2004-05-23 12:39:02 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -48,14 +49,17 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
-import freemind.controller.actions.ActionPair;
-import freemind.controller.actions.ActorXml;
-import freemind.controller.actions.generated.instance.BoldNodeAction;
-import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.controller.actions.generated.instance.MenuAction;
+import freemind.controller.actions.generated.instance.MenuCategory;
+import freemind.controller.actions.generated.instance.MenuCategoryBase;
+import freemind.controller.actions.generated.instance.MenuSeparator;
+import freemind.controller.actions.generated.instance.MenuStructure;
+import freemind.controller.actions.generated.instance.MenuSubmenu;
 import freemind.extensions.HookFactory;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
@@ -68,8 +72,6 @@ import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.StylePattern;
-import freemind.modes.actions.*;
-import freemind.modes.actions.EditAction;
 import freemind.modes.actions.NewMapAction;
 import freemind.modes.actions.NodeGeneralAction;
 import freemind.modes.actions.SingleNodeOperation;
@@ -80,6 +82,8 @@ import freemind.modes.actions.SingleNodeOperation;
 
 public class MindMapController extends ControllerAdapter {
 
+	private static Logger logger;
+
 	public Vector nodeHookActions;
 	public Vector modeControllerHookActions;
 	//    Mode mode;
@@ -88,64 +92,69 @@ public class MindMapController extends ControllerAdapter {
     private MindMapToolBar toolbar;
     private boolean addAsChildMode = false;
 
-    Action newMap = new NewMapAction(this, this);
-    Action open = new OpenAction(this);
-    Action save = new SaveAction(this);
-    Action saveAs = new SaveAsAction(this);
-    Action exportToHTML = new ExportToHTMLAction(this);
-    Action exportBranchToHTML = new ExportBranchToHTMLAction(this);
+   public Action newMap = new NewMapAction(this, this);
+   public Action open = new OpenAction(this);
+   public Action save = new SaveAction(this);
+   public Action saveAs = new SaveAsAction(this);
+   public Action exportToHTML = new ExportToHTMLAction(this);
+   public Action exportBranchToHTML = new ExportBranchToHTMLAction(this);
 
-    Action editLong = new EditLongAction();
-    Action newChildWithoutFocus = new NewChildWithoutFocusAction();
-    Action newSibling = new NewSiblingAction();
-    Action newPreviousSibling = new NewPreviousSiblingAction();
-    Action remove = new RemoveAction();
-    Action toggleFolded = new ToggleFoldedAction();
-    Action toggleChildrenFolded = new ToggleChildrenFoldedAction();
-    Action setLinkByFileChooser = new SetLinkByFileChooserAction();
-	Action setImageByFileChooser = new SetImageByFileChooserAction();
-    Action setLinkByTextField = new SetLinkByTextFieldAction();
-    Action followLink = new FollowLinkAction();
-    Action exportBranch = new ExportBranchAction();
-    Action importBranch = new ImportBranchAction();
-    Action importLinkedBranch = new ImportLinkedBranchAction();
-    Action importLinkedBranchWithoutRoot = new ImportLinkedBranchWithoutRootAction();
-    Action importExplorerFavorites = new ImportExplorerFavoritesAction();
-    Action importFolderStructure = new ImportFolderStructureAction();
-    Action joinNodes = new JoinNodesAction();
-    Action nodeUp = new NodeUpAction();
-    Action nodeDown = new NodeDownAction();
-    Action find = new FindAction();
-    Action findNext = new FindNextAction();
+   public Action editLong = new EditLongAction();
+   public Action newChildWithoutFocus = new NewChildWithoutFocusAction();
+   public Action newSibling = new NewSiblingAction();
+   public Action newPreviousSibling = new NewPreviousSiblingAction();
+   public Action remove = new RemoveAction();
+   public Action toggleFolded = new ToggleFoldedAction();
+   public Action toggleChildrenFolded = new ToggleChildrenFoldedAction();
+   public Action setLinkByFileChooser = new SetLinkByFileChooserAction();
+   public Action setImageByFileChooser = new SetImageByFileChooserAction();
+   public Action setLinkByTextField = new SetLinkByTextFieldAction();
+   public Action followLink = new FollowLinkAction();
+   public Action exportBranch = new ExportBranchAction();
+   public Action importBranch = new ImportBranchAction();
+   public Action importLinkedBranch = new ImportLinkedBranchAction();
+   public Action importLinkedBranchWithoutRoot = new ImportLinkedBranchWithoutRootAction();
+   public Action importExplorerFavorites = new ImportExplorerFavoritesAction();
+   public Action importFolderStructure = new ImportFolderStructureAction();
+   public Action joinNodes = new JoinNodesAction();
+   public Action nodeUp = new NodeUpAction();
+   public Action nodeDown = new NodeDownAction();
+   public Action find = new FindAction();
+   public Action findNext = new FindNextAction();
 
-    Action fork = new ForkAction();
-    Action bubble = new BubbleAction();
-    Action nodeColor = new NodeColorAction();
-    Action nodeColorBlend = new NodeGeneralAction (this, "blend_color", null,
+   public Action fork = new ForkAction();
+   public Action bubble = new BubbleAction();
+   public Action nodeColor = new NodeColorAction();
+   public Action nodeColorBlend = new NodeGeneralAction (this, "blend_color", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.blendNodeColor(node); }});
 
-    Action edgeColor = new EdgeColorAction();
-    Action edgeWidths[] = {
-       new EdgeWidthAction(EdgeAdapter.WIDTH_PARENT),
-       new EdgeWidthAction(EdgeAdapter.WIDTH_THIN),
-       new EdgeWidthAction(1),
-       new EdgeWidthAction(2),
-       new EdgeWidthAction(4),
-       new EdgeWidthAction(8)
+    public Action edgeColor = new EdgeColorAction();
+    public Action EdgeWidth_WIDTH_PARENT = new EdgeWidthAction(EdgeAdapter.WIDTH_PARENT);
+	public Action EdgeWidth_WIDTH_THIN = new EdgeWidthAction(EdgeAdapter.WIDTH_THIN);
+	public Action EdgeWidth_1 = new EdgeWidthAction(1);
+	public Action EdgeWidth_2 = new EdgeWidthAction(2);
+	public Action EdgeWidth_4 = new EdgeWidthAction(4);
+	public Action EdgeWidth_8 = new EdgeWidthAction(8);
+    public Action edgeWidths[] = {
+		EdgeWidth_WIDTH_PARENT, EdgeWidth_WIDTH_THIN, EdgeWidth_1, EdgeWidth_2, EdgeWidth_4, EdgeWidth_8
     };
-    Action edgeStyles[] = {
-       new EdgeStyleAction("linear"),
-       new EdgeStyleAction("bezier"),
-       new EdgeStyleAction("sharp_linear"),
-       new EdgeStyleAction("sharp_bezier")
+	public Action EdgeStyle_linear = new EdgeStyleAction("linear");
+	public Action EdgeStyle_bezier = new EdgeStyleAction("bezier");
+	public Action EdgeStyle_sharp_linear = new EdgeStyleAction("sharp_linear");
+	public Action EdgeStyle_sharp_bezier = new EdgeStyleAction("sharp_bezier");
+    public Action edgeStyles[] = {
+		EdgeStyle_linear,
+		EdgeStyle_bezier,
+		EdgeStyle_sharp_linear,
+		EdgeStyle_sharp_bezier
     };
-    Action cloudColor = new CloudColorAction();
+    public Action cloudColor = new CloudColorAction();
 
-    Action italic = new NodeGeneralAction (this, "italic", "images/Italic24.gif",
+    public Action italic = new NodeGeneralAction (this, "italic", "images/Italic24.gif",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.setItalic(node); }});
-    Action cloud   = new NodeGeneralAction (this, "cloud", "images/Cloud24.gif",
+    public Action cloud   = new NodeGeneralAction (this, "cloud", "images/Cloud24.gif",
        new SingleNodeOperation() { private MindMapCloud lastCloud;
            private MindMapNodeModel nodeOfLastCloud;
            public void apply(MindMapMapModel map, MindMapNodeModel node) {
@@ -162,23 +171,23 @@ public class MindMapController extends ControllerAdapter {
 
            }
        });
-    Action normalFont = new NodeGeneralAction (this, "normal", "images/Normal24.gif",
+    public Action normalFont = new NodeGeneralAction (this, "normal", "images/Normal24.gif",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.setNormalFont(node); }});
-    Action increaseNodeFont = new NodeGeneralAction (this, "increase_node_font_size", null,
+    public Action increaseNodeFont = new NodeGeneralAction (this, "increase_node_font_size", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.increaseFontSize(node,1); }});
-    Action decreaseNodeFont = new NodeGeneralAction (this, "decrease_node_font_size", null,
+    public Action decreaseNodeFont = new NodeGeneralAction (this, "decrease_node_font_size", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.increaseFontSize(node,-1); }});
 
     // Extension Actions
-    Action patterns[] = new Action[0]; // Make sure it is initialized
+    public Action patterns[] = new Action[0]; // Make sure it is initialized
     public Vector iconActions = new Vector(); //fc
-    Action removeLastIcon = new NodeGeneralAction (this, "remove_last_icon", "images/remove.png",
+    public Action removeLastIcon = new NodeGeneralAction (this, "remove_last_icon", "images/remove.png",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
           map.removeLastIcon(node); }});
-    Action removeAllIcons = new NodeGeneralAction (this, "remove_all_icons", "images/edittrash.png",
+    public Action removeAllIcons = new NodeGeneralAction (this, "remove_all_icons", "images/edittrash.png",
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
            while(map.removeLastIcon(node)>0) {}; }});
 
@@ -189,6 +198,9 @@ public class MindMapController extends ControllerAdapter {
 
     public MindMapController(Mode mode) {
 	super(mode);
+	if(logger == null) {
+		logger = getFrame().getLogger(this.getClass().getName());
+	}
 	try {
            File patternsFile = getFrame().getPatternsFile();
            if (patternsFile != null && patternsFile.exists()) {
@@ -315,76 +327,107 @@ public class MindMapController extends ControllerAdapter {
 
 	    //get/set methods
 
-    JMenu getEditMenu() {
-	JMenu editMenu = new JMenu();
-	add(editMenu,undo,"keystroke_undo");
-	add(editMenu,redo,"keystroke_redo");
-	editMenu.addSeparator();
-
-        JMenu leading = getLeadingNodeMenu();
-        Component[] mc = leading.getMenuComponents();
-        for (int i = 0; i < mc.length; i++) {
-           editMenu.add(mc[i]); }
-
-        editMenu.addSeparator();
-	editMenu.add(getNodeMenu());
-	editMenu.add(getBranchMenu());
-	editMenu.add(getEdgeMenu());
-	editMenu.add(getExtensionMenu());
-	editMenu.add(getIconMenu());
-	// hooks, fc, 1.3.2004:
-	for (int i=0; i<nodeHookActions.size(); ++i) {          
-		   JMenuItem item = editMenu.add((Action) nodeHookActions.get(i));
-	}
-
-//	List list = getFrame().getHookFactory().getPossibleNodeHooks(this.getClass());
-//	for(Iterator i=list.iterator(); i.hasNext();){
-//		String desc = (String) i.next();
-//		// create hook class.
-//		HookFactory factory = getFrame().getHookFactory();
-//		NodeHook hook = factory.createNodeHook(desc, null, 
-//			getMap(), 
-//			this);
-//		hook.nodeMenuHook(editMenu);
-//	}
-//	// end hook generation.
-
-
-	return editMenu;
-    }
 
 
 	/**
 	 * @param holder
 	 */
-	public void updateMenus(StructuredMenuHolder holder) {
-		add(holder, MenuBar.FILE_MENU+"open/new", newMap, "keystroke_newMap");
-		add(holder, MenuBar.FILE_MENU+"open/open", open, "keystroke_open");
-		add(holder, MenuBar.FILE_MENU+"open/save", save, "keystroke_save");
-		add(holder, MenuBar.FILE_MENU+"open/saveAs", saveAs, "keystroke_saveAs");
-		holder.addSeparator(MenuBar.FILE_MENU+"open");
-		add(holder, MenuBar.FILE_MENU+"export/html", exportToHTML, "keystroke_export_to_html");
-//		// hooks: 
-//		// hooks, fc, 1.3.2004:
-//		for (int i=0; i<modeControllerHookActions.size(); ++i) {          
-//			   holder.addAction((Action) modeControllerHookActions.get(i));
-//		}
-	}
+    public void updateMenus(StructuredMenuHolder holder) {
 
-    JMenu getFileMenu() {
-        JMenu fileMenu = new JMenu();
-        add(fileMenu, newMap, "keystroke_newMap");
-        add(fileMenu, open, "keystroke_open");
-        add(fileMenu, save, "keystroke_save");
-        add(fileMenu, saveAs, "keystroke_saveAs");
-        fileMenu.addSeparator();
-        add(fileMenu, exportToHTML, "keystroke_export_to_html");
-        // hooks: 
-		// hooks, fc, 1.3.2004:
-		for (int i=0; i<modeControllerHookActions.size(); ++i) {          
-			   JMenuItem item = fileMenu.add((Action) modeControllerHookActions.get(i));
+		// get from resources:
+		try {
+            InputStream in = this.getFrame().getResource("mindmap_menus.xml").openStream();
+			Unmarshaller unmarshaller = jc.createUnmarshaller();
+			unmarshaller.setValidating(true);
+			MenuStructure menus = (MenuStructure) unmarshaller.unmarshal(in);
+			processMenuCategory(holder, menus.getMenuCategory(), "");
+        } catch (IOException e2) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace();
+		} catch (JAXBException e) {
+			logger.severe(e.getCause() + e.getLocalizedMessage() + e.getMessage());
+			e.printStackTrace();
+			throw new IllegalArgumentException("Menu structure could not be read.");
 		}
-        return fileMenu;
+        
+//		editMenu.add(getExtensionMenu());
+		JMenu extensionMenu = holder.addMenu(new JMenu(getText("extension_menu")), MenuBar.FORMAT_MENU+"patterns/.");
+        for (int i = 0; i < patterns.length; ++i) {
+            JMenuItem item =
+                holder.addAction(
+                    patterns[i],
+                    MenuBar.FORMAT_MENU + "patterns/" + i);
+            item.setAccelerator(
+                KeyStroke.getKeyStroke(
+                    getFrame().getProperty(
+                        "keystroke_apply_pattern_" + (i + 1))));
+        }
+
+
+//        editMenu.add(getIconMenu());
+		String iconMenuString = MenuBar.INSERT_MENU + "icons";
+		JMenu iconMenu = holder.addMenu(new JMenu(getText("icon_menu")), iconMenuString+"/.") ;
+		holder.addAction(removeLastIcon, iconMenuString+"/removeLastIcon");
+		holder.addAction(removeAllIcons, iconMenuString+"/removeAllIcons");
+		holder.addSeparator(iconMenuString);
+		for (int i=0; i<iconActions.size(); ++i) {          
+			   JMenuItem item = holder.addAction((Action) iconActions.get(i), iconMenuString+"/"+i);
+		}
+		// hooks: 
+		// hooks, fc, 1.3.2004:
+		for (int i = 0; i < modeControllerHookActions.size(); ++i) {
+			Action hookAction = (Action) modeControllerHookActions.get(i);
+			holder.addAction(
+				hookAction,
+				MenuBar.FILE_MENU
+					+ "export/"
+					+ (hookAction).getValue(Action.NAME));
+		}
+        // hooks, fc, 1.3.2004:
+        for (int i = 0; i < nodeHookActions.size(); ++i) {
+        	Action action = (Action) nodeHookActions.get(i);
+            add(holder, MenuBar.EDIT_MENU+"/plugins/"+action.getValue(Action.NAME), action, null);
+        }
+
+    }
+
+
+    /**
+     * @param type
+     */
+    private void processMenuCategory(StructuredMenuHolder holder, List list, String category) {
+    	for (Iterator i = list.iterator(); i.hasNext();) {
+            Object obj = (Object) i.next();
+            if(obj instanceof MenuCategoryBase) {
+				MenuCategoryBase cat = (MenuCategoryBase) obj;
+            	String newCategory = category+"/"+cat.getName();
+            	if (cat.isSetSeparatorBefore()) {
+                    holder.addSeparator(newCategory);
+                }
+				holder.addCategory(newCategory);
+                if(cat instanceof MenuSubmenu) {
+                	MenuSubmenu submenu = (MenuSubmenu) cat;
+                	holder.addMenu(new JMenu(getText(submenu.getNameRef())), newCategory+"/.");
+                }
+            	processMenuCategory(holder, cat.getMenuCategoryOrMenuSubmenuOrMenuAction(), newCategory);
+            } else if( obj instanceof MenuAction ) {
+				MenuAction action = (MenuAction) obj;            	
+				String field = action.getField();
+				String name = action.getName();
+				if(name == null) {
+					name = field;
+				}
+				String keystroke = action.getKeyRef();
+				try {
+					Action theAction = (Action) this.getClass().getField(field).get(this);
+                    add(holder, category+"/"+name, theAction, keystroke);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+            } else if (obj instanceof MenuSeparator) {
+            	holder.addSeparator(category);
+            } /* else exception */
+         }
     }
 
     JMenu getExtensionMenu() {
@@ -990,11 +1033,16 @@ public class MindMapController extends ControllerAdapter {
     // __________________
 
     private String getWidthTitle(int width) {
-       if (width==EdgeAdapter.WIDTH_PARENT)
-          return getText("edge_width_parent");
-       if (width==EdgeAdapter.WIDTH_THIN)
-          return getText("edge_width_thin");
-       return Integer.toString(width); }
+        String returnValue;
+        if (width == EdgeAdapter.WIDTH_PARENT) {
+            returnValue = getText("edge_width_parent");
+        } else if (width == EdgeAdapter.WIDTH_THIN) {
+            returnValue = getText("edge_width_thin");
+        } else {
+            returnValue = Integer.toString(width);
+        } 
+        return getText("edge_width") + returnValue;
+    }
 
     private class EdgeWidthAction extends AbstractAction {
        int width;
@@ -1038,7 +1086,7 @@ public class MindMapController extends ControllerAdapter {
     private class EdgeStyleAction extends AbstractAction {
 	String style;
 	EdgeStyleAction(String style) {
-	    super(getText(style));
+	    super(getText("edge_style") + getText(style));
             this.style = style; }	
        public void actionPerformed(ActionEvent e) {          
           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {

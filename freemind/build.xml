@@ -156,6 +156,7 @@
 				<include name="user.properties"/>
 				<include name="patterns.xml"/>
 				<include name="Resources*"/>
+				<include name="mindmap_menus.xml"/>
 			</fileset>
 		</jar>
 	</target>

@@ -92,7 +92,7 @@ public class ExportToImage extends ModeControllerHookAdapter {
 	public boolean exportToImage(BufferedImage image, String type) {
 		JFileChooser chooser = null;
 		chooser = new JFileChooser();
-		String imageName = view.getName() + type;
+		String imageName = getController().getMap().getFile().getName() +"."+ type;
 		chooser.setSelectedFile(new File(imageName));
 
 		chooser.addChoosableFileFilter(new ImageFilter(type));

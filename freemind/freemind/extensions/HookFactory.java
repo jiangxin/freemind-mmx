@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.5 2004-04-08 18:54:55 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.6 2004-05-23 12:39:02 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -80,15 +80,11 @@ public class HookFactory {
 	}
 
 	public Vector getPossibleNodeHooks(Class mode) {
-		actualizePlugins();
 		return searchFor(NodeHook.class, mode);
-		//return new String[] {"BlueNodeHook"};
 	}
 
 	public Vector getPossibleModeControllerHooks(Class mode) {
-		actualizePlugins();
 		return searchFor(ModeControllerHook.class, mode);
-		//return new String[] {"BlueNodeHook"};
 	}
 
 	/**
@@ -97,6 +93,7 @@ public class HookFactory {
 	 * @return
 	 */
 	private Vector searchFor(Class baseClass, Class mode) {
+		actualizePlugins();
 		Vector returnValue = new Vector();
 		for (Iterator i = pluginInfo.entrySet().iterator(); i.hasNext();) {
 			Map.Entry entry = (Map.Entry) i.next();

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.10.5 2004-04-08 18:54:55 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.10.6 2004-05-23 12:39:02 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -289,6 +289,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
     public String getProperty(String key) {
 	return props.getProperty(key);
     }
+
+	public Properties getProperties() {
+		return props;
+	}
+
 
     public void setProperty(String key, String value) {
 	props.setProperty(key,value);
