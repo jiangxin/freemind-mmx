@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.4.4 2005-01-09 00:05:05 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.4.5 2005-02-06 22:15:12 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -207,8 +207,9 @@ public class HookFactory {
      * @throws MalformedURLException
      */
     private ClassLoader getClassLoader(List pluginClasspathList) {
-        if(classLoaderCache.containsKey(pluginClasspathList))
-            return (ClassLoader) classLoaderCache.get(pluginClasspathList);
+    		String key = createPluginClasspathString(pluginClasspathList);
+        if(classLoaderCache.containsKey(key))
+            return (ClassLoader) classLoaderCache.get(key);
         try {
             URL[] urls = new URL[pluginClasspathList.size() + 1];
             int j = 0;
@@ -222,7 +223,7 @@ public class HookFactory {
                 urls[j++] = file.toURL();
             }
             ClassLoader loader = new URLClassLoader(urls, this.getClass().getClassLoader());
-            classLoaderCache.put(pluginClasspathList, loader);
+            classLoaderCache.put(key, loader);
             return loader;
         } catch (MalformedURLException e) {
             logger.severe(e.getMessage());
@@ -231,6 +232,19 @@ public class HookFactory {
     }
 
     /**
+	 * @param pluginClasspathList
+	 * @return
+	 */
+	private String createPluginClasspathString(List pluginClasspathList) {
+		String result = "";
+		for (Iterator i = pluginClasspathList.iterator(); i.hasNext();) {
+			PluginClasspathType type = (PluginClasspathType) i.next();
+			result += type.getJar() + ",";
+		}
+		return result;
+	}
+
+	/**
      * @return
      */
     public static String getFreemindBaseDir() {

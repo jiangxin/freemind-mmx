@@ -150,6 +150,11 @@ RC2
 * Introduced Dimitris patch on not synchronized Edit-Boxes. Thanks to Dimitri.
 * Introduced Dans Resource changes.
 * Adjusted popup menus
+* http://www.apple.com/support/downloads/javaupdate142.html
+* Bug fix: Class Loader generation is now cached.
+* New external plugin: time management. It is now possible to add dates to nodes and
+  to schedule resubmissions, which remind at a certain date to a given node. 
+
 
 Changes made in Freemind 0.7.2:
 ===============================

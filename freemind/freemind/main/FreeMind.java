@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.13 2005-02-02 21:33:09 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.14 2005-02-06 22:15:12 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -607,6 +607,13 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	 */
 	public JPanel getSouthPanel() {
 		return southPanel;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.main.FreeMindMain#getJFrame()
+	 */
+	public JFrame getJFrame() {
+		return this;
 	}
 
 }

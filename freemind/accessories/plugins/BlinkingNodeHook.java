@@ -38,7 +38,7 @@ public class BlinkingNodeHook extends PermanentNodeHookAdapter {
 		super.invoke(node);
 		if(timer == null) {
 			timer = new Timer();
-			timer.schedule(new timerColorChanger(), 500, 500);
+			timer.schedule(new TimerColorChanger(), 500, 500);
 			nodeChanged(getNode());
 		}
 	}
@@ -49,8 +49,8 @@ public class BlinkingNodeHook extends PermanentNodeHookAdapter {
 
 
 	static Vector colors = new Vector();
-	protected class timerColorChanger extends TimerTask {
-		timerColorChanger() {
+	protected class TimerColorChanger extends TimerTask {
+		TimerColorChanger() {
 			colors.clear();
 			colors.add(Color.BLUE);
 			colors.add(Color.RED);

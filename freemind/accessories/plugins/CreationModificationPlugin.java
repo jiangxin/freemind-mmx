@@ -43,8 +43,8 @@ public class CreationModificationPlugin extends PermanentNodeHookAdapter {
 		};
 		MessageFormat formatter = new MessageFormat(getResourceString("tooltip_format"));
 		setToolTip(formatter.format(messageArguments));
-
-		nodeChanged(getNode());
+		//fc, 4.2.2005: The following does not make sense, as the node was not effectively changed.
+		//nodeChanged(getNode());
 	}
 
 	/* (non-Javadoc)

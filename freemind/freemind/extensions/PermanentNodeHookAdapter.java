@@ -6,15 +6,11 @@
  */
 package freemind.extensions;
 
-import java.io.File;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 import freemind.main.XMLElement;
-import freemind.modes.ControllerAdapter;
-import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
-import freemind.modes.ModeController;
 
 /**
  * @author foltin
@@ -135,6 +131,52 @@ public class PermanentNodeHookAdapter
     public void onAddChildren(MindMapNode addedChild) {
         logger.finest("onAddChildren");
     }
+
+	public static final String NAMEVALUEPAIR_VALUE = "value";
+	public static final String NAMEVALUEPAIR_NAME = "name";
+	public static final String NAMEVALUEPAIR = "NameValuePair";
+	public static final String PARAMETERS = "Parameters";
+
+	/**
+	 * @param child
+	 */
+	protected HashMap loadNameValuePairs(XMLElement child) {
+		HashMap result = new HashMap();
+		XMLElement paramChild = (XMLElement) child.getChildren().get(0);
+		if (paramChild != null && PARAMETERS.equals(paramChild.getName())) {
+			for (Iterator i = paramChild.getChildren().iterator(); i.hasNext();) {
+				XMLElement nameValuePair = (XMLElement) i.next();
+				if (NAMEVALUEPAIR.equals(nameValuePair.getName())) {
+					String name = (String) nameValuePair
+							.getAttribute(NAMEVALUEPAIR_NAME);
+					String value = (String) nameValuePair
+							.getAttribute(NAMEVALUEPAIR_VALUE);
+					result.put(name, value);
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * @param nameValuePairs
+	 * @param xml
+	 */
+	protected void saveNameValuePairs(HashMap nameValuePairs, XMLElement xml) {
+		XMLElement child = new XMLElement();
+		child.setName(PARAMETERS);
+		XMLElement nameValue = new XMLElement();
+		for (Iterator i = nameValuePairs.keySet().iterator(); i.hasNext();) {
+			String key = (String) i.next();
+			Object value = nameValuePairs.get(key);
+			nameValue.setName(NAMEVALUEPAIR);
+			nameValue.setAttribute(NAMEVALUEPAIR_NAME, key);
+			nameValue.setAttribute(NAMEVALUEPAIR_VALUE, value);
+			child.addChild(nameValue);
+		}
+		xml.addChild(child);
+	
+	}
 
 
 }

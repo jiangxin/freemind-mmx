@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.14.4 2004-12-19 22:25:34 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.14.5 2005-02-06 22:15:12 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -79,6 +79,10 @@ public interface ModeController extends MindMapActions {
     void deRegisterMouseWheelEventHandler(MouseWheelEventHandler handler);
     void mouseWheelMoved(MouseWheelEvent e);
     MindMapNode getSelected();
+    
+	/**
+	 * @return a List of MindMapNode s.
+	 */
 	List getSelecteds();
 	/** @return a LinkedList of MindMapNodes ordered by depth. nodes with greater depth occur first. */
     List getSelectedsByDepth();

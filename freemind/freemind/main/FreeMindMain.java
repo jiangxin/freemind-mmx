@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12.14.2 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.14.3 2005-02-06 22:15:12 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
@@ -35,6 +36,8 @@ import freemind.extensions.HookFactory;
 import freemind.view.mindmapview.MapView;
 
 public interface FreeMindMain {
+	public JFrame getJFrame();
+	
     public boolean isApplet();
 
     public MapView getView();
