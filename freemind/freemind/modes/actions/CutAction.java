@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: CutAction.java,v 1.1.4.1 2004-10-17 23:00:09 dpolivaev Exp $*/
+/*$Id: CutAction.java,v 1.1.4.2 2004-11-25 05:45:07 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -128,7 +128,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 		NodeCoordinate coord = new NodeCoordinate(c.getNodeFromID(cutAction.getNode()), cutAction.isAsSibling(), cutAction.isIsLeft());
         MindMapNode selectedNode = coord.getNode();
 		c.getModel().getLinkRegistry().cutNode(selectedNode);
-		c.deleteNode(selectedNode);
+		c.deleteChild.deleteWithoutUndo(selectedNode);
     }
 
 	public TransferableContentType getTransferableContent(

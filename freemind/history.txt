@@ -1,8 +1,3 @@
-Changes made in Freemind 0.8.0 alpha:
-=====================================
-* Bug fix for reading arrow link inclinations.
-
-
 Changes made in Freemind 0.8.0:
 ===============================
 * From Koh (thanks): Standard Macintosh application use Command(meta) key based Keyboard shortcut. (ex. copy is Command(meta) + C). I think that mac version's freemind should allow to assign meta key based shortcut. 
@@ -80,6 +75,7 @@ Changes made in Freemind 0.8.0:
 * Local hyperlinks enabled.
 * Link targets are shown in the status bar on mouse over.
 * Text of the status bar content improved.
+* Bug fix for reading arrow link inclinations.
 
 * Export to image reactivated. Export to clipboard added but not tested.
 * Export via XSLT revised. New HTML export added (java script version from Miika Nurminen, 12.7.2004. Thanks. 
@@ -105,6 +101,8 @@ Changes made in Freemind 0.8.0:
 * Japanese translation merged (thanks to Koh for the fast reaction).
 * Fixed the proposed file names of all export hooks
 * Fast bug fix for the moving node bug.
+* Bug fix: Cut/Paste
+* New translations chinese and russian.
 
 Changes made in Freemind 0.7.2:
 ===============================

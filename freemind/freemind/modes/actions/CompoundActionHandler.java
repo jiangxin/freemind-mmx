@@ -19,11 +19,12 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: CompoundActionHandler.java,v 1.1.4.1 2004-10-17 23:00:08 dpolivaev Exp $*/
+/*$Id: CompoundActionHandler.java,v 1.1.4.2 2004-11-25 05:45:07 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
+import java.util.Collections;
 import java.util.Iterator;
 
 import javax.swing.AbstractAction;
@@ -50,16 +51,14 @@ public class CompoundActionHandler extends AbstractAction implements ActorXml {
      */
     public void act(XmlAction action) {
 		CompoundAction compound = (CompoundAction) action;
-        for (Iterator i =
-            compound
-                .getCompoundActionOrSelectNodeActionOrCutNodeAction()
-                .iterator();
-            i.hasNext();
-            ) {
-            XmlAction ac = (XmlAction) i.next();
-			ActorXml actor = c.getActionFactory().getActor(ac);
-			actor.act(ac);
-
+		Object[] actions = compound.getCompoundActionOrSelectNodeActionOrCutNodeAction().toArray();
+		for (int i = 0; i < actions.length; i++) {
+		    Object obj = actions[i];
+		    if (obj instanceof XmlAction) {
+                XmlAction xmlAction = (XmlAction) obj;
+    			ActorXml actor = c.getActionFactory().getActor(xmlAction);
+    			actor.act(xmlAction);
+            }
         }
     }
 
