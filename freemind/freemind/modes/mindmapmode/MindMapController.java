@@ -76,7 +76,7 @@ public class MindMapController extends ControllerAdapter {
     }
 
     public void save(File file) {
-	//	getController().getModel().save(file);
+	getModel().save(file);
     }
 
     public FileFilter getFileFilter() {
@@ -97,7 +97,7 @@ public class MindMapController extends ControllerAdapter {
     }
 
 
-    //private
+    //convenience methods
     private MindMapMapModel getModel() {
 	return (MindMapMapModel)getController().getModel();
     }

@@ -19,10 +19,10 @@
 
 package freemind.modes.filemode;
 
-import freemind.controller.Controller;
 import freemind.modes.Mode;
 import freemind.modes.MindMap;
 import freemind.modes.ModeController;
+import freemind.controller.Controller;
 import freemind.view.mindmapview.MapView;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -35,7 +35,8 @@ public class FileMode implements Mode {
     private FileController modecontroller;
     private JToolBar toolbar;
     private JPopupMenu popupmenu;
-    private final String MODENAME = "File";
+    private static final String MODENAME = "File";
+    private static boolean isRunning = false;
 
     public FileMode(Controller c) {
 	this.c = c;
@@ -53,6 +54,15 @@ public class FileMode implements Mode {
      * (updates Actions etc.)
      */
     public void activate(JMenu menu) {
+	if (!isRunning) {
+	    getModeController().newMap();
+	    isRunning = true;
+	} else {
+	    getController().changeToMapOfMode(this);
+	}
+	menu.add( ((FileController)getModeController()).center );
+	getController().cut.setEnabled(false);
+	getController().paste.setEnabled(false);
 	//	menu.add(new JMenuItem("test"));
     }
     

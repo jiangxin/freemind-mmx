@@ -42,6 +42,7 @@ import java.io.File;
  */
 public class FileNodeModel extends NodeAdapter {
     private File file;
+    private Color color;
 	
     //
     //  Constructors
@@ -64,6 +65,25 @@ public class FileNodeModel extends NodeAdapter {
 
     File getFile() {
 	return file;
+    }
+
+    /**
+     * This could be a nice feat. Improve it!
+     */
+    public Color getColor() {
+	if (color == null) {
+
+	    //float hue = (float)getFile().length() / 100000;
+	    // float hue = 6.3F;
+	   //  if (hue > 1) {
+// 		hue = 1;
+// 	    }
+	    //	    color = Color.getHSBColor(hue,0.5F, 0.5F);
+// 	    int red = (int)(1 / (getFile().length()+1) * 255);
+// 	    color = new Color(red,0,0);
+	    color = Color.blue;
+	}
+	return color;
     }
 
 //     void setFile(File file) {

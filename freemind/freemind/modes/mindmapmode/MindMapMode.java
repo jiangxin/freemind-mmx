@@ -53,10 +53,13 @@ public class MindMapMode implements Mode {
      * (updates Actions etc.)
      */
     public void activate(JMenu menu) {
+	getController().changeToMapOfMode(this);
 	menu.add(getMindMapController().newMap);
 	menu.add(getMindMapController().open);
 	menu.add(getMindMapController().save);
 	menu.add(getMindMapController().saveAs);
+	getController().cut.setEnabled(true);
+	getController().paste.setEnabled(true);
     }
     
     public Controller getController() {

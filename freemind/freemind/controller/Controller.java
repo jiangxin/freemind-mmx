@@ -39,6 +39,7 @@ import java.util.ListIterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Iterator;
 import java.awt.Component;
 import java.awt.Color;
 import java.awt.Point;
@@ -84,8 +85,8 @@ public class Controller {
     Action about = new AboutAction();
     Action lastMap = new LastMapAction(this);
     Action nextMap = new NextMapAction(this);
-    Action cut = new CutAction(this);
-    Action paste = new PasteAction(this);
+    public Action cut = new CutAction(this);
+    public Action paste = new PasteAction(this);
 
     //
     // Constructors
@@ -301,6 +302,16 @@ public class Controller {
 	setMapModule(mapmodule);
 	addToMapModules(mapmodule.toString(), mapmodule);
 	getView().init();
+    }
+
+    public void changeToMapOfMode(Mode mode) {
+	for (Iterator i = getMapModules().keySet().iterator(); i.hasNext(); ) {
+	    String next = (String)i.next();
+	    if ( ((MapModule)getMapModules().get(next)).getMode() == mode ) {
+		changeToMapModule(next);
+		return;
+	    }
+	}
     }
 
     //
