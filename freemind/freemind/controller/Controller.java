@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.5 2005-01-02 08:37:54 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.6 2005-03-03 21:11:26 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -109,33 +109,33 @@ public class Controller {
     boolean toolbarVisible=true;
     boolean leftToolbarVisible=true;
 
-    Action close; 
-    Action print; 
-    Action printDirect; 
-    Action page; 
+    public Action close; 
+    public Action print; 
+    public Action printDirect; 
+    public Action page; 
     public Action quit;
-    Action background; 
+    public Action background; 
 
-    Action optionAntialiasAction;
-    Action optionHTMLExportFoldingAction;
-    Action optionSelectionMechanismAction;
+    public Action optionAntialiasAction;
+    public Action optionHTMLExportFoldingAction;
+    public Action optionSelectionMechanismAction;
 
     public Action about;
-    Action faq;
-    Action documentation;
-    Action license;
-    Action historyPreviousMap;
-    Action historyNextMap;
-    Action navigationPreviousMap;
-    Action navigationNextMap;
+    public Action faq;
+    public Action documentation;
+    public Action license;
+    public Action historyPreviousMap;
+    public Action historyNextMap;
+    public Action navigationPreviousMap;
+    public Action navigationNextMap;
 
-    Action moveToRoot;
-    Action toggleMenubar;
-    Action toggleToolbar;
-    Action toggleLeftToolbar;
+    public Action moveToRoot;
+    public Action toggleMenubar;
+    public Action toggleToolbar;
+    public Action toggleLeftToolbar;
 
-    Action zoomIn;
-    Action zoomOut;
+    public Action zoomIn;
+    public Action zoomOut;
 
 	// this values better suit at least the test purposes
     private static final String[] zooms = {"25%","50%","75%","100%","150%","200%","300%","400%"};
@@ -401,12 +401,18 @@ public class Controller {
 
 
 
+    /** Creates a new mode (controller), activates the toolbars, title and deactivates all 
+     * actions.
+     * 
+     * @param mode
+     * @return false if the change was not successful.
+     */
     public boolean changeToMode(String mode) {
         if (getMode() != null && mode.equals(getMode().toString())) {
             return true;
         }
 
-        //Check if the mode is available
+        //Check if the mode is available and create ModeController.
         Mode newmode = modescreator.getMode(mode);
         if (newmode == null) {
             errorMessage(getResourceString("mode_na")+": "+mode);
@@ -441,7 +447,7 @@ public class Controller {
         setTitle();
         getMode().activate();
 
-        // this is already done in mapModuleChanged: 
+        // FIXME: this is already done in mapModuleChanged in MapModuleManager. 
         getFrame().getFreeMindMenuBar().updateMenus();
 
         if (getMapModule() == null) {

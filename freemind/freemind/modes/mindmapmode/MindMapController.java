@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.8 2005-02-10 23:01:23 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.9 2005-03-03 21:11:27 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -74,6 +74,8 @@ import freemind.modes.actions.ColorArrowLinkAction;
 import freemind.modes.actions.FindAction;
 import freemind.modes.actions.GotoLinkNodeAction;
 import freemind.modes.actions.IconAction;
+import freemind.modes.actions.ImportExplorerFavoritesAction;
+import freemind.modes.actions.ImportFolderStructureAction;
 import freemind.modes.actions.NewMapAction;
 import freemind.modes.actions.NewPreviousSiblingAction;
 import freemind.modes.actions.NewSiblingAction;
@@ -174,6 +176,7 @@ public class MindMapController extends ControllerAdapter {
      * 
      */
     public void startupController() {
+        super.startupController();
         List pluginRegistratios = getFrame().getHookFactory().getRegistrations(this.getClass());
         logger.info("mScheduledActions are executed: "+pluginRegistratios.size());
         for (Iterator i = pluginRegistratios.iterator(); i.hasNext();) {
@@ -195,6 +198,7 @@ public class MindMapController extends ControllerAdapter {
 
 
     public void shutdownController() {
+        super.shutdownController();
         for (Iterator i = pRegistrations.iterator(); i.hasNext();) {
             HookRegistration registrationInstance = (HookRegistration) i.next();
             registrationInstance.deRegister();
@@ -595,88 +599,20 @@ public class MindMapController extends ControllerAdapter {
      * whether there is a map open or not.
      */
     protected void setAllActions(boolean enabled) {
-/*    	
-<<<<<<< MindMapController.java
-	edit.setEnabled(enabled);
-    editLong.setEnabled(enabled);
-    newChildWithoutFocus.setEnabled(enabled);
-    newSibling.setEnabled(enabled);
-    newPreviousSibling.setEnabled(enabled);
-	newChild.setEnabled(enabled);
-	remove.setEnabled(enabled);
-	toggleFolded.setEnabled(enabled);
-	toggleChildrenFolded.setEnabled(enabled);
-	setLinkByTextField.setEnabled(enabled);
-	setLinkByFileChooser.setEnabled(enabled);
-	setImageByFileChooser.setEnabled(enabled);
-	followLink.setEnabled(enabled);
-	italic.setEnabled(enabled);
-	bold.setEnabled(enabled);
-	cloud.setEnabled(enabled);
-    cloudColor.setEnabled(enabled);
-	normalFont.setEnabled(enabled);
-	nodeColor.setEnabled(enabled);
-	edgeColor.setEnabled(enabled);
-    removeLastIcon.setEnabled(enabled);
-    removeAllIcons.setEnabled(enabled);
-	for (int i=0; i<iconActions.size(); ++i) {          
-        ((Action) iconActions.get(i)).setEnabled(enabled);
-    }
-	for (int i=0; i<edgeWidths.length; ++i) { 
-		edgeWidths[i].setEnabled(enabled);
-	}
-	forkStyle.setEnabled(enabled);
-	bubbleStyle.setEnabled(enabled);
-	for (int i=0; i<edgeStyles.length; ++i) { 
-		edgeStyles[i].setEnabled(enabled);
-	}
-	for (int i=0; i<patterns.length; ++i) { 
-		patterns[i].setEnabled(enabled);
-	}
-	save.setEnabled(enabled);
-	saveAs.setEnabled(enabled);
-	getToolBar().setAllActions(enabled);
-	exportBranch.setEnabled(enabled);
-	importBranch.setEnabled(enabled);
-	importLinkedBranch.setEnabled(enabled);
-	importLinkedBranchWithoutRoot.setEnabled(enabled);
-=======
-*/
-    	undo.setEnabled(enabled);
-		redo.setEnabled(enabled);
-        edit.setEnabled(enabled);
+        super.setAllActions(enabled);
+        // own actions
+        increaseNodeFont.setEnabled(enabled);
+        decreaseNodeFont.setEnabled(enabled);
+        exportBranch.setEnabled(enabled);
+        exportBranchToHTML.setEnabled(enabled);
         editLong.setEnabled(enabled);
         newSibling.setEnabled(enabled);
         newPreviousSibling.setEnabled(enabled);
-        newChild.setEnabled(enabled);
-        toggleFolded.setEnabled(enabled);
-        toggleChildrenFolded.setEnabled(enabled);
-        setLinkByTextField.setEnabled(enabled);
         setLinkByFileChooser.setEnabled(enabled);
         setImageByFileChooser.setEnabled(enabled);
         followLink.setEnabled(enabled);
-        italic.setEnabled(enabled);
-        bold.setEnabled(enabled);
-        cloud.setEnabled(enabled);
-        cloudColor.setEnabled(enabled);
-//        normalFont.setEnabled(enabled);
-        nodeColor.setEnabled(enabled);
-        edgeColor.setEnabled(enabled);
-        removeLastIconAction.setEnabled(enabled);
-        removeAllIconsAction.setEnabled(enabled);
         for (int i=0; i<iconActions.size(); ++i) {          
             ((Action) iconActions.get(i)).setEnabled(enabled);
-        }
-        for (int i=0; i<edgeWidths.length; ++i) { 
-            edgeWidths[i].setEnabled(enabled);
-        }
-        fork.setEnabled(enabled);
-        bubble.setEnabled(enabled);
-        for (int i=0; i<edgeStyles.length; ++i) { 
-            edgeStyles[i].setEnabled(enabled);
-        }
-        for (int i=0; i<patterns.length; ++i) { 
-            patterns[i].setEnabled(enabled);
         }
         save.setEnabled(enabled);
         saveAs.setEnabled(enabled);

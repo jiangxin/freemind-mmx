@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.1 2004-10-17 23:00:06 dpolivaev Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.2 2005-03-03 21:11:26 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -143,6 +143,7 @@ import freemind.view.mindmapview.MapView;
         	if (mapModule != null) {
                 // change mode ?
                 if (mapModule.getMode() != c.getMode()) {
+	                // create mode 
                     c.changeToMode(mapModule.getMode().toString());
                 }
             }

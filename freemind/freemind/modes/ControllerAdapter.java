@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.13 2005-02-14 21:10:03 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.14 2005-03-03 21:11:26 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -163,7 +163,6 @@ public abstract class ControllerAdapter implements ModeController {
     public ApplyPatternAction patterns[] = new ApplyPatternAction[0]; // Make sure it is initialized
 
 	private Mode mode;
-    private int noOfMaps = 0; //The number of currently open maps
     private Clipboard clipboard;
     private int status;
 	public UndoAction undo=null;
@@ -522,7 +521,6 @@ public abstract class ControllerAdapter implements ModeController {
 
     public void newMap(MindMap mapModel) {
         getController().getMapModuleManager().newMapModule(mapModel);
-        mapOpened(true);
     }
 
     /**
@@ -533,8 +531,8 @@ public abstract class ControllerAdapter implements ModeController {
         MapAdapter model = newModel();
         model.load(file);
 		getController().getMapModuleManager().newMapModule(model);
-        mapOpened(true);
-		invokeHooksRecursively((NodeAdapter) getModel().getRoot(), getModel());
+		getController().getModeController().invokeHooksRecursively(
+                (NodeAdapter) getModel().getRoot(), getModel());
     }
 
     public boolean save() {
@@ -736,7 +734,6 @@ public abstract class ControllerAdapter implements ModeController {
 				return false; }}
                 
         getModel().destroy();
-        mapOpened(false);
         return true; }
     
 
@@ -769,45 +766,56 @@ public abstract class ControllerAdapter implements ModeController {
 
 
     /**
-     * Call this method if you have opened a map for this mode with true,
-     * and if you have closed a map of this mode with false. It updates the Actions
-     * that are dependent on whether there is a map or not.
-     * --> What to do if either newMap or load or close are overwritten by a concrete
-     * implementation? uups.
-     */
-     public void mapOpened(boolean open) {
-        if (open) {
-           if (noOfMaps == 0) {
-              //opened the first map
-              setAllActions(true);
-              if (cut!=null) cut.setEnabled(true);
-              if (copy!=null) copy.setEnabled(true);
-              if (copySingle!=null) copySingle.setEnabled(true);
-              if (paste!=null) paste.setEnabled(true);
-           }
-           if (getFrame().getView()!=null) {
-              DropTarget dropTarget = new DropTarget
-                 (getFrame().getView(), new FileOpener() );
-           }
-           noOfMaps++;
-        } else {
-           noOfMaps--;
-           if (noOfMaps == 0) {
-              //closed the last map
-              setAllActions(false);
-              if (cut!=null) cut.setEnabled(false);
-              if (copy!=null) copy.setEnabled(false);
-              if (copySingle!=null) copySingle.setEnabled(true);
-              if (paste!=null) paste.setEnabled(false);
-           }
-        }
-    }
-
-    /**
      * Overwrite this to set all of your actions which are
      * dependent on whether there is a map or not.
      */
     protected void setAllActions(boolean enabled) {
+        // controller actions:
+        getController().zoomIn.setEnabled(enabled);
+        getController().zoomOut.setEnabled(enabled);
+        cut.setEnabled(enabled);
+        copy.setEnabled(enabled);
+        copySingle.setEnabled(enabled);
+        paste.setEnabled(enabled);
+    	undo.setEnabled(enabled);
+		redo.setEnabled(enabled);
+        edit.setEnabled(enabled);
+        newChild.setEnabled(enabled);
+        toggleFolded.setEnabled(enabled);
+        toggleChildrenFolded.setEnabled(enabled);
+        setLinkByTextField.setEnabled(enabled);
+        italic.setEnabled(enabled);
+        bold.setEnabled(enabled);
+        find.setEnabled(enabled);
+        findNext.setEnabled(enabled);
+        addArrowLinkAction.setEnabled(enabled);
+        addLocalLinkAction.setEnabled(enabled);
+        nodeColorBlend.setEnabled(enabled);
+        nodeUp.setEnabled(enabled);
+        nodeBackgroundColor.setEnabled(enabled);
+        nodeDown.setEnabled(enabled);
+        importExplorerFavorites.setEnabled(enabled);
+        importFolderStructure.setEnabled(enabled);
+        joinNodes.setEnabled(enabled);
+        deleteChild.setEnabled(enabled);
+        cloud.setEnabled(enabled);
+        cloudColor.setEnabled(enabled);
+//        normalFont.setEnabled(enabled);
+        nodeColor.setEnabled(enabled);
+        edgeColor.setEnabled(enabled);
+        removeLastIconAction.setEnabled(enabled);
+        removeAllIconsAction.setEnabled(enabled);
+        for (int i=0; i<edgeWidths.length; ++i) { 
+            edgeWidths[i].setEnabled(enabled);
+        }
+        fork.setEnabled(enabled);
+        bubble.setEnabled(enabled);
+        for (int i=0; i<edgeStyles.length; ++i) { 
+            edgeStyles[i].setEnabled(enabled);
+        }
+        for (int i=0; i<patterns.length; ++i) { 
+            patterns[i].setEnabled(enabled);
+        }
     }
 
     //
@@ -1764,12 +1772,18 @@ public abstract class ControllerAdapter implements ModeController {
      */
 
     public void shutdownController() {
+        setAllActions(false);
     }
     /**
      *
      */
 
     public void startupController() {
+        setAllActions(true);
+        if (getFrame().getView() != null) {
+            DropTarget dropTarget = new DropTarget(getFrame().getView(),
+                    new FileOpener());
+        }
     }
     /**
      *

@@ -175,7 +175,7 @@ RC2
 * some insert menu points are put into the popup menu.
 * bin-max.zip created.
 
-RC 3;
+RC 3:
 -----
 * Bug fix: dot removed.
 * New feature: hierarchical icons.
@@ -187,6 +187,11 @@ RC 3;
 
 * New icons: priority 1-7
 * Bug fix: pdf/svg fonts are now embedded.
+
+* Bug fix: mapOpened removed from ControllerAdapter
+* With permission of Dan, the NodeNotes are back.
+* Bug fix: Node background colour in bubble nodes.
+* Bug fix: No appropiate actions are enabled when all maps are closed.
 
 Changes made in Freemind 0.7.2:
 ===============================

@@ -19,7 +19,7 @@
  *
  * Created on 21.08.2004
  */
-/*$Id: NodeDownAction.java,v 1.1.4.1 2004-10-17 23:00:08 dpolivaev Exp $*/
+/*$Id: NodeDownAction.java,v 1.1.4.2 2005-03-03 21:11:27 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -29,7 +29,7 @@ import java.util.Comparator;
 import javax.swing.AbstractAction;
 
 
-class NodeDownAction extends AbstractAction {
+public class NodeDownAction extends AbstractAction {
     private final ControllerAdapter modeController;
     public NodeDownAction(ControllerAdapter adapter) {
         super(adapter.getText("node_down"));

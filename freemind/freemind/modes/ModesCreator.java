@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModesCreator.java,v 1.9.18.2 2004-11-19 21:46:51 christianfoltin Exp $*/
+/*$Id: ModesCreator.java,v 1.9.18.3 2005-03-03 21:11:27 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -69,6 +69,12 @@ public class ModesCreator {
 		return modesTranslation.keySet();
 	}
 
+	
+	/** Creates a new ModeController.
+	 * 
+	 * @param modeAlias
+	 * @return
+	 */
 	public Mode getMode(String modeAlias) {
 		getAllModes();
 		Mode mode = null;
