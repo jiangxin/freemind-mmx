@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.33 2003-12-07 21:00:24 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.34 2004-01-05 23:41:05 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -496,10 +496,10 @@ public class MindMapController extends ControllerAdapter {
      */
     protected void setAllActions(boolean enabled) {
 	edit.setEnabled(enabled);
-        editLong.setEnabled(enabled);
-        newChildWithoutFocus.setEnabled(enabled);
-        newSibling.setEnabled(enabled);
-        newPreviousSibling.setEnabled(enabled);
+    editLong.setEnabled(enabled);
+    newChildWithoutFocus.setEnabled(enabled);
+    newSibling.setEnabled(enabled);
+    newPreviousSibling.setEnabled(enabled);
 	newChild.setEnabled(enabled);
 	remove.setEnabled(enabled);
 	toggleFolded.setEnabled(enabled);
@@ -511,9 +511,15 @@ public class MindMapController extends ControllerAdapter {
 	italic.setEnabled(enabled);
 	bold.setEnabled(enabled);
 	cloud.setEnabled(enabled);
+    cloudColor.setEnabled(enabled);
 	normalFont.setEnabled(enabled);
 	nodeColor.setEnabled(enabled);
 	edgeColor.setEnabled(enabled);
+    removeLastIcon.setEnabled(enabled);
+    removeAllIcons.setEnabled(enabled);
+	for (int i=0; i<iconActions.size(); ++i) {          
+        ((Action) iconActions.get(i)).setEnabled(enabled);
+    }
 	for (int i=0; i<edgeWidths.length; ++i) { 
 		edgeWidths[i].setEnabled(enabled);
 	}

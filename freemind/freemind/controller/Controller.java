@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.38 2003-12-22 11:12:55 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.39 2004-01-05 23:41:05 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -432,10 +432,19 @@ public class Controller {
        JOptionPane.showMessageDialog(component, message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }
 
     public void obtainFocusForSelected() {
-       SwingUtilities.invokeLater( new Runnable() {
-             public void run () {
-                if (getView() != null) { // is null if the last map was closed.
-                   getView().getSelected().requestFocus(); }}}); }
+        SwingUtilities.invokeLater( new Runnable() {
+                public void run () {
+                    if (getView() != null) { // is null if the last map was closed.
+                        getView().getSelected().requestFocus(); 
+                    } else {
+                        // fc, 6.1.2004: bug fix, that open and quit are not working if no map is present.
+                        // to avoid this, the menu bar gets the focus, and everything seems to be all right!!
+                        // but I cannot avoid thinking of this change to be a bad hack ....
+                        getFrame().getFreeMindMenuBar().requestFocus();
+                    }
+                }
+            }); 
+    }
 
     //
     // Map Navigation
@@ -932,7 +941,7 @@ public class Controller {
         public void actionPerformed(ActionEvent e) {
             changeToMode("Browse");
             //      try {
-            String map = getProperty("docmapurl");
+            String map = getProperty("docmapurl_since_version_0_7_0");
             if (map.startsWith("."))  {
                 map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
             }

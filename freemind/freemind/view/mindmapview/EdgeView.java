@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeView.java,v 1.11 2003-12-21 08:40:36 christianfoltin Exp $*/
+/*$Id: EdgeView.java,v 1.12 2004-01-05 23:41:05 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -60,6 +60,10 @@ public abstract class EdgeView {
         // if node is folded, then add a plus sign:
         if(target.getModel().isFolded()) {
             int height = target.getSize().height/2;
+            // implement a maximum:
+            final int MAX_HEIGHT = 50;
+            if(height > MAX_HEIGHT)
+                height = MAX_HEIGHT;
             g.drawArc( end.x - height/2 , end.y - height/2, height,   height,(target.isLeft())?270:90,180);
         }
         

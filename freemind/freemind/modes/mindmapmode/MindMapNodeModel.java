@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.18 2003-12-20 16:12:51 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.19 2004-01-05 23:41:05 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -398,6 +398,14 @@ public class MindMapNodeModel extends NodeAdapter {
         XMLElement cloud = ((MindMapCloudModel)getCloud()).save();
         node.addChild(cloud); 
     }
+
+//     // fc, 31.12.2003: For SVG export
+//     if(getViewer() != null) {
+//         node.setAttribute("SCREEN_POSITION_X", Integer.toString(getViewer().getX()));
+//         node.setAttribute("SCREEN_POSITION_Y", Integer.toString(getViewer().getY()));
+//         node.setAttribute("SCREEN_HEIGHT", Integer.toString(getViewer().getHeight()));
+//         node.setAttribute("SCREEN_WIDTH", Integer.toString(getViewer().getWidth()));
+//     }
 
     Vector linkVector = getFrame().getController().getModel().getLinkRegistry().getAllLinksFromMe(this); /* Puh... */
     for(int i = 0; i < linkVector.size(); ++i) {

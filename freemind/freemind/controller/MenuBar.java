@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.20 2003-12-14 23:58:03 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.21 2004-01-05 23:41:05 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -165,9 +165,14 @@ public class MenuBar extends JMenuBar {
 	    filemenu.remove((JMenuItem)it.next());
 	}
 	lastOpenedItems.clear();
+    boolean firstElement = true;
 	LastOpenedList lst = c.getLastOpenedList();
 	for(ListIterator it=lst.listIterator();it.hasNext();) {
             JMenuItem item = new JMenuItem((String)it.next());
+            if(firstElement) {
+                firstElement = false;
+                item.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_open_first_in_history")));
+            }
 	    item.addActionListener(lastOpenedActionListener);
 	    lastOpenedItems.add(item);
 	    filemenu.add(item);
