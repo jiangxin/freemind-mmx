@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.5 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: MindMapMapModel.java,v 1.6 2000-11-02 17:20:11 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.main.FreeMind;
 import freemind.modes.MapAdapter;
 import java.awt.Color;
+import java.io.FileNotFoundException;
 import java.io.File;
 import java.io.StringWriter;
 import java.io.FileOutputStream;
@@ -161,10 +162,15 @@ public class MindMapMapModel extends MapAdapter {
 	}
     }
     
-    public void load(File file) {
+    public void load(File file) throws FileNotFoundException {
 	setFile(file);
 	setSaved(true);
-	setRoot(loadTree(file));
+	MindMapNodeModel root = loadTree(file);
+	if (root != null) {
+	    setRoot(root);
+	} else {
+	    throw new FileNotFoundException();
+	}
     }
 
     MindMapNodeModel loadTree(File file) {
@@ -175,7 +181,7 @@ public class MindMapMapModel extends MapAdapter {
 	    try {
 		parser.parse(file.getPath());
 	    } catch(Exception e) {
-		System.err.println("Error at parsing"+e);
+		return null;
 	    }
 	    Document doc = parser.getDocument();
 
@@ -185,8 +191,7 @@ public class MindMapMapModel extends MapAdapter {
 	    root = new MindMapNodeModel();
 	    root.load(rootElement);
 	} catch(Exception e) {
-	    System.err.println("Error in MindMapMapModel.loadXML(): ");
-	    e.printStackTrace();
+	    return null;
 	}
 	return root;
     }

@@ -1,4 +1,5 @@
-Manifest-Version: 2.0
+Manifest-Version: 1.0
 Main-Class: freemind.main.FreeMind
+Class-Path: xerces.jar
 Created-By: Joerg Mueller
 

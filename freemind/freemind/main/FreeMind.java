@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.6 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: FreeMind.java,v 1.7 2000-11-02 17:20:11 ponder Exp $*/
 
 package freemind.main;
 
@@ -39,7 +39,7 @@ import javax.swing.UIManager;
 
 public class FreeMind extends JFrame {
 
-    public static final String version = "0.1.1 pre 32";
+    public static final String version = "0.2.0";
     public static final String defaultPropsURL = "freemind.properties";
     public static Properties defaultProps;
     public static Properties userProps;

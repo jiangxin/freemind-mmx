@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.5 2000-11-02 17:20:11 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -121,7 +121,7 @@ public class MindMapNodeModel extends NodeAdapter {
 
 	//link
 	if (getLink() != null) {
-	    node.setAttribute("link", getLink().toExternalForm());
+	    node.setAttribute("link", getLink());
 	}
 
 	//font
@@ -168,11 +168,7 @@ public class MindMapNodeModel extends NodeAdapter {
 	    setStyle(node.getAttribute("style"));
 	}
 	if (!node.getAttribute("link").equals("")) {
-	    try {
-		setLink(new URL(node.getAttribute("link")));
-	    } catch (MalformedURLException ex) {
-		System.err.println("Malformed URL: "+node.getAttribute("link"));
-	    }
+	    setLink(node.getAttribute("link"));
 	}
 	NodeList childNodes = node.getChildNodes();
 	for(int i=0; i < childNodes.getLength(); i++) {

@@ -16,16 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.4 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: ModeController.java,v 1.5 2000-11-02 17:20:11 ponder Exp $*/
 
 package freemind.modes;
 
 import freemind.view.mindmapview.NodeView;
 import java.io.File;
+import java.io.FileNotFoundException;
 
 public interface ModeController {
 
-    public void load(File file);
+    public void load(File file) throws FileNotFoundException;
     public void save(File file);
     public void addNew(NodeView parent);
     public void remove(NodeView node);
@@ -35,4 +36,5 @@ public interface ModeController {
     public void open();
     public void edit(NodeView node, NodeView toBeSelected);
     public void close() throws Exception;
+    public void doubleClick();
 }

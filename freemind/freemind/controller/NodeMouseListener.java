@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseListener.java,v 1.3 2000-08-11 10:22:37 ponder Exp $*/
+/*$Id: NodeMouseListener.java,v 1.4 2000-11-02 17:20:11 ponder Exp $*/
 
 package freemind.controller;
 
@@ -56,7 +56,7 @@ public class NodeMouseListener implements MouseListener {
 	    //what to do?
 	    e.consume();
 	} else if(e.getClickCount() == 2) {
-	    c.toggleFolded();
+	    c.getMode().getModeController().doubleClick();
 	    //The timer is necessary if ClickCount == 1 must not be called
 	    //before ClickCount == 2 is called
 

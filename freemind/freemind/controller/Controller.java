@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.8 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: Controller.java,v 1.9 2000-11-02 17:20:11 ponder Exp $*/
 
 package freemind.controller;
 
@@ -49,6 +49,7 @@ import javax.swing.Action;
 import javax.swing.JToolBar;
 //Documentation
 import java.io.File;
+import java.io.FileNotFoundException;
 import freemind.modes.ControllerAdapter;
 
 /**
@@ -232,15 +233,6 @@ public class Controller {
 
     void centerNode() {
 	getView().centerNode(getView().getSelected());
-    }
-
-    void toggleFolded() {
-	MindMapNode node = getSelected();
-	if (node.isFolded()) {
-	    getModel().setFolded(node,false);
-	} else {
-	    getModel().setFolded(node,true);
-	}
     }
 
     private MindMapNode getSelected() {
@@ -497,7 +489,11 @@ public class Controller {
 	}
 	public void actionPerformed(ActionEvent e) {
 	    changeToMode("MindMap");
-	    ((ControllerAdapter)getMode().getModeController()).load(new File("freemind.mm"));
+	    try {
+		((ControllerAdapter)getMode().getModeController()).load(new File("freemind.mm"));
+	    } catch (FileNotFoundException ex) {
+		JOptionPane.showMessageDialog(getFrame(), FreeMind.getResources().getString("file_not_found") + "\n Documentation Map not found.");
+	    }
 	}
     }
 

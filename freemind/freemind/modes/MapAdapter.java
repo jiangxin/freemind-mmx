@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.5 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: MapAdapter.java,v 1.6 2000-11-02 17:20:11 ponder Exp $*/
 
 package freemind.modes;
 
 import freemind.main.FreeMind;
 import freemind.main.Tools;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.awt.Color;
 import javax.swing.tree.TreeModel;
@@ -49,7 +50,7 @@ public abstract class MapAdapter implements MindMap {
 
     public abstract void save(File file); 
     
-    public abstract void load(File file);
+    public abstract void load(File file) throws FileNotFoundException;
 
     public void close() {
     }
@@ -117,8 +118,9 @@ public abstract class MapAdapter implements MindMap {
 	}
     }
 
-    public void setLink( NodeAdapter node, URL link ) {
+    public void setLink( NodeAdapter node, String link ) {
 	node.setLink(link);
+	nodeChanged(node);
     }
 
     public Object[] getPathToRoot( TreeNode node ) {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.6 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: MindMapController.java,v 1.7 2000-11-02 17:20:11 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -28,6 +28,7 @@ import freemind.modes.Mode;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import java.io.File;
+import java.util.Enumeration;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.Color;
@@ -59,11 +60,13 @@ public class MindMapController extends ControllerAdapter {
     Action edit = new EditAction();
     Action addNew = new AddNewAction();
     Action remove = new RemoveAction();
+    Action toggleFolded = new ToggleFoldedAction();
     Action setLink = new SetLinkAction();
     Action followLink = new FollowLinkAction();
     Action exportBranch = new ExportBranchAction();
     Action importBranch = new ImportBranchAction();
     Action importLinkedBranch = new ImportLinkedBranchAction();
+    Action importLinkedBranchWithoutRoot = new ImportLinkedBranchWithoutRootAction();
 
     Action fork = new ForkAction();
     Action bubble = new BubbleAction();
@@ -95,6 +98,14 @@ public class MindMapController extends ControllerAdapter {
 
     public FileFilter getFileFilter() {
 	return filefilter;
+    }
+
+    public void doubleClick() {
+	if (FreeMind.userProps.getProperty("mindmap_doubleclick").equals("follow_link")) {
+	    loadURL();
+	} else {
+	    toggleFolded();
+	}
     }
 
     //Node editing
@@ -146,14 +157,19 @@ public class MindMapController extends ControllerAdapter {
  	removeItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_remove")));
 	JMenuItem exportBranchItem = nodeMenu.add(exportBranch);
 	// 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
-	JMenuItem importBranchItem = nodeMenu.add(importBranch);
+	JMenu importMenu = new JMenu(FreeMind.getResources().getString("import"));
+	nodeMenu.add(importMenu);
+	JMenuItem importBranchItem = importMenu.add(importBranch);
 	// 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
-	JMenuItem importLinkedBranchItem = nodeMenu.add(importLinkedBranch);
+	JMenuItem importLinkedBranchItem = importMenu.add(importLinkedBranch);
 	// 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
+	JMenuItem importLinkedBranchWithoutRootItem = importMenu.add(importLinkedBranchWithoutRoot);
 	JMenuItem followLinkItem = nodeMenu.add(followLink);
  	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
 	JMenuItem setLinkItem = nodeMenu.add(setLink);
  	setLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_set_link")));
+	JMenuItem toggleFoldedItem = nodeMenu.add(toggleFolded);
+ 	toggleFoldedItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_toggle_folded")));
 	JMenu nodeStyle = new JMenu(FreeMind.getResources().getString("style"));
 	nodeMenu.add(nodeStyle);
 	nodeStyle.add(fork);
@@ -203,6 +219,7 @@ public class MindMapController extends ControllerAdapter {
 	edit.setEnabled(enabled);
 	addNew.setEnabled(enabled);
 	remove.setEnabled(enabled);
+	toggleFolded.setEnabled(enabled);
 	setLink.setEnabled(enabled);
 	followLink.setEnabled(enabled);
 	italic.setEnabled(enabled);
@@ -219,6 +236,8 @@ public class MindMapController extends ControllerAdapter {
 	getToolBar().setAllActions(enabled);
 	exportBranch.setEnabled(enabled);
 	importBranch.setEnabled(enabled);
+	importLinkedBranch.setEnabled(enabled);
+	importLinkedBranchWithoutRoot.setEnabled(enabled);
     }
 
     //////////
@@ -271,7 +290,8 @@ public class MindMapController extends ControllerAdapter {
 		map.save(f);
 
 		getModel().insertNodeInto(newNode,parent, 0);
-		getModel().setLink(newNode,link);
+		String linkString = link.toString();
+		getModel().setLink(newNode,linkString);
 	    }
 	}
     }
@@ -304,8 +324,42 @@ public class MindMapController extends ControllerAdapter {
 	public void actionPerformed(ActionEvent e) {
 	    MindMapNodeModel parent = (MindMapNodeModel)getSelected();
 	    if((parent != null)&&(parent.getLink() != null)) {
-		MindMapNodeModel node = getModel().loadTree(new File(parent.getLink().getFile()));
+		URL absolute = null;
+		try {
+		    absolute = new URL(getMap().getFile().toURL(), parent.getLink());
+		} catch (MalformedURLException ex) {
+		    JOptionPane.showMessageDialog(getController().getFrame(),"couldn't create valid URL!");
+		    return;
+		}
+		MindMapNodeModel node = getModel().loadTree(new File(absolute.getFile()));
 		getModel().paste(node, parent);
+	    }
+	}
+    }
+
+
+    /**
+     * This is exactly the opposite of exportBranch.
+     */
+    private class ImportLinkedBranchWithoutRootAction extends AbstractAction {
+	ImportLinkedBranchWithoutRootAction() {
+	    super(FreeMind.getResources().getString("import_linked_branch_without_root"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    MindMapNodeModel parent = (MindMapNodeModel)getSelected();
+	    if((parent != null)&&(parent.getLink() != null)) {
+		URL absolute = null;
+		try {
+		    absolute = new URL(getMap().getFile().toURL(), parent.getLink());
+		} catch (MalformedURLException ex) {
+		    JOptionPane.showMessageDialog(getController().getFrame(),"couldn't create valid URL!");
+		    return;
+		}
+		MindMapNodeModel node = getModel().loadTree(new File(absolute.getFile()));
+		for (Enumeration enum=node.children();enum.hasMoreElements();) {
+		    getModel().paste((MindMapNodeModel)enum.nextElement(), parent);
+		}
+		getModel().setLink(parent, null);
 	    }
 	}
     }

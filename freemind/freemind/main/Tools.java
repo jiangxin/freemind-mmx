@@ -16,13 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.3 2000-08-09 22:12:25 ponder Exp $*/
+/*$Id: Tools.java,v 1.4 2000-11-02 17:20:11 ponder Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
 
 import java.io.File;
 import java.util.Vector;
+import java.util.StringTokenizer;
+import java.net.URL;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
@@ -71,6 +73,79 @@ public class Tools {
 	}
 	if (ext==null) ext="";
 	return ext;
+    }
+
+    /**
+     * This method converts an absolute url to an url relative to a given base-url.
+     * The algorithm is somewhat chaotic, but it works (Maybe rewrite it). 
+     * Be careful, the method is ".mm"-specific. Something like this should be included
+     * in the librarys, but I couldn't find it. You can create a new absolute url with
+     * "new URL(URL context, URL relative)".
+     */
+    public static String toRelativeURL(URL base, URL target) {
+	if( (base.getProtocol().equals(target.getProtocol())) &&
+	    (base.getHost().equals(target.getHost()))) {
+
+	    String baseString = base.getFile();
+	    String targetString = target.getFile();
+	    String result = "";
+
+	    if (baseString.endsWith(".mm")) {
+		//remove filename from URL
+		baseString = baseString.substring(0, baseString.lastIndexOf("/")+1);
+	    }
+
+	    if (targetString.endsWith(".mm")) {
+		//remove filename from URL
+		targetString = targetString.substring(0, targetString.lastIndexOf("/")+1);
+	    }
+	    
+	    StringTokenizer baseTokens = new StringTokenizer(baseString,"/");//Maybe this causes problems under windows
+	    StringTokenizer targetTokens = new StringTokenizer(targetString,"/");//Maybe this causes problems under windows
+
+	    String nextBaseToken = "", nextTargetToken = "";
+
+	    //Algorithm
+
+	    while(baseTokens.hasMoreTokens() && targetTokens.hasMoreTokens()) {
+		nextBaseToken = baseTokens.nextToken();
+		nextTargetToken = targetTokens.nextToken();
+		if (!(nextBaseToken.equals(nextTargetToken))) {
+		    while(true) {
+			result = result.concat("../");
+			if (!baseTokens.hasMoreTokens()) {
+			    break;
+			}
+			nextBaseToken = baseTokens.nextToken();
+		    }
+		    while(true) {
+			result = result.concat(nextTargetToken+"/");
+			if (!targetTokens.hasMoreTokens()) {
+			    break;
+			}
+			nextTargetToken = targetTokens.nextToken();
+		    }
+		    String temp = target.getFile();
+		    result = result.concat(temp.substring(temp.lastIndexOf("/")+1,temp.length()));
+		    return result;
+		}
+	    }
+
+	    while(baseTokens.hasMoreTokens()) {
+		result = result.concat("../");
+		baseTokens.nextToken();
+	    }
+
+	    while(targetTokens.hasMoreTokens()) {
+		nextTargetToken = targetTokens.nextToken();
+		result = result.concat(nextTargetToken + "/");
+	    }
+
+	    String temp = target.getFile();
+	    result = result.concat(temp.substring(temp.lastIndexOf("/")+1,temp.length()));
+	    return result;
+	}
+	return target.toString();
     }
 }
 

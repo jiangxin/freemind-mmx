@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.7 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.8 2000-11-02 17:20:11 ponder Exp $*/
 
 package freemind.modes;
 
@@ -28,6 +28,7 @@ import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.Point;
@@ -87,6 +88,10 @@ public abstract class ControllerAdapter implements ModeController {
 	return null;
     }
 
+    public void doubleClick() {
+	toggleFolded();
+    }
+
     //
     // Map Management
     //
@@ -100,9 +105,9 @@ public abstract class ControllerAdapter implements ModeController {
      * You may decide to overload this or take the default
      * and implement the functionality in your MapModel (implements MindMap)
      */
-    public void load(File file) {
- 	MapAdapter model = newModel();
- 	model.load(file);
+    public void load(File file) throws FileNotFoundException {
+	MapAdapter model = newModel();
+	model.load(file);
 	getController().newMapModule(model);
 	mapOpened(true);
     }
@@ -129,19 +134,33 @@ public abstract class ControllerAdapter implements ModeController {
     //
 
     public void open() {
-	JFileChooser chooser = new JFileChooser();
+	JFileChooser chooser = null;
+	if ((getMap() != null) && (getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
+	    chooser = new JFileChooser(getMap().getFile().getParentFile());
+	} else {
+	    chooser = new JFileChooser();
+	}
 	//chooser.setLocale(currentLocale);
 	if (getFileFilter() != null) {
 	    chooser.addChoosableFileFilter(getFileFilter());
 	}
 	int returnVal = chooser.showOpenDialog(getView());
 	if (returnVal==JFileChooser.APPROVE_OPTION) {
-	    load(chooser.getSelectedFile());
+	    try {
+		load(chooser.getSelectedFile());
+	    } catch (FileNotFoundException ex) {
+		JOptionPane.showMessageDialog(getController().getFrame(), FreeMind.getResources().getString("file_not_found"));
+	    }
 	}
     }
 
     public void saveAs() {
-	JFileChooser chooser = new JFileChooser();
+	JFileChooser chooser = null;
+	if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
+	    chooser = new JFileChooser(getMap().getFile().getParentFile());
+	} else {
+	    chooser = new JFileChooser();
+	}
 	//chooser.setLocale(currentLocale);
 	if (getFileFilter() != null) {
 	    chooser.addChoosableFileFilter(getFileFilter());
@@ -281,10 +300,25 @@ public abstract class ControllerAdapter implements ModeController {
 	getFrame().repaint();
     }
 
+    protected void toggleFolded() {
+	MindMapNode node = getSelected();
+	if (node.isFolded()) {
+	    getModel().setFolded(node,false);
+	} else {
+	    getModel().setFolded(node,true);
+	}
+    }
+
     protected void setLink() {
 	URL link;
+	String relative;
 	File input;
-	JFileChooser chooser = new JFileChooser();
+	JFileChooser chooser = null;
+	if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
+	    chooser = new JFileChooser(getMap().getFile().getParentFile());
+	} else {
+	    chooser = new JFileChooser();
+	}
 	if (getFileFilter() != null) {
 	    chooser.addChoosableFileFilter(getFileFilter());
 	}
@@ -293,22 +327,46 @@ public abstract class ControllerAdapter implements ModeController {
 	    input = chooser.getSelectedFile();
 	    try {
 		link = input.toURL();
+		relative = link.toString();
 	    } catch (MalformedURLException ex) {
-		JOptionPane.showMessageDialog(getController().getFrame(),"couldn't create valid URL!");
+		JOptionPane.showMessageDialog(getController().getFrame(), FreeMind.getResources().getString("url_error"));
 		return;
 	    }
-	    getModel().setLink(getSelected(),link);
+	    if (FreeMind.userProps.getProperty("links").equals("relative")) {
+		//Create relative URL
+		try {
+		    relative = Tools.toRelativeURL(getMap().getFile().toURL(), link);
+		} catch (MalformedURLException ex) {
+		    JOptionPane.showMessageDialog(getController().getFrame(), FreeMind.getResources().getString("url_error"));
+		    return;
+		}
+	    }
+	    getModel().setLink(getSelected(),relative);
 	}
     }
 
-    private void loadURL(URL url) {
-	String fileName = url.getFile();
-	File file = new File(fileName);
-	load(file);
+    private void loadURL(String relative) {
+	URL absolute = null;
+	try {
+	    absolute = new URL(getMap().getFile().toURL(), relative);
+	} catch (MalformedURLException ex) {
+	    JOptionPane.showMessageDialog(getController().getFrame(), FreeMind.getResources().getString("url_error"));
+	    return;
+	}
+	try {
+	    String fileName = absolute.getFile();
+	    File file = new File(fileName);
+	    load(file);
+	} catch (FileNotFoundException e) {
+	    int returnVal = JOptionPane.showConfirmDialog(getController().getFrame(), FreeMind.getResources().getString("repair_link_question"), FreeMind.getResources().getString("repair_link"),JOptionPane.YES_NO_OPTION);
+	    if (returnVal==JOptionPane.YES_OPTION) {
+		setLink();
+	    } 
+	}
     }
 
     protected void loadURL() {
-	URL link = getSelected().getLink();
+	String link = getSelected().getLink();
 	if (link != null) {
 	    loadURL(link);
 	}
@@ -324,6 +382,14 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected MapModule getMapModule() {
 	return getController().getMapModule();
+    }
+
+    protected MapAdapter getMap() {
+	if (getMapModule() != null) {
+	    return (MapAdapter)getMapModule().getModel();
+	} else {
+	    return null;
+	}
     }
 
     protected Controller getController() {
@@ -445,6 +511,15 @@ public abstract class ControllerAdapter implements ModeController {
 	}
 	public void actionPerformed(ActionEvent e) {
 	    delete(getView().getSelected());
+	}
+    }
+
+    protected class ToggleFoldedAction extends AbstractAction {
+	protected ToggleFoldedAction() {
+	    super(FreeMind.getResources().getString("toggle_folded"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    toggleFolded();
 	}
     }
 

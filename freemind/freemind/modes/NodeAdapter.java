@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.5 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: NodeAdapter.java,v 1.6 2000-11-02 17:20:11 ponder Exp $*/
 
 package freemind.modes;
 
@@ -38,7 +38,7 @@ import javax.swing.tree.TreePath;
 public abstract class NodeAdapter implements MindMapNode {
 	
     private Object userObject = "no text";
-    private URL link;//Change this to vector in future for full graph support
+    private String link;//Change this to vector in future for full graph support
 
     //these Attributes have default values, so it can be useful to directly access them in
     //the save() method instead of using getXXX(). This way the stored file is smaller and looks better.
@@ -74,11 +74,11 @@ public abstract class NodeAdapter implements MindMapNode {
 	this.userObject = userObject;
     }
 
-    public URL getLink() {
+    public String getLink() {
  	return link;
     }
     
-    public void setLink(URL link) {
+    public void setLink(String link) {
  	this.link = link;
     }
 
@@ -191,6 +191,11 @@ public abstract class NodeAdapter implements MindMapNode {
     //  Interface TreeNode
     //
 
+    /**
+     * This causes me some headache because the children are not reported if the node is folded, which
+     * is only correct if the view asks. Otherwise the children _should_ be reported. Maybe write to different
+     * methods for folded_sensitive and not_folded_sensitive.
+     */
     public Enumeration children() {
 	if (isFolded()) {
 	    return new Vector().elements();//return empty Enumeration
