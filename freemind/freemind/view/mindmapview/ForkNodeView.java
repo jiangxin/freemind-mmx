@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ForkNodeView.java,v 1.10 2003-11-03 11:00:24 sviles Exp $*/
+/*$Id: ForkNodeView.java,v 1.10.16.1 2004-08-22 14:28:12 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -46,6 +46,20 @@ public class ForkNodeView extends NodeView {
     /**
      * Paints the node
      */
+	public void paintFoldingMark(Graphics2D g){ 
+		if(getModel().isFolded()) {
+			final Point out = getOutPoint(); 
+			if (isLeft())
+			{
+				g.drawOval(out.x - FOLDING_SYMBOL_WIDTH , out.y - FOLDING_SYMBOL_WIDTH/2, FOLDING_SYMBOL_WIDTH, FOLDING_SYMBOL_WIDTH);
+			}
+			else
+			{
+				g.drawOval(out.x, out.y - FOLDING_SYMBOL_WIDTH/2, FOLDING_SYMBOL_WIDTH, FOLDING_SYMBOL_WIDTH);
+			}
+		}        
+	}
+
     public void paint(Graphics graphics) {
 	Graphics2D g = (Graphics2D)graphics;
 	Dimension size = getSize();

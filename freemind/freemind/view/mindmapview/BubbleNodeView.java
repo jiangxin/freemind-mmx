@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.13 2003-12-21 08:40:36 christianfoltin Exp $*/
+/*$Id: BubbleNodeView.java,v 1.13.4.1 2004-08-22 14:28:11 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -51,8 +51,11 @@ public class BubbleNodeView extends NodeView {
 
 
     public Dimension getPreferredSize() {
-	return new Dimension(super.getPreferredSize().width+2*LEFT_WIDTH_OVERHEAD,
-                             super.getPreferredSize().height+4);
+    	Dimension result = new Dimension(super.getPreferredSize().width+2*LEFT_WIDTH_OVERHEAD,
+			super.getPreferredSize().height+4); 
+    	if (getModel().isFolded())
+			result.width +=  FOLDING_SYMBOL_WIDTH / 2 ;
+		return result; 
     }	  
 
     public void paintSelected(Graphics2D graphics, Dimension size) {
@@ -61,6 +64,36 @@ public class BubbleNodeView extends NodeView {
           graphics.fillRoundRect(0,0,size.width-1,size.height-1,10,10);
        }
     }
+
+	public void paintFoldingMark(Graphics2D g){ 
+		if(getModel().isFolded()) {
+            int height = getSize().height/2;
+			// implement a maximum:
+			final int MAX_HEIGHT = 50;
+			if(height > MAX_HEIGHT)
+				height = MAX_HEIGHT;
+
+			Point ovalStartPoint = getOutPoint(); 
+			Point arcStartPoint = getInPoint(); 
+			arcStartPoint.translate( - height/2,  - height/2);
+			if (isLeft())
+			{
+				g.drawArc( arcStartPoint.x , arcStartPoint.y , height,   height, 270,180);
+				ovalStartPoint.translate(- FOLDING_SYMBOL_WIDTH/2 + 1 , - FOLDING_SYMBOL_WIDTH/2);
+			}
+			else
+			{
+				g.drawArc( arcStartPoint.x , arcStartPoint.y, height,   height,90,180);
+				ovalStartPoint.translate(- FOLDING_SYMBOL_WIDTH/2 - 1 , - FOLDING_SYMBOL_WIDTH/2);
+			}
+			Color actualColor = g.getColor();
+			g.setColor(model.getBackgroundColor());
+			g.fillOval(ovalStartPoint.x + 1 , ovalStartPoint.y + 1, FOLDING_SYMBOL_WIDTH - 2, FOLDING_SYMBOL_WIDTH - 2);
+			g.setColor(actualColor);
+			g.drawOval(ovalStartPoint.x , ovalStartPoint.y , FOLDING_SYMBOL_WIDTH, FOLDING_SYMBOL_WIDTH);
+		}
+        
+	}
 
     /**
      * Paints the node
@@ -83,8 +116,9 @@ public class BubbleNodeView extends NodeView {
 	//g.drawOval(0,0,size.width-1,size.height-1);   // Changed by Daniel
 
         if (map.getController().getAntialiasEdges()) {
-           g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
-        g.drawRoundRect(0,0,size.width-1,size.height-1,10,10);
+           g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); 
+        }
+        g.drawRoundRect(0, 0,size.width-1,size.height-1,10,10);
         // return to old rendering, fc, 21.12.2003.
         setRendering(g);
 

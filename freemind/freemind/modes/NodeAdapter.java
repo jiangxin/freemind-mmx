@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.4.1 2004-02-28 12:48:11 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.4.1.2.1 2004-08-22 14:28:11 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -174,6 +174,16 @@ public abstract class NodeAdapter implements MindMapNode {
     public Color getColor() {
        return color; }
 
+	public Color getBackgroundColor(){
+		if (isRoot()){
+			return Color.WHITE;
+		}
+		if(getCloud() != null){
+			return getCloud().getColor();
+		}
+		return parent.getBackgroundColor();
+	}
+	
     //////
     // The set methods. I'm not sure if they should be here or in the implementing class.
     /////

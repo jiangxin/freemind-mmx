@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.25.2.1 2004-02-28 12:48:11 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.25.2.1.2.1 2004-08-22 14:28:12 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -61,6 +61,8 @@ public abstract class NodeView extends JLabel {
     final static int DRAGGED_OVER_SON = 1;
     final static int DRAGGED_OVER_SIBLING = 2;
 
+	public final int FOLDING_SYMBOL_WIDTH = 8;
+
     protected int isDraggedOver = 0;
     public void setDraggedOver(int draggedOver) {
        isDraggedOver = draggedOver; }
@@ -73,7 +75,7 @@ public abstract class NodeView extends JLabel {
 
     public final int LEFT_WIDTH_OVERHEAD = 0;
     public final int LEFT_HEIGHT_OVERHEAD = 0;
-
+    
     //
     // Constructors
     //
@@ -125,8 +127,10 @@ public abstract class NodeView extends JLabel {
 	    newView = new RootNodeView( model, map );
 	} else if (model.getStyle().equals(MindMapNode.STYLE_FORK) ) {
 	    newView = new ForkNodeView( model, map );
+//		newView = new BubbleNodeView( model, map );
 	} else if (model.getStyle().equals(MindMapNode.STYLE_BUBBLE) ) {
-	    newView = new BubbleNodeView( model, map );
+//		newView = new ForkNodeView( model, map );
+		newView = new BubbleNodeView( model, map );
 	} else {
 	    System.err.println("Tried to create a NodeView of unknown Style.");
 	    newView = new ForkNodeView(model, map);
@@ -220,6 +224,9 @@ public abstract class NodeView extends JLabel {
       map.getController().getMode().getModeController().anotherNodeSelected(getModel());
       super. requestFocus();
    }
+
+	public void paintFoldingMark(Graphics2D g){ 
+	}
 
     public void paint(Graphics graphics) {
         // background color starts here, fc. 9.11.2003: todo
