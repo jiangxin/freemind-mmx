@@ -85,7 +85,7 @@ public class UnfoldAll extends NodeHookAdapter  {
 				unfoldOneStage(node);
 			} 
 		}
-		getController().getView().selectAsTheOnlyOneSelected(node.getViewer());
+		//getController().getView().selectAsTheOnlyOneSelected(node.getViewer());
 	}
 		
 	/**

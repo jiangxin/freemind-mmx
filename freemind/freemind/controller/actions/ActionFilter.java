@@ -1,5 +1,6 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000-2001  Joerg Mueller <joergmueller@bigfoot.com>
+ *Copyright (C) 2000-2004  Joerg Mueller, Daniel Polansky, Christian Foltin and others.
+ *
  *See COPYING for Details
  *
  *This program is free software; you can redistribute it and/or
@@ -15,26 +16,23 @@
  *You should have received a copy of the GNU General Public License
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * Created on 25.08.2004
  */
-/*$Id: NodeHook.java,v 1.1.2.5 2004-08-25 20:40:02 christianfoltin Exp $*/
+/*$Id: ActionFilter.java,v 1.1.2.1 2004-08-25 20:40:02 christianfoltin Exp $*/
+package freemind.controller.actions;
 
-package freemind.extensions;
-
-import java.util.Collection;
-import java.util.List;
-
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
-
-public interface NodeHook extends MindMapHook {
-	
-	void setMap(MindMap map);
-	void setNode(MindMapNode node);
-	
-	/* hooks */
-	/**
-	 * Is called after creation:
+/**
+ * @author foltin
+ *
+ * TODO To change the template for this generated type comment go to
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+public interface ActionFilter {
+	/** Each filter receives the action pair and its result is taken as the
+	 * new action pair.
+	 * @param pair
+	 * @return
 	 */
-	void invoke(MindMapNode node);
+	ActionPair filterAction(ActionPair pair);
 }
-

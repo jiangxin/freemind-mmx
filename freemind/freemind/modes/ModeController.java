@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.16 2004-08-12 22:20:28 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.17 2004-08-25 20:40:03 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -34,6 +34,7 @@ import javax.swing.JPopupMenu;
 import freemind.controller.Controller;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.ActionFactory;
+import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
@@ -124,6 +125,7 @@ public interface ModeController extends MindMapActions {
 	MapAdapter getMap();
 	Controller getController();
 	ActionFactory getActionFactory();
+	ObjectFactory getActionXmlFactory();
 	Color getSelectionColor();
     /**
      * Get text from resource file

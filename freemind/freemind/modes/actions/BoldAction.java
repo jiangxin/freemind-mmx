@@ -7,13 +7,10 @@
 package freemind.modes.actions;
 
 import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.xml.bind.JAXBException;
 
 import freemind.controller.MenuItemEnabledListener;
-import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.NodeActorXml;
 import freemind.controller.actions.generated.instance.BoldNodeAction;
@@ -27,7 +24,6 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
 
 public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuItemEnabledListener{
 	private final ControllerAdapter modeController;
-	private final ImageIcon myIcon;
 	/**
 	 * @param textID
 	 * @param iconPath
@@ -35,13 +31,11 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuI
 	 */
 	public BoldAction(ControllerAdapter modeController) {
 		super(modeController, "bold", "images/Bold16.gif");
-		myIcon = (ImageIcon) getValue(Action.SMALL_ICON); 
 		this.modeController = modeController;
 		addActor(this);			
 	}
 
 	public void act(XmlAction action) {
-		System.out.println("BoldActor");
 		BoldNodeAction boldact = (BoldNodeAction) action;
 		NodeAdapter node = getNodeFromID(boldact.getNode());
 		if(node.isBold() != boldact.isBold()) {

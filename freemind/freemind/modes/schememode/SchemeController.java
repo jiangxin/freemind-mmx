@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.10.12.4 2004-08-12 22:20:29 christianfoltin Exp $*/
+/*$Id: SchemeController.java,v 1.10.12.5 2004-08-25 20:40:04 christianfoltin Exp $*/
 
 package freemind.modes.schememode;
 
@@ -49,8 +49,6 @@ public class SchemeController extends ControllerAdapter {
     Action saveAs = new SaveAsAction(this);
     Action evaluate = new EvaluateAction();
     Action edit = new EditAction(this);
-    Action addNew = new NewChildWithoutFocusAction();
-    Action remove = new RemoveAction();
     private JPopupMenu popupmenu = new SchemePopupMenu(this);
 
     public SchemeController(Mode mode) {
@@ -129,10 +127,10 @@ public class SchemeController extends ControllerAdapter {
 
 		JMenuItem editItem = holder.addAction(edit, MenuBar.EDIT_MENU+"edit/editItem");
 		editItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_edit")));
-		JMenuItem addNewItem = holder.addAction(addNew, MenuBar.EDIT_MENU+"edit/newItem");
-		addNewItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_add")));
-		JMenuItem removeItem = holder.addAction(remove, MenuBar.EDIT_MENU+"edit/removeItem");
-		removeItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_remove")));
+//		JMenuItem addNewItem = holder.addAction(addNew, MenuBar.EDIT_MENU+"edit/newItem");
+//		addNewItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_add")));
+		//JMenuItem removeItem = holder.addAction(remove, MenuBar.EDIT_MENU+"edit/removeItem");
+		//removeItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_remove")));
 		holder.addAction(evaluate, MenuBar.EDIT_MENU+"edit/evaluate");
 		holder.addAction(toggleFolded, MenuBar.EDIT_MENU+"edit/toggleFolded");
 

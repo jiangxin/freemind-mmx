@@ -6,6 +6,7 @@
  */
 package freemind.modes.actions;
 
+import java.awt.Color;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -44,7 +45,7 @@ public interface MindMapActions {
 //	public abstract void setNodeColor(MindMapNode node, Color color);
 //	public abstract void blendNodeColor(MindMapNode node);
 //	public abstract void setNodeFont(MindMapNode node, Font font);
-//	public abstract void setEdgeColor(MindMapNode node, Color color);
+	public abstract void setEdgeColor(MindMapNode node, Color color);
 //	public abstract void setEdgeWidth(MindMapNode node, int width);
 //	public abstract void setNodeStyle(MindMapNode node, String style);
 //	public abstract void setEdgeStyle(MindMapNode node, String style);
@@ -71,7 +72,7 @@ public interface MindMapActions {
 //		MindMapNode source,
 //		MindMapArrowLinkModel arrowLink,
 //		Color color);
-//	public abstract void setItalic(MindMapNode node);
+	public abstract void setItalic(MindMapNode node, boolean isItalic);
 //	public abstract void setUnderlined(MindMapNode node);
 //	public abstract void setNormalFont(MindMapNode node);
 //	public abstract void setFontFamily(

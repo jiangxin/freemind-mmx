@@ -19,7 +19,7 @@
  *
  * Created on 26.07.2004
  */
-/*$Id: NodeHookAction.java,v 1.1.2.3 2004-08-08 13:03:48 christianfoltin Exp $*/
+/*$Id: NodeHookAction.java,v 1.1.2.4 2004-08-25 20:40:03 christianfoltin Exp $*/
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
@@ -44,6 +44,9 @@ import freemind.modes.ModeController;
 public class NodeHookAction extends FreemindAction implements MenuItemEnabledListener {
 	String hookName;
 	ModeController controller;
+	public ModeController getController() {
+		return controller;
+	}
 	private static Logger logger;
 	public NodeHookAction(String hookName, ModeController controller) {
 		super(hookName, null, null);
@@ -110,11 +113,38 @@ public class NodeHookAction extends FreemindAction implements MenuItemEnabledLis
 					controller.nodeChanged(currentDestinationNode);
 				}
 			}
+			finishInvocation(focussed, selecteds, adaptedFocussedNode, destinationNodes);
 		}
 	}
 
 
+	/**
+	 * @param focussed The real focussed node
+	 * @param selecteds The list of selected nodes
+	 * @param adaptedFocussedNode The calculated focussed node (if the hook specifies, that 
+	 * the hook should apply to root, then this is the root node).
+	 * @param destinationNodes The calculated list of selected nodes (see last)
+	 */
+	public void finishInvocation(MindMapNode focussed, List selecteds,
+			MindMapNode adaptedFocussedNode, Collection destinationNodes) {
+			// select all destination nodes:
+			// fc, 25.8.2004: The following code snippet should be moved to a more general place.
+			if (focussed.getViewer() != null) {
+				getController().getView().selectAsTheOnlyOneSelected(
+						focussed.getViewer());
+				getController().getView().scrollNodeToVisible(
+						focussed.getViewer());
+				for (Iterator i = selecteds.iterator(); i.hasNext();) {
+					MindMapNode node = (MindMapNode) i.next();
+					if(node.getViewer() != null) {
+						getController().getView().makeTheSelected(node.getViewer());
+					}
+				}
+			}
+		}
+
 	
+
 	/**
 	 * @return
 	 */

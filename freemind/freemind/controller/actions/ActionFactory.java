@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: ActionFactory.java,v 1.1.2.3 2004-07-01 20:13:39 christianfoltin Exp $*/
+/*$Id: ActionFactory.java,v 1.1.2.4 2004-08-25 20:40:02 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -42,6 +42,8 @@ public class ActionFactory {
 	private Controller controller;
 	/** This set denotes all handler of the action to be called for each action. */
 	private Set registeredHandler;
+	/** This set denotes all filters for XmlActions.*/
+	private Set registeredFilters;
 	/** HashMap of Action class -> actor instance. */
 	private HashMap registeredActors;
 
@@ -52,6 +54,7 @@ public class ActionFactory {
 		super();
 		this.controller = c;
 		registeredHandler = new HashSet();
+		registeredFilters = new HashSet();
 		registeredActors = new HashMap();
 	}
 
@@ -61,6 +64,14 @@ public class ActionFactory {
 
 	public void deregisterHandler(ActionHandler newHandler) {
 		registeredHandler.remove(newHandler);
+	}
+
+	public void registerFilter(ActionFilter newFilter) {
+		registeredFilters.add(newFilter);
+	}
+
+	public void deregisterFilter(ActionFilter newFilter) {
+		registeredFilters.remove(newFilter);
 	}
 
 	public void startTransaction(String name) {
@@ -83,9 +94,15 @@ public class ActionFactory {
 	 * @param undoAction
 	 */
 	public void executeAction(ActionPair pair) {
+		ActionPair filteredPair = pair;
+		// first filter:
+		for (Iterator i = registeredFilters.iterator(); i.hasNext();) {
+			ActionFilter filter = (ActionFilter) i.next();
+			filteredPair = filter.filterAction(filteredPair);
+		}
 		for (Iterator i = registeredHandler.iterator(); i.hasNext();) {
 			ActionHandler handler = (ActionHandler) i.next();
-			handler.executeAction(pair);
+			handler.executeAction(filteredPair);
 		}
 	}
 

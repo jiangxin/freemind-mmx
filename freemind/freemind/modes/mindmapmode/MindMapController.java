@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.23 2004-08-20 23:12:13 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.24 2004-08-25 20:40:03 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -66,7 +66,6 @@ import freemind.controller.actions.generated.instance.MenuSubmenu;
 import freemind.controller.actions.generated.instance.PluginRegistrationType;
 import freemind.extensions.HookFactory;
 import freemind.extensions.HookRegistration;
-import freemind.extensions.MindMapHook;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.ControllerAdapter;
@@ -80,7 +79,10 @@ import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.StylePattern;
+import freemind.modes.actions.EdgeColorAction;
 import freemind.modes.actions.NewMapAction;
+import freemind.modes.actions.NewPreviousSiblingAction;
+import freemind.modes.actions.NewSiblingAction;
 import freemind.modes.actions.NodeGeneralAction;
 import freemind.modes.actions.NodeHookAction;
 import freemind.modes.actions.SingleNodeOperation;
@@ -109,10 +111,8 @@ public class MindMapController extends ControllerAdapter {
    public Action exportBranchToHTML = new ExportBranchToHTMLAction(this);
 
    public Action editLong = new EditLongAction();
-   public Action newChildWithoutFocus = new NewChildWithoutFocusAction();
-   public Action newSibling = new NewSiblingAction();
-   public Action newPreviousSibling = new NewPreviousSiblingAction();
-   public Action remove = new RemoveAction();
+   public Action newSibling = new NewSiblingAction(this);
+   public Action newPreviousSibling = new NewPreviousSiblingAction(this);
    public Action setLinkByFileChooser = new SetLinkByFileChooserAction();
    public Action setImageByFileChooser = new SetImageByFileChooserAction();
    public Action setLinkByTextField = new SetLinkByTextFieldAction();
@@ -135,7 +135,6 @@ public class MindMapController extends ControllerAdapter {
           map.blendNodeColor(node); }});
 	public Action nodeBackgroundColor = new NodeBackgroundColorAction();
 
-    public Action edgeColor = new EdgeColorAction();
     public Action EdgeWidth_WIDTH_PARENT = new EdgeWidthAction(EdgeAdapter.WIDTH_PARENT);
 	public Action EdgeWidth_WIDTH_THIN = new EdgeWidthAction(EdgeAdapter.WIDTH_THIN);
 	public Action EdgeWidth_1 = new EdgeWidthAction(1);
@@ -157,9 +156,6 @@ public class MindMapController extends ControllerAdapter {
     };
     public Action cloudColor = new CloudColorAction();
 
-    public Action italic = new NodeGeneralAction (this, "italic", "images/Italic16.gif",
-       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
-          map.setItalic(node); }});
     public Action cloud   = new NodeGeneralAction (this, "cloud", "images/Cloud24.gif",
        new SingleNodeOperation() { private MindMapCloud lastCloud;
            private MindMapNodeModel nodeOfLastCloud;
@@ -568,11 +564,9 @@ public class MindMapController extends ControllerAdapter {
 		redo.setEnabled(enabled);
         edit.setEnabled(enabled);
         editLong.setEnabled(enabled);
-        newChildWithoutFocus.setEnabled(enabled);
         newSibling.setEnabled(enabled);
         newPreviousSibling.setEnabled(enabled);
         newChild.setEnabled(enabled);
-        remove.setEnabled(enabled);
         toggleFolded.setEnabled(enabled);
         toggleChildrenFolded.setEnabled(enabled);
         setLinkByTextField.setEnabled(enabled);
@@ -846,29 +840,27 @@ public class MindMapController extends ControllerAdapter {
 			 MindMapNodeModel selected = (MindMapNodeModel)it.next();
 			 getMindMapMapModel().setNodeBackgroundColor(selected, color); }}}
 
-    private class EdgeColorAction extends AbstractAction {
-	EdgeColorAction() { super(getText("edge_color")); }
-	public void actionPerformed(ActionEvent e) {
-           Color color = Controller.showCommonJColorChooserDialog(getView().getSelected(),"Choose Edge Color:",getSelected().getEdge().getColor());
-           if (color==null) return;
-           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-              MindMapNodeModel selected = (MindMapNodeModel)it.next();
-              getMindMapMapModel().setEdgeColor(selected,color); }}}
-
-
     private class CloudColorAction extends AbstractAction {
-	CloudColorAction() { 
-        super(getText("cloud_color"), new ImageIcon(getResource("images/Colors24.gif"))); 
-        putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));}
-	public void actionPerformed(ActionEvent e) {
-        Color selectedColor = null;
-        if(getSelected().getCloud() != null)
-            selectedColor = getSelected().getCloud().getColor();
-           Color color = Controller.showCommonJColorChooserDialog(getView().getSelected(),"Choose Cloud Color:",selectedColor);
-           if (color==null) return;
-           for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-              MindMapNodeModel selected = (MindMapNodeModel)it.next();
-              getMindMapMapModel().setCloudColor(selected,color); }}}
+		CloudColorAction() {
+			super(getText("cloud_color"), new ImageIcon(
+					getResource("images/Colors24.gif")));
+			putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			Color selectedColor = null;
+			if (getSelected().getCloud() != null)
+				selectedColor = getSelected().getCloud().getColor();
+			Color color = Controller.showCommonJColorChooserDialog(getView()
+					.getSelected(), "Choose Cloud Color:", selectedColor);
+			if (color == null)
+				return;
+			for (ListIterator it = getSelecteds().listIterator(); it.hasNext();) {
+				MindMapNodeModel selected = (MindMapNodeModel) it.next();
+				getMindMapMapModel().setCloudColor(selected, color);
+			}
+		}
+	}
 
 
     protected class ColorArrowLinkAction extends AbstractAction {

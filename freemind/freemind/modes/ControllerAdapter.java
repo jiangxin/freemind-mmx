@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.26 2004-08-21 07:14:13 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.27 2004-08-25 20:40:03 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -93,9 +93,13 @@ import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.actions.BoldAction;
 import freemind.modes.actions.CompoundActionHandler;
+import freemind.modes.actions.CopyAction;
+import freemind.modes.actions.CopySingleAction;
 import freemind.modes.actions.CutAction;
 import freemind.modes.actions.DeleteChildAction;
+import freemind.modes.actions.EdgeColorAction;
 import freemind.modes.actions.EditAction;
+import freemind.modes.actions.ItalicAction;
 import freemind.modes.actions.NewChildAction;
 import freemind.modes.actions.NodeUpAction;
 import freemind.modes.actions.PasteAction;
@@ -136,6 +140,7 @@ public abstract class ControllerAdapter implements ModeController {
     public CutAction cut = null;
     public PasteAction paste = null;
 	public BoldAction bold = null;
+	public ItalicAction italic = null;
 	public EditAction edit = null;
 	public NewChildAction newChild = null;
 	public DeleteChildAction deleteChild = null;
@@ -143,6 +148,7 @@ public abstract class ControllerAdapter implements ModeController {
     public ToggleChildrenFoldedAction toggleChildrenFolded = null;
     public NodeUpAction nodeUp = null;
     public NodeDownAction nodeDown = null;
+    public EdgeColorAction edgeColor = null;
 	/** Executes series of actions. */
 	private CompoundActionHandler compound = null;
 
@@ -197,6 +203,7 @@ public abstract class ControllerAdapter implements ModeController {
         copy = new CopyAction(this);
         copySingle = new CopySingleAction(this);
 		bold = new BoldAction (this);
+		italic = new ItalicAction(this);
 		edit = new EditAction(this);
 		newChild = new NewChildAction(this);
 		deleteChild = new DeleteChildAction(this);
@@ -204,6 +211,7 @@ public abstract class ControllerAdapter implements ModeController {
 		toggleChildrenFolded = new ToggleChildrenFoldedAction(this);
 		nodeUp = new NodeUpAction(this);
 		nodeDown = new NodeDownAction(this);
+	    edgeColor = new EdgeColorAction(this);
 		compound = new CompoundActionHandler(this);
 
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -747,8 +755,14 @@ public abstract class ControllerAdapter implements ModeController {
 		bold.setBold(node, bolded);
 	}
 
+	public void setItalic(MindMapNode node, boolean isItalic) {
+		italic.setItalic(node, isItalic);
+	}
 
 
+	public void setEdgeColor(MindMapNode node, Color color) {
+		edgeColor.setEdgeColor(node, color);
+	}
 	// edit begins with home/end or typing (PN 6.2)
 	public void edit(KeyEvent e, boolean addNew, boolean editLong) {
 		edit.edit(e, addNew, editLong);
@@ -1234,7 +1248,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected class FindAction extends AbstractAction {
         public FindAction() {
-           super(getText("find")); }
+           super(getText("find"),new ImageIcon(getResource("images/Find16.gif"))); }
         public void actionPerformed(ActionEvent e) {
            String what = JOptionPane.showInputDialog(getView().getSelected(),
                                                      getText("find_what"));
@@ -1445,45 +1459,6 @@ public abstract class ControllerAdapter implements ModeController {
         }
     }
 
-    // old model of inserting node
-    protected class NewChildWithoutFocusAction extends AbstractAction {
-        public NewChildWithoutFocusAction() {
-            super(getText("new_node"));
-        }
-        public void actionPerformed(ActionEvent e) {
-            addNew(getSelected(), NEW_CHILD_WITHOUT_FOCUS, null);
-        }
-    }
-
-    // new model of inserting node
-    protected class NewSiblingAction extends AbstractAction {
-        public NewSiblingAction() {
-            super(getText("new_sibling_behind"));
-        }
-        public void actionPerformed(ActionEvent e) {
-            addNew(getSelected(), NEW_SIBLING_BEHIND, null);
-        }
-    }
-
-    protected class NewPreviousSiblingAction extends AbstractAction {
-        public NewPreviousSiblingAction() {
-            super(getText("new_sibling_before"));
-        }
-        public void actionPerformed(ActionEvent e) {
-            addNew(getSelected(), NEW_SIBLING_BEFORE, null);
-        }
-    }
-
-
-    protected class RemoveAction extends AbstractAction {
-        public RemoveAction() {
-            super(getText("remove_node"));
-        }
-        public void actionPerformed(ActionEvent e) {
-           if (getMapModule() != null) {
-              cut();
-              getController().obtainFocusForSelected(); }}}
-
     protected class SetLinkByFileChooserAction extends AbstractAction {
         public SetLinkByFileChooserAction() {
             super(getText("set_link_by_filechooser"));
@@ -1522,27 +1497,6 @@ public abstract class ControllerAdapter implements ModeController {
         }
     }
 
-    protected class CopyAction extends AbstractAction {
-        public CopyAction(Object controller) {
-            super(getText("copy"), new ImageIcon(getResource("images/Copy24.gif")));
-            setEnabled(false);
-        }
-        public void actionPerformed(ActionEvent e) {
-           if(getMapModule() != null) {
-              Transferable copy = getView().getModel().copy();
-              if (copy != null) {
-                 clipboard.setContents(copy,null); }}}}
-
-    protected class CopySingleAction extends AbstractAction {
-        public CopySingleAction(Object controller) {
-           super(getText("copy_single"));
-           setEnabled(false);
-        }
-        public void actionPerformed(ActionEvent e) {
-           if(getMapModule() != null) {
-              Transferable copy = getView().getModel().copySingle();
-              if (copy != null) {
-                 clipboard.setContents(copy,null); }}}}
 
     protected class FileOpener implements DropTargetListener {
         private boolean isDragAcceptable(DropTargetDragEvent event) {

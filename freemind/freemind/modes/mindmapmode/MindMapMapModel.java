@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.10.8 2004-08-08 13:03:49 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.10.9 2004-08-25 20:40:04 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -142,10 +142,6 @@ public class MindMapMapModel extends MapAdapter  {
 
     public void setNodeFont(MindMapNodeModel node, Font font) {
         node.setFont(font);
-        nodeChanged(node); }
-
-    public void setEdgeColor(MindMapNodeModel node, Color color) {
-        ((MindMapEdgeModel)node.getEdge()).setColor(color);
         nodeChanged(node); }
 
     public void setEdgeWidth(MindMapNodeModel node, int width) {

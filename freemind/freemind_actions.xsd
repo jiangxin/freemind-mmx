@@ -15,6 +15,9 @@
 					<xs:element ref="cut_node_action"/>
 					<xs:element ref="paste_node_action"/>
 					<xs:element ref="bold_node_action"/>
+					<xs:element ref="italic_node_action"/>
+					<xs:element ref="underlined_node_action"/>
+					<xs:element ref="edge_color_format_action"/>
 					<xs:element ref="delete_node_action"/>
 					<xs:element ref="edit_node_action"/>
 					<xs:element ref="new_node_action"/>
@@ -92,16 +95,58 @@
 		</xs:complexContent>
 	  </xs:complexType>
 
+	<!-- Format node actions. These actions describe format changes.-->
+	  <xs:complexType name="format_node_action">
+		<xs:complexContent>
+			<xs:extension base="node_action"/>
+		</xs:complexContent>
+	  </xs:complexType>
+
 	<!-- Bold Action -->
 	<xs:element name="bold_node_action">
 	  <xs:complexType>
 		<xs:complexContent>
-			<xs:extension base="node_action">
+			<xs:extension base="format_node_action">
 		      <xs:attribute name="bold" use="required" type="xs:boolean"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
+
+	<!-- Italic Action -->
+	<xs:element name="italic_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="italic" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Underlined Action -->
+	<xs:element name="underlined_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="underlined" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Sets the color of the edges Action -->
+	<xs:element name="edge_color_format_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="color" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+
 
 	<!-- Delete node Action 
 		 This is done via the parent and its index, because at creation time of the node, the id was not present. -->

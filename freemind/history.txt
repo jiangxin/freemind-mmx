@@ -30,6 +30,12 @@ Changes made in Freemind 0.8.0:
 * Folding can be undone (for children too).
 * Multiple move nodes is now possible + undoable
 
+* More undoables: Edge color, italic, underline
+* Format of new nodes is now automatically taken from the last format changes
+* Find has an icon, such that it is more visible.
+* There is a filter possibility for XmlActions
+* Selection corrected after execution of NodeHookActions.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added
