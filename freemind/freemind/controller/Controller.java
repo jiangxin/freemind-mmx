@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.19 2001-04-19 16:20:38 ponder Exp $*/
+/*$Id: Controller.java,v 1.20 2001-04-21 13:09:13 ponder Exp $*/
 
 package freemind.controller;
 
@@ -67,6 +67,8 @@ public class Controller {
 
     private Map mapmodules = new TreeMap(); //The instances of mode, ie. the Model/View pairs
     private LastOpenedList lastOpened = new LastOpenedList();//A list of the pathnames of all the maps that were opened in the last time
+    private List historyList = new LinkedList();//manages previous/next map buttons DO NOT USE THIS DIRECTLY
+    private ListIterator history = historyList.listIterator();//all work is done through this ListIterator
     private MapModule mapmodule; //reference to the current mode, could be done with an index to mapmodules, too.
     private Map modes; //hash of all possible modes
     private Mode mode; //The current mode
@@ -316,21 +318,25 @@ public class Controller {
     }
 
     void nextMap() {
+	/*
 	List keys = new LinkedList(getMapModules().keySet());
 	int index = keys.indexOf(getMapModule().toString());
 	ListIterator i = keys.listIterator(index+1);
-	if (i.hasNext()) {
-	    changeToMapModule((String)i.next());
+	*/
+	if (history.hasNext()) {
+	    changeToMapModule((String)history.next());
 	}
 	updateNavigationActions();
     }
 
     void previousMap() {
+	/*
 	List keys = new LinkedList(getMapModules().keySet());
 	int index = keys.indexOf(getMapModule().toString());
 	ListIterator i = keys.listIterator(index);
-	if (i.hasPrevious()) {
-	    changeToMapModule((String)i.previous());
+	*/
+	if (history.hasPrevious()) {
+	    changeToMapModule((String)history.previous());
 	}
 	updateNavigationActions();
     }
@@ -339,6 +345,7 @@ public class Controller {
 	MapModule mapmodule = new MapModule(map, new MapView(map, this), getMode());
 	setMapModule(mapmodule);
 	addToMapModules(mapmodule.toString(), mapmodule);
+	nextMap.setEnabled(false);
     }
 
     public void changeToMapOfMode(Mode mode) {
@@ -408,6 +415,7 @@ public class Controller {
     private void mapModuleChanged() {
 	frame.getFreeMindMenuBar().updateMapsMenu();//to show the new map in the mindmaps menu
 	lastOpened.mapOpened(getMapModule());
+	history.add(getMapModule());
 	updateNavigationActions();
 	setTitle();
 	moveToRoot();
@@ -445,6 +453,7 @@ public class Controller {
 	((MainToolBar)getToolBar()).setAllActions(enabled);
     }
 
+    /*
     private void updateNavigationActions() {
 	List keys = new LinkedList(getMapModules().keySet());
 	if (getMapModule() == null) {
@@ -466,6 +475,7 @@ public class Controller {
 	    }
 	}
     }
+    */
 
     //
     // program/map control
