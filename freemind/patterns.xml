@@ -63,6 +63,37 @@
       <node color="#009999"/>
    </pattern>
 
+   <!-- Mind map styles -->
+   <pattern name="MindMapDefault">
+      <node color="#111111"/>
+      <edge color="#111111" width="thin"/>
+      <child pattern="MindMapDefault"/>
+   </pattern>
+
+   <pattern name="MindMap3">
+      <node color="#990000"/>
+      <edge color="#990000" width="1"/>
+      <child pattern="MindMapDefault"/>
+   </pattern>
+
+   <pattern name="MindMap2">
+      <node color="#00b439"/>
+      <edge color="#00b439" width="2"/>
+      <child pattern="MindMap3"/>
+   </pattern>
+   
+   <pattern name="MindMap1">
+      <node color="#0033FF"/>
+      <edge color="#0033FF" width="4"/>
+      <child pattern="MindMap2"/>
+   </pattern>
+
+   <pattern name="AutomaticMindMapRoot">
+      <node color="#000000"/>
+      <edge color="#000000" width="8"/>
+      <child pattern="MindMap1"/>
+   </pattern>
+
 
    <!-- These two examples are not really meant for serious use -->
    <!-- example of edges -->

@@ -1,3 +1,9 @@
 #!/bin/sh
 echo $@
-java -jar ./lib/freemind.jar $@
+#
+# Thanks to Peter Torngaard
+#
+full=$(dirname $0)
+echo ${full}/lib/freemind.jar
+java -jar ${full}/lib/freemind.jar $@
+
