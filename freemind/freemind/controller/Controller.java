@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.10.9 2004-09-04 06:56:04 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.10.10 2004-09-04 20:22:43 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -105,7 +105,7 @@ public class Controller {
     Action optionHTMLExportFoldingAction;
     Action optionSelectionMechanismAction;
 
-    Action about;
+    public Action about;
     Action faq;
     Action documentation;
     Action license;

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.10.8 2004-09-04 06:56:04 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.10.9 2004-09-04 20:22:43 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -83,6 +83,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
         super("FreeMind");
         FreeMindSplash splash = new FreeMindSplash(this);
         splash.setVisible(true);
+        /* This is only for apple but does not harm for the others. */
+        System.setProperty("apple.laf.useScreenMenuBar", "true");			
 	String propsLoc = "freemind.properties";
 	defaultPropsURL = ClassLoader.getSystemResource(propsLoc);
 

@@ -82,6 +82,17 @@
 	<!-- end generator part -->
 
 	<target name="build" depends="gen">
+		<!-- Perform Mac Changes as a plugin. -->
+		<exec dir="${src}/accessories/plugins" executable="ln" os="Mac OS X">
+			<arg value="-s"/>
+			<arg value="MacChanges.java.not_here"/>
+			<arg value="MacChanges.java"/>
+		</exec>
+		<exec dir="${src}/accessories/plugins" executable="ln" os="Mac OS X">
+			<arg value="-s"/>
+			<arg value="MacChanges.xml.not_here"/>
+			<arg value="MacChanges.xml"/>
+		</exec>
 		<mkdir dir="${build}"/>
 	    <!-- build generated files -->
 	    <antcall target="build-generated"/>

@@ -42,6 +42,8 @@ Changes made in Freemind 0.8.0:
 * Added the help plugin
 * Changed the plugin class loader behaviour completely.
 
+* Application is more or less fit for Mac OS X
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added
