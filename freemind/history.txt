@@ -115,6 +115,7 @@ Changes made in Freemind 0.8.0:
 * Two new portugese translations (thanks to the authors).
 * New Feature: Encrypted Maps (and not only encrpyted nodes).
 * Icons for encryption improved
+* Bug fix: docu map for mac os x.
 
 Changes made in Freemind 0.7.2:
 ===============================

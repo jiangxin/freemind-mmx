@@ -1,5 +1,5 @@
 <project name="freemind" default="dist" basedir=".">
-	<property name="ver" value="0_8_0_beta4" />
+	<property name="ver" value="0_8_0_beta5" />
 	<property name="src" value="." />
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
@@ -224,13 +224,17 @@
 	</target>
 
 	<target name="post_macos">
+		<!-- doc -->
+		<mkdir dir="${dist_macos}/doc" />
+		<copy todir="${dist_macos}/doc/" file="${dist}/doc/freemind.mm" />
+
 		<exec dir="." executable="bash" os="Mac OS X">
 			<arg value="./mkdmg.sh"/>
-			<arg value="${src}/${dist_macos}"/>
+			<arg path="${dist_macos}"/>
 		</exec>
 		<exec dir="." executable="mv" os="Mac OS X">
-			<arg value="/tmp/${dist_macos_name}"/>
-			<arg value="${post}"/>
+			<arg path="/tmp/${dist_macos_name} Archive.dmg"/>
+			<arg path="${post}/${dist_macos_name}.dmg"/>
 		</exec>
 
 	</target>
@@ -286,13 +290,7 @@
 	<target name="doc">
 		<mkdir dir="${dist}/doc" />
 		<mkdir dir="${dist}/doc/javadoc" />
-		<copy todir="${dist}/doc/">
-			<fileset dir="${src}/doc">
-				<exclude name="*.text"/>
-				<exclude name="compile"/>
-				<exclude name="frame*"/>
-			</fileset>
-		</copy>
+		<copy todir="${dist}/doc" file="${src}/doc/freemind.doc"/>
 		<javadoc sourcepath="${src}"
 		         destdir="${dist}/doc/javadoc"
 		         packagenames="freemind.*" />
