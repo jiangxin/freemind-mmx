@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.17 2003-11-19 20:36:29 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.18 2003-11-29 17:12:33 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -203,6 +203,8 @@ public abstract class MapAdapter implements MindMap {
 
     public final Transferable cut() {
        Transferable t = copy();
+       // clear all recently cutted links from the registry:
+       getLinkRegistry().clearCuttedNodeBuffer();
        for(Iterator i = getFrame().getView().getSelecteds().iterator();i.hasNext();) {
           MindMapNode selectedNode = ((NodeView)i.next()).getModel();
           getLinkRegistry().cutNode(selectedNode);
@@ -488,7 +490,7 @@ public abstract class MapAdapter implements MindMap {
              // Iterate the path with the exception of the last node
              for (int i = 0; i < path.length - 1; i++) {
                 MindMapNode nodeOnPath = (MindMapNode)path[i];
-                System.out.println(nodeOnPath);
+                //System.out.println(nodeOnPath);
                 if (nodeOnPath.isFolded()) {
                     if(findNodesUnfoldedByLastFind != null) 
                         findNodesUnfoldedByLastFind.add(nodeOnPath);

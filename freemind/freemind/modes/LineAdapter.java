@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LineAdapter.java,v 1.1 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: LineAdapter.java,v 1.2 2003-11-29 17:12:33 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -120,6 +120,17 @@ public abstract class LineAdapter implements MindMapLine {
     /** I see no reason to hide the node, the line belongs to, to the public, but... fc. */
     public MindMapNode getTarget() {
         return target;
+    }
+
+    public Object clone() {
+        try {
+            LineAdapter link = (LineAdapter) super.clone();
+            // color, ...
+            link.color = (color==null)?null:new Color(color.getRGB());
+            return link;
+        } catch(java.lang.CloneNotSupportedException e) {
+            return null;
+        }
     }
 
     

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapXMLElement.java,v 1.10 2003-11-24 08:09:04 christianfoltin Exp $*/
+/*$Id: MindMapXMLElement.java,v 1.11 2003-11-29 17:12:33 christianfoltin Exp $*/
 
 /*On doubling of code
  *
@@ -281,7 +281,19 @@ public class MindMapXMLElement extends XMLElement {
         for(Iterator i = IDToTarget.keySet().iterator(); i.hasNext();) {
             String key = (String) i.next();
             MindMapNodeModel target = (MindMapNodeModel) IDToTarget.get(key);
-            registry.registerLinkTarget(target, key /* Proposed name for the target, is changed by the registry, if already present.*/);
+            MindMapLinkRegistry.ID_Registered newState = registry.registerLinkTarget(target, key /* Proposed name for the target, is changed by the registry, if already present.*/);
+            String newId = newState.getID();
+            // and in the cutted case: 
+            // search for links to this ids that have been cutted earlier:
+            Vector cuttedLinks = registry.getCuttedNode(key /* old target id*/);
+            for(int j=0; j < cuttedLinks.size(); ++j) {
+                MindMapArrowLinkModel link = (MindMapArrowLinkModel) cuttedLinks.get(j);
+                // repair link
+                link.setTarget(target);
+                link.setDestinationLabel(newId);
+                // and set it:
+                registry.registerLink(link);
+            }
         }
     }
 

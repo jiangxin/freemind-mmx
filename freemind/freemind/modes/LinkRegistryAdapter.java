@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.5 2003-11-20 07:01:58 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.6 2003-11-29 17:12:33 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -85,6 +85,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 
     protected HashMap /* MindMapNode = Target -> ID_BasicState. */ TargetToID;
     protected HashMap /* id -> vector of links whose TargetToID.get(target) == id.*/  IDToLinks;
+    protected HashMap /* id -> vector of links whose TargetToID.get(target) == id and who are cutted recently.*/  IDToCuttedLinks;
     /** The map the registry belongs to.*/
 //     protected MindMap map;
 
@@ -96,10 +97,12 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     ////////////////////////////////////////////////////////////////////////////////////////
     public LinkRegistryAdapter(/*MindMap map*/) {
 //         this.map = map;
-        TargetToID = new HashMap();
-        IDToLinks = new HashMap();
+        TargetToID      = new HashMap();
+        IDToLinks       = new HashMap();
+        IDToCuttedLinks = new HashMap();
         logger.setLevel(java.util.logging.Level.WARNING);
-         logger.info("New Registry");
+        //logger.setLevel(java.util.logging.Level.FINEST);
+        logger.info("New Registry");
     };
 
     protected String generateUniqueID(String proposedID) {
@@ -272,10 +275,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         if(getState(target) instanceof ID_Registered)
             {
                 Vector vec = getAssignedLinksVector((ID_Registered) state);
-                /* clone */
-                for(int i = 0 ; i < vec.size(); ++i) {
-                    returnValue.add( vec.get(i) );
-                }
+                /* "clone" */
+                returnValue.addAll( vec );
             }
         return returnValue;
     }
@@ -305,15 +306,62 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     }
 
     public void        cutNode(MindMapNode target) {
+        logger.entering("LinkRegistryAdapter", "cutNode", target);
+        ID_BasicState state = getState(target);
+        if(state instanceof ID_Registered) {
+            // there is a registered target id.
+            String id = getIDString(target);
+            // create new vector to the links:
+            Vector vec;
+            if(IDToCuttedLinks.containsKey(id) ) {
+                vec = (Vector) IDToCuttedLinks.get(id);
+                // clear this vector:
+                vec.clear();
+            } else { 
+                vec = new Vector();
+                IDToCuttedLinks.put(id,vec);
+            }
+            // deregister all links to me:
+            Vector links = getAllLinksIntoMe(target);
+            for(int i = links.size() - 1; i >= 0 ; --i) {
+                MindMapLink link = (MindMapLink) links.get(i);
+                vec.add(link);
+                logger.info("Adding link ("+link+") to target " + target + " to the cutted nodes from (old) id " + id);
+                deregisterLink(link);
+            }
+            // deregister myself to keep the registry tidy.
+            deregisterLinkTarget(target);
+        }
+        // deregister all links from me:
         Vector links = getAllLinksFromMe(target);
         for(int i = links.size() - 1; i >= 0 ; --i) {
-            deregisterLink((MindMapLink) links.get(i));
+            MindMapLink link = (MindMapLink) links.get(i);
+            deregisterLink(link);
         }
-        deregisterLinkTarget(target);
+        // and process my sons:
         for (ListIterator e = target.childrenUnfolded(); e.hasNext(); ) {
             MindMapNodeModel child = (MindMapNodeModel)e.next();            
             cutNode(child);
         }
+        logger.exiting("LinkRegistryAdapter", "cutNode", target);
+    }
+    /** Clears the set of recent cutted nodes.*/
+    public void clearCuttedNodeBuffer() { IDToCuttedLinks.clear(); };
+
+    /** @return returns all links that have been cutted out recently.*/
+    public Vector /* of MindMapLink s*/  getCuttedNode(String oldTargetID) { 
+        Vector vec;
+        if(IDToCuttedLinks.containsKey(oldTargetID) ) {
+            vec = (Vector) IDToCuttedLinks.get(oldTargetID); 
+            for(int i = 0; i < vec.size(); ++i) {
+                vec.set(i, ((MindMapLink) vec.get(i)).clone());
+            }
+            logger.info("returning link repository ("+vec+") the cutted nodes with old id " + oldTargetID);
+        } else { 
+            // error case?
+            vec = new Vector();
+        }
+        return vec;
     }
 
 

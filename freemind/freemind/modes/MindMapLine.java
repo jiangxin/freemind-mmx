@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLine.java,v 1.1 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: MindMapLine.java,v 1.2 2003-11-29 17:12:33 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -24,7 +24,7 @@ import java.awt.Color;
 import java.awt.Stroke;
 import freemind.modes.MindMapNode;
 
-public interface MindMapLine {
+public interface MindMapLine extends Cloneable {
 
     public Color getColor();
     public String getStyle();
@@ -34,4 +34,5 @@ public interface MindMapLine {
     /** The node to which this line is associated. */
     public void setTarget(MindMapNode node);
 
+    public Object clone();
 }

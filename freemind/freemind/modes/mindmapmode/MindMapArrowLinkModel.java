@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapArrowLinkModel.java,v 1.3 2003-11-18 23:19:46 christianfoltin Exp $*/
+/*$Id: MindMapArrowLinkModel.java,v 1.4 2003-11-29 17:12:33 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -32,6 +32,11 @@ public class MindMapArrowLinkModel extends ArrowLinkAdapter {
 
     public MindMapArrowLinkModel(MindMapNode source,MindMapNode target,FreeMindMain frame) {
         super(source,target,frame);
+    }
+
+    /* maybe this method is wrong here, but ...*/
+    public Object clone() {
+        return super.clone();
     }
 
     public XMLElement save() {
