@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.3 2004-03-18 06:44:34 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.4 2004-04-04 11:56:31 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -241,7 +241,7 @@ public abstract class ControllerAdapter implements ModeController {
         model.load(file);
 		getController().getMapModuleManager().newMapModule(model);
         mapOpened(true);
-		invokeHooksRecursively((NodeAdapter) getModel().getRoot(), getModeController(), getModel());
+		invokeHooksRecursively((NodeAdapter) getModel().getRoot(), getModel());
     }
 
     public boolean save() {
@@ -1476,14 +1476,14 @@ public abstract class ControllerAdapter implements ModeController {
 	/**
 	  *  
 	  */
-	public void invokeHooksRecursively(NodeAdapter node, ModeController controller, MindMap map) {
+	public void invokeHooksRecursively(NodeAdapter node, MindMap map) {
 		 for(Iterator i = node.childrenUnfolded(); i.hasNext();) {
 			 NodeAdapter child = (NodeAdapter) i.next();
-			 invokeHooksRecursively(child, controller, map);
+			 invokeHooksRecursively(child, map);
 		 }
 		 for(Iterator i = node.getHooks().iterator(); i.hasNext();) {
 			 PermanentNodeHook hook = (PermanentNodeHook) i.next();
-			 hook.setController(controller);
+			 hook.setController(this);
 			 hook.setMap(map);
 			 node.invokeHook(hook); 
 		 }

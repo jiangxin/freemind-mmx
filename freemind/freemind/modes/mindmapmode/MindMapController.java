@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.2 2004-03-11 06:28:41 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.3 2004-04-04 11:56:32 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -736,7 +736,7 @@ public class MindMapController extends ControllerAdapter {
                try {
                   MindMapNodeModel node = getModel().loadTree(chooser.getSelectedFile());
                   getModel().paste(node, parent);
- 				  invokeHooksRecursively(node, getModeController(), getModel());
+ 				  invokeHooksRecursively(node, getModel());
                }
                catch (Exception ex) {
                   handleLoadingException(ex); }}}}
@@ -760,7 +760,7 @@ public class MindMapController extends ControllerAdapter {
             try {
                MindMapNodeModel node = getModel().loadTree(new File(absolute.getFile()));
                getModel().paste(node, parent); 
-			   invokeHooksRecursively(node, getModeController(), getModel());
+			   invokeHooksRecursively(node, getModel());
             }
             catch (Exception ex) {
                handleLoadingException(ex); }}}
@@ -788,7 +788,7 @@ public class MindMapController extends ControllerAdapter {
                for (ListIterator i = node.childrenUnfolded();i.hasNext();) {
                   	MindMapNodeModel importNode = (MindMapNodeModel)i.next();
 					getModel().paste(importNode, parent);
-					invokeHooksRecursively(importNode, getModeController(), getModel());
+					invokeHooksRecursively(importNode, getModel());
                   }
                }
                //getModel().setLink(parent, null); }

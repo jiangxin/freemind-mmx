@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.17 2003-12-17 21:04:52 christianfoltin Exp $*/
+/*$Id: Tools.java,v 1.17.12.1 2004-04-04 11:56:31 christianfoltin Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -220,13 +220,15 @@ public class Tools {
        // However, if it starts with separator, then it is absolute too.
      
        // Possible problems: Not tested on Macintosh, but should work.
+	   // Koh, 1.4.2004: Resolved problem: I tested on Mac OS X 10.3.3 and worked.
 
        String osNameStart = System.getProperty("os.name").substring(0,3);
        String fileSeparator = System.getProperty("file.separator");
        if (osNameStart.equals("Win")) {
           return ((path.length() > 1) && path.substring(1,2).equals(":")) || path.startsWith(fileSeparator);
        } else if (osNameStart.equals("Mac")) {
-          return !path.startsWith(fileSeparator);
+       	  //Koh:Panther (or Java 1.4.2) may change file path rule
+          return path.startsWith(fileSeparator);
        } else {
           return path.startsWith(fileSeparator);
        }

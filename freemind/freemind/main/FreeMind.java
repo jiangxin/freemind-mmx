@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.10.3 2004-03-18 06:44:33 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.10.4 2004-04-04 11:56:31 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -521,10 +521,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
            if (args[i].toLowerCase().endsWith(".mm")) {
 
               if (!Tools.isAbsolutePath(args[i])) {
-                 // <problem description="This will not work on Mac. Please fix it">
                  args[i] = System.getProperty("user.dir") + 
                     System.getProperty("file.separator") + args[i];
-                 // </problem>
               }
               //fin = ;
               try {

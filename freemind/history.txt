@@ -11,6 +11,8 @@ Changes made in Freemind 0.7.2:
 * Icon size reduced
 * Unfold all added
 * Bug fix: XMLWriter addes additional \n for contents.
+* setNode is now called automatically.
+
 
 Changes made in Freemind 0.7.1:
 ===============================

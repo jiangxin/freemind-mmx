@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.10.3 2004-03-18 06:44:34 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.10.4 2004-04-04 11:56:32 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -70,6 +70,7 @@ public interface ModeController {
     public void anotherNodeSelected(MindMapNode n);
 	//hooks, fc 28.2.2004:
 	void invokeHook(ModeControllerHook hook);
+	void invokeHooksRecursively(NodeAdapter node, MindMap map);
 	//end hooks
 	FreeMindMain getFrame();
 	MapView getView(); 
