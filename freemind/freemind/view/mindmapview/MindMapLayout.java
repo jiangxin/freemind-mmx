@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.7 2000-11-16 20:43:26 ponder Exp $*/
+/*$Id: MindMapLayout.java,v 1.8 2001-03-13 15:50:06 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.main.FreeMind;
+import freemind.main.FreeMindMain;
 import java.awt.LayoutManager;
 import java.awt.Container;
 import java.awt.Component;
@@ -40,14 +41,19 @@ public class MindMapLayout implements LayoutManager {
     private int hgap = 15;//width of the horizontal gap that contains the edges
     private int VGAP = 3;//height of the vertical gap between nodes
     private MapView map;
-    private int ySize = Integer.parseInt(FreeMind.userProps.getProperty("mapysize"));
-    private int totalXSize = Integer.parseInt(FreeMind.userProps.getProperty("mapxsize"));
+    private int ySize;
+    private int totalXSize;
 
 
     public MindMapLayout(MapView map) {
 	this.map = map;
+	ySize = Integer.parseInt(getFrame().getProperty("mapysize"));
+	totalXSize = Integer.parseInt(getFrame().getProperty("mapxsize"));
     }
     
+    private FreeMindMain getFrame() {
+	return map.getController().getFrame();
+    }
 
     public void addLayoutComponent(String name, Component comp){
     }

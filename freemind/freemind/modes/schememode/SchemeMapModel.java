@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMapModel.java,v 1.2 2000-11-16 20:43:25 ponder Exp $*/
+/*$Id: SchemeMapModel.java,v 1.3 2001-03-13 15:50:06 ponder Exp $*/
 
 package freemind.modes.schememode;
 
+import freemind.main.FreeMindMain;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.MindMapEdge;
@@ -32,8 +33,9 @@ public class SchemeMapModel extends MapAdapter {
     // Constructors
     //
 
-    public SchemeMapModel() {
-	setRoot(new SchemeNodeModel());
+    public SchemeMapModel(FreeMindMain frame) {
+	super(frame);
+	setRoot(new SchemeNodeModel(getFrame()));
     }
     
     //

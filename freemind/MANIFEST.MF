@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 Main-Class: freemind.main.FreeMind
-Class-Path: xerces.jar silk.jar
+Class-Path: silk.jar nanoxml.jar
 Created-By: Joerg Mueller
 

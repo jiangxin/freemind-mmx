@@ -16,11 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.6 2000-11-02 17:20:11 ponder Exp $*/
+/*$Id: MapAdapter.java,v 1.7 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.modes;
 
-import freemind.main.FreeMind;
+import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,8 +42,12 @@ public abstract class MapAdapter implements MindMap {
     private boolean saved=true;
     private Color backgroundColor;
     private File file;
+    private FreeMindMain frame;
 
-    
+    public MapAdapter (FreeMindMain frame) {
+	this.frame = frame;
+    }
+
     //
     // Abstract methods that _must_ be implemented.
     //
@@ -53,6 +57,10 @@ public abstract class MapAdapter implements MindMap {
     public abstract void load(File file) throws FileNotFoundException;
 
     public void close() {
+    }
+
+    public FreeMindMain getFrame() {
+	return frame;
     }
 
     //
@@ -69,7 +77,7 @@ public abstract class MapAdapter implements MindMap {
 
     public Color getBackgroundColor() {
 	if (backgroundColor==null) {
-	    return Tools.xmlToColor(FreeMind.userProps.getProperty("standardbackgroundcolor"));
+	    return Tools.xmlToColor(getFrame().getProperty("standardbackgroundcolor"));
 	}
 	return backgroundColor;
     }

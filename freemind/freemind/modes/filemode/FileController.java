@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileController.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: FileController.java,v 1.5 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.modes.filemode;
 
 import freemind.main.FreeMind;
+import freemind.main.FreeMindMain;
 import freemind.modes.Mode;
 import freemind.modes.MindMap;
 import freemind.modes.MapAdapter;
@@ -42,13 +43,13 @@ public class FileController extends ControllerAdapter {
     }
 
     public MapAdapter newModel() {
-	return new FileMapModel();
+	return new FileMapModel(getFrame());
     }
 
     public MindMapNode newNode() {
 	File newNode = new File(((FileNodeModel)getSelected()).getFile(), "new_Directory");
 	newNode.mkdir();
-	return new FileNodeModel(newNode);
+	return new FileNodeModel(newNode,getFrame());
     }
 
 
@@ -66,14 +67,14 @@ public class FileController extends ControllerAdapter {
 	    return null;
 	}
     }
-
+    
     private class CenterAction extends AbstractAction {
 	CenterAction() {
-	    super(FreeMind.getResources().getString("center"));
+	    super(getFrame().getResources().getString("center"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    if (getSelected() != null) {
-		MindMap map = new FileMapModel(((FileNodeModel)getSelected()).getFile());
+		MindMap map = new FileMapModel(((FileNodeModel)getSelected()).getFile(), getFrame());
 		getController().newMapModule(map);
 	    }
 	}

@@ -16,11 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.9 2000-12-08 20:28:10 ponder Exp $*/
+/*$Id: MindMapMapModel.java,v 1.10 2001-03-13 15:50:06 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
-import freemind.main.FreeMind;
+import freemind.main.FreeMindMain;
 import freemind.modes.MapAdapter;
 import java.awt.Color;
 import java.awt.Font;
@@ -30,14 +30,18 @@ import java.io.StringWriter;
 import java.io.FileOutputStream;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import freemind.main.XMLElement;
 //XML Specification (Interfaces)
-import  org.w3c.dom.Document;
-import org.w3c.dom.Element;
+//import  org.w3c.dom.Document;
+//import org.w3c.dom.Element;
 // //XML Parser, actually apache xerces
-import org.apache.xerces.parsers.DOMParser;
-import org.apache.xerces.dom.DocumentImpl;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
+//import org.apache.xerces.parsers.DOMParser;
+//import org.apache.xerces.dom.DocumentImpl;
+//import org.apache.xml.serialize.OutputFormat;
+//import org.apache.xml.serialize.XMLSerializer;
 
 public class MindMapMapModel extends MapAdapter {
 
@@ -45,18 +49,20 @@ public class MindMapMapModel extends MapAdapter {
     // Constructors
     //
 
-    public MindMapMapModel() {
-	setRoot(new MindMapNodeModel("new Mindmap"));
+    public MindMapMapModel(FreeMindMain frame) {
+	super(frame);
+	setRoot(new MindMapNodeModel("new Mindmap", getFrame()));
     }
     
-    public MindMapMapModel( MindMapNodeModel root ) {
+    public MindMapMapModel( MindMapNodeModel root, FreeMindMain frame ) {
+	super(frame);
 	setRoot(root);
     }
 
     //
     // Methods for editing of the Nodes
     //
-
+    
     public void setNodeColor(MindMapNodeModel node, Color color) {
 	node.setColor(color);
 	nodeChanged(node);
@@ -274,7 +280,10 @@ public class MindMapMapModel extends MapAdapter {
 	try {
 	    setFile(file);
 	    setSaved(true);
-	    Document doc = new DocumentImpl();
+
+
+	    /*	 CODE FOR XERCES (DOM)
+		 Document doc = new DocumentImpl();
 	    Element map = doc.createElement("map");
 	    doc.appendChild(map);
 	    ( (MindMapNodeModel)getRoot() ).save(doc,map);
@@ -286,11 +295,21 @@ public class MindMapMapModel extends MapAdapter {
             serial.asDOMSerializer();                            // As a DOM Serializer
 
             serial.serialize( doc.getDocumentElement() );
+	    */
+
+	    //CODE FOR NANOXML
+	    XMLElement map = new XMLElement();
+	    map.setTagName("map");
+	    map.addChild(((MindMapNodeModel)getRoot()).save());
+
+
 
 	    //Generating output Stream
 	    BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
 
-            fileout.write( stringOut.toString() ); //Spit out DOM as a String
+	    //            fileout.write( stringOut.toString() ); *///Spit out DOM as a String  */
+	    
+	    map.write(fileout);
 
 	    fileout.close();
 
@@ -313,15 +332,17 @@ public class MindMapMapModel extends MapAdapter {
 
     MindMapNodeModel loadTree(File file) {
 	MindMapNodeModel root = null;
+
+	/*
 	try {
 	    //Generating Parser
-            DOMParser parser = new DOMParser();
-	    try {
+	              DOMParser parser = new DOMParser();
+	    //	    try {
 		//		parser.setFeature("http://apache.org/xml/features/dom/include-ignorable-whitespace",false);
 		parser.parse(file.getPath());
-	    } catch(Exception e) {
-		return null;
-	    }
+		//	    } catch(Exception e) {
+		//		return null;
+		//	    }
 	    Document doc = parser.getDocument();
 
 	    //Throw away old map
@@ -331,7 +352,25 @@ public class MindMapMapModel extends MapAdapter {
 	    root.load(rootElement);
 	} catch(Exception e) {
 	    return null;
+	    }*/
+
+
+
+	//NanoXML Code
+	XMLElement parser = new XMLElement();
+	try {
+	    parser.parseFromReader(new InputStreamReader(new FileInputStream(file)));
+	} catch (Exception ex) {
+	    System.err.println("Help! Error while parsing!");
+	    return null;
 	}
+
+	//	XMLElement map = 
+
+	XMLElement rootElement = (XMLElement)parser.getChildren().firstElement();
+	root = new MindMapNodeModel(getFrame());
+	root.load(rootElement);
+
 	return root;
     }
 }

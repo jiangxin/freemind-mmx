@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileNodeModel.java,v 1.5 2000-11-15 22:17:54 ponder Exp $*/
+/*$Id: FileNodeModel.java,v 1.6 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.modes.filemode;
 
+import freemind.main.FreeMindMain;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import java.util.LinkedList;
@@ -40,8 +41,9 @@ public class FileNodeModel extends NodeAdapter {
     //  Constructors
     //
 
-    public FileNodeModel( File file ) {
-	setEdge(new FileEdgeModel(this));
+    public FileNodeModel( File file, FreeMindMain frame ) {
+	super(frame);
+	setEdge(new FileEdgeModel(this,getFrame()));
 	this.file = file;
 	setFolded(true);
     }
@@ -111,7 +113,7 @@ public class FileNodeModel extends NodeAdapter {
 		for(int i = 0; i < files.length; i++) {
 		    File childFile = new File(path, files[i]);
 		    if (!childFile.isHidden()) {
-			insert(new FileNodeModel(childFile),0);
+			insert(new FileNodeModel(childFile,getFrame()),0);
 		    }
 		}
 	    }

@@ -16,17 +16,18 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileEdgeModel.java,v 1.3 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: FileEdgeModel.java,v 1.4 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.modes.filemode;
 
+import freemind.main.FreeMindMain;
 import freemind.modes.MindMapNode;
 import freemind.modes.EdgeAdapter;
 
 
 public class FileEdgeModel extends EdgeAdapter {
 
-    public FileEdgeModel(MindMapNode node) {
-	super(node);
+    public FileEdgeModel(MindMapNode node, FreeMindMain frame) {
+	super(node,frame);
     }
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.5 2000-12-05 17:32:56 ponder Exp $*/
+/*$Id: Tools.java,v 1.6 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
@@ -64,16 +64,15 @@ public class Tools {
 	return getAllFonts().contains(font);
     }
 
-    public static String getExtension(File f) {
+    public static String getExtension(String s) {
 	String ext = null;
-	String s = f.getName();
 	int i = s.lastIndexOf('.');
 
 	if (i>0 && i<s.length()-1) {
 	    ext = s.substring(i+1).toLowerCase();
 	}
 	if (ext==null) ext="";
-	return ext;
+	return ext.trim();
     }
 
     /**

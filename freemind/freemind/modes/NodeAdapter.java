@@ -16,12 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.8 2000-12-05 17:32:56 ponder Exp $*/
+/*$Id: NodeAdapter.java,v 1.9 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.modes;
 
 import freemind.main.FreeMind;
+import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.controller.Controller;
 import freemind.view.mindmapview.NodeView;
 import java.util.Enumeration;
 import java.util.Vector;
@@ -67,6 +69,7 @@ public abstract class NodeAdapter implements MindMapNode {
     //In future it has to hold more than one view, maybe with a Vector in which the index specifies
     //the MapView which contains the NodeViews
     private NodeView viewer;
+    private FreeMindMain frame;
     private static final boolean ALLOWSCHILDREN = true;
     private static final boolean ISLEAF = false; //all nodes may have children
 
@@ -74,11 +77,13 @@ public abstract class NodeAdapter implements MindMapNode {
     // Constructors
     //
 
-    protected NodeAdapter() {
+    protected NodeAdapter(FreeMindMain frame) {
+	this.frame = frame;
     }
 
-    protected NodeAdapter(Object userObject) {
+    protected NodeAdapter(Object userObject, FreeMindMain frame) {
 	this.userObject = userObject;
+	this.frame = frame;
     }
 
     public String getLink() {
@@ -87,6 +92,10 @@ public abstract class NodeAdapter implements MindMapNode {
     
     public void setLink(String link) {
  	this.link = link;
+    }
+
+    public FreeMindMain getFrame() {
+	return frame;
     }
 
     //
@@ -126,7 +135,7 @@ public abstract class NodeAdapter implements MindMapNode {
     public String getStyle() {
 	if(style==null) {
 	    if(this.isRoot()) {
-		return FreeMind.userProps.getProperty("standardnodestyle");
+		return getFrame().getProperty("standardnodestyle");
 	    }
 	    return ( (MindMapNode)getParent() ).getStyle();
 	}
@@ -137,7 +146,7 @@ public abstract class NodeAdapter implements MindMapNode {
     /**The Foreground/Font Color*/
     public Color getColor() {
 	if(color==null) {
-	    String stdcolor = FreeMind.userProps.getProperty("standardnodecolor");
+	    String stdcolor = getFrame().getProperty("standardnodecolor");
 	    if (stdcolor.length() == 7) {
 		return Tools.xmlToColor(stdcolor);
 	    }
@@ -145,6 +154,49 @@ public abstract class NodeAdapter implements MindMapNode {
 	}
 	return color;
     }
+
+    //////
+    // The set methods. I'm not sure if they should be here or in the implementing class.
+    /////
+
+    public void setStyle(String style) {
+	this.style = style;
+    }
+
+    public void setColor(Color color) {
+	this.color = color;
+    }
+    
+    public void setBold(boolean bold) {
+	// ** use font object
+	// this.bold = bold;
+	if(bold && font.isBold()) return;
+	if(!bold && !font.isBold()) return;
+
+	if(bold) setFont(font.deriveFont(font.getStyle()+Font.BOLD));
+	if(!bold) setFont(font.deriveFont(font.getStyle()-Font.BOLD));
+    }
+
+    public void setItalic(boolean italic) {
+	// ** use font object
+	// this.italic = italic;
+
+	if(italic && font.isItalic()) return;
+	if(!italic && !font.isItalic()) return;
+
+	if(italic) setFont(font.deriveFont(font.getStyle()+Font.ITALIC));
+	if(!italic) setFont(font.deriveFont(font.getStyle()-Font.ITALIC));
+    }
+
+    public void setUnderlined(boolean underlined) {
+	this.underlined = underlined;
+    }
+
+    public void setFont(Font font) {
+	this.font = font;
+    }
+
+     
 
     // **
     // ** font handling
@@ -155,9 +207,9 @@ public abstract class NodeAdapter implements MindMapNode {
 	    // ** Maybe implement handling for cases when
 	    //    the font is not available on this system
 
-	    int fontSize = Integer.parseInt(FreeMind.userProps.getProperty("standardfontsize"));
-	    int fontStyle = Integer.parseInt(FreeMind.userProps.getProperty("standardfontstyle"));
-	    String fontName = FreeMind.userProps.getProperty("standardfont");
+	    int fontSize = Integer.parseInt(getFrame().getProperty("standardfontsize"));
+	    int fontStyle = Integer.parseInt(getFrame().getProperty("standardfontstyle"));
+	    String fontName = getFrame().getProperty("standardfont");
 
 	    font = new Font(fontName, fontStyle, fontSize);
 	}
@@ -182,13 +234,13 @@ public abstract class NodeAdapter implements MindMapNode {
     // ** much better to use the java.awt.Font object (Sebastian)
 
 //      public int getFontSize() {
-//  	if (fontSize==0) return Integer.parseInt(FreeMind.userProps.getProperty("standardfontsize"));
+//  	if (fontSize==0) return Integer.parseInt(getFrame().getProperty("standardfontsize"));
 //  	return fontSize;
 //      }
 
     /**Maybe implement handling for cases when the font is not available on this system*/
 //      public String getFont() {
-//  	if (font==null) return FreeMind.userProps.getProperty("standardfont");
+//  	if (font==null) return getFrame().getProperty("standardfont");
 //  	return font;
 //      }
 

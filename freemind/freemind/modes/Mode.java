@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Mode.java,v 1.3 2000-10-23 21:38:17 ponder Exp $*/
+/*$Id: Mode.java,v 1.4 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.modes;
 
@@ -28,6 +28,7 @@ import javax.swing.JPopupMenu;
 public interface Mode {
 
     //    public ode newMode(){return new Mode();}
+    public void init(Controller c);
     public String toString();
     public void activate();
     public ModeController getModeController();

@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.13 2000-12-05 17:32:56 ponder Exp $*/
+/*$Id: Controller.java,v 1.14 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.controller;
 
 import freemind.main.FreeMind;
+import freemind.main.FreeMindMain;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -28,12 +29,14 @@ import freemind.modes.ModesCreator;
 import freemind.modes.Mode;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
+import freemind.modes.browsemode.BrowseController;//this isn't good
 import java.util.List;
 import java.util.ListIterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Iterator;
+import java.net.URL;
 import java.awt.Component;
 import java.awt.Color;
 import java.awt.BorderLayout;
@@ -63,35 +66,47 @@ public class Controller {
     private MapModule mapmodule; //reference to the current mode, could be done with an index to mapmodules, too.
     private Map modes; //hash of all possible modes
     private Mode mode; //The current mode
-    private FreeMind frame;
+    private FreeMindMain frame;
     private JToolBar toolbar;
     private JPopupMenu popupmenu;
     private NodeMouseListener nodeMouseListener;
     private NodeKeyListener nodeKeyListener;
     private ModesCreator modescreator = new ModesCreator(this);
 
-    Action close = new CloseAction();
-    Action print = new PrintAction();
-    public Action quit = new QuitAction(this);
-    Action background = new BackgroundAction();
-    Action about = new AboutAction();
-    Action documentation = new DocumentationAction();
-    Action license = new LicenseAction();
-    Action previousMap = new PreviousMapAction(this);
-    Action nextMap = new NextMapAction(this);
+    Action close; 
+    Action print; 
+    public Action quit;
+    Action background; 
+    Action about;
+    Action documentation;
+    Action license;
+    Action previousMap;
+    Action nextMap;
 
-    Action moveToRoot = new MoveToRootAction(this);
+    Action moveToRoot;
 
     //
     // Constructors
     //
 
-    public Controller(FreeMind frame) {
+    public Controller(FreeMindMain frame) {
 	this.frame = frame;
 	modes = modescreator.getAllModes();
 
   	nodeMouseListener = new NodeMouseListener(this);
 	nodeKeyListener = new NodeKeyListener(this);
+
+	close = new CloseAction(this);
+	print = new PrintAction(this);
+	quit = new QuitAction(this);
+	background = new BackgroundAction(this);
+	about = new AboutAction(this);
+	documentation = new DocumentationAction(this);
+	license = new LicenseAction(this);
+	previousMap = new PreviousMapAction(this);
+	nextMap = new NextMapAction(this);
+	
+	moveToRoot = new MoveToRootAction(this);
 
 	//Create the ToolBar
 	toolbar = new MainToolBar(this);
@@ -104,9 +119,14 @@ public class Controller {
     // get/set methods
     //
 
-    public FreeMind getFrame() {
+    public FreeMindMain getFrame() {
 	return frame;
     }
+
+    public URL getResource(String resource) {
+	return getFrame().getResource(resource);
+    }
+					    
 
     /**Returns the current model*/
     public MindMap getModel() {
@@ -153,6 +173,14 @@ public class Controller {
 	if (mode.equals(getMode())) {
 	    return;
 	}
+
+	//Check if the mode is available
+	Mode newmode = (Mode)modes.get(mode);
+	if (newmode == null) {
+	    getFrame().err("Mode not available: "+mode);
+	    return;
+	}
+
 	if (getMode() != null) {
 	    if (getMode().getModeToolBar() != null) {
 		toolbar.remove(getMode().getModeToolBar());
@@ -162,7 +190,7 @@ public class Controller {
 	    setMapModule(null);
 	    mapModuleChanged();
 	}
-	this.mode = (Mode)modes.get(mode);
+	this.mode = newmode;
 		
 	if (getMode().getModeToolBar() != null) {
 	    toolbar.add(getMode().getModeToolBar());
@@ -182,6 +210,8 @@ public class Controller {
 	if (getMapModule() == null) {
 	    setAllActions(false);
 	}
+
+	getFrame().out("Mode changed to "+mode+" Mode");
     }
 
 
@@ -193,7 +223,7 @@ public class Controller {
 	return nodeMouseListener;
     }
 
-    public void setFrame(FreeMind frame) {
+    public void setFrame(FreeMindMain frame) {
 	this.frame = frame;
     }
 
@@ -448,7 +478,7 @@ public class Controller {
 
     private class QuitAction extends AbstractAction {
 	QuitAction(Controller controller) {
-	    super(FreeMind.getResources().getString("quit"));
+	    super(controller.getFrame().getResources().getString("quit"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    quit();
@@ -457,8 +487,8 @@ public class Controller {
 
     /**This closes only the current map*/
     private class CloseAction extends AbstractAction {
-	CloseAction() {
-	    super(FreeMind.getResources().getString("close"));
+	CloseAction(Controller controller) {
+	    super(controller.getFrame().getResources().getString("close"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    try {
@@ -470,8 +500,10 @@ public class Controller {
     }
 
     private class PrintAction extends AbstractAction {
-	PrintAction() {
-	    super(FreeMind.getResources().getString("print"));
+	Controller controller;
+	PrintAction(Controller controller) {
+	    super(controller.getFrame().getResources().getString("print"));
+	    this.controller = controller;
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -496,34 +528,41 @@ public class Controller {
     //
 
     private class DocumentationAction extends AbstractAction {
-	DocumentationAction() {
-	    super(FreeMind.getResources().getString("documentation"));
+	Controller controller;
+	DocumentationAction(Controller controller) {
+	    super(controller.getFrame().getResources().getString("documentation"));
+	    this.controller = controller;
 	}
 	public void actionPerformed(ActionEvent e) {
-	    changeToMode("MindMap");
-	    try {
-		((ControllerAdapter)getMode().getModeController()).load(new File("doc/maps/freemind.mm"));
-	    } catch (FileNotFoundException ex) {
-		JOptionPane.showMessageDialog(getFrame(), FreeMind.getResources().getString("file_not_found") + "\n Documentation Map not found.");
-	    }
+	    changeToMode("Browse");
+	    //	    try {
+		((BrowseController)getMode().getModeController()).loadURL(getFrame().getProperty("docmapurl"));  //(new File("doc/maps/freemind.mm"));
+		//IMPROVE THIS!
+		//	    } catch (FileNotFoundException ex) {
+		//		JOptionPane.showMessageDialog(getView(), getFrame().getResources().getString("file_not_found") + "\n Documentation Map not found.");
+		//	    }
 	}
     }
 
     private class AboutAction extends AbstractAction {
-	AboutAction() {
-	    super(FreeMind.getResources().getString("about"));
+	Controller controller;
+	AboutAction(Controller controller) {
+	    super(controller.getFrame().getResources().getString("about"));
+	    this.controller = controller;
 	}
 	public void actionPerformed(ActionEvent e) {
-	    JOptionPane.showMessageDialog(getView(),FreeMind.getResources().getString("about_text")+FreeMind.version);
+	    JOptionPane.showMessageDialog(getView(),controller.getFrame().getResources().getString("about_text")+FreeMind.version);
 	}
     }
 
     private class LicenseAction extends AbstractAction {
-	LicenseAction() {
-	    super(FreeMind.getResources().getString("license"));
+	Controller controller;
+	LicenseAction(Controller controller) {
+	    super(controller.getFrame().getResources().getString("license"));
+	    this.controller = controller;
 	}
 	public void actionPerformed(ActionEvent e) {
-	    JOptionPane.showMessageDialog(getView(),FreeMind.getResources().getString("license_text"));
+	    JOptionPane.showMessageDialog(getView(),controller.getFrame().getResources().getString("license_text"));
 	}
     }
 
@@ -534,7 +573,7 @@ public class Controller {
 
     private class PreviousMapAction extends AbstractAction {
 	PreviousMapAction(Controller controller) {	 
-	    super(FreeMind.getResources().getString("previous_map"), new ImageIcon(ClassLoader.getSystemResource("images/Back24.gif")));
+	    super(controller.getFrame().getResources().getString("previous_map"), new ImageIcon(getResource("images/Back24.gif")));
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent event) {
@@ -544,7 +583,7 @@ public class Controller {
 
     private class NextMapAction extends AbstractAction {
 	NextMapAction(Controller controller) {
-	    super(FreeMind.getResources().getString("next_map"), new ImageIcon(ClassLoader.getSystemResource("images/Forward24.gif")));
+	    super(controller.getFrame().getResources().getString("next_map"), new ImageIcon(getResource("images/Forward24.gif")));
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent event) {
@@ -558,7 +597,7 @@ public class Controller {
     
     private class MoveToRootAction extends AbstractAction {
 	MoveToRootAction(Controller controller) {
-	    super(FreeMind.getResources().getString("move_to_root"));
+	    super(controller.getFrame().getResources().getString("move_to_root"));
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent event) {
@@ -571,8 +610,8 @@ public class Controller {
     //
 
     private class BackgroundAction extends AbstractAction {
-	BackgroundAction() {
-	    super(FreeMind.getResources().getString("background"));
+	BackgroundAction(Controller controller) {
+	    super(controller.getFrame().getResources().getString("background"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    Color color = JColorChooser.showDialog(getView(),"Choose Background Color:",getView().getBackground() );

@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.12 2000-11-16 20:05:36 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.13 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.modes;
 
 import freemind.main.FreeMind;
+import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.controller.Controller;
 import freemind.modes.MindMap;
@@ -59,11 +60,18 @@ public abstract class ControllerAdapter implements ModeController {
     private int noOfMaps = 0;//The number of currently open maps
     private MindMapNode clipboard;
 
-    public Action cut = new CutAction(this);
-    public Action paste = new PasteAction(this);
+    public Action cut;
+    public Action paste;
+
+    public ControllerAdapter() {
+    }
 
     public ControllerAdapter(Mode mode) {
 	this.mode = mode;
+
+	cut = new CutAction(this);
+	paste = new PasteAction(this);
+
     }
 
     //
@@ -150,7 +158,7 @@ public abstract class ControllerAdapter implements ModeController {
 	    try {
 		load(chooser.getSelectedFile());
 	    } catch (FileNotFoundException ex) {
-		JOptionPane.showMessageDialog(getController().getFrame(), FreeMind.getResources().getString("file_not_found"));
+		JOptionPane.showMessageDialog(getView(), getFrame().getResources().getString("file_not_found"));
 	    }
 	}
     }
@@ -170,7 +178,7 @@ public abstract class ControllerAdapter implements ModeController {
 	if (returnVal==JFileChooser.APPROVE_OPTION) {//ok pressed
 	    File f = chooser.getSelectedFile();
 	    //Force the extension to be .mm
-	    String ext = Tools.getExtension(f);
+	    String ext = Tools.getExtension(f.getName());
 	    if(!ext.equals("mm")) {
 		f = new File(f.getParent(),f.getName()+".mm");
 	    }
@@ -181,10 +189,10 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public void close() throws Exception {
-	String[] options = {FreeMind.getResources().getString("yes"),FreeMind.getResources().getString("no"),FreeMind.getResources().getString("cancel")};
+	String[] options = {getFrame().getResources().getString("yes"),getFrame().getResources().getString("no"),getFrame().getResources().getString("cancel")};
 	if (!getModel().isSaved()) {
-	    String text = FreeMind.getResources().getString("save_unsaved")+"\n"+getMapModule().toString();
-	    String title = FreeMind.getResources().getString("save");
+	    String text = getFrame().getResources().getString("save_unsaved")+"\n"+getMapModule().toString();
+	    String title = getFrame().getResources().getString("save");
 	    int returnVal = JOptionPane.showOptionDialog( getView(),text,title,JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,options[0]);
 	    if (returnVal==JOptionPane.YES_OPTION) {
 		save();
@@ -204,7 +212,7 @@ public abstract class ControllerAdapter implements ModeController {
      * --> What to do if either newMap or load or close are overwritten by a concrete
      * implementation? uups.
      */
-    private void mapOpened(boolean open) {
+    public void mapOpened(boolean open) {
 	if (open) {
 	    if (noOfMaps == 0) {
 		//opened the first map
@@ -262,7 +270,7 @@ public abstract class ControllerAdapter implements ModeController {
     public void addNew(NodeView parent) {
 	MindMapNode newNode = newNode();
 	int place;
-	if (FreeMind.userProps.getProperty("placenewbranches").equals("last")) {
+	if (getFrame().getProperty("placenewbranches").equals("last")) {
 	    place = parent.getModel().getChildCount();
 	} else {
 	    place = 0;
@@ -364,15 +372,15 @@ public abstract class ControllerAdapter implements ModeController {
 		link = input.toURL();
 		relative = link.toString();
 	    } catch (MalformedURLException ex) {
-		JOptionPane.showMessageDialog(getController().getFrame(), FreeMind.getResources().getString("url_error"));
+		JOptionPane.showMessageDialog(getView(), getFrame().getResources().getString("url_error"));
 		return;
 	    }
-	    if (FreeMind.userProps.getProperty("links").equals("relative")) {
+	    if (getFrame().getProperty("links").equals("relative")) {
 		//Create relative URL
 		try {
 		    relative = Tools.toRelativeURL(getMap().getFile().toURL(), link);
 		} catch (MalformedURLException ex) {
-		    JOptionPane.showMessageDialog(getController().getFrame(), FreeMind.getResources().getString("url_error"));
+		    JOptionPane.showMessageDialog(getView(), getFrame().getResources().getString("url_error"));
 		    return;
 		}
 	    }
@@ -380,12 +388,12 @@ public abstract class ControllerAdapter implements ModeController {
 	}
     }
 
-    private void loadURL(String relative) {
+    protected void loadURL(String relative) {
 	URL absolute = null;
 	try {
 	    absolute = new URL(getMap().getFile().toURL(), relative);
 	} catch (MalformedURLException ex) {
-	    JOptionPane.showMessageDialog(getController().getFrame(), FreeMind.getResources().getString("url_error"));
+	    JOptionPane.showMessageDialog(getView(), getFrame().getResources().getString("url_error"));
 	    return;
 	}
 	try {
@@ -395,7 +403,7 @@ public abstract class ControllerAdapter implements ModeController {
 		load(file);
 	    }
 	} catch (FileNotFoundException e) {
-	    int returnVal = JOptionPane.showConfirmDialog(getController().getFrame(), FreeMind.getResources().getString("repair_link_question"), FreeMind.getResources().getString("repair_link"),JOptionPane.YES_NO_OPTION);
+	    int returnVal = JOptionPane.showConfirmDialog(getView(), getFrame().getResources().getString("repair_link_question"), getFrame().getResources().getString("repair_link"),JOptionPane.YES_NO_OPTION);
 	    if (returnVal==JOptionPane.YES_OPTION) {
 		setLink();
 	    } 
@@ -409,12 +417,30 @@ public abstract class ControllerAdapter implements ModeController {
 	}
     }
 
+    public void applyPattern(NodeAdapter node, Pattern pattern) {
+	if (pattern.getText() != null) {
+	    node.setUserObject(pattern.getText());
+	}
+	node.setColor(pattern.getNodeColor());
+	node.setStyle(pattern.getNodeStyle());
+	node.setFont(pattern.getNodeFont());
+	
+	EdgeAdapter edge = (EdgeAdapter)node.getEdge();
+	edge.setColor(pattern.getEdgeColor());
+	edge.setStyle(pattern.getEdgeStyle());
+    }
+	
+
     //
     // Convenience methods
     //
 
     protected Mode getMode() {
 	return mode;
+    }
+
+    protected void setMode(Mode mode) {
+	this.mode = mode;
     }
 
     protected MapModule getMapModule() {
@@ -429,11 +455,15 @@ public abstract class ControllerAdapter implements ModeController {
 	}
     }
 
+    protected URL getResource (String name) {
+	return getFrame().getResource(name);
+    }
+
     protected Controller getController() {
 	return getMode().getController();
     }
 
-    protected FreeMind getFrame() {
+    public FreeMindMain getFrame() {
 	return getController().getFrame();
     }
 
@@ -476,7 +506,7 @@ public abstract class ControllerAdapter implements ModeController {
     protected class NewMapAction extends AbstractAction {
 	ControllerAdapter c;
 	public NewMapAction(ControllerAdapter controller) {
-	    super(FreeMind.getResources().getString("new"), new ImageIcon(ClassLoader.getSystemResource("images/New24.gif")));
+	    super(getFrame().getResources().getString("new"), new ImageIcon(getResource("images/New24.gif")));
 	    c = controller;
 	    //Workaround to get the images loaded in jar file.
 	    //they have to be added to jar manually with full path from root
@@ -490,7 +520,7 @@ public abstract class ControllerAdapter implements ModeController {
     protected class OpenAction extends AbstractAction {
 	ControllerAdapter c;
 	public OpenAction(ControllerAdapter controller) {
-	    super(FreeMind.getResources().getString("open"), new ImageIcon(ClassLoader.getSystemResource("images/Open24.gif")));
+	    super(getFrame().getResources().getString("open"), new ImageIcon(getResource("images/Open24.gif")));
 	    c = controller;
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -501,7 +531,7 @@ public abstract class ControllerAdapter implements ModeController {
     protected class SaveAction extends AbstractAction {
 	ControllerAdapter c;
 	public SaveAction(ControllerAdapter controller) {
-	    super(FreeMind.getResources().getString("save"), new ImageIcon(ClassLoader.getSystemResource("images/Save24.gif")));
+	    super(getFrame().getResources().getString("save"), new ImageIcon(getResource("images/Save24.gif")));
 	    c = controller;
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -512,7 +542,7 @@ public abstract class ControllerAdapter implements ModeController {
     protected class SaveAsAction extends AbstractAction {
 	ControllerAdapter c;
 	public SaveAsAction(ControllerAdapter controller) {
-	    super(FreeMind.getResources().getString("save_as"), new ImageIcon(ClassLoader.getSystemResource("images/SaveAs24.gif")));
+	    super(getFrame().getResources().getString("save_as"), new ImageIcon(getResource("images/SaveAs24.gif")));
 	    c = controller;
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -526,7 +556,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected class EditAction extends AbstractAction {
 	public EditAction() {
-	    super(FreeMind.getResources().getString("edit"));
+	    super(getFrame().getResources().getString("edit"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    edit();
@@ -535,7 +565,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected class AddNewAction extends AbstractAction {
 	public AddNewAction() {
-	    super(FreeMind.getResources().getString("new_node"));
+	    super(getFrame().getResources().getString("new_node"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    addNew(getView().getSelected());
@@ -544,7 +574,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected class RemoveAction extends AbstractAction {
 	public RemoveAction() {
-	    super(FreeMind.getResources().getString("remove_node"));
+	    super(getFrame().getResources().getString("remove_node"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    delete(getView().getSelected());
@@ -553,25 +583,51 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected class NodeUpAction extends AbstractAction {
 	public NodeUpAction() {
-	    super(FreeMind.getResources().getString("node_up"));
+	    super(getFrame().getResources().getString("node_up"));
 	}
 	public void actionPerformed(ActionEvent e) {
-	    delete(getView().getSelected());
+	    MindMapNode selected = getView().getSelected().getModel();
+	    if(!selected.isRoot()) {
+		MindMapNode parent = (MindMapNode)selected.getParent();
+		int index = getModel().getIndexOfChild(parent, selected);
+		delete(getView().getSelected());
+		int maxindex = getModel().getChildCount(parent);
+		if(index - 1 <0) { 
+		    getModel().insertNodeInto(selected,parent,maxindex);
+		} else {
+		    getModel().insertNodeInto(selected,parent,index - 1);
+		}
+		getModel().nodeStructureChanged(parent);
+		getView().select(selected.getViewer());
+	    }
 	}
     }
 
     protected class NodeDownAction extends AbstractAction {
 	public NodeDownAction() {
-	    super(FreeMind.getResources().getString("node_down"));
+	    super(getFrame().getResources().getString("node_down"));
 	}
 	public void actionPerformed(ActionEvent e) {
-	    delete(getView().getSelected());
+	    MindMapNode selected = getView().getSelected().getModel();
+	    if(!selected.isRoot()) {
+		MindMapNode parent = (MindMapNode)selected.getParent();
+		int index = getModel().getIndexOfChild(parent, selected);
+		delete(getView().getSelected());
+		int maxindex = getModel().getChildCount(parent);
+		if(index + 1 > maxindex) { 
+		    getModel().insertNodeInto(selected,parent,0);
+		} else {
+		    getModel().insertNodeInto(selected,parent,index + 1);
+		}
+		getModel().nodeStructureChanged(parent);
+		getView().select(selected.getViewer());
+	    }
 	}
     }
 
     protected class ToggleFoldedAction extends AbstractAction {
 	public ToggleFoldedAction() {
-	    super(FreeMind.getResources().getString("toggle_folded"));
+	    super(getFrame().getResources().getString("toggle_folded"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    toggleFolded();
@@ -580,7 +636,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected class toggleChildrenFoldedAction extends AbstractAction {
 	public toggleChildrenFoldedAction() {
-	    super(FreeMind.getResources().getString("toggle_children_folded"));
+	    super(getFrame().getResources().getString("toggle_children_folded"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    toggleChildrenFolded();
@@ -589,7 +645,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected class SetLinkAction extends AbstractAction {
 	public SetLinkAction() {
-	    super(FreeMind.getResources().getString("set_link"));
+	    super(getFrame().getResources().getString("set_link"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    setLink();
@@ -598,7 +654,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected class FollowLinkAction extends AbstractAction {
 	public FollowLinkAction() {
-	    super(FreeMind.getResources().getString("follow_link"));
+	    super(getFrame().getResources().getString("follow_link"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    loadURL();
@@ -607,7 +663,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected class CutAction extends AbstractAction {
 	public CutAction(Object controller) {
-	    super(FreeMind.getResources().getString("cut"), new ImageIcon(ClassLoader.getSystemResource("images/Cut24.gif")));
+	    super(getFrame().getResources().getString("cut"), new ImageIcon(getResource("images/Cut24.gif")));
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -622,7 +678,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     protected class PasteAction extends AbstractAction {
 	public PasteAction(Object controller) {
-	    super(FreeMind.getResources().getString("paste"),new ImageIcon(ClassLoader.getSystemResource("images/Paste24.gif")));
+	    super(getFrame().getResources().getString("paste"),new ImageIcon(getResource("images/Paste24.gif")));
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent e) {

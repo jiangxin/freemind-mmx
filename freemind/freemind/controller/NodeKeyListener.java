@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeKeyListener.java,v 1.9 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: NodeKeyListener.java,v 1.10 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.controller;
 
@@ -24,6 +24,7 @@ import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
+import javax.swing.KeyStroke;
 
 /**
  * The KeyListener which belongs to the node and cares for
@@ -33,9 +34,14 @@ import java.awt.event.KeyEvent;
 public class NodeKeyListener implements KeyListener {
 
     private Controller c;
+    private String up, down, left, right;
 
     public NodeKeyListener(Controller controller ) {
 	c = controller;
+	up = c.getFrame().getProperty("keystroke_move_up");
+	down = c.getFrame().getProperty("keystroke_move_down");
+	left = c.getFrame().getProperty("keystroke_move_left");
+	right = c.getFrame().getProperty("keystroke_move_right");
     }
 
     //
@@ -78,22 +84,21 @@ public class NodeKeyListener implements KeyListener {
 	    //twice and the n was posted to the editor as the first char.
 	    //That was to annoying
 
-	case KeyEvent.VK_E:
+	}
+
+	if ( KeyStroke.getKeyStroke(up) != null && e.getKeyCode() == KeyStroke.getKeyStroke(up).getKeyCode()) {
 	    c.moveUp();
 	    e.consume();
 	    return;
-
-	case KeyEvent.VK_D:
+	} else if ( KeyStroke.getKeyStroke(down) != null && e.getKeyCode() == KeyStroke.getKeyStroke(down).getKeyCode()) {
 	    c.moveDown();
 	    e.consume();
 	    return;
-
-	case KeyEvent.VK_S:
+	} else if ( KeyStroke.getKeyStroke(left) != null && e.getKeyCode() == KeyStroke.getKeyStroke(left).getKeyCode()) {
 	    c.moveLeft();
 	    e.consume();
 	    return;
-
-	case KeyEvent.VK_F:
+	} else if ( KeyStroke.getKeyStroke(right) != null && e.getKeyCode() == KeyStroke.getKeyStroke(right).getKeyCode()) {
 	    c.moveRight();
 	    e.consume();
 	    return;

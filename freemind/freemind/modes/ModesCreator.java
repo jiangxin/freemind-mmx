@@ -16,16 +16,18 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModesCreator.java,v 1.4 2000-11-15 22:17:54 ponder Exp $*/
+/*$Id: ModesCreator.java,v 1.5 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.modes;
 
 import freemind.modes.mindmapmode.MindMapMode;
+import freemind.modes.browsemode.BrowseMode;
 import freemind.modes.filemode.FileMode;
 import freemind.modes.schememode.SchemeMode;
 import freemind.controller.Controller;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.StringTokenizer;
 
 
 /**
@@ -46,14 +48,41 @@ public class ModesCreator {
 	//Copy these two lines for every new Mode,
 	//and replace MindMapMode(c) with YourNewMode(c)
 
-	mode = new MindMapMode(c);
+	String modestring = c.getFrame().getProperty("modes");
+
+	StringTokenizer tokens = new StringTokenizer(modestring,",");
+
+	while (tokens.hasMoreTokens()) {
+	    String modename = tokens.nextToken();
+	    try {
+		mode = (Mode)Class.forName(modename).newInstance();
+		mode.init(c);
+		modes.put(mode.toString(), mode);
+	    } catch (Exception ex) {
+		System.err.println("Mode "+modename+" could not be loaded.");
+	    }
+	}
+
+	
+
+	//	mode = new MindMapMode(c);
+	//	modes.put(mode.toString(), mode);
+	/*	try {
+	mode = (Mode)Class.forName("freemind.modes.browsemode.BrowseMode").newInstance();
+	mode.init(c);
 	modes.put(mode.toString(), mode);
 
-	mode = new FileMode(c);
-	modes.put(mode.toString(), mode);
+	} catch (Exception ex) {
+	    System.err.println("Tjuschi");
+	ex.printStackTrace();}
 
-	mode = new SchemeMode(c);
-	modes.put(mode.toString(), mode);
+	//	mode = new FileMode(c);
+	//	modes.put(mode.toString(), mode);
+
+	//	mode = new SchemeMode(c);
+	//	modes.put(mode.toString(), mode);
+	*/
+
 
 	return modes;
     }

@@ -16,17 +16,18 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeAdapter.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: EdgeAdapter.java,v 1.5 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.modes;
 
-import freemind.main.FreeMind;
+import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import java.awt.Color;
 
 public abstract class EdgeAdapter implements MindMapEdge {
 
     private MindMapNode target;
+    private FreeMindMain frame;
     
     //recursive attributes. may be accessed directly by the save() method.
     protected Color color; 
@@ -35,7 +36,8 @@ public abstract class EdgeAdapter implements MindMapEdge {
     //
     // Constructors
     //
-    public EdgeAdapter(MindMapNode target) {
+    public EdgeAdapter(MindMapNode target,FreeMindMain frame) {
+	this.frame = frame;
 	this.target = target;
     }
 
@@ -43,10 +45,14 @@ public abstract class EdgeAdapter implements MindMapEdge {
     // Attributes
     //
 
+    public FreeMindMain getFrame() {
+	return frame;
+    }
+
     public Color getColor() {
 	if(color==null) {
 	    if (getTarget().isRoot()) {
-		String stdcolor = FreeMind.userProps.getProperty("standardedgecolor");
+		String stdcolor = getFrame().getProperty("standardedgecolor");
 		if (stdcolor.length() == 7) {
 		    return Tools.xmlToColor(stdcolor);
 		}
@@ -64,7 +70,7 @@ public abstract class EdgeAdapter implements MindMapEdge {
     public String getStyle() {
 	if(style==null) {
 	    if (getTarget().isRoot()) {
-		return FreeMind.userProps.getProperty("standardedgestyle");
+		return getFrame().getProperty("standardedgestyle");
 	    }
 	    return getSource().getEdge().getStyle();
 	}

@@ -16,23 +16,26 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.7 2000-12-05 17:32:56 ponder Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.8 2001-03-13 15:50:06 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.main.Tools;
+import freemind.main.FreeMindMain;
 import freemind.modes.NodeAdapter;
 import java.util.ListIterator;
 import java.util.LinkedList;
+import java.util.Vector;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.awt.Color;
 import java.awt.Font;
 // //XML Definition (Interfaces)
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
+//import org.w3c.dom.Document;
+//import org.w3c.dom.Element;
+//import org.w3c.dom.NodeList;
+//import org.w3c.dom.Node;
+import freemind.main.XMLElement;
 
 /**
  * This class represents a single Node of a Tree. It contains direct handles 
@@ -44,59 +47,59 @@ public class MindMapNodeModel extends NodeAdapter {
     //  Constructors
     //
 
-    public MindMapNodeModel() {
-	super();
+    public MindMapNodeModel(FreeMindMain frame) {
+	super(frame);
 	children = new LinkedList();
-	setEdge(new MindMapEdgeModel(this));
+	setEdge(new MindMapEdgeModel(this,getFrame()));
     }
 
 	    
-    public MindMapNodeModel( Object userObject ) {
-	super(userObject);
+    public MindMapNodeModel( Object userObject, FreeMindMain frame ) {
+	super(userObject,frame);
 	children = new LinkedList();
-	setEdge(new MindMapEdgeModel(this));
+	setEdge(new MindMapEdgeModel(this,getFrame()));
     }
 
-    //
-    // set Methods for Attributes. They are simply set through the ModeController
-    //
+//     //
+//     // set Methods for Attributes. They are simply set through the ModeController
+//     //
 
-    void setStyle(String style) {
-	super.style = style;
-    }
+//     void setStyle(String style) {
+// 	super.style = style;
+//     }
 
-    void setColor(Color color) {
-	super.color = color;
-    }
+//     void setColor(Color color) {
+// 	super.color = color;
+//     }
 
-    void setBold(boolean bold) {
-	// ** use font object
-	// super.bold = bold;
-	if(bold && font.isBold()) return;
-	if(!bold && !font.isBold()) return;
+//     void setBold(boolean bold) {
+// 	// ** use font object
+// 	// super.bold = bold;
+// 	if(bold && font.isBold()) return;
+// 	if(!bold && !font.isBold()) return;
 
-	if(bold) setFont(font.deriveFont(font.getStyle()+Font.BOLD));
-	if(!bold) setFont(font.deriveFont(font.getStyle()-Font.BOLD));
-    }
+// 	if(bold) setFont(font.deriveFont(font.getStyle()+Font.BOLD));
+// 	if(!bold) setFont(font.deriveFont(font.getStyle()-Font.BOLD));
+//     }
 
-    void setItalic(boolean italic) {
-	// ** use font object
-	// super.italic = italic;
+//     void setItalic(boolean italic) {
+// 	// ** use font object
+// 	// super.italic = italic;
 
-	if(italic && font.isItalic()) return;
-	if(!italic && !font.isItalic()) return;
+// 	if(italic && font.isItalic()) return;
+// 	if(!italic && !font.isItalic()) return;
 
-	if(italic) setFont(font.deriveFont(font.getStyle()+Font.ITALIC));
-	if(!italic) setFont(font.deriveFont(font.getStyle()-Font.ITALIC));
-    }
+// 	if(italic) setFont(font.deriveFont(font.getStyle()+Font.ITALIC));
+// 	if(!italic) setFont(font.deriveFont(font.getStyle()-Font.ITALIC));
+//     }
 
-    void setUnderlined(boolean underlined) {
-	super.underlined = underlined;
-    }
+//     void setUnderlined(boolean underlined) {
+// 	super.underlined = underlined;
+//     }
 
-    void setFont(Font font) {
-	this.font = font;
-    }
+//     void setFont(Font font) {
+// 	this.font = font;
+//     }
     
 //      void setFontSize(int fontSize) {
 //  	super.fontSize = fontSize;
@@ -119,6 +122,8 @@ public class MindMapNodeModel extends NodeAdapter {
     // The mandatory load and save methods
     //
 
+    /*
+      XERCES SAVE Method
     public void save(Document doc, Element xmlParent) {
 	Element node = doc.createElement( "node" );
 	xmlParent.appendChild(node);
@@ -169,7 +174,72 @@ public class MindMapNodeModel extends NodeAdapter {
 	    child.save(doc, node);
 	}
     }
+    */
 
+    //NanoXML save method
+    public XMLElement save() {
+	XMLElement node = new XMLElement();
+	node.setTagName("node");
+
+	node.addProperty("text",this.toString());
+
+	//	((MindMapEdgeModel)getEdge()).save(doc,node);
+
+	XMLElement edge = ((MindMapEdgeModel)getEdge()).save();
+	if (edge != null) {
+	    node.addChild(edge);
+	}
+
+	if (isFolded()) {
+	    node.addProperty("folded","true");
+	}
+	
+	if (color != null) {
+	    node.addProperty("color", Tools.colorToXml(getColor()));
+	}
+
+	if (style != null) {
+	    node.addProperty("style", getStyle());
+	}
+
+	//link
+	if (getLink() != null) {
+	    node.addProperty("link", getLink());
+	}
+
+	//font
+	if (font!=null || font.getSize()!=0 || isBold() || isItalic() || isUnderlined() ) {
+	    XMLElement fontElement = new XMLElement();
+	    fontElement.setTagName("font");
+
+	    if (font != null) {
+		fontElement.addProperty("name",getFont().getFontName());
+	    }
+	    if (font.getSize() != 0) {
+		fontElement.addProperty("size",Integer.toString(getFont().getSize()));
+	    }
+	    if (isBold()) {
+		fontElement.addProperty("bold","true");
+	    }
+	    if (isItalic()) {
+		fontElement.addProperty("italic","true");
+	    }
+	    if (isUnderlined()) {
+		fontElement.addProperty("underline","true");
+	    }
+	    node.addChild(fontElement);
+	}
+
+	//recursive
+	for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
+	    MindMapNodeModel child = (MindMapNodeModel)e.next();
+	    node.addChild(child.save());
+	}
+	return node;
+    }
+
+
+    /*
     public void load(Node node_) {
 	Element node = (Element)node_;
 	setUserObject( node.getAttribute("text") );
@@ -220,9 +290,67 @@ public class MindMapNodeModel extends NodeAdapter {
 	    }
 	    //node
 	    if ( ((Node)childNodes.item(i)).getNodeName().equals("node")) {
-		MindMapNodeModel child = new MindMapNodeModel();
+		MindMapNodeModel child = new MindMapNodeModel(getFrame());
 		insert(child,getChildCount());
 		child.load( (Node)childNodes.item(i) );//recursive
+	    }
+	}
+    }
+    */
+
+    public void load(XMLElement node) {
+	setUserObject( node.getProperty("text") );
+
+
+	if (node.getProperty("folded")!=null && node.getProperty("folded").equals("true")) {
+	    setFolded(true);
+	}
+	if (node.getProperty("color")!=null && node.getProperty("color").length() == 7) {
+	    setColor(Tools.xmlToColor(node.getProperty("color") ) );
+	}
+	if (node.getProperty("style")!=null) {
+	    setStyle(node.getProperty("style"));
+	}
+	if (node.getProperty("link")!=null) {
+	    setLink(node.getProperty("link"));
+	}
+	Vector childNodes = node.getChildren();
+	for(int i=0; i < childNodes.size(); i++) {
+	    //this has to be improved!
+	    //edge
+	    if ( ((XMLElement)childNodes.elementAt(i)).getTagName().equals("edge")) {
+		XMLElement edge = (XMLElement)childNodes.elementAt(i);
+		setEdge(new MindMapEdgeModel(this,getFrame()) );
+		((MindMapEdgeModel)getEdge()).load(edge);
+	    }
+	    //font
+	    if ( ((XMLElement)childNodes.elementAt(i)).getTagName().equals("font")) {
+		XMLElement font =((XMLElement)childNodes.elementAt(i));
+		String name = font.getProperty("name"); 
+		int style=0;
+		int size=0;
+
+		if (!Tools.isValidFont(name)) {
+		    name = "Sans Serif";
+		}
+
+		if (font.getProperty("bold")!=null && font.getProperty("bold").equals("true")) style+=Font.BOLD;;
+		if (font.getProperty("italic")!=null && font.getProperty("italic").equals("true")) style+=Font.ITALIC;
+		if (font.getProperty("underline")!=null && font.getProperty("underline").equals("true")) setUnderlined(true);
+
+		if (font.getProperty("size")!=null) {
+		    size = Integer.parseInt(font.getProperty("size"));
+		    // getFont().setSize(Integer.parseInt(font.getProperty("size")));
+		}
+
+		setFont(new Font(name, style, size));
+
+	    }
+	    //node
+	    if ( ((XMLElement)childNodes.elementAt(i)).getTagName().equals("node")) {
+		MindMapNodeModel child = new MindMapNodeModel(getFrame());
+		insert(child,getChildCount());
+		child.load( (XMLElement)childNodes.elementAt(i) );//recursive
 	    }
 	}
     }

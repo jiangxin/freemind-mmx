@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar lib/freemind.jar
+java -jar ./lib/freemind.jar

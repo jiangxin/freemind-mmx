@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.2 2000-11-16 20:43:25 ponder Exp $*/
+/*$Id: SchemeController.java,v 1.3 2001-03-13 15:50:06 ponder Exp $*/
 
 package freemind.modes.schememode;
 
 import freemind.main.FreeMind;
+import freemind.main.FreeMindMain;
 import freemind.modes.Mode;
 import freemind.modes.MindMap;
 import freemind.modes.MapAdapter;
@@ -48,11 +49,11 @@ public class SchemeController extends ControllerAdapter {
     }
 
     public MapAdapter newModel() {
-	return new SchemeMapModel();
+	return new SchemeMapModel(getFrame());
     }
 
     public MindMapNode newNode() {
-	return new SchemeNodeModel();
+	return new SchemeNodeModel(getFrame());
     }
 
 
@@ -73,7 +74,7 @@ public class SchemeController extends ControllerAdapter {
 
     private class EvaluateAction extends AbstractAction {
 	EvaluateAction() {
-	    super(FreeMind.getResources().getString("scheme_evaluate"));
+	    super(getFrame().getResources().getString("scheme_evaluate"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    String rawCode = ((SchemeMapModel)getMap()).getCode().trim();

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMode.java,v 1.6 2000-10-23 21:38:17 ponder Exp $*/
+/*$Id: FileMode.java,v 1.7 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.modes.filemode;
 
@@ -39,12 +39,16 @@ public class FileMode implements Mode {
     private static final String MODENAME = "File";
     private static boolean isRunning = false;
 
-    public FileMode(Controller c) {
+    public FileMode() {
+    }
+
+    public void init(Controller c) {
 	this.c = c;
 	modecontroller = new FileController(this);
 	toolbar = new FileToolBar(modecontroller);
 	popupmenu = new FilePopupMenu(modecontroller);
     }
+    
 
     public String toString() {
 	return MODENAME;

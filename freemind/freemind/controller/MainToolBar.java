@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.5 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: MainToolBar.java,v 1.6 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.controller;
 
@@ -38,23 +38,26 @@ public class MainToolBar extends JToolBar {
 	button.setText("");
 	button = add(c.nextMap);
 	button.setText("");
-
-	zoom = new JComboBox(zooms);
-	zoom.setSelectedItem("100%");
-	add(zoom);
-	zoom.addItemListener(new ItemListener(){
-		public void itemStateChanged(ItemEvent e) {
-		    //remove '%' sign
-		    String dirty = (String)e.getItem();
-		    String cleaned = dirty.substring(0,dirty.length()-1);
-		    //change representation ("125" to 1.25)
-		    c.setZoom(Integer.parseInt(cleaned,10)/100F);
-		}
-	    });
+	if (! c.getFrame().getProperty("mindmapview_enable_zoom").trim().equals("false")) {
+	    zoom = new JComboBox(zooms);
+	    zoom.setSelectedItem("100%");
+	    add(zoom);
+	    zoom.addItemListener(new ItemListener(){
+		    public void itemStateChanged(ItemEvent e) {
+			//remove '%' sign
+			String dirty = (String)e.getItem();
+			String cleaned = dirty.substring(0,dirty.length()-1);
+			//change representation ("125" to 1.25)
+			c.setZoom(Integer.parseInt(cleaned,10)/100F);
+		    }
+		});
+	}
 
     }
 
     public void setAllActions(boolean enabled) {
-	zoom.setEnabled(enabled);
+	if (zoom != null) {
+	    zoom.setEnabled(enabled);
+	}
     }
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.6 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: MenuBar.java,v 1.7 2001-03-13 15:50:05 ponder Exp $*/
 
 package freemind.controller;
 
@@ -39,22 +39,23 @@ import javax.swing.KeyStroke;
 public class MenuBar extends JMenuBar {
 
     JMenu mapsmenu;
-    private JMenu filemenu = new JMenu(FreeMind.getResources().getString("file"));
-    private JMenu editmenu = new JMenu(FreeMind.getResources().getString("edit"));
+    private JMenu filemenu;
+    private JMenu editmenu;
     Controller c;
 
     public MenuBar(Controller controller) {
 	this.c = controller;
-
+	filemenu = new JMenu(c.getFrame().getResources().getString("file"));
+	editmenu = new JMenu(c.getFrame().getResources().getString("edit"));
 	this.add(filemenu);
 	this.add(editmenu);
 
 	//Mapsmenu
-	mapsmenu = new JMenu(FreeMind.getResources().getString("mindmaps"));
+	mapsmenu = new JMenu(c.getFrame().getResources().getString("mindmaps"));
 	this.add(mapsmenu);
 
 	//Modesmenu
-	JMenu modesmenu = new JMenu(FreeMind.getResources().getString("modes"));
+	JMenu modesmenu = new JMenu(c.getFrame().getResources().getString("modes"));
 	this.add(modesmenu);
 
 	ActionListener modesMenuActionListener = new ModesMenuActionListener();
@@ -63,7 +64,7 @@ public class MenuBar extends JMenuBar {
 	    String key = (String)i.next();
 	    JMenuItem newItem = new JMenuItem(key);
 	    modesmenu.add(newItem);
-	    String keystroke = FreeMind.userProps.getProperty("keystroke_mode_"+key);
+	    String keystroke = c.getFrame().getProperty("keystroke_mode_"+key);
 	    if (keystroke != null) {
 		newItem.setAccelerator(KeyStroke.getKeyStroke(keystroke));
 	    }
@@ -74,7 +75,7 @@ public class MenuBar extends JMenuBar {
 	}
 
 	//Helpmenu
-	JMenu helpmenu = new JMenu(FreeMind.getResources().getString("help"));
+	JMenu helpmenu = new JMenu(c.getFrame().getResources().getString("help"));
 	this.add(helpmenu);
 
 	helpmenu.add(c.documentation);
@@ -118,10 +119,10 @@ public class MenuBar extends JMenuBar {
 	filemenu.addSeparator();
 
 	JMenuItem close = filemenu.add(c.close);
-	close.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_close")));
+	close.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_close")));
 	
 	JMenuItem quit = filemenu.add(c.quit);
-	quit.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_quit")));
+	quit.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_quit")));
     }
 
     public void updateEditMenu() {
@@ -134,23 +135,23 @@ public class MenuBar extends JMenuBar {
 	editmenu.addSeparator();
 
 	JMenuItem moveToRoot = editmenu.add(c.moveToRoot);
-	moveToRoot.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_moveToRoot")));
+	moveToRoot.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_moveToRoot")));
 
 	JMenuItem previousMap = editmenu.add(c.previousMap);
-	previousMap.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_previousMap")));
+	previousMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_previousMap")));
 
 	JMenuItem nextMap = editmenu.add(c.nextMap);
-	nextMap.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_nextMap")));
+	nextMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_nextMap")));
 
 // 	JMenuItem cut = editmenu.add(c.cut);
-// 	cut.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_cut")));
+// 	cut.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_cut")));
 	
 // 	JMenuItem paste = editmenu.add(c.paste);
-// 	paste.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_paste")));
+// 	paste.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_paste")));
 
 	editmenu.addSeparator();
 
-	JMenu preferences = new JMenu(FreeMind.getResources().getString("preferences"));
+	JMenu preferences = new JMenu(c.getFrame().getResources().getString("preferences"));
 	editmenu.add(preferences);
 
 	preferences.add(c.background);

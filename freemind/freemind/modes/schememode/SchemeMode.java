@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMode.java,v 1.1 2000-11-15 22:27:20 ponder Exp $*/
+/*$Id: SchemeMode.java,v 1.2 2001-03-13 15:50:06 ponder Exp $*/
 
 package freemind.modes.schememode;
 
@@ -41,7 +41,10 @@ public class SchemeMode implements Mode {
     private static final String MODENAME = "Scheme";
     private static boolean isRunning = false;
 
-    public SchemeMode(Controller c) {
+    public SchemeMode() {
+    }
+
+    public void init(Controller c) {
 	this.c = c;
 	modecontroller = new SchemeController(this);
 	toolbar = new SchemeToolBar(modecontroller);

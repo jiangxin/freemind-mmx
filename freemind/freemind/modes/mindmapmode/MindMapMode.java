@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMode.java,v 1.7 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: MindMapMode.java,v 1.8 2001-03-13 15:50:06 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -35,7 +35,10 @@ public class MindMapMode implements Mode {
     private MindMapController modecontroller;
     private final String MODENAME = "MindMap";
 
-    public MindMapMode(Controller c) {
+    public MindMapMode() {
+    }
+
+    public void init (Controller c) {
 	this.c = c;
 	modecontroller = new MindMapController(this);
     }

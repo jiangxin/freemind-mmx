@@ -1,8 +1,8 @@
 <project name="freemind" default="dist" basedir=".">
 	<property name="src" value="." />
 	<property name="build" value="build" />
-	<property name="build.compiler" value="modern" />
 	<property name="dist" value="dist" />
+
 
 	<target name="compile">
 		<mkdir dir="${build}"/>
@@ -12,7 +12,7 @@
 		        debug="on"/>
 	</target>
 
-	<target name="dist" depends="jar,doc">
+	<target name="dist" depends="jar">
 		<copy todir="${dist}"> 
 			<fileset dir="${src}"
 				includes="**/*.properties,**/freemind.bat,**/freemind.sh"
@@ -20,7 +20,7 @@
 		</copy>
 		<copy todir="${dist}/lib">
 			<fileset dir="${src}"
-				includes="**/xerces.jar,**/silk.jar"
+				includes="**/silk.jar"
 			/>
 		</copy>
 	</target>
@@ -32,8 +32,33 @@
 			<fileset dir="${build}"/>
 			<fileset dir="${src}">
 				<include name="images/*"/>
+				<include name="*.properties"/>
 			</fileset>
 		</jar>
+	</target>
+
+	<target name="browser" depends="compile">
+		<mkdir dir="${dist}/browser" />
+		<jar jarfile="${dist}/browser/freemindbrowser.jar">
+			<fileset dir="${build}">
+				<include name="freemind/view/*"/>
+				<include name="freemind/view/mindmapview/*"/>
+				<include name="freemind/main/*"/>
+				<include name="freemind/controller/*"/>	
+				<include name="freemind/modes/*"/>
+				<include name="freemind/modes/browsemode/*"/>
+			</fileset>
+			<fileset dir="${src}">
+				<include name="images/Back24.gif"/>
+				<include name="images/Forward24.gif"/>
+				<include name="*.properties"/>
+			</fileset>
+		</jar>
+		<copy todir="${dist}/browser" >
+			<fileset dir="${src}/html">
+				<include name="freemindbrowser.html"/>
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="doc">
