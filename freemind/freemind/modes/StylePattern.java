@@ -16,17 +16,23 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePattern.java,v 1.5 2003-12-07 21:00:21 christianfoltin Exp $*/
+/*$Id: StylePattern.java,v 1.5.12.1 2004-10-05 22:23:57 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.util.*;
-import java.io.*;
-import freemind.main.XMLElement;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+
 import freemind.main.Tools;
-import freemind.modes.MindIcon;
+import freemind.main.XMLElement;
 
 // Daniel: this seems like a description of what pattern should do rather
 // than of that what it actually does.
@@ -51,7 +57,34 @@ public class StylePattern {
     private boolean appliesToNode = false;
     private Color  nodeColor;
     private String nodeStyle;
-    private Font   nodeFont;
+    private String   nodeFontFamily=null;
+    private Integer  nodeFontSize=null;
+    private Boolean  nodeFontBold=null;
+    private Boolean  nodeFontItalic=null;
+    /**
+     * @return Returns the nodeFontBold.
+     */
+    public Boolean getNodeFontBold() {
+        return nodeFontBold;
+    }
+    /**
+     * @param nodeFontBold The nodeFontBold to set.
+     */
+    public void setNodeFontBold(Boolean nodeFontBold) {
+        this.nodeFontBold = nodeFontBold;
+    }
+    /**
+     * @return Returns the nodeFontItalic.
+     */
+    public Boolean getNodeFontItalic() {
+        return nodeFontItalic;
+    }
+    /**
+     * @param nodeFontItalic The nodeFontItalic to set.
+     */
+    public void setNodeFontItalic(Boolean nodeFontItalic) {
+        this.nodeFontItalic = nodeFontItalic;
+    }
     private MindIcon   nodeIcon;
 
     private boolean appliesToEdge = false;    
@@ -79,7 +112,7 @@ public class StylePattern {
     }
 
     public String toString() {
-        return "node: "+nodeColor+", "+nodeStyle+", "+nodeFont+", "+nodeIcon+", "+
+        return "node: "+nodeColor+", "+nodeStyle+", "+nodeFontFamily+", "+nodeFontSize+", "+nodeIcon+", "+
            "\nedge: "+edgeColor+", "+edgeStyle+", "+edgeWidth; }
 
     public boolean getAppliesToEdge() {
@@ -188,19 +221,29 @@ public class StylePattern {
     
     
     /**
-       * Get the value of font.
-       * @return Value of font.
-       */
-    public Font getNodeFont() {
-       return nodeFont;}
-
+     * @return Returns the nodeFontFamily.
+     */
+    public String getNodeFontFamily() {
+        return nodeFontFamily;
+    }
     /**
-       * Set the value of font.
-       * @param v  Value to assign to font.
-       */
-    public void setNodeFont(Font  nodeFont) {
-       this.nodeFont = nodeFont; }
-
+     * @param nodeFontFamily The nodeFontFamily to set.
+     */
+    public void setNodeFontFamily(String nodeFontFamily) {
+        this.nodeFontFamily = nodeFontFamily;
+    }
+    /**
+     * @return Returns the nodeFontSize.
+     */
+    public Integer getNodeFontSize() {
+        return nodeFontSize;
+    }
+    /**
+     * @param nodeFontSize The nodeFontSize to set.
+     */
+    public void setNodeFontSize(Integer nodeFontSize) {
+        this.nodeFontSize = nodeFontSize;
+    }
     /**
        * Get the value of icon.
        * @return Value of icon.
@@ -318,23 +361,21 @@ public class StylePattern {
                  if (nodeChild.getName().equals("font")) {
                     appliesToNodeFont = true;
 
-                    String name = nodeChild.getStringAttribute("name"); 
-                    int style=0;
-                    int size=0;
-                                            
+                    if (nodeChild.getStringAttribute("name")!= null) {
+                        setNodeFontFamily(nodeChild.getStringAttribute("name")); 
+                    } 
                     if (Tools.safeEquals(nodeChild.getStringAttribute("bold"),"true")) {
-                       style+=Font.BOLD; }
+                       setNodeFontBold(Boolean.TRUE);
+                    } 
                     if (Tools.safeEquals(nodeChild.getStringAttribute("italic"),"true")) {
-                       style+=Font.ITALIC; }
+                       setNodeFontItalic(Boolean.TRUE); }
                     // if (font.getProperty("underline")!=null && 
                     // nodeChild.getProperty("underline").equals("true")) setUnderlined(true);                    
-                    if (nodeChild.getStringAttribute("size")!=null) {
-                       size = Integer.parseInt(nodeChild.getStringAttribute("size")); }
+                    if (nodeChild.getStringAttribute("size") != null) {
+                        setNodeFontSize(Integer.valueOf(nodeChild
+                                .getStringAttribute("size")));
+                    }
                     
-                    setNodeFont(new Font(name, style, size));
-
-                    if (size == 0) {
-                       setNodeFont(null); }
 
                  }}}
            

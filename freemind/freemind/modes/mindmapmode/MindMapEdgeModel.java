@@ -16,17 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapEdgeModel.java,v 1.9 2003-11-03 11:00:20 sviles Exp $*/
+/*$Id: MindMapEdgeModel.java,v 1.9.12.1 2004-10-05 22:23:58 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.main.FreeMindMain;
-import freemind.modes.MindMapNode;
-import freemind.modes.EdgeAdapter;
 import freemind.main.Tools;
-import java.awt.Color;
-
 import freemind.main.XMLElement;
+import freemind.modes.EdgeAdapter;
+import freemind.modes.MindMapNode;
 
 public class MindMapEdgeModel extends EdgeAdapter {
 
@@ -56,15 +54,4 @@ public class MindMapEdgeModel extends EdgeAdapter {
 	return null;
     }
 
-    public void setColor(Color color) {
-	super.setColor(color);
-    }
-
-    public void setWidth(int width) {
-	super.setWidth(width);
-    }
-
-    public void setStyle(String style) {
-	super.setStyle(style);
-    }
 }

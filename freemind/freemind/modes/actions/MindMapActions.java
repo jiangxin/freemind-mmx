@@ -67,10 +67,11 @@ public interface MindMapActions {
 	 * has a getPattern() method and the pattern has a getName() method ... */
 	public void applyPattern(MindMapNode node, String patternName);
 	public void applyPattern(MindMapNode node, StylePattern pattern);
-//	public void setNodeStyle(MindMapNode node, String style);
+	public void setNodeStyle(MindMapNode node, String style);
 	public void setEdgeColor(MindMapNode node, Color color);
-//	public void setEdgeWidth(MindMapNode node, int width);
-//	public void setEdgeStyle(MindMapNode node, String style);
+	/** The widths range from -1 (for equal to parent) to 0 (thin), 1, 2, 4, 8. */
+	public void setEdgeWidth(MindMapNode node, int width);
+	public void setEdgeStyle(MindMapNode node, String style);
 //	public void setCloud(MindMapNode node);
 //	public void setCloudColor(MindMapNode node, Color color);
 //	public void setCloudWidth(MindMapNode node, int width);

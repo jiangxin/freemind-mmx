@@ -33,12 +33,14 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuI
 	}
 
 	public void act(XmlAction action) {
-		BoldNodeAction boldact = (BoldNodeAction) action;
-		NodeAdapter node = getNodeFromID(boldact.getNode());
-		if(node.isBold() != boldact.isBold()) {
-			node.setBold(boldact.isBold());
-			modeController.nodeChanged(node);
-		}
+		if (action instanceof BoldNodeAction) {
+            BoldNodeAction boldact = (BoldNodeAction) action;
+            NodeAdapter node = getNodeFromID(boldact.getNode());
+            if (node.isBold() != boldact.isBold()) {
+                node.setBold(boldact.isBold());
+                modeController.nodeChanged(node);
+            }
+        }
 	}
 
 
@@ -49,13 +51,13 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuI
 	public ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException {
 		// every node is set to the inverse of the focussed node.
 		boolean bold = modeController.getSelected().isBold();
-		return getActionPair(selected, bold);
+		return getActionPair(selected, !bold);
 	}
 
 	private ActionPair getActionPair(MindMapNode selected, boolean bold)
 		throws JAXBException {
-		BoldNodeAction boldAction = toggleBold(selected, !bold);
-		BoldNodeAction undoBoldAction = toggleBold(selected, bold);
+		BoldNodeAction boldAction = toggleBold(selected, bold);
+		BoldNodeAction undoBoldAction = toggleBold(selected, selected.isBold());
 		return new ActionPair(boldAction, undoBoldAction);
 	}
 
@@ -76,8 +78,7 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuI
 	}
 
     public boolean isEnabled(JMenuItem item, Action action) {
-		boolean bold = modeController.getSelected().isBold();
-		setSelected(item, bold);
+		setSelected(item, modeController.getSelected().isBold());
         return true;
     }
 

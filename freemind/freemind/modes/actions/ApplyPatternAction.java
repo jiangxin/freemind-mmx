@@ -29,9 +29,6 @@ package freemind.modes.actions;
 
 import java.util.ListIterator;
 
-import javax.swing.Action;
-
-import freemind.modes.EdgeAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
@@ -39,12 +36,13 @@ import freemind.modes.StylePattern;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
-public class ApplyPatternAction extends NodeGeneralAction implements SingleNodeOperation {
+public class ApplyPatternAction extends NodeGeneralAction implements
+        SingleNodeOperation {
     private StylePattern mpattern;
 
     public ApplyPatternAction(ModeController controller, StylePattern pattern) {
         super(controller, null /* no text */, null /* = no icon */);
-        putValue(Action.NAME, pattern.getName());
+        setName(pattern.getName());
         this.mpattern = pattern;
         setSingleNodeOperation(this);
     }
@@ -52,36 +50,55 @@ public class ApplyPatternAction extends NodeGeneralAction implements SingleNodeO
     public void apply(MindMapMapModel map, MindMapNodeModel node) {
         applyPattern(node, mpattern);
     }
-    
-     public void applyPattern(MindMapNode node, StylePattern pattern) {
+
+    public void applyPattern(MindMapNode node, StylePattern pattern) {
         if (pattern.getAppliesToNode()) {
             if (pattern.getText() != null) {
-                getModeController().setNodeText(node,pattern.getText());
+                getModeController().setNodeText(node, pattern.getText());
             }
             getModeController().setNodeColor(node, pattern.getNodeColor());
-            //URGENT: change this:
-            ((NodeAdapter) node).setStyle(pattern.getNodeStyle());
+            getModeController().setNodeStyle(node, pattern.getNodeStyle());
             if (pattern.getAppliesToNodeIcon()) {
                 if (pattern.getNodeIcon() == null) {
                     while (getModeController().removeLastIcon(node) > 0) {
                     }
                 } else {
-                    getModeController().addIcon(node,pattern.getNodeIcon());
+                    getModeController().addIcon(node, pattern.getNodeIcon());
                 }
             } // fc, 28.9.2003
             if (pattern.getAppliesToNodeFont()) {
-                //URGENT: change this:
-                node.setFont(pattern.getNodeFont());
-                ((NodeAdapter) node).estabilishOwnFont();
+                String nodeFontFamily = pattern.getNodeFontFamily();
+                if (nodeFontFamily == null) {
+                    nodeFontFamily = getModeController().getController().getDefaultFontFamilyName();
+                }
+                getModeController().setFontFamily(node,
+                        nodeFontFamily);
+                Integer nodeFontSize = pattern.getNodeFontSize();
+                if (nodeFontSize == null) {
+                    nodeFontSize = new Integer(getModeController().getController().getDefaultFontSize());
+                }
+                getModeController().setFontSize(node,
+                        String.valueOf(nodeFontSize));
+                if (pattern.getNodeFontItalic() != null) {
+                    getModeController().setItalic(node,
+                            pattern.getNodeFontItalic().booleanValue());
+                } else {
+                    getModeController().setItalic(node,false);
+                    
+                }
+                if (pattern.getNodeFontBold() != null) {
+                    getModeController().setBold(node,
+                            pattern.getNodeFontBold().booleanValue());
+                } else {
+                    getModeController().setBold(node,false);
+                }
             }
         }
 
         if (pattern.getAppliesToEdge()) {
             getModeController().setEdgeColor(node, pattern.getEdgeColor());
-            EdgeAdapter edge = (EdgeAdapter) node.getEdge();
-            //URGENT: change this:
-            edge.setStyle(pattern.getEdgeStyle());
-            edge.setWidth(pattern.getEdgeWidth());
+            getModeController().setEdgeStyle(node, pattern.getEdgeStyle());
+            getModeController().setEdgeWidth(node, pattern.getEdgeWidth());
         }
 
         if (pattern.getAppliesToChildren()) {
@@ -90,10 +107,7 @@ public class ApplyPatternAction extends NodeGeneralAction implements SingleNodeO
                 applyPattern(child, pattern.getChildrenStylePattern());
             }
         }
-        //URGENT: remove this:
-        getModeController().nodeChanged(node);
     }
-
 
     /**
      * @return Returns the pattern.

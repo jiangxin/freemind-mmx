@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LineAdapter.java,v 1.2 2003-11-29 17:12:33 christianfoltin Exp $*/
+/*$Id: LineAdapter.java,v 1.2.12.1 2004-10-05 22:23:57 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -41,6 +41,8 @@ public abstract class LineAdapter implements MindMapLine {
     protected String style;
     protected int width;
 	protected Stroke stroke;
+    private String standardStyle;
+    private Color standardColor;
 
     //
     // Constructors
@@ -52,6 +54,13 @@ public abstract class LineAdapter implements MindMapLine {
         this.standardStylePropertyString = standardStylePropertyString;
         width = DEFAULT_WIDTH;
         stroke = null;
+        standardStyle = getFrame().getProperty(standardStylePropertyString);
+        String stdColor = getFrame().getProperty(standardColorPropertyString);
+        if (stdColor != null && stdColor.length() == 7) {
+            standardColor = Tools.xmlToColor(stdColor);
+        } else {
+            standardColor = Color.RED;
+        }
 
     }
 
@@ -65,11 +74,7 @@ public abstract class LineAdapter implements MindMapLine {
 
     public Color getColor() {
         if(color==null) {
-            String stdcolor = getFrame().getProperty(standardColorPropertyString);
-            if (stdcolor != null && stdcolor.length() == 7) {
-                return Tools.xmlToColor(stdcolor);
-            }
-            return Color.red;
+            return standardColor;
         }
         return color;
     }
@@ -96,7 +101,7 @@ public abstract class LineAdapter implements MindMapLine {
 
     public String getStyle() {
         if(style==null) {
-            return getFrame().getProperty(standardStylePropertyString);
+            return standardStyle;
         }
         return style;
     }

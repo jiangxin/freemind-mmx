@@ -33,14 +33,21 @@ public class NodeGeneralAction extends AbstractXmlAction {
 	private freemind.controller.actions.NodeActorXml actor;
 	SingleNodeOperation singleNodeOperation;
 	protected static Logger logger;
+	
+	/**
+	 * @param modeController
+	 * @param textID null if you cannot provide a title that is present in the resources. 
+	 * 	Use the setName method to set your not translateble title after that.
+	 * @param iconPath give a resource name for the icon.
+	 */
 	protected NodeGeneralAction(ModeController modeController, String textID, String iconPath) {
 		super(
-		    textID != null? modeController.getText(textID) : null,
+		    null,
 			iconPath != null ? new ImageIcon(modeController.getController().getResource(iconPath)) : null,
 		modeController);
 		this.modeController = modeController;
 		if (textID != null) {
-            putValue(Action.SHORT_DESCRIPTION, modeController.getText(textID));
+            setName(modeController.getText(textID));
         }
 		this.singleNodeOperation = null;
 		this.actor = null;
@@ -49,6 +56,14 @@ public class NodeGeneralAction extends AbstractXmlAction {
 		}
 	}
 
+	protected void setName(String name) {
+        if (name != null) {
+            putValue(Action.NAME, name);
+            putValue(Action.SHORT_DESCRIPTION, name);
+        }
+	    
+	}
+	
 	public NodeGeneralAction(
 	        ModeController modeController, String textID,
 		String iconPath,

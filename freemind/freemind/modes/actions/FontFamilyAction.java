@@ -19,7 +19,7 @@
  *
  * Created on 27.08.2004
  */
-/*$Id: FontFamilyAction.java,v 1.1.2.2 2004-09-29 21:49:04 christianfoltin Exp $*/
+/*$Id: FontFamilyAction.java,v 1.1.2.3 2004-10-05 22:23:58 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -31,6 +31,7 @@ import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.NodeActorXml;
 import freemind.controller.actions.generated.instance.FontNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Tools;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
@@ -110,7 +111,7 @@ public class FontFamilyAction extends NodeGeneralAction implements NodeActorXml 
             FontNodeAction fontFamilyAction = (FontNodeAction) action;
             MindMapNode node = getNodeFromID(fontFamilyAction.getNode());
             String fontFamily = fontFamilyAction.getFont();
-            if(!node.getFontFamilyName().equals(fontFamily)) {
+            if(!Tools.safeEquals(node.getFontFamilyName(),fontFamily)) {
                 ((NodeAdapter) node).estabilishOwnFont();
                 node.setFont(modeController.getController().getFontThroughMap
                         (new Font(fontFamily,node.getFont().getStyle(),node.getFont().getSize())));

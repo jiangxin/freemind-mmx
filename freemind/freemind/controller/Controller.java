@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.10.10 2004-09-04 20:22:43 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.10.11 2004-10-05 22:23:57 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -297,13 +297,37 @@ public class Controller {
        // Maybe implement handling for cases when the font is not
        // available on this system.
 
-       int fontSize = Integer.parseInt(getFrame().getProperty("defaultfontsize"));
-       int fontStyle = Integer.parseInt(getFrame().getProperty("defaultfontstyle"));
-       String fontFamily = getProperty("defaultfont");
+       int fontSize = getDefaultFontSize();
+       int fontStyle = getDefaultFontStyle();
+       String fontFamily = getDefaultFontFamilyName();
 
        return getFontThroughMap (new Font(fontFamily, fontStyle, fontSize)); }
 
-	/** Static JColorChooser to have  the recent colors feature. */
+	/**
+     * @return
+     */
+    public String getDefaultFontFamilyName() {
+        String fontFamily = getProperty("defaultfont");
+        return fontFamily;
+    }
+
+    /**
+     * @return
+     */
+    public int getDefaultFontStyle() {
+        int fontStyle = Integer.parseInt(getFrame().getProperty("defaultfontstyle"));
+        return fontStyle;
+    }
+
+    /**
+     * @return
+     */
+    public int getDefaultFontSize() {
+        int fontSize = Integer.parseInt(getFrame().getProperty("defaultfontsize"));
+        return fontSize;
+    }
+
+    /** Static JColorChooser to have  the recent colors feature. */
 	static public JColorChooser getCommonJColorChooser() {
 		return colorChooser;
 	}

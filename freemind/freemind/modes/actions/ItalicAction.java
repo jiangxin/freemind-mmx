@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: ItalicAction.java,v 1.1.2.2 2004-09-29 21:49:04 christianfoltin Exp $ */
+/* $Id: ItalicAction.java,v 1.1.2.3 2004-10-05 22:23:58 christianfoltin Exp $ */
 package freemind.modes.actions;
 
 import javax.swing.Action;
@@ -68,13 +68,13 @@ public class ItalicAction extends NodeGeneralAction implements NodeActorXml, Men
 	public ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException {
 		// every node is set to the inverse of the focussed node.
 		boolean italic = modeController.getSelected().isItalic();
-		return getActionPair(selected, italic);
+		return getActionPair(selected, !italic);
 	}
 
 	private ActionPair getActionPair(MindMapNode selected, boolean italic)
 		throws JAXBException {
-		ItalicNodeAction italicAction = toggleItalic(selected, !italic);
-		ItalicNodeAction undoItalicAction = toggleItalic(selected, italic);
+		ItalicNodeAction italicAction = toggleItalic(selected, italic);
+		ItalicNodeAction undoItalicAction = toggleItalic(selected, selected.isItalic());
 		return new ActionPair(italicAction, undoItalicAction);
 	}
 

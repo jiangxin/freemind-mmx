@@ -20,7 +20,10 @@
 					<xs:element ref="font_size_node_action"/>
 					<xs:element ref="font_node_action"/>
 					<xs:element ref="node_color_format_action"/>
+					<xs:element ref="node_style_format_action"/>
 					<xs:element ref="edge_color_format_action"/>
+					<xs:element ref="edge_width_format_action"/>
+					<xs:element ref="edge_style_format_action"/>
 					<xs:element ref="delete_node_action"/>
 					<xs:element ref="edit_node_action"/>
 					<xs:element ref="new_node_action"/>
@@ -188,6 +191,39 @@
 		<xs:complexContent>
 			<xs:extension base="format_node_action">
 		      <xs:attribute name="color" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Sets the style of the edges Action -->
+	<xs:element name="edge_style_format_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="style" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Sets the width of the edges Action -->
+	<xs:element name="edge_width_format_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="width" use="optional" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Sets the style of the nodes Action -->
+	<xs:element name="node_style_format_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="style" use="optional" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

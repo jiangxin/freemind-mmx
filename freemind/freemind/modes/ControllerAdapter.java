@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.35 2004-10-05 17:50:48 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.36 2004-10-05 22:23:57 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -97,6 +97,8 @@ import freemind.modes.actions.CopySingleAction;
 import freemind.modes.actions.CutAction;
 import freemind.modes.actions.DeleteChildAction;
 import freemind.modes.actions.EdgeColorAction;
+import freemind.modes.actions.EdgeStyleAction;
+import freemind.modes.actions.EdgeWidthAction;
 import freemind.modes.actions.EditAction;
 import freemind.modes.actions.FontFamilyAction;
 import freemind.modes.actions.FontSizeAction;
@@ -105,6 +107,7 @@ import freemind.modes.actions.ItalicAction;
 import freemind.modes.actions.NewChildAction;
 import freemind.modes.actions.NodeColorAction;
 import freemind.modes.actions.NodeColorBlendAction;
+import freemind.modes.actions.NodeStyleAction;
 import freemind.modes.actions.NodeUpAction;
 import freemind.modes.actions.PasteAction;
 import freemind.modes.actions.RedoAction;
@@ -160,7 +163,22 @@ public abstract class ControllerAdapter implements ModeController {
     public NodeUpAction nodeUp = null;
     public NodeDownAction nodeDown = null;
     public EdgeColorAction edgeColor = null;
+    public EdgeWidthAction EdgeWidth_WIDTH_PARENT = null;
+	public EdgeWidthAction EdgeWidth_WIDTH_THIN = null;
+	public EdgeWidthAction EdgeWidth_1 = null;
+	public EdgeWidthAction EdgeWidth_2 = null;
+	public EdgeWidthAction EdgeWidth_4 = null;
+	public EdgeWidthAction EdgeWidth_8 = null;
+    public EdgeWidthAction edgeWidths[] = null;
+	public EdgeStyleAction EdgeStyle_linear = null;
+	public EdgeStyleAction EdgeStyle_bezier = null;
+	public EdgeStyleAction EdgeStyle_sharp_linear = null;
+	public EdgeStyleAction EdgeStyle_sharp_bezier = null;
+    public EdgeStyleAction edgeStyles[] = null;
     public NodeColorBlendAction nodeColorBlend = null;
+    public NodeStyleAction fork = null;
+    public NodeStyleAction bubble = null;
+
     public IconAction unknwonIconAction = null;
     public RemoveLastIconAction removeLastIconAction = null;
     public RemoveAllIconsAction removeAllIconsAction = null;
@@ -211,6 +229,8 @@ public abstract class ControllerAdapter implements ModeController {
 	    edgeColor = new EdgeColorAction(this);
 	    nodeColor = new NodeColorAction(this);
 	    nodeColorBlend = new NodeColorBlendAction(this);
+	    fork = new NodeStyleAction(this, MindMapNode.STYLE_FORK);
+	    bubble = new NodeStyleAction(this, MindMapNode.STYLE_BUBBLE);
 	    // this is an unknown icon and thus corrected by mindicon:
 	    removeLastIconAction = new RemoveLastIconAction(this);
 	    // this action handles the xml stuff: (undo etc.)
@@ -230,6 +250,25 @@ public abstract class ControllerAdapter implements ModeController {
 	           System.err.println("In patterns:"+e); }
 		catch (Exception ex) {
 	           System.err.println("Patterns not loaded:"+ex); }
+	    EdgeWidth_WIDTH_PARENT = new EdgeWidthAction(this, EdgeAdapter.WIDTH_PARENT);
+		EdgeWidth_WIDTH_THIN = new EdgeWidthAction(this, EdgeAdapter.WIDTH_THIN);
+		EdgeWidth_1 = new EdgeWidthAction(this, 1);
+		EdgeWidth_2 = new EdgeWidthAction(this, 2);
+		EdgeWidth_4 = new EdgeWidthAction(this, 4);
+		EdgeWidth_8 = new EdgeWidthAction(this, 8);
+	    edgeWidths =  new EdgeWidthAction[]{
+			EdgeWidth_WIDTH_PARENT, EdgeWidth_WIDTH_THIN, EdgeWidth_1, EdgeWidth_2, EdgeWidth_4, EdgeWidth_8
+	    };
+		EdgeStyle_linear = new EdgeStyleAction(this, "linear");
+		EdgeStyle_bezier = new EdgeStyleAction(this, "bezier");
+		EdgeStyle_sharp_linear = new EdgeStyleAction(this, "sharp_linear");
+		EdgeStyle_sharp_bezier = new EdgeStyleAction(this, "sharp_bezier");
+	    edgeStyles =  new EdgeStyleAction[]{
+			EdgeStyle_linear,
+			EdgeStyle_bezier,
+			EdgeStyle_sharp_linear,
+			EdgeStyle_sharp_bezier
+	    };
 	    compound = new CompoundActionHandler(this);
 
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -881,6 +920,27 @@ public abstract class ControllerAdapter implements ModeController {
         edit.setNodeText(selected, newText);
     }
 
+    /**
+     *
+     */
+
+    public void setEdgeWidth(MindMapNode node, int width) {
+        EdgeWidth_1.setEdgeWidth(node, width);
+    }
+    /**
+     *
+     */
+
+    public void setEdgeStyle(MindMapNode node, String style) {
+        EdgeStyle_bezier.setEdgeStyle(node, style);
+    }
+    /**
+     *
+     */
+
+    public void setNodeStyle(MindMapNode node, String style) {
+        fork.setStyle(node, style);
+    }
      public Transferable cut() {
 		return cut.cut();
 	}

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.30 2004-10-05 17:50:48 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.31 2004-10-05 22:23:58 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -65,7 +65,6 @@ import freemind.extensions.HookFactory;
 import freemind.extensions.HookRegistration;
 import freemind.main.Tools;
 import freemind.modes.ControllerAdapter;
-import freemind.modes.EdgeAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
@@ -74,6 +73,7 @@ import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
+import freemind.modes.actions.EdgeStyleAction;
 import freemind.modes.actions.IconAction;
 import freemind.modes.actions.NewMapAction;
 import freemind.modes.actions.NewPreviousSiblingAction;
@@ -122,29 +122,8 @@ public class MindMapController extends ControllerAdapter {
    public Action find = new FindAction();
    public Action findNext = new FindNextAction();
 
-   public Action fork = new ForkAction();
-   public Action bubble = new BubbleAction();
 	public Action nodeBackgroundColor = new NodeBackgroundColorAction();
 
-    public Action EdgeWidth_WIDTH_PARENT = new EdgeWidthAction(EdgeAdapter.WIDTH_PARENT);
-	public Action EdgeWidth_WIDTH_THIN = new EdgeWidthAction(EdgeAdapter.WIDTH_THIN);
-	public Action EdgeWidth_1 = new EdgeWidthAction(1);
-	public Action EdgeWidth_2 = new EdgeWidthAction(2);
-	public Action EdgeWidth_4 = new EdgeWidthAction(4);
-	public Action EdgeWidth_8 = new EdgeWidthAction(8);
-    public Action edgeWidths[] = {
-		EdgeWidth_WIDTH_PARENT, EdgeWidth_WIDTH_THIN, EdgeWidth_1, EdgeWidth_2, EdgeWidth_4, EdgeWidth_8
-    };
-	public Action EdgeStyle_linear = new EdgeStyleAction("linear");
-	public Action EdgeStyle_bezier = new EdgeStyleAction("bezier");
-	public Action EdgeStyle_sharp_linear = new EdgeStyleAction("sharp_linear");
-	public Action EdgeStyle_sharp_bezier = new EdgeStyleAction("sharp_bezier");
-    public Action edgeStyles[] = {
-		EdgeStyle_linear,
-		EdgeStyle_bezier,
-		EdgeStyle_sharp_linear,
-		EdgeStyle_sharp_bezier
-    };
     public Action cloudColor = new CloudColorAction();
 
     public Action cloud   = new NodeGeneralAction (this, "cloud", "images/Cloud24.gif",
@@ -858,33 +837,6 @@ public class MindMapController extends ControllerAdapter {
     // Edge width
     // __________________
 
-    private String getWidthTitle(int width) {
-        String returnValue;
-        if (width == EdgeAdapter.WIDTH_PARENT) {
-            returnValue = getText("edge_width_parent");
-        } else if (width == EdgeAdapter.WIDTH_THIN) {
-            returnValue = getText("edge_width_thin");
-        } else {
-            returnValue = Integer.toString(width);
-        } 
-        return getText("edge_width") + returnValue;
-    }
-
-    private class EdgeWidthAction extends AbstractAction {
-       int width;
-       EdgeWidthAction(int width) {
-          super(getWidthTitle(width));
-          this.width = width; }
-       public void actionPerformed(ActionEvent e) {
-          for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-             MindMapNodeModel selected = (MindMapNodeModel)it.next();
-             getMindMapMapModel().setEdgeWidth(selected,width); }}}
-
-
-    // Miscelaneous
-    // _________________
-
-
     private class JoinNodesAction extends AbstractAction {
 	JoinNodesAction() { super(getText("join_nodes")); }
 	public void actionPerformed(ActionEvent e) {
@@ -894,30 +846,6 @@ public class MindMapController extends ControllerAdapter {
 	FollowLinkAction() { super(getText("follow_link")); }
 	public void actionPerformed(ActionEvent e) {
            loadURL(); }}
-
-    private class ForkAction extends AbstractAction {
-       ForkAction() { super(getText(MindMapNode.STYLE_FORK)); }
-       public void actionPerformed(ActionEvent e) {
-          for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-             MindMapNodeModel selected = (MindMapNodeModel)it.next();
-             getMindMapMapModel().setNodeStyle(selected, MindMapNode.STYLE_FORK); }}}
-
-    private class BubbleAction extends AbstractAction {
-	BubbleAction() { super(getText(MindMapNode.STYLE_BUBBLE)); }
-       public void actionPerformed(ActionEvent e) {
-          for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-             MindMapNodeModel selected = (MindMapNodeModel)it.next();
-             getMindMapMapModel().setNodeStyle(selected, MindMapNode.STYLE_BUBBLE); }}}
-
-    private class EdgeStyleAction extends AbstractAction {
-	String style;
-	EdgeStyleAction(String style) {
-	    super(getText("edge_style") + getText(style));
-            this.style = style; }	
-       public void actionPerformed(ActionEvent e) {          
-          for(ListIterator it = getSelecteds().listIterator();it.hasNext();) {
-             MindMapNodeModel selected = (MindMapNodeModel)it.next();
-             getMindMapMapModel().setEdgeStyle(selected, style); }}}
 
     private class MindMapFilter extends FileFilter {
       public boolean accept(File f) {
