@@ -108,6 +108,33 @@ public class NodeKeyListener implements KeyListener {
 	    e.consume();
 	    return;
 
+	    //Easy access keybindings
+	case KeyEvent.VK_E:
+	    c.moveUp();
+	    e.consume();
+	    return;
+
+	case KeyEvent.VK_D:
+	    c.moveDown();
+	    e.consume();
+	    return;
+
+	case KeyEvent.VK_S:
+	    c.moveLeft();
+	    e.consume();
+	    return;
+
+	case KeyEvent.VK_F:
+	    c.moveRight();
+	    e.consume();
+	    return;
+
+	case KeyEvent.VK_N:
+	    c.addNew( (NodeView)e.getSource() );
+	    e.consume();
+	    return;
+
+
 	case KeyEvent.VK_ESCAPE:
 	    c.moveToRoot();
 	    e.consume();

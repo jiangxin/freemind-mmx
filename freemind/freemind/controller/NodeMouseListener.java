@@ -56,6 +56,9 @@ public class NodeMouseListener implements MouseListener {
 	    e.consume();
 	} else if(e.getClickCount() == 2) {
 	    c.toggleFolded();
+	    //The timer is necessary if ClickCount == 1 must not be called
+	    //before ClickCount == 2 is called
+
 	    //	    timer = new Timer(300, new ActionListener() {
 // 		    public void actionPerformed(ActionEvent evt) {
 // 			edit();

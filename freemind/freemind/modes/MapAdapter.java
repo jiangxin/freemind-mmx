@@ -21,9 +21,9 @@ package freemind.modes;
 
 import freemind.main.FreeMind;
 import freemind.main.Tools;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
-import freemind.modes.MindMapEdge;
+import java.io.File;
+import java.net.URL;
+import java.awt.Color;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.MutableTreeNode;
@@ -31,26 +31,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.EventListenerList;
-import java.util.Enumeration;
-import java.awt.Color;
-import java.io.File;
-import java.io.StringWriter;
-import java.io.FileOutputStream;
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.FileInputStream;
-import java.net.URL;
-//XML Specification (Interfaces)
-import  org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
-//XML Parser, currently apache xerces
-import org.apache.xerces.parsers.DOMParser;
-import org.apache.xerces.dom.DocumentImpl;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
+
 
 public abstract class MapAdapter implements MindMap {
 

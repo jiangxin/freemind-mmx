@@ -19,12 +19,12 @@
 
 package freemind.modes;
 
+import java.io.File;
+import java.net.URL;
+import java.awt.Color;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.MutableTreeNode;
-import java.awt.Color;
-import java.io.File;
-import java.net.URL;
 
 public interface MindMap extends TreeModel {
         
@@ -43,19 +43,4 @@ public interface MindMap extends TreeModel {
     void setFolded(MindMapNode node, boolean folded);
 
     void close();
-
-    /**
-     * Use this method to add children because it will cause the appropriate event.
-     */
-     void insertNodeInto(MutableTreeNode newChild,
-			 MutableTreeNode parent, int index);
-    
-    /**
-     * Message this to remove node from its parent. This will message
-     * nodesWereRemoved to create the appropriate event. This is the
-     * preferred way to remove a node as it handles the event creation
-     * for you.
-     */
-    void removeNodeFromParent(MutableTreeNode node);
-    
 }

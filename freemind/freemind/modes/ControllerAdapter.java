@@ -22,32 +22,28 @@ package freemind.modes;
 import freemind.main.FreeMind;
 import freemind.main.Tools;
 import freemind.controller.Controller;
-import freemind.view.MapModule;
 import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
-import freemind.modes.MindMapEdge;
-import freemind.modes.Mode;
-import freemind.modes.ModeController;
+import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.JFileChooser;
-import java.awt.Color;
-import javax.swing.JColorChooser;
-import javax.swing.ImageIcon;
 import java.io.File;
 import java.net.URL;
 import java.net.MalformedURLException;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import java.awt.Point;
-import javax.swing.JViewport;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusAdapter;
+import javax.swing.Action;
+import javax.swing.AbstractAction;
+import javax.swing.JColorChooser;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.JViewport;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 /**
  * Derive from this class to implement the Controller for your mode. Overload the methods
@@ -179,6 +175,12 @@ public abstract class ControllerAdapter implements ModeController {
 	}
 	getModel().insertNodeInto(newNode,parent.getModel(), place);
 	edit(newNode.getViewer(),parent);
+    }
+
+    public void remove(NodeView node) {
+	if (!node.isRoot()) {
+	    getModel().removeNodeFromParent(node.getModel());
+	}
     }
 
     public void edit(final NodeView node,final NodeView toBeSelected) {

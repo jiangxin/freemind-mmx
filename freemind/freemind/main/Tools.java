@@ -18,7 +18,7 @@
  */
 
 package freemind.main;
-//maybe move this class to another Package like tools or something...
+//maybe move this class to another package like tools or something...
 
 import java.io.File;
 import java.util.Vector;

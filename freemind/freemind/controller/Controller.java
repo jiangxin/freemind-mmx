@@ -20,7 +20,6 @@
 package freemind.controller;
 
 import freemind.main.FreeMind;
-import freemind.main.Tools;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -28,12 +27,6 @@ import freemind.modes.ModesCreator;
 import freemind.modes.Mode;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
-// import freemind.modes.mindmapmode.NodeModel;
-// import freemind.modes.mindmapmode.MapModel;
-// import freemind.modes.mindmapmode.MindMapMode;//testing
-import java.io.File;
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.LinkedList;
@@ -42,20 +35,14 @@ import java.util.TreeMap;
 import java.util.Iterator;
 import java.awt.Component;
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.BorderLayout;
 import java.awt.print.PrinterJob;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JColorChooser;
 import javax.swing.ImageIcon;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.JFileChooser;
-import javax.swing.JTextField;
-import javax.swing.JViewport;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JToolBar;
@@ -237,9 +224,7 @@ public class Controller {
     }
 
     void delete(NodeView node) {
-	if (!node.isRoot()) {
-	    getModel().removeNodeFromParent(node.getModel());
-	}
+	getMode().getModeController().remove(node);
     }
 
     void edit() {

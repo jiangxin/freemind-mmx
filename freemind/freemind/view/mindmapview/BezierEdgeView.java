@@ -19,11 +19,11 @@
 
 package freemind.view.mindmapview;
 
-import java.awt.geom.CubicCurve2D;
+import freemind.modes.MindMapEdge;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
-import java.awt.Color;
-import freemind.modes.MindMapEdge;
+import java.awt.geom.CubicCurve2D;
 
 /**
  * This class represents a single Edge of a MindMap.
@@ -33,7 +33,7 @@ public class BezierEdgeView extends EdgeView {
     CubicCurve2D.Float graph = new CubicCurve2D.Float();
     NodeView source,target;
     Point2D.Float start, end, one, two;
-    private static final int XCTRL = 7;//the difference between endpoint and controlpoint
+    private static final int XCTRL = 7;//the distance between endpoint and controlpoint
    
     public BezierEdgeView(NodeView source, NodeView target) {
 	this.source = source;

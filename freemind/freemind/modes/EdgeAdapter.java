@@ -20,14 +20,8 @@
 package freemind.modes;
 
 import freemind.main.FreeMind;
-import freemind.modes.MindMapNode;
-import freemind.modes.MindMapEdge;
 import freemind.main.Tools;
 import java.awt.Color;
-
-import  org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 
 public abstract class EdgeAdapter implements MindMapEdge {
 

@@ -28,6 +28,7 @@ public interface ModeController {
     public void load(File file);
     public void save(File file);
     public void addNew(NodeView parent);
+    public void remove(NodeView node);
     public void newMap();
     public void save();
     public void saveAs();

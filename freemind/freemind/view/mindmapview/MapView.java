@@ -73,9 +73,7 @@ public class MapView extends JPanel implements Printable {
 	removeAll();
 	//Initialize MindMap
 	rootView = NodeView.newNodeView( (MindMapNode)getModel().getRoot(), this );
-	//	( (MindMapNode)mapModel.getRoot() ).setViewer(rootView);
  	rootView.insert();
-// 	add(rootView);
 	rootView.setPosition(0,0);
 
 	layoutAll();

@@ -19,10 +19,10 @@
 
 package freemind.view.mindmapview;
 
+import freemind.modes.MindMapEdge;
 import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.Color;
-import freemind.modes.MindMapEdge;
 
 /**
  * This class represents a single Edge of a MindMap.
