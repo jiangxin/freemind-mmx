@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.9 2001-04-19 16:20:38 ponder Exp $*/
+/*$Id: MenuBar.java,v 1.10 2001-05-06 18:47:56 ponder Exp $*/
 
 package freemind.controller;
 
@@ -89,17 +89,17 @@ public class MenuBar extends JMenuBar {
     public void updateMapsMenu() {
 	ActionListener mapsMenuActionListener = new MapsMenuActionListener();
 	mapsmenu.removeAll();
-	if (c.getMapModules() == null) {
+	if (c.getMapModuleManager().getMapModules() == null) {
 	    return;
 	}
-	List keys = new LinkedList(c.getMapModules().keySet());
+	List keys = new LinkedList(c.getMapModuleManager().getMapModules().keySet());
 	for (ListIterator i = keys.listIterator(); i.hasNext();) {
 	    String key = (String)i.next();
 	    JMenuItem newItem = new JMenuItem(key);
 	    mapsmenu.add(newItem);
 	    newItem.addActionListener(mapsMenuActionListener);
-	    if (c.getMapModule() != null) {
-		if (key.equals(c.getMapModule().toString())) {
+	    if (c.getMapModuleManager().getMapModule() != null) {
+		if (key.equals(c.getMapModuleManager().getMapModule().toString())) {
 		    //This could be done more elegant
 		    newItem.setBackground(Color.blue);
 		}
@@ -171,7 +171,7 @@ public class MenuBar extends JMenuBar {
 
     private class MapsMenuActionListener implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
-	    c.changeToMapModule(e.getActionCommand());
+	    c.getMapModuleManager().changeToMapModule(e.getActionCommand());
 	}
     }
 

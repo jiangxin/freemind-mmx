@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.20 2001-05-05 13:58:46 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.21 2001-05-06 18:47:57 ponder Exp $*/
 
 package freemind.modes;
 
@@ -134,7 +134,12 @@ public abstract class ControllerAdapter implements ModeController {
     //
 
     public void newMap() {
-	getController().newMapModule(newModel());
+	getController().getMapModuleManager().newMapModule(newModel());
+	mapOpened(true);
+    }
+
+    protected void newMap(MindMap map) {
+	getController().getMapModuleManager().newMapModule(map);
 	mapOpened(true);
     }
 
@@ -145,7 +150,7 @@ public abstract class ControllerAdapter implements ModeController {
     public void load(File file) throws FileNotFoundException {
 	MapAdapter model = newModel();
 	model.load(file);
-	getController().newMapModule(model);
+	getController().getMapModuleManager().newMapModule(model);
 	mapOpened(true);
     }
 
@@ -212,7 +217,7 @@ public abstract class ControllerAdapter implements ModeController {
 	    }
 	    save(f);
 	    //Update the name of the map
-	    getController().updateMapModuleName();
+	    getController().getMapModuleManager().updateMapModuleName();
 	}
     }
 
@@ -471,7 +476,7 @@ public abstract class ControllerAdapter implements ModeController {
 	try {
 	    String fileName = absolute.getFile();
 	    File file = new File(fileName);
-	    if(!getController().tryToChangeToMapModule(file.getName())) {//this can lead to confusion if the user handles multiple maps with the same name.
+	    if(!getController().getMapModuleManager().tryToChangeToMapModule(file.getName())) {//this can lead to confusion if the user handles multiple maps with the same name.
 		load(file);
 	    }
 	} catch (FileNotFoundException e) {
@@ -516,7 +521,7 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     protected MapModule getMapModule() {
-	return getController().getMapModule();
+	return getController().getMapModuleManager().getMapModule();
     }
 
     public MapAdapter getMap() {
@@ -547,8 +552,16 @@ public abstract class ControllerAdapter implements ModeController {
 	return getController().getView();
     }
 
+    protected void updateMapModuleName() {
+	getController().getMapModuleManager().updateMapModuleName();
+    }
+
     private NodeAdapter getSelected() {
 	return (NodeAdapter)getView().getSelected().getModel();
+    }
+
+    public void changeToMapOfMode(Mode mode) {
+	getController().getMapModuleManager().changeToMapOfMode(mode);
     }
 
     /**
@@ -753,7 +766,7 @@ public abstract class ControllerAdapter implements ModeController {
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent e) {
-	    if(getController().getMapModule() != null) {
+	    if(getMapModule() != null) {
 			MindMapNode node = getView().getSelected().getModel();
 			if (node.isRoot()) return;
 			clipboard.setContents(getModel().cut(node),null);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMode.java,v 1.9 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: MindMapMode.java,v 1.10 2001-05-06 18:47:57 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -24,6 +24,7 @@ import freemind.main.FreeMind;
 import freemind.controller.Controller;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
+import freemind.modes.ControllerAdapter;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
@@ -52,7 +53,7 @@ public class MindMapMode implements Mode {
      * (updates Actions etc.)
      */
     public void activate() {
-	getController().changeToMapOfMode(this);
+	((ControllerAdapter)getModeController()).changeToMapOfMode(this);
     }
     
     public Controller getController() {

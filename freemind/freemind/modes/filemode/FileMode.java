@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMode.java,v 1.8 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: FileMode.java,v 1.9 2001-05-06 18:47:57 ponder Exp $*/
 
 package freemind.modes.filemode;
 
 import freemind.modes.Mode;
 import freemind.modes.MindMap;
 import freemind.modes.ModeController;
+import freemind.modes.ControllerAdapter;
 import freemind.controller.Controller;
 import freemind.view.mindmapview.MapView;
 import javax.swing.JMenu;
@@ -63,7 +64,7 @@ public class FileMode implements Mode {
 	    getModeController().newMap();
 	    isRunning = true;
 	} else {
-	    getController().changeToMapOfMode(this);
+	    ((ControllerAdapter)getModeController()).changeToMapOfMode(this);
 	}
 	//	menu.add( ((FileController)getModeController()).center );
 // 	getController().cut.setEnabled(false);

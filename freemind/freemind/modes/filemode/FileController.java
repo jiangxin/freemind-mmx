@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileController.java,v 1.6 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: FileController.java,v 1.7 2001-05-06 18:47:57 ponder Exp $*/
 
 package freemind.modes.filemode;
 
@@ -75,7 +75,7 @@ public class FileController extends ControllerAdapter {
 	public void actionPerformed(ActionEvent e) {
 	    if (getSelected() != null) {
 		MindMap map = new FileMapModel(((FileNodeModel)getSelected()).getFile(), getFrame());
-		getController().newMapModule(map);
+		newMap(map);
 	    }
 	}
     }

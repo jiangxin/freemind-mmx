@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.5 2001-03-31 22:37:00 ponder Exp $*/
+/*$Id: SchemeController.java,v 1.6 2001-05-06 18:47:57 ponder Exp $*/
 
 package freemind.modes.schememode;
 
@@ -98,7 +98,7 @@ public class SchemeController extends ControllerAdapter {
 	    //	    }
 	    save(f);
 	    //Update the name of the map
-	    getController().updateMapModuleName();
+	    updateMapModuleName();
 	}
     }
 
