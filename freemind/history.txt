@@ -101,6 +101,10 @@ Changes made in Freemind 0.8.0:
 * Bug fix: Export to XHTML
 * Bug fix: Export branch.
 * Bug fix: Classpath and Mac OS X
+* Icon selector has remove actions
+* Japanese translation merged (thanks to Koh for the fast reaction).
+* Fixed the proposed file names of all export hooks
+* Fast bug fix for the moving node bug.
 
 Changes made in Freemind 0.7.2:
 ===============================

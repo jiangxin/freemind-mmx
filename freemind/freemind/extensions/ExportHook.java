@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: ExportHook.java,v 1.1.4.2 2004-11-16 16:42:35 christianfoltin Exp $*/
+/*$Id: ExportHook.java,v 1.1.4.3 2004-11-22 22:25:48 christianfoltin Exp $*/
 
 package freemind.extensions;
 
@@ -54,7 +54,8 @@ public class ExportHook extends ModeControllerHookAdapter {
         Container component = getController().getFrame().getContentPane();
 		JFileChooser chooser = null;
 		chooser = new JFileChooser();
-		String proposedName = getController().getMap().getFile().getName() +"."+ type;
+		File mmFile = getController().getMap().getFile();
+        String proposedName = mmFile.getAbsolutePath().replaceFirst("\\.[^.]*?$", "") +"."+ type;
 		chooser.setSelectedFile(new File(proposedName));
 
 		chooser.addChoosableFileFilter(new ImageFilter(type, description));

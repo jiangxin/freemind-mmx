@@ -8,7 +8,6 @@ package accessories.plugins;
 
 import java.awt.Point;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -44,6 +43,7 @@ public class IconSelectionPlugin extends NodeHookAdapter {
 		// we dont need node. 
 		MindMapNode focussed = getController().getSelected();
 		List selecteds = getController().getSelecteds();
+		Vector actions = new Vector();
 		Vector items = new Vector();
 		Vector itemdescriptions = new Vector();
 		MindMapController controller = ((MindMapController) getController());
@@ -51,9 +51,11 @@ public class IconSelectionPlugin extends NodeHookAdapter {
 		for (Enumeration e = iconActions.elements(); e.hasMoreElements();) {
 			IconAction action =
 				((IconAction) e.nextElement());
-			items.add(action.getValue(Action.SMALL_ICON));
-			itemdescriptions.add(action.getValue(Action.SHORT_DESCRIPTION));
+			addActionToActionVector(actions, items, itemdescriptions, action);
 		}
+		// And add the remove action, too:
+		addActionToActionVector(actions, items, itemdescriptions, controller.removeLastIconAction);
+		addActionToActionVector(actions, items, itemdescriptions, controller.removeAllIconsAction);
 
 		FreeMind frame = (FreeMind) getController().getFrame();
 		IconSelectionPopupDialog selectionDialog =
@@ -92,15 +94,24 @@ public class IconSelectionPlugin extends NodeHookAdapter {
 		selectionDialog.setModal(true);
 		selectionDialog.show();
 		// process result:
-		if (selectionDialog.getResult() >= 0) {
-			this.icon = ((IconAction) iconActions.get(selectionDialog
-					.getResult())).icon;
-			for (Iterator i = selecteds.iterator(); i.hasNext();) {
-				MindMapNode selNode = (MindMapNode) i.next();
-				controller.addIcon(selNode, icon);
-			}
+		int result = selectionDialog.getResult();
+        if (result >= 0) {
+			Action action = (Action) actions.get(result);
+			action.actionPerformed(null);
 		}
 	}
+
+    /**
+     * @param items
+     * @param itemdescriptions
+     * @param itemdescriptions2
+     * @param action
+     */
+    private void addActionToActionVector(Vector actions, Vector items, Vector itemdescriptions, Action action) {
+        actions.add(action);
+        items.add(action.getValue(Action.SMALL_ICON));
+        itemdescriptions.add(action.getValue(Action.SHORT_DESCRIPTION));
+    }
 
 //	/* (non-Javadoc)
 //	 * @see freemind.extensions.NodeHook#invoke()
