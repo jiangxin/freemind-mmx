@@ -1,0 +1,11 @@
+<patterns>
+	<pattern name="positive">
+		<node color="#00FF00"/>
+	</pattern>
+	<pattern name="negative">
+		<node color="#FF0000"/>
+	</pattern>
+	<pattern name="neutral">
+		<node color="#0000FF"/>
+	</pattern>
+</patterns>
