@@ -181,6 +181,10 @@ RC 3;
 * New feature: hierarchical icons.
 * Bug fix: icon from encrypted node corrected.
 
+* Bug fix from Dimitri: Random Node id generation.
+* Bug fix: english translation typos from Dan.
+
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

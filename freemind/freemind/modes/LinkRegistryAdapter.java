@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.10.18.1 2004-10-17 23:00:08 dpolivaev Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.10.18.2 2005-02-27 21:02:33 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -91,6 +91,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 
     // Logging: for applets the logging must be anonymously. This will be generalized later. fc, 22.12.2003.
     private static java.util.logging.Logger logger = java.util.logging.Logger.getAnonymousLogger(); //getLogger("freemind.modes.LinkRegistryAdapter");
+    // bug fix from Dimitri. 
+    protected static Random ran = new Random();
 
     ////////////////////////////////////////////////////////////////////////////////////////
     ////   Methods                                                                     /////
@@ -115,7 +117,6 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     };
 
     private String generateID(String proposedID, HashMap hashMap, String prefix) {
-        Random ran = new Random();
         String myProposedID = new String((proposedID != null)?proposedID:"");
         String returnValue;
         do {

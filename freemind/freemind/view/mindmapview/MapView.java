@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.9 2005-02-13 22:39:56 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.16.10 2005-02-27 21:02:35 christianfoltin Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -147,7 +147,9 @@ public class MapView extends JPanel implements Printable {
 		 * @param extraWidth
 		 */
 		public void componentMoved(ComponentEvent e){
-			m_map.scrollNodeToVisible(m_node, m_extraWidth);
+			if (m_map != null) { // fc, 22.2.2005: bug fix.
+                m_map.scrollNodeToVisible(m_node, m_extraWidth);
+            }
 			m_map = null;
 			m_node = null;		
 		}		
