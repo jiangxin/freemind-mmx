@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.17 2004-11-13 08:28:34 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.18 2004-11-15 07:00:52 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -40,6 +40,7 @@ import freemind.common.JaxbTools;
 import freemind.controller.actions.generated.instance.Plugin;
 import freemind.controller.actions.generated.instance.PluginActionType;
 import freemind.controller.actions.generated.instance.PluginClasspathType;
+import freemind.controller.actions.generated.instance.PluginModeType;
 import freemind.controller.actions.generated.instance.PluginRegistrationType;
 import freemind.main.FreeMindMain;
 import freemind.modes.MindMapNode;
@@ -160,7 +161,7 @@ public class HookFactory {
 				// plugin is loaded.
 				for (Iterator j = plugin.getPluginAction().iterator(); j.hasNext();) {
 					PluginActionType action = (PluginActionType) j.next();
-					pluginInfo.put(action.getLabel(), new HookDescriptor(action, plugin));
+					pluginInfo.put(action.getLabel(), new HookDescriptor(frame, action, plugin));
 					allPlugins.add(action.getLabel());
 				}
 				for (Iterator k = plugin.getPluginRegistration().iterator(); k.hasNext();) {
@@ -337,11 +338,20 @@ public class HookFactory {
     /**
      * @return A list of Class elements that are (probably) of HookRegistration type.
      */
-    public List getRegistrations() {
+    public List getRegistrations(Class mode) {
         actualizePlugins();
         Vector returnValue = new Vector();
         for (Iterator i = allRegistrations.keySet().iterator(); i.hasNext();) {
             PluginRegistrationType registration = (PluginRegistrationType) i.next();
+			boolean modeFound=false;
+            for (Iterator j = (registration.getPluginMode()).iterator(); j.hasNext();) {
+				PluginModeType possibleMode = (PluginModeType) j.next();
+				if(mode.getPackage().getName().equals(possibleMode.getClassName())) {
+					modeFound = true;
+				}
+			}
+            if(!modeFound)
+            	continue;
             try {
                 Plugin plug = (Plugin)allRegistrations.get(registration);
 		        ClassLoader loader = getClassLoader(plug.getPluginClasspath());

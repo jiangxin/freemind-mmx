@@ -138,13 +138,13 @@
 				<exclude name="${jarbundler.jar}"/>
 			</fileset>
 		</copy>
-		<!-- Mac OS X -->
-	  <condition property="isMacOs">
-	      <os family="mac"/>
-	  </condition>
-		<antcall target="dist_macos"/>
 		<ant antfile="accessories/plugins/build.xml" target="dist"/>
 		<ant antfile="plugins/build.xml" target="dist"/>
+		<!-- Mac OS X -->
+	    <condition property="isMacOs">
+		  <os family="mac"/>
+		</condition>
+		<antcall target="dist_macos"/>
 	</target>
 
 	<target name="dist_macos" if="isMacOs">

@@ -1,4 +1,4 @@
-<project name="imported" basedir="." default="...">
+<project name="imported" basedir="." default="dist">
 	<target name="build">
 		<echo message="Plugins build on path ${src}"/>
 		<mkdir dir="${build}" />

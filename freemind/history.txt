@@ -91,6 +91,8 @@ Changes made in Freemind 0.8.0:
 * icon for "insert child node"
 * Packaging of default plugins
 
+* Plugins internationalized.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

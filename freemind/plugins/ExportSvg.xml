@@ -23,16 +23,16 @@
 	<plugin_classpath jar="plugins/svg/xerces_2_5_0.jar"/>
 	<plugin_classpath jar="plugins/svg/xml-apis.jar"/>
 	<plugin_action 
-		documentation="PDF-Export" 
-		name="PDF-Export" base="freemind.extensions.ModeControllerHookAdapter" 
+		documentation="%plugins/ExportPdf.xml_documentation" 
+		name="%plugins/ExportPdf.xml_name" base="freemind.extensions.ModeControllerHookAdapter" 
 		label="plugins/ExportPdf.xml" 
 		class_name="plugins.svg.ExportPdf">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/file/export/pdf_export"/>
 	</plugin_action>
 	<plugin_action 
-		documentation="SVG-Export" 
-		name="SVG-Export" base="freemind.extensions.ModeControllerHookAdapter" 
+		documentation="%plugins/ExportSvg.xml_documentation" 
+		name="%plugins/ExportSvg.xml_name" base="freemind.extensions.ModeControllerHookAdapter" 
 		label="plugins/ExportSvg.xml" 
 		class_name="plugins.svg.ExportSvg">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>

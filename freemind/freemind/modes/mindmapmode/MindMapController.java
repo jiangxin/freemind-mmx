@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.38 2004-11-13 08:28:35 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.39 2004-11-15 07:00:52 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -185,7 +185,7 @@ public class MindMapController extends ControllerAdapter {
      * 
      */
     public void startupController() {
-        List pluginRegistratios = getFrame().getHookFactory().getRegistrations();
+        List pluginRegistratios = getFrame().getHookFactory().getRegistrations(this.getClass());
         logger.info("mScheduledActions are executed: "+pluginRegistratios.size());
         for (Iterator i = pluginRegistratios.iterator(); i.hasNext();) {
             // call constructor:

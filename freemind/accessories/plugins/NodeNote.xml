@@ -1,12 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0"?>
 <plugin>
-	<plugin_action 
-		documentation="&lt;html&gt;Associates a simple note editor to the current note.&lt;/html&gt;" 
-		name="Note"
-		base="freemind.extensions.NodeHookAdapter" 
-		icon_path="accessories/plugins/icons/knotes.png" 
-		label="accessories/plugins/NodeNote.properties" 
-		class_name="accessories.plugins.NodeNote" instanciation="Once">
+	<plugin_action documentation="%accessories/plugins/NodeNote.properties_documentation" name="%accessories/plugins/NodeNote.properties_name" base="freemind.extensions.NodeHookAdapter" icon_path="accessories/plugins/icons/knotes.png" label="accessories/plugins/NodeNote.properties" class_name="accessories.plugins.NodeNote" instanciation="Once">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/insert/nodeNote"/>
 	</plugin_action>

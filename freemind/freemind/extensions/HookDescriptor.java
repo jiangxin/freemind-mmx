@@ -19,7 +19,7 @@
  *
  * Created on 22.07.2004
  */
-/*$Id: HookDescriptor.java,v 1.1.2.4 2004-08-29 15:18:21 christianfoltin Exp $*/
+/*$Id: HookDescriptor.java,v 1.1.2.5 2004-11-15 07:00:52 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.HashMap;
@@ -32,6 +32,7 @@ import freemind.controller.actions.generated.instance.PluginActionType;
 import freemind.controller.actions.generated.instance.PluginMenuType;
 import freemind.controller.actions.generated.instance.PluginModeType;
 import freemind.controller.actions.generated.instance.PluginPropertyType;
+import freemind.main.FreeMindMain;
 
 
 class HookDescriptor {
@@ -40,7 +41,9 @@ class HookDescriptor {
 	private Vector modes;
 	private PluginActionType pluginAction;
     private final Plugin pluginBase;
-	public HookDescriptor(PluginActionType pluginAction, Plugin pluginBase) {
+	private final FreeMindMain frame;
+	public HookDescriptor(FreeMindMain frame, PluginActionType pluginAction, Plugin pluginBase) {
+		this.frame = frame;
 		this.pluginAction = pluginAction;
         this.pluginBase = pluginBase;
 		if (pluginAction.getName() == null) {	
@@ -90,13 +93,26 @@ class HookDescriptor {
 		return pluginAction.getBase();
 	}
 	public String getName() {
-		return pluginAction.getName();
+		return getFromResourceIfNecessary(pluginAction.getName());
+	}
+	/**
+	 * @param name
+	 * @return
+	 */
+	private String getFromResourceIfNecessary(String string) {
+		if(string==null) {
+			return string;
+		}
+		if(string.startsWith("%")) {
+			return frame.getController().getResourceString(string.substring(1));
+		}
+		return string;
 	}
 	public String getClassName() {
 		return pluginAction.getClassName();
 	}
 	public String getDocumentation() {
-		return pluginAction.getDocumentation();
+		return getFromResourceIfNecessary(pluginAction.getDocumentation());
 	}
 	public String getIconPath() {
 		return pluginAction.getIconPath();

@@ -508,6 +508,11 @@
 
   <xs:element name="plugin_registration">
     <xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="0">
+					<xs:element ref="plugin_mode" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:choice>
+			</xs:sequence>
 				<!-- A class that implements HookRegistration.
 					   It is called at map startup and shutdown.
 						 The public constructor must be calleable with arguments:
@@ -546,12 +551,13 @@
 			</xs:sequence>
 			<!-- The unique label of this action (e.g. the class_name if this is unique.). -->
 			<xs:attribute name="label" use="required" type="xs:string"/>
-			<!-- name is a reference to the language bundle.  -->
+			<!-- A name string starting with '%' is searched in the resource bundle.  -->
 			<xs:attribute name="name" use="optional" type="xs:string"/>
 			<!-- The hook base class (e.g. freemind.extensions.ModeControllerHookAdapter). -->
 			<xs:attribute name="base" use="required" type="xs:string"/>
 			<!-- The hook fully qualified class (e.g. accessories.plugins.AutomaticLayout). -->
 			<xs:attribute name="class_name" use="required" type="xs:string"/>
+			<!-- A doc string starting with '%' is searched in the resource bundle. -->
 			<xs:attribute name="documentation" use="optional" type="xs:string"/>
 			<!-- Icon path (e.g. "accessories/plugins/icons/2leftarrow.png"). -->
 			<xs:attribute name="icon_path" use="optional" type="xs:string"/>
