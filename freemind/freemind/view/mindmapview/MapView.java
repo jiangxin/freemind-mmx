@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.10.2 2004-03-18 06:44:34 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.10.3 2004-03-29 18:08:10 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -81,7 +81,7 @@ public class MapView extends JPanel implements Printable {
 				triggerHooks(get(0)); 
 			}
 			mySelected.clear();
-			logger.info("Cleared selected.");
+			logger.finest("Cleared selected.");
 		}
 		public int size() { return mySelected.size();
 		}
@@ -90,14 +90,14 @@ public class MapView extends JPanel implements Printable {
 				triggerHooks(node);
 			}
 			mySelected.remove(node); 
-			logger.info("Removed selected "+node);
+			logger.finest("Removed selected "+node);
 		}
 		public void add(NodeView node) {
 			if(size() >0 ) {
 				triggerHooks(get(0)); 
 			}
 			mySelected.add(0, node); 
-			logger.info("Added selected "+node + "\nAll="+mySelected);
+			logger.finest("Added selected "+node + "\nAll="+mySelected);
 		}
 		private void triggerHooks(NodeView node) {
 			// deselect the old node:
@@ -126,7 +126,7 @@ public class MapView extends JPanel implements Printable {
 			} else {
 				add(newSelected);
 			}
-			logger.info("MovedToFront selected "+newSelected + "\nAll="+mySelected);
+			logger.finest("MovedToFront selected "+newSelected + "\nAll="+mySelected);
 		}
 	}
 
@@ -971,7 +971,8 @@ public class MapView extends JPanel implements Printable {
             getMindMapLayout().updateTreeHeightsAndRelativeYOfAncestors(parentView);
             // Here, the view of child gets its size and position
             getMindMapLayout().layout();
-            parentView.requestFocus();
+            //fc, 29.3.2004: here, I change parentView.requestFocus() to:
+            child.getViewer().requestFocus();
             repaint();
         }
 

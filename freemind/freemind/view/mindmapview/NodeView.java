@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.10.1 2004-03-04 20:26:20 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.10.2 2004-03-29 18:08:10 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -47,7 +47,8 @@ public abstract class NodeView extends JLabel {
     protected MindMapNode model;
     protected MapView map;
     protected EdgeView edge;
-    protected final static Color selectedColor = new Color(210,210,210); //Color.lightGray; //the Color of the Rectangle of a selected Node
+    /** the Color of the Rectangle of a selected Node */
+    protected static Color selectedColor; 
     protected final static Color dragColor = Color.lightGray; //the Color of appearing GradientBox on drag over
     protected int treeHeight;
     private boolean left = true; //is the node left of root?
@@ -82,6 +83,15 @@ public abstract class NodeView extends JLabel {
     protected NodeView(MindMapNode model, MapView map) {
 	this.model = model;
 	setMap(map);
+	// initialize the selectedColor:
+	if(selectedColor== null) {
+		String stdcolor = map.getController().getFrame().getProperty("standardselectednodecolor");
+		if (stdcolor.length() == 7) {
+			selectedColor = Tools.xmlToColor(stdcolor);
+		} else {
+			selectedColor = new Color(210,210,210);
+		}
+	}
 
 	//Root has no edge
 	if (!isRoot()) {

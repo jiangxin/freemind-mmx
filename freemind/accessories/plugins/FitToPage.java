@@ -1,8 +1,6 @@
 /*
  * Created on 12.03.2004
  *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 package accessories.plugins;
 
@@ -14,18 +12,18 @@ import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
+ * @author dimitri: Bug fixes.
  *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class FitToPage extends ModeControllerHookAdapter {
+
+	private MapView view;
 
 	/**
 	 * 
 	 */
 	public FitToPage() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
@@ -33,26 +31,41 @@ public class FitToPage extends ModeControllerHookAdapter {
 	 */
 	public void startupMapHook() {
 		super.startupMapHook();
-		MapView view = getController().getView();
-		 if(view == null)
-			 return;
+		view = getController().getView();
+		if (view == null)
+			return;
+		zoom();
+		scroll();
+	}
+
+	private void scroll() {
+		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
+		Rectangle rect = view.getInnerBounds(root.getViewer());
+		Rectangle viewer = view.getVisibleRect();
+		view.scrollBy(rect.x - viewer.x, rect.y - viewer.y);
+	}
+
+	private void zoom() {
 		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
 		Rectangle rect = view.getInnerBounds(root.getViewer());
 		// calculate the zoom:
 		double oldZoom = getController().getView().getZoom();
-		double newZoom = 1;
 		Rectangle viewer = view.getVisibleRect();
-		Rectangle viewerTotal = view.getBounds();
-		logger.info("Found viewer rect="+viewer+" (Total="+viewerTotal+") and inner bounds="+rect);
-		double widthZoom = viewer.width*oldZoom / (rect.width+0.0);
-		if( widthZoom < newZoom    ) {
-			newZoom = widthZoom;
-		}
-		double heightZoom = viewer.height*oldZoom /(rect.height +0.0);
-		if( heightZoom < newZoom ) {
+		logger.info(
+			"Found viewer rect="
+				+ viewer.height
+				+ "/"
+				+ rect.height
+				+ ", "
+				+ viewer.width
+				+ "/"
+				+ rect.width);
+		double newZoom = viewer.width * oldZoom / (rect.width + 0.0);
+		double heightZoom = viewer.height * oldZoom / (rect.height + 0.0);
+		if (heightZoom < newZoom) {
 			newZoom = heightZoom;
 		}
-		logger.info("Calculated new zoom from min("+widthZoom+","+heightZoom+")="+newZoom+", oldZoom="+oldZoom+", result ="+(newZoom*oldZoom));
+		logger.info("Calculated new zoom " + (newZoom));
 		getController().getController().setZoom((float) (newZoom));
 	}
 

@@ -1,7 +1,7 @@
 /* XMLElement.java
  *
- * $Revision: 1.7 $
- * $Date: 2003-11-03 11:00:10 $
+ * $Revision: 1.7.12.1 $
+ * $Date: 2004-03-29 18:08:10 $
  * $Name:  $
  *
  * This file is part of NanoXML 2 Lite.
@@ -100,7 +100,7 @@ import java.util.Vector;
  *
  * @author Marc De Scheemaecker
  *         &lt;<A href="mailto:cyberelf@mac.com">cyberelf@mac.com</A>&gt;
- * @version $Name:  $, $Revision: 1.7 $
+ * @version $Name:  $, $Revision: 1.7.12.1 $
  */
 public class XMLElement
 {
@@ -2207,7 +2207,7 @@ public class XMLElement
         }
         if ((this.contents != null) && (this.contents.length() > 0)) {
             writer.write('>');
-            writer.write('\n');
+            //writer.write('\n');
             this.writeEncoded(writer, this.contents);
             if (withClosingTag) {
                writer.write('<'); writer.write('/');

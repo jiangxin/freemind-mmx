@@ -16,30 +16,23 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.12.12.1 2004-03-04 20:26:19 christianfoltin Exp $*/
+/*$Id: MindMapToolBar.java,v 1.12.12.2 2004-03-29 18:08:10 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
+import freemind.controller.FreeMindToolBar;
 import freemind.main.Tools;
-import freemind.modes.MindIcon;
 
-import java.lang.Integer;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
-import java.awt.BorderLayout;
 import javax.swing.JComboBox;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.Icon;
 import javax.swing.Action;
 import javax.swing.plaf.basic.BasicComboBoxEditor; 
-import java.util.List;
-import java.util.Vector;
-import java.util.Enumeration;
 
 
-public class MindMapToolBar extends JToolBar {
+public class MindMapToolBar extends FreeMindToolBar {
 
     private static final String[] sizes = {"8","10","12","14","16","18","20","24","28"};
     private MindMapController c;
@@ -49,40 +42,28 @@ public class MindMapToolBar extends JToolBar {
     private boolean fontFamily_IgnoreChangeEvent = false;
 
     public MindMapToolBar(MindMapController controller) {
-	
+	super();
 	this.c=controller;
         this.setRollover(true);
 
 	JButton button;
 
 	button = add(c.newMap);
-	button.setText("");
 	button = add(c.open);
-	button.setText("");
 	button = add(c.save);
-	button.setText("");
 	button = add(c.saveAs);
-	button.setText("");
 
 	button = add(c.cut);
-	button.setText("");
 
 	button = add(c.copy);
-	button.setText("");
 
 	button = add(c.paste);
-	button.setText("");
 
 	button = add(c.italic);
-	button.setText("");
 	button = add(c.bold);
-	button.setText("");
 	//	button = add(c.underlined);
-	//	button.setText("");
-	button = add(c.normalFont);
-	button.setText("");
+	//	button = add(c.normalFont);
 	button = add(c.cloud);
-	button.setText("");
 	button = add(c.cloudColor);
 	// hooks, fc, 3.3.2004:
 	for (int i=0; i<c.nodeHookActions.size(); ++i) {          
@@ -131,13 +112,11 @@ public class MindMapToolBar extends JToolBar {
            });
         
         // button tool bar.
-        buttonToolBar = new JToolBar();
+        buttonToolBar = new FreeMindToolBar();
         buttonToolBar.setRollover(true);
         button = buttonToolBar.add(c.removeLastIcon);
-        button.setText("");
         button = buttonToolBar.add(c.removeAllIcons);
         buttonToolBar.addSeparator();
-        button.setText("");
         for(int i = 0; i < c.iconActions.size(); ++i) {
             button = buttonToolBar.add((Action) c.iconActions.get(i));
         }

@@ -16,42 +16,46 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.16 2004-01-10 18:22:25 christianfoltin Exp $*/
+/*$Id: MainToolBar.java,v 1.16.10.1 2004-03-29 18:08:10 christianfoltin Exp $*/
 
 package freemind.controller;
 
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
-import javax.swing.JToolBar;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
-public class MainToolBar extends JToolBar {
+public class MainToolBar extends FreeMindToolBar {
     JComboBox zoom;	    
     Controller c;
     String userDefinedZoom;
-
+	
     public MainToolBar(final Controller c) {
+    	super();
         this.setRollover(true);
         this.c = c;
         userDefinedZoom = c.getResourceString("user_defined_zoom");
 	JButton button;
 
 	button = add(c.navigationPreviousMap);
-	button.setText("");
 	button = add(c.navigationNextMap);
-	button.setText("");
 	button = add(c.printDirect);
-	button.setText("");
 
         zoom = new JComboBox(c.getZooms());
         zoom.setSelectedItem("100%");
         zoom.addItem(userDefinedZoom);
         add(zoom);
-        zoom.addItemListener(new ItemListener(){
-              public void itemStateChanged(ItemEvent e) {
-                  // todo: dialog with user zoom value, if user zoom is chosen.
-                 setZoomByItem(e.getItem()); }}); }
+		zoom.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				// todo: dialog with user zoom value, if user zoom is chosen.
+				// change proposed by dimitri:
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					setZoomByItem(e.getItem());
+				}
+			}
+		});
+	}
 
     private void setZoomByItem(Object item) {
         if(((String) item).equals(userDefinedZoom))
@@ -90,4 +94,5 @@ public class MainToolBar extends JToolBar {
     public void setAllActions(boolean enabled) {
 	if (zoom != null) {
            zoom.setEnabled(enabled); }}
+
 }

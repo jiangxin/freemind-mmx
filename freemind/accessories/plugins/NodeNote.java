@@ -15,12 +15,10 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
-import freemind.controller.Controller;
 import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
-import freemind.modes.ModeController;
 
 /**
  * @author foltin
@@ -30,11 +28,10 @@ import freemind.modes.ModeController;
  */
 public class NodeNote extends PermanentNodeHookAdapter {
 
-	static private JTextArea text;
-	static private Integer instanceCounter;
-	static private MindMapNode oldSelectedNode;
+	private NodeTextListener listener;
+	private JTextArea text;
 	private String myNodeText;
-	static private JScrollPane scroller;
+	private JScrollPane scroller;
 	/**
 	 * 
 	 */
@@ -49,20 +46,6 @@ public class NodeNote extends PermanentNodeHookAdapter {
 	 */
 	public void invoke(MindMapNode node) {
 		super.invoke(node);
-		if(instanceCounter == null ){
-			instanceCounter = new Integer(0);
-		}
-		instanceCounter=new Integer(instanceCounter.intValue()+1);
-		if(text == null) {
-			// panel:
-			FreeMindMain frame = getController().getFrame();
-			text = new JTextArea(5,50);
-			scroller = new JScrollPane(text);
-			scroller.setPreferredSize( new Dimension( 600, 150 ) );
-			frame.getSouthPanel().add(scroller, BorderLayout.CENTER);
-			scroller.repaint();
-			oldSelectedNode = node;
-		}
 	}
 
 	/* (non-Javadoc)
@@ -70,9 +53,23 @@ public class NodeNote extends PermanentNodeHookAdapter {
 	 */
 	public void onReceiveFocusHook() {
 		super.onReceiveFocusHook();
-		logger.info("Text ctrl. set for node "+getNode()+" as "+getMyNodeText());
-		text.setText(null);				
-		text.setText(getMyNodeText());				
+		if(text==null) {
+			logger.info("Text ctrl. set for node "+getNode()+" as "+getMyNodeText());
+			// panel:
+			FreeMindMain frame = getController().getFrame();
+	
+			text = new JTextArea(5,50);
+			text.setText(getMyNodeText());
+	
+			listener = new NodeTextListener();
+			listener.setN(this);				
+			text.getDocument().addDocumentListener(listener);
+			
+			scroller = new JScrollPane(text);
+			scroller.setPreferredSize( new Dimension( 600, 150 ) );
+			frame.getSouthPanel().add(scroller, BorderLayout.CENTER);
+			frame.getSouthPanel().validate();
+		}
 	}
 
 	/**
@@ -86,7 +83,6 @@ public class NodeNote extends PermanentNodeHookAdapter {
 	 * @param string
 	 */
 	public void setMyNodeText(String string) {
-		logger.info("Text set for node "+getNode()+" as "+string);
 		myNodeText = new String(string);
 	}
 
@@ -95,24 +91,15 @@ public class NodeNote extends PermanentNodeHookAdapter {
 	 */
 	public void onLooseFocusHook() {
 		super.onLooseFocusHook();
-		setMyNodeText(text.getText());
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.extensions.MindMapHook#shutdownMapHook()
-	 */
-	public void shutdownMapHook() {
-		instanceCounter=new Integer(instanceCounter.intValue()-1);
-		if(instanceCounter.intValue()==0) {
+		if (text != null) {
+			listener.setN(null);
 			// shut down the display:
 			FreeMindMain frame = getController().getFrame();
 			frame.getSouthPanel().remove(scroller);
-			frame.getSouthPanel().repaint();
-			scroller=null;
-			text    =null;
-			instanceCounter=null;
+			frame.getSouthPanel().validate();
+			scroller = null;
+			text = null;
 		}
-		super.shutdownMapHook();
 	}
 
 	/* (non-Javadoc)
@@ -123,7 +110,7 @@ public class NodeNote extends PermanentNodeHookAdapter {
 		if(child.getChildren().size()>0) {
 			XMLElement paramChild = (XMLElement) child.getChildren().get(0);
 			if(paramChild != null) {
-				myNodeText = paramChild.getContent();
+				setMyNodeText(paramChild.getContent());
 			}
 		}
 	}
@@ -135,15 +122,15 @@ public class NodeNote extends PermanentNodeHookAdapter {
 		super.save(xml);
 		XMLElement child = new XMLElement();
 		child.setName("text");
-		child.setContent(myNodeText);
+		child.setContent(getMyNodeText());
 		xml.addChild(child);
 	}
 
 	public class NodeTextListener implements DocumentListener {
-		private final ModeController c;
+		private NodeNote n;
 
-		public NodeTextListener(ModeController controller) {
-			c=controller;
+		public NodeTextListener() {
+			n=null;
 		}
 		/**
 		 * @see javax.swing.event.DocumentListener#insertUpdate(DocumentEvent)
@@ -164,15 +151,31 @@ public class NodeNote extends PermanentNodeHookAdapter {
 		 */
 		public void changedUpdate(DocumentEvent e) {
 			try {
-				String text = e.getDocument().getText(0, e.getDocument().getLength());
-//				MindMapNode node = c.getSelecteds();
-//				node.setNodeText(text);
+				if(n!=null) {
+					String text = e.getDocument().getText(0, e.getDocument().getLength());
+					n.setMyNodeText(text);
+					n.nodeChanged(n.getNode());
+				}
 			} catch (BadLocationException ex) {
 				System.err.println("Could not fetch nodeText content"+ex.toString());
 			}
 		}
 
+		/**
+		 * @param note
+		 */
+		public void setN(NodeNote note) {
+			n = note;
+		}
+
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.extensions.MindMapHook#shutdownMapHook()
+	 */
+	public void shutdownMapHook() {
+		onLooseFocusHook();
+		super.shutdownMapHook();
+	}
 
 }

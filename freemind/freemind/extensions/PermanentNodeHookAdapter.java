@@ -54,7 +54,11 @@ public class PermanentNodeHookAdapter
 		   selected.addHook(hook);
 		   // call invoke.
 		   selected.invokeHook(hook);
-		}								
+		   // the focussed receives the focus:
+		   if(selected == focussed) {
+		   	hook.onReceiveFocusHook();
+		   }
+		}
 	}
 
 

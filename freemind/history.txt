@@ -5,6 +5,12 @@ Changes made in Freemind 0.7.2:
 * Special key for mac insert
 * ModeControllerHookAction added.
 * Permanent Hooks can save their things as XML
+* Toolbar size reduced by Stefan Zechmeister
+* FitToPage corrected by Dimitri
+* Lazy initialization of Jython to increase startup speed.
+* Icon size reduced
+* Unfold all added
+* Bug fix: XMLWriter addes additional \n for contents.
 
 Changes made in Freemind 0.7.1:
 ===============================

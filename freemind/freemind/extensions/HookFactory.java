@@ -16,14 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.3 2004-03-18 06:44:33 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.4 2004-03-29 18:08:10 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,10 +34,6 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import freemind.main.FreeMindMain;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
-import freemind.modes.ModeController;
-import freemind.modes.NodeAdapter;
 // jython:
 import org.python.core.*;
 import org.python.util.*;
@@ -84,8 +79,6 @@ public class HookFactory {
 	 */
 	public HookFactory(FreeMindMain frame) {
 		this.frame = frame;
-		PySystemState.initialize();
-		this.interp = new PythonInterpreter();
 		logger = frame.getLogger(this.getClass().getName());
 	}
 
@@ -185,15 +178,7 @@ public class HookFactory {
 	public ModeControllerHook createModeControllerHook(String hookName) {
 		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);
 		if (descriptor.script.endsWith("py")) {
-			logger.info("Excecuting jython script: " + descriptor.fileName);
-			interp.execfile(
-				ClassLoader.getSystemResourceAsStream(descriptor.fileName));
-			ModeControllerHook hook =
-				(ModeControllerHook) interp.get(
-					"instance",
-					ModeControllerHook.class);
-			decorateHook(hookName, descriptor, hook);
-			return hook;
+			return (ModeControllerHook) createJythonHook(hookName, descriptor);
 		}
 		return (ModeControllerHook) createJavaHook(hookName, descriptor);
 	}
@@ -225,6 +210,29 @@ public class HookFactory {
 		}
 	}
 
+	private MindMapHook createJythonHook(
+		String hookName,
+		HookDescriptor descriptor) {
+		try {
+			// Lazy initialization:
+			if(interp==null) {
+				PySystemState.initialize();
+				this.interp = new PythonInterpreter();
+			}
+			logger.info("Excecuting jython script: " + descriptor.fileName);
+			interp.execfile(
+				ClassLoader.getSystemResourceAsStream(descriptor.fileName));
+			MindMapHook hook =
+				(MindMapHook) interp.get("instance", MindMapHook.class);
+			decorateHook(hookName, descriptor, hook);
+			return hook;
+		} catch (Exception e) {
+			System.out.println(
+				"Error occurred loading hook: " + descriptor.fileName);
+			return null;
+		}
+	}
+
 	public NodeHook createNodeHook(
 		String hookName) {
         logger.info("CreateNodeHook: " + hookName);
@@ -240,12 +248,7 @@ public class HookFactory {
 			return proxy;
 		}
 		if (descriptor.script.endsWith("py")) {
-			logger.info("Excecuting jython script: " + descriptor.fileName);
-			interp.execfile(
-				ClassLoader.getSystemResourceAsStream(descriptor.fileName));
-			NodeHook hook = (NodeHook) interp.get("instance", NodeHook.class);
-			decorateHook(hookName, descriptor, hook);
-			return hook;
+			return (NodeHook) createJythonHook(hookName, descriptor);
 		}
 		return (NodeHook) createJavaHook(hookName, descriptor);
 	}
@@ -281,7 +284,12 @@ public class HookFactory {
 		if(descriptor == null){
 			throw new IllegalArgumentException("The hook "+hookName + " is not defined.");
 		}
-		action.putValue(AbstractAction.NAME, descriptor.script);		
+		String name = descriptor.properties.getProperty("name");
+		if(name != null){
+			action.putValue(AbstractAction.NAME, name);		
+		} else {
+			action.putValue(AbstractAction.NAME, descriptor.script);		
+		}
 		String docu = descriptor.properties.getProperty("documentation");
 		if(docu != null)
 			action.putValue(AbstractAction.SHORT_DESCRIPTION, docu);
