@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ForkNodeView.java,v 1.10.16.3 2004-08-28 07:07:34 dpolivaev Exp $*/
+/*$Id: ForkNodeView.java,v 1.10.16.4 2004-09-01 12:35:41 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -29,7 +29,8 @@ import java.awt.*;
  */
 public class ForkNodeView extends NodeView {
 
-
+	public final int FOLDING_WIDTH_OVERHEAD = 3;
+    
     //
     // Constructors
     //
@@ -42,8 +43,8 @@ public class ForkNodeView extends NodeView {
 		Dimension result =  new Dimension(super.getPreferredSize().width,
                              super.getPreferredSize().height + 3 + getEdge().getRealWidth());
 		if (getModel().isFolded()){
-			result.width +=  getZoomedFoldingSymbolWidth() ;
-			result.height +=  getZoomedFoldingSymbolWidth() / 2 ;
+			result.width +=  getZoomedFoldingSymbolHalfWidth() * 2 + FOLDING_WIDTH_OVERHEAD ;
+			result.height +=  getZoomedFoldingSymbolHalfWidth() ;
 		}
 		
         return result;
@@ -51,15 +52,15 @@ public class ForkNodeView extends NodeView {
     
 	public void setExtendedLocation(int x,	int y){
 		if(getModel().isFolded() && isLeft()){
-				x += getZoomedFoldingSymbolWidth();
+				x += getZoomedFoldingSymbolHalfWidth() * 2 + FOLDING_WIDTH_OVERHEAD;
 		}
 		setLocation(x, y);
 	}
     
 	public void setExtendedSize(int width,	int height){
 		if(getModel().isFolded()){
-			height -= getZoomedFoldingSymbolWidth() / 2;
-			width -= getZoomedFoldingSymbolWidth();
+			height -= getZoomedFoldingSymbolHalfWidth();
+			width -= getZoomedFoldingSymbolHalfWidth() * 2 + FOLDING_WIDTH_OVERHEAD;
 		}
 		setSize(width, height);
 	}
@@ -67,7 +68,7 @@ public class ForkNodeView extends NodeView {
     public int getExtendedX(){
     	int x = getX();
 		if(getModel().isFolded() && isLeft()){
-			x -= getZoomedFoldingSymbolWidth();
+			x -= getZoomedFoldingSymbolHalfWidth() * 2 + FOLDING_WIDTH_OVERHEAD;
 		}
 		return x;
     }
@@ -76,7 +77,7 @@ public class ForkNodeView extends NodeView {
 	{
 		int width = getWidth();
 		if(getModel().isFolded()){
-			width += getZoomedFoldingSymbolWidth();
+			width += getZoomedFoldingSymbolHalfWidth() * 2 + FOLDING_WIDTH_OVERHEAD;
 		}
 		return width;
 	}
@@ -85,7 +86,7 @@ public class ForkNodeView extends NodeView {
 	{
 		int height = getHeight();
 		if(getModel().isFolded()){
-			height += getZoomedFoldingSymbolWidth() / 2;
+			height += getZoomedFoldingSymbolHalfWidth();
 		}
 		return height;
 	}
@@ -96,14 +97,17 @@ public class ForkNodeView extends NodeView {
      */
 	public void paintFoldingMark(Graphics2D g){ 
 		if(getModel().isFolded()) {
-			final Point out = getOutPoint(); 
+			Point out = getOutPoint();
+			out.translate(0, 1); 
 			if (isLeft())
 			{
-				g.drawOval(out.x - getZoomedFoldingSymbolWidth() , out.y - getZoomedFoldingSymbolWidth()/2, getZoomedFoldingSymbolWidth(), getZoomedFoldingSymbolWidth());
+				g.drawLine(out.x - FOLDING_WIDTH_OVERHEAD, out.y, out.x, out.y);
+				g.drawOval(out.x - (getZoomedFoldingSymbolHalfWidth() * 2 + FOLDING_WIDTH_OVERHEAD) , out.y - getZoomedFoldingSymbolHalfWidth(), getZoomedFoldingSymbolHalfWidth() * 2, getZoomedFoldingSymbolHalfWidth() * 2);
 			}
 			else
 			{
-				g.drawOval(out.x, out.y - getZoomedFoldingSymbolWidth()/2, getZoomedFoldingSymbolWidth(), getZoomedFoldingSymbolWidth());
+				g.drawLine(out.x, out.y, out.x + FOLDING_WIDTH_OVERHEAD, out.y);
+				g.drawOval(out.x + FOLDING_WIDTH_OVERHEAD, out.y - getZoomedFoldingSymbolHalfWidth(), getZoomedFoldingSymbolHalfWidth() * 2, getZoomedFoldingSymbolHalfWidth() * 2);
 			}
 		}        
 	}

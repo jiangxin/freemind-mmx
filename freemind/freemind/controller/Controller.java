@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.39.2.2 2004-06-08 20:14:32 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.39.2.2.2.1 2004-09-01 12:35:39 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -186,8 +186,11 @@ public class Controller {
           System.err.println(message);
           JOptionPane.showMessageDialog(null, message, "FreeMind", JOptionPane.WARNING_MESSAGE); }}
 
-    public String getProperty(String property) {
-       return frame.getProperty(property); }
+	public String getProperty(String property) {
+	   return frame.getProperty(property); }
+
+	public int getIntProperty(String property, int defaultValue) {
+	   return frame.getIntProperty(property, defaultValue); }
 
     public void setProperty(String property, String value) {
        frame.setProperty(property, value); }

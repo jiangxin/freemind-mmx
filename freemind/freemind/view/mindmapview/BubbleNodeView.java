@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.13.4.3 2004-08-28 07:07:34 dpolivaev Exp $*/
+/*$Id: BubbleNodeView.java,v 1.13.4.4 2004-09-01 12:35:41 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -54,20 +54,20 @@ public class BubbleNodeView extends NodeView {
     	Dimension result = new Dimension(super.getPreferredSize().width+2*LEFT_WIDTH_OVERHEAD,
 			super.getPreferredSize().height+4); 
     	if (getModel().isFolded())
-			result.width +=  getZoomedFoldingSymbolWidth() / 2 ;
+			result.width +=  getZoomedFoldingSymbolHalfWidth() * 2 ;
 		return result; 
     }	  
 
 	public void setExtendedLocation(int x,	int y){
 		if(getModel().isFolded() && isLeft()){
-				x += getZoomedFoldingSymbolWidth() / 2;
+				x += getZoomedFoldingSymbolHalfWidth() * 2;
 		}
 		setLocation(x, y);
 	}
   
 	public void setExtendedSize(int width,	int height){
 		if(getModel().isFolded()){
-			width -= getZoomedFoldingSymbolWidth() / 2;
+			width -= getZoomedFoldingSymbolHalfWidth() * 2;
 		}
 		setSize(width, height);
 	}
@@ -76,7 +76,7 @@ public class BubbleNodeView extends NodeView {
 	{
 		int width = getWidth();
 		if(getModel().isFolded()){
-			width += getZoomedFoldingSymbolWidth() / 2;
+			width += getZoomedFoldingSymbolHalfWidth() * 2;
 		}
 		return width;
 	}
@@ -85,7 +85,7 @@ public class BubbleNodeView extends NodeView {
 	{
 		int x = getX();
 		if(getModel().isFolded() && isLeft()){
-				x -= getZoomedFoldingSymbolWidth() / 2;
+				x -= getZoomedFoldingSymbolHalfWidth() * 2;
 		}
 		return x;
 	}
@@ -106,23 +106,19 @@ public class BubbleNodeView extends NodeView {
 				height = MAX_HEIGHT;
 
 			Point ovalStartPoint = getOutPoint(); 
-			Point arcStartPoint = getInPoint(); 
-			arcStartPoint.translate( - height/2,  - height/2);
 			if (isLeft())
 			{
-				g.drawArc( arcStartPoint.x , arcStartPoint.y , height,   height, 270,180);
-				ovalStartPoint.translate(- getZoomedFoldingSymbolWidth()/2 + 1 , - getZoomedFoldingSymbolWidth()/2);
+				ovalStartPoint.translate(- getZoomedFoldingSymbolHalfWidth() * 2 , - getZoomedFoldingSymbolHalfWidth());
 			}
 			else
 			{
-				g.drawArc( arcStartPoint.x , arcStartPoint.y, height,   height,90,180);
-				ovalStartPoint.translate(- getZoomedFoldingSymbolWidth()/2 - 1 , - getZoomedFoldingSymbolWidth()/2);
+				ovalStartPoint.translate(0 , - getZoomedFoldingSymbolHalfWidth());
 			}
 			Color actualColor = g.getColor();
 			g.setColor(model.getBackgroundColor());
-			g.fillOval(ovalStartPoint.x + 1 , ovalStartPoint.y + 1, getZoomedFoldingSymbolWidth() - 2, getZoomedFoldingSymbolWidth() - 2);
+			g.fillOval(ovalStartPoint.x + 1 , ovalStartPoint.y + 1, getZoomedFoldingSymbolHalfWidth() * 2 - 2, getZoomedFoldingSymbolHalfWidth() * 2 - 2);
 			g.setColor(actualColor);
-			g.drawOval(ovalStartPoint.x , ovalStartPoint.y , getZoomedFoldingSymbolWidth(), getZoomedFoldingSymbolWidth());
+			g.drawOval(ovalStartPoint.x , ovalStartPoint.y , getZoomedFoldingSymbolHalfWidth() * 2, getZoomedFoldingSymbolHalfWidth() * 2);
 		}
         
 	}

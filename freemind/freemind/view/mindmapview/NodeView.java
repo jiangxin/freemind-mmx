@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.25.2.1.2.4 2004-08-28 15:17:53 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.25.2.1.2.5 2004-09-01 12:35:41 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -61,7 +61,6 @@ public abstract class NodeView extends JLabel {
     final static int DRAGGED_OVER_SON = 1;
     final static int DRAGGED_OVER_SIBLING = 2;
 
-	private final int FOLDING_SYMBOL_WIDTH = 8;
 
     protected int isDraggedOver = 0;
     public void setDraggedOver(int draggedOver) {
@@ -793,8 +792,9 @@ public abstract class NodeView extends JLabel {
         treeWidth = i;
     }
 
-    public int getZoomedFoldingSymbolWidth() {
-        return 2 * (int) (FOLDING_SYMBOL_WIDTH * map.getZoom() / 2);
+    public int getZoomedFoldingSymbolHalfWidth() {
+    	int preferredFoldingSymbolHalfWidth = map.getZoomedFoldingSymbolHalfWidth();
+        return Math.min(preferredFoldingSymbolHalfWidth, super.getPreferredSize().height / 2);
     }
 
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.10 2003-12-22 11:14:51 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.10.4.1 2004-09-01 12:35:40 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -65,7 +65,9 @@ public interface FreeMindMain {
 
     public URL getResource(String name);
 
-    public String getProperty(String key);
+	public String getProperty(String key);
+
+	public int getIntProperty(String key, int defaultValue);
 
     public void setProperty(String key, String value);
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.15.2.1 2004-02-28 12:48:11 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.15.2.1.2.1 2004-09-01 12:35:39 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -118,6 +118,15 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 	return userProps.getProperty(key);
     }
     
+	public int getIntProperty(String key, int defaultValue){
+		try{
+			return Integer.parseInt(getProperty(key));
+		}
+		catch(NumberFormatException nfe){
+			return defaultValue;
+		}
+	}
+
     public void setProperty(String key, String value) {
     }
 
