@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: MainToolBar.java,v 1.5 2000-10-27 21:44:35 ponder Exp $*/
 
 package freemind.controller;
 
@@ -29,19 +29,15 @@ import javax.swing.JComboBox;
 
 public class MainToolBar extends JToolBar {
     private static final String[] zooms = {"50%","75%","100%","125%","150%"};
-    
+    JComboBox zoom;	    
+
     public MainToolBar(final Controller c) {
-	JComboBox zoom;	
 	JButton button;
 
 	button = add(c.previousMap);
 	button.setText("");
 	button = add(c.nextMap);
 	button.setText("");
-// 	button = add(c.cut);
-// 	button.setText("");
-// 	button = add(c.paste);
-// 	button.setText("");
 
 	zoom = new JComboBox(zooms);
 	zoom.setSelectedItem("100%");
@@ -56,5 +52,9 @@ public class MainToolBar extends JToolBar {
 		}
 	    });
 
+    }
+
+    public void setAllActions(boolean enabled) {
+	zoom.setEnabled(enabled);
     }
 }

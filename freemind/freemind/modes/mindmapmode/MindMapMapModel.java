@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.4 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: MindMapMapModel.java,v 1.5 2000-10-27 21:44:35 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -162,9 +162,14 @@ public class MindMapMapModel extends MapAdapter {
     }
     
     public void load(File file) {
+	setFile(file);
+	setSaved(true);
+	setRoot(loadTree(file));
+    }
+
+    MindMapNodeModel loadTree(File file) {
+	MindMapNodeModel root = null;
 	try {
-	    setFile(file);
-	    setSaved(true);
 	    //Generating Parser
             DOMParser parser = new DOMParser();
 	    try {
@@ -177,13 +182,12 @@ public class MindMapMapModel extends MapAdapter {
 	    //Throw away old map
 	    Element map = doc.getDocumentElement();
 	    Element rootElement = (Element)map.getChildNodes().item(0);
-	    setRoot(new MindMapNodeModel());
-	    ( (MindMapNodeModel)getRoot() ).load(rootElement);
-
+	    root = new MindMapNodeModel();
+	    root.load(rootElement);
 	} catch(Exception e) {
 	    System.err.println("Error in MindMapMapModel.loadXML(): ");
 	    e.printStackTrace();
 	}
-
+	return root;
     }
 }

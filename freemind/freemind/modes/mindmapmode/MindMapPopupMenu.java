@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapPopupMenu.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: MindMapPopupMenu.java,v 1.5 2000-10-27 21:44:35 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -32,51 +32,8 @@ public class MindMapPopupMenu extends JPopupMenu {
 
     public MindMapPopupMenu(MindMapController c) {
 	this.c = c;
-
-	//Node menu
-	JMenu nodeMenu = new JMenu(FreeMind.getResources().getString("node"));
-	this.add(nodeMenu);
-
-	JMenuItem edit = nodeMenu.add(c.edit);
- 	edit.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_edit")));
- 	JMenuItem addNew = nodeMenu.add(c.addNew);
- 	addNew.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_add")));
- 	JMenuItem remove = nodeMenu.add(c.remove);
- 	remove.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_remove")));
-
-	nodeMenu.add(c.followLink);
-	nodeMenu.add(c.setLink);
-	
-	JMenu nodeStyle = new JMenu(FreeMind.getResources().getString("style"));
-	nodeMenu.add(nodeStyle);
-
-	nodeStyle.add(c.fork);
-
-	nodeStyle.add(c.bubble);
-
-	JMenu nodeFont = new JMenu(FreeMind.getResources().getString("font"));
-	nodeMenu.add(nodeFont);
-
-	nodeFont.add(c.italic);
-
-	nodeFont.add(c.bold);
-
-	//	nodeFont.add(c.underline);
-
-	nodeMenu.add(c.nodeColor);
-
-	//Edge menu
-	JMenu edgeMenu = new JMenu(FreeMind.getResources().getString("edge"));
-	this.add(edgeMenu);
-
-	JMenu edgeStyle = new JMenu(FreeMind.getResources().getString("style"));
-	edgeMenu.add(edgeStyle);
-	
-	edgeStyle.add(c.linear);
-
-	edgeStyle.add(c.bezier);
-
-	edgeMenu.add(c.edgeColor);
+	this.add(c.getNodeMenu());
+	this.add(c.getEdgeMenu());
     }
 }
 

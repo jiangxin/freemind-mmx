@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.3 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: MindMapToolBar.java,v 1.4 2000-10-27 21:44:35 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -35,12 +35,12 @@ public class MindMapToolBar extends JToolBar {
 
     private static final String[] sizes = {"8","10","12","14","16","18","20","24","28"};
     private MindMapController c;
+    private JComboBox fonts, size;
 
     public MindMapToolBar(MindMapController controller) {
 	
 	this.c=controller;
 	JButton button;
-	JComboBox fonts, size;
 
 	button = add(c.newMap);
 	button.setText("");
@@ -82,5 +82,10 @@ public class MindMapToolBar extends JToolBar {
 		}
 	    });
 
+    }
+
+    void setAllActions(boolean enabled) {
+	fonts.setEnabled(enabled);
+	size.setEnabled(enabled);
     }
 }

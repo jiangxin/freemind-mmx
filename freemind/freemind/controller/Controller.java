@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.7 2000-10-23 21:38:17 ponder Exp $*/
+/*$Id: Controller.java,v 1.8 2000-10-27 21:44:35 ponder Exp $*/
 
 package freemind.controller;
 
@@ -90,11 +90,12 @@ public class Controller {
 
   	nodeMouseListener = new NodeMouseListener(this);
 	nodeKeyListener = new NodeKeyListener(this);
-	setAllActions(false);
 
 	//Create the ToolBar
 	toolbar = new MainToolBar(this);
 	getFrame().getContentPane().add( toolbar, BorderLayout.NORTH );
+
+	setAllActions(false);
     }
 
     //
@@ -140,6 +141,10 @@ public class Controller {
 
     Mode getMode() {
 	return mode;
+    }
+
+    private JToolBar getToolBar() {
+	return toolbar;
     }
 
     public void changeToMode(String mode) {
@@ -230,10 +235,11 @@ public class Controller {
     }
 
     void toggleFolded() {
-	if (getSelected().isFolded()) {
-	    getModel().setFolded(getSelected(),false);
+	MindMapNode node = getSelected();
+	if (node.isFolded()) {
+	    getModel().setFolded(node,false);
 	} else {
-	    getModel().setFolded(getSelected(),true);
+	    getModel().setFolded(node,true);
 	}
     }
 
@@ -332,7 +338,7 @@ public class Controller {
     //
     
     private void mapModuleChanged() {
-	frame.updateMenuBar();//to show the new map in the mindmaps menu
+	frame.getFreeMindMenuBar().updateMapsMenu();//to show the new map in the mindmaps menu
 	updateNavigationActions();
 	if (getMapModule() == null) {
 	    getFrame().setTitle("FreeMind - " + getMode().toString()+" Mode");
@@ -340,7 +346,6 @@ public class Controller {
 	    getFrame().setTitle("FreeMind - " + getMode().toString()+" Mode" + " - " + getMapModule().toString());
 	}
 	moveToRoot();
-	//??	getView().repaint();
     }
 
     private void addToMapModules(String key, MapModule value) {
@@ -370,6 +375,7 @@ public class Controller {
 	print.setEnabled(enabled);
 	close.setEnabled(enabled);
 	moveToRoot.setEnabled(enabled);
+	((MainToolBar)getToolBar()).setAllActions(enabled);
     }
 
     private void updateNavigationActions() {
@@ -468,6 +474,7 @@ public class Controller {
 	    setEnabled(false);
 	}
 	public void actionPerformed(ActionEvent e) {
+	    JOptionPane.showMessageDialog(getView(),"Printing doesn't work yet, it's just experimental.\n I'll implement it in a future version.");
 	    PrinterJob printJob = PrinterJob.getPrinterJob();
 	    printJob.setPrintable(getView());
 	    if (printJob.printDialog()) {

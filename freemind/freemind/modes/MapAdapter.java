@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: MapAdapter.java,v 1.5 2000-10-27 21:44:35 ponder Exp $*/
 
 package freemind.modes;
 
@@ -37,7 +37,6 @@ import javax.swing.event.EventListenerList;
 public abstract class MapAdapter implements MindMap {
 
     private MindMapNode root;
-    private MindMapNode clipboard;
     private EventListenerList treeModelListeners  = new EventListenerList();
     private boolean saved=true;
     private Color backgroundColor;
@@ -129,16 +128,15 @@ public abstract class MapAdapter implements MindMap {
     //
     // cut'n'paste
     //
-    public void cut(MindMapNode node) {
-	clipboard = (MindMapNode)node;
+    public MindMapNode cut(MindMapNode node) {
 	removeNodeFromParent(node);
+	return node;
     }
 
-    public void paste(MindMapNode parent) {
-	if (clipboard != null) {
-	    insertNodeInto(clipboard,parent,0);
+    public void paste(MindMapNode node, MindMapNode parent) {
+	if (node != null) {
+	    insertNodeInto(node,parent,0);
 	    nodeStructureChanged(parent);
-	    clipboard=null;
 	}
     }
 

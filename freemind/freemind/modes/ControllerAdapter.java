@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.6 2000-10-23 21:38:17 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.7 2000-10-27 21:44:35 ponder Exp $*/
 
 package freemind.modes;
 
@@ -55,6 +55,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     Mode mode;
     private int noOfMaps = 0;//The number of currently open maps
+    private MindMapNode clipboard;
 
     public Action cut = new CutAction(this);
     public Action paste = new PasteAction(this);
@@ -187,16 +188,25 @@ public abstract class ControllerAdapter implements ModeController {
 	if (open) {
 	    if (noOfMaps == 0) {
 		//opened the first map
-		System.out.println("Opened first!");
+		setAllActions(true);
+		cut.setEnabled(true);
 	    }
 	    noOfMaps++;
 	} else {
 	    noOfMaps--;
 	    if (noOfMaps == 0) {
 		//closed the last map
-		System.out.println("Closed last");
+		setAllActions(false);
+		cut.setEnabled(false);
 	    }
 	}
+    }
+
+    /**
+     * Overwrite this to set all of your actions which are
+     * dependent on whether there is a map or not.
+     */
+    protected void setAllActions(boolean enabled) {
     }
 
     /**
@@ -466,7 +476,7 @@ public abstract class ControllerAdapter implements ModeController {
 		MindMapNode node = getView().getSelected().getModel();
 		if (node.isRoot()) return;
 		paste.setEnabled(true);
-		getModel().cut(node);
+		clipboard = getModel().cut(node);
 	    }
 	}
     }
@@ -478,7 +488,9 @@ public abstract class ControllerAdapter implements ModeController {
 	}
 	public void actionPerformed(ActionEvent e) {
 	    setEnabled(false);
-	    getModel().paste(getView().getSelected().getModel());
+	    if(clipboard != null) {
+		getModel().paste(clipboard, getView().getSelected().getModel());
+	    }
 	}
     }
 

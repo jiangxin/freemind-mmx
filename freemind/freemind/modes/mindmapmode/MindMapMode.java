@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMode.java,v 1.6 2000-10-23 21:38:17 ponder Exp $*/
+/*$Id: MindMapMode.java,v 1.7 2000-10-27 21:44:35 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -28,21 +28,16 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
 
 public class MindMapMode implements Mode {
 
     private Controller c;
     private MindMapController modecontroller;
-    private JToolBar toolbar;
-    private JPopupMenu popupmenu;
     private final String MODENAME = "MindMap";
 
     public MindMapMode(Controller c) {
 	this.c = c;
 	modecontroller = new MindMapController(this);
-	toolbar = new MindMapToolBar(modecontroller);
-	popupmenu = new MindMapPopupMenu(modecontroller);
     }
 
     public String toString() {
@@ -55,18 +50,6 @@ public class MindMapMode implements Mode {
      */
     public void activate() {
 	getController().changeToMapOfMode(this);
-// 	menu.add(getMindMapController().newMap);
-// 	menu.add(getMindMapController().open);
-// 	menu.add(getMindMapController().save);
-// 	menu.add(getMindMapController().saveAs);
-// 	JMenuItem edit = menu.add(getMindMapController().edit);
-//  	edit.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_edit")));
-// 	JMenuItem addNew = menu.add(getMindMapController().addNew);
-// 	addNew.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_add")));
-//  	JMenuItem remove = menu.add(getMindMapController().remove);
-//  	remove.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_remove")));
-
-	getMindMapController().cut.setEnabled(true);
     }
     
     public Controller getController() {
@@ -82,18 +65,18 @@ public class MindMapMode implements Mode {
     }
 
     public JToolBar getModeToolBar() {
-	return toolbar;
+	return ((MindMapController)getModeController()).getToolBar();
     }
 
     public JMenu getModeFileMenu() {
-	return null;
+	return ((MindMapController)getModeController()).getFileMenu();
     }
 
     public JMenu getModeEditMenu() {
-	return null;
+	return ((MindMapController)getModeController()).getEditMenu();
     }
 
     public JPopupMenu getPopupMenu() {
-	return popupmenu;
+	return ((MindMapController)getModeController()).getPopupMenu();
     }
 }

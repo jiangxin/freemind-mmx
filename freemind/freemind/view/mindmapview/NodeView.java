@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.3 2000-10-17 17:20:29 ponder Exp $*/
+/*$Id: NodeView.java,v 1.4 2000-10-27 21:44:35 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
+import freemind.modes.NodeAdapter;//This should not be done.
 import java.util.Vector;
 import java.util.Enumeration;
 import java.awt.Dimension;
@@ -106,22 +107,15 @@ public abstract class NodeView extends JLabel {
 
     public void paint(Graphics graphics) {
 	super.paint(graphics);
+	if (((NodeAdapter)getModel()).getLink() != null) {//THIS IS NO GOOD! NodeAdapter is too special.
+	    graphics.setColor(Color.red);
+	    graphics.drawLine(0,getSize().height-3,getSize().width,getSize().height-3);
+	}
     }
 
     //
     // get/set methods
     //
-
-//     protected boolean isTreeheightCurrent() {
-// 	return treeheightCurrent;
-//     }
-
-//     protected void setTreeheightCurrent(boolean current) {
-// 	treeheightCurrent = current;
-// 	if(!current) {
-// 	    getParentView().setTreeheightCurrent(false);
-// 	}
-//     }
 
     int getTreeHeight() {
 	return treeHeight;
@@ -289,7 +283,9 @@ public abstract class NodeView extends JLabel {
     void update() {
 	setText(getModel().toString());
 	setForeground(getModel().getColor());
-	//setCursor(new Cursor(getModel().getCursor()));//getCursor() is int
+	if (((NodeAdapter)getModel()).getLink() != null) {//THIS IS NO GOOD!
+	    setCursor(new Cursor(Cursor.HAND_CURSOR));//getCursor() is int
+	}
 	int style=0;
 	if(getModel().isBold()) {
 	    style=Font.BOLD;

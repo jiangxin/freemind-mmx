@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.5 2000-10-23 21:38:17 ponder Exp $*/
+/*$Id: MenuBar.java,v 1.6 2000-10-27 21:44:35 ponder Exp $*/
 
 package freemind.controller;
 
@@ -24,6 +24,7 @@ import freemind.main.FreeMind;
 import java.util.ListIterator;
 import java.util.List;
 import java.util.LinkedList;
+import java.awt.Component;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
@@ -62,6 +63,10 @@ public class MenuBar extends JMenuBar {
 	    String key = (String)i.next();
 	    JMenuItem newItem = new JMenuItem(key);
 	    modesmenu.add(newItem);
+	    String keystroke = FreeMind.userProps.getProperty("keystroke_mode_"+key);
+	    if (keystroke != null) {
+		newItem.setAccelerator(KeyStroke.getKeyStroke(keystroke));
+	    }
 	    newItem.addActionListener(modesMenuActionListener);
 	    //if (key.equals(c.getMode().toString())) {
 	    //		newItem.setBackground(Color.blue);
@@ -80,7 +85,7 @@ public class MenuBar extends JMenuBar {
 	
     }//Constructor
 
-    public void update() {
+    public void updateMapsMenu() {
 	ActionListener mapsMenuActionListener = new MapsMenuActionListener();
 	mapsmenu.removeAll();
 	if (c.getMapModules() == null) {
@@ -102,8 +107,9 @@ public class MenuBar extends JMenuBar {
     }
 
     public void updateFileMenu() {
+	filemenu.removeAll();
 	if ((c.getMode() != null) && (c.getMode().getModeFileMenu() != null)) {
-	    filemenu.add(c.getMode().getModeFileMenu());
+	    copyMenuItems(c.getMode().getModeFileMenu(), filemenu);
 	}
 
 	filemenu.addSeparator();
@@ -119,9 +125,13 @@ public class MenuBar extends JMenuBar {
     }
 
     public void updateEditMenu() {
+	editmenu.removeAll();
+
 	if ((c.getMode() != null) && (c.getMode().getModeEditMenu() != null)) {
-	    editmenu.add(c.getMode().getModeEditMenu());
+	    copyMenuItems(c.getMode().getModeEditMenu(), editmenu);
 	}
+
+	editmenu.addSeparator();
 
 	JMenuItem moveToRoot = editmenu.add(c.moveToRoot);
 	moveToRoot.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_moveToRoot")));
@@ -144,6 +154,17 @@ public class MenuBar extends JMenuBar {
 	editmenu.add(preferences);
 
 	preferences.add(c.background);
+    }
+
+    /**
+     * This method simpy copy's all elements of the source Menu
+     * to the end of the second menu.
+     */
+    private void copyMenuItems (JMenu source, JMenu dest) {
+	Component[] items = source.getMenuComponents();
+	for (int i=0; i<items.length; i++) {
+	    dest.add(items[i]);
+	}
     }
 
     private class MapsMenuActionListener implements ActionListener {

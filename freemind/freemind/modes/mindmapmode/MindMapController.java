@@ -16,21 +16,31 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.5 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: MindMapController.java,v 1.6 2000-10-27 21:44:35 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.main.FreeMind;
 import freemind.main.Tools;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import java.io.File;
+import java.net.URL;
+import java.net.MalformedURLException;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import javax.swing.Action;
 import javax.swing.AbstractAction;
+import javax.swing.KeyStroke;
+import javax.swing.JToolBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
 import javax.swing.JColorChooser;
 import javax.swing.ImageIcon;
 import javax.swing.filechooser.FileFilter;
@@ -38,6 +48,9 @@ import javax.swing.filechooser.FileFilter;
 public class MindMapController extends ControllerAdapter {
 
     Mode mode;
+    private JPopupMenu popupmenu;
+    private JToolBar toolbar;
+
     Action newMap = new NewMapAction(this);
     Action open = new OpenAction(this);
     Action save = new SaveAction(this);
@@ -48,6 +61,9 @@ public class MindMapController extends ControllerAdapter {
     Action remove = new RemoveAction();
     Action setLink = new SetLinkAction();
     Action followLink = new FollowLinkAction();
+    Action exportBranch = new ExportBranchAction();
+    Action importBranch = new ImportBranchAction();
+    Action importLinkedBranch = new ImportLinkedBranchAction();
 
     Action fork = new ForkAction();
     Action bubble = new BubbleAction();
@@ -64,6 +80,9 @@ public class MindMapController extends ControllerAdapter {
 
     public MindMapController(Mode mode) {
 	super(mode);
+	popupmenu = new MindMapPopupMenu(this);
+	toolbar = new MindMapToolBar(this);
+	setAllActions(false);
     }
 
     public MapAdapter newModel() {
@@ -91,6 +110,77 @@ public class MindMapController extends ControllerAdapter {
 	return new MindMapNodeModel(FreeMind.getResources().getString("new_node"));
     }
 
+    //get/set methods
+
+    JMenu getEditMenu() {
+	JMenu editMenu = new JMenu();
+	editMenu.add(getNodeMenu());
+	editMenu.add(getEdgeMenu());
+	JMenuItem cutItem = editMenu.add(cut);
+ 	cutItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_cut")));
+	JMenuItem pasteItem = editMenu.add(paste);
+ 	pasteItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_paste")));
+	return editMenu;
+    }
+
+    JMenu getFileMenu() {
+	JMenu fileMenu = new JMenu();
+	JMenuItem newMapItem = fileMenu.add(newMap);
+ 	newMapItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_newMap")));
+	JMenuItem openItem = fileMenu.add(open);
+ 	openItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_open")));
+	JMenuItem saveItem = fileMenu.add(save);
+ 	saveItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_save")));
+	JMenuItem saveAsItem = fileMenu.add(saveAs);
+ 	saveAsItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_saveAs")));
+	return fileMenu;
+    }
+
+    JMenu getNodeMenu() {
+	JMenu nodeMenu = new JMenu(FreeMind.getResources().getString("node"));
+	JMenuItem editItem = nodeMenu.add(edit);
+ 	editItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_edit")));
+ 	JMenuItem addNewItem = nodeMenu.add(addNew);
+ 	addNewItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_add")));
+ 	JMenuItem removeItem = nodeMenu.add(remove);
+ 	removeItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_remove")));
+	JMenuItem exportBranchItem = nodeMenu.add(exportBranch);
+	// 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
+	JMenuItem importBranchItem = nodeMenu.add(importBranch);
+	// 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
+	JMenuItem importLinkedBranchItem = nodeMenu.add(importLinkedBranch);
+	// 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
+	JMenuItem followLinkItem = nodeMenu.add(followLink);
+ 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_follow_link")));
+	JMenuItem setLinkItem = nodeMenu.add(setLink);
+ 	setLinkItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_set_link")));
+	JMenu nodeStyle = new JMenu(FreeMind.getResources().getString("style"));
+	nodeMenu.add(nodeStyle);
+	nodeStyle.add(fork);
+	nodeStyle.add(bubble);
+	JMenu nodeFont = new JMenu(FreeMind.getResources().getString("font"));
+	nodeMenu.add(nodeFont);
+	nodeFont.add(italic);
+	nodeFont.add(bold);
+	//	nodeFont.add(underline);
+	nodeMenu.add(nodeColor);
+	return nodeMenu;
+    }
+
+    JMenu getEdgeMenu() {
+	JMenu edgeMenu = new JMenu(FreeMind.getResources().getString("edge"));
+	JMenu edgeStyle = new JMenu(FreeMind.getResources().getString("style"));
+	edgeMenu.add(edgeStyle);
+	edgeStyle.add(linear);
+	edgeStyle.add(bezier);
+	edgeMenu.add(edgeColor);
+	return edgeMenu;
+    }
+
+
+    JPopupMenu getPopupMenu() {
+	return popupmenu;
+    }
 
     //convenience methods
     private MindMapMapModel getModel() {
@@ -101,9 +191,124 @@ public class MindMapController extends ControllerAdapter {
 	return (MindMapNodeModel)getView().getSelected().getModel();
     }
 
+    MindMapToolBar getToolBar() {
+	return (MindMapToolBar)toolbar;
+    }
+
+    /**
+     * Enabled/Disabled all actions that are dependent on
+     * whether there is a map open or not.
+     */
+    protected void setAllActions(boolean enabled) {
+	edit.setEnabled(enabled);
+	addNew.setEnabled(enabled);
+	remove.setEnabled(enabled);
+	setLink.setEnabled(enabled);
+	followLink.setEnabled(enabled);
+	italic.setEnabled(enabled);
+	bold.setEnabled(enabled);
+	normalFont.setEnabled(enabled);
+	nodeColor.setEnabled(enabled);
+	edgeColor.setEnabled(enabled);
+	fork.setEnabled(enabled);
+	bubble.setEnabled(enabled);
+	linear.setEnabled(enabled);
+	bezier.setEnabled(enabled);
+	save.setEnabled(enabled);
+	saveAs.setEnabled(enabled);
+	getToolBar().setAllActions(enabled);
+	exportBranch.setEnabled(enabled);
+	importBranch.setEnabled(enabled);
+    }
+
     //////////
     // Actions
     /////////
+
+    private class ExportBranchAction extends AbstractAction {
+	ExportBranchAction() {
+	    super(FreeMind.getResources().getString("export_branch"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    MindMapNodeModel node = (MindMapNodeModel)getSelected();
+	    if(node == null || node.isRoot()) {
+		return;
+	    }
+
+	    //Open FileChooser to choose in which file the exported
+	    //branch should be stored
+	    JFileChooser chooser = new JFileChooser();
+	    //chooser.setLocale(currentLocale);
+	    if (getFileFilter() != null) {
+		chooser.addChoosableFileFilter(getFileFilter());
+	    }
+	    int returnVal = chooser.showSaveDialog(getView());
+	    if (returnVal==JFileChooser.APPROVE_OPTION) {
+		File f = chooser.getSelectedFile();
+		URL link;
+		//Force the extension to be .mm
+		String ext = Tools.getExtension(f);
+		if(!ext.equals("mm")) {
+		    f = new File(f.getParent(),f.getName()+".mm");
+		}
+		try {
+		    link = f.toURL();
+		} catch (MalformedURLException ex) {
+		    JOptionPane.showMessageDialog(getController().getFrame(),"couldn't create valid URL!");
+		    return;
+		}
+
+		//Now make a copy from the node, remove the node from the map and create a new
+		//Map with the node as root, store the new Map, add the copy of the node to the parent,
+		//and set a link from the copy to the new Map.
+
+		MindMapNodeModel parent = (MindMapNodeModel)node.getParent();
+		MindMapNodeModel newNode = new MindMapNodeModel(node.toString());
+		getModel().removeNodeFromParent(node);
+		node.setParent(null);
+		MindMapMapModel map = new MindMapMapModel(node);
+		//		getController().newMapModule(map);
+		map.save(f);
+
+		getModel().insertNodeInto(newNode,parent, 0);
+		getModel().setLink(newNode,link);
+	    }
+	}
+    }
+
+    private class ImportBranchAction extends AbstractAction {
+	ImportBranchAction() {
+	    super(FreeMind.getResources().getString("import_branch"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    MindMapNodeModel parent = (MindMapNodeModel)getSelected();
+	    if(parent != null) {
+		JFileChooser chooser = new JFileChooser();
+		//chooser.setLocale(currentLocale);
+		if (getFileFilter() != null) {
+		    chooser.addChoosableFileFilter(getFileFilter());
+		}
+		int returnVal = chooser.showOpenDialog(getView());
+		if (returnVal==JFileChooser.APPROVE_OPTION) {
+		    MindMapNodeModel node = getModel().loadTree(chooser.getSelectedFile());
+		    getModel().paste(node, parent);
+		}
+	    }
+	}
+    }
+
+    private class ImportLinkedBranchAction extends AbstractAction {
+	ImportLinkedBranchAction() {
+	    super(FreeMind.getResources().getString("import_linked_branch"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    MindMapNodeModel parent = (MindMapNodeModel)getSelected();
+	    if((parent != null)&&(parent.getLink() != null)) {
+		MindMapNodeModel node = getModel().loadTree(new File(parent.getLink().getFile()));
+		getModel().paste(node, parent);
+	    }
+	}
+    }
 
     private class SetLinkAction extends AbstractAction {
 	SetLinkAction() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeKeyListener.java,v 1.8 2000-10-23 21:38:17 ponder Exp $*/
+/*$Id: NodeKeyListener.java,v 1.9 2000-10-27 21:44:35 ponder Exp $*/
 
 package freemind.controller;
 
@@ -47,40 +47,9 @@ public class NodeKeyListener implements KeyListener {
 
     public void keyPressed( KeyEvent e ) {
 
-	//Control is for navigation (emacs-style)
-	if ( e.isControlDown() ) {
-	    switch ( e.getKeyCode() ) {
-	    case KeyEvent.VK_P:
-		c.moveUp();
-		e.consume();
-		return;
-	    case KeyEvent.VK_N:
-		c.moveDown();
-		e.consume();
-		return;
-	    case KeyEvent.VK_F:
-		c.moveRight();
-		e.consume();
-		return;
-	    case KeyEvent.VK_B:
-		c.moveLeft();
-		e.consume();
-		return;
-	    }
+	if (e.isAltDown() || e.isControlDown()) {
 	    return;
 	}
-
-	//Alt is for editing
-	if ( e.isAltDown() ) {
-	    switch ( e.getKeyCode() ) {
-	    case KeyEvent.VK_C:
-		c.centerNode();
-		e.consume();
-		return;
-	    }
-	    return;
-	}
-
 
 	switch ( e.getKeyCode() ) {
 	case KeyEvent.VK_UP:
@@ -128,12 +97,6 @@ public class NodeKeyListener implements KeyListener {
 	    c.moveRight();
 	    e.consume();
 	    return;
-
-	case KeyEvent.VK_ESCAPE:
-	    c.moveToRoot();
-	    e.consume();
-	    return;
-
 	}
     }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.3 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: MindMap.java,v 1.4 2000-10-27 21:44:35 ponder Exp $*/
 
 package freemind.modes;
 
@@ -31,9 +31,9 @@ public interface MindMap extends TreeModel {
         
     void changeNode(MindMapNode node, String newText);
 
-    void cut(MindMapNode node);
+    MindMapNode cut(MindMapNode node);
 
-    void paste(MindMapNode parent);
+    void paste(MindMapNode node, MindMapNode parent);
 
     Object[] getPathToRoot( TreeNode node );
 
