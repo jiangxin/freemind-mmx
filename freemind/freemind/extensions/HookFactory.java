@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.8 2004-07-01 20:13:39 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.9 2004-07-01 20:58:28 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -209,7 +209,8 @@ public class HookFactory {
             PluginAction action = factory.createPluginAction();
 			action.setBase(def.getProperty("base"));
 			action.setClassName("accessories.plugins." + 
-				def.getProperty("script").replaceAll("\\.class$", "")); 
+				def.getProperty("script").replaceAll("\\.class$", ""));
+			action.setLabel(action.getClassName()); 
 			action.setDocumentation(def.getProperty("documentation"));
 			action.setIconPath(def.getProperty("icon"));
 			action.setName(def.getProperty("name"));
@@ -217,14 +218,14 @@ public class HookFactory {
 
 			PluginMode mode = factory.createPluginMode();
 			mode.setClassName("freemind.modes.mindmapmode");
-			action.getPluginModeOrPluginMenu().add(mode);
+			action.getPluginModeOrPluginMenuOrPluginProperties().add(mode);
 
 			StringTokenizer to = new StringTokenizer(def.getProperty("menus"), ",");
 			while(to.hasMoreTokens()) {
 				String token = to.nextToken();
 				PluginMenu menu = factory.createPluginMenu();
 				menu.setLocation(token.trim());
-				action.getPluginModeOrPluginMenu().add(menu);
+				action.getPluginModeOrPluginMenuOrPluginProperties().add(menu);
 			}
             plugin.getPluginAction().add(action);
 			//marshal to StringBuffer:
