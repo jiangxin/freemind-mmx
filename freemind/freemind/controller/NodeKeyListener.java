@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeKeyListener.java,v 1.7 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: NodeKeyListener.java,v 1.8 2000-10-23 21:38:17 ponder Exp $*/
 
 package freemind.controller;
 
@@ -73,14 +73,6 @@ public class NodeKeyListener implements KeyListener {
 	//Alt is for editing
 	if ( e.isAltDown() ) {
 	    switch ( e.getKeyCode() ) {
-// 	    case KeyEvent.VK_D:
-// 		c.delete( (NodeView)e.getSource() );
-// 		e.consume();
-// 		return;
-// 	    case KeyEvent.VK_N:
-// 		c.addNew( (NodeView)e.getSource() );
-// 		e.consume();
-// 		return;
 	    case KeyEvent.VK_C:
 		c.centerNode();
 		e.consume();
@@ -142,20 +134,6 @@ public class NodeKeyListener implements KeyListener {
 	    e.consume();
 	    return;
 
-// 	case KeyEvent.VK_DELETE:
-// 	    c.delete( (NodeView)e.getSource() );
-// 	    e.consume();
-// 	    return;
-
-// 	case KeyEvent.VK_INSERT:
-// 	    c.addNew( (NodeView)e.getSource() );
-// 	    e.consume();
-// 	    return;
-	
-// 	case KeyEvent.VK_ENTER:
-// 	    c.edit( (NodeView)e.getSource() );
-// 	    e.consume();
-// 	    return;
 	}
     }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: FreeMind.java,v 1.5 2000-10-23 21:38:17 ponder Exp $*/
 
 package freemind.main;
 
@@ -92,7 +92,7 @@ public class FreeMind extends JFrame {
 	//Create the MenuBar
 	menuBar = new MenuBar(c);
 	setJMenuBar(menuBar);
-	
+
         //Create the scroll pane.
 	scrollPane.setPreferredSize( new Dimension( 600, 400 ) );
 	
@@ -113,7 +113,8 @@ public class FreeMind extends JFrame {
 		    }
 		}
         });  
- 
+
+	c.changeToMode("MindMap");
 
     }//Constructor
 
@@ -127,6 +128,10 @@ public class FreeMind extends JFrame {
 
     public void updateMenuBar() {
 	menuBar.update();
+    }
+
+    public MenuBar getFreeMindMenuBar() {
+	return menuBar;
     }
 
     /**Returns the ResourceBundle with the current language*/

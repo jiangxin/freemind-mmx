@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.3 2000-10-17 17:20:29 ponder Exp $*/
+/*$Id: MindMapLayout.java,v 1.4 2000-10-23 21:38:17 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -92,9 +92,10 @@ public class MindMapLayout implements LayoutManager {
 	    y = ySize / 2 - node.getPreferredSize().height/2;
 	    node.setBounds(x,y,node.getPreferredSize().width,node.getPreferredSize().height);
 	} else {
+
 	    //place the node-label
-	    x = node.getParentView().getLocation().x + relativeX;
-	    y = node.getParentView().getLocation().y + relativeY;
+		x = node.getParentView().getLocation().x + relativeX;
+		y = node.getParentView().getLocation().y + relativeY;
 
 	    //check if the map is to small
 	    if ( x<0 || x + node.getPreferredSize().width > map.getSize().width ) {

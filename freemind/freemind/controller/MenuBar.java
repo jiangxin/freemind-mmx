@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.4 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: MenuBar.java,v 1.5 2000-10-23 21:38:17 ponder Exp $*/
 
 package freemind.controller;
 
@@ -38,52 +38,15 @@ import javax.swing.KeyStroke;
 public class MenuBar extends JMenuBar {
 
     JMenu mapsmenu;
+    private JMenu filemenu = new JMenu(FreeMind.getResources().getString("file"));
+    private JMenu editmenu = new JMenu(FreeMind.getResources().getString("edit"));
     Controller c;
 
     public MenuBar(Controller controller) {
 	this.c = controller;
-	//Filemenu
-	JMenu filemenu = new JMenu(FreeMind.getResources().getString("file"));
-	this.add(filemenu);	
 
-	JMenuItem print = filemenu.add(c.print);
-
-	filemenu.addSeparator();
-
-	JMenuItem close = filemenu.add(c.close);
-	close.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_close")));
-	
-	JMenuItem quit = filemenu.add(c.quit);
-	quit.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_quit")));
-
-	//Modemenu
-	this.add(c.getModeMenu());
-
-	//Editmenu
-	JMenu editmenu = new JMenu(FreeMind.getResources().getString("edit"));
+	this.add(filemenu);
 	this.add(editmenu);
-
-	JMenuItem moveToRoot = editmenu.add(c.moveToRoot);
-	moveToRoot.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_moveToRoot")));
-
-	JMenuItem previousMap = editmenu.add(c.previousMap);
-	previousMap.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_previousMap")));
-
-	JMenuItem nextMap = editmenu.add(c.nextMap);
-	nextMap.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_nextMap")));
-
-// 	JMenuItem cut = editmenu.add(c.cut);
-// 	cut.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_cut")));
-	
-// 	JMenuItem paste = editmenu.add(c.paste);
-// 	paste.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_paste")));
-
-	editmenu.addSeparator();
-
-	JMenu preferences = new JMenu(FreeMind.getResources().getString("preferences"));
-	editmenu.add(preferences);
-
-	preferences.add(c.background);
 
 	//Mapsmenu
 	mapsmenu = new JMenu(FreeMind.getResources().getString("mindmaps"));
@@ -136,6 +99,51 @@ public class MenuBar extends JMenuBar {
 		}
 	    }
 	}
+    }
+
+    public void updateFileMenu() {
+	if ((c.getMode() != null) && (c.getMode().getModeFileMenu() != null)) {
+	    filemenu.add(c.getMode().getModeFileMenu());
+	}
+
+	filemenu.addSeparator();
+	JMenuItem print = filemenu.add(c.print);
+
+	filemenu.addSeparator();
+
+	JMenuItem close = filemenu.add(c.close);
+	close.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_close")));
+	
+	JMenuItem quit = filemenu.add(c.quit);
+	quit.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_quit")));
+    }
+
+    public void updateEditMenu() {
+	if ((c.getMode() != null) && (c.getMode().getModeEditMenu() != null)) {
+	    editmenu.add(c.getMode().getModeEditMenu());
+	}
+
+	JMenuItem moveToRoot = editmenu.add(c.moveToRoot);
+	moveToRoot.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_moveToRoot")));
+
+	JMenuItem previousMap = editmenu.add(c.previousMap);
+	previousMap.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_previousMap")));
+
+	JMenuItem nextMap = editmenu.add(c.nextMap);
+	nextMap.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_nextMap")));
+
+// 	JMenuItem cut = editmenu.add(c.cut);
+// 	cut.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_cut")));
+	
+// 	JMenuItem paste = editmenu.add(c.paste);
+// 	paste.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_paste")));
+
+	editmenu.addSeparator();
+
+	JMenu preferences = new JMenu(FreeMind.getResources().getString("preferences"));
+	editmenu.add(preferences);
+
+	preferences.add(c.background);
     }
 
     private class MapsMenuActionListener implements ActionListener {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMode.java,v 1.5 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: FileMode.java,v 1.6 2000-10-23 21:38:17 ponder Exp $*/
 
 package freemind.modes.filemode;
 
@@ -54,14 +54,14 @@ public class FileMode implements Mode {
      * Called whenever this mode is chosen in the program.
      * (updates Actions etc.)
      */
-    public void activate(JMenu menu) {
+    public void activate() {
 	if (!isRunning) {
 	    getModeController().newMap();
 	    isRunning = true;
 	} else {
 	    getController().changeToMapOfMode(this);
 	}
-	menu.add( ((FileController)getModeController()).center );
+	//	menu.add( ((FileController)getModeController()).center );
 // 	getController().cut.setEnabled(false);
 // 	getController().paste.setEnabled(false);
     }
@@ -72,6 +72,14 @@ public class FileMode implements Mode {
 
     public ModeController getModeController() {
 	return modecontroller;
+    }
+
+    public JMenu getModeFileMenu() {
+	return null;
+    }
+
+    public JMenu getModeEditMenu() {
+	return null;
     }
 
     public JToolBar getModeToolBar() {

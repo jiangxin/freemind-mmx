@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Mode.java,v 1.2 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: Mode.java,v 1.3 2000-10-23 21:38:17 ponder Exp $*/
 
 package freemind.modes;
 
@@ -29,9 +29,11 @@ public interface Mode {
 
     //    public ode newMode(){return new Mode();}
     public String toString();
-    public void activate(JMenu menu);
+    public void activate();
     public ModeController getModeController();
     public Controller getController();
+    public JMenu getModeFileMenu();
+    public JMenu getModeEditMenu();
     public JToolBar getModeToolBar();
     public JPopupMenu getPopupMenu();
 }

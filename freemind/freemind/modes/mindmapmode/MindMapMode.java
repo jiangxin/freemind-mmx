@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMode.java,v 1.5 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: MindMapMode.java,v 1.6 2000-10-23 21:38:17 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -53,18 +53,18 @@ public class MindMapMode implements Mode {
      * Called whenever this mode is chosen in the program.
      * (updates Actions etc.)
      */
-    public void activate(JMenu menu) {
+    public void activate() {
 	getController().changeToMapOfMode(this);
-	menu.add(getMindMapController().newMap);
-	menu.add(getMindMapController().open);
-	menu.add(getMindMapController().save);
-	menu.add(getMindMapController().saveAs);
-	JMenuItem edit = menu.add(getMindMapController().edit);
- 	edit.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_edit")));
- 	JMenuItem addNew = menu.add(getMindMapController().addNew);
- 	addNew.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_add")));
- 	JMenuItem remove = menu.add(getMindMapController().remove);
- 	remove.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_remove")));
+// 	menu.add(getMindMapController().newMap);
+// 	menu.add(getMindMapController().open);
+// 	menu.add(getMindMapController().save);
+// 	menu.add(getMindMapController().saveAs);
+// 	JMenuItem edit = menu.add(getMindMapController().edit);
+//  	edit.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_edit")));
+// 	JMenuItem addNew = menu.add(getMindMapController().addNew);
+// 	addNew.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_add")));
+//  	JMenuItem remove = menu.add(getMindMapController().remove);
+//  	remove.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_remove")));
 
 	getMindMapController().cut.setEnabled(true);
     }
@@ -83,6 +83,14 @@ public class MindMapMode implements Mode {
 
     public JToolBar getModeToolBar() {
 	return toolbar;
+    }
+
+    public JMenu getModeFileMenu() {
+	return null;
+    }
+
+    public JMenu getModeEditMenu() {
+	return null;
     }
 
     public JPopupMenu getPopupMenu() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.5 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.6 2000-10-23 21:38:17 ponder Exp $*/
 
 package freemind.modes;
 
@@ -54,6 +54,7 @@ import javax.swing.filechooser.FileFilter;
 public abstract class ControllerAdapter implements ModeController {
 
     Mode mode;
+    private int noOfMaps = 0;//The number of currently open maps
 
     public Action cut = new CutAction(this);
     public Action paste = new PasteAction(this);
@@ -91,6 +92,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     public void newMap() {
 	getController().newMapModule(newModel());
+	mapOpened(true);
     }
 
     /**
@@ -101,6 +103,7 @@ public abstract class ControllerAdapter implements ModeController {
  	MapAdapter model = newModel();
  	model.load(file);
 	getController().newMapModule(model);
+	mapOpened(true);
     }
 
     public void save() {
@@ -170,6 +173,37 @@ public abstract class ControllerAdapter implements ModeController {
 		//do this because quit() must terminate (and _not_ quit the prog)
 	    }
 	}
+	mapOpened(false);
+    }
+
+    /**
+     * Call this method if you have opened a map for this mode with true,
+     * and if you have closed a map of this mode with false. It updates the Actions
+     * that are dependent on whether there is a map or not.
+     * --> What to do if either newMap or load or close are overwritten by a concrete
+     * implementation? uups.
+     */
+    private void mapOpened(boolean open) {
+	if (open) {
+	    if (noOfMaps == 0) {
+		//opened the first map
+		System.out.println("Opened first!");
+	    }
+	    noOfMaps++;
+	} else {
+	    noOfMaps--;
+	    if (noOfMaps == 0) {
+		//closed the last map
+		System.out.println("Closed last");
+	    }
+	}
+    }
+
+    /**
+     * Returns the number of maps currently opened for this mode.
+     */
+    public int getNoOfMaps() {
+	return noOfMaps;
     }
 
 

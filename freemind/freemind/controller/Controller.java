@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.6 2000-10-17 17:20:28 ponder Exp $*/
+/*$Id: Controller.java,v 1.7 2000-10-23 21:38:17 ponder Exp $*/
 
 package freemind.controller;
 
@@ -66,7 +66,6 @@ public class Controller {
     private JPopupMenu popupmenu;
     private NodeMouseListener nodeMouseListener;
     private NodeKeyListener nodeKeyListener;
-    private JMenu modemenu = new JMenu("Mode");
     private ModesCreator modescreator = new ModesCreator(this);
 
     Action close = new CloseAction();
@@ -96,8 +95,6 @@ public class Controller {
 	//Create the ToolBar
 	toolbar = new MainToolBar(this);
 	getFrame().getContentPane().add( toolbar, BorderLayout.NORTH );
-
-	changeToMode("MindMap");
     }
 
     //
@@ -145,7 +142,7 @@ public class Controller {
 	return mode;
     }
 
-    void changeToMode(String mode) {
+    public void changeToMode(String mode) {
 	if (mode.equals(getMode())) {
 	    return;
 	}
@@ -168,9 +165,13 @@ public class Controller {
 	toolbar.repaint();
 	
 	popupmenu = getMode().getPopupMenu();
-	getModeMenu().removeAll();
+
 	getFrame().setTitle("FreeMind - "+mode+" Mode");
-	getMode().activate(getModeMenu());
+	getMode().activate();
+
+	getFrame().getFreeMindMenuBar().updateFileMenu();
+	getFrame().getFreeMindMenuBar().updateEditMenu();
+
 	if (getMapModule() == null) {
 	    setAllActions(false);
 	}
@@ -188,11 +189,6 @@ public class Controller {
     public void setFrame(FreeMind frame) {
 	this.frame = frame;
     }
-
-    JMenu getModeMenu(){
-	return modemenu;
-    }
-
 
     //
     // Node Navigation
