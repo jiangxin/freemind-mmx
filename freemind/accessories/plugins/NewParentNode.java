@@ -48,6 +48,9 @@ public class NewParentNode extends NodeHookAdapter {
 		MindMapNode selectedNode = focussed;
 		List selectedNodes = selecteds;
 		
+		// bug fix: sort to make independent by user's selection:
+		getController().sortNodesByDepth(selectedNodes);
+
 		if(focussed.isRoot()) {
 			getController().getController().errorMessage(
 					getResourceString("cannot_add_parent_to_root"));
@@ -80,7 +83,7 @@ public class NewParentNode extends NodeHookAdapter {
 		//getMap().insertNodeInto(newNode, selectedParent, childPosition);
 
 		// Move selected nodes to become children of new node
-		Transferable copy = getController().cut();
+		Transferable copy = getController().cut(selectedNodes);
 		getController().paste(copy, newNode);
 		nodeChanged(selectedParent);
 

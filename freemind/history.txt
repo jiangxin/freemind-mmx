@@ -183,7 +183,7 @@ RC 3;
 
 * Bug fix from Dimitri: Random Node id generation.
 * Bug fix: english translation typos from Dan.
-
+* Bug fix: "new parent" order of childs.
 
 Changes made in Freemind 0.7.2:
 ===============================
