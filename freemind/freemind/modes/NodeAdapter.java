@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.4.1.2.2 2004-08-28 15:17:53 dpolivaev Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.4.1.2.3 2004-08-30 19:35:11 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -160,13 +160,25 @@ public abstract class NodeAdapter implements MindMapNode {
 
     /**A Node-Style like MindMapNode.STYLE_FORK or MindMapNode.STYLE_BUBBLE*/
     public String getStyle() {
-	if (style==null) {
+	if (style==null || this.isRoot() && style == MindMapNode.STYLE_AS_PARENT) {
 		return getFrame().getProperty("standardnodestyle");
 /*	    if(this.isRoot()) {
 		return getFrame().getProperty("standardnodestyle");
 	    }
 	    return getParentNode().getStyle();
  */
+ 	}
+ 	if( style == MindMapNode.STYLE_AS_PARENT){
+		return getParentNode().getStyle();
+ 	}
+ 	if (style == MindMapNode.STYLE_COMBINED)
+ 	{
+ 		if (this.isFolded()){
+ 			return MindMapNode.STYLE_BUBBLE;
+ 		}
+ 		else{
+			return MindMapNode.STYLE_FORK;
+ 		}
  	}
 	return style;
 

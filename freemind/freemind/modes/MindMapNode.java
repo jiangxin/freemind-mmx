@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.16.1 2004-08-22 14:28:11 dpolivaev Exp $*/
+/*$Id: MindMapNode.java,v 1.15.16.2 2004-08-30 19:35:11 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -39,7 +39,9 @@ import java.util.Vector;
 public interface MindMapNode extends MutableTreeNode {
    
     public static final String STYLE_BUBBLE = "bubble";
-    public static final String STYLE_FORK = "fork";
+	public static final String STYLE_FORK = "fork";
+	public static final String STYLE_COMBINED = "combined";
+	public static final String STYLE_AS_PARENT = "as_parent";
 	
     ListIterator childrenFolded();
 
