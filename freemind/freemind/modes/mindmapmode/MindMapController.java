@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.34 2004-01-05 23:41:05 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35 2004-02-06 06:04:25 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -426,6 +426,8 @@ public class MindMapController extends ControllerAdapter {
             // yes, this is a link.
             MindMapArrowLinkModel link = (MindMapArrowLinkModel) obj;
             JPopupMenu arrowLinkPopup = new JPopupMenu();
+            // block the screen while showing popup.
+            arrowLinkPopup.addPopupMenuListener( this.popupListenerSingleton );
             arrowLinkPopup.add(new RemoveArrowLinkAction(link.getSource(), link));
             arrowLinkPopup.add(new ColorArrowLinkAction(link.getSource(), link));
             arrowLinkPopup.addSeparator();

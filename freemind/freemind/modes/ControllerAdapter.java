@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.40 2004-01-25 16:41:12 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41 2004-02-06 06:04:25 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -434,7 +434,8 @@ public abstract class ControllerAdapter implements ModeController {
 
     private JPopupMenu popupmenu;
 
-    // listener, that blocks the controler if the menu is active (PN)
+    /** listener, that blocks the controler if the menu is active (PN)
+        Take care! This listener is also used for modelpopups (as for graphical links).*/
     private class ControllerPopupMenuListener implements PopupMenuListener  {
       public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
         setBlocked(true);         // block controller
@@ -447,7 +448,8 @@ public abstract class ControllerAdapter implements ModeController {
       }
 
     }
-    private final ControllerPopupMenuListener popupListenerSingleton
+    /** Take care! This listener is also used for modelpopups (as for graphical links).*/
+    protected final ControllerPopupMenuListener popupListenerSingleton
         = new ControllerPopupMenuListener();
     
     public void showPopupMenu(MouseEvent e) {

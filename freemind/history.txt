@@ -5,6 +5,8 @@ Changes made in Freemind 0.7.1:
 * Bug fix: Documentation opened twice.
 * Security fix: path for auto save is changeable and points to the freemind user properties directory by default
 * At normal shutdown, the auto saves are deleted, but this is configurable.
+* Bug fix: When a map is closed, the saving stops (Thanks to Karim).
+* Bug fix: Blocking is enabled for graphical link popup menu.
 
 RC3:
 ----
