@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.26.2.2 2004-04-18 19:49:49 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.26.2.3 2004-05-02 04:53:42 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -526,7 +526,12 @@ public class MapView extends JPanel implements Printable {
     }
 
     public NodeView getSelected() {
-        return (NodeView)selected.get(0);
+		if(selected.size() > 0){
+			return (NodeView)selected.get(0);
+		}
+		else{
+			return null;
+		}
     }
 
     private NodeView getSelected(int i) {
@@ -885,17 +890,22 @@ public class MapView extends JPanel implements Printable {
 
             MindMapNode subtreeRoot = (MindMapNode)e.getTreePath().getLastPathComponent();
 
+			boolean nodeIsLeft = subtreeRoot.getViewer().isLeft();
+			NodeView oldNodeView = subtreeRoot.getViewer();
+			int x = oldNodeView.getX();
+			int y = oldNodeView.getY();
+			subtreeRoot.getViewer().remove();
+			NodeView nodeView = null;
             if (subtreeRoot.isRoot()) {
-                subtreeRoot.getViewer().remove();               
-                rootView = NodeView.newNodeView(getRoot().getModel(), getMap());
-                rootView.insert(); }
+				nodeView = NodeView.newNodeView(getRoot().getModel(), getMap());
+                rootView = nodeView; 
+            }
             else {
-                boolean nodeIsLeft = subtreeRoot.getViewer().isLeft();
-                subtreeRoot.getViewer().remove();
-                NodeView nodeView = NodeView.newNodeView(subtreeRoot, getMap());
-                nodeView.setLeft(nodeIsLeft);
-                nodeView.insert(); }
-
+                nodeView = NodeView.newNodeView(subtreeRoot, getMap());
+            }
+			nodeView.setLocation(x, y);
+            nodeView.setLeft(nodeIsLeft);
+            nodeView.insert(); 
             getMindMapLayout().updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(subtreeRoot.getViewer());
             // the layout function will be called later by AWT framework itself
             // comment it out

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.14.2.2 2004-04-18 19:49:49 christianfoltin Exp $*/
+/*$Id: MindMapLayout.java,v 1.14.2.3 2004-05-02 04:53:42 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -92,17 +92,20 @@ public class MindMapLayout implements LayoutManager {
      * This funcion resizes the map and do the layout.
      * All tree heights, widths and shifts should be already calculated.
      */
-    public void layout() {
-		int oldRootX = getRootX();
-		int oldRootY = getRootY();
+	public void layout() {
+		NodeView selected = map.getSelected();
+		boolean holdSelected =  (selected != null 
+								&& selected.getX() != 0 && selected.getY() != 0);
+		int oldRootX = holdSelected ? selected.getX() : getRoot().getX();
+		int oldRootY = holdSelected ? selected.getY() : getRoot().getY();
 		resizeMap(getRoot().getTreeWidth(), getRoot().getTreeHeight());
 		calcNewRootCoord();
         layout(map.getRoot());
 		try{
-			getRoot().getLocationOnScreen();
-			int rootX = getRootX();
-			int rootY = getRootY();
-			getMapView().scrollBy(rootX - oldRootX, rootY - oldRootY, true /* according to Dimitri. */);
+//			getRoot().getLocationOnScreen();
+			int rootX = holdSelected ? selected.getX() : getRoot().getX();
+			int rootY = holdSelected ? selected.getY() : getRoot().getY();
+			getMapView().scrollBy(rootX - oldRootX, rootY - oldRootY, true );
 		}
 		catch(IllegalComponentStateException e){
 		}
