@@ -16,6 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+/*$Id: Controller.java,v 1.5 2000-08-09 22:12:25 ponder Exp $*/
 
 package freemind.controller;
 

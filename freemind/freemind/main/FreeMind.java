@@ -16,10 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Author: ponder $
- *$Date: 2000-08-04 17:22:10 $
- *$Revision: 1.2 $
- */
+/*$Id: FreeMind.java,v 1.3 2000-08-09 22:12:25 ponder Exp $*/
 
 package freemind.main;
 

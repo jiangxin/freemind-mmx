@@ -7,13 +7,13 @@ Readme
 This is version 0.1.0 of Freemind, the editor for tree structured data.
 
 STATUS
-First of all, this is ALPHA Software! That means, it is not stable. There are many bugs for you to find, so if you find one, mail me so that I can kill him ;-)
+First of all, this is ALPHA Software! That means, it is not stable. There are many bugs for you to find, so if you find one, mail me so that I can fix it. You want to have stable software, don't you? So _really_ do this, or you may find the bug in the next release, too. (And if you find a bug, it IS a bug, not a feature, as Microsoft tries to tell you ;-).
 
 LICENSE
-This program is licensed under GPL. Most of its users won't be the normal GNU/Linux users, so I will explain that: I want this program to be of biggest possible use for mankind, so take it as a personal gift from me. Copy it as many times as you want, give it to all your friends, use it whenever you want! (I just hope that you will be as generous in future, too :-) . You may even get the sourcecode, change the program as you wish, and redistribute it. (It would be nice to tell me before redistributing). Take the exact terms from the attached license.
+This program is licensed under the GPL.
 
 INSTALLATION
-This program is written in Java, so you will need the Java Runtime Environment for your OS. It is available for: Linux, Windows, Macintosh, Solaris. Download it at java.sun.com/j2se. You need at least Java 2 Version 1.2 . Install the JRE, and copy a link to freemind.bat (on windows) or freemind.sh (on unix) to your desktop. You can also type "java -jar freemind.jar" on the shell.
+This program is written in Java, so you will need the Java Runtime Environment for your OS. It is available for: Linux, Windows, Macintosh, Solaris. Download it at java.sun.com/j2se. You need at least Java 2 Version 1.2 . Install the JRE, and copy a link to freemind.bat (on windows) or freemind.sh (on unix) to your desktop. You can also type "java -jar freemind.jar" on the shell (in the dir where freemind.jar lives). If FreeMind runs, open the file "freemind.mm", which explains the usage of FreeMind.
 
 FEEDBACK
 If you like the program, have some ideas for new features, find any bugs, mail me at: joergmueller@bigfoot.com

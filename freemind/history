@@ -1,0 +1,43 @@
+
+
+FreeMind History
+
+
+FreeMind Project History
+05.08.2000
+Fourth release (0.1.0)
+New orientation: FreeMind is now a generic editor for tree structured data.
+Modular design, many bug fixes. Implemented modes: MindMap, File(experimental).
+
+17.07.2000
+Posting of the new website with better design and more information.
+
+09.07.2000
+Third release (0.0.3)
+Hyperlinking between Mind maps, more than one Mind map opened at the same time. Basic printing functionality, internationalization, properties files.
+
+27.06.2000
+Second release (0.0.2)
+Automatically resizing Mind map, better node editor, better node-positioning algorithm.
+
+06.-07.2000
+Designing of a XML-Format together with Jost Schenck which will be compatible with MyMap.
+
+18.06.2000
+First release (0.0.1), running program with a nice view (Mind map style).
+
+25.05.2000
+Program is running the first time.
+
+07.05.2000
+Starting of project FreeMind, initially with a JTree as view.
+
+04.-05.2000
+Design discussions with Richard Krutisch, evaluation of the failures of MindMapRK (eg. no
+Model-View division).
+
+09.1999-04.2000
+First ideas and evaluation of other Mind mapping programs.
+
+
+
