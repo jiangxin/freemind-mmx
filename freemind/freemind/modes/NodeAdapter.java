@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20 2003-12-17 21:04:53 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.4.1 2004-02-28 12:48:11 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -134,8 +134,29 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
     public void setCloud( MindMapCloud cloud ) {
+    	// Take care to keep the calculated iterative levels consistent
+		if (cloud != null && this.cloud == null) {
+			changeChildCloudIterativeLevels(1);
+		}
+		else if (cloud == null && this.cloud != null) {
+			changeChildCloudIterativeLevels(-1);
+		}
         this.cloud = cloud;
     }
+
+	/**
+	*  Correct iterative level values of children
+	*/
+	private void changeChildCloudIterativeLevels(int deltaLevel) {
+		for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
+			NodeAdapter childNode = (NodeAdapter)e.next();
+			MindMapCloud childCloud = childNode.getCloud();
+			if (childCloud != null) {
+				childCloud.changeIterativeLevel(deltaLevel);
+			}
+			childNode.changeChildCloudIterativeLevels(deltaLevel); 
+		}
+	}
 
     /**A Node-Style like MindMapNode.STYLE_FORK or MindMapNode.STYLE_BUBBLE*/
     public String getStyle() {

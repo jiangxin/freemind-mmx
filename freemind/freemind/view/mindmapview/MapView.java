@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.26 2003-12-02 22:50:23 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.26.2.1 2004-02-28 12:48:11 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -28,7 +28,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 // Clouds:
-import freemind.view.mindmapview.CloudView;
+
 // End Clouds
 // links:
 import freemind.modes.MindMapArrowLink;
@@ -139,14 +139,19 @@ public class MapView extends JPanel implements Printable {
      */
     public void centerNode( NodeView node ) {
         JViewport viewPort = (JViewport)getParent();
-
         Dimension d = viewPort.getExtentSize();
-        scrollRectToVisible(new Rectangle(node.getLocation().x + (node.getPreferredSize().width/2) - (d.width/2),
+		if (! isValid()){
+			final Rectangle r0 = new Rectangle(0,0,d.width, d.height);
+			scrollRectToVisible(r0);
+		}
+		Rectangle rect = new Rectangle(node.getLocation().x + (node.getPreferredSize().width/2) - (d.width/2),
                                           node.getLocation().y + (node.getPreferredSize().height/2) - (d.height/2),
-                                          d.width, d.height));
-        scrollRectToVisible(new Rectangle(node.getLocation().x + (node.getPreferredSize().width/2) - (d.width/2),
-                                          node.getLocation().y + (node.getPreferredSize().height/2) - (d.height/2),
-                                          d.width, d.height));
+			d.width, d.height);
+			
+		// One call of scrollRectToVisible suffices 
+		// after patching the FreeMind.java
+		// and the FreeMindApplet
+		scrollRectToVisible(rect);		
     }
 
     // scroll with extension (PN 6.2)
@@ -159,46 +164,49 @@ public class MapView extends JPanel implements Printable {
     //      fit the input field into the screen
     public void scrollNodeToVisible( NodeView node, int extraWidth) {
         //see centerNode()
-
         final int HORIZ_SPACE  = 10;
         final int HORIZ_SPACE2 = 20;
         final int VERT_SPACE   = 5; 
         final int VERT_SPACE2  = 10;
 
         // get left/right dimension
-        int xLeft  = node.getLocation().x - HORIZ_SPACE;
-        int xRight = node.getSize().width + HORIZ_SPACE2;
+        int x  =  node.getLocation().x ;
+        int width = node.getSize().width;
         if (extraWidth < 0) { // extra left width
-            xLeft += extraWidth;
+            x += extraWidth;
+			width -= extraWidth; 
         }
         else {                // extra right width
-            xRight += extraWidth; 
+            width += extraWidth; 
         }
-      
-        // adjust container size
-        if (xLeft < 0) {
-            getMindMapLayout().resizeMap(xLeft);
-        }
-        else if (xRight > getSize().width) {
-            getMindMapLayout().resizeMap(xRight);
-        }
-
+		// get top/bottom dimension
+		int y  =  node.getLocation().y;
+		int height = node.getSize().height;
+        // adjusting container size is needed no more
         //this is buggy! 
         // %%% and therefore is the scrollRectToVisible called twice ? (PN)
         //     I don't think so and therefore I'll comment one call out... (PN)
         if (node != null) {
-            scrollRectToVisible( new Rectangle(xLeft, node.getLocation().y - VERT_SPACE,
-                                               xRight, node.getSize().height + VERT_SPACE2) );
+            scrollRectToVisible( new Rectangle(x - HORIZ_SPACE, node.getLocation().y - VERT_SPACE,
+                                               width + HORIZ_SPACE2, node.getSize().height + VERT_SPACE2) );
             // (PN)   scrollRectToVisible( new Rectangle(xLeft, node.getLocation().y - VERT_SPACE,
             //                                           xRight, node.getSize().height + VERT_SPACE2) );
         }
     }
+	/**
+	 * Returns the size of the visible part of the view in view coordinates. 
+	 */
+	public Dimension getViewportSize(){
+		JViewport mapViewport = (JViewport)getParent();
+		return mapViewport == null ? null : mapViewport.getExtentSize();
+	}
 
     /**
      * Scroll the viewport of the map to the south-west, i.e. scroll the map itself to the north-east.
      */
     public void scrollBy(int x, int y) {
         JViewport mapViewport = (JViewport)getParent();
+		if(mapViewport != null){
         Point currentPoint = mapViewport.getViewPosition();                 // Get View Position
         currentPoint.translate(x, y);                                       // Add the difference to it
         // Watch for the boundaries
@@ -215,6 +223,7 @@ public class MapView extends JPanel implements Printable {
         if (currentPoint.getY()>maxY) {
             currentPoint.setLocation(currentPoint.getX(), maxY); }
         mapViewport.setViewPosition(currentPoint);                          // Set It Back
+    }
     }
 
     //
@@ -395,8 +404,7 @@ public class MapView extends JPanel implements Printable {
 
         // set last focused as preferred (PN) 
         if (newSelected.getModel().getParentNode() != null) {
-            newSelected.getModel().getParentNode().setPreferredChild(
-                                                                     newSelected.getModel());
+            newSelected.getModel().getParentNode().setPreferredChild(newSelected.getModel());
         }
 
         // scrollNodeToVisible(newSelected);
@@ -577,28 +585,25 @@ public class MapView extends JPanel implements Printable {
 
 
     public void paintChildren(Graphics graphics) {
-        paintClouds(rootView, graphics, 0 /*iterativeLevel=0 means start level*/);
+        paintClouds(rootView, graphics);
         HashMap labels = new HashMap();
         ArrowLinkViews = new Vector();
         collectLabels(rootView, labels);
         paintLinks(rootView, (Graphics2D)graphics, labels, null);
         super.paintChildren(graphics);
         paintEdges(rootView, (Graphics2D)graphics);
+        
     }
 
     /** @param iterativeLevel describes the n-th nested cloud that is to be painted.*/
-    protected void paintClouds(NodeView source, Graphics graphics, int iterativeLevel){
+    protected void paintClouds(NodeView source, Graphics graphics){
         for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
             if(target.getModel().getCloud() != null) {
-                CloudView cloud = new CloudView(target.getModel().getCloud(), target, iterativeLevel);
+                CloudView cloud = new CloudView(target.getModel().getCloud(), target);
                 cloud.paint(graphics);
-                /* increase level, because the parent of the coming children has a cloud.*/
-                paintClouds(target,graphics, iterativeLevel+1);
-            } else {
-                /* identical level, because the parent of the coming children has NO cloud.*/
-                paintClouds(target,graphics, iterativeLevel);
             }                
+			paintClouds(target,graphics);
         }
     }
 
@@ -750,6 +755,13 @@ public class MapView extends JPanel implements Printable {
             NodeView target = (NodeView)e.next();
             r.add(getInnerBounds(target));//recursive
         }
+        
+        // add heigth of the cloud
+        int additionalCloudHeigth =  (source.getAdditionalCloudHeigth() + 1) / 2;
+        if (additionalCloudHeigth != 0){
+        	r.grow(additionalCloudHeigth, additionalCloudHeigth);
+        }
+        
         return r;
     }
 
@@ -821,7 +833,7 @@ public class MapView extends JPanel implements Printable {
             if (child != null) {  // if a node is folded, child is null.
                 // Here, the view will be created if it does no exist already
                 parentView.insert(child);
-                getMindMapLayout().updateTreeHeightFromChildren(child.getViewer()); }
+                getMindMapLayout().updateTreeHeightWidthShiftFromChildren(child.getViewer()); }
             getMindMapLayout().updateTreeHeightsAndRelativeYOfAncestors(parentView);
             // Here, the view of child gets its size and position
             getMindMapLayout().layout();
@@ -844,7 +856,8 @@ public class MapView extends JPanel implements Printable {
             }
             getMindMapLayout().updateTreeHeightsAndRelativeYOfAncestors(parent);
             getMindMapLayout().layout();
-            parent.requestFocus();
+            getSelected().requestFocus();
+			// scrollNodeToVisible(getSelected());
             repaint();
         }
 
@@ -877,7 +890,9 @@ public class MapView extends JPanel implements Printable {
                 nodeView.insert(); }
 
             getMindMapLayout().updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(subtreeRoot.getViewer());
-            getMindMapLayout().layout();
+            // the layout function will be called later by AWT framework itself
+            // comment it out
+            // getMindMapLayout().layout();
 
             // Restore selected nodes
 

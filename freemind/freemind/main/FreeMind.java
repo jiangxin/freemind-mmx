@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.29 2004-01-06 13:04:16 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.29.2.1 2004-02-28 12:48:11 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -24,6 +24,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -519,6 +520,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	try {
            if (frame.getView() != null) {
+           	// wait until AWT thread starts
+           	if (! EventQueue.isDispatchThread()){
+				EventQueue.invokeAndWait(new Runnable() {public void run(){};});
+           	}
               frame.getView().moveToRoot(); }}
         catch (Exception e) { 
            e.printStackTrace(); }

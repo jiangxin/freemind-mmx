@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.32 2004-01-04 22:22:49 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.32.2.1 2004-02-28 12:48:11 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -144,27 +144,36 @@ public class MindMapMapModel extends MapAdapter {
     }
 
     public void setCloudColor(MindMapNodeModel node, Color color) {
+        // the root node must not have a cloud
+		if (node.isRoot() == false) {
         if(node.getCloud() == null) {
             setCloud(node);
         }
         ((MindMapCloudModel)node.getCloud()).setColor(color);
-        nodeChanged(node); }
+	        nodeChanged(node); 	        
+		}
+	}
 
     public void setCloudWidth(MindMapNodeModel node, int width) {
+        // the root node must not have a cloud
+		if (node.isRoot() == false) {
         if(node.getCloud() == null) {
             setCloud(node);
         }
         ((MindMapCloudModel)node.getCloud()).setWidth(width);
         nodeChanged(node); }
+    }
 
     public void setCloudStyle(MindMapNodeModel node, String style) {
+        // the root node must not have a cloud
+		if (node.isRoot() == false) {
         if(node.getCloud() == null) {
             setCloud(node);
         }
         MindMapCloudModel cloud = (MindMapCloudModel)node.getCloud();
         cloud.setStyle(style);
         nodeStructureChanged(node); }
-
+    }
 
     public void addIcon(MindMapNodeModel node, MindIcon icon) {
         node.addIcon(icon);

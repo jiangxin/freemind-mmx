@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: CloudAdapter.java,v 1.1 2003-11-09 22:09:26 christianfoltin Exp $*/
+/*$Id: CloudAdapter.java,v 1.1.4.1 2004-02-28 12:48:11 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -39,10 +39,51 @@ public abstract class CloudAdapter extends LineAdapter implements MindMapCloud {
     protected  CloudAdapter(MindMapNode target,FreeMindMain frame, String standardColorPropertyString, String standardStylePropertyString)  {
         super(target, frame, standardColorPropertyString, standardStylePropertyString);
         NORMAL_WIDTH = 3;
+        iterativeLevel = -1;
+    }
+    /**
+    *  calculates the cloud iterative level which 
+    *  is importent for the cloud size
+    */
+    
+    private void calcIterativeLevel(MindMapNode target) {
+        iterativeLevel = 0;	
+        if (target != null) {	
+        	for(MindMapNode parentNode = target.getParentNode(); 
+        	    parentNode != null; 
+        	    parentNode = parentNode.getParentNode()) {
+        	    	MindMapCloud cloud = parentNode.getCloud();
+        	    	if (cloud != null) {
+        				iterativeLevel = cloud.getIterativeLevel() + 1;
+        	    		break;
+        	    	} 
+        	}
+        }
+    }
+
+	public void setTarget(MindMapNode target) {
+		super.setTarget(target); 
     }
 
     public Color getExteriorColor() {
         return getColor().darker();
     }
 
+    /**  gets iterative level which is required for painting and layout. */
+	public int getIterativeLevel() {
+		if (iterativeLevel == -1) {
+			calcIterativeLevel(target);
+		}
+		return iterativeLevel;
+	}
+
+	/**  changes the iterative level.*/
+	public void changeIterativeLevel(int deltaLevel) {
+		if (iterativeLevel != -1) {
+			iterativeLevel = iterativeLevel + deltaLevel;
+		}	
+	}
+	
+	private int iterativeLevel;
+	
 }

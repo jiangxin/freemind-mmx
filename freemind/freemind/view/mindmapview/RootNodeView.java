@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.12 2003-12-17 21:04:54 christianfoltin Exp $*/
+/*$Id: RootNodeView.java,v 1.12.2.1 2004-02-28 12:48:12 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -30,6 +30,8 @@ import java.awt.*;
  * and different painting than a normal NodeView
  */
 public class RootNodeView extends NodeView {
+    // sum width of the left child tree
+	private int leftTreeWidth;
 
     //
     // Constructors
@@ -168,6 +170,14 @@ public class RootNodeView extends NodeView {
       if (getMap().getController().getAntialiasEdges() || getMap().getController().getAntialiasAll()) {
          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
 
+
+    public int getLeftTreeWidth() {
+        return leftTreeWidth;
+    }
+
+    public void setLeftTreeWidth(int i) {
+        leftTreeWidth = i;
+    }
 
 }
 

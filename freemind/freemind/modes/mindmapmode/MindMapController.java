@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.34 2004-01-05 23:41:05 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.34.2.1 2004-02-28 12:48:11 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -132,7 +132,10 @@ public class MindMapController extends ControllerAdapter {
                    lastCloud = node.getCloud();
                    nodeOfLastCloud = node;
                }
+            // the root node must not have a cloud
+			if (node.isRoot() == false) {
                map.setCloud(node); 
+			} 
                // restore color:
                if((node.getCloud() != null) && (node == nodeOfLastCloud)) {
                    node.setCloud(lastCloud);

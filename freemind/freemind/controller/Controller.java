@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.39 2004-01-05 23:41:05 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.39.2.1 2004-02-28 12:48:11 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -111,7 +111,9 @@ public class Controller {
     Action zoomIn;
     Action zoomOut;
 
-    private static final String[] zooms = {"25%","40%","60%","75%","100%","125%","150%","200%"};
+	// this values better suit at least the test purposes
+    private static final String[] zooms = {"25%","50%","75%","100%","150%","200%","300%","400%"};
+//    private static final String[] zooms = {"25%","40%","60%","75%","100%","125%","150%","200%"};
 
     //
     // Constructors
@@ -602,7 +604,8 @@ public class Controller {
             setMapModule(mapModule);
             addToMapModules(mapModule.toString(), mapModule);
             history.mapChanged(mapModule);
-            updateNavigationActions(); }
+            updateNavigationActions(); 
+            }
 
         public void updateMapModuleName() {
             getMapModules().remove(getMapModule().toString());

@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.25 2003-12-21 08:40:36 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.25.2.1 2004-02-28 12:48:11 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.main.FreeMind;
 import freemind.main.Tools;
+import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;//This should not be done.
 import freemind.modes.MindIcon;
@@ -49,9 +50,11 @@ public abstract class NodeView extends JLabel {
     protected EdgeView edge;
     protected final static Color selectedColor = new Color(210,210,210); //Color.lightGray; //the Color of the Rectangle of a selected Node
     protected final static Color dragColor = Color.lightGray; //the Color of appearing GradientBox on drag over
-    protected int treeHeight;
+	protected int treeHeight = 0;
+	protected int treeWidth = 0;
+	protected int treeShift = 0;
     private boolean left = true; //is the node left of root?
-    int relYPos;//the relative Y Position to it's parent
+    int relYPos = 0;//the relative Y Position to it's parent
     private boolean isLong = false;
 
     final static int DRAGGED_OVER_NO = 0;
@@ -175,16 +178,30 @@ public abstract class NodeView extends JLabel {
     }
 
     /** Returns the coordinates occupied by the node and its children as a vector of four point per node.*/
-    public void getCoordinates(LinkedList inList, int additionalDistanceForConvexHull) {
+	public void getCoordinates(LinkedList inList) {
+		getCoordinates(inList, 0, false);
+	}
+	private void getCoordinates(LinkedList inList, int additionalDistanceForConvexHull, boolean byChildren) {
+		MindMapCloud cloud = getModel().getCloud();
+		CloudView cloudView = null;
+
+		// consider existing clouds of children
+		if (byChildren && cloud != null){
+			cloudView = new CloudView(cloud, this);
+			additionalDistanceForConvexHull  += cloudView.getAdditionalHeigth() / 2; 
+		}
         inList.addLast(new Point( -additionalDistanceForConvexHull + getX()             ,  -additionalDistanceForConvexHull + getY()              ));
         inList.addLast(new Point( -additionalDistanceForConvexHull + getX()             ,   additionalDistanceForConvexHull + getY() + getHeight()));
         inList.addLast(new Point(  additionalDistanceForConvexHull + getX() + getWidth(),   additionalDistanceForConvexHull + getY() + getHeight()));
         inList.addLast(new Point(  additionalDistanceForConvexHull + getX() + getWidth(),  -additionalDistanceForConvexHull + getY()              ));
+		
+		if (cloudView != null){
+		}
         LinkedList childrenViews = getChildrenViews();
         ListIterator children_it = childrenViews.listIterator();
         while(children_it.hasNext()) {
             NodeView child = (NodeView)children_it.next();
-            child.getCoordinates(inList, additionalDistanceForConvexHull);
+	        child.getCoordinates(inList, additionalDistanceForConvexHull, true);
         }
     }   
 
@@ -243,12 +260,26 @@ public abstract class NodeView extends JLabel {
     // get/set methods
     //
 
+    /**
+    * Calculates the tree height increment because of the clouds.
+    */
+	public int getAdditionalCloudHeigth() {
+		MindMapCloud cloud = getModel().getCloud();
+		if( cloud!= null) { 
+			CloudView cloudView = new CloudView(cloud, this);
+			return cloudView.getAdditionalHeigth();
+		} else {           
+			return 0;
+		}
+	}
+
     int getTreeHeight() {
 	return treeHeight;
     }
 
     void setTreeHeight(int treeHeight) {
 	this.treeHeight = treeHeight;
+
     }
 
     protected boolean isSelected() {
@@ -689,5 +720,31 @@ public abstract class NodeView extends JLabel {
 //          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); 
 
    }
+
+    /**
+     * @return the shift of the tree root node
+     * relative to the middle of the tree
+     * because of the light shift of the children nodes
+     */
+    public int getTreeShift() {
+        return treeShift;
+    }
+
+	/**
+	 * sets the shift of the tree root node
+	 * relative to the middle of the tree
+	 * because of the light shift of the children nodes.
+	 */
+    public void setTreeShift(int i) {
+        treeShift = i;
+    }
+
+    public int getTreeWidth() {
+        return treeWidth;
+    }
+
+    public void setTreeWidth(int i) {
+        treeWidth = i;
+    }
 
 }
