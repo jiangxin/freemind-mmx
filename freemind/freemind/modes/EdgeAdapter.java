@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeAdapter.java,v 1.12 2003-11-03 11:00:12 sviles Exp $*/
+/*$Id: EdgeAdapter.java,v 1.13 2003-11-13 06:39:30 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -26,111 +26,78 @@ import java.awt.Color;
 import java.awt.Stroke;
 import java.awt.BasicStroke;
 
-public abstract class EdgeAdapter implements MindMapEdge {
+public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
 
-    private MindMapNode target;
-    private FreeMindMain frame;
-    
 	public static final int WIDTH_PARENT = 0;
 	public static final int WIDTH_THIN = -1;
-//	public static final int WIDTH_PROPORTIONAL = -2;
 
-    //recursive attributes. may be accessed directly by the save() method.
-    protected Color color; 
-    protected String style;
-    protected int width = WIDTH_PARENT;
-	protected Stroke stroke = null;
-
-    //
-    // Constructors
-    //
     public EdgeAdapter(MindMapNode target,FreeMindMain frame) {
-	this.frame = frame;
-	this.target = target;
+        this(target, frame, "standardedgecolor", "standardedgestyle");
+    }
+
+    /** For derived classes.*/
+    protected  EdgeAdapter(MindMapNode target,FreeMindMain frame, String standardColorPropertyString, String standardStylePropertyString)  {
+        super(target, frame, standardColorPropertyString, standardStylePropertyString);
+        NORMAL_WIDTH = WIDTH_PARENT;
     }
 
     //
     // Attributes
     //
 
-    public FreeMindMain getFrame() {
-	return frame;
-    }
-
     public Color getColor() {
-	if(color==null) {
-	    if (getTarget().isRoot()) {
-		String stdcolor = getFrame().getProperty("standardedgecolor");
-		if (stdcolor.length() == 7) {
-		    return Tools.xmlToColor(stdcolor);
-		}
-		return Color.blue;
-	    }
-	    return getSource().getEdge().getColor();
-	}
-	return color;
+        if(color==null) {
+            if (getTarget().isRoot()) {
+                String stdcolor = getFrame().getProperty(standardColorPropertyString);
+                if (stdcolor.length() == 7) {
+                    return Tools.xmlToColor(stdcolor);
+                }
+                return Color.blue;
+            }
+            return getSource().getEdge().getColor();
+        }
+        return color;
     }
-
-    protected void setColor(Color color) {
-	this.color = color;
-    }
-
 
     public int getWidth() {
-	if (width==WIDTH_PARENT) {
-           if (getTarget().isRoot()) {
-              return WIDTH_THIN; }
-           return getSource().getEdge().getWidth(); }
-	return width; }
+        if (width==WIDTH_PARENT) {
+            if (getTarget().isRoot()) {
+                return WIDTH_THIN; }
+            return getSource().getEdge().getWidth(); }
+        return width; }
 
     public Stroke getStroke() {
-	if (width==WIDTH_THIN)
-		return null;
-	if(stroke==null) {
-	    if (getTarget().isRoot()) {
-			return null;
-	    }
-	    return getSource().getEdge().getStroke();
-	}
-	return stroke;
+        if (width==WIDTH_THIN)
+            return null;
+        if(stroke==null) {
+            if (getTarget().isRoot()) {
+                return null;
+            }
+            return getSource().getEdge().getStroke();
+        }
+        return stroke;
     }
 		
     public void setWidth(int width) {
-	this.width = width;
+        this.width = width;
         stroke = ((width==WIDTH_PARENT) || (width==WIDTH_THIN)) ? null :
-           new BasicStroke(getWidth(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER); }
+            new BasicStroke(getWidth(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER); }
 
     public String getStyle() {
-	if(style==null) {
-	    if (getTarget().isRoot()) {
-		return getFrame().getProperty("standardedgestyle");
-	    }
-	    return getSource().getEdge().getStyle();
-	}
-	return style;
-    }
-
-    protected void setStyle(String style) {
-	this.style = style;
-    }
-
-    public String toString() {
-	return "";
-    }
-
-    public void setTarget(MindMapNode target) {
-       this.target = target; 
+        if(style==null) {
+            if (getTarget().isRoot()) {
+                return getFrame().getProperty(standardStylePropertyString);
+            }
+            return getSource().getEdge().getStyle();
+        }
+        return style;
     }
 
     ///////////
     // Private Methods
     /////////
 
-    private MindMapNode getTarget() {
-  	return target;
-    }
-    
     private MindMapNode getSource() {
- 	return target.getParentNode();
+        return target.getParentNode();
     }
 }
