@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeToolBar.java,v 1.2 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: SchemeToolBar.java,v 1.3 2001-03-31 22:37:00 ponder Exp $*/
 
 package freemind.modes.schememode;
 
@@ -31,6 +31,10 @@ public class SchemeToolBar extends JToolBar {
 	this.c=controller;
 	JButton button;
 
+	button = add(c.newMap);
+	button = add(c.open);
+	button = add(c.save);
+	button = add(c.saveAs);
 	button = add(c.evaluate);
     }
 }

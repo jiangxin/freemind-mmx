@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMapModel.java,v 1.5 2001-03-28 19:17:37 ponder Exp $*/
+/*$Id: SchemeMapModel.java,v 1.6 2001-03-31 22:37:00 ponder Exp $*/
 
 package freemind.modes.schememode;
 
@@ -26,6 +26,15 @@ import freemind.modes.MindMapNode;
 import freemind.modes.MindMapEdge;
 import freemind.modes.MapAdapter;
 import java.io.File;
+import java.io.Reader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.FileOutputStream;
+import java.io.StreamTokenizer;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 
 public class SchemeMapModel extends MapAdapter {
     
@@ -42,9 +51,81 @@ public class SchemeMapModel extends MapAdapter {
     // Other methods
     //
     public void save(File file) {
+	try {
+	    setFile(file);
+	    setSaved(true);
+
+	    //Generating output Stream
+	    BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
+
+	    fileout.write( getCode() );
+
+	    fileout.close();
+
+	} catch(Exception e) {
+	    System.out.println("Error in SchemeMapModel.save: ");
+	    e.printStackTrace();
+	}
     }
     
-    public void load(File file) {
+    public void load(File file) throws FileNotFoundException {
+	setFile(file);
+	setSaved(true);
+
+	setRoot(new SchemeNodeModel(getFrame()));
+	
+	try {
+	    loadMathStyle(new InputStreamReader(new FileInputStream(file)));
+	} catch (IOException ex) {
+	}
+    }
+
+    public void loadMathStyle(Reader re) throws IOException{
+	StreamTokenizer tok = new StreamTokenizer(re);
+	tok.resetSyntax();
+	tok.whitespaceChars(0, 32);
+	tok.wordChars(33, 255);
+	tok.ordinaryChars('(',')');
+
+	//commentChar('/');
+	tok.commentChar(';');//59 is ';'
+	//	tok.quoteChar('"');
+	//	quoteChar('\'');	//	tok.eolIsSignificant(true);
+
+	SchemeNodeModel node = (SchemeNodeModel)getRoot();
+	while (tok.nextToken() != tok.TT_EOF) {
+	    if (tok.ttype == 40) {    //"("
+		//		System.out.println("Token starts with (");
+		SchemeNodeModel newNode = new SchemeNodeModel(getFrame());
+		insertNodeInto(newNode, node, node.getChildCount());
+		node = newNode;
+	    } else if (tok.ttype == 41) {    //")"
+		//		System.out.println("Token starts with )");
+		if (node.getParent() != null) {//this should not be necessary, if this happens, the code is wrong
+		    node = (SchemeNodeModel)node.getParent();
+		}
+	    } else if (tok.ttype == tok.TT_WORD) {
+		String token = tok.sval.trim();
+
+		if (node.toString().equals(" ") && node.getChildCount() == 0) {
+		    node.setUserObject(token);
+		} else {
+		    SchemeNodeModel newNode = new SchemeNodeModel(getFrame());
+		    insertNodeInto(newNode,node,node.getChildCount());
+		    newNode.setUserObject(token);
+		}
+	    }/* else if (tok.ttype == tok.TT_NUMBER) {
+		String token = Double.toString(tok.nval);
+
+		if (node.toString().equals("")) {
+		    node.setUserObject(token);
+		} else {
+		    SchemeNodeModel newNode = new SchemeNodeModel(getFrame());
+		    insertNodeInto(newNode,node,node.getChildCount());
+		    newNode.setUserObject(token);
+		}
+		}*/
+	}
     }
 
     /**
@@ -55,11 +136,15 @@ public class SchemeMapModel extends MapAdapter {
 	return ((SchemeNodeModel)getRoot()).getCodeMathStyle();
     }
     
-    public boolean isSaved() {
-	return true;
-    }
+    //    public boolean isSaved() {
+    //	return true;
+    //    }
 
     public String toString() {
-	return "Scheme";
+	if (getFile() == null) {
+	    return null;
+	} else {
+	    return getFile().getName();
+	}
     }
 }

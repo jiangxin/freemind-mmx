@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.16 2001-03-28 19:17:37 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.17 2001-03-31 22:36:59 ponder Exp $*/
 
 package freemind.modes;
 
@@ -270,6 +270,10 @@ public abstract class ControllerAdapter implements ModeController {
 
     void edit(final NodeView node, NodeView toBeSelected) {
 	String text = node.getModel().toString();
+	//Make fields for short texts editable
+	while (text.length() < 8) {//make this number configurable
+	    text = text + " ";
+	}
 	final JTextField input = new JTextField(text);
 	FocusListener whenEdited = new FocusAdapter() {
 		public void focusLost(FocusEvent e) {

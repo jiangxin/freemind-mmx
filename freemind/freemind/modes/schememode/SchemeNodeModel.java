@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeNodeModel.java,v 1.5 2001-03-26 20:14:01 ponder Exp $*/
+/*$Id: SchemeNodeModel.java,v 1.6 2001-03-31 22:37:00 ponder Exp $*/
 
 package freemind.modes.schememode;
 
@@ -26,6 +26,7 @@ import freemind.modes.NodeAdapter;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.io.File;
+import java.io.StreamTokenizer;
 import java.awt.Color;
 
 
@@ -49,7 +50,11 @@ public class SchemeNodeModel extends NodeAdapter {
 	if (this.isRoot()) {
 	    return "Scheme";
 	} else {
-	    return super.toString();
+	    String ret = super.toString();
+	    if (ret == "no text") {
+		ret = " ";
+	    }
+	    return ret;
 	}
     }
 
@@ -59,20 +64,20 @@ public class SchemeNodeModel extends NodeAdapter {
 	    ListIterator it = childrenUnfolded();
 	    if (it != null) {
 		while (it.hasNext()) {
-		    code = code + ((SchemeNodeModel)it.next()).getCodeMathStyle() + ",";
+		    code = code +  ((SchemeNodeModel)it.next()).getCodeMathStyle();
 		}
 	    }
 	} else {
-	    code = toString().trim();
-	    if(code.equals("")) {
-		code = "(";
+	    code = toString().trim()+" ";
+	    if (getChildCount() > 0) {
+		code = "(" + code;
 		ListIterator it = childrenUnfolded();
 		if (it != null) {
 		    while (it.hasNext()) {
-			code = code + ((SchemeNodeModel)it.next()).getCodeMathStyle() + " ";
+			code = code + ((SchemeNodeModel)it.next()).getCodeMathStyle();
 		    }
 		}
-		code = code +")";
+		code = code +")";		
 	    }
 	}
 	return code;

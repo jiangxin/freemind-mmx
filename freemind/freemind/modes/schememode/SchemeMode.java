@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMode.java,v 1.3 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: SchemeMode.java,v 1.4 2001-03-31 22:37:00 ponder Exp $*/
 
 package freemind.modes.schememode;
 
@@ -77,7 +77,13 @@ public class SchemeMode implements Mode {
     }
 
     public JMenu getModeFileMenu() {
-	return null;
+	JMenu filemenu = new JMenu();
+	filemenu.add(((SchemeController)getModeController()).newMap);
+	filemenu.add(((SchemeController)getModeController()).open);
+	filemenu.add(((SchemeController)getModeController()).save);
+	filemenu.add(((SchemeController)getModeController()).saveAs);
+
+	return filemenu;
     }
 
     public JMenu getModeEditMenu() {

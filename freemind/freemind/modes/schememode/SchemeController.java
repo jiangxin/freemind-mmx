@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.4 2001-03-24 22:45:46 ponder Exp $*/
+/*$Id: SchemeController.java,v 1.5 2001-03-31 22:37:00 ponder Exp $*/
 
 package freemind.modes.schememode;
 
@@ -27,17 +27,21 @@ import freemind.modes.MindMap;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.ControllerAdapter;
-import silk.SI;
+//import silk.SI;
 import java.io.File;
 import java.awt.event.ActionEvent;
 import java.util.StringTokenizer;
 import javax.swing.Action;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
 
 public class SchemeController extends ControllerAdapter {
 
     Action newMap = new NewMapAction(this);
+    Action open = new OpenAction(this);
+    Action save = new SaveAction(this);
+    Action saveAs = new SaveAsAction(this);
     Action evaluate = new EvaluateAction();
     Action edit = new EditAction();
     Action addNew = new AddNewAction();
@@ -72,17 +76,45 @@ public class SchemeController extends ControllerAdapter {
 	}
     }
 
+
+    public void saveAs() {
+	JFileChooser chooser = null;
+	if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
+	    chooser = new JFileChooser(getMap().getFile().getParentFile());
+	} else {
+	    chooser = new JFileChooser();
+	}
+	//chooser.setLocale(currentLocale);
+	if (getFileFilter() != null) {
+	    chooser.addChoosableFileFilter(getFileFilter());
+	}
+	int returnVal = chooser.showSaveDialog(getView());
+	if (returnVal==JFileChooser.APPROVE_OPTION) {//ok pressed
+	    File f = chooser.getSelectedFile();
+	    //Force the extension to be .mm
+	    //	    String ext = Tools.getExtension(f.getName());
+	    //	    if(!ext.equals("mm")) {
+	    //		f = new File(f.getParent(),f.getName()+".mm");
+	    //	    }
+	    save(f);
+	    //Update the name of the map
+	    getController().updateMapModuleName();
+	}
+    }
+
+
     private class EvaluateAction extends AbstractAction {
 	EvaluateAction() {
 	    super(getFrame().getResources().getString("scheme_evaluate"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    String rawCode = ((SchemeMapModel)getMap()).getCode().trim();
+	    System.out.println(rawCode);
 	    StringTokenizer code = new StringTokenizer(rawCode,",");
 	    String output = "Output: \n";
-	    while(code.hasMoreTokens()) {
-		output = output + (SI.eval(code.nextToken()).toString())+"\n";
-	    }
+	    //	    while(code.hasMoreTokens()) {
+	    //		output = output + (SI.eval(code.nextToken()).toString())+"\n";
+	    //	    }
 	    JOptionPane.showMessageDialog(getView(),output);
 	}
     }

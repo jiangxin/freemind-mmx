@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.12 2001-03-28 19:17:37 ponder Exp $*/
+/*$Id: MindMapMapModel.java,v 1.13 2001-03-31 22:37:00 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -370,7 +370,7 @@ public class MindMapMapModel extends MapAdapter {
 	try {
 	    parser.parseFromReader(new InputStreamReader(new FileInputStream(file)));
 	} catch (Exception ex) {
-	    System.err.println("Help! Error while parsing!");
+	    System.err.println("Error while parsing file.");
 	    return null;
 	}
 
