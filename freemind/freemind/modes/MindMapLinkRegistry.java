@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLinkRegistry.java,v 1.3 2003-11-18 23:19:46 christianfoltin Exp $*/
+/*$Id: MindMapLinkRegistry.java,v 1.4 2003-11-19 20:36:29 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -64,8 +64,8 @@ public interface MindMapLinkRegistry {
     public String getLabel(MindMapNode target);
 //     /** Method to keep track of the targets associated to a target node. This method also sets the new id to the target. 
 //         Moreover, it is not required that the target node is already registered. This will be done on the fly.*/
-//     /** Sets all nodes beginning from target with its children to ID_Pending for later paste action.*/
-//     public ID_Pending cutLinkTarget(MindMapNode target);
+    /** Removes links to all nodes beginning from target with its children.*/
+    public void        cutNode(MindMapNode target);
     public void   registerLink(MindMapLink link);
     public void deregisterLink(MindMapLink link);
 

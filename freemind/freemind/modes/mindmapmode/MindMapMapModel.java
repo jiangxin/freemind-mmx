@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.26 2003-11-18 23:19:46 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.27 2003-11-19 20:36:30 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -597,7 +597,7 @@ public class MindMapMapModel extends MapAdapter {
            ex.printStackTrace();
            return null; }
         // complete the arrow links:
-        mapElement.processUnfinishedLinks(mapElement.getMapChild(), getLinkRegistry());
+        mapElement.processUnfinishedLinks(getLinkRegistry());
         return mapElement.getMapChild(); 
     }
 
@@ -754,6 +754,7 @@ public class MindMapMapModel extends MapAdapter {
              insertNodeInto(node, parent, parent.getChildPosition(target)); }
           else {
              insertNodeIntoNoEvent(node, target); }
+          element.processUnfinishedLinks(getLinkRegistry());
           return node; }
        catch (IOException ee) { ee.printStackTrace(); return null; }}
 

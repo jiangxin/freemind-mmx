@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.3 2003-11-18 23:19:46 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.4 2003-11-19 20:36:29 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -28,6 +28,7 @@ import java.util.Random;
 import java.util.Vector;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 
 
@@ -177,15 +178,18 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     public void deregisterLinkTarget(MindMapNode target)
         throws java.lang.IllegalArgumentException
     {
-        ID_Registered state = registerLinkTarget(target);
-        Vector vec = getAssignedLinksVector(state);
-        for(int i = 0 ; i < vec.size(); ++i) {
-            deregisterLink((MindMapLink) vec.get(i));
-        }
-//         if(vec.size() != 0)
-//             throw new java.lang.IllegalArgumentException("Cannot remove a link target, if there are sources pointing to.");
-         logger.info("Register target node:"+target);
-        TargetToID.remove(target);
+        ID_BasicState state = getState(target);
+        if(state instanceof ID_Registered)
+            {
+                Vector vec = getAssignedLinksVector((ID_Registered) state);
+                for(int i = 0 ; i < vec.size(); ++i) {
+                    deregisterLink((MindMapLink) vec.get(i));
+                }
+                //         if(vec.size() != 0)
+                //             throw new java.lang.IllegalArgumentException("Cannot remove a link target, if there are sources pointing to.");
+                logger.info("Deregister target node:"+target);
+                TargetToID.remove(target);
+            }
     }
                 
     /** Method to keep track of the sources associated to a target node. This method also sets the new id to the target. 
@@ -230,7 +234,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         Vector returnValue;
         returnValue = new Vector();
         ID_BasicState state = getState(target);
-        if(getState(target) instanceof ID_Registered)
+        if(state instanceof ID_Registered)
             {
                 Vector vec = getAssignedLinksVector((ID_Registered) state);
                 for(int i = 0 ; i < vec.size(); ++i) {
@@ -244,7 +248,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         Vector returnValue = new Vector();
         returnValue.addAll(getAllLinksIntoMe( node ));
         returnValue.addAll(getAllLinksFromMe( node ));
-        logger.info("All links  ("+returnValue+") from  node:"+node);
+        logger.fine("All links  ("+returnValue+") from  node:"+node);
         return returnValue;
     };
 
@@ -285,6 +289,18 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
                 return ((ID_Registered) state).getID();
             }
         return null;
+    }
+
+    public void        cutNode(MindMapNode target) {
+        Vector links = getAllLinksFromMe(target);
+        for(int i = 0; i  < links.size(); ++i) {
+            deregisterLink((MindMapLink) links.get(i));
+        }
+        deregisterLinkTarget(target);
+        for (ListIterator e = target.childrenUnfolded(); e.hasNext(); ) {
+            MindMapNodeModel child = (MindMapNodeModel)e.next();            
+            cutNode(child);
+        }
     }
 
 

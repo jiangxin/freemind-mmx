@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapXMLElement.java,v 1.7 2003-11-18 23:19:46 christianfoltin Exp $*/
+/*$Id: MindMapXMLElement.java,v 1.8 2003-11-19 20:36:30 christianfoltin Exp $*/
 
 /*On doubling of code
  *
@@ -232,7 +232,7 @@ public class MindMapXMLElement extends XMLElement {
    }
 
     /** Completes the links within the map. They are registered in the registry.*/
-    public void processUnfinishedLinks(MindMapNodeModel root, MindMapLinkRegistry registry) {
+    public void processUnfinishedLinks(MindMapLinkRegistry registry) {
         // add labels to the nodes:
         setIDs(IDToTarget, registry);
         // complete arrow links with right labels:
@@ -240,6 +240,7 @@ public class MindMapXMLElement extends XMLElement {
             MindMapArrowLinkModel arrowLink = (MindMapArrowLinkModel) MindMapArrowLinkModels.get(i);
             String oldID = arrowLink.getDestinationLabel();
             // find oldID in target list:
+            // wrong: also as registry, if link is present in the map (paste).
             if(IDToTarget.containsKey(oldID)) {
                 MindMapNodeModel target = (MindMapNodeModel) IDToTarget.get(oldID);
                 String newID = registry.getLabel(target);

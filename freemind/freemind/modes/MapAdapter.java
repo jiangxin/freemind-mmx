@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.16 2003-11-16 22:15:15 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.17 2003-11-19 20:36:29 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -205,6 +205,7 @@ public abstract class MapAdapter implements MindMap {
        Transferable t = copy();
        for(Iterator i = getFrame().getView().getSelecteds().iterator();i.hasNext();) {
           MindMapNode selectedNode = ((NodeView)i.next()).getModel();
+          getLinkRegistry().cutNode(selectedNode);
           removeNodeFromParent(selectedNode); }
        return t; }
 
