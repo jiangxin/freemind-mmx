@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.8 2004-01-17 23:20:58 christianfoltin Exp $*/
+/*$Id: ArrowLinkView.java,v 1.8.12.1 2004-05-23 10:44:45 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -94,11 +94,11 @@ public class ArrowLinkView {
 
         // determine, whether destination exists:
         if(source == null) {
-            p1 = new Point(target.getLinkPoint());
+            p1 = new Point(target.getLinkPoint(arrowLinkModel.getEndInclination()));
             p1.translate(100,0);
             sourceIsLeft = true;
         } else {
-            p1 = source.getLinkPoint();
+            p1 = source.getLinkPoint(arrowLinkModel.getStartInclination());
             sourceIsLeft = source.isLeft();
         }
         if(target == null) {
@@ -106,29 +106,25 @@ public class ArrowLinkView {
             p2.translate(100,0);
             targetIsLeft = true;
         } else {
-            p2 = target.getLinkPoint();
+            p2 = target.getLinkPoint(arrowLinkModel.getEndInclination());
             targetIsLeft = target.isLeft();
         }
         // determine point 2 and 3:
-        double delx, dely;
-        delx = p2.x - p1.x; /* direction of p1 -> p3*/
-        dely = p2.y - p1.y;
-        double dellength = Math.sqrt(delx*delx + dely*dely);
-        int deltax = (int) (getZoom() * dellength);
+		if(arrowLinkModel.getEndInclination() == null
+		   || arrowLinkModel.getStartInclination() == null) {
+//			double dellength = 30 + p1.distance(p2) / getZoom() / 10;
+			double dellength = p1.distance(p2) / getZoom();
+			if(arrowLinkModel.getEndInclination() == null){
+				arrowLinkModel.setEndInclination(new Point((int)dellength, 0));
+			}
+			if(arrowLinkModel.getStartInclination() == null){
+				arrowLinkModel.setStartInclination(new Point((int)dellength, 0));
+			}
+		}
         p3 = new Point( p1 );
-        if(arrowLinkModel.getStartInclination() != null) {
-            p3.translate( arrowLinkModel.getStartInclination().x, arrowLinkModel.getStartInclination().y);
-        } else {
-            // automatic translation in outside direction:
-            p3.translate(((sourceIsLeft)?-1:1) * deltax, 0);
-        }            
+        p3.translate( ((sourceIsLeft)?-1:1) * getMap().getZoomed(arrowLinkModel.getStartInclination().x), getMap().getZoomed(arrowLinkModel.getStartInclination().y));
         p4 = new Point( p2 );
-        if(arrowLinkModel.getEndInclination() != null) {
-            p4.translate( arrowLinkModel.getEndInclination().x, arrowLinkModel.getEndInclination().y);
-        } else {
-            // automatic translation in outside direction:
-            p4.translate(((targetIsLeft)?-1:1) * deltax, 0);
-        }
+        p4.translate( ((targetIsLeft)?-1:1) * getMap().getZoomed(arrowLinkModel.getEndInclination().x), getMap().getZoomed(arrowLinkModel.getEndInclination().y));
         //
         if(source == null) {
             p1 = p4;
@@ -253,5 +249,14 @@ public class ArrowLinkView {
       if (getMap().getController().getAntialiasEdges() || getMap().getController().getAntialiasAll()) {
          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
 
-
+    /**
+     * @param originX
+     * @param originY
+     * @param newX
+     * @param newY
+     */
+    public void changeInclination(int originX, int originY, int newX, int newY) {
+        // TODO Auto-generated method stub
+        
+    }
 }

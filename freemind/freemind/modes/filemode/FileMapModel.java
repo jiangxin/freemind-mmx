@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMapModel.java,v 1.7 2003-11-03 11:00:13 sviles Exp $*/
+/*$Id: FileMapModel.java,v 1.7.14.1 2004-05-23 10:44:44 dpolivaev Exp $*/
 
 package freemind.modes.filemode;
 
@@ -71,6 +71,12 @@ public class FileMapModel extends MapAdapter {
 
 
 // 	nodeChanged(node);
+    }
+
+    /* (non-Javadoc)
+     * @see freemind.modes.MindMap#setLinkInclinationChanged()
+     */
+    public void setLinkInclinationChanged() {
     }
 }
 

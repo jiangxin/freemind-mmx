@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMapModel.java,v 1.11 2003-11-03 11:00:22 sviles Exp $*/
+/*$Id: SchemeMapModel.java,v 1.11.14.1 2004-05-23 10:44:45 dpolivaev Exp $*/
 
 package freemind.modes.schememode;
 
@@ -145,5 +145,11 @@ public class SchemeMapModel extends MapAdapter {
 	} else {
 	    return getFile().getName();
 	}
+    }
+
+    /* (non-Javadoc)
+     * @see freemind.modes.MindMap#setLinkInclinationChanged()
+     */
+    public void setLinkInclinationChanged() {
     }
 }

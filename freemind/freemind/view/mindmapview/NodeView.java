@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27 2004-01-25 16:41:28 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.12.1 2004-05-23 10:44:45 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -368,15 +368,39 @@ public abstract class NodeView extends JLabel {
      * should arrive the Node.
      * THIS SHOULD BE DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
      */
-    Point getLinkPoint() {
-	Dimension size = getSize();
-	if( isRoot() ) {
-	    return new Point(getLocation().x, getLocation().y + size.height / 2);
-	} else if( isLeft() ) {
-	    return new Point(getLocation().x, getLocation().y + size.height / 2);
-	} else {
-	    return new Point(getLocation().x + size.width, getLocation().y + size.height / 2);
-	} 
+    public Point getLinkPoint(Point declination) {
+		Dimension size = getSize();
+		int x, y;
+		if(declination != null){
+			x = getMap().getZoomed(declination.x);
+			y = getMap().getZoomed(declination.y);
+		}
+		else{
+			x = 1;
+			y = 0;
+		}
+		if( isRoot() || isLeft()) {
+			x = -x;
+		}
+		if(y != 0){
+			double ctgRect = Math.abs((double)size.width / size.height);
+			double ctgLine = Math.abs((double)x / y);
+			int absLinkX, absLinkY;
+			if(ctgRect > ctgLine){
+				absLinkX = Math.abs(x*size.height / (2 * y));
+				absLinkY = size.height / 2;
+			}
+			else{
+				absLinkX = size.width / 2;
+				absLinkY = Math.abs(y*size.width / (2 * x));
+			}
+			return new Point(getLocation().x + size.width / 2 + (x>0 ? absLinkX : -absLinkX), 
+							getLocation().y + size.height / 2 + (y>0 ? absLinkY : -absLinkY));	
+		}
+		else{
+			return new Point(getLocation().x + (x>0 ? size.width:0), 
+			                 getLocation().y + (size.height / 2));	
+		}
     }
 
     /**
