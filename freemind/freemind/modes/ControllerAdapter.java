@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.21 2001-05-06 18:47:57 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.22 2001-06-22 20:35:14 ponder Exp $*/
 
 package freemind.modes;
 
@@ -93,10 +93,10 @@ public abstract class ControllerAdapter implements ModeController {
 	cut = new CutAction(this);
 	paste = new PasteAction(this);
 
-	DropTarget dropTarget = new DropTarget(
-		getFrame().getViewport(),
-		new FileOpener()
-	);
+	//	DropTarget dropTarget = new DropTarget(
+	//		getFrame().getViewport(),
+	//		new FileOpener()
+	//	);
 
 	clipboard = getFrame().getViewport().getToolkit().getSystemClipboard();
 
@@ -788,51 +788,74 @@ public abstract class ControllerAdapter implements ModeController {
 	}
     }
 
-	protected class FileOpener implements DropTargetListener {
-    public void drop (DropTargetDropEvent dtde) {
-      dtde.acceptDrop(DnDConstants.ACTION_COPY);
-      try {
-        Object data = 
-          dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-        if (data == null) {
-          // Shouldn't happen because dragEnter() rejects drags w/out at least
-          // one javaFileListFlavor. But just in case it does ...
-          dtde.dropComplete(false);
-          return;
-        }
-        Iterator iterator = ((List)data).iterator();
-        while (iterator.hasNext()) {
-          File file = (File)iterator.next();
-		  load(file);
-        }
-      }
-      catch (Exception e) {
-		  JOptionPane.showMessageDialog(getView(),
-		  	"Couldn't open dropped file(s). Reason: " + e.getMessage()
-			//getFrame().getResources().getString("file_not_found")
-        );
-        dtde.dropComplete(false);
-        return;
-      }
-      dtde.dropComplete(true);
-    }
+    protected class FileOpener implements DropTargetListener {
+	private boolean isDragAcceptable(DropTargetDragEvent event) {
+	    // check if there is at least one File Type in the list
+	    DataFlavor[] flavors = event.getCurrentDataFlavors();
+	    for (int i = 0; i < flavors.length; i++) {
+		if (flavors[i].isFlavorJavaFileListType()) {
+		    //		    event.acceptDrag(DnDConstants.ACTION_COPY);
+		    return true;
+		}
+	    }
+	    //	    event.rejectDrag();
+	    return false;
+	}
 
-    public void dragEnter (DropTargetDragEvent dtde) {
-      // check if there is at least one File Type in the list
-      DataFlavor[] flavors = dtde.getCurrentDataFlavors();
-      for (int i = 0; i < flavors.length; i++) {
-        if (flavors[i].isFlavorJavaFileListType()) {
-          dtde.acceptDrag(DnDConstants.ACTION_COPY);
-          return;
-        }
-      }
-      dtde.rejectDrag();
-    }
+	private boolean isDropAcceptable(DropTargetDropEvent event) {
+	    // check if there is at least one File Type in the list
+	    DataFlavor[] flavors = event.getCurrentDataFlavors();
+	    for (int i = 0; i < flavors.length; i++) {
+		if (flavors[i].isFlavorJavaFileListType()) {
+		    return true;
+		}
+	    }
+	    return false;
+	}
 
-    public void dragOver (DropTargetDragEvent e) {}
-    public void dragExit (DropTargetEvent e) {}
-    public void dragScroll (DropTargetDragEvent e) {}
-    public void dropActionChanged (DropTargetDragEvent e) {}    
-  }
+	public void drop (DropTargetDropEvent dtde) {
+	    if(!isDropAcceptable(dtde)) {
+		dtde.rejectDrop();
+		return;
+	    }
+	    dtde.acceptDrop(DnDConstants.ACTION_COPY);
+	    try {
+		Object data = 
+		    dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+		if (data == null) {
+		    // Shouldn't happen because dragEnter() rejects drags w/out at least
+		    // one javaFileListFlavor. But just in case it does ...
+		    dtde.dropComplete(false);
+		    return;
+		}
+		Iterator iterator = ((List)data).iterator();
+		while (iterator.hasNext()) {
+		    File file = (File)iterator.next();
+		    load(file);
+		}
+	    }
+	    catch (Exception e) {
+		JOptionPane.showMessageDialog(getView(),
+					      "Couldn't open dropped file(s). Reason: " + e.getMessage()
+					      //getFrame().getResources().getString("file_not_found")
+					      );
+		dtde.dropComplete(false);
+		return;
+	    }
+	    dtde.dropComplete(true);
+	}
+
+	public void dragEnter (DropTargetDragEvent dtde) {
+	    if(!isDragAcceptable(dtde)) {
+		dtde.rejectDrag();
+		return;
+	    }
+	}
+
+	public void dragOver (DropTargetDragEvent e) {}
+	public void dragExit (DropTargetEvent e) {}
+	public void dragScroll (DropTargetDragEvent e) {}
+	public void dropActionChanged (DropTargetDragEvent e) {}    
+    }
 
 }

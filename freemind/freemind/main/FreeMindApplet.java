@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.4 2001-04-19 16:20:38 ponder Exp $*/
+/*$Id: FreeMindApplet.java,v 1.5 2001-06-22 20:35:14 ponder Exp $*/
 
 package freemind.main;
 
@@ -101,6 +101,12 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
     public String getProperty(String key) {
 	return userProps.getProperty(key);
+    }
+    
+    public void setProperty(String key, String value) {
+    }
+
+    public void saveProperties() {
     }
 
     public void setTitle(String title) {

@@ -16,11 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMode.java,v 1.5 2001-05-06 18:47:57 ponder Exp $*/
+/*$Id: SchemeMode.java,v 1.6 2001-06-22 20:35:14 ponder Exp $*/
 
 package freemind.modes.schememode;
 
-import freemind.main.FreeMind;
+import freemind.main.FreeMindMain;
 import freemind.modes.Mode;
 import freemind.modes.MindMap;
 import freemind.modes.ModeController;
@@ -68,7 +68,10 @@ public class SchemeMode implements Mode {
 	    ((ControllerAdapter)getModeController()).changeToMapOfMode(this);
 	}
     }
-    
+
+    public void restore(String restoreable) {
+    }
+
     public Controller getController() {
 	return c;
     }
@@ -90,11 +93,11 @@ public class SchemeMode implements Mode {
     public JMenu getModeEditMenu() {
 	JMenu editmenu = new JMenu();
 	JMenuItem editItem = editmenu.add(((SchemeController)getModeController()).edit);
- 	editItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_edit")));
+ 	editItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_edit")));
  	JMenuItem addNewItem = editmenu.add(((SchemeController)getModeController()).addNew);
- 	addNewItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_add")));
+ 	addNewItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_add")));
  	JMenuItem removeItem = editmenu.add(((SchemeController)getModeController()).remove);
- 	removeItem.setAccelerator(KeyStroke.getKeyStroke(FreeMind.userProps.getProperty("keystroke_remove")));
+ 	removeItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_remove")));
 	editmenu.add(((SchemeController)getModeController()).evaluate);
 	editmenu.add(((SchemeController)getModeController()).toggleFolded);
 
@@ -103,6 +106,10 @@ public class SchemeMode implements Mode {
 
     public JToolBar getModeToolBar() {
 	return toolbar;
+    }
+
+    public FreeMindMain getFrame() {
+	return c.getFrame();
     }
 
     public JPopupMenu getPopupMenu() {

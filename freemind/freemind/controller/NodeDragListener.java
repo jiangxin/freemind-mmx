@@ -46,21 +46,20 @@ public class NodeDragListener implements DragGestureListener {
 
     public void dragGestureRecognized(DragGestureEvent e) {
 	MindMapNode node = ((NodeView)e.getComponent()).getModel();
-	System.out.println("Node:"+node);
-	
 	if (node.isRoot()) return;
-	Transferable t = c.getModel().cut(node);
-	System.out.println("Trans:"+t);
-	
+	Transferable t = c.getModel().copy(node);
 	// starts the dragging
-	DragSource dragSource = DragSource.getDefaultDragSource();
-	dragSource.startDrag (e, DragSource.DefaultMoveDrop, t,
+	//	DragSource dragSource = DragSource.getDefaultDragSource();
+	e.startDrag (DragSource.DefaultMoveDrop, t,
 			      new DragSourceListener() {
 				      public void	dragDropEnd(DragSourceDropEvent dsde) {
 					  // if not ok, go back
 					  if ( !dsde.getDropSuccess()){
+					      //					      c.getModel().paste(oldnode,(MindMapNode)oldnode.getParent());
+					  } else {
+					      //successful
 					      MindMapNode oldnode = ((NodeView)dsde.getDragSourceContext().getComponent()).getModel();
-					      c.getModel().paste(oldnode,(MindMapNode)oldnode.getParent());
+					      c.getModel().cut(oldnode);
 					  }
 				      }
 				      public void	dragEnter(DragSourceDragEvent dsde) {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.10 2001-03-24 22:45:45 ponder Exp $*/
+/*$Id: NodeAdapter.java,v 1.11 2001-06-22 20:35:14 ponder Exp $*/
 
 package freemind.modes;
 
@@ -264,6 +264,20 @@ public abstract class NodeAdapter implements MindMapNode {
 	}
 	return string;
     }
+
+    /**
+     * Returns whether the argument is parent
+     * or parent of one of the grandpa's of this node.
+     * (transitive)
+     */
+    public boolean isDescendantOf(MindMapNode node) {
+	if(this.isRoot())
+	    return false;
+	else if (node == getParent())
+	    return true;
+	else
+	    return ((MindMapNode)getParent()).isDescendantOf(node);
+    }	    
 	 
     public boolean isRoot() {
 	return (parent==null);

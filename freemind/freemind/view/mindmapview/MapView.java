@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.13 2001-05-05 13:58:46 ponder Exp $*/
+/*$Id: MapView.java,v 1.14 2001-06-22 20:35:14 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -55,7 +55,7 @@ public class MapView extends JPanel implements Printable {
     private Vector selected = new Vector();
     private Controller controller;
     private float zoom=1F;
-	private boolean isPrinting = false; // use for remove selection from print
+    private boolean isPrinting = false; // use for remove selection from print
 
     //
     // Constructors
@@ -67,13 +67,15 @@ public class MapView extends JPanel implements Printable {
 	this.model = model;
 	this.controller = controller;
 
+	this.setAutoscrolls(true); //For some reason this doesn't work.
+
 	getModel().addTreeModelListener( new MapModelHandler() );
 
 	this.setLayout( new MindMapLayout( this ) );
 
-	setBackground(getModel().getBackgroundColor());
-	
 	initRoot();
+
+	setBackground(getModel().getBackgroundColor());
     }
 
     public void initRoot() {
@@ -181,15 +183,15 @@ public class MapView extends JPanel implements Printable {
 
     /**
      * Select a node.
-	 * If extend is false, it will be the only one.
-	 * If yes, this node will be added.
+     * If extend is false, it will be the only one.
+     * If yes, this node will be added.
      */
     public void select(NodeView newSelected, boolean extend) {
-		if (extend)
-			toggleSelect(newSelected);
-		else
-			select(newSelected);
-	}
+	if (extend)
+	    toggleSelect(newSelected);
+	else
+	    select(newSelected);
+    }
 
     /**
      * Select only one node.
@@ -269,13 +271,13 @@ public class MapView extends JPanel implements Printable {
   	return getController().getNodeKeyListener();
     }
 
-	DragGestureListener getNodeDragListener() {
-		return getController().getNodeDragListener();
-	}
+    DragGestureListener getNodeDragListener() {
+	return getController().getNodeDragListener();
+    }
 
-	DropTargetListener getNodeDropListener() {
-		return getController().getNodeDropListener();
-	}
+    DropTargetListener getNodeDropListener() {
+	return getController().getNodeDropListener();
+    }
 
     public NodeView getSelected() {
 	return (NodeView)selected.get(0);

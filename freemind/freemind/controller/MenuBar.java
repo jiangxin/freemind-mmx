@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.11 2001-05-09 21:21:49 ponder Exp $*/
+/*$Id: MenuBar.java,v 1.12 2001-06-22 20:35:14 ponder Exp $*/
 
 package freemind.controller;
 
@@ -42,6 +42,9 @@ public class MenuBar extends JMenuBar {
     private JMenu filemenu;
     private JMenu editmenu;
     Controller c;
+    private LinkedList lastOpenedItems = new LinkedList();
+    ActionListener mapsMenuActionListener = new MapsMenuActionListener();
+    ActionListener lastOpenedActionListener = new LastOpenedActionListener();
 
     public MenuBar(Controller controller) {
 	this.c = controller;
@@ -87,7 +90,6 @@ public class MenuBar extends JMenuBar {
     }//Constructor
 
     public void updateMapsMenu() {
-	ActionListener mapsMenuActionListener = new MapsMenuActionListener();
 	mapsmenu.removeAll();
 	if (c.getMapModuleManager().getMapModules() == null) {
 	    return;
@@ -124,6 +126,22 @@ public class MenuBar extends JMenuBar {
 	
 	JMenuItem quit = filemenu.add(c.quit);
 	quit.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_quit")));
+	filemenu.addSeparator();
+	updateLastOpenedList();
+    }
+
+    public void updateLastOpenedList() {
+	for(ListIterator it=lastOpenedItems.listIterator();it.hasNext();) {
+	    filemenu.remove((JMenuItem)it.next());
+	}
+	lastOpenedItems.clear();
+	LastOpenedList lst = c.getLastOpenedList();
+	for(ListIterator it=lst.listIterator();it.hasNext();) {
+	    JMenuItem item = new JMenuItem((String)it.next());
+	    item.addActionListener(lastOpenedActionListener);
+	    lastOpenedItems.add(item);
+	    filemenu.add(item);
+	}
     }
 
     public void updateEditMenu() {
@@ -175,6 +193,12 @@ public class MenuBar extends JMenuBar {
     private class MapsMenuActionListener implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 	    c.getMapModuleManager().changeToMapModule(e.getActionCommand());
+	}
+    }
+
+    private class LastOpenedActionListener implements ActionListener {
+	public void actionPerformed(ActionEvent e) {
+	    c.getLastOpenedList().open(e.getActionCommand());
 	}
     }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.24 2001-05-09 21:21:49 ponder Exp $*/
+/*$Id: Controller.java,v 1.25 2001-06-22 20:35:14 ponder Exp $*/
 
 package freemind.controller;
 
@@ -65,7 +65,7 @@ import freemind.modes.ControllerAdapter;
  */
 public class Controller {
 
-    private LastOpenedList lastOpened = new LastOpenedList();//A list of the pathnames of all the maps that were opened in the last time
+    private LastOpenedList lastOpened;//A list of the pathnames of all the maps that were opened in the last time
     private MapModuleManager mapModuleManager;// new MapModuleManager();
     private HistoryManager history = new HistoryManager();
     private Map modes; //hash of all possible modes
@@ -106,6 +106,7 @@ public class Controller {
 	this.frame = frame;
 	modes = modescreator.getAllModes();
 	mapModuleManager=new MapModuleManager(this);
+	lastOpened=new LastOpenedList(this, getFrame().getProperty("lastOpened"));
 
   	nodeMouseListener = new NodeMouseListener(this);
 	nodeKeyListener = new NodeKeyListener(this);
@@ -172,6 +173,10 @@ public class Controller {
 	return mapModuleManager;
     }
 
+    public LastOpenedList getLastOpenedList() {
+	return lastOpened;
+    }
+
     private MapModule getMapModule() {
 	return getMapModuleManager().getMapModule();
     }
@@ -180,16 +185,16 @@ public class Controller {
 	return toolbar;
     }
 
-    public void changeToMode(String mode) {
-	if (mode.equals(getMode())) {
-	    return;
+    public boolean changeToMode(String mode) {
+	if (getMode() != null && mode.equals(getMode().toString())) {
+	    return true;
 	}
 
 	//Check if the mode is available
 	Mode newmode = (Mode)modes.get(mode);
 	if (newmode == null) {
 	    getFrame().err(getFrame().getResources().getString("mode_na")+": "+mode);
-	    return;
+	    return false;
 	}
 
 	if (getMode() != null) {
@@ -228,6 +233,8 @@ public class Controller {
 	MessageFormat formatter = new MessageFormat(
 		getFrame().getResources().getString("mode_status"));
 	getFrame().out(formatter.format(messageArguments));
+	
+	return true;
     }
 
 
@@ -379,9 +386,15 @@ public class Controller {
 	    try {
 		getMapModuleManager().close();
 	    } catch (Exception ex) {
-		return;
+		System.out.println("Error: "+ex);
+		//		return;
 	    }
 	}
+
+	String lastOpenedString=lastOpened.save();
+	getFrame().setProperty("lastOpened",lastOpenedString);
+	getFrame().saveProperties();
+	//save to properties
 	System.exit(0);
     }
 
@@ -450,7 +463,7 @@ public class Controller {
 	//Change MapModules
 
 	public boolean tryToChangeToMapModule(String mapmodule) {
-	    if (getMapModules().containsKey(mapmodule)) {
+	    if (mapmodule != null && getMapModules().containsKey(mapmodule)) {
 		changeToMapModule(mapmodule);
 		return true;
 	    } else {
@@ -485,8 +498,12 @@ public class Controller {
 	//private
 
 	private void changeToAnotherMap(String toBeClosed) {
+	    if(!(getMapModules().size() > 1)) {
+		setMapModule(null);
+		return;
+	    }
 	    List keys = new LinkedList(getMapModules().keySet());
-	    int index = keys.indexOf(getMapModule().toString());
+	    //	    int index = keys.indexOf(getMapModule().toString());
 	    for (ListIterator i = keys.listIterator(); i.hasNext();) {
 		String key = (String)i.next();
 		if (!key.equals(toBeClosed)) {
@@ -494,13 +511,12 @@ public class Controller {
 		    return;
 		}
 	    }
-	    //What to do if no other maps are available?
-	    setMapModule(null);
 	}
 
 	private void mapModuleChanged() {
 	    frame.getFreeMindMenuBar().updateMapsMenu();//to show the new map in the mindmaps menu
 	    lastOpened.mapOpened(getMapModule());
+	    frame.getFreeMindMenuBar().updateLastOpenedList();//to show the new map in the file menu
 	    //	history.add(getMapModule());
 	    updateNavigationActions();
 	    setTitle();
@@ -610,44 +626,6 @@ public class Controller {
 	    }
 	}
     }
-
-    /**
-     * This class manages a list of the maps that were opened last.
-     * It aims to provide persistence for the last recent maps.
-     * Maps should be showed in the format:"mode:key",ie."mindmap:/home/joerg/freemind.mm"
-     */
-    private class LastOpenedList {
-	private int entrys = 10;
-	private List lst = new LinkedList();	
-
-	LastOpenedList() {
-	}
-
-	void mapOpened(MapModule map) {
-	    if (lst.contains(map)) {
-		lst.remove(map);
-	    }
-	    lst.add(0,map);
-
-	    while (lst.size()>entrys) {
-		lst.remove(lst.size()); //remove last elt
-	    }
-	}
-
-	void mapClosed(MapModule map) {
-	}
-
-	String save() {
-	    String str = new String();
-
-	    return str;
-	}
-
-	void load(String data) {
-	}
-    }
-
-    
 
     //
     // program/map control

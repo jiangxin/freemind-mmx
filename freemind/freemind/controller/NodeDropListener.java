@@ -39,25 +39,57 @@ public class NodeDropListener implements DropTargetListener {
     public NodeDropListener(Controller controller) {
 	c = controller;
     }
+
+    private boolean isDragAcceptable(DropTargetDragEvent event) {
+	DataFlavor[] flavors = event.getCurrentDataFlavors();
+	for (int i = 0; i < flavors.length; i++) {
+	    if (flavors[i].equals(DataFlavor.stringFlavor)) {
+		return true;
+	    }
+	}
+	return false;
+    }
+
+    private boolean isDropAcceptable(DropTargetDropEvent event) {
+	MindMapNode node = ((NodeView)event.getDropTargetContext().getComponent()).getModel();
+	if(!node.isDescendantOf(c.getView().getSelected().getModel())){
+	    DataFlavor[] flavors = event.getCurrentDataFlavors();
+	    for (int i = 0; i < flavors.length; i++) {
+		if (flavors[i].equals(DataFlavor.stringFlavor)) {
+		    return true;
+		}
+	    }
+	}
+	return false;
+    }
+
 	
     public void drop (DropTargetDropEvent dtde) {
-      dtde.acceptDrop(DnDConstants.ACTION_MOVE);
-      try {
-        Transferable t = dtde.getTransferable();
-		MindMapNode node = ((NodeView)dtde.getDropTargetContext().getComponent()).getModel();
-		c.getModel().paste(t,node);
-      }
-      catch (Exception e) {
-        dtde.dropComplete(false);
-        return;
-      }
-      dtde.dropComplete(true);
+	if(!isDropAcceptable(dtde)) {
+	    dtde.rejectDrop();
+	    return;
+	}
+	dtde.acceptDrop(DnDConstants.ACTION_COPY);
+	try {
+	    Transferable t = dtde.getTransferable();
+	    MindMapNode node = ((NodeView)dtde.getDropTargetContext().getComponent()).getModel();
+	    c.getModel().paste(t,node);
+	}
+	catch (Exception e) {
+	    System.out.println("Drop exception:"+e);
+	    dtde.dropComplete(false);
+	    return;
+	}
+	dtde.dropComplete(true);
     }
 
     public void dragEnter (DropTargetDragEvent dtde) {
-		// TODO: check DataFlavor before say ok
-		// then dtde.rejectDrag(); if not
-		dtde.acceptDrag(DnDConstants.ACTION_MOVE);
+	// TODO: check DataFlavor before say ok
+	// then dtde.rejectDrag(); if not
+	if(isDragAcceptable(dtde))
+	    dtde.acceptDrag(DnDConstants.ACTION_MOVE);
+	else
+	    dtde.rejectDrag();
     }
 
     public void dragOver (DropTargetDragEvent e) {}

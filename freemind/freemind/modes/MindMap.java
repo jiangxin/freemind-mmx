@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.6 2001-05-05 13:58:46 ponder Exp $*/
+/*$Id: MindMap.java,v 1.7 2001-06-22 20:35:14 ponder Exp $*/
 
 package freemind.modes;
 
@@ -39,7 +39,15 @@ public interface MindMap extends TreeModel {
 
     void paste(Transferable t, MindMapNode parent);
 
-    void paste(MindMapNode node, MindMapNode parent);
+    //    void paste(MindMapNode node, MindMapNode parent);
+    
+    /**
+     * Returns a string that may be given to the modes restore()
+     * to get this map again. The Mode must take care that
+     * two different maps don't give the same restoreable
+     * key.
+     */
+    String getRestoreable();
 
     Object[] getPathToRoot( TreeNode node );
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMode.java,v 1.3 2001-03-28 19:17:37 ponder Exp $*/
+/*$Id: BrowseMode.java,v 1.4 2001-06-22 20:35:14 ponder Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -62,6 +62,9 @@ public class BrowseMode implements Mode {
 	if (map != "") {
 	    ((BrowseController)getModeController()).loadURL(map);
 	}
+    }
+
+    public void restore(String restoreable) {
     }
     
     public Controller getController() {

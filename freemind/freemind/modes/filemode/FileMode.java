@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMode.java,v 1.9 2001-05-06 18:47:57 ponder Exp $*/
+/*$Id: FileMode.java,v 1.10 2001-06-22 20:35:14 ponder Exp $*/
 
 package freemind.modes.filemode;
 
@@ -71,6 +71,9 @@ public class FileMode implements Mode {
 // 	getController().paste.setEnabled(false);
     }
     
+    public void restore(String restoreable) {
+    }
+
     public Controller getController() {
 	return c;
     }

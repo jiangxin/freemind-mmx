@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.12 2001-05-05 13:58:46 ponder Exp $*/
+/*$Id: NodeView.java,v 1.13 2001-06-22 20:35:14 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -84,15 +84,16 @@ public abstract class NodeView extends JLabel {
 	addDropListener( map.getNodeDropListener() );
     }
 
-	void addDragListener(DragGestureListener dgl) {
-		DragSource dragSource = DragSource.getDefaultDragSource();
-		dragSource.createDefaultDragGestureRecognizer(
-			this, DnDConstants.ACTION_MOVE,dgl);
-	}
+    void addDragListener(DragGestureListener dgl) {
+	DragSource dragSource = DragSource.getDefaultDragSource();
+	dragSource.createDefaultDragGestureRecognizer(
+						      this, DnDConstants.ACTION_COPY,dgl);
+    }
 
-	void addDropListener(DropTargetListener dtl) {
-		DropTarget dropTarget = new DropTarget(this,dtl);
-	}
+    void addDropListener(DropTargetListener dtl) {
+	DropTarget dropTarget = new DropTarget(this,dtl);
+	dropTarget.setActive(true);
+    }
 
     /**
      * Factory method which creates the right NodeView for the model.
