@@ -19,10 +19,11 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: PrintActionHandler.java,v 1.1.2.3 2004-05-09 22:31:14 christianfoltin Exp $*/
+/*$Id: PrintActionHandler.java,v 1.1.2.4 2004-05-21 21:49:11 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
+import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ModeController;
 
 /**

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.10.9 2004-05-09 22:31:15 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.10.10 2004-05-21 21:49:12 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -50,6 +50,8 @@ import javax.swing.filechooser.FileFilter;
 import javax.xml.bind.JAXBException;
 
 import freemind.controller.Controller;
+import freemind.controller.MenuBar;
+import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.ActorXml;
 import freemind.controller.actions.generated.instance.BoldNodeAction;
@@ -350,6 +352,24 @@ public class MindMapController extends ControllerAdapter {
 
 	return editMenu;
     }
+
+
+	/**
+	 * @param holder
+	 */
+	public void updateMenus(StructuredMenuHolder holder) {
+		add(holder, MenuBar.FILE_MENU+"open/new", newMap, "keystroke_newMap");
+		add(holder, MenuBar.FILE_MENU+"open/open", open, "keystroke_open");
+		add(holder, MenuBar.FILE_MENU+"open/save", save, "keystroke_save");
+		add(holder, MenuBar.FILE_MENU+"open/saveAs", saveAs, "keystroke_saveAs");
+		holder.addSeparator(MenuBar.FILE_MENU+"open");
+		add(holder, MenuBar.FILE_MENU+"export/html", exportToHTML, "keystroke_export_to_html");
+//		// hooks: 
+//		// hooks, fc, 1.3.2004:
+//		for (int i=0; i<modeControllerHookActions.size(); ++i) {          
+//			   holder.addAction((Action) modeControllerHookActions.get(i));
+//		}
+	}
 
     JMenu getFileMenu() {
         JMenu fileMenu = new JMenu();

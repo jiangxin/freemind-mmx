@@ -18,7 +18,8 @@ Changes made in Freemind 0.7.2:
 * Bug fix: AutomaticLayout.java
 * Undo action added. Currently only one undo action is working.
 * Added addNode/deleteNode to the undo-actions.
-
+* no root folding.
+* Started to rearrange the menus.
 
 Changes made in Freemind 0.7.1:
 ===============================

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.12 2004-05-09 23:11:30 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.13 2004-05-21 21:49:11 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -72,6 +72,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import freemind.controller.Controller;
+import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.AbstractXmlAction;
 import freemind.controller.actions.ActionFactory;
 import freemind.controller.actions.ActionHandler;
@@ -429,6 +430,13 @@ public abstract class ControllerAdapter implements ModeController {
        return item;
     }
 
+	/** @return returns the new JMenuItem.*/
+	protected JMenuItem add(StructuredMenuHolder holder, String category, Action action, String keystroke) { 
+	   JMenuItem item = holder.addMenuItem(new JMenuItem(action), category);
+	   item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
+	   return item;
+	}
+
     protected void add(JMenu menu, Action action) {
        menu.add(action); }
 
@@ -559,12 +567,15 @@ public abstract class ControllerAdapter implements ModeController {
 			}
 		} else {
 			MindMapNode node = getSelected();
-			for (Iterator j = node.getActivatedHooks().iterator();
-				j.hasNext();
-				) {
-				PermanentNodeHook hook = (PermanentNodeHook) j.next();
-				hook.onLooseFocusHook();
-			}
+			// bug fix, fc 18.5.2004. This should not be here.
+			if (node != null) {
+                for (Iterator j = node.getActivatedHooks().iterator();
+                    j.hasNext();
+                    ) {
+                    PermanentNodeHook hook = (PermanentNodeHook) j.next();
+                    hook.onLooseFocusHook();
+                }
+            }
 		}
 	}
 
@@ -790,7 +801,7 @@ public abstract class ControllerAdapter implements ModeController {
             MindMapNode node = (MindMapNode)it.next();
             // fold the node only if the node is not a leaf (PN 0.6.2)
             if (node.hasChildren() || node.isFolded() || Tools.safeEquals(getFrame().getProperty("enable_leaves_folding"),"true"))   {
-                getModel().setFolded(node, fold);
+				getModel().setFolded(node, fold);
             }
             lastNode = node;
         }

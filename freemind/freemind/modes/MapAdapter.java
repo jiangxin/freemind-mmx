@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.10.7 2004-05-09 22:31:14 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.10.8 2004-05-21 21:49:11 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -196,11 +196,17 @@ public abstract class MapAdapter implements MindMap {
     // Node editing
     //
 
-    public void setFolded( MindMapNode node, boolean folded ) {
-       if (node.isFolded() != folded) {
-          node.setFolded(folded);
-          getFrame().getView().selectAsTheOnlyOneSelected(node.getViewer());
-          fireTreeStructureChanged(this, getPathToRoot(node), null, null); }}
+    public void setFolded(MindMapNode node, boolean folded) {
+        // no root folding, fc, 16.5.2004
+        if (node.isRoot()) {
+            return;
+        }
+        if (node.isFolded() != folded) {
+            node.setFolded(folded);
+            getFrame().getView().selectAsTheOnlyOneSelected(node.getViewer());
+            fireTreeStructureChanged(this, getPathToRoot(node), null, null);
+        }
+    }
  
     public void setLink( NodeAdapter node, String link ) {
 	node.setLink(link);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMode.java,v 1.8 2003-11-03 11:00:22 sviles Exp $*/
+/*$Id: SchemeMode.java,v 1.8.12.1 2004-05-21 21:49:12 christianfoltin Exp $*/
 
 package freemind.modes.schememode;
 
@@ -26,6 +26,8 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
 import freemind.controller.Controller;
+import freemind.controller.MenuBar;
+import freemind.controller.StructuredMenuHolder;
 import freemind.main.FreeMindMain;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
@@ -109,5 +111,16 @@ public class SchemeMode implements Mode {
 
     public FreeMindMain getFrame() {
 	return c.getFrame();
+    }
+
+    /* (non-Javadoc)
+     * @see freemind.modes.Mode#updateMenus(freemind.controller.StructuredMenuHolder)
+     */
+    public void updateMenus(StructuredMenuHolder holder) {
+		SchemeController controller = ((SchemeController)getModeController());
+    	holder.addAction(controller.newMap, MenuBar.FILE_MENU+"open/new");
+		holder.addAction(controller.open, MenuBar.FILE_MENU+"open/open");
+		holder.addAction(controller.save, MenuBar.FILE_MENU+"open/save");
+		holder.addAction(controller.saveAs, MenuBar.FILE_MENU+"open/saveAs");
     }
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.10.4 2004-05-09 22:31:13 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.10.5 2004-05-21 21:49:10 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -392,8 +392,7 @@ public class Controller {
         setTitle();
         getMode().activate();
 
-        getFrame().getFreeMindMenuBar().updateFileMenu();
-        getFrame().getFreeMindMenuBar().updateEditMenu();
+        getFrame().getFreeMindMenuBar().updateMenus();
 
         if (getMapModule() == null) {
             setAllActions(false);
@@ -748,9 +747,11 @@ public class Controller {
         //private
 
         private void mapModuleChanged() {
-            frame.getFreeMindMenuBar().updateMapsMenu();//to show the new map in the mindmaps menu
-            lastOpened.mapOpened(getMapModule());
-            frame.getFreeMindMenuBar().updateLastOpenedList();//to show the new map in the file menu
+//			frame.getFreeMindMenuBar().updateMapsMenu();//to show the new map in the mindmaps menu
+//			lastOpened.mapOpened(getMapModule());
+//			frame.getFreeMindMenuBar().updateLastOpenedList();//to show the new map in the file menu
+			lastOpened.mapOpened(getMapModule());
+			frame.getFreeMindMenuBar().updateMenus();//to show the new map in the mindmaps menu
             //  history.add(getMapModule());
             //updateNavigationActions();
             setTitle();

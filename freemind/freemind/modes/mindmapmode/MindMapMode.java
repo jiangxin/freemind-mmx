@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMode.java,v 1.17.12.1 2004-03-11 06:28:41 christianfoltin Exp $*/
+/*$Id: MindMapMode.java,v 1.17.12.2 2004-05-21 21:49:12 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import freemind.controller.Controller;
+import freemind.controller.StructuredMenuHolder;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 
@@ -89,5 +90,9 @@ public class MindMapMode implements Mode {
 
     public JMenu getModeEditMenu() {
 	return ((MindMapController)getModeController()).getEditMenu();
+    }
+
+    public void updateMenus(StructuredMenuHolder holder) {
+		((MindMapController)getModeController()).updateMenus(holder);
     }
 }
