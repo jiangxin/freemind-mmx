@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.2.15 2004-08-29 15:18:21 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.2.16 2004-11-06 22:06:25 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -52,7 +52,7 @@ import freemind.modes.MindMapNode;
  * */
 public class HookFactory {
     /** Match xml files in the accessories/plugin directory and not in its subdirectories. */
-	private static final String pluginPrefixRegEx = "accessories\\.plugins\\.[^.]*";
+	private static final String pluginPrefixRegEx = "(accessories\\.|)plugins\\.[^.]*";
 	private FreeMindMain frame;
 	// Logging: 
 	private java.util.logging.Logger logger;
@@ -188,7 +188,7 @@ public class HookFactory {
 			return hook;
 		} catch (Exception e) {
 			logger.severe(
-				"Error occurred loading hook: " + descriptor.getClassName());
+				"Error occurred loading hook: " + descriptor.getClassName() + "\nException:"+e.toString());
 			return null;
 		}
 	}
@@ -211,6 +211,7 @@ public class HookFactory {
             for (Iterator i = pluginClasspathList.iterator(); i.hasNext();) {
                 PluginClasspathType classPath = (PluginClasspathType) i.next();
                 File file = new File(classPath.getJar());
+                logger.info("file " + file.toString() + " exists = " + file.exists());
                 urls[j++] = file.toURL();
             }
             ClassLoader loader = new URLClassLoader(urls, this.getClass().getClassLoader());

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin>
+	<plugin_classpath jar="plugins/svg/batik-awt-util.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-dom.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-svggen.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-util.jar"/>
+	<plugin_classpath jar="plugins/svg/batik-xml.jar"/>
+	<plugin_classpath jar="plugins/svg/svg_plugin.jar"/>
+	<plugin_action 
+		documentation="SVG Export" 
+		name="SVG Export" base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/ExportSvg.xml" 
+		class_name="plugins.svg.ExportSvg">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/file/export/svg_help"/>
+	</plugin_action>
+</plugin>

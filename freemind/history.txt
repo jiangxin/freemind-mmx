@@ -80,6 +80,8 @@ Changes made in Freemind 0.8.0:
 * Export via XSLT revised. New HTML export added (java script version from Miika Nurminen, 12.7.2004. Thanks. 
 * New HTML export added from Markus Brueckner. Thanks
 
+* Help and SVG Export added as Plugins.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

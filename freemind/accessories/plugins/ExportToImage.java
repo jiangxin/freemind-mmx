@@ -29,7 +29,6 @@ import freemind.view.mindmapview.MapView;
  */
 public class ExportToImage extends ExportHook {
 
-	private MapView view;
 
 	/**
 	 * 
@@ -43,9 +42,6 @@ public class ExportToImage extends ExportHook {
 	 */
 	public void startupMapHook() {
 		super.startupMapHook();
-		view = getController().getView();
-		if (view == null)
-			return;
 		BufferedImage image = createBufferedImage();
 		if (image != null) {
 			String imageType = getResourceString("image_type");
@@ -60,35 +56,6 @@ public class ExportToImage extends ExportHook {
 
 	}
 
-	public BufferedImage createBufferedImage() {
-		//Determine which part of the view contains the nodes of the map:
-			//(Needed to eliminate areas of whitespace around the actual rendering of the map)
-
-		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
-		Rectangle innerBounds = view.getInnerBounds(root.getViewer());
-
-		 //Create an image containing the map:
-		 BufferedImage myImage = (BufferedImage) view.createImage(view.getWidth(), view.getHeight() );
-
-		 //Render the mind map nodes on the image:
-		 Graphics g = myImage.getGraphics();
-		 g.clipRect(innerBounds.x, innerBounds.y, innerBounds.width, innerBounds.height);
-		 view.print(g);
-		 myImage = myImage.getSubimage(innerBounds.x, innerBounds.y, innerBounds.width, innerBounds.height);
-		 return myImage;
-//		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
-//		Rectangle rect = view.getInnerBounds(root.getViewer());
-//
-//		BufferedImage image =
-//			new BufferedImage(
-//				rect.width,
-//				rect.height,
-//				BufferedImage.TYPE_INT_RGB);
-//		Graphics2D g = (Graphics2D) image.createGraphics();
-//		g.translate(-rect.getMinX(), -rect.getMinY());
-//		view.update(g);
-//		return image;
-	}
 	/**
 	 * Export image.
 	 * @return
@@ -143,6 +110,7 @@ public class ExportToImage extends ExportHook {
 	// adapted from http://javaalmanac.com/egs/java.awt.datatransfer/ToClipImg.html:
 	
 //	 This method writes a image to the system clipboard.
+	// fc, 28.10.2004: this new method does not work.
     // otherwise it returns null.
     public void setClipboard(BufferedImage image) {
         ImageSelection imgSel = new ImageSelection(image);

@@ -1,0 +1,11 @@
+<project name="freemind_plugins" default="dist" basedir=".">
+	
+	<property name="plugin.xml" value="plugins/ExportSvg.xml" />
+	<property name="plugin.dir" value="plugins/svg"/>
+	<property name="plugin.jar" value="svg_plugin.jar" />
+	<property name="plugin.zip" value="svg_plugin-${ver}.zip" />
+	<property name="additional.lib" value="${plugin.dir}/batik-awt-util.jar:${plugin.dir}/batik-dom.jar:${plugin.dir}/batik-svggen.jar:${plugin.dir}/batik-util.jar:${plugin.dir}/batik-xml.jar"/>
+	<property name="additional.lib.pattern" value="${plugin.dir}/batik*.jar"/>
+
+	<import file="build_import.xml" />
+</project>
