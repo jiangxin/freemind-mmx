@@ -6,7 +6,9 @@
 	<property name="dist" value="../bin/dist" />
 	<property name="dist.lib" value="${dist}/lib" />
 	<property name="dist_macos_name" value="Mac_OS_X_Freemind-${ver}" />	
-	<property name="dist_macos" value="../bin/dist_macos/${dist_macos_name}" />	
+	<property name="dist_macos_base" value="../bin/dist_macos" />	
+	<property name="dist_macos" value="${dist_macos_base}/${dist_macos_name}" />	
+	<property name="dist_macos_info" value="${dist_macos}/FreeMind.app/Contents/Info.plist"></property>
     <property name="FM.jar" value="${dist.lib}/freemind.jar"/>
 	<property name="post" value="../post" />
 	<property name="debug" value="on" />
@@ -173,6 +175,13 @@
 		            <exclude name="plugins/**" />
           	</jarfileset>
         </jarbundler>
+		<!-- Associate Freemind with mm -->
+		<xslt style="mac_file_association.xslt" 
+			in ="${dist_macos_info}" 
+			out="${dist_macos_info}2"/>
+		<move file="${dist_macos_info}2"
+			  tofile="${dist_macos_info}"/>
+		<!-- Done. -->
 		<mkdir dir="${dist_macos}/accessories" />
 		<copy todir="${dist_macos}/accessories"> 
 			<fileset dir="${dist}/accessories"/>
@@ -299,6 +308,7 @@
 	<target name="clean">
 		<delete dir="${build}"  quiet="true"/>
 		<delete dir="${dist}"  quiet="true"/>
+		<delete dir="${dist_macos_base}"  quiet="true"/>
 		<delete dir="${gen.dir}"  quiet="true"/>
 		<delete dir="${post}"  quiet="true"/>
                 <delete>

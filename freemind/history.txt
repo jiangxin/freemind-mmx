@@ -139,6 +139,8 @@ Changes made in Freemind 0.8.0:
 * New freemind.sh from Eric.
 * Arrow moves with the mouse are undoable now.
 
+* mm files can be associated with FM under Mac OSX now.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added
