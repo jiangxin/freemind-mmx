@@ -32,7 +32,7 @@ import freemind.view.mindmapview.NodeView;
 public class EditAction extends AbstractAction implements ActorXml {
 	private final ControllerAdapter c;
     public EditAction(ControllerAdapter modeController) {
-        super(modeController.getText("edit"));
+        super(modeController.getText("edit_node"));
 		this.c = modeController;
 		this.c.getActionFactory().registerActor(this, getDoActionClass());
     }
@@ -165,7 +165,7 @@ public class EditAction extends AbstractAction implements ActorXml {
 		String oldText = selected.toString();
 
 		try {
-			c.getActionFactory().startTransaction(c.getText("edit"));
+			c.getActionFactory().startTransaction(c.getText("edit_node"));
 			EditNodeAction EditAction = c.getActionXmlFactory().createEditNodeAction();
 			EditAction.setNode(c.getNodeID(selected));
 			EditAction.setText(newText);
@@ -175,7 +175,7 @@ public class EditAction extends AbstractAction implements ActorXml {
 			undoEditAction.setText(oldText);
             	
 			c.getActionFactory().executeAction(new ActionPair(EditAction, undoEditAction));
-			c.getActionFactory().endTransaction(c.getText("edit"));
+			c.getActionFactory().endTransaction(c.getText("edit_node"));
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}

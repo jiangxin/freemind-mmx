@@ -1,3 +1,17 @@
+Changes made in Freemind 0.8.0:
+===============================
+* From Koh (thanks): Standard Macintosh application use Command(meta) key based Keyboard shortcut. (ex. copy is Command(meta) + C). I think that mac version's freemind should allow to assign meta key based shortcut. 
+* Bug fix: AutomaticLayout.java
+* Undo action added. 
+* Added edit node to the undo-actions.
+* Added addNode/deleteNode to the undo-actions.
+* Added cut/paste/del to undo-actions.
+* no root folding.
+* Rearranged the menus.
+* Bug fix: icon selection can be canceled.
+* Plugins are now well distributed over the menus.
+* Blind icons to align the menus (in development)
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added
@@ -14,16 +28,6 @@ Changes made in Freemind 0.7.2:
 * setNode is now called automatically.
 * Jython is substituted by an attrappe 
 * Fold and Unfold one stage is available now.
-* From Koh (thanks): Standard Macintosh application use Command(meta) key based Keyboard shortcut. (ex. copy is Command(meta) + C). I think that mac version's freemind should allow to assign meta key based shortcut. 
-* Bug fix: AutomaticLayout.java
-* Undo action added. 
-* Added edit node to the undo-actions.
-* Added addNode/deleteNode to the undo-actions.
-* Added cut/paste/del to undo-actions.
-* no root folding.
-* Rearranged the menus.
-* Bug fix: icon selection can be canceled.
-* Plugins are now well distributed over the menus.
 
 Changes made in Freemind 0.7.1:
 ===============================

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.10.15 2004-05-23 14:33:19 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.10.16 2004-05-27 07:09:11 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -161,7 +161,7 @@ public abstract class ControllerAdapter implements ModeController {
 		actionFactory = new ActionFactory(getController());
 		// register default action handler:
 		getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
-		getActionFactory().registerHandler(new PrintActionHandler(this));
+		//debug: getActionFactory().registerHandler(new PrintActionHandler(this));
 		undo = new UndoAction();
 		redo = new RedoAction();
 		getActionFactory().registerHandler(new ActionHandler() {

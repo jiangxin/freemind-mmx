@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.2.4 2004-05-24 05:36:42 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.2.5 2004-05-27 07:09:10 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -30,14 +30,13 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.Action;
-import javax.swing.JButton;
+import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
-import freemind.modes.mindmapmode.MindMapToolBar;
 
 /**
  * @author foltin
@@ -45,7 +44,11 @@ import freemind.modes.mindmapmode.MindMapToolBar;
  */
 public class StructuredMenuHolder {
 
-	private String mOutputString;
+	public static final int ICON_SIZE = 16;
+    private String mOutputString;
+	private static Icon blindIcon = new BlindIcon(ICON_SIZE);
+
+
     private static final String SEPARATOR_TEXT = "000";
     private static final String ORDER_NAME = "/order";
 	Map menuMap; 
@@ -256,7 +259,8 @@ public class StructuredMenuHolder {
 	}
 	
 	private static class MenuItemAdder implements MenuAdder {
-		private JMenu myItem;
+
+        private JMenu myItem;
 
 
         public MenuItemAdder(JMenu myItem) {
@@ -265,6 +269,14 @@ public class StructuredMenuHolder {
 
 
         public void addMenuItem(JMenuItem item) {
+        	if(item.getIcon() == null) {
+				item.setIcon(blindIcon);
+        	} else {
+				// align
+        		if(item.getIcon().getIconWidth() < ICON_SIZE) {
+        			item.setIconTextGap(item.getIconTextGap() + (ICON_SIZE - item.getIcon().getIconWidth()));
+        		}
+        	}
         	myItem.add(item);
         }
 

@@ -33,7 +33,7 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 
 	private void setColor(MindMapNode node) {
 		int depth = depth(node);
-		logger.info("COLOR, depth="+(depth));
+		//logger.info("COLOR, depth="+(depth));
 		Color mycolor = colors[colors.length-1]; 
 		if(depth < colors.length)
 			mycolor = colors[depth];
