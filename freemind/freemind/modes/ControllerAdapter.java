@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.8 2000-11-02 17:20:11 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.9 2000-11-03 22:49:20 ponder Exp $*/
 
 package freemind.modes;
 
@@ -356,7 +356,9 @@ public abstract class ControllerAdapter implements ModeController {
 	try {
 	    String fileName = absolute.getFile();
 	    File file = new File(fileName);
-	    load(file);
+	    if(!getController().tryToChangeToMapModule(file.getName())) {//this can lead to confusion if the user handles multiple maps with the same name.
+		load(file);
+	    }
 	} catch (FileNotFoundException e) {
 	    int returnVal = JOptionPane.showConfirmDialog(getController().getFrame(), FreeMind.getResources().getString("repair_link_question"), FreeMind.getResources().getString("repair_link"),JOptionPane.YES_NO_OPTION);
 	    if (returnVal==JOptionPane.YES_OPTION) {

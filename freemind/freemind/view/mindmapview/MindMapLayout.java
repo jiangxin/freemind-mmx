@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.4 2000-10-23 21:38:17 ponder Exp $*/
+/*$Id: MindMapLayout.java,v 1.5 2000-11-03 22:49:20 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -104,6 +104,7 @@ public class MindMapLayout implements LayoutManager {
 		} else {
 		    resizeMap(x + node.getPreferredSize().width);
 		}
+		return;
 	    }
 
 	    node.setBounds(x,y,node.getPreferredSize().width,node.getPreferredSize().height);
@@ -149,7 +150,8 @@ public class MindMapLayout implements LayoutManager {
 	totalXSize = newXSize;
 	getMap().setSize(new Dimension(totalXSize, ySize));
 	//	layoutContainer(getMap());
-	getMap().revalidate();
+	layout(map.getRoot());
+	//	getMap().validate();
     }
 
 

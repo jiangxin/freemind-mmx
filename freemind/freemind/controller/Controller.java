@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.9 2000-11-02 17:20:11 ponder Exp $*/
+/*$Id: Controller.java,v 1.10 2000-11-03 22:49:20 ponder Exp $*/
 
 package freemind.controller;
 
@@ -242,6 +242,14 @@ public class Controller {
     //
     // Map Navigation
     //
+    public boolean tryToChangeToMapModule(String mapmodule) {
+	if (getMapModules().containsKey(mapmodule)) {
+	    changeToMapModule(mapmodule);
+	    return true;
+	} else {
+	    return false;
+	}
+    }
 
     void changeToMapModule(String mapmodule) {
 	MapModule map =  (MapModule)(getMapModules().get(mapmodule));

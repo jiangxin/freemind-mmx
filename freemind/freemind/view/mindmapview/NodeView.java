@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.4 2000-10-27 21:44:35 ponder Exp $*/
+/*$Id: NodeView.java,v 1.5 2000-11-03 22:49:20 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -107,10 +107,6 @@ public abstract class NodeView extends JLabel {
 
     public void paint(Graphics graphics) {
 	super.paint(graphics);
-	if (((NodeAdapter)getModel()).getLink() != null) {//THIS IS NO GOOD! NodeAdapter is too special.
-	    graphics.setColor(Color.red);
-	    graphics.drawLine(0,getSize().height-3,getSize().width,getSize().height-3);
-	}
     }
 
     //

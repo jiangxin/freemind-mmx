@@ -5,6 +5,10 @@
 <body>
 <h1>FreeMind Project History</h1>
 
+<h4>1.11.2000</h4>
+Fifth release (0.2.0)
+Usable for normal user: Intuitive menu structure. Comletely rewritten node-positioning algorithm to enable future extensions (named edges) and for better performance. Many small bugfixes and improvements.
+
 <h4>25.10.2000</h4>
 Designed the new website, merged all available information for FreeMind (README's, Website, ...)
 

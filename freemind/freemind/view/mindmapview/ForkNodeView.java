@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ForkNodeView.java,v 1.3 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: ForkNodeView.java,v 1.4 2000-11-03 22:49:20 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
+import freemind.modes.NodeAdapter;//This should not be done.
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Point;
@@ -60,6 +61,11 @@ public class ForkNodeView extends NodeView {
 	    g.drawRect(0,0,size.width-1, size.height-1);
 	}
 
+	if (((NodeAdapter)getModel()).getLink() != null) {//THIS IS NO GOOD! NodeAdapter is too special.
+	    graphics.setColor(Color.red);
+	    graphics.drawLine(0,getSize().height-3,getSize().width,getSize().height-3);
+	}
+   
 	super.paint(g);
     }
 }

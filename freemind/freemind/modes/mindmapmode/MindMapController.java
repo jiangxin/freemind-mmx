@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.7 2000-11-02 17:20:11 ponder Exp $*/
+/*$Id: MindMapController.java,v 1.8 2000-11-03 22:49:20 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -256,7 +256,12 @@ public class MindMapController extends ControllerAdapter {
 
 	    //Open FileChooser to choose in which file the exported
 	    //branch should be stored
-	    JFileChooser chooser = new JFileChooser();
+	    JFileChooser chooser;
+	    if ((getMap() != null) && (getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
+		chooser = new JFileChooser(getMap().getFile().getParentFile());
+	    } else {
+		chooser = new JFileChooser();
+	    }
 	    //chooser.setLocale(currentLocale);
 	    if (getFileFilter() != null) {
 		chooser.addChoosableFileFilter(getFileFilter());
@@ -286,12 +291,19 @@ public class MindMapController extends ControllerAdapter {
 		getModel().removeNodeFromParent(node);
 		node.setParent(null);
 		MindMapMapModel map = new MindMapMapModel(node);
+		if (getModel().getFile() != null) {
+		    try{
+			map.setLink(node, getModel().getFile().toURL().toString());
+		    } catch(MalformedURLException ex) {
+		    }
+		}
 		//		getController().newMapModule(map);
 		map.save(f);
 
 		getModel().insertNodeInto(newNode,parent, 0);
 		String linkString = link.toString();
 		getModel().setLink(newNode,linkString);
+		getModel().save(getModel().getFile());
 	    }
 	}
     }

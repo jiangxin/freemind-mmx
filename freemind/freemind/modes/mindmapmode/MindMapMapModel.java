@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.6 2000-11-02 17:20:11 ponder Exp $*/
+/*$Id: MindMapMapModel.java,v 1.7 2000-11-03 22:49:20 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -179,6 +179,7 @@ public class MindMapMapModel extends MapAdapter {
 	    //Generating Parser
             DOMParser parser = new DOMParser();
 	    try {
+		//		parser.setFeature("http://apache.org/xml/features/dom/include-ignorable-whitespace",false);
 		parser.parse(file.getPath());
 	    } catch(Exception e) {
 		return null;

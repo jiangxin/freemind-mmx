@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.2 2000-08-11 10:22:38 ponder Exp $*/
+/*$Id: BubbleNodeView.java,v 1.3 2000-11-03 22:49:20 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
+import freemind.modes.NodeAdapter;//This should not be done.
 import freemind.modes.MindMapNode;
 import java.awt.Dimension;
 import java.awt.Color;
@@ -64,6 +65,12 @@ public class BubbleNodeView extends NodeView {
 	    g.setColor(selectedColor);
 	    g.drawRect(0,2,size.width-1, size.height-5);
 	}
+
+	if (((NodeAdapter)getModel()).getLink() != null) {//THIS IS NO GOOD! NodeAdapter is too special.
+	    graphics.setColor(Color.red);
+	    graphics.drawLine(0,getSize().height-3,getSize().width,getSize().height-3);
+	}
+    
 	super.paint(g);
     }
     /**
