@@ -1,5 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000  Joerg Mueller <joergmueller@bigfoot.com>
+ *Copyright (C) 2000-2001  Joerg Mueller <joergmueller@bigfoot.com>
  *See COPYING for Details
  *
  *This program is free software; you can redistribute it and/or
@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.13 2001-03-13 15:50:05 ponder Exp $*/
+/*$Id: ControllerAdapter.java,v 1.14 2001-03-24 22:45:45 ponder Exp $*/
 
 package freemind.modes;
 
@@ -47,6 +47,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.JFileChooser;
+import javax.swing.text.Keymap;
+import javax.swing.text.DefaultEditorKit;
+import javax.swing.KeyStroke;
+import java.awt.event.KeyEvent;
 import javax.swing.filechooser.FileFilter;
 
 /**
@@ -288,6 +292,11 @@ public abstract class ControllerAdapter implements ModeController {
     public void edit(final NodeView node,final NodeView toBeSelected) {
 	getView().scrollNodeToVisible(node);
 	final JTextField input = new JTextField(node.getModel().toString());
+	//	Keymap keymap = input.addKeymap("My",input.getKeymap());
+	//	Action act = input.getActions()[0];//DefaultEditorKit.InsertContentAction;
+	//	KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_A,0);
+	//	keymap.addActionForKeyStroke(key,act);
+
 	Point position = getAbsoluteNodePosition(node);
 	input.setBounds(position.x,position.y,input.getPreferredSize().width,15);
 	input.selectAll();
@@ -305,8 +314,8 @@ public abstract class ControllerAdapter implements ModeController {
 	    });
 		
 	getFrame().getLayeredPane().add(input,2000);
-	input.requestFocus();
 	getFrame().repaint();
+	input.requestFocus();
     }
 
     protected void toggleFolded() {
@@ -352,7 +361,19 @@ public abstract class ControllerAdapter implements ModeController {
 	getView().select(parent.getViewer());
     }
 
-    protected void setLink() {
+    protected void setLinkByTextField() {
+	String old = getModel().getLink(getSelected());
+	if (old != null && old != "") {
+	    getFrame().out("Old link is: "+old);
+	}
+	String link = JOptionPane.showInputDialog("Link:");
+	if (link != null) {
+	    getModel().setLink(getSelected(),link);
+	    getFrame().out("Set Link to: "+link);
+	}
+    }
+
+    protected void setLinkByFileChooser() {
 	URL link;
 	String relative;
 	File input;
@@ -405,7 +426,7 @@ public abstract class ControllerAdapter implements ModeController {
 	} catch (FileNotFoundException e) {
 	    int returnVal = JOptionPane.showConfirmDialog(getView(), getFrame().getResources().getString("repair_link_question"), getFrame().getResources().getString("repair_link"),JOptionPane.YES_NO_OPTION);
 	    if (returnVal==JOptionPane.YES_OPTION) {
-		setLink();
+		setLinkByTextField();
 	    } 
 	}
     }
@@ -643,14 +664,24 @@ public abstract class ControllerAdapter implements ModeController {
 	}
     }
 
-    protected class SetLinkAction extends AbstractAction {
-	public SetLinkAction() {
-	    super(getFrame().getResources().getString("set_link"));
+    protected class SetLinkByFileChooserAction extends AbstractAction {
+	public SetLinkByFileChooserAction() {
+	    super(getFrame().getResources().getString("set_link_by_filechooser"));
 	}
 	public void actionPerformed(ActionEvent e) {
-	    setLink();
+	    setLinkByFileChooser();
 	}
     }
+
+    protected class SetLinkByTextFieldAction extends AbstractAction {
+	public SetLinkByTextFieldAction() {
+	    super(getFrame().getResources().getString("set_link_by_textfield"));
+	}
+	public void actionPerformed(ActionEvent e) {
+	    setLinkByTextField();
+	}
+    }
+
 
     protected class FollowLinkAction extends AbstractAction {
 	public FollowLinkAction() {

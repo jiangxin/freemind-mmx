@@ -2,6 +2,11 @@
 
 <HEAD>
 <TITLE>FreeMind</TITLE>
+    <SCRIPT LANGUAGE="JavaScript">
+      function loadfreemind() {
+      APP = open("freemindbrowser.html","Joerg Mueller's FreeMind","width="+(screen.availWidth - 50)+",height="+(screen.availHeight - 50)+",hotkeys=no, locationbar=no, menubar=no, status=no");
+      }
+    </SCRIPT>
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 <TABLE>
@@ -17,6 +22,7 @@
 	<LI><A HREF="screenshots.html">Screenshots</A></LI>
 	<LI><A HREF="guide.html">Guide</A></LI>
 	<LI><A HREF="development.html">Development</A></LI>
+	<LI><A HREF="javadoc/index.html">JavaDoc</A></LI>
 	<LI><A HREF="author.html">Authors</A></LI>
 	<LI><A HREF="maillist.html">Mailing Lists</A></LI>
 	<LI><A HREF="download.html">Download</A></LI>

@@ -1,10 +1,10 @@
 /* This file is part of NanoXML.
  *
- * $Revision: 1.1 $
- * $Date: 2001-03-13 16:01:42 $
+ * $Revision: 1.2 $
+ * $Date: 2001-03-24 22:45:45 $
  * $Name:  $
  *
- * Copyright (C) 2000 Marc De Scheemaecker, All Rights Reserved.
+ * Copyright (C) 2000-2001 Marc De Scheemaecker, All Rights Reserved.
  *
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from the
@@ -27,7 +27,7 @@
  *  I have changed this a little bit. Joerg.
  * 
  */
-/*$Id: XMLElement.java,v 1.1 2001-03-13 16:01:42 ponder Exp $*/
+/*$Id: XMLElement.java,v 1.2 2001-03-24 22:45:45 ponder Exp $*/
 
 package freemind.main;
 
@@ -61,8 +61,8 @@ import java.util.Vector;
  * and setting the property <CODE>org.xml.sax.parser</CODE> to
  * <CODE>nanoxml.sax.SAXParser</CODE>
  * <P>
- * $Revision: 1.1 $<BR>
- * $Date: 2001-03-13 16:01:42 $<P>
+ * $Revision: 1.2 $<BR>
+ * $Date: 2001-03-24 22:45:45 $<P>
  *
  * @see freemind.main.XMLParseException
  *

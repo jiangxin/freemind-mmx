@@ -1,5 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000  Joerg Mueller <joergmueller@bigfoot.com>
+ *Copyright (C) 2000-2001  Joerg Mueller <joergmueller@bigfoot.com>
  *See COPYING for Details
  *
  *This program is free software; you can redistribute it and/or
@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.13 2001-03-13 15:50:05 ponder Exp $*/
+/*$Id: MindMapController.java,v 1.14 2001-03-24 22:45:46 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -64,7 +64,8 @@ public class MindMapController extends ControllerAdapter {
     Action remove = new RemoveAction();
     Action toggleFolded = new ToggleFoldedAction();
     Action toggleChildrenFolded = new toggleChildrenFoldedAction();
-    Action setLink = new SetLinkAction();
+    Action setLinkByFileChooser = new SetLinkByFileChooserAction();
+    Action setLinkByTextField = new SetLinkByTextFieldAction();
     Action followLink = new FollowLinkAction();
     Action exportBranch = new ExportBranchAction();
     Action importBranch = new ImportBranchAction();
@@ -131,10 +132,10 @@ public class MindMapController extends ControllerAdapter {
     }
 
     public void doubleClick() {
-	if (getFrame().getProperty("mindmap_doubleclick").equals("follow_link")) {
-	    loadURL();
-	} else {
+	if (getFrame().getProperty("mindmap_doubleclick").equals("toggle_folded")) {
 	    toggleFolded();
+	} else {
+	    loadURL();
 	}
     }
 
@@ -205,7 +206,7 @@ public class MindMapController extends ControllerAdapter {
 	JMenu branchMenu = new JMenu(getFrame().getResources().getString("branch"));
 
 	JMenuItem exportBranchItem = branchMenu.add(exportBranch);
-	// 	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_follow_link")));
+	exportBranchItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_export_branch")));
 	JMenu importMenu = new JMenu(getFrame().getResources().getString("import"));
 	branchMenu.add(importMenu);
 
@@ -257,8 +258,10 @@ public class MindMapController extends ControllerAdapter {
 
 	JMenuItem followLinkItem = nodeMenu.add(followLink);
  	followLinkItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_follow_link")));
-	JMenuItem setLinkItem = nodeMenu.add(setLink);
- 	setLinkItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_set_link")));
+	JMenuItem setLinkByFileChooserItem = nodeMenu.add(setLinkByFileChooser);
+ 	setLinkByFileChooserItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_set_link_by_filechooser")));
+	JMenuItem setLinkByTextFieldItem = nodeMenu.add(setLinkByTextField);
+ 	setLinkByTextFieldItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_set_link_by_textfield")));
 
 	nodeMenu.addSeparator();
 
@@ -329,7 +332,8 @@ public class MindMapController extends ControllerAdapter {
 	remove.setEnabled(enabled);
 	toggleFolded.setEnabled(enabled);
 	toggleChildrenFolded.setEnabled(enabled);
-	setLink.setEnabled(enabled);
+	setLinkByTextField.setEnabled(enabled);
+	setLinkByFileChooser.setEnabled(enabled);
 	followLink.setEnabled(enabled);
 	italic.setEnabled(enabled);
 	bold.setEnabled(enabled);
@@ -359,14 +363,22 @@ public class MindMapController extends ControllerAdapter {
 	}
 	public void actionPerformed(ActionEvent e) {
 	    MindMapNodeModel node = (MindMapNodeModel)getSelected();
-	    if(node == null || node.isRoot()) {
+
+	    //if something is wrong, abort.
+	    if(getMap() == null || node == null || node.isRoot()) {
+		getFrame().err("Could not export branch.");
 		return;
+	    }
+	    //If the current map is not saved yet, save it first.
+	    if (getMap().getFile() == null) {
+		getFrame().out("You must save the current map first!");
+		save();
 	    }
 
 	    //Open FileChooser to choose in which file the exported
 	    //branch should be stored
 	    JFileChooser chooser;
-	    if ((getMap() != null) && (getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
+	    if (getMap().getFile().getParentFile() != null) {
 		chooser = new JFileChooser(getMap().getFile().getParentFile());
 	    } else {
 		chooser = new JFileChooser();
@@ -402,7 +414,8 @@ public class MindMapController extends ControllerAdapter {
 		MindMapMapModel map = new MindMapMapModel(node,getFrame());
 		if (getModel().getFile() != null) {
 		    try{
-			map.setLink(node, getModel().getFile().toURL().toString());
+			//set a link from the new root to the old map
+			map.setLink(node, Tools.toRelativeURL(f.toURL(), getModel().getFile().toURL()));
 		    } catch(MalformedURLException ex) {
 		    }
 		}
@@ -410,8 +423,11 @@ public class MindMapController extends ControllerAdapter {
 		map.save(f);
 
 		getModel().insertNodeInto(newNode,parent, 0);
-		String linkString = link.toString();
-		getModel().setLink(newNode,linkString);
+		try {
+		    String linkString = Tools.toRelativeURL(getModel().getFile().toURL(), f.toURL());
+		    getModel().setLink(newNode,linkString);
+		} catch (MalformedURLException ex) {
+		}
 		getModel().save(getModel().getFile());
 	    }
 	}
@@ -482,15 +498,6 @@ public class MindMapController extends ControllerAdapter {
 		}
 		getModel().setLink(parent, null);
 	    }
-	}
-    }
-
-    private class SetLinkAction extends AbstractAction {
-	SetLinkAction() {
-	    super(getFrame().getResources().getString("set_link"));
-	}
-	public void actionPerformed(ActionEvent e) {
-	    setLink();
 	}
     }
 
@@ -743,8 +750,8 @@ public class MindMapController extends ControllerAdapter {
 	    getModel().setBranchColor(getSelected(), color);
 
 	    Font f = new Font(getFrame().getProperty("positive_node_font"),
-			      Integer.parseInt(getFrame().getProperty("positive_node_font_style")),
-			      Integer.parseInt(getFrame().getProperty("positive_node_font_size")));
+			      Integer.parseInt(getFrame().getProperty("positive_node_font_style").trim()),
+			      Integer.parseInt(getFrame().getProperty("positive_node_font_size").trim()));
 	    getModel().setBranchFont(getSelected(), f);
 	}
     }

@@ -1,13 +1,17 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html>
   <head>
-    <title>FreeMind Browser</title>
+    <title>Joerg Muellers FreeMind</title>
   </head>
 
-  <body marginwidth="0" marginheight="0">
-    <!--"CONVERTED_APPLET"-->
-    <!-- CONVERTER VERSION 1.3 -->
+  <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <SCRIPT LANGUAGE="JavaScript"><!--
+
+      modes = "freemind.modes.browsemode.BrowseMode";
+      initial_mode = "Browse";
+      browsemode_initial_map = "http://freemind.sourceforge.net/maps/freemind.mm";
+      docmapurl = "http://freemind.sourceforge.net/maps/freemind.mm";
+
     var _info = navigator.userAgent; var _ns = false;
     var _ie = (_info.indexOf("MSIE") > 0 && _info.indexOf("Win") > 0 && _info.indexOf("Windows 3.1") < 0);
 //--></SCRIPT>
@@ -16,8 +20,8 @@
 //--></SCRIPT></COMMENT>
 
 <SCRIPT LANGUAGE="JavaScript"><!--
-    if (_ie == true) document.writeln('<OBJECT classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" WIDTH = "'+ document.body.clientWidth + 'HEIGHT = "' + document.body.clientHeight + '" codebase="http://java.sun.com/products/plugin/1.3/jinstall-13-win32.cab#Version=1,3,0,0"><NOEMBED><XMP>');
-    else if (_ns == true) document.writeln('<EMBED type="application/x-java-applet;version=1.3"  CODE = "freemind.main.FreeMindApplet.class" CODEBASE = "." ARCHIVE = "freemindbrowser.jar" WIDTH = "'+ (window.innerWidth - 5) + '" HEIGHT = "'+ (window.innerHeight - 5) +'" modes = "freemind.modes.browsemode.BrowseMode"  scriptable=false pluginspage="http://java.sun.com/products/plugin/1.3/plugin-install.html"><NOEMBED><XMP>');
+    if (_ie == true) document.writeln('<OBJECT classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" WIDTH = "'+ (screen.availWidth - 50 ) + '" HEIGHT = "' + (screen.availHeight - 50) + '" codebase="http://java.sun.com/products/plugin/1.3/jinstall-13-win32.cab#Version=1,3,0,0"><NOEMBED><XMP>');
+      else if (_ns == true) document.writeln('<EMBED type="application/x-java-applet;version=1.3"  CODE = "freemind.main.FreeMindApplet.class" CODEBASE = "." ARCHIVE = "freemindbrowser.jar" WIDTH = "'+ (window.innerWidth) + '" HEIGHT = "'+ (window.innerHeight) +'" modes = "'+modes+'" initial_mode = "'+initial_mode+'" browsemode_initial_map = "'+browsemode_initial_map+'" docmapurl = "'+docmapurl+'"  scriptable=false pluginspage="http://java.sun.com/products/plugin/1.3/plugin-install.html"><NOEMBED><XMP>');
 //--></SCRIPT>
 <APPLET  CODE = "freemind.main.FreeMindApplet.class" CODEBASE = "." ARCHIVE = "freemindbrowser.jar" WIDTH = "950" HEIGHT = "650"></XMP>
 <PARAM NAME = CODE VALUE = "freemind.main.FreeMindApplet.class" >
@@ -26,23 +30,15 @@
 
 <PARAM NAME="type" VALUE="application/x-java-applet;version=1.3">
 <PARAM NAME="scriptable" VALUE="false">
-<PARAM NAME = "modes" VALUE ="freemind.modes.browsemode.BrowseMode">
-<PARAM NAME = "docmapurl" VALUE ="http://freemind.sourceforge.net/doc/documentation.mm">
+
+<PARAM NAME = "modes" VALUE = "freemind.modes.browsemode.BrowseMode">
+<PARAM NAME = "browsemode_initial_map" VALUE = "http://freemind.sourceforge.net/maps/freemind.mm">
+<PARAM NAME = "initial_mode" VALUE = "Browse">
+<PARAM NAME = "docmapurl" VALUE = "http://freemind.sourceforge.net/maps/freemind.mm">
 
 </APPLET>
 
 </NOEMBED></EMBED></OBJECT>
-
-
-<!--
-<APPLET CODE = "freemind.main.FreeMindApplet.class" CODEBASE = "." ARCHIVE = "freemindbrowser.jar" WIDTH = "950" HEIGHT = "650">
-<PARAM NAME = "modes" VALUE ="freemind.modes.browsemode.BrowseMode">
-
-
-</APPLET>
--->
-<!--"END_CONVERTED_APPLET"-->
-
   </body>
 </html>
 

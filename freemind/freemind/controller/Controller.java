@@ -1,5 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000  Joerg Mueller <joergmueller@bigfoot.com>
+ *Copyright (C) 2000-2001  Joerg Mueller <joergmueller@bigfoot.com>
  *See COPYING for Details
  *
  *This program is free software; you can redistribute it and/or
@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.14 2001-03-13 15:50:05 ponder Exp $*/
+/*$Id: Controller.java,v 1.15 2001-03-24 22:45:45 ponder Exp $*/
 
 package freemind.controller;
 
@@ -161,7 +161,7 @@ public class Controller {
 	return modes;
     }
 
-    Mode getMode() {
+    public Mode getMode() {
 	return mode;
     }
 
@@ -315,7 +315,6 @@ public class Controller {
 	MapModule mapmodule = new MapModule(map, new MapView(map, this), getMode());
 	setMapModule(mapmodule);
 	addToMapModules(mapmodule.toString(), mapmodule);
-	mapModuleChanged();
     }
 
     public void changeToMapOfMode(Mode mode) {
@@ -381,8 +380,8 @@ public class Controller {
 
     private void addToMapModules(String key, MapModule value) {
 	mapmodules.put(key,value);
-	mapModuleChanged();
 	setAllActions(true);
+	mapModuleChanged();
     }
 
     private void removeFromMapModules(String key) {

@@ -1,5 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000  Joerg Mueller <joergmueller@bigfoot.com>
+ *Copyright (C) 2000-2001  Joerg Mueller <joergmueller@bigfoot.com>
  *See COPYING for Details
  *
  *This program is free software; you can redistribute it and/or
@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.8 2001-03-13 15:50:05 ponder Exp $*/
+/*$Id: FreeMind.java,v 1.9 2001-03-24 22:45:45 ponder Exp $*/
 
 package freemind.main;
 
@@ -45,7 +45,7 @@ import javax.swing.UIManager;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
-    public static final String version = "0.2.5";
+    public static final String version = "0.3";
     //    public static final String defaultPropsURL = "freemind.properties";
     public URL defaultPropsURL;
     public static Properties defaultProps;
@@ -132,7 +132,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		}
         });  
 
-	c.changeToMode("Browse");
+	c.changeToMode(getProperty("initial_mode"));
 
     }//Constructor
 

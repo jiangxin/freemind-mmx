@@ -5,6 +5,10 @@
 <body>
 <h1>FreeMind Project History</h1>
 
+<h4>24.3.2001</h4>
+Release 0.3.0<BR>
+FreeMind Applet. I think the future of FreeMind will be the Web. The only mode yet available in the applet is the new "Browse" mode, so FreeMind maps can now be used on peoples websites, either to provide an overview or to replace the html. I also tried to get some system into all the keyboard shortcuts (sorry, folks ;-) (alt means: edit a node (toggle folded), ctrl means: command for the program (save) and shift means to modify the command (apply it to the whole branch) ). I also fixed some nasty bugs.
+
 <h4>1.11.2000</h4>
 Fifth release (0.2.0)
 Usable for normal user: Intuitive menu structure. Comletely rewritten node-positioning algorithm to enable future extensions (named edges) and for better performance. Many small bugfixes and improvements.
@@ -13,7 +17,7 @@ Usable for normal user: Intuitive menu structure. Comletely rewritten node-posit
 Designed the new website, merged all available information for FreeMind (README's, Website, ...)
 
 <h4>08.-10.2000</h4>
-I'm beginning to study, so I have much less time now ;-) . To add named edges, I had to completely rewrite the view (especially the nodepositioning algorithm). Also improved the internal architecture and the controller.
+To add named edges, I had to completely rewrite the view (especially the nodepositioning algorithm). Also improved the internal architecture and the controller.
 
 <h4>05.08.2000</h4>
 Fourth release (0.1.0)

@@ -1,5 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000  Joerg Mueller <joergmueller@bigfoot.com>
+ *Copyright (C) 2000-2001  Joerg Mueller <joergmueller@bigfoot.com>
  *See COPYING for Details
  *
  *This program is free software; you can redistribute it and/or
@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.1 2001-03-13 16:01:42 ponder Exp $*/
+/*$Id: BrowseController.java,v 1.2 2001-03-24 22:45:46 ponder Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -183,6 +183,7 @@ public class BrowseController extends ControllerAdapter {
     }
 
     private void load(URL url) throws Exception {
+	getToolBar().setURLField(url.toString());
     	BrowseMapModel model = (BrowseMapModel)newModel();
 	model.load(url);
 	getController().newMapModule(model);

@@ -1,5 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000  Joerg Mueller <joergmueller@bigfoot.com>
+ *Copyright (C) 2000-2001  Joerg Mueller <joergmueller@bigfoot.com>
  *See COPYING for Details
  *
  *This program is free software; you can redistribute it and/or
@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.9 2001-03-13 15:50:06 ponder Exp $*/
+/*$Id: MapView.java,v 1.10 2001-03-24 22:45:46 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -85,17 +85,28 @@ public class MapView extends JPanel implements Printable {
     // Navigation
     //
 
+    /**
+     * Problem: Before  scrollRectToVisible is called, the node has the location (0,0), ie. the location first gets
+     * calculated after the scrollpane is actually scrolled. Thus, as a workaround, I simply call scrollRectToVisible
+     * twice, the first time the location of the node is calculated, the second time the scrollPane is actually
+     * scrolled.
+     */
     public void centerNode( NodeView node ) {
 	JViewport viewPort = (JViewport)getParent();
 
 	Dimension d = viewPort.getExtentSize();
-	Rectangle scrollTo = new Rectangle(node.getLocation().x + node.getPreferredSize().width/2 - d.width/2, node.getLocation().y + node.getPreferredSize().height/2 - d.height/2, d.width, d.height);
+	Rectangle scrollTo = new Rectangle(node.getLocation().x + (node.getPreferredSize().width/2) - (d.width/2), node.getLocation().y + (node.getPreferredSize().height/2) - (d.height/2), d.width, d.height);
 	scrollRectToVisible(scrollTo);
+
+	Rectangle scrollTo2 = new Rectangle(node.getLocation().x + (node.getPreferredSize().width/2) - (d.width/2), node.getLocation().y + (node.getPreferredSize().height/2) - (d.height/2), d.width, d.height);
+	scrollRectToVisible(scrollTo2);
     }
 
     public void scrollNodeToVisible( NodeView node ) {
 	//this is buggy!
+	//see centerNode()
 	if (node != null) {
+  	    scrollRectToVisible( new Rectangle(node.getLocation().x-20, node.getLocation().y,node.getSize().width+20,node.getSize().height) );
   	    scrollRectToVisible( new Rectangle(node.getLocation().x-20, node.getLocation().y,node.getSize().width+20,node.getSize().height) );
   	}
     }

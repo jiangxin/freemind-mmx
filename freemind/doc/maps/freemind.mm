@@ -1,2 +1,18 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<map><node text="FreeMind"><node text="Usage"><node text="Keyboard"><edge color="#00ff33"/><node text="Navigation"><node text="Cursor Keys"/><node text="&lt;esc&gt;"><node text="move to root"/></node><node text="Simple style"><node text="E"><node text="up"/></node><node text="D"><node text="down"/></node><node text="S"><node text="left"/></node><node text="F"><node text="right"/></node></node></node><node text="Editing"><node text="Control-D"><node text="delete current subtree"/></node><node text="Control-N"><node text="Add new Node"/></node><node text="Cut&apos;n&apos;Paste"><node text="C-X"><node text="Cut current subtree"/></node><node text="C-V"><node text="Paste from Clipboard"/></node></node><node text="Enter"><node text="Edit current node"/></node></node></node><node text="Mouse"><edge color="#ff3333"/><node text="left mousekey"><node text="Double Click"><node text="Fold/Unfold"/></node><node text="Single Click"><node text="Select"/></node></node><node text="right mousekey"><node text="Single Click"><node text="Open Popup-Menu"/></node></node></node><node color="#ff0000" text="Just play around!"><font size="14"/></node></node><node style="bubble" text="Bugs"><edge color="#990099"/><node text="Fonts"><node text="Bug of Java"><node text="Options"><node text="build workaround"/><node text="wait until fixed"/><node text="Disable Bold/Italic option"/></node></node><node text="Bold&amp;Italic doesn&apos;t always work"/><node text="Font selection for nodes is buggy"/></node><node text="Printing"><node text="Doesn&apos;t work yet"/></node></node><node text="Modes"><node text="MindMap"><node text="First &quot;usable&quot; mode"/><node text="For making Mind maps"><node text="Like introduced by Tony Buzan"/><node text="Like MindManager"/></node></node><node text="File"><node text="Experimental!"/><node text="Only viewing, no editing"/></node></node></node></map>
+<map>
+    <node TEXT="FreeMind">
+        <font NAME="Lucida Sans Regular" BOLD="true" SIZE="18"/>
+        <node LINK="author.mm" TEXT="The Author">
+            <font NAME="Lucida Sans Regular" SIZE="12"/>
+        </node>
+        <node LINK="tutorial.mm" COLOR="#cc0000" TEXT="Tutorial">
+            <font NAME="Lucida Sans Regular" SIZE="24"/>
+        </node>
+        <node LINK="project/project.mm" COLOR="#990099" TEXT="The Project">
+            <font NAME="Lucida Sans Regular" SIZE="14"/>
+        </node>
+        <node LINK="http://freemind.sourceforge.net" COLOR="#009999" TEXT="The Website" STYLE="bubble">
+            <edge COLOR="#009999"/>
+            <font NAME="Lucida Sans Regular" SIZE="12"/>
+        </node>
+    </node>
+</map>

@@ -2,27 +2,61 @@
 	<property name="src" value="." />
 	<property name="build" value="build" />
 	<property name="dist" value="dist" />
-
+	<property name="post" value="post" />
+	<property name="debug" value="on" />
+	<property name="build.compiler" value="modern" />
 
 	<target name="compile">
 		<mkdir dir="${build}"/>
 		<javac	srcdir="${src}"
 			destdir="${build}"
-			classpath="xerces.jar:w3cdom1.jar"
-		        debug="on"/>
+			debug="${debug}"/>
 	</target>
 
 	<target name="dist" depends="jar">
 		<copy todir="${dist}"> 
 			<fileset dir="${src}"
-				includes="**/*.properties,**/freemind.bat,**/freemind.sh"
+				includes="freemind.props,freemind.bat,freemind.sh,license"
 			/>
 		</copy>
-		<copy todir="${dist}/lib">
-			<fileset dir="${src}"
-				includes="**/silk.jar"
-			/>
-		</copy>
+	</target>
+
+	<target name="post" depends="dist,browser,doc">
+		<mkdir dir="${post}" />
+		<zip zipfile="${post}/freemind-bin-ver.zip"
+			basedir="${dist}"
+			excludes="browser"
+		/>
+		<zip zipfile="${post}/freemind-src-ver.zip"
+			basedir="${src}"
+			excludes="build,post,dist"
+		/>
+		<tar tarfile="${post}/freemind-bin.tar"
+			basedir="${dist}"
+			excludes="browser"
+		/>
+		<tar tarfile="${post}/freemind-src.tar"
+			basedir="${src}"
+			excludes="build,post,dist"
+		/>
+		<gzip src="${post}/freemind-bin.tar"
+			zipfile="${post}/freemind-bin-ver.tar.gz"
+		/>
+		<gzip src="${post}/freemind-src.tar"
+			zipfile="${post}/freemind-src-ver.tar.gz"
+		/>
+		<zip zipfile="${post}/freemind-browser-ver.zip"
+			basedir="${dist}/browser"
+		/>
+		<tar tarfile="${post}/freemind-browser.tar"
+			basedir="${dist}/browser"
+		/>
+		<gzip src="${post}/freemind-browser.tar"
+			zipfile="${post}/freemind-browser-ver.tar.gz"
+		/>
+		<delete>
+			<fileset dir="${post}" includes="*.tar" />
+		</delete>
 	</target>
 
 	<target name="jar" depends="compile">
@@ -32,7 +66,8 @@
 			<fileset dir="${build}"/>
 			<fileset dir="${src}">
 				<include name="images/*"/>
-				<include name="*.properties"/>
+				<include name="freemind.properties"/>
+				<include name="Resources*"/>
 			</fileset>
 		</jar>
 	</target>
@@ -56,23 +91,29 @@
 		</jar>
 		<copy todir="${dist}/browser" >
 			<fileset dir="${src}/html">
-				<include name="freemindbrowser.html"/>
+				<include name="*.html"/>
 			</fileset>
 		</copy>
 	</target>
 
 	<target name="doc">
 		<mkdir dir="${dist}/doc" />
+		<mkdir dir="${dist}/doc/javadoc" />
 		<copy todir="${dist}/doc/">
-			<fileset dir="${src}/doc"/>
+			<fileset dir="${src}/doc">
+				<exclude name="*.text"/>
+				<exclude name="compile"/>
+				<exclude name="frame*"/>
+			</fileset>
 		</copy>
 		<javadoc sourcepath="${src}/.."
-		         destdir="${dist}/doc"
+		         destdir="${dist}/doc/javadoc"
 		         packagenames="freemind.*" />
 	</target>
 
 	<target name="clean">
 		<delete dir="${build}" />
 		<delete dir="${dist}" />
+		<delete dir="${post}" />
 	</target>
 </project>
