@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileController.java,v 1.11.18.1 2004-10-17 23:00:12 dpolivaev Exp $*/
+/*$Id: FileController.java,v 1.11.18.2 2004-12-19 09:00:40 christianfoltin Exp $*/
 
 package freemind.modes.filemode;
 
@@ -53,12 +53,9 @@ public class FileController extends ControllerAdapter {
 	return new FileMapModel(getFrame());
     }
 
-    public MindMapNode newNode() {
-	File newNode = new File(((FileNodeModel)getSelected()).getFile(),"new_Directory");
-	newNode.mkdir();
-	return new FileNodeModel(newNode,getFrame());
+    public MindMapNode newNode(Object userObject) {
+        return new FileNodeModel((File) userObject, getFrame());
     }
-
     public JPopupMenu getPopupMenu() {
       return this.popupmenu;
     }

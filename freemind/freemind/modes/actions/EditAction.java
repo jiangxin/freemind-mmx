@@ -114,7 +114,7 @@ public class EditAction extends AbstractAction implements ActorXml {
 				}
 
 				public void split(String newText, int position) {
-					c.getModel().splitNode(node.getModel(), position, newText);
+					c.splitNode(node.getModel(), position, newText);
 					c.getController().obtainFocusForSelected(); // focus fix
 				}
 			});

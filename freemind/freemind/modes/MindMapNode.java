@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.4 2004-11-16 16:42:35 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.5 2004-12-19 09:00:38 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -168,7 +168,21 @@ public interface MindMapNode extends MutableTreeNode {
 	//tooltips,fc 29.2.2004
 	void setToolTip(String tip);
 	String getToolTip();
+	
+	//additional info, fc, 15.12.2004
+	
+	/** This method can be used to store non-visual additions to a node. 
+	 * Currently, it is used for encrypted nodes to store the encrypted content.
+	 * @param info
+	 */
+	void setAdditionalInfo(String info);
+	public String getAdditionalInfo();
+	/**
+	 * @return if true, the output xml contains the concrete node class name.
+	 * Currently, it is used for encrypted nodes.
+	 */
+	public boolean isNodeClassToBeSaved();
         
     MindMapNode shallowCopy();
-    public void save(Writer writer, MindMapLinkRegistry registry) throws IOException;
+    public XMLElement save(Writer writer, MindMapLinkRegistry registry) throws IOException;
 }

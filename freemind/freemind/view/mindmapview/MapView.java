@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.3 2004-10-17 23:00:13 dpolivaev Exp $*/
+/*$Id: MapView.java,v 1.30.16.4 2004-12-19 09:00:41 christianfoltin Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -697,6 +697,10 @@ public class MapView extends JPanel implements Printable {
         return selectedNodes;
     }
 
+    
+    /**
+     * @return an ArrayList of MindMapNode objects.
+     */
     public ArrayList /*of MindMapNodes*/ getSelectedNodesSortedByY() {
         TreeMap sortedNodes = new TreeMap();
         for (int i=0; i<selected.size();i++) {
@@ -1020,10 +1024,16 @@ public class MapView extends JPanel implements Printable {
             // Works only with one child
             MindMapNode child = (MindMapNode)e.getChildren()[0];
 
-            if (child != null) {  // if a node is folded, child is null.
-                // Here, the view will be created if it does no exist already
-                parentView.insert(child);
-                getMindMapLayout().updateTreeHeightWidthShiftFromChildren(child.getViewer()); }
+//            for (int i = 0; i < e.getPath().length; i++) {
+//                MindMapNode node = (MindMapNode) e.getPath()[i];
+//                if(node.isFolded()) {
+//                    logger.info("Found folded node in path of a new children to be inserted.");
+//                    return;
+//                }
+//            }
+            // Here, the view will be created if it does no exist already
+            parentView.insert(child);
+            getMindMapLayout().updateTreeHeightWidthShiftFromChildren(child.getViewer()); 
             getMindMapLayout().updateTreeHeightsAndRelativeYOfAncestors(parentView);
             // Here, the view of child gets its size and position
             getMindMapLayout().layout();

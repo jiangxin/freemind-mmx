@@ -9,6 +9,7 @@ package freemind.modes.actions;
 import java.awt.Color;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import freemind.modes.MindIcon;
@@ -51,6 +52,11 @@ public interface MindMapActions {
 	void moveNodes(MindMapNode selected, List selecteds, int direction);
 	
 	void setFolded(MindMapNode node, boolean folded);
+	/**
+	 * Switches the folding state of all selected nodes. In fact, 
+	 * it determines one action (fold or unfold) and applies this action to every
+	 * selected node.
+	 */
 	void toggleFolded();
 	
 	void displayNode(MindMapNode node);
@@ -98,12 +104,8 @@ public interface MindMapActions {
 //	public void setUnderlined(MindMapNode node);
 //	public void setNormalFont(MindMapNode node);
 	public void increaseFontSize(MindMapNode node, int increment);
-//	public void splitNode(
-//		MindMapNode node,
-//		int caretPosition,
-//		String newText);
-//	//URGENT: This method needs refactoring. At least, it is at the wrong place in the model!!!!
-//	public void joinNodes();
+	public void splitNode(MindMapNode node, int caretPosition, String newText);
+	public void joinNodes(MindMapNode selectedNode, List selectedNodes);
 //	/*
 //	 *
 //	 */

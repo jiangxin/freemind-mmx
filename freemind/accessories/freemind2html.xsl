@@ -30,6 +30,15 @@
 
 <!-- fc, 20.10.2004: The following parameter is set by freemind. -->
 <xsl:param name="destination_dir">./</xsl:param>
+<xsl:param name="area_code"></xsl:param>
+<xsl:param name="folding_type">html_export_no_folding</xsl:param>
+	<!-- possible values: 
+		html_export_fold_all, 
+		html_export_no_folding, 
+		html_export_fold_currently_folded, 
+		html_export_based_on_headings: this means, that approx. five levels are given, more deeper nodes are folded.
+		As of the time being, this parameter is not used.
+		-->
 
   <xsl:template match="/">
     <html>
@@ -37,8 +46,8 @@
         <!-- look if there is any node inside the map (there should never be none, but who knows?) 
              and take its text as the title -->
         <xsl:choose>
-          <xsl:when test="/map/node">
-            <title><xsl:value-of select="/map/node/@TEXT" /></title>
+          <xsl:when test="/node">
+            <title><xsl:value-of select="/node/@TEXT" /></title>
           </xsl:when>
           <xsl:otherwise>
             <title>FreeMind2HTML Mindmap</title>
@@ -79,20 +88,30 @@
           ]]>
         </script>
       </head>
-      <body>
-        <!-- choose the first nodes text again as the headline -->
-        <h1>
-          <xsl:choose>
-            <xsl:when test="/map/node">
-              <xsl:value-of select="/map/node/@TEXT" />
-            </xsl:when>
-            <xsl:otherwise>
-              FreeMind2HTML Mindmap
-            </xsl:otherwise>
-          </xsl:choose>
-        </h1>
-        <xsl:apply-templates />
-      </body>
+		<body>
+			<!-- choose the first nodes text again as the headline -->
+			<h1>
+				<xsl:choose>
+					<xsl:when test="/node">
+						<xsl:value-of select="/node/@TEXT" />
+					</xsl:when>
+					<xsl:otherwise> FreeMind2HTML Mindmap </xsl:otherwise>
+				</xsl:choose>
+			</h1>
+			<!-- place image -->
+			<div style="width:96%; 	padding:2%; 	margin-bottom:10px; 	border: 0px; 	text-align:center; 	vertical-align:center;">
+					<xsl:element name="img">
+						<xsl:attribute name="src"><xsl:value-of select="$destination_dir"/>image.jpg</xsl:attribute>
+						<xsl:attribute name="style">max-width:96%; 	padding:2%; 	margin-bottom:10px; 	border: 0px; 	text-align:center; 	vertical-align:center;</xsl:attribute>
+						<xsl:attribute name="alt">Imagemap</xsl:attribute>
+						<xsl:attribute name="usemap">#fm_imagemap</xsl:attribute>
+					</xsl:element>
+			</div>
+			<map name="fm_imagemap" id="fm_imagemap">
+				<xsl:value-of select="$area_code" disable-output-escaping="yes"/>
+			</map>
+			<xsl:apply-templates />
+		</body>
     </html>
   </xsl:template>
 

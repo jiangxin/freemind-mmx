@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.4 2004-11-19 21:46:52 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.5 2004-12-19 09:00:40 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -73,6 +73,7 @@ import freemind.modes.actions.ChangeArrowsInArrowLinkAction;
 import freemind.modes.actions.ColorArrowLinkAction;
 import freemind.modes.actions.GotoLinkNodeAction;
 import freemind.modes.actions.IconAction;
+import freemind.modes.actions.ImportFolderStructureAction;
 import freemind.modes.actions.NewMapAction;
 import freemind.modes.actions.NewPreviousSiblingAction;
 import freemind.modes.actions.NewSiblingAction;
@@ -96,49 +97,6 @@ public class MindMapController extends ControllerAdapter {
     //private JToolBar toolbar;
     private MindMapToolBar toolbar;
     private boolean addAsChildMode = false;
-/*
-<<<<<<< MindMapController.java
-    Action newMap = new NewMapAction(this);
-    Action open = new OpenAction(this);
-    Action save = new SaveAction(this);
-    Action saveAs = new SaveAsAction(this);
-    Action exportToHTML = new ExportToHTMLAction(this);
-    Action exportBranchToHTML = new ExportBranchToHTMLAction(this);
-
-    Action edit = new EditAction();
-    Action editLong = new EditLongAction();
-    Action newChild = new NewChildAction();
-    Action newChildWithoutFocus = new NewChildWithoutFocusAction();
-    Action newSibling = new NewSiblingAction();
-    Action newPreviousSibling = new NewPreviousSiblingAction();
-    Action remove = new RemoveAction();
-    Action toggleFolded = new ToggleFoldedAction();
-    Action toggleChildrenFolded = new ToggleChildrenFoldedAction();
-    Action setLinkByFileChooser = new SetLinkByFileChooserAction();
-	Action setImageByFileChooser = new SetImageByFileChooserAction();
-    Action setLinkByTextField = new SetLinkByTextFieldAction();
-    Action followLink = new FollowLinkAction();
-    Action exportBranch = new ExportBranchAction();
-    Action importBranch = new ImportBranchAction();
-    Action importLinkedBranch = new ImportLinkedBranchAction();
-    Action importLinkedBranchWithoutRoot = new ImportLinkedBranchWithoutRootAction();
-    Action importExplorerFavorites = new ImportExplorerFavoritesAction();
-    Action importFolderStructure = new ImportFolderStructureAction();
-    Action joinNodes = new JoinNodesAction();
-    Action nodeUp = new NodeUpAction();
-    Action nodeDown = new NodeDownAction();
-    Action find = new FindAction();
-    Action findNext = new FindNextAction();
-
-    Action forkStyle = new NodeViewStyleAction(MindMapNode.STYLE_FORK);
-	Action bubbleStyle = new NodeViewStyleAction(MindMapNode.STYLE_BUBBLE);
-	Action combinedStyle = new NodeViewStyleAction(MindMapNode.STYLE_COMBINED);
-	Action parentStyle = new NodeViewStyleAction(MindMapNode.STYLE_AS_PARENT);
-	
-    Action nodeColor = new NodeColorAction();
-    Action nodeColorBlend = new NodeGeneralAction ("blend_color", null,
-=======
-*/
    public Action newMap = new NewMapAction(this, this);
    public Action open = new OpenAction(this);
    public Action save = new SaveAction(this);
@@ -156,16 +114,10 @@ public class MindMapController extends ControllerAdapter {
    public Action importBranch = new ImportBranchAction();
    public Action importLinkedBranch = new ImportLinkedBranchAction();
    public Action importLinkedBranchWithoutRoot = new ImportLinkedBranchWithoutRootAction();
-   public Action importExplorerFavorites = new ImportExplorerFavoritesAction();
-   public Action importFolderStructure = new ImportFolderStructureAction();
-   public Action joinNodes = new JoinNodesAction();
    public Action find = new FindAction();
    public Action findNext = new FindNextAction();
 
 
-//    public Action normalFont = new NodeGeneralAction (this, "normal", "images/Normal24.gif",
-//       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
-//          map.setNormalFont(node); }});
     public Action increaseNodeFont = new NodeGeneralAction (this, "increase_node_font_size", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
            increaseFontSize(node, 1);
@@ -177,34 +129,6 @@ public class MindMapController extends ControllerAdapter {
 
     // Extension Actions
     public Vector iconActions = new Vector(); //fc
-
-/*
-<<<<<<< MindMapController.java
-    Action italic = new NodeGeneralAction ("italic", "images/Italic24.gif",
-       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
-          map.setItalic(node); }});
-    Action bold   = new NodeGeneralAction ("bold", "images/Bold24.gif",
-       new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
-          map.setBold(node); }});
-    Action cloud   = new NodeGeneralAction ("cloud", "images/Cloud24.gif",
-       new SingleNodeOperation() { private MindMapCloud lastCloud;
-           private MindMapNodeModel nodeOfLastCloud;
-           public void apply(MindMapMapModel map, MindMapNodeModel node) {
-               // store last color to enable if the node is switched on and off.
-               if(node.getCloud() != null) {
-                   lastCloud = node.getCloud();
-                   nodeOfLastCloud = node;
-               }
-            // the root node must not have a cloud
-			if (node.isRoot() == false) {
-               map.setCloud(node); 
-			} 
-               // restore color:
-               if((node.getCloud() != null) && (node == nodeOfLastCloud)) {
-                   node.setCloud(lastCloud);
-               }
-*/
-
 
     FileFilter filefilter = new MindMapFilter();
 
@@ -342,10 +266,35 @@ public class MindMapController extends ControllerAdapter {
        toolbar.selectFontSize(((NodeAdapter)n).getFontSize());
        toolbar.selectFontName(((NodeAdapter)n).getFontFamilyName()); }
 
-    public MindMapNode newNode() {
-       return new MindMapNodeModel("" // getText("new_node") (PN) nicer when created
-                                  , getFrame()); }
+    // fc, 14.12.2004: changes, such that different models can be used:
+    private NewNodeCreator myNewNodeCreator = null;
+    
+    public interface NewNodeCreator {
+        MindMapNode createNode(Object userObject);
+    }
 
+    public class DefaultMindMapNodeCreator implements NewNodeCreator {
+
+        public MindMapNode createNode(Object userObject) {
+            return new MindMapNodeModel(userObject, getFrame());
+        }
+        
+    }
+    
+    public void setNewNodeCreator(NewNodeCreator creator) {
+        myNewNodeCreator = creator;
+    }
+    
+    public MindMapNode newNode(Object userObject) {
+        // singleton default:
+        if (myNewNodeCreator == null) {
+            myNewNodeCreator = new DefaultMindMapNodeCreator();
+        }
+        return myNewNodeCreator.createNode(userObject);
+    }
+
+    // fc, 14.12.2004: end "different models" change
+    
 	    //get/set methods
 
 
@@ -942,51 +891,13 @@ public class MindMapController extends ControllerAdapter {
             catch (Exception ex) {
                handleLoadingException(ex); }}}
 
-    private class ImportExplorerFavoritesAction extends AbstractAction {
-	ImportExplorerFavoritesAction() { super(getText("import_explorer_favorites")); }
-	public void actionPerformed(ActionEvent e) {
-           JFileChooser chooser = new JFileChooser();
-           chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-           chooser.setDialogTitle(getText("select_favorites_folder"));
-           int returnVal = chooser.showOpenDialog(getFrame().getContentPane());
-           if (returnVal == JFileChooser.APPROVE_OPTION) {
-              File folder = chooser.getSelectedFile();
-              getFrame().out("Importing Favorites ...");
-              //getFrame().repaint(); // Refresh the frame, namely hide dialog and show status
-              //getView().updateUI();
-              // Problem: the frame should be refreshed here, but I don't know how to do it
-              getMindMapMapModel().importExplorerFavorites(folder,getSelected(),/*redisplay=*/true);
-              getFrame().out("Favorites imported."); }}}
-
-    private class ImportFolderStructureAction extends AbstractAction {
-	ImportFolderStructureAction() { super(getText("import_folder_structure")); }
-	public void actionPerformed(ActionEvent e) {
-           JFileChooser chooser = new JFileChooser();
-           chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-           chooser.setDialogTitle(getText("select_folder_for_importing"));
-           int returnVal = chooser.showOpenDialog(getFrame().getContentPane());
-           if (returnVal == JFileChooser.APPROVE_OPTION) {
-              File folder = chooser.getSelectedFile();
-              getFrame().out("Importing folder structure ...");
-              //getFrame().repaint(); // Refresh the frame, namely hide dialog and show status
-              //getView().updateUI();
-              // Problem: the frame should be refreshed here, but I don't know how to do it
-              getMindMapMapModel().importFolderStructure(folder,getSelected(),/*redisplay=*/true);
-              getFrame().out("Folder structure imported."); }}}
-
-
-    private class JoinNodesAction extends AbstractAction {
-	JoinNodesAction() { super(getText("join_nodes")); }
-	public void actionPerformed(ActionEvent e) {
-           ((MindMapMapModel)getView().getModel()).joinNodes(); }}
-
     private class FollowLinkAction extends AbstractAction {
 	FollowLinkAction() { super(getText("follow_link")); }
 	public void actionPerformed(ActionEvent e) {
            loadURL(); }}
 
 /*
-<<<<<<< MindMapController.java
+ MindMapController.java
     private class NodeViewStyleAction extends AbstractAction {
        NodeViewStyleAction(final String style) { super(getText(style)); m_style = style; }
        public void actionPerformed(ActionEvent e) {

@@ -24,7 +24,7 @@
 	<!-- begin generator part -->
 	<property name="jaxb" value="${ant.dir}/jaxb-xjc.jar:${ant.dir}/jaxb-api.jar:${ant.dir}/jaxb-impl.jar:${ant.dir}/jaxb-libs.jar:${ant.dir}/namespace.jar:${ant.dir}/relaxngDatatype.jar:${ant.dir}/xsdlib.jar:${ant.dir}/jax-qname.jar"/>
 	<property name="xml" value="${ant.dir}/sax.jar:${ant.dir}/dom.jar"/> 
-	<property name="classpath" value="${jaxb}:${xml}"/>
+	<property name="classpath" value="${jaxb}:${xml}:lib/commons-lang-2.0.jar"/>
 	<property name="xsd.dir" value="." />
 	<property name="gen.dir" value="generated" />
 	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" 

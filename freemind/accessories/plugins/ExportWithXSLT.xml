@@ -1,31 +1,49 @@
 <?xml version="1.0"?>
 <plugin>
-	<plugin_action documentation="%accessories/plugins/ExportWithXSLT.properties_documentation" name="%accessories/plugins/ExportWithXSLT.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithXSLT.properties" class_name="accessories.plugins.ExportWithXSLT">
+	<plugin_action 
+		documentation="%accessories/plugins/ExportWithXSLT.properties_documentation" 
+		name="%accessories/plugins/ExportWithXSLT.properties_name" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="accessories/plugins/ExportWithXSLT.properties" 
+		class_name="accessories.plugins.ExportWithXSLT">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/file/export/exportXslt"/>
 		<plugin_property name="file_type" value="user"/>
 	</plugin_action>
-	<plugin_action name="%accessories/plugins/ExportWithXSLT_HTML.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithXSLT_HTML.properties" class_name="accessories.plugins.ExportWithXSLT">
+	<plugin_action 
+		name="%accessories/plugins/ExportWithXSLT_HTML.properties_name" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="accessories/plugins/ExportWithXSLT_HTML.properties" 
+		class_name="accessories.plugins.ExportWithXSLT">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/file/export/html/exportHTML_II"/>
 		<plugin_property name="file_type" value="html"/>
 		<plugin_property name="file_description" value="Webside"/>
 		<plugin_property name="xslt_file" value="accessories/toxhtml.xsl"/>
 		<plugin_property name="create_dir" value="true"/>
-		<plugin_property name="files_to_copy" value="marktree.js,minus.png,plus.png,treestyles.css"/>
+		<plugin_property name="files_to_copy" 
+			value="marktree.js,minus.png,plus.png,treestyles.css"/>
 		<plugin_property name="file_prefix" value="accessories/"/>
 		<plugin_property name="load_file" value="true"/>
 	</plugin_action>
-	<plugin_action name="%accessories/plugins/ExportWithXSLT_HTML3.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithXSLT_HTML3.properties" class_name="accessories.plugins.ExportWithXSLT">
+	<plugin_action 
+		name="%accessories/plugins/ExportWithXSLT_HTML3.properties_name" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="accessories/plugins/ExportWithXSLT_HTML3.properties" 
+		class_name="accessories.plugins.ExportWithXSLT">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/file/export/html/exportHTML_III"/>
 		<plugin_property name="file_type" value="html"/>
 		<plugin_property name="file_description" value="Webside"/>
-		<plugin_property name="xslt_file" value="accessories/freemind2html.xsl"/>
+		<plugin_property name="xslt_file" 
+			value="accessories/freemind2html.xsl"/>
 		<plugin_property name="create_dir" value="true"/>
-		<plugin_property name="files_to_copy" value="freemind2html.css,hide.png,leaf.png,show.png,ilink.png"/>
+		<plugin_property name="files_to_copy" 
+			value="freemind2html.css,hide.png,leaf.png,show.png,ilink.png"/>
 		<plugin_property name="file_prefix" value="accessories/"/>
 		<plugin_property name="copy_icons" value="true"/>
 		<plugin_property name="load_file" value="true"/>
+		<plugin_property name="create_html_linked_image" value="true"/>
+		<plugin_property name="link_replacement_regexp" value="FM$1FM"/>
 	</plugin_action>
 </plugin>

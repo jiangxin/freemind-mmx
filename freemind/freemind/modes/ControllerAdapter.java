@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.5 2004-11-28 21:37:46 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.6 2004-12-19 09:00:36 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -109,7 +109,10 @@ import freemind.modes.actions.FontFamilyAction;
 import freemind.modes.actions.FontSizeAction;
 import freemind.modes.actions.GotoLinkNodeAction;
 import freemind.modes.actions.IconAction;
+import freemind.modes.actions.ImportExplorerFavoritesAction;
+import freemind.modes.actions.ImportFolderStructureAction;
 import freemind.modes.actions.ItalicAction;
+import freemind.modes.actions.JoinNodesAction;
 import freemind.modes.actions.NewChildAction;
 import freemind.modes.actions.NodeBackgroundColorAction;
 import freemind.modes.actions.NodeColorAction;
@@ -127,6 +130,7 @@ import freemind.modes.actions.ToggleFoldedAction;
 import freemind.modes.actions.UnderlinedAction;
 import freemind.modes.actions.UndoAction;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
+import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.MindMapLayout;
@@ -206,6 +210,12 @@ public abstract class ControllerAdapter implements ModeController {
     public SetLinkByTextFieldAction setLinkByTextField = null;
     public AddLocalLinkAction addLocalLinkAction = null;
     public GotoLinkNodeAction gotoLinkNodeAction = null;
+    public JoinNodesAction joinNodes = null;
+    public ImportExplorerFavoritesAction importExplorerFavorites = null;
+    public ImportFolderStructureAction importFolderStructure = null;
+
+
+
 
 	/** Executes series of actions. */
 	private CompoundActionHandler compound = null;
@@ -305,7 +315,11 @@ public abstract class ControllerAdapter implements ModeController {
 	    setLinkByTextField = new SetLinkByTextFieldAction(this);
 	    addLocalLinkAction = new AddLocalLinkAction(this);
 	    gotoLinkNodeAction = new GotoLinkNodeAction(this, null);
+	    joinNodes = new JoinNodesAction(this);
+	    importExplorerFavorites = new ImportExplorerFavoritesAction(this);
+	    importFolderStructure = new ImportFolderStructureAction(this);
 
+	    
 	    compound = new CompoundActionHandler(this);
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
                                                new FileOpener());
@@ -356,7 +370,10 @@ public abstract class ControllerAdapter implements ModeController {
     // Methods that should be overloaded
     //
 
-    public abstract MindMapNode newNode();
+    public abstract MindMapNode newNode(Object userObject);
+    protected MindMapNode newNode() {
+        return newNode(null);
+    }
 
     /**
      * You _must_ implement this if you use one of the following actions:
@@ -1091,7 +1108,9 @@ public abstract class ControllerAdapter implements ModeController {
 	    nodeUp.moveNodes(selected, selecteds, direction);
 	}
 
-
+	public void joinNodes(MindMapNode selectedNode, List selectedNodes) {
+	    joinNodes.joinNodes(selectedNode, selectedNodes);
+	}
 
     protected void setLinkByFileChooser() {
 		String relative = getLinkByFileChooser(getFileFilter());
@@ -1739,5 +1758,27 @@ public abstract class ControllerAdapter implements ModeController {
     /**
      *
      */
+
+    /**
+     * @param node
+     * @param position
+     * @param newText
+     */
+    public void splitNode(MindMapNode node, int caretPosition, String newText) {
+            //If there are children, they go to the node below
+            String futureText = newText != null ? newText : node.toString();
+
+            String newLowerContent = futureText.substring(caretPosition, futureText.length());
+            String newUpperContent = futureText.substring(0,caretPosition);
+
+            setNodeText(node, newLowerContent);
+
+            MindMapNode parent = node.getParentNode();
+            MindMapNode upperNode = addNewNode(parent, parent.getChildPosition(node), parent.isLeft());
+            upperNode.setColor(node.getColor());
+            upperNode.setFont(node.getFont());
+            setNodeText(upperNode, newUpperContent);
+        
+    }
 
 }

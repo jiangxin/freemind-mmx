@@ -16,36 +16,46 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapXMLElement.java,v 1.13 2003-12-07 21:00:27 christianfoltin Exp $*/
+/*$Id: MindMapXMLElement.java,v 1.13.18.1 2004-12-19 09:00:41 christianfoltin Exp $*/
 
 
 package freemind.modes.mindmapmode;
 
-import freemind.main.XMLElement;
-import freemind.main.FreeMindMain;
-import freemind.main.Tools;
-import freemind.modes.NodeAdapter;
-import freemind.modes.EdgeAdapter;
-import freemind.modes.CloudAdapter;
-import freemind.modes.ArrowLinkAdapter;
-import freemind.modes.XMLElementAdapter;
-import freemind.modes.MindIcon;
-import freemind.modes.MindMapLinkRegistry;
-
-import java.awt.Font;
-import java.util.Vector;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.Vector;
+
+import freemind.main.FreeMindMain;
+import freemind.main.XMLElement;
+import freemind.modes.ArrowLinkAdapter;
+import freemind.modes.CloudAdapter;
+import freemind.modes.EdgeAdapter;
+import freemind.modes.NodeAdapter;
+import freemind.modes.XMLElementAdapter;
 
 public class MindMapXMLElement extends XMLElementAdapter {
 
+    
+	// Logging: 
+	private static java.util.logging.Logger logger;
+
    public MindMapXMLElement(FreeMindMain frame) {
        super(frame);
+       init();
    }
 
     protected MindMapXMLElement(FreeMindMain frame, Vector ArrowLinkAdapters, HashMap IDToTarget) {
         super(frame, ArrowLinkAdapters, IDToTarget);
+        init();
+    }
+
+    /**
+     * 
+     */
+    private void init() {
+        if(logger==null) {
+        	logger = getFrame().getLogger(this.getClass().getName());
+        }
     }
 
     /** abstract method to create elements of my type (factory).*/
@@ -53,8 +63,27 @@ public class MindMapXMLElement extends XMLElementAdapter {
     // We do not need to initialize the things of XMLElement.
         return new MindMapXMLElement(getFrame(), ArrowLinkAdapters, IDToTarget);
     }
-    protected NodeAdapter createNodeAdapter(FreeMindMain     frame){
-        return new MindMapNodeModel(frame);
+    protected NodeAdapter createNodeAdapter(FreeMindMain     frame, String nodeClass){
+        if (nodeClass==null) {
+            return new MindMapNodeModel(frame);
+        }
+        // reflection:
+		try {
+		    // construct class loader:
+            ClassLoader loader = this.getClass().getClassLoader();
+		    // constructed.
+			Class nodeJavaClass = Class.forName(nodeClass, true, loader);
+			Class[] constrArgs = new Class[]{Object.class, FreeMindMain.class};
+			Object[] constrObjs = new Object[]{null, frame};
+			Constructor constructor = nodeJavaClass.getConstructor(constrArgs);
+			NodeAdapter nodeImplementor =
+				(NodeAdapter) constructor.newInstance(constrObjs);
+			return nodeImplementor;
+		} catch (Exception e) {
+			logger.severe("Error occurred loading node implementor: " + nodeClass + "\nException:"+e.toString());
+			// the best we can do is to return the normal class:
+			return new MindMapNodeModel(frame);
+		}
     }
     protected EdgeAdapter createEdgeAdapter(NodeAdapter node, FreeMindMain frame){
         return new MindMapEdgeModel(node, frame); 

@@ -17,46 +17,40 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.4 2004-10-28 05:24:54 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.5 2004-12-19 09:00:41 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
-import freemind.main.FreeMindMain;
-import freemind.controller.MindMapNodesSelection;
-import freemind.main.XMLParseException;
-import freemind.main.Tools;
-import freemind.modes.MapAdapter;
-import freemind.modes.MindMapNode;
-import freemind.modes.MindIcon;
-import freemind.modes.MindMapLink;
-import freemind.modes.actions.*;
-import freemind.extensions.*;
-
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.datatransfer.*;
-
-import java.io.*;
-
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-// for automatic saving:
-import java.util.TimerTask;
-import java.util.Timer;
-
-
-
-import java.net.URL;
-//import java.net.URLConnection;
+import java.awt.datatransfer.Transferable;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
-
-import javax.swing.JOptionPane;
 import java.nio.channels.FileLock;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.Vector;
 
-// link registry.
+import freemind.controller.MindMapNodesSelection;
+import freemind.main.FreeMindMain;
+import freemind.main.Tools;
+import freemind.main.XMLParseException;
 import freemind.modes.LinkRegistryAdapter;
+import freemind.modes.MapAdapter;
 import freemind.modes.MindMapLinkRegistry;
+import freemind.modes.MindMapNode;
 
 
 public class MindMapMapModel extends MapAdapter  {
@@ -121,7 +115,7 @@ public class MindMapMapModel extends MapAdapter  {
 
     //  All these methods do redisplay, because they are offered to controller for use.
     // __________________________________________________________________________
-
+/*
     public void setNodeColor(MindMapNodeModel node, Color color) {
         node.setColor(color);
         nodeChanged(node); }
@@ -212,7 +206,7 @@ public class MindMapMapModel extends MapAdapter  {
         return retval;
     }
 
-    /** Source holds the MindMapArrowLinkModel and points to the id placed in target.*/
+    // Source holds the MindMapArrowLinkModel and points to the id placed in target.
     public void addLink(MindMapNodeModel source, MindMapNodeModel target) {
         if(getLinkRegistry().getLabel(target) == null) {
             // call registry to give new label
@@ -272,7 +266,7 @@ public class MindMapMapModel extends MapAdapter  {
         node.estabilishOwnFont();
         node.setFontSize(node.getFont().getSize() + increment);
         nodeChanged(node); }
-
+*/
     //
     // Other methods
     //
@@ -673,122 +667,6 @@ public class MindMapMapModel extends MapAdapter  {
        catch (IOException e) {}
        return new MindMapNodesSelection(stringWriter.toString(), null, null, null, null, null); }
 
-   public void splitNode(MindMapNode node, int caretPosition, String newText) {
-      //If there are children, they go to the node below
-      String currentText = newText != null ? newText : node.toString();
-
-      String newContent = currentText.substring(caretPosition, currentText.length());
-      MindMapNodeModel upperNode =
-         new MindMapNodeModel(currentText.substring(0,caretPosition), getFrame());
-
-      upperNode.setColor(node.getColor());
-      upperNode.setFont(node.getFont());
-
-      node.setUserObject(newContent);
-      MindMapNode parent = node.getParentNode();
-      insertNodeInto(upperNode, parent, parent.getChildPosition(node));
-      nodeStructureChanged(parent);
-   }
-
-	//URGENT: This method needs refactoring. At least, it is at the wrong place in the model!!!!
-   public void joinNodes() {
-      MindMapNode selectedNode = getFrame().getView().getSelected().getModel();
-      ArrayList selectedNodes = getFrame().getView().getSelectedNodesSortedByY();
-      String newContent = "";
-      boolean firstLoop = true;
-
-      // Make sure the selected node do not have children
-      for(Iterator it = selectedNodes.iterator();it.hasNext();) {
-         MindMapNode node = (MindMapNode)it.next();
-         if (node.hasChildren()) {
-            JOptionPane.showMessageDialog
-               (node.getViewer(), getText("cannot_join_nodes_with_children"),
-                "FreeMind", JOptionPane.WARNING_MESSAGE);
-            return; }}
-
-      // Join
-      for(Iterator it = selectedNodes.iterator();it.hasNext();) {
-         if (firstLoop) {
-            firstLoop = false; }
-         else {
-            newContent += " "; }
-         MindMapNode node = (MindMapNode)it.next();
-         newContent += node.toString();
-         if (node != selectedNode) {
-            removeNodeFromParent(node); }}
-
-      getFrame().getView().selectAsTheOnlyOneSelected(selectedNode.getViewer());
-      changeNode(selectedNode, newContent);
-   }
-
-   public boolean importExplorerFavorites(File folder, MindMapNode target, boolean redisplay) {
-      // Returns true iff any favorites found
-      boolean favoritesFound = false;
-      if (folder.isDirectory()) {
-         File[] list = folder.listFiles();
-         // Go recursively to subfolders
-         for (int i = 0; i < list.length; i++) {
-            if (list[i].isDirectory()) {
-               // Insert a new node
-               MindMapNodeModel node = new MindMapNodeModel(list[i].getName(), getFrame());
-               insertNodeIntoNoEvent(node, target);
-               //
-               boolean favoritesFoundInSubfolder = importExplorerFavorites(list[i], node, false);
-               if (favoritesFoundInSubfolder) {
-                  favoritesFound = true; }
-               else {
-                  removeNodeFromParent(node, /*notify=*/false); }}}
-         
-         // For each .url file: add it
-         for (int i = 0; i < list.length; i++) {
-            if (!list[i].isDirectory() && Tools.getExtension(list[i]).equals("url")) {
-               favoritesFound = true;
-               try {
-                  MindMapNodeModel node = new MindMapNodeModel(Tools.removeExtension(list[i].getName()),
-                                                               getFrame());
-                  // For each line:  Is it URL? => Set it as link
-                  BufferedReader in = new BufferedReader(new FileReader(list[i]));
-                  while (in.ready()) {
-                     String line = in.readLine();
-                     if (line.startsWith("URL=")) {
-                        node.setLink(line.substring(4));
-                        break; }}
-
-                  insertNodeIntoNoEvent(node, target); }
-               catch (Exception e) {
-                  e.printStackTrace(); }}}}
-      if (redisplay) {
-         nodeStructureChanged(target); }
-      return favoritesFound;
-   }
-
-   public void importFolderStructure(File folder, MindMapNode target, boolean redisplay) {
-
-      if ( folder.isDirectory() ) {
-         File[] list = folder.listFiles();
-         // Go recursively to subfolders
-         for (int i = 0; i < list.length; i++){
-            if (list[i].isDirectory()) {
-               // Insert a new node
-               MindMapNodeModel node = new MindMapNodeModel(list[i].getName(),getFrame());
-               try {
-                  node.setLink(list[i].toURL().toString()); }
-               catch (MalformedURLException e) { e.printStackTrace(); }
-               insertNodeIntoNoEvent(node, target); 
-               importFolderStructure(list[i], node, false); }}
-
-         // For each file: add it
-         for (int i = 0; i < list.length; i++){
-            if (!list[i].isDirectory()) {
-               MindMapNodeModel node = new MindMapNodeModel(list[i].getName(),getFrame());
-               try {
-                  node.setLink(list[i].toURL().toString()); }
-               catch (MalformedURLException e) { e.printStackTrace(); }
-               insertNodeIntoNoEvent(node, target); }}}
-
-      if (redisplay) {
-         nodeStructureChanged(target); }
-   }
 
 
     private class LockManager extends TimerTask {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseXMLElement.java,v 1.6 2003-12-07 21:00:21 christianfoltin Exp $*/
+/*$Id: BrowseXMLElement.java,v 1.6.18.1 2004-12-19 09:00:40 christianfoltin Exp $*/
 
 
 package freemind.modes.browsemode;
@@ -52,7 +52,7 @@ public class BrowseXMLElement extends XMLElementAdapter {
     // We do not need to initialize the things of XMLElement.
         return new BrowseXMLElement(getFrame(), ArrowLinkAdapters, IDToTarget);
     }
-    protected NodeAdapter createNodeAdapter(FreeMindMain     frame){
+    protected NodeAdapter createNodeAdapter(FreeMindMain     frame, String nodeClass){
         return new BrowseNodeModel(frame);
     }
     protected EdgeAdapter createEdgeAdapter(NodeAdapter node, FreeMindMain frame){

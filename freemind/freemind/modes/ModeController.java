@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.14.2 2004-11-28 21:37:46 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.14.3 2004-12-19 09:00:38 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -49,7 +49,10 @@ public interface ModeController extends MindMapActions {
     void load(File file) throws FileNotFoundException, IOException, XMLParseException;
     boolean save(File file);
     //void addNew(NodeView target, int newNodeMode, KeyEvent e);
-	MindMapNode newNode();
+    /**
+     * @param userObject is typically a text. 
+     * */
+	MindMapNode newNode(Object userObject);
     void newMap();
     boolean save();
     boolean saveAs();

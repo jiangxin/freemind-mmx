@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.3 2004-11-16 16:42:35 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.4 2004-12-19 09:00:34 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -210,7 +210,7 @@ public class Controller {
     public void checkJavaVersion() {
        if (System.getProperty("java.version").compareTo("1.4.0") < 0) {
           String message = "Warning: FreeMind requires version Java 1.4.0 or higher (your version: "+
-             System.getProperty("java.version")+").";
+             System.getProperty("java.version")+", installed in "+ System.getProperty("java.home")+").";
           System.err.println(message);
           JOptionPane.showMessageDialog(null, message, "FreeMind", JOptionPane.WARNING_MESSAGE); }}
 

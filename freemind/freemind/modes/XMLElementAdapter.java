@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.2 2004-11-18 21:43:33 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.3 2004-12-19 09:00:39 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -51,6 +51,11 @@ public abstract class XMLElementAdapter extends XMLElement {
     // arrow link attributes:
     protected Vector ArrowLinkAdapters;
     protected HashMap /* id -> target */  IDToTarget;
+    public static final String XML_NODE_TEXT = "TEXT";
+    public static final String XML_NODE = "node";
+    //public static final String XML_NODE_CLASS_PREFIX = XML_NODE+"_";
+    public static final String XML_NODE_CLASS = "AA_NODE_CLASS";
+    public static final String XML_NODE_ADDITIONAL_INFO = "ADDITIONAL_INFO";
 
    //   Overhead methods
 
@@ -68,7 +73,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 
     /** abstract method to create elements of my type (factory).*/
     abstract protected XMLElement  createAnotherElement();
-    abstract protected NodeAdapter createNodeAdapter(FreeMindMain     frame);
+    abstract protected NodeAdapter createNodeAdapter(FreeMindMain     frame, String nodeClass);
     abstract protected EdgeAdapter createEdgeAdapter(NodeAdapter node, FreeMindMain frame);
     abstract protected CloudAdapter createCloudAdapter(NodeAdapter node, FreeMindMain frame);
     abstract protected ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter source, NodeAdapter target, FreeMindMain frame);
@@ -88,9 +93,11 @@ public abstract class XMLElementAdapter extends XMLElement {
    public void setName(String name)  {
 		super.setName(name);
 		// Create user object based on name
-		if (name.equals("node")) {
-			userObject = createNodeAdapter(frame);
-		} else if (name.equals("edge")) {
+		if (name.equals(XML_NODE)) {
+			userObject = createNodeAdapter(frame, null);
+		} else /*if (name.startsWith(XML_NODE_CLASS_PREFIX)) {
+			userObject = createNodeAdapter(frame, name.substring(XML_NODE_CLASS_PREFIX.length()));
+		} else*/ if (name.equals("edge")) {
 			userObject = createEdgeAdapter(null, frame);
 		} else if (name.equals("cloud")) {
 			userObject = createCloudAdapter(null, frame);
@@ -174,10 +181,15 @@ public void setAttribute(String name, Object value) {
 	  }
 
       if (userObject instanceof NodeAdapter) {
-         // 
+         //
          NodeAdapter node = (NodeAdapter)userObject;
-         if (name.equals("TEXT")) {
+         if(/*This must be the first to be checked: */name.equals(XML_NODE_CLASS)) {
+             // bad hack, but not avoidable:
+             userObject = createNodeAdapter(frame, sValue);
+         } else if (name.equals(XML_NODE_TEXT)) {
             node.setUserObject(sValue); }
+         else if (name.equals(XML_NODE_ADDITIONAL_INFO)) {
+             node.setAdditionalInfo(sValue); }
          else if (name.equals("FOLDED")) {
             if (sValue.equals("true")) {
                node.setFolded(true); }}

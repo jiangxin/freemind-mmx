@@ -19,12 +19,13 @@
  *
  * Created on 12.08.2004
  */
-/*$Id: ToggleFoldedAction.java,v 1.1.4.1 2004-10-17 23:00:10 dpolivaev Exp $*/
+/*$Id: ToggleFoldedAction.java,v 1.1.4.2 2004-12-19 09:00:39 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
 import java.util.ListIterator;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;

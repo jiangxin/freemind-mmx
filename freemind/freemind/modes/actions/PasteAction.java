@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: PasteAction.java,v 1.1.4.1 2004-10-17 23:00:10 dpolivaev Exp $*/
+/*$Id: PasteAction.java,v 1.1.4.2 2004-12-19 09:00:39 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -55,10 +55,12 @@ import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
+import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.MindMapXMLElement;
 
 public class PasteAction extends AbstractAction implements ActorXml {
+    public static final String NODESEPARATOR = "<nodeseparator>";
     private static java.util.logging.Logger logger;
     private String text;
     private final ControllerAdapter c;
@@ -205,8 +207,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
             List fileList = (List) TransferData;
             for (ListIterator it = fileList.listIterator(); it.hasNext();) {
                 File file = (File) it.next();
-                MindMapNodeModel node = new MindMapNodeModel(file.getName(), c
-                        .getFrame());
+                MindMapNode node = c.newNode(file.getName());
                 node.setLink(file.getAbsolutePath());
                 insertNodeIntoNoEvent(node, target, asSibling);
             }
@@ -233,22 +234,16 @@ public class PasteAction extends AbstractAction implements ActorXml {
 			 String textFromClipboard =
 				(String)TransferData;
 			 if (textFromClipboard != null) {
-               String[] textLines = textFromClipboard.split("<nodeseparator>");
+               String[] textLines = textFromClipboard.split(NODESEPARATOR);
                if (textLines.length > 1) {
                    c.getFrame().setWaitingCursor(true);
                }
-//               boolean isFirst = true;
                for (int i = 0; i < textLines.length; ++i) {
                    //logger.info(textLines[i]+", "+ target+", "+ asSibling);
                    MindMapNodeModel newModel = pasteXMLWithoutRedisplay(
                            textLines[i], target, asSibling);
                    // additional code for left/right decision:
                    newModel.setLeft(isLeft);
-//                   if(isFirst) {
-//                       c.getView().selectAsTheOnlyOneSelected(newModel.getViewer());
-//                   } else {
-//                       c.getView().makeTheSelected(newModel.getViewer());
-//                   }
                }
            }
         }
@@ -256,7 +251,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
         public long getNumberOfObjects(Object TransferData, Transferable transfer) {
             String textFromClipboard = (String) TransferData;
             if (textFromClipboard != null) {
-                String[] textLines = textFromClipboard.split("<nodeseparator>");
+                String[] textLines = textFromClipboard.split(NODESEPARATOR);
                 return textLines.length;
             }
             return 0;
@@ -285,7 +280,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
             String[] links = textFromClipboard
                     .split("<[aA][^>]*[hH][rR][eE][fF]=\"");
 
-            MindMapNodeModel linkParentNode = null;
+            MindMapNode linkParentNode = null;
             URL referenceURL = null;
             boolean baseUrlCanceled = false;
 
@@ -330,14 +325,12 @@ public class PasteAction extends AbstractAction implements ActorXml {
                         break;
                     }
                     if (linkParentNode == null) {
-                        linkParentNode = new MindMapNodeModel("Links", c
-                                .getFrame());
+                        linkParentNode = c.newNode("Links");
                         // Here we cannot set bold, because linkParentNode.font is null
                         insertNodeInto(linkParentNode, target);
-                        linkParentNode.setBold(true);
+                        ((NodeAdapter) linkParentNode).setBold(true);
                     }
-                    MindMapNodeModel linkNode = new MindMapNodeModel(text, c
-                            .getFrame());
+                    MindMapNode linkNode = c.newNode(text);
                     linkNode.setLink(linkURL.toString());
                     insertNodeInto(linkNode, linkParentNode);
                 }
@@ -418,7 +411,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 	   throws XMLParseException  {
 	   return pasteXMLWithoutRedisplay(pasted, target, /*asSibling=*/false); }
 
-	private MindMapNodeModel pasteXMLWithoutRedisplay(String pasted, MindMapNode target, boolean asSibling)
+	public MindMapNodeModel pasteXMLWithoutRedisplay(String pasted, MindMapNode target, boolean asSibling)
 	   throws XMLParseException {
 	   // Call nodeStructureChanged(parent) after this function.
 	   try {
@@ -475,7 +468,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 
 	   String[] linkPrefixes = { "http://", "ftp://", "https://" };
 
-	   MindMapNodeModel pastedNode = null;
+	   MindMapNode pastedNode = null;
 
 	   for (int i = 0; i < textLines.length; ++i) {
 		  String text = textLines[i];
@@ -503,7 +496,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				visibleText += textPartIdx == 0 ? textParts[textPartIdx] : 
 				   Tools.firstLetterCapitalized(textParts[textPartIdx].replaceAll("^~*","")); }}
 
-		  MindMapNodeModel node = new MindMapNodeModel(visibleText, c.getFrame());
+		  MindMapNode node = c.newNode(visibleText);
 		  if (textLines.length == 1) {
 			 pastedNode = node; }
 
@@ -536,7 +529,6 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				   parentNodesDepths.remove(k); }
 				MindMapNode target = (MindMapNode)parentNodes.get(j);
 				insertNodeIntoNoEvent(node, target);
-
 				parentNodes.add(node);
 				parentNodesDepths.add(new Integer(depth));
 				break; }}}
@@ -555,7 +547,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
      * @param node
      * @param target
      */
-    private void insertNodeIntoNoEvent(MindMapNodeModel node, MindMapNode target) {
+    private void insertNodeIntoNoEvent(MindMapNode node, MindMapNode target) {
 		c.getModel().insertNodeIntoNoEvent(node, target);
     }
     /**

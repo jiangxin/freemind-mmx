@@ -6,6 +6,7 @@
  */
 package accessories.plugins;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -26,6 +28,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import accessories.plugins.util.html.ClickableImageCreator;
 import accessories.plugins.util.xslt.ExportDialog;
 import freemind.extensions.ExportHook;
 import freemind.main.Tools;
@@ -84,12 +87,22 @@ public class ExportWithXSLT extends ExportHook {
     private void transform() {
         try {
             File saveFile = chooseFile();
+            // get XML
             MindMapNode root = (MindMapNode) getController().getMap().getRoot();
+            // get AREA:
+            // create HTML image?
+            ClickableImageCreator creator=null;
+            boolean create_image = Tools.safeEquals(getResourceString("create_html_linked_image"), "true");
+            if(create_image) {
+                creator = new ClickableImageCreator(root, getController(), 
+                        getResourceString("link_replacement_regexp"));
+            }
+            // get output:
             StringWriter writer = new StringWriter();
             root.save(writer, getController().getMap().getLinkRegistry());
             StringReader reader = new StringReader(writer.getBuffer().toString());
             transForm(new StreamSource(reader), new File(
-                    getResourceString("xslt_file")), saveFile);
+                    getResourceString("xslt_file")), saveFile, creator);
             // copy files from the resources to the file system:
             if(Tools.safeEquals(getResourceString("create_dir"), "true")) {
                 String directoryName = saveFile.getAbsolutePath()+"_files";
@@ -110,13 +123,12 @@ public class ExportWithXSLT extends ExportHook {
                     // copy icons?
                     if(Tools.safeEquals(getResourceString("copy_icons"),"true")) {
                         String directoryName2 = directoryName + File.separatorChar + "icons";
-                        boolean success2 = true;
                         File dir2 = new File(directoryName2);
                         // create directory, if not exists:
                         if (!dir2.exists()) {
-                            success2 = dir2.mkdir();
+                            success = dir2.mkdir();
                         }
-                        if(success2) {
+                        if(success) {
 	                        Vector iconNames = MindIcon.getAllIconNames();
 	                        for ( int i = 0 ; i < iconNames.size(); ++i ) {
 	                            String iconName = ((String) iconNames.get(i));
@@ -125,7 +137,19 @@ public class ExportWithXSLT extends ExportHook {
 	                        }
                         }
                     }
-                } else {
+                }
+                if(success && create_image) {
+                    // create image:
+            		BufferedImage image = createBufferedImage();
+            		try {
+            			FileOutputStream out = new FileOutputStream(directoryName+File.separator+"image.jpg");
+            			ImageIO.write(image, "jpeg", out);
+            			out.close();
+            		} catch (IOException e1) {
+            			e1.printStackTrace();
+            		}
+                }
+                if(!success){
                     JOptionPane.showMessageDialog(null, getResourceString("error_creating_directory"), "Freemind", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -179,7 +203,11 @@ public class ExportWithXSLT extends ExportHook {
         exp.setVisible(true);
 	}
 
-    public void transForm(Source xmlSource, File xsltFile, File resultFile){
+    public void transForm(Source xmlSource, File xsltFile, File resultFile, ClickableImageCreator creator){
+        String areaCode="";
+        if(creator!=null) {
+            areaCode = creator.generateHtml();
+        }
         //System.out.println("set xsl");
        Source xsltSource =  new StreamSource(xsltFile);
         //System.out.println("set result");
@@ -194,6 +222,8 @@ public class ExportWithXSLT extends ExportHook {
        // set parameter:
        // relative directory <filename>_files
        trans.setParameter("destination_dir", resultFile.getName()+"_files/");
+       trans.setParameter("area_code", areaCode);
+       trans.setParameter("folding_type", getController().getFrame().getProperty("html_export_folding"));
        trans.transform(xmlSource, result);
        }
        catch(Exception e){

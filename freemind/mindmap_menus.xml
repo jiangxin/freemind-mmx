@@ -133,6 +133,8 @@
 				<menu_category name="links">
 					<menu_action field="followLink" key_ref="keystroke_follow_link"/>
 				</menu_category>
+				<menu_category name="crypto">
+				</menu_category>
 			</menu_category>
 		</menu_category>	
 	

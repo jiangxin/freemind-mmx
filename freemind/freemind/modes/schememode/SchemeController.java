@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.10.18.1 2004-10-17 23:00:13 dpolivaev Exp $*/
+/*$Id: SchemeController.java,v 1.10.18.2 2004-12-19 09:00:41 christianfoltin Exp $*/
 
 package freemind.modes.schememode;
 
@@ -59,9 +59,9 @@ public class SchemeController extends ControllerAdapter {
 	return new SchemeMapModel(getFrame());
     }
 
-    public MindMapNode newNode() {
-	return new SchemeNodeModel(getFrame());
-    }
+    public MindMapNode newNode(Object userObject) {
+    	return new SchemeNodeModel(getFrame());
+        }
 
 //    //private
 //    private MindMap getModel() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.14.2 2004-11-28 21:37:46 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.14.3 2004-12-19 09:00:37 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -228,8 +228,6 @@ public abstract class MapAdapter implements MindMap {
 	return ( ((MindMapNode)node).getPath() ).getPath();//Create Object[] from TreePath
     }
 
-    public void splitNode(MindMapNode node, int caretPosition, String newText) {}
-    
     //
     // cut'n'paste
     //

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.4 2004-11-16 16:42:36 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.5 2004-12-19 09:00:38 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -409,7 +409,10 @@ public abstract class NodeAdapter implements MindMapNode {
     //
 
     public String toString() {
-	String string = userObject.toString();
+	String string="";
+    if (userObject!=null) {
+        string = userObject.toString();
+    }
 // (PN) %%%
 // Why? If because of presentation, this level shall be self responsible... 
 // Model shall NOT change the real data!!!
@@ -476,11 +479,13 @@ public abstract class NodeAdapter implements MindMapNode {
 	return ALLOWSCHILDREN;
     }
 	
-    public TreeNode getChildAt( int childIndex ) {
-	if (isFolded()) {
-	    return null;
-	}
-	return (TreeNode)children.get( childIndex );
+    public TreeNode getChildAt(int childIndex) {
+        // fc, 11.12.2004: This is not understandable, that a child does not
+        // exist if the parent is folded.
+        //	if (isFolded()) {
+        //	    return null;
+        //	}
+        return (TreeNode) children.get(childIndex);
     }
 
     public int getChildCount() {
@@ -713,12 +718,25 @@ public abstract class NodeAdapter implements MindMapNode {
 	    return controller.getNodeID(this);
 	}
 
-    public void save(Writer writer, MindMapLinkRegistry registry) throws IOException {
+    public XMLElement save(Writer writer, MindMapLinkRegistry registry) throws IOException {
     	XMLElement node = new XMLElement();
-    	node.setName("node");
+    	
+//    	if (!isNodeClassToBeSaved()) {
+    	node.setName(XMLElementAdapter.XML_NODE);
+//        } else {
+//            node.setName(XMLElementAdapter.XML_NODE_CLASS_PREFIX
+//                    + this.getClass().getName());
+//        }
     
-    	node.setAttribute("TEXT",this.toString());
-    
+        if (isNodeClassToBeSaved()) {
+            node.setAttribute(XMLElementAdapter.XML_NODE_CLASS,	this.getClass().getName());
+        }    
+        node.setAttribute(XMLElementAdapter.XML_NODE_TEXT,this.toString());
+    	// save additional info:
+    	if (getAdditionalInfo() != null) {
+            node.setAttribute(XMLElementAdapter.XML_NODE_ADDITIONAL_INFO,
+                    getAdditionalInfo());
+        }
     	//	((MindMapEdgeModel)getEdge()).save(doc,node);
     
     	XMLElement edge = (getEdge()).save();
@@ -793,22 +811,39 @@ public abstract class NodeAdapter implements MindMapNode {
             node.addChild(iconElement);
         }
     
-    	for(Iterator i = getActivatedHooks().iterator(); i.hasNext();) {
-    		XMLElement hookElement = new XMLElement();
-    		hookElement.setName("hook");
-    		((PermanentNodeHook) i.next()).save(hookElement);
-    		node.addChild(hookElement);
-    	}
-            
-    
-            if (childrenUnfolded().hasNext()) {
-               node.writeWithoutClosingTag(writer);
-               //recursive
-               for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
-                  NodeAdapter child = (NodeAdapter)e.next();
-                  child.save(writer, registry); }
-               node.writeClosingTag(writer); }
-            else {
-               node.write(writer); }}
+    	for (Iterator i = getActivatedHooks().iterator(); i.hasNext();) {
+            XMLElement hookElement = new XMLElement();
+            hookElement.setName("hook");
+            ((PermanentNodeHook) i.next()).save(hookElement);
+            node.addChild(hookElement);
+        }
 
+        if (childrenUnfolded().hasNext()) {
+            node.writeWithoutClosingTag(writer);
+            //recursive
+            for (ListIterator e = childrenUnfolded(); e.hasNext();) {
+                NodeAdapter child = (NodeAdapter) e.next();
+                child.save(writer, registry);
+            }
+            node.writeClosingTag(writer);
+        } else {
+            node.write(writer);
+        }
+        return node;
+    }
+    
+
+    /**
+     *
+     */
+
+    public void setAdditionalInfo(String info) {
+    }
+    
+    public String getAdditionalInfo(){
+        return null;
+    }
+    public boolean isNodeClassToBeSaved() {
+        return false;
+    }
 }

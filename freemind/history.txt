@@ -106,6 +106,14 @@ Changes made in Freemind 0.8.0:
 
 * Bug fix: Drag'n'Drop to children nodes with total loss is no longer possible.
 
+* New Feature: encrypted nodes introduced (DON'T RELY ON THIS ENCRYPTION. IT IS WEAK BECAUSE IT IS PASSWORD BASED!)
+* New Feature: HTML export III enhanced by a clickable image map.
+* Bug fix: export unsaved maps.
+* Import actions are new undoable.
+* Join node is undoable
+* Split node is undoable
+* Two new portugese translations (thanks to the authors).
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

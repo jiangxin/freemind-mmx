@@ -1,7 +1,7 @@
 /* XMLElement.java
  *
- * $Revision: 1.7.18.1 $
- * $Date: 2004-10-17 23:00:07 $
+ * $Revision: 1.7.18.2 $
+ * $Date: 2004-12-19 09:00:35 $
  * $Name:  $
  *
  * This file is part of NanoXML 2 Lite.
@@ -41,6 +41,8 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.Vector;
 
 
@@ -100,7 +102,7 @@ import java.util.Vector;
  *
  * @author Marc De Scheemaecker
  *         &lt;<A href="mailto:cyberelf@mac.com">cyberelf@mac.com</A>&gt;
- * @version $Name:  $, $Revision: 1.7.18.1 $
+ * @version $Name:  $, $Revision: 1.7.18.2 $
  */
 public class XMLElement
 {
@@ -142,7 +144,7 @@ public class XMLElement
      *     <li>The keys and the values are strings.
      * </ul></dd></dl>
      */
-    private Hashtable attributes;
+    private TreeMap attributes;
 
 
     /**
@@ -476,7 +478,7 @@ public class XMLElement
         this.ignoreCase = ignoreCase;
         this.name = null;
         this.contents = "";
-        this.attributes = new Hashtable();
+        this.attributes = new TreeMap();
         this.children = new Vector();
         this.entities = entities;
         this.lineNr = 0;
@@ -802,9 +804,9 @@ public class XMLElement
      *                                             java.lang.String, boolean)
      *         getBooleanAttribute(String, String, String, boolean)
      */
-    public Enumeration enumerateAttributeNames()
+    public Iterator enumerateAttributeNames()
     {
-        return this.attributes.keys();
+        return this.attributes.keySet().iterator();
     }
 
 
@@ -814,7 +816,7 @@ public class XMLElement
      * @deprecated Use {@link #enumerateAttributeNames()
      *             enumerateAttributeNames} instead.
      */
-    public Enumeration enumeratePropertyNames()
+    public Iterator enumeratePropertyNames()
     {
         return this.enumerateAttributeNames();
     }
@@ -2194,10 +2196,10 @@ public class XMLElement
         writer.write('<');
         writer.write(this.name);
         if (! this.attributes.isEmpty()) {
-            Enumeration enumerator = this.attributes.keys();
-            while (enumerator.hasMoreElements()) {
+            Iterator enumerator = this.attributes.keySet().iterator();
+            while (enumerator.hasNext()) {
                 writer.write(' ');
-                String key = (String) enumerator.nextElement();
+                String key = (String) enumerator.next();
                 String value = (String) this.attributes.get(key);
                 writer.write(key);
                 writer.write('='); writer.write('"');
