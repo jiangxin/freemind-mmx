@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.5 2000-11-03 22:49:20 ponder Exp $*/
+/*$Id: NodeView.java,v 1.6 2000-11-05 21:05:22 ponder Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -235,7 +235,7 @@ public abstract class NodeView extends JLabel {
 	    }
 	}
 	NodeView sibling;
-	if (v.indexOf(this) == 0) {//this is first, return last
+	if (v.indexOf(this) <= 0) {//this is first, return last
 	    sibling = (NodeView)v.lastElement();
 	} else {
 	    sibling = (NodeView)v.elementAt(v.indexOf(this)-1);
