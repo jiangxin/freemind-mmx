@@ -41,7 +41,7 @@
 		<copy todir="${dist}/doc/">
 			<fileset dir="${src}/doc"/>
 		</copy>
-		<javadoc sourcepath="${src}"
+		<javadoc sourcepath="${src}/.."
 		         destdir="${dist}/doc"
 		         packagenames="freemind.*" />
 	</target>

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.8 2000-12-05 17:32:56 ponder Exp $*/
+/*$Id: MindMapMapModel.java,v 1.9 2000-12-08 20:28:10 ponder Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -241,6 +241,19 @@ public class MindMapMapModel extends MapAdapter {
 
 	for(int i=0;i<node.getChildCount();i++) {
 	    setBranchFontSize((MindMapNodeModel)node.getChildAt(i),fontSize);
+	}
+
+	nodeStructureChanged(node);
+    }
+
+    public void increaseBranchFontSize(MindMapNodeModel node, int increment) {
+	Font f = node.getFont();
+	float newSize = f.getSize()+increment;
+
+	node.setFont(f.deriveFont(newSize));
+
+	for(int i=0;i<node.getChildCount();i++) {
+	    increaseBranchFontSize((MindMapNodeModel)node.getChildAt(i),increment);
 	}
 
 	nodeStructureChanged(node);
