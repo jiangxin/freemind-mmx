@@ -12,7 +12,7 @@
 	<property name="debug" value="on" />
 	<property name="build.compiler" value="modern" />
 	<property name="ant.dir" value="lib/ant/lib"/>
-	<property name="jarbundler.jar" value = "jarbundler-1.2.jar"/>
+	<property name="jarbundler.jar" value = "jarbundler-1.4.jar"/>
 
     <taskdef name="jarbundler"
                classpath="${src}/lib/${jarbundler.jar}"
