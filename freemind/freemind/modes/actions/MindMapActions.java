@@ -43,6 +43,7 @@ public interface MindMapActions {
 	MindMapNode addNewNode(MindMapNode parent, int index, freemind.main.Tools.BooleanHolder newNodeIsLeft);
 	public void deleteNode(MindMapNode selectedNode);
 	public Transferable cut();
+	public Transferable cut(List nodeList);
 	/**
 	 * moves selected and selecteds (if they are child of the same parent and adjacent)
 	 * in the direction specified (up = -1, down = 1). 

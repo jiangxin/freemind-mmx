@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: CutAction.java,v 1.1.4.2 2004-11-25 05:45:07 christianfoltin Exp $*/
+/*$Id: CutAction.java,v 1.1.4.3 2004-11-28 21:37:46 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -43,7 +43,6 @@ import freemind.controller.actions.generated.instance.CutNodeAction;
 import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.TransferableContentType;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.extensions.PermanentNodeHook;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.actions.PasteAction.NodeCoordinate;
@@ -86,16 +85,16 @@ public class CutAction extends AbstractAction implements ActorXml {
         return cutAction;
     }
 
-    public Transferable cut() {
-    	Transferable totalCopy = c.getModel().copy();
+    public Transferable cut(List nodeList) {
+    	Transferable totalCopy = c.getModel().copy(nodeList, null);
 		try {
 			// Do-action
 			CompoundAction doAction = c.getActionXmlFactory().createCompoundAction();
 			// Undo-action
 			CompoundAction undo= c.getActionXmlFactory().createCompoundAction();
 			// sort selectedNodes list by depth, in order to guarantee that sons are deleted first:
-			List sortedNodes = c.getSelectedsByDepth();
-			for (Iterator i = sortedNodes.iterator(); i.hasNext();) {
+			c.sortNodesByDepth(nodeList);
+			for (Iterator i = nodeList.iterator(); i.hasNext();) {
 				MindMapNode node = (MindMapNode) i.next();
 				Transferable copy = c.getModel().copy(node);
 				NodeCoordinate coord = new NodeCoordinate(node, node.isLeft().getValue());

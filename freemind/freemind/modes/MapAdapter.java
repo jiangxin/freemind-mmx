@@ -16,32 +16,37 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.14.1 2004-10-17 23:00:08 dpolivaev Exp $*/
+/*$Id: MapAdapter.java,v 1.24.14.2 2004-11-28 21:37:46 christianfoltin Exp $*/
 
 package freemind.modes;
 
+import java.awt.Color;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.logging.Logger;
+
+import javax.swing.event.EventListenerList;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+
+import freemind.controller.MindMapNodesSelection;
+import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
-import freemind.view.mindmapview.NodeView;
-import freemind.controller.MindMapNodesSelection;
-import freemind.extensions.*;
-
-
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.awt.Color;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreePath;
-import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.EventListenerList;
-// Clipboard
-import java.awt.datatransfer.*;
-import java.io.*;
-import java.util.*;
-import java.util.logging.Logger;
 
 public abstract class MapAdapter implements MindMap {
 
@@ -249,7 +254,7 @@ public abstract class MapAdapter implements MindMap {
       selectedNodes.add(selectedNode.shallowCopy());
       return copy(selectedNodes, selectedNode.toString()); }
 
-   private Transferable copy(ArrayList selectedNodes, String inPlainText) {
+   public Transferable copy(List selectedNodes, String inPlainText) {
       try {
          String forNodesFlavor = "";
          boolean firstLoop = true;

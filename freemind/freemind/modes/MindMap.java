@@ -16,21 +16,20 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.14.14.2 2004-10-17 23:00:08 dpolivaev Exp $*/
+/*$Id: MindMap.java,v 1.14.14.3 2004-11-28 21:37:46 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import java.io.File;
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.awt.Color;
-import java.util.List;
+import java.awt.datatransfer.Transferable;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
-
-// Clipboard
-import java.awt.datatransfer.Transferable;
 
 public interface MindMap extends TreeModel {
         
@@ -44,7 +43,13 @@ public interface MindMap extends TreeModel {
 
     // ^ Is copy with node really needed? It seems to me, that no.
     Transferable copy(); 
-    Transferable copySingle(); 
+    Transferable copySingle();
+    /**
+     * @param selectedNodes
+     * @param inPlainText typically this is null. AN alternative is node.toString(); if there is only one node.
+     * @return
+     */
+    public Transferable copy(List selectedNodes, String inPlainText);
     String getAsPlainText(List mindMapNodes);
     String getAsRTF(List mindMapNodes);
 

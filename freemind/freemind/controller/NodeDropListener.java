@@ -19,11 +19,6 @@
 
 package freemind.controller;
 
-import freemind.view.mindmapview.NodeView;
-import freemind.modes.MindMapNode;
-import freemind.modes.mindmapmode.MindMapNodeModel;
-import freemind.modes.mindmapmode.MindMapMapModel;
-// For Drag&Drop
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
@@ -31,8 +26,16 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.util.List;
 import java.util.ListIterator;
+
 import javax.swing.JOptionPane;
+import javax.swing.tree.TreePath;
+
+import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.MindMapMapModel;
+import freemind.modes.mindmapmode.MindMapNodeModel;
+import freemind.view.mindmapview.NodeView;
 
 //import ublic class MindMapNodesSelection implements Transferable, ClipboardOwner {
    //   public static DataFlavor fileListFlavor = null;
@@ -145,14 +148,35 @@ public class NodeDropListener implements DropTargetListener {
               }
            }
            else {
-           	  Transferable trans = dropAction == DnDConstants.ACTION_MOVE 
-									? c.getModeController().cut() : c.getModel().copy();
-			  c.getView().selectAsTheOnlyOneSelected(targetNodeModel.getViewer()); 			
-            c.getModeController().paste(
-                trans,
-                targetNode,
-                targetNode.getViewer().dropAsSibling(dtde.getLocation().getX()),
-                targetNode.getViewer().dropPosition(dtde.getLocation().getX()));
+           	Transferable trans = null;
+				// if move, verify, that the target is not a son of the sources.
+				if (DnDConstants.ACTION_MOVE == dropAction) {
+					List selecteds = c.getModeController().getSelecteds();
+					MindMapNode actualNode = targetNode;
+					do {
+						if (selecteds.contains(actualNode)) {
+							String message = c.getResourceString("cannot_move_to_child");
+		                      JOptionPane.showMessageDialog(c.getFrame().getContentPane(),
+                                    message,"Freemind", JOptionPane.WARNING_MESSAGE);
+							dtde.dropComplete(true);
+							return;
+						}
+						actualNode = (actualNode.isRoot())?null:actualNode.getParentNode();
+					} while(actualNode != null);
+					trans = c.getModeController().cut();
+				} else {
+					trans = c.getModel().copy();
+				}
+
+				c.getView().selectAsTheOnlyOneSelected(
+						targetNodeModel.getViewer());
+				c.getModeController().paste(
+						trans,
+						targetNode,
+						targetNode.getViewer().dropAsSibling(
+								dtde.getLocation().getX()),
+						targetNode.getViewer().dropPosition(
+								dtde.getLocation().getX()));
               }
            }
 	catch (Exception e) {

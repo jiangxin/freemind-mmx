@@ -104,6 +104,8 @@ Changes made in Freemind 0.8.0:
 * Bug fix: Cut/Paste
 * New translations chinese and russian.
 
+* Bug fix: Drag'n'Drop to children nodes with total loss is no longer possible.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.4 2004-11-19 21:46:51 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.5 2004-11-28 21:37:46 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -76,7 +76,6 @@ import freemind.common.JaxbTools;
 import freemind.controller.Controller;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.ActionFactory;
-import freemind.controller.actions.FreemindAction;
 import freemind.controller.actions.ModeControllerActionHandler;
 import freemind.controller.actions.UndoActionHandler;
 import freemind.controller.actions.generated.instance.ObjectFactory;
@@ -543,13 +542,17 @@ public abstract class ControllerAdapter implements ModeController {
 	public List getSelectedsByDepth() {
 		// return an ArrayList of MindMapNodes.
 		List result = getSelecteds();
-		Collections.sort(result, new nodesDepthComparator());
-		logger.finest("Sort result: "+result);
+		sortNodesByDepth(result);
 		return result;
 	}
 
 
-    /**
+	public void sortNodesByDepth(List inPlaceList) {
+		Collections.sort(inPlaceList, new nodesDepthComparator());
+		logger.finest("Sort result: "+inPlaceList);
+	}
+
+	/**
      * Return false is the action was cancelled, e.g. when
      * it has to lead to saving as.
      */
@@ -1027,9 +1030,14 @@ public abstract class ControllerAdapter implements ModeController {
         fork.setStyle(node, style);
     }
      public Transferable cut() {
-		return cut.cut();
+		return cut(getSelecteds());
 	}
 
+     
+     	
+	public Transferable cut(List nodeList) {
+		return cut.cut(nodeList);
+	}
 	public void paste(Transferable t, MindMapNode parent) {
 		boolean isLeft = false;
 		if(parent.isLeft()!= null)

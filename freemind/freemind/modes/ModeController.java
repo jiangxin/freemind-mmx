@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.14.1 2004-10-17 23:00:08 dpolivaev Exp $*/
+/*$Id: ModeController.java,v 1.14.14.2 2004-11-28 21:37:46 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -41,9 +41,8 @@ import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
-import freemind.modes.actions.*;
+import freemind.modes.actions.MindMapActions;
 import freemind.view.mindmapview.MapView;
-import freemind.view.mindmapview.NodeView;
 
 public interface ModeController extends MindMapActions {
 
@@ -80,6 +79,10 @@ public interface ModeController extends MindMapActions {
 	List getSelecteds();
 	/** @return a LinkedList of MindMapNodes ordered by depth. nodes with greater depth occur first. */
     List getSelectedsByDepth();
+    /** nodes with greater depth occur first.
+	 * @param inPlaceList the given list is sorted by reference.
+	 */
+    public void sortNodesByDepth(List inPlaceList) ;
 	    /** This extends the currently selected nodes. 
         @return true, if the method changed the selection.*/
     boolean extendSelection(MouseEvent e);
