@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapHook.java,v 1.1.4.2 2005-02-10 23:01:18 christianfoltin Exp $*/
+/*$Id: MindMapHook.java,v 1.1.4.3 2005-04-08 21:37:30 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.Properties;
@@ -45,11 +45,28 @@ public interface MindMapHook {
 	 */
 	String getResourceString(String property);
 
-
-
-
 	void setController(ModeController controller);
 
+	/** If a base class is specified in the plugin declaration
+	 *  via a plugin_registration entry with isPluginBase==true,
+	 *  this object is returned here. You can use it to realize something
+	 *  like the state of a plugin (eg. is the plugin switched on or off?).
+	 * 
+	 *  An example is the menu status of the encrypted nodes. If the node is not
+	 *  encrypted, the encryption state cannot be toggled (see EncryptNode.java).
+	 * 
+	 *  Another example arises from the collaboration mode. The state (connected,
+	 *  wait for second party, map sharing etc.) can be stored in the plugin base.
+	 * 
+	 *  Remember, that it is most likely that you havn't specified
+	 *  the base class and that you get NULL here. 
+	 * @return The object returned is of HookRegistration type but has to be  
+	 * casted anyway.
+	 */
+	Object getPluginBaseClass();
+
+	void setPluginBaseClass(Object baseClass);
+	
 	/* Hooks */
 
 	/**
@@ -64,4 +81,5 @@ public interface MindMapHook {
 	 */
 	void shutdownMapHook();
 
+	
 }

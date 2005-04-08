@@ -19,7 +19,7 @@
  *
  * Created on 26.07.2004
  */
-/*$Id: NodeHookAction.java,v 1.1.4.1 2004-10-17 23:00:10 dpolivaev Exp $*/
+/*$Id: NodeHookAction.java,v 1.1.4.2 2005-04-08 21:37:30 christianfoltin Exp $*/
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
@@ -191,16 +191,33 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 	 * @return
 	 */
 	private HookInstanciationMethod getInstanciationMethod(String hookName) {
-		HookFactory factory = controller.getFrame().getHookFactory();
+		HookFactory factory = getHookFactory();
 		// determine instanciation method
 		HookInstanciationMethod instMethod = factory.getInstanciationMethod(hookName);
 		return instMethod;
+	}
+
+	/**
+	 * @return
+	 */
+	private HookFactory getHookFactory() {
+		HookFactory factory = controller.getFrame().getHookFactory();
+		return factory;
 	}
 
 	/* (non-Javadoc)
 	 * @see freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem, javax.swing.Action)
 	 */
 	public boolean isEnabled(JMenuItem item, Action action) {
+		// test if plugin has its own method:
+		HookFactory factory = getHookFactory();
+		Object baseClass = factory.getPluginBaseClass(_hookName);
+		if(baseClass != null) {
+			if (baseClass instanceof MenuItemEnabledListener) {
+				MenuItemEnabledListener listener = (MenuItemEnabledListener) baseClass;
+				return listener.isEnabled(item, this);
+			}
+		}
 		MindMapNode focussed = controller.getSelected();
 		List selecteds = controller.getSelecteds();
 		HookInstanciationMethod instMethod = getInstanciationMethod(_hookName);
@@ -250,6 +267,13 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 
     public Class getDoActionClass() {
         return HookNodeAction.class;
-    } 
+    }
+
+	/**
+	 * @return
+	 */
+	public String getHookName() {
+		return _hookName;
+	} 
 		
 }

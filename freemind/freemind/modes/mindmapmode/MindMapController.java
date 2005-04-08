@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.9 2005-03-03 21:11:27 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.10 2005-04-08 21:37:30 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -60,6 +60,7 @@ import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
 import freemind.extensions.HookFactory;
 import freemind.extensions.HookRegistration;
+import freemind.extensions.HookFactory.RegistrationContainer;
 import freemind.main.Tools;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
@@ -176,25 +177,32 @@ public class MindMapController extends ControllerAdapter {
      * 
      */
     public void startupController() {
-        super.startupController();
-        List pluginRegistratios = getFrame().getHookFactory().getRegistrations(this.getClass());
-        logger.info("mScheduledActions are executed: "+pluginRegistratios.size());
-        for (Iterator i = pluginRegistratios.iterator(); i.hasNext();) {
-            // call constructor:
+		super.startupController();
+		HookFactory hookFactory = getFrame().getHookFactory();
+		List pluginRegistratios = hookFactory.getRegistrations(this.getClass());
+		logger.info("mScheduledActions are executed: "
+				+ pluginRegistratios.size());
+		for (Iterator i = pluginRegistratios.iterator(); i.hasNext();) {
+			// call constructor:
 			try {
-	            Class registrationClass = (Class) i.next();
-                Constructor hookConstructor = registrationClass
-                        .getConstructor(new Class[] { ModeController.class,
-                                MindMap.class });
-                HookRegistration registrationInstance = (HookRegistration) hookConstructor
-                        .newInstance(new Object[] { this, getMap() });
-                registrationInstance.register();
-                pRegistrations.add(registrationInstance);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+				HookFactory.RegistrationContainer container = (RegistrationContainer) i
+						.next();
+				Class registrationClass = container.hookRegistrationClass;
+				Constructor hookConstructor = registrationClass
+						.getConstructor(new Class[] { ModeController.class,
+								MindMap.class });
+				HookRegistration registrationInstance = (HookRegistration) hookConstructor
+						.newInstance(new Object[] { this, getMap() });
+				// register the instance to enable basePlugins.
+				hookFactory.registerRegistrationContainer(container,
+						registrationInstance);
+				registrationInstance.register();
+				pRegistrations.add(registrationInstance);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 
     public void shutdownController() {

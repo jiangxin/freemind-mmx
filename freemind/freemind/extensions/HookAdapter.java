@@ -1,8 +1,6 @@
 /*
  * Created on 29.02.2004
  *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 package freemind.extensions;
 
@@ -13,11 +11,11 @@ import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.ModeController;
 
-/**
+/** Implments MindMapHook as an Adapter class.
+ *  Implementation is straight forward.
+ * 
  * @author foltin
  *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class HookAdapter implements MindMapHook {
 
@@ -27,12 +25,16 @@ public class HookAdapter implements MindMapHook {
 
 	// Logging: 
 	protected java.util.logging.Logger logger;
+	/**
+	 * Stores the plugin base class as declared by the plugin_registration/isBaseClass
+	 * attribute.
+	 */
+	private Object baseClass;
 
 	/**
-	 * @param map
-	 * @param controller
 	 */
 	public HookAdapter() {
+		baseClass=null;
 	}
 	/* (non-Javadoc)
 	 * @see freemind.modes.NodeHook#getName()
@@ -105,6 +107,18 @@ public class HookAdapter implements MindMapHook {
 	
 	public URL getResource(String resourceName) {
 	    return this.getClass().getClassLoader().getResource(resourceName);
+	}
+	/* (non-Javadoc)
+	 * @see freemind.extensions.MindMapHook#getPluginBaseClass()
+	 */
+	public Object getPluginBaseClass() {
+		return baseClass;
+	}
+	/* (non-Javadoc)
+	 * @see freemind.extensions.MindMapHook#setPluginBaseClass(java.lang.Object)
+	 */
+	public void setPluginBaseClass(Object baseClass) {
+		this.baseClass = baseClass;
 	}
 
 }

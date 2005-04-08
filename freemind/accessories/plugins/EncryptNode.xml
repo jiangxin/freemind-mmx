@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <plugin>
+	<plugin_registration isPluginBase="true" class_name="accessories.plugins.EncryptNode$Registration"><plugin_mode class_name="freemind.modes.mindmapmode"/></plugin_registration>
 	<plugin_action 
 		documentation="%accessories/plugins/EncryptNode.properties_documentation" 
 		name="%accessories/plugins/EncryptNode.properties_name" 

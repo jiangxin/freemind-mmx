@@ -144,6 +144,12 @@
 				<menu_category name="crypto">
 				</menu_category>
 				<menu_separator/>
+				<menu_category name="time_management">
+				</menu_category>
+				<menu_separator/>
+				<menu_category name="collaboration">
+				</menu_category>
+				<menu_separator/>
 				<menu_category name="links">
 					<menu_action field="followLink" key_ref="keystroke_follow_link"/> <!-- goto -->
 				</menu_category>

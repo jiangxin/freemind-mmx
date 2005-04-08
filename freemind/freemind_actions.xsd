@@ -581,6 +581,9 @@
 						 The public constructor must be calleable with arguments:
 						 (ModeController controller, MindMap map) -->
 	      <xs:attribute name="class_name" use="required" type="xs:string"/>
+		  <!-- One registration can be the plugin base for the current
+			   plugin. This base can be retrieved via the getPluginBaseClass method. -->
+	      <xs:attribute name="isPluginBase" use="optional" type="xs:boolean" default="false"/>
     </xs:complexType>
   </xs:element>
 

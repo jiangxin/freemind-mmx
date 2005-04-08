@@ -72,7 +72,14 @@ public interface MindMapActions {
 	 */
 	void toggleFolded();
 	
+	/** Unfolds a node and centers it (see centerNode).
+	 * @param node
+	 */
 	void displayNode(MindMapNode node);
+	/** node is the only one selected. It is moved to the center of the
+	 *  screen.
+	 * @param node
+	 */
 	void centerNode(MindMapNode node);
 	String getLinkShortText(MindMapNode node);
 

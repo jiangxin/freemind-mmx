@@ -255,7 +255,8 @@
 	<target name="jar" depends="build">
 		<mkdir dir="${dist.lib}" />
 		<jar jarfile="${FM.jar}"
-		     manifest="${src}/MANIFEST.MF">
+		     manifest="${src}/MANIFEST.MF"
+			update="true">
 			<fileset dir="${build}">
 				<exclude name="accessories/**"/> 
 				<exclude name="plugins/**"/> 

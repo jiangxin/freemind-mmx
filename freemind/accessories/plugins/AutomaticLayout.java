@@ -102,7 +102,7 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 	    logger.finest("setStyle "+ node);
         setStyle(node);
 		// recurse:
-		for (Iterator i = node.childrenFolded(); i.hasNext();) {
+		for (Iterator i = node.childrenUnfolded(); i.hasNext();) {
 			MindMapNode child = (MindMapNode) i.next();
 			invoke(child);
 		}

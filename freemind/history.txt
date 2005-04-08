@@ -204,6 +204,12 @@ RC 3:
 * Collaboration: The map is sent to the invited user.
 * New translation into korean. Thanks to the author.
 
+* Today button added for time management.
+* Encryption menu items disabled if not applicable.
+* Bug fix: Automatic layout applies to folded childs.
+* New feature: Time Scheduler list added.
+
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

@@ -15,6 +15,6 @@
 		label="plugins/collaboration/jabber/jabber_plugin" 
 		class_name="plugins.collaboration.jabber.JabberStarter">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/extras/collaboration/jabber"/>
+		<plugin_menu location="menu_bar/extras/first/collaboration/jabber"/>
 	</plugin_action>
 </plugin>

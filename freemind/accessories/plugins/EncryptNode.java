@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EncryptNode.java,v 1.1.2.4 2005-01-09 00:05:05 christianfoltin Exp $*/
+/*$Id: EncryptNode.java,v 1.1.2.5 2005-04-08 21:37:30 christianfoltin Exp $*/
 
 /*
  * Created on 14.12.2004
@@ -24,13 +24,20 @@
  */
 package accessories.plugins;
 
+import javax.swing.Action;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import accessories.plugins.dialogs.EnterPasswordDialog;
+import freemind.controller.MenuItemEnabledListener;
+import freemind.extensions.HookRegistration;
 import freemind.extensions.NodeHookAdapter;
 import freemind.modes.MapAdapter;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
+import freemind.modes.actions.NodeHookAction;
 import freemind.modes.mindmapmode.EncryptedMindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
@@ -41,7 +48,44 @@ import freemind.modes.mindmapmode.MindMapController.NewNodeCreator;
  *  
  */
 public class EncryptNode extends NodeHookAdapter {
+    /** Enables the encrypt/decrypt menu item only if the map/node is encrypted.
+     * @author foltin
+     *
+     */
+    public static class Registration implements HookRegistration, MenuItemEnabledListener {
 
+        private final ModeController controller;
+        private final MindMap mMap;
+        private final java.util.logging.Logger logger;
+
+        public Registration(ModeController controller, MindMap map) {
+            this.controller = controller;
+            mMap = map;
+            logger = controller.getFrame().getLogger(this.getClass().getName());
+        }
+
+		public void register() {
+		}
+
+		public void deRegister() {
+		}
+
+		/* (non-Javadoc)
+		 * @see freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem, javax.swing.Action)
+		 */
+		public boolean isEnabled(JMenuItem item, Action action) {
+			boolean isEncryptedNode = false;
+			if(controller.getSelected() != null && controller.getSelected() instanceof EncryptedMindMapNode) {
+				isEncryptedNode = true;
+			}
+			String hookName = ((NodeHookAction)action).getHookName();
+			if (hookName.equals("accessories/plugins/EnterPassword.properties")) {
+				return isEncryptedNode;
+			} else {
+				return true;
+			}
+		}
+    }
     /**
      *  
      */
