@@ -16,21 +16,26 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Tools.java,v 1.17.18.3 2005-01-03 18:02:01 christianfoltin Exp $*/
+/*$Id: Tools.java,v 1.17.18.4 2005-04-12 21:12:14 christianfoltin Exp $*/
 
 package freemind.main;
 //maybe move this class to another package like tools or something...
 
+import java.awt.Color;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
 import java.net.URL;
-import java.awt.Color;
-import java.awt.Point;
-import java.awt.GraphicsEnvironment;
-import java.lang.Thread;
-
-import freemind.modes.mindmapmode.MindMapEdgeModel;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 public class Tools {
 
@@ -105,6 +110,8 @@ public class Tools {
     }
 
     public static boolean xmlToBoolean(String string) {
+    		if(string == null) 
+    			return false;
         if(string.equals("true"))
             return true;
         return false;
@@ -455,6 +462,23 @@ public class Tools {
     */
    public static byte[] fromBase64(String base64String) throws IOException {
        return new sun.misc.BASE64Decoder().decodeBuffer(base64String);
+   }
+   
+	/** Extracts a long from xml. Only useful for dates.
+    * @param xmlString
+    * @return
+    */
+   public static Date xmlToDate(String xmlString) {
+       try {
+           return new Date(Long.valueOf(xmlString).longValue());
+       } catch (Exception e) {
+           return new Date(System.currentTimeMillis());
+       }
+   }
+
+   
+   public static String dateToString(Date date) {
+   	 return Long.toString(date.getTime());
    }
 }
 

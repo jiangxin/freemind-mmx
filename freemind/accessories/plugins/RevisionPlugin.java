@@ -47,6 +47,10 @@ public class RevisionPlugin extends PermanentNodeHookAdapter implements ActionHa
 		}
 	}
 
+	public void shutdownMapHook() {
+		getController().getActionFactory().deregisterHandler(this);
+		super.shutdownMapHook();
+	}
     /* (non-Javadoc)
      * @see freemind.controller.actions.ActionHandler#executeAction(freemind.controller.actions.ActionPair)
      */

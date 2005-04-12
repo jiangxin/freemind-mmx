@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.7 2005-02-18 21:17:37 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.8 2005-04-12 21:12:16 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -759,7 +759,7 @@ public abstract class NodeView extends JLabel {
             iconPresent = true;
             MindIcon myicon = (MindIcon) icons.get(i);
             //System.out.println("print the icon " + myicon.toString());
-            iconImages.addImage((ImageIcon) myicon.getIcon(frame));  
+            iconImages.addImage(myicon.getIcon(frame));  
         }
         String link = ((NodeAdapter)getModel()).getLink();
         if ( link != null ) 

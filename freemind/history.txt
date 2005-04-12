@@ -209,6 +209,11 @@ RC 3:
 * Bug fix: Automatic layout applies to folded childs.
 * New feature: Time Scheduler list added.
 
+* Bug fix: revision plugin shutdown implemented.
+* Storage of creation/modification times moved to <node> tag. This times are always updated, even if its display is turned off.
+* Bug fix: removal of node background colors introduced.
+
+* Moved personal freemind folder to '.freemind' to hide it under Linux and MacOSX. The old folder is moved the first time.
 
 Changes made in Freemind 0.7.2:
 ===============================

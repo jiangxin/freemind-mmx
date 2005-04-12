@@ -16,22 +16,22 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.5 2005-02-13 22:39:56 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.6 2005-04-12 21:12:16 christianfoltin Exp $*/
 
 package freemind.modes;
 
+import java.awt.Font;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Vector;
+
 import freemind.extensions.PermanentNodeHook;
 import freemind.extensions.PermanentNodeHookSubstituteUnknown;
-import freemind.main.XMLElement;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
-
-import java.awt.Font;
-import java.io.File;
-import java.util.Vector;
-import java.util.HashMap;
-import java.util.Collection;
-import java.util.Iterator;
+import freemind.main.XMLElement;
+import freemind.modes.MindMapNode.HistoryInformation;
 
 public abstract class XMLElementAdapter extends XMLElement {
 
@@ -61,6 +61,8 @@ public abstract class XMLElementAdapter extends XMLElement {
     //public static final String XML_NODE_CLASS_PREFIX = XML_NODE+"_";
     public static final String XML_NODE_CLASS = "AA_NODE_CLASS";
     public static final String XML_NODE_ADDITIONAL_INFO = "ADDITIONAL_INFO";
+    public static final String XML_NODE_HISTORY_CREATED_AT = "CREATED";
+    public static final String XML_NODE_HISTORY_LAST_MODIFIED_AT = "MODIFIED";
 
    //   Overhead methods
 
@@ -169,6 +171,9 @@ public abstract class XMLElementAdapter extends XMLElement {
 				  * have to be created via the ModeController. 
 				  * DO NOT COPY. */
                 hook = (PermanentNodeHook) frame.getHookFactory().createNodeHook(loadName);
+                // this is a bad hack. Don't make use of this data unless
+                // you know exactly what you are doing.
+                hook.setNode(node);
              } catch(Exception e) {
                  e.printStackTrace();
                  hook = new PermanentNodeHookSubstituteUnknown(loadName);
@@ -200,6 +205,18 @@ public void setAttribute(String name, Object value) {
             node.setUserObject(sValue); }
          else if (name.equals(XML_NODE_ADDITIONAL_INFO)) {
              node.setAdditionalInfo(sValue); }
+         else if (name.equals(XML_NODE_HISTORY_CREATED_AT)) {
+             if(node.getHistoryInformation()==null) {
+             	node.setHistoryInformation(new HistoryInformation());
+             }
+             node.getHistoryInformation().setCreatedAt(Tools.xmlToDate(sValue));
+         }
+         else if (name.equals(XML_NODE_HISTORY_LAST_MODIFIED_AT)) {
+             if(node.getHistoryInformation()==null) {
+             	node.setHistoryInformation(new HistoryInformation());
+             }
+             node.getHistoryInformation().setLastModifiedAt(Tools.xmlToDate(sValue));
+         }
          else if (name.equals("FOLDED")) {
             if (sValue.equals("true")) {
                node.setFolded(true); }}

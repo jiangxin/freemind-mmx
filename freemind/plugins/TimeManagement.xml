@@ -19,7 +19,18 @@
 		label="plugins/TimeList.xml" 
 		class_name="plugins.time.TimeList">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/extras/first/time_management/list"/>
+		<plugin_menu location="menu_bar/extras/first/time_management/timelist"/>
+		<plugin_property name="show_all_nodes" value="false"/>
+	</plugin_action>
+	<plugin_action 
+		documentation="%plugins/NodeList.xml_documentation" 
+		name="%plugins/NodeList.xml_name" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/NodeList.xml" 
+		class_name="plugins.time.TimeList">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/extras/first/time_management/nodelist"/>
+		<plugin_property name="show_all_nodes" value="true"/>
 	</plugin_action>
 	<plugin_action 
 		documentation="%plugins/TimeManagementReminder.xml_documentation" 

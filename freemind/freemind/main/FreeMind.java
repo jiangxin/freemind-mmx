@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.14 2005-02-06 22:15:12 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.15 2005-04-12 21:12:14 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -112,8 +112,21 @@ public class FreeMind extends JFrame implements FreeMindMain {
             autoPropertiesFile = new File (userPropertiesFolder,def.getProperty("autoproperties"));
             patternsFile = new File (userPropertiesFolder,def.getProperty("patternsfile"));
 	    try {
+            		// move freemind to .freemind:
+				if (getProperty("properties_folder").startsWith(".")) {
+					String oldFolderName = System.getProperty("user.home")
+							+ System.getProperty("file.separator")
+							+ getProperty("properties_folder").substring(1);
+					File oldFolder = new File(oldFolderName);
+					if (oldFolder.exists() && !userPropertiesFolder.exists()) {
+						System.out
+								.println("Try to move the properties folder to .properties folder.");
+						oldFolder.renameTo(userPropertiesFolder);
+					}
+				}
                 if (!userPropertiesFolder.exists()) {
-                   userPropertiesFolder.mkdir(); }
+					userPropertiesFolder.mkdir();
+				}
 
                 System.out.println();
                 System.out.println("Looking for user properties:");

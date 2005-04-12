@@ -167,61 +167,20 @@ public class ImportWizard {
 		}
 	}
 
-	/**
-	 * Looks up an unqualified class name in the class path to find possible
-	 * fully qualified matches.
-	 *
-	 * @param className a value of type 'String'
-	 */
-	public void makeImportStatement(String className) {
-
-		String importList = "(list";
-
-		for (int i = 0; i < CLASS_LIST.size(); i++) {
-			String testName = (String) CLASS_LIST.elementAt(i);
-
-			if ((testName.length() > className.length()
-				&& testName.endsWith(className)
-				&& testName.charAt(testName.length() - className.length() - 1)
-					== '.')
-				|| (testName.length() == className.length())
-				&& testName.equals(className)) {
-
-				// Avoid duplicates!
-				testName = " \"" + testName + "\"";
-				if (importList.indexOf(testName) == -1)
-					importList += testName;
-			}
-		}
-
-		importList += ")";
-
-		System.out.println(importList);
-		System.out.flush();
-
-	}
-
-	/**
-	 * Tests the ImportWizard from the command line
-	 *
-	 * @param args an array of strings containing class names to look up
-	 */
-	public void main(String[] args) {
-
-		if (args.length == 0) {
-			System.out.println("Give class names as arguments to look up");
-		} else {
-			for (int i = 0; i < args.length; i++) {
-				System.out.println("=== " + args[i] + " ===");
-				makeImportStatement(args[i]);
-			}
-		}
-	}
 } // ImportWizard
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.4  2005-03-10 20:50:13  christianfoltin
+ * Revision 1.1.4.5  2005-04-12 21:12:14  christianfoltin
+ * * New feature: Time Scheduler list added.
+ *
+ * * Bug fix: revision plugin shutdown implemented.
+ * * Storage of creation/modification times moved to <node> tag. This times are always updated, even if its display is turned off.
+ * * Bug fix: removal of node background colors introduced.
+ *
+ * * Moved personal freemind folder to '.freemind' to hide it under Linux and MacOSX. The old folder is moved the first time.
+ *
+ * Revision 1.1.4.4  2005/03/10 20:50:13  christianfoltin
  * * New feature: Collaboration mode (alpha version)
  * * Bug fix: java 1.5 compiler changes (thanks to Dimitri and to brcha)
  * * Bug fix: Typing into the node gulps the first letter. Due to Dimitri.

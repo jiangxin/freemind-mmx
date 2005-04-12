@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.7 2005-02-18 21:17:37 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.8 2005-04-12 21:12:15 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -46,6 +46,7 @@ import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
+import freemind.modes.MindMapNode.HistoryInformation;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -92,6 +93,8 @@ public abstract class NodeAdapter implements MindMapNode {
     private FreeMindMain frame;
     private static final boolean ALLOWSCHILDREN = true;
     private static final boolean ISLEAF = false; //all nodes may have children
+    
+    private HistoryInformation historyInformation = null;
 	// Logging: 
     static protected java.util.logging.Logger logger;
 
@@ -111,6 +114,9 @@ public abstract class NodeAdapter implements MindMapNode {
 		activatedHooks = new HashSet();
 		if(logger == null)
 			logger = frame.getLogger(this.getClass().getName());
+		// create creation time:
+		setHistoryInformation(new HistoryInformation());
+
     }
 
     /**
@@ -814,7 +820,17 @@ public abstract class NodeAdapter implements MindMapNode {
     	//link
     	if (getLink() != null) {
                node.setAttribute("LINK", getLink()); }
-    
+
+
+    	//history information, fc, 11.4.2005
+    	if (historyInformation != null) {
+			node.setAttribute(XMLElementAdapter.XML_NODE_HISTORY_CREATED_AT,
+					Tools.dateToString(getHistoryInformation().getCreatedAt()));
+			node.setAttribute(
+					XMLElementAdapter.XML_NODE_HISTORY_LAST_MODIFIED_AT, Tools
+							.dateToString(getHistoryInformation()
+									.getLastModifiedAt()));
+	}
     	//font
     	if (font!=null) {
     	    XMLElement fontElement = new XMLElement();
@@ -886,4 +902,10 @@ public abstract class NodeAdapter implements MindMapNode {
             stateIcons.remove(key);
         }
     }
+	public HistoryInformation getHistoryInformation() {
+		return historyInformation;
+	}
+	public void setHistoryInformation(HistoryInformation historyInformation) {
+		this.historyInformation = historyInformation;
+	}
 }

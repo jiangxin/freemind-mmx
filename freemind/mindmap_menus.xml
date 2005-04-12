@@ -102,6 +102,7 @@
 					<menu_action field="nodeColor" key_ref="keystroke_node_color"/>
 					<menu_action field="nodeColorBlend" key_ref="keystroke_node_color_blend"/>
 					<menu_action field="nodeBackgroundColor"/>
+					<menu_action field="removeNodeBackgroundColor"/>
 				</menu_category>
 				<menu_separator/>
 			</menu_category>
@@ -205,6 +206,7 @@
 					<menu_action field="nodeColor" key_ref="keystroke_node_color"/>
 					<menu_action field="nodeColorBlend" key_ref="keystroke_node_color_blend"/>
 					<menu_action field="nodeBackgroundColor"/>
+					<menu_action field="removeNodeBackgroundColor"/>
 				</menu_category>
 				<menu_separator/>
 			</menu_category>

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.15 2005-03-11 22:27:28 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.16 2005-04-12 21:12:14 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -48,6 +48,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -135,6 +136,7 @@ import freemind.modes.actions.ToggleFoldedAction;
 import freemind.modes.actions.UnderlinedAction;
 import freemind.modes.actions.UndoAction;
 import freemind.modes.actions.FindAction.FindNextAction;
+import freemind.modes.actions.NodeBackgroundColorAction.RemoveNodeBackgroundColorAction;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
@@ -207,6 +209,7 @@ public abstract class ControllerAdapter implements ModeController {
     public ColorArrowLinkAction colorArrowLinkAction = null;
     public ChangeArrowsInArrowLinkAction changeArrowsInArrowLinkAction = null;
 	public NodeBackgroundColorAction nodeBackgroundColor = null;
+	public RemoveNodeBackgroundColorAction removeNodeBackgroundColor = null;
 
     public IconAction unknwonIconAction = null;
     public RemoveLastIconAction removeLastIconAction = null;
@@ -320,6 +323,7 @@ public abstract class ControllerAdapter implements ModeController {
 	    colorArrowLinkAction = new ColorArrowLinkAction(this, null);
 	    changeArrowsInArrowLinkAction = new ChangeArrowsInArrowLinkAction(this, "none", null, null, true, true);
 	    nodeBackgroundColor = new NodeBackgroundColorAction(this);
+	    removeNodeBackgroundColor = new RemoveNodeBackgroundColorAction(this);
 	    setLinkByTextField = new SetLinkByTextFieldAction(this);
 	    addLocalLinkAction = new AddLocalLinkAction(this);
 	    gotoLinkNodeAction = new GotoLinkNodeAction(this, null);
@@ -422,6 +426,10 @@ public abstract class ControllerAdapter implements ModeController {
 		nodesToBeUpdated.add(node);
 		nodesAlreadyUpdated.add(node);
 		if (isUpdate) {
+			// update modification times:
+			if(node.getHistoryInformation()!= null) {
+				node.getHistoryInformation().setLastModifiedAt(new Date());
+			}
             // Tell any node hooks that the node is changed:
             recursiveCallUpdateHooks((MindMapNode) node, (MindMapNode) node /* self update */);
         }
@@ -971,6 +979,9 @@ public abstract class ControllerAdapter implements ModeController {
         nodeColor.setNodeColor(node, color);
     }
     
+	public void setNodeBackgroundColor(MindMapNode node, Color color) {
+		nodeBackgroundColor.setNodeBackgroundColor(node, color);
+	}
     public void blendNodeColor(MindMapNode node) {
         Color mapColor = getMap().getBackgroundColor();
         Color nodeColor = node.getColor();
