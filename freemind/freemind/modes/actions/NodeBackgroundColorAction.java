@@ -20,7 +20,7 @@
  * 
  * Created on 19.09.2004
  */
-/* $Id: NodeBackgroundColorAction.java,v 1.1.4.2 2005-04-12 21:12:16 christianfoltin Exp $ */
+/* $Id: NodeBackgroundColorAction.java,v 1.1.4.3 2005-04-14 20:37:23 christianfoltin Exp $ */
 
 package freemind.modes.actions;
 
@@ -56,7 +56,7 @@ public class NodeBackgroundColorAction extends FreemindAction implements ActorXm
     public void actionPerformed(ActionEvent e) {
         Color color = Controller.showCommonJColorChooserDialog(controller
                 .getView().getSelected(), controller.getText("choose_node_background_color"), controller.getSelected()
-                .getColor());
+                .getBackgroundColor());
         if (color == null) {
             return;
         }

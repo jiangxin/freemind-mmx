@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePattern.java,v 1.5.18.3 2005-03-03 21:29:56 christianfoltin Exp $*/
+/*$Id: StylePattern.java,v 1.5.18.4 2005-04-14 20:37:23 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -56,6 +56,7 @@ public class StylePattern {
 
     private boolean appliesToNode = false;
     private Color  nodeColor;
+    private Color  nodeBackgroundColor;
     private String nodeStyle;
 
     private boolean appliesToNodeFont = false;
@@ -87,6 +88,7 @@ public class StylePattern {
     public StylePattern(MindMapNode node) {
         appliesToNode = true;
         nodeColor = node.getColor();
+        nodeBackgroundColor = node.getBackgroundColor();
         nodeStyle = node.getStyle();
 
         appliesToNodeFont = true;
@@ -107,7 +109,7 @@ public class StylePattern {
     }
     
     public String toString() {
-        return "node: "+nodeColor+", "+nodeStyle+", "+nodeFontFamily+", "+nodeFontSize+", "+nodeIcon+", "+
+        return "node: "+nodeColor+", "+nodeBackgroundColor+", "+nodeStyle+", "+nodeFontFamily+", "+nodeFontSize+", "+nodeIcon+", "+
            "\nedge: "+edgeColor+", "+edgeStyle+", "+edgeWidth; }
 
     public boolean getAppliesToEdge() {
@@ -200,6 +202,12 @@ public class StylePattern {
        this.nodeColor = v; }
     
     
+	public Color getNodeBackgroundColor() {
+		return nodeBackgroundColor;
+	}
+	public void setNodeBackgroundColor(Color nodeBackgroundColor) {
+		this.nodeBackgroundColor = nodeBackgroundColor;
+	}
     /**
        * Get the value of nodeStyle.
        * @return Value of nodeStyle.
@@ -339,6 +347,9 @@ public class StylePattern {
               if (child.getStringAttribute("color")!=null && 
                   child.getStringAttribute("color").length() == 7) {
                  setNodeColor(Tools.xmlToColor(child.getStringAttribute("color") ) ); }
+              if (child.getStringAttribute("background_color")!=null && 
+                  child.getStringAttribute("background_color").length() == 7) {
+                 setNodeBackgroundColor(Tools.xmlToColor(child.getStringAttribute("background_color") ) ); }
               if (child.getStringAttribute("style")!=null) {
                  setNodeStyle(child.getStringAttribute("style")); }
               if (child.getStringAttribute("icon") != null) {

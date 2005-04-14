@@ -538,6 +538,25 @@
 	  </xs:complexType>
 	</xs:element>
 		
+	<!-- Windowpositionstorage stores the window configuration of the 
+		 time list window. -->
+	<xs:element name="time_window_configuration_storage">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+		      <xs:attribute name="x" use="required" type="xs:int"/>
+		      <xs:attribute name="y" use="required" type="xs:int"/>
+		      <xs:attribute name="width" use="required" type="xs:int"/>
+		      <xs:attribute name="height" use="required" type="xs:int"/>
+		      <xs:attribute name="column_1_width" use="required" type="xs:int"/>
+		      <xs:attribute name="column_2_width" use="required" type="xs:int"/>
+		      <xs:attribute name="column_3_width" use="required" type="xs:int"/>
+		      <xs:attribute name="column_4_width" use="required" type="xs:int"/>
+		      <xs:attribute name="column_5_width" use="required" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
 
 
 	<!-- ======================================================================================= 
