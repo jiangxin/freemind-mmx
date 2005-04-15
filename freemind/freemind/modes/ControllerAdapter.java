@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.16 2005-04-12 21:12:14 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.17 2005-04-15 22:28:09 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -686,7 +686,7 @@ public abstract class ControllerAdapter implements ModeController {
             chooser = new JFileChooser(getMap().getFile().getParentFile()); }
         else {
            chooser = new JFileChooser();
-           chooser.setSelectedFile(new File(((MindMapNode)getMap().getRoot()).toString()+".mm"));
+           chooser.setSelectedFile(new File(getFileNameProposal()+".mm"));
         }
         //chooser.setLocale(currentLocale);
         if (getFileFilter() != null) {
@@ -726,6 +726,16 @@ public abstract class ControllerAdapter implements ModeController {
         getController().getMapModuleManager().updateMapModuleName();        
         return true;
     }
+    /** Creates a proposal for a file name to save the map.
+     *  Removes all illegal characters.
+     * @return
+     */
+    private String getFileNameProposal() {
+        String rootText = ((MindMapNode)getMap().getRoot()).toString();
+        rootText = rootText.replaceAll("[^0-9a-zA-Z_ ]+", "_");
+        return rootText;
+    }
+
     /**
      * Return false if user has canceled. 
      */

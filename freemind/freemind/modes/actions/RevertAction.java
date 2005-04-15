@@ -19,7 +19,7 @@
  *
  * Created on 11.03.2005
  */
-/*$Id: RevertAction.java,v 1.1.2.1 2005-03-11 22:27:29 christianfoltin Exp $*/
+/*$Id: RevertAction.java,v 1.1.2.2 2005-04-15 22:28:10 christianfoltin Exp $*/
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
@@ -146,7 +146,7 @@ public class RevertAction extends FreemindAction implements ActorXml {
 					if (revertAction.getFilePrefix() != null) {
 						filePrefix = revertAction.getFilePrefix();
 					}
-					File tempFile = File.createTempFile(filePrefix, ".xml",
+					File tempFile = File.createTempFile(filePrefix, ".mm",
 							new File(controller.getFrame()
 									.getFreemindDirectory()));
 					FileWriter fw = new FileWriter(tempFile);

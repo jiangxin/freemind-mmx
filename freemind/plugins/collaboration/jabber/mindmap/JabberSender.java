@@ -21,6 +21,7 @@ import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.generated.instance.CollaborationAction;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Tools;
 
 /**
  * @author RReppel
@@ -193,13 +194,13 @@ public class JabberSender implements ActionFilter {
             throw new IllegalArgumentException(
                     "sendToUser is null. (Did you specify the user to share with by calling 'setMapShareUser'?)");
         logger.info("Sending message:"
-                + ((message.length() < 50) ? message : (message
-                        .substring(0, 25)
-                        + "..." + message.substring(message.length() - 25))));
+                + ((message.length() < 100) ? message : (message
+                        .substring(0, 50)
+                        + "..." + message.substring(message.length() - 50))));
         /*
          * Wait until there is a reply.
          */
-        chat.sendPrivateMessage(new JID(requestReceiverUser), message, false);
+        chat.sendPrivateMessage(new JID(requestReceiverUser), Tools.compress(message), false);
 
     }
 

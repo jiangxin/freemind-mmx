@@ -20,6 +20,7 @@
 package plugins.collaboration.jabber.mindmap;
 
 import java.util.LinkedList;
+import java.util.logging.Level;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -38,7 +39,7 @@ import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.generated.instance.CollaborationAction;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.main.XMLElement;
+import freemind.main.Tools;
 import freemind.modes.mindmapmode.MindMapController;
 
 /**
@@ -150,12 +151,20 @@ public class JabberListener {
 
                 JabberChatMessage msg = (JabberChatMessage) commandQueue
                         .removeFirst(); //Process the first command in the
-                // list.
-                logger.info("message " + msg + " from "
-                        + msg.getFrom().getUsername() + " is reply required:"
-                        + msg.isReplyRequired());
 
-                String msgString = msg.getBody();
+                String msgString = Tools.decompress(msg.getBody());
+                // list.
+                if(logger.isLoggable(Level.INFO)){
+                    String displayMessage = ("Sending message:" + ((msgString
+                            .length() < 100) ? msgString : (msgString
+                            .substring(0, 50)
+                            + "..." + msgString
+                            .substring(msgString.length() - 50))));
+
+                    logger.info("message " + displayMessage + " from "
+                            + msg.getFrom().getUsername()
+                            + " is reply required:" + msg.isReplyRequired());
+                }
                 XmlAction action = controller.unMarshall(msgString);
                 if (action instanceof CollaborationAction) {
                     CollaborationAction xml = (CollaborationAction) action;

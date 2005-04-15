@@ -203,6 +203,7 @@ RC 3:
 
 * Collaboration: The map is sent to the invited user.
 * New translation into korean. Thanks to the author.
+* Translation into chinese enhanced. Thanks to william chen - (willyann).
 
 * Today button added for time management.
 * Encryption menu items disabled if not applicable.
@@ -218,6 +219,8 @@ RC 3:
 * Window properties of TimeList window is stored in preferences
 * Nodebackground color is used in patterns and copy-format
 
+* New map: filename is better chosen (special characters are removed).
+* Collaboration: messages are sent zipped now.
 
 Changes made in Freemind 0.7.2:
 ===============================
