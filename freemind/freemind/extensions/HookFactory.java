@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HookFactory.java,v 1.1.4.7 2005-04-08 21:37:30 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.4.8 2005-04-17 08:29:06 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -245,8 +245,16 @@ public class HookFactory {
 			urls[j++] = new File(getFreemindBaseDir()).toURL();
 			for (Iterator i = pluginClasspathList.iterator(); i.hasNext();) {
 				PluginClasspathType classPath = (PluginClasspathType) i.next();
-				File file = new File(getFreemindBaseDir() + File.separator
-						+ classPath.getJar());
+				// new version of classpath resolution suggested by ewl under 
+				// patch [ 1154510 ] Be able to give absolute classpath entries in plugin.xml
+				File file = new File(classPath.getJar());
+				if (! file.isAbsolute()) {
+					file = new File(getFreemindBaseDir(),
+							classPath.getJar());
+				}
+				// end new version by ewl.
+//				File file = new File(getFreemindBaseDir() + File.separator
+//						+ classPath.getJar());
 				logger.info("file " + file.toString() + " exists = "
 						+ file.exists());
 				urls[j++] = file.toURL();
@@ -261,7 +269,9 @@ public class HookFactory {
 		}
 	}
 
-	/**
+	/** This string is used to identify known classloaders as they
+	 *  are cached.
+	 * 
 	 * @param pluginClasspathList
 	 * @return
 	 */

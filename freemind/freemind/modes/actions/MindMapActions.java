@@ -1,9 +1,23 @@
-/*
- * Created on 05.05.2004
+/*FreeMind - A Program for creating and viewing Mindmaps
+ *Copyright (C) 2000-2001  Joerg Mueller <joergmueller@bigfoot.com>
+ *See COPYING for Details
  *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * Created on 05.05.2004
  */
+/*$Id: MindMapActions.java,v 1.1.4.11 2005-04-17 08:29:06 christianfoltin Exp $*/
 package freemind.modes.actions;
 
 import java.awt.Color;
@@ -19,12 +33,16 @@ import freemind.modes.MindMapNode;
 import freemind.modes.StylePattern;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 
-/**
+/** This is the central method interface of actions that can be undertaken on
+ *  nodes. Whenever you want to change the mindmap choose one of these actions
+ *  as they do proper redisplay, inform others about the actions, the actions are
+ *  all undoable etc.etc.
+ *  
+ * All these methods do redisplay, because they are offered from the  ModeController for use.
+ * 
  * @author foltin
- *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
+ * @see freemind.modes.ModeController
+ * */
 public interface MindMapActions {
     /** Call this method, if you changed anything at a node. This method makes the map dirty.
      * @param node
@@ -35,7 +53,6 @@ public interface MindMapActions {
      */
     public void nodeRefresh(MindMapNode node);
 	public void nodeStructureChanged(MindMapNode node);
-	//  All these methods do redisplay, because they are offered to controller for use.
 	/** The following modes are present: 
 	 *     public final int NEW_CHILD_WITHOUT_FOCUS = 1;  // old model of insertion
 	 *     public final int NEW_CHILD = 2;
@@ -72,11 +89,11 @@ public interface MindMapActions {
 	 */
 	void toggleFolded();
 	
-	/** Unfolds a node and centers it (see centerNode).
+	/** Unfolds a node if necessary.
 	 * @param node
 	 */
 	void displayNode(MindMapNode node);
-	/** node is the only one selected. It is moved to the center of the
+	/** Node is displayed and selected as the only one selected. It is moved to the center of the
 	 *  screen.
 	 * @param node
 	 */
@@ -111,7 +128,7 @@ public interface MindMapActions {
 	public void setCloudColor(MindMapNode node, Color color);
 //	public void setCloudWidth(MindMapNode node, int width);
 //	public void setCloudStyle(MindMapNode node, String style);
-//	/** Source holds the MindMapArrowLinkModel and points to the id placed in target.*/
+	/** Source holds the MindMapArrowLinkModel and points to the id placed in target.*/
 	public void addLink(
 		MindMapNode source,
 		MindMapNode target);
@@ -134,11 +151,9 @@ public interface MindMapActions {
 	public void increaseFontSize(MindMapNode node, int increment);
 	public void splitNode(MindMapNode node, int caretPosition, String newText);
 	public void joinNodes(MindMapNode selectedNode, List selectedNodes);
-//	/*
-//	 *
-//	 */
+
 	public void paste(Transferable t, MindMapNode parent);
-	/** @param isLeft determines, whether or not the node is placed on the left or right. **/
+	/** @param isLeft determines, whether or not the node is placed on the left or right. */
 	public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft);
 	public void paste(MindMapNode node, MindMapNode parent);
 	

@@ -19,7 +19,7 @@
  *
  * Created on 06.02.2005
  */
-/*$Id: ReminderHook.java,v 1.1.2.5 2005-02-18 21:17:37 christianfoltin Exp $*/
+/*$Id: ReminderHook.java,v 1.1.2.6 2005-04-17 08:29:06 christianfoltin Exp $*/
 package plugins.time;
 
 import java.text.MessageFormat;
@@ -131,7 +131,6 @@ public class ReminderHook extends PermanentNodeHookAdapter {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     // yes, the time is over:
-                    getController().displayNode(getNode());
                     // select the node.
                     getController().centerNode(getNode());
                     // format message:

@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: GotoLinkNodeAction.java,v 1.1.4.2 2004-11-16 16:42:36 christianfoltin Exp $*/
+/*$Id: GotoLinkNodeAction.java,v 1.1.4.3 2005-04-17 08:29:06 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -50,7 +50,7 @@ public class GotoLinkNodeAction extends FreemindAction {
     }
 
     public void actionPerformed(ActionEvent e) {
-        controller.displayNode(source);
+        controller.centerNode(source);
     }
     
     public String getShortTextForLink(MindMapNode node) {

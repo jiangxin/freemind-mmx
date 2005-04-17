@@ -222,6 +222,10 @@ RC 3:
 * New map: filename is better chosen (special characters are removed).
 * Collaboration: messages are sent zipped now.
 
+* patch from ewl (thanks): new version of classpath resolution suggested by ewl under patch [ 1154510 ] Be able to give absolute classpath entries in plugin.xml
+* corrected behaviour of centerNode and displayNode.
+
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

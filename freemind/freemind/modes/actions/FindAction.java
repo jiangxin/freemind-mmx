@@ -136,6 +136,7 @@ public class FindAction extends AbstractAction {
                     .toLowerCase();
             if (nodeText.indexOf(what) >= 0) { // Found
                 displayNode(node, findNodesUnfoldedByLastFind);
+                centerNode(node);
 
                 // Save the state for find next
                 findWhat = what;
@@ -168,7 +169,6 @@ public class FindAction extends AbstractAction {
             }
         }
 
-        centerNode(node);
     }
 
     public boolean findNext() {

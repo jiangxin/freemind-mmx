@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <plugin>
 	<plugin_classpath jar="plugins/time/time_plugin.jar"/>
-	<plugin_classpath jar="plugins/time/jcalendar.jar"/>
+	<plugin_classpath jar="plugins/time/jcalendar.jar"/> 
 	<plugin_action 
 		documentation="%plugins/TimeManagement.xml_documentation" 
 		name="%plugins/TimeManagement.xml_name" 

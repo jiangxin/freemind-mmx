@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/*$Id: TimeList.java,v 1.1.2.3 2005-04-14 20:37:23 christianfoltin Exp $*/
+/*$Id: TimeList.java,v 1.1.2.4 2005-04-17 08:29:06 christianfoltin Exp $*/
 package plugins.time;
 
 import java.awt.Container;
@@ -277,9 +277,9 @@ public class TimeList extends ModeControllerHookAdapter {
 	 */
 	private void gotoNodeAndClose(int selectedRow) {
 		if (selectedRow >= 0) {
-			MindMapNode selectedNode = (MindMapNode) timeTable.getModel()
-					.getValueAt(selectedRow, 1);
-			getController().displayNode(selectedNode);
+			MindMapNode selectedNode = ((NodeHolder) timeTable.getModel()
+					.getValueAt(selectedRow, NODE_TEXT_COLUMN)).node;
+			getController().centerNode(selectedNode);
 			for (int i = 0; i < timeTable.getSelectedRows().length; i++) {
 				int row = timeTable.getSelectedRows()[i];
 				// FIXME: Select me.
