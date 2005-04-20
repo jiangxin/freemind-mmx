@@ -225,6 +225,8 @@ RC 3:
 * patch from ewl (thanks): new version of classpath resolution suggested by ewl under patch [ 1154510 ] Be able to give absolute classpath entries in plugin.xml
 * corrected behaviour of centerNode and displayNode.
 
+* Bug fix: encrypted nodes are stored correctly, even if they are closed before saving.
+
 
 Changes made in Freemind 0.7.2:
 ===============================

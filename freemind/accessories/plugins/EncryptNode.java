@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EncryptNode.java,v 1.1.2.5 2005-04-08 21:37:30 christianfoltin Exp $*/
+/*$Id: EncryptNode.java,v 1.1.2.6 2005-04-20 16:52:20 christianfoltin Exp $*/
 
 /*
  * Created on 14.12.2004
@@ -75,14 +75,19 @@ public class EncryptNode extends NodeHookAdapter {
 		 */
 		public boolean isEnabled(JMenuItem item, Action action) {
 			boolean isEncryptedNode = false;
+			boolean isOpened = false;
 			if(controller.getSelected() != null && controller.getSelected() instanceof EncryptedMindMapNode) {
 				isEncryptedNode = true;
+			    EncryptedMindMapNode enode = (EncryptedMindMapNode) controller.getSelected() ;
+				isOpened = enode.isVisible();
 			}
 			String hookName = ((NodeHookAction)action).getHookName();
 			if (hookName.equals("accessories/plugins/EnterPassword.properties")) {
 				return isEncryptedNode;
 			} else {
-				return true;
+			    /* you can insert an encrypted node, if the current selected node is 
+			     * not encrypted, or if it is opened. */ 
+				return !isEncryptedNode || isOpened ;
 			}
 		}
     }
@@ -137,6 +142,7 @@ public class EncryptNode extends NodeHookAdapter {
             return;
         }
         MindMapController mindmapcontroller = (MindMapController) getController();
+        // FIXME: not multithreading safe
         mindmapcontroller.setNewNodeCreator(new NewNodeCreator() {
 
             public MindMapNode createNode(Object userObject) {

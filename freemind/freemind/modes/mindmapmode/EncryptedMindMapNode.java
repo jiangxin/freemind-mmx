@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.7 2005-02-18 21:17:37 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.8 2005-04-20 16:52:20 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -51,6 +51,10 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
     private boolean isVisible = true;
 
+    /**
+     * is only set to false by the load mechanism. 
+     * If the node is generated or it is decrypted once, this is always true.
+     */
     private boolean isDecrypted = true;
 
     /**
@@ -79,7 +83,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         if (decryptedIcon == null) {
             decryptedIcon = new MindIcon("decrypted").getIcon(frame);
         }
-
+        updateIcon();
     }
 
     /**
@@ -243,16 +247,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     public XMLElement save(Writer writer, MindMapLinkRegistry registry)
             throws IOException {
         if (isDecrypted) {
-            StringWriter sWriter = new StringWriter();
-            for (Iterator i = childrenUnfolded(); i.hasNext();) {
-                MindMapNode child = (MindMapNode) i.next();
-                child.save(sWriter, registry);
-                if (i.hasNext()) {
-                    sWriter.write(PasteAction.NODESEPARATOR);
-                }
-            }
-            StringBuffer childXml = sWriter.getBuffer();
-            encryptedContent = encryptXml(childXml);
+            generateEncryptedContent(registry);
         }
         boolean oldIsVisible = isVisible();
         setVisible(false);
@@ -264,6 +259,23 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         }
         setVisible(oldIsVisible);
         return ret;
+    }
+
+    /**
+     * @param registry
+     * @throws IOException
+     */
+    private void generateEncryptedContent(MindMapLinkRegistry registry) throws IOException {
+        StringWriter sWriter = new StringWriter();
+        for (Iterator i = super.childrenUnfolded(); i.hasNext();) {
+            MindMapNode child = (MindMapNode) i.next();
+            child.save(sWriter, registry);
+            if (i.hasNext()) {
+                sWriter.write(PasteAction.NODESEPARATOR);
+            }
+        }
+        StringBuffer childXml = sWriter.getBuffer();
+        encryptedContent = encryptXml(childXml);
     }
 
     /**
