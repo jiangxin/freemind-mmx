@@ -62,6 +62,9 @@
 	<!-- Node actions. These actions involve exactly one node.-->
 	<xs:element name="transferable_content">
 		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="TransferableAsFileList" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
 	      <xs:attribute name="Transferable" use="optional" type="xs:string"/>
 	      <xs:attribute name="TransferableAsPlainText" use="optional" type="xs:string"/>
 	      <xs:attribute name="TransferableAsRTF" use="optional" type="xs:string"/>

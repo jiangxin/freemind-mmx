@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: CutAction.java,v 1.1.4.4 2005-01-02 08:37:54 christianfoltin Exp $*/
+/*$Id: CutAction.java,v 1.1.4.5 2005-04-24 18:49:12 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -27,6 +27,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -158,6 +159,16 @@ public class CutAction extends AbstractAction implements ActorXml {
 					(String) t.getTransferData(MindMapNodesSelection.htmlFlavor);
 				trans.setTransferableAsHtml(textFromClipboard);
 			}
+			if(t.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
+				/* Since the JAXB-generated interface TransferableContentType doesn't supply
+				  a setTranserableAsFileList method, we have to get the fileList, clear it,
+				  and then set it to the new value.
+				*/ 
+	            List fileList = (List)t.getTransferData(MindMapNodesSelection.fileListFlavor);
+				List listCopy = trans.getTransferableAsFileList();
+				listCopy.clear();
+				listCopy.addAll(fileList);
+			}
 			return trans;
 		} catch (UnsupportedFlavorException e) {
 			e.printStackTrace();
@@ -176,7 +187,8 @@ public class CutAction extends AbstractAction implements ActorXml {
         		trans.getTransferableAsPlainText(),
                 trans.getTransferableAsRTF(),
                 trans.getTransferableAsDrop(), 
-                trans.getTransferableAsHtml(), null);
+                trans.getTransferableAsHtml(), 
+            	trans.getTransferableAsFileList());
         return copy;
     }
     /* (non-Javadoc)

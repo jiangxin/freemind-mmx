@@ -19,7 +19,7 @@
  *
  * Created on ???
  */
-/*$Id: MindMapNodesSelection.java,v 1.2.18.1 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: MindMapNodesSelection.java,v 1.2.18.2 2005-04-24 18:49:12 christianfoltin Exp $*/
 package freemind.controller;
 import java.awt.datatransfer.*;
 import java.io.*;
@@ -101,7 +101,7 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
            return true;
        if(flavor.equals(htmlFlavor) && htmlContent != null) 
            return true;
-       if(flavor.equals(fileListFlavor) && fileList != null) 
+       if(flavor.equals(fileListFlavor) && (fileList != null) && fileList.size()> 0) 
            return true;
        return false;
    }
