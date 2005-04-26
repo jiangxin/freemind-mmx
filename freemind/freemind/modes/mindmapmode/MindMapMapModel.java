@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.8 2005-03-11 22:27:29 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.9 2005-04-26 21:41:00 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -32,9 +32,12 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.nio.channels.FileLock;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +47,13 @@ import java.util.ListIterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import freemind.controller.MindMapNodesSelection;
 import freemind.main.FreeMindMain;
@@ -66,7 +76,7 @@ public class MindMapMapModel extends MapAdapter  {
     //
 
     public MindMapMapModel(FreeMindMain frame) {
-        this(new MindMapNodeModel( frame.getResources().getString("new_mindmap"), frame), frame);
+        this(new MindMapNodeModel( frame.getResourceString("new_mindmap"), frame), frame);
     }
     
     public MindMapMapModel( MindMapNodeModel root, FreeMindMain frame ) {
@@ -646,15 +656,40 @@ public class MindMapMapModel extends MapAdapter  {
 
     MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
         MindMapXMLElement mapElement = new MindMapXMLElement(getFrame());
+        // the resulting file is accessed by the reader:
+        Reader reader = null;
+        try{
+	        // try to convert map with xslt:
+	        URL updaterUrl = getFrame().getResource("freemind/modes/mindmapmode/freemind_version_updater.xslt");
+	        if(updaterUrl == null) {
+	            throw new IllegalArgumentException("freemind_version_updater.xslt not found.");
+	        }
+	        Source xsltSource =  new StreamSource(updaterUrl.openStream());
+	        // get output:
+	        StringWriter writer = new StringWriter();
+	        Result result = new StreamResult(writer);
+	        // create an instance of TransformerFactory
+            TransformerFactory transFact = TransformerFactory.newInstance();
+            Transformer trans = transFact.newTransformer(xsltSource);
+            trans.transform(new StreamSource(file), result);
+            reader = new StringReader(writer.getBuffer().toString());
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            // exception: we take the file itself:
+            reader = new BufferedReader(new FileReader(file));
+        }
         try {
-           mapElement.parseFromReader(new BufferedReader(new FileReader(file))); }
-        catch (Exception ex) {
-           System.err.println("Error while parsing file:"+ex);
-           ex.printStackTrace();
-           return null; }
+            mapElement
+                    .parseFromReader(reader);
+        } catch (Exception ex) {
+            System.err.println("Error while parsing file:" + ex);
+            ex.printStackTrace();
+            return null;
+        }
         // complete the arrow links:
         mapElement.processUnfinishedLinks(getLinkRegistry());
-        // we wait with "invokeHooksRecursively" until the map is fully registered.
+        // we wait with "invokeHooksRecursively" until the map is fully
+        // registered.
         return (MindMapNodeModel) mapElement.getMapChild(); 
     }
 

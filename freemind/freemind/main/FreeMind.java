@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.15 2005-04-12 21:12:14 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.16 2005-04-26 21:41:00 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -28,25 +28,28 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.text.MessageFormat;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
-import java.text.MessageFormat;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -64,6 +67,9 @@ import freemind.view.mindmapview.MapView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
+    private static Logger logger =null;
+    
+    private static final String DEFAULT_LANGUAGE = "en";
     private HookFactory nodeHookFactory;
 	public static final String version = "0.8.0 RC2";
     //    public static final String defaultPropsURL = "freemind.properties";
@@ -80,8 +86,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
     Controller c;//the one and only controller
     
     private JPanel southPanel;
+    private static PropertyResourceBundle languageResources;
+
+    private PropertyResourceBundle defaultResources;
 	public FreeMind() {
         super("FreeMind");
+        if(logger == null) {
+            logger = getLogger(FreeMind.class.getName());
+        }
         FreeMindSplash splash = new FreeMindSplash(this);
         splash.setVisible(true);
         /* This is only for apple but does not harm for the others. */
@@ -521,19 +533,67 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	return (String)filetypes.get(type.trim().toLowerCase());
     }
 
-    /**Returns the ResourceBundle with the current language*/
+    /** Returns the ResourceBundle with the current language */
     public ResourceBundle getResources() {
-	String lang = getProperty("language");
-	try {
-	    InputStream in = ClassLoader.getSystemResource("Resources_"+lang+".properties").openStream();
-	    PropertyResourceBundle resources = new PropertyResourceBundle(in);
-	    in.close();
-	    return resources;
-	} catch (Exception ex) {
-	    System.err.println("Error loading Resources");
-	    return null;
-	}
-	//	return ResourceBundle.getBundle("Resources",locale);
+        if (languageResources == null) {
+            try {
+                String lang = getProperty("language");
+                if(lang == null || lang.equals("automatic")) {
+                    lang = Locale.getDefault().getLanguage() + "_" +  Locale.getDefault().getCountry();
+                    if(getLanguageResources(lang)== null) {
+	                    lang = Locale.getDefault().getLanguage();
+	                    if(getLanguageResources(lang)== null) {
+	                        // default is english.
+	                        lang=DEFAULT_LANGUAGE;
+	                    }
+                    }
+                } 
+                languageResources = getLanguageResources(lang);
+                defaultResources = getLanguageResources(DEFAULT_LANGUAGE);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.err.println("Error loading Resources");
+                return null;
+            }
+        }
+        return languageResources;
+    }
+
+    public String getResourceString(String resource) {
+        try {
+            return getResources().getString(resource);
+        } catch (Exception ex) {
+            System.err.println("Warning - resource string not found:"
+                    + resource);
+            try{
+                return "[translate me]"+defaultResources.getString(resource);
+            } catch(Exception e) {
+	            System.err.println("Warning - resource string not found (even in english):"
+	                    + resource);
+                return resource;
+            }
+        }
+    }
+
+    
+    /**
+     * @param lang
+     * @return
+     * @throws IOException
+     */
+    private PropertyResourceBundle getLanguageResources(String lang) throws IOException {
+        URL systemResource = ClassLoader.getSystemResource(
+                "Resources_" + lang + ".properties");
+        if(systemResource == null) {
+            return null;
+        }
+        InputStream in = systemResource.openStream();
+        if(in == null) {
+            return null;
+        }
+        PropertyResourceBundle bundle = new PropertyResourceBundle(in);
+        in.close();
+        return bundle;
     }
 
     public java.util.logging.Logger getLogger(String forClass) {

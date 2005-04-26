@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.19 2005-04-26 05:59:13 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.20 2005-04-26 21:41:00 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -131,6 +131,8 @@ import freemind.modes.actions.RemoveAllIconsAction;
 import freemind.modes.actions.RemoveArrowLinkAction;
 import freemind.modes.actions.RemoveLastIconAction;
 import freemind.modes.actions.RevertAction;
+import freemind.modes.actions.SelectAllAction;
+import freemind.modes.actions.SelectBranchAction;
 import freemind.modes.actions.SetLinkByTextFieldAction;
 import freemind.modes.actions.ToggleChildrenFoldedAction;
 import freemind.modes.actions.ToggleFoldedAction;
@@ -227,6 +229,8 @@ public abstract class ControllerAdapter implements ModeController {
     public FindNextAction findNext=null;
     public NodeHookAction nodeHookAction = null;
     public RevertAction revertAction = null;
+    public SelectBranchAction selectBranchAction = null;
+    public SelectAllAction selectAllAction = null;
 
 
 	/** Executes series of actions. */
@@ -336,6 +340,8 @@ public abstract class ControllerAdapter implements ModeController {
 	    findNext = new FindNextAction(this,find);
 	    nodeHookAction = new NodeHookAction("no_title", this); 
 	    revertAction = new RevertAction(this);
+	    selectBranchAction = new SelectBranchAction(this);
+	    selectAllAction = new SelectAllAction(this);
 	    
 	    compound = new CompoundActionHandler(this);
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
@@ -1537,6 +1543,11 @@ public abstract class ControllerAdapter implements ModeController {
             getView().makeTheSelected(node.getViewer());
         }
         getController().obtainFocusForSelected(); // focus fix
+    }
+    
+    public void selectBranch(MindMapNode selected, boolean extend) {
+        displayNode(selected);
+        getView().selectBranch(selected.getViewer(), extend);
     }
     
 	public void invokeHook(ModeControllerHook hook) {

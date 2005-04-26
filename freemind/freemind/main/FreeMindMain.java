@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12.14.3 2005-02-06 22:15:12 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.14.4 2005-04-26 21:41:00 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -55,6 +55,9 @@ public interface FreeMindMain {
     /**Returns the ResourceBundle with the current language*/
     public ResourceBundle getResources();
 
+    public String getResourceString(String key) ;
+
+    
     public Container getContentPane();
     
     public void out (String msg);

@@ -269,6 +269,7 @@
 				<include name="patterns.xml"/>
 				<include name="Resources*"/>
 				<include name="mindmap_menus.xml"/>
+				<include name="**/freemind_version_updater.xslt"/>
 			</fileset>
 		</jar>
 	</target>

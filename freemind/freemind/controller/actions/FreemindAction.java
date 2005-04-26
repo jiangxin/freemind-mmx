@@ -19,7 +19,7 @@
  *
  * Created on 19.07.2004
  */
-/*$Id: FreemindAction.java,v 1.1.4.1 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: FreemindAction.java,v 1.1.4.2 2005-04-26 21:41:00 christianfoltin Exp $*/
 
 package freemind.controller.actions;
 
@@ -87,5 +87,8 @@ public abstract class FreemindAction extends AbstractAction {
     public void addActor(ActorXml actor) {
 //      registration:
 		modeController.getActionFactory().registerActor(actor, actor.getDoActionClass());
+    }
+    public ModeController getModeController() {
+        return modeController;
     }
 }

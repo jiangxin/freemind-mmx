@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.7 2005-03-11 22:27:28 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.8 2005-04-26 21:41:00 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -232,11 +232,8 @@ public class Controller {
     }
                                             
     public String getResourceString(String resource) {
-       try {
-          return frame.getResources().getString(resource); }
-       catch (Exception ex) {
-          System.err.println("Warning - resource string not found:"+resource);
-          return resource; }}
+          return frame.getResourceString(resource);
+    }
 
 	/** @return the current modeController. */
 	public ModeController getModeController() {

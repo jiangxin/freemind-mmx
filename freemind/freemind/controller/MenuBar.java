@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.7 2005-02-02 22:16:20 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.8 2005-04-26 21:41:00 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -98,6 +98,8 @@ public class MenuBar extends JMenuBar {
 		// editmenu
 		editmenu = menuHolder.addMenu(new JMenu(c.getResourceString("edit")), EDIT_MENU+".");
 		menuHolder.addCategory(EDIT_MENU+"undo");	
+		menuHolder.addSeparator(EDIT_MENU);	
+		menuHolder.addCategory(EDIT_MENU+"select");	
 		menuHolder.addSeparator(EDIT_MENU);	
 		menuHolder.addCategory(EDIT_MENU+"paste");	
 		menuHolder.addSeparator(EDIT_MENU);	

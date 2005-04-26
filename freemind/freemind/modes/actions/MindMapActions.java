@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/*$Id: MindMapActions.java,v 1.1.4.12 2005-04-26 05:59:15 christianfoltin Exp $*/
+/*$Id: MindMapActions.java,v 1.1.4.13 2005-04-26 21:41:00 christianfoltin Exp $*/
 package freemind.modes.actions;
 
 import java.awt.Color;
@@ -184,5 +184,13 @@ public interface MindMapActions {
      * @param selecteds are all nodes that are selected (the focussed has not to be contained).
      */
     public void selectMultipleNodes(MindMapNode focussed, Collection selecteds) ;
+
+    /** The branch that starts from selected is added to the selection.
+     * 
+     * On extend = false clear up the previous selection.
+     * if extend is false, the past selection will be empty.
+     * if yes, the selection will extended with this node and its children
+     */
+    public void selectBranch( MindMapNode selected, boolean extend);
 
 }

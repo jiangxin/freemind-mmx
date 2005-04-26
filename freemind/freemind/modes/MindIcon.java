@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindIcon.java,v 1.1.18.3 2005-03-01 06:38:59 christianfoltin Exp $*/
+/*$Id: MindIcon.java,v 1.1.18.4 2005-04-26 21:41:00 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -91,14 +91,8 @@ public class MindIcon {
        * @return Value of description.
        */
     public String getDescription(FreeMindMain frame) {
-        /* GRRR: doubled code from controller: */
         String resource = new String("icon_"+getName());
-        try {
-            return frame.getResources().getString(resource); }
-        catch (Exception ex) {
-            System.err.println("Warning - resource string not found:"+resource);
-            return getName(); 
-        }
+        return frame.getResourceString(resource); 
     }
     
     public String getIconFileName() {

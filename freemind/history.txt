@@ -230,6 +230,10 @@ RC 3:
 
 * Window properties of TimeList window enhanced by sorting info. Close action fixed.
 * Added selection methods to MindmapActions.
+* Select all and select branch added.
+* Version updater installed. All mindmaps loaded are automatically converted in the eventually changed
+  actual mindmap xml format by the freemind_version_updater.xml
+* Automatic language chooser added. (Now, FM tries to load the user's language. If this does not exist, english is chosen).
 
 
 Changes made in Freemind 0.7.2:

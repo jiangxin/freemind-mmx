@@ -19,10 +19,11 @@
  *
  * Created on 04.02.2005
  */
-/*$Id: TimeList.java,v 1.1.2.5 2005-04-26 05:59:15 christianfoltin Exp $*/
+/*$Id: TimeList.java,v 1.1.2.6 2005-04-26 21:41:02 christianfoltin Exp $*/
 package plugins.time;
 
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
@@ -258,8 +259,10 @@ public class TimeList extends ModeControllerHookAdapter {
 			TimeWindowConfigurationStorage storage = (TimeWindowConfigurationStorage) getController()
 					.unMarshall(unmarshalled);
 			if (storage != null) {
-				dialog.setBounds(storage.getX(), storage.getY(), storage
-						.getWidth(), storage.getHeight());
+//				dialog.setBounds(storage.getX(), storage.getY(), storage
+//						.getWidth(), storage.getHeight());
+				dialog.setLocation(storage.getX(), storage.getY());
+				dialog.getRootPane().setPreferredSize(new Dimension(storage.getWidth(), storage.getHeight()));
 				//			 Disable auto resizing
 				timeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 				int column = 0;
