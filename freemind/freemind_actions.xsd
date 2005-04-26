@@ -547,18 +547,24 @@
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="xml_action">
+	          <xs:sequence>
+	    	      <xs:element ref="time_window_column_setting" maxOccurs="unbounded" minOccurs="0"/>				
+	          </xs:sequence>
 		      <xs:attribute name="x" use="required" type="xs:int"/>
 		      <xs:attribute name="y" use="required" type="xs:int"/>
 		      <xs:attribute name="width" use="required" type="xs:int"/>
 		      <xs:attribute name="height" use="required" type="xs:int"/>
-		      <xs:attribute name="column_1_width" use="required" type="xs:int"/>
-		      <xs:attribute name="column_2_width" use="required" type="xs:int"/>
-		      <xs:attribute name="column_3_width" use="required" type="xs:int"/>
-		      <xs:attribute name="column_4_width" use="required" type="xs:int"/>
-		      <xs:attribute name="column_5_width" use="required" type="xs:int"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
+	</xs:element>
+
+	<!-- This element holds the sorting and size information to a column -->
+	<xs:element name="time_window_column_setting">
+		<xs:complexType>
+		      <xs:attribute name="column_width" use="required" type="xs:int"/>
+		      <xs:attribute name="column_sorting" use="optional" type="xs:int"/>
+		</xs:complexType>
 	</xs:element>
 
 

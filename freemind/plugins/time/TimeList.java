@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/*$Id: TimeList.java,v 1.1.2.4 2005-04-17 08:29:06 christianfoltin Exp $*/
+/*$Id: TimeList.java,v 1.1.2.5 2005-04-26 05:59:15 christianfoltin Exp $*/
 package plugins.time;
 
 import java.awt.Container;
@@ -31,6 +31,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.DateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -52,6 +54,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.xml.bind.JAXBException;
 
+import freemind.controller.actions.generated.instance.TimeWindowColumnSetting;
+import freemind.controller.actions.generated.instance.TimeWindowColumnSettingType;
 import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
 import freemind.extensions.ModeControllerHookAdapter;
 import freemind.main.Tools;
@@ -124,7 +128,12 @@ public class TimeList extends ModeControllerHookAdapter {
 		dialog = new JDialog(getController().getFrame().getJFrame(), true /* modal */);
 		dialog
 				.setTitle(getResourceString("plugins/TimeManagement.xml_WindowTitle"));
-		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		dialog.addWindowListener(new WindowAdapter(){
+		    public void windowClosing(WindowEvent event) {
+		        disposeDialog();
+		    }
+		});
 		Action action = new AbstractAction() {
 
 			public void actionPerformed(ActionEvent arg0) {
@@ -198,8 +207,7 @@ public class TimeList extends ModeControllerHookAdapter {
 				}
 				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
 
-					int selectedRow = timeTable.getSelectedRow();
-					gotoNodeAndClose(selectedRow);
+					gotoNodesAndClose(timeTable.getSelectedRow(), timeTable.getSelectedRows());
 				}
 			}
 
@@ -210,7 +218,7 @@ public class TimeList extends ModeControllerHookAdapter {
 				if (e.getClickCount() == 2) {
 					Point p = e.getPoint();
 					int row = timeTable.rowAtPoint(p);
-					gotoNodeAndClose(row);
+					gotoNodesAndClose(row, new int[]{row});
 				}
 			}
 		});
@@ -230,8 +238,6 @@ public class TimeList extends ModeControllerHookAdapter {
 		// Sort by default by date.
 		sorter.setSortingStatus(DATE_COLUMN, TableSorter.ASCENDING);
 		//FIXME: Export of this list
-		//FIXME: Enable goto to several nodes.
-		//FIXME: Store sorting to properties.
 		JScrollPane pane = new JScrollPane(timeTable);
 		contentPane.add(pane, gb1);
 		//		{
@@ -256,16 +262,14 @@ public class TimeList extends ModeControllerHookAdapter {
 						.getWidth(), storage.getHeight());
 				//			 Disable auto resizing
 				timeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-				timeTable.getColumnModel().getColumn(0).setPreferredWidth(
-						storage.getColumn1Width());
-				timeTable.getColumnModel().getColumn(1).setPreferredWidth(
-						storage.getColumn2Width());
-				timeTable.getColumnModel().getColumn(2).setPreferredWidth(
-						storage.getColumn3Width());
-				timeTable.getColumnModel().getColumn(3).setPreferredWidth(
-						storage.getColumn4Width());
-				timeTable.getColumnModel().getColumn(4).setPreferredWidth(
-						storage.getColumn5Width());
+				int column = 0;
+				for (Iterator i = storage.getTimeWindowColumnSetting().iterator(); i.hasNext();) {
+                    TimeWindowColumnSettingType setting = (TimeWindowColumnSettingType) i.next();
+                    timeTable.getColumnModel().getColumn(column).setPreferredWidth(setting.getColumnWidth());
+                    sorter.setSortingStatus(column, setting.getColumnSorting());
+                    column++;
+                    
+                }
 			}
 		}
 		dialog.pack();
@@ -273,22 +277,34 @@ public class TimeList extends ModeControllerHookAdapter {
 	}
 
 	/**
-	 * @param selectedRow
+	 * @param focussedRow
+	 * @param selectedRows TODO
 	 */
-	private void gotoNodeAndClose(int selectedRow) {
-		if (selectedRow >= 0) {
-			MindMapNode selectedNode = ((NodeHolder) timeTable.getModel()
-					.getValueAt(selectedRow, NODE_TEXT_COLUMN)).node;
-			getController().centerNode(selectedNode);
-			for (int i = 0; i < timeTable.getSelectedRows().length; i++) {
-				int row = timeTable.getSelectedRows()[i];
-				// FIXME: Select me.
+	private void gotoNodesAndClose(int focussedRow, int[] selectedRows) {
+		if (focussedRow >= 0) {
+			MindMapNode focussedNode = getMindMapNode(focussedRow);
+//			getController().centerNode(focussedNode);
+			Vector selectedNodes = new Vector();
+            for (int i = 0; i < selectedRows.length; i++) {
+				int row = selectedRows[i];
+				selectedNodes.add(getMindMapNode(row));
 			}
+            getController().selectMultipleNodes(focussedNode, selectedNodes);
 			disposeDialog();
 		}
 	}
 
 	/**
+     * @param focussedRow
+     * @return
+     */
+    private MindMapNode getMindMapNode(int focussedRow) {
+        MindMapNode selectedNode = ((NodeHolder) timeTable.getModel()
+        		.getValueAt(focussedRow, NODE_TEXT_COLUMN)).node;
+        return selectedNode;
+    }
+
+    /**
 	 * Creates a table model for the new table and returns it.
 	 */
 	private DefaultTableModel updateModel() {
@@ -379,21 +395,18 @@ public class TimeList extends ModeControllerHookAdapter {
 			storage.setY((dialog.getY()));
 			storage.setWidth((dialog.getWidth()));
 			storage.setHeight((dialog.getHeight()));
-			storage.setColumn1Width((timeTable.getColumnModel().getColumn(0)
-					.getWidth()));
-			storage.setColumn2Width((timeTable.getColumnModel().getColumn(1)
-					.getWidth()));
-			storage.setColumn3Width((timeTable.getColumnModel().getColumn(2)
-					.getWidth()));
-			storage.setColumn4Width((timeTable.getColumnModel().getColumn(3)
-					.getWidth()));
-			storage.setColumn5Width((timeTable.getColumnModel().getColumn(4)
-					.getWidth()));
+			for(int i = 0; i< timeTable.getColumnCount(); i++) {
+				TimeWindowColumnSetting setting = getController()
+						.getActionXmlFactory()
+						.createTimeWindowColumnSetting();
+				setting.setColumnWidth(timeTable.getColumnModel().getColumn(i).getWidth());
+				setting.setColumnSorting(sorter.getSortingStatus(i));
+				storage.getTimeWindowColumnSetting().add(setting);
+			}
 			String marshalled = getController().marshall(storage);
 			getController().getController().setProperty(
 					WINDOW_PREFERENCE_STORAGE_PROPERTY, marshalled);
 		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		dialog.setVisible(false);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.18 2005-04-17 08:29:06 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.19 2005-04-26 05:59:13 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -46,6 +46,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1512,10 +1513,32 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public void select( NodeView node) {
+        getView().scrollNodeToVisible(node);
         getView().selectAsTheOnlyOneSelected(node);
         getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); // this level is default
     }
 
+    public void select( MindMapNode selected) {
+        // are they visible visible?
+        displayNode(selected);
+        select(selected.getViewer());
+    }
+
+    public void selectMultipleNodes(MindMapNode focussed, Collection selecteds) {
+        // are they visible visible?
+        for (Iterator i = selecteds.iterator(); i.hasNext();) {
+            MindMapNode node = (MindMapNode) i.next();
+	        displayNode(node);
+        }
+        // this one must be visible.
+        select(focussed);
+        for (Iterator i = selecteds.iterator(); i.hasNext();) {
+            MindMapNode node = (MindMapNode) i.next();
+            getView().makeTheSelected(node.getViewer());
+        }
+        getController().obtainFocusForSelected(); // focus fix
+    }
+    
 	public void invokeHook(ModeControllerHook hook) {
 		hook.setController(this);
 		// initialize:

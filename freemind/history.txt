@@ -228,6 +228,9 @@ RC 3:
 * Bug fix: encrypted nodes are stored correctly, even if they are closed before saving.
 * Patch introduced: Drag&Drop of files into FM under Windows. Thanks to cerney.
 
+* Window properties of TimeList window enhanced by sorting info. Close action fixed.
+* Added selection methods to MindmapActions.
+
 
 Changes made in Freemind 0.7.2:
 ===============================

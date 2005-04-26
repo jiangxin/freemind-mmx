@@ -17,13 +17,14 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/*$Id: MindMapActions.java,v 1.1.4.11 2005-04-17 08:29:06 christianfoltin Exp $*/
+/*$Id: MindMapActions.java,v 1.1.4.12 2005-04-26 05:59:15 christianfoltin Exp $*/
 package freemind.modes.actions;
 
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
+import java.util.Collection;
 import java.util.List;
 
 import freemind.modes.MindIcon;
@@ -32,6 +33,7 @@ import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
 import freemind.modes.StylePattern;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
+import freemind.view.mindmapview.NodeView;
 
 /** This is the central method interface of actions that can be undertaken on
  *  nodes. Whenever you want to change the mindmap choose one of these actions
@@ -166,4 +168,21 @@ public interface MindMapActions {
 	 * @param value null if you want to delete this tooltip.
 	 */
 	public void setToolTip(MindMapNode node, String key, String value);
+	
+    /** Single selection: the node is the only one selected after calling this method.
+     * @param node
+     */
+    public void select( NodeView node) ;
+
+    /**Single selection: the node is the only one selected after calling this method.
+     * @param selected
+     */
+    public void select( MindMapNode selected);
+
+    /** Multiple selection.
+     * @param focussed will be focussed afterwards
+     * @param selecteds are all nodes that are selected (the focussed has not to be contained).
+     */
+    public void selectMultipleNodes(MindMapNode focussed, Collection selecteds) ;
+
 }
