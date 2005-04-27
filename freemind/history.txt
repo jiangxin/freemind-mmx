@@ -234,7 +234,9 @@ RC 3:
 * Version updater installed. All mindmaps loaded are automatically converted in the eventually changed
   actual mindmap xml format by the freemind_version_updater.xml
 * Automatic language chooser added. (Now, FM tries to load the user's language. If this does not exist, english is chosen).
+* New slowenian translation.
 
+* Merged the node moving algorithm and implementation of Dimitri. Many thanks.
 
 Changes made in Freemind 0.7.2:
 ===============================

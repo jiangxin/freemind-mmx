@@ -108,6 +108,9 @@
 					<menu_action field="nodeBackgroundColor"/>
 					<menu_action field="removeNodeBackgroundColor"/>
 				</menu_category>
+				<menu_category name="position">
+					<menu_action field="moveNodeAction"/>
+				</menu_category>
 				<menu_separator/>
 			</menu_category>
 			<menu_category name="icons">

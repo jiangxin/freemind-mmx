@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.2 2005-03-10 20:50:14 christianfoltin Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3 2005-04-27 21:45:30 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -73,12 +73,11 @@ public class EditNodeTextField extends EditNodeBase {
         int textFieldBorderWidth = 2;
         int cursorWidth = 1;
         int xOffset =
-            -1 * textFieldBorderWidth + getNode().getLeftWidthOverhead() - 1;
+            -1 * textFieldBorderWidth  - 1;
         int yOffset = -1; // Optimized for Windows style; basically ad hoc
         int widthAddition =
             2 * textFieldBorderWidth
                 + cursorWidth
-                - 2 * getNode().getLeftWidthOverhead()
                 + 2;
         int heightAddition = 2;
         if (getNode().getModel().getLink() != null) {

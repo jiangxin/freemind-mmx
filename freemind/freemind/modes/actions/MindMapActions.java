@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/*$Id: MindMapActions.java,v 1.1.4.13 2005-04-26 21:41:00 christianfoltin Exp $*/
+/*$Id: MindMapActions.java,v 1.1.4.14 2005-04-27 21:45:30 christianfoltin Exp $*/
 package freemind.modes.actions;
 
 import java.awt.Color;
@@ -193,4 +193,13 @@ public interface MindMapActions {
      */
     public void selectBranch( MindMapNode selected, boolean extend);
 
+	
+	/** Moves the node to a new position.
+	 * @param node
+	 * @param vGap
+	 * @param hGap
+	 * @param shiftY
+	 */
+	public void moveNodePosition(MindMapNode node, int vGap, int hGap,
+            int shiftY);
 }

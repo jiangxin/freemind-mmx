@@ -36,6 +36,7 @@
 					<xs:element ref="add_icon_action"/>
 					<xs:element ref="remove_last_icon_xml_action"/>
 					<xs:element ref="remove_all_icons_xml_action"/>
+					<xs:element ref="move_node_xml_action"/>
 					<xs:element ref="add_cloud_xml_action"/>
 					<xs:element ref="add_arrow_link_xml_action"/>
 					<xs:element ref="add_link_xml_action"/>
@@ -173,6 +174,19 @@
 			<xs:extension base="node_action">
 		      <xs:attribute name="enabled" use="required" type="xs:boolean"/>
 		      <!-- <xs:attribute name="color" use="optional" type="xs:string"/>-->
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Move Node Action -->
+	<xs:element name="move_node_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="v_gap"   use="required" type="xs:int"/>
+		      <xs:attribute name="h_gap"   use="required" type="xs:int"/>
+		      <xs:attribute name="shift_y" use="required" type="xs:int"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

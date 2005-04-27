@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.8 2005-04-12 21:12:16 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.9 2005-04-27 21:45:32 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -48,6 +48,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import freemind.controller.Controller;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
@@ -68,13 +69,14 @@ public abstract class NodeView extends JLabel {
     /** the Color of the Rectangle of a selected Node */
 	protected final static Color selectedColor = new Color(210,210,210); //Color.lightGray; //the Color of the Rectangle of a selected Node
     protected final static Color dragColor = Color.lightGray; //the Color of appearing GradientBox on drag over
-	protected int treeHeight = 0;
 	protected int treeWidth = 0;
+	protected int treeHeight = 0;
+	protected int standardTreeShift = 0;
 	protected int treeShift = 0;
     private boolean left = true; //is the node left of root?
     int relYPos = 0;//the relative Y Position to it's parent
     private boolean isLong = false;
-
+    
     public final static int DRAGGED_OVER_NO = 0;
     public final static int DRAGGED_OVER_SON = 1;
     public final static int DRAGGED_OVER_SIBLING = 2;
@@ -92,9 +94,6 @@ public abstract class NodeView extends JLabel {
 	final static int ALIGN_BOTTOM = -1;
 	final static int ALIGN_CENTER = 0;
 	final static int ALIGN_TOP = 1;
-
-    public final int LEFT_WIDTH_OVERHEAD = 0;
-    public final int LEFT_HEIGHT_OVERHEAD = 0;
     
     //
     // Constructors
@@ -103,6 +102,8 @@ public abstract class NodeView extends JLabel {
     private static Color standardSelectColor;
     private static Color standardNodeColor;
     protected NodeView(MindMapNode model, MapView map) {
+	setHorizontalAlignment(CENTER);
+
 	this.model = model;
 	setMap(map);
 
@@ -144,6 +145,14 @@ public abstract class NodeView extends JLabel {
 	addDragListener( map.getNodeDragListener() );
 	addDropListener( map.getNodeDropListener() );
     }
+    
+    protected void addToMap(){
+    	map.add(this);
+    }
+    
+    protected void removeFromMap(){
+    	map.remove(this);
+    }
 
     void addDragListener(DragGestureListener dgl) {
 	DragSource dragSource = DragSource.getDefaultDragSource();
@@ -174,7 +183,7 @@ public abstract class NodeView extends JLabel {
 	    newView = new ForkNodeView(model, map);
 	}
 	model.setViewer(newView);
-	map.add(newView);
+	newView.addToMap();
 	newView.update();
 	return newView;
     }
@@ -184,10 +193,10 @@ public abstract class NodeView extends JLabel {
     //
 
     public boolean dropAsSibling(double xCoord) {
-       return isLeft() ?
-          xCoord > getSize().width*2/3 :
-          xCoord < getSize().width/3; 
-    }
+        return isLeft() ?
+           xCoord > getSize().width*2/3 :
+           xCoord < getSize().width/3; 
+     }
 
     /** @return true if should be on the left, false otherwise.*/
     public boolean dropPosition (double xCoord) {
@@ -241,20 +250,16 @@ public abstract class NodeView extends JLabel {
 	}
 	private void getCoordinates(LinkedList inList, int additionalDistanceForConvexHull, boolean byChildren) {
 		MindMapCloud cloud = getModel().getCloud();
-		CloudView cloudView = null;
 
 		// consider existing clouds of children
 		if (byChildren && cloud != null){
-			cloudView = new CloudView(cloud, this);
-			additionalDistanceForConvexHull  += cloudView.getAdditionalHeigth() / 2; 
+			additionalDistanceForConvexHull  += CloudView.getAdditionalHeigth(cloud, this) / 2; 
 		}
         inList.addLast(new Point( -additionalDistanceForConvexHull + getExtendedX()             ,  -additionalDistanceForConvexHull + getExtendedY()              ));
         inList.addLast(new Point( -additionalDistanceForConvexHull + getExtendedX()             ,   additionalDistanceForConvexHull + getExtendedY() + getExtendedHeight()));
         inList.addLast(new Point(  additionalDistanceForConvexHull + getExtendedX() + getExtendedWidth(),   additionalDistanceForConvexHull + getExtendedY() + getExtendedHeight()));
         inList.addLast(new Point(  additionalDistanceForConvexHull + getExtendedX() + getExtendedWidth(),  -additionalDistanceForConvexHull + getExtendedY()              ));
 		
-		if (cloudView != null){
-		}
         LinkedList childrenViews = getChildrenViews();
         ListIterator children_it = childrenViews.listIterator();
         while(children_it.hasNext()) {
@@ -262,26 +267,38 @@ public abstract class NodeView extends JLabel {
 	        child.getCoordinates(inList, additionalDistanceForConvexHull, true);
         }
     }   
-
-    /** Changed to remove the printing bug of java.*/
+	private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
+	private static final int MIN_HOR_NODE_SIZE = 10;
     public Dimension getPreferredSize() {
-        if(map.isPrinting()) {
-            return new Dimension(super.getPreferredSize().width + (int)(10f*map.getZoom()),
-                                 super.getPreferredSize().height);
-        } else {
-            return super.getPreferredSize();
-        }
+    	Dimension prefSize = super.getPreferredSize();
+        if(map.isPrinting() && NEED_PREF_SIZE_BUG_FIX) {
+        	prefSize.width += (int)(10f*map.getZoom());
+        } 
+        prefSize.width = Math.max(map.getZoomed(MIN_HOR_NODE_SIZE), prefSize.width);
+        return prefSize;
     }
+    
     /** get width including folding symbol*/	
 	public int getExtendedWidth()
 	{
-		return getWidth();
+		return getExtendedWidth(getWidth());
 	}
   
 	/** get height including folding symbol*/	
 	public int getExtendedHeight()
 	{
-		return getHeight();
+		return getExtendedHeight(getHeight());
+	}
+  
+	protected int getExtendedWidth(int w)
+	{
+		return w;
+	}
+  
+	/** get height including folding symbol*/	
+	protected int getExtendedHeight(int h)
+	{
+		return h;
 	}
   
 	/** get x coordinate including folding symbol*/	
@@ -296,20 +313,10 @@ public abstract class NodeView extends JLabel {
 		return getY();
 	}
 
-	/** set x and y coordinate including folding symbol*/	
-	public void setExtendedLocation(int x,	int y){
-		setLocation(x, y);
-	}
   
-	/** set size including folding symbol*/	
-	public void setExtendedSize(int width,	int height){
-		setSize(width, height);
-	}
-	  
-	/** set bounds including folding symbol*/	
-	public void setExtendedBounds(int x,	int y,	int width,	int height){
-		setExtendedLocation(x, y);
-		setExtendedSize(width, height);
+	public void setBounds(int x,	int y){
+		setLocation(x, y);
+		setSize(getPreferredSize());
 	}
 
    public void requestFocus(){
@@ -369,10 +376,7 @@ public abstract class NodeView extends JLabel {
 	}
     }
 
-    public int getLeftWidthOverhead() {
-       return LEFT_WIDTH_OVERHEAD; }
-
-    //
+     //
     // get/set methods
     //
 
@@ -382,22 +386,13 @@ public abstract class NodeView extends JLabel {
 	public int getAdditionalCloudHeigth() {
 		MindMapCloud cloud = getModel().getCloud();
 		if( cloud!= null) { 
-			CloudView cloudView = new CloudView(cloud, this);
-			return cloudView.getAdditionalHeigth();
+			return CloudView.getAdditionalHeigth(cloud, this);
 		} else {           
 			return 0;
 		}
 	}
 
-    int getTreeHeight() {
-	return treeHeight;
-    }
-
-    void setTreeHeight(int treeHeight) {
-	this.treeHeight = treeHeight;
-
-    }
-
+ 
     protected boolean isSelected() {
 	return (getMap().isSelected(this));
     }
@@ -723,7 +718,7 @@ public abstract class NodeView extends JLabel {
      * removed (it needs to stay in memory)
      */
     void remove() {
-	getMap().remove(this);
+	removeFromMap();
 	if (getEdge()!=null) {
            getEdge().remove(); }
         getModel().setViewer(null); // Let the model know he is invisible
@@ -796,11 +791,9 @@ public abstract class NodeView extends JLabel {
         // Right now, this implementation is quite logical, although it allows
         // for nonconvex feature of nodes starting with <html>.
 
+//        String nodeText = getModel().toString();
         String nodeText = getModel().toString();
-        if (nodeText.length() < 4) { // (PN)
-          nodeText = nodeText + new String("   ").substring(nodeText.length());
-        }
-
+ 
         // Tell if node is long and its width has to be restricted
         // boolean isMultiline = nodeText.indexOf("\n") >= 0;
         String[] lines = nodeText.split("\n");
@@ -898,13 +891,15 @@ public abstract class NodeView extends JLabel {
 
    }
 
+   abstract String getStyle() ;
+   
     /**
      * @return the shift of the tree root node
      * relative to the middle of the tree
      * because of the light shift of the children nodes
      */
-    public int getTreeShift() {
-        return treeShift;
+    public int getTreeHeight() {
+        return treeHeight;
     }
 
 	/**
@@ -912,8 +907,8 @@ public abstract class NodeView extends JLabel {
 	 * relative to the middle of the tree
 	 * because of the light shift of the children nodes.
 	 */
-    public void setTreeShift(int i) {
-        treeShift = i;
+    public void setTreeHeight(int i) {
+        treeHeight = i;
     }
 
     public int getTreeWidth() {
@@ -990,5 +985,41 @@ public abstract class NodeView extends JLabel {
    return Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
   }
 
+	/**
+	 * @return Returns the sHIFT.
+	 */
 
+  public int getShift() {
+	return map.getZoomed(model.calcShiftY());
+}
+  
+
+    /**
+	 * @return Returns the VGAP.
+	 */
+	public int getVGap() {		
+        return  map.getZoomed(model.calcVGap());
+        // TODO 
+	}
+
+	public int getHGap() {
+		return  map.getZoomed(model.getHGap());
+	}
+
+
+	public int getTreeShift() {
+		return treeShift;
+	}
+	public void setTreeShift(int treeShift) {
+		this.treeShift = treeShift;
+	}
+	public int getStandardTreeShift() {
+		return standardTreeShift;
+	}
+	public void setStandardTreeShift(int standardTreeShift) {
+		this.standardTreeShift = standardTreeShift;
+	}
+	public NodeMotionListenerView getMotionListenerView() {
+		return null;
+	}
 }

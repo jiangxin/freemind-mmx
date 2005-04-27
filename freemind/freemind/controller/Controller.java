@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.8 2005-04-26 21:41:00 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.9 2005-04-27 21:45:30 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -91,6 +91,7 @@ public class Controller {
     private FreeMindMain frame;
     private JToolBar toolbar;
     private NodeMouseMotionListener nodeMouseMotionListener;
+    private NodeMotionListener nodeMotionListener;
     private NodeKeyListener nodeKeyListener;
     private NodeDragListener nodeDragListener;
     private NodeDropListener nodeDropListener;
@@ -156,6 +157,7 @@ public class Controller {
         mapModuleManager = new MapModuleManager(this, history, lastOpened);
 
         nodeMouseMotionListener = new NodeMouseMotionListener(this);
+        nodeMotionListener = new NodeMotionListener(this);
         nodeKeyListener = new NodeKeyListener(this);
         nodeDragListener = new NodeDragListener(this);
         nodeDropListener = new NodeDropListener(this);
@@ -206,9 +208,9 @@ public class Controller {
     //
     // get/set methods
     //
-
+    public static final String JAVA_VERSION = System.getProperty("java.version");
     public void checkJavaVersion() {
-       if (System.getProperty("java.version").compareTo("1.4.0") < 0) {
+       if (JAVA_VERSION.compareTo("1.4.0") < 0) {
           String message = "Warning: FreeMind requires version Java 1.4.0 or higher (your version: "+
              System.getProperty("java.version")+", installed in "+ System.getProperty("java.home")+").";
           System.err.println(message);
@@ -489,6 +491,10 @@ public class Controller {
 
     public NodeMouseMotionListener getNodeMouseMotionListener() {
         return nodeMouseMotionListener;
+    }
+
+    public NodeMotionListener getNodeMotionListener() {
+        return nodeMotionListener;
     }
 
     public MapMouseMotionListener getMapMouseMotionListener() {

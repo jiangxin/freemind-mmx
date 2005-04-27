@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.8 2005-04-12 21:12:15 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.9 2005-04-27 21:45:30 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -55,6 +55,10 @@ import freemind.view.mindmapview.NodeView;
  */
 public abstract class NodeAdapter implements MindMapNode {
 	
+    final static int SHIFT = -2;//height of the vertical shift between node and its closest child
+    public final static int HGAP = 20;//width of the horizontal gap that contains the edges
+    public final static int VGAP = 3;//height of the vertical gap between nodes
+
     private HashSet activatedHooks;
 	private List hooks;
 	protected Object userObject = "no text";
@@ -78,6 +82,10 @@ public abstract class NodeAdapter implements MindMapNode {
     protected Color backgroundColor;
     protected boolean folded;
     private Tools.BooleanHolder left;
+
+	private int vGap = AUTO;
+	private int hGap = HGAP;
+    private int shiftY = 0;
 
     protected List children;
     private MindMapNode preferredChild; 
@@ -817,6 +825,16 @@ public abstract class NodeAdapter implements MindMapNode {
     	    //  real style is fork and node is folded, getStyle returns
     	    //  MindMapNode.STYLE_BUBBLE, which is not what we want to save.
     
+    	//layout
+        if(vGap != AUTO) {
+        	node.setAttribute("VGAP",Integer.toString(vGap));
+        }
+        if(hGap != HGAP) {
+        	node.setAttribute("HGAP",Integer.toString(hGap));
+        }
+        if(shiftY != 0) {
+        	node.setAttribute("SHIFT_Y",Integer.toString(shiftY));
+        }
     	//link
     	if (getLink() != null) {
                node.setAttribute("LINK", getLink()); }
@@ -875,7 +893,25 @@ public abstract class NodeAdapter implements MindMapNode {
         return node;
     }
     
-
+	public int getShiftY() {
+			return shiftY ;
+	}
+	
+	public int calcShiftY() {
+		try{
+			return shiftY + (getParent().getChildCount()== 1 ? SHIFT:0);
+		}
+		catch(NullPointerException e){
+			return 0;			
+		}
+		
+	}
+	/**
+	 * @param shiftY The shiftY to set.
+	 */
+	public void setShiftY(int shiftY) {
+		this.shiftY = shiftY;
+	}
     /**
      *
      */
@@ -907,5 +943,27 @@ public abstract class NodeAdapter implements MindMapNode {
 	}
 	public void setHistoryInformation(HistoryInformation historyInformation) {
 		this.historyInformation = historyInformation;
+	}
+
+	public int getHGap() {
+		return hGap;
+	}
+	public void setHGap(int gap) {
+		hGap = Math.max(HGAP, gap);
+	}
+
+	public int getVGap() {
+		return vGap;
+}
+	public int calcVGap() {
+		if (vGap != AUTO)
+			return vGap;
+		double delta = 8.0 / Math.pow(1 + getNodeLevel(), 1.5); 
+        return (int ) ((1 + delta) * VGAP );			 
+	}
+	
+	public void setVGap(int gap) {
+		if (gap == AUTO) vGap = AUTO;
+		else vGap = Math.max(gap, 0);
 	}
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.14.14.3 2005-03-03 21:11:27 christianfoltin Exp $*/
+/*$Id: BubbleNodeView.java,v 1.14.14.4 2005-04-27 21:45:30 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -27,58 +27,28 @@ import java.awt.*;
  * This class represents a single Bubble-Style Node of a MindMap
  * (in analogy to TreeCellRenderer).
  */
-public class BubbleNodeView extends NodeView {
+public class BubbleNodeView extends MoveableNodeView {
 
     private final static Stroke BOLD_STROKE =
 		new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
 					1f, new float[] {2f, 2f}, 0f);  
     private final static Stroke DEF_STROKE = new BasicStroke();
 
-
-    public final int LEFT_WIDTH_OVERHEAD = 5;
-    public final int LEFT_HEIGHT_OVERHEAD = 2;
-
     //
     // Constructors
     //
     
     public BubbleNodeView(MindMapNode model, MapView map) {
-	super(model,map);
-	setHorizontalAlignment(CENTER);
-	setVerticalAlignment(CENTER);
+    	super(model,map);
     }
 
-
-
-    public Dimension getPreferredSize() {
-    	Dimension result = new Dimension(super.getPreferredSize().width+2*LEFT_WIDTH_OVERHEAD,
-			super.getPreferredSize().height+4); 
-    	if (getModel().isFolded())
-			result.width +=  getZoomedFoldingSymbolHalfWidth() * 2 ;
-		return result; 
-    }	  
-
-	public void setExtendedLocation(int x,	int y){
-		if(getModel().isFolded() && isLeft()){
-				x += getZoomedFoldingSymbolHalfWidth() * 2;
-		}
-		setLocation(x, y);
-	}
   
-	public void setExtendedSize(int width,	int height){
+	protected int getExtendedWidth(int width)
+	{	int dW = getZoomedFoldingSymbolHalfWidth() * 2;
 		if(getModel().isFolded()){
-			width -= getZoomedFoldingSymbolHalfWidth() * 2;
+			width += dW;
 		}
-		setSize(width, height);
-	}
-	
-	public int getExtendedWidth()
-	{
-		int width = getWidth();
-		if(getModel().isFolded()){
-			width += getZoomedFoldingSymbolHalfWidth() * 2;
-		}
-		return width;
+		return width + dW;
 	}
   
 	public int getExtendedX()
@@ -116,10 +86,6 @@ public class BubbleNodeView extends NodeView {
 			{
 				ovalStartPoint.translate(0 , - getZoomedFoldingSymbolHalfWidth());
 			}
-			Color actualColor = g.getColor();
-			g.setColor(model.getBackgroundColor());
-			g.fillOval(ovalStartPoint.x + 1 , ovalStartPoint.y + 1, getZoomedFoldingSymbolHalfWidth() * 2 - 2, getZoomedFoldingSymbolHalfWidth() * 2 - 2);
-			g.setColor(actualColor);
 			g.drawOval(ovalStartPoint.x , ovalStartPoint.y , getZoomedFoldingSymbolHalfWidth() * 2, getZoomedFoldingSymbolHalfWidth() * 2);
 		}
         
@@ -147,7 +113,7 @@ public class BubbleNodeView extends NodeView {
 
         if (map.getController().getAntialiasEdges()) {
            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
-        g.drawRoundRect(0,0,size.width-1,size.height-1,10,10);
+        g.drawRoundRect(0,0, size.width-1, size.height-1,10,10);
         // this disables the font antialias if only AntialiasEdges is requested.
         if (map.getController().getAntialiasEdges()) {
            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); }
@@ -157,9 +123,6 @@ public class BubbleNodeView extends NodeView {
 
 	super.paint(g);
     }
-
-    public int getLeftWidthOverhead() {
-       return LEFT_WIDTH_OVERHEAD; }
 
     /**
      * Returns the Point where the OutEdge
@@ -201,6 +164,19 @@ public class BubbleNodeView extends NodeView {
 			graphics.setColor(color);
 			graphics.fillRoundRect(0,0,size.width-1,size.height-1,10,10);
     }
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.NodeView#getStyle()
+	 */
+	String getStyle() {
+		return MindMapNode.STYLE_BUBBLE;
+	}
+	public Dimension getPreferredSize() {
+		Dimension prefSize = super.getPreferredSize();
+		prefSize.width  += 5;
+	    return prefSize;
+	}
+
 
 }
 

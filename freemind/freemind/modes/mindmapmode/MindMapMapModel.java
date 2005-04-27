@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.9 2005-04-26 21:41:00 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.10 2005-04-27 21:45:30 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -38,6 +38,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.nio.channels.FileLock;
 import java.util.HashMap;
 import java.util.HashSet;

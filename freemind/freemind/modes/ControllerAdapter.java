@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.20 2005-04-26 21:41:00 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.21 2005-04-27 21:45:30 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -118,6 +118,7 @@ import freemind.modes.actions.ImportExplorerFavoritesAction;
 import freemind.modes.actions.ImportFolderStructureAction;
 import freemind.modes.actions.ItalicAction;
 import freemind.modes.actions.JoinNodesAction;
+import freemind.modes.actions.MoveNodeAction;
 import freemind.modes.actions.NewChildAction;
 import freemind.modes.actions.NodeBackgroundColorAction;
 import freemind.modes.actions.NodeColorAction;
@@ -221,6 +222,7 @@ public abstract class ControllerAdapter implements ModeController {
     public AddLocalLinkAction addLocalLinkAction = null;
     public GotoLinkNodeAction gotoLinkNodeAction = null;
     public JoinNodesAction joinNodes = null;
+    public MoveNodeAction moveNodeAction = null;
     public ImportExplorerFavoritesAction importExplorerFavorites = null;
     public ImportFolderStructureAction importFolderStructure = null;
     public ChangeArrowLinkEndPoints changeArrowLinkEndPoints = null;
@@ -332,6 +334,7 @@ public abstract class ControllerAdapter implements ModeController {
 	    setLinkByTextField = new SetLinkByTextFieldAction(this);
 	    addLocalLinkAction = new AddLocalLinkAction(this);
 	    gotoLinkNodeAction = new GotoLinkNodeAction(this, null);
+	    moveNodeAction = new MoveNodeAction(this);
 	    joinNodes = new JoinNodesAction(this);
 	    importExplorerFavorites = new ImportExplorerFavoritesAction(this);
 	    importFolderStructure = new ImportFolderStructureAction(this);
@@ -1872,6 +1875,11 @@ public abstract class ControllerAdapter implements ModeController {
             setNodeText(upperNode, newUpperContent);
         
     }
+	public void moveNodePosition(MindMapNode node, int vGap, int hGap,
+            int shiftY) {
+	    moveNodeAction.moveNodeTo(node, vGap, hGap, shiftY);
+	}
+
 
     
     
