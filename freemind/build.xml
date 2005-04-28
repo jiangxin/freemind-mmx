@@ -155,6 +155,12 @@
 	<target name="dist_macos" if="isMacOs">
 		<delete dir="${dist_macos}"/>
 		<mkdir dir="${dist_macos}"/>
+		<!-- change freemind.properties -->
+		<copy todir="${dist_macos}" file="${src}/freemind.properties"/>
+		<replaceregexp byline="true" file="${dist_macos}/freemind.properties" match="^keystroke(.*)=(.*)\bcontrol\b" replace="keystroke\1=\2meta" flags="gim"></replaceregexp>
+		<replaceregexp byline="true" file="${dist_macos}/freemind.properties" match="^keystroke(.*)=(.*)\binsert\b" replace="keystroke\1=\2TAB" flags="gim"></replaceregexp>
+		<!-- update jar -->
+		<jar file="${FM.jar}" update="true" basedir="${dist_macos}"><fileset dir="${dist_macos}"><include name="${dist_macos}/freemind.properties"/></fileset></jar>
 		  <jarbundler dir="${dist_macos}"
 		                    name="FreeMind"
 		                    mainclass="freemind.main.FreeMind"
