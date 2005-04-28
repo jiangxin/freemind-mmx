@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.11 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.16.12 2005-04-28 21:12:34 christianfoltin Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -970,7 +970,7 @@ public class MapView extends JPanel implements Printable {
     }
 
     /** For nodes, they can ask, whether or not the width must be bigger to prevent the "..." at the output. (Bug of java).*/
-    public boolean isPrinting() { return isPrinting;};
+    public boolean isCurrentlyPrinting() { return isPrinting;};
 
     public Dimension getPreferredSize() {
         return getLayout().preferredLayoutSize(this);

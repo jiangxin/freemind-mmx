@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.9 2005-04-27 21:45:32 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10 2005-04-28 21:12:35 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -271,7 +271,7 @@ public abstract class NodeView extends JLabel {
 	private static final int MIN_HOR_NODE_SIZE = 10;
     public Dimension getPreferredSize() {
     	Dimension prefSize = super.getPreferredSize();
-        if(map.isPrinting() && NEED_PREF_SIZE_BUG_FIX) {
+        if(map.isCurrentlyPrinting() && NEED_PREF_SIZE_BUG_FIX) {
         	prefSize.width += (int)(10f*map.getZoom());
         } 
         prefSize.width = Math.max(map.getZoomed(MIN_HOR_NODE_SIZE), prefSize.width);

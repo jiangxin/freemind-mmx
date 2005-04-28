@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.10.18.2 2005-02-27 21:02:33 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.10.18.3 2005-04-28 21:12:34 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -230,6 +230,13 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
                 return;
         }
         vec.add(link);
+        if(IDToLink.containsKey(link.getUniqueID())) {
+            if(IDToLink.get(link.getUniqueID()) != link) {
+                logger.warning("link with duplicated unique id found:" +link);
+                // new id:
+                ((LinkAdapter) link).setUniqueID(generateUniqueLinkID(link.getUniqueID()));
+            }
+        }
         IDToLink.put(link.getUniqueID(), link);
         logger.info("Register link ("+link+") from source node:"+source+" to target " + target);
     };

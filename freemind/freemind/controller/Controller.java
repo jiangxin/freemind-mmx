@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.9 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.10 2005-04-28 21:12:34 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -647,7 +647,7 @@ public class Controller {
 		   (getResourceString("mode_title"));
 		String title = formatter.format(messageArguments);        
 		if (getMapModule() != null) {
-			title += " - " + getMapModule().toString() +               
+			title = getMapModule().toString() + " - " + title +               
 			  ( getMapModule().getModel().isReadOnly() ?
 				" ("+getResourceString("read_only")+")" : ""); 
 		}

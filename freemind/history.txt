@@ -237,6 +237,8 @@ RC 3:
 * New slowenian translation.
 
 * Merged the node moving algorithm and implementation of Dimitri. Many thanks.
+* Bug fix: isPrinting and title of screen.
+* Bug fix: copying of links generates new unique ids.
 
 Changes made in Freemind 0.7.2:
 ===============================
