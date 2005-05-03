@@ -244,7 +244,8 @@ RC 3:
 * Time Management Reminders don't display boxes anymore. Instead they use
   blinking nodes.
 * MindMapIcons are singletons now.
-
+* Bug fix: folded root can be unfolded now.
+* Docu bug fix: no popup in reminders any more.
 
 Changes made in Freemind 0.7.2:
 ===============================

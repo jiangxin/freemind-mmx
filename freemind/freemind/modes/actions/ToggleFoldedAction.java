@@ -19,7 +19,7 @@
  *
  * Created on 12.08.2004
  */
-/*$Id: ToggleFoldedAction.java,v 1.1.4.4 2005-02-10 23:01:23 christianfoltin Exp $*/
+/*$Id: ToggleFoldedAction.java,v 1.1.4.5 2005-05-03 19:57:52 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -186,7 +186,7 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
         if(node == null)
             throw new IllegalArgumentException("setFolded was called with a null node.");
         // no root folding, fc, 16.5.2004
-        if (node.isRoot()) {
+        if (node.isRoot() && folded) {
             return;
         }
         if (node.isFolded() != folded) {
