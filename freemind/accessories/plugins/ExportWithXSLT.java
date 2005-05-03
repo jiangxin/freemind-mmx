@@ -139,7 +139,7 @@ public class ExportWithXSLT extends ExportHook {
 	                        Vector iconNames = MindIcon.getAllIconNames();
 	                        for ( int i = 0 ; i < iconNames.size(); ++i ) {
 	                            String iconName = ((String) iconNames.get(i));
-	                            MindIcon myIcon     = new MindIcon(iconName);
+	                            MindIcon myIcon     = MindIcon.factory(iconName);
 	                            copyFromResource(MindIcon.getIconsPath(), myIcon.getIconBaseFileName(), directoryName2); 
 	                        }
                         }

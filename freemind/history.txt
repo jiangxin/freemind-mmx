@@ -240,6 +240,12 @@ RC 3:
 * Bug fix: isPrinting and title of screen.
 * Bug fix: copying of links generates new unique ids.
 
+* Bug fix: cutting nodes preserves order.
+* Time Management Reminders don't display boxes anymore. Instead they use
+  blinking nodes.
+* MindMapIcons are singletons now.
+
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

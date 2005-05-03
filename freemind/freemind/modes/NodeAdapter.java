@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.9 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.10 2005-05-03 05:29:50 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -927,16 +927,15 @@ public abstract class NodeAdapter implements MindMapNode {
     }
     
     
-    public void addStateIcon(String key, ImageIcon icon) {
-        stateIcons.put(key, icon);
+    public void setStateIcon(String key, ImageIcon icon) {
+        if (icon != null) {
+			stateIcons.put(key, icon);
+		} else if(stateIcons.containsKey(key)) {
+            stateIcons.remove(key);
+        }
     }
     public SortedMap getStateIcons() {
         return Collections.unmodifiableSortedMap(stateIcons);
-    }
-    public void removeStateIcon(String key) {
-        if(stateIcons.containsKey(key)) {
-            stateIcons.remove(key);
-        }
     }
 	public HistoryInformation getHistoryInformation() {
 		return historyInformation;

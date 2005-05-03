@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.10 2005-04-08 21:37:30 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.11 2005-05-03 05:29:50 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -220,7 +220,7 @@ public class MindMapController extends ControllerAdapter {
         Vector iconNames = MindIcon.getAllIconNames();
         for ( int i = 0 ; i < iconNames.size(); ++i ) {
             String iconName = ((String) iconNames.get(i));
-            MindIcon myIcon     = new MindIcon(iconName);
+            MindIcon myIcon     = MindIcon.factory(iconName);
             IconAction myAction = new IconAction(this, myIcon,removeLastIconAction);
             iconActions.add(myAction);
         }

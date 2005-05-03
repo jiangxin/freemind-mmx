@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.9 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.10 2005-05-03 05:29:50 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -236,10 +236,12 @@ public interface MindMapNode extends MutableTreeNode {
      */
     SortedMap getStateIcons();
 
-    void   addStateIcon(String key, ImageIcon icon);
-
-    void removeStateIcon(String key);
-    
+    /**
+     * @param key
+     * @param icon use null to remove the state icon. Then it is not 
+     * required, that the key already exists.
+     */
+    void   setStateIcon(String key, ImageIcon icon);    
     
     //fc, 11.4.2005:
     HistoryInformation getHistoryInformation();

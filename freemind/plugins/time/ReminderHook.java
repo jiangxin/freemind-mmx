@@ -19,7 +19,7 @@
  *
  * Created on 06.02.2005
  */
-/*$Id: ReminderHook.java,v 1.1.2.6 2005-04-17 08:29:06 christianfoltin Exp $*/
+/*$Id: ReminderHook.java,v 1.1.2.7 2005-05-03 05:29:51 christianfoltin Exp $*/
 package plugins.time;
 
 import java.text.MessageFormat;
@@ -37,131 +37,220 @@ import freemind.main.XMLElement;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
 
-
 /**
  * @author foltin
  *  
  */
 public class ReminderHook extends PermanentNodeHookAdapter {
 
-    private static final String REMINDUSERAT = "REMINDUSERAT";
+	private static final int CLOCK_INVISIBLE = 0;
 
-    private long remindUserAt = 0;
+	private static final int CLOCK_VISIBLE = 1;
 
-    private Timer timer;
+	private static final int REMOVE_CLOCK = -1;
 
-    private static ImageIcon clockIcon=null;
+	private static final String REMINDUSERAT = "REMINDUSERAT";
 
-    //private Vector dateVector = new Vector();
-    
-    /**
-     *  
-     */
-    public ReminderHook() {
-        super();
-    }
+	private long remindUserAt = 0;
 
-    public void loadFrom(XMLElement child) {
-        super.loadFrom(child);
-        HashMap hash = loadNameValuePairs(child);
-        if (hash.containsKey(REMINDUSERAT)) {
-            String remindAt = (String) hash.get(REMINDUSERAT);
-            setRemindUserAt(new Long(remindAt)
-                    .longValue());
-        }
+	private Timer timer;
 
-    }
+	private static ImageIcon clockIcon = null;
 
-    public void save(XMLElement xml) {
-        super.save(xml);
-        HashMap nameValuePairs = new HashMap();
-        nameValuePairs.put(REMINDUSERAT, new Long(remindUserAt));
-        saveNameValuePairs(nameValuePairs, xml);
-    }
+	private static ImageIcon bellIcon;
 
-    public void shutdownMapHook() {
-        getController().setToolTip(getNode(), getName(), null);
-        getNode().removeStateIcon(getName());
-        getController().nodeRefresh(getNode());
-        if (timer != null) {
-            timer.cancel();
-        }
-        super.shutdownMapHook();
-    }
+	private static ImageIcon flagIcon;
 
-    public void invoke(MindMapNode node) {
-        super.invoke(node);
-        if (remindUserAt == 0) {
-            return;
-        }
-        if (timer == null) {
-            scheduleTimer(node);
-        }
-    }
+	//private Vector dateVector = new Vector();
 
-    /**
-     * @param node
-     */
-    private void scheduleTimer(MindMapNode node)
-    {
-        timer = new Timer();
-        Date date = new Date(remindUserAt);
-        timer.schedule(new CheckReminder(), date);
-        Object[] messageArguments = { date };
-        MessageFormat formatter = new MessageFormat(
-                getResourceString("plugins/TimeManagement.xml_reminderNode_tooltip"));
-        String message = formatter.format(messageArguments);
+	/**
+	 *  
+	 */
+	public ReminderHook() {
+		super();
+	}
 
-        getController().setToolTip(node, getName(), message);
-        // icon
-        if (clockIcon == null) {
-            clockIcon = new MindIcon("clock").getIcon(getController().getFrame());
-        }
-        node.addStateIcon(getName(), clockIcon);
-        getController().nodeRefresh(node);
-    }
+	public void loadFrom(XMLElement child) {
+		super.loadFrom(child);
+		HashMap hash = loadNameValuePairs(child);
+		if (hash.containsKey(REMINDUSERAT)) {
+			String remindAt = (String) hash.get(REMINDUSERAT);
+			setRemindUserAt(new Long(remindAt).longValue());
+		}
 
-    protected class CheckReminder extends TimerTask {
-        CheckReminder() {
+	}
 
-        }
+	public void save(XMLElement xml) {
+		super.save(xml);
+		HashMap nameValuePairs = new HashMap();
+		nameValuePairs.put(REMINDUSERAT, new Long(remindUserAt));
+		saveNameValuePairs(nameValuePairs, xml);
+	}
 
-        /** TimerTask method to enable the selection after a given time. */
-        public void run() {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    // yes, the time is over:
-                    // select the node.
-                    getController().centerNode(getNode());
-                    // format message:
-                    Object[] messageArguments = { getNode().getShortText(getController()) };
-                    MessageFormat formatter = new MessageFormat(
-                            getResourceString("plugins/TimeManagement.xml_reminderNode_showNode"));
-                    String message = formatter.format(messageArguments);
+	public void shutdownMapHook() {
+		getController().setToolTip(getNode(), getName(), null);
+		displayState(REMOVE_CLOCK, getNode(), true);
+		if (timer != null) {
+			timer.cancel();
+		}
+		super.shutdownMapHook();
+	}
 
-                    int result = JOptionPane
-                            .showConfirmDialog(
-                                    getController().getFrame().getJFrame(),
-                                    message,
-                                    "Freemind", JOptionPane.YES_NO_OPTION);
-                    if (result == JOptionPane.YES_OPTION) {
-                        setRemindUserAt(System.currentTimeMillis() + 10 * 60 * 1000);
-                        scheduleTimer(getNode());
-                        return;
-                    }
-                    nodeChanged(getNode());
-                    // remove the hook (suicide)
-                    getNode().removeHook(ReminderHook.this);
-                }
-            });
-        }
-    }
+	public void invoke(MindMapNode node) {
+		super.invoke(node);
+		if (remindUserAt == 0) {
+			return;
+		}
+		if (timer == null) {
+			scheduleTimer(node);
+		}
+	}
 
-    public long getRemindUserAt() {
-        return remindUserAt;
-    }
+	/**
+	 * @param node
+	 */
+	private void scheduleTimer(MindMapNode node) {
+		scheduleTimer(node, new TimerBlinkTask(false));
+		//		scheduleTimer(node, new CheckReminder(false));
+	}
 
-    public void setRemindUserAt(long remindUserAt) {
-        this.remindUserAt = remindUserAt;
-    }
+	private void scheduleTimer(MindMapNode node, TimerTask task) {
+		timer = new Timer();
+		Date date = new Date(remindUserAt);
+		timer.schedule(task, date);
+		Object[] messageArguments = { date };
+		MessageFormat formatter = new MessageFormat(
+				getResourceString("plugins/TimeManagement.xml_reminderNode_tooltip"));
+		String message = formatter.format(messageArguments);
+
+		getController().setToolTip(node, getName(), message);
+		displayState(CLOCK_VISIBLE, getNode(), false);
+	}
+
+	private ImageIcon getClockIcon() {
+		// icon
+		if (clockIcon == null) {
+			clockIcon = MindIcon.factory("clock").getIcon(
+					getController().getFrame());
+		}
+		return clockIcon;
+	}
+
+	private ImageIcon getBellIcon() {
+		// icon
+		if (bellIcon == null) {
+			bellIcon = MindIcon.factory("bell").getIcon(
+					getController().getFrame());
+		}
+		return bellIcon;
+	}
+
+	private ImageIcon getFlagIcon() {
+		// icon
+		if (flagIcon == null) {
+			flagIcon = MindIcon.factory("flag").getIcon(
+					getController().getFrame());
+		}
+		return flagIcon;
+	}
+
+	protected class CheckReminder extends TimerTask {
+		CheckReminder() {
+
+		}
+
+		/** TimerTask method to enable the selection after a given time. */
+		public void run() {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					// yes, the time is over:
+					// select the node.
+					getController().centerNode(getNode());
+					// format message:
+					Object[] messageArguments = { getNode().getShortText(
+							getController()) };
+					MessageFormat formatter = new MessageFormat(
+							getResourceString("plugins/TimeManagement.xml_reminderNode_showNode"));
+					String message = formatter.format(messageArguments);
+
+					int result = JOptionPane.showConfirmDialog(getController()
+							.getFrame().getJFrame(), message, "Freemind",
+							JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
+						setRemindUserAt(System.currentTimeMillis() + 10 * 60 * 1000);
+						scheduleTimer(getNode());
+						return;
+					}
+					nodeChanged(getNode());
+					// remove the hook (suicide)
+					getNode().removeHook(ReminderHook.this);
+				}
+			});
+		}
+	}
+
+	public class TimerBlinkTask extends TimerTask {
+
+		/**
+		 * @param stateAdded
+		 */
+		public TimerBlinkTask(boolean stateAdded) {
+			super();
+			this.stateAdded = stateAdded;
+		}
+
+		private boolean stateAdded = false;
+
+		public void run() {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					// time is over, we add the new icon until the user removes
+					// the user removes the reminder.
+					// 
+					stateAdded = !stateAdded;
+					setRemindUserAt(System.currentTimeMillis() + 3000); // 3
+					// secs
+					scheduleTimer(getNode(), new TimerBlinkTask(stateAdded));
+					displayState(
+							(stateAdded) ? CLOCK_VISIBLE : CLOCK_INVISIBLE,
+							getNode(), true);
+
+				}
+			});
+		}
+
+	}
+
+	private final String STATE_TOOLTIP = TimerBlinkTask.class.getName()
+			+ "_STATE_";
+
+	public String getStateKey() {
+		return STATE_TOOLTIP + getNode().getObjectId(getController());
+	}
+
+	public void displayState(int stateAdded, MindMapNode node, boolean recurse) {
+		ImageIcon icon = null;
+		if (stateAdded == CLOCK_VISIBLE) {
+			icon = getClockIcon();
+		} else if (stateAdded == CLOCK_INVISIBLE) {
+			if (node == getNode()) {
+				icon = getBellIcon();
+			} else {
+				icon = getFlagIcon();
+			}
+		}
+		node.setStateIcon(getStateKey(), icon);
+		getController().nodeRefresh(node);
+		if (recurse && !node.isRoot()) {
+			displayState(stateAdded, node.getParentNode(), recurse);
+		}
+	}
+
+	public long getRemindUserAt() {
+		return remindUserAt;
+	}
+
+	public void setRemindUserAt(long remindUserAt) {
+		this.remindUserAt = remindUserAt;
+	}
 }

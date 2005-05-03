@@ -195,6 +195,8 @@
 		<menu_category name="folding">
 			<menu_action field="toggleFolded" key_ref="keystroke_toggle_folded"/>
 		</menu_category>
+		<menu_category name="context">
+		</menu_category>
 		<menu_separator/>
 		<menu_submenu name="format" name_ref="menu_format">
 			<menu_category name="nodes">

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HierarchicalIcons.java,v 1.1.2.1 2005-02-18 21:17:36 christianfoltin Exp $*/
+/*$Id: HierarchicalIcons.java,v 1.1.2.2 2005-05-03 05:29:49 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -50,7 +50,7 @@ public class HierarchicalIcons extends PermanentNodeHookAdapter {
      */
     private void removeIcons(MindMapNode node)
     {
-        node.removeStateIcon(getName());
+        node.setStateIcon(getName(),null);
         getController().nodeRefresh(node);
         for (Iterator i = node.childrenUnfolded(); i.hasNext();)
         {
@@ -99,12 +99,12 @@ public class HierarchicalIcons extends PermanentNodeHookAdapter {
                 for (Iterator i = iconSet.iterator(); i.hasNext();) {
                     String iconName = (String) i.next();
 //                    logger.info("Adding icon "+iconName + " to node "+ node.toString());
-                    MindIcon icon = new MindIcon(iconName);
+                    MindIcon icon = MindIcon.factory(iconName);
                     image.addImage(icon.getIcon(getController().getFrame()));
                 }
-                node.addStateIcon(getName(), image);
+                node.setStateIcon(getName(), image);
             } else {
-                node.removeStateIcon(getName());
+                node.setStateIcon(getName(),null);
             }
             getController().nodeRefresh(node);
         }

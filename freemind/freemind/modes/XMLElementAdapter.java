@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.7 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.8 2005-05-03 05:29:50 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -323,7 +323,7 @@ public void setAttribute(String name, Object value) {
             (new Font(fontName, fontStyle, fontSize)); }
       /* icons */
             if (getName().equals("icon")) {
-         userObject =  new MindIcon(iconName); }
+         userObject =  MindIcon.factory(iconName); }
    }
 
     /** Completes the links within the map. They are registered in the registry.*/

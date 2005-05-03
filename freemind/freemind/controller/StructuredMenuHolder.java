@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.5 2005-02-02 22:16:21 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.6 2005-05-03 05:29:49 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -39,6 +39,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 
 /**
@@ -224,10 +225,18 @@ public class StructuredMenuHolder {
 		Map myMap = (Map) pair.map.get(pair.token);
 		updateMenus(new MenuAdder() {
 
+			StructuredMenuListener listener = new StructuredMenuListener();
+			
             public void addMenuItem(StructuredMenuItemHolder holder) {
             	JMenuItem menuItem = holder.getMenuItem();
             	adjustMenuItem(menuItem);
-                myItem.add(menuItem);
+             myItem.add(menuItem);
+             if (myItem instanceof MenuEventSupplier) {
+				MenuEventSupplier receiver = (MenuEventSupplier) myItem;
+				receiver.addMenuListener(listener);
+				listener.addItem(holder);
+			}
+                
             }
 
             public void addSeparator() {
@@ -286,7 +295,7 @@ public class StructuredMenuHolder {
 
 		public MenuItemAdder(JMenu myItem) {
 			this.myItem = myItem;
-			listener = new StructuredMenuListener(myItem);
+			listener = new StructuredMenuListener();
 			myItem.addMenuListener(listener);
 		}
 
@@ -419,13 +428,16 @@ public class StructuredMenuHolder {
 		mOutputString += (string)+"\n";
 	}
 
-    private static class StructuredMenuListener implements
+	public interface MenuEventSupplier {
+		void addMenuListener(MenuListener listener);
+		void removeMenuListener(MenuListener listener);
+		
+	}
+    public static class StructuredMenuListener implements
 			javax.swing.event.MenuListener {
     		private Vector menuItemHolder = new Vector();
-		private JMenu item;
 
-		public StructuredMenuListener(JMenu item) {
-			this.item = item;
+		public StructuredMenuListener() {
 		}
 
 		public void menuSelected(MenuEvent arg0) {

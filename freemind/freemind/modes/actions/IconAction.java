@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/*$Id: IconAction.java,v 1.1.4.1 2004-10-17 23:00:10 dpolivaev Exp $*/
+/*$Id: IconAction.java,v 1.1.4.2 2005-05-03 05:29:50 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -90,7 +90,7 @@ public class IconAction extends FreemindAction  implements ActorXml{
             AddIconAction iconAction = (AddIconAction) action;
             MindMapNode node = modeController.getNodeFromID(iconAction.getNode());
             String iconName = iconAction.getIconName();
-            MindIcon icon = new MindIcon(iconName);
+            MindIcon icon = MindIcon.factory(iconName);
             node.addIcon(icon);
             modeController.nodeChanged(node);
         }

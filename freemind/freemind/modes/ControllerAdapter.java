@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.21 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22 2005-05-03 05:29:49 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -261,7 +261,7 @@ public abstract class ControllerAdapter implements ModeController {
 		// the executor must be the first here, because it is executed last then.
 		getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
 		getActionFactory().registerHandler(new UndoActionHandler(this, undo, redo));
-		//debug:				getActionFactory().registerHandler(new freemind.controller.actions.PrintActionHandler(this));
+		//debug:						getActionFactory().registerHandler(new freemind.controller.actions.PrintActionHandler(this));
 
         cut = new CutAction(this);
         paste = new PasteAction(this);
@@ -287,7 +287,7 @@ public abstract class ControllerAdapter implements ModeController {
 	    // this is an unknown icon and thus corrected by mindicon:
 	    removeLastIconAction = new RemoveLastIconAction(this);
 	    // this action handles the xml stuff: (undo etc.)
-	    unknwonIconAction = new IconAction(this, new MindIcon((String) MindIcon
+	    unknwonIconAction = new IconAction(this, MindIcon.factory((String) MindIcon
                 .getAllIconNames().get(0)), removeLastIconAction);
 	    removeLastIconAction.setIconAction(unknwonIconAction);
 	    removeAllIconsAction = new RemoveAllIconsAction(this, unknwonIconAction);
@@ -580,7 +580,14 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     
-	/** This class sortes nodes by ascending depth of their paths to root. This is useful to assure that children are cutted <b>before</b> their fathers!!!.*/
+	/**
+	 * This class sortes nodes by ascending depth of their paths to root. This
+	 * is useful to assure that children are cutted <b>before </b> their
+	 * fathers!!!.
+	 * 
+	 * Moreover, it sorts nodes with the same depth according to their
+	 * position relative to each other.
+	 */
 	protected class nodesDepthComparator implements Comparator{
 		public nodesDepthComparator() {}
 		/* the < relation.*/
@@ -594,6 +601,8 @@ public abstract class ControllerAdapter implements ModeController {
 				return -1;
 			if(depth < 0)
 				return 1;
+			if(n1.isRoot()) // if n1 is root, n2 is root, too ;)
+				return 0;
 			return n1.getParentNode().getChildPosition(n1) - n2.getParentNode().getChildPosition(n2);
 		}
 	}

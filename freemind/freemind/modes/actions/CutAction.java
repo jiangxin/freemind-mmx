@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: CutAction.java,v 1.1.4.5 2005-04-24 18:49:12 christianfoltin Exp $*/
+/*$Id: CutAction.java,v 1.1.4.6 2005-05-03 05:29:50 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -87,6 +87,7 @@ public class CutAction extends AbstractAction implements ActorXml {
     }
 
     public Transferable cut(List nodeList) {
+	c.sortNodesByDepth(nodeList);
     	Transferable totalCopy = c.getModel().copy(nodeList, null);
 		try {
 			// Do-action
@@ -94,7 +95,6 @@ public class CutAction extends AbstractAction implements ActorXml {
 			// Undo-action
 			CompoundAction undo= c.getActionXmlFactory().createCompoundAction();
 			// sort selectedNodes list by depth, in order to guarantee that sons are deleted first:
-			c.sortNodesByDepth(nodeList);
 			for (Iterator i = nodeList.iterator(); i.hasNext();) {
 				MindMapNode node = (MindMapNode) i.next();
 				Transferable copy = c.getModel().copy(node);

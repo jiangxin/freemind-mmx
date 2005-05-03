@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/*$Id: TimeManagement.java,v 1.1.2.4 2005-04-08 21:37:30 christianfoltin Exp $*/
+/*$Id: TimeManagement.java,v 1.1.2.5 2005-05-03 05:29:51 christianfoltin Exp $*/
 package plugins.time;
 
 import java.awt.Container;
@@ -65,7 +65,7 @@ import freemind.modes.MindMapNode;
 public class TimeManagement extends ModeControllerHookAdapter implements
 		PropertyChangeListener, ActionListener {
 
-	public final String REMINDER_HOOK_NAME = "plugins/TimeManagementReminder.xml";
+	public final static String REMINDER_HOOK_NAME = "plugins/TimeManagementReminder.xml";
 
 	private static Date lastDate = null;
 

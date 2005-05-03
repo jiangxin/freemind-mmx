@@ -16,16 +16,16 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindIcon.java,v 1.1.18.4 2005-04-26 21:41:00 christianfoltin Exp $*/
+/*$Id: MindIcon.java,v 1.1.18.5 2005-05-03 05:29:50 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import java.util.*;
-import java.io.*;
 import java.net.URL;
-import javax.swing.Icon;
+import java.util.HashMap;
+import java.util.Vector;
+
 import javax.swing.ImageIcon;
-/* for resources:*/
+
 import freemind.main.FreeMindMain;
 
 /**
@@ -35,11 +35,19 @@ import freemind.main.FreeMindMain;
 public class MindIcon {
     private String name;
     private String description;
+    /**
+     * Stores the once created ImageIcon.
+     */
     private ImageIcon   associatedIcon;
     private static Vector mAllIconNames;
     private static ImageIcon iconNotFound;
+    /**
+     * Set of all created icons. Name -> MindIcon
+     */
+    private static HashMap createdIcons = new HashMap();
+    
 
-    public MindIcon(String name) {
+    private MindIcon(String name) {
        setName(name); 
        associatedIcon=null;
     }
@@ -170,4 +178,12 @@ public class MindIcon {
         return mAllIconNames;
     }
 
+    public static MindIcon factory(String iconName){
+    		if(createdIcons.containsKey(iconName)){
+    			return (MindIcon) createdIcons.get(iconName);
+    		}
+    		MindIcon icon = new MindIcon(iconName);
+    		createdIcons.put(iconName, icon);
+    		return icon;
+    }
 }
