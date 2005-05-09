@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10 2005-04-28 21:12:35 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -249,6 +249,8 @@ public abstract class NodeView extends JLabel {
 		getCoordinates(inList, 0, false);
 	}
 	private void getCoordinates(LinkedList inList, int additionalDistanceForConvexHull, boolean byChildren) {
+	    if (! isVisible()) return;
+	    
 		MindMapCloud cloud = getModel().getCloud();
 
 		// consider existing clouds of children
@@ -260,7 +262,7 @@ public abstract class NodeView extends JLabel {
         inList.addLast(new Point(  additionalDistanceForConvexHull + getExtendedX() + getExtendedWidth(),   additionalDistanceForConvexHull + getExtendedY() + getExtendedHeight()));
         inList.addLast(new Point(  additionalDistanceForConvexHull + getExtendedX() + getExtendedWidth(),  -additionalDistanceForConvexHull + getExtendedY()              ));
 		
-        LinkedList childrenViews = getChildrenViews();
+        LinkedList childrenViews = getChildrenViews(true);
         ListIterator children_it = childrenViews.listIterator();
         while(children_it.hasNext()) {
             NodeView child = (NodeView)children_it.next();
@@ -270,11 +272,14 @@ public abstract class NodeView extends JLabel {
 	private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
 	private static final int MIN_HOR_NODE_SIZE = 10;
     public Dimension getPreferredSize() {
+    	boolean isEmpty = getText().length() == 0;
+    	if (isEmpty) setText("!");
     	Dimension prefSize = super.getPreferredSize();
         if(map.isCurrentlyPrinting() && NEED_PREF_SIZE_BUG_FIX) {
         	prefSize.width += (int)(10f*map.getZoom());
         } 
         prefSize.width = Math.max(map.getZoomed(MIN_HOR_NODE_SIZE), prefSize.width);
+    	if (isEmpty) setText("");
         return prefSize;
     }
     
@@ -440,14 +445,17 @@ public abstract class NodeView extends JLabel {
     /**
      * This method returns the NodeViews that are children of this node.
      */
-    public LinkedList getChildrenViews() {
+    public LinkedList getChildrenViews(boolean onlyVisible) {
 	LinkedList childrenViews = new LinkedList();
 	ListIterator it = getModel().childrenUnfolded();
 	if (it != null) {
            while(it.hasNext()) {
-              NodeView view = ((MindMapNode)it.next()).getViewer();
-              if (view != null) { // Visible view
-                 childrenViews.add(view); // child.getViewer() );
+              MindMapNode node = (MindMapNode)it.next();
+              if (! onlyVisible || node.isVisible()){
+	              NodeView view = node.getViewer();
+	              if (view != null) { // Visible view
+	                 childrenViews.add(view); // child.getViewer() );
+	              }
               }
            }
         }
@@ -455,7 +463,7 @@ public abstract class NodeView extends JLabel {
     }
     
     protected LinkedList getSiblingViews() {
-	return getParentView().getChildrenViews();
+	return getParentView().getChildrenViews(true);
     }
 
     /**
@@ -605,10 +613,10 @@ public abstract class NodeView extends JLabel {
       sibling = nextSibling;
       while (sibling.getModel().getNodeLevel() < getMap().getSiblingMaxLevel()) {
         // can we drill down?
-        if (sibling.getChildrenViews().size() <= 0) {
+        if (sibling.getChildrenViews(true).size() <= 0) {
           break; // no
         }
-        sibling = (NodeView)(sibling.getChildrenViews().getFirst());
+        sibling = (NodeView)(sibling.getChildrenViews(true).getFirst());
       }
       return sibling;
     }
@@ -634,10 +642,10 @@ public abstract class NodeView extends JLabel {
       sibling = previousSibling;
       while (sibling.getModel().getNodeLevel() < getMap().getSiblingMaxLevel()) {
         // can we drill down?
-        if (sibling.getChildrenViews().size() <= 0) {
+        if (sibling.getChildrenViews(true).size() <= 0) {
           break; // no
         }
-        sibling = (NodeView)(sibling.getChildrenViews().getLast());
+        sibling = (NodeView)(sibling.getChildrenViews(true).getLast());
       }
       return sibling;
     }
@@ -646,12 +654,12 @@ public abstract class NodeView extends JLabel {
 	LinkedList v = null;
 	if (getParentView().isRoot()) {
 	    if (this.isLeft()) {
-		v = ((RootNodeView)getParentView()).getLeft();
+		v = ((RootNodeView)getParentView()).getLeft(true);
 	    } else {
-		v = ((RootNodeView)getParentView()).getRight();
+		v = ((RootNodeView)getParentView()).getRight(true);
 	    }
 	} else {
-	    v = getParentView().getChildrenViews();
+	    v = getParentView().getChildrenViews(true);
 	}	
 	NodeView sibling;
 	if (v.size()-1 == v.indexOf(this)) { //this is last, return first
@@ -667,12 +675,12 @@ public abstract class NodeView extends JLabel {
 	LinkedList v = null;
 	if (getParentView().isRoot()) {
 	    if (this.isLeft()) {
-		v = ((RootNodeView)getParentView()).getLeft();
+		v = ((RootNodeView)getParentView()).getLeft(true);
 	    } else {
-		v = ((RootNodeView)getParentView()).getRight();
+		v = ((RootNodeView)getParentView()).getRight(true);
 	    }
 	} else {
-	    v = getParentView().getChildrenViews();
+	    v = getParentView().getChildrenViews(true);
 	}
 	NodeView sibling;
 	if (v.indexOf(this) <= 0) {//this is first, return last
@@ -722,7 +730,7 @@ public abstract class NodeView extends JLabel {
 	if (getEdge()!=null) {
            getEdge().remove(); }
         getModel().setViewer(null); // Let the model know he is invisible
-	for(ListIterator e = getChildrenViews().listIterator();e.hasNext();) {
+	for(ListIterator e = getChildrenViews(false).listIterator();e.hasNext();) {
            ((NodeView)e.next()).remove(); }}
 
      void update() {
@@ -877,7 +885,7 @@ public abstract class NodeView extends JLabel {
 
     void updateAll() {
 	update();
-	for(ListIterator e = getChildrenViews().listIterator();e.hasNext();) {
+	for(ListIterator e = getChildrenViews(true).listIterator();e.hasNext();) {
 	    NodeView child = (NodeView)e.next();
 	    child.updateAll();
 	}

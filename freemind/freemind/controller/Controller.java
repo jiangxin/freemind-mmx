@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10 2005-04-28 21:12:34 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -66,6 +66,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
+import freemind.controller.filter.FilterController;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
@@ -90,6 +91,8 @@ public class Controller {
     private Mode mode; //The current mode
     private FreeMindMain frame;
     private JToolBar toolbar;
+    private JToolBar filterToolbar;
+    private JPanel northToolbarPanel;
     private NodeMouseMotionListener nodeMouseMotionListener;
     private NodeMotionListener nodeMotionListener;
     private NodeKeyListener nodeKeyListener;
@@ -104,6 +107,8 @@ public class Controller {
     private boolean antialiasEdges = false;
     private boolean antialiasAll = false;
     private Map fontMap = new HashMap();
+    
+    private FilterController fc;
 
     boolean isPrintingAllowed=true;     
     boolean menubarVisible=true;
@@ -145,8 +150,15 @@ public class Controller {
     //
     // Constructors
     //
-
-    public Controller(FreeMindMain frame) {
+    static Controller c = null;
+    static public Controller getInstance(){
+        return c;
+    }
+    static public void createInstance(FreeMindMain frame){
+        if (c == null) new Controller(frame);
+    }
+    private Controller(FreeMindMain frame) {
+        c = this;
         checkJavaVersion();
 
         this.frame = frame;
@@ -194,8 +206,13 @@ public class Controller {
         moveToRoot = new MoveToRootAction(this);
 
         //Create the ToolBar
+        northToolbarPanel = new JPanel(new BorderLayout());
         toolbar = new MainToolBar(this);
-        getFrame().getContentPane().add( toolbar, BorderLayout.NORTH );
+        fc = new FilterController(this);
+        filterToolbar = fc.getFilterToolbar();
+        getFrame().getContentPane().add( northToolbarPanel, BorderLayout.NORTH );
+        northToolbarPanel.add( toolbar, BorderLayout.NORTH);
+        northToolbarPanel.add( filterToolbar, BorderLayout.SOUTH);
 
         setAllActions(false);
 
@@ -1165,6 +1182,16 @@ public class Controller {
                 c.errorMessage(ex);
             }
         }
+    }
+
+
+
+    /**
+     * @return
+     */
+    public FilterController getFilterController() {
+        // TODO Auto-generated method stub
+        return fc;
     }
 
 

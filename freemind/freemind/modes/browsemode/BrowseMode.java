@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMode.java,v 1.8.18.2 2004-10-28 05:24:54 christianfoltin Exp $*/
+/*$Id: BrowseMode.java,v 1.8.18.2.6.1 2005-05-09 23:45:46 dpolivaev Exp $*/
 
 package freemind.modes.browsemode;
 
+import java.awt.Component;
 import java.net.URL;
 
 import javax.swing.JToolBar;
@@ -96,7 +97,7 @@ public class BrowseMode implements Mode {
         return ((BrowseController)getModeController()).getToolBar();
     }
 
-    public JToolBar getLeftToolBar() {
+    public Component getLeftToolBar() {
         return null;
     }
 

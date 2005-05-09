@@ -16,9 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Mode.java,v 1.8.18.1 2004-10-17 23:00:08 dpolivaev Exp $*/
+/*$Id: Mode.java,v 1.8.18.1.6.1 2005-05-09 23:45:46 dpolivaev Exp $*/
 
 package freemind.modes;
+
+import java.awt.Component;
 
 import javax.swing.JToolBar;
 
@@ -34,5 +36,5 @@ public interface Mode {
     public Controller getController();
     public JToolBar getModeToolBar();
     /** For the toolbar on the left hand side of the window.*/
-    public JToolBar getLeftToolBar();
+    public Component getLeftToolBar();
 }

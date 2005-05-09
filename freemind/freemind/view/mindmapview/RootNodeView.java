@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.14.14.3 2005-04-27 21:45:32 christianfoltin Exp $*/
+/*$Id: RootNodeView.java,v 1.14.14.3.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -71,8 +71,8 @@ public class RootNodeView extends NodeView {
     void setEdge(EdgeView edge) {
     }
 
-    LinkedList getLeft() {
-	LinkedList all = getChildrenViews();
+    LinkedList getLeft(boolean onlyVisible) {
+	LinkedList all = getChildrenViews(onlyVisible);
 	LinkedList left = new LinkedList();
 	for (ListIterator e = all.listIterator();e.hasNext();) {
 	    NodeView node = (NodeView)e.next();
@@ -82,8 +82,8 @@ public class RootNodeView extends NodeView {
 	return left;
     }
 
-    LinkedList getRight() {
-	LinkedList all = getChildrenViews();
+    LinkedList getRight(boolean onlyVisible) {
+	LinkedList all = getChildrenViews(onlyVisible);
 	LinkedList right = new LinkedList();
 	for (ListIterator e = all.listIterator();e.hasNext();) {
 	    NodeView node = (NodeView)e.next();
@@ -98,7 +98,7 @@ public class RootNodeView extends NodeView {
         newView.update();
         // decide left or right only if not actually set:
         if(newNode.isLeft()==null)
-            newView.setLeft( getLeft().size() <= getRight().size() );
+            newView.setLeft( getLeft(false).size() <= getRight(false).size() );
         ListIterator it = newNode.childrenFolded();
         if (it != null) {
             for (;it.hasNext();) {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.17 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.17.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -238,7 +238,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	//Layout everything
 	getContentPane().setLayout( new BorderLayout() );
 
-	c = new Controller(this);
+	Controller.createInstance(this);
+	c = Controller.getInstance() ;
 
 	if (Tools.safeEquals(getProperty("antialiasEdges"),"true")) {
            c.setAntialiasEdges(true); }

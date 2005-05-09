@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.8.14.3 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: ArrowLinkView.java,v 1.8.14.3.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -79,6 +79,8 @@ public class ArrowLinkView {
 
     /** \param iterativeLevel describes the n-th nested arrowLink that is to be painted.*/
 	public void paint(Graphics graphics) {
+	    if(! isSourceVisible() && ! isTargetVisible())
+	        return;
 	    Point p1 = null, p2 = null, p3 = null, p4 = null;
 	    boolean targetIsLeft = false;
 	    boolean sourceIsLeft = false;
@@ -88,29 +90,29 @@ public class ArrowLinkView {
 	    /* set stroke.*/
 	    g.setStroke(getStroke());
 	    // if one of the nodes is not present then draw a dashed line:
-	    if(source == null || target == null)
+	    if(! isSourceVisible() || ! isTargetVisible())
 	        g.setStroke(new BasicStroke(getWidth(), BasicStroke.CAP_ROUND,
 	                                    BasicStroke.JOIN_ROUND, 0, new float[]{0,3,0,3}, 0));
 	
 	    // determine, whether destination exists:
-	    if(source != null) {
+	    if(isSourceVisible()) {
 	        p1 = source.getLinkPoint(arrowLinkModel.getStartInclination());
 	        sourceIsLeft = source.isLeft();
 	    }
-	    if(target != null) {
+	    if(isTargetVisible()) {
 	        p2 = target.getLinkPoint(arrowLinkModel.getEndInclination());
 	        targetIsLeft = target.isLeft();
 	    }
 	    // determine point 2 and 3:
 		if (arrowLinkModel.getEndInclination() == null
 		   || arrowLinkModel.getStartInclination() == null) {
-			double dellength = source != null && target != null ? p1.distance(p2) / getZoom() : 30;
-			if(source != null && arrowLinkModel.getStartInclination() == null){
+			double dellength = isSourceVisible() && isTargetVisible() ? p1.distance(p2) / getZoom() : 30;
+			if(isSourceVisible() && arrowLinkModel.getStartInclination() == null){
 				Point incl = calcInclination(source, dellength);
 				arrowLinkModel.setStartInclination(incl);
 		        p1 = source.getLinkPoint(arrowLinkModel.getStartInclination());
 			}
-			if(target != null && arrowLinkModel.getEndInclination() == null){
+			if(isTargetVisible() && arrowLinkModel.getEndInclination() == null){
 				Point incl = calcInclination(target, dellength);
 				incl.y = -incl.y;
 				arrowLinkModel.setEndInclination(incl);
@@ -139,15 +141,15 @@ public class ArrowLinkView {
 	        g.draw(arrowLinkCurve);
 	        // arrow source:
 		}
-	    if(source != null && !arrowLinkModel.getStartArrow().equals("None")) {
+	    if(isSourceVisible() && !arrowLinkModel.getStartArrow().equals("None")) {
 	        paintArrow(p1, p3, g);
 	    }
 	    // arrow target:
-	    if(target != null && !arrowLinkModel.getEndArrow().equals("None")) {
+	    if(isTargetVisible() && !arrowLinkModel.getEndArrow().equals("None")) {
 	        paintArrow(p2, p4, g);
 	    }
 	    // Control Points
-	    if(arrowLinkModel.getShowControlPointsFlag() || source == null || target == null){
+	    if(arrowLinkModel.getShowControlPointsFlag() || ! isSourceVisible() || ! isTargetVisible()){
 			g.setStroke(new BasicStroke(getWidth(), BasicStroke.CAP_ROUND,
 										BasicStroke.JOIN_ROUND, 0, new float[]{0,3,0,3}, 0));
 			if (p1 != null){
@@ -158,6 +160,20 @@ public class ArrowLinkView {
 			}
 	    }
 	}
+
+    /**
+     * @return
+     */
+    private boolean isTargetVisible() {
+        return (target != null && target.isVisible());
+    }
+
+    /**
+     * @return
+     */
+    private boolean isSourceVisible() {
+        return (source != null && source.isVisible());
+    }
 
     /**
 	 * @param dellength

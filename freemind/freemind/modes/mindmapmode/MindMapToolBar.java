@@ -16,15 +16,19 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.12.18.1 2004-10-17 23:00:13 dpolivaev Exp $*/
+/*$Id: MindMapToolBar.java,v 1.12.18.1.6.1 2005-05-09 23:45:46 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.Action;
 import javax.swing.JComboBox;
+import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 
@@ -38,6 +42,7 @@ public class MindMapToolBar extends FreeMindToolBar {
     private static final String[] sizes = {"8","10","12","14","16","18","20","24","28"};
     private MindMapController c;
     private JComboBox fonts, size;
+    private JScrollPane buttonToolBarScrollPane;    
     private JToolBar buttonToolBar;    
     private boolean fontSize_IgnoreChangeEvent = false;
     private boolean fontFamily_IgnoreChangeEvent = false;
@@ -51,6 +56,7 @@ public class MindMapToolBar extends FreeMindToolBar {
 		fonts = new JComboBox(Tools.getAvailableFontFamilyNamesAsVector());
 		size = new JComboBox(sizes);
 		buttonToolBar = new FreeMindToolBar();
+		buttonToolBarScrollPane = new JScrollPane(buttonToolBar);
 		fontsListener = new ItemListener(){
         	        public void itemStateChanged(ItemEvent e) {
         	            if (e.getStateChange() != ItemEvent.SELECTED) {
@@ -106,6 +112,10 @@ public class MindMapToolBar extends FreeMindToolBar {
             buttonToolBar.add((Action) c.iconActions.get(i));
         }
         buttonToolBar.setOrientation(JToolBar.VERTICAL);
+        Dimension buttonToolBarSize = buttonToolBar.getPreferredSize();
+        buttonToolBarSize.width += 20;
+		buttonToolBarScrollPane.setPreferredSize(buttonToolBarSize);
+
         //c.getFrame().getContentPane().add( buttonToolBar, BorderLayout.WEST );
    }
 
@@ -122,8 +132,8 @@ public class MindMapToolBar extends FreeMindToolBar {
       fontSize_IgnoreChangeEvent = false;
    }
 
-   JToolBar getLeftToolBar() {
-       return buttonToolBar;
+   Component getLeftToolBar() {
+       return buttonToolBarScrollPane;
    }
    
    public void selectFontName(String fontName) // (DiPo)

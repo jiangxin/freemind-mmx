@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.3 2005-04-27 21:45:31 christianfoltin Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.3.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -78,13 +78,6 @@ public class MindMapLayout implements LayoutManager {
     //
 
     /**
-	* placeNode throws this exception 
-	* if the map size changes require new layout calculations 
-     */
-	private class NewLayoutIterationNeeded extends Exception {
-	}
-
-    /**
      * This funcion resizes the map and do the layout.
      * All tree heights, widths and shifts should be already calculated.
      */
@@ -131,7 +124,7 @@ public class MindMapLayout implements LayoutManager {
         placeNode(node, x, node.relYPos);
 
         //Iterations
-        for ( ListIterator e = node.getChildrenViews().listIterator(); e.hasNext(); ) {
+        for ( ListIterator e = node.getChildrenViews(true).listIterator(); e.hasNext(); ) {
            layout( (NodeView)e.next() ); }
     }
 
@@ -296,8 +289,10 @@ public class MindMapLayout implements LayoutManager {
 
    
     void updateTreeHeightsAndRelativeYOfDescendants(NodeView node) {
-	        for (ListIterator e = node.getChildrenViews().listIterator(); e.hasNext();) {
+        if (node.getParentView() != null) node.setVisible(node.getParentView().isVisible() && node.getModel().isVisible());
+        for (ListIterator e = node.getChildrenViews(false).listIterator(); e.hasNext();) {
 	           updateTreeHeightsAndRelativeYOfDescendants((NodeView)e.next()); }
+        if(node.isVisible())
         updateTreeGeometry(node);
    	}
     
@@ -349,8 +344,8 @@ public class MindMapLayout implements LayoutManager {
 	}
     protected void updateTreeGeometry(NodeView node) {
     	if (node.isRoot()){
-    		LinkedList leftNodeViews = getRoot().getLeft();
-			LinkedList rightNodeViews = getRoot().getRight();
+    		LinkedList leftNodeViews = getRoot().getLeft(true);
+			LinkedList rightNodeViews = getRoot().getRight(true);
 
 			int leftWidth = calcTreeWidth(node, leftNodeViews);
 			int rightWidth = calcTreeWidth(node, rightNodeViews);
@@ -372,7 +367,7 @@ public class MindMapLayout implements LayoutManager {
 			getRoot().setRootTreeHeights(leftTreeHeight, rightTreeHeight);
     	}
     	else{
-			LinkedList childrenViews = node.getChildrenViews();
+			LinkedList childrenViews = node.getChildrenViews(true);
 
 			int treeWidth = calcTreeWidth(node, childrenViews);
     		node.setTreeWidth(treeWidth); 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12 2005-04-28 21:12:34 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.16.12.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -93,7 +93,7 @@ public class MapView extends JPanel implements Printable {
 			if(size() >0 ) {
 				removeSelectionForHooks(get(0)); 
 			}
-			mySelected.add(0, node);
+			mySelected.add(node);
 			addSelectionForHooks(node); 
 			logger.finest("Added selected "+node + "\nAll="+mySelected);
 		}
@@ -123,15 +123,15 @@ public class MapView extends JPanel implements Printable {
 		public void moveToFirst(NodeView newSelected) {
 			if(contains(newSelected)) {
 				int pos = mySelected.indexOf(newSelected);
+				if(size() >0 ) {
+					removeSelectionForHooks(get(0)); 
+				}
 				if( pos > 0 ){ // move
-					if(size() >0 ) {
-						removeSelectionForHooks(get(0)); 
-					}
 					mySelected.remove(newSelected);
 					mySelected.add(0, newSelected);
 				}
 			} else {
-				add(newSelected);
+				mySelected.add(0, newSelected);
 			}
 			addSelectionForHooks(newSelected);
 			logger.finest("MovedToFront selected "+newSelected + "\nAll="+mySelected);
@@ -372,7 +372,7 @@ public class MapView extends JPanel implements Printable {
         case KeyEvent.VK_LEFT:
             setSiblingMaxLevel(oldSelected.getModel().getNodeLevel()); // for case of return
             if(oldSelected.isRoot()){
-                LinkedList left = ((RootNodeView)oldSelected).getLeft();
+                LinkedList left = ((RootNodeView)oldSelected).getLeft(true);
                 if (left.size() == 0) return null;
                 newSelected = oldSelected.getModel().getPreferredChild().getViewer();
                 if (!left.contains(newSelected)) {
@@ -388,7 +388,7 @@ public class MapView extends JPanel implements Printable {
                     return null;
                 }
 
-                if (oldSelected.getChildrenViews().size() == 0) return null;
+                if (oldSelected.getChildrenViews(true).size() == 0) return null;
                 newSelected = oldSelected.getModel().getPreferredChild().getViewer();
             }
             setSiblingMaxLevel(newSelected.getModel().getNodeLevel());
@@ -397,7 +397,7 @@ public class MapView extends JPanel implements Printable {
         case KeyEvent.VK_RIGHT:
             setSiblingMaxLevel(oldSelected.getModel().getNodeLevel()); // for case of return
             if(oldSelected.isRoot()) {
-                LinkedList right = ((RootNodeView)oldSelected).getRight();
+                LinkedList right = ((RootNodeView)oldSelected).getRight(true);
                 if (right.size() == 0) return null;
                 newSelected = oldSelected.getModel().getPreferredChild().getViewer();
                 if (!right.contains(newSelected)) {
@@ -413,7 +413,7 @@ public class MapView extends JPanel implements Printable {
                     return null;
                 }
 
-                if (oldSelected.getChildrenViews().size() == 0) return null;
+                if (oldSelected.getChildrenViews(true).size() == 0) return null;
                 newSelected = oldSelected.getModel().getPreferredChild().getViewer();
             }
             setSiblingMaxLevel(newSelected.getModel().getNodeLevel());
@@ -586,7 +586,7 @@ public class MapView extends JPanel implements Printable {
         else if (!isSelected(newlySelectedNodeView)) {
             toggleSelected(newlySelectedNodeView); }
         //select(newSelected,extend);
-        for (ListIterator e = newlySelectedNodeView.getChildrenViews().listIterator(); e.hasNext(); ) {
+        for (ListIterator e = newlySelectedNodeView.getChildrenViews(false).listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
             selectBranch(target,true);
         }
@@ -670,9 +670,6 @@ public class MapView extends JPanel implements Printable {
                 break; 
             }
         }
-        // now, make oldSelected the last of the list in order to make this repeatable:
-        toggleSelected(oldSelected);
-        toggleSelected(oldSelected);
         return true;
     }
 
@@ -734,20 +731,7 @@ public class MapView extends JPanel implements Printable {
     }
 
 
-    public ArrayList /*of NodeViews*/ getSelectedsSortedByY() {
-        TreeMap sortedNodes = new TreeMap();
-        for (int i=0; i<selected.size();i++) {
-            sortedNodes.put(new Integer(getSelected(i).getY()), getSelected(i)); }
-
-        ArrayList selectedNodes = new ArrayList();
-        for(Iterator it = sortedNodes.entrySet().iterator();it.hasNext();) {
-            selectedNodes.add( ((Map.Entry)it.next()).getValue() ); }
-
-        return selectedNodes;
-    }
-
-    
-    /**
+     /**
      * @return an ArrayList of MindMapNode objects.
      */
     public ArrayList /*of MindMapNodes*/ getSelectedNodesSortedByY() {
@@ -800,7 +784,7 @@ public class MapView extends JPanel implements Printable {
 
     /** @param iterativeLevel describes the n-th nested cloud that is to be painted.*/
     protected void paintClouds(NodeView source, Graphics graphics){
-        for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
+        for(ListIterator e = source.getChildrenViews(true).listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
             if(target.getModel().getCloud() != null) {
                 CloudView cloud = new CloudView(target.getModel().getCloud(), target);
@@ -819,7 +803,7 @@ public class MapView extends JPanel implements Printable {
         String label = getModel().getLinkRegistry().getLabel(source.getModel());
         if(label != null) 
             labels.put(label, source);
-        for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
+        for(ListIterator e = source.getChildrenViews(true).listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
             collectLabels(target, labels);
         }
@@ -855,7 +839,7 @@ public class MapView extends JPanel implements Printable {
                 }
             }
         }
-        for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
+        for(ListIterator e = source.getChildrenViews(true).listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
             paintLinks(target, graphics, labels, LinkAlreadyVisited);
         }
@@ -987,7 +971,7 @@ public class MapView extends JPanel implements Printable {
      */
     public Rectangle getInnerBounds(NodeView source) {
         Rectangle innerBounds = source.getBounds();
-        for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
+        for(ListIterator e = source.getChildrenViews(true).listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
             innerBounds.add(getInnerBounds(target));//recursive
         }
@@ -1013,8 +997,10 @@ public class MapView extends JPanel implements Printable {
     }
 
     private void paintEdges(NodeView source, Graphics2D g) {
-        for(ListIterator e = source.getChildrenViews().listIterator(); e.hasNext(); ) {
+        if (! source.isVisible()) return;
+        for(ListIterator e = source.getChildrenViews(true).listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
+            if (! target.isVisible()) continue;
             target.getEdge().paint(g);
             paintEdges( target, g );//recursive
         }
