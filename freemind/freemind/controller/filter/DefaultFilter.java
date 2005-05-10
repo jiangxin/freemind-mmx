@@ -23,6 +23,7 @@ class DefaultFilter implements Filter{
 
 	private Condition condition = null;
     private int options = 0;
+
     
     /**
      * @param condition
@@ -57,14 +58,14 @@ class DefaultFilter implements Filter{
      * @return
      */
     private boolean applyFilter(ListIterator iterator, boolean isAncestorSelected) {
-        boolean result = false;
+        boolean isDescenderSelected = false;
         while(iterator.hasNext()){
             MindMapNode node = (MindMapNode)iterator.next();
             resetFilter(node);
             if (isAncestorSelected) addFilterResult(node, FILTER_DESCENDER);
             boolean lastCheck = condition.checkNode(node);
             if (lastCheck){
-                result = true;
+                isDescenderSelected = true;
                 addFilterResult(node, FILTER_MATCHED);
             }
             else
@@ -74,9 +75,10 @@ class DefaultFilter implements Filter{
             ListIterator children = node.childrenUnfolded();
             if(applyFilter(children, lastCheck || isAncestorSelected)){
                 addFilterResult(node, FILTER_ANCESTOR);
+                isDescenderSelected = true;
             }            
         }
-        return result;
+        return isDescenderSelected;
     }
     /* (non-Javadoc)
      * @see freemind.controller.filter.Filter#isVisible(freemind.modes.MindMapNode)

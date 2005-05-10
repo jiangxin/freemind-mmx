@@ -42,7 +42,7 @@ public class DisjunctConditions implements Condition {
             Condition cond = (Condition)conditions[i];
             if (cond.checkNode(node)) return true;
         }
-        return true;
+        return false;
     }
 
     /* (non-Javadoc)
