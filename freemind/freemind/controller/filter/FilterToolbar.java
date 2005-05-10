@@ -46,6 +46,7 @@ import freemind.modes.MindMapNode;
     private JCheckBox showDescenders;
     private Filter activeFilter;
     private Filter inactiveFilter;
+    private JButton btnEdit;
 	private class ApplyFilterAction extends AbstractAction {
 
 		/**
@@ -58,12 +59,13 @@ import freemind.modes.MindMapNode;
 		}
 		 
 		 public void actionPerformed(ActionEvent e) {
-		     if (getBtnApply().isSelected() && activeFilterCondition.getSelectedItem() == null){
-		         getBtnApply().setSelected(false);
+	         resetFilter();
+		     if (btnApply.getModel().isSelected() && getSelectedCondition() == null){
+		         btnEdit.doClick();
 		     }
-		     else{
-			     resetFilter();
-			     getFilter().applyFilter(c.getModel());
+		     else
+		     {
+		         getFilter().applyFilter(c.getModel());
 		     }
 		 }
 	}
@@ -84,7 +86,7 @@ import freemind.modes.MindMapNode;
          * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
          */
         public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED && getBtnApply().isSelected())
+            if (e.getStateChange() == ItemEvent.SELECTED && btnApply.getModel().isSelected())
    		     resetFilter();
 		     getFilter().applyFilter(c.getModel());            
         }
@@ -118,8 +120,8 @@ import freemind.modes.MindMapNode;
          * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.ComponentEvent)
          */
         public void componentHidden(ComponentEvent e) {
-            if(getBtnApply().isSelected())
-                getBtnApplyRef().doClick();          
+            if(btnApply.getModel().isSelected())
+                btnApply.doClick();          
         }
 	    
 	}
@@ -162,8 +164,8 @@ import freemind.modes.MindMapNode;
 		btnApply = new JToggleButton(new ApplyFilterAction());
 		add(btnApply);
 		
-		JButton btnEdit = new JButton(new EditFilterAction(this));
-		add(btnEdit);
+		btnEdit = new JButton(new EditFilterAction(this));
+        add(btnEdit);
 
 		showAncestors = new JCheckBox(Controller.getInstance().getResourceString("filter_show_ancestors"), true);
 		add(showAncestors);
@@ -185,40 +187,35 @@ import freemind.modes.MindMapNode;
         
     }
 
-    private Condition getActiveFilterCondition() {
+    private Condition getSelectedCondition() {
         return (Condition)activeFilterCondition.getSelectedItem();
     }
     
-    JComboBox getActiveFilterConditionRef() {
+    JComboBox getActiveFilterConditionComboBox() {
         return activeFilterCondition;
     }
     
-    AbstractButton getBtnApplyRef() {
-        return btnApply;
-    }
-    
-   ButtonModel getBtnApply() {
-        return btnApply.getModel();
-    }
-    private ButtonModel getShowAncestors() {
-        return showAncestors.getModel();
-    }
-    private ButtonModel getShowDescenders() {
-        return showDescenders.getModel();
-    }
-	Filter getFilter(){
+    Filter getFilter(){
 	    if (isVisible())
 	    {
 	        if(activeFilter == null)
 	            activeFilter = new DefaultFilter(
-	    	            getActiveFilterCondition(),
-	    	            getBtnApply().isSelected(),
-	    	            getShowAncestors().isSelected(),
-	    	            getShowDescenders().isSelected()	            
+	    	            getSelectedCondition(),
+	    	            btnApply.getModel().isSelected(),
+	    	            showAncestors.getModel().isSelected(),
+	    	            showDescenders.getModel().isSelected()	            
 	    	            );
 	        return activeFilter;
 	    }
 	    return inactiveFilter;
 	}
+
+    /**
+     * @return
+     */
+    public AbstractButton getBtnApply() {
+        // TODO Auto-generated method stub
+        return btnApply;
+    }
 
 }

@@ -44,4 +44,8 @@ public abstract class MoveableNodeView extends NodeView {
 		motionListenerView.setSize(LISTENER_VIEW_WIDTH, prefSize.height);
 	}
 
+	    public void setVisible(boolean isVisible) {
+        super.setVisible(isVisible);
+        motionListenerView.setVisible(isVisible);
+    }
 }

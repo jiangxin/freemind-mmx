@@ -93,8 +93,8 @@ public class FilterDialog extends JDialog {
             while(0 <= (selectedIndex = getConditionList().getSelectedIndex())){
                 if(selectedIndex == getSelectedConditionReference().getSelectedIndex()){
                     getSelectedConditionReference().setSelectedIndex(-1);
-                    if(ft.getBtnApply().isSelected())
-                        ft.getBtnApplyRef().doClick();
+                    if(ft.getBtnApply().getModel().isSelected())
+                        ft.getBtnApply().doClick();
                 }
                 model.removeElementAt(selectedIndex);                 
             }           
@@ -252,7 +252,7 @@ public class FilterDialog extends JDialog {
 		btnDelete.setAlignmentX(Component.CENTER_ALIGNMENT);
 		conditionButtonToolbar.add(btnDelete);
 
-		conditionList = new JList(ft.getActiveFilterConditionRef().getModel());
+		conditionList = new JList(ft.getActiveFilterConditionComboBox().getModel());
 		conditionList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		conditionList.setCellRenderer(fc.getConditionRenderer());
 		conditionList.setLayoutOrientation(JList.VERTICAL);
@@ -284,6 +284,6 @@ public class FilterDialog extends JDialog {
         return fc;
     }
     JComboBox getSelectedConditionReference() {
-        return ft.getActiveFilterConditionRef();
+        return ft.getActiveFilterConditionComboBox();
     }
 }
