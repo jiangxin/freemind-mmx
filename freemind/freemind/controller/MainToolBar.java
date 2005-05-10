@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.16.14.1 2004-10-17 23:00:06 dpolivaev Exp $*/
+/*$Id: MainToolBar.java,v 1.16.14.1.6.1 2005-05-10 22:59:31 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -25,6 +25,7 @@ import java.awt.event.ItemEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JToggleButton;
 
 public class MainToolBar extends FreeMindToolBar {
     JComboBox zoom;	    
@@ -41,6 +42,8 @@ public class MainToolBar extends FreeMindToolBar {
 	button = add(c.navigationPreviousMap);
 	button = add(c.navigationNextMap);
 	button = add(c.printDirect);
+	JToggleButton btnFilter = new JToggleButton (c.showFilterToolbarAction);
+	add(btnFilter);
 
         zoom = new JComboBox(c.getZooms());
         zoom.setSelectedItem("100%");

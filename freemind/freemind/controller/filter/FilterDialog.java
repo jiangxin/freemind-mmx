@@ -22,13 +22,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import freemind.controller.Controller;
 import freemind.controller.filter.condition.Condition;
 import freemind.controller.filter.condition.ConditionNotSatisfiedDecorator;
 import freemind.controller.filter.condition.ConjunctConditions;
 import freemind.controller.filter.condition.DisjunctConditions;
-import freemind.controller.filter.util.ForeignString;
+import freemind.controller.filter.util.TranslatedString;
 import freemind.modes.MindIcon;
 
 /**
@@ -48,9 +50,9 @@ public class FilterDialog extends JDialog {
             super(Controller.getInstance().getResourceString("filter_add"));
         }
         public void actionPerformed(ActionEvent e) {
-            ForeignString attType = getAttributeType();
+            TranslatedString attType = getAttributeType();
             String att = getAttribute();
-            ForeignString simpleCond = getSimpleCondition();
+            TranslatedString simpleCond = getSimpleCondition();
             String condValue = getConditionValue();
             Condition newCond = getFilterController().createCondition(
                     attType, att, simpleCond, condValue);
@@ -163,6 +165,45 @@ public class FilterDialog extends JDialog {
         }
     }
     
+    private class ConditionListSelectionListener extends AbstractAction implements ListSelectionListener {
+
+        /* (non-Javadoc)
+         * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+         */
+        public void valueChanged(ListSelectionEvent e) {
+            
+            if (conditionList.getMinSelectionIndex() == -1){
+                btnSelect.setEnabled(false);
+                btnNot.setEnabled(false);
+                btnAnd.setEnabled(false);
+                btnOr.setEnabled(false);
+                btnDelete.setEnabled(false);
+                return;
+            }
+            else if(conditionList.getMinSelectionIndex() == conditionList.getMaxSelectionIndex()){
+                btnSelect.setEnabled(true);
+                btnNot.setEnabled(true);
+                btnAnd.setEnabled(false);
+                btnOr.setEnabled(false);
+                btnDelete.setEnabled(true);
+                return;
+            }
+            else {
+	            btnSelect.setEnabled(false);
+	            btnNot.setEnabled(false);
+	            btnAnd.setEnabled(true);
+	            btnOr.setEnabled(true);
+	            btnDelete.setEnabled(false);
+            }
+        }
+
+        /* (non-Javadoc)
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
+        public void actionPerformed(ActionEvent e) {
+        }
+        
+    }
     
     private FilterController fc;
 	private JList conditionList;
@@ -171,6 +212,12 @@ public class FilterDialog extends JDialog {
 	private JComboBox attributes;
 	private JComboBox attributeType;
 	private FilterToolbar ft;
+    private JButton btnAdd;
+    private JButton btnSelect;
+    private JButton btnNot;
+    private JButton btnAnd;
+    private JButton btnOr;
+    private JButton btnDelete;
 	public FilterDialog(final FilterToolbar ft) {
 		super(Controller.getInstance().getFilterController().getFrame());
 		this.fc = Controller.getInstance().getFilterController();
@@ -181,9 +228,9 @@ public class FilterDialog extends JDialog {
 		getContentPane().add(simpleConditionPanel, BorderLayout.NORTH);
 
 		attributeType = new JComboBox();
-		DefaultComboBoxModel filteredAttributeComboBoxModel = new DefaultComboBoxModel(new ForeignString[] {
-		        new ForeignString("filter_icon"), 
-		        new ForeignString("filter_attribute")
+		DefaultComboBoxModel filteredAttributeComboBoxModel = new DefaultComboBoxModel(new TranslatedString[] {
+		        new TranslatedString("filter_icon"), 
+		        new TranslatedString("filter_attribute")
 		        });
         attributeType.setModel(filteredAttributeComboBoxModel);
 		simpleConditionPanel.add(attributeType);
@@ -201,16 +248,16 @@ public class FilterDialog extends JDialog {
 		simpleConditionPanel.add(attributes);
 
 		simpleCondition = new JComboBox();
-		DefaultComboBoxModel simpleConditionSomboBoxModel = new DefaultComboBoxModel(new ForeignString[] {
-		        new ForeignString("filter_exist"), 
-		        new ForeignString("filter_does_not_exist"), 
-		        new ForeignString("filter_contains"), 
-		        new ForeignString("filter_is_equal_to"), 
-		        new ForeignString("filter_is_not_equal_to"), 
-		        ForeignString.literal(">"), 
-		        ForeignString.literal(">="), 
-		        ForeignString.literal("<="), 
-		        ForeignString.literal("<"), 
+		DefaultComboBoxModel simpleConditionSomboBoxModel = new DefaultComboBoxModel(new TranslatedString[] {
+		        new TranslatedString("filter_exist"), 
+		        new TranslatedString("filter_does_not_exist"), 
+		        new TranslatedString("filter_contains"), 
+		        new TranslatedString("filter_is_equal_to"), 
+		        new TranslatedString("filter_is_not_equal_to"), 
+		        TranslatedString.literal(">"), 
+		        TranslatedString.literal(">="), 
+		        TranslatedString.literal("<="), 
+		        TranslatedString.literal("<"), 
 		});
         simpleCondition.setModel(simpleConditionSomboBoxModel);
 		simpleConditionPanel.add(simpleCondition);
@@ -222,8 +269,8 @@ public class FilterDialog extends JDialog {
 		conditionValue.setText(Controller.getInstance().getResourceString("filter_enter_value"));
 		conditionValue.setEnabled(false);
 
-		final JButton btnAdd = new JButton(new AddConditionAction());
-		btnAdd.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnAdd = new JButton(new AddConditionAction());
+        btnAdd.setAlignmentX(Component.CENTER_ALIGNMENT);
 		simpleConditionPanel.add(btnAdd);
 
 		final JToolBar conditionButtonToolbar = new JToolBar();
@@ -231,25 +278,30 @@ public class FilterDialog extends JDialog {
 		conditionButtonToolbar.setFloatable(false);
 		getContentPane().add(conditionButtonToolbar, BorderLayout.EAST);
 
-		final JButton btnSelect = new JButton(new SelectConditionAction());
-		btnSelect.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnSelect = new JButton(new SelectConditionAction());
+        btnSelect.setAlignmentX(Component.CENTER_ALIGNMENT);
 		conditionButtonToolbar.add(btnSelect);
+		btnSelect.setEnabled(false);
 
-		final JButton btnNot = new JButton(new CreateNotSatisfiedConditionAction());
-		btnNot.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnNot = new JButton(new CreateNotSatisfiedConditionAction());
+        btnNot.setAlignmentX(Component.CENTER_ALIGNMENT);
 		conditionButtonToolbar.add(btnNot);
+		btnNot.setEnabled(false);
 
-		final JButton btnAnd = new JButton(new CreateConjunctConditionAction());
-		btnAnd.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnAnd = new JButton(new CreateConjunctConditionAction());
+        btnAnd.setAlignmentX(Component.CENTER_ALIGNMENT);
 		conditionButtonToolbar.add(btnAnd);
+		btnAnd.setEnabled(false);
 
-		final JButton btnOR = new JButton(new CreateDisjunctConditionAction());
-		btnOR.setAlignmentX(Component.CENTER_ALIGNMENT);
-		conditionButtonToolbar.add(btnOR);
+		btnOr = new JButton(new CreateDisjunctConditionAction());
+        btnOr.setAlignmentX(Component.CENTER_ALIGNMENT);
+		conditionButtonToolbar.add(btnOr);
+		btnOr.setEnabled(false);
 
-		final JButton btnDelete = new JButton(new DeleteConditionAction());
-		btnDelete.setAutoscrolls(true);
+		btnDelete = new JButton(new DeleteConditionAction());
+        btnDelete.setAutoscrolls(true);
 		btnDelete.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnDelete.setEnabled(false);
 		conditionButtonToolbar.add(btnDelete);
 
 		conditionList = new JList(ft.getActiveFilterConditionComboBox().getModel());
@@ -257,11 +309,13 @@ public class FilterDialog extends JDialog {
 		conditionList.setCellRenderer(fc.getConditionRenderer());
 		conditionList.setLayoutOrientation(JList.VERTICAL);
 		conditionList.setAlignmentX(Component.LEFT_ALIGNMENT);
+		conditionList.addListSelectionListener(new ConditionListSelectionListener());
+		
 		final JScrollPane conditionScrollPane = new JScrollPane(conditionList);
 		getContentPane().add(conditionScrollPane, BorderLayout.CENTER);
 	}
-    public ForeignString getAttributeType() {
-        return (ForeignString) attributeType.getSelectedItem();
+    public TranslatedString getAttributeType() {
+        return (TranslatedString) attributeType.getSelectedItem();
     }
     public String getAttribute() {
         if (getAttributeType().equals("filter_icon")){
@@ -270,8 +324,8 @@ public class FilterDialog extends JDialog {
         }                
         return attributes.getSelectedItem().toString();
     }
-    public ForeignString getSimpleCondition() {
-        return (ForeignString) simpleCondition.getSelectedItem();
+    public TranslatedString getSimpleCondition() {
+        return (TranslatedString) simpleCondition.getSelectedItem();
     }
     public String getConditionValue() {
         return conditionValue.getText();

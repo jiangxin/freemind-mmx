@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.2 2005-05-10 22:59:31 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -63,6 +63,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
@@ -133,6 +134,7 @@ public class Controller {
     public Action historyPreviousMap;
     public Action historyNextMap;
     public Action navigationPreviousMap;
+    public Action showFilterToolbarAction;
     public Action navigationNextMap;
 
     public Action moveToRoot;
@@ -191,6 +193,7 @@ public class Controller {
         historyPreviousMap = new HistoryPreviousMapAction(this);
         historyNextMap = new HistoryNextMapAction(this);
         navigationPreviousMap = new NavigationPreviousMapAction(this);
+        showFilterToolbarAction = new ShowFilterToolbarAction(this);
         navigationNextMap = new NavigationNextMapAction(this);
         toggleMenubar = new ToggleMenubarAction(this);
         toggleToolbar = new ToggleToolbarAction(this);
@@ -1034,6 +1037,21 @@ public class Controller {
         }
         public void actionPerformed(ActionEvent event) {
             mapModuleManager.previousMapModule();
+        }
+    }
+    private class ShowFilterToolbarAction extends AbstractAction {
+        ShowFilterToolbarAction(Controller controller) {     
+            super("",
+                  new ImageIcon(getResource("images/filter.gif")));
+        }
+        public void actionPerformed(ActionEvent event) {
+            JToggleButton btnFilter = (JToggleButton)event.getSource();
+            if(btnFilter.getModel().isSelected()){
+                c.getFilterController().showFilterToolbar(true);
+            }
+            else{
+                c.getFilterController().showFilterToolbar(false);
+            }
         }
     }
 

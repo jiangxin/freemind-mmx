@@ -6,6 +6,7 @@
  */
 package freemind.controller.filter;
 
+import javax.swing.AbstractButton;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -16,7 +17,7 @@ import freemind.controller.filter.condition.Condition;
 import freemind.controller.filter.condition.ConditionRenderer;
 import freemind.controller.filter.condition.IconExistCondition;
 import freemind.controller.filter.condition.MindIconRenderer;
-import freemind.controller.filter.util.ForeignString;
+import freemind.controller.filter.util.TranslatedString;
 import freemind.main.FreeMindMain;
 import freemind.modes.MindIcon;
 
@@ -61,9 +62,9 @@ import freemind.modes.MindIcon;
     }
     
      Condition createCondition(
-            ForeignString attributeType,
+            TranslatedString attributeType,
             String attribute, 
-            ForeignString simpleCondition,
+            TranslatedString simpleCondition,
             String conditionValue)
     {
         if (attributeType.equals("filter_icon") 
@@ -83,5 +84,20 @@ import freemind.modes.MindIcon;
     public Filter getFilter() {
         // TODO Auto-generated method stub
         return filterToolbar.getFilter();
+    }
+    
+    public void showFilterToolbar(boolean show){
+        AbstractButton btnFilterActive = filterToolbar.getBtnApply();
+        if (show){
+            if (! filterToolbar.isVisible()){ 
+                filterToolbar.setVisible(true);
+            }
+        }
+        else{
+            if (filterToolbar.isVisible() && btnFilterActive.getModel().isSelected()) 
+                btnFilterActive.doClick();
+            filterToolbar.setVisible(false);
+        }
+        
     }
 }

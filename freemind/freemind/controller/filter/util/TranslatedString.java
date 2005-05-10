@@ -10,17 +10,17 @@ import freemind.controller.Controller;
  * @author dimitri
  * 08.05.2005
  */
-public class ForeignString{
+public class TranslatedString{
     private String foreignString;
     private String key;
-    private ForeignString(){        
+    private TranslatedString(){        
     }
-    public ForeignString(String key) {        
+    public TranslatedString(String key) {        
         this.key = key;
         foreignString =Controller.getInstance().getResourceString(key);
     }
-    static public ForeignString literal(String literal){
-        ForeignString result = new ForeignString();
+    static public TranslatedString literal(String literal){
+        TranslatedString result = new TranslatedString();
         result.key = literal;
         result.foreignString = literal;
         return result;

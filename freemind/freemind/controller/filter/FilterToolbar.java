@@ -93,39 +93,6 @@ import freemind.modes.MindMapNode;
 	    
 	}
 	
-	private class ToolbarListener implements ComponentListener{
-		private Controller c;
-		ToolbarListener() {
-			this.c = Controller.getInstance();
-		}
-        /* (non-Javadoc)
-         * @see java.awt.event.ComponentListener#componentResized(java.awt.event.ComponentEvent)
-         */
-        public void componentResized(ComponentEvent e) {
-         }
-
-        /* (non-Javadoc)
-         * @see java.awt.event.ComponentListener#componentMoved(java.awt.event.ComponentEvent)
-         */
-        public void componentMoved(ComponentEvent e) {
-        }
-
-        /* (non-Javadoc)
-         * @see java.awt.event.ComponentListener#componentShown(java.awt.event.ComponentEvent)
-         */
-        public void componentShown(ComponentEvent e) {
-		}
-
-        /* (non-Javadoc)
-         * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.ComponentEvent)
-         */
-        public void componentHidden(ComponentEvent e) {
-            if(btnApply.getModel().isSelected())
-                btnApply.doClick();          
-        }
-	    
-	}
-
 	 private class EditFilterAction extends AbstractAction {
 
 		private FilterToolbar ft;
@@ -152,6 +119,7 @@ import freemind.modes.MindMapNode;
 	{
 		super();
 		this.fc = fc;
+		setVisible(false);
 		FilterChangeListener filterChangeListener = new FilterChangeListener();
 		
 		add(new JLabel(Controller.getInstance().getResourceString("filter_toolbar") + " "));
