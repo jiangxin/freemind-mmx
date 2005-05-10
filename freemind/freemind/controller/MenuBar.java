@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.8 2005-04-26 21:41:00 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.9 2005-05-10 20:55:29 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -292,6 +292,7 @@ public class MenuBar extends JMenuBar {
 	
 	
 		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EXTRAS_MENU+"last/options/.");
+		JMenuItem prefDialog = menuHolder.addAction(c.propertyAction, EXTRAS_MENU+"last/option_dialog");
 	
 	        if (false) {
 	           preferences.add(c.background);

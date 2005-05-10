@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10 2005-04-28 21:12:34 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.11 2005-05-10 20:55:29 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -43,10 +43,14 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -64,7 +68,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
@@ -73,6 +79,8 @@ import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.ModesCreator;
+import freemind.preferences.layout.OptionPanel;
+import freemind.preferences.layout.OptionPanel.OptionPanelFeedback;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 
@@ -137,6 +145,7 @@ public class Controller {
 
     public Action zoomIn;
     public Action zoomOut;
+    public PropertyAction propertyAction;
 
 	// this values better suit at least the test purposes
     private static final String[] zooms = {"25%","50%","75%","100%","150%","200%","300%","400%"};
@@ -189,7 +198,7 @@ public class Controller {
 
         zoomIn = new ZoomInAction(this);
         zoomOut = new ZoomOutAction(this);
-
+        propertyAction = new PropertyAction(this);
 
         moveToRoot = new MoveToRootAction(this);
 
@@ -1095,7 +1104,86 @@ public class Controller {
     //
     // Preferences
     //
-    private class BackgroundSwatch extends ColorSwatch {
+	/**
+	 * @author foltin
+	 *
+	 */
+	public class PropertyAction extends AbstractAction {
+
+		private final Controller controller;
+
+		/**
+		 * 
+		 */
+		public PropertyAction(Controller controller) {
+			super(controller.getResourceString("property_dialog"));
+			// TODO Auto-generated constructor stub
+			this.controller = controller;
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+//			changeListeners.add(new FreemindPropertyListener() {
+//
+//				public void propertiesChanged() {
+//					System.out.println("Reread properties.");
+//
+//				}
+//			});
+			JDialog dialog = new JDialog(getFrame().getJFrame(), true /* modal */);			
+			final OptionPanel options = new OptionPanel(getFrame(), dialog, new OptionPanelFeedback() {
+
+				public void writeProperties(Properties props) {
+					Vector sortedKeys = new Vector();
+					sortedKeys.addAll(props.keySet());
+					Collections.sort(sortedKeys);
+					for (Iterator i = sortedKeys.iterator(); i.hasNext();) {
+						String key = (String) i.next();
+						// save only changed keys:
+						if (!controller.getProperty(key).equals(props.getProperty(key))) {
+							controller.setProperty(key, props.getProperty(key));
+						}
+					}
+//					for (Iterator i = changeListeners.iterator(); i.hasNext();) {
+//						FreemindPropertyListener listener = (FreemindPropertyListener) i
+//								.next();
+//						listener.propertiesChanged();
+//					}
+				}
+			});
+			options.buildPanel();
+			options.setProperties(getFrame().getProperties());
+			dialog.setTitle("Freemind Properties");
+			dialog.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+			dialog.addWindowListener(new WindowAdapter(){
+			    public void windowClosing(WindowEvent event) {
+			        options.closeWindow();
+			    }
+			});
+			Action action = new AbstractAction() {
+
+				public void actionPerformed(ActionEvent arg0) {
+			        options.closeWindow();
+				}
+			};
+			action.putValue(Action.NAME, "end_dialog");
+			//		 Register keystroke
+			dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+					.put(KeyStroke.getKeyStroke("ESCAPE"),
+							action.getValue(Action.NAME));
+
+			// Register action
+			dialog.getRootPane().getActionMap().put(action.getValue(Action.NAME),
+					action);
+
+
+			dialog.pack();
+			dialog.setVisible(true);
+			
+		}
+
+	}
+
+	private class BackgroundSwatch extends ColorSwatch {
         Color getColor() {
             return getModel().getBackgroundColor();
         }
