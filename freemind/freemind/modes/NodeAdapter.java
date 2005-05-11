@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.10.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.10.2.2 2005-05-11 00:13:58 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -911,9 +911,19 @@ public abstract class NodeAdapter implements MindMapNode {
 			return shiftY ;
 	}
 	
+	
+	
+    public int getVisibleChildCount() {
+        int count = 0;
+        for (ListIterator i = childrenUnfolded() ; i.hasNext() ;) {
+            if (((MindMapNode)i.next()).isVisible()) count++;
+        }
+        return count;
+    }
+    
 	public int calcShiftY() {
 		try{
-			return shiftY + (getParent().getChildCount()== 1 ? SHIFT:0);
+			return shiftY + (parent.getVisibleChildCount()== 1 ? SHIFT:0);
 		}
 		catch(NullPointerException e){
 			return 0;			
