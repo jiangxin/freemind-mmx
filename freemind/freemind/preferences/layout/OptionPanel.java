@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.2 2005-05-12 21:31:16 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.3 2005-05-12 21:56:57 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -483,7 +483,7 @@ public class OptionPanel {
 				public void actionPerformed(ActionEvent arg0) {
 					//FIXME: Determine bindings.
 					Vector allKeybindings = new Vector();
-					GrabKeyDialog dialog = new GrabKeyDialog(frame,
+					GrabKeyDialog dialog = new GrabKeyDialog(fmMain, frame,
 							new GrabKeyDialog.KeyBinding(getLabel(),
 									getLabel(), getValue(), false),
 							allKeybindings, null);

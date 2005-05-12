@@ -42,6 +42,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import freemind.main.FreeMindMain;
 //import org.gjt.sp.util.Log;
 //}}}
 
@@ -50,7 +52,9 @@ import javax.swing.border.EmptyBorder;
  */
 public class GrabKeyDialog extends JDialog
 {
-	private static class Buffer {
+	private final FreeMindMain fmMain;
+
+    private static class Buffer {
 
 		/**
 		 * @return
@@ -120,6 +124,7 @@ public class GrabKeyDialog extends JDialog
 	//{{{ GrabKeyDialog constructor
 	/**
 	 * Create and show a new modal dialog.
+	 * @param fmMain
 	 *
 	 * @param  parent  center dialog on this component.
 	 * @param  binding  the action/macro that should get a binding.
@@ -128,10 +133,12 @@ public class GrabKeyDialog extends JDialog
 	 * (may be null)
 	 * @since jEdit 4.1pre7
 	 */
-	public GrabKeyDialog(Dialog parent, KeyBinding binding,
+	public GrabKeyDialog(FreeMindMain fmMain, Dialog parent, KeyBinding binding,
 		Vector allBindings, Buffer debugBuffer)
 	{
 		super(parent,(/*FIXME: getText*/("grab-key.title")),true);
+        this.fmMain = fmMain;
+        setTitle(getText("grab-key.title"));
 
 		init(binding,allBindings,debugBuffer);
 	} //}}}
@@ -261,7 +268,7 @@ public class GrabKeyDialog extends JDialog
 
 		if(debugBuffer == null)
 		{
-			ok = new JButton(("common.ok"));
+			ok = new JButton(getText("common.ok"));
 			ok.addActionListener(new ActionHandler());
 			buttons.add(ok);
 			buttons.add(Box.createHorizontalStrut(12));
@@ -270,20 +277,20 @@ public class GrabKeyDialog extends JDialog
 				// show "remove" button
 				remove = new JButton((getText("grab-key.remove")));
 				remove.addActionListener(new ActionHandler());
-				buttons.add(remove);
+				//FIXME: REACTIVATE buttons.add(remove);
 				buttons.add(Box.createHorizontalStrut(12));
 			}
 		}
 
-		cancel = new JButton(("common.cancel"));
+		cancel = new JButton(getText("common.cancel"));
 		cancel.addActionListener(new ActionHandler());
 		buttons.add(cancel);
 		buttons.add(Box.createGlue());
 
-		content.add(label);
+//FIXME: REACTIVATE		content.add(label);
 		content.add(input);
-		if(debugBuffer == null)
-			content.add(assignedTo);
+//		if(debugBuffer == null)
+//FIXME: REACTIVATE					content.add(assignedTo);
 		content.add(buttons);
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -304,8 +311,9 @@ public class GrabKeyDialog extends JDialog
 		else if(keyCode == KeyEvent.VK_CLOSE_BRACKET)
 			return "]"; */
 
-		if(keyCode >= KeyEvent.VK_A && keyCode <= KeyEvent.VK_Z)
+		if(keyCode >= KeyEvent.VK_A && keyCode <= KeyEvent.VK_Z) {
 			return String.valueOf(Character.toLowerCase((char)keyCode));
+		}
 
 		try
 		{
@@ -593,8 +601,7 @@ public class GrabKeyDialog extends JDialog
 	 * @return
 	 */
 	private String getText(String resourceString) {
-		// TODO Auto-generated method stub
-		return resourceString;
+		return fmMain.getResourceString("GrabKeyDialog."+resourceString);
 	}
 
 	/**FIXME: make method here.

@@ -35,7 +35,7 @@ import java.util.Map;
  * warts in the AWT key event API.
  *
  * @author Slava Pestov
- * @version $Id: KeyEventTranslator.java,v 1.1.2.1 2005-05-10 20:55:31 christianfoltin Exp $
+ * @version $Id: KeyEventTranslator.java,v 1.1.2.2 2005-05-12 21:56:57 christianfoltin Exp $
  */
 public class KeyEventTranslator
 {
@@ -77,7 +77,8 @@ public class KeyEventTranslator
 				{
 					returnValue = new Key(
 						modifiersToString(modifiers),
-						'\0',Character.toLowerCase(
+					    //fc, 12.5.2005: changed to upper case as Freemind seems to need this.
+						'\0',Character.toUpperCase(
 						(char)keyCode));
 				}
 			}
@@ -326,13 +327,13 @@ public class KeyEventTranslator
 	public static String getSymbolicModifierName(int mod)
 	{
 		if((mod & c) != 0)
-			return "Control";
+			return "control";
 		else if((mod & a) != 0)
-			return "Alt";
+			return "alt";
 		else if((mod & m) != 0)
-			return "Meta";
+			return "meta";
 		else if((mod & s) != 0)
-			return "Shift";
+			return "shift";
 		else
 			return "";
 	} //}}}
