@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.1 2005-05-10 20:55:31 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.2 2005-05-12 21:31:16 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -54,6 +54,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
 
 import freemind.controller.Controller;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 
@@ -65,6 +66,8 @@ public class OptionPanel {
 
 	//TODO: mark first button blue.
 	//TODO: Cancel and windowClose => Are you sure, or save.
+    //FIXME: key dialog
+    //FIXME: Translate me and html 
 	private static final Color MARKED_BUTTON_COLOR = Color.BLUE;
 
 	private Vector controls;
@@ -578,8 +581,7 @@ public class OptionPanel {
 			super();
 			this.description = description;
 			this.label = label;
-			this.possibleValues = new Vector();
-			possibleValues.addAll(Arrays.asList(possibles));
+			fillPossibleValues(possibles);
 			Vector possibleTranslations = new Vector();
 			for (Iterator i = possibleValues.iterator(); i.hasNext();) {
 				String key = (String) i.next();
@@ -587,6 +589,21 @@ public class OptionPanel {
 			}
 			setModel(new DefaultComboBoxModel(possibleTranslations));
 		}
+
+        public ComboProperty(String description, String label,
+				String[] possibles, Vector possibleTranslations) {
+			this.description = description;
+			this.label = label;
+			fillPossibleValues(possibles);
+			setModel(new DefaultComboBoxModel(possibleTranslations));
+		}
+		/**
+         * @param possibles
+         */
+        private void fillPossibleValues(String[] possibles) {
+            this.possibleValues = new Vector();
+			possibleValues.addAll(Arrays.asList(possibles));
+        }
 
 		public String getDescription() {
 			return description;
@@ -627,7 +644,7 @@ public class OptionPanel {
 		//TODO: Search class path for translations.
 		controls.add(new ComboProperty(
 
-		"language.tooltip", "language", new String[] { "automatic", "de", "dk",
+		"language.tooltip", FreeMind.RESOURCE_LANGUAGE, new String[] { "automatic", "de", "dk",
 				"en", "es", "fr", "hu", "it", "ja", "kr", "nl", "pl", "pt_BR",
 				"pt_PT", "ru", "sl", "zh", "zh_CN" })); //  automatic
 
@@ -781,26 +798,34 @@ public class OptionPanel {
 		controls.add(new SeparatorProperty("Look and Feel"));
 		LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
 		String[] lafNames = new String[lafInfo.length + 5];
+		Vector translatedLafNames = new Vector();
 		lafNames[0] = "default";
+		translatedLafNames.add(getText("default"));
 		lafNames[1] = "metal";
+		translatedLafNames.add(getText("metal"));
 		lafNames[2] = "windows";
+		translatedLafNames.add(getText("windows"));
 		lafNames[3] = "motif";
+		translatedLafNames.add(getText("motif"));
 		lafNames[4] = "gtk";
+		translatedLafNames.add(getText("gtk"));
 		lafNames[5] = "nothing";
+		translatedLafNames.add(getText("nothing"));
 		for (int i = 0; i < lafInfo.length; i++) {
 			LookAndFeelInfo info = lafInfo[i];
-			lafNames[i + 5] = info.getClassName();
+			String className = info.getClassName();
+            lafNames[i + 5] = className;
+			translatedLafNames.add(className);
 		}
-		controls.add(new ComboProperty("lookandfeel.tooltip", "lookandfeel",
-				lafNames)); //  default
+		controls.add(new ComboProperty("lookandfeel.tooltip", FreeMind.RESOURCE_LOOKANDFEEL,
+				lafNames, translatedLafNames)); //  default
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("Anti-Alias"));
 		controls.add(new BooleanProperty(
+		"antialiasEdges.tooltip", FreeMind.RESOURCE_ANTIALIASEDGES)); //  true
 
-		"antialiasEdges.tooltip", "antialiasEdges")); //  true
-
-		controls.add(new BooleanProperty(null, "antialiasAll")); //  false
+		controls.add(new BooleanProperty(null, FreeMind.RESOURCE_ANTIALIASALL)); //  false
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
@@ -1046,16 +1071,16 @@ public class OptionPanel {
 				"keystroke_node_decrease_font_size")); //  control
 		// MINUS
 
-		controls.add(new KeyProperty(frame, null,
-				"keystroke_branch_increase_font_size")); //  control
-		// shift
-		// PLUS
-
-		controls.add(new KeyProperty(frame, null,
-				"keystroke_branch_decrease_font_size")); //  control
-		// shift
-		// MINUS
-
+//		controls.add(new KeyProperty(frame, null,
+//				"keystroke_branch_increase_font_size")); //  control
+//		// shift
+//		// PLUS
+//
+//		controls.add(new KeyProperty(frame, null,
+//				"keystroke_branch_decrease_font_size")); //  control
+//		// shift
+//		// MINUS
+//
 		controls.add(new KeyProperty(frame, null, "keystroke_export_branch")); //  alt
 		// A
 		//

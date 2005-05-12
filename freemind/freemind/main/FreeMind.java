@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.17 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.18 2005-05-12 21:31:15 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -40,9 +40,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -63,10 +61,15 @@ import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.extensions.HookFactory;
 import freemind.modes.ModeController;
+import freemind.preferences.FreemindPropertyListener;
 import freemind.view.mindmapview.MapView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
+    public static final String RESOURCE_LOOKANDFEEL = "lookandfeel";
+    public static final String RESOURCE_ANTIALIASALL = "antialiasAll";
+    public static final String RESOURCE_ANTIALIASEDGES = "antialiasEdges";
+    public static final String RESOURCE_LANGUAGE = "language";
     private static Logger logger =null;
     
     private static final String DEFAULT_LANGUAGE = "en";
@@ -202,35 +205,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	    //even close() fails. what now?
 	}
 
-	//set Look&Feel
-	try {
-	    String lookAndFeel = props.getProperty("lookandfeel");
-	    if (lookAndFeel.equals("windows")) {
-		UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-	    } else if (lookAndFeel.equals("motif")) {
-		UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-	    } else if (lookAndFeel.equals("mac")) {
-		//Only available on macOS
-		UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
-	    } else if (lookAndFeel.equals("metal")) {
-		UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-	    } else if (lookAndFeel.equals("gtk")) {
-	        UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-	    } else if (lookAndFeel.equals("nothing")) {
-	    } else if (lookAndFeel.indexOf('.') != -1) { // string contains a
-                                                         // dot
-	        UIManager.setLookAndFeel(lookAndFeel);
-	        //	         we assume class name
-	    } else {
-            // default.
-            System.out.println("Default (System) Look & Feel: "
-                    + UIManager.getSystemLookAndFeelClassName());
-            UIManager.setLookAndFeel(UIManager
-                    .getSystemLookAndFeelClassName());
-        }
-        } catch (Exception ex) {
-            System.err.println("Unable to set Look & Feel.");
-        }
+	updateLookAndFeel();
 
 	ImageIcon icon = new ImageIcon(getResource("images/FreeMindWindowIcon.png"));
 	setIconImage(icon.getImage());
@@ -239,11 +214,49 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	getContentPane().setLayout( new BorderLayout() );
 
 	c = new Controller(this);
+    // add a listener for the controller, resource bundle:
+    Controller.addPropertyChangeListener(new FreemindPropertyListener() {
 
-	if (Tools.safeEquals(getProperty("antialiasEdges"),"true")) {
+        public void propertyChanged(String propertyName, String newValue,
+                String oldValue) {
+            if (propertyName.equals(RESOURCE_LANGUAGE)) {
+                // re-read resources:
+                languageResources = null;
+                getResources();
+            }
+        }
+    });
+    // add a listener for the controller, look and feel:
+    Controller.addPropertyChangeListener(new FreemindPropertyListener() {
+
+        public void propertyChanged(String propertyName, String newValue,
+                String oldValue) {
+            if (propertyName.equals(RESOURCE_LOOKANDFEEL)) {
+            	updateLookAndFeel();
+            }
+        }
+    });
+
+
+	if (Tools.safeEquals(getProperty(RESOURCE_ANTIALIASEDGES),"true")) {
            c.setAntialiasEdges(true); }
-        if (Tools.safeEquals(getProperty("antialiasAll"),"true")) {
+        if (Tools.safeEquals(getProperty(RESOURCE_ANTIALIASALL),"true")) {
            c.setAntialiasAll(true); }
+    // add a listener for the controller, alias:
+    Controller.addPropertyChangeListener(new FreemindPropertyListener() {
+
+        public void propertyChanged(String propertyName, String newValue,
+                String oldValue) {
+            if (propertyName.equals(RESOURCE_ANTIALIASEDGES)) {
+                // re-read resources:
+                c.setAntialiasEdges(Tools.xmlToBoolean(newValue));
+            }
+            if (propertyName.equals(RESOURCE_ANTIALIASALL)) {
+                // re-read resources:
+                c.setAntialiasAll(Tools.xmlToBoolean(newValue));
+            }
+        }
+    });
 
 	//Create the MenuBar
 	menuBar = new MenuBar(c);
@@ -293,6 +306,41 @@ public class FreeMind extends JFrame implements FreeMindMain {
     splash.setVisible(false);
 
     }//Constructor
+
+    /**
+     * 
+     */
+    private void updateLookAndFeel() {
+        //set Look&Feel
+        try {
+            String lookAndFeel = props.getProperty(RESOURCE_LOOKANDFEEL);
+            if (lookAndFeel.equals("windows")) {
+        	UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            } else if (lookAndFeel.equals("motif")) {
+        	UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+            } else if (lookAndFeel.equals("mac")) {
+        	//Only available on macOS
+        	UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
+            } else if (lookAndFeel.equals("metal")) {
+        	UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+            } else if (lookAndFeel.equals("gtk")) {
+                UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+            } else if (lookAndFeel.equals("nothing")) {
+            } else if (lookAndFeel.indexOf('.') != -1) { // string contains a
+                                                             // dot
+                UIManager.setLookAndFeel(lookAndFeel);
+                //	         we assume class name
+            } else {
+                // default.
+                System.out.println("Default (System) Look & Feel: "
+                        + UIManager.getSystemLookAndFeelClassName());
+                UIManager.setLookAndFeel(UIManager
+                        .getSystemLookAndFeelClassName());
+            }
+            } catch (Exception ex) {
+                System.err.println("Unable to set Look & Feel.");
+            }
+    }
 
     public boolean isApplet() {
        return false; }
@@ -537,7 +585,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
     public ResourceBundle getResources() {
         if (languageResources == null) {
             try {
-                String lang = getProperty("language");
+                String lang = getProperty(RESOURCE_LANGUAGE);
                 if(lang == null || lang.equals("automatic")) {
                     lang = Locale.getDefault().getLanguage() + "_" +  Locale.getDefault().getCountry();
                     if(getLanguageResources(lang)== null) {
@@ -566,7 +614,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
             System.err.println("Warning - resource string not found:"
                     + resource);
             try{
-                return "[translate me]"+defaultResources.getString(resource);
+                return defaultResources.getString(resource)+"[translate me]";
             } catch(Exception e) {
 	            System.err.println("Warning - resource string not found (even in english):"
 	                    + resource);

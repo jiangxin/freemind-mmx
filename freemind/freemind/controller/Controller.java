@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.11 2005-05-10 20:55:29 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.12 2005-05-12 21:31:15 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -43,6 +43,7 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,6 +80,7 @@ import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.ModesCreator;
+import freemind.preferences.FreemindPropertyListener;
 import freemind.preferences.layout.OptionPanel;
 import freemind.preferences.layout.OptionPanel.OptionPanelFeedback;
 import freemind.view.MapModule;
@@ -1104,6 +1106,15 @@ public class Controller {
     //
     // Preferences
     //
+    
+    private static Vector propertyChangeListeners = new Vector();
+    
+    public static Collection getPropertyChangeListeners() {
+        return Collections.unmodifiableCollection(propertyChangeListeners);
+    }
+    public static void addPropertyChangeListener(FreemindPropertyListener listener) {
+        Controller.propertyChangeListeners.add(listener);
+    }
 	/**
 	 * @author foltin
 	 *
@@ -1122,13 +1133,6 @@ public class Controller {
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
-//			changeListeners.add(new FreemindPropertyListener() {
-//
-//				public void propertiesChanged() {
-//					System.out.println("Reread properties.");
-//
-//				}
-//			});
 			JDialog dialog = new JDialog(getFrame().getJFrame(), true /* modal */);			
 			final OptionPanel options = new OptionPanel(getFrame(), dialog, new OptionPanelFeedback() {
 
@@ -1136,18 +1140,35 @@ public class Controller {
 					Vector sortedKeys = new Vector();
 					sortedKeys.addAll(props.keySet());
 					Collections.sort(sortedKeys);
+					HashMap oldProperties = new HashMap();
 					for (Iterator i = sortedKeys.iterator(); i.hasNext();) {
 						String key = (String) i.next();
 						// save only changed keys:
-						if (!controller.getProperty(key).equals(props.getProperty(key))) {
-							controller.setProperty(key, props.getProperty(key));
+						String oldProperty = controller.getProperty(key);
+                        String newProperty = props.getProperty(key);
+                        if (!oldProperty.equals(newProperty)) {
+						    oldProperties.put(key, oldProperty);
+							controller.setProperty(key, newProperty);
 						}
 					}
-//					for (Iterator i = changeListeners.iterator(); i.hasNext();) {
-//						FreemindPropertyListener listener = (FreemindPropertyListener) i
-//								.next();
-//						listener.propertiesChanged();
-//					}
+					
+					for (Iterator i = Controller.getPropertyChangeListeners().iterator(); i.hasNext();) {
+						FreemindPropertyListener listener = (FreemindPropertyListener) i
+								.next();
+						for (Iterator j = oldProperties.keySet().iterator(); j
+                                .hasNext();) {
+                            String key = (String) j.next();
+    						listener.propertyChanged(key, controller.getProperty(key), (String) oldProperties.get(key));
+                        }
+					}
+					
+					if (oldProperties.size() > 0) {
+                        JOptionPane
+                                .showMessageDialog(
+                                        getFrame().getContentPane(),
+                                        getResourceString("option_changes_may_require_restart"));
+                        controller.getFrame().saveProperties();
+                    }
 				}
 			});
 			options.buildPanel();

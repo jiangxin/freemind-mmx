@@ -19,10 +19,10 @@
  *
  * Created on 10.05.2005
  */
-/*$Id: FreemindPropertyListener.java,v 1.1.2.1 2005-05-10 20:55:31 christianfoltin Exp $*/
+/*$Id: FreemindPropertyListener.java,v 1.1.2.2 2005-05-12 21:31:15 christianfoltin Exp $*/
 package freemind.preferences;
 
 
 public interface FreemindPropertyListener {
-	void propertiesChanged();
+	void propertyChanged(String propertyName, String newValue, String oldValue);
 }
