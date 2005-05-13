@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/*$Id: MacChanges.java.not_here,v 1.1.4.3 2005-01-08 23:27:40 christianfoltin Exp $*/
+/*$Id: MacChanges.java.not_here,v 1.1.4.4 2005-05-13 11:44:04 christianfoltin Exp $*/
 package accessories.plugins;
 
 import java.io.File;
@@ -60,7 +60,9 @@ public class MacChanges extends ApplicationAdapter implements HookRegistration {
 		if(fmMacApplication==null){
 			fmMacApplication = Application.getApplication();
 			fmMacApplication.addApplicationListener(this);
-			fmMacApplication.removePreferencesMenuItem();
+			fmMacApplication.addPreferencesMenuItem();
+			fmMacApplication.addAboutMenuItem();
+//			fmMacApplication.removePreferencesMenuItem();
 		}
 		frame.setProperty("keystroke_add_child", frame.getProperty("keystroke_add_child_mac"));
 	}
@@ -96,5 +98,9 @@ public class MacChanges extends ApplicationAdapter implements HookRegistration {
 			e.printStackTrace();
 		}
 		event.setHandled(true);
+	}
+	
+	public void handlePreferences(ApplicationEvent arg0) {
+		controller.getController().propertyAction.actionPerformed(null);
 	}
 }

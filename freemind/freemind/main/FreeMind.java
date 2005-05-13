@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.18 2005-05-12 21:31:15 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.19 2005-05-13 11:44:04 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -226,16 +226,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
             }
         }
     });
-    // add a listener for the controller, look and feel:
-    Controller.addPropertyChangeListener(new FreemindPropertyListener() {
-
-        public void propertyChanged(String propertyName, String newValue,
-                String oldValue) {
-            if (propertyName.equals(RESOURCE_LOOKANDFEEL)) {
-            	updateLookAndFeel();
-            }
-        }
-    });
+    //fc, disabled with purpose (see java look and feel styleguides).
+    //http://java.sun.com/products/jlf/ed2/book/index.html
+//    // add a listener for the controller, look and feel:
+//    Controller.addPropertyChangeListener(new FreemindPropertyListener() {
+//
+//        public void propertyChanged(String propertyName, String newValue,
+//                String oldValue) {
+//            if (propertyName.equals(RESOURCE_LOOKANDFEEL)) {
+//            	updateLookAndFeel();
+//            }
+//        }
+//    });
 
 
 	if (Tools.safeEquals(getProperty(RESOURCE_ANTIALIASEDGES),"true")) {

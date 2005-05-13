@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.3 2005-05-12 21:56:57 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.4 2005-05-13 11:44:04 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -308,7 +308,7 @@ public class OptionPanel {
 		}
 
 		public void layout(DefaultFormBuilder builder) {
-			builder.appendSeparator(getLabel());
+			builder.appendSeparator(getText("separator."+getLabel()));
 		}
 
 	}
@@ -632,7 +632,7 @@ public class OptionPanel {
 		}
 
 	}
-
+	//
 	private Vector getControls() {
 		Vector controls = new Vector();
 		/***********************************************************************
@@ -640,7 +640,7 @@ public class OptionPanel {
 		 * ****************************************************************
 		 */
 		controls.add(new NewTabProperty("Environment"));
-		controls.add(new SeparatorProperty("Language"));
+		controls.add(new SeparatorProperty("language"));
 		//TODO: Search class path for translations.
 		controls.add(new ComboProperty(
 
@@ -670,7 +670,7 @@ public class OptionPanel {
 		//						"properties_folder")); // .freemind
 
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Files"));
+		controls.add(new SeparatorProperty("files"));
 		controls.add(new StringProperty(null, "last_opened_list_length")); //  25
 		controls
 				.add(new BooleanProperty(
@@ -698,7 +698,7 @@ public class OptionPanel {
 
 		"browsemode_initial_map.tooltip", "browsemode_initial_map")); //  ./doc/freemind.mm
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Automatic Save"));
+		controls.add(new SeparatorProperty("automatic_save"));
 		controls.add(new StringProperty(
 
 		"time_for_automatic_save.tooltip", "time_for_automatic_save")); // 60000
@@ -723,7 +723,7 @@ public class OptionPanel {
 		 * ****************************************************************
 		 */
 		controls.add(new NewTabProperty("Defaults"));
-		controls.add(new SeparatorProperty("Default styles"));
+		controls.add(new SeparatorProperty("default_styles"));
 		controls.add(new ComboProperty(
 
 		"standardnodestyle.tooltip", "standardnodestyle", new String[] {
@@ -735,7 +735,7 @@ public class OptionPanel {
 				"fork", "bubble", "combined" })); //  fork
 
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Default colors"));
+		controls.add(new SeparatorProperty("default_colors"));
 		controls.add(new ColorProperty(
 
 		"standardnodecolor.tooltip", "standardnodecolor")); //  #000000
@@ -761,7 +761,7 @@ public class OptionPanel {
 		"standardcloudcolor.tooltip", "standardcloudcolor")); //  #f0f0f0
 
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Default fonts"));
+		controls.add(new SeparatorProperty("default_fonts"));
 		controls.add(new StringProperty(
 
 		"defaultfont.tooltip", "defaultfont")); //  SansSerif
@@ -774,7 +774,7 @@ public class OptionPanel {
 				"max_node_width")); //  600
 
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Other Defaults"));
+		controls.add(new SeparatorProperty("other_defaults"));
 		controls.add(new ComboProperty(
 
 		"standardedgestyle.tooltip", "standardedgestyle", new String[] {
@@ -795,7 +795,7 @@ public class OptionPanel {
 		 * ****************************************************************
 		 */
 		controls.add(new NewTabProperty("Appearance"));
-		controls.add(new SeparatorProperty("Look and Feel"));
+		controls.add(new SeparatorProperty("look_and_feel"));
 		LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
 		String[] lafNames = new String[lafInfo.length + 5];
 		Vector translatedLafNames = new Vector();
@@ -815,13 +815,13 @@ public class OptionPanel {
 			LookAndFeelInfo info = lafInfo[i];
 			String className = info.getClassName();
             lafNames[i + 5] = className;
-			translatedLafNames.add(className);
+			translatedLafNames.add(info.getName());
 		}
 		controls.add(new ComboProperty("lookandfeel.tooltip", FreeMind.RESOURCE_LOOKANDFEEL,
 				lafNames, translatedLafNames)); //  default
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Anti-Alias"));
+		controls.add(new SeparatorProperty("anti_alias"));
 		controls.add(new BooleanProperty(
 		"antialiasEdges.tooltip", FreeMind.RESOURCE_ANTIALIASEDGES)); //  true
 
@@ -829,20 +829,20 @@ public class OptionPanel {
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Initial Map Size"));
+		controls.add(new SeparatorProperty("initial_map_size"));
 		controls.add(new StringProperty("mapxsize.tooltip", "mapxsize")); //  1000
 
 		controls.add(new StringProperty(null, "mapysize")); //  3200
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Hyperlink Types"));
+		controls.add(new SeparatorProperty("hyperlink_types"));
 		controls.add(new ComboProperty("links.tooltip", "links", new String[] {
 				"relative", "absolute" })); //  relative
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Edit Long Node Window"));
+		controls.add(new SeparatorProperty("edit_long_node_window"));
 		controls.add(new StringProperty("el__buttons_position.tooltip",
 				"el__buttons_position")); //  above
 
@@ -877,7 +877,7 @@ public class OptionPanel {
 		//		   Use control modifier whereever possible
 
 		//		Commands for the program
-		controls.add(new SeparatorProperty("Commands for the program"));
+		controls.add(new SeparatorProperty("commands_for_the_program"));
 		controls.add(new KeyProperty(frame, null, "keystroke_newMap")); //  control
 		// N
 
@@ -966,7 +966,7 @@ public class OptionPanel {
 
 		//		Node editing commands
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Node editing commands"));
+		controls.add(new SeparatorProperty("node_editing_commands"));
 		controls.add(new KeyProperty(frame, null, "keystroke_cut")); //  control
 		// X
 
@@ -998,7 +998,7 @@ public class OptionPanel {
 
 		//		Node navigation commands
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Node navigation commands"));
+		controls.add(new SeparatorProperty("node_navigation_commands"));
 		controls.add(new KeyProperty(frame, null, "keystroke_moveToRoot")); //  ESCAPE
 
 		controls.add(new KeyProperty(frame, null, "keystroke_move_up")); //  E
@@ -1015,7 +1015,7 @@ public class OptionPanel {
 
 		//		New node commands
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("New node commands"));
+		controls.add(new SeparatorProperty("new_node_commands"));
 		controls.add(new KeyProperty(frame, null, "keystroke_add")); //  ENTER
 
 		controls.add(new KeyProperty(frame, null, "keystroke_add_child")); //  INSERT
@@ -1029,7 +1029,7 @@ public class OptionPanel {
 
 		//		Node editing commands
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Node editing commands"));
+		controls.add(new SeparatorProperty("node_editing_commands"));
 		controls.add(new KeyProperty(frame, null, "keystroke_edit")); //  F2
 
 		controls.add(new KeyProperty(frame, null, "keystroke_edit_long_node")); //  alt
@@ -1108,7 +1108,7 @@ public class OptionPanel {
 		// Windows.
 
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Patterns"));
+		controls.add(new SeparatorProperty("patterns"));
 		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_1")); //  F1
 
 		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_2")); //  control
@@ -1170,7 +1170,7 @@ public class OptionPanel {
 		 * Misc ****************************************************************
 		 */
 		controls.add(new NewTabProperty("Behaviour"));
-		controls.add(new SeparatorProperty("Behaviour"));
+		controls.add(new SeparatorProperty("behaviour"));
 		controls.add(new ComboProperty(
 
 		"placenewbranches.tooltip", "placenewbranches", new String[] { "first",
@@ -1189,7 +1189,7 @@ public class OptionPanel {
 		"foldingsymbolwidth.tooltip", "foldingsymbolwidth")); //  6
 
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Key Typing"));
+		controls.add(new SeparatorProperty("key_typing"));
 		controls.add(new BooleanProperty(
 
 		"disable_key_type.tooltip", "disable_key_type")); //  false
@@ -1199,7 +1199,7 @@ public class OptionPanel {
 		"key_type_adds_new.tooltip", "key_type_adds_new")); //  false
 
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Selection Method"));
+		controls.add(new SeparatorProperty("selection_method"));
 		controls.add(new ComboProperty(
 
 		"selection_method.tooltip", "selection_method", new String[] {
@@ -1215,7 +1215,7 @@ public class OptionPanel {
 		 * ****************************************************************
 		 */
 		controls.add(new NewTabProperty("HTML"));
-		controls.add(new SeparatorProperty("Browser"));
+		controls.add(new SeparatorProperty("browser"));
 		//
 		//		 The default browser setting
 		//
@@ -1269,7 +1269,7 @@ public class OptionPanel {
 								"html_export_based_on_headings" })); //  html_export_fold_currently_folded
 
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Html export"));
+		controls.add(new SeparatorProperty("html_export"));
 		controls.add(new BooleanProperty(
 
 		"export_icons_in_html.tooltip", "export_icons_in_html")); //  false

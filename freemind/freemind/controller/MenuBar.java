@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.10 2005-05-12 21:31:15 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.11 2005-05-13 11:44:04 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -291,16 +291,16 @@ public class MenuBar extends JMenuBar {
 		nextMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_nextMap")));
 	
 	
-		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EXTRAS_MENU+"last/options/.");
+//		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EXTRAS_MENU+"last/options/.");
 		JMenuItem prefDialog = menuHolder.addAction(c.propertyAction, EXTRAS_MENU+"last/option_dialog");
 	
-	        if (false) {
-	           preferences.add(c.background);
-	           // Background is disabled from preferences, because it has no real function.
-	           // To complete the function, one would either make sure that the color is
-	           // saved and read from auto.properties or think about storing the background
-	           // color into map (just like <map backgroud="#eeeee0">).
-	        }
+//	        if (false) {
+//	           preferences.add(c.background);
+//	           // Background is disabled from preferences, because it has no real function.
+//	           // To complete the function, one would either make sure that the color is
+//	           // saved and read from auto.properties or think about storing the background
+//	           // color into map (just like <map backgroud="#eeeee0">).
+//	        }
 	
 //	        // Daniel: The way antialias option is represented now is not nice,
 //	        // there should be only one variable controlling it. Fix it if you

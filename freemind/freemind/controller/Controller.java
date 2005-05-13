@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.12 2005-05-12 21:31:15 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.13 2005-05-13 11:44:04 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -1133,7 +1133,9 @@ public class Controller {
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
-			JDialog dialog = new JDialog(getFrame().getJFrame(), true /* modal */);			
+			JDialog dialog = new JDialog(getFrame().getJFrame(), true /* modal */);
+			dialog.setResizable(true);
+			dialog.setUndecorated(false);
 			final OptionPanel options = new OptionPanel(getFrame(), dialog, new OptionPanelFeedback() {
 
 				public void writeProperties(Properties props) {
