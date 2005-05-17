@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.3.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.3.2.2 2005-05-17 19:34:32 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -261,7 +261,7 @@ public class MindMapLayout implements LayoutManager {
     void updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(NodeView node) {
        updateTreeHeightsAndRelativeYOfDescendants(node);  
        if (! node.isRoot())
-       updateTreeHeightsAndRelativeYOfAncestors(node.getParentView()); 
+       updateTreeHeightsAndRelativeYOfAncestors(node.getModel().getParentNode().getViewer()); 
     }
 
     /**
@@ -271,6 +271,7 @@ public class MindMapLayout implements LayoutManager {
      */
 
     void updateTreeHeightsAndRelativeYOfAncestors(NodeView node) {
+        if (node.getParentView() != null) node.setVisible(node.getModel().isVisible());
 		updateTreeGeometry(node);
        if ( !node.isRoot()){
           updateTreeHeightsAndRelativeYOfAncestors(node.getParentView()); }
@@ -289,7 +290,7 @@ public class MindMapLayout implements LayoutManager {
 
    
     void updateTreeHeightsAndRelativeYOfDescendants(NodeView node) {
-        if (node.getParentView() != null) node.setVisible(node.getParentView().isVisible() && node.getModel().isVisible());
+        if (node.getParentView() != null) node.setVisible(node.getModel().isVisible());
         for (ListIterator e = node.getChildrenViews(false).listIterator(); e.hasNext();) {
 	           updateTreeHeightsAndRelativeYOfDescendants((NodeView)e.next()); }
         if(node.isVisible())

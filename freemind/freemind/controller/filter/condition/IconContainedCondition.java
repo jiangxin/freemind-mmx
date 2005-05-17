@@ -28,12 +28,10 @@ import freemind.modes.MindMapNode;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class IconExistCondition implements Condition {
+public class IconContainedCondition implements Condition {
 	private String iconName;
-	private FilterController fc;
-	public IconExistCondition(String iconName, FilterController fc){
+	public IconContainedCondition(String iconName){
 		this.iconName = iconName;
-		this.fc = fc;
 	}
 	
 	public boolean checkNode(MindMapNode node) {
@@ -51,9 +49,9 @@ public class IconExistCondition implements Condition {
     public JComponent getListCellRendererComponent() {
         JComponent component = new JPanel();
         component.setBackground(Color.WHITE);
-        component.add(fc.getMindIconRenderer().getComponent(getIconName()));
-        component.add(new JLabel(Controller.getInstance().getResourceString("filter_exist")));
-        component.validate();
+        component.add(new JLabel(Controller.getInstance().getResourceString("filter_icon")));
+        component.add(new JLabel(Controller.getInstance().getResourceString("filter_contains")));
+        component.add(Controller.getInstance().getFilterController().getMindIconRenderer().getComponent(getIconName()));
         return component;
     }
 

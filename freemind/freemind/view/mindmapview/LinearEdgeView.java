@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinearEdgeView.java,v 1.9 2003-11-03 11:00:25 sviles Exp $*/
+/*$Id: LinearEdgeView.java,v 1.9.24.1 2005-05-17 19:34:32 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -45,6 +45,9 @@ public class LinearEdgeView extends EdgeView {
 	int w=getWidth();
 	if (w<=1) {
 		g.drawLine(start.x,start.y,end.x,end.y);
+		if(isTargetEclipsed(g)){
+			g.drawLine(start.x,start.y,end.x,end.y);
+		}
 	}
 	else {
 		// a little horizontal part because of line cap
@@ -55,7 +58,11 @@ public class LinearEdgeView extends EdgeView {
 		int xs[] = { start.x, start.x+dx, end.x-dx, end.x };
 		int ys[] = { start.y+dy1, start.y+dy1, end.y+dy2, end.y+dy2 };
 		g.drawPolyline(xs,ys,4);
+		if(isTargetEclipsed(g)){
+			g.drawPolyline(xs,ys,4);
+		}
 	}
+	
 	super.paint(g);
     }
     

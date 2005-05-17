@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.10.2.2 2005-05-11 00:13:57 dpolivaev Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.10.2.3 2005-05-17 19:34:30 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -37,6 +37,7 @@ import javax.swing.tree.TreePath;
 
 
 import freemind.controller.filter.Filter;
+import freemind.controller.filter.FilterInfo;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.XMLElement;
@@ -99,8 +100,7 @@ public interface MindMapNode extends MutableTreeNode {
 
     boolean hasChildren();
     
-    public void setFilterResult(int filterResult);
-    public int getFilterResult();
+    public FilterInfo getFilterInfo();
 
 	/** @return -1 if the argument childNode is not a child. */
     int getChildPosition(MindMapNode childNode);
@@ -252,10 +252,6 @@ public interface MindMapNode extends MutableTreeNode {
     HistoryInformation getHistoryInformation();
     
     void setHistoryInformation(HistoryInformation historyInformation);
-    /**
-     * 
-     */
-    void resetFilterResult();
     /**
      * @return
      */

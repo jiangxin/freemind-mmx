@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BezierEdgeView.java,v 1.13 2003-11-03 11:00:22 sviles Exp $*/
+/*$Id: BezierEdgeView.java,v 1.13.24.1 2005-05-17 19:34:32 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -67,6 +67,11 @@ public class BezierEdgeView extends EdgeView {
 	g.setStroke(getStroke());
         setRendering(g);
 	g.draw(graph);
+	
+	if(isTargetEclipsed(g)){
+		g.draw(graph);
+	}
+	
 	super.paint(g);
     }
 

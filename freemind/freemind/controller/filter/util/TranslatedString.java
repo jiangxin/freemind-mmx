@@ -26,8 +26,13 @@ public class TranslatedString{
         return result;
     }
     public boolean equals(Object o){
+        if (o instanceof TranslatedString){
+            TranslatedString ts =  (TranslatedString)o;
+            return key.equals(ts.key);
+        }
         return key.equals(o);
     }
+    
     public String toString(){
         return foreignString;
     }

@@ -159,7 +159,6 @@ public class FindAction extends AbstractAction {
         // Unfold the path to the node
         Object[] path = controller.getMap().getPathToRoot(node);
         // Iterate the path with the exception of the last node
-        MindMapNode invisibleNode = null; 
         for (int i = 0; i < path.length - 1; i++) {
             MindMapNode nodeOnPath = (MindMapNode) path[i];
             //System.out.println(nodeOnPath);
@@ -168,19 +167,11 @@ public class FindAction extends AbstractAction {
                     nodesUnfoldedByDisplay.add(nodeOnPath);
                 controller.setFolded(nodeOnPath, false);
             }
-            if (invisibleNode == null && nodeOnPath.getViewer() != null && ! nodeOnPath.getViewer().isVisible()){
-                invisibleNode = node;                
-            }
-            if(invisibleNode != null){
-                node.resetFilterResult();
-            }
+            nodeOnPath.getFilterInfo().setAncestor();
         }
-        if (invisibleNode == null && node.getViewer() != null && ! node.getViewer().isVisible()){
-            invisibleNode = node;                
-        }
-        if(invisibleNode != null){
-            node.resetFilterResult();
-        	controller.getMap().nodeChanged(invisibleNode);
+        if (node.getViewer() != null && ! node.getViewer().isVisible()){
+        	node.getFilterInfo().reset();
+        	controller.getMap().nodeChanged(node);
         }
     }
 

@@ -24,17 +24,15 @@ import freemind.modes.MindIcon;
  * 06.05.2005
  */
 public class MindIconRenderer implements ListCellRenderer{
-    private Controller c;
     private Map name2components = null;
     private ListCellRenderer defaultRenderer = new DefaultListCellRenderer();
-    public MindIconRenderer(Controller c){
-        this.c = c;
+    public MindIconRenderer(){
     }
     Component getComponent(String name){
         if(name2components == null) name2components = new HashMap();
         JLabel component = (JLabel)name2components.get(name);
         if (component == null){
-            Icon icon = MindIcon.factory(name).getIcon(c.getFrame());
+            Icon icon = MindIcon.factory(name).getIcon(Controller.getInstance().getFrame());
             component = new JLabel(icon);
             name2components.put(name, component);            
         }        

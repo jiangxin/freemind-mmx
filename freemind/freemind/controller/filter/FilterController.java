@@ -13,11 +13,9 @@ import javax.swing.JFrame;
 import javax.swing.JToolBar;
 
 import freemind.controller.Controller;
-import freemind.controller.filter.condition.Condition;
+import freemind.controller.filter.condition.ConditionFactory;
 import freemind.controller.filter.condition.ConditionRenderer;
-import freemind.controller.filter.condition.IconExistCondition;
 import freemind.controller.filter.condition.MindIconRenderer;
-import freemind.controller.filter.util.TranslatedString;
 import freemind.main.FreeMindMain;
 import freemind.modes.MindIcon;
 
@@ -26,26 +24,22 @@ import freemind.modes.MindIcon;
  *
  */
  public class FilterController {
-	private Controller c;
 	private FilterToolbar filterToolbar;
 	private MindIconRenderer mindIconRenderer;
 	private ConditionRenderer conditionRenderer;
-	public FilterController(final Controller c){
-		this.c = c;
-		mindIconRenderer = new MindIconRenderer(c);
+	private ConditionFactory conditionFactory;
+	
+	public FilterController(){
+		mindIconRenderer = new MindIconRenderer();
 		conditionRenderer = new ConditionRenderer();
 		filterToolbar = new FilterToolbar(this);
 	}
 	 JFrame getFrame() {
-		FreeMindMain f = c.getFrame();
+		FreeMindMain f = Controller.getInstance().getFrame();
 		if (f instanceof JFrame) return (JFrame) f;
 		return null;
 	}
 
-    Controller getController() {
-        return c;
-    }
-    
     /**
      * @param iconName
      * @return
@@ -61,18 +55,7 @@ import freemind.modes.MindIcon;
         return conditionRenderer;
     }
     
-     Condition createCondition(
-            TranslatedString attributeType,
-            String attribute, 
-            TranslatedString simpleCondition,
-            String conditionValue)
-    {
-        if (attributeType.equals("filter_icon") 
-            && simpleCondition.equals("filter_exist")    )
-            return new IconExistCondition(attribute, this);
-        return null;
-    }
-    /**
+     /**
      * @return
      */
     public JToolBar getFilterToolbar() {
@@ -99,5 +82,10 @@ import freemind.modes.MindIcon;
             filterToolbar.setVisible(false);
         }
         
+    }
+    public ConditionFactory getConditionFactory(){
+        if(conditionFactory == null)
+            conditionFactory = new ConditionFactory();
+        return conditionFactory;
     }
 }

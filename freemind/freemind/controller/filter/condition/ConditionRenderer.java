@@ -35,6 +35,9 @@ public class ConditionRenderer implements ListCellRenderer {
         if (isSelected  || cellHasFocus){
             component.setBackground(Color.BLUE);            
         }
+        else{
+            component.setBackground(Color.WHITE);            
+        }
         component.setAlignmentX(Component.LEFT_ALIGNMENT);
         return component;       
     }

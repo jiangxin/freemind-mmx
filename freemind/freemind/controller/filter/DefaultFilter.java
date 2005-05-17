@@ -16,11 +16,6 @@ import freemind.modes.MindMapNode;
  */
 class DefaultFilter implements Filter{
 	
-	static final int FILTER_MATCHED = 2;
-	static final int FILTER_ANCESTOR = 4;
-	static final int FILTER_DESCENDER = 8;
-	static final int FILTER_HIDDEN = 16;
-
 	private Condition condition = null;
     private int options = 0;
 
@@ -33,12 +28,14 @@ class DefaultFilter implements Filter{
             Condition condition, 
             boolean isActive, 
             boolean areAnchestorsShown, 
+            boolean areEclipsedShown, 
             boolean areDescendersShown) {
         super();
         this.condition = isActive ? condition : null;
-        this.options = FILTER_INITIAL_VALUE | FILTER_MATCHED;
-        if (areAnchestorsShown) options += FILTER_ANCESTOR;
-        if (areDescendersShown) options += FILTER_DESCENDER;
+        this.options = FILTER_INITIAL_VALUE | FILTER_SHOW_MATCHED;
+        if (areAnchestorsShown) options += FILTER_SHOW_ANCESTOR;
+        if (areEclipsedShown) options += FILTER_SHOW_ECLIPSED;
+        if (areDescendersShown) options += FILTER_SHOW_DESCENDER;
     }
     /* (non-Javadoc)
      * @see freemind.controller.filter.Filter#applyFilter(freemind.modes.MindMap)
@@ -47,8 +44,8 @@ class DefaultFilter implements Filter{
         MindMapNode root = (MindMapNode)map.getRoot();
         if(condition != null){
             resetFilter(root);
-            if (applyFilter(root.childrenUnfolded(), false))
-                addFilterResult(root, FILTER_ANCESTOR);
+            if (applyFilter(root.childrenUnfolded(), false, false))
+                addFilterResult(root, FILTER_SHOW_ANCESTOR);
         }
         map.nodeChanged(root);
     }
@@ -57,24 +54,27 @@ class DefaultFilter implements Filter{
      * @param iterator
      * @return
      */
-    private boolean applyFilter(ListIterator iterator, boolean isAncestorSelected) {
+    private boolean applyFilter(ListIterator iterator, boolean isAncestorSelected, boolean isAncestorEclipsed) {
         boolean isDescenderSelected = false;
         while(iterator.hasNext()){
             MindMapNode node = (MindMapNode)iterator.next();
             resetFilter(node);
-            if (isAncestorSelected) addFilterResult(node, FILTER_DESCENDER);
+            if (isAncestorSelected) addFilterResult(node, FILTER_SHOW_DESCENDER);
             boolean lastCheck = condition.checkNode(node);
             if (lastCheck){
                 isDescenderSelected = true;
-                addFilterResult(node, FILTER_MATCHED);
+                addFilterResult(node, FILTER_SHOW_MATCHED);
             }
             else
             {
-                addFilterResult(node, FILTER_HIDDEN);
+                addFilterResult(node, FILTER_SHOW_HIDDEN);
+            }
+            if (isAncestorEclipsed){
+                addFilterResult(node, FILTER_SHOW_ECLIPSED);               
             }
             ListIterator children = node.childrenUnfolded();
-            if(applyFilter(children, lastCheck || isAncestorSelected)){
-                addFilterResult(node, FILTER_ANCESTOR);
+            if(applyFilter(children, lastCheck || isAncestorSelected, !lastCheck || isAncestorEclipsed)){
+                addFilterResult(node, FILTER_SHOW_ANCESTOR);
                 isDescenderSelected = true;
             }            
         }
@@ -84,17 +84,19 @@ class DefaultFilter implements Filter{
      * @see freemind.controller.filter.Filter#isVisible(freemind.modes.MindMapNode)
      */
     public boolean isVisible(MindMapNode node) {
-        return condition == null  || (node.getFilterResult() & options) != 0;
+        if (condition == null) return true;
+        int filterResult = node.getFilterInfo().get();
+        return ((options & FILTER_SHOW_ANCESTOR) != 0 
+             || (options & FILTER_SHOW_ECLIPSED) >= (filterResult & FILTER_SHOW_ECLIPSED)
+             ) &&  ((options & filterResult & ~FILTER_SHOW_ECLIPSED) != 0);
+       
     }
     
     static public void resetFilter(MindMapNode node){
-        node.setFilterResult(FILTER_INITIAL_VALUE);
+        node.getFilterInfo().reset();
     }
     
-    void addFilterResult(MindMapNode node, int flag){
-        int filterResult = node.getFilterResult();
-	    filterResult &= ~FILTER_INITIAL_VALUE;
-		filterResult |= flag;        
-		node.setFilterResult(filterResult);
+    static void addFilterResult(MindMapNode node, int flag){
+		node.getFilterInfo().add(flag);
     }
 }

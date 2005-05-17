@@ -1,0 +1,49 @@
+/*
+ * Created on 15.05.2005
+ *
+ */
+package freemind.controller.filter;
+
+import freemind.modes.MindMapNode;
+
+/**
+ * @author dimitri
+ * 15.05.2005
+ */
+public class FilterInfo {
+    private int info = Filter.FILTER_INITIAL_VALUE;
+
+    /**
+     * 
+     */
+    public FilterInfo() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+    public void reset() {
+        info = Filter.FILTER_INITIAL_VALUE;
+    }
+    
+    public void setAncestor() {
+        add(Filter.FILTER_SHOW_ANCESTOR); 
+    }
+    
+    public void setDescender() {
+        add(Filter.FILTER_SHOW_DESCENDER); 
+    }
+    
+    public void setMatched() {
+        add(Filter.FILTER_SHOW_MATCHED); 
+    }
+    
+    void add(int flag){
+        if ((flag & (Filter.FILTER_SHOW_MATCHED | Filter.FILTER_SHOW_HIDDEN)) != 0){
+            info &= ~Filter.FILTER_INITIAL_VALUE;
+        }
+        info |= flag;        
+    }
+
+     int get() {
+        return info;
+    }
+}

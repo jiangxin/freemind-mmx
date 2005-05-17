@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.10.2.2 2005-05-11 00:13:58 dpolivaev Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.10.2.3 2005-05-17 19:34:31 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -43,6 +43,7 @@ import javax.swing.tree.TreePath;
 
 import freemind.controller.Controller;
 import freemind.controller.filter.Filter;
+import freemind.controller.filter.FilterInfo;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMindMain;
@@ -95,7 +96,7 @@ public abstract class NodeAdapter implements MindMapNode {
     protected Font font;
     protected boolean underlined = false;
 
-    private int filterResult = Filter.FILTER_INITIAL_VALUE;
+    private FilterInfo filterInfo = new FilterInfo();
     
     
     private MindMapNode parent;
@@ -163,15 +164,10 @@ public abstract class NodeAdapter implements MindMapNode {
  	this.link = link;
     }
 
-	public int getFilterResult() {
-		return filterResult;
-	}
-	
-	
-    public void setFilterResult(int filterResult) {
-        this.filterResult = filterResult;
+    public FilterInfo getFilterInfo(){
+        return filterInfo;
     }
-    
+
     public FreeMindMain getFrame() {
 	return frame;
     }
@@ -988,12 +984,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	public void setVGap(int gap) {
 		if (gap == AUTO) vGap = AUTO;
 		else vGap = Math.max(gap, 0);
-	}
-	
-    public void resetFilterResult() {
-        setFilterResult(Filter.FILTER_INITIAL_VALUE);
-    }
-    
+	}	   
     
     public boolean isVisible() {
         return Controller.getInstance().getFilterController().getFilter().isVisible(this);

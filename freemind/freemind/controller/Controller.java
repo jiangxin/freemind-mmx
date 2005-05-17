@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10.2.2 2005-05-10 22:59:31 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.3 2005-05-17 19:34:30 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -211,7 +211,7 @@ public class Controller {
         //Create the ToolBar
         northToolbarPanel = new JPanel(new BorderLayout());
         toolbar = new MainToolBar(this);
-        fc = new FilterController(this);
+        fc = new FilterController();
         filterToolbar = fc.getFilterToolbar();
         getFrame().getContentPane().add( northToolbarPanel, BorderLayout.NORTH );
         northToolbarPanel.add( toolbar, BorderLayout.NORTH);
