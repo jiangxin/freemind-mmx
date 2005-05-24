@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.4 2005-05-13 11:44:04 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.5 2005-05-24 21:10:17 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -68,6 +68,7 @@ public class OptionPanel {
 	//TODO: Cancel and windowClose => Are you sure, or save.
     //FIXME: key dialog
     //FIXME: Translate me and html 
+    //FIXME: Window size.
 	private static final Color MARKED_BUTTON_COLOR = Color.BLUE;
 
 	private Vector controls;
@@ -644,7 +645,7 @@ public class OptionPanel {
 		//TODO: Search class path for translations.
 		controls.add(new ComboProperty(
 
-		"language.tooltip", FreeMind.RESOURCE_LANGUAGE, new String[] { "automatic", "de", "dk",
+		"language.tooltip", FreeMind.RESOURCE_LANGUAGE, new String[] { "automatic", "cs", "de", "dk",
 				"en", "es", "fr", "hu", "it", "ja", "kr", "nl", "pl", "pt_BR",
 				"pt_PT", "ru", "sl", "zh", "zh_CN" })); //  automatic
 

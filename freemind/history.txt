@@ -251,6 +251,11 @@ RC 3:
 * Some property change listener implemented.
 * Bug fix: new nodes have a proper text box.
 
+Final RC:
+------------
+* Some new languages
+
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added
