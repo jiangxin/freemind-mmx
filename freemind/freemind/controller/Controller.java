@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.13 2005-05-13 11:44:04 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.14 2005-05-25 06:10:59 christianfoltin Exp $*/
 
 package freemind.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -40,6 +41,8 @@ import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -72,7 +75,16 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 
+import freemind.common.JaxbTools;
+import freemind.controller.actions.generated.instance.ObjectFactory;
+import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
+import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
+import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
@@ -93,6 +105,7 @@ import freemind.view.mindmapview.MapView;
 public class Controller {
 
     private static Logger logger;
+	private ObjectFactory actionXmlFactory;
     private static JColorChooser colorChooser = new JColorChooser();
 	private LastOpenedList lastOpened;//A list of the pathnames of all the maps that were opened in the last time
     private MapModuleManager mapModuleManager;// new MapModuleManager();
@@ -164,6 +177,9 @@ public class Controller {
         if(logger == null) {
             logger = frame.getLogger(this.getClass().getName());
         }
+		// new object factory for xml actions:
+		actionXmlFactory = JaxbTools.getInstance().getObjectFactory();
+
         lastOpened = new LastOpenedList(this, getProperty("lastOpened"));
         mapModuleManager = new MapModuleManager(this, history, lastOpened);
 
@@ -1278,6 +1294,70 @@ public class Controller {
         }
     }
 
+    public WindowConfigurationStorage decorateDialog(JDialog dialog, String propertyName) {
+		String unmarshalled = getProperty(
+		        propertyName);
+		if (unmarshalled != null) {
+			WindowConfigurationStorage storage = (WindowConfigurationStorage) unMarshall(unmarshalled);
+			if (storage != null) {
+				dialog.setLocation(storage.getX(), storage.getY());
+				dialog.getRootPane().setPreferredSize(new Dimension(storage.getWidth(), storage.getHeight()));
+			}
+			return storage;
+		}
+		return null;
+    }
 
+
+	/**
+     * @param storage
+	 * @param propertyName
+     */
+    public void storeDialogPositions(JDialog dialog, WindowConfigurationStorage storage, String propertyName) {
+        storage.setX((dialog.getX()));
+        storage.setY((dialog.getY()));
+        storage.setWidth((dialog.getWidth()));
+        storage.setHeight((dialog.getHeight()));
+        String marshalled = marshall(storage);
+        setProperty(propertyName, marshalled);
+    }
+
+
+    public String marshall(XmlAction action) {
+        try {
+            // marshall:
+            //marshal to StringBuffer:
+            StringWriter writer = new StringWriter();
+            Marshaller m = JaxbTools.getInstance().createMarshaller();
+            m.marshal(action, writer);
+            String result = writer.toString();
+            return result;
+        } catch (JAXBException e) {
+			logger.severe(e.toString());
+            e.printStackTrace();
+            return "";
+        }
+
+	}
+
+	public XmlAction unMarshall(String inputString) {
+		try {
+			// unmarshall:
+			Unmarshaller u = JaxbTools.getInstance().createUnmarshaller();
+			StringBuffer xmlStr = new StringBuffer( inputString);
+			XmlAction doAction = (XmlAction) u.unmarshal( new StreamSource( new StringReader( xmlStr.toString() ) ) );
+			return doAction;
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+    
+    public ObjectFactory getActionXmlFactory() {
+        return actionXmlFactory;
+    }
 }//Class Controller
 

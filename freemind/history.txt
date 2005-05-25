@@ -254,7 +254,7 @@ RC 3:
 Final RC:
 ------------
 * Some new languages
-
+* Size+Position is stored for the option panel. Moreover, the first size is adjusted to 800x600.
 
 Changes made in Freemind 0.7.2:
 ===============================

@@ -555,19 +555,36 @@
 	  </xs:complexType>
 	</xs:element>
 		
+	<!-- Windowpositionstorage stores the window configuration of some windows. -->
+	  <xs:complexType name="window_configuration_storage">
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+		      <xs:attribute name="x" use="required" type="xs:int"/>
+		      <xs:attribute name="y" use="required" type="xs:int"/>
+		      <xs:attribute name="width" use="required" type="xs:int"/>
+		      <xs:attribute name="height" use="required" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	
+	<xs:element name="normal_window_configuration_storage">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="window_configuration_storage">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
 	<!-- Windowpositionstorage stores the window configuration of the 
 		 time list window. -->
 	<xs:element name="time_window_configuration_storage">
 	  <xs:complexType>
 		<xs:complexContent>
-			<xs:extension base="xml_action">
+			<xs:extension base="window_configuration_storage">
 	          <xs:sequence>
 	    	      <xs:element ref="time_window_column_setting" maxOccurs="unbounded" minOccurs="0"/>				
 	          </xs:sequence>
-		      <xs:attribute name="x" use="required" type="xs:int"/>
-		      <xs:attribute name="y" use="required" type="xs:int"/>
-		      <xs:attribute name="width" use="required" type="xs:int"/>
-		      <xs:attribute name="height" use="required" type="xs:int"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

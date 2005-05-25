@@ -19,12 +19,13 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.5 2005-05-24 21:10:17 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.6 2005-05-25 06:10:59 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -48,12 +49,15 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.xml.bind.JAXBException;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
 
 import freemind.controller.Controller;
+import freemind.controller.actions.generated.instance.NormalWindowConfigurationStorage;
+import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
@@ -83,6 +87,8 @@ public class OptionPanel {
 
 	private static FreeMindMain fmMain;
 
+    private static final String PREFERENCE_STORAGE_PROPERTY = "OptionPanel_Window_Properties";
+
 	/**
 	 * @param frame
 	 * @param feedback
@@ -97,6 +103,12 @@ public class OptionPanel {
 		}
 		this.frame = frame;
 		this.feedback = feedback;
+		//Retrieve window size and column positions.		
+		WindowConfigurationStorage storage = fm.getController().decorateDialog(frame, PREFERENCE_STORAGE_PROPERTY);
+		if(storage == null) {
+		    frame.getRootPane().setPreferredSize(new Dimension(800,600));
+		}
+
 	}
 
 	public interface OptionPanelFeedback {
@@ -1279,6 +1291,16 @@ public class OptionPanel {
 	}
 
 	public void closeWindow() {
+	    try {
+            NormalWindowConfigurationStorage storage = fmMain.getController()
+                    .getActionXmlFactory()
+                    .createNormalWindowConfigurationStorage();
+            fmMain.getController().storeDialogPositions(frame, storage,
+                    PREFERENCE_STORAGE_PROPERTY);
+        } catch (JAXBException e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
 		frame.hide();
 		frame.dispose();
 	}

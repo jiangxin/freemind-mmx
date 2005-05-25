@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/*$Id: TimeList.java,v 1.1.2.6 2005-04-26 21:41:02 christianfoltin Exp $*/
+/*$Id: TimeList.java,v 1.1.2.7 2005-05-25 06:10:59 christianfoltin Exp $*/
 package plugins.time;
 
 import java.awt.Container;
@@ -58,6 +58,8 @@ import javax.xml.bind.JAXBException;
 import freemind.controller.actions.generated.instance.TimeWindowColumnSetting;
 import freemind.controller.actions.generated.instance.TimeWindowColumnSettingType;
 import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
+import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorageType;
+import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.extensions.ModeControllerHookAdapter;
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
@@ -252,28 +254,18 @@ public class TimeList extends ModeControllerHookAdapter {
 
 		// restore prefrences:
 
-		//Retrieve window size and column positions.
-		String unmarshalled = getController().getController().getProperty(
-				WINDOW_PREFERENCE_STORAGE_PROPERTY);
-		if (unmarshalled != null) {
-			TimeWindowConfigurationStorage storage = (TimeWindowConfigurationStorage) getController()
-					.unMarshall(unmarshalled);
-			if (storage != null) {
-//				dialog.setBounds(storage.getX(), storage.getY(), storage
-//						.getWidth(), storage.getHeight());
-				dialog.setLocation(storage.getX(), storage.getY());
-				dialog.getRootPane().setPreferredSize(new Dimension(storage.getWidth(), storage.getHeight()));
-				//			 Disable auto resizing
-				timeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-				int column = 0;
-				for (Iterator i = storage.getTimeWindowColumnSetting().iterator(); i.hasNext();) {
-                    TimeWindowColumnSettingType setting = (TimeWindowColumnSettingType) i.next();
-                    timeTable.getColumnModel().getColumn(column).setPreferredWidth(setting.getColumnWidth());
-                    sorter.setSortingStatus(column, setting.getColumnSorting());
-                    column++;
-                    
-                }
-			}
+		//Retrieve window size and column positions.		
+		WindowConfigurationStorage storage = getController().getController().decorateDialog(dialog, WINDOW_PREFERENCE_STORAGE_PROPERTY);
+		if (storage != null) {
+			//			 Disable auto resizing
+			timeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			int column = 0;
+			for (Iterator i = ((TimeWindowConfigurationStorageType) storage).getTimeWindowColumnSetting().iterator(); i.hasNext();) {
+                TimeWindowColumnSettingType setting = (TimeWindowColumnSettingType) i.next();
+                timeTable.getColumnModel().getColumn(column).setPreferredWidth(setting.getColumnWidth());
+                sorter.setSortingStatus(column, setting.getColumnSorting());
+                column++;
+            }
 		}
 		dialog.pack();
 		dialog.setVisible(true);
@@ -394,10 +386,6 @@ public class TimeList extends ModeControllerHookAdapter {
 			TimeWindowConfigurationStorage storage = getController()
 					.getActionXmlFactory()
 					.createTimeWindowConfigurationStorage();
-			storage.setX((dialog.getX()));
-			storage.setY((dialog.getY()));
-			storage.setWidth((dialog.getWidth()));
-			storage.setHeight((dialog.getHeight()));
 			for(int i = 0; i< timeTable.getColumnCount(); i++) {
 				TimeWindowColumnSetting setting = getController()
 						.getActionXmlFactory()
@@ -406,9 +394,7 @@ public class TimeList extends ModeControllerHookAdapter {
 				setting.setColumnSorting(sorter.getSortingStatus(i));
 				storage.getTimeWindowColumnSetting().add(setting);
 			}
-			String marshalled = getController().marshall(storage);
-			getController().getController().setProperty(
-					WINDOW_PREFERENCE_STORAGE_PROPERTY, marshalled);
+			getController().getController().storeDialogPositions(dialog, storage, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22 2005-05-03 05:29:49 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.23 2005-05-25 06:10:59 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -159,7 +159,6 @@ public abstract class ControllerAdapter implements ModeController {
 	private final static int MINIMAL_WIDTH = MindMapLayout.MINIMAL_WIDTH;
 
     private ActionFactory actionFactory;
-	private ObjectFactory actionXmlFactory;
 	// for cascading updates.
 	private HashSet nodesAlreadyUpdated;
 	private HashSet nodesToBeUpdated;
@@ -250,8 +249,6 @@ public abstract class ControllerAdapter implements ModeController {
         // for updates of nodes:
 		nodesAlreadyUpdated = new HashSet();
 		nodesToBeUpdated    = new HashSet();
-		// new object factory for xml actions:
-		actionXmlFactory = JaxbTools.getInstance().getObjectFactory();
         // create action factory:
 		actionFactory = new ActionFactory(getController());
 		// prepare undo:
@@ -1672,35 +1669,11 @@ public abstract class ControllerAdapter implements ModeController {
 
 
     public String marshall(XmlAction action) {
-        try {
-            // marshall:
-            //marshal to StringBuffer:
-            StringWriter writer = new StringWriter();
-            Marshaller m = JaxbTools.getInstance().createMarshaller();
-            m.marshal(action, writer);
-            String result = writer.toString();
-            return result;
-        } catch (JAXBException e) {
-			logger.severe(e.toString());
-            e.printStackTrace();
-            return "";
-        }
-
+        return getController().marshall(action);
 	}
 
 	public XmlAction unMarshall(String inputString) {
-		try {
-			// unmarshall:
-			Unmarshaller u = JaxbTools.getInstance().createUnmarshaller();
-			StringBuffer xmlStr = new StringBuffer( inputString);
-			XmlAction doAction = (XmlAction) u.unmarshal( new StreamSource( new StringReader( xmlStr.toString() ) ) );
-			return doAction;
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-
+        return getController().unMarshall(inputString);
 	}
 
 	protected class EditLongAction extends AbstractAction {
@@ -1816,7 +1789,7 @@ public abstract class ControllerAdapter implements ModeController {
 	 * @return
 	 */
 	public ObjectFactory getActionXmlFactory() {
-		return actionXmlFactory;
+		return getController().getActionXmlFactory();
 	}
 
     /**
