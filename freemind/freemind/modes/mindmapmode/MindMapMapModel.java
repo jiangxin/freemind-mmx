@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.10 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.10.2.1 2005-05-26 16:43:26 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -57,6 +57,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import freemind.controller.Controller;
 import freemind.controller.MindMapNodesSelection;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
@@ -645,7 +646,9 @@ public class MindMapMapModel extends MapAdapter  {
        if (root != null) {
           setRoot(root); }
        setFile(file);
-       setSaved(true); } 
+       setSaved(true); 
+       Controller.getInstance().getMapModuleManager().getMapModule().initMap();
+       } 
     
     /** When a map is closed, this method is called. */
     public void destroy() {

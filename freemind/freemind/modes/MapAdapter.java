@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.14.7 2005-04-26 21:41:00 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.14.7.2.1 2005-05-26 16:43:26 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -58,6 +58,7 @@ public abstract class MapAdapter implements MindMap {
     private File file;
     private FreeMindMain frame;
     static protected Logger logger;
+    private MapStatistics statistics;
 
 
 
@@ -66,6 +67,7 @@ public abstract class MapAdapter implements MindMap {
 		if(logger == null) {
 		    logger = frame.getLogger(this.getClass().getName());
 		}
+		statistics = new MapStatistics();
     }
 
     //
@@ -626,5 +628,8 @@ public abstract class MapAdapter implements MindMap {
         }
     }
 
+    public MapStatistics getStatistics() {
+        return statistics;
+    }
 }
 

@@ -37,8 +37,11 @@ import freemind.controller.filter.condition.ConditionNotSatisfiedDecorator;
 import freemind.controller.filter.condition.ConjunctConditions;
 import freemind.controller.filter.condition.DisjunctConditions;
 import freemind.controller.filter.condition.NodeCondition;
+import freemind.controller.filter.util.ExtendedComboBoxModel;
+import freemind.controller.filter.util.SortedListModel;
 import freemind.controller.filter.util.TranslatedString;
 import freemind.modes.MindIcon;
+import freemind.modes.MindMap;
 
 /**
  * @author dimitri
@@ -244,6 +247,9 @@ public class FilterDialog extends JDialog {
                     simpleCondition.setEnabled(false);
                     values.setEditable(false);
                     values.setModel(icons);
+                    if(icons.getSize() >= 1){
+                        values.setSelectedIndex(0);
+                    }
                     caseInsensitive.setEnabled(false);
                     return;
                 }
@@ -270,7 +276,7 @@ public class FilterDialog extends JDialog {
     private JButton btnOr;
     private JButton btnDelete;
     private JCheckBox caseInsensitive;
-    private DefaultComboBoxModel icons;
+    private ExtendedComboBoxModel icons;
     private DefaultComboBoxModel nodes;
     public FilterDialog(final FilterToolbar ft) {
         super(Controller.getInstance().getFilterController().getFrame());
@@ -298,17 +304,13 @@ public class FilterDialog extends JDialog {
         simpleConditionToolbar.add(simpleCondition);
         
         values = new JComboBox();
-        icons = new DefaultComboBoxModel();
+        icons = new ExtendedComboBoxModel();
         nodes = new DefaultComboBoxModel();
         values.setModel(nodes);
         simpleConditionToolbar.add(values);
         values.setRenderer(fc.getMindIconRenderer());
         
-        Vector iconNames = MindIcon.getAllIconNames();
-        for(int i=0; i< iconNames.size(); i++){
-            String iconName = (String)iconNames.get(i);
-            icons.addElement(fc.getIcon(iconName));
-        }
+        icons.setExtensionList(Controller.getInstance().getModel().getStatistics().getIcons());
         values.setEditable(true);
         
         caseInsensitive = new JCheckBox();
@@ -369,5 +371,18 @@ public class FilterDialog extends JDialog {
         }  
         Object item = values.getSelectedItem();
         return item != null ? item.toString() : "";
+    }
+
+    /**
+     * @param newMap
+     */
+    void mapChanged(MindMap newMap) {
+        icons.setExtensionList(newMap.getStatistics().getIcons());        
+        if(icons.getSize() >= 1){
+            values.setSelectedIndex(0);
+        }
+        else{
+            values.setSelectedIndex(-1);
+        }
     }
 }

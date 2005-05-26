@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.14.14.6 2005-03-11 22:27:29 christianfoltin Exp $*/
+/*$Id: MindMap.java,v 1.14.14.6.2.1 2005-05-26 16:43:26 dpolivaev Exp $*/
 
 package freemind.modes;
 
 import java.awt.Color;
 import java.awt.datatransfer.Transferable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
@@ -31,6 +32,8 @@ import java.util.List;
 
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
+
+import freemind.main.XMLParseException;
 
 public interface MindMap extends TreeModel {
         
@@ -109,6 +112,17 @@ public interface MindMap extends TreeModel {
     void destroy();
 
     boolean isReadOnly();
+    /**
+     * @return
+     */
+    MapStatistics getStatistics();
+    /**
+     * @param file
+     * @throws XMLParseException
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    void load(File file) throws FileNotFoundException, IOException, XMLParseException;
 
 // (PN)
 //    void close();

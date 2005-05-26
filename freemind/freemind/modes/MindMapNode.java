@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.10.2.3 2005-05-17 19:34:30 dpolivaev Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.10.2.4 2005-05-26 16:43:26 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -259,5 +259,5 @@ public interface MindMapNode extends MutableTreeNode {
     /**
      * @return
      */
-    int getVisibleChildCount();
+    boolean hasOneVisibleChild();
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2 2005-05-26 16:43:26 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -549,8 +549,8 @@ public abstract class ControllerAdapter implements ModeController {
      */
     public void load (File file) throws FileNotFoundException, IOException, XMLParseException {
         MapAdapter model = newModel();
-		model.load(file);
 		getController().getMapModuleManager().newMapModule(model);
+		model.load(file);
 		//FIXME: This must be done in the mapModuleManager. Ojo: The
 		// ModeController has changed.
 		getController().getModeController().invokeHooksRecursively(

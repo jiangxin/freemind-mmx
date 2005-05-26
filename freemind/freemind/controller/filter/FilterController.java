@@ -18,6 +18,7 @@ import freemind.controller.filter.condition.ConditionRenderer;
 import freemind.controller.filter.condition.MindIconRenderer;
 import freemind.main.FreeMindMain;
 import freemind.modes.MindIcon;
+import freemind.modes.MindMap;
 
 /**
  * @author dimitri
@@ -40,15 +41,7 @@ import freemind.modes.MindIcon;
 		return null;
 	}
 
-    /**
-     * @param iconName
-     * @return
-     */
-     MindIcon getIcon(String iconName) {
-        return  MindIcon.factory(iconName);
-    }
-
-     public MindIconRenderer getMindIconRenderer() {
+    public MindIconRenderer getMindIconRenderer() {
         return mindIconRenderer;
     }
      ConditionRenderer getConditionRenderer() {
@@ -87,5 +80,12 @@ import freemind.modes.MindIcon;
         if(conditionFactory == null)
             conditionFactory = new ConditionFactory();
         return conditionFactory;
+    }
+    
+    public void mapChanged(MindMap newMap){
+        FilterDialog fd = filterToolbar.getFilterDialog();
+        if (fd != null){
+            fd.mapChanged(newMap);
+        }
     }
 }

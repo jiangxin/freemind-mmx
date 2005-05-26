@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.3 2005-03-11 22:27:28 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.3.2.1 2005-05-26 16:43:26 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -174,6 +174,7 @@ import freemind.view.mindmapview.MapView;
 			c.obtainFocusForSelected();
 			c.getModeController().startupController();
 			c.getModeController().setVisible(true);
+			c.getFilterController().mapChanged(mapModule.getModel());
 		} else {
 			c.getFrame().setView(null);
 

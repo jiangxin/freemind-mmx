@@ -40,10 +40,10 @@ import freemind.modes.MindMapNode;
  */
  class FilterToolbar extends JToolBar {
 	private FilterController fc;
+	private FilterDialog filterDialog = null;
     private JComboBox activeFilterCondition;
     private JToggleButton btnApply;
     private JCheckBox showAncestors;
-    private JCheckBox showEclipsed;
     private JCheckBox showDescenders;
     private Filter activeFilter;
     private Filter inactiveFilter;
@@ -79,7 +79,6 @@ import freemind.modes.MindMapNode;
 			this.c = Controller.getInstance();
 	    }
         public void actionPerformed(ActionEvent arg0) {
-            showEclipsed.setEnabled(! showAncestors.isSelected());
             resetFilter();            
 		     MindMap map = c.getModel(); 
 		     map.nodeChanged((MindMapNode)map.getRoot());
@@ -98,7 +97,6 @@ import freemind.modes.MindMapNode;
 	 private class EditFilterAction extends AbstractAction {
 
 		private FilterToolbar ft;
-		FilterDialog filterDialog = null;
 		 EditFilterAction(FilterToolbar ft) {
 			super(Controller.getInstance().getResourceString("filter_edit"));
 			this.ft = ft;
@@ -141,17 +139,12 @@ import freemind.modes.MindMapNode;
 		add(showAncestors);
 		showAncestors.getModel().addActionListener(filterChangeListener);
 
-		showEclipsed = new JCheckBox(Controller.getInstance().getResourceString("filter_show_flat"), false);
-		showEclipsed.setEnabled(false);
-		add(showEclipsed);
-		showEclipsed.getModel().addActionListener(filterChangeListener);
-		
 		showDescenders = new JCheckBox(Controller.getInstance().getResourceString("filter_show_descenders"), false);
 		add(showDescenders);
 		showDescenders.getModel().addActionListener(filterChangeListener);
 		
 		activeFilter = null;
-		inactiveFilter = new DefaultFilter(null, false, false, false, false);
+		inactiveFilter = new DefaultFilter(null, false, false, false);
 	}
 	
     /**
@@ -178,7 +171,6 @@ import freemind.modes.MindMapNode;
 	    	            getSelectedCondition(),
 	    	            btnApply.getModel().isSelected(),
 	    	            showAncestors.getModel().isSelected(),
-	    	            showEclipsed.getModel().isSelected(),
 	    	            showDescenders.getModel().isSelected()	            
 	    	            );
 	        return activeFilter;
@@ -194,4 +186,7 @@ import freemind.modes.MindMapNode;
         return btnApply;
     }
 
+    FilterDialog getFilterDialog() {
+        return filterDialog;
+    }
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.10.2.3 2005-05-17 19:34:31 dpolivaev Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.10.2.4 2005-05-26 16:43:26 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -375,7 +375,15 @@ public abstract class NodeAdapter implements MindMapNode {
     // fc, 24.9.2003:
     public Vector/*<MindIcon>*/ getIcons() { return icons;};
 
-    public void   addIcon(MindIcon _icon) { icons.add(_icon); };
+    public void   addIcon(MindIcon _icon) 
+    { 
+        icons.add(_icon);
+        getMap().getStatistics().addIcon(_icon);
+    };
+
+    private MindMap getMap() {
+        return getFrame().getController().getModel();
+    }
 
     /** @return returns the number of remaining icons. */
     public int   removeLastIcon() { if(icons.size() > 0) icons.setSize(icons.size()-1); return icons.size();};
@@ -909,17 +917,18 @@ public abstract class NodeAdapter implements MindMapNode {
 	
 	
 	
-    public int getVisibleChildCount() {
+    public boolean hasOneVisibleChild() {
         int count = 0;
         for (ListIterator i = childrenUnfolded() ; i.hasNext() ;) {
             if (((MindMapNode)i.next()).isVisible()) count++;
+            if (count == 2) return false;
         }
-        return count;
+        return count == 1;
     }
     
 	public int calcShiftY() {
 		try{
-			return shiftY + (parent.getVisibleChildCount()== 1 ? SHIFT:0);
+			return shiftY + (parent.hasOneVisibleChild() ? SHIFT:0);
 		}
 		catch(NullPointerException e){
 			return 0;			

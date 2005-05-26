@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13.18.4 2005-03-03 21:11:27 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.13.18.4.2.1 2005-05-26 16:43:26 dpolivaev Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -32,6 +32,7 @@ import javax.swing.Action;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
+import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.main.Tools;
@@ -176,9 +177,10 @@ public class BrowseController extends ControllerAdapter {
 
     private void load(URL url) throws Exception {
 	getToolBar().setURLField(url.toString());
-    	BrowseMapModel model = (BrowseMapModel)newModel();
+   	BrowseMapModel model = (BrowseMapModel)newModel();
+   	newMap(model);
 	model.load(url);
-	newMap(model);
+	Controller.getInstance().getMapModuleManager().getMapModule().initMap();
 	//FIXME: Must activate hooks???
     }
 

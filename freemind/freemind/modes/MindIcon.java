@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindIcon.java,v 1.1.18.5 2005-05-03 05:29:50 christianfoltin Exp $*/
+/*$Id: MindIcon.java,v 1.1.18.5.2.1 2005-05-26 16:43:26 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -26,15 +26,17 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
+import freemind.controller.Controller;
 import freemind.main.FreeMindMain;
 
 /**
  * This class represents a MindIcon than can be applied
  * to a node or a whole branch.
  */
-public class MindIcon {
+public class MindIcon implements Comparable{
     private String name;
     private String description;
+    private int number = UNKNOWN;
     /**
      * Stores the once created ImageIcon.
      */
@@ -45,6 +47,7 @@ public class MindIcon {
      * Set of all created icons. Name -> MindIcon
      */
     private static HashMap createdIcons = new HashMap();
+    private static final int UNKNOWN = -2;
     
 
     private MindIcon(String name) {
@@ -185,5 +188,26 @@ public class MindIcon {
     		MindIcon icon = new MindIcon(iconName);
     		createdIcons.put(iconName, icon);
     		return icon;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o) {
+        if (o instanceof MindIcon){
+            MindIcon icon = (MindIcon)o;
+            int i1 = getNumber();
+            int i2 = icon.getNumber();
+            return i1 < i2 ? -1 : i1 == i2 ? 0 : +1;
+        }
+        throw new ClassCastException() ;
+    }
+    
+    
+    private int getNumber() {
+        if(number == UNKNOWN){
+            number = getAllIconNames ().indexOf(name);
+        }
+        return number;
     }
 }

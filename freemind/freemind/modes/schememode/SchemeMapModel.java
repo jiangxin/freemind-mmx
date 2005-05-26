@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMapModel.java,v 1.11.18.3 2005-03-11 22:27:30 christianfoltin Exp $*/
+/*$Id: SchemeMapModel.java,v 1.11.18.3.2.1 2005-05-26 16:43:27 dpolivaev Exp $*/
 
 package freemind.modes.schememode;
 
+import freemind.controller.Controller;
 import freemind.main.FreeMindMain;
 
 import freemind.modes.MapAdapter;
@@ -80,6 +81,7 @@ public class SchemeMapModel extends MapAdapter {
 	    loadMathStyle(new InputStreamReader(new FileInputStream(file)));
 	} catch (IOException ex) {
 	}
+	Controller.getInstance().getMapModuleManager().getMapModule().initMap();
     }
 
     public void loadMathStyle(Reader re) throws IOException{

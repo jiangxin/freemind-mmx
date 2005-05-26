@@ -28,13 +28,12 @@ class DefaultFilter implements Filter{
             Condition condition, 
             boolean isActive, 
             boolean areAnchestorsShown, 
-            boolean areEclipsedShown, 
             boolean areDescendersShown) {
         super();
         this.condition = isActive ? condition : null;
         this.options = FILTER_INITIAL_VALUE | FILTER_SHOW_MATCHED;
         if (areAnchestorsShown) options += FILTER_SHOW_ANCESTOR;
-        if (areEclipsedShown) options += FILTER_SHOW_ECLIPSED;
+        options += FILTER_SHOW_ECLIPSED;
         if (areDescendersShown) options += FILTER_SHOW_DESCENDER;
     }
     /* (non-Javadoc)
