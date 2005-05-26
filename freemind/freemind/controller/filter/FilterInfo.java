@@ -46,4 +46,16 @@ public class FilterInfo {
      int get() {
         return info;
     }
+    /**
+     * @return
+     */
+    public boolean isAncestor() {
+        return (info & Filter.FILTER_SHOW_ANCESTOR) != 0;
+    }
+    /**
+     * @return
+     */
+    public boolean isMatched() {
+        return (info & Filter.FILTER_SHOW_MATCHED) != 0;
+    }
 }

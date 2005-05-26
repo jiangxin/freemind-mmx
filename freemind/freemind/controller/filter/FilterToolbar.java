@@ -14,11 +14,13 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -48,6 +50,7 @@ import freemind.modes.MindMapNode;
     private Filter activeFilter;
     private Filter inactiveFilter;
     private JButton btnEdit;
+    private JButton btnUnfold;
 	private class ApplyFilterAction extends AbstractAction {
 
 		/**
@@ -68,6 +71,7 @@ import freemind.modes.MindMapNode;
 		     {
 		         getFilter().applyFilter(c.getModel());
 		     }
+	         btnUnfold.setEnabled(btnApply.getModel().isSelected());
 		 }
 	}
 	private class FilterChangeListener extends AbstractAction implements ItemListener{
@@ -115,7 +119,41 @@ import freemind.modes.MindMapNode;
 
 	}
 	
-	FilterToolbar(final FilterController fc)
+	private class UnfoldAction extends AbstractAction {
+
+		/**
+		 * 
+		 */
+		UnfoldAction() {
+			super("", new ImageIcon(Controller.getInstance().getResource("images/unfold.png")));
+		}
+		 
+		private void unfoldAll(MindMapNode parent) {
+			for(Iterator i = parent.childrenUnfolded(); i.hasNext();) {
+			    MindMapNode node = (MindMapNode)i.next();
+			    if (node.getFilterInfo().isAncestor() ){
+					setFolded(node, false);
+			        unfoldAll(node) ;
+			    }
+			    else if (node.getFilterInfo().isMatched()){
+					setFolded(node, false);
+			    }
+			}
+		}
+
+		private void setFolded(MindMapNode node, boolean state) {
+			if(node.hasChildren() && (node.isFolded()!=state)) {
+			    Controller.getInstance().getModeController().setFolded(node, state);
+			}
+		}
+		 public void actionPerformed(ActionEvent e) {
+		     if (getSelectedCondition() != null){
+		        unfoldAll((MindMapNode)Controller.getInstance().getModel().getRoot()); 
+		     }
+		 }
+	}
+
+	 FilterToolbar(final FilterController fc)
 	{
 		super();
 		this.fc = fc;
@@ -142,6 +180,10 @@ import freemind.modes.MindMapNode;
 		showDescenders = new JCheckBox(Controller.getInstance().getResourceString("filter_show_descenders"), false);
 		add(showDescenders);
 		showDescenders.getModel().addActionListener(filterChangeListener);
+		
+		btnUnfold = new JButton(new UnfoldAction());
+		btnUnfold.setEnabled(false);
+		add(btnUnfold);
 		
 		activeFilter = null;
 		inactiveFilter = new DefaultFilter(null, false, false, false);
