@@ -50,7 +50,7 @@ import freemind.modes.MindMapNode;
     private Filter activeFilter;
     private Filter inactiveFilter;
     private JButton btnEdit;
-    private JButton btnUnfold;
+    private JButton btnUnfoldAncestors;
 	private class ApplyFilterAction extends AbstractAction {
 
 		/**
@@ -71,7 +71,7 @@ import freemind.modes.MindMapNode;
 		     {
 		         getFilter().applyFilter(c.getModel());
 		     }
-	         btnUnfold.setEnabled(btnApply.getModel().isSelected());
+	         btnUnfoldAncestors.setEnabled(btnApply.getModel().isSelected());
 		 }
 	}
 	private class FilterChangeListener extends AbstractAction implements ItemListener{
@@ -119,24 +119,21 @@ import freemind.modes.MindMapNode;
 
 	}
 	
-	private class UnfoldAction extends AbstractAction {
+	private class UnfoldAncestorsAction extends AbstractAction {
 
 		/**
 		 * 
 		 */
-		UnfoldAction() {
+		UnfoldAncestorsAction() {
 			super("", new ImageIcon(Controller.getInstance().getResource("images/unfold.png")));
 		}
 		 
-		private void unfoldAll(MindMapNode parent) {
+		private void unfoldAncestors(MindMapNode parent) {
 			for(Iterator i = parent.childrenUnfolded(); i.hasNext();) {
 			    MindMapNode node = (MindMapNode)i.next();
 			    if (node.getFilterInfo().isAncestor() ){
 					setFolded(node, false);
-			        unfoldAll(node) ;
-			    }
-			    else if (node.getFilterInfo().isMatched()){
-					setFolded(node, false);
+			        unfoldAncestors(node) ;
 			    }
 			}
 		}
@@ -148,7 +145,7 @@ import freemind.modes.MindMapNode;
 		}
 		 public void actionPerformed(ActionEvent e) {
 		     if (getSelectedCondition() != null){
-		        unfoldAll((MindMapNode)Controller.getInstance().getModel().getRoot()); 
+		        unfoldAncestors((MindMapNode)Controller.getInstance().getModel().getRoot()); 
 		     }
 		 }
 	}
@@ -173,6 +170,11 @@ import freemind.modes.MindMapNode;
 		btnEdit = new JButton(new EditFilterAction(this));
         add(btnEdit);
 
+		btnUnfoldAncestors = new JButton(new UnfoldAncestorsAction());
+		btnUnfoldAncestors.setToolTipText(Controller.getInstance().getResourceString("filter_unfold_ancestors"));
+		btnUnfoldAncestors.setEnabled(false);
+		add(btnUnfoldAncestors);
+		
 		showAncestors = new JCheckBox(Controller.getInstance().getResourceString("filter_show_ancestors"), true);
 		add(showAncestors);
 		showAncestors.getModel().addActionListener(filterChangeListener);
@@ -180,10 +182,6 @@ import freemind.modes.MindMapNode;
 		showDescenders = new JCheckBox(Controller.getInstance().getResourceString("filter_show_descenders"), false);
 		add(showDescenders);
 		showDescenders.getModel().addActionListener(filterChangeListener);
-		
-		btnUnfold = new JButton(new UnfoldAction());
-		btnUnfold.setEnabled(false);
-		add(btnUnfold);
 		
 		activeFilter = null;
 		inactiveFilter = new DefaultFilter(null, false, false, false);

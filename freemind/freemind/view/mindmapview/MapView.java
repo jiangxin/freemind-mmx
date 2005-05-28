@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12.2.3 2005-05-26 16:43:27 dpolivaev Exp $*/
+/*$Id: MapView.java,v 1.30.16.12.2.4 2005-05-28 20:55:22 dpolivaev Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -231,12 +231,16 @@ public class MapView extends JPanel implements Printable {
     }
 
     public void initRoot() {
-        if (rootView != null){
+        boolean oldRoot = rootView != null;
+        if (oldRoot){
             rootView.remove();
         }
         rootView = NodeView.newNodeView( (MindMapNode)getModel().getRoot(), this );
         rootView.insert();
         getMindMapLayout().updateTreeHeightsAndRelativeYOfWholeMap();
+        if (oldRoot){
+            moveToRoot();
+        }
         revalidate();
     }
     
