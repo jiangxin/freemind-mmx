@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<plugin>
+	<plugin_action documentation="%accessories/plugins/AutomaticLayout.properties_documentation" name="%accessories/plugins/AutomaticLayout.properties_name" base="freemind.extensions.NodeHookAdapter" icon_path="accessories/plugins/icons/kcmsystem.png" label="accessories/plugins/AutomaticLayout.properties" class_name="accessories.plugins.AutomaticLayout" instanciation="OnceForRoot">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/format/nodes/automaticLayout"/>
+	</plugin_action>
+</plugin>

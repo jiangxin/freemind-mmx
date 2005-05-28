@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin>
+	<plugin_classpath jar="plugins/collaboration/jabber/commons-logging.jar"  />
+	<plugin_classpath jar="plugins/collaboration/jabber/crimson-1.1.3.jar"  />
+	<plugin_classpath jar="plugins/collaboration/jabber/jakarta-oro.jar"  />
+	<plugin_classpath jar="plugins/collaboration/jabber/jaxp-1.1.jar"  />
+	<plugin_classpath jar="plugins/collaboration/jabber/jdom.jar"  />
+	<plugin_classpath jar="plugins/collaboration/jabber/log4j.jar"  />
+	<plugin_classpath jar="plugins/collaboration/jabber/muse.jar"/>
+	<plugin_classpath jar="plugins/collaboration/jabber/jabber_plugin.jar"/>
+	<plugin_action 
+		documentation="TODO" 
+		name="Start Collaboration Mode" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/collaboration/jabber/jabber_plugin" 
+		class_name="plugins.collaboration.jabber.JabberStarter">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/extras/first/collaboration/jabber"/>
+	</plugin_action>
+</plugin>

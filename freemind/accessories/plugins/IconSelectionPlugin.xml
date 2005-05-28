@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<plugin>
+	<plugin_action documentation="%accessories/plugins/IconSelectionPlugin.properties_documentation" name="%accessories/plugins/IconSelectionPlugin.properties_name" key_stroke="alt I" base="freemind.extensions.NodeHookAdapter" icon_path="accessories/plugins/icons/kalzium.png" label="accessories/plugins/IconSelectionPlugin.properties" class_name="accessories.plugins.IconSelectionPlugin" instanciation="ApplyToRoot">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/insert/icons/IconSelection"/>
+		<plugin_menu location="mindmapmode_toolbar/icons/IconSelection"/>
+	</plugin_action>
+</plugin>

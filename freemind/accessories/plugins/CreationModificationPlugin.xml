@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<plugin>
+	<plugin_action 
+		documentation="%accessories/plugins/CreationModificationPlugin.properties_documentation" 
+		name="%accessories/plugins/CreationModificationPlugin.properties_name" 
+		base="freemind.extensions.NodeHookAdapter" 
+		icon_path="accessories/plugins/icons/kword.png" 
+		label="accessories/plugins/CreationModificationPlugin_new.properties" 
+		class_name="accessories.plugins.CreationModificationPlugin" 
+		instanciation="OnceForRoot">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu 
+			location="menu_bar/extras/first/nodes/CreationModificationPlugin"/>
+		<plugin_property name="tooltip_format" 
+			value="&lt;html&gt;Created:  {0,date} {0,time}&lt;br&gt;Modified: {1,date} {1,time}&lt;/html&gt;"/>
+	</plugin_action>
+</plugin>
