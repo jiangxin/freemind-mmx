@@ -16,12 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.8 2005-05-03 05:29:50 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.9 2005-05-29 20:19:45 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import java.awt.Font;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
@@ -42,6 +41,7 @@ public abstract class XMLElementAdapter extends XMLElement {
    private Object           userObject = null;
    private FreeMindMain     frame;
    private NodeAdapter      mapChild   = null;
+   private HashMap 		  nodeAttributes = null;
 
    //   Font attributes
 
@@ -58,7 +58,6 @@ public abstract class XMLElementAdapter extends XMLElement {
     protected HashMap /* id -> target */  IDToTarget;
     public static final String XML_NODE_TEXT = "TEXT";
     public static final String XML_NODE = "node";
-    //public static final String XML_NODE_CLASS_PREFIX = XML_NODE+"_";
     public static final String XML_NODE_CLASS = "AA_NODE_CLASS";
     public static final String XML_NODE_ADDITIONAL_INFO = "ADDITIONAL_INFO";
     public static final String XML_NODE_HISTORY_CREATED_AT = "CREATED";
@@ -105,9 +104,8 @@ public abstract class XMLElementAdapter extends XMLElement {
 		// Create user object based on name
 		if (name.equals(XML_NODE)) {
 			userObject = createNodeAdapter(frame, null);
-		} else /*if (name.startsWith(XML_NODE_CLASS_PREFIX)) {
-			userObject = createNodeAdapter(frame, name.substring(XML_NODE_CLASS_PREFIX.length()));
-		} else*/ if (name.equals("edge")) {
+			nodeAttributes = new HashMap();
+		} else if (name.equals("edge")) {
 			userObject = createEdgeAdapter(null, frame);
 		} else if (name.equals("cloud")) {
 			userObject = createCloudAdapter(null, frame);
@@ -198,54 +196,9 @@ public void setAttribute(String name, Object value) {
       if (userObject instanceof NodeAdapter) {
          //
          NodeAdapter node = (NodeAdapter)userObject;
-         if(/*This must be the first to be checked: */name.equals(XML_NODE_CLASS)) {
-             // bad hack, but not avoidable:
-             userObject = createNodeAdapter(frame, sValue);
-         } else if (name.equals(XML_NODE_TEXT)) {
-            node.setUserObject(sValue); }
-         else if (name.equals(XML_NODE_ADDITIONAL_INFO)) {
-             node.setAdditionalInfo(sValue); }
-         else if (name.equals(XML_NODE_HISTORY_CREATED_AT)) {
-             if(node.getHistoryInformation()==null) {
-             	node.setHistoryInformation(new HistoryInformation());
-             }
-             node.getHistoryInformation().setCreatedAt(Tools.xmlToDate(sValue));
-         }
-         else if (name.equals(XML_NODE_HISTORY_LAST_MODIFIED_AT)) {
-             if(node.getHistoryInformation()==null) {
-             	node.setHistoryInformation(new HistoryInformation());
-             }
-             node.getHistoryInformation().setLastModifiedAt(Tools.xmlToDate(sValue));
-         }
-         else if (name.equals("FOLDED")) {
-            if (sValue.equals("true")) {
-               node.setFolded(true); }}
-         else if (name.equals("POSITION")) {
-             // fc, 17.12.2003: Remove the left/right bug.
-             node.setLeft(sValue.equals("left")); }
-         else if (name.equals("COLOR")) {
-            if (sValue.length() == 7) {
-               node.setColor(Tools.xmlToColor(sValue)); }}
-         else if (name.equals("BACKGROUND_COLOR")) {
-            if (sValue.length() == 7) {
-               node.setBackgroundColor(Tools.xmlToColor(sValue)); }}
-         else if (name.equals("LINK")) {
-            node.setLink(sValue); }
-         else if (name.equals("STYLE")) {
-            node.setStyle(sValue); }
-         else if (name.equals("ID")) {
-             // do not set label but annotate in list:
-             //System.out.println("(sValue, node) = " + sValue + ", "+  node);
-             IDToTarget.put(sValue, node);
-         }
-         else if (name.equals("SHIFT_Y")) {
-         	node.setShiftY(Integer.parseInt(sValue));
-         }
-         else if (name.equals("VGAP")) {
-           	node.setVGap(Integer.parseInt(sValue));
-         }
-         else if (name.equals("HGAP")) {
-           	node.setHGap(Integer.parseInt(sValue));
+         setNodeAttribute(name, sValue, node);
+         if(nodeAttributes!=null){
+         	nodeAttributes.put(name, sValue);
          }
         return; }
 
@@ -317,7 +270,66 @@ public void setAttribute(String name, Object value) {
       }
   }
 
-   protected void completeElement() {
+   private void setNodeAttribute(String name, String sValue, NodeAdapter node) {
+	if(name.equals(XML_NODE_CLASS)) {
+	     userObject = createNodeAdapter(frame, sValue);
+	     // reactivate all settings from nodeAttributes:
+	     for (Iterator i = nodeAttributes.keySet().iterator(); i.hasNext();) {
+			String key = (String) i.next();
+			//to avoid self reference:
+			if(!key.equals(XML_NODE_CLASS)){
+				setNodeAttribute(key, (String) nodeAttributes.get(key), (NodeAdapter) userObject);
+			}
+		}
+	 } else if (name.equals(XML_NODE_TEXT)) {
+	    node.setUserObject(sValue); }
+	 else if (name.equals(XML_NODE_ADDITIONAL_INFO)) {
+	     node.setAdditionalInfo(sValue); }
+	 else if (name.equals(XML_NODE_HISTORY_CREATED_AT)) {
+	     if(node.getHistoryInformation()==null) {
+	     	node.setHistoryInformation(new HistoryInformation());
+	     }
+	     node.getHistoryInformation().setCreatedAt(Tools.xmlToDate(sValue));
+	 }
+	 else if (name.equals(XML_NODE_HISTORY_LAST_MODIFIED_AT)) {
+	     if(node.getHistoryInformation()==null) {
+	     	node.setHistoryInformation(new HistoryInformation());
+	     }
+	     node.getHistoryInformation().setLastModifiedAt(Tools.xmlToDate(sValue));
+	 }
+	 else if (name.equals("FOLDED")) {
+	    if (sValue.equals("true")) {
+	       node.setFolded(true); }}
+	 else if (name.equals("POSITION")) {
+	     // fc, 17.12.2003: Remove the left/right bug.
+	     node.setLeft(sValue.equals("left")); }
+	 else if (name.equals("COLOR")) {
+	    if (sValue.length() == 7) {
+	       node.setColor(Tools.xmlToColor(sValue)); }}
+	 else if (name.equals("BACKGROUND_COLOR")) {
+	    if (sValue.length() == 7) {
+	       node.setBackgroundColor(Tools.xmlToColor(sValue)); }}
+	 else if (name.equals("LINK")) {
+	    node.setLink(sValue); }
+	 else if (name.equals("STYLE")) {
+	    node.setStyle(sValue); }
+	 else if (name.equals("ID")) {
+	     // do not set label but annotate in list:
+	     //System.out.println("(sValue, node) = " + sValue + ", "+  node);
+	     IDToTarget.put(sValue, node);
+	 }
+	 else if (name.equals("SHIFT_Y")) {
+	 	node.setShiftY(Integer.parseInt(sValue));
+	 }
+	 else if (name.equals("VGAP")) {
+	   	node.setVGap(Integer.parseInt(sValue));
+	 }
+	 else if (name.equals("HGAP")) {
+	   	node.setHGap(Integer.parseInt(sValue));
+	 }
+}
+
+protected void completeElement() {
       if (getName().equals("font")) {
          userObject =  frame.getController().getFontThroughMap
             (new Font(fontName, fontStyle, fontSize)); }

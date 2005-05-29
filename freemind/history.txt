@@ -257,6 +257,7 @@ Final RC:
 * Size+Position is stored for the option panel. Moreover, the first size is adjusted to 800x600.
 * Bug fix: [ 1207937 ] [0.8 rc3] Null pointer exception on map load blocks whole FM
 * Notes have an icon now.
+* Hack removed: encrypted nodes: the xml attribute AA_NODE_CLASS needs not to occur as the first attribute.
 
 Changes made in Freemind 0.7.2:
 ===============================
