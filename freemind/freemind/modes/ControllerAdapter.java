@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.23 2005-05-25 06:10:59 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.24 2005-05-29 19:36:17 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -690,6 +690,7 @@ public abstract class ControllerAdapter implements ModeController {
        else if (exceptionType.equals("java.io.FileNotFoundException")) {
           getController().errorMessage(ex.getMessage()); }
        else {
+       	  ex.printStackTrace();
           getController().errorMessage(ex); }
     }
 
