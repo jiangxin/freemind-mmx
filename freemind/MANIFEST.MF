@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 Main-Class: freemind.main.FreeMind
-Class-Path:     freemind.jar     ant/lib/jaxb-api.jar                     ant/lib/jaxb-impl.jar     ant/lib/jaxb-libs.jar                      ant/lib/namespace.jar     ant/lib/relaxngDatatype.jar                ant/lib/xsdlib.jar     ant/lib/jax-qname.jar                           ant/lib/sax.jar     ant/lib/dom.jar ../ commons-lang-2.0.jar
+Class-Path:     freemind.jar     ant/lib/jaxb-api.jar                     ant/lib/jaxb-impl.jar     ant/lib/jaxb-libs.jar                      ant/lib/namespace.jar     ant/lib/relaxngDatatype.jar                ant/lib/xsdlib.jar     ant/lib/jax-qname.jar                           ant/lib/sax.jar     ant/lib/dom.jar ../ commons-lang-2.0.jar       forms-1.0.5.jar
 Created-By: Joerg Mueller
 

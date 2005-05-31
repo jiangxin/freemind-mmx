@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: AbstractXmlAction.java,v 1.1.4.1 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: AbstractXmlAction.java,v 1.1.4.1.8.1 2005-05-31 20:24:06 dpolivaev Exp $*/
 
 package freemind.controller.actions;
 
@@ -42,7 +42,7 @@ public abstract class AbstractXmlAction extends FreemindAction {
 	private ModeController controller;
 
 
-	public AbstractXmlAction(String name, Icon icon, ModeController controller) {
+	protected AbstractXmlAction(String name, Icon icon, ModeController controller) {
 		super(name, icon, controller);
 		this.controller = controller;
 	}

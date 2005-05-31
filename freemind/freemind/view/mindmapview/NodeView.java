@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2 2005-05-17 19:34:32 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.1 2005-05-31 20:24:06 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -286,14 +286,18 @@ public abstract class NodeView extends JLabel {
 	private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
 	private static final int MIN_HOR_NODE_SIZE = 10;
     public Dimension getPreferredSize() {
-    	boolean isEmpty = getText().length() == 0;
-    	if (isEmpty) setText("!");
+        boolean isEmpty = getText().length() == 0;
+        if(isEmpty){
+            setText("!");
+        }
     	Dimension prefSize = super.getPreferredSize();
         if(map.isCurrentlyPrinting() && NEED_PREF_SIZE_BUG_FIX) {
         	prefSize.width += (int)(10f*map.getZoom());
         } 
         prefSize.width = Math.max(map.getZoomed(MIN_HOR_NODE_SIZE), prefSize.width);
-    	if (isEmpty) setText("");
+        if (isEmpty){
+            setText("");
+        }
         return prefSize;
     }
     

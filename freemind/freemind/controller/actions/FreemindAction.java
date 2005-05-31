@@ -19,16 +19,20 @@
  *
  * Created on 19.07.2004
  */
-/*$Id: FreemindAction.java,v 1.1.4.2 2005-04-26 21:41:00 christianfoltin Exp $*/
+/*$Id: FreemindAction.java,v 1.1.4.2.4.1 2005-05-31 20:24:06 dpolivaev Exp $*/
 
 package freemind.controller.actions;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 
+import freemind.controller.Controller;
+import freemind.main.FreeMind;
 import freemind.modes.ModeController;
+import freemind.preferences.FreemindPropertyListener;
 
 /**
  * @author foltin
@@ -65,12 +69,12 @@ public abstract class FreemindAction extends AbstractAction {
      * @param iconPath is a path to an icon.
      * @param modeController
      */
-    public FreemindAction(String title, String iconPath, ModeController modeController) {
+    public FreemindAction(String title, String iconPath, final ModeController modeController) {
         this(modeController.getController().getResourceString(title), 
             (iconPath==null)?null: new ImageIcon(modeController.getController().getResource(iconPath)), 
                 modeController);
     }
-
+    
     protected void setSelected(JMenuItem menuItem, boolean state) {
     		// prevents that icons set after the construction is forgotten to
     		// recover.

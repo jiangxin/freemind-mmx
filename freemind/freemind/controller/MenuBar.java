@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.8 2005-04-26 21:41:00 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.8.4.1 2005-05-31 20:24:06 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -291,40 +291,41 @@ public class MenuBar extends JMenuBar {
 		nextMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_nextMap")));
 	
 	
-		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EXTRAS_MENU+"last/options/.");
+//		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EXTRAS_MENU+"last/options/.");
+		JMenuItem prefDialog = menuHolder.addAction(c.propertyAction, EXTRAS_MENU+"last/option_dialog");
 	
-	        if (false) {
-	           preferences.add(c.background);
-	           // Background is disabled from preferences, because it has no real function.
-	           // To complete the function, one would either make sure that the color is
-	           // saved and read from auto.properties or think about storing the background
-	           // color into map (just like <map backgroud="#eeeee0">).
-	        }
+//	        if (false) {
+//	           preferences.add(c.background);
+//	           // Background is disabled from preferences, because it has no real function.
+//	           // To complete the function, one would either make sure that the color is
+//	           // saved and read from auto.properties or think about storing the background
+//	           // color into map (just like <map backgroud="#eeeee0">).
+//	        }
 	
-	        // Daniel: The way antialias option is represented now is not nice,
-	        // there should be only one variable controlling it. Fix it if you
-	        // have time, this kind of classical quality is low pri now.
-	        String antialiasSelected = c.getAntialiasAll() ? "antialias_all" : 
-	           ( c.getAntialiasEdges() ? "antialias_edges" : "antialias_none" );
-	        addOptionSet( c.optionAntialiasAction,
-	                      new String[]{ "antialias_none",
-	                                       "antialias_edges",
-	                                       "antialias_all" },
-	                      preferences, antialiasSelected );
-		preferences.addSeparator();
-	        addOptionSet( c.optionHTMLExportFoldingAction,
-	                      new String[]{ "html_export_no_folding",
-	                                       "html_export_fold_currently_folded",
-	                                       "html_export_fold_all",
-	                                       "html_export_based_on_headings" },
-	                      preferences, c.getProperty("html_export_folding") );
-	
-		preferences.addSeparator();
-	    addOptionSet( c.optionSelectionMechanismAction,
-	                  new String[]{ "selection_method_direct",
-	    							"selection_method_delayed",
-	                                "selection_method_by_click"},
-	                  preferences, c.getProperty("selection_method") );
+//	        // Daniel: The way antialias option is represented now is not nice,
+//	        // there should be only one variable controlling it. Fix it if you
+//	        // have time, this kind of classical quality is low pri now.
+//	        String antialiasSelected = c.getAntialiasAll() ? "antialias_all" : 
+//	           ( c.getAntialiasEdges() ? "antialias_edges" : "antialias_none" );
+//	        addOptionSet( c.optionAntialiasAction,
+//	                      new String[]{ "antialias_none",
+//	                                       "antialias_edges",
+//	                                       "antialias_all" },
+//	                      preferences, antialiasSelected );
+//		preferences.addSeparator();
+//	        addOptionSet( c.optionHTMLExportFoldingAction,
+//	                      new String[]{ "html_export_no_folding",
+//	                                       "html_export_fold_currently_folded",
+//	                                       "html_export_fold_all",
+//	                                       "html_export_based_on_headings" },
+//	                      preferences, c.getProperty("html_export_folding") );
+//	
+//		preferences.addSeparator();
+//	    addOptionSet( c.optionSelectionMechanismAction,
+//	                  new String[]{ "selection_method_direct",
+//	    							"selection_method_delayed",
+//	                                "selection_method_by_click"},
+//	                  preferences, c.getProperty("selection_method") );
 	
     }
 

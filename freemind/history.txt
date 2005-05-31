@@ -247,6 +247,10 @@ RC 3:
 * Bug fix: folded root can be unfolded now.
 * Docu bug fix: no popup in reminders any more.
 
+* First version of preference window added.
+* Some property change listener implemented.
+* Bug fix: new nodes have a proper text box.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added
