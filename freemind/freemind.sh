@@ -4,6 +4,9 @@
 #             (based on Jan Schulz's input)
 # 2004-11-28, minor changes for version 0.8.0 by deb@zorglub.s.bawue.de
 # 2005-01-08, removed bashims to make script POSIX conform
+# 2005-01-16, added usage of FREEMIND_BASE_DIR variable
+# 2005-02-18, add -Dfreemind.base.dir to make plugins work, add some ""
+#             and enhance debug mode.
 
 _debug() {
 	if [ -n "${DEBUG}" ]
@@ -55,6 +58,10 @@ findjava() {
 	if [ -n "${JAVACMD}" ] && [ -x "${JAVACMD}" ]
 	then
 		_debug "Using '$JAVACMD' as java virtual machine..."
+		if [ -n "${DEBUG}" ]
+		then
+			"$JAVACMD" -version
+		fi
 		return 0
 	else
 		_error "Couldn't find a java virtual machine," \
@@ -72,6 +79,7 @@ _source() {
 }
 
 _debug "Freemind parameters are '${@}'."
+_debug "$(uname -a)"
 
 _source /etc/freemind/freemindrc
 _source ~/.freemind/freemindrc
@@ -87,7 +95,8 @@ freepath="${freepath%/bin}" # nothing happens if freemind is not installed
                             # under something/bin
 
 # we try different possibilities to find freemind.jar
-for jar in "${freepath}" "${freepath}/share/freemind" "${freepath}/freemind"
+for jar in "${FREEMIND_BASE_DIR}" \
+	"${freepath}" "${freepath}/share/freemind" "${freepath}/freemind"
 do
 	if [ -f "${jar}/lib/freemind.jar" ]
 	then
@@ -127,6 +136,7 @@ ${freedir}/lib/ant/lib/xsdlib.jar:\
 ${freedir}/lib/ant/lib/jax-qname.jar:\
 ${freedir}/lib/ant/lib/sax.jar:\
 ${freedir}/lib/ant/lib/dom.jar:\
+${freedir}/lib/forms-1.0.5.jar:\
 ${freedir}"
-_debug "CLASSPATH=${CLASSPATH}"
-${JAVACMD} -cp ${CLASSPATH} freemind.main.FreeMind  $@
+_debug "Calling: '${JAVACMD} -Dfreemind.base.dir=${freedir} -cp ${CLASSPATH} freemind.main.FreeMind  $@'."
+"${JAVACMD}" -Dfreemind.base.dir="${freedir}" -cp "${CLASSPATH}" freemind.main.FreeMind "$@"
