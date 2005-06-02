@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.6 2005-05-25 06:10:59 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.7 2005-06-02 06:06:11 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -67,12 +67,12 @@ import freemind.main.Tools;
  *  
  */
 public class OptionPanel {
-
-	//TODO: mark first button blue.
-	//TODO: Cancel and windowClose => Are you sure, or save.
+    //TODO: mark first button blue.
+    //TODO: Cancel and windowClose => Are you sure, or save.
     //FIXME: key dialog
     //FIXME: Translate me and html 
-    //FIXME: Window size.
+
+    
 	private static final Color MARKED_BUTTON_COLOR = Color.BLUE;
 
 	private Vector controls;
@@ -658,7 +658,7 @@ public class OptionPanel {
 		controls.add(new ComboProperty(
 
 		"language.tooltip", FreeMind.RESOURCE_LANGUAGE, new String[] { "automatic", "cs", "de", "dk",
-				"en", "es", "fr", "hu", "it", "ja", "kr", "nl", "pl", "pt_BR",
+				"en", "es", "fr", "hu", "it", "ja", "kr", "nl", "no", "pl", "pt_BR",
 				"pt_PT", "ru", "sl", "zh", "zh_CN" })); //  automatic
 
 		//INTERNAL PROPERTY.
@@ -835,10 +835,8 @@ public class OptionPanel {
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("anti_alias"));
-		controls.add(new BooleanProperty(
-		"antialiasEdges.tooltip", FreeMind.RESOURCE_ANTIALIASEDGES)); //  true
-
-		controls.add(new BooleanProperty(null, FreeMind.RESOURCE_ANTIALIASALL)); //  false
+		controls.add(new ComboProperty(
+		"antialias.tooltip", FreeMind.RESOURCE_ANTIALIAS, new String[]{"antialias_edges", "antialias_all", "antialias_none"})); //  true
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
@@ -1212,10 +1210,10 @@ public class OptionPanel {
 		"key_type_adds_new.tooltip", "key_type_adds_new")); //  false
 
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("selection_method"));
+		controls.add(new SeparatorProperty(FreeMind.RESOURCES_SELECTION_METHOD));
 		controls.add(new ComboProperty(
 
-		"selection_method.tooltip", "selection_method", new String[] {
+		"selection_method.tooltip", FreeMind.RESOURCES_SELECTION_METHOD, new String[] {
 				"selection_method_direct", "selection_method_delayed",
 				"selection_method_by_click" })); //  selection_method_direct
 

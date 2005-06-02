@@ -258,6 +258,7 @@ Final RC:
 * Bug fix: [ 1207937 ] [0.8 rc3] Null pointer exception on map load blocks whole FM
 * Notes have an icon now.
 * Hack removed: encrypted nodes: the xml attribute AA_NODE_CLASS needs not to occur as the first attribute.
+* Antialias and selection option changes are now directly applied.
 
 Changes made in Freemind 0.7.2:
 ===============================

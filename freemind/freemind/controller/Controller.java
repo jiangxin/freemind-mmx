@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.14 2005-05-25 06:10:59 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.15 2005-06-02 06:06:10 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -82,7 +82,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import freemind.common.JaxbTools;
 import freemind.controller.actions.generated.instance.ObjectFactory;
-import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.FreeMind;
@@ -140,7 +139,7 @@ public class Controller {
     public Action quit;
     public Action background; 
 
-    public Action optionAntialiasAction;
+    public OptionAntialiasAction optionAntialiasAction;
     public Action optionHTMLExportFoldingAction;
     public Action optionSelectionMechanismAction;
 
@@ -1238,21 +1237,38 @@ public class Controller {
         }
     }
 
-    private class OptionAntialiasAction extends AbstractAction {
-       OptionAntialiasAction(Controller controller) {}
-       public void actionPerformed(ActionEvent e) {
-          if (e.getActionCommand().equals("antialias_none")) {
-             setAntialiasEdges(false);
-             setAntialiasAll(false); }
-          if (e.getActionCommand().equals("antialias_edges")) {
-             setAntialiasEdges(true);
-             setAntialiasAll(false); }
-          if (e.getActionCommand().equals("antialias_all")) {
-             setAntialiasEdges(false);
-             setAntialiasAll(true); }
-          if(getView() != null)
-              getView().repaint(); 
+    public class OptionAntialiasAction extends AbstractAction implements FreemindPropertyListener {
+       OptionAntialiasAction(Controller controller) {
+           Controller.addPropertyChangeListener(this);
        }
+       public void actionPerformed(ActionEvent e) {
+          String command = e.getActionCommand();
+        changeAntialias(command); 
+       }
+	    /**
+	     * @param command
+	     */
+	    public void changeAntialias(String command) {
+	        if(command == null) {
+	            return;
+	        }
+	        if (command.equals("antialias_none")) {
+	             setAntialiasEdges(false);
+	             setAntialiasAll(false); }
+	          if (command.equals("antialias_edges")) {
+	             setAntialiasEdges(true);
+	             setAntialiasAll(false); }
+	          if (command.equals("antialias_all")) {
+	             setAntialiasEdges(false);
+	             setAntialiasAll(true); }
+	          if(getView() != null)
+	              getView().repaint();
+	    }
+	    public void propertyChanged(String propertyName, String newValue, String oldValue) {
+            if (propertyName.equals(FreeMind.RESOURCE_ANTIALIAS)) {
+                changeAntialias(newValue);
+            }
+	    }
     }
 
     private class OptionHTMLExportFoldingAction extends AbstractAction {
@@ -1261,19 +1277,37 @@ public class Controller {
           setProperty("html_export_folding", e.getActionCommand()); }}
 
     // switch auto properties for selection mechanism fc, 7.12.2003.
-    private class OptionSelectionMechanismAction extends AbstractAction {
+    private class OptionSelectionMechanismAction extends AbstractAction implements FreemindPropertyListener {
         Controller c;
-       OptionSelectionMechanismAction(Controller controller) {
-           c = controller;
-       }
-       public void actionPerformed(ActionEvent e) {
-          setProperty("selection_method", e.getActionCommand());
-          // and update the selection method in the NodeMouseMotionListener
-          freemind.controller.NodeMouseMotionListener.updateSelectionMethod(c);
-          String statusBarString = c.getResourceString(e.getActionCommand());
-          if(statusBarString != null) // should not happen
-              c.getFrame().out(statusBarString);
-       }
+
+        OptionSelectionMechanismAction(Controller controller) {
+            c = controller;
+            Controller.addPropertyChangeListener(this);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            String command = e.getActionCommand();
+            changeSelection(command);
+        }
+
+        /**
+         * @param command
+         */
+        private void changeSelection(String command) {
+            setProperty("selection_method", command);
+            // and update the selection method in the NodeMouseMotionListener
+            freemind.controller.NodeMouseMotionListener
+                    .updateSelectionMethod(c);
+            String statusBarString = c.getResourceString(command);
+            if (statusBarString != null) // should not happen
+                c.getFrame().out(statusBarString);
+        }
+
+        public void propertyChanged(String propertyName, String newValue, String oldValue) {
+            if(propertyName.equals(FreeMind.RESOURCES_SELECTION_METHOD)) {
+                changeSelection(newValue);
+            }
+        }
     }
 
     // open faq url from freeminds page:

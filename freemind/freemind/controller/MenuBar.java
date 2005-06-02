@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.11 2005-05-13 11:44:04 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.12 2005-06-02 06:06:10 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -302,30 +302,6 @@ public class MenuBar extends JMenuBar {
 //	           // color into map (just like <map backgroud="#eeeee0">).
 //	        }
 	
-//	        // Daniel: The way antialias option is represented now is not nice,
-//	        // there should be only one variable controlling it. Fix it if you
-//	        // have time, this kind of classical quality is low pri now.
-//	        String antialiasSelected = c.getAntialiasAll() ? "antialias_all" : 
-//	           ( c.getAntialiasEdges() ? "antialias_edges" : "antialias_none" );
-//	        addOptionSet( c.optionAntialiasAction,
-//	                      new String[]{ "antialias_none",
-//	                                       "antialias_edges",
-//	                                       "antialias_all" },
-//	                      preferences, antialiasSelected );
-//		preferences.addSeparator();
-//	        addOptionSet( c.optionHTMLExportFoldingAction,
-//	                      new String[]{ "html_export_no_folding",
-//	                                       "html_export_fold_currently_folded",
-//	                                       "html_export_fold_all",
-//	                                       "html_export_based_on_headings" },
-//	                      preferences, c.getProperty("html_export_folding") );
-//	
-//		preferences.addSeparator();
-//	    addOptionSet( c.optionSelectionMechanismAction,
-//	                  new String[]{ "selection_method_direct",
-//	    							"selection_method_delayed",
-//	                                "selection_method_by_click"},
-//	                  preferences, c.getProperty("selection_method") );
 	
     }
 

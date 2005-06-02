@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.19 2005-05-13 11:44:04 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.20 2005-06-02 06:06:11 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -67,9 +67,9 @@ import freemind.view.mindmapview.MapView;
 public class FreeMind extends JFrame implements FreeMindMain {
 
     public static final String RESOURCE_LOOKANDFEEL = "lookandfeel";
-    public static final String RESOURCE_ANTIALIASALL = "antialiasAll";
-    public static final String RESOURCE_ANTIALIASEDGES = "antialiasEdges";
+    public static final String RESOURCE_ANTIALIAS = "antialias";
     public static final String RESOURCE_LANGUAGE = "language";
+    public static final String RESOURCES_SELECTION_METHOD = "selection_method";
     private static Logger logger =null;
     
     private static final String DEFAULT_LANGUAGE = "en";
@@ -240,25 +240,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 //    });
 
 
-	if (Tools.safeEquals(getProperty(RESOURCE_ANTIALIASEDGES),"true")) {
-           c.setAntialiasEdges(true); }
-        if (Tools.safeEquals(getProperty(RESOURCE_ANTIALIASALL),"true")) {
-           c.setAntialiasAll(true); }
-    // add a listener for the controller, alias:
-    Controller.addPropertyChangeListener(new FreemindPropertyListener() {
-
-        public void propertyChanged(String propertyName, String newValue,
-                String oldValue) {
-            if (propertyName.equals(RESOURCE_ANTIALIASEDGES)) {
-                // re-read resources:
-                c.setAntialiasEdges(Tools.xmlToBoolean(newValue));
-            }
-            if (propertyName.equals(RESOURCE_ANTIALIASALL)) {
-                // re-read resources:
-                c.setAntialiasAll(Tools.xmlToBoolean(newValue));
-            }
-        }
-    });
+    c.optionAntialiasAction.changeAntialias(getProperty(RESOURCE_ANTIALIAS));
 
 	//Create the MenuBar
 	menuBar = new MenuBar(c);
