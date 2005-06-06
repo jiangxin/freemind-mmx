@@ -261,6 +261,7 @@ Final RC:
 * Antialias and selection option changes are now directly applied.
 * Option panel stores its panel
 * Removing clouds stores its color for undo.
+* Added icons to popup menu.
 
 Changes made in Freemind 0.7.2:
 ===============================

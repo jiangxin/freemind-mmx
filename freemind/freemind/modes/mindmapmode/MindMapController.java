@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.11 2005-05-03 05:29:50 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.12 2005-06-06 21:23:27 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -335,7 +335,11 @@ public class MindMapController extends ControllerAdapter {
 
 
 //        editMenu.add(getIconMenu());
-		String iconMenuString = MenuBar.INSERT_MENU + "icons";
+		addIconsToMenu(holder, MenuBar.INSERT_MENU + "icons");
+
+    }
+
+    public void addIconsToMenu(StructuredMenuHolder holder, String iconMenuString) {
 		JMenu iconMenu = holder.addMenu(new JMenu(getText("icon_menu")), iconMenuString+"/.") ;
 		holder.addAction(removeLastIconAction, iconMenuString+"/removeLastIcon");
 		holder.addAction(removeAllIconsAction, iconMenuString+"/removeAllIcons");
@@ -343,10 +347,9 @@ public class MindMapController extends ControllerAdapter {
 		for (int i=0; i<iconActions.size(); ++i) {          
 			   JMenuItem item = holder.addAction((Action) iconActions.get(i), iconMenuString+"/"+i);
 		}
+	}
 
-    }
-
-    /**
+	/**
      * @param holder
      * @param formatMenuString
      */

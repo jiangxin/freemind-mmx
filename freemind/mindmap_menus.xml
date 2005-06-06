@@ -198,6 +198,8 @@
 		<menu_category name="context">
 		</menu_category>
 		<menu_separator/>
+		<menu_category name="icons">
+		</menu_category>
 		<menu_submenu name="format" name_ref="menu_format">
 			<menu_category name="nodes">
 				<menu_category name="style">
