@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.7 2005-06-02 06:06:11 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.8 2005-06-06 20:14:57 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
+import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -57,6 +58,8 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.NormalWindowConfigurationStorage;
+import freemind.controller.actions.generated.instance.OptionPanelWindowConfigurationStorage;
+import freemind.controller.actions.generated.instance.OptionPanelWindowConfigurationStorageType;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
@@ -67,12 +70,10 @@ import freemind.main.Tools;
  *  
  */
 public class OptionPanel {
-    //TODO: mark first button blue.
-    //TODO: Cancel and windowClose => Are you sure, or save.
-    //FIXME: key dialog
-    //FIXME: Translate me and html 
+	//TODO: Cancel and windowClose => Are you sure, or save.
+	//FIXME: key dialog
+	//FIXME: Translate me and html
 
-    
 	private static final Color MARKED_BUTTON_COLOR = Color.BLUE;
 
 	private Vector controls;
@@ -80,6 +81,8 @@ public class OptionPanel {
 	private final JDialog frame;
 
 	private HashMap tabButtonMap = new HashMap();
+	private HashMap tabActionMap = new HashMap();
+	private String selectedPanel = null;
 
 	private static JColorChooser colorChooser;
 
@@ -87,7 +90,8 @@ public class OptionPanel {
 
 	private static FreeMindMain fmMain;
 
-    private static final String PREFERENCE_STORAGE_PROPERTY = "OptionPanel_Window_Properties";
+	private static final String PREFERENCE_STORAGE_PROPERTY = "OptionPanel_Window_Properties";
+
 
 	/**
 	 * @param frame
@@ -103,10 +107,16 @@ public class OptionPanel {
 		}
 		this.frame = frame;
 		this.feedback = feedback;
-		//Retrieve window size and column positions.		
-		WindowConfigurationStorage storage = fm.getController().decorateDialog(frame, PREFERENCE_STORAGE_PROPERTY);
-		if(storage == null) {
-		    frame.getRootPane().setPreferredSize(new Dimension(800,600));
+		//Retrieve window size and column positions.
+		WindowConfigurationStorage storage = fm.getController().decorateDialog(
+				frame, PREFERENCE_STORAGE_PROPERTY);
+		if (storage == null) {
+			frame.getRootPane().setPreferredSize(new Dimension(800, 600));
+		} else {
+			if (storage instanceof OptionPanelWindowConfigurationStorageType) {
+				OptionPanelWindowConfigurationStorageType oWindowSettings = (OptionPanelWindowConfigurationStorageType) storage;
+				selectedPanel = oWindowSettings.getPanel();
+			}
 		}
 
 	}
@@ -167,7 +177,7 @@ public class OptionPanel {
 		controls = getControls();
 		for (Iterator i = controls.iterator(); i.hasNext();) {
 			PropertyControl control = (PropertyControl) i.next();
-//			System.out.println("layouting : " + control.getLabel());
+			//			System.out.println("layouting : " + control.getLabel());
 
 			if (control instanceof NewTabProperty) {
 				NewTabProperty newTab = (NewTabProperty) control;
@@ -176,9 +186,9 @@ public class OptionPanel {
 					rightStack.add(rightBuilder.getPanel(), lastTabName);
 				}
 				rightLayout = new FormLayout(
-						"right:max(40dlu;p), 4dlu, 60dlu, 7dlu, " // 1st major
+						"right:max(40dlu;p), 4dlu, 120dlu, 7dlu, " // 1st major
 								// column
-								+ "right:max(40dlu;p), 4dlu, 60dlu" // 2nd major
+//								+ "right:max(40dlu;p), 4dlu, 60dlu" // 2nd major
 								// column
 						, "");
 				rightBuilder = new DefaultFormBuilder(rightLayout);
@@ -189,7 +199,7 @@ public class OptionPanel {
 				ChangeTabAction changeTabAction = new ChangeTabAction(
 						cardLayout, rightStack, lastTabName);
 				tabButton.addActionListener(changeTabAction);
-				registerTabButton(tabButton, lastTabName);
+				registerTabButton(tabButton, lastTabName, changeTabAction);
 				leftBuilder.append(tabButton);
 			} else {
 				control.layout(rightBuilder);
@@ -197,6 +207,10 @@ public class OptionPanel {
 		}
 		// add the last one, too
 		rightStack.add(rightBuilder.getPanel(), lastTabName);
+		// select one panel:
+		if(selectedPanel != null && tabActionMap.containsKey(selectedPanel)){
+			((ChangeTabAction) tabActionMap.get(selectedPanel)).actionPerformed(null);
+		}
 		JSplitPane centralPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				leftBuilder.getPanel(), new JScrollPane(rightStack));
 		frame.getContentPane().add(centralPanel, BorderLayout.CENTER);
@@ -223,6 +237,7 @@ public class OptionPanel {
 
 	private static String lastKey = "";
 
+
 	/**
 	 * @param string
 	 * @return
@@ -242,11 +257,17 @@ public class OptionPanel {
 
 	/**
 	 * @param tabButton
+	 * @param changeTabAction
 	 * @param lastTabName
 	 */
-	private void registerTabButton(JButton tabButton, String name) {
+	private void registerTabButton(JButton tabButton, String name,
+			ChangeTabAction changeTabAction) {
 		tabButtonMap.put(name, tabButton);
-
+		tabActionMap.put(name, changeTabAction);
+		// if no default panel was given, we use the first.
+		if(selectedPanel == null){
+			selectedPanel = name;
+		}
 	}
 
 	private JButton getTabButton(String name) {
@@ -281,6 +302,7 @@ public class OptionPanel {
 				button.setForeground(null);
 			}
 			getTabButton(tabName).setForeground(MARKED_BUTTON_COLOR);
+			selectedPanel = tabName;
 		}
 	}
 
@@ -321,7 +343,7 @@ public class OptionPanel {
 		}
 
 		public void layout(DefaultFormBuilder builder) {
-			builder.appendSeparator(getText("separator."+getLabel()));
+			builder.appendSeparator(getText("separator." + getLabel()));
 		}
 
 	}
@@ -603,20 +625,21 @@ public class OptionPanel {
 			setModel(new DefaultComboBoxModel(possibleTranslations));
 		}
 
-        public ComboProperty(String description, String label,
+		public ComboProperty(String description, String label,
 				String[] possibles, Vector possibleTranslations) {
 			this.description = description;
 			this.label = label;
 			fillPossibleValues(possibles);
 			setModel(new DefaultComboBoxModel(possibleTranslations));
 		}
+
 		/**
-         * @param possibles
-         */
-        private void fillPossibleValues(String[] possibles) {
-            this.possibleValues = new Vector();
+		 * @param possibles
+		 */
+		private void fillPossibleValues(String[] possibles) {
+			this.possibleValues = new Vector();
 			possibleValues.addAll(Arrays.asList(possibles));
-        }
+		}
 
 		public String getDescription() {
 			return description;
@@ -645,6 +668,7 @@ public class OptionPanel {
 		}
 
 	}
+
 	//
 	private Vector getControls() {
 		Vector controls = new Vector();
@@ -657,9 +681,10 @@ public class OptionPanel {
 		//TODO: Search class path for translations.
 		controls.add(new ComboProperty(
 
-		"language.tooltip", FreeMind.RESOURCE_LANGUAGE, new String[] { "automatic", "cs", "de", "dk",
-				"en", "es", "fr", "hu", "it", "ja", "kr", "nl", "no", "pl", "pt_BR",
-				"pt_PT", "ru", "sl", "zh", "zh_CN" })); //  automatic
+		"language.tooltip", FreeMind.RESOURCE_LANGUAGE, new String[] {
+				"automatic", "cs", "de", "dk", "en", "es", "fr", "hu", "it",
+				"ja", "kr", "nl", "no", "pl", "pt_BR", "pt_PT", "ru", "sl",
+				"zh", "zh_CN" })); //  automatic
 
 		//INTERNAL PROPERTY.
 		//		controls
@@ -827,16 +852,17 @@ public class OptionPanel {
 		for (int i = 0; i < lafInfo.length; i++) {
 			LookAndFeelInfo info = lafInfo[i];
 			String className = info.getClassName();
-            lafNames[i + 5] = className;
+			lafNames[i + 5] = className;
 			translatedLafNames.add(info.getName());
 		}
-		controls.add(new ComboProperty("lookandfeel.tooltip", FreeMind.RESOURCE_LOOKANDFEEL,
-				lafNames, translatedLafNames)); //  default
+		controls.add(new ComboProperty("lookandfeel.tooltip",
+				FreeMind.RESOURCE_LOOKANDFEEL, lafNames, translatedLafNames)); //  default
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("anti_alias"));
-		controls.add(new ComboProperty(
-		"antialias.tooltip", FreeMind.RESOURCE_ANTIALIAS, new String[]{"antialias_edges", "antialias_all", "antialias_none"})); //  true
+		controls.add(new ComboProperty("antialias.tooltip",
+				FreeMind.RESOURCE_ANTIALIAS, new String[] { "antialias_edges",
+						"antialias_all", "antialias_none" })); //  true
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
@@ -1082,16 +1108,16 @@ public class OptionPanel {
 				"keystroke_node_decrease_font_size")); //  control
 		// MINUS
 
-//		controls.add(new KeyProperty(frame, null,
-//				"keystroke_branch_increase_font_size")); //  control
-//		// shift
-//		// PLUS
-//
-//		controls.add(new KeyProperty(frame, null,
-//				"keystroke_branch_decrease_font_size")); //  control
-//		// shift
-//		// MINUS
-//
+		//		controls.add(new KeyProperty(frame, null,
+		//				"keystroke_branch_increase_font_size")); // control
+		//		// shift
+		//		// PLUS
+		//
+		//		controls.add(new KeyProperty(frame, null,
+		//				"keystroke_branch_decrease_font_size")); // control
+		//		// shift
+		//		// MINUS
+		//
 		controls.add(new KeyProperty(frame, null, "keystroke_export_branch")); //  alt
 		// A
 		//
@@ -1210,12 +1236,16 @@ public class OptionPanel {
 		"key_type_adds_new.tooltip", "key_type_adds_new")); //  false
 
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty(FreeMind.RESOURCES_SELECTION_METHOD));
-		controls.add(new ComboProperty(
+		controls
+				.add(new SeparatorProperty(FreeMind.RESOURCES_SELECTION_METHOD));
+		controls
+				.add(new ComboProperty(
 
-		"selection_method.tooltip", FreeMind.RESOURCES_SELECTION_METHOD, new String[] {
-				"selection_method_direct", "selection_method_delayed",
-				"selection_method_by_click" })); //  selection_method_direct
+				"selection_method.tooltip",
+						FreeMind.RESOURCES_SELECTION_METHOD, new String[] {
+								"selection_method_direct",
+								"selection_method_delayed",
+								"selection_method_by_click" })); //  selection_method_direct
 
 		controls.add(new StringProperty(
 
@@ -1289,16 +1319,17 @@ public class OptionPanel {
 	}
 
 	public void closeWindow() {
-	    try {
-            NormalWindowConfigurationStorage storage = fmMain.getController()
-                    .getActionXmlFactory()
-                    .createNormalWindowConfigurationStorage();
-            fmMain.getController().storeDialogPositions(frame, storage,
-                    PREFERENCE_STORAGE_PROPERTY);
-        } catch (JAXBException e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
+		try {
+			OptionPanelWindowConfigurationStorage storage = fmMain.getController()
+					.getActionXmlFactory()
+					.createOptionPanelWindowConfigurationStorage();
+			storage.setPanel(selectedPanel);
+			fmMain.getController().storeDialogPositions(frame, storage,
+					PREFERENCE_STORAGE_PROPERTY);
+		} catch (JAXBException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 		frame.hide();
 		frame.dispose();
 	}

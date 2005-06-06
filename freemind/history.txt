@@ -259,6 +259,8 @@ Final RC:
 * Notes have an icon now.
 * Hack removed: encrypted nodes: the xml attribute AA_NODE_CLASS needs not to occur as the first attribute.
 * Antialias and selection option changes are now directly applied.
+* Option panel stores its panel
+* Removing clouds stores its color for undo.
 
 Changes made in Freemind 0.7.2:
 ===============================
