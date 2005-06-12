@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.10 2005-05-30 19:39:07 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.11 2005-06-12 12:04:26 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -316,7 +316,7 @@ public void setAttribute(String name, Object value) {
 	     //System.out.println("(sValue, node) = " + sValue + ", "+  node);
 	     IDToTarget.put(sValue, node);
 	 }
-	 else if (name.equals("SHIFT_Y")) {
+	 else if (name.equals("VSHIFT")) {
 	 	node.setShiftY(Integer.parseInt(sValue));
 	 }
 	 else if (name.equals("VGAP")) {

@@ -251,7 +251,7 @@ RC 3:
 * Some property change listener implemented.
 * Bug fix: new nodes have a proper text box.
 
-Final RC:
+RC 4:
 ------------
 * Some new languages
 * Size+Position is stored for the option panel. Moreover, the first size is adjusted to 800x600.
@@ -262,6 +262,12 @@ Final RC:
 * Option panel stores its panel
 * Removing clouds stores its color for undo.
 * Added icons to popup menu.
+
+* Version updater adapted to process renames from RC3->RC4.
+* Added readme.txt for the src package
+* XML must not contain any zero characters.
+* Fixed: Filename construction
+
 
 Changes made in Freemind 0.7.2:
 ===============================

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.12 2005-05-29 19:36:17 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.13 2005-06-12 12:04:26 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -779,7 +779,9 @@ public abstract class NodeAdapter implements MindMapNode {
         if (isNodeClassToBeSaved()) {
             node.setAttribute(XMLElementAdapter.XML_NODE_CLASS,	this.getClass().getName());
         }    
-        node.setAttribute(XMLElementAdapter.XML_NODE_TEXT,this.toString());
+        /** fc, 12.6.2005: XML must not contain any zero characters. */
+        String text = this.toString().replace('\0', ' ');
+        node.setAttribute(XMLElementAdapter.XML_NODE_TEXT,text);
     	// save additional info:
     	if (getAdditionalInfo() != null) {
             node.setAttribute(XMLElementAdapter.XML_NODE_ADDITIONAL_INFO,
@@ -840,7 +842,7 @@ public abstract class NodeAdapter implements MindMapNode {
         	node.setAttribute("HGAP",Integer.toString(hGap));
         }
         if(shiftY != 0) {
-        	node.setAttribute("SHIFT_Y",Integer.toString(shiftY));
+        	node.setAttribute("VSHIFT",Integer.toString(shiftY));
         }
     	//link
     	if (getLink() != null) {

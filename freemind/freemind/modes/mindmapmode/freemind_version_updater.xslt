@@ -8,30 +8,44 @@
 		</xsl:copy>
 	</xsl:template>
 
-	<xsl:template 
-		match="/ | node() | @* | comment() | processing-instruction()" mode="BELOW_0_8_0RC3">
-		<xsl:copy>
-			<xsl:apply-templates select="@* | node()"/>
-		</xsl:copy>
-	</xsl:template>
-
 	<xsl:template match="map">
-		<xsl:choose>
-			<!-- versions that may use the CreationModificationPlugin. -->
-			<xsl:when 
-				test="(starts-with(@version, '0.7.')) or (starts-with(@version, '0.8.0_alpha')) or (starts-with(@version, '0.8.0_beta')) or (@version='0.8.0 RC1') or (@version='0.8.0 RC2')">
-				<xsl:copy>
-					<xsl:apply-templates select="@*" mode="BELOW_0_8_0RC3"/>
-					<!--<xsl:attribute name="version">0.8.0 RC3</xsl:attribute>-->
-					<xsl:apply-templates select="node()" mode="BELOW_0_8_0RC3"/>
-				</xsl:copy>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:copy>
-					<xsl:apply-templates select="@* | node()"/>
-				</xsl:copy>
-			</xsl:otherwise>
-		</xsl:choose>
+			<!-- versions -->
+		<xsl:variable name="version"><!--
+			--><xsl:choose><!--
+				--><xsl:when test="@version='0.7.0'"><!--
+				--></xsl:when><!--
+				--><xsl:when test="@version='0.7.1'"><!--
+					-->0710000<!--Numbering scheme: version.subversion.releasecandidateversion.betaversion.alphaversion
+				--></xsl:when><!--
+				--><xsl:when test="(starts-with(@version, '0.8.0_alpha'))"><!--
+					-->0800001<!--
+				--></xsl:when><!--
+				--><xsl:when test="(starts-with(@version, '0.8.0_beta'))"><!--
+					-->0800010<!--
+				--></xsl:when><!--
+				--><xsl:when test="@version='0.8.0 RC1'"><!--
+					-->0800100<!--
+				--></xsl:when><!--
+				--><xsl:when test="@version='0.8.0 RC2'"><!--
+					-->0800200<!--
+				--></xsl:when><!--
+				--><xsl:when test="@version='0.8.0 RC3'"><!--
+					-->0800300<!--
+				--></xsl:when><!--
+				--><xsl:when test="@version='0.8.0 RC4'"><!--
+					-->0800400<!--
+				--></xsl:when><!--
+				--><xsl:otherwise><!--
+					-->-1<!--
+				--></xsl:otherwise><!--
+			--></xsl:choose><!--
+		--></xsl:variable><!--
+		<xsl:message>!<xsl:value-of select="$version"></xsl:value-of>!</xsl:message>
+		--><xsl:copy>
+			<xsl:apply-templates select="@* | node()">
+				<xsl:with-param name="version" select="$version"/>
+			</xsl:apply-templates>
+		</xsl:copy>
 	</xsl:template>
 	<!-- from
 	 <hook NAME="accessories/plugins/CreationModificationPlugin.properties">
@@ -44,21 +58,35 @@
 		ID="Freemind_Link_241899915" MODIFIED="1113680014182" 
 		TEXT="Transactions">
  -->
-	<xsl:template 
-		match="node/hook[@NAME='accessories/plugins/CreationModificationPlugin.properties']" mode="BELOW_0_8_0RC3"><!--
-	--></xsl:template>
+	<!-- remove the following attributes/tags: -->
+	<xsl:template match="node/hook[@NAME='accessories/plugins/CreationModificationPlugin.properties']"/>
+	<xsl:template match="node/@SHIFT_Y"/>
 	
-	<xsl:template match="node[./hook[@NAME='accessories/plugins/CreationModificationPlugin.properties']]" mode="BELOW_0_8_0RC3">
-		<xsl:copy>
-			<xsl:attribute name="CREATED">
-				<xsl:value-of 
-					select="hook[@NAME='accessories/plugins/CreationModificationPlugin.properties']/Parameters/@CREATED"/>
-			</xsl:attribute>
-			<xsl:attribute name="MODIFIED">
-				<xsl:value-of 
-					select="hook[@NAME='accessories/plugins/CreationModificationPlugin.properties']/Parameters/@MODIFIED"/>
-			</xsl:attribute>
-			<xsl:apply-templates select="@*|node()" mode="BELOW_0_8_0RC3"/>
+	<xsl:template match="node">
+		<xsl:param name="version">-1</xsl:param>
+  		<xsl:copy>
+			<xsl:choose>
+				<!-- move the attributes CREATED and MODIFIED into the node tag as of version 0.8.0RC3-->
+				<xsl:when test="$version &lt; 0800300 and hook[@NAME='accessories/plugins/CreationModificationPlugin.properties']">
+					<xsl:attribute name="CREATED">
+						<xsl:value-of 
+							select="hook[@NAME='accessories/plugins/CreationModificationPlugin.properties']/Parameters/@CREATED"/>
+					</xsl:attribute>
+					<xsl:attribute name="MODIFIED">
+						<xsl:value-of 
+							select="hook[@NAME='accessories/plugins/CreationModificationPlugin.properties']/Parameters/@MODIFIED"/>
+					</xsl:attribute>
+				</xsl:when>				
+				<xsl:when test="$version &lt; 0800400 and @SHIFT_Y">
+					<xsl:attribute name="VSHIFT">
+						<xsl:value-of 
+							select="@SHIFT_Y"/>
+					</xsl:attribute>
+				</xsl:when>
+			</xsl:choose>
+			<xsl:apply-templates select="@*|node()">
+				<xsl:with-param name="version" select="$version"/>
+			</xsl:apply-templates>
 		</xsl:copy>
 	</xsl:template>
 </xsl:stylesheet>

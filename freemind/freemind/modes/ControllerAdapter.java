@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.24 2005-05-29 19:36:17 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.25 2005-06-12 12:04:26 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -743,13 +743,22 @@ public abstract class ControllerAdapter implements ModeController {
         getController().getMapModuleManager().updateMapModuleName();        
         return true;
     }
-    /** Creates a proposal for a file name to save the map.
-     *  Removes all illegal characters.
+    /**
+     * Creates a proposal for a file name to save the map. Removes all illegal
+     * characters.
+     * 
+     * Fixed: When creating file names based on the text of the root node, now all the
+     * extra unicode characters are replaced with _. This is not very good. For
+     * chinese content, you would only get a list of ______ as a file name. Only
+     * characters special for building file paths shall be removed (rather than
+     * replaced with _), like : or /. The exact list of dangeous characters
+     * needs to be investigated. 0.8.0RC3.
+     * 
      * @return
      */
     private String getFileNameProposal() {
         String rootText = ((MindMapNode)getMap().getRoot()).toString();
-        rootText = rootText.replaceAll("[^0-9a-zA-Z_ ]+", "_");
+        rootText = rootText.replaceAll("[&:/\\\\\0%$#~\\?\\*]+", "");
         return rootText;
     }
 

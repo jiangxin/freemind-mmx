@@ -16,25 +16,30 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.16.14.1 2004-10-17 23:00:06 dpolivaev Exp $*/
+/*$Id: MainToolBar.java,v 1.16.14.2 2005-06-12 12:04:17 christianfoltin Exp $*/
 
 package freemind.controller;
 
-import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
 public class MainToolBar extends FreeMindToolBar {
-    JComboBox zoom;	    
+    private JComboBox zoom;	    
     Controller c;
     String userDefinedZoom;
+    private static Logger logger= null;
 	
     public MainToolBar(final Controller c) {
     	super();
         this.setRollover(true);
         this.c = c;
+        if(logger == null) {
+            logger = c.getFrame().getLogger(this.getClass().getName());
+        }
         userDefinedZoom = c.getResourceString("user_defined_zoom");
 	JButton button;
 
@@ -80,6 +85,7 @@ public class MainToolBar extends FreeMindToolBar {
        return (int)(f*100F)+"%"; }
 
     public void setZoomComboBox(float f) {
+        logger.info("setZoomComboBox is called with "+f+".");
         String toBeFound = getItemForZoom(f);
         for(int i = 0; i < zoom.getItemCount(); ++i) {
             if(toBeFound.equals((String) zoom.getItemAt(i))) {
