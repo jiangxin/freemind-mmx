@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EncryptNode.java,v 1.1.2.6 2005-04-20 16:52:20 christianfoltin Exp $*/
+/*$Id: EncryptNode.java,v 1.1.2.6.6.1 2005-06-12 13:06:42 dpolivaev Exp $*/
 
 /*
  * Created on 14.12.2004
@@ -124,11 +124,13 @@ public class EncryptNode extends NodeHookAdapter {
         if(password == null) {
             return;
         }
+        MapAdapter newModel = new MindMapMapModel(getController().getFrame());
         EncryptedMindMapNode encryptedMindMapNode = new EncryptedMindMapNode(
                 getController().getText("accessories/plugins/EncryptNode.properties_select_me"), 
-                getController().getFrame());
+                getController().getFrame(),
+                newModel);
+        newModel.setRoot(encryptedMindMapNode);
         encryptedMindMapNode.setPassword(password);
-        MapAdapter newModel = new MindMapMapModel(encryptedMindMapNode, getController().getFrame());
         MindMapController mindmapcontroller = (MindMapController) getController();
         mindmapcontroller.newMap(newModel);
     }
@@ -145,9 +147,9 @@ public class EncryptNode extends NodeHookAdapter {
         // FIXME: not multithreading safe
         mindmapcontroller.setNewNodeCreator(new NewNodeCreator() {
 
-            public MindMapNode createNode(Object userObject) {
+            public MindMapNode createNode(Object userObject, MindMap map) {
                 EncryptedMindMapNode encryptedMindMapNode = new EncryptedMindMapNode(
-                        userObject, getController().getFrame());
+                        userObject, getController().getFrame(), map);
                 encryptedMindMapNode.setPassword(password);
                 return encryptedMindMapNode;
             }
