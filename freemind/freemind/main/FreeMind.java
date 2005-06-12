@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.21 2005-06-12 12:04:18 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.22 2005-06-12 19:43:54 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -70,6 +70,12 @@ public class FreeMind extends JFrame implements FreeMindMain {
     public static final String RESOURCE_ANTIALIAS = "antialias";
     public static final String RESOURCE_LANGUAGE = "language";
     public static final String RESOURCES_SELECTION_METHOD = "selection_method";
+    public static final String RESOURCES_NODE_STYLE = "standardnodestyle";
+    public static final String RESOURCES_ROOT_NODE_STYLE = "standardrootnodestyle";
+    public static final String RESOURCES_NODE_COLOR = "standardnodecolor";
+    public static final String RESOURCES_SELECTED_NODE_COLOR = "standardselectednodecolor";
+    
+    
     private static Logger logger =null;
     
     private static final String DEFAULT_LANGUAGE = "en";

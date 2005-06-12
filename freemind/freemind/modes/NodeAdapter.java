@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.13 2005-06-12 12:04:26 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.14 2005-06-12 19:43:54 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -43,6 +43,7 @@ import javax.swing.tree.TreePath;
 
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
@@ -225,44 +226,43 @@ public abstract class NodeAdapter implements MindMapNode {
 	}
 
     /**A Node-Style like MindMapNode.STYLE_FORK or MindMapNode.STYLE_BUBBLE*/
-    public String getStyle() {
-	if (style==null) {
-		if (this.isRoot()) {
-			return getFrame().getProperty("standardrootnodestyle");
-		}
-		String stdstyle = getFrame().getProperty("standardnodestyle");
-		if( stdstyle.equals(MindMapNode.STYLE_AS_PARENT)){
-			return getParentNode().getStyle();
-		}
-		return stdstyle;
+	public String getStyle() {
+    	String returnedString = style; /* Style string returned */
+    	if (style==null) {
+    		if (this.isRoot()) {
+    			returnedString=getFrame().getProperty(FreeMind.RESOURCES_ROOT_NODE_STYLE);
+    		}
+    		else{ 
+    			String stdstyle = getFrame().getProperty(FreeMind.RESOURCES_NODE_STYLE);
+    			if( stdstyle.equals(MindMapNode.STYLE_AS_PARENT)){
+    				returnedString=getParentNode().getStyle();
+    			}
+    			else{
+    				returnedString = stdstyle;
+    			}
+    		}
+    	}
+    	else if (this.isRoot() && style.equals(MindMapNode.STYLE_AS_PARENT)) {
+    		returnedString =  getFrame().getProperty(FreeMind.RESOURCES_ROOT_NODE_STYLE);
+     	}
+     	else if( style.equals(MindMapNode.STYLE_AS_PARENT)){
+    		returnedString = getParentNode().getStyle();
+     	}
+    	
+    	// Handle the combined node style
+     	if (returnedString.equals(MindMapNode.STYLE_COMBINED))
+     	{
+     		if (this.isFolded()){
+     			return MindMapNode.STYLE_BUBBLE;
+     		}
+     		else{
+    			return MindMapNode.STYLE_FORK;
+     		}
+     	}
+    	return returnedString;
 	}
-
-	if (this.isRoot() && style.equals(MindMapNode.STYLE_AS_PARENT)) {
-		return getFrame().getProperty("standardrootnodestyle");
- 	}
-	if (style==null) {
-		String stdstyle = getFrame().getProperty("standardnodestyle");
-		if( stdstyle.equals(MindMapNode.STYLE_AS_PARENT)){
-			return getParentNode().getStyle();
-		}
-		return stdstyle;
-	}
- 	if( style.equals(MindMapNode.STYLE_AS_PARENT)){
-		return getParentNode().getStyle();
- 	}
- 	if (style.equals(MindMapNode.STYLE_COMBINED))
- 	{
- 		if (this.isFolded()){
- 			return MindMapNode.STYLE_BUBBLE;
- 		}
- 		else{
-			return MindMapNode.STYLE_FORK;
- 		}
- 	}
-	return style;
-
-   }
-
+	
+	
 
     /**The Foreground/Font Color*/
     public Color getColor() {

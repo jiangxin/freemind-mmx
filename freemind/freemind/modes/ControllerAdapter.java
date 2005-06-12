@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.25 2005-06-12 12:04:26 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.26 2005-06-12 19:43:54 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -89,6 +89,7 @@ import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.extensions.UndoEventReceiver;
 import freemind.main.ExampleFileFilter;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
@@ -1023,7 +1024,7 @@ public abstract class ControllerAdapter implements ModeController {
         Color nodeColor = node.getColor();
         if (nodeColor == null) {
             nodeColor = Tools.xmlToColor(getFrame().getProperty(
-                    "standardnodecolor"));
+                    FreeMind.RESOURCES_NODE_COLOR));
         }
         setNodeColor(node, new Color(
                 (3 * mapColor.getRed() + nodeColor.getRed()) / 4, (3 * mapColor

@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.9 2005-06-12 12:04:26 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.10 2005-06-12 19:43:54 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -36,7 +36,6 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
-import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -57,13 +56,13 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
 
 import freemind.controller.Controller;
-import freemind.controller.actions.generated.instance.NormalWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.OptionPanelWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.OptionPanelWindowConfigurationStorageType;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.modes.MindMapNode;
 
 /**
  * @author foltin
@@ -762,25 +761,28 @@ public class OptionPanel {
 		 */
 		controls.add(new NewTabProperty("Defaults"));
 		controls.add(new SeparatorProperty("default_styles"));
+		controls.add(new ComboProperty("standardnodestyle.tooltip",
+                FreeMind.RESOURCES_NODE_STYLE,
+                new String[] { MindMapNode.STYLE_FORK,
+                        MindMapNode.STYLE_BUBBLE, MindMapNode.STYLE_AS_PARENT,
+                        MindMapNode.STYLE_COMBINED })); //  as_parent
+
 		controls.add(new ComboProperty(
 
-		"standardnodestyle.tooltip", "standardnodestyle", new String[] {
-				"fork", "bubble", "as_parent", "combined" })); //  as_parent
-
-		controls.add(new ComboProperty(
-
-		"standardrootnodestyle.tooltip", "standardrootnodestyle", new String[] {
-				"fork", "bubble", "combined" })); //  fork
+		"standardrootnodestyle.tooltip", FreeMind.RESOURCES_ROOT_NODE_STYLE, new String[] {
+		        MindMapNode.STYLE_FORK,
+                MindMapNode.STYLE_BUBBLE,
+                MindMapNode.STYLE_COMBINED })); //  fork
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("default_colors"));
 		controls.add(new ColorProperty(
 
-		"standardnodecolor.tooltip", "standardnodecolor")); //  #000000
+		"standardnodecolor.tooltip", FreeMind.RESOURCES_NODE_COLOR)); //  #000000
 
 		controls.add(new ColorProperty(
 
-		"standardselectednodecolor.tooltip", "standardselectednodecolor")); //  #D2D2D2
+		"standardselectednodecolor.tooltip", FreeMind.RESOURCES_SELECTED_NODE_COLOR)); //  #D2D2D2
 
 		controls.add(new ColorProperty(
 

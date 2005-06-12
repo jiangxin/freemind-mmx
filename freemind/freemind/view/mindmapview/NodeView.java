@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.11 2005-05-12 21:31:16 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.12 2005-06-12 19:43:54 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -49,12 +49,14 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import freemind.controller.Controller;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
+import freemind.preferences.FreemindPropertyListener;
 
 
 /**
@@ -111,11 +113,28 @@ public abstract class NodeView extends JLabel {
 	if (standardNodeColor == null) {
         standardNodeColor =
             Tools.xmlToColor(
-                map.getController().getProperty("standardnodecolor"));
+                map.getController().getProperty(FreeMind.RESOURCES_NODE_COLOR));
+        // add listener:
+        Controller
+                    .addPropertyChangeListener(new FreemindPropertyListener() {
+
+                        public void propertyChanged(String propertyName,
+                                String newValue, String oldValue) {
+                            if (propertyName
+                                    .equals(FreeMind.RESOURCES_NODE_COLOR)) {
+                                standardNodeColor = Tools.xmlToColor(newValue);
+                            }
+                            if (propertyName
+                                    .equals(FreeMind.RESOURCES_SELECTED_NODE_COLOR)) {
+                                standardSelectColor = Tools.xmlToColor(newValue);
+                            }
+                        }
+                    });
+
     }
 	// initialize the selectedColor:
 	if(standardSelectColor== null) {
-		String stdcolor = map.getController().getFrame().getProperty("standardselectednodecolor");
+		String stdcolor = map.getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR);
 		if (stdcolor.length() == 7) {
 			standardSelectColor = Tools.xmlToColor(stdcolor);
 		} else {

@@ -262,12 +262,12 @@ RC 4:
 * Option panel stores its panel
 * Removing clouds stores its color for undo.
 * Added icons to popup menu.
-
 * Version updater adapted to process renames from RC3->RC4.
 * Added readme.txt for the src package
 * XML must not contain any zero characters.
 * Fixed: Filename construction
-
+* Integrated patch: NodeFoldingPatch 1166708. Thanks to John Cerney.
+* Node styles, color, selected node color change with option change.
 
 Changes made in Freemind 0.7.2:
 ===============================
