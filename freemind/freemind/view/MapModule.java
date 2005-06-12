@@ -16,12 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapModule.java,v 1.4.18.1.2.1 2005-05-26 16:43:27 dpolivaev Exp $*/
+/*$Id: MapModule.java,v 1.4.18.1.2.1.2.1 2005-06-12 12:59:55 dpolivaev Exp $*/
 
 package freemind.view;
 
 import freemind.view.mindmapview.MapView;
-import freemind.controller.Controller;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
 
@@ -85,13 +84,5 @@ public class MapModule {
 
     public void setView(MapView view) {
 	this.view = view;
-    }
-
-    /**
-     * 
-     */
-    public void initMap() {
-        getView().initRoot();
-        Controller.getInstance().getFilterController().mapChanged(model);
     }
 }

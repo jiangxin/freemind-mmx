@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeNodeModel.java,v 1.8 2003-11-03 11:00:22 sviles Exp $*/
+/*$Id: SchemeNodeModel.java,v 1.8.28.1 2005-06-12 12:59:55 dpolivaev Exp $*/
 
 package freemind.modes.schememode;
 
 import freemind.main.FreeMindMain;
+import freemind.modes.MindMap;
 import freemind.modes.NodeAdapter;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -35,8 +36,8 @@ public class SchemeNodeModel extends NodeAdapter {
     //  Constructors
     //
 
-    public SchemeNodeModel(FreeMindMain frame) {
-	super(frame);
+    public SchemeNodeModel(FreeMindMain frame, MindMap map) {
+	super(frame, map);
 	children = new LinkedList();
 	setEdge(new SchemeEdgeModel(this,getFrame()));
     }

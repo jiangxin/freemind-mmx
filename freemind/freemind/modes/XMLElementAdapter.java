@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.8 2005-05-03 05:29:50 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.1 2005-06-12 12:59:54 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -64,21 +64,22 @@ public abstract class XMLElementAdapter extends XMLElement {
     public static final String XML_NODE_HISTORY_CREATED_AT = "CREATED";
     public static final String XML_NODE_HISTORY_LAST_MODIFIED_AT = "MODIFIED";
 
+    private MindMap map;
+
    //   Overhead methods
 
-   public XMLElementAdapter(FreeMindMain frame) {
-      this.frame = frame; 
-      this.ArrowLinkAdapters = new Vector();
-      this.IDToTarget = new HashMap();
+   public XMLElementAdapter(FreeMindMain frame, MindMap map) {
+      this(frame, new Vector(), new HashMap(), map);
       if(logger==null) {
           logger = frame.getLogger(this.getClass().getName());
       }
    }
 
-    protected XMLElementAdapter(FreeMindMain frame, Vector ArrowLinkAdapters, HashMap IDToTarget) {
+    protected XMLElementAdapter(FreeMindMain frame, Vector ArrowLinkAdapters, HashMap IDToTarget, MindMap map) {
         this.frame = frame; 
         this.ArrowLinkAdapters = ArrowLinkAdapters;
         this.IDToTarget = IDToTarget;
+        this.map = map;
     }
 
     /** abstract method to create elements of my type (factory).*/
@@ -393,4 +394,7 @@ public void setAttribute(String name, Object value) {
     }
 
 
+    protected MindMap getMap() {
+        return map;
+    }
 }

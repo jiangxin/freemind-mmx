@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseXMLElement.java,v 1.6.18.1 2004-12-19 09:00:40 christianfoltin Exp $*/
+/*$Id: BrowseXMLElement.java,v 1.6.18.1.8.1 2005-06-12 12:59:55 dpolivaev Exp $*/
 
 
 package freemind.modes.browsemode;
@@ -24,6 +24,7 @@ package freemind.modes.browsemode;
 import freemind.main.XMLElement;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.modes.MindMap;
 import freemind.modes.NodeAdapter;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.CloudAdapter;
@@ -39,21 +40,22 @@ import java.util.HashMap;
 
 public class BrowseXMLElement extends XMLElementAdapter {
 
-   public BrowseXMLElement(FreeMindMain frame) {
-       super(frame);
+   public BrowseXMLElement(FreeMindMain frame, MindMap map) {
+       super(frame, map);
    }
 
-    protected BrowseXMLElement(FreeMindMain frame, Vector ArrowLinkAdapters, HashMap IDToTarget) {
-        super(frame, ArrowLinkAdapters, IDToTarget);
+    protected BrowseXMLElement(FreeMindMain frame, Vector ArrowLinkAdapters, HashMap IDToTarget, MindMap map) {
+        super(frame, ArrowLinkAdapters, IDToTarget, map);
     }
 
     /** abstract method to create elements of my type (factory).*/
     protected XMLElement  createAnotherElement(){
     // We do not need to initialize the things of XMLElement.
-        return new BrowseXMLElement(getFrame(), ArrowLinkAdapters, IDToTarget);
+        return new BrowseXMLElement(getFrame(), ArrowLinkAdapters, IDToTarget, getMap());
     }
     protected NodeAdapter createNodeAdapter(FreeMindMain     frame, String nodeClass){
-        return new BrowseNodeModel(frame);
+        BrowseNodeModel browseNodeModel = new BrowseNodeModel(frame, getMap());
+        return browseNodeModel;
     }
     protected EdgeAdapter createEdgeAdapter(NodeAdapter node, FreeMindMain frame){
         return new BrowseEdgeModel(node, frame); 

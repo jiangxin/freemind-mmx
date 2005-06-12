@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.14.6 2005-03-11 22:27:29 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.14.6.6.1 2005-06-12 12:59:54 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -52,7 +52,7 @@ public interface ModeController extends MindMapActions {
     /**
      * @param userObject is typically a text. 
      * */
-	MindMapNode newNode(Object userObject);
+	MindMapNode newNode(Object userObject, MindMap map);
     MindMap newMap();
     boolean save();
     boolean saveAs();

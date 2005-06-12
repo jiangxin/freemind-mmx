@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.10.2.1 2005-05-26 16:43:26 dpolivaev Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.10.2.1.2.1 2005-06-12 12:59:55 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -57,7 +57,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import freemind.controller.Controller;
 import freemind.controller.MindMapNodesSelection;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
@@ -79,10 +78,6 @@ public class MindMapMapModel extends MapAdapter  {
     //
 
     public MindMapMapModel(FreeMindMain frame) {
-        this(new MindMapNodeModel( frame.getResourceString("new_mindmap"), frame), frame);
-    }
-    
-    public MindMapMapModel( MindMapNodeModel root, FreeMindMain frame ) {
         super(frame);
         lockManager = frame.getProperty("experimental_file_locking_on").equals("true") ? 
            new LockManager() : new DummyLockManager();
@@ -90,7 +85,6 @@ public class MindMapMapModel extends MapAdapter  {
         // register new LinkRegistryAdapter
         linkRegistry = new LinkRegistryAdapter();
 
-        setRoot(root);
         readOnly = false; 
         
         // automatic save:
@@ -646,9 +640,7 @@ public class MindMapMapModel extends MapAdapter  {
        if (root != null) {
           setRoot(root); }
        setFile(file);
-       setSaved(true); 
-       Controller.getInstance().getMapModuleManager().getMapModule().initMap();
-       } 
+       setSaved(true); } 
     
     /** When a map is closed, this method is called. */
     public void destroy() {
@@ -660,7 +652,7 @@ public class MindMapMapModel extends MapAdapter  {
     }
 
     MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
-        MindMapXMLElement mapElement = new MindMapXMLElement(getFrame());
+        MindMapXMLElement mapElement = new MindMapXMLElement(getFrame(), this);
         // the resulting file is accessed by the reader:
         Reader reader = null;
         try{

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMapModel.java,v 1.9.18.4 2005-04-26 21:41:00 christianfoltin Exp $*/
+/*$Id: BrowseMapModel.java,v 1.9.18.4.6.1 2005-06-12 12:59:55 dpolivaev Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -52,7 +52,7 @@ public class BrowseMapModel extends MapAdapter {
         if(root != null)
             setRoot(root);
         else
-           setRoot(new BrowseNodeModel(getFrame().getResourceString("new_mindmap"), getFrame())); 
+           setRoot(new BrowseNodeModel(getFrame().getResourceString("new_mindmap"), getFrame(), this)); 
         // register new LinkRegistryAdapter
         linkRegistry = new LinkRegistryAdapter();
     }
@@ -122,7 +122,7 @@ public class BrowseMapModel extends MapAdapter {
 
 	//NanoXML Code
 	//XMLElement parser = new XMLElement();
-        BrowseXMLElement mapElement = new BrowseXMLElement(getFrame());
+        BrowseXMLElement mapElement = new BrowseXMLElement(getFrame(), this);
 
         InputStreamReader urlStreamReader = null;
         URLConnection uc = null;

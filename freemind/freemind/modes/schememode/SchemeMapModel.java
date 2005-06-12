@@ -16,11 +16,10 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMapModel.java,v 1.11.18.3.2.1 2005-05-26 16:43:27 dpolivaev Exp $*/
+/*$Id: SchemeMapModel.java,v 1.11.18.3.2.1.2.1 2005-06-12 12:59:55 dpolivaev Exp $*/
 
 package freemind.modes.schememode;
 
-import freemind.controller.Controller;
 import freemind.main.FreeMindMain;
 
 import freemind.modes.MapAdapter;
@@ -46,7 +45,7 @@ public class SchemeMapModel extends MapAdapter {
 
     public SchemeMapModel(FreeMindMain frame) {
 	super(frame);
-	setRoot(new SchemeNodeModel(getFrame()));
+	setRoot(new SchemeNodeModel(getFrame(), this));
     }
     
     //
@@ -75,13 +74,12 @@ public class SchemeMapModel extends MapAdapter {
 	setFile(file);
 	setSaved(true);
 
-	setRoot(new SchemeNodeModel(getFrame()));
+	setRoot(new SchemeNodeModel(getFrame(), this));
 	
 	try {
 	    loadMathStyle(new InputStreamReader(new FileInputStream(file)));
 	} catch (IOException ex) {
 	}
-	Controller.getInstance().getMapModuleManager().getMapModule().initMap();
     }
 
     public void loadMathStyle(Reader re) throws IOException{
@@ -100,7 +98,7 @@ public class SchemeMapModel extends MapAdapter {
 	while (tok.nextToken() != StreamTokenizer.TT_EOF) {
 	    if (tok.ttype == 40) {    //"("
 		//		System.out.println("Token starts with (");
-		SchemeNodeModel newNode = new SchemeNodeModel(getFrame());
+		SchemeNodeModel newNode = new SchemeNodeModel(getFrame(), this);
 		insertNodeInto(newNode, node);
 		node = newNode;
 	    } else if (tok.ttype == 41) {    //")"
@@ -114,7 +112,7 @@ public class SchemeMapModel extends MapAdapter {
 		if (node.toString().equals(" ") && node.getChildCount() == 0) {
 		    node.setUserObject(token);
 		} else {
-		    SchemeNodeModel newNode = new SchemeNodeModel(getFrame());
+		    SchemeNodeModel newNode = new SchemeNodeModel(getFrame(), this);
 		    insertNodeInto(newNode, node);
 		    newNode.setUserObject(token);
 		}

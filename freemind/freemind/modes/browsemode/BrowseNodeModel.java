@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseNodeModel.java,v 1.7.18.1 2004-10-17 20:01:06 dpolivaev Exp $*/
+/*$Id: BrowseNodeModel.java,v 1.7.18.1.10.1 2005-06-12 12:59:55 dpolivaev Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -24,6 +24,7 @@ import java.util.LinkedList;
 
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 
@@ -37,13 +38,13 @@ public class BrowseNodeModel extends NodeAdapter {
     //  Constructors
     //
 
-    public BrowseNodeModel(FreeMindMain frame) {
-	super(frame);
+    public BrowseNodeModel(FreeMindMain frame, MindMap map) {
+	super(frame, map);
 	children = new LinkedList();
 	setEdge(new BrowseEdgeModel(this,getFrame())); }
 	    
-    public BrowseNodeModel( Object userObject, FreeMindMain frame ) {
-	super(userObject,frame);
+    public BrowseNodeModel( Object userObject, FreeMindMain frame, MindMap map ) {
+	super(userObject, frame, map);
 	children = new LinkedList();
 	setEdge(new BrowseEdgeModel(this,getFrame())); }
 

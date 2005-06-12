@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.11.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.1 2005-06-12 12:59:55 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -281,13 +281,13 @@ public class MindMapController extends ControllerAdapter {
     private NewNodeCreator myNewNodeCreator = null;
     
     public interface NewNodeCreator {
-        MindMapNode createNode(Object userObject);
+        MindMapNode createNode(Object userObject, MindMap map);
     }
 
     public class DefaultMindMapNodeCreator implements NewNodeCreator {
 
-        public MindMapNode createNode(Object userObject) {
-            return new MindMapNodeModel(userObject, getFrame());
+        public MindMapNode createNode(Object userObject, MindMap map) {
+            return new MindMapNodeModel(userObject, getFrame(), map);
         }
         
     }
@@ -296,12 +296,12 @@ public class MindMapController extends ControllerAdapter {
         myNewNodeCreator = creator;
     }
     
-    public MindMapNode newNode(Object userObject) {
+    public MindMapNode newNode(Object userObject, MindMap map) {
         // singleton default:
         if (myNewNodeCreator == null) {
             myNewNodeCreator = new DefaultMindMapNodeCreator();
         }
-        return myNewNodeCreator.createNode(userObject);
+        return myNewNodeCreator.createNode(userObject, map);
     }
 
     // fc, 14.12.2004: end "different models" change
@@ -741,7 +741,9 @@ public class MindMapController extends ControllerAdapter {
                 deleteNode(node);
                 // save node:
                 node.setParent(null);
-                MindMapMapModel map = new MindMapMapModel(node, getFrame());
+                MindMapMapModel map = new MindMapMapModel(getFrame());
+                node.setMap(map);
+                map.setRoot(node);
                 map.save(chosenFile);
                 // new node instead:
                 MindMapNode newNode = addNewNode(parent, nodePosition, node.isLeft());

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.10.2.4 2005-05-26 16:43:26 dpolivaev Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.10.2.4.2.1 2005-06-12 12:59:54 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -50,6 +50,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode.HistoryInformation;
+import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -111,17 +112,18 @@ public abstract class NodeAdapter implements MindMapNode {
     private HistoryInformation historyInformation = null;
 	// Logging: 
     static protected java.util.logging.Logger logger;
+    private MindMap map = null;
 
 
     //
     // Constructors
     //
 
-    protected NodeAdapter(FreeMindMain frame) {
-		this(null, frame);
+    protected NodeAdapter(FreeMindMain frame, MindMap map) {
+		this(null, frame, map);
     }
 
-    protected NodeAdapter(Object userObject, FreeMindMain frame) {
+    protected NodeAdapter(Object userObject, FreeMindMain frame, MindMap map) {
 		this.userObject = userObject;
 		this.frame = frame;
 		hooks = new Vector();
@@ -130,9 +132,17 @@ public abstract class NodeAdapter implements MindMapNode {
 			logger = frame.getLogger(this.getClass().getName());
 		// create creation time:
 		setHistoryInformation(new HistoryInformation());
+		MindMapNode parentNode = getParentNode();
+		this.map = map; 
 
     }
 
+    /**
+     * @param map
+     */
+    public void setMap(MindMap map) {
+        this.map = map;        
+    }
     /**
      *
      */
@@ -381,8 +391,8 @@ public abstract class NodeAdapter implements MindMapNode {
         getMap().getStatistics().addIcon(_icon);
     };
 
-    private MindMap getMap() {
-        return getFrame().getController().getModel();
+    public MindMap getMap() {
+        return map;
     }
 
     /** @return returns the number of remaining icons. */
