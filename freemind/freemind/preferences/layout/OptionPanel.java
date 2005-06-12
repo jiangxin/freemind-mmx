@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.10 2005-06-12 19:43:54 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.11 2005-06-12 20:07:40 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -28,6 +28,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,7 +45,9 @@ import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
@@ -437,15 +441,20 @@ public class OptionPanel {
 		String label;
 
 		Color color;
+		final JPopupMenu menu = new JPopupMenu();
+
+        private final String defaultColor;
 
 		/**
 		 * @param description
 		 * @param label
+		 * @param defaultColor TODO
 		 */
-		public ColorProperty(String description, String label) {
+		public ColorProperty(String description, String label, String defaultColor) {
 			super();
 			this.description = description;
 			this.label = label;
+            this.defaultColor = defaultColor;
 			addActionListener(this);
 			color = Color.BLACK;
 		}
@@ -470,6 +479,31 @@ public class OptionPanel {
 			JLabel label = builder
 					.append(OptionPanel.getText(getLabel()), this);
 			label.setToolTipText(OptionPanel.getText(getDescription()));
+			// add "reset to standard" popup:
+		    
+		    // Create and add a menu item
+			//FIXME: Translate me!
+		    JMenuItem item = new JMenuItem(fmMain.getResourceString("OptionPanel.ColorProperty.ResetColor"));
+		    item.addActionListener(new ActionListener(){
+
+                public void actionPerformed(ActionEvent e) {
+                    setValue(defaultColor);
+                }});
+		    menu.add(item);
+		    
+		    // Set the component to show the popup menu
+		    this.addMouseListener(new MouseAdapter() {
+		        public void mousePressed(MouseEvent evt) {
+		            if (evt.isPopupTrigger()) {
+		                menu.show(evt.getComponent(), evt.getX(), evt.getY());
+		            }
+		        }
+		        public void mouseReleased(MouseEvent evt) {
+		            if (evt.isPopupTrigger()) {
+		                menu.show(evt.getComponent(), evt.getX(), evt.getY());
+		            }
+		        }
+		    });
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -778,27 +812,27 @@ public class OptionPanel {
 		controls.add(new SeparatorProperty("default_colors"));
 		controls.add(new ColorProperty(
 
-		"standardnodecolor.tooltip", FreeMind.RESOURCES_NODE_COLOR)); //  #000000
+		"standardnodecolor.tooltip", FreeMind.RESOURCES_NODE_COLOR, "#000000")); //  #000000
 
 		controls.add(new ColorProperty(
 
-		"standardselectednodecolor.tooltip", FreeMind.RESOURCES_SELECTED_NODE_COLOR)); //  #D2D2D2
+		"standardselectednodecolor.tooltip", FreeMind.RESOURCES_SELECTED_NODE_COLOR, "#D2D2D2")); //  #D2D2D2
 
 		controls.add(new ColorProperty(
 
-		"standardedgecolor.tooltip", "standardedgecolor")); //  #808080
+		"standardedgecolor.tooltip", "standardedgecolor", "#808080")); //  #808080
 
 		controls.add(new ColorProperty(
 
-		"standardlinkcolor.tooltip", "standardlinkcolor")); //  #b0b0b0
+		"standardlinkcolor.tooltip", "standardlinkcolor", "#b0b0b0")); //  #b0b0b0
 
 		controls.add(new ColorProperty(
 
-		"standardbackgroundcolor.tooltip", "standardbackgroundcolor")); //  #ffffff
+		"standardbackgroundcolor.tooltip", "standardbackgroundcolor", "#ffffff")); //  #ffffff
 
 		controls.add(new ColorProperty(
 
-		"standardcloudcolor.tooltip", "standardcloudcolor")); //  #f0f0f0
+		"standardcloudcolor.tooltip", "standardcloudcolor", "#f0f0f0")); //  #f0f0f0
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("default_fonts"));

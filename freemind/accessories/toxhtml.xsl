@@ -57,7 +57,7 @@ Todo:
 <xsl:processing-instruction name="xml-stylesheet">href="treestyles.css" type="text/css"</xsl:processing-instruction>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fi" >
 <head>
-<title><xsl:value-of select="/node/@TEXT"/>
+<title><xsl:value-of select="/map/node/@TEXT"/>
 	</title>
 	<xsl:element name="link"><xsl:attribute name="rel">stylesheet</xsl:attribute>
 		<xsl:attribute name="href"><xsl:value-of select="$destination_dir"/>treestyles.css</xsl:attribute>

@@ -268,6 +268,8 @@ RC 4:
 * Fixed: Filename construction
 * Integrated patch: NodeFoldingPatch 1166708. Thanks to John Cerney.
 * Node styles, color, selected node color change with option change.
+* Little bugs in XSLT exports removed.
+* All colors in the option panel now have a "Reset color" popup menu.
 
 Changes made in Freemind 0.7.2:
 ===============================
