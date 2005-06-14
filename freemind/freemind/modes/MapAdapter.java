@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.14.7 2005-04-26 21:41:00 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.14.8 2005-06-14 20:38:07 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -43,6 +43,7 @@ import javax.swing.tree.TreePath;
 
 import freemind.controller.MindMapNodesSelection;
 import freemind.extensions.PermanentNodeHook;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
@@ -145,7 +146,7 @@ public abstract class MapAdapter implements MindMap {
 
     public Color getBackgroundColor() {
 	if (backgroundColor==null) {
-	    return Tools.xmlToColor(getFrame().getProperty("standardbackgroundcolor"));
+	    return Tools.xmlToColor(getFrame().getProperty(FreeMind.RESOURCES_BACKGROUND_COLOR));
 	}
 	return backgroundColor;
     }

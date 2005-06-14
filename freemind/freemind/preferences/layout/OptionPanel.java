@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.11 2005-06-12 20:07:40 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.12 2005-06-14 20:38:07 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -233,6 +233,7 @@ public class OptionPanel {
 			}
 
 		});
+		frame.getRootPane().setDefaultButton(okButton);
 		frame.getContentPane().add(
 				ButtonBarFactory.buildOKCancelBar(cancelButton, okButton),
 				BorderLayout.SOUTH);
@@ -820,19 +821,19 @@ public class OptionPanel {
 
 		controls.add(new ColorProperty(
 
-		"standardedgecolor.tooltip", "standardedgecolor", "#808080")); //  #808080
+		"standardedgecolor.tooltip", FreeMind.RESOURCES_EDGE_COLOR, "#808080")); //  #808080
 
 		controls.add(new ColorProperty(
 
-		"standardlinkcolor.tooltip", "standardlinkcolor", "#b0b0b0")); //  #b0b0b0
+		"standardlinkcolor.tooltip", FreeMind.RESOURCES_LINK_COLOR, "#b0b0b0")); //  #b0b0b0
 
 		controls.add(new ColorProperty(
 
-		"standardbackgroundcolor.tooltip", "standardbackgroundcolor", "#ffffff")); //  #ffffff
+		"standardbackgroundcolor.tooltip", FreeMind.RESOURCES_BACKGROUND_COLOR, "#ffffff")); //  #ffffff
 
 		controls.add(new ColorProperty(
 
-		"standardcloudcolor.tooltip", "standardcloudcolor", "#f0f0f0")); //  #f0f0f0
+		"standardcloudcolor.tooltip", FreeMind.RESOURCES_CLOUD_COLOR, "#f0f0f0")); //  #f0f0f0
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("default_fonts"));
@@ -851,18 +852,18 @@ public class OptionPanel {
 		controls.add(new SeparatorProperty("other_defaults"));
 		controls.add(new ComboProperty(
 
-		"standardedgestyle.tooltip", "standardedgestyle", new String[] {
+		"standardedgestyle.tooltip", FreeMind.RESOURCES_EDGE_STYLE, new String[] {
 				"bezier", "linear" })); //  bezier
 
-		controls.add(new ComboProperty(
-
-		"standardcloudestyle.tooltip", "standardcloudestyle",
-				new String[] { "bezier" })); //  bezier
-
-		controls.add(new ComboProperty(
-
-		"standardlinkestyle.tooltip", "standardlinkestyle",
-				new String[] { "bezier" })); //  bezier
+//		controls.add(new ComboProperty(
+//
+//		"standardcloudestyle.tooltip", "standardcloudestyle",
+//				new String[] { "bezier" })); //  bezier
+//
+//		controls.add(new ComboProperty(
+//
+//		"standardlinkestyle.tooltip", "standardlinkestyle",
+//				new String[] { "bezier" })); //  bezier
 
 		/***********************************************************************
 		 * Appearance
@@ -1366,7 +1367,7 @@ public class OptionPanel {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		frame.hide();
+//		frame.hide();
 		frame.dispose();
 	}
 }

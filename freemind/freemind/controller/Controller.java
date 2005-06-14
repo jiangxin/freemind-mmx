@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.15 2005-06-02 06:06:10 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.16 2005-06-14 20:38:06 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -1227,9 +1227,17 @@ public class Controller {
         }
     }
 
+    /** Seems to be obsolete, but we add the property listener here. fc, 14.6.2005*/
     private class BackgroundAction extends AbstractAction {
         BackgroundAction(Controller controller, Icon icon) {
             super(controller.getResourceString("background"),icon);
+            Controller.addPropertyChangeListener(new FreemindPropertyListener(){
+
+                public void propertyChanged(String propertyName, String newValue, String oldValue) {
+                    if(propertyName.equals(FreeMind.RESOURCES_BACKGROUND_COLOR)) {
+                        getModel().setBackgroundColor(Tools.xmlToColor(newValue));
+                    }
+                }});
         }
         public void actionPerformed(ActionEvent e) {
             Color color = showCommonJColorChooserDialog(getView(),getResourceString("choose_background_color"),getView().getBackground() );
