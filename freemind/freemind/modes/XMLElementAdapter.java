@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.11 2005-06-12 12:04:26 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.12 2005-06-15 20:13:48 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -31,6 +31,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode.HistoryInformation;
+import freemind.modes.mindmapmode.EncryptedMindMapNode;
 
 public abstract class XMLElementAdapter extends XMLElement {
 
@@ -58,8 +59,7 @@ public abstract class XMLElementAdapter extends XMLElement {
     protected HashMap /* id -> target */  IDToTarget;
     public static final String XML_NODE_TEXT = "TEXT";
     public static final String XML_NODE = "node";
-    public static final String XML_NODE_CLASS = "AA_NODE_CLASS";
-    public static final String XML_NODE_ADDITIONAL_INFO = "ADDITIONAL_INFO";
+    public static final String XML_NODE_ENCRYPTED_CONTENT = "ENCRYPTED_CONTENT";
     public static final String XML_NODE_HISTORY_CREATED_AT = "CREATED";
     public static final String XML_NODE_HISTORY_LAST_MODIFIED_AT = "MODIFIED";
 
@@ -269,21 +269,13 @@ public void setAttribute(String name, Object value) {
   }
 
    private void setNodeAttribute(String name, String sValue, NodeAdapter node) {
-	if(name.equals(XML_NODE_CLASS)) {
-	     userObject = createNodeAdapter(frame, sValue);
-	     // reactivate all settings from nodeAttributes:
-	     for (Iterator i = nodeAttributes.keySet().iterator(); i.hasNext();) {
-			String key = (String) i.next();
-			//to avoid self reference:
-			if(!key.equals(XML_NODE_CLASS)){
-				setNodeAttribute(key, (String) nodeAttributes.get(key), (NodeAdapter) userObject);
-			}
-		}
-	 } else if (name.equals(XML_NODE_TEXT)) {
+     if (name.equals(XML_NODE_TEXT)) {
 	    node.setUserObject(sValue); }
-	 else if (name.equals(XML_NODE_ADDITIONAL_INFO)) {
-	     node.setAdditionalInfo(sValue); }
-	 else if (name.equals(XML_NODE_HISTORY_CREATED_AT)) {
+	 else if (name.equals(XML_NODE_ENCRYPTED_CONTENT)) {
+	     // we change the node implementation to EncryptedMindMapNode.
+	     node = createNodeGivenClassName(EncryptedMindMapNode.class.getName());
+	     node.setAdditionalInfo(sValue); 
+	 } else if (name.equals(XML_NODE_HISTORY_CREATED_AT)) {
 	     if(node.getHistoryInformation()==null) {
 	     	node.setHistoryInformation(new HistoryInformation());
 	     }
@@ -327,7 +319,22 @@ public void setAttribute(String name, Object value) {
 	 }
 }
 
-protected void completeElement() {
+    /**
+     * @param className
+     */
+    private NodeAdapter createNodeGivenClassName(String className) {
+        userObject = createNodeAdapter(frame, className);
+        // reactivate all settings from nodeAttributes:
+        for (Iterator i = nodeAttributes.keySet().iterator(); i.hasNext();) {
+            String key = (String) i.next();
+            //to avoid self reference:
+            setNodeAttribute(key, (String) nodeAttributes.get(key),
+                    (NodeAdapter) userObject);
+        }
+        return (NodeAdapter) userObject;
+    }
+
+    protected void completeElement() {
       if (getName().equals("font")) {
          userObject =  frame.getController().getFontThroughMap
             (new Font(fontName, fontStyle, fontSize)); }

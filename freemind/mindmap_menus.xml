@@ -87,6 +87,10 @@
 				<menu_action field="toggleFolded" key_ref="keystroke_toggle_folded"/>
 				<menu_action field="toggleChildrenFolded" key_ref="keystroke_toggle_children_folded"/>
 			</menu_category>
+			<menu_separator/>
+			<menu_category name="links">
+				<menu_action field="followLink" key_ref="keystroke_follow_link"/> <!-- goto -->				
+			</menu_category>
 		</menu_category>	
 	
 		<menu_category name="format">
@@ -156,10 +160,6 @@
 				</menu_category>
 				<menu_separator/>
 				<menu_category name="collaboration">
-				</menu_category>
-				<menu_separator/>
-				<menu_category name="links">
-					<menu_action field="followLink" key_ref="keystroke_follow_link"/> <!-- goto -->
 				</menu_category>
 			</menu_category>
 		</menu_category>	

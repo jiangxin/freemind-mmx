@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.10 2005-05-03 05:29:50 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.11 2005-06-15 20:13:48 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -220,11 +220,6 @@ public interface MindMapNode extends MutableTreeNode {
 	 */
 	void setAdditionalInfo(String info);
 	public String getAdditionalInfo();
-	/**
-	 * @return if true, the output xml contains the concrete node class name.
-	 * Currently, it is used for encrypted nodes.
-	 */
-	public boolean isNodeClassToBeSaved();
         
     MindMapNode shallowCopy();
     public XMLElement save(Writer writer, MindMapLinkRegistry registry) throws IOException;

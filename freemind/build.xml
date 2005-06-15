@@ -303,7 +303,7 @@
                 <copy file="${src}/freemind.properties" tofile="${src}/user.properties"/>
 		<copy todir="${dist}/browser" >
 			<fileset dir="${src}/html">
-				<include name="*.html"/>
+				<include name="*.*html"/>
 			</fileset>
 		</copy>
 	</target>

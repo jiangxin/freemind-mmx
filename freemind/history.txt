@@ -270,6 +270,18 @@ RC 4:
 * Node styles, color, selected node, edge, cloud, link color change with option change.
 * Little bugs in XSLT exports removed.
 * All colors in the option panel now have a "Reset color" popup menu.
+* Moved "Goto" to navigate menu.
+* Renamed XML representation of encrypted nodes.
+* Fixed: File mode (added linkRegistry to FileMapModel).
+* New french translation.
+
+* Merge with dimitris stuff: cvs co -r fm_041017_base_integration freemind && cvs -z3 co -kk -j fm_050526_betterlayout freemind && emacs freemind/freemind/modes/NodeAdapter.java
+/*		
+		double delta = 8.0 / (1 + getNodeLevel()); 
+//		double delta = 8.0 / Math.pow(1.5, 1 + getNodeLevel()); // to expensive... 
+        return (int ) ((1 + delta) * VGAP );			 
+*/
+
 
 Changes made in Freemind 0.7.2:
 ===============================

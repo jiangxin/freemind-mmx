@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.14 2005-06-12 19:43:54 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.15 2005-06-15 20:13:48 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -776,15 +776,12 @@ public abstract class NodeAdapter implements MindMapNode {
 //                    + this.getClass().getName());
 //        }
     
-        if (isNodeClassToBeSaved()) {
-            node.setAttribute(XMLElementAdapter.XML_NODE_CLASS,	this.getClass().getName());
-        }    
         /** fc, 12.6.2005: XML must not contain any zero characters. */
         String text = this.toString().replace('\0', ' ');
         node.setAttribute(XMLElementAdapter.XML_NODE_TEXT,text);
     	// save additional info:
     	if (getAdditionalInfo() != null) {
-            node.setAttribute(XMLElementAdapter.XML_NODE_ADDITIONAL_INFO,
+            node.setAttribute(XMLElementAdapter.XML_NODE_ENCRYPTED_CONTENT,
                     getAdditionalInfo());
         }
     	//	((MindMapEdgeModel)getEdge()).save(doc,node);
@@ -931,11 +928,8 @@ public abstract class NodeAdapter implements MindMapNode {
     public String getAdditionalInfo(){
         return null;
     }
-    public boolean isNodeClassToBeSaved() {
-        return false;
-    }
     
-    
+   
     public void setStateIcon(String key, ImageIcon icon) {
         if (icon != null) {
 			stateIcons.put(key, icon);

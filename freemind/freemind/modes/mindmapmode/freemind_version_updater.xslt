@@ -61,6 +61,8 @@
 	<!-- remove the following attributes/tags: -->
 	<xsl:template match="node/hook[@NAME='accessories/plugins/CreationModificationPlugin.properties']"/>
 	<xsl:template match="node/@SHIFT_Y"/>
+	<xsl:template match="node/@AA_NODE_CLASS"/>
+	<xsl:template match="node/@ADDITIONAL_INFO"/>
 	
 	<xsl:template match="node">
 		<xsl:param name="version">-1</xsl:param>
@@ -81,6 +83,12 @@
 					<xsl:attribute name="VSHIFT">
 						<xsl:value-of 
 							select="@SHIFT_Y"/>
+					</xsl:attribute>
+				</xsl:when>
+				<xsl:when test="$version &lt; 0800400 and @ADDITIONAL_INFO">
+					<xsl:attribute name="ENCRYPTED_CONTENT">
+						<xsl:value-of 
+							select="@ADDITIONAL_INFO"/>
 					</xsl:attribute>
 				</xsl:when>
 			</xsl:choose>
