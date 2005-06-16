@@ -279,6 +279,7 @@ RC 4:
 * Changed cursor when over the ellipsis that enables node moving.
 * Added keyboard shortcut for property menu.
 * Cleaned up format menu.
+* Changed option panels keystroke page to have two columns
 
 * Merge with dimitris stuff: cvs -z3 co -r fm_041017_base_integration freemind && cvs -z3 co -kk -j fm_050526_betterlayout freemind && emacs freemind/freemind/modes/NodeAdapter.java
 

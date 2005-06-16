@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.13 2005-06-16 19:27:05 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.14 2005-06-16 19:42:43 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -94,6 +94,8 @@ public class OptionPanel {
 	private static FreeMindMain fmMain;
 
 	private static final String PREFERENCE_STORAGE_PROPERTY = "OptionPanel_Window_Properties";
+    private static final String DEFAULT_LAYOUT_FORMAT = "right:max(40dlu;p), 4dlu, 120dlu, 7dlu";
+
 
 
 	/**
@@ -188,12 +190,7 @@ public class OptionPanel {
 					// terminate old panel:
 					rightStack.add(rightBuilder.getPanel(), lastTabName);
 				}
-				rightLayout = new FormLayout(
-						"right:max(40dlu;p), 4dlu, 120dlu, 7dlu, " // 1st major
-								// column
-//								+ "right:max(40dlu;p), 4dlu, 60dlu" // 2nd major
-								// column
-						, "");
+				rightLayout = new FormLayout(newTab.getDescription(), "");
 				rightBuilder = new DefaultFormBuilder(rightLayout);
 				rightBuilder.setDefaultDialogBorder();
 				lastTabName = newTab.getLabel();
@@ -355,14 +352,19 @@ public class OptionPanel {
 	private static class NewTabProperty implements PropertyControl {
 
 		private String label;
+        private String layoutFormat;
 
 		public NewTabProperty(String label) {
+			this(label, DEFAULT_LAYOUT_FORMAT);
+		}
+		public NewTabProperty(String label, String layoutFormat) {
 			super();
 			this.label = label;
+			this.layoutFormat = layoutFormat;
 		}
 
 		public String getDescription() {
-			return null;
+			return layoutFormat;
 		}
 
 		public String getLabel() {
@@ -573,6 +575,7 @@ public class OptionPanel {
 
 		public void setValue(String value) {
 			setText(value);
+			setToolTipText(getText());
 		}
 
 		public String getValue() {
@@ -938,7 +941,8 @@ public class OptionPanel {
 		 * Keystrokes
 		 * ****************************************************************
 		 */
-		controls.add(new NewTabProperty("Keystrokes"));
+		String form = "right:max(40dlu;p), 4dlu, 80dlu, 7dlu";
+		controls.add(new NewTabProperty("Keystrokes", form+ ","+form)); //", right:max(40dlu;p), 4dlu, 60dlu"));
 		//		 
 		//		 These are the accelerators for the menu items. Valid modifiers are:
 		//		 shift | control | alt | meta | button1 | button2 | button3
