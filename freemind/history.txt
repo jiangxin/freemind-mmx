@@ -274,14 +274,13 @@ RC 4:
 * Renamed XML representation of encrypted nodes.
 * Fixed: File mode (added linkRegistry to FileMapModel).
 * New french translation.
+* Separators in ToolBar 
+* Bug fix: folding with the mouse wheel folds selected nodes.
+* Changed cursor when over the ellipsis that enables node moving.
+* Added keyboard shortcut for property menu.
+* Cleaned up format menu.
 
-* Merge with dimitris stuff: cvs co -r fm_041017_base_integration freemind && cvs -z3 co -kk -j fm_050526_betterlayout freemind && emacs freemind/freemind/modes/NodeAdapter.java
-/*		
-		double delta = 8.0 / (1 + getNodeLevel()); 
-//		double delta = 8.0 / Math.pow(1.5, 1 + getNodeLevel()); // to expensive... 
-        return (int ) ((1 + delta) * VGAP );			 
-*/
-
+* Merge with dimitris stuff: cvs -z3 co -r fm_041017_base_integration freemind && cvs -z3 co -kk -j fm_050526_betterlayout freemind && emacs freemind/freemind/modes/NodeAdapter.java
 
 Changes made in Freemind 0.7.2:
 ===============================

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.12 2005-06-02 06:06:10 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.13 2005-06-16 19:27:04 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -274,6 +274,11 @@ public class MenuBar extends JMenuBar {
     }
 
     private void updateEditMenu() {
+		JMenuItem toggleToolbar = menuHolder.addAction(c.toggleToolbar, VIEW_MENU+"toolbars/toggleToolbar");
+		JMenuItem toggleLeftToolbar = menuHolder.addAction(c.toggleLeftToolbar, VIEW_MENU+"toolbars/toggleLeftToolbar");
+		
+		menuHolder.addSeparator(VIEW_MENU);
+		
 		JMenuItem zoomIn = menuHolder.addAction(c.zoomIn, VIEW_MENU+"zoom/zoomIn");
 		zoomIn.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_zoom_in")));
 	
@@ -293,6 +298,7 @@ public class MenuBar extends JMenuBar {
 	
 //		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EXTRAS_MENU+"last/options/.");
 		JMenuItem prefDialog = menuHolder.addAction(c.propertyAction, EXTRAS_MENU+"last/option_dialog");
+		prefDialog.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_option_dialog")));
 	
 //	        if (false) {
 //	           preferences.add(c.background);

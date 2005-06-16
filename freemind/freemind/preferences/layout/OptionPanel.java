@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.12 2005-06-14 20:38:07 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.13 2005-06-16 19:27:05 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -973,6 +973,8 @@ public class OptionPanel {
 
 		controls.add(new KeyProperty(frame, null, "keystroke_quit")); //  control
 		// Q
+
+		controls.add(new KeyProperty(frame, null, "keystroke_option_dialog")); //  control COMMA
 
 		controls.add(new KeyProperty(frame, null, "keystroke_export_to_html")); //  control
 		// E

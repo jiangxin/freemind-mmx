@@ -50,10 +50,13 @@ public class UnfoldAll extends NodeHookAdapter  {
         public boolean handleMouseWheelEvent(MouseWheelEvent e) {
             if ((e.getModifiers() & InputEvent.ALT_MASK) != 0) {
 	            logger.info("handleMouseWheelEvent entered.");
+                MindMapNode rootNode = (MindMapNode) mMap.getRoot();
                 if(e.getWheelRotation() > 0) {
-                    hookInstance.unfoldOneStage((MindMapNode) mMap.getRoot());
+                    hookInstance.unfoldOneStage(rootNode);
                 } else {
-                    hookInstance.foldOneStage((MindMapNode) mMap.getRoot());
+                    // this is to avoid having selected nodes getting folded.
+                    controller.select(rootNode);
+                    hookInstance.foldOneStage(rootNode);
                 }
                 return true;
             }
@@ -85,7 +88,6 @@ public class UnfoldAll extends NodeHookAdapter  {
 				unfoldOneStage(node);
 			} 
 		}
-		//getController().getView().selectAsTheOnlyOneSelected(node.getViewer());
 	}
 		
 	/**
