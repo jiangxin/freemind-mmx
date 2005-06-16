@@ -16,12 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMotionListenerView.java,v 1.1.4.3 2005-06-16 19:27:05 christianfoltin Exp $*/
+/*$Id: NodeMotionListenerView.java,v 1.1.4.4 2005-06-16 19:54:36 christianfoltin Exp $*/
 package freemind.view.mindmapview;
 
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 /**
  * @author Dimitri
@@ -41,9 +43,17 @@ public class NodeMotionListenerView extends Component {
 	public NodeView getMovedView() {
 		return movedView;
 	}
+	
+   protected void setRendering(Graphics2D g) {
+       if (movedView.getMap().getController().getAntialiasEdges() || movedView.getMap().getController().getAntialiasAll()) {
+          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
+
+
 	public void paint(Graphics g) {
 		super.paint(g);
-		if(isMouseEntered) {
+		if(isMouseEntered){
+		    Graphics2D g2 = (Graphics2D )g;
+		    setRendering(g2);
 			g.drawOval(0, 0, getWidth()-1, getHeight()-1);
 			//fc, 16.6.2005: to emphasis the possible movement.
             this.setCursor(new Cursor(Cursor.MOVE_CURSOR));

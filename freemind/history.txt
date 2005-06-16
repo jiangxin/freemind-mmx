@@ -280,8 +280,9 @@ RC 4:
 * Added keyboard shortcut for property menu.
 * Cleaned up format menu.
 * Changed option panels keystroke page to have two columns
-
-* Merge with dimitris stuff: cvs -z3 co -r fm_041017_base_integration freemind && cvs -z3 co -kk -j fm_050526_betterlayout freemind && emacs freemind/freemind/modes/NodeAdapter.java
+* Merge with Dimitris Layout adjustments: 
+	- node spacing and graphical link positions returned to the version of 0.7.1
+	- padding for bubble style node is bigger now.
 
 Changes made in Freemind 0.7.2:
 ===============================

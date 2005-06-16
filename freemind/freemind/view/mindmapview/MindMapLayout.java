@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.3 2005-04-27 21:45:31 christianfoltin Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.4 2005-06-16 19:54:36 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -77,14 +77,7 @@ public class MindMapLayout implements LayoutManager {
     // Absolute positioning
     //
 
-    /**
-	* placeNode throws this exception 
-	* if the map size changes require new layout calculations 
-     */
-	private class NewLayoutIterationNeeded extends Exception {
-	}
-
-    /**
+     /**
      * This funcion resizes the map and do the layout.
      * All tree heights, widths and shifts should be already calculated.
      */
@@ -192,7 +185,7 @@ public class MindMapLayout implements LayoutManager {
 	 * @return
 	 */
 	private int getRootY() {
-		return calcYBorderSize() / 2 - Math.min(0, getRoot().getTreeShift());
+		return calcYBorderSize() / 2 + getRoot().getUpperChildShift();
 	}
 
 	/**
@@ -239,11 +232,10 @@ public class MindMapLayout implements LayoutManager {
         	{
         	Dimension visibleSize = map.getViewportSize();
         	if (visibleSize != null){
-        		yBorderSize = Math.max(visibleSize.height, 2 *  BORDER);
+        		yBorderSize = 2 *  Math.max(visibleSize.height, BORDER);
         	}
         	else{
         		yBorderSize = 2 *  BORDER;
-        		
         	}
         }
         return yBorderSize;
@@ -301,41 +293,36 @@ public class MindMapLayout implements LayoutManager {
         updateTreeGeometry(node);
    	}
     
-	private void updateRelativeYOfChildren(NodeView node, int standardTreeShift, LinkedList childrenViews) {
+	private void updateRelativeYOfChildren(NodeView node, LinkedList childrenViews) {
 		ListIterator e = childrenViews.listIterator();
 		if (! e.hasNext())
 			return ;
 		int vgap = node.getVGap();
 		NodeView child = (NodeView)childrenViews.getFirst();
-		int sumShiftUp = 0;
-		int pointer  = 0  
-		+ (standardTreeShift - child.getStandardTreeShift())
-		- Math.min(0, child.getTreeShift()-child.getStandardTreeShift())
-  			+ Math.min(0, child.getTreeShift())
-			 ;
-
+		int pointer  = 0;  
+		int upperShift = 0;
 		while (e.hasNext()) {
 			child = (NodeView)e.next();
 			int shiftUp = getShiftUp(child);
-			sumShiftUp += shiftUp;
-			sumShiftUp += Math.min(0, child.getTreeShift()-child.getStandardTreeShift());
-			int shiftDown = shiftUp!= 0 ? 0 : getShiftDown(child);
+			int shiftDown = getShiftDown(child);
 			int iAdditionalCloudHeigth = child.getAdditionalCloudHeigth();
-			child.relYPos = pointer - Math.min(0, child.getTreeShift())
+			int upperChildShift = child.getUpperChildShift();
+			child.relYPos = pointer + upperChildShift
 			+ iAdditionalCloudHeigth / 2  + shiftDown; 
-			pointer +=  child.getTreeHeight()- shiftUp + shiftDown + iAdditionalCloudHeigth + vgap;
+			upperShift += upperChildShift + shiftUp;
+			pointer +=  child.getTreeHeight()+ shiftUp + shiftDown + iAdditionalCloudHeigth + vgap;
 		}
-			while (e.hasPrevious()) {
-				child = (NodeView)e.previous();
-				
-				child.relYPos += sumShiftUp;
+		upperShift += calcStandardTreeShift(node, childrenViews);
+		while (e.hasPrevious()) {
+			child = (NodeView)e.previous();
+			child.relYPos -= upperShift; 
 		}
 	}
 
 	  protected int getShiftUp(NodeView node) {
 	  	int shift = node.getShift();
 	  	if (shift < 0)
-	  		return shift;
+	  		return -shift;
 	  	else
 	  		return 0;
 	}
@@ -355,16 +342,14 @@ public class MindMapLayout implements LayoutManager {
 			int leftWidth = calcTreeWidth(node, leftNodeViews);
 			int rightWidth = calcTreeWidth(node, rightNodeViews);
 			getRoot().setRootTreeWidths(leftWidth, rightWidth);
-			int leftStandardTreeShift = calcStandardTreeShift(node, leftNodeViews);		
-			int rightStandardTreeShift = calcStandardTreeShift(node, rightNodeViews);		
-
-			updateRelativeYOfChildren(node, leftStandardTreeShift, leftNodeViews);
-			updateRelativeYOfChildren(node, rightStandardTreeShift, rightNodeViews);
 			
-			int leftTreeShift = calcTreeShift(node, leftNodeViews);
-			int rightTreeShift = calcTreeShift(node, rightNodeViews);
+			updateRelativeYOfChildren(node, leftNodeViews);
+			updateRelativeYOfChildren(node, rightNodeViews);
 			
-			getRoot().setRootTreeShifts(leftTreeShift, rightTreeShift);
+			int leftTreeShift = calcUpperChildShift(node, leftNodeViews);
+			int rightTreeShift = calcUpperChildShift(node, rightNodeViews);
+			
+			getRoot().setRootUpperChildShift(leftTreeShift, rightTreeShift);
 
 			int leftTreeHeight = calcTreeHeight(node, leftTreeShift, leftNodeViews);
 			int rightTreeHeight = calcTreeHeight(node, rightTreeShift, rightNodeViews);
@@ -377,13 +362,10 @@ public class MindMapLayout implements LayoutManager {
 			int treeWidth = calcTreeWidth(node, childrenViews);
     		node.setTreeWidth(treeWidth); 
 
-    		int standardTreeShift = calcStandardTreeShift(node, childrenViews);
-    		node.setStandardTreeShift(standardTreeShift);
+    		updateRelativeYOfChildren(node, childrenViews);
 
-    		updateRelativeYOfChildren(node, standardTreeShift, childrenViews);
-
-			int treeShift = calcTreeShift(node, childrenViews);
-			node.setTreeShift(treeShift);
+			int treeShift = calcUpperChildShift(node, childrenViews);
+			node.setUpperChildShift(treeShift);
 
 			int treeHeight = calcTreeHeight(node, treeShift, childrenViews);        	
     		node.setTreeHeight(treeHeight);
@@ -401,14 +383,13 @@ public class MindMapLayout implements LayoutManager {
 	 * @param rightNodeViews
 	 * @return
 	 */
-	private int calcTreeShift(NodeView node, LinkedList childrenViews) {
+	private int calcUpperChildShift(NodeView node, LinkedList childrenViews) {
 		try{
 			NodeView firstChild = (NodeView) childrenViews.getFirst();
-			int childShift = firstChild.relYPos - firstChild.getAdditionalCloudHeigth()/2;
-			int childTreeShift = firstChild.getTreeShift();
-			if (childTreeShift < 0 ) return childShift + childTreeShift; 
-			else return childShift;
-			
+			int childShift = -firstChild.relYPos 
+				+ firstChild.getAdditionalCloudHeigth()/2
+				+ firstChild.getUpperChildShift(); 
+			return childShift > 0 ? childShift : 0;			
 		}
 		catch(NoSuchElementException e)
 		{
@@ -425,10 +406,10 @@ public class MindMapLayout implements LayoutManager {
        for (ListIterator e = childrenViews.listIterator(); e.hasNext(); ) {
            NodeView node = (NodeView)e.next();
            if (node != null) {
-              height += node.getPreferredSize().height - 2 * node.getStandardTreeShift() + vgap + node.getAdditionalCloudHeigth(); 
+              height += node.getPreferredSize().height + vgap + node.getAdditionalCloudHeigth(); 
            }
        }
-       return -Math.max(height - vgap - parentHeight, 0) / 2; 
+       return Math.max(height - vgap - parentHeight, 0) / 2; 
     }
 
 	/**
@@ -441,11 +422,13 @@ public class MindMapLayout implements LayoutManager {
 			NodeView firstChild = (NodeView) childrenViews.getFirst();
 			NodeView lastChild = (NodeView) childrenViews.getLast();
 			int minY = Math.min(
-					firstChild.relYPos + Math.min(firstChild.getTreeShift() , 0)
+					firstChild.relYPos 
+					- firstChild.getUpperChildShift()
 					- firstChild.getAdditionalCloudHeigth()/2, 
 					0);
 			int maxY = Math.max(
-					lastChild.relYPos + Math.min(lastChild.getTreeShift(), 0)
+					lastChild.relYPos 
+					- lastChild.getUpperChildShift()
 					+ lastChild.getTreeHeight() + lastChild.getAdditionalCloudHeigth()/2 
 					, parentHeight);
 			return maxY - minY;

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.12 2005-06-12 19:43:54 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.13 2005-06-16 19:54:36 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -73,8 +73,7 @@ public abstract class NodeView extends JLabel {
     protected final static Color dragColor = Color.lightGray; //the Color of appearing GradientBox on drag over
 	protected int treeWidth = 0;
 	protected int treeHeight = 0;
-	protected int standardTreeShift = 0;
-	protected int treeShift = 0;
+	protected int upperChildShift = 0;
     private boolean left = true; //is the node left of root?
     int relYPos = 0;//the relative Y Position to it's parent
     private boolean isLong = false;
@@ -301,6 +300,8 @@ public abstract class NodeView extends JLabel {
         if (isEmpty){
             setText("");
         }
+		prefSize.width += 4;
+		prefSize.height += 4;
         return prefSize;
     }
     
@@ -1033,17 +1034,11 @@ public abstract class NodeView extends JLabel {
 	}
 
 
-	public int getTreeShift() {
-		return treeShift;
+	public int getUpperChildShift() {
+		return upperChildShift;
 	}
-	public void setTreeShift(int treeShift) {
-		this.treeShift = treeShift;
-	}
-	public int getStandardTreeShift() {
-		return standardTreeShift;
-	}
-	public void setStandardTreeShift(int standardTreeShift) {
-		this.standardTreeShift = standardTreeShift;
+	public void setUpperChildShift(int treeShift) {
+		this.upperChildShift = treeShift;
 	}
 	public NodeMotionListenerView getMotionListenerView() {
 		return null;
