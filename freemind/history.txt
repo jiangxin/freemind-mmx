@@ -281,8 +281,10 @@ RC 4:
 * Cleaned up format menu.
 * Changed option panels keystroke page to have two columns
 * Merge with Dimitris Layout adjustments: 
+	- node positions do not change, when nodes are folded or unfolded.
 	- node spacing and graphical link positions returned to the version of 0.7.1
 	- padding for bubble style node is bigger now.
+* Fix: HYPERLINK_POSITION: the hyperlink is activated when clicked to the region of the node closer to root.	
 
 Changes made in Freemind 0.7.2:
 ===============================

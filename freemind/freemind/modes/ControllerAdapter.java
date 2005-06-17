@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.26 2005-06-12 19:43:54 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.27 2005-06-17 17:54:47 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -509,7 +509,7 @@ public abstract class ControllerAdapter implements ModeController {
         if(getSelecteds().size() != 1)
             return;
         MindMapNode node = ((NodeView)(e.getComponent())).getModel();
-        if (getView().getSelected().followLink(e.getX())) {
+        if (getView().getSelected().isInFollowLinkRegion(e.getX())) {
             loadURL(); }
         else {
             if (!node.hasChildren()) {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.13 2005-06-16 19:54:36 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.14 2005-06-17 17:54:47 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -211,9 +211,17 @@ public abstract class NodeView extends JLabel {
     //
 
     public boolean dropAsSibling(double xCoord) {
+        return isInVerticalRegion(xCoord, 1./3);
+     }
+
+    /** Determines whether or not the xCoord is in the part p of the node:
+     *  if node is on the left: part [1-p,1] 
+     *  if node is on the right: part[  0,p] of the total width.
+     */
+    public boolean isInVerticalRegion(double xCoord, double p) {
         return isLeft() ?
-           xCoord > getSize().width*2/3 :
-           xCoord < getSize().width/3; 
+           xCoord > getSize().width*(1.0-p) :
+           xCoord < getSize().width*p; 
      }
 
     /** @return true if should be on the left, false otherwise.*/
@@ -222,16 +230,17 @@ public abstract class NodeView extends JLabel {
        return isLeft(); 
     }
 
-    public boolean followLink(double xCoord) {
+    public boolean isInFollowLinkRegion(double xCoord) {
        return getModel().getLink() != null &&
-          (getModel().isRoot() || !getModel().hasChildren() || xCoord < getSize().width/2); }
+          (getModel().isRoot() || !getModel().hasChildren() || isInVerticalRegion(xCoord, 1./2)); 
+    }
 
     /**
      * @param xCoord
      * @return true if a link is to be displayed and the curser is the hand now.
      */
     public boolean updateCursor(double xCoord) {
-      boolean followLink = followLink(xCoord);
+      boolean followLink = isInFollowLinkRegion(xCoord);
     int requiredCursor = followLink ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR;
       if (getCursor().getType() != requiredCursor) {
         setCursor(new Cursor(requiredCursor));
