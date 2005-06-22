@@ -51,14 +51,23 @@ public class NodeNote extends PermanentNodeHookAdapter {
 	 */
 	public void invoke(MindMapNode node) {
 		super.invoke(node);
-		// icon
+		enableStateIcon(node);
+	}
+
+	/**
+     * @param node
+     */
+    private void enableStateIcon(MindMapNode node) {
+        // icon
 		if (noteIcon == null) {
 			noteIcon = new ImageIcon(getController().getFrame().getResource("accessories/plugins/icons/knotes.png"));
 		}
 		node.setStateIcon(getName(), noteIcon);
-	}
+		getController().nodeRefresh(node);
+    }
 
-	/* (non-Javadoc)
+
+    /* (non-Javadoc)
 	 * @see freemind.extensions.PermanentNodeHook#onReceiveFocusHook()
 	 */
 	public void onReceiveFocusHook() {

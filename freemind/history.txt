@@ -289,6 +289,7 @@ RC 4:
 RC 5:
 -----
 * Enabled standard preferences menu under Mac OS X.
+* Bug fix: NodeNote icon is present at file load.
 
 
 Changes made in Freemind 0.7.2:
