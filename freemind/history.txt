@@ -286,6 +286,11 @@ RC 4:
 	- padding for bubble style node is bigger now.
 * Fix: HYPERLINK_POSITION: the hyperlink is activated when clicked to the region of the node closer to root.	
 
+RC 5:
+-----
+* Enabled standard preferences menu under Mac OS X.
+
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

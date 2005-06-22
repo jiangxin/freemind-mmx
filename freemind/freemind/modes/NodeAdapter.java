@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.16 2005-06-16 19:54:35 christianfoltin Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.17 2005-06-22 19:40:13 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -930,7 +930,9 @@ public abstract class NodeAdapter implements MindMapNode {
     }
     
    
-    public void setStateIcon(String key, ImageIcon icon) {
+    /** This method must be synchronized as the TreeMap isn't. */
+    public synchronized void setStateIcon(String key, ImageIcon icon) {
+//    		logger.warning("Set state of key:"+key+", icon "+icon);
         if (icon != null) {
 			stateIcons.put(key, icon);
 		} else if(stateIcons.containsKey(key)) {

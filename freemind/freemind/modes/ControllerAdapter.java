@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.27 2005-06-17 17:54:47 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.28 2005-06-22 19:40:13 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -42,8 +42,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
@@ -70,12 +68,7 @@ import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
 
-import freemind.common.JaxbTools;
 import freemind.controller.Controller;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.ActionFactory;
@@ -1421,10 +1414,12 @@ public abstract class ControllerAdapter implements ModeController {
         this.mode = mode;
     }
 
+    //FIXME: Wrong as the actual controller is eventually not used (think of more than one map opened).
     protected MapModule getMapModule() {
         return getController().getMapModuleManager().getMapModule();
     }
 
+    //FIXME: Wrong as the actual controller is eventually not used (think of more than one map opened).
     public MapAdapter getMap() {
         if (getMapModule() != null) {
             return (MapAdapter)getMapModule().getModel();

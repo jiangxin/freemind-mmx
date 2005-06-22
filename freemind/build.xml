@@ -166,7 +166,7 @@
 		                    mainclass="freemind.main.FreeMind"
 		                    icon="${src}/images/FreeMindWindowIcon.icns"
 		                    version="${ver}"
-		                    infostring="FreeMind ${ver} application (c) 2004"
+		                    infostring="FreeMind ${ver} application (c) 2005"
 		                    aboutmenuname="FreeMind"
 		                    bundleid="freemind.main.FreeMind"
 		                    signature="FM"
