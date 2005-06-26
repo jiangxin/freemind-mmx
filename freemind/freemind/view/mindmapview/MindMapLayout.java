@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.4 2005-06-16 19:54:36 christianfoltin Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.5 2005-06-26 21:41:58 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -159,12 +159,11 @@ public class MindMapLayout implements LayoutManager {
 
             //place the edge-label
             JLabel label = node.getEdge().getLabel();
-            Point start = node.getParentView().getOutPoint();
+            /* fc, 26.06.2005 */
             Point end = node.getInPoint();
+            Point start = node.getParentView().getOutPoint(end, node.isLeft());
+            /* end fc, 26.06.2005 */
         
-            if (node.getParentView().isRoot()) {
-               if (node.isLeft()) {
-                  start = node.getParentView().getInPoint(); }}
 
             node.getEdge().start = start;
             node.getEdge().end = end;

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.14.14.4 2005-06-16 19:54:36 christianfoltin Exp $*/
+/*$Id: RootNodeView.java,v 1.14.14.5 2005-06-26 21:41:58 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -54,6 +54,29 @@ public class RootNodeView extends NodeView {
 	Dimension size = getSize();
 	return new Point(getLocation().x + size.width, getLocation().y + size.height / 2);
     }
+
+    /* fc, 26.06.2005 */
+    /** Returns the point the edge should start given the index of the child node 
+     * that should be connected.
+     * @return
+     */
+    Point getOutPoint(Point destinationPoint, boolean isLeft) {
+		Dimension size = getSize();
+        double nWidth = size.width;
+        double nHeight = size.height;
+        Point centerPoint = new Point(getLocation().x+ (int)(nWidth/2f), 
+                getLocation().y+ (int)(nHeight / 2f));
+        // assume, that destinationPoint is on the right:
+        double angle = Math.atan((destinationPoint.y - centerPoint.y+0f)/(destinationPoint.x - centerPoint.x+0f));
+        if(isLeft) {
+            angle += Math.PI ;
+        }
+        // now determine point on ellipsis corresponding to that angle:
+        return new Point(centerPoint.x + (int)(Math.cos(angle)* nWidth /2f), 
+                centerPoint.y + (int)(Math.sin(angle)* (nHeight) /2f ));
+        // old behaviour: return (isLeft)?getInPoint():getOutPoint();
+    }
+    /* end fc, 26.06.2005 */
 
     /**
      * Returns the Point where the InEdge

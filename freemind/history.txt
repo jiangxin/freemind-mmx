@@ -290,6 +290,8 @@ RC 5:
 -----
 * Enabled standard preferences menu under Mac OS X.
 * Bug fix: NodeNote icon is present at file load.
+* New layout of edges emerging from root.
+* Started to write import XSLT from MindManager X5.
 
 
 Changes made in Freemind 0.7.2:

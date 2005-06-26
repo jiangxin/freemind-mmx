@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.14 2005-06-17 17:54:47 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.15 2005-06-26 21:41:58 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -510,6 +510,19 @@ public abstract class NodeView extends JLabel {
 	} 
     }
 
+    
+    /* fc, 26.06.2005 */
+    /** Returns the point the edge should start given the point of the child node 
+     * that should be connected.
+     * @param destinationPoint the outpoint should point in the direction of destinationPoint 
+     * @param isLeft TODO
+     * @return
+     */
+    Point getOutPoint(Point destinationPoint, boolean isLeft) {
+        return getOutPoint();
+    }
+    /* end fc, 26.06.2005 */
+    
     /**
      * Returns the Point where the InEdge
      * should arrive the Node.
