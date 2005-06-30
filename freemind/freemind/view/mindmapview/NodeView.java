@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.15 2005-06-26 21:41:58 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.16 2005-06-30 20:57:01 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -37,12 +37,11 @@ import java.awt.dnd.DropTargetListener;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.TreeSet;
-import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -789,7 +788,7 @@ public abstract class NodeView extends JLabel {
         /* fc, 06.10.2003: images?*/
         
         FreeMindMain frame = map.getController().getFrame();
-        SortedMap stateIcons = (getModel()).getStateIcons();
+        Map stateIcons = (getModel()).getStateIcons();
         for (Iterator i = stateIcons.keySet().iterator(); i.hasNext();) {
             String key = (String) i.next();
             iconPresent = true;
@@ -798,12 +797,12 @@ public abstract class NodeView extends JLabel {
             
         }
 
-        Vector icons = (getModel()).getIcons();
-        for(int i = 0; i < icons.size(); ++i) {
+        List icons = (getModel()).getIcons();
+        	for (Iterator i = icons.iterator(); i.hasNext();) {
+			MindIcon myIcon = (MindIcon) i.next();
             iconPresent = true;
-            MindIcon myicon = (MindIcon) icons.get(i);
             //System.out.println("print the icon " + myicon.toString());
-            iconImages.addImage(myicon.getIcon(frame));  
+            iconImages.addImage(myIcon.getIcon(frame));  
         }
         String link = ((NodeAdapter)getModel()).getLink();
         if ( link != null ) 

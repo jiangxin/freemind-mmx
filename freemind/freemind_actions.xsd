@@ -522,6 +522,7 @@
     	      <xs:element ref="node_list_member" maxOccurs="unbounded" minOccurs="1"/>				
           </xs:sequence>
 		      <xs:attribute name="hook_name" use="required" type="xs:string"/>
+		      <xs:attribute name="content" use="optional" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

@@ -16,9 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.11 2005-06-15 20:13:48 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.12 2005-06-30 20:57:01 christianfoltin Exp $*/
 
 package freemind.modes;
+
+
 
 import java.awt.Color;
 import java.awt.Font;
@@ -28,8 +30,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.SortedMap;
-import java.util.Vector;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.tree.MutableTreeNode;
@@ -175,7 +176,7 @@ public interface MindMapNode extends MutableTreeNode {
 
     // fc, 06.10.2003:
     /** Is a vector of MindIcon s*/
-    Vector getIcons();
+    List getIcons();
 
     void   addIcon(MindIcon icon);
 
@@ -229,7 +230,7 @@ public interface MindMapNode extends MutableTreeNode {
      *  this node is special.
      * @return
      */
-    SortedMap getStateIcons();
+    Map getStateIcons();
 
     /**
      * @param key
