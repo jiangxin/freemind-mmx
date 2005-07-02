@@ -7,7 +7,7 @@
    :
    : Christian Foltin, June, 2005
    :
-   : $Id: mindmanager2mm.xsl,v 1.1.2.1 2005-06-26 21:41:58 christianfoltin Exp $
+   : $Id: mindmanager2mm.xsl,v 1.1.2.2 2005-07-02 22:13:34 christianfoltin Exp $
    :
   -->
 
@@ -38,6 +38,26 @@
 					<xsl:otherwise><xsl:text>left</xsl:text></xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
+			<xsl:choose>
+				<xsl:when test="./ap:Hyperlink">
+					<xsl:attribute name="LINK">
+						<xsl:value-of select="./ap:Hyperlink/@Url"/>
+					</xsl:attribute>
+				</xsl:when>
+				<xsl:when test="./ap:Text/ap:Font/@Color">
+					<xsl:attribute name="COLOR">
+						<xsl:text>#</xsl:text><xsl:value-of
+							select="substring(./ap:Text/ap:Font/@Color,3)"/>
+					</xsl:attribute>
+				</xsl:when>
+				<xsl:when
+					test="./ap:SubTopicShape/@SubTopicShape='urn:mindjet:Oval'">
+					<xsl:attribute name="STYLE">
+						<xsl:text>bubble</xsl:text>
+					</xsl:attribute>
+				</xsl:when>
+			</xsl:choose>			
+			<xsl:apply-templates select="./ap:NotesGroup" />
 			<xsl:apply-templates select="./ap:SubTopics/ap:Topic" />
 <!--			<xsl:for-each select="./ap:SubTopics/ap:Topic">
 				<xsl:sort select="(./ap:Offset/@CX) * -1"/>
@@ -45,6 +65,17 @@
 			</xsl:for-each> -->
 			<xsl:apply-templates select="./ap:IconsGroup" />
 		</node>
+	</xsl:template>
+
+	<xsl:template match="ap:NotesGroup">
+		<xsl:element name="hook">
+			<xsl:attribute name="NAME">
+				<xsl:text>accessories/plugins/NodeNote.properties</xsl:text>
+			</xsl:attribute>
+			<xsl:element name="text">
+				<xsl:value-of select="ap:NotesXhtmlData/@PreviewPlainText"/>
+			</xsl:element>
+		</xsl:element>
 	</xsl:template>
 
 	<xsl:template match="ap:IconsGroup">

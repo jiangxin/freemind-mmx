@@ -297,6 +297,7 @@ RC 5:
 * Translations introduced (thanks to the authors).
 * freemind.xsd improved. Works on the command line (but not with ant...) using
   find . -name "*.mm" -exec xmllint --noout --schema freemind.xsd {} \;
+* mindmanager2mm.xsl done. 
 
 Changes made in Freemind 0.7.2:
 ===============================
