@@ -343,15 +343,17 @@
     </java>
   </target>
 
+	<!-- does not work!! -->
 	<target name="val">
 		<xmlvalidate lenient="false"
-		  failonerror="no" warn="true">
+		  failonerror="no" warn="true" classname="org.apache.xerces.parsers.SAXParser"
+            classpath="plugins/svg/xerces_2_5_0.jar">
 			<fileset dir="." includes="**/*.mm"/>
 		  <attribute name="http://apache.org/xml/features/validation/schema"
 		  value="true"/>
-		  <attribute name="http://xml.org/sax/features/namespaces" value="false"/>
+		  <attribute name="http://xml.org/sax/features/namespaces" value="true"/>
 		  <property
-		  name="http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation"
+		  name="http://apache.org/xml/properties/schema/external-schemaLocation"
 		  value="freemind.xsd"/>
 		</xmlvalidate>
 	</target>
