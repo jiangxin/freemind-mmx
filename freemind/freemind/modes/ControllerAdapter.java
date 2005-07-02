@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.28 2005-06-22 19:40:13 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.29 2005-07-02 23:19:38 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -554,6 +554,11 @@ public abstract class ControllerAdapter implements ModeController {
            return saveAs(); }
         else {
            return save(getModel().getFile()); }}
+    
+    
+    public void load(String xmlMapContents) {
+        revertAction.openXmlInsteadOfMap(xmlMapContents);
+    }
 
     /** fc, 24.1.2004: having two methods getSelecteds with different return values 
      * (linkedlists of models resp. views) is asking for trouble. @see MapView

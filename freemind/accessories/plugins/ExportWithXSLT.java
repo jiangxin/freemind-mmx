@@ -15,7 +15,6 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -36,8 +35,6 @@ import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
-import freemind.modes.actions.IconAction;
-import freemind.modes.mindmapmode.MindMapController;
 /**
  * @author foltin
  *
@@ -54,7 +51,6 @@ public class ExportWithXSLT extends ExportHook {
 	 */
 	public ExportWithXSLT() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<plugin>
+	<plugin_action 
+		documentation="" 
+		name="%accessories/plugins/ImportMindmanagerFiles.properties_name" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="accessories/plugins/ImportMindmanagerFiles.properties" 
+		class_name="accessories.plugins.ImportMindmanagerFiles">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/file/import/ImportMindmanagerFiles"/>
+	</plugin_action>
+</plugin>
