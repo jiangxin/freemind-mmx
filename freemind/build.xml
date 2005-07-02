@@ -343,5 +343,18 @@
     </java>
   </target>
 
+	<target name="val">
+		<xmlvalidate lenient="false"
+		  failonerror="no" warn="true">
+			<fileset dir="." includes="**/*.mm"/>
+		  <attribute name="http://apache.org/xml/features/validation/schema"
+		  value="true"/>
+		  <attribute name="http://xml.org/sax/features/namespaces" value="false"/>
+		  <property
+		  name="http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation"
+		  value="freemind.xsd"/>
+		</xmlvalidate>
+	</target>
+	
 </project>
 

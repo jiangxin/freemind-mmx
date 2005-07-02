@@ -293,6 +293,9 @@ RC 5:
 * New layout of edges emerging from root.
 * Started to write import XSLT from MindManager X5.
 * Reduced memory consumption due to lazy initialization of Node attributes like icons, tooltips, etc.
+* Validation task added to build-file
+* Translations introduced (thanks to the authors).
+* freemind.xsd improved.
 
 Changes made in Freemind 0.7.2:
 ===============================
