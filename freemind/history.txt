@@ -299,6 +299,8 @@ RC 5:
   find . -name "*.mm" -exec xmllint --noout --schema freemind.xsd {} \;
 * mindmanager2mm.xsl done. 
 * New feature: Import from Mind M*nager X5.
+* Commented new layout for root nodes out. To reactivate, go to method
+  Point getOutPoint(Point destinationPoint, boolean isLeft) and say if(true)
 
 Changes made in Freemind 0.7.2:
 ===============================
