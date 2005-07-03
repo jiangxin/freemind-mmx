@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12 2005-04-28 21:12:34 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.16.13 2005-07-03 20:53:50 christianfoltin Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -1065,9 +1065,11 @@ public class MapView extends JPanel implements Printable {
                 getMindMapLayout()
                         .updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(
                                 nodeView);
+                /* Layout only, if node is visible. fc, 03.07.2005 */
+                getMindMapLayout().layout(true);
+                repaint();
+                /* end fc, 03.07.2005 */
             }
-            getMindMapLayout().layout(true);
-            repaint();
         }
 	
         public void treeNodesInserted( TreeModelEvent e ) {

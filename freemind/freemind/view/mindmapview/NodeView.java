@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.16 2005-06-30 20:57:01 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.17 2005-07-03 20:53:50 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -782,7 +782,9 @@ public abstract class NodeView extends JLabel {
         }
         setForeground(color);
 
-        // 2) Create the icons:
+        // 2) icons left or right? 
+        setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
+        // 3) Create the icons:
         MultipleImage iconImages = new MultipleImage(map.getZoom());
         boolean iconPresent = false;
         /* fc, 06.10.2003: images?*/
@@ -824,7 +826,7 @@ public abstract class NodeView extends JLabel {
         // we don't want to insert any additional white space.        
         setIcon(iconPresent?iconImages:null);
 
-        // 3) Determine font
+        // 4) Determine font
         Font font = getModel().getFont();
         font = font == null ? map.getController().getDefaultFont() : font;
         if (font != null) {
@@ -835,7 +837,7 @@ public abstract class NodeView extends JLabel {
            // We can survive this trouble.
            System.err.println("NodeView.update(): default font is null."); }
 
-        // 4) Set the text
+        // 5) Set the text
         // Right now, this implementation is quite logical, although it allows
         // for nonconvex feature of nodes starting with <html>.
 
@@ -894,7 +896,15 @@ public abstract class NodeView extends JLabel {
            setText("<html><table"+
                    (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
                    text+"</table></html>"); }
-   		// 5) ToolTips:
+   		// 6) ToolTips:
+        updateToolTip();
+        // 7) Complete
+        repaint(); // Because of zoom?
+    }
+    /**
+     * Updates the tool tip of the node.
+     */
+    public void updateToolTip() {
         Map tooltips = getModel().getToolTip();
         if(tooltips.size() == 1) {
             setToolTipText((String) tooltips.values().iterator().next());
@@ -916,11 +926,6 @@ public abstract class NodeView extends JLabel {
             text.append("</table></html>");
             setToolTipText(text.toString());
         }
-   		// 6) icons left or right? 
-   		//URGENT: Discuss with Dan.
-	    setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
-        // 7) Complete
-        repaint(); // Because of zoom?
     }
 
     void updateAll() {
