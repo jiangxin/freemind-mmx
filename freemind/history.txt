@@ -303,6 +303,8 @@ RC 5:
   Point getOutPoint(Point destinationPoint, boolean isLeft) and say if(true)
 * Problem solution: Faster shutdown of maps, as redisplay of the map is only performed if the changed node is visible.
 * Import folder structure now folds the nodes. This method is to slow to be useful. 
+* New feature: Export to Open Office Writer
+* Memory consumption reduced.
 
 Changes made in Freemind 0.7.2:
 ===============================

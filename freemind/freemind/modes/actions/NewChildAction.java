@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: NewChildAction.java,v 1.1.4.8 2005-04-12 21:12:16 christianfoltin Exp $*/
+/*$Id: NewChildAction.java,v 1.1.4.9 2005-07-06 06:00:03 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -43,7 +43,6 @@ import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.MindMapLinkRegistry.ID_Registered;
-import freemind.modes.MindMapNode.HistoryInformation;
 
 
 public class NewChildAction extends AbstractAction implements ActorXml {

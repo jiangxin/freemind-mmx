@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.12 2005-06-30 20:57:01 christianfoltin Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.13 2005-07-06 06:00:03 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -27,7 +27,6 @@ import java.awt.Font;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -43,36 +42,7 @@ import freemind.view.mindmapview.NodeView;
 
 public interface MindMapNode extends MutableTreeNode {
 
-	public static class HistoryInformation {
-		private Date createdAt=null;
-		private Date lastModifiedAt=null;
-
-		/**
-		 * Initializes to today.
-		 */
-		public HistoryInformation() {
-			createdAt = new Date();
-			lastModifiedAt = new Date();
-		}
-		public HistoryInformation(Date createdAt, Date lastModifiedAt) {
-			this.createdAt = createdAt;
-			this.lastModifiedAt = lastModifiedAt;
-		}
-		public Date getCreatedAt() {
-			return createdAt;
-		}
-		public Date getLastModifiedAt() {
-			return lastModifiedAt;
-		}
-		public void setCreatedAt(Date createdAt) {
-			this.createdAt = createdAt;
-		}
-		public void setLastModifiedAt(Date lastModifiedAt) {
-			this.lastModifiedAt = lastModifiedAt;
-		}
-	}
-	
-    public static final String STYLE_BUBBLE = "bubble";
+	public static final String STYLE_BUBBLE = "bubble";
 	public static final String STYLE_FORK = "fork";
 	public static final String STYLE_COMBINED = "combined";
 	public static final String STYLE_AS_PARENT = "as_parent";

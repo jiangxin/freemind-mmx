@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.12 2005-06-15 20:13:48 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.13 2005-07-06 06:00:03 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -30,7 +30,6 @@ import freemind.extensions.PermanentNodeHookSubstituteUnknown;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
-import freemind.modes.MindMapNode.HistoryInformation;
 import freemind.modes.mindmapmode.EncryptedMindMapNode;
 
 public abstract class XMLElementAdapter extends XMLElement {
