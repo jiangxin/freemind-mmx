@@ -109,10 +109,8 @@
       <node color="#000099"/>
       <edge color="#009999" width="4"/>
    </pattern>
-   <!-- example with text and icon
-        Because this we have no undo, this example is dangerous.
-        We'd better comment it out.
-   <pattern name="Program with icon">
+   <!-- example with text and icon -->
+   <!-- <pattern name="Program with icon">
       <node color="#996600" italic="true" text="Program" icon="stop">
          <font size="16" italic="true"/>
       </node>

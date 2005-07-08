@@ -35,6 +35,9 @@
 				--><xsl:when test="@version='0.8.0 RC4'"><!--
 					-->0800400<!--
 				--></xsl:when><!--
+				--><xsl:when test="@version='0.8.0 RC5'"><!--
+					-->0800500<!--
+				--></xsl:when><!--
 				--><xsl:otherwise><!--
 					-->-1<!--
 				--></xsl:otherwise><!--
