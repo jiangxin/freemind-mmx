@@ -19,7 +19,7 @@
  *
  * Created on 20.09.2004
  */
-/*$Id: UndoAction.java,v 1.1.4.1 2004-10-17 23:00:11 dpolivaev Exp $*/
+/*$Id: UndoAction.java,v 1.1.4.2 2005-07-10 19:55:55 christianfoltin Exp $*/
 
 package freemind.modes.actions;
 
@@ -171,6 +171,18 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
 	            remedia.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(0, pair.getUndoAction());
 	        } else {
 	            actionPairList.add(0, pair);
+                // and cut vector, if bigger than given size:
+	            int maxEntries = 100;
+                try {
+                    maxEntries = new Integer(controller.getFrame().getProperty(
+                            "undo_levels")).intValue();
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+                while (actionPairList.size()>maxEntries) {
+                    actionPairList.remove(actionPairList.size()-1); // remove
+                                                                    // last elt
+                }
 	        }
 	        timeOfLastAdd = currentTime;
         } catch (JAXBException e) {

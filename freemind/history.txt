@@ -306,6 +306,10 @@ RC 5:
 * New feature: Export to Open Office Writer
 * Memory consumption reduced.
 
+RC 6:
+-----
+* Added option for amount of undo steps.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added
