@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12.2.4 2005-05-28 20:55:22 dpolivaev Exp $*/
+/*$Id: MapView.java,v 1.30.16.12.2.4.2.1 2005-07-12 15:41:18 dpolivaev Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -49,6 +49,7 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 import javax.swing.JViewport;
+import javax.swing.RepaintManager;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 
@@ -231,16 +232,9 @@ public class MapView extends JPanel implements Printable {
     }
 
     public void initRoot() {
-        boolean oldRoot = rootView != null;
-        if (oldRoot){
-            rootView.remove();
-        }
         rootView = NodeView.newNodeView( (MindMapNode)getModel().getRoot(), this );
         rootView.insert();
         getMindMapLayout().updateTreeHeightsAndRelativeYOfWholeMap();
-        if (oldRoot){
-            moveToRoot();
-        }
         revalidate();
     }
     
@@ -521,6 +515,7 @@ public class MapView extends JPanel implements Printable {
         //select new node
         this.selected.clear();
         this.selected.add(newSelected);
+        newSelected.clearOldTableSelection();
         newSelected.requestFocus();
 
         // set last focused as preferred (PN) 
@@ -786,8 +781,8 @@ public class MapView extends JPanel implements Printable {
         HashMap labels = new HashMap();
         ArrowLinkViews = new Vector();
         collectLabels(rootView, labels);
-        paintLinks(rootView, (Graphics2D)graphics, labels, null);
         super.paintChildren(graphics);
+        paintLinks(rootView, (Graphics2D)graphics, labels, null);
         paintEdges(rootView, (Graphics2D)graphics);
         
     }
@@ -1061,9 +1056,9 @@ public class MapView extends JPanel implements Printable {
                 getMindMapLayout()
                         .updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(
                                 nodeView);
+                getMindMapLayout().layout(true);
+                repaint();
             }
-            getMindMapLayout().layout(true);
-            repaint();
         }
 	
         public void treeNodesInserted( TreeModelEvent e ) {

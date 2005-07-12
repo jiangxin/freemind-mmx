@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.1 2005-06-12 12:59:54 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.2 2005-07-12 15:41:15 dpolivaev Exp $*/
 
 package freemind.modes;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -42,8 +43,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
@@ -70,12 +69,7 @@ import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
 
-import freemind.common.JaxbTools;
 import freemind.controller.Controller;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.ActionFactory;
@@ -89,6 +83,7 @@ import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.extensions.UndoEventReceiver;
 import freemind.main.ExampleFileFilter;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
@@ -159,7 +154,6 @@ public abstract class ControllerAdapter implements ModeController {
 	private final static int MINIMAL_WIDTH = MindMapLayout.MINIMAL_WIDTH;
 
     private ActionFactory actionFactory;
-	private ObjectFactory actionXmlFactory;
 	// for cascading updates.
 	private HashSet nodesAlreadyUpdated;
 	private HashSet nodesToBeUpdated;
@@ -250,8 +244,6 @@ public abstract class ControllerAdapter implements ModeController {
         // for updates of nodes:
 		nodesAlreadyUpdated = new HashSet();
 		nodesToBeUpdated    = new HashSet();
-		// new object factory for xml actions:
-		actionXmlFactory = JaxbTools.getInstance().getObjectFactory();
         // create action factory:
 		actionFactory = new ActionFactory(getController());
 		// prepare undo:
@@ -489,7 +481,7 @@ public abstract class ControllerAdapter implements ModeController {
         /* perform action only if one selected node.*/
         if(getSelecteds().size() != 1)
             return;
-        MindMapNode node = ((NodeView)(e.getComponent())).getModel();
+        MindMapNode node = ((NodeView)(e.getComponent().getParent())).getModel();
         // edit the node only if the node is a leaf (fc 0.7.1)
         if (node.hasChildren()) {
             // the emulate the plain click. 
@@ -510,8 +502,8 @@ public abstract class ControllerAdapter implements ModeController {
         /* perform action only if one selected node.*/
         if(getSelecteds().size() != 1)
             return;
-        MindMapNode node = ((NodeView)(e.getComponent())).getModel();
-        if (getView().getSelected().followLink(e.getX())) {
+        MindMapNode node = ((NodeView)(e.getComponent().getParent())).getModel();
+        if (getView().getSelected().isInFollowLinkRegion(e.getX())) {
             loadURL(); }
         else {
             if (!node.hasChildren()) {
@@ -563,6 +555,11 @@ public abstract class ControllerAdapter implements ModeController {
            return saveAs(); }
         else {
            return save(getModel().getFile()); }}
+    
+    
+    public void load(String xmlMapContents) {
+        revertAction.openXmlInsteadOfMap(xmlMapContents);
+    }
 
     /** fc, 24.1.2004: having two methods getSelecteds with different return values 
      * (linkedlists of models resp. views) is asking for trouble. @see MapView
@@ -693,6 +690,7 @@ public abstract class ControllerAdapter implements ModeController {
        else if (exceptionType.equals("java.io.FileNotFoundException")) {
           getController().errorMessage(ex.getMessage()); }
        else {
+       	  ex.printStackTrace();
           getController().errorMessage(ex); }
     }
 
@@ -745,13 +743,22 @@ public abstract class ControllerAdapter implements ModeController {
         getController().getMapModuleManager().updateMapModuleName();        
         return true;
     }
-    /** Creates a proposal for a file name to save the map.
-     *  Removes all illegal characters.
+    /**
+     * Creates a proposal for a file name to save the map. Removes all illegal
+     * characters.
+     * 
+     * Fixed: When creating file names based on the text of the root node, now all the
+     * extra unicode characters are replaced with _. This is not very good. For
+     * chinese content, you would only get a list of ______ as a file name. Only
+     * characters special for building file paths shall be removed (rather than
+     * replaced with _), like : or /. The exact list of dangeous characters
+     * needs to be investigated. 0.8.0RC3.
+     * 
      * @return
      */
     private String getFileNameProposal() {
         String rootText = ((MindMapNode)getMap().getRoot()).toString();
-        rootText = rootText.replaceAll("[^0-9a-zA-Z_ ]+", "_");
+        rootText = rootText.replaceAll("[&:/\\\\\0%$#~\\?\\*]+", "");
         return rootText;
     }
 
@@ -1016,7 +1023,7 @@ public abstract class ControllerAdapter implements ModeController {
         Color nodeColor = node.getColor();
         if (nodeColor == null) {
             nodeColor = Tools.xmlToColor(getFrame().getProperty(
-                    "standardnodecolor"));
+                    FreeMind.RESOURCES_NODE_COLOR));
         }
         setNodeColor(node, new Color(
                 (3 * mapColor.getRed() + nodeColor.getRed()) / 4, (3 * mapColor
@@ -1414,10 +1421,12 @@ public abstract class ControllerAdapter implements ModeController {
         this.mode = mode;
     }
 
+    //FIXME: Wrong as the actual controller is eventually not used (think of more than one map opened).
     protected MapModule getMapModule() {
         return getController().getMapModuleManager().getMapModule();
     }
 
+    //FIXME: Wrong as the actual controller is eventually not used (think of more than one map opened).
     public MapAdapter getMap() {
         if (getMapModule() != null) {
             return (MapAdapter)getMapModule().getModel();
@@ -1485,7 +1494,7 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public boolean extendSelection(MouseEvent e) {
-        NodeView newlySelectedNodeView = (NodeView)e.getSource();
+        NodeView newlySelectedNodeView = (NodeView)((Component)e.getSource()).getParent();
         //MindMapNode newlySelectedNode = newlySelectedNodeView.getModel();
         boolean extend = e.isControlDown(); 
         boolean range = e.isShiftDown(); 
@@ -1673,35 +1682,11 @@ public abstract class ControllerAdapter implements ModeController {
 
 
     public String marshall(XmlAction action) {
-        try {
-            // marshall:
-            //marshal to StringBuffer:
-            StringWriter writer = new StringWriter();
-            Marshaller m = JaxbTools.getInstance().createMarshaller();
-            m.marshal(action, writer);
-            String result = writer.toString();
-            return result;
-        } catch (JAXBException e) {
-			logger.severe(e.toString());
-            e.printStackTrace();
-            return "";
-        }
-
+        return getController().marshall(action);
 	}
 
 	public XmlAction unMarshall(String inputString) {
-		try {
-			// unmarshall:
-			Unmarshaller u = JaxbTools.getInstance().createUnmarshaller();
-			StringBuffer xmlStr = new StringBuffer( inputString);
-			XmlAction doAction = (XmlAction) u.unmarshal( new StreamSource( new StringReader( xmlStr.toString() ) ) );
-			return doAction;
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-
+        return getController().unMarshall(inputString);
 	}
 
 	protected class EditLongAction extends AbstractAction {
@@ -1710,6 +1695,22 @@ public abstract class ControllerAdapter implements ModeController {
         }
         public void actionPerformed(ActionEvent e) {
             edit(null, false, true);
+        }
+    }
+
+	protected class EditAttributesAction extends AbstractAction {
+        public EditAttributesAction() {
+            super(getText("edit_attributes"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            NodeView selectedNodeView = getView().getSelected();
+            if(! selectedNodeView.areExtendedAttributesShown()){
+                selectedNodeView.showExtendedAttributes(true);
+            }
+            else{
+                selectedNodeView.showExtendedAttributes(false);
+            }
+            nodeRefresh(selectedNodeView.getModel());
         }
     }
 
@@ -1817,7 +1818,7 @@ public abstract class ControllerAdapter implements ModeController {
 	 * @return
 	 */
 	public ObjectFactory getActionXmlFactory() {
-		return actionXmlFactory;
+		return getController().getActionXmlFactory();
 	}
 
     /**

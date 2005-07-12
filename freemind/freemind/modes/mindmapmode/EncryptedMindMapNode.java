@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.9.6.1 2005-06-12 12:59:55 dpolivaev Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.9.6.2 2005-07-12 15:41:16 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -237,10 +237,6 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         return encryptedContent;
     }
 
-    public boolean isNodeClassToBeSaved() {
-        return true;
-    }
-
     /**
      *  
      */
@@ -419,6 +415,9 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
 
         public String decrypt(String str) {
+            if(str == null) {
+                return null;
+            }
             try {
                 byte[] salt = null;
                 // test if salt exists:

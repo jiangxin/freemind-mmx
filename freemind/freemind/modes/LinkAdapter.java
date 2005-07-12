@@ -16,13 +16,22 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkAdapter.java,v 1.3.18.1 2004-10-17 23:00:08 dpolivaev Exp $*/
+/*$Id: LinkAdapter.java,v 1.3.18.1.10.1 2005-07-12 15:41:15 dpolivaev Exp $*/
 
 package freemind.modes;
+import java.awt.Color;
+
+import freemind.controller.Controller;
 import freemind.modes.LineAdapter;
+import freemind.modes.LineAdapter.LineAdapterListener;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 
 public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
+
+    private static Color standardColor = null;
+    private static String standardStyle = null;
+    private static LineAdapterListener listener = null;
 
     String destinationLabel;
     String referenceText;
@@ -30,7 +39,7 @@ public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
     private String uniqueID;
 
     public LinkAdapter(MindMapNode source,MindMapNode target,FreeMindMain frame)  {
-        this(source,target, frame, "standardlinkcolor", "standardlinkstyle");
+        this(source,target, frame, FreeMind.RESOURCES_LINK_COLOR, "standardlinkstyle");
     }
 
     /** For derived classes.*/
@@ -39,6 +48,10 @@ public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
         this.source=source;
         destinationLabel = null;
         referenceText = null;
+        if(listener == null) {
+            listener = new LineAdapterListener(); 
+            Controller.addPropertyChangeListener(listener);
+        }
     }
 
     public String getDestinationLabel() { return destinationLabel; }
@@ -69,5 +82,17 @@ public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
      */
     public void setUniqueID(String uniqueID) {
         this.uniqueID = uniqueID;
+    }
+    protected Color getStandardColor() {
+        return standardColor;
+    }
+    protected void setStandardColor(Color standardColor) {
+        LinkAdapter.standardColor = standardColor;
+    }
+    protected String getStandardStyle() {
+        return standardStyle;
+    }
+    protected void setStandardStyle(String standardStyle) {
+        LinkAdapter.standardStyle = standardStyle;
     }
 }

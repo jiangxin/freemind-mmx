@@ -16,22 +16,24 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.10.2.4.2.1 2005-06-12 12:59:54 dpolivaev Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.10.2.4.2.2 2005-07-12 15:41:15 dpolivaev Exp $*/
 
 package freemind.modes;
+
+
 
 import java.awt.Color;
 import java.awt.Font;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.SortedMap;
-import java.util.Vector;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -41,40 +43,12 @@ import freemind.controller.filter.FilterInfo;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.XMLElement;
+import freemind.modes.attributes.PersistentAttributeTableModel;
 import freemind.view.mindmapview.NodeView;
 
 public interface MindMapNode extends MutableTreeNode {
 
-	public static class HistoryInformation {
-		private Date createdAt=null;
-		private Date lastModifiedAt=null;
-
-		/**
-		 * Initializes to today.
-		 */
-		public HistoryInformation() {
-			createdAt = new Date();
-			lastModifiedAt = new Date();
-		}
-		public HistoryInformation(Date createdAt, Date lastModifiedAt) {
-			this.createdAt = createdAt;
-			this.lastModifiedAt = lastModifiedAt;
-		}
-		public Date getCreatedAt() {
-			return createdAt;
-		}
-		public Date getLastModifiedAt() {
-			return lastModifiedAt;
-		}
-		public void setCreatedAt(Date createdAt) {
-			this.createdAt = createdAt;
-		}
-		public void setLastModifiedAt(Date lastModifiedAt) {
-			this.lastModifiedAt = lastModifiedAt;
-		}
-	}
-	
-    public static final String STYLE_BUBBLE = "bubble";
+	public static final String STYLE_BUBBLE = "bubble";
 	public static final String STYLE_FORK = "fork";
 	public static final String STYLE_COMBINED = "combined";
 	public static final String STYLE_AS_PARENT = "as_parent";
@@ -180,7 +154,7 @@ public interface MindMapNode extends MutableTreeNode {
 
     // fc, 06.10.2003:
     /** Is a vector of MindIcon s*/
-    Vector getIcons();
+    List getIcons();
 
     void   addIcon(MindIcon icon);
 
@@ -225,11 +199,6 @@ public interface MindMapNode extends MutableTreeNode {
 	 */
 	void setAdditionalInfo(String info);
 	public String getAdditionalInfo();
-	/**
-	 * @return if true, the output xml contains the concrete node class name.
-	 * Currently, it is used for encrypted nodes.
-	 */
-	public boolean isNodeClassToBeSaved();
         
     MindMapNode shallowCopy();
     public XMLElement save(Writer writer, MindMapLinkRegistry registry) throws IOException;
@@ -239,7 +208,7 @@ public interface MindMapNode extends MutableTreeNode {
      *  this node is special.
      * @return
      */
-    SortedMap getStateIcons();
+    Map getStateIcons();
 
     /**
      * @param key
@@ -264,4 +233,6 @@ public interface MindMapNode extends MutableTreeNode {
      * @return
      */
     MindMap getMap();
+    
+    PersistentAttributeTableModel getAttributes();
 }

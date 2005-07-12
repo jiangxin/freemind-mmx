@@ -65,6 +65,8 @@ public class ExtendedComboBoxModel extends DefaultComboBoxModel {
             final int extensionSize = getExtensionSize();
             if (extensionSize > 0){
                 fireIntervalAdded(this, ownSize, ownSize + extensionSize - 1);
+            }
+            if (extension != null){
                 extension.addListDataListener(extensionDataListener);
             }
         }

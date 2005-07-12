@@ -20,7 +20,7 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: EdgeWidthAction.java,v 1.1.4.1 2004-10-17 23:00:09 dpolivaev Exp $ */
+/* $Id: EdgeWidthAction.java,v 1.1.4.1.10.1 2005-07-12 15:41:16 dpolivaev Exp $ */
 
 package freemind.modes.actions;
 
@@ -109,7 +109,7 @@ public class EdgeWidthAction extends NodeGeneralAction implements NodeActorXml {
         } else {
             returnValue = Integer.toString(width);
         }
-        return controller.getText("edge_width") + returnValue;
+        return /*controller.getText("edge_width") +*/ returnValue;
     }
 
 }

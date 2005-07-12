@@ -38,10 +38,12 @@ import freemind.controller.filter.condition.ConjunctConditions;
 import freemind.controller.filter.condition.DisjunctConditions;
 import freemind.controller.filter.condition.NodeCondition;
 import freemind.controller.filter.util.ExtendedComboBoxModel;
-import freemind.controller.filter.util.SortedListModel;
+import freemind.controller.filter.util.SortedMapListModel;
 import freemind.controller.filter.util.TranslatedString;
+import freemind.modes.MapRegistry;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
+import freemind.modes.attributes.AttributeRegistryTableModel;
 
 /**
  * @author dimitri
@@ -60,12 +62,22 @@ public class FilterDialog extends JDialog {
             super(Controller.getInstance().getResourceString("filter_add"));
         }
         public void actionPerformed(ActionEvent e) {
-            TranslatedString attribute = (TranslatedString) attributes.getSelectedItem();
+            Condition newCond ;
             String value = getAttributeValue();
             TranslatedString simpleCond = (TranslatedString) simpleCondition.getSelectedItem();
             boolean ignoreCase = caseInsensitive.isSelected();
-            Condition newCond = fc.getConditionFactory().createCondition(
-                    attribute, simpleCond, value, ignoreCase);
+            
+            Object selectedItem = attributes.getSelectedItem();
+            if(selectedItem instanceof TranslatedString){
+                TranslatedString attribute = (TranslatedString) selectedItem;
+                newCond = fc.getConditionFactory().createCondition(
+                        attribute, simpleCond, value, ignoreCase);
+            }
+            else{
+                String attribute = selectedItem.toString();
+                newCond = fc.getConditionFactory().createAttributeCondition(
+                        attribute, simpleCond, value, ignoreCase);
+            }
             DefaultComboBoxModel model = (DefaultComboBoxModel) conditionList.getModel();
             if (newCond != null) 
                 model.addElement(newCond);
@@ -184,7 +196,7 @@ public class FilterDialog extends JDialog {
         }
     }
     
-    private class ConditionListSelectionListener extends AbstractAction implements ListSelectionListener {
+    private class ConditionListSelectionListener implements ListSelectionListener {
 
         /* (non-Javadoc)
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
@@ -216,19 +228,24 @@ public class FilterDialog extends JDialog {
             }
         }
 
-        /* (non-Javadoc)
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-        }
-        
     }
     
     private static final int NODE_POSITION = 0;
     private static final int ICON_POSITION = 1;
     private static final int CONTAINS_POSITION = 0;
     
-    private class SelectedAttributeChangeListener extends AbstractAction implements ItemListener {
+    private class SimpleConditionChangeListener implements ItemListener {
+        public void itemStateChanged(ItemEvent e) {
+            if(e.getStateChange() == ItemEvent.SELECTED)
+            {
+                boolean considerValue = ! simpleCondition.getSelectedItem().equals("filter_exist")
+                    && ! simpleCondition.getSelectedItem().equals("filter_does_not_exist");
+                caseInsensitive.setEnabled(considerValue);
+                values.setEnabled(considerValue);
+            }
+        }
+    }
+    private class SelectedAttributeChangeListener implements ItemListener {
         /* (non-Javadoc)
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
          */
@@ -236,8 +253,11 @@ public class FilterDialog extends JDialog {
             if(e.getStateChange() == ItemEvent.SELECTED)
             {
                 if (attributes.getSelectedIndex() == NODE_POSITION){
+                    simpleCondition.setModel(simpleNodeConditionComboBoxModel);
                     simpleCondition.setEnabled(true);
                     values.setEditable(true);
+                    values.setEnabled(true);
+                    nodes.setExtensionList(null);
                     values.setModel(nodes);
                     caseInsensitive.setEnabled(true);
                     return;
@@ -253,13 +273,17 @@ public class FilterDialog extends JDialog {
                     caseInsensitive.setEnabled(false);
                     return;
                 }
+                if (attributes.getSelectedIndex() > NODE_POSITION){
+                    simpleCondition.setModel(simpleAttributeConditionComboBoxModel);
+                    simpleCondition.setEnabled(true);
+                    values.setEditable(true);
+                    nodes.setExtensionList(registeredAttributes.getElement(attributes.getSelectedItem().toString()).getValues());
+                    values.setModel(nodes);
+                    values.setEnabled(false);
+                    caseInsensitive.setEnabled(false);
+                    return;
+                }
             }
-        }
-
-        /* (non-Javadoc)
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
         }
     }
     
@@ -277,12 +301,14 @@ public class FilterDialog extends JDialog {
     private JButton btnDelete;
     private JCheckBox caseInsensitive;
     private ExtendedComboBoxModel icons;
-    private DefaultComboBoxModel nodes;
+    private ExtendedComboBoxModel nodes;
+    private AttributeRegistryTableModel registeredAttributes;
+    private DefaultComboBoxModel simpleNodeConditionComboBoxModel;
+    private DefaultComboBoxModel simpleAttributeConditionComboBoxModel;
     public FilterDialog(final FilterToolbar ft) {
-        super(Controller.getInstance().getFilterController().getFrame());
+        super(Controller.getInstance().getJFrame());
         this.fc = Controller.getInstance().getFilterController();
         this.ft = ft;
-        getContentPane().setLayout(new BorderLayout());
         
         final JToolBar simpleConditionToolbar = new JToolBar();
         simpleConditionToolbar.setOrientation(JToolBar.HORIZONTAL);
@@ -290,28 +316,34 @@ public class FilterDialog extends JDialog {
         getContentPane().add(simpleConditionToolbar, BorderLayout.NORTH);
         
         attributes = new JComboBox();
-        DefaultComboBoxModel filteredAttributeComboBoxModel = new DefaultComboBoxModel(new TranslatedString[] {
+        ExtendedComboBoxModel filteredAttributeComboBoxModel = new ExtendedComboBoxModel(new TranslatedString[] {
                 new TranslatedString("filter_node"), 
                 new TranslatedString("filter_icon")
         });
+        MapRegistry registry = Controller.getInstance().getModel().getRegistry();
+        filteredAttributeComboBoxModel.setExtensionList(registry.getAttributes().getListBoxModel());
         attributes.setModel(filteredAttributeComboBoxModel);
         attributes.addItemListener(new SelectedAttributeChangeListener());
         simpleConditionToolbar.add(attributes);
         
         simpleCondition = new JComboBox();
-        DefaultComboBoxModel simpleConditionComboBoxModel = new DefaultComboBoxModel(fc.getConditionFactory().getNodeConditionNames());
-        simpleCondition.setModel(simpleConditionComboBoxModel);
+        simpleNodeConditionComboBoxModel = new DefaultComboBoxModel(fc.getConditionFactory().getNodeConditionNames());
+        simpleCondition.setModel(simpleNodeConditionComboBoxModel);
+        simpleCondition.addItemListener(new SimpleConditionChangeListener());        
         simpleConditionToolbar.add(simpleCondition);
-        
+
+        simpleAttributeConditionComboBoxModel = new DefaultComboBoxModel(fc.getConditionFactory().getAttributeConditionNames());
         values = new JComboBox();
-        icons = new ExtendedComboBoxModel();
-        nodes = new DefaultComboBoxModel();
+        nodes = new ExtendedComboBoxModel();
         values.setModel(nodes);
         simpleConditionToolbar.add(values);
         values.setRenderer(fc.getMindIconRenderer());
-        
-        icons.setExtensionList(Controller.getInstance().getModel().getStatistics().getIcons());
         values.setEditable(true);
+        
+        icons = new ExtendedComboBoxModel();
+        icons.setExtensionList(registry.getIcons());
+        
+        registeredAttributes = registry.getAttributes();
         
         caseInsensitive = new JCheckBox();
         simpleConditionToolbar.add(caseInsensitive);
@@ -365,7 +397,7 @@ public class FilterDialog extends JDialog {
     }
     
     private String getAttributeValue() {
-        if (((TranslatedString) attributes.getSelectedItem()).equals("filter_icon")){
+        if (attributes.getSelectedIndex() == ICON_POSITION){
             MindIcon mi = (MindIcon)values.getSelectedItem();
             return mi.getName();
         }  
@@ -377,12 +409,13 @@ public class FilterDialog extends JDialog {
      * @param newMap
      */
     void mapChanged(MindMap newMap) {
-        icons.setExtensionList(newMap.getStatistics().getIcons());        
+        icons.setExtensionList(newMap.getRegistry().getIcons());        
         if(icons.getSize() >= 1){
             values.setSelectedIndex(0);
         }
         else{
             values.setSelectedIndex(-1);
         }
+        registeredAttributes = newMap.getRegistry().getAttributes();
     }
 }

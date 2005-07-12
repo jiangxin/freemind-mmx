@@ -1,5 +1,5 @@
 <project name="freemind" default="dist" basedir=".">
-	<property name="ver" value="0_8_0_rc3" />
+	<property name="ver" value="0_8_0_rc5" />
 	<property name="src" value="." />
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
@@ -166,7 +166,7 @@
 		                    mainclass="freemind.main.FreeMind"
 		                    icon="${src}/images/FreeMindWindowIcon.icns"
 		                    version="${ver}"
-		                    infostring="FreeMind ${ver} application (c) 2004"
+		                    infostring="FreeMind ${ver} application (c) 2005"
 		                    aboutmenuname="FreeMind"
 		                    bundleid="freemind.main.FreeMind"
 		                    signature="FM"
@@ -303,7 +303,7 @@
                 <copy file="${src}/freemind.properties" tofile="${src}/user.properties"/>
 		<copy todir="${dist}/browser" >
 			<fileset dir="${src}/html">
-				<include name="*.html"/>
+				<include name="*.*html"/>
 			</fileset>
 		</copy>
 	</target>
@@ -343,5 +343,20 @@
     </java>
   </target>
 
+	<!-- does not work!! -->
+	<target name="val">
+		<xmlvalidate lenient="false"
+		  failonerror="no" warn="true" classname="org.apache.xerces.parsers.SAXParser"
+            classpath="plugins/svg/xerces_2_5_0.jar">
+			<fileset dir="." includes="**/*.mm"/>
+		  <attribute name="http://apache.org/xml/features/validation/schema"
+		  value="true"/>
+		  <attribute name="http://xml.org/sax/features/namespaces" value="true"/>
+		  <property
+		  name="http://apache.org/xml/properties/schema/external-schemaLocation"
+		  value="freemind.xsd"/>
+		</xmlvalidate>
+	</target>
+	
 </project>
 

@@ -16,11 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMapModel.java,v 1.7.18.3.6.1 2005-06-12 12:59:55 dpolivaev Exp $*/
+/*$Id: FileMapModel.java,v 1.7.18.3.6.2 2005-07-12 15:41:16 dpolivaev Exp $*/
 
 package freemind.modes.filemode;
 
 import freemind.main.FreeMindMain;
+import freemind.modes.LinkRegistryAdapter;
+import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
 import freemind.modes.MapAdapter;
 import java.io.File;
@@ -29,18 +31,27 @@ import java.io.Writer;
 
 public class FileMapModel extends MapAdapter {
     
+    private LinkRegistryAdapter linkRegistry;
+
     //
     // Constructors
     //
 
     public FileMapModel(FreeMindMain frame) {
-	super(frame);
-	setRoot(new FileNodeModel(new File(File.separator), getFrame(), this));
+        this(new File(File.separator), frame);
     }
     
     public FileMapModel( File root , FreeMindMain frame) {
-	super(frame);
- 	setRoot(new FileNodeModel(root,getFrame(), this));
+        super(frame);
+        setRoot(new FileNodeModel(root,getFrame(), this));
+ 		linkRegistry = new LinkRegistryAdapter();
+    }
+
+    //
+    // Other methods
+    //
+    public MindMapLinkRegistry getLinkRegistry() {
+        return linkRegistry;
     }
 
     //

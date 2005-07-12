@@ -53,7 +53,7 @@ public class NodeDragListener implements DragGestureListener {
    public void dragGestureRecognized(DragGestureEvent e) {
       if(!c.getFrame().getProperty("draganddrop").equals("true")) return;
 
-      MindMapNode node = ((NodeView)e.getComponent()).getModel();
+      MindMapNode node = ((NodeView)e.getComponent().getParent()).getModel();
       if (node.isRoot()) return;
 
       //Transferable t; // = new StringSelection("");

@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.10.2.1.2.1 2005-06-12 12:59:55 dpolivaev Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.10.2.1.2.2 2005-07-12 15:41:16 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -38,8 +38,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.nio.channels.FileLock;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -77,14 +75,16 @@ public class MindMapMapModel extends MapAdapter  {
     // Constructors
     //
 
-    public MindMapMapModel(FreeMindMain frame) {
+    public MindMapMapModel( FreeMindMain frame ) {
         super(frame);
+        MindMapNodeModel root = new MindMapNodeModel( frame.getResourceString("new_mindmap"), frame, this);
         lockManager = frame.getProperty("experimental_file_locking_on").equals("true") ? 
            new LockManager() : new DummyLockManager();
 
         // register new LinkRegistryAdapter
         linkRegistry = new LinkRegistryAdapter();
 
+        setRoot(root);
         readOnly = false; 
         
         // automatic save:
@@ -122,160 +122,6 @@ public class MindMapMapModel extends MapAdapter  {
     public String getRestoreable() {
        return getFile()==null ? null : "MindMap:"+getFile().getAbsolutePath(); }
 
-    //  All these methods do redisplay, because they are offered to controller for use.
-    // __________________________________________________________________________
-/*
-    public void setNodeColor(MindMapNodeModel node, Color color) {
-        node.setColor(color);
-        nodeChanged(node); }
-
-    public void blendNodeColor(MindMapNodeModel node) {
-        Color mapColor = getBackgroundColor();
-        Color nodeColor = node.getColor();
-        if (nodeColor == null) {
-           nodeColor = Tools.xmlToColor(getFrame().getProperty("standardnodecolor")); }
-        node.setColor( new Color ( (3*mapColor.getRed() + nodeColor.getRed()) / 4,
-                                   (3*mapColor.getGreen() + nodeColor.getGreen()) / 4,
-                                   (3*mapColor.getBlue() + nodeColor.getBlue()) / 4));
-        nodeChanged(node); }
-
-    public void setNodeFont(MindMapNodeModel node, Font font) {
-        node.setFont(font);
-        nodeChanged(node); }
-
-    public void setEdgeColor(MindMapNodeModel node, Color color) {
-        ((MindMapEdgeModel)node.getEdge()).setColor(color);
-        nodeChanged(node); }
-
-    public void setEdgeWidth(MindMapNodeModel node, int width) {
-        ((MindMapEdgeModel)node.getEdge()).setWidth(width);
-        nodeChanged(node); }
-
-    public void setNodeStyle(MindMapNodeModel node, String style) {
-        node.setStyle(style);
-        nodeStructureChanged(node); }
-
-    public void setEdgeStyle(MindMapNodeModel node, String style) {
-        MindMapEdgeModel edge = (MindMapEdgeModel)node.getEdge();
-        edge.setStyle(style);
-        nodeStructureChanged(node); }
-
-    public void setBold(MindMapNodeModel node) {
-        node.setBold(!node.isBold());
-        nodeChanged(node); }
-
-    public void setCloud(MindMapNodeModel node) {
-        if(node.getCloud() == null) {
-            node.setCloud(new MindMapCloudModel(node, getFrame()));
-        } else {
-            node.setCloud(null);
-        }
-        nodeChanged(node); 
-    }
-
-    public void setCloudColor(MindMapNodeModel node, Color color) {
-        // the root node must not have a cloud
-		if (node.isRoot() == false) {
-        if(node.getCloud() == null) {
-            setCloud(node);
-        }
-        ((MindMapCloudModel)node.getCloud()).setColor(color);
-	        nodeChanged(node); 	        
-		}
-	}
-
-    public void setCloudWidth(MindMapNodeModel node, int width) {
-        // the root node must not have a cloud
-		if (node.isRoot() == false) {
-        if(node.getCloud() == null) {
-            setCloud(node);
-        }
-        ((MindMapCloudModel)node.getCloud()).setWidth(width);
-        nodeChanged(node); }
-    }
-
-    public void setCloudStyle(MindMapNodeModel node, String style) {
-        // the root node must not have a cloud
-		if (node.isRoot() == false) {
-        if(node.getCloud() == null) {
-            setCloud(node);
-        }
-        MindMapCloudModel cloud = (MindMapCloudModel)node.getCloud();
-        cloud.setStyle(style);
-        nodeStructureChanged(node); }
-    }
-
-    public void addIcon(MindMapNodeModel node, MindIcon icon) {
-        node.addIcon(icon);
-        nodeChanged(node); }
-
-    public int removeLastIcon(MindMapNodeModel node) {
-        int retval = node.removeLastIcon();
-        nodeChanged(node); 
-        return retval;
-    }
-
-    // Source holds the MindMapArrowLinkModel and points to the id placed in target.
-    public void addLink(MindMapNodeModel source, MindMapNodeModel target) {
-        if(getLinkRegistry().getLabel(target) == null) {
-            // call registry to give new label
-            getLinkRegistry().registerLinkTarget(target);
-        }
-        MindMapArrowLinkModel linkModel = new MindMapArrowLinkModel(source, target, getFrame());
-        linkModel.setDestinationLabel(getLinkRegistry().getLabel(target));
-        // register link.
-        getLinkRegistry().registerLink(linkModel);
-        nodeChanged(target); 
-        nodeChanged(source); 
-    }
-
-    public void removeReference(MindMapNode source, MindMapArrowLinkModel arrowLink) {
-        getLinkRegistry().deregisterLink(arrowLink);
-        nodeChanged(source);
-        nodeChanged(arrowLink.getTarget());
-    }
-
-    public void changeArrowsOfArrowLink(MindMapNode source, MindMapArrowLinkModel arrowLink, boolean hasStartArrow, boolean hasEndArrow) {
-        arrowLink.setStartArrow((hasStartArrow)?"Default":"None");
-        arrowLink.setEndArrow((hasEndArrow)?"Default":"None");
-        nodeChanged(source);
-    }
-
-    public void setArrowLinkColor(MindMapNode source, MindMapArrowLinkModel arrowLink, Color color) {
-        arrowLink.setColor(color);
-        nodeChanged(source); 
-    }
-
-    public void setItalic(MindMapNodeModel node) {
-        node.setItalic(!node.isItalic());
-        nodeChanged(node); }
-
-    public void setUnderlined(MindMapNodeModel node) {
-        node.setUnderlined(!node.isUnderlined());
-        nodeChanged(node); }
-
-    public void setNormalFont(MindMapNodeModel node) {
-        node.setItalic(false);
-        node.setBold(false);
-        node.setUnderlined(false);
-        nodeChanged(node); }
-
-    public void setFontFamily(MindMapNodeModel node, String fontFamily) {
-        node.estabilishOwnFont();
-        node.setFont(getFrame().getController().getFontThroughMap
-                     (new Font(fontFamily,node.getFont().getStyle(),node.getFont().getSize())));
-        nodeChanged(node); }
-
-    public void setFontSize(MindMapNodeModel node, int fontSize) {
-        node.estabilishOwnFont();
-        node.setFont(node.getFont().deriveFont((float)fontSize));
-        nodeChanged(node); }
-
-    public void increaseFontSize(MindMapNodeModel node, int increment) {
-        node.estabilishOwnFont();
-        node.setFontSize(node.getFont().getSize() + increment);
-        nodeChanged(node); }
-*/
     //
     // Other methods
     //

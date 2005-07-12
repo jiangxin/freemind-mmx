@@ -19,9 +19,11 @@
  *
  * Created on 29.09.2004
  */
-/*$Id: RemoveLastIconAction.java,v 1.1.4.1 2004-10-17 23:00:10 dpolivaev Exp $*/
+/*$Id: RemoveLastIconAction.java,v 1.1.4.1.10.1 2005-07-12 15:41:16 dpolivaev Exp $*/
 
 package freemind.modes.actions;
+
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
@@ -53,9 +55,10 @@ public class RemoveLastIconAction extends NodeGeneralAction implements NodeActor
     }
 
     public ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException {
-        if(selected.getIcons().size()==0) 
+        List icons = selected.getIcons();
+		if(icons.size()==0) 
             return null;
-        AddIconAction undoAction = iconAction.createAddIconAction(selected, (MindIcon) selected.getIcons().lastElement());
+        AddIconAction undoAction = iconAction.createAddIconAction(selected, (MindIcon) icons.get(icons.size()-1));
         return new ActionPair(createRemoveLastIconXmlAction(selected), undoAction);
     }
 

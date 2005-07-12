@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.6 2005-05-03 05:29:49 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.6.6.1 2005-07-12 15:41:13 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -32,12 +32,14 @@ import java.util.Vector;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
@@ -107,9 +109,8 @@ public class StructuredMenuHolder {
 
 	public void addCategory(String category) {
 		StringTokenizer tokens = new StringTokenizer(category+"/blank", "/");
+		// with this call, the category is created.
 		MapTokenPair categoryPair = getCategoryMap(tokens, menuMap);
-		// remove blank
-		categoryPair.order.remove(categoryPair.token);
 	}
 
 	public void addSeparator(String category) {
@@ -121,11 +122,9 @@ public class StructuredMenuHolder {
 		StringTokenizer tokens = new StringTokenizer(sep, "/");
 		// separators can occur as doubles.
 		MapTokenPair categoryPair = getCategoryMap(tokens, menuMap);
-		if(true /*categoryPair.order.size() == 0 ||
-		   !(((String)categoryPair.order.lastElement())).equals(SEPARATOR_TEXT)*/) {
-			categoryPair.map.put(categoryPair.token, new SeparatorHolder());
-			categoryPair.order.add(categoryPair.token);
-		}
+		// add an separator
+		categoryPair.map.put(categoryPair.token, new SeparatorHolder());
+		categoryPair.order.add(categoryPair.token);
 	}
 	/**
 	 * @param item
@@ -134,14 +133,11 @@ public class StructuredMenuHolder {
 	 */
 	private Object addMenu(Object item, StringTokenizer tokens) {
 		MapTokenPair categoryPair = getCategoryMap(tokens, menuMap);
+		// add the item:
 		categoryPair.map.put(categoryPair.token, item);
+		categoryPair.order.add(categoryPair.token);
 		return item;
 	}
-
-//	private void removeItem(StringTokenizer tokens) {
-//		MapTokenPair categoryPair = getCategoryMap(tokens, menuMap);
-//		categoryPair.map.remove(categoryPair.token);
-//	}
 
 	private final class PrintMenuAdder implements MenuAdder {
         public void addMenuItem(StructuredMenuItemHolder holder) {
@@ -187,9 +183,6 @@ public class StructuredMenuHolder {
 				return getCategoryMap(tokens, nextMap);
 			} else {
 				Vector order = (Vector)thisMap.get(ORDER_NAME);
-				if (!order.contains(nextToken)) {
-					order.add(nextToken);
-				}
 				return new MapTokenPair(thisMap, nextToken, order);
 			}
 		}
@@ -266,8 +259,8 @@ public class StructuredMenuHolder {
 			}
 
 			public void addSeparator() {
-				// no separators to save place.
-				//bar.addSeparator();
+				// no separators to save place. But they look good. fc, 16.6.2005.
+				bar.addSeparator();
 			}
 
 //			public void addAction(Action action) {

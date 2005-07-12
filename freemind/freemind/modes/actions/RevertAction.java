@@ -19,7 +19,7 @@
  *
  * Created on 11.03.2005
  */
-/*$Id: RevertAction.java,v 1.1.2.2 2005-04-15 22:28:10 christianfoltin Exp $*/
+/*$Id: RevertAction.java,v 1.1.2.2.6.1 2005-07-12 15:41:16 dpolivaev Exp $*/
 package freemind.modes.actions;
 
 import java.awt.event.ActionEvent;
@@ -92,6 +92,23 @@ public class RevertAction extends FreemindAction implements ActorXml {
 
 	}
 
+    public void openXmlInsteadOfMap(String xmlFileContent) {
+        try {
+            RevertXmlAction doAction = createRevertXmlAction(xmlFileContent, null, null);
+            RevertXmlAction undoAction = createRevertXmlAction(controller
+                    .getMap(), null, null);
+            controller.getActionFactory().startTransaction(
+                    this.getClass().getName());
+            controller.getActionFactory().executeAction(
+                    new ActionPair(doAction, undoAction));
+            controller.getActionFactory().endTransaction(
+                    this.getClass().getName());
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 	public RevertXmlAction createRevertXmlAction(File file)
 			throws JAXBException, IOException {
 		String fileName = file.getAbsolutePath();

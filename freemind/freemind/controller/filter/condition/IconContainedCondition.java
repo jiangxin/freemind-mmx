@@ -9,6 +9,7 @@ package freemind.controller.filter.condition;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Vector;
 
@@ -35,7 +36,7 @@ public class IconContainedCondition implements Condition {
 	}
 	
 	public boolean checkNode(MindMapNode node) {
-		Vector icons = node.getIcons();
+		List icons = node.getIcons();
 		for (ListIterator i=icons.listIterator(); i.hasNext(); ) {
 			MindIcon nextIcon = (MindIcon) i.next() ;
 			if (iconName.equals(nextIcon.getName())) return true;

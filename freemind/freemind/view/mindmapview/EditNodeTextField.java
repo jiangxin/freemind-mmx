@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.6.1 2005-07-12 15:41:18 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -117,7 +117,7 @@ public class EditNodeTextField extends EditNodeBase {
             }
         }
 
-        textfield.setSize(xSize, getNode().getHeight() + heightAddition);
+        textfield.setSize(xSize, getNode().getMainView().getHeight() + heightAddition);
         textfield.setFont(getNode().getFont());
         textfield.setForeground(getNode().getForeground());
         textfield.setSelectedTextColor(getNode().getForeground());

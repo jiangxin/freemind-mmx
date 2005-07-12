@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileNodeModel.java,v 1.11.28.1 2005-06-12 12:59:55 dpolivaev Exp $*/
+/*$Id: FileNodeModel.java,v 1.11.28.2 2005-07-12 15:41:16 dpolivaev Exp $*/
 
 package freemind.modes.filemode;
 
@@ -29,6 +29,7 @@ import java.util.ListIterator;
 import freemind.main.FreeMindMain;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 
 
@@ -53,14 +54,15 @@ public class FileNodeModel extends NodeAdapter {
 
     //Overwritten get Methods
     public String getStyle() {
-        // This condition shows the code is not quite logical:
-        // ordinary file should not be considered folded and 
-        // therefore the clause !isLeaf() should not be necessary.       
-       if (isFolded()) { // && !isLeaf()) {
-	    return MindMapNode.STYLE_BUBBLE;
-	} else {
  	    return MindMapNode.STYLE_FORK;
-	}
+		//        // This condition shows the code is not quite logical:
+		//        // ordinary file should not be considered folded and 
+		//        // therefore the clause !isLeaf() should not be necessary.       
+		//       if (isFolded()) { // && !isLeaf()) {
+		//	    return MindMapNode.STYLE_BUBBLE;
+		//	} else {
+		// 	    return MindMapNode.STYLE_FORK;
+		//	}
     }
     /*
 	if (file.isFile()) {

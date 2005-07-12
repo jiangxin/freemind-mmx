@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
@@ -20,6 +21,7 @@ import javax.swing.text.BadLocationException;
 import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
+import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
 
 /**
@@ -34,6 +36,7 @@ public class NodeNote extends PermanentNodeHookAdapter {
 	private JTextArea text;
 	private String myNodeText;
 	private JScrollPane scroller;
+	private static ImageIcon noteIcon;
 	/**
 	 * 
 	 */
@@ -48,11 +51,23 @@ public class NodeNote extends PermanentNodeHookAdapter {
 	 */
 	public void invoke(MindMapNode node) {
 		super.invoke(node);
-		// select to get focus on it.
-        getController().getView().selectAsTheOnlyOneSelected(node.getViewer());
+		enableStateIcon(node);
 	}
 
-	/* (non-Javadoc)
+	/**
+     * @param node
+     */
+    private void enableStateIcon(MindMapNode node) {
+        // icon
+		if (noteIcon == null) {
+			noteIcon = new ImageIcon(getController().getFrame().getResource("accessories/plugins/icons/knotes.png"));
+		}
+		node.setStateIcon(getName(), noteIcon);
+		getController().nodeRefresh(node);
+    }
+
+
+    /* (non-Javadoc)
 	 * @see freemind.extensions.PermanentNodeHook#onReceiveFocusHook()
 	 */
 	public void onReceiveFocusHook() {
@@ -198,6 +213,8 @@ public class NodeNote extends PermanentNodeHookAdapter {
 	 */
 	public void shutdownMapHook() {
 		onLooseFocusHook();
+		getNode().setStateIcon(getName(), null);
+		getController().nodeRefresh(getNode());
 		super.shutdownMapHook();
 	}
 

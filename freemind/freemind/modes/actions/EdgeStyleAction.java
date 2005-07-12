@@ -20,7 +20,7 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: EdgeStyleAction.java,v 1.1.4.1 2004-10-17 23:00:09 dpolivaev Exp $ */
+/* $Id: EdgeStyleAction.java,v 1.1.4.1.10.1 2005-07-12 15:41:16 dpolivaev Exp $ */
 
 package freemind.modes.actions;
 
@@ -41,7 +41,7 @@ public class EdgeStyleAction extends NodeGeneralAction implements NodeActorXml {
 
     public EdgeStyleAction(ModeController controller, String style) {
         super(controller, null, null);
-        setName(controller.getText("edge_style") + controller.getText(style));
+        setName(/*controller.getText("edge_style") +*/ controller.getText(style));
         this.mStyle = style;
         addActor(this);
     }

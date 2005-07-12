@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.14.14.3.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
+/*$Id: RootNodeView.java,v 1.14.14.3.2.1.2.1 2005-07-12 15:41:19 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -51,17 +51,46 @@ public class RootNodeView extends NodeView {
      * should leave the Node.
      */
     Point getOutPoint() {
-	Dimension size = getSize();
-	return new Point(getLocation().x + size.width, getLocation().y + size.height / 2);
+	Dimension size = getMainView().getSize();
+	return new Point(getX() + getMainView().getX() + size.width, getY() + getMainView().getY()  + size.height / 2);
     }
+
+    /* fc, 26.06.2005 */
+    /** Returns the point the edge should start given the index of the child node 
+     * that should be connected.
+     * @return
+     */
+    Point getOutPoint(Point destinationPoint, boolean isLeft) {
+		if (false) {
+			Dimension size = getSize();
+			double nWidth = size.width;
+			double nHeight = size.height;
+			Point centerPoint = new Point(
+					getLocation().x + (int) (nWidth / 2f), getLocation().y
+							+ (int) (nHeight / 2f));
+			// assume, that destinationPoint is on the right:
+			double angle = Math.atan((destinationPoint.y - centerPoint.y + 0f)
+					/ (destinationPoint.x - centerPoint.x + 0f));
+			if (isLeft) {
+				angle += Math.PI;
+			}
+			// now determine point on ellipsis corresponding to that angle:
+			return new Point(centerPoint.x
+					+ (int) (Math.cos(angle) * nWidth / 2f), centerPoint.y
+					+ (int) (Math.sin(angle) * (nHeight) / 2f));
+		}
+        // old behaviour of 0.7.1:
+		return (isLeft) ? getInPoint() : getOutPoint();
+    }
+    /* end fc, 26.06.2005 */
 
     /**
      * Returns the Point where the InEdge
      * should arrive the Node.
      */
     Point getInPoint() {
-	Dimension size = getSize();
-	return new Point(getLocation().x, getLocation().y + size.height / 2);
+	Dimension size = getMainView().getSize();
+	return new Point(getX() + getMainView().getX(), getY() + getMainView().getY() + size.height / 2);
     }
 
     EdgeView getEdge() {
@@ -143,7 +172,7 @@ public class RootNodeView extends NodeView {
      */
     public void paint(Graphics graphics) {
 	Graphics2D g = (Graphics2D)graphics;
-	Dimension size = getSize();
+	Dimension size = getMainView().getSize();
 	if (this.getModel()==null) return;
 
         paintSelected(g, size);
@@ -194,10 +223,8 @@ public class RootNodeView extends NodeView {
     public void setTreeWidth(int w) {
     	throw new Error();
     }
-	public void setStandardTreeShift(int h) {
-    	throw new Error();
-	}
-    public void setRootTreeWidths(int left, int right) {
+    
+   public void setRootTreeWidths(int left, int right) {
         leftTreeWidth = left - getPreferredSize().width;
         rightTreeWidth = right ;
         super.setTreeWidth(leftTreeWidth + rightTreeWidth );
@@ -210,8 +237,8 @@ public class RootNodeView extends NodeView {
 			super.setTreeHeight(right);
 		}		
 	}
-	public void setRootTreeShifts(int left, int right) {
-		super.setTreeShift(Math.min(left,right));
+	public void setRootUpperChildShift(int left, int right) {
+		super.setUpperChildShift(Math.max(left,right));
 	}
 
 	/* (non-Javadoc)
@@ -221,8 +248,8 @@ public class RootNodeView extends NodeView {
 		return model.getStyle();
 	}
 
-	public Dimension getPreferredSize() {
-		Dimension prefSize = super.getPreferredSize();
+	protected Dimension getMainViewPreferredSize() {
+		Dimension prefSize = super.getMainViewPreferredSize();
 		prefSize.width *= 1.1;
 		prefSize.height *= 2;
 	    return prefSize;

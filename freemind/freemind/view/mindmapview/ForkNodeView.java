@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ForkNodeView.java,v 1.10.18.2 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: ForkNodeView.java,v 1.10.18.2.6.1 2005-07-12 15:41:18 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -40,12 +40,11 @@ public class ForkNodeView extends MoveableNodeView {
 	super(model,map);
     }
     
-    public int getExtendedX(){
-    	int x = getX();
+    public int getDeltaX(){
 		if(getModel().isFolded() && isLeft()){
-			x -= getZoomedFoldingSymbolHalfWidth() * 2 + FOLDING_WIDTH_OVERHEAD;
+		    return super.getDeltaX()+ getZoomedFoldingSymbolHalfWidth() * 2 + FOLDING_WIDTH_OVERHEAD;
 		}
-		return x;
+		return super.getDeltaX();
     }
     
     protected int getExtendedWidth(int width )
@@ -87,7 +86,7 @@ public class ForkNodeView extends MoveableNodeView {
 
     public void paint(Graphics graphics) {
 	Graphics2D g = (Graphics2D)graphics;
-	Dimension size = getSize();
+	Dimension size = getMainView().getSize();
 	//Dimension size = getPreferredSize();
 
 	if (this.getModel()==null) return;

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.8.14.3.2.1 2005-05-09 23:45:46 dpolivaev Exp $*/
+/*$Id: ArrowLinkView.java,v 1.8.14.3.2.1.2.1 2005-07-12 15:41:17 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -179,12 +179,15 @@ public class ArrowLinkView {
 	 * @param dellength
 	 */
 	private Point calcInclination(NodeView node, double dellength) {
+/*	    
 		int w = node.getWidth();
 		int h = node.getHeight();
 		double r = Math.sqrt(w*w+h*h);
 		double wr = dellength * w / r;
 		double hr = dellength * h / r;
 		return  new Point((int)wr, (int)hr);
+*/		
+		return  new Point((int) dellength, 0);
 	}
 
 	/** @param p1 is the start point 

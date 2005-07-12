@@ -35,11 +35,6 @@ import freemind.modes.MindMap;
 		conditionRenderer = new ConditionRenderer();
 		filterToolbar = new FilterToolbar(this);
 	}
-	 JFrame getFrame() {
-		FreeMindMain f = Controller.getInstance().getFrame();
-		if (f instanceof JFrame) return (JFrame) f;
-		return null;
-	}
 
     public MindIconRenderer getMindIconRenderer() {
         return mindIconRenderer;

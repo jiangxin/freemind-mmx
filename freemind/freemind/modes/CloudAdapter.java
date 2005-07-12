@@ -16,23 +16,28 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: CloudAdapter.java,v 1.1.16.2 2004-10-28 05:24:53 christianfoltin Exp $*/
+/*$Id: CloudAdapter.java,v 1.1.16.2.10.1 2005-07-12 15:41:14 dpolivaev Exp $*/
 
 package freemind.modes;
 
 import java.awt.Color;
 
+import freemind.controller.Controller;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 
 public abstract class CloudAdapter extends LineAdapter implements MindMapCloud {
 
+    private static Color standardColor = null;
+    private static String standardStyle = null;
+    private static LineAdapterListener listener = null;
     //
     // Constructors
     //
     public CloudAdapter(MindMapNode target,FreeMindMain frame) {
-        this(target, frame, "standardcloudcolor", "standardcloudstyle");
+        this(target, frame, FreeMind.RESOURCES_CLOUD_COLOR, "standardcloudstyle");
     }
 
     /** For derived classes.*/
@@ -40,6 +45,11 @@ public abstract class CloudAdapter extends LineAdapter implements MindMapCloud {
         super(target, frame, standardColorPropertyString, standardStylePropertyString);
         NORMAL_WIDTH = 3;
         iterativeLevel = -1;
+        if(listener == null) {
+            listener = new LineAdapterListener(); 
+            Controller.addPropertyChangeListener(listener);
+        }
+        
     }
     /**
     *  calculates the cloud iterative level which 
@@ -102,4 +112,16 @@ public abstract class CloudAdapter extends LineAdapter implements MindMapCloud {
         return cloud;
     }
 
+    protected Color getStandardColor() {
+        return standardColor;
+    }
+    protected void setStandardColor(Color standardColor) {
+        CloudAdapter.standardColor = standardColor;
+    }
+    protected String getStandardStyle() {
+        return standardStyle;
+    }
+    protected void setStandardStyle(String standardStyle) {
+        CloudAdapter.standardStyle = standardStyle;
+    }
 }

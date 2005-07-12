@@ -19,7 +19,7 @@
  *
  * Created on 06.02.2005
  */
-/*$Id: ReminderHook.java,v 1.1.2.7 2005-05-03 05:29:51 christianfoltin Exp $*/
+/*$Id: ReminderHook.java,v 1.1.2.7.6.1 2005-07-12 15:41:19 dpolivaev Exp $*/
 package plugins.time;
 
 import java.text.MessageFormat;
@@ -89,10 +89,10 @@ public class ReminderHook extends PermanentNodeHookAdapter {
 
 	public void shutdownMapHook() {
 		getController().setToolTip(getNode(), getName(), null);
-		displayState(REMOVE_CLOCK, getNode(), true);
 		if (timer != null) {
 			timer.cancel();
 		}
+		displayState(REMOVE_CLOCK, getNode(), true);
 		super.shutdownMapHook();
 	}
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.1 2005-06-12 12:59:55 dpolivaev Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.2 2005-07-12 15:41:16 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -109,6 +109,7 @@ public class MindMapController extends ControllerAdapter {
    public Action exportBranchToHTML = new ExportBranchToHTMLAction(this);
 
    public Action editLong = new EditLongAction();
+   public Action editAttributes = new EditAttributesAction();
    public Action newSibling = new NewSiblingAction(this);
    public Action newPreviousSibling = new NewPreviousSiblingAction(this);
    public Action setLinkByFileChooser = new SetLinkByFileChooserAction();
@@ -336,7 +337,11 @@ public class MindMapController extends ControllerAdapter {
 
 
 //        editMenu.add(getIconMenu());
-		String iconMenuString = MenuBar.INSERT_MENU + "icons";
+		addIconsToMenu(holder, MenuBar.INSERT_MENU + "icons");
+
+    }
+
+    public void addIconsToMenu(StructuredMenuHolder holder, String iconMenuString) {
 		JMenu iconMenu = holder.addMenu(new JMenu(getText("icon_menu")), iconMenuString+"/.") ;
 		holder.addAction(removeLastIconAction, iconMenuString+"/removeLastIcon");
 		holder.addAction(removeAllIconsAction, iconMenuString+"/removeAllIcons");
@@ -344,10 +349,9 @@ public class MindMapController extends ControllerAdapter {
 		for (int i=0; i<iconActions.size(); ++i) {          
 			   JMenuItem item = holder.addAction((Action) iconActions.get(i), iconMenuString+"/"+i);
 		}
+	}
 
-    }
-
-    /**
+	/**
      * @param holder
      * @param formatMenuString
      */
@@ -421,111 +425,7 @@ public class MindMapController extends ControllerAdapter {
             } /* else exception */
          }
     }
-/*
-<<<<<<< MindMapController.java
-    JMenu getLeadingNodeMenu() {
-       JMenu leadingEditMenu = new JMenu();
-       add(leadingEditMenu, edit, "keystroke_edit");
-       add(leadingEditMenu, editLong, "keystroke_edit_long_node");
-       add(leadingEditMenu, newChild, "keystroke_add_child");
-       leadingEditMenu.addSeparator();
 
-       add(leadingEditMenu, cut, "keystroke_cut");
-       add(leadingEditMenu, copy, "keystroke_copy");
-       add(leadingEditMenu, copySingle, "keystroke_copy_single");
-       add(leadingEditMenu, paste, "keystroke_paste");
-       return leadingEditMenu; }
-
-    JMenu getNodeMenu() {
-	JMenu nodeMenu = new JMenu(getText("node"));
-
-// currently only hidden feature - needs debugging %%%   
-//#  if the property "add_as_child = true" is set,
-//#  the old logic of inserting of a new node with Ctrl+N is used.
-   
-        if (addAsChildMode) {
-          add(nodeMenu, newChildWithoutFocus, "keystroke_add_sibling_before");
-        }
-        else {
-          add(nodeMenu, newPreviousSibling, "keystroke_add_sibling_before");
-        }
-        add(nodeMenu, newSibling, "keystroke_add");
- 	add(nodeMenu, remove, "keystroke_remove");
-        add(nodeMenu, joinNodes, "keystroke_join_nodes");
-
-	nodeMenu.addSeparator();
-
-        add(nodeMenu, find, "keystroke_find");
-        add(nodeMenu, findNext, "keystroke_find_next");
-
-	nodeMenu.addSeparator();
-
- 	add(nodeMenu, nodeUp, "keystroke_node_up");
- 	add(nodeMenu, nodeDown, "keystroke_node_down");
-
-	nodeMenu.addSeparator();
-
-	add(nodeMenu, followLink, "keystroke_follow_link");
-	add(nodeMenu, setLinkByFileChooser, "keystroke_set_link_by_filechooser");
-	add(nodeMenu, setLinkByTextField, "keystroke_set_link_by_textfield");
-
-	nodeMenu.addSeparator();
-
-	add(nodeMenu, setImageByFileChooser, "keystroke_set_image_by_filechooser");
-
-	nodeMenu.addSeparator();
-
-	add(nodeMenu, toggleFolded, "keystroke_toggle_folded");
-	add(nodeMenu, toggleChildrenFolded, "keystroke_toggle_children_folded");
-
-	nodeMenu.addSeparator();
-
-	JMenu nodeStyle = new JMenu(getText("style"));
-	nodeMenu.add(nodeStyle);
-
-	add(nodeStyle, forkStyle);
-	add(nodeStyle, bubbleStyle);
-	add(nodeStyle, combinedStyle);
-	add(nodeStyle, parentStyle);
-	
-    // and the clouds:
-	nodeStyle.addSeparator();
-	add(nodeStyle, cloud, "keystroke_node_toggle_cloud");
-	add(nodeStyle, cloudColor);
-    
-    
-
-	JMenu nodeFont = new JMenu(getText("font"));
-	add(nodeFont, increaseNodeFont, "keystroke_node_increase_font_size");
-	add(nodeFont, decreaseNodeFont, "keystroke_node_decrease_font_size");
-
-	nodeFont.addSeparator();
-
-	add(nodeFont, italic,"keystroke_node_toggle_italic"); 
-	add(nodeFont, bold,"keystroke_node_toggle_boldface");
-	nodeMenu.add(nodeFont);
-	//	nodeFont.add(underline);
-	add(nodeMenu, nodeColor, "keystroke_node_color"); 
-        add(nodeMenu, nodeColorBlend, "keystroke_node_color_blend");
-
-	return nodeMenu;
-    }
-
-    JMenu getEdgeMenu() {
-	JMenu edgeMenu = new JMenu(getText("edge"));
-	JMenu edgeStyle = new JMenu(getText("style"));
-	edgeMenu.add(edgeStyle);
-	for (int i=0; i<edgeStyles.length; ++i) { 
-           edgeStyle.add(edgeStyles[i]); }
- 	add(edgeMenu, edgeColor, "keystroke_edge_color");
-	JMenu edgeWidth = new JMenu(getText("width"));
-	edgeMenu.add(edgeWidth);
-	for (int i=0; i<edgeWidths.length; ++i) { 
-           edgeWidth.add(edgeWidths[i]); }
-	return edgeMenu; }
-
-=======
-*/
     public JPopupMenu getPopupMenu() {
         return popupmenu;
     }

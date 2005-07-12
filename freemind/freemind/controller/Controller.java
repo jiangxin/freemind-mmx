@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10.2.3.2.1 2005-05-31 20:24:06 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.3.2.2 2005-07-12 15:41:13 dpolivaev Exp $*/
 
 package freemind.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -40,6 +41,8 @@ import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -75,6 +78,18 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import freemind.controller.filter.FilterController;
+import freemind.controller.filter.FilterDialog;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+
+import freemind.common.JaxbTools;
+import freemind.controller.actions.generated.instance.ObjectFactory;
+import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
+import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.controller.attributes.AttributeDialog;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
@@ -95,6 +110,7 @@ import freemind.view.mindmapview.MapView;
 public class Controller {
 
     private static Logger logger;
+	private ObjectFactory actionXmlFactory;
     private static JColorChooser colorChooser = new JColorChooser();
 	private LastOpenedList lastOpened;//A list of the pathnames of all the maps that were opened in the last time
     private MapModuleManager mapModuleManager;// new MapModuleManager();
@@ -133,7 +149,7 @@ public class Controller {
     public Action quit;
     public Action background; 
 
-    public Action optionAntialiasAction;
+    public OptionAntialiasAction optionAntialiasAction;
     public Action optionHTMLExportFoldingAction;
     public Action optionSelectionMechanismAction;
 
@@ -145,6 +161,7 @@ public class Controller {
     public Action historyNextMap;
     public Action navigationPreviousMap;
     public Action showFilterToolbarAction;
+    public Action showAttributeDialogAction;    
     public Action navigationNextMap;
 
     public Action moveToRoot;
@@ -178,6 +195,9 @@ public class Controller {
         if(logger == null) {
             logger = frame.getLogger(this.getClass().getName());
         }
+		// new object factory for xml actions:
+		actionXmlFactory = JaxbTools.getInstance().getObjectFactory();
+
         lastOpened = new LastOpenedList(this, getProperty("lastOpened"));
         mapModuleManager = new MapModuleManager(this, history, lastOpened);
 
@@ -205,6 +225,7 @@ public class Controller {
         historyNextMap = new HistoryNextMapAction(this);
         navigationPreviousMap = new NavigationPreviousMapAction(this);
         showFilterToolbarAction = new ShowFilterToolbarAction(this);
+        showAttributeDialogAction = new ShowAttributeDialogAction(this);
         navigationNextMap = new NavigationNextMapAction(this);
         toggleMenubar = new ToggleMenubarAction(this);
         toggleToolbar = new ToggleToolbarAction(this);
@@ -1050,6 +1071,26 @@ public class Controller {
             mapModuleManager.previousMapModule();
         }
     }
+    
+    private class ShowAttributeDialogAction extends AbstractAction {
+        private AttributeDialog attributeDialog;
+        ShowAttributeDialogAction(Controller controller) {     
+            super("",
+                  new ImageIcon(getResource("images/showAttributes.gif")));
+        }
+		private AttributeDialog getAttributeDialog() {
+			if (attributeDialog == null) attributeDialog = new AttributeDialog();
+			return attributeDialog;
+		}
+		 public void actionPerformed(ActionEvent e) {
+		     if (getAttributeDialog().isVisible() == false)
+		     {
+		         getAttributeDialog().pack();
+		         getAttributeDialog().setVisible(true);
+		     }
+		}
+    }
+
     private class ShowFilterToolbarAction extends AbstractAction {
         ShowFilterToolbarAction(Controller controller) {     
             super("",
@@ -1247,9 +1288,17 @@ public class Controller {
         }
     }
 
+    /** Seems to be obsolete, but we add the property listener here. fc, 14.6.2005*/
     private class BackgroundAction extends AbstractAction {
         BackgroundAction(Controller controller, Icon icon) {
             super(controller.getResourceString("background"),icon);
+            Controller.addPropertyChangeListener(new FreemindPropertyListener(){
+
+                public void propertyChanged(String propertyName, String newValue, String oldValue) {
+                    if(propertyName.equals(FreeMind.RESOURCES_BACKGROUND_COLOR)) {
+                        getModel().setBackgroundColor(Tools.xmlToColor(newValue));
+                    }
+                }});
         }
         public void actionPerformed(ActionEvent e) {
             Color color = showCommonJColorChooserDialog(getView(),getResourceString("choose_background_color"),getView().getBackground() );
@@ -1257,21 +1306,38 @@ public class Controller {
         }
     }
 
-    private class OptionAntialiasAction extends AbstractAction {
-       OptionAntialiasAction(Controller controller) {}
-       public void actionPerformed(ActionEvent e) {
-          if (e.getActionCommand().equals("antialias_none")) {
-             setAntialiasEdges(false);
-             setAntialiasAll(false); }
-          if (e.getActionCommand().equals("antialias_edges")) {
-             setAntialiasEdges(true);
-             setAntialiasAll(false); }
-          if (e.getActionCommand().equals("antialias_all")) {
-             setAntialiasEdges(false);
-             setAntialiasAll(true); }
-          if(getView() != null)
-              getView().repaint(); 
+    public class OptionAntialiasAction extends AbstractAction implements FreemindPropertyListener {
+       OptionAntialiasAction(Controller controller) {
+           Controller.addPropertyChangeListener(this);
        }
+       public void actionPerformed(ActionEvent e) {
+          String command = e.getActionCommand();
+        changeAntialias(command); 
+       }
+	    /**
+	     * @param command
+	     */
+	    public void changeAntialias(String command) {
+	        if(command == null) {
+	            return;
+	        }
+	        if (command.equals("antialias_none")) {
+	             setAntialiasEdges(false);
+	             setAntialiasAll(false); }
+	          if (command.equals("antialias_edges")) {
+	             setAntialiasEdges(true);
+	             setAntialiasAll(false); }
+	          if (command.equals("antialias_all")) {
+	             setAntialiasEdges(false);
+	             setAntialiasAll(true); }
+	          if(getView() != null)
+	              getView().repaint();
+	    }
+	    public void propertyChanged(String propertyName, String newValue, String oldValue) {
+            if (propertyName.equals(FreeMind.RESOURCE_ANTIALIAS)) {
+                changeAntialias(newValue);
+            }
+	    }
     }
 
     private class OptionHTMLExportFoldingAction extends AbstractAction {
@@ -1280,19 +1346,37 @@ public class Controller {
           setProperty("html_export_folding", e.getActionCommand()); }}
 
     // switch auto properties for selection mechanism fc, 7.12.2003.
-    private class OptionSelectionMechanismAction extends AbstractAction {
+    private class OptionSelectionMechanismAction extends AbstractAction implements FreemindPropertyListener {
         Controller c;
-       OptionSelectionMechanismAction(Controller controller) {
-           c = controller;
-       }
-       public void actionPerformed(ActionEvent e) {
-          setProperty("selection_method", e.getActionCommand());
-          // and update the selection method in the NodeMouseMotionListener
-          freemind.controller.NodeMouseMotionListener.updateSelectionMethod(c);
-          String statusBarString = c.getResourceString(e.getActionCommand());
-          if(statusBarString != null) // should not happen
-              c.getFrame().out(statusBarString);
-       }
+
+        OptionSelectionMechanismAction(Controller controller) {
+            c = controller;
+            Controller.addPropertyChangeListener(this);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            String command = e.getActionCommand();
+            changeSelection(command);
+        }
+
+        /**
+         * @param command
+         */
+        private void changeSelection(String command) {
+            setProperty("selection_method", command);
+            // and update the selection method in the NodeMouseMotionListener
+            freemind.controller.NodeMouseMotionListener
+                    .updateSelectionMethod(c);
+            String statusBarString = c.getResourceString(command);
+            if (statusBarString != null) // should not happen
+                c.getFrame().out(statusBarString);
+        }
+
+        public void propertyChanged(String propertyName, String newValue, String oldValue) {
+            if(propertyName.equals(FreeMind.RESOURCES_SELECTION_METHOD)) {
+                changeSelection(newValue);
+            }
+        }
     }
 
     // open faq url from freeminds page:
@@ -1313,7 +1397,65 @@ public class Controller {
         }
     }
 
+    public WindowConfigurationStorage decorateDialog(JDialog dialog, String propertyName) {
+		String unmarshalled = getProperty(
+		        propertyName);
+		if (unmarshalled != null) {
+			WindowConfigurationStorage storage = (WindowConfigurationStorage) unMarshall(unmarshalled);
+			if (storage != null) {
+				dialog.setLocation(storage.getX(), storage.getY());
+				dialog.getRootPane().setPreferredSize(new Dimension(storage.getWidth(), storage.getHeight()));
+			}
+			return storage;
+		}
+		return null;
+    }
 
+
+	/**
+     * @param storage
+	 * @param propertyName
+     */
+    public void storeDialogPositions(JDialog dialog, WindowConfigurationStorage storage, String propertyName) {
+        storage.setX((dialog.getX()));
+        storage.setY((dialog.getY()));
+        storage.setWidth((dialog.getWidth()));
+        storage.setHeight((dialog.getHeight()));
+        String marshalled = marshall(storage);
+        setProperty(propertyName, marshalled);
+    }
+
+
+    public String marshall(XmlAction action) {
+        try {
+            // marshall:
+            //marshal to StringBuffer:
+            StringWriter writer = new StringWriter();
+            Marshaller m = JaxbTools.getInstance().createMarshaller();
+            m.marshal(action, writer);
+            String result = writer.toString();
+            return result;
+        } catch (JAXBException e) {
+			logger.severe(e.toString());
+            e.printStackTrace();
+            return "";
+        }
+
+	}
+
+	public XmlAction unMarshall(String inputString) {
+		try {
+			// unmarshall:
+			Unmarshaller u = JaxbTools.getInstance().createUnmarshaller();
+			StringBuffer xmlStr = new StringBuffer( inputString);
+			XmlAction doAction = (XmlAction) u.unmarshal( new StreamSource( new StringReader( xmlStr.toString() ) ) );
+			return doAction;
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
 
     /**
      * @return
@@ -1323,6 +1465,16 @@ public class Controller {
         return fc;
     }
 
+	 public JFrame getJFrame() {
+			FreeMindMain f = getFrame();
+			if (f instanceof JFrame) return (JFrame) f;
+			return null;
+		}
 
+
+    
+    public ObjectFactory getActionXmlFactory() {
+        return actionXmlFactory;
+    }
 }//Class Controller
 

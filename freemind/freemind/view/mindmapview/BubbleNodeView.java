@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.14.14.4 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: BubbleNodeView.java,v 1.14.14.4.6.1 2005-07-12 15:41:18 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -51,13 +51,12 @@ public class BubbleNodeView extends MoveableNodeView {
 		return width + dW;
 	}
   
-	public int getExtendedX()
+	public int getDeltaX()
 	{
-		int x = getX();
 		if(getModel().isFolded() && isLeft()){
-				x -= getZoomedFoldingSymbolHalfWidth() * 2;
+				return super.getDeltaX()+getZoomedFoldingSymbolHalfWidth() * 2;
 		}
-		return x;
+		return super.getDeltaX();
 	}
   
     public void paintSelected(Graphics2D graphics, Dimension size) {
@@ -96,7 +95,7 @@ public class BubbleNodeView extends MoveableNodeView {
      */
     public void paint(Graphics graphics) {
 	Graphics2D g = (Graphics2D)graphics;
-	Dimension size = getSize();
+	Dimension size = getMainView().getSize();
 	if (this.getModel()==null) return;
 
         paintSelected(g, size);
@@ -129,12 +128,12 @@ public class BubbleNodeView extends MoveableNodeView {
      * should leave the Node.
      */
     Point getOutPoint() {
-	Dimension size = getSize();
-	if (isLeft()) {
-	    return new Point(getLocation().x, getLocation().y + size.height / 2);
-	} else {
-	    return new Point(getLocation().x + size.width, getLocation().y + size.height / 2);
-	}
+        Dimension size = getMainView().getSize();
+        if( isLeft() ) {
+            return new Point(getLocation().x + getMainView().getLocation().x, getLocation().y + getMainView().getLocation().y + size.height / 2);
+        } else {
+            return new Point(getLocation().x + getMainView().getLocation().x + size.width, getLocation().y + getMainView().getLocation().y + size.height / 2);
+        } 
     }
 
     /**
@@ -142,12 +141,12 @@ public class BubbleNodeView extends MoveableNodeView {
      * should arrive the Node.
      */
     Point getInPoint() {
-	Dimension size = getSize();
-	if (isLeft()) {
-	    return new Point(getLocation().x + size.width, getLocation().y + size.height / 2);
-	} else {
-	    return new Point(getLocation().x, getLocation().y + size.height / 2);
-	}
+        Dimension size = getMainView().getSize();
+        if (isLeft()) {
+            return new Point(getX() + getMainView().getX() + size.width, getY() + getMainView().getY() + size.height / 2);
+        } else {
+            return new Point(getX() + getMainView().getX(), getY() + getMainView().getY() + size.height / 2);
+        }
     }
 
     /**
@@ -171,8 +170,8 @@ public class BubbleNodeView extends MoveableNodeView {
 	String getStyle() {
 		return MindMapNode.STYLE_BUBBLE;
 	}
-	public Dimension getPreferredSize() {
-		Dimension prefSize = super.getPreferredSize();
+	protected Dimension getMainViewPreferredSize() {
+		Dimension prefSize = super.getMainViewPreferredSize();
 		prefSize.width  += 5;
 	    return prefSize;
 	}

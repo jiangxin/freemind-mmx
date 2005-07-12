@@ -30,13 +30,63 @@ public class ConditionFactory {
             TranslatedString simpleCondition,
             String value,
             boolean ignoreCase){
-        String description = attribute.toString() + " "
+        return createDescription(attribute.toString(), simpleCondition, value, ignoreCase);
+    }
+    
+        String createDescription(
+                String attribute,
+                TranslatedString simpleCondition,
+                String value,
+                boolean ignoreCase){
+        boolean considerValue = ! simpleCondition.equals("filter_exist") && ! simpleCondition.equals("filter_does_not_exist");
+        String description = attribute + " "
         + simpleCondition.toString() + " "
-        + "\"" + value + "\"" 
-        + (ignoreCase ? ", " + Controller.getInstance().getResourceString("filter_ignore_case") : "");
+        + (considerValue ?  "\"" + value + "\"": "") 
+        + (considerValue && ignoreCase ? ", " + Controller.getInstance().getResourceString("filter_ignore_case") : "");
         return description;
     }
 
+    public Condition createAttributeCondition(
+            String attribute,
+            TranslatedString simpleCondition,
+            String value,
+            boolean ignoreCase)
+    {
+    	String description   = createDescription(attribute, simpleCondition, value, ignoreCase);
+        if(simpleCondition.equals("filter_exist"))
+            return new AttributeExistsCondition(description, attribute); 
+        if(simpleCondition.equals("filter_does_not_exist"))
+            return new AttributeNotExistsCondition(description, attribute); 
+        if(ignoreCase){            
+            if(simpleCondition.equals("filter_is_equal_to"))
+                return new AttributeCompareCondition(description, attribute,value, true, 0, true);
+            if(simpleCondition.equals("filter_is_not_equal_to"))
+                return new AttributeCompareCondition(description, attribute,value,  true, 0, false);
+            if(simpleCondition.equals(">"))
+                return  new AttributeCompareCondition(description, attribute,value,  true, 1, true);
+            if(simpleCondition.equals(">="))
+                return new AttributeCompareCondition(description, attribute,value,  true, -1, false);
+            if(simpleCondition.equals("<"))
+                return new AttributeCompareCondition(description, attribute,value,  true, -1, true);
+            if(simpleCondition.equals("<="))
+                return new AttributeCompareCondition(description, attribute,value,  true, 1, false);
+        }
+        else{            
+            if(simpleCondition.equals("filter_is_equal_to"))
+                return new AttributeCompareCondition(description, attribute,value, false, 0, true);
+            if(simpleCondition.equals("filter_is_not_equal_to"))
+                return new AttributeCompareCondition(description, attribute,value, false, 0, false);
+            if(simpleCondition.equals(">"))
+                return  new AttributeCompareCondition(description, attribute,value, false, 1, true);
+            if(simpleCondition.equals(">="))
+                return new AttributeCompareCondition(description, attribute,value, false, -1, false);
+            if(simpleCondition.equals("<"))
+                return new AttributeCompareCondition(description, attribute,value, false, -1, true);
+            if(simpleCondition.equals("<="))
+                return new AttributeCompareCondition(description, attribute,value, false, 1, false);
+        }
+        return null;
+    }
     public Condition createCondition(
             TranslatedString attribute,
             TranslatedString simpleCondition,
@@ -66,6 +116,20 @@ public class ConditionFactory {
                     TranslatedString.literal("<"), 
             };
         }
+
+    public  TranslatedString[] getAttributeConditionNames() {
+        return new TranslatedString[] {
+                new TranslatedString("filter_exist"), 
+                new TranslatedString("filter_does_not_exist"), 
+//                new TranslatedString("filter_contains"), 
+                new TranslatedString("filter_is_equal_to"), 
+                new TranslatedString("filter_is_not_equal_to"), 
+                TranslatedString.literal(">"), 
+                TranslatedString.literal(">="), 
+                TranslatedString.literal("<="), 
+                TranslatedString.literal("<"), 
+        };
+    }
 
     protected Condition createNodeCondition(
             String description,

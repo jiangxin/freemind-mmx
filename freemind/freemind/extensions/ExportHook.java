@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: ExportHook.java,v 1.1.4.4 2004-12-19 09:00:35 christianfoltin Exp $*/
+/*$Id: ExportHook.java,v 1.1.4.4.8.1 2005-07-12 15:41:13 dpolivaev Exp $*/
 
 package freemind.extensions;
 
@@ -87,7 +87,7 @@ public class ExportHook extends ModeControllerHookAdapter {
 		return chosenFile;
     }
 
-	private class ImageFilter extends FileFilter {
+	public static class ImageFilter extends FileFilter {
 		private String type;
         private final String description;
 		public ImageFilter(String type, String description) {

@@ -12,11 +12,15 @@ import freemind.modes.ModeController;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
 public class ImportFolderStructureAction extends AbstractAction {
+    //  Logging: 
+    private static java.util.logging.Logger logger;
     private final ModeController controller;
 
     public ImportFolderStructureAction(ModeController controller) {
         super(controller.getText("import_folder_structure"));
         this.controller = controller;
+        if(logger == null)
+            logger = controller.getFrame().getLogger(this.getClass().getName());
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -34,14 +38,19 @@ public class ImportFolderStructureAction extends AbstractAction {
             //getView().updateUI();
             // Problem: the frame should be refreshed here, but I don't know how
             // to do it
-            importFolderStructure(folder, controller.getSelected(),/* redisplay= */
-                    true);
+            try {
+                importFolderStructure(folder, controller.getSelected(),/* redisplay= */
+                true);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
             controller.getFrame().out("Folder structure imported.");
         }
     }
 
     public void importFolderStructure(File folder, MindMapNode target,
-            boolean redisplay) {
+            boolean redisplay) throws MalformedURLException {
+        logger.warning("Entering folder: "+folder);
 
         if (folder.isDirectory()) {
             File[] list = folder.listFiles();
@@ -50,12 +59,7 @@ public class ImportFolderStructureAction extends AbstractAction {
                 if (list[i].isDirectory()) {
                     // Insert a new node
 
-                    MindMapNode node = addNode(target, list[i].getName());
-                    try {
-                        node.setLink(list[i].toURL().toString());
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
+                    MindMapNode node = addNode(target, list[i].getName(), list[i].toURL().toString());
                     importFolderStructure(list[i], node, false);
                 }
             }
@@ -63,19 +67,12 @@ public class ImportFolderStructureAction extends AbstractAction {
             // For each file: add it
             for (int i = 0; i < list.length; i++) {
                 if (!list[i].isDirectory()) {
-                    MindMapNode node = addNode(target, list[i].getName());
-                    try {
-                        node.setLink(list[i].toURL().toString());
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
+                    addNode(target, list[i].getName(), list[i].toURL().toString());
                 }
             }
         }
-
-        if (redisplay) {
-            controller.nodeChanged(target);
-        }
+        controller.setFolded(target, true);
+        
     }
 
     /**
@@ -83,10 +80,11 @@ public class ImportFolderStructureAction extends AbstractAction {
      * @param nodeContent
      * @return
      */
-    private MindMapNode addNode(MindMapNode target, String nodeContent) {
+    private MindMapNode addNode(MindMapNode target, String nodeContent, String link) {
         MindMapNode node = controller.addNewNode(target,
                 target.getChildCount(), target.isLeft());
         controller.setNodeText(node, nodeContent);
+        controller.setLink(node, link);
         return node;
     }
 

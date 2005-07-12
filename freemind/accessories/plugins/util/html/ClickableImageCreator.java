@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ClickableImageCreator.java,v 1.1.2.1 2004-12-19 09:00:34 christianfoltin Exp $*/
+/*$Id: ClickableImageCreator.java,v 1.1.2.1.8.1 2005-07-12 15:41:13 dpolivaev Exp $*/
 
 package accessories.plugins.util.html;
 
@@ -113,8 +113,8 @@ public class ClickableImageCreator {
             holder.href = node.getObjectId(controller);
             holder.coordinates.x = (int) (node.getViewer().getX()-innerBounds.getMinX());
             holder.coordinates.y = (int) (node.getViewer().getY()-innerBounds.getMinY());
-            holder.coordinates.width = node.getViewer().getExtendedWidth();
-            holder.coordinates.height = node.getViewer().getExtendedHeight();
+            holder.coordinates.width = node.getViewer().getWidth();
+            holder.coordinates.height = node.getViewer().getHeight();
             area.add(holder);
             for (Iterator i = node.childrenUnfolded(); i.hasNext();) {
                 MindMapNode child = (MindMapNode) i.next();

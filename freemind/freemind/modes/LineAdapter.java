@@ -16,15 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LineAdapter.java,v 1.2.18.1 2004-10-17 23:00:08 dpolivaev Exp $*/
+/*$Id: LineAdapter.java,v 1.2.18.1.10.1 2005-07-12 15:41:15 dpolivaev Exp $*/
 
 package freemind.modes;
 
-import freemind.main.FreeMindMain;
-import freemind.main.Tools;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
-import java.awt.BasicStroke;
+
+import freemind.main.FreeMindMain;
+import freemind.main.Tools;
+import freemind.preferences.FreemindPropertyListener;
 
 public abstract class LineAdapter implements MindMapLine {
 
@@ -41,8 +43,6 @@ public abstract class LineAdapter implements MindMapLine {
     protected String style;
     protected int width;
 	protected Stroke stroke;
-    private String standardStyle;
-    private Color standardColor;
 
     //
     // Constructors
@@ -54,13 +54,7 @@ public abstract class LineAdapter implements MindMapLine {
         this.standardStylePropertyString = standardStylePropertyString;
         width = DEFAULT_WIDTH;
         stroke = null;
-        standardStyle = getFrame().getProperty(standardStylePropertyString);
-        String stdColor = getFrame().getProperty(standardColorPropertyString);
-        if (stdColor != null && stdColor.length() == 7) {
-            standardColor = Tools.xmlToColor(stdColor);
-        } else {
-            standardColor = Color.RED;
-        }
+        updateStandards();
 
     }
 
@@ -68,13 +62,37 @@ public abstract class LineAdapter implements MindMapLine {
     // Attributes
     //
 
+    /**
+     * @param standardColorPropertyString
+     */
+    protected void updateStandards() {
+        if (getStandardColor() == null) {
+            String stdColor = getFrame().getProperty(
+                    standardColorPropertyString);
+            if (stdColor != null && stdColor.length() == 7) {
+                setStandardColor(Tools.xmlToColor(stdColor));
+            } else {
+                setStandardColor(Color.RED);
+            }
+        }
+        if (getStandardStyle() == null) {
+            String stdStyle = getFrame().getProperty(
+                    standardStylePropertyString);
+            if (stdStyle != null ) {
+                setStandardStyle(stdStyle);
+            } else {
+//                setStandardStyle(Style.RED);
+            }
+        }
+    }
+
     public FreeMindMain getFrame() {
         return frame;
     }
 
     public Color getColor() {
         if(color==null) {
-            return standardColor;
+            return getStandardColor();
         }
         return color;
     }
@@ -101,7 +119,7 @@ public abstract class LineAdapter implements MindMapLine {
 
     public String getStyle() {
         if(style==null) {
-            return standardStyle;
+            return getStandardStyle();
         }
         return style;
     }
@@ -137,6 +155,29 @@ public abstract class LineAdapter implements MindMapLine {
             return null;
         }
     }
+    /** As this color is static but used in at least three different 
+     * objects (edges, clouds and links), the abstract mechanism was chosen.
+     * The derived classes set and get the static instance variable. */
+    protected abstract void setStandardColor(Color standardColor);
 
+    /** See @see setStandardColor
+     */
+    protected abstract Color getStandardColor();
+    
+    protected abstract void setStandardStyle(String standardStyle);
+
+    protected abstract String getStandardStyle() ;
+
+    protected class LineAdapterListener implements FreemindPropertyListener {
+        public void propertyChanged(String propertyName,
+                String newValue, String oldValue) {
+            if (propertyName.equals(standardColorPropertyString)) {
+                setStandardColor(Tools.xmlToColor(newValue));
+            }
+            if (propertyName.equals(standardStylePropertyString)) {
+                setStandardStyle(newValue);
+            }
+        }
+    }
     
 }

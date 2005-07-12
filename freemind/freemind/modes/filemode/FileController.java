@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileController.java,v 1.11.18.3.6.1 2005-06-12 12:59:55 dpolivaev Exp $*/
+/*$Id: FileController.java,v 1.11.18.3.6.2 2005-07-12 15:41:16 dpolivaev Exp $*/
 
 package freemind.modes.filemode;
 
@@ -109,4 +109,6 @@ public class FileController extends ControllerAdapter {
 		add(holder, MenuBar.EDIT_MENU+"/openPath", openPath, null);
     }
 
+  
+    
 }

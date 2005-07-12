@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<plugin>
+	<plugin_action
+		documentation="%accessories/plugins/ExportToOoWriter.properties_documentation"
+		name="%accessories/plugins/ExportToOoWriter.properties_name"
+		base="freemind.extensions.ModeControllerHookAdapter"
+		label="accessories/plugins/ExportToOoWriter.properties"
+		class_name="accessories.plugins.ExportToOoWriter">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/file/export/exportOoWriter"/>
+	</plugin_action>
+</plugin>

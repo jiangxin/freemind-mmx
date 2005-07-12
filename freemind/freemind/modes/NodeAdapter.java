@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.10.2.4.2.1 2005-06-12 12:59:54 dpolivaev Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.10.2.4.2.2 2005-07-12 15:41:15 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -30,13 +30,16 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.SortedMap;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -46,11 +49,12 @@ import freemind.controller.filter.Filter;
 import freemind.controller.filter.FilterInfo;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
-import freemind.modes.MindMapNode.HistoryInformation;
-import freemind.modes.mindmapmode.MindMapMapModel;
+import freemind.modes.attributes.PersistentAttributeTableModel;
+import freemind.modes.attributes.ConcreteAttributeTableModel;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -67,16 +71,16 @@ public abstract class NodeAdapter implements MindMapNode {
 	private List hooks;
 	protected Object userObject = "no text";
     private String link = null; //Change this to vector in future for full graph support
-    private HashMap toolTip = new HashMap();
+    private HashMap toolTip = null; // lazy, fc, 30.6.2005
 
     //these Attributes have default values, so it can be useful to directly access them in
     //the save() method instead of using getXXX(). This way the stored file is smaller and looks better.
     //(if the default is used, it is not stored) Look at mindmapmode for an example.
     protected String style;
     /**stores the icons associated with this node.*/
-    protected Vector/*<MindIcon>*/ icons = new Vector();
+    protected Vector/*<MindIcon>*/ icons = null; // lazy, fc, 30.6.2005
     
-    protected TreeMap /* of String to MindIcon s*/ stateIcons = new TreeMap();
+    protected TreeMap /* of String to MindIcon s*/ stateIcons = null; // lazy, fc, 30.6.2005
 //     /**stores the label associated with this node:*/
 //     protected String mLabel;
     /** parameters of an eventually associated cloud*/
@@ -113,6 +117,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	// Logging: 
     static protected java.util.logging.Logger logger;
     private MindMap map = null;
+    private PersistentAttributeTableModel attributes;
 
 
     //
@@ -126,15 +131,15 @@ public abstract class NodeAdapter implements MindMapNode {
     protected NodeAdapter(Object userObject, FreeMindMain frame, MindMap map) {
 		this.userObject = userObject;
 		this.frame = frame;
-		hooks = new Vector();
-		activatedHooks = new HashSet();
+		hooks = null; // lazy, fc, 30.6.2005.
+		activatedHooks = null; //lazy, fc, 30.6.2005
 		if(logger == null)
 			logger = frame.getLogger(this.getClass().getName());
 		// create creation time:
 		setHistoryInformation(new HistoryInformation());
 		MindMapNode parentNode = getParentNode();
 		this.map = map; 
-
+		this.attributes = new ConcreteAttributeTableModel(this);
     }
 
     /**
@@ -245,44 +250,43 @@ public abstract class NodeAdapter implements MindMapNode {
 	}
 
     /**A Node-Style like MindMapNode.STYLE_FORK or MindMapNode.STYLE_BUBBLE*/
-    public String getStyle() {
-	if (style==null) {
-		if (this.isRoot()) {
-			return getFrame().getProperty("standardrootnodestyle");
-		}
-		String stdstyle = getFrame().getProperty("standardnodestyle");
-		if( stdstyle.equals(MindMapNode.STYLE_AS_PARENT)){
-			return getParentNode().getStyle();
-		}
-		return stdstyle;
+	public String getStyle() {
+    	String returnedString = style; /* Style string returned */
+    	if (style==null) {
+    		if (this.isRoot()) {
+    			returnedString=getFrame().getProperty(FreeMind.RESOURCES_ROOT_NODE_STYLE);
+    		}
+    		else{ 
+    			String stdstyle = getFrame().getProperty(FreeMind.RESOURCES_NODE_STYLE);
+    			if( stdstyle.equals(MindMapNode.STYLE_AS_PARENT)){
+    				returnedString=getParentNode().getStyle();
+    			}
+    			else{
+    				returnedString = stdstyle;
+    			}
+    		}
+    	}
+    	else if (this.isRoot() && style.equals(MindMapNode.STYLE_AS_PARENT)) {
+    		returnedString =  getFrame().getProperty(FreeMind.RESOURCES_ROOT_NODE_STYLE);
+     	}
+     	else if( style.equals(MindMapNode.STYLE_AS_PARENT)){
+    		returnedString = getParentNode().getStyle();
+     	}
+    	
+    	// Handle the combined node style
+     	if (returnedString.equals(MindMapNode.STYLE_COMBINED))
+     	{
+     		if (this.isFolded()){
+     			return MindMapNode.STYLE_BUBBLE;
+     		}
+     		else{
+    			return MindMapNode.STYLE_FORK;
+     		}
+     	}
+    	return returnedString;
 	}
-
-	if (this.isRoot() && style.equals(MindMapNode.STYLE_AS_PARENT)) {
-		return getFrame().getProperty("standardrootnodestyle");
- 	}
-	if (style==null) {
-		String stdstyle = getFrame().getProperty("standardnodestyle");
-		if( stdstyle.equals(MindMapNode.STYLE_AS_PARENT)){
-			return getParentNode().getStyle();
-		}
-		return stdstyle;
-	}
- 	if( style.equals(MindMapNode.STYLE_AS_PARENT)){
-		return getParentNode().getStyle();
- 	}
- 	if (style.equals(MindMapNode.STYLE_COMBINED))
- 	{
- 		if (this.isFolded()){
- 			return MindMapNode.STYLE_BUBBLE;
- 		}
- 		else{
-			return MindMapNode.STYLE_FORK;
- 		}
- 	}
-	return style;
-
-   }
-
+	
+	
 
     /**The Foreground/Font Color*/
     public Color getColor() {
@@ -383,20 +387,32 @@ public abstract class NodeAdapter implements MindMapNode {
        return folded; }
 
     // fc, 24.9.2003:
-    public Vector/*<MindIcon>*/ getIcons() { return icons;};
-
-    public void   addIcon(MindIcon _icon) 
-    { 
-        icons.add(_icon);
-        getMap().getStatistics().addIcon(_icon);
-    };
+    public List getIcons() {
+    		if(icons==null)
+    			return Collections.EMPTY_LIST;
+    		return icons;
+    	}
 
     public MindMap getMap() {
         return map;
     }
+    public void   addIcon(MindIcon _icon) {
+    		createIcons();
+    		icons.add(_icon); 
+            getMap().getRegistry().addIcon(_icon);
+    	}
 
     /** @return returns the number of remaining icons. */
-    public int   removeLastIcon() { if(icons.size() > 0) icons.setSize(icons.size()-1); return icons.size();};
+	public int removeLastIcon() {
+		createIcons();
+		if (icons.size() > 0)
+			icons.setSize(icons.size() - 1);
+		int returnSize = icons.size();
+		if(returnSize==0) {
+			icons = null;
+		}
+		return returnSize;
+	};
 
     // end, fc, 24.9.2003
 
@@ -446,7 +462,7 @@ public abstract class NodeAdapter implements MindMapNode {
        copy.setLink(getLink());
        if(isLeft() != null)
            copy.setLeft(isLeft().getValue());
-       Vector icons = getIcons();
+       List icons = getIcons();
        for(int i = 0; i < icons.size(); ++i) {
            copy.addIcon((MindIcon) icons.get(i));
        }
@@ -715,6 +731,7 @@ public abstract class NodeAdapter implements MindMapNode {
 		// add then
 		if(hook == null) 
 			throw new IllegalArgumentException("Added null hook.");
+		createHooks();
 		hooks.add(hook);
 		return hook;
 	}
@@ -724,8 +741,16 @@ public abstract class NodeAdapter implements MindMapNode {
 		hook.startupMapHook();
 		// the main invocation:
 		hook.setNode(this);
-		hook.invoke(this);
+		try {
+			hook.invoke(this);
+		} catch (Exception e) {
+			//FIXME: Do something special here, but in any case, do not add the hook
+			// to the activatedHooks:
+			e.printStackTrace();
+			return;
+		}
 	    if (hook instanceof PermanentNodeHook) {
+	    		createActivatedHooks();
 			activatedHooks.add(hook);
 		} else {
 		    // end of its short life:
@@ -733,10 +758,38 @@ public abstract class NodeAdapter implements MindMapNode {
 		}
 	}
 
+	private void createActivatedHooks() {
+		if(activatedHooks == null) {
+			activatedHooks = new HashSet();
+		}
+	}
+	private void createToolTip() {
+		if(toolTip == null) {
+			toolTip = new HashMap();
+		}
+	}
+	private void createHooks() {
+		if(hooks == null) {
+			hooks = new Vector();
+		}
+	}
+	private void createStateIcons() {
+		if(stateIcons == null) {
+			stateIcons = new TreeMap();
+		}
+	}
+	private void createIcons() {
+		if(icons == null) {
+			icons = new Vector();
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMapNode#getHooks()
 	 */
 	public List getHooks() {
+		if(hooks==null)
+			return Collections.EMPTY_LIST;
 		return Collections.unmodifiableList(hooks);
 	}
 
@@ -744,6 +797,9 @@ public abstract class NodeAdapter implements MindMapNode {
 	 * @see freemind.modes.MindMapNode#getActivatedHooks()
 	 */
 	public Collection getActivatedHooks() {
+		if(activatedHooks==null) {
+			return Collections.EMPTY_LIST;
+		}
 		return Collections.unmodifiableCollection(activatedHooks);
 	}
 
@@ -753,15 +809,24 @@ public abstract class NodeAdapter implements MindMapNode {
 	public void removeHook(PermanentNodeHook hook) {
 	    // the order is crucial here: the shutdown method should be able to perform "nodeChanged" 
 	    // calls without having its own updateNodeHook method to be called again.
+		createActivatedHooks();
 		activatedHooks.remove(hook);
+		if(activatedHooks.size()==0) {
+			activatedHooks=null;
+		}
 		hook.shutdownMapHook();
+		createHooks();
 		hooks.remove(hook);
+		if(hooks.size()==0)
+			hooks=null;
 	}
 
 	/**
 	 * @return
 	 */
 	public java.util.Map getToolTip() {
+		if(toolTip==null)
+			return Collections.EMPTY_MAP;
 		return Collections.unmodifiableMap(toolTip);
 	}
 
@@ -769,12 +834,14 @@ public abstract class NodeAdapter implements MindMapNode {
 	 * @param string
 	 */
 	public void setToolTip(String key, String string) {
+		createToolTip();
 		if (string == null) {
 		    if (toolTip.containsKey(key)) {
                 toolTip.remove(key);
             }
+            if(toolTip.size()==0)
+            	toolTip=null;
         } else {
-            
             toolTip.put(key, string);
         }
 	}
@@ -797,13 +864,12 @@ public abstract class NodeAdapter implements MindMapNode {
 //                    + this.getClass().getName());
 //        }
     
-        if (isNodeClassToBeSaved()) {
-            node.setAttribute(XMLElementAdapter.XML_NODE_CLASS,	this.getClass().getName());
-        }    
-        node.setAttribute(XMLElementAdapter.XML_NODE_TEXT,this.toString());
+        /** fc, 12.6.2005: XML must not contain any zero characters. */
+        String text = this.toString().replace('\0', ' ');
+        node.setAttribute(XMLElementAdapter.XML_NODE_TEXT,text);
     	// save additional info:
     	if (getAdditionalInfo() != null) {
-            node.setAttribute(XMLElementAdapter.XML_NODE_ADDITIONAL_INFO,
+            node.setAttribute(XMLElementAdapter.XML_NODE_ENCRYPTED_CONTENT,
                     getAdditionalInfo());
         }
     	//	((MindMapEdgeModel)getEdge()).save(doc,node);
@@ -861,7 +927,7 @@ public abstract class NodeAdapter implements MindMapNode {
         	node.setAttribute("HGAP",Integer.toString(hGap));
         }
         if(shiftY != 0) {
-        	node.setAttribute("SHIFT_Y",Integer.toString(shiftY));
+        	node.setAttribute("VSHIFT",Integer.toString(shiftY));
         }
     	//link
     	if (getLink() != null) {
@@ -907,6 +973,7 @@ public abstract class NodeAdapter implements MindMapNode {
             node.addChild(hookElement);
         }
 
+        attributes.save(node);
         if (childrenUnfolded().hasNext()) {
             node.writeWithoutClosingTag(writer);
             //recursive
@@ -961,19 +1028,23 @@ public abstract class NodeAdapter implements MindMapNode {
     public String getAdditionalInfo(){
         return null;
     }
-    public boolean isNodeClassToBeSaved() {
-        return false;
-    }
     
-    
-    public void setStateIcon(String key, ImageIcon icon) {
+   
+    /** This method must be synchronized as the TreeMap isn't. */
+    public synchronized void setStateIcon(String key, ImageIcon icon) {
+//    		logger.warning("Set state of key:"+key+", icon "+icon);
+    		createStateIcons();
         if (icon != null) {
 			stateIcons.put(key, icon);
 		} else if(stateIcons.containsKey(key)) {
             stateIcons.remove(key);
         }
+		if(stateIcons.size()==0)
+			stateIcons = null;
     }
-    public SortedMap getStateIcons() {
+    public Map getStateIcons() {
+    		if(stateIcons==null)
+    			return Collections.EMPTY_MAP;
         return Collections.unmodifiableSortedMap(stateIcons);
     }
 	public HistoryInformation getHistoryInformation() {
@@ -996,8 +1067,12 @@ public abstract class NodeAdapter implements MindMapNode {
 	public int calcVGap() {
 		if (vGap != AUTO)
 			return vGap;
+/*		
+//		double delta = 8.0 / Math.pow(1.5, 1 + getNodeLevel()); // to expensive... 
 		double delta = 8.0 / Math.pow(1 + getNodeLevel(), 1.5); 
         return (int ) ((1 + delta) * VGAP );			 
+*/
+		return VGAP;		    
 	}
 	
 	public void setVGap(int gap) {
@@ -1007,5 +1082,9 @@ public abstract class NodeAdapter implements MindMapNode {
     
     public boolean isVisible() {
         return Controller.getInstance().getFilterController().getFilter().isVisible(this);
+    }
+    
+    public PersistentAttributeTableModel getAttributes(){
+        return attributes;
     }
 }

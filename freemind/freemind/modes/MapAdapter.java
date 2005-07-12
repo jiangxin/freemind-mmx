@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.14.7.2.1.2.1 2005-06-12 12:59:54 dpolivaev Exp $*/
+/*$Id: MapAdapter.java,v 1.24.14.7.2.1.2.2 2005-07-12 15:41:15 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -43,6 +43,7 @@ import javax.swing.tree.TreePath;
 
 import freemind.controller.MindMapNodesSelection;
 import freemind.extensions.PermanentNodeHook;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
@@ -58,7 +59,7 @@ public abstract class MapAdapter implements MindMap {
     private File file;
     private FreeMindMain frame;
     static protected Logger logger;
-    private MapStatistics statistics;
+    private MapRegistry registry;
 
 
 
@@ -67,7 +68,7 @@ public abstract class MapAdapter implements MindMap {
 		if(logger == null) {
 		    logger = frame.getLogger(this.getClass().getName());
 		}
-		statistics = new MapStatistics();
+		registry = new MapRegistry(this);
     }
 
     //
@@ -147,7 +148,7 @@ public abstract class MapAdapter implements MindMap {
 
     public Color getBackgroundColor() {
 	if (backgroundColor==null) {
-	    return Tools.xmlToColor(getFrame().getProperty("standardbackgroundcolor"));
+	    return Tools.xmlToColor(getFrame().getProperty(FreeMind.RESOURCES_BACKGROUND_COLOR));
 	}
 	return backgroundColor;
     }
@@ -628,8 +629,8 @@ public abstract class MapAdapter implements MindMap {
         }
     }
 
-    public MapStatistics getStatistics() {
-        return statistics;
+    public MapRegistry getRegistry() {
+        return registry;
     }
 }
 

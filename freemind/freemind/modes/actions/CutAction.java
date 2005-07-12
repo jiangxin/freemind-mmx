@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: CutAction.java,v 1.1.4.6 2005-05-03 05:29:50 christianfoltin Exp $*/
+/*$Id: CutAction.java,v 1.1.4.6.6.1 2005-07-12 15:41:16 dpolivaev Exp $*/
 
 package freemind.modes.actions;
 
@@ -97,6 +97,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 			// sort selectedNodes list by depth, in order to guarantee that sons are deleted first:
 			for (Iterator i = nodeList.iterator(); i.hasNext();) {
 				MindMapNode node = (MindMapNode) i.next();
+				if(node.getParentNode() == null) continue;
 				Transferable copy = c.getModel().copy(node);
 				NodeCoordinate coord = new NodeCoordinate(node, node.isLeft().getValue());
                 CutNodeAction cutNodeAction = getCutNodeAction( copy, coord);
@@ -108,10 +109,11 @@ public class CutAction extends AbstractAction implements ActorXml {
 				undo.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(0,pasteNodeAction);
                 
             }
-
-			c.getActionFactory().startTransaction(text);
-			c.getActionFactory().executeAction(new ActionPair(doAction, undo));
-			c.getActionFactory().endTransaction(text);
+			if (doAction.getCompoundActionOrSelectNodeActionOrCutNodeAction().size() > 0){
+			    c.getActionFactory().startTransaction(text);
+			    c.getActionFactory().executeAction(new ActionPair(doAction, undo));
+			    c.getActionFactory().endTransaction(text);
+			}
 			return totalCopy;
 		} catch (JAXBException e) {
 			e.printStackTrace();

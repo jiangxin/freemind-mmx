@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMouseMotionListener.java,v 1.15.14.2 2004-10-28 05:24:53 christianfoltin Exp $*/
+/*$Id: NodeMouseMotionListener.java,v 1.15.14.2.10.1 2005-07-12 15:41:13 dpolivaev Exp $*/
 
 package freemind.controller;
 
+import java.awt.Component;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -77,7 +78,7 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
         logger.finest("Event: mouseMoved");
         //  Invoked when the mouse button has been moved on a component (with no
         // buttons down).
-        NodeView node = (NodeView) e.getComponent();
+        NodeView node = (NodeView) e.getComponent().getParent();
         boolean isLink = (node).updateCursor(e.getX());
         // links are displayed in the status bar:
         if (isLink) {
@@ -99,7 +100,7 @@ public class NodeMouseMotionListener implements MouseMotionListener, MouseListen
         logger.fine("Event: mouseDragged");
         // first stop the timer and select the node:
         stopTimerForDelayedSelection();
-        NodeView nodeV = (NodeView)e.getSource();
+        NodeView nodeV = (NodeView)((Component)e.getSource()).getParent();
 
         // if dragged for the first time, select the node:
         if(!c.getView().isSelected(nodeV))

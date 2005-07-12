@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.8.4.1 2005-05-31 20:24:06 dpolivaev Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.8.4.2 2005-07-12 15:41:13 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -274,6 +274,11 @@ public class MenuBar extends JMenuBar {
     }
 
     private void updateEditMenu() {
+		JMenuItem toggleToolbar = menuHolder.addAction(c.toggleToolbar, VIEW_MENU+"toolbars/toggleToolbar");
+		JMenuItem toggleLeftToolbar = menuHolder.addAction(c.toggleLeftToolbar, VIEW_MENU+"toolbars/toggleLeftToolbar");
+		
+		menuHolder.addSeparator(VIEW_MENU);
+		
 		JMenuItem zoomIn = menuHolder.addAction(c.zoomIn, VIEW_MENU+"zoom/zoomIn");
 		zoomIn.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_zoom_in")));
 	
@@ -293,6 +298,7 @@ public class MenuBar extends JMenuBar {
 	
 //		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EXTRAS_MENU+"last/options/.");
 		JMenuItem prefDialog = menuHolder.addAction(c.propertyAction, EXTRAS_MENU+"last/option_dialog");
+		prefDialog.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_option_dialog")));
 	
 //	        if (false) {
 //	           preferences.add(c.background);
@@ -302,30 +308,6 @@ public class MenuBar extends JMenuBar {
 //	           // color into map (just like <map backgroud="#eeeee0">).
 //	        }
 	
-//	        // Daniel: The way antialias option is represented now is not nice,
-//	        // there should be only one variable controlling it. Fix it if you
-//	        // have time, this kind of classical quality is low pri now.
-//	        String antialiasSelected = c.getAntialiasAll() ? "antialias_all" : 
-//	           ( c.getAntialiasEdges() ? "antialias_edges" : "antialias_none" );
-//	        addOptionSet( c.optionAntialiasAction,
-//	                      new String[]{ "antialias_none",
-//	                                       "antialias_edges",
-//	                                       "antialias_all" },
-//	                      preferences, antialiasSelected );
-//		preferences.addSeparator();
-//	        addOptionSet( c.optionHTMLExportFoldingAction,
-//	                      new String[]{ "html_export_no_folding",
-//	                                       "html_export_fold_currently_folded",
-//	                                       "html_export_fold_all",
-//	                                       "html_export_based_on_headings" },
-//	                      preferences, c.getProperty("html_export_folding") );
-//	
-//		preferences.addSeparator();
-//	    addOptionSet( c.optionSelectionMechanismAction,
-//	                  new String[]{ "selection_method_direct",
-//	    							"selection_method_delayed",
-//	                                "selection_method_by_click"},
-//	                  preferences, c.getProperty("selection_method") );
 	
     }
 

@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.1 2005-05-31 20:24:06 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.2 2005-07-12 15:41:19 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -37,35 +38,86 @@ import java.awt.dnd.DropTargetListener;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.TreeSet;
-import java.util.Vector;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import freemind.controller.Controller;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
+import freemind.modes.attributes.AttributeRegistryTableModel;
+import freemind.modes.attributes.AttributeTableModel;
+import freemind.modes.attributes.ExtendedAttributeTableModel;
+import freemind.modes.attributes.FilteredAttributeTableModel;
+import freemind.modes.attributes.PersistentAttributeTableModel;
+import freemind.preferences.FreemindPropertyListener;
 
 
 /**
  * This class represents a single Node of a MindMap (in analogy to
  * TreeCellRenderer).
  */
-public abstract class NodeView extends JLabel {
-
+public abstract class NodeView extends JComponent  {
+    
+    static private class MyJScrollPane extends JScrollPane{
+        
+         
+        /**
+         * @param attributeTable
+         */
+        public MyJScrollPane(AttributeTable attributeTable) {
+            super(attributeTable);
+        }
+        public Dimension getPreferredSize() {
+            Component table = getViewport();
+            if(isValid() == false)
+                validate();
+            return super.getPreferredSize();
+        }
+        public void revalidate() {
+            // TODO Auto-generated method stub
+            super.revalidate();
+        }
+        public void validate() {
+            // TODO Auto-generated method stub
+            super.validate();
+        }
+        protected void validateTree() {
+            // TODO Auto-generated method stub
+            super.validateTree();
+        }
+    }
+    private class AttributeChangeListener implements TableModelListener{
+        public void tableChanged(TableModelEvent arg0) {
+            map.getModel().nodeChanged(model);
+        }
+        
+    }
+	private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
+	private static final int MIN_HOR_NODE_SIZE = 10;
     protected MindMapNode model;
     protected MapView map;
     protected EdgeView edge;
+    private JLabel mainView; 
+    private JScrollPane attributeView;
+    private AttributeTable attributeTable;
     /** the Color of the Rectangle of a selected Node */
 	protected final static Color selectedColor = new Color(210,210,210); //Color.lightGray;
                                                                          // //the
@@ -82,8 +134,7 @@ public abstract class NodeView extends JLabel {
                                                               // drag over
 	protected int treeWidth = 0;
 	protected int treeHeight = 0;
-	protected int standardTreeShift = 0;
-	protected int treeShift = 0;
+	protected int upperChildShift = 0;
     private boolean left = true; //is the node left of root?
     int relYPos = 0;//the relative Y Position to it's parent
     private boolean isLong = false;
@@ -112,8 +163,18 @@ public abstract class NodeView extends JLabel {
     
     private static Color standardSelectColor;
     private static Color standardNodeColor;
+    private FilteredAttributeTableModel filteredAttributeTableModel;
+    private AttributeTableModel extendedAttributeTableModel = null;
+    private AttributeTableModel currentAttributeTableModel;
     protected NodeView(MindMapNode model, MapView map) {
-	setHorizontalAlignment(CENTER);
+    setLayout(NodeViewLayoutManager.getInstance());
+    mainView = new JLabel();
+    mainView.setHorizontalAlignment(JLabel.CENTER);
+    add(mainView);
+    PersistentAttributeTableModel attributes = model.getAttributes();
+    AttributeRegistryTableModel registryTable = model.getMap().getRegistry().getAttributes();
+    filteredAttributeTableModel = new FilteredAttributeTableModel(attributes, registryTable);
+    currentAttributeTableModel = filteredAttributeTableModel;
 
 	this.model = model;
 	setMap(map);
@@ -122,11 +183,28 @@ public abstract class NodeView extends JLabel {
 	if (standardNodeColor == null) {
         standardNodeColor =
             Tools.xmlToColor(
-                map.getController().getProperty("standardnodecolor"));
+                map.getController().getProperty(FreeMind.RESOURCES_NODE_COLOR));
+        // add listener:
+        Controller
+                    .addPropertyChangeListener(new FreemindPropertyListener() {
+
+                        public void propertyChanged(String propertyName,
+                                String newValue, String oldValue) {
+                            if (propertyName
+                                    .equals(FreeMind.RESOURCES_NODE_COLOR)) {
+                                standardNodeColor = Tools.xmlToColor(newValue);
+                            }
+                            if (propertyName
+                                    .equals(FreeMind.RESOURCES_SELECTED_NODE_COLOR)) {
+                                standardSelectColor = Tools.xmlToColor(newValue);
+                            }
+                        }
+                    });
+
     }
 	// initialize the selectedColor:
 	if(standardSelectColor== null) {
-		String stdcolor = map.getController().getFrame().getProperty("standardselectednodecolor");
+		String stdcolor = map.getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR);
 		if (stdcolor.length() == 7) {
 			standardSelectColor = Tools.xmlToColor(stdcolor);
 		} else {
@@ -149,12 +227,13 @@ public abstract class NodeView extends JLabel {
 	    }
 	}
 
-	addMouseListener( map.getNodeMouseMotionListener() );
-	addMouseMotionListener( map.getNodeMouseMotionListener() );
-	addKeyListener( map.getNodeKeyListener() );
+	getMainView().addMouseListener( map.getNodeMouseMotionListener() );
+	getMainView().addMouseMotionListener( map.getNodeMouseMotionListener() );
+	getMainView().addKeyListener( map.getNodeKeyListener() );
 
 	addDragListener( map.getNodeDragListener() );
 	addDropListener( map.getNodeDropListener() );
+	
     }
     
     protected void addToMap(){
@@ -168,11 +247,11 @@ public abstract class NodeView extends JLabel {
     void addDragListener(DragGestureListener dgl) {
 	DragSource dragSource = DragSource.getDefaultDragSource();
 	dragSource.createDefaultDragGestureRecognizer 
-           (this, DnDConstants.ACTION_COPY | DnDConstants.ACTION_MOVE | DnDConstants.ACTION_LINK ,dgl);
+           (getMainView(), DnDConstants.ACTION_COPY | DnDConstants.ACTION_MOVE | DnDConstants.ACTION_LINK ,dgl);
     }
 
     void addDropListener(DropTargetListener dtl) {
-	DropTarget dropTarget = new DropTarget(this,dtl);
+	DropTarget dropTarget = new DropTarget(getMainView(),dtl);
 	dropTarget.setActive(true);
     }
 
@@ -204,9 +283,17 @@ public abstract class NodeView extends JLabel {
     //
 
     public boolean dropAsSibling(double xCoord) {
+        return isInVerticalRegion(xCoord, 1./3);
+     }
+
+    /** Determines whether or not the xCoord is in the part p of the node:
+     *  if node is on the left: part [1-p,1] 
+     *  if node is on the right: part[  0,p] of the total width.
+     */
+    public boolean isInVerticalRegion(double xCoord, double p) {
         return isLeft() ?
-           xCoord > getSize().width*2/3 :
-           xCoord < getSize().width/3; 
+           xCoord > getSize().width*(1.0-p) :
+           xCoord < getSize().width*p; 
      }
 
     /** @return true if should be on the left, false otherwise. */
@@ -215,16 +302,17 @@ public abstract class NodeView extends JLabel {
        return isLeft(); 
     }
 
-    public boolean followLink(double xCoord) {
+    public boolean isInFollowLinkRegion(double xCoord) {
        return getModel().getLink() != null &&
-          (getModel().isRoot() || !getModel().hasChildren() || xCoord < getSize().width/2); }
+          (getModel().isRoot() || !getModel().hasChildren() || isInVerticalRegion(xCoord, 1./2)); 
+    }
 
     /**
      * @param xCoord
      * @return true if a link is to be displayed and the curser is the hand now.
      */
     public boolean updateCursor(double xCoord) {
-      boolean followLink = followLink(xCoord);
+      boolean followLink = isInFollowLinkRegion(xCoord);
     int requiredCursor = followLink ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR;
       if (getCursor().getType() != requiredCursor) {
         setCursor(new Cursor(requiredCursor));
@@ -271,10 +359,10 @@ public abstract class NodeView extends JLabel {
 		if (byChildren && cloud != null){
 			additionalDistanceForConvexHull  += CloudView.getAdditionalHeigth(cloud, this) / 2; 
 		}
-        inList.addLast(new Point( -additionalDistanceForConvexHull + getExtendedX()             ,  -additionalDistanceForConvexHull + getExtendedY()              ));
-        inList.addLast(new Point( -additionalDistanceForConvexHull + getExtendedX()             ,   additionalDistanceForConvexHull + getExtendedY() + getExtendedHeight()));
-        inList.addLast(new Point(  additionalDistanceForConvexHull + getExtendedX() + getExtendedWidth(),   additionalDistanceForConvexHull + getExtendedY() + getExtendedHeight()));
-        inList.addLast(new Point(  additionalDistanceForConvexHull + getExtendedX() + getExtendedWidth(),  -additionalDistanceForConvexHull + getExtendedY()              ));
+        inList.addLast(new Point( -additionalDistanceForConvexHull + getX()             ,  -additionalDistanceForConvexHull + getY()              ));
+        inList.addLast(new Point( -additionalDistanceForConvexHull + getX()             ,   additionalDistanceForConvexHull + getY() + getHeight()));
+        inList.addLast(new Point(  additionalDistanceForConvexHull + getX() + getWidth(),   additionalDistanceForConvexHull + getY() + getHeight()));
+        inList.addLast(new Point(  additionalDistanceForConvexHull + getX() + getWidth(),  -additionalDistanceForConvexHull + getY()              ));
 		
         LinkedList childrenViews = getChildrenViews(true);
         ListIterator children_it = childrenViews.listIterator();
@@ -283,14 +371,12 @@ public abstract class NodeView extends JLabel {
 	        child.getCoordinates(inList, additionalDistanceForConvexHull, true);
         }
     }   
-	private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
-	private static final int MIN_HOR_NODE_SIZE = 10;
-    public Dimension getPreferredSize() {
+    protected Dimension getMainViewPreferredSize() {
         boolean isEmpty = getText().length() == 0;
         if(isEmpty){
             setText("!");
         }
-    	Dimension prefSize = super.getPreferredSize();
+    	Dimension prefSize = mainView.getPreferredSize();
         if(map.isCurrentlyPrinting() && NEED_PREF_SIZE_BUG_FIX) {
         	prefSize.width += (int)(10f*map.getZoom());
         } 
@@ -298,22 +384,26 @@ public abstract class NodeView extends JLabel {
         if (isEmpty){
             setText("");
         }
+		prefSize.width += 4;
+		prefSize.height += 4;
         return prefSize;
     }
     
-    /** get width including folding symbol */	
-	public int getExtendedWidth()
-	{
-		return getExtendedWidth(getWidth());
-	}
-  
-	/** get height including folding symbol */	
-	public int getExtendedHeight()
-	{
-		return getExtendedHeight(getHeight());
-	}
-  
-	protected int getExtendedWidth(int w)
+    /**
+     * @param string
+     */
+    public void setText(String string) {
+        mainView.setText(string);        
+    }
+    /**
+     * @return
+     */
+    public String getText() {
+        // TODO Auto-generated method stub
+        return mainView.getText();
+    }
+
+    protected int getExtendedWidth(int w)
 	{
 		return w;
 	}
@@ -325,26 +415,27 @@ public abstract class NodeView extends JLabel {
 	}
   
 	/** get x coordinate including folding symbol */	
-	public int getExtendedX()
+	public int getDeltaX()
 	{
-		return getX();
+		return 0;
 	}
   
 	/** get y coordinate including folding symbol */	
-	public int getExtendedY()
+	public int getDeltaY()
 	{
-		return getY();
+		return 0;
 	}
 
   
 	public void setBounds(int x,	int y){
-		setLocation(x, y);
-		setSize(getPreferredSize());
+		setLocation(x - getDeltaX(), y - getDeltaY());	
+		Dimension prefSize = getPreferredSize();
+		setSize(getExtendedWidth(prefSize.width), getExtendedHeight(prefSize.height));
 	}
 
    public void requestFocus(){
       map.getController().getMode().getModeController().anotherNodeSelected(getModel());
-      super. requestFocus();
+      mainView. requestFocus();
    }
 
    /** draw folding symbol */	
@@ -500,31 +591,40 @@ public abstract class NodeView extends JLabel {
      * DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
      */
     Point getOutPoint() {
-	Dimension size = getSize();
-	if( isRoot() ) {
-	    return new Point(getLocation().x + size.width, getLocation().y + size.height / 2);
-	} else if( isLeft() ) {
-	    return new Point(getLocation().x, getLocation().y + size.height - 2);
-	} else {
-	    return new Point(getLocation().x + size.width, getLocation().y + size.height - 2);
-	} 
+        Dimension size = getMainView().getSize();
+        if( isLeft() ) {
+            return new Point(getLocation().x + getMainView().getLocation().x, getLocation().y + getMainView().getLocation().y + size.height - 2);
+        } else {
+            return new Point(getLocation().x + getMainView().getLocation().x + size.width, getLocation().y + getMainView().getLocation().y + size.height - 2);
+        } 
     }
 
+    
+    /* fc, 26.06.2005 */
+    /** Returns the point the edge should start given the point of the child node 
+     * that should be connected.
+     * @param destinationPoint the outpoint should point in the direction of destinationPoint 
+     * @param isLeft TODO
+     * @return
+     */
+    Point getOutPoint(Point destinationPoint, boolean isLeft) {
+        return getOutPoint();
+    }
+    /* end fc, 26.06.2005 */
+    
     /**
      * Returns the Point where the InEdge should arrive the Node. THIS SHOULD BE
      * DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
      */
     Point getInPoint() {
-	Dimension size = getSize();
-	if( isRoot() ) {
-	    return new Point(getLocation().x, getLocation().y + size.height / 2);
-	} else if( isLeft() ) {
-	    return new Point(getLocation().x + size.width, getLocation().y + size.height - 2);
-	} else {
-	    return new Point(getLocation().x, getLocation().y + size.height - 2);
-	} 
+        Dimension size = getMainView().getSize();
+        if( isLeft() ) {
+            return new Point(getX() + getMainView().getX() + size.width, getY() + getMainView().getY() + size.height - 2);
+        } else {
+            return new Point(getX() + getMainView().getX(), getY() + getMainView().getY() + size.height - 2);
+        } 
     }
-
+    
 
     /**
      * Returns the Point where the Links should arrive the Node. THIS SHOULD BE
@@ -768,13 +868,15 @@ public abstract class NodeView extends JLabel {
         }
         setForeground(color);
 
-        // 2) Create the icons:
+        // 2) icons left or right? 
+        getMainView().setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
+        // 3) Create the icons:
         MultipleImage iconImages = new MultipleImage(map.getZoom());
         boolean iconPresent = false;
         /* fc, 06.10.2003: images? */
         
         FreeMindMain frame = map.getController().getFrame();
-        SortedMap stateIcons = (getModel()).getStateIcons();
+        Map stateIcons = (getModel()).getStateIcons();
         for (Iterator i = stateIcons.keySet().iterator(); i.hasNext();) {
             String key = (String) i.next();
             iconPresent = true;
@@ -783,12 +885,12 @@ public abstract class NodeView extends JLabel {
             
         }
 
-        Vector icons = (getModel()).getIcons();
-        for(int i = 0; i < icons.size(); ++i) {
+        List icons = (getModel()).getIcons();
+        	for (Iterator i = icons.iterator(); i.hasNext();) {
+			MindIcon myIcon = (MindIcon) i.next();
             iconPresent = true;
-            MindIcon myicon = (MindIcon) icons.get(i);
             //System.out.println("print the icon " + myicon.toString());
-            iconImages.addImage(myicon.getIcon(frame));  
+            iconImages.addImage(myIcon.getIcon(frame));  
         }
         String link = ((NodeAdapter)getModel()).getLink();
         if ( link != null ) 
@@ -811,7 +913,7 @@ public abstract class NodeView extends JLabel {
         // we don't want to insert any additional white space.
         setIcon(iconPresent?iconImages:null);
 
-        // 3) Determine font
+        // 4) Determine font
         Font font = getModel().getFont();
         font = font == null ? map.getController().getDefaultFont() : font;
         if (font != null) {
@@ -822,7 +924,7 @@ public abstract class NodeView extends JLabel {
            // We can survive this trouble.
            System.err.println("NodeView.update(): default font is null."); }
 
-        // 4) Set the text
+        // 5) Set the text
         // Right now, this implementation is quite logical, although it allows
         // for nonconvex feature of nodes starting with <html>.
 
@@ -840,7 +942,7 @@ public abstract class NodeView extends JLabel {
             // Compute the width the node would spontaneously take,
             // by preliminarily setting the text.
             setText(lines[line]);
-            widthMustBeRestricted = getPreferredSize().width > map
+            widthMustBeRestricted = getMainViewPreferredSize().width > map
                     .getZoomed(map.getMaxNodeWidth());
             if (widthMustBeRestricted)
             {
@@ -882,7 +984,15 @@ public abstract class NodeView extends JLabel {
            setText("<html><table"+
                    (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
                    text+"</table></html>"); }
-   		// 5) ToolTips:
+   		// 6) ToolTips:
+        updateToolTip();
+        // 7) Complete
+        revalidate(); // Because of zoom?
+    }
+    /**
+     * Updates the tool tip of the node.
+     */
+    public void updateToolTip() {
         Map tooltips = getModel().getToolTip();
         if(tooltips.size() == 1) {
             setToolTipText((String) tooltips.values().iterator().next());
@@ -906,11 +1016,17 @@ public abstract class NodeView extends JLabel {
         }
    		// 6) icons left or right?
    		//URGENT: Discuss with Dan.
-	    setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
+        mainView.setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
         // 7) Complete
         repaint(); // Because of zoom?
     }
 
+    /**
+     * @param image
+     */
+    public void setIcon(MultipleImage image) {
+        mainView.setIcon(image);        
+    }
     void updateAll() {
 	update();
 	for(ListIterator e = getChildrenViews(true).listIterator();e.hasNext();) {
@@ -1044,19 +1160,78 @@ public abstract class NodeView extends JLabel {
 	}
 
 
-	public int getTreeShift() {
-		return treeShift;
+	public int getUpperChildShift() {
+		return upperChildShift;
 	}
-	public void setTreeShift(int treeShift) {
-		this.treeShift = treeShift;
-	}
-	public int getStandardTreeShift() {
-		return standardTreeShift;
-	}
-	public void setStandardTreeShift(int standardTreeShift) {
-		this.standardTreeShift = standardTreeShift;
+	public void setUpperChildShift(int treeShift) {
+		this.upperChildShift = treeShift;
 	}
 	public NodeMotionListenerView getMotionListenerView() {
 		return null;
 	}
+    JLabel getMainView() {
+        return mainView;
+    }
+    JScrollPane syncronizeAttributeView() {
+        if (attributeTable == null && currentAttributeTableModel.getRowCount() > 0){
+            attributeTable = new AttributeTable(this);
+            attributeTable.getModel().addTableModelListener(new AttributeChangeListener());
+            attributeView = new MyJScrollPane(attributeTable);
+            attributeView.setColumnHeaderView(attributeTable.getTableHeader());
+            add(attributeView);
+        }
+        return attributeView;
+    }
+    public void setFont(Font f) {
+        mainView.setFont(f);
+    }
+    public void setForeground(Color c) {
+        mainView.setForeground(c);
+    }
+    public Font getFont() {
+        return mainView.getFont();
+    }
+    public Color getForeground() {
+        return mainView.getForeground();
+    }
+    /**
+     * @return
+     */
+    public boolean areAttributesVisible() {
+        return  currentAttributeTableModel.getRowCount() > 0;
+    }
+    /**
+     * @return Returns the extendedAttributeTableModel.
+     */
+    private AttributeTableModel getExtendedAttributeTableModel() {
+        if(extendedAttributeTableModel == null){
+            extendedAttributeTableModel = new ExtendedAttributeTableModel(model.getAttributes());
+        }
+        return extendedAttributeTableModel;
+    }
+    
+    public void showExtendedAttributes(boolean show){
+        if(show)
+            currentAttributeTableModel = getExtendedAttributeTableModel();
+        else{
+            currentAttributeTableModel = filteredAttributeTableModel;
+            filteredAttributeTableModel.stateChanged(null);
+        }
+        if(attributeTable != null && attributeTable.getModel() != attributeTable){
+            attributeTable.setModel(currentAttributeTableModel);
+            invalidate();
+        }
+    }
+    
+    public boolean areExtendedAttributesShown(){
+        return extendedAttributeTableModel == currentAttributeTableModel;
+    }
+    
+    
+    AttributeTableModel getCurrentAttributeTableModel() {
+        return currentAttributeTableModel;
+    }
+    void clearOldTableSelection() {
+        AttributeTable.clearOldSelection(attributeTable);
+    }
 }

@@ -58,7 +58,7 @@ public class NodeDropListener implements DropTargetListener {
        return false; }
 
     private boolean isDropAcceptable(DropTargetDropEvent event) {
-        MindMapNode node = ((NodeView)event.getDropTargetContext().getComponent()).getModel();
+        MindMapNode node = ((NodeView)event.getDropTargetContext().getComponent().getParent()).getModel();
 	MindMapNode selected = c.getView().getSelected().getModel();
 	return ((node!=selected) && !node.isDescendantOf(selected));
         // I think (node!=selected) is a hack for windows
@@ -70,7 +70,7 @@ public class NodeDropListener implements DropTargetListener {
            int dropAction = dtde.getDropAction();
 	   Transferable t = dtde.getTransferable();
 
-           NodeView targetNodeView = (NodeView)dtde.getDropTargetContext().getComponent();
+           NodeView targetNodeView = (NodeView)dtde.getDropTargetContext().getComponent().getParent();
            MindMapNode targetNode = targetNodeView.getModel();
            MindMapNodeModel targetNodeModel = (MindMapNodeModel)targetNode;          
 
@@ -205,7 +205,7 @@ public class NodeDropListener implements DropTargetListener {
     }
 
     public void dragOver (DropTargetDragEvent e) {
-       NodeView draggedNode = (NodeView)e.getDropTargetContext().getComponent();
+       NodeView draggedNode = (NodeView)e.getDropTargetContext().getComponent().getParent();
        int oldDraggedOver = draggedNode.getDraggedOver();
        // let the node decide, which dragged over type it is:
        draggedNode.setDraggedOver(e.getLocation());
@@ -215,7 +215,7 @@ public class NodeDropListener implements DropTargetListener {
           draggedNode.repaint(); }
     }
    public void dragExit (DropTargetEvent e) {
-       NodeView draggedNode = (NodeView)e.getDropTargetContext().getComponent();
+       NodeView draggedNode = (NodeView)e.getDropTargetContext().getComponent().getParent();
        draggedNode.setDraggedOver(NodeView.DRAGGED_OVER_NO);
        draggedNode.repaint();
    }

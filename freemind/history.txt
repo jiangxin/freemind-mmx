@@ -251,6 +251,61 @@ RC 3:
 * Some property change listener implemented.
 * Bug fix: new nodes have a proper text box.
 
+RC 4:
+------------
+* Some new languages
+* Size+Position is stored for the option panel. Moreover, the first size is adjusted to 800x600.
+* Bug fix: [ 1207937 ] [0.8 rc3] Null pointer exception on map load blocks whole FM
+* Notes have an icon now.
+* Hack removed: encrypted nodes: the xml attribute AA_NODE_CLASS needs not to occur as the first attribute.
+* Antialias and selection option changes are now directly applied.
+* Option panel stores its panel
+* Removing clouds stores its color for undo.
+* Added icons to popup menu.
+* Version updater adapted to process renames from RC3->RC4.
+* Added readme.txt for the src package
+* XML must not contain any zero characters.
+* Fixed: Filename construction
+* Integrated patch: NodeFoldingPatch 1166708. Thanks to John Cerney.
+* Node styles, color, selected node, edge, cloud, link color change with option change.
+* Little bugs in XSLT exports removed.
+* All colors in the option panel now have a "Reset color" popup menu.
+* Moved "Goto" to navigate menu.
+* Renamed XML representation of encrypted nodes.
+* Fixed: File mode (added linkRegistry to FileMapModel).
+* New french translation.
+* Separators in ToolBar 
+* Bug fix: folding with the mouse wheel folds selected nodes.
+* Changed cursor when over the ellipsis that enables node moving.
+* Added keyboard shortcut for property menu.
+* Cleaned up format menu.
+* Changed option panels keystroke page to have two columns
+* Merge with Dimitris Layout adjustments: 
+	- node positions do not change, when nodes are folded or unfolded.
+	- node spacing and graphical link positions returned to the version of 0.7.1
+	- padding for bubble style node is bigger now.
+* Fix: HYPERLINK_POSITION: the hyperlink is activated when clicked to the region of the node closer to root.	
+
+RC 5:
+-----
+* Enabled standard preferences menu under Mac OS X.
+* Bug fix: NodeNote icon is present at file load.
+* New layout of edges emerging from root.
+* Started to write import XSLT from MindManager X5.
+* Reduced memory consumption due to lazy initialization of Node attributes like icons, tooltips, etc.
+* Validation task added to build-file
+* Translations introduced (thanks to the authors).
+* freemind.xsd improved. Works on the command line (but not with ant...) using
+  find . -name "*.mm" -exec xmllint --noout --schema freemind.xsd {} \;
+* mindmanager2mm.xsl done. 
+* New feature: Import from Mind M*nager X5.
+* Commented new layout for root nodes out. To reactivate, go to method
+  Point getOutPoint(Point destinationPoint, boolean isLeft) and say if(true)
+* Problem solution: Faster shutdown of maps, as redisplay of the map is only performed if the changed node is visible.
+* Import folder structure now folds the nodes. This method is to slow to be useful. 
+* New feature: Export to Open Office Writer
+* Memory consumption reduced.
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added
