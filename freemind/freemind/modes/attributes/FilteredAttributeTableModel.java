@@ -26,6 +26,7 @@ public class FilteredAttributeTableModel extends AttributeTableModelAdapter impl
         super();
         this.concreteModel = model;
         this.registryTable = registryTable;
+        stateChanged(null);
         registryTable.addChangeListener(this);
     }
     private Vector getIndex() {
