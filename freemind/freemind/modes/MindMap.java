@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.14.14.6.2.1.2.1 2005-07-12 15:41:15 dpolivaev Exp $*/
+/*$Id: MindMap.java,v 1.14.14.6.2.1.2.2 2005-07-16 17:23:24 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -33,6 +33,7 @@ import java.util.List;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
+import freemind.controller.filter.Filter;
 import freemind.main.XMLParseException;
 
 public interface MindMap extends TreeModel {
@@ -123,6 +124,14 @@ public interface MindMap extends TreeModel {
      * @throws FileNotFoundException
      */
     void load(File file) throws FileNotFoundException, IOException, XMLParseException;
+    /**
+     * @return
+     */
+    Filter getFilter();
+    /**
+     * @param inactiveFilter
+     */
+    void setFilter(Filter inactiveFilter);
 
 // (PN)
 //    void close();

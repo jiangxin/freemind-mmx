@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 
 import freemind.controller.Controller;
 import freemind.controller.filter.FilterController;
+import freemind.main.Resources;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
 
@@ -34,7 +35,7 @@ public class IconContainedCondition implements Condition {
 	public IconContainedCondition(String iconName){
 		this.iconName = iconName;
 	}
-	
+
 	public boolean checkNode(MindMapNode node) {
 		List icons = node.getIcons();
 		for (ListIterator i=icons.listIterator(); i.hasNext(); ) {
@@ -50,9 +51,9 @@ public class IconContainedCondition implements Condition {
     public JComponent getListCellRendererComponent() {
         JComponent component = new JPanel();
         component.setBackground(Color.WHITE);
-        component.add(new JLabel(Controller.getInstance().getResourceString("filter_icon")));
-        component.add(new JLabel(Controller.getInstance().getResourceString("filter_contains")));
-        component.add(Controller.getInstance().getFilterController().getMindIconRenderer().getComponent(getIconName()));
+        component.add(new JLabel(Resources.getInstance().getResourceString("filter_icon")));
+        component.add(new JLabel(Resources.getInstance().getResourceString("filter_contains")));
+        component.add(Resources.getInstance().getComponent(getIconName()));
         return component;
     }
 

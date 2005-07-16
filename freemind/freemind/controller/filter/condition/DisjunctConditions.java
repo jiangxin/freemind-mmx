@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 
 
 import freemind.controller.Controller;
+import freemind.main.Resources;
 import freemind.modes.MindMapNode;
 
 /**
@@ -27,7 +28,7 @@ public class DisjunctConditions implements Condition {
 
     private Object[] conditions;
     /**
-     * 
+     *
      */
     public DisjunctConditions(Object[] conditions) {
         this.conditions = conditions;
@@ -56,7 +57,7 @@ public class DisjunctConditions implements Condition {
         component.add(cond.getListCellRendererComponent());
         int i;
         for(i=1; i<conditions.length; i++){
-            component.add(new JLabel(Controller.getInstance().getResourceString("filter_or") + " "));
+            component.add(new JLabel(Resources.getInstance().getResourceString("filter_or") + " "));
             cond = (Condition)conditions[i];
             component.add(cond.getListCellRendererComponent());        }
         component.add(new JLabel(")"));

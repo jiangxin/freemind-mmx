@@ -17,50 +17,10 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 import freemind.controller.Controller;
+import freemind.main.Resources;
 import freemind.modes.MindIcon;
 
 /**
  * @author dimitri
  * 06.05.2005
  */
-public class MindIconRenderer implements ListCellRenderer{
-    private Map name2components = null;
-    private ListCellRenderer defaultRenderer = new DefaultListCellRenderer();
-    public MindIconRenderer(){
-    }
-    Component getComponent(String name){
-        if(name2components == null) name2components = new HashMap();
-        JLabel component = (JLabel)name2components.get(name);
-        if (component == null){
-            Icon icon = MindIcon.factory(name).getIcon(Controller.getInstance().getFrame());
-            component = new JLabel(icon);
-            name2components.put(name, component);            
-        }        
-        return component;
-    }
-    
-    Component getComponent(MindIcon mi){
-        return getComponent(mi.getName());
-    }
-    /* (non-Javadoc)
-     * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
-     */
-    public Component getListCellRendererComponent(
-            JList list,
-            Object value,
-            int index,
-            boolean isSelected,
-            boolean cellHasFocus) {
-        if(value == null) return new JLabel("--");
-        if (value instanceof MindIcon){
-	        MindIcon mi = (MindIcon) value;
-	        Component component = getComponent(mi);
-	        if (isSelected  || cellHasFocus){
-	            component.setBackground(Color.BLUE);            
-	        }
-	        return component;
-        }
-        return defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus );
-    }
-    
-}

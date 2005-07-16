@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.10.2.4.2.2 2005-07-12 15:41:15 dpolivaev Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.10.2.4.2.3 2005-07-16 17:23:24 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -38,7 +38,6 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 
 
-import freemind.controller.filter.Filter;
 import freemind.controller.filter.FilterInfo;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;

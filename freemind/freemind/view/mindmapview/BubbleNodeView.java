@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.14.14.4.6.1 2005-07-12 15:41:18 dpolivaev Exp $*/
+/*$Id: BubbleNodeView.java,v 1.14.14.4.6.2 2005-07-16 17:23:24 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -59,11 +59,11 @@ public class BubbleNodeView extends MoveableNodeView {
 		return super.getDeltaX();
 	}
   
-    public void paintSelected(Graphics2D graphics, Dimension size) {
-        super.paintSelected(graphics, size);
+    public void paintSelected(Graphics2D graphics) {
+        super.paintSelected(graphics);
         if (this.isSelected()) {
             graphics.setColor(selectedColor);
-            graphics.fillRoundRect(0, 0, size.width - 1, size.height - 1, 10,
+            graphics.fillRoundRect(getMainView().getX(), getMainView().getY(), getMainView().getWidth()-1, getMainView().getHeight()-1, 10,
                     10);
         }
     }
@@ -98,8 +98,8 @@ public class BubbleNodeView extends MoveableNodeView {
 	Dimension size = getMainView().getSize();
 	if (this.getModel()==null) return;
 
-        paintSelected(g, size);
-        paintDragOver(g, size);
+        paintSelected(g);
+        paintDragOver(g);
 
 	// change to bold stroke
 	//g.setStroke(BOLD_STROKE);                     // Changed by Daniel

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10.2.3.2.2 2005-07-12 15:41:13 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.3.2.3 2005-07-16 17:23:23 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -92,6 +92,7 @@ import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.controller.attributes.AttributeDialog;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
@@ -180,15 +181,7 @@ public class Controller {
     //
     // Constructors
     //
-    static Controller c = null;
-    static public Controller getInstance(){
-        return c;
-    }
-    static public void createInstance(FreeMindMain frame){
-        if (c == null) new Controller(frame);
-    }
-    private Controller(FreeMindMain frame) {
-        c = this;
+    public Controller(FreeMindMain frame) {
         checkJavaVersion();
 
         this.frame = frame;
@@ -243,7 +236,7 @@ public class Controller {
         //Create the ToolBar
         northToolbarPanel = new JPanel(new BorderLayout());
         toolbar = new MainToolBar(this);
-        fc = new FilterController();
+        fc = new FilterController(this);
         filterToolbar = fc.getFilterToolbar();
         getFrame().getContentPane().add( northToolbarPanel, BorderLayout.NORTH );
         northToolbarPanel.add( toolbar, BorderLayout.NORTH);
@@ -278,15 +271,7 @@ public class Controller {
        frame.setProperty(property, value); }
 
     public FreeMindMain getFrame() {
-        return frame;
-    }
-
-    public URL getResource(String resource) {
-        return getFrame().getResource(resource);
-    }
-                                            
-    public String getResourceString(String resource) {
-          return frame.getResourceString(resource);
+        return Resources.getInstance().getFrame();
     }
 
 	/** @return the current modeController. */
@@ -514,6 +499,13 @@ public class Controller {
     }
 
 
+    /**
+     * @param string
+     * @return
+     */
+    public String getResourceString(String string) {
+        return Resources.getInstance().getResourceString(string);
+    }
     public void setMenubarVisible(boolean visible) {
         menubarVisible = visible;
         getFrame().getFreeMindMenuBar().setVisible(menubarVisible);
@@ -887,6 +879,10 @@ public class Controller {
             setEnabled(false);
             this.isDlg = isDlg;
         }
+        /**
+         * @param string
+         * @return
+         */
         public void actionPerformed(ActionEvent e) {
             if (!acquirePrinterJobAndPageFormat()) {
                return; }
@@ -1073,15 +1069,17 @@ public class Controller {
     }
     
     private class ShowAttributeDialogAction extends AbstractAction {
-        private AttributeDialog attributeDialog;
-        ShowAttributeDialogAction(Controller controller) {     
+        private Controller c;
+        ShowAttributeDialogAction(Controller c) {     
             super("",
                   new ImageIcon(getResource("images/showAttributes.gif")));
+            this.c = c;
         }
 		private AttributeDialog getAttributeDialog() {
-			if (attributeDialog == null) attributeDialog = new AttributeDialog();
+			if (attributeDialog == null) attributeDialog = new AttributeDialog(c.getMap());
 			return attributeDialog;
 		}
+		
 		 public void actionPerformed(ActionEvent e) {
 		     if (getAttributeDialog().isVisible() == false)
 		     {
@@ -1099,10 +1097,10 @@ public class Controller {
         public void actionPerformed(ActionEvent event) {
             JToggleButton btnFilter = (JToggleButton)event.getSource();
             if(btnFilter.getModel().isSelected()){
-                c.getFilterController().showFilterToolbar(true);
+                getFilterController().showFilterToolbar(true);
             }
             else{
-                c.getFilterController().showFilterToolbar(false);
+                getFilterController().showFilterToolbar(false);
             }
         }
     }
@@ -1185,9 +1183,24 @@ public class Controller {
     
     private static Vector propertyChangeListeners = new Vector();
     
+    private AttributeDialog attributeDialog = null;
+    
     public static Collection getPropertyChangeListeners() {
         return Collections.unmodifiableCollection(propertyChangeListeners);
     }
+    /**
+     * @return
+     */
+    public MindMap getMap() {
+        return getMapModule().getModel();
+    }
+
+    public void mapChanged(MindMap newMap){
+        fc.mapChanged(newMap);
+        if (attributeDialog != null)
+            attributeDialog.mapChanged(newMap); 
+    }
+    
     public static void addPropertyChangeListener(FreemindPropertyListener listener) {
         Controller.propertyChangeListeners.add(listener);
     }
@@ -1204,7 +1217,6 @@ public class Controller {
 		 */
 		public PropertyAction(Controller controller) {
 			super(controller.getResourceString("property_dialog"));
-			// TODO Auto-generated constructor stub
 			this.controller = controller;
 		}
 
@@ -1461,17 +1473,13 @@ public class Controller {
      * @return
      */
     public FilterController getFilterController() {
-        // TODO Auto-generated method stub
         return fc;
     }
 
-	 public JFrame getJFrame() {
-			FreeMindMain f = getFrame();
-			if (f instanceof JFrame) return (JFrame) f;
-			return null;
-		}
-
-
+     public URL getResource(String resource) {            
+         return Resources.getInstance().getResource(resource);
+     }
+     
     
     public ObjectFactory getActionXmlFactory() {
         return actionXmlFactory;

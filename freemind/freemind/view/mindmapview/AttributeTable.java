@@ -11,6 +11,9 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
@@ -18,6 +21,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.JTableHeader;
@@ -42,7 +46,8 @@ public class AttributeTable extends JTable {
         public void focusGained(FocusEvent event) { 
             AttributeTable table = (AttributeTable)event.getSource();
             NodeView nodeView = table.node;
-            nodeView.getMap().selectAsTheOnlyOneSelected(nodeView);
+            AttributeTable.clearOldSelection();
+            nodeView.getMap().scrollNodeToVisible(nodeView);
             selectedTable = table;
         }
         
@@ -53,39 +58,22 @@ public class AttributeTable extends JTable {
         }
     }
     
-    static private class MyComponentListener implements ComponentListener{
-
-        /* (non-Javadoc)
-         * @see java.awt.event.ComponentListener#componentResized(java.awt.event.ComponentEvent)
-         */
-        public void componentResized(ComponentEvent e) {
-            AttributeTable table = (AttributeTable)e.getSource();
-            JComponent map = (JComponent)table.getParent().getParent().getParent().getParent();
-            map.revalidate();
+    static private class HeaderMouseListener extends MouseAdapter{
+        public void mouseReleased(MouseEvent e) {
+            JTableHeader header = (JTableHeader)e.getSource();
+            JTable table = header.getTable();
+            Dimension preferredScrollableViewportSize = table.getPreferredScrollableViewportSize();
+            JViewport port = (JViewport)table.getParent();
+            Dimension extentSize = port.getExtentSize();
+            if(preferredScrollableViewportSize.width !=extentSize.width){
+                JComponent map = (JComponent)port.getParent().getParent().getParent();
+                map.revalidate();
+            }
         }
-
-        /* (non-Javadoc)
-         * @see java.awt.event.ComponentListener#componentMoved(java.awt.event.ComponentEvent)
-         */
-        public void componentMoved(ComponentEvent e) {
-        }
-
-        /* (non-Javadoc)
-         * @see java.awt.event.ComponentListener#componentShown(java.awt.event.ComponentEvent)
-         */
-        public void componentShown(ComponentEvent e) {
-        }
-
-        /* (non-Javadoc)
-         * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.ComponentEvent)
-         */
-        public void componentHidden(ComponentEvent e) {
-         }
-        
     }
 
     static private MyFocusListener focusListener = new MyFocusListener();
-    static private MyComponentListener componentListener = new MyComponentListener();
+    static private MouseListener componentListener = new HeaderMouseListener();
     private AttributeTableModel currentModel;
     static private JComboBox comboBox = null; 
     static private ComboBoxModel defaultModel = null; 
@@ -95,14 +83,31 @@ public class AttributeTable extends JTable {
         super();
         this.node = node;
         addFocusListener(focusListener);
-        addComponentListener(componentListener);
+        getTableHeader().addMouseListener(componentListener);
         currentModel = node.getCurrentAttributeTableModel();
         setModel(currentModel);
         setDefaultEditor(Object.class, getDCE());
         getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setAutoResizeMode(AUTO_RESIZE_OFF);
+        getTableHeader().setReorderingAllowed(false);
     }
 
+    /**
+     * 
+     */
+    public static void clearOldSelection() {
+        if(selectedTable != null && selectedTable != null){
+            if (selectedTable.isEditing()){                
+                selectedTable.getCellEditor().stopCellEditing();
+            }
+            selectedTable.clearSelection(); 
+            selectedTable = null;
+        }
+    }
+
+    /**
+     * 
+     */
     public Component prepareEditor(TableCellEditor tce, int row, int col) {
         ComboBoxModel model;
         switch (col){
@@ -152,14 +157,5 @@ public class AttributeTable extends JTable {
             defaultModel = new DefaultComboBoxModel();
          }
         return defaultModel;
-    }
-    static void clearOldSelection(AttributeTable table){
-        if(selectedTable != null && selectedTable != table){
-            if (selectedTable.isEditing()){                
-                selectedTable.getCellEditor().stopCellEditing();
-            }
-            selectedTable.clearSelection(); 
-            selectedTable = null;
-        }
     }
 }

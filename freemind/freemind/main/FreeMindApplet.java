@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.9.2.1.2.1 2005-07-12 15:41:14 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.9.2.1.2.2 2005-07-16 17:23:24 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -50,7 +50,7 @@ import freemind.view.mindmapview.MapView;
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 
     private HookFactory nodeHookFactory;
-	public static final String version = "0.8.0 RC5";
+	public static final String version = FreeMindApplet.version;
     //    public static final String defaultPropsURL;
     public URL defaultPropsURL;
     public static Properties defaultProps;
@@ -283,8 +283,8 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
  	//Layout everything
  	getContentPane().setLayout( new BorderLayout() );
 
-	Controller.createInstance(this);
-	c = Controller.getInstance() ;
+	Resources.createInstance(this);
+	c = new Controller(this) ;
 
 	if (Tools.safeEquals(getProperty("antialiasEdges"), "true")) {
            c.setAntialiasEdges(true); }

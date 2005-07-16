@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.2 2005-07-12 15:41:19 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.3 2005-07-16 17:23:24 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -449,12 +449,11 @@ public abstract class NodeView extends JComponent  {
           // background color ends here, fc. 9.11.2003: todo
 	super.paint(graphics);
     }
-    public void paintSelected(Graphics2D graphics, Dimension size) {
+    public void paintSelected(Graphics2D graphics) {
 		if (this.isSelected()) {
-			paintBackground(graphics, size, getSelectedColor());
-			//g.drawRect(0,0,size.width-1, size.height-2);
+			paintBackground(graphics, getSelectedColor());
 		} else if (getModel().getBackgroundColor() != null) {
-			paintBackground(graphics, size, getModel().getBackgroundColor());
+			paintBackground(graphics, getModel().getBackgroundColor());
 		}
 //		if (this.isSelected()) {
 //			paintBackground(graphics, size, getSelectedColor());
@@ -469,25 +468,60 @@ public abstract class NodeView extends JComponent  {
 //		}
     }
 
-	protected void paintBackground(Graphics2D graphics, Dimension size, Color color) {
+	protected void paintBackground(Graphics2D graphics, Color color) {
 		graphics.setColor(color);
-		graphics.fillRect(0,0,size.width, size.height);		
+		graphics.fillRect(getMainView().getX(), getMainView().getY(), getMainView().getWidth(), getMainView().getHeight());		
 	}
 
 
-   public void paintDragOver(Graphics2D graphics, Dimension size) {
+   public void paintDragOver(Graphics2D graphics) {
         if (isDraggedOver == DRAGGED_OVER_SON) {
            if (isLeft()) {
-              graphics.setPaint( new GradientPaint(size.width*3/4,0,map.getBackground(), size.width/4, 0, dragColor));
-              graphics.fillRect(0, 0, size.width*3/4, size.height-1); }
+              graphics.setPaint( 
+                      new GradientPaint(
+                              getMainView().getX() + getMainView().getWidth()*3/4,
+                              getMainView().getY(),
+                              map.getBackground(), 
+                              getMainView().getX() + getMainView().getWidth()/4, 
+                              getMainView().getY(), 
+                              dragColor));
+              graphics.fillRect(
+                      getMainView().getX(), 
+                      getMainView().getY(), 
+                      getMainView().getWidth()*3/4, 
+                      getMainView().getHeight()-1); }
            else {
-              graphics.setPaint( new GradientPaint(size.width/4,0,map.getBackground(), size.width*3/4, 0, dragColor));
-              graphics.fillRect(size.width/4, 0, size.width-1, size.height-1); }       
+              graphics.setPaint( 
+                      new GradientPaint(
+                              getMainView().getX() + getMainView().getWidth()/4,
+                              getMainView().getY() ,
+                              map.getBackground(), 
+                              getMainView().getX() + getMainView().getWidth()*3/4, 
+                              getMainView().getY(), 
+                              dragColor)
+                              );
+              graphics.fillRect(
+                      getMainView().getX() + getMainView().getWidth()/4, 
+                      getMainView().getY(), getMainView().getWidth()-1, 
+                      getMainView().getHeight()-1);
+              }       
 	}
 
         if (isDraggedOver == DRAGGED_OVER_SIBLING) {
-            graphics.setPaint( new GradientPaint(0,size.height*3/5,map.getBackground(), 0, size.height/5, dragColor));
-            graphics.fillRect(0, 0, size.width-1, size.height-1);
+            graphics.setPaint( 
+                    new GradientPaint(
+                            getMainView().getX(), 
+                            getMainView().getY()+getMainView().getHeight()*3/5,
+                            map.getBackground(), 
+                            getMainView().getX(), 
+                            getMainView().getY() + getMainView().getHeight()/5, 
+                            dragColor)
+                            );
+            graphics.fillRect(
+                    getMainView().getX(), 
+                    getMainView().getY(), 
+                    getMainView().getWidth()-1, 
+                    getMainView().getHeight()-1);
 	}
     }
 
@@ -1230,8 +1264,5 @@ public abstract class NodeView extends JComponent  {
     
     AttributeTableModel getCurrentAttributeTableModel() {
         return currentAttributeTableModel;
-    }
-    void clearOldTableSelection() {
-        AttributeTable.clearOldSelection(attributeTable);
     }
 }

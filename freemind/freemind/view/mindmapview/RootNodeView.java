@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.14.14.3.2.1.2.1 2005-07-12 15:41:19 dpolivaev Exp $*/
+/*$Id: RootNodeView.java,v 1.14.14.3.2.1.2.2 2005-07-16 17:23:24 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -175,8 +175,8 @@ public class RootNodeView extends NodeView {
 	Dimension size = getMainView().getSize();
 	if (this.getModel()==null) return;
 
-        paintSelected(g, size);
-        paintDragOver(g, size);
+        paintSelected(g);
+        paintDragOver(g);
 
 	//Draw a root node
 	g.setColor(Color.gray);
@@ -189,13 +189,36 @@ public class RootNodeView extends NodeView {
 	super.paint(g);
     }
 
-   public void paintDragOver(Graphics2D graphics, Dimension size) {
+   public void paintDragOver(Graphics2D graphics) {
         if (getDraggedOver() == DRAGGED_OVER_SON) {
-              graphics.setPaint( new GradientPaint(size.width/4,0,map.getBackground(), size.width*3/4, 0, dragColor));
-              graphics.fillRect(size.width/4, 0, size.width-1, size.height-1); 
+              graphics.setPaint( 
+                      new GradientPaint(
+                              getMainView().getX()+ getMainView().getWidth()/4,
+                              getMainView().getY(),
+                              map.getBackground(), 
+                              getMainView().getX() + getMainView().getWidth()*3/4, 
+                              getMainView().getY(), 
+                              dragColor)
+                              );
+              graphics.fillRect(
+                      getMainView().getX() + getMainView().getWidth()/4, 
+                      getMainView().getY(), 
+                      getMainView().getWidth()-1, 
+                      getMainView().getHeight()-1); 
         } else if (getDraggedOver() == DRAGGED_OVER_SON_LEFT) {
-              graphics.setPaint( new GradientPaint(size.width*3/4,0,map.getBackground(), size.width/4, 0, dragColor));
-              graphics.fillRect(0, 0, size.width*3/4, size.height-1);
+              graphics.setPaint( 
+                      new GradientPaint(
+                              getMainView().getX() + getMainView().getWidth()*3/4,
+                              getMainView().getY(),
+                              map.getBackground(), 
+                              getMainView().getX() + getMainView().getWidth()/4, 
+                              getMainView().getY(), 
+                              dragColor)
+                              );
+              graphics.fillRect(getMainView().getX(), 
+                      getMainView().getY(), 
+                      getMainView().getWidth()*3/4, 
+                      getMainView().getHeight()-1);
         }
     }
 
@@ -207,10 +230,12 @@ public class RootNodeView extends NodeView {
 
     protected void paintBackground(
         Graphics2D graphics,
-        Dimension size,
         Color color) {
 		graphics.setColor(color);
-		graphics.fillOval(1,1,size.width-1,size.height-1);
+		graphics.fillOval(getMainView().getX()+ 1,
+		        getMainView().getY() + 1,
+		        getMainView().getWidth()-1,
+		        getMainView().getHeight()-1);
     }
 
 	public int getRightTreeWidth() {

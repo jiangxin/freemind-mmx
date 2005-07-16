@@ -21,5 +21,10 @@ public interface Filter {
 
 	
 	void applyFilter(MindMap map); 
-	boolean isVisible(MindMapNode node); 
+	boolean isVisible(MindMapNode node);
+	boolean areMatchedShown();
+	boolean areHiddenShown();
+	boolean areAncestorsShown();
+	boolean areDescendersShown();
+	boolean areEclipsedShown();
 }

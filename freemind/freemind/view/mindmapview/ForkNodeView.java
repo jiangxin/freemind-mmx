@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ForkNodeView.java,v 1.10.18.2.6.1 2005-07-12 15:41:18 dpolivaev Exp $*/
+/*$Id: ForkNodeView.java,v 1.10.18.2.6.2 2005-07-16 17:23:24 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -91,8 +91,8 @@ public class ForkNodeView extends MoveableNodeView {
 
 	if (this.getModel()==null) return;
 
-        paintSelected(g, size);
-        paintDragOver(g, size);
+        paintSelected(g);
+        paintDragOver(g);
 
         int edgeWidth = getEdge().getRealWidth();
 
@@ -100,9 +100,10 @@ public class ForkNodeView extends MoveableNodeView {
         setRendering(g);
 	g.setColor(getEdge().getColor());
 	g.setStroke(getEdge().getStroke());
-	g.drawLine(0,          size.height-edgeWidth/2-1,
-                   size.width, size.height-edgeWidth/2-1);
-   
+	g.drawLine(getMainView().getX(),          
+	        getMainView().getY() + size.height-edgeWidth/2-1,
+                   getMainView().getX() + size.width, 
+                   getMainView().getY() + size.height-edgeWidth/2-1);
 	super.paint(g);
     }
 

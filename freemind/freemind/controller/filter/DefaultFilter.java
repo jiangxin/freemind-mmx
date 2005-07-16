@@ -14,7 +14,7 @@ import freemind.modes.MindMapNode;
  * @author dimitri
  * 07.05.2005
  */
-class DefaultFilter implements Filter{
+public class DefaultFilter implements Filter{
 	
 	private Condition condition = null;
     private int options = 0;
@@ -97,5 +97,35 @@ class DefaultFilter implements Filter{
     
     static void addFilterResult(MindMapNode node, int flag){
 		node.getFilterInfo().add(flag);
+    }
+    /* (non-Javadoc)
+     * @see freemind.controller.filter.Filter#areMatchedShown()
+     */
+    public boolean areMatchedShown() {
+        return true;
+    }
+    /* (non-Javadoc)
+     * @see freemind.controller.filter.Filter#areHiddenShown()
+     */
+    public boolean areHiddenShown() {
+        return false;
+    }
+    /* (non-Javadoc)
+     * @see freemind.controller.filter.Filter#areAncestorsShown()
+     */
+    public boolean areAncestorsShown() {
+        return 0 != (options & FILTER_SHOW_ANCESTOR) ;
+    }
+    /* (non-Javadoc)
+     * @see freemind.controller.filter.Filter#areDescendersShown()
+     */
+    public boolean areDescendersShown() {
+        return 0 != (options & FILTER_SHOW_DESCENDER) ;
+    }
+    /* (non-Javadoc)
+     * @see freemind.controller.filter.Filter#areEclipsedShown()
+     */
+    public boolean areEclipsedShown() {
+        return true;
     }
 }

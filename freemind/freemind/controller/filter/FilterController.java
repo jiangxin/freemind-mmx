@@ -11,11 +11,11 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
+import javax.swing.ListCellRenderer;
 
 import freemind.controller.Controller;
 import freemind.controller.filter.condition.ConditionFactory;
 import freemind.controller.filter.condition.ConditionRenderer;
-import freemind.controller.filter.condition.MindIconRenderer;
 import freemind.main.FreeMindMain;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
@@ -25,20 +25,17 @@ import freemind.modes.MindMap;
  *
  */
  public class FilterController {
+     private Controller c;
 	private FilterToolbar filterToolbar;
-	private MindIconRenderer mindIconRenderer;
 	private ConditionRenderer conditionRenderer;
 	private ConditionFactory conditionFactory;
+    private MindMap map;
 	
-	public FilterController(){
-		mindIconRenderer = new MindIconRenderer();
+	public FilterController(Controller c){
+		this.c = c;
 		conditionRenderer = new ConditionRenderer();
-		filterToolbar = new FilterToolbar(this);
 	}
 
-    public MindIconRenderer getMindIconRenderer() {
-        return mindIconRenderer;
-    }
      ConditionRenderer getConditionRenderer() {
         return conditionRenderer;
     }
@@ -46,28 +43,25 @@ import freemind.modes.MindMap;
      /**
      * @return
      */
-    public JToolBar getFilterToolbar() {
+    public FilterToolbar getFilterToolbar() {
+        if(filterToolbar == null)
+            filterToolbar  = new FilterToolbar(c);
         return filterToolbar;
     }
     /**
      * @return
      */
-    public Filter getFilter() {
-        // TODO Auto-generated method stub
-        return filterToolbar.getFilter();
-    }
-    
     public void showFilterToolbar(boolean show){
-        AbstractButton btnFilterActive = filterToolbar.getBtnApply();
+        AbstractButton btnFilterActive = getFilterToolbar().getBtnApply();
         if (show){
-            if (! filterToolbar.isVisible()){ 
-                filterToolbar.setVisible(true);
+            if (! getFilterToolbar().isVisible()){ 
+                getFilterToolbar().setVisible(true);
             }
         }
         else{
-            if (filterToolbar.isVisible() && btnFilterActive.getModel().isSelected()) 
+            if (getFilterToolbar().isVisible() && btnFilterActive.getModel().isSelected()) 
                 btnFilterActive.doClick();
-            filterToolbar.setVisible(false);
+            getFilterToolbar().setVisible(false);
         }
         
     }
@@ -78,9 +72,25 @@ import freemind.modes.MindMap;
     }
     
     public void mapChanged(MindMap newMap){
-        FilterDialog fd = filterToolbar.getFilterDialog();
+        FilterDialog fd = getFilterToolbar().getFilterDialog();
         if (fd != null){
             fd.mapChanged(newMap);
         }
+        map = newMap;
+        getFilterToolbar().mapChanged(newMap);
+    }
+
+    /**
+     * @return
+     */
+    public MindMap getMap() {
+        return map;
+    }
+
+    /**
+     * @param filterToolbar The filterToolbar to set.
+     */
+    private void setFilterToolbar(FilterToolbar filterToolbar) {
+        this.filterToolbar = filterToolbar;
     }
 }

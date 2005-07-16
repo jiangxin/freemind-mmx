@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 
 import freemind.controller.Controller;
+import freemind.main.Resources;
 import freemind.modes.MindMapNode;
 
 /**
@@ -24,7 +25,7 @@ public class ConditionNotSatisfiedDecorator implements Condition {
 
     private Condition originalCondition;
     /**
-     * 
+     *
      */
     public ConditionNotSatisfiedDecorator(Condition originalCondition) {
         super();
@@ -45,7 +46,7 @@ public class ConditionNotSatisfiedDecorator implements Condition {
     public JComponent getListCellRendererComponent() {
         JComponent component = new JPanel();
         component.setBackground(Color.WHITE);
-        component.add(new JLabel(Controller.getInstance().getResourceString("filter_not") + " "));
+        component.add(new JLabel(Resources.getInstance().getResourceString("filter_not") + " "));
         component.add(originalCondition.getListCellRendererComponent());
         return component;
     }

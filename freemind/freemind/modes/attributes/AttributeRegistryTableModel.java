@@ -19,6 +19,7 @@ import javax.swing.table.AbstractTableModel;
 
 import freemind.controller.filter.util.SortedListModel;
 import freemind.controller.filter.util.SortedMapVector;
+import freemind.main.Resources;
 import freemind.modes.MapRegistry;
 import freemind.modes.MindMapNode;
 
@@ -281,5 +282,22 @@ public class AttributeRegistryTableModel extends AbstractTableModel  {
                 ((ChangeListener)listeners[i+1]).stateChanged(changeEvent);
             }
         }
+    }
+    
+    static private String attributeColumnName = null; 
+    static private String visibilityColumnName = null; 
+    public String getColumnName(int column) {
+        
+        switch(column){
+        case 0: 
+            if (attributeColumnName == null)
+                attributeColumnName = Resources.getInstance().getResourceString("attributes_attribute");
+            return  attributeColumnName;           
+        case 1: 
+            if (visibilityColumnName == null)
+                visibilityColumnName = Resources.getInstance().getResourceString("attributes_visible");
+            return  visibilityColumnName;           
+        }
+        return null;
     }
 }

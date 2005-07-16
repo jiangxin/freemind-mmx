@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 import freemind.controller.Controller;
 import freemind.controller.filter.util.TranslatedString;
+import freemind.main.Resources;
 
 /**
  * @author dimitri
@@ -20,11 +21,11 @@ import freemind.controller.filter.util.TranslatedString;
 public class ConditionFactory {
 
     /**
-     * 
+     *
      */
     public ConditionFactory() {
     }
-    
+
     String createDescription(
             TranslatedString attribute,
             TranslatedString simpleCondition,
@@ -32,7 +33,7 @@ public class ConditionFactory {
             boolean ignoreCase){
         return createDescription(attribute.toString(), simpleCondition, value, ignoreCase);
     }
-    
+
         String createDescription(
                 String attribute,
                 TranslatedString simpleCondition,
@@ -41,8 +42,8 @@ public class ConditionFactory {
         boolean considerValue = ! simpleCondition.equals("filter_exist") && ! simpleCondition.equals("filter_does_not_exist");
         String description = attribute + " "
         + simpleCondition.toString() + " "
-        + (considerValue ?  "\"" + value + "\"": "") 
-        + (considerValue && ignoreCase ? ", " + Controller.getInstance().getResourceString("filter_ignore_case") : "");
+        + (considerValue ?  "\"" + value + "\"": "")
+        + (considerValue && ignoreCase ? ", " + Resources.getInstance().getResourceString("filter_ignore_case") : "");
         return description;
     }
 
@@ -54,10 +55,10 @@ public class ConditionFactory {
     {
     	String description   = createDescription(attribute, simpleCondition, value, ignoreCase);
         if(simpleCondition.equals("filter_exist"))
-            return new AttributeExistsCondition(description, attribute); 
+            return new AttributeExistsCondition(description, attribute);
         if(simpleCondition.equals("filter_does_not_exist"))
-            return new AttributeNotExistsCondition(description, attribute); 
-        if(ignoreCase){            
+            return new AttributeNotExistsCondition(description, attribute);
+        if(ignoreCase){
             if(simpleCondition.equals("filter_is_equal_to"))
                 return new AttributeCompareCondition(description, attribute,value, true, 0, true);
             if(simpleCondition.equals("filter_is_not_equal_to"))
@@ -71,7 +72,7 @@ public class ConditionFactory {
             if(simpleCondition.equals("<="))
                 return new AttributeCompareCondition(description, attribute,value,  true, 1, false);
         }
-        else{            
+        else{
             if(simpleCondition.equals("filter_is_equal_to"))
                 return new AttributeCompareCondition(description, attribute,value, false, 0, true);
             if(simpleCondition.equals("filter_is_not_equal_to"))
@@ -93,7 +94,7 @@ public class ConditionFactory {
             String value,
             boolean ignoreCase)
     {
-        if (attribute.equals("filter_icon") 
+        if (attribute.equals("filter_icon")
             && simpleCondition.equals("filter_contains")    )
             return new IconContainedCondition(value);
         if (attribute.equals("filter_node")){
@@ -105,40 +106,40 @@ public class ConditionFactory {
 
     public  TranslatedString[] getNodeConditionNames() {
             return new TranslatedString[] {
-    //                new TranslatedString("filter_exist"), 
-    //                new TranslatedString("filter_does_not_exist"), 
-                    new TranslatedString("filter_contains"), 
-                    new TranslatedString("filter_is_equal_to"), 
-                    new TranslatedString("filter_is_not_equal_to"), 
-                    TranslatedString.literal(">"), 
-                    TranslatedString.literal(">="), 
-                    TranslatedString.literal("<="), 
-                    TranslatedString.literal("<"), 
+    //                new TranslatedString("filter_exist"),
+    //                new TranslatedString("filter_does_not_exist"),
+                    new TranslatedString("filter_contains"),
+                    new TranslatedString("filter_is_equal_to"),
+                    new TranslatedString("filter_is_not_equal_to"),
+                    TranslatedString.literal(">"),
+                    TranslatedString.literal(">="),
+                    TranslatedString.literal("<="),
+                    TranslatedString.literal("<"),
             };
         }
 
     public  TranslatedString[] getAttributeConditionNames() {
         return new TranslatedString[] {
-                new TranslatedString("filter_exist"), 
-                new TranslatedString("filter_does_not_exist"), 
-//                new TranslatedString("filter_contains"), 
-                new TranslatedString("filter_is_equal_to"), 
-                new TranslatedString("filter_is_not_equal_to"), 
-                TranslatedString.literal(">"), 
-                TranslatedString.literal(">="), 
-                TranslatedString.literal("<="), 
-                TranslatedString.literal("<"), 
+                new TranslatedString("filter_exist"),
+                new TranslatedString("filter_does_not_exist"),
+//                new TranslatedString("filter_contains"),
+                new TranslatedString("filter_is_equal_to"),
+                new TranslatedString("filter_is_not_equal_to"),
+                TranslatedString.literal(">"),
+                TranslatedString.literal(">="),
+                TranslatedString.literal("<="),
+                TranslatedString.literal("<"),
         };
     }
 
     protected Condition createNodeCondition(
             String description,
-            TranslatedString simpleCondition, 
+            TranslatedString simpleCondition,
             String value,
             boolean ignoreCase) {
-        if(ignoreCase){            
+        if(ignoreCase){
             if(simpleCondition.equals("filter_contains")){
-                if (value.equals("")) 
+                if (value.equals(""))
                     return null;
                 return new IgnoreCaseNodeContainsCondition(description, value);
             }
@@ -155,9 +156,9 @@ public class ConditionFactory {
             if(simpleCondition.equals("<="))
                 return new NodeCompareCondition(description, value,  true, 1, false);
         }
-        else{            
+        else{
             if(simpleCondition.equals("filter_contains")){
-                if (value.equals("")) 
+                if (value.equals(""))
                     return null;
                 return new NodeContainsCondition(description, value);
             }
@@ -181,7 +182,7 @@ public class ConditionFactory {
         JComponent renderer = new JPanel();
         renderer.setBackground(Color.WHITE);
         renderer.add(new JLabel(description));
-        return renderer; 
+        return renderer;
     }
 
 }

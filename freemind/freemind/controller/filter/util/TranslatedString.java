@@ -5,6 +5,7 @@
 package freemind.controller.filter.util;
 
 import freemind.controller.Controller;
+import freemind.main.Resources;
 
 /**
  * @author dimitri
@@ -13,11 +14,11 @@ import freemind.controller.Controller;
 public class TranslatedString{
     private String foreignString;
     private String key;
-    private TranslatedString(){        
+    private TranslatedString(){
     }
-    public TranslatedString(String key) {        
+    public TranslatedString(String key) {
         this.key = key;
-        foreignString =Controller.getInstance().getResourceString(key);
+        foreignString =Resources.getInstance().getResourceString(key);
     }
     static public TranslatedString literal(String literal){
         TranslatedString result = new TranslatedString();
@@ -32,7 +33,7 @@ public class TranslatedString{
         }
         return key.equals(o);
     }
-    
+
     public String toString(){
         return foreignString;
     }

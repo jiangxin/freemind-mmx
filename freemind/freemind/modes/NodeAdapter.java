@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.10.2.4.2.2 2005-07-12 15:41:15 dpolivaev Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.10.2.4.2.3 2005-07-16 17:23:24 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -51,6 +51,7 @@ import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.attributes.PersistentAttributeTableModel;
@@ -146,7 +147,8 @@ public abstract class NodeAdapter implements MindMapNode {
      * @param map
      */
     public void setMap(MindMap map) {
-        this.map = map;        
+        this.map = map; 
+        map.getRegistry().registrySubtree(this);
     }
     /**
      *
@@ -1081,7 +1083,8 @@ public abstract class NodeAdapter implements MindMapNode {
 	}	   
     
     public boolean isVisible() {
-        return Controller.getInstance().getFilterController().getFilter().isVisible(this);
+        Filter filter = getMap().getFilter();
+        return filter == null || filter.isVisible(this);
     }
     
     public PersistentAttributeTableModel getAttributes(){

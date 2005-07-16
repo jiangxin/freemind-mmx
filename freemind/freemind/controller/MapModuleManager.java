@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.3.2.1 2005-05-26 16:43:26 dpolivaev Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.3.2.1.2.1 2005-07-16 17:23:23 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -174,7 +174,7 @@ import freemind.view.mindmapview.MapView;
 			c.obtainFocusForSelected();
 			c.getModeController().startupController();
 			c.getModeController().setVisible(true);
-			c.getFilterController().mapChanged(mapModule.getModel());
+			fireMapChanged(mapModule);
 		} else {
 			c.getFrame().setView(null);
 
@@ -183,6 +183,10 @@ import freemind.view.mindmapview.MapView;
 
 
         //private
+
+        private void fireMapChanged(MapModule mapModule) {
+        c.mapChanged(mapModule.getModel());
+    }
 
         private void addToMapModules(String key, MapModule newMapModule) {
             // begin bug fix, 20.12.2003, fc.
