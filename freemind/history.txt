@@ -309,6 +309,9 @@ RC 5:
 RC 6:
 -----
 * Added option for amount of undo steps.
+* set image by file chooser corrected (undoable).
+* html export (variant with map picture) corrected and enhanced by notes and embedded images.
+* Unused method removed from MapModel.
 
 Changes made in Freemind 0.7.2:
 ===============================
