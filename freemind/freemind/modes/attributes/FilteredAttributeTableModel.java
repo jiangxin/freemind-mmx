@@ -8,6 +8,8 @@ import java.util.Vector;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import freemind.modes.MindMap;
@@ -17,14 +19,15 @@ import freemind.modes.MindMapNode;
  * @author Dimitri Polivaev
  * 10.07.2005
  */
-public class FilteredAttributeTableModel extends AttributeTableModelAdapter implements AttributeTableModel, ChangeListener{
+public class FilteredAttributeTableModel extends AbstractTableModel implements AttributeTableModel, ChangeListener, TableModelListener{
     private AttributeTableModel concreteModel;
     private AttributeRegistryTableModel registryTable;
     private Vector index = null;
     private int visibleRowCount;
     public FilteredAttributeTableModel(AttributeTableModel model, AttributeRegistryTableModel registryTable) {
         super();
-        this.concreteModel = model;
+        model.addTableModelListener(this);
+        this.concreteModel = model;        
         this.registryTable = registryTable;
         stateChanged(null);
         registryTable.addChangeListener(this);
@@ -98,5 +101,17 @@ public class FilteredAttributeTableModel extends AttributeTableModelAdapter impl
     }
     public AttributeRegistryTableModel getRegistryTable() {
         return registryTable;
+    }
+    public Class getColumnClass(int columnIndex) {
+        return concreteModel.getColumnClass(columnIndex);
+    }
+    public String getColumnName(int columnIndex) {
+        return concreteModel.getColumnName(columnIndex);
+    }
+    /* (non-Javadoc)
+     * @see javax.swing.event.TableModelListener#tableChanged(javax.swing.event.TableModelEvent)
+     */
+    public void tableChanged(TableModelEvent e) {
+        fireTableDataChanged();        
     }
 }

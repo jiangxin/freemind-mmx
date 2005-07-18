@@ -75,10 +75,12 @@ public class AttributeTable extends JTable {
     static private MyFocusListener focusListener = new MyFocusListener();
     static private MouseListener componentListener = new HeaderMouseListener();
     private AttributeTableModel currentModel;
+    private int highRowIndex = 0;
     static private JComboBox comboBox = null; 
     static private ComboBoxModel defaultModel = null; 
     static private DefaultCellEditor dce = null;
     private NodeView node;
+    private static final int EXTRA_HEIGHT = 3;
     public AttributeTable(NodeView node) {
         super();
         this.node = node;
@@ -90,6 +92,8 @@ public class AttributeTable extends JTable {
         getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setAutoResizeMode(AUTO_RESIZE_OFF);
         getTableHeader().setReorderingAllowed(false);
+        int h = getRowHeight();
+        setRowHeight(highRowIndex, h + EXTRA_HEIGHT);
     }
 
     /**
@@ -157,5 +161,24 @@ public class AttributeTable extends JTable {
             defaultModel = new DefaultComboBoxModel();
          }
         return defaultModel;
+    }
+    public void changeSelection(int rowIndex, int columnIndex, boolean toggle,
+            boolean extend) {
+        changeSelectedRowHeight(rowIndex);
+        super.changeSelection(rowIndex, columnIndex, toggle, extend);        
+    }
+    private void changeSelectedRowHeight(int rowIndex) {
+        if(highRowIndex != rowIndex){
+            int h = getRowHeight(highRowIndex);
+            setRowHeight(highRowIndex, h - EXTRA_HEIGHT);
+            h = getRowHeight(rowIndex);
+            setRowHeight(rowIndex, h + EXTRA_HEIGHT);
+            highRowIndex = rowIndex;
+        }
+    }
+
+    public void clearSelection() {
+        changeSelectedRowHeight(0);
+        super.clearSelection();
     }
 }

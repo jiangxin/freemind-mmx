@@ -4,6 +4,7 @@
  */
 package freemind.modes.attributes;
 
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
@@ -14,7 +15,7 @@ import freemind.modes.MindMapNode;
  * @author Dimitri Polivaev
  * 18.06.2005
  */
-public class ExtendedAttributeTableModel  extends AttributeTableModelAdapter implements AttributeTableModel{
+public class ExtendedAttributeTableModel   implements AttributeTableModel{
     private AttributeTableModel concreteModel;
     public ExtendedAttributeTableModel(AttributeTableModel model) {
         super();
@@ -34,7 +35,6 @@ public class ExtendedAttributeTableModel  extends AttributeTableModelAdapter imp
     }
     public void insertRow(int index, Attribute newAttribute) {
         concreteModel.insertRow(index, newAttribute);
-        fireTableRowsInserted(index, index);
     }
     public boolean isCellEditable(int row, int col) {
         if (col == 0)
@@ -52,11 +52,9 @@ public class ExtendedAttributeTableModel  extends AttributeTableModelAdapter imp
         if(row < concreteModel.getRowCount()){
             if(col == 1 || o.toString().length() > 0){
                 concreteModel.setValueAt(o, row, col);
-            	fireTableCellUpdated(row,col);
             }
             else{
                 concreteModel.removeRow(row);
-                fireTableRowsDeleted(row, row);
             }
             return;
         }
@@ -66,7 +64,6 @@ public class ExtendedAttributeTableModel  extends AttributeTableModelAdapter imp
     }
     public void addRow(Attribute attr) {
         concreteModel.addRow(attr);
-        fireTableRowsInserted(concreteModel.getRowCount(), concreteModel.getRowCount());
     }
     public MindMapNode getNode() {
         return concreteModel.getNode();
@@ -75,4 +72,16 @@ public class ExtendedAttributeTableModel  extends AttributeTableModelAdapter imp
         return concreteModel.toString();
     }
     
+    public void addTableModelListener(TableModelListener l) {
+        concreteModel.addTableModelListener(l);
+    }
+    public void removeTableModelListener(TableModelListener l) {
+        concreteModel.removeTableModelListener(l);
+    }
+    public Class getColumnClass(int columnIndex) {
+        return concreteModel.getColumnClass(columnIndex);
+    }
+    public String getColumnName(int columnIndex) {
+        return concreteModel.getColumnName(columnIndex);
+    }
 }

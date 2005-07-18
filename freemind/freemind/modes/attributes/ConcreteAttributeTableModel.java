@@ -7,6 +7,7 @@ package freemind.modes.attributes;
 import java.util.Vector;
 
 import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
@@ -16,7 +17,7 @@ import freemind.modes.XMLElementAdapter;
  * @author Dimitri Polivaev
  * 18.06.2005
  */
-public class ConcreteAttributeTableModel implements PersistentAttributeTableModel {
+public class ConcreteAttributeTableModel extends AbstractTableModel implements PersistentAttributeTableModel {
     private MindMapNode node;
     private Vector attributes;
     private static final int CAPACITY_INCREMENT = 10;
@@ -64,18 +65,22 @@ public class ConcreteAttributeTableModel implements PersistentAttributeTableMode
             break;
         }
         node.getMap().getRegistry().addAttribute(attr);
+        fireTableCellUpdated(row, col);
     }
     
     public void insertRow(int index, Attribute newAttribute) {
         attributes.add(index, newAttribute);
+        fireTableRowsInserted(index, index);
     }
     public void addRow(Attribute newAttribute) {
         int index = getRowCount();
         attributes.add(newAttribute);
         node.getMap().getRegistry().addAttribute(newAttribute);
+        fireTableRowsInserted(index, index);
     }
     public Object removeRow(int index) {
         Object o = attributes.remove(index);
+        fireTableRowsDeleted(index, index);
         return o;
     }
     public void  save(XMLElement node) {
@@ -107,20 +112,6 @@ public class ConcreteAttributeTableModel implements PersistentAttributeTableMode
     }
 
     /* (non-Javadoc)
-     * @see javax.swing.table.TableModel#getColumnName(int)
-     */
-    public String getColumnName(int arg0) {
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.swing.table.TableModel#getColumnClass(int)
-     */
-    public Class getColumnClass(int arg0) {
-        return null;
-    }
-
-    /* (non-Javadoc)
      * @see javax.swing.table.TableModel#isCellEditable(int, int)
      */
     public boolean isCellEditable(int arg0, int arg1) {
@@ -140,6 +131,17 @@ public class ConcreteAttributeTableModel implements PersistentAttributeTableMode
     }
 
     /* (non-Javadoc)
-     * @see freemind.modes.attributes.PersistentAttributeTableModel#findAttribute(java.lang.String)
+     * @see javax.swing.table.TableModel#getColumnName(int)
      */
-}
+    public String getColumnName(int col) {
+        return "";
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.table.TableModel#getColumnClass(int)
+     */
+    public Class getColumnClass(int col) {
+        return Object.class;
+    }
+
+ }
