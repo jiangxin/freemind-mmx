@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.29 2005-07-02 23:19:38 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.30 2005-07-18 20:43:35 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -1242,6 +1242,7 @@ public abstract class ControllerAdapter implements ModeController {
                 }
 
                 try {
+                	// FIXME: Is this used?????
                    if (picturesAmongSelecteds) {
                       for (ListIterator e = getSelecteds().listIterator();e.hasNext();) {
                          MindMapNode node = (MindMapNode)e.next();
@@ -1250,9 +1251,9 @@ public abstract class ControllerAdapter implements ModeController {
                             String relative = Tools.isAbsolutePath(possiblyRelative) ?
                                new File(possiblyRelative).toURL().toString() : possiblyRelative;
                             if (relative != null) {
-                               String strText = "<html><img src=\"" + relative + "\">"; 
-                               node.setLink(null);
-                               getModel().changeNode(node,strText);
+                               String strText = "<html><img src=\"" + relative + "\">";
+                               setLink(node, null);
+                               setNodeText(node, strText);
                             }
                          }
                       }
@@ -1261,7 +1262,7 @@ public abstract class ControllerAdapter implements ModeController {
                       String relative = getLinkByFileChooser(filter);
                       if (relative != null) {
                          String strText = "<html><img src=\"" + relative + "\">"; 
-                         getModel().changeNode((MindMapNode)getSelected(),strText);
+                         setNodeText((MindMapNode)getSelected(),strText);
                       } 
                    }
                 }

@@ -73,7 +73,7 @@ public class NodeNote extends PermanentNodeHookAdapter {
 	public void onReceiveFocusHook() {
 		super.onReceiveFocusHook();
 		if(text==null) {
-			logger.info("Text ctrl. set for node "+getNode()+" as "+getMyNodeText());
+			logger.fine("Text ctrl. set for node "+getNode()+" as "+getMyNodeText());
 			// panel:
 			FreeMindMain frame = getController().getFrame();
 	
