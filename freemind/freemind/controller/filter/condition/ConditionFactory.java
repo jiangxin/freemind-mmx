@@ -10,7 +10,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import freemind.controller.Controller;
 import freemind.controller.filter.util.TranslatedString;
 import freemind.main.Resources;
 

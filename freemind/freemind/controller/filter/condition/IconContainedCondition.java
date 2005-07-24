@@ -7,19 +7,13 @@
 package freemind.controller.filter.condition;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Vector;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 
-import freemind.controller.Controller;
-import freemind.controller.filter.FilterController;
 import freemind.main.Resources;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;

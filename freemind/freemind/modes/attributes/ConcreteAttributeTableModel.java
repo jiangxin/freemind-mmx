@@ -17,7 +17,7 @@ import freemind.modes.XMLElementAdapter;
  * @author Dimitri Polivaev
  * 18.06.2005
  */
-public class ConcreteAttributeTableModel extends AbstractTableModel implements PersistentAttributeTableModel {
+public class ConcreteAttributeTableModel extends AbstractTableModel implements AttributeTableModel{
     private MindMapNode node;
     private Vector attributes;
     private static final int CAPACITY_INCREMENT = 10;

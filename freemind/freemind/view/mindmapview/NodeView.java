@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.3 2005-07-16 17:23:24 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.4 2005-07-24 10:20:23 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -64,9 +64,9 @@ import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.attributes.AttributeRegistryTableModel;
 import freemind.modes.attributes.AttributeTableModel;
+import freemind.modes.attributes.ConcreteAttributeTableModel;
 import freemind.modes.attributes.ExtendedAttributeTableModel;
 import freemind.modes.attributes.FilteredAttributeTableModel;
-import freemind.modes.attributes.PersistentAttributeTableModel;
 import freemind.preferences.FreemindPropertyListener;
 
 
@@ -171,7 +171,7 @@ public abstract class NodeView extends JComponent  {
     mainView = new JLabel();
     mainView.setHorizontalAlignment(JLabel.CENTER);
     add(mainView);
-    PersistentAttributeTableModel attributes = model.getAttributes();
+    ConcreteAttributeTableModel attributes = model.getAttributes();
     AttributeRegistryTableModel registryTable = model.getMap().getRegistry().getAttributes();
     filteredAttributeTableModel = new FilteredAttributeTableModel(attributes, registryTable);
     currentAttributeTableModel = filteredAttributeTableModel;

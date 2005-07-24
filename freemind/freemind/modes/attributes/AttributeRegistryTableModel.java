@@ -5,14 +5,11 @@
 package freemind.modes.attributes;
 
 import java.util.NoSuchElementException;
-import java.util.Vector;
 
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ListDataListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
@@ -21,7 +18,6 @@ import freemind.controller.filter.util.SortedListModel;
 import freemind.controller.filter.util.SortedMapVector;
 import freemind.main.Resources;
 import freemind.modes.MapRegistry;
-import freemind.modes.MindMapNode;
 
 /**
  * @author Dimitri Polivaev

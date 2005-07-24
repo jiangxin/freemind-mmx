@@ -7,17 +7,10 @@
 package freemind.controller.filter;
 
 import javax.swing.AbstractButton;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JToolBar;
-import javax.swing.ListCellRenderer;
 
 import freemind.controller.Controller;
 import freemind.controller.filter.condition.ConditionFactory;
 import freemind.controller.filter.condition.ConditionRenderer;
-import freemind.main.FreeMindMain;
-import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 
 /**

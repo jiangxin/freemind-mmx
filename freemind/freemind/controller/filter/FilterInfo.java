@@ -4,7 +4,6 @@
  */
 package freemind.controller.filter;
 
-import freemind.modes.MindMapNode;
 
 /**
  * @author dimitri

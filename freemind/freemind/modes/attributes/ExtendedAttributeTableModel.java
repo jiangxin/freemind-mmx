@@ -5,10 +5,7 @@
 package freemind.modes.attributes;
 
 import javax.swing.event.TableModelListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
-import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 
 /**

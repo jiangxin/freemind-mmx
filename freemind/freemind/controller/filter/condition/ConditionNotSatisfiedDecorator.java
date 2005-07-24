@@ -5,15 +5,11 @@
 package freemind.controller.filter.condition;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-
-import freemind.controller.Controller;
 import freemind.main.Resources;
 import freemind.modes.MindMapNode;
 

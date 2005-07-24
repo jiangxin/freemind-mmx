@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNode.java,v 1.15.18.10.2.4.2.3 2005-07-16 17:23:24 dpolivaev Exp $*/
+/*$Id: MindMapNode.java,v 1.15.18.10.2.4.2.4 2005-07-24 10:20:22 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -42,7 +42,7 @@ import freemind.controller.filter.FilterInfo;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.XMLElement;
-import freemind.modes.attributes.PersistentAttributeTableModel;
+import freemind.modes.attributes.ConcreteAttributeTableModel;
 import freemind.view.mindmapview.NodeView;
 
 public interface MindMapNode extends MutableTreeNode {
@@ -233,5 +233,5 @@ public interface MindMapNode extends MutableTreeNode {
      */
     MindMap getMap();
     
-    PersistentAttributeTableModel getAttributes();
+    ConcreteAttributeTableModel getAttributes();
 }

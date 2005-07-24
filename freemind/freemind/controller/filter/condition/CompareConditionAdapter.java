@@ -4,7 +4,6 @@
  */
 package freemind.controller.filter.condition;
 
-import freemind.modes.MindMapNode;
 
 
 abstract class CompareConditionAdapter extends NodeCondition{

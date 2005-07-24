@@ -5,10 +5,7 @@
 package freemind.view.mindmapview;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
@@ -23,15 +20,10 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ChangeEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 
 import freemind.modes.attributes.AttributeTableModel;
-import freemind.modes.attributes.PersistentAttributeTableModel;
-import freemind.modes.attributes.ExtendedAttributeTableModel;
-import freemind.modes.attributes.FilteredAttributeTableModel;
 
 /**
  * @author dimitri

@@ -14,7 +14,6 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 
-import freemind.controller.Controller;
 import freemind.main.Resources;
 import freemind.modes.MapRegistry;
 import freemind.modes.MindMap;

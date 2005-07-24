@@ -4,9 +4,6 @@
  */
 package freemind.modes.attributes;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-
 import freemind.controller.filter.util.SortedComboBoxModel;
 
 /**

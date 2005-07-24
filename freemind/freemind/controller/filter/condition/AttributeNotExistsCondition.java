@@ -5,7 +5,7 @@
 package freemind.controller.filter.condition;
 
 import freemind.modes.MindMapNode;
-import freemind.modes.attributes.PersistentAttributeTableModel;
+import freemind.modes.attributes.AttributeTableModel;
 
 /**
  * @author Dimitri Polivaev
@@ -28,7 +28,7 @@ private String attribute;
      * @see freemind.controller.filter.condition.Condition#checkNode(freemind.modes.MindMapNode)
      */
     public boolean checkNode(MindMapNode node) {
-        PersistentAttributeTableModel attributes = node.getAttributes();
+        AttributeTableModel attributes = node.getAttributes();
         for(int i = 0; i < attributes.getRowCount(); i++){
             if (attributes.getValueAt(i, 0).equals(attribute))
                 return false;

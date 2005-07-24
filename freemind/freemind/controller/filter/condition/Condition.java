@@ -6,8 +6,6 @@
  */
 package freemind.controller.filter.condition;
 
-import java.awt.Component;
-
 import javax.swing.JComponent;
 
 import freemind.modes.MindMapNode;

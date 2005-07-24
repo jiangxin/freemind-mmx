@@ -5,18 +5,11 @@
 package freemind.controller.filter.condition;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-
-import freemind.controller.Controller;
 import freemind.main.Resources;
 import freemind.modes.MindMapNode;
 

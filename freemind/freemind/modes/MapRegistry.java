@@ -15,7 +15,7 @@ import freemind.controller.filter.util.SortedMapListModel;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistryElement;
 import freemind.modes.attributes.AttributeRegistryTableModel;
-import freemind.modes.attributes.PersistentAttributeTableModel;
+import freemind.modes.attributes.ConcreteAttributeTableModel;
 
 /**
  * @author dimitri
@@ -68,7 +68,7 @@ public class MapRegistry {
     }
 
     private void registryAttributes(MindMapNode node) {
-        PersistentAttributeTableModel model = node.getAttributes();
+        ConcreteAttributeTableModel model = node.getAttributes();
         for (int i = 0; i < model.getRowCount(); i++){
             attributes.registry(model.getAttribute(i));
         }
