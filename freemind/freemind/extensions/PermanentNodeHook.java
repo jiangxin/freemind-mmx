@@ -52,8 +52,9 @@ public interface PermanentNodeHook extends NodeHook {
     /** This method is called, if a child is removed to me or to any of my children.
      *  (See onUpdateChildrenHook)
      * @param oldChildNode
+     * @param oldDad TODO
      */
-	void onRemoveChildren(MindMapNode oldChildNode);
+	void onRemoveChildren(MindMapNode oldChildNode, MindMapNode oldDad);
 	
 	/**
 	 * If any of my children is updated, I get this notification.

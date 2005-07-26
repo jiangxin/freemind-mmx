@@ -312,6 +312,8 @@ RC 6:
 * set image by file chooser corrected (undoable).
 * html export (variant with map picture) corrected and enhanced by notes and embedded images.
 * Unused method removed from MapModel.
+* Bug fix: Hierarchical Icons with "cut", "delete" and "undo add icon".
+* Actions are disabled if no map is open.
 
 Changes made in Freemind 0.7.2:
 ===============================

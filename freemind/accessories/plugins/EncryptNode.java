@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EncryptNode.java,v 1.1.2.6 2005-04-20 16:52:20 christianfoltin Exp $*/
+/*$Id: EncryptNode.java,v 1.1.2.7 2005-07-26 20:52:34 christianfoltin Exp $*/
 
 /*
  * Created on 14.12.2004
@@ -57,7 +57,8 @@ public class EncryptNode extends NodeHookAdapter {
         private final ModeController controller;
         private final MindMap mMap;
         private final java.util.logging.Logger logger;
-
+        private boolean enabled = false;
+        
         public Registration(ModeController controller, MindMap map) {
             this.controller = controller;
             mMap = map;
@@ -65,15 +66,24 @@ public class EncryptNode extends NodeHookAdapter {
         }
 
 		public void register() {
+            enabled = true;
 		}
 
 		public void deRegister() {
+            enabled = false;
 		}
 
 		/* (non-Javadoc)
 		 * @see freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem, javax.swing.Action)
 		 */
 		public boolean isEnabled(JMenuItem item, Action action) {
+		    String hookName = ((NodeHookAction)action).getHookName();
+            // the following function does not work without a running valid controller, so we comment it out.
+//            if(hookName.equals("accessories/plugins/NewEncryptedMap.properties")) {
+//                return true;
+//            }   
+            if(!enabled)
+                return false;
 			boolean isEncryptedNode = false;
 			boolean isOpened = false;
 			if(controller.getSelected() != null && controller.getSelected() instanceof EncryptedMindMapNode) {
@@ -81,13 +91,12 @@ public class EncryptNode extends NodeHookAdapter {
 			    EncryptedMindMapNode enode = (EncryptedMindMapNode) controller.getSelected() ;
 				isOpened = enode.isVisible();
 			}
-			String hookName = ((NodeHookAction)action).getHookName();
 			if (hookName.equals("accessories/plugins/EnterPassword.properties")) {
 				return isEncryptedNode;
 			} else {
 			    /* you can insert an encrypted node, if the current selected node is 
 			     * not encrypted, or if it is opened. */ 
-				return !isEncryptedNode || isOpened ;
+				return (!isEncryptedNode || isOpened) ;
 			}
 		}
     }

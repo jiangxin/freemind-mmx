@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.30 2005-07-18 20:43:35 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.31 2005-07-26 20:52:34 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -852,6 +852,11 @@ public abstract class ControllerAdapter implements ModeController {
         edgeColor.setEnabled(enabled);
         removeLastIconAction.setEnabled(enabled);
         removeAllIconsAction.setEnabled(enabled);
+        selectAllAction.setEnabled(enabled);
+        selectBranchAction.setEnabled(enabled);
+        removeNodeBackgroundColor.setEnabled(enabled);
+        moveNodeAction.setEnabled(enabled);
+        revertAction.setEnabled(enabled);
         for (int i=0; i<edgeWidths.length; ++i) { 
             edgeWidths[i].setEnabled(enabled);
         }
