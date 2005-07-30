@@ -8,10 +8,11 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 
 import freemind.main.Resources;
@@ -92,16 +93,22 @@ public class AttributeDialog extends JDialog {
         JScrollPane scrollPane = new JScrollPane(view);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
 
-        final JToolBar buttons = new JToolBar();
+        final Box buttons = Box.createHorizontalBox();
 
-        buttons.setOrientation(JToolBar.HORIZONTAL);
-        buttons.setFloatable(false);
         getContentPane().add(buttons, BorderLayout.SOUTH);
-
-        buttons.add(new OKAction());
-        buttons.add(new ApplyAction());
-        buttons.add(new CloseAction());
-        buttons.add(new RefreshAction());
+        buttons.add(Box.createHorizontalGlue());
+        JButton ok = new JButton(new OKAction());
+        buttons.add(ok);
+        buttons.add(Box.createHorizontalGlue());
+        JButton apply = new JButton(new ApplyAction());
+        buttons.add(apply);
+        buttons.add(Box.createHorizontalGlue());
+        JButton close = new JButton(new CloseAction());
+        buttons.add(close);
+        buttons.add(Box.createHorizontalGlue());
+        JButton refresh = new JButton(new RefreshAction());
+        buttons.add(refresh);
+        buttons.add(Box.createHorizontalGlue());
 
     }
     public void mapChanged(MindMap map){

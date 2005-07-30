@@ -14,6 +14,10 @@ import freemind.modes.MindMapNode;
  */
 public interface AttributeTableModel extends TableModel{
     int getRowCount();
+    
+    int getColumnWidth(int col);
+    
+    void setColumnWidth(int col, int width);
 
     Object getValueAt(int row, int col);
 

@@ -53,13 +53,19 @@ public class AttributeTable extends JTable {
     static private class HeaderMouseListener extends MouseAdapter{
         public void mouseReleased(MouseEvent e) {
             JTableHeader header = (JTableHeader)e.getSource();
-            JTable table = header.getTable();
+            AttributeTable table = (AttributeTable) header.getTable();
             Dimension preferredScrollableViewportSize = table.getPreferredScrollableViewportSize();
             JViewport port = (JViewport)table.getParent();
             Dimension extentSize = port.getExtentSize();
             if(preferredScrollableViewportSize.width !=extentSize.width){
-                JComponent map = (JComponent)port.getParent().getParent().getParent();
-                map.revalidate();
+                AttributeTableModel model = (AttributeTableModel)table.getModel();
+                for(int col = 0; col < table.getColumnCount(); col++){
+                    int modelColumnWidth = model.getColumnWidth(col);
+                    int currentColumnWidth = table.getColumnModel().getColumn(col).getWidth();
+                    if(modelColumnWidth != currentColumnWidth){
+                        model.setColumnWidth(col, currentColumnWidth);
+                    }
+                }
             }
         }
     }
@@ -69,7 +75,7 @@ public class AttributeTable extends JTable {
     private AttributeTableModel currentModel;
     private int highRowIndex = 0;
     static private JComboBox comboBox = null; 
-    static private ComboBoxModel defaultModel = null; 
+    static private ComboBoxModel defaultComboBoxModel = null; 
     static private DefaultCellEditor dce = null;
     private NodeView node;
     private static final int EXTRA_HEIGHT = 3;
@@ -80,6 +86,10 @@ public class AttributeTable extends JTable {
         getTableHeader().addMouseListener(componentListener);
         currentModel = node.getCurrentAttributeTableModel();
         setModel(currentModel);
+        for(int i = 0; i < 2; i++){
+            int width = currentModel.getColumnWidth(i);
+            getColumnModel().getColumn(i).setPreferredWidth(width);            
+        }
         setDefaultEditor(Object.class, getDCE());
         getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setAutoResizeMode(AUTO_RESIZE_OFF);
@@ -115,7 +125,7 @@ public class AttributeTable extends JTable {
             model = currentModel.getNode().getMap().getRegistry().getAttributes().getDefaultComboBoxModel(attrName);
             break;
         default:
-            model = getDefaultModel();
+            model = getDefaultComboBoxModel();
         }
         model.setSelectedItem("");
         if(selectedTable != this)
@@ -147,12 +157,12 @@ public class AttributeTable extends JTable {
         }
         return dce;
     }
-    public static ComboBoxModel getDefaultModel() {
-        if (defaultModel == null)
+    public static ComboBoxModel getDefaultComboBoxModel() {
+        if (defaultComboBoxModel == null)
         {
-            defaultModel = new DefaultComboBoxModel();
+            defaultComboBoxModel = new DefaultComboBoxModel();
          }
-        return defaultModel;
+        return defaultComboBoxModel;
     }
     public void changeSelection(int rowIndex, int columnIndex, boolean toggle,
             boolean extend) {

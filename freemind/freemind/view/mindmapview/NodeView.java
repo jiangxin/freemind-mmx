@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.4 2005-07-24 10:20:23 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.5 2005-07-30 17:07:11 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -44,13 +44,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
@@ -63,10 +63,13 @@ import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.attributes.AttributeRegistryTableModel;
+import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.AttributeTableModel;
+import freemind.modes.attributes.ColumnWidthChangeEvent;
+import freemind.modes.attributes.ColumnWidthChangeListener;
 import freemind.modes.attributes.ConcreteAttributeTableModel;
 import freemind.modes.attributes.ExtendedAttributeTableModel;
-import freemind.modes.attributes.FilteredAttributeTableModel;
+import freemind.modes.attributes.SelectedAttributeTableModel;
 import freemind.preferences.FreemindPropertyListener;
 
 
@@ -74,7 +77,7 @@ import freemind.preferences.FreemindPropertyListener;
  * This class represents a single Node of a MindMap (in analogy to
  * TreeCellRenderer).
  */
-public abstract class NodeView extends JComponent  {
+public abstract class NodeView extends JComponent implements ChangeListener, ColumnWidthChangeListener {
     
     static private class MyJScrollPane extends JScrollPane{
         
@@ -163,7 +166,7 @@ public abstract class NodeView extends JComponent  {
     
     private static Color standardSelectColor;
     private static Color standardNodeColor;
-    private FilteredAttributeTableModel filteredAttributeTableModel;
+    private SelectedAttributeTableModel filteredAttributeTableModel;
     private AttributeTableModel extendedAttributeTableModel = null;
     private AttributeTableModel currentAttributeTableModel;
     protected NodeView(MindMapNode model, MapView map) {
@@ -173,12 +176,15 @@ public abstract class NodeView extends JComponent  {
     add(mainView);
     ConcreteAttributeTableModel attributes = model.getAttributes();
     AttributeRegistryTableModel registryTable = model.getMap().getRegistry().getAttributes();
-    filteredAttributeTableModel = new FilteredAttributeTableModel(attributes, registryTable);
+    filteredAttributeTableModel = new SelectedAttributeTableModel(attributes, registryTable);
     currentAttributeTableModel = filteredAttributeTableModel;
 
 	this.model = model;
 	setMap(map);
-
+    model.getAttributes().setViewType(attributes.getViewType());
+    setViewType();
+    model.getAttributes().getLayout().addStateChangeListener(this);
+    model.getAttributes().getLayout().addColumnWidthChangeListener(this);
 	// initialize the standard node color.
 	if (standardNodeColor == null) {
         standardNodeColor =
@@ -1244,10 +1250,16 @@ public abstract class NodeView extends JComponent  {
         return extendedAttributeTableModel;
     }
     
-    public void showExtendedAttributes(boolean show){
-        if(show)
+    public void stateChanged(ChangeEvent event){
+        setViewType();
+    }
+    
+    private void setViewType() {
+        String currentViewType = model.getAttributes().getLayout().getViewType(); 
+        if(currentViewType.equals( AttributeTableLayoutModel.SHOW_EXTENDED)){
             currentAttributeTableModel = getExtendedAttributeTableModel();
-        else{
+        }
+        else if(currentViewType.equals( AttributeTableLayoutModel.SHOW_SELECTED)){
             currentAttributeTableModel = filteredAttributeTableModel;
             filteredAttributeTableModel.stateChanged(null);
         }
@@ -1256,13 +1268,19 @@ public abstract class NodeView extends JComponent  {
             invalidate();
         }
     }
-    
-    public boolean areExtendedAttributesShown(){
-        return extendedAttributeTableModel == currentAttributeTableModel;
+    public String getAttributeViewType(){
+        return model.getAttributes().getViewType();           
     }
     
     
     AttributeTableModel getCurrentAttributeTableModel() {
         return currentAttributeTableModel;
+    }
+    public void columnWidthChanged(ColumnWidthChangeEvent event) {
+        int col = event.getColumnNumber();
+        AttributeTableLayoutModel layoutModel = (AttributeTableLayoutModel) event.getSource();
+        int width = layoutModel.getColumnWidth(col);
+        attributeTable.getColumnModel().getColumn(col).setPreferredWidth(width);
+        model.getMap().nodeChanged(model);
     }
 }

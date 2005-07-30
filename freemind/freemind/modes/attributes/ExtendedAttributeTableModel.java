@@ -34,10 +34,12 @@ public class ExtendedAttributeTableModel   implements AttributeTableModel{
         concreteModel.insertRow(index, newAttribute);
     }
     public boolean isCellEditable(int row, int col) {
-        if (col == 0)
-            return true;
-        if (row < concreteModel.getRowCount())
-            return concreteModel.getValueAt(row, 0).toString().length() > 0;
+        if(concreteModel.isCellEditable(row, col)){
+            if (col == 0)
+                return true;
+            if (row < concreteModel.getRowCount())
+                return concreteModel.getValueAt(row, 0).toString().length() > 0;
+        }
         return false;
     }
     
@@ -80,5 +82,11 @@ public class ExtendedAttributeTableModel   implements AttributeTableModel{
     }
     public String getColumnName(int columnIndex) {
         return concreteModel.getColumnName(columnIndex);
+    }
+    public int getColumnWidth(int col) {
+        return concreteModel.getColumnWidth(col);
+    }
+    public void setColumnWidth(int col, int width) {
+        concreteModel.setColumnWidth(col, width);
     }
 }

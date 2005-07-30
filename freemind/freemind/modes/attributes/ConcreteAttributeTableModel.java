@@ -20,10 +20,12 @@ import freemind.modes.XMLElementAdapter;
 public class ConcreteAttributeTableModel extends AbstractTableModel implements AttributeTableModel{
     private MindMapNode node;
     private Vector attributes;
+    private AttributeTableLayoutModel layout;
     private static final int CAPACITY_INCREMENT = 10;
     public ConcreteAttributeTableModel(MindMapNode node, int size) {
         super();
         attributes = new Vector(size, CAPACITY_INCREMENT);
+        layout = new AttributeTableLayoutModel();
         this.node = node;
     }
     
@@ -84,15 +86,47 @@ public class ConcreteAttributeTableModel extends AbstractTableModel implements A
         return o;
     }
     public void  save(XMLElement node) {
+        saveLayout(node);
     	for (int i = 0; i < attributes.size(); i++) {
-            XMLElement attributeElement = new XMLElement();
-            attributeElement.setName(XMLElementAdapter.XML_NODE_ATTRIBUTE);
-            Attribute attr = (Attribute) attributes.get(i);
-            attributeElement.setAttribute("NAME", attr.getName());
-            attributeElement.setAttribute("VALUE", attr.getValue());
-            node.addChild(attributeElement);
+            saveAttribute(node, i);
         }
     }
+    private void saveAttribute(XMLElement node, int i) {
+        XMLElement attributeElement = new XMLElement();
+        attributeElement.setName(XMLElementAdapter.XML_NODE_ATTRIBUTE);
+        Attribute attr = (Attribute) attributes.get(i);
+        attributeElement.setAttribute("NAME", attr.getName());
+        attributeElement.setAttribute("VALUE", attr.getValue());
+        node.addChild(attributeElement);
+    }
+
+    private void saveLayout(XMLElement node) {
+        XMLElement attributeElement = null;
+        if(! layout.getViewType().equals(AttributeTableLayoutModel.SHOW_SELECTED)){
+            attributeElement = initializeNodeAttributeLayoutXMLElement(attributeElement);
+            attributeElement.setAttribute("VIEWTYPE", layout.getViewType());
+        }
+        if(layout.getColumnWidth(0)!= AttributeTableLayoutModel.DEFAULT_COLUMN_WIDTH){
+            attributeElement = initializeNodeAttributeLayoutXMLElement(attributeElement);
+            attributeElement.setIntAttribute("NAME_WIDTH", getColumnWidth(0));
+        }
+        if(layout.getColumnWidth(1)!= AttributeTableLayoutModel.DEFAULT_COLUMN_WIDTH){
+            attributeElement = initializeNodeAttributeLayoutXMLElement(attributeElement);
+            attributeElement.setIntAttribute("VALUE_WIDTH", layout.getColumnWidth(1));
+        }
+        if(attributeElement != null){
+            node.addChild(attributeElement);
+        }
+   }
+
+    private XMLElement initializeNodeAttributeLayoutXMLElement(XMLElement attributeElement) {
+        if(attributeElement == null){
+            attributeElement = new XMLElement();
+            attributeElement.setName(XMLElementAdapter.XML_NODE_ATTRIBUTE_LAYOUT);
+        }
+        return attributeElement;
+    }
+
     public MindMapNode getNode() {
         return node;
     }
@@ -115,7 +149,7 @@ public class ConcreteAttributeTableModel extends AbstractTableModel implements A
      * @see javax.swing.table.TableModel#isCellEditable(int, int)
      */
     public boolean isCellEditable(int arg0, int arg1) {
-        return false;
+        return ! node.getMap().isReadOnly();
     }
 
     /* (non-Javadoc)
@@ -144,4 +178,20 @@ public class ConcreteAttributeTableModel extends AbstractTableModel implements A
         return Object.class;
     }
 
+    public int getColumnWidth(int col) {
+        return layout.getColumnWidth(col);
+    }
+    public void setColumnWidth(int col, int width) {
+        layout.setColumnWidth(col, width);
+    }
+       
+    public String getViewType() {
+        return layout.getViewType();
+    }
+    public void setViewType(String viewType) {
+        layout.setViewType(viewType);
+    }
+    public AttributeTableLayoutModel getLayout() {
+        return layout;
+    }
  }

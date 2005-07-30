@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.2 2005-07-12 15:41:16 dpolivaev Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.3 2005-07-30 17:07:11 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -31,6 +31,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.attributes.Attribute;
+import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.mindmapmode.EncryptedMindMapNode;
 
 public abstract class XMLElementAdapter extends XMLElement {
@@ -60,6 +61,7 @@ public abstract class XMLElementAdapter extends XMLElement {
     public static final String XML_NODE_TEXT = "TEXT";
     public static final String XML_NODE = "node";
     public static final String XML_NODE_ATTRIBUTE = "attribute";
+    public static final String XML_NODE_ATTRIBUTE_LAYOUT = "attrlayout";
     //public static final String XML_NODE_CLASS_PREFIX = XML_NODE+"_";
     public static final String XML_NODE_CLASS = "AA_NODE_CLASS";
     public static final String XML_NODE_ADDITIONAL_INFO = "ADDITIONAL_INFO";
@@ -72,6 +74,12 @@ public abstract class XMLElementAdapter extends XMLElement {
     private String attributeName;
 
     private String attributeValue;
+
+    private String attributeViewType = AttributeTableLayoutModel.SHOW_SELECTED;
+
+    private int attributeNameWidth = AttributeTableLayoutModel.DEFAULT_COLUMN_WIDTH;
+
+    private int attributeValueWidth = AttributeTableLayoutModel.DEFAULT_COLUMN_WIDTH;
 
    //   Overhead methods
 
@@ -124,6 +132,8 @@ public abstract class XMLElementAdapter extends XMLElement {
 			userObject = null;
 		}  else if (name.equals(XML_NODE_ATTRIBUTE)) {
 			userObject = null;
+		}  else if (name.equals(XML_NODE_ATTRIBUTE_LAYOUT)) {
+			userObject = null;
 		} else if (name.equals("map")) {
 			userObject = null;
 		} else if (name.equals("icon")) {
@@ -170,6 +180,12 @@ public abstract class XMLElementAdapter extends XMLElement {
              node.setFont((Font)child.getUserObject()); }
          else if (child.getName().equals(XML_NODE_ATTRIBUTE)) {
              node.getAttributes().addRow((Attribute)child.getUserObject()); }
+         else if (child.getName().equals(XML_NODE_ATTRIBUTE_LAYOUT)) {
+             AttributeTableLayoutModel layout = node.getAttributes().getLayout();
+             layout.setViewType(((XMLElementAdapter)child).attributeViewType);
+             layout.setColumnWidth(0, ((XMLElementAdapter)child).attributeNameWidth);
+             layout.setColumnWidth(1, ((XMLElementAdapter)child).attributeValueWidth);
+             }
           else if (child.getName().equals("icon")) {
              node.addIcon((MindIcon)child.getUserObject()); }
          else if (child.getName().equals("hook")) {
@@ -280,11 +296,19 @@ public void setAttribute(String name, Object value) {
             iconName = sValue; } 
       }
       /* attributes */
-      if (getName().equals(XML_NODE_ATTRIBUTE)) {
+      else if (getName().equals(XML_NODE_ATTRIBUTE)) {
           if (name.equals("NAME")) {
               attributeName = sValue; } 
           else if (name.equals("VALUE")) {
               attributeValue = sValue; } 
+       }
+      else if (getName().equals(XML_NODE_ATTRIBUTE_LAYOUT)) {
+          if (name.equals("VIEWTYPE")) {
+              attributeViewType = sValue; } 
+          else if (name.equals("NAME_WIDTH")) {
+              attributeNameWidth = Integer.parseInt(sValue); } 
+          else if (name.equals("VALUE_WIDTH")) {
+              attributeValueWidth = Integer.parseInt(sValue); } 
        }
      
   }

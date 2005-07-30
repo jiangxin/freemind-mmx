@@ -18,12 +18,12 @@ import freemind.modes.MindMapNode;
  * @author Dimitri Polivaev
  * 10.07.2005
  */
-public class FilteredAttributeTableModel extends AbstractTableModel implements AttributeTableModel, ChangeListener, TableModelListener{
+public class SelectedAttributeTableModel extends AbstractTableModel implements AttributeTableModel, ChangeListener, TableModelListener{
     private AttributeTableModel concreteModel;
     private AttributeRegistryTableModel registryTable;
     private Vector index = null;
     private int visibleRowCount;
-    public FilteredAttributeTableModel(AttributeTableModel model, AttributeRegistryTableModel registryTable) {
+    public SelectedAttributeTableModel(AttributeTableModel model, AttributeRegistryTableModel registryTable) {
         super();
         model.addTableModelListener(this);
         this.concreteModel = model;        
@@ -47,7 +47,10 @@ public class FilteredAttributeTableModel extends AbstractTableModel implements A
     }
     
     public boolean isCellEditable(int row, int col) {
-        return col == 1;
+        if(concreteModel.isCellEditable(row, col)){
+            return col == 1;
+        }
+        return false;
     }
 
     private int calcRow(int row){
@@ -112,5 +115,13 @@ public class FilteredAttributeTableModel extends AbstractTableModel implements A
      */
     public void tableChanged(TableModelEvent e) {
         fireTableDataChanged();        
+    }
+    
+    public int getColumnWidth(int col) {
+        return concreteModel.getColumnWidth(col);
+    }
+    
+    public void setColumnWidth(int col, int width) {
+        concreteModel.setColumnWidth(col, width);
     }
 }

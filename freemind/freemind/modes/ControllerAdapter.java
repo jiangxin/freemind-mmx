@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.2 2005-07-12 15:41:15 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.3 2005-07-30 17:07:10 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -136,6 +136,7 @@ import freemind.modes.actions.UnderlinedAction;
 import freemind.modes.actions.UndoAction;
 import freemind.modes.actions.FindAction.FindNextAction;
 import freemind.modes.actions.NodeBackgroundColorAction.RemoveNodeBackgroundColorAction;
+import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
@@ -1704,13 +1705,13 @@ public abstract class ControllerAdapter implements ModeController {
         }
         public void actionPerformed(ActionEvent e) {
             NodeView selectedNodeView = getView().getSelected();
-            if(! selectedNodeView.areExtendedAttributesShown()){
-                selectedNodeView.showExtendedAttributes(true);
+            if(selectedNodeView.getAttributeViewType() != AttributeTableLayoutModel.SHOW_EXTENDED){
+                selectedNodeView.getModel().getAttributes().setViewType(AttributeTableLayoutModel.SHOW_EXTENDED);
             }
             else{
-                selectedNodeView.showExtendedAttributes(false);
+                selectedNodeView.getModel().getAttributes().setViewType(AttributeTableLayoutModel.SHOW_SELECTED);
             }
-            nodeRefresh(selectedNodeView.getModel());
+            nodeChanged(selectedNodeView.getModel());
         }
     }
 
