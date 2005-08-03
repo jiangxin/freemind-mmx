@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21.14.3 2004-10-28 05:24:54 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.14.4 2005-08-03 20:09:26 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -100,6 +100,23 @@ public class MindMapNodeModel extends NodeAdapter {
              previousSpace = spaceOccured; }}
        return result.toString(); };
 
+   public String saveHTML_escapeUnicode(String text) {
+        int len = text.length();
+        StringBuffer result = new StringBuffer(len);
+        int intValue;
+        char myChar;
+        for (int i = 0; i < len; ++i) {
+            myChar = text.charAt(i);
+            intValue = (int) text.charAt(i);
+            if (intValue > 128) {
+                result.append("&#").append(intValue).append(';');
+            } else {
+                result.append(myChar);
+            }
+        }
+        return result.toString();
+    };
+
     public int saveHTML(Writer fileout, String parentID, int lastChildNumber,
                         boolean isRoot, boolean treatAsParagraph, int depth) throws IOException {
         // return lastChildNumber 
@@ -179,7 +196,7 @@ public class MindMapNodeModel extends NodeAdapter {
            String output = this.toString().substring(6); // do not write <html>
            if (output.endsWith("</html>")) {
               output = output.substring(0,output.length()-7); }
-           fileout.write(output); }
+           fileout.write(saveHTML_escapeUnicode(output)); }
         else {
            fileout.write(saveHTML_escapeUnicodeAndSpecialCharacters(toString())); }
 
