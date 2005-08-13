@@ -315,6 +315,7 @@ RC 6:
 * Bug fix: Hierarchical Icons with "cut", "delete" and "undo add icon".
 * Actions are disabled if no map is open.
 * Bug fix: [ 1251054 ] Unicode input and display in HTML.
+* New lithuanian translation. Thanks to oxiris.
 
 Changes made in Freemind 0.7.2:
 ===============================

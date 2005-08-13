@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.15 2005-07-10 19:55:55 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.16 2005-08-13 21:36:46 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -774,7 +774,7 @@ public class OptionPanel {
 
 		"language.tooltip", FreeMind.RESOURCE_LANGUAGE, new String[] {
 				"automatic", "cs", "de", "dk", "en", "es", "fr", "hu", "it",
-				"ja", "kr", "nl", "no", "pl", "pt_BR", "pt_PT", "ru", "sl",
+				"ja", "kr", "lt", "nl", "no", "pl", "pt_BR", "pt_PT", "ru", "sl",
 				"zh", "zh_CN" })); //  automatic
 
 		//INTERNAL PROPERTY.
