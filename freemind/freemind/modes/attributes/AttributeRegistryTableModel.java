@@ -239,6 +239,7 @@ public class AttributeRegistryTableModel extends AbstractTableModel  {
                 visibleElementsNumber--;
                 isVisibilityChanged = true;
             }
+            fireTableCellUpdated(row, col);
         }
     }
     

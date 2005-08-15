@@ -82,7 +82,7 @@ public class AttributeTable extends JTable {
     static private ComboBoxModel defaultComboBoxModel = null; 
     static private DefaultCellEditor dce = null;
     private NodeView node;
-    private static final int EXTRA_HEIGHT = 3;
+    private static final int EXTRA_HEIGHT = 4;
     private static final float TABLE_ROW_HEIGHT = 16;
     public AttributeTable(NodeView node) {
         super();

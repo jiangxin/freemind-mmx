@@ -29,6 +29,36 @@ public class AttributeDialog extends JDialog {
     private MapRegistry registry;
     private AttributeRegistryTableModel model;
 
+    private class SelectAllAction extends AbstractAction{
+        SelectAllAction(){
+            super(Resources.getInstance().getResourceString("attributes_select_all"));
+        }
+        /* (non-Javadoc)
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
+        public void actionPerformed(ActionEvent e) {
+            for(int i = 0; i < model.getRowCount(); i++){
+                model.setValueAt(Boolean.TRUE, i, 1);
+            }
+        }
+
+    }
+
+    private class DeselectAllAction extends AbstractAction{
+        DeselectAllAction(){
+            super(Resources.getInstance().getResourceString("attributes_deselect_all"));
+        }
+        /* (non-Javadoc)
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
+        public void actionPerformed(ActionEvent e) {            
+            for(int i = 0; i < model.getRowCount(); i++){
+                model.setValueAt(Boolean.FALSE, i, 1);
+            }
+        }
+
+    }
+
     private class CloseAction extends AbstractAction{
         CloseAction(){
             super(Resources.getInstance().getResourceString("attributes_close"));
@@ -90,25 +120,36 @@ public class AttributeDialog extends JDialog {
         view.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         view.getTableHeader().setReorderingAllowed(false);
 
+        final Box northButtons = Box.createHorizontalBox();
+
+        getContentPane().add(northButtons, BorderLayout.NORTH);
+        northButtons.add(Box.createHorizontalGlue());
+        JButton selectAll = new JButton(new SelectAllAction());
+        northButtons.add(selectAll);
+        northButtons.add(Box.createHorizontalGlue());
+        JButton deselectAll = new JButton(new DeselectAllAction());
+        northButtons.add(deselectAll);
+        northButtons.add(Box.createHorizontalGlue());
+
         JScrollPane scrollPane = new JScrollPane(view);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
 
-        final Box buttons = Box.createHorizontalBox();
+        final Box southButtons = Box.createHorizontalBox();
 
-        getContentPane().add(buttons, BorderLayout.SOUTH);
-        buttons.add(Box.createHorizontalGlue());
+        getContentPane().add(southButtons, BorderLayout.SOUTH);
+        southButtons.add(Box.createHorizontalGlue());
         JButton ok = new JButton(new OKAction());
-        buttons.add(ok);
-        buttons.add(Box.createHorizontalGlue());
+        southButtons.add(ok);
+        southButtons.add(Box.createHorizontalGlue());
         JButton apply = new JButton(new ApplyAction());
-        buttons.add(apply);
-        buttons.add(Box.createHorizontalGlue());
+        southButtons.add(apply);
+        southButtons.add(Box.createHorizontalGlue());
         JButton close = new JButton(new CloseAction());
-        buttons.add(close);
-        buttons.add(Box.createHorizontalGlue());
+        southButtons.add(close);
+        southButtons.add(Box.createHorizontalGlue());
         JButton refresh = new JButton(new RefreshAction());
-        buttons.add(refresh);
-        buttons.add(Box.createHorizontalGlue());
+        southButtons.add(refresh);
+        southButtons.add(Box.createHorizontalGlue());
 
     }
     public void mapChanged(MindMap map){
