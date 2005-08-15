@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.5 2005-07-30 17:07:11 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.6 2005-08-15 11:20:44 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -1024,13 +1024,23 @@ public abstract class NodeView extends JComponent implements ChangeListener, Col
            setText("<html><table"+
                    (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
                    text+"</table></html>"); }
-   		// 6) ToolTips:
+        // 6) attributeTable
+        updateAttributeTable();
+   		// 7) ToolTips:
         updateToolTip();
-        // 7) Complete
+        // 8) Complete
         revalidate(); // Because of zoom?
     }
     /**
-     * Updates the tool tip of the node.
+     * 
+     */
+     private void updateAttributeTable() {
+         if(attributeTable != null){
+             attributeTable.updateAttributeTable();
+         }
+     }
+     /**
+      * Updates the tool tip of the node.
      */
     public void updateToolTip() {
         Map tooltips = getModel().getToolTip();

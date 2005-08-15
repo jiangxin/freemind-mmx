@@ -6,6 +6,7 @@ package freemind.view.mindmapview;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
@@ -16,7 +17,6 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
@@ -30,6 +30,9 @@ import freemind.modes.attributes.AttributeTableModel;
  * 12.06.2005
  */
 public class AttributeTable extends JTable {
+    private static final int MAX_HEIGTH = 300;
+    private static final int MAX_WIDTH = 600;
+    private static final int TABLE_FONT_SIZE = 12;
     static private AttributeTable selectedTable = null;
     static private class MyFocusListener implements FocusListener{
         /* (non-Javadoc)
@@ -54,6 +57,7 @@ public class AttributeTable extends JTable {
         public void mouseReleased(MouseEvent e) {
             JTableHeader header = (JTableHeader)e.getSource();
             AttributeTable table = (AttributeTable) header.getTable();
+            float zoom = table.node.getMap().getZoom();
             Dimension preferredScrollableViewportSize = table.getPreferredScrollableViewportSize();
             JViewport port = (JViewport)table.getParent();
             Dimension extentSize = port.getExtentSize();
@@ -61,7 +65,7 @@ public class AttributeTable extends JTable {
                 AttributeTableModel model = (AttributeTableModel)table.getModel();
                 for(int col = 0; col < table.getColumnCount(); col++){
                     int modelColumnWidth = model.getColumnWidth(col);
-                    int currentColumnWidth = table.getColumnModel().getColumn(col).getWidth();
+                    int currentColumnWidth = (int) (table.getColumnModel().getColumn(col).getWidth() / zoom);
                     if(modelColumnWidth != currentColumnWidth){
                         model.setColumnWidth(col, currentColumnWidth);
                     }
@@ -79,6 +83,7 @@ public class AttributeTable extends JTable {
     static private DefaultCellEditor dce = null;
     private NodeView node;
     private static final int EXTRA_HEIGHT = 3;
+    private static final float TABLE_ROW_HEIGHT = 16;
     public AttributeTable(NodeView node) {
         super();
         this.node = node;
@@ -86,10 +91,7 @@ public class AttributeTable extends JTable {
         getTableHeader().addMouseListener(componentListener);
         currentModel = node.getCurrentAttributeTableModel();
         setModel(currentModel);
-        for(int i = 0; i < 2; i++){
-            int width = currentModel.getColumnWidth(i);
-            getColumnModel().getColumn(i).setPreferredWidth(width);            
-        }
+        updateAttributeTable();
         setDefaultEditor(Object.class, getDCE());
         getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setAutoResizeMode(AUTO_RESIZE_OFF);
@@ -134,19 +136,19 @@ public class AttributeTable extends JTable {
             selectedTable = this;
         }
         comboBox.setModel(model);
-        return super.prepareEditor(tce, row, col);
+        Component editor = super.prepareEditor(tce, row, col);
+        updateFontSize(editor);
+        return editor;
     }
 
     public Dimension getPreferredScrollableViewportSize() {
         if(! isValid())
             validate();
+        float zoom = node.getMap().getZoom();
         Dimension dimension = super.getPreferredSize();
-        dimension.width = Math.min(600, dimension.width);
-        dimension.height = Math.min(300, dimension.height);
+        dimension.width = Math.min((int)(MAX_WIDTH * zoom) , dimension.width);
+        dimension.height = Math.min((int)(MAX_HEIGTH * zoom) - getTableHeader().getPreferredSize().height, dimension.height);
         return dimension;
-    }
-    public boolean getScrollableTracksViewportWidth() {
-        return false; // getWidth() < 300;
     }
     private static DefaultCellEditor getDCE() {
         if (dce == null)
@@ -182,5 +184,48 @@ public class AttributeTable extends JTable {
     public void clearSelection() {
         changeSelectedRowHeight(0);
         super.clearSelection();
+    }
+
+    /**
+     * 
+     */
+    public void updateAttributeTable() {
+        float zoom = updateFontSize(this);
+        // 2) Determine row heights
+        int constHeight = getTableHeader().getPreferredSize().height + EXTRA_HEIGHT;
+        int rowCount = getRowCount();
+        int newHeight = (int)((zoom * TABLE_ROW_HEIGHT * rowCount + (zoom - 1)* constHeight) / rowCount);
+        int highRowsNumber = (int)((zoom * TABLE_ROW_HEIGHT - newHeight)* rowCount);
+        for (int i = 0; i < highRowsNumber; i++)
+        {
+            setRowHeight(1 + newHeight + (i == highRowIndex ? EXTRA_HEIGHT : 0));
+        }
+        for (int i = highRowsNumber; i < rowCount; i++)
+        {
+            setRowHeight(newHeight + (i == highRowIndex ? EXTRA_HEIGHT : 0));
+        }
+        
+        // 3) Determine row widths
+        for(int i = 0; i < 2; i++){
+            int width = (int) (currentModel.getColumnWidth(i) * zoom);
+            getColumnModel().getColumn(i).setPreferredWidth(width);            
+        }
+        
+    }
+
+    private float updateFontSize(Component c) {
+        float zoom = node.getMap().getZoom();
+        // 1) Determine font
+        Font font = c.getFont();
+        if (font != null) {
+            float oldFontSize = font.getSize2D();
+            float newFontSize = TABLE_FONT_SIZE*zoom;
+            if(oldFontSize != newFontSize)
+            {
+                font = font.deriveFont(newFontSize);
+                c.setFont(font); 
+            }
+        }
+        return zoom;
     }
 }
