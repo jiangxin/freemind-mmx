@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.11 2005-06-12 19:43:54 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.12 2005-08-19 20:11:29 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
@@ -56,6 +57,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import freemind.controller.MindMapNodesSelection;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
@@ -502,36 +504,33 @@ public class MindMapMapModel extends MapAdapter  {
 
     MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
         MindMapXMLElement mapElement = new MindMapXMLElement(getFrame());
+        String expectedStartString = "<map version=\""+FreeMind.version+"\"";
+        int versionInfoLength = expectedStartString.length();
+        // reading the start of the file:
+        StringBuffer buffer = readFileStart(file, versionInfoLength);
+        String mapStart = buffer.substring(0, versionInfoLength);
         // the resulting file is accessed by the reader:
         Reader reader = null;
-        try{
-	        // try to convert map with xslt:
-	        URL updaterUrl = getFrame().getResource("freemind/modes/mindmapmode/freemind_version_updater.xslt");
-	        if(updaterUrl == null) {
-	            throw new IllegalArgumentException("freemind_version_updater.xslt not found.");
-	        }
-	        Source xsltSource =  new StreamSource(updaterUrl.openStream());
-	        // get output:
-	        StringWriter writer = new StringWriter();
-	        Result result = new StreamResult(writer);
-	        // create an instance of TransformerFactory
-            TransformerFactory transFact = TransformerFactory.newInstance();
-            Transformer trans = transFact.newTransformer(xsltSource);
-            trans.transform(new StreamSource(file), result);
-            reader = new StringReader(writer.getBuffer().toString());
-        } catch(Exception ex) {
-            ex.printStackTrace();
-            // exception: we take the file itself:
-            reader = new BufferedReader(new FileReader(file));
+        if(mapStart.equals(expectedStartString)){
+            // actual version:
+            reader = getActualReader(file);
+        } else {
+            // older version:
+            reader = getUpdateReader(file);
         }
-        try {
+         try {
             mapElement
                     .parseFromReader(reader);
         } catch (Exception ex) {
             System.err.println("Error while parsing file:" + ex);
             ex.printStackTrace();
             return null;
+        } finally {
+            if(reader != null) {
+                reader.close();
+            }
         }
+        System.gc();
         // complete the arrow links:
         mapElement.processUnfinishedLinks(getLinkRegistry());
         // we wait with "invokeHooksRecursively" until the map is fully
@@ -539,7 +538,81 @@ public class MindMapMapModel extends MapAdapter  {
         return (MindMapNodeModel) mapElement.getMapChild(); 
     }
 
+    /** Returns pMinimumLength bytes of the files content.
+     * @param file
+     * @param pMinimumLength
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private StringBuffer readFileStart(File file, int pMinimumLength) throws FileNotFoundException, IOException {
+        // get the file start into the memory:
+        BufferedReader in = new BufferedReader(new FileReader(file));
+        StringBuffer buffer = new StringBuffer();
+        String str;
+        while ((str = in.readLine()) != null) {
+            buffer.append(str);
+            if(buffer.length() >= pMinimumLength)
+                break;
+        }
+        in.close();
+        return buffer;
+    }
+
     
+
+    /** Creates a reader that pipes the input file through a XSLT-Script that
+     *  updates the version to the current.
+     * @param file
+     * @return 
+     * @throws IOException
+     */
+    private Reader getUpdateReader(File file) throws IOException {
+        StringWriter writer = null;
+        InputStream inputStream = null;
+        logger.info("Updating the file "+file.getName()+" to the current version.");
+        try{
+            // try to convert map with xslt:
+            URL updaterUrl=null;
+            updaterUrl = getFrame().getResource("freemind/modes/mindmapmode/freemind_version_updater.xslt");
+            if(updaterUrl == null) {
+                throw new IllegalArgumentException("freemind_version_updater.xslt not found.");
+            }
+            Source xsltSource=null;
+            inputStream = updaterUrl.openStream();
+            xsltSource = new StreamSource(inputStream);
+            // get output:
+            writer = new StringWriter();
+            Result result = new StreamResult(writer);
+            // create an instance of TransformerFactory
+            TransformerFactory transFact = TransformerFactory.newInstance();
+            Transformer trans = transFact.newTransformer(xsltSource);
+            trans.transform(new StreamSource(file), result);
+            trans.reset();
+            logger.info("Updating the file "+file.getName()+" to the current version. Done.");
+            return new StringReader(writer.getBuffer().toString());
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            // exception: we take the file itself:
+            return getActualReader(file);
+        } finally {
+            if(inputStream!= null) {
+                inputStream.close();
+            }
+            if(writer != null) {
+                writer.close();
+            }
+        }
+    }
+
+    /** Creates a default reader that just reads the given file.
+     * @param file
+     * @return
+     * @throws FileNotFoundException
+     */
+    private Reader getActualReader(File file) throws FileNotFoundException {
+        return new BufferedReader(new FileReader(file));
+    }
 
     //
     // cut'n'paste
