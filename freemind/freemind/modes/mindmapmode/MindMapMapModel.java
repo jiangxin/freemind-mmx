@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.12 2005-08-19 20:11:29 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.13 2005-08-21 14:47:49 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -508,7 +508,10 @@ public class MindMapMapModel extends MapAdapter  {
         int versionInfoLength = expectedStartString.length();
         // reading the start of the file:
         StringBuffer buffer = readFileStart(file, versionInfoLength);
-        String mapStart = buffer.substring(0, versionInfoLength);
+        String mapStart = "";
+        if(buffer.length() >= versionInfoLength){
+        		mapStart = buffer.substring(0, versionInfoLength);
+        }
         // the resulting file is accessed by the reader:
         Reader reader = null;
         if(mapStart.equals(expectedStartString)){
@@ -530,7 +533,6 @@ public class MindMapMapModel extends MapAdapter  {
                 reader.close();
             }
         }
-        System.gc();
         // complete the arrow links:
         mapElement.processUnfinishedLinks(getLinkRegistry());
         // we wait with "invokeHooksRecursively" until the map is fully
@@ -545,18 +547,24 @@ public class MindMapMapModel extends MapAdapter  {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private StringBuffer readFileStart(File file, int pMinimumLength) throws FileNotFoundException, IOException {
-        // get the file start into the memory:
-        BufferedReader in = new BufferedReader(new FileReader(file));
-        StringBuffer buffer = new StringBuffer();
-        String str;
-        while ((str = in.readLine()) != null) {
-            buffer.append(str);
-            if(buffer.length() >= pMinimumLength)
-                break;
-        }
-        in.close();
-        return buffer;
+    private StringBuffer readFileStart(File file, int pMinimumLength) {
+    	BufferedReader in=null;
+    	StringBuffer buffer = new StringBuffer();
+        try {
+			// get the file start into the memory:
+			in = new BufferedReader(new FileReader(file));
+			String str;
+			while ((str = in.readLine()) != null) {
+				buffer.append(str);
+				if (buffer.length() >= pMinimumLength)
+					break;
+			}
+			in.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new StringBuffer();
+		}
+		return buffer;
     }
 
     
@@ -588,9 +596,7 @@ public class MindMapMapModel extends MapAdapter  {
             TransformerFactory transFact = TransformerFactory.newInstance();
             Transformer trans = transFact.newTransformer(xsltSource);
             trans.transform(new StreamSource(file), result);
-            trans.reset();
             logger.info("Updating the file "+file.getName()+" to the current version. Done.");
-            return new StringReader(writer.getBuffer().toString());
         } catch(Exception ex) {
             ex.printStackTrace();
             // exception: we take the file itself:
@@ -603,6 +609,7 @@ public class MindMapMapModel extends MapAdapter  {
                 writer.close();
             }
         }
+        return new StringReader(writer.getBuffer().toString());
     }
 
     /** Creates a default reader that just reads the given file.

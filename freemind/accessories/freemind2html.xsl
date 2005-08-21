@@ -228,15 +228,40 @@
 		<xsl:choose>
 			<xsl:when test="./text">
 				<br/>
-				<xsl:value-of select="./text" disable-output-escaping="no"/>
+				<p class="notes">
+					<xsl:call-template name="notesOut">
+						<xsl:with-param name="text"><xsl:value-of select="./text"/></xsl:with-param>
+					</xsl:call-template>
+				</p>
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>
 
+	<xsl:template name="notesOut">
+		<xsl:param name="text"></xsl:param>
+		<xsl:variable name="search">
+</xsl:variable>
+		<xsl:choose>
+<!--			<xsl:when test="contains($text, $search)">
+			<xsl:call-template name="notesOut">
+				<xsl:with-param name="text"><xsl:value-of select="substring-before($text, $search)"/></xsl:with-param>
+			</xsl:call-template>
+			<br/>
+				<xsl:call-template name="notesOut">
+					<xsl:with-param name="text"><xsl:value-of select="substring-after($text, $search)"/></xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>-->
+			<xsl:otherwise><!--
+				--><xsl:value-of select="$text"/><!--
+			--></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template match="node" mode="textOut">
 		<xsl:choose>
 			<xsl:when test="starts-with(@TEXT, '&lt;html&gt;&lt;img src=&quot;')">
 				<xsl:element name="img">
+					<xsl:attribute name="class">images</xsl:attribute>
 					<xsl:attribute name="src">
 						<xsl:value-of select="substring-before(substring(@TEXT, 17), '&quot;')"/>
 					</xsl:attribute>
