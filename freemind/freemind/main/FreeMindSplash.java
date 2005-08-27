@@ -60,12 +60,15 @@ class FreeMindSplash extends JFrame {
         		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         		Font font = new Font("Arial", Font.BOLD, 16);
         		g2.setFont(font);
+                // determine width of string to center it.
+                String freemindVersion = frame.getFreemindVersion();
+                int width = g2.getFontMetrics().stringWidth(freemindVersion);
         		int yCoordinate = (int)(getSize().getHeight())-14;
-                int xCoordinate = (int)(getSize().getWidth()/3);
+                int xCoordinate = (int)(getSize().getWidth()/2-width/2);
         		g2.setColor(Color.YELLOW);
-                g2.drawString(frame.getFreemindVersion(), xCoordinate , yCoordinate);
+                g2.drawString(freemindVersion, xCoordinate , yCoordinate);
         		g2.setColor(Color.WHITE);
-        		g2.drawString(frame.getFreemindVersion(), xCoordinate+1 , yCoordinate+1);
+        		g2.drawString(freemindVersion, xCoordinate+1 , yCoordinate+1);
         	}
         };
         

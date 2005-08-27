@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.13 2005-08-21 14:47:49 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.14 2005-08-27 20:35:25 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -504,7 +504,10 @@ public class MindMapMapModel extends MapAdapter  {
 
     MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
         MindMapXMLElement mapElement = new MindMapXMLElement(getFrame());
-        String expectedStartString = "<map version=\""+FreeMind.version+"\"";
+        String expectedStartString = "<map version=\"" + FreeMind.version
+                + "\"";
+        // FIXME: fc, 27.8.2005: this is for 0.8.0 only. Remove me ASAP.
+        String expectedAlternativeStartString = "<map version=\"0.7.1\"";
         int versionInfoLength = expectedStartString.length();
         // reading the start of the file:
         StringBuffer buffer = readFileStart(file, versionInfoLength);
@@ -514,22 +517,22 @@ public class MindMapMapModel extends MapAdapter  {
         }
         // the resulting file is accessed by the reader:
         Reader reader = null;
-        if(mapStart.equals(expectedStartString)){
+        if (mapStart.equals(expectedStartString)
+                || mapStart.equals(expectedAlternativeStartString)) {
             // actual version:
             reader = getActualReader(file);
         } else {
             // older version:
             reader = getUpdateReader(file);
         }
-         try {
-            mapElement
-                    .parseFromReader(reader);
+        try {
+            mapElement.parseFromReader(reader);
         } catch (Exception ex) {
             System.err.println("Error while parsing file:" + ex);
             ex.printStackTrace();
             return null;
         } finally {
-            if(reader != null) {
+            if (reader != null) {
                 reader.close();
             }
         }
@@ -537,7 +540,7 @@ public class MindMapMapModel extends MapAdapter  {
         mapElement.processUnfinishedLinks(getLinkRegistry());
         // we wait with "invokeHooksRecursively" until the map is fully
         // registered.
-        return (MindMapNodeModel) mapElement.getMapChild(); 
+        return (MindMapNodeModel) mapElement.getMapChild();
     }
 
     /** Returns pMinimumLength bytes of the files content.
