@@ -259,13 +259,19 @@
 	
 	<xsl:template match="node" mode="textOut">
 		<xsl:choose>
-			<xsl:when test="starts-with(@TEXT, '&lt;html&gt;&lt;img src=&quot;')">
-				<xsl:element name="img">
-					<xsl:attribute name="class">images</xsl:attribute>
-					<xsl:attribute name="src">
-						<xsl:value-of select="substring-before(substring(@TEXT, 17), '&quot;')"/>
-					</xsl:attribute>
-				</xsl:element>
+			<xsl:when
+				test="starts-with(@TEXT, '&lt;html&gt;&lt;img src=&quot;')">
+				<xsl:variable name="file"><xsl:value-of
+						select="substring-before(substring(@TEXT, 17), '&quot;')"/>
+					</xsl:variable>
+				<xsl:element name="a"><xsl:attribute name="href"><xsl:value-of
+						select="$file"/></xsl:attribute>
+					<xsl:element name="img">
+						<xsl:attribute name="class">images</xsl:attribute>
+						<xsl:attribute name="src">
+							<xsl:value-of select="$file"/>
+						</xsl:attribute>
+					</xsl:element></xsl:element>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="@TEXT" />
