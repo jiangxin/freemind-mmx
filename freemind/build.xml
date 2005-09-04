@@ -12,6 +12,8 @@
     <property name="FM.jar" value="${dist.lib}/freemind.jar"/>
 	<property name="post" value="../post" />
 	<property name="debug" value="on" />
+	<property name="java_source_version" value="1.2" />
+	<property name="java_target_version" value="1.2" />
 	<property name="build.compiler" value="modern" />
 	<property name="ant.dir" value="lib/ant/lib"/>
 	<property name="jarbundler.jar" value = "jarbundler-1.4.jar"/>
@@ -53,7 +55,10 @@
   <target name="-buildgen">
     <javac srcdir="${gen.dir}/${gen.file}"
            destdir="${build}"
-           debug="${debug}">
+           debug="${debug}"
+    	   source="${java_source_version}"
+	       target="${java_target_version}"
+    	>
       <classpath path="${classpath}" />
       <include name="**/*.java" />
     </javac>
@@ -103,7 +108,10 @@
 		<javac	srcdir="${src}"
 			destdir="${build}"
 			classpath="${classpath}"
-			debug="${debug}"> 
+			debug="${debug}"
+    	   source="${java_source_version}"
+	       target="${java_target_version}"
+			> 
 	      <exclude name="${gen.dir}/**" />
 	      <exclude name="accessories/plugins/**" />
 	      <exclude name="plugins/**" />
