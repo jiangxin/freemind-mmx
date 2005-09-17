@@ -30,3 +30,13 @@ img.ilink {
   border-width: 0px;
   padding-left: 1ex;
 }
+
+/* for notes and image export, fc, 18.7.2005. */
+.images {
+ width:50%;
+}
+
+.notes {
+ margin-left:10%;
+ color:#0000FF;
+}

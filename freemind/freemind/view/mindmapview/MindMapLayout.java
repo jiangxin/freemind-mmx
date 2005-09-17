@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.3.2.2.2.1 2005-07-12 15:41:18 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.3.2.2.2.2 2005-09-17 19:02:07 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -338,7 +338,10 @@ public class MindMapLayout implements LayoutManager {
 	  		return 0;
 	}
     protected void updateTreeGeometry(NodeView node) {
+        
+       //FIXME (Dimitri) workaround: the child components of the node have to be validated 
         node.syncronizeAttributeView();
+        
     	if (node.isRoot()){
     		LinkedList leftNodeViews = getRoot().getLeft(true);
 			LinkedList rightNodeViews = getRoot().getRight(true);

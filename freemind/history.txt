@@ -306,6 +306,18 @@ RC 5:
 * New feature: Export to Open Office Writer
 * Memory consumption reduced.
 
+RC 6:
+-----
+* Added option for amount of undo steps.
+* set image by file chooser corrected (undoable).
+* html export (variant with map picture) corrected and enhanced by notes and embedded images.
+* Unused method removed from MapModel.
+* Bug fix: Hierarchical Icons with "cut", "delete" and "undo add icon".
+* Actions are disabled if no map is open.
+* Bug fix: [ 1251054 ] Unicode input and display in HTML.
+* New lithuanian translation. Thanks to oxiris.
+* Update version XSLT is only applied if neccessary (for 0.7.1 it is not applied).
+
 Changes made in Freemind 0.7.2:
 ===============================
 * Pluginmechanism added

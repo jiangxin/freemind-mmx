@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.3 2005-07-30 17:07:10 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.4 2005-09-17 19:02:07 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -142,6 +142,7 @@ import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.MindMapLayout;
 import freemind.view.mindmapview.NodeView;
+import freemind.view.mindmapview.attributeview.AttributeView;
 
 
 /**
@@ -854,6 +855,11 @@ public abstract class ControllerAdapter implements ModeController {
         edgeColor.setEnabled(enabled);
         removeLastIconAction.setEnabled(enabled);
         removeAllIconsAction.setEnabled(enabled);
+        selectAllAction.setEnabled(enabled);
+        selectBranchAction.setEnabled(enabled);
+        removeNodeBackgroundColor.setEnabled(enabled);
+        moveNodeAction.setEnabled(enabled);
+        revertAction.setEnabled(enabled);
         for (int i=0; i<edgeWidths.length; ++i) { 
             edgeWidths[i].setEnabled(enabled);
         }
@@ -1245,6 +1251,7 @@ public abstract class ControllerAdapter implements ModeController {
                 }
 
                 try {
+                	// FIXME: Is this used?????
                    if (picturesAmongSelecteds) {
                       for (ListIterator e = getSelecteds().listIterator();e.hasNext();) {
                          MindMapNode node = (MindMapNode)e.next();
@@ -1253,9 +1260,9 @@ public abstract class ControllerAdapter implements ModeController {
                             String relative = Tools.isAbsolutePath(possiblyRelative) ?
                                new File(possiblyRelative).toURL().toString() : possiblyRelative;
                             if (relative != null) {
-                               String strText = "<html><img src=\"" + relative + "\">"; 
-                               node.setLink(null);
-                               getModel().changeNode(node,strText);
+                               String strText = "<html><img src=\"" + relative + "\">";
+                               setLink(node, null);
+                               setNodeText(node, strText);
                             }
                          }
                       }
@@ -1264,7 +1271,7 @@ public abstract class ControllerAdapter implements ModeController {
                       String relative = getLinkByFileChooser(filter);
                       if (relative != null) {
                          String strText = "<html><img src=\"" + relative + "\">"; 
-                         getModel().changeNode((MindMapNode)getSelected(),strText);
+                         setNodeText((MindMapNode)getSelected(),strText);
                       } 
                    }
                 }
@@ -1705,11 +1712,12 @@ public abstract class ControllerAdapter implements ModeController {
         }
         public void actionPerformed(ActionEvent e) {
             NodeView selectedNodeView = getView().getSelected();
-            if(selectedNodeView.getAttributeViewType() != AttributeTableLayoutModel.SHOW_EXTENDED){
+            AttributeView selectedAttributeView = selectedNodeView.getAttributeView();
+                      if(selectedAttributeView.getAttributeViewType() != AttributeTableLayoutModel.SHOW_EXTENDED){
                 selectedNodeView.getModel().getAttributes().setViewType(AttributeTableLayoutModel.SHOW_EXTENDED);
             }
             else{
-                selectedNodeView.getModel().getAttributes().setViewType(AttributeTableLayoutModel.SHOW_SELECTED);
+                selectedNodeView.getModel().getAttributes().setViewType(AttributeTableLayoutModel.SHOW_REDUCED);
             }
             nodeChanged(selectedNodeView.getModel());
         }

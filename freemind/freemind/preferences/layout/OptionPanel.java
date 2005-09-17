@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.4.2.2.1 2005-07-12 15:41:16 dpolivaev Exp $*/
+/*$Id: OptionPanel.java,v 1.1.4.2.2.2 2005-09-17 19:02:07 dpolivaev Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -49,8 +49,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.xml.bind.JAXBException;
@@ -436,6 +439,57 @@ public class OptionPanel {
 		}
 
 	}
+	private static class NumberProperty implements
+	PropertyControl, PropertyBean {
+	    String description;
+	    JSlider slider;
+	    String label;
+        private JSpinner spinner;
+	    
+	    /**
+	     * @param description
+	     * @param label
+	     */
+	    public NumberProperty(String description, String label, int min, int max, int step) {
+	        slider = new JSlider(JSlider.HORIZONTAL, 5, 1000, 100);
+	        spinner = new JSpinner(
+              new SpinnerNumberModel(min, min, max, step));
+
+	        this.description = description;
+	        this.label = label;
+	    }
+	    
+	    public String getDescription() {
+	        return description;
+	    }
+	    
+	    public String getLabel() {
+	        return label;
+	    }
+	    
+	    public void setValue(String value) {
+            int intValue = 100;
+            try {
+                intValue = Integer.parseInt(value);
+            } catch(NumberFormatException e){
+                e.printStackTrace();
+            }
+            spinner.setValue(new Integer(intValue));
+	    }
+	    
+	    public String getValue() {
+	        return spinner.getValue().toString();
+	    }
+	    
+	    public void layout(DefaultFormBuilder builder) {
+//	        JLabel label = builder
+//	        .append(OptionPanel.getText(getLabel()), slider);
+	        JLabel label = builder
+	        .append(OptionPanel.getText(getLabel()), spinner);
+	        label.setToolTipText(OptionPanel.getText(getDescription()));
+	    }
+	    
+	}
 
 	private static class ColorProperty extends JButton implements
 			PropertyControl, PropertyBean, ActionListener {
@@ -720,7 +774,7 @@ public class OptionPanel {
 
 		"language.tooltip", FreeMind.RESOURCE_LANGUAGE, new String[] {
 				"automatic", "cs", "de", "dk", "en", "es", "fr", "hu", "it",
-				"ja", "kr", "nl", "no", "pl", "pt_BR", "pt_PT", "ru", "sl",
+				"ja", "kr", "lt", "nl", "no", "pl", "pt_BR", "pt_PT", "ru", "sl",
 				"zh", "zh_CN" })); //  automatic
 
 		//INTERNAL PROPERTY.
@@ -1293,6 +1347,11 @@ public class OptionPanel {
 		controls.add(new StringProperty(
 
 		"time_for_delayed_selection.tooltip", "time_for_delayed_selection")); // 500
+
+        controls.add(new NextLineProperty());
+		controls
+		.add(new SeparatorProperty("undo"));
+        controls.add(new NumberProperty("undo_levels.tooltip", "undo_levels", 2,1000,1));
 
 		/***********************************************************************
 		 * Browser/external apps

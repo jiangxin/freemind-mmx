@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.10.2.4.2.4 2005-07-24 10:20:22 dpolivaev Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.10.2.4.2.5 2005-09-17 19:02:07 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -644,25 +644,26 @@ public abstract class NodeAdapter implements MindMapNode {
                 (MindMapNode)(children.get(index - 1)) : null;
           }
         }
-		// call remove child hook:
-        recursiveCallRemoveChildren(this, (MindMapNode) node);
         node.setParent(null);
     	children.remove( node );
+    	// call remove child hook after removal.
+    	recursiveCallRemoveChildren(this, (MindMapNode) node, this);
     }
 
 	/**
 	 * @param node
+	 * @param oldDad the last dad node had.
 	 */
-	private void recursiveCallRemoveChildren(MindMapNode node, MindMapNode removedChild) {
+	private void recursiveCallRemoveChildren(MindMapNode node, MindMapNode removedChild, MindMapNode oldDad) {
 		for(Iterator i=  node.getActivatedHooks().iterator(); i.hasNext();) {
         	PermanentNodeHook hook = (PermanentNodeHook) i.next();
             if (removedChild.getParentNode() == node) {
                 hook.onRemoveChild(removedChild);
             }
-            hook.onRemoveChildren(removedChild);
+            hook.onRemoveChildren(removedChild, oldDad);
         }
 		if(!node.isRoot() && node.getParentNode()!= null)
-		    recursiveCallRemoveChildren(node.getParentNode(), removedChild);
+		    recursiveCallRemoveChildren(node.getParentNode(), removedChild, oldDad);
 	}
 
 

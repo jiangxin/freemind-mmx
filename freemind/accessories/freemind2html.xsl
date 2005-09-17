@@ -46,8 +46,8 @@
         <!-- look if there is any node inside the map (there should never be none, but who knows?) 
              and take its text as the title -->
         <xsl:choose>
-          <xsl:when test="/node">
-            <title><xsl:value-of select="/node/@TEXT" /></title>
+          <xsl:when test="/map/node">
+            <title><xsl:value-of select="/map/node/@TEXT" /></title>
           </xsl:when>
           <xsl:otherwise>
             <title>FreeMind2HTML Mindmap</title>
@@ -92,8 +92,8 @@
 			<!-- choose the first nodes text again as the headline -->
 			<h1>
 				<xsl:choose>
-					<xsl:when test="/node">
-						<xsl:value-of select="/node/@TEXT" />
+					<xsl:when test="/map/node">
+						<xsl:value-of select="/map/node/@TEXT" />
 					</xsl:when>
 					<xsl:otherwise> FreeMind2HTML Mindmap </xsl:otherwise>
 				</xsl:choose>
@@ -172,20 +172,6 @@
           <xsl:attribute name="alt"><xsl:value-of select="@BUILTIN" /></xsl:attribute>
         </img>
       </xsl:for-each>
-      <!-- check whether this node has a link-ID (for external URLs) -->
-      <xsl:choose>
-        <xsl:when test="@LINK">
-          <a>
-            <xsl:attribute name="href">
-              <xsl:value-of select="@LINK" />
-            </xsl:attribute>
-            <xsl:value-of select="@TEXT" />
-          </a>
-        </xsl:when>
-        <xsl:otherwise>
-            <xsl:value-of select="@TEXT" />
-        </xsl:otherwise>
-      </xsl:choose>
       <!-- check if this node has an ID (for the document internal links) -->
       <xsl:if test="@ID">
         <!-- note: as FreeMind sometimes prepends the IDs with an underscore which is not valid
@@ -194,6 +180,20 @@
           <xsl:attribute name="id">FM<xsl:value-of select="@ID"/>FM</xsl:attribute>
         </a>
       </xsl:if>
+      <!-- check whether this node has a link-ID (for external URLs) -->
+      <xsl:choose>
+        <xsl:when test="@LINK">
+          <a>
+            <xsl:attribute name="href">
+              <xsl:value-of select="@LINK" />
+            </xsl:attribute>
+		   <xsl:apply-templates select="." mode="textOut"/>
+          </a>
+        </xsl:when>
+        <xsl:otherwise>
+		   <xsl:apply-templates select="." mode="textOut"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <!-- if there are arrowlinks inside this node (i.e. this node is connected to another node
            in FreeMind using an arrow), then create a document internal link -->
       <xsl:for-each select="arrowlink">
@@ -208,6 +208,8 @@
 					</xsl:element>
         </a>
       </xsl:for-each>
+		<!-- Output the note.-->
+	 <xsl:apply-templates select="hook" mode="notes"/>
       <!-- the content div. This div contains all subnodes of this node. It carries the unique ID
            created in the beginning (which is used to hide this div when necessary). The content node
            is only created if there are any subnodes -->
@@ -216,9 +218,51 @@
         <xsl:attribute name="id">
           <xsl:value-of select="$contentID" />
         </xsl:attribute>
-        <xsl:apply-templates/>
+        <xsl:apply-templates select="node"/>
       </div>
       </xsl:if>
     </div>
   </xsl:template>
+
+	<xsl:template match="hook[@NAME='accessories/plugins/NodeNote.properties']" mode="notes">
+		<xsl:choose>
+			<xsl:when test="./text">
+				<br/>
+				<p class="notes">
+					<xsl:call-template name="notesOut">
+						<xsl:with-param name="text"><xsl:value-of select="./text"/></xsl:with-param>
+					</xsl:call-template>
+				</p>
+			</xsl:when>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="notesOut">
+		<xsl:param name="text"></xsl:param><!--
+	 --><xsl:value-of select="$text"/><!--
+--></xsl:template>
+	
+	<xsl:template match="node" mode="textOut">
+		<xsl:choose>
+			<xsl:when
+				test="starts-with(@TEXT, '&lt;html&gt;&lt;img src=&quot;')">
+				<xsl:variable name="file"><xsl:value-of
+						select="substring-before(substring(@TEXT, 17), '&quot;')"/>
+					</xsl:variable>
+				<xsl:element name="a"><xsl:attribute name="href"><xsl:value-of
+						select="$file"/></xsl:attribute>
+					<xsl:element name="img">
+						<xsl:attribute name="class">images</xsl:attribute>
+						<xsl:attribute name="src">
+							<xsl:value-of select="$file"/>
+						</xsl:attribute>
+					</xsl:element></xsl:element>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="@TEXT" />
+			</xsl:otherwise>
+		</xsl:choose>
+
+	</xsl:template>	
+
 </xsl:stylesheet>

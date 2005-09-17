@@ -2,19 +2,21 @@
  * Created on 18.06.2005
  * Copyright (C) 2005 Dimitri Polivaev
  */
-package freemind.modes.attributes;
+package freemind.view.mindmapview.attributeview;
 
 import javax.swing.event.TableModelListener;
 
 import freemind.modes.MindMapNode;
+import freemind.modes.attributes.Attribute;
+import freemind.modes.attributes.AttributeTableModel;
 
 /**
  * @author Dimitri Polivaev
  * 18.06.2005
  */
-public class ExtendedAttributeTableModel   implements AttributeTableModel{
+class ExtendedAttributeTableModelDecorator   implements AttributeTableModel{
     private AttributeTableModel concreteModel;
-    public ExtendedAttributeTableModel(AttributeTableModel model) {
+    ExtendedAttributeTableModelDecorator(AttributeTableModel model) {
         super();
         this.concreteModel = model;
     }

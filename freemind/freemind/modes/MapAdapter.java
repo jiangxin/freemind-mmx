@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.14.7.2.1.2.3 2005-07-16 17:23:24 dpolivaev Exp $*/
+/*$Id: MapAdapter.java,v 1.24.14.7.2.1.2.4 2005-09-17 19:02:07 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -357,10 +357,10 @@ public abstract class MapAdapter implements MindMap {
            removedArray[0] = node;
            nodesWereRemoved(parent, childIndex, removedArray); }}
 
-    public void changeNode(MindMapNode node, String newText) {
-	node.setUserObject(newText);
-	nodeChanged(node);
-    }
+//    public void changeNode(MindMapNode node, String newText) {
+//	node.setUserObject(newText);
+//	nodeChanged(node);
+//    }
 
     //
     // Interface TreeModel
@@ -449,6 +449,10 @@ public abstract class MapAdapter implements MindMap {
       */
     public void nodeChanged(TreeNode node) {
         frame.getController().getMode().getModeController().nodeChanged((MindMapNode)node);
+    }
+
+    public void nodeRefresh(TreeNode node) {
+        frame.getController().getMode().getModeController().nodeRefresh((MindMapNode)node);
     }
 
 	public void nodeChangedMapInternal(TreeNode node) {

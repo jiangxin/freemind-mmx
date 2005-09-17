@@ -1,11 +1,11 @@
 <project name="imported" basedir="." default="dist">
 	<target name="build">
-		<echo message="Plugins build on path ${src}"/>
-		<mkdir dir="${build}" />
-		<javac	srcdir="${src}"
-			destdir="${build}"
-			includes="${plugin.dir}/**.java"
-			debug="${debug}"> 
+		<echo
+			message="Plugins build on path ${src}"/>
+		<mkdir dir="${build}"/>
+		<javac srcdir="${src}" destdir="${build}" includes="${plugin.dir}/**.java"
+			debug="${debug}" source="${java_source_version}"
+			target="${java_target_version}">
 			<classpath>
 				<path path="${classpath}"/>
 				<path path="${additional.lib}"/>

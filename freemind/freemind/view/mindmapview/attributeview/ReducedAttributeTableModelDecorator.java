@@ -2,7 +2,7 @@
  * Created on 10.07.2005
  * Copyright (C) 2005 Dimitri Polivaev
  */
-package freemind.modes.attributes;
+package freemind.view.mindmapview.attributeview;
 
 import java.util.Vector;
 
@@ -13,17 +13,20 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import freemind.modes.MindMapNode;
+import freemind.modes.attributes.Attribute;
+import freemind.modes.attributes.AttributeRegistryTableModel;
+import freemind.modes.attributes.AttributeTableModel;
 
 /**
  * @author Dimitri Polivaev
  * 10.07.2005
  */
-public class SelectedAttributeTableModel extends AbstractTableModel implements AttributeTableModel, ChangeListener, TableModelListener{
+class ReducedAttributeTableModelDecorator extends AbstractTableModel implements AttributeTableModel, ChangeListener, TableModelListener{
     private AttributeTableModel concreteModel;
     private AttributeRegistryTableModel registryTable;
     private Vector index = null;
     private int visibleRowCount;
-    public SelectedAttributeTableModel(AttributeTableModel model, AttributeRegistryTableModel registryTable) {
+    ReducedAttributeTableModelDecorator(AttributeTableModel model, AttributeRegistryTableModel registryTable) {
         super();
         model.addTableModelListener(this);
         this.concreteModel = model;        

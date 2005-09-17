@@ -9,45 +9,48 @@
 	</xsl:template>
 
 	<xsl:template match="map">
-			<!-- versions -->
+		<!-- versions -->
 		<xsl:variable name="version"><!--
 			--><xsl:choose><!--
-				--><xsl:when test="@version='0.7.0'"><!--
-				--></xsl:when><!--
-				--><xsl:when test="@version='0.7.1'"><!--
-					-->0710000<!--Numbering scheme: version.subversion.releasecandidateversion.betaversion.alphaversion
-				--></xsl:when><!--
-				--><xsl:when test="(starts-with(@version, '0.8.0_alpha'))"><!--
-					-->0800001<!--
-				--></xsl:when><!--
-				--><xsl:when test="(starts-with(@version, '0.8.0_beta'))"><!--
-					-->0800010<!--
-				--></xsl:when><!--
-				--><xsl:when test="@version='0.8.0 RC1'"><!--
-					-->0800100<!--
-				--></xsl:when><!--
-				--><xsl:when test="@version='0.8.0 RC2'"><!--
-					-->0800200<!--
-				--></xsl:when><!--
-				--><xsl:when test="@version='0.8.0 RC3'"><!--
-					-->0800300<!--
-				--></xsl:when><!--
-				--><xsl:when test="@version='0.8.0 RC4'"><!--
-					-->0800400<!--
-				--></xsl:when><!--
-				--><xsl:when test="@version='0.8.0 RC5'"><!--
-					-->0800500<!--
-				--></xsl:when><!--
-				--><xsl:otherwise><!--
-					-->-1<!--
-				--></xsl:otherwise><!--
+			--><xsl:when test="@version='0.7.0'"><!--
+			--></xsl:when><!--
+			--><xsl:when test="@version='0.7.1'"><!--
+			-->0710000<!--Numbering scheme: version.subversion.releasecandidateversion.betaversion.alphaversion
+			--></xsl:when><!--
+			--><xsl:when test="(starts-with(@version, '0.8.0_alpha'))"><!--
+			-->0800001<!--
+			--></xsl:when><!--
+			--><xsl:when test="(starts-with(@version, '0.8.0_beta'))"><!--
+			-->0800010<!--
+			--></xsl:when><!--
+			--><xsl:when test="@version='0.8.0 RC1'"><!--
+			-->0800100<!--
+			--></xsl:when><!--
+			--><xsl:when test="@version='0.8.0 RC2'"><!--
+			-->0800200<!--
+			--></xsl:when><!--
+			--><xsl:when test="@version='0.8.0 RC3'"><!--
+			-->0800300<!--
+			--></xsl:when><!--
+			--><xsl:when test="@version='0.8.0 RC4'"><!--
+			-->0800400<!--
+			--></xsl:when><!--
+			--><xsl:when test="@version='0.8.0 RC5'"><!--
+			-->0800500<!--
+			--></xsl:when><!--
+			--><xsl:when test="@version='0.8.0'"><!--
+			-->0801000<!-- Means the 0.8 release. This number is bigger than that of 0.8RC5.
+			--></xsl:when><!--
+			--><xsl:otherwise><!--
+			-->-1<!--
+			--></xsl:otherwise><!--
 			--></xsl:choose><!--
-		--></xsl:variable><!--
+			--></xsl:variable><!--
 		<xsl:message>!<xsl:value-of select="$version"></xsl:value-of>!</xsl:message>
 		--><xsl:copy>
-			<xsl:apply-templates select="@* | node()">
-				<xsl:with-param name="version" select="$version"/>
-			</xsl:apply-templates>
+		<xsl:apply-templates select="@* | node()">
+			<xsl:with-param name="version" select="$version"/>
+		</xsl:apply-templates>
 		</xsl:copy>
 	</xsl:template>
 	<!-- from

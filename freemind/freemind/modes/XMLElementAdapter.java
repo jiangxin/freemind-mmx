@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.3 2005-07-30 17:07:11 dpolivaev Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.4 2005-09-17 19:02:07 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -75,7 +75,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 
     private String attributeValue;
 
-    private String attributeViewType = AttributeTableLayoutModel.SHOW_SELECTED;
+    private String attributeViewType = AttributeTableLayoutModel.SHOW_REDUCED;
 
     private int attributeNameWidth = AttributeTableLayoutModel.DEFAULT_COLUMN_WIDTH;
 

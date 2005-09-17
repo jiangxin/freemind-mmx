@@ -13,11 +13,11 @@ import javax.swing.event.EventListenerList;
  * 24.07.2005
  */
 public class AttributeTableLayoutModel {
-    public static final String SHOW_SELECTED = "selected";
+    public static final String SHOW_REDUCED = "selected";
     public static final String SHOW_EXTENDED = "extended"; 
     public static final int DEFAULT_COLUMN_WIDTH = 75; 
     private int[] width  = {DEFAULT_COLUMN_WIDTH, DEFAULT_COLUMN_WIDTH};
-    private String viewType = SHOW_SELECTED;
+    private String viewType = SHOW_REDUCED;
     
     private EventListenerList listenerList = null;
     ChangeEvent changeEvent = null;

@@ -7,7 +7,7 @@
    :
    : Christian Foltin, June, 2005
    :
-   : $Id: mindmanager2mm.xsl,v 1.1.4.2 2005-07-12 15:41:12 dpolivaev Exp $
+   : $Id: mindmanager2mm.xsl,v 1.1.4.3 2005-09-17 19:02:07 dpolivaev Exp $
    :
   -->
 
@@ -22,7 +22,7 @@
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" />
 
 	<xsl:template match="/ap:Map">
-		<map version="0.8.0 RC4">
+		<map version="0.8.0">
 			<xsl:apply-templates select="ap:OneTopic/ap:Topic"/>
 		</map>
 	</xsl:template>

@@ -16,12 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.6 2005-08-15 11:20:44 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.7 2005-09-17 19:02:07 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -49,10 +48,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 
 import freemind.controller.Controller;
 import freemind.main.FreeMind;
@@ -62,65 +57,23 @@ import freemind.modes.MindIcon;
 import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import freemind.modes.attributes.AttributeRegistryTableModel;
-import freemind.modes.attributes.AttributeTableLayoutModel;
-import freemind.modes.attributes.AttributeTableModel;
-import freemind.modes.attributes.ColumnWidthChangeEvent;
-import freemind.modes.attributes.ColumnWidthChangeListener;
-import freemind.modes.attributes.ConcreteAttributeTableModel;
-import freemind.modes.attributes.ExtendedAttributeTableModel;
-import freemind.modes.attributes.SelectedAttributeTableModel;
 import freemind.preferences.FreemindPropertyListener;
+import freemind.view.mindmapview.attributeview.AttributeView;
 
 
 /**
  * This class represents a single Node of a MindMap (in analogy to
  * TreeCellRenderer).
  */
-public abstract class NodeView extends JComponent implements ChangeListener, ColumnWidthChangeListener {
+public abstract class NodeView extends JComponent{
     
-    static private class MyJScrollPane extends JScrollPane{
-        
-         
-        /**
-         * @param attributeTable
-         */
-        public MyJScrollPane(AttributeTable attributeTable) {
-            super(attributeTable);
-        }
-        public Dimension getPreferredSize() {
-            Component table = getViewport();
-            if(isValid() == false)
-                validate();
-            return super.getPreferredSize();
-        }
-        public void revalidate() {
-            // TODO Auto-generated method stub
-            super.revalidate();
-        }
-        public void validate() {
-            // TODO Auto-generated method stub
-            super.validate();
-        }
-        protected void validateTree() {
-            // TODO Auto-generated method stub
-            super.validateTree();
-        }
-    }
-    private class AttributeChangeListener implements TableModelListener{
-        public void tableChanged(TableModelEvent arg0) {
-            map.getModel().nodeChanged(model);
-        }
-        
-    }
 	private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
 	private static final int MIN_HOR_NODE_SIZE = 10;
     protected MindMapNode model;
     protected MapView map;
     protected EdgeView edge;
     private JLabel mainView; 
-    private JScrollPane attributeView;
-    private AttributeTable attributeTable;
+    private AttributeView attributeView;
     /** the Color of the Rectangle of a selected Node */
 	protected final static Color selectedColor = new Color(210,210,210); //Color.lightGray;
                                                                          // //the
@@ -166,25 +119,14 @@ public abstract class NodeView extends JComponent implements ChangeListener, Col
     
     private static Color standardSelectColor;
     private static Color standardNodeColor;
-    private SelectedAttributeTableModel filteredAttributeTableModel;
-    private AttributeTableModel extendedAttributeTableModel = null;
-    private AttributeTableModel currentAttributeTableModel;
     protected NodeView(MindMapNode model, MapView map) {
     setLayout(NodeViewLayoutManager.getInstance());
     mainView = new JLabel();
     mainView.setHorizontalAlignment(JLabel.CENTER);
     add(mainView);
-    ConcreteAttributeTableModel attributes = model.getAttributes();
-    AttributeRegistryTableModel registryTable = model.getMap().getRegistry().getAttributes();
-    filteredAttributeTableModel = new SelectedAttributeTableModel(attributes, registryTable);
-    currentAttributeTableModel = filteredAttributeTableModel;
 
 	this.model = model;
 	setMap(map);
-    model.getAttributes().setViewType(attributes.getViewType());
-    setViewType();
-    model.getAttributes().getLayout().addStateChangeListener(this);
-    model.getAttributes().getLayout().addColumnWidthChangeListener(this);
 	// initialize the standard node color.
 	if (standardNodeColor == null) {
         standardNodeColor =
@@ -240,6 +182,7 @@ public abstract class NodeView extends JComponent implements ChangeListener, Col
 	addDragListener( map.getNodeDragListener() );
 	addDropListener( map.getNodeDropListener() );
 	
+	attributeView = new AttributeView(this);
     }
     
     protected void addToMap(){
@@ -405,7 +348,6 @@ public abstract class NodeView extends JComponent implements ChangeListener, Col
      * @return
      */
     public String getText() {
-        // TODO Auto-generated method stub
         return mainView.getText();
     }
 
@@ -572,7 +514,7 @@ public abstract class NodeView extends JComponent implements ChangeListener, Col
 	this.model = model;
     }
 
-    MapView getMap() {
+    public MapView getMap() {
 	return map;
     }
 
@@ -1024,8 +966,8 @@ public abstract class NodeView extends JComponent implements ChangeListener, Col
            setText("<html><table"+
                    (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
                    text+"</table></html>"); }
-        // 6) attributeTable
-        updateAttributeTable();
+        // 6) AttributeView
+        attributeView.update();
    		// 7) ToolTips:
         updateToolTip();
         // 8) Complete
@@ -1034,11 +976,6 @@ public abstract class NodeView extends JComponent implements ChangeListener, Col
     /**
      * 
      */
-     private void updateAttributeTable() {
-         if(attributeTable != null){
-             attributeTable.updateAttributeTable();
-         }
-     }
      /**
       * Updates the tool tip of the node.
      */
@@ -1202,7 +1139,6 @@ public abstract class NodeView extends JComponent implements ChangeListener, Col
      */
 	public int getVGap() {		
         return  map.getZoomed(model.calcVGap());
-        // TODO
 	}
 
 	public int getHGap() {
@@ -1222,15 +1158,8 @@ public abstract class NodeView extends JComponent implements ChangeListener, Col
     JLabel getMainView() {
         return mainView;
     }
-    JScrollPane syncronizeAttributeView() {
-        if (attributeTable == null && currentAttributeTableModel.getRowCount() > 0){
-            attributeTable = new AttributeTable(this);
-            attributeTable.getModel().addTableModelListener(new AttributeChangeListener());
-            attributeView = new MyJScrollPane(attributeTable);
-            attributeView.setColumnHeaderView(attributeTable.getTableHeader());
-            add(attributeView);
-        }
-        return attributeView;
+    JComponent syncronizeAttributeView() {
+        return attributeView.syncronizeAttributeView();
     }
     public void setFont(Font f) {
         mainView.setFont(f);
@@ -1247,50 +1176,7 @@ public abstract class NodeView extends JComponent implements ChangeListener, Col
     /**
      * @return
      */
-    public boolean areAttributesVisible() {
-        return  currentAttributeTableModel.getRowCount() > 0;
-    }
-    /**
-     * @return Returns the extendedAttributeTableModel.
-     */
-    private AttributeTableModel getExtendedAttributeTableModel() {
-        if(extendedAttributeTableModel == null){
-            extendedAttributeTableModel = new ExtendedAttributeTableModel(model.getAttributes());
-        }
-        return extendedAttributeTableModel;
-    }
-    
-    public void stateChanged(ChangeEvent event){
-        setViewType();
-    }
-    
-    private void setViewType() {
-        String currentViewType = model.getAttributes().getLayout().getViewType(); 
-        if(currentViewType.equals( AttributeTableLayoutModel.SHOW_EXTENDED)){
-            currentAttributeTableModel = getExtendedAttributeTableModel();
-        }
-        else if(currentViewType.equals( AttributeTableLayoutModel.SHOW_SELECTED)){
-            currentAttributeTableModel = filteredAttributeTableModel;
-            filteredAttributeTableModel.stateChanged(null);
-        }
-        if(attributeTable != null && attributeTable.getModel() != attributeTable){
-            attributeTable.setModel(currentAttributeTableModel);
-            invalidate();
-        }
-    }
-    public String getAttributeViewType(){
-        return model.getAttributes().getViewType();           
-    }
-    
-    
-    AttributeTableModel getCurrentAttributeTableModel() {
-        return currentAttributeTableModel;
-    }
-    public void columnWidthChanged(ColumnWidthChangeEvent event) {
-        int col = event.getColumnNumber();
-        AttributeTableLayoutModel layoutModel = (AttributeTableLayoutModel) event.getSource();
-        int width = layoutModel.getColumnWidth(col);
-        attributeTable.getColumnModel().getColumn(col).setPreferredWidth(width);
-        model.getMap().nodeChanged(model);
+    public AttributeView getAttributeView() {       
+        return attributeView;
     }
 }

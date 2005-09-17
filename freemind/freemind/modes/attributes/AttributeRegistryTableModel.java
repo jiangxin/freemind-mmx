@@ -7,7 +7,9 @@ package freemind.modes.attributes;
 import java.util.NoSuchElementException;
 
 import javax.swing.AbstractListModel;
+import javax.swing.ButtonModel;
 import javax.swing.ComboBoxModel;
+import javax.swing.JToggleButton.ToggleButtonModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
@@ -102,7 +104,6 @@ public class AttributeRegistryTableModel extends AbstractTableModel  {
     MapRegistry registry;
     private SortedMapVector elements;
     private AttributeComboBoxColumnModel myComboBoxColumnModel = null;
-
     private ChangeEvent changeEvent;
     public AttributeRegistryTableModel(MapRegistry registry) {
         super();
@@ -282,7 +283,8 @@ public class AttributeRegistryTableModel extends AbstractTableModel  {
     }
     
     static private String attributeColumnName = null; 
-    static private String visibilityColumnName = null; 
+    static private String visibilityColumnName = null;
+
     public String getColumnName(int column) {
         
         switch(column){
@@ -297,4 +299,5 @@ public class AttributeRegistryTableModel extends AbstractTableModel  {
         }
         return null;
     }
+
 }

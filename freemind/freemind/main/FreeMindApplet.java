@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.9.2.1.2.2 2005-07-16 17:23:24 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.9.2.1.2.3 2005-09-17 19:02:07 dpolivaev Exp $*/
 
 package freemind.main;
 

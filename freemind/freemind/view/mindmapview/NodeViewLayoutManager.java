@@ -9,6 +9,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
 /**
@@ -43,7 +44,7 @@ public class NodeViewLayoutManager implements LayoutManager {
     }
 
     private Dimension getAttributeViewPreferredSize(Container c) {        
-        JScrollPane attributeView = nodeView(c).syncronizeAttributeView();
+        JComponent attributeView = nodeView(c).syncronizeAttributeView();
         Dimension attributeViewPreferredSize = attributeView.getPreferredSize();
         return attributeViewPreferredSize;
     }
@@ -67,7 +68,7 @@ public class NodeViewLayoutManager implements LayoutManager {
         Dimension mainViewPreferredSize = getMainViewPreferredSize(c);
         final NodeView nodeView = nodeView(c);
         nodeView.syncronizeAttributeView();
-        if (nodeView.areAttributesVisible()){
+        if (nodeView.getAttributeView().areAttributesVisible()){
             Dimension attributeViewPreferredSize = getAttributeViewPreferredSize(c);
             return new Dimension(Math.max(mainViewPreferredSize.width, attributeViewPreferredSize.width),
                     mainViewPreferredSize.height + attributeViewPreferredSize.height);
@@ -82,8 +83,8 @@ public class NodeViewLayoutManager implements LayoutManager {
         int deltaY = nodeView.getDeltaY();
         Dimension mainViewPreferredSize = getMainViewPreferredSize(c);
         int w = mainViewPreferredSize.width;
-        JScrollPane attributeView = nodeView.syncronizeAttributeView();
-        if (nodeView(c).areAttributesVisible()){
+        JComponent attributeView = nodeView.syncronizeAttributeView();
+        if (nodeView(c).getAttributeView().areAttributesVisible()){
             Dimension attributesViewPreferredSize = getAttributeViewPreferredSize(c);
             w = Math.max(mainViewPreferredSize.width, attributesViewPreferredSize.width);
             attributeView.setVisible(true);

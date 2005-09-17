@@ -1,3 +1,4 @@
 #include <windows.h>
 
-allegro_icon ICON "FreeMind.ico"
+100 ICON "FreeMind.ico"
+101 ICON "FreeMind-document.ico"

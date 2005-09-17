@@ -115,7 +115,7 @@ public class ConcreteAttributeTableModel extends AbstractTableModel implements A
         if(layout != null)
         {
             XMLElement attributeElement = null;
-            if(! layout.getViewType().equals(AttributeTableLayoutModel.SHOW_SELECTED)){
+            if(! layout.getViewType().equals(AttributeTableLayoutModel.SHOW_REDUCED)){
                 attributeElement = initializeNodeAttributeLayoutXMLElement(attributeElement);
                 attributeElement.setAttribute("VIEWTYPE", layout.getViewType());
             }

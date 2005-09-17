@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.14.14.6.2.1.2.2 2005-07-16 17:23:24 dpolivaev Exp $*/
+/*$Id: MindMap.java,v 1.14.14.6.2.1.2.3 2005-09-17 19:02:07 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -38,9 +38,11 @@ import freemind.main.XMLParseException;
 
 public interface MindMap extends TreeModel {
         
-    void changeNode(MindMapNode node, String newText);
+//    void changeNode(MindMapNode node, String newText);
     //nodeChanged has moved to the modeController. (fc, 2.5.2004)
 	void nodeChanged(TreeNode node);
+	
+	void nodeRefresh(TreeNode node);
 
     Transferable cut(MindMapNode node);
 

@@ -13,7 +13,10 @@
 		<javac	srcdir="${src}"
 			destdir="${build}"
 			includes="${plugin.dir}/**.java"
-			debug="${debug}"> 
+			debug="${debug}"
+		   source="${java_source_version}"
+	       target="${java_target_version}"
+						> 
 			<classpath>
 				<path path="${classpath}"/>
 				<!-- <path path="${additional.lib}"/> -->
