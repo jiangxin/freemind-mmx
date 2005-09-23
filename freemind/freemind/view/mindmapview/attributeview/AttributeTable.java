@@ -42,10 +42,12 @@ class AttributeTable extends JTable {
          */
          public void focusGained(FocusEvent event) { 
             AttributeTable table = (AttributeTable)event.getSource();
-            NodeView nodeView = table.attributeView.getNodeView();
-            AttributeTable.clearOldSelection();
-            nodeView.getMap().scrollNodeToVisible(nodeView);
-            selectedTable = table;
+            if(table != selectedTable){
+                NodeView nodeView = table.attributeView.getNodeView();
+                AttributeTable.clearOldSelection();
+                nodeView.getMap().scrollNodeToVisible(nodeView);
+                selectedTable = table;
+            }
         }
         
         /* (non-Javadoc)
@@ -96,11 +98,12 @@ class AttributeTable extends JTable {
         updateFontSize(this);
         updateRowWidths();       
         setDefaultEditor(Object.class, getDCE());
-        getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setAutoResizeMode(AUTO_RESIZE_OFF);
         getTableHeader().setReorderingAllowed(false);
         int h = getRowHeight();
         setRowHeight(highRowIndex, h + EXTRA_HEIGHT);
+        setRowSelectionAllowed(false);
+        setFocusCycleRoot(true);
     }
 
     /**
