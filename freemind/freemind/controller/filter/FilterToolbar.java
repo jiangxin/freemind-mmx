@@ -6,6 +6,7 @@
  */
 package freemind.controller.filter;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -44,6 +45,9 @@ class FilterToolbar extends JToolBar {
     private Filter inactiveFilter;
     private JButton btnEdit;
     private JButton btnUnfoldAncestors;
+    private static Color filterActiveColor = null;
+    private static Color filterInactiveColor = null;
+    
     private class ApplyFilterAction extends AbstractAction {
         
         /**
@@ -63,6 +67,16 @@ class FilterToolbar extends JToolBar {
             else
             {
                 getFilter().applyFilter(c.getModel());
+            }
+            if(btnApply.isSelected()){
+                if(filterInactiveColor == null)
+                    filterInactiveColor = btnApply.getBackground();
+                if(filterActiveColor == null)
+                    filterActiveColor = new Color(255, 128, 128);
+                btnApply.setBackground(filterActiveColor);
+            }
+            else{
+                btnApply.setBackground(filterInactiveColor);                
             }
             btnUnfoldAncestors.setEnabled(btnApply.getModel().isSelected());
         }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.4 2005-09-17 19:02:07 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.5 2005-10-03 15:07:59 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -1713,7 +1713,7 @@ public abstract class ControllerAdapter implements ModeController {
         public void actionPerformed(ActionEvent e) {
             NodeView selectedNodeView = getView().getSelected();
             AttributeView selectedAttributeView = selectedNodeView.getAttributeView();
-                      if(selectedAttributeView.getAttributeViewType() != AttributeTableLayoutModel.SHOW_EXTENDED){
+            if(! selectedAttributeView.getAttributeViewType().equals(AttributeTableLayoutModel.SHOW_EXTENDED)){
                 selectedNodeView.getModel().getAttributes().setViewType(AttributeTableLayoutModel.SHOW_EXTENDED);
             }
             else{
@@ -1721,7 +1721,7 @@ public abstract class ControllerAdapter implements ModeController {
             }
             nodeChanged(selectedNodeView.getModel());
         }
-    }
+	}
 
     protected class SetLinkByFileChooserAction extends AbstractAction {
         public SetLinkByFileChooserAction() {

@@ -16,12 +16,16 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.14.14.4.6.2 2005-07-16 17:23:24 dpolivaev Exp $*/
+/*$Id: BubbleNodeView.java,v 1.14.14.4.6.3 2005-10-03 15:07:59 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.attributeview.AttributeView;
+
 import java.awt.*;
+
+import javax.swing.JLabel;
 
 /**
  * This class represents a single Bubble-Style Node of a MindMap
@@ -43,8 +47,10 @@ public class BubbleNodeView extends MoveableNodeView {
     }
 
   
-	protected int getExtendedWidth(int width)
-	{	int dW = getZoomedFoldingSymbolHalfWidth() * 2;
+	protected int getMainViewWidthWithFoldingMark()
+	{
+	    int width = getMainView().getWidth();
+	    int dW = getZoomedFoldingSymbolHalfWidth() * 2;
 		if(getModel().isFolded()){
 			width += dW;
 		}
@@ -128,11 +134,10 @@ public class BubbleNodeView extends MoveableNodeView {
      * should leave the Node.
      */
     Point getOutPoint() {
-        Dimension size = getMainView().getSize();
         if( isLeft() ) {
-            return new Point(getLocation().x + getMainView().getLocation().x, getLocation().y + getMainView().getLocation().y + size.height / 2);
+            return new Point(getX(), getY() + getMainView().getHeight() / 2);
         } else {
-            return new Point(getLocation().x + getMainView().getLocation().x + size.width, getLocation().y + getMainView().getLocation().y + size.height / 2);
+            return new Point(getX() + getMainView().getWidth(), getY() + getMainView().getHeight() / 2);
         } 
     }
 
@@ -141,11 +146,10 @@ public class BubbleNodeView extends MoveableNodeView {
      * should arrive the Node.
      */
     Point getInPoint() {
-        Dimension size = getMainView().getSize();
         if (isLeft()) {
-            return new Point(getX() + getMainView().getX() + size.width, getY() + getMainView().getY() + size.height / 2);
+            return new Point(getX() + getMainView().getWidth(), getY() + getMainView().getHeight() / 2);
         } else {
-            return new Point(getX() + getMainView().getX(), getY() + getMainView().getY() + size.height / 2);
+            return new Point(getX(), getY() + getMainView().getHeight() / 2);
         }
     }
 

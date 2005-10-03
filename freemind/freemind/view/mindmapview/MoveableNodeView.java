@@ -5,7 +5,10 @@ package freemind.view.mindmapview;
 
 import java.awt.Dimension;
 
+import javax.swing.JLabel;
+
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.attributeview.AttributeView;
 
 /**
  * @author Dimitri

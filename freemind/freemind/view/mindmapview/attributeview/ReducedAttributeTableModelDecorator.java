@@ -6,6 +6,8 @@ package freemind.view.mindmapview.attributeview;
 
 import java.util.Vector;
 
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
@@ -16,23 +18,31 @@ import freemind.modes.MindMapNode;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistryTableModel;
 import freemind.modes.attributes.AttributeTableModel;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author Dimitri Polivaev
  * 10.07.2005
  */
-class ReducedAttributeTableModelDecorator extends AbstractTableModel implements AttributeTableModel, ChangeListener, TableModelListener{
+class ReducedAttributeTableModelDecorator extends AbstractTableModel implements AttributeTableModel, ChangeListener, TableModelListener, AncestorListener{
     private AttributeTableModel concreteModel;
     private AttributeRegistryTableModel registryTable;
     private Vector index = null;
     private int visibleRowCount;
-    ReducedAttributeTableModelDecorator(AttributeTableModel model, AttributeRegistryTableModel registryTable) {
+    ReducedAttributeTableModelDecorator(AttributeView attributeView, AttributeTableModel model, AttributeRegistryTableModel registryTable) {
         super();
-        model.addTableModelListener(this);
         this.concreteModel = model;        
         this.registryTable = registryTable;
         stateChanged(null);
-        registryTable.addChangeListener(this);
+        attributeView.getNodeView().addAncestorListener(this);        
+    }
+    private void addListeners() {
+        concreteModel.addTableModelListener(this);
+        this.registryTable.addChangeListener(this);
+    }
+    private void removeListeners() {
+        concreteModel.removeTableModelListener(this);
+        this.registryTable.removeChangeListener(this);
     }
     private Vector getIndex() {
         if(index == null && this.registryTable.getVisibleElementsNumber() > 0)
@@ -126,5 +136,22 @@ class ReducedAttributeTableModelDecorator extends AbstractTableModel implements 
     
     public void setColumnWidth(int col, int width) {
         concreteModel.setColumnWidth(col, width);
+    }
+    /* (non-Javadoc)
+     * @see javax.swing.event.AncestorListener#ancestorAdded(javax.swing.event.AncestorEvent)
+     */
+    public void ancestorAdded(AncestorEvent event) {
+        addListeners();
+    }
+    /* (non-Javadoc)
+     * @see javax.swing.event.AncestorListener#ancestorRemoved(javax.swing.event.AncestorEvent)
+     */
+    public void ancestorRemoved(AncestorEvent event) {
+        removeListeners();
+    }
+    /* (non-Javadoc)
+     * @see javax.swing.event.AncestorListener#ancestorMoved(javax.swing.event.AncestorEvent)
+     */
+    public void ancestorMoved(AncestorEvent event) {
     }
 }

@@ -16,14 +16,18 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.14.14.3.2.1.2.2 2005-07-16 17:23:24 dpolivaev Exp $*/
+/*$Id: RootNodeView.java,v 1.14.14.3.2.1.2.3 2005-10-03 15:07:59 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.attributeview.AttributeView;
+
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.awt.*;
+
+import javax.swing.JLabel;
 
 /**
  * This is a RootNode with different placing of children
@@ -52,7 +56,7 @@ public class RootNodeView extends NodeView {
      */
     Point getOutPoint() {
 	Dimension size = getMainView().getSize();
-	return new Point(getX() + getMainView().getX() + size.width, getY() + getMainView().getY()  + size.height / 2);
+	return new Point(getX() + getMainView().getWidth(), getY()  + getMainView().getHeight() / 2);
     }
 
     /* fc, 26.06.2005 */
@@ -66,7 +70,7 @@ public class RootNodeView extends NodeView {
 			double nWidth = size.width;
 			double nHeight = size.height;
 			Point centerPoint = new Point(
-					getLocation().x + (int) (nWidth / 2f), getLocation().y
+					getX() + (int) (nWidth / 2f), getY()
 							+ (int) (nHeight / 2f));
 			// assume, that destinationPoint is on the right:
 			double angle = Math.atan((destinationPoint.y - centerPoint.y + 0f)
@@ -89,8 +93,7 @@ public class RootNodeView extends NodeView {
      * should arrive the Node.
      */
     Point getInPoint() {
-	Dimension size = getMainView().getSize();
-	return new Point(getX() + getMainView().getX(), getY() + getMainView().getY() + size.height / 2);
+	return new Point(getX(), getY() + getMainView().getHeight() / 2);
     }
 
     EdgeView getEdge() {

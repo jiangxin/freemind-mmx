@@ -16,12 +16,16 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ForkNodeView.java,v 1.10.18.2.6.2 2005-07-16 17:23:24 dpolivaev Exp $*/
+/*$Id: ForkNodeView.java,v 1.10.18.2.6.3 2005-10-03 15:07:59 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.attributeview.AttributeView;
+
 import java.awt.*;
+
+import javax.swing.JLabel;
 
 /**
  * This class represents a single Fork-Style Node of a MindMap
@@ -47,16 +51,18 @@ public class ForkNodeView extends MoveableNodeView {
 		return super.getDeltaX();
     }
     
-    protected int getExtendedWidth(int width )
+    protected int getMainViewWidthWithFoldingMark( )
 	{
+        int width = getMainView().getWidth();
 		if(getModel().isFolded()){
 			width += getZoomedFoldingSymbolHalfWidth() * 2 + FOLDING_WIDTH_OVERHEAD;
 		}
 		return width;
 	}
   
-	protected int getExtendedHeight(int height)
+	protected int getMainViewHeightWithFoldingMark()
 	{
+	    int height = getMainView().getHeight();
 		if(getModel().isFolded()){
 			height += getZoomedFoldingSymbolHalfWidth();
 		}

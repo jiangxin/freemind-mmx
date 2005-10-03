@@ -16,12 +16,16 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.1 2005-09-17 19:02:07 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.2 2005-10-03 15:07:59 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
-import javax.swing.JComponent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+
 import javax.swing.JScrollPane;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
@@ -43,7 +47,7 @@ import freemind.view.mindmapview.NodeView;
  * This class represents a single Node of a MindMap (in analogy to
  * TreeCellRenderer).
  */
-public class AttributeView implements ChangeListener, ColumnWidthChangeListener {    
+public class AttributeView implements ChangeListener, ColumnWidthChangeListener, AncestorListener {    
     private class AttributeChangeListener implements TableModelListener{
         public void tableChanged(TableModelEvent arg0) {
             MapView map = getNodeView().getMap();
@@ -64,34 +68,46 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener 
     private AttributeTableModel currentAttributeTableModel;
     private JScrollPane attributeViewScrollPane;
     private NodeView nodeView;
+    private AttributeChangeListener attributeChangeListener;
     
     public AttributeView(NodeView nodeView) {
         super();
         this.nodeView = nodeView;
+        nodeView.addAncestorListener(this);
         ConcreteAttributeTableModel attributes = getModel().getAttributes();
         AttributeRegistryTableModel registryTable = getModel().getMap().getRegistry().getAttributes();
-        reducedAttributeTableModel = new ReducedAttributeTableModelDecorator(attributes, registryTable);
+        reducedAttributeTableModel = new ReducedAttributeTableModelDecorator(this, attributes, registryTable);
         currentAttributeTableModel = reducedAttributeTableModel;
-        getModel().getAttributes().getLayout().addStateChangeListener(this);
-        getModel().getAttributes().getLayout().addColumnWidthChangeListener(this);
         getModel().getAttributes().setViewType(attributes.getViewType());
         setViewType(attributes.getViewType());
     }
-    public JComponent syncronizeAttributeView() {
+    private void addListeners() {
+        getModel().getAttributes().getLayout().addStateChangeListener(this);
+        getModel().getAttributes().getLayout().addColumnWidthChangeListener(this);
+        addTableModelListener();
+    }
+    public void syncronizeAttributeView() {
         if (attributeTable == null && currentAttributeTableModel.getRowCount() > 0){
             attributeTable = new AttributeTable(this);
-            attributeTable.getModel().addTableModelListener(new AttributeChangeListener());
+            addTableModelListener();
             attributeViewScrollPane = new AttributeViewScrollPane(attributeTable);
             attributeViewScrollPane.setColumnHeaderView(attributeTable.getTableHeader());
             getNodeView().add(attributeViewScrollPane);
         }
-        return attributeViewScrollPane;
+    }
+    private void addTableModelListener() {
+        if(attributeTable != null){
+            if(attributeChangeListener == null){
+                attributeChangeListener = new AttributeChangeListener();
+                attributeTable.getModel().addTableModelListener(attributeChangeListener);
+            }
+        }
     }
     /**
      * @return
      */
     public void update() {
-        if(attributeTable != null){
+        if(attributeTable != null && attributeTable.isVisible()){
             attributeTable.updateAttributeTable();
         }
     }
@@ -165,5 +181,31 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener 
      */
     public static void clearOldSelection() {
         AttributeTable.clearOldSelection();        
+    }
+    /**
+     * 
+     */
+    public void removeListeners() {
+        getModel().getAttributes().getLayout().removeStateChangeListener(this);
+        getModel().getAttributes().getLayout().removeColumnWidthChangeListener(this);
+        if(attributeTable != null)
+            attributeTable.getModel().removeTableModelListener(attributeChangeListener);
+    }
+    /* (non-Javadoc)
+     * @see javax.swing.event.AncestorListener#ancestorAdded(javax.swing.event.AncestorEvent)
+     */
+    public void ancestorAdded(AncestorEvent event) {
+        addListeners();        
+    }
+    /* (non-Javadoc)
+     * @see javax.swing.event.AncestorListener#ancestorRemoved(javax.swing.event.AncestorEvent)
+     */
+    public void ancestorRemoved(AncestorEvent event) {
+        removeListeners();        
+    }
+    /* (non-Javadoc)
+     * @see javax.swing.event.AncestorListener#ancestorMoved(javax.swing.event.AncestorEvent)
+     */
+    public void ancestorMoved(AncestorEvent event) {
     }
 }

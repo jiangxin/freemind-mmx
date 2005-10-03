@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12.2.4.2.3 2005-09-17 19:02:07 dpolivaev Exp $*/
+/*$Id: MapView.java,v 1.30.16.12.2.4.2.4 2005-10-03 15:07:59 dpolivaev Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -264,8 +264,8 @@ public class MapView extends JPanel implements Printable {
 			final Rectangle r0 = new Rectangle(0,0,d.width, d.height);
 			scrollRectToVisible(r0);
 		}
-		Rectangle rect = new Rectangle(node.getLocation().x + (node.getPreferredSize().width/2) - (d.width/2),
-                                          node.getLocation().y + (node.getPreferredSize().height/2) - (d.height/2),
+		Rectangle rect = new Rectangle(node.getX() + (node.getPreferredSize().width/2) - (d.width/2),
+                                          node.getY() + (node.getPreferredSize().height/2) - (d.height/2),
 			d.width, d.height);
 			
 		// One call of scrollRectToVisible suffices 
@@ -315,10 +315,10 @@ public class MapView extends JPanel implements Printable {
     		JViewport mapViewport = (JViewport)getParent();
           int viewPortScrollMode = mapViewport.getScrollMode();
            mapViewport.setScrollMode(JViewport.SIMPLE_SCROLL_MODE );
-            scrollRectToVisible( new Rectangle(x - HORIZ_SPACE, node.getLocation().y - VERT_SPACE,
+            scrollRectToVisible( new Rectangle(x - HORIZ_SPACE, node.getY() - VERT_SPACE,
                                                width + HORIZ_SPACE2, node.getSize().height + VERT_SPACE2) );
             mapViewport.setScrollMode(viewPortScrollMode);
-            // (PN)   scrollRectToVisible( new Rectangle(xLeft, node.getLocation().y - VERT_SPACE,
+            // (PN)   scrollRectToVisible( new Rectangle(xLeft, node.getY() - VERT_SPACE,
             //                                           xRight, node.getSize().height + VERT_SPACE2) );
         }
     }
@@ -974,7 +974,7 @@ public class MapView extends JPanel implements Printable {
      * Should that be implemented in LayoutManager as minimum size?
      */
     public Rectangle getInnerBounds(NodeView source) {
-        Rectangle innerBounds = source.getBounds();
+        Rectangle innerBounds = source.getBoundsWithFoldingMark();
         for(ListIterator e = source.getChildrenViews(true).listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
             innerBounds.add(getInnerBounds(target));//recursive

@@ -20,6 +20,8 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
@@ -31,7 +33,7 @@ import freemind.view.mindmapview.NodeView;
  * @author dimitri
  * 12.06.2005
  */
-class AttributeTable extends JTable {
+class AttributeTable extends JTable implements AncestorListener{
     private static final int MAX_HEIGTH = 300;
     private static final int MAX_WIDTH = 600;
     private static final int TABLE_FONT_SIZE = 12;
@@ -88,13 +90,15 @@ class AttributeTable extends JTable {
     private AttributeView attributeView;
     private static final int EXTRA_HEIGHT = 4;
     private static final float TABLE_ROW_HEIGHT = 16;
-     AttributeTable(AttributeView attributeView) {
+      AttributeTable(AttributeView attributeView) {
         super();
         this.attributeView = attributeView;
         addFocusListener(focusListener);
         getTableHeader().addMouseListener(componentListener);
+        attributeView.getNodeView().addAncestorListener(this);
         currentModel = attributeView.getCurrentAttributeTableModel();
         setModel(currentModel);
+        getModel().removeTableModelListener(this);
         updateFontSize(this);
         updateRowWidths();       
         setDefaultEditor(Object.class, getDCE());
@@ -251,5 +255,26 @@ class AttributeTable extends JTable {
     public void tableChanged(TableModelEvent e) {
         super.tableChanged(e);
         updateRowHeights();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.event.AncestorListener#ancestorAdded(javax.swing.event.AncestorEvent)
+     */
+    public void ancestorAdded(AncestorEvent event) {
+        getModel().addTableModelListener(this);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.event.AncestorListener#ancestorRemoved(javax.swing.event.AncestorEvent)
+     */
+    public void ancestorRemoved(AncestorEvent event) {
+        getModel().removeTableModelListener(this);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.event.AncestorListener#ancestorMoved(javax.swing.event.AncestorEvent)
+     */
+    public void ancestorMoved(AncestorEvent event) {
+        
     }
 }

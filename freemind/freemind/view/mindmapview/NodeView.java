@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.7 2005-09-17 19:02:07 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.8 2005-10-03 15:07:59 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -28,6 +29,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureListener;
@@ -119,6 +121,7 @@ public abstract class NodeView extends JComponent{
     
     private static Color standardSelectColor;
     private static Color standardNodeColor;
+    private Object viewDeletionEvent;
     protected NodeView(MindMapNode model, MapView map) {
     setLayout(NodeViewLayoutManager.getInstance());
     mainView = new JLabel();
@@ -308,10 +311,14 @@ public abstract class NodeView extends JComponent{
 		if (byChildren && cloud != null){
 			additionalDistanceForConvexHull  += CloudView.getAdditionalHeigth(cloud, this) / 2; 
 		}
-        inList.addLast(new Point( -additionalDistanceForConvexHull + getX()             ,  -additionalDistanceForConvexHull + getY()              ));
-        inList.addLast(new Point( -additionalDistanceForConvexHull + getX()             ,   additionalDistanceForConvexHull + getY() + getHeight()));
-        inList.addLast(new Point(  additionalDistanceForConvexHull + getX() + getWidth(),   additionalDistanceForConvexHull + getY() + getHeight()));
-        inList.addLast(new Point(  additionalDistanceForConvexHull + getX() + getWidth(),  -additionalDistanceForConvexHull + getY()              ));
+        final int x = getXWithFoldingMark();
+        final int y = getYWithFoldingMark();
+        final int width = getWidthWithFoldingMark();
+        final int height = getHeightWithFoldingMark();
+        inList.addLast(new Point( -additionalDistanceForConvexHull + x             ,  -additionalDistanceForConvexHull + y              ));
+        inList.addLast(new Point( -additionalDistanceForConvexHull + x             ,   additionalDistanceForConvexHull + y + height));
+        inList.addLast(new Point(  additionalDistanceForConvexHull + x + width,   additionalDistanceForConvexHull + y + height));
+        inList.addLast(new Point(  additionalDistanceForConvexHull + x + width,  -additionalDistanceForConvexHull + y              ));
 		
         LinkedList childrenViews = getChildrenViews(true);
         ListIterator children_it = childrenViews.listIterator();
@@ -351,15 +358,15 @@ public abstract class NodeView extends JComponent{
         return mainView.getText();
     }
 
-    protected int getExtendedWidth(int w)
+    protected int getMainViewWidthWithFoldingMark()
 	{
-		return w;
+		return mainView.getWidth();
 	}
   
 	/** get height including folding symbol */	
-	protected int getExtendedHeight(int h)
+	protected int getMainViewHeightWithFoldingMark()
 	{
-		return h;
+	    return mainView.getHeight();
 	}
   
 	/** get x coordinate including folding symbol */	
@@ -375,12 +382,6 @@ public abstract class NodeView extends JComponent{
 	}
 
   
-	public void setBounds(int x,	int y){
-		setLocation(x - getDeltaX(), y - getDeltaY());	
-		Dimension prefSize = getPreferredSize();
-		setSize(getExtendedWidth(prefSize.width), getExtendedHeight(prefSize.height));
-	}
-
    public void requestFocus(){
       map.getController().getMode().getModeController().anotherNodeSelected(getModel());
       mainView. requestFocus();
@@ -573,11 +574,10 @@ public abstract class NodeView extends JComponent{
      * DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
      */
     Point getOutPoint() {
-        Dimension size = getMainView().getSize();
         if( isLeft() ) {
-            return new Point(getLocation().x + getMainView().getLocation().x, getLocation().y + getMainView().getLocation().y + size.height - 2);
+            return new Point(getX(), getY() + getMainView().getHeight() - 2);
         } else {
-            return new Point(getLocation().x + getMainView().getLocation().x + size.width, getLocation().y + getMainView().getLocation().y + size.height - 2);
+            return new Point(getX() + getMainView().getWidth(), getY() + getMainView().getHeight() - 2);
         } 
     }
 
@@ -599,11 +599,10 @@ public abstract class NodeView extends JComponent{
      * DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
      */
     Point getInPoint() {
-        Dimension size = getMainView().getSize();
         if( isLeft() ) {
-            return new Point(getX() + getMainView().getX() + size.width, getY() + getMainView().getY() + size.height - 2);
+            return new Point(getX() + getMainView().getWidth(), getY() + getMainView().getHeight() - 2);
         } else {
-            return new Point(getX() + getMainView().getX(), getY() + getMainView().getY() + size.height - 2);
+            return new Point(getX(), getY() + getMainView().getHeight() - 2);
         } 
     }
     
@@ -638,12 +637,12 @@ public abstract class NodeView extends JComponent{
 				absLinkX = size.width / 2;
 				absLinkY = Math.abs(y*size.width / (2 * x));
 			}
-			return new Point(getLocation().x + size.width / 2 + (x>0 ? absLinkX : -absLinkX), 
-							getLocation().y + size.height / 2 + (y>0 ? absLinkY : -absLinkY));	
+			return new Point(getX() + size.width / 2 + (x>0 ? absLinkX : -absLinkX), 
+							getY() + size.height / 2 + (y>0 ? absLinkY : -absLinkY));	
 		}
 		else{
-			return new Point(getLocation().x + (x>0 ? size.width:0), 
-			                 getLocation().y + (size.height / 2));	
+			return new Point(getX() + (x>0 ? size.width:0), 
+			                 getY() + (size.height / 2));	
 		}
     }
 
@@ -970,7 +969,9 @@ public abstract class NodeView extends JComponent{
         attributeView.update();
    		// 7) ToolTips:
         updateToolTip();
-        // 8) Complete
+        // 8) AttributeView
+        syncronizeAttributeView();
+        // 9) Complete
         revalidate(); // Because of zoom?
     }
     /**
@@ -1158,8 +1159,8 @@ public abstract class NodeView extends JComponent{
     JLabel getMainView() {
         return mainView;
     }
-    JComponent syncronizeAttributeView() {
-        return attributeView.syncronizeAttributeView();
+    void syncronizeAttributeView() {
+        attributeView.syncronizeAttributeView();
     }
     public void setFont(Font f) {
         mainView.setFont(f);
@@ -1178,5 +1179,37 @@ public abstract class NodeView extends JComponent{
      */
     public AttributeView getAttributeView() {       
         return attributeView;
+    }
+    
+	public void setBounds(int x,	int y){
+		setLocation(x , y );	
+		Dimension prefSize = getPreferredSize();
+		setSize(prefSize);
+	}
+    public int getXWithFoldingMark() {
+        return getX()- getDeltaX();
+    }
+    public int getYWithFoldingMark() {
+        return getY()- getDeltaY();
+    }
+    public Rectangle getBoundsWithFoldingMark() {
+        Rectangle bounds = getBounds();
+        bounds.x -=  getDeltaX(); 
+        bounds.y -=  getDeltaY();
+        bounds.width = getWidthWithFoldingMark();
+        bounds.height = getHeightWithFoldingMark();
+        return bounds;
+    }
+    private int getHeightWithFoldingMark() {
+        int heightWithFoldingMark = getMainViewHeightWithFoldingMark();        
+        return Math.max(heightWithFoldingMark, getHeight());
+    }
+    private int getWidthWithFoldingMark() {
+        return getMainViewWidthWithFoldingMark();
+    }
+
+    public Dimension getPreferredSize() {
+        syncronizeAttributeView();
+        return super.getPreferredSize();
     }
 }

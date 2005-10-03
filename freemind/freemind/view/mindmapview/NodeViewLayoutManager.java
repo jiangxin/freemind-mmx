@@ -44,8 +44,7 @@ public class NodeViewLayoutManager implements LayoutManager {
     }
 
     private Dimension getAttributeViewPreferredSize(Container c) {        
-        JComponent attributeView = nodeView(c).syncronizeAttributeView();
-        Dimension attributeViewPreferredSize = attributeView.getPreferredSize();
+        Dimension attributeViewPreferredSize = c.getComponent(1).getPreferredSize();
         return attributeViewPreferredSize;
     }
 
@@ -77,29 +76,23 @@ public class NodeViewLayoutManager implements LayoutManager {
             return mainViewPreferredSize;
     }
 
-   public void layoutContainer(Container c) {        
+      public void layoutContainer(Container c) {        
         final NodeView nodeView = nodeView(c);
-        int deltaX = nodeView.getDeltaX();
-        int deltaY = nodeView.getDeltaY();
         Dimension mainViewPreferredSize = getMainViewPreferredSize(c);
         int w = mainViewPreferredSize.width;
-        JComponent attributeView = nodeView.syncronizeAttributeView();
         if (nodeView(c).getAttributeView().areAttributesVisible()){
             Dimension attributesViewPreferredSize = getAttributeViewPreferredSize(c);
             w = Math.max(mainViewPreferredSize.width, attributesViewPreferredSize.width);
-            attributeView.setVisible(true);
-            attributeView.setBounds(deltaX + (w - attributesViewPreferredSize.width)/2, deltaY + mainViewPreferredSize.height , attributesViewPreferredSize.width, attributesViewPreferredSize.height) ;
+            Component attributeView = c.getComponent(1);
+            c.getComponent(1).setVisible(true);
+            attributeView.setBounds((w - attributesViewPreferredSize.width)/2, mainViewPreferredSize.height , attributesViewPreferredSize.width, attributesViewPreferredSize.height) ;
         }
         else{
-            if(attributeView != null)
-                attributeView.setVisible(false);
+            if(c.getComponentCount() >= 2){
+                c.getComponent(1).setVisible(false);
+            }
         }
-        if (nodeView.isLeft()){
-            nodeView.getMainView().setBounds(deltaX, deltaY , w, mainViewPreferredSize.height) ;
-        }
-        else{
-            nodeView.getMainView().setBounds(deltaX, deltaY , w, mainViewPreferredSize.height) ;
-        }
+        nodeView.getMainView().setBounds(0, 0 , w, mainViewPreferredSize.height) ;
     }
 
     static NodeViewLayoutManager getInstance() {
