@@ -16,12 +16,9 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.2 2005-10-03 15:07:59 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.3 2005-10-08 09:45:23 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
-
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 
 import javax.swing.JScrollPane;
 import javax.swing.event.AncestorEvent;
@@ -33,7 +30,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.tree.TreeNode;
 
 import freemind.modes.MindMapNode;
-import freemind.modes.attributes.AttributeRegistryTableModel;
+import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.AttributeTableModel;
 import freemind.modes.attributes.ColumnWidthChangeEvent;
@@ -75,8 +72,8 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
         this.nodeView = nodeView;
         nodeView.addAncestorListener(this);
         ConcreteAttributeTableModel attributes = getModel().getAttributes();
-        AttributeRegistryTableModel registryTable = getModel().getMap().getRegistry().getAttributes();
-        reducedAttributeTableModel = new ReducedAttributeTableModelDecorator(this, attributes, registryTable);
+        AttributeRegistry attributeRegistry = getModel().getMap().getRegistry().getAttributes();
+        reducedAttributeTableModel = new ReducedAttributeTableModelDecorator(this, attributes, attributeRegistry);
         currentAttributeTableModel = reducedAttributeTableModel;
         getModel().getAttributes().setViewType(attributes.getViewType());
         setViewType(attributes.getViewType());

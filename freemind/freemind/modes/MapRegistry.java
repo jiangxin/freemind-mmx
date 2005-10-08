@@ -13,6 +13,7 @@ import java.util.Vector;
 import freemind.controller.Controller;
 import freemind.controller.filter.util.SortedMapListModel;
 import freemind.modes.attributes.Attribute;
+import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeRegistryElement;
 import freemind.modes.attributes.AttributeRegistryTableModel;
 import freemind.modes.attributes.ConcreteAttributeTableModel;
@@ -23,14 +24,14 @@ import freemind.modes.attributes.ConcreteAttributeTableModel;
  */
 public class MapRegistry {
     private SortedMapListModel mapIcons;
-    private AttributeRegistryTableModel attributes;
+    private AttributeRegistry attributes;
     private MindMap map;
 
     public MapRegistry(MindMap map) {
         super();
         this.map = map;
         mapIcons = new SortedMapListModel();
-        attributes = new AttributeRegistryTableModel(this);
+        attributes = new AttributeRegistry(this);
      }
 
     public void addIcon(MindIcon icon) {
@@ -47,7 +48,7 @@ public class MapRegistry {
         return mapIcons;
     }
 
-    public AttributeRegistryTableModel getAttributes() {
+    public AttributeRegistry getAttributes() {
         return attributes;
     }
     

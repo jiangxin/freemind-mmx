@@ -19,6 +19,7 @@ import javax.swing.ListSelectionModel;
 import freemind.main.Resources;
 import freemind.modes.MapRegistry;
 import freemind.modes.MindMap;
+import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeRegistryTableModel;
 
 /**
@@ -28,7 +29,7 @@ import freemind.modes.attributes.AttributeRegistryTableModel;
 public class AttributeDialog extends JDialog {
     private JTable view;
     private MapRegistry registry;
-    private AttributeRegistryTableModel model;
+    private AttributeRegistry model;
 
     private class SelectAllAction extends AbstractAction{
         SelectAllAction(){
@@ -38,8 +39,8 @@ public class AttributeDialog extends JDialog {
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent e) {
-            for(int i = 0; i < model.getRowCount(); i++){
-                model.setValueAt(Boolean.TRUE, i, 1);
+            for(int i = 0; i < model.size(); i++){
+                model.setVisible(i, Boolean.TRUE);
             }
         }
 
@@ -53,8 +54,8 @@ public class AttributeDialog extends JDialog {
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent e) {            
-            for(int i = 0; i < model.getRowCount(); i++){
-                model.setValueAt(Boolean.FALSE, i, 1);
+            for(int i = 0; i < model.size(); i++){
+                model.setVisible(i, Boolean.FALSE);
             }
         }
 
@@ -117,7 +118,7 @@ public class AttributeDialog extends JDialog {
         view = new JTable();
         registry = map.getRegistry();
         model = registry.getAttributes();
-        view.setModel(model);
+        view.setModel(model.getTableModel());
         view.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         view.getTableHeader().setReorderingAllowed(false);
 
@@ -155,6 +156,6 @@ public class AttributeDialog extends JDialog {
     }
     public void mapChanged(MindMap map){
         registry = map.getRegistry();
-        view.setModel(registry.getAttributes());
+        view.setModel(registry.getAttributes().getTableModel());
     }
 }

@@ -37,6 +37,7 @@ import freemind.main.Resources;
 import freemind.modes.MapRegistry;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
+import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeRegistryTableModel;
 
 /**
@@ -297,7 +298,7 @@ public class FilterDialog extends JDialog {
     private JCheckBox caseInsensitive;
     private ExtendedComboBoxModel icons;
     private ExtendedComboBoxModel nodes;
-    private AttributeRegistryTableModel registeredAttributes;
+    private AttributeRegistry registeredAttributes;
     private DefaultComboBoxModel simpleNodeConditionComboBoxModel;
     private DefaultComboBoxModel simpleAttributeConditionComboBoxModel;
     private ExtendedComboBoxModel filteredAttributeComboBoxModel;

@@ -9,7 +9,6 @@ import javax.swing.event.TableModelListener;
 import freemind.modes.MindMapNode;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeTableModel;
-import freemind.view.mindmapview.NodeView;
 
 /**
  * @author Dimitri Polivaev

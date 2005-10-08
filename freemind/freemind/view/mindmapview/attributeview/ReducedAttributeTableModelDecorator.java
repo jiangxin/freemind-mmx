@@ -16,9 +16,8 @@ import javax.swing.table.AbstractTableModel;
 
 import freemind.modes.MindMapNode;
 import freemind.modes.attributes.Attribute;
-import freemind.modes.attributes.AttributeRegistryTableModel;
+import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableModel;
-import freemind.view.mindmapview.NodeView;
 
 /**
  * @author Dimitri Polivaev
@@ -26,26 +25,26 @@ import freemind.view.mindmapview.NodeView;
  */
 class ReducedAttributeTableModelDecorator extends AbstractTableModel implements AttributeTableModel, ChangeListener, TableModelListener, AncestorListener{
     private AttributeTableModel concreteModel;
-    private AttributeRegistryTableModel registryTable;
+    private AttributeRegistry attributeRegistry;
     private Vector index = null;
     private int visibleRowCount;
-    ReducedAttributeTableModelDecorator(AttributeView attributeView, AttributeTableModel model, AttributeRegistryTableModel registryTable) {
+    ReducedAttributeTableModelDecorator(AttributeView attributeView, AttributeTableModel model, AttributeRegistry registryTable) {
         super();
         this.concreteModel = model;        
-        this.registryTable = registryTable;
+        this.attributeRegistry = registryTable;
         stateChanged(null);
         attributeView.getNodeView().addAncestorListener(this);        
     }
     private void addListeners() {
         concreteModel.addTableModelListener(this);
-        this.registryTable.addChangeListener(this);
+        this.attributeRegistry.addChangeListener(this);
     }
     private void removeListeners() {
         concreteModel.removeTableModelListener(this);
-        this.registryTable.removeChangeListener(this);
+        this.attributeRegistry.removeChangeListener(this);
     }
     private Vector getIndex() {
-        if(index == null && this.registryTable.getVisibleElementsNumber() > 0)
+        if(index == null && this.attributeRegistry.getVisibleElementsNumber() > 0)
             index = new Vector(this.concreteModel.getRowCount(), 10);
         return index;
     }
@@ -105,7 +104,7 @@ class ReducedAttributeTableModelDecorator extends AbstractTableModel implements 
             index.clear();
             for(int i = 0; i < concreteModel.getRowCount(); i++){
                 String name = (String)concreteModel.getValueAt(i, 0);
-                if(registryTable.getElement(name).isVisible().booleanValue()){
+                if(attributeRegistry.getElement(name).isVisible().booleanValue()){
                     index.add(new Integer(i));
                     visibleRowCount++;
                 }
@@ -113,9 +112,6 @@ class ReducedAttributeTableModelDecorator extends AbstractTableModel implements 
         fireTableStructureChanged();    
         }
         
-    }
-    public AttributeRegistryTableModel getRegistryTable() {
-        return registryTable;
     }
     public Class getColumnClass(int columnIndex) {
         return concreteModel.getColumnClass(columnIndex);
