@@ -136,7 +136,6 @@ public class ExtendedComboBoxModel extends DefaultComboBoxModel {
     }
     
     public int getIndexOf(Object o) {
-        // TODO Auto-generated method stub
         int idx =  super.getIndexOf(o);
         if (idx > -1 || extension == null)
         {

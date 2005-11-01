@@ -58,14 +58,6 @@ public class SortedMapListModel extends AbstractListModel implements SortedListM
     return model.last();
   }
 
-  public boolean removeElement(Object element) {
-    boolean removed = model.remove(element);
-    if (removed) {
-      fireContentsChanged(this, 0, getSize());
-    }
-    return removed;   
-  }
-
 /**
  * @param o
  * @return
@@ -79,5 +71,28 @@ public int getIndexOf(Object o) {
             return count;
     }
     return -1;
+}
+
+/* (non-Javadoc)
+ * @see freemind.controller.filter.util.SortedListModel#replace(java.lang.Object, java.lang.Object)
+ */
+public void replace(Object oldO, Object newO) {
+    if(oldO.equals(newO))
+        return;
+    boolean removed = model.remove(oldO);
+    boolean added = model.add(newO);
+    if(removed || added) {
+        fireContentsChanged(this, 0, getSize());
+    }
+}
+
+/* (non-Javadoc)
+ * @see freemind.controller.filter.util.SortedListModel#delete(java.lang.Object)
+ */
+public void remove(Object element) {
+    if (model.remove(element)) {
+        fireContentsChanged(this, 0, getSize());
+      }
+    
 }
 }

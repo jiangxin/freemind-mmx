@@ -32,7 +32,6 @@ public class ConditionNotSatisfiedDecorator implements Condition {
      * @see freemind.controller.filter.condition.Condition#checkNode(freemind.modes.MindMapNode)
      */
     public boolean checkNode(MindMapNode node) {
-        // TODO Auto-generated method stub
         return ! originalCondition.checkNode(node);
     }
 

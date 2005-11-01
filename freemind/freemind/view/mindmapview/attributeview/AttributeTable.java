@@ -19,13 +19,13 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JViewport;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 
+import freemind.modes.NodeViewEvent;
+import freemind.modes.NodeViewEventListener;
+import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableModel;
 import freemind.view.mindmapview.NodeView;
 
@@ -33,10 +33,9 @@ import freemind.view.mindmapview.NodeView;
  * @author dimitri
  * 12.06.2005
  */
-class AttributeTable extends JTable implements AncestorListener{
+class AttributeTable extends JTable implements NodeViewEventListener{
     private static final int MAX_HEIGTH = 300;
     private static final int MAX_WIDTH = 600;
-    private static final int TABLE_FONT_SIZE = 12;
     static private AttributeTable selectedTable = null;
     static private class MyFocusListener implements FocusListener{
         /* (non-Javadoc)
@@ -89,13 +88,13 @@ class AttributeTable extends JTable implements AncestorListener{
     static private DefaultCellEditor dce = null;
     private AttributeView attributeView;
     private static final int EXTRA_HEIGHT = 4;
-    private static final float TABLE_ROW_HEIGHT = 16;
+    private static final float TABLE_ROW_HEIGHT = 4;
       AttributeTable(AttributeView attributeView) {
         super();
         this.attributeView = attributeView;
         addFocusListener(focusListener);
         getTableHeader().addMouseListener(componentListener);
-        attributeView.getNodeView().addAncestorListener(this);
+        attributeView.getNodeView().getModel().addNodeViewEventListener(this);
         currentModel = attributeView.getCurrentAttributeTableModel();
         setModel(currentModel);
         getModel().removeTableModelListener(this);
@@ -128,13 +127,16 @@ class AttributeTable extends JTable implements AncestorListener{
      */
      public Component prepareEditor(TableCellEditor tce, int row, int col) {
         ComboBoxModel model;
+        AttributeRegistry attributes = currentModel.getNode().getMap().getRegistry().getAttributes();
         switch (col){
         case 0:        
-            model = currentModel.getNode().getMap().getRegistry().getAttributes().getComboBoxModel();
+            model = attributes.getComboBoxModel();
+            comboBox.setEditable(! attributes.isRestricted());
             break;
         case 1:
             String attrName = currentModel.getValueAt(row, 0).toString();
-            model = currentModel.getNode().getMap().getRegistry().getAttributes().getDefaultComboBoxModel(attrName);
+            model = attributes.getDefaultComboBoxModel(attrName);
+            comboBox.setEditable(! attributes.isRestricted(attrName));
             break;
         default:
             model = getDefaultComboBoxModel();
@@ -222,8 +224,10 @@ class AttributeTable extends JTable implements AncestorListener{
 
         int constHeight = getTableHeader().getPreferredSize().height + EXTRA_HEIGHT;        
         float zoom = getZoom();
-        int newHeight = (int)((zoom * TABLE_ROW_HEIGHT * rowCount + (zoom - 1)* constHeight) / rowCount);
-        int highRowsNumber = (int)((zoom * TABLE_ROW_HEIGHT - newHeight)* rowCount);
+        float fontSize = getFontSize();
+        float tableRowHeight = fontSize + zoom * TABLE_ROW_HEIGHT;
+        int newHeight = (int)((tableRowHeight * rowCount + (zoom - 1)* constHeight) / rowCount);
+        int highRowsNumber = (int)((tableRowHeight - newHeight)* rowCount);
         for (int i = 0; i < highRowsNumber; i++)
         {
             setRowHeight(i, 1 + newHeight + (i == highRowIndex ? EXTRA_HEIGHT : 0));
@@ -235,12 +239,11 @@ class AttributeTable extends JTable implements AncestorListener{
     }
 
     private void updateFontSize(Component c) {
-        float zoom = getZoom();
         // 1) Determine font
         Font font = c.getFont();
         if (font != null) {
             float oldFontSize = font.getSize2D();
-            float newFontSize = TABLE_FONT_SIZE*zoom;
+            float newFontSize = getFontSize();
             if(oldFontSize != newFontSize)
             {
                 font = font.deriveFont(newFontSize);
@@ -260,21 +263,21 @@ class AttributeTable extends JTable implements AncestorListener{
     /* (non-Javadoc)
      * @see javax.swing.event.AncestorListener#ancestorAdded(javax.swing.event.AncestorEvent)
      */
-    public void ancestorAdded(AncestorEvent event) {
+    public void nodeViewCreated(NodeViewEvent event) {
         getModel().addTableModelListener(this);
     }
 
     /* (non-Javadoc)
      * @see javax.swing.event.AncestorListener#ancestorRemoved(javax.swing.event.AncestorEvent)
      */
-    public void ancestorRemoved(AncestorEvent event) {
+    public void nodeViewRemoved(NodeViewEvent event) {
         getModel().removeTableModelListener(this);
+        attributeView.getNodeView().getModel().removeNodeViewEventListener(this);
     }
 
-    /* (non-Javadoc)
-     * @see javax.swing.event.AncestorListener#ancestorMoved(javax.swing.event.AncestorEvent)
-     */
-    public void ancestorMoved(AncestorEvent event) {
-        
+
+    private float getFontSize() {
+        float zoom = getZoom();
+        return (attributeView.getNodeView().getModel().getMap().getRegistry().getAttributes().getFontSize() * zoom);
     }
 }

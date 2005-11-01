@@ -35,7 +35,7 @@ class AttributeRegistryComboBoxColumnModel extends AbstractListModel implements 
         return selectedItem;
     }
     public int getSize() {
-        return this.model.size();
+        return model.size();
     }
 
     /* (non-Javadoc)
@@ -49,9 +49,20 @@ class AttributeRegistryComboBoxColumnModel extends AbstractListModel implements 
      * @see javax.swing.event.TableModelListener#tableChanged(javax.swing.event.TableModelEvent)
      */
     public void tableChanged(TableModelEvent e) {
+        if(e.getType() == TableModelEvent.DELETE)
+        {
+            fireIntervalRemoved(this, e.getFirstRow(), e.getLastRow());
+            return;
+        }
         if(e.getType() == TableModelEvent.UPDATE)
         {
+            fireContentsChanged(this, e.getFirstRow(), e.getLastRow());
+            return;
+        }
+        if(e.getType() == TableModelEvent.INSERT)
+        {
             fireIntervalAdded(this, e.getFirstRow(), e.getLastRow());
+            return;
         }
     }
 
@@ -66,16 +77,31 @@ class AttributeRegistryComboBoxColumnModel extends AbstractListModel implements 
      * @see freemind.controller.filter.util.SortedListModel#contains(java.lang.Object)
      */
     public boolean contains(Object o) {
-        return this.model.containsElement(o.toString()); 
+        return model.containsElement(o.toString()); 
     }
 
     /* (non-Javadoc)
      * @see freemind.controller.filter.util.SortedListModel#add(java.lang.Object)
      */
     public void add(Object o) {
-        
+        String s = o.toString();
+        model.registry(s);      
     }
 
+
+    /* (non-Javadoc)
+     * @see freemind.controller.filter.util.SortedListModel#replace(java.lang.Object, java.lang.Object)
+     */
+    public void replace(Object oldO, Object newO) {
+        model.replaceAtributeName(oldO, newO);
+    }
+
+    /* (non-Javadoc)
+     * @see freemind.controller.filter.util.SortedListModel#delete(java.lang.Object)
+     */
+    public void remove(Object o) {
+        model.removeAtribute(o);              
+    }
     /* (non-Javadoc)
      * @see freemind.controller.filter.util.SortedListModel#getIndexOf(java.lang.Object)
      */

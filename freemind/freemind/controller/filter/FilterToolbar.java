@@ -1,8 +1,6 @@
 /*
  * Created on 05.05.2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * Copyright (C) 2005 Dimitri Polivaev
  */
 package freemind.controller.filter;
 
@@ -28,12 +26,6 @@ import freemind.main.Resources;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 
-/**
- * @author d
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 class FilterToolbar extends JToolBar {
     private FilterController fc;
     private FilterDialog filterDialog = null;

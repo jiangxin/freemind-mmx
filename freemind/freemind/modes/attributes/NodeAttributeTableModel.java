@@ -6,7 +6,6 @@ package freemind.modes.attributes;
 
 import java.util.Vector;
 
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import freemind.main.XMLElement;
@@ -17,12 +16,12 @@ import freemind.modes.XMLElementAdapter;
  * @author Dimitri Polivaev
  * 18.06.2005
  */
-public class ConcreteAttributeTableModel extends AbstractTableModel implements AttributeTableModel{
+public class NodeAttributeTableModel extends AbstractTableModel implements AttributeTableModel{
     private MindMapNode node;
     private Vector attributes = null;
     private AttributeTableLayoutModel layout = null;
     private static final int CAPACITY_INCREMENT = 10;
-    public ConcreteAttributeTableModel(MindMapNode node, int size) {
+    public NodeAttributeTableModel(MindMapNode node, int size) {
         super();
         allocateAttributes(size);
         this.node = node;
@@ -33,7 +32,7 @@ public class ConcreteAttributeTableModel extends AbstractTableModel implements A
         attributes = new Vector(size, CAPACITY_INCREMENT);
     }
 
-    public ConcreteAttributeTableModel(MindMapNode node) {
+    public NodeAttributeTableModel(MindMapNode node) {
         this(node, 0);
     }
     /* (non-Javadoc)
@@ -48,13 +47,24 @@ public class ConcreteAttributeTableModel extends AbstractTableModel implements A
      */
     public Object getValueAt(int row, int col) {
         if (attributes != null){
-            Attribute attr = (Attribute)attributes.get(row);
             switch(col){
-            case 0: return attr.getName();
-            case 1: return attr.getValue();
+            case 0: 
+                return getName(row);
+            case 1: 
+                return getValue(row);
             }
         }
         return null;
+    }
+
+    private Object getName(int row) {
+        Attribute attr = (Attribute)attributes.get(row);
+        return attr.getName();
+    }
+
+    private Object getValue(int row) {
+        Attribute attr = (Attribute)attributes.get(row);
+        return attr.getValue();
     }
 
     public void setValueAt(Object o, int row, int col) {
@@ -72,7 +82,7 @@ public class ConcreteAttributeTableModel extends AbstractTableModel implements A
             attr.setValue(s);
             break;
         }
-        node.getMap().getRegistry().addAttribute(attr);
+        node.getMap().getRegistry().getAttributes().registry(attr);
             fireTableCellUpdated(row, col);
     }
     
@@ -84,10 +94,49 @@ public class ConcreteAttributeTableModel extends AbstractTableModel implements A
     public void addRow(Attribute newAttribute) {
         allocateAttributes(CAPACITY_INCREMENT);
         int index = getRowCount();
+        node.getMap().getRegistry().getAttributes().registry(newAttribute);
         attributes.add(newAttribute);
-        node.getMap().getRegistry().addAttribute(newAttribute);
         fireTableRowsInserted(index, index);
     }
+    
+    void replaceName(Object oldName, Object newName){
+        for(int i = 0; i < getRowCount(); i++){
+            if(getName(i).equals(oldName))
+                setName(i, newName);            
+        }
+    }
+
+    void replaceValue(Object name, Object oldValue, Object newValue){
+        for(int i = 0; i < getRowCount(); i++){
+            if(getName(i).equals(name) && getValue(i).equals(oldValue))
+                setValue(i, newValue);            
+        }
+    }
+    private void setName(int row, Object newName) {
+        Attribute attr = (Attribute)attributes.get(row);
+        attr.setName(newName.toString());
+        fireTableRowsUpdated(row, row);
+    }
+    private void setValue(int row, Object newValue) {
+        Attribute attr = (Attribute)attributes.get(row);
+        attr.setValue(newValue.toString());
+        fireTableRowsUpdated(row, row);
+    }
+    
+    void removeAttribute(Object name){
+        for(int i = 0; i < getRowCount(); i++){
+            if(getName(i).equals(name))
+                removeRow(i);            
+        }
+    }
+
+    void removeValue(Object name, Object value){
+        for(int i = 0; i < getRowCount(); i++){
+            if(getName(i).equals(name) && getValue(i).equals(value))
+                removeRow(i);            
+        }
+    }
+    
     public Object removeRow(int index) {
         Object o = attributes.remove(index);
         fireTableRowsDeleted(index, index);

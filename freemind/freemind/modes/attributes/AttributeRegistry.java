@@ -4,6 +4,9 @@
  */
 package freemind.modes.attributes;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import javax.swing.ComboBoxModel;
@@ -14,20 +17,116 @@ import javax.swing.table.TableModel;
 
 import freemind.controller.filter.util.SortedListModel;
 import freemind.controller.filter.util.SortedMapVector;
+import freemind.main.XMLElement;
 import freemind.modes.MapRegistry;
+import freemind.modes.MindMapNode;
+import freemind.modes.XMLElementAdapter;
 
 /**
  * @author Dimitri Polivaev
  * 08.10.2005
  */
 public class AttributeRegistry{
+    private static interface Visitor{
+        void visit(NodeAttributeTableModel model);
+    }
+    
+    private static class AttributeRenamer implements Visitor{
 
+        private Object oldName;
+        private Object newName;
+
+        public AttributeRenamer(Object oldName, Object newName) {
+            super();
+            this.newName = newName;
+            this.oldName = oldName;
+        }
+        /* (non-Javadoc)
+         * @see freemind.modes.attributes.AttributeRegistry.Visitor#visit(freemind.modes.attributes.ConcreteAttributeTableModel)
+         */
+        public void visit(NodeAttributeTableModel model) {
+            model.replaceName(oldName, newName);            
+        }
+        
+    }
+    
+    private static class AttributeChanger implements Visitor{
+        private Object name;
+        private Object oldValue;
+        private Object newValue;
+
+        public AttributeChanger(Object name, Object oldValue, Object newValue) {
+            super();
+            this.name = name;
+            this.oldValue = oldValue;
+            this.newValue = newValue;
+        }
+        /* (non-Javadoc)
+         * @see freemind.modes.attributes.AttributeRegistry.Visitor#visit(freemind.modes.attributes.ConcreteAttributeTableModel)
+         */
+        public void visit(NodeAttributeTableModel model) {
+            model.replaceValue(name, oldValue, newValue);            
+        }
+    }
+    private static class AttributeRemover implements Visitor{
+        private Object name;
+
+        public AttributeRemover(Object name) {
+            super();
+            this.name = name;
+        }
+        /* (non-Javadoc)
+         * @see freemind.modes.attributes.AttributeRegistry.Visitor#visit(freemind.modes.attributes.ConcreteAttributeTableModel)
+         */
+        public void visit(NodeAttributeTableModel model) {
+            model.removeAttribute(name);
+         }
+    }
+    
+    private static class AttributeValueRemover implements Visitor{
+
+        private Object name;
+        private Object value;
+
+        public AttributeValueRemover(Object name, Object value) {
+            super();
+            this.name = name;
+            this.value = value;
+        }
+        /* (non-Javadoc)
+         * @see freemind.modes.attributes.AttributeRegistry.Visitor#visit(freemind.modes.attributes.ConcreteAttributeTableModel)
+         */
+        public void visit(NodeAttributeTableModel model) {
+            model.removeValue(name, value);            
+        }
+    }
+    private class Iterator{
+        private Visitor visitor;
+        Iterator(Visitor v){
+            this.visitor = v;
+        }
+        void iterate(){
+            MindMapNode root = (MindMapNode)registry.getMap().getRoot();
+            iterate(root);
+        }
+        /**
+         * @param root
+         */
+        private void iterate(MindMapNode node) {
+            visitor.visit(node.getAttributes());            
+            ListIterator iterator = node.childrenUnfolded();
+            while(iterator.hasNext()){
+                MindMapNode child = (MindMapNode)iterator.next();
+                iterate(child);           
+            }            
+        }
+    }
+    
     /**
      * 
      */
     public AttributeRegistry() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     private static final int CAPACITY_INCREMENT = 10;
@@ -39,7 +138,11 @@ public class AttributeRegistry{
     private AttributeRegistryComboBoxColumnModel myComboBoxColumnModel = null;
     private AttributeRegistryTableModel myTableModel = null;
     private EventListenerList listenerList = null; 
-
+    
+    private Boolean isRestricted;
+    static final int GLOBAL = -1;
+    private static final int TABLE_FONT_SIZE = 12;
+    private int fontSize = TABLE_FONT_SIZE;
     public int size() {
         return elements.size();
     }
@@ -52,6 +155,7 @@ public class AttributeRegistry{
         visibleElementsNumber = 0;
         elements = new SortedMapVector();
         myTableModel = new AttributeRegistryTableModel(this);
+        isRestricted = new Boolean(false);
     }
     
     public Comparable getKey(int index) {
@@ -62,22 +166,106 @@ public class AttributeRegistry{
         return (AttributeRegistryElement)elements.getValue(index);
     }
 
+    /**
+     * @param name
+     */
+    public int registry(String name) {
+        if(name.equals(""))
+            return -1;
+        AttributeRegistryElement attributeRegistryElement = new AttributeRegistryElement(this, name);
+        int index = elements.add(name, attributeRegistryElement);
+        myTableModel.fireTableRowsInserted(index, index);
+        return index;
+    }
+    
     public void registry(Attribute newAttribute) {
         String name = newAttribute.getName();
+        if(name.equals(""))
+            return;
         String value = newAttribute.getValue();
         try{
             AttributeRegistryElement elem = getElement(name);
-            elem.addValue(value);
+            if(value.equals("")){
+                value = elem.getValues().firstElement().toString();
+            }
+            else{
+                elem.addValue(value);
+            }
         }
         catch(NoSuchElementException ex)
         {
-            AttributeRegistryElement attributeRegistryElement = new AttributeRegistryElement();
+            AttributeRegistryElement attributeRegistryElement = new AttributeRegistryElement(this, name);
             attributeRegistryElement.addValue(value);
             int index = elements.add(name, attributeRegistryElement);
             myTableModel.fireTableRowsInserted(index, index);
         };
     }
 
+    /**
+     * @param oldO
+     * @param newO
+     */
+    public void replaceAtributeName(Object oldO, Object newO) {
+        String sOld = oldO.toString();
+        String sNew = newO.toString();
+        if(sOld.equals("") || sNew.equals(""))
+            return;
+        
+        int iOld = elements.indexOf(sOld);
+        Boolean wasVisible = getElement(iOld).isVisible();
+        Boolean wasRestricted = getElement(iOld).isRestricted();
+        unregistry(iOld);
+        int iNew = registry(sNew);
+        getElement(iNew).setVisible(wasVisible);
+        getElement(iNew).setRestricted(wasRestricted);
+        myTableModel.fireTableRowsUpdated(iNew, iNew);
+        Visitor replacer = new AttributeRenamer(oldO, newO); 
+        Iterator iterator = new Iterator(replacer);
+        isVisibilityChanged = true;
+        iterator.iterate();
+    }
+
+    private void unregistry(String name) {
+        int index = elements.indexOf(name);
+        unregistry(index);
+    }
+
+    private void unregistry(int index) {
+        elements.remove(index);
+        myTableModel.fireTableRowsDeleted(index, index);
+    }
+
+    /**
+     * @param o
+     */
+    public void removeAtribute(Object o) {
+        unregistry(o.toString());
+        Visitor remover = new AttributeRemover(o); 
+        Iterator iterator = new Iterator(remover);
+        iterator.iterate();
+        isVisibilityChanged = true;
+        fireVisibilityChanged();
+    }
+    /**
+     * @param oldO
+     * @param newO
+     */
+    public void replaceAtributeValue(Comparable key, Object oldV, Object newV) {
+        Visitor replacer = new AttributeChanger(key, oldV, newV); 
+        Iterator iterator = new Iterator(replacer);
+        iterator.iterate();
+    }
+
+    /**
+     * @param o
+     */
+    public void removeAtributeValue(Comparable key, Object o) {
+        Visitor remover = new AttributeValueRemover(key, o); 
+        Iterator iterator = new Iterator(remover);
+        iterator.iterate();
+        isVisibilityChanged = true;
+        fireVisibilityChanged();
+    }
     public void clear() {
         myTableModel.fireTableRowsDeleted();
         elements.clear();
@@ -185,7 +373,7 @@ public class AttributeRegistry{
                 visibleElementsNumber--;
                 isVisibilityChanged = true;
             }
-            myTableModel.fireVisibilityUpdated(row, 1); 
+            myTableModel.fireVisibilityUpdated(row); 
         }
     }
 
@@ -195,4 +383,121 @@ public class AttributeRegistry{
     public TableModel getTableModel() {
         return myTableModel;
     }
+
+    /**
+     * @param i
+     * @param value
+     */
+    public void setRestricted(int row, Boolean value) {
+        if(row == GLOBAL){
+            isRestricted = value;   
+            isVisibilityChanged = true;
+        }
+        else{
+            getElement(row).setRestricted(value);
+        }
+        myTableModel.fireRestrictionsUpdated(row);
+    }
+    
+    Boolean isRestricted(int row){
+        if(row == GLOBAL){
+            return isRestricted;   
+           }
+       else{
+           return getElement(row).isRestricted();
+       }
+    }
+    
+    public boolean isRestricted(String s){
+        return isRestricted(indexOf(s)).booleanValue();
+    }
+
+    public void setRestricted(String s, boolean b){
+        setRestricted(indexOf(s),Boolean.valueOf(b));
+    }
+
+    /**
+     * @return
+     */
+    public SortedListModel getValues(int row) {
+        if(row == GLOBAL){
+            return getListBoxModel();
+        }
+        return  getElement(row).getValues();
+    }
+
+    /**
+     * @return
+     */
+    public boolean isRestricted() {
+        return isRestricted.booleanValue();
+    }
+    /**
+     * @param b
+     */
+    public void setRestricted(boolean b) {
+        isRestricted = Boolean.valueOf(b);        
+    }
+
+    /**
+     * 
+     */
+    public void setVisibilityChanged() {
+        isVisibilityChanged = true;        
+    }
+
+    /**
+     * @return Returns the fontSize.
+     */
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    /**
+     * @param size
+     */
+    public void setFontSize(int size) {
+        if(fontSize != size){
+            fontSize = size;
+            setVisibilityChanged();
+        }
+    }
+
+    /**
+     * @param fileout
+     * @throws IOException
+     */
+    public void save(Writer fileout) throws IOException{
+        boolean mustSave = false;
+        XMLElement attributeRegistry = new XMLElement();
+        if(isRestricted()){
+            attributeRegistry.setAttribute("RESTRICTED", "true");
+            mustSave = true;
+        }
+        if(getFontSize() != TABLE_FONT_SIZE){
+            attributeRegistry.setIntAttribute("FONT_SIZE", getFontSize());
+            mustSave = true;
+        }
+        for (int i = 0; i < size(); i++){
+            XMLElement attributeData = getElement(i).save();
+            if (attributeData != null){
+                attributeRegistry.addChild(attributeData);
+                mustSave = true;
+            }
+        }
+        if(mustSave){
+            attributeRegistry.setName(XMLElementAdapter.XML_NODE_ATTRIBUTE_REGISTRY);
+            attributeRegistry.write(fileout);
+        }
+        
+    }
+
+    /**
+     * @param attributeName
+     * @param b
+     */
+    public void setVisible(String attributeName, boolean b){
+        setVisible(indexOf(attributeName),Boolean.valueOf(b));        
+    }
+
 }

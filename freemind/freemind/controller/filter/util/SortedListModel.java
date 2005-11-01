@@ -28,7 +28,11 @@ public interface SortedListModel extends ListModel{
      * @param o
      */
     void add(Object o);
+    
+    void replace(Object oldO, Object newO);
 
+    void remove(Object o);
+    
     /**
      * @param o
      * @return

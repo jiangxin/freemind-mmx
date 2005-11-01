@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.10.2.4.2.5 2005-09-17 19:02:07 dpolivaev Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.10.2.4.2.6 2005-11-01 13:42:20 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -38,6 +38,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
+import javax.swing.event.EventListenerList;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.tree.MutableTreeNode;
@@ -54,7 +55,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
-import freemind.modes.attributes.ConcreteAttributeTableModel;
+import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -117,7 +118,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	// Logging: 
     static protected java.util.logging.Logger logger;
     private MindMap map = null;
-    private ConcreteAttributeTableModel attributes;
+    private NodeAttributeTableModel attributes;
 
 
     //
@@ -139,7 +140,7 @@ public abstract class NodeAdapter implements MindMapNode {
 		setHistoryInformation(new HistoryInformation());
 		MindMapNode parentNode = getParentNode();
 		this.map = map; 
-		this.attributes = new ConcreteAttributeTableModel(this);
+		this.attributes = new NodeAttributeTableModel(this);
     }
 
     /**
@@ -199,9 +200,13 @@ public abstract class NodeAdapter implements MindMapNode {
     public NodeView getViewer() {
 	return viewer;
     }
-
+    
     public void setViewer( NodeView viewer ) {
-	this.viewer = viewer;
+        if(this.viewer != null)
+            fireNodeViewRemoved();
+        this.viewer = viewer;
+        if(this.viewer != null)
+            fireNodeViewCreated();
     }
 
     /** Creates the TreePath recursively */
@@ -1087,7 +1092,52 @@ public abstract class NodeAdapter implements MindMapNode {
         return filter == null || filter.isVisible(this);
     }
     
-    public ConcreteAttributeTableModel getAttributes(){
+    public NodeAttributeTableModel getAttributes(){
         return attributes;
+    }
+    EventListenerList listenerList = new EventListenerList();
+    NodeViewEvent nodeViewEvent = null;
+
+    public void addNodeViewEventListener(NodeViewEventListener l) {
+        listenerList.add(NodeViewEventListener.class, l);
+    }
+
+    public void removeNodeViewEventListener(NodeViewEventListener l) {
+        listenerList.remove(NodeViewEventListener.class, l);
+    }
+
+
+    // Notify all listeners that have registered interest for
+    // notification on this event type.  The event instance 
+    // is lazily created using the parameters passed into 
+    // the fire method.
+
+    protected void fireNodeViewCreated() {
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==NodeViewEventListener.class) {
+                // Lazily create the event:
+                if (nodeViewEvent == null)
+                    nodeViewEvent = new NodeViewEvent(this);
+                ((NodeViewEventListener)listeners[i+1]).nodeViewCreated(nodeViewEvent);
+            }
+        }
+    }
+    protected void fireNodeViewRemoved() {
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==NodeViewEventListener.class) {
+                // Lazily create the event:
+                if (nodeViewEvent == null)
+                    nodeViewEvent = new NodeViewEvent(this);
+                ((NodeViewEventListener)listeners[i+1]).nodeViewRemoved(nodeViewEvent);
+            }
+        }
     }
 }

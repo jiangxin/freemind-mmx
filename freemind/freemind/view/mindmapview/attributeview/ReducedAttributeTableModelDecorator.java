@@ -6,8 +6,6 @@ package freemind.view.mindmapview.attributeview;
 
 import java.util.Vector;
 
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
@@ -15,6 +13,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import freemind.modes.MindMapNode;
+import freemind.modes.NodeViewEvent;
+import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableModel;
@@ -23,29 +23,30 @@ import freemind.modes.attributes.AttributeTableModel;
  * @author Dimitri Polivaev
  * 10.07.2005
  */
-class ReducedAttributeTableModelDecorator extends AbstractTableModel implements AttributeTableModel, ChangeListener, TableModelListener, AncestorListener{
-    private AttributeTableModel concreteModel;
+class ReducedAttributeTableModelDecorator extends AbstractTableModel implements AttributeTableModel, ChangeListener, TableModelListener, NodeViewEventListener{
+    private AttributeTableModel nodeAttributeModel;
     private AttributeRegistry attributeRegistry;
     private Vector index = null;
     private int visibleRowCount;
     ReducedAttributeTableModelDecorator(AttributeView attributeView, AttributeTableModel model, AttributeRegistry registryTable) {
         super();
-        this.concreteModel = model;        
+        this.nodeAttributeModel = model;        
         this.attributeRegistry = registryTable;
         stateChanged(null);
-        attributeView.getNodeView().addAncestorListener(this);        
+        nodeAttributeModel.getNode().addNodeViewEventListener(this);        
     }
     private void addListeners() {
-        concreteModel.addTableModelListener(this);
+        nodeAttributeModel.addTableModelListener(this);
         this.attributeRegistry.addChangeListener(this);
     }
     private void removeListeners() {
-        concreteModel.removeTableModelListener(this);
+        nodeAttributeModel.removeTableModelListener(this);
         this.attributeRegistry.removeChangeListener(this);
+        nodeAttributeModel.getNode().removeNodeViewEventListener(this);        
     }
     private Vector getIndex() {
         if(index == null && this.attributeRegistry.getVisibleElementsNumber() > 0)
-            index = new Vector(this.concreteModel.getRowCount(), 10);
+            index = new Vector(this.nodeAttributeModel.getRowCount(), 10);
         return index;
     }
     public int getColumnCount() {
@@ -55,11 +56,11 @@ class ReducedAttributeTableModelDecorator extends AbstractTableModel implements 
         return visibleRowCount;
     }
     public Object getValueAt(int row, int col) {
-        return concreteModel.getValueAt(calcRow(row), col);
+        return nodeAttributeModel.getValueAt(calcRow(row), col);
     }
     
     public boolean isCellEditable(int row, int col) {
-        if(concreteModel.isCellEditable(row, col)){
+        if(nodeAttributeModel.isCellEditable(row, col)){
             return col == 1;
         }
         return false;
@@ -69,12 +70,12 @@ class ReducedAttributeTableModelDecorator extends AbstractTableModel implements 
         return ((Integer) index.get(row)).intValue();
     }
     public void setValueAt(Object o, int row, int col) {
-        concreteModel.setValueAt(o, calcRow(row), col);
+        nodeAttributeModel.setValueAt(o, calcRow(row), col);
     	fireTableCellUpdated(row,col);
     }
     
     public MindMapNode getNode() {
-        return concreteModel.getNode();
+        return nodeAttributeModel.getNode();
     }
     /* (non-Javadoc)
      * @see freemind.modes.attributes.AttributeTableModel#insertRow(int, freemind.modes.attributes.Attribute)
@@ -102,8 +103,8 @@ class ReducedAttributeTableModelDecorator extends AbstractTableModel implements 
         if(index != null){
             visibleRowCount= 0;
             index.clear();
-            for(int i = 0; i < concreteModel.getRowCount(); i++){
-                String name = (String)concreteModel.getValueAt(i, 0);
+            for(int i = 0; i < nodeAttributeModel.getRowCount(); i++){
+                String name = (String)nodeAttributeModel.getValueAt(i, 0);
                 if(attributeRegistry.getElement(name).isVisible().booleanValue()){
                     index.add(new Integer(i));
                     visibleRowCount++;
@@ -114,10 +115,10 @@ class ReducedAttributeTableModelDecorator extends AbstractTableModel implements 
         
     }
     public Class getColumnClass(int columnIndex) {
-        return concreteModel.getColumnClass(columnIndex);
+        return nodeAttributeModel.getColumnClass(columnIndex);
     }
     public String getColumnName(int columnIndex) {
-        return concreteModel.getColumnName(columnIndex);
+        return nodeAttributeModel.getColumnName(columnIndex);
     }
     /* (non-Javadoc)
      * @see javax.swing.event.TableModelListener#tableChanged(javax.swing.event.TableModelEvent)
@@ -127,27 +128,16 @@ class ReducedAttributeTableModelDecorator extends AbstractTableModel implements 
     }
     
     public int getColumnWidth(int col) {
-        return concreteModel.getColumnWidth(col);
+        return nodeAttributeModel.getColumnWidth(col);
     }
     
     public void setColumnWidth(int col, int width) {
-        concreteModel.setColumnWidth(col, width);
+        nodeAttributeModel.setColumnWidth(col, width);
     }
-    /* (non-Javadoc)
-     * @see javax.swing.event.AncestorListener#ancestorAdded(javax.swing.event.AncestorEvent)
-     */
-    public void ancestorAdded(AncestorEvent event) {
+    public void nodeViewCreated(NodeViewEvent event) {
         addListeners();
     }
-    /* (non-Javadoc)
-     * @see javax.swing.event.AncestorListener#ancestorRemoved(javax.swing.event.AncestorEvent)
-     */
-    public void ancestorRemoved(AncestorEvent event) {
+    public void nodeViewRemoved(NodeViewEvent event) {
         removeListeners();
-    }
-    /* (non-Javadoc)
-     * @see javax.swing.event.AncestorListener#ancestorMoved(javax.swing.event.AncestorEvent)
-     */
-    public void ancestorMoved(AncestorEvent event) {
     }
 }

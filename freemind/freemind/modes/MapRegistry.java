@@ -4,19 +4,16 @@
  */
 package freemind.modes;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.NoSuchElementException;
-import java.util.Vector;
 
-import freemind.controller.Controller;
 import freemind.controller.filter.util.SortedMapListModel;
-import freemind.modes.attributes.Attribute;
+import freemind.main.XMLElement;
 import freemind.modes.attributes.AttributeRegistry;
-import freemind.modes.attributes.AttributeRegistryElement;
-import freemind.modes.attributes.AttributeRegistryTableModel;
-import freemind.modes.attributes.ConcreteAttributeTableModel;
+import freemind.modes.attributes.NodeAttributeTableModel;
 
 /**
  * @author dimitri
@@ -38,9 +35,6 @@ public class MapRegistry {
         mapIcons.add(icon);
     }
 
-    public void addAttribute(Attribute newAttribute) {
-        attributes.registry(newAttribute);
-    }
     /**
      * @return
      */
@@ -69,7 +63,7 @@ public class MapRegistry {
     }
 
     private void registryAttributes(MindMapNode node) {
-        ConcreteAttributeTableModel model = node.getAttributes();
+        NodeAttributeTableModel model = node.getAttributes();
         for (int i = 0; i < model.getRowCount(); i++){
             attributes.registry(model.getAttribute(i));
         }
@@ -90,5 +84,16 @@ public class MapRegistry {
     public void repaintMap() {
         MindMapNode root = (MindMapNode)map.getRoot();
         map.nodeChanged(root);
+    }
+    public MindMap getMap() {
+        return map;
+    }
+
+    /**
+     * @param fileout
+     * @throws IOException
+     */
+    public void save(Writer fileout) throws IOException {
+        getAttributes().save(fileout);        
     }
 }

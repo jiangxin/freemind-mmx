@@ -30,4 +30,6 @@ public interface AttributeTableModel extends TableModel{
     Object removeRow(int index);
 
     MindMapNode getNode();
+
+    void fireTableDataChanged();
     }

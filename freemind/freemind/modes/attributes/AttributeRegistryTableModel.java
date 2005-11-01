@@ -4,22 +4,10 @@
  */
 package freemind.modes.attributes;
 
-import java.util.NoSuchElementException;
-
-import javax.swing.AbstractListModel;
-import javax.swing.ButtonModel;
-import javax.swing.ComboBoxModel;
-import javax.swing.JToggleButton.ToggleButtonModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import freemind.controller.filter.util.SortedListModel;
-import freemind.controller.filter.util.SortedMapVector;
 import freemind.main.Resources;
-import freemind.modes.MapRegistry;
 
 /**
  * @author Dimitri Polivaev
@@ -36,30 +24,51 @@ public class AttributeRegistryTableModel   extends AbstractTableModel {
      * @see javax.swing.table.TableModel#getRowCount()
      */
     public int getRowCount() {
-        return attributeRegistry.size();
+        return attributeRegistry.size() + 1;
     }
 
     /* (non-Javadoc)
      * @see javax.swing.table.TableModel#getColumnCount()
      */
     public int getColumnCount() {
-        return 2;
+        return 4;
     }
 
     /* (non-Javadoc)
      * @see javax.swing.table.TableModel#getValueAt(int, int)
      */
     public Object getValueAt(int row, int col) {
+        if(row == 0 && col < 2){
+            return null;
+        }
+        row--;
          switch(col){
         case 0: return attributeRegistry.getKey(row);
         case 1: return attributeRegistry.getElement(row).isVisible();
+        case 2: return attributeRegistry.isRestricted(row);
+        case 3: return attributeRegistry.getValues(row);        
         }
         return null;
     }
 
     public void setValueAt(Object o, int row, int col) {
-        Boolean visible = (Boolean)o;
-        attributeRegistry.setVisible(row, visible);
+        if(row == 0 && col != 2)
+        {
+            return;
+        }
+        if(col == 3)
+        {
+            return;
+        }
+        Boolean value = (Boolean)o;
+        switch (col){
+        case 1:
+            attributeRegistry.setVisible(row-1, value);
+            break;
+        case 2:
+            attributeRegistry.setRestricted(row-1, value);
+            break;
+        }
     }
 
 
@@ -69,12 +78,16 @@ public class AttributeRegistryTableModel   extends AbstractTableModel {
             return String.class;
         case 1:
             return Boolean.class;
+        case 2:
+            return Boolean.class;
+        case 3:
+            return SortedListModel.class;
         }
         return Object.class;
     }
     
     public boolean isCellEditable(int row, int col) {
-        return col == 1;
+        return col >= 1;
     }
     
     static private String attributeColumnName = null; 
@@ -96,14 +109,31 @@ public class AttributeRegistryTableModel   extends AbstractTableModel {
     }
     
     void fireTableRowsDeleted() {
-        if (getRowCount() > 0)
-            fireTableRowsDeleted(0, getRowCount()-1);
+        if (getRowCount() > 1)
+            fireTableRowsDeleted(1, getRowCount()-1);
+    }
+    public void fireTableCellUpdated(int row, int column) {
+        super.fireTableCellUpdated(row+1, column);
+    }
+    public void fireTableRowsDeleted(int firstRow, int lastRow) {
+        super.fireTableRowsDeleted(firstRow+1, lastRow+1);
+    }
+    public void fireTableRowsInserted(int firstRow, int lastRow) {
+        super.fireTableRowsInserted(firstRow+1, lastRow+1);
+    }
+    public void fireTableRowsUpdated(int firstRow, int lastRow) {
+        super.fireTableRowsUpdated(firstRow+1, lastRow+1);
     }
     /**
      * @param row
      * @param i
      */
-    public void fireVisibilityUpdated(int row, int col) {
-        fireTableCellUpdated(row, col);
+    public void fireVisibilityUpdated(int row) {
+        fireTableCellUpdated(row+1, 1);
     }
+    /**
+     * @param row
+     */
+    public void fireRestrictionsUpdated(int row) {
+        fireTableRowsUpdated(row+1, row+1);    }
 }

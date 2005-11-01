@@ -4,58 +4,71 @@
  */
 package freemind.view.mindmapview.attributeview;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelListener;
 
 import freemind.modes.MindMapNode;
+import freemind.modes.NodeViewEvent;
+import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.Attribute;
+import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableModel;
 
 /**
  * @author Dimitri Polivaev
  * 18.06.2005
  */
-class ExtendedAttributeTableModelDecorator   implements AttributeTableModel{
-    private AttributeTableModel concreteModel;
-    ExtendedAttributeTableModelDecorator(AttributeTableModel model) {
+class ExtendedAttributeTableModelDecorator   implements AttributeTableModel, ChangeListener, NodeViewEventListener{
+    private AttributeTableModel nodeAttributeModel;
+    private AttributeRegistry attributeRegistry;
+    public ExtendedAttributeTableModelDecorator(
+            AttributeView attributeView, 
+            AttributeTableModel nodeAttributeModel,
+            AttributeRegistry attributeRegistry) {
         super();
-        this.concreteModel = model;
+        this.nodeAttributeModel = nodeAttributeModel;
+        this.attributeRegistry = attributeRegistry;
+        nodeAttributeModel.getNode().addNodeViewEventListener(this);        
     }
     public int getColumnCount() {
         return 2;
     }
     public int getRowCount() {
-        return concreteModel.getRowCount() + 1;
+        if (nodeAttributeModel.getNode().getMap().getRegistry().getAttributes().isRestricted())
+            return nodeAttributeModel.getRowCount();
+        return nodeAttributeModel.getRowCount() + 1;
     }
     public Object getValueAt(int row, int col) {
-        if (row < concreteModel.getRowCount()){
-            return concreteModel.getValueAt(row, col);
+        if (row < nodeAttributeModel.getRowCount()){
+            return nodeAttributeModel.getValueAt(row, col);
         }
         return "";
     }
     public void insertRow(int index, Attribute newAttribute) {
-        concreteModel.insertRow(index, newAttribute);
+        nodeAttributeModel.insertRow(index, newAttribute);
     }
     public boolean isCellEditable(int row, int col) {
-        if(concreteModel.isCellEditable(row, col)){
+        if(nodeAttributeModel.isCellEditable(row, col)){
             if (col == 0)
                 return true;
-            if (row < concreteModel.getRowCount())
-                return concreteModel.getValueAt(row, 0).toString().length() > 0;
+            if (row < nodeAttributeModel.getRowCount())
+                return nodeAttributeModel.getValueAt(row, 0).toString().length() > 0;
         }
         return false;
     }
     
     public Object removeRow(int index) {
-        return concreteModel.removeRow(index);
+        return nodeAttributeModel.removeRow(index);
     }
     
     public void setValueAt(Object o, int row, int col) {
-        if(row < concreteModel.getRowCount()){
+        if(row < nodeAttributeModel.getRowCount()){
             if(col == 1 || o.toString().length() > 0){
-                concreteModel.setValueAt(o, row, col);
+                nodeAttributeModel.setValueAt(o, row, col);
             }
             else{
-                concreteModel.removeRow(row);
+                nodeAttributeModel.removeRow(row);
             }
             return;
         }
@@ -64,31 +77,59 @@ class ExtendedAttributeTableModelDecorator   implements AttributeTableModel{
         }
     }
     public void addRow(Attribute attr) {
-        concreteModel.addRow(attr);
+        nodeAttributeModel.addRow(attr);
     }
     public MindMapNode getNode() {
-        return concreteModel.getNode();
+        return nodeAttributeModel.getNode();
     }
     public String toString() {
-        return concreteModel.toString();
+        return nodeAttributeModel.toString();
     }
     
     public void addTableModelListener(TableModelListener l) {
-        concreteModel.addTableModelListener(l);
+        nodeAttributeModel.addTableModelListener(l);
     }
     public void removeTableModelListener(TableModelListener l) {
-        concreteModel.removeTableModelListener(l);
+        nodeAttributeModel.removeTableModelListener(l);
     }
     public Class getColumnClass(int columnIndex) {
-        return concreteModel.getColumnClass(columnIndex);
+        return nodeAttributeModel.getColumnClass(columnIndex);
     }
     public String getColumnName(int columnIndex) {
-        return concreteModel.getColumnName(columnIndex);
+        return nodeAttributeModel.getColumnName(columnIndex);
     }
     public int getColumnWidth(int col) {
-        return concreteModel.getColumnWidth(col);
+        return nodeAttributeModel.getColumnWidth(col);
     }
     public void setColumnWidth(int col, int width) {
-        concreteModel.setColumnWidth(col, width);
+        nodeAttributeModel.setColumnWidth(col, width);
+    }
+    private void addListeners() {
+        this.attributeRegistry.addChangeListener(this);
+    }
+    private void removeListeners() {
+        this.attributeRegistry.removeChangeListener(this);
+        nodeAttributeModel.getNode().removeNodeViewEventListener(this);        
+    }
+    /* (non-Javadoc)
+     * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
+     */
+    public void stateChanged(ChangeEvent e) {
+        nodeAttributeModel.fireTableDataChanged();     
+    }
+    /* (non-Javadoc)
+     * @see freemind.modes.attributes.AttributeTableModel#fireTableStructureChanged()
+     */
+    public void nodeViewCreated(NodeViewEvent event) {
+        addListeners();
+    }
+    public void nodeViewRemoved(NodeViewEvent event) {
+        removeListeners();
+    }
+    /* (non-Javadoc)
+     * @see freemind.modes.attributes.AttributeTableModel#fireTableDataChanged()
+     */
+    public void fireTableDataChanged() {
+        nodeAttributeModel.fireTableDataChanged();        
     }
 }

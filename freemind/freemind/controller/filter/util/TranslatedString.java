@@ -4,7 +4,6 @@
  */
 package freemind.controller.filter.util;
 
-import freemind.controller.Controller;
 import freemind.main.Resources;
 
 /**

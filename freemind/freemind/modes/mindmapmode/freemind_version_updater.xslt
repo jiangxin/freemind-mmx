@@ -36,10 +36,13 @@
 			-->0800400<!--
 			--></xsl:when><!--
 			--><xsl:when test="@version='0.8.0 RC5'"><!--
-			-->0800500<!--
+			-->0800500<!--				
 			--></xsl:when><!--
 			--><xsl:when test="@version='0.8.0'"><!--
 			-->0801000<!-- Means the 0.8 release. This number is bigger than that of 0.8RC5.
+			--></xsl:when><!--
+			--><xsl:when test="@version='0.8.FA Alpha 3' or @version='0.8.FA Alpha 4'"><!--
+			-->0801004<!--
 			--></xsl:when><!--
 			--><xsl:otherwise><!--
 			-->-1<!--
@@ -69,6 +72,7 @@
 	<xsl:template match="node/@SHIFT_Y"/>
 	<xsl:template match="node/@AA_NODE_CLASS"/>
 	<xsl:template match="node/@ADDITIONAL_INFO"/>
+	<xsl:template match="node/attrlayout"/>
 	
 	<xsl:template match="node">
 		<xsl:param name="version">-1</xsl:param>
@@ -98,6 +102,11 @@
 					</xsl:attribute>
 				</xsl:when>
 			</xsl:choose>
+			<xsl:if test="attrlayout">
+				<xsl:element name="attribute_layout">
+                    	<xsl:apply-templates select = "attrlayout/@*" /> 
+				</xsl:element>
+			</xsl:if>
 			<xsl:apply-templates select="@*|node()">
 				<xsl:with-param name="version" select="$version"/>
 			</xsl:apply-templates>

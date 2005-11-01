@@ -16,13 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.3 2005-10-08 09:45:23 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.4 2005-11-01 13:42:20 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
 import javax.swing.JScrollPane;
 import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
+
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
@@ -30,12 +30,14 @@ import javax.swing.event.TableModelListener;
 import javax.swing.tree.TreeNode;
 
 import freemind.modes.MindMapNode;
+import freemind.modes.NodeViewEvent;
+import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.AttributeTableModel;
 import freemind.modes.attributes.ColumnWidthChangeEvent;
 import freemind.modes.attributes.ColumnWidthChangeListener;
-import freemind.modes.attributes.ConcreteAttributeTableModel;
+import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
@@ -44,7 +46,7 @@ import freemind.view.mindmapview.NodeView;
  * This class represents a single Node of a MindMap (in analogy to
  * TreeCellRenderer).
  */
-public class AttributeView implements ChangeListener, ColumnWidthChangeListener, AncestorListener {    
+public class AttributeView implements ChangeListener, ColumnWidthChangeListener, NodeViewEventListener {    
     private class AttributeChangeListener implements TableModelListener{
         public void tableChanged(TableModelEvent arg0) {
             MapView map = getNodeView().getMap();
@@ -70,8 +72,8 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
     public AttributeView(NodeView nodeView) {
         super();
         this.nodeView = nodeView;
-        nodeView.addAncestorListener(this);
-        ConcreteAttributeTableModel attributes = getModel().getAttributes();
+        nodeView.getModel().addNodeViewEventListener(this);
+        NodeAttributeTableModel attributes = getModel().getAttributes();
         AttributeRegistry attributeRegistry = getModel().getMap().getRegistry().getAttributes();
         reducedAttributeTableModel = new ReducedAttributeTableModelDecorator(this, attributes, attributeRegistry);
         currentAttributeTableModel = reducedAttributeTableModel;
@@ -119,7 +121,10 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
      */
     private AttributeTableModel getExtendedAttributeTableModel() {
         if(extendedAttributeTableModel == null){
-            extendedAttributeTableModel = new ExtendedAttributeTableModelDecorator(getModel().getAttributes());
+            extendedAttributeTableModel = new ExtendedAttributeTableModelDecorator(
+                    this,
+                    getModel().getAttributes(),
+                    getModel().getMap().getRegistry().getAttributes());
         }
         return extendedAttributeTableModel;
     }
@@ -185,19 +190,20 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
     public void removeListeners() {
         getModel().getAttributes().getLayout().removeStateChangeListener(this);
         getModel().getAttributes().getLayout().removeColumnWidthChangeListener(this);
+        nodeView.getModel().removeNodeViewEventListener(this);
         if(attributeTable != null)
             attributeTable.getModel().removeTableModelListener(attributeChangeListener);
     }
     /* (non-Javadoc)
      * @see javax.swing.event.AncestorListener#ancestorAdded(javax.swing.event.AncestorEvent)
      */
-    public void ancestorAdded(AncestorEvent event) {
+    public void nodeViewCreated(NodeViewEvent event){
         addListeners();        
     }
     /* (non-Javadoc)
      * @see javax.swing.event.AncestorListener#ancestorRemoved(javax.swing.event.AncestorEvent)
      */
-    public void ancestorRemoved(AncestorEvent event) {
+    public void nodeViewRemoved(NodeViewEvent event) {
         removeListeners();        
     }
     /* (non-Javadoc)

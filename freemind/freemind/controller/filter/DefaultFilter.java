@@ -43,7 +43,7 @@ public class DefaultFilter implements Filter{
         MindMapNode root = (MindMapNode)map.getRoot();
         if(condition != null){
             resetFilter(root);
-            if (applyFilter(root.childrenUnfolded(), false, false))
+            if (filterChildren(root, false, false))
                 addFilterResult(root, FILTER_SHOW_ANCESTOR);
         }
         map.nodeChanged(root);
@@ -53,29 +53,34 @@ public class DefaultFilter implements Filter{
      * @param iterator
      * @return
      */
-    private boolean applyFilter(ListIterator iterator, boolean isAncestorSelected, boolean isAncestorEclipsed) {
+    private boolean filterChildren(MindMapNode parent, boolean isAncestorSelected, boolean isAncestorEclipsed) {
+        ListIterator iterator = parent.childrenUnfolded();
         boolean isDescenderSelected = false;
         while(iterator.hasNext()){
             MindMapNode node = (MindMapNode)iterator.next();
-            resetFilter(node);
-            if (isAncestorSelected) addFilterResult(node, FILTER_SHOW_DESCENDER);
-            boolean lastCheck = condition.checkNode(node);
-            if (lastCheck){
-                isDescenderSelected = true;
-                addFilterResult(node, FILTER_SHOW_MATCHED);
-            }
-            else
-            {
-                addFilterResult(node, FILTER_SHOW_HIDDEN);
-            }
-            if (isAncestorEclipsed){
-                addFilterResult(node, FILTER_SHOW_ECLIPSED);               
-            }
-            ListIterator children = node.childrenUnfolded();
-            if(applyFilter(children, lastCheck || isAncestorSelected, !lastCheck || isAncestorEclipsed)){
-                addFilterResult(node, FILTER_SHOW_ANCESTOR);
-                isDescenderSelected = true;
-            }            
+            isDescenderSelected = applyFilter(node, isAncestorSelected, isAncestorEclipsed, isDescenderSelected);            
+        }
+        return isDescenderSelected;
+    }
+    
+    private boolean applyFilter(MindMapNode node, boolean isAncestorSelected, boolean isAncestorEclipsed, boolean isDescenderSelected) {
+        resetFilter(node);
+        if (isAncestorSelected) addFilterResult(node, FILTER_SHOW_DESCENDER);
+        boolean conditionSatisfied = condition.checkNode(node);
+        if (conditionSatisfied){
+            isDescenderSelected = true;
+            addFilterResult(node, FILTER_SHOW_MATCHED);
+        }
+        else
+        {
+            addFilterResult(node, FILTER_SHOW_HIDDEN);
+        }
+        if (isAncestorEclipsed){
+            addFilterResult(node, FILTER_SHOW_ECLIPSED);               
+        }
+        if(filterChildren(node, conditionSatisfied || isAncestorSelected, !conditionSatisfied || isAncestorEclipsed)){
+            addFilterResult(node, FILTER_SHOW_ANCESTOR);
+            isDescenderSelected = true;
         }
         return isDescenderSelected;
     }

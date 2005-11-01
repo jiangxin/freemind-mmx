@@ -9,9 +9,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 
-import javax.swing.JComponent;
-import javax.swing.JScrollPane;
-
 /**
  * @author dimitri
  * 05.06.2005

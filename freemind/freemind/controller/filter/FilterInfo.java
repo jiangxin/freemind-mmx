@@ -17,7 +17,6 @@ public class FilterInfo {
      */
     public FilterInfo() {
         super();
-        // TODO Auto-generated constructor stub
     }
     public void reset() {
         info = Filter.FILTER_INITIAL_VALUE;

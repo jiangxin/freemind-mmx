@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.4 2005-09-17 19:02:07 dpolivaev Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.5 2005-11-01 13:42:20 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -61,7 +61,10 @@ public abstract class XMLElementAdapter extends XMLElement {
     public static final String XML_NODE_TEXT = "TEXT";
     public static final String XML_NODE = "node";
     public static final String XML_NODE_ATTRIBUTE = "attribute";
-    public static final String XML_NODE_ATTRIBUTE_LAYOUT = "attrlayout";
+    public static final String XML_NODE_ATTRIBUTE_LAYOUT = "attribute_layout";
+    public static final String XML_NODE_ATTRIBUTE_REGISTRY = "attribute_registry";
+    public static final String XML_NODE_REGISTERED_ATTRIBUTE_NAME = "attribute_name";
+    public static final String XML_NODE_REGISTERED_ATTRIBUTE_VALUE = "attribute_valuet";
     //public static final String XML_NODE_CLASS_PREFIX = XML_NODE+"_";
     public static final String XML_NODE_CLASS = "AA_NODE_CLASS";
     public static final String XML_NODE_ADDITIONAL_INFO = "ADDITIONAL_INFO";
@@ -136,6 +139,12 @@ public abstract class XMLElementAdapter extends XMLElement {
 			userObject = null;
 		} else if (name.equals("map")) {
 			userObject = null;
+		} else if (name.equals(XML_NODE_ATTRIBUTE_REGISTRY)) {
+			userObject = null;
+		} else if (name.equals(XML_NODE_REGISTERED_ATTRIBUTE_NAME)) {
+			userObject = null;
+		} else if (name.equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)) {
+			userObject = null;
 		} else if (name.equals("icon")) {
 			userObject = null;
 		} else if (name.equals("hook")) {
@@ -208,6 +217,14 @@ public abstract class XMLElementAdapter extends XMLElement {
  			 hook.loadFrom(xml);
  			 node.addHook(hook);
  		 }
+         return;
+      }
+      if(child instanceof XMLElementAdapter
+              && getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_NAME)
+              && child.getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)){
+          Attribute attribute = new Attribute(attributeName, ((XMLElementAdapter)child).attributeValue);
+          map.getRegistry().getAttributes().registry(attribute);
+          map.getRegistry().getAttributes().setRestricted(attributeName, true);
       }
    }
 
@@ -310,7 +327,33 @@ public void setAttribute(String name, Object value) {
           else if (name.equals("VALUE_WIDTH")) {
               attributeValueWidth = Integer.parseInt(sValue); } 
        }
-     
+      else if (getName().equals(XML_NODE_ATTRIBUTE_REGISTRY)) {
+          if (name.equals("RESTRICTED")) {
+              map.getRegistry().getAttributes().setRestricted(true);
+          }
+          if (name.equals("FONT_SIZE")) {
+              try {
+                  int size = Integer.parseInt(sValue);
+                  map.getRegistry().getAttributes().setFontSize(size);
+              }
+              catch (NumberFormatException ex){                  
+              }
+          }
+      }     
+      else if (getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_NAME)) {
+          if (name.equals("NAME")) {
+              attributeName = sValue;
+              map.getRegistry().getAttributes().getListBoxModel().add(attributeName);
+          }
+          if (name.equals("VISIBLE")) {
+              map.getRegistry().getAttributes().setVisible(attributeName, true);
+          }
+      }     
+      else if (getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)) {
+          if (name.equals("VALUE")) {
+              attributeValue = sValue;
+          }
+      }     
   }
 
    private void setNodeAttribute(String name, String sValue, NodeAdapter node) {

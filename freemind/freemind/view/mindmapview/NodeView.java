@@ -16,12 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.8 2005-10-03 15:07:59 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.9 2005-11-01 13:42:20 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -48,7 +47,6 @@ import java.util.TreeSet;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import freemind.controller.Controller;

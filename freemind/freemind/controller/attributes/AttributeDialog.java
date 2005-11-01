@@ -5,22 +5,27 @@
 package freemind.controller.attributes;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
+import freemind.controller.filter.util.SortedListModel;
 import freemind.main.Resources;
 import freemind.modes.MapRegistry;
 import freemind.modes.MindMap;
 import freemind.modes.attributes.AttributeRegistry;
-import freemind.modes.attributes.AttributeRegistryTableModel;
 
 /**
  * @author Dimitri Polivaev
@@ -30,50 +35,10 @@ public class AttributeDialog extends JDialog {
     private JTable view;
     private MapRegistry registry;
     private AttributeRegistry model;
-
-    private class SelectAllAction extends AbstractAction{
-        SelectAllAction(){
-            super(Resources.getInstance().getResourceString("attributes_select_all"));
-        }
-        /* (non-Javadoc)
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            for(int i = 0; i < model.size(); i++){
-                model.setVisible(i, Boolean.TRUE);
-            }
-        }
-
-    }
-
-    private class DeselectAllAction extends AbstractAction{
-        DeselectAllAction(){
-            super(Resources.getInstance().getResourceString("attributes_deselect_all"));
-        }
-        /* (non-Javadoc)
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {            
-            for(int i = 0; i < model.size(); i++){
-                model.setVisible(i, Boolean.FALSE);
-            }
-        }
-
-    }
-
-    private class CloseAction extends AbstractAction{
-        CloseAction(){
-            super(Resources.getInstance().getResourceString("attributes_close"));
-        }
-        /* (non-Javadoc)
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            setVisible(false);
-        }
-
-    }
-
+    private static final String[] fontSizes = {"6","8","10","12","14","16","18","20","24"};
+    private JComboBox size;
+    static final Icon editButtonImage = new ImageIcon("images/Edit12.png");
+    
     private class ApplyAction extends AbstractAction{
         ApplyAction(){
             super(Resources.getInstance().getResourceString("attributes_apply"));
@@ -82,9 +47,15 @@ public class AttributeDialog extends JDialog {
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent e) {
-            model.fireVisibilityChanged();
+            applyChanges();
         }
 
+    }
+    private void applyChanges() {
+        Object size = this.size.getSelectedItem();
+        int iSize = Integer.parseInt(size.toString());
+        model.setFontSize(iSize);
+        model.fireVisibilityChanged();
     }
 
     private class OKAction extends AbstractAction{
@@ -95,10 +66,9 @@ public class AttributeDialog extends JDialog {
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent e) {
-            model.fireVisibilityChanged();
+            applyChanges();
             setVisible(false);
         }
-
     }
 
     private class RefreshAction extends AbstractAction{
@@ -112,26 +82,46 @@ public class AttributeDialog extends JDialog {
             registry.refresh();
         }
     }
+    
+    class EditListAction extends AbstractAction{
+        public EditListAction() {
+            super("", editButtonImage);
+        }
+        private int row = 0;
+        private SortedListModel listBoxModel;        
+        public void actionPerformed(ActionEvent e) {
+            ListDialog.showDialog(
+                    (Component)e.getSource(),
+                    AttributeDialog.this,
+                    "labelText",
+                    "Title",
+                    listBoxModel,
+                    "xxxxxxxxxxxxxxxxxxxxx"
+                    );
+        }
+        
+        public int getRow() {
+            return row;
+        }
+        public void setRow(int row) {
+            this.row = row;
+        }
+        public SortedListModel getListBoxModel() {
+            return listBoxModel;
+        }
+        public void setListBoxModel(SortedListModel listBoxModel) {
+            this.listBoxModel = listBoxModel;
+        }
+    }
     public AttributeDialog(MindMap map){
-        super(Resources.getInstance().getJFrame());
+        super(Resources.getInstance().getJFrame(), true);
 
-        view = new JTable();
+        view = new AttributeRegistryTable(new EditListAction());
         registry = map.getRegistry();
         model = registry.getAttributes();
         view.setModel(model.getTableModel());
         view.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         view.getTableHeader().setReorderingAllowed(false);
-
-        final Box northButtons = Box.createHorizontalBox();
-
-        getContentPane().add(northButtons, BorderLayout.NORTH);
-        northButtons.add(Box.createHorizontalGlue());
-        JButton selectAll = new JButton(new SelectAllAction());
-        northButtons.add(selectAll);
-        northButtons.add(Box.createHorizontalGlue());
-        JButton deselectAll = new JButton(new DeselectAllAction());
-        northButtons.add(deselectAll);
-        northButtons.add(Box.createHorizontalGlue());
 
         JScrollPane scrollPane = new JScrollPane(view);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
@@ -146,16 +136,29 @@ public class AttributeDialog extends JDialog {
         JButton apply = new JButton(new ApplyAction());
         southButtons.add(apply);
         southButtons.add(Box.createHorizontalGlue());
-        JButton close = new JButton(new CloseAction());
-        southButtons.add(close);
-        southButtons.add(Box.createHorizontalGlue());
         JButton refresh = new JButton(new RefreshAction());
         southButtons.add(refresh);
         southButtons.add(Box.createHorizontalGlue());
-
+    	size = new JComboBox(fontSizes);
+    	size.addItemListener(new ItemListener(){
+            public void itemStateChanged(ItemEvent e) {
+                model.setVisibilityChanged();
+            }
+    	    
+    	});
+        southButtons.add(size);
+        southButtons.add(Box.createHorizontalGlue());
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); 
+    	
     }
     public void mapChanged(MindMap map){
         registry = map.getRegistry();
         view.setModel(registry.getAttributes().getTableModel());
+    }
+    public void setVisible(boolean b) {
+        if(b){
+            size.setSelectedItem(Integer.toString(model.getFontSize()));
+        }
+        super.setVisible(b);
     }
 }
