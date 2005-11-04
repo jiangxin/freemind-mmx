@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.16 2005-08-13 21:36:46 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.17 2005-11-04 21:42:24 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -1403,6 +1403,7 @@ public class OptionPanel {
 				"default_browser_command_mac")); //  open -a
 		// /Applications/Safari.app {0}
 
+		controls.add(new SeparatorProperty("html_export"));
 		//
 		controls
 				.add(new ComboProperty(null, "html_export_folding",
@@ -1412,7 +1413,6 @@ public class OptionPanel {
 								"html_export_based_on_headings" })); //  html_export_fold_currently_folded
 
 		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("html_export"));
 		controls.add(new BooleanProperty(
 
 		"export_icons_in_html.tooltip", "export_icons_in_html")); //  false
