@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12.2.4.2.4 2005-10-03 15:07:59 dpolivaev Exp $*/
+/*$Id: MapView.java,v 1.30.16.12.2.4.2.5 2005-11-06 12:01:14 dpolivaev Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -514,7 +514,6 @@ public class MapView extends JPanel implements Printable {
         //select new node
         this.selected.clear();
         this.selected.add(newSelected);
-        AttributeView.clearOldSelection();
         newSelected.requestFocus();
 
         // set last focused as preferred (PN) 

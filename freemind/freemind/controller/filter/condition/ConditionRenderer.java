@@ -20,6 +20,7 @@ import javax.swing.ListCellRenderer;
  */
 public class ConditionRenderer implements ListCellRenderer {
 
+    final public static Color SELECTED_BACKGROUND = new Color(207, 247, 202);
     /* (non-Javadoc)
      * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
      */
@@ -32,8 +33,9 @@ public class ConditionRenderer implements ListCellRenderer {
         if(value == null) return new JLabel("--");
         Condition cond = (Condition) value;
         JComponent component = cond.getListCellRendererComponent();
+        component.setOpaque(true);
         if (isSelected  || cellHasFocus){
-            component.setBackground(Color.BLUE);            
+            component.setBackground(SELECTED_BACKGROUND);            
         }
         else{
             component.setBackground(Color.WHITE);            

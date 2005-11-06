@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.9 2005-11-01 13:42:20 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.10 2005-11-06 12:01:14 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -489,7 +489,7 @@ public abstract class NodeView extends JComponent{
 	}
 
  
-    protected boolean isSelected() {
+    public boolean isSelected() {
 	return (getMap().isSelected(this));
     }
 
@@ -868,7 +868,6 @@ public abstract class NodeView extends JComponent{
         	for (Iterator i = icons.iterator(); i.hasNext();) {
 			MindIcon myIcon = (MindIcon) i.next();
             iconPresent = true;
-            //System.out.println("print the icon " + myicon.toString());
             iconImages.addImage(myIcon.getIcon(frame));  
         }
         String link = ((NodeAdapter)getModel()).getLink();

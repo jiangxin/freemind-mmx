@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.4 2005-11-01 13:42:20 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.5 2005-11-06 12:01:14 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -49,7 +49,9 @@ import freemind.view.mindmapview.NodeView;
 public class AttributeView implements ChangeListener, ColumnWidthChangeListener, NodeViewEventListener {    
     private class AttributeChangeListener implements TableModelListener{
         public void tableChanged(TableModelEvent arg0) {
+            attributeTable.tableChanged(arg0);
             MapView map = getNodeView().getMap();
+            attributeViewScrollPane.invalidate();
             map.getModel().nodeChanged(getModel());
         }
         
@@ -75,7 +77,7 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
         nodeView.getModel().addNodeViewEventListener(this);
         NodeAttributeTableModel attributes = getModel().getAttributes();
         AttributeRegistry attributeRegistry = getModel().getMap().getRegistry().getAttributes();
-        reducedAttributeTableModel = new ReducedAttributeTableModelDecorator(this, attributes, attributeRegistry);
+        reducedAttributeTableModel = new ReducedAttributeTableModelDecorator(attributes, attributeRegistry);
         currentAttributeTableModel = reducedAttributeTableModel;
         getModel().getAttributes().setViewType(attributes.getViewType());
         setViewType(attributes.getViewType());
@@ -122,7 +124,6 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
     private AttributeTableModel getExtendedAttributeTableModel() {
         if(extendedAttributeTableModel == null){
             extendedAttributeTableModel = new ExtendedAttributeTableModelDecorator(
-                    this,
                     getModel().getAttributes(),
                     getModel().getMap().getRegistry().getAttributes());
         }
@@ -177,12 +178,6 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
      */
     public MapView getMapView() {
         return getNodeView().getMap();
-    }
-    /**
-     * 
-     */
-    public static void clearOldSelection() {
-        AttributeTable.clearOldSelection();        
     }
     /**
      * 

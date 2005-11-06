@@ -39,9 +39,9 @@ public class ConditionNotSatisfiedDecorator implements Condition {
      * @see freemind.controller.filter.condition.Condition#getListCellRendererComponent()
      */
     public JComponent getListCellRendererComponent() {
-        JComponent component = new JPanel();
-        component.setBackground(Color.WHITE);
-        component.add(new JLabel(Resources.getInstance().getResourceString("filter_not") + " "));
+        JCondition component = new JCondition();   
+        String text = Resources.getInstance().getResourceString("filter_not") + ' ';
+        component.add(new JLabel(text));
         component.add(originalCondition.getListCellRendererComponent());
         return component;
     }

@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.5 2005-04-15 22:28:09 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.5.6.1 2005-11-06 12:01:14 dpolivaev Exp $ */
 
 package freemind.main;
 
@@ -109,7 +109,7 @@ public class Tools {
     public static Point xmlToPoint(String string) {
         if (string == null)
             return null;
-        System.out.println("old String: '" + string + "'");
+        // System.out.println("old String: '" + string + "'");
         // fc, 3.11.2004: bug fix for alpha release of FM
         if (string.startsWith("java.awt.Point")) {
             string = string.replaceAll(

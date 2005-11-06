@@ -178,10 +178,11 @@ public class ConditionFactory {
     }
 
     static public JComponent createCellRendererComponent(String description) {
-        JComponent renderer = new JPanel();
-        renderer.setBackground(Color.WHITE);
-        renderer.add(new JLabel(description));
-        return renderer;
+        JCondition component = new JCondition();   
+        JLabel label = new JLabel(description);
+        label.setBackground(Color.PINK);
+        component.add(label);
+        return component;
     }
 
 }

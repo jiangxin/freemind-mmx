@@ -43,14 +43,14 @@ public class ConjunctConditions implements Condition {
      * @see freemind.controller.filter.condition.Condition#getListCellRendererComponent()
      */
     public JComponent getListCellRendererComponent() {
-        JComponent component = new JPanel();
-        component.setBackground(Color.WHITE);
+        JCondition component = new JCondition();   
         component.add(new JLabel("("));
         Condition cond = (Condition)conditions[0];
         component.add(cond.getListCellRendererComponent());
         int i;
         for(i=1; i<conditions.length; i++){
-            component.add(new JLabel(Resources.getInstance().getResourceString("filter_and") + " "));
+            String text = ' ' + Resources.getInstance().getResourceString("filter_and") + ' ';
+            component.add(new JLabel(text));
             cond = (Condition)conditions[i];
             component.add(cond.getListCellRendererComponent());        }
         component.add(new JLabel(")"));

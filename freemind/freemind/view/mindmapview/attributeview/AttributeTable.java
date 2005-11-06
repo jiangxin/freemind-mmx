@@ -5,6 +5,7 @@
 package freemind.view.mindmapview.attributeview;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.FocusEvent;
@@ -20,9 +21,13 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.event.TableModelEvent;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 
+import freemind.modes.MindMapNode;
 import freemind.modes.NodeViewEvent;
 import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.AttributeRegistry;
@@ -36,28 +41,48 @@ import freemind.view.mindmapview.NodeView;
 class AttributeTable extends JTable implements NodeViewEventListener{
     private static final int MAX_HEIGTH = 300;
     private static final int MAX_WIDTH = 600;
-    static private AttributeTable selectedTable = null;
     static private class MyFocusListener implements FocusListener{
         /* (non-Javadoc)
          * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
          */
-         public void focusGained(FocusEvent event) { 
-            AttributeTable table = (AttributeTable)event.getSource();
-            if(table != selectedTable){
-                NodeView nodeView = table.attributeView.getNodeView();
-                AttributeTable.clearOldSelection();
-                nodeView.getMap().scrollNodeToVisible(nodeView);
-                selectedTable = table;
+        public void focusGained(FocusEvent event) { 
+            Container newFocusCycleRoot = getFocusCycleRoot(event.getSource());
+            Container oldFocusCycleRoot = getFocusCycleRoot(event.getOppositeComponent());
+            if(newFocusCycleRoot != oldFocusCycleRoot 
+                    && newFocusCycleRoot instanceof AttributeTable){
+                AttributeTable table = (AttributeTable)newFocusCycleRoot;
+                table.selectNode();
             }
         }
         
         /* (non-Javadoc)
          * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
          */
-         public void focusLost(FocusEvent event) {
+        public void focusLost(FocusEvent event) {
+            Container oldFocusCycleRoot = getFocusCycleRoot(event.getSource());
+            Container newFocusCycleRoot = getFocusCycleRoot(event.getOppositeComponent());
+            if(newFocusCycleRoot != oldFocusCycleRoot 
+                    && oldFocusCycleRoot instanceof AttributeTable){
+                ((AttributeTable)oldFocusCycleRoot).clearSelection();                 
+                return;                 
+            }
         }
+        
+        private Container getFocusCycleRoot(Object object) {
+            if(object instanceof Container){
+                Container source = (Container)object;
+                if(source.isFocusCycleRoot()){
+                    return source;
+                }
+            }
+            if(object instanceof Component){
+                Component source = (Component)object;
+                return source.getFocusCycleRootAncestor();
+            }
+            return null;
+        }
+        
     }
-    
     static private class HeaderMouseListener extends MouseAdapter{
         public void mouseReleased(MouseEvent e) {
             JTableHeader header = (JTableHeader)e.getSource();
@@ -78,7 +103,7 @@ class AttributeTable extends JTable implements NodeViewEventListener{
             }
         }
     }
-
+    
     static private MyFocusListener focusListener = new MyFocusListener();
     static private MouseListener componentListener = new HeaderMouseListener();
     private AttributeTableModel currentModel;
@@ -86,10 +111,11 @@ class AttributeTable extends JTable implements NodeViewEventListener{
     static private JComboBox comboBox = null; 
     static private ComboBoxModel defaultComboBoxModel = null; 
     static private DefaultCellEditor dce = null;
+    static private DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
     private AttributeView attributeView;
     private static final int EXTRA_HEIGHT = 4;
     private static final float TABLE_ROW_HEIGHT = 4;
-      AttributeTable(AttributeView attributeView) {
+    AttributeTable(AttributeView attributeView) {
         super();
         this.attributeView = attributeView;
         addFocusListener(focusListener);
@@ -97,9 +123,8 @@ class AttributeTable extends JTable implements NodeViewEventListener{
         attributeView.getNodeView().getModel().addNodeViewEventListener(this);
         currentModel = attributeView.getCurrentAttributeTableModel();
         setModel(currentModel);
-        getModel().removeTableModelListener(this);
         updateFontSize(this);
-        updateRowWidths();       
+        updateColumnWidths();       
         setDefaultEditor(Object.class, getDCE());
         setAutoResizeMode(AUTO_RESIZE_OFF);
         getTableHeader().setReorderingAllowed(false);
@@ -108,26 +133,31 @@ class AttributeTable extends JTable implements NodeViewEventListener{
         setRowSelectionAllowed(false);
         setFocusCycleRoot(true);
     }
-
-    /**
-     * 
-     */
-     static void clearOldSelection() {
-        if(selectedTable != null){
-            if (selectedTable.isEditing()){                
-                selectedTable.getCellEditor().stopCellEditing();
-            }
-            selectedTable.clearSelection(); 
-            selectedTable = null;
-        }
+    
+    
+    public TableCellEditor getCellEditor(int row, int column) {
+        return dce;
     }
-
+    public TableCellRenderer getCellRenderer(int row, int column) {
+        String text = getValueAt(row, column).toString();
+        dtcr.setText(text);
+        int prefWidth = dtcr.getPreferredSize().width;
+        int width = getColumnModel().getColumn(column).getWidth();
+        if(prefWidth > width){
+            dtcr.setToolTipText(text);
+        }
+        else{
+            dtcr.setToolTipText(null);
+        }
+        return dtcr;
+    }
     /**
      * 
      */
-     public Component prepareEditor(TableCellEditor tce, int row, int col) {
+    public Component prepareEditor(TableCellEditor tce, int row, int col) {
         ComboBoxModel model;
-        AttributeRegistry attributes = currentModel.getNode().getMap().getRegistry().getAttributes();
+        MindMapNode node = currentModel.getNode();
+        AttributeRegistry attributes = node.getMap().getRegistry().getAttributes();
         switch (col){
         case 0:        
             model = attributes.getComboBoxModel();
@@ -142,18 +172,21 @@ class AttributeTable extends JTable implements NodeViewEventListener{
             model = getDefaultComboBoxModel();
         }
         model.setSelectedItem("");
-        if(selectedTable != this)
-        {
-            attributeView.getMapView().selectAsTheOnlyOneSelected(attributeView.getNodeView());
-            selectedTable = this;
-        }
         comboBox.setModel(model);
         Component editor = super.prepareEditor(tce, row, col);
         updateFontSize(editor);
         return editor;
     }
-
-     public Dimension getPreferredScrollableViewportSize() {
+    
+    private void selectNode() {
+        MindMapNode node = currentModel.getNode();
+        NodeView viewer = node.getViewer();
+        if(! viewer.isSelected()){
+            viewer.getMap().selectAsTheOnlyOneSelected(viewer);
+        }
+    }
+    
+    public Dimension getPreferredScrollableViewportSize() {
         if(! isValid())
             validate();
         float zoom = getZoom();
@@ -167,18 +200,20 @@ class AttributeTable extends JTable implements NodeViewEventListener{
         {
             comboBox = new JComboBox();
             comboBox.setEditable(true);
+            comboBox.addFocusListener(focusListener);
+            comboBox.getEditor().getEditorComponent().addFocusListener(focusListener);
             dce = new DefaultCellEditor(comboBox);
         }
         return dce;
     }
-     static ComboBoxModel getDefaultComboBoxModel() {
+    static ComboBoxModel getDefaultComboBoxModel() {
         if (defaultComboBoxModel == null)
         {
             defaultComboBoxModel = new DefaultComboBoxModel();
-         }
+        }
         return defaultComboBoxModel;
     }
-     public void changeSelection(int rowIndex, int columnIndex, boolean toggle,
+    public void changeSelection(int rowIndex, int columnIndex, boolean toggle,
             boolean extend) {
         changeSelectedRowHeight(rowIndex);
         super.changeSelection(rowIndex, columnIndex, toggle, extend);        
@@ -194,34 +229,37 @@ class AttributeTable extends JTable implements NodeViewEventListener{
             highRowIndex = rowIndex;
         }
     }
-
+    
     public void clearSelection() {
+        if (isEditing()){                
+            getCellEditor().stopCellEditing();
+        }
         changeSelectedRowHeight(0);
         super.clearSelection();
     }
-
+    
     /**
      * 
      */
-     void updateAttributeTable() {
+    void updateAttributeTable() {
         updateFontSize(this);
         updateRowHeights();
-        updateRowWidths();       
+        updateColumnWidths();       
     }
-
-    private void updateRowWidths() {
+    
+    private void updateColumnWidths() {
         float zoom = getZoom();
         for(int i = 0; i < 2; i++){
             int width = (int) (currentModel.getColumnWidth(i) * zoom);
             getColumnModel().getColumn(i).setPreferredWidth(width);            
         }
     }
-
+    
     private void updateRowHeights() {
         int rowCount = getRowCount();
         if(rowCount == 0)
             return;
-
+        
         int constHeight = getTableHeader().getPreferredSize().height + EXTRA_HEIGHT;        
         float zoom = getZoom();
         float fontSize = getFontSize();
@@ -237,7 +275,7 @@ class AttributeTable extends JTable implements NodeViewEventListener{
             setRowHeight(i, newHeight + (i == highRowIndex ? EXTRA_HEIGHT : 0));
         }
     }
-
+    
     private void updateFontSize(Component c) {
         // 1) Determine font
         Font font = c.getFont();
@@ -254,19 +292,24 @@ class AttributeTable extends JTable implements NodeViewEventListener{
     private float getZoom() {
         return attributeView.getMapView().getZoom();
     }
-
+    
     public void tableChanged(TableModelEvent e) {
+        if (isEditing()
+                && (e.getColumn() == TableModelEvent.ALL_COLUMNS 
+                        || e.getFirstRow() == TableModelEvent.HEADER_ROW)){
+            getCellEditor().cancelCellEditing();
+        }
         super.tableChanged(e);
         updateRowHeights();
     }
-
+    
     /* (non-Javadoc)
      * @see javax.swing.event.AncestorListener#ancestorAdded(javax.swing.event.AncestorEvent)
      */
     public void nodeViewCreated(NodeViewEvent event) {
         getModel().addTableModelListener(this);
     }
-
+    
     /* (non-Javadoc)
      * @see javax.swing.event.AncestorListener#ancestorRemoved(javax.swing.event.AncestorEvent)
      */
@@ -274,10 +317,14 @@ class AttributeTable extends JTable implements NodeViewEventListener{
         getModel().removeTableModelListener(this);
         attributeView.getNodeView().getModel().removeNodeViewEventListener(this);
     }
-
-
+    
+    
     private float getFontSize() {
         float zoom = getZoom();
         return (attributeView.getNodeView().getModel().getMap().getRegistry().getAttributes().getFontSize() * zoom);
+    }
+    public void setModel(TableModel dataModel) {
+        super.setModel(dataModel);
+        getModel().removeTableModelListener(this);
     }
 }

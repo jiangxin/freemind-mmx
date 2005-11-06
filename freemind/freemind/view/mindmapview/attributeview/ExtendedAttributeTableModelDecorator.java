@@ -5,12 +5,7 @@
 package freemind.view.mindmapview.attributeview;
 
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.TableModelListener;
 
-import freemind.modes.MindMapNode;
-import freemind.modes.NodeViewEvent;
-import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableModel;
@@ -19,20 +14,11 @@ import freemind.modes.attributes.AttributeTableModel;
  * @author Dimitri Polivaev
  * 18.06.2005
  */
-class ExtendedAttributeTableModelDecorator   implements AttributeTableModel, ChangeListener, NodeViewEventListener{
-    private AttributeTableModel nodeAttributeModel;
-    private AttributeRegistry attributeRegistry;
+class ExtendedAttributeTableModelDecorator extends AttributeTableModelDecoratorAdapter{
     public ExtendedAttributeTableModelDecorator(
-            AttributeView attributeView, 
             AttributeTableModel nodeAttributeModel,
             AttributeRegistry attributeRegistry) {
-        super();
-        this.nodeAttributeModel = nodeAttributeModel;
-        this.attributeRegistry = attributeRegistry;
-        nodeAttributeModel.getNode().addNodeViewEventListener(this);        
-    }
-    public int getColumnCount() {
-        return 2;
+        super(nodeAttributeModel, attributeRegistry);
     }
     public int getRowCount() {
         if (nodeAttributeModel.getNode().getMap().getRegistry().getAttributes().isRestricted())
@@ -79,57 +65,7 @@ class ExtendedAttributeTableModelDecorator   implements AttributeTableModel, Cha
     public void addRow(Attribute attr) {
         nodeAttributeModel.addRow(attr);
     }
-    public MindMapNode getNode() {
-        return nodeAttributeModel.getNode();
-    }
-    public String toString() {
-        return nodeAttributeModel.toString();
-    }
-    
-    public void addTableModelListener(TableModelListener l) {
-        nodeAttributeModel.addTableModelListener(l);
-    }
-    public void removeTableModelListener(TableModelListener l) {
-        nodeAttributeModel.removeTableModelListener(l);
-    }
-    public Class getColumnClass(int columnIndex) {
-        return nodeAttributeModel.getColumnClass(columnIndex);
-    }
-    public String getColumnName(int columnIndex) {
-        return nodeAttributeModel.getColumnName(columnIndex);
-    }
-    public int getColumnWidth(int col) {
-        return nodeAttributeModel.getColumnWidth(col);
-    }
-    public void setColumnWidth(int col, int width) {
-        nodeAttributeModel.setColumnWidth(col, width);
-    }
-    private void addListeners() {
-        this.attributeRegistry.addChangeListener(this);
-    }
-    private void removeListeners() {
-        this.attributeRegistry.removeChangeListener(this);
-        nodeAttributeModel.getNode().removeNodeViewEventListener(this);        
-    }
-    /* (non-Javadoc)
-     * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
-     */
     public void stateChanged(ChangeEvent e) {
-        nodeAttributeModel.fireTableDataChanged();     
-    }
-    /* (non-Javadoc)
-     * @see freemind.modes.attributes.AttributeTableModel#fireTableStructureChanged()
-     */
-    public void nodeViewCreated(NodeViewEvent event) {
-        addListeners();
-    }
-    public void nodeViewRemoved(NodeViewEvent event) {
-        removeListeners();
-    }
-    /* (non-Javadoc)
-     * @see freemind.modes.attributes.AttributeTableModel#fireTableDataChanged()
-     */
-    public void fireTableDataChanged() {
-        nodeAttributeModel.fireTableDataChanged();        
+        fireTableDataChanged();     
     }
 }

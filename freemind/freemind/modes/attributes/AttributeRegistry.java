@@ -221,7 +221,7 @@ public class AttributeRegistry{
         myTableModel.fireTableRowsUpdated(iNew, iNew);
         Visitor replacer = new AttributeRenamer(oldO, newO); 
         Iterator iterator = new Iterator(replacer);
-        isVisibilityChanged = true;
+        setVisibilityChanged();
         iterator.iterate();
     }
 
@@ -243,7 +243,7 @@ public class AttributeRegistry{
         Visitor remover = new AttributeRemover(o); 
         Iterator iterator = new Iterator(remover);
         iterator.iterate();
-        isVisibilityChanged = true;
+        setVisibilityChanged();
         fireVisibilityChanged();
     }
     /**
@@ -263,14 +263,14 @@ public class AttributeRegistry{
         Visitor remover = new AttributeValueRemover(key, o); 
         Iterator iterator = new Iterator(remover);
         iterator.iterate();
-        isVisibilityChanged = true;
+        setVisibilityChanged();
         fireVisibilityChanged();
     }
     public void clear() {
         myTableModel.fireTableRowsDeleted();
         elements.clear();
         if(visibleElementsNumber != 0){
-            isVisibilityChanged = true;
+            setVisibilityChanged();
             visibleElementsNumber = 0;
         }
     }
@@ -367,11 +367,11 @@ public class AttributeRegistry{
             element.setVisible(visible);
             if(visible.booleanValue()){
                 visibleElementsNumber++;
-                isVisibilityChanged = true;
+                setVisibilityChanged();
             }
             else{
                 visibleElementsNumber--;
-                isVisibilityChanged = true;
+                setVisibilityChanged();
             }
             myTableModel.fireVisibilityUpdated(row); 
         }
@@ -391,7 +391,7 @@ public class AttributeRegistry{
     public void setRestricted(int row, Boolean value) {
         if(row == GLOBAL){
             isRestricted = value;   
-            isVisibilityChanged = true;
+            setVisibilityChanged();
         }
         else{
             getElement(row).setRestricted(value);
@@ -436,7 +436,7 @@ public class AttributeRegistry{
      * @param b
      */
     public void setRestricted(boolean b) {
-        isRestricted = Boolean.valueOf(b);        
+        isRestricted = Boolean.valueOf(b); 
     }
 
     /**

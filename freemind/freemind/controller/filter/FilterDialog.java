@@ -300,7 +300,8 @@ public class FilterDialog extends JDialog {
     private DefaultComboBoxModel simpleAttributeConditionComboBoxModel;
     private ExtendedComboBoxModel filteredAttributeComboBoxModel;
     public FilterDialog(Controller c, final FilterToolbar ft) {
-        super(Resources.getInstance().getJFrame());
+        super(Resources.getInstance().getJFrame(),
+                c.getResourceString("filter_dialog"));
         this.c = c;
         this.fc = c.getFilterController();
         this.ft = ft;

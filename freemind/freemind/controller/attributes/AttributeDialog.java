@@ -113,8 +113,8 @@ public class AttributeDialog extends JDialog {
             this.listBoxModel = listBoxModel;
         }
     }
-    public AttributeDialog(MindMap map){
-        super(Resources.getInstance().getJFrame(), true);
+    public AttributeDialog(MindMap map, String titel){
+        super(Resources.getInstance().getJFrame(), titel, true);
 
         view = new AttributeRegistryTable(new EditListAction());
         registry = map.getRegistry();
@@ -153,6 +153,7 @@ public class AttributeDialog extends JDialog {
     }
     public void mapChanged(MindMap map){
         registry = map.getRegistry();
+        model = registry.getAttributes();
         view.setModel(registry.getAttributes().getTableModel());
     }
     public void setVisible(boolean b) {

@@ -21,7 +21,8 @@ public abstract class NodeCondition implements Condition {
     }
     
     public JComponent getListCellRendererComponent() {
-        return ConditionFactory.createCellRendererComponent(description);
+        JComponent component = ConditionFactory.createCellRendererComponent(description);
+        return component;
     }
     
     public String toString(){

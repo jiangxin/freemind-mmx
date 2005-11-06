@@ -35,10 +35,12 @@ public class IconContainedCondition implements Condition {
      * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
      */
     public JComponent getListCellRendererComponent() {
-        JComponent component = new JPanel();
-        component.setBackground(Color.WHITE);
-        component.add(new JLabel(Resources.getInstance().getResourceString("filter_icon")));
-        component.add(new JLabel(Resources.getInstance().getResourceString("filter_contains")));
+        JCondition component = new JCondition(); 
+        String text = Resources.getInstance().getResourceString("filter_icon")
+        + ' ' 
+        + Resources.getInstance().getResourceString("filter_contains")
+        + ' ';
+        component.add(new JLabel(text));
         component.add(Resources.getInstance().getComponent(getIconName()));
         return component;
     }

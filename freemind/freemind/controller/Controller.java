@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10.2.3.2.3 2005-07-16 17:23:23 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.3.2.4 2005-11-06 12:01:13 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -1071,12 +1071,14 @@ public class Controller {
     private class ShowAttributeDialogAction extends AbstractAction {
         private Controller c;
         ShowAttributeDialogAction(Controller c) {     
-            super("",
+            super(c.getResourceString("attributes_dialog"),
                   new ImageIcon(getResource("images/showAttributes.gif")));
             this.c = c;
         }
 		private AttributeDialog getAttributeDialog() {
-			if (attributeDialog == null) attributeDialog = new AttributeDialog(c.getMap());
+			if (attributeDialog == null) {
+			    attributeDialog = new AttributeDialog(c.getMap(), c.getResourceString("attributes_dialog"));
+			}
 			return attributeDialog;
 		}
 		

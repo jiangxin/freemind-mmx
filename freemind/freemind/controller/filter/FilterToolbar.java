@@ -162,6 +162,7 @@ class FilterToolbar extends JToolBar {
         add(new JLabel(Resources.getInstance().getResourceString("filter_toolbar") + " "));
         
         activeFilterCondition = new JComboBox();
+        activeFilterCondition.setFocusable(false);
         activeFilterCondition.setRenderer(fc.getConditionRenderer());
         add(activeFilterCondition);
         activeFilterCondition.addItemListener(filterChangeListener);

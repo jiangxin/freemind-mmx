@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.3.2.2.2.3 2005-10-03 15:07:59 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.3.2.2.2.4 2005-11-06 12:01:14 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -377,10 +377,6 @@ public class MindMapLayout implements LayoutManager {
 			int treeHeight = calcTreeHeight(node, treeShift, childrenViews);        	
     		node.setTreeHeight(treeHeight);
     		
-// System.out.println(node.getText()
-//    				+ ": treeShift=" + treeShift 
-//    				+ ": treeHeight=" + treeHeight 
-//					);
     	}
 
     }
