@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12.2.4.2.5 2005-11-06 12:01:14 dpolivaev Exp $*/
+/*$Id: MapView.java,v 1.30.16.12.2.4.2.6 2005-11-17 21:17:53 dpolivaev Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -515,15 +515,14 @@ public class MapView extends JPanel implements Printable {
         this.selected.clear();
         this.selected.add(newSelected);
         newSelected.requestFocus();
-
         // set last focused as preferred (PN) 
         if (newSelected.getModel().getParentNode() != null) {
             newSelected.getModel().getParentNode().setPreferredChild(newSelected.getModel());
         }
-
+        
         scrollNodeToVisible(newSelected);
         newSelected.repaint();
-
+        
         for(ListIterator e = oldSelecteds.listIterator();e.hasNext();) {
             NodeView oldSelected = (NodeView)e.next();
             if (oldSelected != null) {

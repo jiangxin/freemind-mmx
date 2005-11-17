@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.5 2005-11-01 13:42:20 dpolivaev Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.6 2005-11-17 21:17:53 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -224,7 +224,6 @@ public abstract class XMLElementAdapter extends XMLElement {
               && child.getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)){
           Attribute attribute = new Attribute(attributeName, ((XMLElementAdapter)child).attributeValue);
           map.getRegistry().getAttributes().registry(attribute);
-          map.getRegistry().getAttributes().setRestricted(attributeName, true);
       }
    }
 
@@ -347,6 +346,9 @@ public void setAttribute(String name, Object value) {
           }
           if (name.equals("VISIBLE")) {
               map.getRegistry().getAttributes().setVisible(attributeName, true);
+          }
+          if (name.equals("RESTRICTED")) {
+              map.getRegistry().getAttributes().setRestricted(attributeName, true);
           }
       }     
       else if (getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)) {

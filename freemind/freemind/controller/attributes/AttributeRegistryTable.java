@@ -91,7 +91,7 @@ class AttributeRegistryTable extends JTable {
         }
     }
     private static final ButtonRenderer editButtonRenderer = new ButtonRenderer(AttributeDialog.editButtonImage);
-    static final private Icon checkBoxImage = new ImageIcon("images/CheckBox12.gif");
+    static final private Icon checkBoxImage = new ImageIcon("images/CheckBox12.png");
     final private ButtonRenderer selectAllButtonRenderer;
     final private ButtonEditor selectAllButtonEditor;
     final private AttributeDialog.EditListAction editListAction;

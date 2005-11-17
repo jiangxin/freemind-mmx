@@ -71,17 +71,17 @@ public class AttributeDialog extends JDialog {
         }
     }
 
-    private class RefreshAction extends AbstractAction{
-        RefreshAction(){
-            super(Resources.getInstance().getResourceString("attributes_refresh"));
-        }
-        /* (non-Javadoc)
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            registry.refresh();
-        }
-    }
+//    private class RefreshAction extends AbstractAction{
+//        RefreshAction(){
+//            super(Resources.getInstance().getResourceString("attributes_refresh"));
+//        }
+//        /* (non-Javadoc)
+//         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+//         */
+//        public void actionPerformed(ActionEvent e) {
+//            registry.refresh();
+//        }
+//    }
     
     class EditListAction extends AbstractAction{
         public EditListAction() {
@@ -136,9 +136,9 @@ public class AttributeDialog extends JDialog {
         JButton apply = new JButton(new ApplyAction());
         southButtons.add(apply);
         southButtons.add(Box.createHorizontalGlue());
-        JButton refresh = new JButton(new RefreshAction());
-        southButtons.add(refresh);
-        southButtons.add(Box.createHorizontalGlue());
+//        JButton refresh = new JButton(new RefreshAction());
+//        southButtons.add(refresh);
+//        southButtons.add(Box.createHorizontalGlue());
     	size = new JComboBox(fontSizes);
     	size.addItemListener(new ItemListener(){
             public void itemStateChanged(ItemEvent e) {

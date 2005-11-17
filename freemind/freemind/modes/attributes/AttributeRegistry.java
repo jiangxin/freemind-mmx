@@ -168,12 +168,12 @@ public class AttributeRegistry{
 
     /**
      * @param name
+     * @param oldElement
      */
-    public int registry(String name) {
+    public int registry(String name, AttributeRegistryElement oldElement){
         if(name.equals(""))
             return -1;
-        AttributeRegistryElement attributeRegistryElement = new AttributeRegistryElement(this, name);
-        int index = elements.add(name, attributeRegistryElement);
+        int index = elements.add(name, oldElement);
         myTableModel.fireTableRowsInserted(index, index);
         return index;
     }
@@ -212,12 +212,9 @@ public class AttributeRegistry{
             return;
         
         int iOld = elements.indexOf(sOld);
-        Boolean wasVisible = getElement(iOld).isVisible();
-        Boolean wasRestricted = getElement(iOld).isRestricted();
+        AttributeRegistryElement oldElement = getElement(iOld);
         unregistry(iOld);
-        int iNew = registry(sNew);
-        getElement(iNew).setVisible(wasVisible);
-        getElement(iNew).setRestricted(wasRestricted);
+        int iNew = registry(sNew, oldElement);
         myTableModel.fireTableRowsUpdated(iNew, iNew);
         Visitor replacer = new AttributeRenamer(oldO, newO); 
         Iterator iterator = new Iterator(replacer);
@@ -282,7 +279,6 @@ public class AttributeRegistry{
     private AttributeRegistryComboBoxColumnModel getCombinedModel() {
         if(myComboBoxColumnModel== null)
             myComboBoxColumnModel = new AttributeRegistryComboBoxColumnModel(this);
-        myComboBoxColumnModel.setSelectedItem("");
         return myComboBoxColumnModel;
     }
 
@@ -468,28 +464,19 @@ public class AttributeRegistry{
      * @throws IOException
      */
     public void save(Writer fileout) throws IOException{
-        boolean mustSave = false;
         XMLElement attributeRegistry = new XMLElement();
         if(isRestricted()){
             attributeRegistry.setAttribute("RESTRICTED", "true");
-            mustSave = true;
         }
         if(getFontSize() != TABLE_FONT_SIZE){
             attributeRegistry.setIntAttribute("FONT_SIZE", getFontSize());
-            mustSave = true;
         }
         for (int i = 0; i < size(); i++){
             XMLElement attributeData = getElement(i).save();
-            if (attributeData != null){
-                attributeRegistry.addChild(attributeData);
-                mustSave = true;
-            }
+            attributeRegistry.addChild(attributeData);
         }
-        if(mustSave){
-            attributeRegistry.setName(XMLElementAdapter.XML_NODE_ATTRIBUTE_REGISTRY);
-            attributeRegistry.write(fileout);
-        }
-        
+        attributeRegistry.setName(XMLElementAdapter.XML_NODE_ATTRIBUTE_REGISTRY);
+        attributeRegistry.write(fileout);        
     }
 
     /**
@@ -498,6 +485,14 @@ public class AttributeRegistry{
      */
     public void setVisible(String attributeName, boolean b){
         setVisible(indexOf(attributeName),Boolean.valueOf(b));        
+    }
+
+    /**
+     * @param s
+     */
+    public void registry(String s) {
+        if (s != "")
+            registry(s, new AttributeRegistryElement(this, s));        
     }
 
 }

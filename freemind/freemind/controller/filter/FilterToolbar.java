@@ -157,6 +157,7 @@ class FilterToolbar extends JToolBar {
         super();
         this.fc = c.getFilterController();
         setVisible(false);
+        setFocusable(false);
         FilterChangeListener filterChangeListener = new FilterChangeListener(c);
         
         add(new JLabel(Resources.getInstance().getResourceString("filter_toolbar") + " "));

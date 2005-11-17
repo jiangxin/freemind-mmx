@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.10 2005-11-06 12:01:14 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.11 2005-11-17 21:17:53 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -122,6 +122,7 @@ public abstract class NodeView extends JComponent{
     private Object viewDeletionEvent;
     protected NodeView(MindMapNode model, MapView map) {
     setLayout(NodeViewLayoutManager.getInstance());
+    setFocusCycleRoot(true);
     mainView = new JLabel();
     mainView.setHorizontalAlignment(JLabel.CENTER);
     add(mainView);

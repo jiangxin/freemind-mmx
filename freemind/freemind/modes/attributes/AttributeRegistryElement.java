@@ -71,26 +71,21 @@ public class AttributeRegistryElement {
      * @return
      */
     public XMLElement save() {
-        boolean mustSave = false;
         XMLElement element = new XMLElement();
         if(isVisible().booleanValue()){
             element.setAttribute("VISIBLE", "true");
-            mustSave = true;
         }
         if(isRestricted().booleanValue()){
-            mustSave = true;
-            for (int i = 0; i < values.getSize(); i++){
-                XMLElement value = new XMLElement();
-                value.setName(XMLElementAdapter.XML_NODE_REGISTERED_ATTRIBUTE_VALUE);
-                value.setAttribute("VALUE", values.getElementAt(i).toString());
-                element.addChild(value);
-            }
+            element.setAttribute("RESTRICTED", "true");
         }
-        if(mustSave){
-            element.setName(XMLElementAdapter.XML_NODE_REGISTERED_ATTRIBUTE_NAME);
-            element.setAttribute("NAME", key.toString());
-            return element;
+        for (int i = 0; i < values.getSize(); i++){
+            XMLElement value = new XMLElement();
+            value.setName(XMLElementAdapter.XML_NODE_REGISTERED_ATTRIBUTE_VALUE);
+            value.setAttribute("VALUE", values.getElementAt(i).toString());
+            element.addChild(value);
         }
-        return null;
+        element.setName(XMLElementAdapter.XML_NODE_REGISTERED_ATTRIBUTE_NAME);
+        element.setAttribute("NAME", key.toString());
+        return element;
     }
 }
