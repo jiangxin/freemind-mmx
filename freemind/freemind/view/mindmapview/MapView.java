@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12.2.4.2.6 2005-11-17 21:17:53 dpolivaev Exp $*/
+/*$Id: MapView.java,v 1.30.16.12.2.4.2.7 2005-11-19 11:35:59 dpolivaev Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -26,9 +26,11 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.dnd.Autoscroll;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ComponentAdapter;
@@ -70,7 +72,7 @@ import freemind.view.mindmapview.attributeview.AttributeView;
  * This class represents the view of a whole MindMap
  * (in analogy to class JTree).
  */
-public class MapView extends JPanel implements Printable {
+public class MapView extends JPanel implements Printable, Autoscroll {
 
 	private class Selected {
 		private Vector mySelected = new Vector();
@@ -206,7 +208,7 @@ public class MapView extends JPanel implements Printable {
 		if(logger == null)
 			logger = controller.getFrame().getLogger(this.getClass().getName());
 
-        this.setAutoscrolls(true); //For some reason this doesn't work.
+        this.setAutoscrolls(true);
 
         getModel().addTreeModelListener( new MapModelHandler() );
 
@@ -1211,6 +1213,9 @@ public class MapView extends JPanel implements Printable {
     }
     
 	private int FOLDING_SYMBOL_WIDTH = -1;
+
+    private static final int margin = 20;
+
 	public int getZoomedFoldingSymbolHalfWidth() {
 		if (FOLDING_SYMBOL_WIDTH == -1)
 		{
@@ -1218,6 +1223,25 @@ public class MapView extends JPanel implements Printable {
 		}
 		return (int) ((FOLDING_SYMBOL_WIDTH * getZoom()) / 2);
 	}
+
+    /* (non-Javadoc)
+     * @see java.awt.dnd.Autoscroll#getAutoscrollInsets()
+     */
+    public Insets getAutoscrollInsets() {
+        Rectangle outer = getBounds();
+        Rectangle inner = getParent().getBounds();
+        return new Insets(
+        inner.y - outer.y + margin, inner.x - outer.x + margin,
+        outer.height - inner.height - inner.y + outer.y + margin,
+        outer.width - inner.width - inner.x + outer.x + margin);    }
+
+    /* (non-Javadoc)
+     * @see java.awt.dnd.Autoscroll#autoscroll(java.awt.Point)
+     */
+    public void autoscroll(Point cursorLocn) {
+        Rectangle r = new Rectangle((int)cursorLocn.getX() - margin, (int)cursorLocn.getY() - margin, 1+ 2*margin, 1+ 2*margin);
+        scrollRectToVisible(r);
+    }
 
 
  }

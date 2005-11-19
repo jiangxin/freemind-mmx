@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMotionListener.java,v 1.1.4.2.6.1 2005-07-12 15:41:13 dpolivaev Exp $*/
+/*$Id: NodeMotionListener.java,v 1.1.4.2.6.2 2005-11-19 11:35:59 dpolivaev Exp $*/
 
 package freemind.controller;
 
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.InputEvent;
@@ -35,6 +36,7 @@ import javax.swing.SwingUtilities;
 
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeMotionListenerView;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.RootNodeView;
@@ -73,9 +75,17 @@ public class NodeMotionListener extends MouseAdapter implements
         logger.fine("Event: mouseDragged");
         if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == (InputEvent.BUTTON1_DOWN_MASK)) {
             NodeView nodeV = getNodeView(e);
+            Component component = e.getComponent();
+            Rectangle r = new Rectangle(component.getX() + e.getX(), component.getY() + e.getY(), 1, 1);
+            MapView mapView = (MapView)component.getParent();
+            boolean isEventPointVisible = mapView.getVisibleRect().contains(r);
+            if(! isEventPointVisible){
+                mapView.scrollRectToVisible(r);
+                return;
+            }
 
             Point point = e.getPoint();
-            SwingUtilities.convertPointToScreen(point, e.getComponent());
+            SwingUtilities.convertPointToScreen(point, component);
             if (!isActive()) {
                 setDragStartingPoint(point,nodeV.getModel());
             } else {

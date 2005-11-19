@@ -16,26 +16,28 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMotionListenerView.java,v 1.1.4.2.6.1 2005-07-12 15:41:19 dpolivaev Exp $*/
+/*$Id: NodeMotionListenerView.java,v 1.1.4.2.6.2 2005-11-19 11:36:00 dpolivaev Exp $*/
 package freemind.view.mindmapview;
 
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
+import javax.swing.JComponent;
+
 /**
  * @author Dimitri
  *
  */
-public class NodeMotionListenerView extends Component {
+public class NodeMotionListenerView extends JComponent {
 	public NodeMotionListenerView(NodeView view) {
 		super();
 		this.movedView = view;
 		MapView map = view.getMap();
 		addMouseListener( map.getNodeMotionListener() );
-		addMouseMotionListener( map.getNodeMotionListener() );		
+		addMouseMotionListener( map.getNodeMotionListener() );
+		setAutoscrolls(true);
 	}
 	
 	private NodeView movedView;

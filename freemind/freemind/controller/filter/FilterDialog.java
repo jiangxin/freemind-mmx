@@ -374,7 +374,6 @@ public class FilterDialog extends JDialog {
         btnOr.setEnabled(false);
 
         btnDelete = new JButton(new DeleteConditionAction());
-        btnDelete.setAutoscrolls(true);
         btnDelete.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnDelete.setEnabled(false);
         conditionButtonToolbar.add(btnDelete);

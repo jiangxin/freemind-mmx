@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.17.2.1.2.7 2005-11-01 13:42:20 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.17.2.1.2.8 2005-11-19 11:35:59 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -414,8 +414,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     public void setView(MapView view) {
         scrollPane.setViewportView(view);
-	if(view != null) 
-	    view.setAutoscrolls(true);//for some reason this doesn't work
     }
 
     public MenuBar getFreeMindMenuBar() {

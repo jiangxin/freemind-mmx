@@ -16,14 +16,16 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapMouseMotionListener.java,v 1.7.16.4 2005-02-10 23:01:18 christianfoltin Exp $*/
+/*$Id: MapMouseMotionListener.java,v 1.7.16.4.6.1 2005-11-19 11:35:59 dpolivaev Exp $*/
 
 package freemind.controller;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+
 import javax.swing.JPopupMenu;
 
 import freemind.modes.MindMapArrowLink;
@@ -70,6 +72,12 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
 
     public void mouseMoved(MouseEvent e) { }
     public void mouseDragged(MouseEvent e) {
+        Rectangle r = new Rectangle(e.getX(), e.getY(), 1, 1);
+        MapView mapView = (MapView)e.getComponent();
+        boolean isEventPointVisible = mapView.getVisibleRect().contains(r);
+        if(! isEventPointVisible){
+        mapView.scrollRectToVisible(r);
+        }
        // Always try to get mouse to the original position in the Map.
        if (originX >=0) {
     	  if(draggedLink != null){
@@ -80,10 +88,13 @@ public class MapMouseMotionListener implements MouseMotionListener, MouseListene
     		originY = e.getY();
     		c.getView().repaint();
     	  }
-    	  else{
-    		((MapView)e.getComponent()).scrollBy(originX - e.getX(), originY - e.getY(), false);
+    	  else if(isEventPointVisible){
+     		mapView.scrollBy(originX - e.getX(), originY - e.getY(), false);
     	  }
-       // } else { // do the init in the mouse press
+    	  else{
+    	      originX = e.getX();
+    	      originY = e.getY();
+    	  }
        }
     } 
 
