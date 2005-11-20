@@ -139,7 +139,8 @@ public class AttributeRegistry{
     private AttributeRegistryTableModel myTableModel = null;
     private EventListenerList listenerList = null; 
     
-    private Boolean isRestricted;
+    private Boolean restrictionModel;
+    private boolean isRestricted;
     static final int GLOBAL = -1;
     private static final int TABLE_FONT_SIZE = 12;
     private int fontSize = TABLE_FONT_SIZE;
@@ -155,7 +156,8 @@ public class AttributeRegistry{
         visibleElementsNumber = 0;
         elements = new SortedMapVector();
         myTableModel = new AttributeRegistryTableModel(this);
-        isRestricted = new Boolean(false);
+        isRestricted = false;
+        restrictionModel= Boolean.FALSE;
     }
     
     public Comparable getKey(int index) {
@@ -329,7 +331,6 @@ public class AttributeRegistry{
     public void fireVisibilityChanged() {
         if(isVisibilityChanged){
             fireStateChanged();
-            isVisibilityChanged = false;
             registry.repaintMap();
         }
     }
@@ -357,10 +358,10 @@ public class AttributeRegistry{
         return elements.indexOf(string);
     }
 
-    public void setVisible(int row, Boolean visible) {
+    public void setVisibility(int row, Boolean visible) {
         AttributeRegistryElement element = getElement(row);
-        if(! element.isVisible().equals(visible)){
-            element.setVisible(visible);
+        if(! element.getVisibilityModel().equals(visible)){
+            element.setVisibilityModel(visible);
             if(visible.booleanValue()){
                 visibleElementsNumber++;
                 setVisibilityChanged();
@@ -384,32 +385,41 @@ public class AttributeRegistry{
      * @param i
      * @param value
      */
-    public void setRestricted(int row, Boolean value) {
+    public void setRestriction(int row, Boolean value) {
         if(row == GLOBAL){
-            isRestricted = value;   
+            restrictionModel = value;   
             setVisibilityChanged();
         }
         else{
-            getElement(row).setRestricted(value);
+            getElement(row).setRestrictionModel(value);
         }
         myTableModel.fireRestrictionsUpdated(row);
     }
     
-    Boolean isRestricted(int row){
+    Boolean getRestriction(int row){
         if(row == GLOBAL){
-            return isRestricted;   
+            return restrictionModel;   
            }
        else{
-           return getElement(row).isRestricted();
+           return getElement(row).getRestriction();
        }
     }
     
     public boolean isRestricted(String s){
-        return isRestricted(indexOf(s)).booleanValue();
+        return getRestriction(indexOf(s)).booleanValue();
     }
 
     public void setRestricted(String s, boolean b){
-        setRestricted(indexOf(s),Boolean.valueOf(b));
+        setRestricted(indexOf(s),b);
+    }
+
+    /**
+     * @param i
+     * @param b
+     */
+    private void setRestricted(int row, boolean b) {
+        getElement(row).setRestricted(b);
+        
     }
 
     /**
@@ -426,13 +436,13 @@ public class AttributeRegistry{
      * @return
      */
     public boolean isRestricted() {
-        return isRestricted.booleanValue();
+        return isRestricted;
     }
     /**
      * @param b
      */
     public void setRestricted(boolean b) {
-        isRestricted = Boolean.valueOf(b); 
+        isRestricted = b; 
     }
 
     /**
@@ -484,7 +494,15 @@ public class AttributeRegistry{
      * @param b
      */
     public void setVisible(String attributeName, boolean b){
-        setVisible(indexOf(attributeName),Boolean.valueOf(b));        
+        setVisible(indexOf(attributeName), b);        
+    }
+
+    /**
+     * @param i
+     * @param b
+     */
+    private void setVisible(int row, boolean b) {
+        getElement(row).setVisible(b);        
     }
 
     /**
@@ -495,4 +513,22 @@ public class AttributeRegistry{
             registry(s, new AttributeRegistryElement(this, s));        
     }
 
+    public void resetChanges(){
+        if(isVisibilityChanged == false)
+            return;
+        restrictionModel = Boolean.valueOf(isRestricted);
+        for(int i = 0; i < elements.size(); i++)
+            getElement(i).resetChanges();
+        isVisibilityChanged = false;
+    }
+    
+    public void applyChanges(){
+        if(isVisibilityChanged == false)
+            return;
+        isRestricted = restrictionModel.booleanValue(); 
+        for(int i = 0; i < elements.size(); i++)
+            getElement(i).applyChanges();
+        fireVisibilityChanged();
+        isVisibilityChanged = false;
+    }
 }

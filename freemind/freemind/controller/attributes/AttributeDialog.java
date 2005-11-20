@@ -20,6 +20,7 @@ import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
 
 import freemind.controller.filter.util.SortedListModel;
 import freemind.main.Resources;
@@ -55,18 +56,37 @@ public class AttributeDialog extends JDialog {
         Object size = this.size.getSelectedItem();
         int iSize = Integer.parseInt(size.toString());
         model.setFontSize(iSize);
-        model.fireVisibilityChanged();
+        model.applyChanges();
+    }
+
+    private void resetChanges() {        
+        int iSize = model.getFontSize();
+        size.setSelectedItem(Integer.toString(iSize));
+        model.resetChanges();
     }
 
     private class OKAction extends AbstractAction{
         OKAction(){
-            super(Resources.getInstance().getResourceString("attributes_okey"));
+            super(Resources.getInstance().getResourceString("ok"));
         }
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent e) {
             applyChanges();
+            setVisible(false);
+        }
+    }
+
+    private class CancelAction extends AbstractAction{
+        CancelAction(){
+            super(Resources.getInstance().getResourceString("cancel"));
+        }
+        /* (non-Javadoc)
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
+        public void actionPerformed(ActionEvent e) {
+            resetChanges();
             setVisible(false);
         }
     }
@@ -127,7 +147,8 @@ public class AttributeDialog extends JDialog {
         getContentPane().add(scrollPane, BorderLayout.CENTER);
 
         final Box southButtons = Box.createHorizontalBox();
-
+        southButtons.setBorder(new EmptyBorder(5, 5, 5, 5));
+        
         getContentPane().add(southButtons, BorderLayout.SOUTH);
         southButtons.add(Box.createHorizontalGlue());
         JButton ok = new JButton(new OKAction());
@@ -135,6 +156,9 @@ public class AttributeDialog extends JDialog {
         southButtons.add(Box.createHorizontalGlue());
         JButton apply = new JButton(new ApplyAction());
         southButtons.add(apply);
+        southButtons.add(Box.createHorizontalGlue());
+        JButton cancel = new JButton(new CancelAction());
+        southButtons.add(cancel);
         southButtons.add(Box.createHorizontalGlue());
 //        JButton refresh = new JButton(new RefreshAction());
 //        southButtons.add(refresh);
@@ -146,7 +170,8 @@ public class AttributeDialog extends JDialog {
             }
     	    
     	});
-        southButtons.add(size);
+    	size.setToolTipText(Resources.getInstance().getResourceString("attribute_font_size_tooltip"));
+    	southButtons.add(size);
         southButtons.add(Box.createHorizontalGlue());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); 
     	

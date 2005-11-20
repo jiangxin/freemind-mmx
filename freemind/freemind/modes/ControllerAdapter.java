@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.5 2005-10-03 15:07:59 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.6 2005-11-20 20:41:36 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -1711,15 +1711,25 @@ public abstract class ControllerAdapter implements ModeController {
             super(getText("edit_attributes"));
         }
         public void actionPerformed(ActionEvent e) {
-            NodeView selectedNodeView = getView().getSelected();
-            AttributeView selectedAttributeView = selectedNodeView.getAttributeView();
-            if(! selectedAttributeView.getAttributeViewType().equals(AttributeTableLayoutModel.SHOW_EXTENDED)){
-                selectedNodeView.getModel().getAttributes().setViewType(AttributeTableLayoutModel.SHOW_EXTENDED);
+            NodeView firstSelectedNodeView = getView().getSelected();
+            String attributeViewType = firstSelectedNodeView.getAttributeView().getAttributeViewType();
+            if(! attributeViewType.equals(AttributeTableLayoutModel.SHOW_EXTENDED)){
+                attributeViewType = AttributeTableLayoutModel.SHOW_EXTENDED;
             }
             else{
-                selectedNodeView.getModel().getAttributes().setViewType(AttributeTableLayoutModel.SHOW_REDUCED);
+                attributeViewType = AttributeTableLayoutModel.SHOW_REDUCED;
             }
-            nodeChanged(selectedNodeView.getModel());
+
+            LinkedList selecteds = getView().getSelecteds();
+            ListIterator iterator = selecteds.listIterator();
+            while(iterator.hasNext()){
+                NodeView selectedNodeView = (NodeView) iterator.next();
+                AttributeView selectedAttributeView = selectedNodeView.getAttributeView();
+                if(! selectedAttributeView.getAttributeViewType().equals(attributeViewType)){
+                    selectedNodeView.getModel().getAttributes().setViewType(attributeViewType);
+                    nodeChanged(selectedNodeView.getModel());
+                }
+            }
         }
 	}
 

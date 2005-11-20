@@ -10,8 +10,11 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -19,8 +22,9 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -42,6 +46,7 @@ import freemind.modes.attributes.AttributeRegistry;
  *
  */
 public class FilterDialog extends JDialog {
+    private static final Dimension maxButtonDimension = new Dimension(1000, 1000);
     /**
      * @author dimitri
      * 06.05.2005
@@ -222,6 +227,18 @@ public class FilterDialog extends JDialog {
 
     }
 
+    private class CloseAction extends AbstractAction {
+        /* (non-Javadoc)
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
+        CloseAction(){
+            super(Resources.getInstance().getResourceString("close"));
+        }
+        public void actionPerformed(ActionEvent e) {
+            setVisible(false);
+        }
+    }
+
     private static final int NODE_POSITION = 0;
     private static final int ICON_POSITION = 1;
     private static final int CONTAINS_POSITION = 0;
@@ -305,12 +322,11 @@ public class FilterDialog extends JDialog {
         this.c = c;
         this.fc = c.getFilterController();
         this.ft = ft;
-
-        final JToolBar simpleConditionToolbar = new JToolBar();
-        simpleConditionToolbar.setOrientation(JToolBar.HORIZONTAL);
-        simpleConditionToolbar.setFloatable(false);
-        getContentPane().add(simpleConditionToolbar, BorderLayout.NORTH);
-
+    
+        final Box simpleConditionBox = Box.createHorizontalBox();
+        simpleConditionBox.setBorder(new EmptyBorder(5, 0, 5, 0));        
+        getContentPane().add(simpleConditionBox, BorderLayout.NORTH);
+    
         attributes = new JComboBox();
         filteredAttributeComboBoxModel = new ExtendedComboBoxModel(new TranslatedString[] {
                         new TranslatedString("filter_node"),
@@ -321,70 +337,92 @@ public class FilterDialog extends JDialog {
         filteredAttributeComboBoxModel.setExtensionList(registeredAttributes.getListBoxModel());
         attributes.setModel(filteredAttributeComboBoxModel);
         attributes.addItemListener(new SelectedAttributeChangeListener());
-        simpleConditionToolbar.add(attributes);
-
+        simpleConditionBox.add(Box.createHorizontalGlue());
+        simpleConditionBox.add(attributes);
+    
         simpleCondition = new JComboBox();
         simpleNodeConditionComboBoxModel = new DefaultComboBoxModel(fc.getConditionFactory().getNodeConditionNames());
         simpleCondition.setModel(simpleNodeConditionComboBoxModel);
         simpleCondition.addItemListener(new SimpleConditionChangeListener());
-        simpleConditionToolbar.add(simpleCondition);
-
+        simpleConditionBox.add(Box.createHorizontalGlue());
+        simpleConditionBox.add(simpleCondition);
+    
         simpleAttributeConditionComboBoxModel = new DefaultComboBoxModel(fc.getConditionFactory().getAttributeConditionNames());
         values = new JComboBox();
         nodes = new ExtendedComboBoxModel();
         values.setModel(nodes);
-        simpleConditionToolbar.add(values);
+        simpleConditionBox.add(Box.createHorizontalGlue());
+        simpleConditionBox.add(values);
         values.setRenderer(Resources.getInstance().getMindIconRenderer());
         values.setEditable(true);
-
+    
         icons = new ExtendedComboBoxModel();
         icons.setExtensionList(registry.getIcons());
-
+    
         caseInsensitive = new JCheckBox();
-        simpleConditionToolbar.add(caseInsensitive);
+        simpleConditionBox.add(Box.createHorizontalGlue());
+        simpleConditionBox.add(caseInsensitive);
         caseInsensitive.setText(Resources.getInstance().getResourceString("filter_ignore_case"));
-
+        
+        final Box conditionButtonBox = Box.createVerticalBox();
+        conditionButtonBox.setBorder(new EmptyBorder(0, 10, 0, 10));        
+        getContentPane().add(conditionButtonBox, BorderLayout.EAST);
+    
         btnAdd = new JButton(new AddConditionAction());
-        btnAdd.setAlignmentX(Component.CENTER_ALIGNMENT);
-        simpleConditionToolbar.add(btnAdd);
-
-        final JToolBar conditionButtonToolbar = new JToolBar();
-        conditionButtonToolbar.setOrientation(JToolBar.VERTICAL);
-        conditionButtonToolbar.setFloatable(false);
-        getContentPane().add(conditionButtonToolbar, BorderLayout.EAST);
-
+        btnAdd.setMaximumSize(maxButtonDimension);
+        conditionButtonBox.add(Box.createVerticalGlue());
+        conditionButtonBox.add(btnAdd);
+    
         btnSelect = new JButton(new SelectConditionAction());
-        btnSelect.setAlignmentX(Component.CENTER_ALIGNMENT);
-        conditionButtonToolbar.add(btnSelect);
+        conditionButtonBox.add(Box.createVerticalGlue());
+        btnSelect.setMaximumSize(maxButtonDimension);
+        conditionButtonBox.add(btnSelect);
         btnSelect.setEnabled(false);
-
+    
         btnNot = new JButton(new CreateNotSatisfiedConditionAction());
-        btnNot.setAlignmentX(Component.CENTER_ALIGNMENT);
-        conditionButtonToolbar.add(btnNot);
+        conditionButtonBox.add(Box.createVerticalGlue());
+        btnNot.setMaximumSize(maxButtonDimension);
+        conditionButtonBox.add(btnNot);
         btnNot.setEnabled(false);
-
+    
         btnAnd = new JButton(new CreateConjunctConditionAction());
-        btnAnd.setAlignmentX(Component.CENTER_ALIGNMENT);
-        conditionButtonToolbar.add(btnAnd);
+        conditionButtonBox.add(Box.createVerticalGlue());
+        btnAnd.setMaximumSize(maxButtonDimension);
+        conditionButtonBox.add(btnAnd);
         btnAnd.setEnabled(false);
-
+    
         btnOr = new JButton(new CreateDisjunctConditionAction());
-        btnOr.setAlignmentX(Component.CENTER_ALIGNMENT);
-        conditionButtonToolbar.add(btnOr);
+        conditionButtonBox.add(Box.createVerticalGlue());
+        btnOr.setMaximumSize(maxButtonDimension);
+        conditionButtonBox.add(btnOr);
         btnOr.setEnabled(false);
-
+    
         btnDelete = new JButton(new DeleteConditionAction());
-        btnDelete.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnDelete.setEnabled(false);
-        conditionButtonToolbar.add(btnDelete);
+        conditionButtonBox.add(Box.createVerticalGlue());
+        btnDelete.setMaximumSize(maxButtonDimension);
+        conditionButtonBox.add(btnDelete);
+        conditionButtonBox.add(Box.createVerticalGlue());
+    
+        final Box controllerBox = Box.createHorizontalBox();
+        controllerBox.setBorder(new EmptyBorder(5, 0, 5, 0));        
+        getContentPane().add(controllerBox, BorderLayout.SOUTH);
+    
+        CloseAction closeAction = new CloseAction();
+        JButton btnClose = new JButton(closeAction);
 
+        btnClose.setMaximumSize(maxButtonDimension);
+        controllerBox.add(Box.createHorizontalGlue());
+        controllerBox.add(btnClose);
+        controllerBox.add(Box.createHorizontalGlue());
+    
         conditionList = new JList(ft.getActiveFilterConditionComboBox().getModel());
         conditionList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         conditionList.setCellRenderer(fc.getConditionRenderer());
         conditionList.setLayoutOrientation(JList.VERTICAL);
         conditionList.setAlignmentX(Component.LEFT_ALIGNMENT);
         conditionList.addListSelectionListener(new ConditionListSelectionListener());
-
+    
         final JScrollPane conditionScrollPane = new JScrollPane(conditionList);
         conditionScrollPane.setPreferredSize(new Dimension(500, 200));
         getContentPane().add(conditionScrollPane, BorderLayout.CENTER);

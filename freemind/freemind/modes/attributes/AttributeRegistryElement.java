@@ -27,21 +27,26 @@ public class AttributeRegistryElement {
     private Comparable key;
     private RegisteredAttributeValues values;
     private AttributeRegistry registry;
-    private Boolean isVisible;
-    private Boolean isRestricted;
+    private boolean isVisible;
+    private boolean isRestricted;
+    private Boolean visibilityModel;
+    private Boolean restrictionModel;
     public AttributeRegistryElement(AttributeRegistry registry, Comparable key) {
         super();
         this.key = key;
         this.registry = registry;
         values = new RegisteredAttributeValues();
-        isVisible = new Boolean(false);
-        isRestricted = new Boolean(false);
+        isVisible = false;
+        visibilityModel = new Boolean(isVisible);
+        isRestricted = false;
+        restrictionModel = new Boolean(isRestricted);
     }
-    public Boolean isVisible() {
+    public boolean isVisible() {
         return isVisible;
     }
-    public void setVisible(Boolean isVisible) {
+    public void setVisible(boolean isVisible) {
         this.isVisible = isVisible;
+        visibilityModel = Boolean.valueOf(isVisible);
     }
     public SortedComboBoxModel getValues() {
         return values;
@@ -55,11 +60,12 @@ public class AttributeRegistryElement {
     public void removeValue(String s) {
         values.remove(s);
     }
-    public Boolean isRestricted() {
+    public boolean isRestricted() {
         return isRestricted;
     }
-    public void setRestricted(Boolean isRestricted) {
+    public void setRestricted(boolean isRestricted) {
         this.isRestricted = isRestricted;
+        restrictionModel = Boolean.valueOf(isRestricted);
     }
     public Comparable getKey() {
         return key;
@@ -72,10 +78,10 @@ public class AttributeRegistryElement {
      */
     public XMLElement save() {
         XMLElement element = new XMLElement();
-        if(isVisible().booleanValue()){
+        if(isVisible()){
             element.setAttribute("VISIBLE", "true");
         }
-        if(isRestricted().booleanValue()){
+        if(isRestricted()){
             element.setAttribute("RESTRICTED", "true");
         }
         for (int i = 0; i < values.getSize(); i++){
@@ -87,5 +93,26 @@ public class AttributeRegistryElement {
         element.setName(XMLElementAdapter.XML_NODE_REGISTERED_ATTRIBUTE_NAME);
         element.setAttribute("NAME", key.toString());
         return element;
+    }
+    
+    void resetChanges(){
+        visibilityModel = Boolean.valueOf(isVisible);
+        restrictionModel = Boolean.valueOf(isRestricted);
+    }
+    void applyChanges(){
+        isVisible = visibilityModel.booleanValue(); 
+        isRestricted = restrictionModel.booleanValue(); 
+    }
+    Boolean getRestriction() {
+        return restrictionModel;
+    }
+    void setRestrictionModel(Boolean restrictionModel) {
+        this.restrictionModel = restrictionModel;
+    }
+    Boolean getVisibilityModel() {
+        return visibilityModel;
+    }
+    void setVisibilityModel(Boolean visibilityModel) {
+        this.visibilityModel = visibilityModel;
     }
 }

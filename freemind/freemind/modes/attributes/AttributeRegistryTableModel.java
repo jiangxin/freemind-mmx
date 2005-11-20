@@ -15,6 +15,7 @@ import freemind.main.Resources;
  */
 public class AttributeRegistryTableModel   extends AbstractTableModel {
     private final AttributeRegistry attributeRegistry;
+    private String allAttributes = Resources.getInstance().getResourceString("attributes_all");
 
     AttributeRegistryTableModel(AttributeRegistry registry)
     {
@@ -39,13 +40,15 @@ public class AttributeRegistryTableModel   extends AbstractTableModel {
      */
     public Object getValueAt(int row, int col) {
         if(row == 0 && col < 2){
+            if(col == 0)
+                return allAttributes;
             return null;
         }
         row--;
-         switch(col){
+        switch(col){
         case 0: return attributeRegistry.getKey(row);
-        case 1: return attributeRegistry.getElement(row).isVisible();
-        case 2: return attributeRegistry.isRestricted(row);
+        case 1: return attributeRegistry.getElement(row).getVisibilityModel();
+        case 2: return attributeRegistry.getRestriction(row);
         case 3: return attributeRegistry.getValues(row);        
         }
         return null;
@@ -63,10 +66,10 @@ public class AttributeRegistryTableModel   extends AbstractTableModel {
         Boolean value = (Boolean)o;
         switch (col){
         case 1:
-            attributeRegistry.setVisible(row-1, value);
+            attributeRegistry.setVisibility(row-1, value);
             break;
         case 2:
-            attributeRegistry.setRestricted(row-1, value);
+            attributeRegistry.setRestriction(row-1, value);
             break;
         }
     }
@@ -92,6 +95,8 @@ public class AttributeRegistryTableModel   extends AbstractTableModel {
     
     static private String attributeColumnName = null; 
     static private String visibilityColumnName = null;
+    static private String restrictionColumnName = null;
+    static private String editorColumnName = null;
 
     public String getColumnName(int column) {
         
@@ -104,6 +109,14 @@ public class AttributeRegistryTableModel   extends AbstractTableModel {
             if (visibilityColumnName == null)
                 visibilityColumnName = Resources.getInstance().getResourceString("attributes_visible");
             return  visibilityColumnName;           
+        case 2: 
+            if (restrictionColumnName == null)
+                restrictionColumnName = Resources.getInstance().getResourceString("attributes_restriction");
+            return  restrictionColumnName;           
+        case 3: 
+            if (editorColumnName == null)
+                editorColumnName = Resources.getInstance().getResourceString("attributes_edit");
+            return  editorColumnName;           
         }
         return null;
     }

@@ -129,6 +129,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
     private AttributeView attributeView;
     private static final int EXTRA_HEIGHT = 4;
     private static final float TABLE_ROW_HEIGHT = 4;
+    private static final Dimension prefHeaderSize = new Dimension(5, 5);
     AttributeTable(AttributeView attributeView) {
         super();
         this.attributeView = attributeView;
@@ -141,6 +142,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
         updateColumnWidths();       
         setAutoResizeMode(AUTO_RESIZE_OFF);
         getTableHeader().setReorderingAllowed(false);
+        getTableHeader().setPreferredSize(prefHeaderSize);
         int h = getRowHeight();
         setRowHeight(highRowIndex, h + EXTRA_HEIGHT);
         setRowSelectionAllowed(false);

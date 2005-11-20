@@ -13,12 +13,15 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import freemind.controller.filter.util.SortedListModel;
+import freemind.main.Resources;
 
 /**
  * @author Dimitri Polivaev
@@ -60,9 +63,10 @@ class AttributeRegistryTable extends JTable {
         }
     }
     static private class ButtonRenderer implements TableCellRenderer{
-        public ButtonRenderer(Icon image) {
+        public ButtonRenderer(Icon image, String toolTip) {
             renderingEditButton = new JButton(image);
             renderingEditButton.setFocusable(false);
+            renderingEditButton.setToolTipText(toolTip);
         }
         final private JButton renderingEditButton;
 
@@ -90,7 +94,8 @@ class AttributeRegistryTable extends JTable {
             }
         }
     }
-    private static final ButtonRenderer editButtonRenderer = new ButtonRenderer(AttributeDialog.editButtonImage);
+    private static final ButtonRenderer editButtonRenderer = new ButtonRenderer(AttributeDialog.editButtonImage,
+            Resources.getInstance().getResourceString("attributes_edit_tooltip"));
     static final private Icon checkBoxImage = new ImageIcon("images/CheckBox12.png");
     final private ButtonRenderer selectAllButtonRenderer;
     final private ButtonEditor selectAllButtonEditor;
@@ -99,18 +104,24 @@ class AttributeRegistryTable extends JTable {
         super();  
         this.editListAction = editListAction;
         getTableHeader().setReorderingAllowed(false);
-        selectAllButtonRenderer = new ButtonRenderer(checkBoxImage);
+        selectAllButtonRenderer = new ButtonRenderer(checkBoxImage,
+                Resources.getInstance().getResourceString("attributes_select_all_tooltip"));
         selectAllButtonEditor = new ButtonEditor(new ToggleAllAction());
         setDefaultEditor(SortedListModel.class, new ButtonEditor(editListAction));
         setDefaultRenderer(SortedListModel.class, editButtonRenderer);
         setRowHeight(20);
-    }
+        setRowSelectionAllowed(false);
+        }
+    
     public void setModel(TableModel dataModel) {
         super.setModel(dataModel);
         if(dataModel.getColumnCount() >= 1){
             for(int i = 1; i < getColumnCount(); i++){
                 getColumnModel().getColumn(i).setMinWidth(20);
-                getColumnModel().getColumn(i).setPreferredWidth(20);
+                int prefWidth = getTableHeader().getDefaultRenderer().getTableCellRendererComponent(
+                        this, getColumnName(i), false, false, -1, i)
+                        .getPreferredSize().width;
+                getColumnModel().getColumn(i).setPreferredWidth(prefWidth);
             }
         }
     }
@@ -124,7 +135,33 @@ class AttributeRegistryTable extends JTable {
         if(row == 0 && column == 1){
             return selectAllButtonRenderer;
         }
-        return super.getCellRenderer(row, column);
+        TableCellRenderer tableCellRenderer = super.getCellRenderer(row, column);
+        
+        if(tableCellRenderer instanceof JLabel){
+            JLabel label = (JLabel) tableCellRenderer;
+            if(row == 0){
+                label.setHorizontalAlignment(JLabel.CENTER);
+            }else{
+                label.setHorizontalAlignment(JLabel.LEFT);
+            }
+        }
+        else if(tableCellRenderer instanceof JComponent){
+            JComponent label = (JComponent) tableCellRenderer;
+            switch (column){
+            case 1: 
+                label.setToolTipText(Resources.getInstance().getResourceString("attributes_visible_tooltip"));
+                break;
+            case 2:
+                if(row == 0){
+                    label.setToolTipText(Resources.getInstance().getResourceString("attributes_restricted_attributes_tooltip"));
+                }
+                else{
+                    label.setToolTipText(Resources.getInstance().getResourceString("attributes_restricted_values_tooltip"));
+                }
+                break;
+            }            
+        }
+        return tableCellRenderer;
     }
     public Component prepareEditor(TableCellEditor editor, int row, int column) {
         if(column == 3){
