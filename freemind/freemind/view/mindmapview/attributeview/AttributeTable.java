@@ -324,6 +324,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
         JComboBox comboBox = (JComboBox) ((DefaultCellEditor) e.getSource()).getComponent();
         comboBox.removeFocusListener(focusListener);
         comboBox.getEditor().getEditorComponent().removeFocusListener(focusListener);
+        comboBox.setModel(new DefaultComboBoxModel());
     }
     public void editingCanceled(ChangeEvent e) {
         super.editingCanceled(e);
