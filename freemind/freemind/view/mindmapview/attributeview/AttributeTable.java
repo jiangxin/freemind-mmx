@@ -79,12 +79,15 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
                 return;
             Component source = (Component) event.getSource();
             Component oppositeComponent = event.getOppositeComponent();
-            Component oldTable = getAncestorComponent(source, AttributeTable.class);
+            AttributeTable oldTable = (AttributeTable)getAncestorComponent(source, AttributeTable.class);
             if(oldTable != null){
-                Component oldFocusCycleRoot = getAncestorComponent(oldTable, NodeView.class);
-                Component newFocusCycleRoot = getAncestorComponent(oppositeComponent, NodeView.class);
-                if(newFocusCycleRoot != oldFocusCycleRoot){
-                    ((AttributeTable)oldTable).clearSelection();                           
+                Component newTable = getAncestorComponent(oppositeComponent, AttributeTable.class);
+                if(oldTable != newTable){
+                    if (oldTable.isEditing()){                
+                        oldTable.getCellEditor().stopCellEditing();
+                    }
+                    oldTable.changeSelectedRowHeight(0);
+                    oldTable.clearSelection();
                 }
             }
         }
@@ -230,11 +233,6 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
     }
     
     public void clearSelection() {
-        if (isEditing()){                
-            getCellEditor().stopCellEditing();
-        }
-        changeSelectedRowHeight(0);
-        super.clearSelection();
     }
     
     /**
