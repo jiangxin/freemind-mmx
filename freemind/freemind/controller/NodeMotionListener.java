@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMotionListener.java,v 1.1.4.2.6.2 2005-11-19 11:35:59 dpolivaev Exp $*/
+/*$Id: NodeMotionListener.java,v 1.1.4.2.6.3 2005-11-20 11:00:23 dpolivaev Exp $*/
 
 package freemind.controller;
 
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.InputEvent;
@@ -28,18 +29,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Point2D;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.SwingUtilities;
 
-import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeMotionListenerView;
 import freemind.view.mindmapview.NodeView;
-import freemind.view.mindmapview.RootNodeView;
 
 /**
  * The MouseMotionListener which belongs to every NodeView
@@ -49,14 +45,10 @@ public class NodeMotionListener extends MouseAdapter implements
 
     private final Controller c;
     private Point originalStartingPoint;
-
-    // Logging:
-    private static java.util.logging.Logger logger;
+    static private final Rectangle bounds = new Rectangle();
 
     public NodeMotionListener(Controller controller) {
         c = controller;
-        if (logger == null)
-            logger = c.getFrame().getLogger(this.getClass().getName());
     }
 
     public void mouseMoved(MouseEvent e) {
@@ -72,17 +64,9 @@ public class NodeMotionListener extends MouseAdapter implements
 
     /** Invoked when a mouse button is pressed on a component and then dragged. */
     public void mouseDragged(MouseEvent e) {
-        logger.fine("Event: mouseDragged");
         if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == (InputEvent.BUTTON1_DOWN_MASK)) {
             NodeView nodeV = getNodeView(e);
-            Component component = e.getComponent();
-            Rectangle r = new Rectangle(component.getX() + e.getX(), component.getY() + e.getY(), 1, 1);
-            MapView mapView = (MapView)component.getParent();
-            boolean isEventPointVisible = mapView.getVisibleRect().contains(r);
-            if(! isEventPointVisible){
-                mapView.scrollRectToVisible(r);
-                return;
-            }
+            final Component component = e.getComponent();
 
             Point point = e.getPoint();
             SwingUtilities.convertPointToScreen(point, component);
@@ -105,6 +89,14 @@ public class NodeMotionListener extends MouseAdapter implements
                     c.getModel().nodeChanged(parentNode);
                 }
             }
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    final MapView mapView = (MapView)component.getParent();
+                    component.getBounds(bounds);
+                    mapView.scrollRectToVisible(bounds);
+                };
+            });
+
         }
     }
 
@@ -179,7 +171,6 @@ public class NodeMotionListener extends MouseAdapter implements
     }
 
     public void mouseEntered(MouseEvent e) {
-        logger.fine("Event: mouseEntered");
         if (!isActive()) {
             NodeMotionListenerView v = (NodeMotionListenerView) e.getSource();
             v.setMouseEntered();
@@ -187,7 +178,6 @@ public class NodeMotionListener extends MouseAdapter implements
     }
 
     public void mouseExited(MouseEvent e) {
-        logger.fine("Event: mouseExited");
         if (!isActive()) {
             NodeMotionListenerView v = (NodeMotionListenerView) e.getSource();
             v.setMouseExited();
@@ -199,7 +189,6 @@ public class NodeMotionListener extends MouseAdapter implements
     }
 
     public void mouseReleased(MouseEvent e) {
-        logger.fine("Event: mouseReleased");
         NodeMotionListenerView v = (NodeMotionListenerView) e.getSource();
         if (!v.contains(e.getX(), e.getY()))
             v.setMouseExited();
