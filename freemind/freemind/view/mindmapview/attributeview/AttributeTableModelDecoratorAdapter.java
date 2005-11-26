@@ -28,7 +28,11 @@ abstract class AttributeTableModelDecoratorAdapter extends AbstractTableModel  i
         super();
         this.nodeAttributeModel = nodeAttributeModel;
         this.attributeRegistry = attributeRegistry;
-        nodeAttributeModel.getNode().addNodeViewEventListener(this);        
+        MindMapNode node = nodeAttributeModel.getNode();
+        if(node.getViewer() != null){
+            addListeners();
+        }
+        node.addNodeViewEventListener(this);        
     }
     public MindMapNode getNode() {
         return nodeAttributeModel.getNode();

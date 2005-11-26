@@ -96,7 +96,7 @@ class AttributeRegistryTable extends JTable {
     }
     private static final ButtonRenderer editButtonRenderer = new ButtonRenderer(AttributeDialog.editButtonImage,
             Resources.getInstance().getResourceString("attributes_edit_tooltip"));
-    static final private Icon checkBoxImage = new ImageIcon("images/CheckBox12.png");
+    static final private Icon checkBoxImage = new ImageIcon(Resources.getInstance().getResource("images/checkbox12.png"));
     final private ButtonRenderer selectAllButtonRenderer;
     final private ButtonEditor selectAllButtonEditor;
     final private AttributeDialog.EditListAction editListAction;

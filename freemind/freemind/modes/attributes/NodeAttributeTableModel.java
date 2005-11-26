@@ -6,8 +6,11 @@ package freemind.modes.attributes;
 
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
+import freemind.main.Resources;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.XMLElementAdapter;
@@ -21,6 +24,8 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
     private Vector attributes = null;
     private AttributeTableLayoutModel layout = null;
     private static final int CAPACITY_INCREMENT = 10;
+    static private ImageIcon noteIcon = null;
+    private static final String STATE_ICON = "AttributeExist";
     public NodeAttributeTableModel(MindMapNode node, int size) {
         super();
         allocateAttributes(size);
@@ -86,9 +91,24 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
             fireTableCellUpdated(row, col);
     }
     
+    private void enableStateIcon() {
+        if(getRowCount() == 1){
+            if (noteIcon == null) {
+                noteIcon = new ImageIcon(Resources.getInstance().getResource("images/showAttributes.gif"));
+            }
+            node.setStateIcon(STATE_ICON, noteIcon);
+        }
+    }
+    private void disableStateIcon() {
+        if(getRowCount() == 0){
+            node.setStateIcon(STATE_ICON, null);
+        }
+    }
     public void insertRow(int index, Attribute newAttribute) {
         allocateAttributes(CAPACITY_INCREMENT);
+        node.getMap().getRegistry().getAttributes().registry(newAttribute);
         attributes.add(index, newAttribute);
+        enableStateIcon();
         fireTableRowsInserted(index, index);
     }
     public void addRow(Attribute newAttribute) {
@@ -96,6 +116,7 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
         int index = getRowCount();
         node.getMap().getRegistry().getAttributes().registry(newAttribute);
         attributes.add(newAttribute);
+        enableStateIcon();
         fireTableRowsInserted(index, index);
     }
     
@@ -139,6 +160,7 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
     
     public Object removeRow(int index) {
         Object o = attributes.remove(index);
+        disableStateIcon();
         fireTableRowsDeleted(index, index);
         return o;
     }

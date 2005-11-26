@@ -38,7 +38,7 @@ public class AttributeDialog extends JDialog {
     private AttributeRegistry model;
     private static final String[] fontSizes = {"6","8","10","12","14","16","18","20","24"};
     private JComboBox size;
-    static final Icon editButtonImage = new ImageIcon("images/Edit12.png");
+    static final Icon editButtonImage = new ImageIcon(Resources.getInstance().getResource("images/edit12.png"));
     
     private class ApplyAction extends AbstractAction{
         ApplyAction(){
