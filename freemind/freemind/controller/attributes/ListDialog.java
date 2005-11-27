@@ -82,6 +82,9 @@ public class ListDialog extends JDialog
             for(int i = 0; i < selectedValues.length; i++){
                 data.remove(selectedValues[i]);
             }
+            if(data.getSize() == 0){
+                data.add("");
+            }
             deleteButton.setEnabled(false);
         }
     }

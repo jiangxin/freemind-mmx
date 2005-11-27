@@ -166,7 +166,9 @@ class AttributeRegistryTable extends JTable {
     public Component prepareEditor(TableCellEditor editor, int row, int column) {
         if(column == 3){
             SortedListModel list = (SortedListModel) getModel().getValueAt(row, column);
-            editListAction.setListBoxModel(list);
+            String title = getModel().getValueAt(row, 0).toString();
+            String labelText = Resources.getInstance().getResourceString("attribute_list_box_label_text");
+            editListAction.setListBoxModel(title,labelText, list);
         }
         return super.prepareEditor(editor, row, column);
     }

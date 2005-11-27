@@ -14,16 +14,17 @@ import freemind.modes.NodeViewEvent;
 import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableModel;
+import freemind.modes.attributes.NodeAttributeTableModel;
 
 /**
  * @author Dimitri Polivaev
  * 18.06.2005
  */
 abstract class AttributeTableModelDecoratorAdapter extends AbstractTableModel  implements AttributeTableModel, TableModelListener, ChangeListener, NodeViewEventListener{
-    protected AttributeTableModel nodeAttributeModel;
+    protected NodeAttributeTableModel nodeAttributeModel;
     protected AttributeRegistry attributeRegistry;
     public AttributeTableModelDecoratorAdapter(
-            AttributeTableModel nodeAttributeModel,
+            NodeAttributeTableModel nodeAttributeModel,
             AttributeRegistry attributeRegistry) {
         super();
         this.nodeAttributeModel = nodeAttributeModel;
@@ -75,4 +76,10 @@ abstract class AttributeTableModelDecoratorAdapter extends AbstractTableModel  i
     public void tableChanged(TableModelEvent e) {
         fireTableDataChanged();        
     }
+    public void editingCanceled() {
+    }
+    /**
+     * @return
+     */
+    public abstract boolean areAttributesVisible() ;
 }

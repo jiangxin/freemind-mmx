@@ -108,13 +108,15 @@ public class AttributeDialog extends JDialog {
             super("", editButtonImage);
         }
         private int row = 0;
-        private SortedListModel listBoxModel;        
+        private SortedListModel listBoxModel;
+        private String title;
+        private String labelText;       
         public void actionPerformed(ActionEvent e) {
             ListDialog.showDialog(
                     (Component)e.getSource(),
                     AttributeDialog.this,
-                    "labelText",
-                    "Title",
+                    labelText,
+                    title,
                     listBoxModel,
                     "xxxxxxxxxxxxxxxxxxxxx"
                     );
@@ -126,10 +128,9 @@ public class AttributeDialog extends JDialog {
         public void setRow(int row) {
             this.row = row;
         }
-        public SortedListModel getListBoxModel() {
-            return listBoxModel;
-        }
-        public void setListBoxModel(SortedListModel listBoxModel) {
+        public void setListBoxModel(String title, String labelText, SortedListModel listBoxModel) {
+            this.title = title;
+            this.labelText = labelText;
             this.listBoxModel = listBoxModel;
         }
     }

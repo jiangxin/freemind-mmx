@@ -362,14 +362,7 @@ public class AttributeRegistry{
         AttributeRegistryElement element = getElement(row);
         if(! element.getVisibilityModel().equals(visible)){
             element.setVisibilityModel(visible);
-            if(visible.booleanValue()){
-                visibleElementsNumber++;
-                setVisibilityChanged();
-            }
-            else{
-                visibleElementsNumber--;
-                setVisibilityChanged();
-            }
+            setVisibilityChanged();
             myTableModel.fireVisibilityUpdated(row); 
         }
     }
@@ -501,8 +494,17 @@ public class AttributeRegistry{
      * @param i
      * @param b
      */
-    private void setVisible(int row, boolean b) {
-        getElement(row).setVisible(b);        
+    private void setVisible(int row, boolean isVisible) {
+        AttributeRegistryElement element = getElement(row);
+        if(element.isVisible() == isVisible)
+            return;
+        if(isVisible){
+            visibleElementsNumber++;
+        }
+        else{
+            visibleElementsNumber--;
+        }
+        element.setVisible(isVisible);        
     }
 
     /**

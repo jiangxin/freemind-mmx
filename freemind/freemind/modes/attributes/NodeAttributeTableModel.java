@@ -4,10 +4,10 @@
  */
 package freemind.modes.attributes;
 
+import java.util.NoSuchElementException;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import freemind.main.Resources;
@@ -73,22 +73,35 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
     }
 
     public void setValueAt(Object o, int row, int col) {
-        Attribute attr = (Attribute)attributes.get(row);
+        Attribute attribute = (Attribute)attributes.get(row);
         String s = o.toString();
+        AttributeRegistry attributes = node.getMap().getRegistry().getAttributes();
         switch(col){
         case 0: 
-            if(attr.getName().equals(s))
+            if(attribute.getName().equals(s))
                 return;
-            attr.setName(s);
+            attribute.setName(s);
+            try{
+                AttributeRegistryElement element = attributes.getElement(s);
+                String value = getValueAt(row, 1).toString(); 
+                int index = element.getValues().getIndexOf(value);
+                if(index == -1){
+                    setValueAt(element.getValues().firstElement(), row, 1);
+                }
+            }
+            catch(NoSuchElementException ex)
+            {
+                attributes.registry(attribute);                
+            }
             break;
         case 1: 
-            if(attr.getValue().equals(s))
+            if(attribute.getValue().equals(s))
                 return;
-            attr.setValue(s);
+            attribute.setValue(s);
+            attributes.registry(attribute);
             break;
         }
-        node.getMap().getRegistry().getAttributes().registry(attr);
-            fireTableCellUpdated(row, col);
+        fireTableCellUpdated(row, col);
     }
     
     private void enableStateIcon() {
@@ -264,7 +277,9 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
     
     public void setViewType(String viewType) {
         getLayout().setViewType(viewType);
+        node.getMap().nodeChanged(node);
     }
+    
     public AttributeTableLayoutModel getLayout() {
         if(layout == null)
             layout = new AttributeTableLayoutModel();

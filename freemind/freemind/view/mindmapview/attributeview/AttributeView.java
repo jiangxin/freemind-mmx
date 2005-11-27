@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.5 2005-11-06 12:01:14 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.6 2005-11-27 16:55:42 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -29,6 +29,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.tree.TreeNode;
 
+import freemind.controller.attributes.AttributePopupMenu;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeViewEvent;
 import freemind.modes.NodeViewEventListener;
@@ -65,43 +66,52 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
     }
     private AttributeTable attributeTable;
     private ReducedAttributeTableModelDecorator reducedAttributeTableModel;
-    private AttributeTableModel extendedAttributeTableModel = null;
-    private AttributeTableModel currentAttributeTableModel;
+    private ExtendedAttributeTableModelDecorator extendedAttributeTableModel = null;
+    private AttributeTableModelDecoratorAdapter currentAttributeTableModel;
     private JScrollPane attributeViewScrollPane;
     private NodeView nodeView;
     private AttributeChangeListener attributeChangeListener;
+    static private AttributePopupMenu tablePopupMenu;
     
     public AttributeView(NodeView nodeView) {
         super();
         this.nodeView = nodeView;
         nodeView.getModel().addNodeViewEventListener(this);
-        NodeAttributeTableModel attributes = getModel().getAttributes();
+        NodeAttributeTableModel attributes = getAttributes();
         AttributeRegistry attributeRegistry = getModel().getMap().getRegistry().getAttributes();
         reducedAttributeTableModel = new ReducedAttributeTableModelDecorator(attributes, attributeRegistry);
         currentAttributeTableModel = reducedAttributeTableModel;
-        getModel().getAttributes().setViewType(attributes.getViewType());
+        getAttributes().getLayout().setViewType(attributes.getViewType());
         setViewType(attributes.getViewType());
     }
+    public NodeAttributeTableModel getAttributes() {
+        return getModel().getAttributes();
+    }
     private void addListeners() {
-        getModel().getAttributes().getLayout().addStateChangeListener(this);
-        getModel().getAttributes().getLayout().addColumnWidthChangeListener(this);
-        addTableModelListener();
+        getAttributes().getLayout().addStateChangeListener(this);
+        getAttributes().getLayout().addColumnWidthChangeListener(this);
+        addTableModelListeners();
     }
     public void syncronizeAttributeView() {
-        if (attributeTable == null && currentAttributeTableModel.getRowCount() > 0){
+        if (attributeTable == null && currentAttributeTableModel.areAttributesVisible()){
             attributeTable = new AttributeTable(this);
-            addTableModelListener();
+            addTableModelListeners();
             attributeViewScrollPane = new AttributeViewScrollPane(attributeTable);
             attributeViewScrollPane.setColumnHeaderView(attributeTable.getTableHeader());
             getNodeView().add(attributeViewScrollPane);
         }
     }
-    private void addTableModelListener() {
+    private void addTableModelListeners() {
         if(attributeTable != null){
             if(attributeChangeListener == null){
                 attributeChangeListener = new AttributeChangeListener();
-                attributeTable.getModel().addTableModelListener(attributeChangeListener);
+                attributeTable.getModel().addTableModelListener(attributeChangeListener);                
             }
+            if(tablePopupMenu == null){
+                tablePopupMenu = new AttributePopupMenu();
+            }
+            attributeTable.addMouseListener(tablePopupMenu);
+            attributeTable.getTableHeader().addMouseListener(tablePopupMenu);
         }
     }
     /**
@@ -116,15 +126,15 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
      * @return
      */
     public boolean areAttributesVisible() {
-        return  currentAttributeTableModel.getRowCount() > 0;
+        return  currentAttributeTableModel.areAttributesVisible();
     }
     /**
      * @return Returns the extendedAttributeTableModel.
      */
-    private AttributeTableModel getExtendedAttributeTableModel() {
+    private ExtendedAttributeTableModelDecorator getExtendedAttributeTableModel() {
         if(extendedAttributeTableModel == null){
             extendedAttributeTableModel = new ExtendedAttributeTableModelDecorator(
-                    getModel().getAttributes(),
+                    getAttributes(),
                     getModel().getMap().getRegistry().getAttributes());
         }
         return extendedAttributeTableModel;
@@ -144,7 +154,7 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
         }
     }
     public String getAttributeViewType(){
-        return getModel().getAttributes().getViewType();           
+        return getAttributes().getViewType();           
     }
     
     public AttributeTableModel getCurrentAttributeTableModel() {
@@ -160,12 +170,12 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
     /**
      * @return
      */
-    private MindMapNode getModel() {
+    MindMapNode getModel() {
         return getNodeView().getModel();
     }
     
     public void stateChanged(ChangeEvent event){
-        setViewType(getModel().getAttributes().getLayout().getViewType());
+        setViewType(getAttributes().getLayout().getViewType());
     }
     /**
      * @return
@@ -183,11 +193,14 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
      * 
      */
     public void removeListeners() {
-        getModel().getAttributes().getLayout().removeStateChangeListener(this);
-        getModel().getAttributes().getLayout().removeColumnWidthChangeListener(this);
+        getAttributes().getLayout().removeStateChangeListener(this);
+        getAttributes().getLayout().removeColumnWidthChangeListener(this);
         nodeView.getModel().removeNodeViewEventListener(this);
-        if(attributeTable != null)
+        if(attributeTable != null){
             attributeTable.getModel().removeTableModelListener(attributeChangeListener);
+            attributeTable.removeMouseListener(tablePopupMenu);                
+            attributeTable.getTableHeader().removeMouseListener(tablePopupMenu);
+        }
     }
     /* (non-Javadoc)
      * @see javax.swing.event.AncestorListener#ancestorAdded(javax.swing.event.AncestorEvent)

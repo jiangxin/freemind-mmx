@@ -11,6 +11,7 @@ import javax.swing.event.ChangeEvent;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableModel;
+import freemind.modes.attributes.NodeAttributeTableModel;
 
 /**
  * @author Dimitri Polivaev
@@ -20,7 +21,7 @@ class ReducedAttributeTableModelDecorator extends AttributeTableModelDecoratorAd
     private Vector index = null;
     private int visibleRowCount;
     ReducedAttributeTableModelDecorator(
-            AttributeTableModel nodeAttributeModel,
+            NodeAttributeTableModel nodeAttributeModel,
             AttributeRegistry attributeRegistry) {
         super(nodeAttributeModel, attributeRegistry);
     }
@@ -88,5 +89,12 @@ class ReducedAttributeTableModelDecorator extends AttributeTableModelDecoratorAd
         fireTableDataChanged();    
         }
         
+    }
+
+    /* (non-Javadoc)
+     * @see freemind.view.mindmapview.attributeview.AttributeTableModelDecoratorAdapter#areAttributesVisible()
+     */
+    public boolean areAttributesVisible() {
+        return getRowCount() !=0;
     }
 }

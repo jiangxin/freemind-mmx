@@ -8,40 +8,45 @@ import javax.swing.event.ChangeEvent;
 
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistry;
-import freemind.modes.attributes.AttributeTableModel;
+import freemind.modes.attributes.NodeAttributeTableModel;
 
 /**
  * @author Dimitri Polivaev
  * 18.06.2005
  */
 class ExtendedAttributeTableModelDecorator extends AttributeTableModelDecoratorAdapter{
+    int newRow;
+    private static final int AFTER_LAST_ROW = Integer.MAX_VALUE;
     public ExtendedAttributeTableModelDecorator(
-            AttributeTableModel nodeAttributeModel,
+            NodeAttributeTableModel nodeAttributeModel,
             AttributeRegistry attributeRegistry) {
         super(nodeAttributeModel, attributeRegistry);
+        newRow = AFTER_LAST_ROW;
     }
     public int getRowCount() {
-        if (nodeAttributeModel.getNode().getMap().getRegistry().getAttributes().isRestricted())
+        if (newRow == AFTER_LAST_ROW)
             return nodeAttributeModel.getRowCount();
         return nodeAttributeModel.getRowCount() + 1;
     }
     public Object getValueAt(int row, int col) {
-        if (row < nodeAttributeModel.getRowCount()){
+        if (row < newRow){
             return nodeAttributeModel.getValueAt(row, col);
         }
-        return "";
+        if(row == newRow){
+            return "";
+        }
+        return nodeAttributeModel.getValueAt(row-1, col);
     }
-    public void insertRow(int index, Attribute newAttribute) {
-        nodeAttributeModel.insertRow(index, newAttribute);
+    public void insertRow(int index) {
+        newRow = index;
+        fireTableRowsInserted(index, index);
     }
     public boolean isCellEditable(int row, int col) {
-        if(nodeAttributeModel.isCellEditable(row, col)){
-            if (col == 0)
-                return true;
-            if (row < nodeAttributeModel.getRowCount())
-                return nodeAttributeModel.getValueAt(row, 0).toString().length() > 0;
+        if(row != newRow){
+            int rowInModel = row < newRow ? row : row - 1;
+            return nodeAttributeModel.isCellEditable(rowInModel, col);
         }
-        return false;
+        return col == 0;
     }
     
     public Object removeRow(int index) {
@@ -49,23 +54,51 @@ class ExtendedAttributeTableModelDecorator extends AttributeTableModelDecoratorA
     }
     
     public void setValueAt(Object o, int row, int col) {
-        if(row < nodeAttributeModel.getRowCount()){
+        if(row != newRow){
             if(col == 1 || o.toString().length() > 0){
-                nodeAttributeModel.setValueAt(o, row, col);
-            }
-            else{
-                nodeAttributeModel.removeRow(row);
+                int rowInModel = row < newRow ? row : row - 1;
+                nodeAttributeModel.setValueAt(o, rowInModel, col);
             }
             return;
         }
-        if(col == 0 && o.toString().length() > 0){
-            addRow(new Attribute(o.toString()));
+        else{
+            fireTableRowsDeleted(newRow, newRow);
+            newRow = AFTER_LAST_ROW;
+            if(col == 0 && o != null && o.toString().length() > 0){
+                nodeAttributeModel.insertRow(row, new Attribute(o.toString()));
+            }
+            return;
         }
-    }
-    public void addRow(Attribute attr) {
-        nodeAttributeModel.addRow(attr);
+        
     }
     public void stateChanged(ChangeEvent e) {
         fireTableDataChanged();     
+    }
+    
+    public void editingCanceled() {
+        if(newRow != AFTER_LAST_ROW){
+            fireTableRowsDeleted(newRow, newRow);
+            newRow = AFTER_LAST_ROW;            
+        }
+    }
+    /* (non-Javadoc)
+     * @see freemind.view.mindmapview.attributeview.AttributeTableModelDecoratorAdapter#areAttributesVisible()
+     */
+    public boolean areAttributesVisible() {
+        return true;
+    }
+    /**
+     * @param row
+     */
+    public void moveRowUp(int row) {
+        Attribute attribute = (Attribute)nodeAttributeModel.removeRow(row);
+        nodeAttributeModel.insertRow(row-1, attribute);                
+    }
+    /**
+     * @param row
+     */
+    public void moveRowDown(int row) {
+        Attribute attribute = (Attribute)nodeAttributeModel.removeRow(row);
+        nodeAttributeModel.insertRow(row+1, attribute);                
     }
 }

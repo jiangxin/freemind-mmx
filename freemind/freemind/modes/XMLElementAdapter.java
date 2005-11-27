@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.6 2005-11-17 21:17:53 dpolivaev Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.7 2005-11-27 16:55:42 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -64,7 +64,7 @@ public abstract class XMLElementAdapter extends XMLElement {
     public static final String XML_NODE_ATTRIBUTE_LAYOUT = "attribute_layout";
     public static final String XML_NODE_ATTRIBUTE_REGISTRY = "attribute_registry";
     public static final String XML_NODE_REGISTERED_ATTRIBUTE_NAME = "attribute_name";
-    public static final String XML_NODE_REGISTERED_ATTRIBUTE_VALUE = "attribute_valuet";
+    public static final String XML_NODE_REGISTERED_ATTRIBUTE_VALUE = "attribute_value";
     //public static final String XML_NODE_CLASS_PREFIX = XML_NODE+"_";
     public static final String XML_NODE_CLASS = "AA_NODE_CLASS";
     public static final String XML_NODE_ADDITIONAL_INFO = "ADDITIONAL_INFO";

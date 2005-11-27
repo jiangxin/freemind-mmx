@@ -23,12 +23,6 @@ public interface AttributeTableModel extends TableModel{
 
     void setValueAt(Object o, int row, int col);
 
-    void insertRow(int index, Attribute newAttribute);
-
-    void addRow(Attribute newAttribute);
-
-    Object removeRow(int index);
-
     MindMapNode getNode();
 
     void fireTableDataChanged();
