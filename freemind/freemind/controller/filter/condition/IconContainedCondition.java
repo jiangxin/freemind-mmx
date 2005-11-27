@@ -4,13 +4,13 @@
  */
 package freemind.controller.filter.condition;
 
-import java.awt.Color;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import freemind.main.Resources;
 import freemind.modes.MindIcon;
@@ -27,6 +27,11 @@ public class IconContainedCondition implements Condition {
 		for (ListIterator i=icons.listIterator(); i.hasNext(); ) {
 			MindIcon nextIcon = (MindIcon) i.next() ;
 			if (iconName.equals(nextIcon.getName())) return true;
+		}
+		Set stateIcons = node.getStateIcons().keySet();
+		for(Iterator stateIcon = stateIcons.iterator(); stateIcon.hasNext();){
+			String nextIcon = (String) stateIcon.next() ;
+			if (iconName.equals(nextIcon)) return true;		    
 		}
 		return false;
 	}

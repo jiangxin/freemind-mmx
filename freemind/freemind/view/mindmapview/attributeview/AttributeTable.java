@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -19,14 +20,15 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JViewport;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeViewEvent;
 import freemind.modes.NodeViewEventListener;
@@ -127,7 +129,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
     private AttributeView attributeView;
     private static final int EXTRA_HEIGHT = 4;
     private static final float TABLE_ROW_HEIGHT = 4;
-    private static final Dimension prefHeaderSize = new Dimension(5, 5);
+    private static final Dimension prefHeaderSize = new Dimension(1, 8);
     AttributeTable(AttributeView attributeView) {
         super();
         this.attributeView = attributeView;
@@ -346,8 +348,21 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
      * 
      */
     public void setOptimalColumnWidths() {
-        // TODO Auto-generated method stub
-        
+            TableColumn column = null;
+            Component comp = null;
+            int cellWidth = 0;
+            int maxCellWidth = 0;
+             for (int col = 0; col < 2; col++) {
+                column = getColumnModel().getColumn(col);
+                for(int row = 0; row < getRowCount(); row++){
+                comp = dtcr.getTableCellRendererComponent(
+                                     this, getValueAt(row, col),
+                                     false, false, row, col);
+                cellWidth = comp.getPreferredSize().width;
+                maxCellWidth = Math.max(cellWidth, maxCellWidth);
+                }
+                getAttributeTableModel().setColumnWidth(col, maxCellWidth + 1);
+            }
     }
 
 
@@ -412,5 +427,10 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
             ExtendedAttributeTableModelDecorator model = (ExtendedAttributeTableModelDecorator)getModel();
             model.moveRowDown(row);
         }
+    }
+    protected boolean processKeyBinding(KeyStroke ks, KeyEvent e,
+            int condition, boolean pressed) {
+        //TODO
+        return super.processKeyBinding(ks, e, condition, pressed);
     }
 }

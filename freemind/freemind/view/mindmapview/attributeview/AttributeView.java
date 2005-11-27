@@ -16,11 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.6 2005-11-27 16:55:42 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.7 2005-11-27 21:18:06 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
+import java.awt.Color;
+
 import javax.swing.JScrollPane;
+import javax.swing.UIManager;
 import javax.swing.event.AncestorEvent;
 
 import javax.swing.event.ChangeEvent;
@@ -72,6 +75,8 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
     private NodeView nodeView;
     private AttributeChangeListener attributeChangeListener;
     static private AttributePopupMenu tablePopupMenu;
+    private static final Color USUAL_HEADER_BACKGROUND = UIManager.getColor("Table.gridColor");
+    private static final Color EXTENDED_HEADER_BACKGROUND = Color.RED.darker();
     
     public AttributeView(NodeView nodeView) {
         super();
@@ -95,6 +100,9 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
     public void syncronizeAttributeView() {
         if (attributeTable == null && currentAttributeTableModel.areAttributesVisible()){
             attributeTable = new AttributeTable(this);
+            if(getAttributes().getViewType().equals(AttributeTableLayoutModel.SHOW_EXTENDED)){
+                attributeTable.getTableHeader().setBackground(EXTENDED_HEADER_BACKGROUND);
+            }
             addTableModelListeners();
             attributeViewScrollPane = new AttributeViewScrollPane(attributeTable);
             attributeViewScrollPane.setColumnHeaderView(attributeTable.getTableHeader());
@@ -141,8 +149,10 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
     }
     
     private void setViewType(String viewType) {
+        Color headerBackground = USUAL_HEADER_BACKGROUND;
         if(viewType.equals( AttributeTableLayoutModel.SHOW_EXTENDED)){
             currentAttributeTableModel = getExtendedAttributeTableModel();
+            headerBackground = EXTENDED_HEADER_BACKGROUND;
         }
         else if(viewType.equals( AttributeTableLayoutModel.SHOW_REDUCED)){
             currentAttributeTableModel = reducedAttributeTableModel;
@@ -150,6 +160,7 @@ public class AttributeView implements ChangeListener, ColumnWidthChangeListener,
         }
         if(attributeTable != null && attributeTable.getModel() != attributeTable){
             attributeTable.setModel(currentAttributeTableModel);
+            attributeTable.getTableHeader().setBackground(headerBackground);
             attributeViewScrollPane.invalidate();
         }
     }

@@ -39,6 +39,8 @@ class FilterToolbar extends JToolBar {
     private JButton btnUnfoldAncestors;
     private static Color filterActiveColor = null;
     private static Color filterInactiveColor = null;
+    static private  final String FILTER_ON = Resources.getInstance().getResourceString("filter_on");
+    static private  final String FILTER_OFF = Resources.getInstance().getResourceString("filter_off");
     
     private class ApplyFilterAction extends AbstractAction {
         
@@ -47,7 +49,7 @@ class FilterToolbar extends JToolBar {
          */
         private Controller c;
         ApplyFilterAction(Controller c) {
-            super(Resources.getInstance().getResourceString("filter_apply"));
+            super(FILTER_ON);
             this.c = c;
         }
         
@@ -66,9 +68,11 @@ class FilterToolbar extends JToolBar {
                 if(filterActiveColor == null)
                     filterActiveColor = new Color(255, 128, 128);
                 btnApply.setBackground(filterActiveColor);
+                btnApply.setText(FILTER_OFF);
             }
             else{
                 btnApply.setBackground(filterInactiveColor);                
+                btnApply.setText(FILTER_ON);
             }
             btnUnfoldAncestors.setEnabled(btnApply.getModel().isSelected());
         }

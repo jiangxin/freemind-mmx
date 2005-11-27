@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.10.2.4.2.6 2005-11-01 13:42:20 dpolivaev Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.10.2.4.2.7 2005-11-27 21:18:06 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -1042,7 +1042,8 @@ public abstract class NodeAdapter implements MindMapNode {
 //    		logger.warning("Set state of key:"+key+", icon "+icon);
     		createStateIcons();
         if (icon != null) {
-			stateIcons.put(key, icon);
+			stateIcons.put(key, icon);			
+            getMap().getRegistry().addIcon(MindIcon.factory(key, icon));
 		} else if(stateIcons.containsKey(key)) {
             stateIcons.remove(key);
         }

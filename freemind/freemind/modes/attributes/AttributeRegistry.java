@@ -187,12 +187,7 @@ public class AttributeRegistry{
         String value = newAttribute.getValue();
         try{
             AttributeRegistryElement elem = getElement(name);
-            if(value.equals("")){
-                value = elem.getValues().firstElement().toString();
-            }
-            else{
-                elem.addValue(value);
-            }
+            elem.addValue(value);
         }
         catch(NoSuchElementException ex)
         {

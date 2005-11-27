@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindIcon.java,v 1.1.18.5.2.1 2005-05-26 16:43:26 dpolivaev Exp $*/
+/*$Id: MindIcon.java,v 1.1.18.5.2.1.2.1 2005-11-27 21:18:06 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -53,6 +53,15 @@ public class MindIcon implements Comparable{
     private MindIcon(String name) {
        setName(name); 
        associatedIcon=null;
+    }
+
+    /**
+     * @param iconName
+     * @param icon
+     */
+    private MindIcon(String name, ImageIcon icon) {
+        setName(name); 
+        associatedIcon=icon;
     }
 
     public String toString() {
@@ -190,6 +199,20 @@ public class MindIcon implements Comparable{
     		return icon;
     }
 
+    /**
+     * @param key
+     * @param icon
+     * @return
+     */
+    public static MindIcon factory(String iconName, ImageIcon icon) {
+		if(createdIcons.containsKey(iconName)){
+			return (MindIcon) createdIcons.get(iconName);
+		}
+		MindIcon mindIcon = new MindIcon(iconName, icon);
+		getAllIconNames ().add(iconName);
+		createdIcons.put(iconName, mindIcon);
+		return mindIcon;
+    }
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
@@ -210,4 +233,5 @@ public class MindIcon implements Comparable{
         }
         return number;
     }
+
 }
