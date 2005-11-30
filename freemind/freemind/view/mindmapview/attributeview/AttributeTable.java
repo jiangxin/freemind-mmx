@@ -29,28 +29,32 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+
+import com.sun.tools.xjc.generator.field.IsSetFieldRenderer;
+
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeViewEvent;
 import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.AttributeTableModel;
+import freemind.modes.attributes.ColumnWidthChangeEvent;
+import freemind.modes.attributes.ColumnWidthChangeListener;
+import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
 /**
  * @author dimitri
  * 12.06.2005
  */
-public class AttributeTable extends JTable implements NodeViewEventListener{
+public class AttributeTable extends JTable implements NodeViewEventListener, ColumnWidthChangeListener{
     private static final int MAX_HEIGTH = 300;
     private static final int MAX_WIDTH = 600;
     static private class MyFocusListener implements FocusListener{
         /* (non-Javadoc)
          * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
          */
-        boolean ignoreLostFocus = false;
         public void focusGained(FocusEvent event) { 
-            ignoreLostFocus = false;
             Component source = (Component)event.getSource();
             Component oppositeComponent = event.getOppositeComponent();
             Component newNodeViewInFocus = getAncestorComponent(source, NodeView.class);
@@ -59,15 +63,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
                     && newNodeViewInFocus instanceof NodeView){
                 NodeView viewer = (NodeView)newNodeViewInFocus;
                 if(! viewer.isSelected()){
-                    ignoreLostFocus = true;
-                    viewer.getMap().selectAsTheOnlyOneSelected(viewer);
-                    source.requestFocus();
-                }
-            }
-            else if(source instanceof JComboBox){
-                JComboBox comboBox = (JComboBox)source;
-                if(! comboBox.isEditable()){
-                    comboBox.setPopupVisible(true);
+                    viewer.getMap().selectAsTheOnlyOneSelected(viewer, false);
                 }
             }
         }
@@ -76,8 +72,6 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
          * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
          */
         public void focusLost(FocusEvent event) {
-            if(ignoreLostFocus)
-                return;
             Component source = (Component) event.getSource();
             Component oppositeComponent = event.getOppositeComponent();
             AttributeTable oldTable = (AttributeTable)getAncestorComponent(source, AttributeTable.class);
@@ -87,8 +81,6 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
                     if (oldTable.isEditing()){                
                         oldTable.getCellEditor().stopCellEditing();
                     }
-                    oldTable.changeSelectedRowHeight(0);
-                    oldTable.clearSelection();
                 }
             }
         }
@@ -291,7 +283,19 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
     
     public void tableChanged(TableModelEvent e) {
         super.tableChanged(e);
+        if(getParent() == null)
+            return;
+        
+        if(e.getType() == TableModelEvent.DELETE
+           && e.getFirstRow() == highRowIndex
+           && e.getFirstRow() == getRowCount()
+           && e.getFirstRow() != 0)
+            changeSelectedRowHeight( e.getFirstRow()-1);
         updateRowHeights();
+        
+        MapView map = getAttributeView().getNodeView().getMap();
+        getParent().getParent().invalidate();
+        map.getModel().nodeChanged(getAttributeView().getNode());
     }
     
     /* (non-Javadoc)
@@ -316,7 +320,6 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
     }
     public void setModel(TableModel dataModel) {
         super.setModel(dataModel);
-        getModel().removeTableModelListener(this);
     }
     
     private void removeListenerFromEditor() {
@@ -388,12 +391,9 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
         if(getModel() instanceof ExtendedAttributeTableModelDecorator){
             ExtendedAttributeTableModelDecorator model = (ExtendedAttributeTableModelDecorator)getModel();
             model.insertRow(row);
-            setEditingRow(row);
-            setEditingColumn(0);
+            changeSelection(row, 0, false, false);
             editCellAt(row, 0);
-            
-            getEditorComponent().requestFocus();
-        }
+         }
     }
 
 
@@ -428,9 +428,26 @@ public class AttributeTable extends JTable implements NodeViewEventListener{
             model.moveRowDown(row);
         }
     }
-    protected boolean processKeyBinding(KeyStroke ks, KeyEvent e,
+    public void columnWidthChanged(ColumnWidthChangeEvent event) {
+        int col = event.getColumnNumber();
+        AttributeTableLayoutModel layoutModel = (AttributeTableLayoutModel) event.getSource();
+        int width = layoutModel.getColumnWidth(col);
+        getColumnModel().getColumn(col).setPreferredWidth(width);
+        getAttributeView().getNode().getMap().nodeChanged(getAttributeView().getNode());
+    }
+    
+   protected boolean processKeyBinding(KeyStroke ks, KeyEvent e,
             int condition, boolean pressed) {
-        //TODO
+        if( ks.getKeyCode() == KeyEvent.VK_TAB
+            && e.getModifiers() == 0
+            && pressed
+            && getSelectedColumn() == 1
+            && getSelectedRow() == getRowCount()-1
+            && getModel() instanceof ExtendedAttributeTableModelDecorator){
+            	ExtendedAttributeTableModelDecorator modelEx = (ExtendedAttributeTableModelDecorator) getModel();
+            	insertRow(getRowCount());
+            	return true;            
+        }
         return super.processKeyBinding(ks, e, condition, pressed);
     }
 }

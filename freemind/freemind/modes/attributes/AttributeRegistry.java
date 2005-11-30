@@ -431,6 +431,7 @@ public class AttributeRegistry{
      */
     public void setRestricted(boolean b) {
         isRestricted = b; 
+        restrictionModel = Boolean.valueOf(isRestricted);
     }
 
     /**

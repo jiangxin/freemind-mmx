@@ -62,8 +62,8 @@ class ExtendedAttributeTableModelDecorator extends AttributeTableModelDecoratorA
             return;
         }
         else{
-            fireTableRowsDeleted(newRow, newRow);
             newRow = AFTER_LAST_ROW;
+            fireTableRowsDeleted(row, row);
             if(col == 0 && o != null && o.toString().length() > 0){
                 nodeAttributeModel.insertRow(row, new Attribute(o.toString()));
             }

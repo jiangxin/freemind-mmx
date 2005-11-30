@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12.2.4.2.7 2005-11-19 11:35:59 dpolivaev Exp $*/
+/*$Id: MapView.java,v 1.30.16.12.2.4.2.8 2005-11-30 20:42:29 dpolivaev Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -512,11 +512,17 @@ public class MapView extends JPanel implements Printable, Autoscroll {
      * Select the node, resulting in only that one being selected.
      */
     public void selectAsTheOnlyOneSelected(NodeView newSelected) {
+        selectAsTheOnlyOneSelected(newSelected, true);
+    }
+    public void selectAsTheOnlyOneSelected(NodeView newSelected, boolean requestFocus) {
         LinkedList oldSelecteds = getSelecteds();
         //select new node
         this.selected.clear();
         this.selected.add(newSelected);
-        newSelected.requestFocus();
+        if(requestFocus)
+            newSelected.requestFocus();
+        else
+            getController().getMode().getModeController().anotherNodeSelected(newSelected.getModel());
         // set last focused as preferred (PN) 
         if (newSelected.getModel().getParentNode() != null) {
             newSelected.getModel().getParentNode().setPreferredChild(newSelected.getModel());
