@@ -30,7 +30,11 @@ public class ConditionRenderer implements ListCellRenderer {
             int index,
             boolean isSelected,
             boolean cellHasFocus){
-        if(value == null) return new JLabel("--");
+        if(value == null) 
+            return new JLabel("--");
+        if(! (value instanceof Condition)) 
+            return new JLabel(value.toString());
+
         Condition cond = (Condition) value;
         JComponent component = cond.getListCellRendererComponent();
         component.setOpaque(true);

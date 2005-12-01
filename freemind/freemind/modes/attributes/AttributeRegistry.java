@@ -221,6 +221,8 @@ public class AttributeRegistry{
 
     private void unregistry(String name) {
         int index = elements.indexOf(name);
+        if(getElement(index).isVisible())
+            visibleElementsNumber--;
         unregistry(index);
     }
 
@@ -524,8 +526,13 @@ public class AttributeRegistry{
         if(isVisibilityChanged == false)
             return;
         isRestricted = restrictionModel.booleanValue(); 
-        for(int i = 0; i < elements.size(); i++)
-            getElement(i).applyChanges();
+        visibleElementsNumber = 0;
+        for(int i = 0; i < elements.size(); i++){
+            AttributeRegistryElement element = getElement(i);
+            element.applyChanges();
+            if(element.isVisible())
+                visibleElementsNumber ++;
+        }
         fireVisibilityChanged();
         isVisibilityChanged = false;
     }

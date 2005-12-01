@@ -5,6 +5,7 @@
 package freemind.controller.filter;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -17,8 +18,13 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.plaf.basic.BasicComboBoxUI;
+import javax.swing.plaf.basic.BasicComboPopup;
+import javax.swing.plaf.basic.ComboPopup;
 
 import freemind.controller.Controller;
 import freemind.controller.filter.condition.Condition;
@@ -168,6 +174,7 @@ class FilterToolbar extends JToolBar {
         
         activeFilterCondition = new JComboBox();
         activeFilterCondition.setFocusable(false);
+        activeFilterCondition.setPrototypeDisplayValue("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
         activeFilterCondition.setRenderer(fc.getConditionRenderer());
         add(activeFilterCondition);
         activeFilterCondition.addItemListener(filterChangeListener);
