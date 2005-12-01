@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.14.14.4.6.3 2005-10-03 15:07:59 dpolivaev Exp $*/
+/*$Id: BubbleNodeView.java,v 1.14.14.4.6.4 2005-12-01 18:21:41 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -135,7 +135,7 @@ public class BubbleNodeView extends MoveableNodeView {
      */
     Point getOutPoint() {
         if( isLeft() ) {
-            return new Point(getX(), getY() + getMainView().getHeight() / 2);
+            return new Point(getX() - 1, getY() + getMainView().getHeight() / 2);
         } else {
             return new Point(getX() + getMainView().getWidth(), getY() + getMainView().getHeight() / 2);
         } 
@@ -149,7 +149,7 @@ public class BubbleNodeView extends MoveableNodeView {
         if (isLeft()) {
             return new Point(getX() + getMainView().getWidth(), getY() + getMainView().getHeight() / 2);
         } else {
-            return new Point(getX(), getY() + getMainView().getHeight() / 2);
+            return new Point(getX() - 1, getY() + getMainView().getHeight() / 2);
         }
     }
 

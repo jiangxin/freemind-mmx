@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.10.2.1.2.4 2005-11-01 13:42:20 dpolivaev Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.10.2.1.2.5 2005-12-01 18:24:24 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -73,7 +73,7 @@ public class MindMapMapModel extends MapAdapter  {
     private LinkRegistryAdapter linkRegistry;
     private Timer timerForAutomaticSaving;
     private static final String EXPECTED_START_STRINGS[] = {
-            "<map version=\"" + FreeMind.version + "\"",
+            "<map version=\"" + FreeMind.VERSION + "\"",
             "<map version=\"0.7.1\"",
             "<map version=\"0.8.0\""};
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.8 2005-11-30 20:42:29 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.9 2005-12-01 18:21:41 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -60,7 +60,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener {
     private JScrollPane attributeViewScrollPane;
     private NodeView nodeView;
     static private AttributePopupMenu tablePopupMenu;
-    private static final Color USUAL_HEADER_BACKGROUND = UIManager.getColor("Table.gridColor");
+    private static final Color USUAL_HEADER_BACKGROUND = UIManager.getColor("TableHeader.background");
     private static final Color EXTENDED_HEADER_BACKGROUND = Color.RED.darker();
     
     public AttributeView(NodeView nodeView) {
