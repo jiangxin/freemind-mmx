@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.9 2005-12-01 18:21:41 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.10 2005-12-01 20:13:40 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -25,14 +25,8 @@ import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.event.AncestorEvent;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.tree.TreeNode;
 
 import freemind.controller.attributes.AttributePopupMenu;
 import freemind.modes.MindMapNode;
@@ -41,8 +35,6 @@ import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.AttributeTableModel;
-import freemind.modes.attributes.ColumnWidthChangeEvent;
-import freemind.modes.attributes.ColumnWidthChangeListener;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;

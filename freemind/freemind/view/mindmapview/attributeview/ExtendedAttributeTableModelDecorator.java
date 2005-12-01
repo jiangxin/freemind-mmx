@@ -77,8 +77,10 @@ class ExtendedAttributeTableModelDecorator extends AttributeTableModelDecoratorA
     
     public void editingCanceled() {
         if(newRow != AFTER_LAST_ROW){
-            fireTableRowsDeleted(newRow, newRow);
-            newRow = AFTER_LAST_ROW;            
+            int row = newRow;
+            newRow = AFTER_LAST_ROW;  
+            fireTableRowsDeleted(row, row);
+          
         }
     }
     /* (non-Javadoc)

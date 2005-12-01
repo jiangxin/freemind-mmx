@@ -208,6 +208,13 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
     }
     public void changeSelection(int rowIndex, int columnIndex, boolean toggle,
             boolean extend) {
+        int rowCount = getRowCount();
+        if(rowCount == 0)
+            return;        
+        if(rowIndex >= rowCount){
+            rowIndex = 0;
+            columnIndex = 0;
+        }
         changeSelectedRowHeight(rowIndex);
         super.changeSelection(rowIndex, columnIndex, toggle, extend);        
     }
@@ -289,9 +296,12 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         if(e.getType() == TableModelEvent.DELETE
            && e.getFirstRow() == highRowIndex
            && e.getFirstRow() == getRowCount()
-           && e.getFirstRow() != 0)
-            changeSelectedRowHeight( e.getFirstRow()-1);
-        updateRowHeights();
+           && e.getFirstRow() != 0){
+            changeSelection(e.getFirstRow()-1, 0, false, false);
+        }
+        else{
+            updateRowHeights();
+        }
         
         MapView map = getAttributeView().getNodeView().getMap();
         getParent().getParent().invalidate();
@@ -390,9 +400,14 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
     public void insertRow(int row) {
         if(getModel() instanceof ExtendedAttributeTableModelDecorator){
             ExtendedAttributeTableModelDecorator model = (ExtendedAttributeTableModelDecorator)getModel();
+            if (isEditing() && getCellEditor() != null 
+                    && !getCellEditor().stopCellEditing()) {
+                return;
+            }
             model.insertRow(row);
             changeSelection(row, 0, false, false);
-            editCellAt(row, 0);
+            if(editCellAt(row, 0))
+                getEditorComponent().requestFocus();
          }
     }
 
