@@ -120,12 +120,20 @@ class FilterToolbar extends JToolBar {
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         private FilterDialog getFilterDialog() {
-            if (filterDialog == null) filterDialog = new FilterDialog(c, ft);
+            if (filterDialog == null){
+                filterDialog = new FilterDialog(c, ft);                
+            }
             return filterDialog;
         }
         public void actionPerformed(ActionEvent arg0) {
-            getFilterDialog().pack();
-            getFilterDialog().setVisible(true);
+            Object selectedItem = getActiveFilterConditionComboBox().getSelectedItem();
+            if(selectedItem != null){
+                getFilterDialog().setSelectedItem(selectedItem);
+            }
+            if(getFilterDialog().isVisible() == false){
+                getFilterDialog().setLocationRelativeTo(Resources.getInstance().getJFrame());
+                getFilterDialog().setVisible(true);
+            }
         }
         
     }

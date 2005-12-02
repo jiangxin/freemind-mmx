@@ -7,11 +7,15 @@ package freemind.controller.filter;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -99,14 +103,7 @@ public class FilterDialog extends JDialog {
             super(Resources.getInstance().getResourceString("filter_select"));
         }
         public void actionPerformed(ActionEvent e) {
-            JList conditions = conditionList;
-            int min = conditions.getMinSelectionIndex();
-            if(min >= 0){
-                int max = conditions.getMinSelectionIndex();
-                if(min == max){
-                    ft.getActiveFilterConditionComboBox().setSelectedIndex(min);
-                }
-            }
+            selectCondition();
         }
     }
 
@@ -226,7 +223,20 @@ public class FilterDialog extends JDialog {
         }
 
     }
-
+    private class ConditionListMouseListener extends MouseAdapter{
+        
+         public void mouseClicked(MouseEvent e) {
+             if(e.getClickCount() == 2){
+                 EventQueue.invokeLater(new Runnable(){
+                     public void run(){
+                         if(selectCondition()){
+                             setVisible(false);
+                         }
+                     }
+                 });
+             }
+         }
+}
     private class CloseAction extends AbstractAction {
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -422,10 +432,13 @@ public class FilterDialog extends JDialog {
         conditionList.setLayoutOrientation(JList.VERTICAL);
         conditionList.setAlignmentX(Component.LEFT_ALIGNMENT);
         conditionList.addListSelectionListener(new ConditionListSelectionListener());
+        conditionList.addMouseListener(new ConditionListMouseListener());
     
         final JScrollPane conditionScrollPane = new JScrollPane(conditionList);
         conditionScrollPane.setPreferredSize(new Dimension(500, 200));
         getContentPane().add(conditionScrollPane, BorderLayout.CENTER);
+        
+        pack();
     }
 
     private String getAttributeValue() {
@@ -455,5 +468,25 @@ public class FilterDialog extends JDialog {
             attributes.setSelectedIndex(0);
         registeredAttributes = newMap.getRegistry().getAttributes();
         filteredAttributeComboBoxModel.setExtensionList(registeredAttributes.getListBoxModel());
+    }
+
+    private boolean selectCondition() {
+        int min = conditionList.getMinSelectionIndex();
+        if(min >= 0){
+            int max = conditionList.getMinSelectionIndex();
+            if(min == max){
+                ft.getActiveFilterConditionComboBox().setSelectedIndex(min);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param selectedItem
+     */
+    public void setSelectedItem(Object selectedItem) {
+        conditionList.setSelectedValue(selectedItem, true);
+        
     }
 }
