@@ -13,7 +13,7 @@ import freemind.modes.XMLElementAdapter;
  * 18.06.2005
  */
 public class AttributeRegistryElement {
-    class RegisteredAttributeValues extends SortedComboBoxModel {
+    class RegisteredAttributeValues extends SortedComboBoxModel{
         
         public void remove(Object element) {
             super.remove(element);

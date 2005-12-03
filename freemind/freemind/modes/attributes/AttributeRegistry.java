@@ -466,18 +466,24 @@ public class AttributeRegistry{
      */
     public void save(Writer fileout) throws IOException{
         XMLElement attributeRegistry = new XMLElement();
+        boolean toBeSaved = false;
         if(isRestricted()){
             attributeRegistry.setAttribute("RESTRICTED", "true");
+            toBeSaved = true;
         }
         if(getFontSize() != TABLE_FONT_SIZE){
             attributeRegistry.setIntAttribute("FONT_SIZE", getFontSize());
+            toBeSaved = true;
         }
         for (int i = 0; i < size(); i++){
             XMLElement attributeData = getElement(i).save();
             attributeRegistry.addChild(attributeData);
+            toBeSaved = true;
         }
-        attributeRegistry.setName(XMLElementAdapter.XML_NODE_ATTRIBUTE_REGISTRY);
-        attributeRegistry.write(fileout);        
+        if(toBeSaved){
+            attributeRegistry.setName(XMLElementAdapter.XML_NODE_ATTRIBUTE_REGISTRY);
+            attributeRegistry.write(fileout);
+        }
     }
 
     /**
