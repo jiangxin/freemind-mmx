@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10.2.3.2.5 2005-12-01 18:24:24 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.3.2.6 2005-12-05 21:23:34 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -526,6 +526,7 @@ public class Controller {
         if (getMode() != null && getMode().getLeftToolBar() != null) {
            leftToolbarVisible = visible;
            getMode().getLeftToolBar().setVisible(leftToolbarVisible);
+           ((JComponent)getMode().getLeftToolBar().getParent()).revalidate();
         }
     }
 
