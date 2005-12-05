@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapXMLElement.java,v 1.13.18.1.8.1 2005-06-12 12:59:55 dpolivaev Exp $*/
+/*$Id: MindMapXMLElement.java,v 1.13.18.1.8.2 2005-12-05 20:44:40 dpolivaev Exp $*/
 
 
 package freemind.modes.mindmapmode;
@@ -75,8 +75,8 @@ public class MindMapXMLElement extends XMLElementAdapter {
             ClassLoader loader = this.getClass().getClassLoader();
 		    // constructed.
 			Class nodeJavaClass = Class.forName(nodeClass, true, loader);
-			Class[] constrArgs = new Class[]{Object.class, FreeMindMain.class};
-			Object[] constrObjs = new Object[]{null, frame};
+			Class[] constrArgs = new Class[]{Object.class, FreeMindMain.class, MindMap.class};
+			Object[] constrObjs = new Object[]{null, frame, getMap()};
 			Constructor constructor = nodeJavaClass.getConstructor(constrArgs);
 			NodeAdapter nodeImplementor =
 				(NodeAdapter) constructor.newInstance(constrObjs);
