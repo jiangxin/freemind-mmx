@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EncryptNode.java,v 1.1.2.6.6.2 2005-09-17 19:02:07 dpolivaev Exp $*/
+/*$Id: EncryptNode.java,v 1.1.2.6.6.3 2005-12-05 21:09:03 dpolivaev Exp $*/
 
 /*
  * Created on 14.12.2004
@@ -89,7 +89,7 @@ public class EncryptNode extends NodeHookAdapter {
 			if(controller.getSelected() != null && controller.getSelected() instanceof EncryptedMindMapNode) {
 				isEncryptedNode = true;
 			    EncryptedMindMapNode enode = (EncryptedMindMapNode) controller.getSelected() ;
-				isOpened = enode.isVisible();
+				isOpened = enode.isAccessable();
 			}
 			if (hookName.equals("accessories/plugins/EnterPassword.properties")) {
 				return isEncryptedNode;
@@ -194,7 +194,7 @@ public class EncryptNode extends NodeHookAdapter {
     private void toggleCryptState(MindMapNode node) {
         if (node instanceof EncryptedMindMapNode) {
             EncryptedMindMapNode encNode = (EncryptedMindMapNode) node;
-            if (encNode.isVisible()) {
+            if (encNode.isAccessable()) {
                 // to remove all children views:
                 encNode.encrypt();
                 encNode.setShuttingDown(true);
