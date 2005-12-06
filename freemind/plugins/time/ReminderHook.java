@@ -19,7 +19,7 @@
  *
  * Created on 06.02.2005
  */
-/*$Id: ReminderHook.java,v 1.1.2.7.6.1 2005-07-12 15:41:19 dpolivaev Exp $*/
+/*$Id: ReminderHook.java,v 1.1.2.7.6.2 2005-12-06 19:47:30 dpolivaev Exp $*/
 package plugins.time;
 
 import java.text.MessageFormat;
@@ -130,8 +130,7 @@ public class ReminderHook extends PermanentNodeHookAdapter {
 	private ImageIcon getClockIcon() {
 		// icon
 		if (clockIcon == null) {
-			clockIcon = MindIcon.factory("clock").getIcon(
-					getController().getFrame());
+			clockIcon = MindIcon.factory("clock").getIcon();
 		}
 		return clockIcon;
 	}
@@ -139,8 +138,7 @@ public class ReminderHook extends PermanentNodeHookAdapter {
 	private ImageIcon getBellIcon() {
 		// icon
 		if (bellIcon == null) {
-			bellIcon = MindIcon.factory("bell").getIcon(
-					getController().getFrame());
+			bellIcon = MindIcon.factory("bell").getIcon();
 		}
 		return bellIcon;
 	}
@@ -148,8 +146,7 @@ public class ReminderHook extends PermanentNodeHookAdapter {
 	private ImageIcon getFlagIcon() {
 		// icon
 		if (flagIcon == null) {
-			flagIcon = MindIcon.factory("flag").getIcon(
-					getController().getFrame());
+			flagIcon = MindIcon.factory("flag").getIcon();
 		}
 		return flagIcon;
 	}

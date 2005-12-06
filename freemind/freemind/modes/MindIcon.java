@@ -16,18 +16,22 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindIcon.java,v 1.1.18.5.2.1.2.1 2005-11-27 21:18:06 dpolivaev Exp $*/
+/*$Id: MindIcon.java,v 1.1.18.5.2.1.2.2 2005-12-06 19:47:30 dpolivaev Exp $*/
 
 package freemind.modes;
 
+import java.awt.Component;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 
 import freemind.controller.Controller;
 import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 
 /**
  * This class represents a MindIcon than can be applied
@@ -48,6 +52,7 @@ public class MindIcon implements Comparable{
      */
     private static HashMap createdIcons = new HashMap();
     private static final int UNKNOWN = -2;
+    private JComponent component = null;
     
 
     private MindIcon(String name) {
@@ -127,15 +132,15 @@ public class MindIcon implements Comparable{
         return "images/icons/";
     }
 
-    public ImageIcon getIcon(FreeMindMain frame) {
+    public ImageIcon getIcon() {
         // We need the frame to be able to obtain the resource URL of the icon.
         if (iconNotFound == null) {
-           iconNotFound = new ImageIcon(frame.getResource("images/IconNotFound.png")); }
+           iconNotFound = new ImageIcon(Resources.getInstance().getResource("images/IconNotFound.png")); }
 
         if(associatedIcon != null)
             return associatedIcon;
         if ( name != null ) {
-           URL imageURL = frame.getResource(getIconFileName());
+           URL imageURL = Resources.getInstance().getResource(getIconFileName());
            ImageIcon icon = imageURL == null ? iconNotFound : new ImageIcon(imageURL);
            setIcon(icon);
            return icon; }
@@ -232,6 +237,16 @@ public class MindIcon implements Comparable{
             number = getAllIconNames ().indexOf(name);
         }
         return number;
+    }
+
+    /**
+     * @return
+     */
+    public JComponent getRendererComponent() {
+        if(component == null){
+            component = new JLabel(getIcon());
+        }
+        return component;
     }
 
 }

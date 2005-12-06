@@ -46,7 +46,7 @@ public class IconContainedCondition implements Condition {
         + Resources.getInstance().getResourceString("filter_contains")
         + ' ';
         component.add(new JLabel(text));
-        component.add(Resources.getInstance().getComponent(getIconName()));
+        component.add(MindIcon.factory(getIconName()).getRendererComponent());
         return component;
     }
 

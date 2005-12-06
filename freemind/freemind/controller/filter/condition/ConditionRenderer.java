@@ -6,11 +6,15 @@ package freemind.controller.filter.condition;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Image;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+
+import freemind.modes.MindIcon;
 
 
 
@@ -32,11 +36,17 @@ public class ConditionRenderer implements ListCellRenderer {
             boolean cellHasFocus){
         if(value == null) 
             return new JLabel("--");
-        if(! (value instanceof Condition)) 
-            return new JLabel(value.toString());
-
-        Condition cond = (Condition) value;
-        JComponent component = cond.getListCellRendererComponent();
+        JComponent component;
+        if(value instanceof MindIcon){
+            component = ((MindIcon)value).getRendererComponent();
+        }
+        else if(value instanceof Condition){ 
+            Condition cond = (Condition) value;            
+            component = cond.getListCellRendererComponent();
+        }
+        else{
+            component = new JLabel(value.toString());
+        }
         component.setOpaque(true);
         if (isSelected  || cellHasFocus){
             component.setBackground(SELECTED_BACKGROUND);            

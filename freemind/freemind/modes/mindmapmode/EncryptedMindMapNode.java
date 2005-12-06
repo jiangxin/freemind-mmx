@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.9.6.3 2005-12-05 21:09:03 dpolivaev Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.9.6.4 2005-12-06 19:47:30 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -79,10 +79,10 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     public EncryptedMindMapNode(Object userObject, FreeMindMain frame, MindMap map) {
         super(userObject, frame, map);
         if (encryptedIcon == null) {
-            encryptedIcon = MindIcon.factory("encrypted").getIcon(frame);
+            encryptedIcon = MindIcon.factory("encrypted").getIcon();
         }
         if (decryptedIcon == null) {
-            decryptedIcon = MindIcon.factory("decrypted").getIcon(frame);
+            decryptedIcon = MindIcon.factory("decrypted").getIcon();
         }
         updateIcon();
     }

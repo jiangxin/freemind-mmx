@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/*$Id: TimeList.java,v 1.1.2.6.6.1 2005-07-12 15:41:19 dpolivaev Exp $*/
+/*$Id: TimeList.java,v 1.1.2.6.6.2 2005-12-06 19:47:30 dpolivaev Exp $*/
 package plugins.time;
 
 import java.awt.Container;
@@ -502,7 +502,7 @@ public class TimeList extends ModeControllerHookAdapter {
 						.hasNext();) {
 					MindIcon icon = (MindIcon) i.next();
 					iconImages
-							.addImage(icon.getIcon(modeController.getFrame()));
+							.addImage(icon.getIcon());
 				}
 				if (iconImages.getImageCount() > 0) {
 					setIcon(iconImages);

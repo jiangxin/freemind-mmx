@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HierarchicalIcons.java,v 1.1.2.2.6.1 2005-09-17 19:02:07 dpolivaev Exp $*/
+/*$Id: HierarchicalIcons.java,v 1.1.2.2.6.2 2005-12-06 19:47:29 dpolivaev Exp $*/
 
 package accessories.plugins;
 
@@ -99,7 +99,7 @@ public class HierarchicalIcons extends PermanentNodeHookAdapter implements UndoE
                     String iconName = (String) i.next();
 //                    logger.info("Adding icon "+iconName + " to node "+ node.toString());
                     MindIcon icon = MindIcon.factory(iconName);
-                    image.addImage(icon.getIcon(getController().getFrame()));
+                    image.addImage(icon.getIcon());
                 }
                 node.setStateIcon(getName(), image);
             } else {

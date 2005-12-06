@@ -61,7 +61,7 @@ class FreeMindSplash extends JFrame {
         		Font font = new Font("Arial", Font.BOLD, 16);
         		g2.setFont(font);
                 // determine width of string to center it.
-                String freemindVersion = frame.getFreemindVersion();
+                String freemindVersion = FreeMind.VERSION;
                 int width = g2.getFontMetrics().stringWidth(freemindVersion);
         		int yCoordinate = (int)(getSize().getHeight())-14;
                 int xCoordinate = (int)(getSize().getWidth()/2-width/2);

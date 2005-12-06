@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.6 2005-11-20 20:41:36 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.7 2005-12-06 19:47:29 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -376,7 +376,7 @@ public abstract class ControllerAdapter implements ModeController {
                     .getNodeIcon();
             if (patternIcon != null) {
                 patterns[i].putValue(Action.SMALL_ICON, patternIcon
-                        .getIcon(getFrame()));
+                        .getIcon());
             }
         }
     }

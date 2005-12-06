@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.12 2005-11-27 16:55:42 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.13 2005-12-06 19:47:30 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -870,7 +870,7 @@ public abstract class NodeView extends JComponent{
         	for (Iterator i = icons.iterator(); i.hasNext();) {
 			MindIcon myIcon = (MindIcon) i.next();
             iconPresent = true;
-            iconImages.addImage(myIcon.getIcon(frame));  
+            iconImages.addImage(myIcon.getIcon());  
         }
         String link = ((NodeAdapter)getModel()).getLink();
         if ( link != null ) 

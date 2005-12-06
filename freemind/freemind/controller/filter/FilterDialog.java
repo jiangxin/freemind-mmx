@@ -35,6 +35,7 @@ import javax.swing.event.ListSelectionListener;
 import freemind.controller.Controller;
 import freemind.controller.filter.condition.Condition;
 import freemind.controller.filter.condition.ConditionNotSatisfiedDecorator;
+import freemind.controller.filter.condition.ConditionRenderer;
 import freemind.controller.filter.condition.ConjunctConditions;
 import freemind.controller.filter.condition.DisjunctConditions;
 import freemind.controller.filter.util.ExtendedComboBoxModel;
@@ -363,7 +364,7 @@ public class FilterDialog extends JDialog {
         values.setModel(nodes);
         simpleConditionBox.add(Box.createHorizontalGlue());
         simpleConditionBox.add(values);
-        values.setRenderer(Resources.getInstance().getMindIconRenderer());
+        values.setRenderer(new ConditionRenderer());
         values.setEditable(true);
     
         icons = new ExtendedComboBoxModel();
