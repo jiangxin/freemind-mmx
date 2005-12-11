@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.2 2005-07-12 15:41:16 dpolivaev Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.3 2005-12-11 13:34:07 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -59,6 +59,7 @@ import freemind.controller.actions.generated.instance.MenuCheckedAction;
 import freemind.controller.actions.generated.instance.MenuSeparator;
 import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
+import freemind.controller.attributes.NodeAttributesDialog;
 import freemind.extensions.HookFactory;
 import freemind.extensions.HookRegistration;
 import freemind.extensions.HookFactory.RegistrationContainer;
@@ -92,6 +93,17 @@ import freemind.modes.actions.SingleNodeOperation;
 
 public class MindMapController extends ControllerAdapter {
 
+    protected class AssignAttributesAction extends AbstractAction {
+        public AssignAttributesAction() {
+            super(getText("attributes_node_dialog"));
+        }
+        public void actionPerformed(ActionEvent e) {
+             if(nodeAttributesDialog == null){
+                nodeAttributesDialog = new NodeAttributesDialog(getView());
+            }
+            nodeAttributesDialog.setVisible(true);
+        }
+     }
 	private static Logger logger;
 	private Vector hookActions;
 	/** Stores the menu items belonging to the given action. */
@@ -109,7 +121,9 @@ public class MindMapController extends ControllerAdapter {
    public Action exportBranchToHTML = new ExportBranchToHTMLAction(this);
 
    public Action editLong = new EditLongAction();
-   public Action editAttributes = new EditAttributesAction();
+   public Action showAttributes = new ShowAttributesAction();
+   protected  NodeAttributesDialog nodeAttributesDialog = null;
+   public Action assignAttributes = new AssignAttributesAction();
    public Action newSibling = new NewSiblingAction(this);
    public Action newPreviousSibling = new NewPreviousSiblingAction(this);
    public Action setLinkByFileChooser = new SetLinkByFileChooserAction();
@@ -800,6 +814,13 @@ public class MindMapController extends ControllerAdapter {
 	   public String getDescription() {
 	      return getText("mindmaps_desc");
 	   }
+    }
+
+    public void mapChanged(MindMap newMap) {
+        if(nodeAttributesDialog != null){
+            nodeAttributesDialog.mapChanged(getView());
+        }
+        
     }
 
 

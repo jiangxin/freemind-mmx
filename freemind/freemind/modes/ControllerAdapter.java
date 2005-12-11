@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.7 2005-12-06 19:47:29 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.8 2005-12-11 13:34:07 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -77,6 +77,7 @@ import freemind.controller.actions.ModeControllerActionHandler;
 import freemind.controller.actions.UndoActionHandler;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.controller.attributes.NodeAttributesDialog;
 import freemind.extensions.HookFactory;
 import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
@@ -1706,9 +1707,10 @@ public abstract class ControllerAdapter implements ModeController {
         }
     }
 
-	protected class EditAttributesAction extends AbstractAction {
-        public EditAttributesAction() {
-            super(getText("edit_attributes"));
+    
+        protected class ShowAttributesAction extends AbstractAction {
+        public ShowAttributesAction() {
+            super(getText("attributes_show_hide"));
         }
         public void actionPerformed(ActionEvent e) {
             NodeView firstSelectedNodeView = getView().getSelected();
@@ -1909,6 +1911,9 @@ public abstract class ControllerAdapter implements ModeController {
             int shiftY) {
 	    moveNodeAction.moveNodeTo(node, vGap, hGap, shiftY);
 	}
+
+    public void mapChanged(MindMap newMap) {        
+    }
 
 
     

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.14.6.6.1 2005-06-12 12:59:54 dpolivaev Exp $*/
+/*$Id: ModeController.java,v 1.14.14.6.6.2 2005-12-11 13:34:07 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -150,4 +150,5 @@ public interface ModeController extends MindMapActions {
 	
 	/** undo in progress? */
 	boolean isUndoAction();
+    void mapChanged(MindMap newMap);
 }

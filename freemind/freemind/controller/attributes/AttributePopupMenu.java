@@ -43,7 +43,7 @@ public class AttributePopupMenu extends JPopupMenu implements MouseListener {
             edit = new JMenuItem(Resources.getInstance().getResourceString("attributes_popup_edit"));
             edit.addActionListener(new ActionListener(){
                 public void actionPerformed(ActionEvent e) {
-                    table.editAttributes();                    
+                    table.showAttributes();                    
                 }                
             });
         }

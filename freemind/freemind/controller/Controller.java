@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10.2.3.2.6 2005-12-05 21:23:34 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.3.2.7 2005-12-11 13:34:07 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -1202,6 +1202,7 @@ public class Controller {
         fc.mapChanged(newMap);
         if (attributeDialog != null)
             attributeDialog.mapChanged(newMap); 
+        getModeController().mapChanged(newMap);
     }
     
     public static void addPropertyChangeListener(FreemindPropertyListener listener) {

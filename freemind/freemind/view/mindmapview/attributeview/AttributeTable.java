@@ -382,7 +382,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
     /**
      * 
      */
-    public void editAttributes() {
+    public void showAttributes() {
         attributeView.getAttributes().setViewType(AttributeTableLayoutModel.SHOW_EXTENDED);
     }
     
