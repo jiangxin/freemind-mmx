@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
 
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.XMLElementAdapter;
@@ -20,6 +21,8 @@ import freemind.modes.XMLElementAdapter;
  * 18.06.2005
  */
 public class NodeAttributeTableModel extends AbstractTableModel implements AttributeTableModel{
+    private static boolean SHOW_ATTRIBUTE_ICON = 
+        Tools.safeEquals("true", Resources.getInstance().getProperty("el__show_icon_for_attributes"));
     private MindMapNode node;
     private Vector attributes = null;
     private AttributeTableLayoutModel layout = null;
@@ -105,7 +108,7 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
     }
     
     private void enableStateIcon() {
-        if(getRowCount() == 1){
+        if(SHOW_ATTRIBUTE_ICON && getRowCount() == 1){
             if (noteIcon == null) {
                 noteIcon = new ImageIcon(Resources.getInstance().getResource("images/showAttributes.gif"));
             }
@@ -113,7 +116,7 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
         }
     }
     private void disableStateIcon() {
-        if(getRowCount() == 0){
+        if(SHOW_ATTRIBUTE_ICON && getRowCount() == 0){
             node.setStateIcon(STATE_ICON, null);
         }
     }

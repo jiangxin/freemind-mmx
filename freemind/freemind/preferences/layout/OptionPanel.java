@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.4.2.2.2 2005-09-17 19:02:07 dpolivaev Exp $*/
+/*$Id: OptionPanel.java,v 1.1.4.2.2.3 2005-12-12 22:08:08 dpolivaev Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -988,8 +988,11 @@ public class OptionPanel {
 
 		controls.add(new StringProperty(null, "el__max_default_window_width")); //  600
 
-		controls
-				.add(new BooleanProperty(null, "el__enter_confirms_by_default")); //  true
+        controls
+                .add(new BooleanProperty(null, "el__enter_confirms_by_default")); //  true
+
+        controls
+                .add(new BooleanProperty(null, "el__show_icon_for_attributes")); //  true
 
 		/***********************************************************************
 		 * Keystrokes
