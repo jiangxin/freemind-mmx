@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.4 2005-12-12 21:14:50 dpolivaev Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.5 2005-12-12 21:23:32 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -95,7 +95,7 @@ public class MindMapController extends ControllerAdapter {
 
     protected class AssignAttributesAction extends AbstractAction {
         public AssignAttributesAction() {
-            super(getText("attributes_node_dialog"));
+            super(getText("attributes_assign_dialog"));
         }
         public void actionPerformed(ActionEvent e) {
              if(assignAttributeDialog == null){
