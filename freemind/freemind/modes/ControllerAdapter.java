@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.8 2005-12-11 13:34:07 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.9 2005-12-12 21:14:50 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -77,7 +77,7 @@ import freemind.controller.actions.ModeControllerActionHandler;
 import freemind.controller.actions.UndoActionHandler;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.controller.attributes.NodeAttributesDialog;
+import freemind.controller.attributes.AssignAttributeDialog;
 import freemind.extensions.HookFactory;
 import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;

@@ -9,6 +9,8 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -38,6 +40,7 @@ public class AttributeDialog extends JDialog {
     private AttributeRegistry model;
     private static final String[] fontSizes = {"6","8","10","12","14","16","18","20","24"};
     private JComboBox size;
+    private ImportAttributesDialog importDialog = null;
     static final Icon editButtonImage = new ImageIcon(Resources.getInstance().getResource("images/edit12.png"));
     
     private class ApplyAction extends AbstractAction{
@@ -90,6 +93,23 @@ public class AttributeDialog extends JDialog {
             setVisible(false);
         }
     }
+    
+    private class ImportAction extends AbstractAction{
+        ImportAction(){
+            super(Resources.getInstance().getResourceString("attributes_import"));
+        }
+        /* (non-Javadoc)
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
+        public void actionPerformed(ActionEvent e) {
+            if(importDialog == null){
+                importDialog = new ImportAttributesDialog(AttributeDialog.this);
+            }
+            importDialog.setVisible(true);
+        }
+    }
+    
+    
 
 //    private class RefreshAction extends AbstractAction{
 //        RefreshAction(){
@@ -134,8 +154,19 @@ public class AttributeDialog extends JDialog {
             this.listBoxModel = listBoxModel;
         }
     }
-    public AttributeDialog(MindMap map, String titel){
-        super(Resources.getInstance().getJFrame(), titel, true);
+    
+    private class ClosingListener extends WindowAdapter{
+
+        public void windowClosing(WindowEvent e) {
+            resetChanges();
+            super.windowClosing(e);
+            setVisible(false);
+        }
+        
+    }
+
+    public AttributeDialog(MindMap map){
+        super(Resources.getInstance().getJFrame(), Resources.getInstance().getResourceString("attributes_dialog"), true);
 
         view = new AttributeRegistryTable(new EditListAction());
         registry = map.getRegistry();
@@ -174,7 +205,13 @@ public class AttributeDialog extends JDialog {
     	size.setToolTipText(Resources.getInstance().getResourceString("attribute_font_size_tooltip"));
     	southButtons.add(size);
         southButtons.add(Box.createHorizontalGlue());
+        JButton importBtn = new JButton(new ImportAction());
+        importBtn.setToolTipText(Resources.getInstance().getResourceString("attributes_import_tooltip"));
+        southButtons.add(importBtn);
+        southButtons.add(Box.createHorizontalGlue());
+
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); 
+        addWindowListener(new ClosingListener());
     	
     }
     public void mapChanged(MindMap map){

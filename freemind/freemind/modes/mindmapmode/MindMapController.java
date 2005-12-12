@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.3 2005-12-11 13:34:07 dpolivaev Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.4 2005-12-12 21:14:50 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -59,7 +59,7 @@ import freemind.controller.actions.generated.instance.MenuCheckedAction;
 import freemind.controller.actions.generated.instance.MenuSeparator;
 import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
-import freemind.controller.attributes.NodeAttributesDialog;
+import freemind.controller.attributes.AssignAttributeDialog;
 import freemind.extensions.HookFactory;
 import freemind.extensions.HookRegistration;
 import freemind.extensions.HookFactory.RegistrationContainer;
@@ -98,10 +98,10 @@ public class MindMapController extends ControllerAdapter {
             super(getText("attributes_node_dialog"));
         }
         public void actionPerformed(ActionEvent e) {
-             if(nodeAttributesDialog == null){
-                nodeAttributesDialog = new NodeAttributesDialog(getView());
+             if(assignAttributeDialog == null){
+                assignAttributeDialog = new AssignAttributeDialog(getView());
             }
-            nodeAttributesDialog.setVisible(true);
+            assignAttributeDialog.setVisible(true);
         }
      }
 	private static Logger logger;
@@ -122,7 +122,7 @@ public class MindMapController extends ControllerAdapter {
 
    public Action editLong = new EditLongAction();
    public Action showAttributes = new ShowAttributesAction();
-   protected  NodeAttributesDialog nodeAttributesDialog = null;
+   protected  AssignAttributeDialog assignAttributeDialog = null;
    public Action assignAttributes = new AssignAttributesAction();
    public Action newSibling = new NewSiblingAction(this);
    public Action newPreviousSibling = new NewPreviousSiblingAction(this);
@@ -817,8 +817,8 @@ public class MindMapController extends ControllerAdapter {
     }
 
     public void mapChanged(MindMap newMap) {
-        if(nodeAttributesDialog != null){
-            nodeAttributesDialog.mapChanged(getView());
+        if(assignAttributeDialog != null){
+            assignAttributeDialog.mapChanged(getView());
         }
         
     }

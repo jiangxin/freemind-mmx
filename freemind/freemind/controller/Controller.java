@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10.2.3.2.7 2005-12-11 13:34:07 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.3.2.8 2005-12-12 21:14:50 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -1078,7 +1078,7 @@ public class Controller {
         }
 		private AttributeDialog getAttributeDialog() {
 			if (attributeDialog == null) {
-			    attributeDialog = new AttributeDialog(c.getMap(), c.getResourceString("attributes_dialog"));
+			    attributeDialog = new AttributeDialog(c.getMap());
 			}
 			return attributeDialog;
 		}

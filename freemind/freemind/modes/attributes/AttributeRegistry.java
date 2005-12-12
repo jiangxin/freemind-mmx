@@ -15,6 +15,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.table.TableModel;
 
+import freemind.controller.filter.util.SortedComboBoxModel;
 import freemind.controller.filter.util.SortedListModel;
 import freemind.controller.filter.util.SortedMapVector;
 import freemind.main.XMLElement;
@@ -516,7 +517,7 @@ public class AttributeRegistry{
      */
     public void registry(String s) {
         if (s != "")
-            registry(s, new AttributeRegistryElement(this, s));        
+            registry(s, new AttributeRegistryElement(this, s));
     }
 
     public void resetChanges(){
@@ -541,5 +542,19 @@ public class AttributeRegistry{
         }
         fireVisibilityChanged();
         isVisibilityChanged = false;
+    }
+
+    public boolean exist(String attributeName, Object element) {
+        int index = indexOf(attributeName);
+        if(index == -1){
+            return false;
+        }
+        SortedComboBoxModel values = getElement(index).getValues();
+        for(int i = 0; i < values.getSize(); i++){
+            if(element.equals(values.getElementAt(i))){
+                return true;
+            }
+        }
+        return false;        
     }
 }
