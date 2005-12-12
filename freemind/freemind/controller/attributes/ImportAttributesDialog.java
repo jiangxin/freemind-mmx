@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.Box;
 import javax.swing.Icon;
@@ -26,9 +25,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import freemind.controller.MapModuleManager;
@@ -137,6 +134,7 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
         tree = new JTree(treeModel);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(this);
+        tree.setPreferredSize(new Dimension(600, 300));
         
         scrollPane = new JScrollPane();        
         scrollPane.setViewportView(tree);
@@ -171,7 +169,6 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
         
         getContentPane().add(buttons, BorderLayout.SOUTH);
 
-        setPreferredSize(new Dimension(600, 300));
     }
     
     private void performImport(DefaultMutableTreeNode node) {
