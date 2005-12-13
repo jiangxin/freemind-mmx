@@ -14,23 +14,22 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
-import javax.swing.event.ChangeEvent;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-
-import com.sun.tools.xjc.generator.field.IsSetFieldRenderer;
 
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeViewEvent;
@@ -137,6 +136,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         int h = getRowHeight();
         setRowHeight(highRowIndex, h + EXTRA_HEIGHT);
         setRowSelectionAllowed(false);
+        putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
     }
     
     
@@ -181,7 +181,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         }
         comboBox.setModel(model);
         model.setSelectedItem(getValueAt(row, col));
-               
+        
         comboBox.addFocusListener(focusListener);
         comboBox.getEditor().getEditorComponent().addFocusListener(focusListener);
         Component editor = super.prepareEditor(tce, row, col);
@@ -198,7 +198,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         dimension.height = Math.min((int)(MAX_HEIGTH * zoom) - getTableHeader().getPreferredSize().height, dimension.height);
         return dimension;
     }
-
+    
     static ComboBoxModel getDefaultComboBoxModel() {
         if (defaultComboBoxModel == null)
         {
@@ -294,9 +294,9 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
             return;
         
         if(e.getType() == TableModelEvent.DELETE
-           && e.getFirstRow() == highRowIndex
-           && e.getFirstRow() == getRowCount()
-           && e.getFirstRow() != 0){
+                && e.getFirstRow() == highRowIndex
+                && e.getFirstRow() == getRowCount()
+                && e.getFirstRow() != 0){
             changeSelection(e.getFirstRow()-1, 0, false, false);
         }
         else{
@@ -344,8 +344,8 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         getAttributeTableModel().editingCanceled();
         super.removeEditor();
     }
-
-
+    
+    
     /**
      * @return Returns the currentModel.
      */
@@ -355,30 +355,28 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
     public AttributeView getAttributeView() {
         return attributeView;
     }
-
-
+    
+    
     /**
      * 
      */
     public void setOptimalColumnWidths() {
-            TableColumn column = null;
-            Component comp = null;
-            int cellWidth = 0;
-            int maxCellWidth = 0;
-             for (int col = 0; col < 2; col++) {
-                column = getColumnModel().getColumn(col);
-                for(int row = 0; row < getRowCount(); row++){
+        Component comp = null;
+        int cellWidth = 0;
+        int maxCellWidth = 0;
+        for (int col = 0; col < 2; col++) {
+            for(int row = 0; row < getRowCount(); row++){
                 comp = dtcr.getTableCellRendererComponent(
-                                     this, getValueAt(row, col),
-                                     false, false, row, col);
+                        this, getValueAt(row, col),
+                        false, false, row, col);
                 cellWidth = comp.getPreferredSize().width;
                 maxCellWidth = Math.max(cellWidth, maxCellWidth);
-                }
-                getAttributeTableModel().setColumnWidth(col, maxCellWidth + 1);
             }
+            getAttributeTableModel().setColumnWidth(col, maxCellWidth + 1);
+        }
     }
-
-
+    
+    
     /**
      * 
      */
@@ -392,8 +390,8 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
     public void hideAttributes() {
         attributeView.getAttributes().setViewType(AttributeTableLayoutModel.SHOW_REDUCED);
     }
-
-
+    
+    
     /**
      * @param row
      */
@@ -408,10 +406,10 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
             changeSelection(row, 0, false, false);
             if(editCellAt(row, 0))
                 getEditorComponent().requestFocus();
-         }
+        }
     }
-
-
+    
+    
     /**
      * @param row
      */
@@ -421,8 +419,8 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
             model.removeRow(row);
         }
     }
-
-
+    
+    
     /**
      * @param row
      */
@@ -432,8 +430,8 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
             model.moveRowUp(row);
         }
     }
-
-
+    
+    
     /**
      * @param row
      */
@@ -451,18 +449,59 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         getAttributeView().getNode().getMap().nodeChanged(getAttributeView().getNode());
     }
     
-   protected boolean processKeyBinding(KeyStroke ks, KeyEvent e,
+    protected boolean processKeyBinding(KeyStroke ks, KeyEvent e,
             int condition, boolean pressed) {
         if( ks.getKeyCode() == KeyEvent.VK_TAB
-            && e.getModifiers() == 0
-            && pressed
-            && getSelectedColumn() == 1
-            && getSelectedRow() == getRowCount()-1
-            && getModel() instanceof ExtendedAttributeTableModelDecorator){
-            	ExtendedAttributeTableModelDecorator modelEx = (ExtendedAttributeTableModelDecorator) getModel();
-            	insertRow(getRowCount());
-            	return true;            
+                && e.getModifiers() == 0
+                && pressed
+                && getSelectedColumn() == 1
+                && getSelectedRow() == getRowCount()-1
+                && getModel() instanceof ExtendedAttributeTableModelDecorator){
+            insertRow(getRowCount());
+            return true;            
         }
-        return super.processKeyBinding(ks, e, condition, pressed);
+        boolean retValue =  super.processKeyBinding(ks, e, condition, pressed);
+        // Start editing when a key is typed. UI classes can disable this behavior
+        // by setting the client property JTable.autoStartsEdit to Boolean.FALSE.
+        if (!retValue && condition == WHEN_FOCUSED &&
+                isFocusOwner() && ks.getKeyCode() != KeyEvent.VK_TAB &&
+                e != null && e.getID() == KeyEvent.KEY_PRESSED && !e.isActionKey() 
+                && e.getKeyChar() != KeyEvent.CHAR_UNDEFINED) {
+            // We do not have a binding for the event.
+            // Try to install the editor
+            int leadRow = getSelectionModel().getLeadSelectionIndex();
+            int leadColumn = getColumnModel().getSelectionModel().
+            getLeadSelectionIndex();
+            if (leadRow != -1 && leadColumn != -1 && !isEditing()) {
+                if (!editCellAt(leadRow, leadColumn)) {
+                    return false;
+                }
+            }
+            Component editorComponent = getEditorComponent();
+            // If the editorComponent is a JComboBox, pass the event to it.
+            if (editorComponent instanceof JComboBox) {
+                JComboBox comboBox = (JComboBox)editorComponent;
+                if(comboBox.isEditable()){
+                    ComboBoxEditor editor = comboBox.getEditor();
+                    editor.selectAll(); // to enable overwrite
+                    KeyEvent keyEv;
+                    keyEv =
+                        new KeyEvent(
+                                editor.getEditorComponent(),
+                                KeyEvent.KEY_TYPED,
+                                e.getWhen(),
+                                e.getModifiers(),
+                                KeyEvent.VK_UNDEFINED,
+                                e.getKeyChar(),
+                                KeyEvent.KEY_LOCATION_UNKNOWN);
+                    retValue = SwingUtilities.processKeyBindings(keyEv);
+                }
+                else{
+                    editorComponent.requestFocus();
+                    retValue = true;
+                }                
+            }
+        }
+        return retValue;
     }
 }

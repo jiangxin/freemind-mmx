@@ -134,10 +134,10 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
         tree = new JTree(treeModel);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(this);
-        tree.setPreferredSize(new Dimension(600, 300));
         
         scrollPane = new JScrollPane();        
         scrollPane.setViewportView(tree);
+        scrollPane.setPreferredSize(new Dimension(600, 300));
         getContentPane().add(scrollPane, BorderLayout.CENTER);
         
         Box buttons = Box.createHorizontalBox();
