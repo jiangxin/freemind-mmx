@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12.2.4.2.8 2005-11-30 20:42:29 dpolivaev Exp $*/
+/*$Id: MapView.java,v 1.30.16.12.2.4.2.9 2005-12-14 22:16:33 dpolivaev Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -237,7 +237,9 @@ public class MapView extends JPanel implements Printable, Autoscroll {
     public void initRoot() {
         rootView = NodeView.newNodeView( (MindMapNode)getModel().getRoot(), this );
         rootView.insert();
-        getMindMapLayout().updateTreeHeightsAndRelativeYOfWholeMap();
+        MindMapLayout r = getMindMapLayout();
+        r.updateTreeHeightsAndRelativeYOfDescendants(getRoot()); 
+        r.layout(false);
         revalidate();
     }
     
@@ -771,7 +773,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
     public void setZoom(float zoom) {
         this.zoom = zoom;
         getRoot().updateAll();
-        getMindMapLayout().updateTreeHeightsAndRelativeYOfWholeMap();
+        getMindMapLayout().updateTreeHeightsAndRelativeYOfDescendants(getRoot()); 
         getMindMapLayout().layout(true);
         repaint();
     }

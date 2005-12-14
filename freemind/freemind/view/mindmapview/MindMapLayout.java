@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.3.2.2.2.4 2005-11-06 12:01:14 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.3.2.2.2.5 2005-12-14 22:16:36 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -34,6 +34,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 /**
  * This class will Layout the Nodes and Edges of an MapView.
@@ -85,14 +86,18 @@ public class MindMapLayout implements LayoutManager {
 		NodeView selected = map.getSelected();
 		 holdSelected =  holdSelected &&  
 		    (selected != null && selected.getX() != 0 && selected.getY() != 0);
-		int oldRootX = getRoot().getX();
-		int oldRootY = holdSelected ? selected.getY() : getRoot().getY();
+		int oldRootX = holdSelected ? selected.getX() + selected.getWidth()/ 2 : getRoot().getX();
+		int oldRootY = holdSelected ? selected.getY() + selected.getHeight()/ 2 : getRoot().getY();
+        Point oldPoint = new Point(oldRootX, oldRootY);
+        SwingUtilities.convertPointToScreen(oldPoint, map);
 		resizeMap(getRoot().getTreeWidth(), getRoot().getTreeHeight());
         layout(map.getRoot());
 		try{
-			int rootX = getRoot().getX();
-			int rootY = holdSelected ? selected.getY() : getRoot().getY();
-			getMapView().scrollBy(rootX - oldRootX, rootY - oldRootY, true );
+			int rootX = holdSelected ? selected.getX() + selected.getWidth()/ 2 : getRoot().getX();
+			int rootY = holdSelected ? selected.getY() + selected.getHeight()/ 2 : getRoot().getY();
+            Point newPoint = new Point(rootX, rootY);
+            SwingUtilities.convertPointToScreen(newPoint, map);
+			getMapView().scrollBy(newPoint.x - oldPoint.x, newPoint.y - oldPoint.y, true );
 		}
 		catch(IllegalComponentStateException e){
 		}
@@ -282,12 +287,6 @@ public class MindMapLayout implements LayoutManager {
 
     // Definiton: relative vertical is either relative Y coord or Treeheight.
 
-    void updateTreeHeightsAndRelativeYOfWholeMap() {
-        updateTreeHeightsAndRelativeYOfDescendants(getRoot()); 
-		layout(false);
-        }
-
-   
     void updateTreeHeightsAndRelativeYOfDescendants(NodeView node) {
         if (node.getParentView() != null) node.setVisible(node.getModel().isVisible());
         for (ListIterator e = node.getChildrenViews(false).listIterator(); e.hasNext();) {
