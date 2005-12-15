@@ -14,8 +14,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
-import javax.swing.Action;
+import javax.swing.AbstractListModel;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.ComboBoxModel;
@@ -27,7 +28,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
-import javax.swing.ListModel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -37,7 +37,6 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import freemind.main.Resources;
-import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.attributes.Attribute;
@@ -45,25 +44,22 @@ import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeRegistryElement;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.NodeAttributeTableModel;
-import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
-import freemind.view.mindmapview.attributeview.AttributeView;
 
 public class AssignAttributeDialog extends JDialog implements ChangeListener{
-    private static class ClonedComboBoxModel implements ComboBoxModel{
-        private ListModel sharedListModel;
+    private static class ClonedComboBoxModel extends AbstractListModel implements ComboBoxModel{
+        private AbstractListModel sharedListModel;
         private Object selectedItem;
-        private ListDataListener l;
         private ListDataEvent ev = null; 
-        public ClonedComboBoxModel(ListModel sharedListModel) {
+        public ClonedComboBoxModel(ComboBoxModel sharedListModel) {
             super();
-            this.sharedListModel = sharedListModel;
+            this.sharedListModel = (AbstractListModel)sharedListModel;
         }
         
         public void addListDataListener(ListDataListener l) {
+            super.addListDataListener(l);
             sharedListModel.addListDataListener(l);
-            this.l = l;
         }
         
         public Object getElementAt(int index) {
@@ -75,16 +71,13 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         }
         
         public void removeListDataListener(ListDataListener l) {
+            super.removeListDataListener(l);
             sharedListModel.removeListDataListener(l);
-            this.l = null;
         }
         
         public void setSelectedItem(Object anItem) {
             selectedItem = anItem;
-            if(l != null){
-                l.contentsChanged(getContentChangedEvent());                
-            }
-            
+            fireContentsChanged(anItem, -1, -1);
         }
 
         private ListDataEvent getContentChangedEvent() {
@@ -128,6 +121,12 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
             performAction(selectedNodeView.getModel());
         }
        abstract protected void performAction(MindMapNode model) ;
+       
+       protected void showEmptyStringErrorMessage() {
+           JOptionPane.showMessageDialog(AssignAttributeDialog.this, 
+                   Resources.getInstance().getResourceString("attributes_adding_empty_attribute_error"), 
+                   Resources.getInstance().getResourceString("error"), JOptionPane.ERROR_MESSAGE);
+       }        
     }
     
     private  class ShowAction extends IteratingAction{
@@ -161,21 +160,40 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
        }
 
         public void actionPerformed(ActionEvent e) {
+            if(attributeNames.getSelectedItem() == null){
+                showEmptyStringErrorMessage();
+                return;
+            }
+            
             name = attributeNames.getSelectedItem().toString();
-            Object selectedItem = attributeValues.getSelectedItem();
-            value =  selectedItem != null ? selectedItem.toString() : "";            
+            if(name.equals("")){
+                showEmptyStringErrorMessage();
+                return;
+            }
+            Object valueSelectedItem = attributeValues.getSelectedItem();
+            value =  valueSelectedItem != null ? valueSelectedItem.toString() : "";
+            
             super.actionPerformed(e);
-            if(selectedItem == null){                
+            if(valueSelectedItem == null){                
                 selectedAttributeChanged(name, attributeValues);
             }
-        }        
+        }
+
         
     }
     
     private  class DeleteAttributeAction extends IteratingAction{
+        private String name;
+        public void actionPerformed(ActionEvent e) {
+            name = attributeNames.getSelectedItem().toString();
+            if(name.equals("")){
+                showEmptyStringErrorMessage();
+                return;
+            }
+            super.actionPerformed(e);
+        }        
         protected void performAction(MindMapNode model) {
             NodeAttributeTableModel attributes = model.getAttributes();
-            String name = attributeNames.getSelectedItem().toString();
             for(int i = attributes.getRowCount()-1; i >= 0; i--){
                 if(attributes.getAttribute(i).getName().equals(name)){
                     attributes.removeRow(i);
@@ -185,10 +203,26 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
     }
     
     private  class DeleteValueAction extends IteratingAction{
+        private String name;
+        private String value;
+        public void actionPerformed(ActionEvent e) {
+            if(attributeNames.getSelectedItem() == null){
+                showEmptyStringErrorMessage();
+                return;
+            }
+            
+            name = attributeNames.getSelectedItem().toString();
+            if(name.equals("")){
+                showEmptyStringErrorMessage();
+                return;
+            }
+            Object valueSelectedItem = attributeValues.getSelectedItem();
+            value =  valueSelectedItem != null ? valueSelectedItem.toString() : "";
+            
+            super.actionPerformed(e);
+        }        
         protected void performAction(MindMapNode model) {
             NodeAttributeTableModel attributes = model.getAttributes();
-            String name = attributeNames.getSelectedItem().toString();
-            String value = attributeValues.getSelectedItem().toString();
             for(int i = attributes.getRowCount()-1; i >= 0; i--){
                 Attribute attribute = attributes.getAttribute(i);
                 if(attribute.getName().equals(name)
@@ -200,12 +234,37 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
     }
 
     private  class ReplaceValueAction extends IteratingAction{
+        private String name;
+        private String value;
+        private String replacingName;
+        private String replacingValue;
+        public void actionPerformed(ActionEvent e) {
+            if(attributeNames.getSelectedItem() == null){
+                showEmptyStringErrorMessage();
+                return;
+            }
+            if(replacingAttributeNames.getSelectedItem() == null){
+                showEmptyStringErrorMessage();
+                return;
+            }
+            name = attributeNames.getSelectedItem().toString();
+            if(name.equals("")){
+                showEmptyStringErrorMessage();
+                return;
+            }
+            replacingName = replacingAttributeNames.getSelectedItem().toString();
+            if(replacingName.equals("")){
+                showEmptyStringErrorMessage();
+                return;
+            }
+            Object valueSelectedItem = attributeValues.getSelectedItem();
+            value =  valueSelectedItem != null ? valueSelectedItem.toString() : "";            
+            Object replacingValueSelectedItem = replacingAttributeValues.getSelectedItem();
+            replacingValue = replacingValueSelectedItem != null ? replacingValueSelectedItem.toString() :"";
+            super.actionPerformed(e);
+        }        
         protected void performAction(MindMapNode model) {
             NodeAttributeTableModel attributes = model.getAttributes();
-            String name = attributeNames.getSelectedItem().toString();
-            String value = attributeValues.getSelectedItem().toString();
-            String replacingName = replacingAttributeNames.getSelectedItem().toString();
-            String replacingValue = replacingAttributeValues.getSelectedItem().toString();
             for(int i = attributes.getRowCount()-1; i >= 0; i--){
                 Attribute attribute = attributes.getAttribute(i);
                 if(attribute.getName().equals(name)
@@ -230,28 +289,29 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
     private JRadioButton visibleBtn;
 
     private JCheckBox skipRootBtn;
+
     public AssignAttributeDialog(MapView mapView){
         super(JOptionPane.getFrameForComponent(mapView), Resources.getInstance().getResourceString("attributes_assign_dialog"), false);
         
-        Border actionBorder = new MatteBorder(2, 2, 2, 2, Color.BLACK);
-        Border emptyBorder = new EmptyBorder(5, 5, 5, 5);
-        Border btnBorder = new EmptyBorder(2, 2, 2, 2);
+        final Border actionBorder = new MatteBorder(2, 2, 2, 2, Color.BLACK);
+        final Border emptyBorder = new EmptyBorder(5, 5, 5, 5);
+        final Border btnBorder = new EmptyBorder(2, 2, 2, 2);
         
         selectedBtn = new JRadioButton(Resources.getInstance().getResourceString("attributes_for_selected"));
         selectedBtn.setSelected(true);
         visibleBtn = new JRadioButton(Resources.getInstance().getResourceString("attributes_for_visible"));
-        ButtonGroup group = new ButtonGroup();
+        final ButtonGroup group = new ButtonGroup();
         group.add(selectedBtn);
         group.add(visibleBtn);
         
         skipRootBtn = new JCheckBox(Resources.getInstance().getResourceString("attributes_skip_root"));
         skipRootBtn.setSelected(true);
-        JButton showBtn = new JButton(Resources.getInstance().getResourceString("attributes_show"));
+        final JButton showBtn = new JButton(Resources.getInstance().getResourceString("attributes_show"));
         showBtn.addActionListener(new ShowAction());
-        JButton hideBtn = new JButton(Resources.getInstance().getResourceString("attributes_hide"));
+        final JButton hideBtn = new JButton(Resources.getInstance().getResourceString("attributes_hide"));
         hideBtn.addActionListener(new HideAction());
         
-        Box selectionBox = Box.createHorizontalBox();
+        final Box selectionBox = Box.createHorizontalBox();
         selectionBox.setBorder(emptyBorder);
         selectionBox.add(Box.createHorizontalGlue());
         selectionBox.add(selectedBtn);
@@ -267,9 +327,23 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         
         getContentPane().add(selectionBox, BorderLayout.NORTH);
         
-        String pattern = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-        JLabel patternLabel = new JLabel(pattern);
-        Dimension comboBoxMaximumSize = patternLabel.getPreferredSize();
+        final JButton addBtn = new JButton(Resources.getInstance().getResourceString("filter_add"));
+        addBtn.addActionListener(new AddAction());
+        addBtn.setMaximumSize(maxButtonDimension);
+        JButton deleteAttributeBtn = new JButton(Resources.getInstance().getResourceString("attribute_delete"));
+        deleteAttributeBtn.addActionListener(new DeleteAttributeAction());
+        deleteAttributeBtn.setMaximumSize(maxButtonDimension);
+        JButton deleteAttributeValueBtn = new JButton(Resources.getInstance().getResourceString("attribute_delete_value"));
+        deleteAttributeValueBtn.addActionListener(new DeleteValueAction());
+        deleteAttributeValueBtn.setMaximumSize(maxButtonDimension);
+        JButton replaceBtn = new JButton(Resources.getInstance().getResourceString("attribute_replace"));
+        replaceBtn.addActionListener(new ReplaceValueAction());
+        replaceBtn.setMaximumSize(maxButtonDimension);
+        
+
+        final String pattern = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+        final JLabel patternLabel = new JLabel(pattern);
+        final Dimension comboBoxMaximumSize = patternLabel.getPreferredSize();
         comboBoxMaximumSize.width += 4;
         comboBoxMaximumSize.height += 4;
         attributeNames = new JComboBox();        
@@ -295,21 +369,8 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         replacingAttributeValues.setMaximumSize(comboBoxMaximumSize);
         replacingAttributeValues.setPreferredSize(comboBoxMaximumSize);
         
-        JButton addBtn  = new JButton(Resources.getInstance().getResourceString("filter_add"));
-        addBtn.addActionListener(new AddAction());
-        addBtn.setMaximumSize(maxButtonDimension);
-        JButton deleteAttributeBtn = new JButton(Resources.getInstance().getResourceString("attribute_delete"));
-        deleteAttributeBtn.addActionListener(new DeleteAttributeAction());
-        deleteAttributeBtn.setMaximumSize(maxButtonDimension);
-        JButton deleteAttributeValueBtn = new JButton(Resources.getInstance().getResourceString("attribute_delete_value"));
-        deleteAttributeValueBtn.addActionListener(new DeleteValueAction());
-        deleteAttributeValueBtn.setMaximumSize(maxButtonDimension);
-        JButton replaceBtn = new JButton(Resources.getInstance().getResourceString("attribute_replace"));
-        replaceBtn.addActionListener(new ReplaceValueAction());
-        replaceBtn.setMaximumSize(maxButtonDimension);
         
-        
-        Box addDeleteBtnBox = Box.createVerticalBox();
+        final Box addDeleteBtnBox = Box.createVerticalBox();
         addDeleteBtnBox.setBorder(btnBorder);
         addDeleteBtnBox.add(Box.createVerticalGlue());
         addDeleteBtnBox.add(addBtn);
@@ -317,7 +378,7 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         addDeleteBtnBox.add(deleteAttributeValueBtn);
         addDeleteBtnBox.add(Box.createVerticalGlue());
         
-        Box addDeleteBox = Box.createHorizontalBox();
+        final Box addDeleteBox = Box.createHorizontalBox();
         addDeleteBox.setBorder(actionBorder);
         addDeleteBox.add(Box.createHorizontalGlue());
         addDeleteBox.add(addDeleteBtnBox);
@@ -327,10 +388,10 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         addDeleteBox.add(attributeValues);
         addDeleteBox.add(Box.createHorizontalStrut(5));
         
-        Box outerReplaceBox = Box.createVerticalBox();
+        final Box outerReplaceBox = Box.createVerticalBox();
         outerReplaceBox.setBorder(actionBorder);
         
-        Box replaceBox = Box.createHorizontalBox();
+        final Box replaceBox = Box.createHorizontalBox();
         replaceBox.setBorder(btnBorder);
         replaceBox.add(Box.createHorizontalGlue());
         replaceBox.add(replaceBtn);
@@ -344,7 +405,7 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         outerReplaceBox.add(replaceBox);
         outerReplaceBox.add(Box.createVerticalGlue());
         
-        Box actionBox = Box.createVerticalBox();
+        final Box actionBox = Box.createVerticalBox();
         actionBox.add(Box.createVerticalGlue());
         actionBox.add(addDeleteBox);
         actionBox.add(Box.createVerticalStrut(5));
@@ -352,7 +413,7 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         actionBox.add(Box.createVerticalGlue());
         getContentPane().add(actionBox, BorderLayout.CENTER);
         
-        JButton closeBtn = new JButton(Resources.getInstance().getResourceString("close"));
+        final JButton closeBtn = new JButton(Resources.getInstance().getResourceString("close"));
         closeBtn.addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e) {
@@ -361,7 +422,7 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
             
         });
         
-        Box bottomBox = Box.createHorizontalBox();
+        final Box bottomBox = Box.createHorizontalBox();
         bottomBox.setBorder(emptyBorder);
         bottomBox.add(Box.createHorizontalGlue());
         bottomBox.add(closeBtn);
@@ -390,12 +451,17 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
 
     private void selectedAttributeChanged(Object selectedAttributeName, JComboBox values){
         AttributeRegistry attributes = mapView.getModel().getRegistry().getAttributes();
+        try{
         AttributeRegistryElement element = attributes.getElement(selectedAttributeName.toString());
         ComboBoxModel selectedValues = element.getValues();
         Object firstValue = selectedValues.getElementAt(0);
         values.setModel(new ClonedComboBoxModel(selectedValues));
         values.setSelectedItem(firstValue);
         values.setEditable(! element.isRestricted());
+        }
+        catch(NoSuchElementException ex){
+            values.setEditable(! selectedAttributeName.toString().equals(""));  
+        }
     }
 
     public void stateChanged(ChangeEvent e) {  

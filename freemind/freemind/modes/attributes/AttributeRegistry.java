@@ -379,11 +379,11 @@ public class AttributeRegistry{
     public void setRestriction(int row, Boolean value) {
         if(row == GLOBAL){
             restrictionModel = value;   
-            setVisibilityChanged();
         }
         else{
             getElement(row).setRestrictionModel(value);
         }
+        setVisibilityChanged();
         myTableModel.fireRestrictionsUpdated(row);
     }
     

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.10 2005-12-01 20:13:40 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.11 2005-12-15 19:58:10 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -27,6 +27,8 @@ import javax.swing.UIManager;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import freemind.controller.attributes.AttributePopupMenu;
 import freemind.modes.MindMapNode;
@@ -44,7 +46,7 @@ import freemind.view.mindmapview.NodeView;
  * This class represents a single Node of a MindMap (in analogy to
  * TreeCellRenderer).
  */
-public class AttributeView implements ChangeListener, NodeViewEventListener {    
+public class AttributeView implements ChangeListener, NodeViewEventListener, TableModelListener {    
     private AttributeTable attributeTable;
     private ReducedAttributeTableModelDecorator reducedAttributeTableModel;
     private ExtendedAttributeTableModelDecorator extendedAttributeTableModel = null;
@@ -79,6 +81,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener {
             attributeViewScrollPane = new AttributeViewScrollPane(attributeTable);
             attributeViewScrollPane.setColumnHeaderView(attributeTable.getTableHeader());
             getNodeView().add(attributeViewScrollPane);
+            getAttributes().removeTableModelListener(this);
         }
     }
     private void addListeners() {
@@ -94,6 +97,9 @@ public class AttributeView implements ChangeListener, NodeViewEventListener {
             attributeTable.addMouseListener(tablePopupMenu);
             attributeTable.getTableHeader().addMouseListener(tablePopupMenu);
         }
+        else {
+            getAttributes().addTableModelListener(this);
+        }
     }
     
     private void removeListeners() {
@@ -106,6 +112,9 @@ public class AttributeView implements ChangeListener, NodeViewEventListener {
             attributeTable.getModel().removeTableModelListener(attributeTable);
             attributeTable.removeMouseListener(tablePopupMenu);                
             attributeTable.getTableHeader().removeMouseListener(tablePopupMenu);
+        }
+        else {
+            getAttributes().removeTableModelListener(this);
         }
     }
     /**
@@ -195,5 +204,9 @@ public class AttributeView implements ChangeListener, NodeViewEventListener {
      * @see javax.swing.event.AncestorListener#ancestorMoved(javax.swing.event.AncestorEvent)
      */
     public void ancestorMoved(AncestorEvent event) {
+    }
+    public void tableChanged(TableModelEvent e) {
+        MapView map = getNodeView().getMap();
+        map.getModel().nodeChanged(getNode());
     }
 }
