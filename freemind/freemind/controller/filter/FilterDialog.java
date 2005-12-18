@@ -65,7 +65,13 @@ public class FilterDialog extends JDialog {
         }
         public void actionPerformed(ActionEvent e) {
             Condition newCond ;
-            String value = getAttributeValue();
+            String value;
+            try{
+                value = getAttributeValue();
+            }
+            catch(NullPointerException ex){
+                return;
+            }
             TranslatedString simpleCond = (TranslatedString) simpleCondition.getSelectedItem();
             boolean ignoreCase = caseInsensitive.isSelected();
 
