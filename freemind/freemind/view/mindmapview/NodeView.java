@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.14 2005-12-24 13:45:19 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.15 2005-12-24 18:56:11 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -90,9 +90,10 @@ public abstract class NodeView extends JComponent{
                                                               // drag over
 	protected int treeWidth = 0;
 	protected int treeHeight = 0;
+    int relYPos = 0;//the relative Y Position to it's parent
+    
 	protected int upperChildShift = 0;
     private boolean left = true; //is the node left of root?
-    int relYPos = 0;//the relative Y Position to it's parent
     private boolean isLong = false;
     
     public final static int DRAGGED_OVER_NO = 0;
@@ -840,139 +841,139 @@ public abstract class NodeView extends JComponent{
 	for(ListIterator e = getChildrenViews(false).listIterator();e.hasNext();) {
            ((NodeView)e.next()).remove(); }}
 
-     void update() {
-        //System.err.println("update");
-        // 1) Set color
-        Color color = getModel().getColor();
-        if (color==null) {
-        	color = standardNodeColor;
-        }
-        setForeground(color);
-
-        // 2) icons left or right? 
-        getMainView().setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
-        // 3) Create the icons:
-        MultipleImage iconImages = new MultipleImage(map.getZoom());
-        boolean iconPresent = false;
-        /* fc, 06.10.2003: images? */
-        
-        FreeMindMain frame = map.getController().getFrame();
-        Map stateIcons = (getModel()).getStateIcons();
-        for (Iterator i = stateIcons.keySet().iterator(); i.hasNext();) {
-            String key = (String) i.next();
-            iconPresent = true;
-            ImageIcon myIcon = (ImageIcon) stateIcons.get(key);
-            iconImages.addImage(myIcon);  
+          void update() {
+            //System.err.println("update");
+            // 1) Set color
+            Color color = getModel().getColor();
+            if (color==null) {
+            	color = standardNodeColor;
+            }
+            setForeground(color);
+    
+            // 2) icons left or right? 
+            getMainView().setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
+            // 3) Create the icons:
+            MultipleImage iconImages = new MultipleImage(map.getZoom());
+            boolean iconPresent = false;
+            /* fc, 06.10.2003: images? */
             
-        }
-
-        List icons = (getModel()).getIcons();
-        	for (Iterator i = icons.iterator(); i.hasNext();) {
-			MindIcon myIcon = (MindIcon) i.next();
-            iconPresent = true;
-            iconImages.addImage(myIcon.getIcon());  
-        }
-        String link = ((NodeAdapter)getModel()).getLink();
-        if ( link != null ) 
-            {
+            FreeMindMain frame = map.getController().getFrame();
+            Map stateIcons = (getModel()).getStateIcons();
+            for (Iterator i = stateIcons.keySet().iterator(); i.hasNext();) {
+                String key = (String) i.next();
                 iconPresent = true;
-                ImageIcon icon = new ImageIcon(frame.getResource
-                                          (link.startsWith("mailto:") ? "images/Mail.png" :
-                                           (Tools.executableByExtension(link) ? "images/Executable.png" :
-                                            "images/Link.png")));
-                iconImages.addImage(icon); 
+                ImageIcon myIcon = (ImageIcon) stateIcons.get(key);
+                iconImages.addImage(myIcon);  
+                
             }
-//         /* Folded icon by Matthias Schade (mascha2), fc, 20.12.2003*/
-//         if (((NodeAdapter)getModel()).isFolded()) {
-//             iconPresent = true;
-//             ImageIcon icon = new
-// ImageIcon(((NodeAdapter)getModel()).getFrame().getResource("images/Folded.png"));
-//             iconImages.addImage(icon);
-//         }
-        // DanielPolansky: set icon only if icon is present, because
-        // we don't want to insert any additional white space.
-        setIcon(iconPresent?iconImages:null);
-
-        // 4) Determine font
-        Font font = getModel().getFont();
-        font = font == null ? map.getController().getDefaultFont() : font;
-        if (font != null) {
-           if (map.getZoom() != 1F) {
-              font = font.deriveFont(font.getSize()*map.getZoom()); }
-           setFont(font); }
-        else {
-           // We can survive this trouble.
-           System.err.println("NodeView.update(): default font is null."); }
-
-        // 5) Set the text
-        // Right now, this implementation is quite logical, although it allows
-        // for nonconvex feature of nodes starting with <html>.
-
-//        String nodeText = getModel().toString();
-        String nodeText = getModel().toString();
- 
-        // Tell if node is long and its width has to be restricted
-        // boolean isMultiline = nodeText.indexOf("\n") >= 0;
-        String[] lines = nodeText.split("\n");
-        boolean widthMustBeRestricted = false;
-
-        lines = nodeText.split("\n");           
-        for (int line = 0; line < lines.length; line++)
-        {
-            // Compute the width the node would spontaneously take,
-            // by preliminarily setting the text.
-            setText(lines[line]);
-            widthMustBeRestricted = getMainViewPreferredSize().width > map
-                    .getZoomed(map.getMaxNodeWidth());
-            if (widthMustBeRestricted)
+    
+            List icons = (getModel()).getIcons();
+            	for (Iterator i = icons.iterator(); i.hasNext();) {
+    			MindIcon myIcon = (MindIcon) i.next();
+                iconPresent = true;
+                iconImages.addImage(myIcon.getIcon());  
+            }
+            String link = ((NodeAdapter)getModel()).getLink();
+            if ( link != null ) 
+                {
+                    iconPresent = true;
+                    ImageIcon icon = new ImageIcon(frame.getResource
+                                              (link.startsWith("mailto:") ? "images/Mail.png" :
+                                               (Tools.executableByExtension(link) ? "images/Executable.png" :
+                                                "images/Link.png")));
+                    iconImages.addImage(icon); 
+                }
+    //         /* Folded icon by Matthias Schade (mascha2), fc, 20.12.2003*/
+    //         if (((NodeAdapter)getModel()).isFolded()) {
+    //             iconPresent = true;
+    //             ImageIcon icon = new
+    // ImageIcon(((NodeAdapter)getModel()).getFrame().getResource("images/Folded.png"));
+    //             iconImages.addImage(icon);
+    //         }
+            // DanielPolansky: set icon only if icon is present, because
+            // we don't want to insert any additional white space.
+            setIcon(iconPresent?iconImages:null);
+    
+            // 4) Determine font
+            Font font = getModel().getFont();
+            font = font == null ? map.getController().getDefaultFont() : font;
+            if (font != null) {
+               if (map.getZoom() != 1F) {
+                  font = font.deriveFont(font.getSize()*map.getZoom()); }
+               setFont(font); }
+            else {
+               // We can survive this trouble.
+               System.err.println("NodeView.update(): default font is null."); }
+    
+            // 5) Set the text
+            // Right now, this implementation is quite logical, although it allows
+            // for nonconvex feature of nodes starting with <html>.
+    
+    //        String nodeText = getModel().toString();
+            String nodeText = getModel().toString();
+     
+            // Tell if node is long and its width has to be restricted
+            // boolean isMultiline = nodeText.indexOf("\n") >= 0;
+            String[] lines = nodeText.split("\n");
+            boolean widthMustBeRestricted = false;
+    
+            lines = nodeText.split("\n");           
+            for (int line = 0; line < lines.length; line++)
             {
-                break;
+                // Compute the width the node would spontaneously take,
+                // by preliminarily setting the text.
+                setText(lines[line]);
+                widthMustBeRestricted = getMainViewPreferredSize().width > map
+                        .getZoomed(map.getMaxNodeWidth());
+                if (widthMustBeRestricted)
+                {
+                    break;
+                }
             }
+    
+            isLong = widthMustBeRestricted || lines.length > 1;
+       
+            if (nodeText.startsWith("<html>")) {
+               // Make it possible to use relative img references in HTML using tag
+               // <base>.
+               if (nodeText.indexOf("<img")>=0 && nodeText.indexOf("<base ") < 0 ) {
+                  try {
+                     nodeText = "<html><base href=\""+
+                        map.getModel().getURL()+"\">"+nodeText.substring(6); }
+                  catch (MalformedURLException e) {} }
+               setText(nodeText); }
+            else if (nodeText.startsWith("<table>")) {           	             	  
+               lines[0] = lines[0].substring(7); // remove <table> tag
+               int startingLine = lines[0].matches("\\s*") ? 1 : 0;
+               // ^ If the remaining first line is empty, do not draw it
+               
+               String text = "<html><table border=1 style=\"border-color: white\">";
+               //String[] lines = nodeText.split("\n");
+               for (int line = startingLine; line < lines.length; line++) {
+                  text += "<tr><td style=\"border-color: white;\">"+
+                     Tools.toXMLEscapedText(lines[line]).replaceAll("\t","<td style=\"border-color: white\">"); }
+               setText(text); }
+            else if (isLong) {
+               String text = "<tr><td>";              
+               int maximumLineLength = 0;
+               for (int line = 0; line < lines.length; line++) {
+                  text += Tools.toXMLEscapedTextWithNBSPizedSpaces(lines[line]) + "<p>";
+                  if (lines[line].length() > maximumLineLength) {
+                     maximumLineLength = lines[line].length(); }}
+               
+    			text += "</td></tr>";
+               setText("<html><table"+
+                       (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
+                       text+"</table></html>"); }
+            // 6) AttributeView
+            attributeView.update();
+       		// 7) ToolTips:
+            updateToolTip();
+            // 8) AttributeView
+            syncronizeAttributeView();
+            // 9) Complete
+            revalidate(); // Because of zoom?
         }
-
-        isLong = widthMustBeRestricted || lines.length > 1;
-   
-        if (nodeText.startsWith("<html>")) {
-           // Make it possible to use relative img references in HTML using tag
-           // <base>.
-           if (nodeText.indexOf("<img")>=0 && nodeText.indexOf("<base ") < 0 ) {
-              try {
-                 nodeText = "<html><base href=\""+
-                    map.getModel().getURL()+"\">"+nodeText.substring(6); }
-              catch (MalformedURLException e) {} }
-           setText(nodeText); }
-        else if (nodeText.startsWith("<table>")) {           	             	  
-           lines[0] = lines[0].substring(7); // remove <table> tag
-           int startingLine = lines[0].matches("\\s*") ? 1 : 0;
-           // ^ If the remaining first line is empty, do not draw it
-           
-           String text = "<html><table border=1 style=\"border-color: white\">";
-           //String[] lines = nodeText.split("\n");
-           for (int line = startingLine; line < lines.length; line++) {
-              text += "<tr><td style=\"border-color: white;\">"+
-                 Tools.toXMLEscapedText(lines[line]).replaceAll("\t","<td style=\"border-color: white\">"); }
-           setText(text); }
-        else if (isLong) {
-           String text = "<tr><td>";              
-           int maximumLineLength = 0;
-           for (int line = 0; line < lines.length; line++) {
-              text += Tools.toXMLEscapedTextWithNBSPizedSpaces(lines[line]) + "<p>";
-              if (lines[line].length() > maximumLineLength) {
-                 maximumLineLength = lines[line].length(); }}
-           
-			text += "</td></tr>";
-           setText("<html><table"+
-                   (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
-                   text+"</table></html>"); }
-        // 6) AttributeView
-        attributeView.update();
-   		// 7) ToolTips:
-        updateToolTip();
-        // 8) AttributeView
-        syncronizeAttributeView();
-        // 9) Complete
-        revalidate(); // Because of zoom?
-    }
     /**
      * 
      */
@@ -1015,8 +1016,11 @@ public abstract class NodeView extends JComponent{
         mainView.setIcon(image);        
     }
     void updateAll() {
-	update();
-	for(ListIterator e = getChildrenViews(true).listIterator();e.hasNext();) {
+    invalidateTreeGeometries();
+	if(getModel().isVisible()){
+        update();
+    }
+	for(ListIterator e = getChildrenViews(false).listIterator();e.hasNext();) {
 	    NodeView child = (NodeView)e.next();
 	    child.updateAll();
 	}
@@ -1210,5 +1214,14 @@ public abstract class NodeView extends JComponent{
     public Dimension getPreferredSize() {
         syncronizeAttributeView();
         return super.getPreferredSize();
+    }
+    
+    void invalidateTreeGeometries(){
+        setTreeHeight(0);
+        setTreeWidth(0);
+        relYPos = 0;
+        if(! isRoot()){
+            getParentView().invalidateTreeGeometries();
+        }
     }
 }

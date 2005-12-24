@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12.2.4.2.11 2005-12-24 13:45:19 dpolivaev Exp $*/
+/*$Id: MapView.java,v 1.30.16.12.2.4.2.12 2005-12-24 18:56:11 dpolivaev Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -239,7 +239,6 @@ public class MapView extends JPanel implements Printable, Autoscroll {
         rootView.insert();
         MindMapLayout r = getMindMapLayout();
         r.updateTreeHeightsAndRelativeYOfDescendants(getRoot()); 
-        r.layout(false);
         revalidate();
     }
     
@@ -774,8 +773,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
         this.zoom = zoom;
         getRoot().updateAll();
         getMindMapLayout().updateTreeHeightsAndRelativeYOfDescendants(getRoot()); 
-        getMindMapLayout().layout(true);
-        repaint();
+        revalidate();
     }
 
     /*****************************************************************
@@ -1059,12 +1057,9 @@ public class MapView extends JPanel implements Printable, Autoscroll {
             if (nodeView != null) {
                 logger.finest("The update node is " + nodeView
                         + " with treemodelevent=" + e);
+                nodeView.invalidateTreeGeometries();
                 nodeView.update();
-                getMindMapLayout()
-                        .updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(
-                                nodeView);
-                getMindMapLayout().layout(true);
-                repaint();
+                revalidate();
             }
         }
 	
@@ -1088,15 +1083,14 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 //                  return;
 //              }
 //          }
-          // Here, the view will be created if it does no exist already
+                // Here, the view will be created if it does no exist already
                 parentView.insert(child);
-                getMindMapLayout().updateTreeGeometry(child.getViewer()); }
-            getMindMapLayout().updateTreeHeightsAndRelativeYOfAncestors(parentView);
+            }
+            parentView.invalidateTreeGeometries();
             // Here, the view of child gets its size and position
-            getMindMapLayout().layout(false);
+            revalidate();
             //fc, 29.3.2004: here, I change parentView.requestFocus() to:
             child.getViewer().requestFocus();
-            repaint();
         }
 
         public void treeNodesRemoved (TreeModelEvent e) {
@@ -1116,13 +1110,12 @@ public class MapView extends JPanel implements Printable, Autoscroll {
             else {
                 selectAsTheOnlyOneSelected(parent);
             }
-            getMindMapLayout().updateTreeHeightsAndRelativeYOfAncestors(parent);
-            getMindMapLayout().layout(false);
+            parent.invalidateTreeGeometries();
             getSelected().requestFocus();
+            revalidate();
 			// scrollNodeToVisible(getSelected());
             //fc, 5.4.2004. is already done by selectAsTheOnlyOneSelected:
             //parent.requestFocus();
-            repaint();
         }
 
         /**
@@ -1175,7 +1168,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 				nodeView.setBounds(x, y, w, h);
 	            nodeView.setLeft(nodeIsLeft);
 	            nodeView.insert(); 
-	            getMindMapLayout().updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(subtreeRoot.getViewer());
+                subtreeRoot.getViewer().invalidateTreeGeometries();
 	            // the layout function will be called later by AWT framework itself
 	            // comment it out
 	            // getMindMapLayout().layout();

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.3.2.2.2.5 2005-12-14 22:16:36 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.3.2.2.2.6 2005-12-24 18:56:11 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -68,7 +68,7 @@ public class MindMapLayout implements LayoutManager {
     public void removeLayoutComponent(Component comp) {  }
 
     public void layoutContainer(Container parent) {
-       layout(true); }
+       layout(); }
    
 
 
@@ -82,19 +82,19 @@ public class MindMapLayout implements LayoutManager {
      * This funcion resizes the map and do the layout.
      * All tree heights, widths and shifts should be already calculated.
      */
-	public void layout(boolean holdSelected) {
+	public void layout() {
+        updateTreeHeightsAndRelativeYOfDescendants(getRoot()); 
 		NodeView selected = map.getSelected();
-		 holdSelected =  holdSelected &&  
-		    (selected != null && selected.getX() != 0 && selected.getY() != 0);
+        boolean  holdSelected  = (selected != null && selected.getX() != 0 && selected.getY() != 0);
 		int oldRootX = holdSelected ? selected.getX() + selected.getWidth()/ 2 : getRoot().getX();
-		int oldRootY = holdSelected ? selected.getY() + selected.getHeight()/ 2 : getRoot().getY();
+		int oldRootY = holdSelected ? selected.getY() : getRoot().getY();
         Point oldPoint = new Point(oldRootX, oldRootY);
         SwingUtilities.convertPointToScreen(oldPoint, map);
 		resizeMap(getRoot().getTreeWidth(), getRoot().getTreeHeight());
         layout(map.getRoot());
 		try{
 			int rootX = holdSelected ? selected.getX() + selected.getWidth()/ 2 : getRoot().getX();
-			int rootY = holdSelected ? selected.getY() + selected.getHeight()/ 2 : getRoot().getY();
+			int rootY = holdSelected ? selected.getY() : getRoot().getY();
             Point newPoint = new Point(rootX, rootY);
             SwingUtilities.convertPointToScreen(newPoint, map);
 			getMapView().scrollBy(newPoint.x - oldPoint.x, newPoint.y - oldPoint.y, true );
@@ -262,25 +262,6 @@ public class MindMapLayout implements LayoutManager {
     }
 
 
-    void updateTreeHeightsAndRelativeYOfDescendantsAndAncestors(NodeView node) {
-       updateTreeHeightsAndRelativeYOfDescendants(node);  
-       if (! node.isRoot())
-       updateTreeHeightsAndRelativeYOfAncestors(node.getModel().getParentNode().getViewer()); 
-    }
-
-    /**
-     * This is called by treeNodesChanged(), treeNodesRemoved() & treeNodesInserted(), so it's the
-     * standard mechanism to update the graphical node structure. It updates the parent of the 
-     * significant node, and follows recursivly the hierary upwards to root.
-     */
-
-    void updateTreeHeightsAndRelativeYOfAncestors(NodeView node) {
-        if (node.getParentView() != null) node.setVisible(node.getModel().isVisible());
-		updateTreeGeometry(node);
-       if ( !node.isRoot()){
-          updateTreeHeightsAndRelativeYOfAncestors(node.getParentView()); }
-    }
-
     //
     // Relative positioning
     //
@@ -340,6 +321,9 @@ public class MindMapLayout implements LayoutManager {
         
        //FIXME (Dimitri) workaround: the child components of the node have to be validated 
 //        node.syncronizeAttributeView();
+        
+        if(node.getTreeHeight() != 0)
+            return;
         
     	if (node.isRoot()){
     		LinkedList leftNodeViews = getRoot().getLeft(true);

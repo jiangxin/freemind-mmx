@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.14.14.3.2.1.2.3 2005-10-03 15:07:59 dpolivaev Exp $*/
+/*$Id: RootNodeView.java,v 1.14.14.3.2.1.2.4 2005-12-24 18:56:11 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -127,7 +127,6 @@ public class RootNodeView extends NodeView {
 
     void insert(MindMapNode newNode) {
         NodeView newView = newNodeView(newNode,getMap());
-        newView.update();
         // decide left or right only if not actually set:
         if(newNode.isLeft()==null)
             newView.setLeft( getLeft(false).size() <= getRight(false).size() );
@@ -249,6 +248,12 @@ public class RootNodeView extends NodeView {
     }
 
     public void setTreeWidth(int w) {
+        if(w == 0)
+        {
+            leftTreeWidth = 0;
+            rightTreeWidth = 0;
+            return;
+        }
     	throw new Error();
     }
     
