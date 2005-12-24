@@ -4,11 +4,16 @@
  */
 package freemind.controller.filter;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.ListIterator;
 
+import freemind.controller.Controller;
 import freemind.controller.filter.condition.Condition;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.MapView;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author dimitri
@@ -28,47 +33,71 @@ public class DefaultFilter implements Filter{
             Condition condition, 
             boolean isActive, 
             boolean areAnchestorsShown, 
-            boolean areDescendersShown) {
+            boolean areDescendantsShown) {
         super();
         this.condition = isActive ? condition : null;
         this.options = FILTER_INITIAL_VALUE | FILTER_SHOW_MATCHED;
         if (areAnchestorsShown) options += FILTER_SHOW_ANCESTOR;
         options += FILTER_SHOW_ECLIPSED;
-        if (areDescendersShown) options += FILTER_SHOW_DESCENDER;
+        if (areDescendantsShown) options += FILTER_SHOW_DESCENDANT;
     }
     /* (non-Javadoc)
      * @see freemind.controller.filter.Filter#applyFilter(freemind.modes.MindMap)
      */
-    public void applyFilter(MindMap map) {
+    public void applyFilter(Controller c) {
+        MindMap map = c.getModel();
+        MapView mapView = c.getView();
         MindMapNode root = (MindMapNode)map.getRoot();
         if(condition != null){
             resetFilter(root);
-            if (filterChildren(root, false, false))
+            if (filterChildren(root, false, false)){
                 addFilterResult(root, FILTER_SHOW_ANCESTOR);
+            }
+            selectVisibleNode(mapView);
         }
         map.nodeChanged(root);
     }
 
+    static public void selectVisibleNode(MapView mapView) {
+        LinkedList selectedNodes = mapView.getSelecteds();
+        ListIterator iterator = selectedNodes.listIterator(selectedNodes.size()-1);
+        while(iterator.hasPrevious()){
+            NodeView previous = (NodeView) iterator.previous();
+            if ( ! previous.getModel().isVisible()){
+                mapView.toggleSelected(previous); 
+            }
+        }
+        NodeView selected = mapView.getSelected();
+        if(! selected.getModel().isVisible()){
+            mapView.selectAsTheOnlyOneSelected(getNearestVisibleParent(selected));
+        }
+    }
+    
+    static private NodeView getNearestVisibleParent(NodeView selectedNode) {
+        if(selectedNode.getModel().isVisible())
+            return selectedNode;
+        return getNearestVisibleParent(selectedNode.getParentView());
+    }
     /**
      * @param iterator
      * @return
      */
     private boolean filterChildren(MindMapNode parent, boolean isAncestorSelected, boolean isAncestorEclipsed) {
         ListIterator iterator = parent.childrenUnfolded();
-        boolean isDescenderSelected = false;
+        boolean isDescendantSelected = false;
         while(iterator.hasNext()){
             MindMapNode node = (MindMapNode)iterator.next();
-            isDescenderSelected = applyFilter(node, isAncestorSelected, isAncestorEclipsed, isDescenderSelected);            
+            isDescendantSelected = applyFilter(node, isAncestorSelected, isAncestorEclipsed, isDescendantSelected);            
         }
-        return isDescenderSelected;
+        return isDescendantSelected;
     }
     
-    private boolean applyFilter(MindMapNode node, boolean isAncestorSelected, boolean isAncestorEclipsed, boolean isDescenderSelected) {
+    private boolean applyFilter(MindMapNode node, boolean isAncestorSelected, boolean isAncestorEclipsed, boolean isDescendantSelected) {
         resetFilter(node);
-        if (isAncestorSelected) addFilterResult(node, FILTER_SHOW_DESCENDER);
+        if (isAncestorSelected) addFilterResult(node, FILTER_SHOW_DESCENDANT);
         boolean conditionSatisfied = condition.checkNode(node);
         if (conditionSatisfied){
-            isDescenderSelected = true;
+            isDescendantSelected = true;
             addFilterResult(node, FILTER_SHOW_MATCHED);
         }
         else
@@ -80,9 +109,9 @@ public class DefaultFilter implements Filter{
         }
         if(filterChildren(node, conditionSatisfied || isAncestorSelected, !conditionSatisfied || isAncestorEclipsed)){
             addFilterResult(node, FILTER_SHOW_ANCESTOR);
-            isDescenderSelected = true;
+            isDescendantSelected = true;
         }
-        return isDescenderSelected;
+        return isDescendantSelected;
     }
     /* (non-Javadoc)
      * @see freemind.controller.filter.Filter#isVisible(freemind.modes.MindMapNode)
@@ -122,10 +151,10 @@ public class DefaultFilter implements Filter{
         return 0 != (options & FILTER_SHOW_ANCESTOR) ;
     }
     /* (non-Javadoc)
-     * @see freemind.controller.filter.Filter#areDescendersShown()
+     * @see freemind.controller.filter.Filter#areDescendantsShown()
      */
-    public boolean areDescendersShown() {
-        return 0 != (options & FILTER_SHOW_DESCENDER) ;
+    public boolean areDescendantsShown() {
+        return 0 != (options & FILTER_SHOW_DESCENDANT) ;
     }
     /* (non-Javadoc)
      * @see freemind.controller.filter.Filter#areEclipsedShown()

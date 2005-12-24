@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12.2.4.2.10 2005-12-18 22:53:48 dpolivaev Exp $*/
+/*$Id: MapView.java,v 1.30.16.12.2.4.2.11 2005-12-24 13:45:19 dpolivaev Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -724,13 +724,13 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 
     public NodeView getSelected() {
         if(selected.size() > 0)
-            return (NodeView)selected.get(0);
+            return selected.get(0);
         else
             return null;
     }
 
     private NodeView getSelected(int i) {
-        return (NodeView)selected.get(i);
+        return selected.get(i);
     }
 
     public LinkedList getSelecteds() {
@@ -1018,7 +1018,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
         }
     }
     
-    protected NodeView getRoot() {
+    public NodeView getRoot() {
         return rootView; }
 
     private MindMapLayout getMindMapLayout() {

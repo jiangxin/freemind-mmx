@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.5 2005-12-12 21:23:32 dpolivaev Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.6 2005-12-24 13:45:19 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -121,7 +121,7 @@ public class MindMapController extends ControllerAdapter {
    public Action exportBranchToHTML = new ExportBranchToHTMLAction(this);
 
    public Action editLong = new EditLongAction();
-   public Action showAttributes = new ShowAttributesAction();
+   public Action showOrHideAttributes = new ShowOrHideAttributesAction();
    protected  AssignAttributeDialog assignAttributeDialog = null;
    public Action assignAttributes = new AssignAttributesAction();
    public Action newSibling = new NewSiblingAction(this);
@@ -134,6 +134,8 @@ public class MindMapController extends ControllerAdapter {
    public Action importLinkedBranch = new ImportLinkedBranchAction();
    public Action importLinkedBranchWithoutRoot = new ImportLinkedBranchWithoutRootAction();
 
+   public Action showAttributeManagerAction = null;    
+   
 
     public Action increaseNodeFont = new NodeGeneralAction (this, "increase_node_font_size", null,
        new SingleNodeOperation() { public void apply(MindMapMapModel map, MindMapNodeModel node) {
@@ -154,6 +156,7 @@ public class MindMapController extends ControllerAdapter {
 
     public MindMapController(Mode mode) {
 	super(mode);
+    showAttributeManagerAction = getController().showAttributeManagerAction;
 	if(logger == null) {
 		logger = getFrame().getLogger(this.getClass().getName());
 	}

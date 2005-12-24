@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.9 2005-12-12 21:14:50 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.10 2005-12-24 13:45:18 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -1708,8 +1708,8 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     
-        protected class ShowAttributesAction extends AbstractAction {
-        public ShowAttributesAction() {
+        protected class ShowOrHideAttributesAction extends AbstractAction {
+        public ShowOrHideAttributesAction() {
             super(getText("attributes_show_hide"));
         }
         public void actionPerformed(ActionEvent e) {

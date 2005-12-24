@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10.2.3.2.8 2005-12-12 21:14:50 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.3.2.9 2005-12-24 13:45:18 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -162,7 +162,7 @@ public class Controller {
     public Action historyNextMap;
     public Action navigationPreviousMap;
     public Action showFilterToolbarAction;
-    public Action showAttributeDialogAction;    
+    public Action showAttributeManagerAction;    
     public Action navigationNextMap;
 
     public Action moveToRoot;
@@ -218,7 +218,7 @@ public class Controller {
         historyNextMap = new HistoryNextMapAction(this);
         navigationPreviousMap = new NavigationPreviousMapAction(this);
         showFilterToolbarAction = new ShowFilterToolbarAction(this);
-        showAttributeDialogAction = new ShowAttributeDialogAction(this);
+        showAttributeManagerAction = new ShowAttributeDialogAction(this);
         navigationNextMap = new NavigationNextMapAction(this);
         toggleMenubar = new ToggleMenubarAction(this);
         toggleToolbar = new ToggleToolbarAction(this);

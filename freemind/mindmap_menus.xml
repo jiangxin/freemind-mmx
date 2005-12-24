@@ -39,8 +39,6 @@
 			<menu_category name="edit">
 				<menu_action name="edit" field="edit" key_ref="keystroke_edit"/>
 				<menu_action name="editLong" field="editLong" key_ref="keystroke_edit_long_node"/>
-				<menu_action name="showAttributes" field="showAttributes" key_ref="keystroke_show_attributes"/>
-				<menu_action name="assignAttributes" field="assignAttributes" key_ref="keystroke_assignAttributes"/>
 				<menu_action name="deleteChild" field="deleteChild" key_ref="keystroke_delete_child"/>
 				<!-- <menu_action field="remove" key_ref="keystroke_remove"/> -->
 			</menu_category>
@@ -148,6 +146,14 @@
 					
 		</menu_category>
 	
+		<menu_submenu name="attributes" name_ref="menu_attributes">
+			<menu_category name="controls">
+				<menu_action name="showOrHideAttributes" field="showOrHideAttributes" key_ref="keystroke_show_or_hide_attributes"/>
+				<menu_action name="assignAttributes" field="assignAttributes" key_ref="keystroke_assign_attributes"/>
+				<menu_action name="showAttributeManagerAction" field="showAttributeManagerAction" key_ref="keystroke_show_attribute_manager"/>
+			</menu_category>
+		</menu_submenu>	
+		
 		<menu_category name="extras">
 			<menu_category name="first">
 				<menu_category name="nodes">
@@ -170,7 +176,7 @@
 		<menu_category name="edit">
 			<menu_action name="edit" field="edit" key_ref="keystroke_edit"/>
 			<menu_action name="editLong" field="editLong" key_ref="keystroke_edit_long_node"/>
-			<menu_action name="assignAttributes" field="assignAttributes" key_ref="keystroke_assignAttributes"/>
+			<menu_action name="showOrHideAttributes" field="showOrHideAttributes" key_ref="keystroke_show_or_hide_attributes"/>
 			<menu_action name="deleteChild" field="deleteChild" key_ref="keystroke_delete_child"/>
 			<!-- <menu_action field="remove" key_ref="keystroke_remove"/> -->
 		</menu_category>

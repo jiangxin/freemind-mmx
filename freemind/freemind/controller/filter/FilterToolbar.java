@@ -38,7 +38,7 @@ class FilterToolbar extends JToolBar {
     private JComboBox activeFilterCondition;
     private JToggleButton btnApply;
     private JCheckBox showAncestors;
-    private JCheckBox showDescenders;
+    private JCheckBox showDescendants;
     private Filter activeFilter;
     private Filter inactiveFilter;
     private JButton btnEdit;
@@ -66,7 +66,7 @@ class FilterToolbar extends JToolBar {
             }
             else
             {
-                getFilter().applyFilter(c.getModel());
+                getFilter().applyFilter(c);
             }
             if(btnApply.isSelected()){
                 if(filterInactiveColor == null)
@@ -96,6 +96,7 @@ class FilterToolbar extends JToolBar {
             getFilter();
             MindMap map = c.getModel();
             map.nodeChanged((MindMapNode)map.getRoot());
+            DefaultFilter.selectVisibleNode(c.getView());
         }
         /* (non-Javadoc)
          * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
@@ -103,7 +104,7 @@ class FilterToolbar extends JToolBar {
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED && btnApply.getModel().isSelected())
                 resetFilter();
-            getFilter().applyFilter(c.getModel());
+            getFilter().applyFilter(c);
         }
         
     }
@@ -151,7 +152,7 @@ class FilterToolbar extends JToolBar {
         private void unfoldAncestors(MindMapNode parent) {
             for(Iterator i = parent.childrenUnfolded(); i.hasNext();) {
                 MindMapNode node = (MindMapNode)i.next();
-                if (node.getFilterInfo().isAncestor() ){
+                if (showDescendants.isSelected()|| node.getFilterInfo().isAncestor() ){
                     setFolded(node, false);
                     unfoldAncestors(node) ;
                 }
@@ -202,9 +203,9 @@ class FilterToolbar extends JToolBar {
         add(showAncestors);
         showAncestors.getModel().addActionListener(filterChangeListener);
         
-        showDescenders = new JCheckBox(Resources.getInstance().getResourceString("filter_show_descenders"), false);
-        add(showDescenders);
-        showDescenders.getModel().addActionListener(filterChangeListener);
+        showDescendants = new JCheckBox(Resources.getInstance().getResourceString("filter_show_descendants"), false);
+        add(showDescendants);
+        showDescendants.getModel().addActionListener(filterChangeListener);
         
         activeFilter = null;
         inactiveFilter = new DefaultFilter(null, false, false, false);
@@ -234,7 +235,7 @@ class FilterToolbar extends JToolBar {
                         getSelectedCondition(),
                         btnApply.getModel().isSelected(),
                         showAncestors.getModel().isSelected(),
-                        showDescenders.getModel().isSelected()
+                        showDescendants.getModel().isSelected()
                 );
             fc.getMap().setFilter(activeFilter);
             return activeFilter;
@@ -268,11 +269,11 @@ class FilterToolbar extends JToolBar {
                 activeFilterCondition.setSelectedItem(filter);
                 if(filter != null){
                     showAncestors.setSelected(filter.areAncestorsShown());
-                    showDescenders.setSelected(filter.areDescendersShown());
+                    showDescendants.setSelected(filter.areDescendantsShown());
                 }
                 else{                    
                     showAncestors.setSelected(false);
-                    showDescenders.setSelected(false);
+                    showDescendants.setSelected(false);
                 }
             }
             if(filter != null && ! btnApply.isSelected())

@@ -26,8 +26,8 @@ public class FilterInfo {
         add(Filter.FILTER_SHOW_ANCESTOR); 
     }
     
-    public void setDescender() {
-        add(Filter.FILTER_SHOW_DESCENDER); 
+    public void setDescendant() {
+        add(Filter.FILTER_SHOW_DESCENDANT); 
     }
     
     public void setMatched() {

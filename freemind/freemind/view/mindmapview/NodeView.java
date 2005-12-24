@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.13 2005-12-06 19:47:30 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.14 2005-12-24 13:45:19 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -536,7 +536,7 @@ public abstract class NodeView extends JComponent{
         return parentView != null && ! parentView.isVisible();        
     }
     
-    protected NodeView getParentView() {
+    public NodeView getParentView() {
         NodeView parentView = getModel().getParentNode().getViewer();
         if (parentView == null || parentView.isVisible()) return parentView;
         return parentView.getParentView();
