@@ -38,7 +38,13 @@ public class ListDialog extends JDialog
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
          */
         public void valueChanged(ListSelectionEvent e) {
-            listSelectionChanged();
+            int minIndex = list.getMinSelectionIndex();
+            int maxIndex = list.getMaxSelectionIndex();
+            if(minIndex == maxIndex && minIndex != -1){
+                textField.setText(data.getElementAt(minIndex).toString());
+                selectText();
+            }
+            updateButtons();
         }
         
     }
@@ -66,6 +72,7 @@ public class ListDialog extends JDialog
                 }
             }
             renameButton.setEnabled(false);            
+            list.clearSelection();
             selectText();
         }
     }
@@ -82,7 +89,7 @@ public class ListDialog extends JDialog
             if(data.getSize() == 0){
                 data.add("");
             }
-            listSelectionChanged();
+            list.clearSelection();
         }
     }
     
@@ -271,20 +278,5 @@ public class ListDialog extends JDialog
                 return i;
         }
         return -1;
-    }
-
-    private void listSelectionChanged() {
-        int minIndex = list.getMinSelectionIndex();
-        int maxIndex = list.getMaxSelectionIndex();
-        if(minIndex == maxIndex){
-            int validIndex = data.getSize() - 1;
-            if(validIndex < minIndex){
-                list.setSelectedIndex(validIndex);
-                return;
-            }
-            textField.setText(data.getElementAt(minIndex).toString());
-            selectText();
-        }
-        updateButtons();
     }
 }

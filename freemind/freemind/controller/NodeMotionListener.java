@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMotionListener.java,v 1.1.4.2.6.3 2005-11-20 11:00:23 dpolivaev Exp $*/
+/*$Id: NodeMotionListener.java,v 1.1.4.2.6.4 2005-12-25 20:03:41 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -71,6 +71,8 @@ public class NodeMotionListener extends MouseAdapter implements
             Point point = e.getPoint();
             SwingUtilities.convertPointToScreen(point, component);
             if (!isActive()) {
+                NodeMotionListenerView v = (NodeMotionListenerView) e.getSource();
+                v.setMouseEntered();
                 setDragStartingPoint(point,nodeV.getModel());
             } else {
                 Point dragNextPoint = point;
