@@ -10,6 +10,7 @@ import freemind.controller.filter.util.SortedListModel;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.EventObject;
 
 public class ListDialog extends JDialog
 {
@@ -37,15 +38,7 @@ public class ListDialog extends JDialog
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
          */
         public void valueChanged(ListSelectionEvent e) {
-            JList source = (JList)e.getSource();
-            int index = source.getMinSelectionIndex();
-            if(index == source.getMaxSelectionIndex()){
-                textField.setText(data.getElementAt(index).toString());
-                selectText();
-            }
-            else{
-                updateButtons();
-            }
+            listSelectionChanged();
         }
         
     }
@@ -89,7 +82,7 @@ public class ListDialog extends JDialog
             if(data.getSize() == 0){
                 data.add("");
             }
-            deleteButton.setEnabled(false);
+            listSelectionChanged();
         }
     }
     
@@ -278,5 +271,20 @@ public class ListDialog extends JDialog
                 return i;
         }
         return -1;
+    }
+
+    private void listSelectionChanged() {
+        int minIndex = list.getMinSelectionIndex();
+        int maxIndex = list.getMaxSelectionIndex();
+        if(minIndex == maxIndex){
+            int validIndex = data.getSize() - 1;
+            if(validIndex < minIndex){
+                list.setSelectedIndex(validIndex);
+                return;
+            }
+            textField.setText(data.getElementAt(minIndex).toString());
+            selectText();
+        }
+        updateButtons();
     }
 }
