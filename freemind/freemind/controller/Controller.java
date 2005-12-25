@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10.2.3.2.9 2005-12-24 13:45:18 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.3.2.10 2005-12-25 13:07:50 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -89,7 +89,7 @@ import freemind.common.JaxbTools;
 import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.controller.attributes.AttributeDialog;
+import freemind.controller.attributes.AttributeManagerDialog;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Resources;
@@ -1076,9 +1076,9 @@ public class Controller {
                   new ImageIcon(getResource("images/showAttributes.gif")));
             this.c = c;
         }
-		private AttributeDialog getAttributeDialog() {
+		private AttributeManagerDialog getAttributeDialog() {
 			if (attributeDialog == null) {
-			    attributeDialog = new AttributeDialog(c.getMap());
+			    attributeDialog = new AttributeManagerDialog(c.getMap());
 			}
 			return attributeDialog;
 		}
@@ -1186,7 +1186,7 @@ public class Controller {
     
     private static Vector propertyChangeListeners = new Vector();
     
-    private AttributeDialog attributeDialog = null;
+    private AttributeManagerDialog attributeDialog = null;
     
     public static Collection getPropertyChangeListeners() {
         return Collections.unmodifiableCollection(propertyChangeListeners);

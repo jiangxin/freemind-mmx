@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.6 2005-12-24 13:45:19 dpolivaev Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.7 2005-12-25 13:07:51 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -86,6 +86,7 @@ import freemind.modes.actions.NodeGeneralAction;
 import freemind.modes.actions.NodeHookAction;
 import freemind.modes.actions.RemoveArrowLinkAction;
 import freemind.modes.actions.SingleNodeOperation;
+import freemind.modes.attributes.AttributeTableLayoutModel;
 
 
 
@@ -121,7 +122,9 @@ public class MindMapController extends ControllerAdapter {
    public Action exportBranchToHTML = new ExportBranchToHTMLAction(this);
 
    public Action editLong = new EditLongAction();
-   public Action showOrHideAttributes = new ShowOrHideAttributesAction();
+   public Action showOrHideAttributes = new ShowOrHideAttributesForSelectedNodesAction();
+   public Action showAllAttributes = new ShowOrHideAllAttributesAction("attributes_show_all", AttributeTableLayoutModel.SHOW_EXTENDED);
+   public Action hideAllAttributes = new ShowOrHideAllAttributesAction("attributes_hide_all", AttributeTableLayoutModel.SHOW_REDUCED);
    protected  AssignAttributeDialog assignAttributeDialog = null;
    public Action assignAttributes = new AssignAttributesAction();
    public Action newSibling = new NewSiblingAction(this);

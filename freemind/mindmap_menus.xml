@@ -147,7 +147,9 @@
 		</menu_category>
 	
 		<menu_submenu name="attributes" name_ref="menu_attributes">
-			<menu_category name="controls">
+			<menu_category name="controls">				
+				<menu_action name="showAllAttributes" field="showAllAttributes" key_ref="keystroke_show_all_attributes"/>
+				<menu_action name="hideAllAttributes" field="hideAllAttributes" key_ref="keystroke_hide_all_attributes"/>
 				<menu_action name="showOrHideAttributes" field="showOrHideAttributes" key_ref="keystroke_show_or_hide_attributes"/>
 				<menu_action name="assignAttributes" field="assignAttributes" key_ref="keystroke_assign_attributes"/>
 				<menu_action name="showAttributeManagerAction" field="showAttributeManagerAction" key_ref="keystroke_show_attribute_manager"/>

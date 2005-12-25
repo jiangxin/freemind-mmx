@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -19,7 +20,9 @@ import java.awt.event.MouseListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -27,6 +30,7 @@ import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -102,18 +106,6 @@ public class FilterDialog extends JDialog {
         }
     }
 
-    private class SelectConditionAction extends AbstractAction {
-        /* (non-Javadoc)
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        SelectConditionAction(){
-            super(Resources.getInstance().getResourceString("filter_select"));
-        }
-        public void actionPerformed(ActionEvent e) {
-            selectCondition();
-        }
-    }
-
     private class DeleteConditionAction extends AbstractAction {
          /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -125,11 +117,6 @@ public class FilterDialog extends JDialog {
             DefaultComboBoxModel model = (DefaultComboBoxModel)conditionList.getModel();
             int selectedIndex;
             while(0 <= (selectedIndex = conditionList.getSelectedIndex())){
-                if(selectedIndex == ft.getActiveFilterConditionComboBox().getSelectedIndex()){
-                    ft.getActiveFilterConditionComboBox().setSelectedIndex(-1);
-                    if(ft.getBtnApply().getModel().isSelected())
-                        ft.getBtnApply().doClick();
-                }
                 model.removeElementAt(selectedIndex);
             }
             validate();
@@ -205,7 +192,6 @@ public class FilterDialog extends JDialog {
         public void valueChanged(ListSelectionEvent e) {
 
             if (conditionList.getMinSelectionIndex() == -1){
-                btnSelect.setEnabled(false);
                 btnNot.setEnabled(false);
                 btnAnd.setEnabled(false);
                 btnOr.setEnabled(false);
@@ -213,7 +199,6 @@ public class FilterDialog extends JDialog {
                 return;
             }
             else if(conditionList.getMinSelectionIndex() == conditionList.getMaxSelectionIndex()){
-                btnSelect.setEnabled(true);
                 btnNot.setEnabled(true);
                 btnAnd.setEnabled(false);
                 btnOr.setEnabled(false);
@@ -221,7 +206,6 @@ public class FilterDialog extends JDialog {
                 return;
             }
             else {
-	            btnSelect.setEnabled(false);
 	            btnNot.setEnabled(false);
 	            btnAnd.setEnabled(true);
 	            btnOr.setEnabled(true);
@@ -244,15 +228,15 @@ public class FilterDialog extends JDialog {
              }
          }
 }
-    private class CloseAction extends AbstractAction {
-        /* (non-Javadoc)
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        CloseAction(){
-            super(Resources.getInstance().getResourceString("close"));
-        }
+    private class CloseAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            setVisible(false);
+            Object source = e.getSource();
+            if(source == btnOK ||source == btnApply)
+                applyChanges();
+            if(source == btnOK ||source == btnCancel)
+                setVisible(false);
+            else
+                initInternalConditionModel();
         }
     }
 
@@ -321,7 +305,6 @@ public class FilterDialog extends JDialog {
 	private JComboBox attributes;
 	private FilterToolbar ft;
     private JButton btnAdd;
-    private JButton btnSelect;
     private JButton btnNot;
     private JButton btnAnd;
     private JButton btnOr;
@@ -333,6 +316,11 @@ public class FilterDialog extends JDialog {
     private DefaultComboBoxModel simpleNodeConditionComboBoxModel;
     private DefaultComboBoxModel simpleAttributeConditionComboBoxModel;
     private ExtendedComboBoxModel filteredAttributeComboBoxModel;
+    private DefaultComboBoxModel internalConditionsModel;
+    private JComboBox externalFilterConditionComboBox;
+    private JButton btnOK;
+    private JButton btnApply;
+    private JButton btnCancel;   
     public FilterDialog(Controller c, final FilterToolbar ft) {
         super(Resources.getInstance().getJFrame(),
                 c.getResourceString("filter_dialog"));
@@ -389,13 +377,7 @@ public class FilterDialog extends JDialog {
         btnAdd.setMaximumSize(maxButtonDimension);
         conditionButtonBox.add(Box.createVerticalGlue());
         conditionButtonBox.add(btnAdd);
-    
-        btnSelect = new JButton(new SelectConditionAction());
-        conditionButtonBox.add(Box.createVerticalGlue());
-        btnSelect.setMaximumSize(maxButtonDimension);
-        conditionButtonBox.add(btnSelect);
-        btnSelect.setEnabled(false);
-    
+        
         btnNot = new JButton(new CreateNotSatisfiedConditionAction());
         conditionButtonBox.add(Box.createVerticalGlue());
         btnNot.setMaximumSize(maxButtonDimension);
@@ -425,15 +407,29 @@ public class FilterDialog extends JDialog {
         controllerBox.setBorder(new EmptyBorder(5, 0, 5, 0));        
         getContentPane().add(controllerBox, BorderLayout.SOUTH);
     
-        CloseAction closeAction = new CloseAction();
-        JButton btnClose = new JButton(closeAction);
+        CloseAction closeAction = new CloseAction();        
 
-        btnClose.setMaximumSize(maxButtonDimension);
+        btnOK = new JButton(Resources.getInstance().getResourceString("ok"));
+        btnOK.addActionListener(closeAction);
+        btnOK.setMaximumSize(maxButtonDimension);
+
+        btnApply = new JButton(Resources.getInstance().getResourceString("apply"));
+        btnApply.addActionListener(closeAction);
+        btnApply.setMaximumSize(maxButtonDimension);
+
+        btnCancel = new JButton(Resources.getInstance().getResourceString("cancel"));
+        btnCancel.addActionListener(closeAction);
+        btnCancel.setMaximumSize(maxButtonDimension);
+
         controllerBox.add(Box.createHorizontalGlue());
-        controllerBox.add(btnClose);
+        controllerBox.add(btnOK);
+        controllerBox.add(Box.createHorizontalGlue());
+        controllerBox.add(btnApply);
+        controllerBox.add(Box.createHorizontalGlue());
+        controllerBox.add(btnCancel);
         controllerBox.add(Box.createHorizontalGlue());
     
-        conditionList = new JList(ft.getActiveFilterConditionComboBox().getModel());
+        conditionList = new JList();
         conditionList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         conditionList.setCellRenderer(fc.getConditionRenderer());
         conditionList.setLayoutOrientation(JList.VERTICAL);
@@ -482,6 +478,7 @@ public class FilterDialog extends JDialog {
         if(min >= 0){
             int max = conditionList.getMinSelectionIndex();
             if(min == max){
+                applyChanges();
                 ft.getActiveFilterConditionComboBox().setSelectedIndex(min);
                 return true;
             }
@@ -496,4 +493,44 @@ public class FilterDialog extends JDialog {
         conditionList.setSelectedValue(selectedItem, true);
         
     }
+
+    public void setVisible(boolean b) {
+        if(b){
+            initInternalConditionModel();
+        }
+        super.setVisible(b);
+    }
+
+    private void initInternalConditionModel() {
+        externalFilterConditionComboBox = ft.getActiveFilterConditionComboBox();
+        ComboBoxModel externalConditionsModel = externalFilterConditionComboBox.getModel();
+        if(internalConditionsModel == null){
+            internalConditionsModel = new DefaultComboBoxModel();
+            conditionList.setModel(internalConditionsModel);
+        }
+        else{
+            internalConditionsModel.removeAllElements();
+        }
+        for (int i = 0; i < externalConditionsModel.getSize(); i++){
+            internalConditionsModel.addElement(externalConditionsModel.getElementAt(i));
+        }
+    }
+
+    private void applyChanges() {
+        Object selectedItem = externalFilterConditionComboBox.getModel().getSelectedItem();
+        if(internalConditionsModel.getIndexOf(selectedItem) != -1)
+        {
+            internalConditionsModel.setSelectedItem(selectedItem);
+        }
+        else
+        {
+            internalConditionsModel.setSelectedItem(null);
+            if(ft.getBtnApply().getModel().isSelected())
+                ft.getBtnApply().doClick();
+        }
+        externalFilterConditionComboBox.setModel(internalConditionsModel);
+        internalConditionsModel = null;
+    }
+    
+    
 }

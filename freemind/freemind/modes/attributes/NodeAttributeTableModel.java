@@ -279,8 +279,10 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
     }
     
     public void setViewType(String viewType) {
-        getLayout().setViewType(viewType);
-        node.getMap().nodeChanged(node);
+        if(getLayout().getViewType() != viewType){
+            getLayout().setViewType(viewType);
+            node.getMap().nodeChanged(node);
+        }
     }
     
     public AttributeTableLayoutModel getLayout() {

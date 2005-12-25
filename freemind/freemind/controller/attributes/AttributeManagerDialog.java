@@ -34,7 +34,7 @@ import freemind.modes.attributes.AttributeRegistry;
  * @author Dimitri Polivaev
  * 10.07.2005
  */
-public class AttributeDialog extends JDialog {
+public class AttributeManagerDialog extends JDialog {
     private JTable view;
     private MapRegistry registry;
     private AttributeRegistry model;
@@ -45,7 +45,7 @@ public class AttributeDialog extends JDialog {
     
     private class ApplyAction extends AbstractAction{
         ApplyAction(){
-            super(Resources.getInstance().getResourceString("attributes_apply"));
+            super(Resources.getInstance().getResourceString("apply"));
         }
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -103,7 +103,7 @@ public class AttributeDialog extends JDialog {
          */
         public void actionPerformed(ActionEvent e) {
             if(importDialog == null){
-                importDialog = new ImportAttributesDialog(AttributeDialog.this);
+                importDialog = new ImportAttributesDialog(AttributeManagerDialog.this);
             }
             importDialog.setVisible(true);
         }
@@ -134,7 +134,7 @@ public class AttributeDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
             ListDialog.showDialog(
                     (Component)e.getSource(),
-                    AttributeDialog.this,
+                    AttributeManagerDialog.this,
                     labelText,
                     title,
                     listBoxModel,
@@ -165,7 +165,7 @@ public class AttributeDialog extends JDialog {
         
     }
 
-    public AttributeDialog(MindMap map){
+    public AttributeManagerDialog(MindMap map){
         super(Resources.getInstance().getJFrame(), Resources.getInstance().getResourceString("attributes_dialog"), true);
 
         view = new AttributeRegistryTable(new EditListAction());

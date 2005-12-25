@@ -94,13 +94,13 @@ class AttributeRegistryTable extends JTable {
             }
         }
     }
-    private static final ButtonRenderer editButtonRenderer = new ButtonRenderer(AttributeDialog.editButtonImage,
+    private static final ButtonRenderer editButtonRenderer = new ButtonRenderer(AttributeManagerDialog.editButtonImage,
             Resources.getInstance().getResourceString("attributes_edit_tooltip"));
     static final private Icon checkBoxImage = new ImageIcon(Resources.getInstance().getResource("images/checkbox12.png"));
     final private ButtonRenderer selectAllButtonRenderer;
     final private ButtonEditor selectAllButtonEditor;
-    final private AttributeDialog.EditListAction editListAction;
-    public AttributeRegistryTable(AttributeDialog.EditListAction editListAction) {
+    final private AttributeManagerDialog.EditListAction editListAction;
+    public AttributeRegistryTable(AttributeManagerDialog.EditListAction editListAction) {
         super();  
         this.editListAction = editListAction;
         getTableHeader().setReorderingAllowed(false);

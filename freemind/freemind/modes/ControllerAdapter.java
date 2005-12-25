@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.10 2005-12-24 13:45:18 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.11 2005-12-25 13:07:51 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -1708,8 +1708,8 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     
-        protected class ShowOrHideAttributesAction extends AbstractAction {
-        public ShowOrHideAttributesAction() {
+        protected class ShowOrHideAttributesForSelectedNodesAction extends AbstractAction {
+        public ShowOrHideAttributesForSelectedNodesAction() {
             super(getText("attributes_show_hide"));
         }
         public void actionPerformed(ActionEvent e) {
@@ -1727,13 +1727,30 @@ public abstract class ControllerAdapter implements ModeController {
             while(iterator.hasNext()){
                 NodeView selectedNodeView = (NodeView) iterator.next();
                 AttributeView selectedAttributeView = selectedNodeView.getAttributeView();
-                if(! selectedAttributeView.getAttributeViewType().equals(attributeViewType)){
-                    selectedNodeView.getModel().getAttributes().setViewType(attributeViewType);
-                    nodeChanged(selectedNodeView.getModel());
-                }
+                selectedNodeView.getModel().getAttributes().setViewType(attributeViewType);
             }
         }
 	}
+
+        protected class ShowOrHideAllAttributesAction extends AbstractAction {
+            String type;
+            public ShowOrHideAllAttributesAction(String textId, String type) {                
+                super(getText(textId));
+                this.type = type;
+            }
+            public void actionPerformed(ActionEvent e) {
+                showOrHideAllAttributes(getRootNode());
+            }
+            private void showOrHideAllAttributes(MindMapNode parent) {
+                ListIterator children = parent.childrenUnfolded();
+                while(children.hasNext()){
+                    MindMapNode child = (MindMapNode) children.next();
+                    child.getAttributes().setViewType(type);
+                    showOrHideAllAttributes(child);
+                }
+                
+            }
+        }
 
     protected class SetLinkByFileChooserAction extends AbstractAction {
         public SetLinkByFileChooserAction() {
