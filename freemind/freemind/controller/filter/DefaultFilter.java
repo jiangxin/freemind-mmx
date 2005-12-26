@@ -45,17 +45,16 @@ public class DefaultFilter implements Filter{
      * @see freemind.controller.filter.Filter#applyFilter(freemind.modes.MindMap)
      */
     public void applyFilter(Controller c) {
-        MindMap map = c.getModel();
-        MapView mapView = c.getView();
-        MindMapNode root = (MindMapNode)map.getRoot();
         if(condition != null){
+            MindMap map = c.getModel();
+            MapView mapView = c.getView();
+            MindMapNode root = (MindMapNode)map.getRoot();
             resetFilter(root);
             if (filterChildren(root, false, false)){
                 addFilterResult(root, FILTER_SHOW_ANCESTOR);
             }
             selectVisibleNode(mapView);
         }
-        map.nodeChanged(root);
     }
 
     static public void selectVisibleNode(MapView mapView) {

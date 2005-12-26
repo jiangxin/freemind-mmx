@@ -31,6 +31,7 @@ import freemind.controller.filter.condition.Condition;
 import freemind.main.Resources;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.MapView;
 
 class FilterToolbar extends JToolBar {
     private FilterController fc;
@@ -43,6 +44,7 @@ class FilterToolbar extends JToolBar {
     private Filter inactiveFilter;
     private JButton btnEdit;
     private JButton btnUnfoldAncestors;
+    private Controller c;
     private static Color filterActiveColor = null;
     private static Color filterInactiveColor = null;
     static private  final String FILTER_ON = Resources.getInstance().getResourceString("filter_on");
@@ -53,10 +55,8 @@ class FilterToolbar extends JToolBar {
         /**
          *
          */
-        private Controller c;
-        ApplyFilterAction(Controller c) {
+        ApplyFilterAction() {
             super(FILTER_ON);
-            this.c = c;
         }
         
         public void actionPerformed(ActionEvent e) {
@@ -67,6 +67,7 @@ class FilterToolbar extends JToolBar {
             else
             {
                 getFilter().applyFilter(c);
+                refreshMap();
             }
             if(btnApply.isSelected()){
                 if(filterInactiveColor == null)
@@ -84,45 +85,41 @@ class FilterToolbar extends JToolBar {
         }
     }
     private class FilterChangeListener extends AbstractAction implements ItemListener{
-        private Controller c;
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
-        public FilterChangeListener(Controller c){
-            this.c = c;
+        public FilterChangeListener(){
         }
         public void actionPerformed(ActionEvent arg0) {
             resetFilter();
             getFilter();
-            MindMap map = c.getModel();
-            map.nodeChanged((MindMapNode)map.getRoot());
+            refreshMap();
             DefaultFilter.selectVisibleNode(c.getView());
         }
         /* (non-Javadoc)
          * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
          */
         public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED && btnApply.getModel().isSelected())
+            if (e.getStateChange() == ItemEvent.SELECTED && btnApply.getModel().isSelected()){
                 resetFilter();
-            getFilter().applyFilter(c);
+                getFilter().applyFilter(c);
+                refreshMap();
+                DefaultFilter.selectVisibleNode(c.getView());
+            }
         }
         
     }
     
     private class EditFilterAction extends AbstractAction {
-        private Controller c;        
-        private FilterToolbar ft;
-        EditFilterAction(Controller c, FilterToolbar ft) {
+        EditFilterAction() {
             super(Resources.getInstance().getResourceString("filter_edit"));
-            this.c = c;
-            this.ft = ft;
         }
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         private FilterDialog getFilterDialog() {
             if (filterDialog == null){
-                filterDialog = new FilterDialog(c, ft);                
+                filterDialog = new FilterDialog(c, FilterToolbar.this);                
             }
             return filterDialog;
         }
@@ -140,13 +137,11 @@ class FilterToolbar extends JToolBar {
     }
     
     private class UnfoldAncestorsAction extends AbstractAction {
-        private Controller c;
         /**
          *
          */
-        UnfoldAncestorsAction(Controller c) {
+        UnfoldAncestorsAction() {
             super("", new ImageIcon(Resources.getInstance().getResource("images/unfold.png")));
-            this.c = c;
         }
         
         private void unfoldAncestors(MindMapNode parent) {
@@ -175,9 +170,10 @@ class FilterToolbar extends JToolBar {
     {
         super();
         this.fc = c.getFilterController();
+        this.c = c;
         setVisible(false);
         setFocusable(false);
-        FilterChangeListener filterChangeListener = new FilterChangeListener(c);
+        FilterChangeListener filterChangeListener = new FilterChangeListener();
         
         add(new JLabel(Resources.getInstance().getResourceString("filter_toolbar") + " "));
         
@@ -188,13 +184,13 @@ class FilterToolbar extends JToolBar {
         add(activeFilterCondition);
         activeFilterCondition.addItemListener(filterChangeListener);
         
-        btnApply = new JToggleButton(new ApplyFilterAction(c));
+        btnApply = new JToggleButton(new ApplyFilterAction());
         add(btnApply);
         
-        btnEdit = new JButton(new EditFilterAction(c, this));
+        btnEdit = new JButton(new EditFilterAction());
         add(btnEdit);
         
-        btnUnfoldAncestors = new JButton(new UnfoldAncestorsAction(c));
+        btnUnfoldAncestors = new JButton(new UnfoldAncestorsAction());
         btnUnfoldAncestors.setToolTipText(Resources.getInstance().getResourceString("filter_unfold_ancestors"));
         btnUnfoldAncestors.setEnabled(false);
         add(btnUnfoldAncestors);
@@ -279,5 +275,12 @@ class FilterToolbar extends JToolBar {
             if(filter != null && ! btnApply.isSelected())
                 btnApply.doClick();            
         }
+    }
+
+    private void refreshMap() {
+        MindMap map = c.getModel();
+        MindMapNode root = (MindMapNode)map.getRoot();
+        root.getViewer().invalidateDescendantsTreeGeometries();         
+        map.nodeRefresh(root);
     }
 }

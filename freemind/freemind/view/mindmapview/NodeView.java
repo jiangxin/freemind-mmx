@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.15 2005-12-24 18:56:11 dpolivaev Exp $*/
+/*$Id: NodeView.java,v 1.27.14.10.2.2.2.16 2005-12-26 10:08:12 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -1016,14 +1016,11 @@ public abstract class NodeView extends JComponent{
         mainView.setIcon(image);        
     }
     void updateAll() {
-    invalidateTreeGeometries();
-	if(getModel().isVisible()){
-        update();
+    update();
+    for(ListIterator e = getChildrenViews(true).listIterator();e.hasNext();) {
+        NodeView child = (NodeView)e.next();
+        child.updateAll();
     }
-	for(ListIterator e = getChildrenViews(false).listIterator();e.hasNext();) {
-	    NodeView child = (NodeView)e.next();
-	    child.updateAll();
-	}
     }
 
    protected void setRendering(Graphics2D g) {
@@ -1218,10 +1215,16 @@ public abstract class NodeView extends JComponent{
     
     void invalidateTreeGeometries(){
         setTreeHeight(0);
-        setTreeWidth(0);
-        relYPos = 0;
         if(! isRoot()){
             getParentView().invalidateTreeGeometries();
         }
+    }
+    public void invalidateDescendantsTreeGeometries() {
+        setTreeHeight(0);
+        for(ListIterator e = getChildrenViews(false).listIterator();e.hasNext();) {
+            NodeView child = (NodeView)e.next();
+            child.invalidateDescendantsTreeGeometries();
+        }
+        
     }
 }
