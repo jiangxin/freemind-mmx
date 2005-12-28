@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12.2.4.2.13 2005-12-26 10:08:12 dpolivaev Exp $*/
+/*$Id: MapView.java,v 1.30.16.12.2.4.2.14 2005-12-28 22:03:55 dpolivaev Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -1060,6 +1060,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
                 nodeView.invalidateTreeGeometries();
                 nodeView.update();
                 revalidate();
+                repaint();
             }
         }
 	
@@ -1089,6 +1090,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
             parentView.invalidateTreeGeometries();
             // Here, the view of child gets its size and position
             revalidate();
+            repaint();
             //fc, 29.3.2004: here, I change parentView.requestFocus() to:
             child.getViewer().requestFocus();
         }
@@ -1113,6 +1115,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
             parent.invalidateTreeGeometries();
             getSelected().requestFocus();
             revalidate();
+            repaint();
 			// scrollNodeToVisible(getSelected());
             //fc, 5.4.2004. is already done by selectAsTheOnlyOneSelected:
             //parent.requestFocus();

@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.4.2.2.3 2005-12-12 22:08:08 dpolivaev Exp $*/
+/*$Id: OptionPanel.java,v 1.1.4.2.2.4 2005-12-28 22:03:55 dpolivaev Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -673,7 +673,8 @@ public class OptionPanel {
 					|| !(value.toLowerCase().equals("true") || value
 							.toLowerCase().equals("false"))) {
 				throw new IllegalArgumentException("Cannot set a boolean to "
-						+ value);
+						+ value
+                        + " for label " + label);
 			}
 			setSelected(value.toLowerCase().equals("true"));
 		}
@@ -744,7 +745,8 @@ public class OptionPanel {
 			if (possibleValues.contains(value)) {
 				super.setSelectedIndex(possibleValues.indexOf(value));
 			} else {
-				throw new IllegalArgumentException("Unknown value:" + value);
+				throw new IllegalArgumentException("Unknown value:" + value
+                        + " for label " + label);
 			}
 		}
 

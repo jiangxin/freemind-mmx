@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.11 2005-12-25 13:07:51 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.12 2005-12-28 22:03:55 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -138,6 +138,7 @@ import freemind.modes.actions.UndoAction;
 import freemind.modes.actions.FindAction.FindNextAction;
 import freemind.modes.actions.NodeBackgroundColorAction.RemoveNodeBackgroundColorAction;
 import freemind.modes.attributes.AttributeTableLayoutModel;
+import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
@@ -1732,11 +1733,9 @@ public abstract class ControllerAdapter implements ModeController {
         }
 	}
 
-        protected class ShowOrHideAllAttributesAction extends AbstractAction {
-            String type;
-            public ShowOrHideAllAttributesAction(String textId, String type) {                
+        protected abstract class ShowOrHideAllAttributesAction extends AbstractAction {
+            public ShowOrHideAllAttributesAction(String textId) {                
                 super(getText(textId));
-                this.type = type;
             }
             public void actionPerformed(ActionEvent e) {
                 showOrHideAllAttributes(getRootNode());
@@ -1745,10 +1744,42 @@ public abstract class ControllerAdapter implements ModeController {
                 ListIterator children = parent.childrenUnfolded();
                 while(children.hasNext()){
                     MindMapNode child = (MindMapNode) children.next();
-                    child.getAttributes().setViewType(type);
+                    child.getAttributes().setViewType(getViewType(child));
                     showOrHideAllAttributes(child);
                 }
                 
+            }
+            protected abstract String getViewType(MindMapNode child);
+        }
+
+        protected class ShowAllAttributesAction extends ShowOrHideAllAttributesAction {
+            public ShowAllAttributesAction() {                
+                super("attributes_show_everywhere");
+            }
+            protected String getViewType(MindMapNode child) {
+                return AttributeTableLayoutModel.SHOW_EXTENDED;
+            }
+        }
+
+        protected class HideAllAttributesAction extends ShowOrHideAllAttributesAction {
+            public HideAllAttributesAction() {                
+                super("attributes_hide_everywhere");
+            }
+            protected String getViewType(MindMapNode child) {
+                return AttributeTableLayoutModel.SHOW_REDUCED;
+            }
+        }
+
+        protected class ShowAvailableAttributesAction extends ShowOrHideAllAttributesAction {
+            public ShowAvailableAttributesAction() {                
+                super("attributes_show_available_everywhere");
+            }
+            protected String getViewType(MindMapNode child) {
+                NodeAttributeTableModel attributes = child.getAttributes();
+                String type = attributes.getRowCount() != 0 
+                    ? AttributeTableLayoutModel.SHOW_EXTENDED
+                    : AttributeTableLayoutModel.SHOW_REDUCED ;
+                return type;
             }
         }
 

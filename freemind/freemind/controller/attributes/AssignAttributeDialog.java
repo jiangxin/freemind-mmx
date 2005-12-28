@@ -139,6 +139,19 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         }        
     }
     
+    private  class ShowExistingAction extends IteratingAction{
+        protected void performAction(MindMapNode model) {
+            NodeAttributeTableModel attributes = model.getAttributes();
+            String type = attributes.getRowCount() != 0 
+                ? AttributeTableLayoutModel.SHOW_EXTENDED
+                : AttributeTableLayoutModel.SHOW_REDUCED ;
+            if(! attributes.getViewType().equals(type)){
+                attributes.setViewType(type);
+                model.getMap().nodeChanged(model);
+            }
+        }        
+    }
+    
     private  class HideAction extends IteratingAction{
         protected void performAction(MindMapNode model) {
             NodeAttributeTableModel attributes = model.getAttributes();
@@ -308,6 +321,8 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         skipRootBtn.setSelected(true);
         final JButton showBtn = new JButton(Resources.getInstance().getResourceString("attributes_show"));
         showBtn.addActionListener(new ShowAction());
+        final JButton showExistingBtn = new JButton(Resources.getInstance().getResourceString("attributes_show_existing"));
+        showExistingBtn.addActionListener(new ShowExistingAction());        
         final JButton hideBtn = new JButton(Resources.getInstance().getResourceString("attributes_hide"));
         hideBtn.addActionListener(new HideAction());
         
@@ -321,6 +336,8 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         selectionBox.add(skipRootBtn);
         selectionBox.add(Box.createHorizontalGlue());
         selectionBox.add(showBtn);
+        selectionBox.add(Box.createHorizontalGlue());
+        selectionBox.add(showExistingBtn);
         selectionBox.add(Box.createHorizontalGlue());
         selectionBox.add(hideBtn);
         selectionBox.add(Box.createHorizontalGlue());
