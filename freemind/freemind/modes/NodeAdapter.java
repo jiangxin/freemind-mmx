@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeAdapter.java,v 1.20.16.10.2.4.2.7 2005-11-27 21:18:06 dpolivaev Exp $*/
+/*$Id: NodeAdapter.java,v 1.20.16.10.2.4.2.8 2005-12-29 20:21:30 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -458,11 +458,11 @@ public abstract class NodeAdapter implements MindMapNode {
 	this.folded = folded;
     }
 
-    protected MindMapNode basicCopy() {
+    protected MindMapNode basicCopy(MindMap map) {
        return null; }
 	
     public MindMapNode shallowCopy() {
-       MindMapNode copy = basicCopy();
+       MindMapNode copy = basicCopy(getMap());
        copy.setColor(getColor());
        copy.setFont(getFont());
        copy.setLink(getLink());
