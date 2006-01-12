@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.17 2005-07-03 20:53:50 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.18 2006-01-12 23:10:14 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -355,7 +355,7 @@ public abstract class NodeView extends JLabel {
 	}
 
    public void requestFocus(){
-      map.getController().getMode().getModeController().anotherNodeSelected(getModel());
+      map.getController().getModeController().anotherNodeSelected(getModel());
       super. requestFocus();
    }
 

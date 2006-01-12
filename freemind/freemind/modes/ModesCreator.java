@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModesCreator.java,v 1.9.18.3 2005-03-03 21:11:27 christianfoltin Exp $*/
+/*$Id: ModesCreator.java,v 1.9.18.4 2006-01-12 23:10:12 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -37,8 +37,14 @@ import freemind.controller.Controller;
 public class ModesCreator {
 	private Controller c;
 
-	private Map modes;
+	/**
+	 * Contains translated mode name => Mode instances
+	 */
+	private Map mCreatedModes;
 
+	/**
+	 * Contains a name translation. Mode name => Class Name
+	 */
 	private Map modesTranslation;
 
 	private static Logger logger;
@@ -51,8 +57,8 @@ public class ModesCreator {
 		if(logger==null) {
 			logger = c.getFrame().getLogger(this.getClass().getName());
 		}
-		if (modes == null) {
-			modes = new TreeMap();
+		if (mCreatedModes == null) {
+			mCreatedModes = new TreeMap();
 			modesTranslation = new HashMap();
 			String modestring = c.getFrame().getProperty("modes_since_0_8_0");
 
@@ -61,10 +67,10 @@ public class ModesCreator {
 			while (tokens.hasMoreTokens()) {
 				String modename = tokens.nextToken();
 				String modeAlias = tokens.nextToken();
-				modes.put(modename, null);
+				mCreatedModes.put(modename, null);
 				modesTranslation.put(modeAlias, modename);
 			}
-			logger.info("Modes:" + modes.keySet());
+			logger.info("Modes:" + mCreatedModes.keySet());
 		}
 		return modesTranslation.keySet();
 	}
@@ -77,24 +83,24 @@ public class ModesCreator {
 	 */
 	public Mode getMode(String modeAlias) {
 		getAllModes();
-		Mode mode = null;
 		if (!modesTranslation.containsKey(modeAlias)) {
 			throw new IllegalArgumentException("Unknown mode " + modeAlias);
 		}
 		String modeName = (String) modesTranslation.get(modeAlias);
-		if (modes.get(modeName) == null) {
+		if (mCreatedModes.get(modeName) == null) {
 			try {
+				Mode mode = null;
 				mode = (Mode) Class.forName(modeName).newInstance();
 				logger.info("Initializing mode "+ modeAlias );
 				mode.init(c);
 				logger.info("Done: Initializing mode "+ modeAlias );
-				modes.put(modeName, mode);
+				mCreatedModes.put(modeName, mode);
 			} catch (Exception ex) {
 				logger.severe("Mode " + modeName + " could not be loaded.");
 				ex.printStackTrace();
 			}
 		}
-		return (Mode) modes.get(modeName);
+		return (Mode) mCreatedModes.get(modeName);
 	}
 
 }

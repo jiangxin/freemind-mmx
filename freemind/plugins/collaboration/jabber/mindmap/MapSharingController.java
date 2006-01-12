@@ -12,9 +12,9 @@ import java.awt.event.MouseListener;
 import javax.xml.bind.JAXBException;
 
 import plugins.collaboration.jabber.view.MapSharingWizardView;
-import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.generated.instance.RevertXmlAction;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 /**
  * @author RReppel

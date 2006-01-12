@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.14 2005-08-27 20:35:25 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.15 2006-01-12 23:10:13 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -65,6 +65,7 @@ import freemind.modes.LinkRegistryAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 
 
 public class MindMapMapModel extends MapAdapter  {
@@ -72,17 +73,16 @@ public class MindMapMapModel extends MapAdapter  {
     LockManager lockManager;
     private LinkRegistryAdapter linkRegistry;
     private Timer timerForAutomaticSaving;
-
-    //
+	//
     // Constructors
     //
 
-    public MindMapMapModel(FreeMindMain frame) {
-        this(new MindMapNodeModel( frame.getResourceString("new_mindmap"), frame), frame);
+    public MindMapMapModel(FreeMindMain frame, ModeController modeController) {
+        this(new MindMapNodeModel( frame.getResourceString("new_mindmap"), frame), frame, modeController );
     }
     
-    public MindMapMapModel( MindMapNodeModel root, FreeMindMain frame ) {
-        super(frame);
+    public MindMapMapModel( MindMapNodeModel root, FreeMindMain frame, ModeController modeController ) {
+        super(frame, modeController);
         lockManager = frame.getProperty("experimental_file_locking_on").equals("true") ? 
            new LockManager() : new DummyLockManager();
 
@@ -466,7 +466,8 @@ public class MindMapMapModel extends MapAdapter  {
           readOnly = false; } // The map sure is not read only when the locking suceeded.                   
         return lockingUser; }
                 
-    public void load(File file) throws FileNotFoundException, IOException, XMLParseException {
+    public void load(URL url) throws FileNotFoundException, IOException, XMLParseException {
+        File file = new File(url.getFile());
        if (!file.exists()) {
           throw new FileNotFoundException(Tools.expandPlaceholders(getText("file_not_found"), file.getPath())); }
        if (!file.canWrite()) {
@@ -489,7 +490,11 @@ public class MindMapMapModel extends MapAdapter  {
        
        MindMapNodeModel root = loadTree(file);
        if (root != null) {
-          setRoot(root); }
+          setRoot(root);
+          ((MindMapController) mModeController).invokeHooksRecursively(
+                  root, this);
+
+       }
        setFile(file);
        setSaved(true); } 
     
@@ -503,7 +508,7 @@ public class MindMapMapModel extends MapAdapter  {
     }
 
     MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
-        MindMapXMLElement mapElement = new MindMapXMLElement(getFrame());
+        MindMapXMLElement mapElement = new MindMapXMLElement(mModeController);
         String expectedStartString = "<map version=\"" + FreeMind.version
                 + "\"";
         // FIXME: fc, 27.8.2005: this is for 0.8.0 only. Remove me ASAP.

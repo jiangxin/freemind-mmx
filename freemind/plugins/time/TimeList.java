@@ -19,11 +19,10 @@
  *
  * Created on 04.02.2005
  */
-/*$Id: TimeList.java,v 1.1.2.7 2005-05-25 06:10:59 christianfoltin Exp $*/
+/*$Id: TimeList.java,v 1.1.2.8 2006-01-12 23:10:14 christianfoltin Exp $*/
 package plugins.time;
 
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
@@ -60,18 +59,19 @@ import freemind.controller.actions.generated.instance.TimeWindowColumnSettingTyp
 import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorageType;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
-import freemind.extensions.ModeControllerHookAdapter;
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
+import freemind.modes.common.plugins.ReminderHookBase;
+import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
 import freemind.view.mindmapview.MultipleImage;
 
 /**
  * @author foltin
  *  
  */
-public class TimeList extends ModeControllerHookAdapter {
+public class TimeList extends MindMapHookAdapter {
 
 	private static  String COLUMN_MODIFIED = "Modified";
 
@@ -255,7 +255,7 @@ public class TimeList extends ModeControllerHookAdapter {
 		// restore prefrences:
 
 		//Retrieve window size and column positions.		
-		WindowConfigurationStorage storage = getController().getController().decorateDialog(dialog, WINDOW_PREFERENCE_STORAGE_PROPERTY);
+		WindowConfigurationStorage storage = getMindMapController().decorateDialog(dialog, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		if (storage != null) {
 			//			 Disable auto resizing
 			timeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -284,7 +284,7 @@ public class TimeList extends ModeControllerHookAdapter {
 				int row = selectedRows[i];
 				selectedNodes.add(getMindMapNode(row));
 			}
-            getController().selectMultipleNodes(focussedNode, selectedNodes);
+            getMindMapController().selectMultipleNodes(focussedNode, selectedNodes);
 			disposeDialog();
 		}
 	}
@@ -338,7 +338,7 @@ public class TimeList extends ModeControllerHookAdapter {
 	}
 
 	private void updateModel(DefaultTableModel model, MindMapNode node) {
-		ReminderHook hook = TimeManagement.getHook(node);
+		ReminderHookBase hook = TimeManagement.getHook(node);
 		Date date = null;
 		if (hook != null) {
 			date = new Date(hook.getRemindUserAt());
@@ -383,18 +383,18 @@ public class TimeList extends ModeControllerHookAdapter {
 		// store window positions:
 
 		try {
-			TimeWindowConfigurationStorage storage = getController()
+			TimeWindowConfigurationStorage storage = getMindMapController()
 					.getActionXmlFactory()
 					.createTimeWindowConfigurationStorage();
 			for(int i = 0; i< timeTable.getColumnCount(); i++) {
-				TimeWindowColumnSetting setting = getController()
+				TimeWindowColumnSetting setting = getMindMapController()
 						.getActionXmlFactory()
 						.createTimeWindowColumnSetting();
 				setting.setColumnWidth(timeTable.getColumnModel().getColumn(i).getWidth());
 				setting.setColumnSorting(sorter.getSortingStatus(i));
 				storage.getTimeWindowColumnSetting().add(setting);
 			}
-			getController().getController().storeDialogPositions(dialog, storage, WINDOW_PREFERENCE_STORAGE_PROPERTY);
+            getMindMapController().storeDialogPositions(dialog, storage, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}

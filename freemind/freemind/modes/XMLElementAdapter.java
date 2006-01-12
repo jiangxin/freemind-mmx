@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.13 2005-07-06 06:00:03 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.14 2006-01-12 23:10:12 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -30,7 +30,6 @@ import freemind.extensions.PermanentNodeHookSubstituteUnknown;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
-import freemind.modes.mindmapmode.EncryptedMindMapNode;
 
 public abstract class XMLElementAdapter extends XMLElement {
 
@@ -39,7 +38,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 	protected static java.util.logging.Logger logger;
 
    private Object           userObject = null;
-   private FreeMindMain     frame;
+   protected FreeMindMain     frame;
    private NodeAdapter      mapChild   = null;
    private HashMap 		  nodeAttributes = new HashMap();
 
@@ -62,21 +61,22 @@ public abstract class XMLElementAdapter extends XMLElement {
     public static final String XML_NODE_HISTORY_CREATED_AT = "CREATED";
     public static final String XML_NODE_HISTORY_LAST_MODIFIED_AT = "MODIFIED";
 
+	protected final ModeController mModeController;
+
    //   Overhead methods
 
-   public XMLElementAdapter(FreeMindMain frame) {
-      this.frame = frame; 
-      this.ArrowLinkAdapters = new Vector();
-      this.IDToTarget = new HashMap();
-      if(logger==null) {
-          logger = frame.getLogger(this.getClass().getName());
-      }
+   public XMLElementAdapter(ModeController modeController) {
+	   this(modeController, new Vector(), new HashMap());
    }
 
-    protected XMLElementAdapter(FreeMindMain frame, Vector ArrowLinkAdapters, HashMap IDToTarget) {
-        this.frame = frame; 
+    protected XMLElementAdapter(ModeController modeController, Vector ArrowLinkAdapters, HashMap IDToTarget) {
+        this.mModeController = modeController;
+        this.frame = modeController.getFrame(); 
         this.ArrowLinkAdapters = ArrowLinkAdapters;
         this.IDToTarget = IDToTarget;
+        if(logger==null) {
+        	logger = frame.getLogger(this.getClass().getName());
+        }
     }
 
     /** abstract method to create elements of my type (factory).*/
@@ -85,6 +85,9 @@ public abstract class XMLElementAdapter extends XMLElement {
     abstract protected EdgeAdapter createEdgeAdapter(NodeAdapter node, FreeMindMain frame);
     abstract protected CloudAdapter createCloudAdapter(NodeAdapter node, FreeMindMain frame);
     abstract protected ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter source, NodeAdapter target, FreeMindMain frame);
+    abstract protected NodeAdapter createEncryptedNode(String additionalInfo);
+
+
     
     protected FreeMindMain getFrame() {
         return frame;
@@ -92,6 +95,10 @@ public abstract class XMLElementAdapter extends XMLElement {
 
    public Object getUserObject() {
       return userObject; }
+   
+   protected void setUserObject(Object obj){
+	   userObject = obj;
+   }
 
    public NodeAdapter getMapChild() {
       return mapChild; }
@@ -167,7 +174,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 				 /* The next code snippet is an exception. Normally, hooks 
 				  * have to be created via the ModeController. 
 				  * DO NOT COPY. */
-                hook = (PermanentNodeHook) frame.getHookFactory().createNodeHook(loadName);
+                hook = (PermanentNodeHook) mModeController.getHookFactory().createNodeHook(loadName);
                 // this is a bad hack. Don't make use of this data unless
                 // you know exactly what you are doing.
                 hook.setNode(node);
@@ -272,8 +279,7 @@ public void setAttribute(String name, Object value) {
 	    node.setUserObject(sValue); }
 	 else if (name.equals(XML_NODE_ENCRYPTED_CONTENT)) {
 	     // we change the node implementation to EncryptedMindMapNode.
-	     node = createNodeGivenClassName(EncryptedMindMapNode.class.getName());
-	     node.setAdditionalInfo(sValue); 
+	     node = createEncryptedNode(sValue);
 	 } else if (name.equals(XML_NODE_HISTORY_CREATED_AT)) {
 	     if(node.getHistoryInformation()==null) {
 	     	node.setHistoryInformation(new HistoryInformation());
@@ -318,20 +324,20 @@ public void setAttribute(String name, Object value) {
 	 }
 }
 
-    /**
-     * @param className
-     */
-    private NodeAdapter createNodeGivenClassName(String className) {
-        userObject = createNodeAdapter(frame, className);
-        // reactivate all settings from nodeAttributes:
+	/** Sets all attributes that were formely applied to the current userObject
+	 *  to a given (new) node. Thus, the instance of a node can be changed after
+	 *  the creation. (At the moment, relevant for encrypted nodes).
+	 * @param node
+	 */
+	protected void copyAttributesToNode(NodeAdapter node) {
+		// reactivate all settings from nodeAttributes:
         for (Iterator i = nodeAttributes.keySet().iterator(); i.hasNext();) {
             String key = (String) i.next();
             //to avoid self reference:
             setNodeAttribute(key, (String) nodeAttributes.get(key),
-                    (NodeAdapter) userObject);
+                    node);
         }
-        return (NodeAdapter) userObject;
-    }
+	}
 
     protected void completeElement() {
       if (getName().equals("font")) {

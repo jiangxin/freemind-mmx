@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/*$Id: FormatNewNodes.java,v 1.1.4.1 2004-10-17 23:00:05 dpolivaev Exp $*/
+/*$Id: FormatNewNodes.java,v 1.1.4.2 2006-01-12 23:10:12 christianfoltin Exp $*/
 package accessories.plugins;
 
 import java.util.HashMap;
@@ -28,9 +28,6 @@ import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBException;
 
-import freemind.controller.actions.ActionFilter;
-import freemind.controller.actions.ActionHandler;
-import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.CompoundActionType;
 import freemind.controller.actions.generated.instance.FormatNodeAction;
@@ -38,9 +35,12 @@ import freemind.controller.actions.generated.instance.NewNodeActionType;
 import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
-import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.ModeController;
+import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.ActionFilter;
+import freemind.modes.mindmapmode.actions.xml.ActionHandler;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 /** This plugin formats new nodes using the formats given to former nodes.
  * @author foltin
@@ -48,7 +48,7 @@ import freemind.modes.ModeController;
 public class FormatNewNodes implements ActionHandler, ActionFilter,
 		HookRegistration {
 
-	private ModeController controller;
+	private MindMapController controller;
 
 	private MindMap mMap;
 
@@ -57,7 +57,7 @@ public class FormatNewNodes implements ActionHandler, ActionFilter,
 	private HashMap formatActions;
 
 	public FormatNewNodes(ModeController controller, MindMap map) {
-		this.controller = controller;
+		this.controller = (MindMapController) controller;
 		mMap = map;
 		logger = controller.getFrame().getLogger(this.getClass().getName());
 		this.formatActions = new HashMap();
@@ -110,7 +110,7 @@ public class FormatNewNodes implements ActionHandler, ActionFilter,
 						.getDoAction();
 				// add to a compound the newNodeAction and the other formats we
 				// have:
-				CompoundAction compound = ((ControllerAdapter) controller)
+				CompoundAction compound =  controller
 						.getActionXmlFactory().createCompoundAction();
 				compound.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(newNodeAction);
 				for (Iterator i = formatActions.values().iterator(); i.hasNext();) {

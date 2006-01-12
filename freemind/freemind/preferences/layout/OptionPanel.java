@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.17 2005-11-04 21:42:24 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.18 2006-01-12 23:10:14 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -62,11 +62,13 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
 
+import freemind.common.JaxbTools;
 import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.OptionPanelWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.OptionPanelWindowConfigurationStorageType;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.FreeMind;
+import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
@@ -116,7 +118,7 @@ public class OptionPanel {
 		this.frame = frame;
 		this.feedback = feedback;
 		//Retrieve window size and column positions.
-		WindowConfigurationStorage storage = fm.getController().decorateDialog(
+		WindowConfigurationStorage storage = JaxbTools.getInstance().decorateDialog(fm.getController(),
 				frame, PREFERENCE_STORAGE_PROPERTY);
 		if (storage == null) {
 			frame.getRootPane().setPreferredSize(new Dimension(800, 600));
@@ -772,9 +774,9 @@ public class OptionPanel {
 		//TODO: Search class path for translations.
 		controls.add(new ComboProperty(
 
-		"language.tooltip", FreeMind.RESOURCE_LANGUAGE, new String[] {
+		"language.tooltip", FreeMindCommon.RESOURCE_LANGUAGE, new String[] {
 				"automatic", "cs", "de", "dk", "en", "es", "fr", "hu", "it",
-				"ja", "kr", "lt", "nl", "no", "pl", "pt_BR", "pt_PT", "ru", "sl",
+				"ja", "kr", "lt", "nl", "nn", "no", "pl", "pt_BR", "pt_PT", "ru", "se", "sl",
 				"zh", "zh_CN" })); //  automatic
 
 		//INTERNAL PROPERTY.
@@ -1422,11 +1424,11 @@ public class OptionPanel {
 
 	public void closeWindow() {
 		try {
-			OptionPanelWindowConfigurationStorage storage = fmMain.getController()
+			OptionPanelWindowConfigurationStorage storage = JaxbTools.getInstance()
 					.getActionXmlFactory()
 					.createOptionPanelWindowConfigurationStorage();
 			storage.setPanel(selectedPanel);
-			fmMain.getController().storeDialogPositions(frame, storage,
+			JaxbTools.getInstance().storeDialogPositions(fmMain.getController(), frame, storage,
 					PREFERENCE_STORAGE_PROPERTY);
 		} catch (JAXBException e) {
 			// TODO: handle exception

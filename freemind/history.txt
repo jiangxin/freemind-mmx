@@ -1,3 +1,22 @@
+Changes made in Freemind 0.8.1:
+===============================
+* Word wrap enabled for notes.
+* Refactoring: MindMap specific actions moved to mindmapmode.
+* Refactoring: Each Model comes with its specific ModeController.
+* Refactoring: Each mode has a default ModeController for the case that all maps are closed.
+* Refactoring: Each model has its own HookFactory.
+* Startup: ProgressBar added.
+* Browse Mode: Note viewer written.
+* Browse Mode: Encrypted node viewer written
+* Browse Mode: Reminder viewer written
+* Encryption: Bug fix for empty encrypted nodes.
+* New and revised translations nn and se (thanks to the authors)
+* New translation of the main documentation into german (thanks to the authors)
+* Clean up: Removed clipboard image export that has never worked.
+* Bug fix: Removing reminders call nodeChanged.
+* Documentation is opened in german, if german is the current language.
+
+
 Changes made in Freemind 0.8.0:
 ===============================
 * From Koh (thanks): Standard Macintosh application use Command(meta) key based Keyboard shortcut. (ex. copy is Command(meta) + C). I think that mac version's freemind should allow to assign meta key based shortcut. 

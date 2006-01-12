@@ -36,16 +36,6 @@ public class PermanentNodeHookAdapter
 //			logger = ((ControllerAdapter)getController()).getFrame().getLogger(this.getClass().getName());
 	}
 
-	/**
-	 * @param child the child node the hook should be propagated to.
-	 * @return returns the new hook or null if there is already such a hook.
-	 */
-	protected PermanentNodeHook propagate(MindMapNode child) {
-		PermanentNodeHook hook = (PermanentNodeHook) getController().createNodeHook(getName(), child, getMap());
-		// invocation:
-		child.invokeHook(hook);
-		return hook;
-	}
 
     /*
 	 * (non-Javadoc)

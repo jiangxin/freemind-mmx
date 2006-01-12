@@ -6,21 +6,19 @@ package accessories.plugins;
 
 import java.awt.Color;
 
-import freemind.controller.actions.ActionHandler;
-import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.generated.instance.EditNodeActionType;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.extensions.PermanentNodeHookAdapter;
-import freemind.main.Tools;
-import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
+import freemind.modes.mindmapmode.actions.xml.ActionHandler;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
+import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
 /**
  * @author foltin
  *
  */
-public class RevisionPlugin extends PermanentNodeHookAdapter implements ActionHandler {
+public class RevisionPlugin extends PermanentMindMapNodeHookAdapter implements ActionHandler {
 
 	static boolean alreadyUsed = false;
 
@@ -42,13 +40,13 @@ public class RevisionPlugin extends PermanentNodeHookAdapter implements ActionHa
 		if(alreadyUsed == false ){
 			color = Color.YELLOW;
 			// new register: 
-			getController().getActionFactory().registerHandler(this);
+			getMindMapController().getActionFactory().registerHandler(this);
 			alreadyUsed = true;
 		}
 	}
 
 	public void shutdownMapHook() {
-		getController().getActionFactory().deregisterHandler(this);
+		getMindMapController().getActionFactory().deregisterHandler(this);
 		super.shutdownMapHook();
 	}
     /* (non-Javadoc)
@@ -59,7 +57,7 @@ public class RevisionPlugin extends PermanentNodeHookAdapter implements ActionHa
     	if(action instanceof EditNodeActionType) {
     		// there is an edit action.
 			EditNodeActionType editAction = (EditNodeActionType) action;
-			NodeAdapter node = getController().getNodeFromID(editAction.getNode());
+			NodeAdapter node = getMindMapController().getNodeFromID(editAction.getNode());
 			node.setBackgroundColor(color);
 			nodeChanged(node);
     	}

@@ -7,15 +7,15 @@ package accessories.plugins;
 import java.awt.Color;
 import java.util.Iterator;
 
-import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
 /**
  * @author foltin
  *
  */
-public class AutomaticLayout extends PermanentNodeHookAdapter {
+public class AutomaticLayout extends PermanentMindMapNodeHookAdapter {
 
 	private Color[] colors = new Color[]{ new Color(0x000000), new Color(0x0033FF), new Color(0x00b439), 
 		new Color(0x990000), new Color(0x111111) };
@@ -31,7 +31,7 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 	}
 
 	private void setStyle(MindMapNode node) {
-	    logger.finest("updating node id="+node.getObjectId(getController())+" and text:"+node);
+	    logger.finest("updating node id="+node.getObjectId(getMindMapController())+" and text:"+node);
 		int depth = depth(node);
 		logger.finest("COLOR, depth="+(depth));
 		int myIndex = colors.length - 1;
@@ -39,13 +39,13 @@ public class AutomaticLayout extends PermanentNodeHookAdapter {
 		    myIndex = depth;
 		Color mycolor = colors[myIndex];
 		if (!Tools.safeEquals(mycolor, node.getColor())) {
-			getController().setNodeColor(node, mycolor);
+            getMindMapController().setNodeColor(node, mycolor);
 //			nodeChanged(node);
 		}
 		String myFontSize = fontSize[myIndex];
 		if (((node.getFontSize() != null) && (!node.getFontSize().equals(myFontSize)) ) 
 		        || node.getFontSize() == null ) {
-		    getController().setFontSize(node, myFontSize);
+		    getMindMapController().setFontSize(node, myFontSize);
 //		    nodeChanged(node);
 		}
 	}

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMode.java,v 1.8.18.1 2004-10-17 23:00:13 dpolivaev Exp $*/
+/*$Id: SchemeMode.java,v 1.8.18.2 2006-01-12 23:10:14 christianfoltin Exp $*/
 
 package freemind.modes.schememode;
 
@@ -54,7 +54,7 @@ public class SchemeMode implements Mode {
      */
     public void activate() {
 	if (!isRunning) {
-	    getModeController().newMap();
+	    getDefaultModeController().newMap();
 	    isRunning = true;
 	} else {
             c.getMapModuleManager().changeToMapOfMode(this);
@@ -68,21 +68,17 @@ public class SchemeMode implements Mode {
 	return c;
     }
 
-    public ModeController getModeController() {
+    public ModeController getDefaultModeController() {
 	return modecontroller;
     }
 
 
-    public JToolBar getModeToolBar() {
-	return toolbar;
-    }
-
-    public JToolBar getLeftToolBar() {
-	return null;
-    }
-
     public FreeMindMain getFrame() {
 	return c.getFrame();
     }
+
+	public ModeController createModeController() {
+		return new SchemeController(this);
+	}
 
 }

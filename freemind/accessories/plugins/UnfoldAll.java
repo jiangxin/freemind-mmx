@@ -9,28 +9,29 @@ import java.awt.event.MouseWheelEvent;
 import java.util.Iterator;
 
 import freemind.extensions.HookRegistration;
-import freemind.extensions.NodeHookAdapter;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
-import freemind.modes.ModeController.MouseWheelEventHandler;
+import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.MindMapActions.MouseWheelEventHandler;
+import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
 /**
  * @author foltin
  *
  */
-public class UnfoldAll extends NodeHookAdapter  {
+public class UnfoldAll extends MindMapNodeHookAdapter  {
 
     public static class Registration implements HookRegistration, MouseWheelEventHandler {
 
-        private final ModeController controller;
+        private final MindMapController controller;
         private final MindMap mMap;
         private final java.util.logging.Logger logger;
         private UnfoldAll hookInstance;
 
         public Registration(ModeController controller, MindMap map) {
-            this.controller = controller;
+            this.controller = (MindMapController) controller;
             mMap = map;
             logger = controller.getFrame().getLogger(this.getClass().getName());
             // fc, 12.8.2004: this is a bad hack, but when time lacks...
@@ -126,7 +127,7 @@ public class UnfoldAll extends NodeHookAdapter  {
 
 	protected void setFolded(MindMapNode node, boolean state) {
 		if(node.hasChildren() && (node.isFolded()!=state)) {
-		    getController().setFolded(node, state);
+		    getMindMapController().setFolded(node, state);
 		}
 	}
 

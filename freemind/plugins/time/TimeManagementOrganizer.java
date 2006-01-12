@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2005
  */
-/*$Id: TimeManagementOrganizer.java,v 1.1.2.1 2005-05-03 05:29:51 christianfoltin Exp $*/
+/*$Id: TimeManagementOrganizer.java,v 1.1.2.2 2006-01-12 23:10:14 christianfoltin Exp $*/
 package plugins.time;
 
 import java.util.Iterator;
@@ -32,7 +32,7 @@ import freemind.extensions.HookRegistration;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
-import freemind.modes.actions.NodeHookAction;
+import freemind.modes.mindmapmode.actions.NodeHookAction;
 
 /** Enables the encrypt/decrypt menu item only if the map/node is encrypted.
  * @author foltin

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.14.9 2005-07-18 20:46:44 christianfoltin Exp $*/
+/*$Id: MapAdapter.java,v 1.24.14.10 2006-01-12 23:10:12 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -26,7 +26,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -52,30 +51,40 @@ public abstract class MapAdapter implements MindMap {
 
     private MindMapNode root;
     private EventListenerList treeModelListeners = new EventListenerList();
-    /** denotes the amount of changes since the last save. The initial value is one, to ensure, that the model is dirty.*/
-    protected int changesPerformedSinceLastSave = 1; 
+    /**
+	 * denotes the amount of changes since the last save. The initial value is
+	 * zero, such that new models are not to be saved.
+	 */
+    protected int changesPerformedSinceLastSave = 0; 
     protected boolean readOnly = true;
     private Color backgroundColor;
     private File file;
     private FreeMindMain frame;
     static protected Logger logger;
+	protected final ModeController mModeController;
 
 
 
-    public MapAdapter (FreeMindMain frame) {
+    public MapAdapter (FreeMindMain frame, ModeController modeController) {
 		this.frame = frame;
+		this.mModeController = modeController;
+		mModeController.setModel(this);
 		if(logger == null) {
 		    logger = frame.getLogger(this.getClass().getName());
 		}
     }
 
+    public ModeController getModeController() {
+    		return mModeController;
+    }
+    
     //
     // Abstract methods that _must_ be implemented.
     //
 
     public abstract boolean save(File file); 
     
-    public abstract void load(File file) throws FileNotFoundException, IOException, XMLParseException ;
+    public abstract void load(URL file) throws FileNotFoundException, IOException, XMLParseException ;
 
 	/**
 	 * Attempts to lock the map using semaphore file.
@@ -207,7 +216,7 @@ public abstract class MapAdapter implements MindMap {
 
 
    public Transferable copy(MindMapNode node) {
-     return null;
+	   throw new IllegalArgumentException("No copy so far.");
    }
 
    public Transferable copy() {
@@ -446,7 +455,7 @@ public abstract class MapAdapter implements MindMap {
       * This method should not be called directly!
       */
     public void nodeChanged(TreeNode node) {
-        frame.getController().getMode().getModeController().nodeChanged((MindMapNode)node);
+        getModeController().nodeChanged((MindMapNode)node);
     }
 
 	public void nodeChangedMapInternal(TreeNode node) {

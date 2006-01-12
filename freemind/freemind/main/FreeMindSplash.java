@@ -24,11 +24,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.text.NumberFormat;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 import javax.swing.JRootPane;
+import javax.swing.SwingUtilities;
 
 
 
@@ -38,12 +41,52 @@ import javax.swing.JRootPane;
 
 class FreeMindSplash extends JFrame {
 
-    private final FreeMindMain frame;
+	private class FeedBackImpl implements FeedBack {
 
+		private int mActualValue;
+		private long mActualTimeStamp=System.currentTimeMillis();
+
+		public void progress(final int act) {
+			this.mActualValue = act;
+			System.out.print("Task: "+act+" last " + (System.currentTimeMillis()-mActualTimeStamp)/1000.0 + " seconds.\n");
+			mActualTimeStamp = System.currentTimeMillis();
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					mProgressBar.setValue(act);
+					double percent = act*1.0/mProgressBar.getMaximum();
+					mProgressBar.setString(NumberFormat.getPercentInstance().format(percent));
+				}
+			});
+		}
+
+		public int getActualValue() {
+			return mActualValue;
+		}
+
+		public void setMaximumValue(int max) {
+			mProgressBar.setMaximum(max);
+			mProgressBar.setIndeterminate(false);
+		}
+
+		public void increase() {
+			progress(getActualValue()+1);
+		}
+		
+	}
+	
+    private final FreeMindMain frame;
+	private final FeedBack feedBack;
+	private JProgressBar mProgressBar;
+
+	public FeedBack getFeedBack() {
+		return feedBack;
+	}
+	
 
     public FreeMindSplash(final FreeMindMain frame){
     	super("FreeMind");
         this.frame = frame;
+		this.feedBack = new FeedBackImpl();
     	
     	ImageIcon icon = new ImageIcon(frame.getResource(
 			"images/FreeMindWindowIcon.png"));
@@ -74,6 +117,12 @@ class FreeMindSplash extends JFrame {
         
         
         getContentPane().add(l, BorderLayout.CENTER);
+        mProgressBar = new JProgressBar();
+        mProgressBar.setIndeterminate(true);
+        mProgressBar.setStringPainted(true);
+
+
+        getContentPane().add(mProgressBar, BorderLayout.SOUTH);
         pack();
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

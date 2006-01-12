@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LastOpenedList.java,v 1.8.18.1 2004-10-17 23:00:06 dpolivaev Exp $*/
+/*$Id: LastOpenedList.java,v 1.8.18.2 2006-01-12 23:10:12 christianfoltin Exp $*/
 package freemind.controller;
 
 import freemind.view.MapModule;
@@ -25,13 +25,19 @@ import java.util.*;
 /**
  * This class manages a list of the maps that were opened last.
  * It aims to provide persistence for the last recent maps.
- * Maps should be showed in the format:"mode:key",ie."mindmap:/home/joerg/freemind.mm"
+ * Maps should be shown in the format:"mode\:key",ie."Mindmap\:/home/joerg/freemind.mm"
  */
 public class LastOpenedList {
     private Controller c;
     private int maxEntries = 25; // is rewritten from property anyway
-    private List lst = new LinkedList();
-    private Map hash = new HashMap();
+    /**
+     * Contains Restore strings.
+     */
+    private List lastOpenedList = new LinkedList();
+    /**
+     * Contains Restore string => map name (map.toString()).
+     */
+    private Map mRestorableToMapName = new HashMap();
 
     LastOpenedList(Controller c, String restored) {
         this.c=c;
@@ -41,16 +47,16 @@ public class LastOpenedList {
 
     void mapOpened(MapModule map) {
 	if (map==null || map.getModel()==null) return;
-	String rest = map.getModel().getRestoreable();
-	if (rest==null) return;
-	if (lst.contains(rest)) {
-	    lst.remove(rest);
+	String restoreString = map.getModel().getRestoreable();
+	if (restoreString==null) return;
+	if (lastOpenedList.contains(restoreString)) {
+	    lastOpenedList.remove(restoreString);
 	}
-	lst.add(0,rest);
-	hash.put(rest,map.toString());
+	lastOpenedList.add(0,restoreString);
+	mRestorableToMapName.put(restoreString,map.toString());
 
-	while (lst.size()>maxEntries) {
-	    lst.remove(lst.size()-1); //remove last elt
+	while (lastOpenedList.size()>maxEntries) {
+	    lastOpenedList.remove(lastOpenedList.size()-1); //remove last elt
 	}
     }
 
@@ -76,24 +82,28 @@ public class LastOpenedList {
 	if (data != null) {
 	    StringTokenizer token = new StringTokenizer(data,";");
 	    while (token.hasMoreTokens())
-		lst.add(token.nextToken());
+		lastOpenedList.add(token.nextToken());
 	}
     }
 
     public void open(String restoreable) {
-	if( (restoreable != null) & 
-            !(c.getMapModuleManager().tryToChangeToMapModule((String)hash.get(restoreable)))) {
-           StringTokenizer token = new StringTokenizer(restoreable,":");
-           if (token.hasMoreTokens()) {
-              String mode = token.nextToken();
-              if(c.changeToMode(mode)) {
-                 c.getMode().restore(token.nextToken("").substring(1));//fix for windows
-              }
-           }
+		boolean changedToMapModule = c.getMapModuleManager()
+				.tryToChangeToMapModule(
+						(String) mRestorableToMapName.get(restoreable));
+		if ((restoreable != null) && !(changedToMapModule)) {
+			StringTokenizer token = new StringTokenizer(restoreable, ":");
+			if (token.hasMoreTokens()) {
+				String mode = token.nextToken();
+				if (c.createNewMode(mode)) {
+					// fix for windows (??, fc, 25.11.2005).
+					String fileName = token.nextToken("").substring(1);
+					c.getMode().restore(fileName);
+				}
+			}
+		}
 	}
-    }
 	
     ListIterator listIterator () {
-	return lst.listIterator();
+	return lastOpenedList.listIterator();
     }
 }

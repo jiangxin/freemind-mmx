@@ -8,8 +8,8 @@ import java.awt.datatransfer.Transferable;
 import java.util.Iterator;
 import java.util.List;
 
-import freemind.extensions.NodeHookAdapter;
 import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
 /**
  * @author foltin
@@ -29,7 +29,7 @@ import freemind.modes.MindMapNode;
  *  The code simply performs these actions in sequence, after validating 
  * the selected nodes.
  */
-public class NewParentNode extends NodeHookAdapter {
+public class NewParentNode extends MindMapNodeHookAdapter {
 
 	/**
 	 * 
@@ -43,16 +43,16 @@ public class NewParentNode extends NodeHookAdapter {
 	 */
 	public void invoke(MindMapNode rootNode) {
 		// we dont need node. 
-		MindMapNode focussed = getController().getSelected();
-		List selecteds = getController().getSelecteds();
+		MindMapNode focussed = getMindMapController().getSelected();
+		List selecteds = getMindMapController().getSelecteds();
 		MindMapNode selectedNode = focussed;
 		List selectedNodes = selecteds;
 		
 		// bug fix: sort to make independent by user's selection:
-		getController().sortNodesByDepth(selectedNodes);
+		getMindMapController().sortNodesByDepth(selectedNodes);
 
 		if(focussed.isRoot()) {
-			getController().getController().errorMessage(
+			getMindMapController().getController().errorMessage(
 					getResourceString("cannot_add_parent_to_root"));
 			return;
 		}
@@ -65,12 +65,12 @@ public class NewParentNode extends NodeHookAdapter {
 		for (Iterator it = selectedNodes.iterator(); it.hasNext();) {
 			MindMapNode node = (MindMapNode) it.next();
 			if (node.getParentNode() != selectedParent) {
-				getController().getController().errorMessage(
+				getMindMapController().getController().errorMessage(
 					getResourceString("cannot_add_parent_diff_parents"));
 				return;
 			}
 			if (node == rootNode) {
-				getController().getController().errorMessage(
+				getMindMapController().getController().errorMessage(
 					getResourceString("cannot_add_parent_to_root"));
 				return;
 			}
@@ -78,21 +78,21 @@ public class NewParentNode extends NodeHookAdapter {
 
 		// Create new node in the position of the selectedNode
 		int childPosition = selectedParent.getChildPosition(selectedNode);
-		MindMapNode newNode = getController().addNewNode(selectedParent, childPosition, selectedNode.isLeft());
-		//MindMapNode newNode = getController().newNode();
+		MindMapNode newNode = getMindMapController().addNewNode(selectedParent, childPosition, selectedNode.isLeft());
+		//MindMapNode newNode = getMindMapController().newNode();
 		//getMap().insertNodeInto(newNode, selectedParent, childPosition);
 
 		// Move selected nodes to become children of new node
-		Transferable copy = getController().cut(selectedNodes);
-		getController().paste(copy, newNode);
+		Transferable copy = getMindMapController().cut(selectedNodes);
+		getMindMapController().paste(copy, newNode);
 		nodeChanged(selectedParent);
 
 		// Start editing new node
-		getController().getView().selectAsTheOnlyOneSelected(
+		getMindMapController().getView().selectAsTheOnlyOneSelected(
 			newNode.getViewer());
-		getController().getFrame().repaint();
+		getMindMapController().getFrame().repaint();
 		// edit is not necessary, as the new text can directly entered and editing is starting automatically.
-		//getController().edit(newNode.getViewer(), selectedParent.getViewer(), null, false, false, false);
+		//getMindMapController().edit(newNode.getViewer(), selectedParent.getViewer(), null, false, false, false);
 	}
 
 }

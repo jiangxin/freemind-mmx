@@ -18,8 +18,8 @@ import freemind.extensions.NodeHookAdapter;
 import freemind.main.FreeMind;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
-import freemind.modes.actions.IconAction;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.IconAction;
 import freemind.view.mindmapview.NodeView;
 
 /**

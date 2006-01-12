@@ -19,7 +19,7 @@
  *
  * Created on 22.07.2004
  */
-/*$Id: HookDescriptor.java,v 1.1.4.2 2004-11-16 16:42:35 christianfoltin Exp $*/
+/*$Id: HookDescriptor.java,v 1.1.4.3 2006-01-12 23:10:12 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.HashMap;
@@ -35,7 +35,15 @@ import freemind.controller.actions.generated.instance.PluginPropertyType;
 import freemind.main.FreeMindMain;
 
 
-class HookDescriptor {
+/** This is an information class that holds all outer properties
+ *  of a hook, i.e. all contents of the XML description file.
+ *  
+ *  Don't use this class for anything except for the implementation
+ *  of a HookFactory.
+ * @author foltin
+ *
+ */
+public class HookDescriptor {
 	private Properties properties;
 	public Vector menuPositions;
 	private Vector modes;

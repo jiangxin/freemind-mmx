@@ -19,20 +19,21 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.3 2005-03-11 22:27:28 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4 2006-01-12 23:10:12 christianfoltin Exp $*/
 
 package freemind.controller;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import freemind.controller.Controller.HistoryManager;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
+import freemind.modes.ModeController;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 
@@ -42,27 +43,95 @@ import freemind.view.mindmapview.MapView;
      * As this task is very complex, I exported it
      * from Controller to this class to keep Controller
      * simple.
+     * 
+     * The information exchange between controller and this class is managed by oberser pattern (the controller observes
+     * changes to the map modules here).
      */
     public class MapModuleManager {
-        // Variable below: The instances of mode, ie. the Model/View pairs. Normally, the
-        // order should be the order of insertion, but such a Map is not
-        // available.
+    	
+    		public static interface MapModuleChangeOberser {
+    			/** The params may be null to indicate the there was no previous map,
+    			 * or that the last map is closed now.
+    			 * @param oldMapModule
+    			 * @param newMapModule
+    			 * @return
+    			 */
+    			boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
+    			void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
+    			void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
+    			/** To enable/disable the previous/next map actions.
+    			 * @param number
+    			 */
+    			void numberOfOpenMapInformation(int number);
+    		}
+    	
+    		public static class MapModuleChangeOberserCompound implements MapModuleChangeOberser {
+    			private HashSet listeners = new HashSet();
+    			public void addListener(MapModuleChangeOberser listener) {
+    				listeners.add(listener);
+    			}
+    			public void removeListener(MapModuleChangeOberser listener) {
+    				listeners.remove(listener);
+    			}
+				public boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+					boolean returnValue = true;
+					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+						MapModuleChangeOberser observer = (MapModuleChangeOberser) iter.next();
+						returnValue = observer.isMapModuleChangeAllowed(oldMapModule, oldMode, newMapModule, newMode);
+						if(!returnValue){
+							break;
+						}
+					}
+					return returnValue;
+				}
+				public void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+						MapModuleChangeOberser observer = (MapModuleChangeOberser) iter.next();
+						observer.beforeMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
+					}
+				}
+				public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+						MapModuleChangeOberser observer = (MapModuleChangeOberser) iter.next();
+						observer.afterMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
+					}
+				}
+				public void numberOfOpenMapInformation(int number) {
+					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+						MapModuleChangeOberser observer = (MapModuleChangeOberser) iter.next();
+						observer.numberOfOpenMapInformation(number);
+					}
+				}
+    		}
+    		
+    		MapModuleChangeOberserCompound listener = new MapModuleChangeOberserCompound();
+    		
+			public void addListener(MapModuleChangeOberser pListener) {
+				listener.addListener(pListener);
+			}
+			public void removeListener(MapModuleChangeOberser pListener) {
+				listener.removeListener(pListener);
+			}
+
+        /** Contains pairs String (key+extension) => MapModule instances.
+         * The instances of mode, ie. the Model/View pairs. Normally, the
+        * order should be the order of insertion, but such a Map is not
+        * available. */
         private Map mapModules = new HashMap();
 
-        private MapModule mapModule; //reference to the current mapmodule, could be done
-                                     //with an index to mapModules, too.
-        // private String current;
+        /** reference to the current mapmodule; null is allowed, too. */
+        private MapModule mapModule;
+        /**
+         * Reference to the current mode as the mapModule may be null. 
+         */
+        private Mode mCurrentMode = null;
         
-        private Controller c;
+        private Controller mController;
 
-        private final LastOpenedList lastOpened;
 
-        private final HistoryManager history;
-
-        MapModuleManager(Controller c, HistoryManager history, LastOpenedList lastOpened) {
-           this.c=c;
-        this.history = history;
-        this.lastOpened = lastOpened; }
+        MapModuleManager(Controller c) {
+           this.mController=c;
+        }
 
         Map getMapModules() {
            return mapModules; }
@@ -70,11 +139,11 @@ import freemind.view.mindmapview.MapView;
         public MapModule getMapModule() {
            return mapModule; }
 
-        public void newMapModule(MindMap map) {
-            MapModule mapModule = new MapModule(map, new MapView(map, c), c.getMode());
+        public void newMapModule(MindMap map, ModeController modeController) {
+            MapModule mapModule = new MapModule(map, new MapView(map, mController),
+				modeController.getMode(), modeController);
             addToMapModules(mapModule.toString(), mapModule);
-            setMapModule(mapModule);
-            history.mapChanged(mapModule);
+            setMapModule(mapModule, modeController.getMode());
         }
 
         public void updateMapModuleName() {
@@ -83,12 +152,12 @@ import freemind.view.mindmapview.MapView;
             //must not be called at this state
             getMapModule().rename();
             addToMapModules(getMapModule().toString(),getMapModule());
-            setMapModule(getMapModule());
+            setMapModule(getMapModule(), getMapModule().getMode());
         }
 
         void nextMapModule() {
             List keys = new LinkedList(getMapModules().keySet());
-            int index = keys.indexOf(getMapModule().toString());
+            int index = (getMapModule()!=null)?keys.indexOf(getMapModule().toString()):keys.size()-1;
             ListIterator i = keys.listIterator(index+1);
             if (i.hasNext()) {
                changeToMapModule((String)i.next()); }
@@ -98,7 +167,7 @@ import freemind.view.mindmapview.MapView;
 
         void previousMapModule() {
             List keys = new LinkedList(getMapModules().keySet());
-            int index = keys.indexOf(getMapModule().toString());
+            int index = (getMapModule()!=null)?keys.indexOf(getMapModule().toString()):0;
             ListIterator i = keys.listIterator(index);
             if (i.hasPrevious()) {
                changeToMapModule((String)i.previous()); }
@@ -117,67 +186,44 @@ import freemind.view.mindmapview.MapView;
             else {
                return false; }}
 
-    	/** adds the mapModule to the history and calls changeToMapModuleWithoutHistory. */
         void changeToMapModule(String mapModule) {
             MapModule map = (MapModule)(getMapModules().get(mapModule));
-            history.mapChanged(map);
-            setMapModule(map); 
+            setMapModule(map, map.getMode()); 
         }
 
 
-        public void changeToMapOfMode(Mode mode) {
-            for (Iterator i = getMapModules().keySet().iterator(); i.hasNext(); ) {
-                String next = (String)i.next();
-                if ( ((MapModule)getMapModules().get(next)).getMode() == mode ) {
-                    changeToMapModule(next);
-                    return; }}}
+    public void changeToMapOfMode(Mode mode) {
+		for (Iterator i = getMapModules().keySet().iterator(); i.hasNext();) {
+			String keyString = (String) i.next();
+			if (((MapModule) getMapModules().get(keyString)).getMode() == mode) {
+				changeToMapModule(keyString);
+				return;
+			}
+		}
+        // there is no map with the given mode open. We have to create an empty one?
+        setMapModule(null, mode);
+		//FIXME: Is getting here an error? fc, 25.11.2005.
+	}
 
     /**
-	 * @param mapModule
+	 * @param newMapModule
 	 *            is null if the old mode should be closed.
+	 * @return true if the set command was sucessful.
 	 */
-	void setMapModule(MapModule mapModule) {
+	boolean setMapModule(MapModule newMapModule, Mode newMode) {
+		// allowed?
 		MapModule oldMapModule = this.mapModule;
-		if (oldMapModule != null) {
-			// shut down screens of old view + frame
-			c.getModeController().setVisible(false);
-			c.getModeController().shutdownController();
+		Mode oldMode = mCurrentMode;
+		if(!listener.isMapModuleChangeAllowed(oldMapModule, oldMode, newMapModule, newMode)){
+			return false;
 		}
 
-		if (mapModule != null) {
-			// change mode ?
-			if (mapModule.getMode() != c.getMode()) {
-				// create mode
-				c.changeToMode(mapModule.getMode().toString());
-			}
-		}
-		this.mapModule = mapModule;
-		List keys = new LinkedList(getMapModules().keySet());
-		c.navigationPreviousMap.setEnabled(keys.size() > 1);
-		c.navigationNextMap.setEnabled(keys.size() > 1);
-		// FIXME: This is done twice (the first time was in changeToMode above),
-		// but we need it to update the maps menus
-		c.getFrame().getFreeMindMenuBar().updateMenus();
-
-		if (mapModule != null) {
-			//FIXME: This is controller code and has to be moved.
-			c.getFrame().setView(mapModule.getView());
-			c.setAllActions(true);
-			if (c.getView().getSelected() == null) {
-				// Only for the new modules move to root
-				c.moveToRoot();
-			}
-			lastOpened.mapOpened(getMapModule());
-			c.setTitle();
-			((MainToolBar) c.getToolbar()).setZoomComboBox(getMapModule()
-					.getView().getZoom());
-			c.obtainFocusForSelected();
-			c.getModeController().startupController();
-			c.getModeController().setVisible(true);
-		} else {
-			c.getFrame().setView(null);
-
-		}
+		listener.beforeMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
+		this.mapModule = newMapModule;
+		this.mCurrentMode = newMode;
+		listener.afterMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
+		listener.numberOfOpenMapInformation(getMapModules().keySet().size());
+		return true;
 	}
 
 
@@ -197,33 +243,27 @@ import freemind.view.mindmapview.MapView;
             // end bug fix, 20.12.2003, fc.
        }
 
-       private void changeToAnotherMap(String toBeClosed) {
-          List keys = new LinkedList(getMapModules().keySet());
-          for (ListIterator i = keys.listIterator(); i.hasNext();) {
-             String key = (String)i.next();
-             if (!key.equals(toBeClosed)) {
-                changeToMapModule(key);
-                return; }}}
-
         /**
         *  Close the currently active map, return false if closing cancelled.
          * @param force forces the closing without any save actions.
         */
        public boolean close(boolean force) {
        	    // (DP) The mode controller does not close the map
-            boolean closingNotCancelled = c.getMode().getModeController().close(force);
+    	   		MapModule module = getMapModule();
+    	   		// FIXME: This is not correct, as this class should not ask somebody. 
+    	   		// This class is only a list!
+            boolean closingNotCancelled = module.getModeController().close(force, this);
             if (!closingNotCancelled) {
                return false; }	
             
             String toBeClosed = getMapModule().toString();
             mapModules.remove(toBeClosed);
             if (mapModules.isEmpty()) {
-               c.setAllActions(false);
-               setMapModule(null);
-               c.getFrame().setView(null); }
-            else {
-               changeToMapModule((String)mapModules.keySet().iterator().next());
-            }
+			/*Keep the current running mode*/
+			setMapModule(null, module.getMode());
+		} else {
+			changeToMapModule((String) mapModules.keySet().iterator().next());
+		}
             return true; }
 
        // }}

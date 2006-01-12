@@ -16,16 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMode.java,v 1.8.18.2 2004-10-28 05:24:54 christianfoltin Exp $*/
+/*$Id: BrowseMode.java,v 1.8.18.3 2006-01-12 23:10:12 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
-import java.net.URL;
-
-import javax.swing.JToolBar;
+import java.io.File;
 
 import freemind.controller.Controller;
-import freemind.main.FreeMindApplet;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 
@@ -33,7 +30,8 @@ public class BrowseMode implements Mode {
 
     private Controller c;
     private BrowseController modecontroller;
-    private final String MODENAME = "Browse";
+    public final static String MODENAME = "Browse";
+    private boolean isRunning = false;
 
     public BrowseMode() {
     }
@@ -52,31 +50,21 @@ public class BrowseMode implements Mode {
      * (updates Actions etc.)
      */
     public void activate() {
-
-        String map = getController().getFrame().getProperty("browsemode_initial_map");
-        if (map != null && map.startsWith("."))  {
-            /* new handling for relative urls. fc, 29.10.2003.*/
-            try {
-                if(getController().getFrame() instanceof FreeMindApplet) {
-                    FreeMindApplet applet = (FreeMindApplet) getController().getFrame();
-                    URL documentBaseUrl = new URL( applet.getDocumentBase(), map);
-                    map = documentBaseUrl.toString();
-                } else {
-                    map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
-                }
-            }  catch (java.net.MalformedURLException e) { 
-                getController().errorMessage("Could not open relative URL "+map+". It is malformed.");
-                System.err.println(e);
-                return;
-            }
-            /* end: new handling for relative urls. fc, 29.10.2003.*/
-        }    
-        if (map != "") {
-            ((BrowseController)getModeController()).loadURL(map);
+        if(isRunning) {
+            c.getMapModuleManager().changeToMapOfMode(this);
+        } else {
+            isRunning = true;
         }
+
     }
 
     public void restore(String restoreable) {
+        try {
+            getDefaultModeController().load(new File(restoreable).toURL());
+        } catch (Exception e) {
+            c.errorMessage("An error occured on opening the file: "+restoreable + ".");
+            e.printStackTrace();
+        }
     }
     
     public Controller getController() {
@@ -84,20 +72,14 @@ public class BrowseMode implements Mode {
     }
 
 
-    public ModeController getModeController() {
+    public ModeController getDefaultModeController() {
+    		// no url should be visible for the empty controller.
+        modecontroller.getToolBar().setURLField("");
         return modecontroller;
     }
 
-    public BrowseController getBrowseController() {
-        return (BrowseController)getModeController();
-    }
-
-    public JToolBar getModeToolBar() {
-        return ((BrowseController)getModeController()).getToolBar();
-    }
-
-    public JToolBar getLeftToolBar() {
-        return null;
-    }
+ 	public ModeController createModeController() {
+		return new BrowseController(this);
+	}
 
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapXMLElement.java,v 1.13.18.1 2004-12-19 09:00:41 christianfoltin Exp $*/
+/*$Id: MindMapXMLElement.java,v 1.13.18.2 2006-01-12 23:10:13 christianfoltin Exp $*/
 
 
 package freemind.modes.mindmapmode;
@@ -30,6 +30,7 @@ import freemind.main.XMLElement;
 import freemind.modes.ArrowLinkAdapter;
 import freemind.modes.CloudAdapter;
 import freemind.modes.EdgeAdapter;
+import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.XMLElementAdapter;
 
@@ -39,13 +40,13 @@ public class MindMapXMLElement extends XMLElementAdapter {
 	// Logging: 
 	private static java.util.logging.Logger logger;
 
-   public MindMapXMLElement(FreeMindMain frame) {
-       super(frame);
+   public MindMapXMLElement(ModeController pModeController) {
+       super(pModeController);
        init();
    }
 
-    protected MindMapXMLElement(FreeMindMain frame, Vector ArrowLinkAdapters, HashMap IDToTarget) {
-        super(frame, ArrowLinkAdapters, IDToTarget);
+    protected MindMapXMLElement(ModeController pModeController, Vector ArrowLinkAdapters, HashMap IDToTarget) {
+        super(pModeController, ArrowLinkAdapters, IDToTarget);
         init();
     }
 
@@ -61,7 +62,7 @@ public class MindMapXMLElement extends XMLElementAdapter {
     /** abstract method to create elements of my type (factory).*/
     protected XMLElement  createAnotherElement(){
     // We do not need to initialize the things of XMLElement.
-        return new MindMapXMLElement(getFrame(), ArrowLinkAdapters, IDToTarget);
+        return new MindMapXMLElement(mModeController, ArrowLinkAdapters, IDToTarget);
     }
     protected NodeAdapter createNodeAdapter(FreeMindMain     frame, String nodeClass){
         if (nodeClass==null) {
@@ -94,6 +95,14 @@ public class MindMapXMLElement extends XMLElementAdapter {
     protected ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter source, NodeAdapter target, FreeMindMain frame) {
         return new MindMapArrowLinkModel(source,target,frame);
     }
+
+	protected NodeAdapter createEncryptedNode(String additionalInfo) {
+		NodeAdapter node = createNodeAdapter(frame, EncryptedMindMapNode.class.getName());
+		setUserObject(node);
+        copyAttributesToNode(node);
+	    node.setAdditionalInfo(additionalInfo); 
+        return node;
+	}
 
 }
 

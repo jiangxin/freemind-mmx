@@ -16,26 +16,26 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMapModel.java,v 1.11.18.3 2005-03-11 22:27:30 christianfoltin Exp $*/
+/*$Id: SchemeMapModel.java,v 1.11.18.4 2006-01-12 23:10:14 christianfoltin Exp $*/
 
 package freemind.modes.schememode;
 
-import freemind.main.FreeMindMain;
-
-import freemind.modes.MapAdapter;
-import freemind.modes.MindMapNode;
-
-import java.io.File;
-import java.io.Reader;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.FileOutputStream;
-import java.io.StreamTokenizer;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StreamTokenizer;
 import java.io.Writer;
+import java.net.URL;
+
+import freemind.main.FreeMindMain;
+import freemind.modes.MapAdapter;
+import freemind.modes.ModeController;
 
 public class SchemeMapModel extends MapAdapter {
     
@@ -43,8 +43,8 @@ public class SchemeMapModel extends MapAdapter {
     // Constructors
     //
 
-    public SchemeMapModel(FreeMindMain frame) {
-	super(frame);
+    public SchemeMapModel(FreeMindMain frame, ModeController modeController) {
+	super(frame, modeController);
 	setRoot(new SchemeNodeModel(getFrame()));
     }
     
@@ -70,7 +70,8 @@ public class SchemeMapModel extends MapAdapter {
 	}
     }
     
-    public void load(File file) throws FileNotFoundException {
+    public void load(URL url) throws FileNotFoundException {
+        File file = new File(url.getFile());
 	setFile(file);
 	setSaved(true);
 
@@ -150,11 +151,6 @@ public class SchemeMapModel extends MapAdapter {
 	}
     }
 
-    /* (non-Javadoc)
-     * @see freemind.modes.MindMap#setLinkInclinationChanged()
-     */
-    public void setLinkInclinationChanged() {
-    }
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMap#getXml(java.io.Writer)
 	 */

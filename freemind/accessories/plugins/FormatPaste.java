@@ -19,21 +19,21 @@
  *
  * Created on 06.10.2004
  */
-/*$Id: FormatPaste.java,v 1.1.4.2 2004-11-16 16:42:35 christianfoltin Exp $*/
+/*$Id: FormatPaste.java,v 1.1.4.3 2006-01-12 23:10:12 christianfoltin Exp $*/
 
 package accessories.plugins;
 
 import javax.swing.JOptionPane;
 
-import freemind.extensions.NodeHookAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.StylePattern;
+import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
 /**
  * @author foltin
  *
  */
-public class FormatPaste extends NodeHookAdapter {
+public class FormatPaste extends MindMapNodeHookAdapter {
     private static StylePattern pattern=null;
 
     public FormatPaste() {
@@ -55,12 +55,12 @@ public class FormatPaste extends NodeHookAdapter {
      */
     private void pasteFormat(MindMapNode node) {
         if(pattern==null) {
-            JOptionPane.showMessageDialog(getController().getFrame().getContentPane(),
+            JOptionPane.showMessageDialog(getMindMapController().getFrame().getContentPane(),
                     getResourceString("no_format_copy_before_format_paste"),"" /*=Title*/,
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        getController().applyPattern(node, pattern);
+        getMindMapController().applyPattern(node, pattern);
     }
 
     /**

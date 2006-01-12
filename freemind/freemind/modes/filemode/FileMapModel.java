@@ -16,18 +16,21 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMapModel.java,v 1.7.18.4 2005-06-15 20:13:48 christianfoltin Exp $*/
+/*$Id: FileMapModel.java,v 1.7.18.5 2006-01-12 23:10:13 christianfoltin Exp $*/
 
 package freemind.modes.filemode;
 
-import freemind.main.FreeMindMain;
-import freemind.modes.LinkRegistryAdapter;
-import freemind.modes.MindMapLinkRegistry;
-import freemind.modes.MindMapNode;
-import freemind.modes.MapAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URL;
+
+import freemind.main.FreeMindMain;
+import freemind.modes.LinkRegistryAdapter;
+import freemind.modes.MapAdapter;
+import freemind.modes.MindMapLinkRegistry;
+import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 
 public class FileMapModel extends MapAdapter {
     
@@ -37,12 +40,12 @@ public class FileMapModel extends MapAdapter {
     // Constructors
     //
 
-    public FileMapModel(FreeMindMain frame) {
-        this(new File(File.separator), frame);
+    public FileMapModel(FreeMindMain frame, ModeController modeController) {
+        this(new File(File.separator), frame, modeController);
     }
     
-    public FileMapModel( File root , FreeMindMain frame) {
-        super(frame);
+    public FileMapModel( File root , FreeMindMain frame, ModeController modeController) {
+        super(frame, modeController);
         setRoot(new FileNodeModel(root,getFrame()));
  		linkRegistry = new LinkRegistryAdapter();
     }
@@ -70,7 +73,7 @@ public class FileMapModel extends MapAdapter {
          * This must fail. */
         //super.destroy();
     }
-    public void load(File file) {
+    public void load(URL file) {
     }
     
     public boolean isSaved() {

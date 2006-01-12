@@ -46,12 +46,8 @@ public class ExportToImage extends ExportHook {
 		if (image != null) {
 			String imageType = getResourceString("image_type");
 			
-            if (!imageType.equals("clipboard")) {
-                exportToImage(image, imageType,
-                        getResourceString("image_description"));
-            } else {
-                setClipboard(image);
-            }
+            exportToImage(image, imageType,
+                    getResourceString("image_description"));
 		}
 
 	}
@@ -79,77 +75,6 @@ public class ExportToImage extends ExportHook {
 	    getController().getFrame().setWaitingCursor(false);
 		return true;
 	}
-
-
-
-//	Hi all !
-//
-//	I just found out about this project last week. I just missed the possibility of saving the mapview as tiff, jpeg (no compression) or bmp (svg later ?) so I imported JAI package and wrote what was needed while trying to respect the whole pattern. May be this could be an interesting feature ? It is just about specifying  xxx.bmp, xxx.tiff or xxx.jpeg (as well as xxx.mm) in File->SaveAs menu.  For bmp it is awfully slow (jai...). In any case -Xmx128m is required at startup. Oh, as it prints what's on the mapview panel, this printing feature inherited a "feature" which prevents large diagrams from being fully expanded i.e. they are truncated.
-//
-//	Keith 
-//	-    public boolean saveJPEG(File file,BufferedImage bi){ //KR
-//	-        boolean result = false;
-//	-        System.out.println("Saving JPEG");
-//	-        try{
-//	-            OutputStream os = new FileOutputStream(file);
-//	-            JPEGEncodeParam param = new JPEGEncodeParam();
-//	-            param.setQuality(1.0f);
-//	-            ImageEncoder encoder = ImageCodec.createImageEncoder("JPEG",os,param);    
-//	-            encoder.encode(bi);
-//	-            os.flush();
-//	-            os.close();
-//	-            result = true;
-//	-        }
-//	-        catch (IOException e){
-//	-            e.printStackTrace();
-//	-            result = false;
-//	-        }
-//	-        return result;
-//	-    } //KR
 	
-	// adapted from http://javaalmanac.com/egs/java.awt.datatransfer/ToClipImg.html:
-	
-//	 This method writes a image to the system clipboard.
-	// fc, 28.10.2004: this new method does not work.
-    // otherwise it returns null.
-    public void setClipboard(BufferedImage image) {
-        ImageSelection imgSel = new ImageSelection(image);
-        getController().getClipboard().setContents(imgSel, null);
-    }
-    
-    // This class is used to hold an image while on the clipboard.
-    public static class ImageSelection implements Transferable {
-        private BufferedImage image;
-        private DataFlavor imageFlavor;
-    
-        public ImageSelection(BufferedImage image) {
-            this.image = image;
-            try {
-                imageFlavor = new DataFlavor("image/jpeg");
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-    
-        // Returns supported flavors
-        public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{imageFlavor};
-        }
-    
-        // Returns true if flavor is supported
-        public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return imageFlavor.equals(flavor);
-        }
-    
-        // Returns image
-        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-            if (!imageFlavor.equals(flavor)) {
-                throw new UnsupportedFlavorException(flavor);
-            }
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-			ImageIO.write(image, "JPEG", out);
-            return out;
-        }
-    }
 
 }

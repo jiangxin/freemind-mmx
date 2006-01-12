@@ -7,14 +7,14 @@ package accessories.plugins;
 import java.text.MessageFormat;
 import java.util.Iterator;
 
-import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
 /**
  * @author foltin
  *  
  */
-public class CreationModificationPlugin extends PermanentNodeHookAdapter {
+public class CreationModificationPlugin extends PermanentMindMapNodeHookAdapter {
 
 	private static final String CREATED = "CREATED";
 

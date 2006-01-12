@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.13 2005-06-16 19:27:04 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.14 2006-01-12 23:10:12 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -161,7 +161,7 @@ public class MenuBar extends JMenuBar {
 		addAdditionalPopupActions();
 		// the modes:
 		if ((c.getMode() != null)) {
-			c.getMode().getModeController().updateMenus(menuHolder);
+			c.getModeController().updateMenus(menuHolder);
 		}
 		menuHolder.updateMenus(this, MENU_BAR_PREFIX);
 		menuHolder.updateMenus(mapsPopupMenu, GENERAL_POPUP_PREFIX);
@@ -345,8 +345,12 @@ public class MenuBar extends JMenuBar {
     }
 
     private class MapsMenuActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-		    c.getMapModuleManager().changeToMapModule(e.getActionCommand());
+		public void actionPerformed(final ActionEvent e) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    c.getMapModuleManager().changeToMapModule(e.getActionCommand());
+                }
+            });
 		}
     }
 
@@ -357,8 +361,12 @@ public class MenuBar extends JMenuBar {
     }
 
     private class ModesMenuActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-		    c.changeToMode(e.getActionCommand());
+		public void actionPerformed(final ActionEvent e) {
+		    SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    c.createNewMode(e.getActionCommand());
+                }
+            });
 		}
     }
     
