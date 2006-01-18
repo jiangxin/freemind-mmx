@@ -44,6 +44,7 @@
 					<xs:element ref="arrow_link_color_xml_action"/>
 					<xs:element ref="arrow_link_arrow_xml_action"/>
 					<xs:element ref="arrow_link_point_xml_action"/>
+					<xs:element ref="edit_note_to_node_action"/>
 				</xs:choice>
 			</xs:extension>
 		</xs:complexContent>
@@ -439,6 +440,15 @@
 
 	<!-- Edit node Action -->
 	<xs:element name="edit_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="text_node_action"/>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Edit note to a node Action -->
+	<xs:element name="edit_note_to_node_action">
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="text_node_action"/>

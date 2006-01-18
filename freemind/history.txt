@@ -15,7 +15,9 @@ Changes made in Freemind 0.8.1:
 * Clean up: Removed clipboard image export that has never worked.
 * Bug fix: Removing reminders call nodeChanged.
 * Documentation is opened in german, if german is the current language.
-
+* Bug fix: screen title when all maps are closed.
+* Integrated: [ 1274572 ] open / save : remember last directory
+* Implemented undo for notes.
 
 Changes made in Freemind 0.8.0:
 ===============================

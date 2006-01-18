@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.17 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.18 2006-01-18 22:28:48 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -456,7 +456,6 @@ public class Controller  implements MapModuleChangeOberser {
                 moveToRoot();
             }
             lastOpened.mapOpened(newMapModule);
-            setTitle();
             ((MainToolBar) getToolbar()).setZoomComboBox(newMapModule.getView()
                     .getZoom());
             obtainFocusForSelected();
@@ -468,6 +467,7 @@ public class Controller  implements MapModuleChangeOberser {
             getFrame().setView(null);
             setAllActions(false);
         }
+        setTitle();
         JToolBar newToolBar = newModeController.getModeToolBar();
         if (newToolBar != null) {
             toolbar.add(newToolBar);

@@ -16,96 +16,224 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeNote.java,v 1.1.4.5 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: NodeNote.java,v 1.1.4.6 2006-01-18 22:28:48 christianfoltin Exp $*/
 package accessories.plugins;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.xml.bind.JAXBException;
 
+import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
+import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.extensions.HookFactory;
+import freemind.extensions.HookRegistration;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 import freemind.modes.common.plugins.NodeNoteBase;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
+import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class NodeNote extends NodeNoteBase {
 
+    public static class Registration implements HookRegistration, ActorXml {
 
-	private NodeTextListener listener;
+        private final MindMapController controller;
 
-	/* (non-Javadoc)
-	 * @see freemind.extensions.PermanentNodeHook#save(freemind.main.XMLElement)
-	 */
-	public void save(XMLElement xml) {
-		super.save(xml);
-		XMLElement child = new XMLElement();
-		child.setName("text");
-		child.setContent(getMyNodeText());
-		xml.addChild(child);
-	}
+        private final MindMap mMap;
 
-	public class NodeTextListener implements DocumentListener {
-		private NodeNote pNote;
+        private final java.util.logging.Logger logger;
 
-		public NodeTextListener() {
-			pNote=null;
-		}
-		/**
-		 * @see javax.swing.event.DocumentListener#insertUpdate(DocumentEvent)
-		 */
-		public void insertUpdate(DocumentEvent e) {
-			changedUpdate(e);
-		}
+        public Registration(ModeController controller, MindMap map) {
+            this.controller = (MindMapController) controller;
+            mMap = map;
+            logger = controller.getFrame().getLogger(this.getClass().getName());
+        }
 
-		/**
-		 * @see javax.swing.event.DocumentListener#removeUpdate(DocumentEvent)
-		 */
-		public void removeUpdate(DocumentEvent e) {
-			changedUpdate(e);
-		}
+        public void register() {
+            logger.info("Registration of note undo handler.");
+            controller.getActionFactory().registerActor(this,
+                    getDoActionClass());
+        }
 
-		/**
-		 * @see javax.swing.event.DocumentListener#changedUpdate(DocumentEvent)
-		 */
-		public void changedUpdate(DocumentEvent e) {
-			try {
-				if(pNote!=null) {
-					String text = e.getDocument().getText(0, e.getDocument().getLength());
-					pNote.setMyNodeText(text);
-					pNote.nodeChanged(pNote.getNode());
-				}
-			} catch (BadLocationException ex) {
-				System.err.println("Could not fetch nodeText content"+ex.toString());
-			}
-		}
+        public void deRegister() {
+            logger.info("Deregistration of note undo handler.");
+            controller.getActionFactory().deregisterActor(getDoActionClass());
+        }
 
-		/**
-		 * @param note
-		 */
-		public void setNote(NodeNote note) {
-			pNote = note;
-		}
+        public void act(XmlAction action) {
+            if (action instanceof EditNoteToNodeAction) {
+                EditNoteToNodeAction noteTextAction = (EditNoteToNodeAction) action;
+                MindMapNode node = controller.getNodeFromID(noteTextAction
+                        .getNode());
+                String newText = noteTextAction.getText();
+                // check if plugin present for that node:
+                HookFactory factory = controller.getHookFactory();
+                NodeNote hook = (NodeNote) factory.getHookInNode(node,
+                        NodeNoteBase.HOOK_NAME);
+                if (hook == null) {
+                    // create hook
+                    throw new IllegalArgumentException("Not implemented yet");
+                }
+                // hook is present, get text:
+                String oldText = hook.getMyNodeText();
+                if (!Tools.safeEquals(newText, oldText)) {
+                    hook.setMyNodeText(newText);
+                    // FIXME: This is ugly code as we are fishing in the waters
+                    // of NodeNote.
+                    if (hook.text != null) {
+                        // check if document is different:
+                        try {
+                            if (!newText.equals(getDocumentText(hook.text
+                                    .getDocument()))) {
+                                hook.text.setText(newText);
+                            }
+                        } catch (BadLocationException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    controller.nodeChanged(node);
+                }
+            }
+        }
 
-	}
+        public Class getDoActionClass() {
+            return EditNoteToNodeAction.class;
+        }
 
-	protected void nodeRefresh(MindMapNode node) {
-		((MindMapController) getController()).nodeRefresh(node);		
-	}
+    }
 
-	protected void receiveFocusAddons() {
-		listener = new NodeTextListener();
-		listener.setNote(this);				
-		text.getDocument().addDocumentListener(listener);
-	}
+    private NodeTextListener listener;
 
-	protected void looseFocusAddons() {
-		listener.setNote(null);
-		
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see freemind.extensions.PermanentNodeHook#save(freemind.main.XMLElement)
+     */
+    public void save(XMLElement xml) {
+        super.save(xml);
+        XMLElement child = new XMLElement();
+        child.setName("text");
+        child.setContent(getMyNodeText());
+        xml.addChild(child);
+    }
 
+    public class NodeTextListener implements DocumentListener {
+        private NodeNote pNote;
+
+        public NodeTextListener() {
+            pNote = null;
+        }
+
+        /**
+         * @see javax.swing.event.DocumentListener#insertUpdate(DocumentEvent)
+         */
+        public void insertUpdate(DocumentEvent e) {
+            changedUpdate(e);
+        }
+
+        /**
+         * @see javax.swing.event.DocumentListener#removeUpdate(DocumentEvent)
+         */
+        public void removeUpdate(DocumentEvent e) {
+            changedUpdate(e);
+        }
+
+        /**
+         * @see javax.swing.event.DocumentListener#changedUpdate(DocumentEvent)
+         */
+        public void changedUpdate(DocumentEvent e) {
+            try {
+                if (pNote != null) {
+                    Document document = e.getDocument();
+                    String text = getDocumentText(document);
+                    pNote.changeNodeText(text);
+                }
+            } catch (BadLocationException ex) {
+                System.err.println("Could not fetch nodeText content"
+                        + ex.toString());
+            }
+        }
+
+        /**
+         * @param note
+         */
+        public void setNote(NodeNote note) {
+            pNote = note;
+        }
+
+    }
+
+    /**
+     * @param document
+     * @return
+     * @throws BadLocationException
+     */
+    private static String getDocumentText(Document document)
+            throws BadLocationException {
+        return document.getText(0, document.getLength());
+    }
+
+    protected void nodeRefresh(MindMapNode node) {
+        getMindMapController().nodeRefresh(node);
+    }
+
+    /**
+     * Set text with undo:
+     * 
+     * @param text
+     */
+    public void changeNodeText(String text) {
+        try {
+            EditNoteToNodeAction doAction = createEditNoteToNodeAction(
+                    getNode(), text);
+            EditNoteToNodeAction undoAction = createEditNoteToNodeAction(
+                    getNode(), getMyNodeText());
+            getMindMapController().getActionFactory().startTransaction(
+                    this.getClass().getName());
+            getMindMapController().getActionFactory().executeAction(
+                    new ActionPair(doAction, undoAction));
+            getMindMapController().getActionFactory().endTransaction(
+                    this.getClass().getName());
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public EditNoteToNodeAction createEditNoteToNodeAction(MindMapNode node,
+            String text) throws JAXBException {
+        EditNoteToNodeAction nodeAction = getMindMapController()
+                .getActionXmlFactory().createEditNoteToNodeAction();
+        nodeAction.setNode(node.getObjectId(getController()));
+        nodeAction.setText(text);
+        return nodeAction;
+    }
+
+    /**
+     * @return
+     */
+    private MindMapController getMindMapController() {
+        return ((MindMapController) getController());
+    }
+
+    protected void receiveFocusAddons() {
+        listener = new NodeTextListener();
+        listener.setNote(this);
+        text.getDocument().addDocumentListener(listener);
+    }
+
+    protected void looseFocusAddons() {
+        listener.setNote(null);
+
+    }
 
 }

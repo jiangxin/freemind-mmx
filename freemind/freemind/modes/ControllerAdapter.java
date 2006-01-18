@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.32 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.33 2006-01-18 22:28:48 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -96,6 +96,7 @@ public abstract class ControllerAdapter implements ModeController {
 	 * it is the default controller that does not show a map.
 	 */
 	private MapAdapter mModel;
+    private static File lastCurrentDir =  null;
 
     /** Instanciation order: first me and then the model.
      * @param mode
@@ -362,25 +363,35 @@ public abstract class ControllerAdapter implements ModeController {
     //
 
     public void open() {
-        JFileChooser chooser = null;
-        if ((getMap() != null) && (getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
-            chooser = new JFileChooser(getMap().getFile().getParentFile());
-        } else {
-            chooser = new JFileChooser();
-        }
-        //chooser.setLocale(currentLocale);
-        if (getFileFilter() != null) {
-            chooser.addChoosableFileFilter(getFileFilter());
-        }
+        JFileChooser chooser = getFileChooser();
         int returnVal = chooser.showOpenDialog(getView());
         if (returnVal==JFileChooser.APPROVE_OPTION) {
             try {
-                load(chooser.getSelectedFile().toURL());
+                File theFile = chooser.getSelectedFile();
+                this.lastCurrentDir = theFile.getParentFile();
+                load(theFile.toURL());
             } catch (Exception ex) {
                handleLoadingException (ex); } {
             }
         }
         getController().setTitle();
+    }
+
+    /** Creates a file chooser with the last selected directory as default.
+     * @return
+     */
+    protected JFileChooser getFileChooser() {
+        JFileChooser chooser = new JFileChooser();
+        if ((getMap() != null) && (getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
+            this.lastCurrentDir = getMap().getFile().getParentFile();
+        }
+        if (lastCurrentDir!= null) {
+            chooser.setCurrentDirectory(this.lastCurrentDir);
+        }
+        if (getFileFilter() != null) {
+            chooser.addChoosableFileFilter(getFileFilter());
+        }
+        return chooser;
     }
 
     public void handleLoadingException (Exception ex) {
@@ -401,17 +412,10 @@ public abstract class ControllerAdapter implements ModeController {
      * Save as; return false is the action was cancelled
      */
     public boolean saveAs() {
-        JFileChooser chooser = null;
-        if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
-            chooser = new JFileChooser(getMap().getFile().getParentFile()); }
-        else {
-           chooser = new JFileChooser();
-           chooser.setSelectedFile(new File(getFileNameProposal()+".mm"));
+        JFileChooser chooser = getFileChooser();
+        if (lastCurrentDir == null) {
+            chooser.setSelectedFile(new File(getFileNameProposal() + ".mm"));
         }
-        //chooser.setLocale(currentLocale);
-        if (getFileFilter() != null) {
-            chooser.addChoosableFileFilter(getFileFilter()); }
-        
         chooser.setDialogTitle(getText("save_as"));
         int returnVal = chooser.showSaveDialog(getView());
         if (returnVal != JFileChooser.APPROVE_OPTION) {// not ok pressed

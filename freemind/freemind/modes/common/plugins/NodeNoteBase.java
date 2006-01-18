@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeNoteBase.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: NodeNoteBase.java,v 1.1.2.2 2006-01-18 22:28:48 christianfoltin Exp $*/
 package freemind.modes.common.plugins;
 
 import java.awt.BorderLayout;
@@ -40,7 +40,8 @@ import freemind.modes.MindMapNode;
  */
 public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 
-	protected JTextArea text;
+	public static final String HOOK_NAME = "accessories/plugins/NodeNote.properties";
+    protected JTextArea text;
 	private String myNodeText;
 	private JScrollPane scroller;
 	private static ImageIcon noteIcon;

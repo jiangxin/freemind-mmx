@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: ActionFactory.java,v 1.1.2.1 2006-01-12 23:10:14 christianfoltin Exp $*/
+/*$Id: ActionFactory.java,v 1.1.2.2 2006-01-18 22:28:48 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -136,6 +136,13 @@ public class ActionFactory {
 	 */
 	public void registerActor(ActorXml actor, Class action) {
 		registeredActors.put(action, actor);		
+	}
+	/**
+	 * @param actor
+	 * @param action
+	 */
+	public void deregisterActor(Class action) {
+	    registeredActors.remove(action);		
 	}
 
 	public ActorXml getActor(XmlAction action) {
