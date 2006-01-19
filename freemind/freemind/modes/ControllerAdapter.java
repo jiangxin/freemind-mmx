@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.33 2006-01-18 22:28:48 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.34 2006-01-19 06:39:57 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -382,8 +382,9 @@ public abstract class ControllerAdapter implements ModeController {
      */
     protected JFileChooser getFileChooser() {
         JFileChooser chooser = new JFileChooser();
-        if ((getMap() != null) && (getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
-            this.lastCurrentDir = getMap().getFile().getParentFile();
+        File parentFile = getMapsParentFile();
+        if (parentFile != null) {
+            this.lastCurrentDir = parentFile;
         }
         if (lastCurrentDir!= null) {
             chooser.setCurrentDirectory(this.lastCurrentDir);
@@ -394,6 +395,13 @@ public abstract class ControllerAdapter implements ModeController {
         return chooser;
     }
 
+    private File getMapsParentFile(){
+        if ((getMap() != null) && (getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
+            return getMap().getFile().getParentFile();
+        }
+        return null;
+    }
+    
     public void handleLoadingException (Exception ex) {
        String exceptionType = ex.getClass().getName();
        if (exceptionType.equals("freemind.main.XMLParseException")) {
@@ -413,7 +421,7 @@ public abstract class ControllerAdapter implements ModeController {
      */
     public boolean saveAs() {
         JFileChooser chooser = getFileChooser();
-        if (lastCurrentDir == null) {
+        if (getMapsParentFile() == null) {
             chooser.setSelectedFile(new File(getFileNameProposal() + ".mm"));
         }
         chooser.setDialogTitle(getText("save_as"));
