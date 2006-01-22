@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.8 2005-12-28 22:03:55 dpolivaev Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.9 2006-01-22 12:24:38 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -237,7 +237,7 @@ public class MindMapController extends ControllerAdapter {
     }
     
 	public MapAdapter newModel() {
-       return new MindMapMapModel(getFrame()); }
+       return new MindMapMapModel(getFrame(), this); }
 
     private void createIconActions() {
         Vector iconNames = MindIcon.getAllIconNames();
@@ -662,7 +662,7 @@ public class MindMapController extends ControllerAdapter {
                 deleteNode(node);
                 // save node:
                 node.setParent(null);
-                MindMapMapModel map = new MindMapMapModel(getFrame());
+                MindMapMapModel map = new MindMapMapModel(getFrame(), MindMapController.this);
                 node.setMap(map);
                 map.setRoot(node);
                 map.save(chosenFile);

@@ -23,10 +23,12 @@ public class MapRegistry {
     private SortedMapListModel mapIcons;
     private AttributeRegistry attributes;
     private MindMap map;
+    private ModeController modeController;
 
-    public MapRegistry(MindMap map) {
+    public MapRegistry(MindMap map, ModeController modeController) {
         super();
         this.map = map;
+        this.modeController = modeController;
         mapIcons = new SortedMapListModel();
         attributes = new AttributeRegistry(this);
      }
@@ -87,6 +89,10 @@ public class MapRegistry {
     }
     public MindMap getMap() {
         return map;
+    }
+    
+    public ModeController getModeController() {
+        return modeController;
     }
 
     /**

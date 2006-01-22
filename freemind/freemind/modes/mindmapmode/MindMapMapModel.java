@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.10.2.1.2.6 2005-12-06 19:47:30 dpolivaev Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.10.2.1.2.7 2006-01-22 12:24:39 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -65,6 +65,7 @@ import freemind.modes.LinkRegistryAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 
 
 public class MindMapMapModel extends MapAdapter  {
@@ -81,8 +82,8 @@ public class MindMapMapModel extends MapAdapter  {
     // Constructors
     //
 
-    public MindMapMapModel( FreeMindMain frame ) {
-        super(frame);
+    public MindMapMapModel( FreeMindMain frame , ModeController modeController) {
+        super(frame, modeController);
         MindMapNodeModel root = new MindMapNodeModel( frame.getResourceString("new_mindmap"), frame, this);
         lockManager = frame.getProperty("experimental_file_locking_on").equals("true") ? 
            new LockManager() : new DummyLockManager();

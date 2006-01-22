@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13.18.4.2.1.2.1 2005-06-12 12:59:55 dpolivaev Exp $*/
+/*$Id: BrowseController.java,v 1.13.18.4.2.1.2.2 2006-01-22 12:24:38 dpolivaev Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -70,7 +70,7 @@ public class BrowseController extends ControllerAdapter {
     }
 
     public MapAdapter newModel() {
-	return new BrowseMapModel(getFrame());
+	return new BrowseMapModel(getFrame(), this);
     }
 
     public void doubleClick() {

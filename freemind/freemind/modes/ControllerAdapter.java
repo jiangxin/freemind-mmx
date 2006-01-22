@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.12 2005-12-28 22:03:55 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.13 2006-01-22 12:24:38 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -137,7 +137,9 @@ import freemind.modes.actions.UnderlinedAction;
 import freemind.modes.actions.UndoAction;
 import freemind.modes.actions.FindAction.FindNextAction;
 import freemind.modes.actions.NodeBackgroundColorAction.RemoveNodeBackgroundColorAction;
+import freemind.modes.attributes.AttributeController;
 import freemind.modes.attributes.AttributeTableLayoutModel;
+import freemind.modes.attributes.MindMapModeAttributeController;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.view.MapModule;
@@ -242,6 +244,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     public ControllerAdapter(Mode mode) {
         this.setMode(mode);
+        attributeController = new MindMapModeAttributeController();
         if(logger==null) {
         	logger = getFrame().getLogger(this.getClass().getName());
         }
@@ -975,6 +978,7 @@ public abstract class ControllerAdapter implements ModeController {
     // status, currently: default, blocked  (PN)
     // (blocked to protect against particular events e.g. in edit mode)
     private boolean isBlocked = false;
+    private AttributeController attributeController;
 
     public boolean isBlocked() {
       return this.isBlocked;
@@ -1963,7 +1967,9 @@ public abstract class ControllerAdapter implements ModeController {
     public void mapChanged(MindMap newMap) {        
     }
 
-
+    public AttributeController getAttributeController(){
+        return attributeController;
+    }
     
     
 }

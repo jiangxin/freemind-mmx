@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.14.6.6.2 2005-12-11 13:34:07 dpolivaev Exp $*/
+/*$Id: ModeController.java,v 1.14.14.6.6.3 2006-01-22 12:24:38 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -42,6 +42,7 @@ import freemind.extensions.NodeHook;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
 import freemind.modes.actions.MindMapActions;
+import freemind.modes.attributes.AttributeController;
 import freemind.view.mindmapview.MapView;
 
 public interface ModeController extends MindMapActions {
@@ -151,4 +152,6 @@ public interface ModeController extends MindMapActions {
 	/** undo in progress? */
 	boolean isUndoAction();
     void mapChanged(MindMap newMap);
+    
+    AttributeController getAttributeController();
 }

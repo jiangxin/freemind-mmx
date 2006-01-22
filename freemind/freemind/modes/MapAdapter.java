@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.14.7.2.1.2.4 2005-09-17 19:02:07 dpolivaev Exp $*/
+/*$Id: MapAdapter.java,v 1.24.14.7.2.1.2.5 2006-01-22 12:24:38 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -63,12 +63,12 @@ public abstract class MapAdapter implements MindMap {
     private Filter filter = null;
 
 
-    public MapAdapter (FreeMindMain frame) {
+    public MapAdapter (FreeMindMain frame, ModeController modeController) {
 		this.frame = frame;
 		if(logger == null) {
 		    logger = frame.getLogger(this.getClass().getName());
 		}
-		registry = new MapRegistry(this);
+		registry = new MapRegistry(this, modeController);
     }
 
     //
