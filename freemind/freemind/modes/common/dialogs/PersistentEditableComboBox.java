@@ -19,7 +19,7 @@
  *
  * Created on 31.01.2006
  */
-/*$Id: PersistentEditableComboBox.java,v 1.1.2.1 2006-01-31 05:24:25 christianfoltin Exp $*/
+/*$Id: PersistentEditableComboBox.java,v 1.1.2.2 2006-01-31 20:42:07 christianfoltin Exp $*/
 package freemind.modes.common.dialogs;
 
 import java.awt.event.ActionEvent;
@@ -27,24 +27,24 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
 
-import freemind.modes.browsemode.BrowseController;
+import freemind.modes.ModeController;
 
 public class PersistentEditableComboBox extends JComboBox {
 	private ActionListener actionListener = null;
 
 	private boolean sendExternalEvents = true;
 
-	private final BrowseController mBrowseController;
+	private final ModeController mModeController;
 
 	private final String pStorageKey;
 
-	public PersistentEditableComboBox(BrowseController browseController, String storageKey) {
-		this.mBrowseController = browseController;
+	public PersistentEditableComboBox(ModeController modeController, String storageKey) {
+		this.mModeController = modeController;
 		this.pStorageKey = storageKey;
 		setEditable(true);
 
 		addUrl("", false);
-		String storedUrls = mBrowseController.getFrame().getProperty(
+		String storedUrls = mModeController.getFrame().getProperty(
 				pStorageKey);
 		if (storedUrls != null) {
 			String[] array = storedUrls.split("\t");
@@ -89,7 +89,7 @@ public class PersistentEditableComboBox extends JComboBox {
 				resultBuffer.append(element);
 				resultBuffer.append("\t");
 			}
-			mBrowseController.getFrame().setProperty(
+			mModeController.getFrame().setProperty(
 					pStorageKey, resultBuffer.toString());
 		}
 		return true;

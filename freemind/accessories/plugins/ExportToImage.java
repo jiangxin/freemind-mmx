@@ -4,13 +4,7 @@
  */
 package accessories.plugins;
 
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,8 +12,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import freemind.extensions.ExportHook;
-import freemind.modes.NodeAdapter;
-import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
