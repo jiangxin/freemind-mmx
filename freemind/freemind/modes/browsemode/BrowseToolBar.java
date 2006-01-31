@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseToolBar.java,v 1.6.18.1 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: BrowseToolBar.java,v 1.6.18.2 2006-01-31 05:24:25 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -24,102 +24,31 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JToolBar;
+
+import freemind.modes.common.dialogs.PersistentEditableComboBox;
 
 public class BrowseToolBar extends JToolBar {
 
 	public static final String BROWSE_URL_STORAGE_KEY = "browse_url_storage";
 
-	private static class UrlField extends JComboBox {
-		private ActionListener actionListener = null;
-
-		private boolean sendExternalEvents = true;
-
-		private final BrowseController mBrowseController;
-
-		public UrlField(BrowseController browseController) {
-			this.mBrowseController = browseController;
-			setEditable(true);
-
-			addUrl("", false);
-			String storedUrls = mBrowseController.getFrame().getProperty(
-					BROWSE_URL_STORAGE_KEY);
-			if (storedUrls != null) {
-				String[] array = storedUrls.split("\t");
-				for (int i = 0; i < array.length; i++) {
-					String string = array[i];
-					addUrl(string, false);
-				}
-			}
-			setSelectedIndex(0);
-			super.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					addUrl(getText(), false);
-					// notification only if a new string is entered.
-					if (sendExternalEvents && actionListener != null) {
-						actionListener.actionPerformed(arg0);
-					}
-				}
-			});
-		}
-
-		public void addActionListener(ActionListener arg0) {
-			this.actionListener = arg0;
-		}
-
-		private boolean addUrl(String selectedItem, boolean calledFromSetText) {
-			// search:
-			for (int i = 0; i < getModel().getSize(); i++) {
-				String element = (String) getModel().getElementAt(i);
-				if (element.equals(selectedItem)) {
-					if (calledFromSetText) {
-						setSelectedIndex(i);
-					}
-					return false;
-				}
-			}
-			addItem(selectedItem);
-			setSelectedIndex(getModel().getSize() - 1);
-			if (calledFromSetText) {
-				StringBuffer resultBuffer = new StringBuffer();
-				for (int i = 0; i < getModel().getSize(); i++) {
-					String element = (String) getModel().getElementAt(i);
-					resultBuffer.append(element);
-					resultBuffer.append("\t");
-				}
-				mBrowseController.getFrame().setProperty(
-						BROWSE_URL_STORAGE_KEY, resultBuffer.toString());
-			}
-			return true;
-		};
-
-		public String getText() {
-			return getSelectedItem().toString();
-		}
-
-		public void setText(String text) {
-			sendExternalEvents = false;
-			addUrl(text, true);
-			sendExternalEvents = true;
-		}
-	}
-    private BrowseController c;
-    private UrlField urlfield = null;
+	private BrowseController c;
+    private PersistentEditableComboBox urlfield = null;
 
     public BrowseToolBar(BrowseController controller) {
 	
 	this.c=controller;
-	urlfield = new UrlField(controller);
+	urlfield = new PersistentEditableComboBox(controller, BROWSE_URL_STORAGE_KEY);
         this.setRollover(true);
 
 	urlfield.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			if("".equals(urlfield.getText()))
+			String urlText = urlfield.getText();
+			if("".equals(urlText))
 				return;
 		    try {
-                c.load(new URL(urlfield.getText()));
+                c.load(new URL(urlText));
             } catch (Exception e1) {
                 e1.printStackTrace();
                 //FIXME: Give a good error message.
