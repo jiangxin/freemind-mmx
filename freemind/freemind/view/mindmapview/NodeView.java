@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.18 2006-01-12 23:10:14 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.19 2006-02-01 06:40:39 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -807,17 +807,21 @@ public abstract class NodeView extends JLabel {
             iconImages.addImage(myIcon.getIcon(frame));  
         }
         String link = ((NodeAdapter)getModel()).getLink();
-        if ( link != null ) 
-            {
-                iconPresent = true;
-                ImageIcon icon = new ImageIcon(frame.getResource
-                                          (link.startsWith("mailto:") ? "images/Mail.png" :
-                                           (Tools.executableByExtension(link) ? "images/Executable.png" :
-                                            "images/Link.png")));
-                iconImages.addImage(icon); 
-            }
-//         /* Folded icon by Matthias Schade (mascha2), fc, 20.12.2003*/
-//         if (((NodeAdapter)getModel()).isFolded()) {
+        if (link != null) {
+			iconPresent = true;
+			String iconPath = "images/Link.png";
+			if (link.startsWith("#")) {
+				iconPath = "images/LinkLocal.png";
+			} else if (link.startsWith("mailto:")) {
+				iconPath = "images/Mail.png";
+			} else if (Tools.executableByExtension(link)) {
+				iconPath = "images/Executable.png";
+			}
+			ImageIcon icon = new ImageIcon(frame.getResource(iconPath));
+			iconImages.addImage(icon);
+		}
+// /* Folded icon by Matthias Schade (mascha2), fc, 20.12.2003*/
+// if (((NodeAdapter)getModel()).isFolded()) {
 //             iconPresent = true;
 //             ImageIcon icon = new ImageIcon(((NodeAdapter)getModel()).getFrame().getResource("images/Folded.png"));
 //             iconImages.addImage(icon); 

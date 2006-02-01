@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13.18.5 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.13.18.6 2006-02-01 06:40:39 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -165,9 +166,25 @@ public class BrowseController extends ViewControllerAdapter {
 	}
 
 	public void loadURL(String relative) {
+		// copy from mind map controller:
+        if (relative.startsWith("#")) {
+			// inner map link, fc, 12.10.2004
+			String target = relative.substring(1);
+			try {
+				MindMapNode node = getNodeFromID(target);
+				centerNode(node);
+				return;
+			} catch (IllegalArgumentException e) {
+				// bad luck.
+				getFrame().out(Tools.expandPlaceholders(getText("link_not_found"), target));
+				return;
+			}
+		}  
+
 		URL absolute = null;
 		try {
 			BrowseMapModel map = (BrowseMapModel) getMap();
+			// TODO: fc, 1.2.06: How should this be zero??
 			if (map != null) {
 				absolute = new URL(map.getURL(), relative);
 			} else {

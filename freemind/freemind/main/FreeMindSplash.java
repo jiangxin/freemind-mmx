@@ -39,7 +39,7 @@ import javax.swing.SwingUtilities;
  * Class to put a splash before lunch the soft
  */
 
-class FreeMindSplash extends JFrame {
+public class FreeMindSplash extends JFrame {
 
 	private class FeedBackImpl implements FeedBack {
 

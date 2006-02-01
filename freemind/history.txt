@@ -18,6 +18,7 @@ Changes made in Freemind 0.8.1:
 * Bug fix: screen title when all maps are closed.
 * Integrated: [ 1274572 ] open / save : remember last directory
 * Implemented undo for notes.
+* Local links get local arrows and are supported in the browser.
 
 Changes made in Freemind 0.8.0:
 ===============================

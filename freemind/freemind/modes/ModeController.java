@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.14.7 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.14.8 2006-02-01 06:40:39 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -72,7 +72,8 @@ public interface ModeController  {
 
     boolean isBlocked();
     // node identifier (fc, 2.5.2004):
-    /** Given a node identifier, this method returns the corresponding node. */
+    /** Given a node identifier, this method returns the corresponding node.
+     * @throws IllegalArgumentException if the id is unknown. */
     NodeAdapter getNodeFromID(String nodeID);
     /** Calling this method the map-unique identifier of the node is returned 
      * (and created before, if not present)*/
