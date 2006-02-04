@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/*$Id: ViewControllerAdapter.java,v 1.1.2.1 2006-01-12 23:10:14 christianfoltin Exp $*/
+/*$Id: ViewControllerAdapter.java,v 1.1.2.2 2006-02-04 20:19:08 christianfoltin Exp $*/
 package freemind.modes.viewmodes;
 
 import java.awt.event.KeyEvent;
@@ -140,4 +140,12 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 		getController().getNodeKeyListener().deregister();
 	}
 
+    protected void setAllActions(boolean enabled) {
+        super.setAllActions(enabled);
+        find.setEnabled(enabled);
+        findNext.setEnabled(enabled);
+        toggleFolded.setEnabled(enabled);
+        toggleChildrenFolded.setEnabled(enabled);
+    }
+    
 }

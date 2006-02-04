@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.18 2006-01-18 22:28:48 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.19 2006-02-04 20:19:08 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -481,7 +481,11 @@ public class Controller  implements MapModuleChangeOberser {
         }
         toolbar.validate();
         toolbar.repaint();
-        getFrame().getFreeMindMenuBar().updateMenus();
+        MenuBar menuBar = getFrame().getFreeMindMenuBar();
+        menuBar.updateMenus(newModeController);
+        menuBar.validate();
+        menuBar.repaint();
+        
     }
 	 
 	public void numberOfOpenMapInformation(int number) {

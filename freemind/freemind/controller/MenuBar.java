@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.14 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.15 2006-02-04 20:19:08 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -27,6 +27,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
+
+import freemind.modes.ModeController;
 
 /**This is the menu bar for FreeMind. Actions are defined in MenuListener.
  * Moreover, the StructuredMenuHolder of all menus are hold here.
@@ -72,8 +74,9 @@ public class MenuBar extends JMenuBar {
 
 	/**
 	 * This is the only public method. It restores all menus.
+	 * @param newModeController 
 	 */
-	public void updateMenus() {
+	public void updateMenus(ModeController newModeController) {
 		this.removeAll();
 
 		menuHolder = new StructuredMenuHolder();
@@ -160,9 +163,7 @@ public class MenuBar extends JMenuBar {
 		updateMapsMenu(menuHolder, POPUP_MENU);
 		addAdditionalPopupActions();
 		// the modes:
-		if ((c.getMode() != null)) {
-			c.getModeController().updateMenus(menuHolder);
-		}
+        newModeController.updateMenus(menuHolder);
 		menuHolder.updateMenus(this, MENU_BAR_PREFIX);
 		menuHolder.updateMenus(mapsPopupMenu, GENERAL_POPUP_PREFIX);
 		
