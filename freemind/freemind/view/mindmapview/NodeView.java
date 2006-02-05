@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.19 2006-02-01 06:40:39 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.20 2006-02-05 19:16:58 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -977,10 +977,9 @@ public abstract class NodeView extends JLabel {
     }
 
     public int getZoomedFoldingSymbolHalfWidth() {
-    	int preferredFoldingSymbolHalfWidth = map.getZoomedFoldingSymbolHalfWidth();
-        return Math.min(preferredFoldingSymbolHalfWidth, super.getPreferredSize().height / 2);
-    }
-
+        int preferredFoldingSymbolHalfWidth = map.getZoomedFoldingSymbolHalfWidth();
+        return Math.min(preferredFoldingSymbolHalfWidth, getPreferredSize().height / 2);
+    } 
     /**
      * @return returns the color that should used to select the node.
      */

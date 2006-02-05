@@ -21,6 +21,7 @@ Changes made in Freemind 0.8.1:
 * '"' are not used to generate File Name Proposals in Save dialogs.
 * Bug fix: Menu bars are displayed correctly when all (browse) maps are closed.
 * Local links get local arrows and are supported in the browser.
+* Bug fix: folded empty nodes have the bubble symbol. Thanks to Dimitri.
 
 Changes made in Freemind 0.8.0:
 ===============================
