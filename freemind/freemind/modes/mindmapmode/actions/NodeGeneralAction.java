@@ -12,10 +12,8 @@ import java.util.logging.Logger;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
-import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
@@ -105,39 +103,31 @@ public class NodeGeneralAction extends AbstractXmlAction {
             }
         } else {
             // xml action:
-            try {
-                // Do-action
-                CompoundAction doAction = modeController.getActionXmlFactory()
-                        .createCompoundAction();
-                // Undo-action
-                CompoundAction undo = modeController.getActionXmlFactory()
-                        .createCompoundAction();
-                // sort selectedNodes list by depth, in order to guarantee that
-                // sons are deleted first:
-                for (ListIterator it = modeController.getSelecteds()
-                        .listIterator(); it.hasNext();) {
-                    MindMapNodeModel selected = (MindMapNodeModel) it.next();
-                    ActionPair pair = actor.apply(this.modeController.getMap(),
-                            selected);
-                    if (pair != null) {
-                        doAction
-                                .getCompoundActionOrSelectNodeActionOrCutNodeAction()
-                                .add(pair.getDoAction());
-                        undo
-                                .getCompoundActionOrSelectNodeActionOrCutNodeAction()
-                                .add(0, pair.getUndoAction());
-                    }
+            // Do-action
+            CompoundAction doAction = new CompoundAction();
+            // Undo-action
+            CompoundAction undo = new CompoundAction();
+            // sort selectedNodes list by depth, in order to guarantee that
+            // sons are deleted first:
+            for (ListIterator it = modeController.getSelecteds()
+                    .listIterator(); it.hasNext();) {
+                MindMapNodeModel selected = (MindMapNodeModel) it.next();
+                ActionPair pair = actor.apply(this.modeController.getMap(),
+                        selected);
+                if (pair != null) {
+                    doAction
+                            
+                            .addChoice(pair.getDoAction());
+                    undo
+                            .addAtChoice(0, pair.getUndoAction());
                 }
-                modeController.getActionFactory().startTransaction(
-                        (String) getValue(NAME));
-                modeController.getActionFactory().executeAction(
-                        new ActionPair(doAction, undo));
-                modeController.getActionFactory().endTransaction(
-                        (String) getValue(NAME));
-            } catch (JAXBException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
             }
+            modeController.getActionFactory().startTransaction(
+                    (String) getValue(NAME));
+            modeController.getActionFactory().executeAction(
+                    new ActionPair(doAction, undo));
+            modeController.getActionFactory().endTransaction(
+                    (String) getValue(NAME));
         }
 
     }
@@ -171,12 +161,5 @@ public class NodeGeneralAction extends AbstractXmlAction {
         return modeController.getNodeID(selected);
     }
 
-    /**
-     *  
-     */
-    protected ObjectFactory getActionXmlFactory() {
-        // TODO Auto-generated method stub
-        return modeController.getActionXmlFactory();
-    }
 
 }

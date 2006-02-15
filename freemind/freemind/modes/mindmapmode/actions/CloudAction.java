@@ -19,13 +19,11 @@
  *
  * Created on 06.10.2004
  */
-/*$Id: CloudAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: CloudAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.AddCloudXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -52,27 +50,23 @@ public class CloudAction extends NodeGeneralAction implements NodeActorXml {
 	}
 
 	public ActionPair apply(MapAdapter model, MindMapNode selected)
-			throws JAXBException {
+			 {
 		ActionPair pair = getActionPair(selected, selected.getCloud() == null);
 		return pair;
 	}
 
 	public void setCloud(MindMapNode node, boolean enable) {
-		try {
-			modeController.getActionFactory().startTransaction(
-					(String) getValue(NAME));
-			modeController.getActionFactory().executeAction(
-					getActionPair(node, enable));
-			modeController.getActionFactory().endTransaction(
-					(String) getValue(NAME));
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
+		modeController.getActionFactory().startTransaction(
+        		(String) getValue(NAME));
+        modeController.getActionFactory().executeAction(
+        		getActionPair(node, enable));
+        modeController.getActionFactory().endTransaction(
+        		(String) getValue(NAME));
 
 	}
 
 	private ActionPair getActionPair(MindMapNode selected, boolean enable)
-			throws JAXBException {
+			 {
 		AddCloudXmlAction cloudAction = createAddCloudXmlAction(selected,
 				enable, null);
 		AddCloudXmlAction undocloudAction = null;
@@ -88,9 +82,8 @@ public class CloudAction extends NodeGeneralAction implements NodeActorXml {
 	}
 
 	private AddCloudXmlAction createAddCloudXmlAction(MindMapNode selected,
-			boolean enable, Color color) throws JAXBException {
-		AddCloudXmlAction nodecloudAction = getActionXmlFactory()
-				.createAddCloudXmlAction();
+			boolean enable, Color color)  {
+		AddCloudXmlAction nodecloudAction = new AddCloudXmlAction();
 		nodecloudAction.setNode(getNodeID(selected));
 		nodecloudAction.setEnabled(enable);
 		nodecloudAction.setColor(Tools.colorToXml(color));
@@ -101,8 +94,8 @@ public class CloudAction extends NodeGeneralAction implements NodeActorXml {
 		if (action instanceof AddCloudXmlAction) {
 			AddCloudXmlAction nodecloudAction = (AddCloudXmlAction) action;
 			MindMapNode node = getNodeFromID(nodecloudAction.getNode());
-			if ((node.getCloud() == null) == nodecloudAction.isEnabled()) {
-				if (nodecloudAction.isEnabled()) {
+			if ((node.getCloud() == null) == nodecloudAction.getEnabled()) {
+				if (nodecloudAction.getEnabled()) {
 					node.setCloud(new MindMapCloudModel(node,
 							getMindMapController().getFrame()));
 					if (nodecloudAction.getColor() != null) {

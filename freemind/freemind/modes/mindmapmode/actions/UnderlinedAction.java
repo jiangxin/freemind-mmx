@@ -20,12 +20,11 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: UnderlinedAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $ */
+/* $Id: UnderlinedAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import javax.swing.Action;
 import javax.swing.JMenuItem;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.actions.generated.instance.UnderlinedNodeAction;
@@ -53,8 +52,8 @@ public class UnderlinedAction extends NodeGeneralAction implements NodeActorXml,
 	public void act(XmlAction action) {
 		UnderlinedNodeAction underlinedact = (UnderlinedNodeAction) action;
 		NodeAdapter node = getNodeFromID(underlinedact.getNode());
-		if(node.isUnderlined() != underlinedact.isUnderlined()) {
-			node.setUnderlined(underlinedact.isUnderlined());
+		if(node.isUnderlined() != underlinedact.getUnderlined()) {
+			node.setUnderlined(underlinedact.getUnderlined());
 			this.modeController.nodeChanged(node);
 		}
 	}
@@ -64,33 +63,29 @@ public class UnderlinedAction extends NodeGeneralAction implements NodeActorXml,
 		return UnderlinedNodeAction.class;
 	}
 
-	public ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException {
+	public ActionPair apply(MapAdapter model, MindMapNode selected) {
 		// every node is set to the inverse of the focussed node.
 		boolean underlined = modeController.getSelected().isUnderlined();
 		return getActionPair(selected, underlined);
 	}
 
 	private ActionPair getActionPair(MindMapNode selected, boolean underlined)
-		throws JAXBException {
+		 {
 		UnderlinedNodeAction underlinedAction = toggleUnderlined(selected, !underlined);
 		UnderlinedNodeAction undoUnderlinedAction = toggleUnderlined(selected, underlined);
 		return new ActionPair(underlinedAction, undoUnderlinedAction);
 	}
 
 	private UnderlinedNodeAction toggleUnderlined(MindMapNode selected, boolean underlined)
-		throws JAXBException {
-		UnderlinedNodeAction underlinedAction = getActionXmlFactory().createUnderlinedNodeAction();
+		 {
+		UnderlinedNodeAction underlinedAction = new UnderlinedNodeAction();
 		underlinedAction.setNode(getNodeID(selected));
 		underlinedAction.setUnderlined(underlined);
 		return underlinedAction;
 	}
 
 	public void setUnderlined(MindMapNode node, boolean  underlined) {
-		try {
-			execute(getActionPair(node, underlined));
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
+		execute(getActionPair(node, underlined));
 	}
 
     public boolean isEnabled(JMenuItem item, Action action) {

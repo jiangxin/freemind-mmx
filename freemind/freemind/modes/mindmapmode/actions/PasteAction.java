@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: PasteAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: PasteAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -42,7 +42,6 @@ import java.util.regex.Pattern;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.actions.generated.instance.CompoundAction;
@@ -93,8 +92,8 @@ public class PasteAction extends AbstractAction implements ActorXml {
         _paste(
             pMindMapController.cut.getTransferable(pasteAction.getTransferableContent()),
             pMindMapController.getNodeFromID(pasteAction.getNode()),
-            pasteAction.isAsSibling(),
-            pasteAction.isIsLeft());
+            pasteAction.getAsSibling(),
+            pasteAction.getIsLeft());
     }
     /* (non-Javadoc)
      * @see freemind.controller.actions.ActorXml#getDoActionClass()
@@ -104,9 +103,9 @@ public class PasteAction extends AbstractAction implements ActorXml {
     }
 
 
-	public PasteNodeAction getPasteNodeAction(Transferable t, NodeCoordinate coord) throws JAXBException {
+	public PasteNodeAction getPasteNodeAction(Transferable t, NodeCoordinate coord)  {
 		PasteNodeAction pasteAction =
-			pMindMapController.getActionXmlFactory().createPasteNodeAction();
+			new PasteNodeAction();
 		pasteAction.setNode(pMindMapController.getNodeID(coord.target));
 		pasteAction.setTransferableContent(pMindMapController.cut.getTransferableContent(t));
 		pasteAction.setAsSibling(coord.asSibling);
@@ -137,10 +136,10 @@ public class PasteAction extends AbstractAction implements ActorXml {
                     break;
                 }
             }
-            CompoundAction compound = pMindMapController.getActionXmlFactory().createCompoundAction();
+            CompoundAction compound = new CompoundAction();
     	   	for(long i = 0; i < amountOfCuts; ++i) {
     			CutNodeAction cutNodeAction = pMindMapController.cut.getCutNodeAction(t, new NodeCoordinate(target,asSibling, isLeft));
-    			compound.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(cutNodeAction);
+    			compound.addChoice(cutNodeAction);
     	   	}
 
 				
@@ -148,8 +147,6 @@ public class PasteAction extends AbstractAction implements ActorXml {
 			pMindMapController.getActionFactory().startTransaction(text);
 			pMindMapController.getActionFactory().executeAction(new ActionPair(pasteAction, compound));
 			pMindMapController.getActionFactory().endTransaction(text);
-		} catch (JAXBException e) {
-			e.printStackTrace();
 		} catch (UnsupportedFlavorException e) {
             e.printStackTrace();
         } catch (IOException e) {

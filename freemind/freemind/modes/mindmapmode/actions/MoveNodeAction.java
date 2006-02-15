@@ -20,10 +20,8 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: MoveNodeAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $ */
+/* $Id: MoveNodeAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.MoveNodeXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -65,13 +63,13 @@ public class MoveNodeAction extends NodeGeneralAction implements NodeActorXml {
     }
 
     public ActionPair apply(MapAdapter model, MindMapNode selected)
-            throws JAXBException {
+             {
         // reset position
         return getActionPair(selected, MindMapNode.AUTO, 0, 0);
     }
 
     private ActionPair getActionPair(MindMapNode selected, int vGap, int hGap,
-            int shiftY) throws JAXBException {
+            int shiftY)  {
         MoveNodeXmlAction moveAction = moveNode(selected, vGap, hGap, shiftY);
         MoveNodeXmlAction undoItalicAction = moveNode(selected, selected
                 .getVGap(), selected.getHGap(), selected.getShiftY());
@@ -79,9 +77,8 @@ public class MoveNodeAction extends NodeGeneralAction implements NodeActorXml {
     }
 
     private MoveNodeXmlAction moveNode(MindMapNode selected, int vGap,
-            int hGap, int shiftY) throws JAXBException {
-        MoveNodeXmlAction moveNodeAction = getActionXmlFactory()
-                .createMoveNodeXmlAction();
+            int hGap, int shiftY)  {
+        MoveNodeXmlAction moveNodeAction = new MoveNodeXmlAction();
         moveNodeAction.setNode(getNodeID(selected));
         moveNodeAction.setHGap(hGap);
         moveNodeAction.setVGap(vGap);
@@ -90,16 +87,12 @@ public class MoveNodeAction extends NodeGeneralAction implements NodeActorXml {
     }
 
     public void moveNodeTo(MindMapNode node, int vGap, int hGap, int shiftY) {
-        try {
-            modeController.getActionFactory().startTransaction(
-                    (String) getValue(NAME));
-            modeController.getActionFactory().executeAction(
-                    getActionPair(node, vGap, hGap, shiftY));
-            modeController.getActionFactory().endTransaction(
-                    (String) getValue(NAME));
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+        modeController.getActionFactory().startTransaction(
+                (String) getValue(NAME));
+        modeController.getActionFactory().executeAction(
+                getActionPair(node, vGap, hGap, shiftY));
+        modeController.getActionFactory().endTransaction(
+                (String) getValue(NAME));
     }
 
 }

@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: NewChildAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: NewChildAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -30,7 +30,6 @@ import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.DeleteNodeAction;
 import freemind.controller.actions.generated.instance.NewNodeAction;
@@ -138,22 +137,17 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 	}
 
 	public MindMapNode addNewNode(MindMapNode parent, int index, freemind.main.Tools.BooleanHolder newNodeIsLeft){
-		try {
-		    // bug fix from Dimitri.
-		    c.getModel().getLinkRegistry().registerLinkTarget(parent);
-		    String newId = c.getModel().getLinkRegistry().generateUniqueID("_");
-			c.getActionFactory().startTransaction(c.getText("new_child"));
-            NewNodeAction newNodeAction =
-                getAddNodeAction(parent, index, newId, newNodeIsLeft);
-			// Undo-action
-			DeleteNodeAction deleteAction = c.deleteChild.getDeleteNodeAction(newId);
-			c.getActionFactory().executeAction(new ActionPair(newNodeAction, deleteAction));
-			c.getActionFactory().endTransaction(c.getText("new_child"));
-			return (MindMapNode) parent.getChildAt(index);
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-		return null;
+		// bug fix from Dimitri.
+        c.getModel().getLinkRegistry().registerLinkTarget(parent);
+        String newId = c.getModel().getLinkRegistry().generateUniqueID("_");
+        c.getActionFactory().startTransaction(c.getText("new_child"));
+        NewNodeAction newNodeAction =
+            getAddNodeAction(parent, index, newId, newNodeIsLeft);
+        // Undo-action
+        DeleteNodeAction deleteAction = c.deleteChild.getDeleteNodeAction(newId);
+        c.getActionFactory().executeAction(new ActionPair(newNodeAction, deleteAction));
+        c.getActionFactory().endTransaction(c.getText("new_child"));
+        return (MindMapNode) parent.getChildAt(index);
 	}
 
 
@@ -162,13 +156,13 @@ public class NewChildAction extends AbstractAction implements ActorXml {
         int index,
         String newId,
         freemind.main.Tools.BooleanHolder newNodeIsLeft)
-        throws JAXBException {
+         {
         String pos = null;
         
       	if (newNodeIsLeft!= null) {
             pos = newNodeIsLeft.getValue() ? "left" : "right";
         }
-        NewNodeAction newNodeAction = c.getActionXmlFactory().createNewNodeAction();
+        NewNodeAction newNodeAction = new NewNodeAction();
         newNodeAction.setNode(c.getNodeID(parent));
         newNodeAction.setPosition(pos);
         newNodeAction.setIndex(index);

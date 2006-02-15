@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.EditNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -199,21 +198,17 @@ public class EditAction extends AbstractAction implements ActorXml {
 	public void setNodeText(MindMapNode selected, String newText){
 		String oldText = selected.toString();
 
-		try {
-			c.getActionFactory().startTransaction(c.getText("edit_node"));
-			EditNodeAction EditAction = c.getActionXmlFactory().createEditNodeAction();
-			EditAction.setNode(c.getNodeID(selected));
-			EditAction.setText(newText);
-            
-			EditNodeAction undoEditAction = c.getActionXmlFactory().createEditNodeAction();
-			undoEditAction.setNode(c.getNodeID(selected));
-			undoEditAction.setText(oldText);
-            	
-			c.getActionFactory().executeAction(new ActionPair(EditAction, undoEditAction));
-			c.getActionFactory().endTransaction(c.getText("edit_node"));
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
+		c.getActionFactory().startTransaction(c.getText("edit_node"));
+        EditNodeAction EditAction = new EditNodeAction();
+        EditAction.setNode(c.getNodeID(selected));
+        EditAction.setText(newText);
+        
+        EditNodeAction undoEditAction = new EditNodeAction();
+        undoEditAction.setNode(c.getNodeID(selected));
+        undoEditAction.setText(oldText);
+        	
+        c.getActionFactory().executeAction(new ActionPair(EditAction, undoEditAction));
+        c.getActionFactory().endTransaction(c.getText("edit_node"));
 		
 	}
 

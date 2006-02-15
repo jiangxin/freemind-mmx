@@ -30,7 +30,6 @@ package freemind.modes.mindmapmode.actions;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.AddLinkXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -86,15 +85,9 @@ public class SetLinkByTextFieldAction extends FreemindAction implements ActorXml
         return new ActionPair(createAddLinkXmlAction(node, link), createAddLinkXmlAction(node, node.getLink()));
     }
     private AddLinkXmlAction createAddLinkXmlAction(MindMapNode node, String link) {
-        try {
-            AddLinkXmlAction action = controller.getActionXmlFactory()
-                    .createAddLinkXmlAction();
-            action.setNode(node.getObjectId(controller));
-            action.setDestination(link);
-            return action;
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            return null;
-        }
+        AddLinkXmlAction action = new AddLinkXmlAction();
+        action.setNode(node.getObjectId(controller));
+        action.setDestination(link);
+        return action;
     }
 }

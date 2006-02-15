@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: CompoundActionHandler.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: CompoundActionHandler.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -48,7 +48,7 @@ public class CompoundActionHandler extends AbstractAction implements ActorXml {
      */
     public void act(XmlAction action) {
 		CompoundAction compound = (CompoundAction) action;
-		Object[] actions = compound.getCompoundActionOrSelectNodeActionOrCutNodeAction().toArray();
+		Object[] actions = compound.getListChoiceList().toArray();
 		for (int i = 0; i < actions.length; i++) {
 		    Object obj = actions[i];
 		    if (obj instanceof XmlAction) {

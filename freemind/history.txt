@@ -22,6 +22,9 @@ Changes made in Freemind 0.8.1:
 * Bug fix: Menu bars are displayed correctly when all (browse) maps are closed.
 * Local links get local arrows and are supported in the browser.
 * Bug fix: folded empty nodes have the bubble symbol. Thanks to Dimitri.
+* Introduced: [ 1390137 ] patch for bug [ 1368727 ] oowriter 2.0 freemind.0.8.0-oowriter.2.0.patch
+* Switched from JaxB to JibX, which is free. Thanks to Dennis Sosnoski for the help.
+* New icon: bad smily
 
 Changes made in Freemind 0.8.0:
 ===============================

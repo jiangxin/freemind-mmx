@@ -19,14 +19,12 @@
  *
  * Created on 07.10.2004
  */
-/*$Id: AddArrowLinkAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: AddArrowLinkAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
 import java.util.List;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.AddArrowLinkXmlAction;
 import freemind.controller.actions.generated.instance.RemoveArrowLinkXmlAction;
@@ -128,17 +126,11 @@ public class AddArrowLinkAction extends FreemindAction  implements ActorXml{
     }
     
     public AddArrowLinkXmlAction createAddArrowLinkXmlAction(MindMapNode source, MindMapNode target, String proposedID) {
-        try {
-            AddArrowLinkXmlAction action = modeController.getActionXmlFactory()
-                    .createAddArrowLinkXmlAction();
-            action.setNode(source.getObjectId(modeController));
-            action.setDestination(target.getObjectId(modeController));
-            action.setNewId(proposedID);
-            return action;
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            return null;
-        }
+        AddArrowLinkXmlAction action = new AddArrowLinkXmlAction();
+        action.setNode(source.getObjectId(modeController));
+        action.setDestination(target.getObjectId(modeController));
+        action.setNewId(proposedID);
+        return action;
     }
     /** Source holds the MindMapArrowLinkModel and points to the id placed in target.*/
     public void addLink(MindMapNode source, MindMapNode target) {

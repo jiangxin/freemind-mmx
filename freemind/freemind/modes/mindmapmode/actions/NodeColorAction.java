@@ -20,15 +20,13 @@
  * 
  * Created on 19.09.2004
  */
-/* $Id: NodeColorAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $ */
+/* $Id: NodeColorAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.ListIterator;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.NodeColorFormatAction;
@@ -64,20 +62,15 @@ public class NodeColorAction extends FreemindAction implements ActorXml {
     }
     
     public void setNodeColor(MindMapNode node, Color color) {
-		try {
-			NodeColorFormatAction doAction = createNodeColorFormatAction(node, color);
-			NodeColorFormatAction undoAction = createNodeColorFormatAction(node, node.getColor());
-			controller.getActionFactory().startTransaction(this.getClass().getName());
-			controller.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
-			controller.getActionFactory().endTransaction(this.getClass().getName());
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		NodeColorFormatAction doAction = createNodeColorFormatAction(node, color);
+        NodeColorFormatAction undoAction = createNodeColorFormatAction(node, node.getColor());
+        controller.getActionFactory().startTransaction(this.getClass().getName());
+        controller.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
+        controller.getActionFactory().endTransaction(this.getClass().getName());
     }
 
-    public NodeColorFormatAction createNodeColorFormatAction(MindMapNode node, Color color) throws JAXBException {
-		NodeColorFormatAction nodeAction = controller.getActionXmlFactory().createNodeColorFormatAction();
+    public NodeColorFormatAction createNodeColorFormatAction(MindMapNode node, Color color)  {
+		NodeColorFormatAction nodeAction = new NodeColorFormatAction();
 		nodeAction.setNode(node.getObjectId(controller));
 	    nodeAction.setColor(Tools.colorToXml(color));
 		return nodeAction;

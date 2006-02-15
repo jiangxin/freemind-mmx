@@ -20,11 +20,9 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: EdgeWidthAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $ */
+/* $Id: EdgeWidthAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.EdgeWidthFormatAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -45,7 +43,7 @@ public class EdgeWidthAction extends NodeGeneralAction implements NodeActorXml {
     }
 
     public ActionPair apply(MapAdapter model, MindMapNode selected)
-            throws JAXBException {
+             {
         return getActionPair(selected, mWidth);
     }
 
@@ -54,21 +52,17 @@ public class EdgeWidthAction extends NodeGeneralAction implements NodeActorXml {
     }
 
     public void setEdgeWidth(MindMapNode node, int width) {
-        try {
-            modeController.getActionFactory().startTransaction(
-                    (String) getValue(NAME));
-            modeController.getActionFactory().executeAction(
-                    getActionPair(node, width));
-            modeController.getActionFactory().endTransaction(
-                    (String) getValue(NAME));
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+        modeController.getActionFactory().startTransaction(
+                (String) getValue(NAME));
+        modeController.getActionFactory().executeAction(
+                getActionPair(node, width));
+        modeController.getActionFactory().endTransaction(
+                (String) getValue(NAME));
 
     }
 
     private ActionPair getActionPair(MindMapNode selected, int width)
-            throws JAXBException {
+             {
         EdgeWidthFormatAction styleAction = createEdgeWidthFormatAction(
                 selected, width);
         EdgeWidthFormatAction undoStyleAction = createEdgeWidthFormatAction(
@@ -77,9 +71,8 @@ public class EdgeWidthAction extends NodeGeneralAction implements NodeActorXml {
     }
 
     private EdgeWidthFormatAction createEdgeWidthFormatAction(
-            MindMapNode selected, int  width) throws JAXBException {
-        EdgeWidthFormatAction edgeWidthAction = getActionXmlFactory()
-                .createEdgeWidthFormatAction();
+            MindMapNode selected, int  width)  {
+        EdgeWidthFormatAction edgeWidthAction = new EdgeWidthFormatAction();
         edgeWidthAction.setNode(getNodeID(selected));
         edgeWidthAction.setWidth(width);
         return edgeWidthAction;

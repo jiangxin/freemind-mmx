@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: AbstractXmlAction.java,v 1.1.2.1 2006-01-12 23:10:14 christianfoltin Exp $*/
+/*$Id: AbstractXmlAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -27,7 +27,6 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.xml.bind.JAXBException;
 
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.FreemindAction;
@@ -53,19 +52,14 @@ public abstract class AbstractXmlAction extends FreemindAction {
 	 */
 	final public void actionPerformed(ActionEvent arg0) {
 		getActionFactory().startTransaction((String) getValue(Action.SHORT_DESCRIPTION));
-		try {
-			xmlActionPerformed(arg0);
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		xmlActionPerformed(arg0);
 		getActionFactory().endTransaction((String) getValue(Action.SHORT_DESCRIPTION));
 	}
 
 	/**
 	 * @param arg0
 	 */
-	protected abstract void xmlActionPerformed(ActionEvent arg0)  throws JAXBException;
+	protected abstract void xmlActionPerformed(ActionEvent arg0) ;
 
 	/**
 	 * 

@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: DeleteChildAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: DeleteChildAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.DeleteNodeAction;
 import freemind.controller.actions.generated.instance.PasteNodeAction;
@@ -93,28 +92,24 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
     }
     
 	public void deleteNode(MindMapNode selectedNode){
-		try {
-			String newId = pMindMapController.getNodeID(selectedNode);
-			pMindMapController.getActionFactory().startTransaction(text);
-			MindMapNode parent = selectedNode.getParentNode();
+		String newId = pMindMapController.getNodeID(selectedNode);
+        pMindMapController.getActionFactory().startTransaction(text);
+        MindMapNode parent = selectedNode.getParentNode();
 
-			Transferable copy = pMindMapController.getModel().copy(selectedNode);
-			NodeCoordinate coord = new NodeCoordinate(selectedNode, selectedNode.isLeft().getValue());
-			// Undo-action
-			PasteNodeAction pasteNodeAction=null;
-            pasteNodeAction = pMindMapController.paste.getPasteNodeAction(copy, coord);
+        Transferable copy = pMindMapController.getModel().copy(selectedNode);
+        NodeCoordinate coord = new NodeCoordinate(selectedNode, selectedNode.isLeft().getValue());
+        // Undo-action
+        PasteNodeAction pasteNodeAction=null;
+        pasteNodeAction = pMindMapController.paste.getPasteNodeAction(copy, coord);
 
-			DeleteNodeAction deleteAction = getDeleteNodeAction(newId);
-			pMindMapController.getActionFactory().executeAction(new ActionPair(deleteAction, pasteNodeAction));
-			pMindMapController.getActionFactory().endTransaction(text);
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
+        DeleteNodeAction deleteAction = getDeleteNodeAction(newId);
+        pMindMapController.getActionFactory().executeAction(new ActionPair(deleteAction, pasteNodeAction));
+        pMindMapController.getActionFactory().endTransaction(text);
 	}
 
 	public DeleteNodeAction getDeleteNodeAction(String newId)
-		throws JAXBException {
-		DeleteNodeAction deleteAction = pMindMapController.getActionXmlFactory().createDeleteNodeAction();
+		 {
+		DeleteNodeAction deleteAction = new DeleteNodeAction();
 		deleteAction.setNode(newId);
 		return deleteAction;
 	}

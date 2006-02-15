@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/*$Id: IconAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: IconAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -27,7 +27,6 @@ import java.awt.event.ActionEvent;
 import java.util.ListIterator;
 
 import javax.swing.Action;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.AddIconAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -60,16 +59,12 @@ public class IconAction extends FreemindAction  implements ActorXml{
     }
 
     public void addIcon(MindMapNode node, MindIcon icon) {
-        try {
-            modeController.getActionFactory().startTransaction(
-                    (String) getValue(NAME));
-            modeController.getActionFactory().executeAction(
-                    getActionPair(node, icon));
-            modeController.getActionFactory().endTransaction(
-                    (String) getValue(NAME));
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+        modeController.getActionFactory().startTransaction(
+                (String) getValue(NAME));
+        modeController.getActionFactory().executeAction(
+                getActionPair(node, icon));
+        modeController.getActionFactory().endTransaction(
+                (String) getValue(NAME));
     }
 
     /**
@@ -78,7 +73,7 @@ public class IconAction extends FreemindAction  implements ActorXml{
      * @return
      * @throws JAXBException
      */
-    private ActionPair getActionPair(MindMapNode node, MindIcon icon) throws JAXBException {
+    private ActionPair getActionPair(MindMapNode node, MindIcon icon)  {
         AddIconAction doAction = createAddIconAction(node, icon);
         XmlAction undoAction = removeLastIconAction.createRemoveLastIconXmlAction(node);
         return new ActionPair(doAction, undoAction);
@@ -98,8 +93,8 @@ public class IconAction extends FreemindAction  implements ActorXml{
     public Class getDoActionClass() {
         return AddIconAction.class;
     }
-    public AddIconAction createAddIconAction(MindMapNode node, MindIcon icon) throws JAXBException {
-        AddIconAction action = modeController.getActionXmlFactory().createAddIconAction();
+    public AddIconAction createAddIconAction(MindMapNode node, MindIcon icon) {
+        AddIconAction action = new AddIconAction();
         action.setNode(node.getObjectId(modeController));
         action.setIconName(icon.getName());
         return action;

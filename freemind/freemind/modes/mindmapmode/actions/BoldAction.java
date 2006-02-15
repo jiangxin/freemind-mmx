@@ -8,7 +8,6 @@ package freemind.modes.mindmapmode.actions;
 
 import javax.swing.Action;
 import javax.swing.JMenuItem;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.actions.generated.instance.BoldNodeAction;
@@ -35,8 +34,8 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuI
 		if (action instanceof BoldNodeAction) {
             BoldNodeAction boldact = (BoldNodeAction) action;
             NodeAdapter node = getNodeFromID(boldact.getNode());
-            if (node.isBold() != boldact.isBold()) {
-                node.setBold(boldact.isBold());
+            if (node.isBold() != boldact.getBold()) {
+                node.setBold(boldact.getBold());
                 modeController.nodeChanged(node);
             }
         }
@@ -47,33 +46,29 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuI
 		return BoldNodeAction.class;
 	}
 
-	public ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException {
+	public ActionPair apply(MapAdapter model, MindMapNode selected)  {
 		// every node is set to the inverse of the focussed node.
 		boolean bold = modeController.getSelected().isBold();
 		return getActionPair(selected, !bold);
 	}
 
 	private ActionPair getActionPair(MindMapNode selected, boolean bold)
-		throws JAXBException {
+		 {
 		BoldNodeAction boldAction = toggleBold(selected, bold);
 		BoldNodeAction undoBoldAction = toggleBold(selected, selected.isBold());
 		return new ActionPair(boldAction, undoBoldAction);
 	}
 
 	private BoldNodeAction toggleBold(MindMapNode selected, boolean bold)
-		throws JAXBException {
-		BoldNodeAction boldAction = getActionXmlFactory().createBoldNodeAction();
+		{
+		BoldNodeAction boldAction = new BoldNodeAction();
 		boldAction.setNode(getNodeID(selected));
 		boldAction.setBold(bold);
 		return boldAction;
 	}
 
 	public void setBold(MindMapNode node, boolean  bold) {
-		try {
-			execute(getActionPair(node, bold));
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
+		execute(getActionPair(node, bold));
 	}
 
     public boolean isEnabled(JMenuItem item, Action action) {

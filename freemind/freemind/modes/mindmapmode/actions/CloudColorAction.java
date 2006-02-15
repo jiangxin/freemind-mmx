@@ -20,7 +20,7 @@
  * 
  * Created on 19.09.2004
  */
-/* $Id: CloudColorAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $ */
+/* $Id: CloudColorAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -30,7 +30,6 @@ import java.util.ListIterator;
 
 import javax.swing.Action;
 import javax.swing.JMenuItem;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.Controller;
 import freemind.controller.MenuItemEnabledListener;
@@ -71,21 +70,16 @@ public class CloudColorAction extends FreemindAction implements ActorXml , MenuI
     }
     
     public void setCloudColor(MindMapNode node, Color color) {
-		try {
-			CloudColorXmlAction doAction = createCloudColorXmlAction(node, color);
-			CloudColorXmlAction undoAction = createCloudColorXmlAction(node, 
-			        (node.getCloud()==null)?null:node.getCloud().getColor());
-			controller.getActionFactory().startTransaction(this.getClass().getName());
-			controller.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
-			controller.getActionFactory().endTransaction(this.getClass().getName());
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		CloudColorXmlAction doAction = createCloudColorXmlAction(node, color);
+        CloudColorXmlAction undoAction = createCloudColorXmlAction(node, 
+                (node.getCloud()==null)?null:node.getCloud().getColor());
+        controller.getActionFactory().startTransaction(this.getClass().getName());
+        controller.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
+        controller.getActionFactory().endTransaction(this.getClass().getName());
     }
 
-    public CloudColorXmlAction createCloudColorXmlAction(MindMapNode node, Color color) throws JAXBException {
-		CloudColorXmlAction nodeAction = controller.getActionXmlFactory().createCloudColorXmlAction();
+    public CloudColorXmlAction createCloudColorXmlAction(MindMapNode node, Color color)  {
+		CloudColorXmlAction nodeAction = new CloudColorXmlAction();
 		nodeAction.setNode(node.getObjectId(controller));
 	    nodeAction.setColor(Tools.colorToXml(color));
 		return nodeAction;

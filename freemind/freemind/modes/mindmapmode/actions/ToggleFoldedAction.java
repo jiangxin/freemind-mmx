@@ -19,7 +19,7 @@
  *
  * Created on 12.08.2004
  */
-/*$Id: ToggleFoldedAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: ToggleFoldedAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -28,13 +28,11 @@ import java.util.ListIterator;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.FoldAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
-import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.common.CommonToggleFoldedAction;
 import freemind.modes.mindmapmode.MindMapController;
@@ -79,37 +77,31 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
 
 	private CompoundAction createFoldAction(ListIterator iterator,
 			boolean fold, boolean undo) {
-		try {
-			CompoundAction comp = modeController.getActionXmlFactory()
-					.createCompoundAction();
-			MindMapNode lastNode = null;
-			// sort selectedNodes list by depth, in order to guarantee that sons
-			// are deleted first:
-			for (ListIterator it = iterator; it.hasNext();) {
-				MindMapNode node = (MindMapNode) it.next();
-				FoldAction foldAction = createSingleFoldAction(fold, node, undo);
-				if (foldAction != null) {
-					if (!undo) {
-						comp
-								.getCompoundActionOrSelectNodeActionOrCutNodeAction()
-								.add(foldAction);
-					} else {
-						// reverse the order:
-						comp
-								.getCompoundActionOrSelectNodeActionOrCutNodeAction()
-								.add(0, foldAction);
-					}
-					lastNode = node;
-				}
-			}
-			logger.finest("Compound contains "
-					+ comp.getCompoundActionOrSelectNodeActionOrCutNodeAction()
-							.size() + " elements.");
-			return comp;
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-		return null;
+		CompoundAction comp = new CompoundAction();
+        MindMapNode lastNode = null;
+        // sort selectedNodes list by depth, in order to guarantee that sons
+        // are deleted first:
+        for (ListIterator it = iterator; it.hasNext();) {
+        	MindMapNode node = (MindMapNode) it.next();
+        	FoldAction foldAction = createSingleFoldAction(fold, node, undo);
+        	if (foldAction != null) {
+        		if (!undo) {
+        			comp
+        					
+        					.addChoice(foldAction);
+        		} else {
+        			// reverse the order:
+        			comp
+        					
+        					.addAtChoice(0, foldAction);
+        		}
+        		lastNode = node;
+        	}
+        }
+        logger.finest("Compound contains "
+        		+ comp
+        				.sizeChoiceList() + " elements.");
+        return comp;
 	}
 
 	/**
@@ -121,21 +113,16 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
 	private FoldAction createSingleFoldAction(boolean fold, MindMapNode node,
 			boolean undo) {
 		FoldAction foldAction = null;
-		try {
-			if ((undo && (node.isFolded() == fold))
-					|| (!undo && (node.isFolded() != fold))) {
-				if (node.hasChildren()
-						|| Tools.safeEquals(modeController.getFrame()
-								.getProperty("enable_leaves_folding"), "true")) {
-					foldAction = modeController.getActionXmlFactory()
-							.createFoldAction();
-					foldAction.setFolded(fold);
-					foldAction.setNode(modeController.getNodeID(node));
-				}
-			}
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
+		if ((undo && (node.isFolded() == fold))
+        		|| (!undo && (node.isFolded() != fold))) {
+        	if (node.hasChildren()
+        			|| Tools.safeEquals(modeController.getFrame()
+        					.getProperty("enable_leaves_folding"), "true")) {
+        		foldAction = new FoldAction();
+        		foldAction.setFolded(fold);
+        		foldAction.setNode(modeController.getNodeID(node));
+        	}
+        }
 		return foldAction;
 	}
 
@@ -144,7 +131,7 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
 			FoldAction foldAction = (FoldAction) action;
 			MindMapNode node = modeController.getNodeFromID(foldAction
 					.getNode());
-			boolean fold = foldAction.isFolded();
+			boolean fold = foldAction.getFolded();
 			modeController._setFolded(node, fold);
 		}
 	}

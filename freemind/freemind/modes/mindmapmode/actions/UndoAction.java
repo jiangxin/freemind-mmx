@@ -19,7 +19,7 @@
  *
  * Created on 20.09.2004
  */
-/*$Id: UndoAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: UndoAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -30,10 +30,8 @@ import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
-import freemind.controller.actions.generated.instance.CompoundActionType;
 import freemind.controller.actions.generated.instance.UndoXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.mindmapmode.MindMapController;
@@ -78,7 +76,7 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
     /* (non-Javadoc)
      * @see freemind.controller.actions.AbstractXmlAction#xmlActionPerformed(java.awt.event.ActionEvent)
      */
-    protected void xmlActionPerformed(ActionEvent arg0) throws JAXBException {
+    protected void xmlActionPerformed(ActionEvent arg0)  {
      	if(actionPairList.size() > 0) {
 			ActionPair pair = (ActionPair) actionPairList.get(0);
 			informUndoPartner(pair);
@@ -103,17 +101,17 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
         this.controller.redo.setEnabled(true);
     }
 
-    protected void undoDoAction(ActionPair pair) throws JAXBException {
+    protected void undoDoAction(ActionPair pair)  {
         String doActionString = this.controller.marshall(pair.getDoAction());
         String redoActionString = this.controller.marshall(pair.getUndoAction());
 		//logger.info("doActionString: "+ doActionString ); 
 		//logger.info("\nredoActionString: "+ redoActionString);
         
-        UndoXmlAction undoAction = this.controller.getActionXmlFactory().createUndoXmlAction();
+        UndoXmlAction undoAction = new UndoXmlAction();
         undoAction.setDescription(redoActionString);
         undoAction.setRemedia(doActionString);
         
-        UndoXmlAction redoAction = this.controller.getActionXmlFactory().createUndoXmlAction();
+        UndoXmlAction redoAction = new UndoXmlAction();
         redoAction.setDescription(doActionString);
         undoAction.setRemedia(redoActionString);
         
@@ -148,46 +146,41 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
     }
     
     public void add(ActionPair pair) {
-	    try {
-	        long currentTime = System.currentTimeMillis();
-	        if((actionPairList.size() > 0) && (currentTime - timeOfLastAdd < TIME_TO_BEGIN_NEW_ACTION)) {
-	            ActionPair firstPair = (ActionPair) actionPairList.get(0);
-                CompoundAction action;
-                CompoundAction remedia;
-	            if ( ! (firstPair.getDoAction() instanceof CompoundActionType) || ! (firstPair.getUndoAction() instanceof CompoundActionType)) {
-	                action = controller.getActionXmlFactory().createCompoundAction();
-	                action.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(firstPair.getDoAction());
-	                remedia = controller.getActionXmlFactory().createCompoundAction();
-	                remedia.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(firstPair.getUndoAction());
-	                actionPairList.remove(0);
-	                actionPairList.add(0, new ActionPair(action, remedia));
-		            firstPair = (ActionPair) actionPairList.get(0);
-	            } else {
-	                action = (CompoundAction) firstPair.getDoAction();
-	                remedia = (CompoundAction) firstPair.getUndoAction();
-	            }
-	            action.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(pair.getDoAction());
-	            remedia.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(0, pair.getUndoAction());
-	        } else {
-	            actionPairList.add(0, pair);
-                // and cut vector, if bigger than given size:
-	            int maxEntries = 100;
-                try {
-                    maxEntries = new Integer(controller.getFrame().getProperty(
-                            "undo_levels")).intValue();
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-                while (actionPairList.size()>maxEntries) {
-                    actionPairList.remove(actionPairList.size()-1); // remove
-                                                                    // last elt
-                }
-	        }
-	        timeOfLastAdd = currentTime;
-        } catch (JAXBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+	    long currentTime = System.currentTimeMillis();
+        if((actionPairList.size() > 0) && (currentTime - timeOfLastAdd < TIME_TO_BEGIN_NEW_ACTION)) {
+            ActionPair firstPair = (ActionPair) actionPairList.get(0);
+            CompoundAction action;
+            CompoundAction remedia;
+            if ( ! (firstPair.getDoAction() instanceof CompoundAction) || ! (firstPair.getUndoAction() instanceof CompoundAction)) {
+                action = new CompoundAction();
+                action.addChoice(firstPair.getDoAction());
+                remedia = new CompoundAction();
+                remedia.addChoice(firstPair.getUndoAction());
+                actionPairList.remove(0);
+                actionPairList.add(0, new ActionPair(action, remedia));
+                firstPair = (ActionPair) actionPairList.get(0);
+            } else {
+                action = (CompoundAction) firstPair.getDoAction();
+                remedia = (CompoundAction) firstPair.getUndoAction();
+            }
+            action.addChoice(pair.getDoAction());
+            remedia.addAtChoice(0, pair.getUndoAction());
+        } else {
+            actionPairList.add(0, pair);
+            // and cut vector, if bigger than given size:
+            int maxEntries = 100;
+            try {
+                maxEntries = new Integer(controller.getFrame().getProperty(
+                        "undo_levels")).intValue();
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            while (actionPairList.size()>maxEntries) {
+                actionPairList.remove(actionPairList.size()-1); // remove
+                                                                // last elt
+            }
         }
+        timeOfLastAdd = currentTime;
     }
     
     public void clear() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.14 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.15 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -60,10 +60,11 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
-import freemind.common.JaxbTools;
+import org.jibx.runtime.IUnmarshallingContext;
+import org.jibx.runtime.JiBXException;
+
+import freemind.common.XmlBindingTools;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.MenuActionBase;
@@ -72,7 +73,6 @@ import freemind.controller.actions.generated.instance.MenuCheckedAction;
 import freemind.controller.actions.generated.instance.MenuSeparator;
 import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
-import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -360,7 +360,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         // the executor must be the first here, because it is executed last then.
         getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
         getActionFactory().registerHandler(new UndoActionHandler(this, undo, redo));
-        //debug:                        getActionFactory().registerHandler(new freemind.controller.actions.PrintActionHandler(this));
+        //debug:        getActionFactory().registerHandler(new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
 
         cut = new CutAction(this);
         paste = new PasteAction(this);
@@ -652,7 +652,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 	 */
     public void updateMenus(StructuredMenuHolder holder) {
 
-		processMenuCategory(holder, mMenuStructure.getMenuCategory(), ""); /*MenuBar.MENU_BAR_PREFIX*/
+		processMenuCategory(holder, mMenuStructure.getListChoiceList(), ""); /*MenuBar.MENU_BAR_PREFIX*/
 		// add hook actions to this holder.
 		// hooks, fc, 1.3.2004:
 		for (int i = 0; i < hookActions.size(); ++i) {
@@ -709,14 +709,13 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     public MenuStructure updateMenusFromXml(InputStream in) {
         // get from resources:
         try {
-        	Unmarshaller unmarshaller = JaxbTools.getInstance().createUnmarshaller();
-        	unmarshaller.setValidating(true);
-        	MenuStructure menus = (MenuStructure) unmarshaller.unmarshal(in);
+       	    IUnmarshallingContext unmarshaller = XmlBindingTools.getInstance().createUnmarshaller();
+        	MenuStructure menus = (MenuStructure) unmarshaller.unmarshalDocument(in, null);
         	return menus;
-		} catch (JAXBException e) {
-        	logger.severe(e.getCause() + e.getLocalizedMessage() + e.getMessage());
-        	e.printStackTrace();
-        	throw new IllegalArgumentException("Menu structure could not be read.");
+        } catch (JiBXException e) {
+            logger.severe(e.getCause() + e.getLocalizedMessage() + e.getMessage());
+            e.printStackTrace();
+            throw new IllegalArgumentException("Menu structure could not be read.");
         }
     }
 
@@ -736,7 +735,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
                 	MenuSubmenu submenu = (MenuSubmenu) cat;
                 	holder.addMenu(new JMenu(getText(submenu.getNameRef())), newCategory+"/.");
                 }
-            	processMenuCategory(holder, cat.getMenuCategoryOrMenuSubmenuOrMenuAction(), newCategory);
+            	processMenuCategory(holder, cat.getListChoiceList(), newCategory);
             } else if( obj instanceof MenuActionBase ) {
 				MenuActionBase action = (MenuActionBase) obj;            	
 				String field = action.getField();
@@ -1494,8 +1493,8 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
             // overwrote the linked map.
 
         }
-        if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
-            chooser = new JFileChooser(getMap().getFile().getParentFile());
+        if (getLastCurrentDir() != null) {
+            chooser = new JFileChooser(getLastCurrentDir());
         } else {
             chooser = new JFileChooser();
         }
@@ -1510,6 +1509,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         int returnVal = chooser.showOpenDialog(getFrame().getContentPane());
         if (returnVal==JFileChooser.APPROVE_OPTION) {
             input = chooser.getSelectedFile();
+            setLastCurrentDir(input.getParentFile());
             try {
                 link = input.toURL();
                 relative = link.toString();
@@ -1894,23 +1894,19 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     }
     
     public String marshall(XmlAction action) {
-        return JaxbTools.getInstance().marshall(action);
+        return XmlBindingTools.getInstance().marshall(action);
 	}
 
 	public XmlAction unMarshall(String inputString) {
-        return JaxbTools.getInstance().unMarshall(inputString);
+        return XmlBindingTools.getInstance().unMarshall(inputString);
 	}
 
 	public void storeDialogPositions(JDialog dialog, TimeWindowConfigurationStorage storage, String window_preference_storage_property) {
-		JaxbTools.getInstance().storeDialogPositions(getController(), dialog, storage, window_preference_storage_property);
+		XmlBindingTools.getInstance().storeDialogPositions(getController(), dialog, storage, window_preference_storage_property);
 	}
 
 	public WindowConfigurationStorage decorateDialog(JDialog dialog, String window_preference_storage_property) {
-		return JaxbTools.getInstance().decorateDialog(getController(), dialog, window_preference_storage_property);
-	}
-
-	public ObjectFactory getActionXmlFactory() {
-		return JaxbTools.getInstance().getActionXmlFactory();
+		return XmlBindingTools.getInstance().decorateDialog(getController(), dialog, window_preference_storage_property);
 	}
 
 

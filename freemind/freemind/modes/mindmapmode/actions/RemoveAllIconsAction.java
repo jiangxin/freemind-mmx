@@ -19,13 +19,11 @@
  *
  * Created on 29.09.2004
  */
-/*$Id: RemoveAllIconsAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: RemoveAllIconsAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
 import java.util.Iterator;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.RemoveAllIconsXmlAction;
@@ -56,17 +54,17 @@ public class RemoveAllIconsAction extends NodeGeneralAction implements NodeActor
         addActor(this);
     }
 
-    public ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException {
-        CompoundAction undoAction = modeController.getActionXmlFactory().createCompoundAction();
+    public ActionPair apply(MapAdapter model, MindMapNode selected)  {
+        CompoundAction undoAction = new CompoundAction();
         for (Iterator i = selected.getIcons().iterator(); i.hasNext();) {
             MindIcon icon = (MindIcon) i.next();
-            undoAction.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(addIconAction.createAddIconAction(selected, icon));
+            undoAction.addChoice(addIconAction.createAddIconAction(selected, icon));
         }
         return new ActionPair(createRemoveAllIconsXmlAction(selected), undoAction);
     }
 
-    public RemoveAllIconsXmlAction createRemoveAllIconsXmlAction(MindMapNode node) throws JAXBException {
-        RemoveAllIconsXmlAction action = modeController.getActionXmlFactory().createRemoveAllIconsXmlAction();
+    public RemoveAllIconsXmlAction createRemoveAllIconsXmlAction(MindMapNode node)  {
+        RemoveAllIconsXmlAction action = new RemoveAllIconsXmlAction();
         action.setNode(node.getObjectId(modeController));
         return action;
     }
@@ -83,16 +81,12 @@ public class RemoveAllIconsAction extends NodeGeneralAction implements NodeActor
     }
 
     public void removeAllIcons(MindMapNode node) {
-        try {
-            modeController.getActionFactory().startTransaction(
-                    (String) getValue(NAME));
-            modeController.getActionFactory().executeAction(
-                    apply(modeController.getMap(), node));
-            modeController.getActionFactory().endTransaction(
-                    (String) getValue(NAME));
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+        modeController.getActionFactory().startTransaction(
+                (String) getValue(NAME));
+        modeController.getActionFactory().executeAction(
+                apply(modeController.getMap(), node));
+        modeController.getActionFactory().endTransaction(
+                (String) getValue(NAME));
     }
 
     public Class getDoActionClass() {

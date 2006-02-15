@@ -16,14 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeNote.java,v 1.1.4.6 2006-01-18 22:28:48 christianfoltin Exp $*/
+/*$Id: NodeNote.java,v 1.1.4.7 2006-02-15 21:18:45 christianfoltin Exp $*/
 package accessories.plugins;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -193,7 +192,6 @@ public class NodeNote extends NodeNoteBase {
      * @param text
      */
     public void changeNodeText(String text) {
-        try {
             EditNoteToNodeAction doAction = createEditNoteToNodeAction(
                     getNode(), text);
             EditNoteToNodeAction undoAction = createEditNoteToNodeAction(
@@ -204,15 +202,11 @@ public class NodeNote extends NodeNoteBase {
                     new ActionPair(doAction, undoAction));
             getMindMapController().getActionFactory().endTransaction(
                     this.getClass().getName());
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
     }
 
     public EditNoteToNodeAction createEditNoteToNodeAction(MindMapNode node,
-            String text) throws JAXBException {
-        EditNoteToNodeAction nodeAction = getMindMapController()
-                .getActionXmlFactory().createEditNoteToNodeAction();
+            String text)  {
+        EditNoteToNodeAction nodeAction = new EditNoteToNodeAction();
         nodeAction.setNode(node.getObjectId(getController()));
         nodeAction.setText(text);
         return nodeAction;

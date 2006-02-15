@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindIcon.java,v 1.1.18.5 2005-05-03 05:29:50 christianfoltin Exp $*/
+/*$Id: MindIcon.java,v 1.1.18.6 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -158,6 +158,7 @@ public class MindIcon {
         mAllIconNames.add("forward");
         mAllIconNames.add("attach");
         mAllIconNames.add("ksmiletris");
+        mAllIconNames.add("smily_bad");
         mAllIconNames.add("clanbomber");
         mAllIconNames.add("desktop_new");
         mAllIconNames.add("flag");

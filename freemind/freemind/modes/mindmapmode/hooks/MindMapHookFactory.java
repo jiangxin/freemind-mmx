@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapHookFactory.java,v 1.1.2.1 2006-01-12 23:10:14 christianfoltin Exp $*/
+/*$Id: MindMapHookFactory.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 package freemind.modes.mindmapmode.hooks;
 
 import java.io.File;
@@ -33,14 +33,15 @@ import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
-import javax.xml.bind.Unmarshaller;
 
-import freemind.common.JaxbTools;
+import org.jibx.runtime.IUnmarshallingContext;
+
+import freemind.common.XmlBindingTools;
 import freemind.controller.actions.generated.instance.Plugin;
-import freemind.controller.actions.generated.instance.PluginActionType;
-import freemind.controller.actions.generated.instance.PluginClasspathType;
-import freemind.controller.actions.generated.instance.PluginModeType;
-import freemind.controller.actions.generated.instance.PluginRegistrationType;
+import freemind.controller.actions.generated.instance.PluginAction;
+import freemind.controller.actions.generated.instance.PluginClasspath;
+import freemind.controller.actions.generated.instance.PluginMode;
+import freemind.controller.actions.generated.instance.PluginRegistration;
 import freemind.extensions.HookDescriptor;
 import freemind.extensions.HookFactoryAdapter;
 import freemind.extensions.HookInstanciationMethod;
@@ -151,7 +152,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 		allPlugins = new Vector();
 		allRegistrations = new HashMap();
 		// the unmarshaller:
-		Unmarshaller unmarshaller = JaxbTools.getInstance()
+		 IUnmarshallingContext unmarshaller = XmlBindingTools.getInstance()
 				.createUnmarshaller();
 		// the loop
 		for (Iterator i = importWizard.CLASS_LIST.iterator(); i.hasNext();) {
@@ -173,8 +174,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 					logger.finest("Reading: " + xmlPluginFile + " from "
 							+ pluginURL);
 					InputStream in = pluginURL.openStream();
-					unmarshaller.setValidating(true);
-					plugin = (Plugin) unmarshaller.unmarshal(in);
+					plugin = (Plugin) unmarshaller.unmarshalDocument(in, null);
 				} catch (Exception e) {
 					// error case
 					logger.severe(e.getLocalizedMessage());
@@ -182,19 +182,19 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 					continue;
 				}
 				// plugin is loaded.
-				for (Iterator j = plugin.getPluginAction().iterator(); j
+				for (Iterator j = plugin.getListChoiceList().iterator(); j
 						.hasNext();) {
-					PluginActionType action = (PluginActionType) j.next();
-					pluginInfo.put(action.getLabel(), new HookDescriptor(frame,
-							action, plugin));
-					allPlugins.add(action.getLabel());
-				}
-				for (Iterator k = plugin.getPluginRegistration().iterator(); k
-						.hasNext();) {
-					PluginRegistrationType registration = (PluginRegistrationType) k
-							.next();
-					allRegistrations.put(registration, plugin);
-
+                    Object obj = j.next();
+                    if (obj instanceof PluginAction) {
+                        PluginAction action = (PluginAction) obj;
+                        pluginInfo.put(action.getLabel(), new HookDescriptor(frame,
+                                action, plugin));
+                        allPlugins.add(action.getLabel());
+                        
+                    } else if (obj instanceof PluginRegistration) {
+                        PluginRegistration registration = (PluginRegistration) obj;
+                        allRegistrations.put(registration, plugin);
+                    }
 				}
 			}
 		}
@@ -209,8 +209,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 			HookDescriptor descriptor) {
 		try {
 			// construct class loader:
-			List pluginClasspathList = descriptor.getPluginBase()
-					.getPluginClasspath();
+			List pluginClasspathList = getPluginClasspath(descriptor.getPluginBase());
 			ClassLoader loader = getClassLoader(pluginClasspathList);
 			// constructed.
 			Class hookClass = Class.forName(descriptor.getClassName(), true,
@@ -227,7 +226,19 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 		}
 	}
 
-	private HashMap classLoaderCache = new HashMap();
+	private List getPluginClasspath(Plugin pluginBase) {
+        Vector returnValue = new Vector();
+        for (Iterator i = pluginBase.getListChoiceList().iterator(); i.hasNext();) {
+            Object obj = (Object) i.next();
+            if (obj instanceof PluginClasspath) {
+                PluginClasspath pluginClasspath = (PluginClasspath) obj;
+                returnValue.add(pluginClasspath);
+            }
+        }
+        return returnValue;
+    }
+
+    private HashMap classLoaderCache = new HashMap();
 
 	/**
 	 * @param pluginClasspathList
@@ -244,7 +255,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 			//logger.info("freemind.base.dir is " + getFreemindBaseDir());
 			urls[j++] = new File(getFreemindBaseDir()).toURL();
 			for (Iterator i = pluginClasspathList.iterator(); i.hasNext();) {
-				PluginClasspathType classPath = (PluginClasspathType) i.next();
+				PluginClasspath classPath = (PluginClasspath) i.next();
 				// new version of classpath resolution suggested by ewl under 
 				// patch [ 1154510 ] Be able to give absolute classpath entries in plugin.xml
 				File file = new File(classPath.getJar());
@@ -278,7 +289,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 	private String createPluginClasspathString(List pluginClasspathList) {
 		String result = "";
 		for (Iterator i = pluginClasspathList.iterator(); i.hasNext();) {
-			PluginClasspathType type = (PluginClasspathType) i.next();
+			PluginClasspath type = (PluginClasspath) i.next();
 			result += type.getJar() + ",";
 		}
 		return result;
@@ -375,12 +386,12 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 		actualizePlugins();
 		Vector returnValue = new Vector();
 		for (Iterator i = allRegistrations.keySet().iterator(); i.hasNext();) {
-			PluginRegistrationType registration = (PluginRegistrationType) i
+			PluginRegistration registration = (PluginRegistration) i
 					.next();
 			boolean modeFound = false;
-			for (Iterator j = (registration.getPluginMode()).iterator(); j
+			for (Iterator j = (registration.getListPluginModeList()).iterator(); j
 					.hasNext();) {
-				PluginModeType possibleMode = (PluginModeType) j.next();
+				PluginMode possibleMode = (PluginMode) j.next();
 				if (mode.getPackage().getName().equals(
 						possibleMode.getClassName())) {
 					modeFound = true;
@@ -390,13 +401,13 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 				continue;
 			try {
 				Plugin plugin = (Plugin) allRegistrations.get(registration);
-				ClassLoader loader = getClassLoader(plugin.getPluginClasspath());
+				ClassLoader loader = getClassLoader(getPluginClasspath(plugin));
 				RegistrationContainer container = new RegistrationContainer();
 				Class hookRegistrationClass = Class.forName(registration
 						.getClassName(), true, loader);
 				container.hookRegistrationClass = hookRegistrationClass;
 				container.correspondingPlugin = plugin;
-				container.isPluginBase = registration.isIsPluginBase();
+				container.isPluginBase = registration.getIsPluginBase();
 				returnValue.add(container);
 			} catch (ClassNotFoundException e) { 
 				e.printStackTrace();

@@ -19,13 +19,11 @@
  *
  * Created on 09.01.2005
  */
-/*$Id: ChangeArrowLinkEndPoints.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: ChangeArrowLinkEndPoints.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.ArrowLinkPointXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -103,16 +101,11 @@ public class ChangeArrowLinkEndPoints extends FreemindAction  implements ActorXm
 	}
     private ArrowLinkPointXmlAction createArrowLinkPointXmlAction(MindMapArrowLink arrowLink,
             Point startPoint, Point endPoint){
-        try {
-            ArrowLinkPointXmlAction action = controller.getActionXmlFactory().createArrowLinkPointXmlAction();
-            action.setStartPoint(Tools.PointToXml(startPoint));
-            action.setEndPoint(Tools.PointToXml(endPoint));
-            action.setId(arrowLink.getUniqueID());
-            return action;
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            return null;
-        }
+        ArrowLinkPointXmlAction action = new ArrowLinkPointXmlAction();
+        action.setStartPoint(Tools.PointToXml(startPoint));
+        action.setEndPoint(Tools.PointToXml(endPoint));
+        action.setId(arrowLink.getUniqueID());
+        return action;
     }
     /**
      * @return

@@ -20,11 +20,9 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: EdgeStyleAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $ */
+/* $Id: EdgeStyleAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.EdgeStyleFormatAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -46,7 +44,7 @@ public class EdgeStyleAction extends NodeGeneralAction implements NodeActorXml {
     }
 
     public ActionPair apply(MapAdapter model, MindMapNode selected)
-            throws JAXBException {
+             {
         return getActionPair(selected, mStyle);
     }
 
@@ -55,21 +53,17 @@ public class EdgeStyleAction extends NodeGeneralAction implements NodeActorXml {
     }
 
     public void setEdgeStyle(MindMapNode node, String style) {
-        try {
-            modeController.getActionFactory().startTransaction(
-                    (String) getValue(NAME));
-            modeController.getActionFactory().executeAction(
-                    getActionPair(node, style));
-            modeController.getActionFactory().endTransaction(
-                    (String) getValue(NAME));
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+        modeController.getActionFactory().startTransaction(
+                (String) getValue(NAME));
+        modeController.getActionFactory().executeAction(
+                getActionPair(node, style));
+        modeController.getActionFactory().endTransaction(
+                (String) getValue(NAME));
 
     }
 
     private ActionPair getActionPair(MindMapNode selected, String style)
-            throws JAXBException {
+             {
         EdgeStyleFormatAction styleAction = createNodeStyleFormatAction(
                 selected, style);
         EdgeStyleFormatAction undoStyleAction = createNodeStyleFormatAction(
@@ -78,9 +72,8 @@ public class EdgeStyleAction extends NodeGeneralAction implements NodeActorXml {
     }
 
     private EdgeStyleFormatAction createNodeStyleFormatAction(
-            MindMapNode selected, String style) throws JAXBException {
-        EdgeStyleFormatAction edgeStyleAction = getActionXmlFactory()
-                .createEdgeStyleFormatAction();
+            MindMapNode selected, String style)  {
+        EdgeStyleFormatAction edgeStyleAction = new EdgeStyleFormatAction();
         edgeStyleAction.setNode(getNodeID(selected));
         edgeStyleAction.setStyle(style);
         return edgeStyleAction;

@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.18 2006-01-12 23:10:14 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.19 2006-02-15 21:18:45 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -56,16 +56,14 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.xml.bind.JAXBException;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
 
-import freemind.common.JaxbTools;
+import freemind.common.XmlBindingTools;
 import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.OptionPanelWindowConfigurationStorage;
-import freemind.controller.actions.generated.instance.OptionPanelWindowConfigurationStorageType;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
@@ -118,13 +116,13 @@ public class OptionPanel {
 		this.frame = frame;
 		this.feedback = feedback;
 		//Retrieve window size and column positions.
-		WindowConfigurationStorage storage = JaxbTools.getInstance().decorateDialog(fm.getController(),
+		WindowConfigurationStorage storage = XmlBindingTools.getInstance().decorateDialog(fm.getController(),
 				frame, PREFERENCE_STORAGE_PROPERTY);
 		if (storage == null) {
 			frame.getRootPane().setPreferredSize(new Dimension(800, 600));
 		} else {
-			if (storage instanceof OptionPanelWindowConfigurationStorageType) {
-				OptionPanelWindowConfigurationStorageType oWindowSettings = (OptionPanelWindowConfigurationStorageType) storage;
+			if (storage instanceof OptionPanelWindowConfigurationStorage) {
+				OptionPanelWindowConfigurationStorage oWindowSettings = (OptionPanelWindowConfigurationStorage) storage;
 				selectedPanel = oWindowSettings.getPanel();
 			}
 		}
@@ -1423,17 +1421,10 @@ public class OptionPanel {
 	}
 
 	public void closeWindow() {
-		try {
-			OptionPanelWindowConfigurationStorage storage = JaxbTools.getInstance()
-					.getActionXmlFactory()
-					.createOptionPanelWindowConfigurationStorage();
-			storage.setPanel(selectedPanel);
-			JaxbTools.getInstance().storeDialogPositions(fmMain.getController(), frame, storage,
-					PREFERENCE_STORAGE_PROPERTY);
-		} catch (JAXBException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
+		OptionPanelWindowConfigurationStorage storage = new OptionPanelWindowConfigurationStorage();
+        storage.setPanel(selectedPanel);
+        XmlBindingTools.getInstance().storeDialogPositions(fmMain.getController(), frame, storage,
+        		PREFERENCE_STORAGE_PROPERTY);
 //		frame.hide();
 		frame.dispose();
 	}

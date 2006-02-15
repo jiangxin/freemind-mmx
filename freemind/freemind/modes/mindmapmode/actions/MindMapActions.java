@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/*$Id: MindMapActions.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: MindMapActions.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
@@ -29,7 +29,6 @@ import java.awt.event.MouseWheelEvent;
 import java.util.Collection;
 import java.util.List;
 
-import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
@@ -42,7 +41,6 @@ import freemind.modes.NodeAdapter;
 import freemind.modes.StylePattern;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
-import freemind.view.mindmapview.NodeView;
 
 /** This is the central method interface of actions that can be undertaken on
  *  nodes. Whenever you want to change the mindmap choose one of these actions
@@ -185,7 +183,6 @@ public interface MindMapActions {
     //end hooks
 
     ActionFactory getActionFactory();
-    ObjectFactory getActionXmlFactory();
     // XML Actions:
     public String marshall(XmlAction action);   
     public XmlAction unMarshall(String inputString);

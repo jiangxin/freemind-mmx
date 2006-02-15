@@ -19,13 +19,11 @@
  *
  * Created on 29.09.2004
  */
-/*$Id: RemoveLastIconAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: RemoveLastIconAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
 import java.util.List;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.AddIconAction;
 import freemind.controller.actions.generated.instance.RemoveLastIconXmlAction;
@@ -53,7 +51,7 @@ public class RemoveLastIconAction extends NodeGeneralAction implements NodeActor
         addActor(this);
     }
 
-    public ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException {
+    public ActionPair apply(MapAdapter model, MindMapNode selected) {
         List icons = selected.getIcons();
 		if(icons.size()==0) 
             return null;
@@ -65,26 +63,21 @@ public class RemoveLastIconAction extends NodeGeneralAction implements NodeActor
         return RemoveLastIconXmlAction.class;
     }
 
-    public RemoveLastIconXmlAction createRemoveLastIconXmlAction(MindMapNode node) throws JAXBException {
-        RemoveLastIconXmlAction action = modeController.getActionXmlFactory().createRemoveLastIconXmlAction();
+    public RemoveLastIconXmlAction createRemoveLastIconXmlAction(MindMapNode node)  {
+        RemoveLastIconXmlAction action = new RemoveLastIconXmlAction();
         action.setNode(node.getObjectId(modeController));
         return action;
     }
 
     
     public int removeLastIcon(MindMapNode node) {
-        try {
-            modeController.getActionFactory().startTransaction(
-                    (String) getValue(NAME));
-            modeController.getActionFactory().executeAction(
-                    apply(modeController.getMap(), node));
-            modeController.getActionFactory().endTransaction(
-                    (String) getValue(NAME));
-            return node.getIcons().size();
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            return 0;
-        }
+        modeController.getActionFactory().startTransaction(
+                (String) getValue(NAME));
+        modeController.getActionFactory().executeAction(
+                apply(modeController.getMap(), node));
+        modeController.getActionFactory().endTransaction(
+                (String) getValue(NAME));
+        return node.getIcons().size();
     }
     
     /**

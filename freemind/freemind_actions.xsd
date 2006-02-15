@@ -61,11 +61,21 @@
 	  </xs:complexType>
 	</xs:element>
 
+	<!-- File Transferable List Element -->
+	<xs:element name="transferable_file">
+	  <xs:complexType>
+		<xs:complexContent>
+		      <xs:attribute name="file_name" use="required" type="xs:string"/>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
 	<!-- Node actions. These actions involve exactly one node.-->
 	<xs:element name="transferable_content">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="TransferableAsFileList" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="transferable_file" minOccurs="0" maxOccurs="unbounded"/>
+<!--				<xs:element name="TransferableAsFileList" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>-->
 			</xs:sequence>
 	      <xs:attribute name="Transferable" use="optional" type="xs:string"/>
 	      <xs:attribute name="TransferableAsPlainText" use="optional" type="xs:string"/>
@@ -631,17 +641,11 @@
 	<xs:element name="plugin">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:choice minOccurs="0">
-					<xs:element ref="plugin_classpath" minOccurs="0" maxOccurs="unbounded"/>
-				</xs:choice>
-				<xs:choice minOccurs="0">
-					<xs:element ref="plugin_registration" minOccurs="0" maxOccurs="unbounded"/>
-				</xs:choice>
-				<xs:choice minOccurs="0">
-					<xs:element ref="plugin_action" minOccurs="0" maxOccurs="unbounded"/>
-				</xs:choice>
-				<xs:choice minOccurs="0">
-					<xs:element ref="plugin_strings" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:choice minOccurs="0"  maxOccurs="unbounded">
+					<xs:element ref="plugin_classpath"/>
+					<xs:element ref="plugin_registration"/>
+					<xs:element ref="plugin_action"/>
+					<xs:element ref="plugin_strings"/>
 				</xs:choice>
 			</xs:sequence>
 		</xs:complexType>		
@@ -657,9 +661,7 @@
   <xs:element name="plugin_registration">
     <xs:complexType>
 			<xs:sequence>
-				<xs:choice minOccurs="0">
-					<xs:element ref="plugin_mode" minOccurs="0" maxOccurs="unbounded"/>
-				</xs:choice>
+					<xs:element ref="plugin_mode" maxOccurs="unbounded" minOccurs="1"/>
 			</xs:sequence>
 				<!-- A class that implements HookRegistration.
 					   It is called at map startup and shutdown.
@@ -690,14 +692,10 @@
   <xs:element name="plugin_action">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:choice minOccurs="0">
-					<xs:element ref="plugin_mode" minOccurs="0" maxOccurs="unbounded"/>
-				</xs:choice>
-				<xs:choice minOccurs="0">
-					<xs:element ref="plugin_menu" minOccurs="0" maxOccurs="unbounded"/>
-				</xs:choice>
-				<xs:choice minOccurs="0">
-					<xs:element ref="plugin_property" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="plugin_mode"/>
+					<xs:element ref="plugin_menu" />
+					<xs:element ref="plugin_property"/>
 				</xs:choice>
 			</xs:sequence>
 			<!-- The unique label of this action (e.g. the class_name if this is unique.). -->
@@ -740,9 +738,7 @@
   <xs:element name="plugin_strings">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:choice minOccurs="0">
 					<xs:element ref="plugin_string" minOccurs="0" maxOccurs="unbounded"/>
-				</xs:choice>
 			</xs:sequence>
       <xs:attribute name="language" use="required" type="xs:string"/>
 		</xs:complexType>
@@ -773,8 +769,10 @@
 
 	<xs:element name="menu_structure">
 		<xs:complexType>
-	      <xs:sequence  minOccurs="0" maxOccurs="unbounded">
+	      <xs:sequence>
+	        <xs:choice minOccurs="0" maxOccurs="unbounded">
 	          <xs:element ref="menu_category"/>
+	        </xs:choice>
 	      </xs:sequence>
 		</xs:complexType>		
 	</xs:element>

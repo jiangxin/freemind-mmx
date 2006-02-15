@@ -19,7 +19,7 @@
  *
  * Created on 26.07.2004
  */
-/*$Id: NodeHookAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: NodeHookAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -32,12 +32,11 @@ import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.MenuItemEnabledListener;
+import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.HookNodeAction;
 import freemind.controller.actions.generated.instance.NodeListMember;
-import freemind.controller.actions.generated.instance.NodeListMemberType;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookFactory;
 import freemind.extensions.HookInstanciationMethod;
@@ -80,13 +79,8 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 	    HookNodeAction doAction = createHookNodeAction(focussed, selecteds, hookName);
 	    
         XmlAction undoAction=null;
-        try {
-            // this is the non operation:
-            undoAction = controller.getActionXmlFactory()
-                    .createCompoundAction();
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+        // this is the non operation:
+        undoAction = new CompoundAction();
 	    if (getInstanciationMethod(hookName).isPermanent()) {
             // double application = remove.
             undoAction = createHookNodeAction(focussed,
@@ -232,24 +226,17 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 	}
 
 	public HookNodeAction createHookNodeAction(MindMapNode focussed, List selecteds, String hookName) {
-	    try {
-            HookNodeAction hookNodeAction = getController()
-                    .getActionXmlFactory().createHookNodeAction();
-            hookNodeAction.setNode(focussed.getObjectId(getController()));
-            hookNodeAction.setHookName(hookName);
-            // selectedNodes list 
-            for (Iterator i = selecteds.iterator(); i.hasNext();) {
-                MindMapNode node = (MindMapNode) i.next();
-                NodeListMember nodeListMember = getController()
-                        .getActionXmlFactory().createNodeListMember();
-                nodeListMember.setNode(node.getObjectId(getController()));
-                hookNodeAction.getNodeListMember().add(nodeListMember);
-            }
-            return hookNodeAction;
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            return null;
+	    HookNodeAction hookNodeAction = new HookNodeAction();
+        hookNodeAction.setNode(focussed.getObjectId(getController()));
+        hookNodeAction.setHookName(hookName);
+        // selectedNodes list 
+        for (Iterator i = selecteds.iterator(); i.hasNext();) {
+            MindMapNode node = (MindMapNode) i.next();
+            NodeListMember nodeListMember = new NodeListMember();
+            nodeListMember.setNode(node.getObjectId(getController()));
+            hookNodeAction.addNodeListMember(nodeListMember);
         }
+        return hookNodeAction;
 	}
 	
 	public void act(XmlAction action) {
@@ -257,8 +244,8 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
             HookNodeAction hookNodeAction = (HookNodeAction) action;
             MindMapNode selected = getController().getNodeFromID(hookNodeAction.getNode());
             Vector selecteds = new Vector();
-            for (Iterator i = hookNodeAction.getNodeListMember().iterator(); i.hasNext();) {
-                NodeListMemberType node = (NodeListMemberType) i.next();
+            for (Iterator i = hookNodeAction.getListNodeListMemberList().iterator(); i.hasNext();) {
+                NodeListMember node = (NodeListMember) i.next();
                 selecteds.add(getController().getNodeFromID(node.getNode()));
             }
             invoke(selected, selecteds, hookNodeAction.getHookName());

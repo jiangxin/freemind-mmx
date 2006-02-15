@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/*$Id: TimeList.java,v 1.1.2.8 2006-01-12 23:10:14 christianfoltin Exp $*/
+/*$Id: TimeList.java,v 1.1.2.9 2006-02-15 21:18:46 christianfoltin Exp $*/
 package plugins.time;
 
 import java.awt.Container;
@@ -52,12 +52,9 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.TimeWindowColumnSetting;
-import freemind.controller.actions.generated.instance.TimeWindowColumnSettingType;
 import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
-import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorageType;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
@@ -260,8 +257,8 @@ public class TimeList extends MindMapHookAdapter {
 			//			 Disable auto resizing
 			timeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 			int column = 0;
-			for (Iterator i = ((TimeWindowConfigurationStorageType) storage).getTimeWindowColumnSetting().iterator(); i.hasNext();) {
-                TimeWindowColumnSettingType setting = (TimeWindowColumnSettingType) i.next();
+			for (Iterator i = ((TimeWindowConfigurationStorage) storage).getListTimeWindowColumnSettingList().iterator(); i.hasNext();) {
+                TimeWindowColumnSetting setting = (TimeWindowColumnSetting) i.next();
                 timeTable.getColumnModel().getColumn(column).setPreferredWidth(setting.getColumnWidth());
                 sorter.setSortingStatus(column, setting.getColumnSorting());
                 column++;
@@ -382,22 +379,14 @@ public class TimeList extends MindMapHookAdapter {
 	private void disposeDialog() {
 		// store window positions:
 
-		try {
-			TimeWindowConfigurationStorage storage = getMindMapController()
-					.getActionXmlFactory()
-					.createTimeWindowConfigurationStorage();
-			for(int i = 0; i< timeTable.getColumnCount(); i++) {
-				TimeWindowColumnSetting setting = getMindMapController()
-						.getActionXmlFactory()
-						.createTimeWindowColumnSetting();
-				setting.setColumnWidth(timeTable.getColumnModel().getColumn(i).getWidth());
-				setting.setColumnSorting(sorter.getSortingStatus(i));
-				storage.getTimeWindowColumnSetting().add(setting);
-			}
-            getMindMapController().storeDialogPositions(dialog, storage, WINDOW_PREFERENCE_STORAGE_PROPERTY);
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
+		TimeWindowConfigurationStorage storage = new TimeWindowConfigurationStorage();
+        for(int i = 0; i< timeTable.getColumnCount(); i++) {
+        	TimeWindowColumnSetting setting = new TimeWindowColumnSetting();
+        	setting.setColumnWidth(timeTable.getColumnModel().getColumn(i).getWidth());
+        	setting.setColumnSorting(sorter.getSortingStatus(i));
+        	storage.addTimeWindowColumnSetting(setting);
+        }
+        getMindMapController().storeDialogPositions(dialog, storage, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		dialog.setVisible(false);
 		dialog.dispose();
 	}

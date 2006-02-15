@@ -19,13 +19,11 @@
  *
  * Created on 27.08.2004
  */
-/*$Id: FontFamilyAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: FontFamilyAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Font;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.FontNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -61,7 +59,7 @@ public class FontFamilyAction extends NodeGeneralAction implements NodeActorXml 
         super.actionPerformed(null);
     }
     
-    public ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException {
+    public ActionPair apply(MapAdapter model, MindMapNode selected) {
         return getActionPair(selected, actionFont);
     }
 
@@ -74,27 +72,23 @@ public class FontFamilyAction extends NodeGeneralAction implements NodeActorXml 
      * @param fontValue
      */
     public void setFontFamily(MindMapNode node, String fontFamilyValue) {
-        try {
-            modeController.getActionFactory().startTransaction(
-                    (String) getValue(NAME));
-            modeController.getActionFactory().executeAction(
-                    getActionPair(node, fontFamilyValue));
-            modeController.getActionFactory().endTransaction(
-                    (String) getValue(NAME));
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+        modeController.getActionFactory().startTransaction(
+                (String) getValue(NAME));
+        modeController.getActionFactory().executeAction(
+                getActionPair(node, fontFamilyValue));
+        modeController.getActionFactory().endTransaction(
+                (String) getValue(NAME));
     }
 
 	private ActionPair getActionPair(MindMapNode node, String fontFamilyValue)
-	throws JAXBException {
+	 {
 	    FontNodeAction fontFamilyAction = createFontNodeAction(node, fontFamilyValue);
 	    FontNodeAction undoFontFamilyAction = createFontNodeAction(node, node.getFontFamilyName());
 	    return new ActionPair(fontFamilyAction, undoFontFamilyAction);
 	}
 
-	private FontNodeAction createFontNodeAction(MindMapNode node, String fontValue) throws JAXBException {
-        FontNodeAction fontFamilyAction = getActionXmlFactory().createFontNodeAction();
+	private FontNodeAction createFontNodeAction(MindMapNode node, String fontValue)  {
+        FontNodeAction fontFamilyAction = new FontNodeAction();
         fontFamilyAction.setNode(getNodeID(node));
         fontFamilyAction.setFont(fontValue);
 		return fontFamilyAction;

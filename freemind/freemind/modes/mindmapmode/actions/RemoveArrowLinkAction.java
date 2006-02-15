@@ -29,8 +29,6 @@ package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
 
-import javax.xml.bind.JAXBException;
-
 import freemind.controller.actions.generated.instance.AddArrowLinkXmlAction;
 import freemind.controller.actions.generated.instance.RemoveArrowLinkXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -127,35 +125,24 @@ public class RemoveArrowLinkAction extends FreemindAction implements ActorXml {
     }
 
     public RemoveArrowLinkXmlAction createRemoveArrowLinkXmlAction(String id) {
-        try {
-            RemoveArrowLinkXmlAction action = controller.getActionXmlFactory().createRemoveArrowLinkXmlAction();
-            action.setId(id);
-            return action;
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            return null;
-        }
+        RemoveArrowLinkXmlAction action = new RemoveArrowLinkXmlAction();
+        action.setId(id);
+        return action;
     }
     public AddArrowLinkXmlAction createAddArrowLinkXmlAction(MindMapLink link) {
-        try {
-            AddArrowLinkXmlAction action = controller.getActionXmlFactory()
-                    .createAddArrowLinkXmlAction();
-            action.setNode(link.getSource().getObjectId(controller));
-            action.setDestination(link.getTarget().getObjectId(controller));
-            action.setNewId(link.getUniqueID());
-            action.setColor(Tools.colorToXml(link.getColor()));
-            if (link instanceof MindMapArrowLink) {
-                MindMapArrowLink arrowLink = (MindMapArrowLink) link;
-                action.setEndArrow(arrowLink.getEndArrow());
-                action.setEndInclination(Tools.PointToXml(arrowLink.getEndInclination()));
-                action.setStartArrow(arrowLink.getStartArrow());
-                action.setStartInclination(Tools.PointToXml(arrowLink.getStartInclination()));
-            }
-            return action;
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            return null;
+        AddArrowLinkXmlAction action = new AddArrowLinkXmlAction();
+        action.setNode(link.getSource().getObjectId(controller));
+        action.setDestination(link.getTarget().getObjectId(controller));
+        action.setNewId(link.getUniqueID());
+        action.setColor(Tools.colorToXml(link.getColor()));
+        if (link instanceof MindMapArrowLink) {
+            MindMapArrowLink arrowLink = (MindMapArrowLink) link;
+            action.setEndArrow(arrowLink.getEndArrow());
+            action.setEndInclination(Tools.PointToXml(arrowLink.getEndInclination()));
+            action.setStartArrow(arrowLink.getStartArrow());
+            action.setStartInclination(Tools.PointToXml(arrowLink.getStartInclination()));
         }
+        return action;
     }
     
 }

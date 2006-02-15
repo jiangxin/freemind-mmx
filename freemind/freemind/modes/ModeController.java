@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.14.8 2006-02-01 06:40:39 christianfoltin Exp $*/
+/*$Id: ModeController.java,v 1.14.14.9 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -160,5 +160,9 @@ public interface ModeController  {
      */
     String getText(String textId);
     URL getResource(String path);
+    /** If other places want to save/load something, this should be the default path.*/
+    public File getLastCurrentDir();
+    /** If some load/save operation has changed the path, it should be mentioned here.*/
+    public void setLastCurrentDir(File pLastCurrentDir);
 
 }

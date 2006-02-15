@@ -29,8 +29,6 @@ package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
 
-import javax.xml.bind.JAXBException;
-
 import freemind.controller.actions.generated.instance.ArrowLinkArrowXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ArrowLinkAdapter;
@@ -108,16 +106,11 @@ public class ChangeArrowsInArrowLinkAction extends FreemindAction implements
     
     private ArrowLinkArrowXmlAction createArrowLinkArrowXmlAction(MindMapArrowLinkModel arrowLink,
             String hasStartArrow, String hasEndArrow){
-        try {
-            ArrowLinkArrowXmlAction action = controller.getActionXmlFactory().createArrowLinkArrowXmlAction();
-            action.setStartArrow(hasStartArrow);
-            action.setEndArrow(hasEndArrow);
-            action.setId(arrowLink.getUniqueID());
-            return action;
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            return null;
-        }
+        ArrowLinkArrowXmlAction action = new ArrowLinkArrowXmlAction();
+        action.setStartArrow(hasStartArrow);
+        action.setEndArrow(hasEndArrow);
+        action.setId(arrowLink.getUniqueID());
+        return action;
     }
     /**
      * @return

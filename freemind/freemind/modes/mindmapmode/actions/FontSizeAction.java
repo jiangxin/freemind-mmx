@@ -19,11 +19,9 @@
  *
  * Created on 27.08.2004
  */
-/*$Id: FontSizeAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: FontSizeAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.FontSizeNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -58,7 +56,7 @@ public class FontSizeAction extends NodeGeneralAction implements NodeActorXml {
         super.actionPerformed(null);
     }
     
-    public ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException {
+    public ActionPair apply(MapAdapter model, MindMapNode selected)  {
         return getActionPair(selected, actionSize);
     }
 
@@ -71,28 +69,24 @@ public class FontSizeAction extends NodeGeneralAction implements NodeActorXml {
      * @param fontSizeValue
      */
     public void setFontSize(MindMapNode node, String fontSizeValue) {
-        try {
-            modeController.getActionFactory().startTransaction(
-                    (String) getValue(NAME));
-            modeController.getActionFactory().executeAction(
-                    getActionPair(node, fontSizeValue));
-            modeController.getActionFactory().endTransaction(
-                    (String) getValue(NAME));
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+        modeController.getActionFactory().startTransaction(
+                (String) getValue(NAME));
+        modeController.getActionFactory().executeAction(
+                getActionPair(node, fontSizeValue));
+        modeController.getActionFactory().endTransaction(
+                (String) getValue(NAME));
         
     }
 
 	private ActionPair getActionPair(MindMapNode node, String fontSizeValue)
-	throws JAXBException {
+	 {
 	    FontSizeNodeAction fontSizeAction = createFontSizeNodeAction(node, fontSizeValue);
 	    FontSizeNodeAction undoFontSizeAction = createFontSizeNodeAction(node, node.getFontSize());
 	    return new ActionPair(fontSizeAction, undoFontSizeAction);
 	}
 
-	private FontSizeNodeAction createFontSizeNodeAction(MindMapNode node, String fontSizeValue) throws JAXBException {
-        FontSizeNodeAction fontSizeAction = getActionXmlFactory().createFontSizeNodeAction();
+	private FontSizeNodeAction createFontSizeNodeAction(MindMapNode node, String fontSizeValue)  {
+        FontSizeNodeAction fontSizeAction = new FontSizeNodeAction();
         fontSizeAction.setNode(getNodeID(node));
         fontSizeAction.setSize(fontSizeValue);
 		return fontSizeAction;

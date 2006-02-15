@@ -20,15 +20,13 @@
  * 
  * Created on 19.09.2004
  */
-/* $Id: NodeBackgroundColorAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $ */
+/* $Id: NodeBackgroundColorAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.ListIterator;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.NodeBackgroundColorFormatAction;
@@ -81,20 +79,15 @@ public class NodeBackgroundColorAction extends FreemindAction implements ActorXm
     	
     }
     public void setNodeBackgroundColor(MindMapNode node, Color color) {
-		try {
-			NodeBackgroundColorFormatAction doAction = createNodeBackgroundColorFormatAction(node, color);
-			NodeBackgroundColorFormatAction undoAction = createNodeBackgroundColorFormatAction(node, node.getBackgroundColor());
-			controller.getActionFactory().startTransaction(this.getClass().getName());
-			controller.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
-			controller.getActionFactory().endTransaction(this.getClass().getName());
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		NodeBackgroundColorFormatAction doAction = createNodeBackgroundColorFormatAction(node, color);
+        NodeBackgroundColorFormatAction undoAction = createNodeBackgroundColorFormatAction(node, node.getBackgroundColor());
+        controller.getActionFactory().startTransaction(this.getClass().getName());
+        controller.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
+        controller.getActionFactory().endTransaction(this.getClass().getName());
     }
 
-    public NodeBackgroundColorFormatAction createNodeBackgroundColorFormatAction(MindMapNode node, Color color) throws JAXBException {
-		NodeBackgroundColorFormatAction nodeAction = controller.getActionXmlFactory().createNodeBackgroundColorFormatAction();
+    public NodeBackgroundColorFormatAction createNodeBackgroundColorFormatAction(MindMapNode node, Color color) {
+		NodeBackgroundColorFormatAction nodeAction = new NodeBackgroundColorFormatAction();
 		nodeAction.setNode(node.getObjectId(controller));
 		nodeAction.setColor(Tools.colorToXml(color));
 		return nodeAction;

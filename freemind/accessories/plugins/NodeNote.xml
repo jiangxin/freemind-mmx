@@ -6,6 +6,7 @@
 	<plugin_action
 		documentation="%accessories/plugins/NodeNote.properties_documentation"
 		name="%accessories/plugins/NodeNote.properties_name"
+        key_stroke="alt N"
 		base="freemind.extensions.NodeHookAdapter" icon_path="images/knotes.png"
 		label="accessories/plugins/NodeNote.properties"
 		class_name="accessories.plugins.NodeNote" instanciation="Once">

@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: CutAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: CutAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -27,19 +27,21 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.CutNodeAction;
 import freemind.controller.actions.generated.instance.PasteNodeAction;
-import freemind.controller.actions.generated.instance.TransferableContentType;
+import freemind.controller.actions.generated.instance.TransferableContent;
+import freemind.controller.actions.generated.instance.TransferableFile;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
@@ -66,7 +68,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 		controller.getController().obtainFocusForSelected();
     }
 
-	public CutNodeAction getCutNodeAction(Transferable t, MindMapNode node) throws JAXBException {
+	public CutNodeAction getCutNodeAction(Transferable t, MindMapNode node){
 		return getCutNodeAction(t, new NodeCoordinate(node, node.isLeft().getValue()));
 	}
 
@@ -74,9 +76,9 @@ public class CutAction extends AbstractAction implements ActorXml {
     /** 
     */
     public CutNodeAction getCutNodeAction(Transferable t, NodeCoordinate coord)
-        throws JAXBException {
+         {
         CutNodeAction cutAction =
-            controller.getActionXmlFactory().createCutNodeAction();
+            new CutNodeAction();
         cutAction.setTransferableContent(getTransferableContent(t));
         cutAction.setNode(controller.getNodeID(coord.target));
 		cutAction.setAsSibling(coord.asSibling);
@@ -88,36 +90,31 @@ public class CutAction extends AbstractAction implements ActorXml {
     public Transferable cut(List nodeList) {
 	controller.sortNodesByDepth(nodeList);
     	Transferable totalCopy = controller.getModel().copy(nodeList, null);
-		try {
-			// Do-action
-			CompoundAction doAction = controller.getActionXmlFactory().createCompoundAction();
-			// Undo-action
-			CompoundAction undo= controller.getActionXmlFactory().createCompoundAction();
-			// sort selectedNodes list by depth, in order to guarantee that sons are deleted first:
-			for (Iterator i = nodeList.iterator(); i.hasNext();) {
-				MindMapNode node = (MindMapNode) i.next();
-				if(node.getParentNode() == null) continue;
-				Transferable copy = controller.getModel().copy(node);
-				NodeCoordinate coord = new NodeCoordinate(node, node.isLeft().getValue());
-                CutNodeAction cutNodeAction = getCutNodeAction( copy, coord);
-				doAction.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(cutNodeAction);
-				
-				PasteNodeAction pasteNodeAction=null;
-                pasteNodeAction = controller.paste.getPasteNodeAction(copy, coord);
-                // The paste actions are reversed because of the strange coordinates.
-				undo.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(0,pasteNodeAction);
-                
-            }
-			if (doAction.getCompoundActionOrSelectNodeActionOrCutNodeAction().size() > 0){
-			    controller.getActionFactory().startTransaction(text);
-			    controller.getActionFactory().executeAction(new ActionPair(doAction, undo));
-			    controller.getActionFactory().endTransaction(text);
-			}
-			return totalCopy;
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-		return totalCopy;
+		// Do-action
+        CompoundAction doAction = new CompoundAction();
+        // Undo-action
+        CompoundAction undo= new CompoundAction();
+        // sort selectedNodes list by depth, in order to guarantee that sons are deleted first:
+        for (Iterator i = nodeList.iterator(); i.hasNext();) {
+        	MindMapNode node = (MindMapNode) i.next();
+        	if(node.getParentNode() == null) continue;
+        	Transferable copy = controller.getModel().copy(node);
+        	NodeCoordinate coord = new NodeCoordinate(node, node.isLeft().getValue());
+            CutNodeAction cutNodeAction = getCutNodeAction( copy, coord);
+        	doAction.addChoice(cutNodeAction);
+        	
+        	PasteNodeAction pasteNodeAction=null;
+            pasteNodeAction = controller.paste.getPasteNodeAction(copy, coord);
+            // The paste actions are reversed because of the strange coordinates.
+        	undo.addAtChoice(0,pasteNodeAction);
+            
+        }
+        if (doAction.sizeChoiceList() > 0){
+            controller.getActionFactory().startTransaction(text);
+            controller.getActionFactory().executeAction(new ActionPair(doAction, undo));
+            controller.getActionFactory().endTransaction(text);
+        }
+        return totalCopy;
     }
     /* (non-Javadoc)
      * @see freemind.controller.actions.ActorXml#act(freemind.controller.actions.generated.instance.XmlAction)
@@ -126,18 +123,18 @@ public class CutAction extends AbstractAction implements ActorXml {
         CutNodeAction cutAction = (CutNodeAction) action;
         // clear all recently cutted links from the registry:
         controller.getModel().getLinkRegistry().clearCuttedNodeBuffer();
-		NodeCoordinate coord = new NodeCoordinate(controller.getNodeFromID(cutAction.getNode()), cutAction.isAsSibling(), cutAction.isIsLeft());
+		NodeCoordinate coord = new NodeCoordinate(controller.getNodeFromID(cutAction.getNode()), cutAction.getAsSibling(), cutAction.getIsLeft());
         MindMapNode selectedNode = coord.getNode();
 		controller.getModel().getLinkRegistry().cutNode(selectedNode);
 		controller.deleteChild.deleteWithoutUndo(selectedNode);
     }
 
-	public TransferableContentType getTransferableContent(
-		Transferable t) throws JAXBException {
+	public TransferableContent getTransferableContent(
+		Transferable t)  {
 
 		try {
-			TransferableContentType trans =
-					controller.getActionXmlFactory().createTransferableContentType();
+			TransferableContent trans =
+					new TransferableContent();
 			if (t.isDataFlavorSupported(MindMapNodesSelection.mindMapNodesFlavor)) {
 				String textFromClipboard;
 				textFromClipboard =
@@ -161,14 +158,17 @@ public class CutAction extends AbstractAction implements ActorXml {
 				trans.setTransferableAsHtml(textFromClipboard);
 			}
 			if(t.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
-				/* Since the JAXB-generated interface TransferableContentType doesn't supply
+				/* Since the JAXB-generated interface TransferableContent doesn't supply
 				  a setTranserableAsFileList method, we have to get the fileList, clear it,
 				  and then set it to the new value.
 				*/ 
 	            List fileList = (List)t.getTransferData(MindMapNodesSelection.fileListFlavor);
-				List listCopy = trans.getTransferableAsFileList();
-				listCopy.clear();
-				listCopy.addAll(fileList);
+                for (Iterator iter = fileList.iterator(); iter.hasNext();) {
+                    File fileName = (File) iter.next();
+                    TransferableFile transferableFile = new TransferableFile();
+                    transferableFile.setFileName(fileName.getAbsolutePath());
+                    trans.addTransferableFile(transferableFile);
+                }
 			}
 			return trans;
 		} catch (UnsupportedFlavorException e) {
@@ -179,9 +179,15 @@ public class CutAction extends AbstractAction implements ActorXml {
 		return null; 
 	}
 
-    public Transferable getTransferable(TransferableContentType trans) {
+    public Transferable getTransferable(TransferableContent trans) {
         // create Transferable:
-        //URGENT: Add file list to this selection.
+        //Add file list to this selection.
+        Vector fileList = new Vector();
+        for (Iterator iter = trans.getListTransferableFileList().iterator(); iter.hasNext();)
+        {
+            TransferableFile tFile = (TransferableFile) iter.next();
+            fileList.add(new File(tFile.getFileName()));
+        }
         Transferable copy =
             new MindMapNodesSelection(
                 trans.getTransferable(),
@@ -189,7 +195,7 @@ public class CutAction extends AbstractAction implements ActorXml {
                 trans.getTransferableAsRTF(),
                 trans.getTransferableAsDrop(), 
                 trans.getTransferableAsHtml(), 
-            	trans.getTransferableAsFileList());
+                fileList);
         return copy;
     }
     /* (non-Javadoc)

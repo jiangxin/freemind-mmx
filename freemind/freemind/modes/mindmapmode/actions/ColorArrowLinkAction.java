@@ -31,7 +31,6 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 
 import javax.swing.Action;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.ArrowLinkColorXmlAction;
@@ -103,15 +102,10 @@ public class ColorArrowLinkAction extends FreemindAction implements ActorXml{
 
     
     private ArrowLinkColorXmlAction createArrowLinkColorXmlAction(MindMapLink arrowLink, Color color) {
-        try {
-            ArrowLinkColorXmlAction action = controller.getActionXmlFactory().createArrowLinkColorXmlAction();
-            action.setColor(Tools.colorToXml(color));
-            action.setId(arrowLink.getUniqueID());
-            return action;
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            return null;
-        }
+        ArrowLinkColorXmlAction action = new ArrowLinkColorXmlAction();
+        action.setColor(Tools.colorToXml(color));
+        action.setId(arrowLink.getUniqueID());
+        return action;
     }
     /**
      * @return

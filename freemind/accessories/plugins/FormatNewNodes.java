@@ -19,19 +19,16 @@
  *
  * Created on 25.08.2004
  */
-/*$Id: FormatNewNodes.java,v 1.1.4.2 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: FormatNewNodes.java,v 1.1.4.3 2006-02-15 21:18:45 christianfoltin Exp $*/
 package accessories.plugins;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import javax.xml.bind.JAXBException;
-
 import freemind.controller.actions.generated.instance.CompoundAction;
-import freemind.controller.actions.generated.instance.CompoundActionType;
 import freemind.controller.actions.generated.instance.FormatNodeAction;
-import freemind.controller.actions.generated.instance.NewNodeActionType;
+import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
@@ -83,10 +80,10 @@ public class FormatNewNodes implements ActionHandler, ActionFilter,
 	 * @param doAction
 	 */
 	private void detectFormatChanges(XmlAction doAction) {
-		if (doAction instanceof CompoundActionType) {
-			CompoundActionType compAction = (CompoundActionType) doAction;
+		if (doAction instanceof CompoundAction) {
+			CompoundAction compAction = (CompoundAction) doAction;
 			for (Iterator i = compAction
-					.getCompoundActionOrSelectNodeActionOrCutNodeAction()
+					.getListChoiceList()
 					.iterator(); i.hasNext();) {
 				XmlAction childAction = (XmlAction) i.next();
 				detectFormatChanges(childAction);
@@ -104,28 +101,22 @@ public class FormatNewNodes implements ActionHandler, ActionFilter,
 	}
 
 	public ActionPair filterAction(ActionPair pair) {
-		try {
-			if (pair.getDoAction() instanceof NewNodeActionType) {
-				NewNodeActionType newNodeAction = (NewNodeActionType) pair
-						.getDoAction();
-				// add to a compound the newNodeAction and the other formats we
-				// have:
-				CompoundAction compound =  controller
-						.getActionXmlFactory().createCompoundAction();
-				compound.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(newNodeAction);
-				for (Iterator i = formatActions.values().iterator(); i.hasNext();) {
-					NodeAction formatAction = (NodeAction) i.next();
-					// deep copy:
-					FormatNodeAction copiedFormatAction = (FormatNodeAction) controller.unMarshall(controller.marshall(formatAction));
-					copiedFormatAction.setNode(newNodeAction.getNewId());
-					compound.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(copiedFormatAction);
-				}
-				ActionPair newPair = new ActionPair(compound, pair.getUndoAction());
-				return newPair;
+		if (pair.getDoAction() instanceof NewNodeAction) {
+			NewNodeAction newNodeAction = (NewNodeAction) pair
+					.getDoAction();
+			// add to a compound the newNodeAction and the other formats we
+			// have:
+			CompoundAction compound =  new CompoundAction();
+			compound.addChoice(newNodeAction);
+			for (Iterator i = formatActions.values().iterator(); i.hasNext();) {
+				NodeAction formatAction = (NodeAction) i.next();
+				// deep copy:
+				FormatNodeAction copiedFormatAction = (FormatNodeAction) controller.unMarshall(controller.marshall(formatAction));
+				copiedFormatAction.setNode(newNodeAction.getNewId());
+				compound.addChoice(copiedFormatAction);
 			}
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ActionPair newPair = new ActionPair(compound, pair.getUndoAction());
+			return newPair;
 		}
 		return pair;
 	}

@@ -6,7 +6,7 @@ package accessories.plugins;
 
 import java.awt.Color;
 
-import freemind.controller.actions.generated.instance.EditNodeActionType;
+import freemind.controller.actions.generated.instance.EditNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
@@ -54,9 +54,9 @@ public class RevisionPlugin extends PermanentMindMapNodeHookAdapter implements A
      */
     public void executeAction(ActionPair pair) {
     	XmlAction action = pair.getDoAction();
-    	if(action instanceof EditNodeActionType) {
+    	if(action instanceof EditNodeAction) {
     		// there is an edit action.
-			EditNodeActionType editAction = (EditNodeActionType) action;
+			EditNodeAction editAction = (EditNodeAction) action;
 			NodeAdapter node = getMindMapController().getNodeFromID(editAction.getNode());
 			node.setBackgroundColor(color);
 			nodeChanged(node);

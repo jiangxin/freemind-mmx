@@ -19,7 +19,7 @@
  *
  * Created on 23.06.2004
  */
-/*$Id: JaxbTools.java,v 1.1.4.2 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: XmlBindingTools.java,v 1.1.2.1 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.common;
 
@@ -28,14 +28,14 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.swing.JDialog;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
+
+import org.jibx.runtime.BindingDirectory;
+import org.jibx.runtime.IBindingFactory;
+import org.jibx.runtime.IMarshallingContext;
+import org.jibx.runtime.IUnmarshallingContext;
+import org.jibx.runtime.JiBXException;
 
 import freemind.controller.Controller;
-import freemind.controller.actions.generated.instance.ObjectFactory;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.XmlAction;
 
@@ -43,59 +43,44 @@ import freemind.controller.actions.generated.instance.XmlAction;
  * @author foltin
  * Singleton
  */
-public class JaxbTools {
+public class XmlBindingTools {
 
-	private static JaxbTools instance;
-	private static JAXBContext context;
-	private ObjectFactory actionXmlFactory;
+	private static XmlBindingTools instance;
+    private static IBindingFactory mBindingFactory;
 
 
-    private JaxbTools() {
-		context = getJAXBContext();
-		// new object factory for xml actions:
-		actionXmlFactory = new ObjectFactory();
+    private XmlBindingTools() {
 	}
 
-	public static JaxbTools getInstance() {
+	public static XmlBindingTools getInstance() {
 		if(instance == null) {
-			instance = new JaxbTools();
+			instance = new XmlBindingTools();
+            try {
+                mBindingFactory = BindingDirectory.getFactory(XmlAction.class);
+            } catch (JiBXException e) {
+                e.printStackTrace();
+            }
 
 		}
 		return instance;
 	}
 
-	private static final String JAXB_CONTEXT =
-		"freemind.controller.actions.generated.instance";
-
-
-	public JAXBContext getJAXBContext() {
-		try {
-			return JAXBContext.newInstance(JAXB_CONTEXT);
-		} catch (JAXBException e) {
-			e.printStackTrace();
-			throw new RuntimeException("getJAXBContext failed.");
-		}
-	}
 	
-    public ObjectFactory getActionXmlFactory() {
-        return actionXmlFactory;
-    }
-	
-	public Marshaller createMarshaller() {
-		try {
-            return context.createMarshaller();
-        } catch (JAXBException e) {
+	public IMarshallingContext createMarshaller() {
+        try {
+            return mBindingFactory.createMarshallingContext();
+        } catch (JiBXException e) {
             e.printStackTrace();
-            throw new RuntimeException("createMarshaller failed.");
+            return null;
         }
 	}
 	
-	public Unmarshaller createUnmarshaller() {
-		try {
-            return context.createUnmarshaller();
-        } catch (JAXBException e) {
+	public IUnmarshallingContext createUnmarshaller() {
+        try {
+            return  mBindingFactory.createUnmarshallingContext();
+        } catch (JiBXException e) {
             e.printStackTrace();
-			throw new RuntimeException("createUnmarshaller failed.");
+            return null;
         }
 	}
 	
@@ -131,34 +116,34 @@ public class JaxbTools {
 
 
 	public String marshall(XmlAction action) {
+        // marshall:
+        //marshal to StringBuffer:
+        StringWriter writer = new StringWriter();
+        IMarshallingContext m = XmlBindingTools.getInstance().createMarshaller();
         try {
-            // marshall:
-            //marshal to StringBuffer:
-            StringWriter writer = new StringWriter();
-            Marshaller m = JaxbTools.getInstance().createMarshaller();
-            m.marshal(action, writer);
-            String result = writer.toString();
-            return result;
-        } catch (JAXBException e) {
-//			logger.severe(e.toString(),e);
+            m.marshalDocument(action, "UTF-8", null,
+                    writer);
+        } catch (JiBXException e) {
             e.printStackTrace();
-            return "";
+            return null;
         }
+        String result = writer.toString();
+        return result;
 
 	}
 
 	public XmlAction unMarshall(String inputString) {
 		try {
 			// unmarshall:
-			Unmarshaller u = JaxbTools.getInstance().createUnmarshaller();
+            IUnmarshallingContext u = XmlBindingTools.getInstance().createUnmarshaller();
 			StringBuffer xmlStr = new StringBuffer( inputString);
-			XmlAction doAction = (XmlAction) u.unmarshal( new StreamSource( new StringReader( xmlStr.toString() ) ) );
+			XmlAction doAction = (XmlAction) u.unmarshalDocument
+            ( new StringReader( xmlStr.toString() )  , null);
 			return doAction;
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+		} catch (JiBXException e) {
+            e.printStackTrace();
+            return null;
+        }
 
 	}
 

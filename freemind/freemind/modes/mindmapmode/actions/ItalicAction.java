@@ -20,12 +20,11 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: ItalicAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $ */
+/* $Id: ItalicAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import javax.swing.Action;
 import javax.swing.JMenuItem;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.actions.generated.instance.ItalicNodeAction;
@@ -53,8 +52,8 @@ public class ItalicAction extends NodeGeneralAction implements NodeActorXml, Men
 	public void act(XmlAction action) {
 		ItalicNodeAction italicact = (ItalicNodeAction) action;
 		NodeAdapter node = getNodeFromID(italicact.getNode());
-		if(node.isItalic() != italicact.isItalic()) {
-			node.setItalic(italicact.isItalic());
+		if(node.isItalic() != italicact.getItalic()) {
+			node.setItalic(italicact.getItalic());
 			this.modeController.nodeChanged(node);
 		}
 	}
@@ -64,33 +63,29 @@ public class ItalicAction extends NodeGeneralAction implements NodeActorXml, Men
 		return ItalicNodeAction.class;
 	}
 
-	public ActionPair apply(MapAdapter model, MindMapNode selected) throws JAXBException {
+	public ActionPair apply(MapAdapter model, MindMapNode selected) {
 		// every node is set to the inverse of the focussed node.
 		boolean italic = modeController.getSelected().isItalic();
 		return getActionPair(selected, !italic);
 	}
 
 	private ActionPair getActionPair(MindMapNode selected, boolean italic)
-		throws JAXBException {
+		 {
 		ItalicNodeAction italicAction = toggleItalic(selected, italic);
 		ItalicNodeAction undoItalicAction = toggleItalic(selected, selected.isItalic());
 		return new ActionPair(italicAction, undoItalicAction);
 	}
 
 	private ItalicNodeAction toggleItalic(MindMapNode selected, boolean italic)
-		throws JAXBException {
-		ItalicNodeAction italicAction = getActionXmlFactory().createItalicNodeAction();
+		 {
+		ItalicNodeAction italicAction = new ItalicNodeAction();
 		italicAction.setNode(getNodeID(selected));
 		italicAction.setItalic(italic);
 		return italicAction;
 	}
 
 	public void setItalic(MindMapNode node, boolean  italic) {
-		try {
-			execute(getActionPair(node, italic));
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
+		execute(getActionPair(node, italic));
 	}
 
     public boolean isEnabled(JMenuItem item, Action action) {

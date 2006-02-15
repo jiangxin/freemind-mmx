@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: EdgeColorAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $ */
+/* $Id: EdgeColorAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 import java.util.ListIterator;
 
 import javax.swing.AbstractAction;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.EdgeColorFormatAction;
@@ -65,16 +64,11 @@ public class EdgeColorAction extends AbstractAction implements ActorXml {
 	}
 
 	public void setEdgeColor(MindMapNode node, Color color) {
-		try {
-			EdgeColorFormatAction doAction = createEdgeColorFormatAction(node, color);
-			EdgeColorFormatAction undoAction = createEdgeColorFormatAction(node, ((EdgeAdapter) node.getEdge()).getRealColor());
-			controller.getActionFactory().startTransaction(this.getClass().getName());
-			controller.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
-			controller.getActionFactory().endTransaction(this.getClass().getName());
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		EdgeColorFormatAction doAction = createEdgeColorFormatAction(node, color);
+        EdgeColorFormatAction undoAction = createEdgeColorFormatAction(node, ((EdgeAdapter) node.getEdge()).getRealColor());
+        controller.getActionFactory().startTransaction(this.getClass().getName());
+        controller.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
+        controller.getActionFactory().endTransaction(this.getClass().getName());
 		
 	}
 
@@ -94,8 +88,8 @@ public class EdgeColorAction extends AbstractAction implements ActorXml {
 		}
 	}
 
-	public EdgeColorFormatAction createEdgeColorFormatAction(MindMapNode node, Color color) throws JAXBException {
-		EdgeColorFormatAction edgeAction = controller.getActionXmlFactory().createEdgeColorFormatAction();
+	public EdgeColorFormatAction createEdgeColorFormatAction(MindMapNode node, Color color)  {
+		EdgeColorFormatAction edgeAction = new EdgeColorFormatAction();
 		edgeAction.setNode(node.getObjectId(controller));
 		if (color != null) {
             edgeAction.setColor(Tools.colorToXml(color));

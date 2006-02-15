@@ -19,7 +19,7 @@
  *
  * Created on 11.03.2005
  */
-/*$Id: RevertAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: RevertAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -28,8 +28,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.RevertXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -83,8 +81,6 @@ public class RevertAction extends FreemindAction implements ActorXml {
 					new ActionPair(doAction, undoAction));
 			controller.getActionFactory().endTransaction(
 					this.getClass().getName());
-		} catch (JAXBException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -102,14 +98,12 @@ public class RevertAction extends FreemindAction implements ActorXml {
                     new ActionPair(doAction, undoAction));
             controller.getActionFactory().endTransaction(
                     this.getClass().getName());
-        } catch (JAXBException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 	public RevertXmlAction createRevertXmlAction(File file)
-			throws JAXBException, IOException {
+			throws IOException {
 		String fileName = file.getAbsolutePath();
 		FileReader f = new FileReader(file);
 		StringBuffer buffer = new StringBuffer();
@@ -120,7 +114,7 @@ public class RevertAction extends FreemindAction implements ActorXml {
 	}
 
 	public RevertXmlAction createRevertXmlAction(MindMap map, String fileName, String filePrefix)
-			throws JAXBException, IOException {
+			throws IOException {
 		StringWriter writer = new StringWriter();
 		map.getXml(writer);
 		return createRevertXmlAction(writer.getBuffer().toString(), fileName,
@@ -130,12 +124,10 @@ public class RevertAction extends FreemindAction implements ActorXml {
 	/**
 	 * @param filePrefix is used to generate the name of the reverted map in case that fileName is null.
 	 * @return
-	 * @throws JAXBException
 	 */
 	public RevertXmlAction createRevertXmlAction(String xmlPackedFile,
-			String fileName, String filePrefix) throws JAXBException {
-		RevertXmlAction revertXmlAction = controller.getActionXmlFactory()
-				.createRevertXmlAction();
+			String fileName, String filePrefix)  {
+		RevertXmlAction revertXmlAction = new RevertXmlAction();
 		revertXmlAction.setLocalFileName(fileName);
 		revertXmlAction.setMap(xmlPackedFile);
 		revertXmlAction.setFilePrefix(filePrefix);

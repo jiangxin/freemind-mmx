@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: ExportHook.java,v 1.1.4.5 2005-07-02 23:19:38 christianfoltin Exp $*/
+/*$Id: ExportHook.java,v 1.1.4.6 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.extensions;
 
@@ -61,6 +61,10 @@ public class ExportHook extends ModeControllerHookAdapter {
                     + "." + type;
             chooser.setSelectedFile(new File(proposedName));
         }
+        if (getController().getLastCurrentDir()!= null) {
+            chooser.setCurrentDirectory(getController().getLastCurrentDir());
+        }
+
 
 		chooser.addChoosableFileFilter(new ImageFilter(type, description));
 		//    	chooser.setDialogTitle(label);
@@ -71,6 +75,7 @@ public class ExportHook extends ModeControllerHookAdapter {
 
 		// |= Pressed O.K.
 		File chosenFile = chooser.getSelectedFile();
+        getController().setLastCurrentDir(chosenFile.getParentFile());
 		String ext = Tools.getExtension(chosenFile.getName());
 		if (!Tools.safeEqualsIgnoreCase(ext, type)) {
 			chosenFile = new File(chosenFile.getParent(), chosenFile.getName() + "." + type);

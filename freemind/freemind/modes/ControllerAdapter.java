@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.35 2006-02-04 20:19:08 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.36 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -368,7 +368,7 @@ public abstract class ControllerAdapter implements ModeController {
         if (returnVal==JFileChooser.APPROVE_OPTION) {
             try {
                 File theFile = chooser.getSelectedFile();
-                this.lastCurrentDir = theFile.getParentFile();
+                lastCurrentDir = theFile.getParentFile();
                 load(theFile.toURL());
             } catch (Exception ex) {
                handleLoadingException (ex); } {
@@ -383,11 +383,12 @@ public abstract class ControllerAdapter implements ModeController {
     protected JFileChooser getFileChooser() {
         JFileChooser chooser = new JFileChooser();
         File parentFile = getMapsParentFile();
-        if (parentFile != null) {
-            this.lastCurrentDir = parentFile;
+        // choose new lastCurrentDir only, if not previously set.
+        if (parentFile != null && lastCurrentDir == null) {
+            lastCurrentDir = parentFile;
         }
         if (lastCurrentDir!= null) {
-            chooser.setCurrentDirectory(this.lastCurrentDir);
+            chooser.setCurrentDirectory(lastCurrentDir);
         }
         if (getFileFilter() != null) {
             chooser.addChoosableFileFilter(getFileFilter());
@@ -431,6 +432,7 @@ public abstract class ControllerAdapter implements ModeController {
         
         // |= Pressed O.K.    
         File f = chooser.getSelectedFile();
+        lastCurrentDir = f.getParentFile();
         //Force the extension to be .mm
         String ext = Tools.getExtension(f.getName());
         if(!ext.equals("mm")) {
@@ -892,6 +894,16 @@ public abstract class ControllerAdapter implements ModeController {
             getView().centerNode(node.getViewer());
             getView().selectAsTheOnlyOneSelected(node.getViewer());
             getController().obtainFocusForSelected();
+    }
+
+    public File getLastCurrentDir()
+    {
+        return lastCurrentDir;
+    }
+
+    public void setLastCurrentDir(File pLastCurrentDir)
+    {
+        lastCurrentDir = pLastCurrentDir;
     }
         
 

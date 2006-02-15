@@ -20,11 +20,9 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: NodeStyleAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $ */
+/* $Id: NodeStyleAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
-
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.NodeStyleFormatAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -45,7 +43,7 @@ public class NodeStyleAction extends NodeGeneralAction implements NodeActorXml {
     }
 
     public ActionPair apply(MapAdapter model, MindMapNode selected)
-            throws JAXBException {
+            {
         return getActionPair(selected, mStyle);
     }
 
@@ -54,30 +52,25 @@ public class NodeStyleAction extends NodeGeneralAction implements NodeActorXml {
     }
 
     public void setStyle(MindMapNode node, String style) {
-        try {
-            modeController.getActionFactory().startTransaction(
-                    (String) getValue(NAME));
-            modeController.getActionFactory().executeAction(
-                    getActionPair(node, style));
-            modeController.getActionFactory().endTransaction(
-                    (String) getValue(NAME));
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+        modeController.getActionFactory().startTransaction(
+                (String) getValue(NAME));
+        modeController.getActionFactory().executeAction(
+                getActionPair(node, style));
+        modeController.getActionFactory().endTransaction(
+                (String) getValue(NAME));
         
     }
 
     private ActionPair getActionPair(MindMapNode targetNode, String style)
-            throws JAXBException {
+             {
         NodeStyleFormatAction styleAction = createNodeStyleFormatAction(targetNode, style);
         NodeStyleFormatAction undoStyleAction = createNodeStyleFormatAction(targetNode, targetNode.getStyle());
         return new ActionPair(styleAction, undoStyleAction);
     }
 
     private NodeStyleFormatAction createNodeStyleFormatAction(MindMapNode selected, String style)
-            throws JAXBException {
-        NodeStyleFormatAction nodeStyleAction = getActionXmlFactory()
-                .createNodeStyleFormatAction();
+            {
+        NodeStyleFormatAction nodeStyleAction = new NodeStyleFormatAction();
         nodeStyleAction.setNode(getNodeID(selected));
         nodeStyleAction.setStyle(style);
         return nodeStyleAction;

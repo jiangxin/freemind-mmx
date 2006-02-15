@@ -19,7 +19,7 @@
  *
  * Created on 21.08.2004
  */
-/*$Id: NodeUpAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: NodeUpAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -33,11 +33,9 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
-import javax.xml.bind.JAXBException;
 
 import freemind.controller.actions.generated.instance.MoveNodesAction;
 import freemind.controller.actions.generated.instance.NodeListMember;
-import freemind.controller.actions.generated.instance.NodeListMemberType;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
@@ -187,8 +185,8 @@ public class NodeUpAction extends AbstractAction implements ActorXml{
             MoveNodesAction moveAction = (MoveNodesAction) action;
             MindMapNode selected = modeController.getNodeFromID(moveAction.getNode());
             Vector selecteds = new Vector();
-            for (Iterator i = moveAction.getNodeListMember().iterator(); i.hasNext();) {
-                NodeListMemberType node = (NodeListMemberType) i.next();
+            for (Iterator i = moveAction.getListNodeListMemberList().iterator(); i.hasNext();) {
+                NodeListMember node = (NodeListMember) i.next();
                 selecteds.add(modeController.getNodeFromID(node.getNode()));
             }
             _moveNodes(selected, selecteds, moveAction.getDirection());
@@ -198,22 +196,17 @@ public class NodeUpAction extends AbstractAction implements ActorXml{
         return MoveNodesAction.class;
     }
     private MoveNodesAction createMoveNodesAction(MindMapNode selected, List selecteds, int direction) {
-        try {
-            MoveNodesAction moveAction = modeController.getActionXmlFactory().createMoveNodesAction();
-            moveAction.setDirection(direction);
-            moveAction.setNode(selected.getObjectId(modeController));
-            // selectedNodes list 
-            for (Iterator i = selecteds.iterator(); i.hasNext();) {
-                MindMapNode node = (MindMapNode) i.next();
-                NodeListMember nodeListMember = modeController.getActionXmlFactory().createNodeListMember();
-                nodeListMember.setNode(node.getObjectId(modeController));
-                moveAction.getNodeListMember().add(nodeListMember);
-            } 
-            return moveAction;
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-        return null;
+        MoveNodesAction moveAction = new MoveNodesAction();
+        moveAction.setDirection(direction);
+        moveAction.setNode(selected.getObjectId(modeController));
+        // selectedNodes list 
+        for (Iterator i = selecteds.iterator(); i.hasNext();) {
+            MindMapNode node = (MindMapNode) i.next();
+            NodeListMember nodeListMember = new NodeListMember();
+            nodeListMember.setNode(node.getObjectId(modeController));
+            moveAction.addNodeListMember(nodeListMember);
+        } 
+        return moveAction;
         
     }
 }
