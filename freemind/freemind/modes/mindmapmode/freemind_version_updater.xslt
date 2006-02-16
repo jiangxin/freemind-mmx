@@ -47,6 +47,9 @@
 			--><xsl:when test="@version='0.8.1_beta2'"><!--
 			-->0810020<!-- 
 			--></xsl:when><!--
+			--><xsl:when test="@version='0.8.1_beta3'"><!--
+			-->0810030<!-- 
+			--></xsl:when><!--
 			--><xsl:otherwise><!--
 			-->-1<!--
 			--></xsl:otherwise><!--
