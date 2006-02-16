@@ -7,11 +7,12 @@
 package accessories.plugins;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
@@ -43,10 +44,18 @@ import freemind.modes.ModeController;
  */
 public class ExportWithXSLT extends ExportHook {
     protected File chooseFile() {
-        return chooseFile(getResourceString("file_type"), getResourceString("file_description"));
+        return chooseFile(getResourceString("file_type"), getTranslatableResourceString("file_description"));
     }
 
-	/**
+	private String getTranslatableResourceString(String resourceName) {
+        String returnValue = getResourceString(resourceName);
+        if(returnValue != null && returnValue.startsWith("%")) {
+            return getController().getText(returnValue.substring(1));
+        }
+        return returnValue;
+    }
+
+    /**
 	 * 
 	 */
 	public ExportWithXSLT() {
@@ -83,78 +92,42 @@ public class ExportWithXSLT extends ExportHook {
     private void transform() {
         try {
             File saveFile = chooseFile();
+            if(saveFile==null) {
+                // no file.
+                return;
+            }
             // get AREA:
             // create HTML image?
-            MindMapNode root = (MindMapNode) getController().getMap().getRoot();
-            ClickableImageCreator creator=null;
             boolean create_image = Tools.safeEquals(getResourceString("create_html_linked_image"), "true");
-            if(create_image) {
-                creator = new ClickableImageCreator(root, getController(), 
-                        getResourceString("link_replacement_regexp"));
-            }
-            // get output:
-            StringWriter writer = new StringWriter();
-            // get XML
-            getController().getMap().getXml(writer);
-            StringReader reader = new StringReader(writer.getBuffer().toString());
-            // search for xslt file:
+            String areaCode = getAreaCode(create_image);
+            // XSLT Transformation
             String xsltFileName = getResourceString("xslt_file");
-            URL xsltUrl = getResource(xsltFileName);
-            if(xsltUrl == null) {
-                logger.severe("Can't find " + xsltFileName + " as resource.");
-                throw new IllegalArgumentException("Can't find " + xsltFileName + " as resource.");
-            }
-            InputStream xsltFile = xsltUrl.openStream();
-            transForm(new StreamSource(reader), xsltFile, saveFile, creator);
-            // copy files from the resources to the file system:
-            if(Tools.safeEquals(getResourceString("create_dir"), "true")) {
+            boolean success = transformMapWithXslt(xsltFileName, saveFile, areaCode);
+            // create directory?
+            if(success && Tools.safeEquals(getResourceString("create_dir"), "true")) {
                 String directoryName = saveFile.getAbsolutePath()+"_files";
-                boolean success = true;
-                File dir = new File(directoryName);
-                // create directory, if not exists:
-                if (!dir.exists()) {
-                    success = dir.mkdir();
-                }
+                success = createDirectory(directoryName);
+                
+                // copy files from the resources to the file system:
                 if(success) {
                     String files = getResourceString("files_to_copy");
                     String filePrefix = getResourceString("file_prefix");
-                    StringTokenizer tokenizer = new StringTokenizer(files, ",");
-                    while(tokenizer.hasMoreTokens()) {
-                        String next = tokenizer.nextToken();
-                        copyFromResource(filePrefix, next, directoryName); 
-                    }
-                    // copy icons?
-                    if(Tools.safeEquals(getResourceString("copy_icons"),"true")) {
-                        String directoryName2 = directoryName + File.separatorChar + "icons";
-                        File dir2 = new File(directoryName2);
-                        // create directory, if not exists:
-                        if (!dir2.exists()) {
-                            success = dir2.mkdir();
-                        }
-                        if(success) {
-	                        Vector iconNames = MindIcon.getAllIconNames();
-	                        for ( int i = 0 ; i < iconNames.size(); ++i ) {
-	                            String iconName = ((String) iconNames.get(i));
-	                            MindIcon myIcon     = MindIcon.factory(iconName);
-	                            copyFromResource(MindIcon.getIconsPath(), myIcon.getIconBaseFileName(), directoryName2); 
-	                        }
-                        }
-                    }
+                    copyFilesFromResourcesToDirectory(directoryName, files, filePrefix);
+                }
+                // copy icons?
+                if(success && Tools.safeEquals(getResourceString("copy_icons"),"true")) {
+                    success = copyIcons(directoryName);
+                }
+                if(success && Tools.safeEquals(getResourceString("copy_map"),"true")) {
+                    success = copyMap(directoryName);
                 }
                 if(success && create_image) {
-                    // create image:
-            		BufferedImage image = createBufferedImage();
-            		try {
-            			FileOutputStream out = new FileOutputStream(directoryName+File.separator+"image.png");
-            			ImageIO.write(image, "png", out);
-            			out.close();
-            		} catch (IOException e1) {
-            			e1.printStackTrace();
-            		}
+                    createImageFromMap(directoryName);
                 }
-                if(!success){
-                    JOptionPane.showMessageDialog(null, getResourceString("error_creating_directory"), "Freemind", JOptionPane.ERROR_MESSAGE);
-                }
+            }
+            if(!success){
+                JOptionPane.showMessageDialog(null, getResourceString("error_creating_directory"), "Freemind", JOptionPane.ERROR_MESSAGE);
+                return;
             }
             if(Tools.safeEquals(getResourceString("load_file"), "true")) {
                 getController().getFrame().openDocument(saveFile.toURL());
@@ -164,41 +137,136 @@ public class ExportWithXSLT extends ExportHook {
         }
     }
 
+    private boolean copyMap(String pDirectoryName) throws IOException
+    {
+        boolean success = true;
+//      Generating output Stream            
+        BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(pDirectoryName+File.separator + "map.mm") ) );
+        getController().getMap().getXml(fileout);
+        return success;
+    }
+
     /**
-     * @param next
      * @param directoryName
+     * @return
+     */
+    private boolean copyIcons(String directoryName)
+    {
+        boolean success;
+        String iconDirectoryName = directoryName + File.separatorChar + "icons";
+        
+        success = createDirectory(iconDirectoryName);
+        if(success) {
+            copyIconsToDirectory(iconDirectoryName);
+        }
+        return success;
+    }
+
+    /**
+     * @param directoryName
+     */
+    private void createImageFromMap(String directoryName)
+    {
+        // create image:
+        BufferedImage image = createBufferedImage();
+        try {
+        	FileOutputStream out = new FileOutputStream(directoryName+File.separator+"image.png");
+        	ImageIO.write(image, "png", out);
+        	out.close();
+        } catch (IOException e1) {
+        	e1.printStackTrace();
+        }
+    }
+
+    /**
      * @param directoryName2
      */
-    private void copyFromResource(String prefix, String fileName, String destinationDirectory) {
-        // adapted from http://javaalmanac.com/egs/java.io/CopyFile.html
-        // Copies src file to dst file.
-        // If the dst file does not exist, it is created
-            try {
-                logger.finest("searching for " + prefix + fileName);
-                URL resource = getResource(prefix + fileName);
-                if(resource==null){
-                		logger.severe("Cannot find resource: "+ prefix+fileName);
-                		return;
-                }
-                InputStream in = resource.openStream();
-                OutputStream out = new FileOutputStream(destinationDirectory
-                        + "/" + fileName);
+    private void copyIconsToDirectory(String directoryName2)
+    {
+        Vector iconNames = MindIcon.getAllIconNames();
+        for ( int i = 0 ; i < iconNames.size(); ++i ) {
+            String iconName = ((String) iconNames.get(i));
+            MindIcon myIcon     = MindIcon.factory(iconName);
+            copyFromResource(MindIcon.getIconsPath(), myIcon.getIconBaseFileName(), directoryName2); 
+        }
+    }
 
-                // Transfer bytes from in to out
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                in.close();
-                out.close();
-            } catch (Exception e) {
-                logger.severe("File not found or could not be copied. " +
-                		"Was earching for " + prefix + fileName + " and should go to "+destinationDirectory);
-                e.printStackTrace();
-            }
- 
-        
+    /**
+     * @param directoryName
+     * @param files
+     * @param filePrefix
+     */
+    private void copyFilesFromResourcesToDirectory(String directoryName, String files, String filePrefix)
+    {
+        StringTokenizer tokenizer = new StringTokenizer(files, ",");
+        while(tokenizer.hasMoreTokens()) {
+            String next = tokenizer.nextToken();
+            copyFromResource(filePrefix, next, directoryName); 
+        }
+    }
+
+    /**
+     * @param directoryName
+     * @param success
+     * @return
+     */
+    private boolean createDirectory(String directoryName)
+    {
+        File dir = new File(directoryName);
+        // create directory, if not exists:
+        if (!dir.exists()) {
+            return dir.mkdir();
+        }
+        return true;
+    }
+
+    /**
+     * @param xsltFileName
+     * @param saveFile
+     * @param areaCode
+     * @throws IOException
+     */
+    private boolean transformMapWithXslt(String xsltFileName, File saveFile, String areaCode) throws IOException
+    {
+        StringWriter writer = getMapXml();
+        StringReader reader = new StringReader(writer.getBuffer().toString());
+        // search for xslt file:
+        URL xsltUrl = getResource(xsltFileName);
+        if(xsltUrl == null) {
+            logger.severe("Can't find " + xsltFileName + " as resource.");
+            throw new IllegalArgumentException("Can't find " + xsltFileName + " as resource.");
+        }
+        InputStream xsltFile = xsltUrl.openStream();
+        return transForm(new StreamSource(reader), xsltFile, saveFile, areaCode);
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
+    private StringWriter getMapXml() throws IOException
+    {
+        // get output:
+        StringWriter writer = new StringWriter();
+        // get XML
+        getController().getMap().getXml(writer);
+        return writer;
+    }
+
+    /**
+     * @param create_image
+     * @return
+     */
+    private String getAreaCode(boolean create_image)
+    {
+        String areaCode="";
+        if(create_image) {
+            MindMapNode root = (MindMapNode) getController().getMap().getRoot();
+            ClickableImageCreator creator = new ClickableImageCreator(root, getController(), 
+                    getResourceString("link_replacement_regexp"));
+            areaCode = creator.generateHtml();
+        }
+        return areaCode;
     }
 
     private void export(File file) {
@@ -206,21 +274,18 @@ public class ExportWithXSLT extends ExportHook {
         exp.setVisible(true);
 	}
 
-    public void transForm(Source xmlSource, InputStream xsltStream, File resultFile, ClickableImageCreator creator){
-        String areaCode="";
-        if(creator!=null) {
-            areaCode = creator.generateHtml();
-        }
+    public boolean transForm(Source xmlSource, InputStream xsltStream, File resultFile, String areaCode)
+    {
         //System.out.println("set xsl");
        Source xsltSource =  new StreamSource(xsltStream);
         //System.out.println("set result");
        Result result = new StreamResult(resultFile);
-
+    
        // create an instance of TransformerFactory
        try{
            //System.out.println("make transform instance");
        TransformerFactory transFact = TransformerFactory.newInstance(  );
-
+    
        Transformer trans = transFact.newTransformer(xsltSource);
        // set parameter:
        // relative directory <filename>_files
@@ -232,8 +297,9 @@ public class ExportWithXSLT extends ExportHook {
        catch(Exception e){
        //System.err.println("error applying the xslt file "+e);
        e.printStackTrace();
+       return false;
        };
-      return ;
+      return true;
       }
       
 	

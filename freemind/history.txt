@@ -26,6 +26,10 @@ Changes made in Freemind 0.8.1:
 * Switched from JaxB to JibX, which is free. Thanks to Dennis Sosnoski for the help.
 * New icon: bad smily
 
+RC 1
+----
+* New features: Export to Applet and Flash added.
+
 Changes made in Freemind 0.8.0:
 ===============================
 * From Koh (thanks): Standard Macintosh application use Command(meta) key based Keyboard shortcut. (ex. copy is Command(meta) + C). I think that mac version's freemind should allow to assign meta key based shortcut. 

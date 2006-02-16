@@ -19,13 +19,22 @@
  *
  * Created on 10.11.2004
  */
-/*$Id: ExportVectorGraphic.java,v 1.1.4.2 2005-03-01 06:38:59 christianfoltin Exp $*/
+/*$Id: ExportVectorGraphic.java,v 1.1.4.3 2006-02-16 21:28:05 christianfoltin Exp $*/
 package plugins.svg;
 
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.io.File;
+import java.io.InputStream;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGeneratorContext;
@@ -74,5 +83,32 @@ public class ExportVectorGraphic extends ExportHook{
 		view.print(g2d);
 		return g2d;
 	}
+
+    public void transForm(Source xmlSource, InputStream xsltStream, File resultFile, String areaCode)
+    {
+        //System.out.println("set xsl");
+       Source xsltSource =  new StreamSource(xsltStream);
+        //System.out.println("set result");
+       Result result = new StreamResult(resultFile);
+    
+       // create an instance of TransformerFactory
+       try{
+           //System.out.println("make transform instance");
+       TransformerFactory transFact = TransformerFactory.newInstance(  );
+    
+       Transformer trans = transFact.newTransformer(xsltSource);
+       // set parameter:
+       // relative directory <filename>_files
+       trans.setParameter("destination_dir", resultFile.getName()+"_files/");
+       trans.setParameter("area_code", areaCode);
+       trans.setParameter("folding_type", getController().getFrame().getProperty("html_export_folding"));
+       trans.transform(xmlSource, result);
+       }
+       catch(Exception e){
+       //System.err.println("error applying the xslt file "+e);
+       e.printStackTrace();
+       };
+      return ;
+      }
 
 }

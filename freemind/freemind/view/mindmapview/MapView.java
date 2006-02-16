@@ -16,16 +16,16 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.14 2005-08-21 14:47:49 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.16.15 2006-02-16 21:28:05 christianfoltin Exp $*/
  
 package freemind.view.mindmapview;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.event.TreeModelEvent;
@@ -58,6 +59,7 @@ import freemind.controller.NodeMotionListener;
 import freemind.controller.NodeMouseMotionListener;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
+import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
@@ -784,8 +786,14 @@ public class MapView extends JPanel implements Printable {
      **             P A I N T I N G                                 **
      *****************************************************************/
 
+//    private static Image image = null;
 
     public void paintChildren(Graphics graphics) {
+        // first tries for background images.
+//        if(image ==  null) {
+//            image = MindIcon.factory("ksmiletris").getIcon(controller.getFrame()).getImage();
+//        }
+//        graphics.drawImage(image, 0, 0, getHeight(), getWidth(), null);
         paintClouds(rootView, graphics);
         HashMap labels = new HashMap();
         ArrowLinkViews = new Vector();
@@ -793,7 +801,6 @@ public class MapView extends JPanel implements Printable {
         paintLinks(rootView, (Graphics2D)graphics, labels, null);
         super.paintChildren(graphics);
         paintEdges(rootView, (Graphics2D)graphics);
-        
     }
 
     /** @param iterativeLevel describes the n-th nested cloud that is to be painted.*/

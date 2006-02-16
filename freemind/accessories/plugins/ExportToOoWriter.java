@@ -149,5 +149,32 @@ public class ExportToOoWriter extends ExportHook {
         
     }
 
+    public void transForm(Source xmlSource, InputStream xsltStream, File resultFile, String areaCode)
+    {
+        //System.out.println("set xsl");
+       Source xsltSource =  new StreamSource(xsltStream);
+        //System.out.println("set result");
+       Result result = new StreamResult(resultFile);
+    
+       // create an instance of TransformerFactory
+       try{
+           //System.out.println("make transform instance");
+       TransformerFactory transFact = TransformerFactory.newInstance(  );
+    
+       Transformer trans = transFact.newTransformer(xsltSource);
+       // set parameter:
+       // relative directory <filename>_files
+       trans.setParameter("destination_dir", resultFile.getName()+"_files/");
+       trans.setParameter("area_code", areaCode);
+       trans.setParameter("folding_type", getController().getFrame().getProperty("html_export_folding"));
+       trans.transform(xmlSource, result);
+       }
+       catch(Exception e){
+       //System.err.println("error applying the xslt file "+e);
+       e.printStackTrace();
+       };
+      return ;
+      }
+
 }
 

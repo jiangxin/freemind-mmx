@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: ExportHook.java,v 1.1.4.6 2006-02-15 21:18:45 christianfoltin Exp $*/
+/*$Id: ExportHook.java,v 1.1.4.7 2006-02-16 21:28:05 christianfoltin Exp $*/
 
 package freemind.extensions;
 
@@ -28,6 +28,10 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.text.MessageFormat;
 
 import javax.swing.JFileChooser;
@@ -147,6 +151,45 @@ public class ExportHook extends ModeControllerHookAdapter {
 //		view.update(g);
 //		return image;
 	}
+
+
+    /**
+     * @param next
+     * @param directoryName
+     * @param directoryName2
+     */
+    protected void copyFromResource(String prefix, String fileName, String destinationDirectory)
+    {
+        // adapted from http://javaalmanac.com/egs/java.io/CopyFile.html
+        // Copies src file to dst file.
+        // If the dst file does not exist, it is created
+            try {
+                logger.finest("searching for " + prefix + fileName);
+                URL resource = getResource(prefix + fileName);
+                if(resource==null){
+                		logger.severe("Cannot find resource: "+ prefix+fileName);
+                		return;
+                }
+                InputStream in = resource.openStream();
+                OutputStream out = new FileOutputStream(destinationDirectory
+                        + "/" + fileName);
+    
+                // Transfer bytes from in to out
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                in.close();
+                out.close();
+            } catch (Exception e) {
+                logger.severe("File not found or could not be copied. " +
+                		"Was earching for " + prefix + fileName + " and should go to "+destinationDirectory);
+                e.printStackTrace();
+            }
+    
+        
+    }
 
 
 }
