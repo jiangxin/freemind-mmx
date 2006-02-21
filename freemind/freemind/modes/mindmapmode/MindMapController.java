@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.15 2006-02-15 21:18:45 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.16 2006-02-21 20:49:42 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -1799,6 +1799,10 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
     
     public void select( NodeView node) {
+    		if(node == null) {
+    			logger.warning("Select with null NodeView called!");
+    			return;
+    		}
         getView().scrollNodeToVisible(node);
         getView().selectAsTheOnlyOneSelected(node);
         getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); // this level is default

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.36 2006-02-15 21:18:45 christianfoltin Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.37 2006-02-21 20:49:42 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -203,9 +203,6 @@ public abstract class ControllerAdapter implements ModeController {
 
     public String getText(String textId) {
        return getController().getResourceString(textId); }
-
-    protected boolean binOptionIsTrue(String option) {
-       return getFrame().getProperty(option).equals("true");}
 
     public MindMap newMap() {
         ModeController newModeController = getMode().createModeController();

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13.18.6 2006-02-01 06:40:39 christianfoltin Exp $*/
+/*$Id: BrowseController.java,v 1.13.18.7 2006-02-21 20:49:42 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -102,6 +103,31 @@ public class BrowseController extends ViewControllerAdapter {
 			loadURL();
 		}
 	}
+
+//	public void anotherNodeSelected(MindMapNode n) {
+//		super.anotherNodeSelected(n);
+//		if(n.isRoot()){
+//			return;
+//		}
+//		//Presentation:
+//		setFolded(n, false);
+//		foldOthers(n);
+//	}
+//	
+//	
+//	private void foldOthers(MindMapNode n) {
+//		if(n.isRoot()){
+//			return;
+//		}
+//		MindMapNode parent = n.getParentNode();
+//		for (Iterator iter = parent.childrenUnfolded(); iter.hasNext();) {
+//			MindMapNode element = (MindMapNode) iter.next();
+//			if(element != n){
+//				setFolded(element, true);
+//			}
+//		}
+//		foldOthers(parent);
+//	}
 
 	public MindMapNode newNode(Object userObject) {
 		return new BrowseNodeModel(userObject, getFrame());

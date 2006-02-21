@@ -26,9 +26,10 @@ Changes made in Freemind 0.8.1:
 * Switched from JaxB to JibX, which is free. Thanks to Dennis Sosnoski for the help.
 * New icon: bad smily
 
-RC 1
-----
+Beta3:
+------
 * New features: Export to Applet and Flash added.
+* New feature: move nodes left/right.
 
 Changes made in Freemind 0.8.0:
 ===============================

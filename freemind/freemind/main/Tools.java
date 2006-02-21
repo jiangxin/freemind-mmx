@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.6 2006-01-12 23:10:12 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.7 2006-02-21 20:49:42 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -407,6 +407,11 @@ public class Tools {
                 || (string1 == null && string2 == null);
     }
 
+    public static boolean safeEquals(Object obj1, Object obj2) {
+		return (obj1 != null && obj2 != null && obj1.equals(obj2))
+				|| (obj1 == null && obj2 == null);
+	}
+    
     public static boolean safeEqualsIgnoreCase(String string1, String string2) {
         return (string1 != null && string2 != null && string1.toLowerCase()
                 .equals(string2.toLowerCase()))
@@ -792,6 +797,12 @@ public class Tools {
     public static String dateToString(Date date) {
     	 return Long.toString(date.getTime());
     }
+
+	public static boolean safeEquals(BooleanHolder holder, BooleanHolder holder2) {
+		return (holder == null && holder2 == null)
+				|| (holder != null && holder2 != null && holder.getValue() == holder2
+						.getValue());
+	}
 
 
 }

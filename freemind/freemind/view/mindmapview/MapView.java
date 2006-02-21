@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.15 2006-02-16 21:28:05 christianfoltin Exp $*/
+/*$Id: MapView.java,v 1.30.16.16 2006-02-21 20:49:42 christianfoltin Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -384,7 +384,7 @@ public class MapView extends JPanel implements Printable {
                 newSelected = oldSelected.getParentView();
             } else {
                 if (oldSelected.getModel().isFolded()) { // If folded in the direction, unfold
-                    getController().getModeController().setFolded(oldSelected.getModel(), false);
+                    model.getModeController().setFolded(oldSelected.getModel(), false);
                     return null;
                 }
 

@@ -19,7 +19,7 @@
  *
  * Created on 22.07.2004
  */
-/*$Id: HookDescriptor.java,v 1.1.4.4 2006-02-15 21:18:45 christianfoltin Exp $*/
+/*$Id: HookDescriptor.java,v 1.1.4.5 2006-02-21 20:49:41 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.HashMap;
@@ -119,6 +119,15 @@ public class HookDescriptor {
 		}
 		return string;
 	}
+	private String getFromPropertiesIfNecessary(String string) {
+		if(string==null) {
+			return string;
+		}
+		if(string.startsWith("%")) {
+			return frame.getController().getProperty(string.substring(1));
+		}
+		return string;
+	}
 	public String getClassName() {
 		return pluginAction.getClassName();
 	}
@@ -129,7 +138,7 @@ public class HookDescriptor {
 		return pluginAction.getIconPath();
 	}
 	public String getKeyStroke() {
-		return pluginAction.getKeyStroke();
+		return getFromPropertiesIfNecessary(pluginAction.getKeyStroke());
 	}
 	public Plugin getPluginBase(){
 	    return pluginBase;
