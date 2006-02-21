@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ChangeNodeLevelAction.java,v 1.1.2.1 2006-02-21 20:49:41 christianfoltin Exp $*/
+/*$Id: ChangeNodeLevelAction.java,v 1.1.2.2 2006-02-21 22:04:36 christianfoltin Exp $*/
 
 /*
  * Created on 19.02.2006
@@ -105,7 +105,7 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 		if (upwards) {
 			if (selectedParent.isRoot()) {
 				// change side of the items:
-				boolean isLeft = getLeft(selectedParent);
+				boolean isLeft = getLeft(selectedNode);
 				Transferable copy = getMindMapController().cut(selectedNodes);
 				getMindMapController().paste(copy, selectedParent, false, !isLeft);
 				select(selectedNodeId, selectedNodesId);
