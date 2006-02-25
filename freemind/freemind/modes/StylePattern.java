@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePattern.java,v 1.5.18.5 2005-05-03 05:29:50 christianfoltin Exp $*/
+/*$Id: StylePattern.java,v 1.5.18.6 2006-02-25 23:10:58 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -47,12 +47,11 @@ import freemind.main.XMLElement;
  */
 public class StylePattern {
     private String name;
+    /**  NOT USED: The idea of recursive is redundant. You have a possibility to
+     select all nodes in a branch easily. */
     private boolean recursive;
-    // ^ The idea of recursive is redundant. You have a possibility to
-    // select all nodes in a branch easily.
 
     private String text;
-    private boolean folded;   // Daniel: What is this good for?
 
     private boolean appliesToNode = false;
     private Color  nodeColor;
@@ -78,6 +77,12 @@ public class StylePattern {
     private boolean appliesToChildren = false;    
     private StylePattern  ChildrenStylePattern;
 
+    /**
+     * Empty constructor
+     */
+    public StylePattern() {
+    }
+    
     public StylePattern(XMLElement elm, List justConstructedPatterns) {
        loadPattern(elm, justConstructedPatterns); 
     }
@@ -156,21 +161,6 @@ public class StylePattern {
        */
     public void setRecursive(boolean  v) {
        this.recursive = v; }
-    
-
-    /**
-       * Get the value of folded.
-       * @return Value of folded.
-       */
-    public boolean getFolded() {
-       return folded; }
-    
-    /**
-       * Set the value of folded.
-       * @param v  Value to assign to folded.
-       */
-    public void setFolded(boolean  v) {
-       this.folded = v; }
     
 
     /**
@@ -448,6 +438,7 @@ public class StylePattern {
     public void setNodeFontItalic(Boolean nodeFontItalic) {
         this.nodeFontItalic = nodeFontItalic;
     }
+    
 }
 
 

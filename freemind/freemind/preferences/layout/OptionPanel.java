@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.20 2006-02-15 21:43:30 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.21 2006-02-25 23:10:58 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -28,32 +28,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSlider;
-import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -61,21 +49,29 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
 
+import freemind.common.BooleanProperty;
+import freemind.common.ColorProperty;
+import freemind.common.ComboProperty;
+import freemind.common.NextLineProperty;
+import freemind.common.NumberProperty;
+import freemind.common.PropertyBean;
+import freemind.common.PropertyControl;
+import freemind.common.SeparatorProperty;
+import freemind.common.StringProperty;
 import freemind.common.XmlBindingTools;
-import freemind.controller.Controller;
+import freemind.common.PropertyControl.TextTranslator;
 import freemind.controller.actions.generated.instance.OptionPanelWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
-import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 
 /**
  * @author foltin
  *  
  */
-public class OptionPanel {
+public class OptionPanel implements TextTranslator {
 	//TODO: Cancel and windowClose => Are you sure, or save.
 	//FIXME: key dialog
 	//FIXME: Translate me and html
@@ -205,7 +201,7 @@ public class OptionPanel {
 				registerTabButton(tabButton, lastTabName, changeTabAction);
 				leftBuilder.append(tabButton);
 			} else {
-				control.layout(rightBuilder);
+				control.layout(rightBuilder, this);
 			}
 		}
 		// add the last one, too
@@ -246,7 +242,7 @@ public class OptionPanel {
 	 * @param string
 	 * @return
 	 */
-	private static String getText(String string) {
+	public String getText(String string) {
 		if (string == null)
 			return null;
 		checkConnectionToFreeMindMain();
@@ -310,48 +306,6 @@ public class OptionPanel {
 		}
 	}
 
-	private interface PropertyControl {
-
-		String getDescription();
-
-		String getLabel();
-
-		void layout(DefaultFormBuilder builder);
-	}
-
-	private interface PropertyBean {
-		/** The key of the property. */
-		String getLabel();
-
-		void setValue(String value);
-
-		String getValue();
-
-	}
-
-	private static class SeparatorProperty implements PropertyControl {
-
-		private String label;
-
-		public SeparatorProperty(String label) {
-			super();
-			this.label = label;
-		}
-
-		public String getDescription() {
-			return null;
-		}
-
-		public String getLabel() {
-			return label;
-		}
-
-		public void layout(DefaultFormBuilder builder) {
-			builder.appendSeparator(getText("separator." + getLabel()));
-		}
-
-	}
-
 	private static class NewTabProperty implements PropertyControl {
 
 		private String label;
@@ -374,217 +328,8 @@ public class OptionPanel {
 			return label;
 		}
 
-		public void layout(DefaultFormBuilder builder) {
+		public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
 
-		}
-
-	}
-
-	private static class NextLineProperty implements PropertyControl {
-
-		public NextLineProperty() {
-			super();
-		}
-
-		public String getDescription() {
-			return null;
-		}
-
-		public String getLabel() {
-			return null;
-		}
-
-		public void layout(DefaultFormBuilder builder) {
-			builder.nextLine();
-		}
-
-	}
-
-	private static class StringProperty extends JTextField implements
-			PropertyControl, PropertyBean {
-		String description;
-
-		String label;
-
-		/**
-		 * @param description
-		 * @param label
-		 */
-		public StringProperty(String description, String label) {
-			super();
-			this.description = description;
-			this.label = label;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-		public String getLabel() {
-			return label;
-		}
-
-		public void setValue(String value) {
-			setText(value);
-		}
-
-		public String getValue() {
-			return getText();
-		}
-
-		public void layout(DefaultFormBuilder builder) {
-			JLabel label = builder
-					.append(OptionPanel.getText(getLabel()), this);
-			label.setToolTipText(OptionPanel.getText(getDescription()));
-		}
-
-	}
-	private static class NumberProperty implements
-	PropertyControl, PropertyBean {
-	    String description;
-	    JSlider slider;
-	    String label;
-        private JSpinner spinner;
-	    
-	    /**
-	     * @param description
-	     * @param label
-	     */
-	    public NumberProperty(String description, String label, int min, int max, int step) {
-	        slider = new JSlider(JSlider.HORIZONTAL, 5, 1000, 100);
-	        spinner = new JSpinner(
-              new SpinnerNumberModel(min, min, max, step));
-
-	        this.description = description;
-	        this.label = label;
-	    }
-	    
-	    public String getDescription() {
-	        return description;
-	    }
-	    
-	    public String getLabel() {
-	        return label;
-	    }
-	    
-	    public void setValue(String value) {
-            int intValue = 100;
-            try {
-                intValue = Integer.parseInt(value);
-            } catch(NumberFormatException e){
-                e.printStackTrace();
-            }
-            spinner.setValue(new Integer(intValue));
-	    }
-	    
-	    public String getValue() {
-	        return spinner.getValue().toString();
-	    }
-	    
-	    public void layout(DefaultFormBuilder builder) {
-//	        JLabel label = builder
-//	        .append(OptionPanel.getText(getLabel()), slider);
-	        JLabel label = builder
-	        .append(OptionPanel.getText(getLabel()), spinner);
-	        label.setToolTipText(OptionPanel.getText(getDescription()));
-	    }
-	    
-	}
-
-	private static class ColorProperty extends JButton implements
-			PropertyControl, PropertyBean, ActionListener {
-		String description;
-
-		String label;
-
-		Color color;
-		final JPopupMenu menu = new JPopupMenu();
-
-        private final String defaultColor;
-
-		/**
-		 * @param description
-		 * @param label
-		 * @param defaultColor TODO
-		 */
-		public ColorProperty(String description, String label, String defaultColor) {
-			super();
-			this.description = description;
-			this.label = label;
-            this.defaultColor = defaultColor;
-			addActionListener(this);
-			color = Color.BLACK;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-		public String getLabel() {
-			return label;
-		}
-
-		public void setValue(String value) {
-			setColorValue(Tools.xmlToColor(value));
-		}
-
-		public String getValue() {
-			return Tools.colorToXml(getColorValue());
-		}
-
-		public void layout(DefaultFormBuilder builder) {
-			JLabel label = builder
-					.append(OptionPanel.getText(getLabel()), this);
-			label.setToolTipText(OptionPanel.getText(getDescription()));
-			// add "reset to standard" popup:
-		    
-		    // Create and add a menu item
-			//FIXME: Translate me!
-		    JMenuItem item = new JMenuItem(fmMain.getResourceString("OptionPanel.ColorProperty.ResetColor"));
-		    item.addActionListener(new ActionListener(){
-
-                public void actionPerformed(ActionEvent e) {
-                    setValue(defaultColor);
-                }});
-		    menu.add(item);
-		    
-		    // Set the component to show the popup menu
-		    this.addMouseListener(new MouseAdapter() {
-		        public void mousePressed(MouseEvent evt) {
-		            if (evt.isPopupTrigger()) {
-		                menu.show(evt.getComponent(), evt.getX(), evt.getY());
-		            }
-		        }
-		        public void mouseReleased(MouseEvent evt) {
-		            if (evt.isPopupTrigger()) {
-		                menu.show(evt.getComponent(), evt.getX(), evt.getY());
-		            }
-		        }
-		    });
-		}
-
-		public void actionPerformed(ActionEvent arg0) {
-			Color result = Controller.showCommonJColorChooserDialog(
-					getRootPane(), getLabel(), getColorValue());
-			if (result != null) {
-				setColorValue(result);
-			}
-		}
-
-		/**
-		 * @param result
-		 */
-		private void setColorValue(Color result) {
-			color = result;
-			setBackground(result);
-			setText(Tools.colorToXml(result));
-		}
-
-		/**
-		 * @return
-		 */
-		private Color getColorValue() {
-			return color;
 		}
 
 	}
@@ -636,126 +381,10 @@ public class OptionPanel {
 			return getText();
 		}
 
-		public void layout(DefaultFormBuilder builder) {
+		public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
 			JLabel label = builder
-					.append(OptionPanel.getText(getLabel()), this);
-			label.setToolTipText(OptionPanel.getText(getDescription()));
-		}
-
-	}
-
-	private static class BooleanProperty extends JCheckBox implements
-			PropertyControl, PropertyBean {
-		String description;
-
-		String label;
-
-		/**
-		 * @param description
-		 * @param label
-		 */
-		public BooleanProperty(String description, String label) {
-			super();
-			this.description = description;
-			this.label = label;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-		public String getLabel() {
-			return label;
-		}
-
-		public void setValue(String value) {
-			if (value == null
-					|| !(value.toLowerCase().equals("true") || value
-							.toLowerCase().equals("false"))) {
-				throw new IllegalArgumentException("Cannot set a boolean to "
-						+ value);
-			}
-			setSelected(value.toLowerCase().equals("true"));
-		}
-
-		public String getValue() {
-			return isSelected() ? "true" : "false";
-		}
-
-		public void layout(DefaultFormBuilder builder) {
-			JLabel label = builder
-					.append(OptionPanel.getText(getLabel()), this);
-			label.setToolTipText(OptionPanel.getText(getDescription()));
-		}
-
-	}
-
-	private static class ComboProperty extends JComboBox implements
-			PropertyControl, PropertyBean {
-		String description;
-
-		String label;
-
-		private Vector possibleValues;
-
-		/**
-		 * @param description
-		 * @param label
-		 */
-		public ComboProperty(String description, String label,
-				String[] possibles) {
-			super();
-			this.description = description;
-			this.label = label;
-			fillPossibleValues(possibles);
-			Vector possibleTranslations = new Vector();
-			for (Iterator i = possibleValues.iterator(); i.hasNext();) {
-				String key = (String) i.next();
-				possibleTranslations.add(OptionPanel.getText(key));
-			}
-			setModel(new DefaultComboBoxModel(possibleTranslations));
-		}
-
-		public ComboProperty(String description, String label,
-				String[] possibles, Vector possibleTranslations) {
-			this.description = description;
-			this.label = label;
-			fillPossibleValues(possibles);
-			setModel(new DefaultComboBoxModel(possibleTranslations));
-		}
-
-		/**
-		 * @param possibles
-		 */
-		private void fillPossibleValues(String[] possibles) {
-			this.possibleValues = new Vector();
-			possibleValues.addAll(Arrays.asList(possibles));
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-		public String getLabel() {
-			return label;
-		}
-
-		public void setValue(String value) {
-			if (possibleValues.contains(value)) {
-				super.setSelectedIndex(possibleValues.indexOf(value));
-			} else {
-				throw new IllegalArgumentException("Unknown value:" + value);
-			}
-		}
-
-		public String getValue() {
-			return (String) possibleValues.get(super.getSelectedIndex());
-		}
-
-		public void layout(DefaultFormBuilder builder) {
-			JLabel label = builder
-					.append(OptionPanel.getText(getLabel()), this);
-			label.setToolTipText(OptionPanel.getText(getDescription()));
+					.append(pTranslator.getText(getLabel()), this);
+			label.setToolTipText(pTranslator.getText(getDescription()));
 		}
 
 	}
@@ -775,7 +404,7 @@ public class OptionPanel {
 		"language.tooltip", FreeMindCommon.RESOURCE_LANGUAGE, new String[] {
 				"automatic", "cs", "de", "dk", "en", "es", "fr", "hr", "hu", "it",
 				"ja", "kr", "lt", "nl", "nn", "no", "pl", "pt_BR", "pt_PT", "ru", "se", "sl",
-				"zh", "zh_CN" })); //  automatic
+				"zh", "zh_CN" }, this)); //  automatic
 
 		//INTERNAL PROPERTY.
 		//		controls
@@ -855,42 +484,40 @@ public class OptionPanel {
 		controls.add(new SeparatorProperty("default_styles"));
 		controls.add(new ComboProperty("standardnodestyle.tooltip",
                 FreeMind.RESOURCES_NODE_STYLE,
-                new String[] { MindMapNode.STYLE_FORK,
-                        MindMapNode.STYLE_BUBBLE, MindMapNode.STYLE_AS_PARENT,
-                        MindMapNode.STYLE_COMBINED })); //  as_parent
+                MindMapNode.NODE_STYLES, this)); //  as_parent
 
 		controls.add(new ComboProperty(
 
 		"standardrootnodestyle.tooltip", FreeMind.RESOURCES_ROOT_NODE_STYLE, new String[] {
 		        MindMapNode.STYLE_FORK,
                 MindMapNode.STYLE_BUBBLE,
-                MindMapNode.STYLE_COMBINED })); //  fork
+                MindMapNode.STYLE_COMBINED }, this)); //  fork
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("default_colors"));
-		controls.add(new ColorProperty(
+		controls.add(new ColorProperty("standardnodecolor.tooltip", 
 
-		"standardnodecolor.tooltip", FreeMind.RESOURCES_NODE_COLOR, "#000000")); //  #000000
+		FreeMind.RESOURCES_NODE_COLOR, "#000000", this)); //  #000000
 
-		controls.add(new ColorProperty(
+		controls.add(new ColorProperty("standardselectednodecolor.tooltip", 
 
-		"standardselectednodecolor.tooltip", FreeMind.RESOURCES_SELECTED_NODE_COLOR, "#D2D2D2")); //  #D2D2D2
+		FreeMind.RESOURCES_SELECTED_NODE_COLOR, "#D2D2D2", this)); //  #D2D2D2
 
-		controls.add(new ColorProperty(
+		controls.add(new ColorProperty("standardedgecolor.tooltip", 
 
-		"standardedgecolor.tooltip", FreeMind.RESOURCES_EDGE_COLOR, "#808080")); //  #808080
+		FreeMind.RESOURCES_EDGE_COLOR, "#808080", this)); //  #808080
 
-		controls.add(new ColorProperty(
+		controls.add(new ColorProperty("standardlinkcolor.tooltip", 
 
-		"standardlinkcolor.tooltip", FreeMind.RESOURCES_LINK_COLOR, "#b0b0b0")); //  #b0b0b0
+		FreeMind.RESOURCES_LINK_COLOR, "#b0b0b0", this)); //  #b0b0b0
 
-		controls.add(new ColorProperty(
+		controls.add(new ColorProperty("standardbackgroundcolor.tooltip", 
 
-		"standardbackgroundcolor.tooltip", FreeMind.RESOURCES_BACKGROUND_COLOR, "#ffffff")); //  #ffffff
+		FreeMind.RESOURCES_BACKGROUND_COLOR, "#ffffff", this)); //  #ffffff
 
-		controls.add(new ColorProperty(
+		controls.add(new ColorProperty("standardcloudcolor.tooltip", 
 
-		"standardcloudcolor.tooltip", FreeMind.RESOURCES_CLOUD_COLOR, "#f0f0f0")); //  #f0f0f0
+		FreeMind.RESOURCES_CLOUD_COLOR, "#f0f0f0", this)); //  #f0f0f0
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("default_fonts"));
@@ -910,7 +537,7 @@ public class OptionPanel {
 		controls.add(new ComboProperty(
 
 		"standardedgestyle.tooltip", FreeMind.RESOURCES_EDGE_STYLE, new String[] {
-				"bezier", "linear" })); //  bezier
+				"bezier", "linear" }, this)); //  bezier
 
 //		controls.add(new ComboProperty(
 //
@@ -956,7 +583,7 @@ public class OptionPanel {
 		controls.add(new SeparatorProperty("anti_alias"));
 		controls.add(new ComboProperty("antialias.tooltip",
 				FreeMind.RESOURCE_ANTIALIAS, new String[] { "antialias_edges",
-						"antialias_all", "antialias_none" })); //  true
+						"antialias_all", "antialias_none" }, this)); //  true
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
@@ -969,7 +596,7 @@ public class OptionPanel {
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("hyperlink_types"));
 		controls.add(new ComboProperty("links.tooltip", "links", new String[] {
-				"relative", "absolute" })); //  relative
+				"relative", "absolute" }, this)); //  relative
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
@@ -1308,7 +935,7 @@ public class OptionPanel {
 		controls.add(new ComboProperty(
 
 		"placenewbranches.tooltip", "placenewbranches", new String[] { "first",
-				"last" })); //  last
+				"last" }, this)); //  last
 		controls.add(new BooleanProperty("draganddrop.tooltip", "draganddrop")); //  true
 
 		controls.add(new BooleanProperty(
@@ -1342,7 +969,7 @@ public class OptionPanel {
 						FreeMind.RESOURCES_SELECTION_METHOD, new String[] {
 								"selection_method_direct",
 								"selection_method_delayed",
-								"selection_method_by_click" })); //  selection_method_direct
+								"selection_method_by_click" }, this)); //  selection_method_direct
 
 		controls.add(new StringProperty(
 
@@ -1410,7 +1037,7 @@ public class OptionPanel {
 						new String[] { "html_export_no_folding",
 								"html_export_fold_currently_folded",
 								"html_export_fold_all",
-								"html_export_based_on_headings" })); //  html_export_fold_currently_folded
+								"html_export_based_on_headings" }, this)); //  html_export_fold_currently_folded
 
 		controls.add(new NextLineProperty());
 		controls.add(new BooleanProperty(
