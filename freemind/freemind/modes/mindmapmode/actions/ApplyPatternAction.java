@@ -103,7 +103,10 @@ public class ApplyPatternAction extends NodeGeneralAction implements
         if (pattern.getAppliesToEdge()) {
             getMindMapController().setEdgeColor(node, pattern.getEdgeColor());
             getMindMapController().setEdgeStyle(node, pattern.getEdgeStyle());
-            getMindMapController().setEdgeWidth(node, pattern.getEdgeWidth());
+            if (pattern.getEdgeWidth() !=null) {
+				getMindMapController().setEdgeWidth(node,
+						pattern.getEdgeWidth().intValue());
+			}
         }
 
         if (pattern.getAppliesToChildren()) {

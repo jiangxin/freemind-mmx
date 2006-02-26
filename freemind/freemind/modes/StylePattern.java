@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePattern.java,v 1.5.18.7 2006-02-26 00:30:10 christianfoltin Exp $*/
+/*$Id: StylePattern.java,v 1.5.18.8 2006-02-26 12:06:44 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -53,29 +53,24 @@ public class StylePattern {
 
     private String text;
 
-    private boolean appliesToNode = false;
     private Color  nodeColor;
     private Color  nodeBackgroundColor;
     private String nodeStyle;
 
-    private boolean appliesToNodeFont = false;
     private String   nodeFontFamily=null;
     private Integer  nodeFontSize=null;
     private Boolean  nodeFontBold=null;
     private Boolean  nodeFontItalic=null;
 
-    private boolean appliesToNodeIcon = false;
     private MindIcon   nodeIcon;
 
-    private boolean appliesToEdge = false;    
     private Color  edgeColor;
     private String edgeStyle;
-    private int    edgeWidth;
+    private Integer    edgeWidth;
     
 
     /** Inhertitable patterns, fc, 3.12.2003.*/
-    private boolean appliesToChildren = false;    
-    private StylePattern  ChildrenStylePattern;
+    private StylePattern  mChildrenStylePattern;
 
     /**
      * Empty constructor
@@ -91,25 +86,22 @@ public class StylePattern {
      * @param node
      */
     public StylePattern(MindMapNode node) {
-        appliesToNode = true;
         nodeColor = node.getColor();
         nodeBackgroundColor = node.getBackgroundColor();
         nodeStyle = node.getStyle();
 
-        appliesToNodeFont = true;
         nodeFontBold = new Boolean(node.isBold());
         nodeFontItalic = new Boolean(node.isItalic());
         nodeFontSize = node.getFontSize()==null?null:Integer.valueOf(node.getFontSize());
         nodeFontFamily = node.getFontFamilyName();
 
-        appliesToNodeIcon = false; // no icons.
+        nodeIcon = null;
 //        appliesToNodeIcon = node.getIcons().size()>0;
 //        nodeIcon = (MindIcon) (node.getIcons().size()==0?null:node.getIcons().get(0));
         
-        appliesToEdge=true;
         edgeColor = node.getEdge().getColor();
         edgeStyle = node.getEdge().getStyle();
-        edgeWidth = node.getEdge().getWidth();
+        edgeWidth = new Integer(node.getEdge().getWidth());
         
     }
     
@@ -118,19 +110,19 @@ public class StylePattern {
            "\nedge: "+edgeColor+", "+edgeStyle+", "+edgeWidth; }
 
     public boolean getAppliesToEdge() {
-       return appliesToEdge; }
+       return edgeColor != null || edgeStyle != null || edgeWidth != null; }
 
     public boolean getAppliesToNode() {
-       return appliesToNode; }
+       return nodeBackgroundColor != null|| nodeColor != null || nodeStyle !=null; }
 
     public boolean getAppliesToNodeFont() {
-       return appliesToNodeFont; }
+       return nodeFontBold != null || nodeFontFamily != null || nodeFontItalic != null || nodeFontSize != null; }
 
     public boolean getAppliesToNodeIcon() {
-       return appliesToNodeIcon; }
+       return nodeIcon != null; }
 
     public boolean getAppliesToChildren() {
-       return appliesToChildren; }
+       return mChildrenStylePattern != null; }
 
     /**
        * Get the value of name.
@@ -284,14 +276,14 @@ public class StylePattern {
        * Get the value of edgeWidth.
        * @return Value of edgeWidth.
        */
-    public int getEdgeWidth() {
+    public Integer getEdgeWidth() {
        return edgeWidth; }
     
     /**
        * Set the value of edgeWidth.
        * @param v  Value to assign to edgeWidth.
        */
-    public void setEdgeWidth(int edgeWidth) {
+    public void setEdgeWidth(Integer edgeWidth) {
        this.edgeWidth = edgeWidth;}
     
     /**
@@ -299,14 +291,14 @@ public class StylePattern {
        * @return Value of ChildrenStylePattern.
        */
     public StylePattern getChildrenStylePattern() {
-       return ChildrenStylePattern; }
+       return mChildrenStylePattern; }
     
     /**
        * Set the value of ChildrenStylePattern.
        * @param v  Value to assign to ChildrenStylePattern.
        */
     public void setChildrenStylePattern(StylePattern ChildrenStylePattern) {
-       this.ChildrenStylePattern = ChildrenStylePattern;}
+       this.mChildrenStylePattern = ChildrenStylePattern;}
     
 
     public static List loadPatterns(File file) throws Exception {
@@ -333,7 +325,6 @@ public class StylePattern {
             //NODE
            XMLElement child = (XMLElement)i.next();
            if (child.getName().equals("node")) {
-              appliesToNode = true;
               if (child.getStringAttribute("color")!=null && 
                   child.getStringAttribute("color").length() == 7) {
                  setNodeColor(Tools.xmlToColor(child.getStringAttribute("color") ) ); }
@@ -343,7 +334,6 @@ public class StylePattern {
               if (child.getStringAttribute("style")!=null) {
                  setNodeStyle(child.getStringAttribute("style")); }
               if (child.getStringAttribute("icon") != null) {
-                    appliesToNodeIcon = true;
                     setNodeIcon(child.getStringAttribute("icon").equals("none") ? null
                             : MindIcon.factory(child.getStringAttribute("icon")));
                 }
@@ -353,8 +343,7 @@ public class StylePattern {
                  XMLElement nodeChild = (XMLElement)j.next();
                  //FONT
                  if (nodeChild.getName().equals("font")) {
-                    appliesToNodeFont = true;
-
+                    
                     if (nodeChild.getStringAttribute("name")!= null) {
                         setNodeFontFamily(nodeChild.getStringAttribute("name")); 
                     } 
@@ -375,22 +364,20 @@ public class StylePattern {
            
            //EDGE
            if (child.getName().equals("edge")) {
-              appliesToEdge = true;
               if (child.getStringAttribute("style")!=null) {
                  setEdgeStyle(child.getStringAttribute("style")); }
               if (child.getStringAttribute("color")!=null) {
                  setEdgeColor(Tools.xmlToColor(child.getStringAttribute("color") ) ); }
               if (child.getStringAttribute("width")!=null) {
                  if (child.getStringAttribute("width").equals("thin")) {
-                    setEdgeWidth(freemind.modes.EdgeAdapter.WIDTH_THIN); }
+                    setEdgeWidth(new Integer(freemind.modes.EdgeAdapter.WIDTH_THIN)); }
                  else {
-                    setEdgeWidth(Integer.parseInt(child.getStringAttribute("width"))); }
+                    setEdgeWidth(new Integer(Integer.parseInt(child.getStringAttribute("width")))); }
               }
            }
 
            //CHILD
            if (child.getName().equals("child")) {
-               appliesToChildren = true;
                if (child.getStringAttribute("pattern")!=null) {
                    // find name in list of justConstructedPatterns:
                    String searchName = child.getStringAttribute("pattern");

@@ -42,7 +42,6 @@ public class IconSelectionPlugin extends NodeHookAdapter {
 	public void invoke(MindMapNode rootNode) {
 		// we dont need node. 
 		MindMapNode focussed = getController().getSelected();
-		List selecteds = getController().getSelecteds();
 		Vector actions = new Vector();
 		Vector items = new Vector();
 		Vector itemdescriptions = new Vector();
