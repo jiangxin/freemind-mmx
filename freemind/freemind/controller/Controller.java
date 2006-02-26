@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10.2.3.2.10 2005-12-25 13:07:50 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.3.2.11 2006-02-26 17:00:54 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -78,7 +78,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import freemind.controller.filter.FilterController;
-import freemind.controller.filter.FilterDialog;
+import freemind.controller.filter.FilterComposerDialog;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;

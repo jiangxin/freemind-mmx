@@ -15,7 +15,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 import freemind.modes.MindIcon;
-
+import freemind.main.Resources;;
 
 
 /**
@@ -35,7 +35,7 @@ public class ConditionRenderer implements ListCellRenderer {
             boolean isSelected,
             boolean cellHasFocus){
         if(value == null) 
-            return new JLabel("--");
+            return new JLabel(Resources.getInstance().getResourceString("attribute_no_filtering"));
         JComponent component;
         if(value instanceof MindIcon){
             component = ((MindIcon)value).getRendererComponent();
@@ -48,7 +48,7 @@ public class ConditionRenderer implements ListCellRenderer {
             component = new JLabel(value.toString());
         }
         component.setOpaque(true);
-        if (isSelected  || cellHasFocus){
+        if (isSelected){
             component.setBackground(SELECTED_BACKGROUND);            
         }
         else{

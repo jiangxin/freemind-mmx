@@ -63,7 +63,7 @@ import freemind.modes.MindMap;
     }
     
     public void mapChanged(MindMap newMap){
-        FilterDialog fd = getFilterToolbar().getFilterDialog();
+        FilterComposerDialog fd = getFilterToolbar().getFilterDialog();
         if (fd != null){
             fd.mapChanged(newMap);
         }

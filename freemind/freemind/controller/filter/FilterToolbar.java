@@ -28,6 +28,7 @@ import javax.swing.plaf.basic.ComboPopup;
 
 import freemind.controller.Controller;
 import freemind.controller.filter.condition.Condition;
+import freemind.controller.filter.condition.ConditionRenderer;
 import freemind.main.Resources;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -35,7 +36,7 @@ import freemind.view.mindmapview.MapView;
 
 class FilterToolbar extends JToolBar {
     private FilterController fc;
-    private FilterDialog filterDialog = null;
+    private FilterComposerDialog filterDialog = null;
     private JComboBox activeFilterCondition;
     private JToggleButton btnApply;
     private JCheckBox showAncestors;
@@ -45,7 +46,6 @@ class FilterToolbar extends JToolBar {
     private JButton btnEdit;
     private JButton btnUnfoldAncestors;
     private Controller c;
-    private static Color filterActiveColor = null;
     private static Color filterInactiveColor = null;
     static private  final String FILTER_ON = Resources.getInstance().getResourceString("filter_on");
     static private  final String FILTER_OFF = Resources.getInstance().getResourceString("filter_off");
@@ -61,20 +61,12 @@ class FilterToolbar extends JToolBar {
         
         public void actionPerformed(ActionEvent e) {
             resetFilter();
-            if (btnApply.isSelected() && getSelectedCondition() == null){
-                btnEdit.doClick();
-            }
-            else
-            {
-                getFilter().applyFilter(c);
-                refreshMap();
-            }
+            getFilter().applyFilter(c);
+            refreshMap();
             if(btnApply.isSelected()){
                 if(filterInactiveColor == null)
                     filterInactiveColor = btnApply.getBackground();
-                if(filterActiveColor == null)
-                    filterActiveColor = new Color(255, 128, 128);
-                btnApply.setBackground(filterActiveColor);
+                btnApply.setBackground(ConditionRenderer.SELECTED_BACKGROUND);
                 btnApply.setText(FILTER_OFF);
             }
             else{
@@ -100,11 +92,14 @@ class FilterToolbar extends JToolBar {
          * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
          */
         public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED && btnApply.getModel().isSelected()){
-                resetFilter();
-                getFilter().applyFilter(c);
-                refreshMap();
-                DefaultFilter.selectVisibleNode(c.getView());
+            if (e.getStateChange() == ItemEvent.SELECTED){
+                btnApply.setEnabled(true);
+                if( btnApply.getModel().isSelected()){
+                    resetFilter();
+                    getFilter().applyFilter(c);
+                    refreshMap();
+                    DefaultFilter.selectVisibleNode(c.getView());
+                }
             }
         }
         
@@ -113,13 +108,14 @@ class FilterToolbar extends JToolBar {
     private class EditFilterAction extends AbstractAction {
         EditFilterAction() {
             super(Resources.getInstance().getResourceString("filter_edit"));
+            putValue(SHORT_DESCRIPTION, Resources.getInstance().getResourceString("filter_edit_description"));
         }
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
-        private FilterDialog getFilterDialog() {
+        private FilterComposerDialog getFilterDialog() {
             if (filterDialog == null){
-                filterDialog = new FilterDialog(c, FilterToolbar.this);                
+                filterDialog = new FilterComposerDialog(c, FilterToolbar.this);                
             }
             return filterDialog;
         }
@@ -129,7 +125,7 @@ class FilterToolbar extends JToolBar {
                 getFilterDialog().setSelectedItem(selectedItem);
             }
             if(getFilterDialog().isVisible() == false){
-                getFilterDialog().setLocationRelativeTo(Resources.getInstance().getJFrame());
+                getFilterDialog().setLocationRelativeTo(FilterToolbar.this);
                 getFilterDialog().setVisible(true);
             }
         }
@@ -185,6 +181,7 @@ class FilterToolbar extends JToolBar {
         activeFilterCondition.addItemListener(filterChangeListener);
         
         btnApply = new JToggleButton(new ApplyFilterAction());
+        btnApply.setEnabled(false);
         add(btnApply);
         
         btnEdit = new JButton(new EditFilterAction());
@@ -247,7 +244,7 @@ class FilterToolbar extends JToolBar {
         return btnApply;
     }
     
-    FilterDialog getFilterDialog() {
+    FilterComposerDialog getFilterDialog() {
         return filterDialog;
     }
 
