@@ -85,7 +85,7 @@ class AttributeRegistryComboBoxColumnModel extends AbstractListModel implements 
      */
     public void add(Object o) {
         String s = o.toString();
-        model.registry(s);      
+        model.getAttributeController().performRegistryAttribute(s, null);      
     }
 
 
@@ -93,7 +93,7 @@ class AttributeRegistryComboBoxColumnModel extends AbstractListModel implements 
      * @see freemind.controller.filter.util.SortedListModel#replace(java.lang.Object, java.lang.Object)
      */
     public void replace(Object oldO, Object newO) {
-        model.replaceAtributeName(oldO, newO);
+        model.getAttributeController().performReplaceAtributeName(oldO.toString(), newO.toString());
     }
 
     /* (non-Javadoc)

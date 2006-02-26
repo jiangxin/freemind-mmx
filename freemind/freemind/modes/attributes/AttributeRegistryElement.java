@@ -13,25 +13,42 @@ import freemind.modes.XMLElementAdapter;
  * 18.06.2005
  */
 public class AttributeRegistryElement {
-    class RegisteredAttributeValues extends SortedComboBoxModel{
+    private class RegisteredAttributeValues extends SortedComboBoxModel{
         
+        public AttributeRegistry getRegistry(){
+            return registry;
+        }
+        public String getKey() {
+            return key;
+        }
+        public void add(Object element) {
+            registry.getAttributeController().performRegistryAttribute(getKey(), element.toString());
+        }
+        public void _add(Object element) {
+            super.add(element);
+        }
         public void remove(Object element) {
+            registry.getAttributeController().performRemoveAttributeValue(getKey(), element.toString());
+
+        }
+        public void _remove(Object element) {
             super.remove(element);
-            registry.removeAtributeValue(key, element);
         }
         public void replace(Object oldO, Object newO) {
+            registry.getAttributeController().performReplaceAttributeValue(getKey(), oldO.toString(), newO.toString());
+        }
+        public void _replace(Object oldO, Object newO) {
            super.replace(oldO, newO);
-           registry.replaceAtributeValue(key, oldO, newO);
         }
 }
-    private Comparable key;
+    private String key;
     private RegisteredAttributeValues values;
     private AttributeRegistry registry;
     private boolean isVisible;
     private boolean isRestricted;
     private Boolean visibilityModel;
     private Boolean restrictionModel;
-    public AttributeRegistryElement(AttributeRegistry registry, Comparable key) {
+    public AttributeRegistryElement(AttributeRegistry registry, String key) {
         super();
         this.key = key;
         this.registry = registry;
@@ -44,33 +61,28 @@ public class AttributeRegistryElement {
     public boolean isVisible() {
         return isVisible;
     }
-    public void setVisible(boolean isVisible) {
-        this.isVisible = isVisible;
-        visibilityModel = Boolean.valueOf(isVisible);
-    }
     public SortedComboBoxModel getValues() {
         return values;
     }
     public void addValue(String s) {
-        values.add(s);
+        values._add(s);
+        registry.fireAttributesChanged();
     }
     public void removeAllValues() {
         values.clear();
+        registry.fireAttributesChanged();
     }
     public void removeValue(String s) {
-        values.remove(s);
+        values._remove(s);
+        registry.fireAttributesChanged();
     }
     public boolean isRestricted() {
         return isRestricted;
     }
-    public void setRestricted(boolean isRestricted) {
-        this.isRestricted = isRestricted;
-        restrictionModel = Boolean.valueOf(isRestricted);
-    }
     public Comparable getKey() {
         return key;
     }
-    public void setKey(Comparable key) {
+    public void setKey(String key) {
         this.key = key;
     }
     /**
@@ -95,13 +107,15 @@ public class AttributeRegistryElement {
         return element;
     }
     
-    void resetChanges(){
-        visibilityModel = Boolean.valueOf(isVisible);
-        restrictionModel = Boolean.valueOf(isRestricted);
+    public void setVisibility(boolean isVisible){
+        this.isVisible = isVisible; 
+        visibilityModel= Boolean.valueOf(isVisible);
+        registry.fireAttributeLayoutChanged();
     }
-    void applyChanges(){
-        isVisible = visibilityModel.booleanValue(); 
-        isRestricted = restrictionModel.booleanValue(); 
+    public void setRestriction(boolean isRestricted){
+        this.isRestricted = isRestricted; 
+        restrictionModel = Boolean.valueOf(isRestricted);
+        registry.fireAttributesChanged();
     }
     Boolean getRestriction() {
         return restrictionModel;
@@ -115,4 +129,9 @@ public class AttributeRegistryElement {
     void setVisibilityModel(Boolean visibilityModel) {
         this.visibilityModel = visibilityModel;
     }
+    public void replaceValue(String oldValue, String newValue) {
+        values._replace(oldValue, newValue);        
+        registry.fireAttributesChanged();
+    }
+    
 }

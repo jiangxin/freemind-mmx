@@ -19,10 +19,11 @@
  *
  * Created on 20.09.2004
  */
-/*$Id: UndoAction.java,v 1.1.4.1.10.1 2005-09-17 19:02:07 dpolivaev Exp $*/
+/*$Id: UndoAction.java,v 1.1.4.1.10.2 2006-02-26 14:27:55 dpolivaev Exp $*/
 
 package freemind.modes.actions;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
 import java.util.Vector;
@@ -49,6 +50,7 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
     private boolean isUndoAction;
 	protected Vector actionPairList=new Vector();
 	private long timeOfLastAdd = 0;
+    private boolean actionFrameStarted = false;
     private static final long TIME_TO_BEGIN_NEW_ACTION = 100;
     protected static Logger logger;
 
@@ -151,7 +153,7 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
     public void add(ActionPair pair) {
 	    try {
 	        long currentTime = System.currentTimeMillis();
-	        if((actionPairList.size() > 0) && (currentTime - timeOfLastAdd < TIME_TO_BEGIN_NEW_ACTION)) {
+	        if((actionPairList.size() > 0) && (actionFrameStarted || currentTime - timeOfLastAdd < TIME_TO_BEGIN_NEW_ACTION)) {
 	            ActionPair firstPair = (ActionPair) actionPairList.get(0);
                 CompoundAction action;
                 CompoundAction remedia;
@@ -184,10 +186,23 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
                                                                     // last elt
                 }
 	        }
+            startActionFrame();
 	        timeOfLastAdd = currentTime;
         } catch (JAXBException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+    }
+
+    private void startActionFrame() {
+        if(actionFrameStarted == false && EventQueue.isDispatchThread())
+        {
+            actionFrameStarted = true;
+            EventQueue.invokeLater(new Runnable() {
+                public void run(){
+                    actionFrameStarted = false; 
+                }
+            });
         }
     }
     

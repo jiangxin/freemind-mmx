@@ -66,10 +66,10 @@ public class AttributeRegistryTableModel   extends AbstractTableModel {
         Boolean value = (Boolean)o;
         switch (col){
         case 1:
-            attributeRegistry.setVisibility(row-1, value);
+            attributeRegistry.setVisibilityModel(row-1, value);
             break;
         case 2:
-            attributeRegistry.setRestriction(row-1, value);
+            attributeRegistry.setRestrictionModel(row-1, value);
             break;
         }
     }
@@ -121,7 +121,7 @@ public class AttributeRegistryTableModel   extends AbstractTableModel {
         return null;
     }
     
-    void fireTableRowsDeleted() {
+    public void fireTableRowsDeleted() {
         if (getRowCount() > 1)
             fireTableRowsDeleted(1, getRowCount()-1);
     }

@@ -4,7 +4,6 @@
  */
 package freemind.modes.attributes;
 
-import java.util.NoSuchElementException;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -65,49 +64,25 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
         return null;
     }
 
-    private Object getName(int row) {
+    public Object getName(int row) {
         Attribute attr = (Attribute)attributes.get(row);
         return attr.getName();
     }
 
-    private Object getValue(int row) {
+    public Object getValue(int row) {
         Attribute attr = (Attribute)attributes.get(row);
         return attr.getValue();
     }
+    
+    public AttributeController getAttributeController(){
+        return node.getMap().getRegistry().getModeController().getAttributeController();
+    }
 
     public void setValueAt(Object o, int row, int col) {
-        Attribute attribute = (Attribute)attributes.get(row);
-        String s = o.toString();
-        AttributeRegistry attributes = node.getMap().getRegistry().getAttributes();
-        switch(col){
-        case 0: 
-            if(attribute.getName().equals(s))
-                return;
-            attribute.setName(s);
-            try{
-                AttributeRegistryElement element = attributes.getElement(s);
-                String value = getValueAt(row, 1).toString(); 
-                int index = element.getValues().getIndexOf(value);
-                if(index == -1){
-                    setValueAt(element.getValues().firstElement(), row, 1);
-                }
-            }
-            catch(NoSuchElementException ex)
-            {
-                attributes.registry(attribute);                
-            }
-            break;
-        case 1: 
-            if(attribute.getValue().equals(s))
-                return;
-            attribute.setValue(s);
-            attributes.registry(attribute);
-            break;
-        }
-        fireTableCellUpdated(row, col);
+        getAttributeController().performSetValueAt(this, o, row, col);
     }
     
-    private void enableStateIcon() {
+    public void enableStateIcon() {
         if(SHOW_ATTRIBUTE_ICON && getRowCount() == 1){
             if (noteIcon == null) {
                 noteIcon = new ImageIcon(Resources.getInstance().getResource("images/showAttributes.gif"));
@@ -115,19 +90,16 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
             node.setStateIcon(STATE_ICON, noteIcon);
         }
     }
-    private void disableStateIcon() {
+    public void disableStateIcon() {
         if(SHOW_ATTRIBUTE_ICON && getRowCount() == 0){
             node.setStateIcon(STATE_ICON, null);
         }
     }
-    public void insertRow(int index, Attribute newAttribute) {
-        allocateAttributes(CAPACITY_INCREMENT);
-        node.getMap().getRegistry().getAttributes().registry(newAttribute);
-        attributes.add(index, newAttribute);
-        enableStateIcon();
-        fireTableRowsInserted(index, index);
+    public void insertRow(int index, String name, String value) {
+        getAttributeController().performInsertRow(this, index, name, value);
     }
-    public void addRow(Attribute newAttribute) {
+    
+    public void addRowNoUndo(Attribute newAttribute) {
         allocateAttributes(CAPACITY_INCREMENT);
         int index = getRowCount();
         node.getMap().getRegistry().getAttributes().registry(newAttribute);
@@ -136,50 +108,23 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
         fireTableRowsInserted(index, index);
     }
     
-    void replaceName(Object oldName, Object newName){
-        for(int i = 0; i < getRowCount(); i++){
-            if(getName(i).equals(oldName))
-                setName(i, newName);            
-        }
-    }
-
-    void replaceValue(Object name, Object oldValue, Object newValue){
-        for(int i = 0; i < getRowCount(); i++){
-            if(getName(i).equals(name) && getValue(i).equals(oldValue))
-                setValue(i, newValue);            
-        }
-    }
-    private void setName(int row, Object newName) {
+    public void setName(int row, Object newName) {
         Attribute attr = (Attribute)attributes.get(row);
         attr.setName(newName.toString());
         fireTableRowsUpdated(row, row);
     }
-    private void setValue(int row, Object newValue) {
+    public void setValue(int row, Object newValue) {
         Attribute attr = (Attribute)attributes.get(row);
         attr.setValue(newValue.toString());
         fireTableRowsUpdated(row, row);
     }
     
-    void removeAttribute(Object name){
-        for(int i = 0; i < getRowCount(); i++){
-            if(getName(i).equals(name))
-                removeRow(i);            
-        }
-    }
-
-    void removeValue(Object name, Object value){
-        for(int i = 0; i < getRowCount(); i++){
-            if(getName(i).equals(name) && getValue(i).equals(value))
-                removeRow(i);            
-        }
-    }
-    
     public Object removeRow(int index) {
-        Object o = attributes.remove(index);
-        disableStateIcon();
-        fireTableRowsDeleted(index, index);
+        Object o = getAttributes().elementAt(index);
+        getAttributeController().performRemoveRow(this, index);
         return o;
     }
+    
     public void  save(XMLElement node) {
         saveLayout(node);
         if (attributes != null){
@@ -270,24 +215,26 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
     public int getColumnWidth(int col) {
         return getLayout().getColumnWidth(col);
     }
+    
     public void setColumnWidth(int col, int width) {
-        getLayout().setColumnWidth(col, width);
+        getAttributeController().performSetColumnWidth(this, col, width);
     }
-       
     public String getViewType() {
         return  getLayout().getViewType();
     }
     
     public void setViewType(String viewType) {
-        if(getLayout().getViewType() != viewType){
-            getLayout().setViewType(viewType);
-            node.getMap().nodeChanged(node);
-        }
+        getAttributeController().performSetViewType(this, viewType);
     }
     
     public AttributeTableLayoutModel getLayout() {
         if(layout == null)
             layout = new AttributeTableLayoutModel();
         return layout;
+    }
+
+    public Vector getAttributes() {
+        allocateAttributes(NodeAttributeTableModel.CAPACITY_INCREMENT);
+        return attributes;
     }
  }

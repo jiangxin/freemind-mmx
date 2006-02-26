@@ -58,7 +58,7 @@ public class AttributeManagerDialog extends JDialog {
     private void applyChanges() {
         Object size = this.size.getSelectedItem();
         int iSize = Integer.parseInt(size.toString());
-        model.setFontSize(iSize);
+        model.getAttributeController().performSetFontSize(model, iSize);
         model.applyChanges();
     }
 
@@ -198,7 +198,7 @@ public class AttributeManagerDialog extends JDialog {
     	size = new JComboBox(fontSizes);
     	size.addItemListener(new ItemListener(){
             public void itemStateChanged(ItemEvent e) {
-                model.setVisibilityChanged();
+                model.setAttributeLayoutChanged();
             }
     	    
     	});

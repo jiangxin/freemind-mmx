@@ -65,7 +65,7 @@ class ExtendedAttributeTableModelDecorator extends AttributeTableModelDecoratorA
             newRow = AFTER_LAST_ROW;
             fireTableRowsDeleted(row, row);
             if(col == 0 && o != null && o.toString().length() > 0){
-                nodeAttributeModel.insertRow(row, new Attribute(o.toString()));
+                nodeAttributeModel.insertRow(row, o.toString(), "");
             }
             return;
         }
@@ -94,13 +94,13 @@ class ExtendedAttributeTableModelDecorator extends AttributeTableModelDecoratorA
      */
     public void moveRowUp(int row) {
         Attribute attribute = (Attribute)nodeAttributeModel.removeRow(row);
-        nodeAttributeModel.insertRow(row-1, attribute);                
+        nodeAttributeModel.insertRow(row-1, attribute.getName(), attribute.getValue());                
     }
     /**
      * @param row
      */
     public void moveRowDown(int row) {
         Attribute attribute = (Attribute)nodeAttributeModel.removeRow(row);
-        nodeAttributeModel.insertRow(row+1, attribute);                
+        nodeAttributeModel.insertRow(row+1, attribute.getName(), attribute.getValue());                
     }
 }

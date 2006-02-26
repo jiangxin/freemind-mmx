@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.7 2005-11-27 16:55:42 dpolivaev Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.8 2006-02-26 14:27:55 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -31,6 +31,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.attributes.Attribute;
+import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.mindmapmode.EncryptedMindMapNode;
 
@@ -188,7 +189,7 @@ public abstract class XMLElementAdapter extends XMLElement {
          else if (child.getName().equals("font")) {
              node.setFont((Font)child.getUserObject()); }
          else if (child.getName().equals(XML_NODE_ATTRIBUTE)) {
-             node.getAttributes().addRow((Attribute)child.getUserObject()); }
+             node.getAttributes().addRowNoUndo((Attribute)child.getUserObject()); }
          else if (child.getName().equals(XML_NODE_ATTRIBUTE_LAYOUT)) {
              AttributeTableLayoutModel layout = node.getAttributes().getLayout();
              layout.setViewType(((XMLElementAdapter)child).attributeViewType);
@@ -223,7 +224,8 @@ public abstract class XMLElementAdapter extends XMLElement {
               && getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_NAME)
               && child.getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)){
           Attribute attribute = new Attribute(attributeName, ((XMLElementAdapter)child).attributeValue);
-          map.getRegistry().getAttributes().registry(attribute);
+        AttributeRegistry r = map.getRegistry().getAttributes();
+          r.registry(attribute);
       }
    }
 
@@ -342,13 +344,13 @@ public void setAttribute(String name, Object value) {
       else if (getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_NAME)) {
           if (name.equals("NAME")) {
               attributeName = sValue;
-              map.getRegistry().getAttributes().getListBoxModel().add(attributeName);
+              map.getRegistry().getAttributes().registry(attributeName);
           }
           if (name.equals("VISIBLE")) {
-              map.getRegistry().getAttributes().setVisible(attributeName, true);
+              map.getRegistry().getAttributes().getElement(attributeName).setVisibility(true);
           }
           if (name.equals("RESTRICTED")) {
-              map.getRegistry().getAttributes().setRestricted(attributeName, true);
+              map.getRegistry().getAttributes().getElement(attributeName).setRestriction(true);
           }
       }     
       else if (getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)) {

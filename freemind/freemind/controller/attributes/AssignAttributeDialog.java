@@ -43,11 +43,12 @@ import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeRegistryElement;
 import freemind.modes.attributes.AttributeTableLayoutModel;
+import freemind.modes.attributes.AttributesListener;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
-public class AssignAttributeDialog extends JDialog implements ChangeListener{
+public class AssignAttributeDialog extends JDialog implements AttributesListener{
     private static class ClonedComboBoxModel extends AbstractListModel implements ComboBoxModel{
         private AbstractListModel sharedListModel;
         private Object selectedItem;
@@ -133,7 +134,7 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         protected void performAction(MindMapNode model) {
             NodeAttributeTableModel attributes = model.getAttributes();
             if(! attributes.getViewType().equals(AttributeTableLayoutModel.SHOW_EXTENDED)){
-                attributes.setViewType(AttributeTableLayoutModel.SHOW_EXTENDED);
+                attributes.getAttributeController().performSetViewType(attributes, AttributeTableLayoutModel.SHOW_EXTENDED);
                 model.getMap().nodeChanged(model);
             }
         }        
@@ -146,7 +147,7 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
                 ? AttributeTableLayoutModel.SHOW_EXTENDED
                 : AttributeTableLayoutModel.SHOW_REDUCED ;
             if(! attributes.getViewType().equals(type)){
-                attributes.setViewType(type);
+                attributes.getAttributeController().performSetViewType(attributes, type);
                 model.getMap().nodeChanged(model);
             }
         }        
@@ -156,7 +157,7 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         protected void performAction(MindMapNode model) {
             NodeAttributeTableModel attributes = model.getAttributes();
             if(! attributes.getViewType().equals(AttributeTableLayoutModel.SHOW_REDUCED)){
-                attributes.setViewType(AttributeTableLayoutModel.SHOW_REDUCED);
+                attributes.getAttributeController().performSetViewType(attributes, AttributeTableLayoutModel.SHOW_REDUCED);
                 model.getMap().nodeChanged(model);
             }
         }        
@@ -167,9 +168,8 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         private String value;
 
         protected void performAction(MindMapNode model) {
-            NodeAttributeTableModel attributes = model.getAttributes();
-            Attribute attribute = new Attribute(name, value);
-            attributes.addRow(attribute);
+            NodeAttributeTableModel attributes = model.getAttributes();                         
+            attributes.getAttributeController().performInsertRow(attributes, attributes.getRowCount(), name, value);
        }
 
         public void actionPerformed(ActionEvent e) {
@@ -198,7 +198,12 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
     private  class DeleteAttributeAction extends IteratingAction{
         private String name;
         public void actionPerformed(ActionEvent e) {
-            name = attributeNames.getSelectedItem().toString();
+            final Object selectedItem = attributeNames.getSelectedItem();
+            if(selectedItem == null){
+                showEmptyStringErrorMessage();
+                return;
+            }
+            name = selectedItem.toString();
             if(name.equals("")){
                 showEmptyStringErrorMessage();
                 return;
@@ -209,7 +214,7 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
             NodeAttributeTableModel attributes = model.getAttributes();
             for(int i = attributes.getRowCount()-1; i >= 0; i--){
                 if(attributes.getAttribute(i).getName().equals(name)){
-                    attributes.removeRow(i);
+                    attributes.getAttributeController().performRemoveRow(attributes, i);
                 }
             }
        }        
@@ -240,7 +245,7 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
                 Attribute attribute = attributes.getAttribute(i);
                 if(attribute.getName().equals(name)
                         && attribute.getValue().equals(value)){
-                    attributes.removeRow(i);
+                    attributes.getAttributeController().performRemoveRow(attributes, i);
                 }
             }
        }        
@@ -282,8 +287,8 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
                 Attribute attribute = attributes.getAttribute(i);
                 if(attribute.getName().equals(name)
                         && attribute.getValue().equals(value)){
-                    attributes.removeRow(i);
-                    attributes.insertRow(i, new Attribute(replacingName, replacingValue));
+                    attributes.getAttributeController().performRemoveRow(attributes, i);
+                    attributes.insertRow(i, replacingName, replacingValue);
                 }
             }
        }        
@@ -457,13 +462,13 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
     
     public void mapChanged(MapView currentMapView) {
         if(mapView != null){
-            mapView.getModel().getRegistry().getAttributes().removeChangeListener(this);
+            mapView.getModel().getRegistry().getAttributes().removeAttributesListener(this);
         }
         mapView = currentMapView;        
         MindMap map = currentMapView.getModel();
         AttributeRegistry attributes = map.getRegistry().getAttributes();
-        attributes.addChangeListener(this);
-        stateChanged();
+        attributes.addAttributesListener(this);
+        attributesChanged();
     }
 
     private void selectedAttributeChanged(Object selectedAttributeName, JComboBox values){
@@ -481,11 +486,11 @@ public class AssignAttributeDialog extends JDialog implements ChangeListener{
         }
     }
 
-    public void stateChanged(ChangeEvent e) {  
-        stateChanged();
+    public void attributesChanged(ChangeEvent e) {  
+        attributesChanged();
     }
     
-    private void stateChanged() {  
+    private void attributesChanged() {  
         AttributeRegistry attributes = mapView.getModel().getRegistry().getAttributes();
         ComboBoxModel names = attributes.getComboBoxModel();
         attributeNames.setModel(new ClonedComboBoxModel(names));

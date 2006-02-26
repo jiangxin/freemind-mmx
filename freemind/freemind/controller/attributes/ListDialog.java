@@ -128,7 +128,7 @@ public class ListDialog extends JDialog
     /**
      * 
      */
-    public void updateButtons() {
+    private void updateButtons() {
         String text = getCurrentText();
         boolean isNewText = -1 == getIndexOf(text);
         addButton.setEnabled(isNewText);

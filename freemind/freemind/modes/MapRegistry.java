@@ -48,12 +48,6 @@ public class MapRegistry {
         return attributes;
     }
     
-    public void refresh(){
-        attributes.clear();
-        mapIcons.clear();
-        MindMapNode root = (MindMapNode)map.getRoot();
-        registrySubtree(root);
-    }
     public void registrySubtree(MindMapNode root){
         registryNodeIcons(root);
         registryAttributes(root);

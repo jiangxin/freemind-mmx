@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.13 2006-01-22 12:24:38 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.14 2006-02-26 14:27:55 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -139,8 +139,8 @@ import freemind.modes.actions.FindAction.FindNextAction;
 import freemind.modes.actions.NodeBackgroundColorAction.RemoveNodeBackgroundColorAction;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.attributes.AttributeTableLayoutModel;
-import freemind.modes.attributes.MindMapModeAttributeController;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.modes.attributes.mindmapmodeactors.MindMapModeAttributeController;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
@@ -244,7 +244,6 @@ public abstract class ControllerAdapter implements ModeController {
 
     public ControllerAdapter(Mode mode) {
         this.setMode(mode);
-        attributeController = new MindMapModeAttributeController();
         if(logger==null) {
         	logger = getFrame().getLogger(this.getClass().getName());
         }
@@ -253,6 +252,8 @@ public abstract class ControllerAdapter implements ModeController {
 		nodesToBeUpdated    = new HashSet();
         // create action factory:
 		actionFactory = new ActionFactory(getController());
+        // create attrubute controller
+        attributeController = new MindMapModeAttributeController(this);
 		// prepare undo:
 		undo = new UndoAction(this);
 		redo = new RedoAction(this);
