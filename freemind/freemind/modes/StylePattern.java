@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePattern.java,v 1.5.18.6 2006-02-25 23:10:58 christianfoltin Exp $*/
+/*$Id: StylePattern.java,v 1.5.18.7 2006-02-26 00:30:10 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -114,7 +114,7 @@ public class StylePattern {
     }
     
     public String toString() {
-        return "node: "+nodeColor+", "+nodeBackgroundColor+", "+nodeStyle+", "+nodeFontFamily+", "+nodeFontSize+", "+nodeIcon+", "+
+        return "node: "+nodeColor+", "+nodeBackgroundColor+", "+nodeStyle+", "+nodeFontFamily+", "+nodeFontSize+", "+nodeIcon+", "+text+", "+
            "\nedge: "+edgeColor+", "+edgeStyle+", "+edgeWidth; }
 
     public boolean getAppliesToEdge() {

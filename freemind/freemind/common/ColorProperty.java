@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ColorProperty.java,v 1.1.2.1 2006-02-25 23:10:58 christianfoltin Exp $*/
+/*$Id: ColorProperty.java,v 1.1.2.2 2006-02-26 00:30:10 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.Color;
@@ -127,6 +127,9 @@ public class ColorProperty extends JButton implements
 	 */
 	private void setColorValue(Color result) {
 		color = result;
+        if(result == null) {
+            result = Color.WHITE;
+        }
 		setBackground(result);
 		setText(Tools.colorToXml(result));
 	}

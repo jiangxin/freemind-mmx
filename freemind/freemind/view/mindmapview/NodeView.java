@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.21 2006-02-21 20:49:42 christianfoltin Exp $*/
+/*$Id: NodeView.java,v 1.27.14.22 2006-02-26 00:30:10 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -51,6 +51,7 @@ import freemind.controller.Controller;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.modes.EdgeAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
@@ -142,13 +143,13 @@ public abstract class NodeView extends JLabel {
 
 	//Root has no edge
 	if (!isRoot()) {
-	    if (getModel().getEdge().getStyle().equals("linear")) {
+	    if (getModel().getEdge().getStyle().equals(EdgeAdapter.EDGESTYLE_LINEAR)) {
 		edge = new LinearEdgeView(getParentView(),this);
-	    } else if (getModel().getEdge().getStyle().equals("bezier")) {
+	    } else if (getModel().getEdge().getStyle().equals(EdgeAdapter.EDGESTYLE_BEZIER)) {
 		edge = new BezierEdgeView(getParentView(),this);
-	    } else if (getModel().getEdge().getStyle().equals("sharp_linear")) {
+	    } else if (getModel().getEdge().getStyle().equals(EdgeAdapter.EDGESTYLE_SHARP_LINEAR)) {
 		edge = new SharpLinearEdgeView(getParentView(),this);
-	    } else if (getModel().getEdge().getStyle().equals("sharp_bezier")) {
+	    } else if (getModel().getEdge().getStyle().equals(EdgeAdapter.EDGESTYLE_SHARP_BEZIER)) {
 		edge = new SharpBezierEdgeView(getParentView(),this);
 	    } else {
 		System.err.println("Unknown Edge Type.");

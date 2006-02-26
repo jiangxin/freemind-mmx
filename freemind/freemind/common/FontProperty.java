@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: FontProperty.java,v 1.1.2.1 2006-02-25 23:10:58 christianfoltin Exp $*/
+/*$Id: FontProperty.java,v 1.1.2.2 2006-02-26 00:30:10 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.Font;
@@ -27,89 +27,84 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
-public class FontProperty extends JButton implements
-		PropertyControl, PropertyBean, ActionListener {
-	String description;
+public class FontProperty extends JButton implements PropertyControl,
+        ActionListener {
+    String description;
 
-	String label;
+    String label;
 
-	Font font;
-	
-	final JPopupMenu menu = new JPopupMenu();
+    Font font = null;
 
-    private final String defaultFont;
+    final JPopupMenu menu = new JPopupMenu();
 
-	private final TextTranslator mTranslator;
+    private final TextTranslator mTranslator;
 
+    /**
+     * @param description
+     * @param label
+     * @param pTranslator
+     *            TODO
+     * @param defaultColor
+     *            TODO
+     */
+    public FontProperty(String description, String label,
+            TextTranslator pTranslator) {
+        super();
+        this.description = description;
+        this.label = label;
+        mTranslator = pTranslator;
+        addActionListener(this);
+    }
 
-	/**
-	 * @param description
-	 * @param label
-	 * @param pTranslator TODO
-	 * @param defaultColor TODO
-	 */
-	public FontProperty(String description, String label, String defaultFont, TextTranslator pTranslator) {
-		super();
-		this.description = description;
-		this.label = label;
-        this.defaultFont = defaultFont;
-		mTranslator = pTranslator;
-		addActionListener(this);
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getLabel() {
+        return label;
+    }
 
-	public String getLabel() {
-		return label;
-	}
+    public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
+        JLabel label = builder.append(pTranslator.getText(getLabel()), this);
+        label.setToolTipText(pTranslator.getText(getDescription()));
 
-	public void setValue(String value) {
-		setFontValue(new Font(value, 0, 12));
-	}
+    }
 
-	public String getValue() {
-		return getFontValue().getFontName();
-	}
+    public void actionPerformed(ActionEvent arg0) {
+        JFontChooser dialog = new JFontChooser(null);
+        if (getFontValue() != null) {
+            dialog.setFont(getFontValue());
+        }
+        dialog.showDialog();
+        Font result = dialog.getFont();
+        if (result != null) {
+            setFontValue(result);
+        }
+    }
 
-	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
-		JLabel label = builder
-				.append(pTranslator.getText(getLabel()), this);
-		label.setToolTipText(pTranslator.getText(getDescription()));
-	    
-	}
+    /**
+     * @param result
+     */
+    public void setFontValue(Font result) {
+        font = result;
+        if (font != null) {
+            setFont(result);
+            setText(result.getFontName());
+        } else {
+            setText(mTranslator.getText("undefined_font"));
+        }
+    }
 
-	public void actionPerformed(ActionEvent arg0) {
-		JFontChooser dialog = new JFontChooser(null);
-		dialog.setFont(getFontValue());
-		dialog.showDialog();
-		Font result = dialog.getFont();
-		if (result != null) {
-			setFontValue(result);
-		}
-	}
-
-	/**
-	 * @param result
-	 */
-	private void setFontValue(Font result) {
-		font = result;
-		setFont(result);
-		setText(result.getFontName());
-	}
-
-	/**
-	 * @return
-	 */
-	private Font getFontValue() {
-		return font;
-	}
+    /**
+     * @return
+     */
+    public Font getFontValue() {
+        return font;
+    }
 
 }

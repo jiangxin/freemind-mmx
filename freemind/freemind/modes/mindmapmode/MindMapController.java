@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.16 2006-02-21 20:49:42 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.17 2006-02-26 00:30:10 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -411,10 +411,10 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         edgeWidths =  new EdgeWidthAction[]{
             EdgeWidth_WIDTH_PARENT, EdgeWidth_WIDTH_THIN, EdgeWidth_1, EdgeWidth_2, EdgeWidth_4, EdgeWidth_8
         };
-        EdgeStyle_linear = new EdgeStyleAction(this, "linear");
-        EdgeStyle_bezier = new EdgeStyleAction(this, "bezier");
-        EdgeStyle_sharp_linear = new EdgeStyleAction(this, "sharp_linear");
-        EdgeStyle_sharp_bezier = new EdgeStyleAction(this, "sharp_bezier");
+        EdgeStyle_linear = new EdgeStyleAction(this, EdgeAdapter.EDGESTYLE_LINEAR);
+        EdgeStyle_bezier = new EdgeStyleAction(this, EdgeAdapter.EDGESTYLE_BEZIER);
+        EdgeStyle_sharp_linear = new EdgeStyleAction(this, EdgeAdapter.EDGESTYLE_SHARP_LINEAR);
+        EdgeStyle_sharp_bezier = new EdgeStyleAction(this, EdgeAdapter.EDGESTYLE_SHARP_BEZIER);
         edgeStyles =  new EdgeStyleAction[]{
             EdgeStyle_linear,
             EdgeStyle_bezier,
