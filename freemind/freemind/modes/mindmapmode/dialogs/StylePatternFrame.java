@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: StylePatternFrame.java,v 1.1.2.3 2006-02-26 12:06:44 christianfoltin Exp $*/
+/*$Id: StylePatternFrame.java,v 1.1.2.4 2006-02-27 18:49:01 christianfoltin Exp $*/
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;
@@ -155,8 +155,8 @@ public class StylePatternFrame extends JPanel implements TextTranslator {
 	public void init() {
 		CardLayout cardLayout = new CardLayout();
 		JPanel rightStack = new JPanel(cardLayout);
-		String form = "right:max(40dlu;p), 4dlu, 80dlu, 7dlu";
-		FormLayout rightLayout = new FormLayout(form + "," + form, "");
+		String form = "right:max(40dlu;p), 4dlu, 10dlu, 7dlu,right:max(40dlu;p), 4dlu, 80dlu, 7dlu";
+		FormLayout rightLayout = new FormLayout(form, "");
 		DefaultFormBuilder rightBuilder = new DefaultFormBuilder(rightLayout);
 		rightBuilder.setDefaultDialogBorder();
 		mControls = getControls();

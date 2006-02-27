@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ChooseFormatPopupDialog.java,v 1.1.2.1 2006-02-26 12:06:44 christianfoltin Exp $*/
+/*$Id: ChooseFormatPopupDialog.java,v 1.1.2.2 2006-02-27 18:49:01 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -32,6 +32,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import freemind.common.PropertyControl.TextTranslator;
 import freemind.modes.MindMapNode;
@@ -50,8 +51,6 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator {
 
 	private javax.swing.JPanel jContentPane = null;
 
-	private JFrame caller;
-
 	private MindMapController controller;
 
 	private JButton jCancelButton;
@@ -60,17 +59,13 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator {
 
 	private StylePatternFrame mStylePatternFrame;
 
-	private final MindMapNode mNode;
-
 	/**
 	 * This is the default constructor
 	 */
 	public ChooseFormatPopupDialog(JFrame caller, MindMapController controller,
 			MindMapNode node) {
 		super(caller);
-		this.caller = caller;
 		this.controller = controller;
-		this.mNode = node;
 		initialize();
 		mStylePatternFrame.setPattern(new StylePattern(node));
 	}
@@ -82,17 +77,15 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator {
 	 */
 	private void initialize() {
 		this.setTitle(controller
-				.getText("accessories/plugins/EncryptNode.properties_0")); //$NON-NLS-1$
-		this.setSize(300, 200);
-		this.setContentPane(getJContentPane());
+				.getText("accessories/plugins/ApplyFormatPlugin.dialog.title")); 
+		JPanel contentPane = getJContentPane();
+        this.setContentPane(contentPane);
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent we) {
 				cancelPressed();
 			}
-
 		});
-
 	}
 
 	private void close() {
@@ -163,7 +156,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator {
 			});
 
 			jOKButton.setText(controller
-					.getText("accessories/plugins/EncryptNode.properties_6")); //$NON-NLS-1$
+					.getText("ok")); 
 		}
 		return jOKButton;
 	}
@@ -183,7 +176,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator {
 				}
 			});
 			jCancelButton.setText(controller
-					.getText("accessories/plugins/EncryptNode.properties_7")); //$NON-NLS-1$
+					.getText("cancel")); 
 		}
 		return jCancelButton;
 	}
@@ -196,7 +189,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator {
 	}
 
 	public String getText(String pKey) {
-		return controller.getText(pKey);
+        return controller.getText(pKey);
 	}
 
 	public StylePattern getPattern() {

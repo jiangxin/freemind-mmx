@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.15 2006-02-04 20:19:08 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.16 2006-02-27 18:49:01 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -122,6 +122,8 @@ public class MenuBar extends JMenuBar {
 
 		//format menu
 		formatmenu = menuHolder.addMenu(new JMenu(c.getResourceString("menu_format")), FORMAT_MENU+".");
+		menuHolder.addCategory(FORMAT_MENU+"change");	
+		menuHolder.addSeparator(FORMAT_MENU);	
 		menuHolder.addCategory(FORMAT_MENU+"patterns");	
 		menuHolder.addSeparator(FORMAT_MENU);	
 

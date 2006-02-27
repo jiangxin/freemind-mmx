@@ -39,10 +39,10 @@ public class ApplyFormatPlugin extends MindMapNodeHookAdapter {
 			new ChooseFormatPopupDialog(
 				frame, getMindMapController(), focussed);
 		formatDialog.setModal(true);
+        formatDialog.pack();
 		formatDialog.show();
 		// process result:
-		int result = formatDialog.getResult();
-        if (result >= 0) {
+        if (formatDialog.getResult() == ChooseFormatPopupDialog.OK) {
         		StylePattern pattern = formatDialog.getPattern();
         		for (Iterator iter = selected.iterator(); iter.hasNext();) {
 					MindMapNode node = (MindMapNode) iter.next();
