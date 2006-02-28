@@ -20,6 +20,7 @@ import freemind.controller.filter.util.SortedMapVector;
 import freemind.main.XMLElement;
 import freemind.modes.MapRegistry;
 import freemind.modes.XMLElementAdapter;
+import freemind.view.mindmapview.attributeview.AttributeView;
 
 /**
  * @author Dimitri Polivaev
@@ -50,6 +51,7 @@ public class AttributeRegistry{
     private boolean isAttributeLayoutFired = false;
     private ChangeEvent changeEvent;
     private ChangeEvent attributesEvent;
+    private String attributeViewType;
     public int size() {
         return elements.size();
     }
@@ -64,6 +66,7 @@ public class AttributeRegistry{
         myTableModel = new AttributeRegistryTableModel(this);
         isRestricted = false;
         restrictionModel= Boolean.FALSE;
+        attributeViewType = AttributeTableLayoutModel.SHOW_SELECTED;
     }
     
     public Comparable getKey(int index) {
@@ -169,8 +172,6 @@ public class AttributeRegistry{
                 ((ChangeListener)listeners[i+1]).stateChanged(changeEvent);
             }
         }
-        if (changeEvent != null)
-            registry.repaintMap();
     }
 
     protected void fireAttributesChanged() {
@@ -186,8 +187,6 @@ public class AttributeRegistry{
                 ((AttributesListener)listeners[i+1]).attributesChanged(changeEvent);
             }
         }
-        if (changeEvent != null)
-            registry.repaintMap();
     }
 
     /**
@@ -408,5 +407,14 @@ public class AttributeRegistry{
         elements.remove(index );
         getTableModel().fireTableRowsDeleted(index, index); 
         fireAttributesChanged(); 
+    }
+
+    public String getAttributeViewType() {
+        return attributeViewType;
+    }
+
+    public void setAttributeViewType(String attributeViewType) {
+        this.attributeViewType = attributeViewType;
+        fireAttributeLayoutChanged();
     }
 }

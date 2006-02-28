@@ -1,3 +1,24 @@
+Changes made in FreeMind 0.8.FA Alpha 8
+===============================
+* Undo for all attribute operations
+
+* There are only four possible situations: 
+   (a) all the attributes are shown everywhere, 
+   (b) no attributes are shown anywhere, and 
+   (c) only some attributes are shown, accross the whole map
+   (d) all attributes are temporarily shown for the currently selected node, a shortcut alt+f9 
+* the "show all", "hide all" ans "show selected" attribute actions are a submenu of the view menu 
+* the rest attribute actions (dialogs) have been put to tools 
+
+* the button On/Off only switch the filtering, rather than editing
+* When the label "No Filtering" is shown in the combo box, the On/Off button is be inactive
+
+Filter Composer Dialog:
+* Apply applies the filter selected in the list of filters, regardless of the filter selected in the combobox in the toolbar 
+* OK closes the dialog and sets the currently selected filter in the list of filters as the current filter in the combobox
+
+* other minor changes and refactorings
+
 Changes made in Freemind 0.8.0:
 ===============================
 * From Koh (thanks): Standard Macintosh application use Command(meta) key based Keyboard shortcut. (ex. copy is Command(meta) + C). I think that mac version's freemind should allow to assign meta key based shortcut. 

@@ -262,13 +262,6 @@ public class MindMapModeAttributeController implements AttributeController{
         }
     }
 
-    public void performSetViewType(NodeAttributeTableModel model, String viewType) {
-        if(model.getLayout().getViewType() != viewType){
-            model.getLayout().setViewType(viewType);
-            model.getNode().getMap().nodeChanged(model.getNode());
-        }        
-    }
-
     public void performRemoveRow(NodeAttributeTableModel model, int row) {
         try{
             startTransaction("performRemoveRow");

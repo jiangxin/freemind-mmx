@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.14 2006-02-26 14:27:55 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.15 2006-02-28 20:58:08 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -86,6 +86,7 @@ import freemind.extensions.UndoEventReceiver;
 import freemind.main.ExampleFileFilter;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.actions.AddArrowLinkAction;
@@ -138,6 +139,7 @@ import freemind.modes.actions.UndoAction;
 import freemind.modes.actions.FindAction.FindNextAction;
 import freemind.modes.actions.NodeBackgroundColorAction.RemoveNodeBackgroundColorAction;
 import freemind.modes.attributes.AttributeController;
+import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.attributes.mindmapmodeactors.MindMapModeAttributeController;
@@ -1714,77 +1716,49 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     
-        protected class ShowOrHideAttributesForSelectedNodesAction extends AbstractAction {
-        public ShowOrHideAttributesForSelectedNodesAction() {
-            super(getText("attributes_show_hide"));
-        }
-        public void actionPerformed(ActionEvent e) {
-            NodeView firstSelectedNodeView = getView().getSelected();
-            String attributeViewType = firstSelectedNodeView.getAttributeView().getAttributeViewType();
-            if(! attributeViewType.equals(AttributeTableLayoutModel.SHOW_EXTENDED)){
-                attributeViewType = AttributeTableLayoutModel.SHOW_EXTENDED;
-            }
-            else{
-                attributeViewType = AttributeTableLayoutModel.SHOW_REDUCED;
-            }
-
-            LinkedList selecteds = getView().getSelecteds();
-            ListIterator iterator = selecteds.listIterator();
-            while(iterator.hasNext()){
-                NodeView selectedNodeView = (NodeView) iterator.next();
-                AttributeView selectedAttributeView = selectedNodeView.getAttributeView();
-                selectedNodeView.getModel().getAttributes().setViewType(attributeViewType);
-            }
-        }
-	}
-
-        protected abstract class ShowOrHideAllAttributesAction extends AbstractAction {
-            public ShowOrHideAllAttributesAction(String textId) {                
-                super(getText(textId));
-            }
+        protected class ShowAllAttributesAction extends AbstractAction {
+            public ShowAllAttributesAction(){
+                super(Resources.getInstance().getResourceString("attributes_show_all"));
+            };
             public void actionPerformed(ActionEvent e) {
-                showOrHideAllAttributes(getRootNode());
-            }
-            private void showOrHideAllAttributes(MindMapNode parent) {
-                ListIterator children = parent.childrenUnfolded();
-                while(children.hasNext()){
-                    MindMapNode child = (MindMapNode) children.next();
-                    child.getAttributes().setViewType(getViewType(child));
-                    showOrHideAllAttributes(child);
+                final AttributeRegistry attributes = getMap().getRegistry().getAttributes();
+                if(attributes.getAttributeViewType() != AttributeTableLayoutModel.SHOW_ALL){
+                    attributes.setAttributeViewType(AttributeTableLayoutModel.SHOW_ALL); 
                 }
-                
-            }
-            protected abstract String getViewType(MindMapNode child);
-        }
-
-        protected class ShowAllAttributesAction extends ShowOrHideAllAttributesAction {
-            public ShowAllAttributesAction() {                
-                super("attributes_show_everywhere");
-            }
-            protected String getViewType(MindMapNode child) {
-                return AttributeTableLayoutModel.SHOW_EXTENDED;
             }
         }
-
-        protected class HideAllAttributesAction extends ShowOrHideAllAttributesAction {
-            public HideAllAttributesAction() {                
-                super("attributes_hide_everywhere");
-            }
-            protected String getViewType(MindMapNode child) {
-                return AttributeTableLayoutModel.SHOW_REDUCED;
+        protected class HideAllAttributesAction extends AbstractAction {
+            public HideAllAttributesAction(){
+                super(Resources.getInstance().getResourceString("attributes_hide_all"));
+            };
+            public void actionPerformed(ActionEvent e) {
+                final AttributeRegistry attributes = getMap().getRegistry().getAttributes();
+                if(attributes.getAttributeViewType() != AttributeTableLayoutModel.HIDE_ALL){
+                    attributes.setAttributeViewType(AttributeTableLayoutModel.HIDE_ALL); 
+                }
             }
         }
 
-        protected class ShowAvailableAttributesAction extends ShowOrHideAllAttributesAction {
-            public ShowAvailableAttributesAction() {                
-                super("attributes_show_available_everywhere");
+        protected class ShowSelectedAttributesAction extends AbstractAction {
+            public ShowSelectedAttributesAction(){
+                super(Resources.getInstance().getResourceString("attributes_show_selected"));
+            };
+            public void actionPerformed(ActionEvent e) {
+                final AttributeRegistry attributes = getMap().getRegistry().getAttributes();
+                if(attributes.getAttributeViewType() != AttributeTableLayoutModel.SHOW_SELECTED){
+                    attributes.setAttributeViewType(AttributeTableLayoutModel.SHOW_SELECTED); 
+                }
             }
-            protected String getViewType(MindMapNode child) {
-                NodeAttributeTableModel attributes = child.getAttributes();
-                String type = attributes.getRowCount() != 0 
-                    ? AttributeTableLayoutModel.SHOW_EXTENDED
-                    : AttributeTableLayoutModel.SHOW_REDUCED ;
-                return type;
+        }
+
+
+        protected class EditAttributesAction extends AbstractAction {
+            public EditAttributesAction(){
+                super(Resources.getInstance().getResourceString("attributes_edit_in_place"));                
+            };
+            public void actionPerformed(ActionEvent e) {
+                final AttributeView attributeView = getView().getSelected().getAttributeView();
+                attributeView.edit();
             }
         }
 

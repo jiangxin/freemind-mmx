@@ -74,13 +74,6 @@ public class MapRegistry {
         }
     }
 
-    /**
-     * 
-     */
-    public void repaintMap() {
-        MindMapNode root = (MindMapNode)map.getRoot();
-        map.nodeChanged(root);
-    }
     public MindMap getMap() {
         return map;
     }

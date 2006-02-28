@@ -147,10 +147,6 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
         if(layout != null)
         {
             XMLElement attributeElement = null;
-            if(! layout.getViewType().equals(AttributeTableLayoutModel.SHOW_REDUCED)){
-                attributeElement = initializeNodeAttributeLayoutXMLElement(attributeElement);
-                attributeElement.setAttribute("VIEWTYPE", layout.getViewType());
-            }
             if(layout.getColumnWidth(0)!= AttributeTableLayoutModel.DEFAULT_COLUMN_WIDTH){
                 attributeElement = initializeNodeAttributeLayoutXMLElement(attributeElement);
                 attributeElement.setIntAttribute("NAME_WIDTH", getColumnWidth(0));
@@ -219,14 +215,7 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
     public void setColumnWidth(int col, int width) {
         getAttributeController().performSetColumnWidth(this, col, width);
     }
-    public String getViewType() {
-        return  getLayout().getViewType();
-    }
-    
-    public void setViewType(String viewType) {
-        getAttributeController().performSetViewType(this, viewType);
-    }
-    
+
     public AttributeTableLayoutModel getLayout() {
         if(layout == null)
             layout = new AttributeTableLayoutModel();
@@ -237,4 +226,5 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
         allocateAttributes(NodeAttributeTableModel.CAPACITY_INCREMENT);
         return attributes;
     }
+
  }

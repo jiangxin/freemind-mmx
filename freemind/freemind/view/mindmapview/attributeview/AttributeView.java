@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.11 2005-12-15 19:58:10 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.12 2006-02-28 20:58:08 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
 import java.awt.Color;
+import java.awt.Component;
 
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
@@ -62,19 +63,26 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         this.nodeView = nodeView;
         nodeView.getModel().addNodeViewEventListener(this);
         NodeAttributeTableModel attributes = getAttributes();
-        AttributeRegistry attributeRegistry = getNode().getMap().getRegistry().getAttributes();
+        AttributeRegistry attributeRegistry = getAttributeRegistry();
         reducedAttributeTableModel = new ReducedAttributeTableModelDecorator(attributes, attributeRegistry);
         currentAttributeTableModel = reducedAttributeTableModel;
-        getAttributes().getLayout().setViewType(attributes.getViewType());
-        setViewType(attributes.getViewType());
+        setViewType(attributeRegistry.getAttributeViewType());
+    }
+    private AttributeRegistry getAttributeRegistry() {
+        return getNode().getMap().getRegistry().getAttributes();
     }
     public NodeAttributeTableModel getAttributes() {
         return getNode().getAttributes();
     }
     public void syncronizeAttributeView() {
         if (attributeTable == null && currentAttributeTableModel.areAttributesVisible()){
+            provideAttributeTable();
+        }
+    }
+    private void provideAttributeTable() {
+        if (attributeTable == null){            
             attributeTable = new AttributeTable(this);
-            if(getAttributes().getViewType().equals(AttributeTableLayoutModel.SHOW_EXTENDED)){
+            if(getAttributeRegistry().getAttributeViewType().equals(AttributeTableLayoutModel.SHOW_ALL)){
                 attributeTable.getTableHeader().setBackground(EXTENDED_HEADER_BACKGROUND);
             }
             addTableModelListeners();
@@ -85,7 +93,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         }
     }
     private void addListeners() {
-        getAttributes().getLayout().addStateChangeListener(this);
+        getAttributeRegistry().addChangeListener(this);
         addTableModelListeners();
     }
     private void addTableModelListeners() {
@@ -103,7 +111,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     }
     
     private void removeListeners() {
-        getAttributes().getLayout().removeStateChangeListener(this);
+        getAttributeRegistry().removeChangeListener(this);
         if(attributeTable != null)
             getAttributes().getLayout().removeColumnWidthChangeListener(attributeTable);
         nodeView.getModel().removeNodeViewEventListener(this);
@@ -129,7 +137,9 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
      * @return
      */
     public boolean areAttributesVisible() {
-        return  currentAttributeTableModel.areAttributesVisible();
+        final String viewType = getViewType();
+        return  viewType !=AttributeTableLayoutModel.HIDE_ALL 
+        && (currentAttributeTableModel.areAttributesVisible() || viewType != getAttributeRegistry().getAttributeViewType());
     }
     /**
      * @return Returns the extendedAttributeTableModel.
@@ -138,31 +148,27 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         if(extendedAttributeTableModel == null){
             extendedAttributeTableModel = new ExtendedAttributeTableModelDecorator(
                     getAttributes(),
-                    getNode().getMap().getRegistry().getAttributes());
+                    getAttributeRegistry());
         }
         return extendedAttributeTableModel;
     }
     
     private void setViewType(String viewType) {
         Color headerBackground = USUAL_HEADER_BACKGROUND;
-        if(viewType.equals( AttributeTableLayoutModel.SHOW_EXTENDED)){
+        if(viewType == AttributeTableLayoutModel.SHOW_ALL){
             currentAttributeTableModel = getExtendedAttributeTableModel();
             headerBackground = EXTENDED_HEADER_BACKGROUND;
         }
-        else if(viewType.equals( AttributeTableLayoutModel.SHOW_REDUCED)){
+        else {
             currentAttributeTableModel = reducedAttributeTableModel;
             reducedAttributeTableModel.stateChanged(null);
         }
-        if(attributeTable != null && attributeTable.getModel() != attributeTable){
+        if(attributeTable != null){
             attributeTable.setModel(currentAttributeTableModel);
             attributeTable.getTableHeader().setBackground(headerBackground);
             attributeViewScrollPane.invalidate();
         }
     }
-    public String getAttributeViewType(){
-        return getAttributes().getViewType();           
-    }
-    
     public AttributeTableModel getCurrentAttributeTableModel() {
         return currentAttributeTableModel;
     }
@@ -174,7 +180,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     }
     
     public void stateChanged(ChangeEvent event){
-        setViewType(getAttributes().getLayout().getViewType());
+        setViewType(getAttributeRegistry().getAttributeViewType());
     }
     /**
      * @return
@@ -208,5 +214,34 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     public void tableChanged(TableModelEvent e) {
         MapView map = getNodeView().getMap();
         map.getModel().nodeChanged(getNode());
+    }
+    public String getViewType() {
+        return currentAttributeTableModel == reducedAttributeTableModel 
+        ? getAttributeRegistry().getAttributeViewType()
+        : AttributeTableLayoutModel.SHOW_ALL;
+    }
+    public void edit() {
+        provideAttributeTable();
+        final String registryAttributeViewType = getAttributeRegistry().getAttributeViewType();
+        if(registryAttributeViewType == AttributeTableLayoutModel.SHOW_SELECTED
+                || registryAttributeViewType == AttributeTableLayoutModel.HIDE_ALL){
+            setViewType(AttributeTableLayoutModel.SHOW_ALL);
+        }
+        if(currentAttributeTableModel.getRowCount() == 0){
+            attributeTable.insertRow(0);
+        }
+        else{
+            attributeTable.editCellAt(0, 0);
+        }
+    }
+    boolean isPopupShown(){
+        return attributeTable != null
+        && (tablePopupMenu.getTable() == attributeTable);       
+    }
+    static public Component getAncestorComponent(Component object, Class ancestorClass) {
+        if(object == null || ancestorClass.isAssignableFrom(object.getClass())){
+            return object;
+        }
+        return getAncestorComponent(object.getParent(), ancestorClass);
     }
 }

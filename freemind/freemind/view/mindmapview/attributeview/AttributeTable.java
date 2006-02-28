@@ -56,8 +56,8 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         public void focusGained(FocusEvent event) { 
             Component source = (Component)event.getSource();
             Component oppositeComponent = event.getOppositeComponent();
-            Component newNodeViewInFocus = getAncestorComponent(source, NodeView.class);
-            Component oldNodeViewInFocus = getAncestorComponent(oppositeComponent, NodeView.class);
+            Component newNodeViewInFocus = AttributeView.getAncestorComponent(source, NodeView.class);
+            Component oldNodeViewInFocus = AttributeView.getAncestorComponent(oppositeComponent, NodeView.class);
             if(newNodeViewInFocus != oldNodeViewInFocus 
                     && newNodeViewInFocus instanceof NodeView){
                 NodeView viewer = (NodeView)newNodeViewInFocus;
@@ -73,23 +73,24 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         public void focusLost(FocusEvent event) {
             Component source = (Component) event.getSource();
             Component oppositeComponent = event.getOppositeComponent();
-            AttributeTable oldTable = (AttributeTable)getAncestorComponent(source, AttributeTable.class);
+            AttributeTable oldTable = (AttributeTable)AttributeView.getAncestorComponent(source, AttributeTable.class);
             if(oldTable != null){
-                Component newTable = getAncestorComponent(oppositeComponent, AttributeTable.class);
+                Component newTable = AttributeView.getAncestorComponent(oppositeComponent, AttributeTable.class);
                 if(oldTable != newTable){
                     if (oldTable.isEditing()){                
                         oldTable.getCellEditor().stopCellEditing();
+                    } 
+                    if(!oldTable.attributeView.isPopupShown()){
+                        final AttributeView attributeView = oldTable.getAttributeView();
+                        final String currentAttributeViewType = attributeView.getNode().getMap().getRegistry().getAttributes().getAttributeViewType();
+                        if(attributeView.getViewType() != currentAttributeViewType){
+                            attributeView.stateChanged(null);
+                        }
                     }
                 }
             }
         }
         
-        private Component getAncestorComponent(Component object, Class ancestorClass) {
-            if(object == null || ancestorClass.isAssignableFrom(object.getClass())){
-                return object;
-            }
-            return getAncestorComponent(object.getParent(), ancestorClass);
-        }
     }
     static private class HeaderMouseListener extends MouseAdapter{
         public void mouseReleased(MouseEvent e) {
@@ -374,21 +375,6 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
             }
             getAttributeTableModel().setColumnWidth(col, maxCellWidth + 1);
         }
-    }
-    
-    
-    /**
-     * 
-     */
-    public void showAttributes() {
-        attributeView.getAttributes().setViewType(AttributeTableLayoutModel.SHOW_EXTENDED);
-    }
-    
-    /**
-     * 
-     */
-    public void hideAttributes() {
-        attributeView.getAttributes().setViewType(AttributeTableLayoutModel.SHOW_REDUCED);
     }
     
     

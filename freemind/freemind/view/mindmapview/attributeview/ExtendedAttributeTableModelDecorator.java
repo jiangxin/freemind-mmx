@@ -9,6 +9,7 @@ import javax.swing.event.ChangeEvent;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author Dimitri Polivaev
@@ -87,7 +88,7 @@ class ExtendedAttributeTableModelDecorator extends AttributeTableModelDecoratorA
      * @see freemind.view.mindmapview.attributeview.AttributeTableModelDecoratorAdapter#areAttributesVisible()
      */
     public boolean areAttributesVisible() {
-        return true;
+        return getRowCount() !=0;
     }
     /**
      * @param row

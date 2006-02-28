@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.8 2006-02-26 14:27:55 dpolivaev Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.9 2006-02-28 20:58:08 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -78,8 +78,6 @@ public abstract class XMLElementAdapter extends XMLElement {
     private String attributeName;
 
     private String attributeValue;
-
-    private String attributeViewType = AttributeTableLayoutModel.SHOW_REDUCED;
 
     private int attributeNameWidth = AttributeTableLayoutModel.DEFAULT_COLUMN_WIDTH;
 
@@ -192,7 +190,6 @@ public abstract class XMLElementAdapter extends XMLElement {
              node.getAttributes().addRowNoUndo((Attribute)child.getUserObject()); }
          else if (child.getName().equals(XML_NODE_ATTRIBUTE_LAYOUT)) {
              AttributeTableLayoutModel layout = node.getAttributes().getLayout();
-             layout.setViewType(((XMLElementAdapter)child).attributeViewType);
              layout.setColumnWidth(0, ((XMLElementAdapter)child).attributeNameWidth);
              layout.setColumnWidth(1, ((XMLElementAdapter)child).attributeValueWidth);
              }
@@ -321,9 +318,7 @@ public void setAttribute(String name, Object value) {
               attributeValue = sValue; } 
        }
       else if (getName().equals(XML_NODE_ATTRIBUTE_LAYOUT)) {
-          if (name.equals("VIEWTYPE")) {
-              attributeViewType = sValue; } 
-          else if (name.equals("NAME_WIDTH")) {
+          if (name.equals("NAME_WIDTH")) {
               attributeNameWidth = Integer.parseInt(sValue); } 
           else if (name.equals("VALUE_WIDTH")) {
               attributeValueWidth = Integer.parseInt(sValue); } 

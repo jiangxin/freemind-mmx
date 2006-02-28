@@ -5,12 +5,15 @@
 package freemind.controller.attributes;
 
 import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.table.JTableHeader;
@@ -19,6 +22,7 @@ import freemind.main.Resources;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.AttributeTableModel;
 import freemind.view.mindmapview.attributeview.AttributeTable;
+import freemind.view.mindmapview.attributeview.AttributeView;
 
 /**
  * @author Dimitri Polivaev
@@ -36,21 +40,6 @@ public class AttributePopupMenu extends JPopupMenu implements MouseListener {
     private int row;
     
     /**
-     * @return Returns the edit.
-     */
-    private JMenuItem getEdit() {
-        if(edit == null){
-            edit = new JMenuItem(Resources.getInstance().getResourceString("attributes_popup_edit"));
-            edit.addActionListener(new ActionListener(){
-                public void actionPerformed(ActionEvent e) {
-                    table.showAttributes();                    
-                }                
-            });
-        }
-        return edit;
-    }
-
-    /**
      * @return Returns the optimalWidth.
      */
     private JMenuItem getOptimalWidth() {
@@ -63,21 +52,6 @@ public class AttributePopupMenu extends JPopupMenu implements MouseListener {
             });
         }
         return optimalWidth;
-    }
-
-    /**
-     * @return Returns the hide.
-     */
-    private JMenuItem getHide() {
-        if(hide == null){
-            hide = new JMenuItem(Resources.getInstance().getResourceString("attributes_popup_hide"));
-            hide.addActionListener(new ActionListener(){
-                public void actionPerformed(ActionEvent e) {
-                    table.hideAttributes();                    
-                }                
-            });
-        }
-        return hide;
     }
 
     /**
@@ -170,11 +144,10 @@ public class AttributePopupMenu extends JPopupMenu implements MouseListener {
      * 
      */
     private void make() {
-        String attributeViewType = table.getAttributeView().getAttributeViewType();
+        String attributeViewType = table.getAttributeView().getViewType();
         AttributeTableModel model = table.getAttributeTableModel();
         int rowCount = model.getRowCount();
-        if(attributeViewType.equals(AttributeTableLayoutModel.SHOW_EXTENDED)){
-            add(getHide());
+        if(attributeViewType.equals(AttributeTableLayoutModel.SHOW_ALL)){
             if(rowCount != 0){
                 add(getOptimalWidth());   
             }            
@@ -190,7 +163,6 @@ public class AttributePopupMenu extends JPopupMenu implements MouseListener {
             }
         }
         else{
-            add(getEdit());
             if(rowCount != 0){
                 add(getOptimalWidth());   
             }            
@@ -206,6 +178,9 @@ public class AttributePopupMenu extends JPopupMenu implements MouseListener {
         if(component instanceof AttributeTable){
             table = (AttributeTable)component;  
             row = table.rowAtPoint(point);
+            if(table.getValueAt(row, 0).equals("")){
+                row--;
+            }
             int selectedRow = table.getSelectedRow();
         }
         else if (component instanceof JTableHeader){
@@ -234,13 +209,27 @@ public class AttributePopupMenu extends JPopupMenu implements MouseListener {
     protected void firePopupMenuWillBecomeInvisible() {
         if(row != -1){
             table.removeRowSelectionInterval(row, row);
-            table.setRowSelectionAllowed(false);
         }
+        EventQueue.invokeLater(new Runnable(){
+            public void run() {
+                final KeyboardFocusManager focusManager = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager();
+                final Component focusOwner = AttributeView.getAncestorComponent(focusManager.getFocusOwner(), AttributeTable.class);
+                if(table != focusOwner
+                        && focusOwner instanceof JComponent){
+                    table.requestFocus(true);
+                    ((JComponent)focusOwner).requestFocus();
+                }
+                table = null;
+            }
+        });
     }
     protected void firePopupMenuWillBecomeVisible() {
         if(row != -1){
-            table.setRowSelectionAllowed(true);
             table.addRowSelectionInterval(row, row);
         }
+    }
+
+    public AttributeTable getTable() {
+        return table;
     }
 }

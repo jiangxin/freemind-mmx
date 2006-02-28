@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapView.java,v 1.30.16.12.2.4.2.14 2005-12-28 22:03:55 dpolivaev Exp $*/
+/*$Id: MapView.java,v 1.30.16.12.2.4.2.15 2006-02-28 20:58:08 dpolivaev Exp $*/
  
 package freemind.view.mindmapview;
 
@@ -52,6 +52,8 @@ import java.util.Vector;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.RepaintManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 
@@ -210,7 +212,9 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 
         this.setAutoscrolls(true);
 
-        getModel().addTreeModelListener( new MapModelHandler() );
+        final MapModelHandler mapModelHandler = new MapModelHandler();
+        getModel().addTreeModelListener( mapModelHandler );
+        getModel().getRegistry().getAttributes().addChangeListener(mapModelHandler);
 
         this.setLayout( new MindMapLayout( this ) );
 
@@ -1040,7 +1044,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
     /**
      * This inner class updates the Tree when the model is changed.
      */
-    private class MapModelHandler implements TreeModelListener {
+    private class MapModelHandler implements TreeModelListener, ChangeListener {
         public void treeNodesChanged( TreeModelEvent e ) {
             // must be in structureChanged instead ?
             // or in is own Listerner
@@ -1206,6 +1210,12 @@ public class MapView extends JPanel implements Printable, Autoscroll {
             focussedNode.getViewer().requestFocus();
             repaint();
         }
+
+        public void stateChanged(ChangeEvent e) {
+            getRoot().invalidateDescendantsTreeGeometries();
+            revalidate();
+            repaint();            
+        }
     }
     
     // this property is used when the user navigates up/down using cursor keys (PN)
@@ -1248,6 +1258,4 @@ public class MapView extends JPanel implements Printable, Autoscroll {
         Rectangle r = new Rectangle((int)cursorLocn.getX() - margin, (int)cursorLocn.getY() - margin, 1+ 2*margin, 1+ 2*margin);
         scrollRectToVisible(r);
     }
-
-
  }

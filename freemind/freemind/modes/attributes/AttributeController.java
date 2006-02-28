@@ -11,8 +11,6 @@ public interface AttributeController {
 
     void performInsertRow(NodeAttributeTableModel model, int index, String name, String value);
 
-    void performSetViewType(NodeAttributeTableModel model, String viewType);
-
     void performRemoveRow(NodeAttributeTableModel model, int index);
 
     void performSetColumnWidth(NodeAttributeTableModel model, int col, int width);

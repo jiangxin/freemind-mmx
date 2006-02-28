@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.8.4.3 2005-12-24 13:45:18 dpolivaev Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.8.4.4 2006-02-28 20:58:08 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -49,7 +49,7 @@ public class MenuBar extends JMenuBar {
     public static final String FILE_MENU = MENU_BAR_PREFIX+"file/";
     public static final String FORMAT_MENU = MENU_BAR_PREFIX+"format/";
     public static final String EXTRAS_MENU = MENU_BAR_PREFIX+"extras/";
-    public static final String ATTRIBUTES_MENU = MENU_BAR_PREFIX+"attributes/";
+
 
 	private StructuredMenuHolder menuHolder;
 	
@@ -126,10 +126,6 @@ public class MenuBar extends JMenuBar {
 		//navigate menu
 		menuHolder.addMenu(new JMenu(c.getResourceString("menu_navigate")), NAVIGATE_MENU+".");
 
-
-        //attributes menu
-        menuHolder.addMenu(new JMenu(c.getResourceString("menu_attributes")), ATTRIBUTES_MENU+".");
-        menuHolder.addCategory(ATTRIBUTES_MENU+"controls");    
 
         //extras menu
         menuHolder.addMenu(new JMenu(c.getResourceString("menu_extras")), EXTRAS_MENU+".");

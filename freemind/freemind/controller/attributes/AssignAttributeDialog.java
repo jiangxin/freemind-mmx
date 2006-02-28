@@ -130,39 +130,6 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
        }        
     }
     
-    private  class ShowAction extends IteratingAction{
-        protected void performAction(MindMapNode model) {
-            NodeAttributeTableModel attributes = model.getAttributes();
-            if(! attributes.getViewType().equals(AttributeTableLayoutModel.SHOW_EXTENDED)){
-                attributes.getAttributeController().performSetViewType(attributes, AttributeTableLayoutModel.SHOW_EXTENDED);
-                model.getMap().nodeChanged(model);
-            }
-        }        
-    }
-    
-    private  class ShowExistingAction extends IteratingAction{
-        protected void performAction(MindMapNode model) {
-            NodeAttributeTableModel attributes = model.getAttributes();
-            String type = attributes.getRowCount() != 0 
-                ? AttributeTableLayoutModel.SHOW_EXTENDED
-                : AttributeTableLayoutModel.SHOW_REDUCED ;
-            if(! attributes.getViewType().equals(type)){
-                attributes.getAttributeController().performSetViewType(attributes, type);
-                model.getMap().nodeChanged(model);
-            }
-        }        
-    }
-    
-    private  class HideAction extends IteratingAction{
-        protected void performAction(MindMapNode model) {
-            NodeAttributeTableModel attributes = model.getAttributes();
-            if(! attributes.getViewType().equals(AttributeTableLayoutModel.SHOW_REDUCED)){
-                attributes.getAttributeController().performSetViewType(attributes, AttributeTableLayoutModel.SHOW_REDUCED);
-                model.getMap().nodeChanged(model);
-            }
-        }        
-    }
-    
     private  class AddAction extends IteratingAction{
         private String name;
         private String value;
@@ -324,12 +291,6 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
         
         skipRootBtn = new JCheckBox(Resources.getInstance().getResourceString("attributes_skip_root"));
         skipRootBtn.setSelected(true);
-        final JButton showBtn = new JButton(Resources.getInstance().getResourceString("attributes_show"));
-        showBtn.addActionListener(new ShowAction());
-        final JButton showExistingBtn = new JButton(Resources.getInstance().getResourceString("attributes_show_existing"));
-        showExistingBtn.addActionListener(new ShowExistingAction());        
-        final JButton hideBtn = new JButton(Resources.getInstance().getResourceString("attributes_hide"));
-        hideBtn.addActionListener(new HideAction());
         
         final Box selectionBox = Box.createHorizontalBox();
         selectionBox.setBorder(emptyBorder);
@@ -339,12 +300,6 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
         selectionBox.add(visibleBtn);
         selectionBox.add(Box.createHorizontalGlue());
         selectionBox.add(skipRootBtn);
-        selectionBox.add(Box.createHorizontalGlue());
-        selectionBox.add(showBtn);
-        selectionBox.add(Box.createHorizontalGlue());
-        selectionBox.add(showExistingBtn);
-        selectionBox.add(Box.createHorizontalGlue());
-        selectionBox.add(hideBtn);
         selectionBox.add(Box.createHorizontalGlue());
         
         getContentPane().add(selectionBox, BorderLayout.NORTH);
