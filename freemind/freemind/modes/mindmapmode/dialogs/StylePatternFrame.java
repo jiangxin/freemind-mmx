@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: StylePatternFrame.java,v 1.1.2.4 2006-02-27 18:49:01 christianfoltin Exp $*/
+/*$Id: StylePatternFrame.java,v 1.1.2.5 2006-02-28 18:56:50 christianfoltin Exp $*/
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;
@@ -29,6 +29,8 @@ import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
@@ -44,6 +46,8 @@ import freemind.common.BooleanProperty;
 import freemind.common.ColorProperty;
 import freemind.common.ComboProperty;
 import freemind.common.FontProperty;
+import freemind.common.NextLineProperty;
+import freemind.common.PropertyBean;
 import freemind.common.PropertyControl;
 import freemind.common.SeparatorProperty;
 import freemind.common.StringProperty;
@@ -57,7 +61,7 @@ import freemind.modes.StylePattern;
  * @author foltin
  * 
  */
-public class StylePatternFrame extends JPanel implements TextTranslator {
+public class StylePatternFrame extends JPanel implements TextTranslator, PropertyChangeListener {
 
 	private static final String[] EDGE_STYLES = new String[] {
 			EdgeAdapter.EDGESTYLE_LINEAR, EdgeAdapter.EDGESTYLE_BEZIER,
@@ -104,6 +108,8 @@ public class StylePatternFrame extends JPanel implements TextTranslator {
 
 	private static final String EDGE_COLOR = "edgecolor";
 
+    private static final String CLEAR_ALL_SETTERS = "clear_all_setters";
+
 	private final TextTranslator mTranslator;
 
 	private Vector mControls;
@@ -139,6 +145,14 @@ public class StylePatternFrame extends JPanel implements TextTranslator {
 	private BooleanProperty mSetEdgeColor;
 
 	private ColorProperty mEdgeColor;
+    
+    /**
+     * Denotes pairs property -> BooleanProperty such that the boolean property can be set,
+     * when the format property is changed.
+     */
+    private HashMap mPropertyChangePropagation = new HashMap();
+
+    private BooleanProperty mClearSetters;
 
 	/**
 	 * @throws HeadlessException
@@ -169,11 +183,41 @@ public class StylePatternFrame extends JPanel implements TextTranslator {
 		add(rightStack, BorderLayout.CENTER);
 	}
 
+    public void addListeners() {
+        // add listeners:
+        for (Iterator iter = mControls.iterator(); iter.hasNext();)
+        {
+            PropertyControl control = (PropertyControl) iter.next();
+            if (control instanceof PropertyBean)
+            {
+                PropertyBean bean = (PropertyBean) control;
+                bean.addPropertyChangeListener(this);
+            }
+        }
+        mClearSetters.addPropertyChangeListener(new PropertyChangeListener(){
+
+            public void propertyChange(PropertyChangeEvent pEvt)
+            {
+                for (Iterator iter = mPropertyChangePropagation.values().iterator(); iter.hasNext();)
+                {
+                    BooleanProperty booleanProp = (BooleanProperty) iter.next();
+                    System.out.println("Setting : " + booleanProp);
+                    booleanProp.setValue(mClearSetters.getValue());
+                }
+            }});
+    }
+    
 	private Vector getControls() {
 		Vector controls = new Vector();
+		controls.add(new SeparatorProperty("General"));
+		mClearSetters = new BooleanProperty(CLEAR_ALL_SETTERS + ".tooltip",
+                CLEAR_ALL_SETTERS);
+		mClearSetters.setValue(BooleanProperty.TRUE_VALUE);
+		controls.add(mClearSetters);
+		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("NodeColors"));
 		mSetNodeColor = new BooleanProperty(SET_NODE_COLOR + ".tooltip",
-				SET_NODE_COLOR);
+		        SET_NODE_COLOR);
 		controls.add(mSetNodeColor);
 		mNodeColor = new ColorProperty(NODE_COLOR + ".tooltip", NODE_COLOR,
 				"#ffffff", this);
@@ -224,6 +268,15 @@ public class StylePatternFrame extends JPanel implements TextTranslator {
 		mEdgeColor = new ColorProperty(EDGE_COLOR + ".tooltip", EDGE_COLOR,
 				"#000000", this);
 		controls.add(mEdgeColor);
+        // fill map;
+        mPropertyChangePropagation.put(mNodeColor, mSetNodeColor);
+        mPropertyChangePropagation.put(mNodeBackgoundColor, mSetNodeBackgroundColor);
+        mPropertyChangePropagation.put(mNodeStyle, mSetNodeStyle);
+        mPropertyChangePropagation.put(mNodeFont, mSetNodeFont);
+        mPropertyChangePropagation.put(mNodeText, mSetNodeText);
+        mPropertyChangePropagation.put(mEdgeColor, mSetEdgeColor);
+        mPropertyChangePropagation.put(mEdgeStyle, mSetEdgeStyle);
+        mPropertyChangePropagation.put(mEdgeWidth, mSetEdgeWidth);
 		return controls;
 	}
 
@@ -412,5 +465,14 @@ public class StylePatternFrame extends JPanel implements TextTranslator {
 		frame.pack();
 		frame.show();
 	}
+
+    public void propertyChange(PropertyChangeEvent pEvt)
+    {
+        if(mPropertyChangePropagation.containsKey(pEvt.getSource())) {
+            BooleanProperty booleanProp = (BooleanProperty) mPropertyChangePropagation.get(pEvt.getSource());
+            booleanProp.setValue(BooleanProperty.TRUE_VALUE);
+            return;
+        }
+    }
 
 }

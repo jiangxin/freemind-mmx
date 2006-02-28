@@ -19,18 +19,20 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: NumberProperty.java,v 1.1.2.1 2006-02-25 23:10:58 christianfoltin Exp $*/
+/*$Id: NumberProperty.java,v 1.1.2.2 2006-02-28 18:56:50 christianfoltin Exp $*/
 package freemind.common;
 
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
-public class NumberProperty implements
-	PropertyControl, PropertyBean {
+public class NumberProperty extends PropertyBean implements
+	PropertyControl {
 	    String description;
 	    JSlider slider;
 	    String label;
@@ -47,6 +49,13 @@ public class NumberProperty implements
 
 	        this.description = description;
 	        this.label = label;
+            spinner.addChangeListener(new ChangeListener(){
+
+                public void stateChanged(ChangeEvent pE)
+                {
+                    firePropertyChangeEvent();
+                }});
+
 	    }
 	    
 	    public String getDescription() {

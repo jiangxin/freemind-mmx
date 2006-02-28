@@ -19,9 +19,11 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ComboProperty.java,v 1.1.2.1 2006-02-25 23:10:58 christianfoltin Exp $*/
+/*$Id: ComboProperty.java,v 1.1.2.2 2006-02-28 18:56:50 christianfoltin Exp $*/
 package freemind.common;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Vector;
@@ -33,11 +35,13 @@ import javax.swing.JLabel;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
 
-public class ComboProperty extends JComboBox implements
-		PropertyControl, PropertyBean {
+public class ComboProperty extends PropertyBean implements
+		PropertyControl {
 	String description;
 
 	String label;
+	
+	JComboBox mComboBox = new JComboBox();
 
 	private Vector possibleValues;
 
@@ -57,7 +61,13 @@ public class ComboProperty extends JComboBox implements
 			String key = (String) i.next();
 			possibleTranslations.add(pTranslator.getText(key));
 		}
-		setModel(new DefaultComboBoxModel(possibleTranslations));
+		mComboBox.setModel(new DefaultComboBoxModel(possibleTranslations));
+		mComboBox.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent pE)
+            {
+                firePropertyChangeEvent();
+            }});
 	}
 
 	public ComboProperty(String description, String label,
@@ -65,7 +75,7 @@ public class ComboProperty extends JComboBox implements
 		this.description = description;
 		this.label = label;
 		fillPossibleValues(possibles);
-		setModel(new DefaultComboBoxModel(possibleTranslations));
+		mComboBox.setModel(new DefaultComboBoxModel(possibleTranslations));
 	}
 
 	/**
@@ -86,19 +96,19 @@ public class ComboProperty extends JComboBox implements
 
 	public void setValue(String value) {
 		if (possibleValues.contains(value)) {
-			super.setSelectedIndex(possibleValues.indexOf(value));
+			mComboBox.setSelectedIndex(possibleValues.indexOf(value));
 		} else {
 			throw new IllegalArgumentException("Unknown value:" + value);
 		}
 	}
 
 	public String getValue() {
-		return (String) possibleValues.get(super.getSelectedIndex());
+		return (String) possibleValues.get(mComboBox.getSelectedIndex());
 	}
 
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
 		JLabel label = builder
-				.append(pTranslator.getText(getLabel()), this);
+				.append(pTranslator.getText(getLabel()), mComboBox);
 		label.setToolTipText(pTranslator.getText(getDescription()));
 	}
 

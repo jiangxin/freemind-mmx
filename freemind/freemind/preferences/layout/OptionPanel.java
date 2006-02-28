@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.22 2006-02-27 18:49:01 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.23 2006-02-28 18:56:50 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -334,12 +334,13 @@ public class OptionPanel implements TextTranslator {
 
 	}
 
-	private static class KeyProperty extends JButton implements
-			PropertyControl, PropertyBean {
+	private static class KeyProperty extends PropertyBean implements
+			PropertyControl {
 		String description;
 
 		String label;
 
+		JButton mButton = new JButton();
 		/**
 		 * @param description
 		 * @param label
@@ -348,7 +349,7 @@ public class OptionPanel implements TextTranslator {
 			super();
 			this.description = description;
 			this.label = label;
-			addActionListener(new ActionListener() {
+			mButton.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent arg0) {
 					//FIXME: Determine bindings.
@@ -359,6 +360,7 @@ public class OptionPanel implements TextTranslator {
 							allKeybindings, null);
 					if (dialog.isOK()) {
 						setValue(dialog.getShortcut());
+                        firePropertyChangeEvent();
 					}
 				}
 			});
@@ -373,17 +375,17 @@ public class OptionPanel implements TextTranslator {
 		}
 
 		public void setValue(String value) {
-			setText(value);
-			setToolTipText(getText());
+			mButton.setText(value);
+			mButton.setToolTipText(mButton.getText());
 		}
 
 		public String getValue() {
-			return getText();
+			return mButton.getText();
 		}
 
 		public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
 			JLabel label = builder
-					.append(pTranslator.getText(getLabel()), this);
+					.append(pTranslator.getText(getLabel()), mButton);
 			label.setToolTipText(pTranslator.getText(getDescription()));
 		}
 

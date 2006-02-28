@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ColorProperty.java,v 1.1.2.2 2006-02-26 00:30:10 christianfoltin Exp $*/
+/*$Id: ColorProperty.java,v 1.1.2.3 2006-02-28 18:56:50 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.Color;
@@ -38,13 +38,15 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 import freemind.controller.Controller;
 import freemind.main.Tools;
 
-public class ColorProperty extends JButton implements
-		PropertyControl, PropertyBean, ActionListener {
+public class ColorProperty extends PropertyBean implements
+		PropertyControl, ActionListener {
 	String description;
 
 	String label;
 
 	Color color;
+	
+	JButton mButton ;
 	final JPopupMenu menu = new JPopupMenu();
 
     private final String defaultColor;
@@ -64,7 +66,8 @@ public class ColorProperty extends JButton implements
 		this.label = label;
         this.defaultColor = defaultColor;
 		mTranslator = pTranslator;
-		addActionListener(this);
+		mButton = new JButton();
+		mButton.addActionListener(this);
 		color = Color.BLACK;
 	}
 
@@ -86,7 +89,7 @@ public class ColorProperty extends JButton implements
 
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
 		JLabel label = builder
-				.append(pTranslator.getText(getLabel()), this);
+				.append(pTranslator.getText(getLabel()), mButton);
 		label.setToolTipText(pTranslator.getText(getDescription()));
 		// add "reset to standard" popup:
 	    
@@ -100,7 +103,7 @@ public class ColorProperty extends JButton implements
 	    menu.add(item);
 	    
 	    // Set the component to show the popup menu
-	    this.addMouseListener(new MouseAdapter() {
+	    mButton.addMouseListener(new MouseAdapter() {
 	        public void mousePressed(MouseEvent evt) {
 	            if (evt.isPopupTrigger()) {
 	                menu.show(evt.getComponent(), evt.getX(), evt.getY());
@@ -116,9 +119,10 @@ public class ColorProperty extends JButton implements
 
 	public void actionPerformed(ActionEvent arg0) {
 		Color result = Controller.showCommonJColorChooserDialog(
-				getRootPane(), getLabel(), getColorValue());
+				mButton.getRootPane(), getLabel(), getColorValue());
 		if (result != null) {
 			setColorValue(result);
+			firePropertyChangeEvent();
 		}
 	}
 
@@ -130,8 +134,8 @@ public class ColorProperty extends JButton implements
         if(result == null) {
             result = Color.WHITE;
         }
-		setBackground(result);
-		setText(Tools.colorToXml(result));
+        mButton.setBackground(result);
+        mButton.setText(Tools.colorToXml(result));
 	}
 
 	/**

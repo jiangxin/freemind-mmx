@@ -19,20 +19,26 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: StringProperty.java,v 1.1.2.1 2006-02-25 23:10:58 christianfoltin Exp $*/
+/*$Id: StringProperty.java,v 1.1.2.2 2006-02-28 18:56:50 christianfoltin Exp $*/
 package freemind.common;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
-public class StringProperty extends JTextField implements
-		PropertyControl, PropertyBean {
+public class StringProperty extends PropertyBean implements
+		PropertyControl {
 	String description;
 
 	String label;
 
+	JTextField mTextField = new JTextField();
 	/**
 	 * @param description
 	 * @param label
@@ -41,6 +47,19 @@ public class StringProperty extends JTextField implements
 		super();
 		this.description = description;
 		this.label = label;
+//        mTextField.addPropertyChangeListener(new PropertyChangeListener() {
+//            public void propertyChange(PropertyChangeEvent pEvt)
+//            {
+//                firePropertyChangeEvent();
+//            }
+//        });
+        mTextField.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent pE)
+            {
+                firePropertyChangeEvent();
+            }});
+
 	}
 
 	public String getDescription() {
@@ -52,16 +71,16 @@ public class StringProperty extends JTextField implements
 	}
 
 	public void setValue(String value) {
-		setText(value);
+		mTextField.setText(value);
 	}
 
 	public String getValue() {
-		return getText();
+		return mTextField.getText();
 	}
 
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
 		JLabel label = builder
-				.append(pTranslator.getText(getLabel()), this);
+				.append(pTranslator.getText(getLabel()), mTextField);
 		label.setToolTipText(pTranslator.getText(getDescription()));
 	}
 
