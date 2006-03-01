@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: StylePatternFrame.java,v 1.1.2.5 2006-02-28 18:56:50 christianfoltin Exp $*/
+/*$Id: StylePatternFrame.java,v 1.1.2.6 2006-03-01 21:13:28 christianfoltin Exp $*/
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;
@@ -375,6 +375,10 @@ public class StylePatternFrame extends JPanel implements TextTranslator, Propert
 
 	public StylePattern getResultPattern() {
 		StylePattern pattern = new StylePattern();
+        return getResultPattern(pattern);
+    }
+    
+    public StylePattern getResultPattern(StylePattern pattern){
 		if (mSetNodeColor.getValue() == TRUE_VALUE) {
 			pattern.setNodeColor(Tools.xmlToColor(mNodeColor.getValue()));
 		} else {

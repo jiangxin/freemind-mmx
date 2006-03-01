@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.17 2006-02-26 00:30:10 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.18 2006-03-01 21:13:28 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -30,6 +30,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -267,7 +268,6 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     public ChangeArrowsInArrowLinkAction changeArrowsInArrowLinkAction = null;
     public NodeBackgroundColorAction nodeBackgroundColor = null;
     public RemoveNodeBackgroundColorAction removeNodeBackgroundColor = null;
-    private Set globalPatternList;
 
     public IconAction unknwonIconAction = null;
     public RemoveLastIconAction removeLastIconAction = null;
@@ -392,16 +392,13 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         removeAllIconsAction = new RemoveAllIconsAction(this, unknwonIconAction);
         // load pattern actions:
         try {
-               File patternsFile = getFrame().getPatternsFile();
-               if (patternsFile != null && patternsFile.exists()) {
-                  loadPatterns(patternsFile); }
-               else {
-                  System.out.println("User patterns file "+patternsFile+" not found.");
-                  loadPatterns(new InputStreamReader(getResource("patterns.xml").openStream())); }}
-            catch (XMLParseException e) {
-               System.err.println("In patterns:"+e); }
-        catch (Exception ex) {
-               System.err.println("Patterns not loaded:"+ex); }
+            Reader reader = getPatternReader();
+            loadPatterns(reader);
+        } catch (XMLParseException e) {
+            System.err.println("In patterns:" + e);
+        } catch (Exception ex) {
+            System.err.println("Patterns not loaded:" + ex);
+        }
         EdgeWidth_WIDTH_PARENT = new EdgeWidthAction(this, EdgeAdapter.WIDTH_PARENT);
         EdgeWidth_WIDTH_THIN = new EdgeWidthAction(this, EdgeAdapter.WIDTH_THIN);
         EdgeWidth_1 = new EdgeWidthAction(this, 1);
@@ -448,6 +445,25 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
     /**
      * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    public Reader getPatternReader() throws FileNotFoundException, IOException {
+        Reader reader = null;
+        File patternsFile = getFrame().getPatternsFile();
+        if (patternsFile != null && patternsFile.exists()) {
+            reader = new FileReader(patternsFile);
+        } else {
+            System.out.println("User patterns file " + patternsFile
+                    + " not found.");
+            reader = new InputStreamReader(getResource("patterns.xml")
+                    .openStream());
+        }
+        return reader;
+    }
+
+    /**
+     * @return
      */
     public Clipboard getClipboard() {
         return clipboard;
@@ -463,17 +479,11 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
 
     
-    private void loadPatterns(File file) throws Exception {
-        createPatterns(StylePattern.loadPatterns(file));
-    }
-
     private void loadPatterns(Reader reader) throws Exception {
         createPatterns(StylePattern.loadPatterns(reader));
     }
 
     private void createPatterns(List patternsList) throws Exception {
-        globalPatternList = new HashSet();
-        globalPatternList.addAll(patternsList);
         patterns = new ApplyPatternAction[patternsList.size()];
         for (int i = 0; i < patterns.length; i++) {
             patterns[i] = new ApplyPatternAction(this,

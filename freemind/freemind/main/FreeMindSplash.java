@@ -45,11 +45,14 @@ public class FreeMindSplash extends JFrame {
 
 		private int mActualValue;
 		private long mActualTimeStamp=System.currentTimeMillis();
+        private long mTotalTime = 0;
 
 		public void progress(final int act) {
 			this.mActualValue = act;
-			System.out.print("Task: "+act+" last " + (System.currentTimeMillis()-mActualTimeStamp)/1000.0 + " seconds.\n");
+			long timeDifference = System.currentTimeMillis()-mActualTimeStamp;
 			mActualTimeStamp = System.currentTimeMillis();
+			mTotalTime += timeDifference;
+			System.out.print("Task: "+act+" last " + (timeDifference)/1000.0 + " seconds.\nTotal: "+mTotalTime/1000.0+"\n");
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					mProgressBar.setValue(act);

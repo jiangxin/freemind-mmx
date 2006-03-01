@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ComboProperty.java,v 1.1.2.2 2006-02-28 18:56:50 christianfoltin Exp $*/
+/*$Id: ComboProperty.java,v 1.1.2.3 2006-03-01 21:13:28 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -98,7 +98,10 @@ public class ComboProperty extends PropertyBean implements
 		if (possibleValues.contains(value)) {
 			mComboBox.setSelectedIndex(possibleValues.indexOf(value));
 		} else {
-			throw new IllegalArgumentException("Unknown value:" + value);
+			System.err.println("Unknown value:" + value);
+            if(mComboBox.getModel().getSize()>0) {
+                mComboBox.setSelectedIndex(0);
+            }
 		}
 	}
 
