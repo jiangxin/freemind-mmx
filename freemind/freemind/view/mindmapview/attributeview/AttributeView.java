@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.13 2006-03-02 21:00:55 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.14 2006-03-02 22:45:52 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -233,11 +233,13 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         }
         else{
             if(attributeTable.isVisible()){
+                attributeTable.changeSelection(0, 0, false, false);
                 attributeTable.requestFocus();
             }
             else{
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
+                        attributeTable.changeSelection(0, 0, false, false);
                         attributeTable.requestFocus();
                     }
                 });

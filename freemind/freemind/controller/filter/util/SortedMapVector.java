@@ -120,7 +120,7 @@ public class SortedMapVector{
                     return last;
                 return last+1 | ELEMENT_NOT_FOUND_FLAG;
             }
-            return findElement(key, middle, halfSize);
+            return findElement(key, middle, size - halfSize);
         }
     }
 
