@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.10 2006-02-28 20:58:08 dpolivaev Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.11.2.1.2.11 2006-03-02 21:00:54 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -56,6 +57,7 @@ import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.MenuActionBase;
 import freemind.controller.actions.generated.instance.MenuCategoryBase;
 import freemind.controller.actions.generated.instance.MenuCheckedAction;
+import freemind.controller.actions.generated.instance.MenuRadioAction;
 import freemind.controller.actions.generated.instance.MenuSeparator;
 import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
@@ -122,9 +124,6 @@ public class MindMapController extends ControllerAdapter {
    public Action exportBranchToHTML = new ExportBranchToHTMLAction(this);
 
    public Action editLong = new EditLongAction();
-   public Action showAllAttributes = new ShowAllAttributesAction();
-   public Action showSelectedAttributes = new ShowSelectedAttributesAction();
-   public Action hideAllAttributes = new HideAllAttributesAction();
    public Action editAttributes = new EditAttributesAction();
    protected  AssignAttributeDialog assignAttributeDialog = null;
    public Action assignAttributes = new AssignAttributesAction();
@@ -411,6 +410,7 @@ public class MindMapController extends ControllerAdapter {
      */
     public void processMenuCategory(StructuredMenuHolder holder, List list, String category) {
 		String categoryCopy = category;
+        ButtonGroup buttonGroup = null;        
     	for (Iterator i = list.iterator(); i.hasNext();) {
             Object obj = (Object) i.next();
             if(obj instanceof MenuCategoryBase) {
@@ -435,7 +435,13 @@ public class MindMapController extends ControllerAdapter {
 					String theCategory = categoryCopy+"/"+name;
 					if (obj instanceof MenuCheckedAction) {
 						addCheckBox(holder, theCategory, theAction, keystroke);
-					} else {
+					} else if (obj instanceof MenuRadioAction) {                        
+                        final JRadioButtonMenuItem item = (JRadioButtonMenuItem) addRadioItem(holder, theCategory, theAction, keystroke, ((MenuRadioAction)obj).isSelected());
+                        if(buttonGroup == null)
+                            buttonGroup = new ButtonGroup();
+                        buttonGroup.add(item);
+
+                    } else {
 						add(holder, theCategory, theAction, keystroke);
 					}
 				} catch (Exception e1) {

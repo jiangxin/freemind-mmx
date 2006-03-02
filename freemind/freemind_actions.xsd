@@ -924,6 +924,7 @@
 	          <xs:element ref="menu_submenu"/>
 	          <xs:element ref="menu_action"/>
 	          <xs:element ref="menu_checked_action"/>
+	          <xs:element ref="menu_radio_action"/>
 	          <xs:element ref="menu_separator"/>
        </xs:choice>
 	</xs:group>
@@ -988,6 +989,16 @@
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="menu_action_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+  </xs:element>
+
+  <xs:element name="menu_radio_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="menu_action_base">
+			      <xs:attribute name="selected" use="optional" default ="false" type="xs:boolean"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.15 2006-02-28 20:58:08 dpolivaev Exp $*/
+/*$Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.16 2006-03-02 21:00:54 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -58,6 +58,7 @@ import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -65,6 +66,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
@@ -236,6 +238,9 @@ public abstract class ControllerAdapter implements ModeController {
     public SelectBranchAction selectBranchAction = null;
     public SelectAllAction selectAllAction = null;
 
+    public Action showAllAttributes = new ShowAllAttributesAction();
+    public Action showSelectedAttributes = new ShowSelectedAttributesAction();
+    public Action hideAllAttributes = new HideAllAttributesAction();
 
 	/** Executes series of actions. */
 	private CompoundActionHandler compound = null;
@@ -661,6 +666,16 @@ public abstract class ControllerAdapter implements ModeController {
 	   return item;
 	}
 
+	protected JMenuItem addRadioItem(StructuredMenuHolder holder, String category, Action action, String keystroke, boolean isSelected) {
+	    JRadioButtonMenuItem item = (JRadioButtonMenuItem) holder.addMenuItem(new JRadioButtonMenuItem(action), category);
+	    if(keystroke != null) {
+	        item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
+	    }
+	    item.setSelected(isSelected);
+	    return item;
+	}
+
+    
 	protected void add(JMenu menu, Action action) {
        menu.add(action); }
 

@@ -17,7 +17,9 @@ Filter Composer Dialog:
 * Apply applies the filter selected in the list of filters, regardless of the filter selected in the combobox in the toolbar 
 * OK closes the dialog and sets the currently selected filter in the list of filters as the current filter in the combobox
 
-* other minor changes and refactorings
+Other improvements:
+* Radio Button Items in Menus
+* other changes and refactorings
 
 Changes made in Freemind 0.8.0:
 ===============================

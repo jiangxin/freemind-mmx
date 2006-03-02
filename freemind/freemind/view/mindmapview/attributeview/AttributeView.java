@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.12 2006-02-28 20:58:08 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.13 2006-03-02 21:00:55 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.EventQueue;
 
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
@@ -231,7 +232,16 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
             attributeTable.insertRow(0);
         }
         else{
-            attributeTable.editCellAt(0, 0);
+            if(attributeTable.isVisible()){
+                attributeTable.requestFocus();
+            }
+            else{
+                EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        attributeTable.requestFocus();
+                    }
+                });
+            }
         }
     }
     boolean isPopupShown(){

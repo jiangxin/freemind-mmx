@@ -446,6 +446,12 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
             insertRow(getRowCount());
             return true;            
         }
+        if( ks.getKeyCode() == KeyEvent.VK_ESCAPE
+                && e.getModifiers() == 0
+                && pressed){
+            attributeView.getNodeView().requestFocus();
+            return true;            
+        }
         boolean retValue =  super.processKeyBinding(ks, e, condition, pressed);
         // Start editing when a key is typed. UI classes can disable this behavior
         // by setting the client property JTable.autoStartsEdit to Boolean.FALSE.
