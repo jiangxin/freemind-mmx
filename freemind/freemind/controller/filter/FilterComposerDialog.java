@@ -243,8 +243,6 @@ public class FilterComposerDialog extends JDialog {
 
     private static final int NODE_POSITION = 0;
     private static final int ICON_POSITION = 1;
-    private static final int CONTAINS_POSITION = 0;
-
     private class SimpleConditionChangeListener implements ItemListener {
         public void itemStateChanged(ItemEvent e) {
             if(e.getStateChange() == ItemEvent.SELECTED)
@@ -274,9 +272,11 @@ public class FilterComposerDialog extends JDialog {
                     return;
                 }
                 if (attributes.getSelectedIndex() == ICON_POSITION){
-                    simpleCondition.setSelectedIndex(CONTAINS_POSITION);
+                    simpleCondition.setModel(simpleAttributeConditionComboBoxModel);
+                    simpleCondition.setSelectedIndex(0);
                     simpleCondition.setEnabled(false);
                     values.setEditable(false);
+                    values.setEnabled(true);
                     values.setModel(icons);
                     if(icons.getSize() >= 1){
                         values.setSelectedIndex(0);
@@ -285,13 +285,27 @@ public class FilterComposerDialog extends JDialog {
                     return;
                 }
                 if (attributes.getSelectedIndex() > NODE_POSITION){
-                    simpleCondition.setModel(simpleAttributeConditionComboBoxModel);
-                    simpleCondition.setEnabled(true);
-                    values.setEditable(true);
-                    nodes.setExtensionList(registeredAttributes.getElement(attributes.getSelectedItem().toString()).getValues());
+                    final String attributeName = attributes.getSelectedItem().toString();
+                    nodes.setExtensionList(registeredAttributes.getElement(attributeName).getValues());
                     values.setModel(nodes);
-                    values.setEnabled(false);
-                    caseInsensitive.setEnabled(false);
+                    if (values.getSelectedItem() != null){
+                        if(nodes.getSize() >= 1){
+                            values.setSelectedIndex(0);
+                        }
+                        else{
+                            values.setSelectedItem(null);
+                        }
+                    }
+                    if(simpleCondition.getModel() != simpleAttributeConditionComboBoxModel){
+                        simpleCondition.setModel(simpleAttributeConditionComboBoxModel);
+                        simpleCondition.setSelectedIndex(0);
+                    }
+                    if(simpleCondition.getSelectedIndex() == 0){
+                        caseInsensitive.setEnabled(false);
+                        values.setEnabled(false);                        
+                    }
+                    values.setEditable(true);
+                    simpleCondition.setEnabled(true);
                     return;
                 }
             }
@@ -345,6 +359,7 @@ public class FilterComposerDialog extends JDialog {
         attributes.addItemListener(new SelectedAttributeChangeListener());
         simpleConditionBox.add(Box.createHorizontalGlue());
         simpleConditionBox.add(attributes);
+        attributes.setRenderer(fc.getConditionRenderer());
     
         simpleCondition = new JComboBox();
         simpleNodeConditionComboBoxModel = new DefaultComboBoxModel(fc.getConditionFactory().getNodeConditionNames());
@@ -352,6 +367,7 @@ public class FilterComposerDialog extends JDialog {
         simpleCondition.addItemListener(new SimpleConditionChangeListener());
         simpleConditionBox.add(Box.createHorizontalGlue());
         simpleConditionBox.add(simpleCondition);
+        simpleCondition.setRenderer(fc.getConditionRenderer());
     
         simpleAttributeConditionComboBoxModel = new DefaultComboBoxModel(fc.getConditionFactory().getAttributeConditionNames());
         values = new JComboBox();
@@ -359,7 +375,7 @@ public class FilterComposerDialog extends JDialog {
         values.setModel(nodes);
         simpleConditionBox.add(Box.createHorizontalGlue());
         simpleConditionBox.add(values);
-        values.setRenderer(new ConditionRenderer());
+        values.setRenderer(fc.getConditionRenderer());
         values.setEditable(true);
     
         icons = new ExtendedComboBoxModel();
@@ -522,6 +538,7 @@ public class FilterComposerDialog extends JDialog {
 
     private void applyChanges() {
         final int selectionIndex = conditionList.getMinSelectionIndex();
+        externalFilterConditionComboBox.setModel(internalConditionsModel);
         if(selectionIndex != -1 &&  selectionIndex == conditionList.getMaxSelectionIndex()){
             internalConditionsModel.setSelectedItem(conditionList.getSelectedValue());
         }
@@ -540,7 +557,6 @@ public class FilterComposerDialog extends JDialog {
         {
             selectNoFiltering();
         }
-        externalFilterConditionComboBox.setModel(internalConditionsModel);
         internalConditionsModel = null;
     }
 

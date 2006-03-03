@@ -18,16 +18,17 @@ import freemind.modes.MindMap;
  public class FilterController {
      private Controller c;
 	private FilterToolbar filterToolbar;
-	private ConditionRenderer conditionRenderer;
-	private ConditionFactory conditionFactory;
+	static private ConditionRenderer conditionRenderer = null;
+	static private ConditionFactory conditionFactory;
     private MindMap map;
 	
 	public FilterController(Controller c){
-		this.c = c;
-		conditionRenderer = new ConditionRenderer();
+		this.c = c;		
 	}
 
      ConditionRenderer getConditionRenderer() {
+         if(conditionRenderer == null)
+             conditionRenderer = new ConditionRenderer();
         return conditionRenderer;
     }
     
