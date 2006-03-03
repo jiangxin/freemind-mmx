@@ -636,6 +636,48 @@
 
 
 	<!-- ======================================================================================= 
+		 										Patterns
+		   ======================================================================================= -->
+	<xs:element name="patterns">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="0"  maxOccurs="unbounded">
+					<xs:element ref="pattern"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>		
+	</xs:element>
+
+	<xs:element name="pattern">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="0"  maxOccurs="unbounded">
+					<xs:element ref="pattern_node_backgroundcolor"/>
+					<xs:element ref="pattern_node_color"/>
+					<xs:element ref="pattern_node_style"/>
+					<xs:element ref="pattern_node_text"/>
+					<xs:element ref="pattern_node_font"/>
+					<xs:element ref="pattern_icon"/>
+					<xs:element ref="pattern_edge_color"/>
+					<xs:element ref="pattern_edge_style"/>
+					<xs:element ref="pattern_edge_width"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>		
+	</xs:element>
+
+	<xs:element name="pattern_node_backgroundcolor"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
+	<xs:element name="pattern_node_color"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
+	<xs:element name="pattern_node_style"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
+	<xs:element name="pattern_node_text"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
+	<xs:element name="pattern_node_font"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
+	<xs:element name="pattern_icon"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
+	<xs:element name="pattern_edge_color"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
+	<xs:element name="pattern_edge_style"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
+	<xs:element name="pattern_edge_width"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
+
+	
+	<!-- ======================================================================================= 
 		 										Plugin XML
 		   ======================================================================================= -->
 	<xs:element name="plugin">
