@@ -50,13 +50,15 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
     private static final int MAX_HEIGTH = 300;
     private static final int MAX_WIDTH = 600;
     static private class MyFocusListener implements FocusListener{
+        private AttributeTable focusedTable; 
         /* (non-Javadoc)
          * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
          */
         public void focusGained(FocusEvent event) { 
             Component source = (Component)event.getSource();
             Component oppositeComponent = event.getOppositeComponent();
-            Component newNodeViewInFocus = AttributeView.getAncestorComponent(source, NodeView.class);
+            focusedTable = (AttributeTable)AttributeView.getAncestorComponent(source, AttributeTable.class);
+            Component newNodeViewInFocus = AttributeView.getAncestorComponent(focusedTable, NodeView.class);
             Component oldNodeViewInFocus = AttributeView.getAncestorComponent(oppositeComponent, NodeView.class);
             if(newNodeViewInFocus != oldNodeViewInFocus 
                     && newNodeViewInFocus instanceof NodeView){
@@ -71,23 +73,20 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
          * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
          */
         public void focusLost(FocusEvent event) {
-            Component source = (Component) event.getSource();
             Component oppositeComponent = event.getOppositeComponent();
-            AttributeTable oldTable = (AttributeTable)AttributeView.getAncestorComponent(source, AttributeTable.class);
-            if(oldTable != null){
-                Component newTable = AttributeView.getAncestorComponent(oppositeComponent, AttributeTable.class);
-                if(oldTable != newTable){
-                    if (oldTable.isEditing()){                
-                        oldTable.getCellEditor().stopCellEditing();
-                    } 
-                    if(!oldTable.attributeView.isPopupShown()){
-                        final AttributeView attributeView = oldTable.getAttributeView();
-                        final String currentAttributeViewType = attributeView.getNode().getMap().getRegistry().getAttributes().getAttributeViewType();
-                        if(attributeView.getViewType() != currentAttributeViewType){
-                            attributeView.stateChanged(null);
-                        }
+            Component newTable = AttributeView.getAncestorComponent(oppositeComponent, AttributeTable.class);
+            if(focusedTable != newTable){
+                if (focusedTable.isEditing()){                
+                    focusedTable.getCellEditor().stopCellEditing();
+                } 
+                if(!focusedTable.attributeView.isPopupShown()){
+                    final AttributeView attributeView = focusedTable.getAttributeView();
+                    final String currentAttributeViewType = attributeView.getNode().getMap().getRegistry().getAttributes().getAttributeViewType();
+                    if(attributeView.getViewType() != currentAttributeViewType){
+                        attributeView.stateChanged(null);
                     }
                 }
+                focusedTable = null;
             }
         }
         
@@ -231,8 +230,6 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         }
     }
     
-    public void clearSelection() {
-    }
     
     /**
      * 

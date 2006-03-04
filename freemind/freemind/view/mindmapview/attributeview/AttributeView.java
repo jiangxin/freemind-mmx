@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.14 2006-03-02 22:45:52 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.15 2006-03-04 19:32:52 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -228,24 +228,27 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
                 || registryAttributeViewType == AttributeTableLayoutModel.HIDE_ALL){
             setViewType(AttributeTableLayoutModel.SHOW_ALL);
         }
+        if(attributeTable.isVisible()){
+            startEditingTable();
+        }
+        else{
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    startEditingTable();
+                }
+            });
+        }
+    }
+    private void startEditingTable() {
+        attributeTable.requestFocus();
         if(currentAttributeTableModel.getRowCount() == 0){
             attributeTable.insertRow(0);
         }
         else{
-            if(attributeTable.isVisible()){
-                attributeTable.changeSelection(0, 0, false, false);
-                attributeTable.requestFocus();
-            }
-            else{
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        attributeTable.changeSelection(0, 0, false, false);
-                        attributeTable.requestFocus();
-                    }
-                });
-            }
+            attributeTable.changeSelection(0, 0, false, false);
         }
     }
+    
     boolean isPopupShown(){
         return attributeTable != null
         && (tablePopupMenu.getTable() == attributeTable);       
