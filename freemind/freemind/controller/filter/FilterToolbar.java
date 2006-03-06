@@ -9,6 +9,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 
 import javax.swing.AbstractAction;
@@ -76,7 +78,7 @@ class FilterToolbar extends JToolBar {
             btnUnfoldAncestors.setEnabled(btnApply.getModel().isSelected());
         }
     }
-    private class FilterChangeListener extends AbstractAction implements ItemListener{
+    private class FilterChangeListener extends AbstractAction implements ItemListener, PropertyChangeListener{
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
@@ -92,15 +94,22 @@ class FilterToolbar extends JToolBar {
          * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
          */
         public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED){
-                btnApply.setEnabled(true);
-                if( btnApply.getModel().isSelected()){
-                    resetFilter();
-                    getFilter().applyFilter(c);
-                    refreshMap();
-                    DefaultFilter.selectVisibleNode(c.getView());
-                }
-            }
+            if (e.getStateChange() == ItemEvent.SELECTED)
+                filterChanged();
+        }
+        private void filterChanged() {
+            final boolean isFilterSet = activeFilterCondition.getSelectedItem() != null;
+            if(btnApply.isSelected() && ! isFilterSet)
+                btnApply.doClick();
+            btnApply.setEnabled(isFilterSet);
+            resetFilter();
+            getFilter().applyFilter(c);
+            refreshMap();
+            DefaultFilter.selectVisibleNode(c.getView());
+        }
+        public void propertyChange(PropertyChangeEvent evt) {
+            if(evt.getPropertyName().equals("model"))
+                filterChanged();            
         }
         
     }
@@ -179,6 +188,7 @@ class FilterToolbar extends JToolBar {
         activeFilterCondition.setRenderer(fc.getConditionRenderer());
         add(activeFilterCondition);
         activeFilterCondition.addItemListener(filterChangeListener);
+        activeFilterCondition.addPropertyChangeListener(filterChangeListener);
         
         btnApply = new JToggleButton(new ApplyFilterAction());
         btnApply.setEnabled(false);

@@ -540,36 +540,8 @@ public class FilterComposerDialog extends JDialog {
     }
 
     private void applyChanges() {
-        final int selectionIndex = conditionList.getMinSelectionIndex();
+        internalConditionsModel.setSelectedItem(conditionList.getSelectedValue());
         externalFilterConditionComboBox.setModel(internalConditionsModel);
-        if(selectionIndex != -1 &&  selectionIndex == conditionList.getMaxSelectionIndex()){
-            internalConditionsModel.setSelectedItem(conditionList.getSelectedValue());
-        }
-        else if(selectionIndex != -1){            
-            Object selectedItem = externalFilterConditionComboBox.getModel().getSelectedItem();
-            final int oldSelectionIndex = internalConditionsModel.getIndexOf(selectedItem);
-            if(oldSelectionIndex != -1)
-            {
-                internalConditionsModel.setSelectedItem(selectedItem);
-            }
-            else{
-                selectNoFiltering();
-            }
-        }
-        else
-        {
-            selectNoFiltering();
-        }
         internalConditionsModel = null;
-    }
-
-    private void selectNoFiltering() {
-        internalConditionsModel.setSelectedItem(null);
-        if(ft.getBtnApply().isSelected())
-            ft.getBtnApply().doClick();
-        if(ft.getBtnApply().isEnabled())
-            ft.getBtnApply().setEnabled(false);
-    }
-    
-    
+    }    
 }
