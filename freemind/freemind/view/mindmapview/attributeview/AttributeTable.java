@@ -195,7 +195,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         float zoom = getZoom();
         Dimension dimension = super.getPreferredSize();
         dimension.width = Math.min((int)(MAX_WIDTH * zoom) , dimension.width);
-        dimension.height = Math.min((int)(MAX_HEIGTH * zoom) - getTableHeader().getPreferredSize().height, dimension.height);
+        dimension.height = Math.min((int)(MAX_HEIGTH * zoom) - getTableHeaderHeight(), dimension.height);
         return dimension;
     }
     
@@ -253,7 +253,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         if(rowCount == 0)
             return;
         
-        int constHeight = getTableHeader().getPreferredSize().height + EXTRA_HEIGHT;        
+        int constHeight = getTableHeaderHeight() + EXTRA_HEIGHT;        
         float zoom = getZoom();
         float fontSize = getFontSize();
         float tableRowHeight = fontSize + zoom * TABLE_ROW_HEIGHT;
@@ -267,6 +267,12 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         {
             setRowHeight(i, newHeight + (i == highRowIndex ? EXTRA_HEIGHT : 0));
         }
+    }
+
+
+    int getTableHeaderHeight() {
+        final JTableHeader tableHeader = getTableHeader();
+        return tableHeader != null ? tableHeader.getPreferredSize().height : 0;
     }
     
     private void updateFontSize(Component c) {

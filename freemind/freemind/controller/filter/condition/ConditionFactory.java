@@ -94,7 +94,7 @@ public class ConditionFactory {
             boolean ignoreCase)
     {
         if (attribute.equals("filter_icon")
-            && simpleCondition.equals("filter_exist")    )
+            && simpleCondition.equals("filter_contains")    )
             return new IconContainedCondition(value);
         if (attribute.equals("filter_node")){
             	String description   = createDescription(attribute, simpleCondition, value, ignoreCase);
@@ -117,6 +117,11 @@ public class ConditionFactory {
             };
         }
 
+    public Object[] getIconConditionNames() {
+        return new TranslatedString[] {
+                new TranslatedString("filter_contains"),
+        };
+    }
     public  TranslatedString[] getAttributeConditionNames() {
         return new TranslatedString[] {
                 new TranslatedString("filter_exist"),

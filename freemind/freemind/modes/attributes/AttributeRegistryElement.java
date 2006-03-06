@@ -108,9 +108,16 @@ public class AttributeRegistryElement {
     }
     
     public void setVisibility(boolean isVisible){
-        this.isVisible = isVisible; 
-        visibilityModel= Boolean.valueOf(isVisible);
-        registry.fireAttributeLayoutChanged();
+        if(this.isVisible != isVisible)
+        {
+            this.isVisible = isVisible; 
+            visibilityModel= Boolean.valueOf(isVisible);
+            if(isVisible)
+                registry.incrementVisibleElementsNumber();
+            else
+                registry.decrementVisibleElementsNumber();
+            registry.fireAttributeLayoutChanged();
+        }
     }
     public void setRestriction(boolean isRestricted){
         this.isRestricted = isRestricted; 

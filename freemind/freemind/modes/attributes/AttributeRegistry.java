@@ -339,13 +339,10 @@ public class AttributeRegistry{
         if(isAttributeLayoutChanged == false)
             return;
         getAttributeController().performSetRestriction(GLOBAL, restrictionModel.booleanValue()); 
-        visibleElementsNumber = 0;
         for(int i = 0; i < elements.size(); i++){
             AttributeRegistryElement element = getElement(i);
             getAttributeController().performSetVisibility(i, element.getVisibilityModel().booleanValue());
             getAttributeController().performSetRestriction(i, element.getRestriction().booleanValue());
-            if(element.isVisible())
-                visibleElementsNumber ++;
         }
         isAttributeLayoutChanged = false;
     }
@@ -370,6 +367,10 @@ public class AttributeRegistry{
 
     public void decrementVisibleElementsNumber() {
         visibleElementsNumber--;        
+    }
+
+    public void incrementVisibleElementsNumber() {
+        visibleElementsNumber++;        
     }
 
     public void registry(Attribute newAttribute) {

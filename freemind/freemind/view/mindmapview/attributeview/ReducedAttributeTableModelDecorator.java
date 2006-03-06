@@ -25,6 +25,7 @@ class ReducedAttributeTableModelDecorator extends AttributeTableModelDecoratorAd
             NodeAttributeTableModel nodeAttributeModel,
             AttributeRegistry attributeRegistry) {
         super(nodeAttributeModel, attributeRegistry);
+        rebuildTableModel();
     }
 
     private Vector getIndex() {
@@ -76,7 +77,15 @@ class ReducedAttributeTableModelDecorator extends AttributeTableModelDecoratorAd
      * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
      */
     public void stateChanged(ChangeEvent e) {
-        Vector index = getIndex();
+        rebuildTableModel();
+        if(index != null){
+            fireTableDataChanged();    
+        }
+        
+    }
+
+    private void rebuildTableModel() {
+        getIndex();
         if(index != null){
             visibleRowCount= 0;
             index.clear();
@@ -87,9 +96,7 @@ class ReducedAttributeTableModelDecorator extends AttributeTableModelDecoratorAd
                     visibleRowCount++;
                 }
             }
-        fireTableDataChanged();    
         }
-        
     }
 
     /* (non-Javadoc)

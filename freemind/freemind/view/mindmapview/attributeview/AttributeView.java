@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.15 2006-03-04 19:32:52 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.16 2006-03-06 08:23:22 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -31,6 +31,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.JTableHeader;
 
 import freemind.controller.attributes.AttributePopupMenu;
 import freemind.modes.MindMapNode;
@@ -55,9 +56,10 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     private AttributeTableModelDecoratorAdapter currentAttributeTableModel;
     private JScrollPane attributeViewScrollPane;
     private NodeView nodeView;
+    private JTableHeader tableHeader;
     static private AttributePopupMenu tablePopupMenu;
-    private static final Color USUAL_HEADER_BACKGROUND = UIManager.getColor("TableHeader.background");
-    private static final Color EXTENDED_HEADER_BACKGROUND = Color.RED.darker();
+    private static final Color HEADER_BACKGROUND = UIManager.getColor("TableHeader.background");
+//    private static final Color HEADER_BACKGROUND = Color.BLUE.darker();
     
     public AttributeView(NodeView nodeView) {
         super();
@@ -67,7 +69,6 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         AttributeRegistry attributeRegistry = getAttributeRegistry();
         reducedAttributeTableModel = new ReducedAttributeTableModelDecorator(attributes, attributeRegistry);
         currentAttributeTableModel = reducedAttributeTableModel;
-        setViewType(attributeRegistry.getAttributeViewType());
     }
     private AttributeRegistry getAttributeRegistry() {
         return getNode().getMap().getRegistry().getAttributes();
@@ -83,14 +84,13 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     private void provideAttributeTable() {
         if (attributeTable == null){            
             attributeTable = new AttributeTable(this);
-            if(getAttributeRegistry().getAttributeViewType().equals(AttributeTableLayoutModel.SHOW_ALL)){
-                attributeTable.getTableHeader().setBackground(EXTENDED_HEADER_BACKGROUND);
-            }
+            tableHeader = attributeTable.getTableHeader();
+            tableHeader.setBackground(HEADER_BACKGROUND);
             addTableModelListeners();
             attributeViewScrollPane = new AttributeViewScrollPane(attributeTable);
-            attributeViewScrollPane.setColumnHeaderView(attributeTable.getTableHeader());
             getNodeView().add(attributeViewScrollPane);
             getAttributes().removeTableModelListener(this);
+            setViewType(getAttributeRegistry().getAttributeViewType());
         }
     }
     private void addListeners() {
@@ -104,7 +104,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
             }
             getAttributes().getLayout().addColumnWidthChangeListener(attributeTable);
             attributeTable.addMouseListener(tablePopupMenu);
-            attributeTable.getTableHeader().addMouseListener(tablePopupMenu);
+            tableHeader.addMouseListener(tablePopupMenu);
         }
         else {
             getAttributes().addTableModelListener(this);
@@ -120,7 +120,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
             attributeTable.getParent().remove(attributeTable);
             attributeTable.getModel().removeTableModelListener(attributeTable);
             attributeTable.removeMouseListener(tablePopupMenu);                
-            attributeTable.getTableHeader().removeMouseListener(tablePopupMenu);
+            tableHeader.removeMouseListener(tablePopupMenu);
         }
         else {
             getAttributes().removeTableModelListener(this);
@@ -155,18 +155,18 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     }
     
     private void setViewType(String viewType) {
-        Color headerBackground = USUAL_HEADER_BACKGROUND;
+        JTableHeader currentColumnHeaderView = null;
         if(viewType == AttributeTableLayoutModel.SHOW_ALL){
             currentAttributeTableModel = getExtendedAttributeTableModel();
-            headerBackground = EXTENDED_HEADER_BACKGROUND;
+            currentColumnHeaderView = tableHeader;
         }
         else {
             currentAttributeTableModel = reducedAttributeTableModel;
-            reducedAttributeTableModel.stateChanged(null);
         }
         if(attributeTable != null){
             attributeTable.setModel(currentAttributeTableModel);
-            attributeTable.getTableHeader().setBackground(headerBackground);
+            attributeTable.setTableHeader(currentColumnHeaderView);
+            attributeViewScrollPane.setColumnHeaderView(currentColumnHeaderView);
             attributeViewScrollPane.invalidate();
         }
     }
@@ -182,6 +182,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     
     public void stateChanged(ChangeEvent event){
         setViewType(getAttributeRegistry().getAttributeViewType());
+        reducedAttributeTableModel.stateChanged(null);
     }
     /**
      * @return
@@ -228,16 +229,11 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
                 || registryAttributeViewType == AttributeTableLayoutModel.HIDE_ALL){
             setViewType(AttributeTableLayoutModel.SHOW_ALL);
         }
-        if(attributeTable.isVisible()){
-            startEditingTable();
-        }
-        else{
-            EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    startEditingTable();
-                }
-            });
-        }
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                startEditingTable();
+            }
+        });
     }
     private void startEditingTable() {
         attributeTable.requestFocus();

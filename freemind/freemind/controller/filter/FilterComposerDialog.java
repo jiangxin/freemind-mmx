@@ -272,7 +272,7 @@ public class FilterComposerDialog extends JDialog {
                     return;
                 }
                 if (attributes.getSelectedIndex() == ICON_POSITION){
-                    simpleCondition.setModel(simpleAttributeConditionComboBoxModel);
+                    simpleCondition.setModel(simpleIconConditionComboBoxModel);
                     simpleCondition.setSelectedIndex(0);
                     simpleCondition.setEnabled(false);
                     values.setEditable(false);
@@ -329,6 +329,7 @@ public class FilterComposerDialog extends JDialog {
     private ExtendedComboBoxModel nodes;
     private AttributeRegistry registeredAttributes;
     private DefaultComboBoxModel simpleNodeConditionComboBoxModel;
+    private DefaultComboBoxModel simpleIconConditionComboBoxModel;
     private DefaultComboBoxModel simpleAttributeConditionComboBoxModel;
     private ExtendedComboBoxModel filteredAttributeComboBoxModel;
     private DefaultComboBoxModel internalConditionsModel;
@@ -361,8 +362,10 @@ public class FilterComposerDialog extends JDialog {
         simpleConditionBox.add(attributes);
         attributes.setRenderer(fc.getConditionRenderer());
     
-        simpleCondition = new JComboBox();
         simpleNodeConditionComboBoxModel = new DefaultComboBoxModel(fc.getConditionFactory().getNodeConditionNames());
+        simpleIconConditionComboBoxModel = new DefaultComboBoxModel(fc.getConditionFactory().getIconConditionNames());
+
+        simpleCondition = new JComboBox();
         simpleCondition.setModel(simpleNodeConditionComboBoxModel);
         simpleCondition.addItemListener(new SimpleConditionChangeListener());
         simpleConditionBox.add(Box.createHorizontalGlue());
