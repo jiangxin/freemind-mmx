@@ -34,6 +34,8 @@ import javax.swing.KeyStroke;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -185,7 +187,7 @@ public class FilterComposerDialog extends JDialog {
         }
     }
 
-    private class ConditionListSelectionListener implements ListSelectionListener {
+    private class ConditionListSelectionListener implements ListSelectionListener , ListDataListener  {
 
         /* (non-Javadoc)
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
@@ -212,6 +214,16 @@ public class FilterComposerDialog extends JDialog {
 	            btnOr.setEnabled(true);
 	            btnDelete.setEnabled(false);
             }
+        }
+
+        public void intervalAdded(ListDataEvent e) {
+            conditionList.setSelectedIndex(e.getIndex0());
+        }
+
+        public void intervalRemoved(ListDataEvent e) {
+        }
+
+        public void contentsChanged(ListDataEvent e) {
         }
 
     }
@@ -254,7 +266,7 @@ public class FilterComposerDialog extends JDialog {
             }
         }
     }
-    private class SelectedAttributeChangeListener implements ItemListener {
+    private class SelectedAttributeChangeListener implements ItemListener{
         /* (non-Javadoc)
          * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
          */
@@ -336,7 +348,8 @@ public class FilterComposerDialog extends JDialog {
     private JComboBox externalFilterConditionComboBox;
     private JButton btnOK;
     private JButton btnApply;
-    private JButton btnCancel;   
+    private JButton btnCancel;
+    private ConditionListSelectionListener conditionListListener;   
     public FilterComposerDialog(Controller c, final FilterToolbar ft) {
         super(Resources.getInstance().getJFrame(),
                 c.getResourceString("filter_dialog"));
@@ -454,7 +467,9 @@ public class FilterComposerDialog extends JDialog {
         conditionList.setCellRenderer(fc.getConditionRenderer());
         conditionList.setLayoutOrientation(JList.VERTICAL);
         conditionList.setAlignmentX(Component.LEFT_ALIGNMENT);
-        conditionList.addListSelectionListener(new ConditionListSelectionListener());
+        conditionListListener = new ConditionListSelectionListener();
+        conditionList.addListSelectionListener(conditionListListener);
+        
         conditionList.addMouseListener(new ConditionListMouseListener());
     
         final JScrollPane conditionScrollPane = new JScrollPane(conditionList);
@@ -529,6 +544,7 @@ public class FilterComposerDialog extends JDialog {
         ComboBoxModel externalConditionsModel = externalFilterConditionComboBox.getModel();
         if(internalConditionsModel == null){
             internalConditionsModel = new DefaultComboBoxModel();
+            internalConditionsModel.addListDataListener(conditionListListener);
             conditionList.setModel(internalConditionsModel);
         }
         else{
@@ -542,6 +558,7 @@ public class FilterComposerDialog extends JDialog {
     private void applyChanges() {
         internalConditionsModel.setSelectedItem(conditionList.getSelectedValue());
         externalFilterConditionComboBox.setModel(internalConditionsModel);
+        internalConditionsModel.removeListDataListener(conditionListListener);
         internalConditionsModel = null;
     }    
 }
