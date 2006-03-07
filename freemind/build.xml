@@ -76,7 +76,9 @@
 		</delete>
 	</target>
 
-
+	<target name="patterns">
+		<xslt style="patterns_updater.xslt" in="patterns.xml" out="patterns_new.xml" />
+	</target>
 
 	<!-- end generator part -->
 

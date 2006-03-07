@@ -661,8 +661,10 @@
 					<xs:element ref="pattern_edge_color"/>
 					<xs:element ref="pattern_edge_style"/>
 					<xs:element ref="pattern_edge_width"/>
+					<xs:element ref="pattern_child"/>
 				</xs:choice>
 			</xs:sequence>
+		    <xs:attribute name="name" use="required" type="xs:string"/>
 		</xs:complexType>		
 	</xs:element>
 
@@ -670,11 +672,27 @@
 	<xs:element name="pattern_node_color"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
 	<xs:element name="pattern_node_style"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
 	<xs:element name="pattern_node_text"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
-	<xs:element name="pattern_node_font"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
+
+	<xs:element name="pattern_node_font">
+		<xs:complexType>
+			<!-- if value is not present, the attribute is cleared. -->     
+			<xs:attribute name="name" use="optional" type="xs:string"/>    
+			<xs:attribute name="bold" use="optional" type="xs:boolean"/>    
+			<xs:attribute name="italic" use="optional" type="xs:boolean"/>    
+			<xs:attribute name="size" use="optional" type="xs:int"/>    
+		</xs:complexType>  
+	</xs:element>
+	
 	<xs:element name="pattern_icon"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
 	<xs:element name="pattern_edge_color"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
 	<xs:element name="pattern_edge_style"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
 	<xs:element name="pattern_edge_width"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
+	<!-- 		      <child pattern="MindMapDefault"/>-->
+	<xs:element name="pattern_child">
+		<xs:complexType>
+			<xs:attribute name="pattern" use="required" type="xs:string"/>
+		</xs:complexType>  
+	</xs:element>
 
 	
 	<!-- ======================================================================================= 
