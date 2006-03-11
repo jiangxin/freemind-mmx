@@ -8,6 +8,7 @@ import javax.swing.AbstractButton;
 
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
+import freemind.controller.MapModuleManager.MapModuleChangeOberser;
 import freemind.controller.filter.condition.ConditionFactory;
 import freemind.controller.filter.condition.ConditionRenderer;
 import freemind.modes.MindMap;
@@ -18,7 +19,7 @@ import freemind.view.MapModule;
  * @author dimitri
  *
  */
- public class FilterController implements MapModuleManager.MapModuleChangeOberser{
+ public class FilterController implements MapModuleChangeOberser{
      private Controller c;
 	private FilterToolbar filterToolbar;
 	static private ConditionRenderer conditionRenderer = null;

@@ -35,17 +35,21 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import freemind.controller.MapModuleManager.MapModuleChangeOberser;
 import freemind.main.Resources;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
+import freemind.modes.Mode;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeRegistryElement;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.modes.mindmapmode.MindMapMode;
+import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
-public class AssignAttributeDialog extends JDialog implements AttributesListener{
+public class AssignAttributeDialog extends JDialog implements AttributesListener, MapModuleChangeOberser{
     private static class ClonedComboBoxModel extends AbstractListModel implements ComboBoxModel{
         private AbstractListModel sharedListModel;
         private Object selectedItem;
@@ -410,6 +414,7 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
         replacingAttributeNames.setMaximumSize(comboBoxMaximumSize);
         replacingAttributeValues.setMaximumSize(comboBoxMaximumSize);
         mapChanged(mapView);
+        mapView.getController().getMapModuleManager().addListener(this);
     }
     
     public void mapChanged(MapView currentMapView) {
@@ -463,5 +468,20 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
             replacingAttributeValues.setModel(new DefaultComboBoxModel());
             replacingAttributeValues.setEditable(false);
         }
+    }
+
+    public boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {        
+        return ! isVisible() || newMode instanceof MindMapMode;
+    }
+
+    public void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+    }
+
+    public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+        if(newMapModule != null)
+        mapChanged(newMapModule.getView());
+    }
+
+    public void numberOfOpenMapInformation(int number) {
     }
 }

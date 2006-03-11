@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.11.2.1.2.13 2006-03-11 18:38:56 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.11.2.1.2.14 2006-03-11 23:22:46 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1238,13 +1238,6 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 	   public String getDescription() {
 	      return getText("mindmaps_desc");
 	   }
-    }
-
-    public void mapChanged(MindMap newMap) {
-        if(assignAttributeDialog != null){
-            assignAttributeDialog.mapChanged(getView());
-        }
-
     }
 
     public void setBold(MindMapNode node, boolean bolded) {
