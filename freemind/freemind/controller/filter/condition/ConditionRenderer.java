@@ -6,9 +6,6 @@ package freemind.controller.filter.condition;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Image;
-
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;

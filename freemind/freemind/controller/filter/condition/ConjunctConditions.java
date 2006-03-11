@@ -4,11 +4,8 @@
  */
 package freemind.controller.filter.condition;
 
-import java.awt.Color;
-
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import freemind.main.Resources;
 import freemind.modes.MindMapNode;

@@ -4,16 +4,11 @@
  */
 package freemind.modes.mindmapmode.attributeactors;
 
-import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.UnregistryAttributeElementaryAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.controller.filter.util.SortedComboBoxModel;
-import freemind.controller.filter.util.SortedMapVector;
-import freemind.modes.ModeController;
 import freemind.modes.attributes.AttributeRegistry;
-import freemind.modes.attributes.AttributeRegistryElement;
-import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.AbstractActorXml;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;

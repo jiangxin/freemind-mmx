@@ -19,11 +19,9 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: ActionHandler.java,v 1.1.4.2 2006-03-11 16:42:37 dpolivaev Exp $ */
+/* $Id: ActionHandler.java,v 1.1.4.3 2006-03-11 18:50:00 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
-
-import freemind.controller.actions.generated.instance.XmlAction;
 
 /**
  * @author foltin

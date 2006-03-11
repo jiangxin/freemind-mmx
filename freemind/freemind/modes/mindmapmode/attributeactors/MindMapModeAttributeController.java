@@ -7,18 +7,14 @@ package freemind.modes.mindmapmode.attributeactors;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
-import freemind.controller.Controller;
 import freemind.controller.filter.util.SortedComboBoxModel;
-import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
-import freemind.modes.ModeController;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeRegistryElement;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class MindMapModeAttributeController implements AttributeController{

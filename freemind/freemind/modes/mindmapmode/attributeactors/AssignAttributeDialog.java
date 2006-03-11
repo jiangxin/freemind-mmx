@@ -32,7 +32,6 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -42,8 +41,6 @@ import freemind.modes.MindMapNode;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeRegistryElement;
-import freemind.modes.attributes.AttributeTableLayoutModel;
-import freemind.modes.attributes.AttributesListener;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;

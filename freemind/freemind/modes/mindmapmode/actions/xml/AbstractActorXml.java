@@ -4,7 +4,6 @@
  */
 package freemind.modes.mindmapmode.actions.xml;
 
-import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;

@@ -4,7 +4,6 @@
  */
 package freemind.controller.filter;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 

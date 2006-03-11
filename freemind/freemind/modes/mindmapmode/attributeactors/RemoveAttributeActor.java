@@ -4,11 +4,8 @@
  */
 package freemind.modes.mindmapmode.attributeactors;
 
-import freemind.controller.Controller;
-import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.DeleteAttributeElementaryAction;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.ModeController;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.AbstractActorXml;

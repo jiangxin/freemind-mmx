@@ -4,10 +4,8 @@
  */
 package freemind.modes.mindmapmode.attributeactors;
 
-import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.SetAttributeFontSizeElementaryAction;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.ModeController;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.AbstractActorXml;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;

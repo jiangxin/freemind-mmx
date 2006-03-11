@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10.2.3.2.13 2006-03-11 18:38:56 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.3.2.14 2006-03-11 18:50:00 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -76,7 +76,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import freemind.controller.filter.FilterController;
-import freemind.controller.filter.FilterComposerDialog;
 
 import freemind.controller.MapModuleManager.MapModuleChangeOberser;
 import freemind.main.FreeMind;
@@ -88,7 +87,6 @@ import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.ModesCreator;
-import freemind.modes.browsemode.BrowseController;
 import freemind.modes.browsemode.BrowseMode;
 import freemind.modes.mindmapmode.attributeactors.AttributeManagerDialog;
 import freemind.preferences.FreemindPropertyListener;

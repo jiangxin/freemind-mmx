@@ -5,7 +5,6 @@
 package freemind.controller.filter;
 
 import freemind.controller.Controller;
-import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 
 /**

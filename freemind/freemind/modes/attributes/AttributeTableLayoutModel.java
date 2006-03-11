@@ -5,7 +5,6 @@
 package freemind.modes.attributes;
 
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
 /**

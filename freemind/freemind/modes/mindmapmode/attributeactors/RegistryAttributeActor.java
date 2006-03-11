@@ -4,14 +4,10 @@
  */
 package freemind.modes.mindmapmode.attributeactors;
 
-import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.RegistryAttributeElementaryAction;
-import freemind.controller.actions.generated.instance.SetAttributeNameElementaryAction;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.ModeController;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeRegistryElement;
-import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.AbstractActorXml;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;

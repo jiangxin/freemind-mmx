@@ -33,7 +33,6 @@ import freemind.controller.filter.util.SortedComboBoxModel;
 import freemind.main.Resources;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
-import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeRegistryElement;
 import freemind.view.MapModule;

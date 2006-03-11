@@ -20,7 +20,7 @@ import freemind.controller.filter.util.SortedMapVector;
 import freemind.main.XMLElement;
 import freemind.modes.MapRegistry;
 import freemind.modes.XMLElementAdapter;
-import freemind.view.mindmapview.attributeview.AttributeView;
+import freemind.modes.mindmapmode.attributeactors.AttributesListener;
 
 /**
  * @author Dimitri Polivaev

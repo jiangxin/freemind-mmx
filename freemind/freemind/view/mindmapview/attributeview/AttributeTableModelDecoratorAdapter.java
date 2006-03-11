@@ -15,7 +15,6 @@ import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableModel;
 import freemind.modes.attributes.NodeAttributeTableModel;
-import freemind.view.mindmapview.NodeView;
 
 /**
  * @author Dimitri Polivaev
