@@ -19,7 +19,7 @@
  *
  * Created on 22.07.2004
  */
-/*$Id: HookDescriptor.java,v 1.1.4.2 2004-11-16 16:42:35 christianfoltin Exp $*/
+/*$Id: HookDescriptor.java,v 1.1.4.2.10.1 2006-03-11 16:42:36 dpolivaev Exp $*/
 package freemind.extensions;
 
 import java.util.HashMap;
@@ -28,21 +28,29 @@ import java.util.Properties;
 import java.util.Vector;
 
 import freemind.controller.actions.generated.instance.Plugin;
-import freemind.controller.actions.generated.instance.PluginActionType;
-import freemind.controller.actions.generated.instance.PluginMenuType;
-import freemind.controller.actions.generated.instance.PluginModeType;
-import freemind.controller.actions.generated.instance.PluginPropertyType;
+import freemind.controller.actions.generated.instance.PluginAction;
+import freemind.controller.actions.generated.instance.PluginMenu;
+import freemind.controller.actions.generated.instance.PluginMode;
+import freemind.controller.actions.generated.instance.PluginProperty;
 import freemind.main.FreeMindMain;
 
 
-class HookDescriptor {
+/** This is an information class that holds all outer properties
+ *  of a hook, i.e. all contents of the XML description file.
+ *  
+ *  Don't use this class for anything except for the implementation
+ *  of a HookFactory.
+ * @author foltin
+ *
+ */
+public class HookDescriptor {
 	private Properties properties;
 	public Vector menuPositions;
 	private Vector modes;
-	private PluginActionType pluginAction;
+	private PluginAction pluginAction;
     private final Plugin pluginBase;
 	private final FreeMindMain frame;
-	public HookDescriptor(FreeMindMain frame, PluginActionType pluginAction, Plugin pluginBase) {
+	public HookDescriptor(FreeMindMain frame, PluginAction pluginAction, Plugin pluginBase) {
 		this.frame = frame;
 		this.pluginAction = pluginAction;
         this.pluginBase = pluginBase;
@@ -50,19 +58,22 @@ class HookDescriptor {
 			pluginAction.setName(pluginAction.getLabel());
 		}
 		menuPositions = new Vector();
-		for (Iterator i = pluginAction.getPluginMenu().iterator(); i.hasNext();) {
-			PluginMenuType menu = (PluginMenuType) i.next();
-			menuPositions.add(menu.getLocation());
-		}
 		properties = new Properties();
-		for (Iterator i = pluginAction.getPluginProperty().iterator(); i.hasNext();) {
-			PluginPropertyType property = (PluginPropertyType) i.next();
-			properties.put(property.getName(), property.getValue());
-		}
 		modes = new Vector();
-		for (Iterator i = pluginAction.getPluginMode().iterator(); i.hasNext();) {
-			PluginModeType mode = (PluginModeType) i.next();
-			modes.add(mode.getClassName());
+		for (Iterator i = pluginAction.getListChoiceList().iterator(); i.hasNext();) {
+		    Object obj = i.next();
+            if (obj instanceof PluginMenu) {
+                PluginMenu menu = (PluginMenu) obj;
+                menuPositions.add(menu.getLocation());
+            }
+            if (obj instanceof PluginProperty) {
+                PluginProperty property = (PluginProperty) obj;
+                properties.put(property.getName(), property.getValue());
+            }
+            if (obj instanceof PluginMode) {
+                PluginMode mode = (PluginMode) obj;
+                modes.add(mode.getClassName());
+            }
 		}
 	}
 	public String toString() {
@@ -108,6 +119,15 @@ class HookDescriptor {
 		}
 		return string;
 	}
+	private String getFromPropertiesIfNecessary(String string) {
+		if(string==null) {
+			return string;
+		}
+		if(string.startsWith("%")) {
+			return frame.getController().getProperty(string.substring(1));
+		}
+		return string;
+	}
 	public String getClassName() {
 		return pluginAction.getClassName();
 	}
@@ -118,7 +138,7 @@ class HookDescriptor {
 		return pluginAction.getIconPath();
 	}
 	public String getKeyStroke() {
-		return pluginAction.getKeyStroke();
+		return getFromPropertiesIfNecessary(pluginAction.getKeyStroke());
 	}
 	public Plugin getPluginBase(){
 	    return pluginBase;

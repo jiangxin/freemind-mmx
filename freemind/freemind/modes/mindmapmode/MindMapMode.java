@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMode.java,v 1.17.18.1.6.1 2005-05-09 23:45:46 dpolivaev Exp $*/
+/* $Id: MindMapMode.java,v 1.17.18.1.6.1.2.1 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -25,8 +25,9 @@ import freemind.controller.StructuredMenuHolder;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 
-import java.awt.Component;
 import java.io.File;
+import java.util.logging.Logger;
+
 import javax.swing.JMenu;
 import javax.swing.JToolBar;
 
@@ -35,14 +36,26 @@ public class MindMapMode implements Mode {
     private Controller c;
     private MindMapController modecontroller;
     private final String MODENAME = "MindMap";
+	private boolean isRunning = false;
+	private static Logger logger = null;
 
     public MindMapMode() {
     }
 
     public void init (Controller c) {
-	this.c = c;
-	modecontroller = new MindMapController(this);
+    		this.c = c;
+		if (logger == null) {
+			logger = c.getFrame().getLogger(this.getClass().getName());
+		}
+		modecontroller =  (MindMapController) createModeController();
     }
+
+	public ModeController createModeController() {
+		logger.finest("Creating new MindMapController..." );
+		MindMapController mindMapController = new MindMapController(this);
+		logger.finest("Creating new MindMapController. Done:"+mindMapController );
+		return mindMapController;
+	}
 
     public String toString() {
 	return MODENAME;
@@ -53,37 +66,28 @@ public class MindMapMode implements Mode {
      * (updates Actions etc.)
      */
     public void activate() {
-       c.getMapModuleManager().changeToMapOfMode(this);
+        if(isRunning) {
+            c.getMapModuleManager().changeToMapOfMode(this);
+        } else {
+            isRunning = true;
+        }
     }
 
     public void restore(String restoreable) {
 	try {
-	    getModeController().load(new File(restoreable));
+	    getDefaultModeController().load(new File(restoreable).toURL());
 	} catch (Exception e) {
 	    c.errorMessage("An error occured on opening the file: "+restoreable + ".");
         e.printStackTrace();
 	}
     }
-    
+
     public Controller getController() {
 	return c;
     }
 
-    public ModeController getModeController() {
+    public ModeController getDefaultModeController() {
 	return modecontroller;
     }
-
-    public MindMapController getMindMapController() {
-	return (MindMapController)getModeController();
-    }
-
-    public JToolBar getModeToolBar() {
-	return ((MindMapController)getModeController()).getToolBar();
-    }
-
-    public Component getLeftToolBar() {
-	return ((MindMapController)getModeController()).getLeftToolBar();
-    }
-
 
 }

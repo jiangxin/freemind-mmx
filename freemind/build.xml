@@ -1,91 +1,83 @@
 <project name="freemind" default="dist" basedir=".">
-	<property name="ver" value="0_8_0" />
+	<property name="ver" value="0_8_1_beta3" />
 	<property name="src" value="." />
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
 	<property name="dist" value="../bin/dist" />
 	<property name="dist.lib" value="${dist}/lib" />
-	<property name="dist_macos_name" value="Mac_OS_X_Freemind-${ver}" />	
-	<property name="dist_macos_base" value="../bin/dist_macos" />	
-	<property name="dist_macos" value="${dist_macos_base}/${dist_macos_name}" />	
-	<property name="dist_macos_info" value="${dist_macos}/FreeMind.app/Contents/Info.plist"></property>
-    <property name="FM.jar" value="${dist.lib}/freemind.jar"/>
+	<property name="dist_macos_name" value="Mac_OS_X_Freemind-${ver}" />
+	<property name="dist_macos_base" value="../bin/dist_macos" />
+	<property name="dist_macos" value="${dist_macos_base}/${dist_macos_name}" />
+	<property name="dist_macos_info" value="${dist_macos}/FreeMind.app/Contents/Info.plist">
+	</property>
+	<property name="FM.jar" value="${dist.lib}/freemind.jar"/>
 	<property name="post" value="../post" />
 	<property name="debug" value="on" />
-	<property name="java_source_version" value="1.2" />
-	<property name="java_target_version" value="1.2" />
+	<property name="java_source_version" value="1.4" />
+	<property name="java_target_version" value="1.4" />
 	<property name="build.compiler" value="modern" />
-	<property name="ant.dir" value="lib/ant/lib"/>
 	<property name="jarbundler.jar" value = "jarbundler-1.4.jar"/>
 
-    <taskdef name="jarbundler"
+	<taskdef name="jarbundler"
                classpath="${src}/lib/${jarbundler.jar}"
                classname="com.loomcom.ant.tasks.jarbundler.JarBundler" />
 
 
-	
-	
 	<!-- begin generator part -->
-	<property name="jaxb" value="${ant.dir}/jaxb-xjc.jar:${ant.dir}/jaxb-api.jar:${ant.dir}/jaxb-impl.jar:${ant.dir}/jaxb-libs.jar:${ant.dir}/namespace.jar:${ant.dir}/relaxngDatatype.jar:${ant.dir}/xsdlib.jar:${ant.dir}/jax-qname.jar"/>
-	<property name="xml" value="${ant.dir}/sax.jar:${ant.dir}/dom.jar"/> 
-	<property name="classpath" value="${jaxb}:${xml}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar"/>
-	<property name="xsd.dir" value="." />
-	<property name="gen.dir" value="generated" />
-	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" 
-	   classpath="${jaxb}" />
+	<property name="jibxhome" value="lib/jibx"/>
+	<property name="jibxjar" value="lib/bindings.jar"/>
+	<property name="jibxruntimelibs" value="${jibxhome}/jibx-run.jar:${jibxhome}/xpp3.jar"/>
+	<property name="jibxlibs" value="${jibxhome}/bcel.jar:${jibxhome}/jibx-bind.jar:${jibxhome}/jibx-extras.jar:${jibxruntimelibs}"/>
+	<taskdef name="bind" classname="org.jibx.binding.ant.CompileTask">
+		<classpath path="${jibxlibs}"/>
+	</taskdef>
 
-  <!-- uses property ${gen.file} as the directory name of the outputs. -->
-  <target name="xmlbind.checkStatusOfGeneration">
-    <uptodate property="xmlbind.isUpToDate"
-              srcfile="${xsd.dir}/${xsd.file}"
-              targetfile="${gen.dir}/${gen.file}/freemind/controller/${gen.file}/generated/instance/jaxb.properties"/>
-  </target>
+	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar"/>
 
-  <!-- uses property ${gen.file} as the directory name of the outputs. -->
-  <target name="xmlbind" 
-          unless="xmlbind.isUpToDate" 
-          depends="xmlbind.checkStatusOfGeneration">
-    <mkdir dir="${gen.dir}/${gen.file}" />
-    <xjc schema="${xsd.dir}/${xsd.file}"
-         target="${gen.dir}/${gen.file}" 
-         package="freemind.controller.${gen.file}.generated.instance" />
-  </target>
+	  <target name="xmlbind.checkStatusOfGeneration">
+	    <uptodate property="xmlbind.isUpToDate"
+	              srcfile="freemind_actions.xsd"
+	              targetfile="${jibxjar}"/>
+	  </target>
 
-  <!-- uses property ${gen.file} as the directory name of the outputs. -->
-  <target name="-buildgen">
-    <javac srcdir="${gen.dir}/${gen.file}"
-           destdir="${build}"
-           debug="${debug}"
-    	   source="${java_source_version}"
-	       target="${java_target_version}"
-    	>
-      <classpath path="${classpath}" />
-      <include name="**/*.java" />
-    </javac>
-    <copy todir="${build}/freemind/controller/${gen.file}/generated" >
-      <fileset dir="${gen.dir}/${gen.file}/freemind/controller/${gen.file}/generated" >
-        <include name="**/jaxb.properties" />
-        <include name="**/*.ser" />
-      </fileset>
-    </copy>
-  </target>
+	<!-- ================================= 
+          target: gen              
+         ================================= -->
+	<target name="gen" depends="xmlbind.checkStatusOfGeneration" description="--> Generates the JixB binding jar." unless="xmlbind.isUpToDate">
+		<mkdir dir="binding" />
+		<mkdir dir="binding/src" />
+		<mkdir dir="binding/classes" />
+		<java fork="true" classname="org.jibx.xsd2jibx.Generate" classpath="${jibxlibs}:${jibxhome}/xsd2jibx.jar:${jibxhome}/commons-logging-1.0.4.jar:${jibxhome}/jaxme-js-0.3.jar:${jibxhome}/log4j-1.2.8.jar:lib/commons-lang-2.0.jar" failonerror="true">
+			<arg line="-n freemind.controller.actions.generated.instance" />
+			<arg line="-d binding/src" />
+			<arg file="freemind_actions.xsd" />
+		</java>
+		<javac srcdir="binding/src" destdir="binding/classes" source="${java_source_version}" target="${java_target_version}" debug="on" />
+		<xslt style="binding.xslt" in="binding/src/freemind/controller/actions/generated/instance/binding.xml" out="binding_new.xml" />
+		<move file="binding_new.xml" tofile="binding/src/freemind/controller/actions/generated/instance/binding.xml" overwrite="true" />
+		<echo message="Running binding compiler..." />
+		<bind verbose="false" load="true">
+			<bindingfileset dir="binding/src">
+				<include name="**/*.xml" />
+			</bindingfileset>
+			<classpathset dir="binding/classes" />
+		</bind>
+		<!-- jar the bindings -->
+		<jar destfile="${jibxjar}">
+			<fileset dir="binding/classes">
+				<include name="**/*.class" />
+			</fileset>
+			<fileset dir="binding/src">
+				<include name="**/*.java" />
+				<include name="**/*.xml" />
+			</fileset>
+		</jar>
+		<delete dir="binding">
+		</delete>
+	</target>
 
 
-  <target name="gen">
-    <antcall target="xmlbind">
-      <param name="gen.file" value="actions"/>
-      <param name="xsd.file" value="freemind_actions.xsd"/>
-    </antcall>
-  </target>
 
-
-
-  <target name="build-generated">
-    <antcall target="-buildgen">
-      <param name="gen.file" value="actions"/>
-      <param name="xsd.file" value="freemind_actions.xsd"/>
-    </antcall>
-  </target>
 	<!-- end generator part -->
 
 	<target name="build" depends="gen">
@@ -102,60 +94,65 @@
 		</exec>
 		<!-- end mac changes. -->
 		<mkdir dir="${build}"/>
-	    <!-- build generated files -->
-	    <antcall target="build-generated"/>
-	    <!-- end build generated files -->
 		<javac	srcdir="${src}"
 			destdir="${build}"
 			classpath="${classpath}"
 			debug="${debug}"
     	   source="${java_source_version}"
 	       target="${java_target_version}"
-			> 
-	      <exclude name="${gen.dir}/**" />
-	      <exclude name="accessories/plugins/**" />
-	      <exclude name="plugins/**" />
+			>
+			<exclude name="${gen.dir}/**" />
+			<exclude name="accessories/plugins/**" />
+			<exclude name="plugins/**" />
 		</javac>
 		<ant antfile="accessories/plugins/build.xml" target="build"/>
 		<ant antfile="plugins/build.xml" target="build"/>
 	</target>
 
-	<target name="dist" depends="jar">
+	<target name="dist" depends="jar, browser">
 
-		<copy todir="${dist}"> 
+		<copy todir="${dist}">
 			<fileset dir="${src}"
 				includes="freemind.bat,freemind.sh,license,patterns.xml"
 			/>
 		</copy>
-        <!-- user.properties are placed in the documents folder. To avoid trouble, make a short comment here.  -->
-        <copy file="${src}/user_comment.properties" tofile="${dist}/user.properties"/>
+		<!-- user.properties are placed in the documents folder. To avoid trouble, make a short comment here.  -->
+		<copy file="${src}/user_comment.properties" tofile="${dist}/user.properties"/>
 
-        <chmod file="${dist}/freemind.sh" perm="u+rx"/>
-		<copy todir="${dist}"> 
+		<chmod file="${dist}/freemind.sh" perm="u+rx"/>
+		<copy todir="${dist}">
 			<fileset dir="${src}/windows-launcher"
 				includes="Freemind.exe"
 			/>
 		</copy>
+		<mkdir dir="${dist}/doc" />
+		<copy todir="${dist}/doc">
+			<fileset dir="${src}/doc/" includes="freemind*.mm"/>
+		</copy>
 		<mkdir dir="${dist}/accessories" />
 		<mkdir dir="${dist}/plugins" />
-		<copy todir="${dist}/accessories" > 
+		<copy todir="${dist}/accessories" >
 			<fileset dir="${src}/accessories" excludes="plugins" includes="*"/>
 			<!-- exclude jars too!
 			<fileset dir="${build}/accessories"/> -->
-		</copy> 
+		</copy>
 		<!-- third party libs -->
 		<mkdir dir="${dist.lib}" />
-		<copy todir="${dist.lib}"> 
+		<copy todir="${dist.lib}">
 			<fileset dir="${src}/lib">
-				<exclude name="**/jaxb-xjc.jar"/>
-				<exclude name="${jarbundler.jar}"/>
+				<include name="commons-lang-2.0.jar"/>
+				<include name="forms-1.0.5.jar"/>
+				<include name="bindings.jar"/>
+				<include name="jibx/jibx-run.jar"/>
+				<include name="jibx/xpp3.jar"/>
 			</fileset>
 		</copy>
+
 		<ant antfile="accessories/plugins/build.xml" target="dist"/>
 		<ant antfile="plugins/build.xml" target="dist"/>
 		<!-- Mac OS X -->
-	    <condition property="isMacOs">
-		  <os family="mac"/>
+		<condition property="isMacOs">
+			<os family="mac"/>
 		</condition>
 		<antcall target="dist_macos"/>
 	</target>
@@ -165,11 +162,18 @@
 		<mkdir dir="${dist_macos}"/>
 		<!-- change freemind.properties -->
 		<copy todir="${dist_macos}" file="${src}/freemind.properties"/>
-		<replaceregexp byline="true" file="${dist_macos}/freemind.properties" match="^keystroke(.*)=(.*)\bcontrol\b" replace="keystroke\1=\2meta" flags="gim"></replaceregexp>
-		<replaceregexp byline="true" file="${dist_macos}/freemind.properties" match="^keystroke(.*)=(.*)\binsert\b" replace="keystroke\1=\2TAB" flags="gim"></replaceregexp>
+		<replaceregexp byline="true" file="${dist_macos}/freemind.properties" match="^keystroke(.*)=(.*)\bcontrol\b" replace="keystroke\1=\2meta" flags="gim">
+		</replaceregexp>
+		<replaceregexp byline="true" file="${dist_macos}/freemind.properties" match="^keystroke(.*)=(.*)\binsert\b" replace="keystroke\1=\2TAB" flags="gim">
+		</replaceregexp>
 		<!-- update jar -->
-		<jar file="${FM.jar}" update="true" basedir="${dist_macos}"><fileset dir="${dist_macos}"><include name="${dist_macos}/freemind.properties"/></fileset></jar>
-		  <jarbundler dir="${dist_macos}"
+		<jar file="${FM.jar}" update="true" basedir="${dist_macos}">
+			<fileset dir="${dist_macos}">
+				<include name="${dist_macos}/freemind.properties"/>
+			</fileset>
+		</jar>
+		<delete file="${dist_macos}/freemind.properties"/>
+		<jarbundler dir="${dist_macos}"
 		                    name="FreeMind"
 		                    mainclass="freemind.main.FreeMind"
 		                    icon="${src}/images/FreeMindWindowIcon.icns"
@@ -181,14 +185,14 @@
 		                    jvmversion="1.4+"
 		                    liveresize="true"
 		                    screenmenu="true" 
-		  				    > 
-		  	<jarfileset dir="${dist}">
-		            <include name="**/*.jar" />
-		            <exclude name="**/CVS" />
-		            <exclude name="accessories/**" />
-		            <exclude name="plugins/**" />
-          	</jarfileset>
-        </jarbundler>
+		  				    >
+			<jarfileset dir="${dist}">
+				<include name="**/*.jar" />
+				<exclude name="**/CVS" />
+				<exclude name="accessories/**" />
+				<exclude name="plugins/**" />
+			</jarfileset>
+		</jarbundler>
 		<!-- Associate Freemind with mm -->
 		<xslt style="mac_file_association.xslt" 
 			in ="${dist_macos_info}" 
@@ -197,9 +201,9 @@
 			  tofile="${dist_macos_info}"/>
 		<!-- Done. -->
 		<mkdir dir="${dist_macos}/accessories" />
-		<copy todir="${dist_macos}/accessories"> 
+		<copy todir="${dist_macos}/accessories">
 			<fileset dir="${dist}/accessories"/>
-		</copy> 
+		</copy>
 		<!-- link accessories in app -->
 		<exec dir="${dist_macos}/FreeMind.app/Contents/Resources/Java" executable="ln" os="Mac OS X">
 			<arg value="-s"/>
@@ -207,9 +211,9 @@
 			<arg value="accessories"/>
 		</exec>
 		<mkdir dir="${dist_macos}/plugins" />
-		<copy todir="${dist_macos}/plugins"> 
+		<copy todir="${dist_macos}/plugins">
 			<fileset dir="${dist}/plugins"/>
-		</copy> 
+		</copy>
 	</target>
 
 	<target name="post" depends="dist,browser,doc">
@@ -217,7 +221,7 @@
 		<tar tarfile="${post}/freemind-bin.tar"
 			basedir="${dist}"
 			longfile="gnu"
-			excludes="browser/,doc/javadoc/,plugins/**" />
+			excludes="doc/javadoc/,plugins/**" />
 		<tar tarfile="${post}/freemind-src.tar"
 			longfile="gnu"
 			basedir="${src_base_for_post}"
@@ -233,21 +237,22 @@
 			zipfile="${post}/freemind-browser-${ver}.tar.gz" />
 		<delete>
 			<fileset dir="${post}" includes="*.tar" />
-		</delete> 
+		</delete>
 		<zip destfile="${post}/freemind-bin-${ver}.zip"
 			basedir="${dist}"
-			excludes="browser/,doc/javadoc/,plugins/**" />
+			excludes="doc/javadoc/,plugins/**" />
 		<!-- fc, 14.2.2005: new max export -->
 		<zip destfile="${post}/freemind-bin-max-${ver}.zip"
 			basedir="${dist}"
-			excludes="browser/,doc/javadoc/" />
+			excludes="doc/javadoc/" />
 		<zip destfile="${post}/freemind-src-${ver}.zip"
 			basedir="${src_base_for_post}"
 			includes="freemind/**,.classpath,.project" />
 		<zip destfile="${post}/freemind-browser-${ver}.zip"
 			basedir="${dist}/browser" />
 		<ant antfile="plugins/build.xml" target="post"/>
-		<antcall target="post_macos"></antcall>
+		<antcall target="post_macos">
+		</antcall>
 	</target>
 
 	<target name="post_macos">
@@ -265,15 +270,16 @@
 		</exec>
 
 	</target>
-	
+
 	<target name="jar" depends="build">
 		<mkdir dir="${dist.lib}" />
 		<jar jarfile="${FM.jar}"
 		     manifest="${src}/MANIFEST.MF"
 			update="true">
 			<fileset dir="${build}">
-				<exclude name="accessories/**"/> 
-				<exclude name="plugins/**"/> 
+				<exclude name="accessories/**"/>
+				<exclude name="plugins/**"/>
+				<exclude name="**/*.jar"/>
 			</fileset>
 			<fileset dir="${src}">
 				<include name="images/*"/>
@@ -290,38 +296,54 @@
 
 	<target name="browser" depends="build">
 		<mkdir dir="${dist}/browser" />
-		<jar jarfile="${dist}/browser/freemindbrowser.jar">
+		<jar jarfile="${dist}/browser/freemindbrowser.jar" >
 			<fileset dir="${build}">
-				<include name="freemind/extensions/*"/>
+
 				<include name="freemind/view/*"/>
 				<include name="freemind/view/mindmapview/*"/>
 				<include name="freemind/main/*"/>
-				<include name="freemind/controller/*"/>	
+				<include name="freemind/controller/*"/>
+				<include name="freemind/extensions/*"/>
+				<include name="freemind/preferences/*"/>
+				<include name="freemind/preferences/layout/*"/>
 				<include name="freemind/modes/*"/>
 				<include name="freemind/modes/browsemode/*"/>
-				<include name="accessories/plugins/**"/>
+				<include name="freemind/modes/common/**"/>
+				<include name="freemind/modes/viewmodes/*"/>
+
 			</fileset>
 			<fileset dir="${src}">
 				<include name="images/*"/>
 				<include name="images/icons/*.png"/>
 				<include name="*.properties"/>
-				<include name="accessories/plugins/**"/>
+				<exclude name="Resources_*.properties"/>
+				<!--				<include name="*.xml"/>
+				<exclude name="build.xml"/> -->
+				<exclude name="images/splash.JPG"/>
+				<exclude name="images/FreeMindWindowIcon.icns"/>
+
+			</fileset>
+			<fileset dir="${src}">
+				<include name="Resources_en.properties"/>
 			</fileset>
 		</jar>
-                <copy file="${src}/freemind.properties" tofile="${src}/user.properties"/>
+		<copy file="${src}/freemind.properties" tofile="${src}/user.properties"/>
 		<copy todir="${dist}/browser" >
 			<fileset dir="${src}/html">
 				<include name="*.*html"/>
 			</fileset>
+			<fileset dir="${src}/doc">
+				<include name="freemind.mm"/>
+			</fileset>
 		</copy>
 	</target>
 
-	<target name="doc">
-		<mkdir dir="${dist}/doc" />
+	<target name="doc" depends="gen">
 		<mkdir dir="${dist}/doc/javadoc" />
-		<copy todir="${dist}/doc" file="${src}/doc/freemind.mm"/>
 		<javadoc sourcepath="${src}"
-		         destdir="${dist}/doc/javadoc"
+	         destdir="${dist}/doc/javadoc"
+			 breakiterator="yes"
+			 classpath="${classpath}"
 		         packagenames="freemind.*" />
 	</target>
 
@@ -331,25 +353,25 @@
 		<delete dir="${dist_macos_base}"  quiet="true"/>
 		<delete dir="${gen.dir}"  quiet="true"/>
 		<delete dir="${post}"  quiet="true"/>
-                <delete>
-                  <fileset defaultexcludes="no" dir="${src}" includes="**/*~"/>
-                </delete>
+		<delete file="${jibxjar}"  quiet="true"/>
+		<delete>
+			<fileset defaultexcludes="no" dir="${src}" includes="**/*~"/>
+		</delete>
 	</target>
 
-  <target name="run" depends="dist">
-    <java classname="freemind.main.FreeMind"
+	<target name="run" depends="dist">
+		<java classname="freemind.main.FreeMind"
           fork="yes"
           dir="${dist}">
-<!--    <jvmarg value="-Djava.util.logging.config.file=logging.properties" /> -->
-    <classpath>
-       <!--<pathelement location="${dist}"/>-->
-       <pathelement location="${FM.jar}"/>
-       <pathelement path="${xml}"/>
-       <pathelement path="${jaxb}"/>
-       <pathelement location="${FM.jar}"/>
-    </classpath>
-    </java>
-  </target>
+			<!--    <jvmarg value="-Djava.util.logging.config.file=logging.properties" /> -->
+			<classpath>
+				<!--<pathelement location="${dist}"/>-->
+				<pathelement location="${FM.jar}"/>
+				<pathelement location="${jibxjar}"/>
+				<pathelement path="${jibxruntimelibs}"/>
+			</classpath>
+		</java>
+	</target>
 
 	<!-- does not work!! -->
 	<target name="val">
@@ -357,14 +379,14 @@
 		  failonerror="no" warn="true" classname="org.apache.xerces.parsers.SAXParser"
             classpath="plugins/svg/xerces_2_5_0.jar">
 			<fileset dir="." includes="**/*.mm"/>
-		  <attribute name="http://apache.org/xml/features/validation/schema"
+			<attribute name="http://apache.org/xml/features/validation/schema"
 		  value="true"/>
-		  <attribute name="http://xml.org/sax/features/namespaces" value="true"/>
-		  <property
+			<attribute name="http://xml.org/sax/features/namespaces" value="true"/>
+			<property
 		  name="http://apache.org/xml/properties/schema/external-schemaLocation"
 		  value="freemind.xsd"/>
 		</xmlvalidate>
 	</target>
-	
+
 </project>
 

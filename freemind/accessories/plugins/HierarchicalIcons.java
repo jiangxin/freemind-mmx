@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HierarchicalIcons.java,v 1.1.2.2.6.2 2005-12-06 19:47:29 dpolivaev Exp $*/
+/* $Id: HierarchicalIcons.java,v 1.1.2.2.6.3 2006-03-11 16:42:36 dpolivaev Exp $ */
 
 package accessories.plugins;
 
@@ -24,22 +24,22 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.extensions.UndoEventReceiver;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 import freemind.view.mindmapview.MultipleImage;
 
 /** */
-public class HierarchicalIcons extends PermanentNodeHookAdapter implements UndoEventReceiver {
+public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implements UndoEventReceiver {
 
     private HashMap /* of MindMapNode to a TreeSet */ nodeIconSets = new HashMap();
-    
-  
+
+
     public void shutdownMapHook()
     {
         // remove all icons:
-        MindMapNode root = getController().getRootNode();
+        MindMapNode root = getMindMapController().getRootNode();
         removeIcons(root);
         super.shutdownMapHook();
     }
@@ -49,7 +49,7 @@ public class HierarchicalIcons extends PermanentNodeHookAdapter implements UndoE
     private void removeIcons(MindMapNode node)
     {
         node.setStateIcon(getName(),null);
-        getController().nodeRefresh(node);
+        getMindMapController().nodeRefresh(node);
         for (Iterator i = node.childrenUnfolded(); i.hasNext();)
         {
             MindMapNode child = (MindMapNode) i.next();
@@ -57,7 +57,7 @@ public class HierarchicalIcons extends PermanentNodeHookAdapter implements UndoE
         }
     }
     /**
-     *  
+     *
      */
     public HierarchicalIcons() {
         super();
@@ -67,7 +67,7 @@ public class HierarchicalIcons extends PermanentNodeHookAdapter implements UndoE
 
     private void setStyle(MindMapNode node) {
         // precondition: all children are contained in nodeIconSets
-        
+
         // gather all icons of my children and of me here:
         TreeSet iconSet = new TreeSet();
         for (Iterator i = node.childrenUnfolded(); i.hasNext();) {
@@ -90,7 +90,7 @@ public class HierarchicalIcons extends PermanentNodeHookAdapter implements UndoE
             }
         }
         nodeIconSets.put(node, iconSet);
-        
+
         if (dirty) {
             if (iconSet.size() > 0) {
                 // create multiple image:
@@ -105,9 +105,9 @@ public class HierarchicalIcons extends PermanentNodeHookAdapter implements UndoE
             } else {
                 node.setStateIcon(getName(),null);
             }
-            getController().nodeRefresh(node);
+            getMindMapController().nodeRefresh(node);
         }
-        
+
     }
 
     /**
@@ -132,7 +132,7 @@ public class HierarchicalIcons extends PermanentNodeHookAdapter implements UndoE
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see freemind.extensions.PermanentNodeHook#onAddChild(freemind.modes.MindMapNode)
      */
     public void onAddChildren(MindMapNode newChildNode) {
@@ -148,7 +148,7 @@ public class HierarchicalIcons extends PermanentNodeHookAdapter implements UndoE
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see freemind.extensions.PermanentNodeHook#onUpdateChildrenHook(freemind.modes.MindMapNode)
      */
     public void onUpdateChildrenHook(MindMapNode updatedNode) {
@@ -158,7 +158,7 @@ public class HierarchicalIcons extends PermanentNodeHookAdapter implements UndoE
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see freemind.extensions.PermanentNodeHook#onUpdateNodeHook()
      */
     public void onUpdateNodeHook() {
@@ -168,7 +168,7 @@ public class HierarchicalIcons extends PermanentNodeHookAdapter implements UndoE
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode)
      */
     public void invoke(MindMapNode node) {

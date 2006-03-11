@@ -19,12 +19,14 @@
  *
  * Created on 01.11.2004
  */
-/*$Id: ExportPdf.java,v 1.1.4.1 2004-11-16 16:42:38 christianfoltin Exp $*/
+/* $Id: ExportPdf.java,v 1.1.4.1.10.1 2006-03-11 16:42:41 dpolivaev Exp $ */
 
 package plugins.svg;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.swing.JOptionPane;
 
@@ -35,11 +37,13 @@ import org.apache.fop.svg.PDFTranscoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import freemind.main.FeedBack;
+import freemind.main.FreeMindSplash;
 import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
- *  
+ *
  */
 public class ExportPdf extends ExportVectorGraphic {
 
@@ -56,15 +60,16 @@ public class ExportPdf extends ExportVectorGraphic {
                 return;
 
             getController().getFrame().setWaitingCursor(true);
-            
+
             SVGGraphics2D g2d = fillSVGGraphics2D(view);
+
 
             PDFTranscoder pdfTranscoder = new PDFTranscoder();
             Document doc = g2d.getDOMFactory();
             Element rootE = doc.getDocumentElement();
             g2d.getRoot(rootE);
             TranscoderInput input = new TranscoderInput(doc);
-            FileOutputStream ostream = new FileOutputStream(chosenFile);
+            final FileOutputStream ostream = new FileOutputStream(chosenFile);
 			TranscoderOutput output = new TranscoderOutput(ostream);
             // save the image
             pdfTranscoder.transcode(input, output);
@@ -72,8 +77,6 @@ public class ExportPdf extends ExportVectorGraphic {
             ostream.flush();
             ostream.close();
 
-            
-            
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(getController().getFrame().getContentPane(), e.getLocalizedMessage(), null, JOptionPane.ERROR_MESSAGE);

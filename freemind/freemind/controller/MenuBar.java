@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.8.4.4 2006-02-28 20:58:08 dpolivaev Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.8.4.5 2006-03-11 16:42:36 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -27,6 +27,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
+
+import freemind.modes.ModeController;
 
 /**This is the menu bar for FreeMind. Actions are defined in MenuListener.
  * Moreover, the StructuredMenuHolder of all menus are hold here.
@@ -73,8 +75,9 @@ public class MenuBar extends JMenuBar {
 
 	/**
 	 * This is the only public method. It restores all menus.
+	 * @param newModeController 
 	 */
-	public void updateMenus() {
+	public void updateMenus(ModeController newModeController) {
 		this.removeAll();
 
 		menuHolder = new StructuredMenuHolder();
@@ -120,6 +123,8 @@ public class MenuBar extends JMenuBar {
 
 		//format menu
 		formatmenu = menuHolder.addMenu(new JMenu(c.getResourceString("menu_format")), FORMAT_MENU+".");
+		menuHolder.addCategory(FORMAT_MENU+"change");	
+		menuHolder.addSeparator(FORMAT_MENU);	
 		menuHolder.addCategory(FORMAT_MENU+"patterns");	
 		menuHolder.addSeparator(FORMAT_MENU);	
 
@@ -161,9 +166,7 @@ public class MenuBar extends JMenuBar {
 		updateMapsMenu(menuHolder, POPUP_MENU);
 		addAdditionalPopupActions();
 		// the modes:
-		if ((c.getMode() != null)) {
-			c.getMode().getModeController().updateMenus(menuHolder);
-		}
+        newModeController.updateMenus(menuHolder);
 		menuHolder.updateMenus(this, MENU_BAR_PREFIX);
 		menuHolder.updateMenus(mapsPopupMenu, GENERAL_POPUP_PREFIX);
 		
@@ -346,8 +349,12 @@ public class MenuBar extends JMenuBar {
     }
 
     private class MapsMenuActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-		    c.getMapModuleManager().changeToMapModule(e.getActionCommand());
+		public void actionPerformed(final ActionEvent e) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    c.getMapModuleManager().changeToMapModule(e.getActionCommand());
+                }
+            });
 		}
     }
 
@@ -358,8 +365,12 @@ public class MenuBar extends JMenuBar {
     }
 
     private class ModesMenuActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-		    c.changeToMode(e.getActionCommand());
+		public void actionPerformed(final ActionEvent e) {
+		    SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    c.createNewMode(e.getActionCommand());
+                }
+            });
 		}
     }
     

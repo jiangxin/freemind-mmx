@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileController.java,v 1.11.18.3.6.3 2006-01-22 12:24:38 dpolivaev Exp $*/
+/* $Id: FileController.java,v 1.11.18.3.6.4 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes.filemode;
 
@@ -30,17 +30,19 @@ import javax.swing.JPopupMenu;
 
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
-import freemind.modes.ControllerAdapter;
+import freemind.extensions.HookFactory;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
-import freemind.modes.actions.NewMapAction;
+import freemind.modes.ModeController;
+import freemind.modes.common.actions.NewMapAction;
+import freemind.modes.viewmodes.ViewControllerAdapter;
 
-public class FileController extends ControllerAdapter {
+public class FileController extends ViewControllerAdapter {
 
 
-    Action newMap = new NewMapAction(this, this);
+    Action newMap = new NewMapAction(this);
     Action center = new CenterAction();
     Action openPath = new OpenPathAction();
 
@@ -51,8 +53,8 @@ public class FileController extends ControllerAdapter {
 	super(mode);
     }
 
-    public MapAdapter newModel() {
-	return new FileMapModel(getFrame(), this);
+    public MapAdapter newModel(ModeController modeController) {
+	return new FileMapModel(getFrame(), modeController);
     }
 
     public MindMapNode newNode(Object userObject, MindMap map) {
@@ -64,20 +66,21 @@ public class FileController extends ControllerAdapter {
     //-----------------------------------------------------------------------------------
 
     // Private
-    // 
+    //
 
-//    private MindMap getModel() {
-// 	return (MindMap)getController().getModel();
-//    }
 
-   
+
     private class CenterAction extends AbstractAction {
 	CenterAction() {
 	    super(getController().getResourceString("center"));
 	}
 	public void actionPerformed(ActionEvent e) {
 	    if (getSelected() != null) {
-		MindMap map = new FileMapModel(((FileNodeModel)getSelected()).getFile(), getFrame(), FileController.this);
+		MindMap map = new FileMapModel(((FileNodeModel)getSelected()).getFile(), getFrame(),
+        		/* DON'T COPY THIS, AS THIS IS A BAD HACK!
+        		 * The Constructor needs a new instance of a modecontroller.*/
+				FileController.this
+				);
 		newMap(map);
 	    }
 	}
@@ -93,7 +96,11 @@ public class FileController extends ControllerAdapter {
            if (inputValue != null) {
               File newCenter = new File(inputValue);
               if (newCenter.exists()) { // and is a folder
-		MindMap map = new FileMapModel(newCenter, getFrame(), FileController.this);
+		MindMap map = new FileMapModel(newCenter, getFrame(),
+        		/* DON'T COPY THIS, AS THIS IS A BAD HACK!
+        		 * The Constructor needs a new instance of a modecontroller.*/
+				FileController.this
+				);
 		newMap(map);
               }
            }
@@ -109,6 +116,9 @@ public class FileController extends ControllerAdapter {
 		add(holder, MenuBar.EDIT_MENU+"/openPath", openPath, null);
     }
 
-  
-    
+	public HookFactory getHookFactory() {
+		throw new IllegalArgumentException("Not implemented yet.");
+	}
+
+
 }

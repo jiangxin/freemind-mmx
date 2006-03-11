@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapMouseWheelListener.java,v 1.8 2003-11-24 08:09:04 christianfoltin Exp $*/
+/*$Id: MapMouseWheelListener.java,v 1.8.28.1 2006-03-11 16:42:36 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -29,11 +29,21 @@ import java.awt.event.MouseWheelListener;
 public class MapMouseWheelListener implements MouseWheelListener {
 
     private final Controller c;
+	private MouseWheelListener mListener;
 
     public MapMouseWheelListener(Controller controller) {
        c = controller; }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
-        c.getMode().getModeController().mouseWheelMoved(e);
+    		if(mListener != null) 
+    			mListener.mouseWheelMoved(e);
    }
+
+	public void register(MouseWheelListener handler) {
+		mListener = handler;
+	}
+	
+	public void deregister() {
+		mListener = null;
+	}
 }

@@ -7,22 +7,14 @@ package accessories.plugins;
 import java.text.MessageFormat;
 import java.util.Iterator;
 
-import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
 /**
  * @author foltin
  *  
  */
-public class CreationModificationPlugin extends PermanentNodeHookAdapter {
-
-	private static final String CREATED = "CREATED";
-
-	private static final String MODIFIED = "MODIFIED";
-
-	private long created;
-
-	private long modified;
+public class CreationModificationPlugin extends PermanentMindMapNodeHookAdapter {
 
 	private String tooltipFormat;
 
@@ -47,28 +39,6 @@ public class CreationModificationPlugin extends PermanentNodeHookAdapter {
 				+ node.getParentNode() + " is " + message);
 	}
 
-//	/** Only for compability with old files ( <= 0.8.0 RC2) */
-//	public void loadFrom(XMLElement child) {
-//		super.loadFrom(child);
-//		HashMap hash = loadNameValuePairs(child);
-//		long created_ = toLong((String) hash.get(CREATED));
-//		long modified_ = toLong((String) hash.get(MODIFIED));
-//		getNode().getHistoryInformation().setCreatedAt(new Date(created_));
-//		getNode().getHistoryInformation()
-//				.setLastModifiedAt(new Date(modified_));
-//	}
-
-	/**
-	 * @param createdString
-	 * @return
-	 */
-	private static long toLong(String createdString) {
-		try {
-			return Long.valueOf(createdString).longValue();
-		} catch (Exception e) {
-			return System.currentTimeMillis();
-		}
-	}
 
 	public void shutdownMapHook() {
 		removeToolTipRecursively(getNode());
@@ -86,13 +56,13 @@ public class CreationModificationPlugin extends PermanentNodeHookAdapter {
 		}
 	}
 
-	private long getCreated() {
-		return getNode().getHistoryInformation().getCreatedAt().getTime();
-	}
-
-	private long getModified() {
-		return getNode().getHistoryInformation().getLastModifiedAt().getTime();
-	}
+//	private long getCreated() {
+//		return getNode().getHistoryInformation().getCreatedAt().getTime();
+//	}
+//
+//	private long getModified() {
+//		return getNode().getHistoryInformation().getLastModifiedAt().getTime();
+//	}
 
 	/*
 	 * (non-Javadoc)

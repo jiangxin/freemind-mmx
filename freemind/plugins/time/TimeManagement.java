@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/*$Id: TimeManagement.java,v 1.1.2.5 2005-05-03 05:29:51 christianfoltin Exp $*/
+/* $Id: TimeManagement.java,v 1.1.2.5.6.1 2006-03-11 16:42:41 dpolivaev Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -51,18 +51,19 @@ import javax.swing.WindowConstants;
 
 import com.toedter.calendar.JCalendar;
 
-import freemind.extensions.ModeControllerHookAdapter;
 import freemind.extensions.PermanentNodeHook;
 import freemind.modes.MindMapNode;
+import freemind.modes.common.plugins.ReminderHookBase;
+import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
 
-//FIXME: REminder: more than once. (later) 
+//FIXME: REminder: more than once. (later)
 //FIXME: Button shortcuts (difficult?)
 
 /**
  * @author foltin
- *  
+ *
  */
-public class TimeManagement extends ModeControllerHookAdapter implements
+public class TimeManagement extends MindMapHookAdapter implements
 		PropertyChangeListener, ActionListener {
 
 	public final static String REMINDER_HOOK_NAME = "plugins/TimeManagementReminder.xml";
@@ -139,7 +140,7 @@ public class TimeManagement extends ModeControllerHookAdapter implements
 						DateFormat df = DateFormat
 								.getDateInstance(DateFormat.SHORT);
 						String dateAsString = df.format(getCalendarDate());
-						getController().setNodeText(element,
+                        getMindMapController().setNodeText(element,
 								element.getText() + " " + dateAsString);
 					}
 
@@ -275,7 +276,7 @@ public class TimeManagement extends ModeControllerHookAdapter implements
 					.hasNext();) {
 				MindMapNode node = (MindMapNode) i.next();
 
-				ReminderHook alreadyPresentHook = getHook(node);
+				ReminderHookBase alreadyPresentHook = getHook(node);
 				if (alreadyPresentHook != null) {
 					addHook(node); // means remove hook, as it is already
 					// present.
@@ -292,7 +293,7 @@ public class TimeManagement extends ModeControllerHookAdapter implements
 				.hasNext();) {
 			MindMapNode node = (MindMapNode) i.next();
 
-			ReminderHook alreadyPresentHook = getHook(node);
+			ReminderHookBase alreadyPresentHook = getHook(node);
 			if (alreadyPresentHook != null) {
 				// already present:
 				Object[] messageArguments = {
@@ -313,7 +314,7 @@ public class TimeManagement extends ModeControllerHookAdapter implements
 			List selected;
 			addHook(node);
 			PermanentNodeHook element;
-			ReminderHook rh = getHook(node);
+			ReminderHookBase rh = getHook(node);
 			if (rh == null) {
 				throw new IllegalArgumentException(
 						"hook not found although it is present!!");
@@ -331,25 +332,25 @@ public class TimeManagement extends ModeControllerHookAdapter implements
 	private void addHook(MindMapNode node) {
 		// add the hook:
 		List selected = Arrays.asList(new MindMapNode[] { node });
-		getController().addHook(node, selected, REMINDER_HOOK_NAME);
+        getMindMapController().addHook(node, selected, REMINDER_HOOK_NAME);
 	}
 
 	/**
 	 * @param node
 	 * @return
 	 */
-	public static ReminderHook getHook(MindMapNode node) {
+	public static ReminderHookBase getHook(MindMapNode node) {
 		for (Iterator j = node.getActivatedHooks().iterator(); j.hasNext();) {
 			PermanentNodeHook element = (PermanentNodeHook) j.next();
-			if (element instanceof ReminderHook) {
-				return (ReminderHook) element;
+			if (element instanceof ReminderHookBase) {
+				return (ReminderHookBase) element;
 			}
 		}
 		return null;
 	}
 
 	/**
-	 *  
+	 *
 	 */
 	private void disposeDialog() {
 		dialog.setVisible(false);

@@ -1,221 +1,233 @@
-/*
- * Created on 16.03.2004
+/*FreeMind - A Program for creating and viewing Mindmaps
+ *Copyright (C) 2000-2006  Christian Foltin and others
+ *See COPYING for Details
  *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+/* $Id: NodeNote.java,v 1.1.4.1.10.3 2006-03-11 16:42:36 dpolivaev Exp $ */
 package accessories.plugins;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
-import javax.swing.ImageIcon;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 
-import freemind.extensions.PermanentNodeHookAdapter;
-import freemind.main.FreeMindMain;
+import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
+import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.extensions.HookFactory;
+import freemind.extensions.HookRegistration;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
-import freemind.modes.MindIcon;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
+import freemind.modes.common.plugins.NodeNoteBase;
+import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
+import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 /**
  * @author foltin
  *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class NodeNote extends PermanentNodeHookAdapter {
+public class NodeNote extends NodeNoteBase {
 
-	private NodeTextListener listener;
-	private JTextArea text;
-	private String myNodeText;
-	private JScrollPane scroller;
-	private static ImageIcon noteIcon;
-	/**
-	 * 
-	 */
-	public NodeNote() {
-		super();
-		myNodeText = new String();
-	}
+    public static class Registration implements HookRegistration, ActorXml {
 
+        private final MindMapController controller;
 
-	/* (non-Javadoc)
-	 * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode)
-	 */
-	public void invoke(MindMapNode node) {
-		super.invoke(node);
-		enableStateIcon(node);
-	}
+        private final MindMap mMap;
 
-	/**
-     * @param node
-     */
-    private void enableStateIcon(MindMapNode node) {
-        // icon
-		if (noteIcon == null) {
-			noteIcon = new ImageIcon(getController().getFrame().getResource("accessories/plugins/icons/knotes.png"));
-		}
-		node.setStateIcon(getName(), noteIcon);
-		getController().nodeRefresh(node);
+        private final java.util.logging.Logger logger;
+
+        public Registration(ModeController controller, MindMap map) {
+            this.controller = (MindMapController) controller;
+            mMap = map;
+            logger = controller.getFrame().getLogger(this.getClass().getName());
+        }
+
+        public void register() {
+            logger.info("Registration of note undo handler.");
+            controller.getActionFactory().registerActor(this,
+                    getDoActionClass());
+        }
+
+        public void deRegister() {
+            logger.info("Deregistration of note undo handler.");
+            controller.getActionFactory().deregisterActor(getDoActionClass());
+        }
+
+        public void act(XmlAction action) {
+            if (action instanceof EditNoteToNodeAction) {
+                EditNoteToNodeAction noteTextAction = (EditNoteToNodeAction) action;
+                MindMapNode node = controller.getNodeFromID(noteTextAction
+                        .getNode());
+                String newText = noteTextAction.getText();
+                // check if plugin present for that node:
+                HookFactory factory = controller.getHookFactory();
+                NodeNote hook = (NodeNote) factory.getHookInNode(node,
+                        NodeNoteBase.HOOK_NAME);
+                if (hook == null) {
+                    // create hook
+                    throw new IllegalArgumentException("Not implemented yet");
+                }
+                // hook is present, get text:
+                String oldText = hook.getMyNodeText();
+                if (!Tools.safeEquals(newText, oldText)) {
+                    hook.setMyNodeText(newText);
+                    // FIXME: This is ugly code as we are fishing in the waters
+                    // of NodeNote.
+                    if (hook.text != null) {
+                        // check if document is different:
+                        try {
+                            if (!newText.equals(getDocumentText(hook.text
+                                    .getDocument()))) {
+                                hook.text.setText(newText);
+                            }
+                        } catch (BadLocationException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    controller.nodeChanged(node);
+                }
+            }
+        }
+
+        public Class getDoActionClass() {
+            return EditNoteToNodeAction.class;
+        }
+
     }
 
+    private NodeTextListener listener;
 
-    /* (non-Javadoc)
-	 * @see freemind.extensions.PermanentNodeHook#onReceiveFocusHook()
-	 */
-	public void onReceiveFocusHook() {
-		super.onReceiveFocusHook();
-		if(text==null) {
-			logger.fine("Text ctrl. set for node "+getNode()+" as "+getMyNodeText());
-			// panel:
-			FreeMindMain frame = getController().getFrame();
-	
-			text = new JTextArea(5,50);
-			text.setText(getMyNodeText());
-			
-			text.addKeyListener(new KeyListener(){
+    /*
+     * (non-Javadoc)
+     *
+     * @see freemind.extensions.PermanentNodeHook#save(freemind.main.XMLElement)
+     */
+    public void save(XMLElement xml) {
+        super.save(xml);
+        XMLElement child = new XMLElement();
+        child.setName("text");
+        child.setContent(getMyNodeText());
+        xml.addChild(child);
+    }
 
-                public void keyPressed(KeyEvent e) {
-                	switch ( e.getKeyCode() ) {
-                    	// the space event must not reach the parent frames, as folding would result.
-                        case KeyEvent.VK_SPACE:
-                            e.consume();
-                        	break;
-                	}
+    public class NodeTextListener implements DocumentListener {
+        private NodeNote pNote;
+
+        public NodeTextListener() {
+            pNote = null;
+        }
+
+        /**
+         * @see javax.swing.event.DocumentListener#insertUpdate(DocumentEvent)
+         */
+        public void insertUpdate(DocumentEvent e) {
+            changedUpdate(e);
+        }
+
+        /**
+         * @see javax.swing.event.DocumentListener#removeUpdate(DocumentEvent)
+         */
+        public void removeUpdate(DocumentEvent e) {
+            changedUpdate(e);
+        }
+
+        /**
+         * @see javax.swing.event.DocumentListener#changedUpdate(DocumentEvent)
+         */
+        public void changedUpdate(DocumentEvent e) {
+            try {
+                if (pNote != null) {
+                    Document document = e.getDocument();
+                    String text = getDocumentText(document);
+                    pNote.changeNodeText(text);
                 }
+            } catch (BadLocationException ex) {
+                System.err.println("Could not fetch nodeText content"
+                        + ex.toString());
+            }
+        }
 
-                public void keyReleased(KeyEvent e) {
-                }
+        /**
+         * @param note
+         */
+        public void setNote(NodeNote note) {
+            pNote = note;
+        }
 
-                public void keyTyped(KeyEvent e) {
-                }});
-	
-			listener = new NodeTextListener();
-			listener.setNote(this);				
-			text.getDocument().addDocumentListener(listener);
-			
-			scroller = new JScrollPane(text);
-			scroller.setPreferredSize( new Dimension( 600, 150 ) );
-			frame.getSouthPanel().add(scroller, BorderLayout.CENTER);
-			scroller.setVisible(true);
-			frame.getSouthPanel().revalidate();
-		}
-	}
+    }
 
-	/**
-	 * @return
-	 */
-	public String getMyNodeText() {
-		return new String(myNodeText);
-	}
+    /**
+     * @param document
+     * @return
+     * @throws BadLocationException
+     */
+    private static String getDocumentText(Document document)
+            throws BadLocationException {
+        return document.getText(0, document.getLength());
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setMyNodeText(String string) {
-		myNodeText = new String(string);
-	}
+    protected void nodeRefresh(MindMapNode node) {
+        getMindMapController().nodeRefresh(node);
+    }
 
-	/* (non-Javadoc)
-	 * @see freemind.extensions.PermanentNodeHook#onLooseFocusHook()
-	 */
-	public void onLooseFocusHook() {
-		super.onLooseFocusHook();
-		if (text != null) {
-			listener.setNote(null);
-			// shut down the display:
-			scroller.setVisible(false);
-			FreeMindMain frame = getController().getFrame();
-			frame.getSouthPanel().remove(scroller);
-			frame.getSouthPanel().validate();
-			scroller = null;
-			text = null;
-		}
-	}
+    /**
+     * Set text with undo:
+     *
+     * @param text
+     */
+    public void changeNodeText(String text) {
+            EditNoteToNodeAction doAction = createEditNoteToNodeAction(
+                    getNode(), text);
+            EditNoteToNodeAction undoAction = createEditNoteToNodeAction(
+                    getNode(), getMyNodeText());
+            getMindMapController().getActionFactory().startTransaction(
+                    this.getClass().getName());
+            getMindMapController().getActionFactory().executeAction(
+                    new ActionPair(doAction, undoAction));
+            getMindMapController().getActionFactory().endTransaction(
+                    this.getClass().getName());
+    }
 
-	/* (non-Javadoc)
-	 * @see freemind.extensions.PermanentNodeHook#loadFrom(freemind.main.XMLElement)
-	 */
-	public void loadFrom(XMLElement child) {
-		super.loadFrom(child);
-		if(child.getChildren().size()>0) {
-			XMLElement paramChild = (XMLElement) child.getChildren().get(0);
-			if(paramChild != null) {
-				setMyNodeText(paramChild.getContent());
-			}
-		}
-	}
+    public EditNoteToNodeAction createEditNoteToNodeAction(MindMapNode node,
+            String text)  {
+        EditNoteToNodeAction nodeAction = new EditNoteToNodeAction();
+        nodeAction.setNode(node.getObjectId(getController()));
+        nodeAction.setText(text);
+        return nodeAction;
+    }
 
-	/* (non-Javadoc)
-	 * @see freemind.extensions.PermanentNodeHook#save(freemind.main.XMLElement)
-	 */
-	public void save(XMLElement xml) {
-		super.save(xml);
-		XMLElement child = new XMLElement();
-		child.setName("text");
-		child.setContent(getMyNodeText());
-		xml.addChild(child);
-	}
+    /**
+     * @return
+     */
+    private MindMapController getMindMapController() {
+        return ((MindMapController) getController());
+    }
 
-	public class NodeTextListener implements DocumentListener {
-		private NodeNote pNote;
+    protected void receiveFocusAddons() {
+        listener = new NodeTextListener();
+        listener.setNote(this);
+        text.getDocument().addDocumentListener(listener);
+    }
 
-		public NodeTextListener() {
-			pNote=null;
-		}
-		/**
-		 * @see javax.swing.event.DocumentListener#insertUpdate(DocumentEvent)
-		 */
-		public void insertUpdate(DocumentEvent e) {
-			changedUpdate(e);
-		}
+    protected void looseFocusAddons() {
+        listener.setNote(null);
 
-		/**
-		 * @see javax.swing.event.DocumentListener#removeUpdate(DocumentEvent)
-		 */
-		public void removeUpdate(DocumentEvent e) {
-			changedUpdate(e);
-		}
-
-		/**
-		 * @see javax.swing.event.DocumentListener#changedUpdate(DocumentEvent)
-		 */
-		public void changedUpdate(DocumentEvent e) {
-			try {
-				if(pNote!=null) {
-					String text = e.getDocument().getText(0, e.getDocument().getLength());
-					pNote.setMyNodeText(text);
-					pNote.nodeChanged(pNote.getNode());
-				}
-			} catch (BadLocationException ex) {
-				System.err.println("Could not fetch nodeText content"+ex.toString());
-			}
-		}
-
-		/**
-		 * @param note
-		 */
-		public void setNote(NodeNote note) {
-			pNote = note;
-		}
-
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.extensions.MindMapHook#shutdownMapHook()
-	 */
-	public void shutdownMapHook() {
-		onLooseFocusHook();
-		getNode().setStateIcon(getName(), null);
-		getController().nodeRefresh(getNode());
-		super.shutdownMapHook();
-	}
+    }
 
 }

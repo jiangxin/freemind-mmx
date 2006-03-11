@@ -16,23 +16,23 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMapModel.java,v 1.9.18.4.6.2 2006-01-22 12:24:38 dpolivaev Exp $*/
+/* $Id: BrowseMapModel.java,v 1.9.18.4.6.3 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes.browsemode;
 
 
-import freemind.main.FreeMindMain;
-import freemind.modes.MapAdapter;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Writer;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.AccessControlException;
 
-
-// link registry.
+import freemind.main.FreeMindMain;
+import freemind.modes.ControllerAdapter;
 import freemind.modes.LinkRegistryAdapter;
+import freemind.modes.MapAdapter;
 import freemind.modes.MindMapLinkRegistry;
-import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 
 
@@ -48,12 +48,12 @@ public class BrowseMapModel extends MapAdapter {
         this(null, frame, modeController);
     }
 
-    public BrowseMapModel( BrowseNodeModel root, FreeMindMain frame , ModeController modeController) {
+    public BrowseMapModel( BrowseNodeModel root, FreeMindMain frame, ModeController modeController ) {
         super(frame, modeController);
         if(root != null)
             setRoot(root);
         else
-           setRoot(new BrowseNodeModel(getFrame().getResourceString("new_mindmap"), getFrame(), this)); 
+           setRoot(new BrowseNodeModel(getFrame().getResourceString("new_mindmap"), getFrame(), modeController.getMap())); 
         // register new LinkRegistryAdapter
         linkRegistry = new LinkRegistryAdapter();
     }
@@ -80,41 +80,40 @@ public class BrowseMapModel extends MapAdapter {
     protected void setFile() {
     }
 
-    
+
     /**
        * Get the value of url.
        * @return Value of url.
        */
     public URL getURL() {
        return url;}
-    
+
     /**
        * Set the value of url.
        * @param v  Value to assign to url.
        */
     public void setURL(URL  v) {this.url = v;}
-    
+
 
     public boolean save(File file) {
     	return true;
     }
-    
+
     public boolean isSaved() {
 	return true;
     }
 
-    public void load(File file) throws FileNotFoundException {
-	throw new FileNotFoundException();
-    }
-
-    public void load(URL url) throws Exception {
+    public void load(URL url) throws IOException{
 	setURL(url);
 	BrowseNodeModel root = loadTree(url);
 	if (root != null) {
 	    setRoot(root);
+			((ControllerAdapter) mModeController).invokeHooksRecursively(root,
+					this);
+
 	} else {
-	    //	    System.err.println("Err:"+root.toString());
-	    throw new Exception();
+	    // System.err.println("Err:"+root.toString());
+	    throw new IOException();
 	}
     }
 
@@ -123,10 +122,8 @@ public class BrowseMapModel extends MapAdapter {
 
 	//NanoXML Code
 	//XMLElement parser = new XMLElement();
-        BrowseXMLElement mapElement = new BrowseXMLElement(getFrame(), this);
-
+        BrowseXMLElement mapElement = new BrowseXMLElement(getModeController());
         InputStreamReader urlStreamReader = null;
-        URLConnection uc = null;
 
         try {
            urlStreamReader = new InputStreamReader( url.openStream() ); }
@@ -163,7 +160,7 @@ public class BrowseMapModel extends MapAdapter {
 	 * @see freemind.modes.MindMap#getXml(java.io.Writer)
 	 */
 	public void getXml(Writer fileout) throws IOException {
-		// nothing. 
+		// nothing.
 		//FIXME: Implement me if you need me.
 		throw new RuntimeException("Unimplemented method called.");
 	}

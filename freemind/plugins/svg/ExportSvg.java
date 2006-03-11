@@ -19,7 +19,7 @@
  *
  * Created on 01.11.2004
  */
-/*$Id: ExportSvg.java,v 1.1.4.1 2004-11-16 16:42:38 christianfoltin Exp $*/
+/* $Id: ExportSvg.java,v 1.1.4.1.10.1 2006-03-11 16:42:41 dpolivaev Exp $ */
 
 package plugins.svg;
 
@@ -51,7 +51,7 @@ import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
- *  
+ *
  */
 public class ExportSvg extends ExportVectorGraphic {
 
@@ -68,7 +68,7 @@ public class ExportSvg extends ExportVectorGraphic {
                 return;
 
             getController().getFrame().setWaitingCursor(true);
-            
+
             SVGGraphics2D g2d = fillSVGGraphics2D(view);
             FileOutputStream bos = new FileOutputStream(chosenFile);
             OutputStreamWriter osw = new OutputStreamWriter(bos, "UTF-8");

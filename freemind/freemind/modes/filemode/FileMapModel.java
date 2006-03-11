@@ -16,23 +16,24 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMapModel.java,v 1.7.18.3.6.3 2006-01-22 12:24:38 dpolivaev Exp $*/
+/* $Id: FileMapModel.java,v 1.7.18.3.6.4 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes.filemode;
-
-import freemind.main.FreeMindMain;
-import freemind.modes.LinkRegistryAdapter;
-import freemind.modes.MindMapLinkRegistry;
-import freemind.modes.MindMapNode;
-import freemind.modes.MapAdapter;
-import freemind.modes.ModeController;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URL;
+
+import freemind.main.FreeMindMain;
+import freemind.modes.LinkRegistryAdapter;
+import freemind.modes.MapAdapter;
+import freemind.modes.MindMapLinkRegistry;
+import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 
 public class FileMapModel extends MapAdapter {
-    
+
     private LinkRegistryAdapter linkRegistry;
 
     //
@@ -42,7 +43,7 @@ public class FileMapModel extends MapAdapter {
     public FileMapModel(FreeMindMain frame, ModeController modeController) {
         this(new File(File.separator), frame, modeController);
     }
-    
+
     public FileMapModel( File root , FreeMindMain frame, ModeController modeController) {
         super(frame, modeController);
         setRoot(new FileNodeModel(root,getFrame(), this));
@@ -62,7 +63,7 @@ public class FileMapModel extends MapAdapter {
     public boolean save(File file) {
     	return true;
     }
-    
+
     /**
      *
      */
@@ -72,9 +73,9 @@ public class FileMapModel extends MapAdapter {
          * This must fail. */
         //super.destroy();
     }
-    public void load(File file) {
+    public void load(URL file) {
     }
-    
+
     public boolean isSaved() {
 	return true;
     }
@@ -90,7 +91,7 @@ public class FileMapModel extends MapAdapter {
 // 	System.out.println(file);
 // 	FileNodeModel parent = (FileNodeModel)node.getParent();
 // 	//	removeNodeFromParent(node);
-	
+
 // 	insertNodeInto(new FileNodeModel(newFile),parent,0);
 
 
@@ -102,12 +103,12 @@ public class FileMapModel extends MapAdapter {
      */
     public void setLinkInclinationChanged() {
     }
-    
+
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMap#getXml(java.io.Writer)
 	 */
 	public void getXml(Writer fileout) throws IOException {
-		// nothing. 
+		// nothing.
 		//FIXME: Implement me if you need me.
 		throw new RuntimeException("Unimplemented method called.");
 	}
@@ -116,36 +117,36 @@ public class FileMapModel extends MapAdapter {
 }
 
 
-// public class FileSystemModel extends AbstractTreeTableModel 
+// public class FileSystemModel extends AbstractTreeTableModel
 //                              implements TreeTableModel {
 
-//     // The the returned file length for directories. 
-//     public static final Integer ZERO = new Integer(0); 
+//     // The the returned file length for directories.
+//     public static final Integer ZERO = new Integer(0);
 
 //     //
-//     // Some convenience methods. 
+//     // Some convenience methods.
 //     //
 
 //     protected File getFile(Object node) {
-// 	FileNode fileNode = ((FileNode)node); 
-// 	return fileNode.getFile();       
+// 	FileNode fileNode = ((FileNode)node);
+// 	return fileNode.getFile();
 //     }
 
 //     protected Object[] getChildren(Object node) {
-// 	FileNode fileNode = ((FileNode)node); 
-// 	return fileNode.getChildren(); 
+// 	FileNode fileNode = ((FileNode)node);
+// 	return fileNode.getChildren();
 //     }
 
 //     //
 //     // The TreeModel interface
 //     //
 
-//     public int getChildCount(Object node) { 
-// 	Object[] children = getChildren(node); 
+//     public int getChildCount(Object node) {
+// 	Object[] children = getChildren(node);
 // 	return (children == null) ? 0 : children.length;
 //     }
 
-//     public Object getChild(Object node, int i) { 
-// 	return getChildren(node)[i]; 
+//     public Object getChild(Object node, int i) {
+// 	return getChildren(node)[i];
 //     }
 // }

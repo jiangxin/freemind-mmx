@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapModule.java,v 1.4.18.1.2.1.2.1 2005-06-12 12:59:55 dpolivaev Exp $*/
+/* $Id: MapModule.java,v 1.4.18.1.2.1.2.2 2006-03-11 16:42:38 dpolivaev Exp $ */
 
 package freemind.view;
 
 import freemind.view.mindmapview.MapView;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
+import freemind.modes.ModeController;
 
 /**
  * This class is the key to one Model/View bundle
@@ -33,12 +34,14 @@ public class MapModule {
     private MindMap model;
     private MapView view;
     private Mode mode;
+    private ModeController modeController;
     private static int unnamedMapsNumber = 1;//used to give unique names to maps
 
-    public MapModule(MindMap model, MapView view, Mode mode) {
+    public MapModule(MindMap model, MapView view, Mode mode, ModeController modeController) {
 	this.model = model;
 	this.view = view;
 	this.mode = mode;
+	this.modeController = modeController;
     }
 
     /**
@@ -78,11 +81,7 @@ public class MapModule {
 	this.name = name;
     }
 
-    public void setModel(MindMap model) {
-	this.model = model;
-    }
-
-    public void setView(MapView view) {
-	this.view = view;
-    }
+	public ModeController getModeController() {
+		return modeController;
+	}
 }

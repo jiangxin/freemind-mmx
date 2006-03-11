@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.9.2.1.2.3 2005-09-17 19:02:07 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.9.2.1.2.4 2006-03-11 16:42:36 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -25,12 +25,14 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Properties;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 import javax.swing.JApplet;
@@ -44,25 +46,25 @@ import javax.swing.UIManager;
 
 import freemind.controller.Controller;
 import freemind.controller.MenuBar;
-import freemind.extensions.HookFactory;
 import freemind.view.mindmapview.MapView;
 
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 
-    private HookFactory nodeHookFactory;
-	public static final String version = FreeMindApplet.version;
+	public static final String version = FreeMind.VERSION;
     //    public static final String defaultPropsURL;
     public URL defaultPropsURL;
     public static Properties defaultProps;
     public static Properties userProps;
     private JScrollPane scrollPane = new JScrollPane();
     private MenuBar menuBar;
-    private PropertyResourceBundle resources;
-    private JLabel status = new JLabel();
+    private JLabel status;
     Controller c;//the one and only controller
+	private FreeMindCommon mFreeMindCommon;
+	private JPanel southPanel;
 
 
     public FreeMindApplet() {
+        mFreeMindCommon = new FreeMindCommon(this);
     }//Constructor
 
     public boolean isApplet() {
@@ -110,29 +112,11 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
      * Returns the ResourceBundle with the current language
      */
     public ResourceBundle getResources() {
-	if (resources==null) {
-	    String lang = userProps.getProperty("language");
-	    try {
-		URL myurl = getResource("Resources_"+lang.trim()+".properties");
-		InputStream in = myurl.openStream();
-		resources = new PropertyResourceBundle(in);
-		in.close();
-	    } catch (Exception ex) {
-		System.err.println("Error loading Resources");
-		return null;
-	    }
-	}
-	return resources;
+    		return mFreeMindCommon.getResources();
     }
 
     public String getResourceString(String resource) {
-        try {
-            return getResources().getString(resource);
-        } catch (Exception ex) {
-            System.err.println("Warning - resource string not found:"
-                    + resource);
-            return resource;
-        }
+    		return mFreeMindCommon.getResourceString(resource);
     }
 
     public String getProperty(String key) {
@@ -199,14 +183,6 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
              System.err.println("View is null."); }}
        catch (Exception e) { e.printStackTrace(); }
     }
-
-   /*
-    public void stop() {
-    }
-
-    public void destroy() {
-    }
-    */
 
     public void setWaitingCursor(boolean waiting) {
        if (waiting) {
@@ -300,7 +276,15 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 	//Create the scroll pane.
 		
 	getContentPane().add( scrollPane, BorderLayout.CENTER );
-	getContentPane().add( status, BorderLayout.SOUTH );
+	// taken from Lukasz Pekacki, NodeText version:
+	southPanel = new JPanel(new BorderLayout());
+	
+	
+	status = new JLabel();
+	southPanel.add( status, BorderLayout.SOUTH );
+	
+	getContentPane().add( southPanel, BorderLayout.SOUTH );
+	// end taken.
 
         SwingUtilities.updateComponentTreeUI(this); // Propagate LookAndFeel to JComponents
 
@@ -314,23 +298,45 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
                 e.printStackTrace();
             }
 		}
-	c.changeToMode(getProperty("initial_mode"));
+    	c.createNewMode(getProperty("initial_mode"));
+        String map = getProperty("browsemode_initial_map");
+        if (map != null && map.startsWith(".")) {
+            /* new handling for relative urls. fc, 29.10.2003. */
+            try {
+                URL documentBaseUrl = new URL(getDocumentBase(), map);
+                map = documentBaseUrl.toString();
+            } catch (java.net.MalformedURLException e) {
+                getController().errorMessage(
+                        "Could not open relative URL " + map
+                                + ". It is malformed.");
+                System.err.println(e);
+                return;
+            }
+            /* end: new handling for relative urls. fc, 29.10.2003. */
+        }
+        if (map != "") {
+            try {
+                // get URL:
+                URL mapUrl = new URL(map);
+                getController().getModeController().load(mapUrl);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (XMLParseException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
-	/* (non-Javadoc)
-	 * @see freemind.main.FreeMindMain#getHookFactory()
-	 */
-	public HookFactory getHookFactory() {
-		if(nodeHookFactory == null) {
-			nodeHookFactory = new HookFactory(this);
-		}
-		return nodeHookFactory;
-	}
 
 	/* (non-Javadoc)
 	 * @see freemind.main.FreeMindMain#getSouthPanel()
 	 */
 	public JPanel getSouthPanel() {
-		return null;
+		return southPanel;
 	}
 
 	/* (non-Javadoc)

@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/*$Id: MacChanges.java.not_here,v 1.1.4.3.4.2 2005-07-12 15:41:13 dpolivaev Exp $*/
+/*$Id: MacChanges.java.not_here,v 1.1.4.3.4.3 2006-03-11 16:42:36 dpolivaev Exp $*/
 package accessories.plugins;
 
 import java.io.File;
@@ -89,16 +89,16 @@ public class MacChanges extends ApplicationAdapter implements HookRegistration {
 		event.setHandled(true);
 	}
 	public void handleOpenFile(ApplicationEvent event) {
-		try {
-			controller.load(new File(event.getFilename()));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (XMLParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		event.setHandled(true);
+//		try {
+////			controller.load(new File(event.getFilename()));
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (XMLParseException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		event.setHandled(true);
 	}
 	
 	public void handlePreferences(ApplicationEvent event) {

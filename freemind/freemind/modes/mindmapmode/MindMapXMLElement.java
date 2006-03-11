@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapXMLElement.java,v 1.13.18.1.8.2 2005-12-05 20:44:40 dpolivaev Exp $*/
+/* $Id: MindMapXMLElement.java,v 1.13.18.1.8.3 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 
 package freemind.modes.mindmapmode;
@@ -32,27 +32,28 @@ import freemind.modes.CloudAdapter;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.XMLElementAdapter;
 
 public class MindMapXMLElement extends XMLElementAdapter {
 
-    
-	// Logging: 
+
+	// Logging:
 	private static java.util.logging.Logger logger;
 
-   public MindMapXMLElement(FreeMindMain frame, MindMap map) {
-       super(frame, map);
+   public MindMapXMLElement(ModeController pModeController) {
+       super(pModeController);
        init();
    }
 
-    protected MindMapXMLElement(FreeMindMain frame, Vector ArrowLinkAdapters, HashMap IDToTarget, MindMap map) {
-        super(frame, ArrowLinkAdapters, IDToTarget, map);
+    protected MindMapXMLElement(ModeController pModeController, Vector ArrowLinkAdapters, HashMap IDToTarget) {
+        super(pModeController, ArrowLinkAdapters, IDToTarget);
         init();
     }
 
     /**
-     * 
+     *
      */
     private void init() {
         if(logger==null) {
@@ -63,7 +64,7 @@ public class MindMapXMLElement extends XMLElementAdapter {
     /** abstract method to create elements of my type (factory).*/
     protected XMLElement  createAnotherElement(){
     // We do not need to initialize the things of XMLElement.
-        return new MindMapXMLElement(getFrame(), ArrowLinkAdapters, IDToTarget, getMap());
+        return new MindMapXMLElement(mModeController, ArrowLinkAdapters, IDToTarget);
     }
     protected NodeAdapter createNodeAdapter(FreeMindMain     frame, String nodeClass){
         if (nodeClass==null) {
@@ -89,14 +90,22 @@ public class MindMapXMLElement extends XMLElementAdapter {
 		}
     }
     protected EdgeAdapter createEdgeAdapter(NodeAdapter node, FreeMindMain frame){
-        return new MindMapEdgeModel(node, frame); 
+        return new MindMapEdgeModel(node, frame);
     }
     protected CloudAdapter createCloudAdapter(NodeAdapter node, FreeMindMain frame){
-        return new MindMapCloudModel(node, frame); 
+        return new MindMapCloudModel(node, frame);
     }
     protected ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter source, NodeAdapter target, FreeMindMain frame) {
         return new MindMapArrowLinkModel(source,target,frame);
     }
+
+	protected NodeAdapter createEncryptedNode(String additionalInfo) {
+		NodeAdapter node = createNodeAdapter(frame, EncryptedMindMapNode.class.getName());
+		setUserObject(node);
+        copyAttributesToNode(node);
+	    node.setAdditionalInfo(additionalInfo);
+        return node;
+	}
 
 }
 

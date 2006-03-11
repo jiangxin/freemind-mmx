@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.14.14.6.2.1.2.3 2005-09-17 19:02:07 dpolivaev Exp $*/
+/* $Id: MindMap.java,v 1.14.14.6.2.1.2.4 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -37,11 +37,16 @@ import freemind.controller.filter.Filter;
 import freemind.main.XMLParseException;
 
 public interface MindMap extends TreeModel {
-        
+
+	/**
+	 * @return The mode controller, the model belongs to.
+	 */
+	ModeController getModeController();
+
 //    void changeNode(MindMapNode node, String newText);
     //nodeChanged has moved to the modeController. (fc, 2.5.2004)
 	void nodeChanged(TreeNode node);
-	
+
 	void nodeRefresh(TreeNode node);
 
     Transferable cut(MindMapNode node);
@@ -49,7 +54,7 @@ public interface MindMap extends TreeModel {
     Transferable copy(MindMapNode node);
 
     // ^ Is copy with node really needed? It seems to me, that no.
-    Transferable copy(); 
+    Transferable copy();
     Transferable copySingle();
     /**
      * @param selectedNodes
@@ -72,8 +77,8 @@ public interface MindMap extends TreeModel {
     //    void paste(MindMapNode node, MindMapNode parent);
 
 
- 
-    
+
+
     /**
      * Returns the file name of the map edited or null if not possible.
      */
@@ -83,7 +88,7 @@ public interface MindMap extends TreeModel {
      * Return URL of the map (whether as local file or a web location)
      */
     URL getURL() throws MalformedURLException;
-    
+
     /** writes the content of the map to a writer.
 	 * @param fileout
 	 * @throws IOException
@@ -101,16 +106,16 @@ public interface MindMap extends TreeModel {
     Object[] getPathToRoot( TreeNode node );
 
     Color getBackgroundColor();
-    
+
     void setBackgroundColor(Color color);
 
 
     /** @return returns the link registry associated with this mode, or null, if no registry is present.*/
     MindMapLinkRegistry getLinkRegistry();
 
-   
+
     /**
-     * Destroy everything you have created upon opening.  
+     * Destroy everything you have created upon opening.
      */
     void destroy();
 
@@ -119,16 +124,6 @@ public interface MindMap extends TreeModel {
      * @return
      */
     MapRegistry getRegistry();
-    /**
-     * @param file
-     * @throws XMLParseException
-     * @throws IOException
-     * @throws FileNotFoundException
-     */
-    void load(File file) throws FileNotFoundException, IOException, XMLParseException;
-    /**
-     * @return
-     */
     Filter getFilter();
     /**
      * @param inactiveFilter

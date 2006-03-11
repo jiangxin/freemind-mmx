@@ -4,27 +4,27 @@
  */
 package freemind.modes.attributes.mindmapmodeactors;
 
-import javax.xml.bind.JAXBException;
-
-import freemind.controller.actions.AbstractActorXml;
-import freemind.controller.actions.ActionPair;
+import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.SetAttributeFontSizeElementaryAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ModeController;
+import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.AbstractActorXml;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class SetAttributeFontSizeActor extends AbstractActorXml {
 
-    public SetAttributeFontSizeActor(ModeController modeController) {
-        super(modeController);
+    public SetAttributeFontSizeActor(MindMapController mindMapModeController) {
+        super(mindMapModeController);
     }
     
-    public XmlAction createAction(int size) throws JAXBException{
-        SetAttributeFontSizeElementaryAction action = getActionXmlFactory().createSetAttributeFontSizeElementaryAction();
+    public XmlAction createAction(int size){
+        SetAttributeFontSizeElementaryAction action = new SetAttributeFontSizeElementaryAction();
         action.setSize(size);
         return action;
     }
     
-    public ActionPair createActionPair(int size) throws JAXBException{
+    public ActionPair createActionPair(int size){
         final int previousSize = getAttributeRegistry().getFontSize();
         ActionPair actionPair = new ActionPair(
                 createAction(size), 

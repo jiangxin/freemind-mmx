@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.10.18.2.8.2 2006-01-22 12:24:39 dpolivaev Exp $*/
+/* $Id: SchemeController.java,v 1.10.18.2.8.3 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes.schememode;
 
@@ -27,37 +27,36 @@ import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
 
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
-import freemind.modes.ControllerAdapter;
+import freemind.extensions.HookFactory;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
-import freemind.modes.actions.EditAction;
-import freemind.modes.actions.NewMapAction;
+import freemind.modes.ModeController;
+import freemind.modes.common.actions.NewMapAction;
+import freemind.modes.viewmodes.ViewControllerAdapter;
 
-public class SchemeController extends ControllerAdapter {
+public class SchemeController extends ViewControllerAdapter {
 
-    Action newMap = new NewMapAction(this, this);
+    Action newMap = new NewMapAction(this);
     Action open = new OpenAction(this);
     Action save = new SaveAction(this);
     Action saveAs = new SaveAsAction(this);
     Action evaluate = new EvaluateAction();
-    Action edit = new EditAction(this);
+//    Action edit = new EditAction(this);
     private JPopupMenu popupmenu = new SchemePopupMenu(this);
 
     public SchemeController(Mode mode) {
 	super(mode);
     }
 
-    public MapAdapter newModel() {
-	return new SchemeMapModel(getFrame(), this);
+    public MapAdapter newModel(ModeController modeController) {
+	return new SchemeMapModel(getFrame(), modeController);
     }
 
     public MindMapNode newNode(Object userObject, MindMap map) {
@@ -126,8 +125,8 @@ public class SchemeController extends ControllerAdapter {
 		holder.addAction(save, MenuBar.FILE_MENU+"open/save");
 		holder.addAction(saveAs, MenuBar.FILE_MENU+"open/saveAs");
 
-		JMenuItem editItem = holder.addAction(edit, MenuBar.EDIT_MENU+"edit/editItem");
-		editItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_edit")));
+//		JMenuItem editItem = holder.addAction(edit, MenuBar.EDIT_MENU+"edit/editItem");
+//		editItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_edit")));
 //		JMenuItem addNewItem = holder.addAction(addNew, MenuBar.EDIT_MENU+"edit/newItem");
 //		addNewItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_add")));
 		//JMenuItem removeItem = holder.addAction(remove, MenuBar.EDIT_MENU+"edit/removeItem");
@@ -137,4 +136,9 @@ public class SchemeController extends ControllerAdapter {
 
 
     }
+	public HookFactory getHookFactory() {
+		throw new IllegalArgumentException("Not implemented yet.");
+	}
+
+
 }

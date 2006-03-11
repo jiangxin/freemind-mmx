@@ -4,10 +4,7 @@
  */
 package freemind.modes.attributes.mindmapmodeactors;
 
-import javax.xml.bind.JAXBException;
-
-import freemind.controller.actions.AbstractActorXml;
-import freemind.controller.actions.ActionPair;
+import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.RegistryAttributeElementaryAction;
 import freemind.controller.actions.generated.instance.SetAttributeNameElementaryAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -15,21 +12,24 @@ import freemind.modes.ModeController;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeRegistryElement;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.AbstractActorXml;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class RegistryAttributeActor extends AbstractActorXml {
 
-    public RegistryAttributeActor(ModeController modeController) {
-        super(modeController);
+    public RegistryAttributeActor(MindMapController mindMapModeController) {
+        super(mindMapModeController);
     }
     
-    public XmlAction createAction(String name, String value) throws JAXBException{
-        RegistryAttributeElementaryAction action = getActionXmlFactory().createRegistryAttributeElementaryAction();
+    public XmlAction createAction(String name, String value){
+        RegistryAttributeElementaryAction action = new RegistryAttributeElementaryAction();
         action.setName(name);
         action.setValue(value);
         return action;
     }
     
-    public ActionPair createActionPair(String name, String value) throws JAXBException{
+    public ActionPair createActionPair(String name, String value){
         ActionPair actionPair = new ActionPair(
                 createAction(name, value), 
                 ((MindMapModeAttributeController)getAttributeController()).unregistryAttributeActor.createAction(name)

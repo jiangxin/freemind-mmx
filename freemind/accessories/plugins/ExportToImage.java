@@ -4,22 +4,21 @@
  */
 package accessories.plugins;
 
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import freemind.extensions.ExportHook;
-import freemind.modes.NodeAdapter;
-import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
@@ -46,12 +45,8 @@ public class ExportToImage extends ExportHook {
 		if (image != null) {
 			String imageType = getResourceString("image_type");
 			
-            if (!imageType.equals("clipboard")) {
-                exportToImage(image, imageType,
-                        getResourceString("image_description"));
-            } else {
-                setClipboard(image);
-            }
+            exportToImage(image, imageType,
+                    getResourceString("image_description"));
 		}
 
 	}
@@ -80,76 +75,32 @@ public class ExportToImage extends ExportHook {
 		return true;
 	}
 
-
-
-//	Hi all !
-//
-//	I just found out about this project last week. I just missed the possibility of saving the mapview as tiff, jpeg (no compression) or bmp (svg later ?) so I imported JAI package and wrote what was needed while trying to respect the whole pattern. May be this could be an interesting feature ? It is just about specifying  xxx.bmp, xxx.tiff or xxx.jpeg (as well as xxx.mm) in File->SaveAs menu.  For bmp it is awfully slow (jai...). In any case -Xmx128m is required at startup. Oh, as it prints what's on the mapview panel, this printing feature inherited a "feature" which prevents large diagrams from being fully expanded i.e. they are truncated.
-//
-//	Keith 
-//	-    public boolean saveJPEG(File file,BufferedImage bi){ //KR
-//	-        boolean result = false;
-//	-        System.out.println("Saving JPEG");
-//	-        try{
-//	-            OutputStream os = new FileOutputStream(file);
-//	-            JPEGEncodeParam param = new JPEGEncodeParam();
-//	-            param.setQuality(1.0f);
-//	-            ImageEncoder encoder = ImageCodec.createImageEncoder("JPEG",os,param);    
-//	-            encoder.encode(bi);
-//	-            os.flush();
-//	-            os.close();
-//	-            result = true;
-//	-        }
-//	-        catch (IOException e){
-//	-            e.printStackTrace();
-//	-            result = false;
-//	-        }
-//	-        return result;
-//	-    } //KR
+    public void transForm(Source xmlSource, InputStream xsltStream, File resultFile, String areaCode)
+    {
+        //System.out.println("set xsl");
+       Source xsltSource =  new StreamSource(xsltStream);
+        //System.out.println("set result");
+       Result result = new StreamResult(resultFile);
+    
+       // create an instance of TransformerFactory
+       try{
+           //System.out.println("make transform instance");
+       TransformerFactory transFact = TransformerFactory.newInstance(  );
+    
+       Transformer trans = transFact.newTransformer(xsltSource);
+       // set parameter:
+       // relative directory <filename>_files
+       trans.setParameter("destination_dir", resultFile.getName()+"_files/");
+       trans.setParameter("area_code", areaCode);
+       trans.setParameter("folding_type", getController().getFrame().getProperty("html_export_folding"));
+       trans.transform(xmlSource, result);
+       }
+       catch(Exception e){
+       //System.err.println("error applying the xslt file "+e);
+       e.printStackTrace();
+       };
+      return ;
+      }
 	
-	// adapted from http://javaalmanac.com/egs/java.awt.datatransfer/ToClipImg.html:
-	
-//	 This method writes a image to the system clipboard.
-	// fc, 28.10.2004: this new method does not work.
-    // otherwise it returns null.
-    public void setClipboard(BufferedImage image) {
-        ImageSelection imgSel = new ImageSelection(image);
-        getController().getClipboard().setContents(imgSel, null);
-    }
-    
-    // This class is used to hold an image while on the clipboard.
-    public static class ImageSelection implements Transferable {
-        private BufferedImage image;
-        private DataFlavor imageFlavor;
-    
-        public ImageSelection(BufferedImage image) {
-            this.image = image;
-            try {
-                imageFlavor = new DataFlavor("image/jpeg");
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-    
-        // Returns supported flavors
-        public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{imageFlavor};
-        }
-    
-        // Returns true if flavor is supported
-        public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return imageFlavor.equals(flavor);
-        }
-    
-        // Returns image
-        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-            if (!imageFlavor.equals(flavor)) {
-                throw new UnsupportedFlavorException(flavor);
-            }
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-			ImageIO.write(image, "JPEG", out);
-            return out;
-        }
-    }
 
 }

@@ -16,30 +16,29 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMapModel.java,v 1.11.18.3.2.1.2.2 2006-01-22 12:24:39 dpolivaev Exp $*/
+/* $Id: SchemeMapModel.java,v 1.11.18.3.2.1.2.3 2006-03-11 16:42:38 dpolivaev Exp $ */
 
 package freemind.modes.schememode;
 
-import freemind.main.FreeMindMain;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StreamTokenizer;
+import java.io.Writer;
+import java.net.URL;
 
+import freemind.main.FreeMindMain;
 import freemind.modes.MapAdapter;
-import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 
-import java.io.File;
-import java.io.Reader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.FileOutputStream;
-import java.io.StreamTokenizer;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.Writer;
-
 public class SchemeMapModel extends MapAdapter {
-    
+
     //
     // Constructors
     //
@@ -48,7 +47,7 @@ public class SchemeMapModel extends MapAdapter {
 	super(frame, modeController);
 	setRoot(new SchemeNodeModel(getFrame(), this));
     }
-    
+
     //
     // Other methods
     //
@@ -70,13 +69,14 @@ public class SchemeMapModel extends MapAdapter {
 	    return false;
 	}
     }
-    
-    public void load(File file) throws FileNotFoundException {
+
+    public void load(URL url) throws FileNotFoundException {
+        File file = new File(url.getFile());
 	setFile(file);
 	setSaved(true);
 
 	setRoot(new SchemeNodeModel(getFrame(), this));
-	
+
 	try {
 	    loadMathStyle(new InputStreamReader(new FileInputStream(file)));
 	} catch (IOException ex) {
@@ -138,7 +138,7 @@ public class SchemeMapModel extends MapAdapter {
     public String getCode() {
 	return ((SchemeNodeModel)getRoot()).getCodeMathStyle();
     }
-    
+
     //    public boolean isSaved() {
     //	return true;
     //    }
@@ -151,11 +151,6 @@ public class SchemeMapModel extends MapAdapter {
 	}
     }
 
-    /* (non-Javadoc)
-     * @see freemind.modes.MindMap#setLinkInclinationChanged()
-     */
-    public void setLinkInclinationChanged() {
-    }
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMap#getXml(java.io.Writer)
 	 */

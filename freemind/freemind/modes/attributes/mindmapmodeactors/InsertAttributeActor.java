@@ -4,26 +4,26 @@
  */
 package freemind.modes.attributes.mindmapmodeactors;
 
-import javax.xml.bind.JAXBException;
-
-import freemind.controller.actions.AbstractActorXml;
-import freemind.controller.actions.ActionPair;
+import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.InsertAttributeElementaryAction;
 import freemind.controller.actions.generated.instance.SetAttributeNameElementaryAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ModeController;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.AbstractActorXml;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class InsertAttributeActor extends AbstractActorXml {
 
-    public InsertAttributeActor(ModeController modeController) {
-        super(modeController);
+    public InsertAttributeActor(MindMapController mindMapModeController) {
+        super(mindMapModeController);
     }
     
     public XmlAction createAction(
-            NodeAttributeTableModel model, int row, String name, String value) throws JAXBException{
-        InsertAttributeElementaryAction action = getActionXmlFactory().createInsertAttributeElementaryAction();
+            NodeAttributeTableModel model, int row, String name, String value){
+        InsertAttributeElementaryAction action = new InsertAttributeElementaryAction();
         action.setNode(getNodeID(model.getNode()));
         action.setRow(row);
         action.setName(name);
@@ -32,7 +32,7 @@ public class InsertAttributeActor extends AbstractActorXml {
     }
     
     public ActionPair createActionPair(
-            NodeAttributeTableModel model, int row, String name, String value) throws JAXBException{
+            NodeAttributeTableModel model, int row, String name, String value){
         ActionPair actionPair = new ActionPair(
                 createAction(model, row, name, value), 
                 ((MindMapModeAttributeController)getAttributeController()).removeAttributeActor.createAction(model, row)

@@ -22,15 +22,15 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
-import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
+import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
 /**
  * @author foltin
  *
  */
-public class FormularEditor extends PermanentNodeHookAdapter {
+public class FormularEditor extends PermanentMindMapNodeHookAdapter {
 
 
 

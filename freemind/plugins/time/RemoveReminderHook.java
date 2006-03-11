@@ -19,23 +19,24 @@
  *
  * Created on 02.05.2005
  */
-/*$Id: RemoveReminderHook.java,v 1.1.2.1 2005-05-03 05:29:51 christianfoltin Exp $*/
+/* $Id: RemoveReminderHook.java,v 1.1.2.1.6.1 2006-03-11 16:42:41 dpolivaev Exp $ */
 package plugins.time;
 
 import java.util.Arrays;
 import java.util.List;
 
-import freemind.extensions.NodeHookAdapter;
 import freemind.modes.MindMapNode;
+import freemind.modes.common.plugins.ReminderHookBase;
+import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
 /**
  * @author foltin
  *
  */
-public class RemoveReminderHook extends NodeHookAdapter {
+public class RemoveReminderHook extends MindMapNodeHookAdapter {
 
 	/**
-	 * 
+	 *
 	 */
 	public RemoveReminderHook() {
 		super();
@@ -44,10 +45,10 @@ public class RemoveReminderHook extends NodeHookAdapter {
 
 	public void invoke(MindMapNode node) {
 		super.invoke(node);
-		ReminderHook hook = TimeManagement.getHook(node);
+		ReminderHookBase hook = TimeManagement.getHook(node);
 		if(hook != null) {
 			List selected = Arrays.asList(new MindMapNode[] { node });
-			getController().addHook(node, selected, TimeManagement.REMINDER_HOOK_NAME);			
+			getMindMapController().addHook(node, selected, TimeManagement.REMINDER_HOOK_NAME);
 		}
 	}
 }

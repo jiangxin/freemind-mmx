@@ -16,11 +16,9 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileMode.java,v 1.14.18.1.6.1 2005-05-09 23:45:46 dpolivaev Exp $*/
+/* $Id: FileMode.java,v 1.14.18.1.6.1.2.1 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes.filemode;
-
-import java.awt.Component;
 
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
@@ -46,7 +44,7 @@ public class FileMode implements Mode {
 	modecontroller = new FileController(this);
 	toolbar = new FileToolBar(modecontroller);
     }
-    
+
 
     public String toString() {
 	return MODENAME;
@@ -58,13 +56,13 @@ public class FileMode implements Mode {
      */
     public void activate() {
         if (!isRunning) {
-            getModeController().newMap();
+            getDefaultModeController().newMap();
             isRunning = true;
         } else {
             c.getMapModuleManager().changeToMapOfMode(this);
         }
     }
-    
+
     public void restore(String restoreable) {
     }
 
@@ -72,20 +70,12 @@ public class FileMode implements Mode {
 	return c;
     }
 
-    public ModeController getModeController() {
+    public ModeController getDefaultModeController() {
 	return modecontroller;
     }
 
-    public JMenu getModeFileMenu() {
-	return null;
-    }
-
-    public JToolBar getModeToolBar() {
-	return toolbar;
-    }
-
-    public Component getLeftToolBar() {
-	return null;
-    }
+	public ModeController createModeController() {
+		return new FileController(this);
+	}
 
 }

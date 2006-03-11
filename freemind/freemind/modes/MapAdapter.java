@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapAdapter.java,v 1.24.14.7.2.1.2.5 2006-01-22 12:24:38 dpolivaev Exp $*/
+/* $Id: MapAdapter.java,v 1.24.14.7.2.1.2.6 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -52,8 +52,11 @@ public abstract class MapAdapter implements MindMap {
 
     private MindMapNode root;
     private EventListenerList treeModelListeners = new EventListenerList();
-    /** denotes the amount of changes since the last save. The initial value is one, to ensure, that the model is dirty.*/
-    protected int changesPerformedSinceLastSave = 1; 
+    /**
+	 * denotes the amount of changes since the last save. The initial value is
+	 * zero, such that new models are not to be saved.
+	 */
+    protected int changesPerformedSinceLastSave = 0;
     protected boolean readOnly = true;
     private Color backgroundColor;
     private File file;
@@ -61,23 +64,31 @@ public abstract class MapAdapter implements MindMap {
     static protected Logger logger;
     private MapRegistry registry;
     private Filter filter = null;
+	protected final ModeController mModeController;
+
 
 
     public MapAdapter (FreeMindMain frame, ModeController modeController) {
 		this.frame = frame;
+		this.mModeController = modeController;
+		mModeController.setModel(this);
 		if(logger == null) {
 		    logger = frame.getLogger(this.getClass().getName());
 		}
 		registry = new MapRegistry(this, modeController);
     }
 
+    public ModeController getModeController() {
+    		return mModeController;
+    }
+
     //
     // Abstract methods that _must_ be implemented.
     //
 
-    public abstract boolean save(File file); 
-    
-    public abstract void load(File file) throws FileNotFoundException, IOException, XMLParseException ;
+    public abstract boolean save(File file);
+
+    public abstract void load(URL file) throws FileNotFoundException, IOException, XMLParseException ;
 
 	/**
 	 * Attempts to lock the map using semaphore file.
@@ -86,7 +97,7 @@ public abstract class MapAdapter implements MindMap {
 	 * otherwise.
 	 * @throws Exception
 	 */
-	public String tryToLock(File file) throws Exception { 
+	public String tryToLock(File file) throws Exception {
 	   return null;
 	}
 
@@ -129,10 +140,10 @@ public abstract class MapAdapter implements MindMap {
     }
 
 	public boolean isReadOnly() {
-		return readOnly; 
+		return readOnly;
 	}
 
-    /** Counts the amount of actions performed. 
+    /** Counts the amount of actions performed.
      * @param saved true if the file was saved recently. False otherwise.
      */
     protected void setSaved(boolean saved) {
@@ -186,13 +197,13 @@ public abstract class MapAdapter implements MindMap {
     }
 
     protected String getText(String textId) {
-        return getFrame().getResourceString(textId); 
+        return getFrame().getResourceString(textId);
     }
     //
     // Node editing
     //
 
- 
+
     public Object[] getPathToRoot( TreeNode node ) {
 	return ( ((MindMapNode)node).getPath() ).getPath();//Create Object[] from TreePath
     }
@@ -209,7 +220,7 @@ public abstract class MapAdapter implements MindMap {
 
 
    public Transferable copy(MindMapNode node) {
-     return null;
+	   throw new IllegalArgumentException("No copy so far.");
    }
 
    public Transferable copy() {
@@ -232,7 +243,7 @@ public abstract class MapAdapter implements MindMap {
             else {
                forNodesFlavor += "<nodeseparator>"; }
 
-            forNodesFlavor += copy(tmpNode).getTransferData(MindMapNodesSelection.mindMapNodesFlavor); 
+            forNodesFlavor += copy(tmpNode).getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
          }
 
          String plainText = inPlainText != null ? inPlainText : getAsPlainText(selectedNodes);
@@ -247,7 +258,7 @@ public abstract class MapAdapter implements MindMap {
 
     public String getAsPlainText(List mindMapNodes) {
        return ""; }
- 
+
 
     public String getAsRTF(List mindMapNodes) {
        return ""; }
@@ -280,12 +291,12 @@ public abstract class MapAdapter implements MindMap {
             MindMapNode oldpa = parent.getParentNode();
             oldpa.insert(newChild, oldpa.getChildPosition(parent));
             recursiveCallAddChildren(oldpa, newChild);
-        } 
+        }
         else {
             parent.insert(newChild, parent.getChildCount());
             recursiveCallAddChildren(parent, newChild);
         }
-        
+
     }
 
     public void insertNodeInto(MindMapNode newChild,
@@ -332,7 +343,7 @@ public abstract class MapAdapter implements MindMap {
 		    recursiveCallAddChildren(node.getParentNode(), addedChild);
 	}
 
-    
+
     /**
      * Joerg: Message this to remove node from its parent. This will message
      * nodesWereRemoved to create the appropriate event. This is the
@@ -344,13 +355,13 @@ public abstract class MapAdapter implements MindMap {
 
     public void removeNodeFromParent(MutableTreeNode node, boolean notify) {
 	MutableTreeNode parent = (MutableTreeNode)node.getParent();
-	    
+
 	if (parent == null)
            throw new IllegalArgumentException("node does not have a parent.");
 
 	int[] childIndex = new int[1];
 	Object[] removedArray = new Object[1];
-	    
+
 	childIndex[0] = parent.getIndex(node);
 	parent.remove(node);
         if (notify) {
@@ -377,7 +388,7 @@ public abstract class MapAdapter implements MindMap {
     public int getIndexOfChild( Object parent, Object child ) {
 	return ( (TreeNode)parent ).getIndex( (TreeNode)child );
     }
-	
+
     public boolean isLeaf( Object node ) {
 	return ( (TreeNode)node ).isLeaf();
     }
@@ -413,7 +424,7 @@ public abstract class MapAdapter implements MindMap {
 				 Object[] removedChildren) {
 	setSaved(false);
 	if(parent != null && childIndices != null) {
-	    fireTreeNodesRemoved(this, getPathToRoot( (MindMapNode)parent ), childIndices, 
+	    fireTreeNodesRemoved(this, getPathToRoot( (MindMapNode)parent ), childIndices,
 				 removedChildren);
 	}
     }
@@ -428,18 +439,18 @@ public abstract class MapAdapter implements MindMap {
      * must be sorted in ascending order.
      */
     protected void nodesWereInserted(TreeNode node, int[] childIndices) {
-       if (treeModelListeners != null && node != null && 
+       if (treeModelListeners != null && node != null &&
            childIndices != null && childIndices.length > 0) {
           setSaved(false);
 
-	  Object[] newChildren = new Object[childIndices.length];	    
+	  Object[] newChildren = new Object[childIndices.length];
           for(int counter = 0; counter < childIndices.length; counter++) {
              newChildren[counter] = node.getChildAt(childIndices[counter]); }
 
           fireTreeNodesInserted(this, getPathToRoot( (MindMapNode)node ), childIndices, newChildren);
 	}
     }
-    
+
     //
     // TreeNodesChanged
     //
@@ -448,11 +459,11 @@ public abstract class MapAdapter implements MindMap {
       * This method should not be called directly!
       */
     public void nodeChanged(TreeNode node) {
-        frame.getController().getMode().getModeController().nodeChanged((MindMapNode)node);
+        getModeController().nodeChanged((MindMapNode)node);
     }
 
     public void nodeRefresh(TreeNode node) {
-        frame.getController().getMode().getModeController().nodeRefresh((MindMapNode)node);
+        frame.getController().getModeController().nodeRefresh((MindMapNode)node);
     }
 
 	public void nodeChangedMapInternal(TreeNode node) {
@@ -484,10 +495,10 @@ public abstract class MapAdapter implements MindMap {
        if (node != null) {
           if (childIndices != null) {
              int cCount = childIndices.length;
-             
+
              if (cCount > 0) {
                 Object[] cChildren = new Object[cCount];
-                
+
                 for(int counter = 0; counter < cCount; counter++) {
                    cChildren[counter] = node.getChildAt
                       (childIndices[counter]);
@@ -504,7 +515,7 @@ public abstract class MapAdapter implements MindMap {
 
     //
     // TreeStructureChanged
-    //    
+    //
 
     /**
       * Invoke this method if you've totally changed the children of
@@ -532,13 +543,13 @@ public abstract class MapAdapter implements MindMap {
 
     /*
      * Notify all listeners that have registered interest for
-     * notification on this event type.  The event instance 
-     * is lazily created using the parameters passed into 
+     * notification on this event type.  The event instance
+     * is lazily created using the parameters passed into
      * the fire method.
      * @see EventListenerList
      */
-    private void fireTreeNodesRemoved(Object source, Object[] path, 
-					int[] childIndices, 
+    private void fireTreeNodesRemoved(Object source, Object[] path,
+					int[] childIndices,
 					Object[] children) {
 	// Guaranteed to return a non-null array
 	Object[] listeners = treeModelListeners.getListenerList();
@@ -549,22 +560,22 @@ public abstract class MapAdapter implements MindMap {
 	    if (listeners[i]==TreeModelListener.class) {
 		// Lazily create the event:
 		if (e == null)
-		    e = new TreeModelEvent(source, path, 
+		    e = new TreeModelEvent(source, path,
 					   childIndices, children);
 		((TreeModelListener)listeners[i+1]).treeNodesRemoved(e);
-	    }          
+	    }
 	}
     }
 
     /**
      * Notify all listeners that have registered interest for
-     * notification on this event type.  The event instance 
-     * is lazily created using the parameters passed into 
+     * notification on this event type.  The event instance
+     * is lazily created using the parameters passed into
      * the fire method.
      * @see EventListenerList
      */
-    private void fireTreeNodesInserted(Object source, Object[] path, 
-					 int[] childIndices, 
+    private void fireTreeNodesInserted(Object source, Object[] path,
+					 int[] childIndices,
 					 Object[] children) {
 	// Guaranteed to return a non-null array
 	Object[] listeners = treeModelListeners.getListenerList();
@@ -575,22 +586,22 @@ public abstract class MapAdapter implements MindMap {
             if (listeners[i]==TreeModelListener.class) {
                 // Lazily create the event:
                 if (e == null)
-                    e = new TreeModelEvent(source, path, 
+                    e = new TreeModelEvent(source, path,
                                            childIndices, children);
                 ((TreeModelListener)listeners[i+1]).treeNodesInserted(e);
-            }          
+            }
         }
     }
 
     /*
      * Notify all listeners that have registered interest for
-     * notification on this event type.  The event instance 
-     * is lazily created using the parameters passed into 
+     * notification on this event type.  The event instance
+     * is lazily created using the parameters passed into
      * the fire method.
      * @see EventListenerList
      */
-    private void fireTreeNodesChanged(Object source, Object[] path, 
-                                        int[] childIndices, 
+    private void fireTreeNodesChanged(Object source, Object[] path,
+                                        int[] childIndices,
                                         Object[] children) {
         // Guaranteed to return a non-null array
         Object[] listeners = treeModelListeners.getListenerList();
@@ -601,22 +612,22 @@ public abstract class MapAdapter implements MindMap {
             if (listeners[i]==TreeModelListener.class) {
                 // Lazily create the event:
                 if (e == null)
-                    e = new TreeModelEvent(source, path, 
+                    e = new TreeModelEvent(source, path,
                                            childIndices, children);
                 ((TreeModelListener)listeners[i+1]).treeNodesChanged(e);
-            }          
+            }
         }
     }
 
     /*
      * Notify all listeners that have registered interest for
-     * notification on this event type.  The event instance 
-     * is lazily created using the parameters passed into 
+     * notification on this event type.  The event instance
+     * is lazily created using the parameters passed into
      * the fire method.
      * @see EventListenerList
      */
-    private void fireTreeStructureChanged(Object source, Object[] path, 
-                                        int[] childIndices, 
+    private void fireTreeStructureChanged(Object source, Object[] path,
+                                        int[] childIndices,
                                         Object[] children) {
         // Guaranteed to return a non-null array
         Object[] listeners = treeModelListeners.getListenerList();
@@ -629,7 +640,7 @@ public abstract class MapAdapter implements MindMap {
                 if (e == null)
                     e = new TreeModelEvent(source, path, childIndices, children);
                 ((TreeModelListener)listeners[i+1]).treeStructureChanged(e);
-            }          
+            }
         }
     }
 

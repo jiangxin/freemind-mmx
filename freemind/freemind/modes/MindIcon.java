@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindIcon.java,v 1.1.18.5.2.1.2.2 2005-12-06 19:47:30 dpolivaev Exp $*/
+/* $Id: MindIcon.java,v 1.1.18.5.2.1.2.3 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -53,10 +53,10 @@ public class MindIcon implements Comparable{
     private static HashMap createdIcons = new HashMap();
     private static final int UNKNOWN = -2;
     private JComponent component = null;
-    
+
 
     private MindIcon(String name) {
-       setName(name); 
+       setName(name);
        associatedIcon=null;
     }
 
@@ -65,12 +65,12 @@ public class MindIcon implements Comparable{
      * @param icon
      */
     private MindIcon(String name, ImageIcon icon) {
-        setName(name); 
+        setName(name);
         associatedIcon=icon;
     }
 
     public String toString() {
-        return "Icon_name: "+name; 
+        return "Icon_name: "+name;
     }
 
     /**
@@ -81,14 +81,14 @@ public class MindIcon implements Comparable{
        // DanPolansky: it's essential that we do not return null
        // for saving of the map.
        return name == null ? "notfound" : name; }
-    
+
     /**
        * Set the value of name.
        * @param v  Value to assign to name.
        */
     public void setName(String name) {
-        
-        this.name = name; 
+
+        this.name = name;
         return;
 
         /* here, we must check, whether the name is allowed.*/
@@ -101,7 +101,7 @@ public class MindIcon implements Comparable{
         //for(int i = 0; i < allIconNames.size(); ++i) {
         //    if(((String) allIconNames.get(i)).equals(v)) {
         //        //System.out.println("Icon name: " + v);
-        //        this.name = v; 
+        //        this.name = v;
         //        return;
         //    }
         //}
@@ -109,17 +109,17 @@ public class MindIcon implements Comparable{
         // DanPolansky: we want to parse the file though. Not existent icon is not
         // that a big tragedy.
     }
-    
-    
+
+
     /**
        * Get the value of description (in local language).
        * @return Value of description.
        */
     public String getDescription(FreeMindMain frame) {
         String resource = new String("icon_"+getName());
-        return frame.getResourceString(resource); 
+        return frame.getResourceString(resource);
     }
-    
+
     public String getIconFileName() {
         return getIconsPath()+getIconBaseFileName();
     }
@@ -146,8 +146,8 @@ public class MindIcon implements Comparable{
            return icon; }
         else {
            setIcon(iconNotFound);
-           return iconNotFound; }}      
-            
+           return iconNotFound; }}
+
     /**
        * Set the value of icon.
        * @param v  Value to assign to icon.
@@ -175,6 +175,7 @@ public class MindIcon implements Comparable{
         mAllIconNames.add("forward");
         mAllIconNames.add("attach");
         mAllIconNames.add("ksmiletris");
+        mAllIconNames.add("smily_bad");
         mAllIconNames.add("clanbomber");
         mAllIconNames.add("desktop_new");
         mAllIconNames.add("flag");
@@ -230,8 +231,8 @@ public class MindIcon implements Comparable{
         }
         throw new ClassCastException() ;
     }
-    
-    
+
+
     private int getNumber() {
         if(number == UNKNOWN){
             number = getAllIconNames ().indexOf(name);

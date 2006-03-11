@@ -4,29 +4,29 @@
  */
 package freemind.modes.attributes.mindmapmodeactors;
 
-import javax.xml.bind.JAXBException;
-
-import freemind.controller.actions.AbstractActorXml;
-import freemind.controller.actions.ActionPair;
+import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.SetAttributeRestrictedElementaryAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ModeController;
 import freemind.modes.attributes.AttributeRegistry;
+import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.AbstractActorXml;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class SetAttributeRestrictedActor extends AbstractActorXml {
 
-    public SetAttributeRestrictedActor(ModeController modeController) {
-        super(modeController);
+    public SetAttributeRestrictedActor(MindMapController mindMapModeController) {
+        super(mindMapModeController);
     }
     
-    public XmlAction createAction(int index, boolean value) throws JAXBException{
-        SetAttributeRestrictedElementaryAction action = getActionXmlFactory().createSetAttributeRestrictedElementaryAction();
+    public XmlAction createAction(int index, boolean value){
+        SetAttributeRestrictedElementaryAction action = new SetAttributeRestrictedElementaryAction();
         action.setIndex(index);
         action.setIsRestricted(value);
         return action;
     }
     
-    public ActionPair createActionPair(int index, boolean value) throws JAXBException{
+    public ActionPair createActionPair(int index, boolean value){
         final boolean previousValue ;
         if(index == AttributeRegistry.GLOBAL){
             previousValue = getAttributeRegistry().isRestricted();
@@ -43,7 +43,7 @@ public class SetAttributeRestrictedActor extends AbstractActorXml {
     public void act(XmlAction action) {
         if(action instanceof SetAttributeRestrictedElementaryAction){
             SetAttributeRestrictedElementaryAction setAttributeRestrictedAction = (SetAttributeRestrictedElementaryAction)action;
-            act(setAttributeRestrictedAction.getIndex(), setAttributeRestrictedAction.isIsRestricted());                    
+            act(setAttributeRestrictedAction.getIndex(), setAttributeRestrictedAction.getIsRestricted());                    
         }
 
     }

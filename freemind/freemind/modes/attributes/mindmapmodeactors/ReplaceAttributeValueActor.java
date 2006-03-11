@@ -4,30 +4,30 @@
  */
 package freemind.modes.attributes.mindmapmodeactors;
 
-import javax.xml.bind.JAXBException;
-
-import freemind.controller.actions.AbstractActorXml;
-import freemind.controller.actions.ActionPair;
+import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.ReplaceAttributeValueElementaryAction;
 import freemind.controller.actions.generated.instance.UnregistryAttributeValueElementaryAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ModeController;
+import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.AbstractActorXml;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class ReplaceAttributeValueActor extends AbstractActorXml {
 
-    public ReplaceAttributeValueActor(ModeController modeController) {
-        super(modeController);
+    public ReplaceAttributeValueActor(MindMapController mindMapModeController) {
+        super(mindMapModeController);
     }
     
-    public XmlAction createAction(String name, String oldValue, String newValue) throws JAXBException{
-        ReplaceAttributeValueElementaryAction action = getActionXmlFactory().createReplaceAttributeValueElementaryAction();
+    public XmlAction createAction(String name, String oldValue, String newValue){
+        ReplaceAttributeValueElementaryAction action = new ReplaceAttributeValueElementaryAction();
         action.setName(name);
         action.setOldValue(oldValue);
         action.setNewValue(newValue);
         return action;
     }
     
-    public ActionPair createActionPair(String name, String oldValue, String newValue) throws JAXBException{
+    public ActionPair createActionPair(String name, String oldValue, String newValue){
         ActionPair actionPair = new ActionPair(
                 createAction(name, oldValue, newValue), 
                 createAction(name, newValue, oldValue)

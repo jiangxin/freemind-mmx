@@ -19,10 +19,13 @@
  *
  * Created on 10.05.2005
  */
-/*$Id: FreemindPropertyListener.java,v 1.1.4.2 2005-05-31 20:24:06 dpolivaev Exp $*/
+/* $Id: FreemindPropertyListener.java,v 1.1.4.2.2.1 2006-03-11 16:42:38 dpolivaev Exp $ */
 package freemind.preferences;
 
 
+/**
+ * Is issued by the OptionPanel when the user accepted a change of its preferences.
+ */
 public interface FreemindPropertyListener {
 	void propertyChanged(String propertyName, String newValue, String oldValue);
 }

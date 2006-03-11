@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePattern.java,v 1.5.18.5 2005-05-03 05:29:50 christianfoltin Exp $*/
+/* $Id: StylePattern.java,v 1.5.18.5.6.1 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -47,85 +47,82 @@ import freemind.main.XMLElement;
  */
 public class StylePattern {
     private String name;
+    /**  NOT USED: The idea of recursive is redundant. You have a possibility to
+     select all nodes in a branch easily. */
     private boolean recursive;
-    // ^ The idea of recursive is redundant. You have a possibility to
-    // select all nodes in a branch easily.
 
     private String text;
-    private boolean folded;   // Daniel: What is this good for?
 
-    private boolean appliesToNode = false;
     private Color  nodeColor;
     private Color  nodeBackgroundColor;
     private String nodeStyle;
 
-    private boolean appliesToNodeFont = false;
     private String   nodeFontFamily=null;
     private Integer  nodeFontSize=null;
     private Boolean  nodeFontBold=null;
     private Boolean  nodeFontItalic=null;
 
-    private boolean appliesToNodeIcon = false;
     private MindIcon   nodeIcon;
 
-    private boolean appliesToEdge = false;    
     private Color  edgeColor;
     private String edgeStyle;
-    private int    edgeWidth;
-    
+    private Integer    edgeWidth;
+
 
     /** Inhertitable patterns, fc, 3.12.2003.*/
-    private boolean appliesToChildren = false;    
-    private StylePattern  ChildrenStylePattern;
+    private StylePattern  mChildrenStylePattern;
+
+    /**
+     * Empty constructor
+     */
+    public StylePattern() {
+    }
 
     public StylePattern(XMLElement elm, List justConstructedPatterns) {
-       loadPattern(elm, justConstructedPatterns); 
+       loadPattern(elm, justConstructedPatterns);
     }
 
     /** Constructs a style pattern from a node:
      * @param node
      */
     public StylePattern(MindMapNode node) {
-        appliesToNode = true;
         nodeColor = node.getColor();
         nodeBackgroundColor = node.getBackgroundColor();
         nodeStyle = node.getStyle();
 
-        appliesToNodeFont = true;
         nodeFontBold = new Boolean(node.isBold());
         nodeFontItalic = new Boolean(node.isItalic());
         nodeFontSize = node.getFontSize()==null?null:Integer.valueOf(node.getFontSize());
         nodeFontFamily = node.getFontFamilyName();
 
-        appliesToNodeIcon = false; // no icons.
+        nodeIcon = null;
 //        appliesToNodeIcon = node.getIcons().size()>0;
 //        nodeIcon = (MindIcon) (node.getIcons().size()==0?null:node.getIcons().get(0));
-        
-        appliesToEdge=true;
+
         edgeColor = node.getEdge().getColor();
         edgeStyle = node.getEdge().getStyle();
-        edgeWidth = node.getEdge().getWidth();
-        
+        edgeWidth = new Integer(node.getEdge().getWidth());
+
     }
-    
+
     public String toString() {
-        return "node: "+nodeColor+", "+nodeBackgroundColor+", "+nodeStyle+", "+nodeFontFamily+", "+nodeFontSize+", "+nodeIcon+", "+
+        return "node: "+nodeColor+", "+nodeBackgroundColor+", "+nodeStyle+", "+nodeFontFamily+", "+nodeFontSize+", "+nodeIcon+", "+text+", "+
            "\nedge: "+edgeColor+", "+edgeStyle+", "+edgeWidth; }
 
     public boolean getAppliesToEdge() {
-       return appliesToEdge; }
+       return edgeColor != null || edgeStyle != null || edgeWidth != null; }
 
     public boolean getAppliesToNode() {
-       return appliesToNode; }
+       return nodeBackgroundColor != null|| nodeColor != null || nodeStyle !=null; }
 
     public boolean getAppliesToNodeFont() {
-       return appliesToNodeFont; }
+       return nodeFontBold != null || nodeFontFamily != null || nodeFontItalic != null || nodeFontSize != null; }
 
     public boolean getAppliesToNodeIcon() {
-       return appliesToNodeIcon; }
+       return nodeIcon != null; }
 
     public boolean getAppliesToChildren() {
-       return appliesToChildren; }
+       return mChildrenStylePattern != null; }
 
     /**
        * Get the value of name.
@@ -133,14 +130,14 @@ public class StylePattern {
        */
     public String getName() {
        return name; }
-    
+
     /**
        * Set the value of name.
        * @param v  Value to assign to name.
        */
     public void setName(String  v) {
        this.name = v; }
-    
+
     /**
      * Determine if the properies of this pattern, of course
      * except the "text" attribute, apply to all the child nodes
@@ -149,29 +146,14 @@ public class StylePattern {
      */
     public boolean getRecursive() {
        return recursive; }
-    
+
     /**
        * Set the value of recursive.
        * @param v  Value to assign to recursive.
        */
     public void setRecursive(boolean  v) {
        this.recursive = v; }
-    
 
-    /**
-       * Get the value of folded.
-       * @return Value of folded.
-       */
-    public boolean getFolded() {
-       return folded; }
-    
-    /**
-       * Set the value of folded.
-       * @param v  Value to assign to folded.
-       */
-    public void setFolded(boolean  v) {
-       this.folded = v; }
-    
 
     /**
        * Get the value of text.
@@ -179,7 +161,7 @@ public class StylePattern {
        */
     public String getText() {
        return text; }
-    
+
     /**
        * Set the value of text.
        * @param v  Value to assign to text.
@@ -193,15 +175,15 @@ public class StylePattern {
        */
     public Color getNodeColor() {
        return nodeColor; }
-    
+
     /**
        * Set the value of nodeColor.
        * @param v  Value to assign to nodeColor.
        */
     public void setNodeColor(Color  v) {
        this.nodeColor = v; }
-    
-    
+
+
 	public Color getNodeBackgroundColor() {
 		return nodeBackgroundColor;
 	}
@@ -214,15 +196,15 @@ public class StylePattern {
        */
     public String getNodeStyle() {
        return nodeStyle; }
-    
+
     /**
        * Set the value of nodeStyle.
        * @param v  Value to assign to nodeStyle.
        */
     public void setNodeStyle(String  nodeStyle) {
        this.nodeStyle = nodeStyle; }
-    
-    
+
+
     /**
      * @return Returns the nodeFontFamily.
      */
@@ -267,7 +249,7 @@ public class StylePattern {
        */
     public Color getEdgeColor() {
        return edgeColor; }
-    
+
     /**
        * Set the value of edgeColor.
        * @param v  Value to assign to edgeColor.
@@ -281,7 +263,7 @@ public class StylePattern {
       */
     public String getEdgeStyle() {
        return edgeStyle; }
-    
+
     /**
      * Set the value of edgeStyle.
        * @param v  Value to assign to edgeStyle.
@@ -294,30 +276,30 @@ public class StylePattern {
        * Get the value of edgeWidth.
        * @return Value of edgeWidth.
        */
-    public int getEdgeWidth() {
+    public Integer getEdgeWidth() {
        return edgeWidth; }
-    
+
     /**
        * Set the value of edgeWidth.
        * @param v  Value to assign to edgeWidth.
        */
-    public void setEdgeWidth(int edgeWidth) {
+    public void setEdgeWidth(Integer edgeWidth) {
        this.edgeWidth = edgeWidth;}
-    
+
     /**
        * Get the value of ChildrenStylePattern.
        * @return Value of ChildrenStylePattern.
        */
     public StylePattern getChildrenStylePattern() {
-       return ChildrenStylePattern; }
-    
+       return mChildrenStylePattern; }
+
     /**
        * Set the value of ChildrenStylePattern.
        * @param v  Value to assign to ChildrenStylePattern.
        */
     public void setChildrenStylePattern(StylePattern ChildrenStylePattern) {
-       this.ChildrenStylePattern = ChildrenStylePattern;}
-    
+       this.mChildrenStylePattern = ChildrenStylePattern;}
+
 
     public static List loadPatterns(File file) throws Exception {
        return loadPatterns(new BufferedReader(new FileReader(file))); }
@@ -343,17 +325,15 @@ public class StylePattern {
             //NODE
            XMLElement child = (XMLElement)i.next();
            if (child.getName().equals("node")) {
-              appliesToNode = true;
-              if (child.getStringAttribute("color")!=null && 
+              if (child.getStringAttribute("color")!=null &&
                   child.getStringAttribute("color").length() == 7) {
                  setNodeColor(Tools.xmlToColor(child.getStringAttribute("color") ) ); }
-              if (child.getStringAttribute("background_color")!=null && 
+              if (child.getStringAttribute("background_color")!=null &&
                   child.getStringAttribute("background_color").length() == 7) {
                  setNodeBackgroundColor(Tools.xmlToColor(child.getStringAttribute("background_color") ) ); }
               if (child.getStringAttribute("style")!=null) {
                  setNodeStyle(child.getStringAttribute("style")); }
               if (child.getStringAttribute("icon") != null) {
-                    appliesToNodeIcon = true;
                     setNodeIcon(child.getStringAttribute("icon").equals("none") ? null
                             : MindIcon.factory(child.getStringAttribute("icon")));
                 }
@@ -363,50 +343,47 @@ public class StylePattern {
                  XMLElement nodeChild = (XMLElement)j.next();
                  //FONT
                  if (nodeChild.getName().equals("font")) {
-                    appliesToNodeFont = true;
 
                     if (nodeChild.getStringAttribute("name")!= null) {
-                        setNodeFontFamily(nodeChild.getStringAttribute("name")); 
-                    } 
+                        setNodeFontFamily(nodeChild.getStringAttribute("name"));
+                    }
                     if (Tools.safeEquals(nodeChild.getStringAttribute("bold"),"true")) {
                        setNodeFontBold(Boolean.TRUE);
-                    } 
+                    }
                     if (Tools.safeEquals(nodeChild.getStringAttribute("italic"),"true")) {
                        setNodeFontItalic(Boolean.TRUE); }
-                    // if (font.getProperty("underline")!=null && 
-                    // nodeChild.getProperty("underline").equals("true")) setUnderlined(true);                    
+                    // if (font.getProperty("underline")!=null &&
+                    // nodeChild.getProperty("underline").equals("true")) setUnderlined(true);
                     if (nodeChild.getStringAttribute("size") != null) {
                         setNodeFontSize(Integer.valueOf(nodeChild
                                 .getStringAttribute("size")));
                     }
-                    
+
 
                  }}}
-           
+
            //EDGE
            if (child.getName().equals("edge")) {
-              appliesToEdge = true;
               if (child.getStringAttribute("style")!=null) {
                  setEdgeStyle(child.getStringAttribute("style")); }
               if (child.getStringAttribute("color")!=null) {
                  setEdgeColor(Tools.xmlToColor(child.getStringAttribute("color") ) ); }
               if (child.getStringAttribute("width")!=null) {
                  if (child.getStringAttribute("width").equals("thin")) {
-                    setEdgeWidth(freemind.modes.EdgeAdapter.WIDTH_THIN); }
+                    setEdgeWidth(new Integer(freemind.modes.EdgeAdapter.WIDTH_THIN)); }
                  else {
-                    setEdgeWidth(Integer.parseInt(child.getStringAttribute("width"))); }
+                    setEdgeWidth(new Integer(Integer.parseInt(child.getStringAttribute("width")))); }
               }
            }
 
            //CHILD
            if (child.getName().equals("child")) {
-               appliesToChildren = true;
                if (child.getStringAttribute("pattern")!=null) {
                    // find name in list of justConstructedPatterns:
                    String searchName = child.getStringAttribute("pattern");
                    boolean anythingFound = false;
                    for ( ListIterator e = justConstructedPatterns.listIterator(); e.hasNext(); ) {
-                       StylePattern patternFound = (StylePattern) e.next(); 
+                       StylePattern patternFound = (StylePattern) e.next();
                        if(patternFound.getName().equals(searchName)) {
                            setChildrenStylePattern(patternFound);
                            anythingFound = true;
@@ -448,6 +425,7 @@ public class StylePattern {
     public void setNodeFontItalic(Boolean nodeFontItalic) {
         this.nodeFontItalic = nodeFontItalic;
     }
+
 }
 
 
@@ -472,28 +450,28 @@ public class StylePattern {
 
               XMLElement node = new XMLElement();
               node.setTagName("node");
-              
+
               node.addProperty("text",this.toString());
-              
+
               //        ((MindMapEdgeModel)getEdge()).save(doc,node);
 
               XMLElement edge = ((MindMapEdgeModel)getEdge()).save();
               if (edge != null) {
               node.addChild(edge);
               }
-              
+
               if (isFolded()) {
               node.addProperty("folded","true");
               }
-              
+
               if (color != null) {
               node.addProperty("color", Tools.colorToXml(getColor()));
               }
-              
+
               if (style != null) {
               node.addProperty("style", getStyle());
               }
-              
+
               //link
               if (getLink() != null) {
               node.addProperty("link", getLink());
@@ -503,7 +481,7 @@ public class StylePattern {
               if (font!=null || font.getSize()!=0 || isBold() || isItalic() || isUnderlined() ) {
               XMLElement fontElement = new XMLElement();
               fontElement.setTagName("font");
-              
+
               if (font != null) {
                 fontElement.addProperty("name",getFont().getFontName());
                 }
@@ -521,15 +499,15 @@ public class StylePattern {
                 }
                 node.addChild(fontElement);
                 }
-            
-            
-            
+
+
+
             //Generating output Stream
             BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
             pattern.write(fileout);
-            
+
             fileout.close();
-            
+
         } catch(Exception e) {
             System.err.println("Error in MindMapMapModel.saveXML(): ");
             e.printStackTrace();

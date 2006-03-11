@@ -2,17 +2,14 @@
 package accessories.plugins;
 
 import java.awt.Color;
-
-import freemind.extensions.*;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
-import freemind.modes.ModeController;
-
-import java.util.TimerTask;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 import javax.swing.SwingUtilities;
+
+import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
 /**
  * @author christianfoltin
@@ -20,7 +17,7 @@ import javax.swing.SwingUtilities;
  * @file BlinkingNodeHook.java 
  * @package freemind.modes.mindmapmode
  * */
-public class BlinkingNodeHook extends PermanentNodeHookAdapter {
+public class BlinkingNodeHook extends PermanentMindMapNodeHookAdapter {
 
 	private Timer timer = null;
 

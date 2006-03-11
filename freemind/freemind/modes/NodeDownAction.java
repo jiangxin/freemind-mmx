@@ -19,19 +19,20 @@
  *
  * Created on 21.08.2004
  */
-/*$Id: NodeDownAction.java,v 1.1.4.2 2005-03-03 21:11:27 christianfoltin Exp $*/
+/* $Id: NodeDownAction.java,v 1.1.4.2.6.1 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes;
 
 import java.awt.event.ActionEvent;
-import java.util.Comparator;
 
 import javax.swing.AbstractAction;
 
+import freemind.modes.mindmapmode.MindMapController;
+
 
 public class NodeDownAction extends AbstractAction {
-    private final ControllerAdapter modeController;
-    public NodeDownAction(ControllerAdapter adapter) {
+    private final MindMapController modeController;
+    public NodeDownAction(MindMapController adapter) {
         super(adapter.getText("node_down"));
         this.modeController = adapter;
     }

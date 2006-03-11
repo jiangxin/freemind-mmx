@@ -16,56 +16,66 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseXMLElement.java,v 1.6.18.1.8.1 2005-06-12 12:59:55 dpolivaev Exp $*/
+/* $Id: BrowseXMLElement.java,v 1.6.18.1.8.2 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 
 package freemind.modes.browsemode;
 
-import freemind.main.XMLElement;
-import freemind.main.FreeMindMain;
-import freemind.main.Tools;
-import freemind.modes.MindMap;
-import freemind.modes.NodeAdapter;
-import freemind.modes.EdgeAdapter;
-import freemind.modes.CloudAdapter;
-import freemind.modes.ArrowLinkAdapter;
-import freemind.modes.MindIcon;
-import freemind.modes.XMLElementAdapter;
-import freemind.modes.browsemode.BrowseEdgeModel;
-import freemind.modes.browsemode.BrowseCloudModel;
-
-import java.awt.Font;
-import java.util.Vector;
 import java.util.HashMap;
+import java.util.Vector;
+
+import freemind.main.FreeMindMain;
+import freemind.main.XMLElement;
+import freemind.modes.ArrowLinkAdapter;
+import freemind.modes.CloudAdapter;
+import freemind.modes.EdgeAdapter;
+import freemind.modes.MindMap;
+import freemind.modes.ModeController;
+import freemind.modes.NodeAdapter;
+import freemind.modes.XMLElementAdapter;
 
 public class BrowseXMLElement extends XMLElementAdapter {
 
-   public BrowseXMLElement(FreeMindMain frame, MindMap map) {
-       super(frame, map);
+   private static final String ENCRYPTED_BROWSE_NODE = EncryptedBrowseNode.class.getName();
+   private final ModeController mModeController;
+
+   public BrowseXMLElement(ModeController pModeController) {
+       super(pModeController);
+       mModeController = pModeController;
    }
 
-    protected BrowseXMLElement(FreeMindMain frame, Vector ArrowLinkAdapters, HashMap IDToTarget, MindMap map) {
-        super(frame, ArrowLinkAdapters, IDToTarget, map);
+    protected BrowseXMLElement(ModeController pModeController, Vector ArrowLinkAdapters, HashMap IDToTarget) {
+        super(pModeController, ArrowLinkAdapters, IDToTarget);
+        mModeController = pModeController;
     }
 
     /** abstract method to create elements of my type (factory).*/
     protected XMLElement  createAnotherElement(){
     // We do not need to initialize the things of XMLElement.
-        return new BrowseXMLElement(getFrame(), ArrowLinkAdapters, IDToTarget, getMap());
+        return new BrowseXMLElement(mModeController, ArrowLinkAdapters, IDToTarget);
     }
     protected NodeAdapter createNodeAdapter(FreeMindMain     frame, String nodeClass){
-        BrowseNodeModel browseNodeModel = new BrowseNodeModel(frame, getMap());
-        return browseNodeModel;
+    		if(nodeClass == ENCRYPTED_BROWSE_NODE){
+    			return new EncryptedBrowseNode(frame, mModeController);
+    		}
+        return new BrowseNodeModel(frame, getMap());
     }
     protected EdgeAdapter createEdgeAdapter(NodeAdapter node, FreeMindMain frame){
-        return new BrowseEdgeModel(node, frame); 
+        return new BrowseEdgeModel(node, frame);
     }
     protected CloudAdapter createCloudAdapter(NodeAdapter node, FreeMindMain frame){
-        return new BrowseCloudModel(node, frame); 
+        return new BrowseCloudModel(node, frame);
     }
     protected ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter source, NodeAdapter target, FreeMindMain frame) {
         return new BrowseArrowLinkModel(source,target,frame);
     }
 
+    protected NodeAdapter createEncryptedNode(String additionalInfo) {
+		NodeAdapter node = createNodeAdapter(frame, ENCRYPTED_BROWSE_NODE);
+		setUserObject(node);
+        copyAttributesToNode(node);
+	    node.setAdditionalInfo(additionalInfo);
+        return node;
+	}
 }
 

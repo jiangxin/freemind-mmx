@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EncryptNode.java,v 1.1.2.6.6.4 2006-01-22 12:24:37 dpolivaev Exp $*/
+/* $Id: EncryptNode.java,v 1.1.2.6.6.5 2006-03-11 16:42:36 dpolivaev Exp $ */
 
 /*
  * Created on 14.12.2004
@@ -29,25 +29,25 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import accessories.plugins.dialogs.EnterPasswordDialog;
 import freemind.controller.MenuItemEnabledListener;
 import freemind.extensions.HookRegistration;
-import freemind.extensions.NodeHookAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
-import freemind.modes.actions.NodeHookAction;
+import freemind.modes.common.dialogs.EnterPasswordDialog;
 import freemind.modes.mindmapmode.EncryptedMindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapController.NewNodeCreator;
+import freemind.modes.mindmapmode.actions.NodeHookAction;
+import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
 /**
  * @author foltin
- *  
+ *
  */
-public class EncryptNode extends NodeHookAdapter {
+public class EncryptNode extends MindMapNodeHookAdapter {
     /** Enables the encrypt/decrypt menu item only if the map/node is encrypted.
      * @author foltin
      *
@@ -58,7 +58,7 @@ public class EncryptNode extends NodeHookAdapter {
         private final MindMap mMap;
         private final java.util.logging.Logger logger;
         private boolean enabled = false;
-        
+
         public Registration(ModeController controller, MindMap map) {
             this.controller = controller;
             mMap = map;
@@ -81,7 +81,7 @@ public class EncryptNode extends NodeHookAdapter {
             // the following function does not work without a running valid controller, so we comment it out.
 //            if(hookName.equals("accessories/plugins/NewEncryptedMap.properties")) {
 //                return true;
-//            }   
+//            }
             if(!enabled)
                 return false;
 			boolean isEncryptedNode = false;
@@ -94,14 +94,14 @@ public class EncryptNode extends NodeHookAdapter {
 			if (hookName.equals("accessories/plugins/EnterPassword.properties")) {
 				return isEncryptedNode;
 			} else {
-			    /* you can insert an encrypted node, if the current selected node is 
-			     * not encrypted, or if it is opened. */ 
+			    /* you can insert an encrypted node, if the current selected node is
+			     * not encrypted, or if it is opened. */
 				return (!isEncryptedNode || isOpened) ;
 			}
 		}
     }
     /**
-     *  
+     *
      */
     public EncryptNode() {
         super();
@@ -126,22 +126,24 @@ public class EncryptNode extends NodeHookAdapter {
     }
 
     /**
-     * 
+     *
      */
     private void newEncryptedMap() {
         final StringBuffer password = getUsersPassword();
         if(password == null) {
             return;
         }
-        MapAdapter newModel = new MindMapMapModel(getController().getFrame(), getController());
+        ModeController newModeController = getMindMapController().getMode().createModeController();
         EncryptedMindMapNode encryptedMindMapNode = new EncryptedMindMapNode(
-                getController().getText("accessories/plugins/EncryptNode.properties_select_me"), 
-                getController().getFrame(),
-                newModel);
-        newModel.setRoot(encryptedMindMapNode);
+                getMindMapController().getText("accessories/plugins/EncryptNode.properties_select_me"),
+                getMindMapController().getFrame(),
+                null);
         encryptedMindMapNode.setPassword(password);
-        MindMapController mindmapcontroller = (MindMapController) getController();
+        MapAdapter newModel = new MindMapMapModel(encryptedMindMapNode,
+				getMindMapController().getFrame(), newModeController);
+        MindMapController mindmapcontroller = (MindMapController) getMindMapController();
         mindmapcontroller.newMap(newModel);
+        encryptedMindMapNode.setMap(newModel);
     }
 
     /**
@@ -152,19 +154,19 @@ public class EncryptNode extends NodeHookAdapter {
         if(password == null) {
             return;
         }
-        MindMapController mindmapcontroller = (MindMapController) getController();
+        MindMapController mindmapcontroller = (MindMapController) getMindMapController();
         // FIXME: not multithreading safe
         mindmapcontroller.setNewNodeCreator(new NewNodeCreator() {
 
             public MindMapNode createNode(Object userObject, MindMap map) {
                 EncryptedMindMapNode encryptedMindMapNode = new EncryptedMindMapNode(
-                        userObject, getController().getFrame(), map);
+                        userObject, getMindMapController().getFrame(), map);
                 encryptedMindMapNode.setPassword(password);
                 return encryptedMindMapNode;
             }
         });
         try {
-            MindMapNode newNode = getController().addNewNode(node, 0,
+            MindMapNode newNode = getMindMapController().addNewNode(node, 0,
                     node.isLeft());
         } catch (Exception e) {
         }
@@ -178,7 +180,7 @@ public class EncryptNode extends NodeHookAdapter {
     private StringBuffer getUsersPassword() {
         // get password:
         final EnterPasswordDialog pwdDialog = new EnterPasswordDialog(
-                (JFrame) getController().getFrame(), getController(), true);
+                (JFrame) getMindMapController().getFrame(), getMindMapController(), true);
         pwdDialog.setModal(true);
         pwdDialog.show();
         if (pwdDialog.getResult() == EnterPasswordDialog.CANCEL) {
@@ -201,15 +203,15 @@ public class EncryptNode extends NodeHookAdapter {
             } else {
                 doPasswordCheckAndDecryptNode(encNode);
             }
-            getController().nodeStructureChanged(encNode);
-            getController().getView().selectAsTheOnlyOneSelected(encNode.getViewer());
+            getMindMapController().nodeStructureChanged(encNode);
+            getMindMapController().getView().selectAsTheOnlyOneSelected(encNode.getViewer());
             encNode.setShuttingDown(false);
         } else {
             // box:
             JOptionPane
                     .showMessageDialog(
-                            getController().getFrame().getContentPane(),
-                            getController()
+                            getMindMapController().getFrame().getContentPane(),
+                            getMindMapController()
                                     .getText(
                                             "accessories/plugins/EncryptNode.properties_insert_encrypted_node_first"),
                             "Freemind", JOptionPane.INFORMATION_MESSAGE);
@@ -223,7 +225,7 @@ public class EncryptNode extends NodeHookAdapter {
         while (true) {
             // get password:
             final EnterPasswordDialog pwdDialog = new EnterPasswordDialog(
-                    (JFrame) getController().getFrame(), getController(), false);
+                    (JFrame) getMindMapController().getFrame(), getMindMapController(), false);
             pwdDialog.setModal(true);
             pwdDialog.show();
             if (pwdDialog.getResult() == EnterPasswordDialog.CANCEL) {
@@ -233,8 +235,8 @@ public class EncryptNode extends NodeHookAdapter {
                 // box:
                 JOptionPane
                         .showMessageDialog(
-                                getController().getFrame().getContentPane(),
-                                getController()
+                                getMindMapController().getFrame().getContentPane(),
+                                getMindMapController()
                                         .getText(
                                                 "accessories/plugins/EncryptNode.properties_wrong_password"),
                                 "Freemind", JOptionPane.ERROR_MESSAGE);

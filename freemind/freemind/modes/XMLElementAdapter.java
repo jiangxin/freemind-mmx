@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.8.6.9 2006-02-28 20:58:08 dpolivaev Exp $*/
+/* $Id: XMLElementAdapter.java,v 1.4.14.8.6.10 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -37,24 +37,24 @@ import freemind.modes.mindmapmode.EncryptedMindMapNode;
 
 public abstract class XMLElementAdapter extends XMLElement {
 
-    
-	// Logging: 
+
+	// Logging:
 	protected static java.util.logging.Logger logger;
 
    private Object           userObject = null;
-   private FreeMindMain     frame;
+   protected FreeMindMain     frame;
    private NodeAdapter      mapChild   = null;
    private HashMap 		  nodeAttributes = new HashMap();
 
    //   Font attributes
 
-   private String fontName; 
+   private String fontName;
    private int    fontStyle = 0;
    private int    fontSize = 0;
 
    //   Icon attributes
 
-   private String iconName; 
+   private String iconName;
 
     // arrow link attributes:
     protected Vector ArrowLinkAdapters;
@@ -73,8 +73,6 @@ public abstract class XMLElementAdapter extends XMLElement {
     public static final String XML_NODE_HISTORY_CREATED_AT = "CREATED";
     public static final String XML_NODE_HISTORY_LAST_MODIFIED_AT = "MODIFIED";
 
-    private MindMap map;
-
     private String attributeName;
 
     private String attributeValue;
@@ -83,20 +81,22 @@ public abstract class XMLElementAdapter extends XMLElement {
 
     private int attributeValueWidth = AttributeTableLayoutModel.DEFAULT_COLUMN_WIDTH;
 
+	protected final ModeController mModeController;
+
    //   Overhead methods
 
-   public XMLElementAdapter(FreeMindMain frame, MindMap map) {
-      this(frame, new Vector(), new HashMap(), map);
-      if(logger==null) {
-          logger = frame.getLogger(this.getClass().getName());
-      }
+   public XMLElementAdapter(ModeController modeController) {
+	   this(modeController, new Vector(), new HashMap());
    }
 
-    protected XMLElementAdapter(FreeMindMain frame, Vector ArrowLinkAdapters, HashMap IDToTarget, MindMap map) {
-        this.frame = frame; 
+    protected XMLElementAdapter(ModeController modeController, Vector ArrowLinkAdapters, HashMap IDToTarget) {
+        this.mModeController = modeController;
+        this.frame = modeController.getFrame();
         this.ArrowLinkAdapters = ArrowLinkAdapters;
         this.IDToTarget = IDToTarget;
-        this.map = map;
+        if(logger==null) {
+        	logger = frame.getLogger(this.getClass().getName());
+        }
     }
 
     /** abstract method to create elements of my type (factory).*/
@@ -105,13 +105,20 @@ public abstract class XMLElementAdapter extends XMLElement {
     abstract protected EdgeAdapter createEdgeAdapter(NodeAdapter node, FreeMindMain frame);
     abstract protected CloudAdapter createCloudAdapter(NodeAdapter node, FreeMindMain frame);
     abstract protected ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter source, NodeAdapter target, FreeMindMain frame);
-    
+    abstract protected NodeAdapter createEncryptedNode(String additionalInfo);
+
+
+
     protected FreeMindMain getFrame() {
         return frame;
     }
 
    public Object getUserObject() {
       return userObject; }
+
+   protected void setUserObject(Object obj){
+	   userObject = obj;
+   }
 
    public NodeAdapter getMapChild() {
       return mapChild; }
@@ -201,10 +208,10 @@ public abstract class XMLElementAdapter extends XMLElement {
  			 PermanentNodeHook hook = null;
              try {
 				 //loadName=loadName.replace('/', File.separatorChar);
-				 /* The next code snippet is an exception. Normally, hooks 
-				  * have to be created via the ModeController. 
+				 /* The next code snippet is an exception. Normally, hooks
+				  * have to be created via the ModeController.
 				  * DO NOT COPY. */
-                hook = (PermanentNodeHook) frame.getHookFactory().createNodeHook(loadName);
+                hook = (PermanentNodeHook) mModeController.getHookFactory().createNodeHook(loadName);
                 // this is a bad hack. Don't make use of this data unless
                 // you know exactly what you are doing.
                 hook.setNode(node);
@@ -221,7 +228,7 @@ public abstract class XMLElementAdapter extends XMLElement {
               && getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_NAME)
               && child.getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)){
           Attribute attribute = new Attribute(attributeName, ((XMLElementAdapter)child).attributeValue);
-        AttributeRegistry r = map.getRegistry().getAttributes();
+        AttributeRegistry r = getMap().getRegistry().getAttributes();
           r.registry(attribute);
       }
    }
@@ -264,7 +271,7 @@ public void setAttribute(String name, Object value) {
          else if (name.equals("COLOR")) {
 	    cloud.setColor(Tools.xmlToColor(sValue)); }
          else if (name.equals("WIDTH")) {
-               cloud.setWidth(Integer.parseInt(sValue)); 
+               cloud.setWidth(Integer.parseInt(sValue));
          }
          return; }
 
@@ -289,7 +296,7 @@ public void setAttribute(String name, Object value) {
          else if (name.equals("ENDARROW")) {
              arrowLink.setEndArrow(sValue); }
          else if (name.equals("WIDTH")) {
-             arrowLink.setWidth(Integer.parseInt(sValue)); 
+             arrowLink.setWidth(Integer.parseInt(sValue));
          }
          return; }
 
@@ -297,7 +304,7 @@ public void setAttribute(String name, Object value) {
          if (name.equals("SIZE")) {
             fontSize = Integer.parseInt(sValue); }
          else if (name.equals("NAME")) {
-            fontName = sValue; }             
+            fontName = sValue; }
 
          // Styling
          else if (sValue.equals("true")) {
@@ -308,51 +315,51 @@ public void setAttribute(String name, Object value) {
       /* icons */
       if (getName().equals("icon")) {
          if (name.equals("BUILTIN")) {
-            iconName = sValue; } 
+            iconName = sValue; }
       }
       /* attributes */
       else if (getName().equals(XML_NODE_ATTRIBUTE)) {
           if (name.equals("NAME")) {
-              attributeName = sValue; } 
+              attributeName = sValue; }
           else if (name.equals("VALUE")) {
-              attributeValue = sValue; } 
+              attributeValue = sValue; }
        }
       else if (getName().equals(XML_NODE_ATTRIBUTE_LAYOUT)) {
           if (name.equals("NAME_WIDTH")) {
-              attributeNameWidth = Integer.parseInt(sValue); } 
+              attributeNameWidth = Integer.parseInt(sValue); }
           else if (name.equals("VALUE_WIDTH")) {
-              attributeValueWidth = Integer.parseInt(sValue); } 
+              attributeValueWidth = Integer.parseInt(sValue); }
        }
       else if (getName().equals(XML_NODE_ATTRIBUTE_REGISTRY)) {
           if (name.equals("RESTRICTED")) {
-              map.getRegistry().getAttributes().setRestricted(true);
+              getMap().getRegistry().getAttributes().setRestricted(true);
           }
           if (name.equals("FONT_SIZE")) {
               try {
                   int size = Integer.parseInt(sValue);
-                  map.getRegistry().getAttributes().setFontSize(size);
+                  getMap().getRegistry().getAttributes().setFontSize(size);
               }
-              catch (NumberFormatException ex){                  
+              catch (NumberFormatException ex){
               }
           }
-      }     
+      }
       else if (getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_NAME)) {
           if (name.equals("NAME")) {
               attributeName = sValue;
-              map.getRegistry().getAttributes().registry(attributeName);
+              getMap().getRegistry().getAttributes().registry(attributeName);
           }
           if (name.equals("VISIBLE")) {
-              map.getRegistry().getAttributes().getElement(attributeName).setVisibility(true);
+              getMap().getRegistry().getAttributes().getElement(attributeName).setVisibility(true);
           }
           if (name.equals("RESTRICTED")) {
-              map.getRegistry().getAttributes().getElement(attributeName).setRestriction(true);
+              getMap().getRegistry().getAttributes().getElement(attributeName).setRestriction(true);
           }
-      }     
+      }
       else if (getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)) {
           if (name.equals("VALUE")) {
               attributeValue = sValue;
           }
-      }     
+      }
   }
 
    private void setNodeAttribute(String name, String sValue, NodeAdapter node) {
@@ -360,8 +367,7 @@ public void setAttribute(String name, Object value) {
 	    node.setUserObject(sValue); }
 	 else if (name.equals(XML_NODE_ENCRYPTED_CONTENT)) {
 	     // we change the node implementation to EncryptedMindMapNode.
-	     node = createNodeGivenClassName(EncryptedMindMapNode.class.getName());
-	     node.setAdditionalInfo(sValue); 
+	     node = createEncryptedNode(sValue);
 	 } else if (name.equals(XML_NODE_HISTORY_CREATED_AT)) {
 	     if(node.getHistoryInformation()==null) {
 	     	node.setHistoryInformation(new HistoryInformation());
@@ -406,20 +412,20 @@ public void setAttribute(String name, Object value) {
 	 }
 }
 
-    /**
-     * @param className
-     */
-    private NodeAdapter createNodeGivenClassName(String className) {
-        userObject = createNodeAdapter(frame, className);
-        // reactivate all settings from nodeAttributes:
+	/** Sets all attributes that were formely applied to the current userObject
+	 *  to a given (new) node. Thus, the instance of a node can be changed after
+	 *  the creation. (At the moment, relevant for encrypted nodes).
+	 * @param node
+	 */
+	protected void copyAttributesToNode(NodeAdapter node) {
+		// reactivate all settings from nodeAttributes:
         for (Iterator i = nodeAttributes.keySet().iterator(); i.hasNext();) {
             String key = (String) i.next();
             //to avoid self reference:
             setNodeAttribute(key, (String) nodeAttributes.get(key),
-                    (NodeAdapter) userObject);
+                    node);
         }
-        return (NodeAdapter) userObject;
-    }
+	}
 
     protected void completeElement() {
       if (getName().equals("font")) {
@@ -429,11 +435,11 @@ public void setAttribute(String name, Object value) {
             if (getName().equals("icon")) {
          userObject =  MindIcon.factory(iconName); }
       /* attributes */
-      if (getName().equals(XML_NODE_ATTRIBUTE)) {            
+      if (getName().equals(XML_NODE_ATTRIBUTE)) {
           userObject = new Attribute(attributeName, attributeValue);}
    }
 
-    /** Completes the links within the map. They are registered in the registry.*/
+    /** Completes the links within the getMap(). They are registered in the registry.*/
     public void processUnfinishedLinks(MindMapLinkRegistry registry) {
         // add labels to the nodes:
         setIDs(IDToTarget, registry);
@@ -449,11 +455,11 @@ public void setAttribute(String name, Object value) {
                 target = (NodeAdapter) IDToTarget.get(oldID);
                 newID = registry.getLabel(target);
             } else if(registry.getTargetForID(oldID) != null) {
-                // link is already present in the map (paste).
+                // link is already present in the getMap() (paste).
                 target = (NodeAdapter) registry.getTargetForID(oldID);
                 if(target == null) {
                     // link target is in nowhere-land
-                    System.err.println("Cannot find the label " + oldID + " in the map. The link "+arrowLink+" is not restored.");
+                    System.err.println("Cannot find the label " + oldID + " in the getMap(). The link "+arrowLink+" is not restored.");
                     continue;
                 }
                 newID = registry.getLabel(target);
@@ -461,9 +467,9 @@ public void setAttribute(String name, Object value) {
                     System.err.println("Servere internal error. Looked for id " + oldID + " but found "+newID + " in the node " + target+".");
                     continue;
                 }
-            } else {                
+            } else {
                 // link target is in nowhere-land
-                System.err.println("Cannot find the label " + oldID + " in the map. The link "+arrowLink+" is not restored.");
+                System.err.println("Cannot find the label " + oldID + " in the getMap(). The link "+arrowLink+" is not restored.");
                 continue;
             }
             // set the new ID:
@@ -485,7 +491,7 @@ public void setAttribute(String name, Object value) {
             NodeAdapter target = (NodeAdapter) IDToTarget.get(key);
             MindMapLinkRegistry.ID_Registered newState = registry.registerLinkTarget(target, key /* Proposed name for the target, is changed by the registry, if already present.*/);
             String newId = newState.getID();
-            // and in the cutted case: 
+            // and in the cutted case:
             // search for links to this ids that have been cutted earlier:
             Vector cuttedLinks = registry.getCuttedNode(key /* old target id*/);
             for(int j=0; j < cuttedLinks.size(); ++j) {
@@ -501,6 +507,6 @@ public void setAttribute(String name, Object value) {
 
 
     protected MindMap getMap() {
-        return map;
+        return mModeController.getMap();
     }
 }

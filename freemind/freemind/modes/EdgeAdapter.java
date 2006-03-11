@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EdgeAdapter.java,v 1.14.18.2.10.1 2005-07-12 15:41:15 dpolivaev Exp $ */
+/* $Id: EdgeAdapter.java,v 1.14.18.2.10.2 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -40,6 +40,12 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
     public static final int WIDTH_PARENT = -1;
 
     public static final int WIDTH_THIN = 0;
+    
+    public final static String EDGESTYLE_LINEAR = "linear";
+    public final static String EDGESTYLE_BEZIER = "bezier";
+    public final static String EDGESTYLE_SHARP_LINEAR = "sharp_linear";
+    public final static String EDGESTYLE_SHARP_BEZIER = "sharp_bezier";
+
 
     private static Color standardEdgeColor = new Color(0);
 

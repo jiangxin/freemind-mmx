@@ -7,15 +7,18 @@ package freemind.controller.filter;
 import javax.swing.AbstractButton;
 
 import freemind.controller.Controller;
+import freemind.controller.MapModuleManager;
 import freemind.controller.filter.condition.ConditionFactory;
 import freemind.controller.filter.condition.ConditionRenderer;
 import freemind.modes.MindMap;
+import freemind.modes.Mode;
+import freemind.view.MapModule;
 
 /**
  * @author dimitri
  *
  */
- public class FilterController {
+ public class FilterController implements MapModuleManager.MapModuleChangeOberser{
      private Controller c;
 	private FilterToolbar filterToolbar;
 	static private ConditionRenderer conditionRenderer = null;
@@ -24,6 +27,7 @@ import freemind.modes.MindMap;
 	
 	public FilterController(Controller c){
 		this.c = c;		
+        c.getMapModuleManager().addListener(this);
 	}
 
      ConditionRenderer getConditionRenderer() {
@@ -84,5 +88,20 @@ import freemind.modes.MindMap;
      */
     private void setFilterToolbar(FilterToolbar filterToolbar) {
         this.filterToolbar = filterToolbar;
+    }
+
+    public boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+        return true;
+    }
+
+    public void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+    }
+
+    public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+        if(newMapModule != null)
+        mapChanged(newMapModule.getModel());
+    }
+
+    public void numberOfOpenMapInformation(int number) {
     }
 }

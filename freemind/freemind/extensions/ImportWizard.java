@@ -31,8 +31,12 @@ import java.io.File;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import freemind.main.FreeMindMain;
+import freemind.modes.mindmapmode.hooks.MindMapHookFactory;
 
 /**
  * Converts an unqualified class name to import statements by scanning
@@ -46,6 +50,16 @@ public class ImportWizard {
 	public final String lookFor = ".xml";
 	/** Stores the list of all classes in the classpath */
 	public Vector CLASS_LIST = new Vector(500);
+	private final FreeMindMain mFrame;
+	private static Logger logger = null;
+	
+
+	public ImportWizard(FreeMindMain frame) {
+		this.mFrame = frame;
+		if(logger == null) {
+			logger = frame.getLogger(this.getClass().getName());
+		}
+	}
 
 	/** Build the list of classes */
 	//  static {
@@ -61,11 +75,12 @@ public class ImportWizard {
 		String classPath = System.getProperty("java.class.path");
 		String classPathSeparator = File.pathSeparator;
         // add the current dir to find more plugins
-        classPath=HookFactory.getFreemindBaseDir()+classPathSeparator+classPath;
+        classPath=MindMapHookFactory.getFreemindBaseDir()+classPathSeparator+classPath;
 
 		StringTokenizer st = new StringTokenizer(classPath, classPathSeparator);
 		while (st.hasMoreTokens()) {
 			String classPathEntry = st.nextToken();
+			logger.info("searching for plugins in: "+ classPathEntry);
 			File classPathFile = new File(classPathEntry);
 			if (classPathFile.exists()) {
 				if (classPathEntry.toLowerCase().endsWith(".jar")) {
@@ -171,7 +186,26 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.5  2005-04-12 21:12:14  christianfoltin
+ * Revision 1.1.4.5.6.1  2006-03-11 16:42:36  dpolivaev
+ * Merged with branch fm_041017_base_integration from 01 Mar 2006
+ *
+ * Revision 1.1.4.6  2006/01/12 23:10:12  christianfoltin
+ * * Refactoring: MindMap specific actions moved to mindmapmode.
+ * * Refactoring: Each Model comes with its specific ModeController.
+ * * Refactoring: Each mode has a default ModeController for the case that all maps are closed.
+ * * Refactoring: Each model has its own HookFactory.
+ * * Startup: ProgressBar added.
+ * * Browse Mode: Note viewer written.
+ * * Browse Mode: Encrypted node viewer written
+ * * Browse Mode: Reminder viewer written
+ * * Encryption: Bug fix for empty encrypted nodes.
+ * * New and revised translations nn and se (thanks to the authors)
+ * * New translation of the main documentation into german (thanks to the authors)
+ * * Clean up: Removed clipboard image export that has never worked.
+ * * Bug fix: Removing reminders call nodeChanged.
+ * * Documentation is opened in german, if german is the current language.
+ *
+ * Revision 1.1.4.5  2005/04/12 21:12:14  christianfoltin
  * * New feature: Time Scheduler list added.
  *
  * * Bug fix: revision plugin shutdown implemented.

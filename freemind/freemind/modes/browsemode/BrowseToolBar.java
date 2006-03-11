@@ -16,29 +16,44 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseToolBar.java,v 1.6 2003-11-03 11:00:13 sviles Exp $*/
+/* $Id: BrowseToolBar.java,v 1.6.28.1 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes.browsemode;
 
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JToolBar;
+import java.awt.event.ActionListener;
+import java.net.URL;
+
 import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.JToolBar;
+
+import freemind.modes.common.dialogs.PersistentEditableComboBox;
 
 public class BrowseToolBar extends JToolBar {
 
-    private BrowseController c;
-    JTextField urlfield = new JTextField();
+	public static final String BROWSE_URL_STORAGE_KEY = "browse_url_storage";
+
+	private BrowseController c;
+    private PersistentEditableComboBox urlfield = null;
 
     public BrowseToolBar(BrowseController controller) {
-	
+
 	this.c=controller;
+	urlfield = new PersistentEditableComboBox(controller, BROWSE_URL_STORAGE_KEY);
         this.setRollover(true);
 
 	urlfield.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-		    c.loadURL(urlfield.getText());		    
+			String urlText = urlfield.getText();
+			if("".equals(urlText))
+				return;
+		    try {
+                c.load(new URL(urlText));
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                //FIXME: Give a good error message.
+                c.getController().errorMessage(e1);
+            }
 		}
 	    });
 

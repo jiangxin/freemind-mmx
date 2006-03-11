@@ -4,32 +4,32 @@
  */
 package freemind.modes.attributes.mindmapmodeactors;
 
-import javax.xml.bind.JAXBException;
-
-import freemind.controller.actions.AbstractActorXml;
-import freemind.controller.actions.ActionPair;
+import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.DeleteAttributeElementaryAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ModeController;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.AbstractActorXml;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class RemoveAttributeActor extends AbstractActorXml {
 
-    public RemoveAttributeActor(ModeController modeController) {
-        super(modeController);
+    public RemoveAttributeActor(MindMapController mindMapModeController) {
+        super(mindMapModeController);
     }
     
     public XmlAction createAction(
-            NodeAttributeTableModel model, int row) throws JAXBException{
-        DeleteAttributeElementaryAction action = getActionXmlFactory().createDeleteAttributeElementaryAction();
+            NodeAttributeTableModel model, int row){
+        DeleteAttributeElementaryAction action = new DeleteAttributeElementaryAction();
         action.setNode(getNodeID(model.getNode()));
         action.setRow(row);
         return action;
     }
     
     public ActionPair createActionPair(
-            NodeAttributeTableModel model, int row) throws JAXBException{
+            NodeAttributeTableModel model, int row){
         String name = model.getAttribute(row).getName();
         String value = model.getAttribute(row).getValue();
         ActionPair actionPair = new ActionPair(

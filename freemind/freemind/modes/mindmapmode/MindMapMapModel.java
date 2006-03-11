@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.10.2.1.2.7 2006-01-22 12:24:39 dpolivaev Exp $*/
+/* $Id: MindMapMapModel.java,v 1.36.14.10.2.1.2.8 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -82,18 +82,21 @@ public class MindMapMapModel extends MapAdapter  {
     // Constructors
     //
 
-    public MindMapMapModel( FreeMindMain frame , ModeController modeController) {
+    public MindMapMapModel(FreeMindMain frame, ModeController modeController) {
+        this(new MindMapNodeModel( frame.getResourceString("new_mindmap"), frame, modeController.getMap()), frame, modeController );
+    }
+
+    public MindMapMapModel( MindMapNodeModel root, FreeMindMain frame, ModeController modeController ) {
         super(frame, modeController);
-        MindMapNodeModel root = new MindMapNodeModel( frame.getResourceString("new_mindmap"), frame, this);
-        lockManager = frame.getProperty("experimental_file_locking_on").equals("true") ? 
+        lockManager = frame.getProperty("experimental_file_locking_on").equals("true") ?
            new LockManager() : new DummyLockManager();
 
         // register new LinkRegistryAdapter
         linkRegistry = new LinkRegistryAdapter();
 
         setRoot(root);
-        readOnly = false; 
-        
+        readOnly = false;
+
         // automatic save:
         timerForAutomaticSaving = new Timer();
         int delay = Integer.parseInt(getFrame().getProperty("time_for_automatic_save"));
@@ -120,7 +123,7 @@ public class MindMapMapModel extends MapAdapter  {
         timerForAutomaticSaving.schedule(new doAutomaticSave(this, numberOfTempFiles, filesShouldBeDeletedAfterShutdown, dirToStore), delay, delay);
     }
 
-    // 
+    //
 
     public MindMapLinkRegistry getLinkRegistry() {
         return linkRegistry;
@@ -141,7 +144,7 @@ public class MindMapMapModel extends MapAdapter  {
     //
 
 
-   public boolean saveHTML(MindMapNodeModel rootNodeOfBranch, File file) { 
+   public boolean saveHTML(MindMapNodeModel rootNodeOfBranch, File file) {
         // When isRoot is true, rootNodeOfBranch will be exported as folded
         // regardless his isFolded state in the mindmap.
         try {
@@ -192,7 +195,7 @@ public class MindMapMapModel extends MapAdapter  {
                  rootNodeOfBranch.hasFoldedStrictDescendant() ) ||
                htmlExportFoldingOption.equals("html_export_fold_all") ;
 
-            if (writeFoldingCode) { 
+            if (writeFoldingCode) {
                fileout.write(
 ""+el+
 "<script language=\"JavaScript\">"+el+
@@ -291,7 +294,7 @@ public class MindMapMapModel extends MapAdapter  {
 "}"+el+
 ""+el+
 "</script>"+el);
-               
+
                fileout.write("<SPAN class=foldspecial onclick=\"fold_document()\">All +</SPAN>"+el);
                fileout.write("<SPAN class=foldspecial onclick=\"unfold_document()\">All -</SPAN>"+el); }
 
@@ -335,7 +338,7 @@ public class MindMapMapModel extends MapAdapter  {
         }
     }
 
-   public boolean saveTXT(MindMapNodeModel rootNodeOfBranch, File file) { 
+   public boolean saveTXT(MindMapNodeModel rootNodeOfBranch, File file) {
         // Returns success of the operation.
         try {
             BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
@@ -365,7 +368,7 @@ public class MindMapMapModel extends MapAdapter  {
         }
     }
 
-   public boolean saveRTF(List mindMapNodes, BufferedWriter fileout) { 
+   public boolean saveRTF(List mindMapNodes, BufferedWriter fileout) {
         // Returns success of the operation.
         try {
 
@@ -408,19 +411,19 @@ public class MindMapMapModel extends MapAdapter  {
     public boolean save(File file) {
         return saveInternal(file, false);
     }
-    
+
     /** This method is intended to provide both normal save routines and saving of temporary (internal) files.*/
     private boolean saveInternal(File file, boolean isInternal) {
         if (!isInternal && readOnly) { // unexpected situation, yet it's better to back it up
-            System.err.println("Attempt to save read-only map.");           
+            System.err.println("Attempt to save read-only map.");
             return false; }
-        try {            
-            //Generating output Stream            
+        try {
+            //Generating output Stream
             BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
             getXml(fileout);
 
             if(!isInternal) {
-                setFile(file);            
+                setFile(file);
                 setSaved(true);
             }
             return true;
@@ -430,7 +433,7 @@ public class MindMapMapModel extends MapAdapter  {
                 getFrame().getController().errorMessage(message);
             else
                 getFrame().out(message);
-            return false; 
+            return false;
         } catch(Exception e) {
             System.err.println("Error in MindMapMapModel.save(): ");
             e.printStackTrace();
@@ -459,17 +462,18 @@ public class MindMapMapModel extends MapAdapter  {
      * @throws Exception, when the locking failed for other reasons than that the
      * file is being edited.
      */
-    public String tryToLock(File file) throws Exception {       
+    public String tryToLock(File file) throws Exception {
         String lockingUser = lockManager.tryToLock(file);
-        String lockingUserOfOldLock = lockManager.popLockingUserOfOldLock(); 
-        if (lockingUserOfOldLock != null) {     
+        String lockingUserOfOldLock = lockManager.popLockingUserOfOldLock();
+        if (lockingUserOfOldLock != null) {
           getFrame().getController().informationMessage(
             Tools.expandPlaceholders(getText("locking_old_lock_removed"), file.getName(), lockingUserOfOldLock)); }
-        if (lockingUser == null) {          
-          readOnly = false; } // The map sure is not read only when the locking suceeded.                   
+        if (lockingUser == null) {
+          readOnly = false; } // The map sure is not read only when the locking suceeded.
         return lockingUser; }
-                
-    public void load(File file) throws FileNotFoundException, IOException, XMLParseException {
+
+    public void load(URL url) throws FileNotFoundException, IOException, XMLParseException {
+        File file = new File(url.getFile());
        if (!file.exists()) {
           throw new FileNotFoundException(Tools.expandPlaceholders(getText("file_not_found"), file.getPath())); }
        if (!file.canWrite()) {
@@ -478,35 +482,40 @@ public class MindMapMapModel extends MapAdapter  {
           // try to lock the map
           try {
              String lockingUser = tryToLock(file);
-             if (lockingUser != null) {          
+             if (lockingUser != null) {
                getFrame().getController().informationMessage(
                  Tools.expandPlaceholders(getText("map_locked_by_open"), file.getName(), lockingUser));
                readOnly = true; }
              else {
-               readOnly = false; }}            
+               readOnly = false; }}
           catch (Exception e){ // Throwed by tryToLock
              e.printStackTrace();
              getFrame().getController().informationMessage(
-               Tools.expandPlaceholders(getText("locking_failed_by_open"), file.getName()));   
+               Tools.expandPlaceholders(getText("locking_failed_by_open"), file.getName()));
              readOnly = true; }}
-       
+
        MindMapNodeModel root = loadTree(file);
        if (root != null) {
-          setRoot(root); }
+          setRoot(root);
+          ((MindMapController) mModeController).invokeHooksRecursively(
+                  root, this);
+
+       }
        setFile(file);
-       setSaved(true); } 
-    
+       setSaved(true); }
+
     /** When a map is closed, this method is called. */
     public void destroy() {
        super.destroy();
        lockManager.releaseLock();
-       lockManager.releaseTimer(); 
+       lockManager.releaseTimer();
        /* cancel the timer, if map is closed. */
-       timerForAutomaticSaving.cancel(); 
+       timerForAutomaticSaving.cancel();
     }
 
     MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
-        MindMapXMLElement mapElement = new MindMapXMLElement(getFrame(), this);
+        MindMapXMLElement mapElement = new MindMapXMLElement(mModeController);
+        // FIXME: fc, 27.8.2005: this is for 0.8.0 only. Remove me ASAP.
         int versionInfoLength = EXPECTED_START_STRINGS[0].length();
         // reading the start of the file:
         StringBuffer buffer = readFileStart(file, versionInfoLength);
@@ -521,7 +530,7 @@ public class MindMapMapModel extends MapAdapter  {
                 // actual version:
                 reader = getActualReader(file);
                 break;
-            } 
+            }
         }
         if (reader == null) {
             // other version:
@@ -572,12 +581,12 @@ public class MindMapMapModel extends MapAdapter  {
 		return buffer;
     }
 
-    
+
 
     /** Creates a reader that pipes the input file through a XSLT-Script that
      *  updates the version to the current.
      * @param file
-     * @return 
+     * @return
      * @throws IOException
      */
     private Reader getUpdateReader(File file) throws IOException {
@@ -646,45 +655,45 @@ public class MindMapMapModel extends MapAdapter  {
 
 
     private class LockManager extends TimerTask {
-        File lockedSemaphoreFile = null;        
+        File lockedSemaphoreFile = null;
         Timer lockTimer = null;
         final long lockUpdatePeriod = 4*60*1000; // four minutes
         final long lockSafetyPeriod = 5*60*1000; // five minutes
-        String lockingUserOfOldLock = null;    
-                
-        private File getSemaphoreFile(File mapFile) {       
+        String lockingUserOfOldLock = null;
+
+        private File getSemaphoreFile(File mapFile) {
             return new File(mapFile.getParent()+System.getProperty("file.separator")+
                             "$~"+mapFile.getName()+"~"); }
-                            
+
         public synchronized String popLockingUserOfOldLock() {
             String toReturn = lockingUserOfOldLock;
             lockingUserOfOldLock = null;
-            return toReturn; }  
+            return toReturn; }
 
         private void writeSemaphoreFile(File inSemaphoreFile) throws Exception {
             FileOutputStream semaphoreOutputStream = new FileOutputStream(inSemaphoreFile);
             FileLock lock = null;
             try {
-               lock = semaphoreOutputStream.getChannel().tryLock(); 
+               lock = semaphoreOutputStream.getChannel().tryLock();
                if (lock == null) {
                   semaphoreOutputStream.close();
-                  System.err.println("Locking failed.");                  
+                  System.err.println("Locking failed.");
                   throw new Exception(); }} // locking failed
             catch (UnsatisfiedLinkError eUle) {}  // This may come with Windows95. We don't insist on detailed locking in that case.
             catch (NoClassDefFoundError eDcdf) {} // ^ just like above.
             // ^ On Windows95, the necessary libraries are missing.
             semaphoreOutputStream.write(System.getProperty("user.name").getBytes());
             semaphoreOutputStream.write('\n');
-            semaphoreOutputStream.write(String.valueOf(System.currentTimeMillis()).getBytes());         
+            semaphoreOutputStream.write(String.valueOf(System.currentTimeMillis()).getBytes());
             semaphoreOutputStream.close();
             semaphoreOutputStream = null;
-            Tools.setHidden(inSemaphoreFile, true, /*synchro=*/false); // Exception free  
+            Tools.setHidden(inSemaphoreFile, true, /*synchro=*/false); // Exception free
             if (lock != null) lock.release(); }
-                                    
+
         public synchronized String tryToLock(File file) throws Exception {
             // Locking should work for opening as well as for saving as.
             // We are especially carefull when it comes to exclusivity of writing.
-                 
+
             File semaphoreFile = getSemaphoreFile(file);
             if (semaphoreFile == lockedSemaphoreFile) {
                 return null ; }
@@ -706,11 +715,11 @@ public class MindMapMapModel extends MapAdapter  {
 
             if (lockTimer == null) {
               lockTimer = new Timer();
-              lockTimer.schedule(this, lockUpdatePeriod, lockUpdatePeriod); }                   
+              lockTimer.schedule(this, lockUpdatePeriod, lockUpdatePeriod); }
             releaseLock();
             lockedSemaphoreFile = semaphoreFile;
             return null; }
-               
+
         public synchronized void releaseLock() {
            if (lockedSemaphoreFile != null) {
               lockedSemaphoreFile.delete();
@@ -720,11 +729,11 @@ public class MindMapMapModel extends MapAdapter  {
             if (lockTimer != null) {
               lockTimer.cancel();
               lockTimer = null; }}
-               
-        public synchronized void run() { // update semaphore file           
+
+        public synchronized void run() { // update semaphore file
             if (lockedSemaphoreFile == null) {
                 System.err.println("unexpected: lockedSemaphoreFile is null upon lock update");
-                return; }           
+                return; }
             try {
                Tools.setHidden(lockedSemaphoreFile, false, /*synchro=*/true); // Exception free
                // ^ We unhide the file before overwriting because JavaRE1.4.2 does
@@ -732,21 +741,21 @@ public class MindMapMapModel extends MapAdapter  {
                // I guess.
 
                writeSemaphoreFile(lockedSemaphoreFile); }
-            catch (Exception e) {e.printStackTrace();}}         
-    }   
+            catch (Exception e) {e.printStackTrace();}}
+    }
     private class DummyLockManager extends LockManager {
         public synchronized String popLockingUserOfOldLock() {
-            return null; }  
-                                    
+            return null; }
+
         public synchronized String tryToLock(File file) throws Exception {
             return null; }
-               
+
         public synchronized void releaseLock() {}
-            
+
         public synchronized void releaseTimer() {}
-               
+
         public synchronized void run() {}
-    }   
+    }
 
     private class doAutomaticSave  extends TimerTask {
         private MindMapMapModel model;

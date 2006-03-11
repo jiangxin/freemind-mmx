@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.10.2.2.2.16 2005-12-26 10:08:12 dpolivaev Exp $*/
+/* $Id: NodeView.java,v 1.27.14.10.2.2.2.17 2006-03-11 16:42:38 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -53,6 +53,7 @@ import freemind.controller.Controller;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.modes.EdgeAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
@@ -66,13 +67,13 @@ import freemind.view.mindmapview.attributeview.AttributeView;
  * TreeCellRenderer).
  */
 public abstract class NodeView extends JComponent{
-    
+
 	private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
 	private static final int MIN_HOR_NODE_SIZE = 10;
     protected MindMapNode model;
     protected MapView map;
     protected EdgeView edge;
-    private JLabel mainView; 
+    private JLabel mainView;
     private AttributeView attributeView;
     /** the Color of the Rectangle of a selected Node */
 	protected final static Color selectedColor = new Color(210,210,210); //Color.lightGray;
@@ -91,11 +92,11 @@ public abstract class NodeView extends JComponent{
 	protected int treeWidth = 0;
 	protected int treeHeight = 0;
     int relYPos = 0;//the relative Y Position to it's parent
-    
+
 	protected int upperChildShift = 0;
     private boolean left = true; //is the node left of root?
     private boolean isLong = false;
-    
+
     public final static int DRAGGED_OVER_NO = 0;
     public final static int DRAGGED_OVER_SON = 1;
     public final static int DRAGGED_OVER_SIBLING = 2;
@@ -113,11 +114,11 @@ public abstract class NodeView extends JComponent{
 	final static int ALIGN_BOTTOM = -1;
 	final static int ALIGN_CENTER = 0;
 	final static int ALIGN_TOP = 1;
-    
+
     //
     // Constructors
     //
-    
+
     private static Color standardSelectColor;
     private static Color standardNodeColor;
     private Object viewDeletionEvent;
@@ -165,13 +166,13 @@ public abstract class NodeView extends JComponent{
 
 	//Root has no edge
 	if (!isRoot()) {
-	    if (getModel().getEdge().getStyle().equals("linear")) {
+	    if (getModel().getEdge().getStyle().equals(EdgeAdapter.EDGESTYLE_LINEAR)) {
 		edge = new LinearEdgeView(getParentView(),this);
-	    } else if (getModel().getEdge().getStyle().equals("bezier")) {
+	    } else if (getModel().getEdge().getStyle().equals(EdgeAdapter.EDGESTYLE_BEZIER)) {
 		edge = new BezierEdgeView(getParentView(),this);
-	    } else if (getModel().getEdge().getStyle().equals("sharp_linear")) {
+	    } else if (getModel().getEdge().getStyle().equals(EdgeAdapter.EDGESTYLE_SHARP_LINEAR)) {
 		edge = new SharpLinearEdgeView(getParentView(),this);
-	    } else if (getModel().getEdge().getStyle().equals("sharp_bezier")) {
+	    } else if (getModel().getEdge().getStyle().equals(EdgeAdapter.EDGESTYLE_SHARP_BEZIER)) {
 		edge = new SharpBezierEdgeView(getParentView(),this);
 	    } else {
 		System.err.println("Unknown Edge Type.");
@@ -184,14 +185,14 @@ public abstract class NodeView extends JComponent{
 
 	addDragListener( map.getNodeDragListener() );
 	addDropListener( map.getNodeDropListener() );
-	
+
 	attributeView = new AttributeView(this);
     }
-    
+
     protected void addToMap(){
     	map.add(this);
     }
-    
+
     protected void removeFromMap(){
         setFocusCycleRoot(false);
     	map.remove(this);
@@ -199,7 +200,7 @@ public abstract class NodeView extends JComponent{
 
     void addDragListener(DragGestureListener dgl) {
 	DragSource dragSource = DragSource.getDefaultDragSource();
-	dragSource.createDefaultDragGestureRecognizer 
+	dragSource.createDefaultDragGestureRecognizer
            (getMainView(), DnDConstants.ACTION_COPY | DnDConstants.ACTION_MOVE | DnDConstants.ACTION_LINK ,dgl);
     }
 
@@ -210,7 +211,7 @@ public abstract class NodeView extends JComponent{
 
     /**
      * Factory method which creates the right NodeView for the model.
-     */ 
+     */
     protected static NodeView newNodeView(MindMapNode model, MapView map) {
 	NodeView newView;
 	if (model.isRoot()) {
@@ -240,24 +241,24 @@ public abstract class NodeView extends JComponent{
      }
 
     /** Determines whether or not the xCoord is in the part p of the node:
-     *  if node is on the left: part [1-p,1] 
+     *  if node is on the left: part [1-p,1]
      *  if node is on the right: part[  0,p] of the total width.
      */
     public boolean isInVerticalRegion(double xCoord, double p) {
         return isLeft() ?
            xCoord > getSize().width*(1.0-p) :
-           xCoord < getSize().width*p; 
+           xCoord < getSize().width*p;
      }
 
     /** @return true if should be on the left, false otherwise. */
     public boolean dropPosition (double xCoord) {
         /* here it is the same as me. */
-       return isLeft(); 
+       return isLeft();
     }
 
     public boolean isInFollowLinkRegion(double xCoord) {
        return getModel().getLink() != null &&
-          (getModel().isRoot() || !getModel().hasChildren() || isInVerticalRegion(xCoord, 1./2)); 
+          (getModel().isRoot() || !getModel().hasChildren() || isInVerticalRegion(xCoord, 1./2));
     }
 
     /**
@@ -281,15 +282,15 @@ public abstract class NodeView extends JComponent{
         return isLong; }
 
     /* fc, 25.1.2004: Refactoring necessary: should call the model. */
-    public boolean isSiblingOf(NodeView myNodeView) { 
+    public boolean isSiblingOf(NodeView myNodeView) {
        return getParentView() == myNodeView.getParentView(); }
 
     /* fc, 25.1.2004: Refactoring necessary: should call the model. */
-    public boolean isChildOf(NodeView myNodeView) { 
+    public boolean isChildOf(NodeView myNodeView) {
        return getParentView() == myNodeView; }
 
     /* fc, 25.1.2004: Refactoring necessary: should call the model. */
-    public boolean isParentOf(NodeView myNodeView) { 
+    public boolean isParentOf(NodeView myNodeView) {
        return (this == myNodeView.getParentView()); }
 
     public MindMapNode getModel() {
@@ -305,12 +306,12 @@ public abstract class NodeView extends JComponent{
 	}
 	private void getCoordinates(LinkedList inList, int additionalDistanceForConvexHull, boolean byChildren) {
 	    if (! isVisible()) return;
-	    
+
 		MindMapCloud cloud = getModel().getCloud();
 
 		// consider existing clouds of children
 		if (byChildren && cloud != null){
-			additionalDistanceForConvexHull  += CloudView.getAdditionalHeigth(cloud, this) / 2; 
+			additionalDistanceForConvexHull  += CloudView.getAdditionalHeigth(cloud, this) / 2;
 		}
         final int x = getXWithFoldingMark();
         final int y = getYWithFoldingMark();
@@ -320,14 +321,14 @@ public abstract class NodeView extends JComponent{
         inList.addLast(new Point( -additionalDistanceForConvexHull + x             ,   additionalDistanceForConvexHull + y + height));
         inList.addLast(new Point(  additionalDistanceForConvexHull + x + width,   additionalDistanceForConvexHull + y + height));
         inList.addLast(new Point(  additionalDistanceForConvexHull + x + width,  -additionalDistanceForConvexHull + y              ));
-		
+
         LinkedList childrenViews = getChildrenViews(true);
         ListIterator children_it = childrenViews.listIterator();
         while(children_it.hasNext()) {
             NodeView child = (NodeView)children_it.next();
 	        child.getCoordinates(inList, additionalDistanceForConvexHull, true);
         }
-    }   
+    }
     protected Dimension getMainViewPreferredSize() {
         boolean isEmpty = getText().length() == 0;
         if(isEmpty){
@@ -336,7 +337,7 @@ public abstract class NodeView extends JComponent{
     	Dimension prefSize = mainView.getPreferredSize();
         if(map.isCurrentlyPrinting() && NEED_PREF_SIZE_BUG_FIX) {
         	prefSize.width += (int)(10f*map.getZoom());
-        } 
+        }
         prefSize.width = Math.max(map.getZoomed(MIN_HOR_NODE_SIZE), prefSize.width);
         if (isEmpty){
             setText("");
@@ -345,12 +346,12 @@ public abstract class NodeView extends JComponent{
 		prefSize.height += 4;
         return prefSize;
     }
-    
+
     /**
      * @param string
      */
     public void setText(String string) {
-        mainView.setText(string);        
+        mainView.setText(string);
     }
     /**
      * @return
@@ -363,33 +364,34 @@ public abstract class NodeView extends JComponent{
 	{
 		return mainView.getWidth();
 	}
-  
-	/** get height including folding symbol */	
+
+	/** get height including folding symbol */
 	protected int getMainViewHeightWithFoldingMark()
 	{
 	    return mainView.getHeight();
 	}
-  
-	/** get x coordinate including folding symbol */	
+
+	/** get x coordinate including folding symbol */
 	public int getDeltaX()
 	{
 		return 0;
 	}
-  
-	/** get y coordinate including folding symbol */	
+
+	/** get y coordinate including folding symbol */
 	public int getDeltaY()
 	{
 		return 0;
 	}
 
-  
+
    public void requestFocus(){
-      map.getController().getMode().getModeController().anotherNodeSelected(getModel());
+      mainView. requestFocus();
+      map.getModel().getModeController().anotherNodeSelected(getModel());
       mainView. requestFocus();
    }
 
-   /** draw folding symbol */	
-	public void paintFoldingMark(Graphics2D g){ 
+   /** draw folding symbol */
+	public void paintFoldingMark(Graphics2D g){
 	}
 
     public void paint(Graphics graphics) {
@@ -420,57 +422,57 @@ public abstract class NodeView extends JComponent{
 
 	protected void paintBackground(Graphics2D graphics, Color color) {
 		graphics.setColor(color);
-		graphics.fillRect(getMainView().getX(), getMainView().getY(), getMainView().getWidth(), getMainView().getHeight());		
+		graphics.fillRect(getMainView().getX(), getMainView().getY(), getMainView().getWidth(), getMainView().getHeight());
 	}
 
 
    public void paintDragOver(Graphics2D graphics) {
         if (isDraggedOver == DRAGGED_OVER_SON) {
            if (isLeft()) {
-              graphics.setPaint( 
+              graphics.setPaint(
                       new GradientPaint(
                               getMainView().getX() + getMainView().getWidth()*3/4,
                               getMainView().getY(),
-                              map.getBackground(), 
-                              getMainView().getX() + getMainView().getWidth()/4, 
-                              getMainView().getY(), 
+                              map.getBackground(),
+                              getMainView().getX() + getMainView().getWidth()/4,
+                              getMainView().getY(),
                               dragColor));
               graphics.fillRect(
-                      getMainView().getX(), 
-                      getMainView().getY(), 
-                      getMainView().getWidth()*3/4, 
+                      getMainView().getX(),
+                      getMainView().getY(),
+                      getMainView().getWidth()*3/4,
                       getMainView().getHeight()-1); }
            else {
-              graphics.setPaint( 
+              graphics.setPaint(
                       new GradientPaint(
                               getMainView().getX() + getMainView().getWidth()/4,
                               getMainView().getY() ,
-                              map.getBackground(), 
-                              getMainView().getX() + getMainView().getWidth()*3/4, 
-                              getMainView().getY(), 
+                              map.getBackground(),
+                              getMainView().getX() + getMainView().getWidth()*3/4,
+                              getMainView().getY(),
                               dragColor)
                               );
               graphics.fillRect(
-                      getMainView().getX() + getMainView().getWidth()/4, 
-                      getMainView().getY(), getMainView().getWidth()-1, 
+                      getMainView().getX() + getMainView().getWidth()/4,
+                      getMainView().getY(), getMainView().getWidth()-1,
                       getMainView().getHeight()-1);
-              }       
+              }
 	}
 
         if (isDraggedOver == DRAGGED_OVER_SIBLING) {
-            graphics.setPaint( 
+            graphics.setPaint(
                     new GradientPaint(
-                            getMainView().getX(), 
+                            getMainView().getX(),
                             getMainView().getY()+getMainView().getHeight()*3/5,
-                            map.getBackground(), 
-                            getMainView().getX(), 
-                            getMainView().getY() + getMainView().getHeight()/5, 
+                            map.getBackground(),
+                            getMainView().getX(),
+                            getMainView().getY() + getMainView().getHeight()/5,
                             dragColor)
                             );
             graphics.fillRect(
-                    getMainView().getX(), 
-                    getMainView().getY(), 
-                    getMainView().getWidth()-1, 
+                    getMainView().getX(),
+                    getMainView().getY(),
+                    getMainView().getWidth()-1,
                     getMainView().getHeight()-1);
 	}
     }
@@ -484,14 +486,14 @@ public abstract class NodeView extends JComponent{
      */
 	public int getAdditionalCloudHeigth() {
 		MindMapCloud cloud = getModel().getCloud();
-		if( cloud!= null) { 
+		if( cloud!= null) {
 			return CloudView.getAdditionalHeigth(cloud, this);
-		} else {           
+		} else {
 			return 0;
 		}
 	}
 
- 
+
     public boolean isSelected() {
 	return (getMap().isSelected(this));
     }
@@ -507,11 +509,11 @@ public abstract class NodeView extends JComponent{
         //this.left = left;
         getModel().setLeft(left);
     }
-	
+
 //     public boolean isLeftDefault() {
 //         return getModel().isLeft() == null;
 //     }
-    
+
     protected void setModel( MindMapNode model ) {
 	this.model = model;
     }
@@ -534,9 +536,9 @@ public abstract class NodeView extends JComponent{
 
     boolean isParentHidden(){
         NodeView parentView = getModel().getParentNode().getViewer();
-        return parentView != null && ! parentView.isVisible();        
+        return parentView != null && ! parentView.isVisible();
     }
-    
+
     public NodeView getParentView() {
         NodeView parentView = getModel().getParentNode().getViewer();
         if (parentView == null || parentView.isVisible()) return parentView;
@@ -579,14 +581,14 @@ public abstract class NodeView extends JComponent{
             return new Point(getX(), getY() + getMainView().getHeight() - 2);
         } else {
             return new Point(getX() + getMainView().getWidth(), getY() + getMainView().getHeight() - 2);
-        } 
+        }
     }
 
-    
+
     /* fc, 26.06.2005 */
-    /** Returns the point the edge should start given the point of the child node 
+    /** Returns the point the edge should start given the point of the child node
      * that should be connected.
-     * @param destinationPoint the outpoint should point in the direction of destinationPoint 
+     * @param destinationPoint the outpoint should point in the direction of destinationPoint
      * @param isLeft TODO
      * @return
      */
@@ -594,7 +596,7 @@ public abstract class NodeView extends JComponent{
         return getOutPoint();
     }
     /* end fc, 26.06.2005 */
-    
+
     /**
      * Returns the Point where the InEdge should arrive the Node. THIS SHOULD BE
      * DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
@@ -604,9 +606,9 @@ public abstract class NodeView extends JComponent{
             return new Point(getX() + getMainView().getWidth(), getY() + getMainView().getHeight() - 2);
         } else {
             return new Point(getX(), getY() + getMainView().getHeight() - 2);
-        } 
+        }
     }
-    
+
 
     /**
      * Returns the Point where the Links should arrive the Node. THIS SHOULD BE
@@ -638,12 +640,12 @@ public abstract class NodeView extends JComponent{
 				absLinkX = size.width / 2;
 				absLinkY = Math.abs(y*size.width / (2 * x));
 			}
-			return new Point(getX() + size.width / 2 + (x>0 ? absLinkX : -absLinkX), 
-							getY() + size.height / 2 + (y>0 ? absLinkY : -absLinkY));	
+			return new Point(getX() + size.width / 2 + (x>0 ? absLinkX : -absLinkX),
+							getY() + size.height / 2 + (y>0 ? absLinkY : -absLinkY));
 		}
 		else{
-			return new Point(getX() + (x>0 ? size.width:0), 
-			                 getY() + (size.height / 2));	
+			return new Point(getX() + (x>0 ? size.width:0),
+			                 getY() + (size.height / 2));
 		}
     }
 
@@ -656,7 +658,7 @@ public abstract class NodeView extends JComponent{
 	    return ALIGN_CENTER;
 	return ALIGN_BOTTOM;
     }
-	
+
     //
     // Navigation
     //
@@ -672,14 +674,14 @@ public abstract class NodeView extends JComponent{
 //        return sibling; // sibling on another page (has different parent)
 //      }
       NodeView nextSibling = sibling.getNextSibling();
-      while (nextSibling != sibling 
+      while (nextSibling != sibling
               && sibling.getParentView() == nextSibling.getParentView()) {
         sibling = nextSibling;
         nextSibling = nextSibling.getNextSibling();
       }
       return sibling; // last on the page
     }
-      
+
     protected NodeView getPreviousPage() {
       if (isRoot()) {
         return this; // I'm root
@@ -692,30 +694,30 @@ public abstract class NodeView extends JComponent{
 //        return sibling; // sibling on another page (has different parent)
 //      }
       NodeView previousSibling = sibling.getPreviousSibling();
-      while (previousSibling != sibling 
+      while (previousSibling != sibling
               && sibling.getParentView() == previousSibling.getParentView()) {
         sibling = previousSibling;
         previousSibling = previousSibling.getPreviousSibling();
       }
       return sibling; // last on the page
     }
-    
+
     protected NodeView getNextSibling() {
       NodeView sibling;
       NodeView nextSibling = this;
-      
+
       // get next sibling even in higher levels
-      for (sibling = this; !sibling.isRoot(); sibling = sibling.getParentView()) { 
+      for (sibling = this; !sibling.isRoot(); sibling = sibling.getParentView()) {
         nextSibling = sibling.getNextSiblingSingle();
         if (sibling != nextSibling) {
           break; // found sibling
         }
       }
-      
+
       if (sibling.isRoot()) {
         return this;  // didn't find (we are at the end)
       }
-      
+
       // we have the nextSibling, search in childs
       // untill: leaf, closed node, max level
       sibling = nextSibling;
@@ -732,19 +734,19 @@ public abstract class NodeView extends JComponent{
     protected NodeView getPreviousSibling() {
       NodeView sibling;
       NodeView previousSibling = this;
-      
+
       // get Previous sibling even in higher levels
-      for (sibling = this; !sibling.isRoot(); sibling = sibling.getParentView()) { 
+      for (sibling = this; !sibling.isRoot(); sibling = sibling.getParentView()) {
         previousSibling = sibling.getPreviousSiblingSingle();
         if (sibling != previousSibling) {
           break; // found sibling
         }
       }
-      
+
       if (sibling.isRoot()) {
         return this;  // didn't find (we are at the end)
       }
-      
+
       // we have the PreviousSibling, search in childs
       // untill: leaf, closed node, max level
       sibling = previousSibling;
@@ -768,7 +770,7 @@ public abstract class NodeView extends JComponent{
 	    }
 	} else {
 	    v = getParentView().getChildrenViews(true);
-	}	
+	}
 	NodeView sibling;
 	if (v.size()-1 == v.indexOf(this)) { //this is last, return first
 //	    sibling = (NodeView)v.getFirst(); // loop
@@ -806,7 +808,7 @@ public abstract class NodeView extends JComponent{
 
     void insert() {
        ListIterator it = getModel().childrenFolded();
-       while(it.hasNext()) {               
+       while(it.hasNext()) {
           insert((MindMapNode)it.next());
        }
     }
@@ -827,7 +829,7 @@ public abstract class NodeView extends JComponent{
           newView.insert(child);
        }
     }
-    
+
     /**
      * This is a bit problematic, because getChildrenViews() only works if model
      * is not yet removed. (So do not _really_ delete the model before the view
@@ -849,104 +851,107 @@ public abstract class NodeView extends JComponent{
             	color = standardNodeColor;
             }
             setForeground(color);
-    
-            // 2) icons left or right? 
+
+            // 2) icons left or right?
             getMainView().setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
             // 3) Create the icons:
             MultipleImage iconImages = new MultipleImage(map.getZoom());
             boolean iconPresent = false;
             /* fc, 06.10.2003: images? */
+
+        FreeMindMain frame = map.getController().getFrame();
+        Map stateIcons = (getModel()).getStateIcons();
+        for (Iterator i = stateIcons.keySet().iterator(); i.hasNext();) {
+            String key = (String) i.next();
+            iconPresent = true;
+            ImageIcon myIcon = (ImageIcon) stateIcons.get(key);
+            iconImages.addImage(myIcon);  
             
-            FreeMindMain frame = map.getController().getFrame();
-            Map stateIcons = (getModel()).getStateIcons();
-            for (Iterator i = stateIcons.keySet().iterator(); i.hasNext();) {
-                String key = (String) i.next();
-                iconPresent = true;
-                ImageIcon myIcon = (ImageIcon) stateIcons.get(key);
-                iconImages.addImage(myIcon);  
-                
-            }
-    
-            List icons = (getModel()).getIcons();
-            	for (Iterator i = icons.iterator(); i.hasNext();) {
-    			MindIcon myIcon = (MindIcon) i.next();
-                iconPresent = true;
-                iconImages.addImage(myIcon.getIcon());  
-            }
-            String link = ((NodeAdapter)getModel()).getLink();
-            if ( link != null ) 
-                {
-                    iconPresent = true;
-                    ImageIcon icon = new ImageIcon(frame.getResource
-                                              (link.startsWith("mailto:") ? "images/Mail.png" :
-                                               (Tools.executableByExtension(link) ? "images/Executable.png" :
-                                                "images/Link.png")));
-                    iconImages.addImage(icon); 
-                }
-    //         /* Folded icon by Matthias Schade (mascha2), fc, 20.12.2003*/
-    //         if (((NodeAdapter)getModel()).isFolded()) {
-    //             iconPresent = true;
-    //             ImageIcon icon = new
-    // ImageIcon(((NodeAdapter)getModel()).getFrame().getResource("images/Folded.png"));
-    //             iconImages.addImage(icon);
-    //         }
-            // DanielPolansky: set icon only if icon is present, because
-            // we don't want to insert any additional white space.
-            setIcon(iconPresent?iconImages:null);
-    
-            // 4) Determine font
-            Font font = getModel().getFont();
-            font = font == null ? map.getController().getDefaultFont() : font;
-            if (font != null) {
-               if (map.getZoom() != 1F) {
-                  font = font.deriveFont(font.getSize()*map.getZoom()); }
-               setFont(font); }
-            else {
-               // We can survive this trouble.
-               System.err.println("NodeView.update(): default font is null."); }
-    
-            // 5) Set the text
-            // Right now, this implementation is quite logical, although it allows
-            // for nonconvex feature of nodes starting with <html>.
-    
-    //        String nodeText = getModel().toString();
-            String nodeText = getModel().toString();
-     
-            // Tell if node is long and its width has to be restricted
-            // boolean isMultiline = nodeText.indexOf("\n") >= 0;
-            String[] lines = nodeText.split("\n");
-            boolean widthMustBeRestricted = false;
-    
-            lines = nodeText.split("\n");           
-            for (int line = 0; line < lines.length; line++)
+        }
+
+        List icons = (getModel()).getIcons();
+        	for (Iterator i = icons.iterator(); i.hasNext();) {
+			MindIcon myIcon = (MindIcon) i.next();
+            iconPresent = true;
+            //System.out.println("print the icon " + myicon.toString());
+            iconImages.addImage(myIcon.getIcon());
+        }
+        String link = ((NodeAdapter)getModel()).getLink();
+        if (link != null) {
+			iconPresent = true;
+			String iconPath = "images/Link.png";
+			if (link.startsWith("#")) {
+				iconPath = "images/LinkLocal.png";
+			} else if (link.startsWith("mailto:")) {
+				iconPath = "images/Mail.png";
+			} else if (Tools.executableByExtension(link)) {
+				iconPath = "images/Executable.png";
+			}
+			ImageIcon icon = new ImageIcon(frame.getResource(iconPath));
+			iconImages.addImage(icon);
+		}
+// /* Folded icon by Matthias Schade (mascha2), fc, 20.12.2003*/
+// if (((NodeAdapter)getModel()).isFolded()) {
+//             iconPresent = true;
+//             ImageIcon icon = new ImageIcon(((NodeAdapter)getModel()).getFrame().getResource("images/Folded.png"));
+//             iconImages.addImage(icon);
+//         }
+        // DanielPolansky: set icon only if icon is present, because
+        // we don't want to insert any additional white space.
+        setIcon(iconPresent?iconImages:null);
+
+        // 4) Determine font
+        Font font = getModel().getFont();
+        font = font == null ? map.getController().getDefaultFont() : font;
+        if (font != null) {
+           if (map.getZoom() != 1F) {
+              font = font.deriveFont(font.getSize()*map.getZoom()); }
+           setFont(font); }
+        else {
+           // We can survive this trouble.
+           System.err.println("NodeView.update(): default font is null."); }
+
+        // 5) Set the text
+        // Right now, this implementation is quite logical, although it allows
+        // for nonconvex feature of nodes starting with <html>.
+
+//        String nodeText = getModel().toString();
+        String nodeText = getModel().toString();
+
+        // Tell if node is long and its width has to be restricted
+        // boolean isMultiline = nodeText.indexOf("\n") >= 0;
+        String[] lines = nodeText.split("\n");
+        boolean widthMustBeRestricted = false;
+
+        lines = nodeText.split("\n");
+        for (int line = 0; line < lines.length; line++)
+        {
+            // Compute the width the node would spontaneously take,
+            // by preliminarily setting the text.
+            setText(lines[line]);
+            widthMustBeRestricted = getPreferredSize().width > map
+                    .getZoomed(map.getMaxNodeWidth());
+            if (widthMustBeRestricted)
             {
-                // Compute the width the node would spontaneously take,
-                // by preliminarily setting the text.
-                setText(lines[line]);
-                widthMustBeRestricted = getMainViewPreferredSize().width > map
-                        .getZoomed(map.getMaxNodeWidth());
-                if (widthMustBeRestricted)
-                {
                     break;
                 }
             }
-    
+
             isLong = widthMustBeRestricted || lines.length > 1;
-       
+
             if (nodeText.startsWith("<html>")) {
-               // Make it possible to use relative img references in HTML using tag
-               // <base>.
+           // Make it possible to use relative img references in HTML using tag <base>.
                if (nodeText.indexOf("<img")>=0 && nodeText.indexOf("<base ") < 0 ) {
                   try {
                      nodeText = "<html><base href=\""+
                         map.getModel().getURL()+"\">"+nodeText.substring(6); }
                   catch (MalformedURLException e) {} }
                setText(nodeText); }
-            else if (nodeText.startsWith("<table>")) {           	             	  
+            else if (nodeText.startsWith("<table>")) {
                lines[0] = lines[0].substring(7); // remove <table> tag
                int startingLine = lines[0].matches("\\s*") ? 1 : 0;
                // ^ If the remaining first line is empty, do not draw it
-               
+
                String text = "<html><table border=1 style=\"border-color: white\">";
                //String[] lines = nodeText.split("\n");
                for (int line = startingLine; line < lines.length; line++) {
@@ -954,13 +959,13 @@ public abstract class NodeView extends JComponent{
                      Tools.toXMLEscapedText(lines[line]).replaceAll("\t","<td style=\"border-color: white\">"); }
                setText(text); }
             else if (isLong) {
-               String text = "<tr><td>";              
+               String text = "<tr><td>";
                int maximumLineLength = 0;
                for (int line = 0; line < lines.length; line++) {
                   text += Tools.toXMLEscapedTextWithNBSPizedSpaces(lines[line]) + "<p>";
                   if (lines[line].length() > maximumLineLength) {
                      maximumLineLength = lines[line].length(); }}
-               
+
     			text += "</td></tr>";
                setText("<html><table"+
                        (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
@@ -974,8 +979,9 @@ public abstract class NodeView extends JComponent{
             // 9) Complete
             revalidate(); // Because of zoom?
         }
+
     /**
-     * 
+     *
      */
      /**
       * Updates the tool tip of the node.
@@ -1013,7 +1019,7 @@ public abstract class NodeView extends JComponent{
      * @param image
      */
     public void setIcon(MultipleImage image) {
-        mainView.setIcon(image);        
+        mainView.setIcon(image);
     }
     void updateAll() {
     update();
@@ -1033,7 +1039,7 @@ public abstract class NodeView extends JComponent{
    }
 
    abstract String getStyle() ;
-   
+
     /**
      * @return the shift of the tree root node relative to the middle of the
      *         tree because of the light shift of the children nodes
@@ -1059,10 +1065,9 @@ public abstract class NodeView extends JComponent{
     }
 
     public int getZoomedFoldingSymbolHalfWidth() {
-    	int preferredFoldingSymbolHalfWidth = map.getZoomedFoldingSymbolHalfWidth();
-        return Math.min(preferredFoldingSymbolHalfWidth, super.getPreferredSize().height / 2);
+        int preferredFoldingSymbolHalfWidth = map.getZoomedFoldingSymbolHalfWidth();
+        return Math.min(preferredFoldingSymbolHalfWidth, getPreferredSize().height / 2);
     }
-
     /**
      * @return returns the color that should used to select the node.
      */
@@ -1095,7 +1100,7 @@ public abstract class NodeView extends JComponent{
      * Ermittelt zu einer Farbe eine andere Farbe, die sich möglichst gut von
      * dieser abhebt. Diese Farbe unterscheidet sich auch von
      * {@link #getAntiColor2}.
-     * 
+     *
      * @since PPS 1.1.1
      */
    protected static Color getAntiColor1(Color c)
@@ -1112,7 +1117,7 @@ public abstract class NodeView extends JComponent{
    /**
     * Ermittelt zu einer Farbe eine andere Farbe, die sich möglichst gut von
     * dieser abhebt. Diese Farbe unterscheidet sich von {@link #getAntiColor1}.
-    * 
+    *
     * @since PPS 1.1.1
     */
   protected static Color getAntiColor2(Color c)
@@ -1133,12 +1138,12 @@ public abstract class NodeView extends JComponent{
   public int getShift() {
 	return map.getZoomed(model.calcShiftY());
 }
-  
+
 
     /**
      * @return Returns the VGAP.
      */
-	public int getVGap() {		
+	public int getVGap() {
         return  map.getZoomed(model.calcVGap());
 	}
 
@@ -1177,12 +1182,12 @@ public abstract class NodeView extends JComponent{
     /**
      * @return
      */
-    public AttributeView getAttributeView() {       
+    public AttributeView getAttributeView() {
         return attributeView;
     }
-    
+
 	public void setBounds(int x,	int y){
-		setLocation(x , y );	
+		setLocation(x , y );
 		Dimension prefSize = getPreferredSize();
 		setSize(prefSize);
 	}
@@ -1194,14 +1199,14 @@ public abstract class NodeView extends JComponent{
     }
     public Rectangle getBoundsWithFoldingMark() {
         Rectangle bounds = getBounds();
-        bounds.x -=  getDeltaX(); 
+        bounds.x -=  getDeltaX();
         bounds.y -=  getDeltaY();
         bounds.width = getWidthWithFoldingMark();
         bounds.height = getHeightWithFoldingMark();
         return bounds;
     }
     private int getHeightWithFoldingMark() {
-        int heightWithFoldingMark = getMainViewHeightWithFoldingMark();        
+        int heightWithFoldingMark = getMainViewHeightWithFoldingMark();
         return Math.max(heightWithFoldingMark, getHeight());
     }
     private int getWidthWithFoldingMark() {
@@ -1212,7 +1217,7 @@ public abstract class NodeView extends JComponent{
         syncronizeAttributeView();
         return super.getPreferredSize();
     }
-    
+
     void invalidateTreeGeometries(){
         setTreeHeight(0);
         if(! isRoot()){
@@ -1225,6 +1230,6 @@ public abstract class NodeView extends JComponent{
             NodeView child = (NodeView)e.next();
             child.invalidateDescendantsTreeGeometries();
         }
-        
+
     }
 }

@@ -4,28 +4,28 @@
  */
 package freemind.modes.attributes.mindmapmodeactors;
 
-import javax.xml.bind.JAXBException;
-
-import freemind.controller.actions.AbstractActorXml;
-import freemind.controller.actions.ActionPair;
+import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.SetAttributeVisibleElementaryAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ModeController;
+import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.AbstractActorXml;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class SetAttributeVisibleActor extends AbstractActorXml {
 
-    public SetAttributeVisibleActor(ModeController modeController) {
-        super(modeController);
+    public SetAttributeVisibleActor(MindMapController mindMapModeController) {
+        super(mindMapModeController);
     }
     
-    public XmlAction createAction(int index, boolean value) throws JAXBException{
-        SetAttributeVisibleElementaryAction action = getActionXmlFactory().createSetAttributeVisibleElementaryAction();
+    public XmlAction createAction(int index, boolean value){
+        SetAttributeVisibleElementaryAction action = new SetAttributeVisibleElementaryAction();
         action.setIndex(index);
         action.setIsVisible(value);
         return action;
     }
     
-    public ActionPair createActionPair(int index, boolean value) throws JAXBException{
+    public ActionPair createActionPair(int index, boolean value){
         final boolean previousValue = getAttributeRegistry().getElement(index).isVisible();
         ActionPair actionPair = new ActionPair(
                 createAction(index, value), 
@@ -36,7 +36,7 @@ public class SetAttributeVisibleActor extends AbstractActorXml {
     public void act(XmlAction action) {
         if(action instanceof SetAttributeVisibleElementaryAction){
             SetAttributeVisibleElementaryAction setAttributeVisibleAction = (SetAttributeVisibleElementaryAction)action;
-            act(setAttributeVisibleAction.getIndex(), setAttributeVisibleAction.isIsVisible());                    
+            act(setAttributeVisibleAction.getIndex(), setAttributeVisibleAction.getIsVisible());                    
         }
 
     }

@@ -16,13 +16,9 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Mode.java,v 1.8.18.1.6.1 2005-05-09 23:45:46 dpolivaev Exp $*/
+/* $Id: Mode.java,v 1.8.18.1.6.1.2.1 2006-03-11 16:42:37 dpolivaev Exp $ */
 
 package freemind.modes;
-
-import java.awt.Component;
-
-import javax.swing.JToolBar;
 
 import freemind.controller.Controller;
 
@@ -32,9 +28,13 @@ public interface Mode {
     public String toString();
     public void activate();
     public void restore(String restorable);
-    public ModeController getModeController();
+    /** Creates a new mode controller and returns it.
+     * @return
+     */
+    public ModeController createModeController();
+    /** This modeController is only used, when no map is opened.
+     * @return
+     */
+    public ModeController getDefaultModeController();
     public Controller getController();
-    public JToolBar getModeToolBar();
-    /** For the toolbar on the left hand side of the window.*/
-    public Component getLeftToolBar();
 }

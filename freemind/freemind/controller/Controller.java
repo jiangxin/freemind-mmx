@@ -16,14 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.10.2.3.2.11 2006-02-26 17:00:54 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.10.2.3.2.12 2006-03-11 16:42:36 dpolivaev Exp $*/
 
 package freemind.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -40,9 +39,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -50,7 +49,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -80,24 +78,19 @@ import javax.swing.WindowConstants;
 import freemind.controller.filter.FilterController;
 import freemind.controller.filter.FilterComposerDialog;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
-
-import freemind.common.JaxbTools;
-import freemind.controller.actions.generated.instance.ObjectFactory;
-import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
-import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.controller.attributes.AttributeManagerDialog;
+import freemind.controller.MapModuleManager.MapModuleChangeOberser;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.main.XMLParseException;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.ModesCreator;
+import freemind.modes.browsemode.BrowseController;
+import freemind.modes.browsemode.BrowseMode;
 import freemind.preferences.FreemindPropertyListener;
 import freemind.preferences.layout.OptionPanel;
 import freemind.preferences.layout.OptionPanel.OptionPanelFeedback;
@@ -108,15 +101,14 @@ import freemind.view.mindmapview.MapView;
  * Provides the methods to edit/change a Node.
  * Forwards all messages to MapModel(editing) or MapView(navigation).
  */
-public class Controller {
+public class Controller  implements MapModuleChangeOberser {
 
     private static Logger logger;
-	private ObjectFactory actionXmlFactory;
     private static JColorChooser colorChooser = new JColorChooser();
 	private LastOpenedList lastOpened;//A list of the pathnames of all the maps that were opened in the last time
     private MapModuleManager mapModuleManager;// new MapModuleManager();
-    private HistoryManager history = new HistoryManager();
-    private Mode mode; //The current mode
+    /**  The current mode */
+    private Mode mMode; 
     private FreeMindMain frame;
     private JToolBar toolbar;
     private JToolBar filterToolbar;
@@ -128,7 +120,7 @@ public class Controller {
     private NodeDropListener nodeDropListener;
     private MapMouseMotionListener mapMouseMotionListener;
     private MapMouseWheelListener mapMouseWheelListener;
-    private ModesCreator modescreator = new ModesCreator(this);
+    private ModesCreator mModescreator = new ModesCreator(this);
     private PageFormat pageFormat = null;
     private PrinterJob printerJob = null;
     private Icon bswatch = new BackgroundSwatch();//needed for BackgroundAction
@@ -158,8 +150,6 @@ public class Controller {
     public Action faq;
     public Action documentation;
     public Action license;
-    public Action historyPreviousMap;
-    public Action historyNextMap;
     public Action navigationPreviousMap;
     public Action showFilterToolbarAction;
     public Action showAttributeManagerAction;    
@@ -188,11 +178,10 @@ public class Controller {
         if(logger == null) {
             logger = frame.getLogger(this.getClass().getName());
         }
-		// new object factory for xml actions:
-		actionXmlFactory = JaxbTools.getInstance().getObjectFactory();
 
         lastOpened = new LastOpenedList(this, getProperty("lastOpened"));
-        mapModuleManager = new MapModuleManager(this, history, lastOpened);
+        mapModuleManager = new MapModuleManager(this);
+        mapModuleManager.addListener(this);
 
         nodeMouseMotionListener = new NodeMouseMotionListener(this);
         nodeMotionListener = new NodeMotionListener(this);
@@ -214,8 +203,6 @@ public class Controller {
         faq = new OpenFAQAction(this);
         documentation = new DocumentationAction(this);
         license = new LicenseAction(this);
-        historyPreviousMap = new HistoryPreviousMapAction(this);
-        historyNextMap = new HistoryNextMapAction(this);
         navigationPreviousMap = new NavigationPreviousMapAction(this);
         showFilterToolbarAction = new ShowFilterToolbarAction(this);
         showAttributeManagerAction = new ShowAttributeDialogAction(this);
@@ -274,9 +261,21 @@ public class Controller {
         return Resources.getInstance().getFrame();
     }
 
+    public URL getResource(String resource) {
+        return getFrame().getResource(resource);
+    }
+                                            
+    public String getResourceString(String resource) {
+          return frame.getResourceString(resource);
+    }
+
 	/** @return the current modeController. */
 	public ModeController getModeController() {
-		return getMode().getModeController();
+		if (getMapModule() != null) {
+			return getMapModule().getModeController();
+		}
+		// no map present: we take the default:
+		return getMode().getDefaultModeController();
 	}
 
 
@@ -299,11 +298,11 @@ public class Controller {
     }
 
     Set getModes() {
-        return modescreator.getAllModes();
+        return mModescreator.getAllModes();
     }
 
     public Mode getMode() {
-        return mode;
+        return mMode;
     }
 
     public String[] getZooms() {
@@ -436,61 +435,111 @@ public class Controller {
 	 }
 
 
+	 public boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+		return true;
+	}
+	 
+	 public void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+        ModeController oldModeController;
+        this.mMode = newMode;
+        if (oldMapModule != null) {
+            // shut down screens of old view + frame
+            oldModeController = oldMapModule.getModeController();
+            oldModeController.setVisible(false);
+            oldModeController.shutdownController();
+        } else {
+            if (oldMode != null) {
+                oldModeController = oldMode.getDefaultModeController();
+            } else {
+                return;
+            }
+        }
+        if (oldModeController.getModeToolBar() != null) {
+            toolbar.remove(oldModeController.getModeToolBar());
+        }
+        /* other toolbars are to be removed too. */
+        if (oldModeController.getLeftToolBar() != null) {
+            getFrame().getContentPane().remove(
+                    oldModeController.getLeftToolBar());
+        }
+    }
+	 
+	 public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+        ModeController newModeController;
+        if (newMapModule != null) {
+            getFrame().setView(newMapModule.getView());
+            setAllActions(true);
+            if (getView().getSelected() == null) {
+                // Only for the new modules move to root
+                moveToRoot();
+            }
+            lastOpened.mapOpened(newMapModule);
+            ((MainToolBar) getToolbar()).setZoomComboBox(newMapModule.getView()
+                    .getZoom());
+            obtainFocusForSelected();
+            newModeController = newMapModule.getModeController();
+            newModeController.startupController();
+            newModeController.setVisible(true);
+        } else {
+            newModeController = newMode.getDefaultModeController();
+            getFrame().setView(null);
+            setAllActions(false);
+        }
+        setTitle();
+        JToolBar newToolBar = newModeController.getModeToolBar();
+        if (newToolBar != null) {
+            toolbar.add(newToolBar);
+            newToolBar.repaint();
+        }
+        /* new left toolbar. */
+        Component newLeftToolBar = newModeController.getLeftToolBar();
+        if (newLeftToolBar != null) {
+            getFrame().getContentPane().add(newLeftToolBar, BorderLayout.WEST);
+            newLeftToolBar.repaint();
+        }
+        toolbar.validate();
+        toolbar.repaint();
+        MenuBar menuBar = getFrame().getFreeMindMenuBar();
+        menuBar.updateMenus(newModeController);
+        menuBar.validate();
+        menuBar.repaint();
+        
+    }
+	 
+	public void numberOfOpenMapInformation(int number) {
+		navigationPreviousMap.setEnabled(number>0);
+		navigationNextMap.setEnabled(number>0);
+	}
+	 
 
     /** Creates a new mode (controller), activates the toolbars, title and deactivates all 
      * actions.
+     * Does nothing, if the mode is identical to the current mode.
      * 
      * @param mode
      * @return false if the change was not successful.
      */
-    public boolean changeToMode(String mode) {
+    public boolean createNewMode(String mode) {
         if (getMode() != null && mode.equals(getMode().toString())) {
             return true;
         }
 
         //Check if the mode is available and create ModeController.
-        Mode newmode = modescreator.getMode(mode);
-        if (newmode == null) {
+        Mode newMode = mModescreator.getMode(mode);
+        if (newMode == null) {
             errorMessage(getResourceString("mode_na")+": "+mode);
             return false;
         }
 
-        if (getMode() != null && getMode().getModeToolBar() != null) {
-            toolbar.remove(getMode().getModeToolBar());
-        }
-        /*  other toolbars are to be removed too.*/
-        if (getMode() != null && getMode().getLeftToolBar() != null) {
-            getFrame().getContentPane().remove(getMode().getLeftToolBar());
-        }
 
-        if (getMapModule() != null) {
-            getMapModuleManager().setMapModule(null);
-        }
-        this.mode = newmode;
-                
-        if (getMode().getModeToolBar() != null) {
-            toolbar.add(getMode().getModeToolBar());
-            getMode().getModeToolBar().repaint();
-        }
-        /* new left toolbar.*/
-        if (getMode().getLeftToolBar() != null) {
-            getFrame().getContentPane().add(getMode().getLeftToolBar(), BorderLayout.WEST );
-            getMode().getLeftToolBar().repaint();
-        }
-        toolbar.validate();
-        toolbar.repaint();
+        // change the map module to get changed toolbars etc.:
+        getMapModuleManager().setMapModule(null, newMode);
 
         setTitle();
         getMode().activate();
-
-        getFrame().getFreeMindMenuBar().updateMenus();
-
-        if (getMapModule() == null) {
-            setAllActions(false);
-        }
-
+       
         Object[] messageArguments = {
-         getMode().toString()
+        		getMode().toString()
         };
         MessageFormat formatter = new MessageFormat(getResourceString("mode_status"));
         getFrame().out(formatter.format(messageArguments));
@@ -499,13 +548,6 @@ public class Controller {
     }
 
 
-    /**
-     * @param string
-     * @return
-     */
-    public String getResourceString(String string) {
-        return Resources.getInstance().getResourceString(string);
-    }
     public void setMenubarVisible(boolean visible) {
         menubarVisible = visible;
         getFrame().getFreeMindMenuBar().setVisible(menubarVisible);
@@ -523,10 +565,10 @@ public class Controller {
         return toolbar;
     }
     public void setLeftToolbarVisible(boolean visible) {
-        if (getMode() != null && getMode().getLeftToolBar() != null) {
+        if (getMode() != null && getModeController().getLeftToolBar() != null) {
            leftToolbarVisible = visible;
-           getMode().getLeftToolBar().setVisible(leftToolbarVisible);
-           ((JComponent)getMode().getLeftToolBar().getParent()).revalidate();
+           getModeController().getLeftToolBar().setVisible(leftToolbarVisible);
+           ((JComponent)getModeController().getLeftToolBar().getParent()).revalidate();
         }
     }
 
@@ -782,68 +824,6 @@ public class Controller {
      * History too?
      */
 
-    // Daniel: To the best of my knowledge, history does not serve any
-    // purpose which would not already be covered. I am disabling the
-    // history. If you want to enable history and get it working, you have
-    // to consider that every map module stored in history knows of the map
-    // view. If you close the map, but it is not removed from history,
-    // complete view together with all the models and views of nodes and
-    // edges will remain in memory and cannot be collected.
-    //
-    // One of the solution which comes to mind is to store string names in
-    // history instead of map modules. Another option is to remove maps from
-    // history upon closing the maps.
-
-    protected class HistoryManager {
-        private LinkedList /* of map modules */ historyList = new LinkedList();
-        private int current;
-
-        HistoryManager() {
-        }
-
-        void nextMap() {
-           if (false) {
-           if (current+1 < historyList.size()) {
-              getMapModuleManager().setMapModule((MapModule)historyList.get(++current));
-              //the map is immediately added again via changeToMapModule
-              historyPreviousMap.setEnabled(true);
-              if ( current >= historyList.size()-1)
-                 historyNextMap.setEnabled(false);
-           }
-           }
-        }
-
-        void previousMap() {
-           if (false) {
-           if (current > 0) {
-              getMapModuleManager().setMapModule((MapModule)historyList.get(--current));
-              historyNextMap.setEnabled(true);
-              if ( current <= 0)
-                 historyPreviousMap.setEnabled(false);
-           }
-           }
-        }
-
-        void mapChanged(MapModule map) {
-           if (false) {
-           while (current < historyList.size()-1) {
-              historyList.remove(historyList.size()-1);
-           }
-           historyList.add(map);
-           current = historyList.indexOf(map);
-           if (current > 0) {
-              historyPreviousMap.setEnabled(true);
-           } else {
-              historyPreviousMap.setEnabled(false);
-           }//closeMap will cause a bug?
-           if (current < historyList.size()-1) {
-              historyNextMap.setEnabled(true);
-           } else {
-              historyNextMap.setEnabled(false);
-           }
-           }
-        }
-    }
 
     //
     // program/map control
@@ -880,10 +860,6 @@ public class Controller {
             setEnabled(false);
             this.isDlg = isDlg;
         }
-        /**
-         * @param string
-         * @return
-         */
         public void actionPerformed(ActionEvent e) {
             if (!acquirePrinterJobAndPageFormat()) {
                return; }
@@ -995,17 +971,37 @@ public class Controller {
             this.controller = controller;
         }
         public void actionPerformed(ActionEvent e) {
-            changeToMode("Browse");
-//             //      try {
-//             String map = getProperty("docmapurl_since_version_0_7_0");
-//             if (map.startsWith("."))  {
-//                 map = "file:"+System.getProperty("user.dir") + map.substring(1);//remove "." and make url
-//             }
-//             ((BrowseController)getMode().getModeController()).loadURL(map);
-//                 //IMPROVE THIS!
-//                 // } catch (FileNotFoundException ex) {
-//                 //   JOptionPane.showMessageDialog(getView(), getResourceString("file_not_found") + "\n Documentation Map not found.");
-//                 // }
+            String map = controller.getFrame().getResourceString("browsemode_initial_map");
+            if (map != null && map.startsWith("."))  {
+                /* new handling for relative urls. fc, 29.10.2003.*/
+                map = "file:" + System.getProperty("user.dir") + map.substring(1);//remove "." and make url
+                /* end: new handling for relative urls. fc, 29.10.2003.*/
+            }    
+            if (map != null && map != "") {
+                URL url = null;
+                try {
+                    url = new URL(map);
+                } catch (MalformedURLException e2) {
+                    e2.printStackTrace();
+                    return;
+                }
+                final URL endUrl = url;
+                // invokeLater is necessary, as the mode changing removes all menus (inclusive this action!).
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        try {
+                            createNewMode(BrowseMode.MODENAME);
+                            controller.getModeController().load(endUrl);
+                        } catch (FileNotFoundException e1) {
+                            e1.printStackTrace();
+                        } catch (XMLParseException e1) {
+                            e1.printStackTrace();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -1035,28 +1031,6 @@ public class Controller {
     //
     // Map navigation
     //
-
-    private class HistoryPreviousMapAction extends AbstractAction {
-        HistoryPreviousMapAction(Controller controller) {        
-            super(controller.getResourceString("previous_map"),
-                  new ImageIcon(getResource("images/Back24.gif")));
-            setEnabled(false);
-        }
-        public void actionPerformed(ActionEvent event) {
-            history.previousMap();
-        }
-    }
-
-    private class HistoryNextMapAction extends AbstractAction {
-        HistoryNextMapAction(Controller controller) {
-            super(controller.getResourceString("next_map"),
-                  new ImageIcon(getResource("images/Forward24.gif")));
-            setEnabled(false);
-        }
-        public void actionPerformed(ActionEvent event) {
-            history.nextMap();
-        }
-    }
 
     private class NavigationPreviousMapAction extends AbstractAction {
         NavigationPreviousMapAction(Controller controller) {     
@@ -1202,7 +1176,6 @@ public class Controller {
         fc.mapChanged(newMap);
         if (attributeDialog != null)
             attributeDialog.mapChanged(newMap); 
-        getModeController().mapChanged(newMap);
     }
     
     public static void addPropertyChangeListener(FreemindPropertyListener listener) {
@@ -1381,8 +1354,7 @@ public class Controller {
         private void changeSelection(String command) {
             setProperty("selection_method", command);
             // and update the selection method in the NodeMouseMotionListener
-            freemind.controller.NodeMouseMotionListener
-                    .updateSelectionMethod(c);
+            c.getNodeMouseMotionListener().updateSelectionMethod();
             String statusBarString = c.getResourceString(command);
             if (statusBarString != null) // should not happen
                 c.getFrame().out(statusBarString);
@@ -1413,80 +1385,10 @@ public class Controller {
         }
     }
 
-    public WindowConfigurationStorage decorateDialog(JDialog dialog, String propertyName) {
-		String unmarshalled = getProperty(
-		        propertyName);
-		if (unmarshalled != null) {
-			WindowConfigurationStorage storage = (WindowConfigurationStorage) unMarshall(unmarshalled);
-			if (storage != null) {
-				dialog.setLocation(storage.getX(), storage.getY());
-				dialog.getRootPane().setPreferredSize(new Dimension(storage.getWidth(), storage.getHeight()));
-			}
-			return storage;
-		}
-		return null;
-    }
 
-
-	/**
-     * @param storage
-	 * @param propertyName
-     */
-    public void storeDialogPositions(JDialog dialog, WindowConfigurationStorage storage, String propertyName) {
-        storage.setX((dialog.getX()));
-        storage.setY((dialog.getY()));
-        storage.setWidth((dialog.getWidth()));
-        storage.setHeight((dialog.getHeight()));
-        String marshalled = marshall(storage);
-        setProperty(propertyName, marshalled);
-    }
-
-
-    public String marshall(XmlAction action) {
-        try {
-            // marshall:
-            //marshal to StringBuffer:
-            StringWriter writer = new StringWriter();
-            Marshaller m = JaxbTools.getInstance().createMarshaller();
-            m.marshal(action, writer);
-            String result = writer.toString();
-            return result;
-        } catch (JAXBException e) {
-			logger.severe(e.toString());
-            e.printStackTrace();
-            return "";
-        }
-
-	}
-
-	public XmlAction unMarshall(String inputString) {
-		try {
-			// unmarshall:
-			Unmarshaller u = JaxbTools.getInstance().createUnmarshaller();
-			StringBuffer xmlStr = new StringBuffer( inputString);
-			XmlAction doAction = (XmlAction) u.unmarshal( new StreamSource( new StringReader( xmlStr.toString() ) ) );
-			return doAction;
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-    /**
-     * @return
-     */
     public FilterController getFilterController() {
         return fc;
     }
-
-     public URL getResource(String resource) {            
-         return Resources.getInstance().getResource(resource);
-     }
-     
     
-    public ObjectFactory getActionXmlFactory() {
-        return actionXmlFactory;
-    }
 }//Class Controller
 

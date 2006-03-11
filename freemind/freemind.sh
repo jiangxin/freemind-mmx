@@ -127,15 +127,10 @@ fi
 # you want to add a new Look&Feel jar (the motif one is so ugly...).
 # 
 CLASSPATH="${ADD_JARS}:${CLASSPATH}:${freedir}/lib/freemind.jar:\
-${freedir}/lib/ant/lib/jaxb-api.jar:\
-${freedir}/lib/ant/lib/jaxb-impl.jar:\
-${freedir}/lib/ant/lib/jaxb-libs.jar:\
-${freedir}/lib/ant/lib/namespace.jar:\
-${freedir}/lib/ant/lib/relaxngDatatype.jar:\
-${freedir}/lib/ant/lib/xsdlib.jar:\
-${freedir}/lib/ant/lib/jax-qname.jar:\
-${freedir}/lib/ant/lib/sax.jar:\
-${freedir}/lib/ant/lib/dom.jar:\
+${freedir}/lib/jibx/jibx-run.jar:\
+${freedir}/lib/jibx/xpp3.jar:\
+${freedir}/lib/bindings.jar:\
+${freedir}/lib/commons-lang-2.0.jar:\
 ${freedir}/lib/forms-1.0.5.jar:\
 ${freedir}"
 _debug "Calling: '${JAVACMD} -Dfreemind.base.dir=${freedir} -cp ${CLASSPATH} freemind.main.FreeMind  $@'."

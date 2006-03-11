@@ -4,24 +4,24 @@
  */
 package freemind.modes.attributes.mindmapmodeactors;
 
-import javax.xml.bind.JAXBException;
-
-import freemind.controller.actions.AbstractActorXml;
-import freemind.controller.actions.ActionPair;
+import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.SetAttributeColumnWidthElementaryAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.ModeController;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.AbstractActorXml;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class SetAttributeColumnWidthActor extends AbstractActorXml {
 
-    public SetAttributeColumnWidthActor(ModeController modeController) {
-        super(modeController);
+    public SetAttributeColumnWidthActor(MindMapController mindMapModeController) {
+        super(mindMapModeController);
     }
     
     public XmlAction createAction(
-            NodeAttributeTableModel model, int col, int width) throws JAXBException{
-        SetAttributeColumnWidthElementaryAction action = getActionXmlFactory().createSetAttributeColumnWidthElementaryAction();
+            NodeAttributeTableModel model, int col, int width){
+        SetAttributeColumnWidthElementaryAction action = new SetAttributeColumnWidthElementaryAction();
         action.setNode(getNodeID(model.getNode()));
         action.setColumn(col);
         action.setWidth(width);
@@ -29,7 +29,7 @@ public class SetAttributeColumnWidthActor extends AbstractActorXml {
     }
     
     public ActionPair createActionPair(
-            NodeAttributeTableModel model, int col, int width) throws JAXBException{
+            NodeAttributeTableModel model, int col, int width){
         final int previousWidth = model.getColumnWidth(col);
         ActionPair actionPair = new ActionPair(
                 createAction(model, col, width), 

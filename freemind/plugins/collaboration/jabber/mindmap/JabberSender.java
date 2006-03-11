@@ -16,12 +16,12 @@ import com.echomine.jabber.JID;
 import com.echomine.jabber.JabberChatService;
 import com.echomine.jabber.JabberSession;
 
-import freemind.controller.actions.ActionFilter;
-import freemind.controller.actions.ActionPair;
 import freemind.controller.actions.generated.instance.CollaborationAction;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
+import freemind.modes.mindmapmode.actions.xml.ActionFilter;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 /**
  * @author RReppel
