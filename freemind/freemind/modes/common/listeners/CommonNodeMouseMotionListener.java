@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: CommonNodeMouseMotionListener.java,v 1.1.4.2 2006-03-11 16:42:37 dpolivaev Exp $ */
+/* $Id: CommonNodeMouseMotionListener.java,v 1.1.4.3 2006-03-11 18:38:56 dpolivaev Exp $ */
 
 package freemind.modes.common.listeners;
 
@@ -115,7 +115,7 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
         logger.fine("Event: mouseDragged");
         // first stop the timer and select the node:
         stopTimerForDelayedSelection();
-        NodeView nodeV = (NodeView) ((Component)e.getSource()).getParent();
+        NodeView nodeV = (NodeView) (e.getComponent()).getParent();
 
         // if dragged for the first time, select the node:
         if (!c.getView().isSelected(nodeV))

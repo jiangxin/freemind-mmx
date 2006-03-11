@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.2.16 2006-03-06 08:23:22 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.2.17 2006-03-11 18:38:56 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -33,14 +33,16 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.JTableHeader;
 
-import freemind.controller.attributes.AttributePopupMenu;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 import freemind.modes.NodeViewEvent;
 import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.AttributeTableModel;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.attributeactors.AttributePopupMenu;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
@@ -94,13 +96,21 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         }
     }
     private void addListeners() {
+        if(! (getModeController() instanceof MindMapController))
+            return;
         getAttributeRegistry().addChangeListener(this);
         addTableModelListeners();
     }
+    private ModeController getModeController() {
+        return nodeView.getMap().getController().getModeController();
+    }
     private void addTableModelListeners() {
+        final ModeController modeController = getModeController();
+        if(! (modeController instanceof MindMapController))
+            return;
         if(attributeTable != null){
              if(tablePopupMenu == null){
-                tablePopupMenu = new AttributePopupMenu();
+                tablePopupMenu = ((MindMapController)modeController).getAttributeTablePopupMenu();
             }
             getAttributes().getLayout().addColumnWidthChangeListener(attributeTable);
             attributeTable.addMouseListener(tablePopupMenu);
@@ -112,6 +122,8 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     }
     
     private void removeListeners() {
+        if(! (getModeController() instanceof MindMapController))
+            return;
         getAttributeRegistry().removeChangeListener(this);
         if(attributeTable != null)
             getAttributes().getLayout().removeColumnWidthChangeListener(attributeTable);

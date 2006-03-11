@@ -2,7 +2,7 @@
  * Created on 22.01.2006
  * Copyright (C) 2006 Dimitri Polivaev
  */
-package freemind.modes.attributes.mindmapmodeactors;
+package freemind.modes.mindmapmode.attributeactors;
 
 import java.util.ListIterator;
 import java.util.NoSuchElementException;

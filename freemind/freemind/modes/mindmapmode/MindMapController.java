@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.11.2.1.2.12 2006-03-11 16:42:37 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.11.2.1.2.13 2006-03-11 18:38:56 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -76,7 +76,6 @@ import freemind.controller.actions.generated.instance.MenuRadioAction;
 import freemind.controller.actions.generated.instance.MenuSeparator;
 import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
-import freemind.controller.attributes.AssignAttributeDialog;
 import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -104,7 +103,6 @@ import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.attributes.AttributeTableLayoutModel;
-import freemind.modes.attributes.mindmapmodeactors.MindMapModeAttributeController;
 import freemind.modes.NodeDownAction;
 import freemind.modes.StylePattern;
 import freemind.modes.common.CommonNodeKeyListener;
@@ -168,6 +166,9 @@ import freemind.modes.mindmapmode.actions.UndoAction;
 import freemind.modes.mindmapmode.actions.NodeBackgroundColorAction.RemoveNodeBackgroundColorAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.mindmapmode.actions.xml.UndoActionHandler;
+import freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog;
+import freemind.modes.mindmapmode.attributeactors.AttributePopupMenu;
+import freemind.modes.mindmapmode.attributeactors.MindMapModeAttributeController;
 import freemind.modes.mindmapmode.hooks.MindMapHookFactory;
 import freemind.modes.mindmapmode.listeners.MindMapMouseMotionManager;
 import freemind.modes.mindmapmode.listeners.MindMapMouseWheelEventHandler;
@@ -1873,7 +1874,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     }
 
     public boolean extendSelection(MouseEvent e) {
-        NodeView newlySelectedNodeView = (NodeView)((Component)e.getSource()).getParent();
+        NodeView newlySelectedNodeView = (NodeView)e.getComponent().getParent();
         //MindMapNode newlySelectedNode = newlySelectedNodeView.getModel();
         boolean extend = e.isControlDown();
         boolean range = e.isShiftDown();
@@ -1953,6 +1954,10 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
     public AttributeController getAttributeController() {
         return attributeController;
+    }
+
+    public AttributePopupMenu getAttributeTablePopupMenu() {
+        return new AttributePopupMenu();
     }
 
 }

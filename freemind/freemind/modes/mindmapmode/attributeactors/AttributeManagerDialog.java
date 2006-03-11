@@ -2,7 +2,7 @@
  * Created on 10.07.2005
  * Copyright (C) 2005 Dimitri Polivaev
  */
-package freemind.controller.attributes;
+package freemind.modes.mindmapmode.attributeactors;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

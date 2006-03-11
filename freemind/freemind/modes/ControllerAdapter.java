@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.17 2006-03-11 16:42:37 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.22.2.2.2.18 2006-03-11 18:38:56 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -68,7 +68,6 @@ import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.controller.attributes.AssignAttributeDialog;
 import freemind.extensions.HookFactory;
 import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
@@ -81,10 +80,11 @@ import freemind.modes.attributes.AttributeController;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.NodeAttributeTableModel;
-import freemind.modes.attributes.mindmapmodeactors.MindMapModeAttributeController;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.NodeColorAction;
+import freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog;
+import freemind.modes.mindmapmode.attributeactors.MindMapModeAttributeController;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;

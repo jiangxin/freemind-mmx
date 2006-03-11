@@ -2,7 +2,7 @@
  * Created on 08.10.2005
  * Copyright (C) 2005 Dimitri Polivaev
  */
-package freemind.controller.attributes;
+package freemind.modes.mindmapmode.attributeactors;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;

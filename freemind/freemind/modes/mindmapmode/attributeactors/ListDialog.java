@@ -1,4 +1,4 @@
-package freemind.controller.attributes;
+package freemind.modes.mindmapmode.attributeactors;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;

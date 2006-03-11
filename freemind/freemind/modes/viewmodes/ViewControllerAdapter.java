@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/* $Id: ViewControllerAdapter.java,v 1.1.4.2 2006-03-11 16:42:38 dpolivaev Exp $ */
+/* $Id: ViewControllerAdapter.java,v 1.1.4.3 2006-03-11 18:38:56 dpolivaev Exp $ */
 package freemind.modes.viewmodes;
 
 import java.awt.event.KeyEvent;
@@ -70,7 +70,7 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 
 	public boolean extendSelection(MouseEvent e) {
 		//FIXME: Remove double code
-        NodeView newlySelectedNodeView = (NodeView)e.getSource();
+        NodeView newlySelectedNodeView = (NodeView)e.getComponent().getParent();
         //MindMapNode newlySelectedNode = newlySelectedNodeView.getModel();
         boolean extend = e.isControlDown();
         boolean range = e.isShiftDown();

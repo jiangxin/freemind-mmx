@@ -2,7 +2,7 @@
  * Created on 29.01.2006
  * Copyright (C) 2006 Dimitri Polivaev
  */
-package freemind.modes.attributes.mindmapmodeactors;
+package freemind.modes.mindmapmode.attributeactors;
 
 import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.SetAttributeVisibleElementaryAction;
