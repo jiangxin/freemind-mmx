@@ -325,11 +325,11 @@ public class MindMapModeAttributeController implements AttributeController{
         if(oldName.equals("") || newName.equals("") || oldName.equals(newName))
             return;                
         startTransaction("performReplaceAtributeName");
-        final ActionPair unregistryOldAttributeActionPair = unregistryAttributeActor.createActionPair(oldName);
-        controller.getActionFactory().executeAction(unregistryOldAttributeActionPair);
         AttributeRegistry registry = getAttributeRegistry();
         int iOld = registry.getElements().indexOf(oldName);
         AttributeRegistryElement oldElement = registry.getElement(iOld);
+        final ActionPair unregistryOldAttributeActionPair = unregistryAttributeActor.createActionPair(oldName);
+        controller.getActionFactory().executeAction(unregistryOldAttributeActionPair);
         final SortedComboBoxModel values = oldElement.getValues();
         for(int i = 0; i < values.getSize(); i++){
             final ActionPair registryNewAttributeActionPair = registryAttributeActor.createActionPair(newName, values.getElementAt(i).toString());                
