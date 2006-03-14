@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EdgeAdapter.java,v 1.14.18.4 2006-02-26 00:30:10 christianfoltin Exp $ */
+/* $Id: EdgeAdapter.java,v 1.14.18.5 2006-03-14 21:56:27 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -33,6 +33,7 @@ import freemind.main.XMLElement;
 public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
 
 
+    public static final String EDGE_WIDTH_THIN_STRING = "thin";
     private static Color standardColor = null;
     private static String standardStyle = null;
     private static LineAdapterListener listener = null;
@@ -148,7 +149,7 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
             }
             if (width != WIDTH_PARENT) {
                 if (width == WIDTH_THIN)
-                    edge.setAttribute("WIDTH", "thin");
+                    edge.setAttribute("WIDTH", EDGE_WIDTH_THIN_STRING);
                 else
                     edge.setAttribute("WIDTH", Integer.toString(width));
             }

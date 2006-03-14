@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ChooseFormatPopupDialog.java,v 1.1.2.3 2006-02-28 18:56:50 christianfoltin Exp $*/
+/*$Id: ChooseFormatPopupDialog.java,v 1.1.2.4 2006-03-14 21:56:27 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -35,8 +35,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import freemind.common.PropertyControl.TextTranslator;
+import freemind.controller.actions.generated.instance.Pattern;
 import freemind.modes.MindMapNode;
-import freemind.modes.StylePattern;
+import freemind.modes.StylePatternFactory;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame;
 
@@ -67,7 +68,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator {
 		super(caller);
 		this.controller = controller;
 		initialize();
-		mStylePatternFrame.setPattern(new StylePattern(node));
+		mStylePatternFrame.setPattern(StylePatternFactory.createPatternFromNode(node));
         mStylePatternFrame.addListeners();
 	}
 
@@ -193,7 +194,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator {
         return controller.getText(pKey);
 	}
 
-	public StylePattern getPattern() {
+	public Pattern getPattern() {
 		return mStylePatternFrame.getResultPattern();
 	}
 

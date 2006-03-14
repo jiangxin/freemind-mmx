@@ -20,7 +20,7 @@
  * 
  * Created on 25.02.2006
  */
-/* $Id: BooleanProperty.java,v 1.1.2.2 2006-02-28 18:56:50 christianfoltin Exp $ */
+/* $Id: BooleanProperty.java,v 1.1.2.3 2006-03-14 21:56:27 christianfoltin Exp $ */
 package freemind.common;
 
 import java.awt.event.ItemEvent;
@@ -94,6 +94,10 @@ public class BooleanProperty extends PropertyBean implements PropertyControl
                 pTranslator.getText(getLabel()),
                 mCheckBox);
         label.setToolTipText(pTranslator.getText(getDescription()));
+    }
+
+    public void setEnabled(boolean pEnabled) {
+        mCheckBox.setEnabled(pEnabled);
     }
 
 }

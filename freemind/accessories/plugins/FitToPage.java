@@ -4,6 +4,7 @@
  */
 package accessories.plugins;
 
+import java.awt.EventQueue;
 import java.awt.Rectangle;
 
 import freemind.extensions.ModeControllerHookAdapter;
@@ -26,27 +27,36 @@ public class FitToPage extends ModeControllerHookAdapter {
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.extensions.MindMapHook#startupMapHook()
-	 */
 	public void startupMapHook() {
-		super.startupMapHook();
-		view = getController().getView();
-		if (view == null)
-			return;
-		zoom();
-		scroll();
-	}
+    	super.startupMapHook();
+    	view = getController().getView();
+    	if (view == null)
+    		return;
+        final NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
+        zoom(root);
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+               scroll(root);                
+            }
+            
+        });
+    }
+    
+    private int shift(int coord1, int size1, int coord2, int size2)
+    {
+        return coord1 - coord2 + (size1 - size2)/ 2;
+    }
 
-	private void scroll() {
-		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
+	private void scroll(NodeAdapter root) {
 		Rectangle rect = view.getInnerBounds(root.getViewer());
 		Rectangle viewer = view.getVisibleRect();
-		view.scrollBy(rect.x - viewer.x, rect.y - viewer.y, false);
+		view.scrollBy(
+                shift(rect.x, rect.width, viewer.x, viewer.width), 
+                shift(rect.y, rect.height, viewer.y, viewer.height),
+                false);
 	}
 
-	private void zoom() {
-		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
+	private void zoom(NodeAdapter root) {
 		Rectangle rect = view.getInnerBounds(root.getViewer());
 		// calculate the zoom:
 		double oldZoom = getController().getView().getZoom();

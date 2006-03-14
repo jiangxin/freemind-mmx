@@ -638,60 +638,61 @@
 	<!-- ======================================================================================= 
 		 										Patterns
 		   ======================================================================================= -->
-	<xs:element name="patterns">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:choice minOccurs="0"  maxOccurs="unbounded">
-					<xs:element ref="pattern"/>
-				</xs:choice>
-			</xs:sequence>
-		</xs:complexType>		
-	</xs:element>
+
+				
+
+	<xs:complexType name="pattern_property_base"><xs:complexContent><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>  </xs:complexContent>  </xs:complexType>
+    <xs:element name="pattern_node_background_color"> <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_color">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_style">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_text">             <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_font_name">        <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_font_bold">        <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_font_italic">      <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_font_size">        <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_icon">                  <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_edge_color">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_edge_style">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_edge_width">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_child">                 <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
 
 	<xs:element name="pattern">
 		<xs:complexType>
-			<xs:sequence>
-				<xs:choice minOccurs="0"  maxOccurs="unbounded">
-					<xs:element ref="pattern_node_backgroundcolor"/>
-					<xs:element ref="pattern_node_color"/>
-					<xs:element ref="pattern_node_style"/>
-					<xs:element ref="pattern_node_text"/>
-					<xs:element ref="pattern_node_font"/>
-					<xs:element ref="pattern_icon"/>
-					<xs:element ref="pattern_edge_color"/>
-					<xs:element ref="pattern_edge_style"/>
-					<xs:element ref="pattern_edge_width"/>
-					<xs:element ref="pattern_child"/>
-				</xs:choice>
-			</xs:sequence>
-		    <xs:attribute name="name" use="required" type="xs:string"/>
+			<xs:complexContent>
+				<xs:extension base="xml_action">
+					<xs:choice>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_background_color"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_color"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_style"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_text"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_font_name"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_font_bold"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_font_italic"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_font_size"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_icon"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_edge_color"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_edge_style"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_edge_width"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_child"/>
+					</xs:choice>
+				    <xs:attribute name="name" use="required" type="xs:string"/>
+				</xs:extension>
+			</xs:complexContent>
 		</xs:complexType>		
 	</xs:element>
 
-	<xs:element name="pattern_node_backgroundcolor"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
-	<xs:element name="pattern_node_color"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
-	<xs:element name="pattern_node_style"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
-	<xs:element name="pattern_node_text"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
-
-	<xs:element name="pattern_node_font">
+	<xs:element name="patterns">
 		<xs:complexType>
-			<!-- if value is not present, the attribute is cleared. -->     
-			<xs:attribute name="name" use="optional" type="xs:string"/>    
-			<xs:attribute name="bold" use="optional" type="xs:boolean"/>    
-			<xs:attribute name="italic" use="optional" type="xs:boolean"/>    
-			<xs:attribute name="size" use="optional" type="xs:int"/>    
-		</xs:complexType>  
-	</xs:element>
-	
-	<xs:element name="pattern_icon"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
-	<xs:element name="pattern_edge_color"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
-	<xs:element name="pattern_edge_style"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
-	<xs:element name="pattern_edge_width"><xs:complexType><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>    </xs:complexType>  </xs:element>
-	<!-- 		      <child pattern="MindMapDefault"/>-->
-	<xs:element name="pattern_child">
-		<xs:complexType>
-			<xs:attribute name="pattern" use="required" type="xs:string"/>
-		</xs:complexType>  
+			<xs:complexContent>
+				<xs:extension base="xml_action">
+					<xs:sequence>
+						<xs:choice minOccurs="0"  maxOccurs="unbounded">
+							<xs:element ref="pattern"/>
+						</xs:choice>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>		
 	</xs:element>
 
 	

@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: PropertyControl.java,v 1.1.2.1 2006-02-25 23:10:58 christianfoltin Exp $*/
+/*$Id: PropertyControl.java,v 1.1.2.2 2006-03-14 21:56:27 christianfoltin Exp $*/
 package freemind.common;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -35,4 +35,6 @@ public interface PropertyControl {
 	String getLabel();
 
 	void layout(DefaultFormBuilder builder, TextTranslator pTranslator);
+    
+    void setEnabled(boolean pEnabled);
 }

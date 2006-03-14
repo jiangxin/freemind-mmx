@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.18 2006-03-01 21:13:28 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.19 2006-03-14 21:56:27 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -74,6 +74,8 @@ import freemind.controller.actions.generated.instance.MenuCheckedAction;
 import freemind.controller.actions.generated.instance.MenuSeparator;
 import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
+import freemind.controller.actions.generated.instance.Pattern;
+import freemind.controller.actions.generated.instance.PatternIcon;
 import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -100,7 +102,7 @@ import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.NodeDownAction;
-import freemind.modes.StylePattern;
+import freemind.modes.StylePatternFactory;
 import freemind.modes.common.CommonNodeKeyListener;
 import freemind.modes.common.GotoLinkNodeAction;
 import freemind.modes.common.CommonNodeKeyListener.EditHandler;
@@ -480,21 +482,21 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
     
     private void loadPatterns(Reader reader) throws Exception {
-        createPatterns(StylePattern.loadPatterns(reader));
+        createPatterns(StylePatternFactory.loadPatterns(reader));
     }
 
     private void createPatterns(List patternsList) throws Exception {
         patterns = new ApplyPatternAction[patternsList.size()];
         for (int i = 0; i < patterns.length; i++) {
             patterns[i] = new ApplyPatternAction(this,
-                    (StylePattern) patternsList.get(i));
+                    (Pattern) patternsList.get(i));
 
             // search icons for patterns:
-            MindIcon patternIcon = ((StylePattern) patternsList.get(i))
-                    .getNodeIcon();
-            if (patternIcon != null) {
-                patterns[i].putValue(Action.SMALL_ICON, patternIcon
-                        .getIcon(getFrame()));
+            PatternIcon patternIcon = ((Pattern) patternsList.get(i))
+                    .getPatternIcon();
+            if (patternIcon != null && patternIcon.getValue() != null) {
+                patterns[i].putValue(Action.SMALL_ICON, MindIcon.factory(
+                        patternIcon.getValue()).getIcon(getFrame()));
             }
         }
     }
@@ -1290,7 +1292,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
     
 
-    public void applyPattern(MindMapNode node, StylePattern pattern) {
+    public void applyPattern(MindMapNode node, Pattern pattern) {
         if(patterns.length > 0) {
             patterns[0].applyPattern(node, pattern);
         } else {

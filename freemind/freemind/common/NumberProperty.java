@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: NumberProperty.java,v 1.1.2.2 2006-02-28 18:56:50 christianfoltin Exp $*/
+/*$Id: NumberProperty.java,v 1.1.2.3 2006-03-14 21:56:27 christianfoltin Exp $*/
 package freemind.common;
 
 import javax.swing.JLabel;
@@ -88,4 +88,9 @@ public class NumberProperty extends PropertyBean implements
 	        label.setToolTipText(pTranslator.getText(getDescription()));
 	    }
 	    
+        public void setEnabled(boolean pEnabled) {
+            spinner.setEnabled(pEnabled);
+        }
+
+        
 	}

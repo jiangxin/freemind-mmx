@@ -10,9 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import accessories.plugins.dialogs.ChooseFormatPopupDialog;
+import freemind.controller.actions.generated.instance.Pattern;
 import freemind.main.FreeMind;
 import freemind.modes.MindMapNode;
-import freemind.modes.StylePattern;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
 /**
@@ -43,7 +43,7 @@ public class ApplyFormatPlugin extends MindMapNodeHookAdapter {
         formatDialog.setVisible(true);
 		// process result:
         if (formatDialog.getResult() == ChooseFormatPopupDialog.OK) {
-        		StylePattern pattern = formatDialog.getPattern();
+        		Pattern pattern = formatDialog.getPattern();
         		for (Iterator iter = selected.iterator(); iter.hasNext();) {
 					MindMapNode node = (MindMapNode) iter.next();
 					getMindMapController().applyPattern(node, pattern);

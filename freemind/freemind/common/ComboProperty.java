@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ComboProperty.java,v 1.1.2.3 2006-03-01 21:13:28 christianfoltin Exp $*/
+/*$Id: ComboProperty.java,v 1.1.2.4 2006-03-14 21:56:27 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -115,4 +115,9 @@ public class ComboProperty extends PropertyBean implements
 		label.setToolTipText(pTranslator.getText(getDescription()));
 	}
 
+    public void setEnabled(boolean pEnabled) {
+        mComboBox.setEnabled(pEnabled);
+    }
+
+    
 }

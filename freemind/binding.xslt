@@ -15,7 +15,7 @@
     <xsl:apply-templates select="@* | node()"/>
   </xsl:copy>
 </xsl:template>
-<xsl:template match="mapping/structure[@map-as]" mode="intern">
+<xsl:template match="mapping/structure[@map-as and position()=1]" mode="intern">
 <xsl:element name="structure"> 
 <!-- find parent type -->
     <xsl:attribute name="map-as"><xsl:value-of select="key('classkey', ./@map-as)/@name"/>_type</xsl:attribute> 

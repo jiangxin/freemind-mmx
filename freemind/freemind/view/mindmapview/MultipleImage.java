@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MultipleImage.java,v 1.1.18.1 2005-02-18 21:17:37 christianfoltin Exp $*/
+/*$Id: MultipleImage.java,v 1.1.18.2 2006-03-14 21:56:28 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -59,6 +59,9 @@ public class MultipleImage extends ImageIcon {
             return super.getImage();
         int w = getIconWidth();
         int h = getIconHeight();
+        if(w == 0 || h == 0){
+            return null;
+        }
         BufferedImage outImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);                
         Graphics2D g = outImage.createGraphics();
         double myX = 0;
@@ -84,8 +87,9 @@ public class MultipleImage extends ImageIcon {
                           int x,
                           int y) 
     { 
-        getImage();
-        super.paintIcon(c, g, x, y);
+        if(getImage() != null){
+            super.paintIcon(c, g, x, y);
+        }
     }
 //    public void paintIcon(Component c,
 //                          Graphics g,

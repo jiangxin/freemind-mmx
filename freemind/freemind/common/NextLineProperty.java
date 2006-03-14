@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: NextLineProperty.java,v 1.1.2.1 2006-02-25 23:10:58 christianfoltin Exp $*/
+/*$Id: NextLineProperty.java,v 1.1.2.2 2006-03-14 21:56:27 christianfoltin Exp $*/
 package freemind.common;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -41,5 +41,9 @@ public class NextLineProperty implements PropertyControl {
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
 		builder.nextLine();
 	}
+    public void setEnabled(boolean pEnabled) {
+        
+    }
+
 
 }

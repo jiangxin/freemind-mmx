@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.14 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: XMLElementAdapter.java,v 1.4.14.15 2006-03-14 21:56:27 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -213,7 +213,7 @@ public void setAttribute(String name, Object value) {
          else if (name.equals("COLOR")) {
 	    edge.setColor(Tools.xmlToColor(sValue)); }
          else if (name.equals("WIDTH")) {
-            if (sValue.equals("thin")) {
+            if (sValue.equals(EdgeAdapter.EDGE_WIDTH_THIN_STRING)) {
                edge.setWidth(EdgeAdapter.WIDTH_THIN); }
             else {
                edge.setWidth(Integer.parseInt(sValue)); }}

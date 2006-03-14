@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.1 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2 2006-03-14 21:56:27 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.IOException;
@@ -36,7 +36,9 @@ import java.util.logging.Logger;
  */
 public class FreeMindCommon {
 
-	private static PropertyResourceBundle languageResources;
+	public static final String POSTFIX_TRANSLATE_ME = "[translate me]";
+
+    private static PropertyResourceBundle languageResources;
 
 	private PropertyResourceBundle defaultResources;
 
@@ -118,7 +120,7 @@ public class FreeMindCommon {
 		} catch (Exception ex) {
 			logger.severe("Warning - resource string not found:" + resource);
 			try {
-				return defaultResources.getString(resource) + "[translate me]";
+				return defaultResources.getString(resource) + POSTFIX_TRANSLATE_ME;
 			} catch (Exception e) {
 				logger
 						.severe("Warning - resource string not found (even in english):"

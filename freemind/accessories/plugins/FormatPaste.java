@@ -19,14 +19,15 @@
  *
  * Created on 06.10.2004
  */
-/*$Id: FormatPaste.java,v 1.1.4.3 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: FormatPaste.java,v 1.1.4.4 2006-03-14 21:56:27 christianfoltin Exp $*/
 
 package accessories.plugins;
 
 import javax.swing.JOptionPane;
 
+import freemind.controller.actions.generated.instance.Pattern;
 import freemind.modes.MindMapNode;
-import freemind.modes.StylePattern;
+import freemind.modes.StylePatternFactory;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
 /**
@@ -34,7 +35,7 @@ import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
  *
  */
 public class FormatPaste extends MindMapNodeHookAdapter {
-    private static StylePattern pattern=null;
+    private static Pattern pattern=null;
 
     public FormatPaste() {
         super();
@@ -67,7 +68,7 @@ public class FormatPaste extends MindMapNodeHookAdapter {
      * @param node
      */
     private void copyFormat(MindMapNode node) {
-        pattern = new StylePattern(node);
+        pattern = StylePatternFactory.createPatternFromNode(node);
     }
     
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.19 2006-02-04 20:19:08 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.20 2006-03-14 21:56:27 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -76,6 +76,7 @@ import javax.swing.WindowConstants;
 
 import freemind.controller.MapModuleManager.MapModuleChangeOberser;
 import freemind.main.FreeMind;
+import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
@@ -953,6 +954,11 @@ public class Controller  implements MapModuleChangeOberser {
         }
         public void actionPerformed(ActionEvent e) {
             String map = controller.getFrame().getResourceString("browsemode_initial_map");
+            // if the current language does not provide its own translation, POSTFIX_TRANSLATE_ME is appended:
+            if(map != null && map.endsWith(FreeMindCommon.POSTFIX_TRANSLATE_ME)) {
+                // remove POSTFIX_TRANSLATE_ME:
+                map = map.substring(0, map.length()-FreeMindCommon.POSTFIX_TRANSLATE_ME.length());
+            }
             if (map != null && map.startsWith("."))  {
                 /* new handling for relative urls. fc, 29.10.2003.*/
                 map = "file:" + System.getProperty("user.dir") + map.substring(1);//remove "." and make url

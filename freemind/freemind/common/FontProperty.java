@@ -19,19 +19,21 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: FontProperty.java,v 1.1.2.3 2006-02-28 18:56:50 christianfoltin Exp $*/
+/*$Id: FontProperty.java,v 1.1.2.4 2006-03-14 21:56:27 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
-public class FontProperty extends PropertyBean implements PropertyControl, ActionListener {
+public class FontProperty extends PropertyBean implements PropertyControl {
 	String description;
 
 	String label;
@@ -40,7 +42,9 @@ public class FontProperty extends PropertyBean implements PropertyControl, Actio
 
 	private final TextTranslator mTranslator;
 
-	JButton mButton = new JButton();
+	JComboBox mFontComboBox = new JComboBox();
+
+    private String[] mAvailableFontFamilyNames;
 
 	/**
 	 * @param description
@@ -55,8 +59,16 @@ public class FontProperty extends PropertyBean implements PropertyControl, Actio
 		super();
 		this.description = description;
 		this.label = label;
-		mTranslator = pTranslator;
-		mButton.addActionListener(this);
+		mTranslator = pTranslator;        
+        mAvailableFontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment().
+                     getAvailableFontFamilyNames();
+        mFontComboBox.setModel(new DefaultComboBoxModel(mAvailableFontFamilyNames));
+        mFontComboBox.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent pE)
+            {
+                firePropertyChangeEvent();
+            }});
 	}
 
 	public String getDescription() {
@@ -68,52 +80,33 @@ public class FontProperty extends PropertyBean implements PropertyControl, Actio
 	}
 
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
-		JLabel label = builder.append(pTranslator.getText(getLabel()), mButton);
+		JLabel label = builder.append(pTranslator.getText(getLabel()), mFontComboBox);
 		label.setToolTipText(pTranslator.getText(getDescription()));
 
 	}
 
-	public void actionPerformed(ActionEvent arg0) {
-		JFontChooser dialog = new JFontChooser(null);
-		if (getFontValue() != null) {
-			dialog.setFont(getFontValue());
-		}
-		dialog.showDialog();
-		Font result = dialog.getFont();
-		if (result != null) {
-			setFontValue(result);
-			firePropertyChangeEvent();
-		}
-	}
-
-	/**
-	 * @param result
-	 */
-	public void setFontValue(Font result) {
-		font = result;
-		if (font != null) {
-			mButton.setFont(result);
-			mButton.setText(result.getFontName());
-		} else {
-			mButton.setText(mTranslator.getText("undefined_font"));
-		}
-	}
-
-	/**
-	 * @return
-	 */
-	public Font getFontValue() {
-		return font;
-	}
-
     public void setValue(String pValue)
     {
-        throw new IllegalArgumentException("Not implemented due to purpose.");
+        for (int i = 0; i < mAvailableFontFamilyNames.length; i++) {
+            String fontName = mAvailableFontFamilyNames[i];
+            if(fontName.equals(pValue)) {
+                mFontComboBox.setSelectedIndex(i);
+            }
+        }
+        System.err.println("Unknown value:" + pValue);
+        if(mFontComboBox.getModel().getSize()>0) {
+            mFontComboBox.setSelectedIndex(0);
+        }
     }
 
     public String getValue()
     {
-        return (font!= null)?font.getFamily():null;
+        return mAvailableFontFamilyNames[mFontComboBox.getSelectedIndex()];
     }
 
+    public void setEnabled(boolean pEnabled) {
+        mFontComboBox.setEnabled(pEnabled);
+    }
+
+    
 }

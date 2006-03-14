@@ -19,11 +19,12 @@
  *
  * Created on 23.06.2004
  */
-/*$Id: XmlBindingTools.java,v 1.1.2.1 2006-02-15 21:18:45 christianfoltin Exp $*/
+/*$Id: XmlBindingTools.java,v 1.1.2.2 2006-03-14 21:56:27 christianfoltin Exp $*/
 
 package freemind.common;
 
 import java.awt.Dimension;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -133,19 +134,25 @@ public class XmlBindingTools {
 	}
 
 	public XmlAction unMarshall(String inputString) {
-		try {
+		return unMarshall(new StringReader( inputString ));
+	}
+
+    /**
+     * @param reader
+     * @return
+     */
+    public XmlAction unMarshall(Reader reader) {
+        try {
 			// unmarshall:
             IUnmarshallingContext u = XmlBindingTools.getInstance().createUnmarshaller();
-			StringBuffer xmlStr = new StringBuffer( inputString);
-			XmlAction doAction = (XmlAction) u.unmarshalDocument
-            ( new StringReader( xmlStr.toString() )  , null);
+            XmlAction doAction = (XmlAction) u.unmarshalDocument
+            ( reader  , null);
 			return doAction;
 		} catch (JiBXException e) {
             e.printStackTrace();
             return null;
         }
-
-	}
+    }
 
 
 }

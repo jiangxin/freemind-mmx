@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.23 2006-02-28 18:56:50 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.24 2006-03-14 21:56:28 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -331,6 +331,11 @@ public class OptionPanel implements TextTranslator {
 		public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
 
 		}
+        
+        public void setEnabled(boolean pEnabled) {
+            
+        }
+
 
 	}
 
@@ -388,6 +393,11 @@ public class OptionPanel implements TextTranslator {
 					.append(pTranslator.getText(getLabel()), mButton);
 			label.setToolTipText(pTranslator.getText(getDescription()));
 		}
+        
+        public void setEnabled(boolean pEnabled) {
+            mButton.setEnabled(pEnabled);
+        }
+
 
 	}
 

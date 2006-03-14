@@ -16,14 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatterns.java,v 1.1.2.1 2006-03-01 21:13:28 christianfoltin Exp $*/
+/*$Id: ManagePatterns.java,v 1.1.2.2 2006-03-14 21:56:27 christianfoltin Exp $*/
 
 package accessories.plugins;
 
 import accessories.plugins.dialogs.ChooseFormatPopupDialog;
 import accessories.plugins.dialogs.ManagePatternsPopupDialog;
 import freemind.main.FreeMind;
-import freemind.modes.StylePattern;
+import freemind.modes.StylePatternFactory;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
 
 /** */

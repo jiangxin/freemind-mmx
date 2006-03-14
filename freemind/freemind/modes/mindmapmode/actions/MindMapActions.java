@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/*$Id: MindMapActions.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/*$Id: MindMapActions.java,v 1.1.2.3 2006-03-14 21:56:28 christianfoltin Exp $*/
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
@@ -29,6 +29,7 @@ import java.awt.event.MouseWheelEvent;
 import java.util.Collection;
 import java.util.List;
 
+import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
@@ -38,7 +39,6 @@ import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import freemind.modes.StylePattern;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 
@@ -126,7 +126,7 @@ public interface MindMapActions {
 	 * the patterns list of ApplyPatternActions from the MindMapController. Each action
 	 * has a getPattern() method and the pattern has a getName() method ... */
 	public void applyPattern(MindMapNode node, String patternName);
-	public void applyPattern(MindMapNode node, StylePattern pattern);
+	public void applyPattern(MindMapNode node, Pattern pattern);
 	public void setNodeStyle(MindMapNode node, String style);
 	public void setEdgeColor(MindMapNode node, Color color);
 	/** The widths range from -1 (for equal to parent) to 0 (thin), 1, 2, 4, 8. */

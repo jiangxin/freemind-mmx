@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.1 2006-03-01 21:13:28 christianfoltin Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.2 2006-03-14 21:56:27 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -50,7 +50,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import freemind.common.PropertyControl.TextTranslator;
-import freemind.modes.StylePattern;
+import freemind.controller.actions.generated.instance.Pattern;
+import freemind.modes.StylePatternFactory;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame;
 
@@ -90,7 +91,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
         }
 
         public Object getElementAt(int index) {
-            return ((StylePattern) mPatternList.get(index)).getName();
+            return ((Pattern) mPatternList.get(index)).getName();
         }
 
         public void addListDataListener(ListDataListener l) {
@@ -136,7 +137,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
         super(caller);
         this.controller = controller;
         try {
-            mPatternList = StylePattern.loadPatterns(controller
+            mPatternList = StylePatternFactory.loadPatterns(controller
                     .getPatternReader());
         } catch (Exception e) {
             e.printStackTrace();
@@ -234,7 +235,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
             mRightStack = new JPanel(mCardLayout);
             mRightStack.add(new JPanel(), "");
             for (Iterator iter = patternList.iterator(); iter.hasNext();) {
-                StylePattern pattern = (StylePattern) iter.next();
+                Pattern pattern = (Pattern) iter.next();
                 StylePatternFrame stylePatternFrame = new StylePatternFrame(
                         this);
                 stylePatternFrame.init();

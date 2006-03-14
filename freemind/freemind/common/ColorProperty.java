@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ColorProperty.java,v 1.1.2.3 2006-02-28 18:56:50 christianfoltin Exp $*/
+/*$Id: ColorProperty.java,v 1.1.2.4 2006-03-14 21:56:27 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.Color;
@@ -145,4 +145,9 @@ public class ColorProperty extends PropertyBean implements
 		return color;
 	}
 
+    public void setEnabled(boolean pEnabled) {
+        mButton.setEnabled(pEnabled);
+    }
+
+    
 }
