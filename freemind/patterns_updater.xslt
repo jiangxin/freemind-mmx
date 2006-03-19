@@ -143,7 +143,7 @@
 
 	<xsl:template match="child">
 		<xsl:element name="pattern_child">
-			<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+			<xsl:attribute name="value"><xsl:value-of select="@pattern"/></xsl:attribute>
 		</xsl:element>
 	</xsl:template>
 </xsl:stylesheet>

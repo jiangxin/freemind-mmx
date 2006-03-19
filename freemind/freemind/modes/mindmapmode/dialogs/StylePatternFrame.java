@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: StylePatternFrame.java,v 1.1.2.8 2006-03-19 20:18:30 christianfoltin Exp $*/
+/*$Id: StylePatternFrame.java,v 1.1.2.9 2006-03-19 21:21:33 christianfoltin Exp $*/
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;
@@ -27,9 +27,11 @@ import java.awt.CardLayout;
 import java.awt.HeadlessException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.Action;
@@ -53,6 +55,7 @@ import freemind.common.ThreeCheckBoxProperty;
 import freemind.common.IconProperty.IconInformation;
 import freemind.common.PropertyControl.TextTranslator;
 import freemind.controller.actions.generated.instance.Pattern;
+import freemind.controller.actions.generated.instance.PatternChild;
 import freemind.controller.actions.generated.instance.PatternEdgeColor;
 import freemind.controller.actions.generated.instance.PatternEdgeStyle;
 import freemind.controller.actions.generated.instance.PatternEdgeWidth;
@@ -283,6 +286,8 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 	private String[] sizes = new String[] { "2", "4", "6", "8", "10", "12",
 			"14", "16", "18", "20", "22", "24", "30", "36", "48", "72" };
 
+	private List mPatternList;
+
 	private Vector getControls() {
 		Vector controls = new Vector();
 		controls.add(new SeparatorProperty("General"));
@@ -293,6 +298,14 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		if (StylePatternFrameType.WITH_NAME_AND_CHILDS.equals(mType)) {
 			mName = new StringProperty(NODE_NAME + ".tooltip", NODE_NAME);
 			controls.add(mName);
+			// child pattern
+			mSetChildPattern = new ThreeCheckBoxProperty(SET_CHILD_PATTERN
+					+ ".tooltip", SET_CHILD_PATTERN);
+			controls.add(mSetChildPattern);
+			Vector childNames = new Vector();
+			mChildPattern = new ComboProperty(CHILD_PATTERN + ".tooltip",
+					CHILD_PATTERN, childNames, childNames);
+			controls.add(mChildPattern);
 		}
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("NodeColors"));
@@ -316,6 +329,21 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		mNodeStyle = new ComboProperty(NODE_STYLE + ".tooltip", NODE_STYLE,
 				MindMapNode.NODE_STYLES, this);
 		controls.add(mNodeStyle);
+		mIconInformationVector = new Vector();
+		MindMapController controller = mMindMapController;
+		Vector iconActions = controller.iconActions;
+		for (Enumeration e = iconActions.elements(); e.hasMoreElements();) {
+			IconAction action = ((IconAction) e.nextElement());
+			IconInformation info = new IconInformation((Icon) action
+					.getValue(Action.SMALL_ICON), (String) action
+					.getValue(Action.SHORT_DESCRIPTION), action.icon.getName());
+			mIconInformationVector.add(info);
+		}
+		mSetIcon = new ThreeCheckBoxProperty(SET_ICON + ".tooltip", SET_ICON);
+		controls.add(mSetIcon);
+		mIcon = new IconProperty(ICON + ".tooltip", ICON, mMindMapController
+				.getFrame(), mIconInformationVector);
+		controls.add(mIcon);
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("NodeFont"));
 		mSetNodeFontName = new ThreeCheckBoxProperty(SET_NODE_FONT_NAME
@@ -374,34 +402,6 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		mEdgeColor = new ColorProperty(EDGE_COLOR + ".tooltip", EDGE_COLOR,
 				DEFAULT_COLOR, this);
 		controls.add(mEdgeColor);
-		mIconInformationVector = new Vector();
-		MindMapController controller = mMindMapController;
-		Vector iconActions = controller.iconActions;
-		for (Enumeration e = iconActions.elements(); e.hasMoreElements();) {
-			IconAction action = ((IconAction) e.nextElement());
-			IconInformation info = new IconInformation((Icon) action
-					.getValue(Action.SMALL_ICON), (String) action
-					.getValue(Action.SHORT_DESCRIPTION), action.icon.getName());
-			mIconInformationVector.add(info);
-		}
-		controls.add(new NextLineProperty());
-		controls.add(new SeparatorProperty("Icon"));
-		mSetIcon = new ThreeCheckBoxProperty(SET_ICON + ".tooltip", SET_ICON);
-		controls.add(mSetIcon);
-		mIcon = new IconProperty(ICON + ".tooltip", ICON, mMindMapController
-				.getFrame(), mIconInformationVector);
-		controls.add(mIcon);
-		if (StylePatternFrameType.WITH_NAME_AND_CHILDS.equals(mType)) {
-			// child pattern
-//			controls.add(new NextLineProperty());
-//			controls.add(new SeparatorProperty("Child"));
-//			mSetChildPattern = new ThreeCheckBoxProperty(SET_CHILD_PATTERN
-//					+ ".tooltip", SET_CHILD_PATTERN);
-//			controls.add(mSetChildPattern);
-//			mChildPattern = new ComboProperty(CHILD_PATTERN + ".tooltip",
-//					CHILD_PATTERN, new String[] {}, new Vector());
-//			controls.add(mChildPattern);
-		}
 		// fill map;
 		mPropertyChangePropagation.put(mSetNodeColor, mNodeColor);
 		mPropertyChangePropagation.put(mSetNodeBackgroundColor,
@@ -418,9 +418,18 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		mPropertyChangePropagation.put(mSetIcon, mIcon);
 		if (StylePatternFrameType.WITH_NAME_AND_CHILDS.equals(mType)) {
 			// child pattern
-//			mPropertyChangePropagation.put(mSetChildPattern, mChildPattern);
+			mPropertyChangePropagation.put(mSetChildPattern, mChildPattern);
 		}
 		return controls;
+	}
+
+	private Vector getPatternNames() {
+		Vector childNames = new Vector();
+		for (Iterator iter = mPatternList.iterator(); iter.hasNext();) {
+			Pattern pattern = (Pattern) iter.next();
+			childNames.add(pattern.getName());
+		}
+		return childNames;
 	}
 
 	public String getText(String pKey) {
@@ -456,6 +465,11 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 				firstInfo.iconName);
 		if (StylePatternFrameType.WITH_NAME_AND_CHILDS.equals(mType)) {
 			mName.setValue(pattern.getName());
+			setPatternControls(pattern.getPatternChild(), mSetChildPattern,
+					mChildPattern,
+					(mPatternList.size() > 0) ? ((Pattern) mPatternList.get(0))
+							.getName() : null);
+
 		}
 		for (Iterator iter = mPropertyChangePropagation.keySet().iterator(); iter
 				.hasNext();) {
@@ -595,6 +609,8 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 				new PatternIcon(), mSetIcon, mIcon));
 		if (StylePatternFrameType.WITH_NAME_AND_CHILDS.equals(mType)) {
 			pattern.setName(mName.getValue());
+			pattern.setPatternChild((PatternChild) getPatternResult(
+					new PatternChild(), mSetChildPattern, mChildPattern));
 		}
 		return pattern;
 	}
@@ -647,6 +663,17 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 					.getValue()));
 			return;
 		}
+	}
+
+	/**
+	 * For the child pattern box, the list is set here.
+	 * 
+	 * @param patternList
+	 */
+	public void setPatternList(List patternList) {
+		this.mPatternList = patternList;
+		Vector childNames = getPatternNames();
+		mChildPattern.updateComboBoxEntries(childNames, childNames);
 	}
 
 }

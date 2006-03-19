@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.3 2006-03-19 20:18:30 christianfoltin Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4 2006-03-19 21:21:33 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -32,9 +32,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyVetoException;
-import java.beans.VetoableChangeListener;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -66,6 +63,8 @@ import freemind.modes.mindmapmode.dialogs.StylePatternFrame.StylePatternFrameTyp
 /** */
 public class ManagePatternsPopupDialog extends JDialog implements
 		TextTranslator, KeyListener {
+	private static Integer sLastSelectedIndex = null;
+	
 	private static final String STACK_PATTERN_FRAME = "PATTERN";
 
 	private static final String EMPTY_FRAME = "EMPTY_FRAME";
@@ -85,9 +84,10 @@ public class ManagePatternsPopupDialog extends JDialog implements
 				mCardLayout.show(mRightStack, EMPTY_FRAME);
 			} else {
 				int index = theList.getSelectedIndex();
-				mLastSelectedPatternIndex = new Integer(index);
+				setLastSelectedPatternIndex(new Integer(index));
 				// write pattern:
 				Pattern p = mPatternListModel.getPatternAt(index);
+				mStylePatternFrame.setPatternList(mPatternListModel.getPatternList());
 				mStylePatternFrame.setPattern(p);
 				mCardLayout.show(mRightStack, STACK_PATTERN_FRAME);
 			}
@@ -223,6 +223,13 @@ public class ManagePatternsPopupDialog extends JDialog implements
 			}
 		});
 		contentPane.addKeyListener(this);
+		// recover latest index:
+		if(sLastSelectedIndex != null) {
+			int lastIndex = sLastSelectedIndex.intValue();
+			if(lastIndex < mPatternListModel.getSize()) {
+				mList.setSelectedIndex(lastIndex);
+			}
+		}
 	}
 
 	/**
@@ -265,7 +272,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 			mPatternListModel = new PatternListModel(patternList);
 			mList.setModel(mPatternListModel);
 			jContentPane.add(new JScrollPane(mList), new GridBagConstraints(0,
-					0, 1, 1, 2.0, 8.0, GridBagConstraints.WEST,
+					0, 1, 1, 1.0, 8.0, GridBagConstraints.WEST,
 					GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 			mList.addListSelectionListener(new PatternListSelectionListener());
 			/* Popup menu */
@@ -315,14 +322,14 @@ public class ManagePatternsPopupDialog extends JDialog implements
 					StylePatternFrameType.WITH_NAME_AND_CHILDS);
 			mStylePatternFrame.init();
 			mStylePatternFrame.addListeners();
-			mRightStack.add(mStylePatternFrame, STACK_PATTERN_FRAME);
+			mRightStack.add(new JScrollPane(mStylePatternFrame), STACK_PATTERN_FRAME);
 			jContentPane.add(mRightStack, new GridBagConstraints(1, 0, 2, 1,
-					2.0, 8.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+					8.0, 8.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
-			jContentPane.add(getJOKButton(), new GridBagConstraints(0, 1, 1, 1,
+			jContentPane.add(getJOKButton(), new GridBagConstraints(1, 1, 1, 1,
 					1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.NONE,
 					new Insets(0, 0, 0, 0), 0, 0));
-			jContentPane.add(getJCancelButton(), new GridBagConstraints(1, 1,
+			jContentPane.add(getJCancelButton(), new GridBagConstraints(2, 1,
 					1, 1, 1.0, 1.0, GridBagConstraints.EAST,
 					GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 			getRootPane().setDefaultButton(getJOKButton());
@@ -332,7 +339,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 
 	private void addPattern(ActionEvent actionEvent) {
 		writePatternBackToModel();
-		mLastSelectedPatternIndex = null;
+		setLastSelectedPatternIndex(null);
 		Pattern newPattern = new Pattern();
 		// give it a good name:
 		String newName = controller.getText("PatternNewNameProperty");
@@ -356,7 +363,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 
 	private void removePattern(ActionEvent actionEvent) {
 		int selectedIndex = mList.getSelectedIndex();
-		mLastSelectedPatternIndex = null;
+		setLastSelectedPatternIndex(null);
 		mPatternListModel.removePattern(selectedIndex);
 		if (mPatternListModel.getSize() > selectedIndex) {
 			mList.setSelectedIndex(selectedIndex);
@@ -425,10 +432,10 @@ public class ManagePatternsPopupDialog extends JDialog implements
 	}
 
 	private void writePatternBackToModel() {
-		if (mLastSelectedPatternIndex != null) {
+		if (getLastSelectedPatternIndex() != null) {
 			// save pattern:
 			Pattern pattern = mPatternListModel
-					.getPatternAt(mLastSelectedPatternIndex.intValue());
+					.getPatternAt(getLastSelectedPatternIndex().intValue());
 			Pattern resultPatternCopy = mStylePatternFrame.getResultPattern();
 			// check for name change:
 			String oldPatternName = pattern.getName();
@@ -460,6 +467,10 @@ public class ManagePatternsPopupDialog extends JDialog implements
 				}
 			}
 			mStylePatternFrame.getResultPattern(pattern);
+			// Special case that a pattern that points to itself is renamed:
+			if(pattern.getPatternChild() != null && oldPatternName.equals(pattern.getPatternChild().getValue())) {
+				pattern.getPatternChild().setValue(newPatternName);
+			}
 		}
 	}
 
@@ -494,6 +505,15 @@ public class ManagePatternsPopupDialog extends JDialog implements
 	 */
 	public void keyTyped(KeyEvent keyEvent) {
 		System.out.println("keyTyped: " + keyEvent);
+	}
+
+	private void setLastSelectedPatternIndex(Integer mLastSelectedPatternIndex) {
+		this.mLastSelectedPatternIndex = mLastSelectedPatternIndex;
+		sLastSelectedIndex = mLastSelectedPatternIndex;
+	}
+
+	private Integer getLastSelectedPatternIndex() {
+		return mLastSelectedPatternIndex;
 	}
 
 }

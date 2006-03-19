@@ -19,13 +19,14 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ComboProperty.java,v 1.1.2.4 2006-03-14 21:56:27 christianfoltin Exp $*/
+/*$Id: ComboProperty.java,v 1.1.2.5 2006-03-19 21:21:33 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
@@ -71,21 +72,51 @@ public class ComboProperty extends PropertyBean implements
 	}
 
 	public ComboProperty(String description, String label,
-			String[] possibles, Vector possibleTranslations) {
+			String[] possibles, List possibleTranslations) {
 		this.description = description;
 		this.label = label;
 		fillPossibleValues(possibles);
-		mComboBox.setModel(new DefaultComboBoxModel(possibleTranslations));
+		mComboBox.setModel(new DefaultComboBoxModel(new Vector(possibleTranslations)));
+	}
+
+	public ComboProperty(String description, String label,
+			List possibles, List possibleTranslations) {
+		this.description = description;
+		this.label = label;
+		fillPossibleValues(possibles);
+		mComboBox.setModel(new DefaultComboBoxModel(new Vector(possibleTranslations)));
+	}
+	
+	/**
+	 * @param possibles
+	 */
+	private void fillPossibleValues(String[] possibles) {
+		fillPossibleValues(Arrays.asList(possibles));
 	}
 
 	/**
 	 * @param possibles
 	 */
-	private void fillPossibleValues(String[] possibles) {
+	private void fillPossibleValues(List possibles) {
 		this.possibleValues = new Vector();
-		possibleValues.addAll(Arrays.asList(possibles));
+		possibleValues.addAll(possibles);
 	}
 
+	/** If your combo base changes, call this method to update the values.
+	 *  The old selected value is not selected, but the first in the list.
+	 *  Thus, you should call this method only shortly before setting the 
+	 *  value with setValue.
+	 * @param possibles
+	 * @param possibleTranslations
+	 */
+	public void updateComboBoxEntries(List possibles, List possibleTranslations) {
+		mComboBox.setModel(new DefaultComboBoxModel(new Vector(possibleTranslations)));
+		fillPossibleValues(possibles);
+		if (possibles.size()>0) {
+			mComboBox.setSelectedIndex(0);
+		}
+	}
+	
 	public String getDescription() {
 		return description;
 	}
@@ -98,7 +129,7 @@ public class ComboProperty extends PropertyBean implements
 		if (possibleValues.contains(value)) {
 			mComboBox.setSelectedIndex(possibleValues.indexOf(value));
 		} else {
-			System.err.println("Unknown value:" + value);
+			System.err.println("Can't set the value:" + value + " into the combo box "+getLabel()+"/"+getDescription());
             if(mComboBox.getModel().getSize()>0) {
                 mComboBox.setSelectedIndex(0);
             }
