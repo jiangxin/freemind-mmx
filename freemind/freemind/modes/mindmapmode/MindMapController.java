@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.19 2006-03-14 21:56:27 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.20 2006-03-19 20:18:30 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -394,8 +394,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         removeAllIconsAction = new RemoveAllIconsAction(this, unknwonIconAction);
         // load pattern actions:
         try {
-            Reader reader = getPatternReader();
-            loadPatterns(reader);
+            loadPatterns(getPatternReader());
         } catch (XMLParseException e) {
             System.err.println("In patterns:" + e);
         } catch (Exception ex) {

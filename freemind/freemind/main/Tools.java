@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.7 2006-02-21 20:49:42 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.8 2006-03-19 20:18:30 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -51,6 +51,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import javax.swing.JDialog;
 
 public class Tools {
 
@@ -802,6 +803,32 @@ public class Tools {
 		return (holder == null && holder2 == null)
 				|| (holder != null && holder2 != null && holder.getValue() == holder2
 						.getValue());
+	}
+
+	public static void moveDialogToPosition(FreeMindMain frame, JDialog dialog, Point destPosition) {
+
+		Point frameScreenLocation =
+			frame.getLayeredPane().getLocationOnScreen();
+		double posX =
+			destPosition.getX() - frameScreenLocation.getX();
+		double posY =
+			destPosition.getY() - frameScreenLocation.getY() + 20;
+		if (posX + dialog.getWidth()
+			> frame.getLayeredPane().getWidth()) {
+			posX =
+				frame.getLayeredPane().getWidth() - dialog.getWidth();
+		}
+		if (posY + dialog.getHeight()
+			> frame.getLayeredPane().getHeight()) {
+			posY =
+				frame.getLayeredPane().getHeight()
+					- dialog.getHeight();
+		}
+		posX = ((posX < 0) ? 0 : posX) + frameScreenLocation.getX();
+		posY = ((posY < 0) ? 0 : posY) + frameScreenLocation.getY();
+		dialog.setLocation(
+			new Double(posX).intValue(),
+			new Double(posY).intValue());
 	}
 
 

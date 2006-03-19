@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: StringProperty.java,v 1.1.2.3 2006-03-14 21:56:27 christianfoltin Exp $*/
+/*$Id: StringProperty.java,v 1.1.2.4 2006-03-19 20:18:30 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -72,6 +72,7 @@ public class StringProperty extends PropertyBean implements
 
 	public void setValue(String value) {
 		mTextField.setText(value);
+		mTextField.selectAll();
 	}
 
 	public String getValue() {

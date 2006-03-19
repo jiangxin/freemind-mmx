@@ -16,9 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatterns.java,v 1.1.2.2 2006-03-14 21:56:27 christianfoltin Exp $*/
+/*$Id: ManagePatterns.java,v 1.1.2.3 2006-03-19 20:18:30 christianfoltin Exp $*/
 
 package accessories.plugins;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import javax.swing.JOptionPane;
 
 import accessories.plugins.dialogs.ChooseFormatPopupDialog;
 import accessories.plugins.dialogs.ManagePatternsPopupDialog;
@@ -42,14 +48,20 @@ public class ManagePatterns extends MindMapHookAdapter {
         // start dialog:
         FreeMind frame = (FreeMind) getController().getFrame();
         ManagePatternsPopupDialog formatDialog = new ManagePatternsPopupDialog(
-                frame, getMindMapController());
-        formatDialog.setModal(true);
+                frame.getJFrame(), getMindMapController());
         formatDialog.pack();
-        formatDialog.setVisible(true);
+        formatDialog.setModal(true);
+        formatDialog.show();
         // process result:
         if (formatDialog.getResult() == ChooseFormatPopupDialog.OK) {
-            // TODO
+            try {
+				// Save patterns in private pattern list:
+				File patternFile = getController().getFrame().getPatternsFile();
+				FileWriter f = new FileWriter(patternFile);
+				StylePatternFactory.savePatterns(f, formatDialog.getPatternList());
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, e.getLocalizedMessage());
+			}
         }
-
     }
 }

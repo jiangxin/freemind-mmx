@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ChooseFormatPopupDialog.java,v 1.1.2.4 2006-03-14 21:56:27 christianfoltin Exp $*/
+/*$Id: ChooseFormatPopupDialog.java,v 1.1.2.5 2006-03-19 20:18:30 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -25,6 +25,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -40,9 +42,10 @@ import freemind.modes.MindMapNode;
 import freemind.modes.StylePatternFactory;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame;
+import freemind.modes.mindmapmode.dialogs.StylePatternFrame.StylePatternFrameType;
 
 /** */
-public class ChooseFormatPopupDialog extends JDialog implements TextTranslator {
+public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, KeyListener {
 
 	public static final int CANCEL = -1;
 
@@ -88,6 +91,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator {
 				cancelPressed();
 			}
 		});
+		addKeyListener(this);
 	}
 
 	private void close() {
@@ -133,7 +137,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator {
 
 	private Component getStylePatternFrame() {
 		if(mStylePatternFrame == null) {
-			mStylePatternFrame = new StylePatternFrame(this);
+			mStylePatternFrame = new StylePatternFrame(this, controller, StylePatternFrameType.WITHOUT_NAME_AND_CHILDS);
 			mStylePatternFrame.init();
 			
 		}
@@ -196,6 +200,39 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator {
 
 	public Pattern getPattern() {
 		return mStylePatternFrame.getResultPattern();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+	 */
+	public void keyPressed(KeyEvent keyEvent) {
+		System.out.println("key pressed: " + keyEvent);
+		switch (keyEvent.getKeyCode()) {
+		case KeyEvent.VK_ESCAPE:
+			cancelPressed();
+			keyEvent.consume();
+			break;
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
+	 */
+	public void keyReleased(KeyEvent keyEvent) {
+		System.out.println("keyReleased: " + keyEvent);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
+	 */
+	public void keyTyped(KeyEvent keyEvent) {
+		System.out.println("keyTyped: " + keyEvent);
 	}
 
 }

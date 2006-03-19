@@ -20,7 +20,7 @@
  *
  * @author <a href="mailto:labe@users.sourceforge.net">Lars Berning</a>
  */
-package accessories.plugins.dialogs;
+package freemind.modes.common.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

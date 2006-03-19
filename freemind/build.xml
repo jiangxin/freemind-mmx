@@ -334,6 +334,9 @@
 			<fileset dir="${src}/html">
 				<include name="*.*html"/>
 			</fileset>
+			<fileset dir="${src}">
+				<include name="license*"/>
+			</fileset>
 			<fileset dir="${src}/doc">
 				<include name="freemind.mm"/>
 			</fileset>

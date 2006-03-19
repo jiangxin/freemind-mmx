@@ -6,27 +6,26 @@
  */
 package accessories.plugins;
 
-import java.awt.Point;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.Action;
 
-import accessories.plugins.dialogs.IconSelectionPopupDialog;
-import freemind.extensions.NodeHookAdapter;
 import freemind.main.FreeMind;
+import freemind.main.Tools;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
+import freemind.modes.common.dialogs.IconSelectionPopupDialog;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.IconAction;
+import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 import freemind.view.mindmapview.NodeView;
 
 /**
  * @author adapted to the plugin mechanism by ganzer
  *
  */
-public class IconSelectionPlugin extends NodeHookAdapter {
+public class IconSelectionPlugin extends MindMapNodeHookAdapter {
 
 	private MindIcon icon;
 
@@ -45,7 +44,7 @@ public class IconSelectionPlugin extends NodeHookAdapter {
 		Vector actions = new Vector();
 		Vector items = new Vector();
 		Vector itemdescriptions = new Vector();
-		MindMapController controller = ((MindMapController) getController());
+		MindMapController controller = getMindMapController();
 		Vector iconActions = controller.iconActions;
 		for (Enumeration e = iconActions.elements(); e.hasMoreElements();) {
 			IconAction action =
@@ -59,37 +58,14 @@ public class IconSelectionPlugin extends NodeHookAdapter {
 		FreeMind frame = (FreeMind) getController().getFrame();
 		IconSelectionPopupDialog selectionDialog =
 			new IconSelectionPopupDialog(
-				frame,
+				frame.getJFrame(),
 				items,
 				itemdescriptions,
 				frame);
 
 		NodeView node = focussed.getViewer();
-		// this code is copied from ControllerAdapter, edit
-		//URGENT: DO NOT COPY CODE!
 		controller.getView().scrollNodeToVisible(node, 0);
-		Point frameScreenLocation =
-			frame.getLayeredPane().getLocationOnScreen();
-		double posX =
-			node.getLocationOnScreen().getX() - frameScreenLocation.getX();
-		double posY =
-			node.getLocationOnScreen().getY() - frameScreenLocation.getY() + 20;
-		if (posX + selectionDialog.getWidth()
-			> frame.getLayeredPane().getWidth()) {
-			posX =
-				frame.getLayeredPane().getWidth() - selectionDialog.getWidth();
-		}
-		if (posY + selectionDialog.getHeight()
-			> frame.getLayeredPane().getHeight()) {
-			posY =
-				frame.getLayeredPane().getHeight()
-					- selectionDialog.getHeight();
-		}
-		posX = ((posX < 0) ? 0 : posX) + frameScreenLocation.getX();
-		posY = ((posY < 0) ? 0 : posY) + frameScreenLocation.getY();
-		selectionDialog.setLocation(
-			new Double(posX).intValue(),
-			new Double(posY).intValue());
+		Tools.moveDialogToPosition(frame, selectionDialog, node.getLocationOnScreen());
 		selectionDialog.setModal(true);
 		selectionDialog.show();
 		// process result:
@@ -100,7 +76,7 @@ public class IconSelectionPlugin extends NodeHookAdapter {
 		}
 	}
 
-    /**
+	/**
      * @param items
      * @param itemdescriptions
      * @param itemdescriptions2
