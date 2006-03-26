@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.20 2006-03-14 21:56:27 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21 2006-03-26 20:58:42 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -1166,7 +1166,7 @@ public class Controller  implements MapModuleChangeOberser {
 					if (oldProperties.size() > 0) {
                         JOptionPane
                                 .showMessageDialog(
-                                        getFrame().getContentPane(),
+                                        null,
                                         getResourceString("option_changes_may_require_restart"));
                         controller.getFrame().saveProperties();
                     }

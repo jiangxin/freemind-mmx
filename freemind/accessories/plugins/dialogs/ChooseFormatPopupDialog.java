@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ChooseFormatPopupDialog.java,v 1.1.2.5 2006-03-19 20:18:30 christianfoltin Exp $*/
+/*$Id: ChooseFormatPopupDialog.java,v 1.1.2.6 2006-03-26 20:58:42 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -64,14 +64,27 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 	private StylePatternFrame mStylePatternFrame;
 
 	/**
-	 * This is the default constructor
+	 * This is the default constructor for creation from a node
 	 */
 	public ChooseFormatPopupDialog(JFrame caller, MindMapController controller,
 			MindMapNode node) {
+		this(caller, controller, "accessories/plugins/ApplyFormatPlugin.dialog.title", StylePatternFactory.createPatternFromNode(node));
+	}
+
+	/**
+	 * This constructor is used, if you need the user to enter a pattern generally.
+	 * 
+	 * @param caller
+	 * @param controller
+	 * @param dialogTitle
+	 * @param pattern
+	 */
+	public ChooseFormatPopupDialog(JFrame caller, MindMapController controller, 
+			String dialogTitle, Pattern pattern) {
 		super(caller);
 		this.controller = controller;
-		initialize();
-		mStylePatternFrame.setPattern(StylePatternFactory.createPatternFromNode(node));
+		initialize(dialogTitle);
+		mStylePatternFrame.setPattern(pattern);
         mStylePatternFrame.addListeners();
 	}
 
@@ -80,9 +93,10 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 	 * 
 	 * @return void
 	 */
-	private void initialize() {
+	private void initialize(String dialogTitle) {
+		 
 		this.setTitle(controller
-				.getText("accessories/plugins/ApplyFormatPlugin.dialog.title")); 
+				.getText(dialogTitle)); 
 		JPanel contentPane = getJContentPane();
         this.setContentPane(contentPane);
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
@@ -95,6 +109,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 	}
 
 	private void close() {
+		setVisible(false);
 		this.dispose();
 
 	}

@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: StylePatternFrame.java,v 1.1.2.9 2006-03-19 21:21:33 christianfoltin Exp $*/
+/*$Id: StylePatternFrame.java,v 1.1.2.10 2006-03-26 20:58:43 christianfoltin Exp $*/
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;
@@ -27,7 +27,6 @@ import java.awt.CardLayout;
 import java.awt.HeadlessException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,6 +64,7 @@ import freemind.controller.actions.generated.instance.PatternNodeColor;
 import freemind.controller.actions.generated.instance.PatternNodeFontBold;
 import freemind.controller.actions.generated.instance.PatternNodeFontItalic;
 import freemind.controller.actions.generated.instance.PatternNodeFontName;
+import freemind.controller.actions.generated.instance.PatternNodeFontSize;
 import freemind.controller.actions.generated.instance.PatternNodeStyle;
 import freemind.controller.actions.generated.instance.PatternNodeText;
 import freemind.controller.actions.generated.instance.PatternPropertyBase;
@@ -103,57 +103,59 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 
 	private static final String NODE_BACKGROUND_COLOR = "nodebackgroundcolor";
 
-	private static final String SET_NODE_BACKGROUND_COLOR = "setnodebackgroundcolor";
+	private static final String SET_RESOURCE = "set_property_text";
+
+	private static final String SET_NODE_BACKGROUND_COLOR= SET_RESOURCE;
 
 	private static final String NODE_COLOR = "nodecolor";
 
-	private static final String SET_NODE_COLOR = "setnodecolor";
+	private static final String SET_NODE_COLOR= SET_RESOURCE;
 
-	private static final String SET_NODE_STYLE = "setnodestyle";
+	private static final String SET_NODE_STYLE= SET_RESOURCE;
 
 	private static final String NODE_STYLE = "nodestyle";
 
 	private static final String NODE_FONT_NAME = "nodefontname";
 
-	private static final String SET_NODE_FONT_NAME = "setnodefontname";
+	private static final String SET_NODE_FONT_NAME= SET_RESOURCE;
 
 	private static final String NODE_FONT_SIZE = "nodefontsize";
 
-	private static final String SET_NODE_FONT_SIZE = "setnodefontsize";
+	private static final String SET_NODE_FONT_SIZE= SET_RESOURCE;
 
 	private static final String NODE_FONT_BOLD = "nodefontbold";
 
-	private static final String SET_NODE_FONT_BOLD = "setnodefontbold";
+	private static final String SET_NODE_FONT_BOLD= SET_RESOURCE;
 
 	private static final String NODE_FONT_ITALIC = "nodefontitalic";
 
-	private static final String SET_NODE_FONT_ITALIC = "setnodefontitalic";
+	private static final String SET_NODE_FONT_ITALIC= SET_RESOURCE;
 
-	private static final String SET_NODE_TEXT = "setnodetext";
+	private static final String SET_NODE_TEXT= SET_RESOURCE;
 
 	private static final String NODE_TEXT = "nodetext";
 
-	private static final String SET_EDGE_WIDTH = "setedgewidth";
+	private static final String SET_EDGE_WIDTH= SET_RESOURCE;
 
 	private static final String EDGE_WIDTH = "edgewidth";
 
-	private static final String SET_EDGE_STYLE = "setedgestyle";
+	private static final String SET_EDGE_STYLE= SET_RESOURCE;
 
 	private static final String EDGE_STYLE = "edgestyle";
 
-	private static final String SET_EDGE_COLOR = "setedgecolor";
+	private static final String SET_EDGE_COLOR= SET_RESOURCE;
 
 	private static final String EDGE_COLOR = "edgecolor";
 
 	private static final String CLEAR_ALL_SETTERS = "clear_all_setters";
 
-	private static final String SET_ICON = "seticon";
+	private static final String SET_ICON= SET_RESOURCE;
 
 	private static final String ICON = "icon";
 
 	private static final String NODE_NAME = "patternname";
 
-	private static final String SET_CHILD_PATTERN = "setchildpattern";
+	private static final String SET_CHILD_PATTERN= SET_RESOURCE;
 
 	private static final String CHILD_PATTERN = "childpattern";
 
@@ -597,8 +599,8 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		/* font */
 		pattern.setPatternNodeFontName((PatternNodeFontName) getPatternResult(
 				new PatternNodeFontName(), mSetNodeFontName, mNodeFontName));
-		pattern.setPatternNodeFontName((PatternNodeFontName) getPatternResult(
-				new PatternNodeFontName(), mSetNodeFontName, mNodeFontName));
+		pattern.setPatternNodeFontSize((PatternNodeFontSize) getPatternResult(
+				new PatternNodeFontSize(), mSetNodeFontSize, mNodeFontSize));
 		pattern.setPatternNodeFontBold((PatternNodeFontBold) getPatternResult(
 				new PatternNodeFontBold(), mSetNodeFontBold, mNodeFontBold));
 		pattern

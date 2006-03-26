@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.8 2006-03-19 20:18:30 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9 2006-03-26 20:58:43 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -25,9 +25,16 @@ package freemind.main;
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.security.spec.AlgorithmParameterSpec;
@@ -52,6 +59,12 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import javax.swing.JDialog;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 public class Tools {
 
@@ -829,6 +842,61 @@ public class Tools {
 		dialog.setLocation(
 			new Double(posX).intValue(),
 			new Double(posY).intValue());
+	}
+
+	/** Creates a reader that pipes the input file through a XSLT-Script that
+	 *  updates the version to the current.
+	 * @param file
+	 * @param xsltScript 
+	 * @param frame 
+	 * @return 
+	 * @throws IOException
+	 */
+	public static Reader getUpdateReader(File file, String xsltScript, FreeMindMain frame) throws IOException {
+	    StringWriter writer = null;
+	    InputStream inputStream = null;
+	    java.util.logging.Logger logger = frame.getLogger(Tools.class.getName());
+	    logger.info("Updating the file "+file.getName()+" to the current version.");
+	    try{
+	        // try to convert map with xslt:
+	        URL updaterUrl=null;
+			updaterUrl = frame.getResource(xsltScript);
+	        if(updaterUrl == null) {
+	            throw new IllegalArgumentException(xsltScript+" not found.");
+	        }
+	        Source xsltSource=null;
+	        inputStream = updaterUrl.openStream();
+	        xsltSource = new StreamSource(inputStream);
+	        // get output:
+	        writer = new StringWriter();
+	        Result result = new StreamResult(writer);
+	        // create an instance of TransformerFactory
+	        TransformerFactory transFact = TransformerFactory.newInstance();
+	        Transformer trans = transFact.newTransformer(xsltSource);
+	        trans.transform(new StreamSource(file), result);
+	        logger.info("Updating the file "+file.getName()+" to the current version. Done.");
+	    } catch(Exception ex) {
+	        ex.printStackTrace();
+	        // exception: we take the file itself:
+	        return getActualReader(file);
+	    } finally {
+	        if(inputStream!= null) {
+	            inputStream.close();
+	        }
+	        if(writer != null) {
+	            writer.close();
+	        }
+	    }
+	    return new StringReader(writer.getBuffer().toString());
+	}
+
+	/** Creates a default reader that just reads the given file.
+	 * @param file
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public static Reader getActualReader(File file) throws FileNotFoundException {
+	    return new BufferedReader(new FileReader(file));
 	}
 
 

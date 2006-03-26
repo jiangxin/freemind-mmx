@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.24 2006-03-14 21:56:28 christianfoltin Exp $*/
+/*$Id: OptionPanel.java,v 1.1.2.25 2006-03-26 20:58:43 christianfoltin Exp $*/
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -31,8 +31,10 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -66,6 +68,7 @@ import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
 import freemind.modes.MindMapNode;
+import freemind.preferences.FreemindPropertyContributor;
 
 /**
  * @author foltin
@@ -306,7 +309,7 @@ public class OptionPanel implements TextTranslator {
 		}
 	}
 
-	private static class NewTabProperty implements PropertyControl {
+	public static class NewTabProperty implements PropertyControl {
 
 		private String label;
         private String layoutFormat;
@@ -1070,9 +1073,12 @@ controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldA
 
 		controls.add(new NextLineProperty());
 		controls.add(new BooleanProperty(
-
 		"export_icons_in_html.tooltip", "export_icons_in_html")); //  false
-
+		
+		for (Iterator iter = sContributors.iterator(); iter.hasNext();) {
+			FreemindPropertyContributor contributor = (FreemindPropertyContributor) iter.next();
+			controls.addAll(contributor.getControls(this));
+		}
 		return controls;
 	}
 
@@ -1081,7 +1087,18 @@ controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldA
         storage.setPanel(selectedPanel);
         XmlBindingTools.getInstance().storeDialogPositions(fmMain.getController(), frame, storage,
         		PREFERENCE_STORAGE_PROPERTY);
-//		frame.hide();
+        frame.setVisible(false);
 		frame.dispose();
 	}
+	
+	private static Set sContributors = new HashSet();
+	
+	public static void addContributor(FreemindPropertyContributor contributor) {
+		sContributors.add(contributor);
+	}
+	public static void removeContributor(FreemindPropertyContributor contributor) {
+		sContributors.remove(contributor);
+	}
+	
+	
 }

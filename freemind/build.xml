@@ -289,6 +289,7 @@
 				<include name="freemind.properties"/>
 				<include name="user.properties"/>
 				<include name="patterns.xml"/>
+				<include name="patterns_updater.xslt"/>
 				<include name="Resources*"/>
 				<include name="mindmap_menus.xml"/>
 				<include name="**/freemind_version_updater.xslt"/>

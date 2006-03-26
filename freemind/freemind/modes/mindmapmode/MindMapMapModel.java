@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMapModel.java,v 1.36.14.15 2006-01-12 23:10:13 christianfoltin Exp $*/
+/*$Id: MindMapMapModel.java,v 1.36.14.16 2006-03-26 20:58:43 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -31,10 +31,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
@@ -49,12 +47,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import freemind.controller.MindMapNodesSelection;
 import freemind.main.FreeMind;
@@ -70,7 +62,8 @@ import freemind.modes.ModeController;
 
 public class MindMapMapModel extends MapAdapter  {
 
-    LockManager lockManager;
+    private static final String FREEMIND_VERSION_UPDATER_XSLT = "freemind/modes/mindmapmode/freemind_version_updater.xslt";
+	LockManager lockManager;
     private LinkRegistryAdapter linkRegistry;
     private Timer timerForAutomaticSaving;
 	//
@@ -525,10 +518,10 @@ public class MindMapMapModel extends MapAdapter  {
         if (mapStart.equals(expectedStartString)
                 || mapStart.equals(expectedAlternativeStartString)) {
             // actual version:
-            reader = getActualReader(file);
+            reader = Tools.getActualReader(file);
         } else {
             // older version:
-            reader = getUpdateReader(file);
+            reader = Tools.getUpdateReader(file, FREEMIND_VERSION_UPDATER_XSLT, getFrame());
         }
         try {
             mapElement.parseFromReader(reader);
@@ -576,68 +569,6 @@ public class MindMapMapModel extends MapAdapter  {
     }
 
     
-
-    /** Creates a reader that pipes the input file through a XSLT-Script that
-     *  updates the version to the current.
-     * @param file
-     * @return 
-     * @throws IOException
-     */
-    private Reader getUpdateReader(File file) throws IOException {
-        StringWriter writer = null;
-        InputStream inputStream = null;
-        logger.info("Updating the file "+file.getName()+" to the current version.");
-        try{
-            // try to convert map with xslt:
-            URL updaterUrl=null;
-            updaterUrl = getFrame().getResource("freemind/modes/mindmapmode/freemind_version_updater.xslt");
-            if(updaterUrl == null) {
-                throw new IllegalArgumentException("freemind_version_updater.xslt not found.");
-            }
-            Source xsltSource=null;
-            inputStream = updaterUrl.openStream();
-            xsltSource = new StreamSource(inputStream);
-            // get output:
-            writer = new StringWriter();
-            Result result = new StreamResult(writer);
-            // create an instance of TransformerFactory
-            TransformerFactory transFact = TransformerFactory.newInstance();
-            Transformer trans = transFact.newTransformer(xsltSource);
-            trans.transform(new StreamSource(file), result);
-            logger.info("Updating the file "+file.getName()+" to the current version. Done.");
-        } catch(Exception ex) {
-            ex.printStackTrace();
-            // exception: we take the file itself:
-            return getActualReader(file);
-        } finally {
-            if(inputStream!= null) {
-                inputStream.close();
-            }
-            if(writer != null) {
-                writer.close();
-            }
-        }
-        return new StringReader(writer.getBuffer().toString());
-    }
-
-    /** Creates a default reader that just reads the given file.
-     * @param file
-     * @return
-     * @throws FileNotFoundException
-     */
-    private Reader getActualReader(File file) throws FileNotFoundException {
-        return new BufferedReader(new FileReader(file));
-    }
-
-    //
-    // cut'n'paste
-    //
-// (PN) see: super.cut(node) ... it does exactly the same!!!
-//    public Transferable cut(MindMapNode node) {
-//       Transferable transfer = copy(node);
-//       super.cut(node);
-//       return transfer;
-//    }
 
     public Transferable copy(MindMapNode node) {
        StringWriter stringWriter = new StringWriter();

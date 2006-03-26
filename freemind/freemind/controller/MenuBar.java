@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.16 2006-02-27 18:49:01 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17 2006-03-26 20:58:43 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -45,8 +45,10 @@ public class MenuBar extends JMenuBar {
 	public static final String NAVIGATE_MENU = MENU_BAR_PREFIX+"navigate/";
 	public static final String VIEW_MENU = MENU_BAR_PREFIX+"view/";
     public static final String HELP_MENU = MENU_BAR_PREFIX+"help/";
-    public static final String MODES_MENU = MENU_BAR_PREFIX+"modes/";
     public static final String MINDMAP_MENU = MENU_BAR_PREFIX+"mindmaps/";
+	private static final String MENU_MINDMAP_CATEGORY = MINDMAP_MENU+"mindmaps";
+    public static final String MODES_MENU = MINDMAP_MENU;
+//    public static final String MODES_MENU = MENU_BAR_PREFIX+"modes/";
     public static final String EDIT_MENU = MENU_BAR_PREFIX+"edit/";
     public static final String FILE_MENU = MENU_BAR_PREFIX+"file/";
 	public static final String FORMAT_MENU = MENU_BAR_PREFIX+"format/";
@@ -122,10 +124,6 @@ public class MenuBar extends JMenuBar {
 
 		//format menu
 		formatmenu = menuHolder.addMenu(new JMenu(c.getResourceString("menu_format")), FORMAT_MENU+".");
-		menuHolder.addCategory(FORMAT_MENU+"change");	
-		menuHolder.addSeparator(FORMAT_MENU);	
-		menuHolder.addCategory(FORMAT_MENU+"patterns");	
-		menuHolder.addSeparator(FORMAT_MENU);	
 
 		//navigate menu
 		menuHolder.addMenu(new JMenu(c.getResourceString("menu_navigate")), NAVIGATE_MENU+".");
@@ -142,14 +140,19 @@ public class MenuBar extends JMenuBar {
 		mapsmenu.setMnemonic(KeyEvent.VK_M);
 		menuHolder.addCategory(MINDMAP_MENU+"navigate");	
 		menuHolder.addSeparator(MINDMAP_MENU);	
+		menuHolder.addCategory(MENU_MINDMAP_CATEGORY);	
+		menuHolder.addSeparator(MINDMAP_MENU);	
+		//Modesmenu
+		menuHolder.addCategory(MODES_MENU);	
 
 		// maps popup menu
 		mapsPopupMenu = new JPopupMenu(c.getResourceString("mindmaps"));
 		menuHolder.addCategory(POPUP_MENU+"navigate");	
 		//menuHolder.addSeparator(POPUP_MENU);	
-	
-		//Modesmenu
-		JMenu modesmenu = menuHolder.addMenu(new JMenu(c.getResourceString("modes")), MODES_MENU+".");
+
+		// formerly, the modes menu was an own menu, but to need less place for the menus,
+		// we integrated it into the maps menu.
+		//JMenu modesmenu = menuHolder.addMenu(new JMenu(c.getResourceString("modes")), MODES_MENU+".");
 	
 		menuHolder.addMenu(new JMenu(c.getResourceString("help")), HELP_MENU+".");
 		menuHolder.addAction(c.documentation, HELP_MENU+"doc/documentation");
@@ -161,7 +164,7 @@ public class MenuBar extends JMenuBar {
 		updateFileMenu();
 		updateEditMenu();
 		updateModeMenu();
-		updateMapsMenu(menuHolder, MINDMAP_MENU);
+		updateMapsMenu(menuHolder, MENU_MINDMAP_CATEGORY+"/");
 		updateMapsMenu(menuHolder, POPUP_MENU);
 		addAdditionalPopupActions();
 		// the modes:

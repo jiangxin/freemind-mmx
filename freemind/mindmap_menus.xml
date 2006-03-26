@@ -94,6 +94,15 @@
 		</menu_category>	
 	
 		<menu_category name="format">
+			<menu_category name="change"/>
+			<menu_submenu name="patterns" name_ref="extension_menu">
+				<menu_category name="manage">
+				</menu_category>
+				<menu_separator/>
+				<menu_category name="patterns">
+				</menu_category>
+			</menu_submenu>
+			<menu_separator/>
 			<menu_category name="nodes">
 				<menu_category name="style">
 					<menu_action field="fork"/>
@@ -259,8 +268,13 @@
 				<menu_action field="addLocalLinkAction" key_ref="keystroke_add_local_link_action"/>
 			</menu_category>
 		</menu_submenu>	
-		<menu_separator/>
-		<menu_category name="patterns"/>
+			<menu_submenu name="patterns" name_ref="extension_menu">
+				<menu_category name="manage">
+				</menu_category>
+				<menu_separator/>
+				<menu_category name="patterns">
+				</menu_category>
+			</menu_submenu>
 	</menu_category>
 
 	<menu_category name="mindmapmode_toolbar">

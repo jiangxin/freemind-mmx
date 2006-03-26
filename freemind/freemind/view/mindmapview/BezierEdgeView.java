@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BezierEdgeView.java,v 1.13 2003-11-03 11:00:22 sviles Exp $*/
+/*$Id: BezierEdgeView.java,v 1.13.18.1 2006-03-26 20:58:43 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -43,9 +43,13 @@ public class BezierEdgeView extends EdgeView {
         super.update();
 
 	//YCTRL could be implemented but then we had to check whether target is above or below source.
-
-        int xctrl = getMap().getZoomed(target.isLeft() ? -XCTRL : XCTRL);
-        int childXctrl = getMap().getZoomed(target.isLeft() ? CHILD_XCTRL : -CHILD_XCTRL);
+        int sign = (target.isLeft())? -1 : 1;
+        int sourceSign = 1;
+        if(source.isRoot()){
+        		sourceSign = 0;
+        }
+        int xctrl = getMap().getZoomed(sourceSign * sign * XCTRL);
+        int childXctrl = getMap().getZoomed(- 1 * sign * CHILD_XCTRL);
 
 	int dy1=getSourceShift();
 	int dy2=getTargetShift();

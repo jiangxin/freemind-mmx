@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePatternFactory.java,v 1.1.2.2 2006-03-19 20:18:30 christianfoltin Exp $*/
+/*$Id: StylePatternFactory.java,v 1.1.2.3 2006-03-26 20:58:43 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import freemind.common.XmlBindingTools;
+import freemind.common.PropertyControl.TextTranslator;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.PatternEdgeColor;
 import freemind.controller.actions.generated.instance.PatternEdgeStyle;
@@ -68,8 +69,10 @@ public class StylePatternFactory {
 	}
 
 	/**
-	 * @param writer the result is written to, and it is closed afterwards
-	 * @param listOfPatterns List of Pattern elements.
+	 * @param writer
+	 *            the result is written to, and it is closed afterwards
+	 * @param listOfPatterns
+	 *            List of Pattern elements.
 	 * @throws Exception
 	 */
 	public static void savePatterns(Writer writer, List listOfPatterns)
@@ -142,6 +145,61 @@ public class StylePatternFactory {
 		}
 
 		return pattern;
+	}
+
+	public static String toString(Pattern pPattern, TextTranslator translator) {
+		String result = "";
+		if (pPattern.getPatternNodeColor() != null) {
+			result = addSeparatorIfNecessary(result);
+			if (pPattern.getPatternNodeColor().getValue() == null) {
+				result += "-" + translator.getText("PatternToString.color");
+			} else {
+				result += "+" + translator.getText("PatternToString.color");
+			}
+		}
+		if (pPattern.getPatternNodeBackgroundColor() != null) {
+			result = addSeparatorIfNecessary(result);
+			if (pPattern.getPatternNodeBackgroundColor().getValue() == null) {
+				result += "-"
+						+ translator.getText("PatternToString.backgroundColor");
+			} else {
+				result += "+"
+						+ translator.getText("PatternToString.backgroundColor");
+			}
+		}
+		if (pPattern.getPatternNodeFontSize() != null) {
+			result = addSeparatorIfNecessary(result);
+			if (pPattern.getPatternNodeFontSize().getValue() == null) {
+				result += "-"
+						+ translator.getText("PatternToString.NodeFontSize");
+			} else {
+				result += "+"
+						+ translator.getText("PatternToString.NodeFontSize")
+						+ pPattern.getPatternNodeFontSize().getValue();
+			}
+		}
+		// TODO: Add rest here.
+		result += " ...";
+		return result;
+	}
+
+	private static String addSeparatorIfNecessary(String result) {
+		if (result.length() > 0) {
+			result += ", ";
+		}
+		return result;
+	}
+
+	private static final String PATTERN_DUMMY = "<pattern name='dummy'/>";
+
+	public static Pattern getPatternFromString(String pattern) {
+		String patternString = pattern;
+		if (patternString == null) {
+			patternString = PATTERN_DUMMY;
+		}
+		Pattern pat = (Pattern) XmlBindingTools.getInstance().unMarshall(
+				patternString);
+		return pat;
 	}
 
 }

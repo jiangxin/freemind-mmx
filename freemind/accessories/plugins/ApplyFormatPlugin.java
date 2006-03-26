@@ -34,10 +34,9 @@ public class ApplyFormatPlugin extends MindMapNodeHookAdapter {
 		// we dont need node. 
 		MindMapNode focussed = getController().getSelected();
 		List selected = getController().getSelecteds();
-		FreeMind frame = (FreeMind) getController().getFrame();
 		ChooseFormatPopupDialog formatDialog =
 			new ChooseFormatPopupDialog(
-				frame, getMindMapController(), focussed);
+				((FreeMind) getController().getFrame()).getJFrame(), getMindMapController(), focussed);
 		formatDialog.setModal(true);
         formatDialog.pack();
         formatDialog.setVisible(true);

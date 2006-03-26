@@ -49,6 +49,7 @@
 				<pattern_node_text/>
 			</xsl:otherwise>
 		</xsl:choose>-->
+		<xsl:apply-templates select="font"/>
 		<xsl:choose> 
 			<xsl:when test="@icon and @icon != 'none'">
 				<xsl:element name="pattern_icon">
@@ -61,7 +62,8 @@
 			<xsl:otherwise>
 			</xsl:otherwise>
 		</xsl:choose>
-		<xsl:apply-templates select="node()"/>
+		<xsl:apply-templates select="edge"/>
+		<xsl:apply-templates select="child"/>
 	</xsl:template>
 
 	

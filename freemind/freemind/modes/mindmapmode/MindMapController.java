@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapController.java,v 1.35.14.20 2006-03-19 20:18:30 christianfoltin Exp $*/
+/*$Id: MindMapController.java,v 1.35.14.21 2006-03-26 20:58:43 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -31,6 +31,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -299,6 +300,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
     private MenuStructure mMenuStructure;
     private List mRegistrations;
+	private List mPatternsList = new Vector();
 
     public MindMapController(Mode mode) {
 	super(mode);
@@ -393,13 +395,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         removeLastIconAction.setIconAction(unknwonIconAction);
         removeAllIconsAction = new RemoveAllIconsAction(this, unknwonIconAction);
         // load pattern actions:
-        try {
-            loadPatterns(getPatternReader());
-        } catch (XMLParseException e) {
-            System.err.println("In patterns:" + e);
-        } catch (Exception ex) {
-            System.err.println("Patterns not loaded:" + ex);
-        }
+        loadPatternActions();
         EdgeWidth_WIDTH_PARENT = new EdgeWidthAction(this, EdgeAdapter.WIDTH_PARENT);
         EdgeWidth_WIDTH_THIN = new EdgeWidthAction(this, EdgeAdapter.WIDTH_THIN);
         EdgeWidth_1 = new EdgeWidthAction(this, 1);
@@ -444,11 +440,61 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         selectAllAction = new SelectAllAction(this);
     }
 
+	/**
+	 * Tries to load the user patterns and proposes an update to the new format,
+	 * if they are old fashioned (this is determined by having an exception
+	 * while reading the pattern file).
+	 */
+	private void loadPatternActions() {
+		try {
+			loadPatterns(getPatternReader());
+		} catch (Exception ex) {
+			System.err.println("Patterns not loaded:" + ex);
+			// repair old patterns:
+			String repairTitle = "Repair patterns";
+			File patternsFile = getFrame().getPatternsFile();
+			int result = JOptionPane
+					.showConfirmDialog(
+							null,
+							"<html>The pattern file format has changed, <br>"
+									+ "and it seems, that your pattern file<br>"
+									+ "'"
+									+ patternsFile.getAbsolutePath()
+									+ "'<br> is formatted in the old way. <br>"
+									+ "Should I try to repair the pattern file <br>"
+									+ "(otherwise, you should update it by hand or delete it)?",
+							repairTitle, JOptionPane.YES_NO_OPTION);
+			if (result == JOptionPane.YES_OPTION) {
+				// try xslt script:
+				boolean success = false;
+				try {
+					loadPatterns(Tools.getUpdateReader(patternsFile,
+							"patterns_updater.xslt", getFrame()));
+					// save patterns directly:
+					StylePatternFactory.savePatterns(new FileWriter(
+							patternsFile), mPatternsList);
+					success = true;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				if (success) {
+					JOptionPane.showMessageDialog(null,
+							"Successfully repaired the pattern file.",
+							repairTitle, JOptionPane.PLAIN_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(null,
+							"An error occured repairing the pattern file.",
+							repairTitle, JOptionPane.WARNING_MESSAGE);
+				}
+			}
+		}
+	}
+
     /**
-     * @return
-     * @throws FileNotFoundException
-     * @throws IOException
-     */
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
     public Reader getPatternReader() throws FileNotFoundException, IOException {
         Reader reader = null;
         File patternsFile = getFrame().getPatternsFile();
@@ -480,11 +526,17 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
 
     
-    private void loadPatterns(Reader reader) throws Exception {
+    /** Creates the patterns actions (saved in array patterns),
+     *  and the pure patterns list (saved in mPatternsList).
+     * @param reader
+     * @throws Exception
+     */
+    public void loadPatterns(Reader reader) throws Exception {
         createPatterns(StylePatternFactory.loadPatterns(reader));
     }
 
     private void createPatterns(List patternsList) throws Exception {
+    		mPatternsList = patternsList;
         patterns = new ApplyPatternAction[patternsList.size()];
         for (int i = 0; i < patterns.length; i++) {
             patterns[i] = new ApplyPatternAction(this,
@@ -702,19 +754,17 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
      * @param holder
      * @param formatMenuString
      */
-    public JMenu createPatternSubMenu(StructuredMenuHolder holder, String formatMenuString) {
-        JMenu extensionMenu = holder.addMenu(new JMenu(getText("extension_menu")), formatMenuString+"patterns/.");
+    public void createPatternSubMenu(StructuredMenuHolder holder, String formatMenuString) {
         for (int i = 0; i < patterns.length; ++i) {
             JMenuItem item =
                 holder.addAction(
                     patterns[i],
-                    formatMenuString + "patterns/" + i);
+                    formatMenuString +"patterns/patterns/" + i);
             item.setAccelerator(
                 KeyStroke.getKeyStroke(
                     getFrame().getProperty(
                         "keystroke_apply_pattern_" + (i + 1))));
         }
-        return extensionMenu;
     }
 
     public MenuStructure updateMenusFromXml(InputStream in) {

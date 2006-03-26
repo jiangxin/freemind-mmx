@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatterns.java,v 1.1.2.3 2006-03-19 20:18:30 christianfoltin Exp $*/
+/*$Id: ManagePatterns.java,v 1.1.2.4 2006-03-26 20:58:42 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -35,33 +35,39 @@ import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
 /** */
 public class ManagePatterns extends MindMapHookAdapter {
 
-    /**
-     * 
-     */
-    public ManagePatterns() {
-        super();
+	/**
+	 * 
+	 */
+	public ManagePatterns() {
+		super();
 
-    }
+	}
 
-    public void startupMapHook() {
-        super.startupMapHook();
-        // start dialog:
-        FreeMind frame = (FreeMind) getController().getFrame();
-        ManagePatternsPopupDialog formatDialog = new ManagePatternsPopupDialog(
-                frame.getJFrame(), getMindMapController());
-        formatDialog.pack();
-        formatDialog.setModal(true);
-        formatDialog.show();
-        // process result:
-        if (formatDialog.getResult() == ChooseFormatPopupDialog.OK) {
-            try {
+	public void startupMapHook() {
+		super.startupMapHook();
+		// start dialog:
+		FreeMind frame = (FreeMind) getController().getFrame();
+		ManagePatternsPopupDialog formatDialog = new ManagePatternsPopupDialog(
+				frame.getJFrame(), getMindMapController());
+		formatDialog.pack();
+		formatDialog.setModal(true);
+		formatDialog.show();
+		// process result:
+		if (formatDialog.getResult() == ChooseFormatPopupDialog.OK) {
+			try {
 				// Save patterns in private pattern list:
 				File patternFile = getController().getFrame().getPatternsFile();
-				FileWriter f = new FileWriter(patternFile);
-				StylePatternFactory.savePatterns(f, formatDialog.getPatternList());
+				StylePatternFactory.savePatterns(new FileWriter(patternFile), formatDialog
+						.getPatternList());
+				getMindMapController().loadPatterns(
+						getMindMapController().getPatternReader());
+				// TODO: seems to be a bad hack:
+				getMindMapController().getFrame()
+						.getFreeMindMenuBar().updateMenus(
+								getMindMapController());
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, e.getLocalizedMessage());
 			}
-        }
-    }
+		}
+	}
 }

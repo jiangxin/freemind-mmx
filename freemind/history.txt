@@ -39,7 +39,9 @@ Beta4:
 ------
 * Style editor added.
 * Pattern editor added.
-
+* Modes menu integrated into map menu to save menu place.
+* Root node curves improved.
+* Automatic layout patterns can be specified in the preferences dialog
 
 Changes made in Freemind 0.8.0:
 ===============================
