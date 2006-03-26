@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<plugin>
+	<plugin_action
+		documentation="%accessories/plugins/ManagePatterns.properties_documentation"
+		name="%accessories/plugins/ManagePatterns.properties_name"
+		base="freemind.extensions.ModeControllerHookAdapter"
+		label="accessories/plugins/ManagePatterns.properties"
+		class_name="accessories.plugins.ManagePatterns">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/format/patterns/manage/ManagePatterns"/>
+		<plugin_menu location="mindmapmode_popup/patterns/manage/ManagePatterns"/>
+	</plugin_action>
+</plugin>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin>
+	<plugin_registration class_name="accessories.plugins.MacChanges">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+	</plugin_registration>
+</plugin>

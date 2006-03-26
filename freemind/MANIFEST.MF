@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Main-Class: freemind.main.FreeMind
+Class-Path:     freemind.jar ../ commons-lang-2.0.jar forms-1.0.5.jar jibx/jibx-run.jar jibx/xpp3.jar bindings.jar
+Created-By: Joerg Mueller
+

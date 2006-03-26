@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin>
+	<plugin_classpath jar="plugins/time/time_plugin.jar"/>
+	<plugin_classpath jar="plugins/time/jcalendar.jar"/>
+	<plugin_registration isPluginBase="true" 
+		class_name="plugins.time.TimeManagementOrganizer">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+	</plugin_registration>
+	<plugin_action documentation="%plugins/TimeManagement.xml_documentation" 
+		name="%plugins/TimeManagement.xml_name" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/TimeManagement.xml" 
+		class_name="plugins.time.TimeManagement" key_stroke="control T">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/extras/first/time_management/start"/>
+	</plugin_action>
+	<plugin_action documentation="%plugins/TimeList.xml_documentation" 
+		name="%plugins/TimeList.xml_name" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/TimeList.xml" class_name="plugins.time.TimeList">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/extras/first/time_management/timelist"/>
+		<plugin_property name="show_all_nodes" value="false"/>
+	</plugin_action>
+	<plugin_action documentation="%plugins/NodeList.xml_documentation" 
+		name="%plugins/NodeList.xml_name" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/NodeList.xml" class_name="plugins.time.TimeList">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/extras/first/time_management/nodelist"/>
+		<plugin_property name="show_all_nodes" value="true"/>
+	</plugin_action>
+	<plugin_action 
+		documentation="%plugins/TimeManagementReminder.xml_documentation" 
+		name="%plugins/TimeManagementReminder.xml_name" 
+		base="freemind.extensions.PermanentNodeHookAdapter" 
+		label="plugins/TimeManagementReminder.xml" 
+		class_name="plugins.time.ReminderHook" instanciation="Once">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<!--<plugin_menu location="menu_bar/extras/first/time_management_reminder"/> -->
+	</plugin_action>
+	<!-- Remove reminder is only visible when in suitable context.-->
+	<plugin_action documentation="%plugins/RemoveReminder.xml_documentation" 
+		name="%plugins/RemoveReminder.xml_name" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="plugins/time/RemoveReminderHook.java" 
+		class_name="plugins.time.RemoveReminderHook">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu 
+			location="menu_bar/extras/first/time_management/remove_reminder"/>
+		<plugin_menu location="mindmapmode_popup/context/remove_reminder"/>
+	</plugin_action>
+</plugin>

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<plugin>
+	<plugin_action documentation="%accessories/plugins/FormularEditor.properties_documentation" base="freemind.extensions.NodeHookAdapter" label="accessories/plugins/FormularEditor.properties" class_name="accessories.plugins.FormularEditor" instanciation="Once">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+	</plugin_action>
+</plugin>

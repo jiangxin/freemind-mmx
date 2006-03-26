@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<plugin>
+	<plugin_action documentation="%accessories/plugins/BlinkingNodeHook.properties_documentation" name="%accessories/plugins/BlinkingNodeHook.properties_name" base="freemind.extensions.NodeHookAdapter" icon_path="accessories/plugins/icons/xeyes.png" label="accessories/plugins/BlinkingNodeHook.properties" class_name="accessories.plugins.BlinkingNodeHook" instanciation="Once">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/format/nodes/BlinkingNodeHook"/>
+	</plugin_action>
+</plugin>

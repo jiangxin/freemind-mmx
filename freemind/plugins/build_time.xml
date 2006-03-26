@@ -1,0 +1,12 @@
+<project name="freemind_plugins" default="dist" basedir=".">
+	
+	<property name="plugin.xml" value="plugins/TimeManagement.xml" />
+	<property name="plugin.dir" value="plugins/time"/>
+	<property name="plugin.jar" value="time_plugin.jar" />
+	<property name="plugin.zip" value="time_plugin-${ver}.zip" />
+	<property name="additional.lib" value="${plugin.dir}/batik-awt-util.jar:${plugin.dir}/batik-bridge.jar:${plugin.dir}/batik-css.jar:${plugin.dir}/batik-dom.jar:${plugin.dir}/batik-extension.jar:${plugin.dir}/batik-ext.jar:${plugin.dir}/batik-gui-util.jar:${plugin.dir}/batik-gvt.jar:${plugin.dir}/batik-parser.jar:${plugin.dir}/batik-script.jar:${plugin.dir}/batik-svg-dom.jar:${plugin.dir}/batik-svggen.jar:${plugin.dir}/batik-swing.jar:${plugin.dir}/jcalendar.jar"/>
+	
+	<property name="additional.lib.pattern" value="${plugin.dir}/*.jar"/>
+
+	<import file="build_import.xml" />
+</project>
