@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: PermanentMindMapNodeHookAdapter.java,v 1.1.2.1 2006-01-12 23:10:14 christianfoltin Exp $*/
+/* $Id: PermanentMindMapNodeHookAdapter.java,v 1.1.2.1.2.1 2006-04-05 21:26:30 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.hooks;
 
@@ -31,7 +31,7 @@ import freemind.modes.mindmapmode.MindMapController;
 public class PermanentMindMapNodeHookAdapter extends PermanentNodeHookAdapter {
 
     /**
-     * 
+     *
      */
     public PermanentMindMapNodeHookAdapter() {
         super();
@@ -41,7 +41,7 @@ public class PermanentMindMapNodeHookAdapter extends PermanentNodeHookAdapter {
     public MindMapController getMindMapController(){
         return (MindMapController) getController();
     }
-    
+
     /**
      * @param child the child node the hook should be propagated to.
      * @return returns the new hook or null if there is already such a hook.
@@ -53,7 +53,7 @@ public class PermanentMindMapNodeHookAdapter extends PermanentNodeHookAdapter {
         return hook;
     }
 
-    
+
     /**
      * @param value
      */

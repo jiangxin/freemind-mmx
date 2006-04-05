@@ -19,7 +19,7 @@
  *
  * Created on 06.10.2004
  */
-/*$Id: CloudAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: CloudAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -36,7 +36,7 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 /**
  * @author foltin
- *  
+ *
  */
 public class CloudAction extends NodeGeneralAction implements NodeActorXml {
 
@@ -76,7 +76,7 @@ public class CloudAction extends NodeGeneralAction implements NodeActorXml {
 		} else {
 			undocloudAction = createAddCloudXmlAction(
 					selected, false, null);
-			
+
 		}
 		return new ActionPair(cloudAction, undocloudAction);
 	}

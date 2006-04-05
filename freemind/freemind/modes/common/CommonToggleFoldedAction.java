@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/*$Id: CommonToggleFoldedAction.java,v 1.1.2.1 2006-01-12 23:10:12 christianfoltin Exp $*/
+/* $Id: CommonToggleFoldedAction.java,v 1.1.2.1.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 package freemind.modes.common;
 
 import java.awt.event.ActionEvent;
@@ -38,7 +38,7 @@ import freemind.modes.MindMapNode;
  *
  */
 public class CommonToggleFoldedAction extends AbstractAction {
-	
+
 		private ControllerAdapter modeController;
 
 		private Logger logger;

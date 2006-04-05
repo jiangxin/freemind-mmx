@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMode.java,v 1.17.18.2 2006-01-12 23:10:13 christianfoltin Exp $*/
+/* $Id: MindMapMode.java,v 1.17.18.2.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -81,7 +81,7 @@ public class MindMapMode implements Mode {
         e.printStackTrace();
 	}
     }
-    
+
     public Controller getController() {
 	return c;
     }
@@ -89,6 +89,5 @@ public class MindMapMode implements Mode {
     public ModeController getDefaultModeController() {
 	return modecontroller;
     }
-
 
 }

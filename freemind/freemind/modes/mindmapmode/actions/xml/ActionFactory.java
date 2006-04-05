@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: ActionFactory.java,v 1.1.2.2 2006-01-18 22:28:48 christianfoltin Exp $*/
+/* $Id: ActionFactory.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -47,7 +47,7 @@ public class ActionFactory {
 	private HashMap registeredActors;
 
 	/**
-	 * 
+	 *
 	 */
 	public ActionFactory(Controller c) {
 		super();
@@ -135,14 +135,14 @@ public class ActionFactory {
 	 * @param action
 	 */
 	public void registerActor(ActorXml actor, Class action) {
-		registeredActors.put(action, actor);		
+		registeredActors.put(action, actor);
 	}
 	/**
 	 * @param actor
 	 * @param action
 	 */
 	public void deregisterActor(Class action) {
-	    registeredActors.remove(action);		
+	    registeredActors.remove(action);
 	}
 
 	public ActorXml getActor(XmlAction action) {

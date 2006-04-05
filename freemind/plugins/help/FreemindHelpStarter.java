@@ -19,7 +19,7 @@
  *
  * Created on 29.08.2004
  */
-/*$Id: FreemindHelpStarter.java,v 1.1.4.1 2004-11-16 16:42:37 christianfoltin Exp $*/
+/* $Id: FreemindHelpStarter.java,v 1.1.4.1.16.1 2006-04-05 21:26:32 dpolivaev Exp $ */
 
 package plugins.help;
 
@@ -34,32 +34,32 @@ import freemind.extensions.ModeControllerHookAdapter;
 
 /**
  * @author foltin
- *  
+ *
  */
 public class FreemindHelpStarter extends ModeControllerHookAdapter {
 
     /**
-     *  
+     *
      */
 
     public void startupMapHook() {
         super.startupMapHook();
 //      Find the HelpSet file and create the HelpSet object:
-	    String helpHS = "plugins/help/doc/freemind.hs"; 
-	    try { 
+	    String helpHS = "plugins/help/doc/freemind.hs";
+	    try {
 	        ClassLoader classLoader = this.getClass().getClassLoader();
-            URL hsURL = HelpSet.findHelpSet(classLoader, helpHS); 
-	        HelpSet hs = new HelpSet(classLoader, hsURL); 
-	        HelpBroker hb = hs.createHelpBroker(); 
+            URL hsURL = HelpSet.findHelpSet(classLoader, helpHS);
+	        HelpSet hs = new HelpSet(classLoader, hsURL);
+	        HelpBroker hb = hs.createHelpBroker();
 	        hb.initPresentation();
 	        hb.setDisplayed(true);
 	        hb.setViewDisplayed(true);
-        } catch (Exception ee) { 
+        } catch (Exception ee) {
             // Say what the exception really is
             ee.printStackTrace();
-            logger.warning( "HelpSet " + ee.getMessage() + ee); 
-            logger.warning("HelpSet "+ helpHS +" not found"); 
-            return; 
-        } 
+            logger.warning( "HelpSet " + ee.getMessage() + ee);
+            logger.warning("HelpSet "+ helpHS +" not found");
+            return;
+        }
     }
 }

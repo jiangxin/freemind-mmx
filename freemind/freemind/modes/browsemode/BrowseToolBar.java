@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseToolBar.java,v 1.6.18.2 2006-01-31 05:24:25 christianfoltin Exp $*/
+/* $Id: BrowseToolBar.java,v 1.6.18.2.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -37,7 +37,7 @@ public class BrowseToolBar extends JToolBar {
     private PersistentEditableComboBox urlfield = null;
 
     public BrowseToolBar(BrowseController controller) {
-	
+
 	this.c=controller;
 	urlfield = new PersistentEditableComboBox(controller, BROWSE_URL_STORAGE_KEY);
         this.setRollover(true);
@@ -53,7 +53,7 @@ public class BrowseToolBar extends JToolBar {
                 e1.printStackTrace();
                 //FIXME: Give a good error message.
                 c.getController().errorMessage(e1);
-            }		    
+            }
 		}
 	    });
 

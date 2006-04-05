@@ -19,7 +19,7 @@
  *
  * Created on 19.07.2004
  */
-/*$Id: FreemindAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/* $Id: FreemindAction.java,v 1.1.2.1.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -58,7 +58,7 @@ public abstract class FreemindAction extends AbstractAction {
         if(enabledIcon == null){
             enabledIcon = new ImageIcon(mindMapController.getFrame().getResource(ENABLED_ICON_PATH));
         }
-        
+
     }
 
     /**
@@ -67,11 +67,11 @@ public abstract class FreemindAction extends AbstractAction {
      * @param mindMapController
      */
     public FreemindAction(String title, String iconPath, final MindMapController mindMapController) {
-        this(mindMapController.getText(title), 
-            (iconPath==null)?null: new ImageIcon(mindMapController.getResource(iconPath)), 
+        this(mindMapController.getText(title),
+            (iconPath==null)?null: new ImageIcon(mindMapController.getResource(iconPath)),
                 mindMapController);
     }
-    
+
     protected void setSelected(JMenuItem menuItem, boolean state) {
     		// prevents that icons set after the construction is forgotten to
     		// recover.
@@ -84,7 +84,7 @@ public abstract class FreemindAction extends AbstractAction {
 		    menuItem.setIcon(actionIcon);
 		}
     }
-    
+
     public void addActor(ActorXml actor) {
 //      registration:
 		pMindMapController.getActionFactory().registerActor(actor, actor.getDoActionClass());

@@ -19,7 +19,7 @@
  *
  * Created on 01.11.2004
  */
-/*$Id: ExportPdf.java,v 1.1.4.2 2006-02-01 06:40:39 christianfoltin Exp $*/
+/* $Id: ExportPdf.java,v 1.1.4.2.2.1 2006-04-05 21:26:32 dpolivaev Exp $ */
 
 package plugins.svg;
 
@@ -43,7 +43,7 @@ import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
- *  
+ *
  */
 public class ExportPdf extends ExportVectorGraphic {
 
@@ -60,7 +60,7 @@ public class ExportPdf extends ExportVectorGraphic {
                 return;
 
             getController().getFrame().setWaitingCursor(true);
-            
+
             SVGGraphics2D g2d = fillSVGGraphics2D(view);
 
 
@@ -76,7 +76,7 @@ public class ExportPdf extends ExportVectorGraphic {
             // flush and close the stream then exit
             ostream.flush();
             ostream.close();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(getController().getFrame().getContentPane(), e.getLocalizedMessage(), null, JOptionPane.ERROR_MESSAGE);

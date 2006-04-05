@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: EncryptedBrowseNode.java,v 1.1.2.1 2006-01-12 23:10:12 christianfoltin Exp $*/
+/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ import freemind.modes.common.dialogs.EnterPasswordDialog;
 
 /**
  * @author foltin
- * 
+ *
  */
 public class EncryptedBrowseNode extends BrowseNodeModel {
 
@@ -68,15 +68,15 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 	 */
 	public EncryptedBrowseNode(Object userObject, FreeMindMain frame,
 			ModeController modeController) {
-		super(userObject, frame);
+		super(userObject, frame, modeController.getMap());
 		this.mModeController = modeController;
 		if (logger == null)
 			logger = frame.getLogger(this.getClass().getName());
 		if (encryptedIcon == null) {
-			encryptedIcon = MindIcon.factory("encrypted").getIcon(frame);
+			encryptedIcon = MindIcon.factory("encrypted").getIcon();
 		}
 		if (decryptedIcon == null) {
-			decryptedIcon = MindIcon.factory("decrypted").getIcon(frame);
+			decryptedIcon = MindIcon.factory("decrypted").getIcon();
 		}
 		updateIcon();
 	}
@@ -139,7 +139,7 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void setAdditionalInfo(String info) {
 		encryptedContent = info;

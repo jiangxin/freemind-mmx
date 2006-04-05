@@ -19,7 +19,7 @@
  *
  * Created on 11.01.2006
  */
-/*$Id: BrowseReminderHook.java,v 1.1.2.1 2006-01-12 23:10:12 christianfoltin Exp $*/
+/* $Id: BrowseReminderHook.java,v 1.1.2.1.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
 import freemind.modes.MindMapNode;
@@ -32,7 +32,7 @@ import freemind.modes.common.plugins.ReminderHookBase;
 public class BrowseReminderHook extends ReminderHookBase {
 
 	/**
-	 * 
+	 *
 	 */
 	public BrowseReminderHook() {
 		super();

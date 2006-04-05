@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModeController.java,v 1.14.14.9 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: ModeController.java,v 1.14.14.9.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 
 package freemind.modes;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,6 +38,7 @@ import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.HookFactory;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
+import freemind.modes.attributes.AttributeController;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
@@ -57,16 +59,16 @@ public interface ModeController  {
     boolean saveAs();
     void open();
     boolean close(boolean force, MapModuleManager mapModuleManager);
-    
+
     // activation methods:
     void startupController();
     void shutdownController();
     // end activation methods.
-    
+
     // listener -> controller handling
     void doubleClick(MouseEvent e);
     void plainClick(MouseEvent e);
-    /** This method is used to hide the map "under" another opened map. 
+    /** This method is used to hide the map "under" another opened map.
      * In fact, should remove the focus, stop plugins, if necessary, etc. */
     void setVisible(boolean visible);
 
@@ -75,7 +77,7 @@ public interface ModeController  {
     /** Given a node identifier, this method returns the corresponding node.
      * @throws IllegalArgumentException if the id is unknown. */
     NodeAdapter getNodeFromID(String nodeID);
-    /** Calling this method the map-unique identifier of the node is returned 
+    /** Calling this method the map-unique identifier of the node is returned
      * (and created before, if not present)*/
     String getNodeID(MindMapNode selected);
 
@@ -101,12 +103,12 @@ public interface ModeController  {
 	 * @param inPlaceList the given list is sorted by reference.
 	 */
     public void sortNodesByDepth(List inPlaceList) ;
-	    /** This extends the currently selected nodes. 
+	    /** This extends the currently selected nodes.
         @return true, if the method changed the selection.*/
     boolean extendSelection(MouseEvent e);
     /**
      * Invoke this method after you've changed how a node is to be
-     * represented in the tree. 
+     * represented in the tree.
      */
     void nodeChanged(MindMapNode n);
     void anotherNodeSelected(MindMapNode n);
@@ -131,7 +133,7 @@ public interface ModeController  {
 
     public JToolBar getModeToolBar();
     /** For the toolbar on the left hand side of the window.*/
-    public JToolBar getLeftToolBar();
+    public Component getLeftToolBar();
 
 
 	/** Use this method to get menus to the screen. */
@@ -144,9 +146,9 @@ public interface ModeController  {
     JPopupMenu getPopupForModel(java.lang.Object obj);
 
 	FreeMindMain getFrame();
-	MapView getView(); 
+	MapView getView();
 	MapAdapter getMap();
-	/** This method must only be used by the model itself at creation time. 
+	/** This method must only be used by the model itself at creation time.
 	 * Don't use this method.
 	 * @param model
 	 */
@@ -165,4 +167,6 @@ public interface ModeController  {
     /** If some load/save operation has changed the path, it should be mentioned here.*/
     public void setLastCurrentDir(File pLastCurrentDir);
 
+    AttributeController getAttributeController();
+    void nodeRefresh(MindMapNode node);
 }

@@ -142,7 +142,7 @@ public class ExportWithXSLT extends ExportHook {
         boolean success = true;
 //      Generating output Stream            
         BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(pDirectoryName+File.separator + "map.mm") ) );
-        getController().getMap().getXml(fileout);
+        getController().getMap().getFilteredXml(fileout);
         return success;
     }
 
@@ -249,7 +249,7 @@ public class ExportWithXSLT extends ExportHook {
         // get output:
         StringWriter writer = new StringWriter();
         // get XML
-        getController().getMap().getXml(writer);
+        getController().getMap().getFilteredXml(writer);
         return writer;
     }
 

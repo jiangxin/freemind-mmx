@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/*$Id: MindMapMouseWheelEventHandler.java,v 1.1.2.1 2006-01-12 23:10:14 christianfoltin Exp $*/
+/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.1.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.listeners;
 
 import java.awt.event.InputEvent;
@@ -34,16 +34,16 @@ import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
- * 
+ *
  */
 public class MindMapMouseWheelEventHandler implements MouseWheelListener {
 
     private static final int SCROLL_SKIPS = 8;
     private static final int SCROLL_SKIP = 10;
-    private static final int HORIZONTAL_SCROLL_MASK 
-       = InputEvent.SHIFT_MASK | InputEvent.BUTTON1_MASK 
+    private static final int HORIZONTAL_SCROLL_MASK
+       = InputEvent.SHIFT_MASK | InputEvent.BUTTON1_MASK
          | InputEvent.BUTTON2_MASK | InputEvent.BUTTON3_MASK;
-    private static final int ZOOM_MASK 
+    private static final int ZOOM_MASK
        = InputEvent.CTRL_MASK;
       // |=   oldX >=0 iff we are in the drag
 
@@ -51,7 +51,7 @@ public class MindMapMouseWheelEventHandler implements MouseWheelListener {
 
 	/**
 	 * @param controller
-	 * 
+	 *
 	 */
 	public MindMapMouseWheelEventHandler(MindMapController controller) {
 		super();
@@ -60,7 +60,7 @@ public class MindMapMouseWheelEventHandler implements MouseWheelListener {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see freemind.modes.ModeController.MouseWheelEventHandler#handleMouseWheelEvent(java.awt.event.MouseWheelEvent)
 	 */
 	public void mouseWheelMoved(MouseWheelEvent e) {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: XMLElementAdapter.java,v 1.4.14.15 2006-03-14 21:56:27 christianfoltin Exp $*/
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -30,11 +30,15 @@ import freemind.extensions.PermanentNodeHookSubstituteUnknown;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
+import freemind.modes.attributes.Attribute;
+import freemind.modes.attributes.AttributeRegistry;
+import freemind.modes.attributes.AttributeTableLayoutModel;
+import freemind.modes.mindmapmode.EncryptedMindMapNode;
 
 public abstract class XMLElementAdapter extends XMLElement {
 
-    
-	// Logging: 
+
+	// Logging:
 	protected static java.util.logging.Logger logger;
 
    private Object           userObject = null;
@@ -44,22 +48,38 @@ public abstract class XMLElementAdapter extends XMLElement {
 
    //   Font attributes
 
-   private String fontName; 
+   private String fontName;
    private int    fontStyle = 0;
    private int    fontSize = 0;
 
    //   Icon attributes
 
-   private String iconName; 
+   private String iconName;
 
     // arrow link attributes:
     protected Vector ArrowLinkAdapters;
     protected HashMap /* id -> target */  IDToTarget;
     public static final String XML_NODE_TEXT = "TEXT";
     public static final String XML_NODE = "node";
+    public static final String XML_NODE_ATTRIBUTE = "attribute";
+    public static final String XML_NODE_ATTRIBUTE_LAYOUT = "attribute_layout";
+    public static final String XML_NODE_ATTRIBUTE_REGISTRY = "attribute_registry";
+    public static final String XML_NODE_REGISTERED_ATTRIBUTE_NAME = "attribute_name";
+    public static final String XML_NODE_REGISTERED_ATTRIBUTE_VALUE = "attribute_value";
+    //public static final String XML_NODE_CLASS_PREFIX = XML_NODE+"_";
+    public static final String XML_NODE_CLASS = "AA_NODE_CLASS";
+    public static final String XML_NODE_ADDITIONAL_INFO = "ADDITIONAL_INFO";
     public static final String XML_NODE_ENCRYPTED_CONTENT = "ENCRYPTED_CONTENT";
     public static final String XML_NODE_HISTORY_CREATED_AT = "CREATED";
     public static final String XML_NODE_HISTORY_LAST_MODIFIED_AT = "MODIFIED";
+
+    private String attributeName;
+
+    private String attributeValue;
+
+    private int attributeNameWidth = AttributeTableLayoutModel.DEFAULT_COLUMN_WIDTH;
+
+    private int attributeValueWidth = AttributeTableLayoutModel.DEFAULT_COLUMN_WIDTH;
 
 	protected final ModeController mModeController;
 
@@ -71,7 +91,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 
     protected XMLElementAdapter(ModeController modeController, Vector ArrowLinkAdapters, HashMap IDToTarget) {
         this.mModeController = modeController;
-        this.frame = modeController.getFrame(); 
+        this.frame = modeController.getFrame();
         this.ArrowLinkAdapters = ArrowLinkAdapters;
         this.IDToTarget = IDToTarget;
         if(logger==null) {
@@ -88,14 +108,14 @@ public abstract class XMLElementAdapter extends XMLElement {
     abstract protected NodeAdapter createEncryptedNode(String additionalInfo);
 
 
-    
+
     protected FreeMindMain getFrame() {
         return frame;
     }
 
    public Object getUserObject() {
       return userObject; }
-   
+
    protected void setUserObject(Object obj){
 	   userObject = obj;
    }
@@ -119,7 +139,17 @@ public abstract class XMLElementAdapter extends XMLElement {
 			userObject = createArrowLinkAdapter(null, null, frame);
 		} else if (name.equals("font")) {
 			userObject = null;
+		}  else if (name.equals(XML_NODE_ATTRIBUTE)) {
+			userObject = null;
+		}  else if (name.equals(XML_NODE_ATTRIBUTE_LAYOUT)) {
+			userObject = null;
 		} else if (name.equals("map")) {
+			userObject = null;
+		} else if (name.equals(XML_NODE_ATTRIBUTE_REGISTRY)) {
+			userObject = null;
+		} else if (name.equals(XML_NODE_REGISTERED_ATTRIBUTE_NAME)) {
+			userObject = null;
+		} else if (name.equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)) {
 			userObject = null;
 		} else if (name.equals("icon")) {
 			userObject = null;
@@ -162,8 +192,15 @@ public abstract class XMLElementAdapter extends XMLElement {
             ArrowLinkAdapters.add(arrowLink);
          }
          else if (child.getName().equals("font")) {
-            node.setFont((Font)child.getUserObject()); }
-         else if (child.getName().equals("icon")) {
+             node.setFont((Font)child.getUserObject()); }
+         else if (child.getName().equals(XML_NODE_ATTRIBUTE)) {
+             node.getAttributes().addRowNoUndo((Attribute)child.getUserObject()); }
+         else if (child.getName().equals(XML_NODE_ATTRIBUTE_LAYOUT)) {
+             AttributeTableLayoutModel layout = node.getAttributes().getLayout();
+             layout.setColumnWidth(0, ((XMLElementAdapter)child).attributeNameWidth);
+             layout.setColumnWidth(1, ((XMLElementAdapter)child).attributeValueWidth);
+             }
+          else if (child.getName().equals("icon")) {
              node.addIcon((MindIcon)child.getUserObject()); }
          else if (child.getName().equals("hook")) {
          	 XMLElement xml = (XMLElement) child/*.getUserObject()*/;
@@ -171,8 +208,8 @@ public abstract class XMLElementAdapter extends XMLElement {
  			 PermanentNodeHook hook = null;
              try {
 				 //loadName=loadName.replace('/', File.separatorChar);
-				 /* The next code snippet is an exception. Normally, hooks 
-				  * have to be created via the ModeController. 
+				 /* The next code snippet is an exception. Normally, hooks
+				  * have to be created via the ModeController.
 				  * DO NOT COPY. */
                 hook = (PermanentNodeHook) mModeController.getHookFactory().createNodeHook(loadName);
                 // this is a bad hack. Don't make use of this data unless
@@ -185,6 +222,14 @@ public abstract class XMLElementAdapter extends XMLElement {
  			 hook.loadFrom(xml);
  			 node.addHook(hook);
  		 }
+         return;
+      }
+      if(child instanceof XMLElementAdapter
+              && getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_NAME)
+              && child.getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)){
+          Attribute attribute = new Attribute(attributeName, ((XMLElementAdapter)child).attributeValue);
+        AttributeRegistry r = getMap().getRegistry().getAttributes();
+          r.registry(attribute);
       }
    }
 
@@ -226,7 +271,7 @@ public void setAttribute(String name, Object value) {
          else if (name.equals("COLOR")) {
 	    cloud.setColor(Tools.xmlToColor(sValue)); }
          else if (name.equals("WIDTH")) {
-               cloud.setWidth(Integer.parseInt(sValue)); 
+               cloud.setWidth(Integer.parseInt(sValue));
          }
          return; }
 
@@ -251,7 +296,7 @@ public void setAttribute(String name, Object value) {
          else if (name.equals("ENDARROW")) {
              arrowLink.setEndArrow(sValue); }
          else if (name.equals("WIDTH")) {
-             arrowLink.setWidth(Integer.parseInt(sValue)); 
+             arrowLink.setWidth(Integer.parseInt(sValue));
          }
          return; }
 
@@ -259,7 +304,7 @@ public void setAttribute(String name, Object value) {
          if (name.equals("SIZE")) {
             fontSize = Integer.parseInt(sValue); }
          else if (name.equals("NAME")) {
-            fontName = sValue; }             
+            fontName = sValue; }
 
          // Styling
          else if (sValue.equals("true")) {
@@ -270,7 +315,50 @@ public void setAttribute(String name, Object value) {
       /* icons */
       if (getName().equals("icon")) {
          if (name.equals("BUILTIN")) {
-            iconName = sValue; } 
+            iconName = sValue; }
+      }
+      /* attributes */
+      else if (getName().equals(XML_NODE_ATTRIBUTE)) {
+          if (name.equals("NAME")) {
+              attributeName = sValue; }
+          else if (name.equals("VALUE")) {
+              attributeValue = sValue; }
+       }
+      else if (getName().equals(XML_NODE_ATTRIBUTE_LAYOUT)) {
+          if (name.equals("NAME_WIDTH")) {
+              attributeNameWidth = Integer.parseInt(sValue); }
+          else if (name.equals("VALUE_WIDTH")) {
+              attributeValueWidth = Integer.parseInt(sValue); }
+       }
+      else if (getName().equals(XML_NODE_ATTRIBUTE_REGISTRY)) {
+          if (name.equals("RESTRICTED")) {
+              getMap().getRegistry().getAttributes().setRestricted(true);
+          }
+          if (name.equals("FONT_SIZE")) {
+              try {
+                  int size = Integer.parseInt(sValue);
+                  getMap().getRegistry().getAttributes().setFontSize(size);
+              }
+              catch (NumberFormatException ex){
+              }
+          }
+      }
+      else if (getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_NAME)) {
+          if (name.equals("NAME")) {
+              attributeName = sValue;
+              getMap().getRegistry().getAttributes().registry(attributeName);
+          }
+          if (name.equals("VISIBLE")) {
+              getMap().getRegistry().getAttributes().getElement(attributeName).setVisibility(true);
+          }
+          if (name.equals("RESTRICTED")) {
+              getMap().getRegistry().getAttributes().getElement(attributeName).setRestriction(true);
+          }
+      }
+      else if (getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)) {
+          if (name.equals("VALUE")) {
+              attributeValue = sValue;
+          }
       }
   }
 
@@ -346,9 +434,12 @@ public void setAttribute(String name, Object value) {
       /* icons */
             if (getName().equals("icon")) {
          userObject =  MindIcon.factory(iconName); }
+      /* attributes */
+      if (getName().equals(XML_NODE_ATTRIBUTE)) {
+          userObject = new Attribute(attributeName, attributeValue);}
    }
 
-    /** Completes the links within the map. They are registered in the registry.*/
+    /** Completes the links within the getMap(). They are registered in the registry.*/
     public void processUnfinishedLinks(MindMapLinkRegistry registry) {
         // add labels to the nodes:
         setIDs(IDToTarget, registry);
@@ -364,11 +455,11 @@ public void setAttribute(String name, Object value) {
                 target = (NodeAdapter) IDToTarget.get(oldID);
                 newID = registry.getLabel(target);
             } else if(registry.getTargetForID(oldID) != null) {
-                // link is already present in the map (paste).
+                // link is already present in the getMap() (paste).
                 target = (NodeAdapter) registry.getTargetForID(oldID);
                 if(target == null) {
                     // link target is in nowhere-land
-                    System.err.println("Cannot find the label " + oldID + " in the map. The link "+arrowLink+" is not restored.");
+                    System.err.println("Cannot find the label " + oldID + " in the getMap(). The link "+arrowLink+" is not restored.");
                     continue;
                 }
                 newID = registry.getLabel(target);
@@ -376,9 +467,9 @@ public void setAttribute(String name, Object value) {
                     System.err.println("Servere internal error. Looked for id " + oldID + " but found "+newID + " in the node " + target+".");
                     continue;
                 }
-            } else {                
+            } else {
                 // link target is in nowhere-land
-                System.err.println("Cannot find the label " + oldID + " in the map. The link "+arrowLink+" is not restored.");
+                System.err.println("Cannot find the label " + oldID + " in the getMap(). The link "+arrowLink+" is not restored.");
                 continue;
             }
             // set the new ID:
@@ -400,7 +491,7 @@ public void setAttribute(String name, Object value) {
             NodeAdapter target = (NodeAdapter) IDToTarget.get(key);
             MindMapLinkRegistry.ID_Registered newState = registry.registerLinkTarget(target, key /* Proposed name for the target, is changed by the registry, if already present.*/);
             String newId = newState.getID();
-            // and in the cutted case: 
+            // and in the cutted case:
             // search for links to this ids that have been cutted earlier:
             Vector cuttedLinks = registry.getCuttedNode(key /* old target id*/);
             for(int j=0; j < cuttedLinks.size(); ++j) {
@@ -415,4 +506,7 @@ public void setAttribute(String name, Object value) {
     }
 
 
+    protected MindMap getMap() {
+        return mModeController.getMap();
+    }
 }

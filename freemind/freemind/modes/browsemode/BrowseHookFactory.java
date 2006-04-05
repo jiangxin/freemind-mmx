@@ -19,7 +19,7 @@
  *
  * Created on 31.12.2005
  */
-/*$Id: BrowseHookFactory.java,v 1.1.2.1 2006-01-12 23:10:12 christianfoltin Exp $*/
+/* $Id: BrowseHookFactory.java,v 1.1.2.1.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
 import java.util.List;
@@ -40,7 +40,7 @@ import freemind.modes.common.plugins.ReminderHookBase;
 public class BrowseHookFactory extends HookFactoryAdapter {
 
 	/**
-	 * 
+	 *
 	 */
 	public BrowseHookFactory() {
 		super();

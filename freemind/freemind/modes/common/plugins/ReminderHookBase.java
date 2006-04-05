@@ -19,7 +19,7 @@
  *
  * Created on 06.02.2005
  */
-/*$Id: ReminderHookBase.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/* $Id: ReminderHookBase.java,v 1.1.2.1.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
 package freemind.modes.common.plugins;
 
 import java.text.MessageFormat;
@@ -39,10 +39,10 @@ import freemind.modes.MindMapNode;
 
 /**
  * @author foltin
- *  
+ *
  */
 public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
-	
+
 	public static final String PLUGIN_LABEL = "plugins/TimeManagementReminder.xml";
 
 	private static final int CLOCK_INVISIBLE = 0;
@@ -66,7 +66,7 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	//private Vector dateVector = new Vector();
 
 	/**
-	 *  
+	 *
 	 */
 	public ReminderHookBase() {
 		super();
@@ -132,8 +132,7 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	private ImageIcon getClockIcon() {
 		// icon
 		if (clockIcon == null) {
-			clockIcon = MindIcon.factory("clock").getIcon(
-					getController().getFrame());
+			clockIcon = MindIcon.factory("clock").getIcon();
 		}
 		return clockIcon;
 	}
@@ -141,8 +140,7 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	private ImageIcon getBellIcon() {
 		// icon
 		if (bellIcon == null) {
-			bellIcon = MindIcon.factory("bell").getIcon(
-					getController().getFrame());
+			bellIcon = MindIcon.factory("bell").getIcon();
 		}
 		return bellIcon;
 	}
@@ -150,8 +148,7 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	private ImageIcon getFlagIcon() {
 		// icon
 		if (flagIcon == null) {
-			flagIcon = MindIcon.factory("flag").getIcon(
-					getController().getFrame());
+			flagIcon = MindIcon.factory("flag").getIcon();
 		}
 		return flagIcon;
 	}
@@ -206,9 +203,9 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 		public void run() {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					// time is over, we add the new icon until 
+					// time is over, we add the new icon until
 					// the user removes the reminder.
-					// 
+					//
 					stateAdded = !stateAdded;
 					setRemindUserAt(System.currentTimeMillis() + 3000); // 3
 					// secs

@@ -1,3 +1,52 @@
+Changes made in FreeMind 0.8.1 FA Alpha 10.02
+===============================
+Attributes can be leaved with alt+F9
+
+Changes made in FreeMind 0.8.1 FA Alpha 10.01
+===============================
+Print Preview
+
+Changes made in FreeMind 0.8.1 FA Alpha 9.04
+===============================
+* Key strokes for attributes can be set using the preferences Dialog
+* Save as HTML, RTF and Text consider filter settings
+* Size of buttons with empty key strokes in the Option Panel are set correctly
+
+Changes made in FreeMind 0.8.1 FA Alpha 9.03
+===============================
+*The export plugins using XSLT changed: 
+	Only nodes passed the filter condition inclusive settings 
+	in the "Show Ancestors" and "Show Descendants" - checkboxes in the Filter Toolbar 
+	are exported in OOWriter and generally by the XSLT exporter.
+*Bugfixes	
+
+Changes made in FreeMind 0.8.1 FA Alpha 9.01
+===============================
+Merge with FreeMind 0.8.1 beta 3
+
+Changes made in FreeMind 0.8.FA Alpha 8
+===============================
+* Undo for all attribute operations
+
+* There are only four possible situations: 
+   (a) all the attributes are shown everywhere, 
+   (b) no attributes are shown anywhere, and 
+   (c) only some attributes are shown, accross the whole map
+   (d) all attributes are temporarily shown for the currently selected node, a shortcut alt+f9 
+* the "show all", "hide all" ans "show selected" attribute actions are a submenu of the view menu 
+* the rest attribute actions (dialogs) have been put to tools 
+
+* the button On/Off only switch the filtering, rather than editing
+* When the label "No Filtering" is shown in the combo box, the On/Off button is be inactive
+
+Filter Composer Dialog:
+* Apply applies the filter selected in the list of filters, regardless of the filter selected in the combobox in the toolbar 
+* OK closes the dialog and sets the currently selected filter in the list of filters as the current filter in the combobox
+
+Other improvements:
+* Radio Button Items in Menus
+* other changes and refactorings
+
 Changes made in Freemind 0.8.1:
 ===============================
 * Word wrap enabled for notes.

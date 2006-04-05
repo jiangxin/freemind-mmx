@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EncryptNode.java,v 1.1.2.8 2006-01-12 23:10:12 christianfoltin Exp $*/
+/* $Id: EncryptNode.java,v 1.1.2.8.2.1 2006-04-05 21:26:24 dpolivaev Exp $ */
 
 /*
  * Created on 14.12.2004
@@ -45,7 +45,7 @@ import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
 /**
  * @author foltin
- *  
+ *
  */
 public class EncryptNode extends MindMapNodeHookAdapter {
     /** Enables the encrypt/decrypt menu item only if the map/node is encrypted.
@@ -58,7 +58,7 @@ public class EncryptNode extends MindMapNodeHookAdapter {
         private final MindMap mMap;
         private final java.util.logging.Logger logger;
         private boolean enabled = false;
-        
+
         public Registration(ModeController controller, MindMap map) {
             this.controller = controller;
             mMap = map;
@@ -81,7 +81,7 @@ public class EncryptNode extends MindMapNodeHookAdapter {
             // the following function does not work without a running valid controller, so we comment it out.
 //            if(hookName.equals("accessories/plugins/NewEncryptedMap.properties")) {
 //                return true;
-//            }   
+//            }
             if(!enabled)
                 return false;
 			boolean isEncryptedNode = false;
@@ -89,19 +89,19 @@ public class EncryptNode extends MindMapNodeHookAdapter {
 			if(controller.getSelected() != null && controller.getSelected() instanceof EncryptedMindMapNode) {
 				isEncryptedNode = true;
 			    EncryptedMindMapNode enode = (EncryptedMindMapNode) controller.getSelected() ;
-				isOpened = enode.isVisible();
+				isOpened = enode.isAccessable();
 			}
 			if (hookName.equals("accessories/plugins/EnterPassword.properties")) {
 				return isEncryptedNode;
 			} else {
-			    /* you can insert an encrypted node, if the current selected node is 
-			     * not encrypted, or if it is opened. */ 
+			    /* you can insert an encrypted node, if the current selected node is
+			     * not encrypted, or if it is opened. */
 				return (!isEncryptedNode || isOpened) ;
 			}
 		}
     }
     /**
-     *  
+     *
      */
     public EncryptNode() {
         super();
@@ -126,7 +126,7 @@ public class EncryptNode extends MindMapNodeHookAdapter {
     }
 
     /**
-     * 
+     *
      */
     private void newEncryptedMap() {
         final StringBuffer password = getUsersPassword();
@@ -135,13 +135,15 @@ public class EncryptNode extends MindMapNodeHookAdapter {
         }
         ModeController newModeController = getMindMapController().getMode().createModeController();
         EncryptedMindMapNode encryptedMindMapNode = new EncryptedMindMapNode(
-                getMindMapController().getText("accessories/plugins/EncryptNode.properties_select_me"), 
-                getMindMapController().getFrame());
+                getMindMapController().getText("accessories/plugins/EncryptNode.properties_select_me"),
+                getMindMapController().getFrame(),
+                null);
         encryptedMindMapNode.setPassword(password);
         MapAdapter newModel = new MindMapMapModel(encryptedMindMapNode,
 				getMindMapController().getFrame(), newModeController);
         MindMapController mindmapcontroller = (MindMapController) getMindMapController();
         mindmapcontroller.newMap(newModel);
+        encryptedMindMapNode.setMap(newModel);
     }
 
     /**
@@ -156,9 +158,9 @@ public class EncryptNode extends MindMapNodeHookAdapter {
         // FIXME: not multithreading safe
         mindmapcontroller.setNewNodeCreator(new NewNodeCreator() {
 
-            public MindMapNode createNode(Object userObject) {
+            public MindMapNode createNode(Object userObject, MindMap map) {
                 EncryptedMindMapNode encryptedMindMapNode = new EncryptedMindMapNode(
-                        userObject, getMindMapController().getFrame());
+                        userObject, getMindMapController().getFrame(), map);
                 encryptedMindMapNode.setPassword(password);
                 return encryptedMindMapNode;
             }
@@ -194,7 +196,7 @@ public class EncryptNode extends MindMapNodeHookAdapter {
     private void toggleCryptState(MindMapNode node) {
         if (node instanceof EncryptedMindMapNode) {
             EncryptedMindMapNode encNode = (EncryptedMindMapNode) node;
-            if (encNode.isVisible()) {
+            if (encNode.isAccessable()) {
                 // to remove all children views:
                 encNode.encrypt();
                 encNode.setShuttingDown(true);

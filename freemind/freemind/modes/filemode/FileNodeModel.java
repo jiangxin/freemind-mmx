@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileNodeModel.java,v 1.11.18.1 2005-06-15 20:13:48 christianfoltin Exp $*/
+/*$Id: FileNodeModel.java,v 1.11.18.1.4.1 2006-04-05 21:26:27 dpolivaev Exp $*/
 
 package freemind.modes.filemode;
 
@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import freemind.main.FreeMindMain;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
@@ -44,8 +45,8 @@ public class FileNodeModel extends NodeAdapter {
     //  Constructors
     //
 
-    public FileNodeModel( File file, FreeMindMain frame ) {
-	super(frame);
+    public FileNodeModel( File file, FreeMindMain frame , MindMap map) {
+	super(frame, map);
 	setEdge(new FileEdgeModel(this,getFrame()));
 	this.file = file;
 	setFolded(!file.isFile());
@@ -137,7 +138,7 @@ public class FileNodeModel extends NodeAdapter {
 		for(int i = 0; i < files.length; i++) {
 		    File childFile = new File(path, files[i]);
 		    if (!childFile.isHidden()) {
-			insert(new FileNodeModel(childFile,getFrame()),0);
+			insert(new FileNodeModel(childFile,getFrame(), getMap()),0);
 		    }
 		}
 	    }

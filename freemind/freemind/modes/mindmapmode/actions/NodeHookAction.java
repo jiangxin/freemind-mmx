@@ -19,7 +19,7 @@
  *
  * Created on 26.07.2004
  */
-/*$Id: NodeHookAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: NodeHookAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -69,15 +69,15 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 		// check, which method of invocation:
 		//
 	    controller.getFrame().setWaitingCursor(true);
-		invoke(controller.getSelected(), controller.getSelecteds());							
+		invoke(controller.getSelected(), controller.getSelecteds());
 	    controller.getFrame().setWaitingCursor(false);
 	}
 
-	
-	
+
+
 	public void addHook(MindMapNode focussed, List selecteds, String hookName) {
 	    HookNodeAction doAction = createHookNodeAction(focussed, selecteds, hookName);
-	    
+
         XmlAction undoAction=null;
         // this is the non operation:
         undoAction = new CompoundAction();
@@ -85,11 +85,11 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
             // double application = remove.
             undoAction = createHookNodeAction(focussed,
                     selecteds, hookName);
-        } 
+        }
 	    if (getInstanciationMethod(hookName).isUndoable()) {
 	        getController().getActionFactory().startTransaction((String) getValue(NAME));
 			getController().getActionFactory().executeAction(new ActionPair(doAction, undoAction));
-	        getController().getActionFactory().endTransaction((String) getValue(NAME));            
+	        getController().getActionFactory().endTransaction((String) getValue(NAME));
         } else {
             // direct invocation without undo and such stuff.
             invoke(focussed, selecteds, hookName);
@@ -99,7 +99,7 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 	public void invoke(MindMapNode focussed, List selecteds) {
 	    addHook(focussed, selecteds, _hookName);
 	}
-	
+
 	private void invoke(MindMapNode focussed, List selecteds, String hookName) {
 		logger.finest("invoke(selecteds) called.");
 		HookInstanciationMethod instMethod = getInstanciationMethod(hookName);
@@ -123,7 +123,7 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 						 * at two points (i.e., the collection is not valid anymore after removing
 						 * one element).
 						 * But this is no problem, as there exist only "once" plugins currently.
-						 */ 
+						 */
 						break;
 					}
 				}
@@ -157,7 +157,7 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 	/**
 	 * @param focussed The real focussed node
 	 * @param selecteds The list of selected nodes
-	 * @param adaptedFocussedNode The calculated focussed node (if the hook specifies, that 
+	 * @param adaptedFocussedNode The calculated focussed node (if the hook specifies, that
 	 * the hook should apply to root, then this is the root node).
 	 * @param destinationNodes The calculated list of selected nodes (see last)
 	 */
@@ -179,7 +179,7 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 			}
 		}
 
-	
+
 
 	/**
 	 * @return
@@ -221,7 +221,7 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 		// test if hook already present
 		boolean isActionSelected = instMethod.isAlreadyPresent(controller, _hookName, adaptedFocussedNode, destinationNodes);
 		setSelected(item, isActionSelected);
-		
+
 		return true;
 	}
 
@@ -229,7 +229,7 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 	    HookNodeAction hookNodeAction = new HookNodeAction();
         hookNodeAction.setNode(focussed.getObjectId(getController()));
         hookNodeAction.setHookName(hookName);
-        // selectedNodes list 
+        // selectedNodes list
         for (Iterator i = selecteds.iterator(); i.hasNext();) {
             MindMapNode node = (MindMapNode) i.next();
             NodeListMember nodeListMember = new NodeListMember();
@@ -238,7 +238,7 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
         }
         return hookNodeAction;
 	}
-	
+
 	public void act(XmlAction action) {
         if (action instanceof HookNodeAction) {
             HookNodeAction hookNodeAction = (HookNodeAction) action;
@@ -261,6 +261,6 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 	 */
 	public String getHookName() {
 		return _hookName;
-	} 
-		
+	}
+
 }

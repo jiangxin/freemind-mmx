@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/*$Id: IconAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: IconAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -43,18 +43,18 @@ public class IconAction extends FreemindAction  implements ActorXml{
     private final MindMapController modeController;
     private final RemoveLastIconAction removeLastIconAction;
     public IconAction(MindMapController controller, MindIcon _icon, RemoveLastIconAction removeLastIconAction) {
-        super(_icon.getDescription(controller.getFrame()), _icon.getIcon(controller.getFrame()), controller);
+        super(_icon.getDescription(controller.getFrame()), _icon.getIcon(), controller);
         this.modeController = controller;
         this.removeLastIconAction = removeLastIconAction;
         putValue(Action.SHORT_DESCRIPTION, _icon.getDescription(controller.getFrame()));
         this.icon = _icon;
         controller.getActionFactory().registerActor(this, getDoActionClass());
     }
-    
+
     public void actionPerformed(ActionEvent e) {
        for (ListIterator it = modeController.getSelecteds().listIterator();it.hasNext();) {
           MindMapNodeModel selected = (MindMapNodeModel)it.next();
-          addIcon(selected, icon); 
+          addIcon(selected, icon);
         }
     }
 
@@ -71,7 +71,6 @@ public class IconAction extends FreemindAction  implements ActorXml{
      * @param node
      * @param icon
      * @return
-     * @throws JAXBException
      */
     private ActionPair getActionPair(MindMapNode node, MindIcon icon)  {
         AddIconAction doAction = createAddIconAction(node, icon);

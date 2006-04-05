@@ -16,14 +16,18 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.14.14.7 2006-03-14 21:56:28 christianfoltin Exp $*/
+/*$Id: RootNodeView.java,v 1.14.14.7.2.1 2006-04-05 21:26:32 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.attributeview.AttributeView;
+
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.awt.*;
+
+import javax.swing.JLabel;
 
 /**
  * This is a RootNode with different placing of children
@@ -51,8 +55,8 @@ public class RootNodeView extends NodeView {
      * should leave the Node.
      */
     Point getOutPoint() {
-	Dimension size = getSize();
-	return new Point(getLocation().x + size.width, getLocation().y + size.height / 2);
+	Dimension size = getMainView().getSize();
+	return new Point(getX() + getMainView().getWidth(), getY()  + getMainView().getHeight() / 2);
     }
 
     /* fc, 26.06.2005 */
@@ -66,7 +70,7 @@ public class RootNodeView extends NodeView {
 			double nWidth = size.width;
 			double nHeight = size.height;
 			Point centerPoint = new Point(
-					getLocation().x + (int) (nWidth / 2f), getLocation().y
+					getX() + (int) (nWidth / 2f), getY()
 							+ (int) (nHeight / 2f));
 			// assume, that destinationPoint is on the right:
 			double angle = Math.atan((destinationPoint.y - centerPoint.y + 0f)
@@ -89,8 +93,7 @@ public class RootNodeView extends NodeView {
      * should arrive the Node.
      */
     Point getInPoint() {
-	Dimension size = getSize();
-	return new Point(getLocation().x, getLocation().y + size.height / 2);
+	return new Point(getX(), getY() + getMainView().getHeight() / 2);
     }
 
     EdgeView getEdge() {
@@ -100,8 +103,8 @@ public class RootNodeView extends NodeView {
     void setEdge(EdgeView edge) {
     }
 
-    LinkedList getLeft() {
-	LinkedList all = getChildrenViews();
+    LinkedList getLeft(boolean onlyVisible) {
+	LinkedList all = getChildrenViews(onlyVisible);
 	LinkedList left = new LinkedList();
 	for (ListIterator e = all.listIterator();e.hasNext();) {
 	    NodeView node = (NodeView)e.next();
@@ -111,8 +114,8 @@ public class RootNodeView extends NodeView {
 	return left;
     }
 
-    LinkedList getRight() {
-	LinkedList all = getChildrenViews();
+    LinkedList getRight(boolean onlyVisible) {
+	LinkedList all = getChildrenViews(onlyVisible);
 	LinkedList right = new LinkedList();
 	for (ListIterator e = all.listIterator();e.hasNext();) {
 	    NodeView node = (NodeView)e.next();
@@ -124,10 +127,9 @@ public class RootNodeView extends NodeView {
 
     void insert(MindMapNode newNode) {
         NodeView newView = newNodeView(newNode,getMap());
-        newView.update();
         // decide left or right only if not actually set:
         if(newNode.isLeft()==null)
-            newView.setLeft( getLeft().size() <= getRight().size() );
+            newView.setLeft( getLeft(false).size() <= getRight(false).size() );
         ListIterator it = newNode.childrenFolded();
         if (it != null) {
             for (;it.hasNext();) {
@@ -172,11 +174,11 @@ public class RootNodeView extends NodeView {
      */
     public void paint(Graphics graphics) {
 	Graphics2D g = (Graphics2D)graphics;
-	Dimension size = getSize();
+	Dimension size = getMainView().getSize();
 	if (this.getModel()==null) return;
 
-        paintSelected(g, size);
-        paintDragOver(g, size);
+        paintSelected(g);
+        paintDragOver(g);
 
 	//Draw a root node
 	g.setColor(Color.gray);
@@ -189,13 +191,36 @@ public class RootNodeView extends NodeView {
 	super.paint(g);
     }
 
-   public void paintDragOver(Graphics2D graphics, Dimension size) {
+   public void paintDragOver(Graphics2D graphics) {
         if (getDraggedOver() == DRAGGED_OVER_SON) {
-              graphics.setPaint( new GradientPaint(size.width/4,0,map.getBackground(), size.width*3/4, 0, dragColor));
-              graphics.fillRect(size.width/4, 0, size.width-1, size.height-1); 
+              graphics.setPaint( 
+                      new GradientPaint(
+                              getMainView().getX()+ getMainView().getWidth()/4,
+                              getMainView().getY(),
+                              map.getBackground(), 
+                              getMainView().getX() + getMainView().getWidth()*3/4, 
+                              getMainView().getY(), 
+                              dragColor)
+                              );
+              graphics.fillRect(
+                      getMainView().getX() + getMainView().getWidth()/4, 
+                      getMainView().getY(), 
+                      getMainView().getWidth()-1, 
+                      getMainView().getHeight()-1); 
         } else if (getDraggedOver() == DRAGGED_OVER_SON_LEFT) {
-              graphics.setPaint( new GradientPaint(size.width*3/4,0,map.getBackground(), size.width/4, 0, dragColor));
-              graphics.fillRect(0, 0, size.width*3/4, size.height-1);
+              graphics.setPaint( 
+                      new GradientPaint(
+                              getMainView().getX() + getMainView().getWidth()*3/4,
+                              getMainView().getY(),
+                              map.getBackground(), 
+                              getMainView().getX() + getMainView().getWidth()/4, 
+                              getMainView().getY(), 
+                              dragColor)
+                              );
+              graphics.fillRect(getMainView().getX(), 
+                      getMainView().getY(), 
+                      getMainView().getWidth()*3/4, 
+                      getMainView().getHeight()-1);
         }
     }
 
@@ -207,10 +232,12 @@ public class RootNodeView extends NodeView {
 
     protected void paintBackground(
         Graphics2D graphics,
-        Dimension size,
         Color color) {
 		graphics.setColor(color);
-		graphics.fillOval(1,1,size.width-1,size.height-1);
+		graphics.fillOval(getMainView().getX()+ 1,
+		        getMainView().getY() + 1,
+		        getMainView().getWidth()-1,
+		        getMainView().getHeight()-1);
     }
 
 	public int getRightTreeWidth() {
@@ -221,6 +248,12 @@ public class RootNodeView extends NodeView {
     }
 
     public void setTreeWidth(int w) {
+        if(w == 0)
+        {
+            leftTreeWidth = 0;
+            rightTreeWidth = 0;
+            return;
+        }
     	throw new Error();
     }
     
@@ -248,9 +281,9 @@ public class RootNodeView extends NodeView {
 		return model.getStyle();
 	}
 
-	public Dimension getPreferredSize() {
-		Dimension prefSize = super.getPreferredSize();
-		prefSize.width += Math.max(10, prefSize.width / 10);
+	protected Dimension getMainViewPreferredSize() {
+		Dimension prefSize = super.getMainViewPreferredSize();
+		prefSize.width *= 1.1;
 		prefSize.height *= 2;
 	    return prefSize;
 	}

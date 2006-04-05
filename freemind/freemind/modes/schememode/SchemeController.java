@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeController.java,v 1.10.18.3 2006-01-12 23:10:14 christianfoltin Exp $*/
+/* $Id: SchemeController.java,v 1.10.18.3.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
 
 package freemind.modes.schememode;
 
@@ -34,6 +34,7 @@ import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.HookFactory;
 import freemind.modes.MapAdapter;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
@@ -58,8 +59,8 @@ public class SchemeController extends ViewControllerAdapter {
 	return new SchemeMapModel(getFrame(), modeController);
     }
 
-    public MindMapNode newNode(Object userObject) {
-    	return new SchemeNodeModel(getFrame());
+    public MindMapNode newNode(Object userObject, MindMap map) {
+    	return new SchemeNodeModel(getFrame(), map);
         }
 
 //    //private

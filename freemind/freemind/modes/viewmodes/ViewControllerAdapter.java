@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/*$Id: ViewControllerAdapter.java,v 1.1.2.2 2006-02-04 20:19:08 christianfoltin Exp $*/
+/* $Id: ViewControllerAdapter.java,v 1.1.2.2.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
 package freemind.modes.viewmodes;
 
 import java.awt.event.KeyEvent;
@@ -39,7 +39,7 @@ import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
- * 
+ *
  */
 public abstract class ViewControllerAdapter extends ControllerAdapter {
 
@@ -69,12 +69,12 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 	}
 
 	public boolean extendSelection(MouseEvent e) {
-		//FIXME: Remove double code 
-        NodeView newlySelectedNodeView = (NodeView)e.getSource();
+		//FIXME: Remove double code
+        NodeView newlySelectedNodeView = (NodeView)e.getComponent().getParent();
         //MindMapNode newlySelectedNode = newlySelectedNodeView.getModel();
-        boolean extend = e.isControlDown(); 
-        boolean range = e.isShiftDown(); 
-        boolean branch = e.isAltGraphDown() || e.isAltDown(); /* windows alt, linux altgraph .... */ 
+        boolean extend = e.isControlDown();
+        boolean range = e.isShiftDown();
+        boolean branch = e.isAltGraphDown() || e.isAltDown(); /* windows alt, linux altgraph .... */
         boolean retValue = false;
 
         if (extend || range || branch || !getView().isSelected(newlySelectedNodeView)) {
@@ -86,11 +86,11 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
                 retValue = true;
             }
             else {
-                retValue = getView().selectContinuous(newlySelectedNodeView); 
+                retValue = getView().selectContinuous(newlySelectedNodeView);
 //                 /* fc, 25.1.2004: replace getView by controller methods.*/
 //                 if (newlySelectedNodeView != getView().getSelected() &&
 //                     newlySelectedNodeView.isSiblingOf(getView().getSelected())) {
-//                     getView().selectContinuous(newlySelectedNodeView); 
+//                     getView().selectContinuous(newlySelectedNodeView);
 //                     retValue = true;
 //                 } else {
 //                     /* if shift was down, but no range can be selected, then the new node is simply selected: */
@@ -100,18 +100,18 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 //                     }
             }
             if(branch) {
-                getView().selectBranch(newlySelectedNodeView, extend); 
+                getView().selectBranch(newlySelectedNodeView, extend);
                 retValue = true;
-            }    
+            }
         }
 
         if(retValue) {
             e.consume();
-        
+
             // Display link in status line
             String link = newlySelectedNodeView.getModel().getLink();
             link = (link != null ? link : " ");
-            getController().getFrame().out(link); 
+            getController().getFrame().out(link);
         }
         return retValue;
     }
@@ -147,5 +147,5 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
         toggleFolded.setEnabled(enabled);
         toggleChildrenFolded.setEnabled(enabled);
     }
-    
+
 }

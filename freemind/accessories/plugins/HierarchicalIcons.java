@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HierarchicalIcons.java,v 1.1.2.4 2006-01-12 23:10:12 christianfoltin Exp $*/
+/* $Id: HierarchicalIcons.java,v 1.1.2.4.2.1 2006-04-05 21:26:24 dpolivaev Exp $ */
 
 package accessories.plugins;
 
@@ -34,8 +34,8 @@ import freemind.view.mindmapview.MultipleImage;
 public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implements UndoEventReceiver {
 
     private HashMap /* of MindMapNode to a TreeSet */ nodeIconSets = new HashMap();
-    
-  
+
+
     public void shutdownMapHook()
     {
         // remove all icons:
@@ -57,7 +57,7 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
         }
     }
     /**
-     *  
+     *
      */
     public HierarchicalIcons() {
         super();
@@ -67,7 +67,7 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
 
     private void setStyle(MindMapNode node) {
         // precondition: all children are contained in nodeIconSets
-        
+
         // gather all icons of my children and of me here:
         TreeSet iconSet = new TreeSet();
         for (Iterator i = node.childrenUnfolded(); i.hasNext();) {
@@ -90,7 +90,7 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
             }
         }
         nodeIconSets.put(node, iconSet);
-        
+
         if (dirty) {
             if (iconSet.size() > 0) {
                 // create multiple image:
@@ -99,7 +99,7 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
                     String iconName = (String) i.next();
 //                    logger.info("Adding icon "+iconName + " to node "+ node.toString());
                     MindIcon icon = MindIcon.factory(iconName);
-                    image.addImage(icon.getIcon(getMindMapController().getFrame()));
+                    image.addImage(icon.getIcon());
                 }
                 node.setStateIcon(getName(), image);
             } else {
@@ -107,7 +107,7 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
             }
             getMindMapController().nodeRefresh(node);
         }
-        
+
     }
 
     /**
@@ -132,7 +132,7 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see freemind.extensions.PermanentNodeHook#onAddChild(freemind.modes.MindMapNode)
      */
     public void onAddChildren(MindMapNode newChildNode) {
@@ -148,7 +148,7 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see freemind.extensions.PermanentNodeHook#onUpdateChildrenHook(freemind.modes.MindMapNode)
      */
     public void onUpdateChildrenHook(MindMapNode updatedNode) {
@@ -158,7 +158,7 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see freemind.extensions.PermanentNodeHook#onUpdateNodeHook()
      */
     public void onUpdateNodeHook() {
@@ -168,7 +168,7 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode)
      */
     public void invoke(MindMapNode node) {

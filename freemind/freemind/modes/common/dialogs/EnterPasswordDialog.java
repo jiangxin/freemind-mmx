@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EnterPasswordDialog.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/* $Id: EnterPasswordDialog.java,v 1.1.2.1.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
 
 package freemind.modes.common.dialogs;
 
@@ -90,7 +90,7 @@ public class EnterPasswordDialog extends JDialog {
 
     /**
      * This method initializes this
-     * 
+     *
      * @return void
      */
     private void initialize() {
@@ -160,7 +160,7 @@ public class EnterPasswordDialog extends JDialog {
 
     /**
      * This method initializes jContentPane
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private javax.swing.JPanel getJContentPane() {
@@ -227,7 +227,7 @@ public class EnterPasswordDialog extends JDialog {
 
     /**
      * This method initializes jPasswordField
-     * 
+     *
      * @return javax.swing.JPasswordField
      */
     private JPasswordField getJPasswordField() {
@@ -239,7 +239,7 @@ public class EnterPasswordDialog extends JDialog {
 
     /**
      * This method initializes jPasswordField1
-     * 
+     *
      * @return javax.swing.JPasswordField
      */
     private JPasswordField getJPasswordField1() {
@@ -251,7 +251,7 @@ public class EnterPasswordDialog extends JDialog {
 
     /**
      * This method initializes jButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getJOKButton() {
@@ -274,7 +274,7 @@ public class EnterPasswordDialog extends JDialog {
 
     /**
      * This method initializes jButton1
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getJCancelButton() {

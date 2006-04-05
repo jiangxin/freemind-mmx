@@ -19,10 +19,11 @@
  *
  * Created on 20.09.2004
  */
-/*$Id: UndoAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/*$Id: UndoAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
 import java.util.Vector;
@@ -46,6 +47,7 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
     private boolean isUndoAction;
 	protected Vector actionPairList=new Vector();
 	private long timeOfLastAdd = 0;
+    private boolean actionFrameStarted = false;
     private static final long TIME_TO_BEGIN_NEW_ACTION = 100;
     protected static Logger logger;
 
@@ -104,17 +106,17 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
     protected void undoDoAction(ActionPair pair)  {
         String doActionString = this.controller.marshall(pair.getDoAction());
         String redoActionString = this.controller.marshall(pair.getUndoAction());
-		//logger.info("doActionString: "+ doActionString ); 
+		//logger.info("doActionString: "+ doActionString );
 		//logger.info("\nredoActionString: "+ redoActionString);
-        
+
         UndoXmlAction undoAction = new UndoXmlAction();
         undoAction.setDescription(redoActionString);
         undoAction.setRemedia(doActionString);
-        
+
         UndoXmlAction redoAction = new UndoXmlAction();
         redoAction.setDescription(doActionString);
         undoAction.setRemedia(redoActionString);
-        
+
         isUndoAction = true;
         this.controller.getActionFactory().executeAction(new ActionPair(undoAction, redoAction));
         isUndoAction = false;
@@ -144,10 +146,10 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
         else
         	super.setEnabled(false);
     }
-    
+
     public void add(ActionPair pair) {
 	    long currentTime = System.currentTimeMillis();
-        if((actionPairList.size() > 0) && (currentTime - timeOfLastAdd < TIME_TO_BEGIN_NEW_ACTION)) {
+	        if((actionPairList.size() > 0) && (actionFrameStarted || currentTime - timeOfLastAdd < TIME_TO_BEGIN_NEW_ACTION)) {
             ActionPair firstPair = (ActionPair) actionPairList.get(0);
             CompoundAction action;
             CompoundAction remedia;
@@ -180,9 +182,22 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
                                                                 // last elt
             }
         }
+        startActionFrame();
         timeOfLastAdd = currentTime;
     }
-    
+
+    private void startActionFrame() {
+        if(actionFrameStarted == false && EventQueue.isDispatchThread())
+        {
+            actionFrameStarted = true;
+            EventQueue.invokeLater(new Runnable() {
+                public void run(){
+                    actionFrameStarted = false; 
+                }
+            });
+        }
+    }
+
     public void clear() {
         actionPairList.clear();
     }

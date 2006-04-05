@@ -19,7 +19,7 @@
  *
  * Created on 11.03.2005
  */
-/*$Id: RevertAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: RevertAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -39,16 +39,16 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 /**
  * Reverts the map to the saved version. In Xml, the old map is stored as xml
  * and as an undo action, the new map is stored, too.
- * 
+ *
  * Moreover, the filename of the doAction is set to the appropriate map file's
  * name. The undo action has no file name associated.
- * 
+ *
  * The action goes like this: close the actual map and open the given Xml/File.
  * If only a Xml string is given, a temporary file name is created, the xml
  * stored into and this map is opened instead of the actual.
- * 
+ *
  * @author foltin
- *  
+ *
  */
 public class RevertAction extends FreemindAction implements ActorXml {
 
@@ -66,7 +66,7 @@ public class RevertAction extends FreemindAction implements ActorXml {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent arg0) {
@@ -136,7 +136,7 @@ public class RevertAction extends FreemindAction implements ActorXml {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see freemind.controller.actions.ActorXml#act(freemind.controller.actions.generated.instance.XmlAction)
 	 */
 	public void act(XmlAction action) {
@@ -170,7 +170,7 @@ public class RevertAction extends FreemindAction implements ActorXml {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see freemind.controller.actions.ActorXml#getDoActionClass()
 	 */
 	public Class getDoActionClass() {

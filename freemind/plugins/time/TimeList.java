@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/*$Id: TimeList.java,v 1.1.2.9 2006-02-15 21:18:46 christianfoltin Exp $*/
+/* $Id: TimeList.java,v 1.1.2.9.2.1 2006-04-05 21:26:32 dpolivaev Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -66,7 +66,7 @@ import freemind.view.mindmapview.MultipleImage;
 
 /**
  * @author foltin
- *  
+ *
  */
 public class TimeList extends MindMapHookAdapter {
 
@@ -251,7 +251,7 @@ public class TimeList extends MindMapHookAdapter {
 
 		// restore prefrences:
 
-		//Retrieve window size and column positions.		
+		//Retrieve window size and column positions.
 		WindowConfigurationStorage storage = getMindMapController().decorateDialog(dialog, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		if (storage != null) {
 			//			 Disable auto resizing
@@ -304,7 +304,7 @@ public class TimeList extends MindMapHookAdapter {
 		DefaultTableModel model = new DefaultTableModel() {
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
 			 */
 			public Class getColumnClass(int arg0) {
@@ -374,7 +374,7 @@ public class TimeList extends MindMapHookAdapter {
 	}
 
 	/**
-	 *  
+	 *
 	 */
 	private void disposeDialog() {
 		// store window positions:
@@ -421,7 +421,7 @@ public class TimeList extends MindMapHookAdapter {
 		private final MindMapNode node;
 
 		/**
-		 *  
+		 *
 		 */
 		public NodeHolder(MindMapNode node) {
 			this.node = node;
@@ -491,7 +491,7 @@ public class TimeList extends MindMapHookAdapter {
 						.hasNext();) {
 					MindIcon icon = (MindIcon) i.next();
 					iconImages
-							.addImage(icon.getIcon(modeController.getFrame()));
+							.addImage(icon.getIcon());
 				}
 				if (iconImages.getImageCount() > 0) {
 					setIcon(iconImages);

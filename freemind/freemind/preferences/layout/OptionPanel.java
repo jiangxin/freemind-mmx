@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/*$Id: OptionPanel.java,v 1.1.2.25 2006-03-26 20:58:43 christianfoltin Exp $*/
+/* $Id: OptionPanel.java,v 1.1.2.25.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -50,6 +50,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
 
 import freemind.common.BooleanProperty;
 import freemind.common.ColorProperty;
@@ -72,7 +73,7 @@ import freemind.preferences.FreemindPropertyContributor;
 
 /**
  * @author foltin
- *  
+ *
  */
 public class OptionPanel implements TextTranslator {
 	//TODO: Cancel and windowClose => Are you sure, or save.
@@ -104,7 +105,7 @@ public class OptionPanel implements TextTranslator {
 	 * @param frame
 	 * @param feedback
 	 * @throws IOException
-	 *  
+	 *
 	 */
 	public OptionPanel(FreeMindMain fm, JDialog frame,
 			OptionPanelFeedback feedback) {
@@ -334,9 +335,9 @@ public class OptionPanel implements TextTranslator {
 		public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
 
 		}
-        
+
         public void setEnabled(boolean pEnabled) {
-            
+
         }
 
 
@@ -344,11 +345,13 @@ public class OptionPanel implements TextTranslator {
 
 	private static class KeyProperty extends PropertyBean implements
 			PropertyControl {
-		String description;
+        String description;
 
 		String label;
 
 		JButton mButton = new JButton();
+
+        private static RowSpec rowSpec;
 		/**
 		 * @param description
 		 * @param label
@@ -392,18 +395,22 @@ public class OptionPanel implements TextTranslator {
 		}
 
 		public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
-			JLabel label = builder
-					.append(pTranslator.getText(getLabel()), mButton);
-			label.setToolTipText(pTranslator.getText(getDescription()));
+        	JLabel label = new JLabel(pTranslator.getText(getLabel()));
+            label.setToolTipText(pTranslator.getText(getDescription()));
+            if(rowSpec == null){
+                rowSpec = new RowSpec("fill:20dlu");
+            }
+            builder.appendRelatedComponentsGapRow();
+            builder.appendRow(rowSpec);
+            builder.nextLine(2);
+            builder.add(label);
+            builder.nextColumn(2);
+            builder.add(mButton);
 		}
-        
-        public void setEnabled(boolean pEnabled) {
-            mButton.setEnabled(pEnabled);
-        }
-
-
+		public void setEnabled(boolean pEnabled) {
+		    mButton.setEnabled(pEnabled);
+		}
 	}
-
 	//
 	private Vector getControls() {
 		Vector controls = new Vector();
@@ -510,27 +517,27 @@ public class OptionPanel implements TextTranslator {
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("default_colors"));
-		controls.add(new ColorProperty("standardnodecolor.tooltip", 
+		controls.add(new ColorProperty("standardnodecolor.tooltip",
 
 		FreeMind.RESOURCES_NODE_COLOR, "#000000", this)); //  #000000
 
-		controls.add(new ColorProperty("standardselectednodecolor.tooltip", 
+		controls.add(new ColorProperty("standardselectednodecolor.tooltip",
 
 		FreeMind.RESOURCES_SELECTED_NODE_COLOR, "#D2D2D2", this)); //  #D2D2D2
 
-		controls.add(new ColorProperty("standardedgecolor.tooltip", 
+		controls.add(new ColorProperty("standardedgecolor.tooltip",
 
 		FreeMind.RESOURCES_EDGE_COLOR, "#808080", this)); //  #808080
 
-		controls.add(new ColorProperty("standardlinkcolor.tooltip", 
+		controls.add(new ColorProperty("standardlinkcolor.tooltip",
 
 		FreeMind.RESOURCES_LINK_COLOR, "#b0b0b0", this)); //  #b0b0b0
 
-		controls.add(new ColorProperty("standardbackgroundcolor.tooltip", 
+		controls.add(new ColorProperty("standardbackgroundcolor.tooltip",
 
 		FreeMind.RESOURCES_BACKGROUND_COLOR, "#ffffff", this)); //  #ffffff
 
-		controls.add(new ColorProperty("standardcloudcolor.tooltip", 
+		controls.add(new ColorProperty("standardcloudcolor.tooltip",
 
 		FreeMind.RESOURCES_CLOUD_COLOR, "#f0f0f0", this)); //  #f0f0f0
 
@@ -630,8 +637,11 @@ public class OptionPanel implements TextTranslator {
 
 		controls.add(new StringProperty(null, "el__max_default_window_width")); //  600
 
-		controls
-				.add(new BooleanProperty(null, "el__enter_confirms_by_default")); //  true
+        controls
+                .add(new BooleanProperty(null, "el__enter_confirms_by_default")); //  true
+
+        controls
+                .add(new BooleanProperty(null, "el__show_icon_for_attributes")); //  true
 
 		/***********************************************************************
 		 * Keystrokes
@@ -639,7 +649,7 @@ public class OptionPanel implements TextTranslator {
 		 */
 		String form = "right:max(40dlu;p), 4dlu, 80dlu, 7dlu";
 		controls.add(new NewTabProperty("Keystrokes", form+ ","+form)); //", right:max(40dlu;p), 4dlu, 60dlu"));
-		//		 
+		//
 		//		 These are the accelerators for the menu items. Valid modifiers are:
 		//		 shift | control | alt | meta | button1 | button2 | button3
 		//		 Valid keys should be all that are defined in java.awt.event.KeyEvent
@@ -941,10 +951,10 @@ public class OptionPanel implements TextTranslator {
 		controls
 				.add(new KeyProperty(frame, null, "keystroke_apply_pattern_18")); //  control
 		// F9
-        
+
         controls.add(new NextLineProperty());
         controls.add(new SeparatorProperty("others"));
-        
+
   controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/ChangeNodeLevelAction_left.properties_key"));
 controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/ChangeNodeLevelAction_right.properties_key"));
 controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/FormatCopy.properties.properties_key"));
@@ -957,7 +967,16 @@ controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldA
 controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_HOME"));
 controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_END"));
 
-       
+controls.add(new NextLineProperty());
+controls.add(new SeparatorProperty("attributes"));
+controls.add(new KeyProperty(frame, null, "keystroke_edit_attributes")); //  control
+controls.add(new KeyProperty(frame, null, "keystroke_show_all_attributes")); //  control
+controls.add(new KeyProperty(frame, null, "keystroke_show_selected_attributes")); //  control
+controls.add(new KeyProperty(frame, null, "keystroke_hide_all_attributes")); //  control
+controls.add(new KeyProperty(frame, null, "keystroke_show_attribute_manager")); //  control
+controls.add(new KeyProperty(frame, null, "keystroke_assign_attributes")); //  control
+
+
 
 		/***********************************************************************
 		 * Misc ****************************************************************
@@ -1074,7 +1093,7 @@ controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldA
 		controls.add(new NextLineProperty());
 		controls.add(new BooleanProperty(
 		"export_icons_in_html.tooltip", "export_icons_in_html")); //  false
-		
+
 		for (Iterator iter = sContributors.iterator(); iter.hasNext();) {
 			FreemindPropertyContributor contributor = (FreemindPropertyContributor) iter.next();
 			controls.addAll(contributor.getControls(this));
@@ -1090,15 +1109,15 @@ controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldA
         frame.setVisible(false);
 		frame.dispose();
 	}
-	
+
 	private static Set sContributors = new HashSet();
-	
+
 	public static void addContributor(FreemindPropertyContributor contributor) {
 		sContributors.add(contributor);
 	}
 	public static void removeContributor(FreemindPropertyContributor contributor) {
 		sContributors.remove(contributor);
 	}
-	
-	
+
+
 }

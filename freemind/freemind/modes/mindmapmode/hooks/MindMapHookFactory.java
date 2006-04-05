@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapHookFactory.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.1 2006-04-05 21:26:30 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.hooks;
 
 import java.io.File;
@@ -54,7 +54,7 @@ import freemind.modes.mindmapmode.MindMapController;
 
 /**
  * @author christianfoltin
- * 
+ *
  * @file HookFactory.java
  * @package freemind.modes
  */
@@ -81,7 +81,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 	private static ImportWizard importWizard = null;
 
 	/**
-	 *  
+	 *
 	 */
 	public MindMapHookFactory(FreeMindMain frame) {
 		this.frame = frame;
@@ -140,7 +140,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 	}
 
 	/**
-	 *  
+	 *
 	 */
 	private void actualizePlugins() {
 		if (importWizard == null) {
@@ -190,7 +190,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
                         pluginInfo.put(action.getLabel(), new HookDescriptor(frame,
                                 action, plugin));
                         allPlugins.add(action.getLabel());
-                        
+
                     } else if (obj instanceof PluginRegistration) {
                         PluginRegistration registration = (PluginRegistration) obj;
                         allRegistrations.put(registration, plugin);
@@ -256,7 +256,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 			urls[j++] = new File(getFreemindBaseDir()).toURL();
 			for (Iterator i = pluginClasspathList.iterator(); i.hasNext();) {
 				PluginClasspath classPath = (PluginClasspath) i.next();
-				// new version of classpath resolution suggested by ewl under 
+				// new version of classpath resolution suggested by ewl under
 				// patch [ 1154510 ] Be able to give absolute classpath entries in plugin.xml
 				File file = new File(classPath.getJar());
 				if (! file.isAbsolute()) {
@@ -282,7 +282,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 
 	/** This string is used to identify known classloaders as they
 	 *  are cached.
-	 * 
+	 *
 	 * @param pluginClasspathList
 	 * @return
 	 */
@@ -316,11 +316,11 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 			MindMapHook hook) {
 		hook.setProperties(descriptor.getProperties());
 		hook.setName(hookName);
-		Object baseClass = getPluginBaseClass(descriptor); 
+		Object baseClass = getPluginBaseClass(descriptor);
 		hook.setPluginBaseClass(baseClass);
 	}
 
-	
+
 
 	/**
 	 * @param action
@@ -374,7 +374,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 	 * the corresponding mode is enabled. (Like singletons.) One of these can
 	 * operate as the pluginBase that is accessible to every normal
 	 * plugin_action via the getPluginBaseClass method.
-	 * 
+	 *
 	 * @return A list of RegistrationContainer elements. The field
 	 *         hookRegistrationClass of RegistrationContainer is a class that is
 	 *         (probably) of HookRegistration type. You have to register every
@@ -409,15 +409,15 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 				container.correspondingPlugin = plugin;
 				container.isPluginBase = registration.getIsPluginBase();
 				returnValue.add(container);
-			} catch (ClassNotFoundException e) { 
+			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
 		return returnValue;
 	}
 
-	/** A plugin base class is a common registration class of multiple 
-	 *  plugins. It is useful to embrace several related plugins 
+	/** A plugin base class is a common registration class of multiple
+	 *  plugins. It is useful to embrace several related plugins
 	 *  (example: EncryptedNote -> Registration).
 	 * @param hookName
 	 * @return the base class if declared and successfully instanciated
@@ -441,7 +441,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 		}
 		return baseClass;
 	}
-	
+
 	/**
 	 * @param hookName
 	 */
@@ -452,6 +452,6 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 		return descriptor;
 	}
 
-	
+
 
 }

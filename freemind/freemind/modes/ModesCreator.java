@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ModesCreator.java,v 1.9.18.4 2006-01-12 23:10:12 christianfoltin Exp $*/
+/* $Id: ModesCreator.java,v 1.9.18.4.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -48,7 +48,7 @@ public class ModesCreator {
 	private Map modesTranslation;
 
 	private static Logger logger;
-	
+
 	public ModesCreator(Controller c) {
 		this.c = c;
 	}
@@ -75,9 +75,9 @@ public class ModesCreator {
 		return modesTranslation.keySet();
 	}
 
-	
+
 	/** Creates a new ModeController.
-	 * 
+	 *
 	 * @param modeAlias
 	 * @return
 	 */

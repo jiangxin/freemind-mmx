@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseMapModel.java,v 1.9.18.5 2006-01-12 23:10:12 christianfoltin Exp $*/
+/* $Id: BrowseMapModel.java,v 1.9.18.5.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -53,7 +53,7 @@ public class BrowseMapModel extends MapAdapter {
         if(root != null)
             setRoot(root);
         else
-           setRoot(new BrowseNodeModel(getFrame().getResourceString("new_mindmap"), getFrame())); 
+           setRoot(new BrowseNodeModel(getFrame().getResourceString("new_mindmap"), getFrame(), modeController.getMap()));
         // register new LinkRegistryAdapter
         linkRegistry = new LinkRegistryAdapter();
     }
@@ -80,25 +80,25 @@ public class BrowseMapModel extends MapAdapter {
     protected void setFile() {
     }
 
-    
+
     /**
        * Get the value of url.
        * @return Value of url.
        */
     public URL getURL() {
        return url;}
-    
+
     /**
        * Set the value of url.
        * @param v  Value to assign to url.
        */
     public void setURL(URL  v) {this.url = v;}
-    
+
 
     public boolean save(File file) {
     	return true;
     }
-    
+
     public boolean isSaved() {
 	return true;
     }
@@ -123,7 +123,6 @@ public class BrowseMapModel extends MapAdapter {
 	//NanoXML Code
 	//XMLElement parser = new XMLElement();
         BrowseXMLElement mapElement = new BrowseXMLElement(getModeController());
-
         InputStreamReader urlStreamReader = null;
 
         try {
@@ -160,9 +159,18 @@ public class BrowseMapModel extends MapAdapter {
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMap#getXml(java.io.Writer)
 	 */
-	public void getXml(Writer fileout) throws IOException {
-		// nothing. 
-		//FIXME: Implement me if you need me.
-		throw new RuntimeException("Unimplemented method called.");
-	}
+    public void getXml(Writer fileout) throws IOException {
+        // nothing.
+        //FIXME: Implement me if you need me.
+        throw new RuntimeException("Unimplemented method called.");
+    }
+
+    /* (non-Javadoc)
+     * @see freemind.modes.MindMap#getFilteredXml(java.io.Writer)
+     */
+    public void getFilteredXml(Writer fileout) throws IOException {
+        // nothing.
+        //FIXME: Implement me if you need me.
+        throw new RuntimeException("Unimplemented method called.");
+    }
 }

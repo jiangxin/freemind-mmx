@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMouseMotionManager.java,v 1.1.2.1 2006-01-12 23:10:14 christianfoltin Exp $*/
+/* $Id: MindMapMouseMotionManager.java,v 1.1.2.1.2.1 2006-04-05 21:26:30 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.listeners;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
 import freemind.controller.MapMouseMotionListener.MapMouseMotionReceiver;
@@ -47,7 +48,7 @@ public class MindMapMouseMotionManager implements MapMouseMotionReceiver {
 
     /**
      * @param controller
-     * 
+     *
      */
     public MindMapMouseMotionManager(MindMapController controller) {
         super();
@@ -56,22 +57,29 @@ public class MindMapMouseMotionManager implements MapMouseMotionReceiver {
     }
 
     public void mouseDragged(MouseEvent e) {
+        Rectangle r = new Rectangle(e.getX(), e.getY(), 1, 1);
+        MapView mapView = (MapView)e.getComponent();
+        boolean isEventPointVisible = mapView.getVisibleRect().contains(r);
+        if(! isEventPointVisible){
+        mapView.scrollRectToVisible(r);
+        }
         // Always try to get mouse to the original position in the Map.
         if (originX >= 0) {
             if (draggedLink != null) {
-                int deltaX = (int) ((e.getX() - originX) / mController
-                        .getView().getZoom());
-                int deltaY = (int) ((e.getY() - originY) / mController
-                        .getView().getZoom());
+    		int deltaX = (int)((e.getX()-originX)/mController.getView().getZoom());
+    		int deltaY = (int)((e.getY()-originY)/mController.getView().getZoom());
                 draggedLink.changeInclination(originX, originY, deltaX, deltaY);
                 originX = e.getX();
                 originY = e.getY();
                 mController.getView().repaint();
-            } else {
-                ((MapView) e.getComponent()).scrollBy(originX - e.getX(),
-                        originY - e.getY(), false);
             }
-            // } else { // do the init in the mouse press
+    	  else if(isEventPointVisible){
+     		mapView.scrollBy(originX - e.getX(), originY - e.getY(), false);
+    	  }
+    	  else{
+    	      originX = e.getX();
+    	      originY = e.getY();
+    	  }
         }
     }
 

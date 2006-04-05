@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapHookAdapter.java,v 1.1.2.1 2006-01-12 23:10:14 christianfoltin Exp $*/
+/* $Id: MindMapHookAdapter.java,v 1.1.2.1.2.1 2006-04-05 21:26:30 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.hooks;
 
@@ -27,7 +27,7 @@ import freemind.modes.mindmapmode.MindMapController;
 public class MindMapHookAdapter extends ModeControllerHookAdapter {
 
     /**
-     * 
+     *
      */
     public MindMapHookAdapter() {
         super();
@@ -37,6 +37,6 @@ public class MindMapHookAdapter extends ModeControllerHookAdapter {
     public MindMapController getMindMapController() {
         return (MindMapController) getController();
     }
-    
+
 }
 

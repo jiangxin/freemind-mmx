@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/*$Id: CutAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: CutAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -73,7 +73,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 	}
 
 
-    /** 
+    /**
     */
     public CutNodeAction getCutNodeAction(Transferable t, NodeCoordinate coord)
          {
@@ -83,7 +83,7 @@ public class CutAction extends AbstractAction implements ActorXml {
         cutAction.setNode(controller.getNodeID(coord.target));
 		cutAction.setAsSibling(coord.asSibling);
 		cutAction.setIsLeft(coord.isLeft);
-       
+
         return cutAction;
     }
 
@@ -102,12 +102,12 @@ public class CutAction extends AbstractAction implements ActorXml {
         	NodeCoordinate coord = new NodeCoordinate(node, node.isLeft().getValue());
             CutNodeAction cutNodeAction = getCutNodeAction( copy, coord);
         	doAction.addChoice(cutNodeAction);
-        	
+
         	PasteNodeAction pasteNodeAction=null;
             pasteNodeAction = controller.paste.getPasteNodeAction(copy, coord);
             // The paste actions are reversed because of the strange coordinates.
         	undo.addAtChoice(0,pasteNodeAction);
-            
+
         }
         if (doAction.sizeChoiceList() > 0){
             controller.getActionFactory().startTransaction(text);
@@ -161,7 +161,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 				/* Since the JAXB-generated interface TransferableContent doesn't supply
 				  a setTranserableAsFileList method, we have to get the fileList, clear it,
 				  and then set it to the new value.
-				*/ 
+				*/
 	            List fileList = (List)t.getTransferData(MindMapNodesSelection.fileListFlavor);
                 for (Iterator iter = fileList.iterator(); iter.hasNext();) {
                     File fileName = (File) iter.next();
@@ -175,8 +175,8 @@ public class CutAction extends AbstractAction implements ActorXml {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
-		return null; 
+		}
+		return null;
 	}
 
     public Transferable getTransferable(TransferableContent trans) {
@@ -193,8 +193,8 @@ public class CutAction extends AbstractAction implements ActorXml {
                 trans.getTransferable(),
         		trans.getTransferableAsPlainText(),
                 trans.getTransferableAsRTF(),
-                trans.getTransferableAsDrop(), 
-                trans.getTransferableAsHtml(), 
+                trans.getTransferableAsDrop(),
+                trans.getTransferableAsHtml(),
                 fileList);
         return copy;
     }

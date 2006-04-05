@@ -44,7 +44,22 @@
 					<xs:element ref="arrow_link_color_xml_action"/>
 					<xs:element ref="arrow_link_arrow_xml_action"/>
 					<xs:element ref="arrow_link_point_xml_action"/>
+
+					<xs:element ref="set_attribute_name_elementary_action"/>
+					<xs:element ref="set_attribute_value_elementary_action"/>
+					<xs:element ref="insert_attribute_elementary_action"/>
+					<xs:element ref="delete_attribute_elementary_action"/>
+					<xs:element ref="set_attribute_column_width_elementary_action"/>
+					<xs:element ref="registry_attribute_elementary_action"/>
+					<xs:element ref="unregistry_attribute_elementary_action"/>
+					<xs:element ref="registry_attribute_value_elementary_action"/>
+					<xs:element ref="unregistry_attribute_value_elementary_action"/>
+					<xs:element ref="replace_attribute_value_elementary_action"/>
+					<xs:element ref="set_attribute_font_size_elementary_action"/>
+					<xs:element ref="set_attribute_visible_elementary_action"/>
+					<xs:element ref="set_attribute_restricted_elementary_action"/>
 					<xs:element ref="edit_note_to_node_action"/>
+
 				</xs:choice>
 			</xs:extension>
 		</xs:complexContent>
@@ -86,7 +101,7 @@
 	</xs:element>
 
 
-	<!-- cut Action 
+	<!-- cut Action
 		The node is given in NodeCoordinates (see PasteAction).
 		 -->
 	<xs:element name="cut_node_action">
@@ -94,7 +109,7 @@
 		<xs:complexContent>
 			<xs:extension base="node_action">
               <xs:sequence>
-	            <xs:element ref="transferable_content" maxOccurs="1" minOccurs="1"/>				
+	            <xs:element ref="transferable_content" maxOccurs="1" minOccurs="1"/>
               </xs:sequence>
 		      <xs:attribute name="isLeft" use="required" type="xs:boolean"/>
 		      <xs:attribute name="asSibling" use="required" type="xs:boolean"/>
@@ -103,7 +118,7 @@
 	  </xs:complexType>
 	</xs:element>
 
-	<!-- Paste Action 
+	<!-- Paste Action
 		The node is given in NodeCoordinates (see PasteAction).
 		-->
 	<xs:element name="paste_node_action">
@@ -111,7 +126,7 @@
 		<xs:complexContent>
 			<xs:extension base="node_action">
               <xs:sequence>
-		        <xs:element ref="transferable_content" maxOccurs="1" minOccurs="1"/>				
+		        <xs:element ref="transferable_content" maxOccurs="1" minOccurs="1"/>
 		      </xs:sequence>
 		      <xs:attribute name="isLeft" use="required" type="xs:boolean"/>
 		      <xs:attribute name="asSibling" use="required" type="xs:boolean"/>
@@ -120,7 +135,7 @@
 	  </xs:complexType>
 	</xs:element>
 
-	<!-- Revert Action 
+	<!-- Revert Action
 		 Reloads the map from the file system (or via collaboration)
 		-->
 	<xs:element name="revert_xml_action">
@@ -128,11 +143,11 @@
 		<xs:complexContent>
 			<xs:extension base="xml_action">
 		      <xs:attribute name="map" use="required" type="xs:string"/>
-			  <!-- As this attribute does not make sense on 
+			  <!-- As this attribute does not make sense on
 				   distributed environments, it must not be used
 				   apart from local. -->
 		      <xs:attribute name="localFileName" use="optional" type="xs:string"/>
-			  <!-- Is used when the map should 
+			  <!-- Is used when the map should
 					be stored with a given name prefix. -->
 		      <xs:attribute name="filePrefix" use="optional" type="xs:string"/>
 			</xs:extension>
@@ -240,10 +255,10 @@
 					<xs:attribute name="endInclination"    use="optional" type="xs:string"/>
 					<xs:attribute name="startArrow"    use="optional" type="xs:string"/>
 					<xs:attribute name="endArrow"    use="optional" type="xs:string"/>
-					<!--Currently not used: 					
+					<!--Currently not used:
 						<xs:attribute name="style"    use="optional" type="xs:string"/>
 					  <xs:attribute name="referenceText"    use="optional" type="xs:string"/>
-						-->					
+						-->
 				</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
@@ -255,7 +270,7 @@
 		<xs:complexContent>
 			<xs:extension base="xml_action">
 				<xs:attribute name="id" use="required" type="xs:string"/>
-			</xs:extension>	
+			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
@@ -267,7 +282,7 @@
 			<xs:extension base="xml_action">
 				<xs:attribute name="id" use="required" type="xs:string"/>
 				<xs:attribute name="color" use="optional" type="xs:string"/>
-			</xs:extension>	
+			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
@@ -280,7 +295,7 @@
 				<xs:attribute name="id" use="required" type="xs:string"/>
 				<xs:attribute name="end_arrow" use="optional" type="xs:string"/>
 				<xs:attribute name="start_arrow" use="optional" type="xs:string"/>
-			</xs:extension>	
+			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
@@ -293,7 +308,7 @@
 				<xs:attribute name="id" use="required" type="xs:string"/>
 				<xs:attribute name="end_point" use="optional" type="xs:string"/>
 				<xs:attribute name="start_point" use="optional" type="xs:string"/>
-			</xs:extension>	
+			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
@@ -428,7 +443,7 @@
 	</xs:element>
 
 
-	<!-- Delete node Action 
+	<!-- Delete node Action
 		 This is done via the parent and its index, because at creation time of the node, the id was not present. -->
 	<xs:element name="delete_node_action">
 	  <xs:complexType>
@@ -495,7 +510,7 @@
 	  </xs:complexType>
 	</xs:element>
 
-	<!-- Toggle folded node Action 
+	<!-- Toggle folded node Action
 		 This is done via the parent and its index, because at creation time of the node, the id was not present. -->
 	<xs:element name="fold_action">
 	  <xs:complexType>
@@ -522,14 +537,14 @@
 			<xs:extension base="node_action">
           <xs:sequence>
 						<!-- The selected nodes: -->
-    	      <xs:element ref="node_list_member" maxOccurs="unbounded" minOccurs="1"/>				
+    	      <xs:element ref="node_list_member" maxOccurs="unbounded" minOccurs="1"/>
           </xs:sequence>
 					<!-- Up = -1, Down = 1-->
 		      <xs:attribute name="direction" use="required" type="xs:int"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
-		
+
 	</xs:element>
 
 	<!-- Add a permanent hook to a node -->
@@ -539,7 +554,7 @@
 			<xs:extension base="node_action">
           <xs:sequence>
 						<!-- The selected nodes: -->
-    	      <xs:element ref="node_list_member" maxOccurs="unbounded" minOccurs="1"/>				
+    	      <xs:element ref="node_list_member" maxOccurs="unbounded" minOccurs="1"/>
           </xs:sequence>
 		      <xs:attribute name="hook_name" use="required" type="xs:string"/>
 		      <xs:attribute name="content" use="optional" type="xs:string"/>
@@ -548,8 +563,162 @@
 	  </xs:complexType>
 	</xs:element>
 
+	<!-- Set attribute name Action -->
+	<xs:element name="set_attribute_name_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+				<xs:attribute name="row"    use="optional" type="xs:int"/>
+				<xs:attribute name="name"   use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
 
-	<!-- Collaboration actions (not usable inside FreeMind but only in between different 
+	<!-- Set attribute value Action -->
+	<xs:element name="set_attribute_value_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+				<xs:attribute name="row"    use="optional" type="xs:int"/>
+				<xs:attribute name="value"   use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Insert attribute Action -->
+	<xs:element name="insert_attribute_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+				<xs:attribute name="row"    use="optional" type="xs:int"/>
+				<xs:attribute name="name"   use="optional" type="xs:string"/>
+				<xs:attribute name="value"   use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Delete attribute Action -->
+	<xs:element name="delete_attribute_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+				<xs:attribute name="row"    use="optional" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Set attribute column width Action -->
+	<xs:element name="set_attribute_column_width_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+				<xs:attribute name="column" use="optional" type="xs:int"/>
+				<xs:attribute name="width"  use="optional" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Registry attribute Action -->
+	<xs:element name="registry_attribute_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="name"  use="optional" type="xs:string"/>
+				<xs:attribute name="value" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Unregistry attribute Action -->
+	<xs:element name="unregistry_attribute_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="name" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Registry attribute value Action -->
+	<xs:element name="registry_attribute_value_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="name"  use="optional" type="xs:string"/>
+				<xs:attribute name="value" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Unregistry attribute value Action -->
+	<xs:element name="unregistry_attribute_value_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="name"  use="optional" type="xs:string"/>
+				<xs:attribute name="value" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+		<!-- Replace attribute value Action -->
+	<xs:element name="replace_attribute_value_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="name"  use="optional" type="xs:string"/>
+				<xs:attribute name="old_value" use="optional" type="xs:string"/>
+				<xs:attribute name="new_value" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Set attribute font size Action -->
+	<xs:element name="set_attribute_font_size_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="size" use="optional" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Set attribute visibility elementary Action -->
+	<xs:element name="set_attribute_visible_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+			      <xs:attribute name="index" use="required" type="xs:int"/>
+			      <xs:attribute name="isVisible" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Set attribute restriction elementary Action -->
+	<xs:element name="set_attribute_restricted_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+			      <xs:attribute name="index" use="required" type="xs:int"/>
+			      <xs:attribute name="isRestricted" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Collaboration actions (not usable inside FreeMind but only in between different
 		 instances (and thus not contained in compound_action). -->
 	<xs:element name="collaboration_action">
 	  <xs:complexType>
@@ -575,8 +744,8 @@
 		</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
-		
-	<!-- ======================================================================================= 
+
+	<!-- =======================================================================================
 						Window positions to be stored in the auto.properties
 		   ======================================================================================= -->
 	<!-- Windowpositionstorage stores the window configuration of some windows. -->
@@ -590,7 +759,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
-	
+
 	<xs:element name="normal_window_configuration_storage">
 	  <xs:complexType>
 		<xs:complexContent>
@@ -600,26 +769,26 @@
 	  </xs:complexType>
 	</xs:element>
 
-	<!-- Windowpositionstorage stores the window configuration of the 
+	<!-- Windowpositionstorage stores the window configuration of the
 		 option panel window. -->
 	<xs:element name="option_panel_window_configuration_storage">
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="window_configuration_storage">
-			<xs:attribute use="optional" name="panel" type="xs:string"/>				
+			<xs:attribute use="optional" name="panel" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
 
-	<!-- Windowpositionstorage stores the window configuration of the 
+	<!-- Windowpositionstorage stores the window configuration of the
 		 time list window. -->
 	<xs:element name="time_window_configuration_storage">
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="window_configuration_storage">
 	          <xs:sequence>
-	    	      <xs:element ref="time_window_column_setting" maxOccurs="unbounded" minOccurs="0"/>				
+	    	      <xs:element ref="time_window_column_setting" maxOccurs="unbounded" minOccurs="0"/>
 	          </xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -709,7 +878,7 @@
 					<xs:element ref="plugin_strings"/>
 				</xs:choice>
 			</xs:sequence>
-		</xs:complexType>		
+		</xs:complexType>
 	</xs:element>
 
   <xs:element name="plugin_classpath">
@@ -813,7 +982,7 @@
 	</xs:element>
 
 
-	<!-- ======================================================================================= 
+	<!-- =======================================================================================
 		 										Menu XML
 		   ======================================================================================= -->
 
@@ -823,6 +992,7 @@
 	          <xs:element ref="menu_submenu"/>
 	          <xs:element ref="menu_action"/>
 	          <xs:element ref="menu_checked_action"/>
+	          <xs:element ref="menu_radio_action"/>
 	          <xs:element ref="menu_separator"/>
        </xs:choice>
 	</xs:group>
@@ -835,7 +1005,7 @@
 	          <xs:element ref="menu_category"/>
 	        </xs:choice>
 	      </xs:sequence>
-		</xs:complexType>		
+		</xs:complexType>
 	</xs:element>
 
     <xs:complexType name="menu_category_base">
@@ -889,6 +1059,16 @@
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="menu_action_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+  </xs:element>
+
+  <xs:element name="menu_radio_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="menu_action_base">
+			      <xs:attribute name="selected" use="optional" default ="false" type="xs:boolean"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

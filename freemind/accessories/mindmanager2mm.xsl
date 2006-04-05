@@ -7,7 +7,7 @@
    :
    : Christian Foltin, June, 2005
    :
-   : $Id: mindmanager2mm.xsl,v 1.1.2.3 2005-08-19 20:11:29 christianfoltin Exp $
+   : $Id: mindmanager2mm.xsl,v 1.1.2.3.4.1 2006-04-05 21:26:23 dpolivaev Exp $
    :
   -->
 

@@ -19,7 +19,7 @@
  *
  * Created on 29.08.2004
  */
-/*$Id: JabberStarter.java,v 1.1.2.1 2005-03-13 21:31:34 christianfoltin Exp $*/
+/* $Id: JabberStarter.java,v 1.1.2.1.12.1 2006-04-05 21:26:32 dpolivaev Exp $ */
 
 package plugins.collaboration.jabber;
 
@@ -30,12 +30,12 @@ import freemind.modes.mindmapmode.MindMapController;
 
 /**
  * @author foltin
- *  
+ *
  */
 public class JabberStarter extends ModeControllerHookAdapter {
 
     /**
-     *  
+     *
      */
 
     public void startupMapHook() {

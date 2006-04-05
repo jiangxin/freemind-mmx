@@ -19,9 +19,10 @@
  *
  * Created on 11.11.2005
  */
-/*$Id: CommonMouseMotionManager.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/* $Id: CommonMouseMotionManager.java,v 1.1.2.1.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
 package freemind.modes.common.listeners;
 
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
 import freemind.controller.MapMouseMotionListener.MapMouseMotionReceiver;
@@ -30,7 +31,7 @@ import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
- * 
+ *
  */
 public class CommonMouseMotionManager implements MapMouseMotionReceiver {
 
@@ -44,7 +45,7 @@ public class CommonMouseMotionManager implements MapMouseMotionReceiver {
 
 	/**
 	 * @param controller
-	 * 
+	 *
 	 */
 	public CommonMouseMotionManager(ModeController controller) {
 		super();
@@ -53,8 +54,14 @@ public class CommonMouseMotionManager implements MapMouseMotionReceiver {
 	}
 
 	public void mouseDragged(MouseEvent e) {
+        Rectangle r = new Rectangle(e.getX(), e.getY(), 1, 1);
+        MapView mapView = (MapView)e.getComponent();
+        boolean isEventPointVisible = mapView.getVisibleRect().contains(r);
+        if(! isEventPointVisible){
+        mapView.scrollRectToVisible(r);
+        }
 		// Always try to get mouse to the original position in the Map.
-		if (originX >= 0) {
+		if (originX >= 0 && isEventPointVisible) {
 			((MapView) e.getComponent()).scrollBy(originX - e.getX(), originY
 					- e.getY(), false);
 		}

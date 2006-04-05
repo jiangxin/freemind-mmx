@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseController.java,v 1.13.18.7 2006-02-21 20:49:42 christianfoltin Exp $*/
+/* $Id: BrowseController.java,v 1.13.18.7.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -40,6 +40,7 @@ import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.HookFactory;
 import freemind.main.Tools;
 import freemind.modes.MapAdapter;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
@@ -51,7 +52,6 @@ import freemind.view.mindmapview.NodeView;
 public class BrowseController extends ViewControllerAdapter {
 
 	private JPopupMenu popupmenu;
-
 	private JToolBar toolbar;
 
 	Action followLink;
@@ -87,7 +87,7 @@ public class BrowseController extends ViewControllerAdapter {
             loadURL(); }
         else {
             if (!node.hasChildren()) {
-                // the emulate the plain click. 
+                // the emulate the plain click.
                 doubleClick(e);
                 return;
             }
@@ -113,8 +113,8 @@ public class BrowseController extends ViewControllerAdapter {
 //		setFolded(n, false);
 //		foldOthers(n);
 //	}
-//	
-//	
+//
+//
 //	private void foldOthers(MindMapNode n) {
 //		if(n.isRoot()){
 //			return;
@@ -129,8 +129,8 @@ public class BrowseController extends ViewControllerAdapter {
 //		foldOthers(parent);
 //	}
 
-	public MindMapNode newNode(Object userObject) {
-		return new BrowseNodeModel(userObject, getFrame());
+	public MindMapNode newNode(Object userObject, MindMap map) {
+		return new BrowseNodeModel(userObject, getFrame(), map);
 	}
 
 	public JPopupMenu getPopupMenu() {
@@ -205,7 +205,7 @@ public class BrowseController extends ViewControllerAdapter {
 				getFrame().out(Tools.expandPlaceholders(getText("link_not_found"), target));
 				return;
 			}
-		}  
+		}
 
 		URL absolute = null;
 		try {
@@ -284,7 +284,7 @@ public class BrowseController extends ViewControllerAdapter {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see freemind.modes.ModeController#updateMenus(freemind.controller.StructuredMenuHolder)
 	 */
 	public void updateMenus(StructuredMenuHolder holder) {

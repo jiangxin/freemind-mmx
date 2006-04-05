@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17 2006-03-26 20:58:43 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.1 2006-04-05 21:26:24 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -51,8 +51,9 @@ public class MenuBar extends JMenuBar {
 //    public static final String MODES_MENU = MENU_BAR_PREFIX+"modes/";
     public static final String EDIT_MENU = MENU_BAR_PREFIX+"edit/";
     public static final String FILE_MENU = MENU_BAR_PREFIX+"file/";
-	public static final String FORMAT_MENU = MENU_BAR_PREFIX+"format/";
-	public static final String EXTRAS_MENU = MENU_BAR_PREFIX+"extras/";
+    public static final String FORMAT_MENU = MENU_BAR_PREFIX+"format/";
+    public static final String EXTRAS_MENU = MENU_BAR_PREFIX+"extras/";
+
 
 	private StructuredMenuHolder menuHolder;
 	
@@ -129,11 +130,11 @@ public class MenuBar extends JMenuBar {
 		menuHolder.addMenu(new JMenu(c.getResourceString("menu_navigate")), NAVIGATE_MENU+".");
 
 
-		//extras menu
-		menuHolder.addMenu(new JMenu(c.getResourceString("menu_extras")), EXTRAS_MENU+".");
-		menuHolder.addCategory(EXTRAS_MENU+"first");	
-		menuHolder.addSeparator(EXTRAS_MENU);	
-		menuHolder.addCategory(EXTRAS_MENU+"last");	
+        //extras menu
+        menuHolder.addMenu(new JMenu(c.getResourceString("menu_extras")), EXTRAS_MENU+".");
+        menuHolder.addCategory(EXTRAS_MENU+"first");    
+        menuHolder.addSeparator(EXTRAS_MENU);   
+        menuHolder.addCategory(EXTRAS_MENU+"last"); 
 
 		//Mapsmenu
 		mapsmenu = menuHolder.addMenu(new JMenu(c.getResourceString("mindmaps")), MINDMAP_MENU+".");
@@ -248,9 +249,12 @@ public class MenuBar extends JMenuBar {
     private void updateFileMenu() {
 	
 		menuHolder.addAction(c.page, FILE_MENU+"print/pageSetup");
-		JMenuItem print = menuHolder.addAction(c.print, FILE_MENU+"print/print");
-		print.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_print")));
-	
+        JMenuItem print = menuHolder.addAction(c.print, FILE_MENU+"print/print");
+        print.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_print")));
+    
+        JMenuItem printPreview = menuHolder.addAction(c.printPreview, FILE_MENU+"print/printPreview");
+        printPreview.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_print_preview")));
+    
 		JMenuItem close = menuHolder.addAction(c.close, FILE_MENU+"close/close");
 		close.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_close")));
 		

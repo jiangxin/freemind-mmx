@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ChooseFormatPopupDialog.java,v 1.1.2.6 2006-03-26 20:58:42 christianfoltin Exp $*/
+/* $Id: ChooseFormatPopupDialog.java,v 1.1.2.6.2.1 2006-04-05 21:26:24 dpolivaev Exp $ */
 
 package accessories.plugins.dialogs;
 
@@ -73,13 +73,13 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	/**
 	 * This constructor is used, if you need the user to enter a pattern generally.
-	 * 
+	 *
 	 * @param caller
 	 * @param controller
 	 * @param dialogTitle
 	 * @param pattern
 	 */
-	public ChooseFormatPopupDialog(JFrame caller, MindMapController controller, 
+	public ChooseFormatPopupDialog(JFrame caller, MindMapController controller,
 			String dialogTitle, Pattern pattern) {
 		super(caller);
 		this.controller = controller;
@@ -90,13 +90,13 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private void initialize(String dialogTitle) {
-		 
+
 		this.setTitle(controller
-				.getText(dialogTitle)); 
+				.getText(dialogTitle));
 		JPanel contentPane = getJContentPane();
         this.setContentPane(contentPane);
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
@@ -126,7 +126,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	/**
 	 * This method initializes jContentPane
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private javax.swing.JPanel getJContentPane() {
@@ -137,7 +137,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 			 * public GridBagConstraints(int gridx, int gridy, int gridwidth,
 			 * int gridheight, double weightx, double weighty, int anchor, int
 			 * fill, Insets insets, int ipadx, int ipady)
-			 * 
+			 *
 			 */
 			jContentPane.add(getStylePatternFrame(), new GridBagConstraints(0, 0, 2, 1,
 					2.0, 8.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0, 0));
@@ -154,14 +154,14 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 		if(mStylePatternFrame == null) {
 			mStylePatternFrame = new StylePatternFrame(this, controller, StylePatternFrameType.WITHOUT_NAME_AND_CHILDS);
 			mStylePatternFrame.init();
-			
+
 		}
 		return mStylePatternFrame;
 	}
 
 	/**
 	 * This method initializes jButton
-	 * 
+	 *
 	 * @return javax.swing.JButton
 	 */
 	private JButton getJOKButton() {
@@ -177,14 +177,14 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 			});
 
 			jOKButton.setText(controller
-					.getText("ok")); 
+					.getText("ok"));
 		}
 		return jOKButton;
 	}
 
 	/**
 	 * This method initializes jButton1
-	 * 
+	 *
 	 * @return javax.swing.JButton
 	 */
 	private JButton getJCancelButton() {
@@ -197,7 +197,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 				}
 			});
 			jCancelButton.setText(controller
-					.getText("cancel")); 
+					.getText("cancel"));
 		}
 		return jCancelButton;
 	}
@@ -219,7 +219,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
 	 */
 	public void keyPressed(KeyEvent keyEvent) {
@@ -234,7 +234,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
 	 */
 	public void keyReleased(KeyEvent keyEvent) {
@@ -243,7 +243,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
 	 */
 	public void keyTyped(KeyEvent keyEvent) {

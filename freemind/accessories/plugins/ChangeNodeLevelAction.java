@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ChangeNodeLevelAction.java,v 1.1.2.2 2006-02-21 22:04:36 christianfoltin Exp $*/
+/* $Id: ChangeNodeLevelAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:24 dpolivaev Exp $ */
 
 /*
  * Created on 19.02.2006
@@ -40,7 +40,7 @@ import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 
 	/**
-	 * 
+	 *
 	 */
 	public ChangeNodeLevelAction() {
 		super();
@@ -48,7 +48,7 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode,
 	 *      java.util.List)
 	 */
@@ -92,7 +92,7 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 				return;
 			}
 		}
-        
+
         // collect node ids:
         String selectedNodeId = selectedNode.getObjectId(getController());
         Vector selectedNodesId = new Vector();
@@ -132,7 +132,7 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 			MindMapNode directSibling = null;
 			for(int i = ownPosition - 1; i >= 0; --i) {
 				MindMapNode sibling = (MindMapNode) selectedParent.getChildAt(i);
-				if((! selectedNodes.contains(sibling)) && 
+				if((! selectedNodes.contains(sibling)) &&
                         Tools.safeEquals(selectedNode.isLeft(), sibling.isLeft())){
 					directSibling = sibling;
 					break;
@@ -142,7 +142,7 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
                 // start searching for a sibling after the selected block:
                 for(int i = ownPosition + 1; i < selectedParent.getChildCount() ; ++i) {
                     MindMapNode sibling = (MindMapNode) selectedParent.getChildAt(i);
-                    if((! selectedNodes.contains(sibling)) && 
+                    if((! selectedNodes.contains(sibling)) &&
                             Tools.safeEquals(selectedNode.isLeft(), sibling.isLeft())){
                         directSibling = sibling;
                         break;

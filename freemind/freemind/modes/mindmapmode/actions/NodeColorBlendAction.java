@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/*$Id: NodeColorBlendAction.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/* $Id: NodeColorBlendAction.java,v 1.1.2.1.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -29,11 +29,11 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
 
 /**
  * @author foltin
- *  
+ *
  */
 public class NodeColorBlendAction extends NodeGeneralAction {
     /**
-     * 
+     *
      */
     public NodeColorBlendAction(final MindMapController modeController) {
 		super( modeController, "blend_color", null, new SingleNodeOperation(){
@@ -42,5 +42,5 @@ public class NodeColorBlendAction extends NodeGeneralAction {
                 modeController.blendNodeColor(node);
             }});
     }
-    
+
 }

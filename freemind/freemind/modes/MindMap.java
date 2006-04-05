@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMap.java,v 1.14.14.8 2006-01-12 23:10:12 christianfoltin Exp $*/
+/* $Id: MindMap.java,v 1.14.14.8.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 
 package freemind.modes;
 
 import java.awt.Color;
 import java.awt.datatransfer.Transferable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
@@ -32,23 +33,28 @@ import java.util.List;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
+import freemind.controller.filter.Filter;
+import freemind.main.XMLParseException;
+
 public interface MindMap extends TreeModel {
-        
+
 	/**
 	 * @return The mode controller, the model belongs to.
 	 */
 	ModeController getModeController();
-	
+
 //    void changeNode(MindMapNode node, String newText);
     //nodeChanged has moved to the modeController. (fc, 2.5.2004)
 	void nodeChanged(TreeNode node);
+
+	void nodeRefresh(TreeNode node);
 
     Transferable cut(MindMapNode node);
 
     Transferable copy(MindMapNode node);
 
     // ^ Is copy with node really needed? It seems to me, that no.
-    Transferable copy(); 
+    Transferable copy();
     Transferable copySingle();
     /**
      * @param selectedNodes
@@ -71,8 +77,8 @@ public interface MindMap extends TreeModel {
     //    void paste(MindMapNode node, MindMapNode parent);
 
 
- 
-    
+
+
     /**
      * Returns the file name of the map edited or null if not possible.
      */
@@ -82,12 +88,18 @@ public interface MindMap extends TreeModel {
      * Return URL of the map (whether as local file or a web location)
      */
     URL getURL() throws MalformedURLException;
-    
+
     /** writes the content of the map to a writer.
-	 * @param fileout
-	 * @throws IOException
-	 */
-	void getXml(Writer fileout) throws IOException;
+     * @param fileout
+     * @throws IOException
+     */
+    void getXml(Writer fileout) throws IOException;
+
+    /** writes the content of the map to a writer.
+     * @param fileout
+     * @throws IOException
+     */
+    void getFilteredXml(Writer fileout) throws IOException;
 
     /**
      * Returns a string that may be given to the modes restore()
@@ -100,20 +112,29 @@ public interface MindMap extends TreeModel {
     Object[] getPathToRoot( TreeNode node );
 
     Color getBackgroundColor();
-    
+
     void setBackgroundColor(Color color);
 
 
     /** @return returns the link registry associated with this mode, or null, if no registry is present.*/
     MindMapLinkRegistry getLinkRegistry();
 
-   
+
     /**
-     * Destroy everything you have created upon opening.  
+     * Destroy everything you have created upon opening.
      */
     void destroy();
 
     boolean isReadOnly();
+    /**
+     * @return
+     */
+    MapRegistry getRegistry();
+    Filter getFilter();
+    /**
+     * @param inactiveFilter
+     */
+    void setFilter(Filter inactiveFilter);
 
 // (PN)
 //    void close();

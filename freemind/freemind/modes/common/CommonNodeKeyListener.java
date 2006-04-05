@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: CommonNodeKeyListener.java,v 1.1.2.1 2006-01-12 23:10:12 christianfoltin Exp $*/
+/* $Id: CommonNodeKeyListener.java,v 1.1.2.1.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 
 package freemind.modes.common;
 
@@ -38,7 +38,7 @@ public class CommonNodeKeyListener implements KeyListener {
 	public interface EditHandler {
 		void edit(KeyEvent e, boolean addNew, boolean editLong);
 	}
-	
+
     private ModeController c;
 
     private String up, down, left, right;

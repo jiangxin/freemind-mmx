@@ -19,7 +19,7 @@
  *
  * Created on 27.08.2004
  */
-/*$Id: FontSizeAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: FontSizeAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -55,7 +55,7 @@ public class FontSizeAction extends NodeGeneralAction implements NodeActorXml {
         this.actionSize = size;
         super.actionPerformed(null);
     }
-    
+
     public ActionPair apply(MapAdapter model, MindMapNode selected)  {
         return getActionPair(selected, actionSize);
     }
@@ -75,7 +75,7 @@ public class FontSizeAction extends NodeGeneralAction implements NodeActorXml {
                 getActionPair(node, fontSizeValue));
         modeController.getActionFactory().endTransaction(
                 (String) getValue(NAME));
-        
+
     }
 
 	private ActionPair getActionPair(MindMapNode node, String fontSizeValue)
@@ -90,9 +90,9 @@ public class FontSizeAction extends NodeGeneralAction implements NodeActorXml {
         fontSizeAction.setNode(getNodeID(node));
         fontSizeAction.setSize(fontSizeValue);
 		return fontSizeAction;
-        
+
     }
-    
+
     /**
      *
      */

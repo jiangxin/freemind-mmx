@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseXMLElement.java,v 1.6.18.2 2006-01-12 23:10:12 christianfoltin Exp $*/
+/* $Id: BrowseXMLElement.java,v 1.6.18.2.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 
 
 package freemind.modes.browsemode;
@@ -29,6 +29,7 @@ import freemind.main.XMLElement;
 import freemind.modes.ArrowLinkAdapter;
 import freemind.modes.CloudAdapter;
 import freemind.modes.EdgeAdapter;
+import freemind.modes.MindMap;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.XMLElementAdapter;
@@ -57,13 +58,13 @@ public class BrowseXMLElement extends XMLElementAdapter {
     		if(nodeClass == ENCRYPTED_BROWSE_NODE){
     			return new EncryptedBrowseNode(frame, mModeController);
     		}
-        return new BrowseNodeModel(frame);
+        return new BrowseNodeModel(frame, getMap());
     }
     protected EdgeAdapter createEdgeAdapter(NodeAdapter node, FreeMindMain frame){
-        return new BrowseEdgeModel(node, frame); 
+        return new BrowseEdgeModel(node, frame);
     }
     protected CloudAdapter createCloudAdapter(NodeAdapter node, FreeMindMain frame){
-        return new BrowseCloudModel(node, frame); 
+        return new BrowseCloudModel(node, frame);
     }
     protected ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter source, NodeAdapter target, FreeMindMain frame) {
         return new BrowseArrowLinkModel(source,target,frame);
@@ -73,7 +74,7 @@ public class BrowseXMLElement extends XMLElementAdapter {
 		NodeAdapter node = createNodeAdapter(frame, ENCRYPTED_BROWSE_NODE);
 		setUserObject(node);
         copyAttributesToNode(node);
-	    node.setAdditionalInfo(additionalInfo); 
+	    node.setAdditionalInfo(additionalInfo);
         return node;
 	}
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeNoteViewer.java,v 1.1.2.1 2006-01-12 23:10:12 christianfoltin Exp $*/
+/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
 import freemind.modes.MindMapNode;
@@ -35,7 +35,7 @@ public class NodeNoteViewer extends NodeNoteBase {
 	protected void receiveFocusAddons() {
 		// no edit:
 		text.setEditable(false);
-		
+
 	}
 
 	protected void looseFocusAddons() {

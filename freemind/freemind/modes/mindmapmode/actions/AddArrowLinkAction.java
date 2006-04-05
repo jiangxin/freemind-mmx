@@ -19,7 +19,7 @@
  *
  * Created on 07.10.2004
  */
-/*$Id: AddArrowLinkAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: AddArrowLinkAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -108,9 +108,9 @@ public class AddArrowLinkAction extends FreemindAction  implements ActorXml{
             }
             // register link.
             getLinkRegistry().registerLink(linkModel);
-            modeController.nodeChanged(target); 
-            modeController.nodeChanged(source); 
-            
+            modeController.nodeChanged(target);
+            modeController.nodeChanged(source);
+
         }
     }
 
@@ -124,7 +124,7 @@ public class AddArrowLinkAction extends FreemindAction  implements ActorXml{
         RemoveArrowLinkXmlAction undoAction = removeAction.createRemoveArrowLinkXmlAction(doAction.getNewId());
         return new ActionPair(doAction, undoAction);
     }
-    
+
     public AddArrowLinkXmlAction createAddArrowLinkXmlAction(MindMapNode source, MindMapNode target, String proposedID) {
         AddArrowLinkXmlAction action = new AddArrowLinkXmlAction();
         action.setNode(source.getObjectId(modeController));

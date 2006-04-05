@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21.14.4 2005-08-03 20:09:26 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.1 2006-04-05 21:26:27 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -30,6 +30,7 @@ import java.util.ListIterator;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 
@@ -43,19 +44,19 @@ public class MindMapNodeModel extends NodeAdapter {
     //  Constructors
     //
 
-	public MindMapNodeModel(FreeMindMain frame) {
-		this(null,frame);
+	public MindMapNodeModel(FreeMindMain frame, MindMap map) {
+		this(null,frame, map);
     }
 
 	    
-    public MindMapNodeModel( Object userObject, FreeMindMain frame ) {
-		super(userObject,frame);
+    public MindMapNodeModel( Object userObject, FreeMindMain frame, MindMap map) {
+		super(userObject,frame, map);
 		children = new LinkedList();
 		setEdge(new MindMapEdgeModel(this, getFrame()));
     }
 
-    protected MindMapNode basicCopy() {
-       return new MindMapNodeModel(userObject, getFrame()); }
+    protected MindMapNode basicCopy(MindMap map) {
+       return new MindMapNodeModel(userObject, getFrame(), map); }
 
     //
     // The mandatory load and save methods
@@ -224,42 +225,29 @@ public class MindMapNodeModel extends NodeAdapter {
         //   Export based on headings
 
         if (getFrame().getProperty("html_export_folding").equals("html_export_based_on_headings")) {
-           for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
-              MindMapNodeModel child = (MindMapNodeModel)e.next();            
-              lastChildNumber =
-                 child.saveHTML(fileout,parentID,lastChildNumber,/*isRoot=*/false,
-                                treatChildrenAsParagraph, depth + 1); }
+           lastChildNumber = saveChildrenHtml(fileout, parentID, lastChildNumber, depth, treatChildrenAsParagraph);
            return lastChildNumber; }
        
         //   Export not based on headings
 
         if (hasChildren()) {
            if (getFrame().getProperty("html_export_folding").equals("html_export_based_on_headings")) {
-              for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
-                 MindMapNodeModel child = (MindMapNodeModel)e.next();            
-                 lastChildNumber =
-                    child.saveHTML(fileout,parentID,lastChildNumber,/*isRoot=*/false,
-                                   treatChildrenAsParagraph, depth + 1); }}              
+              lastChildNumber = saveChildrenHtml(fileout, parentID, lastChildNumber, depth, treatChildrenAsParagraph);
+              }              
            else if (createFolding) {
               fileout.write("<ul id=\"fold"+localParentID+
                             "\" style=\"POSITION: relative; VISIBILITY: visible;\">");
               if (treatChildrenAsParagraph) {
                  fileout.write("<li>"); }
               int localLastChildNumber = 0;
-              for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
-                 MindMapNodeModel child = (MindMapNodeModel)e.next();            
-                 localLastChildNumber =
-                    child.saveHTML(fileout,localParentID,localLastChildNumber,/*isRoot=*/false, 
-                                   treatChildrenAsParagraph, depth + 1); }}
+              saveChildrenHtml(fileout, localParentID, localLastChildNumber, depth, treatChildrenAsParagraph);
+              }
            else {
               fileout.write("<ul>"); 
               if (treatChildrenAsParagraph) {
                  fileout.write("<li>"); }
-              for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
-                 MindMapNodeModel child = (MindMapNodeModel)e.next();            
-                 lastChildNumber =
-                    child.saveHTML(fileout,parentID,lastChildNumber,/*isRoot=*/false,
-                                   treatChildrenAsParagraph, depth + 1); }}
+              lastChildNumber = saveChildrenHtml(fileout, parentID, lastChildNumber, depth, treatChildrenAsParagraph);
+              }
            if (treatChildrenAsParagraph) {
               fileout.write("</li>"); }
            fileout.write(el);
@@ -270,6 +258,23 @@ public class MindMapNodeModel extends NodeAdapter {
         if (!treatAsParagraph) {
            fileout.write(el+"</li>"+el); }
 
+        return lastChildNumber;
+    }
+
+
+    private int saveChildrenHtml(Writer fileout, String parentID, int lastChildNumber, int depth, boolean treatChildrenAsParagraph) throws IOException {
+        for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
+              MindMapNodeModel child = (MindMapNodeModel)e.next(); 
+              if(child.isVisible()){
+              lastChildNumber =
+                 child.saveHTML(fileout,parentID,lastChildNumber,/*isRoot=*/false,
+                                treatChildrenAsParagraph, depth + 1); 
+              }
+              else{
+                  lastChildNumber =
+                      child.saveChildrenHtml(fileout, parentID, lastChildNumber, depth, treatChildrenAsParagraph);                   
+              }
+        }
         return lastChildNumber;
     }
     public void saveTXT(Writer fileout,int depth) throws IOException {
@@ -304,8 +309,17 @@ public class MindMapNodeModel extends NodeAdapter {
         // Another hypothesis is, that something goes astray when creating
         // StringWriter.
 
+        saveChildrenText(fileout, depth);
+    }    private void saveChildrenText(Writer fileout, int depth) throws IOException {
         for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
-           ((MindMapNodeModel)e.next()).saveTXT(fileout,depth + 1); }
+            final MindMapNodeModel child = (MindMapNodeModel)e.next();
+            if(child.isVisible()){
+                child.saveTXT(fileout,depth + 1);
+            }
+            else{
+                child.saveChildrenText(fileout, depth);
+            }
+        }
     }
     public void collectColors(HashSet colors) {
        if (color != null) {
@@ -383,8 +397,20 @@ public class MindMapNodeModel extends NodeAdapter {
         fileout.write("\\par");
         fileout.write("\n");
 
+        saveChildrenRTF(fileout, depth, colorTable);
+    }
+
+
+    private void saveChildrenRTF(Writer fileout, int depth, HashMap colorTable) throws IOException {
         for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
-           ((MindMapNodeModel)e.next()).saveRTF(fileout,depth + 1,colorTable); }
+            final MindMapNodeModel child = (MindMapNodeModel)e.next();
+            if(child.isVisible()){
+                child.saveRTF(fileout,depth + 1,colorTable);
+            }
+            else{
+                child.saveChildrenRTF(fileout, depth, colorTable);   
+            }
+        }       
     }
 
 }

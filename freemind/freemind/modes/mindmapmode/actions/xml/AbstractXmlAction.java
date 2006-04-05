@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: AbstractXmlAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: AbstractXmlAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -62,7 +62,7 @@ public abstract class AbstractXmlAction extends FreemindAction {
 	protected abstract void xmlActionPerformed(ActionEvent arg0) ;
 
 	/**
-	 * 
+	 *
 	 */
 	private ActionFactory getActionFactory() {
 		return getMindMapController().getActionFactory();
@@ -80,7 +80,7 @@ public abstract class AbstractXmlAction extends FreemindAction {
 		if (actor != null) {
 			// registration:
 			getActionFactory().registerActor(actor, actor.getDoActionClass());
-		}			
+		}
 	}
 
 	/**

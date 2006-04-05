@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/*$Id: RemoveAllIconsAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: RemoveAllIconsAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -68,7 +68,7 @@ public class RemoveAllIconsAction extends NodeGeneralAction implements NodeActor
         action.setNode(node.getObjectId(modeController));
         return action;
     }
-    
+
     public void act(XmlAction action) {
         if (action instanceof RemoveAllIconsXmlAction) {
             RemoveAllIconsXmlAction removeAction = (RemoveAllIconsXmlAction) action;

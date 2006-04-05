@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeView.java,v 1.27.14.22 2006-02-26 00:30:10 christianfoltin Exp $*/
+/* $Id: NodeView.java,v 1.27.14.22.2.1 2006-04-05 21:26:32 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -28,6 +28,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureListener;
@@ -44,6 +45,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -57,31 +59,48 @@ import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.preferences.FreemindPropertyListener;
+import freemind.view.mindmapview.attributeview.AttributeView;
 
 
 /**
- * This class represents a single Node of a MindMap
- * (in analogy to TreeCellRenderer).
+ * This class represents a single Node of a MindMap (in analogy to
+ * TreeCellRenderer).
  */
-public abstract class NodeView extends JLabel {
+public abstract class NodeView extends JComponent{
 
+	private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
+	private static final int MIN_HOR_NODE_SIZE = 10;
     protected MindMapNode model;
     protected MapView map;
     protected EdgeView edge;
+    private JLabel mainView;
+    private AttributeView attributeView;
     /** the Color of the Rectangle of a selected Node */
-	protected final static Color selectedColor = new Color(210,210,210); //Color.lightGray; //the Color of the Rectangle of a selected Node
-    protected final static Color dragColor = Color.lightGray; //the Color of appearing GradientBox on drag over
+	protected final static Color selectedColor = new Color(210,210,210); //Color.lightGray;
+                                                                         // //the
+                                                                         // Color
+                                                                         // of
+                                                                         // the
+                                                                         // Rectangle
+                                                                         // of a
+                                                                         // selected
+                                                                         // Node
+    protected final static Color dragColor = Color.lightGray; //the Color of
+                                                              // appearing
+                                                              // GradientBox on
+                                                              // drag over
 	protected int treeWidth = 0;
 	protected int treeHeight = 0;
+    int relYPos = 0;//the relative Y Position to it's parent
+
 	protected int upperChildShift = 0;
     private boolean left = true; //is the node left of root?
-    int relYPos = 0;//the relative Y Position to it's parent
     private boolean isLong = false;
-    
+
     public final static int DRAGGED_OVER_NO = 0;
     public final static int DRAGGED_OVER_SON = 1;
     public final static int DRAGGED_OVER_SIBLING = 2;
-    /** For RootNodeView.*/
+    /** For RootNodeView. */
     public final static int DRAGGED_OVER_SON_LEFT = 3;
 
     protected int isDraggedOver = DRAGGED_OVER_NO;
@@ -95,19 +114,23 @@ public abstract class NodeView extends JLabel {
 	final static int ALIGN_BOTTOM = -1;
 	final static int ALIGN_CENTER = 0;
 	final static int ALIGN_TOP = 1;
-    
+
     //
     // Constructors
     //
-    
+
     private static Color standardSelectColor;
     private static Color standardNodeColor;
+    private Object viewDeletionEvent;
     protected NodeView(MindMapNode model, MapView map) {
-	setHorizontalAlignment(CENTER);
+    setLayout(NodeViewLayoutManager.getInstance());
+    setFocusCycleRoot(true);
+    mainView = new JLabel();
+    mainView.setHorizontalAlignment(JLabel.CENTER);
+    add(mainView);
 
 	this.model = model;
 	setMap(map);
-
 	// initialize the standard node color.
 	if (standardNodeColor == null) {
         standardNodeColor =
@@ -156,36 +179,39 @@ public abstract class NodeView extends JLabel {
 	    }
 	}
 
-	addMouseListener( map.getNodeMouseMotionListener() );
-	addMouseMotionListener( map.getNodeMouseMotionListener() );
-	addKeyListener( map.getNodeKeyListener() );
+	getMainView().addMouseListener( map.getNodeMouseMotionListener() );
+	getMainView().addMouseMotionListener( map.getNodeMouseMotionListener() );
+	getMainView().addKeyListener( map.getNodeKeyListener() );
 
 	addDragListener( map.getNodeDragListener() );
 	addDropListener( map.getNodeDropListener() );
+
+	attributeView = new AttributeView(this);
     }
-    
+
     protected void addToMap(){
     	map.add(this);
     }
-    
+
     protected void removeFromMap(){
+        setFocusCycleRoot(false);
     	map.remove(this);
     }
 
     void addDragListener(DragGestureListener dgl) {
 	DragSource dragSource = DragSource.getDefaultDragSource();
-	dragSource.createDefaultDragGestureRecognizer 
-           (this, DnDConstants.ACTION_COPY | DnDConstants.ACTION_MOVE | DnDConstants.ACTION_LINK ,dgl);
+	dragSource.createDefaultDragGestureRecognizer
+           (getMainView(), DnDConstants.ACTION_COPY | DnDConstants.ACTION_MOVE | DnDConstants.ACTION_LINK ,dgl);
     }
 
     void addDropListener(DropTargetListener dtl) {
-	DropTarget dropTarget = new DropTarget(this,dtl);
+	DropTarget dropTarget = new DropTarget(getMainView(),dtl);
 	dropTarget.setActive(true);
     }
 
     /**
      * Factory method which creates the right NodeView for the model.
-     */ 
+     */
     protected static NodeView newNodeView(MindMapNode model, MapView map) {
 	NodeView newView;
 	if (model.isRoot()) {
@@ -215,24 +241,24 @@ public abstract class NodeView extends JLabel {
      }
 
     /** Determines whether or not the xCoord is in the part p of the node:
-     *  if node is on the left: part [1-p,1] 
+     *  if node is on the left: part [1-p,1]
      *  if node is on the right: part[  0,p] of the total width.
      */
     public boolean isInVerticalRegion(double xCoord, double p) {
         return isLeft() ?
            xCoord > getSize().width*(1.0-p) :
-           xCoord < getSize().width*p; 
+           xCoord < getSize().width*p;
      }
 
-    /** @return true if should be on the left, false otherwise.*/
+    /** @return true if should be on the left, false otherwise. */
     public boolean dropPosition (double xCoord) {
         /* here it is the same as me. */
-       return isLeft(); 
+       return isLeft();
     }
 
     public boolean isInFollowLinkRegion(double xCoord) {
        return getModel().getLink() != null &&
-          (getModel().isRoot() || !getModel().hasChildren() || isInVerticalRegion(xCoord, 1./2)); 
+          (getModel().isRoot() || !getModel().hasChildren() || isInVerticalRegion(xCoord, 1./2));
     }
 
     /**
@@ -256,55 +282,62 @@ public abstract class NodeView extends JLabel {
         return isLong; }
 
     /* fc, 25.1.2004: Refactoring necessary: should call the model. */
-    public boolean isSiblingOf(NodeView myNodeView) { 
+    public boolean isSiblingOf(NodeView myNodeView) {
        return getParentView() == myNodeView.getParentView(); }
 
     /* fc, 25.1.2004: Refactoring necessary: should call the model. */
-    public boolean isChildOf(NodeView myNodeView) { 
+    public boolean isChildOf(NodeView myNodeView) {
        return getParentView() == myNodeView; }
 
     /* fc, 25.1.2004: Refactoring necessary: should call the model. */
-    public boolean isParentOf(NodeView myNodeView) { 
+    public boolean isParentOf(NodeView myNodeView) {
        return (this == myNodeView.getParentView()); }
 
     public MindMapNode getModel() {
 	return model;
     }
 
-    /** Returns the coordinates occupied by the node and its children as a vector of four point per node.*/
+    /**
+     * Returns the coordinates occupied by the node and its children as a vector
+     * of four point per node.
+     */
 	public void getCoordinates(LinkedList inList) {
 		getCoordinates(inList, 0, false);
 	}
 	private void getCoordinates(LinkedList inList, int additionalDistanceForConvexHull, boolean byChildren) {
+	    if (! isVisible()) return;
+
 		MindMapCloud cloud = getModel().getCloud();
 
 		// consider existing clouds of children
 		if (byChildren && cloud != null){
-			additionalDistanceForConvexHull  += CloudView.getAdditionalHeigth(cloud, this) / 2; 
+			additionalDistanceForConvexHull  += CloudView.getAdditionalHeigth(cloud, this) / 2;
 		}
-        inList.addLast(new Point( -additionalDistanceForConvexHull + getExtendedX()             ,  -additionalDistanceForConvexHull + getExtendedY()              ));
-        inList.addLast(new Point( -additionalDistanceForConvexHull + getExtendedX()             ,   additionalDistanceForConvexHull + getExtendedY() + getExtendedHeight()));
-        inList.addLast(new Point(  additionalDistanceForConvexHull + getExtendedX() + getExtendedWidth(),   additionalDistanceForConvexHull + getExtendedY() + getExtendedHeight()));
-        inList.addLast(new Point(  additionalDistanceForConvexHull + getExtendedX() + getExtendedWidth(),  -additionalDistanceForConvexHull + getExtendedY()              ));
-		
-        LinkedList childrenViews = getChildrenViews();
+        final int x = getXWithFoldingMark();
+        final int y = getYWithFoldingMark();
+        final int width = getWidthWithFoldingMark();
+        final int height = getHeightWithFoldingMark();
+        inList.addLast(new Point( -additionalDistanceForConvexHull + x             ,  -additionalDistanceForConvexHull + y              ));
+        inList.addLast(new Point( -additionalDistanceForConvexHull + x             ,   additionalDistanceForConvexHull + y + height));
+        inList.addLast(new Point(  additionalDistanceForConvexHull + x + width,   additionalDistanceForConvexHull + y + height));
+        inList.addLast(new Point(  additionalDistanceForConvexHull + x + width,  -additionalDistanceForConvexHull + y              ));
+
+        LinkedList childrenViews = getChildrenViews(true);
         ListIterator children_it = childrenViews.listIterator();
         while(children_it.hasNext()) {
             NodeView child = (NodeView)children_it.next();
 	        child.getCoordinates(inList, additionalDistanceForConvexHull, true);
         }
-    }   
-	private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
-	private static final int MIN_HOR_NODE_SIZE = 10;
-    public Dimension getPreferredSize() {
+    }
+    protected Dimension getMainViewPreferredSize() {
         boolean isEmpty = getText().length() == 0;
         if(isEmpty){
             setText("!");
         }
-    	Dimension prefSize = super.getPreferredSize();
+    	Dimension prefSize = mainView.getPreferredSize();
         if(map.isCurrentlyPrinting() && NEED_PREF_SIZE_BUG_FIX) {
         	prefSize.width += (int)(10f*map.getZoom());
-        } 
+        }
         prefSize.width = Math.max(map.getZoomed(MIN_HOR_NODE_SIZE), prefSize.width);
         if (isEmpty){
             setText("");
@@ -313,55 +346,52 @@ public abstract class NodeView extends JLabel {
 		prefSize.height += 4;
         return prefSize;
     }
-    
-    /** get width including folding symbol*/	
-	public int getExtendedWidth()
+
+    /**
+     * @param string
+     */
+    public void setText(String string) {
+        mainView.setText(string);
+    }
+    /**
+     * @return
+     */
+    public String getText() {
+        return mainView.getText();
+    }
+
+    protected int getMainViewWidthWithFoldingMark()
 	{
-		return getExtendedWidth(getWidth());
-	}
-  
-	/** get height including folding symbol*/	
-	public int getExtendedHeight()
-	{
-		return getExtendedHeight(getHeight());
-	}
-  
-	protected int getExtendedWidth(int w)
-	{
-		return w;
-	}
-  
-	/** get height including folding symbol*/	
-	protected int getExtendedHeight(int h)
-	{
-		return h;
-	}
-  
-	/** get x coordinate including folding symbol*/	
-	public int getExtendedX()
-	{
-		return getX();
-	}
-  
-	/** get y coordinate including folding symbol*/	
-	public int getExtendedY()
-	{
-		return getY();
+		return mainView.getWidth();
 	}
 
-  
-	public void setBounds(int x,	int y){
-		setLocation(x, y);
-		setSize(getPreferredSize());
+	/** get height including folding symbol */
+	protected int getMainViewHeightWithFoldingMark()
+	{
+	    return mainView.getHeight();
 	}
+
+	/** get x coordinate including folding symbol */
+	public int getDeltaX()
+	{
+		return 0;
+	}
+
+	/** get y coordinate including folding symbol */
+	public int getDeltaY()
+	{
+		return 0;
+	}
+
 
    public void requestFocus(){
+      mainView. requestFocus();
       map.getModel().getModeController().anotherNodeSelected(getModel());
-      super. requestFocus();
+      mainView. requestFocus();
    }
 
-   /** draw folding symbol*/	
-	public void paintFoldingMark(Graphics2D g){ 
+   /** draw folding symbol */
+	public void paintFoldingMark(Graphics2D g){
 	}
 
     public void paint(Graphics graphics) {
@@ -371,44 +401,79 @@ public abstract class NodeView extends JLabel {
           // background color ends here, fc. 9.11.2003: todo
 	super.paint(graphics);
     }
-    public void paintSelected(Graphics2D graphics, Dimension size) {
+    public void paintSelected(Graphics2D graphics) {
 		if (this.isSelected()) {
-			paintBackground(graphics, size, getSelectedColor());
-			//g.drawRect(0,0,size.width-1, size.height-2);
+			paintBackground(graphics, getSelectedColor());
 		} else if (getModel().getBackgroundColor() != null) {
-			paintBackground(graphics, size, getModel().getBackgroundColor());
+			paintBackground(graphics, getModel().getBackgroundColor());
 		}
 //		if (this.isSelected()) {
 //			paintBackground(graphics, size, getSelectedColor());
 //			//g.drawRect(0,0,size.width-1, size.height-2);
 //		} /*else*/
-//		if  (true){
+//		if (true){
 //			Dimension newSize = size;
 //			newSize.height -= 5;
 //			newSize.width -= 5;
-//			paintBackground(graphics, newSize, (getModel().getBackgroundColor() != null)?getModel().getBackgroundColor():Color.WHITE);
+//			paintBackground(graphics, newSize, (getModel().getBackgroundColor() !=
+// null)?getModel().getBackgroundColor():Color.WHITE);
 //		}
     }
 
-	protected void paintBackground(Graphics2D graphics, Dimension size, Color color) {
+	protected void paintBackground(Graphics2D graphics, Color color) {
 		graphics.setColor(color);
-		graphics.fillRect(0,0,size.width, size.height);		
+		graphics.fillRect(getMainView().getX(), getMainView().getY(), getMainView().getWidth(), getMainView().getHeight());
 	}
 
 
-   public void paintDragOver(Graphics2D graphics, Dimension size) {
+   public void paintDragOver(Graphics2D graphics) {
         if (isDraggedOver == DRAGGED_OVER_SON) {
            if (isLeft()) {
-              graphics.setPaint( new GradientPaint(size.width*3/4,0,map.getBackground(), size.width/4, 0, dragColor));
-              graphics.fillRect(0, 0, size.width*3/4, size.height-1); }
+              graphics.setPaint(
+                      new GradientPaint(
+                              getMainView().getX() + getMainView().getWidth()*3/4,
+                              getMainView().getY(),
+                              map.getBackground(),
+                              getMainView().getX() + getMainView().getWidth()/4,
+                              getMainView().getY(),
+                              dragColor));
+              graphics.fillRect(
+                      getMainView().getX(),
+                      getMainView().getY(),
+                      getMainView().getWidth()*3/4,
+                      getMainView().getHeight()-1); }
            else {
-              graphics.setPaint( new GradientPaint(size.width/4,0,map.getBackground(), size.width*3/4, 0, dragColor));
-              graphics.fillRect(size.width/4, 0, size.width-1, size.height-1); }       
+              graphics.setPaint(
+                      new GradientPaint(
+                              getMainView().getX() + getMainView().getWidth()/4,
+                              getMainView().getY() ,
+                              map.getBackground(),
+                              getMainView().getX() + getMainView().getWidth()*3/4,
+                              getMainView().getY(),
+                              dragColor)
+                              );
+              graphics.fillRect(
+                      getMainView().getX() + getMainView().getWidth()/4,
+                      getMainView().getY(), getMainView().getWidth()-1,
+                      getMainView().getHeight()-1);
+              }
 	}
 
         if (isDraggedOver == DRAGGED_OVER_SIBLING) {
-            graphics.setPaint( new GradientPaint(0,size.height*3/5,map.getBackground(), 0, size.height/5, dragColor));
-            graphics.fillRect(0, 0, size.width-1, size.height-1);
+            graphics.setPaint(
+                    new GradientPaint(
+                            getMainView().getX(),
+                            getMainView().getY()+getMainView().getHeight()*3/5,
+                            map.getBackground(),
+                            getMainView().getX(),
+                            getMainView().getY() + getMainView().getHeight()/5,
+                            dragColor)
+                            );
+            graphics.fillRect(
+                    getMainView().getX(),
+                    getMainView().getY(),
+                    getMainView().getWidth()-1,
+                    getMainView().getHeight()-1);
 	}
     }
 
@@ -417,23 +482,23 @@ public abstract class NodeView extends JLabel {
     //
 
     /**
-    * Calculates the tree height increment because of the clouds.
-    */
+     * Calculates the tree height increment because of the clouds.
+     */
 	public int getAdditionalCloudHeigth() {
 		MindMapCloud cloud = getModel().getCloud();
-		if( cloud!= null) { 
+		if( cloud!= null) {
 			return CloudView.getAdditionalHeigth(cloud, this);
-		} else {           
+		} else {
 			return 0;
 		}
 	}
 
- 
-    protected boolean isSelected() {
+
+    public boolean isSelected() {
 	return (getMap().isSelected(this));
     }
 
-    /**Is the node left of root?*/
+    /** Is the node left of root? */
     public boolean isLeft() {
         if(getModel().isLeft() == null)
             return true;
@@ -444,16 +509,16 @@ public abstract class NodeView extends JLabel {
         //this.left = left;
         getModel().setLeft(left);
     }
-	
+
 //     public boolean isLeftDefault() {
 //         return getModel().isLeft() == null;
 //     }
-    
+
     protected void setModel( MindMapNode model ) {
 	this.model = model;
     }
 
-    MapView getMap() {
+    public MapView getMap() {
 	return map;
     }
 
@@ -469,52 +534,61 @@ public abstract class NodeView extends JLabel {
 	this.edge = edge;
     }
 
-    protected NodeView getParentView() {
-	return getModel().getParentNode().getViewer();
+    boolean isParentHidden(){
+        NodeView parentView = getModel().getParentNode().getViewer();
+        return parentView != null && ! parentView.isVisible();
+    }
+
+    public NodeView getParentView() {
+        NodeView parentView = getModel().getParentNode().getViewer();
+        if (parentView == null || parentView.isVisible()) return parentView;
+        return parentView.getParentView();
     }
 
     /**
      * This method returns the NodeViews that are children of this node.
      */
-    public LinkedList getChildrenViews() {
-	LinkedList childrenViews = new LinkedList();
-	ListIterator it = getModel().childrenUnfolded();
-	if (it != null) {
-           while(it.hasNext()) {
-              NodeView view = ((MindMapNode)it.next()).getViewer();
-              if (view != null) { // Visible view
-                 childrenViews.add(view); // child.getViewer() );
-              }
-           }
+    public LinkedList getChildrenViews(boolean onlyVisible) {
+        LinkedList childrenViews = new LinkedList();
+        ListIterator it = getModel().childrenUnfolded();
+        if (it != null) {
+            while(it.hasNext()) {
+                MindMapNode node = (MindMapNode)it.next();
+                NodeView view = node.getViewer();
+                if (view != null) {
+                    if (! onlyVisible || node.isVisible()) { // Visible view
+                        childrenViews.add(view); // child.getViewer() );
+                    }
+                    else{
+                        childrenViews.addAll(view.getChildrenViews(true));
+                    }
+            }
         }
-        return childrenViews;
     }
-    
+    return childrenViews;
+}
+
     protected LinkedList getSiblingViews() {
-	return getParentView().getChildrenViews();
+	return getParentView().getChildrenViews(true);
     }
 
     /**
-     * Returns the Point where the OutEdge
-     * should leave the Node.
-     * THIS SHOULD BE DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
+     * Returns the Point where the OutEdge should leave the Node. THIS SHOULD BE
+     * DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
      */
     Point getOutPoint() {
-	Dimension size = getSize();
-	if( isRoot() ) {
-	    return new Point(getLocation().x + size.width, getLocation().y + size.height / 2);
-	} else if( isLeft() ) {
-	    return new Point(getLocation().x, getLocation().y + size.height - 2);
-	} else {
-	    return new Point(getLocation().x + size.width, getLocation().y + size.height - 2);
-	} 
+        if( isLeft() ) {
+            return new Point(getX(), getY() + getMainView().getHeight() - 2);
+        } else {
+            return new Point(getX() + getMainView().getWidth(), getY() + getMainView().getHeight() - 2);
+        }
     }
 
-    
+
     /* fc, 26.06.2005 */
-    /** Returns the point the edge should start given the point of the child node 
+    /** Returns the point the edge should start given the point of the child node
      * that should be connected.
-     * @param destinationPoint the outpoint should point in the direction of destinationPoint 
+     * @param destinationPoint the outpoint should point in the direction of destinationPoint
      * @param isLeft TODO
      * @return
      */
@@ -522,28 +596,23 @@ public abstract class NodeView extends JLabel {
         return getOutPoint();
     }
     /* end fc, 26.06.2005 */
-    
+
     /**
-     * Returns the Point where the InEdge
-     * should arrive the Node.
-     * THIS SHOULD BE DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
+     * Returns the Point where the InEdge should arrive the Node. THIS SHOULD BE
+     * DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
      */
     Point getInPoint() {
-	Dimension size = getSize();
-	if( isRoot() ) {
-	    return new Point(getLocation().x, getLocation().y + size.height / 2);
-	} else if( isLeft() ) {
-	    return new Point(getLocation().x + size.width, getLocation().y + size.height - 2);
-	} else {
-	    return new Point(getLocation().x, getLocation().y + size.height - 2);
-	} 
+        if( isLeft() ) {
+            return new Point(getX() + getMainView().getWidth(), getY() + getMainView().getHeight() - 2);
+        } else {
+            return new Point(getX(), getY() + getMainView().getHeight() - 2);
+        }
     }
 
 
     /**
-     * Returns the Point where the Links 
-     * should arrive the Node.
-     * THIS SHOULD BE DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
+     * Returns the Point where the Links should arrive the Node. THIS SHOULD BE
+     * DECLARED ABSTRACT AND BE DONE IN BUBBLENODEVIEW ETC.
      */
     public Point getLinkPoint(Point declination) {
 		Dimension size = getSize();
@@ -571,25 +640,25 @@ public abstract class NodeView extends JLabel {
 				absLinkX = size.width / 2;
 				absLinkY = Math.abs(y*size.width / (2 * x));
 			}
-			return new Point(getLocation().x + size.width / 2 + (x>0 ? absLinkX : -absLinkX), 
-							getLocation().y + size.height / 2 + (y>0 ? absLinkY : -absLinkY));	
+			return new Point(getX() + size.width / 2 + (x>0 ? absLinkX : -absLinkX),
+							getY() + size.height / 2 + (y>0 ? absLinkY : -absLinkY));
 		}
 		else{
-			return new Point(getLocation().x + (x>0 ? size.width:0), 
-			                 getLocation().y + (size.height / 2));	
+			return new Point(getX() + (x>0 ? size.width:0),
+			                 getY() + (size.height / 2));
 		}
     }
 
     /**
-     * Returns the relative position of the Edge.
-	 * This is used by bold edge to know how to shift the line.
+     * Returns the relative position of the Edge. This is used by bold edge to
+     * know how to shift the line.
      */
     int getAlignment() {
 	if( isRoot() )
 	    return ALIGN_CENTER;
 	return ALIGN_BOTTOM;
     }
-	
+
     //
     // Navigation
     //
@@ -605,14 +674,14 @@ public abstract class NodeView extends JLabel {
 //        return sibling; // sibling on another page (has different parent)
 //      }
       NodeView nextSibling = sibling.getNextSibling();
-      while (nextSibling != sibling 
+      while (nextSibling != sibling
               && sibling.getParentView() == nextSibling.getParentView()) {
         sibling = nextSibling;
         nextSibling = nextSibling.getNextSibling();
       }
       return sibling; // last on the page
     }
-      
+
     protected NodeView getPreviousPage() {
       if (isRoot()) {
         return this; // I'm root
@@ -625,39 +694,39 @@ public abstract class NodeView extends JLabel {
 //        return sibling; // sibling on another page (has different parent)
 //      }
       NodeView previousSibling = sibling.getPreviousSibling();
-      while (previousSibling != sibling 
+      while (previousSibling != sibling
               && sibling.getParentView() == previousSibling.getParentView()) {
         sibling = previousSibling;
         previousSibling = previousSibling.getPreviousSibling();
       }
       return sibling; // last on the page
     }
-    
+
     protected NodeView getNextSibling() {
       NodeView sibling;
       NodeView nextSibling = this;
-      
+
       // get next sibling even in higher levels
-      for (sibling = this; !sibling.isRoot(); sibling = sibling.getParentView()) { 
+      for (sibling = this; !sibling.isRoot(); sibling = sibling.getParentView()) {
         nextSibling = sibling.getNextSiblingSingle();
         if (sibling != nextSibling) {
           break; // found sibling
         }
       }
-      
+
       if (sibling.isRoot()) {
         return this;  // didn't find (we are at the end)
       }
-      
+
       // we have the nextSibling, search in childs
       // untill: leaf, closed node, max level
       sibling = nextSibling;
       while (sibling.getModel().getNodeLevel() < getMap().getSiblingMaxLevel()) {
         // can we drill down?
-        if (sibling.getChildrenViews().size() <= 0) {
+        if (sibling.getChildrenViews(true).size() <= 0) {
           break; // no
         }
-        sibling = (NodeView)(sibling.getChildrenViews().getFirst());
+        sibling = (NodeView)(sibling.getChildrenViews(true).getFirst());
       }
       return sibling;
     }
@@ -665,28 +734,28 @@ public abstract class NodeView extends JLabel {
     protected NodeView getPreviousSibling() {
       NodeView sibling;
       NodeView previousSibling = this;
-      
+
       // get Previous sibling even in higher levels
-      for (sibling = this; !sibling.isRoot(); sibling = sibling.getParentView()) { 
+      for (sibling = this; !sibling.isRoot(); sibling = sibling.getParentView()) {
         previousSibling = sibling.getPreviousSiblingSingle();
         if (sibling != previousSibling) {
           break; // found sibling
         }
       }
-      
+
       if (sibling.isRoot()) {
         return this;  // didn't find (we are at the end)
       }
-      
+
       // we have the PreviousSibling, search in childs
       // untill: leaf, closed node, max level
       sibling = previousSibling;
       while (sibling.getModel().getNodeLevel() < getMap().getSiblingMaxLevel()) {
         // can we drill down?
-        if (sibling.getChildrenViews().size() <= 0) {
+        if (sibling.getChildrenViews(true).size() <= 0) {
           break; // no
         }
-        sibling = (NodeView)(sibling.getChildrenViews().getLast());
+        sibling = (NodeView)(sibling.getChildrenViews(true).getLast());
       }
       return sibling;
     }
@@ -695,13 +764,13 @@ public abstract class NodeView extends JLabel {
 	LinkedList v = null;
 	if (getParentView().isRoot()) {
 	    if (this.isLeft()) {
-		v = ((RootNodeView)getParentView()).getLeft();
+		v = ((RootNodeView)getParentView()).getLeft(true);
 	    } else {
-		v = ((RootNodeView)getParentView()).getRight();
+		v = ((RootNodeView)getParentView()).getRight(true);
 	    }
 	} else {
-	    v = getParentView().getChildrenViews();
-	}	
+	    v = getParentView().getChildrenViews(true);
+	}
 	NodeView sibling;
 	if (v.size()-1 == v.indexOf(this)) { //this is last, return first
 //	    sibling = (NodeView)v.getFirst(); // loop
@@ -716,12 +785,12 @@ public abstract class NodeView extends JLabel {
 	LinkedList v = null;
 	if (getParentView().isRoot()) {
 	    if (this.isLeft()) {
-		v = ((RootNodeView)getParentView()).getLeft();
+		v = ((RootNodeView)getParentView()).getLeft(true);
 	    } else {
-		v = ((RootNodeView)getParentView()).getRight();
+		v = ((RootNodeView)getParentView()).getRight(true);
 	    }
 	} else {
-	    v = getParentView().getChildrenViews();
+	    v = getParentView().getChildrenViews(true);
 	}
 	NodeView sibling;
 	if (v.indexOf(this) <= 0) {//this is first, return last
@@ -739,15 +808,15 @@ public abstract class NodeView extends JLabel {
 
     void insert() {
        ListIterator it = getModel().childrenFolded();
-       while(it.hasNext()) {               
+       while(it.hasNext()) {
           insert((MindMapNode)it.next());
        }
     }
 
     /**
-     * Create views for the newNode and all his descendants, set their
-     * isLeft attribute according to this view. Observe that views know
-     * about their parents only through their models.
+     * Create views for the newNode and all his descendants, set their isLeft
+     * attribute according to this view. Observe that views know about their
+     * parents only through their models.
      */
 
     void insert(MindMapNode newNode) {
@@ -760,10 +829,10 @@ public abstract class NodeView extends JLabel {
           newView.insert(child);
        }
     }
-    
+
     /**
-     * This is a bit problematic, because getChildrenViews() only works if 
-     * model is not yet removed. (So do not _really_ delete the model before the view 
+     * This is a bit problematic, because getChildrenViews() only works if model
+     * is not yet removed. (So do not _really_ delete the model before the view
      * removed (it needs to stay in memory)
      */
     void remove() {
@@ -771,33 +840,33 @@ public abstract class NodeView extends JLabel {
 	if (getEdge()!=null) {
            getEdge().remove(); }
         getModel().setViewer(null); // Let the model know he is invisible
-	for(ListIterator e = getChildrenViews().listIterator();e.hasNext();) {
+	for(ListIterator e = getChildrenViews(false).listIterator();e.hasNext();) {
            ((NodeView)e.next()).remove(); }}
 
-     void update() {
-        //System.err.println("update");
-        // 1) Set color
-        Color color = getModel().getColor();
-        if (color==null) {
-        	color = standardNodeColor;
-        }
-        setForeground(color);
+          void update() {
+            //System.err.println("update");
+            // 1) Set color
+            Color color = getModel().getColor();
+            if (color==null) {
+            	color = standardNodeColor;
+            }
+            setForeground(color);
 
-        // 2) icons left or right? 
-        setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
-        // 3) Create the icons:
-        MultipleImage iconImages = new MultipleImage(map.getZoom());
-        boolean iconPresent = false;
-        /* fc, 06.10.2003: images?*/
-        
+            // 2) icons left or right?
+            getMainView().setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
+            // 3) Create the icons:
+            MultipleImage iconImages = new MultipleImage(map.getZoom());
+            boolean iconPresent = false;
+            /* fc, 06.10.2003: images? */
+
         FreeMindMain frame = map.getController().getFrame();
         Map stateIcons = (getModel()).getStateIcons();
         for (Iterator i = stateIcons.keySet().iterator(); i.hasNext();) {
             String key = (String) i.next();
             iconPresent = true;
             ImageIcon myIcon = (ImageIcon) stateIcons.get(key);
-            iconImages.addImage(myIcon);  
-            
+            iconImages.addImage(myIcon);
+
         }
 
         List icons = (getModel()).getIcons();
@@ -805,7 +874,7 @@ public abstract class NodeView extends JLabel {
 			MindIcon myIcon = (MindIcon) i.next();
             iconPresent = true;
             //System.out.println("print the icon " + myicon.toString());
-            iconImages.addImage(myIcon.getIcon(frame));  
+            iconImages.addImage(myIcon.getIcon());
         }
         String link = ((NodeAdapter)getModel()).getLink();
         if (link != null) {
@@ -825,10 +894,10 @@ public abstract class NodeView extends JLabel {
 // if (((NodeAdapter)getModel()).isFolded()) {
 //             iconPresent = true;
 //             ImageIcon icon = new ImageIcon(((NodeAdapter)getModel()).getFrame().getResource("images/Folded.png"));
-//             iconImages.addImage(icon); 
+//             iconImages.addImage(icon);
 //         }
         // DanielPolansky: set icon only if icon is present, because
-        // we don't want to insert any additional white space.        
+        // we don't want to insert any additional white space.
         setIcon(iconPresent?iconImages:null);
 
         // 4) Determine font
@@ -848,13 +917,13 @@ public abstract class NodeView extends JLabel {
 
 //        String nodeText = getModel().toString();
         String nodeText = getModel().toString();
- 
+
         // Tell if node is long and its width has to be restricted
         // boolean isMultiline = nodeText.indexOf("\n") >= 0;
         String[] lines = nodeText.split("\n");
         boolean widthMustBeRestricted = false;
 
-        lines = nodeText.split("\n");           
+        lines = nodeText.split("\n");
         for (int line = 0; line < lines.length; line++)
         {
             // Compute the width the node would spontaneously take,
@@ -864,50 +933,58 @@ public abstract class NodeView extends JLabel {
                     .getZoomed(map.getMaxNodeWidth());
             if (widthMustBeRestricted)
             {
-                break;
+                    break;
+                }
             }
+
+            isLong = widthMustBeRestricted || lines.length > 1;
+
+            if (nodeText.startsWith("<html>")) {
+           // Make it possible to use relative img references in HTML using tag <base>.
+               if (nodeText.indexOf("<img")>=0 && nodeText.indexOf("<base ") < 0 ) {
+                  try {
+                     nodeText = "<html><base href=\""+
+                        map.getModel().getURL()+"\">"+nodeText.substring(6); }
+                  catch (MalformedURLException e) {} }
+               setText(nodeText); }
+            else if (nodeText.startsWith("<table>")) {
+               lines[0] = lines[0].substring(7); // remove <table> tag
+               int startingLine = lines[0].matches("\\s*") ? 1 : 0;
+               // ^ If the remaining first line is empty, do not draw it
+
+               String text = "<html><table border=1 style=\"border-color: white\">";
+               //String[] lines = nodeText.split("\n");
+               for (int line = startingLine; line < lines.length; line++) {
+                  text += "<tr><td style=\"border-color: white;\">"+
+                     Tools.toXMLEscapedText(lines[line]).replaceAll("\t","<td style=\"border-color: white\">"); }
+               setText(text); }
+            else if (isLong) {
+               String text = "<tr><td>";
+               int maximumLineLength = 0;
+               for (int line = 0; line < lines.length; line++) {
+                  text += Tools.toXMLEscapedTextWithNBSPizedSpaces(lines[line]) + "<p>";
+                  if (lines[line].length() > maximumLineLength) {
+                     maximumLineLength = lines[line].length(); }}
+
+    			text += "</td></tr>";
+               setText("<html><table"+
+                       (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
+                       text+"</table></html>"); }
+            // 6) AttributeView
+            attributeView.update();
+       		// 7) ToolTips:
+            updateToolTip();
+            // 8) AttributeView
+            syncronizeAttributeView();
+            // 9) Complete
+            revalidate(); // Because of zoom?
         }
 
-        isLong = widthMustBeRestricted || lines.length > 1;
-   
-        if (nodeText.startsWith("<html>")) {
-           // Make it possible to use relative img references in HTML using tag <base>.
-           if (nodeText.indexOf("<img")>=0 && nodeText.indexOf("<base ") < 0 ) {
-              try {
-                 nodeText = "<html><base href=\""+
-                    map.getModel().getURL()+"\">"+nodeText.substring(6); }
-              catch (MalformedURLException e) {} }
-           setText(nodeText); }
-        else if (nodeText.startsWith("<table>")) {           	             	  
-           lines[0] = lines[0].substring(7); // remove <table> tag
-           int startingLine = lines[0].matches("\\s*") ? 1 : 0;
-           // ^ If the remaining first line is empty, do not draw it
-           
-           String text = "<html><table border=1 style=\"border-color: white\">";
-           //String[] lines = nodeText.split("\n");
-           for (int line = startingLine; line < lines.length; line++) {
-              text += "<tr><td style=\"border-color: white;\">"+
-                 Tools.toXMLEscapedText(lines[line]).replaceAll("\t","<td style=\"border-color: white\">"); }
-           setText(text); }
-        else if (isLong) {
-           String text = "<tr><td>";              
-           int maximumLineLength = 0;
-           for (int line = 0; line < lines.length; line++) {
-              text += Tools.toXMLEscapedTextWithNBSPizedSpaces(lines[line]) + "<p>";
-              if (lines[line].length() > maximumLineLength) {
-                 maximumLineLength = lines[line].length(); }}
-           
-			text += "</td></tr>";
-           setText("<html><table"+
-                   (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
-                   text+"</table></html>"); }
-   		// 6) ToolTips:
-        updateToolTip();
-        // 7) Complete
-        repaint(); // Because of zoom?
-    }
     /**
-     * Updates the tool tip of the node.
+     *
+     */
+     /**
+      * Updates the tool tip of the node.
      */
     public void updateToolTip() {
         Map tooltips = getModel().getToolTip();
@@ -931,40 +1008,50 @@ public abstract class NodeView extends JLabel {
             text.append("</table></html>");
             setToolTipText(text.toString());
         }
+   		// 6) icons left or right?
+   		//URGENT: Discuss with Dan.
+        mainView.setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
+        // 7) Complete
+        repaint(); // Because of zoom?
     }
 
+    /**
+     * @param image
+     */
+    public void setIcon(MultipleImage image) {
+        mainView.setIcon(image);
+    }
     void updateAll() {
-	update();
-	for(ListIterator e = getChildrenViews().listIterator();e.hasNext();) {
-	    NodeView child = (NodeView)e.next();
-	    child.updateAll();
-	}
+    update();
+    for(ListIterator e = getChildrenViews(true).listIterator();e.hasNext();) {
+        NodeView child = (NodeView)e.next();
+        child.updateAll();
+    }
     }
 
    protected void setRendering(Graphics2D g) {
       if (map.getController().getAntialiasAll()) {
          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
 //       else
-//          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); 
+//          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+// RenderingHints.VALUE_ANTIALIAS_OFF);
 
    }
 
    abstract String getStyle() ;
-   
+
     /**
-     * @return the shift of the tree root node
-     * relative to the middle of the tree
-     * because of the light shift of the children nodes
+     * @return the shift of the tree root node relative to the middle of the
+     *         tree because of the light shift of the children nodes
      */
     public int getTreeHeight() {
         return treeHeight;
     }
 
 	/**
-	 * sets the shift of the tree root node
-	 * relative to the middle of the tree
-	 * because of the light shift of the children nodes.
-	 */
+     * sets the shift of the tree root node relative to the middle of the tree
+     * because of the light shift of the children nodes.
+     */
     public void setTreeHeight(int i) {
         treeHeight = i;
     }
@@ -980,40 +1067,42 @@ public abstract class NodeView extends JLabel {
     public int getZoomedFoldingSymbolHalfWidth() {
         int preferredFoldingSymbolHalfWidth = map.getZoomedFoldingSymbolHalfWidth();
         return Math.min(preferredFoldingSymbolHalfWidth, getPreferredSize().height / 2);
-    } 
+    }
     /**
      * @return returns the color that should used to select the node.
      */
     protected Color getSelectedColor() {
 //		Color backgroundColor = getModel().getBackgroundColor();
-////        if(backgroundColor != null) {
-////			Color backBrighter = backgroundColor.brighter();
-////			// white?
-////			if(backBrighter.getRGB() == Color.WHITE.getRGB()) {
-////				return standardSelectColor;
-////			}
-////			// == standard??
-////            if (backBrighter.equals (standardSelectColor) ) {
-////                return backgroundColor.darker();
-////            }
-////            return backBrighter;
-////		}
+//// if(backgroundColor != null) {
+//// Color backBrighter = backgroundColor.brighter();
+//// // white?
+//// if(backBrighter.getRGB() == Color.WHITE.getRGB()) {
+//// return standardSelectColor;
+//// }
+//// // == standard??
+//// if (backBrighter.equals (standardSelectColor) ) {
+//// return backgroundColor.darker();
+//// }
+//// return backBrighter;
+//// }
 //		// == standard??
-//		  if (backgroundColor != null /*&& backgroundColor.equals(standardSelectColor)*/ ) {
+//		  if (backgroundColor != null /*&&
+// backgroundColor.equals(standardSelectColor)*/ ) {
 //		  	// bad hack:
 //		  	return getAntiColor1(backgroundColor);
-////			  return new Color(0xFFFFFF - backgroundColor.getRGB());
+//// return new Color(0xFFFFFF - backgroundColor.getRGB());
 //		  }
         return standardSelectColor;
     }
 
 /* http://groups.google.de/groups?hl=de&lr=&ie=UTF-8&threadm=9i5bbo%24h1kmi%243%40ID-77081.news.dfncis.de&rnum=1&prev=/groups%3Fq%3Djava%2520komplement%25C3%25A4rfarbe%2520helligkeit%26hl%3Dde%26lr%3D%26ie%3DUTF-8%26sa%3DN%26as_qdr%3Dall%26tab%3Dwg */
 	/**
-	 * Ermittelt zu einer Farbe eine andere Farbe, die sich möglichst gut von
-	 * dieser abhebt.
-	 * Diese Farbe unterscheidet sich auch von {@link #getAntiColor2}.
-	 * @since PPS 1.1.1
-	 */
+     * Ermittelt zu einer Farbe eine andere Farbe, die sich möglichst gut von
+     * dieser abhebt. Diese Farbe unterscheidet sich auch von
+     * {@link #getAntiColor2}.
+     *
+     * @since PPS 1.1.1
+     */
    protected static Color getAntiColor1(Color c)
    {
 	float[] hsb = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
@@ -1026,11 +1115,11 @@ public abstract class NodeView extends JLabel {
    }
 
    /**
-	* Ermittelt zu einer Farbe eine andere Farbe, die sich möglichst gut von
-	* dieser abhebt.
-	* Diese Farbe unterscheidet sich von {@link #getAntiColor1}.
-	* @since PPS 1.1.1
-	*/
+    * Ermittelt zu einer Farbe eine andere Farbe, die sich möglichst gut von
+    * dieser abhebt. Diese Farbe unterscheidet sich von {@link #getAntiColor1}.
+    *
+    * @since PPS 1.1.1
+    */
   protected static Color getAntiColor2(Color c)
   {
    float[] hsb = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
@@ -1043,20 +1132,19 @@ public abstract class NodeView extends JLabel {
   }
 
 	/**
-	 * @return Returns the sHIFT.
-	 */
+     * @return Returns the sHIFT.
+     */
 
   public int getShift() {
 	return map.getZoomed(model.calcShiftY());
 }
-  
+
 
     /**
-	 * @return Returns the VGAP.
-	 */
-	public int getVGap() {		
+     * @return Returns the VGAP.
+     */
+	public int getVGap() {
         return  map.getZoomed(model.calcVGap());
-        // TODO 
 	}
 
 	public int getHGap() {
@@ -1073,4 +1161,75 @@ public abstract class NodeView extends JLabel {
 	public NodeMotionListenerView getMotionListenerView() {
 		return null;
 	}
+    JLabel getMainView() {
+        return mainView;
+    }
+    void syncronizeAttributeView() {
+        attributeView.syncronizeAttributeView();
+    }
+    public void setFont(Font f) {
+        mainView.setFont(f);
+    }
+    public void setForeground(Color c) {
+        mainView.setForeground(c);
+    }
+    public Font getFont() {
+        return mainView.getFont();
+    }
+    public Color getForeground() {
+        return mainView.getForeground();
+    }
+    /**
+     * @return
+     */
+    public AttributeView getAttributeView() {
+        return attributeView;
+    }
+
+	public void setBounds(int x,	int y){
+		setLocation(x , y );
+		Dimension prefSize = getPreferredSize();
+		setSize(prefSize);
+	}
+    public int getXWithFoldingMark() {
+        return getX()- getDeltaX();
+    }
+    public int getYWithFoldingMark() {
+        return getY()- getDeltaY();
+    }
+    public Rectangle getBoundsWithFoldingMark() {
+        Rectangle bounds = getBounds();
+        bounds.x -=  getDeltaX();
+        bounds.y -=  getDeltaY();
+        bounds.width = getWidthWithFoldingMark();
+        bounds.height = getHeightWithFoldingMark();
+        return bounds;
+    }
+    private int getHeightWithFoldingMark() {
+        int heightWithFoldingMark = getMainViewHeightWithFoldingMark();
+        return Math.max(heightWithFoldingMark, getHeight());
+    }
+    private int getWidthWithFoldingMark() {
+        return getMainViewWidthWithFoldingMark();
+    }
+
+    public Dimension getPreferredSize() {
+        syncronizeAttributeView();
+        return super.getPreferredSize();
+    }
+
+    void invalidateTreeGeometries(){
+        setTreeHeight(0);
+        if(! isRoot()){
+            getParentView().invalidateTreeGeometries();
+        }
+    }
+    public void invalidateDescendantsTreeGeometries() {
+        setTreeHeight(0);
+        for(ListIterator e = getChildrenViews(false).listIterator();e.hasNext();) {
+            NodeView child = (NodeView)e.next();
+            child.invalidateDescendantsTreeGeometries();
+        }
+
+    }
 }

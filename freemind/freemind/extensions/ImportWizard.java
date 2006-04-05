@@ -20,7 +20,7 @@
 // adapted to freemind by christianfoltin, 29.2.2004.
 // taken from /usr/share/xemacs/xemacs-packages/etc/jde/java/src/jde/wizards/ImportWizard.java
 // changed: package name, commented out the static method.
-//			if (current.toLowerCase().endsWith(".properties")) { 
+//			if (current.toLowerCase().endsWith(".properties")) {
 //											   // formerly ".class"
 // and related changes.
 // commented out: // For Java 2! ...
@@ -52,7 +52,7 @@ public class ImportWizard {
 	public Vector CLASS_LIST = new Vector(500);
 	private final FreeMindMain mFrame;
 	private static Logger logger = null;
-	
+
 
 	public ImportWizard(FreeMindMain frame) {
 		this.mFrame = frame;
@@ -186,7 +186,13 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6  2006-01-12 23:10:12  christianfoltin
+ * Revision 1.1.4.6.2.1  2006-04-05 21:26:26  dpolivaev
+ * no message
+ *
+ * Revision 1.1.4.5.6.1  2006/03/11 16:42:36  dpolivaev
+ * Merged with branch fm_041017_base_integration from 01 Mar 2006
+ *
+ * Revision 1.1.4.6  2006/01/12 23:10:12  christianfoltin
  * * Refactoring: MindMap specific actions moved to mindmapmode.
  * * Refactoring: Each Model comes with its specific ModeController.
  * * Refactoring: Each mode has a default ModeController for the case that all maps are closed.

@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/*$Id: TimeManagement.java,v 1.1.2.6 2006-01-12 23:10:14 christianfoltin Exp $*/
+/* $Id: TimeManagement.java,v 1.1.2.6.2.1 2006-04-05 21:26:32 dpolivaev Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -56,12 +56,12 @@ import freemind.modes.MindMapNode;
 import freemind.modes.common.plugins.ReminderHookBase;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
 
-//FIXME: REminder: more than once. (later) 
+//FIXME: REminder: more than once. (later)
 //FIXME: Button shortcuts (difficult?)
 
 /**
  * @author foltin
- *  
+ *
  */
 public class TimeManagement extends MindMapHookAdapter implements
 		PropertyChangeListener, ActionListener {
@@ -350,7 +350,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 	}
 
 	/**
-	 *  
+	 *
 	 */
 	private void disposeDialog() {
 		dialog.setVisible(false);

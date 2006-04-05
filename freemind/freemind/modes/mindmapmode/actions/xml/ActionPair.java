@@ -19,7 +19,7 @@
  *
  * Created on 25.04.2004
  */
-/*$Id: ActionPair.java,v 1.1.2.1 2006-01-12 23:10:14 christianfoltin Exp $*/
+/* $Id: ActionPair.java,v 1.1.2.1.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -33,7 +33,7 @@ public class ActionPair {
 	private XmlAction doAction;
 	private XmlAction undoAction;
 	/**
-	 * 
+	 *
 	 */
 	public ActionPair(XmlAction doAction, XmlAction undoAction) {
 		this.doAction = doAction;
@@ -53,7 +53,7 @@ public class ActionPair {
 	public XmlAction getUndoAction() {
 		return undoAction;
 	}
-	
+
 	public ActionPair reverse() {
 		return new ActionPair(undoAction, doAction);
 	}

@@ -16,11 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ControllerAdapter.java,v 1.41.14.37 2006-02-21 20:49:42 christianfoltin Exp $*/
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 
 package freemind.modes;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
+import java.awt.Point;
+import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -46,6 +50,7 @@ import java.util.ListIterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -53,6 +58,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
@@ -62,15 +68,29 @@ import javax.swing.filechooser.FileFilter;
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
 import freemind.controller.StructuredMenuHolder;
+import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.extensions.HookFactory;
+import freemind.extensions.ModeControllerHook;
+import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
+import freemind.modes.attributes.AttributeController;
+import freemind.modes.attributes.AttributeRegistry;
+import freemind.modes.attributes.AttributeTableLayoutModel;
+import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.NodeColorAction;
+import freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog;
+import freemind.modes.mindmapmode.attributeactors.MindMapModeAttributeController;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
+import freemind.view.mindmapview.attributeview.AttributeTable;
+import freemind.view.mindmapview.attributeview.AttributeView;
 
 
 /**
@@ -83,11 +103,14 @@ public abstract class ControllerAdapter implements ModeController {
 	// for cascading updates.
 	private HashSet nodesAlreadyUpdated;
 	private HashSet nodesToBeUpdated;
-	// Logging: 
+	// Logging:
 	private static java.util.logging.Logger logger;
 
 	private Mode mode;
 
+    public Action showAllAttributes = new ShowAllAttributesAction();
+    public Action showSelectedAttributes = new ShowSelectedAttributesAction();
+    public Action hideAllAttributes = new HideAllAttributesAction();
 
     private Color selectionColor = new Color(200,220,200);
     public NodeColorAction nodeColor = null;
@@ -109,10 +132,9 @@ public abstract class ControllerAdapter implements ModeController {
         // for updates of nodes:
 		nodesAlreadyUpdated = new HashSet();
 		nodesToBeUpdated    = new HashSet();
-	    
+        // create attrubute controller
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
                                                new FileOpener());
-
 
     }
 
@@ -124,7 +146,7 @@ public abstract class ControllerAdapter implements ModeController {
     // Methods that should be overloaded
     //
 
-    public abstract MindMapNode newNode(Object userObject);
+    public abstract MindMapNode newNode(Object userObject, MindMap map);
 
     /**
      * You _must_ implement this if you use one of the following actions:
@@ -144,7 +166,7 @@ public abstract class ControllerAdapter implements ModeController {
         return null;
     }
 
-	
+
 	/** Currently, this method is called by the mapAdapter. This is buggy, and is to be changed.*/
     public void nodeChanged(MindMapNode node) {
         getMap().setSaved(false);
@@ -156,7 +178,7 @@ public abstract class ControllerAdapter implements ModeController {
     }
     private void nodeRefresh(MindMapNode node, boolean isUpdate) {
     	logger.finest("nodeChanged called for node "+node+" parent="+node.getParentNode());
-		if(nodesAlreadyUpdated.contains(node)) {			
+		if(nodesAlreadyUpdated.contains(node)) {
 			return;
 		}
 		nodesToBeUpdated.add(node);
@@ -184,15 +206,15 @@ public abstract class ControllerAdapter implements ModeController {
 		getMap().nodeStructureChanged(node);
 	}
 
-    /** Overwrite this method to perform additional operations 
+    /** Overwrite this method to perform additional operations
      *  to an node update.
      * @param node
      */
     protected void updateNode(MindMapNode node){
     	// empty
     }
-    
-	
+
+
 
     public void anotherNodeSelected(MindMapNode n) {
     }
@@ -233,10 +255,10 @@ public abstract class ControllerAdapter implements ModeController {
            return saveAs(); }
         else {
            return save(getModel().getFile()); }}
-    
-    
+
+
     /**
-     *  
+     *
      */
    public void invokeHooksRecursively(NodeAdapter node, MindMap map) {
         for(Iterator i = node.childrenUnfolded(); i.hasNext();) {
@@ -247,11 +269,11 @@ public abstract class ControllerAdapter implements ModeController {
             PermanentNodeHook hook = (PermanentNodeHook) i.next();
             hook.setController(this);
             hook.setMap(map);
-            node.invokeHook(hook); 
+            node.invokeHook(hook);
         }
    }
-   
-    /** fc, 24.1.2004: having two methods getSelecteds with different return values 
+
+    /** fc, 24.1.2004: having two methods getSelecteds with different return values
      * (linkedlists of models resp. views) is asking for trouble. @see MapView
      * @return returns a list of MindMapNode s. */
     public List getSelecteds() {
@@ -277,12 +299,12 @@ public abstract class ControllerAdapter implements ModeController {
         displayNode(selected);
         select(selected.getViewer());
     }
-    
+
 	/**
 	 * This class sortes nodes by ascending depth of their paths to root. This
 	 * is useful to assure that children are cutted <b>before </b> their
 	 * fathers!!!.
-	 * 
+	 *
 	 * Moreover, it sorts nodes with the same depth according to their
 	 * position relative to each other.
 	 */
@@ -323,10 +345,10 @@ public abstract class ControllerAdapter implements ModeController {
      * it has to lead to saving as.
      */
     public boolean save(File file) {
-       return getModel().save(file); }      
+       return getModel().save(file); }
 
     /** @return returns the new JMenuItem.*/
-    protected JMenuItem add(JMenu menu, Action action, String keystroke) { 
+    protected JMenuItem add(JMenu menu, Action action, String keystroke) {
        JMenuItem item = menu.add(action);
        item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
        return item;
@@ -334,7 +356,7 @@ public abstract class ControllerAdapter implements ModeController {
 
 	/** @return returns the new JMenuItem.
 	 * @param keystroke can be null, if no keystroke should be assigned. */
-	protected JMenuItem add(StructuredMenuHolder holder, String category, Action action, String keystroke) { 
+	protected JMenuItem add(StructuredMenuHolder holder, String category, Action action, String keystroke) {
 	   JMenuItem item = holder.addMenuItem(new JMenuItem(action), category);
 	   if(keystroke != null) {
 		item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
@@ -344,13 +366,23 @@ public abstract class ControllerAdapter implements ModeController {
 
 	/** @return returns the new JCheckBoxMenuItem.
 	 * @param keystroke can be null, if no keystroke should be assigned. */
-	protected JMenuItem addCheckBox(StructuredMenuHolder holder, String category, Action action, String keystroke) { 
+	protected JMenuItem addCheckBox(StructuredMenuHolder holder, String category, Action action, String keystroke) {
 		JCheckBoxMenuItem item = (JCheckBoxMenuItem) holder.addMenuItem(new JCheckBoxMenuItem(action), category);
 	   if(keystroke != null) {
 		item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
 	   }
 	   return item;
 	}
+
+	protected JMenuItem addRadioItem(StructuredMenuHolder holder, String category, Action action, String keystroke, boolean isSelected) {
+	    JRadioButtonMenuItem item = (JRadioButtonMenuItem) holder.addMenuItem(new JRadioButtonMenuItem(action), category);
+	    if(keystroke != null) {
+	        item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
+	    }
+	    item.setSelected(isSelected);
+	    return item;
+	}
+
 
 	protected void add(JMenu menu, Action action) {
        menu.add(action); }
@@ -399,7 +431,7 @@ public abstract class ControllerAdapter implements ModeController {
         }
         return null;
     }
-    
+
     public void handleLoadingException (Exception ex) {
        String exceptionType = ex.getClass().getName();
        if (exceptionType.equals("freemind.main.XMLParseException")) {
@@ -426,15 +458,15 @@ public abstract class ControllerAdapter implements ModeController {
         int returnVal = chooser.showSaveDialog(getView());
         if (returnVal != JFileChooser.APPROVE_OPTION) {// not ok pressed
         	return false; }
-        
-        // |= Pressed O.K.    
+
+        // |= Pressed O.K.
         File f = chooser.getSelectedFile();
         lastCurrentDir = f.getParentFile();
         //Force the extension to be .mm
         String ext = Tools.getExtension(f.getName());
         if(!ext.equals("mm")) {
-           f = new File(f.getParent(),f.getName()+".mm"); }        
-                
+           f = new File(f.getParent(),f.getName()+".mm"); }
+
         if (f.exists()) { // If file exists, ask before overwriting.
 			int overwriteMap = JOptionPane.showConfirmDialog
 			   (getView(), getText("map_already_exists"), "FreeMind", JOptionPane.YES_NO_OPTION );
@@ -443,31 +475,31 @@ public abstract class ControllerAdapter implements ModeController {
 
 		try { // We have to lock the file of the map even when it does not exist yet
 		   String lockingUser = getModel().tryToLock(f);
-		   if (lockingUser != null) {          
+		   if (lockingUser != null) {
 		      getFrame().getController().informationMessage(
 			    Tools.expandPlaceholders(getText("map_locked_by_save_as"), f.getName(), lockingUser));
 		      return false; }}
 		catch (Exception e){ // Throwed by tryToLock
 		  getFrame().getController().informationMessage(
-		    Tools.expandPlaceholders(getText("locking_failed_by_save_as"), f.getName()));	 
-		  return false; } 	        	                              
-              
+		    Tools.expandPlaceholders(getText("locking_failed_by_save_as"), f.getName()));
+		  return false; }
+
         save(f);
         //Update the name of the map
-        getController().getMapModuleManager().updateMapModuleName();        
+        getController().getMapModuleManager().updateMapModuleName();
         return true;
     }
     /**
      * Creates a proposal for a file name to save the map. Removes all illegal
      * characters.
-     * 
+     *
      * Fixed: When creating file names based on the text of the root node, now all the
      * extra unicode characters are replaced with _. This is not very good. For
      * chinese content, you would only get a list of ______ as a file name. Only
      * characters special for building file paths shall be removed (rather than
      * replaced with _), like : or /. The exact list of dangeous characters
      * needs to be investigated. 0.8.0RC3.
-     * 
+     *
      * @return
      */
     private String getFileNameProposal() {
@@ -477,7 +509,7 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     /**
-     * Return false if user has canceled. 
+     * Return false if user has canceled.
      */
     public boolean close(boolean force, MapModuleManager mapModuleManager) {
         String[] options = {getText("yes"),
@@ -494,10 +526,10 @@ public abstract class ControllerAdapter implements ModeController {
                	  return false; }}
 			else if ((returnVal==JOptionPane.CANCEL_OPTION) || (returnVal == JOptionPane.CLOSED_OPTION)) {
 				return false; }}
-                
+
         getModel().destroy();
         return true; }
-    
+
 
 
 	/* (non-Javadoc)
@@ -560,7 +592,7 @@ public abstract class ControllerAdapter implements ModeController {
     /** Take care! This listener is also used for modelpopups (as for graphical links).*/
     protected final ControllerPopupMenuListener popupListenerSingleton
         = new ControllerPopupMenuListener();
-    
+
     public void showPopupMenu(MouseEvent e) {
       if (e.isPopupTrigger()) {
         JPopupMenu popupmenu = getPopupMenu();
@@ -577,10 +609,10 @@ public abstract class ControllerAdapter implements ModeController {
     public JPopupMenu getPopupForModel(java.lang.Object obj) {
         return null;
     }
-        
+
     /** Overwrite this, if you have one.
      */
-    public JToolBar getLeftToolBar() {
+    public Component getLeftToolBar() {
         return null;
     }
 
@@ -590,11 +622,12 @@ public abstract class ControllerAdapter implements ModeController {
 		return null;
 	}
 
-    
-    
+
+
     // status, currently: default, blocked  (PN)
     // (blocked to protect against particular events e.g. in edit mode)
     private boolean isBlocked = false;
+    private AttributeController attributeController;
 
     public boolean isBlocked() {
       return this.isBlocked;
@@ -602,7 +635,7 @@ public abstract class ControllerAdapter implements ModeController {
     public void setBlocked(boolean isBlocked) {
       this.isBlocked = isBlocked;
     }
-    
+
 
 
     //
@@ -624,7 +657,7 @@ public abstract class ControllerAdapter implements ModeController {
     public MindMapNode getRootNode(){
         return (MindMapNode) getMap().getRoot();
     }
-    
+
     public URL getResource (String name) {
         return getFrame().getResource(name);
     }
@@ -639,7 +672,7 @@ public abstract class ControllerAdapter implements ModeController {
 
 	/** This was inserted by fc, 10.03.04 to enable all actions to refer to its controller easily.*/
 	public ControllerAdapter getModeController() {
-		return this;	
+		return this;
 	}
 
 	// fc, 29.2.2004: there is no sense in having this private and the controller public,
@@ -676,7 +709,7 @@ public abstract class ControllerAdapter implements ModeController {
     public MindMapNode getSelected() {
     	if(getView() != null && getView().getSelected()!=null)
         	return (MindMapNode)getView().getSelected().getModel();
-		return null;        	
+		return null;
     }
 
 
@@ -717,6 +750,60 @@ public abstract class ControllerAdapter implements ModeController {
 			getController().setTitle(); // Possible update of read-only
         }
     }
+
+
+        protected class ShowAllAttributesAction extends AbstractAction {
+            public ShowAllAttributesAction(){
+                super(Resources.getInstance().getResourceString("attributes_show_all"));
+            };
+            public void actionPerformed(ActionEvent e) {
+                final AttributeRegistry attributes = getMap().getRegistry().getAttributes();
+                if(attributes.getAttributeViewType() != AttributeTableLayoutModel.SHOW_ALL){
+                    attributes.setAttributeViewType(AttributeTableLayoutModel.SHOW_ALL);
+                }
+            }
+        }
+        protected class HideAllAttributesAction extends AbstractAction {
+            public HideAllAttributesAction(){
+                super(Resources.getInstance().getResourceString("attributes_hide_all"));
+            };
+            public void actionPerformed(ActionEvent e) {
+                final AttributeRegistry attributes = getMap().getRegistry().getAttributes();
+                if(attributes.getAttributeViewType() != AttributeTableLayoutModel.HIDE_ALL){
+                    attributes.setAttributeViewType(AttributeTableLayoutModel.HIDE_ALL);
+                }
+            }
+        }
+
+        protected class ShowSelectedAttributesAction extends AbstractAction {
+            public ShowSelectedAttributesAction(){
+                super(Resources.getInstance().getResourceString("attributes_show_selected"));
+            };
+            public void actionPerformed(ActionEvent e) {
+                final AttributeRegistry attributes = getMap().getRegistry().getAttributes();
+                if(attributes.getAttributeViewType() != AttributeTableLayoutModel.SHOW_SELECTED){
+                    attributes.setAttributeViewType(AttributeTableLayoutModel.SHOW_SELECTED);
+                }
+            }
+        }
+
+
+        protected class EditAttributesAction extends AbstractAction {
+            public EditAttributesAction(){
+                super(Resources.getInstance().getResourceString("attributes_edit_in_place"));
+            };
+            public void actionPerformed(ActionEvent e) {
+                final Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+                final AttributeView attributeView = getView().getSelected().getAttributeView();
+                boolean attributesClosed = null == AttributeView.getAncestorComponent(focusOwner, AttributeTable.class);
+                if(attributesClosed){
+                    attributeView.startEditing();
+                }
+                else{
+                    attributeView.stopEditing();
+                }
+            }
+        }
 
 
 
@@ -798,7 +885,7 @@ public abstract class ControllerAdapter implements ModeController {
         return selectionColor;
     }
 
-    
+
 
 
     /* (non-Javadoc)
@@ -826,7 +913,7 @@ public abstract class ControllerAdapter implements ModeController {
                     new FileOpener());
         }
     }
-    
+
     /** Don't call me directly!!!
      * The basic folding method. Without undo.
      */
@@ -844,7 +931,7 @@ public abstract class ControllerAdapter implements ModeController {
     }
     public String getLinkShortText(MindMapNode node) {
         String adaptedText = node.getLink();
-        if(adaptedText== null) 
+        if(adaptedText== null)
             return null;
         if ( adaptedText.startsWith("#")) {
             try {
@@ -860,8 +947,8 @@ public abstract class ControllerAdapter implements ModeController {
         displayNode(node, null);
     }
 
-    
-    
+
+
     /**
      * Display a node in the display (used by find and the goto action by arrow
      * link actions).
@@ -902,6 +989,10 @@ public abstract class ControllerAdapter implements ModeController {
     {
         lastCurrentDir = pLastCurrentDir;
     }
-        
+
+
+    public AttributeController getAttributeController(){
+        return null;
+    }
 
 }

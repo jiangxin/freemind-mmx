@@ -19,7 +19,7 @@
  *
  * Created on 21.08.2004
  */
-/*$Id: NodeUpAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: NodeUpAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -131,7 +131,7 @@ public class NodeUpAction extends AbstractAction implements ActorXml{
         int index = model.getIndexOfChild(parent, newChild);
         int newIndex = index;
         if(newChild.isLeft() != null) {
-            int maxIndex = parent.getChildCount(); 
+            int maxIndex = parent.getChildCount();
             Vector sortedNodesIndices = getSortedSiblings(parent);
             int newPositionInVector = sortedNodesIndices.indexOf(newChild) + direction;
             if(newPositionInVector < 0) {
@@ -140,7 +140,7 @@ public class NodeUpAction extends AbstractAction implements ActorXml{
             if(newPositionInVector  >= maxIndex) {
                 newPositionInVector = 0;
             }
-            MindMapNode destinationNode =(MindMapNode) sortedNodesIndices.get(newPositionInVector); 
+            MindMapNode destinationNode =(MindMapNode) sortedNodesIndices.get(newPositionInVector);
             newIndex = model.getIndexOfChild(parent, destinationNode);
             newChild.setLeft(destinationNode.isLeft().getValue());
             model.removeNodeFromParent(newChild);
@@ -199,14 +199,14 @@ public class NodeUpAction extends AbstractAction implements ActorXml{
         MoveNodesAction moveAction = new MoveNodesAction();
         moveAction.setDirection(direction);
         moveAction.setNode(selected.getObjectId(modeController));
-        // selectedNodes list 
+        // selectedNodes list
         for (Iterator i = selecteds.iterator(); i.hasNext();) {
             MindMapNode node = (MindMapNode) i.next();
             NodeListMember nodeListMember = new NodeListMember();
             nodeListMember.setNode(node.getObjectId(modeController));
             moveAction.addNodeListMember(nodeListMember);
-        } 
+        }
         return moveAction;
-        
+
     }
 }

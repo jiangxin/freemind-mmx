@@ -16,12 +16,16 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.14.14.4 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: BubbleNodeView.java,v 1.14.14.4.10.1 2006-04-05 21:26:31 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.attributeview.AttributeView;
+
 import java.awt.*;
+
+import javax.swing.JLabel;
 
 /**
  * This class represents a single Bubble-Style Node of a MindMap
@@ -43,28 +47,29 @@ public class BubbleNodeView extends MoveableNodeView {
     }
 
   
-	protected int getExtendedWidth(int width)
-	{	int dW = getZoomedFoldingSymbolHalfWidth() * 2;
+	protected int getMainViewWidthWithFoldingMark()
+	{
+	    int width = getMainView().getWidth();
+	    int dW = getZoomedFoldingSymbolHalfWidth() * 2;
 		if(getModel().isFolded()){
 			width += dW;
 		}
 		return width + dW;
 	}
   
-	public int getExtendedX()
+	public int getDeltaX()
 	{
-		int x = getX();
 		if(getModel().isFolded() && isLeft()){
-				x -= getZoomedFoldingSymbolHalfWidth() * 2;
+				return super.getDeltaX()+getZoomedFoldingSymbolHalfWidth() * 2;
 		}
-		return x;
+		return super.getDeltaX();
 	}
   
-    public void paintSelected(Graphics2D graphics, Dimension size) {
-        super.paintSelected(graphics, size);
+    public void paintSelected(Graphics2D graphics) {
+        super.paintSelected(graphics);
         if (this.isSelected()) {
             graphics.setColor(selectedColor);
-            graphics.fillRoundRect(0, 0, size.width - 1, size.height - 1, 10,
+            graphics.fillRoundRect(getMainView().getX(), getMainView().getY(), getMainView().getWidth()-1, getMainView().getHeight()-1, 10,
                     10);
         }
     }
@@ -96,11 +101,11 @@ public class BubbleNodeView extends MoveableNodeView {
      */
     public void paint(Graphics graphics) {
 	Graphics2D g = (Graphics2D)graphics;
-	Dimension size = getSize();
+	Dimension size = getMainView().getSize();
 	if (this.getModel()==null) return;
 
-        paintSelected(g, size);
-        paintDragOver(g, size);
+        paintSelected(g);
+        paintDragOver(g);
 
 	// change to bold stroke
 	//g.setStroke(BOLD_STROKE);                     // Changed by Daniel
@@ -129,12 +134,11 @@ public class BubbleNodeView extends MoveableNodeView {
      * should leave the Node.
      */
     Point getOutPoint() {
-	Dimension size = getSize();
-	if (isLeft()) {
-	    return new Point(getLocation().x, getLocation().y + size.height / 2);
-	} else {
-	    return new Point(getLocation().x + size.width, getLocation().y + size.height / 2);
-	}
+        if( isLeft() ) {
+            return new Point(getX() - 1, getY() + getMainView().getHeight() / 2);
+        } else {
+            return new Point(getX() + getMainView().getWidth(), getY() + getMainView().getHeight() / 2);
+        } 
     }
 
     /**
@@ -142,12 +146,11 @@ public class BubbleNodeView extends MoveableNodeView {
      * should arrive the Node.
      */
     Point getInPoint() {
-	Dimension size = getSize();
-	if (isLeft()) {
-	    return new Point(getLocation().x + size.width, getLocation().y + size.height / 2);
-	} else {
-	    return new Point(getLocation().x, getLocation().y + size.height / 2);
-	}
+        if (isLeft()) {
+            return new Point(getX() + getMainView().getWidth(), getY() + getMainView().getHeight() / 2);
+        } else {
+            return new Point(getX() - 1, getY() + getMainView().getHeight() / 2);
+        }
     }
 
     /**
@@ -171,8 +174,8 @@ public class BubbleNodeView extends MoveableNodeView {
 	String getStyle() {
 		return MindMapNode.STYLE_BUBBLE;
 	}
-	public Dimension getPreferredSize() {
-		Dimension prefSize = super.getPreferredSize();
+	protected Dimension getMainViewPreferredSize() {
+		Dimension prefSize = super.getMainViewPreferredSize();
 		prefSize.width  += 5;
 	    return prefSize;
 	}

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeNote.java,v 1.1.4.7 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: NodeNote.java,v 1.1.4.7.2.1 2006-04-05 21:26:24 dpolivaev Exp $ */
 package accessories.plugins;
 
 import javax.swing.event.DocumentEvent;
@@ -40,7 +40,7 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 /**
  * @author foltin
- * 
+ *
  */
 public class NodeNote extends NodeNoteBase {
 
@@ -115,7 +115,7 @@ public class NodeNote extends NodeNoteBase {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see freemind.extensions.PermanentNodeHook#save(freemind.main.XMLElement)
      */
     public void save(XMLElement xml) {
@@ -188,7 +188,7 @@ public class NodeNote extends NodeNoteBase {
 
     /**
      * Set text with undo:
-     * 
+     *
      * @param text
      */
     public void changeNodeText(String text) {

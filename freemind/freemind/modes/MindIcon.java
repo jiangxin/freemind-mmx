@@ -16,25 +16,31 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindIcon.java,v 1.1.18.6 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: MindIcon.java,v 1.1.18.6.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
 
 package freemind.modes;
 
+import java.awt.Component;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 
+import freemind.controller.Controller;
 import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 
 /**
  * This class represents a MindIcon than can be applied
  * to a node or a whole branch.
  */
-public class MindIcon {
+public class MindIcon implements Comparable{
     private String name;
     private String description;
+    private int number = UNKNOWN;
     /**
      * Stores the once created ImageIcon.
      */
@@ -45,15 +51,26 @@ public class MindIcon {
      * Set of all created icons. Name -> MindIcon
      */
     private static HashMap createdIcons = new HashMap();
-    
+    private static final int UNKNOWN = -2;
+    private JComponent component = null;
+
 
     private MindIcon(String name) {
-       setName(name); 
+       setName(name);
        associatedIcon=null;
     }
 
+    /**
+     * @param iconName
+     * @param icon
+     */
+    private MindIcon(String name, ImageIcon icon) {
+        setName(name);
+        associatedIcon=icon;
+    }
+
     public String toString() {
-        return "Icon_name: "+name; 
+        return "Icon_name: "+name;
     }
 
     /**
@@ -64,14 +81,14 @@ public class MindIcon {
        // DanPolansky: it's essential that we do not return null
        // for saving of the map.
        return name == null ? "notfound" : name; }
-    
+
     /**
        * Set the value of name.
        * @param v  Value to assign to name.
        */
     public void setName(String name) {
-        
-        this.name = name; 
+
+        this.name = name;
         return;
 
         /* here, we must check, whether the name is allowed.*/
@@ -84,7 +101,7 @@ public class MindIcon {
         //for(int i = 0; i < allIconNames.size(); ++i) {
         //    if(((String) allIconNames.get(i)).equals(v)) {
         //        //System.out.println("Icon name: " + v);
-        //        this.name = v; 
+        //        this.name = v;
         //        return;
         //    }
         //}
@@ -92,17 +109,17 @@ public class MindIcon {
         // DanPolansky: we want to parse the file though. Not existent icon is not
         // that a big tragedy.
     }
-    
-    
+
+
     /**
        * Get the value of description (in local language).
        * @return Value of description.
        */
     public String getDescription(FreeMindMain frame) {
         String resource = new String("icon_"+getName());
-        return frame.getResourceString(resource); 
+        return frame.getResourceString(resource);
     }
-    
+
     public String getIconFileName() {
         return getIconsPath()+getIconBaseFileName();
     }
@@ -115,22 +132,22 @@ public class MindIcon {
         return "images/icons/";
     }
 
-    public ImageIcon getIcon(FreeMindMain frame) {
+    public ImageIcon getIcon() {
         // We need the frame to be able to obtain the resource URL of the icon.
         if (iconNotFound == null) {
-           iconNotFound = new ImageIcon(frame.getResource("images/IconNotFound.png")); }
+           iconNotFound = new ImageIcon(Resources.getInstance().getResource("images/IconNotFound.png")); }
 
         if(associatedIcon != null)
             return associatedIcon;
         if ( name != null ) {
-           URL imageURL = frame.getResource(getIconFileName());
+           URL imageURL = Resources.getInstance().getResource(getIconFileName());
            ImageIcon icon = imageURL == null ? iconNotFound : new ImageIcon(imageURL);
            setIcon(icon);
            return icon; }
         else {
            setIcon(iconNotFound);
-           return iconNotFound; }}      
-            
+           return iconNotFound; }}
+
     /**
        * Set the value of icon.
        * @param v  Value to assign to icon.
@@ -187,4 +204,50 @@ public class MindIcon {
     		createdIcons.put(iconName, icon);
     		return icon;
     }
+
+    /**
+     * @param key
+     * @param icon
+     * @return
+     */
+    public static MindIcon factory(String iconName, ImageIcon icon) {
+		if(createdIcons.containsKey(iconName)){
+			return (MindIcon) createdIcons.get(iconName);
+		}
+		MindIcon mindIcon = new MindIcon(iconName, icon);
+		getAllIconNames ().add(iconName);
+		createdIcons.put(iconName, mindIcon);
+		return mindIcon;
+    }
+    /* (non-Javadoc)
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o) {
+        if (o instanceof MindIcon){
+            MindIcon icon = (MindIcon)o;
+            int i1 = getNumber();
+            int i2 = icon.getNumber();
+            return i1 < i2 ? -1 : i1 == i2 ? 0 : +1;
+        }
+        throw new ClassCastException() ;
+    }
+
+
+    private int getNumber() {
+        if(number == UNKNOWN){
+            number = getAllIconNames ().indexOf(name);
+        }
+        return number;
+    }
+
+    /**
+     * @return
+     */
+    public JComponent getRendererComponent() {
+        if(component == null){
+            component = new JLabel(getIcon());
+        }
+        return component;
+    }
+
 }

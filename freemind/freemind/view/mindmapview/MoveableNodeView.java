@@ -4,9 +4,11 @@
 package freemind.view.mindmapview;
 
 import java.awt.Dimension;
-import java.awt.Point;
+
+import javax.swing.JLabel;
 
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.attributeview.AttributeView;
 
 /**
  * @author Dimitri
@@ -35,13 +37,16 @@ public abstract class MoveableNodeView extends NodeView {
     }
 
 	public void setBounds(int x,	int y){
+	    super.setBounds(x, y);
 		Dimension prefSize = getPreferredSize();
-		setLocation(x, y);
-		setSize(prefSize);
 		int motionListenerViewX 
 		  = isLeft() ? x + prefSize.width : x-LISTENER_VIEW_WIDTH;
 		motionListenerView.setLocation(motionListenerViewX, y);
 		motionListenerView.setSize(LISTENER_VIEW_WIDTH, prefSize.height);
 	}
 
+	    public void setVisible(boolean isVisible) {
+        super.setVisible(isVisible);
+        motionListenerView.setVisible(isVisible);
+    }
 }

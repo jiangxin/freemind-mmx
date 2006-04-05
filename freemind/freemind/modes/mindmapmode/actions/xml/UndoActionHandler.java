@@ -19,7 +19,7 @@
  *
  * Created on 23.09.2004
  */
-/*$Id: UndoActionHandler.java,v 1.1.2.1 2006-01-12 23:10:14 christianfoltin Exp $*/
+/* $Id: UndoActionHandler.java,v 1.1.2.1.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 

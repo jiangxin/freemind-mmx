@@ -19,7 +19,7 @@
  *
  * Created on 10.11.2004
  */
-/*$Id: ExportVectorGraphic.java,v 1.1.4.3 2006-02-16 21:28:05 christianfoltin Exp $*/
+/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.1 2006-04-05 21:26:32 dpolivaev Exp $ */
 package plugins.svg;
 
 import java.awt.Dimension;
@@ -65,16 +65,16 @@ public class ExportVectorGraphic extends ExportHook{
 		String namespaceURI = SVGConstants.SVG_NAMESPACE_URI;
 		Document domFactory = impl.createDocument(namespaceURI, "svg", null);
 		SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(domFactory);
-		ctx.setEmbeddedFontsOn(true);       
-		GraphicContextDefaults defaults 
+		ctx.setEmbeddedFontsOn(true);
+		GraphicContextDefaults defaults
 		    = new GraphicContextDefaults();
 		defaults.setFont(new Font("Arial", Font.PLAIN, 12));
 		ctx.setGraphicContextDefaults(defaults);
 		ctx.setPrecision(12);
-	
+
 		SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		
+
 		g2d.setSVGCanvasSize(new Dimension(innerBounds.width, innerBounds.height));
 		g2d.translate(-innerBounds.x, -innerBounds.y);
 		//
@@ -90,12 +90,12 @@ public class ExportVectorGraphic extends ExportHook{
        Source xsltSource =  new StreamSource(xsltStream);
         //System.out.println("set result");
        Result result = new StreamResult(resultFile);
-    
+
        // create an instance of TransformerFactory
        try{
            //System.out.println("make transform instance");
        TransformerFactory transFact = TransformerFactory.newInstance(  );
-    
+
        Transformer trans = transFact.newTransformer(xsltSource);
        // set parameter:
        // relative directory <filename>_files

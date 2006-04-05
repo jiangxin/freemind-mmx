@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeMapModel.java,v 1.11.18.4 2006-01-12 23:10:14 christianfoltin Exp $*/
+/* $Id: SchemeMapModel.java,v 1.11.18.4.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
 
 package freemind.modes.schememode;
 
@@ -38,16 +38,16 @@ import freemind.modes.MapAdapter;
 import freemind.modes.ModeController;
 
 public class SchemeMapModel extends MapAdapter {
-    
+
     //
     // Constructors
     //
 
     public SchemeMapModel(FreeMindMain frame, ModeController modeController) {
 	super(frame, modeController);
-	setRoot(new SchemeNodeModel(getFrame()));
+	setRoot(new SchemeNodeModel(getFrame(), this));
     }
-    
+
     //
     // Other methods
     //
@@ -69,14 +69,14 @@ public class SchemeMapModel extends MapAdapter {
 	    return false;
 	}
     }
-    
+
     public void load(URL url) throws FileNotFoundException {
         File file = new File(url.getFile());
 	setFile(file);
 	setSaved(true);
 
-	setRoot(new SchemeNodeModel(getFrame()));
-	
+	setRoot(new SchemeNodeModel(getFrame(), this));
+
 	try {
 	    loadMathStyle(new InputStreamReader(new FileInputStream(file)));
 	} catch (IOException ex) {
@@ -99,7 +99,7 @@ public class SchemeMapModel extends MapAdapter {
 	while (tok.nextToken() != StreamTokenizer.TT_EOF) {
 	    if (tok.ttype == 40) {    //"("
 		//		System.out.println("Token starts with (");
-		SchemeNodeModel newNode = new SchemeNodeModel(getFrame());
+		SchemeNodeModel newNode = new SchemeNodeModel(getFrame(), this);
 		insertNodeInto(newNode, node);
 		node = newNode;
 	    } else if (tok.ttype == 41) {    //")"
@@ -113,7 +113,7 @@ public class SchemeMapModel extends MapAdapter {
 		if (node.toString().equals(" ") && node.getChildCount() == 0) {
 		    node.setUserObject(token);
 		} else {
-		    SchemeNodeModel newNode = new SchemeNodeModel(getFrame());
+		    SchemeNodeModel newNode = new SchemeNodeModel(getFrame(), this);
 		    insertNodeInto(newNode, node);
 		    newNode.setUserObject(token);
 		}
@@ -138,7 +138,7 @@ public class SchemeMapModel extends MapAdapter {
     public String getCode() {
 	return ((SchemeNodeModel)getRoot()).getCodeMathStyle();
     }
-    
+
     //    public boolean isSaved() {
     //	return true;
     //    }
@@ -157,5 +157,13 @@ public class SchemeMapModel extends MapAdapter {
 	public void getXml(Writer fileout) throws IOException {
 		fileout.write(getCode());
 	}
+    /* (non-Javadoc)
+     * @see freemind.modes.MindMap#getFilteredXml(java.io.Writer)
+     */
+    public void getFilteredXml(Writer fileout) throws IOException {
+        // nothing.
+        //FIXME: Implement me if you need me.
+        throw new RuntimeException("Unimplemented method called.");
+    }
 
 }

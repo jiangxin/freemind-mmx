@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ComboProperty.java,v 1.1.2.5 2006-03-19 21:21:33 christianfoltin Exp $*/
+/*$Id: ComboProperty.java,v 1.1.2.5.2.1 2006-04-05 21:26:24 dpolivaev Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -41,7 +41,7 @@ public class ComboProperty extends PropertyBean implements
 	String description;
 
 	String label;
-	
+
 	JComboBox mComboBox = new JComboBox();
 
 	private Vector possibleValues;
@@ -86,7 +86,7 @@ public class ComboProperty extends PropertyBean implements
 		fillPossibleValues(possibles);
 		mComboBox.setModel(new DefaultComboBoxModel(new Vector(possibleTranslations)));
 	}
-	
+
 	/**
 	 * @param possibles
 	 */
@@ -104,7 +104,7 @@ public class ComboProperty extends PropertyBean implements
 
 	/** If your combo base changes, call this method to update the values.
 	 *  The old selected value is not selected, but the first in the list.
-	 *  Thus, you should call this method only shortly before setting the 
+	 *  Thus, you should call this method only shortly before setting the
 	 *  value with setValue.
 	 * @param possibles
 	 * @param possibleTranslations
@@ -116,7 +116,7 @@ public class ComboProperty extends PropertyBean implements
 			mComboBox.setSelectedIndex(0);
 		}
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -150,5 +150,5 @@ public class ComboProperty extends PropertyBean implements
         mComboBox.setEnabled(pEnabled);
     }
 
-    
+
 }

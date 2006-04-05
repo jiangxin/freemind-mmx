@@ -19,11 +19,9 @@
  *
  * Created on 24.04.2004
  */
-/*$Id: ActionHandler.java,v 1.1.2.1 2006-01-12 23:10:14 christianfoltin Exp $*/
+/* $Id: ActionHandler.java,v 1.1.2.1.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
-
-import freemind.controller.actions.generated.instance.XmlAction;
 
 /**
  * @author foltin
@@ -32,12 +30,12 @@ import freemind.controller.actions.generated.instance.XmlAction;
 public interface ActionHandler {
 
 	void executeAction(ActionPair pair);
-	
+
 	/**
 	 * @param name
 	 */
 	void startTransaction(String name);
-	
+
 	/**
 	 * @param name
 	 */

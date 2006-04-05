@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeNoteBase.java,v 1.1.2.2 2006-01-18 22:28:48 christianfoltin Exp $*/
+/* $Id: NodeNoteBase.java,v 1.1.2.2.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
 package freemind.modes.common.plugins;
 
 import java.awt.BorderLayout;
@@ -46,7 +46,7 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 	private JScrollPane scroller;
 	private static ImageIcon noteIcon;
 	/**
-	 * 
+	 *
 	 */
 	public NodeNoteBase() {
 		super();
@@ -84,12 +84,12 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 			logger.fine("Text ctrl. set for node "+getNode()+" as "+getMyNodeText());
 			// panel:
 			FreeMindMain frame = getController().getFrame();
-	
+
 			text = new JTextArea(5,50);
 			text.setText(getMyNodeText());
             // word wrap for notes.
             text.setWrapStyleWord(true);
-			
+
 			text.addKeyListener(new KeyListener(){
 
                 public void keyPressed(KeyEvent e) {
@@ -106,7 +106,7 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 
                 public void keyTyped(KeyEvent e) {
                 }});
-	
+
 			receiveFocusAddons();
 			scroller = new JScrollPane(text);
 			scroller.setPreferredSize( new Dimension( 600, 150 ) );

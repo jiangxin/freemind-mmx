@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/*$Id: FormatNewNodes.java,v 1.1.4.3 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: FormatNewNodes.java,v 1.1.4.3.2.1 2006-04-05 21:26:24 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.util.HashMap;

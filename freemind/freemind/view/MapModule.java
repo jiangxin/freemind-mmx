@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapModule.java,v 1.4.18.2 2006-01-12 23:10:14 christianfoltin Exp $*/
+/* $Id: MapModule.java,v 1.4.18.2.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
 
 package freemind.view;
 

@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: StylePatternFrame.java,v 1.1.2.10 2006-03-26 20:58:43 christianfoltin Exp $*/
+/* $Id: StylePatternFrame.java,v 1.1.2.10.2.1 2006-04-05 21:26:29 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;
@@ -76,7 +76,7 @@ import freemind.modes.mindmapmode.actions.IconAction;
 
 /**
  * @author foltin
- * 
+ *
  */
 public class StylePatternFrame extends JPanel implements TextTranslator,
 		PropertyChangeListener {
@@ -289,6 +289,7 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 			"14", "16", "18", "20", "22", "24", "30", "36", "48", "72" };
 
 	private List mPatternList;
+
 
 	private Vector getControls() {
 		Vector controls = new Vector();
@@ -669,7 +670,7 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 
 	/**
 	 * For the child pattern box, the list is set here.
-	 * 
+	 *
 	 * @param patternList
 	 */
 	public void setPatternList(List patternList) {

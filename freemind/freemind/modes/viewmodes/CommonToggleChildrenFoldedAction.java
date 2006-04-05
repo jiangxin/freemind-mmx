@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/*$Id: CommonToggleChildrenFoldedAction.java,v 1.1.2.1 2006-01-12 23:10:14 christianfoltin Exp $*/
+/* $Id: CommonToggleChildrenFoldedAction.java,v 1.1.2.1.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
 package freemind.modes.viewmodes;
 
 import java.awt.event.ActionEvent;

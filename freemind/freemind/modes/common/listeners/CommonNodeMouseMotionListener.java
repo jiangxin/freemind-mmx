@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: CommonNodeMouseMotionListener.java,v 1.1.2.1 2006-01-12 23:10:13 christianfoltin Exp $*/
+/* $Id: CommonNodeMouseMotionListener.java,v 1.1.2.1.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
 
 package freemind.modes.common.listeners;
 
+import java.awt.Component;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
@@ -92,7 +93,7 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
         logger.finest("Event: mouseMoved");
         // Invoked when the mouse button has been moved on a component (with no
         // buttons down).
-        NodeView node = (NodeView) e.getComponent();
+        NodeView node = (NodeView) e.getComponent().getParent();
         boolean isLink = (node).updateCursor(e.getX());
         // links are displayed in the status bar:
         if (isLink) {
@@ -114,7 +115,7 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
         logger.fine("Event: mouseDragged");
         // first stop the timer and select the node:
         stopTimerForDelayedSelection();
-        NodeView nodeV = (NodeView) e.getSource();
+        NodeView nodeV = (NodeView) (e.getComponent()).getParent();
 
         // if dragged for the first time, select the node:
         if (!c.getView().isSelected(nodeV))

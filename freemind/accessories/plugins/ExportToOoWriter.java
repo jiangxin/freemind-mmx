@@ -91,7 +91,7 @@ public class ExportToOoWriter extends ExportHook {
 		// get output:
 		StringWriter writer = new StringWriter();
 		// get XML
-		getController().getMap().getXml(writer);
+		getController().getMap().getFilteredXml(writer);
 					
 		// System.out.println("set result");
 		Result result = new StreamResult(zipout);

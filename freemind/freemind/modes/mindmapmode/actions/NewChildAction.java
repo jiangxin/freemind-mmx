@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/*$Id: NewChildAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $*/
+/* $Id: NewChildAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -53,7 +53,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		if(logger == null) {
 		    logger = c.getFrame().getLogger(NewChildAction.class.getName());
 		}
-		
+
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -66,7 +66,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		NewNodeAction addNodeAction = (NewNodeAction) action;
 		NodeAdapter parent = this.c.getNodeFromID(addNodeAction.getNode());
 		int index = addNodeAction.getIndex();
-		MindMapNode newNode = c.newNode("");
+		MindMapNode newNode = c.newNode("", parent.getMap());
 		String newId = addNodeAction.getNewId();
 		ID_Registered reg = c.getModel().getLinkRegistry().registerLinkTarget(newNode,newId);
 		if(!reg.getID().equals(newId)) {
@@ -82,7 +82,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
             hook.onNewChild(newNode);
         }
 		// done.
-		c.getFrame().repaint(); 
+		c.getFrame().repaint();
     }
     /* (non-Javadoc)
      * @see freemind.controller.actions.ActorXml#getDoActionClass()
@@ -90,8 +90,8 @@ public class NewChildAction extends AbstractAction implements ActorXml {
     public Class getDoActionClass() {
         return NewNodeAction.class;
     }
-    
-    
+
+
 	public MindMapNode addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e) {
 	   final MindMapNode targetNode = target;
 	   MindMapNode newNode = null;
@@ -103,18 +103,18 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		   if (targetNode.isRoot()) {
 			c.getController().errorMessage(c.getText("new_node_as_sibling_not_possible_for_the_root"));
 			c.setBlocked(false);
-			 return null; 
+			 return null;
 		   }
 		   MindMapNode parent = targetNode.getParentNode();
 		   int childPosition = parent.getChildPosition(targetNode);
 		   if (newNodeMode == MindMapController.NEW_SIBLING_BEHIND) {
 			  childPosition++;
 		   }
-		   newNode = addNewNode(parent, childPosition, target.isLeft());	
+		   newNode = addNewNode(parent, childPosition, target.isLeft());
 		c.select(newNode.getViewer());
 		c.edit.editLater(newNode.getViewer(), target.getViewer(), e, true, false, false);
 		   break;
-  
+
 		 case MindMapController.NEW_CHILD:
 		 case MindMapController.NEW_CHILD_WITHOUT_FOCUS:
 		   final boolean parentFolded = targetNode.isFolded();
@@ -123,10 +123,10 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		   }
 		   int position = c.getFrame().getProperty("placenewbranches").equals("last") ?
 			  targetNode.getChildCount() : 0;
-		   // Here the NodeView is created for the node. 
+		   // Here the NodeView is created for the node.
 //			 getModel().insertNodeInto(newNode, targetNode, position);
 //			 getFrame().repaint(); //  getLayeredPane().repaint();
-			newNode = addNewNode(targetNode, position, null);	
+			newNode = addNewNode(targetNode, position, null);
 			   if (newNodeMode == MindMapController.NEW_CHILD) {
 				c.select(newNode.getViewer());
 			   }
@@ -158,7 +158,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
         freemind.main.Tools.BooleanHolder newNodeIsLeft)
          {
         String pos = null;
-        
+
       	if (newNodeIsLeft!= null) {
             pos = newNodeIsLeft.getValue() ? "left" : "right";
         }

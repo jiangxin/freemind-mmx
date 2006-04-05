@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/*$Id: MindMapActions.java,v 1.1.2.3 2006-03-14 21:56:28 christianfoltin Exp $*/
+/* $Id: MindMapActions.java,v 1.1.2.3.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
@@ -46,9 +46,9 @@ import freemind.modes.mindmapmode.actions.xml.ActionFactory;
  *  nodes. Whenever you want to change the mindmap choose one of these actions
  *  as they do proper redisplay, inform others about the actions, the actions are
  *  all undoable etc.etc.
- *  
+ *
  * All these methods do redisplay, because they are offered from the  MindMapController for use.
- * 
+ *
  * @author foltin
  * @see freemind.modes.MindMapController
  * */
@@ -57,7 +57,7 @@ public interface MindMapActions {
     public static final int NEW_CHILD = 2;
     public static final int NEW_SIBLING_BEHIND = 3;
     public static final int NEW_SIBLING_BEFORE = 4;
-    
+
 
     /** Call this method, if you changed anything at a node. This method makes the map dirty.
      * @param node
@@ -68,7 +68,7 @@ public interface MindMapActions {
      */
     public void nodeRefresh(MindMapNode node);
 	public void nodeStructureChanged(MindMapNode node);
-	/** The following modes are present: 
+	/** The following modes are present:
 	 *     public final int NEW_CHILD_WITHOUT_FOCUS = 1;  // old model of insertion
 	 *     public final int NEW_CHILD = 2;
 	 *     public final int NEW_SIBLING_BEHIND = 3;
@@ -80,39 +80,36 @@ public interface MindMapActions {
 	public MindMapNode addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e);
 	/** Another variant of addNew. If the index of the new node as a child of parent is known,
 	 * this method is easier to use. Moreover, it does not automatically start an editor.
-	 * @param newNodeIsLeft here, normally parent.isLeft() or null is used. 
+	 * @param newNodeIsLeft here, normally parent.isLeft() or null is used.
 	 * @return returns the new node. */
 	MindMapNode addNewNode(MindMapNode parent, int index, freemind.main.Tools.BooleanHolder newNodeIsLeft);
-    /**
-     * @param userObject is typically a text. 
-     * */
-    MindMapNode newNode(Object userObject);
+
 	public void deleteNode(MindMapNode selectedNode);
 	public Transferable cut();
 	public Transferable cut(List nodeList);
 	/**
 	 * moves selected and selecteds (if they are child of the same parent and adjacent)
-	 * in the direction specified (up = -1, down = 1). 
+	 * in the direction specified (up = -1, down = 1).
 	 * */
 	void moveNodes(MindMapNode selected, List selecteds, int direction);
-	
+
 	/**
 	 * @param node
 	 * @param folded
 	 */
 	void setFolded(MindMapNode node, boolean folded);
 	/**
-	 * Switches the folding state of all selected nodes. In fact, 
+	 * Switches the folding state of all selected nodes. In fact,
 	 * it determines one action (fold or unfold) and applies this action to every
 	 * selected node.
 	 */
 	void toggleFolded();
-	
+
 	public void setBold(MindMapNode node, boolean bolded);
 	public void setItalic(MindMapNode node, boolean isItalic);
 	public void setNodeColor(MindMapNode node, Color color);
 	public void setNodeBackgroundColor(MindMapNode node, Color color);
-	
+
 	public void blendNodeColor(MindMapNode node);
 	public void setFontFamily(
 		MindMapNode node,
@@ -122,7 +119,7 @@ public interface MindMapActions {
 	public void addIcon(MindMapNode node, MindIcon icon);
 	public int removeLastIcon(MindMapNode node);
 	public void removeAllIcons(MindMapNode node);
-	/** @param patternName is one of the names. They can be received using 
+	/** @param patternName is one of the names. They can be received using
 	 * the patterns list of ApplyPatternActions from the MindMapController. Each action
 	 * has a getPattern() method and the pattern has a getName() method ... */
 	public void applyPattern(MindMapNode node, String patternName);
@@ -164,13 +161,13 @@ public interface MindMapActions {
 	/** @param isLeft determines, whether or not the node is placed on the left or right. */
 	public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft);
 	public void paste(MindMapNode node, MindMapNode parent);
-	
+
     //hooks, fc 28.2.2004:
 	public void addHook(MindMapNode focussed, List selecteds, String hookName);
-    /** 
+    /**
      * This is the only way to instanciate new Hooks. THEY HAVE TO BE INVOKED AFTERWARDS!
      * The hook is equipped with the map and controller information.
-     * Furthermore, the hook is added to the node, if it is an instance of 
+     * Furthermore, the hook is added to the node, if it is an instance of
      * the PermanentNodeHook.
      * If the hook policy specifies, that only one instance may exist per node,
      * it returns this instance if it already exists.
@@ -184,24 +181,24 @@ public interface MindMapActions {
 
     ActionFactory getActionFactory();
     // XML Actions:
-    public String marshall(XmlAction action);   
+    public String marshall(XmlAction action);
     public XmlAction unMarshall(String inputString);
-    
+
     /** undo in progress? */
     boolean isUndoAction();
 
 	public Clipboard getClipboard();
 
-	
+
     public MindMapNode getRootNode();
-	
+
 	/**
 	 * @param node
 	 * @param key key value patterns is used to ensure, that more than one tooltip can be displayed.
 	 * @param value null if you want to delete this tooltip.
 	 */
 	public void setToolTip(MindMapNode node, String key, String value);
-	
+
     /** Multiple selection.
      * @param focussed will be focussed afterwards
      * @param selecteds are all nodes that are selected (the focussed has not to be contained).
@@ -209,14 +206,14 @@ public interface MindMapActions {
     public void selectMultipleNodes(MindMapNode focussed, Collection selecteds) ;
 
     /** The branch that starts from selected is added to the selection.
-     * 
+     *
      * On extend = false clear up the previous selection.
      * if extend is false, the past selection will be empty.
      * if yes, the selection will extended with this node and its children
      */
     public void selectBranch( MindMapNode selected, boolean extend);
 
-	
+
 	/** Moves the node to a new position.
 	 * @param node
 	 * @param vGap
@@ -225,12 +222,12 @@ public interface MindMapActions {
 	 */
 	public void moveNodePosition(MindMapNode node, int vGap, int hGap,
             int shiftY);
-    
+
     /** Load the given map (as String) instead of the currently opened map.
      * @param xmlMapContents
      */
     void load(String xmlMapContents);
-    
+
     public interface  MouseWheelEventHandler {
         /** @return true if the event was sucessfully processed and false if the event did not apply.*/
         boolean handleMouseWheelEvent(MouseWheelEvent e);
@@ -238,5 +235,5 @@ public interface MindMapActions {
     void registerMouseWheelEventHandler(MouseWheelEventHandler handler);
     void deRegisterMouseWheelEventHandler(MouseWheelEventHandler handler);
 
-    
+
 }

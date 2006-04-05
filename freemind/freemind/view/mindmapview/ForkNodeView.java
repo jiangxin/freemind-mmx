@@ -16,12 +16,16 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ForkNodeView.java,v 1.10.18.2 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: ForkNodeView.java,v 1.10.18.2.10.1 2006-04-05 21:26:31 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.attributeview.AttributeView;
+
 import java.awt.*;
+
+import javax.swing.JLabel;
 
 /**
  * This class represents a single Fork-Style Node of a MindMap
@@ -40,24 +44,25 @@ public class ForkNodeView extends MoveableNodeView {
 	super(model,map);
     }
     
-    public int getExtendedX(){
-    	int x = getX();
+    public int getDeltaX(){
 		if(getModel().isFolded() && isLeft()){
-			x -= getZoomedFoldingSymbolHalfWidth() * 2 + FOLDING_WIDTH_OVERHEAD;
+		    return super.getDeltaX()+ getZoomedFoldingSymbolHalfWidth() * 2 + FOLDING_WIDTH_OVERHEAD;
 		}
-		return x;
+		return super.getDeltaX();
     }
     
-    protected int getExtendedWidth(int width )
+    protected int getMainViewWidthWithFoldingMark( )
 	{
+        int width = getMainView().getWidth();
 		if(getModel().isFolded()){
 			width += getZoomedFoldingSymbolHalfWidth() * 2 + FOLDING_WIDTH_OVERHEAD;
 		}
 		return width;
 	}
   
-	protected int getExtendedHeight(int height)
+	protected int getMainViewHeightWithFoldingMark()
 	{
+	    int height = getMainView().getHeight();
 		if(getModel().isFolded()){
 			height += getZoomedFoldingSymbolHalfWidth();
 		}
@@ -87,13 +92,13 @@ public class ForkNodeView extends MoveableNodeView {
 
     public void paint(Graphics graphics) {
 	Graphics2D g = (Graphics2D)graphics;
-	Dimension size = getSize();
+	Dimension size = getMainView().getSize();
 	//Dimension size = getPreferredSize();
 
 	if (this.getModel()==null) return;
 
-        paintSelected(g, size);
-        paintDragOver(g, size);
+        paintSelected(g);
+        paintDragOver(g);
 
         int edgeWidth = getEdge().getRealWidth();
 
@@ -101,9 +106,10 @@ public class ForkNodeView extends MoveableNodeView {
         setRendering(g);
 	g.setColor(getEdge().getColor());
 	g.setStroke(getEdge().getStroke());
-	g.drawLine(0,          size.height-edgeWidth/2-1,
-                   size.width, size.height-edgeWidth/2-1);
-   
+	g.drawLine(getMainView().getX(),          
+	        getMainView().getY() + size.height-edgeWidth/2-1,
+                   getMainView().getX() + size.width, 
+                   getMainView().getY() + size.height-edgeWidth/2-1);
 	super.paint(g);
     }
 
