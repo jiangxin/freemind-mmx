@@ -1,3 +1,11 @@
+Changes made in FreeMind 0.9.1 Alpha 1.02
+===============================
+Merged with WYSIWYG Version
+
+Changes made in FreeMind 0.9.1 Alpha 1.01
+===============================
+Merged with Attribute Version
+
 Changes made in FreeMind 0.8.1 FA Alpha 10.02
 ===============================
 Attributes can be leaved with alt+F9
