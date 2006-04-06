@@ -28,11 +28,11 @@
 	<classpathentry kind="lib" path="lib/jibx/jibx-bind.jar"/>
 	<classpathentry kind="lib" path="lib/bindings.jar"/>
 	<classpathentry kind="lib" path="lib/jibx/jibx-run.jar"/>
-	<classpathentry kind="lib" path="lib/kafenio-icons.jar"/>
-	<classpathentry kind="lib" path="lib/gnu-regexp-1.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/jarbundler-1.4.jar"/>
-	<classpathentry kind="lib" path="lib/kafenio.jar"/>
-	<classpathentry kind="lib" path="lib/kafenio-config.jar"/>
+	<classpathentry kind="lib" path="lib/kafenio/kafenio-icons.jar"/>
+	<classpathentry kind="lib" path="lib/kafenio/gnu-regexp-1.1.4.jar"/>
+	<classpathentry kind="lib" path="lib/kafenio/kafenio.jar"/>
+	<classpathentry kind="lib" path="lib/kafenio/kafenio-config.jar"/>
 	<classpathentry kind="lib" path="lib/forms-1.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.0.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>

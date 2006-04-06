@@ -32,7 +32,7 @@
 		<classpath path="${jibxlibs}"/>
 	</taskdef>
 
-	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar"/>
+	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar:lib/kafenio/kafenio.jar:lib/kafenio/kafenio.jar"/>
 
 	  <target name="xmlbind.checkStatusOfGeneration">
 	    <uptodate property="xmlbind.isUpToDate"
@@ -40,8 +40,8 @@
 	              targetfile="${jibxjar}"/>
 	  </target>
 
-	<!-- ================================= 
-          target: gen              
+	<!-- =================================
+          target: gen
          ================================= -->
 	<target name="gen" depends="xmlbind.checkStatusOfGeneration" description="--> Generates the JixB binding jar." unless="xmlbind.isUpToDate">
 		<mkdir dir="binding" />
@@ -147,6 +147,10 @@
 				<include name="bindings.jar"/>
 				<include name="jibx/jibx-run.jar"/>
 				<include name="jibx/xpp3.jar"/>
+				<include name="kafenio/kafenio-icons.jar"/>
+				<include name="kafenio/gnu-regexp-1.1.4.jar"/>
+				<include name="kafenio/kafenio.jar"/>
+				<include name="kafenio/kafenio-config.jar"/>
 			</fileset>
 		</copy>
 
@@ -186,7 +190,7 @@
 		                    signature="FM"
 		                    jvmversion="1.4+"
 		                    liveresize="true"
-		                    screenmenu="true" 
+		                    screenmenu="true"
 		  				    >
 			<jarfileset dir="${dist}">
 				<include name="**/*.jar" />
@@ -196,8 +200,8 @@
 			</jarfileset>
 		</jarbundler>
 		<!-- Associate Freemind with mm -->
-		<xslt style="mac_file_association.xslt" 
-			in ="${dist_macos_info}" 
+		<xslt style="mac_file_association.xslt"
+			in ="${dist_macos_info}"
 			out="${dist_macos_info}2"/>
 		<move file="${dist_macos_info}2"
 			  tofile="${dist_macos_info}"/>
