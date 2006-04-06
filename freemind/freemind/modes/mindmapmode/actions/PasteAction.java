@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -89,6 +89,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
       */
     public void act(XmlAction action) {
     	PasteNodeAction pasteAction = (PasteNodeAction) action;
+        Object transferable = pasteAction.getTransferableContent();
         _paste(
             pMindMapController.cut.getTransferable(pasteAction.getTransferableContent()),
             pMindMapController.getNodeFromID(pasteAction.getNode()),
@@ -137,11 +138,10 @@ public class PasteAction extends AbstractAction implements ActorXml {
                 }
             }
             CompoundAction compound = new CompoundAction();
-    	   	for(long i = 0; i < amountOfCuts; ++i) {
-    			CutNodeAction cutNodeAction = pMindMapController.cut.getCutNodeAction(t, new NodeCoordinate(target,asSibling, isLeft));
-    			compound.addChoice(cutNodeAction);
-    	   	}
-
+            for(long i = 0; i < amountOfCuts; ++i) {
+                CutNodeAction cutNodeAction = pMindMapController.cut.getCutNodeAction(t, new NodeCoordinate(target,asSibling, isLeft));
+                compound.addChoice(cutNodeAction);
+            }
 
 			// Undo-action
 			pMindMapController.getActionFactory().startTransaction(text);
@@ -258,6 +258,40 @@ public class PasteAction extends AbstractAction implements ActorXml {
             return MindMapNodesSelection.mindMapNodesFlavor;
         }
     }
+
+        private class DirectHtmlFlavorHandler implements DataFlavorHandler {
+           public void paste(Object transferData, MindMapNode target,
+                             boolean asSibling, boolean isLeft, Transferable t)
+              throws UnsupportedFlavorException, IOException {
+              String textFromClipboard = (String) transferData;              
+              // ^ This outputs transfer data to standard output. I don't know
+              // why.
+             //{ Alternative pasting of HTML
+              pMindMapController.getFrame().setWaitingCursor(true);
+             textFromClipboard = textFromClipboard.
+                replaceFirst("(?i)(?s)<head>.*</head>","").
+                replaceFirst("(?i)(?s)^.*<html[^>]*>","<html>").
+                replaceFirst("(?i)(?s)<body [^>]*>","<body>").
+                replaceAll("(?i)(?s)<script.*?>.*?</script>","").
+                replaceAll("(?i)(?s)</?tbody.*?>",""). // Java HTML Editor does not like the tag.
+                replaceAll("(?i)(?s)<!--.*?-->","").   // Java HTML Editor shows comments in not very nice manner.
+                replaceAll("(?i)(?s)</?o[^>]*>","");   // Java HTML Editor does not like Microsoft Word's <o> tag.
+
+             if (Tools.safeEquals(pMindMapController.getFrame().getProperty("cut_out_pictures_when_pasting_html"),"true")) {
+                textFromClipboard = textFromClipboard.replaceAll("(?i)(?s)<img[^>]*>",""); } // Cut out images.
+
+             textFromClipboard = Tools.unescapeHTMLUnicodeEntity(textFromClipboard);
+
+             MindMapNodeModel node = new MindMapNodeModel(textFromClipboard, pMindMapController.getFrame(), pMindMapController.getMap());
+             insertNodeInto(node, target);
+             //nodeStructureChanged(target);
+             pMindMapController.getFrame().setWaitingCursor(false); }
+
+        public DataFlavor getDataFlavor() {
+            return MindMapNodesSelection.htmlFlavor; }
+        public long getNumberOfObjects(Object transferData, Transferable transfer) {
+           return transferData != null ? 1: 0; }}
+
 	private class HtmlFlavorHandler implements DataFlavorHandler {
 
         public void paste(Object TransferData, MindMapNode target,
@@ -400,7 +434,9 @@ public class PasteAction extends AbstractAction implements ActorXml {
     private DataFlavorHandler[] getFlavorHandlers() {
         DataFlavorHandler[] dataFlavorHandlerList = new DataFlavorHandler[] {
                     new FileListFlavorHandler(),
-                    new MindMapNodesFlavorHandler(), new HtmlFlavorHandler(),
+                    new MindMapNodesFlavorHandler(),
+                    new DirectHtmlFlavorHandler(), // %%% Make dependent on an option?
+                    //new HtmlFlavorHandler(),
                     new StringFlavorHandler() };
         return dataFlavorHandlerList;
     }

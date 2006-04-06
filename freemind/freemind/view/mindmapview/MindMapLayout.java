@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.5.4.1 2006-04-05 21:26:32 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.5.4.2 2006-04-06 21:15:07 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -82,7 +82,7 @@ public class MindMapLayout implements LayoutManager {
      * This funcion resizes the map and do the layout.
      * All tree heights, widths and shifts should be already calculated.
      */
-	public void layout() {
+	private void layout() {
         updateTreeHeightsAndRelativeYOfDescendants(getRoot()); 
 		NodeView selected = map.getSelected();
         boolean  holdSelected  = (selected != null && selected.getX() != 0 && selected.getY() != 0);

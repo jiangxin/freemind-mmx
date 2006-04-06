@@ -14,6 +14,8 @@ import javax.swing.AbstractAction;
 
 import freemind.controller.actions.generated.instance.EditNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Tools;
+import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
@@ -21,6 +23,8 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.view.mindmapview.EditNodeBase;
 import freemind.view.mindmapview.EditNodeDialog;
+import freemind.view.mindmapview.EditNodeWYSIWYG;
+import freemind.view.mindmapview.EditNodeExternalApplication;
 import freemind.view.mindmapview.EditNodeTextField;
 import freemind.view.mindmapview.NodeView;
 
@@ -136,6 +140,44 @@ public class EditAction extends AbstractAction implements ActorXml {
 		c.setBlocked(true); // locally "modal" stated
 
 		String text = node.getModel().toString();
+                String htmlEditingOption = c.getController().getProperty("html_editing_option");
+                String useRichTextInNewLongNodes = c.getController().getProperty("use_rich_text_in_new_long_nodes");
+
+                if ((node.getIsLong() || editLong) && 
+                    Tools.safeEquals(useRichTextInNewLongNodes,"true") &&
+                    !text.startsWith("<html>")) {
+                   text = Tools.plainToHTML(text); }
+
+                if (text.startsWith("<html>") && Tools.safeEquals(htmlEditingOption,"internal-wysiwyg")) {
+                   EditNodeWYSIWYG editNodeWYSIWYG = new EditNodeWYSIWYG
+                      (node, text, firstEvent, c,
+                       new EditNodeBase.EditControl() {
+                          public void cancel() {}
+                          public void ok(String newText) {
+                             setNodeText(node.getModel(), newText); }
+                          public void split(String newText, int position) {
+                             c.splitNode(node.getModel(), position, newText);
+                             c.getController().obtainFocusForSelected(); }}); // focus fix 
+                   editNodeWYSIWYG.show();
+                   if (editNodeWYSIWYG.lastEditingWasSuccessful()) {
+                      c.setBlocked(false);
+                      return; }}
+
+                if (text.startsWith("<html>") && Tools.safeEquals(htmlEditingOption,"external")) {
+                   EditNodeExternalApplication editNodeExternalApplication = new EditNodeExternalApplication
+                      (node, text, firstEvent, c,
+                       new EditNodeBase.EditControl() {
+                          public void cancel() {}
+                          public void ok(String newText) {
+                             c.setBlocked(false);
+                             setNodeText(node.getModel(), newText); }
+                          public void split(String newText, int position) {
+                             c.splitNode(node.getModel(), position, newText);
+                             c.getController().obtainFocusForSelected(); }}); // focus fix 
+                   editNodeExternalApplication.show();
+                   // We come here before quitting the editor window.
+                   return; }
+
 		if (node.getIsLong() || editLong) {
 			EditNodeDialog nodeEditDialog =
 				new EditNodeDialog(

@@ -1,6 +1,6 @@
 
 /*FreeMindget - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000-2001  Joerg Mueller <joergmueller@bigfoot.com>
+ *Copyright (C) 2000-2006  Joerg Mueller, Daniel Polansky, Christian Foltin and others.
  *See COPYING for Details
  *
  *This program is free software; you can redistribute it and/or
@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -127,6 +127,13 @@ public class MindMapMapModel extends MapAdapter  {
     public String getRestoreable() {
        return getFile()==null ? null : "MindMap:"+getFile().getAbsolutePath(); }
 
+    public void changeNode(MindMapNode node, String newText) {
+       if (node.toString().startsWith("<html>")) {
+          node.setUserObject(Tools.unescapeHTMLUnicodeEntity(newText)); }
+       else {
+          node.setUserObject(newText); }
+       nodeChanged(node); }
+
     //
     // Other methods
     //
@@ -138,6 +145,21 @@ public class MindMapMapModel extends MapAdapter  {
     // Export and saving
     //
 
+   public String getAsHTML(List mindMapNodes) {
+      try {
+         if (mindMapNodes.size() > 1) {
+            return null; } // HTML not supported for multiple nodes
+         MindMapNodeModel node = (MindMapNodeModel) mindMapNodes.get(0);
+         if (node.hasChildren()) {
+            return null; } // HTML not supported for nodes with children
+         if (node.toString().startsWith("<html>")) {
+            String output = node.toString();
+            return Tools.unicodeToHTMLUnicodeEntity(output); }
+         else {
+            return null; }} // No need to support HTML if the node is a plain text node.        
+      catch(Exception e) {
+         e.printStackTrace();
+         return null; }}
 
    public boolean saveHTML(MindMapNodeModel rootNodeOfBranch, File file) {
         // When isRoot is true, rootNodeOfBranch will be exported as folded
@@ -152,7 +174,7 @@ public class MindMapMapModel extends MapAdapter  {
             fileout.write(
 "<html>"+el+
 "<head>"+el+
-"<title>"+rootNodeOfBranch.saveHTML_escapeUnicodeAndSpecialCharacters(rootNodeOfBranch.toString())+
+"<title>"+rootNodeOfBranch.saveHTML_escapeUnicodeAndSpecialCharacters(rootNodeOfBranch.getPlainTextContent())+
 "</title>"+el+
 "<style type=\"text/css\">"+el+
 "    span.foldopened { color: white; font-size: xx-small;"+el+
@@ -170,14 +192,14 @@ public class MindMapMapModel extends MapAdapter  {
 "    border-color: #CCCCCC; border-width: 1; font-family: sans-serif; padding: 0em 0.1em 0em 0.1em; background: #e0e0e0;"+el+
 "    cursor:pointer; }"+el+
 ""+el+
-"    li { list-style: none; }"+el+
+"    li.mapnode { list-style: none; }"+el+
 ""+el+
 "    span.l { color: red; font-weight: bold; }"+el+
 ""+el+
-"    a:link {text-decoration: none; color: black; }"+el+
-"    a:visited {text-decoration: none; color: black; }"+el+
-"    a:active {text-decoration: none; color: black; }"+el+
-"    a:hover {text-decoration: none; color: black; background: #eeeee0; }"+el+
+"    a.mapnode:link {text-decoration: none; color: black; }"+el+
+"    a.mapnode:visited {text-decoration: none; color: black; }"+el+
+"    a.mapnode:active {text-decoration: none; color: black; }"+el+
+"    a.mapnode:hover {text-decoration: none; color: black; background: #eeeee0; }"+el+
 ""+el+
 "</style>"+el+
 "<!-- ^ Position is not set to relative / absolute here because of Mozilla -->"+el+

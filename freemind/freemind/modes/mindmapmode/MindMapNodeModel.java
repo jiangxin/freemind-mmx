@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.1 2006-04-05 21:26:27 dpolivaev Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.2 2006-04-06 21:15:07 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -35,11 +35,11 @@ import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 
 /**
- * This class represents a single Node of a Tree. It contains direct handles 
+ * This class represents a single Node of a Tree. It contains direct handles
  * to its parent and children and to its view.
  */
 public class MindMapNodeModel extends NodeAdapter {
-	
+
     //
     //  Constructors
     //
@@ -48,7 +48,7 @@ public class MindMapNodeModel extends NodeAdapter {
 		this(null,frame, map);
     }
 
-	    
+
     public MindMapNodeModel( Object userObject, FreeMindMain frame, MindMap map) {
 		super(userObject,frame, map);
 		children = new LinkedList();
@@ -90,9 +90,9 @@ public class MindMapNodeModel extends NodeAdapter {
                 spaceOccured  = true;
                 if (previousSpace) {
                    result.append("&nbsp;"); }
-                else { 
+                else {
                    result.append(" "); }
-                break;                
+                break;
              case '\n':
                 result.append("\n<br>\n");
                 break;
@@ -120,11 +120,11 @@ public class MindMapNodeModel extends NodeAdapter {
 
     public int saveHTML(Writer fileout, String parentID, int lastChildNumber,
                         boolean isRoot, boolean treatAsParagraph, int depth) throws IOException {
-        // return lastChildNumber 
+        // return lastChildNumber
         // Not very beautiful solution, but working at least and logical too.
 
         final String el = System.getProperty("line.separator");
-        
+
         boolean basedOnHeadings = (getFrame().getProperty("html_export_folding").
                                    equals("html_export_based_on_headings"));
 
@@ -135,13 +135,13 @@ public class MindMapNodeModel extends NodeAdapter {
             basedOnHeadings || isRoot) {
            createFolding = false; }
 
-        fileout.write(treatAsParagraph || basedOnHeadings ? "<p>" : "<li>");
+        fileout.write(treatAsParagraph || basedOnHeadings ? "<p>" : "<li class=\"mapnode\">");
 
         String localParentID = parentID;
 	if (createFolding) {
            // lastChildNumber = new Integer lastChildNumber.intValue() + 1; Change value of an integer
            lastChildNumber++;
-     
+
            localParentID = parentID+"_"+lastChildNumber;
            fileout.write
               ("<span id=\"show"+localParentID+"\" class=\"foldclosed\" onClick=\"show_folder('"+localParentID+
@@ -150,7 +150,7 @@ public class MindMapNodeModel extends NodeAdapter {
                "')\">-</Span>");
 
            fileout.write("\n"); }
-        
+
         if (basedOnHeadings && hasChildren() && depth <= 5) {
            fileout.write("<h"+depth+">"); }
 
@@ -158,10 +158,10 @@ public class MindMapNodeModel extends NodeAdapter {
            String link = getLink();
            if (link.endsWith(".mm")) {
               link += ".html"; }
-           fileout.write("<a href=\""+link+"\" target=\"_blank\"><span class=l>~</span>&nbsp;"); }
+           fileout.write("<a class=\"mapnode\" href=\""+link+"\" target=\"_blank\"><span class=l>~</span>&nbsp;"); }
 
         String fontStyle="";
-	
+
 	if (color != null) {
            fontStyle+="color: "+Tools.colorToXml(getColor())+";"; }
 
@@ -197,7 +197,7 @@ public class MindMapNodeModel extends NodeAdapter {
            String output = this.toString().substring(6); // do not write <html>
            if (output.endsWith("</html>")) {
               output = output.substring(0,output.length()-7); }
-           fileout.write(saveHTML_escapeUnicode(output)); }
+           fileout.write(Tools.unicodeToHTMLUnicodeEntity(output)); }
         else {
            fileout.write(saveHTML_escapeUnicodeAndSpecialCharacters(toString())); }
 
@@ -211,9 +211,9 @@ public class MindMapNodeModel extends NodeAdapter {
 
         if (basedOnHeadings && hasChildren() && depth <= 5) {
            fileout.write("</h"+depth+">"); }
-        
+
         // Are the children to be treated as paragraphs?
-        
+
         boolean treatChildrenAsParagraph = false;
         for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
            if (((MindMapNodeModel)e.next()).toString().length() > 100) { // TODO: replace heuristic constant
@@ -227,13 +227,13 @@ public class MindMapNodeModel extends NodeAdapter {
         if (getFrame().getProperty("html_export_folding").equals("html_export_based_on_headings")) {
            lastChildNumber = saveChildrenHtml(fileout, parentID, lastChildNumber, depth, treatChildrenAsParagraph);
            return lastChildNumber; }
-       
+
         //   Export not based on headings
 
         if (hasChildren()) {
            if (getFrame().getProperty("html_export_folding").equals("html_export_based_on_headings")) {
               lastChildNumber = saveChildrenHtml(fileout, parentID, lastChildNumber, depth, treatChildrenAsParagraph);
-              }              
+              }
            else if (createFolding) {
               fileout.write("<ul id=\"fold"+localParentID+
                             "\" style=\"POSITION: relative; VISIBILITY: visible;\">");
@@ -243,7 +243,7 @@ public class MindMapNodeModel extends NodeAdapter {
               saveChildrenHtml(fileout, localParentID, localLastChildNumber, depth, treatChildrenAsParagraph);
               }
            else {
-              fileout.write("<ul>"); 
+              fileout.write("<ul>");
               if (treatChildrenAsParagraph) {
                  fileout.write("<li>"); }
               lastChildNumber = saveChildrenHtml(fileout, parentID, lastChildNumber, depth, treatChildrenAsParagraph);
@@ -254,7 +254,7 @@ public class MindMapNodeModel extends NodeAdapter {
            fileout.write("</ul>"); }
 
         // End up the node
-        
+
         if (!treatAsParagraph) {
            fileout.write(el+"</li>"+el); }
 
@@ -264,33 +264,35 @@ public class MindMapNodeModel extends NodeAdapter {
 
     private int saveChildrenHtml(Writer fileout, String parentID, int lastChildNumber, int depth, boolean treatChildrenAsParagraph) throws IOException {
         for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
-              MindMapNodeModel child = (MindMapNodeModel)e.next(); 
+              MindMapNodeModel child = (MindMapNodeModel)e.next();
               if(child.isVisible()){
               lastChildNumber =
                  child.saveHTML(fileout,parentID,lastChildNumber,/*isRoot=*/false,
-                                treatChildrenAsParagraph, depth + 1); 
+                                treatChildrenAsParagraph, depth + 1);
               }
               else{
                   lastChildNumber =
-                      child.saveChildrenHtml(fileout, parentID, lastChildNumber, depth, treatChildrenAsParagraph);                   
+                      child.saveChildrenHtml(fileout, parentID, lastChildNumber, depth, treatChildrenAsParagraph);
               }
         }
         return lastChildNumber;
     }
+    public String getPlainTextContent() {
+       return Tools.htmlToPlain(toString()); }
     public void saveTXT(Writer fileout,int depth) throws IOException {
+       String plainTextContent = getPlainTextContent();
         for (int i=0; i < depth; ++i) {
            fileout.write("    "); }
-        if (this.toString().matches(" *")) {
+        if (plainTextContent.matches(" *")) {
            fileout.write("o"); }
         else {
            if (getLink() != null) {
               String link = getLink();
-              if (!link.equals(this.toString())) {
-                 fileout.write(this.toString()+" "); }              
+              if (!link.equals(plainTextContent)) {
+                 fileout.write(plainTextContent+" "); }
               fileout.write("<"+link+">"); }
            else {
-              fileout.write(this.toString()); }}
-
+              fileout.write(plainTextContent); }}
 
         fileout.write("\n");
         //fileout.write(System.getProperty("line.separator"));
@@ -305,7 +307,7 @@ public class MindMapNodeModel extends NodeAdapter {
         // separator). This method is actually used only for pasting
         // purposes, it is never used for writing to file. As a result, the
         // writing to file is not tested.
-        
+
         // Another hypothesis is, that something goes astray when creating
         // StringWriter.
 
@@ -347,10 +349,10 @@ public class MindMapNodeModel extends NodeAdapter {
                 break;
              case '}':
                 result.append("\\}");
-                break;                
+                break;
 			case '\n':
 				result.append(" \\line ");
-				break;                
+				break;
              default:
                 result.append(myChar); }}}
        return result.toString(); }
@@ -362,7 +364,7 @@ public class MindMapNodeModel extends NodeAdapter {
            level = "\\outlinelevel" + depth;
         }
         else
-        { 
+        {
            level = "";
         }
         String fontsize="";
@@ -393,7 +395,7 @@ public class MindMapNodeModel extends NodeAdapter {
                  fileout.write("<{\\ul\\cf1 "+link+"}}>"); }}
            else {
               fileout.write(pre+text+"}"); }}
-        
+
         fileout.write("\\par");
         fileout.write("\n");
 
@@ -408,9 +410,9 @@ public class MindMapNodeModel extends NodeAdapter {
                 child.saveRTF(fileout,depth + 1,colorTable);
             }
             else{
-                child.saveChildrenRTF(fileout, depth, colorTable);   
+                child.saveChildrenRTF(fileout, depth, colorTable);
             }
-        }       
+        }
     }
 
 }

@@ -1,22 +1,23 @@
 /*
- * FreeMind - A Program for creating and viewing Mindmaps Copyright (C)
- * 2000-2001 Joerg Mueller <joergmueller@bigfoot.com> See COPYING for Details
- * 
+ * FreeMind - a program for creating and viewing mindmaps
+ * Copyright (C) 2000-2006  Joerg Mueller, Daniel Polansky, Christian Foltin and others.
+ * See COPYING for details
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9 2006-03-26 20:58:43 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.1 2006-04-06 21:15:06 dpolivaev Exp $ */
 
 package freemind.main;
 
@@ -26,6 +27,8 @@ import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.io.BufferedReader;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -153,7 +156,7 @@ public class Tools {
     }
 
     public static boolean xmlToBoolean(String string) {
-    		if(string == null) 
+    		if(string == null)
     			return false;
         if(string.equals("true"))
             return true;
@@ -256,40 +259,132 @@ public class Tools {
                 "&quot;", "\"").replaceAll("&amp;", "&");
     }
 
-    public static String toXMLEscapedTextWithNBSPizedSpaces(String text) {
+    public static String toXMLEscapedTextExpandingWhitespace(String text) {
+        // Spaces and tabs are handled
+        text = text.replaceAll("\t","         "); // Use eight spaces as tab width.
         int len = text.length();
         StringBuffer result = new StringBuffer(len);
         char myChar;
-        boolean previousSpace = false;
-        boolean spaceOccured = false;
         for (int i = 0; i < len; ++i) {
             myChar = text.charAt(i);
-            spaceOccured = false;
             switch (myChar) {
-            case '&':
-                result.append("&amp;");
-                break;
-            case '<':
-                result.append("&lt;");
-                break;
-            case '>':
-                result.append("&gt;");
-                break;
+            case '&': result.append("&amp;"); break;
+            case '<': result.append("&lt;"); break;
+            case '>': result.append("&gt;"); break;
             case ' ':
-                spaceOccured = true;
-                if (previousSpace) {
-                    result.append("&nbsp;");
-                } else {
-                    result.append(" ");
-                }
-                break;
+               if ( i > 0 && i < len-1 &&
+                    (int)text.charAt(i-1) > 32 && (int)text.charAt(i+1) > 32 ) {
+                  result.append(' '); }
+               else {
+                  result.append("&nbsp;"); }
+               break;
             default:
                 result.append(myChar);
             }
-            previousSpace = spaceOccured;
         }
         return result.toString();
     }
+
+    public static String unicodeToHTMLUnicodeEntity(String text) {
+       StringBuffer result = new StringBuffer((int)(text.length()*1.2)); // Heuristic reserve for expansion: factor 1.2
+       int intValue;
+       char myChar;
+       for (int i = 0; i < text.length(); ++i) {
+          myChar = text.charAt(i);
+          intValue = (int) text.charAt(i);
+          if (intValue > 128) {
+             result.append("&#").append(intValue).append(';'); }
+          else {
+             result.append(myChar); }}
+       return result.toString(); };
+
+    public static String unescapeHTMLUnicodeEntity(String text) {
+       StringBuffer result = new StringBuffer(text.length());
+       StringBuffer entity = new StringBuffer();
+       boolean readingEntity = false;
+       char myChar;
+       for (int i = 0; i < text.length(); ++i) {
+          myChar = text.charAt(i);
+          if (readingEntity) {
+             if (myChar == ';') {
+                if (entity.charAt(0) == '#') {
+                   try {
+                      if (entity.charAt(1) == 'x') {
+                         result.append((char) Integer.parseInt(entity.substring(2), 16)); }
+                      else {
+                         result.append((char) Integer.parseInt(entity.substring(1), 10)); }}
+                   catch (NumberFormatException e) {
+                      result.append('&').append(entity).append(';'); }}
+                else {
+                   result.append('&').append(entity).append(';'); }
+                entity.setLength(0);
+                readingEntity = false; }
+             else {
+                entity.append(myChar); }}
+          else {
+             if (myChar == '&') {
+                readingEntity = true; }
+             else {
+                result.append(myChar); }}}
+       if (entity.length() > 0) {
+          result.append('&').append(entity); }
+       return result.toString(); }
+
+    public static String plainToHTML(String text) {
+       char myChar;
+       String textTabsExpanded = text.replaceAll("\t","         "); // Use eight spaces as tab width.
+       StringBuffer result = new StringBuffer(textTabsExpanded.length()); // Heuristic
+       int lengthMinus1 = textTabsExpanded.length() - 1;
+       result.append("<html><body>");
+       for (int i = 0; i < textTabsExpanded.length(); ++i) {
+          myChar = textTabsExpanded.charAt(i);
+          switch (myChar) {
+          case '&': result.append("&amp;"); break;
+          case '<': result.append("&lt;"); break;
+          case '>': result.append("&gt;"); break;
+          case ' ':
+             if ( i > 0 && i < lengthMinus1 &&
+                  (int)textTabsExpanded.charAt(i-1) > 32 && (int)textTabsExpanded.charAt(i+1) > 32 ) {
+                result.append(' '); }
+             else {
+                result.append("&nbsp;"); }
+             break;
+          case '\n': result.append("<br>"); break;
+          default:  result.append(myChar); }}
+       return result.toString(); }
+
+    public static String htmlToPlain(String text) {
+       // 0. remove all newlines
+       // 1. replace newlines, paragraphs, and table rows
+       // 2. remove XML tags
+       // 3. replace HTML entities including &nbsp;
+       // 4. unescape unicode entities
+       // This is a very basic conversion, fixing the most annoying
+       // inconvenience.  You can imagine much better conversion of
+       // HTML to plain text. Most of HTML tags can be handled
+       // sensibly, like web browsers do it.
+       if (!text.startsWith("<html")) {
+          return text; }
+       //System.err.println("base:"+text);
+       String intermediate = text.
+          replaceAll("(?ims)[\n\t]","").        // Remove newlines
+          replaceAll("(?ims) +"," ").           // Condense spaces
+          replaceAll("(?ims)<br.*?>","\n").
+          replaceAll("(?ims)<p.*?>","\n\n").    // Paragraph
+          replaceAll("(?ims)<div.*?>","\n").  // Div - block
+          replaceAll("(?ims)<tr.*?>","\n").
+          replaceAll("(?ims)<dt.*?>","\n").     // Defined term
+          replaceAll("(?ims)<dd.*?>","\n   ").  // Definition of defined term
+          replaceAll("(?ims)<td.*?>"," ").
+          replaceAll("(?ims)<[uo]l.*?>","\n").  // Beginning of a list
+          replaceAll("(?ims)<li.*?>","\n   * ").
+          replaceAll("(?ims) *</[^>]*>","").    // Remaining closing HTML tags
+          replaceAll("(?ims)<[^/][^>]*> *",""). // Remaining opening HTML tags
+          replaceAll("(?ims)&lt;", "<").replaceAll("(?ims)&gt;", ">").
+          replaceAll("(?ims)&quot;", "\"").replaceAll("(?ims)&amp;", "&").
+          replaceAll("(?ims)&nbsp;", " ");
+       //System.err.println("intermediate:"+intermediate);
+       return unescapeHTMLUnicodeEntity(intermediate); }
 
     public static boolean isAbsolutePath(String path) {
         // On Windows, we cannot just ask if the file name starts with file
@@ -425,7 +520,7 @@ public class Tools {
 		return (obj1 != null && obj2 != null && obj1.equals(obj2))
 				|| (obj1 == null && obj2 == null);
 	}
-    
+
     public static boolean safeEqualsIgnoreCase(String string1, String string2) {
         return (string1 != null && string2 != null && string1.toLowerCase()
                 .equals(string2.toLowerCase()))
@@ -585,25 +680,25 @@ public class Tools {
 	public static class TripleDesEncrypter {
 	    private static final String SALT_PRESENT_INDICATOR = " ";
 	    private static final int SALT_LENGTH=8;
-	    
+
 	    Cipher ecipher;
-	
+
 	    Cipher dcipher;
-	
+
 	    // 8-byte default Salt
 	    byte[] salt = { (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
 	            (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03 };
-	
+
 	    // Iteration count
 	    int iterationCount = 19;
-	
+
 		private final char[] passPhrase;
-	
+
 	    public TripleDesEncrypter(StringBuffer pPassPhrase) {
 	    		passPhrase = new char[pPassPhrase.length()];
 	    		pPassPhrase.getChars(0, passPhrase.length, passPhrase, 0);
 	    }
-	
+
 	    /**
 		 * @param mSalt
 		 */
@@ -620,11 +715,11 @@ public class Tools {
 							"PBEWithMD5AndTripleDES").generateSecret(keySpec);
 					ecipher = Cipher.getInstance(key.getAlgorithm());
 					dcipher = Cipher.getInstance(key.getAlgorithm());
-	
+
 					// Prepare the parameter to the ciphers
 					AlgorithmParameterSpec paramSpec = new PBEParameterSpec(
 							salt, iterationCount);
-	
+
 					// Create the ciphers
 					ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
 					dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
@@ -636,7 +731,7 @@ public class Tools {
 				}
 			}
 		}
-	
+
 		public String encrypt(String str) {
 	        try {
 	            // Encode the string into bytes using utf-8
@@ -646,11 +741,11 @@ public class Tools {
 	            for (int i = 0; i < newSalt.length; i++) {
 	                newSalt[i] = (byte)(Math.random()*256l-128l);
 	            }
-	
+
 				init(newSalt);
 	            // Encrypt
 	            byte[] enc = ecipher.doFinal(utf8);
-	
+
 	            // Encode bytes to base64 to get a string
 	            return Tools.toBase64(newSalt)
 	                    + SALT_PRESENT_INDICATOR
@@ -661,8 +756,8 @@ public class Tools {
 	        }
 	        return null;
 	    }
-	
-	
+
+
 	    public String decrypt(String str) {
 	        if(str == null) {
 	            return null;
@@ -679,10 +774,10 @@ public class Tools {
 	            // Decode base64 to get bytes
 	            byte[] dec = Tools.fromBase64(str);
 				init(salt);
-				               
+
 				// Decrypt
 	            byte[] utf8 = dcipher.doFinal(dec);
-	
+
 	            // Decode using utf-8
 	            return new String(utf8, "UTF8");
 	        } catch (javax.crypto.BadPaddingException e) {
@@ -794,7 +889,7 @@ public class Tools {
             throw new RuntimeException("UTF8 packing not allowed");
         }
     }
-    
+
 	/** Extracts a long from xml. Only useful for dates.
      * @param xmlString
      * @return
@@ -807,7 +902,7 @@ public class Tools {
         }
     }
 
-    
+
     public static String dateToString(Date date) {
     	 return Long.toString(date.getTime());
     }
@@ -847,9 +942,9 @@ public class Tools {
 	/** Creates a reader that pipes the input file through a XSLT-Script that
 	 *  updates the version to the current.
 	 * @param file
-	 * @param xsltScript 
-	 * @param frame 
-	 * @return 
+	 * @param xsltScript
+	 * @param frame
+	 * @return
 	 * @throws IOException
 	 */
 	public static Reader getUpdateReader(File file, String xsltScript, FreeMindMain frame) throws IOException {
@@ -899,6 +994,19 @@ public class Tools {
 	    return new BufferedReader(new FileReader(file));
 	}
 
+
+   public static void logTransferable(Transferable t) {
+      System.err.println();
+      System.err.println("BEGIN OF Transferable:\t"+t);
+      DataFlavor[] dataFlavors = t.getTransferDataFlavors();
+      for (int i = 0; i < dataFlavors.length; i++) {
+         System.out.println("  Flavor:\t"+dataFlavors[i]);
+         System.out.println("    Supported:\t"+t.isDataFlavorSupported(dataFlavors[i]));
+         try {
+            System.out.println("    Content:\t"+t.getTransferData(dataFlavors[i])); }
+         catch (Exception e) {}}
+      System.err.println("END OF Transferable");
+      System.err.println(); }
 
 }
 

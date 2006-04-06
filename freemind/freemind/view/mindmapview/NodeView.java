@@ -1,5 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000-2001  Joerg Mueller <joergmueller@bigfoot.com>
+ *Copyright (C) 2000-2006  Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitri Polivaev and others.
  *See COPYING for Details
  *
  *This program is free software; you can redistribute it and/or
@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.1 2006-04-05 21:26:32 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -915,70 +915,80 @@ public abstract class NodeView extends JComponent{
         // Right now, this implementation is quite logical, although it allows
         // for nonconvex feature of nodes starting with <html>.
 
-//        String nodeText = getModel().toString();
         String nodeText = getModel().toString();
-
-        // Tell if node is long and its width has to be restricted
+        // For plain text, tell if node is long and its width has to be restricted
         // boolean isMultiline = nodeText.indexOf("\n") >= 0;
         String[] lines = nodeText.split("\n");
         boolean widthMustBeRestricted = false;
-
-        lines = nodeText.split("\n");
-        for (int line = 0; line < lines.length; line++)
-        {
-            // Compute the width the node would spontaneously take,
-            // by preliminarily setting the text.
-            setText(lines[line]);
-            widthMustBeRestricted = getPreferredSize().width > map
-                    .getZoomed(map.getMaxNodeWidth());
-            if (widthMustBeRestricted)
-            {
-                    break;
-                }
-            }
-
-            isLong = widthMustBeRestricted || lines.length > 1;
-
-            if (nodeText.startsWith("<html>")) {
+        if (!nodeText.startsWith("<html>")) {
+           lines = nodeText.split("\n");
+           for (int line = 0; line < lines.length; line++) {
+              // Compute the width the node would spontaneously take,
+              // by preliminarily setting the text.
+              setText(lines[line]);
+              widthMustBeRestricted = getPreferredSize().width > 
+                 map.getZoomed(map.getMaxNodeWidth());
+              if (widthMustBeRestricted) {
+                 break; }}
+           isLong = widthMustBeRestricted || lines.length > 1;}
+   
+        if (nodeText.startsWith("<html>")) {
            // Make it possible to use relative img references in HTML using tag <base>.
-               if (nodeText.indexOf("<img")>=0 && nodeText.indexOf("<base ") < 0 ) {
-                  try {
-                     nodeText = "<html><base href=\""+
-                        map.getModel().getURL()+"\">"+nodeText.substring(6); }
-                  catch (MalformedURLException e) {} }
-               setText(nodeText); }
-            else if (nodeText.startsWith("<table>")) {
-               lines[0] = lines[0].substring(7); // remove <table> tag
-               int startingLine = lines[0].matches("\\s*") ? 1 : 0;
-               // ^ If the remaining first line is empty, do not draw it
+           if (nodeText.indexOf("<img")>=0 && nodeText.indexOf("<base ") < 0 ) {
+              try {
+                 nodeText = "<html><base href=\""+
+                    map.getModel().getURL()+"\">"+nodeText.substring(6); }
+              catch (MalformedURLException e) {} }
+           // If user does not want us to set the width automatically, he'll use <body width="">,
+           // <body width="800">, or avoid the <body> tag altogether.
 
-               String text = "<html><table border=1 style=\"border-color: white\">";
-               //String[] lines = nodeText.split("\n");
-               for (int line = startingLine; line < lines.length; line++) {
-                  text += "<tr><td style=\"border-color: white;\">"+
-                     Tools.toXMLEscapedText(lines[line]).replaceAll("\t","<td style=\"border-color: white\">"); }
-               setText(text); }
-            else if (isLong) {
-               String text = "<tr><td>";
-               int maximumLineLength = 0;
-               for (int line = 0; line < lines.length; line++) {
-                  text += Tools.toXMLEscapedTextWithNBSPizedSpaces(lines[line]) + "<p>";
-                  if (lines[line].length() > maximumLineLength) {
-                     maximumLineLength = lines[line].length(); }}
+           // Set user HTML head
+           String htmlLongNodeHead = map.getController().getFrame().getProperty("html_long_node_head");
+           if (htmlLongNodeHead != null && !htmlLongNodeHead.equals("")) {
+              if (nodeText.matches("(?ims)<head>")) {
+                 nodeText = nodeText.replaceFirst("(?ims)<head>","<head>"+htmlLongNodeHead); }
+              else {
+                 nodeText = nodeText.replaceFirst("(?ims)<html>","<html><head>"+htmlLongNodeHead+"</head>"); }}
 
-    			text += "</td></tr>";
-               setText("<html><table"+
-                       (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
-                       text+"</table></html>"); }
-            // 6) AttributeView
-            attributeView.update();
-       		// 7) ToolTips:
-            updateToolTip();
-            // 8) AttributeView
-            syncronizeAttributeView();
-            // 9) Complete
-            revalidate(); // Because of zoom?
-        }
+           // Find out if the width has to be restricted.
+           if (nodeText.length() < 30000) {
+              //Empirically determined limit, above which we restrict the width without actually checking it.
+              //The purpose of that is to speed up rendering of very long nodes.
+              setText(nodeText);
+              widthMustBeRestricted = getPreferredSize().width > map.getZoomed(map.getMaxNodeWidth());}
+           else {
+              widthMustBeRestricted = true; }
+
+           if (widthMustBeRestricted) {
+              nodeText = nodeText.replaceFirst("(?i)<body>","<body width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">");}
+           setText(nodeText); }
+        else if (nodeText.startsWith("<table>")) {           	             	  
+           lines[0] = lines[0].substring(7); // remove <table> tag
+           int startingLine = lines[0].matches("\\s*") ? 1 : 0;
+           // ^ If the remaining first line is empty, do not draw it
+           
+           String text = "<html><table border=1 style=\"border-color: white\">";
+           //String[] lines = nodeText.split("\n");
+           for (int line = startingLine; line < lines.length; line++) {
+              text += "<tr><td style=\"border-color: white;\">"+
+                 Tools.toXMLEscapedText(lines[line]).replaceAll("\t","<td style=\"border-color: white\">"); }
+           setText(text); }
+        else if (isLong) {
+           String text = "";              
+           for (int line = 0; line < lines.length; line++) {
+              text += Tools.plainToHTML(lines[line]) + "<p>"; }
+           setText("<html><body"+
+                   (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
+                   text); }
+        // 6) AttributeView
+        attributeView.update();
+        // 7) ToolTips:
+        updateToolTip();
+        // 8) AttributeView
+        syncronizeAttributeView();
+        // 9) Complete
+        revalidate(); // Because of zoom?
+    }
 
     /**
      *

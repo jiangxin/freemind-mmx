@@ -80,7 +80,7 @@ public class NodeDragListener implements DragGestureListener {
       //	DragSource dragSource = DragSource.getDefaultDragSource();
 
       e.startDrag
-         ( cursor , t, //new MindMapNodesSelection("Ahoj","Ahoj","Ahoj", dragAction),
+         ( cursor , t,
           new DragSourceListener() {
              public void	dragDropEnd(DragSourceDropEvent dsde) {
 

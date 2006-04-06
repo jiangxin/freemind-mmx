@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: CutAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: CutAction.java,v 1.1.2.2.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -193,8 +193,8 @@ public class CutAction extends AbstractAction implements ActorXml {
                 trans.getTransferable(),
         		trans.getTransferableAsPlainText(),
                 trans.getTransferableAsRTF(),
-                trans.getTransferableAsDrop(),
                 trans.getTransferableAsHtml(),
+                trans.getTransferableAsDrop(),
                 fileList);
         return copy;
     }

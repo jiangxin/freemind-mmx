@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.1 2006-04-05 21:26:24 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.2 2006-04-06 21:15:06 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -108,7 +108,7 @@ public class Controller  implements MapModuleChangeOberser {
 	private LastOpenedList lastOpened;//A list of the pathnames of all the maps that were opened in the last time
     private MapModuleManager mapModuleManager;// new MapModuleManager();
     /**  The current mode */
-    private Mode mMode; 
+    private Mode mMode;
     private FreeMindMain frame;
     private JToolBar toolbar;
     private JToolBar filterToolbar;
@@ -127,21 +127,21 @@ public class Controller  implements MapModuleChangeOberser {
     private boolean antialiasEdges = false;
     private boolean antialiasAll = false;
     private Map fontMap = new HashMap();
-    
+
     private FilterController fc;
 
-    boolean isPrintingAllowed=true;     
+    boolean isPrintingAllowed=true;
     boolean menubarVisible=true;
     boolean toolbarVisible=true;
     boolean leftToolbarVisible=true;
 
-    public CloseAction close; 
-    public Action print; 
-    public Action printDirect; 
+    public CloseAction close;
+    public Action print;
+    public Action printDirect;
     public Action printPreview;
-    public Action page; 
+    public Action page;
     public Action quit;
-    public Action background; 
+    public Action background;
 
     public OptionAntialiasAction optionAntialiasAction;
     public Action optionHTMLExportFoldingAction;
@@ -153,7 +153,7 @@ public class Controller  implements MapModuleChangeOberser {
     public Action license;
     public Action navigationPreviousMap;
     public Action showFilterToolbarAction;
-    public Action showAttributeManagerAction;    
+    public Action showAttributeManagerAction;
     public Action navigationNextMap;
 
     public Action moveToRoot;
@@ -266,7 +266,7 @@ public class Controller  implements MapModuleChangeOberser {
     public URL getResource(String resource) {
         return getFrame().getResource(resource);
     }
-                                            
+
     public String getResourceString(String resource) {
           return frame.getResourceString(resource);
     }
@@ -318,8 +318,8 @@ public class Controller  implements MapModuleChangeOberser {
         return lastOpened;
     }
 
-    // 
-   
+    //
+
     private MapModule getMapModule() {
         return getMapModuleManager().getMapModule();
     }
@@ -387,7 +387,7 @@ public class Controller  implements MapModuleChangeOberser {
 	static public JColorChooser getCommonJColorChooser() {
 		return colorChooser;
 	}
-	
+
 	public static Color showCommonJColorChooserDialog(Component component,
 		String title, Color initialColor) throws HeadlessException {
 
@@ -440,7 +440,7 @@ public class Controller  implements MapModuleChangeOberser {
 	 public boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
 		return true;
 	}
-	 
+
 	 public void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
         ModeController oldModeController;
         this.mMode = newMode;
@@ -465,7 +465,7 @@ public class Controller  implements MapModuleChangeOberser {
                     oldModeController.getLeftToolBar());
         }
     }
-	 
+
 	 public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
         ModeController newModeController;
         if (newMapModule != null) {
@@ -505,19 +505,19 @@ public class Controller  implements MapModuleChangeOberser {
         menuBar.updateMenus(newModeController);
         menuBar.validate();
         menuBar.repaint();
-        
+
     }
-	 
+
 	public void numberOfOpenMapInformation(int number) {
 		navigationPreviousMap.setEnabled(number>0);
 		navigationNextMap.setEnabled(number>0);
 	}
-	 
 
-    /** Creates a new mode (controller), activates the toolbars, title and deactivates all 
+
+    /** Creates a new mode (controller), activates the toolbars, title and deactivates all
      * actions.
      * Does nothing, if the mode is identical to the current mode.
-     * 
+     *
      * @param mode
      * @return false if the change was not successful.
      */
@@ -539,13 +539,13 @@ public class Controller  implements MapModuleChangeOberser {
 
         setTitle();
         getMode().activate();
-       
+
         Object[] messageArguments = {
         		getMode().toString()
         };
         MessageFormat formatter = new MessageFormat(getResourceString("mode_status"));
         getFrame().out(formatter.format(messageArguments));
-        
+
         return true;
     }
 
@@ -625,7 +625,7 @@ public class Controller  implements MapModuleChangeOberser {
 	}
 
 
-    
+
 // (PN) %%%
 //    public void select( NodeView node) {
 //        getView().select(node,false);
@@ -635,7 +635,7 @@ public class Controller  implements MapModuleChangeOberser {
 //    void selectBranch( NodeView node, boolean extend ) {
 //        getView().selectBranch(node,extend);
 //    }
-//        
+//
 //    boolean isSelected( NodeView node ) {
 //        return getView().isSelected(node);
 //    }
@@ -646,7 +646,7 @@ public class Controller  implements MapModuleChangeOberser {
 //
 //    private MindMapNode getSelected() {
 //        return getView().getSelected().getModel();
-//    }    
+//    }
 
     public void informationMessage(Object message) {
        JOptionPane.showMessageDialog(getFrame().getContentPane(), message.toString(), "FreeMind", JOptionPane.INFORMATION_MESSAGE); }
@@ -676,7 +676,7 @@ public class Controller  implements MapModuleChangeOberser {
         SwingUtilities.invokeLater( new Runnable() {
                 public void run () {
                     if (getView() != null) { // is null if the last map was closed.
-                        getView().getSelected().requestFocus(); 
+                        getView().getSelected().requestFocus();
                     } else {
                         // fc, 6.1.2004: bug fix, that open and quit are not working if no map is present.
                         // to avoid this, the menu bar gets the focus, and everything seems to be all right!!
@@ -684,7 +684,7 @@ public class Controller  implements MapModuleChangeOberser {
                         getFrame().getFreeMindMenuBar().requestFocus();
                     }
                 }
-            }); 
+            });
     }
 
     //
@@ -700,7 +700,7 @@ public class Controller  implements MapModuleChangeOberser {
         ((MainToolBar)toolbar).setZoomComboBox(zoom);
         // show text in status bar:
         Object[] messageArguments = {
-         String.valueOf(zoom*100f) 
+         String.valueOf(zoom*100f)
         };
         MessageFormat formatter = new MessageFormat(getResourceString("user_defined_zoom_status_bar"));
         getFrame().out(formatter.format(messageArguments));
@@ -723,7 +723,7 @@ public class Controller  implements MapModuleChangeOberser {
     //
     // Multiple Views management
     //
-        
+
 
 	/**
 	 * Set the Frame title with mode and file if exist
@@ -734,20 +734,20 @@ public class Controller  implements MapModuleChangeOberser {
 		};
 		MessageFormat formatter = new MessageFormat
 		   (getResourceString("mode_title"));
-		String title = formatter.format(messageArguments);        
+		String title = formatter.format(messageArguments);
 		if (getMapModule() != null) {
-			title = getMapModule().toString() + " - " + title +               
+			title = getMapModule().toString() + " - " + title +
 			  ( getMapModule().getModel().isReadOnly() ?
-				" ("+getResourceString("read_only")+")" : ""); 
+				" ("+getResourceString("read_only")+")" : "");
 		}
 		getFrame().setTitle(title);
-	}   
+	}
     //
     // Actions management
     //
 
     /**
-     * Manage the availabilty of all Actions dependend 
+     * Manage the availabilty of all Actions dependend
      * of whether there is a map or not
      */
     public void setAllActions(boolean enabled) {
@@ -967,7 +967,7 @@ public class Controller  implements MapModuleChangeOberser {
             else
                return;
 
-            // Ask user for page format (e.g., portrait/landscape)          
+            // Ask user for page format (e.g., portrait/landscape)
             pageFormat = printerJob.pageDialog(pageFormat);
             if (pageFormat.getOrientation() == PageFormat.LANDSCAPE) {
                 setProperty("page_orientation", "landscape");
@@ -1000,7 +1000,7 @@ public class Controller  implements MapModuleChangeOberser {
                 /* new handling for relative urls. fc, 29.10.2003.*/
                 map = "file:" + System.getProperty("user.dir") + map.substring(1);//remove "." and make url
                 /* end: new handling for relative urls. fc, 29.10.2003.*/
-            }    
+            }
             if (map != null && map != "") {
                 URL url = null;
                 try {
@@ -1057,7 +1057,7 @@ public class Controller  implements MapModuleChangeOberser {
     //
 
     private class NavigationPreviousMapAction extends AbstractAction {
-        NavigationPreviousMapAction(Controller controller) {     
+        NavigationPreviousMapAction(Controller controller) {
             super(controller.getResourceString("previous_map"),
                   new ImageIcon(getResource("images/1leftarrow.png")));
             setEnabled(false);
@@ -1066,10 +1066,10 @@ public class Controller  implements MapModuleChangeOberser {
             mapModuleManager.previousMapModule();
         }
     }
-    
+
     private class ShowAttributeDialogAction extends AbstractAction {
         private Controller c;
-        ShowAttributeDialogAction(Controller c) {     
+        ShowAttributeDialogAction(Controller c) {
             super(c.getResourceString("attributes_dialog"),
                   new ImageIcon(getResource("images/showAttributes.gif")));
             this.c = c;
@@ -1080,7 +1080,7 @@ public class Controller  implements MapModuleChangeOberser {
 			}
 			return attributeDialog;
 		}
-		
+
 		 public void actionPerformed(ActionEvent e) {
 		     if (getAttributeDialog().isVisible() == false)
 		     {
@@ -1091,7 +1091,7 @@ public class Controller  implements MapModuleChangeOberser {
     }
 
     private class ShowFilterToolbarAction extends AbstractAction {
-        ShowFilterToolbarAction(Controller controller) {     
+        ShowFilterToolbarAction(Controller controller) {
             super("",
                   new ImageIcon(getResource("images/filter.gif")));
         }
@@ -1120,7 +1120,7 @@ public class Controller  implements MapModuleChangeOberser {
     //
     // Node navigation
     //
-    
+
     private class MoveToRootAction extends AbstractAction {
         MoveToRootAction(Controller controller) {
             super(controller.getResourceString("move_to_root"));
@@ -1130,7 +1130,7 @@ public class Controller  implements MapModuleChangeOberser {
             moveToRoot();
         }
     }
-            
+
     private class ToggleMenubarAction extends AbstractAction {
         ToggleMenubarAction(Controller controller) {
            super(controller.getResourceString("toggle_menubar"));
@@ -1181,11 +1181,11 @@ public class Controller  implements MapModuleChangeOberser {
     //
     // Preferences
     //
-    
+
     private static Vector propertyChangeListeners = new Vector();
-    
+
     private AttributeManagerDialog attributeDialog = null;
-    
+
     public static Collection getPropertyChangeListeners() {
         return Collections.unmodifiableCollection(propertyChangeListeners);
     }
@@ -1199,9 +1199,9 @@ public class Controller  implements MapModuleChangeOberser {
     public void mapChanged(MindMap newMap){
         fc.mapChanged(newMap);
         if (attributeDialog != null)
-            attributeDialog.mapChanged(newMap); 
+            attributeDialog.mapChanged(newMap);
     }
-    
+
     public static void addPropertyChangeListener(FreemindPropertyListener listener) {
         Controller.propertyChangeListeners.add(listener);
     }
@@ -1214,7 +1214,7 @@ public class Controller  implements MapModuleChangeOberser {
 		private final Controller controller;
 
 		/**
-		 * 
+		 *
 		 */
 		public PropertyAction(Controller controller) {
 			super(controller.getResourceString("property_dialog"));
@@ -1242,7 +1242,7 @@ public class Controller  implements MapModuleChangeOberser {
 							controller.setProperty(key, newProperty);
 						}
 					}
-					
+
 					for (Iterator i = Controller.getPropertyChangeListeners().iterator(); i.hasNext();) {
 						FreemindPropertyListener listener = (FreemindPropertyListener) i
 								.next();
@@ -1252,7 +1252,7 @@ public class Controller  implements MapModuleChangeOberser {
     						listener.propertyChanged(key, controller.getProperty(key), (String) oldProperties.get(key));
                         }
 					}
-					
+
 					if (oldProperties.size() > 0) {
                         JOptionPane
                                 .showMessageDialog(
@@ -1290,7 +1290,7 @@ public class Controller  implements MapModuleChangeOberser {
 
 			dialog.pack();
 			dialog.setVisible(true);
-			
+
 		}
 
 	}
@@ -1316,7 +1316,7 @@ public class Controller  implements MapModuleChangeOberser {
         public void actionPerformed(ActionEvent e) {
             Color color = showCommonJColorChooserDialog(getView(),getResourceString("choose_background_color"),getView().getBackground() );
             getModel().setBackgroundColor(color);
-            
+
         }
     }
 
@@ -1326,7 +1326,7 @@ public class Controller  implements MapModuleChangeOberser {
        }
        public void actionPerformed(ActionEvent e) {
           String command = e.getActionCommand();
-        changeAntialias(command); 
+        changeAntialias(command);
        }
 	    /**
 	     * @param command
@@ -1418,6 +1418,6 @@ public class Controller  implements MapModuleChangeOberser {
     public PageFormat getPageFormat() {
         return pageFormat;
     }
-    
+
 }//Class Controller
 

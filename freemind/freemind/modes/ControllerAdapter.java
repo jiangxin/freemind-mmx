@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
+import java.awt.BorderLayout;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
@@ -34,11 +35,17 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowAdapter;
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -55,6 +62,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -77,6 +85,8 @@ import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
+import freemind.modes.actions.UsePlainTextAction;
+import freemind.modes.actions.UseRichFormattingAction;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
@@ -108,7 +118,9 @@ public abstract class ControllerAdapter implements ModeController {
 
 	private Mode mode;
 
-    public Action showAllAttributes = new ShowAllAttributesAction();
+    public UseRichFormattingAction useRichFormatting = null;
+    public UsePlainTextAction usePlainText = null;
+   public Action showAllAttributes = new ShowAllAttributesAction();
     public Action showSelectedAttributes = new ShowSelectedAttributesAction();
     public Action hideAllAttributes = new HideAllAttributesAction();
 
@@ -132,10 +144,10 @@ public abstract class ControllerAdapter implements ModeController {
         // for updates of nodes:
 		nodesAlreadyUpdated = new HashSet();
 		nodesToBeUpdated    = new HashSet();
-        // create attrubute controller
         DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
                                                new FileOpener());
-
+        useRichFormatting = new UseRichFormattingAction(this);
+        usePlainText = new UsePlainTextAction(this);
     }
 
     public void setModel(MapAdapter model) {
@@ -500,11 +512,14 @@ public abstract class ControllerAdapter implements ModeController {
      * replaced with _), like : or /. The exact list of dangeous characters
      * needs to be investigated. 0.8.0RC3.
      *
+     *
+     * Keywords: suggest file name.
+     * 
      * @return
      */
     private String getFileNameProposal() {
-        String rootText = ((MindMapNode)getMap().getRoot()).toString();
-        rootText = rootText.replaceAll("[&:/\\\\\0%$#~\\?\\*\"]+", "");
+        String rootText = ((MindMapNode)getMap().getRoot()).getPlainTextContent();
+        rootText = rootText.replaceAll("[&:/\\\\\0%$#~\\?\\*]+", "");
         return rootText;
     }
 

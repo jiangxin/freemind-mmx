@@ -1,5 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000-2004  Joerg Mueller, Daniel Polansky, Christian Foltin and others.
+ *Copyright (C) 2000-2006  Joerg Mueller, Daniel Polansky, Christian Foltin and others.
  *
  *See COPYING for Details
  *
@@ -19,19 +19,20 @@
  *
  * Created on ???
  */
-/*$Id: MindMapNodesSelection.java,v 1.2.18.2 2005-04-24 18:49:12 christianfoltin Exp $*/
+/*$Id: MindMapNodesSelection.java,v 1.2.18.2.12.1 2006-04-06 21:15:06 dpolivaev Exp $*/
 package freemind.controller;
 import java.awt.datatransfer.*;
 import java.io.*;
 import java.util.List;
+import java.util.ArrayList;
 
 public class MindMapNodesSelection implements Transferable, ClipboardOwner {
 
    private String nodesContent;
    private String stringContent;
    private String rtfContent;
+   private String htmlContent;
    private String dropActionContent;
-   private final String htmlContent;
    private final List fileList;
 
    public static DataFlavor mindMapNodesFlavor = null;
@@ -56,7 +57,7 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
    //
 
    public MindMapNodesSelection(String nodesContent, String stringContent,
-            String rtfContent, String dropActionContent, String htmlContent,
+            String rtfContent, String htmlContent, String dropActionContent, 
             List fileList) {
         this.nodesContent = nodesContent;
         this.rtfContent = rtfContent;
@@ -79,16 +80,15 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
          //   System.out.println(byteArray[i]); }
 
          return new ByteArrayInputStream(byteArray); }
-      if(flavor.equals(htmlFlavor)) {
-          return htmlContent;
-      }
+      if (flavor.equals(htmlFlavor) && htmlContent != null) {
+         return htmlContent; }
       if(flavor.equals(fileListFlavor)) {
           return fileList;
       }
       throw new UnsupportedFlavorException(flavor); }
 
    public DataFlavor[] getTransferDataFlavors() {
-      return new DataFlavor[] { DataFlavor.stringFlavor, mindMapNodesFlavor, rtfFlavor, dropActionFlavor}; }
+      return new DataFlavor[] { DataFlavor.stringFlavor, mindMapNodesFlavor, rtfFlavor, htmlFlavor, dropActionFlavor}; }
 
    public boolean isDataFlavorSupported(DataFlavor flavor) {
        if(flavor.equals(DataFlavor.stringFlavor) && stringContent != null) 

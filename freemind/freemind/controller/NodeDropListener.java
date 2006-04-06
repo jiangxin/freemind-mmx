@@ -40,7 +40,6 @@ public class NodeDropListener implements DropTargetListener {
 
     public void register(DropTargetListener listener) {
         this.mListener = listener;
-
     }
 
     public void deregister() {

@@ -1,5 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000-2004  Joerg Mueller, Daniel Polansky, Christian Foltin and others.
+ *Copyright (C) 2000-2006  Joerg Mueller, Daniel Polansky, Christian Foltin and others.
  *
  *See COPYING for Details
  *
@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1 2004-10-17 23:00:13 dpolivaev Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.1 2006-04-06 21:15:07 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -190,17 +190,17 @@ public class EditNodeDialog extends EditNodeBase {
 					eventSource.setValue(BUTTON_CANCEL);
 					dialog.dispose();
 				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (enterConfirms.isSelected()
-						== ((e.getModifiers() & KeyEvent.CTRL_MASK) == 0)) {
-						e.consume();
-						eventSource.setValue(BUTTON_OK);
-						dialog.dispose();
-					} else if (
-						enterConfirms.isSelected()
-							&& (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
-						e.consume();
-						textArea.insert("\n", textArea.getCaretPosition());
-					}
+                                   if (enterConfirms.isSelected() && (e.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
+                                      e.consume();
+                                      textArea.insert("\n",textArea.getCaretPosition()); }
+                                   else if (enterConfirms.isSelected() || ((e.getModifiers() & KeyEvent.ALT_MASK) != 0)) {
+                                      e.consume();
+                                      eventSource.setValue(BUTTON_OK);
+                                      dialog.dispose(); }
+                                   else {
+                                      e.consume();
+                                      textArea.insert("\n", textArea.getCaretPosition());
+                                   }
 				} 
 			}
 

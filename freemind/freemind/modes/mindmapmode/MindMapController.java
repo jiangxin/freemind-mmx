@@ -1,5 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000-2001  Joerg Mueller <joergmueller@bigfoot.com>
+ *Copyright (C) 2000-2006 Joerg Mueller, Daniel Polansky, Christian Foltin and others.
  *See COPYING for Details
  *
  *This program is free software; you can redistribute it and/or
@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -645,6 +645,9 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
     private void createIconActions() {
         Vector iconNames = MindIcon.getAllIconNames();
+        String[] userIconArray = getFrame().getProperty("user_icons").split(",");
+        for ( int i = 0 ; i < userIconArray.length; ++i ) {
+           iconNames.add(userIconArray[i]); }
         for ( int i = 0 ; i < iconNames.size(); ++i ) {
             String iconName = ((String) iconNames.get(i));
             MindIcon myIcon     = MindIcon.factory(iconName);

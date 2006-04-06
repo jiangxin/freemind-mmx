@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.2 2005-01-08 16:21:07 christianfoltin Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2.12.1 2006-04-06 21:15:07 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -54,11 +54,12 @@ public class EditNodeBase {
     protected static  final int BUTTON_OK = 0;
     protected static  final int BUTTON_CANCEL = 1;
     protected static  final int BUTTON_SPLIT = 2;
-    private NodeView node;
+    protected NodeView node;
     private EditControl editControl;
     private Clipboard clipboard;
     private ModeController controller;
-	private String text;
+	protected String text;
+   protected boolean lastEditingWasSuccessful;
 
 	EditNodeBase(final NodeView node,
 	final String text,
@@ -102,8 +103,8 @@ public class EditNodeBase {
     	return controller.getFrame();
     }
 
-    protected boolean binOptionIsTrue(String option) {
-    	return Tools.safeEquals("true", option);
+    protected boolean binOptionIsTrue(String option) {       
+       return Tools.safeEquals("true", getFrame().getProperty(option));
     }
 
 	// this enables from outside close the edit mode
@@ -186,6 +187,10 @@ public class EditNodeBase {
      */
     public void setTextFieldListener(FocusListener listener) {
         textFieldListener = listener;
+    }
+
+    public boolean lastEditingWasSuccessful() {
+       return lastEditingWasSuccessful; 
     }
 
 }
