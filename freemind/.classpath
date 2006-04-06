@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/build*.xml|**/build.xml|**/cvs/|plugins/collaboration/**" kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="plugins/svg/xml-apis.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-bridge.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-css.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-dom.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-ext.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-extension.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-gui-util.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-gvt.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-parser.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-script.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-squiggle.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-svg-dom.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-svggen.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-swing.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-transcoder.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-util.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-xml.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/js.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/pdf-transcoder.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/xerces_2_5_0.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-awt-util.jar"/>
+	<classpathentry kind="lib" path="plugins/help/jhall.jar"/>
+	<classpathentry kind="lib" path="plugins/time/jcalendar.jar"/>
+	<classpathentry kind="lib" path="lib/jibx/jibx-bind.jar"/>
+	<classpathentry kind="lib" path="lib/bindings.jar"/>
+	<classpathentry kind="lib" path="lib/jibx/jibx-run.jar"/>
+	<classpathentry kind="lib" path="lib/kafenio-icons.jar"/>
+	<classpathentry kind="lib" path="lib/gnu-regexp-1.1.4.jar"/>
+	<classpathentry kind="lib" path="lib/jarbundler-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/kafenio.jar"/>
+	<classpathentry kind="lib" path="lib/kafenio-config.jar"/>
+	<classpathentry kind="lib" path="lib/forms-1.0.5.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.0.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>
