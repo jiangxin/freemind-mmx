@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePatternFactory.java,v 1.1.2.3 2006-03-26 20:58:43 christianfoltin Exp $*/
+/*$Id: StylePatternFactory.java,v 1.1.2.4 2006-04-08 21:45:55 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -174,7 +174,7 @@ public class StylePatternFactory {
 						+ translator.getText("PatternToString.NodeFontSize");
 			} else {
 				result += "+"
-						+ translator.getText("PatternToString.NodeFontSize")
+						+ translator.getText("PatternToString.NodeFontSize") + " "
 						+ pPattern.getPatternNodeFontSize().getValue();
 			}
 		}
@@ -200,6 +200,17 @@ public class StylePatternFactory {
 		Pattern pat = (Pattern) XmlBindingTools.getInstance().unMarshall(
 				patternString);
 		return pat;
+	}
+
+    private static final String PATTERNS_DUMMY = "<patterns/>";
+	public static Patterns getPatternsFromString(String patterns) {
+	    String patternsString = patterns;
+	    if (patternsString == null) {
+	        patternsString = PATTERNS_DUMMY;
+	    }
+	    Patterns pat = (Patterns) XmlBindingTools.getInstance().unMarshall(
+	            patternsString);
+	    return pat;
 	}
 
 }
