@@ -5,6 +5,7 @@
 package freemind.main;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -17,6 +18,7 @@ import javax.swing.JFrame;
 public class Resources {
     private FreeMindMain frame;
     static Resources resourcesInstance = null;
+    private HashMap countryMap;
     private Resources(FreeMindMain frame) {
         this.frame = frame;  
     }
@@ -69,5 +71,18 @@ public class Resources {
     
     public FreeMindMain getFrame() {
         return frame;
+    }
+
+    public HashMap getCountryMap() {
+        if(countryMap == null){
+            String[] countryMapArray = new String[]{ 
+                    "de", "DE", "en", "UK", "en", "US", "es", "ES", "es", "MX", "fi", "FI", "fr", "FR", "hu", "HU", "it", "CH",
+                    "it", "IT", "nl", "NL", "no", "NO", "pt", "PT", "ru", "RU", "sl", "SI", "uk", "UA", "zh", "CN" };
+            
+            countryMap = new HashMap();
+            for (int i = 0; i < countryMapArray.length; i = i + 2) {
+                countryMap.put(countryMapArray[i],countryMapArray[i+1]); }
+        }
+        return countryMap;
     }
 }

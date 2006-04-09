@@ -17,11 +17,12 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.3 2006-04-09 09:47:48 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.4 2006-04-09 18:03:16 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -34,8 +35,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.text.html.HTMLDocument;
 
+import de.xeinfach.kafenio.KafenioPanel;
+import de.xeinfach.kafenio.KafenioPanelConfiguration;
+import de.xeinfach.kafenio.interfaces.KafenioPanelConfigurationInterface;
 import de.xeinfach.kafenio.interfaces.KafenioPanelInterface;
 import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.ModeController;
 
@@ -46,6 +51,8 @@ import freemind.modes.ModeController;
 public class EditNodeWYSIWYG extends EditNodeBase {
 
    private KeyEvent firstEvent;
+
+static KafenioPanelConfigurationInterface kafenioPanelConfiguration;
 
    private static JDialog htmlEditorWindow;
    private static KafenioPanelInterface htmlEditorPanel;
@@ -67,7 +74,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
          boolean position_window_below_node = binOptionIsTrue("el__position_window_below_node");
          FreeMindMain frame = getFrame();
          if (htmlEditorPanel == null) {
-             htmlEditorPanel = ComponentFactory.createKafenioPanel();
+            createKafenioPanel();
             htmlEditorWindow = new JDialog((JFrame)frame, title, /*modal=*/true);
             htmlEditorWindow.getContentPane().setLayout(new BorderLayout());
             htmlEditorWindow.getContentPane().add((JPanel)htmlEditorPanel, BorderLayout.CENTER);
@@ -159,4 +166,36 @@ public class EditNodeWYSIWYG extends EditNodeBase {
    // return false; }}
    
    protected KeyEvent getFirstEvent() {
-       return firstEvent; }}
+       return firstEvent; }
+   
+   static private KafenioPanelInterface createKafenioPanel() throws Exception {
+       createCafenioConfiguration();
+       htmlEditorPanel  = new KafenioPanel(kafenioPanelConfiguration);
+       htmlEditorPanel.getJToolBar1().setRollover(true);
+       //htmlEditorPanel.getJToolBar2().setRollover(true);
+       return htmlEditorPanel;           
+   }
+private static void createCafenioConfiguration() {
+    String language = Resources.getInstance().getProperty("language");
+       HashMap countryMap = Resources.getInstance().getCountryMap();        
+       kafenioPanelConfiguration = new KafenioPanelConfiguration();
+       kafenioPanelConfiguration.setImageDir("file://");
+       kafenioPanelConfiguration.setDebugMode(true); 
+       //kafenioPanelConfiguration.setLanguage("sk");
+       //kafenioPanelConfiguration.setCountry("SK");
+       kafenioPanelConfiguration.setLanguage(language);
+       kafenioPanelConfiguration.setCountry((String)countryMap.get(language));
+       kafenioPanelConfiguration.setCustomMenuItems("edit view font format insert table forms search tools help");
+       // In the following excluded: new, open, styleselect
+       kafenioPanelConfiguration.setCustomToolBar1("cut copy paste ld bold italic underline strike color left center right justify viewsource confirmcontent");
+       // All available tool bar items:
+       // new open save cut copy paste bold italic underline left center right justify styleselect ulist olist deindent indent anchor
+       // image clearformats viewsource strike superscript subscript insertcharacter find color table
+       
+       kafenioPanelConfiguration.setShowToolbar2(false);
+       kafenioPanelConfiguration.setProperty("escapeCloses","true");
+       kafenioPanelConfiguration.setProperty("confirmRatherThanPost","true");
+       //kafenioPanelConfiguration.setProperty("alternativeLanguage","en");
+       //kafenioPanelConfiguration.setProperty("alternativeCountry","US");
+}
+}
