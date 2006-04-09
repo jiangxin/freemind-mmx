@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.2 2006-04-09 13:34:38 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -175,7 +175,7 @@ public class OptionPanel implements TextTranslator {
 		FormLayout leftLayout = new FormLayout("80dlu", "");
 		DefaultFormBuilder leftBuilder = new DefaultFormBuilder(leftLayout);
 
-		CardLayout cardLayout = new CardLayout();
+		CardLayout cardLayout = new VariableSizeCardLayout();
 		JPanel rightStack = new JPanel(cardLayout);
 
 		FormLayout rightLayout = null; // add rows dynamically

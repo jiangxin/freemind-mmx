@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ChooseFormatPopupDialog.java,v 1.1.2.6.2.1 2006-04-05 21:26:24 dpolivaev Exp $ */
+/* $Id: ChooseFormatPopupDialog.java,v 1.1.2.6.2.2 2006-04-09 13:34:38 dpolivaev Exp $ */
 
 package accessories.plugins.dialogs;
 
@@ -217,6 +217,10 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 		return mStylePatternFrame.getResultPattern();
 	}
 
+	public Pattern getPattern(Pattern copyIntoPattern) {
+	    return mStylePatternFrame.getResultPattern(copyIntoPattern);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 *

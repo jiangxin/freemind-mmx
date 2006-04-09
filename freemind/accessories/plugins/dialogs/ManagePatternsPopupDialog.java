@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4 2006-03-19 21:21:33 christianfoltin Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.1 2006-04-09 13:34:38 dpolivaev Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -94,7 +94,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 		}
 	}
 
-	private final class PatternListModel implements ListModel {
+	protected final class PatternListModel implements ListModel {
 		private final List mPatternList;
 
 		private final List mListeners;
@@ -158,6 +158,30 @@ public class ManagePatternsPopupDialog extends JDialog implements
 						ListDataEvent.INTERVAL_ADDED, selectedIndex, selectedIndex));
 			}
 		}
+        
+        public Pattern getPatternByName(String name) {
+            for (Iterator iter = mPatternList.iterator(); iter.hasNext();) {
+                Pattern pattern = (Pattern) iter.next();
+                if(pattern.getName().equals(name)) {
+                    return pattern;
+                }
+            }
+            return null;
+        }
+
+        public void add(int i, Object object) {
+            if (object instanceof String) {
+                String patternName = (String) object;
+                Pattern correspondingPattern = getPatternByName(patternName);
+                if (correspondingPattern!=null) {
+                    addPattern(correspondingPattern, i);
+                }
+            }
+        }
+
+        public void remove(int i) {
+            removePattern(i);
+        }
 	}
 
 	public static final int CANCEL = -1;
@@ -185,6 +209,8 @@ public class ManagePatternsPopupDialog extends JDialog implements
 	private StylePatternFrame mStylePatternFrame;
 
 	private JList mList;
+
+    private accessories.plugins.dialogs.ArrayListTransferHandler mArrayListHandler;
 
 	/**
 	 * This is the default constructor
@@ -268,9 +294,12 @@ public class ManagePatternsPopupDialog extends JDialog implements
 			jContentPane = new javax.swing.JPanel();
 			jContentPane.setLayout(new GridBagLayout());
 			mList = new JList();
+			mArrayListHandler = new ArrayListTransferHandler();
 			mList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			mPatternListModel = new PatternListModel(patternList);
 			mList.setModel(mPatternListModel);
+            mList.setTransferHandler(mArrayListHandler);
+            mList.setDragEnabled(true);
 			jContentPane.add(new JScrollPane(mList), new GridBagConstraints(0,
 					0, 1, 1, 1.0, 8.0, GridBagConstraints.WEST,
 					GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));

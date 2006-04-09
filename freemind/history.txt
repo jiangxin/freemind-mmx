@@ -1,8 +1,13 @@
-Changes made in FreeMind 0.9.1 Alpha 1.02
+Changes made in FreeMind 0.9.0 Beta 1
+===============================
+* VariableSizeCardLayout implemented for Preference Dialog
+* Automatic layout preference design bugs fixed
+
+Changes made in FreeMind 0.9.0 Alpha 1.02
 ===============================
 Merged with WYSIWYG Version
 
-Changes made in FreeMind 0.9.1 Alpha 1.01
+Changes made in FreeMind 0.9.0 Alpha 1.01
 ===============================
 Merged with Attribute Version
 
