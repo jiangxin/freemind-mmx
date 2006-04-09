@@ -17,48 +17,27 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.2 2006-04-06 21:15:07 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.3 2006-04-09 09:47:48 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.event.WindowAdapter;
-
-
-import java.lang.reflect.Constructor;
+import java.awt.event.WindowEvent;
 import java.util.HashMap;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
-import javax.swing.text.Style;
-import javax.swing.text.html.StyleSheet;
 import javax.swing.text.html.HTMLDocument;
 
-import freemind.main.FreeMind;
+import de.xeinfach.kafenio.interfaces.KafenioPanelInterface;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.ModeController;
-
-import de.xeinfach.kafenio.interfaces.KafenioPanelInterface;
-import de.xeinfach.kafenio.interfaces.KafenioPanelConfigurationInterface;
 
 /**
  * @author Daniel Polansky
@@ -69,14 +48,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
    private KeyEvent firstEvent;
 
    private static JDialog htmlEditorWindow;
-   private static KafenioPanelConfigurationInterface kafenioPanelConfiguration;
-   private static Class kafenioPanelConfigurationClass;
-   private static Class kafenioPanelClass;
-   private static Constructor kafenioPanelConstructor;
    private static KafenioPanelInterface htmlEditorPanel;
-   private static boolean initialized = false;       
-   private static HashMap countryMap;
-
    
    public EditNodeWYSIWYG
       (final NodeView node,
@@ -90,57 +62,17 @@ public class EditNodeWYSIWYG extends EditNodeBase {
       // Return true if successful.
       try {
          lastEditingWasSuccessful = false;
-         FreeMindMain frame = getFrame();
          MapView mapView = getView();
          String title = getText("edit_long_node");
          boolean position_window_below_node = binOptionIsTrue("el__position_window_below_node");
-         if (!initialized) {
-
-            String[] countryMapArray = new String[]{ 
-               "de", "DE", "en", "UK", "en", "US", "es", "ES", "es", "MX", "fi", "FI", "fr", "FR", "hu", "HU", "it", "CH",
-               "it", "IT", "nl", "NL", "no", "NO", "pt", "PT", "ru", "RU", "sl", "SI", "uk", "UA", "zh", "CN" };
-
-            countryMap = new HashMap();
-            for (int i = 0; i < countryMapArray.length; i = i + 2) {
-               countryMap.put(countryMapArray[i],countryMapArray[i+1]); } 
-            
-            //System.err.println(countryMap);
-            //frame.setProperty("language","bf");
-            
-            kafenioPanelConfigurationClass = Class.forName("de.xeinfach.kafenio.KafenioPanelConfiguration");
-            kafenioPanelClass = Class.forName("de.xeinfach.kafenio.KafenioPanel");
-            kafenioPanelConstructor = kafenioPanelClass.getConstructor( new Class[]{ KafenioPanelConfigurationInterface.class } );
-
-            kafenioPanelConfiguration = (KafenioPanelConfigurationInterface)kafenioPanelConfigurationClass.newInstance();
-            kafenioPanelConfiguration.setImageDir("file://");
-            kafenioPanelConfiguration.setDebugMode(true); 
-            //kafenioPanelConfiguration.setLanguage("sk");
-            //kafenioPanelConfiguration.setCountry("SK");
-            kafenioPanelConfiguration.setLanguage(frame.getProperty("language"));
-            kafenioPanelConfiguration.setCountry((String)countryMap.get(frame.getProperty("language")));
-            kafenioPanelConfiguration.setCustomMenuItems("edit view font format insert table forms search tools help");
-            // In the following excluded: new, open, styleselect
-            kafenioPanelConfiguration.setCustomToolBar1("cut copy paste ld bold italic underline strike color left center right justify viewsource confirmcontent");
-            // All available tool bar items:
-            // new open save cut copy paste bold italic underline left center right justify styleselect ulist olist deindent indent anchor
-            // image clearformats viewsource strike superscript subscript insertcharacter find color table
-            
-            kafenioPanelConfiguration.setShowToolbar2(false);
-            kafenioPanelConfiguration.setProperty("escapeCloses","true");
-            kafenioPanelConfiguration.setProperty("confirmRatherThanPost","true");
-            //kafenioPanelConfiguration.setProperty("alternativeLanguage","en");
-            //kafenioPanelConfiguration.setProperty("alternativeCountry","US");
-
-            htmlEditorPanel  = (KafenioPanelInterface) kafenioPanelConstructor.newInstance(new Object[]{ kafenioPanelConfiguration });
-            htmlEditorPanel.getJToolBar1().setRollover(true);
-            //htmlEditorPanel.getJToolBar2().setRollover(true);
-
+         FreeMindMain frame = getFrame();
+         if (htmlEditorPanel == null) {
+             htmlEditorPanel = ComponentFactory.createKafenioPanel();
             htmlEditorWindow = new JDialog((JFrame)frame, title, /*modal=*/true);
             htmlEditorWindow.getContentPane().setLayout(new BorderLayout());
             htmlEditorWindow.getContentPane().add((JPanel)htmlEditorPanel, BorderLayout.CENTER);
             htmlEditorWindow.setJMenuBar(htmlEditorPanel.getJMenuBar());
-
-            initialized = true; }
+         }
 
          htmlEditorPanel.setKafenioParent(htmlEditorWindow);
 
@@ -225,6 +157,6 @@ public class EditNodeWYSIWYG extends EditNodeBase {
          System.err.println("Loading of WYSIWYG HTML editor Kafenio failed. Use the other editors instead."); 
       }}
    // return false; }}
-
-    protected KeyEvent getFirstEvent() {
+   
+   protected KeyEvent getFirstEvent() {
        return firstEvent; }}
