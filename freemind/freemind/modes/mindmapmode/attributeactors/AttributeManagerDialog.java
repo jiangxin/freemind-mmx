@@ -24,17 +24,21 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
+import freemind.controller.Controller;
+import freemind.controller.MapModuleManager.MapModuleChangeOberser;
 import freemind.controller.filter.util.SortedListModel;
 import freemind.main.Resources;
 import freemind.modes.MapRegistry;
 import freemind.modes.MindMap;
+import freemind.modes.Mode;
 import freemind.modes.attributes.AttributeRegistry;
+import freemind.view.MapModule;
 
 /**
  * @author Dimitri Polivaev
  * 10.07.2005
  */
-public class AttributeManagerDialog extends JDialog {
+public class AttributeManagerDialog extends JDialog implements MapModuleChangeOberser {
     private JTable view;
     private MapRegistry registry;
     private AttributeRegistry model;
@@ -165,11 +169,11 @@ public class AttributeManagerDialog extends JDialog {
         
     }
 
-    public AttributeManagerDialog(MindMap map){
+    public AttributeManagerDialog(Controller c){
         super(Resources.getInstance().getJFrame(), Resources.getInstance().getResourceString("attributes_dialog"), true);
 
         view = new AttributeRegistryTable(new EditListAction());
-        registry = map.getRegistry();
+        registry = c.getMap().getRegistry();
         model = registry.getAttributes();
         view.setModel(model.getTableModel());
         view.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -212,17 +216,31 @@ public class AttributeManagerDialog extends JDialog {
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); 
         addWindowListener(new ClosingListener());
-    	
+        c.getMapModuleManager().addListener(this);
     }
-    public void mapChanged(MindMap map){
-        registry = map.getRegistry();
-        model = registry.getAttributes();
-        view.setModel(registry.getAttributes().getTableModel());
-    }
+
     public void setVisible(boolean b) {
         if(b){
             size.setSelectedItem(Integer.toString(model.getFontSize()));
         }
         super.setVisible(b);
+    }
+
+    public boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+        return ! isVisible();
+    }
+
+    public void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+    }
+
+    public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+        if(newMapModule != null) {
+            registry = newMapModule.getModel().getRegistry();
+            model = registry.getAttributes();
+            view.setModel(registry.getAttributes().getTableModel());
+        }
+    }
+
+    public void numberOfOpenMapInformation(int number) {
     }
 }

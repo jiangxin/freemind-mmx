@@ -67,7 +67,7 @@ public class JAutoScrollBarPane extends JScrollPane{
             layoutAgain = true;
         }
         if(layoutAgain){
-            getParent().doLayout();
+            revalidate();
         }            
     }
 }

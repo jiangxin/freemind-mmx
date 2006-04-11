@@ -16,21 +16,26 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteBase.java,v 1.1.2.2.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
+/* $Id: NodeNoteBase.java,v 1.1.2.2.2.2 2006-04-11 19:14:34 dpolivaev Exp $ */
 package freemind.modes.common.plugins;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import de.xeinfach.kafenio.interfaces.KafenioPanelInterface;
+
 import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.main.FreeMindMain;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 
@@ -41,9 +46,8 @@ import freemind.modes.MindMapNode;
 public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 
 	public static final String HOOK_NAME = "accessories/plugins/NodeNote.properties";
-    protected JTextArea text;
 	private String myNodeText;
-	private JScrollPane scroller;
+	protected Container noteViewerComponent;
 	private static ImageIcon noteIcon;
 	/**
 	 *
@@ -80,48 +84,29 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 	 */
 	public void onReceiveFocusHook() {
 		super.onReceiveFocusHook();
-		if(text==null) {
-			logger.fine("Text ctrl. set for node "+getNode()+" as "+getMyNodeText());
-			// panel:
-			FreeMindMain frame = getController().getFrame();
-
-			text = new JTextArea(5,50);
-			text.setText(getMyNodeText());
-            // word wrap for notes.
-            text.setWrapStyleWord(true);
-
-			text.addKeyListener(new KeyListener(){
-
-                public void keyPressed(KeyEvent e) {
-                	switch ( e.getKeyCode() ) {
-                    	// the space event must not reach the parent frames, as folding would result.
-                        case KeyEvent.VK_SPACE:
-                            e.consume();
-                        	break;
-                	}
-                }
-
-                public void keyReleased(KeyEvent e) {
-                }
-
-                public void keyTyped(KeyEvent e) {
-                }});
-
-			receiveFocusAddons();
-			scroller = new JScrollPane(text);
-			scroller.setPreferredSize( new Dimension( 600, 150 ) );
-			frame.getSouthPanel().add(scroller, BorderLayout.CENTER);
-			scroller.setVisible(true);
-			frame.getSouthPanel().revalidate();
-		}
+        try {
+            noteViewerComponent = getNoteViewerComponent();
+            receiveFocusAddons();
+            FreeMindMain frame = getController().getFrame();
+            frame.getSouthPanel().add(noteViewerComponent, BorderLayout.CENTER);
+            noteViewerComponent.setVisible(true);
+            frame.getSouthPanel().revalidate();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 
 
+    abstract protected Container getNoteViewerComponent() throws Exception;
 
 	/**
 	 * @return
 	 */
 	public String getMyNodeText() {
+        if(!myNodeText.startsWith("<html>")) {
+            myNodeText = Tools.plainToHTML(myNodeText); 
+        }
 		return new String(myNodeText);
 	}
 
@@ -137,15 +122,14 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 	 */
 	public void onLooseFocusHook() {
 		super.onLooseFocusHook();
-		if (text != null) {
+		if (noteViewerComponent != null) {
 			looseFocusAddons();
 			// shut down the display:
-			scroller.setVisible(false);
+			noteViewerComponent.setVisible(false);
 			JPanel southPanel = getController().getFrame().getSouthPanel();
-			southPanel.remove(scroller);
+			southPanel.remove(noteViewerComponent);
 			southPanel.revalidate();
-			scroller = null;
-			text = null;
+            noteViewerComponent = null;
 		}
 	}
 

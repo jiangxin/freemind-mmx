@@ -16,9 +16,18 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
+/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.2 2006-04-11 19:14:34 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+
+import de.xeinfach.kafenio.interfaces.KafenioPanelInterface;
 import freemind.modes.MindMapNode;
 import freemind.modes.common.plugins.NodeNoteBase;
 
@@ -27,19 +36,29 @@ import freemind.modes.common.plugins.NodeNoteBase;
  *
  */
 public class NodeNoteViewer extends NodeNoteBase {
-
+    static private JComponent noteScrollPane;
+    static private JLabel noteViewer;
 	protected void nodeRefresh(MindMapNode node) {
 		getController().nodeChanged(node);
 	}
 
 	protected void receiveFocusAddons() {
-		// no edit:
-		text.setEditable(false);
-
 	}
 
 	protected void looseFocusAddons() {
 	}
 
-
+    protected Container getNoteViewerComponent() throws Exception {
+        if(noteViewer == null){
+            noteViewer = new JLabel();
+            noteViewer.setBackground(Color.WHITE);
+            noteViewer.setVerticalAlignment(JLabel.TOP);
+            noteViewer.setOpaque(true);
+            noteScrollPane = new JScrollPane(noteViewer);
+            noteScrollPane.setPreferredSize(new Dimension(1, 200));
+        }
+        noteViewer.setText(getMyNodeText());
+            
+        return noteScrollPane;
+    }
 }

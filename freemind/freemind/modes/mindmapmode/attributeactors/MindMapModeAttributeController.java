@@ -186,8 +186,10 @@ public class MindMapModeAttributeController implements AttributeController{
             }
             catch(NoSuchElementException ex)
             {
-                final ActionPair registryAttributeActionPair = registryAttributeActor.createActionPair(name, "");
+                final ActionPair registryAttributeActionPair = registryAttributeActor.createActionPair(name);
                 controller.getActionFactory().executeAction(registryAttributeActionPair);
+                final ActionPair setAttributeValueActionPair = setAttributeValueActor.createActionPair(model, row, "");
+                controller.getActionFactory().executeAction(setAttributeValueActionPair);
             }
             break;
         }
@@ -240,8 +242,10 @@ public class MindMapModeAttributeController implements AttributeController{
         }
         catch(NoSuchElementException ex)
         {
-            final ActionPair registryAttributeActionPair = registryAttributeActor.createActionPair(name, value);
+            final ActionPair registryAttributeActionPair = registryAttributeActor.createActionPair(name);
             controller.getActionFactory().executeAction(registryAttributeActionPair);
+            final ActionPair registryAttributeValueActionPair = registryAttributeValueActor.createActionPair(name, "");
+            controller.getActionFactory().executeAction(registryAttributeValueActionPair);
         }
         final ActionPair insertAttributeActionPair = insertAttributeActor.createActionPair(model, row, name, value);
         controller.getActionFactory().executeAction(insertAttributeActionPair);
@@ -331,9 +335,9 @@ public class MindMapModeAttributeController implements AttributeController{
         final ActionPair unregistryOldAttributeActionPair = unregistryAttributeActor.createActionPair(oldName);
         controller.getActionFactory().executeAction(unregistryOldAttributeActionPair);
         final SortedComboBoxModel values = oldElement.getValues();
-            final ActionPair registryNewAttributeActionPair = registryAttributeActor.createActionPair(newName, values.getElementAt(0).toString());                
+            final ActionPair registryNewAttributeActionPair = registryAttributeActor.createActionPair(newName);                
             controller.getActionFactory().executeAction(registryNewAttributeActionPair);
-            for(int i = 1; i < values.getSize(); i++){
+            for(int i = 0; i < values.getSize(); i++){
                 final ActionPair registryNewAttributeValueActionPair = registryAttributeValueActor.createActionPair(newName, values.getElementAt(i).toString());                
                 controller.getActionFactory().executeAction(registryNewAttributeValueActionPair);
         }
@@ -355,7 +359,23 @@ public class MindMapModeAttributeController implements AttributeController{
         endTransaction("performReplaceAtributeName");
     }
 
-    public void performRegistryAttribute(String name, String value) {
+    public void performRegistryAttribute(String name) {
+        if(name.equals(""))
+            return;       
+        try{
+        final AttributeRegistryElement element = getAttributeRegistry().getElement(name);
+        }
+        catch(NoSuchElementException ex){
+            startTransaction("performRegistryAttribute");
+            final ActionPair registryNewAttributeActionPair = registryAttributeActor.createActionPair(name);                
+            controller.getActionFactory().executeAction(registryNewAttributeActionPair);
+            endTransaction("performRegistryAttribute");
+            return;            
+        }
+        
+    }
+
+    public void performRegistryAttributeValue(String name, String value) {
         if(name.equals(""))
             return;       
         try{
@@ -369,10 +389,12 @@ public class MindMapModeAttributeController implements AttributeController{
         return;
         }
         catch(NoSuchElementException ex){
-            startTransaction("performRegistryAttribute");
-            final ActionPair registryNewAttributeActionPair = registryAttributeActor.createActionPair(name, value);                
-            controller.getActionFactory().executeAction(registryNewAttributeActionPair);
-            endTransaction("performRegistryAttribute");
+            startTransaction("performRegistryAttributeValue");
+            final ActionPair registryAttributeActionPair = registryAttributeActor.createActionPair(name);                
+            controller.getActionFactory().executeAction(registryAttributeActionPair);
+            final ActionPair registryAttributeValueActionPair = registryAttributeValueActor.createActionPair(name, value);                
+            controller.getActionFactory().executeAction(registryAttributeValueActionPair);
+            endTransaction("performRegistryAttributeValue");
             return;            
         }
         

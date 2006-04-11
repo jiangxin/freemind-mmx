@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.2 2006-04-09 13:34:38 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.3 2006-04-11 19:14:34 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -400,9 +400,14 @@ public class OptionPanel implements TextTranslator {
             if(rowSpec == null){
                 rowSpec = new RowSpec("fill:20dlu");
             }
+            if( 3 < builder.getColumn()){
             builder.appendRelatedComponentsGapRow();
             builder.appendRow(rowSpec);
             builder.nextLine(2);
+            }
+            else{
+                builder.nextColumn(2);                
+            }
             builder.add(label);
             builder.nextColumn(2);
             builder.add(mButton);

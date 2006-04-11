@@ -18,16 +18,15 @@ public class RegistryAttributeActor extends AbstractActorXml {
         super(mindMapModeController);
     }
     
-    public XmlAction createAction(String name, String value){
+    public XmlAction createAction(String name){
         RegistryAttributeElementaryAction action = new RegistryAttributeElementaryAction();
         action.setName(name);
-        action.setValue(value);
         return action;
     }
     
-    public ActionPair createActionPair(String name, String value){
+    public ActionPair createActionPair(String name){
         ActionPair actionPair = new ActionPair(
-                createAction(name, value), 
+                createAction(name), 
                 ((MindMapModeAttributeController)getAttributeController()).unregistryAttributeActor.createAction(name)
                 );        
         return actionPair;
@@ -36,18 +35,14 @@ public class RegistryAttributeActor extends AbstractActorXml {
     public void act(XmlAction action) {
         if(action instanceof RegistryAttributeElementaryAction){
             RegistryAttributeElementaryAction registryAttributeAction = (RegistryAttributeElementaryAction)action;
-            act(registryAttributeAction.getName(),
-                registryAttributeAction.getValue());                    
+            act(registryAttributeAction.getName());                    
         }
 
     }
 
-    private void act(String name, String value) {
+    private void act(String name) {
         AttributeRegistry registry = getAttributeRegistry();
         AttributeRegistryElement attributeRegistryElement = new AttributeRegistryElement(registry, name);
-        if(value != null){
-            attributeRegistryElement.addValue(value);
-        }
         int index = registry.getElements().add(name, attributeRegistryElement);
         registry.getTableModel().fireTableRowsInserted(index, index);
     }

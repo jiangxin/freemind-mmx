@@ -22,7 +22,7 @@ public class AttributeRegistryElement {
             return key;
         }
         public void add(Object element) {
-            registry.getAttributeController().performRegistryAttribute(getKey(), element.toString());
+            registry.getAttributeController().performRegistryAttributeValue(getKey(), element.toString());
         }
         public void _add(Object element) {
             super.add(element);

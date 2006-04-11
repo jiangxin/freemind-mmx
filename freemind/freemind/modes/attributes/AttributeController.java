@@ -29,6 +29,8 @@ public interface AttributeController {
 
     void performRemoveAttribute(String name);
 
-    void performRegistryAttribute(String name, String value);
+    void performRegistryAttribute(String name);
+
+    void performRegistryAttributeValue(String name, String value);
 
 }

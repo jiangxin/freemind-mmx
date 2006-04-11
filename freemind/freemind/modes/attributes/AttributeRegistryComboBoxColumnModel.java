@@ -85,7 +85,7 @@ class AttributeRegistryComboBoxColumnModel extends AbstractListModel implements 
      */
     public void add(Object o) {
         String s = o.toString();
-        model.getAttributeController().performRegistryAttribute(s, null);      
+        model.getAttributeController().performRegistryAttribute(s);      
     }
 
 
