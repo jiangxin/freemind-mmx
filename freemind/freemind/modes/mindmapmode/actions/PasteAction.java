@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.3 2006-04-12 20:49:46 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -34,6 +34,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.regex.Matcher;
@@ -61,6 +62,7 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 public class PasteAction extends AbstractAction implements ActorXml {
     private static java.util.logging.Logger logger;
+    private List newNodes; //only for Transferable with mindMapNodesFlavor 
     private String text;
     private final MindMapController pMindMapController;
     public PasteAction(MindMapController adapter) {
@@ -413,7 +415,10 @@ public class PasteAction extends AbstractAction implements ActorXml {
 		   for (int i = 0; i < fl.length; i++) {
 			  System.out.println(fl[i]); }
 		   */
-
+        if(newNodes == null){
+            newNodes = new LinkedList();
+        }
+	    newNodes.clear();   
 	   	DataFlavorHandler[] dataFlavorHandlerList = getFlavorHandlers();
 	   	for (int i = 0; i < dataFlavorHandlerList.length; i++) {
             DataFlavorHandler handler = dataFlavorHandlerList[i];
@@ -423,6 +428,10 @@ public class PasteAction extends AbstractAction implements ActorXml {
                 break;
             }
         }
+        for (ListIterator e = newNodes.listIterator(); e.hasNext(); ) {
+            final MindMapNodeModel child = (MindMapNodeModel)e.next();
+            pMindMapController.getAttributeController().performRegistrySubtreeAttributes(child);
+        }        
   	   pMindMapController.nodeStructureChanged((MindMapNode) (asSibling ? target.getParent() : target)); }
 	   catch (Exception e) { e.printStackTrace(); }
 	   pMindMapController.getFrame().setWaitingCursor(false);

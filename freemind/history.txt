@@ -1,3 +1,9 @@
+Changes made in FreeMind 0.9.0 Beta 2
+===============================
+* Kafenio for notes
+* Paste and Encrypted Node register new attributes in the attribtue registry correctly
+* Bug fix for Attribute Registry
+
 Changes made in FreeMind 0.9.0 Beta 1
 ===============================
 * VariableSizeCardLayout implemented for Preference Dialog

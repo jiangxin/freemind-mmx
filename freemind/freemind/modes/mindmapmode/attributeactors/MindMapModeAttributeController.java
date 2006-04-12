@@ -15,6 +15,7 @@ import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeRegistryElement;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class MindMapModeAttributeController implements AttributeController{
@@ -380,12 +381,13 @@ public class MindMapModeAttributeController implements AttributeController{
             return;       
         try{
         final AttributeRegistryElement element = getAttributeRegistry().getElement(name);
-        if (element.getValues().contains(value))
+        if (element.getValues().contains(value)){
             return;
-            startTransaction("performRegistryAttributeValue");
-            final ActionPair registryNewAttributeActionPair = registryAttributeValueActor.createActionPair(name, value);                
-            controller.getActionFactory().executeAction(registryNewAttributeActionPair);
-            endTransaction("performRegistryAttributeValue");
+        }
+        startTransaction("performRegistryAttributeValue");
+        final ActionPair registryNewAttributeActionPair = registryAttributeValueActor.createActionPair(name, value);                
+        controller.getActionFactory().executeAction(registryNewAttributeActionPair);
+        endTransaction("performRegistryAttributeValue");
         return;
         }
         catch(NoSuchElementException ex){
@@ -402,5 +404,17 @@ public class MindMapModeAttributeController implements AttributeController{
 
     private AttributeRegistry getAttributeRegistry() {
         return controller.getMap().getRegistry().getAttributes();
+    }
+
+    public void performRegistrySubtreeAttributes(MindMapNodeModel node) {
+            for(int i = 0; i < node.getAttributes().getRowCount();i++){
+                String name = node.getAttributes().getValueAt(i, 0).toString();
+                String value = node.getAttributes().getValueAt(i, 1).toString();
+                performRegistryAttributeValue(name, value);
+            }
+        for (ListIterator e = node.childrenUnfolded(); e.hasNext(); ) {
+            final MindMapNodeModel child = (MindMapNodeModel)e.next();
+            performRegistrySubtreeAttributes(child);
+        }        
     }
 }

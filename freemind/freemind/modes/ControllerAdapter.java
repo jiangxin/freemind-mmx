@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.3 2006-04-12 20:49:46 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -642,7 +642,6 @@ public abstract class ControllerAdapter implements ModeController {
     // status, currently: default, blocked  (PN)
     // (blocked to protect against particular events e.g. in edit mode)
     private boolean isBlocked = false;
-    private AttributeController attributeController;
 
     public boolean isBlocked() {
       return this.isBlocked;

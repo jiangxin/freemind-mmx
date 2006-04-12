@@ -4,6 +4,8 @@
  */
 package freemind.modes.attributes;
 
+import freemind.modes.mindmapmode.MindMapNodeModel;
+
 
 public interface AttributeController {
 
@@ -32,5 +34,7 @@ public interface AttributeController {
     void performRegistryAttribute(String name);
 
     void performRegistryAttributeValue(String name, String value);
+
+    void performRegistrySubtreeAttributes(MindMapNodeModel child);
 
 }
