@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindIcon.java,v 1.1.18.6.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
+/* $Id: MindIcon.java,v 1.1.18.6.2.3 2006-04-13 18:24:12 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -52,7 +52,8 @@ public class MindIcon implements Comparable{
      * Set of all created icons. Name -> MindIcon
      */
     private static HashMap createdIcons = new HashMap();
-    private static final int UNKNOWN = -2;
+    private static final int UNKNOWN = -1;
+    static int nextNumber = UNKNOWN-1;
     private JComponent component = null;
 
 
@@ -241,6 +242,9 @@ public class MindIcon implements Comparable{
     private int getNumber() {
         if(number == UNKNOWN){
             number = getAllIconNames ().indexOf(name);
+        }
+        if(number == UNKNOWN){
+            number = nextNumber--;
         }
         return number;
     }

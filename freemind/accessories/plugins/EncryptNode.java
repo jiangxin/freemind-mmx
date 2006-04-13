@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: EncryptNode.java,v 1.1.2.8.2.1 2006-04-05 21:26:24 dpolivaev Exp $ */
+/* $Id: EncryptNode.java,v 1.1.2.8.2.2 2006-04-13 18:23:36 dpolivaev Exp $ */
 
 /*
  * Created on 14.12.2004
@@ -141,9 +141,9 @@ public class EncryptNode extends MindMapNodeHookAdapter {
         encryptedMindMapNode.setPassword(password);
         MapAdapter newModel = new MindMapMapModel(encryptedMindMapNode,
 				getMindMapController().getFrame(), newModeController);
-        MindMapController mindmapcontroller = (MindMapController) getMindMapController();
-        mindmapcontroller.newMap(newModel);
+        MindMapController mindmapcontroller = getMindMapController();
         encryptedMindMapNode.setMap(newModel);
+        mindmapcontroller.newMap(newModel);
     }
 
     /**

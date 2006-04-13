@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.2 2006-04-11 19:14:34 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.3 2006-04-13 18:23:36 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.Component;
@@ -26,6 +26,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JMenuBar;
@@ -60,7 +61,8 @@ public class NodeNote extends NodeNoteBase {
 
     private class KafenioPane extends Box implements KafenioContainerInterface{
         public KafenioPane() {
-            super(BoxLayout.Y_AXIS );           
+            super(BoxLayout.Y_AXIS ); 
+            setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
         }
 
         public void detachFrame() {
@@ -288,13 +290,16 @@ public class NodeNote extends NodeNoteBase {
             //kafenioPanelConfiguration.setCountry("SK");
             kafenioPanelConfiguration.setLanguage(language);
             kafenioPanelConfiguration.setCountry((String)countryMap.get(language));
-            kafenioPanelConfiguration.setCustomMenuItems("edit view font format insert table forms search tools help");
+            kafenioPanelConfiguration.setCustomMenuItems("edit" 
+                    // + " view"
+                    +" font format insert table forms search tools help");
             // In the following excluded: new, open, styleselect
             kafenioPanelConfiguration.setCustomToolBar1(
-                    "cut copy paste bold italic underline " 
-                    + "left center right justify ulist olist deindent indent anchor" 
-                    +"image clearformats viewsource strike superscript subscript insertcharacter "
-                    + "find color table"
+                    "cut copy paste bold italic underline" 
+                    + " left center right justify ulist olist deindent indent anchor" 
+                    +" image clearformats strike superscript subscript insertcharacter"
+                    + " find color table"
+                    // + " viewsource"
                     );
             // All available tool bar items:
             // new open save cut copy paste bold italic underline left center right justify styleselect ulist olist deindent indent anchor

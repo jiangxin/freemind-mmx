@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.3 2006-04-11 19:14:34 dpolivaev Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.4 2006-04-13 18:24:12 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -415,23 +415,6 @@ public class MindMapNodeModel extends NodeAdapter {
                 child.saveChildrenRTF(fileout, depth, colorTable);
             }
         }
-    }
-
-
-    public void registerSubtreeAttributes(boolean registerMyself) {
-        if(registerMyself){
-            final AttributeRegistry attributeRegistry = getMap().getRegistry().getAttributes();
-            for(int i = 0; i < getAttributes().getRowCount();i++){
-                String name = getAttributes().getValueAt(i, 0).toString();
-                String value = getAttributes().getValueAt(i, 1).toString();
-                if(! attributeRegistry.exist(name, value))
-                    attributeRegistry.registry(new Attribute(name, value));
-            }
-        }
-        for (ListIterator e = childrenUnfolded(); e.hasNext(); ) {
-            final MindMapNodeModel child = (MindMapNodeModel)e.next();
-            child.registerSubtreeAttributes(true);
-        }        
     }
 
 }

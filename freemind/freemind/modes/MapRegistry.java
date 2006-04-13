@@ -48,13 +48,15 @@ public class MapRegistry {
         return attributes;
     }
     
-    public void registrySubtree(MindMapNode root){
-        registryNodeIcons(root);
-        registryAttributes(root);
+    public void registrySubtree(MindMapNode root, boolean registerMyself){
+        if(registerMyself){
+            registryNodeIcons(root);
+            registryAttributes(root);
+        }
         ListIterator iterator = root.childrenUnfolded();
         while(iterator.hasNext()){
             MindMapNode node = (MindMapNode) iterator.next();
-            registrySubtree(node);
+            registrySubtree(node, true);
         }
     }
 
@@ -65,7 +67,7 @@ public class MapRegistry {
         }
     }
 
-    private void registryNodeIcons(MindMapNode node) {
+    public void registryNodeIcons(MindMapNode node) {
         List icons = node.getIcons();
         Iterator i = icons.iterator();
         while(i.hasNext()){

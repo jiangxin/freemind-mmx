@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.5 2006-04-11 19:14:34 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.6 2006-04-13 18:24:12 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -189,9 +189,13 @@ private static void createCafenioConfiguration() {
        //kafenioPanelConfiguration.setCountry("SK");
        kafenioPanelConfiguration.setLanguage(language);
        kafenioPanelConfiguration.setCountry((String)countryMap.get(language));
-       kafenioPanelConfiguration.setCustomMenuItems("edit view font format insert table forms search tools help");
+       kafenioPanelConfiguration.setCustomMenuItems("edit" 
+               //+" view" 
+               +" font format insert table forms search tools help");
        // In the following excluded: new, open, styleselect
-       kafenioPanelConfiguration.setCustomToolBar1("cut copy paste ld bold italic underline strike color left center right justify viewsource confirmcontent");
+       kafenioPanelConfiguration.setCustomToolBar1("cut copy paste ld bold italic underline strike color left center right justify"
+               //+ " viewsource" 
+               + " confirmcontent");
        // All available tool bar items:
        // new open save cut copy paste bold italic underline left center right justify styleselect ulist olist deindent indent anchor
        // image clearformats viewsource strike superscript subscript insertcharacter find color table
