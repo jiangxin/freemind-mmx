@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.1 2006-04-06 21:15:06 dpolivaev Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.2 2006-04-18 19:06:08 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -61,7 +61,10 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.KeyStroke;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -1007,6 +1010,18 @@ public class Tools {
          catch (Exception e) {}}
       System.err.println("END OF Transferable");
       System.err.println(); }
+
+public static void addEscapeActionToDialog(JDialog dialog, Action action) {
+	action.putValue(Action.NAME, "end_dialog");
+	//		 Register keystroke
+	dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+			.put(KeyStroke.getKeyStroke("ESCAPE"),
+					action.getValue(Action.NAME));
+
+	// Register action
+	dialog.getRootPane().getActionMap().put(action.getValue(Action.NAME),
+			action);
+}
 
 }
 

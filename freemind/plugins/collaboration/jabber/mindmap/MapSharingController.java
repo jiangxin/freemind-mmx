@@ -9,8 +9,6 @@ package plugins.collaboration.jabber.mindmap;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.xml.bind.JAXBException;
-
 import plugins.collaboration.jabber.view.MapSharingWizardView;
 import freemind.controller.actions.generated.instance.RevertXmlAction;
 import freemind.modes.mindmapmode.MindMapController;
@@ -278,16 +276,12 @@ public class MapSharingController {
                 sender.setShareMapUser(mapSharingRequestingUser);
                 sender.isMapShared(true);
                 jabberConnectionWizardView.hide();
-                try {
-                    RevertXmlAction action = controller.revertAction
-                            .createRevertXmlAction(mapContent, null,
-                                    mapFileName);
-                    // no undo possible.
-                    ActionPair pair = new ActionPair(action, null);
-                    controller.getActionFactory().executeAction(pair);
-                } catch (JAXBException e) {
-                    e.printStackTrace();
-                }
+                RevertXmlAction action = controller.revertAction
+                        .createRevertXmlAction(mapContent, null,
+                                mapFileName);
+                // no undo possible.
+                ActionPair pair = new ActionPair(action, null);
+                controller.getActionFactory().executeAction(pair);
             }
         }
 

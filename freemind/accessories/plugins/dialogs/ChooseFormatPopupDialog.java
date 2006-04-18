@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ChooseFormatPopupDialog.java,v 1.1.2.6.2.2 2006-04-09 13:34:38 dpolivaev Exp $ */
+/* $Id: ChooseFormatPopupDialog.java,v 1.1.2.6.2.3 2006-04-18 19:06:08 christianfoltin Exp $ */
 
 package accessories.plugins.dialogs;
 
@@ -31,6 +31,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -38,8 +39,7 @@ import javax.swing.JPanel;
 
 import freemind.common.PropertyControl.TextTranslator;
 import freemind.controller.actions.generated.instance.Pattern;
-import freemind.modes.MindMapNode;
-import freemind.modes.StylePatternFactory;
+import freemind.main.Tools;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame.StylePatternFrameType;
@@ -62,14 +62,6 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 	private JButton jOKButton;
 
 	private StylePatternFrame mStylePatternFrame;
-
-	/**
-	 * This is the default constructor for creation from a node
-	 */
-	public ChooseFormatPopupDialog(JFrame caller, MindMapController controller,
-			MindMapNode node) {
-		this(caller, controller, "accessories/plugins/ApplyFormatPlugin.dialog.title", StylePatternFactory.createPatternFromNode(node));
-	}
 
 	/**
 	 * This constructor is used, if you need the user to enter a pattern generally.
@@ -106,6 +98,14 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 			}
 		});
 		addKeyListener(this);
+		Action action = new AbstractAction() {
+
+			public void actionPerformed(ActionEvent arg0) {
+		        cancelPressed();
+			}
+		};
+		Tools.addEscapeActionToDialog(this, action);
+
 	}
 
 	private void close() {

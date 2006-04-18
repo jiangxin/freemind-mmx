@@ -8,15 +8,15 @@
 	<property name="additional.lib.pattern" value="${plugin.dir}/*.jar"/>
 
 	<target name="build">
-		<echo message="Built in Plugins build on path ${src}"/>
+		<echo message="Built in Plugins build on path ${basedir}"/>
 		<mkdir dir="${build}" />
 		<javac	srcdir="${src}"
 			destdir="${build}"
-			includes="${plugin.dir}/**.java"
 			debug="${debug}"
 		   source="${java_source_version}"
 	       target="${java_target_version}"
 						> 
+			<include name="${plugin.dir}/**" />
 			<classpath>
 				<path path="${classpath}"/>
 				<!-- <path path="${additional.lib}"/> -->

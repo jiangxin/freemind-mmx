@@ -8,8 +8,6 @@ package plugins.collaboration.jabber.mindmap;
 
 import java.io.StringWriter;
 
-import javax.xml.bind.JAXBException;
-
 import com.echomine.common.ParseException;
 import com.echomine.common.SendMessageFailedException;
 import com.echomine.jabber.JID;
@@ -117,17 +115,14 @@ public class JabberSender implements ActionFilter {
      */
     private CollaborationAction createCollaborationAction(
             String requestingUser, String command) {
-        try {
-            CollaborationAction collaboration = controller.getController()
-                    .getActionXmlFactory().createCollaborationAction();
-            collaboration.setCmd(command);
-            collaboration.setUser(requestingUser);
-            collaboration.setTimestamp(String.valueOf(System
-                    .currentTimeMillis()));
-            return collaboration;
-        } catch (JAXBException e) {
-            return null;
-        }
+    
+        CollaborationAction collaboration = new CollaborationAction();
+        collaboration.setCmd(command);
+        collaboration.setUser(requestingUser);
+        collaboration.setTimestamp(String.valueOf(System
+                .currentTimeMillis()));
+        return collaboration;
+         
     }
 
     /**
@@ -228,18 +223,13 @@ public class JabberSender implements ActionFilter {
      * participants.
      */
     public ActionPair filterAction(ActionPair pair) {
-        try {
-            CompoundAction eAction = controller.getController()
-                    .getActionXmlFactory().createCompoundAction();
-            eAction.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(
+    	    try {
+            CompoundAction eAction = new CompoundAction();
+            eAction.getListChoiceList().add(
                     pair.getDoAction());
-            eAction.getCompoundActionOrSelectNodeActionOrCutNodeAction().add(
+            eAction.getListChoiceList().add(
                     pair.getUndoAction());
-            String marshalledString = controller.getController().marshall(
-                    eAction);
             sendMessage(sendToUser, eAction);
-        } catch (JAXBException e) {
-            e.printStackTrace();
         } catch (SendMessageFailedException e) {
             e.printStackTrace();
         } catch (ParseException e) {

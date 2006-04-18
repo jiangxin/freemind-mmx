@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.6.3 2006-04-11 19:14:34 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.6.4 2006-04-18 19:06:09 christianfoltin Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -103,7 +103,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         addTableModelListeners();
     }
     private ModeController getModeController() {
-        return nodeView.getMap().getController().getModeController();
+        return nodeView.getModel().getMap().getModeController();
     }
     private void addTableModelListeners() {
         final ModeController modeController = getModeController();

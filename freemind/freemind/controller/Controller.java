@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.3 2006-04-11 19:14:34 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.4 2006-04-18 19:06:08 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -71,7 +71,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
@@ -1271,21 +1270,14 @@ public class Controller  implements MapModuleChangeOberser {
 			        options.closeWindow();
 				}
 			};
-			action.putValue(Action.NAME, "end_dialog");
-			//		 Register keystroke
-			dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-					.put(KeyStroke.getKeyStroke("ESCAPE"),
-							action.getValue(Action.NAME));
-
-			// Register action
-			dialog.getRootPane().getActionMap().put(action.getValue(Action.NAME),
-					action);
+			Tools.addEscapeActionToDialog(dialog, action);
 
 
 			dialog.pack();
 			dialog.setVisible(true);
 
 		}
+
 
 	}
 

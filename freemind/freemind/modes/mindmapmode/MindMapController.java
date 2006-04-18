@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.3 2006-04-18 19:06:08 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -105,6 +105,8 @@ import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
+import freemind.modes.actions.UsePlainTextAction;
+import freemind.modes.actions.UseRichFormattingAction;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.NodeDownAction;
@@ -264,11 +266,14 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     public UnderlinedAction underlined = null;
     public FontSizeAction fontSize = null;
     public FontFamilyAction fontFamily = null;
+    public NodeColorAction nodeColor = null;
     public EditAction edit = null;
     public NewChildAction newChild = null;
     public DeleteChildAction deleteChild = null;
     public ToggleFoldedAction toggleFolded = null;
     public ToggleChildrenFoldedAction toggleChildrenFolded = null;
+    public UseRichFormattingAction useRichFormatting = null;
+    public UsePlainTextAction usePlainText = null;
     public NodeUpAction nodeUp = null;
     public NodeDownAction nodeDown = null;
     public EdgeColorAction edgeColor = null;
@@ -402,6 +407,8 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         fontSize = new FontSizeAction(this);
         fontFamily = new FontFamilyAction(this);
         edit = new EditAction(this);
+        useRichFormatting = new UseRichFormattingAction(this);
+        usePlainText = new UsePlainTextAction(this);
         newChild = new NewChildAction(this);
         deleteChild = new DeleteChildAction(this);
         toggleFolded = new ToggleFoldedAction(this);

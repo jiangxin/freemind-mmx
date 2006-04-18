@@ -3,9 +3,10 @@
 		<echo
 			message="Plugins build on path ${src}"/>
 		<mkdir dir="${build}"/>
-		<javac srcdir="${src}" destdir="${build}" includes="${plugin.dir}/**.java"
+		<javac srcdir="${src}" destdir="${build}"
 			debug="${debug}" source="${java_source_version}"
 			target="${java_target_version}">
+			<include name="${plugin.dir}/**" />
 			<classpath>
 				<path path="${classpath}"/>
 				<path path="${additional.lib}"/>

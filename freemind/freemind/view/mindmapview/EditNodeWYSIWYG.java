@@ -17,14 +17,12 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.6 2006-04-13 18:24:12 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.7 2006-04-18 19:06:08 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -129,20 +127,8 @@ static KafenioPanelConfigurationInterface kafenioPanelConfiguration;
 
          htmlEditorWindow.pack();
 
-         //{ -- Set location (can be refactored to share code with long node editor)
-         mapView.scrollNodeToVisible(node, 0);
-         Point frameScreenLocation = frame.getLayeredPane().getLocationOnScreen();
-         double posX = node.getLocationOnScreen().getX() - frameScreenLocation.getX();
-         double posY = node.getLocationOnScreen().getY() - frameScreenLocation.getY()
-            + (position_window_below_node ? node.getHeight() : 0);
-         if (posX + htmlEditorWindow.getWidth() > frame.getLayeredPane().getWidth()) {
-            posX = frame.getLayeredPane().getWidth() - htmlEditorWindow.getWidth(); }
-         if (posY + htmlEditorWindow.getHeight() > frame.getLayeredPane().getHeight()) {
-            posY = frame.getLayeredPane().getHeight() - htmlEditorWindow.getHeight(); }
-         posX = ((posX < 0) ? 0 : posX) + frameScreenLocation.getX();
-         posY = ((posY < 0) ? 0 : posY) + frameScreenLocation.getY();
-         htmlEditorWindow.setLocation(new Double(posX).intValue(), new Double(posY).intValue());
-         //}
+         Tools.moveDialogToPosition(frame, htmlEditorWindow, node
+ 				.getLocationOnScreen());
 
          htmlEditorPanel.setDocumentConfirmed(false);
          htmlEditorWindow.show();

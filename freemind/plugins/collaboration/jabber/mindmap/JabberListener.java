@@ -193,7 +193,7 @@ public class JabberListener {
                 } else if (action instanceof CompoundAction) {
                     CompoundAction pair = (CompoundAction) action;
                     if (pair
-                            .getCompoundActionOrSelectNodeActionOrCutNodeAction()
+                            .getListChoiceList()
                             .size() != 2) {
                         //FIXME: Warn the user
                         logger.warning("Cannot process the message "
@@ -212,10 +212,10 @@ public class JabberListener {
          */
         private void executeRemoteCommand(CompoundAction pair) {
             XmlAction doAction = (XmlAction) pair
-                    .getCompoundActionOrSelectNodeActionOrCutNodeAction()
+                    .getListChoiceList()
                     .get(0);
             XmlAction undoAction = (XmlAction) pair
-                    .getCompoundActionOrSelectNodeActionOrCutNodeAction()
+                    .getListChoiceList()
                     .get(1);
             final ActionPair ePair = new ActionPair(doAction,
                     undoAction);

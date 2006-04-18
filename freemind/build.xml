@@ -308,12 +308,15 @@
 
 				<include name="freemind/view/*"/>
 				<include name="freemind/view/mindmapview/*"/>
+				<include name="freemind/view/mindmapview/attributeview/*"/>
 				<include name="freemind/main/*"/>
 				<include name="freemind/controller/*"/>
+				<include name="freemind/controller/filter/**"/>
 				<include name="freemind/extensions/*"/>
 				<include name="freemind/preferences/*"/>
 				<include name="freemind/preferences/layout/*"/>
 				<include name="freemind/modes/*"/>
+				<include name="freemind/modes/attributes/*"/>
 				<include name="freemind/modes/browsemode/*"/>
 				<include name="freemind/modes/common/**"/>
 				<include name="freemind/modes/viewmodes/*"/>

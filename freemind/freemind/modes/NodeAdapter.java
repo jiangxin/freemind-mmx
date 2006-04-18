@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.3 2006-04-13 18:24:12 dpolivaev Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.4 2006-04-18 19:06:08 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -1118,11 +1118,10 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
 
-    // Notify all listeners that have registered interest for
-    // notification on this event type.  The event instance
-    // is lazily created using the parameters passed into
-    // the fire method.
-
+    /** Notify all listeners that have registered interest for
+     notification on this event type.  The event instance
+     is lazily created using the parameters passed into
+     the fire method.*/
     protected void fireNodeViewCreated() {
         // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();

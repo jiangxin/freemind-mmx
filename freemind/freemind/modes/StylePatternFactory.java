@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePatternFactory.java,v 1.1.2.3.2.1 2006-04-09 13:34:38 dpolivaev Exp $*/
+/*$Id: StylePatternFactory.java,v 1.1.2.3.2.2 2006-04-18 19:06:08 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -42,6 +42,7 @@ import freemind.controller.actions.generated.instance.PatternNodeFontItalic;
 import freemind.controller.actions.generated.instance.PatternNodeFontName;
 import freemind.controller.actions.generated.instance.PatternNodeFontSize;
 import freemind.controller.actions.generated.instance.PatternNodeStyle;
+import freemind.controller.actions.generated.instance.PatternPropertyBase;
 import freemind.controller.actions.generated.instance.Patterns;
 import freemind.main.Tools;
 
@@ -127,6 +128,7 @@ public class StylePatternFactory {
 		if (node.getIcons().size() == 1) {
 			PatternIcon iconPattern = new PatternIcon();
 			iconPattern.setValue(((MindIcon) node.getIcons().get(0)).getName());
+			pattern.setPatternIcon(iconPattern);
 		}
 		if (node.getEdge().getColor() != null) {
 			PatternEdgeColor subPattern = new PatternEdgeColor();
@@ -213,4 +215,49 @@ public class StylePatternFactory {
 	    return pat;
 	}
 
+	/** Build the intersection of two patterns. Only, if the 
+	 *  property is the same, or both properties are
+	 *  to be removed, it is kept, otherwise it is set to 'don't touch'. 
+	 * @param p1
+	 * @param p2
+	 * @return
+	 */
+	public static Pattern intersectPattern(Pattern p1, Pattern p2){
+		Pattern result = new Pattern();
+		result.setPatternEdgeColor((PatternEdgeColor) processPatternProperties(p1.getPatternEdgeColor(), p2.getPatternEdgeColor(), new PatternEdgeColor()));
+		result.setPatternEdgeStyle((PatternEdgeStyle) processPatternProperties(p1.getPatternEdgeStyle(), p2.getPatternEdgeStyle(), new PatternEdgeStyle()));
+		result.setPatternEdgeWidth((PatternEdgeWidth) processPatternProperties(p1.getPatternEdgeWidth(), p2.getPatternEdgeWidth(), new PatternEdgeWidth()));
+		result.setPatternIcon((PatternIcon) processPatternProperties(p1.getPatternIcon(), p2.getPatternIcon(), new PatternIcon()));
+		result.setPatternNodeBackgroundColor((PatternNodeBackgroundColor) processPatternProperties(p1.getPatternNodeBackgroundColor(), p2.getPatternNodeBackgroundColor(), new PatternNodeBackgroundColor()));
+		result.setPatternNodeColor((PatternNodeColor) processPatternProperties(p1.getPatternNodeColor(), p2.getPatternNodeColor(), new PatternNodeColor()));
+		result.setPatternNodeFontBold((PatternNodeFontBold) processPatternProperties(p1.getPatternNodeFontBold(), p2.getPatternNodeFontBold(), new PatternNodeFontBold()));
+		result.setPatternNodeFontItalic((PatternNodeFontItalic) processPatternProperties(p1.getPatternNodeFontItalic(), p2.getPatternNodeFontItalic(), new PatternNodeFontItalic()));
+		result.setPatternNodeFontName((PatternNodeFontName) processPatternProperties(p1.getPatternNodeFontName(), p2.getPatternNodeFontName(), new PatternNodeFontName()));
+		result.setPatternNodeFontSize((PatternNodeFontSize) processPatternProperties(p1.getPatternNodeFontSize(), p2.getPatternNodeFontSize(), new PatternNodeFontSize()));
+		result.setPatternNodeStyle((PatternNodeStyle) processPatternProperties(p1.getPatternNodeStyle(), p2.getPatternNodeStyle(), new PatternNodeStyle()));
+		return result;
+	}
+
+	private static PatternPropertyBase processPatternProperties(PatternPropertyBase prop1, PatternPropertyBase prop2, PatternPropertyBase destination) {
+		if(prop1 == null || prop2 == null){
+			return null;
+		}
+		// both delete the value or both have the same value:
+		if(Tools.safeEquals(prop1.getValue(), prop2.getValue())){
+			destination.setValue(prop1.getValue());
+			return destination;
+		}
+		return null;
+	}
+
+	public static Pattern createPatternFromSelected(MindMapNode focussed, List selected) {
+		Pattern nodePattern = createPatternFromNode(focussed);
+		for (Iterator iter = selected.iterator(); iter.hasNext();) {
+			MindMapNode node = (MindMapNode) iter.next();
+			Pattern tempNodePattern = createPatternFromNode(node);
+			nodePattern = intersectPattern(nodePattern, tempNodePattern);
+		}
+		return nodePattern;
+	}
+	
 }
