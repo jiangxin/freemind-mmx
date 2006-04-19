@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseController.java,v 1.13.18.7.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
+/* $Id: BrowseController.java,v 1.13.18.7.2.2 2006-04-19 20:03:02 dpolivaev Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -82,7 +82,7 @@ public class BrowseController extends ViewControllerAdapter {
         /* perform action only if one selected node.*/
         if(getSelecteds().size() != 1)
             return;
-        MindMapNode node = ((NodeView)(e.getComponent())).getModel();
+        MindMapNode node = ((NodeView)(e.getComponent().getParent())).getModel();
         if (getView().getSelected().isInFollowLinkRegion(e.getX())) {
             loadURL(); }
         else {

@@ -30,11 +30,10 @@ public class DefaultFilter implements Filter{
      */
     DefaultFilter(
             Condition condition, 
-            boolean isActive, 
             boolean areAnchestorsShown, 
             boolean areDescendantsShown) {
         super();
-        this.condition = isActive ? condition : null;
+        this.condition = condition;
         this.options = FILTER_INITIAL_VALUE | FILTER_SHOW_MATCHED;
         if (areAnchestorsShown) options += FILTER_SHOW_ANCESTOR;
         options += FILTER_SHOW_ECLIPSED;

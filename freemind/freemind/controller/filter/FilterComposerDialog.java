@@ -543,15 +543,15 @@ public class FilterComposerDialog extends JDialog {
         else{
             internalConditionsModel.removeAllElements();
         }
-        for (int i = 0; i < externalConditionsModel.getSize(); i++){
+        for (int i = 2; i < externalConditionsModel.getSize(); i++){
             internalConditionsModel.addElement(externalConditionsModel.getElementAt(i));
         }
     }
 
     private void applyChanges() {
         internalConditionsModel.setSelectedItem(conditionList.getSelectedValue());
-        externalFilterConditionComboBox.setModel(internalConditionsModel);
         internalConditionsModel.removeListDataListener(conditionListListener);
+        externalFilterConditionComboBox.setModel(internalConditionsModel);
         internalConditionsModel = null;
     }    
 }

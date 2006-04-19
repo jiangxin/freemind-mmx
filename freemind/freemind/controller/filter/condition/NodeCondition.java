@@ -13,7 +13,8 @@ import javax.swing.JComponent;
  */
 public abstract class NodeCondition implements Condition {
 
-    String description;
+    private String description;
+    private JComponent renderer;
     
     protected NodeCondition (String description) {
         super();
@@ -21,8 +22,10 @@ public abstract class NodeCondition implements Condition {
     }
     
     public JComponent getListCellRendererComponent() {
-        JComponent component = ConditionFactory.createCellRendererComponent(description);
-        return component;
+        if(renderer == null){
+            renderer = ConditionFactory.createCellRendererComponent(description);
+        }
+        return renderer;
     }
     
     public String toString(){

@@ -2,7 +2,7 @@
  * Created on 26.11.2005
  * Copyright (C) 2005 Dimitri Polivaev
  */
-package freemind.modes.mindmapmode.attributeactors;
+package freemind.view.mindmapview.attributeview;
 
 import java.awt.Component;
 import java.awt.EventQueue;
@@ -21,8 +21,6 @@ import javax.swing.table.JTableHeader;
 import freemind.main.Resources;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.AttributeTableModel;
-import freemind.view.mindmapview.attributeview.AttributeTable;
-import freemind.view.mindmapview.attributeview.AttributeView;
 
 /**
  * @author Dimitri Polivaev

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.3 2006-04-18 19:06:08 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.4 2006-04-19 20:03:02 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -173,7 +173,6 @@ import freemind.modes.mindmapmode.actions.NodeBackgroundColorAction.RemoveNodeBa
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.mindmapmode.actions.xml.UndoActionHandler;
 import freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog;
-import freemind.modes.mindmapmode.attributeactors.AttributePopupMenu;
 import freemind.modes.mindmapmode.attributeactors.MindMapModeAttributeController;
 import freemind.modes.mindmapmode.hooks.MindMapHookFactory;
 import freemind.modes.mindmapmode.listeners.MindMapMouseMotionManager;
@@ -181,6 +180,7 @@ import freemind.modes.mindmapmode.listeners.MindMapMouseWheelEventHandler;
 import freemind.modes.mindmapmode.listeners.MindMapNodeDropListener;
 import freemind.modes.mindmapmode.listeners.MindMapNodeMotionListener;
 import freemind.view.mindmapview.NodeView;
+import freemind.view.mindmapview.attributeview.AttributePopupMenu;
 
 
 

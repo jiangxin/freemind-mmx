@@ -32,7 +32,7 @@ public class ConditionRenderer implements ListCellRenderer {
             boolean isSelected,
             boolean cellHasFocus){
         if(value == null) 
-            return new JLabel(Resources.getInstance().getResourceString("attribute_no_filtering"));
+            return new JLabel(Resources.getInstance().getResourceString("filter_no_filtering"));
         JComponent component;
         if(value instanceof MindIcon){
             component = ((MindIcon)value).getRendererComponent();

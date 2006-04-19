@@ -4,14 +4,14 @@
  */
 package freemind.controller.filter;
 
-import javax.swing.AbstractButton;
-
 import freemind.controller.Controller;
-import freemind.controller.MapModuleManager;
 import freemind.controller.MapModuleManager.MapModuleChangeOberser;
+import freemind.controller.filter.condition.Condition;
 import freemind.controller.filter.condition.ConditionFactory;
 import freemind.controller.filter.condition.ConditionRenderer;
+import freemind.controller.filter.condition.NoFilteringCondition;
 import freemind.modes.MindMap;
+import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.view.MapModule;
 
@@ -22,6 +22,7 @@ import freemind.view.MapModule;
  public class FilterController implements MapModuleChangeOberser{
      private Controller c;
 	private FilterToolbar filterToolbar;
+    private Filter inactiveFilter;
 	static private ConditionRenderer conditionRenderer = null;
 	static private ConditionFactory conditionFactory;
     private MindMap map;
@@ -29,6 +30,8 @@ import freemind.view.MapModule;
 	public FilterController(Controller c){
 		this.c = c;		
         c.getMapModuleManager().addListener(this);
+        final Condition noFilteringCondition = NoFilteringCondition.CreateCondition();
+        inactiveFilter = new DefaultFilter(noFilteringCondition, false, false);
 	}
 
      ConditionRenderer getConditionRenderer() {
@@ -49,18 +52,25 @@ import freemind.view.MapModule;
      * @return
      */
     public void showFilterToolbar(boolean show){
-        AbstractButton btnFilterActive = getFilterToolbar().getBtnApply();
+        if (show == getFilterToolbar().isVisible())
+            return;
+        getFilterToolbar().setVisible(show);
+        final Filter filter = getMap().getFilter();
+        if( filter == null || filter == inactiveFilter){
+            return;
+        }
         if (show){
-            if (! getFilterToolbar().isVisible()){ 
-                getFilterToolbar().setVisible(true);
-            }
+            filter.applyFilter(c);
         }
         else{
-            if (getFilterToolbar().isVisible() && btnFilterActive.getModel().isSelected()) 
-                btnFilterActive.doClick();
-            getFilterToolbar().setVisible(false);
+            inactiveFilter.applyFilter(c);                
         }
-        
+        refreshMap();        
+    }
+    void refreshMap() {
+        MindMapNode root = (MindMapNode)map.getRoot();
+        root.getViewer().invalidateDescendantsTreeGeometries();         
+        map.nodeRefresh(root);
     }
     public ConditionFactory getConditionFactory(){
         if(conditionFactory == null)

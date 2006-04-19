@@ -184,7 +184,6 @@ public class ConditionFactory {
     static public JComponent createCellRendererComponent(String description) {
         JCondition component = new JCondition();   
         JLabel label = new JLabel(description);
-        label.setBackground(Color.PINK);
         component.add(label);
         return component;
     }

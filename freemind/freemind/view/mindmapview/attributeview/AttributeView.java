@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.6.4 2006-04-18 19:06:09 christianfoltin Exp $*/
+/*$Id: AttributeView.java,v 1.1.6.5 2006-04-19 20:03:02 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -42,7 +42,6 @@ import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.AttributeTableModel;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.attributeactors.AttributePopupMenu;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
@@ -97,7 +96,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         }
     }
     private void addListeners() {
-        if(! (getModeController() instanceof MindMapController))
+        if(getNodeView().getModel().getMap().isReadOnly())
             return;
         getAttributeRegistry().addChangeListener(this);
         addTableModelListeners();
@@ -106,9 +105,9 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         return nodeView.getModel().getMap().getModeController();
     }
     private void addTableModelListeners() {
-        final ModeController modeController = getModeController();
-        if(! (modeController instanceof MindMapController))
+        if(getNodeView().getModel().getMap().isReadOnly())
             return;
+        final ModeController modeController = getModeController();
         if(attributeTable != null){
              if(tablePopupMenu == null){
                 tablePopupMenu = ((MindMapController)modeController).getAttributeTablePopupMenu();
@@ -123,7 +122,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     }
     
     private void removeListeners() {
-        if(! (getModeController() instanceof MindMapController))
+        if(getNodeView().getModel().getMap().isReadOnly())
             return;
         getAttributeRegistry().removeChangeListener(this);
         if(attributeTable != null)
@@ -259,7 +258,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     }
     
     boolean isPopupShown(){
-        return attributeTable != null
+        return attributeTable != null && tablePopupMenu != null
         && (tablePopupMenu.getTable() == attributeTable);       
     }
     static public Component getAncestorComponent(Component object, Class ancestorClass) {
