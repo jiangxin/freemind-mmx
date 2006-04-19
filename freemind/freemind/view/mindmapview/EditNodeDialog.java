@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1.16.1 2006-04-06 21:15:07 dpolivaev Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.2 2006-04-19 20:51:16 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -263,6 +263,7 @@ public class EditNodeDialog extends EditNodeBase {
 
 		textArea.setFont(getNode().getFont());
 		textArea.setForeground(getNode().getForeground());
+        textArea.setBackground(getNode().getModel().getBackgroundColor());
 
 		//panel.setPreferredSize(new Dimension(500, 160));
 		//editorScrollPane.setPreferredSize(new Dimension(500, 160));

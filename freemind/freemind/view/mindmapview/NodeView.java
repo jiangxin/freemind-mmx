@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.3 2006-04-19 20:51:16 christianfoltin Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -119,7 +119,7 @@ public abstract class NodeView extends JComponent{
     // Constructors
     //
 
-    private static Color standardSelectColor;
+    protected static Color standardSelectColor;
     private static Color standardNodeColor;
     private Object viewDeletionEvent;
     protected NodeView(MindMapNode model, MapView map) {

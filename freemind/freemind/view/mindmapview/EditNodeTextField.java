@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.1 2006-04-05 21:26:31 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.2 2006-04-19 20:51:16 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -120,6 +120,7 @@ public class EditNodeTextField extends EditNodeBase {
         textfield.setSize(xSize, getNode().getMainView().getHeight() + heightAddition);
         textfield.setFont(getNode().getFont());
         textfield.setForeground(getNode().getForeground());
+        textfield.setBackground(getNode().getModel().getBackgroundColor());
         textfield.setSelectedTextColor(getNode().getForeground());
         textfield.setSelectionColor(getModeController().getSelectionColor());
         // textField.selectAll(); // no selection on edit (PN)

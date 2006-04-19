@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BubbleNodeView.java,v 1.14.14.4.10.1 2006-04-05 21:26:31 dpolivaev Exp $*/
+/*$Id: BubbleNodeView.java,v 1.14.14.4.10.2 2006-04-19 20:51:16 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -68,7 +68,7 @@ public class BubbleNodeView extends MoveableNodeView {
     public void paintSelected(Graphics2D graphics) {
         super.paintSelected(graphics);
         if (this.isSelected()) {
-            graphics.setColor(selectedColor);
+            graphics.setColor(standardSelectColor);
             graphics.fillRoundRect(getMainView().getX(), getMainView().getY(), getMainView().getWidth()-1, getMainView().getHeight()-1, 10,
                     10);
         }
