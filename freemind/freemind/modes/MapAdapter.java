@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.3 2006-04-19 20:53:16 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -43,6 +43,7 @@ import javax.swing.tree.TreePath;
 
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.filter.Filter;
+import freemind.controller.filter.condition.NoFilteringCondition;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
@@ -77,6 +78,7 @@ public abstract class MapAdapter implements MindMap {
 		    logger = frame.getLogger(this.getClass().getName());
 		}
 		registry = new MapRegistry(this, modeController);
+        filter = NoFilteringCondition.createTransparentFilter();
     }
 
     public ModeController getModeController() {

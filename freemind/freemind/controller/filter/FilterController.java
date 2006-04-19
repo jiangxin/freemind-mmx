@@ -22,7 +22,6 @@ import freemind.view.MapModule;
  public class FilterController implements MapModuleChangeOberser{
      private Controller c;
 	private FilterToolbar filterToolbar;
-    private Filter inactiveFilter;
 	static private ConditionRenderer conditionRenderer = null;
 	static private ConditionFactory conditionFactory;
     private MindMap map;
@@ -30,8 +29,6 @@ import freemind.view.MapModule;
 	public FilterController(Controller c){
 		this.c = c;		
         c.getMapModuleManager().addListener(this);
-        final Condition noFilteringCondition = NoFilteringCondition.CreateCondition();
-        inactiveFilter = new DefaultFilter(noFilteringCondition, false, false);
 	}
 
      ConditionRenderer getConditionRenderer() {
@@ -56,14 +53,14 @@ import freemind.view.MapModule;
             return;
         getFilterToolbar().setVisible(show);
         final Filter filter = getMap().getFilter();
-        if( filter == null || filter == inactiveFilter){
+        if( filter == null || filter == NoFilteringCondition.createTransparentFilter()){
             return;
         }
         if (show){
             filter.applyFilter(c);
         }
         else{
-            inactiveFilter.applyFilter(c);                
+            NoFilteringCondition.createTransparentFilter().applyFilter(c);                
         }
         refreshMap();        
     }

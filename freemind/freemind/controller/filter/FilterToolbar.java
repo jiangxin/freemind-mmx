@@ -162,7 +162,6 @@ class FilterToolbar extends JToolBar {
         
         btnUnfoldAncestors = new JButton(new UnfoldAncestorsAction());
         btnUnfoldAncestors.setToolTipText(Resources.getInstance().getResourceString("filter_unfold_ancestors"));
-        btnUnfoldAncestors.setEnabled(false);
         add(btnUnfoldAncestors);
         
         showAncestors = new JCheckBox(Resources.getInstance().getResourceString("filter_show_ancestors"), true);
@@ -229,7 +228,7 @@ class FilterToolbar extends JToolBar {
 
     private void addStandardConditions() {
         final DefaultComboBoxModel model = (DefaultComboBoxModel)activeFilterCondition.getModel();
-        model.insertElementAt(NoFilteringCondition.CreateCondition(), 0);
+        model.insertElementAt(NoFilteringCondition.createCondition(), 0);
         model.insertElementAt(SelectedViewCondition.CreateCondition(), 1);
     }
 }

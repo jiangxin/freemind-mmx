@@ -28,7 +28,7 @@ public class DefaultFilter implements Filter{
      * @param condition
      * @param options
      */
-    DefaultFilter(
+    public DefaultFilter(
             Condition condition, 
             boolean areAnchestorsShown, 
             boolean areDescendantsShown) {
@@ -48,7 +48,7 @@ public class DefaultFilter implements Filter{
             MapView mapView = c.getView();
             MindMapNode root = (MindMapNode)map.getRoot();
             resetFilter(root);
-            if (filterChildren(root, false, false)){
+            if (filterChildren(root, condition.checkNode(root), false)){
                 addFilterResult(root, FILTER_SHOW_ANCESTOR);
             }
             selectVisibleNode(mapView);
