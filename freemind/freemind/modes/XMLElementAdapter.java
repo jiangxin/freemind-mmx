@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.2 2006-04-20 22:46:47 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -333,6 +333,9 @@ public void setAttribute(String name, Object value) {
       else if (getName().equals(XML_NODE_ATTRIBUTE_REGISTRY)) {
           if (name.equals("RESTRICTED")) {
               getMap().getRegistry().getAttributes().setRestricted(true);
+          }
+          if (name.equals("SHOW_ATTRIBUTES")) {
+              mModeController.setAttributeViewType(sValue);
           }
           if (name.equals("FONT_SIZE")) {
               try {

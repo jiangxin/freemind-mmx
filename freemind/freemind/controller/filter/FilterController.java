@@ -25,6 +25,7 @@ import freemind.view.MapModule;
 	static private ConditionRenderer conditionRenderer = null;
 	static private ConditionFactory conditionFactory;
     private MindMap map;
+    private static Filter inactiveFilter;
 	
 	public FilterController(Controller c){
 		this.c = c;		
@@ -53,14 +54,11 @@ import freemind.view.MapModule;
             return;
         getFilterToolbar().setVisible(show);
         final Filter filter = getMap().getFilter();
-        if( filter == null || filter == NoFilteringCondition.createTransparentFilter()){
-            return;
-        }
         if (show){
             filter.applyFilter(c);
         }
         else{
-            NoFilteringCondition.createTransparentFilter().applyFilter(c);                
+            createTransparentFilter().applyFilter(c);                
         }
         refreshMap();        
     }
@@ -75,15 +73,6 @@ import freemind.view.MapModule;
         return conditionFactory;
     }
     
-    public void mapChanged(MindMap newMap){
-        FilterComposerDialog fd = getFilterToolbar().getFilterDialog();
-        if (fd != null){
-            fd.mapChanged(newMap);
-        }
-        map = newMap;
-        getFilterToolbar().mapChanged(newMap);
-    }
-
     /**
      * @return
      */
@@ -106,10 +95,23 @@ import freemind.view.MapModule;
     }
 
     public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
-        if(newMapModule != null)
-        mapChanged(newMapModule.getModel());
+        if(newMapModule != null) {
+            MindMap newMap = newMapModule.getModel();
+            FilterComposerDialog fd = getFilterToolbar().getFilterDialog();
+            if (fd != null){
+                fd.mapChanged(newMap);
+            }
+            map = newMap;
+            getFilterToolbar().mapChanged(newMap);
+        }
     }
 
     public void numberOfOpenMapInformation(int number) {
+    }
+    private static Filter createTransparentFilter(){
+        if(inactiveFilter == null)
+            inactiveFilter = new DefaultFilter(NoFilteringCondition.createCondition(), true, false);
+        return inactiveFilter;
+
     }
 }

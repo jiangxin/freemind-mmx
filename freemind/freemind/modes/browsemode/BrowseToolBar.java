@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseToolBar.java,v 1.6.18.2.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
+/* $Id: BrowseToolBar.java,v 1.6.18.2.2.2 2006-04-20 22:46:47 dpolivaev Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -45,7 +45,7 @@ public class BrowseToolBar extends JToolBar {
 	urlfield.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			String urlText = urlfield.getText();
-			if("".equals(urlText))
+			if("".equals(urlText) || e.getActionCommand().equals("comboBoxEdited"))
 				return;
 		    try {
                 c.load(new URL(urlText));

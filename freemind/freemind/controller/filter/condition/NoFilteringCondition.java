@@ -7,8 +7,6 @@ package freemind.controller.filter.condition;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import freemind.controller.filter.DefaultFilter;
-import freemind.controller.filter.Filter;
 import freemind.main.Resources;
 import freemind.modes.MindMapNode;
 
@@ -17,7 +15,6 @@ public class NoFilteringCondition implements Condition {
     private static String description;
     private static JComponent renderer;
     private static NoFilteringCondition condition;
-    private static Filter inactiveFilter;
     private NoFilteringCondition() {
         super();
         // TODO Auto-generated constructor stub
@@ -43,13 +40,6 @@ public class NoFilteringCondition implements Condition {
             condition = new NoFilteringCondition();
         }
         return condition;
-    }
-    
-    public static Filter createTransparentFilter(){
-        if(inactiveFilter == null)
-            inactiveFilter = new DefaultFilter(createCondition(), true, false);
-        return inactiveFilter;
-
     }
 
 }

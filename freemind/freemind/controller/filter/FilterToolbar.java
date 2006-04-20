@@ -32,7 +32,7 @@ import freemind.modes.MindMapNode;
 class FilterToolbar extends JToolBar {
     private FilterController fc;
     private FilterComposerDialog filterDialog = null;
-    private JComboBox activeFilterCondition;
+    private JComboBox activeFilterConditionComboBox;
     private JCheckBox showAncestors;
     private JCheckBox showDescendants;
     private Filter activeFilter;
@@ -51,7 +51,7 @@ class FilterToolbar extends JToolBar {
         }
         public void actionPerformed(ActionEvent arg0) {
             resetFilter();
-            getFilter();
+            setMapFilter();
             refreshMap();
             DefaultFilter.selectVisibleNode(c.getView());
         }
@@ -64,7 +64,8 @@ class FilterToolbar extends JToolBar {
         }
         private void filterChanged() {
             resetFilter();
-            getFilter().applyFilter(c);
+            setMapFilter();
+            activeFilter.applyFilter(c);
             refreshMap();
             DefaultFilter.selectVisibleNode(c.getView());
         }
@@ -147,15 +148,15 @@ class FilterToolbar extends JToolBar {
         
         
         activeFilter = null;
-        activeFilterCondition = new JComboBox();
-        activeFilterCondition.setFocusable(false);        
-        activeFilterCondition.setPrototypeDisplayValue("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+        activeFilterConditionComboBox = new JComboBox();
+        activeFilterConditionComboBox.setFocusable(false);        
+        activeFilterConditionComboBox.setPrototypeDisplayValue("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
         addStandardConditions();
-        activeFilterCondition.setSelectedIndex(0);
-        activeFilterCondition.setRenderer(fc.getConditionRenderer());
-        add(activeFilterCondition);
-        activeFilterCondition.addItemListener(filterChangeListener);
-        activeFilterCondition.addPropertyChangeListener(filterChangeListener);
+        activeFilterConditionComboBox.setSelectedIndex(0);
+        activeFilterConditionComboBox.setRenderer(fc.getConditionRenderer());
+        add(activeFilterConditionComboBox);
+        activeFilterConditionComboBox.addItemListener(filterChangeListener);
+        activeFilterConditionComboBox.addPropertyChangeListener(filterChangeListener);
         
         btnEdit = new JButton(new EditFilterAction());
         add(btnEdit);
@@ -182,14 +183,14 @@ class FilterToolbar extends JToolBar {
     }
     
     private Condition getSelectedCondition() {
-        return (Condition)activeFilterCondition.getSelectedItem();
+        return (Condition)activeFilterConditionComboBox.getSelectedItem();
     }
     
     JComboBox getActiveFilterConditionComboBox() {
-        return activeFilterCondition;
+        return activeFilterConditionComboBox;
     }
     
-    Filter getFilter(){
+    void setMapFilter(){
         if(activeFilter == null)
             activeFilter = new DefaultFilter(
                     getSelectedCondition(),
@@ -197,7 +198,6 @@ class FilterToolbar extends JToolBar {
                     showDescendants.getModel().isSelected()
             );
         fc.getMap().setFilter(activeFilter);
-        return activeFilter;
     }
     
     /**
@@ -216,7 +216,7 @@ class FilterToolbar extends JToolBar {
         Filter filter = newMap.getFilter();
         if(filter != activeFilter){
             activeFilter = filter;
-            activeFilterCondition.setSelectedItem(filter);
+            activeFilterConditionComboBox.setSelectedItem(filter);
             showAncestors.setSelected(filter.areAncestorsShown());
             showDescendants.setSelected(filter.areDescendantsShown());
         }
@@ -227,8 +227,11 @@ class FilterToolbar extends JToolBar {
     }
 
     private void addStandardConditions() {
-        final DefaultComboBoxModel model = (DefaultComboBoxModel)activeFilterCondition.getModel();
+        final DefaultComboBoxModel model = (DefaultComboBoxModel)activeFilterConditionComboBox.getModel();
         model.insertElementAt(NoFilteringCondition.createCondition(), 0);
         model.insertElementAt(SelectedViewCondition.CreateCondition(), 1);
+        if(activeFilterConditionComboBox.getSelectedItem()== null){
+            activeFilterConditionComboBox.setSelectedIndex(0);
+        }
     }
 }

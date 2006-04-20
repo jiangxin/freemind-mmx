@@ -66,7 +66,7 @@ public class AttributeRegistry{
         myTableModel = new AttributeRegistryTableModel(this);
         isRestricted = false;
         restrictionModel= Boolean.FALSE;
-        attributeViewType = AttributeTableLayoutModel.SHOW_SELECTED;
+        attributeViewType = AttributeTableLayoutModel.SHOW_ALL;
     }
     
     public Comparable getKey(int index) {
@@ -302,6 +302,10 @@ public class AttributeRegistry{
         boolean toBeSaved = false;
         if(isRestricted()){
             attributeRegistry.setAttribute("RESTRICTED", "true");
+            toBeSaved = true;
+        }
+        if(! attributeViewType.equals(AttributeTableLayoutModel.SHOW_ALL)){
+            attributeRegistry.setAttribute("SHOW_ATTRIBUTES", attributeViewType);
             toBeSaved = true;
         }
         if(getFontSize() != TABLE_FONT_SIZE){

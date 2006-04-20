@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.4 2006-04-18 19:06:08 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.5 2006-04-20 22:46:47 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -979,5 +979,18 @@ public abstract class ControllerAdapter implements ModeController {
     public AttributeController getAttributeController(){
         return null;
     }
+
+    public void setAttributeViewType(String value) {
+        if(value.equals(AttributeTableLayoutModel.SHOW_SELECTED)){
+            showSelectedAttributes.actionPerformed(null);
+        }
+        else if(value.equals(AttributeTableLayoutModel.HIDE_ALL)){
+            hideAllAttributes.actionPerformed(null);
+        }
+        else if(value.equals(AttributeTableLayoutModel.SHOW_ALL)){
+            showAllAttributes.actionPerformed(null);
+        }
+    }
+
 
 }
