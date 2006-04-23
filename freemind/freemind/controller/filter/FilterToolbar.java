@@ -40,8 +40,6 @@ class FilterToolbar extends JToolBar {
     private JButton btnUnfoldAncestors;
     private Controller c;
     private static Color filterInactiveColor = null;
-    static private  final String FILTER_ON = Resources.getInstance().getResourceString("filter_on");
-    static private  final String FILTER_OFF = Resources.getInstance().getResourceString("filter_off");
     
     private class FilterChangeListener extends AbstractAction implements ItemListener, PropertyChangeListener{
         /* (non-Javadoc)

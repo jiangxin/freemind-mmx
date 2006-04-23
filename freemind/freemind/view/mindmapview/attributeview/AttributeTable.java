@@ -498,4 +498,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         }
         return retValue;
     }
+    public boolean isVisible(){
+        return attributeView.areAttributesVisible();
+    }
 }

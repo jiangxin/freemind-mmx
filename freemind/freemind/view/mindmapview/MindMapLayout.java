@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.5.4.2 2006-04-06 21:15:07 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.5.4.3 2006-04-23 13:36:15 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -116,16 +116,16 @@ public class MindMapLayout implements LayoutManager {
         // about relative coordinates / positions, we always mean relative to
         // the coordinates of node's parent.
 
-        node.doLayout();
+        node.validate();
         int x = 0;
         int hgap = node.getHGap();
         if ( node.isRoot() ) {
            //System.err.println("layoutroot"+node.getModel()); 
            x = 0; }
         else if ( node.isLeft() ) {
-           x = - hgap - node.getPreferredSize().width; }
+           x = - hgap - node.getWidth(); }
         else {
-           x = node.getParentView().getPreferredSize().width + hgap; }
+           x = node.getParentView().getWidth() + hgap; }
         
         placeNode(node, x, node.relYPos);
 
@@ -150,14 +150,13 @@ public class MindMapLayout implements LayoutManager {
 
         // relativeX, relativeY - already calculated coordinates of node relative to its parent.;
         if (node.isRoot()) {
-            node.setBounds(getRootX(),
-                           getRootY()); 
+            node.setLocation(getRootX() , getRootY() ); 
             }
         else {
             //place the node-label
             int x = node.getParentView().getX() + relativeX;
             int y = node.getParentView().getY() + relativeY;
-            node.setBounds(x, y);
+            node.setLocation(x , y );
             
             // It seems that there is a piece of coding ready for having labelled edges.
             // Having labelled edges is a nice thing, as sure as hell, but we do not

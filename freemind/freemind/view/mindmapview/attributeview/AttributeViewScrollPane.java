@@ -18,11 +18,17 @@ class AttributeViewScrollPane extends JScrollPane{
      */
     AttributeViewScrollPane(AttributeTable attributeTable) {
         super(attributeTable);
+        setAlignmentX(CENTER_ALIGNMENT);
     }
     public Dimension getPreferredSize() {
-        Component table = getViewport();
-        if(isValid() == false)
-            validate();
+        validate();
         return super.getPreferredSize();
+    }
+    public Dimension getMaximumSize() {
+        validate();
+        return super.getPreferredSize();
+    }
+    public boolean isVisible(){
+        return getViewport().getView().isVisible();
     }
 }

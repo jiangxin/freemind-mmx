@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.7 2006-04-18 19:06:08 christianfoltin Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.8 2006-04-23 13:36:15 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -68,9 +68,7 @@ static KafenioPanelConfigurationInterface kafenioPanelConfiguration;
       // Return true if successful.
       try {
          lastEditingWasSuccessful = false;
-         MapView mapView = getView();
          String title = getText("edit_long_node");
-         boolean position_window_below_node = binOptionIsTrue("el__position_window_below_node");
          FreeMindMain frame = getFrame();
          if (htmlEditorPanel == null) {
              final SplashScreen splashScreen = new SplashScreen();

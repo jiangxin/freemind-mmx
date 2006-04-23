@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.3 2006-04-19 20:51:16 christianfoltin Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.4 2006-04-23 13:36:15 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -44,6 +44,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -67,13 +69,34 @@ import freemind.view.mindmapview.attributeview.AttributeView;
  * TreeCellRenderer).
  */
 public abstract class NodeView extends JComponent{
-
+    static Dimension minimumSize = new Dimension(0, 0);
+    static Dimension maximumSize = new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    protected class MainView extends JLabel{
+        MainView(){
+            setAlignmentX(CENTER_ALIGNMENT);
+        }
+        public Dimension getMinimumSize() {
+            return minimumSize;
+        }
+        
+        public Dimension getMaximumSize() {
+            return maximumSize;
+        }
+        
+        public Dimension getPreferredSize() {
+            return getMainViewPreferredSize();
+        }
+        
+        Dimension getPreferredLabelSize() {
+            return super.getPreferredSize();
+        }        
+    }
 	private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
 	private static final int MIN_HOR_NODE_SIZE = 10;
     protected MindMapNode model;
     protected MapView map;
     protected EdgeView edge;
-    private JLabel mainView;
+    private MainView mainView;
     private AttributeView attributeView;
     /** the Color of the Rectangle of a selected Node */
 	protected final static Color selectedColor = new Color(210,210,210); //Color.lightGray;
@@ -125,7 +148,7 @@ public abstract class NodeView extends JComponent{
     protected NodeView(MindMapNode model, MapView map) {
     setLayout(NodeViewLayoutManager.getInstance());
     setFocusCycleRoot(true);
-    mainView = new JLabel();
+    mainView = new MainView();
     mainView.setHorizontalAlignment(JLabel.CENTER);
     add(mainView);
 
@@ -334,7 +357,7 @@ public abstract class NodeView extends JComponent{
         if(isEmpty){
             setText("!");
         }
-    	Dimension prefSize = mainView.getPreferredSize();
+    	Dimension prefSize = mainView.getPreferredLabelSize();
         if(map.isCurrentlyPrinting() && NEED_PREF_SIZE_BUG_FIX) {
         	prefSize.width += (int)(10f*map.getZoom());
         }
@@ -984,9 +1007,7 @@ public abstract class NodeView extends JComponent{
         attributeView.update();
         // 7) ToolTips:
         updateToolTip();
-        // 8) AttributeView
-        syncronizeAttributeView();
-        // 9) Complete
+        // 8) Complete
         revalidate(); // Because of zoom?
     }
 
@@ -1076,7 +1097,7 @@ public abstract class NodeView extends JComponent{
 
     public int getZoomedFoldingSymbolHalfWidth() {
         int preferredFoldingSymbolHalfWidth = map.getZoomedFoldingSymbolHalfWidth();
-        return Math.min(preferredFoldingSymbolHalfWidth, getPreferredSize().height / 2);
+        return Math.min(preferredFoldingSymbolHalfWidth, getHeight() / 2);
     }
     /**
      * @return returns the color that should used to select the node.
@@ -1196,12 +1217,7 @@ public abstract class NodeView extends JComponent{
         return attributeView;
     }
 
-	public void setBounds(int x,	int y){
-		setLocation(x , y );
-		Dimension prefSize = getPreferredSize();
-		setSize(prefSize);
-	}
-    public int getXWithFoldingMark() {
+	public int getXWithFoldingMark() {
         return getX()- getDeltaX();
     }
     public int getYWithFoldingMark() {
@@ -1241,5 +1257,11 @@ public abstract class NodeView extends JComponent{
             child.invalidateDescendantsTreeGeometries();
         }
 
+    }
+    
+    public void doLayout() {
+        super.doLayout();
+        Dimension prefSize = getPreferredSize();
+        setSize(prefSize);        
     }
 }

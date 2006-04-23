@@ -14,11 +14,6 @@ import java.awt.LayoutManager;
  * 05.06.2005
  */
 public class NodeViewLayoutManager implements LayoutManager {
-    private NodeView nodeView(Container c)
-    {
-        return (NodeView)c;
-    };
-    
     protected NodeViewLayoutManager(){
         
     }
@@ -34,15 +29,6 @@ public class NodeViewLayoutManager implements LayoutManager {
      * @see java.awt.LayoutManager#removeLayoutComponent(java.awt.Component)
      */
     public void removeLayoutComponent(Component arg0) {
-    }
-
-     private Dimension getMainViewPreferredSize(Container c) {
-        return nodeView(c).getMainViewPreferredSize();
-    }
-
-    private Dimension getAttributeViewPreferredSize(Container c) {        
-        Dimension attributeViewPreferredSize = c.getComponent(1).getPreferredSize();
-        return attributeViewPreferredSize;
     }
 
     /* (non-Javadoc)
@@ -61,35 +47,36 @@ public class NodeViewLayoutManager implements LayoutManager {
      * @see java.awt.LayoutManager#preferredLayoutSize(java.awt.Container)
      */
     public Dimension preferredLayoutSize(Container c) {
-        Dimension mainViewPreferredSize = getMainViewPreferredSize(c);
-        final NodeView nodeView = nodeView(c);
-        nodeView.syncronizeAttributeView();
-        if (nodeView.getAttributeView().areAttributesVisible()){
-            Dimension attributeViewPreferredSize = getAttributeViewPreferredSize(c);
-            return new Dimension(Math.max(mainViewPreferredSize.width, attributeViewPreferredSize.width),
-                    mainViewPreferredSize.height + attributeViewPreferredSize.height);
+        Dimension prefSize = new Dimension(0, 0);
+        for(int i = 0; i < c.getComponentCount(); i++){
+            final Component component = c.getComponent(i);
+            if(!component.isVisible())
+                continue;
+            Dimension componentPrefSize = component.getPreferredSize();
+            prefSize.width = Math.max(componentPrefSize.width, prefSize.width);
+            prefSize.height += componentPrefSize.height;
         }
-        else
-            return mainViewPreferredSize;
+        return prefSize;
     }
 
       public void layoutContainer(Container c) {        
-        final NodeView nodeView = nodeView(c);
-        Dimension mainViewPreferredSize = getMainViewPreferredSize(c);
-        int w = mainViewPreferredSize.width;
-        if (nodeView(c).getAttributeView().areAttributesVisible()){
-            Dimension attributesViewPreferredSize = getAttributeViewPreferredSize(c);
-            w = Math.max(mainViewPreferredSize.width, attributesViewPreferredSize.width);
-            Component attributeView = c.getComponent(1);
-            c.getComponent(1).setVisible(true);
-            attributeView.setBounds((w - attributesViewPreferredSize.width)/2, mainViewPreferredSize.height , attributesViewPreferredSize.width, attributesViewPreferredSize.height) ;
-        }
-        else{
-            if(c.getComponentCount() >= 2){
-                c.getComponent(1).setVisible(false);
+        Dimension totalSize = preferredLayoutSize(c);
+        int y = 0;
+        for(int i = 0; i < c.getComponentCount(); i++){
+            final Component component = c.getComponent(i);
+            if(!component.isVisible())
+                continue;
+            Dimension componentPreferredSize = component.getPreferredSize();
+            Dimension componentMaximumSize = component.getMaximumSize();
+            int spaceX = totalSize.width - componentMaximumSize.width;
+            if(spaceX > 0){
+                component.setBounds(spaceX / 2, y, componentMaximumSize.width, componentPreferredSize.height);
             }
+            else{
+                component.setBounds(0, y, totalSize.width, componentPreferredSize.height);                
+            }
+            y += componentPreferredSize.height;
         }
-        nodeView.getMainView().setBounds(0, 0 , w, mainViewPreferredSize.height) ;
     }
 
     static NodeViewLayoutManager getInstance() {
