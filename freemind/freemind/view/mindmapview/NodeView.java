@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.4 2006-04-23 13:36:15 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.5 2006-04-23 14:51:54 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1054,7 +1054,7 @@ public abstract class NodeView extends JComponent{
     }
     void updateAll() {
     update();
-    for(ListIterator e = getChildrenViews(true).listIterator();e.hasNext();) {
+    for(ListIterator e = getChildrenViews(false).listIterator();e.hasNext();) {
         NodeView child = (NodeView)e.next();
         child.updateAll();
     }
