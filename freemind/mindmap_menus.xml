@@ -154,13 +154,14 @@
 		</menu_category>	
 	
 		<menu_category name="view">
-		<menu_separator/>
+<!--			
+		<menu_separator/>			
 		<menu_submenu name="attributes" name_ref="menu_attributes">
 			<menu_radio_action name="showAllAttributes" field="showAllAttributes" key_ref="keystroke_show_all_attributes" selected ="true"/>
 			<menu_radio_action name="showSelectedAttributes" field="showSelectedAttributes" key_ref="keystroke_show_selected_attributes"/>
 			<menu_radio_action name="hideAllAttributes" field="hideAllAttributes" key_ref="keystroke_hide_all_attributes"/>
 		</menu_submenu>	
-					
+-->					
 		</menu_category>
 			
 		<menu_category name="extras">

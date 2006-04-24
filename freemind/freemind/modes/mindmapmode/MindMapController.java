@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.4 2006-04-19 20:03:02 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.5 2006-04-24 22:23:34 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -301,7 +301,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     public NodeBackgroundColorAction nodeBackgroundColor = null;
     public RemoveNodeBackgroundColorAction removeNodeBackgroundColor = null;
 
-    public IconAction unknwonIconAction = null;
+    public IconAction unknownIconAction = null;
     public RemoveLastIconAction removeLastIconAction = null;
     public RemoveAllIconsAction removeAllIconsAction = null;
     public SetLinkByTextFieldAction setLinkByTextField = null;
@@ -423,10 +423,10 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         // this is an unknown icon and thus corrected by mindicon:
         removeLastIconAction = new RemoveLastIconAction(this);
         // this action handles the xml stuff: (undo etc.)
-        unknwonIconAction = new IconAction(this, MindIcon.factory((String) MindIcon
+        unknownIconAction = new IconAction(this, MindIcon.factory((String) MindIcon
                 .getAllIconNames().get(0)), removeLastIconAction);
-        removeLastIconAction.setIconAction(unknwonIconAction);
-        removeAllIconsAction = new RemoveAllIconsAction(this, unknwonIconAction);
+        removeLastIconAction.setIconAction(unknownIconAction);
+        removeAllIconsAction = new RemoveAllIconsAction(this, unknownIconAction);
         // load pattern actions:
         loadPatternActions();
         EdgeWidth_WIDTH_PARENT = new EdgeWidthAction(this, EdgeAdapter.WIDTH_PARENT);
@@ -654,7 +654,11 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         Vector iconNames = MindIcon.getAllIconNames();
         String[] userIconArray = getFrame().getProperty("user_icons").split(",");
         for ( int i = 0 ; i < userIconArray.length; ++i ) {
-           iconNames.add(userIconArray[i]); }
+           final String iconName = userIconArray[i];
+           if(iconName.equals("")){
+               continue;
+           }
+        iconNames.add(iconName); }
         for ( int i = 0 ; i < iconNames.size(); ++i ) {
             String iconName = ((String) iconNames.get(i));
             MindIcon myIcon     = MindIcon.factory(iconName);
@@ -1391,7 +1395,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     }
 
     public void addIcon(MindMapNode node, MindIcon icon) {
-        unknwonIconAction.addIcon(node, icon);
+        unknownIconAction.addIcon(node, icon);
     }
 
 

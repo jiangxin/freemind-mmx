@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.2 2006-04-20 22:46:47 dpolivaev Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.3 2006-04-24 22:23:34 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -169,5 +169,4 @@ public interface ModeController  {
 
     AttributeController getAttributeController();
     void nodeRefresh(MindMapNode node);
-    void setAttributeViewType(String value);
 }

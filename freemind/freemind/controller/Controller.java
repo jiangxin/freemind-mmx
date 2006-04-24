@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.4 2006-04-18 19:06:08 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.5 2006-04-24 22:23:33 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -74,10 +74,9 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import freemind.controller.MapModuleManager.MapModuleChangeOberser;
 import freemind.controller.filter.FilterController;
 import freemind.controller.printpreview.PreviewDialog;
-
-import freemind.controller.MapModuleManager.MapModuleChangeOberser;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
@@ -88,6 +87,8 @@ import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.ModesCreator;
+import freemind.modes.attributes.AttributeRegistry;
+import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.browsemode.BrowseMode;
 import freemind.modes.mindmapmode.attributeactors.AttributeManagerDialog;
 import freemind.preferences.FreemindPropertyListener;
@@ -101,6 +102,8 @@ import freemind.view.mindmapview.MapView;
  * Forwards all messages to MapModel(editing) or MapView(navigation).
  */
 public class Controller  implements MapModuleChangeOberser {
+
+
 
     private static Logger logger;
     private static JColorChooser colorChooser = new JColorChooser();
@@ -142,6 +145,10 @@ public class Controller  implements MapModuleChangeOberser {
     public Action quit;
     public Action background;
 
+    public Action showAllAttributes = new ShowAllAttributesAction();
+    public Action showSelectedAttributes = new ShowSelectedAttributesAction();
+    public Action hideAllAttributes = new HideAllAttributesAction();
+    
     public OptionAntialiasAction optionAntialiasAction;
     public Action optionHTMLExportFoldingAction;
     public Action optionSelectionMechanismAction;
@@ -1177,6 +1184,53 @@ public class Controller  implements MapModuleChangeOberser {
             logger.info("ZoomOutAction actionPerformed");
            ((MainToolBar)toolbar).zoomOut(); }}
 
+    private class ShowAllAttributesAction extends AbstractAction {
+        public ShowAllAttributesAction(){
+            super(Resources.getInstance().getResourceString("attributes_show_all"));
+        };
+        public void actionPerformed(ActionEvent e) {
+            final MindMap map = getMap();
+            setAttributeViewType(map);
+        }
+        public void setAttributeViewType(final MindMap map) {
+            final AttributeRegistry attributes = map.getRegistry().getAttributes();
+            if(attributes.getAttributeViewType() != AttributeTableLayoutModel.SHOW_ALL){
+                attributes.setAttributeViewType(AttributeTableLayoutModel.SHOW_ALL);
+            }
+        }
+    }    
+    private class HideAllAttributesAction extends AbstractAction {
+        public HideAllAttributesAction(){
+            super(Resources.getInstance().getResourceString("attributes_hide_all"));
+        };
+        public void actionPerformed(ActionEvent e) {
+            final MindMap map = getMap();
+            setAttributeViewType(map);
+        }
+        public void setAttributeViewType(final MindMap map) {
+            final AttributeRegistry attributes = map.getRegistry().getAttributes();
+            if(attributes.getAttributeViewType() != AttributeTableLayoutModel.HIDE_ALL){
+                attributes.setAttributeViewType(AttributeTableLayoutModel.HIDE_ALL);
+            }
+        }
+    }
+
+    private class ShowSelectedAttributesAction extends AbstractAction {
+        public ShowSelectedAttributesAction(){
+            super(Resources.getInstance().getResourceString("attributes_show_selected"));
+        };
+        public void actionPerformed(ActionEvent e) {
+            MindMap map = getMap();
+            setAttributeViewType(map);
+        }
+        void setAttributeViewType(MindMap map){
+            final AttributeRegistry attributes = map.getRegistry().getAttributes();
+            if(attributes.getAttributeViewType() != AttributeTableLayoutModel.SHOW_SELECTED){
+                attributes.setAttributeViewType(AttributeTableLayoutModel.SHOW_SELECTED);
+            }
+        }
+    }
+
     //
     // Preferences
     //
@@ -1404,6 +1458,18 @@ public class Controller  implements MapModuleChangeOberser {
     public PageFormat getPageFormat() {
         return pageFormat;
     }
+    public void setAttributeViewType(MindMap map, String value) {
+        if(value.equals(AttributeTableLayoutModel.SHOW_SELECTED)){
+            ((ShowSelectedAttributesAction)showSelectedAttributes).setAttributeViewType(map);
+        }
+        else if(value.equals(AttributeTableLayoutModel.HIDE_ALL)){
+            ((HideAllAttributesAction)hideAllAttributes).setAttributeViewType(map);
+        }
+        else if(value.equals(AttributeTableLayoutModel.SHOW_ALL)){
+            ((ShowAllAttributesAction)showAllAttributes).setAttributeViewType(map);
+        }
+    }
 
-}//Class Controller
+
+}
 

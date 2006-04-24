@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.8 2006-04-23 13:36:15 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.9 2006-04-24 22:23:34 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -31,6 +31,7 @@ import java.util.HashMap;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.text.html.HTMLDocument;
 
 import de.xeinfach.kafenio.KafenioPanel;
@@ -70,15 +71,17 @@ static KafenioPanelConfigurationInterface kafenioPanelConfiguration;
          lastEditingWasSuccessful = false;
          String title = getText("edit_long_node");
          FreeMindMain frame = getFrame();
+         SplashScreen splashScreen = null;
          if (htmlEditorPanel == null) {
-             final SplashScreen splashScreen = new SplashScreen();
+             splashScreen = new SplashScreen();
              splashScreen.setVisible(true);
+             final JRootPane rootPane = splashScreen.getRootPane();
+             rootPane.paintImmediately(0, 0, rootPane.getWidth(), rootPane.getHeight());
              createKafenioPanel();
              htmlEditorWindow = new JDialog((JFrame)frame, title, /*modal=*/true);
              htmlEditorWindow.getContentPane().setLayout(new BorderLayout());
              htmlEditorWindow.getContentPane().add((JPanel)htmlEditorPanel, BorderLayout.CENTER);
              htmlEditorWindow.setJMenuBar(htmlEditorPanel.getJMenuBar());
-             splashScreen.setVisible(false);
          }
 
          htmlEditorPanel.setKafenioParent(htmlEditorWindow);
@@ -129,6 +132,9 @@ static KafenioPanelConfigurationInterface kafenioPanelConfiguration;
  				.getLocationOnScreen());
 
          htmlEditorPanel.setDocumentConfirmed(false);
+         if(splashScreen != null){
+             splashScreen.setVisible(false);
+         }
          htmlEditorWindow.show();
 
          // Returned from editing

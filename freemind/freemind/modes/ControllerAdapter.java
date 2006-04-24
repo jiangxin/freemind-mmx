@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.5 2006-04-20 22:46:47 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.6 2006-04-24 22:23:34 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -93,10 +93,6 @@ public abstract class ControllerAdapter implements ModeController {
 	private static java.util.logging.Logger logger;
 
 	private Mode mode;
-
-   public Action showAllAttributes = new ShowAllAttributesAction();
-    public Action showSelectedAttributes = new ShowSelectedAttributesAction();
-    public Action hideAllAttributes = new HideAllAttributesAction();
 
     private Color selectionColor = new Color(200,220,200);
 	/**
@@ -736,43 +732,6 @@ public abstract class ControllerAdapter implements ModeController {
         }
     }
 
-
-        protected class ShowAllAttributesAction extends AbstractAction {
-            public ShowAllAttributesAction(){
-                super(Resources.getInstance().getResourceString("attributes_show_all"));
-            };
-            public void actionPerformed(ActionEvent e) {
-                final AttributeRegistry attributes = getMap().getRegistry().getAttributes();
-                if(attributes.getAttributeViewType() != AttributeTableLayoutModel.SHOW_ALL){
-                    attributes.setAttributeViewType(AttributeTableLayoutModel.SHOW_ALL);
-                }
-            }
-        }
-        protected class HideAllAttributesAction extends AbstractAction {
-            public HideAllAttributesAction(){
-                super(Resources.getInstance().getResourceString("attributes_hide_all"));
-            };
-            public void actionPerformed(ActionEvent e) {
-                final AttributeRegistry attributes = getMap().getRegistry().getAttributes();
-                if(attributes.getAttributeViewType() != AttributeTableLayoutModel.HIDE_ALL){
-                    attributes.setAttributeViewType(AttributeTableLayoutModel.HIDE_ALL);
-                }
-            }
-        }
-
-        protected class ShowSelectedAttributesAction extends AbstractAction {
-            public ShowSelectedAttributesAction(){
-                super(Resources.getInstance().getResourceString("attributes_show_selected"));
-            };
-            public void actionPerformed(ActionEvent e) {
-                final AttributeRegistry attributes = getMap().getRegistry().getAttributes();
-                if(attributes.getAttributeViewType() != AttributeTableLayoutModel.SHOW_SELECTED){
-                    attributes.setAttributeViewType(AttributeTableLayoutModel.SHOW_SELECTED);
-                }
-            }
-        }
-
-
         protected class EditAttributesAction extends AbstractAction {
             public EditAttributesAction(){
                 super(Resources.getInstance().getResourceString("attributes_edit_in_place"));
@@ -789,10 +748,9 @@ public abstract class ControllerAdapter implements ModeController {
                 }
             }
         }
-
-
-
-    protected class FileOpener implements DropTargetListener {
+        
+        
+        protected class FileOpener implements DropTargetListener {
         private boolean isDragAcceptable(DropTargetDragEvent event) {
             // check if there is at least one File Type in the list
             DataFlavor[] flavors = event.getCurrentDataFlavors();
@@ -979,18 +937,5 @@ public abstract class ControllerAdapter implements ModeController {
     public AttributeController getAttributeController(){
         return null;
     }
-
-    public void setAttributeViewType(String value) {
-        if(value.equals(AttributeTableLayoutModel.SHOW_SELECTED)){
-            showSelectedAttributes.actionPerformed(null);
-        }
-        else if(value.equals(AttributeTableLayoutModel.HIDE_ALL)){
-            hideAllAttributes.actionPerformed(null);
-        }
-        else if(value.equals(AttributeTableLayoutModel.SHOW_ALL)){
-            showAllAttributes.actionPerformed(null);
-        }
-    }
-
 
 }

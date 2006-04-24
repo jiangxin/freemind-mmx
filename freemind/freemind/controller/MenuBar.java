@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.1 2006-04-05 21:26:24 dpolivaev Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.2 2006-04-24 22:23:34 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -298,6 +298,23 @@ public class MenuBar extends JMenuBar {
 		JMenuItem moveToRoot = menuHolder.addAction(c.moveToRoot, NAVIGATE_MENU+"nodes/moveToRoot");
 		moveToRoot.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_moveToRoot")));
 	
+        menuHolder.addSeparator(VIEW_MENU);
+        JMenu attributes = menuHolder.addMenu(new JMenu(c.getResourceString("menu_attributes")), VIEW_MENU+"attributes/.");
+        ButtonGroup buttonGroup = new ButtonGroup();
+        JRadioButtonMenuItem itemShowAll = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(c.showAllAttributes), VIEW_MENU+"attributes/showAllAttributes");
+        itemShowAll.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_show_all_attributes")));
+        buttonGroup.add(itemShowAll);
+
+        JRadioButtonMenuItem itemShowSelected = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(c.showSelectedAttributes), VIEW_MENU+"attributes/showSelectedAttributes");
+        itemShowSelected.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_show_selected_attributes")));
+        buttonGroup.add(itemShowSelected);
+
+        JRadioButtonMenuItem itemHideAll = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(c.hideAllAttributes), VIEW_MENU+"attributes/hideAllAttributes");
+        itemHideAll.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_hide_all_attributes")));
+        buttonGroup.add(itemHideAll);
+        
+        
+
 
 		JMenuItem previousMap = menuHolder.addAction(c.navigationPreviousMap, MINDMAP_MENU+"navigate/navigationPreviousMap");
 		previousMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_previousMap")));

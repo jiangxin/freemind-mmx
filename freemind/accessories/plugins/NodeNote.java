@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.3 2006-04-13 18:23:36 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.4 2006-04-24 22:23:33 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.Component;
@@ -30,6 +30,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JMenuBar;
+import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -266,6 +267,8 @@ public class NodeNote extends NodeNoteBase {
         if(htmlEditorPanel == null){
             final SplashScreen splashScreen = new SplashScreen();
             splashScreen.setVisible(true);
+            final JRootPane rootPane = splashScreen.getRootPane();
+            rootPane.paintImmediately(0, 0, rootPane.getWidth(), rootPane.getHeight());
             createKafenioConfiguration();
             htmlEditorPanel  = new KafenioPanel(kafenioPanelConfiguration);
             htmlEditorPanel.getJToolBar1().setRollover(true);
