@@ -62,13 +62,18 @@ public class ConjunctConditions implements Condition {
         JCondition component = new JCondition();   
         component.add(new JLabel("("));
         Condition cond = (Condition)conditions[0];
-        component.add(cond.getListCellRendererComponent());
+        JComponent rendererComponent = cond.getListCellRendererComponent();
+        rendererComponent.setOpaque(false);
+        component.add(rendererComponent);
         int i;
         for(i=1; i<conditions.length; i++){
             String text = ' ' + Resources.getInstance().getResourceString("filter_and") + ' ';
             component.add(new JLabel(text));
             cond = (Condition)conditions[i];
-            component.add(cond.getListCellRendererComponent());        }
+            rendererComponent = cond.getListCellRendererComponent();
+            rendererComponent.setOpaque(false);
+            component.add(rendererComponent);        
+        }
         component.add(new JLabel(")"));
         return component;
     }
