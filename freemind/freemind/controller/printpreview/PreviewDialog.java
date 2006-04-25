@@ -2,7 +2,7 @@
  *  Preview Dialog - A Preview Dialog for your Swing Applications
  *
  *  Copyright (C) 2003 Jens Kaiser.
- *  Copyright (C) 2006 Dimitri Polivaev.
+ *  Created by Dimitri Polivaev.
  *
  *  Written by: 2003 Jens Kaiser <jens.kaiser@web.de>
  *
@@ -53,7 +53,7 @@ public class PreviewDialog extends JDialog implements ActionListener {
 
     public PreviewDialog(String title, MapView view) {
         super(JOptionPane.getFrameForComponent(view), title, true);
-        this.view = view;        
+        this.view = view;
         Preview preview = new Preview(view, 1);
         JScrollPane scrollPane = new JScrollPane(preview);
         getContentPane().add(scrollPane, "Center");
@@ -67,17 +67,17 @@ public class PreviewDialog extends JDialog implements ActionListener {
         toolbar.add(pageNumber);
         toolbar.add(getButton("Forward24.gif", new BrowseAction(preview, pageNumber,1)));
         toolbar.add(new JToolBar.Separator());
-        toolbar.add(getButton("ZoomIn24.gif", new ZoomAction(preview, DEFAULT_ZOOM_FACTOR_STEP))); 
-        toolbar.add(getButton("ZoomOut24.gif", new ZoomAction(preview, -DEFAULT_ZOOM_FACTOR_STEP))); 
+        toolbar.add(getButton("ZoomIn24.gif", new ZoomAction(preview, DEFAULT_ZOOM_FACTOR_STEP)));
+        toolbar.add(getButton("ZoomOut24.gif", new ZoomAction(preview, -DEFAULT_ZOOM_FACTOR_STEP)));
         toolbar.add(new JToolBar.Separator());
         JPanel dialog = new JPanel();
         dialog.setLayout(new FlowLayout(FlowLayout.RIGHT));
         JButton ok = new JButton("OK");
         ok.addActionListener(this);
         dialog.add(ok);
-        getContentPane().add(dialog, "South"); 
+        getContentPane().add(dialog, "South");
     }
-    
+
 
     private JButton getButton(String iconName) {
         return getButton(null, iconName, null);
@@ -86,28 +86,28 @@ public class PreviewDialog extends JDialog implements ActionListener {
     private JButton getButton(String iconName, AbstractAction action) {
         return getButton(null, iconName, action);
     }
-    
+
     private JButton getButton(String name, String iconName, AbstractAction action) {
         JButton result = null;
 
-        ImageIcon icon = null;        
+        ImageIcon icon = null;
         URL imageURL = getClass().getClassLoader().getResource("images/" + iconName);
         if (imageURL != null)
             icon = new ImageIcon(imageURL);
 
         if (action != null) {
             if (icon != null) action.putValue(Action.SMALL_ICON, new ImageIcon(imageURL));
-            if (name != null) action.putValue(Action.NAME, name);    
+            if (name != null) action.putValue(Action.NAME, name);
             result = new JButton(action);
-        } else 
+        } else
             result = new JButton(name, icon);
-        
+
         return result;
     }
-    
+
     public void actionPerformed(ActionEvent e) {
         dispose();
     }
-    
+
     protected MapView view;
 }

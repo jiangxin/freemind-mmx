@@ -1,6 +1,25 @@
+/*FreeMind - A Program for creating and viewing Mindmaps
+*Copyright (C) 2000-2006 Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitri Polivaev and others.
+*
+*See COPYING for Details
+*
+*This program is free software; you can redistribute it and/or
+*modify it under the terms of the GNU General Public License
+*as published by the Free Software Foundation; either version 2
+*of the License, or (at your option) any later version.
+*
+*This program is distributed in the hope that it will be useful,
+*but WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*GNU General Public License for more details.
+*
+*You should have received a copy of the GNU General Public License
+*along with this program; if not, write to the Free Software
+*Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
 /*
  * Created on 22.01.2006
- * Copyright (C) 2006 Dimitri Polivaev
+ * Created by Dimitri Polivaev
  */
 package freemind.modes.mindmapmode.attributeactors;
 
@@ -22,7 +41,7 @@ public class MindMapModeAttributeController implements AttributeController{
     private static interface Visitor{
         void visit(NodeAttributeTableModel model);
     }
-    
+
     private class AttributeRenamer implements Visitor{
 
         private Object oldName;
@@ -41,11 +60,11 @@ public class MindMapModeAttributeController implements AttributeController{
                 if(model.getName(i).equals(oldName)){
                     final ActionPair setAttributeNameActionPair = setAttributeNameActor.createActionPair(model, i, newName.toString());
                     controller.getActionFactory().executeAction(setAttributeNameActionPair);                }
-            }            
+            }
         }
-        
+
     }
-    
+
     private class AttributeChanger implements Visitor{
         private Object name;
         private Object oldValue;
@@ -64,9 +83,9 @@ public class MindMapModeAttributeController implements AttributeController{
             for(int i = 0; i < model.getRowCount(); i++){
                 if(model.getName(i).equals(name) && model.getValue(i).equals(oldValue)){
                     final ActionPair setAttributeValueActionPair = setAttributeValueActor.createActionPair(model, i, newValue.toString());
-                    controller.getActionFactory().executeAction(setAttributeValueActionPair);                    
+                    controller.getActionFactory().executeAction(setAttributeValueActionPair);
                 }
-            }            
+            }
         }
     }
     private class AttributeRemover implements Visitor{
@@ -83,12 +102,12 @@ public class MindMapModeAttributeController implements AttributeController{
             for(int i = 0; i < model.getRowCount(); i++){
                 if(model.getName(i).equals(name)){
                     final ActionPair removeAttributeActionPair = removeAttributeActor.createActionPair(model, i);
-                    controller.getActionFactory().executeAction(removeAttributeActionPair);                    
-                }      
+                    controller.getActionFactory().executeAction(removeAttributeActionPair);
+                }
             }
          }
     }
-    
+
     private class AttributeValueRemover implements Visitor{
 
         private Object name;
@@ -106,9 +125,9 @@ public class MindMapModeAttributeController implements AttributeController{
             for(int i = 0; i < model.getRowCount(); i++){
                 if(model.getName(i).equals(name) && model.getValue(i).equals(value)){
                     final ActionPair removeAttributeActionPair = removeAttributeActor.createActionPair(model, i);
-                    controller.getActionFactory().executeAction(removeAttributeActionPair);                   
-                }          
-            }            
+                    controller.getActionFactory().executeAction(removeAttributeActionPair);
+                }
+            }
         }
     }
     private static class Iterator{
@@ -120,12 +139,12 @@ public class MindMapModeAttributeController implements AttributeController{
          * @param root
          */
         void iterate(MindMapNode node){
-            visitor.visit(node.getAttributes());            
+            visitor.visit(node.getAttributes());
             ListIterator iterator = node.childrenUnfolded();
             while(iterator.hasNext()){
                 MindMapNode child = (MindMapNode)iterator.next();
-                iterate(child);           
-            }            
+                iterate(child);
+            }
         }
     }
 
@@ -142,10 +161,10 @@ public class MindMapModeAttributeController implements AttributeController{
     SetAttributeFontSizeActor setAttributeFontSizeActor;
     SetAttributeVisibleActor setAttributeVisibleActor;
     SetAttributeRestrictedActor setAttributeRestrictedActor;
-    
+
     private MindMapController controller;
 
-    
+
     public MindMapModeAttributeController(MindMapController controller) {
         this.controller = controller;
         setAttributeNameActor = new SetAttributeNameActor(controller);
@@ -166,10 +185,10 @@ public class MindMapModeAttributeController implements AttributeController{
     public void performSetValueAt(NodeAttributeTableModel model, Object o, int row, int col) {
         startTransaction("performSetValueAt");
         Attribute attribute = model.getAttribute(row);
-        
+
         AttributeRegistry attributes = getAttributeRegistry();
         switch(col){
-        case 0: 
+        case 0:
         {
             if(attribute.getName().equals(o))
                 return;
@@ -178,7 +197,7 @@ public class MindMapModeAttributeController implements AttributeController{
             controller.getActionFactory().executeAction(setAttributeNameActionPair);
             try{
                 AttributeRegistryElement element = attributes.getElement(name);
-                String value = model.getValueAt(row, 1).toString(); 
+                String value = model.getValueAt(row, 1).toString();
                 int index = element.getValues().getIndexOf(value);
                 if(index == -1){
                     final ActionPair setAttributeValueActionPair = setAttributeValueActor.createActionPair(model, row, element.getValues().firstElement().toString());
@@ -201,17 +220,17 @@ public class MindMapModeAttributeController implements AttributeController{
             String value = o.toString();
             final ActionPair setValueActionPair = setAttributeValueActor.createActionPair(model, row, value);
             controller.getActionFactory().executeAction(setValueActionPair);
-            String name = model.getValueAt(row, 0).toString(); 
+            String name = model.getValueAt(row, 0).toString();
             AttributeRegistryElement element = attributes.getElement(name);
             int index = element.getValues().getIndexOf(value);
             if(index == -1){
                 final ActionPair registryAttributeValueActionPair = registryAttributeValueActor.createActionPair(name, value);
                 controller.getActionFactory().executeAction(registryAttributeValueActionPair);
-            }                
+            }
             break;
         }
-        }      
-        
+        }
+
         endTransaction("performSetValueAt");
     }
 
@@ -222,7 +241,7 @@ public class MindMapModeAttributeController implements AttributeController{
     private void startTransaction(String name) {
         controller.getActionFactory().startTransaction(this.getClass().getName() + "." + name);
     }
-    
+
     public void performInsertRow(NodeAttributeTableModel model, int row, String name, String value) {
         startTransaction("performInsertRow");
         AttributeRegistry attributes = getAttributeRegistry();
@@ -236,7 +255,7 @@ public class MindMapModeAttributeController implements AttributeController{
                     value = element.getValues().firstElement().toString();
                 }
                 else{
-                    final ActionPair registryNewAttributeActionPair = registryAttributeValueActor.createActionPair(name, value);                
+                    final ActionPair registryNewAttributeActionPair = registryAttributeValueActor.createActionPair(name, value);
                     controller.getActionFactory().executeAction(registryNewAttributeActionPair);
                 }
             }
@@ -252,7 +271,7 @@ public class MindMapModeAttributeController implements AttributeController{
         controller.getActionFactory().executeAction(insertAttributeActionPair);
         endTransaction("performInsertRow");
     }
-    
+
     public void performRemoveRow(NodeAttributeTableModel model, int row) {
         startTransaction("performRemoveRow");
         final ActionPair removeAttributeActionPair = removeAttributeActor.createActionPair(model, row);
@@ -268,12 +287,12 @@ public class MindMapModeAttributeController implements AttributeController{
             controller.getActionFactory().executeAction(setAttributeColumnWidthActionPair);
             endTransaction("performSetColumnWidth");
     }
-    
+
     public void performRemoveAttributeValue(String name, String value) {
             startTransaction("performRemoveAttributeValue");
             final ActionPair removeAttributeActionPair = unregistryAttributeValueActor.createActionPair(name, value);
             controller.getActionFactory().executeAction(removeAttributeActionPair);
-            Visitor remover = new AttributeValueRemover(name, value); 
+            Visitor remover = new AttributeValueRemover(name, value);
             Iterator iterator = new Iterator(remover);
             MindMapNode root = controller.getRootNode();
             iterator.iterate(root);
@@ -284,7 +303,7 @@ public class MindMapModeAttributeController implements AttributeController{
         startTransaction("performReplaceAttributeValue");
         final ActionPair replaceAttributeActionPair = replaceAttributeValueActor.createActionPair(name, oldValue, newValue);
         controller.getActionFactory().executeAction(replaceAttributeActionPair);
-        Visitor replacer = new AttributeChanger(name, oldValue, newValue); 
+        Visitor replacer = new AttributeChanger(name, oldValue, newValue);
         Iterator iterator = new Iterator(replacer);
         MindMapNode root = controller.getRootNode();
         iterator.iterate(root);
@@ -317,7 +336,7 @@ public class MindMapModeAttributeController implements AttributeController{
         }else{
             currentValue= getAttributeRegistry().getElement(index).isRestricted();
         }
-        
+
         if(currentValue == isRestricted)
             return;
         startTransaction("performSetRestriction");
@@ -325,10 +344,10 @@ public class MindMapModeAttributeController implements AttributeController{
         controller.getActionFactory().executeAction(setRestrictionActionPair);
         endTransaction("performSetRestriction");
     }
-    
+
     public void performReplaceAtributeName(String oldName, String newName) {
         if(oldName.equals("") || newName.equals("") || oldName.equals(newName))
-            return;                
+            return;
         startTransaction("performReplaceAtributeName");
         AttributeRegistry registry = getAttributeRegistry();
         int iOld = registry.getElements().indexOf(oldName);
@@ -336,16 +355,16 @@ public class MindMapModeAttributeController implements AttributeController{
         final ActionPair unregistryOldAttributeActionPair = unregistryAttributeActor.createActionPair(oldName);
         controller.getActionFactory().executeAction(unregistryOldAttributeActionPair);
         final SortedComboBoxModel values = oldElement.getValues();
-            final ActionPair registryNewAttributeActionPair = registryAttributeActor.createActionPair(newName);                
+            final ActionPair registryNewAttributeActionPair = registryAttributeActor.createActionPair(newName);
             controller.getActionFactory().executeAction(registryNewAttributeActionPair);
             for(int i = 0; i < values.getSize(); i++){
-                final ActionPair registryNewAttributeValueActionPair = registryAttributeValueActor.createActionPair(newName, values.getElementAt(i).toString());                
+                final ActionPair registryNewAttributeValueActionPair = registryAttributeValueActor.createActionPair(newName, values.getElementAt(i).toString());
                 controller.getActionFactory().executeAction(registryNewAttributeValueActionPair);
         }
-        Visitor replacer = new AttributeRenamer(oldName, newName); 
+        Visitor replacer = new AttributeRenamer(oldName, newName);
         Iterator iterator = new Iterator(replacer);
         MindMapNode root = controller.getRootNode();
-        iterator.iterate(root);        
+        iterator.iterate(root);
         endTransaction("performReplaceAtributeName");
     }
 
@@ -353,7 +372,7 @@ public class MindMapModeAttributeController implements AttributeController{
         startTransaction("performReplaceAtributeName");
         final ActionPair unregistryOldAttributeActionPair = unregistryAttributeActor.createActionPair(name);
         controller.getActionFactory().executeAction(unregistryOldAttributeActionPair);
-        Visitor remover = new AttributeRemover(name); 
+        Visitor remover = new AttributeRemover(name);
         Iterator iterator = new Iterator(remover);
         MindMapNode root = controller.getRootNode();
         iterator.iterate(root);
@@ -362,44 +381,44 @@ public class MindMapModeAttributeController implements AttributeController{
 
     public void performRegistryAttribute(String name) {
         if(name.equals(""))
-            return;       
+            return;
         try{
         final AttributeRegistryElement element = getAttributeRegistry().getElement(name);
         }
         catch(NoSuchElementException ex){
             startTransaction("performRegistryAttribute");
-            final ActionPair registryNewAttributeActionPair = registryAttributeActor.createActionPair(name);                
+            final ActionPair registryNewAttributeActionPair = registryAttributeActor.createActionPair(name);
             controller.getActionFactory().executeAction(registryNewAttributeActionPair);
             endTransaction("performRegistryAttribute");
-            return;            
+            return;
         }
-        
+
     }
 
     public void performRegistryAttributeValue(String name, String value) {
         if(name.equals(""))
-            return;       
+            return;
         try{
         final AttributeRegistryElement element = getAttributeRegistry().getElement(name);
         if (element.getValues().contains(value)){
             return;
         }
         startTransaction("performRegistryAttributeValue");
-        final ActionPair registryNewAttributeActionPair = registryAttributeValueActor.createActionPair(name, value);                
+        final ActionPair registryNewAttributeActionPair = registryAttributeValueActor.createActionPair(name, value);
         controller.getActionFactory().executeAction(registryNewAttributeActionPair);
         endTransaction("performRegistryAttributeValue");
         return;
         }
         catch(NoSuchElementException ex){
             startTransaction("performRegistryAttributeValue");
-            final ActionPair registryAttributeActionPair = registryAttributeActor.createActionPair(name);                
+            final ActionPair registryAttributeActionPair = registryAttributeActor.createActionPair(name);
             controller.getActionFactory().executeAction(registryAttributeActionPair);
-            final ActionPair registryAttributeValueActionPair = registryAttributeValueActor.createActionPair(name, value);                
+            final ActionPair registryAttributeValueActionPair = registryAttributeValueActor.createActionPair(name, value);
             controller.getActionFactory().executeAction(registryAttributeValueActionPair);
             endTransaction("performRegistryAttributeValue");
-            return;            
+            return;
         }
-        
+
     }
 
     private AttributeRegistry getAttributeRegistry() {
@@ -415,6 +434,6 @@ public class MindMapModeAttributeController implements AttributeController{
         for (ListIterator e = node.childrenUnfolded(); e.hasNext(); ) {
             final MindMapNodeModel child = (MindMapNodeModel)e.next();
             performRegistrySubtreeAttributes(child);
-        }        
+        }
     }
 }
