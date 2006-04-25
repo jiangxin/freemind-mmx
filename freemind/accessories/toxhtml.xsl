@@ -22,6 +22,9 @@ Update (MN / 14.12.2004):
  - Support for mm 0.7.1 - 0.8.0 constructs (clouds, internal links. opens internal link also if collapsed).
  - Support for icons. Some code adapted from Markus Brueckner's freemind2html.xsl style sheet.
  - newlines &#xa;&#xa; behaviour (find and convert to <br/>)
+	
+Bug fix (FC/ 25.04.2006): 
+ - Export of local hiperlinks corrected.
 
 Todo:
  - Can CSS fonts be used with Freemind fonts?
@@ -124,15 +127,23 @@ Todo:
        </xsl:attribute>                    
 <xsl:choose>
   <xsl:when test="(string-length(@LINK) &gt; 0) and (($show_link_url='false'))">
-    <xsl:element name="a"><xsl:attribute name="href"> <xsl:value-of select="@LINK" /></xsl:attribute>
+	  <xsl:param name="link">
+		  <xsl:choose>
+			  <!-- test for local hiperlinks. -->
+			  <xsl:when test="starts-with(@LINK, '#')">#FM<xsl:value-of select="substring(@LINK,2)" />FM</xsl:when>
+		  <xsl:otherwise><xsl:value-of select="@LINK" /></xsl:otherwise>
+		</xsl:choose>		  
+	  </xsl:param>
+    <xsl:element name="a"><xsl:attribute name="href"><xsl:value-of select="$link" /></xsl:attribute>
           <xsl:call-template name="format_text">
             <xsl:with-param name="nodetext"><xsl:value-of select="@TEXT" /></xsl:with-param>
           </xsl:call-template>
     </xsl:element>
 <xsl:if test="$show_icons='true'">
 <xsl:text> </xsl:text>
-    <xsl:element name="a"><xsl:attribute name="href"> <xsl:value-of select="@LINK" /></xsl:attribute><xsl:element name="img">
-          <xsl:attribute name="src"><xsl:value-of select="$destination_dir"/>icons/Link.png</xsl:attribute>
+	<xsl:element name="a">
+		<xsl:attribute name="href"><xsl:value-of select="$link"/></xsl:attribute><xsl:element name="img">
+          <xsl:attribute name="src"><xsl:value-of select="$destination_dir"/>ilink.png</xsl:attribute>
           <xsl:attribute name="alt"><xsl:value-of select="@BUILTIN" /></xsl:attribute>
           <xsl:attribute name="style">border-width:0</xsl:attribute>
         </xsl:element>

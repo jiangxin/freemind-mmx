@@ -4,7 +4,7 @@
 
   <!--
        File:        freemind.xsl
-       Version:     0.1
+       Version:     0.2
        Description: A XSLT stylesheet to transform mindmap files created with FreeMind (http://freemind.sf.net)
                     into HTML files. The transformation will keep the structure of the files, clouds (with it's colors),
                     icons, internal and external links and the ability to collapse whole subtrees of the document (with
@@ -23,6 +23,8 @@
        Author:      Markus Brueckner <freemind-xsl@slash-me.net>
        License:     BSD license without advertising clause. (see http://www.opensource.org/licenses/bsd-license.php
                      for further details)
+	  Bug fix (FC/ 25.04.2006): 
+		 - Export of local hiperlinks corrected.
   -->
 
   <xsl:output method="html" doctype-public="-//W3C//DTD HTML 4.01 Strict//EN" 
@@ -183,10 +185,15 @@
       <!-- check whether this node has a link-ID (for external URLs) -->
       <xsl:choose>
         <xsl:when test="@LINK">
-          <a>
-            <xsl:attribute name="href">
-              <xsl:value-of select="@LINK" />
-            </xsl:attribute>
+		  <xsl:param name="link">
+			  <xsl:choose>
+				  <!-- test for local hiperlinks. -->
+				  <xsl:when test="starts-with(@LINK, '#')">#FM<xsl:value-of select="substring(@LINK,2)" />FM</xsl:when>
+			  <xsl:otherwise><xsl:value-of select="@LINK" /></xsl:otherwise>
+			</xsl:choose>		  
+		  </xsl:param>
+	          <a>
+            <xsl:attribute name="href"><xsl:value-of select="$link" /></xsl:attribute>
 		   <xsl:apply-templates select="." mode="textOut"/>
           </a>
         </xsl:when>
