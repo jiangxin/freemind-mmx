@@ -177,9 +177,17 @@ public class FindAction extends AbstractAction {
 			for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
 				nodes.addLast(i.next());
 			}
+            
+            if(! node.isVisible())
+                continue;
 
 			String nodeText = caseSensitive ? node.toString() : node.toString()
 					.toLowerCase();
+
+            // Save the state for find next
+            this.subterms = subterms;
+            findCaseSensitive = caseSensitive;
+            findNodeQueue = nodes;
 
             boolean found = true;
             for (Iterator i = subterms.iterator(); i.hasNext();) {
@@ -190,12 +198,6 @@ public class FindAction extends AbstractAction {
             if (found) { // Found
                 displayNode(node, findNodesUnfoldedByLastFind);
 				centerNode(node);
-
-				// Save the state for find next
-                this.subterms = subterms;
-				findCaseSensitive = caseSensitive;
-				findNodeQueue = nodes;
-
 				return true;
 			}
 		}
@@ -270,6 +272,9 @@ public class FindAction extends AbstractAction {
 		// nice, but far from critical and working quite fine.
 
         if (subterms != null) {
+            if(findNodeQueue.isEmpty()){
+                return find(controller.getSelected(), subterms, findCaseSensitive);
+            }
             return find(findNodeQueue, subterms, findCaseSensitive);
 		}
 		return false;
