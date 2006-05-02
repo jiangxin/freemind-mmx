@@ -19,14 +19,16 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.9.2.1 2006-04-05 21:26:32 dpolivaev Exp $ */
+/* $Id: TimeList.java,v 1.1.2.9.2.2 2006-05-02 20:40:22 christianfoltin Exp $ */
 package plugins.time;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -38,20 +40,30 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.EventListener;
 import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JComponent;
+import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.KeyStroke;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+
+import com.jgoodies.forms.factories.ButtonBarFactory;
 
 import freemind.controller.actions.generated.instance.TimeWindowColumnSetting;
 import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
@@ -70,6 +82,8 @@ import freemind.view.mindmapview.MultipleImage;
  */
 public class TimeList extends MindMapHookAdapter {
 
+	private static final int TYPE_DELAY_TIME = 500;
+	
 	private static  String COLUMN_MODIFIED = "Modified";
 
 	private static  String COLUMN_CREATED = "Created";
@@ -82,7 +96,7 @@ public class TimeList extends MindMapHookAdapter {
 
 	private static final int DATE_COLUMN = 0;
 
-	private static final int NODE_TEXT_COLUMN = 1;
+	public static final int NODE_TEXT_COLUMN = 1;
 
 	protected static final int NODE_ICON_COLUMN = 2;
 
@@ -112,6 +126,12 @@ public class TimeList extends MindMapHookAdapter {
 			.getName()
 			+ "_properties";
 
+	private FlatNodeTableFilterModel mFlatNodeTableFilterModel;
+
+	private JTextField mFilterTextSearchField;
+
+	private JTextField mFilterTextReplaceField;
+
 	public void startupMapHook() {
 		super.startupMapHook();
 
@@ -134,98 +154,39 @@ public class TimeList extends MindMapHookAdapter {
 		        disposeDialog();
 		    }
 		});
-		Action action = new AbstractAction() {
-
+		Tools.addEscapeActionToDialog(dialog, new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				disposeDialog();
 			}
-		};
-		action.putValue(Action.NAME, "end_dialog");
-		//		 Register keystroke
-		dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-				.put(KeyStroke.getKeyStroke("ESCAPE"),
-						action.getValue(Action.NAME));
-
-		// Register action
-		dialog.getRootPane().getActionMap().put(action.getValue(Action.NAME),
-				action);
-
+		});
 		Container contentPane = dialog.getContentPane();
 		GridBagLayout gbl = new GridBagLayout();
 		gbl.columnWeights = new double[] { 1.0f };
 		gbl.rowWeights = new double[] { 1.0f };
 		contentPane.setLayout(gbl);
-		GridBagConstraints gb1 = new GridBagConstraints();
-		gb1.gridx = 0;
-		gb1.gridy = 0;
-		gb1.fill = GridBagConstraints.BOTH;
+		contentPane.add(new JLabel("Find"), new GridBagConstraints(0,0,1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		mFilterTextSearchField = new JTextField();
+		mFilterTextSearchField.getDocument().addDocumentListener(new FilterTextDocumentListener());
+		contentPane.add(new JScrollPane(mFilterTextSearchField), new GridBagConstraints(0,1, 
+					1, 1, 1.0, 0.0, GridBagConstraints.WEST,
+					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		contentPane.add(new JLabel("Replace"), new GridBagConstraints(0,2,1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		mFilterTextReplaceField = new JTextField();
+		contentPane.add(new JScrollPane(mFilterTextReplaceField), new GridBagConstraints(0,3, 
+				1, 1, 1.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		dateRenderer = new DateRenderer();
 		nodeRenderer = new NodeRenderer();
 		iconsRenderer = new IconsRenderer(getController());
-		timeTable = new JTable() {
-			public TableCellRenderer getCellRenderer(int row, int column) {
-				Object object = getModel().getValueAt(row, column);
-				if (object instanceof Date)
-					return dateRenderer;
-				if (object instanceof NodeHolder)
-					return nodeRenderer;
-				if (object instanceof IconsHolder)
-					return iconsRenderer;
-				return super.getCellRenderer(row, column);
-			}
-
-			public boolean isCellEditable(int rowIndex, int vColIndex) {
-				return false;
-			}
-
-			protected void processKeyEvent(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					EventListener[] el = super.getListeners(KeyListener.class);
-					if (e.getID() != KeyEvent.KEY_RELEASED)
-						return;
-					for (int i = 0; i < el.length; i++) {
-						KeyListener kl = (KeyListener) el[i];
-						kl.keyReleased(e);
-					}
-					return;
-				}
-				super.processKeyEvent(e);
-			}
-
-		};
-		timeTable.addKeyListener(new KeyListener() {
-
-			public void keyTyped(KeyEvent arg0) {
-			}
-
-			public void keyPressed(KeyEvent arg0) {
-			}
-
-			public void keyReleased(KeyEvent arg0) {
-				if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					disposeDialog();
-				}
-				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-
-					gotoNodesAndClose(timeTable.getSelectedRow(), timeTable.getSelectedRows());
-				}
-			}
-
-		});
+		timeTable = new FlatNodeTable();
+		timeTable.addKeyListener(new FlatNodeTableKeyListener());
 		//double click = goto.
-		timeTable.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					Point p = e.getPoint();
-					int row = timeTable.rowAtPoint(p);
-					gotoNodesAndClose(row, new int[]{row});
-				}
-			}
-		});
+		timeTable.addMouseListener(new FlatNodeTableMouseAdapter());
 		//disable moving:
 		timeTable.getTableHeader().setReorderingAllowed(false);
 		timeTableModel = updateModel();
-		sorter = new TableSorter(timeTableModel);
+		mFlatNodeTableFilterModel = new FlatNodeTableFilterModel(timeTableModel);
+		sorter = new TableSorter(mFlatNodeTableFilterModel);
 		timeTable.setModel(sorter);
 
 		sorter.setTableHeader(timeTable.getTableHeader());
@@ -239,18 +200,43 @@ public class TimeList extends MindMapHookAdapter {
 		sorter.setSortingStatus(DATE_COLUMN, TableSorter.ASCENDING);
 		//FIXME: Export of this list
 		JScrollPane pane = new JScrollPane(timeTable);
-		contentPane.add(pane, gb1);
-		//		{
-		//			GridBagConstraints gb2 = new GridBagConstraints();
-		//			gb2.gridx = 0;
-		//			gb2.gridy = 1;
-		//			gb2.gridwidth = 4;
-		//			gb2.fill = GridBagConstraints.HORIZONTAL;
-		//			contentPane.add(getTimePanel(), gb2);
-		//		}
-
+		contentPane.add(pane, new GridBagConstraints(0,4, 
+				1, 1, 1.0, 10.0, GridBagConstraints.WEST,
+				GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+		JButton selectButton = new JButton("Select");
+		selectButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				selectSelectedRowsAndClose();
+			}});
+		JButton replaceAllButton = new JButton("Replace All");
+		replaceAllButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				replace(new ReplaceAllInfo());
+			}});
+		JButton replaceSelectedButton = new JButton("Replace Selected");
+		replaceSelectedButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				replace(new ReplaceSelectedInfo());
+			}});
+		JButton gotoButton = new JButton("Goto");
+		gotoButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				int row = timeTable.getSelectedRow();
+				if(row>=0) {
+					gotoNodesAndClose(row, new int[]{row});
+				}
+			}});
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				disposeDialog();
+			}});
+		JPanel bar = ButtonBarFactory.buildLeftAlignedBar(new JButton[]{cancelButton, gotoButton, replaceSelectedButton, replaceAllButton, selectButton});
+		contentPane.add(bar, new GridBagConstraints(0,5,1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		
+		
+		
 		// restore prefrences:
-
 		//Retrieve window size and column positions.
 		WindowConfigurationStorage storage = getMindMapController().decorateDialog(dialog, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		if (storage != null) {
@@ -268,6 +254,56 @@ public class TimeList extends MindMapHookAdapter {
 		dialog.setVisible(true);
 	}
 
+	private interface ReplaceInfo {
+		int getLength();
+		NodeHolder getNodeHolderAt(int i);
+	}
+
+	
+	private void replace(ReplaceInfo info) {
+		try {
+			String regExp = "(" + getPureRegularExpression(mFilterTextSearchField.getDocument()) + ")";
+			Pattern p = Pattern.compile(regExp);
+			String replacement = getPureRegularExpression(mFilterTextReplaceField.getDocument());
+			int length = info.getLength();
+			for (int i = 0; i < length; i++) {
+				NodeHolder nodeHolder = info.getNodeHolderAt(i);
+				String text = nodeHolder.node.getText();
+				Matcher m = p.matcher(text);
+				if(m.find()) {
+					getMindMapController().setNodeText(nodeHolder.node, m.replaceAll(replacement));
+				}
+			}
+			timeTableModel.fireTableDataChanged();
+			mFlatNodeTableFilterModel.resetFilter();
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private class ReplaceAllInfo implements ReplaceInfo {
+		public int getLength() {
+			return mFlatNodeTableFilterModel.getRowCount();
+		}
+
+		public NodeHolder getNodeHolderAt(int i) {
+			return (NodeHolder) mFlatNodeTableFilterModel.getValueAt(i,
+					NODE_TEXT_COLUMN);
+		}
+	}
+
+	private class ReplaceSelectedInfo implements ReplaceInfo {
+		public int getLength() {
+			return timeTable.getSelectedRowCount();
+		}
+		
+		public NodeHolder getNodeHolderAt(int i) {
+			return (NodeHolder) sorter.getValueAt(timeTable.getSelectedRows()[i],
+					NODE_TEXT_COLUMN);
+		}
+	}
+	
+	
 	/**
 	 * @param focussedRow
 	 * @param selectedRows TODO
@@ -389,6 +425,131 @@ public class TimeList extends MindMapHookAdapter {
         getMindMapController().storeDialogPositions(dialog, storage, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		dialog.setVisible(false);
 		dialog.dispose();
+	}
+
+	private void selectSelectedRowsAndClose() {
+		gotoNodesAndClose(timeTable.getSelectedRow(), timeTable.getSelectedRows());
+	}
+
+	private String getRegularExpression(Document document) throws BadLocationException {
+		String text = getPureRegularExpression(document);
+		text = ".*("+text+").*";
+		return text;
+	}
+
+	private String getPureRegularExpression(Document document) throws BadLocationException {
+		String text = document.getText(
+				0, document.getLength());
+		// remove regexp:
+		text=text.replaceAll("([()\\.\\[\\]^$|])", "\\\\\\1");
+		text=text.replaceAll("\\*", ".*");
+		return text;
+	}
+
+	private final class FilterTextDocumentListener implements DocumentListener {
+		private Timer mTypeDelayTimer = null;
+		
+		private synchronized void change(DocumentEvent event) {
+			// stop old timer, if present:
+			if(mTypeDelayTimer!= null) {
+				mTypeDelayTimer.cancel();
+				mTypeDelayTimer = null;
+			}
+			mTypeDelayTimer = new Timer();
+			mTypeDelayTimer.schedule(new DelayedTextEntry(event), TYPE_DELAY_TIME);
+		}
+		
+		public void insertUpdate(DocumentEvent event) {
+			change(event);
+		}
+
+		public void removeUpdate(DocumentEvent event) {
+			change(event);
+			
+		}
+
+		public void changedUpdate(DocumentEvent event) {
+			change(event);
+			
+		}
+	    protected class DelayedTextEntry extends TimerTask {
+
+	        private final DocumentEvent event;
+
+			DelayedTextEntry(DocumentEvent event) {
+				this.event = event;
+	        }
+
+	        public void run() {
+				try {
+					Document document = event.getDocument();
+					String text = getRegularExpression(document);
+					mFlatNodeTableFilterModel.setFilter(text);
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+					mFlatNodeTableFilterModel.resetFilter();
+				}
+	        }
+	    }
+
+	}
+
+	private final class FlatNodeTableMouseAdapter extends MouseAdapter {
+		public void mouseClicked(MouseEvent e) {
+			if (e.getClickCount() == 2) {
+				Point p = e.getPoint();
+				int row = timeTable.rowAtPoint(p);
+				gotoNodesAndClose(row, new int[]{row});
+			}
+		}
+	}
+
+	private final class FlatNodeTableKeyListener implements KeyListener {
+		public void keyTyped(KeyEvent arg0) {
+		}
+
+		public void keyPressed(KeyEvent arg0) {
+		}
+
+		public void keyReleased(KeyEvent arg0) {
+			if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				disposeDialog();
+			}
+			if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+				selectSelectedRowsAndClose();
+			}
+		}
+	}
+
+	private final class FlatNodeTable extends JTable {
+		public TableCellRenderer getCellRenderer(int row, int column) {
+			Object object = getModel().getValueAt(row, column);
+			if (object instanceof Date)
+				return dateRenderer;
+			if (object instanceof NodeHolder)
+				return nodeRenderer;
+			if (object instanceof IconsHolder)
+				return iconsRenderer;
+			return super.getCellRenderer(row, column);
+		}
+
+		public boolean isCellEditable(int rowIndex, int vColIndex) {
+			return false;
+		}
+
+		protected void processKeyEvent(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				EventListener[] el = super.getListeners(KeyListener.class);
+				if (e.getID() != KeyEvent.KEY_RELEASED)
+					return;
+				for (int i = 0; i < el.length; i++) {
+					KeyListener kl = (KeyListener) el[i];
+					kl.keyReleased(e);
+				}
+				return;
+			}
+			super.processKeyEvent(e);
+		}
 	}
 
 	static class DateRenderer extends DefaultTableCellRenderer {

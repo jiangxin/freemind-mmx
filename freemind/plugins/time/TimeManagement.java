@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeManagement.java,v 1.1.2.6.2.1 2006-04-05 21:26:32 dpolivaev Exp $ */
+/* $Id: TimeManagement.java,v 1.1.2.6.2.2 2006-05-02 20:40:22 christianfoltin Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -52,6 +52,7 @@ import javax.swing.WindowConstants;
 import com.toedter.calendar.JCalendar;
 
 import freemind.extensions.PermanentNodeHook;
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.common.plugins.ReminderHookBase;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
@@ -92,15 +93,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 				disposeDialog();
 			}
 		};
-		action.putValue(Action.NAME, "end_dialog");
-		//		 Register keystroke
-		dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-				.put(KeyStroke.getKeyStroke("ESCAPE"),
-						action.getValue(Action.NAME));
-
-		// Register action
-		dialog.getRootPane().getActionMap().put(action.getValue(Action.NAME),
-				action);
+		Tools.addEscapeActionToDialog(dialog, action);
 
 		calendar = new JCalendar();
 		if (lastDate != null) {

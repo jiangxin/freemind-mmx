@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.2 2006-04-18 19:06:08 christianfoltin Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.3 2006-05-02 20:40:22 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -479,7 +479,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 			jOKButton.setAction(new AbstractAction() {
 
 				public void actionPerformed(ActionEvent e) {
-					okPressed();
+					dispose();
 				}
 
 			});
