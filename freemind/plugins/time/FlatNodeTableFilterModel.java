@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2006
  */
-/*$Id: FlatNodeTableFilterModel.java,v 1.1.2.1 2006-05-02 20:41:02 christianfoltin Exp $*/
+/*$Id: FlatNodeTableFilterModel.java,v 1.1.2.2 2006-05-06 21:56:37 christianfoltin Exp $*/
 package plugins.time;
 
 import java.util.ArrayList;
@@ -46,12 +46,18 @@ public class FlatNodeTableFilterModel extends AbstractTableModel {
 	 */
 	private ArrayList mIndexArray;
 	private Pattern mPattern;
+    /**
+     * The column that contains the NodeHolder items
+     */
+    private final int mNodeTextColumn;
 	/**
+	 * @param node_text_column 
 	 * 
 	 */
-	public FlatNodeTableFilterModel(TableModel tableModel) {
+	public FlatNodeTableFilterModel(TableModel tableModel, int node_text_column) {
 		super();
 		this.mTableModel = tableModel;
+        this.mNodeTextColumn = node_text_column;
 		tableModel.addTableModelListener(new TableModelHandler());
 		resetFilter();
 	}
@@ -71,7 +77,7 @@ public class FlatNodeTableFilterModel extends AbstractTableModel {
 	private void updateIndexArray() {
 		ArrayList newIndexArray = new ArrayList();
 		for (int i = 0; i < mTableModel.getRowCount(); i++) {
-			 NodeHolder nodeContent = (NodeHolder) mTableModel.getValueAt(i, TimeList.NODE_TEXT_COLUMN);
+			 NodeHolder nodeContent = (NodeHolder) mTableModel.getValueAt(i, mNodeTextColumn);
 			 if(mPattern.matcher(nodeContent.toString()).matches()) {
 				 // add index to array:
 				 newIndexArray.add(new Integer(i));

@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.2 2006-04-18 19:06:08 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.3 2006-05-06 21:56:37 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -48,6 +48,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -1011,17 +1012,37 @@ public class Tools {
       System.err.println("END OF Transferable");
       System.err.println(); }
 
-public static void addEscapeActionToDialog(JDialog dialog, Action action) {
-	action.putValue(Action.NAME, "end_dialog");
-	//		 Register keystroke
-	dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-			.put(KeyStroke.getKeyStroke("ESCAPE"),
-					action.getValue(Action.NAME));
+    public static void addEscapeActionToDialog(JDialog dialog, Action action) {
+        action.putValue(Action.NAME, "end_dialog");
+        // Register keystroke
+        dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke("ESCAPE"),
+                        action.getValue(Action.NAME));
 
-	// Register action
-	dialog.getRootPane().getActionMap().put(action.getValue(Action.NAME),
-			action);
-}
+        // Register action
+        dialog.getRootPane().getActionMap().put(action.getValue(Action.NAME),
+                action);
+    }
+
+    /** Removes all tags (<..>) from a string if it starts with "<html>..." to make it compareable.
+     * @param text
+     * @return
+     */
+    public static String removeHtmlTagsFromString(String text) {
+        if (isHtmlNode(text)) {
+            return text.replaceAll("(?s)<[^><]*>", ""); // (?s) enables that . matches newline.
+        } else {
+            return text;
+        }
+    }
+
+    /**
+     * @param text
+     * @return
+     */
+    public static boolean isHtmlNode(String text) {
+        return text.toLowerCase(Locale.ENGLISH).matches("(?s)^\\s*<\\s*html.*?>.*");
+    }
 
 }
 

@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.9.2.2 2006-05-02 20:40:22 christianfoltin Exp $ */
+/* $Id: TimeList.java,v 1.1.2.9.2.3 2006-05-06 21:56:37 christianfoltin Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -185,7 +185,7 @@ public class TimeList extends MindMapHookAdapter {
 		//disable moving:
 		timeTable.getTableHeader().setReorderingAllowed(false);
 		timeTableModel = updateModel();
-		mFlatNodeTableFilterModel = new FlatNodeTableFilterModel(timeTableModel);
+		mFlatNodeTableFilterModel = new FlatNodeTableFilterModel(timeTableModel, NODE_TEXT_COLUMN);
 		sorter = new TableSorter(mFlatNodeTableFilterModel);
 		timeTable.setModel(sorter);
 
@@ -254,34 +254,57 @@ public class TimeList extends MindMapHookAdapter {
 		dialog.setVisible(true);
 	}
 
-	private interface ReplaceInfo {
+	public interface IReplaceInputInformation {
 		int getLength();
 		NodeHolder getNodeHolderAt(int i);
+        void changeString(NodeHolder holder, String newText);
 	}
 
+    private void replace(IReplaceInputInformation info) {
+        try {
+            String searchString = getText(mFilterTextSearchField.getDocument());
+            String replaceString = getText(mFilterTextReplaceField
+                    .getDocument());
+            replace(info, searchString, replaceString);
+            timeTableModel.fireTableDataChanged();
+            mFlatNodeTableFilterModel.resetFilter();
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+
+    }
+    
 	
-	private void replace(ReplaceInfo info) {
-		try {
-			String regExp = "(" + getPureRegularExpression(mFilterTextSearchField.getDocument()) + ")";
-			Pattern p = Pattern.compile(regExp);
-			String replacement = getPureRegularExpression(mFilterTextReplaceField.getDocument());
-			int length = info.getLength();
-			for (int i = 0; i < length; i++) {
-				NodeHolder nodeHolder = info.getNodeHolderAt(i);
-				String text = nodeHolder.node.getText();
-				Matcher m = p.matcher(text);
-				if(m.find()) {
-					getMindMapController().setNodeText(nodeHolder.node, m.replaceAll(replacement));
-				}
-			}
-			timeTableModel.fireTableDataChanged();
-			mFlatNodeTableFilterModel.resetFilter();
-		} catch (BadLocationException e) {
-			e.printStackTrace();
+	public static void replace(IReplaceInputInformation info, String searchString, String replaceString) {
+        String regExp = "(" + getPureRegularExpression(searchString) + ")";
+		Pattern p = Pattern.compile(regExp);
+        String replacement = getPureRegularExpression(replaceString);
+		int length = info.getLength();
+		for (int i = 0; i < length; i++) {
+			NodeHolder nodeHolder = info.getNodeHolderAt(i);
+			String text = nodeHolder.node.getText();
+			String replaceResult = getReplaceResult(p, replacement, text);
+            if (!Tools.safeEquals(text, replaceResult)) {
+                // set new node text only, if different.
+                info.changeString(nodeHolder, replaceResult);
+            }
 		}
 	}
 
-	private class ReplaceAllInfo implements ReplaceInfo {
+    /** Replaces text in node content without replacing tags.
+     * @param pattern
+     * @param replacement
+     * @param text
+     */
+    public static String getReplaceResult(Pattern pattern, String replacement, String text) {
+        Matcher m = pattern.matcher(text);
+        if(m.find()) {
+        	return m.replaceAll(replacement);
+        }
+        return text;
+    }
+
+	private class ReplaceAllInfo implements IReplaceInputInformation {
 		public int getLength() {
 			return mFlatNodeTableFilterModel.getRowCount();
 		}
@@ -290,9 +313,13 @@ public class TimeList extends MindMapHookAdapter {
 			return (NodeHolder) mFlatNodeTableFilterModel.getValueAt(i,
 					NODE_TEXT_COLUMN);
 		}
+
+        public void changeString(NodeHolder nodeHolder, String newText) {
+            getMindMapController().setNodeText(nodeHolder.node, newText);
+        }
 	}
 
-	private class ReplaceSelectedInfo implements ReplaceInfo {
+	private class ReplaceSelectedInfo implements IReplaceInputInformation {
 		public int getLength() {
 			return timeTable.getSelectedRowCount();
 		}
@@ -300,6 +327,9 @@ public class TimeList extends MindMapHookAdapter {
 		public NodeHolder getNodeHolderAt(int i) {
 			return (NodeHolder) sorter.getValueAt(timeTable.getSelectedRows()[i],
 					NODE_TEXT_COLUMN);
+		}
+		public void changeString(NodeHolder nodeHolder, String newText) {
+		    getMindMapController().setNodeText(nodeHolder.node, newText);
 		}
 	}
 	
@@ -431,20 +461,32 @@ public class TimeList extends MindMapHookAdapter {
 		gotoNodesAndClose(timeTable.getSelectedRow(), timeTable.getSelectedRows());
 	}
 
-	private String getRegularExpression(Document document) throws BadLocationException {
-		String text = getPureRegularExpression(document);
+	public static String getRegularExpression(String text) throws BadLocationException {
 		text = ".*("+text+").*";
 		return text;
 	}
 
-	private String getPureRegularExpression(Document document) throws BadLocationException {
-		String text = document.getText(
+    /**
+     * @param document
+     * @return
+     * @throws BadLocationException
+     */
+    private String getText(Document document) throws BadLocationException {
+        String text = document.getText(
 				0, document.getLength());
-		// remove regexp:
+        return text;
+    }
+
+    /**
+     * @param text
+     * @return
+     */
+    public static String getPureRegularExpression(String text) {
+        // remove regexp:
 		text=text.replaceAll("([()\\.\\[\\]^$|])", "\\\\\\1");
 		text=text.replaceAll("\\*", ".*");
-		return text;
-	}
+        return text;
+    }
 
 	private final class FilterTextDocumentListener implements DocumentListener {
 		private Timer mTypeDelayTimer = null;
@@ -483,7 +525,7 @@ public class TimeList extends MindMapHookAdapter {
 	        public void run() {
 				try {
 					Document document = event.getDocument();
-					String text = getRegularExpression(document);
+					String text = getRegularExpression(getText(document));
 					mFlatNodeTableFilterModel.setFilter(text);
 				} catch (BadLocationException e) {
 					e.printStackTrace();
@@ -577,9 +619,10 @@ public class TimeList extends MindMapHookAdapter {
 		}
 	}
 
-	//* removes html in nodes before comparison.
-	static class NodeHolder implements Comparable {
+	/** removes html in nodes before comparison.*/
+	public static class NodeHolder implements Comparable {
 		private final MindMapNode node;
+		private String untaggedNodeText=null;
 
 		/**
 		 *
@@ -593,12 +636,17 @@ public class TimeList extends MindMapHookAdapter {
 		}
 
 		public String toString() {
-			String text = node.getText();
-			if (text.toLowerCase().matches("^\\s*<html>")) {
-				text = text.replaceAll("<[^>]*>", ""); // remove all html tags.
-			}
-			return text;
+            return getUntaggedNodeText();
 		}
+
+        public String getUntaggedNodeText() {
+            if(untaggedNodeText==null) {
+                // remove tags:
+                untaggedNodeText = Tools.removeHtmlTagsFromString(node.getText());
+            }
+            return untaggedNodeText;
+        }
+
 	}
 
 	static class IconsHolder implements Comparable {
