@@ -105,6 +105,9 @@
 			>
 			<exclude name="${gen.dir}/**" />
 			<exclude name="accessories/plugins/**" />
+			<!-- Currently, JUnit tests are only supported inside eclipse due to 
+			     classpath problems of the plugins. -->
+			<exclude name="tests/**" />
 			<exclude name="plugins/**" />
 		</javac>
 		<ant antfile="accessories/plugins/build.xml" target="build"/>
