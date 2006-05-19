@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: TestMindMapNode.java,v 1.1.2.1 2006-05-06 21:56:37 christianfoltin Exp $*/
+/*$Id: TestMindMapNode.java,v 1.1.2.2 2006-05-19 21:27:44 christianfoltin Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -375,5 +375,12 @@ final class TestMindMapNode implements MindMapNode {
 
     public Enumeration children() {
         return null;
+    }
+
+    public String getXmlText() {
+        return null;
+    }
+
+    public void setXmlText(String structuredText) {
     }
 }

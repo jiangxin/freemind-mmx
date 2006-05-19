@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.5 2006-04-20 22:46:47 dpolivaev Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.6 2006-05-19 21:27:43 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -48,6 +48,7 @@ import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
+import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.attributes.NodeAttributeTableModel;
@@ -66,6 +67,7 @@ public abstract class NodeAdapter implements MindMapNode {
     private HashSet activatedHooks;
 	private List hooks;
 	protected Object userObject = "no text";
+	private String xmlText = "no text";
     private String link = null; //Change this to vector in future for full graph support
     private HashMap toolTip = null; // lazy, fc, 30.6.2005
 
@@ -148,15 +150,29 @@ public abstract class NodeAdapter implements MindMapNode {
      *
      */
 
-    public String getText() {
-        return toString();
+    public final String getText() {
+        String string="";
+        if (userObject!=null) {
+            string = userObject.toString();
+        }
+        return string;
     }
     /**
      *
      */
 
-    public void setText(String text) {
-        setUserObject(text);
+    public final void setText(String text) {
+        userObject = text;
+        xmlText = HtmlTools.getInstance().toXhtml(text);
+    }
+
+    public final String getXmlText() {
+        return xmlText;
+    }
+
+    public final void setXmlText(String xmlText) {
+        userObject = HtmlTools.getInstance().toHtml(xmlText);
+        this.xmlText = xmlText;
     }
 
     public String getPlainTextContent() {
@@ -706,7 +722,7 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
     public void setUserObject( Object object ) {
-	userObject = object;
+        setText((String) object);
     }
 
     ////////////////
@@ -871,7 +887,15 @@ public abstract class NodeAdapter implements MindMapNode {
 
         /** fc, 12.6.2005: XML must not contain any zero characters. */
         String text = this.toString().replace('\0', ' ');
-        node.setAttribute(XMLElementAdapter.XML_NODE_TEXT,text);
+        if(!Tools.isHtmlNode(text)) {
+            node.setAttribute(XMLElementAdapter.XML_NODE_TEXT,text);
+        } else {
+            // save <content> tag:
+            XMLElement htmlElement = new XMLElement();
+            htmlElement.setName(XMLElementAdapter.XML_NODE_XHTML_CONTENT_TAG);
+            htmlElement.setEncodedContent(getXmlText());
+            node.addChild(htmlElement);
+        }
     	// save additional info:
     	if (getAdditionalInfo() != null) {
             node.setAttribute(XMLElementAdapter.XML_NODE_ENCRYPTED_CONTENT,

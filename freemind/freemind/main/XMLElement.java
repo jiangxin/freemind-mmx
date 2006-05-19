@@ -19,8 +19,8 @@
 */
 /* XMLElement.java
  *
- * $Revision: 1.7.18.4.2.1 $
- * $Date: 2006-04-25 21:34:12 $
+ * $Revision: 1.7.18.4.2.2 $
+ * $Date: 2006-05-19 21:27:43 $
  * $Name:  $
  *
  * This file is part of NanoXML 2 Lite.
@@ -65,6 +65,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -123,11 +125,19 @@ import java.util.Vector;
  *
  * @author Marc De Scheemaecker
  *         &lt;<A href="mailto:cyberelf@mac.com">cyberelf@mac.com</A>&gt;
- * @version $Name:  $, $Revision: 1.7.18.4.2.1 $
+ * @version $Name:  $, $Revision: 1.7.18.4.2.2 $
  */
 public class XMLElement
 {
 
+    public static final String XML_NODE_XHTML_CONTENT_TAG = "nodecontent";
+
+
+    public static final String XML_NODE_XHTML_CONTENT_END_TAG_REGEXP = "<\\s*/\\s*" + XML_NODE_XHTML_CONTENT_TAG + "\\s*>";
+
+    private static Pattern sContentEndTagPattern = null;
+    
+    
     /**
      * Serialization serial version ID.
      */
@@ -205,6 +215,10 @@ public class XMLElement
      * </ul></dd></dl>
      */
     private String contents;
+    /**
+     * fc, 17.5.06: enable buld xml writing.
+     */
+    private boolean dontEncodeContents;
 
 
     /**
@@ -2114,8 +2128,21 @@ public class XMLElement
     public void setContent(String content)
     {
         this.contents = content;
+        this.dontEncodeContents = false;
     }
 
+    /**
+     * Changes the content string.
+     *
+     * @param content
+     *     The new content string.
+     */
+    public void setEncodedContent(String content)
+    {
+        this.contents = content;
+        this.dontEncodeContents = true;
+    }
+    
 
     /**
      * Changes the name of the element.
@@ -2211,7 +2238,12 @@ public class XMLElement
         throws IOException
     {
         if (this.name == null) {
-            this.writeEncoded(writer, this.contents);
+            // fc, 17.5.06: support encoded contents
+            if (dontEncodeContents) {
+                writer.write(this.contents);
+            } else {
+                this.writeEncoded(writer, this.contents);
+            }
             return;
         }
         writer.write('<');
@@ -2231,7 +2263,12 @@ public class XMLElement
         if ((this.contents != null) && (this.contents.length() > 0)) {
             writer.write('>');
             //writer.write('\n');
-            this.writeEncoded(writer, this.contents);
+            // fc, 17.5.06: support encoded contents
+            if (dontEncodeContents) {
+                writer.write(this.contents);
+            } else {
+                this.writeEncoded(writer, this.contents);
+            }
             if (withClosingTag) {
                writer.write('<'); writer.write('/');
                writer.write(this.name);
@@ -2666,10 +2703,16 @@ public class XMLElement
     protected void scanElement(XMLElement elt)
         throws IOException
     {
+        boolean isCollecctionMode = false;
         StringBuffer buf = new StringBuffer();
         this.scanIdentifier(buf);
         String name = buf.toString();
         elt.setName(name);
+        if(XML_NODE_XHTML_CONTENT_TAG.equals(name)) {
+            /* special case of html content tag:
+               collect chars until </...> occurs. */
+            isCollecctionMode = true;
+        }
         char ch = this.scanWhitespace();
 
         // Scan the attributes of opening tag
@@ -2698,6 +2741,40 @@ public class XMLElement
             return;
         }
 
+        // special collection mode:
+        if(isCollecctionMode) {
+            StringBuffer waitingBuf = new StringBuffer();
+            int lastOpeningBreak = -1;
+            for(;;) {
+                ch = this.readChar();
+                waitingBuf.append(ch);
+                if(ch == '<') {
+                    lastOpeningBreak = waitingBuf.length()-1;
+                }
+                if(ch == '>' && lastOpeningBreak >= 0) {
+                    String content = waitingBuf.toString();
+                    if (sContentEndTagPattern == null) {
+                        sContentEndTagPattern = Pattern
+                                .compile(XML_NODE_XHTML_CONTENT_END_TAG_REGEXP);
+                    }
+                    String substring = content.substring(lastOpeningBreak);
+                    Matcher matcher = sContentEndTagPattern.matcher(substring);
+                    if(matcher.matches()) {
+                        // end found, remove the end tag:
+                        content = content.substring(0, lastOpeningBreak);
+                        // PCDATA         
+                        if (this.ignoreWhitespace) {
+                            elt.setContent(content.trim());
+                        } else {
+                            elt.setContent(content);
+                        }
+                        elt.completeElement();
+                        return;
+                    }
+                }
+            }
+        }
+        
         // This part is unclear - probing for PCDATA
 
         buf.setLength(0);

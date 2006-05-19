@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.3 2006-05-19 21:27:44 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -58,6 +58,7 @@ import freemind.modes.MapAdapter;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
+import freemind.modes.NodeAdapter;
 
 
 public class MindMapMapModel extends MapAdapter  {
@@ -563,9 +564,13 @@ public class MindMapMapModel extends MapAdapter  {
         try {
             mapElement.parseFromReader(reader);
         } catch (Exception ex) {
-            System.err.println("Error while parsing file:" + ex);
+            String errorMessage = "Error while parsing file:" + ex;
+            System.err.println(errorMessage);
             ex.printStackTrace();
-            return null;
+            NodeAdapter result = mapElement.createNodeAdapter(getFrame(), null);
+            result.setText(errorMessage);
+            return (MindMapNodeModel) result;
+//            return null;
         } finally {
             if (reader != null) {
                 reader.close();

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.3 2006-05-19 21:27:43 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -57,8 +57,27 @@ public interface MindMapNode extends MutableTreeNode {
 
 	static final int AUTO = -1;
 
+	/**
+	 * @return the text representation of the nodes content. HTML is represented as <html>....</html>
+     * @see getXmlText
+	 */
 	String getText();
+    /** Sets both text and xmlText.
+     * @param text
+     */
     void setText(String text);
+    
+    /**
+     * @return the text representation of the nodes content as valid XML. HTML is represented as <html>....</html>
+     * with proper tags (like <br/> instead of <br> and so on).
+     */
+    String getXmlText();
+    
+    /**Sets both text and xmlText.
+     * @param structuredText
+     */
+    void setXmlText(String structuredText);
+    
 
 	/**
 	 * @return returns the unique id of the node. It is generated using the LinkRegistry.
