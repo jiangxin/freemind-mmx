@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.6 2006-05-20 19:07:11 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.7 2006-05-20 19:32:34 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -1394,7 +1394,7 @@ public class Controller  implements MapModuleChangeOberser {
 	              getView().repaint();
 	    }
 	    public void propertyChanged(String propertyName, String newValue, String oldValue) {
-            if (propertyName.equals(FreeMind.RESOURCE_ANTIALIAS)) {
+            if (propertyName.equals(FreeMindCommon.RESOURCE_ANTIALIAS)) {
                 changeAntialias(newValue);
             }
 	    }

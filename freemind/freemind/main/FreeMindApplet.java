@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.2 2006-05-20 19:07:11 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.3 2006-05-20 19:32:34 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -262,10 +262,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 	Resources.createInstance(this);
 	c = new Controller(this) ;
 
-	if (Tools.safeEquals(getProperty("antialiasEdges"), "true")) {
-           c.setAntialiasEdges(true); }
-	if (Tools.safeEquals(getProperty("antialiasAll"), "true")) {
-           c.setAntialiasAll(true); }
+    c.optionAntialiasAction.changeAntialias(getProperty(FreeMindCommon.RESOURCE_ANTIALIAS));
 
  	//Create the MenuBar
 	menuBar = new MenuBar(c); //new MenuBar(c);

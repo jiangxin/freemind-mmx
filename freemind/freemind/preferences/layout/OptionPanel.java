@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.3 2006-04-11 19:14:34 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.4 2006-05-20 19:32:34 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -609,7 +609,7 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("anti_alias"));
 		controls.add(new ComboProperty("antialias.tooltip",
-				FreeMind.RESOURCE_ANTIALIAS, new String[] { "antialias_edges",
+				FreeMindCommon.RESOURCE_ANTIALIAS, new String[] { "antialias_edges",
 						"antialias_all", "antialias_none" }, this)); //  true
 
 		/* ***************************************************************** */

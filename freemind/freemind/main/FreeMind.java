@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.5 2006-05-20 19:07:11 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.6 2006-05-20 19:32:34 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -64,7 +64,6 @@ import freemind.view.mindmapview.MapView;
 public class FreeMind extends JFrame implements FreeMindMain {
 
     public static final String RESOURCE_LOOKANDFEEL = "lookandfeel";
-    public static final String RESOURCE_ANTIALIAS = "antialias";
     public static final String RESOURCES_SELECTION_METHOD = "selection_method";
     public static final String RESOURCES_NODE_STYLE = "standardnodestyle";
     public static final String RESOURCES_ROOT_NODE_STYLE = "standardrootnodestyle";
@@ -253,7 +252,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 //    });
 
 
-    c.optionAntialiasAction.changeAntialias(getProperty(RESOURCE_ANTIALIAS));
+    c.optionAntialiasAction.changeAntialias(getProperty(FreeMindCommon.RESOURCE_ANTIALIAS));
 
 	//Create the MenuBar
 	menuBar = new MenuBar(c);

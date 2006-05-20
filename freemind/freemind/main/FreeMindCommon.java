@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2 2006-03-14 21:56:27 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.1 2006-05-20 19:32:34 dpolivaev Exp $*/
 package freemind.main;
 
 import java.io.IOException;
@@ -44,7 +44,9 @@ public class FreeMindCommon {
 
 	public static final String RESOURCE_LANGUAGE = "language";
 
-	public static final String DEFAULT_LANGUAGE = "en";
+    public static final String RESOURCE_ANTIALIAS = "antialias";
+
+    public static final String DEFAULT_LANGUAGE = "en";
 
 	private final FreeMindMain mFreeMindMain;
 
