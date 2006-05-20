@@ -363,7 +363,7 @@ public class FilterComposerDialog extends JDialog {
     private JButton btnCancel;
     private ConditionListSelectionListener conditionListListener;   
     public FilterComposerDialog(Controller c, final FilterToolbar ft) {
-        super(Resources.getInstance().getJFrame(),
+        super(c.getJFrame(),
                 c.getResourceString("filter_dialog"));
         this.c = c;
         this.fc = c.getFilterController();

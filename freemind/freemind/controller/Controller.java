@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.5 2006-04-24 22:23:33 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.6 2006-05-20 19:07:11 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -266,9 +266,15 @@ public class Controller  implements MapModuleChangeOberser {
        frame.setProperty(property, value); }
 
     public FreeMindMain getFrame() {
-        return Resources.getInstance().getFrame();
+        return frame;
     }
 
+    public JFrame getJFrame() {
+        FreeMindMain f = getFrame();
+        if (f instanceof JFrame) return (JFrame) f;
+        return null;
+    }
+    
     public URL getResource(String resource) {
         return getFrame().getResource(resource);
     }

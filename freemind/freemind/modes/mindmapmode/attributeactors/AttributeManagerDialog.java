@@ -64,6 +64,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
     private static final String[] fontSizes = {"6","8","10","12","14","16","18","20","24"};
     private JComboBox size;
     private ImportAttributesDialog importDialog = null;
+    private Controller c;
     static final Icon editButtonImage = new ImageIcon(Resources.getInstance().getResource("images/edit12.png"));
     
     private class ApplyAction extends AbstractAction{
@@ -126,7 +127,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
          */
         public void actionPerformed(ActionEvent e) {
             if(importDialog == null){
-                importDialog = new ImportAttributesDialog(AttributeManagerDialog.this);
+                importDialog = new ImportAttributesDialog(c, AttributeManagerDialog.this);
             }
             importDialog.setVisible(true);
         }
@@ -189,8 +190,8 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
     }
 
     public AttributeManagerDialog(Controller c){
-        super(Resources.getInstance().getJFrame(), Resources.getInstance().getResourceString("attributes_dialog"), true);
-
+        super(c.getJFrame(), Resources.getInstance().getResourceString("attributes_dialog"), true);
+        this.c = c;
         view = new AttributeRegistryTable(new EditListAction());
         registry = c.getMap().getRegistry();
         model = registry.getAttributes();

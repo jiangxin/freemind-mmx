@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.4 2006-04-12 20:49:46 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.5 2006-05-20 19:07:11 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -370,7 +370,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
     }
 
     public URL getResource(String name) {
-	return ClassLoader.getSystemResource(name);
+        return ClassLoader.getSystemResource(name);
     }
 
     public String getProperty(String key) {

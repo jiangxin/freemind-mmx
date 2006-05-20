@@ -47,6 +47,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
+import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
 import freemind.controller.filter.util.SortedComboBoxModel;
 import freemind.main.Resources;
@@ -143,8 +144,10 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
     MyRenderer renderer = null;
     private DefaultTreeModel treeModel;
     private Component parentComponent;
-    public ImportAttributesDialog(Component parentComponent){
-        super(Resources.getInstance().getJFrame(), Resources.getInstance().getResourceString("attributes_import"), true);
+    private Controller c;
+    public ImportAttributesDialog(Controller c, Component parentComponent){
+        super(c.getJFrame(), Resources.getInstance().getResourceString("attributes_import"), true);
+        this.c = c;
         this.parentComponent = parentComponent;
         TreeNodeInfo nodeInfo = new TreeNodeInfo(Resources.getInstance().getResourceString("attribute_top"));
         topNode = new DefaultMutableTreeNode(nodeInfo);
@@ -248,7 +251,7 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
         top.removeAllChildren();
         TreeNodeInfo topInfo = (TreeNodeInfo) top.getUserObject();
         topInfo.setSelected(TreeNodeInfo.NOT_SELECTED);
-        MapModuleManager mapModuleManager = Resources.getInstance().getFrame().getController().getMapModuleManager();
+        MapModuleManager mapModuleManager = c.getMapModuleManager();
         MindMap currentMap = mapModuleManager.getMapModule().getModel();
         currentAttributes = currentMap.getRegistry().getAttributes();
         Iterator iterator = mapModuleManager.getMapModules().entrySet().iterator();

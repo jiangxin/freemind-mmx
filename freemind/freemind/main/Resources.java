@@ -47,7 +47,7 @@ public class Resources {
     }
     
     public URL getResource(String resource) {
-        return getFrame().getResource(resource);
+        return frame.getResource(resource);
     }
     
     public String getResourceString(String resource) {
@@ -80,16 +80,6 @@ public class Resources {
 
     public ResourceBundle getResources() {
         return frame.getResources();
-    }
-
-    public JFrame getJFrame() {
-        FreeMindMain f = getFrame();
-        if (f instanceof JFrame) return (JFrame) f;
-        return null;
-    }
-    
-    public FreeMindMain getFrame() {
-        return frame;
     }
 
     public HashMap getCountryMap() {
