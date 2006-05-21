@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.1 2006-05-20 19:32:34 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.2 2006-05-21 09:29:52 dpolivaev Exp $*/
 package freemind.main;
 
 import java.io.IOException;
@@ -69,7 +69,7 @@ public class FreeMindCommon {
 	}
 
 	/** Returns the ResourceBundle with the current language */
-	public ResourceBundle getResources() {
+    public ResourceBundle getResources() {
 		if (languageResources == null) {
 			try {
 				String lang = getProperty(RESOURCE_LANGUAGE);
@@ -132,7 +132,7 @@ public class FreeMindCommon {
 		}
 	}
 
-	public void clearLanguageResources() {
+    public void clearLanguageResources() {
 		languageResources = null;
 	}
 }
