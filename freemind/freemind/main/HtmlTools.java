@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.1 2006-05-19 21:27:43 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.2 2006-05-21 20:11:09 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -30,7 +30,7 @@ import javax.swing.text.BadLocationException;
 public class HtmlTools {
 
     private static HtmlTools sInstance = new HtmlTools();
-    
+
     /**
      * 
      */
@@ -38,7 +38,7 @@ public class HtmlTools {
         super();
 
     }
-    
+
     public static HtmlTools getInstance() {
         return sInstance;
     }
@@ -60,10 +60,12 @@ public class HtmlTools {
         return htmlText;
     }
 
-    public String toHtml(String xmlText) {
-        xmlText = xmlText.replaceAll("<br\\s*/>", "<br>");
-        return xmlText;
+    public String toHtml(String xhtmlText) {
+        // Remove '/' from <.../> of elements that do not have '/' there in HTML
+        return xhtmlText.replaceAll("<((" + "br|area|base|basefont|"
+                + "bgsound|button|col|colgroup|embed|hr"
+                + "|img|input|isindex|keygen|link|meta"
+                + "|object|plaintext|spacer|wbr" + ")[^>]*)/>", "<$1>");
     }
 
 }
-

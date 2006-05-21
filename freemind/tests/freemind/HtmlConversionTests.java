@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlConversionTests.java,v 1.1.2.1 2006-05-19 21:27:44 christianfoltin Exp $*/
+/*$Id: HtmlConversionTests.java,v 1.1.2.2 2006-05-21 20:11:09 christianfoltin Exp $*/
 
 package tests.freemind;
 
 import java.io.StringReader;
 
 import junit.framework.TestCase;
+import freemind.main.HtmlTools;
 import freemind.main.XMLElement;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
@@ -43,21 +44,32 @@ public class HtmlConversionTests extends TestCase {
         node.setXmlText("<html><br/></html>");
         assertEquals("proper html conversion", "<html><br></html>", node.getText());
         node.setXmlText("<html><br /></html>");
-        assertEquals("proper html conversion", "<html><br></html>", node.getText());
+        assertEquals("proper html conversion", "<html><br ></html>", node.getText());
         
     }
     
     public void testEndContentMatcher() throws Exception {
-        assertTrue("</nodecontent>".matches(XMLElement.XML_NODE_XHTML_CONTENT_END_TAG_REGEXP));
-        assertTrue("</ nodecontent>".matches(XMLElement.XML_NODE_XHTML_CONTENT_END_TAG_REGEXP));
-        assertTrue("</ nodecontent >".matches(XMLElement.XML_NODE_XHTML_CONTENT_END_TAG_REGEXP));
-        assertTrue("< /\nnodecontent >".matches(XMLElement.XML_NODE_XHTML_CONTENT_END_TAG_REGEXP));
+        matchingTest("</" + XMLElement.XML_NODE_XHTML_CONTENT_TAG + ">");
+        matchingTest("</ " + XMLElement.XML_NODE_XHTML_CONTENT_TAG + ">");
+        matchingTest("</ " + XMLElement.XML_NODE_XHTML_CONTENT_TAG + " >");
+        matchingTest("< /\n" + XMLElement.XML_NODE_XHTML_CONTENT_TAG + " >");
+    }
+
+    /**
+     * @param string
+     */
+    private void matchingTest(String string) {
+        assertTrue(string.matches(XMLElement.XML_NODE_XHTML_CONTENT_END_TAG_REGEXP));
     }
     
     public void testNanoXmlContent() throws Exception {
         XMLElement element = new XMLElement();
-        element.parseFromReader(new StringReader("<nodecontent><body>a<b>cd</b>e</body></nodecontent>"));
-        assertEquals("end nodecontent tag removed", "<body>a<b>cd</b>e</body>", element.getContent());
+        element.parseFromReader(new StringReader("<" + XMLElement.XML_NODE_XHTML_CONTENT_TAG + "><body>a<b>cd</b>e</body></" + XMLElement.XML_NODE_XHTML_CONTENT_TAG + ">"));
+        assertEquals("end " + XMLElement.XML_NODE_XHTML_CONTENT_TAG + " tag removed", "<body>a<b>cd</b>e</body>", element.getContent());
+    }
+    
+    public void testXHtmlToHtmlConversion() throws Exception {
+        assertEquals("br removal", "<br >", HtmlTools.getInstance().toHtml("<br />"));
     }
 }
 
