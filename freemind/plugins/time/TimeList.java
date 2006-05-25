@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.9.2.3 2006-05-06 21:56:37 christianfoltin Exp $ */
+/* $Id: TimeList.java,v 1.1.2.9.2.4 2006-05-25 21:38:36 christianfoltin Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -43,7 +43,6 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
@@ -68,6 +67,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import freemind.controller.actions.generated.instance.TimeWindowColumnSetting;
 import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
+import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
@@ -283,7 +283,7 @@ public class TimeList extends MindMapHookAdapter {
 		for (int i = 0; i < length; i++) {
 			NodeHolder nodeHolder = info.getNodeHolderAt(i);
 			String text = nodeHolder.node.getText();
-			String replaceResult = getReplaceResult(p, replacement, text);
+			String replaceResult = HtmlTools.getInstance().getReplaceResult(p, replacement, text);
             if (!Tools.safeEquals(text, replaceResult)) {
                 // set new node text only, if different.
                 info.changeString(nodeHolder, replaceResult);
@@ -291,20 +291,7 @@ public class TimeList extends MindMapHookAdapter {
 		}
 	}
 
-    /** Replaces text in node content without replacing tags.
-     * @param pattern
-     * @param replacement
-     * @param text
-     */
-    public static String getReplaceResult(Pattern pattern, String replacement, String text) {
-        Matcher m = pattern.matcher(text);
-        if(m.find()) {
-        	return m.replaceAll(replacement);
-        }
-        return text;
-    }
-
-	private class ReplaceAllInfo implements IReplaceInputInformation {
+    private class ReplaceAllInfo implements IReplaceInputInformation {
 		public int getLength() {
 			return mFlatNodeTableFilterModel.getRowCount();
 		}

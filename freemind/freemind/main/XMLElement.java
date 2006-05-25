@@ -19,8 +19,8 @@
 */
 /* XMLElement.java
  *
- * $Revision: 1.7.18.4.2.2 $
- * $Date: 2006-05-19 21:27:43 $
+ * $Revision: 1.7.18.4.2.3 $
+ * $Date: 2006-05-25 21:38:35 $
  * $Name:  $
  *
  * This file is part of NanoXML 2 Lite.
@@ -125,12 +125,12 @@ import java.util.regex.Pattern;
  *
  * @author Marc De Scheemaecker
  *         &lt;<A href="mailto:cyberelf@mac.com">cyberelf@mac.com</A>&gt;
- * @version $Name:  $, $Revision: 1.7.18.4.2.2 $
+ * @version $Name:  $, $Revision: 1.7.18.4.2.3 $
  */
 public class XMLElement
 {
 
-    public static final String XML_NODE_XHTML_CONTENT_TAG = "nodecontent";
+    public static final String XML_NODE_XHTML_CONTENT_TAG = "richcontent";
 
 
     public static final String XML_NODE_XHTML_CONTENT_END_TAG_REGEXP = "<\\s*/\\s*" + XML_NODE_XHTML_CONTENT_TAG + "\\s*>";

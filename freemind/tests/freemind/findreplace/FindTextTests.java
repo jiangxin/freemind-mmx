@@ -16,9 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FindTextTests.java,v 1.1.2.1 2006-05-06 21:56:37 christianfoltin Exp $*/
+/*$Id: FindTextTests.java,v 1.1.2.2 2006-05-25 21:38:36 christianfoltin Exp $*/
 
 package tests.freemind.findreplace;
+
+import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -26,6 +29,7 @@ import junit.framework.TestCase;
 import plugins.time.FlatNodeTableFilterModel;
 import plugins.time.TimeList;
 import plugins.time.TimeList.NodeHolder;
+import freemind.main.HtmlTools;
 import freemind.main.Tools;
 
 public class FindTextTests extends TestCase {
@@ -77,13 +81,38 @@ public class FindTextTests extends TestCase {
         dut.setFilter("test");
         assertEquals("One row:", 1, dut.getRowCount());
     }
+    
+    public void testPositions() throws Exception {
+        HtmlTools.IndexPair pair1 = new HtmlTools.IndexPair(0,6,0,0);
+        HtmlTools.IndexPair pair2 = new HtmlTools.IndexPair(6,14,0,0);
+        HtmlTools.IndexPair pair3 = new HtmlTools.IndexPair(14,27,0,4);
+        HtmlTools.IndexPair pair4 = new HtmlTools.IndexPair(27,34,4,4);
+        HtmlTools.IndexPair pair5 = new HtmlTools.IndexPair(34,34,4,4);
+        ArrayList list = new ArrayList();
+        list.add(pair1);
+        list.add(pair2);
+        list.add(pair3);
+        list.add(pair4);
+        list.add(pair5);
+        assertEquals(0,HtmlTools.getInstance().getMinimalOriginalPosition(0, list));
+        assertEquals(14,HtmlTools.getInstance().getMaximalOriginalPosition(0, list));
+        assertEquals(27,HtmlTools.getInstance().getMinimalOriginalPosition(4, list));
+        assertEquals(34,HtmlTools.getInstance().getMaximalOriginalPosition(4, list));
+    }
+    
+    public void testDirectReplace() throws Exception {
+        assertEquals("<html><strong>blabla</strong></html>", HtmlTools
+                .getInstance().getReplaceResult(Pattern.compile("test"),
+                        "blabla", "<html><strong>test</strong></html>"));
+
+    }
 
     public void testReplaceNodeText() throws Exception {
         // normal text is replaced,
         TimeList.IReplaceInputInformation info = new TestReplaceInputInfo(
                 "<html><strong>test</strong></html>",
                 "<html><strong>blabla</strong></html>");
-        TimeList.replace(info, "text", "blabla");
+        TimeList.replace(info, "test", "blabla");
         // but tags not:
         info = new TestReplaceInputInfo("<html><strong>test</strong></html>",
                 "<html><strong>test</strong></html>");

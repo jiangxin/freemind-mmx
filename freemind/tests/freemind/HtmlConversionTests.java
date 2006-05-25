@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlConversionTests.java,v 1.1.2.2 2006-05-21 20:11:09 christianfoltin Exp $*/
+/*$Id: HtmlConversionTests.java,v 1.1.2.3 2006-05-25 21:38:36 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -70,6 +70,7 @@ public class HtmlConversionTests extends TestCase {
     
     public void testXHtmlToHtmlConversion() throws Exception {
         assertEquals("br removal", "<br >", HtmlTools.getInstance().toHtml("<br />"));
+        assertEquals("br removal, not more.", "<brmore/>", HtmlTools.getInstance().toHtml("<brmore/>"));
     }
 }
 

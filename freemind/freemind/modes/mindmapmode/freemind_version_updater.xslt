@@ -41,7 +41,7 @@
 			--><xsl:when test="@version='0.8.0'"><!--
 			-->0801000<!-- Means the 0.8 release. This number is bigger than that of 0.8RC5.
 			--></xsl:when><!--
-			--><xsl:when test="@version='0.8.FA Alpha 3' or @version='0.8.FA Alpha 4'"><!--
+			--><xsl:when test="@version='0.8.FA Alpha 3' or @version='0.8.FA Alpha 4' or @version='0.8.FA Alpha 5a'"><!--
 			-->0801004<!--
 			--></xsl:when><!--
 			--><xsl:when test="@version='0.8.1_beta1'"><!--

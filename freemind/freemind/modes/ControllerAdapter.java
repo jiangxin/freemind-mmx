@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.6 2006-04-24 22:23:34 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.7 2006-05-25 21:38:35 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -659,7 +659,7 @@ public abstract class ControllerAdapter implements ModeController {
 	// fc, 29.2.2004: there is no sense in having this private and the controller public,
 	// because the getController().getModel() method is available anyway.
     public MapAdapter getModel() {
-        return (MapAdapter)getController().getModel();
+        return mModel;
     }
 
     public MapView getView() {

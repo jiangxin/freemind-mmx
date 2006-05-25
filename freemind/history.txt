@@ -2,6 +2,7 @@ Changes made in FreeMind 0.9.0 Beta 4
 ===============================
 * Search and Replace in History Dialog (to be continued).
 * Load and Save Format of HTML nodes realized as discussed by the directors board.
+* Save All implemented.
 
 Changes made in FreeMind 0.9.0 Beta 2
 ===============================

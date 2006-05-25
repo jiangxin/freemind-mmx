@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.4.2.1 2006-04-05 21:26:24 dpolivaev Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4.2.2 2006-05-25 21:38:35 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -133,6 +133,9 @@ import freemind.view.mindmapview.MapView;
            this.mController=c;
         }
 
+        /**
+         * @return a map of String to MapModule elements.
+         */
         public Map getMapModules() {
            return mapModules; }
         
