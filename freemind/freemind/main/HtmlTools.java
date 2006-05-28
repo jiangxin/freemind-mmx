@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.3 2006-05-25 21:38:35 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.4 2006-05-28 21:22:23 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -122,26 +122,26 @@ public class HtmlTools {
      * @param text
      */
     public String getReplaceResult(Pattern pattern, String replacement, String text) {
+        String input = text;
         ArrayList l = new ArrayList();
         StringBuffer sb = new StringBuffer();
-        String input = text;
         // remove tags and denote their positions:
         {
             Pattern p = Pattern.compile(FIND_TAGS_PATTERN);
-            Matcher m = p.matcher(input);
+            Matcher matcher = p.matcher(input);
             int lastMatchEnd = 0;
-            while (m.find())
+            while (matcher.find())
             {
                 int replStart = sb.length();
-                m.appendReplacement(sb, "");
-                IndexPair indexPair = new IndexPair(lastMatchEnd, m.end(),
+                matcher.appendReplacement(sb, "");
+                IndexPair indexPair = new IndexPair(lastMatchEnd, matcher.end(),
                         replStart, sb.length());
-                lastMatchEnd = m.end();
-                System.out.println(sb.toString() + ", " + indexPair);
+                lastMatchEnd = matcher.end();
+                System.out.println(sb.toString() + ", " + input.substring(indexPair.originalStart, indexPair.originalEnd)+ ", " + indexPair);
                 l.add(indexPair);
             }
             int replStart = sb.length();
-            m.appendTail(sb);
+            matcher.appendTail(sb);
             IndexPair indexPair = new IndexPair(lastMatchEnd, input.length(),
                     replStart, sb.length());
             System.out.println(sb.toString() + ", " + indexPair);
@@ -175,8 +175,9 @@ public class HtmlTools {
             sbResult.append(sbTemp.toString().replaceAll(".*?("+FIND_TAGS_PATTERN+")", "$1"));
             //append the rest.
             append(sbResult, input, l, mEnd, replacedString.length());
-            // if there are tags at the end:
-            append(sbResult, input, l, replacedString.length(), replacedString.length());
+        } else {
+            // no change:
+            sbResult.append(input);
         }
 //        m.appendTail(sb2);
         String result = sbResult.toString();
@@ -221,27 +222,24 @@ public class HtmlTools {
         for (Iterator iter = pListOfIndices.iterator(); iter.hasNext();)
         {
             IndexPair pair = (IndexPair) iter.next();
-            if(pI >= pair.replacedStart) {
+            if(pI >= pair.replacedStart && pI <= pair.replacedEnd) {
                 return pair.originalStart + pI - pair.replacedStart;
             }
         }
         throw new IllegalArgumentException("Position "+pI+" not found.");
     }
+    /**
+     * @param pI
+     * @param pListOfIndices
+     * @return the maximal index i such that pI is mapped to i by removing all tags from the original input. 
+     */
     public int getMaximalOriginalPosition(int pI, ArrayList pListOfIndices)
     {
-        int lastResult = -1; 
-        for (Iterator iter = pListOfIndices.iterator(); iter.hasNext();)
-        {
-            IndexPair pair = (IndexPair) iter.next();
-            if(pI > pair.replacedEnd && lastResult >= 0) {
-                return lastResult;
-            }
+        for(int i = pListOfIndices.size() -1 ; i >= 0; --i) {
+            IndexPair pair = (IndexPair) pListOfIndices.get(i);
             if(pI >= pair.replacedStart) {
-                lastResult = pair.originalStart + pI - pair.replacedStart;
+                return pair.originalStart + pI - pair.replacedStart;
             }
-        }
-        if(lastResult >= 0) {
-            return lastResult;
         }
         throw new IllegalArgumentException("Position "+pI+" not found.");
     }

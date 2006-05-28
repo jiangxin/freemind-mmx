@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FindTextTests.java,v 1.1.2.2 2006-05-25 21:38:36 christianfoltin Exp $*/
+/*$Id: FindTextTests.java,v 1.1.2.3 2006-05-28 21:22:23 christianfoltin Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -96,7 +96,7 @@ public class FindTextTests extends TestCase {
         list.add(pair5);
         assertEquals(0,HtmlTools.getInstance().getMinimalOriginalPosition(0, list));
         assertEquals(14,HtmlTools.getInstance().getMaximalOriginalPosition(0, list));
-        assertEquals(27,HtmlTools.getInstance().getMinimalOriginalPosition(4, list));
+        assertEquals(18,HtmlTools.getInstance().getMinimalOriginalPosition(4, list));
         assertEquals(34,HtmlTools.getInstance().getMaximalOriginalPosition(4, list));
     }
     
@@ -104,6 +104,9 @@ public class FindTextTests extends TestCase {
         assertEquals("<html><strong>blabla</strong></html>", HtmlTools
                 .getInstance().getReplaceResult(Pattern.compile("test"),
                         "blabla", "<html><strong>test</strong></html>"));
+        assertEquals("<html><strong>blabla</strong></html>", HtmlTools
+                .getInstance().getReplaceResult(Pattern.compile("strong"),
+                        "strang", "<html><strong>blabla</strong></html>"));
 
     }
 
