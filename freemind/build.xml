@@ -1,5 +1,5 @@
 <project name="freemind" default="dist" basedir=".">
-	<property name="ver" value="0_9_0_beta2" />
+	<property name="ver" value="0_9_0_beta5" />
 	<property name="src" value="." />
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
@@ -8,8 +8,8 @@
 	<property name="dist_macos_name" value="Mac_OS_X_Freemind-${ver}" />
 	<property name="dist_macos_base" value="../bin/dist_macos" />
 	<property name="dist_macos" value="${dist_macos_base}/${dist_macos_name}" />
-	<property name="dist_macos_info" value="${dist_macos}/FreeMind.app/Contents/Info.plist">
-	</property>
+	<property name="dist_macos_contents" value="${dist_macos}/FreeMind.app/Contents"/>
+	<property name="dist_macos_info" value="${dist_macos_contents}/Info.plist"/>
 	<property name="FM.jar" value="${dist.lib}/freemind.jar"/>
 	<property name="post" value="../post" />
 	<property name="debug" value="on" />
@@ -187,7 +187,7 @@
 		                    mainclass="freemind.main.FreeMind"
 		                    icon="${src}/images/FreeMindWindowIcon.icns"
 		                    version="${ver}"
-		                    infostring="FreeMind ${ver} application (c) 2005"
+		                    infostring="FreeMind ${ver} application (c) 2006"
 		                    aboutmenuname="FreeMind"
 		                    bundleid="freemind.main.FreeMind"
 		                    signature="FM"
@@ -202,6 +202,17 @@
 				<exclude name="plugins/**" />
 			</jarfileset>
 		</jarbundler>
+		<!-- Delete the JavaApplicationStub and replace it with a symbolic link -->
+		  <!--   which should work on older and future versions of OS X  
+		   Taken from http://informagen.com/JarBundler/StubFile.html         -->
+		       
+		  <delete file="${dist_macos_contents}/MacOS/JavaApplicationStub"/>
+		  <exec executable="ln">
+		    <arg line="-s /System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub"/>
+		    <arg value="${dist_macos_contents}/MacOS/JavaApplicationStub"/>
+		  </exec>
+
+
 		<!-- Associate Freemind with mm -->
 		<xslt style="mac_file_association.xslt"
 			in ="${dist_macos_info}"
@@ -214,7 +225,7 @@
 			<fileset dir="${dist}/accessories"/>
 		</copy>
 		<!-- link accessories in app -->
-		<exec dir="${dist_macos}/FreeMind.app/Contents/Resources/Java" executable="ln" os="Mac OS X">
+		<exec dir="${dist_macos_contents}/Resources/Java" executable="ln" os="Mac OS X">
 			<arg value="-s"/>
 			<arg value="../../../../accessories/"/>
 			<arg value="accessories"/>
