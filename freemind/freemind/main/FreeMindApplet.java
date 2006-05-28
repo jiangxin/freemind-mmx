@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.4 2006-05-21 09:29:52 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.5 2006-05-28 13:08:06 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -194,7 +194,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
     public URL getResource(String name) {
     final URL resourceURL = this.getClass().getResource("/"+name);
-    if(! resourceURL.getProtocol().equals("jar"))
+    if(resourceURL == null || ! resourceURL.getProtocol().equals("jar"))
         return null;
     return resourceURL;
     }
