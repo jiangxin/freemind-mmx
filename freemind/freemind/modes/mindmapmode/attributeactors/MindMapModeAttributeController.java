@@ -264,7 +264,7 @@ public class MindMapModeAttributeController implements AttributeController{
         {
             final ActionPair registryAttributeActionPair = registryAttributeActor.createActionPair(name);
             controller.getActionFactory().executeAction(registryAttributeActionPair);
-            final ActionPair registryAttributeValueActionPair = registryAttributeValueActor.createActionPair(name, "");
+            final ActionPair registryAttributeValueActionPair = registryAttributeValueActor.createActionPair(name, value);
             controller.getActionFactory().executeAction(registryAttributeValueActionPair);
         }
         final ActionPair insertAttributeActionPair = insertAttributeActor.createActionPair(model, row, name, value);
