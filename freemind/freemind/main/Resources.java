@@ -28,18 +28,16 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import javax.swing.JFrame;
-
 /**
  * @author Dimitri Polivaev
  * 12.07.2005
  */
 public class Resources {
-    private FreeMindMain frame;
+    private FreeMindMain main;
     static Resources resourcesInstance = null;
     private HashMap countryMap;
     private Resources(FreeMindMain frame) {
-        this.frame = frame;  
+        this.main = frame;  
     }
     
     static public void createInstance(FreeMindMain frame){
@@ -47,11 +45,11 @@ public class Resources {
     }
     
     public URL getResource(String resource) {
-        return frame.getResource(resource);
+        return main.getResource(resource);
     }
     
     public String getResourceString(String resource) {
-        return frame.getResourceString(resource);
+        return main.getResourceString(resource);
     }
          
     static public Resources getInstance(){
@@ -59,27 +57,27 @@ public class Resources {
     }
 
     public String getFreemindDirectory() {
-        return frame.getFreemindDirectory();
+        return main.getFreemindDirectory();
     }
 
     public String getFreemindVersion() {
-        return frame.getFreemindVersion();
+        return main.getFreemindVersion();
     }
 
     public int getIntProperty(String key, int defaultValue) {
-        return frame.getIntProperty(key, defaultValue);
+        return main.getIntProperty(key, defaultValue);
     }
 
     public Properties getProperties() {
-        return frame.getProperties();
+        return main.getProperties();
     }
 
     public String getProperty(String key) {
-        return frame.getProperty(key);
+        return main.getProperty(key);
     }
 
     public ResourceBundle getResources() {
-        return frame.getResources();
+        return main.getResources();
     }
 
     public HashMap getCountryMap() {
@@ -94,4 +92,10 @@ public class Resources {
         }
         return countryMap;
     }
+    
+    /* To obtain a logging element, ask here. */
+    public java.util.logging.Logger getLogger(String forClass){
+        return main.getLogger(forClass);
+    }
+
 }

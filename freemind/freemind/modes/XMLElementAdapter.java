@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.4 2006-05-19 21:27:44 christianfoltin Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.5 2006-05-30 21:36:17 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -205,7 +205,7 @@ public abstract class XMLElementAdapter extends XMLElement {
           else if (child.getName().equals(XML_NODE_XHTML_CONTENT_TAG)) {
               String xmlText = ((XMLElement) child).getContent();
               // output:
-              logger.info("Setting node html content to:" + xmlText);
+              logger.finest("Setting node html content to:" + xmlText);
               node.setXmlText(xmlText);
           }
          else if (child.getName().equals("hook")) {

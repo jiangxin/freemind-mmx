@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.9.2.4 2006-05-25 21:38:36 christianfoltin Exp $ */
+/* $Id: TimeList.java,v 1.1.2.9.2.5 2006-05-30 21:36:17 christianfoltin Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -629,7 +629,7 @@ public class TimeList extends MindMapHookAdapter {
         public String getUntaggedNodeText() {
             if(untaggedNodeText==null) {
                 // remove tags:
-                untaggedNodeText = Tools.removeHtmlTagsFromString(node.getText());
+                untaggedNodeText = HtmlTools.removeHtmlTagsFromString(node.getText());
             }
             return untaggedNodeText;
         }

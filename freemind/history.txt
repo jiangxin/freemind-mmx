@@ -1,9 +1,11 @@
 Changes made in FreeMind 0.9.0 Beta 5
 ===============================
-* Search and Replace in History Dialog (to be continued).
+* Search and Replace in History Dialog.
 * Load and Save Format of HTML nodes realized as discussed by the directors board.
 * Save All implemented.
 * Adapted for intel macs. Thanks to tizzyd
+* Safety extension for Html nodes: if they don't give well formed Xml, we replace the tags.
+* \0 characters are removed from HTML.
 
 Changes made in FreeMind 0.9.0 Beta 2
 ===============================

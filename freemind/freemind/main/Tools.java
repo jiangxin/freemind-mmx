@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.3 2006-05-06 21:56:37 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.4 2006-05-30 21:36:17 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -48,7 +48,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Locale;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -252,143 +251,6 @@ public class Tools {
         int i = s.lastIndexOf('.');
         return (i > 0 && i < s.length() - 1) ? s.substring(0, i) : "";
     }
-
-    public static String toXMLEscapedText(String text) {
-        return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
-    }
-
-    public static String toXMLUnescapedText(String text) {
-        return text.replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll(
-                "&quot;", "\"").replaceAll("&amp;", "&");
-    }
-
-    public static String toXMLEscapedTextExpandingWhitespace(String text) {
-        // Spaces and tabs are handled
-        text = text.replaceAll("\t","         "); // Use eight spaces as tab width.
-        int len = text.length();
-        StringBuffer result = new StringBuffer(len);
-        char myChar;
-        for (int i = 0; i < len; ++i) {
-            myChar = text.charAt(i);
-            switch (myChar) {
-            case '&': result.append("&amp;"); break;
-            case '<': result.append("&lt;"); break;
-            case '>': result.append("&gt;"); break;
-            case ' ':
-               if ( i > 0 && i < len-1 &&
-                    (int)text.charAt(i-1) > 32 && (int)text.charAt(i+1) > 32 ) {
-                  result.append(' '); }
-               else {
-                  result.append("&nbsp;"); }
-               break;
-            default:
-                result.append(myChar);
-            }
-        }
-        return result.toString();
-    }
-
-    public static String unicodeToHTMLUnicodeEntity(String text) {
-       StringBuffer result = new StringBuffer((int)(text.length()*1.2)); // Heuristic reserve for expansion: factor 1.2
-       int intValue;
-       char myChar;
-       for (int i = 0; i < text.length(); ++i) {
-          myChar = text.charAt(i);
-          intValue = (int) text.charAt(i);
-          if (intValue > 128) {
-             result.append("&#").append(intValue).append(';'); }
-          else {
-             result.append(myChar); }}
-       return result.toString(); };
-
-    public static String unescapeHTMLUnicodeEntity(String text) {
-       StringBuffer result = new StringBuffer(text.length());
-       StringBuffer entity = new StringBuffer();
-       boolean readingEntity = false;
-       char myChar;
-       for (int i = 0; i < text.length(); ++i) {
-          myChar = text.charAt(i);
-          if (readingEntity) {
-             if (myChar == ';') {
-                if (entity.charAt(0) == '#') {
-                   try {
-                      if (entity.charAt(1) == 'x') {
-                         result.append((char) Integer.parseInt(entity.substring(2), 16)); }
-                      else {
-                         result.append((char) Integer.parseInt(entity.substring(1), 10)); }}
-                   catch (NumberFormatException e) {
-                      result.append('&').append(entity).append(';'); }}
-                else {
-                   result.append('&').append(entity).append(';'); }
-                entity.setLength(0);
-                readingEntity = false; }
-             else {
-                entity.append(myChar); }}
-          else {
-             if (myChar == '&') {
-                readingEntity = true; }
-             else {
-                result.append(myChar); }}}
-       if (entity.length() > 0) {
-          result.append('&').append(entity); }
-       return result.toString(); }
-
-    public static String plainToHTML(String text) {
-       char myChar;
-       String textTabsExpanded = text.replaceAll("\t","         "); // Use eight spaces as tab width.
-       StringBuffer result = new StringBuffer(textTabsExpanded.length()); // Heuristic
-       int lengthMinus1 = textTabsExpanded.length() - 1;
-       result.append("<html><body>");
-       for (int i = 0; i < textTabsExpanded.length(); ++i) {
-          myChar = textTabsExpanded.charAt(i);
-          switch (myChar) {
-          case '&': result.append("&amp;"); break;
-          case '<': result.append("&lt;"); break;
-          case '>': result.append("&gt;"); break;
-          case ' ':
-             if ( i > 0 && i < lengthMinus1 &&
-                  (int)textTabsExpanded.charAt(i-1) > 32 && (int)textTabsExpanded.charAt(i+1) > 32 ) {
-                result.append(' '); }
-             else {
-                result.append("&nbsp;"); }
-             break;
-          case '\n': result.append("<br>"); break;
-          default:  result.append(myChar); }}
-       return result.toString(); }
-
-    public static String htmlToPlain(String text) {
-       // 0. remove all newlines
-       // 1. replace newlines, paragraphs, and table rows
-       // 2. remove XML tags
-       // 3. replace HTML entities including &nbsp;
-       // 4. unescape unicode entities
-       // This is a very basic conversion, fixing the most annoying
-       // inconvenience.  You can imagine much better conversion of
-       // HTML to plain text. Most of HTML tags can be handled
-       // sensibly, like web browsers do it.
-       if (!text.startsWith("<html")) {
-          return text; }
-       //System.err.println("base:"+text);
-       String intermediate = text.
-          replaceAll("(?ims)[\n\t]","").        // Remove newlines
-          replaceAll("(?ims) +"," ").           // Condense spaces
-          replaceAll("(?ims)<br.*?>","\n").
-          replaceAll("(?ims)<p.*?>","\n\n").    // Paragraph
-          replaceAll("(?ims)<div.*?>","\n").  // Div - block
-          replaceAll("(?ims)<tr.*?>","\n").
-          replaceAll("(?ims)<dt.*?>","\n").     // Defined term
-          replaceAll("(?ims)<dd.*?>","\n   ").  // Definition of defined term
-          replaceAll("(?ims)<td.*?>"," ").
-          replaceAll("(?ims)<[uo]l.*?>","\n").  // Beginning of a list
-          replaceAll("(?ims)<li.*?>","\n   * ").
-          replaceAll("(?ims) *</[^>]*>","").    // Remaining closing HTML tags
-          replaceAll("(?ims)<[^/][^>]*> *",""). // Remaining opening HTML tags
-          replaceAll("(?ims)&lt;", "<").replaceAll("(?ims)&gt;", ">").
-          replaceAll("(?ims)&quot;", "\"").replaceAll("(?ims)&amp;", "&").
-          replaceAll("(?ims)&nbsp;", " ");
-       //System.err.println("intermediate:"+intermediate);
-       return unescapeHTMLUnicodeEntity(intermediate); }
 
     public static boolean isAbsolutePath(String path) {
         // On Windows, we cannot just ask if the file name starts with file
@@ -1022,26 +884,6 @@ public class Tools {
         // Register action
         dialog.getRootPane().getActionMap().put(action.getValue(Action.NAME),
                 action);
-    }
-
-    /** Removes all tags (<..>) from a string if it starts with "<html>..." to make it compareable.
-     * @param text
-     * @return
-     */
-    public static String removeHtmlTagsFromString(String text) {
-        if (isHtmlNode(text)) {
-            return text.replaceAll("(?s)<[^><]*>", ""); // (?s) enables that . matches newline.
-        } else {
-            return text;
-        }
-    }
-
-    /**
-     * @param text
-     * @return
-     */
-    public static boolean isHtmlNode(String text) {
-        return text.toLowerCase(Locale.ENGLISH).matches("(?s)^\\s*<\\s*html.*?>.*");
     }
 
 }

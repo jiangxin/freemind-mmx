@@ -33,7 +33,7 @@ import javax.swing.JOptionPane;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.main.Tools;
+import freemind.main.HtmlTools;
 
 public class FindAction extends AbstractAction {
 	private final ControllerAdapter controller;
@@ -58,7 +58,7 @@ public class FindAction extends AbstractAction {
 	}
 
 	public String getFindFromText() {
-       String plainNodeText = Tools.htmlToPlain(findFromNode.toString()).replaceAll("\n"," ");
+       String plainNodeText = HtmlTools.htmlToPlain(findFromNode.toString()).replaceAll("\n"," ");
        return plainNodeText.length() <= 30
           ? plainNodeText
           : plainNodeText.substring(0,30)+"...";
@@ -89,7 +89,7 @@ public class FindAction extends AbstractAction {
 		if (!found) {
            String messageText = controller.getText("no_found_from");
            String searchTerm = messageText.startsWith("<html>")
-              ? Tools.toXMLEscapedText(getSearchTerm())
+              ? HtmlTools.toXMLEscapedText(getSearchTerm())
               : getSearchTerm();
            controller.getController().informationMessage
               (messageText.
@@ -123,7 +123,7 @@ public class FindAction extends AbstractAction {
 			if (!found) {
                 String messageText = controller.getText("no_more_found_from");
                 String searchTerm = messageText.startsWith("<html>")
-                   ? Tools.toXMLEscapedText(find.getSearchTerm())
+                   ? HtmlTools.toXMLEscapedText(find.getSearchTerm())
                    : find.getSearchTerm();
                 controller.getController().informationMessage
                    (messageText.

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteBase.java,v 1.1.2.2.2.2 2006-04-11 19:14:34 dpolivaev Exp $ */
+/* $Id: NodeNoteBase.java,v 1.1.2.2.2.3 2006-05-30 21:36:17 christianfoltin Exp $ */
 package freemind.modes.common.plugins;
 
 import java.awt.BorderLayout;
@@ -35,7 +35,7 @@ import de.xeinfach.kafenio.interfaces.KafenioPanelInterface;
 
 import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.main.FreeMindMain;
-import freemind.main.Tools;
+import freemind.main.HtmlTools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 
@@ -48,6 +48,7 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 	public static final String HOOK_NAME = "accessories/plugins/NodeNote.properties";
 	private String myNodeText;
 	protected Container noteViewerComponent;
+    private String mXmlText;
 	private static ImageIcon noteIcon;
 	/**
 	 *
@@ -104,17 +105,21 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 	 * @return
 	 */
 	public String getMyNodeText() {
-        if(!myNodeText.startsWith("<html>")) {
-            myNodeText = Tools.plainToHTML(myNodeText); 
-        }
-		return new String(myNodeText);
+		return myNodeText;
 	}
 
 	/**
 	 * @param string
 	 */
 	public void setMyNodeText(String string) {
-		myNodeText = new String(string);
+        string = string.replaceAll("&#0;", "")/*= \0 is not allowed: */;
+        if(!HtmlTools.isHtmlNode(string)) {
+            myNodeText = HtmlTools.plainToHTML(string); 
+        } else {
+            myNodeText = string;
+        }
+        mXmlText = HtmlTools.getInstance().toXhtml(string);
+
 	}
 
 	/* (non-Javadoc)
@@ -152,8 +157,8 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 	public void save(XMLElement xml) {
 		super.save(xml);
 		XMLElement child = new XMLElement();
-		child.setName("text");
-		child.setContent(getMyNodeText());
+		child.setName(XMLElement.XML_NODE_XHTML_CONTENT_TAG);
+		child.setEncodedContent(getXmlText());
 		xml.addChild(child);
 	}
 
@@ -172,5 +177,11 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 	protected abstract void nodeRefresh(MindMapNode node);
 	protected abstract void receiveFocusAddons();
 	protected abstract void looseFocusAddons();
+
+
+    public String getXmlText()
+    {
+        return mXmlText;
+    }
 
 }

@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.9 2006-04-24 22:23:34 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.10 2006-05-30 21:36:17 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -40,6 +40,7 @@ import de.xeinfach.kafenio.SplashScreen;
 import de.xeinfach.kafenio.interfaces.KafenioPanelConfigurationInterface;
 import de.xeinfach.kafenio.interfaces.KafenioPanelInterface;
 import freemind.main.FreeMindMain;
+import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.ModeController;
@@ -144,7 +145,7 @@ static KafenioPanelConfigurationInterface kafenioPanelConfiguration;
 
          
          if (htmlEditorPanel.getDocumentConfirmed() || windowClosedByX.getValue()) {
-            getEditControl().ok(Tools.unescapeHTMLUnicodeEntity
+            getEditControl().ok(HtmlTools.unescapeHTMLUnicodeEntity
                                 (htmlEditorPanel.getDocumentText())); }
          lastEditingWasSuccessful = true;
          //mapView.getModel().changeNode(node.getModel(), htmlEditorPanel.getDocumentText()); }

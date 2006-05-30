@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.6 2006-05-19 21:27:43 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.7 2006-05-30 21:36:17 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -162,6 +162,7 @@ public abstract class NodeAdapter implements MindMapNode {
      */
 
     public final void setText(String text) {
+        text = text.replaceAll("\0", "")/*= \0 is not allowed: */;
         userObject = text;
         xmlText = HtmlTools.getInstance().toXhtml(text);
     }
@@ -171,6 +172,7 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
     public final void setXmlText(String xmlText) {
+        xmlText = xmlText.replaceAll("\0", "")/*= \0 is not allowed: */;
         userObject = HtmlTools.getInstance().toHtml(xmlText);
         this.xmlText = xmlText;
     }
@@ -887,7 +889,7 @@ public abstract class NodeAdapter implements MindMapNode {
 
         /** fc, 12.6.2005: XML must not contain any zero characters. */
         String text = this.toString().replace('\0', ' ');
-        if(!Tools.isHtmlNode(text)) {
+        if(!HtmlTools.isHtmlNode(text)) {
             node.setAttribute(XMLElementAdapter.XML_NODE_TEXT,text);
         } else {
             // save <content> tag:

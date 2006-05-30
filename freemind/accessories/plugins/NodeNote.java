@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.4 2006-04-24 22:23:33 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.5 2006-05-30 21:36:17 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.Component;
@@ -148,19 +148,6 @@ public class NodeNote extends NodeNoteBase {
             return EditNoteToNodeAction.class;
         }
 
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see freemind.extensions.PermanentNodeHook#save(freemind.main.XMLElement)
-     */
-    public void save(XMLElement xml) {
-        super.save(xml);
-        XMLElement child = new XMLElement();
-        child.setName("text");
-        child.setContent(getMyNodeText());
-        xml.addChild(child);
     }
 
     public class NodeTextListener implements DocumentListener {

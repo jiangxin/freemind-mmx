@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.3 2006-04-12 20:49:46 dpolivaev Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.4 2006-05-30 21:36:17 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -49,6 +49,7 @@ import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.CutNodeAction;
 import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.MindMapNode;
@@ -282,7 +283,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
              if (Tools.safeEquals(pMindMapController.getFrame().getProperty("cut_out_pictures_when_pasting_html"),"true")) {
                 textFromClipboard = textFromClipboard.replaceAll("(?i)(?s)<img[^>]*>",""); } // Cut out images.
 
-             textFromClipboard = Tools.unescapeHTMLUnicodeEntity(textFromClipboard);
+             textFromClipboard = HtmlTools.unescapeHTMLUnicodeEntity(textFromClipboard);
 
              MindMapNodeModel node = new MindMapNodeModel(textFromClipboard, pMindMapController.getFrame(), pMindMapController.getMap());
              insertNodeInto(node, target);
@@ -321,7 +322,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
                 String link = links[i].substring(0, links[i].indexOf("\""));
                 String textWithHtml = links[i].replaceAll("^[^>]*>", "")
                         .replaceAll("</[aA]>[\\s\\S]*", "");
-                String text = Tools.toXMLUnescapedText(textWithHtml.replaceAll(
+                String text = HtmlTools.toXMLUnescapedText(textWithHtml.replaceAll(
                         "\\n", "").replaceAll("<[^>]*>", "").trim());
                 if (text.equals("")) {
                     text = link;

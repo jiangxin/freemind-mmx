@@ -33,6 +33,7 @@ import javax.swing.AbstractAction;
 
 import freemind.controller.actions.generated.instance.EditNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
@@ -165,7 +166,7 @@ public class EditAction extends AbstractAction implements ActorXml {
                 if ((node.getIsLong() || editLong) && 
                     Tools.safeEquals(useRichTextInNewLongNodes,"true") &&
                     !text.startsWith("<html>")) {
-                   text = Tools.plainToHTML(text); }
+                   text = HtmlTools.plainToHTML(text); }
 
                 if (text.startsWith("<html>") && Tools.safeEquals(htmlEditingOption,"internal-wysiwyg")) {
                    EditNodeWYSIWYG editNodeWYSIWYG = new EditNodeWYSIWYG

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.5 2006-04-23 14:51:54 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.6 2006-05-30 21:36:17 christianfoltin Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -54,6 +54,7 @@ import javax.swing.SwingConstants;
 import freemind.controller.Controller;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
+import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MindIcon;
@@ -994,12 +995,12 @@ public abstract class NodeView extends JComponent{
            //String[] lines = nodeText.split("\n");
            for (int line = startingLine; line < lines.length; line++) {
               text += "<tr><td style=\"border-color: white;\">"+
-                 Tools.toXMLEscapedText(lines[line]).replaceAll("\t","<td style=\"border-color: white\">"); }
+                 HtmlTools.toXMLEscapedText(lines[line]).replaceAll("\t","<td style=\"border-color: white\">"); }
            setText(text); }
         else if (isLong) {
            String text = "";              
            for (int line = 0; line < lines.length; line++) {
-              text += Tools.plainToHTML(lines[line]) + "<p>"; }
+              text += HtmlTools.plainToHTML(lines[line]) + "<p>"; }
            setText("<html><body"+
                    (!widthMustBeRestricted?">":" width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">")+
                    text); }

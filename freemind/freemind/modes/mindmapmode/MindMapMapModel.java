@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.3 2006-05-19 21:27:44 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.4 2006-05-30 21:36:17 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -51,6 +51,7 @@ import java.util.Vector;
 import freemind.controller.MindMapNodesSelection;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
+import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.LinkRegistryAdapter;
@@ -130,7 +131,7 @@ public class MindMapMapModel extends MapAdapter  {
 
     public void changeNode(MindMapNode node, String newText) {
        if (node.toString().startsWith("<html>")) {
-          node.setUserObject(Tools.unescapeHTMLUnicodeEntity(newText)); }
+          node.setUserObject(HtmlTools.unescapeHTMLUnicodeEntity(newText)); }
        else {
           node.setUserObject(newText); }
        nodeChanged(node); }
@@ -155,7 +156,7 @@ public class MindMapMapModel extends MapAdapter  {
             return null; } // HTML not supported for nodes with children
          if (node.toString().startsWith("<html>")) {
             String output = node.toString();
-            return Tools.unicodeToHTMLUnicodeEntity(output); }
+            return HtmlTools.unicodeToHTMLUnicodeEntity(output); }
          else {
             return null; }} // No need to support HTML if the node is a plain text node.        
       catch(Exception e) {

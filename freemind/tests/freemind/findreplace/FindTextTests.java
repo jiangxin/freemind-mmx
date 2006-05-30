@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FindTextTests.java,v 1.1.2.3 2006-05-28 21:22:23 christianfoltin Exp $*/
+/*$Id: FindTextTests.java,v 1.1.2.4 2006-05-30 21:36:17 christianfoltin Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -25,30 +25,29 @@ import java.util.regex.Pattern;
 
 import javax.swing.table.AbstractTableModel;
 
-import junit.framework.TestCase;
 import plugins.time.FlatNodeTableFilterModel;
 import plugins.time.TimeList;
 import plugins.time.TimeList.NodeHolder;
+import tests.freemind.FreeMindTestBase;
 import freemind.main.HtmlTools;
-import freemind.main.Tools;
 
-public class FindTextTests extends TestCase {
+public class FindTextTests extends FreeMindTestBase {
 
     public void testTagRemoval() throws Exception {
         String input = "<html>test</html>";
-        assertEquals("tags are removed:", "test", Tools
+        assertEquals("tags are removed:", "test", HtmlTools
                 .removeHtmlTagsFromString(input));
     }
 
     public void testTagRemovalWithNewlines() throws Exception {
         String input = "<html><strong\nref=\"test2\">test</strong></html\n>";
-        assertEquals("tags are removed:", "test", Tools
+        assertEquals("tags are removed:", "test", HtmlTools
                 .removeHtmlTagsFromString(input));
     }
 
     public void testTagRemovalOnlyForHtmlText() throws Exception {
         String input = "test<test>";
-        assertEquals("nothing is removed:", input, Tools
+        assertEquals("nothing is removed:", input, HtmlTools
                 .removeHtmlTagsFromString(input));
     }
 

@@ -19,7 +19,7 @@
  * 
  * Created on 26.01.2006.
  */
-/* $Id: UsePlainTextAction.java,v 1.1.4.2 2006-04-06 21:15:07 dpolivaev Exp $ */
+/* $Id: UsePlainTextAction.java,v 1.1.4.3 2006-05-30 21:36:17 christianfoltin Exp $ */
 package freemind.modes.actions;
 
 import java.awt.datatransfer.Transferable;
@@ -31,7 +31,7 @@ import javax.swing.ImageIcon;
 
 import freemind.modes.ControllerAdapter;
 import freemind.modes.mindmapmode.MindMapMapModel;
-import freemind.main.Tools;
+import freemind.main.HtmlTools;
 import freemind.view.mindmapview.NodeView;
 
 public class UsePlainTextAction extends AbstractAction {
@@ -61,4 +61,4 @@ public class UsePlainTextAction extends AbstractAction {
          String nodeText = selected.getModel().toString();
          if (nodeText.startsWith("<html>")) {
             ((MindMapMapModel)controller.getModel()).
-               changeNode(selected.getModel(), Tools.htmlToPlain(nodeText)); }}}}
+               changeNode(selected.getModel(), HtmlTools.htmlToPlain(nodeText)); }}}}
