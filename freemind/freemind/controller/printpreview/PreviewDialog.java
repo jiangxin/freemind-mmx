@@ -21,24 +21,16 @@
  */
 package freemind.controller.printpreview;
 
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.awt.print.PageFormat;
-import java.awt.print.Pageable;
-import java.awt.print.Printable;
 import java.net.URL;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;

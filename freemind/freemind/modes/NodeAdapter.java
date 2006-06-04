@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.7 2006-05-30 21:36:17 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.8 2006-06-04 16:16:00 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -1097,7 +1097,8 @@ public abstract class NodeAdapter implements MindMapNode {
 		return hGap;
 	}
 	public void setHGap(int gap) {
-		hGap = Math.max(HGAP, gap);
+//        hGap = Math.max(HGAP, gap);
+        hGap = gap;
 	}
 
 	public int getVGap() {

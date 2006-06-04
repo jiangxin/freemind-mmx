@@ -16,9 +16,10 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMotionListenerView.java,v 1.1.4.4.4.1 2006-04-05 21:26:32 dpolivaev Exp $*/
+/*$Id: NodeMotionListenerView.java,v 1.1.4.4.4.2 2006-06-04 16:16:00 dpolivaev Exp $*/
 package freemind.view.mindmapview;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -37,7 +38,6 @@ public class NodeMotionListenerView extends JComponent {
 		MapView map = view.getMap();
 		addMouseListener( map.getNodeMotionListener() );
 		addMouseMotionListener( map.getNodeMotionListener() );
-		setAutoscrolls(true);
 	}
 	
 	private NodeView movedView;
@@ -55,8 +55,17 @@ public class NodeMotionListenerView extends JComponent {
 		super.paint(g);
 		if(isMouseEntered){
 		    Graphics2D g2 = (Graphics2D )g;
-		    setRendering(g2);
-			g.drawOval(0, 0, getWidth()-1, getHeight()-1);
+            setRendering(g2);
+            Color color = g2.getColor();
+            if(movedView.getModel().getHGap() <= 0){
+                g2.setColor(Color.RED);
+                g.fillOval(0, 0, getWidth()-1, getHeight()-1);
+            }
+            else{
+                g2.setColor(Color.BLACK);
+                g.drawOval(0, 0, getWidth()-1, getHeight()-1);
+            }
+            g2.setColor(color);
 			//fc, 16.6.2005: to emphasis the possible movement.
             this.setCursor(new Cursor(Cursor.MOVE_CURSOR));
 		}

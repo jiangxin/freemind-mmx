@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.5 2006-04-24 22:23:34 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.6 2006-06-04 16:16:00 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1757,9 +1757,9 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     }
 
 
-    public void moveNodePosition(MindMapNode node, int vGap, int hGap,
+    public void moveNodePosition(MindMapNode node, int parentVGap, int hGap,
             int shiftY) {
-        moveNodeAction.moveNodeTo(node, vGap, hGap, shiftY);
+        moveNodeAction.moveNodeTo(node, parentVGap, hGap, shiftY);
     }
 
     /////////////////////////////////////////////////////////////

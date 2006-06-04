@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.14.14.7.2.1 2006-04-05 21:26:32 dpolivaev Exp $*/
+/*$Id: RootNodeView.java,v 1.14.14.7.2.2 2006-06-04 16:16:00 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -75,9 +75,9 @@ public class RootNodeView extends NodeView {
 			// assume, that destinationPoint is on the right:
 			double angle = Math.atan((destinationPoint.y - centerPoint.y + 0f)
 					/ (destinationPoint.x - centerPoint.x + 0f));
-			if (isLeft) {
-				angle += Math.PI;
-			}
+            if (destinationPoint.x < centerPoint.x) {
+                angle += Math.PI;
+            }
 			// now determine point on ellipsis corresponding to that angle:
 			return new Point(centerPoint.x
 					+ (int) (Math.cos(angle) * nWidth / 2f), centerPoint.y

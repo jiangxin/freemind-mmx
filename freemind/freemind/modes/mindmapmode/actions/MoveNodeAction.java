@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: MoveNodeAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $ */
+/* $Id: MoveNodeAction.java,v 1.1.2.2.2.1 2006-06-04 16:16:00 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import freemind.controller.actions.generated.instance.MoveNodeXmlAction;
@@ -48,14 +48,11 @@ public class MoveNodeAction extends NodeGeneralAction implements NodeActorXml {
     public void act(XmlAction action) {
         MoveNodeXmlAction moveAction = (MoveNodeXmlAction) action;
         NodeAdapter node = getNodeFromID(moveAction.getNode());
-        if (node.getHGap() != moveAction.getHGap()
-                || node.getVGap() != moveAction.getVGap()
-                || node.getShiftY() != moveAction.getShiftY()) {
-            node.setHGap(moveAction.getHGap());
-            node.setVGap(moveAction.getVGap());
-            node.setShiftY(moveAction.getShiftY());
-            this.modeController.nodeChanged(node);
-        }
+        node.setHGap(moveAction.getHGap());
+        node.setShiftY(moveAction.getShiftY());
+        if(node.isRoot())
+            node.getParentNode().setVGap(moveAction.getVGap());
+        this.modeController.nodeChanged(node);
     }
 
     public Class getDoActionClass() {
@@ -68,29 +65,34 @@ public class MoveNodeAction extends NodeGeneralAction implements NodeActorXml {
         return getActionPair(selected, MindMapNode.AUTO, 0, 0);
     }
 
-    private ActionPair getActionPair(MindMapNode selected, int vGap, int hGap,
+    private ActionPair getActionPair(MindMapNode selected, int parentVGap, int hGap,
             int shiftY)  {
-        MoveNodeXmlAction moveAction = moveNode(selected, vGap, hGap, shiftY);
-        MoveNodeXmlAction undoItalicAction = moveNode(selected, selected
-                .getVGap(), selected.getHGap(), selected.getShiftY());
-        return new ActionPair(moveAction, undoItalicAction);
+        MoveNodeXmlAction moveAction = moveNode(selected, parentVGap, hGap, shiftY);
+        MoveNodeXmlAction undoAction = moveNode(selected, selected
+                .getParentNode().getVGap(), selected.getHGap(), selected.getShiftY());
+        return new ActionPair(moveAction, undoAction);
     }
 
-    private MoveNodeXmlAction moveNode(MindMapNode selected, int vGap,
+    private MoveNodeXmlAction moveNode(MindMapNode selected, int parentVGap,
             int hGap, int shiftY)  {
         MoveNodeXmlAction moveNodeAction = new MoveNodeXmlAction();
         moveNodeAction.setNode(getNodeID(selected));
         moveNodeAction.setHGap(hGap);
-        moveNodeAction.setVGap(vGap);
+        moveNodeAction.setVGap(parentVGap);
         moveNodeAction.setShiftY(shiftY);
         return moveNodeAction;
     }
 
-    public void moveNodeTo(MindMapNode node, int vGap, int hGap, int shiftY) {
+    public void moveNodeTo(MindMapNode node, int parentVGap, int hGap, int shiftY) {
+        if(parentVGap == node.getParentNode().getVGap()
+                && hGap == node.getHGap()
+                && shiftY==node.getShiftY()){
+            return;
+        }
         modeController.getActionFactory().startTransaction(
                 (String) getValue(NAME));
         modeController.getActionFactory().executeAction(
-                getActionPair(node, vGap, hGap, shiftY));
+                getActionPair(node, parentVGap, hGap, shiftY));
         modeController.getActionFactory().endTransaction(
                 (String) getValue(NAME));
     }

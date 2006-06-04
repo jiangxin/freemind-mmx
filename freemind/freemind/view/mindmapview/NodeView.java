@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.6 2006-05-30 21:36:17 christianfoltin Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.7 2006-06-04 16:16:00 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -98,6 +98,7 @@ public abstract class NodeView extends JComponent{
     protected MapView map;
     protected EdgeView edge;
     private MainView mainView;
+    private boolean isPrinting = false;
     private AttributeView attributeView;
     /** the Color of the Rectangle of a selected Node */
 	protected final static Color selectedColor = new Color(210,210,210); //Color.lightGray;
@@ -426,7 +427,7 @@ public abstract class NodeView extends JComponent{
 	super.paint(graphics);
     }
     public void paintSelected(Graphics2D graphics) {
-		if (this.isSelected()) {
+		if (this.isSelected() && ! isPrinting) {
 			paintBackground(graphics, getSelectedColor());
 		} else if (getModel().getBackgroundColor() != null) {
 			paintBackground(graphics, getModel().getBackgroundColor());
@@ -1264,5 +1265,10 @@ public abstract class NodeView extends JComponent{
         super.doLayout();
         Dimension prefSize = getPreferredSize();
         setSize(prefSize);        
+    }
+    public void print(Graphics g) {
+        isPrinting = true;
+        super.print(g);
+        isPrinting = false;
     }
 }
