@@ -60,10 +60,11 @@ public class PreviewDialog extends JDialog implements ActionListener {
         JToolBar toolbar = new JToolBar();
         //toolbar.setRollover(true);
         getContentPane().add(toolbar, "North");
-        pageNumber = new JLabel("1");
+        pageNumber = new JLabel("- 1 -");
         final JButton button = getButton("Back24.gif", new BrowseAction(preview, pageNumber, -1));
         toolbar.add(button);
         pageNumber.setPreferredSize(button.getPreferredSize());
+        pageNumber.setHorizontalAlignment(JLabel.CENTER);
         toolbar.add(pageNumber);
         toolbar.add(getButton("Forward24.gif", new BrowseAction(preview, pageNumber,1)));
         toolbar.add(new JToolBar.Separator());

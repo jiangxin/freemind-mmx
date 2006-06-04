@@ -34,16 +34,25 @@ class BrowseAction extends AbstractAction {
         this.pageNumber = pageNumber;
         pageIndexPainter = new Runnable(){
                     public void run() {
-                        BrowseAction.this.pageNumber.setText(String.valueOf(1 + BrowseAction.this.preview.getPageIndex()));
+                        paintPageIndex();
                     }            
                 };
     }
     
     public void actionPerformed(ActionEvent e) {
-        pageNumber.setText(String.valueOf(preview.getPageIndex()));
         preview.moveIndex(pageStep);
+        paintPageIndex();
         preview.repaint();
         EventQueue.invokeLater(pageIndexPainter);
+    }
+
+    private void paintPageIndex() {
+        pageNumber.setText(getPageIndexText());
+        pageNumber.paintImmediately(0, 0, pageNumber.getWidth(), pageNumber.getHeight());
+    }
+
+    private String getPageIndexText() {
+        return "- " + String.valueOf(1 + preview.getPageIndex()) + " -";
     }
     
     protected Preview preview;
