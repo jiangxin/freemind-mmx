@@ -2,7 +2,7 @@ Changes made in FreeMind 0.9.0 Beta 6
 ===============================
 * Restrictions on node positions removed, 
 * the node motion view oval is filled red if node overlap is possible.
-* Selected node printed and exported with its usual background color
+* Selected nodes are not indicated on printed / exported maps
 * Bug fixes
 
 
