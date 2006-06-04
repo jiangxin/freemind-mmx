@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: ExportHook.java,v 1.1.4.7 2006-02-16 21:28:05 christianfoltin Exp $*/
+/*$Id: ExportHook.java,v 1.1.4.7.2.1 2006-06-04 11:23:27 dpolivaev Exp $*/
 
 package freemind.extensions;
 
@@ -127,7 +127,7 @@ public class ExportHook extends ModeControllerHookAdapter {
 			//(Needed to eliminate areas of whitespace around the actual rendering of the map)
 
 		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
-		Rectangle innerBounds = view.getInnerBounds(root.getViewer());
+		Rectangle innerBounds = view.getInnerBounds();
 
 		 //Create an image containing the map:
 		 BufferedImage myImage = (BufferedImage) view.createImage(view.getWidth(), view.getHeight() );

@@ -16,18 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.5.4.4 2006-05-29 20:54:33 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.5.4.5 2006-06-04 11:23:28 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
-import freemind.main.FreeMindMain;
-import freemind.modes.MindMapCloud;
-
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.IllegalComponentStateException;
 import java.awt.LayoutManager;
-import java.awt.Container;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Point;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -36,17 +33,12 @@ import java.util.NoSuchElementException;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
+import freemind.main.FreeMindMain;
+
 /**
  * This class will Layout the Nodes and Edges of an MapView.
  */
 public class MindMapLayout implements LayoutManager {
-
-    private final static int BORDER = 30;//width of the border around the map.
-	// minimal width for input field of leaf or folded node (PN)
-	// the MINIMAL_LEAF_WIDTH is reserved by calculation of the map width
-	public final static int MINIMAL_LEAF_WIDTH = 150;
-	public final static int MINIMAL_WIDTH = 50;
-
 
     private MapView map;
     private int ySize;
@@ -187,14 +179,14 @@ public class MindMapLayout implements LayoutManager {
 	 * @return
 	 */
 	private int getRootY() {
-		return calcYBorderSize() / 2 + getRoot().getUpperChildShift();
+		return map.calcYBorderSize() + getRoot().getUpperChildShift();
 	}
 
 	/**
 	 * @return
 	 */
 	private int getRootX() {
-		return calcXBorderSize() / 2 + getRoot().getLeftTreeWidth();
+		return map.calcXBorderSize() + getRoot().getLeftTreeWidth();
 	}
 
 	/**
@@ -208,11 +200,8 @@ public class MindMapLayout implements LayoutManager {
         // 2) Insertion of a node
         // 3) Modification of a node in an enlarging way
             boolean bResized = false;
-        	int oldXSize = getXSize();
-        	int oldYSize = getYSize();
-        
-			int minXSize = width + calcXBorderSize();
-            int minYSize = height  +  calcYBorderSize();
+			int minXSize = width + map.calcXBorderSize() * 2;
+            int minYSize = height  +  map.calcYBorderSize() * 2;
 
          	if (minXSize != getXSize()) {
         		setXSize(minXSize);
@@ -228,36 +217,6 @@ public class MindMapLayout implements LayoutManager {
         		getMapView().setSize(getXSize(), getYSize());
         	}
     }
-
-    private int calcYBorderSize() {
-        int yBorderSize;
-        	{
-        	Dimension visibleSize = map.getViewportSize();
-        	if (visibleSize != null){
-        		yBorderSize = 2 *  Math.max(visibleSize.height, BORDER);
-        	}
-        	else{
-        		yBorderSize = 2 *  BORDER;
-        	}
-        }
-        return yBorderSize;
-    }
-
-    private int calcXBorderSize() {
-        int xBorderSize;
-        {
-        	Dimension visibleSize = map.getViewportSize();
-        	if (visibleSize != null){
-        		xBorderSize = Math.max(visibleSize.width, 2 *(BORDER + MINIMAL_LEAF_WIDTH));
-        	}
-        	else{
-        		xBorderSize = 2 *(BORDER + MINIMAL_LEAF_WIDTH);
-        		
-        	}
-        }
-        return xBorderSize;
-    }
-
 
     //
     // Relative positioning

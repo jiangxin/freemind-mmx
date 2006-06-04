@@ -19,7 +19,7 @@
  *
  * Created on 10.11.2004
  */
-/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.1 2006-04-05 21:26:32 dpolivaev Exp $ */
+/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.2 2006-06-04 11:23:28 dpolivaev Exp $ */
 package plugins.svg;
 
 import java.awt.Dimension;
@@ -60,7 +60,7 @@ public class ExportVectorGraphic extends ExportHook{
 	 */
 	protected SVGGraphics2D fillSVGGraphics2D(MapView view) {
 		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
-		Rectangle innerBounds = view.getInnerBounds(root.getViewer());
+		Rectangle innerBounds = view.getInnerBounds();
 		DOMImplementation impl = GenericDOMImplementation.getDOMImplementation();
 		String namespaceURI = SVGConstants.SVG_NAMESPACE_URI;
 		Document domFactory = impl.createDocument(namespaceURI, "svg", null);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.2 2006-06-04 11:23:28 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -76,6 +76,11 @@ import freemind.view.mindmapview.attributeview.AttributeView;
  * (in analogy to class JTree).
  */
 public class MapView extends JPanel implements Printable, Autoscroll {
+    private final static int BORDER = 30;//width of the border around the map.
+    // minimal width for input field of leaf or folded node (PN)
+    // the MINIMAL_LEAF_WIDTH is reserved by calculation of the map width
+    public final static int MINIMAL_LEAF_WIDTH = 150;
+    public final static int MINIMAL_WIDTH = 50;
 
 	private class Selected {
 		private Vector mySelected = new Vector();
@@ -892,7 +897,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 			/* repaint for printing:*/
 			setZoom(getZoom());
 			background = getBackground();
-			boundingRectangle = getInnerBounds(rootView);
+			boundingRectangle = getInnerBounds();
             fitToPage = Tools.safeEquals(controller.getProperty("fit_to_page"),"true");
 		}
 	}
@@ -981,39 +986,59 @@ public class MapView extends JPanel implements Printable, Autoscroll {
     }
 
 
-    ///////////
-    // private methods. Internal implementation
-    /////////
 
     /**
      * Return the bounding box of all the descendants of the source view, that without BORDER.
      * Should that be implemented in LayoutManager as minimum size?
      */
-    public Rectangle getInnerBounds(NodeView source) {
-        Rectangle innerBounds = source.getBoundsWithFoldingMark();
-        for(ListIterator e = source.getChildrenViews(true).listIterator(); e.hasNext(); ) {
-            NodeView target = (NodeView)e.next();
-            innerBounds.add(getInnerBounds(target));//recursive
+    public Rectangle getInnerBounds() {
+        int xBorder = calcXBorderSize();
+        int yBorder = calcYBorderSize();
+        int width = getWidth();
+        int height = getHeight();
+        final Rectangle innerBounds = new Rectangle(xBorder, yBorder, width-2*xBorder, height-2*yBorder);        
+        final Rectangle maxBounds = new Rectangle(0, 0, width, height);        
+        for(int i = 0; i < ArrowLinkViews.size(); ++i) {
+            ArrowLinkView arrowView = (ArrowLinkView) ArrowLinkViews.get(i);
+            Rectangle arrowViewBigBounds = arrowView.arrowLinkCurve.getBounds();
+            if (! innerBounds.contains(arrowViewBigBounds)){
+                Rectangle arrowViewBounds =PathBBox.getBBox(arrowView.arrowLinkCurve).getBounds();
+                innerBounds.add(arrowViewBounds);
+            }
         }
+        return innerBounds.intersection(maxBounds);
+    }
 
-        // add heigth of the cloud
-        int additionalCloudHeigth =  (source.getAdditionalCloudHeigth() + 1) / 2;
-        if (additionalCloudHeigth != 0){
-        	innerBounds.grow(additionalCloudHeigth, additionalCloudHeigth);
+    ///////////
+    // private methods. Internal implementation
+    /////////
+    int calcYBorderSize() {
+        int yBorderSize;
+            {
+            Dimension visibleSize = getViewportSize();
+            if (visibleSize != null){
+                yBorderSize = Math.max(visibleSize.height, BORDER);
+            }
+            else{
+                yBorderSize = BORDER;
+            }
         }
+        return yBorderSize;
+    }
 
- 		if (source.getModel().isRoot())
- 		{
- 			for(int i = 0; i < ArrowLinkViews.size(); ++i) {
- 				ArrowLinkView arrowView = (ArrowLinkView) ArrowLinkViews.get(i);
- 				Rectangle arrowViewBigBounds = arrowView.arrowLinkCurve.getBounds();
- 				if (! innerBounds.contains(arrowViewBigBounds)){
-					Rectangle arrowViewBounds =PathBBox.getBBox(arrowView.arrowLinkCurve).getBounds();
-					innerBounds.add(arrowViewBounds);
- 				}
- 			}
- 		}
-      return innerBounds;
+    int calcXBorderSize() {
+        int xBorderSize;
+        {
+            Dimension visibleSize = getViewportSize();
+            if (visibleSize != null){
+                xBorderSize = Math.max(visibleSize.width/2, BORDER + MINIMAL_LEAF_WIDTH);
+            }
+            else{
+                xBorderSize = BORDER + MINIMAL_LEAF_WIDTH;
+                
+            }
+        }
+        return xBorderSize;
     }
 
     private void paintEdges(NodeView source, Graphics2D g) {

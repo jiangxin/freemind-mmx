@@ -67,7 +67,7 @@ public class FitToPage extends ModeControllerHookAdapter {
     }
 
 	private void scroll(NodeAdapter root) {
-		Rectangle rect = view.getInnerBounds(root.getViewer());
+		Rectangle rect = view.getInnerBounds();
 		Rectangle viewer = view.getVisibleRect();
 		view.scrollBy(
                 shift(rect.x, rect.width, viewer.x, viewer.width), 
@@ -76,7 +76,7 @@ public class FitToPage extends ModeControllerHookAdapter {
 	}
 
 	private void zoom(NodeAdapter root) {
-		Rectangle rect = view.getInnerBounds(root.getViewer());
+		Rectangle rect = view.getInnerBounds();
 		// calculate the zoom:
 		double oldZoom = getController().getView().getZoom();
 		Rectangle viewer = view.getVisibleRect();
