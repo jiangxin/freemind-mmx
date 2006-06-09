@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.8 2006-06-04 16:16:00 dpolivaev Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.9 2006-06-09 19:52:24 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -690,15 +690,21 @@ public abstract class NodeAdapter implements MindMapNode {
 
 
     public MindMapNode getPreferredChild() { // mind preferred child :-) (PN)
+        MindMapNode preferredChild;  
       if (this.children.contains(this.preferredChild)) {
-        return this.preferredChild;
+          preferredChild =  this.preferredChild;
       }
       else if (!isLeaf()) {
-        return (MindMapNode)(this.children.get((getChildCount() + 1) / 2 - 1));
+          preferredChild = (MindMapNode)(this.children.get((getChildCount() + 1) / 2 - 1));
       }
       else {
         return null;
       }
+      while(! preferredChild.isVisible()) {
+          preferredChild = preferredChild.getParentNode();
+      }
+      return preferredChild;
+      
     }
     public void setPreferredChild(MindMapNode node) {
       this.preferredChild = node;

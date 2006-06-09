@@ -134,7 +134,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
     static private MouseListener componentListener = new HeaderMouseListener();
     private int highRowIndex = 0;
     static private ComboBoxModel defaultComboBoxModel = null; 
-    static private DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+    static private AttributeTableCellRenderer dtcr = new AttributeTableCellRenderer();
     private AttributeView attributeView;
     private static final int EXTRA_HEIGHT = 4;
     private static final float TABLE_ROW_HEIGHT = 4;
