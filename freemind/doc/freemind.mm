@@ -1,6 +1,17 @@
-<map version="0.8.0">
+<map version="0.9.0 Beta 5">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
-<node COLOR="#993300" CREATED="1124560950701" MODIFIED="1124560950701" TEXT="&lt;html&gt;&#xa;  &lt;head&gt;&#xa;    &#xa;  &lt;/head&gt;&#xa;  &lt;body width=&quot;&quot;&gt;&#xa;    &lt;p align=&quot;center&quot;&gt;&#xa;      FreeMind&lt;br&gt;&lt;small&gt;- free mind mapping software -&lt;/small&gt;&#xa0;&#xa;    &lt;/p&gt;&#xa;  &lt;/body&gt;&#xa;&lt;/html&gt;&#xa;">
+<node COLOR="#993300" CREATED="1124560950701" MODIFIED="1124560950701">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body width="">
+    <p align="center">
+      FreeMind<br /><small>- free mind mapping software -</small>&#160;
+    </p>
+  </body>
+</html>
+</richcontent>
 <font BOLD="true" NAME="Dialog" SIZE="18"/>
 <node CREATED="1124560950701" LINK="http://freemind.sourceforge.net" MODIFIED="1124560950701" POSITION="left" TEXT="Home page of FreeMind">
 <font NAME="SansSerif" SIZE="12"/>
@@ -501,7 +512,17 @@
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_526328879" MODIFIED="1124560950717" POSITION="right" TEXT="Using physical styles">
 <node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To apply a physical style, in node context menu use Physical Style &gt; Style of Your Choice. To speedup applying physical styles, use keyboard shortcuts as shown in the node context menu."/>
 <node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To add your own physical style, given that you are a technical user, edit them in the file &quot;patterns.xml&quot; located at the folder &quot;.freemind&quot; in your home directory."/>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="A remark on the file patterns.xml follows. Physical style applies to node, if there is a &lt;node&gt; tag. It applies to edge, if there is an &lt;edge&gt; tag. &lt;node&gt; tag can have &lt;font&gt; tag as a child. Study the file &quot;patterns.xml&quot; supplied with FreeMind."/>
+<node CREATED="1124560950717" ID="Freemind_Link_1514218661" MODIFIED="1150322826740">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    [This paragraph is outdated.] A remark on the file patterns.xml follows. Physical style applies to node, if there is a &lt;node&gt; tag. It applies to edge, if there is an &lt;edge&gt; tag. &lt;node&gt; tag can have <font>tag as a child. Study the file &quot;patterns.xml&quot; supplied with FreeMind.</font>
+  </body>
+</html>
+</richcontent>
+</node>
 </node>
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_1697687428" MODIFIED="1124560950717" POSITION="right" TEXT="Highlighting nodes with clouds">
 <node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="Clouds are well suited for highlighting a region. Highlighted are the node and all its descendants."/>
@@ -517,11 +538,30 @@
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_203858515" MODIFIED="1124560950717" POSITION="right" TEXT="Adding hyperlink">
 <node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To add a hyperlink to a node, press Ctrl + K or in node context menu use Insert &gt; Hyperlink."/>
 <node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To remove a hyperlink, set the hyperlink to empty after pressing Ctrl + K."/>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="&lt;html&gt;&#xa;  &lt;head&gt;&#xa;    &#xa;  &lt;/head&gt;&#xa;  &lt;body&gt;&#xa;    To link to a mail address, set the hyperlink as &lt;i&gt;mailto:don.bonton@supermail.com&lt;/i&gt;.&#xa;  &lt;/body&gt;&#xa;&lt;/html&gt;&#xa;">
+<node CREATED="1124560950717" MODIFIED="1124560950717">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    To link to a mail address, set the hyperlink as <i>mailto:don.bonton@supermail.com</i>.
+  </body>
+</html>
+</richcontent>
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="&lt;html&gt;&#xa;  &lt;head&gt;&#xa;    &#xa;  &lt;/head&gt;&#xa;  &lt;body&gt;&#xa;    To link to a mail address with giving a subject, set the hyperlink as &lt;i&gt;mailto:don.bonton@supermail.com?subject=Last &#xa;    phone call&lt;/i&gt;.&#xa;  &lt;/body&gt;&#xa;&lt;/html&gt;&#xa;"/>
+<node CREATED="1124560950717" MODIFIED="1124560950717">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    To link to a mail address with giving a subject, set the hyperlink as <i>mailto:don.bonton@supermail.com?subject=Last phone call</i>.
+  </body>
+</html>
+</richcontent>
+</node>
 <node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="Hyperlinks can link to web pages, local files, or email addresses."/>
 </node>
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_1044397139" MODIFIED="1124560950717" POSITION="right" TEXT="Adding Icons">
@@ -790,7 +830,17 @@
 <node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_269203785" MODIFIED="1124560950732" POSITION="right" TEXT="Importing Internet Explorer favorites">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To import Internet Explorer favorites into FreeMind, in pull-down menu use File &gt; Import &gt; Explorer Favorites. You&apos;ll be asked to enter the path to the folder where the favorites are stored. The folder&apos;s name is &quot;Favorites&quot; and you can find on it your disk. On Windows 2000, the path is C:\Documents and Settings\&lt;user&gt;\Favorites."/>
+<node CREATED="1124560950732" ID="Freemind_Link_260446736" MODIFIED="1150322748620">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    To import Internet Explorer favorites into FreeMind, in pull-down menu use File &gt; Import &gt; Explorer Favorites. You'll be asked to enter the path to the folder where the favorites are stored. The folder's name is &quot;Favorites&quot; and you can find on it your disk. On Windows 2000, the path is C:\Documents and Settings\&lt;user&gt;\Favorites.
+  </body>
+</html>
+</richcontent>
+</node>
 <node COLOR="#999999" CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Key words: Microsoft Internet Explorer, MSIE, MS IE.">
 <font NAME="Dialog" SIZE="10"/>
 </node>
@@ -830,12 +880,67 @@
 </node>
 <node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_841140408" MODIFIED="1124560950732" POSITION="right" TEXT="Using rich text by means of HTML in nodes">
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Nodes starting with &lt;html&gt; are rendered using HTML contained in them. This feature is helful only for technically minded people. An example follows."/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="&lt;html&gt;&#xa;  &lt;head&gt;&#xa;    &#xa;  &lt;/head&gt;&#xa;  &lt;body&gt;&#xa;    &lt;h3&gt;&#xa;      HTML Example&#xa;    &lt;/h3&gt;&#xa;    &lt;p class=&quot;msonormal&quot;&gt;&#xa;      There are several items:&#xa;    &lt;/p&gt;&#xa;    &lt;ul type=&quot;disc&quot;&gt;&#xa;      &lt;li class=&quot;msonormal&quot;&gt;&#xa;        Item one&#xa;      &lt;/li&gt;&#xa;      &lt;li class=&quot;msonormal&quot;&gt;&#xa;        Item two&#xa;      &lt;/li&gt;&#xa;    &lt;/ul&gt;&#xa;    &lt;p class=&quot;msonormal&quot;&gt;&#xa;      And we have &lt;b&gt;boldface&lt;/b&gt; or &lt;i&gt;italics&lt;/i&gt;. &lt;u&gt;Underlined&lt;/u&gt; a &lt;strike&gt;strike-through&lt;/strike&gt; &#xa;      as well. We can have table:&#xa;    &lt;/p&gt;&#xa;    &lt;table cellpadding=&quot;0&quot; style=&quot;border: none&quot; class=&quot;msonormaltable&quot; border=&quot;1&quot; cellspacing=&quot;0&quot;&gt;&#xa;      &lt;tr&gt;&#xa;        &lt;td style=&quot;border: solid windowtext 1.0pt; padding-left: .75pt; padding-right: .75pt; padding-bottom: .75pt; padding-top: .75pt&quot;&gt;&#xa;          &lt;p class=&quot;msonormal&quot;&gt;&#xa;            Cell1&#xa;          &lt;/p&gt;&#xa;        &lt;/td&gt;&#xa;        &lt;td style=&quot;border: solid windowtext 1.0pt; border-left: none; padding-left: .75pt; padding-right: .75pt; padding-top: .75pt; padding-bottom: .75pt&quot;&gt;&#xa;          &lt;p class=&quot;msonormal&quot;&gt;&#xa;            Cell2&#xa;          &lt;/p&gt;&#xa;        &lt;/td&gt;&#xa;      &lt;/tr&gt;&#xa;      &lt;tr&gt;&#xa;        &lt;td style=&quot;border: solid windowtext 1.0pt; border-top: none; padding-left: .75pt; padding-right: .75pt; padding-top: .75pt; padding-bottom: .75pt&quot;&gt;&#xa;          &lt;p class=&quot;msonormal&quot;&gt;&#xa;            Cell3&#xa;          &lt;/p&gt;&#xa;        &lt;/td&gt;&#xa;        &lt;td style=&quot;border-bottom: solid windowtext 1.0pt; border-top: none; border-left: none; padding-left: .75pt; padding-right: .75pt; border-right: solid windowtext 1.0pt; padding-top: .75pt; padding-bottom: .75pt&quot;&gt;&#xa;          &lt;p class=&quot;msonormal&quot;&gt;&#xa;            Cell4.&#xa;          &lt;/p&gt;&#xa;        &lt;/td&gt;&#xa;      &lt;/tr&gt;&#xa;    &lt;/table&gt;&#xa;    &lt;p class=&quot;msonormal&quot;&gt;&#xa;      &#xa0;We can have various &lt;font color=&quot;#999900&quot;&gt;foreground&lt;/font&gt; &lt;font color=&quot;#336600&quot;&gt;colors&lt;/font&gt;.&#xa;    &lt;/p&gt;&#xa;  &lt;/body&gt;&#xa;&lt;/html&gt;&#xa;"/>
+<node CREATED="1124560950732" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <h3>
+      HTML Example
+    </h3>
+    <p class="msonormal">
+      There are several items:
+    </p>
+    <ul type="disc">
+      <li class="msonormal">
+        Item one
+      </li>
+      <li class="msonormal">
+        Item two
+      </li>
+    </ul>
+    <p class="msonormal">
+      And we have <b>boldface</b> or <i>italics</i>. <u>Underlined</u> a <strike>strike-through</strike> as well. We can have table:
+    </p>
+    <table border="1" class="msonormaltable" cellspacing="0" style="border: none" cellpadding="0">
+      <tr>
+        <td style="padding-top: .75pt; border: solid windowtext 1.0pt; padding-left: .75pt; padding-bottom: .75pt; padding-right: .75pt">
+          <p class="msonormal">
+            Cell1
+          </p>
+        </td>
+        <td style="padding-top: .75pt; border: solid windowtext 1.0pt; border-left: none; padding-left: .75pt; padding-bottom: .75pt; padding-right: .75pt">
+          <p class="msonormal">
+            Cell2
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top: .75pt; border: solid windowtext 1.0pt; padding-left: .75pt; padding-bottom: .75pt; padding-right: .75pt; border-top: none">
+          <p class="msonormal">
+            Cell3
+          </p>
+        </td>
+        <td style="padding-top: .75pt; border-left: none; padding-left: .75pt; padding-bottom: .75pt; border-bottom: solid windowtext 1.0pt; padding-right: .75pt; border-right: solid windowtext 1.0pt; border-top: none">
+          <p class="msonormal">
+            Cell4.
+          </p>
+        </td>
+      </tr>
+    </table>
+    <p class="msonormal">
+      &#160;We can have various <font color="#999900">foreground</font> <font color="#336600">colors</font>.
+    </p>
+  </body>
+</html>
+</richcontent>
+</node>
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="There is no support for HTML nodes and pictures in exporting to text or RTF (Word, Wordpad). At least, using HTML is convenient for publication on the Web using Freemind&apos;s Applet.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" MODIFIED="1124560950732" POSITION="right" TEXT="Using pictures in nodes">
+<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_271176250" MODIFIED="1124560950732" POSITION="right" TEXT="Using pictures in nodes">
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To insert a picture into FreeMind, press Alt + K, or in node context menu use Insert &gt; Image. By inserting a picture, you lose all the text you had in the node. Images inserted in this way are not correctly pasted outside FreeMind and they need not to be correctly exported to HTML. Pictures in FreeMind are a preliminary feature."/>
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Supported picture formats are PNG, JPEG and GIF."/>
@@ -850,16 +955,83 @@
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#996600" CREATED="1124560950732" FOLDED="true" MODIFIED="1124560950732" TEXT="Example of pictures, working on some Windows distributions">
+<node COLOR="#996600" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1825247742" MODIFIED="1124560950732" TEXT="Example of pictures, working on some Windows distributions">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLENDS.GIF&quot;&gt;"/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLUPRT.GIF&quot;&gt;"/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACEXPDTN.GIF&quot;&gt;">
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACINDSTR.GIF&quot;&gt;"/>
+<node CREATED="1124560950732" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLENDS.GIF" />
+  </body>
+</html>
+</richcontent>
 </node>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACRICEPR.GIF&quot;&gt;">
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSNDSTN.GIF&quot;&gt;">
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSUMIPT.GIF&quot;&gt;"/>
+<node CREATED="1124560950732" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLUPRT.GIF" />
+  </body>
+</html>
+</richcontent>
+</node>
+<node CREATED="1124560950732" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACEXPDTN.GIF" />
+  </body>
+</html>
+</richcontent>
+<node CREATED="1124560950732" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACINDSTR.GIF" />
+  </body>
+</html>
+</richcontent>
+</node>
+</node>
+<node CREATED="1124560950732" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACRICEPR.GIF" />
+  </body>
+</html>
+</richcontent>
+<node CREATED="1124560950732" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSNDSTN.GIF" />
+  </body>
+</html>
+</richcontent>
+<node CREATED="1124560950732" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSUMIPT.GIF" />
+  </body>
+</html>
+</richcontent>
+</node>
 </node>
 </node>
 <node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/GLOBE.WMF" MODIFIED="1124560950732" TEXT="GLOBE.WMF"/>
