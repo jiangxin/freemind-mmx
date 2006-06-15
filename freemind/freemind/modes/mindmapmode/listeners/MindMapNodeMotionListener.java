@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNodeMotionListener.java,v 1.1.2.1.2.2 2006-06-04 16:16:00 dpolivaev Exp $ */
+/* $Id: MindMapNodeMotionListener.java,v 1.1.2.1.2.3 2006-06-15 09:58:32 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.listeners;
 
@@ -161,7 +161,7 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
             }
             if (e.getModifiersEx() == InputEvent.CTRL_DOWN_MASK) {
                 NodeView nodeV = getNodeView(e);
-                MindMapNode node = nodeV.getModel().getParentNode();
+                MindMapNode node = nodeV.getModel();
                 c.moveNodePosition(node, MindMapNode.AUTO, node.getHGap(), node
                         .getShiftY());
                 return;

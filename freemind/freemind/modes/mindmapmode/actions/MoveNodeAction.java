@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: MoveNodeAction.java,v 1.1.2.2.2.1 2006-06-04 16:16:00 dpolivaev Exp $ */
+/* $Id: MoveNodeAction.java,v 1.1.2.2.2.2 2006-06-15 09:58:32 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import freemind.controller.actions.generated.instance.MoveNodeXmlAction;
@@ -50,7 +50,7 @@ public class MoveNodeAction extends NodeGeneralAction implements NodeActorXml {
         NodeAdapter node = getNodeFromID(moveAction.getNode());
         node.setHGap(moveAction.getHGap());
         node.setShiftY(moveAction.getShiftY());
-        if(node.isRoot())
+        if(! node.isRoot())
             node.getParentNode().setVGap(moveAction.getVGap());
         this.modeController.nodeChanged(node);
     }
@@ -62,14 +62,19 @@ public class MoveNodeAction extends NodeGeneralAction implements NodeActorXml {
     public ActionPair apply(MapAdapter model, MindMapNode selected)
              {
         // reset position
-        return getActionPair(selected, MindMapNode.AUTO, 0, 0);
+        if(selected.isRoot())
+            return null;
+        return getActionPair(selected, 
+                MindMapNode.AUTO, 
+                NodeAdapter.HGAP, 0);
     }
 
     private ActionPair getActionPair(MindMapNode selected, int parentVGap, int hGap,
             int shiftY)  {
         MoveNodeXmlAction moveAction = moveNode(selected, parentVGap, hGap, shiftY);
-        MoveNodeXmlAction undoAction = moveNode(selected, selected
-                .getParentNode().getVGap(), selected.getHGap(), selected.getShiftY());
+        MoveNodeXmlAction undoAction = moveNode(selected, 
+                selected.getParentNode().getVGap(), 
+                selected.getHGap(), selected.getShiftY());
         return new ActionPair(moveAction, undoAction);
     }
 

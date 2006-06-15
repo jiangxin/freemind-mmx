@@ -141,6 +141,8 @@ public class NodeGeneralAction extends AbstractXmlAction {
                             .addAtChoice(0, pair.getUndoAction());
                 }
             }
+            if(doAction.sizeChoiceList() == 0)
+                return;
             modeController.getActionFactory().startTransaction(
                     (String) getValue(NAME));
             modeController.getActionFactory().executeAction(
