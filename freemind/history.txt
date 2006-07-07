@@ -4,7 +4,11 @@ Changes made in FreeMind 0.9.0 Beta 6
 * the node motion view oval is filled red if node overlap is possible.
 * Selected nodes are not indicated on printed / exported maps
 * Bug fixes
-
+* Mac changes: whole application is in one package
+* Slider for Notes introduced.
+* FreeMindStarter introduced to detect wrong java versions.
+* user.properties are obsolete and were removed. auto.properties are replacing them
+* Logging to file enabled.
 
 Changes made in FreeMind 0.9.0 Beta 5
 ===============================

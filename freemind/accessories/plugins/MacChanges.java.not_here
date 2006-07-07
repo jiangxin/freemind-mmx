@@ -19,12 +19,9 @@
  *
  * Created on 25.08.2004
  */
-/*$Id: MacChanges.java.not_here,v 1.1.4.6.2.1 2006-04-05 21:26:24 dpolivaev Exp $*/
+/*$Id: MacChanges.java.not_here,v 1.1.4.6.2.2 2006-07-07 04:26:26 christianfoltin Exp $*/
 package accessories.plugins;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
@@ -33,9 +30,10 @@ import com.apple.eawt.Application;
 import com.apple.eawt.ApplicationAdapter;
 import com.apple.eawt.ApplicationEvent;
 
+import freemind.controller.Controller;
+import freemind.controller.Controller.LocalLinkConverter;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMindMain;
-import freemind.main.XMLParseException;
 import freemind.modes.MindMap;
 import freemind.modes.ModeController;
 
@@ -66,6 +64,14 @@ public class MacChanges extends ApplicationAdapter implements HookRegistration {
 //			fmMacApplication.removePreferencesMenuItem();
 		}
 		frame.setProperty("keystroke_add_child", frame.getProperty("keystroke_add_child_mac"));
+		Controller.localDocumentationLinkConverter = new LocalLinkConverter(){
+
+			public String convertLocalLink(String link) {
+				return "file:" + System.getProperty("user.dir")
+				//TODO: retrieve name of application and don't use the fixed FreeMind.app here.
+						+ "/FreeMind.app/Contents/Resources/Java/" + link;
+			}}; 
+		
 	}
 
 	public void register() {

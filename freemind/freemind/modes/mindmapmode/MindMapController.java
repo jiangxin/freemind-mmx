@@ -16,12 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.6 2006-06-04 16:16:00 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.7 2006-07-07 04:26:26 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
-import java.awt.Component;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -49,18 +51,25 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JRootPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
@@ -68,6 +77,10 @@ import javax.swing.filechooser.FileFilter;
 import org.jibx.runtime.IUnmarshallingContext;
 import org.jibx.runtime.JiBXException;
 
+import de.xeinfach.kafenio.KafenioPanel;
+import de.xeinfach.kafenio.KafenioPanelConfiguration;
+import de.xeinfach.kafenio.SplashScreen;
+import de.xeinfach.kafenio.interfaces.KafenioContainerInterface;
 import freemind.common.XmlBindingTools;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
@@ -92,8 +105,8 @@ import freemind.extensions.UndoEventReceiver;
 import freemind.extensions.HookFactory.RegistrationContainer;
 import freemind.main.ExampleFileFilter;
 import freemind.main.FreeMind;
+import freemind.main.Resources;
 import freemind.main.Tools;
-import freemind.main.XMLParseException;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MapAdapter;
@@ -105,12 +118,11 @@ import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
+import freemind.modes.NodeDownAction;
+import freemind.modes.StylePatternFactory;
 import freemind.modes.actions.UsePlainTextAction;
 import freemind.modes.actions.UseRichFormattingAction;
 import freemind.modes.attributes.AttributeController;
-import freemind.modes.attributes.AttributeTableLayoutModel;
-import freemind.modes.NodeDownAction;
-import freemind.modes.StylePatternFactory;
 import freemind.modes.common.CommonNodeKeyListener;
 import freemind.modes.common.GotoLinkNodeAction;
 import freemind.modes.common.CommonNodeKeyListener.EditHandler;
@@ -330,6 +342,8 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     private MenuStructure mMenuStructure;
     private List mRegistrations;
 	private List mPatternsList = new Vector();
+	private KafenioPanelConfiguration mKafenioPanelConfiguration;
+	private KafenioPanel mHtmlEditorPanel;
 
     public MindMapController(Mode mode) {
 	super(mode);
@@ -591,6 +605,17 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
      */
     public void startupController() {
 		super.startupController();
+//		// start kafenio:
+//		try {
+//			createKafenioPanel();
+//			JPanel southPanel = getFrame().getSouthPanel();
+//			southPanel.removeAll();
+//			southPanel.add(mHtmlEditorPanel, BorderLayout.CENTER);
+//			mHtmlEditorPanel.setVisible(true);
+//			southPanel.revalidate();
+//		} catch (Exception e1){
+//			logger.log(Level.SEVERE, "Error", e1);
+//		}
 		HookFactory hookFactory = getHookFactory();
 		List pluginRegistrations = hookFactory.getRegistrations();
 		logger.info("mScheduledActions are executed: "
@@ -631,6 +656,83 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 	}
 
 
+    private void createKafenioPanel() throws Exception {
+        if(mHtmlEditorPanel == null){
+            final SplashScreen splashScreen = new SplashScreen();
+            splashScreen.setVisible(true);
+            final JRootPane rootPane = splashScreen.getRootPane();
+            rootPane.paintImmediately(0, 0, rootPane.getWidth(), rootPane.getHeight());
+            createKafenioConfiguration();
+            mHtmlEditorPanel  = new KafenioPanel(mKafenioPanelConfiguration);
+            mHtmlEditorPanel.getJToolBar1().setRollover(true);
+            //htmlEditorPanel.getJToolBar2().setRollover(true);          
+            mHtmlEditorPanel.getHTMLScrollPane().setPreferredSize(new Dimension(1, 200));
+            mHtmlEditorPanel.getSrcScrollPane().setPreferredSize(new Dimension(1, 200));
+            mHtmlEditorPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            
+            mHtmlEditorPanel.getKafenioParent().add(mHtmlEditorPanel);
+            splashScreen.setVisible(false);
+        }
+    }
+
+    private void createKafenioConfiguration() {
+        if(mKafenioPanelConfiguration  == null){
+            String language = Resources.getInstance().getProperty("language");
+            HashMap countryMap = Resources.getInstance().getCountryMap(); 
+            mKafenioPanelConfiguration = new KafenioPanelConfiguration();
+            mKafenioPanelConfiguration.setImageDir("file://");
+            mKafenioPanelConfiguration.setDebugMode(true); 
+            //kafenioPanelConfiguration.setLanguage("sk");
+            //kafenioPanelConfiguration.setCountry("SK");
+            mKafenioPanelConfiguration.setLanguage(language);
+            mKafenioPanelConfiguration.setCountry((String)countryMap.get(language));
+            mKafenioPanelConfiguration.setCustomMenuItems("edit" 
+//                     + " view"
+                    +" font format insert table search tools help");
+            // In the following excluded: new, open, styleselect
+            mKafenioPanelConfiguration.setCustomToolBar1(
+                    "cut copy paste bold italic underline" 
+                    + " left center right justify ulist olist deindent indent anchor" 
+                    +" image clearformats strike superscript subscript insertcharacter"
+                    + " find color table"
+                    // + " viewsource"
+                    );
+            // All available tool bar items:
+            // new open save cut copy paste bold italic underline left center right justify styleselect ulist olist deindent indent anchor
+            // image clearformats viewsource strike superscript subscript insertcharacter find color table
+            mKafenioPanelConfiguration.setShowToolbar2(false);
+            mKafenioPanelConfiguration.setProperty("escapeCloses","false");
+            mKafenioPanelConfiguration.setProperty("confirmRatherThanPost","true");
+            //kafenioPanelConfiguration.setProperty("alternativeLanguage","en");
+            //kafenioPanelConfiguration.setProperty("alternativeCountry","US");
+            mKafenioPanelConfiguration.setKafenioParent(new KafenioPane());
+        }
+    }
+
+    private class KafenioPane extends Box implements KafenioContainerInterface{
+        public KafenioPane() {
+            super(BoxLayout.Y_AXIS ); 
+            setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+        }
+
+        public void detachFrame() {
+        }
+
+        public void setJMenuBar(JMenuBar newMenuBar) {
+            newMenuBar.setAlignmentX(LEFT_ALIGNMENT);
+            add(newMenuBar, 0);
+        }
+
+        protected boolean processKeyBinding(KeyStroke ks, KeyEvent e, int condition, boolean pressed) {
+            if( ks.getKeyCode() == KeyEvent.VK_SPACE
+                    && e.getModifiers() == 0
+                    && pressed){
+                return true;            
+            }
+            return super.processKeyBinding(ks, e, condition, pressed);
+        }
+        
+    }
     public void shutdownController() {
         super.shutdownController();
         for (Iterator i = mRegistrations.iterator(); i.hasNext();) {

@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.4 2006-05-20 19:32:34 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.5 2006-07-07 04:26:27 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -474,7 +474,8 @@ public class OptionPanel implements TextTranslator {
 		//				"The URL of the documentation mindmap (.mm)", "docmapurl")); //
 		// ./doc/freemind.mm
 
-		controls.add(new StringProperty(null, "docmapurl_since_version_0_7_0")); //  ./doc/freemind.mm
+// replaced by browsemode_initial_map?? (See Controller, DocumentationAction).
+		//controls.add(new StringProperty(null, "docmapurl_since_version_0_7_0")); //  ./doc/freemind.mm
 		//
 		//		 The Browse Mode
 		//

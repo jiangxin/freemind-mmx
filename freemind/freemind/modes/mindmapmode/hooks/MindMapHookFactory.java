@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.1 2006-04-05 21:26:30 dpolivaev Exp $ */
+/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.2 2006-07-07 04:26:27 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.hooks;
 
 import java.io.File;
@@ -67,7 +67,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 	 * Match xml files in the accessories/plugin directory and not in its
 	 * subdirectories.
 	 */
-	private static final String pluginPrefixRegEx = "(accessories\\.|)plugins\\.[^.]*";
+	private final static String pluginPrefixRegEx = ".*(accessories(/|\\\\)|)plugins(/|\\\\)[^/\\\\]*";
 
 	private FreeMindMain frame;
 
@@ -159,11 +159,12 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 			String xmlPluginFile = (String) i.next();
 			if (xmlPluginFile.matches(pluginPrefixRegEx)) {
 				// make file name:
-				xmlPluginFile = xmlPluginFile.replace('.', '/') /*
-																 * Here, this is
-																 * not the
-																 * File.separatorChar!!!
-																 */
+				/*
+				 * Here, this is
+				 * not the
+				 * File.separatorChar!!!
+				 */
+				xmlPluginFile = xmlPluginFile.replace('\\', '/') 
 						+ importWizard.lookFor;
 				// this is one of our plugins:
 				URL pluginURL = getClassLoader(Collections.EMPTY_LIST)

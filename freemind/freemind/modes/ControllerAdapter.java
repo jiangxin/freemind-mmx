@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.7 2006-05-25 21:38:35 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.8 2006-07-07 04:26:26 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -338,7 +338,9 @@ public abstract class ControllerAdapter implements ModeController {
 	protected JMenuItem add(StructuredMenuHolder holder, String category, Action action, String keystroke) {
 	   JMenuItem item = holder.addMenuItem(new JMenuItem(action), category);
 	   if(keystroke != null) {
-		item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
+		String keyProperty = getFrame().getProperty(keystroke);
+		logger.finest("Found key stroke: " + keyProperty);
+		item.setAccelerator(KeyStroke.getKeyStroke(keyProperty));
 	   }
 	   return item;
 	}
@@ -845,10 +847,11 @@ public abstract class ControllerAdapter implements ModeController {
     public void shutdownController() {
         setAllActions(false);
     }
-    /**
+
+    /** This method is called after and before a change of the map module.
+     * Use it to perform the actions that cannot be performed at creation time.
      *
      */
-
     public void startupController() {
         setAllActions(true);
         if (getFrame().getView() != null) {

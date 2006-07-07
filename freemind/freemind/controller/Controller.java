@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.7 2006-05-20 19:32:34 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.8 2006-07-07 04:26:26 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -103,6 +103,11 @@ import freemind.view.mindmapview.MapView;
  */
 public class Controller  implements MapModuleChangeOberser {
 
+    /**
+     * Converts from a local link to the real file URL of the
+     * documentation map. (Used to change this behaviour under MacOSX).
+     */
+    public static LocalLinkConverter localDocumentationLinkConverter = new DefaultLocalLinkConverter();
 
 
     private static Logger logger;
@@ -179,8 +184,6 @@ public class Controller  implements MapModuleChangeOberser {
     // Constructors
     //
     public Controller(FreeMindMain frame) {
-        checkJavaVersion();
-
         this.frame = frame;
         if(logger == null) {
             logger = frame.getLogger(this.getClass().getName());
@@ -249,14 +252,8 @@ public class Controller  implements MapModuleChangeOberser {
     // get/set methods
     //
     public static final String JAVA_VERSION = System.getProperty("java.version");
-    public void checkJavaVersion() {
-       if (JAVA_VERSION.compareTo("1.4.0") < 0) {
-          String message = "Warning: FreeMind requires version Java 1.4.0 or higher (your version: "+
-             System.getProperty("java.version")+", installed in "+ System.getProperty("java.home")+").";
-          System.err.println(message);
-          JOptionPane.showMessageDialog(null, message, "FreeMind", JOptionPane.WARNING_MESSAGE); }}
 
-	public String getProperty(String property) {
+    public String getProperty(String property) {
 	   return frame.getProperty(property); }
 
 	public int getIntProperty(String property, int defaultValue) {
@@ -991,12 +988,26 @@ public class Controller  implements MapModuleChangeOberser {
         }
     }
 
+    public interface LocalLinkConverter {
+    		String convertLocalLink(String link);
+    }
+    
+    private static class DefaultLocalLinkConverter implements LocalLinkConverter {
+
+		public String convertLocalLink(String map) {
+            /* new handling for relative urls. fc, 29.10.2003.*/
+			return "file:" + System.getProperty("user.dir") + map.substring(1);//remove "." and make url
+			/* end: new handling for relative urls. fc, 29.10.2003.*/
+		}
+    	
+    }
+    
     //
     // Help
     //
 
     private class DocumentationAction extends AbstractAction {
-        Controller controller;
+		Controller controller;
         DocumentationAction(Controller controller) {
             super(controller.getResourceString("documentation"));
             this.controller = controller;
@@ -1009,9 +1020,7 @@ public class Controller  implements MapModuleChangeOberser {
                 map = map.substring(0, map.length()-FreeMindCommon.POSTFIX_TRANSLATE_ME.length());
             }
             if (map != null && map.startsWith("."))  {
-                /* new handling for relative urls. fc, 29.10.2003.*/
-                map = "file:" + System.getProperty("user.dir") + map.substring(1);//remove "." and make url
-                /* end: new handling for relative urls. fc, 29.10.2003.*/
+                map = localDocumentationLinkConverter.convertLocalLink(map);
             }
             if (map != null && map != "") {
                 URL url = null;

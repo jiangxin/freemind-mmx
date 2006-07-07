@@ -1,14 +1,15 @@
 <project name="freemind" default="dist" basedir=".">
-	<property name="ver" value="0_9_0_beta5" />
+	<property name="ver" value="0_9_0_beta6" />
 	<property name="src" value="." />
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
 	<property name="dist" value="../bin/dist" />
 	<property name="dist.lib" value="${dist}/lib" />
-	<property name="dist_macos_name" value="Mac_OS_X_Freemind-${ver}" />
+	<property name="dist_macos_name" value="FreeMind" />
 	<property name="dist_macos_base" value="../bin/dist_macos" />
 	<property name="dist_macos" value="${dist_macos_base}/${dist_macos_name}" />
-	<property name="dist_macos_contents" value="${dist_macos}/FreeMind.app/Contents"/>
+	<property name="dist_macos_app" value="${dist_macos}/FreeMind.app"/>
+	<property name="dist_macos_contents" value="${dist_macos_app}/Contents"/>
 	<property name="dist_macos_info" value="${dist_macos_contents}/Info.plist"/>
 	<property name="FM.jar" value="${dist.lib}/freemind.jar"/>
 	<property name="post" value="../post" />
@@ -121,9 +122,6 @@
 				includes="freemind.bat,freemind.sh,license,patterns.xml"
 			/>
 		</copy>
-		<!-- user.properties are placed in the documents folder. To avoid trouble, make a short comment here.  -->
-		<copy file="${src}/user_comment.properties" tofile="${dist}/user.properties"/>
-
 		<chmod file="${dist}/freemind.sh" perm="u+rx"/>
 		<copy todir="${dist}">
 			<fileset dir="${src}/windows-launcher"
@@ -184,7 +182,7 @@
 		<delete file="${dist_macos}/freemind.properties"/>
 		<jarbundler dir="${dist_macos}"
 		                    name="FreeMind"
-		                    mainclass="freemind.main.FreeMind"
+		                    mainclass="freemind.main.FreeMindStarter"
 		                    icon="${src}/images/FreeMindWindowIcon.icns"
 		                    version="${ver}"
 		                    infostring="FreeMind ${ver} application (c) 2006"
@@ -200,8 +198,20 @@
 				<exclude name="**/CVS" />
 				<exclude name="accessories/**" />
 				<exclude name="plugins/**" />
+				<exclude name="browser/**" />
+				<exclude name="**/freemindbrowser.jar" />
 			</jarfileset>
 		</jarbundler>
+		<copy todir="${dist_macos_contents}/Resources/Java">
+			<fileset dir="${dist}">
+				<include name="browser/**" />
+				<include name="accessories/*" />
+				<include name="accessories/**/*" />
+				<include name="plugins/*" />
+				<include name="plugins/**/*" />
+				<include name="doc/*" />
+			</fileset>
+		</copy>
 		<!-- Delete the JavaApplicationStub and replace it with a symbolic link -->
 		  <!--   which should work on older and future versions of OS X  
 		   Taken from http://informagen.com/JarBundler/StubFile.html         -->
@@ -220,20 +230,6 @@
 		<move file="${dist_macos_info}2"
 			  tofile="${dist_macos_info}"/>
 		<!-- Done. -->
-		<mkdir dir="${dist_macos}/accessories" />
-		<copy todir="${dist_macos}/accessories">
-			<fileset dir="${dist}/accessories"/>
-		</copy>
-		<!-- link accessories in app -->
-		<exec dir="${dist_macos_contents}/Resources/Java" executable="ln" os="Mac OS X">
-			<arg value="-s"/>
-			<arg value="../../../../accessories/"/>
-			<arg value="accessories"/>
-		</exec>
-		<mkdir dir="${dist_macos}/plugins" />
-		<copy todir="${dist_macos}/plugins">
-			<fileset dir="${dist}/plugins"/>
-		</copy>
 	</target>
 
 	<target name="post" depends="dist,browser,doc">
@@ -276,9 +272,6 @@
 	</target>
 
 	<target name="post_macos">
-		<!-- doc -->
-		<mkdir dir="${dist_macos}/doc" />
-		<copy todir="${dist_macos}/doc/" file="${dist}/doc/freemind.mm" />
 
 		<exec dir="." executable="bash" os="Mac OS X">
 			<arg value="./mkdmg.sh"/>
@@ -305,7 +298,6 @@
 				<include name="images/*"/>
 				<include name="images/icons/*.png"/>
 				<include name="freemind.properties"/>
-				<include name="user.properties"/>
 				<include name="patterns.xml"/>
 				<include name="patterns_updater.xslt"/>
 				<include name="Resources*"/>
@@ -351,7 +343,6 @@
 				<include name="Resources_en.properties"/>
 			</fileset>
 		</jar>
-		<copy file="${src}/freemind.properties" tofile="${src}/user.properties"/>
 		<copy todir="${dist}/browser" >
 			<fileset dir="${src}/html">
 				<include name="*.*html"/>
@@ -389,7 +380,7 @@
 	</target>
 
 	<target name="run" depends="dist">
-		<java classname="freemind.main.FreeMind"
+		<java classname="freemind.main.FreeMindStarter"
           fork="yes"
           dir="${dist}">
 			<!--    <jvmarg value="-Djava.util.logging.config.file=logging.properties" /> -->
@@ -402,6 +393,19 @@
 		</java>
 	</target>
 
+	<property name="log_file" location="${user.home}/.freemind/log.0"/>
+
+	<target name="runmac" depends="dist">
+		<move file="${log_file}" tofile="${log_file}.bak"></move>
+		<exec dir="." executable="open" os="Mac OS X">
+			<arg path="${dist_macos_app}"/>
+		</exec>
+		<waitfor><available file="${log_file}"></available></waitfor>
+		<exec dir="." executable="tail" os="Mac OS X">
+			<arg line="-f ${log_file}"/>
+		</exec>
+	</target>
+	
 	<!-- does not work!! -->
 	<target name="val">
 		<xmlvalidate lenient="false"

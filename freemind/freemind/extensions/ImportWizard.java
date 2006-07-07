@@ -80,18 +80,22 @@ public class ImportWizard {
 		StringTokenizer st = new StringTokenizer(classPath, classPathSeparator);
 		while (st.hasMoreTokens()) {
 			String classPathEntry = st.nextToken();
-			logger.info("searching for plugins in: "+ classPathEntry);
 			File classPathFile = new File(classPathEntry);
 			if (classPathFile.exists()) {
-				if (classPathEntry.toLowerCase().endsWith(".jar")) {
+				String lowerCaseFileName = classPathEntry.toLowerCase();
+				if (lowerCaseFileName.endsWith(".jar")) {
+					logger.finest("searching for plugins in: "+ classPathEntry);
 					addClassesFromZip(CLASS_LIST, classPathFile);
-				} else if (classPathEntry.toLowerCase().endsWith(".zip")) {
+				} else if (lowerCaseFileName.endsWith(".zip")) {
+					logger.finest("searching for plugins in: "+ classPathEntry);
 					addClassesFromZip(CLASS_LIST, classPathFile);
 				} else if (classPathFile.isDirectory()) {
+					logger.finest("searching for plugins in: "+ classPathEntry);
 					addClassesFromDir(CLASS_LIST, classPathFile, classPathFile);
 				}
 			}
 		}
+		
 
 	}
 
@@ -117,13 +121,11 @@ public class ImportWizard {
 						current.substring(
 							0,
 							current.length() - lookFor.length());
-					current = current.replace('/', '.');
-					current = current.replace('\\', '.');
 					classList.addElement(current);
 				}
 			}
 		} catch (Exception ex) {
-			System.err.println(
+			logger.severe(
 				"Problem opening " + classPathFile + " with zip.");
 		}
 	}
@@ -146,7 +148,7 @@ public class ImportWizard {
 				String rootPath = rootDir.getPath();
 				String currentPath = currentDir.getPath();
 				if (! currentPath.startsWith(rootPath)) {
-					System.err.println(
+					logger.severe(
 						"currentPath doesn't start with rootPath!\n"
 							+ "rootPath: "
 							+ rootPath
@@ -161,16 +163,16 @@ public class ImportWizard {
 							current.length() - lookFor.length());
 					String packageName =
 						currentPath.substring(rootPath.length());
+					String fileName;
 					if (packageName.length() > 0) {
 						// Not the current directory
-						packageName = packageName.replace('\\', '.');
-						packageName = packageName.replace('/', '.');
-						classList.addElement(
-							packageName.substring(1) + '.' + current);
+						fileName = packageName.substring(1) + File.separator + current;
 					} else {
 						// The current directory
-						classList.addElement(current);
+						fileName = current;
 					}
+					classList.addElement(fileName);
+					logger.finest("Found: " + fileName);
 				}
 			} else {
 				// Check if it's a directory to recurse into
@@ -186,7 +188,14 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.1  2006-04-05 21:26:26  dpolivaev
+ * Revision 1.1.4.6.2.2  2006-07-07 04:26:26  christianfoltin
+ * * Mac changes: whole application is in one package
+ * * Slider for Notes introduced.
+ * * FreeMindStarter introduced to detect wrong java versions.
+ * * user.properties are obsolete and were removed. auto.properties are replacing them
+ * * Logging to file enabled.
+ *
+ * Revision 1.1.4.6.2.1  2006/04/05 21:26:26  dpolivaev
  * no message
  *
  * Revision 1.1.4.5.6.1  2006/03/11 16:42:36  dpolivaev
