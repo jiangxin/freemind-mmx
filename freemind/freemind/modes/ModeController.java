@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.4 2006-05-25 21:38:35 christianfoltin Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.5 2006-07-21 05:28:13 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -114,7 +114,45 @@ public interface ModeController  {
      * represented in the tree.
      */
     void nodeChanged(MindMapNode n);
-    void anotherNodeSelected(MindMapNode n);
+    /**
+     * Is called when a node is selected.
+     */
+    void onReceiveFocusHook(MindMapNode node);
+    /**
+     * Is called when a node is deselected.
+     */
+    void onLooseFocusHook(MindMapNode node);
+    
+    /** */
+    public interface NodeSelectionListener {
+
+        /** 
+         * Sent, if a node is changed
+         * */
+        void onUpdateNodeHook(MindMapNode node);
+
+        /** Is sent when a node is selected.
+         * @param node
+         */
+        void onReceiveFocusHook(MindMapNode node);
+        /**
+         * Is sent when a node is deselected.
+         */
+        void onLooseFocusHook(MindMapNode node);
+
+    }
+
+    /**
+     * On registering, the onReceiveFocus method of the listener is called with
+     * the current selected node.
+     */
+    void registerNodeSelectionListener(NodeSelectionListener listener);
+    /**
+     * On deregistering, the onLooseFocus method of the listener is called with
+     * the current selected node.
+     */
+    void deregisterNodeSelectionListener(NodeSelectionListener listener);
+    
      /** The position of this method is an exception. Normally, every method that changes
      *  nodes must be contained in the specific mode controllers but as this method
      *  is also used by the MapView to switch to neighbours (private NodeView getNeighbour(int directionCode)),

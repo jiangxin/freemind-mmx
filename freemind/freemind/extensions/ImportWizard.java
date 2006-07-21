@@ -28,7 +28,9 @@
 package freemind.extensions;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -76,11 +78,22 @@ public class ImportWizard {
 		String classPathSeparator = File.pathSeparator;
         // add the current dir to find more plugins
         classPath=MindMapHookFactory.getFreemindBaseDir()+classPathSeparator+classPath;
-
+        // to remove duplicates
+        HashSet foundPlugins = new HashSet();
 		StringTokenizer st = new StringTokenizer(classPath, classPathSeparator);
 		while (st.hasMoreTokens()) {
 			String classPathEntry = st.nextToken();
 			File classPathFile = new File(classPathEntry);
+			try {
+				String key = classPathFile.getCanonicalPath();
+				if(foundPlugins.contains(key))
+					continue;
+				logger.finest("looking for plugins in " + key);
+				foundPlugins.add(key);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			if (classPathFile.exists()) {
 				String lowerCaseFileName = classPathEntry.toLowerCase();
 				if (lowerCaseFileName.endsWith(".jar")) {
@@ -188,7 +201,14 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.2  2006-07-07 04:26:26  christianfoltin
+ * Revision 1.1.4.6.2.3  2006-07-21 05:28:12  christianfoltin
+ * BasePlugins corrected
+ * Notes are always present - start
+ * new danish translation -> thanks
+ * improved kafenio from Dimitri
+ * startup time reduced
+ *
+ * Revision 1.1.4.6.2.2  2006/07/07 04:26:26  christianfoltin
  * * Mac changes: whole application is in one package
  * * Slider for Notes introduced.
  * * FreeMindStarter introduced to detect wrong java versions.

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin>
+<plugin	label="plugins/ExportPdf">
 	<plugin_classpath jar="plugins/svg/svg_plugin.jar"/>
 	<plugin_classpath jar="plugins/svg/batik-awt-util.jar"/>
 	<plugin_classpath jar="plugins/svg/batik-bridge.jar"/>

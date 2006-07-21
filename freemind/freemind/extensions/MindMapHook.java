@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapHook.java,v 1.1.4.4 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: MindMapHook.java,v 1.1.4.4.2.1 2006-07-21 05:28:12 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.Properties;
@@ -65,7 +65,14 @@ public interface MindMapHook {
 	 */
 	Object getPluginBaseClass();
 
-	void setPluginBaseClass(Object baseClass);
+    /** This indirection is necessary, as 
+     *  all stored PermanentNodeHooks are created during the map's creation time
+     *  but the registrations are underdone on ModeController's startup method later.*/
+    public interface PluginBaseClassSearcher {
+        Object getPluginBaseObject();
+    }
+    
+	void setPluginBaseClass(PluginBaseClassSearcher baseClass);
 	
 	/* Hooks */
 

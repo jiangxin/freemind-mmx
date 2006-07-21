@@ -458,7 +458,7 @@
 	  <xs:complexType name="text_node_action">
 		<xs:complexContent>
 			<xs:extension base="node_action">
-		      <xs:attribute name="text" use="required" type="xs:string"/>
+		      <xs:attribute name="text" use="optional" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
@@ -877,6 +877,9 @@
 					<xs:element ref="plugin_strings"/>
 				</xs:choice>
 			</xs:sequence>
+			<!-- The label must be unique among all plugins,
+				 it is used to provide the basePlugin-feature. -->
+	      <xs:attribute name="label" use="required" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 

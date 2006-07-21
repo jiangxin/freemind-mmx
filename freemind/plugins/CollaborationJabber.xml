@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin>
+<plugin label="/collaboration/jabber/jabber">
 	<plugin_classpath jar="plugins/collaboration/jabber/commons-logging.jar"  />
 	<plugin_classpath jar="plugins/collaboration/jabber/crimson-1.1.3.jar"  />
 	<plugin_classpath jar="plugins/collaboration/jabber/jakarta-oro.jar"  />

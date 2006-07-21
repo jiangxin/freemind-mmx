@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.9 2006-07-07 04:26:26 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.10 2006-07-21 05:28:12 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -218,6 +218,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	mSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, southPanel);
 	mSplitPane.setDividerLocation(getIntProperty(SPLIT_PANE_POSITION, 100));
+	mSplitPane.setContinuousLayout(true);
+	mSplitPane.setOneTouchExpandable(true);
 	getContentPane().add( mSplitPane, BorderLayout.CENTER);
 
 	//Disable the default close button, instead use windowListener

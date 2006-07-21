@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.2 2006-06-04 11:23:28 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.3 2006-07-21 05:28:13 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -112,18 +112,10 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		private void removeSelectionForHooks(NodeView node) {
 		    if(node.getModel() == null)
 		        return;
-			// deselect the old node:
-			for(Iterator i= node.getModel().getActivatedHooks().iterator(); i.hasNext();){
-				PermanentNodeHook hook = (PermanentNodeHook) i.next();
-				hook.onLooseFocusHook();
-			}
+		    getModel().getModeController().onLooseFocusHook(node.getModel());
 		}
 		private void addSelectionForHooks(NodeView node) {
-			// select the new node:
-			for(Iterator i= node.getModel().getActivatedHooks().iterator(); i.hasNext();){
-				PermanentNodeHook hook = (PermanentNodeHook) i.next();
-				hook.onReceiveFocusHook();
-			}
+            getModel().getModeController().onReceiveFocusHook(node.getModel());
 		}
 		public NodeView get(int i) { return (NodeView) mySelected.get(i);
 		}
@@ -532,8 +524,8 @@ public class MapView extends JPanel implements Printable, Autoscroll {
         this.selected.add(newSelected);
         if(requestFocus)
             newSelected.requestFocus();
-        else
-            getController().getMode().getDefaultModeController().anotherNodeSelected(newSelected.getModel());
+        
+//        getController().getMode().getDefaultModeController().onReceiveFocusHook(newSelected.getModel());
         // set last focused as preferred (PN)
         if (newSelected.getModel().getParentNode() != null) {
             newSelected.getModel().getParentNode().setPreferredChild(newSelected.getModel());

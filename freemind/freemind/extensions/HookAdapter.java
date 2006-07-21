@@ -26,8 +26,6 @@ package freemind.extensions;
 import java.net.URL;
 import java.util.Properties;
 
-import freemind.modes.ControllerAdapter;
-import freemind.modes.MindMap;
 import freemind.modes.ModeController;
 
 /** Implments MindMapHook as an Adapter class.
@@ -48,7 +46,7 @@ public class HookAdapter implements MindMapHook {
 	 * Stores the plugin base class as declared by the plugin_registration/isBaseClass
 	 * attribute.
 	 */
-	private Object baseClass;
+	private PluginBaseClassSearcher baseClass;
 
 	/**
 	 */
@@ -108,7 +106,7 @@ public class HookAdapter implements MindMapHook {
 	public void setController(ModeController controller) {
 		this.controller = controller;
 		if(logger == null)
-			logger = ((ControllerAdapter)getController()).getFrame().getLogger(this.getClass().getName());
+			logger = getController().getFrame().getLogger(this.getClass().getName());
 	}
 	/* (non-Javadoc)
 	 * @see freemind.extensions.MindMapHook#getResourceString(java.lang.String)
@@ -131,13 +129,10 @@ public class HookAdapter implements MindMapHook {
 	 * @see freemind.extensions.MindMapHook#getPluginBaseClass()
 	 */
 	public Object getPluginBaseClass() {
-		return baseClass;
+		return baseClass.getPluginBaseObject();
 	}
-	/* (non-Javadoc)
-	 * @see freemind.extensions.MindMapHook#setPluginBaseClass(java.lang.Object)
-	 */
-	public void setPluginBaseClass(Object baseClass) {
-		this.baseClass = baseClass;
-	}
+    public void setPluginBaseClass(PluginBaseClassSearcher baseClass) {
+        this.baseClass = baseClass;
+    }
 
 }

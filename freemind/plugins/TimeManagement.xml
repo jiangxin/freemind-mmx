@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin>
+<plugin label="plugins/TimeManagement">
 	<plugin_classpath jar="plugins/time/time_plugin.jar"/>
 	<plugin_classpath jar="plugins/time/jcalendar.jar"/>
 	<plugin_registration isPluginBase="true" 

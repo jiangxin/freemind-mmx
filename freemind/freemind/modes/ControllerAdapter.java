@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.8 2006-07-07 04:26:26 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.9 2006-07-21 05:28:13 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -45,6 +45,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.logging.Level;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -70,6 +71,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
+import freemind.modes.ModeController.NodeSelectionListener;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
@@ -100,6 +102,7 @@ public abstract class ControllerAdapter implements ModeController {
 	 * it is the default controller that does not show a map.
 	 */
 	private MapAdapter mModel;
+    private HashSet mNodeSelectionListeners=new HashSet();
     private static File lastCurrentDir =  null;
 
     /** Instanciation order: first me and then the model.
@@ -190,14 +193,52 @@ public abstract class ControllerAdapter implements ModeController {
      * @param node
      */
     protected void updateNode(MindMapNode node){
-    	// empty
+        for (Iterator iter = mNodeSelectionListeners.iterator(); iter.hasNext();) {
+            NodeSelectionListener listener = (NodeSelectionListener) iter.next();
+            listener.onUpdateNodeHook(node);
+        }
     }
 
+    public void onReceiveFocusHook(MindMapNode node) {
+        // select the new node:
+        for (Iterator iter = mNodeSelectionListeners.iterator(); iter.hasNext();) {
+            NodeSelectionListener listener = (NodeSelectionListener) iter.next();
+            listener.onReceiveFocusHook(node);
+        }
+        for(Iterator i= node.getActivatedHooks().iterator(); i.hasNext();){
+            PermanentNodeHook hook = (PermanentNodeHook) i.next();
+            hook.onReceiveFocusHook();
+        }
 
+    }
+    
+    public void onLooseFocusHook(MindMapNode node) {
+        try {
+			// deselect the old node:
+        	    HashSet copy = new HashSet(mNodeSelectionListeners);
+        	    // we copied the set to be able to remove listeners during a listener method.
+			for (Iterator iter = copy.iterator(); iter.hasNext();) {
+			    NodeSelectionListener listener = (NodeSelectionListener) iter.next();
+			    listener.onLooseFocusHook(node);
+			}
+			for(Iterator i= node.getActivatedHooks().iterator(); i.hasNext();){
+			    PermanentNodeHook hook = (PermanentNodeHook) i.next();
+			    hook.onLooseFocusHook();
+			}
+		} catch (RuntimeException e) {
+			logger.log(Level.SEVERE, "Error in node selection listeners", e);
+		}
 
-    public void anotherNodeSelected(MindMapNode n) {
     }
 
+    public void registerNodeSelectionListener(NodeSelectionListener listener) {
+        mNodeSelectionListeners.add(listener);
+    }
+    
+    public void deregisterNodeSelectionListener(NodeSelectionListener listener) {
+        mNodeSelectionListeners.remove(listener);
+    }
+    
     //
     // Map Management
     //
@@ -522,22 +563,12 @@ public abstract class ControllerAdapter implements ModeController {
 	public void setVisible(boolean visible) {
 		if (visible) {
 			MindMapNode node = getSelected();
-			for (Iterator j = node.getActivatedHooks().iterator();
-				j.hasNext();
-				) {
-				PermanentNodeHook hook = (PermanentNodeHook) j.next();
-				hook.onReceiveFocusHook();
-			}
+            onReceiveFocusHook(node);
 		} else {
 			MindMapNode node = getSelected();
 			// bug fix, fc 18.5.2004. This should not be here.
 			if (node != null) {
-                for (Iterator j = node.getActivatedHooks().iterator();
-                    j.hasNext();
-                    ) {
-                    PermanentNodeHook hook = (PermanentNodeHook) j.next();
-                    hook.onLooseFocusHook();
-                }
+                onLooseFocusHook(node);
             }
 		}
 	}

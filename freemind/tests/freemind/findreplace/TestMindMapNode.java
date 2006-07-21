@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: TestMindMapNode.java,v 1.1.2.2 2006-05-19 21:27:44 christianfoltin Exp $*/
+/*$Id: TestMindMapNode.java,v 1.1.2.3 2006-07-21 05:28:13 christianfoltin Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -383,4 +383,14 @@ final class TestMindMapNode implements MindMapNode {
 
     public void setXmlText(String structuredText) {
     }
+
+	public String getXmlNoteText() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setXmlNoteText(String structuredNoteText) {
+		// TODO Auto-generated method stub
+		
+	}
 }

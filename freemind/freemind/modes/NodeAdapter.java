@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.9 2006-06-09 19:52:24 dpolivaev Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.10 2006-07-21 05:28:13 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -116,6 +116,7 @@ public abstract class NodeAdapter implements MindMapNode {
     static protected java.util.logging.Logger logger;
     private MindMap map = null;
     private NodeAttributeTableModel attributes;
+	private String xmlNoteText;
 
 
     //
@@ -146,9 +147,6 @@ public abstract class NodeAdapter implements MindMapNode {
         this.map = map;
         map.getRegistry().registrySubtree(this, true);
     }
-    /**
-     *
-     */
 
     public final String getText() {
         String string="";
@@ -157,9 +155,6 @@ public abstract class NodeAdapter implements MindMapNode {
         }
         return string;
     }
-    /**
-     *
-     */
 
     public final void setText(String text) {
         text = text.replaceAll("\0", "")/*= \0 is not allowed: */;
@@ -171,11 +166,23 @@ public abstract class NodeAdapter implements MindMapNode {
         return xmlText;
     }
 
-    public final void setXmlText(String xmlText) {
-        xmlText = xmlText.replaceAll("\0", "")/*= \0 is not allowed: */;
-        userObject = HtmlTools.getInstance().toHtml(xmlText);
-        this.xmlText = xmlText;
+    public final void setXmlText(String pXmlText) {
+        pXmlText = pXmlText.replaceAll("\0", "")/*= \0 is not allowed: */;
+        userObject = HtmlTools.getInstance().toHtml(pXmlText);
+        this.xmlText = pXmlText;
     }
+	public final String getXmlNoteText() {
+		return xmlNoteText;
+	}
+
+	public final void setXmlNoteText(String pXmlNoteText) {
+		if(pXmlNoteText==null){
+			xmlNoteText = null;
+			return;
+		}
+		pXmlNoteText = pXmlNoteText.replaceAll("\0", "")/* = \0 is not allowed: */;
+		this.xmlNoteText = pXmlNoteText;
+	}
 
     public String getPlainTextContent() {
        // Redefined in MindMapNodeModel.

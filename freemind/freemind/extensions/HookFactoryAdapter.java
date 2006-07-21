@@ -19,7 +19,7 @@
  *
  * Created on 31.12.2005
  */
-/*$Id: HookFactoryAdapter.java,v 1.1.2.1 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: HookFactoryAdapter.java,v 1.1.2.1.2.1 2006-07-21 05:28:12 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.HashMap;
@@ -34,8 +34,6 @@ import freemind.modes.MindMapNode;
  */
 public abstract class HookFactoryAdapter implements HookFactory {
 
-	/** Contains PluginRegistrationType -> PluginType relations. */
-	protected HashMap allRegistrations;
 	/** Contains PluginType -> Object (baseClass) relations. */
 	protected HashMap allRegistrationInstances;
 
@@ -74,7 +72,7 @@ public abstract class HookFactoryAdapter implements HookFactory {
 	public void registerRegistrationContainer(HookFactory.RegistrationContainer container, HookRegistration instanciatedRegistrationObject) {
 		// registration only for pluginBases.
 		if (container.isPluginBase) {
-			allRegistrationInstances.put(container.correspondingPlugin,
+			allRegistrationInstances.put(container.correspondingPlugin.getLabel(),
 					instanciatedRegistrationObject);
 		}
 	}

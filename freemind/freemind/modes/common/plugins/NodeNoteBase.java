@@ -16,25 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteBase.java,v 1.1.2.2.2.3 2006-05-30 21:36:17 christianfoltin Exp $ */
+/* $Id: NodeNoteBase.java,v 1.1.2.2.2.4 2006-07-21 05:28:13 christianfoltin Exp $ */
 package freemind.modes.common.plugins;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
-import de.xeinfach.kafenio.interfaces.KafenioPanelInterface;
 
 import freemind.extensions.PermanentNodeHookAdapter;
-import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
@@ -47,7 +34,6 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 
 	public static final String HOOK_NAME = "accessories/plugins/NodeNote.properties";
 	private String myNodeText;
-	protected Container noteViewerComponent;
     private String mXmlText;
 	private static ImageIcon noteIcon;
 	/**
@@ -86,12 +72,7 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 	public void onReceiveFocusHook() {
 		super.onReceiveFocusHook();
         try {
-            noteViewerComponent = getNoteViewerComponent();
             receiveFocusAddons();
-            FreeMindMain frame = getController().getFrame();
-            frame.getSouthPanel().add(noteViewerComponent, BorderLayout.CENTER);
-            noteViewerComponent.setVisible(true);
-            frame.getSouthPanel().revalidate();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -99,7 +80,7 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 	}
 
 
-    abstract protected Container getNoteViewerComponent() throws Exception;
+//    abstract protected Container getNoteViewerComponent() throws Exception;
 
 	/**
 	 * @return
@@ -127,15 +108,7 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 	 */
 	public void onLooseFocusHook() {
 		super.onLooseFocusHook();
-		if (noteViewerComponent != null) {
-			looseFocusAddons();
-			// shut down the display:
-			noteViewerComponent.setVisible(false);
-			JPanel southPanel = getController().getFrame().getSouthPanel();
-			southPanel.remove(noteViewerComponent);
-			southPanel.revalidate();
-            noteViewerComponent = null;
-		}
+		looseFocusAddons();
 	}
 
 	/* (non-Javadoc)

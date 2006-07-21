@@ -1,6 +1,17 @@
-<map version="0.8.0">
+<map version="0.9.0 Beta 5">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
-<node COLOR="#993300" CREATED="1124560950701" ID="Freemind_Link_1694418332" MODIFIED="1132082593219" TEXT="&lt;html&gt;&#xa;  &lt;head&gt;&#xa;    &#xa;  &lt;/head&gt;&#xa;  &lt;body width=&quot;&quot;&gt;&#xa;    &lt;p align=&quot;center&quot;&gt;&#xa;      FreeMind&lt;br&gt;&lt;small&gt;- Freie Mind Mapping Software -&lt;/small&gt;&#xa0;&#xa;    &lt;/p&gt;&#xa;  &lt;/body&gt;&#xa;&lt;/html&gt;&#xa;">
+<node COLOR="#993300" CREATED="1124560950701" ID="Freemind_Link_1694418332" MODIFIED="1132082593219">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body width="">
+    <p align="center">
+      FreeMind<br /><small>- Freie Mind Mapping Software -</small>&#160;
+    </p>
+  </body>
+</html>
+</richcontent>
 <font BOLD="true" NAME="Dialog" SIZE="18"/>
 <node CREATED="1124560950701" ID="Freemind_Link_296874513" LINK="http://freemind.sourceforge.net" MODIFIED="1131994301515" POSITION="left" TEXT="Zur Homepage von FreeMind">
 <font NAME="SansSerif" SIZE="12"/>
@@ -508,7 +519,17 @@
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_526328879" MODIFIED="1132244076733" POSITION="right" TEXT="Stile benutzen">
 <node CREATED="1124560950717" ID="Freemind_Link_1212727626" MODIFIED="1132244426690" TEXT="Um einen Stil auf einen Knoten anzuwenden, w&#xe4;hlen Sie ihn im Kontextmen&#xfc; &#xfc;ber den Eintrag &apos;Stile&apos; aus. Um die Anwendung von Stilen zu beschleunigen, verwenden Sie die im Knoten-Kontextmen&#xfc; gezeigten Tastaturk&#xfc;rzel."/>
 <node CREATED="1124560950717" ID="Freemind_Link_32969878" MODIFIED="1132244665223" TEXT="Als technisch versierter Anwender bearbeiten Sie die Datei &apos;patterns.xml&apos; im Ordner &apos;.freemind&apos; Ihres Heimatverzeichnisses, um Ihren eigenen Stil hinzuzuf&#xfc;gen."/>
-<node CREATED="1124560950717" ID="Freemind_Link_159180814" MODIFIED="1134579086877" TEXT="Eine Anmerkung zur Datei &apos;patterns.xml&apos; folgt: Ein Stil ist auf einen Knoten anwendbar, wenn er eine &lt;node&gt;-Auszeichnung enth&#xe4;lt. Er ist auf einen Bogen (eine Kante) anwendbar, wenn er eine &lt;edge&gt;-Auszeichnung enth&#xe4;lt. &lt;node&gt;-Auszeichnungen k&#xf6;nnen &lt;font&gt;-Auszeichnungen enthalten. Studieren Sie die mit FreeMind gelieferte Datei &apos;patterns.xml&apos;."/>
+<node CREATED="1124560950717" ID="Freemind_Link_159180814" MODIFIED="1150324296013">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    [Diese Hilfe ist veraltet.] Eine Anmerkung zur Datei 'patterns.xml' folgt: Ein Stil ist auf einen Knoten anwendbar, wenn er eine &lt;node&gt;-Auszeichnung enth&#228;lt. Er ist auf einen Bogen (eine Kante) anwendbar, wenn er eine &lt;edge&gt;-Auszeichnung enth&#228;lt. &lt;node&gt;-Auszeichnungen k&#246;nnen <font>-Auszeichnungen enthalten. Studieren Sie die mit FreeMind gelieferte Datei 'patterns.xml'.</font>
+  </body>
+</html>
+</richcontent>
+</node>
 </node>
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_1697687428" MODIFIED="1132245544041" POSITION="right" TEXT="Knoten durch Wolken hervorheben">
 <node CREATED="1124560950717" ID="Freemind_Link_243451486" MODIFIED="1132245791432" TEXT="Wolken sind gut geeignet, um einen Bereich hervorzuheben. Der Knoten und alle seine Unterknoten werden hervorgehoben."/>
@@ -524,11 +545,30 @@
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_203858515" MODIFIED="1132328112331" POSITION="right" TEXT="Querverweis hinzuf&#xfc;gen">
 <node CREATED="1124560950717" ID="Freemind_Link_1867388527" MODIFIED="1134579566800" TEXT="Um zu einem Knoten einen Querverweis (Hyperlink) hinzu zu f&#xfc;gen, dr&#xfc;cken Sie &apos;Strg&apos; + &apos;K&apos; oder w&#xe4;hlen Sie &apos;Querverweis&apos; &#xfc;ber den Knoten-Kontextmen&#xfc;punkt &apos;Einf&#xfc;gen&apos;."/>
 <node CREATED="1124560950717" ID="Freemind_Link_743396731" MODIFIED="1134580044924" TEXT="Um einen Querverweis zu entfernen, l&#xf6;schen Sie ihn, nachdem Sie mit &apos;Strg&apos; + &apos;K&apos; seine Bearbeitung aufgerufen haben."/>
-<node CREATED="1124560950717" ID="Freemind_Link_1897919343" MODIFIED="1134585164239" TEXT="&lt;html&gt;&#xa;  &lt;head&gt;&#xa;    &#xa;  &lt;/head&gt;&#xa;  &lt;body&gt;&#xa;    Um auf eine eMail-Adresse zu verweisen, setzen Sie den Querverweis als &lt;i&gt;mailto:don.bonton@supermail.com&lt;/i&gt;.&lt;br&gt;&#xa;--------&lt;br&gt;&#xa;Anm.d.&#xdc;.&lt;br&gt;&#xa;Wobei Sie anstatt &lt;i&gt;don.bonton@supermail.com&lt;/i&gt; nat&#xfc;rlich die von Ihnen gew&#xfc;nschte eMail-Adresse eintragen.&#xa;  &lt;/body&gt;&#xa;&lt;/html&gt;&#xa;">
+<node CREATED="1124560950717" ID="Freemind_Link_1897919343" MODIFIED="1134585164239">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    Um auf eine eMail-Adresse zu verweisen, setzen Sie den Querverweis als <i>mailto:don.bonton@supermail.com</i>.<br />--------<br />Anm.d.&#220;.<br />Wobei Sie anstatt <i>don.bonton@supermail.com</i> nat&#252;rlich die von Ihnen gew&#252;nschte eMail-Adresse eintragen.
+  </body>
+</html>
+</richcontent>
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1124560950717" ID="Freemind_Link_1054419207" MODIFIED="1134585176517" TEXT="&lt;html&gt;&#xa;  &lt;head&gt;&#xa;    &#xa;  &lt;/head&gt;&#xa;  &lt;body&gt;&#xa;    Um auf eine eMail-Adresse zu verweisen und gleich einen Betreff f&#xfc;r die eMail mitzugeben,&lt;br&gt; setzen Sie den Querverweis in folgender Form: &lt;i&gt;mailto:don.bonton@supermail.com?subject=Last &#xa;    phone call&lt;/i&gt;.&lt;br&gt;&#xa;--------&lt;br&gt;&#xa;Anm.d.&#xdc;.&lt;br&gt;&#xa;Wobei Sie anstatt &lt;i&gt;don.bonton@supermail.com&lt;/i&gt; ebenfalls die von Ihnen gew&#xfc;nschte eMail-Adresse und&lt;br&gt; anstatt &lt;i&gt;Last phone call&lt;/i&gt; den von Ihnen gew&#xfc;nschten Betreff eintragen.&#xa;  &lt;/body&gt;&#xa;&lt;/html&gt;&#xa;"/>
+<node CREATED="1124560950717" ID="Freemind_Link_1054419207" MODIFIED="1134585176517">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    Um auf eine eMail-Adresse zu verweisen und gleich einen Betreff f&#252;r die eMail mitzugeben,<br />setzen Sie den Querverweis in folgender Form: <i>mailto:don.bonton@supermail.com?subject=Last phone call</i>.<br />--------<br />Anm.d.&#220;.<br />Wobei Sie anstatt <i>don.bonton@supermail.com</i> ebenfalls die von Ihnen gew&#252;nschte eMail-Adresse und<br />anstatt <i>Last phone call</i> den von Ihnen gew&#252;nschten Betreff eintragen.
+  </body>
+</html>
+</richcontent>
+</node>
 <node CREATED="1124560950717" ID="Freemind_Link_1753886221" MODIFIED="1132329635860" TEXT="Querverweise k&#xf6;nnen Knoten mit Seiten im Internet, lokalen (oder Netzwerk-) Dateien oder eMail-Adressen verbinden.&#xa;--------&#xa;Anm.d.&#xdc;.&#xa;Dar&#xfc;berhinaus k&#xf6;nnen Sie ausf&#xfc;hrbare Programme verkn&#xfc;pfen und dann durch klicken auf den Verweis starten."/>
 </node>
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_1044397139" MODIFIED="1134580510091" POSITION="right" TEXT="Piktogramme hinzuf&#xfc;gen.">
@@ -795,7 +835,17 @@
 <node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_269203785" MODIFIED="1132515432243" POSITION="right" TEXT="Internet Explorer Favoriten importieren">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950732" ID="Freemind_Link_1567658129" MODIFIED="1134584732983" TEXT="Um Internet Explorer Favoriten (Lesezeichen) in FreeMind zu importieren, w&#xe4;hlen Sie vom Hauptmen&#xfc; ausgehend &apos;Datei&apos; -&gt; &apos;Import&apos; -&gt; &apos;Explorer-Favoriten...&apos;. Sie werden nach dem Pfad zu dem Verzeichnis gefragt, in dem die Favoriten abgelegt sind. Der Name des Verzeichnisses ist &quot;Favoriten&quot; und Sie finden es auf Ihrer Festplatte. F&#xfc;r ein unmodifiziertes, deutsches Windows 2000 lautet der vollst&#xe4;ndige Pfadname &quot;C:\Dokumente und Einstellungen\&lt;Benutzername&gt;\Favoriten&quot;, wobei Sie &apos;&lt;Benutzername&gt;&apos; durch den tats&#xe4;chlich verwendeten Benutzernamen ersetzen."/>
+<node CREATED="1124560950732" ID="Freemind_Link_1567658129" MODIFIED="1150324250313">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    Um Internet Explorer Favoriten (Lesezeichen) in FreeMind zu importieren, w&#228;hlen Sie vom Hauptmen&#252; ausgehend 'Datei' -&gt; 'Import' -&gt; 'Explorer-Favoriten...'. Sie werden nach dem Pfad zu dem Verzeichnis gefragt, in dem die Favoriten abgelegt sind. Der Name des Verzeichnisses ist &quot;Favoriten&quot; und Sie finden es auf Ihrer Festplatte. F&#252;r ein unmodifiziertes, deutsches Windows 2000 lautet der vollst&#228;ndige Pfadname &quot;C:\Dokumente und Einstellungen\&lt;Benutzername&gt;\Favoriten&quot;, wobei Sie '&lt;Benutzername&gt;' durch den tats&#228;chlich verwendeten Benutzernamen ersetzen.
+  </body>
+</html>
+</richcontent>
+</node>
 <node COLOR="#999999" CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Key words: Microsoft Internet Explorer, MSIE, MS IE.">
 <font NAME="Dialog" SIZE="10"/>
 </node>
@@ -840,7 +890,63 @@
 </node>
 <node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_841140408" MODIFIED="1132519364643" POSITION="right" TEXT="Textattribute mittels HTML in Knoten verwenden">
 <node CREATED="1124560950732" ID="Freemind_Link_1661237735" MODIFIED="1132519625819" TEXT="Knoten, die mit &apos;&lt;html&gt;&apos; beginnen, werden mit Hilfe des darin enthaltenen HTML-Codes erzeugt. Diese F&#xe4;higkeit ist f&#xfc;r technisch versierte Leute n&#xfc;tzlich. Ein Beispiel folgt:"/>
-<node CREATED="1124560950732" ID="Freemind_Link_843632799" MODIFIED="1132520194964" TEXT="&lt;html&gt;&#xa;  &lt;head&gt;&#xa;    &#xa;  &lt;/head&gt;&#xa;  &lt;body&gt;&#xa;    &lt;h3&gt;&#xa;      HTML Beispiel&#xa;    &lt;/h3&gt;&#xa;    &lt;p class=&quot;msonormal&quot;&gt;&#xa;      Da sind verschiedene Punkte:&#xa;    &lt;/p&gt;&#xa;    &lt;ul type=&quot;disc&quot;&gt;&#xa;      &lt;li class=&quot;msonormal&quot;&gt;&#xa;        Punkt eins&#xa;      &lt;/li&gt;&#xa;      &lt;li class=&quot;msonormal&quot;&gt;&#xa;        Punkt zwei&#xa;      &lt;/li&gt;&#xa;    &lt;/ul&gt;&#xa;    &lt;p class=&quot;msonormal&quot;&gt;&#xa;      Und wir haben &lt;b&gt;Fettschrift&lt;/b&gt; oder &lt;i&gt;Kursives&lt;/i&gt;. &lt;u&gt;Unterstrichen&lt;/u&gt;, ein &lt;strike&gt;Durchgestrichen&lt;/strike&gt; &#xa;      auch.&lt;br&gt;&lt;br&gt; Es gibt Tabellen:&#xa;    &lt;/p&gt;&#xa;    &lt;table cellpadding=&quot;0&quot; style=&quot;border: none&quot; class=&quot;msonormaltable&quot; border=&quot;1&quot; cellspacing=&quot;0&quot;&gt;&#xa;      &lt;tr&gt;&#xa;        &lt;td style=&quot;border: solid windowtext 1.0pt; padding-left: .75pt; padding-right: .75pt; padding-bottom: .75pt; padding-top: .75pt&quot;&gt;&#xa;          &lt;p class=&quot;msonormal&quot;&gt;&#xa;            Zelle 1&#xa;          &lt;/p&gt;&#xa;        &lt;/td&gt;&#xa;        &lt;td style=&quot;border: solid windowtext 1.0pt; border-left: none; padding-left: .75pt; padding-right: .75pt; padding-top: .75pt; padding-bottom: .75pt&quot;&gt;&#xa;          &lt;p class=&quot;msonormal&quot;&gt;&#xa;            Zelle 2&#xa;          &lt;/p&gt;&#xa;        &lt;/td&gt;&#xa;      &lt;/tr&gt;&#xa;      &lt;tr&gt;&#xa;        &lt;td style=&quot;border: solid windowtext 1.0pt; border-top: none; padding-left: .75pt; padding-right: .75pt; padding-top: .75pt; padding-bottom: .75pt&quot;&gt;&#xa;          &lt;p class=&quot;msonormal&quot;&gt;&#xa;            Zelle 3&#xa;          &lt;/p&gt;&#xa;        &lt;/td&gt;&#xa;        &lt;td style=&quot;border-bottom: solid windowtext 1.0pt; border-top: none; border-left: none; padding-left: .75pt; padding-right: .75pt; border-right: solid windowtext 1.0pt; padding-top: .75pt; padding-bottom: .75pt&quot;&gt;&#xa;          &lt;p class=&quot;msonormal&quot;&gt;&#xa;            Zelle 4&#xa;          &lt;/p&gt;&#xa;        &lt;/td&gt;&#xa;      &lt;/tr&gt;&#xa;    &lt;/table&gt;&#xa;    &lt;p class=&quot;msonormal&quot;&gt;&lt;br&gt;&#xa;      &#xa0;Es gibt vielerlei &lt;font color=&quot;#999900&quot;&gt;Schrift&lt;/font&gt;&lt;font color=&quot;#336600&quot;&gt;farben&lt;/font&gt;.&#xa;    &lt;/p&gt;&#xa;  &lt;/body&gt;&#xa;&lt;/html&gt;&#xa;"/>
+<node CREATED="1124560950732" ID="Freemind_Link_843632799" MODIFIED="1132520194964">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <h3>
+      HTML Beispiel
+    </h3>
+    <p class="msonormal">
+      Da sind verschiedene Punkte:
+    </p>
+    <ul type="disc">
+      <li class="msonormal">
+        Punkt eins
+      </li>
+      <li class="msonormal">
+        Punkt zwei
+      </li>
+    </ul>
+    <p class="msonormal">
+      Und wir haben <b>Fettschrift</b> oder <i>Kursives</i>. <u>Unterstrichen</u>, ein <strike>Durchgestrichen</strike> auch.<br /><br />Es gibt Tabellen:
+    </p>
+    <table style="border: none" border="1" class="msonormaltable" cellspacing="0" cellpadding="0">
+      <tr>
+        <td style="padding-bottom: .75pt; padding-right: .75pt; border: solid windowtext 1.0pt; padding-left: .75pt; padding-top: .75pt">
+          <p class="msonormal">
+            Zelle 1
+          </p>
+        </td>
+        <td style="padding-bottom: .75pt; padding-right: .75pt; border: solid windowtext 1.0pt; border-left: none; padding-left: .75pt; padding-top: .75pt">
+          <p class="msonormal">
+            Zelle 2
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-bottom: .75pt; padding-right: .75pt; border-top: none; border: solid windowtext 1.0pt; padding-left: .75pt; padding-top: .75pt">
+          <p class="msonormal">
+            Zelle 3
+          </p>
+        </td>
+        <td style="padding-bottom: .75pt; padding-right: .75pt; border-bottom: solid windowtext 1.0pt; border-top: none; border-left: none; border-right: solid windowtext 1.0pt; padding-left: .75pt; padding-top: .75pt">
+          <p class="msonormal">
+            Zelle 4
+          </p>
+        </td>
+      </tr>
+    </table>
+    <p class="msonormal">
+      <br />
+      &#160;Es gibt vielerlei <font color="#999900">Schrift</font><font color="#336600">farben</font>.
+    </p>
+  </body>
+</html>
+</richcontent>
+</node>
 <node CREATED="1124560950732" ID="Freemind_Link_233295626" MODIFIED="1132520708305" TEXT="Beim Export nach reinem Text oder RTF (f&#xfc;r Word, OpenOffice usw.) werden HTML-Knoten und Bilder nicht unterst&#xfc;tzt. Immerhin ist es praktisch, HTML zu benutzen, um mit Hilfe der FreeMind-Web-Anwendung im Internet zu publizieren.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -862,14 +968,81 @@
 </node>
 <node COLOR="#996600" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_489201373" MODIFIED="1132525208713" TEXT="Beispiele f&#xfc;r Bilder, die auf einigen Windows-Distributionen funktionieren">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLENDS.GIF&quot;&gt;"/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLUPRT.GIF&quot;&gt;"/>
-<node CREATED="1124560950732" ID="Freemind_Link_1024263145" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACEXPDTN.GIF&quot;&gt;">
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACINDSTR.GIF&quot;&gt;"/>
+<node CREATED="1124560950732" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLENDS.GIF" />
+  </body>
+</html>
+</richcontent>
 </node>
-<node CREATED="1124560950732" ID="Freemind_Link_880988159" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACRICEPR.GIF&quot;&gt;">
-<node CREATED="1124560950732" ID="Freemind_Link_85163528" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSNDSTN.GIF&quot;&gt;">
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="&lt;html&gt;&lt;img src=&quot;file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSUMIPT.GIF&quot;&gt;"/>
+<node CREATED="1124560950732" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLUPRT.GIF" />
+  </body>
+</html>
+</richcontent>
+</node>
+<node CREATED="1124560950732" ID="Freemind_Link_1024263145" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACEXPDTN.GIF" />
+  </body>
+</html>
+</richcontent>
+<node CREATED="1124560950732" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACINDSTR.GIF" />
+  </body>
+</html>
+</richcontent>
+</node>
+</node>
+<node CREATED="1124560950732" ID="Freemind_Link_880988159" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACRICEPR.GIF" />
+  </body>
+</html>
+</richcontent>
+<node CREATED="1124560950732" ID="Freemind_Link_85163528" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSNDSTN.GIF" />
+  </body>
+</html>
+</richcontent>
+<node CREATED="1124560950732" MODIFIED="1124560950732">
+<richcontent><html>
+  <head>
+    
+  </head>
+  <body>
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSUMIPT.GIF" />
+  </body>
+</html>
+</richcontent>
+</node>
 </node>
 </node>
 <node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/GLOBE.WMF" MODIFIED="1124560950732" TEXT="GLOBE.WMF"/>
