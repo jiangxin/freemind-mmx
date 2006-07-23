@@ -41,7 +41,10 @@ import javax.swing.SwingUtilities;
 
 public class FreeMindSplash extends JFrame {
 
-	private class FeedBackImpl implements FeedBack {
+	private static final int SPLASH_FONT_SIZE = 16;
+
+
+    private class FeedBackImpl implements FeedBack {
 
 		private int mActualValue;
 		private long mActualTimeStamp=System.currentTimeMillis();
@@ -100,17 +103,22 @@ public class FreeMindSplash extends JFrame {
         
     	ImageIcon splashImage = new ImageIcon(frame.getResource("images/splash.JPG"));
         JLabel l = new JLabel(splashImage) {
-        	public void paint (Graphics g) {
+        	private Integer mWidth = null;
+
+            public void paint (Graphics g) {
         		super.paint(g);
         		Graphics2D g2 = (Graphics2D) g;
         		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        		Font font = new Font("Arial", Font.BOLD, 16);
+        		Font font = new Font("Arial", Font.BOLD, SPLASH_FONT_SIZE);
         		g2.setFont(font);
                 // determine width of string to center it.
                 String freemindVersion = frame.getFreemindVersion();
-                int width = g2.getFontMetrics().stringWidth(freemindVersion);
-        		int yCoordinate = (int)(getSize().getHeight())-14;
-                int xCoordinate = (int)(getSize().getWidth()/2-width/2);
+                if (mWidth == null) {
+                    mWidth = new Integer(g2.getFontMetrics().stringWidth(
+                            freemindVersion));
+                }                
+                int yCoordinate = (int)(getSize().getHeight())-14;
+                int xCoordinate = (int)(getSize().getWidth()/2-mWidth.intValue()/2);
         		g2.setColor(Color.YELLOW);
                 g2.drawString(freemindVersion, xCoordinate , yCoordinate);
         		g2.setColor(Color.WHITE);

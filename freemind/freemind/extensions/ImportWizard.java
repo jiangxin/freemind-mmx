@@ -129,7 +129,7 @@ freemind.main.Resources.getInstance().logExecption(				e);
 			while (enumeration.hasMoreElements()) {
 				ZipEntry zipEntry = (ZipEntry) enumeration.nextElement();
 				String current = zipEntry.getName();
-				if (current.toLowerCase().endsWith(lookFor)) {
+				if (isInteresting(current)) {
 					current =
 						current.substring(
 							0,
@@ -142,6 +142,19 @@ freemind.main.Resources.getInstance().logExecption(				e);
 				"Problem opening " + classPathFile + " with zip.");
 		}
 	}
+
+    /**
+     * @param current
+     * @return
+     */
+    private boolean isInteresting(String current) {
+        int length = current.length();
+        if(length<lookFor.length()) {
+            return false;
+        }
+        String currentPostfix = current.substring(length-lookFor.length());
+        return lookFor.equalsIgnoreCase(currentPostfix);
+    }
 
 	/**
 	 * Adds the classes from the supplied directory to the class list.
@@ -157,7 +170,7 @@ freemind.main.Resources.getInstance().logExecption(				e);
 		String[] files = currentDir.list();
 		for (int i = 0; i < files.length; i++) {
 			String current = files[i];
-			if (current.toLowerCase().endsWith(lookFor)) {
+			if (isInteresting(current)) {
 				String rootPath = rootDir.getPath();
 				String currentPath = currentDir.getPath();
 				if (! currentPath.startsWith(rootPath)) {
@@ -201,7 +214,10 @@ freemind.main.Resources.getInstance().logExecption(				e);
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.4  2006-07-23 20:34:08  christianfoltin
+ * Revision 1.1.4.6.2.5  2006-07-23 21:01:21  christianfoltin
+ * * some startup profiling resulted in these little changes
+ *
+ * Revision 1.1.4.6.2.4  2006/07/23 20:34:08  christianfoltin
  * * exceptions are logged to log file, too.
  *
  * Revision 1.1.4.6.2.3  2006/07/21 05:28:12  christianfoltin

@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.6 2006-07-23 20:34:08 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.7 2006-07-23 21:01:21 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -85,6 +85,8 @@ public class Tools {
             .asList(new String[] { "exe", "com", "vbs", "bat", "lnk" }));
 
     private static Set availableFontFamilyNames = null; // Keep set of platform
+
+    private static String sEnvFonts[] = null;
 
     // fonts
 
@@ -201,9 +203,7 @@ public class Tools {
 
     public static Set getAvailableFontFamilyNames() {
         if (availableFontFamilyNames == null) {
-            GraphicsEnvironment gEnv = GraphicsEnvironment
-                    .getLocalGraphicsEnvironment();
-            String envFonts[] = gEnv.getAvailableFontFamilyNames();
+            String[] envFonts = getAvailableFonts();
             availableFontFamilyNames = new HashSet();
             for (int i = 0; i < envFonts.length; i++) {
                 availableFontFamilyNames.add(envFonts[i]);
@@ -214,10 +214,20 @@ public class Tools {
         return availableFontFamilyNames;
     }
 
+    /**
+     * @return
+     */
+    private static String[] getAvailableFonts() {
+        if (sEnvFonts == null) {
+            GraphicsEnvironment gEnv = GraphicsEnvironment
+                    .getLocalGraphicsEnvironment();
+            sEnvFonts = gEnv.getAvailableFontFamilyNames();
+        }        
+        return sEnvFonts;
+    }
+
     public static Vector getAvailableFontFamilyNamesAsVector() {
-        GraphicsEnvironment gEnv = GraphicsEnvironment
-                .getLocalGraphicsEnvironment();
-        String envFonts[] = gEnv.getAvailableFontFamilyNames();
+        String[] envFonts = getAvailableFonts();
         Vector availableFontFamilyNames = new Vector();
         for (int i = 0; i < envFonts.length; i++) {
             availableFontFamilyNames.add(envFonts[i]);

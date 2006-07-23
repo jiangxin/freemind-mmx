@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.9 2006-07-23 20:34:08 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.10 2006-07-23 21:01:21 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -242,10 +242,10 @@ public class Controller  implements MapModuleChangeOberser {
 
         setAllActions(false);
 
-        if (!Tools.isAvailableFontFamily(getProperty("standardfont"))) {
-           System.out.println("Warning: the font you have set as standard - "+getProperty("standardfont")+
+        if (!Tools.isAvailableFontFamily(getProperty("defaultfont"))) {
+           logger.warning("Warning: the font you have set as standard - "+getProperty("defaultfont")+
                               " - is not available.");
-           frame.setProperty("standardfont","SansSerif"); }
+           frame.setProperty("defaultfont","SansSerif"); }
     }
 
     //
