@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: CommonNodeKeyListener.java,v 1.1.2.1.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
+/* $Id: CommonNodeKeyListener.java,v 1.1.2.1.2.2 2006-07-23 21:23:27 christianfoltin Exp $ */
 
 package freemind.modes.common;
 
@@ -72,10 +72,10 @@ public class CommonNodeKeyListener implements KeyListener {
 
         // like in excel - write a letter means edit (PN)
         // on the other hand it doesn't allow key navigation (sdfe)
-        disabledKeyType = Tools.safeEquals(c.getFrame().getProperty(
-                "disable_key_type"), "true");
-        keyTypeAddsNew = Tools.safeEquals(c.getFrame().getProperty(
-                "key_type_adds_new"), "true");
+        disabledKeyType = Tools.isPreferenceTrue(c.getFrame().getProperty(
+                "disable_key_type"));
+        keyTypeAddsNew = Tools.isPreferenceTrue(c.getFrame().getProperty(
+                "key_type_adds_new"));
 		keyStrokeUp = KeyStroke.getKeyStroke(up);
 		keyStrokeDown = KeyStroke.getKeyStroke(down);
 		keyStrokeLeft = KeyStroke.getKeyStroke(left);

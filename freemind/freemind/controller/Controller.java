@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.10 2006-07-23 21:01:21 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.11 2006-07-23 21:23:27 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -791,7 +791,7 @@ public class Controller  implements MapModuleChangeOberser {
         String lastOpenedString=lastOpened.save();
         setProperty("lastOpened",lastOpenedString);
         if (currentMapRestorable != null) {
-           getFrame().setProperty("onStartIfNotSpecified",currentMapRestorable); }
+           getFrame().setProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED,currentMapRestorable); }
         // getFrame().setProperty("menubarVisible",menubarVisible ? "true" : "false");
         // ^ Not allowed in application because of problems with not working key shortcuts
         setProperty("toolbarVisible", toolbarVisible ? "true" : "false");

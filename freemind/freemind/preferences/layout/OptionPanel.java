@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.5 2006-07-07 04:26:27 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.6 2006-07-23 21:23:27 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -457,6 +457,8 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("files"));
 		controls.add(new StringProperty(null, "last_opened_list_length")); //  25
+		controls.add(new BooleanProperty(FreeMindCommon.LOAD_LAST_MAP+".tooltip",
+                FreeMindCommon.LOAD_LAST_MAP)); // true
 		controls
 				.add(new BooleanProperty(
 

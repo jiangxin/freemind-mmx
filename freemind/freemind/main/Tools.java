@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.7 2006-07-23 21:01:21 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.8 2006-07-23 21:23:27 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -387,6 +387,16 @@ public class Tools {
         return target.toString();
     }
 
+    /**
+     * Tests a string to be equals with "true".
+     * @return true, iff the String is "true".  
+     */
+    public static boolean isPreferenceTrue(String option) {
+        return Tools.safeEquals(option, "true");
+    }
+
+
+    
     public static boolean safeEquals(String string1, String string2) {
         return (string1 != null && string2 != null && string1.equals(string2))
                 || (string1 == null && string2 == null);

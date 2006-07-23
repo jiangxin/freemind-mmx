@@ -10,6 +10,7 @@ Changes made in FreeMind 0.9.0 Beta 6
 * user.properties are obsolete and were removed. auto.properties are replacing them
 * Logging to file enabled.
 * Notes are always present and directly stored (without the plugin notation)
+* Added option to preferences to not load last opened map on startup.
 
 Changes made in FreeMind 0.9.0 Beta 5
 ===============================

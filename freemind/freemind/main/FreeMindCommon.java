@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.4 2006-07-23 20:34:08 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.5 2006-07-23 21:23:27 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.IOException;
@@ -50,6 +50,12 @@ public class FreeMindCommon {
     public static final String DEFAULT_LANGUAGE = "en";
 
 	private final FreeMindMain mFreeMindMain;
+
+    /**
+     * Holds the last opened map.
+     */
+    public static final String ON_START_IF_NOT_SPECIFIED = "onStartIfNotSpecified";
+    public static final String LOAD_LAST_MAP = "loadLastMap";
 
 	private static Logger logger = null;
 

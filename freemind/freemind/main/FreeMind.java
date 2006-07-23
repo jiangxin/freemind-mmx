@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.12 2006-07-23 20:34:08 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.13 2006-07-23 21:23:27 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -577,8 +577,18 @@ freemind.main.Resources.getInstance().logExecption(				e);
               }
            }
         }
-			if (!fileLoaded && frame.getProperty("onStartIfNotSpecified") != null) {
-			   frame.c.getLastOpenedList().open(frame.getProperty("onStartIfNotSpecified")); }
+		if (!fileLoaded) {
+            if (Tools.isPreferenceTrue(frame
+                    .getProperty(FreeMindCommon.LOAD_LAST_MAP))
+                    && frame
+                            .getProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED) != null) {
+                frame.c
+                        .getLastOpenedList()
+                        .open(
+                                frame
+                                        .getProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED));
+            } 
+        }
 
 		feedBack.increase();
         frame.pack();
