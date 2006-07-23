@@ -3,8 +3,9 @@
 	<plugin_registration class_name="accessories.plugins.NodeNote$Registration" isPluginBase="true">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 	</plugin_registration>
-	<plugin_action documentation="%accessories/plugins/NodeNote.properties_documentation" name="%accessories/plugins/NodeNote.properties_name" key_stroke="%keystroke_accessories/plugins/NodeNote.properties_key" base="freemind.extensions.NodeHookAdapter" icon_path="images/knotes.png" label="accessories/plugins/NodeNote.properties" class_name="accessories.plugins.NodeNote" instanciation="Once">
+	<!--fc, 23.7.06: notes are now integrated.
+		<plugin_action documentation="%accessories/plugins/NodeNote.properties_documentation" name="%accessories/plugins/NodeNote.properties_name" key_stroke="%keystroke_accessories/plugins/NodeNote.properties_key" base="freemind.extensions.NodeHookAdapter" icon_path="images/knotes.png" label="accessories/plugins/NodeNote.properties" class_name="accessories.plugins.NodeNote" instanciation="Once">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/insert/nodeNote"/>
-	</plugin_action>
+	</plugin_action>-->
 </plugin>
