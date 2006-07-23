@@ -152,7 +152,7 @@ public class ExportWithXSLT extends ExportHook {
                 getController().getFrame().openDocument(saveFile.toURL());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
         }
     }
 
@@ -193,7 +193,7 @@ public class ExportWithXSLT extends ExportHook {
         	ImageIO.write(image, "png", out);
         	out.close();
         } catch (IOException e1) {
-        	e1.printStackTrace();
+        freemind.main.Resources.getInstance().logExecption(	e1);
         }
     }
 
@@ -315,7 +315,7 @@ public class ExportWithXSLT extends ExportHook {
        }
        catch(Exception e){
        //System.err.println("error applying the xslt file "+e);
-       e.printStackTrace();
+       freemind.main.Resources.getInstance().logExecption(e);
        return false;
        };
       return true;

@@ -71,7 +71,7 @@ public class ExportToOoWriter extends ExportHook {
 		try {
 			exportToOoWriter(chosenFile);
 		} catch (IOException e) {
-			e.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(			e);
 		}
 		getController().getFrame().setWaitingCursor(false);
 	}
@@ -101,7 +101,7 @@ public class ExportToOoWriter extends ExportHook {
 			trans.transform(new StreamSource(reader), result);
 		} catch (Exception e) {
 			// System.err.println("error applying the xslt file "+e);
-			e.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(			e);
 		}
 	}
 	private void exportToOoWriter(File file) throws IOException {
@@ -162,7 +162,7 @@ public class ExportToOoWriter extends ExportHook {
             } catch (Exception e) {
                 logger.severe("File not found or could not be copied. " +
                         "Was earching for " +  fileName + " and should go to "+out);
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             }
  
         
@@ -190,7 +190,7 @@ public class ExportToOoWriter extends ExportHook {
        }
        catch(Exception e){
        //System.err.println("error applying the xslt file "+e);
-       e.printStackTrace();
+       freemind.main.Resources.getInstance().logExecption(e);
        };
       return ;
       }

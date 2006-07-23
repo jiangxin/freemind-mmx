@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: ExportHook.java,v 1.1.4.7.2.1 2006-06-04 11:23:27 dpolivaev Exp $*/
+/*$Id: ExportHook.java,v 1.1.4.7.2.2 2006-07-23 20:34:08 christianfoltin Exp $*/
 
 package freemind.extensions;
 
@@ -185,7 +185,7 @@ public class ExportHook extends ModeControllerHookAdapter {
             } catch (Exception e) {
                 logger.severe("File not found or could not be copied. " +
                 		"Was earching for " + prefix + fileName + " and should go to "+destinationDirectory);
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             }
     
         

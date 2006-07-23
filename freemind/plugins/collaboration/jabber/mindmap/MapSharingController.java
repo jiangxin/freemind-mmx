@@ -413,7 +413,7 @@ public class MapSharingController {
                  * sw.write(" </map>\n");
                  * 
                  * sender.sendMap(sw.getBuffer().toString()); } catch(Exception
-                 * e) { e.printStackTrace(); }
+                 * e) { freemind.main.Resources.getInstance().logExecption(e); }
                  */
                 jabberConnectionWizardView.showSharingAcceptedMessage(userName);
             } else {

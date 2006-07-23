@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.5 2006-05-28 13:08:06 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.6 2006-07-23 20:34:08 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -65,6 +65,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
     public FreeMindApplet() {
         mFreeMindCommon = new FreeMindCommon(this);
+        Resources.createInstance(this);
     }//Constructor
 
     public boolean isApplet() {
@@ -181,7 +182,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
              getView().moveToRoot(); }
           else {
              System.err.println("View is null."); }}
-       catch (Exception e) { e.printStackTrace(); }
+       catch (Exception e) { freemind.main.Resources.getInstance().logExecption(e); }
     }
 
     public void setWaitingCursor(boolean waiting) {
@@ -262,7 +263,6 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
  	//Layout everything
  	getContentPane().setLayout( new BorderLayout() );
 
-	Resources.createInstance(this);
 	c = new Controller(this) ;
 
     c.optionAntialiasAction.changeAntialias(getProperty(FreeMindCommon.RESOURCE_ANTIALIAS));
@@ -293,9 +293,9 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 			try {
                 EventQueue.invokeAndWait(new Runnable() {public void run(){};});
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             }
 		}
     	c.createNewMode(getProperty("initial_mode"));
@@ -320,13 +320,13 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
                 URL mapUrl = new URL(map);
                 getController().getModeController().load(mapUrl);
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             } catch (XMLParseException e) {
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             } catch (IOException e) {
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             }
         }
 

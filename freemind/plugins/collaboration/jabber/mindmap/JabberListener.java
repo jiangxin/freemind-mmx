@@ -90,7 +90,7 @@ public class JabberListener {
                     sharingWizardController)); //end addMessageListener
         } //end MindMapJabberController
         catch (Exception ex) {
-            ex.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(ex);
             String message;
             //TODO: Descriptive error message on Jabber server connection
             // failure.
@@ -188,7 +188,7 @@ public class JabberListener {
                             logger.warning("Unknown command:" + cmd);
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        freemind.main.Resources.getInstance().logExecption(e);
                     } //end catch
                 } else if (action instanceof CompoundAction) {
                     CompoundAction pair = (CompoundAction) action;
@@ -228,7 +228,7 @@ public class JabberListener {
                                 .executeAction(ePair);
                     } catch (Exception e) {
                         // TODO: handle exception
-                        e.printStackTrace();
+                        freemind.main.Resources.getInstance().logExecption(e);
                     }
                     sharingWizardController.setSendingEnabled(true);
                 }

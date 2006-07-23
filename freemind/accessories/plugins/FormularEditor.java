@@ -167,7 +167,7 @@ public class FormularEditor extends PermanentMindMapNodeHookAdapter {
 						setValue(text);
 						nodeChanged(getNode());
 					} catch (BadLocationException e1) {
-						e1.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(						e1);
 					}
 				}});
 		}

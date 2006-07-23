@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseController.java,v 1.13.18.7.2.2 2006-04-19 20:03:02 dpolivaev Exp $ */
+/* $Id: BrowseController.java,v 1.13.18.7.2.3 2006-07-23 20:34:09 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -235,7 +235,7 @@ public class BrowseController extends ViewControllerAdapter {
 			}
 		} catch (Exception ex) {
 			getController().errorMessage(getText("url_load_error") + absolute);
-			ex.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(			ex);
 			// for some reason, this exception is thrown anytime...
 		} finally {
 			getFrame().setWaitingCursor(false);

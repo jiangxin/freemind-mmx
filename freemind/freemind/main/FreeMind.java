@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.11 2006-07-23 03:29:03 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.12 2006-07-23 20:34:08 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -107,6 +107,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
             logger = getLogger(FreeMind.class.getName());
         }
         mFreeMindCommon = new FreeMindCommon(this);
+        Resources.createInstance(this);
 	}
 
      void init(FeedBack feedback) {
@@ -164,7 +165,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	//Layout everything
 	getContentPane().setLayout( new BorderLayout() );
 
-	Resources.createInstance(this);
 	c = new Controller(this) ;
 	feedback.increase();
     // add a listener for the controller, resource bundle:
@@ -536,7 +536,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	        		mFileHandler = new FileHandler("%h/.freemind/log", 1400000, 5, false);
 	        		mFileHandler.setFormatter(new SimpleFormatter());
 			} catch (Exception e) {
-				e.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(				e);
 			}
         }
 		if(mFileHandler != null) 
@@ -592,7 +592,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
            	}
               frame.getView().moveToRoot(); }}
         catch (Exception e) {
-           e.printStackTrace(); }
+           freemind.main.Resources.getInstance().logExecption(e); }
 
         //if (frame.getProperty("menubarVisible").equals("false")) {
         //   frame.c.setMenubarVisible(false); }

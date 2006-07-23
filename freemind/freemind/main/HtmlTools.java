@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.5 2006-05-30 21:36:17 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.6 2006-07-23 20:34:08 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -72,9 +72,9 @@ public class HtmlTools {
             }
             return resultXml;
         } catch (IOException e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
         } catch (BadLocationException e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
         }
         // fallback:
         htmlText = htmlText.replaceAll("<", "&gt;");

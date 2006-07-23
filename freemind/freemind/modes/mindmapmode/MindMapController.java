@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.8 2006-07-21 05:28:13 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.9 2006-07-23 20:34:09 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -360,7 +360,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
             mMenuStructure = updateMenusFromXml(in);
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
         }
 
     	logger.info("MindMapPopupMenu");
@@ -510,7 +510,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 							patternsFile), mPatternsList);
 					success = true;
 				} catch (Exception e) {
-					e.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(					e);
 				}
 				if (success) {
 					JOptionPane.showMessageDialog(null,
@@ -614,7 +614,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 				registrationInstance.register();
 				mRegistrations.add(registrationInstance);
 			} catch (Exception e) {
-				e.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(				e);
 			}
 		}
 
@@ -817,7 +817,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         	return menus;
         } catch (JiBXException e) {
             logger.severe(e.getCause() + e.getLocalizedMessage() + e.getMessage());
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
             throw new IllegalArgumentException("Menu structure could not be read.");
         }
     }
@@ -863,7 +863,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 						add(holder, theCategory, theAction, keystroke);
 					}
 				} catch (Exception e1) {
-					e1.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(					e1);
 				}
             } else if (obj instanceof MenuSeparator) {
             	holder.addSeparator(categoryCopy);
@@ -1216,7 +1216,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
                   new URL(getMap().getFile().toURL(), relative); }
             catch (MalformedURLException ex) {
                JOptionPane.showMessageDialog(getView(),"Couldn't create valid URL for:"+getMap().getFile());
-               ex.printStackTrace();
+               freemind.main.Resources.getInstance().logExecption(ex);
                return; }
             try {
                MindMapNodeModel node = getMindMapMapModel().loadTree(new File(absolute.getFile()));
@@ -1582,7 +1582,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
                       }
                    }
                 }
-                catch (MalformedURLException e) {e.printStackTrace(); }
+                catch (MalformedURLException e){ freemind.main.Resources.getInstance().logExecption(e); }
     }
 
     protected String getLinkByFileChooser(FileFilter fileFilter) {
@@ -1713,7 +1713,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
                 setLinkByTextField.actionPerformed(null);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
         }
         getFrame().setWaitingCursor(false);
     }

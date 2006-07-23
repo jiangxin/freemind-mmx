@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: NumberProperty.java,v 1.1.2.3 2006-03-14 21:56:27 christianfoltin Exp $*/
+/*$Id: NumberProperty.java,v 1.1.2.3.2.1 2006-07-23 20:34:08 christianfoltin Exp $*/
 package freemind.common;
 
 import javax.swing.JLabel;
@@ -71,7 +71,7 @@ public class NumberProperty extends PropertyBean implements
             try {
                 intValue = Integer.parseInt(value);
             } catch(NumberFormatException e){
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             }
             spinner.setValue(new Integer(intValue));
 	    }

@@ -98,7 +98,7 @@ public class XHTMLWriter extends HTMLWriter {
       writer.close();
       reader.close();
     }catch( Exception e ) {
-      e.printStackTrace();
+      freemind.main.Resources.getInstance().logExecption(e);
     }
   }
 

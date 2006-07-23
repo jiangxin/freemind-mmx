@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.10 2006-05-30 21:36:17 christianfoltin Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.11 2006-07-23 20:34:09 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -155,7 +155,7 @@ static KafenioPanelConfigurationInterface kafenioPanelConfiguration;
          //return; }
       }
       catch (Exception ex) { // Probably class not found exception
-         ex.printStackTrace();
+         freemind.main.Resources.getInstance().logExecption(ex);
          System.err.println("Loading of WYSIWYG HTML editor Kafenio failed. Use the other editors instead."); 
       }}
    // return false; }}

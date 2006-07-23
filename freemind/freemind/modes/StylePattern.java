@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: StylePattern.java,v 1.5.18.8.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
+/* $Id: StylePattern.java,v 1.5.18.8.2.2 2006-07-23 20:34:08 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -510,7 +510,7 @@ public class StylePattern {
 
         } catch(Exception e) {
             System.err.println("Error in MindMapMapModel.saveXML(): ");
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
         }
     }
     */

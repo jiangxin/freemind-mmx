@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseMapModel.java,v 1.9.18.5.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
+/* $Id: BrowseMapModel.java,v 1.9.18.5.2.2 2006-07-23 20:34:09 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -134,7 +134,7 @@ public class BrowseMapModel extends MapAdapter {
         catch (Exception ex) {
            getFrame().getController().errorMessage("Could not open URL "+url.toString()+".");
            System.err.println(ex);
-           // ex.printStackTrace();
+           // freemind.main.Resources.getInstance().logExecption(ex);
            return null;
         }
 

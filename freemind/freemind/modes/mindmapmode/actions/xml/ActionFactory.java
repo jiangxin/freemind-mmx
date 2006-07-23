@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: ActionFactory.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: ActionFactory.java,v 1.1.2.2.2.2 2006-07-23 20:34:09 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -114,7 +114,7 @@ public class ActionFactory {
 			try {
                 handler.executeAction(filteredPair);
             } catch (Exception e) {
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             }
         }
 //		for (Iterator i = registeredHandler.iterator(); i.hasNext();) {

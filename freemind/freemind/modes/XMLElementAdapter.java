@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.6 2006-07-23 03:29:03 christianfoltin Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.7 2006-07-23 20:34:09 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -213,10 +213,10 @@ public abstract class XMLElementAdapter extends XMLElement {
 				if (typeAttribute == null
 						|| XML_NODE_XHTML_TYPE_NODE.equals(typeAttribute)) {
 					// output:
-					logger.info("Setting node html content to:" + xmlText);
+					logger.finest("Setting node html content to:" + xmlText);
 					node.setXmlText(xmlText);
 				} else {
-					logger.info("Setting note html content to:" + xmlText);
+					logger.finest("Setting note html content to:" + xmlText);
 					node.setXmlNoteText(xmlText);
 				}
 			}
@@ -234,7 +234,7 @@ public abstract class XMLElementAdapter extends XMLElement {
                 // you know exactly what you are doing.
                 hook.setNode(node);
              } catch(Exception e) {
-                 e.printStackTrace();
+                 freemind.main.Resources.getInstance().logExecption(e);
                  hook = new PermanentNodeHookSubstituteUnknown(loadName);
              }
  			 hook.loadFrom(xml);
@@ -385,7 +385,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 
    private void setNodeAttribute(String name, String sValue, NodeAdapter node) {
      if (name.equals(XML_NODE_TEXT)) {
-			logger.info("Setting node text content to:" + sValue);
+			logger.finest("Setting node text content to:" + sValue);
 	    node.setUserObject(sValue); }
 	 else if (name.equals(XML_NODE_ENCRYPTED_CONTENT)) {
 	     // we change the node implementation to EncryptedMindMapNode.

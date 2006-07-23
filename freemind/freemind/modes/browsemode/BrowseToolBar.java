@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseToolBar.java,v 1.6.18.2.2.2 2006-04-20 22:46:47 dpolivaev Exp $ */
+/* $Id: BrowseToolBar.java,v 1.6.18.2.2.3 2006-07-23 20:34:09 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -50,7 +50,7 @@ public class BrowseToolBar extends JToolBar {
 		    try {
                 c.load(new URL(urlText));
             } catch (Exception e1) {
-                e1.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e1);
                 //FIXME: Give a good error message.
                 c.getController().errorMessage(e1);
             }

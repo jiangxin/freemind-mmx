@@ -19,7 +19,7 @@
  *
  * Created on 23.06.2004
  */
-/*$Id: XmlBindingTools.java,v 1.1.2.2 2006-03-14 21:56:27 christianfoltin Exp $*/
+/*$Id: XmlBindingTools.java,v 1.1.2.2.2.1 2006-07-23 20:34:08 christianfoltin Exp $*/
 
 package freemind.common;
 
@@ -59,7 +59,7 @@ public class XmlBindingTools {
             try {
                 mBindingFactory = BindingDirectory.getFactory(XmlAction.class);
             } catch (JiBXException e) {
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             }
 
 		}
@@ -71,7 +71,7 @@ public class XmlBindingTools {
         try {
             return mBindingFactory.createMarshallingContext();
         } catch (JiBXException e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
             return null;
         }
 	}
@@ -80,7 +80,7 @@ public class XmlBindingTools {
         try {
             return  mBindingFactory.createUnmarshallingContext();
         } catch (JiBXException e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
             return null;
         }
 	}
@@ -125,7 +125,7 @@ public class XmlBindingTools {
             m.marshalDocument(action, "UTF-8", null,
                     writer);
         } catch (JiBXException e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
             return null;
         }
         String result = writer.toString();
@@ -149,7 +149,7 @@ public class XmlBindingTools {
             ( reader  , null);
 			return doAction;
 		} catch (JiBXException e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
             return null;
         }
     }

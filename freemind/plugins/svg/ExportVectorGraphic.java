@@ -19,7 +19,7 @@
  *
  * Created on 10.11.2004
  */
-/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.2 2006-06-04 11:23:28 dpolivaev Exp $ */
+/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.3 2006-07-23 20:34:10 christianfoltin Exp $ */
 package plugins.svg;
 
 import java.awt.Dimension;
@@ -106,7 +106,7 @@ public class ExportVectorGraphic extends ExportHook{
        }
        catch(Exception e){
        //System.err.println("error applying the xslt file "+e);
-       e.printStackTrace();
+       freemind.main.Resources.getInstance().logExecption(e);
        };
       return ;
       }

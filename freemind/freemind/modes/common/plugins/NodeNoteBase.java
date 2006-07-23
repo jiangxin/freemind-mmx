@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteBase.java,v 1.1.2.2.2.4 2006-07-21 05:28:13 christianfoltin Exp $ */
+/* $Id: NodeNoteBase.java,v 1.1.2.2.2.5 2006-07-23 20:34:09 christianfoltin Exp $ */
 package freemind.modes.common.plugins;
 
 import javax.swing.ImageIcon;
@@ -75,7 +75,7 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
             receiveFocusAddons();
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
         }
 	}
 

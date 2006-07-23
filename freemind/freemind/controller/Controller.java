@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.8 2006-07-07 04:26:26 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.9 2006-07-23 20:34:08 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -882,7 +882,7 @@ public class Controller  implements MapModuleChangeOberser {
                 try {
                     printerJob.print();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    freemind.main.Resources.getInstance().logExecption(ex);
                 }
 				getView().endPrinting();
             }
@@ -1027,7 +1027,7 @@ public class Controller  implements MapModuleChangeOberser {
                 try {
                     url = new URL(map);
                 } catch (MalformedURLException e2) {
-                    e2.printStackTrace();
+                    freemind.main.Resources.getInstance().logExecption(e2);
                     return;
                 }
                 final URL endUrl = url;
@@ -1038,11 +1038,11 @@ public class Controller  implements MapModuleChangeOberser {
                             createNewMode(BrowseMode.MODENAME);
                             controller.getModeController().load(endUrl);
                         } catch (FileNotFoundException e1) {
-                            e1.printStackTrace();
+                            freemind.main.Resources.getInstance().logExecption(e1);
                         } catch (XMLParseException e1) {
-                            e1.printStackTrace();
+                            freemind.main.Resources.getInstance().logExecption(e1);
                         } catch (IOException e1) {
-                            e1.printStackTrace();
+                            freemind.main.Resources.getInstance().logExecption(e1);
                         }
                     }
                 });

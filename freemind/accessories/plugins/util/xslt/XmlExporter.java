@@ -62,7 +62,7 @@ public class XmlExporter {
      }
      catch(Exception e){
      //System.err.println("error applying the xslt file "+e);
-     e.printStackTrace();
+     freemind.main.Resources.getInstance().logExecption(e);
      };
     return ;
     }

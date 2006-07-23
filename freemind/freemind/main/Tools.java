@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.5 2006-07-23 03:29:03 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.6 2006-07-23 20:34:08 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -427,7 +427,7 @@ public class Tools {
                     timeOut--;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             }
         }
     }
@@ -837,7 +837,7 @@ public class Tools {
 	        trans.transform(new StreamSource(file), result);
 	        logger.info("Updating the file "+file.getName()+" to the current version. Done." ); //+ writer.getBuffer().toString());
 	    } catch(Exception ex) {
-	        ex.printStackTrace();
+	        freemind.main.Resources.getInstance().logExecption(ex);
 	        // exception: we take the file itself:
 	        return getActualReader(file);
 	    } finally {

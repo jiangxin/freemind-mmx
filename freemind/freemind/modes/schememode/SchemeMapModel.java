@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: SchemeMapModel.java,v 1.11.18.4.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
+/* $Id: SchemeMapModel.java,v 1.11.18.4.2.2 2006-07-23 20:34:09 christianfoltin Exp $ */
 
 package freemind.modes.schememode;
 
@@ -65,7 +65,7 @@ public class SchemeMapModel extends MapAdapter {
 
 	} catch(Exception e) {
 	    System.err.println("Error in SchemeMapModel.save: ");
-	    e.printStackTrace();
+	    freemind.main.Resources.getInstance().logExecption(e);
 	    return false;
 	}
     }

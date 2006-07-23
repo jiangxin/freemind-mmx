@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.3 2006-07-23 03:29:03 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.4 2006-07-23 20:34:08 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.IOException;
@@ -88,7 +88,7 @@ public class FreeMindCommon {
 				languageResources = getLanguageResources(lang);
 				defaultResources = getLanguageResources(DEFAULT_LANGUAGE);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(				ex);
 				logger.severe("Error loading Resources");
 				return null;
 			}

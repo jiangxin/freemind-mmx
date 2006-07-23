@@ -19,7 +19,7 @@
  *
  * Created on 29.08.2004
  */
-/* $Id: FreemindHelpStarter.java,v 1.1.4.1.16.1 2006-04-05 21:26:32 dpolivaev Exp $ */
+/* $Id: FreemindHelpStarter.java,v 1.1.4.1.16.2 2006-07-23 20:34:10 christianfoltin Exp $ */
 
 package plugins.help;
 
@@ -56,7 +56,7 @@ public class FreemindHelpStarter extends ModeControllerHookAdapter {
 	        hb.setViewDisplayed(true);
         } catch (Exception ee) {
             // Say what the exception really is
-            ee.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(ee);
             logger.warning( "HelpSet " + ee.getMessage() + ee);
             logger.warning("HelpSet "+ helpHS +" not found");
             return;

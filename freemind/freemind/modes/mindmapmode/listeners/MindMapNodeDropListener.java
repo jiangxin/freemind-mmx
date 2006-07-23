@@ -214,7 +214,7 @@ public class MindMapNodeDropListener implements DropTargetListener {
             }
         } catch (Exception e) {
             System.err.println("Drop exception:" + e);
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
             dtde.dropComplete(false);
             return;
         }

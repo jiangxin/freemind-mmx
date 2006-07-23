@@ -92,7 +92,7 @@ public class ImportWizard {
 				foundPlugins.add(key);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(				e);
 			}
 			if (classPathFile.exists()) {
 				String lowerCaseFileName = classPathEntry.toLowerCase();
@@ -201,7 +201,10 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.3  2006-07-21 05:28:12  christianfoltin
+ * Revision 1.1.4.6.2.4  2006-07-23 20:34:08  christianfoltin
+ * * exceptions are logged to log file, too.
+ *
+ * Revision 1.1.4.6.2.3  2006/07/21 05:28:12  christianfoltin
  * BasePlugins corrected
  * Notes are always present - start
  * new danish translation -> thanks

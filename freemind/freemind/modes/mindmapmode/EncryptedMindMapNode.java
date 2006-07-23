@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.3 2006-04-13 18:24:12 dpolivaev Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.4 2006-07-23 20:34:09 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -261,7 +261,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         try {
             ret = super.save(writer, registry, saveHidden);
         } catch (Exception e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
         }
         setAccessable(oldIsVisible);
         return ret;
@@ -298,7 +298,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
             String encrypted = encrypter.encrypt(childXml.toString());
             return encrypted;
         } catch (Exception e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
         }
         throw new IllegalArgumentException("Can't encrypt the node.");
     }

@@ -19,7 +19,7 @@
  *
  * Created on 01.11.2004
  */
-/* $Id: ExportPdf.java,v 1.1.4.2.2.1 2006-04-05 21:26:32 dpolivaev Exp $ */
+/* $Id: ExportPdf.java,v 1.1.4.2.2.2 2006-07-23 20:34:10 christianfoltin Exp $ */
 
 package plugins.svg;
 
@@ -78,7 +78,7 @@ public class ExportPdf extends ExportVectorGraphic {
             ostream.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
             JOptionPane.showMessageDialog(getController().getFrame().getContentPane(), e.getLocalizedMessage(), null, JOptionPane.ERROR_MESSAGE);
         }
         getController().getFrame().setWaitingCursor(false);

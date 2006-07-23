@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.4 2006-05-30 21:36:17 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.5 2006-07-23 20:34:09 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -160,7 +160,7 @@ public class MindMapMapModel extends MapAdapter  {
          else {
             return null; }} // No need to support HTML if the node is a plain text node.        
       catch(Exception e) {
-         e.printStackTrace();
+         freemind.main.Resources.getInstance().logExecption(e);
          return null; }}
 
    public boolean saveHTML(MindMapNodeModel rootNodeOfBranch, File file) {
@@ -334,7 +334,7 @@ public class MindMapMapModel extends MapAdapter  {
 
         } catch(Exception e) {
             System.err.println("Error in MindMapMapModel.saveHTML(): ");
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
             return false;
         }
     }
@@ -352,7 +352,7 @@ public class MindMapMapModel extends MapAdapter  {
             return stringWriter.toString();
 
         } catch(Exception e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
             return null;
         }
     }
@@ -367,7 +367,7 @@ public class MindMapMapModel extends MapAdapter  {
 
         } catch(Exception e) {
             System.err.println("Error in MindMapMapModel.saveTXT(): ");
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
             return false;
         }
     }
@@ -382,7 +382,7 @@ public class MindMapMapModel extends MapAdapter  {
 
             return stringWriter.toString();
         } catch(Exception e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
             return null;
         }
     }
@@ -422,7 +422,7 @@ public class MindMapMapModel extends MapAdapter  {
             fileout.write("}");
             return true; }
         catch(Exception e) {
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
             return false; }}
     /**
      * Return the success of saving
@@ -455,7 +455,7 @@ public class MindMapMapModel extends MapAdapter  {
             return false;
         } catch(Exception e) {
             System.err.println("Error in MindMapMapModel.save(): ");
-            e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
             return false;
         }
     }
@@ -515,7 +515,7 @@ public class MindMapMapModel extends MapAdapter  {
              else {
                readOnly = false; }}
           catch (Exception e){ // Throwed by tryToLock
-             e.printStackTrace();
+             freemind.main.Resources.getInstance().logExecption(e);
              getFrame().getController().informationMessage(
                Tools.expandPlaceholders(getText("locking_failed_by_open"), file.getName()));
              readOnly = true; }}
@@ -567,7 +567,7 @@ public class MindMapMapModel extends MapAdapter  {
         } catch (Exception ex) {
             String errorMessage = "Error while parsing file:" + ex;
             System.err.println(errorMessage);
-            ex.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(ex);
             NodeAdapter result = mapElement.createNodeAdapter(getFrame(), null);
             result.setText(errorMessage);
             return (MindMapNodeModel) result;
@@ -605,7 +605,7 @@ public class MindMapMapModel extends MapAdapter  {
 			}
 			in.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(			e);
 			return new StringBuffer();
 		}
 		return buffer;
@@ -709,7 +709,7 @@ public class MindMapMapModel extends MapAdapter  {
                // I guess.
 
                writeSemaphoreFile(lockedSemaphoreFile); }
-            catch (Exception e) {e.printStackTrace();}}
+            catch (Exception e) {freemind.main.Resources.getInstance().logExecption(e);}}
     }
     private class DummyLockManager extends LockManager {
         public synchronized String popLockingUserOfOldLock() {
@@ -765,7 +765,7 @@ public class MindMapMapModel extends MapAdapter  {
                                     tempFile.deleteOnExit();
                             } catch (Exception e) {
                                 System.err.println("Error in automatic MindMapMapModel.save(): "+e.getMessage());
-                                e.printStackTrace();
+                                freemind.main.Resources.getInstance().logExecption(e);
                                 return;
                             }
                         }
@@ -774,15 +774,15 @@ public class MindMapMapModel extends MapAdapter  {
                             model.getFrame().out("Map was automatically saved (using the file name "+tempFile+") ...");
                         } catch (Exception e) {
                             System.err.println("Error in automatic MindMapMapModel.save(): "+e.getMessage());
-                            e.printStackTrace();
+                            freemind.main.Resources.getInstance().logExecption(e);
                         }
                         tempFileStack.add(tempFile); // add at the back.
                     }
                 });
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                freemind.main.Resources.getInstance().logExecption(e);
             }
         }
      }

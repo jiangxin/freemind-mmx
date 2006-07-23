@@ -19,8 +19,8 @@
 */
 /* XMLElement.java
  *
- * $Revision: 1.7.18.4.2.3 $
- * $Date: 2006-05-25 21:38:35 $
+ * $Revision: 1.7.18.4.2.4 $
+ * $Date: 2006-07-23 20:34:08 $
  * $Name:  $
  *
  * This file is part of NanoXML 2 Lite.
@@ -125,7 +125,7 @@ import java.util.regex.Pattern;
  *
  * @author Marc De Scheemaecker
  *         &lt;<A href="mailto:cyberelf@mac.com">cyberelf@mac.com</A>&gt;
- * @version $Name:  $, $Revision: 1.7.18.4.2.3 $
+ * @version $Name:  $, $Revision: 1.7.18.4.2.4 $
  */
 public class XMLElement
 {

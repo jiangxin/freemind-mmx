@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.3 2006-05-02 20:40:22 christianfoltin Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.4 2006-07-23 20:34:08 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -230,7 +230,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 			patternList = StylePatternFactory.loadPatterns(controller
 					.getPatternReader());
 		} catch (Exception e) {
-			e.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(			e);
 			JOptionPane.showMessageDialog(this, getDialogTitle(), controller
 					.getText("accessories/plugins/ManagePatterns.not_found"),
 					JOptionPane.ERROR_MESSAGE);

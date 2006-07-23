@@ -88,7 +88,7 @@ public class ExportToImage extends ExportHook {
 //			encoder.encode(image);
 			out.close();
 		} catch (IOException e1) {
-			e1.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(			e1);
 		}
 	    getController().getFrame().setWaitingCursor(false);
 		return true;
@@ -116,7 +116,7 @@ public class ExportToImage extends ExportHook {
        }
        catch(Exception e){
        //System.err.println("error applying the xslt file "+e);
-       e.printStackTrace();
+       freemind.main.Resources.getInstance().logExecption(e);
        };
       return ;
       }

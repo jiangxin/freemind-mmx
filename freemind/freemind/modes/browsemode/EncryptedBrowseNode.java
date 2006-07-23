@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
+/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.2 2006-07-23 20:34:09 christianfoltin Exp $ */
 package freemind.modes.browsemode;
 
 import java.io.IOException;
@@ -117,10 +117,10 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 			try {
 				element.parseFromReader(new StringReader(string));
 			} catch (XMLParseException e) {
-				e.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(				e);
 				return;
 			} catch (IOException e) {
-				e.printStackTrace();
+freemind.main.Resources.getInstance().logExecption(				e);
 				return;
 			}
 			BrowseNodeModel node = (BrowseNodeModel) element.getUserObject();
