@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.10 2006-07-21 05:28:13 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.11 2006-07-23 03:29:03 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -891,6 +891,8 @@ public abstract class NodeAdapter implements MindMapNode {
 	}
 
     public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveInvisible) throws IOException {
+    	// pre save event to save all contents of the node:
+    	getModeController().firePreSaveEvent(this);
     	XMLElement node = new XMLElement();
 
 //    	if (!isNodeClassToBeSaved()) {
@@ -908,8 +910,17 @@ public abstract class NodeAdapter implements MindMapNode {
             // save <content> tag:
             XMLElement htmlElement = new XMLElement();
             htmlElement.setName(XMLElementAdapter.XML_NODE_XHTML_CONTENT_TAG);
-            htmlElement.setEncodedContent(getXmlText());
+            htmlElement.setAttribute(XMLElementAdapter.XML_NODE_XHTML_TYPE_TAG, XMLElementAdapter.XML_NODE_XHTML_TYPE_NODE);
+            htmlElement.setEncodedContent(getXmlText().replace('\0', ' '));
             node.addChild(htmlElement);
+        }
+        if(getXmlNoteText()!= null){
+	        	XMLElement htmlElement = new XMLElement();
+	        	htmlElement.setName(XMLElementAdapter.XML_NODE_XHTML_CONTENT_TAG);
+	        	htmlElement.setAttribute(XMLElementAdapter.XML_NODE_XHTML_TYPE_TAG, XMLElementAdapter.XML_NODE_XHTML_TYPE_NOTE);
+	        	htmlElement.setEncodedContent(getXmlNoteText().replace('\0', ' '));
+	        	node.addChild(htmlElement);
+        	
         }
     	// save additional info:
     	if (getAdditionalInfo() != null) {
@@ -1028,6 +1039,10 @@ public abstract class NodeAdapter implements MindMapNode {
         }
         return node;
     }
+
+	public ModeController getModeController() {
+		return map.getModeController();
+	}
 
     private void saveChildren(Writer writer, MindMapLinkRegistry registry, NodeAdapter node, boolean saveHidden) throws IOException {
         for (ListIterator e = node.childrenUnfolded(); e.hasNext();) {

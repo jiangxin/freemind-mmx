@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.5 2006-05-30 21:36:17 christianfoltin Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.6 2006-07-23 03:29:03 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -72,6 +72,10 @@ public abstract class XMLElementAdapter extends XMLElement {
     public static final String XML_NODE_ENCRYPTED_CONTENT = "ENCRYPTED_CONTENT";
     public static final String XML_NODE_HISTORY_CREATED_AT = "CREATED";
     public static final String XML_NODE_HISTORY_LAST_MODIFIED_AT = "MODIFIED";
+
+	public static final String XML_NODE_XHTML_TYPE_TAG = "TYPE";
+	public static final String XML_NODE_XHTML_TYPE_NODE = "NODE";
+	public static final String XML_NODE_XHTML_TYPE_NOTE = "NOTE";
 
     private String attributeName;
 
@@ -203,11 +207,19 @@ public abstract class XMLElementAdapter extends XMLElement {
           else if (child.getName().equals("icon")) {
              node.addIcon((MindIcon)child.getUserObject()); }
           else if (child.getName().equals(XML_NODE_XHTML_CONTENT_TAG)) {
-              String xmlText = ((XMLElement) child).getContent();
-              // output:
-              logger.finest("Setting node html content to:" + xmlText);
-              node.setXmlText(xmlText);
-          }
+				String xmlText = ((XMLElement) child).getContent();
+				Object typeAttribute = child
+						.getAttribute(XML_NODE_XHTML_TYPE_TAG);
+				if (typeAttribute == null
+						|| XML_NODE_XHTML_TYPE_NODE.equals(typeAttribute)) {
+					// output:
+					logger.info("Setting node html content to:" + xmlText);
+					node.setXmlText(xmlText);
+				} else {
+					logger.info("Setting note html content to:" + xmlText);
+					node.setXmlNoteText(xmlText);
+				}
+			}
          else if (child.getName().equals("hook")) {
          	 XMLElement xml = (XMLElement) child/*.getUserObject()*/;
              String loadName = (String)xml.getAttribute("NAME");
@@ -373,6 +385,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 
    private void setNodeAttribute(String name, String sValue, NodeAdapter node) {
      if (name.equals(XML_NODE_TEXT)) {
+			logger.info("Setting node text content to:" + sValue);
 	    node.setUserObject(sValue); }
 	 else if (name.equals(XML_NODE_ENCRYPTED_CONTENT)) {
 	     // we change the node implementation to EncryptedMindMapNode.

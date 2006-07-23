@@ -27,6 +27,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Dimitri Polivaev
@@ -36,8 +38,11 @@ public class Resources {
     private FreeMindMain main;
     static Resources resourcesInstance = null;
     private HashMap countryMap;
+	private Logger logger = null;
     private Resources(FreeMindMain frame) {
         this.main = frame;  
+		if (logger == null)
+			logger = main.getLogger(this.getClass().getName());
     }
     
     static public void createInstance(FreeMindMain frame){
@@ -97,5 +102,11 @@ public class Resources {
     public java.util.logging.Logger getLogger(String forClass){
         return main.getLogger(forClass);
     }
+    
+    public void logExecption(Throwable e) {
+		logger.log(Level.SEVERE, "An exception occured", e);
+	}
+    
+
 
 }

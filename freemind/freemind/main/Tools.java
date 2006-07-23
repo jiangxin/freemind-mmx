@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.4 2006-05-30 21:36:17 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.5 2006-07-23 03:29:03 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -835,7 +835,7 @@ public class Tools {
 	        TransformerFactory transFact = TransformerFactory.newInstance();
 	        Transformer trans = transFact.newTransformer(xsltSource);
 	        trans.transform(new StreamSource(file), result);
-	        logger.info("Updating the file "+file.getName()+" to the current version. Done.");
+	        logger.info("Updating the file "+file.getName()+" to the current version. Done." ); //+ writer.getBuffer().toString());
 	    } catch(Exception ex) {
 	        ex.printStackTrace();
 	        // exception: we take the file itself:

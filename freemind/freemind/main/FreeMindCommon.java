@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.2 2006-05-21 09:29:52 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.3 2006-07-23 03:29:03 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.IOException;
@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -135,4 +136,5 @@ public class FreeMindCommon {
     public void clearLanguageResources() {
 		languageResources = null;
 	}
+    
 }

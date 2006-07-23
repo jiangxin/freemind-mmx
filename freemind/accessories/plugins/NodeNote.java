@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.6 2006-07-21 05:28:12 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.7 2006-07-23 03:29:02 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -102,18 +102,8 @@ public class NodeNote extends NodeNoteBase {
 			}
 
 			public void onLooseFocusHook(MindMapNode node) {
-				boolean editorContentEmpty = getHtmlEditorPanel()
-						.getDocumentBody().matches("[\\s\\n]*");
-				controller.deregisterNodeSelectionListener(this);
-				if (listener.isDirty()) {
-					if (editorContentEmpty) {
-						changeNodeText(null, node);
-					} else {
-						changeNodeText(getHtmlEditorPanel().getDocumentText(),
-								node);
-					}
-				}
-				controller.registerNodeSelectionListener(this);
+				// store its content:
+				onSaveNode(node);
 				getHtmlEditorPanel().setDocumentText("");
 				getHtmlEditorPanel().purgeUndos();
 			}
@@ -129,6 +119,22 @@ public class NodeNote extends NodeNoteBase {
 			}
 
 			public void onUpdateNodeHook(MindMapNode node) {
+			}
+
+			public void onSaveNode(MindMapNode node) {
+				boolean editorContentEmpty = getHtmlEditorPanel()
+				.getDocumentBody().matches("[\\s\\n]*");
+				controller.deregisterNodeSelectionListener(this);
+				if (listener.isDirty()) {
+					if (editorContentEmpty) {
+						changeNodeText(null, node);
+					} else {
+						changeNodeText(getHtmlEditorPanel().getDocumentText(),
+								node);
+					}
+				}
+				controller.registerNodeSelectionListener(this);
+				
 			}
 		}
 

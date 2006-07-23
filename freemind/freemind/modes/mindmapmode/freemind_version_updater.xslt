@@ -53,6 +53,12 @@
 			--><xsl:when test="@version='0.8.1_beta3'"><!--
 			-->0810030<!-- 
 			--></xsl:when><!--
+			--><xsl:when test="@version='0.9.0 Beta 5'"><!--
+			-->0900050<!-- 
+			--></xsl:when><!--
+			--><xsl:when test="@version='0.9.0_Beta_6'"><!--
+			-->0900060<!-- 
+			--></xsl:when><!--
 			--><xsl:otherwise><!--
 			-->-1<!--
 			--></xsl:otherwise><!--
@@ -78,6 +84,7 @@
  -->
 	<!-- remove the following attributes/tags: -->
 	<xsl:template match="node/hook[@NAME='accessories/plugins/CreationModificationPlugin.properties']"/>
+	<xsl:template match="node/hook[@NAME='accessories/plugins/NodeNote.properties']"/>
 	<xsl:template match="node/@SHIFT_Y"/>
 	<xsl:template match="node/@AA_NODE_CLASS"/>
 	<xsl:template match="node/@ADDITIONAL_INFO"/>
@@ -119,6 +126,25 @@
 			<xsl:apply-templates select="@*|node()">
 				<xsl:with-param name="version" select="$version"/>
 			</xsl:apply-templates>
+			<xsl:choose>
+				<!-- move the notes into the node tag as of version 0.9.0 Beta6-->
+				<xsl:when test="$version &lt;= 0900050 and hook[@NAME='accessories/plugins/NodeNote.properties']">
+					<xsl:element name="richcontent">
+						<xsl:attribute name="TYPE">NOTE</xsl:attribute>
+					<html>
+					  <head>
+					
+					  </head>
+					  <body>
+						<p align="left">
+						<xsl:value-of 
+							select="hook[@NAME='accessories/plugins/NodeNote.properties']/text"/>
+						</p>
+					  </body>
+					</html>
+					</xsl:element>
+				</xsl:when>				
+			</xsl:choose>
 		</xsl:copy>
 	</xsl:template>
 </xsl:stylesheet>

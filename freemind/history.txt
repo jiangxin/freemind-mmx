@@ -9,6 +9,7 @@ Changes made in FreeMind 0.9.0 Beta 6
 * FreeMindStarter introduced to detect wrong java versions.
 * user.properties are obsolete and were removed. auto.properties are replacing them
 * Logging to file enabled.
+* Notes are always present and directly stored (without the plugin notation)
 
 Changes made in FreeMind 0.9.0 Beta 5
 ===============================

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.5 2006-07-21 05:28:13 christianfoltin Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.6 2006-07-23 03:29:03 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -140,6 +140,11 @@ public interface ModeController  {
          */
         void onLooseFocusHook(MindMapNode node);
 
+		/**
+		 * Is issued before a node is saved (eg. to save its notes, too, even if the notes is currently edited).
+		 */
+		void onSaveNode(MindMapNode node);
+
     }
 
     /**
@@ -152,6 +157,12 @@ public interface ModeController  {
      * the current selected node.
      */
     void deregisterNodeSelectionListener(NodeSelectionListener listener);
+    
+    /**
+     * Is issued before a node is saved (eg. to save its notes, too, even if the notes is currently edited).
+     * It is issued via NodeSelectionListener.
+     */
+    void firePreSaveEvent(MindMapNode node);
     
      /** The position of this method is an exception. Normally, every method that changes
      *  nodes must be contained in the specific mode controllers but as this method

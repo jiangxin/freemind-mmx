@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.10 2006-07-21 05:28:12 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.11 2006-07-23 03:29:03 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -83,7 +83,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     private static final String DEFAULT_LANGUAGE = "en";
     public static final String VERSION = "0.9.0 Beta 6";
-	public static final String XML_VERSION = "0.9.0 Beta 5";
+	public static final String XML_VERSION = "0.9.0_Beta_6";
     //    public static final String defaultPropsURL = "freemind.properties";
     public URL defaultPropsURL;
     //    public static Properties defaultProps;
@@ -214,13 +214,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	southPanel = new JPanel(new BorderLayout());
 	status = new JLabel();
-	southPanel.add( status, BorderLayout.SOUTH );
+//	southPanel.add( status, BorderLayout.SOUTH );
 
 	mSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, southPanel);
 	mSplitPane.setDividerLocation(getIntProperty(SPLIT_PANE_POSITION, 100));
 	mSplitPane.setContinuousLayout(true);
 	mSplitPane.setOneTouchExpandable(true);
 	getContentPane().add( mSplitPane, BorderLayout.CENTER);
+	getContentPane().add( status, BorderLayout.SOUTH);
 
 	//Disable the default close button, instead use windowListener
 	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
