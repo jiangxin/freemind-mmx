@@ -4,7 +4,7 @@
 
   <!--
        File:        freemind.xsl
-       Version:     0.2
+       Version:     0.3
        Description: A XSLT stylesheet to transform mindmap files created with FreeMind (http://freemind.sf.net)
                     into HTML files. The transformation will keep the structure of the files, clouds (with it's colors),
                     icons, internal and external links and the ability to collapse whole subtrees of the document (with
@@ -25,6 +25,8 @@
                      for further details)
 	  Bug fix (FC/ 25.04.2006): 
 		 - Export of local hiperlinks corrected.
+	  Bug fix (FC/ 23.07.2006): 
+		 - Export of notes adapted to new structure.
   -->
 
   <xsl:output method="html" doctype-public="-//W3C//DTD HTML 4.01 Strict//EN" 
@@ -216,7 +218,7 @@
         </a>
       </xsl:for-each>
 		<!-- Output the note.-->
-	 <xsl:apply-templates select="hook" mode="notes"/>
+	 <xsl:apply-templates select="richcontent" mode="notes"/>
       <!-- the content div. This div contains all subnodes of this node. It carries the unique ID
            created in the beginning (which is used to hide this div when necessary). The content node
            is only created if there are any subnodes -->
@@ -231,22 +233,18 @@
     </div>
   </xsl:template>
 
-	<xsl:template match="hook[@NAME='accessories/plugins/NodeNote.properties']" mode="notes">
-		<xsl:choose>
-			<xsl:when test="./text">
-				<br/>
-				<p class="notes">
-					<xsl:call-template name="notesOut">
-						<xsl:with-param name="text"><xsl:value-of select="./text"/></xsl:with-param>
-					</xsl:call-template>
-				</p>
-			</xsl:when>
-		</xsl:choose>
+	<xsl:template match="richcontent[@TYPE='NOTE']" mode="notes">
+		<br/>
+		<p class="notes">
+			<xsl:call-template name="notesOut">
+				<xsl:with-param name="text"><xsl:copy-of select="html/body/*"/></xsl:with-param>
+			</xsl:call-template>
+		</p>
 	</xsl:template>
 
 	<xsl:template name="notesOut">
 		<xsl:param name="text"></xsl:param><!--
-	 --><xsl:value-of select="$text"/><!--
+	 --><xsl:copy-of select="$text"/><!--
 --></xsl:template>
 	
 	<xsl:template match="node" mode="textOut">
