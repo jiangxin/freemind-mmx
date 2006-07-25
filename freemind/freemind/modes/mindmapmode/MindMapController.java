@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.10 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.11 2006-07-25 20:54:46 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -108,8 +108,6 @@ import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.NodeDownAction;
 import freemind.modes.StylePatternFactory;
-import freemind.modes.actions.UsePlainTextAction;
-import freemind.modes.actions.UseRichFormattingAction;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.common.CommonNodeKeyListener;
 import freemind.modes.common.GotoLinkNodeAction;
@@ -169,6 +167,8 @@ import freemind.modes.mindmapmode.actions.ToggleChildrenFoldedAction;
 import freemind.modes.mindmapmode.actions.ToggleFoldedAction;
 import freemind.modes.mindmapmode.actions.UnderlinedAction;
 import freemind.modes.mindmapmode.actions.UndoAction;
+import freemind.modes.mindmapmode.actions.UsePlainTextAction;
+import freemind.modes.mindmapmode.actions.UseRichFormattingAction;
 import freemind.modes.mindmapmode.actions.NodeBackgroundColorAction.RemoveNodeBackgroundColorAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.mindmapmode.actions.xml.UndoActionHandler;

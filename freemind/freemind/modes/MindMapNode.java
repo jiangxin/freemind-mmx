@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.5 2006-07-25 20:28:20 christianfoltin Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.6 2006-07-25 20:54:46 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -68,7 +68,7 @@ public interface MindMapNode extends MutableTreeNode {
     
     /**
      * @return the text representation of the nodes content as valid XML. HTML is represented as <html>....</html>
-     * with proper tags (like <br/> instead of <br> and so on).
+     * with proper tags (like \<br/\> instead of \<br\> and so on).
      */
     String getXmlText();
     
