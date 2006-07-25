@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapHook.java,v 1.1.4.4.2.1 2006-07-21 05:28:12 christianfoltin Exp $*/
+/*$Id: MindMapHook.java,v 1.1.4.4.2.2 2006-07-25 20:28:20 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.Properties;
@@ -41,7 +41,6 @@ public interface MindMapHook {
 	void setProperties(Properties properties);
 	
 	/**looks for a property in the plugin properties file.
-	 * @param string 
 	 */
 	String getResourceString(String property);
 
@@ -78,8 +77,6 @@ public interface MindMapHook {
 
 	/**
 	 * This method is also called, if the hook is created in the map.
-	 * @param persistentStateString every hook can be equipped by a persistent state,
-	 * which is here given. It is stored in the xml of FM.
 	 */
 	void startupMapHook();
 

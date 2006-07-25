@@ -105,7 +105,6 @@ public class AttributeRegistryElement {
         this.key = key;
     }
     /**
-     * @return
      */
     public XMLElement save() {
         XMLElement element = new XMLElement();

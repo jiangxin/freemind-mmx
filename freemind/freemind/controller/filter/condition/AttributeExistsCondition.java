@@ -33,11 +33,6 @@ import freemind.modes.attributes.AttributeTableModel;
 public class AttributeExistsCondition extends NodeCondition {
 private String attribute;
     /**
-     * @param description
-     * @param value
-     * @param ignoreCase
-     * @param comparationResult
-     * @param succeed
      */
     public AttributeExistsCondition(String description, String attribute) {
         super(description);

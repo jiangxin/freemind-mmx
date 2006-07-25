@@ -19,7 +19,7 @@
  *
  * Created on 26.07.2004
  */
-/* $Id: NodeHookAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: NodeHookAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -182,7 +182,6 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 
 
 	/**
-	 * @return
 	 */
 	private HookInstanciationMethod getInstanciationMethod(String hookName) {
 		HookFactory factory = getHookFactory();
@@ -192,7 +191,6 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 	}
 
 	/**
-	 * @return
 	 */
 	private HookFactory getHookFactory() {
 		HookFactory factory = controller.getHookFactory();
@@ -257,7 +255,6 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
     }
 
 	/**
-	 * @return
 	 */
 	public String getHookName() {
 		return _hookName;

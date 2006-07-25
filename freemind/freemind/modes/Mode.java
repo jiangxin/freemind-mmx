@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: Mode.java,v 1.8.18.2.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
+/* $Id: Mode.java,v 1.8.18.2.2.2 2006-07-25 20:28:20 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -29,11 +29,9 @@ public interface Mode {
     public void activate();
     public void restore(String restorable);
     /** Creates a new mode controller and returns it.
-     * @return
      */
     public ModeController createModeController();
     /** This modeController is only used, when no map is opened.
-     * @return
      */
     public ModeController getDefaultModeController();
     public Controller getController();

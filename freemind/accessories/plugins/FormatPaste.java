@@ -19,7 +19,7 @@
  *
  * Created on 06.10.2004
  */
-/* $Id: FormatPaste.java,v 1.1.4.4.2.1 2006-04-05 21:26:24 dpolivaev Exp $ */
+/* $Id: FormatPaste.java,v 1.1.4.4.2.2 2006-07-25 20:28:19 christianfoltin Exp $ */
 
 package accessories.plugins;
 
@@ -52,7 +52,6 @@ public class FormatPaste extends MindMapNodeHookAdapter {
 	}
 
     /**
-     * @param node
      */
     private void pasteFormat(MindMapNode node) {
         if(pattern==null) {
@@ -65,7 +64,6 @@ public class FormatPaste extends MindMapNodeHookAdapter {
     }
 
     /**
-     * @param node
      */
     private void copyFormat(MindMapNode node) {
         pattern = StylePatternFactory.createPatternFromNode(node);

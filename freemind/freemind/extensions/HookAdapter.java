@@ -79,21 +79,18 @@ public class HookAdapter implements MindMapHook {
 	}
 
 	/**
-	 * @return
 	 */
 	protected ModeController getController() {
 		return controller;
 	}
 
 	/**
-	 * @return
 	 */
 	protected Properties getProperties() {
 		return properties;
 	}
 
 	/**
-	 * @param properties
 	 */
 	public void setProperties(Properties properties) {
 		this.properties = properties;
@@ -101,7 +98,6 @@ public class HookAdapter implements MindMapHook {
 
 
 	/**
-	 * @param controller
 	 */
 	public void setController(ModeController controller) {
 		this.controller = controller;

@@ -41,7 +41,6 @@ public class BlinkingNodeHook extends PermanentMindMapNodeHookAdapter {
 	private Timer timer = null;
 
 	/**
-	 * @param node
 	 */
 	public BlinkingNodeHook() {
 		super();

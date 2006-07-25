@@ -100,7 +100,6 @@ public class AttributeRegistry{
         return registry.getModeController().getAttributeController();
     }
     /**
-     * @param o
      */
     void removeAtribute(Object o) {
         getAttributeController().performRemoveAttribute(o.toString());
@@ -125,8 +124,6 @@ public class AttributeRegistry{
     }
 
     /**
-     * @param attrName
-     * @return
      */
     public ComboBoxModel getDefaultComboBoxModel(Comparable attrName) {
         try{
@@ -209,8 +206,6 @@ public class AttributeRegistry{
     }
 
     /**
-     * @param string
-     * @return
      */
     public int indexOf(String string) {
         return elements.indexOf(string);
@@ -226,15 +221,12 @@ public class AttributeRegistry{
     }
 
     /**
-     * @return
      */
     public AttributeRegistryTableModel getTableModel() {
         return myTableModel;
     }
 
     /**
-     * @param i
-     * @param value
      */
     public void setRestrictionModel(int row, Boolean value) {
         if(row == GLOBAL){
@@ -265,15 +257,12 @@ public class AttributeRegistry{
     }
 
     /**
-     * @param i
-     * @param b
      */
     private void setRestricted(int row, boolean b) {
         getElement(row).setRestriction(b);        
     }
 
     /**
-     * @return
      */
     public SortedListModel getValues(int row) {
         if(row == GLOBAL){
@@ -283,13 +272,11 @@ public class AttributeRegistry{
     }
 
     /**
-     * @return
      */
     public boolean isRestricted() {
         return isRestricted;
     }
     /**
-     * @param b
      */
     public void setRestricted(boolean b) {
         isRestricted = b; 
@@ -313,7 +300,6 @@ public class AttributeRegistry{
     }
 
     /**
-     * @param fileout
      * @throws IOException
      */
     public void save(Writer fileout) throws IOException{
@@ -343,8 +329,6 @@ public class AttributeRegistry{
     }
 
     /**
-     * @param attributeName
-     * @param b
      */
      public void resetChanges(){
         if(isAttributeLayoutChanged == false)

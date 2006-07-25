@@ -400,7 +400,6 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
     
     
     /**
-     * @param row
      */
     public void insertRow(int row) {
         if(getModel() instanceof ExtendedAttributeTableModelDecorator){
@@ -418,7 +417,6 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
     
     
     /**
-     * @param row
      */
     public void removeRow(int row) {
         if(getModel() instanceof ExtendedAttributeTableModelDecorator){
@@ -429,7 +427,6 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
     
     
     /**
-     * @param row
      */
     public void moveRowUp(int row) {
         if(getModel() instanceof ExtendedAttributeTableModelDecorator){
@@ -440,7 +437,6 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
     
     
     /**
-     * @param row
      */
     public void moveRowDown(int row) {
         if(getModel() instanceof ExtendedAttributeTableModelDecorator){

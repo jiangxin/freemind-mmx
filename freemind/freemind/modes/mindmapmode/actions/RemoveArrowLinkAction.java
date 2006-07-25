@@ -48,10 +48,7 @@ public class RemoveArrowLinkAction extends FreemindAction implements ActorXml {
     private final MindMapController controller;
 
     /**
-     * @param controller
-     * @param source
      *            can be null
-     * @param arrowLink
      *            can be null.
      */
     public RemoveArrowLinkAction(MindMapController controller, MindMapArrowLinkModel arrowLink) {
@@ -76,8 +73,6 @@ public class RemoveArrowLinkAction extends FreemindAction implements ActorXml {
                 (String) getValue(NAME));    }
 
     /**
-     * @param arrowLink
-     * @return
      */
     private ActionPair getActionPair(MindMapLink arrowLink) {
         return new ActionPair(createRemoveArrowLinkXmlAction(arrowLink.getUniqueID()),
@@ -92,7 +87,6 @@ public class RemoveArrowLinkAction extends FreemindAction implements ActorXml {
     }
 
     /**
-     * @param arrowLink
      *            The arrowLink to set.
      */
     public void setArrowLink(MindMapArrowLinkModel arrowLink) {
@@ -118,7 +112,6 @@ public class RemoveArrowLinkAction extends FreemindAction implements ActorXml {
     }
 
     /**
-     * @return
      */
     private MindMapLinkRegistry getLinkRegistry() {
         return controller.getMap().getLinkRegistry();

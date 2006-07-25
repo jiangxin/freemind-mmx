@@ -20,7 +20,7 @@
  * 
  * Created on 25.02.2006
  */
-/* $Id: ThreeCheckBoxProperty.java,v 1.1.2.1 2006-03-14 21:56:27 christianfoltin Exp $ */
+/* $Id: ThreeCheckBoxProperty.java,v 1.1.2.1.2.1 2006-07-25 20:28:19 christianfoltin Exp $ */
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -66,8 +66,6 @@ public class ThreeCheckBoxProperty extends PropertyBean implements
     JButton mButton = new JButton();
 
     /**
-     * @param description
-     * @param label
      */
     public ThreeCheckBoxProperty(String description, String label) {
         super();

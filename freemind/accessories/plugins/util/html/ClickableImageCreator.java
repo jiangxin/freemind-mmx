@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ClickableImageCreator.java,v 1.1.2.1.12.2 2006-06-04 11:23:27 dpolivaev Exp $ */
+/* $Id: ClickableImageCreator.java,v 1.1.2.1.12.3 2006-07-25 20:28:19 christianfoltin Exp $ */
 
 package accessories.plugins.util.html;
 
@@ -66,8 +66,6 @@ public class ClickableImageCreator {
     private final String regExpLinkReplacement;
 
     /**
-     * @param root
-     * @param controller
      * @param regExpLinkReplacement if for example the link abc must be replaced with FMabcFM,
      * then this string has to be FM$1FM.
      */
@@ -103,7 +101,6 @@ public class ClickableImageCreator {
     }
 
     /**
-     * @param root2
      */
     private void createArea(MindMapNode node) {
         if (node != null && node.getViewer() != null) {

@@ -504,7 +504,6 @@ public class FilterComposerDialog extends JDialog {
     }
 
     /**
-     * @param newMap
      */
     void mapChanged(MindMap newMap) {
         icons.setExtensionList(newMap.getRegistry().getIcons());
@@ -537,7 +536,6 @@ public class FilterComposerDialog extends JDialog {
     }
 
     /**
-     * @param selectedItem
      */
     public void setSelectedItem(Object selectedItem) {
         conditionList.setSelectedValue(selectedItem, true);

@@ -65,7 +65,6 @@ public class SaveAll extends ModeControllerHookAdapter {
     }
 
     /**
-     * @return
      */
     private Map getMapModules() {
         return getController().getController().getMapModuleManager()

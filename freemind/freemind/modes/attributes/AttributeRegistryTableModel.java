@@ -157,14 +157,11 @@ public class AttributeRegistryTableModel   extends AbstractTableModel {
         super.fireTableRowsUpdated(firstRow+1, lastRow+1);
     }
     /**
-     * @param row
-     * @param i
      */
     public void fireVisibilityUpdated(int row) {
         fireTableCellUpdated(row+1, 1);
     }
     /**
-     * @param row
      */
     public void fireRestrictionsUpdated(int row) {
         fireTableRowsUpdated(row+1, row+1);    }

@@ -51,7 +51,6 @@ public class MindMapPopupMenu extends JPopupMenu implements
 	}
 
 	/**
-	 * @param holder
 	 */
 	public void update(StructuredMenuHolder holder) {
 		this.removeAll();

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.11 2006-07-23 20:34:08 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.12 2006-07-25 20:28:20 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -106,7 +106,6 @@ public abstract class ControllerAdapter implements ModeController {
     private static File lastCurrentDir =  null;
 
     /** Instanciation order: first me and then the model.
-     * @param mode
      */
     public ControllerAdapter(Mode mode) {
         this.setMode(mode);
@@ -182,7 +181,6 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
 	/**
-	 * @param parent
 	 */
 	public void nodeStructureChanged(MindMapNode node) {
 		getMap().nodeStructureChanged(node);
@@ -190,7 +188,6 @@ public abstract class ControllerAdapter implements ModeController {
 
     /** Overwrite this method to perform additional operations
      *  to an node update.
-     * @param node
      */
     protected void updateNode(MindMapNode node){
         for (Iterator iter = mNodeSelectionListeners.iterator(); iter.hasNext();) {
@@ -436,7 +433,6 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     /** Creates a file chooser with the last selected directory as default.
-     * @return
      */
     protected JFileChooser getFileChooser() {
         JFileChooser chooser = new JFileChooser();
@@ -532,7 +528,6 @@ public abstract class ControllerAdapter implements ModeController {
      *
      * Keywords: suggest file name.
      * 
-     * @return
      */
     private String getFileNameProposal() {
         String rootText = ((MindMapNode)getMap().getRoot()).getPlainTextContent();
@@ -862,7 +857,6 @@ public abstract class ControllerAdapter implements ModeController {
 
 
     /**
-     * @return
      */
     public Color getSelectionColor() {
         return selectionColor;

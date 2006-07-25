@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.6 2006-07-23 21:23:27 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.7 2006-07-25 20:28:29 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -102,8 +102,6 @@ public class OptionPanel implements TextTranslator {
 
 
 	/**
-	 * @param frame
-	 * @param feedback
 	 * @throws IOException
 	 *
 	 */
@@ -141,7 +139,6 @@ public class OptionPanel implements TextTranslator {
 	}
 
 	/**
-	 * @param properties
 	 */
 	public void setProperties(Properties properties) {
 		for (Iterator i = controls.iterator(); i.hasNext();) {
@@ -243,8 +240,6 @@ public class OptionPanel implements TextTranslator {
 
 
 	/**
-	 * @param string
-	 * @return
 	 */
 	public String getText(String string) {
 		if (string == null)
@@ -260,9 +255,6 @@ public class OptionPanel implements TextTranslator {
 	}
 
 	/**
-	 * @param tabButton
-	 * @param changeTabAction
-	 * @param lastTabName
 	 */
 	private void registerTabButton(JButton tabButton, String name,
 			ChangeTabAction changeTabAction) {
@@ -353,8 +345,6 @@ public class OptionPanel implements TextTranslator {
 
         private static RowSpec rowSpec;
 		/**
-		 * @param description
-		 * @param label
 		 */
 		public KeyProperty(final JDialog frame, String description, String label) {
 			super();

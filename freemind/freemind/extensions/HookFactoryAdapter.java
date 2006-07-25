@@ -19,7 +19,7 @@
  *
  * Created on 31.12.2005
  */
-/*$Id: HookFactoryAdapter.java,v 1.1.2.1.2.1 2006-07-21 05:28:12 christianfoltin Exp $*/
+/*$Id: HookFactoryAdapter.java,v 1.1.2.1.2.2 2006-07-25 20:28:20 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.HashMap;
@@ -45,8 +45,6 @@ public abstract class HookFactoryAdapter implements HookFactory {
 	}
 
 	/**
-	 * @param node
-	 * @param hookName
 	 * @return null if not present, the hook otherwise.
 	 */
 	public PermanentNodeHook getHookInNode(MindMapNode node, String hookName) {
@@ -66,8 +64,6 @@ public abstract class HookFactoryAdapter implements HookFactory {
 	 * Moreover, the factory can tell other hooks it creates, who is its
 	 * base plugin. 
 	 * 
-	 * @param container
-	 * @param instanciatedRegistrationObject
 	 */
 	public void registerRegistrationContainer(HookFactory.RegistrationContainer container, HookRegistration instanciatedRegistrationObject) {
 		// registration only for pluginBases.

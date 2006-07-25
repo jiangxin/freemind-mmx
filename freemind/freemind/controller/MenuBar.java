@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.3 2006-05-21 09:29:52 dpolivaev Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.4 2006-07-25 20:28:19 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -403,7 +403,6 @@ public class MenuBar extends JMenuBar {
     
 
     /**
-     * @return
      */
     public StructuredMenuHolder getMenuHolder() {
         return menuHolder;

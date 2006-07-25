@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: EnterPasswordDialog.java,v 1.1.2.1.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
+/* $Id: EnterPasswordDialog.java,v 1.1.2.1.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
 
 package freemind.modes.common.dialogs;
 
@@ -127,7 +127,6 @@ public class EnterPasswordDialog extends JDialog {
     }
 
     /**
-     * @return
      */
     private boolean checkEqualAndMinimumSize() {
 

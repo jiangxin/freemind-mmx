@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: MoveNodeAction.java,v 1.1.2.2.2.2 2006-06-15 09:58:32 dpolivaev Exp $ */
+/* $Id: MoveNodeAction.java,v 1.1.2.2.2.3 2006-07-25 20:28:21 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import freemind.controller.actions.generated.instance.MoveNodeXmlAction;
@@ -35,9 +35,6 @@ public class MoveNodeAction extends NodeGeneralAction implements NodeActorXml {
     private final MindMapController modeController;
 
     /**
-     * @param textID
-     * @param iconPath
-     * @param actor
      */
     public MoveNodeAction(MindMapController modeController) {
         super(modeController, "reset_node_position", (String) null);

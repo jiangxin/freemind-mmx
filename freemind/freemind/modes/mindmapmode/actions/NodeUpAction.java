@@ -19,7 +19,7 @@
  *
  * Created on 21.08.2004
  */
-/* $Id: NodeUpAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: NodeUpAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -59,9 +59,6 @@ public class NodeUpAction extends AbstractAction implements ActorXml{
         moveNodes(modeController.getSelected(), modeController.getSelecteds(), -1);
     }
     /**
-     * @param selected
-     * @param selecteds
-     * @param i
      */
     public void moveNodes(MindMapNode selected, List selecteds, int direction) {
         MoveNodesAction doAction = createMoveNodesAction(selected, selecteds, direction);
@@ -151,8 +148,6 @@ public class NodeUpAction extends AbstractAction implements ActorXml{
     }
 
     /** Sorts nodes by their left/right status. The left are first.
-     * @param node
-     * @return
      */
     private Vector getSortedSiblings(MindMapNode node) {
         Vector nodes = new Vector();

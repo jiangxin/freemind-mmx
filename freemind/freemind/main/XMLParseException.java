@@ -19,8 +19,8 @@
 */
 /* XMLParseException.java
  *
- * $Revision: 1.7.34.2 $
- * $Date: 2006-07-23 20:34:08 $
+ * $Revision: 1.7.34.3 $
+ * $Date: 2006-07-25 20:28:20 $
  * $Name:  $
  *
  * This file is part of NanoXML 2 Lite.
@@ -57,13 +57,13 @@ package freemind.main;
  * An XMLParseException is thrown when an error occures while parsing an XML
  * string.
  * <P>
- * $Revision: 1.7.34.2 $<BR>
- * $Date: 2006-07-23 20:34:08 $<P>
+ * $Revision: 1.7.34.3 $<BR>
+ * $Date: 2006-07-25 20:28:20 $<P>
  *
- * @see nanoxml.XMLElement
+ * @see XMLElement
  *
  * @author Marc De Scheemaecker
- * @version $Name:  $, $Revision: 1.7.34.2 $
+ * @version $Name:  $, $Revision: 1.7.34.3 $
  */
 public class XMLParseException
     extends RuntimeException
@@ -143,7 +143,6 @@ public class XMLParseException
      * Where the error occurred, or <code>NO_LINE</code> if the line number is
      * unknown.
      *
-     * @see nanoxml.XMLParseException#NO_LINE
      */
     public int getLineNr()
     {

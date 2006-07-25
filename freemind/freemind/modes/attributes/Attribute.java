@@ -31,7 +31,6 @@ public class Attribute {
     private String name;
     private String value;
     /**
-     * @param string
      */
     public Attribute(String name) {
         this.name = name;

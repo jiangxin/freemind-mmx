@@ -78,8 +78,6 @@ public class SortedMapListModel extends AbstractListModel implements SortedListM
   }
 
 /**
- * @param o
- * @return
  */
 public int getIndexOf(Object o) {
     Iterator i = iterator();

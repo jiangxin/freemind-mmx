@@ -19,7 +19,7 @@
  *
  * Created on 09.01.2005
  */
-/* $Id: ChangeArrowLinkEndPoints.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: ChangeArrowLinkEndPoints.java,v 1.1.2.2.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Point;
@@ -60,10 +60,6 @@ public class ChangeArrowLinkEndPoints extends FreemindAction  implements ActorXm
 	}
 
 	/**
-	 * @param link
-	 * @param startPoint
-	 * @param endPoint
-	 * @return
 	 */
 	private ActionPair getActionPair(MindMapArrowLink link, Point startPoint, Point endPoint) {
 		return new ActionPair(createArrowLinkPointXmlAction(link, startPoint, endPoint),
@@ -108,7 +104,6 @@ public class ChangeArrowLinkEndPoints extends FreemindAction  implements ActorXm
         return action;
     }
     /**
-     * @return
      */
     private MindMapLinkRegistry getLinkRegistry() {
         return controller.getMap().getLinkRegistry();

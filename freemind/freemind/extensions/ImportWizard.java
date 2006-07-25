@@ -144,8 +144,6 @@ freemind.main.Resources.getInstance().logExecption(				e);
 	}
 
     /**
-     * @param current
-     * @return
      */
     private boolean isInteresting(String current) {
         int length = current.length();
@@ -160,7 +158,7 @@ freemind.main.Resources.getInstance().logExecption(				e);
 	 * Adds the classes from the supplied directory to the class list.
 	 *
 	 * @param classList the Vector to add the classes to
-	 * @param classPathFile the File to recursively scan as a directory
+	 * @param currentDir the File to recursively scan as a directory
 	 */
 	public void addClassesFromDir(
 		Vector classList,
@@ -214,7 +212,10 @@ freemind.main.Resources.getInstance().logExecption(				e);
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.5  2006-07-23 21:01:21  christianfoltin
+ * Revision 1.1.4.6.2.6  2006-07-25 20:28:20  christianfoltin
+ * * Integrated patch [ 1374771 ] Javadoc call with less warnings (generated + classpath). Thanks to Eric
+ *
+ * Revision 1.1.4.6.2.5  2006/07/23 21:01:21  christianfoltin
  * * some startup profiling resulted in these little changes
  *
  * Revision 1.1.4.6.2.4  2006/07/23 20:34:08  christianfoltin

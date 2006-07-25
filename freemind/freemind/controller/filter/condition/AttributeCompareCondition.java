@@ -35,11 +35,6 @@ private String attribute;
 private int comparationResult;
 private boolean succeed;
     /**
-     * @param description
-     * @param value
-     * @param ignoreCase
-     * @param comparationResult
-     * @param succeed
      */
     public AttributeCompareCondition(String description, String attribute, String value,
             boolean ignoreCase, int comparationResult, boolean succeed) {

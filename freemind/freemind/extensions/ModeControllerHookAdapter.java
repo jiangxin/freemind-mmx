@@ -39,8 +39,6 @@ public class ModeControllerHookAdapter extends HookAdapter implements ModeContro
 	// private static java.util.logging.Logger logger;
 
 	/**
-	 * @param map
-	 * @param controller
 	 */
 	public ModeControllerHookAdapter() {
 		super();

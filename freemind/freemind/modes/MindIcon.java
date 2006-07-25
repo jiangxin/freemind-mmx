@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindIcon.java,v 1.1.18.6.2.3 2006-04-13 18:24:12 dpolivaev Exp $ */
+/* $Id: MindIcon.java,v 1.1.18.6.2.4 2006-07-25 20:28:20 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -63,8 +63,6 @@ public class MindIcon implements Comparable{
     }
 
     /**
-     * @param iconName
-     * @param icon
      */
     private MindIcon(String name, ImageIcon icon) {
         setName(name);
@@ -86,7 +84,7 @@ public class MindIcon implements Comparable{
 
     /**
        * Set the value of name.
-       * @param v  Value to assign to name.
+       * @param name  Value to assign to name.
        */
     public void setName(String name) {
 
@@ -156,7 +154,7 @@ public class MindIcon implements Comparable{
 
     /**
        * Set the value of icon.
-       * @param v  Value to assign to icon.
+       * @param _associatedIcon  Value to assign to icon.
        */
     protected void setIcon(ImageIcon  _associatedIcon) {
        this.associatedIcon = _associatedIcon; }
@@ -212,9 +210,6 @@ public class MindIcon implements Comparable{
     }
 
     /**
-     * @param key
-     * @param icon
-     * @return
      */
     public static MindIcon factory(String iconName, ImageIcon icon) {
 		if(createdIcons.containsKey(iconName)){
@@ -250,7 +245,6 @@ public class MindIcon implements Comparable{
     }
 
     /**
-     * @return
      */
     public JComponent getRendererComponent() {
         if(component == null){

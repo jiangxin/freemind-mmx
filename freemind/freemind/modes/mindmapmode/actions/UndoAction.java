@@ -19,7 +19,7 @@
  *
  * Created on 20.09.2004
  */
-/*$Id: UndoAction.java,v 1.1.2.2.2.2 2006-07-23 20:34:09 christianfoltin Exp $*/
+/*$Id: UndoAction.java,v 1.1.2.2.2.3 2006-07-25 20:28:22 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -69,7 +69,6 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
 	}
 
     /**
-     * @return
      */
     public boolean isUndoAction() {
         return isUndoAction;
@@ -96,7 +95,6 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
     }
 
     /**
-     * @param pair
      */
     protected void informUndoPartner(ActionPair pair) {
         this.controller.redo.add(pair.reverse());

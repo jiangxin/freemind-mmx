@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.5 2006-07-23 20:34:08 christianfoltin Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.6 2006-07-25 20:28:20 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -96,7 +96,6 @@ public abstract class MapAdapter implements MindMap {
 
 	/**
 	 * Attempts to lock the map using semaphore file.
-	 * @param file
 	 * @return If the map is locked, return the name of the locking user, return null
 	 * otherwise.
 	 * @throws Exception
@@ -117,7 +116,6 @@ public abstract class MapAdapter implements MindMap {
     //    }
 
 	/**
-	 * @param node
 	 */
 	private void removeHooks(MindMapNode node) {
 		while(node.getHooks().size()>0) {
@@ -332,7 +330,6 @@ public abstract class MapAdapter implements MindMap {
     }
 
 	/**URGENT: This method must be moved to the ControllerAdapter.
-	 * @param node
 	 */
 	private void recursiveCallAddChildren(MindMapNode node, MindMapNode addedChild) {
 		// Tell any node hooks that the node is added:

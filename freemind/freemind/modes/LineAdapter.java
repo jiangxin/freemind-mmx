@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LineAdapter.java,v 1.2.18.2 2005-06-14 20:38:07 christianfoltin Exp $*/
+/*$Id: LineAdapter.java,v 1.2.18.2.4.1 2006-07-25 20:28:20 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -63,7 +63,6 @@ public abstract class LineAdapter implements MindMapLine {
     //
 
     /**
-     * @param standardColorPropertyString
      */
     protected void updateStandards() {
         if (getStandardColor() == null) {

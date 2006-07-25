@@ -57,7 +57,6 @@ public class MapRegistry {
     }
 
     /**
-     * @return
      */
     public SortedMapListModel getIcons() {
         return mapIcons;
@@ -104,7 +103,6 @@ public class MapRegistry {
     }
 
     /**
-     * @param fileout
      * @throws IOException
      */
     public void save(Writer fileout) throws IOException {

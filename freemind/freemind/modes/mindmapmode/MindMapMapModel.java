@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.5 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.6 2006-07-25 20:28:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -462,7 +462,6 @@ public class MindMapMapModel extends MapAdapter  {
 
 
     /** writes the content of the map to a writer.
-	 * @param fileout
 	 * @throws IOException
 	 */
 	private void getXml(Writer fileout, boolean saveInvisible) throws IOException {
@@ -483,7 +482,6 @@ public class MindMapMapModel extends MapAdapter  {
 
 	/**
      * Attempts to lock the map using a semaphore file
-     * @param file
      * @return If the map is locked, return the name of the locking user, otherwise return null.
      * @throws Exception, when the locking failed for other reasons than that the
      * file is being edited.
@@ -585,9 +583,6 @@ public class MindMapMapModel extends MapAdapter  {
     }
 
     /** Returns pMinimumLength bytes of the files content.
-     * @param file
-     * @param pMinimumLength
-     * @return
      * @throws FileNotFoundException
      * @throws IOException
      */

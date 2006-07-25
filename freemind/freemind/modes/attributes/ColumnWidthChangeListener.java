@@ -32,7 +32,6 @@ import java.util.EventListener;
 public interface ColumnWidthChangeListener extends EventListener {
 
     /**
-     * @param changeEvent
      */
     void columnWidthChanged(ColumnWidthChangeEvent event);
 

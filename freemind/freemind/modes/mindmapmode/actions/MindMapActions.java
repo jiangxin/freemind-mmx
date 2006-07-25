@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/* $Id: MindMapActions.java,v 1.1.2.3.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: MindMapActions.java,v 1.1.2.3.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
@@ -50,7 +50,7 @@ import freemind.modes.mindmapmode.actions.xml.ActionFactory;
  * All these methods do redisplay, because they are offered from the  MindMapController for use.
  *
  * @author foltin
- * @see freemind.modes.MindMapController
+ * see MindMapController
  * */
 public interface MindMapActions {
     public static final int NEW_CHILD_WITHOUT_FOCUS = 1;  // old model of insertion
@@ -60,11 +60,9 @@ public interface MindMapActions {
 
 
     /** Call this method, if you changed anything at a node. This method makes the map dirty.
-     * @param node
      */
     public void nodeChanged(MindMapNode node);
     /** This is nodeChanged without making the map dirty.
-     * @param node
      */
     public void nodeRefresh(MindMapNode node);
 	public void nodeStructureChanged(MindMapNode node);
@@ -73,7 +71,7 @@ public interface MindMapActions {
 	 *     public final int NEW_CHILD = 2;
 	 *     public final int NEW_SIBLING_BEHIND = 3;
 	 *     public final int NEW_SIBLING_BEFORE = 4;
-	 * @see freemind.modes.MindMapController
+	 * see MindMapController
 	 * */
 	public void edit(KeyEvent e, boolean addNew, boolean editLong);
 	public void setNodeText(MindMapNode selected, String newText);
@@ -94,8 +92,6 @@ public interface MindMapActions {
 	void moveNodes(MindMapNode selected, List selecteds, int direction);
 
 	/**
-	 * @param node
-	 * @param folded
 	 */
 	void setFolded(MindMapNode node, boolean folded);
 	/**
@@ -147,8 +143,6 @@ public interface MindMapActions {
 		Color color);
 	public void setArrowLinkEndPoints(MindMapArrowLink link, Point startPoint, Point endPoint);
 	/** Adds a textual hyperlink to a node (e.g. http:/freemind.sourceforge.net)
-	 * @param node
-	 * @param link
 	 */
 	public void setLink(MindMapNode node, String link);
 //	public void setUnderlined(MindMapNode node);
@@ -193,7 +187,6 @@ public interface MindMapActions {
     public MindMapNode getRootNode();
 
 	/**
-	 * @param node
 	 * @param key key value patterns is used to ensure, that more than one tooltip can be displayed.
 	 * @param value null if you want to delete this tooltip.
 	 */
@@ -215,16 +208,11 @@ public interface MindMapActions {
 
 
 	/** Moves the node to a new position.
-	 * @param node
-	 * @param vGap
-	 * @param hGap
-	 * @param shiftY
 	 */
 	public void moveNodePosition(MindMapNode node, int vGap, int hGap,
             int shiftY);
 
     /** Load the given map (as String) instead of the currently opened map.
-     * @param xmlMapContents
      */
     void load(String xmlMapContents);
 

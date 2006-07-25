@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.13 2006-07-23 21:23:27 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.14 2006-07-25 20:28:20 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -628,7 +628,6 @@ freemind.main.Resources.getInstance().logExecption(				e);
     }
 
 	/**
-	 * @return
 	 */
 	public JPanel getSouthPanel() {
 		return southPanel;

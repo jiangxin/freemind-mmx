@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: EncryptNode.java,v 1.1.2.8.2.2 2006-04-13 18:23:36 dpolivaev Exp $ */
+/* $Id: EncryptNode.java,v 1.1.2.8.2.3 2006-07-25 20:28:19 christianfoltin Exp $ */
 
 /*
  * Created on 14.12.2004
@@ -147,7 +147,6 @@ public class EncryptNode extends MindMapNodeHookAdapter {
     }
 
     /**
-     * @param node
      */
     private void encrypt(MindMapNode node) {
         final StringBuffer password = getUsersPassword();
@@ -175,7 +174,6 @@ public class EncryptNode extends MindMapNodeHookAdapter {
     }
 
     /**
-     * @return
      */
     private StringBuffer getUsersPassword() {
         // get password:
@@ -191,7 +189,6 @@ public class EncryptNode extends MindMapNodeHookAdapter {
     }
 
     /**
-     * @param node
      */
     private void toggleCryptState(MindMapNode node) {
         if (node instanceof EncryptedMindMapNode) {
@@ -219,7 +216,6 @@ public class EncryptNode extends MindMapNodeHookAdapter {
     }
 
     /**
-     * @param encNode
      */
     private void doPasswordCheckAndDecryptNode(EncryptedMindMapNode encNode) {
         while (true) {

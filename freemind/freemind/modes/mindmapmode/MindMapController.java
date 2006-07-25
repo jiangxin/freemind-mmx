@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.9 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.10 2006-07-25 20:28:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -526,7 +526,6 @@ freemind.main.Resources.getInstance().logExecption(					e);
 	}
 
     /**
-	 * @return
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
@@ -545,7 +544,6 @@ freemind.main.Resources.getInstance().logExecption(					e);
     }
 
     /**
-     * @return
      */
     public Clipboard getClipboard() {
         return clipboard;
@@ -563,7 +561,6 @@ freemind.main.Resources.getInstance().logExecption(					e);
 
     /** Creates the patterns actions (saved in array patterns),
      *  and the pure patterns list (saved in mPatternsList).
-     * @param reader
      * @throws Exception
      */
     public void loadPatterns(Reader reader) throws Exception {
@@ -753,7 +750,6 @@ freemind.main.Resources.getInstance().logExecption(				e);
 
 
 	/**
-	 * @param holder
 	 */
     public void updateMenus(StructuredMenuHolder holder) {
 
@@ -793,8 +789,6 @@ freemind.main.Resources.getInstance().logExecption(				e);
 	}
 
 	/**
-     * @param holder
-     * @param formatMenuString
      */
     public void createPatternSubMenu(StructuredMenuHolder holder, String formatMenuString) {
         for (int i = 0; i < patterns.length; ++i) {
@@ -824,7 +818,6 @@ freemind.main.Resources.getInstance().logExecption(				e);
 
 
     /**
-     * @param type
      */
     public void processMenuCategory(StructuredMenuHolder holder, List list, String category) {
 		String categoryCopy = category;
@@ -1837,9 +1830,6 @@ freemind.main.Resources.getInstance().logExecption(					e1);
     }
 
     /**
-     * @param node
-     * @param position
-     * @param newText
      */
     public void splitNode(MindMapNode node, int caretPosition, String newText) {
             //If there are children, they go to the node below
@@ -1864,7 +1854,6 @@ freemind.main.Resources.getInstance().logExecption(					e1);
     }
 
     /**
-     * @param node
      */
     private void recursiveCallUpdateHooks(MindMapNode node, MindMapNode changedNode) {
         // Tell any node hooks that the node is changed:

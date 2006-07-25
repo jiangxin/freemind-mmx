@@ -19,7 +19,7 @@
  *
  * Created on 11.11.2005
  */
-/* $Id: CommonMouseMotionManager.java,v 1.1.2.1.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
+/* $Id: CommonMouseMotionManager.java,v 1.1.2.1.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
 package freemind.modes.common.listeners;
 
 import java.awt.Rectangle;
@@ -44,7 +44,6 @@ public class CommonMouseMotionManager implements MapMouseMotionReceiver {
 	// |= oldX >=0 iff we are in the drag
 
 	/**
-	 * @param controller
 	 *
 	 */
 	public CommonMouseMotionManager(ModeController controller) {

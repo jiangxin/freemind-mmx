@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: RemoveLastIconAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: RemoveLastIconAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -42,9 +42,6 @@ public class RemoveLastIconAction extends NodeGeneralAction implements NodeActor
 
     private IconAction iconAction;
     /**
-     * @param title
-     * @param icon
-     * @param modeController
      */
     public RemoveLastIconAction(MindMapController modeController) {
         super(modeController, "remove_last_icon", "images/remove.png");
@@ -96,7 +93,7 @@ public class RemoveLastIconAction extends NodeGeneralAction implements NodeActor
 
 
     /**
-     * @param addIconAction The addIconAction to set.
+     * @param iconAction The addIconAction to set.
      */
     public void setIconAction(IconAction iconAction) {
         this.iconAction = iconAction;

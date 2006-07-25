@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.12 2006-07-23 20:34:08 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.13 2006-07-25 20:28:20 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -141,7 +141,6 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
     /**
-     * @param map
      */
     public void setMap(MindMap map) {
         this.map = map;
@@ -679,7 +678,6 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
 	/**
-	 * @param node
 	 * @param oldDad the last dad node had.
 	 */
 	private void recursiveCallRemoveChildren(MindMapNode node, MindMapNode removedChild, MindMapNode oldDad) {
@@ -858,7 +856,6 @@ freemind.main.Resources.getInstance().logExecption(			e);
 	}
 
 	/**
-	 * @return
 	 */
 	public java.util.Map getToolTip() {
 		if(toolTip==null)
@@ -867,7 +864,6 @@ freemind.main.Resources.getInstance().logExecption(			e);
 	}
 
 	/**
-	 * @param string
 	 */
 	public void setToolTip(String key, String string) {
 		createToolTip();

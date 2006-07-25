@@ -19,7 +19,7 @@
  *
  * Created on 07.10.2004
  */
-/* $Id: AddLocalLinkAction.java,v 1.1.2.1.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: AddLocalLinkAction.java,v 1.1.2.1.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -38,9 +38,6 @@ public class AddLocalLinkAction extends FreemindAction  {
     private final MindMapController modeController;
 
     /**
-     * @param title
-     * @param iconPath
-     * @param modeController
      */
     public AddLocalLinkAction(MindMapController modeController) {
         super("add_local_link", "images/LinkLocal.png",  modeController);

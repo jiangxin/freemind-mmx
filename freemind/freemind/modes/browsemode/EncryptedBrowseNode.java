@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.2 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.3 2006-07-25 20:28:21 christianfoltin Exp $ */
 package freemind.modes.browsemode;
 
 import java.io.IOException;
@@ -55,16 +55,12 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 	private final ModeController mModeController;
 
 	/**
-	 * @param frame
-	 * @param modeController
 	 */
 	public EncryptedBrowseNode(FreeMindMain frame, ModeController modeController) {
 		this(null, frame, modeController);
 	}
 
 	/**
-	 * @param userObject
-	 * @param frame
 	 */
 	public EncryptedBrowseNode(Object userObject, FreeMindMain frame,
 			ModeController modeController) {

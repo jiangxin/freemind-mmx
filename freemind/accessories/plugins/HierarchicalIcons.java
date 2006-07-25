@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: HierarchicalIcons.java,v 1.1.2.4.2.1 2006-04-05 21:26:24 dpolivaev Exp $ */
+/* $Id: HierarchicalIcons.java,v 1.1.2.4.2.2 2006-07-25 20:28:19 christianfoltin Exp $ */
 
 package accessories.plugins;
 
@@ -44,7 +44,6 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
         super.shutdownMapHook();
     }
     /**
-     * @param root
      */
     private void removeIcons(MindMapNode node)
     {
@@ -111,9 +110,6 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
     }
 
     /**
-     * @param child
-     * @param iconSet
-     * @param object
      */
     private void addAccumulatedIconsToTreeSet(MindMapNode child, TreeSet iconSet, TreeSet childsTreeSet) {
         for (Iterator i = child.getIcons().iterator(); i.hasNext();) {
@@ -178,7 +174,6 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
     }
 
     /**
-     * @param node
      */
     private void gatherLeavesAndSetStyle(MindMapNode node) {
         if(node.getChildCount() == 0) {
@@ -193,7 +188,6 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
     }
 
     /**
-     * @param node
      */
     private void gatherLeavesAndSetParentsStyle(MindMapNode node) {
         if(node.getChildCount() == 0) {
@@ -211,7 +205,6 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
 
 
     /**
-     * @param node
      */
     private void setStyleRecursive(MindMapNode node) {
 //        logger.finest("setStyle " + node);

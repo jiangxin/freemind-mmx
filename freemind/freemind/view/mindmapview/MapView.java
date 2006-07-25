@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.3 2006-07-21 05:28:13 christianfoltin Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.4 2006-07-25 20:28:29 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -122,7 +122,6 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		public boolean contains(NodeView node) { return mySelected.contains(node);
 		}
 		/**
-		 * @param newSelected
 		 */
 		public void moveToFirst(NodeView newSelected) {
 			if(contains(newSelected)) {
@@ -148,9 +147,6 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 	private class DelayedScroller extends ComponentAdapter{
 		/**
 		 * the only one interface method.
-		 * @param map
-		 * @param node
-		 * @param extraWidth
 		 */
 		public void componentMoved(ComponentEvent e){
 			if (m_map != null) { // fc, 22.2.2005: bug fix.
@@ -799,7 +795,6 @@ public class MapView extends JPanel implements Printable, Autoscroll {
         paintEdges(rootView, (Graphics2D)graphics);
     }
 
-    /** @param iterativeLevel describes the n-th nested cloud that is to be painted.*/
     protected void paintClouds(NodeView source, Graphics graphics){
         for(ListIterator e = source.getChildrenViews(true).listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();

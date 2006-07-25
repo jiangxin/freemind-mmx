@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.5 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.6 2006-07-25 20:28:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -439,7 +439,6 @@ public class PasteAction extends AbstractAction implements ActorXml {
 	}
 
     /**
-     * @return
      */
     private DataFlavorHandler[] getFlavorHandlers() {
         DataFlavorHandler[] dataFlavorHandlerList = new DataFlavorHandler[] {
@@ -587,25 +586,17 @@ public class PasteAction extends AbstractAction implements ActorXml {
 	   return pastedNode;
 	}
     /**
-     * @param node
-     * @param target
      */
     private void insertNodeIntoNoEvent(MindMapNode node, MindMapNode target) {
 		pMindMapController.getModel().insertNodeIntoNoEvent(node, target);
     }
     /**
-     * @param node
-     * @param realParent
-     * @param asSibling
      */
     private void insertNodeIntoNoEvent(MindMapNode node, MindMapNode realParent, boolean asSibling) {
     	pMindMapController.getModel().insertNodeIntoNoEvent(node, realParent, asSibling);
     }
 
 	/**
-	 * @param node
-	 * @param parent
-	 * @param i
 	 */
 	private void insertNodeInto(MindMapNodeModel node, MindMapNode parent, int i) {
 		pMindMapController.getModel().insertNodeInto(node, parent,i);

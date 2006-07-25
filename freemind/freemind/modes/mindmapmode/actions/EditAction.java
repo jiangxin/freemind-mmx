@@ -99,12 +99,9 @@ public class EditAction extends AbstractAction implements ActorXml {
 
 
     /**
-	 * @param node
 	 * @param prevSelected when new->esc: node be selected
-	 * @param firstEvent
 	 * @param isNewNode when new->esc: cut the node
 	 * @param parentFolded when new->esc: fold prevSelected
-	 * @param editLong
 	 */
 	public void editLater(
 		final NodeView node,

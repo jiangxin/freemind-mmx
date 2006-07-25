@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.4 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.5 2006-07-25 20:28:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -63,8 +63,6 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     private boolean isShuttingDown=false;
 
     /**
-     * @param userObject
-     * @param frame
      */
     public EncryptedMindMapNode(Object userObject, FreeMindMain frame, MindMap map) {
         super(userObject, frame, map);
@@ -85,7 +83,6 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     }
 
     /**
-     * @param givenPassword
      * @return true, if the password was correct.
      */
     public boolean  decrypt(StringBuffer givenPassword) {
@@ -116,7 +113,6 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     }
 
     /**
-     * @param givenPassword
      */
     public boolean checkPassword(StringBuffer givenPassword) {
 
@@ -139,9 +135,6 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     }
 
     /**
-     * @param givenPassword
-     * @param password2
-     * @return
      */
     private boolean equals(StringBuffer givenPassword, StringBuffer password2) {
         if (givenPassword.length() != password.length())
@@ -268,7 +261,6 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     }
 
     /**
-     * @param registry
      * @throws IOException
      */
     private void generateEncryptedContent(MindMapLinkRegistry registry) throws IOException {
@@ -285,8 +277,6 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     }
 
     /**
-     * @param childXml
-     * @return
      */
     private String encryptXml(StringBuffer childXml) {
         try {
@@ -304,7 +294,6 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     }
 
     /**
-     * @param encryptedString
      * @return null if the password is wrong.
      */
     private String decryptXml(String encryptedString, StringBuffer pwd) {

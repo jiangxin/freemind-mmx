@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.1.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
+/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.1.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.listeners;
 
 import java.awt.event.InputEvent;
@@ -50,7 +50,6 @@ public class MindMapMouseWheelEventHandler implements MouseWheelListener {
 	private final MindMapController mController;
 
 	/**
-	 * @param controller
 	 *
 	 */
 	public MindMapMouseWheelEventHandler(MindMapController controller) {

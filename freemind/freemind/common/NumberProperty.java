@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: NumberProperty.java,v 1.1.2.3.2.1 2006-07-23 20:34:08 christianfoltin Exp $*/
+/*$Id: NumberProperty.java,v 1.1.2.3.2.2 2006-07-25 20:28:19 christianfoltin Exp $*/
 package freemind.common;
 
 import javax.swing.JLabel;
@@ -39,8 +39,6 @@ public class NumberProperty extends PropertyBean implements
         private JSpinner spinner;
 	    
 	    /**
-	     * @param description
-	     * @param label
 	     */
 	    public NumberProperty(String description, String label, int min, int max, int step) {
 	        slider = new JSlider(JSlider.HORIZONTAL, 5, 1000, 100);

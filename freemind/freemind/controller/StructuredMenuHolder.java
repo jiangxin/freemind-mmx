@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.7 2005-06-16 19:27:04 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.1 2006-07-25 20:28:19 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -70,9 +70,6 @@ public class StructuredMenuHolder {
 	}
    
     /**
-	 * @param item
-	 * @param category
-	 * @return
 	 */
 	public JMenu addMenu(JMenu item, String category) {
 		StringTokenizer tokens = new StringTokenizer(category, "/");
@@ -80,9 +77,6 @@ public class StructuredMenuHolder {
 	}
 
 	/**
-	 * @param item
-	 * @param category
-	 * @return
 	 */
 	public JMenuItem addMenuItem(JMenuItem item, String category) {
 		StringTokenizer tokens = new StringTokenizer(category, "/");
@@ -94,9 +88,6 @@ public class StructuredMenuHolder {
 	}
 
 	/**
-	 * @param item
-	 * @param category
-	 * @return
 	 */
 	public JMenuItem addAction(Action item, String category) {
 		StringTokenizer tokens = new StringTokenizer(category, "/");
@@ -127,9 +118,6 @@ public class StructuredMenuHolder {
 		categoryPair.order.add(categoryPair.token);
 	}
 	/**
-	 * @param item
-	 * @param category
-	 * @param menuMap
 	 */
 	private Object addMenu(Object item, StringTokenizer tokens) {
 		MapTokenPair categoryPair = getCategoryMap(tokens, menuMap);
@@ -247,7 +235,6 @@ public class StructuredMenuHolder {
 	}
 	
 	/**
-	 * @param bar
 	 */
 	public void updateMenus(final JToolBar bar, String prefix) {
 		MapTokenPair pair = getCategoryMap(new StringTokenizer(prefix, "/"), menuMap);
@@ -315,7 +302,6 @@ public class StructuredMenuHolder {
 	}
     
 	/**
-     * @param item
      */
     static private void adjustMenuItem(JMenuItem item) {
         if (item.getIcon() == null) {

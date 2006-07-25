@@ -19,7 +19,7 @@
  *
  * Created on 23.06.2004
  */
-/*$Id: XmlBindingTools.java,v 1.1.2.2.2.1 2006-07-23 20:34:08 christianfoltin Exp $*/
+/*$Id: XmlBindingTools.java,v 1.1.2.2.2.2 2006-07-25 20:28:19 christianfoltin Exp $*/
 
 package freemind.common;
 
@@ -138,8 +138,6 @@ public class XmlBindingTools {
 	}
 
     /**
-     * @param reader
-     * @return
      */
     public XmlAction unMarshall(Reader reader) {
         try {

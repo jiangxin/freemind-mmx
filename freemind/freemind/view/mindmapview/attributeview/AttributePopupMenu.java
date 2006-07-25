@@ -155,9 +155,6 @@ public class AttributePopupMenu extends JPopupMenu implements MouseListener {
     }
 
     /**
-     * @param j
-     * @param i
-     * @param component
      * 
      */
     private void make() {

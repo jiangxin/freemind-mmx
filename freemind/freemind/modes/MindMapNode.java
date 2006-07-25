@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.4 2006-07-21 05:28:13 christianfoltin Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.5 2006-07-25 20:28:20 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -59,11 +59,10 @@ public interface MindMapNode extends MutableTreeNode {
 
 	/**
 	 * @return the text representation of the nodes content. HTML is represented as <html>....</html>
-     * @see getXmlText
+     * see getXmlText
 	 */
 	String getText();
     /** Sets both text and xmlText.
-     * @param text
      */
     void setText(String text);
     
@@ -74,7 +73,6 @@ public interface MindMapNode extends MutableTreeNode {
     String getXmlText();
     
     /**Sets both text and xmlText.
-     * @param structuredText
      */
     void setXmlText(String structuredText);
     
@@ -85,7 +83,6 @@ public interface MindMapNode extends MutableTreeNode {
     String getXmlNoteText();
     
     /**Sets both text and xmlNoteText.
-     * @param structuredNoteText
      */
     void setXmlNoteText(String structuredNoteText);
     
@@ -162,7 +159,6 @@ public interface MindMapNode extends MutableTreeNode {
     freemind.main.Tools.BooleanHolder isLeft();
 
     /** Root is on the right side.
-     * @return
      */
     boolean isOneLeftSideOfRoot();
 
@@ -211,7 +207,6 @@ public interface MindMapNode extends MutableTreeNode {
 
 	/** Adds the hook to the list of hooks to my node.
 	 *  Does not invoke the hook!
-	 * @param hook
 	 * @return returns the input parameter hook
 	 */
 	PermanentNodeHook addHook(PermanentNodeHook hook);
@@ -229,7 +224,6 @@ public interface MindMapNode extends MutableTreeNode {
 
 	/** This method can be used to store non-visual additions to a node.
 	 * Currently, it is used for encrypted nodes to store the encrypted content.
-	 * @param info
 	 */
 	void setAdditionalInfo(String info);
 	public String getAdditionalInfo();
@@ -240,12 +234,10 @@ public interface MindMapNode extends MutableTreeNode {
     // fc, 10.2.2005:
     /** State icons are icons that are not saved. They indicate that
      *  this node is special.
-     * @return
      */
     Map getStateIcons();
 
     /**
-     * @param key
      * @param icon use null to remove the state icon. Then it is not
      * required, that the key already exists.
      */

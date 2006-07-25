@@ -39,7 +39,6 @@ import javax.swing.JScrollPane;
 public class JAutoScrollBarPane extends JScrollPane{
 
     /**
-     * @param view
      */
     public JAutoScrollBarPane(Component view) {
         super(view, VERTICAL_SCROLLBAR_NEVER , HORIZONTAL_SCROLLBAR_NEVER);

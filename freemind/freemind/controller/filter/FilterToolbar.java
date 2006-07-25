@@ -218,14 +218,12 @@ class FilterToolbar extends JToolBar {
     }
     
     /**
-     * @return
      */
     FilterComposerDialog getFilterDialog() {
         return filterDialog;
     }
 
     /**
-     * @param filter
      */
     void mapChanged(MindMap newMap) {
         if(!isVisible())

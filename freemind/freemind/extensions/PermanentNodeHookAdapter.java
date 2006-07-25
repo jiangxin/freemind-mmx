@@ -45,9 +45,6 @@ public class PermanentNodeHookAdapter
 		// private static java.util.logging.Logger logger;
 
 	/**
-	 * @param node
-	 * @param map
-	 * @param controller
 	 */
 	public PermanentNodeHookAdapter() {
 		super();
@@ -145,7 +142,6 @@ public class PermanentNodeHookAdapter
 	public static final String PARAMETERS = "Parameters";
 
 	/**
-	 * @param child
 	 */
 	protected HashMap loadNameValuePairs(XMLElement xml) {
 		HashMap result = new HashMap();
@@ -160,8 +156,6 @@ public class PermanentNodeHookAdapter
 	}
 
 	/**
-	 * @param nameValuePairs
-	 * @param xml
 	 */
 	protected void saveNameValuePairs(HashMap nameValuePairs, XMLElement xml) {
 		XMLElement child = new XMLElement();

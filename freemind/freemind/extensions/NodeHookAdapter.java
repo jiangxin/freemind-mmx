@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeHookAdapter.java,v 1.1.4.4 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: NodeHookAdapter.java,v 1.1.4.4.2.1 2006-07-25 20:28:20 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.Collection;
@@ -29,8 +29,6 @@ import freemind.modes.MindMapNode;
 /**
  * @author christianfoltin
  *
- * @file NodeHookAdapter.java 
- * @package freemind.modes
  * */
 public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 
@@ -55,28 +53,24 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 	}
 
 	/**
-	 * @return
 	 */
 	protected MindMapNode getNode() {
 		return node;
 	}
 
 	/**
-	 * @param node
 	 */
 	public void setNode(MindMapNode node) {
 		this.node = node;
 	}
 
 	/**
-	 * @return
 	 */
 	protected MindMap getMap() {
 		return map;
 	}
 
 	/**
-	 * @param node
 	 */
 	protected void nodeChanged(MindMapNode node) {
 //		if(node == getNode()) {
@@ -92,7 +86,6 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 	
 
 	/**
-	 * @param map
 	 */
 	public void setMap(MindMap map) {
 		this.map = map;

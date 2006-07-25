@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ColorProperty.java,v 1.1.2.4 2006-03-14 21:56:27 christianfoltin Exp $*/
+/*$Id: ColorProperty.java,v 1.1.2.4.2.1 2006-07-25 20:28:19 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.Color;
@@ -55,8 +55,6 @@ public class ColorProperty extends PropertyBean implements
 
 
 	/**
-	 * @param description
-	 * @param label
 	 * @param defaultColor TODO
 	 * @param pTranslator TODO
 	 */
@@ -127,7 +125,6 @@ public class ColorProperty extends PropertyBean implements
 	}
 
 	/**
-	 * @param result
 	 */
 	private void setColorValue(Color result) {
 		color = result;
@@ -139,7 +136,6 @@ public class ColorProperty extends PropertyBean implements
 	}
 
 	/**
-	 * @return
 	 */
 	private Color getColorValue() {
 		return color;

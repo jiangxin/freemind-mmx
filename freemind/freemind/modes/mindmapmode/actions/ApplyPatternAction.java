@@ -151,8 +151,6 @@ public class ApplyPatternAction extends NodeGeneralAction implements
     }
 
     /**
-     * @param value
-     * @return
      */
     public static int edgeWidthStringToInt(String value) {
         if(value == null) {
@@ -165,8 +163,6 @@ public class ApplyPatternAction extends NodeGeneralAction implements
     }
 
     /**
-     * @param value
-     * @return
      */
     public static String edgeWidthIntToString(int value) {
         if(value == EdgeAdapter.DEFAULT_WIDTH) {

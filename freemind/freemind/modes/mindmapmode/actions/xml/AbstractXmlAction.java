@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/* $Id: AbstractXmlAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: AbstractXmlAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -57,7 +57,6 @@ public abstract class AbstractXmlAction extends FreemindAction {
 	}
 
 	/**
-	 * @param arg0
 	 */
 	protected abstract void xmlActionPerformed(ActionEvent arg0) ;
 
@@ -69,7 +68,6 @@ public abstract class AbstractXmlAction extends FreemindAction {
 	}
 
 	/**
-	 * @return
 	 */
 	public MindMapController getMindMapController() {
 		return controller;
@@ -84,7 +82,6 @@ public abstract class AbstractXmlAction extends FreemindAction {
 	}
 
 	/**
-	 * @return
 	 */
 	public ActorXml getActor() {
 		return actor;

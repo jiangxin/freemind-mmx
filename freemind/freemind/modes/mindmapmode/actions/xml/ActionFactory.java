@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: ActionFactory.java,v 1.1.2.2.2.2 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: ActionFactory.java,v 1.1.2.2.2.3 2006-07-25 20:28:29 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -58,7 +58,6 @@ public class ActionFactory {
 	}
 
 	/** The handler is put in front. Thus it is called before others are called.
-	 * @param newHandler
 	 */
 	public void registerHandler(ActionHandler newHandler) {
 	    // if it is present, put it in front:
@@ -96,8 +95,6 @@ public class ActionFactory {
 	}
 
 	/**
-	 * @param doAction
-	 * @param undoAction
 	 */
 	public void executeAction(ActionPair pair) {
 	    if(pair == null)
@@ -124,22 +121,17 @@ public class ActionFactory {
 	}
 
 	/**
-	 * @return
 	 */
 	public Controller getController() {
 		return controller;
 	}
 
 	/**
-	 * @param actor
-	 * @param action
 	 */
 	public void registerActor(ActorXml actor, Class action) {
 		registeredActors.put(action, actor);
 	}
 	/**
-	 * @param actor
-	 * @param action
 	 */
 	public void deregisterActor(Class action) {
 	    registeredActors.remove(action);

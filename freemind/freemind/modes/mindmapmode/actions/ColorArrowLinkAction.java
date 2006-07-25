@@ -78,9 +78,6 @@ public class ColorArrowLinkAction extends FreemindAction implements ActorXml{
     }
 
     /**
-     * @param arrowLink
-     * @param color
-     * @return
      */
     private ActionPair getActionPair(MindMapLink arrowLink, Color color) {
         return new ActionPair(createArrowLinkColorXmlAction(arrowLink, color), 
@@ -108,7 +105,6 @@ public class ColorArrowLinkAction extends FreemindAction implements ActorXml{
         return action;
     }
     /**
-     * @return
      */
     private MindMapLinkRegistry getLinkRegistry() {
         return controller.getMap().getLinkRegistry();

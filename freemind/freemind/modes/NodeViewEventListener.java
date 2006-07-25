@@ -32,11 +32,9 @@ import java.util.EventListener;
 public interface NodeViewEventListener extends EventListener{
 
     /**
-     * @param nodeViewEvent
      */
     public void nodeViewCreated(NodeViewEvent nodeViewEvent);
     /**
-     * @param nodeViewEvent
      */
     public void nodeViewRemoved(NodeViewEvent nodeViewEvent);
     

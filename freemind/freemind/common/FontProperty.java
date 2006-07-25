@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: FontProperty.java,v 1.1.2.4 2006-03-14 21:56:27 christianfoltin Exp $*/
+/*$Id: FontProperty.java,v 1.1.2.4.2.1 2006-07-25 20:28:19 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.Font;
@@ -47,11 +47,7 @@ public class FontProperty extends PropertyBean implements PropertyControl {
     private String[] mAvailableFontFamilyNames;
 
 	/**
-	 * @param description
-	 * @param label
-	 * @param pTranslator
 	 *            TODO
-	 * @param defaultColor
 	 *            TODO
 	 */
 	public FontProperty(String description, String label,

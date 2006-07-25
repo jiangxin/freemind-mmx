@@ -19,7 +19,7 @@
  *
  * Created on 25.04.2004
  */
-/* $Id: ActorXml.java,v 1.1.2.1.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: ActorXml.java,v 1.1.2.1.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -35,7 +35,6 @@ public interface ActorXml {
 	public void act(XmlAction action);
 
 	/**
-	 * @return
 	 */
 	Class getDoActionClass();
 

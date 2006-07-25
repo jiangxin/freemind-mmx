@@ -43,22 +43,18 @@ public class FreeMindToolBar extends JToolBar {
 	}
 
 	/**
-	 * @param arg0
 	 */
 	public FreeMindToolBar(int arg0) {
 		this("", arg0);
 	}
 
 	/**
-	 * @param arg0
 	 */
 	public FreeMindToolBar(String arg0) {
 		this(arg0, JToolBar.HORIZONTAL);
 	}
 
 	/**
-	 * @param arg0
-	 * @param arg1
 	 */
 	public FreeMindToolBar(String arg0, int arg1) {
 		super(arg0, arg1);

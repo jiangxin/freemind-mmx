@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.8 2006-07-21 05:28:13 christianfoltin Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.9 2006-07-25 20:28:30 christianfoltin Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -287,7 +287,6 @@ public abstract class NodeView extends JComponent{
     }
 
     /**
-     * @param xCoord
      * @return true if a link is to be displayed and the curser is the hand now.
      */
     public boolean updateCursor(double xCoord) {
@@ -373,13 +372,11 @@ public abstract class NodeView extends JComponent{
     }
 
     /**
-     * @param string
      */
     public void setText(String string) {
         mainView.setText(string);
     }
     /**
-     * @return
      */
     public String getText() {
         return mainView.getText();
@@ -613,7 +610,6 @@ public abstract class NodeView extends JComponent{
      * that should be connected.
      * @param destinationPoint the outpoint should point in the direction of destinationPoint
      * @param isLeft TODO
-     * @return
      */
     Point getOutPoint(Point destinationPoint, boolean isLeft) {
         return getOutPoint();
@@ -1047,7 +1043,6 @@ public abstract class NodeView extends JComponent{
     }
 
     /**
-     * @param image
      */
     public void setIcon(MultipleImage image) {
         mainView.setIcon(image);
@@ -1211,7 +1206,6 @@ public abstract class NodeView extends JComponent{
         return mainView.getForeground();
     }
     /**
-     * @return
      */
     public AttributeView getAttributeView() {
         return attributeView;

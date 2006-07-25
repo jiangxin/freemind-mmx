@@ -38,13 +38,10 @@ public interface SortedListModel extends ListModel{
     void clear();
 
     /**
-     * @param o
-     * @return
      */
     boolean contains(Object o);
 
     /**
-     * @param o
      */
     void add(Object o);
     
@@ -53,8 +50,6 @@ public interface SortedListModel extends ListModel{
     void remove(Object o);
     
     /**
-     * @param o
-     * @return
      */
     int getIndexOf(Object o);
 }

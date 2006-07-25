@@ -19,7 +19,7 @@
  *
  * Created on 31.12.2005
  */
-/*$Id: HookFactory.java,v 1.1.4.9 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: HookFactory.java,v 1.1.4.9.2.1 2006-07-25 20:28:20 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.List;
@@ -62,8 +62,6 @@ public interface HookFactory {
 	public abstract NodeHook createNodeHook(String hookName);
 
 	/**
-	 * @param node
-	 * @param hookName
 	 * @return null if not present, the hook otherwise.
 	 */
 	public abstract PermanentNodeHook getHookInNode(MindMapNode node,
@@ -76,8 +74,6 @@ public interface HookFactory {
 	public abstract List getHookMenuPositions(String hookName);
 
 	/**
-	 * @param permHook
-	 * @return
 	 */
 	public abstract HookInstanciationMethod getInstanciationMethod(
 			String hookName);
@@ -101,8 +97,6 @@ public interface HookFactory {
 	 * Moreover, the factory can tell other hooks it creates, who is its
 	 * base plugin. 
 	 * 
-	 * @param container
-	 * @param instanciatedRegistrationObject
 	 */
 	public abstract void registerRegistrationContainer(
 			HookFactory.RegistrationContainer container,
@@ -113,7 +107,6 @@ public interface HookFactory {
 	/** A plugin base class is a common registration class of multiple 
 	 *  plugins. It is useful to embrace several related plugins 
 	 *  (example: EncryptedNote -> Registration).
-	 * @param hookName
 	 * @return the base class if declared and successfully instanciated
 	 * or NULL.
 	 */

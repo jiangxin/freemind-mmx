@@ -19,7 +19,7 @@
  *
  * Created on 07.10.2004
  */
-/* $Id: AddArrowLinkAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: AddArrowLinkAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -53,9 +53,6 @@ public class AddArrowLinkAction extends FreemindAction  implements ActorXml{
         this.removeAction = removeAction;
     }
     /**
-     * @param title
-     * @param iconPath
-     * @param modeController
      */
     public AddArrowLinkAction(MindMapController modeController) {
         super("add_link", "images/designer.png",  modeController);
@@ -143,7 +140,6 @@ public class AddArrowLinkAction extends FreemindAction  implements ActorXml{
     }
 
     /**
-     * @return
      */
     private MindMapLinkRegistry getLinkRegistry() {
         return modeController.getMap().getLinkRegistry();

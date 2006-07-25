@@ -49,9 +49,6 @@ public class IconSelectionPlugin extends MindMapNodeHookAdapter {
 	private MindIcon icon;
 
 	/**
-	 * @param node
-	 * @param map
-	 * @param controller
 	 */
 	public IconSelectionPlugin() {
 		super();
@@ -96,10 +93,6 @@ public class IconSelectionPlugin extends MindMapNodeHookAdapter {
 	}
 
 	/**
-     * @param items
-     * @param itemdescriptions
-     * @param itemdescriptions2
-     * @param action
      */
     private void addActionToActionVector(Vector actions, Vector items, Vector itemdescriptions, Action action) {
         actions.add(action);

@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.5 2006-07-23 21:23:27 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.6 2006-07-25 20:28:20 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.IOException;
@@ -103,8 +103,6 @@ freemind.main.Resources.getInstance().logExecption(				ex);
 	}
 
 	/**
-	 * @param lang
-	 * @return
 	 * @throws IOException
 	 */
 	private PropertyResourceBundle getLanguageResources(String lang)

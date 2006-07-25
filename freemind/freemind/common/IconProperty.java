@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: IconProperty.java,v 1.1.2.1 2006-03-19 20:18:30 christianfoltin Exp $*/
+/*$Id: IconProperty.java,v 1.1.2.1.2.1 2006-07-25 20:28:19 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -63,9 +63,6 @@ public class IconProperty extends PropertyBean implements PropertyControl,
 		public String iconName;
 
 		/**
-		 * @param icon
-		 * @param iconDescription
-		 * @param iconName
 		 */
 		public IconInformation(Icon icon, String iconDescription,
 				String iconName) {

@@ -19,7 +19,7 @@
  *
  * Created on 22.07.2004
  */
-/*$Id: HookInstanciationMethod.java,v 1.1.4.1 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: HookInstanciationMethod.java,v 1.1.4.1.16.1 2006-07-25 20:28:20 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.Collection;
@@ -117,19 +117,11 @@ public class HookInstanciationMethod {
 		return res;
 	}
 	/**
-	 * @param focussed
-	 * @param selecteds
-	 * @return
 	 */
 	public Collection getDestinationNodes(ModeController controller, MindMapNode focussed, List selecteds) {
 		return getter.getDestinationNodes(controller, focussed, selecteds);
 	}
 	/**
-	 * @param controller
-	 * @param hookName
-	 * @param adaptedFocussedNode
-	 * @param destinationNodes
-	 * @return
 	 */
 	public boolean isAlreadyPresent(ModeController controller, String hookName, MindMapNode focussed, Collection destinationNodes) {
 		for (Iterator i = focussed.getActivatedHooks().iterator(); i.hasNext();) {
@@ -141,16 +133,11 @@ public class HookInstanciationMethod {
 		return false;
 	}
 	/**
-	 * @param controller
-	 * @param focussed
-	 * @param selecteds
-	 * @return
 	 */
 	public MindMapNode getCenterNode(ModeController controller, MindMapNode focussed, List selecteds) {
 		return getter.getCenterNode(controller, focussed, selecteds);
 	}
     /**
-     * @return
      */
     public boolean isUndoable() {
         return isUndoable;

@@ -33,7 +33,6 @@ import javax.swing.JPanel;
 public class JCondition extends JPanel {
 
     /**
-     * @param axis
      */
     public JCondition() {
         super();

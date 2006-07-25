@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: ExportHook.java,v 1.1.4.7.2.2 2006-07-23 20:34:08 christianfoltin Exp $*/
+/*$Id: ExportHook.java,v 1.1.4.7.2.3 2006-07-25 20:28:20 christianfoltin Exp $*/
 
 package freemind.extensions;
 
@@ -50,9 +50,6 @@ public class ExportHook extends ModeControllerHookAdapter {
 	private MapView view;
 
 	/**
-     * @param type
-     * @param description
-     * @return
      */
     protected File chooseFile(String type, String description) {
         Container component = getController().getFrame().getContentPane();
@@ -154,9 +151,6 @@ public class ExportHook extends ModeControllerHookAdapter {
 
 
     /**
-     * @param next
-     * @param directoryName
-     * @param directoryName2
      */
     protected void copyFromResource(String prefix, String fileName, String destinationDirectory)
     {

@@ -19,7 +19,7 @@
  *
  * Created on 20.09.2004
  */
-/* $Id: RedoAction.java,v 1.1.2.1.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: RedoAction.java,v 1.1.2.1.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -38,7 +38,6 @@ public class RedoAction extends UndoAction {
 	}
 
     /**
-     * @param pair
      */
     protected void informUndoPartner(ActionPair pair) {
 		this.controller.undo.add(pair.reverse());

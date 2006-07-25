@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteBase.java,v 1.1.2.2.2.5 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: NodeNoteBase.java,v 1.1.2.2.2.6 2006-07-25 20:28:21 christianfoltin Exp $ */
 package freemind.modes.common.plugins;
 
 import javax.swing.ImageIcon;
@@ -54,7 +54,6 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 	}
 
 	/**
-     * @param node
      */
     private void enableStateIcon(MindMapNode node) {
         // icon
@@ -83,14 +82,12 @@ public abstract class NodeNoteBase extends PermanentNodeHookAdapter {
 //    abstract protected Container getNoteViewerComponent() throws Exception;
 
 	/**
-	 * @return
 	 */
 	public String getMyNodeText() {
 		return myNodeText;
 	}
 
 	/**
-	 * @param string
 	 */
 	public void setMyNodeText(String string) {
         string = string.replaceAll("&#0;", "")/*= \0 is not allowed: */;

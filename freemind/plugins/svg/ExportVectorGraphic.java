@@ -19,7 +19,7 @@
  *
  * Created on 10.11.2004
  */
-/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.3 2006-07-23 20:34:10 christianfoltin Exp $ */
+/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.4 2006-07-25 20:28:30 christianfoltin Exp $ */
 package plugins.svg;
 
 import java.awt.Dimension;
@@ -55,8 +55,6 @@ import freemind.view.mindmapview.MapView;
 public class ExportVectorGraphic extends ExportHook{
 
 	/**
-	 * @param view
-	 * @return
 	 */
 	protected SVGGraphics2D fillSVGGraphics2D(MapView view) {
 		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();

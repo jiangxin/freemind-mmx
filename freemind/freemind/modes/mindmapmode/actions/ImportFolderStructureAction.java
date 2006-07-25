@@ -94,9 +94,6 @@ public class ImportFolderStructureAction extends AbstractAction {
     }
 
     /**
-     * @param target
-     * @param nodeContent
-     * @return
      */
     private MindMapNode addNode(MindMapNode target, String nodeContent, String link) {
         MindMapNode node = controller.addNewNode(target,

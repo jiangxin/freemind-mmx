@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.6.5 2006-04-19 20:03:02 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.6.6 2006-07-25 20:28:30 christianfoltin Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -139,7 +139,6 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         }
     }
     /**
-     * @return
      */
     public void update() {
         if(attributeTable != null && attributeTable.isVisible()){
@@ -147,7 +146,6 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         }
     }
     /**
-     * @return
      */
     public boolean areAttributesVisible() {
         final String viewType = getViewType();
@@ -186,7 +184,6 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         return currentAttributeTableModel;
     }
      /**
-     * @return
      */
     MindMapNode getNode() {
         return getNodeView().getModel();
@@ -197,13 +194,11 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         reducedAttributeTableModel.stateChanged(null);
     }
     /**
-     * @return
      */
     public NodeView getNodeView() {
         return nodeView;
     }
     /**
-     * @return
      */
     public MapView getMapView() {
         return getNodeView().getMap();

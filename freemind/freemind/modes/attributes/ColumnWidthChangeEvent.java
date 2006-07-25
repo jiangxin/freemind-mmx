@@ -32,8 +32,6 @@ import java.util.EventObject;
 public class ColumnWidthChangeEvent extends EventObject {
     private final int col;
     /**
-     * @param source
-     * @param col
      */
     public ColumnWidthChangeEvent(Object source, int col) {
         super(source);

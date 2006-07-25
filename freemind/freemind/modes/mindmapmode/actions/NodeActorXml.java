@@ -40,7 +40,6 @@ public interface NodeActorXml extends ActorXml {
 	/**
 	 * @param model
 	 * @param selected
-	 * @return
 	 */
 	ActionPair apply(MapAdapter model, MindMapNode selected);
 

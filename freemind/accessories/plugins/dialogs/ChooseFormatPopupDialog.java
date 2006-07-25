@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ChooseFormatPopupDialog.java,v 1.1.2.6.2.3 2006-04-18 19:06:08 christianfoltin Exp $ */
+/* $Id: ChooseFormatPopupDialog.java,v 1.1.2.6.2.4 2006-07-25 20:28:19 christianfoltin Exp $ */
 
 package accessories.plugins.dialogs;
 
@@ -66,10 +66,6 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 	/**
 	 * This constructor is used, if you need the user to enter a pattern generally.
 	 *
-	 * @param caller
-	 * @param controller
-	 * @param dialogTitle
-	 * @param pattern
 	 */
 	public ChooseFormatPopupDialog(JFrame caller, MindMapController controller,
 			String dialogTitle, Pattern pattern) {

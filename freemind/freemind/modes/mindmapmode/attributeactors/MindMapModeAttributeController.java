@@ -136,7 +136,6 @@ public class MindMapModeAttributeController implements AttributeController{
             this.visitor = v;
         }
         /**
-         * @param root
          */
         void iterate(MindMapNode node){
             visitor.visit(node.getAttributes());

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.4 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.5 2006-07-25 20:28:29 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.hooks;
 
 import java.io.File;
@@ -108,8 +108,6 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 	}
 
 	/**
-	 * @param class1
-	 * @param mode
 	 * @return a string vector with representatives for plugins.
 	 */
 	private Vector searchFor(Class baseClass, Class mode) {
@@ -246,8 +244,6 @@ freemind.main.Resources.getInstance().logExecption(						e);
     private HashMap classLoaderCache = new HashMap();
 
 	/**
-	 * @param pluginClasspathList
-	 * @return
 	 * @throws MalformedURLException
 	 */
 	private ClassLoader getClassLoader(List pluginClasspathList) {
@@ -288,8 +284,6 @@ freemind.main.Resources.getInstance().logExecption(						e);
 	/** This string is used to identify known classloaders as they
 	 *  are cached.
 	 *
-	 * @param pluginClasspathList
-	 * @return
 	 */
 	private String createPluginClasspathString(List pluginClasspathList) {
 		String result = "";
@@ -301,7 +295,6 @@ freemind.main.Resources.getInstance().logExecption(						e);
 	}
 
 	/**
-	 * @return
 	 */
 	public static String getFreemindBaseDir() {
 		return System.getProperty("freemind.base.dir", ".");
@@ -332,7 +325,6 @@ freemind.main.Resources.getInstance().logExecption(						e);
 
 
 	/**
-	 * @param action
 	 */
 	public void decorateAction(String hookName, AbstractAction action) {
 		HookDescriptor descriptor = getHookDescriptor(hookName);
@@ -370,8 +362,6 @@ freemind.main.Resources.getInstance().logExecption(						e);
 	}
 
 	/**
-	 * @param permHook
-	 * @return
 	 */
 	public HookInstanciationMethod getInstanciationMethod(String hookName) {
 		HookDescriptor descriptor = getHookDescriptor(hookName);
@@ -428,7 +418,6 @@ freemind.main.Resources.getInstance().logExecption(				e);
 	/** A plugin base class is a common registration class of multiple
 	 *  plugins. It is useful to embrace several related plugins
 	 *  (example: EncryptedNote -> Registration).
-	 * @param hookName
 	 * @return the base class if declared and successfully instanciated
 	 * or NULL.
 	 */
@@ -439,8 +428,6 @@ freemind.main.Resources.getInstance().logExecption(				e);
 	}
 
 	/**
-	 * @param descriptor
-	 * @return
 	 */
 	private Object getPluginBaseClass(HookDescriptor descriptor) {
 		// test if registration is present:
@@ -453,7 +440,6 @@ freemind.main.Resources.getInstance().logExecption(				e);
 	}
 
 	/**
-	 * @param hookName
 	 */
 	private HookDescriptor getHookDescriptor(String hookName) {
 		HookDescriptor descriptor = (HookDescriptor) pluginInfo.get(hookName);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.7 2006-07-23 03:29:02 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.8 2006-07-25 20:28:19 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -215,7 +215,6 @@ public class NodeNote extends NodeNoteBase {
 		/**
 		 * Set text with undo:
 		 * 
-		 * @param text
 		 */
 		public void changeNodeText(String text, MindMapNode node) {
 			EditNoteToNodeAction doAction = createEditNoteToNodeAction(node,
@@ -231,7 +230,6 @@ public class NodeNote extends NodeNoteBase {
 		}
 
 		/**
-		 * @return
 		 */
 		private MindMapController getMindMapController() {
 			return controller;

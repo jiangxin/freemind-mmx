@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNodeMotionListener.java,v 1.1.2.1.2.3 2006-06-15 09:58:32 dpolivaev Exp $ */
+/* $Id: MindMapNodeMotionListener.java,v 1.1.2.1.2.4 2006-07-25 20:28:29 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.listeners;
 
@@ -102,11 +102,7 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
     }
 
     /**
-     * @param dragNextPoint
-     * @param node
-     * @param dragStartingPoint
      *            TODO
-     * @return
      */
     private int getVGap(Point dragNextPoint, MindMapNode node,
             Point dragStartingPoint) {
@@ -118,11 +114,7 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
     }
 
     /**
-     * @param dragNextPoint
-     * @param node
-     * @param dragStartingPoint
      *            TODO
-     * @return
      */
     private int getHGap(Point dragNextPoint, MindMapNode node,
             Point dragStartingPoint) {
@@ -136,11 +128,7 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
     }
 
     /**
-     * @param dragNextPoint
-     * @param node
-     * @param dragStartingPoint
      *            TODO
-     * @return
      */
     private int getNodeShiftY(Point dragNextPoint, MindMapNode node,
             Point dragStartingPoint) {
@@ -170,8 +158,6 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
     }
 
     /**
-     * @param e
-     * @return
      */
     private NodeView getNodeView(MouseEvent e) {
         return ((NodeMotionListenerView) e.getSource()).getMovedView();
@@ -219,8 +205,6 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
     }
 
     /**
-     * @param node
-     * @param parentNode
      */
     private void resetPositions(MindMapNode node) {
         node.getParentNode().setVGap(originalParentVGap);

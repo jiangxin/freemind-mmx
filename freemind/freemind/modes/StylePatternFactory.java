@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePatternFactory.java,v 1.1.2.3.2.2 2006-04-18 19:06:08 christianfoltin Exp $*/
+/*$Id: StylePatternFactory.java,v 1.1.2.3.2.3 2006-07-25 20:28:20 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -59,7 +59,6 @@ public class StylePatternFactory {
 	}
 
 	/**
-	 * @param reader
 	 * @return a List of Pattern elements.
 	 * @throws Exception
 	 */
@@ -70,9 +69,7 @@ public class StylePatternFactory {
 	}
 
 	/**
-	 * @param writer
 	 *            the result is written to, and it is closed afterwards
-	 * @param listOfPatterns
 	 *            List of Pattern elements.
 	 * @throws Exception
 	 */
@@ -218,9 +215,6 @@ public class StylePatternFactory {
 	/** Build the intersection of two patterns. Only, if the 
 	 *  property is the same, or both properties are
 	 *  to be removed, it is kept, otherwise it is set to 'don't touch'. 
-	 * @param p1
-	 * @param p2
-	 * @return
 	 */
 	public static Pattern intersectPattern(Pattern p1, Pattern p2){
 		Pattern result = new Pattern();

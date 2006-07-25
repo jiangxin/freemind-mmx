@@ -114,7 +114,6 @@ public class CreationModificationPlugin extends PermanentMindMapNodeHookAdapter 
 	}
 
 	/**
-	 * @param node
 	 */
 	private void setStyleRecursive(MindMapNode node) {
 		logger.finest("setStyle " + node);

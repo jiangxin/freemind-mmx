@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.8 2006-07-23 21:23:27 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.9 2006-07-25 20:28:20 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -215,7 +215,6 @@ public class Tools {
     }
 
     /**
-     * @return
      */
     private static String[] getAvailableFonts() {
         if (sEnvFonts == null) {
@@ -586,7 +585,6 @@ public class Tools {
 	    }
 
 	    /**
-		 * @param mSalt
 		 */
 		private void init(byte[] mSalt) {
 	        if(mSalt!=null) {
@@ -675,16 +673,12 @@ public class Tools {
 	}
 
 	/**
-     * @param byteBuffer
-     * @return
      */
     public static String toBase64(byte[] byteBuffer) {
         return new String(CommonsCodecBase64.encodeBase64(byteBuffer));
     }
 
     /**
-     * @param base64String
-     * @return
      * @throws IOException
      */
     public static byte[] fromBase64(String base64String)  {
@@ -752,8 +746,6 @@ public class Tools {
         return byteArrayToUTF8String(decompressedData);
     }
     /**
-     * @param compressedData
-     * @return
      */
     public static String byteArrayToUTF8String(byte[] compressedData) {
         //     Decode using utf-8
@@ -764,8 +756,6 @@ public class Tools {
         }
     }
     /**
-     * @param uncompressedData
-     * @return
      */
     public static byte[] uTF8StringToByteArray(String uncompressedData) {
         //     Code using utf-8
@@ -777,8 +767,6 @@ public class Tools {
     }
 
 	/** Extracts a long from xml. Only useful for dates.
-     * @param xmlString
-     * @return
      */
     public static Date xmlToDate(String xmlString) {
         try {
@@ -827,10 +815,6 @@ public class Tools {
 
 	/** Creates a reader that pipes the input file through a XSLT-Script that
 	 *  updates the version to the current.
-	 * @param file
-	 * @param xsltScript
-	 * @param frame
-	 * @return
 	 * @throws IOException
 	 */
 	public static Reader getUpdateReader(File file, String xsltScript, FreeMindMain frame) throws IOException {
@@ -872,8 +856,6 @@ public class Tools {
 	}
 
 	/** Creates a default reader that just reads the given file.
-	 * @param file
-	 * @return
 	 * @throws FileNotFoundException
 	 */
 	public static Reader getActualReader(File file) throws FileNotFoundException {

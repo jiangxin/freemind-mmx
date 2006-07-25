@@ -134,9 +134,6 @@ freemind.main.Resources.getInstance().logExecption(			e);
 	}
     
     /**
-     * @param next
-     * @param directoryName
-     * @param directoryName2
      */
     private void copyFromResource(String fileName, OutputStream out) {
         // adapted from http://javaalmanac.com/egs/java.io/CopyFile.html

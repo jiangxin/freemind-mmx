@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.7 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.8 2006-07-25 20:28:20 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -437,7 +437,6 @@ public abstract class XMLElementAdapter extends XMLElement {
 	/** Sets all attributes that were formely applied to the current userObject
 	 *  to a given (new) node. Thus, the instance of a node can be changed after
 	 *  the creation. (At the moment, relevant for encrypted nodes).
-	 * @param node
 	 */
 	protected void copyAttributesToNode(NodeAdapter node) {
 		// reactivate all settings from nodeAttributes:

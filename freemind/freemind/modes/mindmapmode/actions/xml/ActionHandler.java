@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: ActionHandler.java,v 1.1.2.1.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: ActionHandler.java,v 1.1.2.1.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -32,12 +32,10 @@ public interface ActionHandler {
 	void executeAction(ActionPair pair);
 
 	/**
-	 * @param name
 	 */
 	void startTransaction(String name);
 
 	/**
-	 * @param name
 	 */
 	void endTransaction(String name);
 

@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.9.2.6 2006-07-23 20:34:10 christianfoltin Exp $ */
+/* $Id: TimeList.java,v 1.1.2.9.2.7 2006-07-25 20:28:30 christianfoltin Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -322,7 +322,6 @@ public class TimeList extends MindMapHookAdapter {
 	
 	
 	/**
-	 * @param focussedRow
 	 * @param selectedRows TODO
 	 */
 	private void gotoNodesAndClose(int focussedRow, int[] selectedRows) {
@@ -340,8 +339,6 @@ public class TimeList extends MindMapHookAdapter {
 	}
 
 	/**
-     * @param focussedRow
-     * @return
      */
     private MindMapNode getMindMapNode(int focussedRow) {
         MindMapNode selectedNode = ((NodeHolder) timeTable.getModel()
@@ -407,7 +404,6 @@ public class TimeList extends MindMapHookAdapter {
 	}
 
 	/**
-	 * @return
 	 */
 	private JPanel getTimePanel() {
 		if (timePanel == null) {
@@ -454,8 +450,6 @@ public class TimeList extends MindMapHookAdapter {
 	}
 
     /**
-     * @param document
-     * @return
      * @throws BadLocationException
      */
     private String getText(Document document) throws BadLocationException {
@@ -465,8 +459,6 @@ public class TimeList extends MindMapHookAdapter {
     }
 
     /**
-     * @param text
-     * @return
      */
     public static String getPureRegularExpression(String text) {
         // remove regexp:

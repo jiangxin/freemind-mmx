@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/* $Id: ActionFilter.java,v 1.1.2.1.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: ActionFilter.java,v 1.1.2.1.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions.xml;
 
 /**
@@ -31,8 +31,6 @@ package freemind.modes.mindmapmode.actions.xml;
 public interface ActionFilter {
 	/** Each filter receives the action pair and its result is taken as the
 	 * new action pair.
-	 * @param pair
-	 * @return
 	 */
 	ActionPair filterAction(ActionPair pair);
 }

@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ComboProperty.java,v 1.1.2.5.2.1 2006-04-05 21:26:24 dpolivaev Exp $*/
+/*$Id: ComboProperty.java,v 1.1.2.5.2.2 2006-07-25 20:28:19 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -47,8 +47,6 @@ public class ComboProperty extends PropertyBean implements
 	private Vector possibleValues;
 
 	/**
-	 * @param description
-	 * @param label
 	 * @param pTranslator TODO
 	 */
 	public ComboProperty(String description, String label,
@@ -88,14 +86,12 @@ public class ComboProperty extends PropertyBean implements
 	}
 
 	/**
-	 * @param possibles
 	 */
 	private void fillPossibleValues(String[] possibles) {
 		fillPossibleValues(Arrays.asList(possibles));
 	}
 
 	/**
-	 * @param possibles
 	 */
 	private void fillPossibleValues(List possibles) {
 		this.possibleValues = new Vector();
@@ -106,8 +102,6 @@ public class ComboProperty extends PropertyBean implements
 	 *  The old selected value is not selected, but the first in the list.
 	 *  Thus, you should call this method only shortly before setting the
 	 *  value with setValue.
-	 * @param possibles
-	 * @param possibleTranslations
 	 */
 	public void updateComboBoxEntries(List possibles, List possibleTranslations) {
 		mComboBox.setModel(new DefaultComboBoxModel(new Vector(possibleTranslations)));

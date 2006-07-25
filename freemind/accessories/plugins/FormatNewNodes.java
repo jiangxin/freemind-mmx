@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/* $Id: FormatNewNodes.java,v 1.1.4.3.2.1 2006-04-05 21:26:24 dpolivaev Exp $ */
+/* $Id: FormatNewNodes.java,v 1.1.4.3.2.2 2006-07-25 20:28:19 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.util.HashMap;
@@ -77,7 +77,6 @@ public class FormatNewNodes implements ActionHandler, ActionFilter,
 	}
 
 	/**
-	 * @param doAction
 	 */
 	private void detectFormatChanges(XmlAction doAction) {
 		if (doAction instanceof CompoundAction) {

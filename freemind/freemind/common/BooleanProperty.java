@@ -20,7 +20,7 @@
  * 
  * Created on 25.02.2006
  */
-/* $Id: BooleanProperty.java,v 1.1.2.3 2006-03-14 21:56:27 christianfoltin Exp $ */
+/* $Id: BooleanProperty.java,v 1.1.2.3.2.1 2006-07-25 20:28:19 christianfoltin Exp $ */
 package freemind.common;
 
 import java.awt.event.ItemEvent;
@@ -45,8 +45,6 @@ public class BooleanProperty extends PropertyBean implements PropertyControl
 
     JCheckBox mCheckBox = new JCheckBox();
     /**
-     * @param description
-     * @param label
      */
     public BooleanProperty(String description, String label)
     {

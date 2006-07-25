@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.4.2.2 2006-05-25 21:38:35 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4.2.3 2006-07-25 20:28:19 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -52,15 +52,11 @@ import freemind.view.mindmapview.MapView;
     		public static interface MapModuleChangeOberser {
     			/** The params may be null to indicate the there was no previous map,
     			 * or that the last map is closed now.
-    			 * @param oldMapModule
-    			 * @param newMapModule
-    			 * @return
     			 */
     			boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
     			void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
     			void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
     			/** To enable/disable the previous/next map actions.
-    			 * @param number
     			 */
     			void numberOfOpenMapInformation(int number);
     		}
@@ -209,7 +205,6 @@ import freemind.view.mindmapview.MapView;
 	}
 
     /**
-	 * @param newMapModule
 	 *            is null if the old mode should be closed.
 	 * @return true if the set command was sucessful.
 	 */

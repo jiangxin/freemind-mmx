@@ -19,7 +19,7 @@
  *
  * Created on 27.08.2004
  */
-/* $Id: FontFamilyAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: FontFamilyAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -42,10 +42,6 @@ public class FontFamilyAction extends NodeGeneralAction implements NodeActorXml 
     /** This action is used for all fonts, which have to be set first.*/
     private String actionFont;
       /**
-     * @param modeController
-     * @param textID
-     * @param iconPath
-     * @param actor
      */
     public FontFamilyAction(MindMapController modeController) {
         super(modeController, "font_family", null, (NodeActorXml) null);
@@ -68,8 +64,6 @@ public class FontFamilyAction extends NodeGeneralAction implements NodeActorXml 
     }
 
     /**
-     * @param node
-     * @param fontValue
      */
     public void setFontFamily(MindMapNode node, String fontFamilyValue) {
         modeController.getActionFactory().startTransaction(

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.8.14.4.4.1 2006-04-05 21:26:31 dpolivaev Exp $*/
+/*$Id: ArrowLinkView.java,v 1.8.14.4.4.2 2006-07-25 20:28:29 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -162,21 +162,18 @@ public class ArrowLinkView {
 	}
 
     /**
-     * @return
      */
     private boolean isTargetVisible() {
         return (target != null && target.isVisible());
     }
 
     /**
-     * @return
      */
     private boolean isSourceVisible() {
         return (source != null && source.isVisible());
     }
 
     /**
-	 * @param dellength
 	 */
 	private Point calcInclination(NodeView node, double dellength) {
 /*	    
@@ -292,10 +289,6 @@ public class ArrowLinkView {
          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
 
     /**
-     * @param originX
-     * @param originY
-     * @param newX
-     * @param newY
      */
     public void changeInclination(int originX, int originY, int newX, int newY) {
         // TODO Auto-generated method stub

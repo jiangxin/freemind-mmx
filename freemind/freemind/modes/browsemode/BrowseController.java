@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseController.java,v 1.13.18.7.2.3 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: BrowseController.java,v 1.13.18.7.2.4 2006-07-25 20:28:21 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -177,8 +177,6 @@ public class BrowseController extends ViewControllerAdapter {
 	}
 
 	/**
-	 * @param destination
-	 * @return
 	 */
 	private GotoLinkNodeAction getGotoLinkNodeAction(MindMapNode destination) {
 		return new GotoLinkNodeAction(this, destination);

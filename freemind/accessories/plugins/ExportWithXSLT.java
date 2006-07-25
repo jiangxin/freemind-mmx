@@ -166,8 +166,6 @@ public class ExportWithXSLT extends ExportHook {
     }
 
     /**
-     * @param directoryName
-     * @return
      */
     private boolean copyIcons(String directoryName)
     {
@@ -182,7 +180,6 @@ public class ExportWithXSLT extends ExportHook {
     }
 
     /**
-     * @param directoryName
      */
     private void createImageFromMap(String directoryName)
     {
@@ -198,7 +195,6 @@ public class ExportWithXSLT extends ExportHook {
     }
 
     /**
-     * @param directoryName2
      */
     private void copyIconsToDirectory(String directoryName2)
     {
@@ -211,9 +207,6 @@ public class ExportWithXSLT extends ExportHook {
     }
 
     /**
-     * @param directoryName
-     * @param files
-     * @param filePrefix
      */
     private void copyFilesFromResourcesToDirectory(String directoryName, String files, String filePrefix)
     {
@@ -225,9 +218,6 @@ public class ExportWithXSLT extends ExportHook {
     }
 
     /**
-     * @param directoryName
-     * @param success
-     * @return
      */
     private boolean createDirectory(String directoryName)
     {
@@ -240,9 +230,6 @@ public class ExportWithXSLT extends ExportHook {
     }
 
     /**
-     * @param xsltFileName
-     * @param saveFile
-     * @param areaCode
      * @throws IOException
      */
     private boolean transformMapWithXslt(String xsltFileName, File saveFile, String areaCode) throws IOException
@@ -260,7 +247,6 @@ public class ExportWithXSLT extends ExportHook {
     }
 
     /**
-     * @return
      * @throws IOException
      */
     private StringWriter getMapXml() throws IOException
@@ -274,7 +260,6 @@ public class ExportWithXSLT extends ExportHook {
 
     /**
      * @param create_image
-     * @return
      */
     private String getAreaCode(boolean create_image)
     {

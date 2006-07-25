@@ -75,10 +75,6 @@ public class ChangeArrowsInArrowLinkAction extends FreemindAction implements
     }
 
     /**
-     * @param arrowLink2
-     * @param hasStartArrow2
-     * @param hasEndArrow2
-     * @return
      */
     private ActionPair getActionPair(MindMapArrowLinkModel arrowLink2, boolean hasStartArrow2, boolean hasEndArrow2) {
         return new ActionPair(createArrowLinkArrowXmlAction(arrowLink2, hasStartArrow2, hasEndArrow2),
@@ -113,7 +109,6 @@ public class ChangeArrowsInArrowLinkAction extends FreemindAction implements
         return action;
     }
     /**
-     * @return
      */
     private MindMapLinkRegistry getLinkRegistry() {
         return controller.getMap().getLinkRegistry();

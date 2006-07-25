@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.4 2006-07-23 20:34:08 christianfoltin Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.5 2006-07-25 20:28:19 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -241,7 +241,6 @@ freemind.main.Resources.getInstance().logExecption(			e);
 	/**
 	 * This method initializes this
 	 * 
-	 * @param patternList
 	 * 
 	 * @return void
 	 */
@@ -272,7 +271,6 @@ freemind.main.Resources.getInstance().logExecption(			e);
 	}
 
 	/**
-	 * @return
 	 */
 	private String getDialogTitle() {
 		return mController
@@ -298,7 +296,6 @@ freemind.main.Resources.getInstance().logExecption(			e);
 	/**
 	 * This method initializes jContentPane
 	 * 
-	 * @param patternList
 	 * 
 	 * @return javax.swing.JPanel
 	 */

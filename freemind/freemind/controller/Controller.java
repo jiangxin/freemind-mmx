@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.11 2006-07-23 21:23:27 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.12 2006-07-25 20:28:19 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -369,7 +369,6 @@ public class Controller  implements MapModuleChangeOberser {
        return getFontThroughMap (new Font(fontFamily, fontStyle, fontSize)); }
 
 	/**
-     * @return
      */
     public String getDefaultFontFamilyName() {
         String fontFamily = getProperty("defaultfont");
@@ -377,7 +376,6 @@ public class Controller  implements MapModuleChangeOberser {
     }
 
     /**
-     * @return
      */
     public int getDefaultFontStyle() {
         int fontStyle = Integer.parseInt(getFrame().getProperty("defaultfontstyle"));
@@ -385,7 +383,6 @@ public class Controller  implements MapModuleChangeOberser {
     }
 
     /**
-     * @return
      */
     public int getDefaultFontSize() {
         int fontSize = Integer.parseInt(getFrame().getProperty("defaultfontsize"));
@@ -527,7 +524,6 @@ public class Controller  implements MapModuleChangeOberser {
      * actions.
      * Does nothing, if the mode is identical to the current mode.
      *
-     * @param mode
      * @return false if the change was not successful.
      */
     public boolean createNewMode(String mode) {
@@ -1258,7 +1254,6 @@ public class Controller  implements MapModuleChangeOberser {
         return Collections.unmodifiableCollection(propertyChangeListeners);
     }
     /**
-     * @return
      */
     public MindMap getMap() {
         return getMapModule().getModel();
@@ -1384,7 +1379,6 @@ public class Controller  implements MapModuleChangeOberser {
         changeAntialias(command);
        }
 	    /**
-	     * @param command
 	     */
 	    public void changeAntialias(String command) {
 	        if(command == null) {
@@ -1429,7 +1423,6 @@ public class Controller  implements MapModuleChangeOberser {
         }
 
         /**
-         * @param command
          */
         private void changeSelection(String command) {
             setProperty("selection_method", command);

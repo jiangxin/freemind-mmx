@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: StringProperty.java,v 1.1.2.4 2006-03-19 20:18:30 christianfoltin Exp $*/
+/*$Id: StringProperty.java,v 1.1.2.4.2.1 2006-07-25 20:28:19 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -40,8 +40,6 @@ public class StringProperty extends PropertyBean implements
 
 	JTextField mTextField = new JTextField();
 	/**
-	 * @param description
-	 * @param label
 	 */
 	public StringProperty(String description, String label) {
 		super();

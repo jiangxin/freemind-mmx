@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.2.12.1 2006-04-06 21:15:07 dpolivaev Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2.12.2 2006-07-25 20:28:29 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -90,14 +90,12 @@ public class EditNodeBase {
     }
 
     /**
-    	 * @param string
     	 */
     protected String getText(String string) {
     	return controller.getController().getResourceString(string);
     }
 
     /**
-    	 * @return
     	 */
     protected FreeMindMain getFrame() {
     	return controller.getFrame();
@@ -140,7 +138,6 @@ public class EditNodeBase {
     }
 
 	/**
-	 * @return
 	 */
 	protected String getText() {
 		return text;
@@ -148,42 +145,36 @@ public class EditNodeBase {
 
 
     /**
-     * @return
      */
     public Clipboard getClipboard() {
         return clipboard;
     }
 
     /**
-     * @return
      */
     public EditControl getEditControl() {
         return editControl;
     }
 
     /**
-     * @return
      */
     public NodeView getNode() {
         return node;
     }
 
     /**
-     * @return
      */
     public FocusListener getTextFieldListener() {
         return textFieldListener;
     }
 
     /**
-     * @param string
      */
     public void setText(String string) {
         text = string;
     }
 
     /**
-     * @param listener
      */
     public void setTextFieldListener(FocusListener listener) {
         textFieldListener = listener;

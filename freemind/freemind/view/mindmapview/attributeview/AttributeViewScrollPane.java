@@ -33,7 +33,6 @@ class AttributeViewScrollPane extends JScrollPane{
     
      
     /**
-     * @param attributeTable
      */
     AttributeViewScrollPane(AttributeTable attributeTable) {
         super(attributeTable);

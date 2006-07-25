@@ -19,7 +19,7 @@
  *
  * Created on 12.08.2004
  */
-/* $Id: ToggleFoldedAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: ToggleFoldedAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:22 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -105,8 +105,6 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
 	}
 
 	/**
-	 * @param fold
-	 * @param node
 	 * @return null if node cannot be folded.
 	 */
 	private FoldAction createSingleFoldAction(boolean fold, MindMapNode node,
@@ -140,8 +138,6 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
 	}
 
 	/**
-	 * @param node
-	 * @param folded
 	 */
 	public void setFolded(MindMapNode node, boolean folded) {
 		FoldAction doAction = createSingleFoldAction(folded, node, false);

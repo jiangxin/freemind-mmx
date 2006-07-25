@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: RemoveAllIconsAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: RemoveAllIconsAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -43,10 +43,6 @@ public class RemoveAllIconsAction extends NodeGeneralAction implements NodeActor
     private final IconAction addIconAction;
 
     /**
-     * @param modeController
-     * @param textID
-     * @param iconPath
-     * @param singleNodeOperation
      */
     public RemoveAllIconsAction(MindMapController modeController, IconAction addIconAction) {
         super(modeController, "remove_all_icons", "images/edittrash.png");

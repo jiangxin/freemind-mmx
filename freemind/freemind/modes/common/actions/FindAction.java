@@ -281,7 +281,6 @@ public class FindAction extends AbstractAction {
 	}
 
 	/**
-	 * @param node
 	 */
 	private void centerNode(MindMapNode node) {
 		// Select the node and scroll to it.

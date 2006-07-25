@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: ItalicAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $ */
+/* $Id: ItalicAction.java,v 1.1.2.2.2.1 2006-07-25 20:28:21 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import javax.swing.Action;
@@ -39,9 +39,6 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 public class ItalicAction extends NodeGeneralAction implements NodeActorXml, MenuItemEnabledListener{
 	private final MindMapController modeController;
 	/**
-	 * @param textID
-	 * @param iconPath
-	 * @param actor
 	 */
 	public ItalicAction(MindMapController modeController) {
 		super(modeController, "italic", "images/Italic16.gif");

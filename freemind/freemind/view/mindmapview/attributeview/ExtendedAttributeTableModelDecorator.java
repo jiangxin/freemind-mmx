@@ -109,14 +109,12 @@ class ExtendedAttributeTableModelDecorator extends AttributeTableModelDecoratorA
         return getRowCount() !=0;
     }
     /**
-     * @param row
      */
     public void moveRowUp(int row) {
         Attribute attribute = (Attribute)nodeAttributeModel.removeRow(row);
         nodeAttributeModel.insertRow(row-1, attribute.getName(), attribute.getValue());                
     }
     /**
-     * @param row
      */
     public void moveRowDown(int row) {
         Attribute attribute = (Attribute)nodeAttributeModel.removeRow(row);

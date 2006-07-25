@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/* $Id: StylePatternFrame.java,v 1.1.2.10.2.1 2006-04-05 21:26:29 dpolivaev Exp $ */
+/* $Id: StylePatternFrame.java,v 1.1.2.10.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;
@@ -513,11 +513,6 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 	}
 
 	/**
-	 * @param patternProperty
-	 * @param ThreeCheckBoxProperty
-	 * @param property
-	 * @param defaultValue
-	 * @param transformer
 	 */
 	private void setPatternControls(PatternPropertyBase patternProperty,
 			PropertyBean threeCheckBoxProperty, PropertyBean property,
@@ -627,11 +622,6 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 	}
 
 	/**
-	 * @param baseProperty
-	 * @param threeCheckBoxProperty
-	 * @param property
-	 * @param transformer
-	 * @return
 	 */
 	private PatternPropertyBase getPatternResult(
 			PatternPropertyBase baseProperty,
@@ -671,7 +661,6 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 	/**
 	 * For the child pattern box, the list is set here.
 	 *
-	 * @param patternList
 	 */
 	public void setPatternList(List patternList) {
 		this.mPatternList = patternList;

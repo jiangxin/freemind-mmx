@@ -58,7 +58,6 @@ import freemind.view.MapModule;
     }
     
      /**
-     * @return
      */
     public FilterToolbar getFilterToolbar() {
         if(filterToolbar == null)
@@ -66,7 +65,6 @@ import freemind.view.MapModule;
         return filterToolbar;
     }
     /**
-     * @return
      */
     public void showFilterToolbar(boolean show){
         if (show == getFilterToolbar().isVisible())
@@ -93,7 +91,6 @@ import freemind.view.MapModule;
     }
     
     /**
-     * @return
      */
     public MindMap getMap() {
         return map;

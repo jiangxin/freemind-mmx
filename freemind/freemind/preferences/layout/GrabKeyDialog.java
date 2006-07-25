@@ -56,7 +56,6 @@ public class GrabKeyDialog extends JDialog
     private static class Buffer {
 
 		/**
-		 * @return
 		 */
 		public int getLength() {
 			// TODO Auto-generated method stub
@@ -64,8 +63,6 @@ public class GrabKeyDialog extends JDialog
 		}
 
 		/**
-		 * @param length
-		 * @param string
 		 */
 		public void insert(int length, String string) {
 			// TODO Auto-generated method stub
@@ -123,7 +120,6 @@ public class GrabKeyDialog extends JDialog
 	//{{{ GrabKeyDialog constructor
 	/**
 	 * Create and show a new modal dialog.
-	 * @param fmMain
 	 *
 	 * @param  parent  center dialog on this component.
 	 * @param  binding  the action/macro that should get a binding.
@@ -596,15 +592,12 @@ public class GrabKeyDialog extends JDialog
 
 	} //}}}
 	/**
-	 * @param string
-	 * @return
 	 */
 	private String getText(String resourceString) {
 		return fmMain.getResourceString("GrabKeyDialog."+resourceString);
 	}
 
 	/**FIXME: make method here.
-	 * @return
 	 */
 	public static boolean isMacOS() {
 		return false;

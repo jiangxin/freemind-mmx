@@ -49,28 +49,24 @@ public interface PermanentNodeHook extends NodeHook {
 	 * 
 	 * Ah, don't call propagate in this method, as paste introduces nodes with the 
 	 * hook and you'll have them twice, ...
-	 * @see onNewChild
-	 * @param addedChildNode
+	 * see onNewChild
 	 */
 	void onAddChild(MindMapNode addedChildNode);
 
 	/** Is only called, if a new nodes is inserted as a child.
 	 * Remark: In this case onAddChild is called too and moreover *before* this method.
-	 * @see onAddChild.
-	 * @param newChildNode
+	 * see onAddChild.
 	 */
 	void onNewChild(MindMapNode newChildNode);
 	
     /** This method is called, if a child is added to me or to any of my children.
      *  (See onUpdateChildrenHook)
-     * @param addedChild
      */
     void onAddChildren(MindMapNode addedChild);
 
 	void onRemoveChild(MindMapNode oldChildNode);
     /** This method is called, if a child is removed to me or to any of my children.
      *  (See onUpdateChildrenHook)
-     * @param oldChildNode
      * @param oldDad TODO
      */
 	void onRemoveChildren(MindMapNode oldChildNode, MindMapNode oldDad);
@@ -81,11 +77,9 @@ public interface PermanentNodeHook extends NodeHook {
 	void onUpdateChildrenHook(MindMapNode updatedNode);
 
 	/**
-	 * @param hookElement
 	 */
 	void save(XMLElement hookElement);
 	/**
-	 * @param child
 	 */
 	void loadFrom(XMLElement child);
 	/**

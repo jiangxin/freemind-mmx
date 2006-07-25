@@ -40,9 +40,6 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuItemEnabledListener{
 	/**
-	 * @param textID
-	 * @param iconPath
-	 * @param actor
 	 */
 	public BoldAction(MindMapController modeController) {
 		super(modeController, "bold", "images/Bold16.gif");

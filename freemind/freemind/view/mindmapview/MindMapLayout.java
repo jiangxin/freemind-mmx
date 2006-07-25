@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.5.4.5 2006-06-04 11:23:28 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.5.4.6 2006-07-25 20:28:30 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -176,14 +176,12 @@ public class MindMapLayout implements LayoutManager {
     }
 
     /**
-	 * @return
 	 */
 	private int getRootY() {
 		return map.calcYBorderSize() + getRoot().getUpperChildShift();
 	}
 
 	/**
-	 * @return
 	 */
 	private int getRootX() {
 		return map.calcXBorderSize() + getRoot().getLeftTreeWidth();
@@ -321,9 +319,6 @@ public class MindMapLayout implements LayoutManager {
     }
 
 	/**
-	 * @param node
-	 * @param rightNodeViews
-	 * @return
 	 */
 	private int calcUpperChildShift(NodeView node, LinkedList childrenViews) {
 		try{
@@ -355,8 +350,6 @@ public class MindMapLayout implements LayoutManager {
     }
 
 	/**
-	 * @param leftNodeViews
-	 * @return
 	 */
 	private int calcTreeHeight(NodeView parent, int treeShift, LinkedList childrenViews) {
     	int parentHeight = parent.getPreferredSize().height;
@@ -424,21 +417,18 @@ public class MindMapLayout implements LayoutManager {
     }
 
     /**
-     * @return
      */
     private int getYSize() {
         return ySize;
     }
 
     /**
-     * @param i
      */
     private void setXSize(int i) {
         xSize = i;
     }
 
     /**
-     * @param i
      */
     private void setYSize(int i) {
         ySize = i;

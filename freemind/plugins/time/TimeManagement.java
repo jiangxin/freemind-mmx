@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeManagement.java,v 1.1.2.6.2.2 2006-05-02 20:40:22 christianfoltin Exp $ */
+/* $Id: TimeManagement.java,v 1.1.2.6.2.3 2006-07-25 20:28:30 christianfoltin Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -202,7 +202,6 @@ public class TimeManagement extends MindMapHookAdapter implements
 	}
 
 	/**
-	 * @return
 	 */
 	private JPanel getTimePanel() {
 		if (timePanel == null) {
@@ -320,7 +319,6 @@ public class TimeManagement extends MindMapHookAdapter implements
 	}
 
 	/**
-	 * @param node
 	 */
 	private void addHook(MindMapNode node) {
 		// add the hook:
@@ -329,8 +327,6 @@ public class TimeManagement extends MindMapHookAdapter implements
 	}
 
 	/**
-	 * @param node
-	 * @return
 	 */
 	public static ReminderHookBase getHook(MindMapNode node) {
 		for (Iterator j = node.getActivatedHooks().iterator(); j.hasNext();) {
@@ -352,7 +348,6 @@ public class TimeManagement extends MindMapHookAdapter implements
 	}
 
 	/**
-	 * @return
 	 */
 	private Date getCalendarDate() {
 		Calendar cal = calendar.getCalendar();

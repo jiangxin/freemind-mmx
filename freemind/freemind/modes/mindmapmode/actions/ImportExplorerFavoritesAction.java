@@ -114,9 +114,6 @@ public class ImportExplorerFavoritesAction extends AbstractAction {
     }
 
     /**
-     * @param target
-     * @param nodeContent
-     * @return
      */
     private MindMapNode addNode(MindMapNode target, String nodeContent) {
         MindMapNode node = controller.addNewNode(target, target.getChildCount(), target.isLeft());

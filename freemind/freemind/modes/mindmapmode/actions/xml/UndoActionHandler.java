@@ -19,7 +19,7 @@
  *
  * Created on 23.09.2004
  */
-/* $Id: UndoActionHandler.java,v 1.1.2.1.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: UndoActionHandler.java,v 1.1.2.1.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -35,9 +35,6 @@ public class UndoActionHandler implements ActionHandler {
     private final RedoAction redo;
 
     /**
-     * @param adapter
-     * @param redo
-     * @param undo
      */
     public UndoActionHandler(MindMapController adapter, UndoAction undo, RedoAction redo) {
         this.controller = adapter;

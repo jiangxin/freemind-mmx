@@ -99,7 +99,6 @@ abstract class AttributeTableModelDecoratorAdapter extends AbstractTableModel  i
     }
     /**
      * @param view 
-     * @return
      */
     public abstract boolean areAttributesVisible() ;
 }

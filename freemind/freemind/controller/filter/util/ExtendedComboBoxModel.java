@@ -66,7 +66,6 @@ public class ExtendedComboBoxModel extends DefaultComboBoxModel {
     private ExtensionDataListener extensionDataListener = new ExtensionDataListener();
  
     /**
-     * @param sortedListModel
      */
     public void setExtensionList(final SortedListModel sortedListModel) {
         final int ownSize = getOwnSize();
@@ -119,7 +118,6 @@ public class ExtendedComboBoxModel extends DefaultComboBoxModel {
     }
 
     /**
-     * @return
      */
     private int getOwnSize() {
         return super.getSize();

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: StylePattern.java,v 1.5.18.8.2.2 2006-07-23 20:34:08 christianfoltin Exp $ */
+/* $Id: StylePattern.java,v 1.5.18.8.2.3 2006-07-25 20:28:20 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -83,7 +83,6 @@ public class StylePattern {
     }
 
     /** Constructs a style pattern from a node:
-     * @param node
      */
     public StylePattern(MindMapNode node) {
         nodeColor = node.getColor();
@@ -199,7 +198,7 @@ public class StylePattern {
 
     /**
        * Set the value of nodeStyle.
-       * @param v  Value to assign to nodeStyle.
+       * @param nodeStyle  Value to assign to nodeStyle.
        */
     public void setNodeStyle(String  nodeStyle) {
        this.nodeStyle = nodeStyle; }
@@ -238,7 +237,7 @@ public class StylePattern {
 
     /**
        * Set the value of icon.
-       * @param v  Value to assign to icon.
+       * @param nodeIcon  Value to assign to icon.
        */
     public void setNodeIcon(MindIcon  nodeIcon) {
        this.nodeIcon = nodeIcon; }
@@ -252,7 +251,7 @@ public class StylePattern {
 
     /**
        * Set the value of edgeColor.
-       * @param v  Value to assign to edgeColor.
+       * @param edgeColor  Value to assign to edgeColor.
        */
     public void setEdgeColor(Color edgeColor) {
        this.edgeColor = edgeColor; }
@@ -266,7 +265,7 @@ public class StylePattern {
 
     /**
      * Set the value of edgeStyle.
-       * @param v  Value to assign to edgeStyle.
+       * @param edgeStyle  Value to assign to edgeStyle.
        */
     public void setEdgeStyle(String  edgeStyle) {
        this.edgeStyle = edgeStyle; }
@@ -281,7 +280,7 @@ public class StylePattern {
 
     /**
        * Set the value of edgeWidth.
-       * @param v  Value to assign to edgeWidth.
+       * @param edgeWidth  Value to assign to edgeWidth.
        */
     public void setEdgeWidth(Integer edgeWidth) {
        this.edgeWidth = edgeWidth;}
@@ -295,10 +294,10 @@ public class StylePattern {
 
     /**
        * Set the value of ChildrenStylePattern.
-       * @param v  Value to assign to ChildrenStylePattern.
+       * @param pChildrenStylePattern  Value to assign to ChildrenStylePattern.
        */
-    public void setChildrenStylePattern(StylePattern ChildrenStylePattern) {
-       this.mChildrenStylePattern = ChildrenStylePattern;}
+    public void setChildrenStylePattern(StylePattern pChildrenStylePattern) {
+       this.mChildrenStylePattern = pChildrenStylePattern;}
 
 
     public static List loadPatterns(File file) throws Exception {

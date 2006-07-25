@@ -19,7 +19,7 @@
  *
  * Created on 06.02.2005
  */
-/* $Id: ReminderHookBase.java,v 1.1.2.1.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
+/* $Id: ReminderHookBase.java,v 1.1.2.1.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
 package freemind.modes.common.plugins;
 
 import java.text.MessageFormat;
@@ -109,7 +109,6 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	}
 
 	/**
-	 * @param node
 	 */
 	private void scheduleTimer(MindMapNode node) {
 		scheduleTimer(node, new TimerBlinkTask(false));
@@ -191,7 +190,6 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	public class TimerBlinkTask extends TimerTask {
 
 		/**
-		 * @param stateAdded
 		 */
 		public TimerBlinkTask(boolean stateAdded) {
 			super();

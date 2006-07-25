@@ -44,8 +44,6 @@ public class DefaultFilter implements Filter{
 
     
     /**
-     * @param condition
-     * @param options
      */
     public DefaultFilter(
             Condition condition, 
@@ -95,8 +93,6 @@ public class DefaultFilter implements Filter{
         return getNearestVisibleParent(selectedNode.getParentView());
     }
     /**
-     * @param iterator
-     * @return
      */
     private boolean filterChildren(MindMapNode parent, boolean isAncestorSelected, boolean isAncestorEclipsed) {
         ListIterator iterator = parent.childrenUnfolded();

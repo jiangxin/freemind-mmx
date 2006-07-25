@@ -19,7 +19,7 @@
  *
  * Created on 11.03.2005
  */
-/* $Id: RevertAction.java,v 1.1.2.2.2.2 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: RevertAction.java,v 1.1.2.2.2.3 2006-07-25 20:28:22 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -55,7 +55,6 @@ public class RevertAction extends FreemindAction implements ActorXml {
 	private final MindMapController controller;
 
 	/**
-	 * @param modeController
 	 */
 	public RevertAction(MindMapController modeController) {
 		super("RevertAction", (String) null, modeController);
@@ -123,7 +122,6 @@ freemind.main.Resources.getInstance().logExecption(			e);
 
 	/**
 	 * @param filePrefix is used to generate the name of the reverted map in case that fileName is null.
-	 * @return
 	 */
 	public RevertXmlAction createRevertXmlAction(String xmlPackedFile,
 			String fileName, String filePrefix)  {

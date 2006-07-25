@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.14.14.7.2.2 2006-06-04 16:16:00 dpolivaev Exp $*/
+/*$Id: RootNodeView.java,v 1.14.14.7.2.3 2006-07-25 20:28:30 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -62,7 +62,6 @@ public class RootNodeView extends NodeView {
     /* fc, 26.06.2005 */
     /** Returns the point the edge should start given the index of the child node 
      * that should be connected.
-     * @return
      */
     Point getOutPoint(Point destinationPoint, boolean isLeft) {
 		if (true) {

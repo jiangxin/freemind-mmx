@@ -19,8 +19,8 @@
 */
 /* XMLElement.java
  *
- * $Revision: 1.7.18.4.2.4 $
- * $Date: 2006-07-23 20:34:08 $
+ * $Revision: 1.7.18.4.2.5 $
+ * $Date: 2006-07-25 20:28:20 $
  * $Name:  $
  *
  * This file is part of NanoXML 2 Lite.
@@ -121,11 +121,11 @@ import java.util.regex.Pattern;
  * </DD></DL>
  * <P>
  *
- * @see nanoxml.XMLParseException
+ *
  *
  * @author Marc De Scheemaecker
  *         &lt;<A href="mailto:cyberelf@mac.com">cyberelf@mac.com</A>&gt;
- * @version $Name:  $, $Revision: 1.7.18.4.2.4 $
+ * @version $Name:  $, $Revision: 1.7.18.4.2.5 $
  */
 public class XMLElement
 {
@@ -326,7 +326,6 @@ public class XMLElement
      * <ul><code>new XMLElement(entities, false, true)
      * </code></ul>
      *
-     * @param entities
      *     The entity conversion table.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -360,7 +359,6 @@ public class XMLElement
      * <ul><code>new XMLElement(new Hashtable(), skipLeadingWhitespace, true)
      * </code></ul>
      *
-     * @param skipLeadingWhitespace
      *     <code>true</code> if leading and trailing whitespace in PCDATA
      *     content has to be removed.
      *
@@ -392,9 +390,7 @@ public class XMLElement
      * <ul><code>new XMLElement(entities, skipLeadingWhitespace, true)
      * </code></ul>
      *
-     * @param entities
      *     The entity conversion table.
-     * @param skipLeadingWhitespace
      *     <code>true</code> if leading and trailing whitespace in PCDATA
      *     content has to be removed.
      *
@@ -427,12 +423,9 @@ public class XMLElement
     /**
      * Creates and initializes a new XML element.
      *
-     * @param entities
      *     The entity conversion table.
-     * @param skipLeadingWhitespace
      *     <code>true</code> if leading and trailing whitespace in PCDATA
      *     content has to be removed.
-     * @param ignoreCase
      *     <code>true</code> if the case of element and attribute names have
      *     to be ignored.
      *
@@ -472,15 +465,11 @@ public class XMLElement
      * {@link #createAnotherElement() createAnotherElement}
      * to create child elements.
      *
-     * @param entities
      *     The entity conversion table.
-     * @param skipLeadingWhitespace
      *     <code>true</code> if leading and trailing whitespace in PCDATA
      *     content has to be removed.
-     * @param fillBasicConversionTable
      *     <code>true</code> if the basic entities need to be added to
      *     the entity list.
-     * @param ignoreCase
      *     <code>true</code> if the case of element and attribute names have
      *     to be ignored.
      *
@@ -542,7 +531,6 @@ public class XMLElement
     /**
      * Adds a child element.
      *
-     * @param child
      *     The child element to add.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -560,7 +548,7 @@ public class XMLElement
      * @see freemind.main.XMLElement#countChildren()
      * @see freemind.main.XMLElement#enumerateChildren()
      * @see freemind.main.XMLElement#getChildren()
-     * @see freemind.main.XMLElement#removeChild(nanoxml.XMLElement)
+     * @see freemind.main.XMLElement#removeChild(XMLElement)
      *         removeChild(XMLElement)
      */
     public void addChild(XMLElement child)
@@ -572,9 +560,7 @@ public class XMLElement
     /**
      * Adds or modifies an attribute.
      *
-     * @param name
      *     The name of the attribute.
-     * @param value
      *     The value of the attribute.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -625,9 +611,7 @@ public class XMLElement
     /**
      * Adds or modifies an attribute.
      *
-     * @param name
      *     The name of the attribute.
-     * @param value
      *     The value of the attribute.
      *
      * @deprecated Use {@link #setAttribute(java.lang.String, java.lang.Object)
@@ -643,9 +627,7 @@ public class XMLElement
     /**
      * Adds or modifies an attribute.
      *
-     * @param name
      *     The name of the attribute.
-     * @param value
      *     The value of the attribute.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -688,9 +670,7 @@ public class XMLElement
     /**
      * Adds or modifies an attribute.
      *
-     * @param name
      *     The name of the attribute.
-     * @param value
      *     The value of the attribute.
      *
      * @deprecated Use {@link #setIntAttribute(java.lang.String, int)
@@ -706,9 +686,7 @@ public class XMLElement
     /**
      * Adds or modifies an attribute.
      *
-     * @param name
      *     The name of the attribute.
-     * @param value
      *     The value of the attribute.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -751,9 +729,7 @@ public class XMLElement
     /**
      * Adds or modifies an attribute.
      *
-     * @param name
      *     The name of the attribute.
-     * @param value
      *     The value of the attribute.
      *
      * @deprecated Use {@link #setDoubleAttribute(java.lang.String, double)
@@ -773,11 +749,11 @@ public class XMLElement
      * <ul><li><code>result >= 0</code>
      * </ul></dd></dl>
      *
-     * @see freemind.main.XMLElement#addChild(nanoxml.XMLElement)
+     * @see freemind.main.XMLElement#addChild(XMLElement)
      *         addChild(XMLElement)
      * @see freemind.main.XMLElement#enumerateChildren()
      * @see freemind.main.XMLElement#getChildren()
-     * @see freemind.main.XMLElement#removeChild(nanoxml.XMLElement)
+     * @see freemind.main.XMLElement#removeChild(XMLElement)
      *         removeChild(XMLElement)
      */
     public int countChildren()
@@ -864,11 +840,11 @@ public class XMLElement
      * <ul><li><code>result != null</code>
      * </ul></dd></dl>
      *
-     * @see freemind.main.XMLElement#addChild(nanoxml.XMLElement)
+     * @see freemind.main.XMLElement#addChild(XMLElement)
      *         addChild(XMLElement)
      * @see freemind.main.XMLElement#countChildren()
      * @see freemind.main.XMLElement#getChildren()
-     * @see freemind.main.XMLElement#removeChild(nanoxml.XMLElement)
+     * @see freemind.main.XMLElement#removeChild(XMLElement)
      *         removeChild(XMLElement)
      */
     public Enumeration enumerateChildren()
@@ -885,11 +861,11 @@ public class XMLElement
      * <ul><li><code>result != null</code>
      * </ul></dd></dl>
      *
-     * @see freemind.main.XMLElement#addChild(nanoxml.XMLElement)
+     * @see freemind.main.XMLElement#addChild(XMLElement)
      *         addChild(XMLElement)
      * @see freemind.main.XMLElement#countChildren()
      * @see freemind.main.XMLElement#enumerateChildren()
-     * @see freemind.main.XMLElement#removeChild(nanoxml.XMLElement)
+     * @see freemind.main.XMLElement#removeChild(XMLElement)
      *         removeChild(XMLElement)
      */
     public Vector getChildren()
@@ -1021,13 +997,9 @@ public class XMLElement
      * <code>getAttribute("attr", mapping, defaultKey, false)</code> returns
      * <code>"1"</code>.
      *
-     * @param name
      *     The name of the attribute.
-     * @param valueSet
      *     Hashtable mapping keys to values.
-     * @param defaultKey
      *     Key to use if the attribute is missing.
-     * @param allowLiterals
      *     <code>true</code> if literals are valid.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -1144,13 +1116,9 @@ public class XMLElement
      * <code>getAttribute("attr", mapping, defaultKey, false)</code> returns
      * <code>"1"</code>.
      *
-     * @param name
      *     The name of the attribute.
-     * @param valueSet
      *     Hashtable mapping keys to values.
-     * @param defaultKey
      *     Key to use if the attribute is missing.
-     * @param allowLiterals
      *     <code>true</code> if literals are valid.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -1260,13 +1228,9 @@ public class XMLElement
      * <code>getIntAttribute("attr", mapping, defaultKey, false)</code> returns
      * <code>1</code>.
      *
-     * @param name
      *     The name of the attribute.
-     * @param valueSet
      *     Hashtable mapping keys to values.
-     * @param defaultKey
      *     Key to use if the attribute is missing.
-     * @param allowLiteralNumbers
      *     <code>true</code> if literal numbers are valid.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -1398,13 +1362,9 @@ public class XMLElement
      * <code>getDoubleAttribute("attr", mapping, defaultKey, false)</code>
      * returns <code>1.0</code>.
      *
-     * @param name
      *     The name of the attribute.
-     * @param valueSet
      *     Hashtable mapping keys to values.
-     * @param defaultKey
      *     Key to use if the attribute is missing.
-     * @param allowLiteralNumbers
      *     <code>true</code> if literal numbers are valid.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -1674,7 +1634,6 @@ public class XMLElement
     /**
      * Reads one XML element from a java.io.Reader and parses it.
      *
-     * @param reader
      *     The reader from which to retrieve the XML data.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -1691,7 +1650,7 @@ public class XMLElement
      *
      * @throws java.io.IOException
      *     If an error occured while reading the input.
-     * @throws nanoxml.XMLParseException
+     * @throws XMLParseException
      *     If an error occured while parsing the read data.
      */
     public void parseFromReader(Reader reader)
@@ -1704,9 +1663,7 @@ public class XMLElement
     /**
      * Reads one XML element from a java.io.Reader and parses it.
      *
-     * @param reader
      *     The reader from which to retrieve the XML data.
-     * @param startingLineNr
      *     The line number of the first line in the data.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -1723,7 +1680,7 @@ public class XMLElement
      *
      * @throws java.io.IOException
      *     If an error occured while reading the input.
-     * @throws nanoxml.XMLParseException
+     * @throws XMLParseException
      *     If an error occured while parsing the read data.
      */
     public void parseFromReader(Reader reader,
@@ -1757,7 +1714,6 @@ public class XMLElement
     /**
      * Reads one XML element from a String and parses it.
      *
-     * @param reader
      *     The reader from which to retrieve the XML data.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -1770,7 +1726,7 @@ public class XMLElement
      *         parsed from the reader
      * </ul></dd></dl><dl>
      *
-     * @throws nanoxml.XMLParseException
+     * @throws XMLParseException
      *     If an error occured while parsing the string.
      */
     public void parseString(String string)
@@ -1788,9 +1744,7 @@ public class XMLElement
     /**
      * Reads one XML element from a String and parses it.
      *
-     * @param reader
      *     The reader from which to retrieve the XML data.
-     * @param offset
      *     The first character in <code>string</code> to scan.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -1804,7 +1758,7 @@ public class XMLElement
      *         parsed from the reader
      * </ul></dd></dl><dl>
      *
-     * @throws nanoxml.XMLParseException
+     * @throws XMLParseException
      *     If an error occured while parsing the string.
      */
     public void parseString(String string,
@@ -1818,11 +1772,8 @@ public class XMLElement
     /**
      * Reads one XML element from a String and parses it.
      *
-     * @param reader
      *     The reader from which to retrieve the XML data.
-     * @param offset
      *     The first character in <code>string</code> to scan.
-     * @param end
      *     The character where to stop scanning.
      *     This character is not scanned.
      *
@@ -1838,7 +1789,7 @@ public class XMLElement
      *         parsed from the reader
      * </ul></dd></dl><dl>
      *
-     * @throws nanoxml.XMLParseException
+     * @throws XMLParseException
      *     If an error occured while parsing the string.
      */
     public void parseString(String string,
@@ -1853,14 +1804,10 @@ public class XMLElement
     /**
      * Reads one XML element from a String and parses it.
      *
-     * @param reader
      *     The reader from which to retrieve the XML data.
-     * @param offset
      *     The first character in <code>string</code> to scan.
-     * @param end
      *     The character where to stop scanning.
      *     This character is not scanned.
-     * @param startingLineNr
      *     The line number of the first line in the data.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -1875,7 +1822,7 @@ public class XMLElement
      *         parsed from the reader
      * </ul></dd></dl><dl>
      *
-     * @throws nanoxml.XMLParseException
+     * @throws XMLParseException
      *     If an error occured while parsing the string.
      */
     public void parseString(String string,
@@ -1896,11 +1843,8 @@ public class XMLElement
     /**
      * Reads one XML element from a char array and parses it.
      *
-     * @param reader
      *     The reader from which to retrieve the XML data.
-     * @param offset
      *     The first character in <code>string</code> to scan.
-     * @param end
      *     The character where to stop scanning.
      *     This character is not scanned.
      *
@@ -1916,7 +1860,7 @@ public class XMLElement
      *         parsed from the reader
      * </ul></dd></dl><dl>
      *
-     * @throws nanoxml.XMLParseException
+     * @throws XMLParseException
      *     If an error occured while parsing the string.
      */
     public void parseCharArray(char[] input,
@@ -1931,14 +1875,10 @@ public class XMLElement
     /**
      * Reads one XML element from a char array and parses it.
      *
-     * @param reader
      *     The reader from which to retrieve the XML data.
-     * @param offset
      *     The first character in <code>string</code> to scan.
-     * @param end
      *     The character where to stop scanning.
      *     This character is not scanned.
-     * @param startingLineNr
      *     The line number of the first line in the data.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -1953,7 +1893,7 @@ public class XMLElement
      *         parsed from the reader
      * </ul></dd></dl><dl>
      *
-     * @throws nanoxml.XMLParseException
+     * @throws XMLParseException
      *     If an error occured while parsing the string.
      */
     public void parseCharArray(char[] input,
@@ -1974,7 +1914,6 @@ public class XMLElement
     /**
      * Removes a child element.
      *
-     * @param child
      *     The child element to remove.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -1988,7 +1927,7 @@ public class XMLElement
      *     <li>getChildren() => old.enumerateChildren() - child
      * </ul></dd></dl><dl>
      *
-     * @see freemind.main.XMLElement#addChild(nanoxml.XMLElement)
+     * @see freemind.main.XMLElement#addChild(XMLElement)
      *         addChild(XMLElement)
      * @see freemind.main.XMLElement#countChildren()
      * @see freemind.main.XMLElement#enumerateChildren()
@@ -2003,7 +1942,6 @@ public class XMLElement
     /**
      * Removes an attribute.
      *
-     * @param name
      *     The name of the attribute.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -2074,7 +2012,6 @@ public class XMLElement
     /**
      * Removes an attribute.
      *
-     * @param name
      *     The name of the attribute.
      *
      * @deprecated Use {@link #removeAttribute(java.lang.String)
@@ -2089,7 +2026,6 @@ public class XMLElement
     /**
      * Removes an attribute.
      *
-     * @param name
      *     The name of the attribute.
      *
      * @deprecated Use {@link #removeAttribute(java.lang.String)
@@ -2122,7 +2058,6 @@ public class XMLElement
     /**
      * Changes the content string.
      *
-     * @param content
      *     The new content string.
      */
     public void setContent(String content)
@@ -2134,7 +2069,6 @@ public class XMLElement
     /**
      * Changes the content string.
      *
-     * @param content
      *     The new content string.
      */
     public void setEncodedContent(String content)
@@ -2147,7 +2081,6 @@ public class XMLElement
     /**
      * Changes the name of the element.
      *
-     * @param name
      *     The new name.
      *
      * @deprecated Use {@link #setName(java.lang.String) setName} instead.
@@ -2161,7 +2094,6 @@ public class XMLElement
     /**
      * Changes the name of the element.
      *
-     * @param name
      *     The new name.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -2200,7 +2132,6 @@ public class XMLElement
     /**
      * Writes the XML element to a writer.
      *
-     * @param writer
      *     The writer to write the XML data to.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -2301,9 +2232,7 @@ public class XMLElement
     /**
      * Writes a string encoded to a writer.
      *
-     * @param writer
      *     The writer to write the XML data to.
-     * @param str
      *     The string to write encoded.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>
@@ -2358,7 +2287,6 @@ public class XMLElement
      * Scans an identifier from the current reader.
      * The scanned identifier is appended to <code>result</code>.
      *
-     * @param result
      *     The buffer in which the scanned identifier will be put.
      *
      * </dl><dl><dt><b>Preconditions:</b></dt><dd>

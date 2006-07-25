@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.6 2006-07-23 03:29:03 christianfoltin Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.7 2006-07-25 20:28:20 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -85,12 +85,10 @@ public interface ModeController  {
     String getNodeID(MindMapNode selected);
 
     /** Single selection: the node is the only one selected after calling this method.
-     * @param node
      */
     public void select( NodeView node) ;
 
     /**Single selection: the node is the only one selected after calling this method.
-     * @param selected
      */
     public void select( MindMapNode selected);
 
@@ -132,7 +130,6 @@ public interface ModeController  {
         void onUpdateNodeHook(MindMapNode node);
 
         /** Is sent when a node is selected.
-         * @param node
          */
         void onReceiveFocusHook(MindMapNode node);
         /**
@@ -168,17 +165,13 @@ public interface ModeController  {
      *  nodes must be contained in the specific mode controllers but as this method
      *  is also used by the MapView to switch to neighbours (private NodeView getNeighbour(int directionCode)),
      *  we make this exception here (fc, 6.11.2005).
-     * @param node
-     * @param folded
      */
     void setFolded(MindMapNode node, boolean folded);
 	/** Unfolds a node if necessary.
-	 * @param node
 	 */
 	void displayNode(MindMapNode node);
 	/** Node is displayed and selected as the only one selected. It is moved to the center of the
 	 *  screen.
-	 * @param node
 	 */
 	void centerNode(MindMapNode node);
 	String getLinkShortText(MindMapNode node);
@@ -202,7 +195,6 @@ public interface ModeController  {
 	MapAdapter getMap();
 	/** This method must only be used by the model itself at creation time.
 	 * Don't use this method.
-	 * @param model
 	 */
 	void setModel(MapAdapter model);
 	Mode getMode();

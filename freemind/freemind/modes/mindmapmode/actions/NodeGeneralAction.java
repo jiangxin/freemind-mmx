@@ -52,12 +52,9 @@ public class NodeGeneralAction extends AbstractXmlAction {
     protected static Logger logger;
 
     /**
-     * @param modeController
-     * @param textID
      *           null if you cannot provide a title that is present in the
      *           resources. Use the setName method to set your not translateble
      *           title after that.
-     * @param iconPath
      *           give a resource name for the icon.
      */
     protected NodeGeneralAction(MindMapController modeController,
@@ -105,7 +102,6 @@ public class NodeGeneralAction extends AbstractXmlAction {
     }
 
     /**
-     * @param singleNodeOperation
      *           The singleNodeOperation to set.
      */
     public void setSingleNodeOperation(SingleNodeOperation singleNodeOperation) {
@@ -166,16 +162,12 @@ public class NodeGeneralAction extends AbstractXmlAction {
     }
 
     /**
-     * @param string
-     * @return
      */
     protected NodeAdapter getNodeFromID(String string) {
         return modeController.getNodeFromID(string);
     }
 
     /**
-     * @param selected
-     * @return
      */
     protected String getNodeID(MindMapNode selected) {
         // TODO Auto-generated method stub

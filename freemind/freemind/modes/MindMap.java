@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMap.java,v 1.14.14.8.2.2 2006-04-06 21:15:07 dpolivaev Exp $ */
+/* $Id: MindMap.java,v 1.14.14.8.2.3 2006-07-25 20:28:20 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -57,9 +57,7 @@ public interface MindMap extends TreeModel {
     Transferable copy();
     Transferable copySingle();
     /**
-     * @param selectedNodes
      * @param inPlainText typically this is null. AN alternative is node.toString(); if there is only one node.
-     * @return
      */
     public Transferable copy(List selectedNodes, String inPlainText);
     String getAsPlainText(List mindMapNodes);
@@ -91,13 +89,11 @@ public interface MindMap extends TreeModel {
     URL getURL() throws MalformedURLException;
 
     /** writes the content of the map to a writer.
-     * @param fileout
      * @throws IOException
      */
     void getXml(Writer fileout) throws IOException;
 
     /** writes the content of the map to a writer.
-     * @param fileout
      * @throws IOException
      */
     void getFilteredXml(Writer fileout) throws IOException;
@@ -128,12 +124,10 @@ public interface MindMap extends TreeModel {
 
     boolean isReadOnly();
     /**
-     * @return
      */
     MapRegistry getRegistry();
     Filter getFilter();
     /**
-     * @param inactiveFilter
      */
     void setFilter(Filter inactiveFilter);
 
