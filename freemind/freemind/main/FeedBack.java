@@ -19,12 +19,12 @@
  *
  * Created on 03.01.2006
  */
-/*$Id: FeedBack.java,v 1.1.2.1 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: FeedBack.java,v 1.1.2.1.2.1 2006-07-30 07:25:11 christianfoltin Exp $*/
 package freemind.main;
 
 public interface FeedBack {
-	void progress(int act);
+	void progress(int act, String messageId);
 	int getActualValue();
 	void setMaximumValue(int max);
-	void increase();
+	void increase(String messageId);
 }

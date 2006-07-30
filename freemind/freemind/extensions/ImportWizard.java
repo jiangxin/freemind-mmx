@@ -92,7 +92,7 @@ public class ImportWizard {
 				foundPlugins.add(key);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-freemind.main.Resources.getInstance().logExecption(				e);
+			    freemind.main.Resources.getInstance().logExecption(				e);
 			}
 			if (classPathFile.exists()) {
 				String lowerCaseFileName = classPathEntry.toLowerCase();
@@ -104,7 +104,7 @@ freemind.main.Resources.getInstance().logExecption(				e);
 					addClassesFromZip(CLASS_LIST, classPathFile);
 				} else if (classPathFile.isDirectory()) {
 					logger.finest("searching for plugins in: "+ classPathEntry);
-					addClassesFromDir(CLASS_LIST, classPathFile, classPathFile);
+					addClassesFromDir(CLASS_LIST, classPathFile, classPathFile, 0);
 				}
 			}
 		}
@@ -159,12 +159,16 @@ freemind.main.Resources.getInstance().logExecption(				e);
 	 *
 	 * @param classList the Vector to add the classes to
 	 * @param currentDir the File to recursively scan as a directory
+	 * @param recursionLevel TODO
 	 */
 	public void addClassesFromDir(
 		Vector classList,
 		File rootDir,
-		File currentDir) {
-
+		File currentDir, int recursionLevel) {
+	    if(recursionLevel >= 2){
+            // search only the first two levels
+	        return;
+        }
 		String[] files = currentDir.list();
 		for (int i = 0; i < files.length; i++) {
 			String current = files[i];
@@ -202,7 +206,7 @@ freemind.main.Resources.getInstance().logExecption(				e);
 				// Check if it's a directory to recurse into
 				File currentFile = new File(currentDir, current);
 				if (currentFile.isDirectory()) {
-					addClassesFromDir(classList, rootDir, currentFile);
+					addClassesFromDir(classList, rootDir, currentFile, recursionLevel+1);
 				}
 			}
 		}
@@ -212,7 +216,11 @@ freemind.main.Resources.getInstance().logExecption(				e);
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.6  2006-07-25 20:28:20  christianfoltin
+ * Revision 1.1.4.6.2.7  2006-07-30 07:25:11  christianfoltin
+ * * Startup shows progress messages.
+ * * Limited the plugin search to two directory levels.
+ *
+ * Revision 1.1.4.6.2.6  2006/07/25 20:28:20  christianfoltin
  * * Integrated patch [ 1374771 ] Javadoc call with less warnings (generated + classpath). Thanks to Eric
  *
  * Revision 1.1.4.6.2.5  2006/07/23 21:01:21  christianfoltin

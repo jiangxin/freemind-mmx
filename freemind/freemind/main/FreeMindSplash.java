@@ -25,6 +25,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.text.NumberFormat;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -49,20 +50,26 @@ public class FreeMindSplash extends JFrame {
 		private int mActualValue;
 		private long mActualTimeStamp=System.currentTimeMillis();
         private long mTotalTime = 0;
+        private String lastTaskId=null;
 
-		public void progress(final int act) {
+		public void progress(final int act, String messageId) {
+		    final String progressString = frame.getResourceString(messageId);
+            logger.info(progressString);
 			this.mActualValue = act;
 			long timeDifference = System.currentTimeMillis()-mActualTimeStamp;
 			mActualTimeStamp = System.currentTimeMillis();
 			mTotalTime += timeDifference;
-			System.out.print("Task: "+act+" last " + (timeDifference)/1000.0 + " seconds.\nTotal: "+mTotalTime/1000.0+"\n");
+            logger.info("Task: "+lastTaskId + " (" + act+") last " + (timeDifference)/1000.0 + " seconds.\nTotal: "+mTotalTime/1000.0+"\n");
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					mProgressBar.setValue(act);
 					double percent = act*1.0/mProgressBar.getMaximum();
-					mProgressBar.setString(NumberFormat.getPercentInstance().format(percent));
+					mProgressBar.setString(progressString);
+//					mProgressBar.setString(NumberFormat.getPercentInstance().format(percent));
 				}
 			});
+			logger.info("Beginnig task:" + messageId);
+            lastTaskId = messageId;
 		}
 
 		public int getActualValue() {
@@ -74,8 +81,8 @@ public class FreeMindSplash extends JFrame {
 			mProgressBar.setIndeterminate(false);
 		}
 
-		public void increase() {
-			progress(getActualValue()+1);
+		public void increase(String messageId) {
+			progress(getActualValue()+1, messageId);
 		}
 		
 	}
@@ -83,6 +90,7 @@ public class FreeMindSplash extends JFrame {
     private final FreeMindMain frame;
 	private final FeedBack feedBack;
 	private JProgressBar mProgressBar;
+    private static Logger logger;
 
 	public FeedBack getFeedBack() {
 		return feedBack;
@@ -92,6 +100,10 @@ public class FreeMindSplash extends JFrame {
     public FreeMindSplash(final FreeMindMain frame){
     	super("FreeMind");
         this.frame = frame;
+        if(logger == null) {
+            logger = frame.getLogger(this.getClass().getName());
+        }
+
 		this.feedBack = new FeedBackImpl();
     	
     	ImageIcon icon = new ImageIcon(frame.getResource(

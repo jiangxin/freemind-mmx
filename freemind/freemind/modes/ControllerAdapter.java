@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.12 2006-07-25 20:28:20 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.13 2006-07-30 07:25:11 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -237,7 +237,9 @@ public abstract class ControllerAdapter implements ModeController {
     }
     
     public void firePreSaveEvent(MindMapNode node) {
-    		for (Iterator iter = mNodeSelectionListeners.iterator(); iter.hasNext();) {
+        // copy to prevent concurrent modification.
+        HashSet listenerCopy = new HashSet(mNodeSelectionListeners);
+    		for (Iterator iter = listenerCopy.iterator(); iter.hasNext();) {
 				NodeSelectionListener listener = (NodeSelectionListener) iter.next();
 				listener.onSaveNode(node);
 			}
