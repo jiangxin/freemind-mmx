@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.12 2006-07-25 20:28:19 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.13 2006-07-30 21:01:03 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -1011,10 +1011,7 @@ public class Controller  implements MapModuleChangeOberser {
         public void actionPerformed(ActionEvent e) {
             String map = controller.getFrame().getResourceString("browsemode_initial_map");
             // if the current language does not provide its own translation, POSTFIX_TRANSLATE_ME is appended:
-            if(map != null && map.endsWith(FreeMindCommon.POSTFIX_TRANSLATE_ME)) {
-                // remove POSTFIX_TRANSLATE_ME:
-                map = map.substring(0, map.length()-FreeMindCommon.POSTFIX_TRANSLATE_ME.length());
-            }
+            map = Tools.removeTranslateComment(map);
             if (map != null && map.startsWith("."))  {
                 map = localDocumentationLinkConverter.convertLocalLink(map);
             }

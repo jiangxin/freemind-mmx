@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.7 2006-07-25 20:28:29 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.8 2006-07-30 21:01:04 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -68,6 +68,7 @@ import freemind.controller.actions.generated.instance.WindowConfigurationStorage
 import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.preferences.FreemindPropertyContributor;
 
@@ -420,8 +421,13 @@ public class OptionPanel implements TextTranslator {
 
 		"language.tooltip", FreeMindCommon.RESOURCE_LANGUAGE, new String[] {
 				"automatic", "cs", "de", "dk", "en", "es", "fr", "hr", "hu", "it",
-				"ja", "kr", "lt", "nl", "nn", "no", "pl", "pt_BR", "pt_PT", "ru", "se", "sl",
-				"zh", "zh_CN" }, this)); //  automatic
+				"ja", "kr", "lt", "nl", "nn", "no", "pl", "pt_BR", "pt_PT", "ru", "se", "sl", "tr",
+				"zh", "zh_CN" }, new TextTranslator(){
+
+                    public String getText(String pKey) {
+                        // decorator, that removes "TranslateMe" comments.
+                        return Tools.removeTranslateComment(OptionPanel.this.getText(pKey));
+                    }})); //  automatic
 
 		//INTERNAL PROPERTY.
 		//		controls

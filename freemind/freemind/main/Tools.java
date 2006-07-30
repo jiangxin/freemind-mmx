@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.9 2006-07-25 20:28:20 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.10 2006-07-30 21:01:03 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -886,6 +886,17 @@ public class Tools {
         // Register action
         dialog.getRootPane().getActionMap().put(action.getValue(Action.NAME),
                 action);
+    }
+
+    /**
+     * Removes the "TranslateMe" sign from the end of not translated texts.
+     */
+    public static String removeTranslateComment(String inputString) {
+        if(inputString != null && inputString.endsWith(FreeMindCommon.POSTFIX_TRANSLATE_ME)) {
+            // remove POSTFIX_TRANSLATE_ME:
+            inputString = inputString.substring(0, inputString.length()-FreeMindCommon.POSTFIX_TRANSLATE_ME.length());
+        }
+        return inputString;
     }
 
 }

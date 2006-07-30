@@ -13,6 +13,7 @@ Changes made in FreeMind 0.9.0 Beta 6
 * Added option to preferences to not load last opened map on startup.
 * Startup shows progress messages.
 * Limited the plugin search to two directory levels.
+* Added the turkish translation. Thanks to the author.
 
 Changes made in FreeMind 0.9.0 Beta 5
 ===============================
