@@ -90,9 +90,13 @@
 </node>
 <node COLOR="#0033ff" CREATED="1154896413253" ID="Freemind_Link_1766300173" MODIFIED="1154896964771" POSITION="right" TEXT="Bugs">
 <font NAME="SansSerif" SIZE="18"/>
-<node COLOR="#00b439" CREATED="1154896415905" ID="Freemind_Link_1452279670" MODIFIED="1154896964779" TEXT="Change Cloud Color is not undoable">
+<node COLOR="#00b439" CREATED="1154896415905" ID="Freemind_Link_1452279670" MODIFIED="1154898240798" TEXT="Change Cloud Color is not undoable">
 <font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="full-4"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node COLOR="#00b439" CREATED="1154898259668" ID="Freemind_Link_550816658" MODIFIED="1154898275752" TEXT="External Plugins are not loaded under Mac">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="full-2"/>
 </node>
 </node>
 <node COLOR="#0033ff" CREATED="1154897688737" ID="Freemind_Link_475477860" MODIFIED="1154897691455" POSITION="right" TEXT="Documentation">
@@ -150,6 +154,10 @@
 <node COLOR="#00b439" CREATED="1154896335357" ID="Freemind_Link_529615894" MODIFIED="1154896964815" TEXT="Nice to have">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="idea"/>
+</node>
+<node COLOR="#00b439" CREATED="1154898245541" ID="Freemind_Link_392275545" MODIFIED="1154898251910" TEXT="Corrected/Done.">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="button_ok"/>
 </node>
 </node>
 <node COLOR="#0033ff" CREATED="1154896660715" ID="Freemind_Link_739426068" MODIFIED="1154897350272" POSITION="left" TEXT="Tests">

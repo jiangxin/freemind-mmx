@@ -38,6 +38,7 @@
 					<xs:element ref="remove_all_icons_xml_action"/>
 					<xs:element ref="move_node_xml_action"/>
 					<xs:element ref="add_cloud_xml_action"/>
+					<xs:element ref="cloud_color_xml_action"/>
 					<xs:element ref="add_arrow_link_xml_action"/>
 					<xs:element ref="add_link_xml_action"/>
 					<xs:element ref="remove_arrow_link_xml_action"/>
