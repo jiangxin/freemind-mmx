@@ -79,8 +79,8 @@
  <xs:element name='html'>
   <xs:complexType>
    <xs:sequence>
-	   <!--Anything that is valid XML-->
-	<xs:any namespace="##any" minOccurs="0"/>
+	   <!--Anything that is valid XML, but should be http://www.w3.org/1999/xhtml -->
+	<xs:any namespace="##any" minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
    </xs:sequence>
   </xs:complexType>
  </xs:element>
