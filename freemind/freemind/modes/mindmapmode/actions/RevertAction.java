@@ -19,7 +19,7 @@
  *
  * Created on 11.03.2005
  */
-/* $Id: RevertAction.java,v 1.1.2.2.2.3 2006-07-25 20:28:22 christianfoltin Exp $ */
+/* $Id: RevertAction.java,v 1.1.2.2.2.4 2006-08-13 22:03:31 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -28,6 +28,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+
+import javax.swing.JOptionPane;
 
 import freemind.controller.actions.generated.instance.RevertXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -71,6 +73,11 @@ public class RevertAction extends FreemindAction implements ActorXml {
 	public void actionPerformed(ActionEvent arg0) {
 		try {
 			File file = controller.getMap().getFile();
+            if(file == null) {
+                JOptionPane.showMessageDialog(controller.getView(), controller
+                        .getText("map_not_saved"), "FreeMind", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 			RevertXmlAction doAction = createRevertXmlAction(file);
 			RevertXmlAction undoAction = createRevertXmlAction(controller
 					.getMap(), null, file.getName());
