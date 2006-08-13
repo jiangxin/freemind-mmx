@@ -24,17 +24,28 @@
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-4"/>
 </node>
-<node COLOR="#00b439" CREATED="1154897482262" ID="Freemind_Link_703354147" MODIFIED="1154897516170" TEXT="Menu points &quot;use rich edit&quot; and &quot;use plain edit&quot; should be moved to Format menu">
+<node COLOR="#00b439" CREATED="1154897482262" ID="Freemind_Link_703354147" MODIFIED="1155478600918">
+<richcontent TYPE="NODE"><html>
+  <head>
+    
+  </head>
+  <body>
+    Menu points &quot;use rich edit&quot; and &quot;use plain edit&quot; should be moved to Format menu Dan: I would prefer to have the menu item for switching between rich text and plain text in the main context menu of a node (Subjective)
+  </body>
+</html>
+</richcontent>
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-4"/>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1154896909470" ID="Freemind_Link_1346714871" MODIFIED="1154896964753" POSITION="right" TEXT="Java Check at startup">
+<node COLOR="#0033ff" CREATED="1154896909470" ID="Freemind_Link_1346714871" MODIFIED="1155478510125" POSITION="right" TEXT="Java Check at startup">
 <font NAME="SansSerif" SIZE="18"/>
-<node COLOR="#00b439" CREATED="1154896915723" FOLDED="true" ID="Freemind_Link_1295491813" MODIFIED="1154896964759" TEXT="Use freemind.main.FreeMindStarter.main as new main class">
+<node COLOR="#00b439" CREATED="1155478510017" ID="Freemind_Link_1233066351" MODIFIED="1155478521791" TEXT="C++-Exe:">
 <font NAME="SansSerif" SIZE="16"/>
+<node COLOR="#990000" CREATED="1154896915723" FOLDED="true" ID="Freemind_Link_1295491813" MODIFIED="1155478510098" TEXT="Use freemind.main.FreeMindStarter.main as new main class">
+<font NAME="SansSerif" SIZE="14"/>
 <icon BUILTIN="full-2"/>
-<node COLOR="#990000" CREATED="1154896939930" ID="Freemind_Link_1729691966" MODIFIED="1154897020019" TEXT="Ensures that the java version is checked at first">
+<node COLOR="#111111" CREATED="1154896939930" ID="Freemind_Link_1729691966" MODIFIED="1155478510099" TEXT="Ensures that the java version is checked at first">
 <richcontent TYPE="NOTE"><html>
   <head>
 
@@ -48,8 +59,13 @@
   </body>
 </html>
 </richcontent>
-<font NAME="SansSerif" SIZE="14"/>
+<font NAME="SansSerif" SIZE="12"/>
 </node>
+</node>
+</node>
+<node COLOR="#00b439" CREATED="1155478623965" ID="Freemind_Link_1440615425" MODIFIED="1155478631187" TEXT="Consider how to fix the problem with searching the complete class path for plug-ins, leading to slow start-ups (Prio middle)">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="full-3"/>
 </node>
 </node>
 <node COLOR="#0033ff" CREATED="1154896599093" ID="Freemind_Link_1998038587" MODIFIED="1154896964726" POSITION="right" TEXT="Notes">
@@ -79,6 +95,20 @@
 <node COLOR="#00b439" CREATED="1154896159445" ID="Freemind_Link_738550042" MODIFIED="1154896964676" TEXT="Move time management plugin to integrated plugins">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-4"/>
+</node>
+</node>
+<node COLOR="#0033ff" CREATED="1155478643777" ID="Freemind_Link_696990453" MODIFIED="1155478646348" POSITION="right" TEXT="Deleting">
+<font NAME="SansSerif" SIZE="18"/>
+<node COLOR="#00b439" CREATED="1155478647713" ID="Freemind_Link_1097171716" MODIFIED="1155478650516" TEXT="Consider adding an option to ask user before deleting a node or a branch (Prio middle)">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="full-3"/>
+</node>
+</node>
+<node COLOR="#0033ff" CREATED="1155478659376" ID="Freemind_Link_1479474730" MODIFIED="1155478665325" POSITION="right" TEXT="Conversion/File Format">
+<font NAME="SansSerif" SIZE="18"/>
+<node COLOR="#00b439" CREATED="1155478667584" ID="Freemind_Link_1227008016" MODIFIED="1155478673248" TEXT="Consider letting user know by means of popup when converting from old map format into new map format (Prio middle)">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="full-3"/>
 </node>
 </node>
 <node COLOR="#0033ff" CREATED="1154897384463" ID="Freemind_Link_1463824321" MODIFIED="1154897386408" POSITION="right" TEXT="build">
@@ -125,6 +155,10 @@
 </node>
 <node COLOR="#00b439" CREATED="1154897267841" ID="Freemind_Link_1262676997" MODIFIED="1154897270127" TEXT="1532279  link between nodes on different freemind maps__freemind-0.8.0-gentoo-001-linkmaps.diff">
 <font NAME="SansSerif" SIZE="16"/>
+</node>
+<node COLOR="#00b439" CREATED="1155478682863" ID="Freemind_Link_337228399" MODIFIED="1155478688431" TEXT="Consider merging the patch for the support of UTF-8 (Prio low)">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="full-6"/>
 </node>
 </node>
 <node COLOR="#0033ff" CREATED="1154896282663" ID="Freemind_Link_962481393" MODIFIED="1154896964783" POSITION="left" TEXT="Legend">
