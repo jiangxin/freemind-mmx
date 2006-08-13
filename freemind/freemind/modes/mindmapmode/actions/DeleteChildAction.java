@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: DeleteChildAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: DeleteChildAction.java,v 1.1.2.2.2.3 2006-08-13 21:41:55 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -80,6 +80,7 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
                 throw new IllegalStateException("Timeout reached shutting down the hooks.");
             }
         }
+        pMindMapController.fireNodeDeleteEvent(selectedNode);
 		pMindMapController.getModel().removeNodeFromParent( selectedNode);
     }
 

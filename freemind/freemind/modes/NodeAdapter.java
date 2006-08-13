@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.13 2006-07-25 20:28:20 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.14 2006-08-13 21:41:55 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -1094,7 +1094,7 @@ freemind.main.Resources.getInstance().logExecption(			e);
 
     /** This method must be synchronized as the TreeMap isn't. */
     public synchronized void setStateIcon(String key, ImageIcon icon) {
-//    		logger.warning("Set state of key:"+key+", icon "+icon);
+//    		logger.info("Set state of key:"+key+", icon "+icon);
     		createStateIcons();
         if (icon != null) {
 			stateIcons.put(key, icon);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.7 2006-07-25 20:28:20 christianfoltin Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.8 2006-08-13 21:41:55 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -144,15 +144,8 @@ public interface ModeController  {
 
     }
 
-    /**
-     * On registering, the onReceiveFocus method of the listener is called with
-     * the current selected node.
-     */
     void registerNodeSelectionListener(NodeSelectionListener listener);
-    /**
-     * On deregistering, the onLooseFocus method of the listener is called with
-     * the current selected node.
-     */
+
     void deregisterNodeSelectionListener(NodeSelectionListener listener);
     
     /**
@@ -160,6 +153,31 @@ public interface ModeController  {
      * It is issued via NodeSelectionListener.
      */
     void firePreSaveEvent(MindMapNode node);
+    
+    /** */
+    public interface NodeLifetimeListener {
+
+        /** 
+         * Sent, if a node is created (on map startup or during operations).
+         * */
+        void onCreateNodeHook(MindMapNode node);
+
+        /** Is sent when a node is deleted (on map shutdown, too).
+         */
+        void onDeleteNodeHook(MindMapNode node);
+
+    }
+
+    /**
+     * The onCreateNodeHook is called for every node (depest nodes first) after registration.
+     */
+    void   registerNodeLifetimeListener(NodeLifetimeListener listener);
+    void deregisterNodeLifetimeListener(NodeLifetimeListener listener);
+    /**
+     * Is issued before a node is deleted.
+     * It is issued via NodeLifetimeListener.
+     */
+    void fireNodeDeleteEvent(MindMapNode node);
     
      /** The position of this method is an exception. Normally, every method that changes
      *  nodes must be contained in the specific mode controllers but as this method

@@ -1,6 +1,6 @@
 <map version="0.9.0_Beta_6">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
-<node COLOR="#000000" CREATED="1154896082504" ID="Freemind_Link_366022196" MODIFIED="1154896964646" TEXT="Todos for coming version 0.9.x">
+<node COLOR="#000000" CREATED="1154896082504" ID="Freemind_Link_366022196" MODIFIED="1155500757582" TEXT="Todos for coming version 0.9.x">
 <font NAME="SansSerif" SIZE="20"/>
 <hook NAME="accessories/plugins/AutomaticLayout.properties"/>
 <node COLOR="#0033ff" CREATED="1154896187932" ID="Freemind_Link_917676449" MODIFIED="1154896964685" POSITION="right" TEXT="HTML">
@@ -40,11 +40,11 @@
 </node>
 <node COLOR="#0033ff" CREATED="1154896909470" ID="Freemind_Link_1346714871" MODIFIED="1155478510125" POSITION="right" TEXT="Java Check at startup">
 <font NAME="SansSerif" SIZE="18"/>
-<node COLOR="#00b439" CREATED="1155478510017" ID="Freemind_Link_1233066351" MODIFIED="1155478521791" TEXT="C++-Exe:">
+<node COLOR="#00b439" CREATED="1155478510017" ID="Freemind_Link_1233066351" MODIFIED="1155500698643" TEXT="C++-Exe:">
 <font NAME="SansSerif" SIZE="16"/>
-<node COLOR="#990000" CREATED="1154896915723" FOLDED="true" ID="Freemind_Link_1295491813" MODIFIED="1155478510098" TEXT="Use freemind.main.FreeMindStarter.main as new main class">
+<node COLOR="#990000" CREATED="1154896915723" FOLDED="true" ID="Freemind_Link_1295491813" MODIFIED="1155500701499" TEXT="Use freemind.main.FreeMindStarter.main as new main class">
 <font NAME="SansSerif" SIZE="14"/>
-<icon BUILTIN="full-2"/>
+<icon BUILTIN="button_ok"/>
 <node COLOR="#111111" CREATED="1154896939930" ID="Freemind_Link_1729691966" MODIFIED="1155478510099" TEXT="Ensures that the java version is checked at first">
 <richcontent TYPE="NOTE"><html>
   <head>
@@ -62,8 +62,13 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
+<node COLOR="#990000" CREATED="1155500706972" ID="Freemind_Link_674545358" MODIFIED="1155500754159" TEXT="Check, whether or not java is recognized.">
+<font NAME="SansSerif" SIZE="14"/>
+<icon BUILTIN="full-2"/>
 </node>
-<node COLOR="#00b439" CREATED="1155478623965" ID="Freemind_Link_1440615425" MODIFIED="1155478631187" TEXT="Consider how to fix the problem with searching the complete class path for plug-ins, leading to slow start-ups (Prio middle)">
+</node>
+<node COLOR="#00b439" CREATED="1155478623965" ID="Freemind_Link_1440615425" MODIFIED="1155500999512" TEXT="Consider how to fix the problem with searching the complete class path for plug-ins, leading to slow start-ups (Prio middle)">
+<arrowlink DESTINATION="Freemind_Link_550816658" ENDARROW="Default" ENDINCLINATION="524;0;" ID="Freemind_Arrow_Link_1550539726" STARTARROW="None" STARTINCLINATION="524;0;"/>
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-3"/>
 </node>
@@ -124,7 +129,7 @@
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="button_ok"/>
 </node>
-<node COLOR="#00b439" CREATED="1154898259668" ID="Freemind_Link_550816658" MODIFIED="1154898275752" TEXT="External Plugins are not loaded under Mac">
+<node COLOR="#00b439" CREATED="1154898259668" ID="Freemind_Link_550816658" MODIFIED="1155500999511" TEXT="External Plugins are not loaded under Mac">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-2"/>
 </node>
@@ -147,13 +152,22 @@
 </node>
 <node COLOR="#0033ff" CREATED="1154897203879" ID="Freemind_Link_39209766" MODIFIED="1154897254028" POSITION="right" TEXT="Missing merges">
 <font NAME="SansSerif" SIZE="18"/>
-<node COLOR="#00b439" CREATED="1154897219366" ID="Freemind_Link_935306843" MODIFIED="1154897220549" TEXT="juanpedro__rectangulars edges and rectangular clouds_freemind.zip">
+<node COLOR="#00b439" CREATED="1154897219366" ID="Freemind_Link_935306843" MODIFIED="1155501094472" TEXT="juanpedro__rectangulars edges and rectangular clouds_freemind">
 <font NAME="SansSerif" SIZE="16"/>
 </node>
-<node COLOR="#00b439" CREATED="1154897244833" ID="Freemind_Link_1890112641" MODIFIED="1154897245680" TEXT="1499796  XHTML export with notes attributes xhtml_xslt.zip">
+<node COLOR="#00b439" CREATED="1154897244833" ID="Freemind_Link_1890112641" MODIFIED="1155501097119" TEXT="1499796  XHTML export with notes attributes xhtml_xslt">
 <font NAME="SansSerif" SIZE="16"/>
 </node>
-<node COLOR="#00b439" CREATED="1154897267841" ID="Freemind_Link_1262676997" MODIFIED="1154897270127" TEXT="1532279  link between nodes on different freemind maps__freemind-0.8.0-gentoo-001-linkmaps.diff">
+<node COLOR="#00b439" CREATED="1154897267841" ID="Freemind_Link_1262676997" MODIFIED="1155501105249">
+<richcontent TYPE="NODE"><html>
+  <head>
+    
+  </head>
+  <body>
+    1532279 link between nodes on different freemind maps__freemind-0.8.0-gentoo-001-linkmaps
+  </body>
+</html>
+</richcontent>
 <font NAME="SansSerif" SIZE="16"/>
 </node>
 <node COLOR="#00b439" CREATED="1155478682863" ID="Freemind_Link_337228399" MODIFIED="1155478688431" TEXT="Consider merging the patch for the support of UTF-8 (Prio low)">

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.8 2006-07-25 20:28:19 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.9 2006-08-13 21:41:54 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -29,6 +29,7 @@ import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
@@ -44,11 +45,13 @@ import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMindMain;
+import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
+import freemind.modes.ModeController.NodeLifetimeListener;
 import freemind.modes.ModeController.NodeSelectionListener;
 import freemind.modes.common.plugins.NodeNoteBase;
 import freemind.modes.mindmapmode.MindMapController;
@@ -92,7 +95,7 @@ public class NodeNote extends NodeNoteBase {
 	public static class Registration implements HookRegistration, ActorXml {
 		// private NodeTextListener listener;
 
-		private final class NotesManager implements NodeSelectionListener {
+		private final class NotesManager implements NodeSelectionListener, NodeLifetimeListener {
 			private NoteTextListener listener = null;
 
 			public NotesManager() {
@@ -122,9 +125,14 @@ public class NodeNote extends NodeNoteBase {
 			}
 
 			public void onSaveNode(MindMapNode node) {
-				boolean editorContentEmpty = getHtmlEditorPanel()
-				.getDocumentBody().matches("[\\s\\n]*");
-				controller.deregisterNodeSelectionListener(this);
+			    boolean editorContentEmpty;
+                {
+                    String documentBody = getHtmlEditorPanel()
+                            .getDocumentBody();
+                    documentBody = HtmlTools.removeAllTagsFromString(documentBody);
+                    editorContentEmpty = documentBody.matches("[\\s\\n]*");
+                }				
+                controller.deregisterNodeSelectionListener(this);
 				if (listener.isDirty()) {
 					if (editorContentEmpty) {
 						changeNodeText(null, node);
@@ -132,10 +140,20 @@ public class NodeNote extends NodeNoteBase {
 						changeNodeText(getHtmlEditorPanel().getDocumentText(),
 								node);
 					}
+					setStateIcon(node, !editorContentEmpty);
 				}
 				controller.registerNodeSelectionListener(this);
 				
 			}
+
+            public void onCreateNodeHook(MindMapNode node) {
+                if (node.getXmlNoteText() != null) {
+                    setStateIcon(node, true);
+                }                
+            }
+
+            public void onDeleteNodeHook(MindMapNode node) {
+            }
 		}
 
 		private KafenioPanelConfiguration kafenioPanelConfiguration;
@@ -151,6 +169,8 @@ public class NodeNote extends NodeNoteBase {
 		private final java.util.logging.Logger logger;
 
 		private NotesManager mNotesManager;
+
+        private static ImageIcon noteIcon = null;
 
 		public Registration(ModeController controller, MindMap map) {
 			this.controller = (MindMapController) controller;
@@ -171,6 +191,7 @@ public class NodeNote extends NodeNoteBase {
 
 			mNotesManager = new NotesManager();
 			controller.registerNodeSelectionListener(mNotesManager);
+			controller.registerNodeLifetimeListener(mNotesManager);
 		}
 
 		public void deRegister() {
@@ -229,6 +250,16 @@ public class NodeNote extends NodeNoteBase {
 					this.getClass().getName());
 		}
 
+        private void setStateIcon(MindMapNode node, boolean enabled) {
+            // icon
+            if (noteIcon == null) {
+                noteIcon  = new ImageIcon(controller.getResource("images/knotes.png"));
+            }
+            node.setStateIcon(this.getClass().getName(), (enabled)?noteIcon:null);
+            getMindMapController().nodeRefresh(node);
+        }
+
+        
 		/**
 		 */
 		private MindMapController getMindMapController() {

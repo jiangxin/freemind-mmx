@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.13 2006-07-30 07:25:11 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.14 2006-08-13 21:41:55 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -71,6 +71,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
+import freemind.modes.ModeController.NodeLifetimeListener;
 import freemind.modes.ModeController.NodeSelectionListener;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.attributes.AttributeRegistry;
@@ -103,6 +104,7 @@ public abstract class ControllerAdapter implements ModeController {
 	 */
 	private MapAdapter mModel;
     private HashSet mNodeSelectionListeners=new HashSet();
+    private HashSet mNodeLifetimeListeners=new HashSet();
     private static File lastCurrentDir =  null;
 
     /** Instanciation order: first me and then the model.
@@ -236,6 +238,40 @@ public abstract class ControllerAdapter implements ModeController {
         mNodeSelectionListeners.remove(listener);
     }
     
+    public void registerNodeLifetimeListener(NodeLifetimeListener listener) {
+        mNodeLifetimeListeners.add(listener);
+        // call create node for all:
+        fireRecursiveNodeCreateEvent(getRootNode());
+    }
+    
+    public void deregisterNodeLifetimeListener(NodeLifetimeListener listener) {
+        mNodeLifetimeListeners.remove(listener);
+    }
+    
+    public HashSet getNodeLifetimeListeners() {
+        return mNodeLifetimeListeners;
+    }
+
+    public void fireNodeDeleteEvent(MindMapNode node) {
+        // call lifetime listeners:
+        for (Iterator iter = mNodeLifetimeListeners.iterator(); iter.hasNext();) {
+            NodeLifetimeListener listener = (NodeLifetimeListener) iter.next();
+            listener.onDeleteNodeHook(node);
+        }
+    }
+    
+    public void fireRecursiveNodeCreateEvent(MindMapNode node) {
+        for(Iterator i = node.childrenUnfolded(); i.hasNext();) {
+            NodeAdapter child = (NodeAdapter) i.next();
+            fireRecursiveNodeCreateEvent(child);
+        }
+        // call lifetime listeners:
+        for (Iterator iter = mNodeLifetimeListeners.iterator(); iter.hasNext();) {
+            NodeLifetimeListener listener = (NodeLifetimeListener) iter.next();
+            listener.onCreateNodeHook(node);
+        }
+    }
+    
     public void firePreSaveEvent(MindMapNode node) {
         // copy to prevent concurrent modification.
         HashSet listenerCopy = new HashSet(mNodeSelectionListeners);
@@ -297,6 +333,12 @@ public abstract class ControllerAdapter implements ModeController {
             hook.setMap(map);
             node.invokeHook(hook);
         }
+        // call lifetime listeners:
+        for (Iterator iter = getNodeLifetimeListeners().iterator(); iter.hasNext();) {
+            NodeLifetimeListener listener = (NodeLifetimeListener) iter.next();
+            listener.onCreateNodeHook(node);
+        }
+
    }
 
     /** fc, 24.1.2004: having two methods getSelecteds with different return values

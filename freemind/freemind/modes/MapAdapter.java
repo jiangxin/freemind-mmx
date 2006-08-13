@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.6 2006-07-25 20:28:20 christianfoltin Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.7 2006-08-13 21:41:55 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -108,7 +108,7 @@ public abstract class MapAdapter implements MindMap {
 		// Do all the necessary destructions in your model,
 		// e.g. remove file locks.
 		// and remove all hooks:
-		removeHooks((MindMapNode) getRoot());
+		removeNodes((MindMapNode) getRoot());
 	}
 
     // (PN)
@@ -117,15 +117,16 @@ public abstract class MapAdapter implements MindMap {
 
 	/**
 	 */
-	private void removeHooks(MindMapNode node) {
+	private void removeNodes(MindMapNode node) {
 		while(node.getHooks().size()>0) {
 			PermanentNodeHook hook = (PermanentNodeHook) node.getHooks().get(0);
 			node.removeHook(hook);
 		}
+        mModeController.fireNodeDeleteEvent(node);
 		// and all children:
 		for(Iterator i= node.childrenUnfolded(); i.hasNext();) {
 			MindMapNode child = (MindMapNode) i.next();
-		    removeHooks(child);
+		    removeNodes(child);
 		}
 	}
 

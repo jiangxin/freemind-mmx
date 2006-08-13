@@ -14,6 +14,7 @@ Changes made in FreeMind 0.9.0 Beta 6
 * Startup shows progress messages.
 * Limited the plugin search to two directory levels.
 * Added the turkish translation. Thanks to the author.
+* Note symbols are back.
 
 Changes made in FreeMind 0.9.0 Beta 5
 ===============================

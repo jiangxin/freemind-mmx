@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.7 2006-07-25 20:28:20 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.8 2006-08-13 21:41:55 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -306,10 +306,14 @@ public class HtmlTools {
      */
     public static String removeHtmlTagsFromString(String text) {
         if (HtmlTools.isHtmlNode(text)) {
-            return text.replaceAll("(?s)<[^><]*>", ""); // (?s) enables that . matches newline.
+            return removeAllTagsFromString(text); // (?s) enables that . matches newline.
         } else {
             return text;
         }
+    }
+
+    public static String removeAllTagsFromString(String text) {
+        return text.replaceAll("(?s)<[^><]*>", "");
     }
 
     public static String htmlToPlain(String text) {
