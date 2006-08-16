@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.15 2006-07-30 07:25:11 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.16 2006-08-16 21:29:29 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -217,8 +217,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 //	southPanel.add( status, BorderLayout.SOUTH );
 
 	mSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, southPanel);
-	mSplitPane.setDividerLocation(getIntProperty(SPLIT_PANE_POSITION, 100));
-	mSplitPane.setContinuousLayout(true);
+    mSplitPane.setContinuousLayout(true);
 	mSplitPane.setOneTouchExpandable(true);
 	getContentPane().add( mSplitPane, BorderLayout.CENTER);
 	getContentPane().add( status, BorderLayout.SOUTH);
@@ -649,6 +648,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
         int win_state  = Integer.parseInt(FreeMind.props.getProperty("appwindow_state","0"));
         win_state = ((win_state & ICONIFIED) != 0) ? NORMAL : win_state;
         frame.setExtendedState(win_state);
+        // set divider position:
+        int splitPanePosition = frame.getIntProperty(SPLIT_PANE_POSITION, (int) (frame.mSplitPane.getHeight()*0.8));
+        frame.mSplitPane.setDividerLocation(splitPanePosition);
+        
+
         if (splash != null) {
             splash.setVisible(false);
         }        
