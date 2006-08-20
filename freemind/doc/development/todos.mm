@@ -164,7 +164,7 @@
 <node COLOR="#00b439" CREATED="1154897244833" ID="Freemind_Link_1890112641" MODIFIED="1155501097119" TEXT="1499796  XHTML export with notes attributes xhtml_xslt">
 <font NAME="SansSerif" SIZE="16"/>
 </node>
-<node COLOR="#00b439" CREATED="1154897267841" ID="Freemind_Link_1262676997" MODIFIED="1155501105249">
+<node COLOR="#00b439" CREATED="1154897267841" ID="Freemind_Link_1262676997" MODIFIED="1156107772642">
 <richcontent TYPE="NODE"><html>
   <head>
     
@@ -175,6 +175,7 @@
 </html>
 </richcontent>
 <font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="button_ok"/>
 </node>
 <node COLOR="#00b439" CREATED="1155478682863" ID="Freemind_Link_337228399" MODIFIED="1155478688431" TEXT="Consider merging the patch for the support of UTF-8 (Prio low)">
 <font NAME="SansSerif" SIZE="16"/>
