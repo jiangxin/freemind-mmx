@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.11 2006-08-20 19:34:25 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.12 2006-08-20 21:00:08 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -39,6 +39,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
@@ -897,6 +898,14 @@ public class Tools {
             inputString = inputString.substring(0, inputString.length()-FreeMindCommon.POSTFIX_TRANSLATE_ME.length());
         }
         return inputString;
+    }
+
+    /**
+     * Returns the same URL as input with the addition, that the reference part "#..." is filtered out. 
+     * @throws MalformedURLException 
+     */
+    public static URL getURLWithoutReference(URL input) throws MalformedURLException {
+        return new URL(input.toString().replaceFirst("#.*", ""));
     }
 
 }

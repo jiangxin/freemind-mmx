@@ -17,7 +17,8 @@ Changes made in FreeMind 0.9.0 Beta 6
 * Note symbols are back.
 * Bug fix: [ 1536205 ] Fail to revert
 * Load of plugins generalized for Mac, more flexible ClassLoaders now.
-* Started to generalize URL and hyperlink handlings.
+* Started to generalize URL and hyperlink handlings. Done.
+* Patch revised and introduced: 1532279 link between nodes on different freemind maps, thanks to the authors.
 
 Changes made in FreeMind 0.9.0 Beta 5
 ===============================

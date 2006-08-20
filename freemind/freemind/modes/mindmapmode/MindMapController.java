@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.12 2006-08-20 19:34:25 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.13 2006-08-20 21:00:08 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -95,6 +95,7 @@ import freemind.extensions.UndoEventReceiver;
 import freemind.extensions.HookFactory.RegistrationContainer;
 import freemind.main.ExampleFileFilter;
 import freemind.main.FreeMind;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.EdgeAdapter;
@@ -134,6 +135,7 @@ import freemind.modes.mindmapmode.actions.EdgeColorAction;
 import freemind.modes.mindmapmode.actions.EdgeStyleAction;
 import freemind.modes.mindmapmode.actions.EdgeWidthAction;
 import freemind.modes.mindmapmode.actions.EditAction;
+import freemind.modes.mindmapmode.actions.ExportBranchAction;
 import freemind.modes.mindmapmode.actions.FontFamilyAction;
 import freemind.modes.mindmapmode.actions.FontSizeAction;
 import freemind.modes.mindmapmode.actions.IconAction;
@@ -239,7 +241,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
    public Action setLinkByFileChooser = new SetLinkByFileChooserAction();
    public Action setImageByFileChooser = new SetImageByFileChooserAction();
    public Action followLink = new FollowLinkAction();
-   public Action exportBranch = new ExportBranchAction();
+   public Action exportBranch = new ExportBranchAction(this);
    public Action importBranch = new ImportBranchAction();
    public Action importLinkedBranch = new ImportLinkedBranchAction();
    public Action importLinkedBranchWithoutRoot = new ImportLinkedBranchWithoutRootAction();
@@ -930,7 +932,7 @@ freemind.main.Resources.getInstance().logExecption(					e1);
 
     //convenience methods
     private MindMapMapModel getMindMapMapModel() {
-	return (MindMapMapModel)getController().getModel();
+	return (MindMapMapModel)getMap();
     }
 
     public JToolBar getModeToolBar() {
@@ -1086,94 +1088,6 @@ freemind.main.Resources.getInstance().logExecption(					e1);
                  loadURL(file.toString()); }}
            catch (IOException ex) {}}}
 
-    private class ExportBranchAction extends AbstractAction {
-	ExportBranchAction() {
-	    super(getText("export_branch"));
-	}
-	public void actionPerformed(ActionEvent e) {
-            MindMapNodeModel node = (MindMapNodeModel) getSelected();
-
-            //if something is wrong, abort.
-            if (getMap() == null || node == null || node.isRoot()) {
-                getFrame().err("Could not export branch.");
-                return;
-            }
-            //If the current map is not saved yet, save it first.
-            if (getMap().getFile() == null) {
-                getFrame().out("You must save the current map first!");
-                save();
-            }
-
-            //Open FileChooser to choose in which file the exported
-            //branch should be stored
-            JFileChooser chooser;
-            if (getMap().getFile().getParentFile() != null) {
-                chooser = new JFileChooser(getMap().getFile().getParentFile());
-            } else {
-                chooser = new JFileChooser();
-            }
-            //chooser.setLocale(currentLocale);
-            if (getFileFilter() != null) {
-                chooser.addChoosableFileFilter(getFileFilter());
-            }
-            int returnVal = chooser.showSaveDialog(getSelected().getViewer());
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File chosenFile = chooser.getSelectedFile();
-                URL link;
-                //Force the extension to be .mm
-                String ext = Tools.getExtension(chosenFile.getName());
-                if (!ext.equals(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT)) {
-                    chosenFile = new File(chosenFile.getParent(), chosenFile.getName() + freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION);
-                }
-                try {
-                    link = chosenFile.toURL();
-                } catch (MalformedURLException ex) {
-                    JOptionPane.showMessageDialog(getView(),
-                            "couldn't create valid URL!");
-                    return;
-                }
-
-                //Now make a copy from the node, remove the node from the map
-                // and create a new
-                //Map with the node as root, store the new Map, add the copy of
-                // the node to the parent,
-                //and set a link from the copy to the new Map.
-
-                MindMapNodeModel parent = (MindMapNodeModel) node
-                        .getParentNode();
-                if (getMindMapMapModel().getFile() != null) {
-                    try {
-                        //set a link from the new root to the old map
-                        String linkToNewMapString = Tools.toRelativeURL(chosenFile.toURL(),
-                                getMindMapMapModel().getFile().toURL());
-                        setLink(node, linkToNewMapString);
-                    } catch (MalformedURLException ex) {
-                    }
-                }
-                int nodePosition = parent.getChildPosition(node);
-                deleteNode(node);
-                // save node:
-                node.setParent(null);
-                MindMapMapModel map = new MindMapMapModel(node, getFrame(),
-                		/* DON'T COPY THIS, AS THIS IS A BAD HACK!
-                		 * The Constructor needs a new instance of a modecontroller.*/
-                		MindMapController.this);
-                map.save(chosenFile);
-                // new node instead:
-                MindMapNode newNode = addNewNode(parent, nodePosition, node.isLeft());
-                setNodeText(newNode, node.getText());
-
-                try {
-                    String linkString = Tools.toRelativeURL(
-                            getMindMapMapModel().getFile().toURL(), chosenFile.toURL());
-                    setLink(newNode, linkString);
-                } catch (MalformedURLException ex) {
-                }
-                // map should not be save automatically!!
-                //getMindMapMapModel().save(getMindMapMapModel().getFile());
-            }
-        }
-    }
 
     private class ImportBranchAction extends AbstractAction {
 	ImportBranchAction() {

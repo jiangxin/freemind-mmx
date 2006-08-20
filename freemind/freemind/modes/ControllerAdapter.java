@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.15 2006-08-20 19:34:25 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.16 2006-08-20 21:00:08 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -305,7 +305,7 @@ public abstract class ControllerAdapter implements ModeController {
      * and implement the functionality in your MapModel (implements MindMap)
      */
     public ModeController load (URL file) throws FileNotFoundException, IOException, XMLParseException {
-	    	ModeController newModeController = getMode().createModeController();
+	    ModeController newModeController = getMode().createModeController();
         MapAdapter model = newModel(newModeController);
 		model.load(file);
 		newMap(model);
@@ -343,21 +343,29 @@ public abstract class ControllerAdapter implements ModeController {
                 logger.finest("found relative link to "+relative);
                 String target = relative.substring(1);
                 try {
-                    MindMapNode node = getNodeFromID(target);
-                    centerNode(node);
+                    centerNode(getNodeFromID(target));
                     return;
                 } catch (Exception e) {
+                    freemind.main.Resources.getInstance().logExecption(e);
                     // give "not found" message
                 		getFrame().out(Tools.expandPlaceholders(getText("link_not_found"), target));
                 		return;
                 }
 
             } else{
-	            	// Remark: getMap().getURL() returns URLs like file:/C:/...
-	            	// It seems, that it does not cause any problems.
+	            	/*
+                     * Remark: getMap().getURL() returns URLs like file:/C:/...
+                     * It seems, that it does not cause any problems.
+                     */
               absolute = new URL(getMap().getURL(), relative);
             }
-
+           // look for reference part in URL:
+           URL originalURL = absolute;
+           String ref = absolute.getRef();
+           if(ref != null) {
+               // remove ref from absolute:
+               absolute = Tools.getURLWithoutReference(absolute);
+           }
            String extension = Tools.getExtension(absolute.toString());
            if ((extension != null) && extension.equals(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT)) {   // ---- Open Mind Map
               MapModuleManager mapModuleManager = getController().getMapModuleManager();
@@ -370,28 +378,32 @@ public abstract class ControllerAdapter implements ModeController {
               } else {
             	  mapModuleManager.tryToChangeToMapModule(mapExtensionKey);
               }
+            if (ref != null) {
+                try {
+                    ModeController newModeController = getController()
+                            .getModeController();
+                    // jump to link:
+                    newModeController.centerNode(newModeController.getNodeFromID(ref));
+                } catch (Exception e) {
+                    freemind.main.Resources.getInstance().logExecption(e);
+                    getFrame().out(Tools.expandPlaceholders(getText("link_not_found"), ref));
+                    return;
+                }                
+            }              
            } else {                                                 
         	   // ---- Open URL in browser
-              getFrame().openDocument(absolute); 
+              getFrame().openDocument(originalURL); 
            }
         }
         catch (MalformedURLException ex) {
 	        	freemind.main.Resources.getInstance().logExecption(ex);
             getController().errorMessage(getText("url_error")+"\n"+ex);
             return; 
-//        } catch (FileNotFoundException e) {
-//            int returnVal = JOptionPane.showConfirmDialog
-//               (getView(),
-//                getText("repair_link_question"),
-//                getText("repair_link"),
-//                JOptionPane.YES_NO_OPTION);
-//            if (returnVal==JOptionPane.YES_OPTION) {
-//                setLinkByTextField.actionPerformed(null);
-//            }
         } catch (Exception e) {
             freemind.main.Resources.getInstance().logExecption(e);
+        } finally {
+            getFrame().setWaitingCursor(false);
         }
-        getFrame().setWaitingCursor(false);
     }
 
     /**

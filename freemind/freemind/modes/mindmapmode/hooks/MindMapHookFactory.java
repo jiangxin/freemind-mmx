@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.6 2006-08-20 19:34:25 christianfoltin Exp $ */
+/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.7 2006-08-20 21:00:08 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.hooks;
 
 import java.io.File;
@@ -173,7 +173,7 @@ freemind.main.Resources.getInstance().logExecption(				e);
 					// unmarshal xml:
 					Plugin plugin = null;
 					try {
-						logger.info("Reading: " + xmlPluginFile + " from "
+						logger.finest("Reading: " + xmlPluginFile + " from "
 								+ pluginURL);
 						InputStream in = pluginURL.openStream();
 						plugin = (Plugin) unmarshaller.unmarshalDocument(in,
