@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/*$Id: MacChanges.java.not_here,v 1.1.4.6.2.2 2006-07-07 04:26:26 christianfoltin Exp $*/
+/*$Id: MacChanges.java.not_here,v 1.1.4.6.2.3 2006-08-20 19:34:25 christianfoltin Exp $*/
 package accessories.plugins;
 
 import java.util.logging.Logger;
@@ -41,6 +41,8 @@ import freemind.modes.ModeController;
  * @author foltin
  */
 public class MacChanges extends ApplicationAdapter implements HookRegistration {
+
+	private static final String FREE_MIND_JAVA = "FreeMind.app/Contents/Resources/Java";
 
 	private ModeController controller;
 
@@ -69,9 +71,9 @@ public class MacChanges extends ApplicationAdapter implements HookRegistration {
 			public String convertLocalLink(String link) {
 				return "file:" + System.getProperty("user.dir")
 				//TODO: retrieve name of application and don't use the fixed FreeMind.app here.
-						+ "/FreeMind.app/Contents/Resources/Java/" + link;
+						+ "/" +
+								FREE_MIND_JAVA + "/" + link;
 			}}; 
-		
 	}
 
 	public void register() {

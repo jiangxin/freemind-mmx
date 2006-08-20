@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <plugin label="/collaboration/jabber/jabber">
-	<plugin_classpath jar="plugins/collaboration/jabber/commons-logging.jar"  />
-	<plugin_classpath jar="plugins/collaboration/jabber/crimson-1.1.3.jar"  />
-	<plugin_classpath jar="plugins/collaboration/jabber/jakarta-oro.jar"  />
-	<plugin_classpath jar="plugins/collaboration/jabber/jaxp-1.1.jar"  />
-	<plugin_classpath jar="plugins/collaboration/jabber/jdom.jar"  />
-	<plugin_classpath jar="plugins/collaboration/jabber/log4j.jar"  />
-	<plugin_classpath jar="plugins/collaboration/jabber/muse.jar"/>
-	<plugin_classpath jar="plugins/collaboration/jabber/jabber_plugin.jar"/>
+	<plugin_classpath jar="collaboration/jabber/commons-logging.jar"  />
+	<plugin_classpath jar="collaboration/jabber/crimson-1.1.3.jar"  />
+	<plugin_classpath jar="collaboration/jabber/jakarta-oro.jar"  />
+	<plugin_classpath jar="collaboration/jabber/jaxp-1.1.jar"  />
+	<plugin_classpath jar="collaboration/jabber/jdom.jar"  />
+	<plugin_classpath jar="collaboration/jabber/log4j.jar"  />
+	<plugin_classpath jar="collaboration/jabber/muse.jar"/>
+	<plugin_classpath jar="collaboration/jabber/jabber_plugin.jar"/>
 	<plugin_action 
 		documentation="TODO" 
 		name="Start Collaboration Mode" 

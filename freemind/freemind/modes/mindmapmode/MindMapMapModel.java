@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.6 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.7 2006-08-20 19:34:25 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -755,7 +755,7 @@ freemind.main.Resources.getInstance().logExecption(			e);
                             tempFile = (File) tempFileStack.remove(0); // pop
                         else {
                             try {
-                                tempFile = File.createTempFile("FM_"+((model.toString()==null)?"unnamed":model.toString()), ".mm", pathToStore);
+                                tempFile = File.createTempFile("FM_"+((model.toString()==null)?"unnamed":model.toString()), freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION, pathToStore);
                                 if(filesShouldBeDeletedAfterShutdown)
                                     tempFile.deleteOnExit();
                             } catch (Exception e) {

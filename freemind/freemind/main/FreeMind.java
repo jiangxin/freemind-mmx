@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.16 2006-08-16 21:29:29 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.17 2006-08-20 19:34:25 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -26,17 +26,16 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -585,7 +584,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
         for (int i=0; i<args.length; i++ ) {
            //JOptionPane.showMessageDialog(null,i+":"+args[i]);
            String fileArgument = args[i];
-		if (fileArgument.toLowerCase().endsWith(".mm")) {
+		if (fileArgument.toLowerCase().endsWith(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION)) {
 
               if (!Tools.isAbsolutePath(fileArgument)) {
             	  	fileArgument = System.getProperty("user.dir") +
@@ -603,17 +602,20 @@ public class FreeMind extends JFrame implements FreeMindMain {
            }
         }
 		if (!fileLoaded) {
-            if (Tools.isPreferenceTrue(frame
-                    .getProperty(FreeMindCommon.LOAD_LAST_MAP))
-                    && frame
-                            .getProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED) != null) {
-                frame.c
-                        .getLastOpenedList()
-                        .open(
-                                frame
-                                        .getProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED));
-            } 
-        }
+			String restoreable = frame
+					.getProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED);
+			if (Tools.isPreferenceTrue(frame
+					.getProperty(FreeMindCommon.LOAD_LAST_MAP))
+					&& restoreable != null) {
+				try {
+					frame.c.getLastOpenedList().open(restoreable);
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logExecption(e);
+					frame.out("An error occured on opening the file: "
+							+ restoreable + ".");
+				}
+			}
+		}
 
 		feedBack.increase("FreeMind.progress.buildScreen");
         frame.pack();
@@ -670,6 +672,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	 */
 	public JFrame getJFrame() {
 		return this;
+	}
+
+	public ClassLoader getFreeMindClassLoader() {
+		return mFreeMindCommon.getFreeMindClassLoader();
 	}
 
 }

@@ -67,10 +67,11 @@
 <icon BUILTIN="full-2"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1155478623965" ID="Freemind_Link_1440615425" MODIFIED="1155500999512" TEXT="Consider how to fix the problem with searching the complete class path for plug-ins, leading to slow start-ups (Prio middle)">
+<node COLOR="#00b439" CREATED="1155478623965" ID="Freemind_Link_1440615425" MODIFIED="1155909761244" TEXT="Consider how to fix the problem with searching the complete class path for plug-ins, leading to slow start-ups (Prio middle)">
 <arrowlink DESTINATION="Freemind_Link_550816658" ENDARROW="Default" ENDINCLINATION="524;0;" ID="Freemind_Arrow_Link_1550539726" STARTARROW="None" STARTINCLINATION="524;0;"/>
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-3"/>
+<icon BUILTIN="button_ok"/>
 </node>
 </node>
 <node COLOR="#0033ff" CREATED="1154896599093" ID="Freemind_Link_1998038587" MODIFIED="1154896964726" POSITION="right" TEXT="Notes">
@@ -129,9 +130,10 @@
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="button_ok"/>
 </node>
-<node COLOR="#00b439" CREATED="1154898259668" ID="Freemind_Link_550816658" MODIFIED="1155500999511" TEXT="External Plugins are not loaded under Mac">
+<node COLOR="#00b439" CREATED="1154898259668" ID="Freemind_Link_550816658" MODIFIED="1155909754394" TEXT="External Plugins are not loaded under Mac">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-2"/>
+<icon BUILTIN="button_ok"/>
 </node>
 </node>
 <node COLOR="#0033ff" CREATED="1154897688737" ID="Freemind_Link_475477860" MODIFIED="1154897691455" POSITION="right" TEXT="Documentation">

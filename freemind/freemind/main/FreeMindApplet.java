@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.6 2006-07-23 20:34:08 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.7 2006-08-20 19:34:25 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -299,33 +299,27 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
             }
 		}
     	c.createNewMode(getProperty("initial_mode"));
-        String map = getProperty("browsemode_initial_map");
-        if (map != null && map.startsWith(".")) {
+        String initialMapName = getProperty("browsemode_initial_map");
+        if (initialMapName != null && initialMapName.startsWith(".")) {
             /* new handling for relative urls. fc, 29.10.2003. */
             try {
-                URL documentBaseUrl = new URL(getDocumentBase(), map);
-                map = documentBaseUrl.toString();
+                URL documentBaseUrl = new URL(getDocumentBase(), initialMapName);
+                initialMapName = documentBaseUrl.toString();
             } catch (java.net.MalformedURLException e) {
                 getController().errorMessage(
-                        "Could not open relative URL " + map
+                        "Could not open relative URL " + initialMapName
                                 + ". It is malformed.");
                 System.err.println(e);
                 return;
             }
             /* end: new handling for relative urls. fc, 29.10.2003. */
         }
-        if (map != "") {
+        if (initialMapName != "") {
             try {
                 // get URL:
-                URL mapUrl = new URL(map);
+                URL mapUrl = new URL(initialMapName);
                 getController().getModeController().load(mapUrl);
-            } catch (MalformedURLException e) {
-                freemind.main.Resources.getInstance().logExecption(e);
-            } catch (FileNotFoundException e) {
-                freemind.main.Resources.getInstance().logExecption(e);
-            } catch (XMLParseException e) {
-                freemind.main.Resources.getInstance().logExecption(e);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 freemind.main.Resources.getInstance().logExecption(e);
             }
         }
@@ -344,6 +338,10 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 	 */
 	public JFrame getJFrame() {
 		throw new IllegalArgumentException("The applet has no frames");
+	}
+
+	public ClassLoader getFreeMindClassLoader() {
+		return mFreeMindCommon.getFreeMindClassLoader();
 	}
 
 }

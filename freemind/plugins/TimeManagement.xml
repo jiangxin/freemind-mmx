@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <plugin label="plugins/TimeManagement">
-	<plugin_classpath jar="plugins/time/time_plugin.jar"/>
-	<plugin_classpath jar="plugins/time/jcalendar.jar"/>
+	<plugin_classpath jar="time/time_plugin.jar"/>
+	<plugin_classpath jar="time/jcalendar.jar"/>
 	<plugin_registration isPluginBase="true" 
 		class_name="plugins.time.TimeManagementOrganizer">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>

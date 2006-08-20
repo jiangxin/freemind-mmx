@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12.14.5 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.14.5.2.1 2006-08-20 19:34:25 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -104,4 +104,10 @@ public interface FreeMindMain {
     public java.util.logging.Logger getLogger(String forClass);
 
 	public JPanel getSouthPanel();
+	
+	/**
+	 * @return a ClassLoader derived from the standard, with 
+	 * freeminds base dir included.
+	 */
+	public ClassLoader getFreeMindClassLoader();
 }

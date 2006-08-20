@@ -19,7 +19,7 @@
  *
  * Created on 11.03.2005
  */
-/* $Id: RevertAction.java,v 1.1.2.2.2.4 2006-08-13 22:03:31 christianfoltin Exp $ */
+/* $Id: RevertAction.java,v 1.1.2.2.2.5 2006-08-20 19:34:25 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -159,7 +159,7 @@ freemind.main.Resources.getInstance().logExecption(			e);
 					if (revertAction.getFilePrefix() != null) {
 						filePrefix = revertAction.getFilePrefix();
 					}
-					File tempFile = File.createTempFile(filePrefix, ".mm",
+					File tempFile = File.createTempFile(filePrefix, freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION,
 							new File(controller.getFrame()
 									.getFreemindDirectory()));
 					FileWriter fw = new FileWriter(tempFile);

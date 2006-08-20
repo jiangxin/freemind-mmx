@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: SchemeController.java,v 1.10.18.3.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
+/* $Id: SchemeController.java,v 1.10.18.3.2.2 2006-08-20 19:34:25 christianfoltin Exp $ */
 
 package freemind.modes.schememode;
 
@@ -85,8 +85,8 @@ public class SchemeController extends ViewControllerAdapter {
 			File f = chooser.getSelectedFile();
 			//Force the extension to be .mm
 			//      String ext = Tools.getExtension(f.getName());
-			//      if(!ext.equals("mm")) {
-			//          f = new File(f.getParent(),f.getName()+".mm");
+			//      if(!ext.equals(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT)) {
+			//          f = new File(f.getParent(),f.getName()+freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION);
 			//      }
 			save(f);
 			//Update the name of the map

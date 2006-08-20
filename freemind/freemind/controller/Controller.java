@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.13 2006-07-30 21:01:03 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.14 2006-08-20 19:34:25 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -1030,11 +1030,7 @@ public class Controller  implements MapModuleChangeOberser {
                         try {
                             createNewMode(BrowseMode.MODENAME);
                             controller.getModeController().load(endUrl);
-                        } catch (FileNotFoundException e1) {
-                            freemind.main.Resources.getInstance().logExecption(e1);
-                        } catch (XMLParseException e1) {
-                            freemind.main.Resources.getInstance().logExecption(e1);
-                        } catch (IOException e1) {
+                        } catch (Exception e1) {
                             freemind.main.Resources.getInstance().logExecption(e1);
                         }
                     }

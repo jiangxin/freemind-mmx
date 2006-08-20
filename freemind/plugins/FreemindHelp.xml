@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <plugin label="plugins/FreemindHelp">
-	<plugin_classpath jar="plugins/help/jhall.jar"/>
-	<plugin_classpath jar="plugins/help/help_plugin.jar"/>
+	<plugin_classpath jar="help/jhall.jar"/>
+	<plugin_classpath jar="help/help_plugin.jar"/>
 	<plugin_action 
 		documentation="%plugins/FreemindHelp.xml_documentation" 
 		name="%plugins/FreemindHelp.xml_name" base="freemind.extensions.ModeControllerHookAdapter" 

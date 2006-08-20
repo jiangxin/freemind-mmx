@@ -104,9 +104,13 @@ public class Resources {
     }
     
     public void logExecption(Throwable e) {
-        e.printStackTrace();
-		logger.log(Level.SEVERE, "An exception occured", e);
+    		logExecption(e, "");
 	}
+    
+    public void logExecption(Throwable e, String comment) {
+	    	e.printStackTrace();
+	    	logger.log(Level.SEVERE, "An exception occured: "+ comment, e);
+    }
     
 
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.4 2006-07-25 20:28:19 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.5 2006-08-20 19:34:25 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -26,8 +26,13 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 import javax.swing.*;
 
+import freemind.main.XMLParseException;
 import freemind.modes.ModeController;
 
 /**This is the menu bar for FreeMind. Actions are defined in MenuListener.
@@ -387,7 +392,14 @@ public class MenuBar extends JMenuBar {
 
     private class LastOpenedActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-		    c.getLastOpenedList().open(e.getActionCommand());
+			
+			String restoreable = e.getActionCommand();
+		    try {
+				c.getLastOpenedList().open(restoreable);
+			} catch (Exception ex) {
+			    c.errorMessage("An error occured on opening the file: "+restoreable + ".");
+		        freemind.main.Resources.getInstance().logExecption(ex);
+			}
 		}
     }
 

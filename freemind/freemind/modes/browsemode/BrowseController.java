@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseController.java,v 1.13.18.7.2.4 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: BrowseController.java,v 1.13.18.7.2.5 2006-08-20 19:34:25 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -189,57 +189,51 @@ public class BrowseController extends ViewControllerAdapter {
 		return (BrowseToolBar) toolbar;
 	}
 
-	public void loadURL(String relative) {
-		// copy from mind map controller:
-        if (relative.startsWith("#")) {
-			// inner map link, fc, 12.10.2004
-			String target = relative.substring(1);
-			try {
-				MindMapNode node = getNodeFromID(target);
-				centerNode(node);
-				return;
-			} catch (IllegalArgumentException e) {
-				// bad luck.
-				getFrame().out(Tools.expandPlaceholders(getText("link_not_found"), target));
-				return;
-			}
-		}
-
-		URL absolute = null;
-		try {
-			BrowseMapModel map = (BrowseMapModel) getMap();
-			// TODO: fc, 1.2.06: How should this be zero??
-			if (map != null) {
-				absolute = new URL(map.getURL(), relative);
-			} else {
-				absolute = new URL(relative);
-			}
-			// absolute = new URL(relative);
-			getFrame().out(absolute.toString());
-		} catch (MalformedURLException ex) {
-			getController().errorMessage(
-					getText("url_error") + " " + ex.getMessage());
-			// getFrame().err(getText("url_error"));
-			return;
-		}
-
-		String type = Tools.getExtension(absolute.getFile());
-		try {
-			if (type.equals("mm")) {
-				getFrame().setWaitingCursor(true);
-				load(absolute);
-			} else {
-				getFrame().openDocument(absolute);
-			}
-		} catch (Exception ex) {
-			getController().errorMessage(getText("url_load_error") + absolute);
-freemind.main.Resources.getInstance().logExecption(			ex);
-			// for some reason, this exception is thrown anytime...
-		} finally {
-			getFrame().setWaitingCursor(false);
-		}
-
-	}
+//	public void loadURL(String relative) {
+//		// copy from mind map controller:
+//        if (relative.startsWith("#")) {
+//			// inner map link, fc, 12.10.2004
+//			String target = relative.substring(1);
+//			try {
+//				MindMapNode node = getNodeFromID(target);
+//				centerNode(node);
+//				return;
+//			} catch (Exception e) {
+//				// bad luck.
+//				getFrame().out(Tools.expandPlaceholders(getText("link_not_found"), target));
+//				return;
+//			}
+//		}
+//
+//		URL absolute = null;
+//		try {
+//			absolute = new URL(getMap().getURL(), relative);
+//			getFrame().out(absolute.toString());
+//		} catch (MalformedURLException ex) {
+//			freemind.main.Resources.getInstance().logExecption(ex);
+//			getController().errorMessage(
+//					getText("url_error") + " " + ex.getMessage());
+//			// getFrame().err(getText("url_error"));
+//			return;
+//		}
+//
+//		String type = Tools.getExtension(absolute.getFile());
+//		try {
+//			if (type.equals(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT)) {
+//				getFrame().setWaitingCursor(true);
+//				load(absolute);
+//			} else {
+//				getFrame().openDocument(absolute);
+//			}
+//		} catch (Exception ex) {
+//			getController().errorMessage(getText("url_load_error") + absolute);
+//freemind.main.Resources.getInstance().logExecption(			ex);
+//			// for some reason, this exception is thrown anytime...
+//		} finally {
+//			getFrame().setWaitingCursor(false);
+//		}
+//
+//	}
 
 	public void loadURL() {
 		String link = getSelected().getLink();

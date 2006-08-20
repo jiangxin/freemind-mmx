@@ -16,6 +16,8 @@ Changes made in FreeMind 0.9.0 Beta 6
 * Added the turkish translation. Thanks to the author.
 * Note symbols are back.
 * Bug fix: [ 1536205 ] Fail to revert
+* Load of plugins generalized for Mac, more flexible ClassLoaders now.
+* Started to generalize URL and hyperlink handlings.
 
 Changes made in FreeMind 0.9.0 Beta 5
 ===============================

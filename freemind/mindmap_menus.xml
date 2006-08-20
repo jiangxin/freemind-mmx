@@ -40,8 +40,6 @@
 				<menu_action name="editLong" field="editLong" key_ref="keystroke_edit_long_node"/>
 				<menu_action name="editAttributes" field="editAttributes" key_ref="keystroke_edit_attributes"/>
 				<menu_action name="deleteChild" field="deleteChild" key_ref="keystroke_delete_child"/>
-				<menu_action name="useRichFormatting" field="useRichFormatting" key_ref="keystroke_use_rich_formatting"/>
-				<menu_action name="usePlainText" field="usePlainText" key_ref="keystroke_use_plain_text"/>
 				<!-- <menu_action field="remove" key_ref="keystroke_remove"/> -->
 			</menu_category>
 			<menu_category name="paste">
@@ -96,7 +94,13 @@
 		</menu_category>	
 	
 		<menu_category name="format">
-			<menu_category name="change"/>
+			<menu_category name="change">
+			</menu_category>
+			<menu_separator/>
+			<menu_category name="formatting_type">
+				<menu_action name="useRichFormatting" field="useRichFormatting" key_ref="keystroke_use_rich_formatting"/>
+				<menu_action name="usePlainText" field="usePlainText" key_ref="keystroke_use_plain_text"/>
+			</menu_category>
 			<menu_submenu name="patterns" name_ref="extension_menu">
 				<menu_category name="manage">
 				</menu_category>

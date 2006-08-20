@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.14 2006-08-13 21:41:55 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.15 2006-08-20 19:34:25 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -35,6 +35,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -318,6 +319,80 @@ public abstract class ControllerAdapter implements ModeController {
         else {
            return save(getModel().getFile()); }}
 
+    public void loadURL(String relative) {
+        try {
+        		URL absolute = null;
+           if (Tools.isAbsolutePath(relative)) {
+              // Protocol can be identified by rexep pattern "[a-zA-Z]://.*".
+              // This should distinguish a protocol path from a file path on most platforms.
+              // 1)  UNIX / Linux - obviously
+              // 2)  Windows - relative path does not contain :, in absolute path is : followed by \.
+              // 3)  Mac - cannot remember
+
+              // If relative is an absolute path, then it cannot be a protocol.
+              // At least on Unix and Windows. But this is not true for Mac!!
+
+              // Here is hidden an assumption that the existence of protocol implies !Tools.isAbsolutePath(relative).
+              // The code should probably be rewritten to convey more logical meaning, on the other hand
+              // it works on Windows and Linux.
+
+              //absolute = new URL("file://"+relative); }
+              absolute = new File(relative).toURL(); }
+            else if(relative.startsWith("#")){
+                // inner map link, fc, 12.10.2004
+                logger.finest("found relative link to "+relative);
+                String target = relative.substring(1);
+                try {
+                    MindMapNode node = getNodeFromID(target);
+                    centerNode(node);
+                    return;
+                } catch (Exception e) {
+                    // give "not found" message
+                		getFrame().out(Tools.expandPlaceholders(getText("link_not_found"), target));
+                		return;
+                }
+
+            } else{
+	            	// Remark: getMap().getURL() returns URLs like file:/C:/...
+	            	// It seems, that it does not cause any problems.
+              absolute = new URL(getMap().getURL(), relative);
+            }
+
+           String extension = Tools.getExtension(absolute.toString());
+           if ((extension != null) && extension.equals(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT)) {   // ---- Open Mind Map
+              MapModuleManager mapModuleManager = getController().getMapModuleManager();
+			/*this can lead to confusion if the user handles multiple maps with the same name.
+               * Obviously, this is wrong. Get a better check whether or not the file is already opened.*/
+              String mapExtensionKey = mapModuleManager.checkIfFileIsAlreadyOpened(absolute);
+              if(mapExtensionKey == null) {
+                 getFrame().setWaitingCursor(true);
+                 load(absolute); 
+              } else {
+            	  mapModuleManager.tryToChangeToMapModule(mapExtensionKey);
+              }
+           } else {                                                 
+        	   // ---- Open URL in browser
+              getFrame().openDocument(absolute); 
+           }
+        }
+        catch (MalformedURLException ex) {
+	        	freemind.main.Resources.getInstance().logExecption(ex);
+            getController().errorMessage(getText("url_error")+"\n"+ex);
+            return; 
+//        } catch (FileNotFoundException e) {
+//            int returnVal = JOptionPane.showConfirmDialog
+//               (getView(),
+//                getText("repair_link_question"),
+//                getText("repair_link"),
+//                JOptionPane.YES_NO_OPTION);
+//            if (returnVal==JOptionPane.YES_OPTION) {
+//                setLinkByTextField.actionPerformed(null);
+//            }
+        } catch (Exception e) {
+            freemind.main.Resources.getInstance().logExecption(e);
+        }
+        getFrame().setWaitingCursor(false);
+    }
 
     /**
      *
@@ -521,7 +596,7 @@ public abstract class ControllerAdapter implements ModeController {
     public boolean saveAs() {
         JFileChooser chooser = getFileChooser();
         if (getMapsParentFile() == null) {
-            chooser.setSelectedFile(new File(getFileNameProposal() + ".mm"));
+            chooser.setSelectedFile(new File(getFileNameProposal() + freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION));
         }
         chooser.setDialogTitle(getText("save_as"));
         int returnVal = chooser.showSaveDialog(getView());
@@ -533,8 +608,8 @@ public abstract class ControllerAdapter implements ModeController {
         lastCurrentDir = f.getParentFile();
         //Force the extension to be .mm
         String ext = Tools.getExtension(f.getName());
-        if(!ext.equals("mm")) {
-           f = new File(f.getParent(),f.getName()+".mm"); }
+        if(!ext.equals(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT)) {
+           f = new File(f.getParent(),f.getName()+freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION); }
 
         if (f.exists()) { // If file exists, ask before overwriting.
 			int overwriteMap = JOptionPane.showConfirmDialog

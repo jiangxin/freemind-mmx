@@ -19,10 +19,12 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.4.2.3 2006-07-25 20:28:19 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4.2.4 2006-08-20 19:34:25 christianfoltin Exp $*/
 
 package freemind.controller;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -185,6 +187,23 @@ import freemind.view.mindmapview.MapView;
             else {
                return false; }}
 
+        /**
+         * 
+         * Checks, whether or not a given url is already opened. Unlike tryToChangeToMapModule,
+         * it does not consider the map+extension identifiers nor switches to the module.
+         * @return null, if not found, the map+extension identifier otherwise.
+         */
+        public String checkIfFileIsAlreadyOpened(URL urlToCheck) throws MalformedURLException{
+        		for (Iterator iter = getMapModules().entrySet().iterator(); iter.hasNext();) {
+					Map.Entry mapEntry = (Map.Entry) iter.next();
+					MapModule module = (MapModule) mapEntry.getValue();
+					if (module.getModel() != null && urlToCheck.sameFile(module.getModel().getURL()))
+						return (String) mapEntry.getKey();
+				}
+        		return null;
+        }
+        
+        
         void changeToMapModule(String mapModule) {
             MapModule map = (MapModule)(getMapModules().get(mapModule));
             setMapModule(map, map.getMode()); 

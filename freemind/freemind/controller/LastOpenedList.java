@@ -16,10 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LastOpenedList.java,v 1.8.18.2 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: LastOpenedList.java,v 1.8.18.2.2.1 2006-08-20 19:34:25 christianfoltin Exp $*/
 package freemind.controller;
 
+import freemind.main.XMLParseException;
 import freemind.view.MapModule;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.*;
 
 /**
@@ -45,15 +50,15 @@ public class LastOpenedList {
 	load(restored);
     }
 
-    void mapOpened(MapModule map) {
-	if (map==null || map.getModel()==null) return;
-	String restoreString = map.getModel().getRestoreable();
+    void mapOpened(MapModule mapModule) {
+	if (mapModule==null || mapModule.getModel()==null) return;
+	String restoreString = mapModule.getModel().getRestoreable();
 	if (restoreString==null) return;
 	if (lastOpenedList.contains(restoreString)) {
 	    lastOpenedList.remove(restoreString);
 	}
 	lastOpenedList.add(0,restoreString);
-	mRestorableToMapName.put(restoreString,map.toString());
+	mRestorableToMapName.put(restoreString,mapModule.toString());
 
 	while (lastOpenedList.size()>maxEntries) {
 	    lastOpenedList.remove(lastOpenedList.size()-1); //remove last elt
@@ -86,7 +91,7 @@ public class LastOpenedList {
 	}
     }
 
-    public void open(String restoreable) {
+    public void open(String restoreable) throws FileNotFoundException, XMLParseException, MalformedURLException, IOException {
 		boolean changedToMapModule = c.getMapModuleManager()
 				.tryToChangeToMapModule(
 						(String) mRestorableToMapName.get(restoreable));

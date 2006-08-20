@@ -19,7 +19,7 @@
  *
  * Created on 22.07.2004
  */
-/*$Id: HookDescriptor.java,v 1.1.4.5.2.1 2006-07-25 20:28:20 christianfoltin Exp $*/
+/*$Id: HookDescriptorPluginAction.java,v 1.1.2.1 2006-08-20 19:34:25 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.HashMap;
@@ -43,17 +43,14 @@ import freemind.main.FreeMindMain;
  * @author foltin
  *
  */
-public class HookDescriptor {
+public class HookDescriptorPluginAction  extends HookDescriptorBase {
 	private Properties properties;
 	public Vector menuPositions;
 	private Vector modes;
 	private PluginAction pluginAction;
-    private final Plugin pluginBase;
-	private final FreeMindMain frame;
-	public HookDescriptor(FreeMindMain frame, PluginAction pluginAction, Plugin pluginBase) {
-		this.frame = frame;
+	public HookDescriptorPluginAction(FreeMindMain frame, String xmlPluginFile, Plugin pluginBase, PluginAction pluginAction) {
+		super(pluginBase, frame, xmlPluginFile);
 		this.pluginAction = pluginAction;
-        this.pluginBase = pluginBase;
 		if (pluginAction.getName() == null) {	
 			pluginAction.setName(pluginAction.getLabel());
 		}
@@ -106,26 +103,6 @@ public class HookDescriptor {
 	public String getName() {
 		return getFromResourceIfNecessary(pluginAction.getName());
 	}
-	/**
-	 */
-	private String getFromResourceIfNecessary(String string) {
-		if(string==null) {
-			return string;
-		}
-		if(string.startsWith("%")) {
-			return frame.getController().getResourceString(string.substring(1));
-		}
-		return string;
-	}
-	private String getFromPropertiesIfNecessary(String string) {
-		if(string==null) {
-			return string;
-		}
-		if(string.startsWith("%")) {
-			return frame.getController().getProperty(string.substring(1));
-		}
-		return string;
-	}
 	public String getClassName() {
 		return pluginAction.getClassName();
 	}
@@ -138,12 +115,10 @@ public class HookDescriptor {
 	public String getKeyStroke() {
 		return getFromPropertiesIfNecessary(pluginAction.getKeyStroke());
 	}
-	public Plugin getPluginBase(){
-	    return pluginBase;
-	}
 	/**
 	 */
 	public Properties getProperties() {
 		return properties;
 	}
+	
 }

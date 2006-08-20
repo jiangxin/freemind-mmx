@@ -37,8 +37,8 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
-import freemind.modes.mindmapmode.hooks.MindMapHookFactory;
 
 /**
  * Converts an unqualified class name to import statements by scanning
@@ -77,7 +77,7 @@ public class ImportWizard {
 		String classPath = System.getProperty("java.class.path");
 		String classPathSeparator = File.pathSeparator;
         // add the current dir to find more plugins
-        classPath=MindMapHookFactory.getFreemindBaseDir()+classPathSeparator+classPath;
+        classPath=FreeMindCommon.getFreemindBaseDir()+classPathSeparator+classPath;
         // to remove duplicates
         HashSet foundPlugins = new HashSet();
 		StringTokenizer st = new StringTokenizer(classPath, classPathSeparator);
@@ -138,7 +138,7 @@ public class ImportWizard {
 				}
 			}
 		} catch (Exception ex) {
-			logger.severe(
+			freemind.main.Resources.getInstance().logExecption(ex,
 				"Problem opening " + classPathFile + " with zip.");
 		}
 	}
@@ -165,7 +165,7 @@ public class ImportWizard {
 		Vector classList,
 		File rootDir,
 		File currentDir, int recursionLevel) {
-	    if(recursionLevel >= 2){
+	    if(recursionLevel >= 6){
             // search only the first two levels
 	        return;
         }
@@ -200,7 +200,7 @@ public class ImportWizard {
 						fileName = current;
 					}
 					classList.addElement(fileName);
-					logger.finest("Found: " + fileName);
+					logger.info("Found: " + fileName);
 				}
 			} else {
 				// Check if it's a directory to recurse into
@@ -216,7 +216,12 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.7  2006-07-30 07:25:11  christianfoltin
+ * Revision 1.1.4.6.2.8  2006-08-20 19:34:25  christianfoltin
+ * * Load of plugins generalized for Mac, more flexible ClassLoaders now.
+ * * Started to generalize URL and hyperlink handlings.
+ * * Bug fixes for rich / plain text actions
+ *
+ * Revision 1.1.4.6.2.7  2006/07/30 07:25:11  christianfoltin
  * * Startup shows progress messages.
  * * Limited the plugin search to two directory levels.
  *

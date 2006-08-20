@@ -19,23 +19,30 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.7 2006-07-30 21:01:03 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.8 2006-08-20 19:34:25 christianfoltin Exp $*/
 package freemind.main;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 /**
  * @author foltin
  * 
  */
 public class FreeMindCommon {
+
+	public static final String FREEMIND_FILE_EXTENSION_WITHOUT_DOT = "mm";
+
+	public static final String FREEMIND_FILE_EXTENSION = "."+FREEMIND_FILE_EXTENSION_WITHOUT_DOT;
 
 	public static final String POSTFIX_TRANSLATE_ME = "[translate me]";
 
@@ -68,7 +75,6 @@ public class FreeMindCommon {
 		this.mFreeMindMain = main;
 		if (logger == null)
 			logger = main.getLogger(this.getClass().getName());
-
 	}
 
 	public String getProperty(String key) {
@@ -141,5 +147,25 @@ public class FreeMindCommon {
     public void clearLanguageResources() {
 		languageResources = null;
 	}
+    
+	public ClassLoader getFreeMindClassLoader() {
+		ClassLoader classLoader = this.getClass().getClassLoader();
+		try {
+			return new URLClassLoader(new URL[] { new File(FreeMindCommon
+					.getFreemindBaseDir()).toURL() }, classLoader);
+		} catch (MalformedURLException e) {
+			freemind.main.Resources.getInstance().logExecption(e);
+			return classLoader;
+		}
+	}
+
+	/**
+	 */
+	public static String getFreemindBaseDir() {
+		// logger.info("freemind.base.dir is " + getFreemindBaseDir());
+		return System.getProperty("freemind.base.dir", ".");
+	}
+
+
     
 }

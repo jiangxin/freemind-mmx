@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ImportMindmanagerFiles.java,v 1.1.2.2.2.2 2006-07-23 20:34:08 christianfoltin Exp $ */
+/* $Id: ImportMindmanagerFiles.java,v 1.1.2.2.2.3 2006-08-20 19:34:25 christianfoltin Exp $ */
 
 package accessories.plugins;
 
@@ -105,7 +105,7 @@ public class ImportMindmanagerFiles extends ModeControllerHookAdapter {
                 String xml = transForm(new StreamSource(in), xsltFile);
                 if (xml != null) {
                     // now start a new map with this string:
-                    File tempFile = File.createTempFile(file.getName(), ".mm", file.getParentFile());
+                    File tempFile = File.createTempFile(file.getName(), freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION, file.getParentFile());
                     FileWriter fw = new FileWriter(tempFile);
                     fw.write(xml);
                     fw.close();

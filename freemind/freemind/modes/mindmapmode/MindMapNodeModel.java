@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.5 2006-05-30 21:36:17 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.6 2006-08-20 19:34:25 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -159,7 +159,7 @@ public class MindMapNodeModel extends NodeAdapter {
 
 	if (getLink() != null) {
            String link = getLink();
-           if (link.endsWith(".mm")) {
+           if (link.endsWith(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION)) {
               link += ".html"; }
            fileout.write("<a class=\"mapnode\" href=\""+link+"\" target=\"_blank\"><span class=l>~</span>&nbsp;"); }
 

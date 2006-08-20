@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.10 2006-07-30 21:01:03 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.11 2006-08-20 19:34:25 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -240,7 +240,7 @@ public class Tools {
 
     /**
      * Returns the lowercase of the extension of a file. Example:
-     * getExtension("fork.pork.MM") == "mm"
+     * getExtension("fork.pork.MM") == freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT
      */
     public static String getExtension(File f) {
         return getExtension(f.toString());
@@ -248,7 +248,7 @@ public class Tools {
 
     /**
      * Returns the lowercase of the extension of a file name. Example:
-     * getExtension("fork.pork.MM") == "mm"
+     * getExtension("fork.pork.MM") == freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT
      */
     public static String getExtension(String s) {
         int i = s.lastIndexOf('.');

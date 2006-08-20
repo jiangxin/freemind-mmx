@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.8 2006-08-13 21:41:55 christianfoltin Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.9 2006-08-20 19:34:25 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -53,6 +53,14 @@ public interface ModeController  {
      * @return returns the new mode controller created for this url.
      */
     ModeController load(URL file) throws FileNotFoundException, IOException, XMLParseException;
+    
+    /**
+     * Opens a link in
+     * * the opened map
+     * * another map 
+     * * another file.
+     */
+    void loadURL(String relative);
     boolean save(File file);
     MindMap newMap();
     /**

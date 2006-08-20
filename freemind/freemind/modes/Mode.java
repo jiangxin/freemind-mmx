@@ -16,18 +16,23 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: Mode.java,v 1.8.18.2.2.2 2006-07-25 20:28:20 christianfoltin Exp $ */
+/* $Id: Mode.java,v 1.8.18.2.2.3 2006-08-20 19:34:25 christianfoltin Exp $ */
 
 package freemind.modes;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 import freemind.controller.Controller;
+import freemind.main.XMLParseException;
 
 public interface Mode {
 
     public void init(Controller c);
     public String toString();
     public void activate();
-    public void restore(String restorable);
+    public void restore(String restorable) throws FileNotFoundException, XMLParseException, MalformedURLException, IOException ;
     /** Creates a new mode controller and returns it.
      */
     public ModeController createModeController();
