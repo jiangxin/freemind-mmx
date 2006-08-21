@@ -24,7 +24,7 @@
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-4"/>
 </node>
-<node COLOR="#00b439" CREATED="1154897482262" ID="Freemind_Link_703354147" MODIFIED="1155478600918">
+<node COLOR="#00b439" CREATED="1154897482262" ID="Freemind_Link_703354147" MODIFIED="1156187889471">
 <richcontent TYPE="NODE"><html>
   <head>
     
@@ -36,6 +36,7 @@
 </richcontent>
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-4"/>
+<icon BUILTIN="button_ok"/>
 </node>
 </node>
 <node COLOR="#0033ff" CREATED="1154896909470" ID="Freemind_Link_1346714871" MODIFIED="1155478510125" POSITION="right" TEXT="Java Check at startup">
@@ -76,12 +77,14 @@
 </node>
 <node COLOR="#0033ff" CREATED="1154896599093" ID="Freemind_Link_1998038587" MODIFIED="1154896964726" POSITION="right" TEXT="Notes">
 <font NAME="SansSerif" SIZE="18"/>
-<node COLOR="#00b439" CREATED="1154896564531" ID="Freemind_Link_868777102" MODIFIED="1154896964734" TEXT="Need icon for nodes with notes">
+<node COLOR="#00b439" CREATED="1154896564531" ID="Freemind_Link_868777102" MODIFIED="1156187871126" TEXT="Need icon for nodes with notes">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-3"/>
-<node COLOR="#990000" CREATED="1154896584602" ID="Freemind_Link_32386694" MODIFIED="1154896964740" TEXT="This should be configurable (switch on/off) via Preferences">
-<font NAME="SansSerif" SIZE="14"/>
+<icon BUILTIN="button_ok"/>
 </node>
+<node COLOR="#00b439" CREATED="1154896584602" ID="Freemind_Link_32386694" MODIFIED="1156187876151" TEXT="This should be configurable (switch on/off) via Preferences">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="full-7"/>
 </node>
 <node COLOR="#00b439" CREATED="1154896108780" ID="_" MODIFIED="1154897550909" TEXT="Shortcut for switch between notes and nodes">
 <font NAME="SansSerif" SIZE="16"/>

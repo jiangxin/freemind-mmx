@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.14 2006-08-13 21:41:55 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.15 2006-08-21 19:20:15 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -128,8 +128,8 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
     protected NodeAdapter(Object userObject, FreeMindMain frame, MindMap map) {
-		this.userObject = userObject;
-		this.frame = frame;
+        this.frame = frame;
+        setText((String) userObject);
 		hooks = null; // lazy, fc, 30.6.2005.
 		activatedHooks = null; //lazy, fc, 30.6.2005
 		if(logger == null)
@@ -156,6 +156,11 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
     public final void setText(String text) {
+        if(text == null) {
+            userObject = null;
+            xmlText = null;
+            return;
+        }
         text = text.replaceAll("\0", "")/*= \0 is not allowed: */;
         userObject = text;
         xmlText = HtmlTools.getInstance().toXhtml(text);

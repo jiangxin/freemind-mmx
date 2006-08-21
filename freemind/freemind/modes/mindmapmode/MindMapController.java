@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.13 2006-08-20 21:00:08 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.14 2006-08-21 19:20:15 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1550,7 +1550,11 @@ freemind.main.Resources.getInstance().logExecption(					e1);
     public void loadURL(String relative) {
         if (getMap().getFile() == null) {
             getFrame().out("You must save the current map first!");
-            save(); 
+            boolean result = save();
+            // canceled??
+            if(!result) {
+                return;
+            }
          }
         super.loadURL(relative);
     }
