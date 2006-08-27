@@ -63,7 +63,7 @@ public class DefaultFilter implements Filter{
         if(condition != null){
             MindMap map = c.getModel();
             MapView mapView = c.getView();
-            MindMapNode root = (MindMapNode)map.getRoot();
+            MindMapNode root = map.getRootNode();
             resetFilter(root);
             if (filterChildren(root, condition.checkNode(root), false)){
                 addFilterResult(root, FILTER_SHOW_ANCESTOR);

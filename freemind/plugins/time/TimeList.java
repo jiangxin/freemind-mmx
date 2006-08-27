@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.9.2.7 2006-07-25 20:28:30 christianfoltin Exp $ */
+/* $Id: TimeList.java,v 1.1.2.9.2.8 2006-08-27 20:29:36 christianfoltin Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -70,9 +70,12 @@ import freemind.controller.actions.generated.instance.WindowConfigurationStorage
 import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
+import freemind.modes.StylePatternFactory;
 import freemind.modes.common.plugins.ReminderHookBase;
+import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
 import freemind.view.mindmapview.MultipleImage;
 
@@ -164,13 +167,13 @@ public class TimeList extends MindMapHookAdapter {
 		gbl.columnWeights = new double[] { 1.0f };
 		gbl.rowWeights = new double[] { 1.0f };
 		contentPane.setLayout(gbl);
-		contentPane.add(new JLabel("Find"), new GridBagConstraints(0,0,1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		contentPane.add(new JLabel(getResourceString("plugins/TimeManagement.xml_Find")), new GridBagConstraints(0,0,1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		mFilterTextSearchField = new JTextField();
 		mFilterTextSearchField.getDocument().addDocumentListener(new FilterTextDocumentListener());
 		contentPane.add(new JScrollPane(mFilterTextSearchField), new GridBagConstraints(0,1, 
 					1, 1, 1.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-		contentPane.add(new JLabel("Replace"), new GridBagConstraints(0,2,1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		contentPane.add(new JLabel(getResourceString("plugins/TimeManagement.xml_Replace")), new GridBagConstraints(0,2,1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		mFilterTextReplaceField = new JTextField();
 		contentPane.add(new JScrollPane(mFilterTextReplaceField), new GridBagConstraints(0,3, 
 				1, 1, 1.0, 0.0, GridBagConstraints.WEST,
@@ -203,22 +206,27 @@ public class TimeList extends MindMapHookAdapter {
 		contentPane.add(pane, new GridBagConstraints(0,4, 
 				1, 1, 1.0, 10.0, GridBagConstraints.WEST,
 				GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-		JButton selectButton = new JButton("Select");
+		JButton selectButton = new JButton(getResourceString("plugins/TimeManagement.xml_Select"));
 		selectButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				selectSelectedRowsAndClose();
 			}});
-		JButton replaceAllButton = new JButton("Replace All");
+		JButton exportButton = new JButton(getResourceString("plugins/TimeManagement.xml_Export"));
+        exportButton.addActionListener(new ActionListener(){
+		    public void actionPerformed(ActionEvent arg0) {
+		        exportSelectedRowsAndClose();
+		    }});
+		JButton replaceAllButton = new JButton(getResourceString("plugins/TimeManagement.xml_Replace_All"));
 		replaceAllButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				replace(new ReplaceAllInfo());
 			}});
-		JButton replaceSelectedButton = new JButton("Replace Selected");
+		JButton replaceSelectedButton = new JButton(getResourceString("plugins/TimeManagement.xml_Replace_Selected"));
 		replaceSelectedButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				replace(new ReplaceSelectedInfo());
 			}});
-		JButton gotoButton = new JButton("Goto");
+		JButton gotoButton = new JButton(getResourceString("plugins/TimeManagement.xml_Goto"));
 		gotoButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				int row = timeTable.getSelectedRow();
@@ -226,12 +234,12 @@ public class TimeList extends MindMapHookAdapter {
 					gotoNodesAndClose(row, new int[]{row});
 				}
 			}});
-		JButton cancelButton = new JButton("Cancel");
+		JButton cancelButton = new JButton(getResourceString("plugins/TimeManagement.xml_Cancel"));
 		cancelButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				disposeDialog();
 			}});
-		JPanel bar = ButtonBarFactory.buildLeftAlignedBar(new JButton[]{cancelButton, gotoButton, replaceSelectedButton, replaceAllButton, selectButton});
+		JPanel bar = ButtonBarFactory.buildLeftAlignedBar(new JButton[]{cancelButton, gotoButton, replaceSelectedButton, replaceAllButton, exportButton, selectButton});
 		contentPane.add(bar, new GridBagConstraints(0,5,1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		
 		
@@ -254,7 +262,31 @@ public class TimeList extends MindMapHookAdapter {
 		dialog.setVisible(true);
 	}
 
-	public interface IReplaceInputInformation {
+	protected void exportSelectedRowsAndClose() {
+        int[] selectedRows = timeTable.getSelectedRows();
+        Vector selectedNodes = new Vector();
+        for (int i = 0; i < selectedRows.length; i++) {
+            int row = selectedRows[i];
+            selectedNodes.add(getMindMapNode(row));
+        }
+        // create new map:
+        MindMap newMap = getMindMapController().newMap();
+        MindMapController newMindMapController = (MindMapController) newMap.getModeController();
+        Tools.BooleanHolder booleanHolder = new Tools.BooleanHolder();
+        booleanHolder.setValue(true);
+        for (Iterator iter = selectedNodes.iterator(); iter.hasNext();) {
+            MindMapNode node = (MindMapNode) iter.next();
+            MindMapNode newNode = newMindMapController.addNewNode( newMap.getRootNode(), 0, booleanHolder);
+            // copy style:
+            freemind.controller.actions.generated.instance.Pattern pattern = StylePatternFactory.createPatternFromNode(node);
+            newMindMapController.applyPattern(newNode, pattern);
+            // copy text:
+            newMindMapController.setNodeText(newNode, node.getText());
+        }
+        disposeDialog();
+    }
+
+    public interface IReplaceInputInformation {
 		int getLength();
 		NodeHolder getNodeHolderAt(int i);
         void changeString(NodeHolder holder, String newText);
@@ -350,7 +382,7 @@ public class TimeList extends MindMapHookAdapter {
 	 * Creates a table model for the new table and returns it.
 	 */
 	private DefaultTableModel updateModel() {
-		MindMapNode node = (MindMapNode) getController().getMap().getRoot();
+		MindMapNode node = getController().getMap().getRootNode();
 		DefaultTableModel model = new DefaultTableModel() {
 			/*
 			 * (non-Javadoc)
@@ -602,6 +634,7 @@ freemind.main.Resources.getInstance().logExecption(					e);
 	public static class NodeHolder implements Comparable {
 		private final MindMapNode node;
 		private String untaggedNodeText=null;
+		private String originalNodeText=null;
 
 		/**
 		 *
@@ -619,9 +652,11 @@ freemind.main.Resources.getInstance().logExecption(					e);
 		}
 
         public String getUntaggedNodeText() {
-            if(untaggedNodeText==null) {
+            String nodeText = node.getText();
+            if(untaggedNodeText==null || (originalNodeText != null && !originalNodeText.equals(nodeText))) {
+                originalNodeText = nodeText;
                 // remove tags:
-                untaggedNodeText = HtmlTools.removeHtmlTagsFromString(node.getText());
+                untaggedNodeText = HtmlTools.removeHtmlTagsFromString(nodeText);
             }
             return untaggedNodeText;
         }

@@ -19,7 +19,7 @@
  *
  * Created on 22.07.2004
  */
-/*$Id: HookInstanciationMethod.java,v 1.1.4.1.16.1 2006-07-25 20:28:20 christianfoltin Exp $*/
+/*$Id: HookInstanciationMethod.java,v 1.1.4.1.16.2 2006-08-27 20:29:35 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.Collection;
@@ -53,7 +53,7 @@ public class HookInstanciationMethod {
 			return returnValue;
 		}
 		public MindMapNode getCenterNode(ModeController controller, MindMapNode focussed, List selecteds) {
-			return (MindMapNode) controller.getMap().getRoot();
+			return controller.getMap().getRootNode();
 		}
 	}
 	private static class AllDestinationNodesGetter implements DestinationNodesGetter {
@@ -66,7 +66,7 @@ public class HookInstanciationMethod {
 		}
 		public Collection getDestinationNodes(ModeController controller, MindMapNode focussed, List selecteds) {
 			Vector returnValue = new Vector();
-			addChilds((MindMapNode) controller.getMap().getRoot(), returnValue);
+			addChilds(controller.getMap().getRootNode(), returnValue);
 			return returnValue;
 		}
 		public MindMapNode getCenterNode(ModeController controller, MindMapNode focussed, List selecteds) {

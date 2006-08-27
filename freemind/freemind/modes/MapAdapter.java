@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.7 2006-08-13 21:41:55 christianfoltin Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.8 2006-08-27 20:29:36 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -108,7 +108,7 @@ public abstract class MapAdapter implements MindMap {
 		// Do all the necessary destructions in your model,
 		// e.g. remove file locks.
 		// and remove all hooks:
-		removeNodes((MindMapNode) getRoot());
+		removeNodes( getRootNode());
 	}
 
     // (PN)
@@ -169,13 +169,17 @@ public abstract class MapAdapter implements MindMap {
 
     public void setBackgroundColor(Color backgroundColor) {
 	this.backgroundColor = backgroundColor;
-	nodeChanged((MindMapNode)getRoot());//update view anyhow
+	nodeChanged(getRootNode());//update view anyhow
     }
 
     public Object getRoot() {
 	return root;
     }
 
+    public MindMapNode getRootNode() {
+        return root;
+    }
+    
     public void setRoot(MindMapNode root) {
 	this.root = root;
     }

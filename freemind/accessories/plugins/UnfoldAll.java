@@ -70,7 +70,7 @@ public class UnfoldAll extends MindMapNodeHookAdapter  {
         public boolean handleMouseWheelEvent(MouseWheelEvent e) {
             if ((e.getModifiers() & InputEvent.ALT_MASK) != 0) {
 	            logger.info("handleMouseWheelEvent entered.");
-                MindMapNode rootNode = (MindMapNode) mMap.getRoot();
+                MindMapNode rootNode = mMap.getRootNode();
                 if(e.getWheelRotation() > 0) {
                     hookInstance.unfoldOneStage(rootNode);
                 } else {

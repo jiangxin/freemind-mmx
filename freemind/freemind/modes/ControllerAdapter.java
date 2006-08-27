@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.16 2006-08-20 21:00:08 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.17 2006-08-27 20:29:35 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -661,7 +661,7 @@ public abstract class ControllerAdapter implements ModeController {
      * 
      */
     private String getFileNameProposal() {
-        String rootText = ((MindMapNode)getMap().getRoot()).getPlainTextContent();
+        String rootText = (getMap().getRootNode()).getPlainTextContent();
         rootText = rootText.replaceAll("[&:/\\\\\0%$#~\\?\\*]+", "");
         return rootText;
     }

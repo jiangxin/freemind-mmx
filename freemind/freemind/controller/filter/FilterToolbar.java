@@ -147,7 +147,7 @@ class FilterToolbar extends JToolBar {
         }
         public void actionPerformed(ActionEvent e) {
             if (getSelectedCondition() != null){
-                unfoldAncestors((MindMapNode)c.getModel().getRoot());
+                unfoldAncestors(c.getModel().getRootNode());
             }
         }
     }

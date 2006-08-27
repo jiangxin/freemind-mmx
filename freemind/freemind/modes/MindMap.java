@@ -16,14 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMap.java,v 1.14.14.8.2.3 2006-07-25 20:28:20 christianfoltin Exp $ */
+/* $Id: MindMap.java,v 1.14.14.8.2.4 2006-08-27 20:29:36 christianfoltin Exp $ */
 
 package freemind.modes;
 
 import java.awt.Color;
 import java.awt.datatransfer.Transferable;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
@@ -34,10 +33,11 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
 import freemind.controller.filter.Filter;
-import freemind.main.XMLParseException;
 
 public interface MindMap extends TreeModel {
 
+    MindMapNode getRootNode();
+    
 	/**
 	 * @return The mode controller, the model belongs to.
 	 */

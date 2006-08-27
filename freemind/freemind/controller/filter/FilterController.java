@@ -80,7 +80,7 @@ import freemind.view.MapModule;
         refreshMap();        
     }
     void refreshMap() {
-        MindMapNode root = (MindMapNode)map.getRoot();
+        MindMapNode root = map.getRootNode();
         root.getViewer().invalidateDescendantsTreeGeometries();         
         map.nodeRefresh(root);
     }
