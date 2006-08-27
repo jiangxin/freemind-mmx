@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.9.2.8 2006-08-27 20:29:36 christianfoltin Exp $ */
+/* $Id: TimeList.java,v 1.1.2.9.2.9 2006-08-27 20:30:18 christianfoltin Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -273,7 +273,7 @@ public class TimeList extends MindMapHookAdapter {
         MindMap newMap = getMindMapController().newMap();
         MindMapController newMindMapController = (MindMapController) newMap.getModeController();
         Tools.BooleanHolder booleanHolder = new Tools.BooleanHolder();
-        booleanHolder.setValue(true);
+        booleanHolder.setValue(false);
         for (Iterator iter = selectedNodes.iterator(); iter.hasNext();) {
             MindMapNode node = (MindMapNode) iter.next();
             MindMapNode newNode = newMindMapController.addNewNode( newMap.getRootNode(), 0, booleanHolder);
