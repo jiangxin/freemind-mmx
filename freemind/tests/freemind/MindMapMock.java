@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMock.java,v 1.1.2.1 2006-05-19 21:27:44 christianfoltin Exp $*/
+/*$Id: MindMapMock.java,v 1.1.2.2 2006-09-02 22:09:49 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -73,7 +73,7 @@ public class MindMapMock implements MindMap {
         return null;
     }
 
-    public Transferable copySingle() {
+    public Transferable copySingle(MindMapNode pSelectedNode) {
         return null;
     }
 
@@ -176,6 +176,10 @@ public class MindMapMock implements MindMap {
 
     public void removeTreeModelListener(TreeModelListener l) {
     }
+
+	public MindMapNode getRootNode() {
+		return null;
+	}
 
 }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: TestMindMapNode.java,v 1.1.2.3 2006-07-21 05:28:13 christianfoltin Exp $*/
+/*$Id: TestMindMapNode.java,v 1.1.2.4 2006-09-02 22:09:49 christianfoltin Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -291,7 +291,7 @@ final class TestMindMapNode implements MindMapNode {
         return null;
     }
 
-    public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveHidden) throws IOException {
+    public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveHidden, boolean saveChildren) throws IOException {
         return null;
     }
 

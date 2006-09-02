@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.8 2006-08-27 20:29:36 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.9 2006-09-02 22:09:49 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -52,6 +52,7 @@ import freemind.controller.MindMapNodesSelection;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.LinkRegistryAdapter;
@@ -468,7 +469,7 @@ public class MindMapMapModel extends MapAdapter  {
 		fileout.write("<map version=\""+FreeMind.XML_VERSION+"\">\n");
 		fileout.write("<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->\n");
 		getRegistry().save(fileout);
-		(getRootNode()).save(fileout, this.getLinkRegistry(), saveInvisible);
+		(getRootNode()).save(fileout, this.getLinkRegistry(), saveInvisible, true);
 		fileout.write("</map>\n");
 		fileout.close();
 	}
@@ -538,7 +539,6 @@ public class MindMapMapModel extends MapAdapter  {
     }
 
     MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
-        MindMapXMLElement mapElement = new MindMapXMLElement(mModeController);
         // FIXME: fc, 27.8.2005: this is for 0.8.0 only. Remove me ASAP.
         int versionInfoLength = EXPECTED_START_STRINGS[0].length();
         // reading the start of the file:
@@ -561,25 +561,27 @@ public class MindMapMapModel extends MapAdapter  {
             reader = Tools.getUpdateReader(file, FREEMIND_VERSION_UPDATER_XSLT, getFrame());
         }
         try {
-            mapElement.parseFromReader(reader);
+        	    return (MindMapNodeModel) mModeController.createNodeTreeFromXml(reader);
+//	        	MindMapXMLElement mapElement = new MindMapXMLElement(mModeController);
+//            mapElement.parseFromReader(reader);
+//            // complete the arrow links:
+//            mapElement.processUnfinishedLinks(getLinkRegistry());
+//            // we wait with "invokeHooksRecursively" until the map is fully
+//            // registered.
+//            return (MindMapNodeModel) mapElement.getMapChild();
         } catch (Exception ex) {
             String errorMessage = "Error while parsing file:" + ex;
             System.err.println(errorMessage);
             freemind.main.Resources.getInstance().logExecption(ex);
+            MindMapXMLElement mapElement = new MindMapXMLElement(mModeController);
             NodeAdapter result = mapElement.createNodeAdapter(getFrame(), null);
             result.setText(errorMessage);
             return (MindMapNodeModel) result;
-//            return null;
         } finally {
             if (reader != null) {
                 reader.close();
             }
         }
-        // complete the arrow links:
-        mapElement.processUnfinishedLinks(getLinkRegistry());
-        // we wait with "invokeHooksRecursively" until the map is fully
-        // registered.
-        return (MindMapNodeModel) mapElement.getMapChild();
     }
 
     /** Returns pMinimumLength bytes of the files content.
@@ -611,7 +613,7 @@ freemind.main.Resources.getInstance().logExecption(			e);
     public Transferable copy(MindMapNode node) {
        StringWriter stringWriter = new StringWriter();
        try {
-          ((MindMapNodeModel)node).save(stringWriter, this.getLinkRegistry(), true); }
+          ((MindMapNodeModel)node).save(stringWriter, this.getLinkRegistry(), true, true); }
        catch (IOException e) {}
        return new MindMapNodesSelection(stringWriter.toString(), null, null, null, null, null); }
 
@@ -766,7 +768,7 @@ freemind.main.Resources.getInstance().logExecption(			e);
                         }
                         try {
                             model.saveInternal(tempFile, true /*=internal call*/);
-                            model.getFrame().out("Map was automatically saved (using the file name "+tempFile+") ...");
+                            model.getFrame().out(Resources.getInstance().format("automatically_save_message", new Object[]{tempFile.toString()}));
                         } catch (Exception e) {
                             System.err.println("Error in automatic MindMapMapModel.save(): "+e.getMessage());
                             freemind.main.Resources.getInstance().logExecption(e);

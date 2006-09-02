@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.14 2006-08-20 19:34:25 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.15 2006-09-02 22:09:48 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -707,8 +707,8 @@ public class Controller  implements MapModuleChangeOberser {
         Object[] messageArguments = {
          String.valueOf(zoom*100f)
         };
-        MessageFormat formatter = new MessageFormat(getResourceString("user_defined_zoom_status_bar"));
-        getFrame().out(formatter.format(messageArguments));
+        String stringResult = Resources.getInstance().format("user_defined_zoom_status_bar", messageArguments);
+		getFrame().out(stringResult);
     }
 
 

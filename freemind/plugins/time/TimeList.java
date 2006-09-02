@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.9.2.9 2006-08-27 20:30:18 christianfoltin Exp $ */
+/* $Id: TimeList.java,v 1.1.2.9.2.10 2006-09-02 22:09:49 christianfoltin Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -272,16 +272,21 @@ public class TimeList extends MindMapHookAdapter {
         // create new map:
         MindMap newMap = getMindMapController().newMap();
         MindMapController newMindMapController = (MindMapController) newMap.getModeController();
-        Tools.BooleanHolder booleanHolder = new Tools.BooleanHolder();
-        booleanHolder.setValue(false);
+//        Tools.BooleanHolder booleanHolder = new Tools.BooleanHolder();
+//        booleanHolder.setValue(false);
         for (Iterator iter = selectedNodes.iterator(); iter.hasNext();) {
             MindMapNode node = (MindMapNode) iter.next();
-            MindMapNode newNode = newMindMapController.addNewNode( newMap.getRootNode(), 0, booleanHolder);
-            // copy style:
-            freemind.controller.actions.generated.instance.Pattern pattern = StylePatternFactory.createPatternFromNode(node);
-            newMindMapController.applyPattern(newNode, pattern);
-            // copy text:
-            newMindMapController.setNodeText(newNode, node.getText());
+//            MindMapNode newNode = newMindMapController.addNewNode( newMap.getRootNode(), 0, booleanHolder);
+//            // copy style:
+//            freemind.controller.actions.generated.instance.Pattern pattern = StylePatternFactory.createPatternFromNode(node);
+//            newMindMapController.applyPattern(newNode, pattern);
+//            // copy text:
+//            newMindMapController.setNodeText(newNode, node.getText());
+            MindMapNode copy = node.shallowCopy();
+            if(copy != null) {
+            	  newMindMapController.getMap().insertNodeInto(copy, newMap.getRootNode());
+            	  copy.setLeft(false);
+            }
         }
         disposeDialog();
     }

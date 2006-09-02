@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.17 2006-08-27 20:29:35 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.18 2006-09-02 22:09:48 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -35,6 +35,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -71,12 +72,9 @@ import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.main.XMLElement;
 import freemind.main.XMLParseException;
-import freemind.modes.ModeController.NodeLifetimeListener;
-import freemind.modes.ModeController.NodeSelectionListener;
 import freemind.modes.attributes.AttributeController;
-import freemind.modes.attributes.AttributeRegistry;
-import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.attributeview.AttributeTable;
@@ -131,6 +129,8 @@ public abstract class ControllerAdapter implements ModeController {
     //
 
     public abstract MindMapNode newNode(Object userObject, MindMap map);
+    
+    public abstract XMLElement  createXMLElement();
 
     /**
      * You _must_ implement this if you use one of the following actions:
@@ -406,6 +406,15 @@ public abstract class ControllerAdapter implements ModeController {
         }
     }
 
+    public MindMapNode createNodeTreeFromXml(Reader pReader)
+			throws XMLParseException, IOException {
+		XMLElementAdapter element = (XMLElementAdapter) createXMLElement();
+		element.parseFromReader(pReader);
+		element.processUnfinishedLinks(getModel().getLinkRegistry());
+		MindMapNode node = element.getMapChild();
+		return node;
+	}
+    
     /**
      *
      */

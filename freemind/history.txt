@@ -20,6 +20,8 @@ Changes made in FreeMind 0.9.0 Beta 6
 * Started to generalize URL and hyperlink handlings. Done.
 * Patch revised and introduced: 1532279 link between nodes on different freemind maps, thanks to the authors.
 * New feature: history of node is exportable now.
+* Fixed map dragging outside of the window.
+* New feature: Scripting via Groovy introduced. 
 
 Changes made in FreeMind 0.9.0 Beta 5
 ===============================

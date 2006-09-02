@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.6 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.7 2006-09-02 22:09:49 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -457,10 +457,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 	   throws XMLParseException {
 	   // Call nodeStructureChanged(target) after this function.
 	   try {
-		  MindMapXMLElement element = new MindMapXMLElement(pMindMapController);
-		  element.parseFromReader(new StringReader(pasted));
-		  MindMapNodeModel node = (MindMapNodeModel)element.getUserObject();
-		  element.processUnfinishedLinks(pMindMapController.getModel().getLinkRegistry());
+		   MindMapNodeModel node = (MindMapNodeModel) pMindMapController.createNodeTreeFromXml(new StringReader(pasted));
 		  // now, the import is finished. We can inform others about the new nodes:
 		  if (asSibling) {
 			 MindMapNode parent = target.getParentNode();

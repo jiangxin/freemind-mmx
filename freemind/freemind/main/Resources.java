@@ -24,6 +24,7 @@
 package freemind.main;
 
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -111,6 +112,12 @@ public class Resources {
 	    	e.printStackTrace();
 	    	logger.log(Level.SEVERE, "An exception occured: "+ comment, e);
     }
+
+	public String format(String resourceKey, Object[] messageArguments) {
+        MessageFormat formatter = new MessageFormat(getResourceString(resourceKey));
+        String stringResult = formatter.format(messageArguments);
+        return stringResult;
+	}
     
 
 

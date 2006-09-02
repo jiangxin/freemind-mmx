@@ -16,18 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseController.java,v 1.13.18.7.2.5 2006-08-20 19:34:25 christianfoltin Exp $ */
+/* $Id: BrowseController.java,v 1.13.18.7.2.6 2006-09-02 22:09:49 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -38,14 +35,13 @@ import javax.swing.JToolBar;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.HookFactory;
-import freemind.main.Tools;
+import freemind.main.XMLElement;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.common.GotoLinkNodeAction;
-import freemind.modes.mindmapmode.hooks.MindMapHookFactory;
 import freemind.modes.viewmodes.ViewControllerAdapter;
 import freemind.view.mindmapview.NodeView;
 
@@ -295,4 +291,9 @@ public class BrowseController extends ViewControllerAdapter {
 	public HookFactory getHookFactory() {
 		return mBrowseHookFactory;
 	}
+	
+	public XMLElement createXMLElement() {
+		return new BrowseXMLElement(this);
+	}
+
 }

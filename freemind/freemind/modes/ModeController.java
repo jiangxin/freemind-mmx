@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.9 2006-08-20 19:34:25 christianfoltin Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.10 2006-09-02 22:09:49 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -26,6 +26,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
 import java.util.List;
 
@@ -70,7 +71,11 @@ public interface ModeController  {
     boolean saveAs();
     void open();
     boolean close(boolean force, MapModuleManager mapModuleManager);
-
+    /** Given a valid Xml parameterization of a node (tree),
+     * this method returns freshly created nodes.
+     */
+    MindMapNode createNodeTreeFromXml(Reader pReader)
+		throws XMLParseException, IOException;
     // activation methods:
     void startupController();
     void shutdownController();

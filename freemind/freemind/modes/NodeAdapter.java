@@ -16,13 +16,15 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.15 2006-08-21 19:20:15 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.16 2006-09-02 22:09:49 christianfoltin Exp $ */
 
 package freemind.modes;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
@@ -485,21 +487,20 @@ public abstract class NodeAdapter implements MindMapNode {
 	this.folded = folded;
     }
 
-    protected MindMapNode basicCopy(MindMap map) {
-       return null; }
-
     public MindMapNode shallowCopy() {
-       MindMapNode copy = basicCopy(getMap());
-       copy.setColor(getColor());
-       copy.setFont(getFont());
-       copy.setLink(getLink());
-       if(isLeft() != null)
-           copy.setLeft(isLeft().getValue());
-       List icons = getIcons();
-       for(int i = 0; i < icons.size(); ++i) {
-           copy.addIcon((MindIcon) icons.get(i));
-       }
-       return copy; }
+		try {
+			// get XML from me.
+			StringWriter writer = new StringWriter();
+			this.save(writer, this.getMap().getLinkRegistry(), true, false);
+			String result = writer.toString();
+			MindMapNode copy = this.getModeController().createNodeTreeFromXml(new StringReader(result));
+			copy.setFolded(false);
+			return copy;
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logExecption(e);			
+			return null;
+		}    	   
+	}
 
     //
     // other
@@ -560,6 +561,10 @@ public abstract class NodeAdapter implements MindMapNode {
        return childrenUnfolded();
     }
 
+    public List getChildren() {
+    		return Collections.unmodifiableList((children!=null)?children:Collections.EMPTY_LIST);
+    }
+    
     //
     //  Interface TreeNode
     //
@@ -849,11 +854,13 @@ freemind.main.Resources.getInstance().logExecption(			e);
 	    // the order is crucial here: the shutdown method should be able to perform "nodeChanged"
 	    // calls without having its own updateNodeHook method to be called again.
 		createActivatedHooks();
-		activatedHooks.remove(hook);
-		if(activatedHooks.size()==0) {
-			activatedHooks=null;
-		}
-		hook.shutdownMapHook();
+		if (activatedHooks.contains(hook)) {
+			activatedHooks.remove(hook);
+			if (activatedHooks.size() == 0) {
+				activatedHooks = null;
+			}
+			hook.shutdownMapHook();
+		}		
 		createHooks();
 		hooks.remove(hook);
 		if(hooks.size()==0)
@@ -891,7 +898,7 @@ freemind.main.Resources.getInstance().logExecption(			e);
 	    return controller.getNodeID(this);
 	}
 
-    public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveInvisible) throws IOException {
+    public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveInvisible, boolean saveChildren) throws IOException {
     	// pre save event to save all contents of the node:
     	getModeController().firePreSaveEvent(this);
     	XMLElement node = new XMLElement();
@@ -1030,7 +1037,7 @@ freemind.main.Resources.getInstance().logExecption(			e);
         }
 
         attributes.save(node);
-        if (childrenUnfolded().hasNext()) {
+        if (saveChildren && childrenUnfolded().hasNext()) {
             node.writeWithoutClosingTag(writer);
             //recursive
             saveChildren(writer, registry, this, saveInvisible);
@@ -1049,7 +1056,7 @@ freemind.main.Resources.getInstance().logExecption(			e);
         for (ListIterator e = node.childrenUnfolded(); e.hasNext();) {
             NodeAdapter child = (NodeAdapter) e.next();
             if(saveHidden || child.isVisible())
-                child.save(writer, registry, saveHidden);
+                child.save(writer, registry, saveHidden, true);
             else
                 saveChildren(writer, registry, child, saveHidden);
         }

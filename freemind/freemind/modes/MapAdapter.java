@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.8 2006-08-27 20:29:36 christianfoltin Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.9 2006-09-02 22:09:49 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -233,11 +233,10 @@ public abstract class MapAdapter implements MindMap {
    public Transferable copy() {
       return copy(getFrame().getView().getSelectedNodesSortedByY(), null); }
 
-   public Transferable copySingle() {
-      MindMapNode selectedNode = (MindMapNode)getFrame().getView().getSelected().getModel();
+   public Transferable copySingle(MindMapNode pSelectedNode) {
       ArrayList selectedNodes  = new ArrayList();
-      selectedNodes.add(selectedNode.shallowCopy());
-      return copy(selectedNodes, selectedNode.toString()); }
+      selectedNodes.add(pSelectedNode.shallowCopy());
+      return copy(selectedNodes, pSelectedNode.toString()); }
 
    public Transferable copy(List selectedNodes, String inPlainText) {
       try {

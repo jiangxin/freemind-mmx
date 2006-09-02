@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.8 2006-07-25 20:28:20 christianfoltin Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.9 2006-09-02 22:09:49 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -33,7 +33,6 @@ import freemind.main.XMLElement;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
-import freemind.modes.mindmapmode.EncryptedMindMapNode;
 
 public abstract class XMLElementAdapter extends XMLElement {
 
@@ -134,6 +133,10 @@ public abstract class XMLElementAdapter extends XMLElement {
 		// Create user object based on name
 		if (name.equals(XML_NODE)) {
 			userObject = createNodeAdapter(frame, null);
+			// unify map child behaviour:
+			if(mapChild==null) {
+				mapChild = (NodeAdapter) userObject;
+			}
 			nodeAttributes.clear();
 		} else if (name.equals("edge")) {
 			userObject = createEdgeAdapter(null, frame);

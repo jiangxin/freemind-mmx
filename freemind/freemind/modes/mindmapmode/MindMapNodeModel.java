@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.6 2006-08-20 19:34:25 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.7 2006-09-02 22:09:49 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,9 +59,7 @@ public class MindMapNodeModel extends NodeAdapter {
 		setEdge(new MindMapEdgeModel(this, getFrame()));
     }
 
-    protected MindMapNode basicCopy(MindMap map) {
-       return new MindMapNodeModel(userObject, getFrame(), map); }
-
+    
     //
     // The mandatory load and save methods
     //

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseMapModel.java,v 1.9.18.5.2.2 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: BrowseMapModel.java,v 1.9.18.5.2.3 2006-09-02 22:09:49 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -120,9 +120,6 @@ public class BrowseMapModel extends MapAdapter {
     BrowseNodeModel loadTree(URL url) {
 	BrowseNodeModel root = null;
 
-	//NanoXML Code
-	//XMLElement parser = new XMLElement();
-        BrowseXMLElement mapElement = new BrowseXMLElement(getModeController());
         InputStreamReader urlStreamReader = null;
 
         try {
@@ -139,15 +136,13 @@ public class BrowseMapModel extends MapAdapter {
         }
 
 	try {
-	    mapElement.parseFromReader(urlStreamReader);
+		root = (BrowseNodeModel) getModeController().createNodeTreeFromXml(urlStreamReader);
+	    urlStreamReader.close();
+	    return root;
 	} catch (Exception ex) {
 	    System.err.println(ex);
 	    return null;
 	}
-    // complete the arrow links:
-    mapElement.processUnfinishedLinks(getLinkRegistry());
-    root = (BrowseNodeModel) mapElement.getMapChild();
-	return root;
     }
 
     /* (non-Javadoc)

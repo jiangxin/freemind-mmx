@@ -36,5 +36,6 @@
 	<classpathentry sourcepath="lib/forms-1.0.5-src.zip" kind="lib" path="lib/forms-1.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/junit.jar"/>
+	<classpathentry kind="lib" path="plugins/script/groovy-all-1.0-JSR-06.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

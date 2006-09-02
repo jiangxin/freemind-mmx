@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMouseMotionManager.java,v 1.1.2.1.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
+/* $Id: MindMapMouseMotionManager.java,v 1.1.2.1.2.3 2006-09-02 22:09:49 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.listeners;
 
@@ -56,30 +56,22 @@ public class MindMapMouseMotionManager implements MapMouseMotionReceiver {
     }
 
     public void mouseDragged(MouseEvent e) {
-        Rectangle r = new Rectangle(e.getX(), e.getY(), 1, 1);
         MapView mapView = (MapView)e.getComponent();
-        boolean isEventPointVisible = mapView.getVisibleRect().contains(r);
-        if(! isEventPointVisible){
-        mapView.scrollRectToVisible(r);
-        }
         // Always try to get mouse to the original position in the Map.
         if (originX >= 0) {
-            if (draggedLink != null) {
-    		int deltaX = (int)((e.getX()-originX)/mController.getView().getZoom());
-    		int deltaY = (int)((e.getY()-originY)/mController.getView().getZoom());
-                draggedLink.changeInclination(originX, originY, deltaX, deltaY);
-                originX = e.getX();
-                originY = e.getY();
-                mController.getView().repaint();
-            }
-    	  else if(isEventPointVisible){
-     		mapView.scrollBy(originX - e.getX(), originY - e.getY(), false);
-    	  }
-    	  else{
-    	      originX = e.getX();
-    	      originY = e.getY();
-    	  }
-        }
+			if (draggedLink != null) {
+				int deltaX = (int) ((e.getX() - originX) / mController
+						.getView().getZoom());
+				int deltaY = (int) ((e.getY() - originY) / mController
+						.getView().getZoom());
+				draggedLink.changeInclination(originX, originY, deltaX, deltaY);
+				originX = e.getX();
+				originY = e.getY();
+				mController.getView().repaint();
+			} else {
+				 mapView.scrollBy(originX - e.getX(), originY - e.getY(), false);
+			} 
+		}
     }
 
     public void mousePressed(MouseEvent e) {

@@ -19,12 +19,13 @@
  *
  * Created on 09.11.2005
  */
-/* $Id: ViewControllerAdapter.java,v 1.1.2.2.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
+/* $Id: ViewControllerAdapter.java,v 1.1.2.2.2.3 2006-09-02 22:09:49 christianfoltin Exp $ */
 package freemind.modes.viewmodes;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import freemind.main.XMLElement;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
@@ -147,4 +148,9 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
         toggleChildrenFolded.setEnabled(enabled);
     }
 
+	public XMLElement createXMLElement() {
+		throw new IllegalArgumentException("createXMLElement is not defined for "+ this.getClass().getName());
+	}
+
+    
 }

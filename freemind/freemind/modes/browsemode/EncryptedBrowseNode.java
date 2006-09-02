@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.3 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.4 2006-09-02 22:09:49 christianfoltin Exp $ */
 package freemind.modes.browsemode;
 
 import java.io.IOException;
@@ -33,6 +33,7 @@ import freemind.main.Tools.TripleDesEncrypter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.ModeController;
+import freemind.modes.NodeAdapter;
 import freemind.modes.common.dialogs.EnterPasswordDialog;
 
 /**
@@ -109,9 +110,18 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 			// if the encrypted node is empty, we skip the insert.
 			if (string.length() == 0)
 				continue;
-			BrowseXMLElement element = new BrowseXMLElement(browseController);
 			try {
-				element.parseFromReader(new StringReader(string));
+				NodeAdapter node = (NodeAdapter) browseController.createNodeTreeFromXml(new StringReader(string));
+				// now, the import is finished. We can inform others about
+				// the new nodes:
+				MapAdapter model = browseController.getModel();
+				model.insertNodeInto(node, this);
+				browseController.invokeHooksRecursively(node, model);
+				super.setFolded(folded);
+				browseController.nodeChanged(this);
+				browseController.nodeStructureChanged(this);
+				isDecrypted = true;
+				updateIcon();
 			} catch (XMLParseException e) {
 freemind.main.Resources.getInstance().logExecption(				e);
 				return;
@@ -119,18 +129,6 @@ freemind.main.Resources.getInstance().logExecption(				e);
 freemind.main.Resources.getInstance().logExecption(				e);
 				return;
 			}
-			BrowseNodeModel node = (BrowseNodeModel) element.getUserObject();
-			MapAdapter model = browseController.getModel();
-			element.processUnfinishedLinks(model.getLinkRegistry());
-			// now, the import is finished. We can inform others about
-			// the new nodes:
-			model.insertNodeInto(node, this);
-			browseController.invokeHooksRecursively(node, model);
-			super.setFolded(folded);
-			browseController.nodeChanged(this);
-			browseController.nodeStructureChanged(this);
-			isDecrypted = true;
-			updateIcon();
 		}
 	}
 

@@ -141,6 +141,7 @@
 <node COLOR="#00b439" CREATED="1156102965918" ID="Freemind_Link_1537014547" MODIFIED="1156103004974" TEXT="The display should not change the scroll direction if not dragging a node.">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-3"/>
+<icon BUILTIN="button_ok"/>
 </node>
 </node>
 <node COLOR="#0033ff" CREATED="1154897688737" ID="Freemind_Link_475477860" MODIFIED="1154897691455" POSITION="right" TEXT="Documentation">

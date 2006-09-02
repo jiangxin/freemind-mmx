@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.14 2006-08-21 19:20:15 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.15 2006-09-02 22:09:49 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -97,6 +97,7 @@ import freemind.main.ExampleFileFilter;
 import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.main.XMLElement;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MapAdapter;
@@ -574,11 +575,12 @@ freemind.main.Resources.getInstance().logExecption(					e);
     		mPatternsList = patternsList;
         patterns = new ApplyPatternAction[patternsList.size()];
         for (int i = 0; i < patterns.length; i++) {
-            patterns[i] = new ApplyPatternAction(this,
-                    (Pattern) patternsList.get(i));
+            Pattern actualPattern = (Pattern) patternsList.get(i);
+			patterns[i] = new ApplyPatternAction(this,
+                    actualPattern);
 
             // search icons for patterns:
-            PatternIcon patternIcon = ((Pattern) patternsList.get(i))
+            PatternIcon patternIcon = actualPattern
                     .getPatternIcon();
             if (patternIcon != null && patternIcon.getValue() != null) {
                 patterns[i].putValue(Action.SMALL_ICON, MindIcon.factory(
@@ -1656,12 +1658,16 @@ freemind.main.Resources.getInstance().logExecption(					e1);
     }
 
     public void invokeHook(ModeControllerHook hook) {
-        hook.setController(this);
-        // initialize:
-        // the main invocation:
-        hook.startupMapHook();
-        // and good bye.
-        hook.shutdownMapHook();
+		try {
+			hook.setController(this);
+			// initialize:
+			// the main invocation:
+			hook.startupMapHook();
+			// and good bye.
+			hook.shutdownMapHook();
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logExecption(e);
+		}        
     }
 
     public ActionFactory getActionFactory() {
@@ -1865,5 +1871,9 @@ freemind.main.Resources.getInstance().logExecption(					e1);
     public AttributePopupMenu getAttributeTablePopupMenu() {
         return new AttributePopupMenu();
     }
+
+	public XMLElement createXMLElement() {
+		return new MindMapXMLElement(this);
+	}
 
 }

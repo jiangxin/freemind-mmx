@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.6 2006-07-25 20:54:46 christianfoltin Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.7 2006-09-02 22:09:49 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -100,6 +100,12 @@ public interface MindMapNode extends MutableTreeNode {
     /** @return returns a ListIterator of all (and not only the unfolded ones!!) children of the node.
      * */
     ListIterator childrenUnfolded();
+    
+    /**
+     * @return a list of (unmodifiable) children (all ones, folded and unfolded) of type
+     * MindMapNode.
+     */
+    List getChildren();
 
     boolean hasChildren();
 
@@ -229,7 +235,11 @@ public interface MindMapNode extends MutableTreeNode {
 	public String getAdditionalInfo();
 
     MindMapNode shallowCopy();
-    public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveHidden) throws IOException;
+    /**
+     * @param saveHidden TODO: Seems not to be used. Remove or fill with live.
+     * @param saveChildren if true, the save recurses to all of the nodes children.
+     */
+    public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveHidden, boolean saveChildren) throws IOException;
 
     // fc, 10.2.2005:
     /** State icons are icons that are not saved. They indicate that
