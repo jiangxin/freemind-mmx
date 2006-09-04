@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.17 2006-08-20 19:34:25 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.18 2006-09-04 20:22:53 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -621,15 +621,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
         frame.pack();
         feedBack.increase("FreeMind.progress.endStartup");
 
-	try {
-           if (frame.getView() != null) {
-           	// wait until AWT thread starts
-           	if (! EventQueue.isDispatchThread()){
-				EventQueue.invokeAndWait(new Runnable() {public void run(){};});
-           	}
-              frame.getView().moveToRoot(); }}
-        catch (Exception e) {
-           freemind.main.Resources.getInstance().logExecption(e); }
 
         //if (frame.getProperty("menubarVisible").equals("false")) {
         //   frame.c.setMenubarVisible(false); }
@@ -654,6 +645,15 @@ public class FreeMind extends JFrame implements FreeMindMain {
         int splitPanePosition = frame.getIntProperty(SPLIT_PANE_POSITION, (int) (frame.mSplitPane.getHeight()*0.8));
         frame.mSplitPane.setDividerLocation(splitPanePosition);
         
+        try {
+            if (frame.getView() != null) {
+                // wait until AWT thread starts
+                if (! EventQueue.isDispatchThread()){
+                    EventQueue.invokeAndWait(new Runnable() {public void run(){};});
+                }
+                frame.getView().moveToRoot(); }}
+        catch (Exception e) {
+            freemind.main.Resources.getInstance().logExecption(e); }
 
         if (splash != null) {
             splash.setVisible(false);

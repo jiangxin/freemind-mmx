@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.16 2006-09-02 22:09:49 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.17 2006-09-04 20:22:54 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -53,6 +53,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
+import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.NodeView;
 
@@ -1164,6 +1165,7 @@ freemind.main.Resources.getInstance().logExecption(			e);
     public NodeAttributeTableModel getAttributes(){
         return attributes;
     }
+    
     EventListenerList listenerList = new EventListenerList();
     NodeViewEvent nodeViewEvent = null;
 

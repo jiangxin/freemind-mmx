@@ -19,7 +19,7 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.1 2006-09-02 22:09:49 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.2 2006-09-04 20:22:54 christianfoltin Exp $ */
 package plugins.script;
 
 import java.util.Iterator;
@@ -45,28 +45,42 @@ public class ScriptingEngine extends MindMapHookAdapter  {
 	}
 
 	private void performScriptOperation(MindMapNode node) {
-		// depth first:
-		for (Iterator iter = node.childrenUnfolded(); iter.hasNext();) {
-			MindMapNode element = (MindMapNode) iter.next();
-			performScriptOperation(element);
-		}
-		NodeAttributeTableModel attributes = node.getAttributes();
-		if(attributes==null)
-			return;
-		for(int row = 0 ; row < attributes.getRowCount(); ++row) {
-			String attrKey = (String) attributes.getName(row);
-			logger.info("Found key = " + attrKey);
-			if(attrKey.startsWith("script")) {
-				Binding binding = new Binding();
-				binding.setVariable("c", getMindMapController());
-				binding.setVariable("node", node);
-				GroovyShell shell = new GroovyShell(binding);
+		try {
+            // depth first:
+            for (Iterator iter = node.childrenUnfolded(); iter.hasNext();) {
+            	MindMapNode element = (MindMapNode) iter.next();
+            	performScriptOperation(element);
+            }
+            NodeAttributeTableModel attributes = node.getAttributes();
+            if(attributes==null)
+            	return;
+            for(int row = 0 ; row < attributes.getRowCount(); ++row) {
+            	String attrKey = (String) attributes.getName(row);
+            	logger.info("Found key = " + attrKey);
+            	if(attrKey.startsWith("script")) {
+            		Binding binding = new Binding();
+            		binding.setVariable("c", getMindMapController());
+            		binding.setVariable("node", node);
+            		GroovyShell shell = new GroovyShell(binding);
 
-				String script = (String) attributes.getValue(row);
-				Object value = shell.evaluate(script);
-				logger.info("Result of executing "+script+" is " + value);
-			}
-		}
+            		String script = (String) attributes.getValue(row);
+                    boolean assignResult = false;
+                    if(script.startsWith("=")){
+                        script = script.substring(1);
+                        assignResult = true;
+                    }
+            		Object value = shell.evaluate(script);
+            		logger.info("Result of executing "+script+" is " + value);
+                    if(assignResult && value != null) {
+                        getMindMapController().setNodeText(node, value.toString());
+                    }
+            	}
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            freemind.main.Resources.getInstance().logExecption(e);
+            getController().getController().errorMessage(e.getClass().getName() + ": " + e.getMessage());
+        }
 	}
 
 

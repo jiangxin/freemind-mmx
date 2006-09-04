@@ -22,6 +22,8 @@ Changes made in FreeMind 0.9.0 Beta 6
 * New feature: history of node is exportable now.
 * Fixed map dragging outside of the window.
 * New feature: Scripting via Groovy introduced. 
+* Bug fix: layout of root with attributes
+* Enhancements of the scripting feature.
 
 Changes made in FreeMind 0.9.0 Beta 5
 ===============================

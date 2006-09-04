@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.14.14.7.2.3 2006-07-25 20:28:30 christianfoltin Exp $*/
+/*$Id: RootNodeView.java,v 1.14.14.7.2.4 2006-09-04 20:22:54 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -65,7 +65,7 @@ public class RootNodeView extends NodeView {
      */
     Point getOutPoint(Point destinationPoint, boolean isLeft) {
 		if (true) {
-			Dimension size = getSize();
+			Dimension size = getMainView().getSize();
 			double nWidth = size.width;
 			double nHeight = size.height;
 			Point centerPoint = new Point(

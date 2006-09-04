@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.8 2006-07-30 21:01:04 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.9 2006-09-04 20:22:54 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -959,26 +959,27 @@ public class OptionPanel implements TextTranslator {
         controls.add(new NextLineProperty());
         controls.add(new SeparatorProperty("others"));
 
-  controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/ChangeNodeLevelAction_left.properties_key"));
-controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/ChangeNodeLevelAction_right.properties_key"));
-controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/FormatCopy.properties.properties_key"));
-controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/FormatPaste.properties.properties_key"));
-controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/IconSelectionPlugin.properties.properties_key"));
-controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NewParentNode.properties_key"));
-controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NodeNote.properties_key"));
-controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_PAGE_UP"));
-controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_PAGE_DOWN"));
-controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_HOME"));
-controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_END"));
-
-controls.add(new NextLineProperty());
-controls.add(new SeparatorProperty("attributes"));
-controls.add(new KeyProperty(frame, null, "keystroke_edit_attributes")); //  control
-controls.add(new KeyProperty(frame, null, "keystroke_show_all_attributes")); //  control
-controls.add(new KeyProperty(frame, null, "keystroke_show_selected_attributes")); //  control
-controls.add(new KeyProperty(frame, null, "keystroke_hide_all_attributes")); //  control
-controls.add(new KeyProperty(frame, null, "keystroke_show_attribute_manager")); //  control
-controls.add(new KeyProperty(frame, null, "keystroke_assign_attributes")); //  control
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/ChangeNodeLevelAction_left.properties_key"));
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/ChangeNodeLevelAction_right.properties_key"));
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/FormatCopy.properties.properties_key"));
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/FormatPaste.properties.properties_key"));
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/IconSelectionPlugin.properties.properties_key"));
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NewParentNode.properties_key"));
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NodeNote.properties_key"));
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_PAGE_UP"));
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_PAGE_DOWN"));
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_HOME"));
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_END"));
+        
+        controls.add(new NextLineProperty());
+        controls.add(new SeparatorProperty("attributes"));
+        controls.add(new KeyProperty(frame, null, "keystroke_edit_attributes")); //  control
+        controls.add(new KeyProperty(frame, null, "keystroke_show_all_attributes")); //  control
+        controls.add(new KeyProperty(frame, null, "keystroke_show_selected_attributes")); //  control
+        controls.add(new KeyProperty(frame, null, "keystroke_hide_all_attributes")); //  control
+        controls.add(new KeyProperty(frame, null, "keystroke_show_attribute_manager")); //  control
+        controls.add(new KeyProperty(frame, null, "keystroke_assign_attributes")); //  control
+        controls.add(new KeyProperty(frame, null, "keystroke_plugins/ScriptingEngine.keystroke.evaluate"));
 
 
 
