@@ -33,7 +33,7 @@
 		<classpath path="${jibxlibs}"/>
 	</taskdef>
 
-	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar:lib/kafenio/kafenio.jar:lib/kafenio/kafenio.jar"/>
+	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar"/>
 
 	  <target name="xmlbind.checkStatusOfGeneration">
 	    <uptodate property="xmlbind.isUpToDate"
@@ -106,7 +106,7 @@
 			>
 			<exclude name="${gen.dir}/**" />
 			<exclude name="accessories/plugins/**" />
-			<!-- Currently, JUnit tests are only supported inside eclipse due to 
+			<!-- Currently, JUnit tests are only supported inside eclipse due to
 			     classpath problems of the plugins. -->
 			<exclude name="tests/**" />
 			<exclude name="plugins/**" />
@@ -148,10 +148,10 @@
 				<include name="bindings.jar"/>
 				<include name="jibx/jibx-run.jar"/>
 				<include name="jibx/xpp3.jar"/>
-				<include name="kafenio/kafenio-icons.jar"/>
-				<include name="kafenio/gnu-regexp-1.1.4.jar"/>
-				<include name="kafenio/kafenio.jar"/>
-				<include name="kafenio/kafenio-config.jar"/>
+				<include name="SimplyHTML/gnu-regexp-1.1.4.jar"/>
+				<include name="SimplyHTML/SimplyHTML.jar"/>
+				<include name="SimplyHTML/SimplyHTMLHelp.jar"/>
+				<include name="SimplyHTML/jhall.jar"/>
 			</fileset>
 		</copy>
 
@@ -213,9 +213,9 @@
 			</fileset>
 		</copy>
 		<!-- Delete the JavaApplicationStub and replace it with a symbolic link -->
-		  <!--   which should work on older and future versions of OS X  
+		  <!--   which should work on older and future versions of OS X
 		   Taken from http://informagen.com/JarBundler/StubFile.html         -->
-		       
+
 		  <delete file="${dist_macos_contents}/MacOS/JavaApplicationStub"/>
 		  <exec executable="ln">
 		    <arg line="-s /System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub"/>
@@ -405,7 +405,7 @@
 			<arg line="-f ${log_file}"/>
 		</exec>
 	</target>
-	
+
 	<!-- does not work!! -->
 	<target name="val">
 		<xmlvalidate lenient="false"

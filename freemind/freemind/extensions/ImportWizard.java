@@ -215,12 +215,25 @@ public class ImportWizard {
 } // ImportWizard
 
 /*
+<<<<<<< ImportWizard.java
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.8  2006-08-20 19:34:25  christianfoltin
+ * Revision 1.1.4.6.2.9  2006-09-05 21:15:19  dpolivaev
+ * SimplyHTML
+ *
+ * Revision 1.1.4.6.2.8  2006/08/20 19:34:25  christianfoltin
  * * Load of plugins generalized for Mac, more flexible ClassLoaders now.
  * * Started to generalize URL and hyperlink handlings.
  * * Bug fixes for rich / plain text actions
  *
+=======
+ * $Log: ImportWizard.java,v $
+ * Revision 1.1.4.6.2.9  2006-09-05 21:15:19  dpolivaev
+ * SimplyHTML
+ *
+ * Revision 1.1.4.6.2.7.2.1  2006/08/11 20:33:22  dpolivaev
+ * no message
+ *
+>>>>>>> 1.1.4.6.2.7.2.1
  * Revision 1.1.4.6.2.7  2006/07/30 07:25:11  christianfoltin
  * * Startup shows progress messages.
  * * Limited the plugin search to two directory levels.
