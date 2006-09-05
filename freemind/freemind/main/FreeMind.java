@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.19 2006-09-05 21:15:19 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.20 2006-09-05 21:25:12 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -90,7 +90,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
     private static Logger logger =null;
 
     private static final String DEFAULT_LANGUAGE = "en";
-    public static final String VERSION = "0.9.0 Beta 8";
+    public static final String VERSION = "0.9.0 Beta 7";
 	public static final String XML_VERSION = "0.9.0_Beta_6";
     //    public static final String defaultPropsURL = "freemind.properties";
     public URL defaultPropsURL;
@@ -549,7 +549,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 //                freemind.main.Resources.getInstance().logExecption(e);
             }
         }
-		if(mFileHandler != null) 
+		if(mFileHandler != null)
 			logger2.addHandler(mFileHandler);
 		return logger2;
     }
@@ -653,7 +653,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
         frame.mSplitPane.setDividerLocation(splitPanePosition);
         frame.pack();
         feedBack.increase("FreeMind.progress.endStartup");
-        
+
         try {
             if (frame.getView() != null) {
                 // wait until AWT thread starts
@@ -666,7 +666,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
         if (splash != null) {
             splash.setVisible(false);
-        }        
+        }
 
     }
 
