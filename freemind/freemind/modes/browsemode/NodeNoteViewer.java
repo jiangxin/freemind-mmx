@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.2 2006-04-11 19:14:34 dpolivaev Exp $ */
+/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.3 2006-09-05 21:15:19 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
 import java.awt.Color;
@@ -27,7 +27,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
-import de.xeinfach.kafenio.interfaces.KafenioPanelInterface;
 import freemind.modes.MindMapNode;
 import freemind.modes.common.plugins.NodeNoteBase;
 

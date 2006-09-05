@@ -1,3 +1,6 @@
+Changes made in FreeMind 0.9.0 Beta 7
+* Kafenio replaced by SimplyHTML
+===============================
 Changes made in FreeMind 0.9.0 Beta 6
 ===============================
 * Restrictions on node positions removed, 
