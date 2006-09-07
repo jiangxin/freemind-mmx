@@ -34,7 +34,6 @@
 	<classpathentry kind="lib" path="lib/junit.jar"/>
 	<classpathentry kind="lib" path="plugins/script/groovy-all-1.0-JSR-06.jar"/>
 	<classpathentry kind="lib" path="lib/SimplyHTML/gnu-regexp-1.1.4.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/simplyHtml"/>
 	<classpathentry kind="lib" path="lib/SimplyHTML/SimplyHTML.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

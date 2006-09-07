@@ -33,10 +33,33 @@ img.ilink {
 
 /* for notes and image export, fc, 18.7.2005. */
 .images {
- width:50%;
+ max-width:50%;
 }
 
-.notes {
+.nodecontent {display:inline;}
+
+.note-and-attributes {
  margin-left:10%;
  color:#0000FF;
+}
+
+table.attributes {
+	border-collapse:collapse;
+	empty-cells:show;
+	border:thin black solid;
+}
+table.attributes td,th {
+	border:thin black solid;
+	padding-top:2px;
+	padding-bottom:2px;
+	padding-left:3px;
+	padding-right:3px;
+}
+table.attributes th {
+	text-align:center;
+}
+table.attributes caption {
+	margin-top:1em;
+	font-style:italic;
+	text-align:center;
 }

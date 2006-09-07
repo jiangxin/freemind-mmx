@@ -159,3 +159,48 @@ li.basic_active {
   margin-top:2px;
   margin-bottom:2px;
 }
+
+/* the 'boxed' and 'attributes' styles are used to display notes and attributes
+*/
+
+.boxed,.nodecontent {display:inline;}
+.boxed .note-and-attributes {display:none;}
+
+.boxed:hover .note-and-attributes {
+	position:fixed; top:2em;right:10px;z-index:3;
+	display:block;
+	min-width:33%;
+	max-width:60%;
+	max-height:95%;
+	color:black;
+	background:#ffffff;
+	font:normal 16px courier, sans-serif;
+	border:1px solid black;
+	padding:10px;
+}
+
+.note:before {
+	content:"NOTE: ";
+	font-weight:bold;
+}
+
+table.attributes {
+	border-collapse:collapse;
+	empty-cells:show;
+	border:thin black solid;
+}
+table.attributes td,th {
+	border:thin black solid;
+	padding-top:2px;
+	padding-bottom:2px;
+	padding-left:3px;
+	padding-right:3px;
+}
+table.attributes th {
+	text-align:center;
+}
+table.attributes caption {
+	margin-top:1em;
+	font-style:italic;
+	text-align:center;
+}

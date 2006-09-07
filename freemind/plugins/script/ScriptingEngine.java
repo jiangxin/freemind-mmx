@@ -19,7 +19,7 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.2 2006-09-04 20:22:54 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.3 2006-09-07 20:00:25 christianfoltin Exp $ */
 package plugins.script;
 
 import java.util.Iterator;
@@ -45,6 +45,7 @@ public class ScriptingEngine extends MindMapHookAdapter  {
 	}
 
 	private void performScriptOperation(MindMapNode node) {
+		getController().getFrame().setWaitingCursor(true);
 		try {
             // depth first:
             for (Iterator iter = node.childrenUnfolded(); iter.hasNext();) {
@@ -81,6 +82,7 @@ public class ScriptingEngine extends MindMapHookAdapter  {
             freemind.main.Resources.getInstance().logExecption(e);
             getController().getController().errorMessage(e.getClass().getName() + ": " + e.getMessage());
         }
+        getController().getFrame().setWaitingCursor(false);
 	}
 
 

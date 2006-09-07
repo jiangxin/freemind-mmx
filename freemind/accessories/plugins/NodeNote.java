@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.10 2006-09-05 21:15:19 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.11 2006-09-07 20:00:25 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -27,8 +27,6 @@ import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 
 import com.lightdev.app.shtm.SHTMLPanel;
 import com.lightdev.app.shtm.Util;
@@ -37,6 +35,7 @@ import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMindMain;
+import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -55,14 +54,17 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 public class NodeNote extends NodeNoteBase {
 
     public final static String NODE_NOTE_PLUGIN = "accessories/plugins/NodeNote.properties";
-
+    public final static String EMPTY_EDITOR_STRING = "<html>\n  <head>\n    \n  </head>\n  <body>\n    \n  </body>\n</html>\n";
+    public final static String EMPTY_EDITOR_STRING_ALTERNATIVE = "<html>\n  <head>\n    \n  </head>\n  <body>\n    <p>\n      \n    </p>\n  </body>\n</html>\n";
+                                                                //<html>\n  <head>\n    \n  </head>\n  <body>\n    <p>\n      \n    </p>\n  </body>\n</html>\n
     public static class Registration implements HookRegistration, ActorXml {
         // private NodeTextListener listener;
 
         private final class NotesManager implements NodeSelectionListener, NodeLifetimeListener  {
 
             private MindMapNode node;
-
+            private boolean mLastContentEmpty = true;
+            
             public NotesManager() {
             }
 
@@ -70,7 +72,7 @@ public class NodeNote extends NodeNoteBase {
                 // store its content:
                 onSaveNode(node);
                 this.node = null;
-                getHtmlEditorPanel().setCurrentDocumentContent("Note", "");
+//                getHtmlEditorPanel().setCurrentDocumentContent("Note", "");
             }
 
             public void onReceiveFocusHook(MindMapNode node) {
@@ -78,7 +80,7 @@ public class NodeNote extends NodeNoteBase {
                 String note = node.getXmlNoteText();
                 if (note != null) {
                     getHtmlEditorPanel().setCurrentDocumentContent("Note", note);
-                } else {
+                } else if(!mLastContentEmpty){
                     getHtmlEditorPanel().setCurrentDocumentContent("Note", "");
                 }
             }
@@ -91,21 +93,20 @@ public class NodeNote extends NodeNoteBase {
                     return;
                 }
                 boolean editorContentEmpty = true;
-                try {
-                    final Document currentDocument = getHtmlEditorPanel()
-                    .getCurrentDocument();
-                    editorContentEmpty = currentDocument.getText(0, currentDocument.getLength()).matches("[\\s\\n]*");
-                } catch (BadLocationException e) {
-                    e.printStackTrace();
-                }
+                String documentText = getHtmlEditorPanel().getDocumentText();
+//				editorContentEmpty = HtmlTools.removeAllTagsFromString(documentText).matches("[\\s\\n]*");
+				editorContentEmpty = /*documentText.equals(EMPTY_EDITOR_STRING)||*/
+					documentText.equals(EMPTY_EDITOR_STRING_ALTERNATIVE);
+//				logger.info("Current document: '" + documentText.replaceAll("\n", "\\\\n") + "', empty="+ editorContentEmpty);
                 controller.deregisterNodeSelectionListener(this);
                 if (getHtmlEditorPanel().needsSaving()) {
                     if (editorContentEmpty) {
                         changeNodeText(null, node);
                     } else {
-                        changeNodeText(getHtmlEditorPanel().getDocumentText(),
+                        changeNodeText(documentText,
                                 node);
                     }
+                    mLastContentEmpty = editorContentEmpty;
                     setStateIcon(node, !editorContentEmpty);
                 }
                 controller.registerNodeSelectionListener(this);

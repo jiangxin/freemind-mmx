@@ -122,6 +122,12 @@ public class ExportWithXSLT extends ExportHook {
             // XSLT Transformation
             String xsltFileName = getResourceString("xslt_file");
             boolean success = transformMapWithXslt(xsltFileName, saveFile, areaCode);
+            if (!success) {
+				JOptionPane.showMessageDialog(null,
+						getResourceString("error_applying_template"),
+						"Freemind", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
             // create directory?
             if(success && Tools.safeEquals(getResourceString("create_dir"), "true")) {
                 String directoryName = saveFile.getAbsolutePath()+"_files";

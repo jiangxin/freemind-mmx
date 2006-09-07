@@ -1,24 +1,37 @@
 <map version="0.9.0_Beta_6">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
+<attribute_registry>
+<attribute_name NAME="script1"/>
+</attribute_registry>
 <node COLOR="#000000" CREATED="1154896082504" ID="Freemind_Link_366022196" MODIFIED="1155500757582" TEXT="Todos for coming version 0.9.x">
 <font NAME="SansSerif" SIZE="20"/>
 <hook NAME="accessories/plugins/AutomaticLayout.properties"/>
 <node COLOR="#0033ff" CREATED="1154896187932" ID="Freemind_Link_917676449" MODIFIED="1154896964685" POSITION="right" TEXT="HTML">
 <font NAME="SansSerif" SIZE="18"/>
-<node COLOR="#00b439" CREATED="1154896193111" ID="Freemind_Link_16073776" MODIFIED="1154896964695" TEXT="Use SimpleHTML and fix most annoying bugs">
+<node COLOR="#00b439" CREATED="1154896193111" ID="Freemind_Link_16073776" MODIFIED="1157641512010" TEXT="Use SimpleHTML and fix most annoying bugs">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-1"/>
+<icon BUILTIN="button_ok"/>
 </node>
 <node COLOR="#00b439" CREATED="1154896202219" ID="Freemind_Link_1421475055" MODIFIED="1154896964705" TEXT="Export-Scripts must be fixed">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-2"/>
-<node COLOR="#990000" CREATED="1154896215298" ID="Freemind_Link_347487038" MODIFIED="1154896964712" TEXT="Started with freemind2html.xsl">
+<node COLOR="#990000" CREATED="1154896215298" ID="Freemind_Link_347487038" MODIFIED="1157641518983" TEXT="Started with freemind2html.xsl">
 <font NAME="SansSerif" SIZE="14"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node COLOR="#990000" CREATED="1157641519663" ID="Freemind_Link_1170834930" MODIFIED="1157641524488" TEXT="toxhtml">
+<font NAME="SansSerif" SIZE="14"/>
+<icon BUILTIN="button_ok"/>
 </node>
 </node>
 <node COLOR="#00b439" CREATED="1154896365380" ID="Freemind_Link_1661079448" MODIFIED="1154896964716" TEXT="Need a script for XHTML to OOo transformation">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-2"/>
+<node COLOR="#990000" CREATED="1157641525022" ID="Freemind_Link_140381541" MODIFIED="1157641530054" TEXT="mm2oowriter">
+<font NAME="SansSerif" SIZE="14"/>
+<icon BUILTIN="button_cancel"/>
+</node>
 </node>
 <node COLOR="#00b439" CREATED="1154897281267" ID="Freemind_Link_1534541891" MODIFIED="1154897295354" TEXT="Split node is missing in the editor">
 <font NAME="SansSerif" SIZE="16"/>
@@ -93,13 +106,15 @@
 </node>
 <node COLOR="#0033ff" CREATED="1154896180148" ID="Freemind_Link_1350749537" MODIFIED="1154896964659" POSITION="right" TEXT="New Search">
 <font NAME="SansSerif" SIZE="18"/>
-<node COLOR="#00b439" CREATED="1154896125530" ID="Freemind_Link_1068027871" MODIFIED="1154896964668" TEXT="Shortcut for new Search functionality like ctrl-shift-F">
+<node COLOR="#00b439" CREATED="1154896125530" ID="Freemind_Link_1068027871" MODIFIED="1157641550108" TEXT="Shortcut for new Search functionality like ctrl-shift-F">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-4"/>
+<icon BUILTIN="button_ok"/>
 </node>
-<node COLOR="#00b439" CREATED="1154896149217" ID="Freemind_Link_728689599" MODIFIED="1154896964672" TEXT="Activate Replace in new Search functionality">
+<node COLOR="#00b439" CREATED="1154896149217" ID="Freemind_Link_728689599" MODIFIED="1157641551476" TEXT="Activate Replace in new Search functionality">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="idea"/>
+<icon BUILTIN="button_ok"/>
 </node>
 <node COLOR="#00b439" CREATED="1154896159445" ID="Freemind_Link_738550042" MODIFIED="1154896964676" TEXT="Move time management plugin to integrated plugins">
 <font NAME="SansSerif" SIZE="16"/>
@@ -143,6 +158,17 @@
 <icon BUILTIN="full-3"/>
 <icon BUILTIN="button_ok"/>
 </node>
+<node COLOR="#00b439" CREATED="1157614005336" ID="Freemind_Link_113590541" MODIFIED="1157643052012" TEXT="&quot;del&quot; l&#xf6;scht auch in Notes den ganzen Knoten">
+<cloud/>
+<font NAME="SansSerif" SIZE="16"/>
+</node>
+<node COLOR="#00b439" CREATED="1157643581276" FOLDED="true" ID="Freemind_Link_1012498162" MODIFIED="1157643629637" TEXT="Add an Attribute, Remove it via undo and start &quot;Attribute zuweisen..&quot;">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="full-3"/>
+<node COLOR="#990000" CREATED="1157643611169" ID="Freemind_Link_1896475514" MODIFIED="1157643617945" TEXT="apple.awt.EventQueueExceptionHandler Caught Throwable : java.lang.ArrayIndexOutOfBoundsException: 0&#xa;java.lang.ArrayIndexOutOfBoundsException: 0&#xa;&#x9;at freemind.controller.filter.util.SortedMapListModel.getElementAt(SortedMapListModel.java:41)&#xa;&#x9;at freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog.selectedAttributeChanged(AssignAttributeDialog.java:455)&#xa;&#x9;at freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog.access$5(AssignAttributeDialog.java:450)&#xa;&#x9;at freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog$1.itemStateChanged(AssignAttributeDialog.java:351)&#xa;&#x9;at javax.swing.JComboBox.fireItemStateChanged(JComboBox.java:1162)&#xa;&#x9;at javax.swing.JComboBox.selectedItemChanged(JComboBox.java:1219)&#xa;&#x9;at javax.swing.JComboBox.contentsChanged(JComboBox.java:1266)&#xa;&#x9;at javax.swing.AbstractListModel.fireContentsChanged(AbstractListModel.java:100)&#xa;&#x9;at freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog$ClonedComboBoxModel.setSelectedItem(AssignAttributeDialog.java:101)&#xa;&#x9;at javax.swing.JComboBox.setSelectedItem(JComboBox.java:551)&#xa;&#x9;at freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog.attributesChanged(AssignAttributeDialog.java:479)&#xa;&#x9;at freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog.mapChanged(AssignAttributeDialog.java:447)&#xa;&#x9;at freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog.&amp;lt;init&amp;gt;(AssignAttributeDialog.java:435)&#xa;&#x9;at freemind.modes.mindmapmode.MindMapController$AssignAttributesAction.actionPerformed(MindMapController.java:200)&#xa;&#x9;at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1819)&#xa;&#x9;at javax.swing.AbstractButton$ForwardActionEvents.actionPerformed(AbstractButton.java:1872)&#xa;&#x9;at javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:420)&#xa;&#x9;at javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:258)&#xa;&#x9;at javax.swing.AbstractButton.doClick(AbstractButton.java:321)&#xa;&#x9;at apple.laf.ScreenMenuItem.actionPerformed(ScreenMenuItem.java:83)&#xa;&#x9;at java.awt.MenuItem.processActionEvent(MenuItem.java:589)&#xa;&#x9;at java.awt.MenuItem.processEvent(MenuItem.java:548)&#xa;&#x9;at java.awt.MenuComponent.dispatchEventImpl(MenuComponent.java:285)&#xa;&#x9;at java.awt.MenuComponent.dispatchEvent(MenuComponent.java:273)&#xa;&#x9;at java.awt.EventQueue.dispatchEvent(EventQueue.java:482)&#xa;&#x9;at java.awt.EventDispatchThread.pumpOneEventForHierarchy(EventDispatchThread.java:234)&#xa;&#x9;at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:184)&#xa;&#x9;at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:178)&#xa;&#x9;at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:170)&#xa;&#x9;at java.awt.EventDispatchThread.run(EventDispatchThread.java:100)&#xa;">
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
 </node>
 <node COLOR="#0033ff" CREATED="1154897688737" ID="Freemind_Link_475477860" MODIFIED="1154897691455" POSITION="right" TEXT="Documentation">
 <font NAME="SansSerif" SIZE="18"/>
@@ -165,8 +191,9 @@
 <node COLOR="#00b439" CREATED="1154897219366" ID="Freemind_Link_935306843" MODIFIED="1155501094472" TEXT="juanpedro__rectangulars edges and rectangular clouds_freemind">
 <font NAME="SansSerif" SIZE="16"/>
 </node>
-<node COLOR="#00b439" CREATED="1154897244833" ID="Freemind_Link_1890112641" MODIFIED="1155501097119" TEXT="1499796  XHTML export with notes attributes xhtml_xslt">
+<node COLOR="#00b439" CREATED="1154897244833" ID="Freemind_Link_1890112641" MODIFIED="1157641577135" TEXT="1499796  XHTML export with notes attributes xhtml_xslt">
 <font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="help"/>
 </node>
 <node COLOR="#00b439" CREATED="1154897267841" ID="Freemind_Link_1262676997" MODIFIED="1156107772642">
 <richcontent TYPE="NODE"><html>

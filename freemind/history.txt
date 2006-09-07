@@ -1,5 +1,7 @@
 Changes made in FreeMind 0.9.0 Beta 7
 * Kafenio replaced by SimplyHTML
+* Bug fixes: two HTML exports adapted to new file format
+
 ===============================
 Changes made in FreeMind 0.9.0 Beta 6
 ===============================
