@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: PrintActionHandler.java,v 1.1.2.1.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: PrintActionHandler.java,v 1.1.2.1.2.2 2006-09-07 20:31:47 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -68,6 +68,11 @@ public class PrintActionHandler implements ActionHandler {
 	public void executeAction(ActionPair pair) {
 		String s = c.marshall(pair.getDoAction()) + "\n" + c.marshall(pair.getUndoAction());
 		logger.info(s);
+//        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+//        for (int i = 0; i < stackTrace.length; i++) {
+//            StackTraceElement element = stackTrace[i];
+//            logger.info(element.toString());
+//        }
 	}
 
 }

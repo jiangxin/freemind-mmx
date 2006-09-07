@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.11 2006-09-07 20:00:25 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.12 2006-09-07 20:31:47 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -54,7 +54,7 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 public class NodeNote extends NodeNoteBase {
 
     public final static String NODE_NOTE_PLUGIN = "accessories/plugins/NodeNote.properties";
-    public final static String EMPTY_EDITOR_STRING = "<html>\n  <head>\n    \n  </head>\n  <body>\n    \n  </body>\n</html>\n";
+    public final static String EMPTY_EDITOR_STRING = "<html>\n  <head>\n\n  </head>\n  <body>\n    <p>\n      \n    </p>\n  </body>\n</html>\n";
     public final static String EMPTY_EDITOR_STRING_ALTERNATIVE = "<html>\n  <head>\n    \n  </head>\n  <body>\n    <p>\n      \n    </p>\n  </body>\n</html>\n";
                                                                 //<html>\n  <head>\n    \n  </head>\n  <body>\n    <p>\n      \n    </p>\n  </body>\n</html>\n
     public static class Registration implements HookRegistration, ActorXml {
@@ -95,15 +95,15 @@ public class NodeNote extends NodeNoteBase {
                 boolean editorContentEmpty = true;
                 String documentText = getHtmlEditorPanel().getDocumentText();
 //				editorContentEmpty = HtmlTools.removeAllTagsFromString(documentText).matches("[\\s\\n]*");
-				editorContentEmpty = /*documentText.equals(EMPTY_EDITOR_STRING)||*/
+				editorContentEmpty = documentText.equals(EMPTY_EDITOR_STRING)||
 					documentText.equals(EMPTY_EDITOR_STRING_ALTERNATIVE);
 //				logger.info("Current document: '" + documentText.replaceAll("\n", "\\\\n") + "', empty="+ editorContentEmpty);
                 controller.deregisterNodeSelectionListener(this);
                 if (getHtmlEditorPanel().needsSaving()) {
                     if (editorContentEmpty) {
-                        changeNodeText(null, node);
+                        changeNoteText(null, node);
                     } else {
-                        changeNodeText(documentText,
+                        changeNoteText(documentText,
                                 node);
                     }
                     mLastContentEmpty = editorContentEmpty;
@@ -212,7 +212,7 @@ public class NodeNote extends NodeNoteBase {
          * Set text with undo:
          *
          */
-        public void changeNodeText(String text, MindMapNode node) {
+        public void changeNoteText(String text, MindMapNode node) {
             EditNoteToNodeAction doAction = createEditNoteToNodeAction(node,
                     text);
             EditNoteToNodeAction undoAction = createEditNoteToNodeAction(node,
