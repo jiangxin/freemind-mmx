@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 0.9.0 Beta 8
+===============================
+* feedback.increase must not be called before auto properties with language setting has been loaded        
+
+===============================
 Changes made in FreeMind 0.9.0 Beta 7
 ===============================
 * Kafenio replaced by SimplyHTML
