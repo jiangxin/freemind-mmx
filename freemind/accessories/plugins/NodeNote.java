@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.12 2006-09-07 20:31:47 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.13 2006-09-10 20:41:29 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -253,7 +253,7 @@ public class NodeNote extends NodeNoteBase {
                 catch(MissingResourceException mre) {
                     Util.errMsg(null, "resources/SimplyHTML.properties not found", mre);
                 }
-                htmlEditorPanel = new SHTMLPanel();
+                htmlEditorPanel = SHTMLPanel.createSHTMLPanel();
             }
             return htmlEditorPanel;
         }
