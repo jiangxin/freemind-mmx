@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.13 2006-09-10 20:41:29 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.14 2006-09-16 21:38:22 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -59,11 +59,11 @@ public class NodeNote extends NodeNoteBase {
                                                                 //<html>\n  <head>\n    \n  </head>\n  <body>\n    <p>\n      \n    </p>\n  </body>\n</html>\n
     public static class Registration implements HookRegistration, ActorXml {
         // private NodeTextListener listener;
+        static private boolean mLastContentEmpty = true;
 
         private final class NotesManager implements NodeSelectionListener, NodeLifetimeListener  {
 
             private MindMapNode node;
-            private boolean mLastContentEmpty = true;
             
             public NotesManager() {
             }

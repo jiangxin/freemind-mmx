@@ -1,7 +1,11 @@
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8
 ===============================
-* feedback.increase must not be called before auto properties with language setting has been loaded        
+* bug fix: feedback.increase must not be called before auto properties with language setting has been loaded        
+* SimpleHTML: icons for bold and italic actions replaced
+* SimpleHTML: shift + enter inserts <br>
+* SimpleHTML: <END > -  Markierung removed
+* bug fix: NodeNote.Registration.NotesManager.mLastContentEmpty declared static
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 7
