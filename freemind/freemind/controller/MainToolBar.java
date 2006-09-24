@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.16.14.2.4.1 2006-04-05 21:26:24 dpolivaev Exp $*/
+/*$Id: MainToolBar.java,v 1.16.14.2.4.2 2006-09-24 19:43:06 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -48,6 +48,8 @@ public class MainToolBar extends FreeMindToolBar {
 	button = add(c.navigationNextMap);
 	button = add(c.printDirect);
 	JToggleButton btnFilter = new JToggleButton (c.showFilterToolbarAction);
+	// don't paint the border, in order to look like every other toolbar item.
+	btnFilter.setBorderPainted(false);
 	btnFilter.setToolTipText(c.getResourceString("filter_toolbar"));
 	add(btnFilter);
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.7 2006-08-20 21:00:08 christianfoltin Exp $ */
+/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.8 2006-09-24 19:43:06 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.hooks;
 
 import java.io.File;
@@ -196,6 +196,7 @@ freemind.main.Resources.getInstance().logExecption(				e);
 						} else if (obj instanceof PluginRegistration) {
 							PluginRegistration registration = (PluginRegistration) obj;
 							allRegistrations.add(new HookDescriptorRegistration(frame, xmlPluginFile, plugin, registration));
+//							logger.info("Added registration " + registration.getClassName() + " to allRegistrations=" + allRegistrations);
 						}
 					}
 				}

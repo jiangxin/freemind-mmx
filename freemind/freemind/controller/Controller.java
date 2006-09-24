@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.15 2006-09-02 22:09:48 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.16 2006-09-24 19:43:06 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -779,10 +779,19 @@ public class Controller  implements MapModuleChangeOberser {
 
     private void quit() {
         String currentMapRestorable = (getModel()!=null) ? getModel().getRestoreable() : null;
-        while (getView() != null) {
-        	boolean closingNotCancelled = getMapModuleManager().close(false);
-        	if  (!closingNotCancelled) {
-        	   return; }}
+        while (getMapModuleManager().getMapModules().size() > 0) {
+				if (getMapModule() != null) {
+					boolean closingNotCancelled = getMapModuleManager().close(
+							false);
+					if (!closingNotCancelled) {
+						return;
+					}
+				} else {
+					// map module without view open. 
+					// FIXME: This seems to be a bad hack. correct me!
+					getMapModuleManager().nextMapModule();
+				}
+		}
 
         String lastOpenedString=lastOpened.save();
         setProperty("lastOpened",lastOpenedString);

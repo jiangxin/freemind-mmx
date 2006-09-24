@@ -3,7 +3,7 @@
 <attribute_registry>
 <attribute_name NAME="script1"/>
 </attribute_registry>
-<node COLOR="#000000" CREATED="1154896082504" ID="Freemind_Link_366022196" MODIFIED="1155500757582" TEXT="Todos for coming version 0.9.x">
+<node COLOR="#000000" CREATED="1154896082504" ID="Freemind_Link_366022196" MODIFIED="1157970025320" TEXT="Todos for coming version 0.9.x">
 <font NAME="SansSerif" SIZE="20"/>
 <hook NAME="accessories/plugins/AutomaticLayout.properties"/>
 <node COLOR="#0033ff" CREATED="1154896187932" ID="Freemind_Link_917676449" MODIFIED="1154896964685" POSITION="right" TEXT="HTML">
@@ -102,6 +102,20 @@
 <node COLOR="#00b439" CREATED="1154896108780" ID="_" MODIFIED="1154897550909" TEXT="Shortcut for switch between notes and nodes">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-3"/>
+</node>
+<node COLOR="#00b439" CREATED="1157970027372" ID="Freemind_Link_1482230050" MODIFIED="1157970043836" TEXT="No automatical save during note edit!">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="full-1"/>
+<icon BUILTIN="clanbomber"/>
+<icon BUILTIN="clanbomber"/>
+</node>
+<node COLOR="#00b439" CREATED="1157971940403" ID="Freemind_Link_259869844" MODIFIED="1157971956750" TEXT="Not possible to cut from one and to paste into another note">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="full-1"/>
+</node>
+<node COLOR="#00b439" CREATED="1157978059773" ID="Freemind_Link_192645673" MODIFIED="1157978076413" TEXT="When switching between maps, last content is still visible">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="full-2"/>
 </node>
 </node>
 <node COLOR="#0033ff" CREATED="1154896180148" ID="Freemind_Link_1350749537" MODIFIED="1154896964659" POSITION="right" TEXT="New Search">
