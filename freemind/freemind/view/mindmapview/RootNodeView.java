@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: RootNodeView.java,v 1.14.14.7.2.4 2006-09-04 20:22:54 christianfoltin Exp $*/
+/*$Id: RootNodeView.java,v 1.14.14.7.2.5 2006-10-01 16:43:40 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -287,8 +287,17 @@ public class RootNodeView extends NodeView {
 	    return prefSize;
 	}
 
-}
+    public int getTextWidth() {
+        return super.getTextWidth() - getMainView().getWidth()/10;
+    }
+    /* (non-Javadoc)
+     * @see freemind.view.mindmapview.NodeView#getTextX()
+     */
+    public int getTextX() {
+        return getIconWidth() + getMainView().getWidth()/20;
+    }
 
+}
 
 
 //     /**

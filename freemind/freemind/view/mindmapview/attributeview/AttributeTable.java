@@ -511,6 +511,9 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
                 }                
             }
         }
+        if(ks.getKeyCode() == KeyEvent.VK_SPACE){
+            return true;
+        }
         return retValue;
     }
     public boolean isVisible(){

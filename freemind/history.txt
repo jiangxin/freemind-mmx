@@ -9,6 +9,12 @@ Changes made in FreeMind 0.9.0 Beta 8
 * Filter has no border in the toolbar, in order to look like every other toolbar item
 * Bug fix: automatic save when note window is changed.
 * Bug fix: Close closes maps when modes without maps are displayed.
+* Bug fix: [ 1559543 ] Space into attribute folds the node (0.9.0 beta7)
+* Bug fix: Note is not cleaned if newly selected node has no note
+* Bug fix: HTML Tab opened first with plain text content
+* Bug fix: I have a multiline node that there is allways an empty line displayed between the text
+* Bug fix: [ 1563410 ] "use plain text" adds blank lines
+* Bug fix: Background of the inline editor must not be gray
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 7

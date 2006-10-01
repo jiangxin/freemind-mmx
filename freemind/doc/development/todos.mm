@@ -6,7 +6,7 @@
 <node COLOR="#000000" CREATED="1154896082504" ID="Freemind_Link_366022196" MODIFIED="1157970025320" TEXT="Todos for coming version 0.9.x">
 <font NAME="SansSerif" SIZE="20"/>
 <hook NAME="accessories/plugins/AutomaticLayout.properties"/>
-<node COLOR="#0033ff" CREATED="1154896187932" FOLDED="true" ID="Freemind_Link_917676449" MODIFIED="1154896964685" POSITION="right" TEXT="HTML">
+<node COLOR="#0033ff" CREATED="1154896187932" ID="Freemind_Link_917676449" MODIFIED="1154896964685" POSITION="right" TEXT="HTML">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1154896365380" ID="Freemind_Link_1661079448" MODIFIED="1154896964716" TEXT="Need a script for XHTML to OOo transformation">
 <font NAME="SansSerif" SIZE="16"/>
@@ -21,7 +21,7 @@
 <icon BUILTIN="full-3"/>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1154896909470" FOLDED="true" ID="Freemind_Link_1346714871" MODIFIED="1155478510125" POSITION="right" TEXT="Java Check at startup">
+<node COLOR="#0033ff" CREATED="1154896909470" ID="Freemind_Link_1346714871" MODIFIED="1155478510125" POSITION="right" TEXT="Java Check at startup">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1155478510017" ID="Freemind_Link_1233066351" MODIFIED="1155500698643" TEXT="C++-Exe:">
 <font NAME="SansSerif" SIZE="16"/>
@@ -34,56 +34,35 @@
 </node>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1154896599093" FOLDED="true" ID="Freemind_Link_1998038587" MODIFIED="1154896964726" POSITION="right" TEXT="Notes">
-<font NAME="SansSerif" SIZE="18"/>
-<node COLOR="#00b439" CREATED="1154896584602" ID="Freemind_Link_32386694" MODIFIED="1159694780179" TEXT="This should be configurable (switch on/off) via Preferences">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="full-3"/>
-</node>
-<node COLOR="#00b439" CREATED="1154896108780" ID="_" MODIFIED="1154897550909" TEXT="Shortcut for switch between notes and nodes">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="full-3"/>
-</node>
-<node COLOR="#00b439" CREATED="1157970027372" ID="Freemind_Link_1482230050" MODIFIED="1159695918706" TEXT="No automatical save during note edit!">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="clanbomber"/>
-<icon BUILTIN="clanbomber"/>
-</node>
-<node COLOR="#00b439" CREATED="1157971940403" ID="Freemind_Link_259869844" MODIFIED="1159695929621" TEXT="Not possible to cut from one and to paste into another note">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="clanbomber"/>
-<icon BUILTIN="dimitry"/>
-</node>
-</node>
-<node COLOR="#0033ff" CREATED="1154896180148" FOLDED="true" ID="Freemind_Link_1350749537" MODIFIED="1154896964659" POSITION="right" TEXT="New Search">
+<node COLOR="#0033ff" CREATED="1154896180148" ID="Freemind_Link_1350749537" MODIFIED="1154896964659" POSITION="right" TEXT="New Search">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1154896159445" ID="Freemind_Link_738550042" MODIFIED="1154896964676" TEXT="Move time management plugin to integrated plugins">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-4"/>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1155478643777" FOLDED="true" ID="Freemind_Link_696990453" MODIFIED="1155478646348" POSITION="right" TEXT="Deleting">
+<node COLOR="#0033ff" CREATED="1155478643777" ID="Freemind_Link_696990453" MODIFIED="1155478646348" POSITION="right" TEXT="Deleting">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1155478647713" ID="Freemind_Link_1097171716" MODIFIED="1155478650516" TEXT="Consider adding an option to ask user before deleting a node or a branch (Prio middle)">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-3"/>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1155478659376" FOLDED="true" ID="Freemind_Link_1479474730" MODIFIED="1155478665325" POSITION="right" TEXT="Conversion/File Format">
+<node COLOR="#0033ff" CREATED="1155478659376" ID="Freemind_Link_1479474730" MODIFIED="1155478665325" POSITION="right" TEXT="Conversion/File Format">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1155478667584" ID="Freemind_Link_1227008016" MODIFIED="1155478673248" TEXT="Consider letting user know by means of popup when converting from old map format into new map format (Prio middle)">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-3"/>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1154897384463" FOLDED="true" ID="Freemind_Link_1463824321" MODIFIED="1154897386408" POSITION="right" TEXT="build">
+<node COLOR="#0033ff" CREATED="1154897384463" ID="Freemind_Link_1463824321" MODIFIED="1154897386408" POSITION="right" TEXT="build">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1154897387078" ID="Freemind_Link_1295952002" MODIFIED="1159694874094" TEXT="Exclude this map from sources before packaging">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-4"/>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1154896413253" FOLDED="true" ID="Freemind_Link_1766300173" MODIFIED="1154896964771" POSITION="right" TEXT="Bugs">
+<node COLOR="#0033ff" CREATED="1154896413253" ID="Freemind_Link_1766300173" MODIFIED="1154896964771" POSITION="right" TEXT="Bugs">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1157614005336" ID="Freemind_Link_113590541" MODIFIED="1159694035738" TEXT="&quot;del&quot; l&#xf6;scht auch in Notes den ganzen Knoten">
 <cloud/>
@@ -103,7 +82,7 @@
 <node COLOR="#990000" CREATED="1157643611169" ID="Freemind_Link_1896475514" MODIFIED="1159694197421">
 <richcontent TYPE="NODE"><html>
   <head>
-    
+
   </head>
   <body>
     <p>
@@ -149,24 +128,13 @@
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1159697279022" ID="Freemind_Link_394321727" MODIFIED="1159697307883" TEXT="Note is not cleaned if newly selected node has no note">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="clanbomber"/>
-<icon BUILTIN="dimitry"/>
-</node>
-<node COLOR="#00b439" CREATED="1159698336993" ID="Freemind_Link_295483558" MODIFIED="1159698381407" TEXT="HTML Tab opened first with plain text content">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-2"/>
-<icon BUILTIN="dimitry"/>
-</node>
 </node>
 <node COLOR="#0033ff" CREATED="1154897688737" ID="Freemind_Link_475477860" MODIFIED="1159701051646" POSITION="right" TEXT="Documentation">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1154897691881" ID="Freemind_Link_151544330" MODIFIED="1159694582715">
 <richcontent TYPE="NODE"><html>
   <head>
-    
+
   </head>
   <body>
     Update documentation.mm and help plugin
@@ -189,7 +157,7 @@
 <icon BUILTIN="pencil"/>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1154897203879" FOLDED="true" ID="Freemind_Link_39209766" MODIFIED="1154897254028" POSITION="right" TEXT="Missing merges">
+<node COLOR="#0033ff" CREATED="1154897203879" ID="Freemind_Link_39209766" MODIFIED="1154897254028" POSITION="right" TEXT="Missing merges">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1154897219366" ID="Freemind_Link_935306843" MODIFIED="1155501094472" TEXT="juanpedro__rectangulars edges and rectangular clouds_freemind">
 <font NAME="SansSerif" SIZE="16"/>
@@ -225,7 +193,7 @@
 <icon BUILTIN="kaddressbook"/>
 <icon BUILTIN="idea"/>
 <icon BUILTIN="help"/>
-<node COLOR="#990000" CREATED="1159695399709" ID="Freemind_Link_1878140560" MODIFIED="1159695453477" TEXT="text highlighting (&lt;SPAN&gt;) is not supported by JLabel HTML">
+<node COLOR="#990000" CREATED="1159695399709" ID="Freemind_Link_1878140560" MODIFIED="1159695453477" TEXT="text highlighting (SPAN) is not supported by JLabel HTML">
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
@@ -242,7 +210,7 @@
 <node COLOR="#990000" CREATED="1159695877717" ID="Freemind_Link_1082822636" MODIFIED="1159695888382">
 <richcontent TYPE="NODE"><html>
   <head>
-    
+
   </head>
   <body>
     <p>
@@ -315,7 +283,7 @@
 <icon BUILTIN="kaddressbook"/>
 <icon BUILTIN="full-2"/>
 </node>
-<node COLOR="#00b439" CREATED="1159697577621" FOLDED="true" ID="Freemind_Link_1471554176" MODIFIED="1159697579894" TEXT="Search function">
+<node COLOR="#00b439" CREATED="1159697577621" ID="Freemind_Link_1471554176" MODIFIED="1159697579894" TEXT="Search function">
 <font NAME="SansSerif" SIZE="16"/>
 <node COLOR="#990000" CREATED="1159697526437" ID="Freemind_Link_1691359465" MODIFIED="1159697582418" TEXT="Search function remembering last search">
 <font NAME="SansSerif" SIZE="14"/>
@@ -330,7 +298,7 @@
 <node COLOR="#111111" CREATED="1159697618710" ID="Freemind_Link_467399771" MODIFIED="1159697618740">
 <richcontent TYPE="NODE"><html>
   <head>
-    
+
   </head>
   <body>
     <pre wrap="">When searching nodes for some text, each matching node is currently unfolded
@@ -385,7 +353,7 @@ existing search function to implement this.
 <node COLOR="#00b439" CREATED="1159698125639" ID="Freemind_Link_11850795" MODIFIED="1159698304446">
 <richcontent TYPE="NODE"><html>
   <head>
-    
+
   </head>
   <body>
     <p>
@@ -430,15 +398,6 @@ existing search function to implement this.
 <icon BUILTIN="smily_bad"/>
 <icon BUILTIN="full-3"/>
 <icon BUILTIN="dimitry"/>
-</node>
-<node COLOR="#00b439" CREATED="1159698658666" ID="Freemind_Link_1867180106" MODIFIED="1159698667859" TEXT="I have a multiline node that there is allways an empty line displayed between the text">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="clanbomber"/>
-<icon BUILTIN="dimitry"/>
-<node COLOR="#990000" CREATED="1159699637243" ID="Freemind_Link_1652894537" MODIFIED="1159699639276" TEXT="If you view the HTML it&apos;s because &lt;P&gt; and &lt;/P&gt; are being used which are paragraph delimiters.">
-<font NAME="SansSerif" SIZE="14"/>
-</node>
 </node>
 <node COLOR="#00b439" CREATED="1159698894364" ID="Freemind_Link_513657946" MODIFIED="1159698914774" TEXT="Apparently randomly, Freemind will cease to update the screen node">
 <font NAME="SansSerif" SIZE="16"/>
@@ -504,46 +463,9 @@ existing search function to implement this.
 <icon BUILTIN="smily_bad"/>
 <icon BUILTIN="full-2"/>
 </node>
-<node COLOR="#00b439" CREATED="1159700183498" FOLDED="true" ID="Freemind_Link_1951569315" MODIFIED="1159700255171" TEXT="[ 1563410 ] &quot;use plain text&quot; adds blank lines">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-2"/>
-<icon BUILTIN="dimitry"/>
-<node COLOR="#990000" CREATED="1159698837923" ID="Freemind_Link_925523937" MODIFIED="1159700206822" TEXT="It doesn&apos;t matter how many lines of text is in a box, switch from rich text to plain, inserts 2 lines at the front of the text">
-<font NAME="SansSerif" SIZE="14"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-2"/>
-</node>
-<node COLOR="#990000" CREATED="1159700223866" ID="Freemind_Link_438702182" MODIFIED="1159700244546">
-<richcontent TYPE="NODE"><html>
-  <head>
-    
-  </head>
-  <body>
-    <p>
-      Use case:<br />1 - create a new map;<br />2 - select root node or create a new one;<br />3 - execute &quot;Use rich formatting command&quot;, either by<br />pressing ALT-R or via right-click menu;<br />4 - execute &quot;Use plain text&quot; command, ALT-P or right<br />click menu;<br /><br />ERROR: Two extra line breaks are created. You can<br />repeat the steps 3-4 indefinitely.
-    </p>
-  </body>
-</html>
-</richcontent>
-<font NAME="SansSerif" SIZE="14"/>
-</node>
-</node>
-<node COLOR="#00b439" CREATED="1159700299845" ID="Freemind_Link_137320977" MODIFIED="1159700306435" TEXT="[ 1559543 ] Space into attribute folds the node (0.9.0 beta7)">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-2"/>
-<icon BUILTIN="dimitry"/>
-</node>
 <node COLOR="#00b439" CREATED="1159700533021" ID="Freemind_Link_918325486" MODIFIED="1159700550446" TEXT="Sort nodes">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="kaddressbook"/>
-</node>
-<node COLOR="#00b439" CREATED="1159700953746" ID="Freemind_Link_442050779" MODIFIED="1159700980174" TEXT="Background of the inline editor must not be gray">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="kaddressbook"/>
-<icon BUILTIN="full-2"/>
-<icon BUILTIN="dimitry"/>
 </node>
 <node COLOR="#00b439" CREATED="1159701100206" ID="Freemind_Link_348558866" MODIFIED="1159701137470" TEXT="Delete arbitrary node icon, not nesessarily the last one">
 <font NAME="SansSerif" SIZE="16"/>
@@ -553,7 +475,7 @@ existing search function to implement this.
 </node>
 <node COLOR="#0033ff" CREATED="1154896282663" ID="Freemind_Link_962481393" MODIFIED="1154896964783" POSITION="left" TEXT="Legend">
 <font NAME="SansSerif" SIZE="18"/>
-<node COLOR="#00b439" CREATED="1154896317602" FOLDED="true" ID="Freemind_Link_1503154831" MODIFIED="1159696926875" TEXT="Priorities">
+<node COLOR="#00b439" CREATED="1154896317602" ID="Freemind_Link_1503154831" MODIFIED="1159696926875" TEXT="Priorities">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="button_cancel"/>
 <icon BUILTIN="clanbomber"/>
@@ -580,7 +502,7 @@ existing search function to implement this.
 <icon BUILTIN="idea"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1159696866689" FOLDED="true" ID="Freemind_Link_726132760" MODIFIED="1159697098142" TEXT="Responsibles">
+<node COLOR="#00b439" CREATED="1159696866689" ID="Freemind_Link_726132760" MODIFIED="1159697098142" TEXT="Responsibles">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="chris"/>
 <icon BUILTIN="dimitry"/>
@@ -598,7 +520,7 @@ existing search function to implement this.
 <icon BUILTIN="dan"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1159697040909" FOLDED="true" ID="Freemind_Link_736132419" MODIFIED="1159697112392" TEXT="Request Types">
+<node COLOR="#00b439" CREATED="1159697040909" ID="Freemind_Link_736132419" MODIFIED="1159697112392" TEXT="Request Types">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="smily_bad"/>
 <icon BUILTIN="kaddressbook"/>
@@ -623,7 +545,7 @@ existing search function to implement this.
 </node>
 <node COLOR="#0033ff" CREATED="1154896660715" ID="Freemind_Link_739426068" MODIFIED="1159693908906" POSITION="left" TEXT="Tests">
 <font NAME="SansSerif" SIZE="18"/>
-<node COLOR="#00b439" CREATED="1154897350221" FOLDED="true" ID="Freemind_Link_1646519917" MODIFIED="1154897352139" TEXT="App">
+<node COLOR="#00b439" CREATED="1154897350221" ID="Freemind_Link_1646519917" MODIFIED="1154897352139" TEXT="App">
 <font NAME="SansSerif" SIZE="16"/>
 <node COLOR="#990000" CREATED="1154896651467" ID="Freemind_Link_920412098" MODIFIED="1154897350251" TEXT="How about word wrap in the HTML editor?">
 <font NAME="SansSerif" SIZE="14"/>
@@ -635,7 +557,7 @@ existing search function to implement this.
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1154897347213" FOLDED="true" ID="Freemind_Link_1327109603" MODIFIED="1154897348593" TEXT="Code">
+<node COLOR="#00b439" CREATED="1154897347213" ID="Freemind_Link_1327109603" MODIFIED="1154897348593" TEXT="Code">
 <font NAME="SansSerif" SIZE="16"/>
 <node COLOR="#990000" CREATED="1154897321981" ID="Freemind_Link_644235764" MODIFIED="1154897347233" TEXT="Check, that every catch(Exception e) uses the new logging facility call">
 <font NAME="SansSerif" SIZE="14"/>
@@ -643,8 +565,9 @@ existing search function to implement this.
 </node>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1159693531834" FOLDED="true" ID="Freemind_Link_1400702844" MODIFIED="1159693538032" POSITION="left" TEXT="Resolved">
+<node COLOR="#0033ff" CREATED="1159693531834" ID="Freemind_Link_1400702844" MODIFIED="1159712415752" POSITION="left" TEXT="Resolved">
 <font NAME="SansSerif" SIZE="18"/>
+<icon BUILTIN="dimitry"/>
 <node COLOR="#00b439" CREATED="1154896193111" ID="Freemind_Link_16073776" MODIFIED="1159694808710" TEXT="Use SimpleHTML and fix most annoying bugs">
 <font NAME="SansSerif" SIZE="16"/>
 </node>
@@ -660,7 +583,7 @@ existing search function to implement this.
 <node COLOR="#00b439" CREATED="1154897482262" ID="Freemind_Link_703354147" MODIFIED="1159694814508">
 <richcontent TYPE="NODE"><html>
   <head>
-    
+
   </head>
   <body>
     Menu points &quot;use rich edit&quot; and &quot;use plain edit&quot; should be moved to Format menu Dan: I would prefer to have the menu item for switching between rich text and plain text in the main context menu of a node (Subjective)
@@ -681,8 +604,8 @@ existing search function to implement this.
   </head>
   <body>
     <p align="left">
-      The FreeMind class can't do this as it uses the logging API of Java1.4. 
-      Java1.3 fails before any check in FreeMind can be performed. Thus, the 
+      The FreeMind class can't do this as it uses the logging API of Java1.4.
+      Java1.3 fails before any check in FreeMind can be performed. Thus, the
       checks were moved to the new class FreeMindStarter.
     </p>
   </body>
@@ -691,7 +614,7 @@ existing search function to implement this.
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1155478623965" ID="Freemind_Link_1440615425" MODIFIED="1159694817202" TEXT="Consider how to fix the problem with searching the complete class path for plug-ins, leading to slow start-ups (Prio middle)">
+<node COLOR="#00b439" CREATED="1155478623965" ID="Freemind_Link_1440615425" MODIFIED="1159714705815" TEXT="Consider how to fix the problem with searching the complete class path for plug-ins, leading to slow start-ups (Prio middle)">
 <font NAME="SansSerif" SIZE="16"/>
 </node>
 <node COLOR="#00b439" CREATED="1154896125530" ID="Freemind_Link_1068027871" MODIFIED="1159694818383" TEXT="Shortcut for new Search functionality like ctrl-shift-F">
@@ -712,7 +635,7 @@ existing search function to implement this.
 <node COLOR="#00b439" CREATED="1154897267841" ID="Freemind_Link_1262676997" MODIFIED="1159695351460">
 <richcontent TYPE="NODE"><html>
   <head>
-    
+
   </head>
   <body>
     1532279 link between nodes on different freemind maps__freemind-0.8.0-gentoo-001-linkmaps
@@ -729,6 +652,54 @@ existing search function to implement this.
 </node>
 <node COLOR="#00b439" CREATED="1159696204867" ID="Freemind_Link_745137613" MODIFIED="1159696206800" TEXT="The SimplyHTML editor uses unexpected letters on the bold (F) and italic (K) buttons.  ">
 <font NAME="SansSerif" SIZE="16"/>
+</node>
+<node COLOR="#00b439" CREATED="1159700299845" ID="Freemind_Link_137320977" MODIFIED="1159712402863" TEXT="[ 1559543 ] Space into attribute folds the node (0.9.0 beta7)">
+<font NAME="SansSerif" SIZE="16"/>
+</node>
+<node COLOR="#00b439" CREATED="1159697279022" ID="Freemind_Link_394321727" MODIFIED="1159712408561" TEXT="Note is not cleaned if newly selected node has no note">
+<font NAME="SansSerif" SIZE="16"/>
+</node>
+<node COLOR="#00b439" CREATED="1159698336993" ID="Freemind_Link_295483558" MODIFIED="1159714709049" TEXT="HTML Tab opened first with plain text content">
+<font NAME="SansSerif" SIZE="16"/>
+</node>
+<node COLOR="#00b439" CREATED="1159698658666" ID="Freemind_Link_1867180106" MODIFIED="1159714711232" TEXT="I have a multiline node that there is allways an empty line displayed between the text">
+<font NAME="SansSerif" SIZE="16"/>
+<node COLOR="#990000" CREATED="1159699637243" ID="Freemind_Link_1652894537" MODIFIED="1159699639276" TEXT="If you view the HTML it&apos;s because &lt;P&gt; and &lt;/P&gt; are being used which are paragraph delimiters.">
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
+<node COLOR="#00b439" CREATED="1159700183498" ID="Freemind_Link_1951569315" MODIFIED="1159716070277" TEXT="[ 1563410 ] &quot;use plain text&quot; adds blank lines">
+<font NAME="SansSerif" SIZE="16"/>
+<node COLOR="#990000" CREATED="1159698837923" ID="Freemind_Link_925523937" MODIFIED="1159700206822" TEXT="It doesn&apos;t matter how many lines of text is in a box, switch from rich text to plain, inserts 2 lines at the front of the text">
+<font NAME="SansSerif" SIZE="14"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-2"/>
+</node>
+<node COLOR="#990000" CREATED="1159700223866" ID="Freemind_Link_438702182" MODIFIED="1159700244546">
+<richcontent TYPE="NODE"><html>
+  <head>
+
+  </head>
+  <body>
+    <p>
+      Use case:<br />1 - create a new map;<br />2 - select root node or create a new one;<br />3 - execute &quot;Use rich formatting command&quot;, either by<br />pressing ALT-R or via right-click menu;<br />4 - execute &quot;Use plain text&quot; command, ALT-P or right<br />click menu;<br /><br />ERROR: Two extra line breaks are created. You can<br />repeat the steps 3-4 indefinitely.
+    </p>
+  </body>
+</html>
+</richcontent>
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
+<node COLOR="#00b439" CREATED="1157971940403" ID="Freemind_Link_259869844" MODIFIED="1159695929621" TEXT="Not possible to cut from one and to paste into another note">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="clanbomber"/>
+<icon BUILTIN="dimitry"/>
+</node>
+<node COLOR="#00b439" CREATED="1159700953746" ID="Freemind_Link_442050779" MODIFIED="1159700980174" TEXT="Background of the inline editor must not be gray">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="kaddressbook"/>
+<icon BUILTIN="full-2"/>
+<icon BUILTIN="dimitry"/>
 </node>
 </node>
 </node>

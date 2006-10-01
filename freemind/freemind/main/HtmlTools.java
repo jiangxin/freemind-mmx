@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.9 2006-09-05 21:15:19 dpolivaev Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.10 2006-10-01 16:43:40 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -61,6 +61,9 @@ public class HtmlTools {
     }
 
     public String toXhtml(String htmlText) {
+        if(! isHtmlNode(htmlText)){
+            return null;
+        }
         StringReader reader = new StringReader(htmlText);
         StringWriter writer = new StringWriter();
         try {
@@ -345,7 +348,10 @@ public class HtmlTools {
           replaceAll("(?ims)<[^/][^>]*> *",""). // Remaining opening HTML tags
           replaceAll("(?ims)&lt;", "<").replaceAll("(?ims)&gt;", ">").
           replaceAll("(?ims)&quot;", "\"").replaceAll("(?ims)&amp;", "&").
-          replaceAll("(?ims)&nbsp;", " ");
+          replaceAll("(?ims)&nbsp;", " ").
+          // FIXME Dimitry: is removing of all new lines at the begin a good idea? 
+          replaceAll("^\n+", "");
+       
        //System.err.println("intermediate:"+intermediate);
        return HtmlTools.unescapeHTMLUnicodeEntity(intermediate); }
 

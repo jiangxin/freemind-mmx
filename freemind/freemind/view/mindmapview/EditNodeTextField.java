@@ -19,10 +19,11 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.2 2006-04-19 20:51:16 christianfoltin Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.3 2006-10-01 16:43:40 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -36,6 +37,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import freemind.main.Tools;
+import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 
 /**
@@ -69,41 +71,33 @@ public class EditNodeTextField extends EditNodeBase {
         // Set textFields's properties
 
         /* fc, 12.10.2003: the following method is not correct. Even more with the zoom factors!*/
-        int linkIconWidth = 16;
         int textFieldBorderWidth = 2;
         int cursorWidth = 1;
         int xOffset =
-            -1 * textFieldBorderWidth  - 1;
+            -1 * textFieldBorderWidth;
         int yOffset = -1; // Optimized for Windows style; basically ad hoc
         int widthAddition =
             2 * textFieldBorderWidth
                 + cursorWidth
                 + 2;
         int heightAddition = 2;
-        if (getNode().getModel().getLink() != null) {
-            xOffset += linkIconWidth;
-            widthAddition -= linkIconWidth;
-        }
-        if (getNode().getModel().getIcons().size() != 0) {
-            // fc, 24.9.2003 full ok for the moment, that an icon has the same size as the link icon.
-            xOffset += linkIconWidth * getNode().getModel().getIcons().size();
-            widthAddition -= linkIconWidth;
-        }
-        /* fc, 12.10.2003: end buggy method*/
 
         // minimal width for input field of leaf or folded node (PN)
         final int MINIMAL_LEAF_WIDTH = 150;
         final int MINIMAL_WIDTH = 50;
 
-        int xSize = getNode().getWidth() + widthAddition;
+        final NodeView nodeView = getNode();
+        final MindMapNode model = nodeView.getModel();
+        int xSize = nodeView.getTextWidth() + widthAddition;
+        xOffset += nodeView.getTextX();
         int xExtraWidth = 0;
         if (MINIMAL_LEAF_WIDTH > xSize
-            && (getNode().getModel().isFolded()
-                || !getNode().getModel().hasChildren())) {
+            && (model.isFolded()
+                || !model.hasChildren())) {
             // leaf or folded node with small size
             xExtraWidth = MINIMAL_LEAF_WIDTH - xSize;
             xSize = MINIMAL_LEAF_WIDTH; // increase minimum size
-            if (getNode().isLeft()) { // left leaf
+            if (nodeView.isLeft()) { // left leaf
                 xExtraWidth = -xExtraWidth;
                 textfield.setHorizontalAlignment(JTextField.RIGHT);
             }
@@ -111,17 +105,23 @@ public class EditNodeTextField extends EditNodeBase {
             // opened node with small size
             xExtraWidth = MINIMAL_WIDTH - xSize;
             xSize = MINIMAL_WIDTH; // increase minimum size
-            if (getNode().isLeft()) { // left node
+            if (nodeView.isLeft()) { // left node
                 xExtraWidth = -xExtraWidth;
                 textfield.setHorizontalAlignment(JTextField.RIGHT);
             }
         }
 
-        textfield.setSize(xSize, getNode().getMainView().getHeight() + heightAddition);
-        textfield.setFont(getNode().getFont());
-        textfield.setForeground(getNode().getForeground());
-        textfield.setBackground(getNode().getModel().getBackgroundColor());
-        textfield.setSelectedTextColor(getNode().getForeground());
+        textfield.setSize(xSize, nodeView.getMainView().getHeight() + heightAddition);
+        textfield.setFont(nodeView.getFont());
+        textfield.setForeground(nodeView.getForeground());
+        final Color backgroundColor = model.getBackgroundColor();
+        if(backgroundColor != null){
+            textfield.setBackground(backgroundColor);
+        }
+        else{
+            textfield.setBackground(nodeView.getMap().getBackground());            
+        }
+        textfield.setSelectedTextColor(nodeView.getForeground());
         textfield.setSelectionColor(getModeController().getSelectionColor());
         // textField.selectAll(); // no selection on edit (PN)
 
@@ -269,12 +269,12 @@ public class EditNodeTextField extends EditNodeBase {
         // screen positionining ---------------------------------------------
 
         // SCROLL if necessary
-        getView().scrollNodeToVisible(getNode(), xExtraWidth);
+        getView().scrollNodeToVisible(nodeView, xExtraWidth);
 
         // NOTE: this must be calculated after scroll because the pane location changes
         Point frameScreenLocation =
             getFrame().getLayeredPane().getLocationOnScreen();
-        Point nodeScreenLocation = getNode().getLocationOnScreen();
+        Point nodeScreenLocation = nodeView.getLocationOnScreen();
 
         int xLeft =
             (int) (nodeScreenLocation.getX()
