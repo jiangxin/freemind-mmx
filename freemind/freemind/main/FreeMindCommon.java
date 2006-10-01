@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.8 2006-08-20 19:34:25 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.9 2006-10-01 11:38:07 dpolivaev Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -127,22 +127,36 @@ public class FreeMindCommon {
 		return bundle;
 	}
 
-	public String getResourceString(String resource) {
-		try {
-			return getResources().getString(resource);
-		} catch (Exception ex) {
-			logger.severe("Warning - resource string not found:" + resource);
-			try {
-				return defaultResources.getString(resource) + POSTFIX_TRANSLATE_ME;
-			} catch (Exception e) {
+    public String getResourceString(String key) {
+        try {
+            return getResources().getString(key);
+        } catch (Exception ex) {
+            logger.severe("Warning - resource string not found:" + key);
+            try {
+                return defaultResources.getString(key) + POSTFIX_TRANSLATE_ME;
+            } catch (Exception e) {
                 freemind.main.Resources.getInstance().logExecption(e);
-				logger
-						.severe("Warning - resource string not found (even in english):"
-								+ resource);
-				return resource;
-			}
-		}
-	}
+                logger
+                        .severe("Warning - default resource string not found (even in english):"
+                                + key);
+                return key;
+            }
+        }
+    }
+
+    public String getResourceString(String key, String resource) {
+        try {
+            return getResources().getString(key);
+        } catch (Exception ex) {
+            logger.severe("Warning - resource string not found:" + key);
+            try {
+                logger.severe("Warning - default resource string not found:" + key);
+                return defaultResources.getString(key) + POSTFIX_TRANSLATE_ME;
+            } catch (Exception e) {
+                return resource;
+            }
+        }
+    }
 
     public void clearLanguageResources() {
 		languageResources = null;

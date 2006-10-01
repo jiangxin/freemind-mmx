@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.21 2006-09-10 10:05:24 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.22 2006-10-01 11:38:07 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -532,6 +532,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     public String getResourceString(String resource) {
     		return mFreeMindCommon.getResourceString(resource);
+    }
+
+    public String getResourceString(String key, String resource) {
+        return mFreeMindCommon.getResourceString(key, resource);
     }
 
     public java.util.logging.Logger getLogger(String forClass) {

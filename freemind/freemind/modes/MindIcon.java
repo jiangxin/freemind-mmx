@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindIcon.java,v 1.1.18.6.2.4 2006-07-25 20:28:20 christianfoltin Exp $ */
+/* $Id: MindIcon.java,v 1.1.18.6.2.5 2006-10-01 11:38:07 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -24,6 +24,7 @@ import java.awt.Component;
 import java.net.URL;
 import java.io.File;
 import java.util.HashMap;
+import java.util.MissingResourceException;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -117,7 +118,7 @@ public class MindIcon implements Comparable{
        */
     public String getDescription(FreeMindMain frame) {
         String resource = new String("icon_"+getName());
-        return frame.getResourceString(resource);
+        return frame.getResourceString(resource, resource);
     }
 
     public String getIconFileName() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.7 2006-08-20 19:34:25 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.8 2006-10-01 11:38:07 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -118,6 +118,10 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
     public String getResourceString(String resource) {
     		return mFreeMindCommon.getResourceString(resource);
+    }
+
+    public String getResourceString(String key, String resource) {
+        return mFreeMindCommon.getResourceString(key, resource);
     }
 
     public String getProperty(String key) {
