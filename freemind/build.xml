@@ -1,5 +1,17 @@
 <project name="freemind" default="dist" basedir=".">
-	<property name="ver" value="0_9_0_beta7" />
+    <!-- read version number from java source:  -->
+    <loadfile property="ver" srcfile="freemind/main/FreeMind.java">
+      <filterchain>
+        <tokenfilter>
+          <filetokenizer/>
+          <replaceregex pattern='.*public static final String VERSION = "(.*?)".*' replace="\1" flags="s" />
+        </tokenfilter>
+      	<!-- Replace spaces by underscores. -->
+      	<tokenfilter><replaceregex pattern=" " replace="_" flags="g"/></tokenfilter>
+      </filterchain>
+    </loadfile>
+
+<!--	<property name="ver" value="0_9_0_beta6" /> -->
 	<property name="src" value="." />
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
