@@ -19,12 +19,14 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.3 2006-10-01 16:43:40 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.4 2006-10-02 21:24:48 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -133,7 +135,7 @@ public class EditNodeTextField extends EditNodeBase {
 
         // listener class
         class TextFieldListener
-            implements KeyListener, FocusListener, MouseListener {
+            implements KeyListener, FocusListener, MouseListener, ComponentListener {
 
             public void focusGained(FocusEvent e) {
                 // the first time the edit field gains a focus
@@ -187,6 +189,7 @@ public class EditNodeTextField extends EditNodeBase {
                 // - block selected events while in editing mode
 
                 if (e == null) { // can be when called explicitly
+                    getNode().removeComponentListener(this);
                     getEditControl().ok(textfield.getText());
                     hideMe();
                     eventSource.setValue(CANCEL); // disallow real focus lost
@@ -255,6 +258,22 @@ public class EditNodeTextField extends EditNodeBase {
                 }
             }
 
+            public void componentHidden(ComponentEvent e) {
+                focusLost(null);
+            }
+
+            public void componentMoved(ComponentEvent e) {
+                focusLost(null);
+            }
+
+            public void componentResized(ComponentEvent e) {
+                focusLost(null);
+            }
+
+            public void componentShown(ComponentEvent e) {
+                focusLost(null);
+            }
+
         }
 
         // create the listener
@@ -265,6 +284,7 @@ public class EditNodeTextField extends EditNodeBase {
         textfield.addFocusListener(textFieldListener);
         textfield.addKeyListener(textFieldListener);
         textfield.addMouseListener(textFieldListener);
+        getNode().addComponentListener(textFieldListener);
 
         // screen positionining ---------------------------------------------
 

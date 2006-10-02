@@ -99,12 +99,6 @@
 <icon BUILTIN="dimitry"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1159695096363" ID="Freemind_Link_1582029495" MODIFIED="1159696621666" TEXT="Edit node inline + press &quot;add icon&quot; =&gt; layout is corrupt">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-2"/>
-<icon BUILTIN="dimitry"/>
-</node>
 <node COLOR="#00b439" CREATED="1159696605834" ID="Freemind_Link_662010297" MODIFIED="1159696614987" TEXT="starting to edit a node, then switching to long node using Alt-Enter and the first text is lost">
 <arrowlink DESTINATION="Freemind_Link_1582029495" ENDARROW="Default" ENDINCLINATION="230;0;" ID="Freemind_Arrow_Link_1405846840" STARTARROW="None" STARTINCLINATION="230;0;"/>
 <font NAME="SansSerif" SIZE="16"/>
@@ -116,8 +110,7 @@
 <icon BUILTIN="clanbomber"/>
 <icon BUILTIN="dimitry"/>
 <icon BUILTIN="smily_bad"/>
-<node COLOR="#990000" CREATED="1159695822137" ID="Freemind_Link_1949200966" MODIFIED="1159695831300" TEXT="On a node with two children, with one of them having rows of plain text (like described above), moving the focus between a pair of child nodes causes the nodes to move up and down, sometimes.">
-<arrowlink DESTINATION="Freemind_Link_991783789" ENDARROW="Default" ENDINCLINATION="444;0;" ID="Freemind_Arrow_Link_1220021618" STARTARROW="None" STARTINCLINATION="444;0;"/>
+<node COLOR="#990000" CREATED="1159695822137" ID="Freemind_Link_1949200966" MODIFIED="1159821964193" TEXT="On a node with two children, with one of them having rows of plain text (like described above), moving the focus between a pair of child nodes causes the nodes to move up and down, sometimes.">
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
@@ -196,12 +189,6 @@
 <node COLOR="#990000" CREATED="1159695399709" ID="Freemind_Link_1878140560" MODIFIED="1159695453477" TEXT="text highlighting (SPAN) is not supported by JLabel HTML">
 <font NAME="SansSerif" SIZE="14"/>
 </node>
-</node>
-<node COLOR="#00b439" CREATED="1159695726279" ID="Freemind_Link_991783789" MODIFIED="1159695831290" TEXT="With format set to use plain text, a node set to have two lines of text, and showing it like that in the long node editor, displays the text over three lines, with a blank line added in the middle.  Switching to rich formatting, the line spacing corrects itself.  Switching back to plain text and the double spacing re-appears, with additional blank lines at the beginning of the node.  Keep switching Alt-R Alr-P (without editing anything) and additional blank lines get added to the beginning of the node.">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="full-2"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="dimitry"/>
 </node>
 <node COLOR="#00b439" CREATED="1159695863536" ID="Freemind_Link_787395581" MODIFIED="1159695998671" TEXT="Manage Patterns is not saving any of my changes. ">
 <font NAME="SansSerif" SIZE="16"/>
@@ -565,9 +552,8 @@ existing search function to implement this.
 </node>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1159693531834" ID="Freemind_Link_1400702844" MODIFIED="1159712415752" POSITION="left" TEXT="Resolved">
+<node COLOR="#0033ff" CREATED="1159693531834" ID="Freemind_Link_1400702844" MODIFIED="1159824226977" POSITION="left" TEXT="Resolved">
 <font NAME="SansSerif" SIZE="18"/>
-<icon BUILTIN="dimitry"/>
 <node COLOR="#00b439" CREATED="1154896193111" ID="Freemind_Link_16073776" MODIFIED="1159694808710" TEXT="Use SimpleHTML and fix most annoying bugs">
 <font NAME="SansSerif" SIZE="16"/>
 </node>
@@ -650,26 +636,32 @@ existing search function to implement this.
 <node COLOR="#00b439" CREATED="1159695276022" ID="Freemind_Link_1991204032" MODIFIED="1159695297412" TEXT="shortcut shift + Enter to add &lt;br&gt;">
 <font NAME="SansSerif" SIZE="16"/>
 </node>
-<node COLOR="#00b439" CREATED="1159696204867" ID="Freemind_Link_745137613" MODIFIED="1159696206800" TEXT="The SimplyHTML editor uses unexpected letters on the bold (F) and italic (K) buttons.  ">
+<node COLOR="#00b439" CREATED="1159696204867" ID="Freemind_Link_745137613" MODIFIED="1159824195131" TEXT="The SimplyHTML editor uses unexpected letters on the bold (F) and italic (K) buttons.  ">
 <font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="dimitry"/>
 </node>
-<node COLOR="#00b439" CREATED="1159700299845" ID="Freemind_Link_137320977" MODIFIED="1159712402863" TEXT="[ 1559543 ] Space into attribute folds the node (0.9.0 beta7)">
+<node COLOR="#00b439" CREATED="1159700299845" ID="Freemind_Link_137320977" MODIFIED="1159824198856" TEXT="[ 1559543 ] Space into attribute folds the node (0.9.0 beta7)">
 <font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="dimitry"/>
 </node>
-<node COLOR="#00b439" CREATED="1159697279022" ID="Freemind_Link_394321727" MODIFIED="1159712408561" TEXT="Note is not cleaned if newly selected node has no note">
+<node COLOR="#00b439" CREATED="1159697279022" ID="Freemind_Link_394321727" MODIFIED="1159824202732" TEXT="Note is not cleaned if newly selected node has no note">
 <font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="dimitry"/>
 </node>
-<node COLOR="#00b439" CREATED="1159698336993" ID="Freemind_Link_295483558" MODIFIED="1159714709049" TEXT="HTML Tab opened first with plain text content">
+<node COLOR="#00b439" CREATED="1159698336993" ID="Freemind_Link_295483558" MODIFIED="1159824207138" TEXT="HTML Tab opened first with plain text content">
 <font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="dimitry"/>
 </node>
-<node COLOR="#00b439" CREATED="1159698658666" ID="Freemind_Link_1867180106" MODIFIED="1159714711232" TEXT="I have a multiline node that there is allways an empty line displayed between the text">
+<node COLOR="#00b439" CREATED="1159698658666" ID="Freemind_Link_1867180106" MODIFIED="1159824212085" TEXT="I have a multiline node that there is allways an empty line displayed between the text">
 <font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="dimitry"/>
 <node COLOR="#990000" CREATED="1159699637243" ID="Freemind_Link_1652894537" MODIFIED="1159699639276" TEXT="If you view the HTML it&apos;s because &lt;P&gt; and &lt;/P&gt; are being used which are paragraph delimiters.">
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1159700183498" ID="Freemind_Link_1951569315" MODIFIED="1159716070277" TEXT="[ 1563410 ] &quot;use plain text&quot; adds blank lines">
+<node COLOR="#00b439" CREATED="1159700183498" ID="Freemind_Link_1951569315" MODIFIED="1159824215120" TEXT="[ 1563410 ] &quot;use plain text&quot; adds blank lines">
 <font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="dimitry"/>
 <node COLOR="#990000" CREATED="1159698837923" ID="Freemind_Link_925523937" MODIFIED="1159700206822" TEXT="It doesn&apos;t matter how many lines of text is in a box, switch from rich text to plain, inserts 2 lines at the front of the text">
 <font NAME="SansSerif" SIZE="14"/>
 <icon BUILTIN="smily_bad"/>
@@ -698,6 +690,18 @@ existing search function to implement this.
 <node COLOR="#00b439" CREATED="1159700953746" ID="Freemind_Link_442050779" MODIFIED="1159700980174" TEXT="Background of the inline editor must not be gray">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="kaddressbook"/>
+<icon BUILTIN="full-2"/>
+<icon BUILTIN="dimitry"/>
+</node>
+<node COLOR="#00b439" CREATED="1159695726279" ID="Freemind_Link_991783789" MODIFIED="1159821964203" TEXT="With format set to use plain text, a node set to have two lines of text, and showing it like that in the long node editor, displays the text over three lines, with a blank line added in the middle.  Switching to rich formatting, the line spacing corrects itself.  Switching back to plain text and the double spacing re-appears, with additional blank lines at the beginning of the node.  Keep switching Alt-R Alr-P (without editing anything) and additional blank lines get added to the beginning of the node.">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="full-2"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="dimitry"/>
+</node>
+<node COLOR="#00b439" CREATED="1159695096363" ID="Freemind_Link_1582029495" MODIFIED="1159696621666" TEXT="Edit node inline + press &quot;add icon&quot; =&gt; layout is corrupt">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
 <icon BUILTIN="full-2"/>
 <icon BUILTIN="dimitry"/>
 </node>
