@@ -15,6 +15,9 @@ Changes made in FreeMind 0.9.0 Beta 8
 * Bug fix: I have a multiline node that there is allways an empty line displayed between the text
 * Bug fix: [ 1563410 ] "use plain text" adds blank lines
 * Bug fix: Background of the inline editor must not be gray
+* Bug fix: Startup user directory creation
+* Bug fix: slider position at first start corrected.
+* New polish translation. Thanks to the author.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 7
