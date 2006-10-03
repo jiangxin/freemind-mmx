@@ -216,7 +216,7 @@
 <font NAME="SansSerif" SIZE="10"/>
 </node>
 </node>
-<node COLOR="#996600" CREATED="1124561753254" ID="Freemind_Link_35211963" MODIFIED="1124563712385" TEXT="Miles a.k.a. filmsi">
+<node COLOR="#996600" CREATED="1124561753254" ID="Freemind_Link_35211963" MODIFIED="1124563712385" TEXT="Martin Srebotnjak (nick: Miles a.k.a. filmsi)">
 <node COLOR="#999999" CREATED="1124561491886" ID="Freemind_Link_835144271" MODIFIED="1124561506386" TEXT="Slovenian translation">
 <font NAME="SansSerif" SIZE="10"/>
 </node>

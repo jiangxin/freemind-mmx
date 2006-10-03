@@ -18,6 +18,7 @@ Changes made in FreeMind 0.9.0 Beta 8
 * Bug fix: Startup user directory creation
 * Bug fix: slider position at first start corrected.
 * New polish translation. Thanks to the author.
+* New slovenian translation. Thanks to the author.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 7
