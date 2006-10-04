@@ -16,16 +16,20 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: CommonNodeMouseMotionListener.java,v 1.1.2.1.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
+/* $Id: CommonNodeMouseMotionListener.java,v 1.1.2.1.2.2 2006-10-04 20:39:53 dpolivaev Exp $ */
 
 package freemind.modes.common.listeners;
 
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.swing.SwingUtilities;
 
 import freemind.controller.NodeMouseMotionListener.NodeMouseMotionObserver;
 import freemind.main.Tools;
@@ -217,10 +221,15 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
              * formerly in ControllerAdapter. To guarantee, that point-to-select
              * does not change selection if any meta key is pressed.
              */
-            if (e.getModifiers() == 0 && !c.isBlocked()
-                    && c.getView().getSelecteds().size() <= 1) {
-                c.extendSelection(e);
-            }
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    if (e.getModifiers() == 0 && !c.isBlocked()
+                            && c.getView().getSelecteds().size() <= 1) {
+                        c.extendSelection(e);
+                    }
+                }
+            }    
+            );
         }
     }
 

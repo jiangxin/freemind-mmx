@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.9.2.10 2006-09-02 22:09:49 christianfoltin Exp $ */
+/* $Id: TimeList.java,v 1.1.2.9.2.11 2006-10-04 20:40:30 dpolivaev Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -53,6 +53,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -539,14 +540,19 @@ public class TimeList extends MindMapHookAdapter {
 	        }
 
 	        public void run() {
-				try {
-					Document document = event.getDocument();
-					String text = getRegularExpression(getText(document));
-					mFlatNodeTableFilterModel.setFilter(text);
-				} catch (BadLocationException e) {
-freemind.main.Resources.getInstance().logExecption(					e);
-					mFlatNodeTableFilterModel.resetFilter();
-				}
+	            SwingUtilities.invokeLater(new Runnable() {
+	                public void run() {
+	                    try {
+	                        Document document = event.getDocument();
+	                        String text = getRegularExpression(getText(document));
+	                        mFlatNodeTableFilterModel.setFilter(text);
+	                    } catch (BadLocationException e) {
+	                        freemind.main.Resources.getInstance().logExecption(					e);
+	                        mFlatNodeTableFilterModel.resetFilter();
+	                    }
+	                }
+	            }    
+	            );
 	        }
 	    }
 
