@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.17 2006-09-24 19:43:06 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.18 2006-10-04 20:23:56 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -706,16 +706,20 @@ freemind.main.Resources.getInstance().logExecption(					e);
     	super.nodeChanged(n);
     	// only for the selected node (fc, 2.5.2004)
 		if (n == getSelected()) {
-			toolbar.selectFontSize(n.getFontSize());
-			toolbar.selectFontName(n.getFontFamilyName());
+			updateToolbar(n);
 		}
 	 }
 
     public void onReceiveFocusHook(MindMapNode n) {
        super.onReceiveFocusHook(n);
-       toolbar.selectFontSize(((NodeAdapter)n).getFontSize());
-       toolbar.selectFontName(((NodeAdapter)n).getFontFamilyName()); }
+       updateToolbar(n); 
+    }
 
+    private void updateToolbar(MindMapNode n) {
+        toolbar.selectFontSize(n.getFontSize());
+        toolbar.selectFontName(n.getFontFamilyName());
+    }
+    
     // fc, 14.12.2004: changes, such that different models can be used:
     private NewNodeCreator myNewNodeCreator = null;
     private MindMapModeAttributeController attributeController;
