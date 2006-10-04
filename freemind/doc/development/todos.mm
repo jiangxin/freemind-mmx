@@ -74,7 +74,7 @@
 <icon BUILTIN="dimitry"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1157643581276" ID="Freemind_Link_1012498162" MODIFIED="1159694979215" TEXT="Add an Attribute, Remove it via undo and start &quot;Attribute zuweisen..&quot;">
+<node COLOR="#00b439" CREATED="1157643581276" FOLDED="true" ID="Freemind_Link_1012498162" MODIFIED="1159694979215" TEXT="Add an Attribute, Remove it via undo and start &quot;Attribute zuweisen..&quot;">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="smily_bad"/>
 <icon BUILTIN="dimitry"/>
@@ -105,6 +105,94 @@
 <icon BUILTIN="full-2"/>
 <icon BUILTIN="smily_bad"/>
 </node>
+<node COLOR="#00b439" CREATED="1159696686930" ID="Freemind_Link_653900690" MODIFIED="1159696692378" TEXT="mention before showing 2 lined nodes text have a line space between two lines">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-2"/>
+</node>
+<node COLOR="#00b439" CREATED="1159697386606" ID="Freemind_Link_587424183" MODIFIED="1159697391824" TEXT="The keyboard shortcut for node color does not work">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-2"/>
+<node COLOR="#990000" CREATED="1159697417020" ID="Freemind_Link_1403921430" MODIFIED="1159697418662" TEXT="on linux">
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
+<node COLOR="#00b439" CREATED="1159698168150" ID="Freemind_Link_480126253" MODIFIED="1159698174980" TEXT="FreeMind creates a ~/SimplyHTML directory and doesn&apos;t clean it up on exit. I would suggest to create this folder under ~/.freemind, and clean it up on exit">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-2"/>
+<icon BUILTIN="dimitry"/>
+</node>
+<node COLOR="#00b439" CREATED="1159699156972" ID="Freemind_Link_720947338" MODIFIED="1159699165935" TEXT="The line (not the arrow heads) within a graphical link is overwriting the nodes on the map in Version 9.0 Beta 7">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-2"/>
+<node COLOR="#990000" CREATED="1159699176971" ID="Freemind_Link_652054312" MODIFIED="1159699178894" TEXT="This makes it difficult to view maps with many graphical links.  I assume this change from Version 8.1 was not intended. Although the links can be moved out of the way, this is not practical when there are many links on a map and the nodes constantly move relative to the links as nodes are created or folded.  Please revert back to the Version 8.1 implementation in Version 9.0.">
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
+<node COLOR="#00b439" CREATED="1159699214004" ID="Freemind_Link_933227556" MODIFIED="1159699220704" TEXT="When you are navigating by keyboard, when you reach a node with a note, the whole app hangs for 3 seconds, before you can continue navigating">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-2"/>
+<icon BUILTIN="help"/>
+</node>
+<node COLOR="#00b439" CREATED="1159700123171" ID="Freemind_Link_624277846" MODIFIED="1159700142419" TEXT="[1565610] Win 0.8.1B4 : Properties dialog is too tall">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-2"/>
+</node>
+<node COLOR="#00b439" CREATED="1159694326026" ID="Freemind_Link_1062300632" MODIFIED="1159695471473" TEXT="Metal look and feel appears twice">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-3"/>
+</node>
+<node COLOR="#00b439" CREATED="1159694364060" ID="Freemind_Link_1342948596" MODIFIED="1159695479063" TEXT="in both motif and gtk look and feel modes the notes area is grey thus making it seem like it is not available to be used, could this be changed to white">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-3"/>
+</node>
+<node COLOR="#00b439" CREATED="1159695863536" ID="Freemind_Link_787395581" MODIFIED="1159695998671" TEXT="Manage Patterns is not saving any of my changes. ">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-3"/>
+<node COLOR="#990000" CREATED="1159695877717" ID="Freemind_Link_1082822636" MODIFIED="1159695888382">
+<richcontent TYPE="NODE"><html>
+  <head>
+
+  </head>
+  <body>
+    <p>
+      After modifying the pattern and exiting the screen, it seems to temporarily work for the loaded map, but going back into the Manage Patterns screen shows the original patterns, and the patterns.xml file on disk is never updated.
+    </p>
+  </body>
+</html>
+</richcontent>
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
+<node COLOR="#00b439" CREATED="1159696097142" ID="Freemind_Link_1306839784" MODIFIED="1159696109480" TEXT="Opening a map when FM has the left toolbar toggled off, results in a half display of the left toolbar.  &quot;Toggle Left Toolbar&quot; then toggles it on to display full toolbar width.">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="full-3"/>
+<icon BUILTIN="smily_bad"/>
+</node>
+<node COLOR="#00b439" CREATED="1159698609785" ID="Freemind_Link_1925414151" MODIFIED="1159698618798" TEXT="type something then change the font size (smaller) and then keep typing. You&apos;ll notice that the font size box changes back to its original value but you keep typing in the new font size">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-3"/>
+<icon BUILTIN="dimitry"/>
+</node>
+<node COLOR="#00b439" CREATED="1159699968008" ID="Freemind_Link_24431422" MODIFIED="1159699978213" TEXT="[ 1563562 ] 0.9b7 - Cut and paste text adds: &amp;#xfffd; characters">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-4"/>
+</node>
+<node COLOR="#00b439" CREATED="1159693896348" ID="Freemind_Link_369389306" MODIFIED="1159695466936" TEXT="couldn&apos;t get gtk+ theme to work">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-4"/>
+</node>
 <node COLOR="#00b439" CREATED="1159695583123" ID="Freemind_Link_686844447" MODIFIED="1159695643460" TEXT="Corrupt layout after editing of existing nodes">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="clanbomber"/>
@@ -121,8 +209,33 @@
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
+<node COLOR="#00b439" CREATED="1159698002152" ID="Freemind_Link_569134429" MODIFIED="1159989892332" TEXT="Primarily, multi-line nodes, that exist as child nodes will overlap eachother frequently if they are selected quickly enough. This is most often the case with the &quot;direct&quot; selection method">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="clanbomber"/>
+<icon BUILTIN="dimitry"/>
+<icon BUILTIN="smily_bad"/>
 </node>
-<node COLOR="#0033ff" CREATED="1154897688737" ID="Freemind_Link_475477860" MODIFIED="1159701051646" POSITION="right" TEXT="Documentation">
+<node COLOR="#00b439" CREATED="1159698191434" ID="Freemind_Link_122578502" MODIFIED="1159698196050" TEXT="rotation of log files in ~/.freemind/ seems quite inconsistent. Also, there is always a log.0.lck file staying in there">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+</node>
+<node COLOR="#00b439" CREATED="1159698894364" ID="Freemind_Link_513657946" MODIFIED="1159698914774" TEXT="Apparently randomly, Freemind will cease to update the screen node">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<node COLOR="#990000" CREATED="1159698897209" ID="Freemind_Link_1523073150" MODIFIED="1159698909917" TEXT="I.e. select node, edit text, &lt;CR&gt; and the OLD text is displayed. Select node to edit, and the NEW text is displayed, &lt;CR&gt; and the OLD text is still displayed. Save the map and reopen, NEW text is displayed. Sometimes folding and unfolding the node will make this go away.">
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
+<node COLOR="#00b439" CREATED="1159700017760" ID="Freemind_Link_1086839457" MODIFIED="1159700091125" TEXT="[1566627] Freemind 0.9.0 beta7 : french folders">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="clanbomber"/>
+<node COLOR="#990000" CREATED="1159699114120" ID="Freemind_Link_1967137167" MODIFIED="1159700081952" TEXT="as Windows use the name &quot;Propri&#xe9;taire&quot; as default folder for the default account (WinXP home), freemind couldn&apos;t create a .freemind folder ==&gt; no preferences could be saved (style, start map, etc.)">
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
+</node>
+<node COLOR="#0033ff" CREATED="1154897688737" FOLDED="true" ID="Freemind_Link_475477860" MODIFIED="1159701051646" POSITION="right" TEXT="Documentation">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1154897691881" ID="Freemind_Link_151544330" MODIFIED="1159694582715">
 <richcontent TYPE="NODE"><html>
@@ -150,7 +263,7 @@
 <icon BUILTIN="pencil"/>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1154897203879" ID="Freemind_Link_39209766" MODIFIED="1154897254028" POSITION="right" TEXT="Missing merges">
+<node COLOR="#0033ff" CREATED="1154897203879" FOLDED="true" ID="Freemind_Link_39209766" MODIFIED="1154897254028" POSITION="right" TEXT="Missing merges">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1154897219366" ID="Freemind_Link_935306843" MODIFIED="1155501094472" TEXT="juanpedro__rectangulars edges and rectangular clouds_freemind">
 <font NAME="SansSerif" SIZE="16"/>
@@ -164,23 +277,8 @@
 <icon BUILTIN="full-3"/>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1159692737832" ID="Freemind_Link_1343376230" MODIFIED="1159700941178" POSITION="right" TEXT="Other Requests">
+<node COLOR="#0033ff" CREATED="1159692737832" FOLDED="true" ID="Freemind_Link_1343376230" MODIFIED="1159700941178" POSITION="right" TEXT="Other Requests">
 <font NAME="SansSerif" SIZE="18"/>
-<node COLOR="#00b439" CREATED="1159693896348" ID="Freemind_Link_369389306" MODIFIED="1159695466936" TEXT="couldn&apos;t get gtk+ theme to work">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-4"/>
-</node>
-<node COLOR="#00b439" CREATED="1159694326026" ID="Freemind_Link_1062300632" MODIFIED="1159695471473" TEXT="Metal look and feel appears twice">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-3"/>
-</node>
-<node COLOR="#00b439" CREATED="1159694364060" ID="Freemind_Link_1342948596" MODIFIED="1159695479063" TEXT="in both motif and gtk look and feel modes the notes area is grey thus making it seem like it is not available to be used, could this be changed to white">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-3"/>
-</node>
 <node COLOR="#00b439" CREATED="1159695208074" ID="Freemind_Link_1065403270" MODIFIED="1159701089751" TEXT="the background highlighter in rich formatting does not work">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="kaddressbook"/>
@@ -190,34 +288,10 @@
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1159695863536" ID="Freemind_Link_787395581" MODIFIED="1159695998671" TEXT="Manage Patterns is not saving any of my changes. ">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-3"/>
-<node COLOR="#990000" CREATED="1159695877717" ID="Freemind_Link_1082822636" MODIFIED="1159695888382">
-<richcontent TYPE="NODE"><html>
-  <head>
-
-  </head>
-  <body>
-    <p>
-      After modifying the pattern and exiting the screen, it seems to temporarily work for the loaded map, but going back into the Manage Patterns screen shows the original patterns, and the patterns.xml file on disk is never updated.
-    </p>
-  </body>
-</html>
-</richcontent>
-<font NAME="SansSerif" SIZE="14"/>
-</node>
-</node>
 <node COLOR="#00b439" CREATED="1159695992602" ID="Freemind_Link_889235655" MODIFIED="1159696170097" TEXT="is there an easier way to get the target node&apos;s details ready to paste in to the source node&apos;s link dialog?">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-3"/>
 <icon BUILTIN="kaddressbook"/>
-</node>
-<node COLOR="#00b439" CREATED="1159696097142" ID="Freemind_Link_1306839784" MODIFIED="1159696109480" TEXT="Opening a map when FM has the left toolbar toggled off, results in a half display of the left toolbar.  &quot;Toggle Left Toolbar&quot; then toggles it on to display full toolbar width.">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="full-3"/>
-<icon BUILTIN="smily_bad"/>
 </node>
 <node COLOR="#00b439" CREATED="1159696347002" ID="Freemind_Link_1091944614" MODIFIED="1159696350136" TEXT="Scripting">
 <font NAME="SansSerif" SIZE="16"/>
@@ -251,19 +325,6 @@
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="kaddressbook"/>
 <icon BUILTIN="full-2"/>
-</node>
-<node COLOR="#00b439" CREATED="1159696686930" ID="Freemind_Link_653900690" MODIFIED="1159696692378" TEXT="mention before showing 2 lined nodes text have a line space between two lines">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-2"/>
-</node>
-<node COLOR="#00b439" CREATED="1159697386606" ID="Freemind_Link_587424183" MODIFIED="1159697391824" TEXT="The keyboard shortcut for node color does not work">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-2"/>
-<node COLOR="#990000" CREATED="1159697417020" ID="Freemind_Link_1403921430" MODIFIED="1159697418662" TEXT="on linux">
-<font NAME="SansSerif" SIZE="14"/>
-</node>
 </node>
 <node COLOR="#00b439" CREATED="1159697493049" ID="Freemind_Link_1928930115" MODIFIED="1159697498918" TEXT="Having a menu option to toggle display of the notes area would be indispensible IMHO (and setting a default in the user&apos;s preferences)">
 <font NAME="SansSerif" SIZE="16"/>
@@ -331,12 +392,6 @@ existing search function to implement this.
 <icon BUILTIN="dimitry"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1159698002152" ID="Freemind_Link_569134429" MODIFIED="1159698011825" TEXT="Primarily, multi-line nodes, that exist as child nodes will overlap eachother frequently if they are selected quickly enough. This is most often the case with the &quot;direct&quot; selection method">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="clanbomber"/>
-<icon BUILTIN="dimitry"/>
-<icon BUILTIN="smily_bad"/>
-</node>
 <node COLOR="#00b439" CREATED="1159698125639" ID="Freemind_Link_11850795" MODIFIED="1159698304446">
 <richcontent TYPE="NODE"><html>
   <head>
@@ -352,16 +407,6 @@ existing search function to implement this.
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="kaddressbook"/>
 <icon BUILTIN="full-2"/>
-</node>
-<node COLOR="#00b439" CREATED="1159698168150" ID="Freemind_Link_480126253" MODIFIED="1159698174980" TEXT="FreeMind creates a ~/SimplyHTML directory and doesn&apos;t clean it up on exit. I would suggest to create this folder under ~/.freemind, and clean it up on exit">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-2"/>
-<icon BUILTIN="dimitry"/>
-</node>
-<node COLOR="#00b439" CREATED="1159698191434" ID="Freemind_Link_122578502" MODIFIED="1159698196050" TEXT="rotation of log files in ~/.freemind/ seems quite inconsistent. Also, there is always a log.0.lck file staying in there">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
 </node>
 <node COLOR="#00b439" CREATED="1159698215448" ID="Freemind_Link_371301206" MODIFIED="1159698229008" TEXT="a splash screen appears for SimplyHTML. Perhaps this should be switched off">
 <font NAME="SansSerif" SIZE="16"/>
@@ -379,41 +424,6 @@ existing search function to implement this.
 <node COLOR="#990000" CREATED="1159698529980" ID="Freemind_Link_1235756247" MODIFIED="1159698550610" TEXT="I&apos;m quite happy to simply type in the (small amount) of html that I actually use">
 <font NAME="SansSerif" SIZE="14"/>
 </node>
-</node>
-<node COLOR="#00b439" CREATED="1159698609785" ID="Freemind_Link_1925414151" MODIFIED="1159698618798" TEXT="type something then change the font size (smaller) and then keep typing. You&apos;ll notice that the font size box changes back to its original value but you keep typing in the new font size">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-3"/>
-<icon BUILTIN="dimitry"/>
-</node>
-<node COLOR="#00b439" CREATED="1159698894364" ID="Freemind_Link_513657946" MODIFIED="1159698914774" TEXT="Apparently randomly, Freemind will cease to update the screen node">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<node COLOR="#990000" CREATED="1159698897209" ID="Freemind_Link_1523073150" MODIFIED="1159698909917" TEXT="I.e. select node, edit text, &lt;CR&gt; and the OLD text is displayed. Select node to edit, and the NEW text is displayed, &lt;CR&gt; and the OLD text is still displayed. Save the map and reopen, NEW text is displayed. Sometimes folding and unfolding the node will make this go away.">
-<font NAME="SansSerif" SIZE="14"/>
-</node>
-</node>
-<node COLOR="#00b439" CREATED="1159700017760" ID="Freemind_Link_1086839457" MODIFIED="1159700091125" TEXT="[1566627] Freemind 0.9.0 beta7 : french folders">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="clanbomber"/>
-<node COLOR="#990000" CREATED="1159699114120" ID="Freemind_Link_1967137167" MODIFIED="1159700081952" TEXT="as Windows use the name &quot;Propri&#xe9;taire&quot; as default folder for the default account (WinXP home), freemind couldn&apos;t create a .freemind folder ==&gt; no preferences could be saved (style, start map, etc.)">
-<font NAME="SansSerif" SIZE="14"/>
-</node>
-</node>
-<node COLOR="#00b439" CREATED="1159699156972" ID="Freemind_Link_720947338" MODIFIED="1159699165935" TEXT="The line (not the arrow heads) within a graphical link is overwriting the nodes on the map in Version 9.0 Beta 7">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-2"/>
-<node COLOR="#990000" CREATED="1159699176971" ID="Freemind_Link_652054312" MODIFIED="1159699178894" TEXT="This makes it difficult to view maps with many graphical links.  I assume this change from Version 8.1 was not intended. Although the links can be moved out of the way, this is not practical when there are many links on a map and the nodes constantly move relative to the links as nodes are created or folded.  Please revert back to the Version 8.1 implementation in Version 9.0.">
-<font NAME="SansSerif" SIZE="14"/>
-</node>
-</node>
-<node COLOR="#00b439" CREATED="1159699214004" ID="Freemind_Link_933227556" MODIFIED="1159699220704" TEXT="When you are navigating by keyboard, when you reach a node with a note, the whole app hangs for 3 seconds, before you can continue navigating">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-2"/>
-<icon BUILTIN="help"/>
 </node>
 <node COLOR="#00b439" CREATED="1159699259109" ID="Freemind_Link_1760346523" MODIFIED="1159699263896" TEXT="edit rich text &quot;in place&quot;, rather than using the &quot;edit long node&quot; dialog box">
 <font NAME="SansSerif" SIZE="16"/>
@@ -439,16 +449,6 @@ existing search function to implement this.
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="kaddressbook"/>
 <icon BUILTIN="full-3"/>
-</node>
-<node COLOR="#00b439" CREATED="1159699968008" ID="Freemind_Link_24431422" MODIFIED="1159699978213" TEXT="[ 1563562 ] 0.9b7 - Cut and paste text adds: &amp;#xfffd; characters">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-4"/>
-</node>
-<node COLOR="#00b439" CREATED="1159700123171" ID="Freemind_Link_624277846" MODIFIED="1159700142419" TEXT="[1565610] Win 0.8.1B4 : Properties dialog is too tall">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-2"/>
 </node>
 <node COLOR="#00b439" CREATED="1159700533021" ID="Freemind_Link_918325486" MODIFIED="1159700550446" TEXT="Sort nodes">
 <font NAME="SansSerif" SIZE="16"/>
@@ -552,7 +552,7 @@ existing search function to implement this.
 </node>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1159693531834" ID="Freemind_Link_1400702844" MODIFIED="1159824226977" POSITION="left" TEXT="Resolved">
+<node COLOR="#0033ff" CREATED="1159693531834" FOLDED="true" ID="Freemind_Link_1400702844" MODIFIED="1159824226977" POSITION="left" TEXT="Resolved">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1154896193111" ID="Freemind_Link_16073776" MODIFIED="1159694808710" TEXT="Use SimpleHTML and fix most annoying bugs">
 <font NAME="SansSerif" SIZE="16"/>

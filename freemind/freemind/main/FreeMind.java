@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.23 2006-10-03 20:31:52 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.24 2006-10-04 19:36:22 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -363,7 +363,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
     }
 
     public String getFreemindDirectory() {
-        return System.getProperty("user.home")+System.getProperty("file.separator")+getProperty("properties_folder");
+        return System.getProperty("user.home")+File.separator+getProperty("properties_folder");
     }
 
     public void saveProperties() {
@@ -566,7 +566,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
         Logger logger2 = java.util.logging.Logger.getLogger(forClass);
         if(mFileHandler==null){
 	        try {
-	        		mFileHandler = new FileHandler("%h/.freemind/log", 1400000, 5, false);
+	        	mFileHandler = new FileHandler(getFreemindDirectory() + File.separator + "log", 1400000, 5, false);
                 mFileHandler.setFormatter(new SimpleFormatter());
 			} catch (Exception e) {
                 System.err.println("Error creating logging File Handler");

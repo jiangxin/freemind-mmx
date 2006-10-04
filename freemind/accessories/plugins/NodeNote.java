@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.16 2006-10-01 16:43:40 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.17 2006-10-04 19:36:21 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -94,7 +94,7 @@ public class NodeNote extends NodeNoteBase {
 			}
 
 			public void onLooseFocusHook(MindMapNode node) {
-				logger.info("onLooseFocuse for node " + node.toString() + " and noteViewerComponent=" + noteViewerComponent);
+//				logger.info("onLooseFocuse for node " + node.toString() + " and noteViewerComponent=" + noteViewerComponent);
 				noteViewerComponent.getDocument()
 						.removeDocumentListener(mNoteDocumentListener);
 				// store its content:
@@ -105,7 +105,7 @@ public class NodeNote extends NodeNoteBase {
 
 			public void onReceiveFocusHook(MindMapNode node) {
 				this.node = node;
-				logger.info("onReceiveFocuse for node " + node.toString());
+//				logger.info("onReceiveFocuse for node " + node.toString());
 				String note = node.getXmlNoteText();
 				if (note != null) {
 					getHtmlEditorPanel()
