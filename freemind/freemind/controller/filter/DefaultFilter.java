@@ -74,7 +74,11 @@ public class DefaultFilter implements Filter{
 
     static public void selectVisibleNode(MapView mapView) {
         LinkedList selectedNodes = mapView.getSelecteds();
-        ListIterator iterator = selectedNodes.listIterator(selectedNodes.size()-1);
+        final int lastSelectedIndex = selectedNodes.size()-1;
+        if(lastSelectedIndex == -1){
+            return;
+        }
+        ListIterator iterator = selectedNodes.listIterator(lastSelectedIndex);
         while(iterator.hasPrevious()){
             NodeView previous = (NodeView) iterator.previous();
             if ( ! previous.getModel().isVisible()){
@@ -173,5 +177,9 @@ public class DefaultFilter implements Filter{
      */
     public boolean areEclipsedShown() {
         return true;
+    }
+    
+    public Object getCondition(){
+        return condition;
     }
 }

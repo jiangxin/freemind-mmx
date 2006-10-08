@@ -231,7 +231,7 @@ class FilterToolbar extends JToolBar {
         Filter filter = newMap.getFilter();
         if(filter != activeFilter){
             activeFilter = filter;
-            activeFilterConditionComboBox.setSelectedItem(filter);
+            activeFilterConditionComboBox.setSelectedItem(filter.getCondition());
             showAncestors.setSelected(filter.areAncestorsShown());
             showDescendants.setSelected(filter.areDescendantsShown());
         }

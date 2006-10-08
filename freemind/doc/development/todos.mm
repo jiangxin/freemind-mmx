@@ -118,21 +118,21 @@
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1159698168150" ID="Freemind_Link_480126253" MODIFIED="1159698174980" TEXT="FreeMind creates a ~/SimplyHTML directory and doesn&apos;t clean it up on exit. I would suggest to create this folder under ~/.freemind, and clean it up on exit">
+<node COLOR="#00b439" CREATED="1159698168150" ID="Freemind_Link_1923164862" MODIFIED="1159698174980" TEXT="FreeMind creates a ~/SimplyHTML directory and doesn&apos;t clean it up on exit. I would suggest to create this folder under ~/.freemind, and clean it up on exit">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="smily_bad"/>
 <icon BUILTIN="full-2"/>
 <icon BUILTIN="dimitry"/>
 </node>
-<node COLOR="#00b439" CREATED="1159699156972" ID="Freemind_Link_720947338" MODIFIED="1159699165935" TEXT="The line (not the arrow heads) within a graphical link is overwriting the nodes on the map in Version 9.0 Beta 7">
+<node COLOR="#00b439" CREATED="1159699156972" ID="Freemind_Link_1180192310" MODIFIED="1159699165935" TEXT="The line (not the arrow heads) within a graphical link is overwriting the nodes on the map in Version 9.0 Beta 7">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="smily_bad"/>
 <icon BUILTIN="full-2"/>
-<node COLOR="#990000" CREATED="1159699176971" ID="Freemind_Link_652054312" MODIFIED="1159699178894" TEXT="This makes it difficult to view maps with many graphical links.  I assume this change from Version 8.1 was not intended. Although the links can be moved out of the way, this is not practical when there are many links on a map and the nodes constantly move relative to the links as nodes are created or folded.  Please revert back to the Version 8.1 implementation in Version 9.0.">
+<node COLOR="#990000" CREATED="1159699176971" ID="Freemind_Link_1069614896" MODIFIED="1159699178894" TEXT="This makes it difficult to view maps with many graphical links.  I assume this change from Version 8.1 was not intended. Although the links can be moved out of the way, this is not practical when there are many links on a map and the nodes constantly move relative to the links as nodes are created or folded.  Please revert back to the Version 8.1 implementation in Version 9.0.">
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1159699214004" ID="Freemind_Link_933227556" MODIFIED="1159699220704" TEXT="When you are navigating by keyboard, when you reach a node with a note, the whole app hangs for 3 seconds, before you can continue navigating">
+<node COLOR="#00b439" CREATED="1159699214004" ID="Freemind_Link_1692154062" MODIFIED="1159699220704" TEXT="When you are navigating by keyboard, when you reach a node with a note, the whole app hangs for 3 seconds, before you can continue navigating">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="smily_bad"/>
 <icon BUILTIN="full-2"/>
@@ -177,12 +177,6 @@
 <icon BUILTIN="full-3"/>
 <icon BUILTIN="smily_bad"/>
 </node>
-<node COLOR="#00b439" CREATED="1159698609785" ID="Freemind_Link_1925414151" MODIFIED="1159698618798" TEXT="type something then change the font size (smaller) and then keep typing. You&apos;ll notice that the font size box changes back to its original value but you keep typing in the new font size">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-3"/>
-<icon BUILTIN="dimitry"/>
-</node>
 <node COLOR="#00b439" CREATED="1159699968008" ID="Freemind_Link_24431422" MODIFIED="1159699978213" TEXT="[ 1563562 ] 0.9b7 - Cut and paste text adds: &amp;#xfffd; characters">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="smily_bad"/>
@@ -209,28 +203,28 @@
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1159698002152" ID="Freemind_Link_569134429" MODIFIED="1159989892332" TEXT="Primarily, multi-line nodes, that exist as child nodes will overlap eachother frequently if they are selected quickly enough. This is most often the case with the &quot;direct&quot; selection method">
+<node COLOR="#00b439" CREATED="1159698002152" ID="Freemind_Link_330781480" MODIFIED="1159989892332" TEXT="Primarily, multi-line nodes, that exist as child nodes will overlap eachother frequently if they are selected quickly enough. This is most often the case with the &quot;direct&quot; selection method">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="clanbomber"/>
 <icon BUILTIN="dimitry"/>
 <icon BUILTIN="smily_bad"/>
 </node>
-<node COLOR="#00b439" CREATED="1159698191434" ID="Freemind_Link_122578502" MODIFIED="1159698196050" TEXT="rotation of log files in ~/.freemind/ seems quite inconsistent. Also, there is always a log.0.lck file staying in there">
+<node COLOR="#00b439" CREATED="1159698191434" ID="Freemind_Link_801984084" MODIFIED="1159698196050" TEXT="rotation of log files in ~/.freemind/ seems quite inconsistent. Also, there is always a log.0.lck file staying in there">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="smily_bad"/>
 </node>
-<node COLOR="#00b439" CREATED="1159698894364" ID="Freemind_Link_513657946" MODIFIED="1159698914774" TEXT="Apparently randomly, Freemind will cease to update the screen node">
+<node COLOR="#00b439" CREATED="1159698894364" ID="Freemind_Link_578472407" MODIFIED="1159698914774" TEXT="Apparently randomly, Freemind will cease to update the screen node">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="smily_bad"/>
-<node COLOR="#990000" CREATED="1159698897209" ID="Freemind_Link_1523073150" MODIFIED="1159698909917" TEXT="I.e. select node, edit text, &lt;CR&gt; and the OLD text is displayed. Select node to edit, and the NEW text is displayed, &lt;CR&gt; and the OLD text is still displayed. Save the map and reopen, NEW text is displayed. Sometimes folding and unfolding the node will make this go away.">
+<node COLOR="#990000" CREATED="1159698897209" ID="Freemind_Link_752651709" MODIFIED="1159698909917" TEXT="I.e. select node, edit text, &lt;CR&gt; and the OLD text is displayed. Select node to edit, and the NEW text is displayed, &lt;CR&gt; and the OLD text is still displayed. Save the map and reopen, NEW text is displayed. Sometimes folding and unfolding the node will make this go away.">
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1159700017760" ID="Freemind_Link_1086839457" MODIFIED="1159700091125" TEXT="[1566627] Freemind 0.9.0 beta7 : french folders">
+<node COLOR="#00b439" CREATED="1159700017760" ID="Freemind_Link_247618167" MODIFIED="1159700091125" TEXT="[1566627] Freemind 0.9.0 beta7 : french folders">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="smily_bad"/>
 <icon BUILTIN="clanbomber"/>
-<node COLOR="#990000" CREATED="1159699114120" ID="Freemind_Link_1967137167" MODIFIED="1159700081952" TEXT="as Windows use the name &quot;Propri&#xe9;taire&quot; as default folder for the default account (WinXP home), freemind couldn&apos;t create a .freemind folder ==&gt; no preferences could be saved (style, start map, etc.)">
+<node COLOR="#990000" CREATED="1159699114120" ID="Freemind_Link_806999239" MODIFIED="1159700081952" TEXT="as Windows use the name &quot;Propri&#xe9;taire&quot; as default folder for the default account (WinXP home), freemind couldn&apos;t create a .freemind folder ==&gt; no preferences could be saved (style, start map, etc.)">
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
@@ -392,6 +386,11 @@ existing search function to implement this.
 <icon BUILTIN="dimitry"/>
 </node>
 </node>
+<node COLOR="#00b439" CREATED="1159698002152" ID="Freemind_Link_569134429" MODIFIED="1159901731326" TEXT="Primarily, multi-line nodes, that exist as child nodes will overlap eachother frequently if they are selected quickly enough. This is most often the case with the &quot;direct&quot; selection method">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="clanbomber"/>
+<icon BUILTIN="smily_bad"/>
+</node>
 <node COLOR="#00b439" CREATED="1159698125639" ID="Freemind_Link_11850795" MODIFIED="1159698304446">
 <richcontent TYPE="NODE"><html>
   <head>
@@ -407,6 +406,15 @@ existing search function to implement this.
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="kaddressbook"/>
 <icon BUILTIN="full-2"/>
+</node>
+<node COLOR="#00b439" CREATED="1159698168150" ID="Freemind_Link_480126253" MODIFIED="1159901682586" TEXT="FreeMind creates a ~/SimplyHTML directory and doesn&apos;t clean it up on exit. I would suggest to create this folder under ~/.freemind, and clean it up on exit">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="idea"/>
+</node>
+<node COLOR="#00b439" CREATED="1159698191434" ID="Freemind_Link_122578502" MODIFIED="1159698196050" TEXT="rotation of log files in ~/.freemind/ seems quite inconsistent. Also, there is always a log.0.lck file staying in there">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
 </node>
 <node COLOR="#00b439" CREATED="1159698215448" ID="Freemind_Link_371301206" MODIFIED="1159698229008" TEXT="a splash screen appears for SimplyHTML. Perhaps this should be switched off">
 <font NAME="SansSerif" SIZE="16"/>
@@ -424,6 +432,35 @@ existing search function to implement this.
 <node COLOR="#990000" CREATED="1159698529980" ID="Freemind_Link_1235756247" MODIFIED="1159698550610" TEXT="I&apos;m quite happy to simply type in the (small amount) of html that I actually use">
 <font NAME="SansSerif" SIZE="14"/>
 </node>
+</node>
+<node COLOR="#00b439" CREATED="1159698894364" ID="Freemind_Link_513657946" MODIFIED="1159698914774" TEXT="Apparently randomly, Freemind will cease to update the screen node">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<node COLOR="#990000" CREATED="1159698897209" ID="Freemind_Link_1523073150" MODIFIED="1159698909917" TEXT="I.e. select node, edit text, &lt;CR&gt; and the OLD text is displayed. Select node to edit, and the NEW text is displayed, &lt;CR&gt; and the OLD text is still displayed. Save the map and reopen, NEW text is displayed. Sometimes folding and unfolding the node will make this go away.">
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
+<node COLOR="#00b439" CREATED="1159700017760" ID="Freemind_Link_1086839457" MODIFIED="1159700091125" TEXT="[1566627] Freemind 0.9.0 beta7 : french folders">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="clanbomber"/>
+<node COLOR="#990000" CREATED="1159699114120" ID="Freemind_Link_1967137167" MODIFIED="1159700081952" TEXT="as Windows use the name &quot;Propri&#xe9;taire&quot; as default folder for the default account (WinXP home), freemind couldn&apos;t create a .freemind folder ==&gt; no preferences could be saved (style, start map, etc.)">
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
+<node COLOR="#00b439" CREATED="1159699156972" ID="Freemind_Link_720947338" MODIFIED="1159699165935" TEXT="The line (not the arrow heads) within a graphical link is overwriting the nodes on the map in Version 9.0 Beta 7">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-2"/>
+<node COLOR="#990000" CREATED="1159699176971" ID="Freemind_Link_652054312" MODIFIED="1159699178894" TEXT="This makes it difficult to view maps with many graphical links.  I assume this change from Version 8.1 was not intended. Although the links can be moved out of the way, this is not practical when there are many links on a map and the nodes constantly move relative to the links as nodes are created or folded.  Please revert back to the Version 8.1 implementation in Version 9.0.">
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
+<node COLOR="#00b439" CREATED="1159699214004" ID="Freemind_Link_933227556" MODIFIED="1159699220704" TEXT="When you are navigating by keyboard, when you reach a node with a note, the whole app hangs for 3 seconds, before you can continue navigating">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-2"/>
+<icon BUILTIN="help"/>
 </node>
 <node COLOR="#00b439" CREATED="1159699259109" ID="Freemind_Link_1760346523" MODIFIED="1159699263896" TEXT="edit rich text &quot;in place&quot;, rather than using the &quot;edit long node&quot; dialog box">
 <font NAME="SansSerif" SIZE="16"/>
@@ -703,6 +740,12 @@ existing search function to implement this.
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="smily_bad"/>
 <icon BUILTIN="full-2"/>
+<icon BUILTIN="dimitry"/>
+</node>
+<node COLOR="#00b439" CREATED="1159698609785" ID="Freemind_Link_1925414151" MODIFIED="1159698618798" TEXT="type something then change the font size (smaller) and then keep typing. You&apos;ll notice that the font size box changes back to its original value but you keep typing in the new font size">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="smily_bad"/>
+<icon BUILTIN="full-3"/>
 <icon BUILTIN="dimitry"/>
 </node>
 </node>

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.17 2006-10-04 19:36:21 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.18 2006-10-08 18:57:02 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -109,10 +109,10 @@ public class NodeNote extends NodeNoteBase {
 				String note = node.getXmlNoteText();
 				if (note != null) {
 					getHtmlEditorPanel()
-							.setCurrentDocumentContent("Note", note);
+							.setCurrentDocumentContent(note);
                     mLastContentEmpty = false;
 				} else if (!mLastContentEmpty) {
-					getHtmlEditorPanel().setCurrentDocumentContent("Note", "");
+					getHtmlEditorPanel().setCurrentDocumentContent("");
                     mLastContentEmpty = true;
 				}
 				noteViewerComponent.getDocument().addDocumentListener(
@@ -243,7 +243,7 @@ public class NodeNote extends NodeNoteBase {
 					if (node == controller.getSelected()
 							&& (!Tools.safeEquals(newText, getHtmlEditorPanel()
 									.getDocumentText()))) {
-						getHtmlEditorPanel().setCurrentDocumentContent("Note",
+						getHtmlEditorPanel().setCurrentDocumentContent(
 								newText == null ? "" : newText);
 					}
 					controller.nodeChanged(node);

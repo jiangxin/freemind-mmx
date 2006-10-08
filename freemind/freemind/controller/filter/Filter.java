@@ -46,4 +46,6 @@ public interface Filter {
 	boolean areAncestorsShown();
 	boolean areDescendantsShown();
 	boolean areEclipsedShown();
+    
+    Object getCondition();
 }
