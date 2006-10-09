@@ -20,7 +20,7 @@
  * 
  * Created on 25.02.2006
  */
-/* $Id: ThreeCheckBoxProperty.java,v 1.1.2.1.2.1 2006-07-25 20:28:19 christianfoltin Exp $ */
+/* $Id: ThreeCheckBoxProperty.java,v 1.1.2.1.2.2 2006-10-09 05:44:33 christianfoltin Exp $ */
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -45,9 +45,9 @@ public class ThreeCheckBoxProperty extends PropertyBean implements
 
     private static final int DON_T_TOUCH_VALUE_INT = 2;
 
-    private static final int TRUE_VALUE_INT = 1;
+    private static final int TRUE_VALUE_INT = 0;
 
-    private static final int FALSE_VALUE_INT = 0;
+    private static final int FALSE_VALUE_INT = 1;
 
     //FIXME: Choose different icon.
     private static final ImageIcon PLUS_IMAGE = new ImageIcon(ClassLoader.getSystemResource("accessories/plugins/icons/edit_add.png"));
@@ -144,8 +144,13 @@ public class ThreeCheckBoxProperty extends PropertyBean implements
      */
     private void setState(int newState) {
         state = newState;
-//        mButton.setText(DISPLAY_VALUES[state]);
-        mButton.setIcon(new Icon[]{MINUS_IMAGE, PLUS_IMAGE, NO_IMAGE}[state]);
+        Icon[] icons;
+        icons = new Icon[3]; //{MINUS_IMAGE, PLUS_IMAGE, NO_IMAGE};
+        icons[TRUE_VALUE_INT] = PLUS_IMAGE;
+        icons[FALSE_VALUE_INT] = MINUS_IMAGE;
+        icons[DON_T_TOUCH_VALUE_INT] = NO_IMAGE;
+		//        mButton.setText(DISPLAY_VALUES[state]);
+        mButton.setIcon(icons[state]);
     }
 
 }
