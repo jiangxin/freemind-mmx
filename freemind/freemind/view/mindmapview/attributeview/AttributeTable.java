@@ -52,6 +52,7 @@ import javax.swing.table.TableModel;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeViewEvent;
 import freemind.modes.NodeViewEventListener;
+import freemind.modes.attributes.AttributeController;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.AttributeTableModel;
@@ -143,8 +144,15 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         super();
         this.attributeView = attributeView;
         addFocusListener(focusListener);
-        getTableHeader().addMouseListener(componentListener);
-        attributeView.getNodeView().getModel().addNodeViewEventListener(this);
+        final MindMapNode model = attributeView.getNodeView().getModel();
+        model.addNodeViewEventListener(this);
+        final AttributeController attributeController = model.getMap().getRegistry().getModeController().getAttributeController();
+        if(attributeController != null){
+            getTableHeader().addMouseListener(componentListener);
+        }
+        else{
+            getTableHeader().setResizingAllowed(false);
+        }
         setModel(attributeView.getCurrentAttributeTableModel());
         updateFontSize(this);
         updateColumnWidths();       
