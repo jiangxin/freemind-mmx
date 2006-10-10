@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.12 2006-08-20 21:00:08 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.13 2006-10-10 18:51:52 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -35,6 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -907,6 +908,16 @@ public class Tools {
     public static URL getURLWithoutReference(URL input) throws MalformedURLException {
         return new URL(input.toString().replaceFirst("#.*", ""));
     }
+
+	public static void copyStream(InputStream in, OutputStream out) throws IOException {
+		byte[] buf = new byte[1024];
+		int len;
+		while ((len = in.read(buf)) > 0) {
+		    out.write(buf, 0, len);
+		}
+		in.close();
+		out.close();
+	}
 
 }
 

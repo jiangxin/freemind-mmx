@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: ExportHook.java,v 1.1.4.7.2.4 2006-08-27 20:29:35 christianfoltin Exp $*/
+/*$Id: ExportHook.java,v 1.1.4.7.2.5 2006-10-10 18:51:52 christianfoltin Exp $*/
 
 package freemind.extensions;
 
@@ -169,13 +169,7 @@ public class ExportHook extends ModeControllerHookAdapter {
                         + "/" + fileName);
     
                 // Transfer bytes from in to out
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                in.close();
-                out.close();
+                Tools.copyStream(in, out);
             } catch (Exception e) {
                 logger.severe("File not found or could not be copied. " +
                 		"Was earching for " + prefix + fileName + " and should go to "+destinationDirectory);

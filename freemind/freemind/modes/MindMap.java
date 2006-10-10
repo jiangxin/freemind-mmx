@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMap.java,v 1.14.14.8.2.5 2006-09-02 22:09:49 christianfoltin Exp $ */
+/* $Id: MindMap.java,v 1.14.14.8.2.6 2006-10-10 18:51:52 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -130,6 +130,16 @@ public interface MindMap extends TreeModel {
     /**
      */
     void setFilter(Filter inactiveFilter);
+
+	void insertNodeInto(MindMapNode copy, MindMapNode rootNode);
+
+	void nodeStructureChanged(MindMapNode node);
+
+	/**
+	 * Use this method to make the map dirty/clean.
+	 * @param isSaved
+	 */
+	void setSaved(boolean isSaved);
 
 // (PN)
 //    void close();

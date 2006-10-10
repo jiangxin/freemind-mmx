@@ -19,7 +19,7 @@
  *
  * Created on 06.10.2004
  */
-/* $Id: CloudAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: CloudAction.java,v 1.1.2.2.2.2 2006-10-10 18:51:53 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -28,7 +28,7 @@ import java.awt.Color;
 import freemind.controller.actions.generated.instance.AddCloudXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
-import freemind.modes.MapAdapter;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapCloudModel;
 import freemind.modes.mindmapmode.MindMapController;
@@ -49,7 +49,7 @@ public class CloudAction extends NodeGeneralAction implements NodeActorXml {
 		return AddCloudXmlAction.class;
 	}
 
-	public ActionPair apply(MapAdapter model, MindMapNode selected)
+	public ActionPair apply(MindMap model, MindMapNode selected)
 			 {
 		ActionPair pair = getActionPair(selected, selected.getCloud() == null);
 		return pair;

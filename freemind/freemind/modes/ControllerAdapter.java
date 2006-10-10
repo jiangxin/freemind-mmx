@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.18 2006-09-02 22:09:48 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.19 2006-10-10 18:51:52 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -175,7 +175,8 @@ public abstract class ControllerAdapter implements ModeController {
             // Tell any node hooks that the node is changed:
             updateNode(node);
         }
-		getMap().nodeChangedMapInternal(node);
+		// fc, 10.10.06: Dirty hack in order to keep this method away from being used by everybody.
+		((MapAdapter) getMap()).nodeChangedMapInternal(node);
 		nodesToBeUpdated.remove(node);
 		if(nodesToBeUpdated.size()==0) {
 			// this is the end of all updates:
@@ -806,7 +807,7 @@ public abstract class ControllerAdapter implements ModeController {
         this.mode = mode;
     }
 
-    public MapAdapter getMap() {
+    public MindMap getMap() {
         return mModel;
     }
 

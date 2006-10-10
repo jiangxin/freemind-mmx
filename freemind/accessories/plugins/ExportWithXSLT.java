@@ -62,6 +62,11 @@ import freemind.modes.ModeController;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class ExportWithXSLT extends ExportHook {
+	/**
+	 * For test purposes. True=no error
+	 */
+	private boolean mTransformResultWithoutError = false;
+	
     protected File chooseFile() {
         return chooseFile(getResourceString("file_type"), getTranslatableResourceString("file_description"));
     }
@@ -102,19 +107,21 @@ public class ExportWithXSLT extends ExportHook {
 			 else
 				 export(model.getFile());
 		 } else {
-		     transform();
+			 File saveFile = chooseFile();
+			 if(saveFile==null) {
+				 // no file.
+				 return;
+			 }
+		     transform(saveFile);
 		 }
 	}
 	/**
+	 * @param saveFile 
      * 
      */
-    private void transform() {
+    public void transform(File saveFile) {
         try {
-            File saveFile = chooseFile();
-            if(saveFile==null) {
-                // no file.
-                return;
-            }
+        		mTransformResultWithoutError=true;
             // get AREA:
             // create HTML image?
             boolean create_image = Tools.safeEquals(getResourceString("create_html_linked_image"), "true");
@@ -159,6 +166,7 @@ public class ExportWithXSLT extends ExportHook {
             }
         } catch (Exception e) {
             freemind.main.Resources.getInstance().logExecption(e);
+            mTransformResultWithoutError = false;
         }
     }
 
@@ -189,6 +197,9 @@ public class ExportWithXSLT extends ExportHook {
      */
     private void createImageFromMap(String directoryName)
     {
+    		// in the test case, we don't have a viewer and skip the image.
+    		if(getController().getView() == null)
+    			return;
         // create image:
         BufferedImage image = createBufferedImage();
         try {
@@ -249,7 +260,7 @@ public class ExportWithXSLT extends ExportHook {
             throw new IllegalArgumentException("Can't find " + xsltFileName + " as resource.");
         }
         InputStream xsltFile = xsltUrl.openStream();
-        return transForm(new StreamSource(reader), xsltFile, saveFile, areaCode);
+        return transform(new StreamSource(reader), xsltFile, saveFile, areaCode);
     }
 
     /**
@@ -284,7 +295,7 @@ public class ExportWithXSLT extends ExportHook {
         exp.setVisible(true);
 	}
 
-    public boolean transForm(Source xmlSource, InputStream xsltStream, File resultFile, String areaCode)
+    public boolean transform(Source xmlSource, InputStream xsltStream, File resultFile, String areaCode)
     {
         //System.out.println("set xsl");
        Source xsltSource =  new StreamSource(xsltStream);
@@ -311,6 +322,10 @@ public class ExportWithXSLT extends ExportHook {
        };
       return true;
       }
+
+	public boolean isTransformResultWithoutError() {
+		return mTransformResultWithoutError;
+	}
       
 	
 	

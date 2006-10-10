@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseController.java,v 1.13.18.7.2.6 2006-09-02 22:09:49 christianfoltin Exp $ */
+/* $Id: BrowseController.java,v 1.13.18.7.2.7 2006-10-10 18:51:52 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -68,6 +68,8 @@ public class BrowseController extends ViewControllerAdapter {
 		popupmenu = new BrowsePopupMenu(this);
 		toolbar = new BrowseToolBar(this);
 		setAllActions(false);
+		// for displaying notes.
+		registerNodeSelectionListener(new NodeNoteViewer(this));
 	}
 
 	public MapAdapter newModel(ModeController modeController) {

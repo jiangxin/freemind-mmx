@@ -271,14 +271,23 @@ Todo:
 	<!-- look if there is any node inside the map (there should never be
 		none, but who knows?) and take its text as the title -->
 	<xsl:choose>
-	<xsl:when test="/map/node">
+	<xsl:when test="/map/node/@TEXT">
 		<xsl:value-of select="/map/node/@TEXT" />
+	</xsl:when>
+	<xsl:when test="/map/node/richcontent[@TYPE='NODE']">
+		<xsl:apply-templates select="/map/node/richcontent[@TYPE='NODE']/html/body" mode="strip-tags" />
 	</xsl:when>
 	<xsl:otherwise>
 		<xsl:text>FreeMind2HTML Mindmap</xsl:text>
 	</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
+
+	
+	<xsl:template match="text()|@*"  mode="strip-tags">
+		  <xsl:value-of select="string(.)"/>
+	</xsl:template>
+
 
 <!-- replace ASCII line breaks through HTML line breaks (br) -->
 <xsl:template name="format_text">

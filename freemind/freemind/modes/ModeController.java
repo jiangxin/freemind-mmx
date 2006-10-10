@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.10 2006-09-02 22:09:49 christianfoltin Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.11 2006-10-10 18:51:52 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -223,7 +223,7 @@ public interface ModeController  {
 
 	FreeMindMain getFrame();
 	MapView getView();
-	MapAdapter getMap();
+	MindMap getMap();
 	/** This method must only be used by the model itself at creation time.
 	 * Don't use this method.
 	 */

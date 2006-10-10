@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ClickableImageCreator.java,v 1.1.2.1.12.3 2006-07-25 20:28:19 christianfoltin Exp $ */
+/* $Id: ClickableImageCreator.java,v 1.1.2.1.12.4 2006-10-10 18:51:52 christianfoltin Exp $ */
 
 package accessories.plugins.util.html;
 
@@ -30,6 +30,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
+import freemind.view.mindmapview.MapView;
 
 /** */
 public class ClickableImageCreator {
@@ -57,7 +58,7 @@ public class ClickableImageCreator {
 
     private final MindMapNode root;
 
-    private final ModeController controller;
+    private final ModeController modeController;
 
 
     private Rectangle innerBounds;
@@ -70,12 +71,18 @@ public class ClickableImageCreator {
      * then this string has to be FM$1FM.
      */
     public ClickableImageCreator(MindMapNode root,
-            ModeController controller, String regExpLinkReplacement) {
+            ModeController modeController, String regExpLinkReplacement) {
         super();
         this.root = root;
         this.regExpLinkReplacement = regExpLinkReplacement;
-		innerBounds = controller.getView().getInnerBounds();
-        this.controller = controller;
+		MapView view = modeController.getView();
+		if (view != null) {
+			innerBounds = view.getInnerBounds();
+		} else {
+			// test case: give any bounds:
+			innerBounds = new Rectangle(0,0,100,100);
+		}
+		this.modeController = modeController;
         createArea();
     }
 
@@ -105,9 +112,9 @@ public class ClickableImageCreator {
     private void createArea(MindMapNode node) {
         if (node != null && node.getViewer() != null) {
             AreaHolder holder = new AreaHolder();
-            holder.title = node.getShortText(controller);
-            holder.alt = node.getShortText(controller);
-            holder.href = node.getObjectId(controller);
+            holder.title = node.getShortText(modeController);
+            holder.alt = node.getShortText(modeController);
+            holder.href = node.getObjectId(modeController);
             holder.coordinates.x = (int) (node.getViewer().getX()-innerBounds.getMinX());
             holder.coordinates.y = (int) (node.getViewer().getY()-innerBounds.getMinY());
             holder.coordinates.width = node.getViewer().getWidth();

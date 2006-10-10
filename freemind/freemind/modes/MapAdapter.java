@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.10 2006-09-24 19:43:06 christianfoltin Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.11 2006-10-10 18:51:52 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -529,7 +529,7 @@ public abstract class MapAdapter implements MindMap {
       * node and its childrens children...  This will post a
       * treeStructureChanged event.
       */
-    protected void nodeStructureChanged(TreeNode node) {
+    public void nodeStructureChanged(MindMapNode node) {
         setSaved(false);
         if (node != null) {
            fireTreeStructureChanged(this, getPathToRoot(node), null, null); }}

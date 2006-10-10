@@ -31,7 +31,7 @@ import javax.swing.JMenuItem;
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.actions.generated.instance.BoldNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.MapAdapter;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
@@ -62,7 +62,7 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuI
 		return BoldNodeAction.class;
 	}
 
-	public ActionPair apply(MapAdapter model, MindMapNode selected)  {
+	public ActionPair apply(MindMap model, MindMapNode selected)  {
 		// every node is set to the inverse of the focussed node.
 		boolean bold = modeController.getSelected().isBold();
 		return getActionPair(selected, !bold);

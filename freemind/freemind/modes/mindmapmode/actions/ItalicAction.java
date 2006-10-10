@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: ItalicAction.java,v 1.1.2.2.2.1 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: ItalicAction.java,v 1.1.2.2.2.2 2006-10-10 18:51:53 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import javax.swing.Action;
@@ -29,7 +29,7 @@ import javax.swing.JMenuItem;
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.actions.generated.instance.ItalicNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.MapAdapter;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
@@ -60,7 +60,7 @@ public class ItalicAction extends NodeGeneralAction implements NodeActorXml, Men
 		return ItalicNodeAction.class;
 	}
 
-	public ActionPair apply(MapAdapter model, MindMapNode selected) {
+	public ActionPair apply(MindMap model, MindMapNode selected) {
 		// every node is set to the inverse of the focussed node.
 		boolean italic = modeController.getSelected().isItalic();
 		return getActionPair(selected, !italic);

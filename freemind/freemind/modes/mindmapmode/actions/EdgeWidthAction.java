@@ -20,14 +20,14 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: EdgeWidthAction.java,v 1.1.2.2 2006-02-15 21:18:45 christianfoltin Exp $ */
+/* $Id: EdgeWidthAction.java,v 1.1.2.2.2.1 2006-10-10 18:51:53 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
 import freemind.controller.actions.generated.instance.EdgeWidthFormatAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.EdgeAdapter;
-import freemind.modes.MapAdapter;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
@@ -42,7 +42,7 @@ public class EdgeWidthAction extends NodeGeneralAction implements NodeActorXml {
         addActor(this);
     }
 
-    public ActionPair apply(MapAdapter model, MindMapNode selected)
+    public ActionPair apply(MindMap model, MindMapNode selected)
              {
         return getActionPair(selected, mWidth);
     }

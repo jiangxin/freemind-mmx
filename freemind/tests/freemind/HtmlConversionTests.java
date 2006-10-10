@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlConversionTests.java,v 1.1.2.5 2006-07-25 20:28:30 christianfoltin Exp $*/
+/*$Id: HtmlConversionTests.java,v 1.1.2.6 2006-10-10 18:51:53 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -30,7 +30,7 @@ public class HtmlConversionTests extends FreeMindTestBase {
 
     
     public void testSetHtml() throws Exception {
-        MindMapNodeModel node = new MindMapNodeModel(getFrame(), new MindMapMock());
+        MindMapNodeModel node = new MindMapNodeModel(getFrame(), new MindMapMock("</map>"));
         node.setText("test");
         // wiped out: <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n
         assertEquals("proper conversion", "<html>\n  <head>\n    \n  </head>\n  <body>\n    test\n  </body>\n</html>\n", node.getXmlText());

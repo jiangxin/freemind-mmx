@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: RemoveAllIconsAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: RemoveAllIconsAction.java,v 1.1.2.2.2.3 2006-10-10 18:51:53 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -28,8 +28,8 @@ import java.util.Iterator;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.RemoveAllIconsXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
@@ -50,7 +50,7 @@ public class RemoveAllIconsAction extends NodeGeneralAction implements NodeActor
         addActor(this);
     }
 
-    public ActionPair apply(MapAdapter model, MindMapNode selected)  {
+    public ActionPair apply(MindMap model, MindMapNode selected)  {
         CompoundAction undoAction = new CompoundAction();
         for (Iterator i = selected.getIcons().iterator(); i.hasNext();) {
             MindIcon icon = (MindIcon) i.next();

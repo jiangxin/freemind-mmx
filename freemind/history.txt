@@ -19,6 +19,8 @@ Changes made in FreeMind 0.9.0 Beta 8
 * Bug fix: slider position at first start corrected.
 * New polish translation. Thanks to the author.
 * New slovenian translation. Thanks to the author.
+* Fixed html exports. New JUnit tests available.
+* Fixed browser applet.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 7

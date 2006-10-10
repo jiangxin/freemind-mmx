@@ -20,12 +20,12 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: MoveNodeAction.java,v 1.1.2.2.2.3 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: MoveNodeAction.java,v 1.1.2.2.2.4 2006-10-10 18:51:53 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import freemind.controller.actions.generated.instance.MoveNodeXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.MapAdapter;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
@@ -56,7 +56,7 @@ public class MoveNodeAction extends NodeGeneralAction implements NodeActorXml {
         return MoveNodeXmlAction.class;
     }
 
-    public ActionPair apply(MapAdapter model, MindMapNode selected)
+    public ActionPair apply(MindMap model, MindMapNode selected)
              {
         // reset position
         if(selected.isRoot())

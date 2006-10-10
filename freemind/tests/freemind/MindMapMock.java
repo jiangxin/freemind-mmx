@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMock.java,v 1.1.2.2 2006-09-02 22:09:49 christianfoltin Exp $*/
+/*$Id: MindMapMock.java,v 1.1.2.3 2006-10-10 18:51:53 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -43,11 +43,14 @@ import freemind.modes.ModeController;
 /** */
 public class MindMapMock implements MindMap {
 
-    /**
+    private final String mapXmlString;
+
+	/**
      * 
      */
-    public MindMapMock() {
+    public MindMapMock(String mapXmlString) {
         super();
+		this.mapXmlString = mapXmlString;
 
     }
 
@@ -109,6 +112,8 @@ public class MindMapMock implements MindMap {
     }
 
     public void getFilteredXml(Writer fileout) throws IOException {
+    		fileout.write(mapXmlString);
+    		fileout.close();
     }
 
     public String getRestoreable() {
@@ -179,6 +184,21 @@ public class MindMapMock implements MindMap {
 
 	public MindMapNode getRootNode() {
 		return null;
+	}
+
+	public void insertNodeInto(MindMapNode copy, MindMapNode rootNode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void nodeStructureChanged(MindMapNode node) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setSaved(boolean isSaved) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

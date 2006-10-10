@@ -19,7 +19,7 @@
  *
  * Created on 31.12.2005
  */
-/* $Id: BrowseHookFactory.java,v 1.1.2.1.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
+/* $Id: BrowseHookFactory.java,v 1.1.2.1.2.2 2006-10-10 18:51:53 christianfoltin Exp $ */
 package freemind.modes.browsemode;
 
 import java.util.List;
@@ -74,9 +74,7 @@ public class BrowseHookFactory extends HookFactoryAdapter {
 	public NodeHook createNodeHook(String hookName) {
 //		System.out.println("create node hook:"+hookName);
 		NodeHook hook;
-		if(hookName.equals("accessories/plugins/NodeNote.properties")) {
-			hook = new NodeNoteViewer();
-		} else if(hookName.equals(ReminderHookBase.PLUGIN_LABEL)) {
+		if(hookName.equals(ReminderHookBase.PLUGIN_LABEL)) {
 			hook = new BrowseReminderHook();
 		} else {
 			hook = new PermanentNodeHookSubstituteUnknown(hookName);
