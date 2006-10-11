@@ -91,6 +91,9 @@
 			<menu_category name="links">
 				<menu_action field="followLink" key_ref="keystroke_follow_link"/> <!-- goto -->				
 			</menu_category>
+			<menu_separator/>
+			<menu_category name="notes">
+			</menu_category>
 		</menu_category>	
 	
 		<menu_category name="format">

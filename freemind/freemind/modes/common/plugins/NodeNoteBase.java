@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteBase.java,v 1.1.2.2.2.8 2006-10-10 18:51:53 christianfoltin Exp $ */
+/* $Id: NodeNoteBase.java,v 1.1.2.2.2.9 2006-10-11 21:32:40 christianfoltin Exp $ */
 package freemind.modes.common.plugins;
 
 
 /**
+ * Not used anymore.
  * @author foltin
  *
  */

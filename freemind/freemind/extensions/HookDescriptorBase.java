@@ -19,7 +19,7 @@
  *
  * Created on 18.08.2006
  */
-/*$Id: HookDescriptorBase.java,v 1.1.2.1 2006-08-20 19:34:25 christianfoltin Exp $*/
+/*$Id: HookDescriptorBase.java,v 1.1.2.2 2006-10-11 21:32:40 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -83,7 +83,7 @@ public class HookDescriptorBase {
 			return string;
 		}
 		if (string.startsWith("%")) {
-			return frame.getController().getProperty(string.substring(1));
+			return frame.getProperty(string.substring(1));
 		}
 		return string;
 	}
