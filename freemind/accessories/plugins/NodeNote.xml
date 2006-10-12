@@ -17,9 +17,9 @@
 		instanciation="Other">
         <plugin_mode class_name="freemind.modes.mindmapmode"/>
         <plugin_menu location="menu_bar/navigate/notes/note_jumpto"/>
-        <plugin_property name="direction" value="note"/>
+<!--         <plugin_property name="direction" value="note"/>  -->
     </plugin_action>
-	<plugin_action documentation="%accessories/plugins/NodeNote_jumpfrom.properties_documentation" 
+<!--	<plugin_action documentation="%accessories/plugins/NodeNote_jumpfrom.properties_documentation" 
 		name="%accessories/plugins/NodeNote_jumpfrom.properties_name" 
 		key_stroke="%keystroke_accessories/plugins/NodeNote_jumpfrom.keystroke.alt_M" 
 		base="freemind.extensions.NodeHookAdapter" 
@@ -28,7 +28,7 @@
 		instanciation="Other">
         <plugin_mode class_name="freemind.modes.mindmapmode"/>
         <plugin_menu location="menu_bar/navigate/notes/note_jumpfrom"/>
-        <plugin_property name="direction" value="node"/>
-    </plugin_action>
+        <plugin_property name="direction" value="node"/> 
+    </plugin_action> -->
 
 </plugin>

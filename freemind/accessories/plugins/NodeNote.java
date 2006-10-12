@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.22 2006-10-12 20:39:16 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.23 2006-10-12 21:25:36 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -209,7 +209,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
             String keystroke = controller
                     .getFrame()
                     .getProperty(
-                            "keystroke_accessories/plugins/NodeNote_jumpfrom.keystroke.alt_M");
+                            "keystroke_accessories/plugins/NodeNote_jumpto.keystroke.alt_N");
             noteViewerComponent.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .put(KeyStroke.getKeyStroke(keystroke), "jumpToMapAction");
 
@@ -286,10 +286,15 @@ public class NodeNote extends MindMapNodeHookAdapter {
          * 
          */
         public void changeNoteText(String text, MindMapNode node) {
+            String oldNoteText = node.getXmlNoteText();
+            if(Tools.safeEquals(text, oldNoteText)) {
+                // they are equal.
+                return;
+            }
             EditNoteToNodeAction doAction = createEditNoteToNodeAction(node,
                     text);
             EditNoteToNodeAction undoAction = createEditNoteToNodeAction(node,
-                    node.getXmlNoteText());
+                    oldNoteText);
             getMindMapController().getActionFactory().startTransaction(
                     this.getClass().getName());
             getMindMapController().getActionFactory().executeAction(
@@ -335,8 +340,8 @@ public class NodeNote extends MindMapNodeHookAdapter {
 
     public void startupMapHook() {
         super.startupMapHook();
-        String foldingType = getResourceString("direction");
-        if (foldingType.equals("note")) {
+//        String foldingType = getResourceString("direction");
+//        if (foldingType.equals("note")) {
             // jump to the notes:
             KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
             EventQueue.invokeLater(new Runnable(){
@@ -345,11 +350,11 @@ public class NodeNote extends MindMapNodeHookAdapter {
                     .requestFocus();
                 }                
             });
-        } else {
-            // jump back from notes:
-            getController().getView().requestFocusInWindow();
-
-        }
+//        } else {
+//            // jump back from notes:
+////            getController().getView().requestFocusInWindow();
+//
+//        }
     }
 
 }
