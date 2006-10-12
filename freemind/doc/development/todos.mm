@@ -62,7 +62,7 @@
 <icon BUILTIN="full-4"/>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1154896413253" ID="Freemind_Link_1766300173" MODIFIED="1154896964771" POSITION="right" TEXT="Bugs">
+<node COLOR="#0033ff" CREATED="1154896413253" FOLDED="true" ID="Freemind_Link_1766300173" MODIFIED="1154896964771" POSITION="right" TEXT="Bugs">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1157614005336" ID="Freemind_Link_113590541" MODIFIED="1159694035738" TEXT="&quot;del&quot; l&#xf6;scht auch in Notes den ganzen Knoten">
 <cloud/>
@@ -495,6 +495,32 @@ existing search function to implement this.
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="kaddressbook"/>
 <icon BUILTIN="help"/>
+</node>
+</node>
+<node COLOR="#0033ff" CREATED="1160643399288" ID="_" MODIFIED="1160643409540" POSITION="right" TEXT="Spontaneous">
+<font NAME="SansSerif" SIZE="18"/>
+<node COLOR="#00b439" CREATED="1160643411158" ID="Freemind_Link_1907839655" MODIFIED="1160643427199" TEXT="Inserting a new node automatically closes the edit window">
+<font NAME="SansSerif" SIZE="16"/>
+</node>
+<node COLOR="#00b439" CREATED="1160643427506" ID="Freemind_Link_1024308952" MODIFIED="1160643452903">
+<richcontent TYPE="NODE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Editing notes is painful slow
+    </p>
+  </body>
+</html>
+</richcontent>
+<font NAME="SansSerif" SIZE="16"/>
+</node>
+<node COLOR="#00b439" CREATED="1160644156064" ID="Freemind_Link_98901142" MODIFIED="1160644163194" TEXT="Tooltips of notes with max width.">
+<font NAME="SansSerif" SIZE="16"/>
+</node>
+<node COLOR="#00b439" CREATED="1160648490160" ID="Freemind_Link_863418151" MODIFIED="1160648507458" TEXT="Gray rectangle below text in notes/rich text.">
+<font NAME="SansSerif" SIZE="16"/>
 </node>
 </node>
 <node COLOR="#0033ff" CREATED="1154896282663" ID="Freemind_Link_962481393" MODIFIED="1154896964783" POSITION="left" TEXT="Legend">

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.21 2006-10-12 20:06:35 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.22 2006-10-12 20:39:16 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -251,6 +251,8 @@ public class NodeNote extends MindMapNodeHookAdapter {
             }
             node.setStateIcon(this.getClass().getName(), (enabled) ? noteIcon
                     : null);
+            // tooltip, first try.
+            getMindMapController().setToolTip(node, "nodeNoteText", (enabled)?node.getXmlNoteText():null);
             getMindMapController().nodeRefresh(node);
         }
 

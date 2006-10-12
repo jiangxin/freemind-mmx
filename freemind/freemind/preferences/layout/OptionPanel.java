@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.9 2006-09-04 20:22:54 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.10 2006-10-12 20:39:17 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -555,8 +555,11 @@ public class OptionPanel implements TextTranslator {
 
 		controls.add(new StringProperty(null, "defaultfontsize")); //  12
 
-		controls.add(new StringProperty("max_node_width.tooltip",
-				"max_node_width")); //  600
+		controls.add(new NumberProperty("max_node_width.tooltip",
+				"max_node_width", 1, Integer.MAX_VALUE, 1)); //  600
+
+        controls.add(new NumberProperty("max_tooltip_width.tooltip",
+		        "max_tooltip_width", 1, Integer.MAX_VALUE, 1)); //  600
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("other_defaults"));
@@ -1027,9 +1030,8 @@ public class OptionPanel implements TextTranslator {
 								"selection_method_delayed",
 								"selection_method_by_click" }, this)); //  selection_method_direct
 
-		controls.add(new StringProperty(
-
-		"time_for_delayed_selection.tooltip", "time_for_delayed_selection")); // 500
+		controls.add(new NumberProperty("time_for_delayed_selection.tooltip",
+                "time_for_delayed_selection", 1, Integer.MAX_VALUE, 1)); // 500
 
         controls.add(new NextLineProperty());
 		controls

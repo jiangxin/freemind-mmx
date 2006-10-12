@@ -22,6 +22,11 @@ Changes made in FreeMind 0.9.0 Beta 8
 * Fixed html exports. New JUnit tests available.
 * Fixed browser applet.
 * Started keyboard support for enter/leave note.
+* Bug fix: Delayed selection time and others are number properties now.
+* Notes are displayed in tooltips (currently, the entire note is displayed).
+* ToolTips are back and its width is an option, now.
+
+
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 7

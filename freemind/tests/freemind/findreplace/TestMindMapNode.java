@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: TestMindMapNode.java,v 1.1.2.5 2006-09-04 20:22:54 christianfoltin Exp $*/
+/*$Id: TestMindMapNode.java,v 1.1.2.6 2006-10-12 20:39:17 christianfoltin Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -29,6 +29,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.SortedMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.tree.MutableTreeNode;
@@ -179,7 +180,7 @@ final class TestMindMapNode implements MindMapNode {
         return null;
     }
 
-    public boolean isOneLeftSideOfRoot() {
+    public boolean isOnLeftSideOfRoot() {
         return false;
     }
 
@@ -276,7 +277,7 @@ final class TestMindMapNode implements MindMapNode {
     public void setToolTip(String key, String tip) {
     }
 
-    public Map getToolTip() {
+    public SortedMap getToolTip() {
         return null;
     }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.16 2006-09-24 19:43:06 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.17 2006-10-12 20:39:16 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -135,7 +135,7 @@ public class Controller  implements MapModuleChangeOberser {
     private boolean antialiasAll = false;
     private Map fontMap = new HashMap();
 
-    private FilterController fc;
+    private FilterController mFilterController;
 
     boolean isPrintingAllowed=true;
     boolean menubarVisible=true;
@@ -234,8 +234,8 @@ public class Controller  implements MapModuleChangeOberser {
         //Create the ToolBar
         northToolbarPanel = new JPanel(new BorderLayout());
         toolbar = new MainToolBar(this);
-        fc = new FilterController(this);
-        filterToolbar = fc.getFilterToolbar();
+        mFilterController = new FilterController(this);
+        filterToolbar = mFilterController.getFilterToolbar();
         getFrame().getContentPane().add( northToolbarPanel, BorderLayout.NORTH );
         northToolbarPanel.add( toolbar, BorderLayout.NORTH);
         northToolbarPanel.add( filterToolbar, BorderLayout.SOUTH);
@@ -1462,7 +1462,7 @@ public class Controller  implements MapModuleChangeOberser {
 
 
     public FilterController getFilterController() {
-        return fc;
+        return mFilterController;
     }
 
     public PageFormat getPageFormat() {

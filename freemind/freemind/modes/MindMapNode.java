@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.7 2006-09-02 22:09:49 christianfoltin Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.8 2006-10-12 20:39:17 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.SortedMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
@@ -166,7 +167,7 @@ public interface MindMapNode extends MutableTreeNode {
 
     /** Root is on the right side.
      */
-    boolean isOneLeftSideOfRoot();
+    boolean isOnLeftSideOfRoot();
 
     void setLeft(boolean isLeft);
 
@@ -224,7 +225,7 @@ public interface MindMapNode extends MutableTreeNode {
 
 	//tooltips,fc 29.2.2004
 	void setToolTip(String key, String tip);
-	java.util.Map getToolTip();
+	SortedMap getToolTip();
 
 	//additional info, fc, 15.12.2004
 

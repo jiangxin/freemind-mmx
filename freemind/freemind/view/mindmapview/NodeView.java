@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.10 2006-10-01 16:43:40 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.11 2006-10-12 20:39:17 christianfoltin Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -43,9 +43,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -140,7 +139,9 @@ public abstract class NodeView extends JComponent{
 	final static int ALIGN_BOTTOM = -1;
 	final static int ALIGN_CENTER = 0;
 	final static int ALIGN_TOP = 1;
+    private static Logger logger;
 
+    
     //
     // Constructors
     //
@@ -148,7 +149,12 @@ public abstract class NodeView extends JComponent{
     protected static Color standardSelectColor;
     private static Color standardNodeColor;
     private Object viewDeletionEvent;
+    private int maxToolTipWidth;
     protected NodeView(MindMapNode model, MapView map) {
+        if(logger == null) {
+            logger = map.getController().getFrame().getLogger(this.getClass().getName());
+        }
+
     setLayout(NodeViewLayoutManager.getInstance());
     setFocusCycleRoot(true);
     mainView = new MainView();
@@ -873,7 +879,7 @@ public abstract class NodeView extends JComponent{
             setForeground(color);
 
             // 2) icons left or right?
-            getMainView().setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
+            getMainView().setHorizontalTextPosition((getModel().isOnLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
             // 3) Create the icons:
             MultipleImage iconImages = new MultipleImage(map.getZoom());
             boolean iconPresent = false;
@@ -1008,7 +1014,12 @@ public abstract class NodeView extends JComponent{
         attributeView.update();
         // 7) ToolTips:
         updateToolTip();
-        // 8) Complete
+        // 8) icons left or right?
+        //URGENT: Discuss with Dan.
+        mainView.setHorizontalTextPosition((getModel().isOnLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
+        // 9) Complete
+        repaint(); // Because of zoom?
+        // 10) Complete
         revalidate(); // Because of zoom?
     }
 
@@ -1020,33 +1031,44 @@ public abstract class NodeView extends JComponent{
      */
     public void updateToolTip() {
         Map tooltips = getModel().getToolTip();
-        if(tooltips.size() == 1) {
-            setToolTipText((String) tooltips.values().iterator().next());
-        } else if (tooltips.size()==0) {
-																setToolTipText(null);
-								} else {
+/*        if(tooltips.size() == 1) {
+            String toolTipText = (String) tooltips.values().iterator().next();
+            logger.finest("setting tooltip to "+toolTipText);
+            mainView.setToolTipText(toolTipText);
+        } else*/ if (tooltips.size()==0) {
+            mainView.setToolTipText(null);
+        } else {
             // html table
-            StringBuffer text = new StringBuffer("<html><table>");
-            Set keySet = tooltips.keySet();
-            TreeSet sortedKeySet = new TreeSet();
-            sortedKeySet.addAll(keySet);
-            for (Iterator i = sortedKeySet.iterator(); i.hasNext();) {
+            StringBuffer text = new StringBuffer("<html><table width=\"" +
+                    getMaxToolTipWidth() +
+                    "\">");
+            for (Iterator i = tooltips.keySet().iterator(); i.hasNext();) {
                 String key = (String) i.next();
                 String value = (String) tooltips.get(key);
+                // no html end inside the value:
+                value = value.replaceAll("</html>", "");
                 text.append("<tr><td>");
                 text.append(value);
                 text.append("</td></tr>");
             }
             text.append("</table></html>");
-            setToolTipText(text.toString());
+            mainView.setToolTipText(text.toString());
         }
-   		// 6) icons left or right?
-   		//URGENT: Discuss with Dan.
-        mainView.setHorizontalTextPosition((getModel().isOneLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
-        // 7) Complete
-        repaint(); // Because of zoom?
     }
 
+    public int getMaxToolTipWidth() {
+        if (maxToolTipWidth == 0) {
+            try {
+                maxToolTipWidth = map.getController().getIntProperty(
+                        "max_tooltip_width", 600);
+            } catch (NumberFormatException e) {
+                maxToolTipWidth = 600;
+            }
+        }
+        return maxToolTipWidth;
+    }
+
+    
     /**
      */
     public void setIcon(MultipleImage image) {

@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: NumberProperty.java,v 1.1.2.3.2.2 2006-07-25 20:28:19 christianfoltin Exp $*/
+/*$Id: NumberProperty.java,v 1.1.2.3.2.3 2006-10-12 20:39:16 christianfoltin Exp $*/
 package freemind.common;
 
 import javax.swing.JLabel;
@@ -34,14 +34,20 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 public class NumberProperty extends PropertyBean implements
 	PropertyControl {
 	    String description;
-	    JSlider slider;
+//	    JSlider slider;
 	    String label;
         private JSpinner spinner;
+        private final int min;
+        private final int max;
+        private final int step;
 	    
 	    /**
 	     */
 	    public NumberProperty(String description, String label, int min, int max, int step) {
-	        slider = new JSlider(JSlider.HORIZONTAL, 5, 1000, 100);
+	        this.min = min;
+            this.max = max;
+            this.step = step;
+            //	        slider = new JSlider(JSlider.HORIZONTAL, 5, 1000, 100);
 	        spinner = new JSpinner(
               new SpinnerNumberModel(min, min, max, step));
 
@@ -68,6 +74,11 @@ public class NumberProperty extends PropertyBean implements
             int intValue = 100;
             try {
                 intValue = Integer.parseInt(value);
+                int stepModul = (intValue-min) % step;
+                if(intValue < min || intValue > max || (stepModul != 0)) {
+                    System.err.println("Actual value of property " + getLabel() + " is not in the allowed range: "+ value);
+                    intValue = min;
+                }
             } catch(NumberFormatException e){
                 freemind.main.Resources.getInstance().logExecption(e);
             }

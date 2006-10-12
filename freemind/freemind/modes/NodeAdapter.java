@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.17 2006-09-04 20:22:54 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.18 2006-10-12 20:39:17 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -29,12 +29,12 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -53,7 +53,6 @@ import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
-import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.NodeView;
 
@@ -72,7 +71,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	protected Object userObject = "no text";
 	private String xmlText = "no text";
     private String link = null; //Change this to vector in future for full graph support
-    private HashMap toolTip = null; // lazy, fc, 30.6.2005
+    private TreeMap toolTip = null; // lazy, fc, 30.6.2005
 
     //these Attributes have default values, so it can be useful to directly access them in
     //the save() method instead of using getXXX(). This way the stored file is smaller and looks better.
@@ -627,14 +626,14 @@ public abstract class NodeAdapter implements MindMapNode {
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMapNode#isOneLeftSideOfRoot()
 	 */
-	public boolean isOneLeftSideOfRoot() {
+	public boolean isOnLeftSideOfRoot() {
 		if(isRoot())
 			return false;
 		// now, the node has a parent:
 		if(getParentNode().isRoot()) {
 			return (isLeft() == null)?false:isLeft().getValue();
 		}
-		return getParentNode().isOneLeftSideOfRoot();
+		return getParentNode().isOnLeftSideOfRoot();
 	}
 
 	public void setLeft(boolean isLeft){
@@ -810,7 +809,7 @@ freemind.main.Resources.getInstance().logExecption(			e);
 	}
 	private void createToolTip() {
 		if(toolTip == null) {
-			toolTip = new HashMap();
+			toolTip = new TreeMap();
 		}
 	}
 	private void createHooks() {
@@ -870,10 +869,10 @@ freemind.main.Resources.getInstance().logExecption(			e);
 
 	/**
 	 */
-	public java.util.Map getToolTip() {
+	public SortedMap getToolTip() {
 		if(toolTip==null)
-			return Collections.EMPTY_MAP;
-		return Collections.unmodifiableMap(toolTip);
+			return new TreeMap();;
+		return Collections.unmodifiableSortedMap(toolTip);
 	}
 
 	/**
