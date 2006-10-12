@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.20 2006-10-11 21:32:40 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.21 2006-10-12 20:06:35 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.util.Locale;
@@ -202,14 +203,14 @@ public class NodeNote extends MindMapNodeHookAdapter {
             // register "leave note" action:
             Action jumpToMapAction = new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
-                    controller.getView().requestFocusInWindow();
+                    controller.getView().getSelected().requestFocus();
                 }
             };
             String keystroke = controller
                     .getFrame()
                     .getProperty(
                             "keystroke_accessories/plugins/NodeNote_jumpfrom.keystroke.alt_M");
-            noteViewerComponent.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            noteViewerComponent.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .put(KeyStroke.getKeyStroke(keystroke), "jumpToMapAction");
 
             // Register action
@@ -336,9 +337,12 @@ public class NodeNote extends MindMapNodeHookAdapter {
         if (foldingType.equals("note")) {
             // jump to the notes:
             KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
-            
-            Registration.getHtmlEditorPanel()
-                    .requestFocusInWindow();
+            EventQueue.invokeLater(new Runnable(){
+                public void run() {
+                    Registration.getHtmlEditorPanel()
+                    .requestFocus();
+                }                
+            });
         } else {
             // jump back from notes:
             getController().getView().requestFocusInWindow();
