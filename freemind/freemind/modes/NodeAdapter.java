@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.18 2006-10-12 20:39:17 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.19 2006-10-13 21:35:56 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -118,6 +118,7 @@ public abstract class NodeAdapter implements MindMapNode {
     static protected java.util.logging.Logger logger;
     private MindMap map = null;
     private NodeAttributeTableModel attributes;
+    private String noteText;
 	private String xmlNoteText;
 
 
@@ -163,7 +164,7 @@ public abstract class NodeAdapter implements MindMapNode {
             xmlText = null;
             return;
         }
-        text = text.replaceAll("\0", "")/*= \0 is not allowed: */;
+        text = makeValidXml(text);
         userObject = text;
         xmlText = HtmlTools.getInstance().toXhtml(text);
     }
@@ -173,23 +174,52 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
     public final void setXmlText(String pXmlText) {
-        pXmlText = pXmlText.replaceAll("\0", "")/*= \0 is not allowed: */;
-        userObject = HtmlTools.getInstance().toHtml(pXmlText);
-        this.xmlText = pXmlText;
+        this.xmlText = makeValidXml(pXmlText);
+        userObject = HtmlTools.getInstance().toHtml(xmlText);
     }
-	public final String getXmlNoteText() {
+
+    /** \0 is not allowed: */
+    private String makeValidXml(String pXmlNoteText) {
+        return pXmlNoteText.replaceAll("\0", "");
+    }
+    /* ************************************************************
+     * ********     Notes                                   *******
+     * ************************************************************
+     */
+    
+    public final String getXmlNoteText() {
 		return xmlNoteText;
 	}
 
-	public final void setXmlNoteText(String pXmlNoteText) {
-		if(pXmlNoteText==null){
-			xmlNoteText = null;
-			return;
-		}
-		pXmlNoteText = pXmlNoteText.replaceAll("\0", "")/* = \0 is not allowed: */;
-		this.xmlNoteText = pXmlNoteText;
-	}
+    public final String getNoteText() {
+        return noteText;
+    }
 
+    public final void setXmlNoteText(String pXmlNoteText) {
+		if (pXmlNoteText == null) {
+            xmlNoteText = null;
+            noteText = null;
+            return;
+        }
+        this.xmlNoteText = makeValidXml(pXmlNoteText);
+        /*
+         * fc, 13.10.06: as long, as the 0.9.0 Beta7 bug with non conformant XML
+         * is out, we double the conversion here.
+         */
+        xmlNoteText = HtmlTools.getInstance().toXhtml(xmlNoteText);
+        noteText = HtmlTools.getInstance().toHtml(xmlNoteText);
+	}
+	
+	public final void setNoteText(String pNoteText) {
+	    if(pNoteText==null){
+	        xmlNoteText = null;
+	        noteText = null;
+	        return;
+	    }
+	    this.noteText = makeValidXml(pNoteText);
+        this.xmlNoteText = HtmlTools.getInstance().toXhtml(noteText);
+	}
+	
     public String getPlainTextContent() {
        // Redefined in MindMapNodeModel.
        return toString(); }

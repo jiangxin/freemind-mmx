@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.23 2006-10-12 21:25:36 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.24 2006-10-13 21:35:56 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -113,7 +113,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
             public void onReceiveFocusHook(MindMapNode node) {
                 this.node = node;
                 // logger.info("onReceiveFocuse for node " + node.toString());
-                String note = node.getXmlNoteText();
+                String note = node.getNoteText();
                 if (note != null) {
                     getHtmlEditorPanel().setCurrentDocumentContent(note);
                     mLastContentEmpty = false;
@@ -252,7 +252,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
             node.setStateIcon(this.getClass().getName(), (enabled) ? noteIcon
                     : null);
             // tooltip, first try.
-            getMindMapController().setToolTip(node, "nodeNoteText", (enabled)?node.getXmlNoteText():null);
+            getMindMapController().setToolTip(node, "nodeNoteText", (enabled)?node.getNoteText():null);
             getMindMapController().nodeRefresh(node);
         }
 
@@ -262,9 +262,9 @@ public class NodeNote extends MindMapNodeHookAdapter {
                 MindMapNode node = controller.getNodeFromID(noteTextAction
                         .getNode());
                 String newText = noteTextAction.getText();
-                String oldText = node.getXmlNoteText();
+                String oldText = node.getNoteText();
                 if (!Tools.safeEquals(newText, oldText)) {
-                    node.setXmlNoteText(newText);
+                    node.setNoteText(newText);
                     // update display only, if the node is displayed.
                     if (node == controller.getSelected()
                             && (!Tools.safeEquals(newText, getHtmlEditorPanel()
@@ -286,7 +286,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
          * 
          */
         public void changeNoteText(String text, MindMapNode node) {
-            String oldNoteText = node.getXmlNoteText();
+            String oldNoteText = node.getNoteText();
             if(Tools.safeEquals(text, oldNoteText)) {
                 // they are equal.
                 return;

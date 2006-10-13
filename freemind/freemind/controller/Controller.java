@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.17 2006-10-12 20:39:16 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.18 2006-10-13 21:35:56 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -39,6 +39,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
@@ -741,9 +742,14 @@ public class Controller  implements MapModuleChangeOberser {
 		   (getResourceString("mode_title"));
 		String title = formatter.format(messageArguments);
 		if (getMapModule() != null) {
-			title = getMapModule().toString() + " - " + title +
-			  ( getMapModule().getModel().isReadOnly() ?
+			MindMap model = getMapModule().getModel();
+            title = getMapModule().toString() + (model.isSaved()?"":"*") + " - " + title +
+			  ( model.isReadOnly() ?
 				" ("+getResourceString("read_only")+")" : "");
+            File file = model.getFile();
+            if (file != null) {
+                title += " " + file.getAbsolutePath();
+            }            
 		}
 		getFrame().setTitle(title);
 	}

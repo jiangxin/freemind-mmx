@@ -25,8 +25,10 @@ Changes made in FreeMind 0.9.0 Beta 8
 * Bug fix: Delayed selection time and others are number properties now.
 * Notes are displayed in tooltips (currently, the entire note is displayed).
 * ToolTips are back and its width is an option, now.
-
-
+* Moved new search to search menu.
+* Title gets a '*', when map gets dirty. Path is added to title.
+* Bug fix: patterns are saved now.
+* Important Bug Fix: Notes are saved in XML now.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 7

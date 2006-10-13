@@ -59,6 +59,9 @@
 			--><xsl:when test="@version='0.9.0_Beta_6'"><!--
 			-->0900060<!-- 
 			--></xsl:when><!--
+			--><xsl:when test="@version='0.9.0_Beta_8'"><!--
+			-->0900080<!-- 
+			--></xsl:when><!--
 			--><xsl:otherwise><!--
 			-->-1<!--
 			--></xsl:otherwise><!--

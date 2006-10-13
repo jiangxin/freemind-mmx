@@ -28,7 +28,8 @@
 		label="plugins/NodeList.xml" class_name="plugins.time.TimeList"
 		key_stroke="control shift F">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/extras/first/time_management/nodelist"/>
+<!-- 		<plugin_menu location="menu_bar/extras/first/time_management/nodelist"/> -->
+		<plugin_menu location="menu_bar/edit/find/nodelist"/>
 		<plugin_property name="show_all_nodes" value="true"/>
 	</plugin_action>
 	<plugin_action 

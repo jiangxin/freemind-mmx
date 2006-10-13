@@ -3,7 +3,7 @@
 <attribute_registry>
 <attribute_name NAME="script1"/>
 </attribute_registry>
-<node COLOR="#000000" CREATED="1154896082504" ID="Freemind_Link_366022196" MODIFIED="1157970025320" TEXT="Todos for coming version 0.9.x">
+<node COLOR="#000000" CREATED="1154896082504" ID="Freemind_Link_366022196" MODIFIED="1160772222083" TEXT="Todos for coming version 0.9.x">
 <font NAME="SansSerif" SIZE="20"/>
 <hook NAME="accessories/plugins/AutomaticLayout.properties"/>
 <node COLOR="#0033ff" CREATED="1154896187932" ID="Freemind_Link_917676449" MODIFIED="1154896964685" POSITION="right" TEXT="HTML">
@@ -62,7 +62,7 @@
 <icon BUILTIN="full-4"/>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1154896413253" FOLDED="true" ID="Freemind_Link_1766300173" MODIFIED="1154896964771" POSITION="right" TEXT="Bugs">
+<node COLOR="#0033ff" CREATED="1154896413253" ID="Freemind_Link_1766300173" MODIFIED="1154896964771" POSITION="right" TEXT="Bugs">
 <font NAME="SansSerif" SIZE="18"/>
 <node COLOR="#00b439" CREATED="1157614005336" ID="Freemind_Link_113590541" MODIFIED="1159694035738" TEXT="&quot;del&quot; l&#xf6;scht auch in Notes den ganzen Knoten">
 <cloud/>
@@ -74,7 +74,7 @@
 <icon BUILTIN="dimitry"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1157643581276" FOLDED="true" ID="Freemind_Link_1012498162" MODIFIED="1159694979215" TEXT="Add an Attribute, Remove it via undo and start &quot;Attribute zuweisen..&quot;">
+<node COLOR="#00b439" CREATED="1157643581276" FOLDED="true" ID="Freemind_Link_1012498162" MODIFIED="1160772558495" TEXT="Add an Attribute, Remove it via undo and start &quot;Attribute zuweisen..&quot;">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="smily_bad"/>
 <icon BUILTIN="dimitry"/>
@@ -118,12 +118,6 @@
 <font NAME="SansSerif" SIZE="14"/>
 </node>
 </node>
-<node COLOR="#00b439" CREATED="1159698168150" ID="Freemind_Link_1923164862" MODIFIED="1159698174980" TEXT="FreeMind creates a ~/SimplyHTML directory and doesn&apos;t clean it up on exit. I would suggest to create this folder under ~/.freemind, and clean it up on exit">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-2"/>
-<icon BUILTIN="dimitry"/>
-</node>
 <node COLOR="#00b439" CREATED="1159699156972" ID="Freemind_Link_1180192310" MODIFIED="1159699165935" TEXT="The line (not the arrow heads) within a graphical link is overwriting the nodes on the map in Version 9.0 Beta 7">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="smily_bad"/>
@@ -153,25 +147,6 @@
 <icon BUILTIN="smily_bad"/>
 <icon BUILTIN="full-3"/>
 </node>
-<node COLOR="#00b439" CREATED="1159695863536" ID="Freemind_Link_787395581" MODIFIED="1159695998671" TEXT="Manage Patterns is not saving any of my changes. ">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="smily_bad"/>
-<icon BUILTIN="full-3"/>
-<node COLOR="#990000" CREATED="1159695877717" ID="Freemind_Link_1082822636" MODIFIED="1159695888382">
-<richcontent TYPE="NODE"><html>
-  <head>
-
-  </head>
-  <body>
-    <p>
-      After modifying the pattern and exiting the screen, it seems to temporarily work for the loaded map, but going back into the Manage Patterns screen shows the original patterns, and the patterns.xml file on disk is never updated.
-    </p>
-  </body>
-</html>
-</richcontent>
-<font NAME="SansSerif" SIZE="14"/>
-</node>
-</node>
 <node COLOR="#00b439" CREATED="1159696097142" ID="Freemind_Link_1306839784" MODIFIED="1159696109480" TEXT="Opening a map when FM has the left toolbar toggled off, results in a half display of the left toolbar.  &quot;Toggle Left Toolbar&quot; then toggles it on to display full toolbar width.">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="full-3"/>
@@ -187,27 +162,12 @@
 <icon BUILTIN="smily_bad"/>
 <icon BUILTIN="full-4"/>
 </node>
-<node COLOR="#00b439" CREATED="1159695583123" ID="Freemind_Link_686844447" MODIFIED="1159695643460" TEXT="Corrupt layout after editing of existing nodes">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="clanbomber"/>
-<icon BUILTIN="dimitry"/>
-<icon BUILTIN="smily_bad"/>
-<node COLOR="#990000" CREATED="1159695822137" ID="Freemind_Link_1949200966" MODIFIED="1159821964193" TEXT="On a node with two children, with one of them having rows of plain text (like described above), moving the focus between a pair of child nodes causes the nodes to move up and down, sometimes.">
-<font NAME="SansSerif" SIZE="14"/>
-</node>
-</node>
 <node COLOR="#00b439" CREATED="1159697202392" ID="Freemind_Link_1845943063" MODIFIED="1159697237091" TEXT="Inline Editor is positioned at the wrong place if Icon exist">
 <font NAME="SansSerif" SIZE="16"/>
 <icon BUILTIN="clanbomber"/>
 <node COLOR="#990000" CREATED="1159697237802" ID="Freemind_Link_1183142025" MODIFIED="1159697261507" TEXT="at the left side much worse that on the right side">
 <font NAME="SansSerif" SIZE="14"/>
 </node>
-</node>
-<node COLOR="#00b439" CREATED="1159698002152" ID="Freemind_Link_330781480" MODIFIED="1159989892332" TEXT="Primarily, multi-line nodes, that exist as child nodes will overlap eachother frequently if they are selected quickly enough. This is most often the case with the &quot;direct&quot; selection method">
-<font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="clanbomber"/>
-<icon BUILTIN="dimitry"/>
-<icon BUILTIN="smily_bad"/>
 </node>
 <node COLOR="#00b439" CREATED="1159698191434" ID="Freemind_Link_801984084" MODIFIED="1159698196050" TEXT="rotation of log files in ~/.freemind/ seems quite inconsistent. Also, there is always a log.0.lck file staying in there">
 <font NAME="SansSerif" SIZE="16"/>
@@ -516,11 +476,21 @@ existing search function to implement this.
 </richcontent>
 <font NAME="SansSerif" SIZE="16"/>
 </node>
-<node COLOR="#00b439" CREATED="1160644156064" ID="Freemind_Link_98901142" MODIFIED="1160644163194" TEXT="Tooltips of notes with max width.">
-<font NAME="SansSerif" SIZE="16"/>
-</node>
 <node COLOR="#00b439" CREATED="1160648490160" ID="Freemind_Link_863418151" MODIFIED="1160648507458" TEXT="Gray rectangle below text in notes/rich text.">
 <font NAME="SansSerif" SIZE="16"/>
+</node>
+<node COLOR="#00b439" CREATED="1160771240215" ID="Freemind_Link_1343502310" MODIFIED="1160771276856" TEXT="jumping to a note should open the note window, if closed. after that, it should close.">
+<font NAME="SansSerif" SIZE="16"/>
+</node>
+<node COLOR="#00b439" CREATED="1160771278748" ID="Freemind_Link_1705952813" MODIFIED="1160771282203" TEXT="ooo export">
+<font NAME="SansSerif" SIZE="16"/>
+</node>
+<node COLOR="#00b439" CREATED="1160772664040" ID="Freemind_Link_1273460723" MODIFIED="1160772674601" TEXT="notes are not stored in xml manner!!!">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="clanbomber"/>
+<icon BUILTIN="clanbomber"/>
+<icon BUILTIN="clanbomber"/>
+<icon BUILTIN="clanbomber"/>
 </node>
 </node>
 <node COLOR="#0033ff" CREATED="1154896282663" ID="Freemind_Link_962481393" MODIFIED="1154896964783" POSITION="left" TEXT="Legend">
@@ -773,6 +743,39 @@ existing search function to implement this.
 <icon BUILTIN="smily_bad"/>
 <icon BUILTIN="full-3"/>
 <icon BUILTIN="dimitry"/>
+</node>
+<node COLOR="#00b439" CREATED="1159698168150" ID="Freemind_Link_1923164862" MODIFIED="1160772566327" TEXT="FreeMind creates a ~/SimplyHTML directory and doesn&apos;t clean it up on exit. I would suggest to create this folder under ~/.freemind, and clean it up on exit">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node COLOR="#00b439" CREATED="1159695583123" FOLDED="true" ID="Freemind_Link_686844447" MODIFIED="1160772621172" TEXT="Corrupt layout after editing of existing nodes">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="button_ok"/>
+<node COLOR="#990000" CREATED="1159695822137" ID="Freemind_Link_1949200966" MODIFIED="1159821964193" TEXT="On a node with two children, with one of them having rows of plain text (like described above), moving the focus between a pair of child nodes causes the nodes to move up and down, sometimes.">
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
+<node COLOR="#00b439" CREATED="1159698002152" ID="Freemind_Link_330781480" MODIFIED="1160772639142" TEXT="Primarily, multi-line nodes, that exist as child nodes will overlap eachother frequently if they are selected quickly enough. This is most often the case with the &quot;direct&quot; selection method">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node COLOR="#00b439" CREATED="1159695863536" FOLDED="true" ID="Freemind_Link_787395581" MODIFIED="1160772700195" TEXT="Manage Patterns is not saving any of my changes. ">
+<font NAME="SansSerif" SIZE="16"/>
+<icon BUILTIN="button_ok"/>
+<node COLOR="#990000" CREATED="1159695877717" ID="Freemind_Link_1082822636" MODIFIED="1159695888382">
+<richcontent TYPE="NODE"><html>
+  <head>
+
+  </head>
+  <body>
+    <p>
+      After modifying the pattern and exiting the screen, it seems to temporarily work for the loaded map, but going back into the Manage Patterns screen shows the original patterns, and the patterns.xml file on disk is never updated.
+    </p>
+  </body>
+</html>
+</richcontent>
+<font NAME="SansSerif" SIZE="14"/>
+</node>
 </node>
 </node>
 </node>

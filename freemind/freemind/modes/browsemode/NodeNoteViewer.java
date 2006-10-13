@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.4 2006-10-10 18:51:53 christianfoltin Exp $ */
+/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.5 2006-10-13 21:35:56 christianfoltin Exp $ */
 package freemind.modes.browsemode;
 
 import java.awt.BorderLayout;
@@ -75,10 +75,10 @@ public class NodeNoteViewer extends NodeNoteBase implements
 
 	public void onReceiveFocusHook(MindMapNode pNode) {
 		// logger.info("Panel added");
-		String xmlNoteText = pNode.getXmlNoteText();
-		if (xmlNoteText != null) {
+		String noteText = pNode.getNoteText();
+		if (noteText != null) {
 			JPanel southPanel = getSouthPanel();
-			Container noteViewer = getNoteViewerComponent(xmlNoteText);
+			Container noteViewer = getNoteViewerComponent(noteText);
 			southPanel.add(noteViewer, BorderLayout.CENTER);
 			southPanel.revalidate();
 		}

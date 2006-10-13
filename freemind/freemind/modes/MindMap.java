@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMap.java,v 1.14.14.8.2.6 2006-10-10 18:51:52 christianfoltin Exp $ */
+/* $Id: MindMap.java,v 1.14.14.8.2.7 2006-10-13 21:35:56 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -123,6 +123,11 @@ public interface MindMap extends TreeModel {
     void destroy();
 
     boolean isReadOnly();
+    
+    /**
+     * @return true if map is clean (saved), false if it is dirty.
+     */
+    boolean isSaved();
     /**
      */
     MapRegistry getRegistry();
