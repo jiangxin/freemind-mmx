@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlConversionTests.java,v 1.1.2.6 2006-10-10 18:51:53 christianfoltin Exp $*/
+/*$Id: HtmlConversionTests.java,v 1.1.2.7 2006-10-13 21:55:22 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -33,7 +33,7 @@ public class HtmlConversionTests extends FreeMindTestBase {
         MindMapNodeModel node = new MindMapNodeModel(getFrame(), new MindMapMock("</map>"));
         node.setText("test");
         // wiped out: <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n
-        assertEquals("proper conversion", "<html>\n  <head>\n    \n  </head>\n  <body>\n    test\n  </body>\n</html>\n", node.getXmlText());
+        assertEquals("no conversion as test is not html.",null , node.getXmlText()); /* former : "<html>\n  <head>\n    \n  </head>\n  <body>\n    test\n  </body>\n</html>\n" */
         node.setXmlText("test");
         
         assertEquals("proper conversion", "test", node.getText());
@@ -77,6 +77,24 @@ public class HtmlConversionTests extends FreeMindTestBase {
         assertEquals(true, HtmlTools.getInstance().isWellformedXml("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<a></a>"));
         assertEquals(false, HtmlTools.getInstance().isWellformedXml("<a><a></a>"));
         
+    }
+    
+    public void testBr() throws Exception {
+        String input = "<html>\n" + 
+        "  <head>\n" + 
+        "    \n" + 
+        "  </head>\n" + 
+        "  <body>\n" + 
+        "    <p>\n" + 
+        "      asdfasdf<br />asdfasdfdasf\n" + 
+        "    </p>\n" + 
+        "    <p>\n" + 
+        "      asdasdfas\n" + 
+        "    </p>\n" + 
+        "  </body>\n" + 
+        "</html>";
+        String result = HtmlTools.getInstance().toHtml(input);
+        assertFalse ( " no > occurs  in " + result, result.contains("&gt;"));
     }
 }
 

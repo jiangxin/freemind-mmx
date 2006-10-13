@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.19 2006-10-13 21:35:56 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.20 2006-10-13 21:55:22 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -164,9 +164,8 @@ public abstract class NodeAdapter implements MindMapNode {
             xmlText = null;
             return;
         }
-        text = makeValidXml(text);
-        userObject = text;
-        xmlText = HtmlTools.getInstance().toXhtml(text);
+        userObject = makeValidXml(text);
+        xmlText = HtmlTools.getInstance().toXhtml((String) userObject);
     }
 
     public final String getXmlText() {
@@ -192,6 +191,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	}
 
     public final String getNoteText() {
+//        logger.info("Note html: " + noteText);
         return noteText;
     }
 
@@ -202,11 +202,6 @@ public abstract class NodeAdapter implements MindMapNode {
             return;
         }
         this.xmlNoteText = makeValidXml(pXmlNoteText);
-        /*
-         * fc, 13.10.06: as long, as the 0.9.0 Beta7 bug with non conformant XML
-         * is out, we double the conversion here.
-         */
-        xmlNoteText = HtmlTools.getInstance().toXhtml(xmlNoteText);
         noteText = HtmlTools.getInstance().toHtml(xmlNoteText);
 	}
 	

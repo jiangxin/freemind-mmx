@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMainMock.java,v 1.1.2.4 2006-10-01 11:38:17 dpolivaev Exp $*/
+/*$Id: FreeMindMainMock.java,v 1.1.2.5 2006-10-13 21:55:22 christianfoltin Exp $*/
 
 package tests.freemind;
 
 import java.awt.Container;
 import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -120,7 +121,9 @@ public class FreeMindMainMock implements FreeMindMain {
     }
 
     public String getProperty(String key) {
-        return null;
+        HashMap predefinedProperties = new HashMap();
+        predefinedProperties.put("html_export_folding", "html_export_fold_currently_folded");
+        return (String) predefinedProperties.get(key);
     }
 
     public void setProperty(String key, String value) {

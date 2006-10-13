@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AllTests.java,v 1.1.2.1 2006-05-19 21:27:44 christianfoltin Exp $*/
+/*$Id: AllTests.java,v 1.1.2.2 2006-10-13 21:55:22 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -41,6 +41,7 @@ public class AllTests {
         // $JUnit-BEGIN$
         suite.addTest(new TestSuite(FindTextTests.class));
         suite.addTest(new TestSuite(HtmlConversionTests.class));
+        suite.addTest(new TestSuite(TransformTest.class));
         // $JUnit-END$
         return suite;
     }
