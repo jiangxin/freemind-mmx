@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.18 2006-10-13 21:35:56 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.19 2006-10-15 11:10:47 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -1107,7 +1107,7 @@ public class Controller  implements MapModuleChangeOberser {
 		}
 
 		 public void actionPerformed(ActionEvent e) {
-		     if (getAttributeDialog().isVisible() == false)
+		     if (getAttributeDialog().isVisible() == false && getMapModule() != null)
 		     {
 		         getAttributeDialog().pack();
 		         getAttributeDialog().setVisible(true);

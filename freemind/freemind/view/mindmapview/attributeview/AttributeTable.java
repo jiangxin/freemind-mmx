@@ -483,7 +483,8 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         if (!retValue && condition == WHEN_FOCUSED &&
                 isFocusOwner() && ks.getKeyCode() != KeyEvent.VK_TAB &&
                 e != null && e.getID() == KeyEvent.KEY_PRESSED && !e.isActionKey() 
-                && e.getKeyChar() != KeyEvent.CHAR_UNDEFINED) {
+                && e.getKeyChar() != KeyEvent.CHAR_UNDEFINED
+                && 0 == (e.getModifiers()& (KeyEvent.CTRL_MASK | KeyEvent.ALT_MASK))) {
             // We do not have a binding for the event.
             // Try to install the editor
             int leadRow = getSelectionModel().getLeadSelectionIndex();

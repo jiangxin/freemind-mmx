@@ -98,7 +98,7 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
         
         public void setSelectedItem(Object anItem) {
             selectedItem = anItem;
-            fireContentsChanged(anItem, -1, -1);
+            fireContentsChanged(this, -1, -1);
         }
 
         private ListDataEvent getContentChangedEvent() {
@@ -452,9 +452,13 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
         try{
         AttributeRegistryElement element = attributes.getElement(selectedAttributeName.toString());
         ComboBoxModel selectedValues = element.getValues();
-        Object firstValue = selectedValues.getElementAt(0);
         values.setModel(new ClonedComboBoxModel(selectedValues));
-        values.setSelectedItem(firstValue);
+        try{
+            Object firstValue = selectedValues.getElementAt(0);
+            values.setSelectedItem(firstValue);
+        }
+        catch(ArrayIndexOutOfBoundsException ex){
+        }
         values.setEditable(! element.isRestricted());
         }
         catch(NoSuchElementException ex){

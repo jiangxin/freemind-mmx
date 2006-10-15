@@ -36,7 +36,7 @@ private Object selectedItem;
      */
     public void setSelectedItem(Object o) {
         selectedItem = o;
-        fireContentsChanged(o, -1, -1);
+        fireContentsChanged(this, -1, -1);
     }
 
     /* (non-Javadoc)
