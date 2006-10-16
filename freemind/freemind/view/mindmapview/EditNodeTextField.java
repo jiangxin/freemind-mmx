@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.4 2006-10-02 21:24:48 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.5 2006-10-16 20:32:17 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -284,7 +284,7 @@ public class EditNodeTextField extends EditNodeBase {
         textfield.addFocusListener(textFieldListener);
         textfield.addKeyListener(textFieldListener);
         textfield.addMouseListener(textFieldListener);
-        getNode().addComponentListener(textFieldListener);
+//        getNode().addComponentListener(textFieldListener);
 
         // screen positionining ---------------------------------------------
 
@@ -316,6 +316,9 @@ public class EditNodeTextField extends EditNodeBase {
         SwingUtilities.invokeLater(new Runnable() { // PN 0.6.2
             public void run() {
                 textfield.requestFocus();
+                // Add listeners
+                getNode().addComponentListener(textFieldListener);
+
             }
         });
     }

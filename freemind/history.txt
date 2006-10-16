@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 0.9.0 Beta 9
+===============================
+* Bug fix: new nodes are directly closed.
+
+===============================
 Changes made in FreeMind 0.9.0 Beta 8
 ===============================
 * bug fix: feedback.increase must not be called before auto properties with language setting has been loaded        
