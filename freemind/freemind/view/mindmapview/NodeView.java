@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.11 2006-10-12 20:39:17 christianfoltin Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.12 2006-10-18 20:05:32 christianfoltin Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -945,9 +945,8 @@ public abstract class NodeView extends JComponent{
         // For plain text, tell if node is long and its width has to be restricted
         // boolean isMultiline = nodeText.indexOf("\n") >= 0;
         boolean widthMustBeRestricted = false;
-        if (!nodeText.startsWith("<html>") && -1 != nodeText.indexOf('\n')) {
+        if (!nodeText.startsWith("<html>")) {
             String[] lines = nodeText.split("\n");
-            lines = nodeText.split("\n");
             for (int line = 0; line < lines.length; line++) {
                 // Compute the width the node would spontaneously take,
                 // by preliminarily setting the text.

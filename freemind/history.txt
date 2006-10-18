@@ -2,6 +2,9 @@
 Changes made in FreeMind 0.9.0 Beta 9
 ===============================
 * Bug fix: new nodes are directly closed.
+* Performance of note editor improved. Thanks to Dimitri.
+* Bug fix: long node handling corrected.
+* New shortcut for note editing: control LESS.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8
