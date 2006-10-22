@@ -76,7 +76,10 @@ freemind.main.Resources.getInstance().logExecption(			e);
 		getController().getFrame().setWaitingCursor(false);
 	}
 	
-	private void applyXsltFile(String xsltFileName, 
+	/**
+	 * @return true, if successful.
+	 */
+	private boolean applyXsltFile(String xsltFileName, 
 			                   StringWriter  writer, 
 			                   Result result) throws IOException
 	{
@@ -99,12 +102,15 @@ freemind.main.Resources.getInstance().logExecption(			e);
 
 			Transformer trans = transFact.newTransformer(xsltSource);
 			trans.transform(new StreamSource(reader), result);
+			return true;
 		} catch (Exception e) {
 			// System.err.println("error applying the xslt file "+e);
-freemind.main.Resources.getInstance().logExecption(			e);
+			freemind.main.Resources.getInstance().logExecption(			e);
+			return false;
 		}
 	}
-	private void exportToOoWriter(File file) throws IOException {
+	public boolean exportToOoWriter(File file) throws IOException {
+		boolean resultValue = true;
 		ZipOutputStream zipout = new ZipOutputStream(new FileOutputStream(file));
 		
 		// get output:
@@ -117,25 +123,27 @@ freemind.main.Resources.getInstance().logExecption(			e);
 
 		ZipEntry entry = new ZipEntry("content.xml");
 		zipout.putNextEntry(entry);
-		applyXsltFile("accessories/mm2oowriter.xsl", writer, result);
+		resultValue &= applyXsltFile("accessories/mm2oowriter.xsl", writer, result);
 		zipout.closeEntry();
 
 		entry = new ZipEntry("META-INF/manifest.xml");
 		zipout.putNextEntry(entry);
-		applyXsltFile("accessories/mm2oowriter.manifest.xsl", writer, result);
+		resultValue &= applyXsltFile("accessories/mm2oowriter.manifest.xsl", writer, result);
 		zipout.closeEntry();		
 		
 		entry = new ZipEntry("styles.xml");
 		zipout.putNextEntry(entry);
-        copyFromResource("accessories/mm2oowriterStyles.xml", zipout);
+		resultValue &= copyFromResource("accessories/mm2oowriterStyles.xml", zipout);
 		zipout.closeEntry();		
 		
 		zipout.close();
+		return resultValue;
 	}
     
     /**
+     * @return true, if successful.
      */
-    private void copyFromResource(String fileName, OutputStream out) {
+    private boolean copyFromResource(String fileName, OutputStream out) {
         // adapted from http://javaalmanac.com/egs/java.io/CopyFile.html
         // Copies src file to dst file.
         // If the dst file does not exist, it is created
@@ -144,7 +152,7 @@ freemind.main.Resources.getInstance().logExecption(			e);
                 URL resource = getResource( fileName);
                 if(resource==null){
                         logger.severe("Cannot find resource: "+ fileName);
-                        return;
+                        return false;
                 }
                 InputStream in = resource.openStream();
                 
@@ -156,10 +164,12 @@ freemind.main.Resources.getInstance().logExecption(			e);
                     out.write(buf, 0, len);
                 }
                 in.close();
+                return true;
             } catch (Exception e) {
                 logger.severe("File not found or could not be copied. " +
                         "Was earching for " +  fileName + " and should go to "+out);
                 freemind.main.Resources.getInstance().logExecption(e);
+                return false;
             }
  
         

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlConversionTests.java,v 1.1.2.7 2006-10-13 21:55:22 christianfoltin Exp $*/
+/*$Id: HtmlConversionTests.java,v 1.1.2.8 2006-10-22 18:47:36 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -94,7 +94,7 @@ public class HtmlConversionTests extends FreeMindTestBase {
         "  </body>\n" + 
         "</html>";
         String result = HtmlTools.getInstance().toHtml(input);
-        assertFalse ( " no > occurs  in " + result, result.contains("&gt;"));
+        assertFalse ( " no > occurs  in " + result, result.matches("^.*&gt;.*$"));
     }
 }
 

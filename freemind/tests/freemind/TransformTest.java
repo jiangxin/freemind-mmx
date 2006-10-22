@@ -19,7 +19,7 @@
  *
  * Created on 06.09.2006
  */
-/*$Id: TransformTest.java,v 1.1.2.1 2006-10-10 18:51:54 christianfoltin Exp $*/
+/*$Id: TransformTest.java,v 1.1.2.2 2006-10-22 18:47:36 christianfoltin Exp $*/
 package tests.freemind;
 
 import java.io.ByteArrayOutputStream;
@@ -32,6 +32,7 @@ import java.util.Properties;
 
 import org.jibx.runtime.IUnmarshallingContext;
 
+import accessories.plugins.ExportToOoWriter;
 import accessories.plugins.ExportWithXSLT;
 import freemind.common.XmlBindingTools;
 import freemind.controller.actions.generated.instance.Plugin;
@@ -87,6 +88,14 @@ public class TransformTest extends FreeMindTestBase {
 				properties);
 	}
 
+	public void testExportOoo() throws Exception {
+		String mapFileToBeExported = TESTMAP_MM;
+		String destinationFileName = "/tmp/test_ooo.sxw";
+		Properties properties = new Properties();
+		doExportWithOooPlugin(mapFileToBeExported, destinationFileName,
+				properties);
+	}
+	
 	private Properties getProperties(String xmlPluginFile, String pluginLabel)
 			throws Exception {
 		Properties properties = new Properties();
@@ -138,6 +147,24 @@ public class TransformTest extends FreeMindTestBase {
 				.exists());
 		assertTrue("No error during export", exportHook
 				.isTransformResultWithoutError());
+	}
+	private void doExportWithOooPlugin(String mapFileToBeExported,
+			String destinationFileName, Properties properties)
+	throws IOException {
+		InputStream xmlSource = ClassLoader.getSystemResource(
+				mapFileToBeExported).openStream();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		Tools.copyStream(xmlSource, out);
+		ExportToOoWriter exportHook = new ExportToOoWriter();
+		exportHook.setController(new MindMapControllerMock(mFreeMindMain, out
+				.toString()));
+		
+		exportHook.setProperties(properties);
+		File destinationFile = new File(destinationFileName);
+		boolean result = exportHook.exportToOoWriter(destinationFile);
+		assertTrue("File " + destinationFile + " exists?", destinationFile
+				.exists());
+		assertTrue("No error during export", result);
 	}
 
 
