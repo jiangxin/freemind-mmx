@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.5 2006-10-16 20:32:17 christianfoltin Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.6 2006-10-23 18:39:55 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -187,9 +187,10 @@ public class EditNodeTextField extends EditNodeBase {
                 // - adding of a child to the rightmost node
                 // - scrolling while in editing mode (it can behave just like other viewers)
                 // - block selected events while in editing mode
-
+                if(! textfield.isVisible())
+                    return;
+                getNode().removeComponentListener(this);
                 if (e == null) { // can be when called explicitly
-                    getNode().removeComponentListener(this);
                     getEditControl().ok(textfield.getText());
                     hideMe();
                     eventSource.setValue(CANCEL); // disallow real focus lost
