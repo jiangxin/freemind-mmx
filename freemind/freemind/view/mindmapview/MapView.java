@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.5 2006-08-27 20:29:36 christianfoltin Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.6 2006-10-24 18:51:17 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -592,7 +592,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
         else if (!isSelected(newlySelectedNodeView)) {
             toggleSelected(newlySelectedNodeView); }
         //select(newSelected,extend);
-        for (ListIterator e = newlySelectedNodeView.getChildrenViews(false).listIterator(); e.hasNext(); ) {
+        for (ListIterator e = newlySelectedNodeView.getChildrenViews(true).listIterator(); e.hasNext(); ) {
             NodeView target = (NodeView)e.next();
             selectBranch(target,true);
         }
