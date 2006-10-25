@@ -5,6 +5,7 @@ Changes made in FreeMind 0.9.0 Beta 9
 * Performance of note editor improved. Thanks to Dimitri.
 * Bug fix: long node handling corrected.
 * New shortcut for note editing: control LESS.
+* Open Office Writer Export: Notes added, styles started
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8

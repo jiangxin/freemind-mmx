@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
     (c) by Christian Foltin, 2005
     This file is licensed under the GPL.
@@ -19,7 +19,7 @@
 	xmlns:math="http://www.w3.org/1998/Math/MathML"
 	xmlns:form="http://openoffice.org/2000/form"
 	xmlns:script="http://openoffice.org/2000/script">
-	<xsl:output method="xml" version="1.0" indent="yes" encoding="iso-8859-1"
+	<xsl:output method="xml" version="1.0" indent="no" encoding="UTF-8"
 		doctype-public="-//OpenOffice.org//DTD OfficeDocument 1.0//EN"
 		doctype-system="office.dtd" omit-xml-declaration="no"/>
 	<xsl:strip-space elements="*"/>
@@ -42,27 +42,116 @@
 			office:version="1.0">
 			<office:script/>
 			<office:font-decls>
-				<style:font-decl style:name="Tahoma1"
-					fo:font-family="Tahoma, Lucidasans, &apos;Lucida Sans&apos;, &apos;Arial Unicode MS&apos;"/>
-				<style:font-decl style:name="HG Mincho Light J"
-					fo:font-family="&apos;HG Mincho Light J&apos;, &apos;MS Mincho&apos;, &apos;HG Mincho J&apos;, &apos;HG Mincho L&apos;, &apos;HG Mincho&apos;, Mincho, &apos;MS PMincho&apos;, &apos;HG Mincho Light J&apos;, &apos;MS Gothic&apos;, &apos;HG Gothic J&apos;, &apos;HG Gothic B&apos;, &apos;HG Gothic&apos;, Gothic, &apos;MS PGothic&apos;, &apos;Andale Sans UI&apos;, &apos;Arial Unicode MS&apos;, &apos;Lucida Sans Unicode&apos;, Tahoma"
-					style:font-pitch="variable"/>
-				<style:font-decl style:name="Nimbus Sans L1"
-					fo:font-family="&apos;Nimbus Sans L&apos;"
-					style:font-pitch="variable"/>
-				<style:font-decl style:name="Tahoma"
-					fo:font-family="Tahoma, Lucidasans, &apos;Lucida Sans&apos;, &apos;Arial Unicode MS&apos;"
-					style:font-pitch="variable"/>
-				<style:font-decl style:name="Nimbus Roman No9 L"
-					fo:font-family="&apos;Nimbus Roman No9 L&apos;"
-					style:font-family-generic="roman"
-					style:font-pitch="variable"/>
-				<style:font-decl style:name="Nimbus Sans L"
-					fo:font-family="&apos;Nimbus Sans L&apos;"
-					style:font-family-generic="swiss"
-					style:font-pitch="variable"/>
+    <style:font-decl style:name="StarSymbol" fo:font-family="StarSymbol" style:font-charset="x-symbol"/>
+    <style:font-decl style:name="starbats" fo:font-family="starbats" style:font-charset="x-symbol"/>
+    <style:font-decl style:name="Lucidasans1" fo:font-family="Lucidasans"/>
+    <style:font-decl style:name="Arial1" fo:font-family="Arial" style:font-pitch="variable"/>
+    <style:font-decl style:name="Lucidasans" fo:font-family="Lucidasans" style:font-pitch="variable"/>
+    <style:font-decl style:name="Times New Roman" fo:font-family="'Times New Roman'" style:font-family-generic="roman" style:font-pitch="variable"/>
+    <style:font-decl style:name="Arial" fo:font-family="Arial" style:font-family-generic="swiss" style:font-pitch="variable"/>
 			</office:font-decls>
-			<office:automatic-styles/>
+			  <office:automatic-styles>
+    <style:style style:name="P1" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="L1">
+      <style:properties fo:font-style="normal" style:font-style-asian="normal" style:font-style-complex="normal"/>
+    </style:style>
+    <style:style style:name="P2" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="L2">
+      <style:properties fo:font-style="normal" style:font-style-asian="normal" style:font-style-complex="normal"/>
+    </style:style>
+    <style:style style:name="P3" style:family="paragraph" style:parent-style-name="Standard">
+      <style:properties fo:font-style="normal" style:font-style-asian="normal" style:font-style-complex="normal"/>
+    </style:style>
+<!--				<style:style style:name="Table1" style:family="table">
+				  <style:properties style:width="16.999cm" table:align="margins"/>
+				</style:style>
+				<style:style style:name="Table1.A" style:family="table-column">
+				  <style:properties style:column-width="5.666cm" style:rel-column-width="21845*"/>
+				</style:style>
+				<style:style style:name="Table1.A1" style:family="table-cell">
+				  <style:properties fo:padding="0.097cm" fo:border-left="0.002cm solid #000000" fo:border-right="none" fo:border-top="0.002cm solid #000000" fo:border-bottom="0.002cm solid #000000"/>
+				</style:style>
+				<style:style style:name="Table1.C1" style:family="table-cell">
+				  <style:properties fo:padding="0.097cm" fo:border="0.002cm solid #000000"/>
+				</style:style>
+				<style:style style:name="Table1.A2" style:family="table-cell">
+				  <style:properties fo:padding="0.097cm" fo:border-left="0.002cm solid #000000" fo:border-right="none" fo:border-top="none" fo:border-bottom="0.002cm solid #000000"/>
+				</style:style>
+				<style:style style:name="Table1.C2" style:family="table-cell">
+				  <style:properties fo:padding="0.097cm" fo:border-left="0.002cm solid #000000" fo:border-right="0.002cm solid #000000" fo:border-top="none" fo:border-bottom="0.002cm solid #000000"/>
+				</style:style>-->
+				<style:style style:name="T1" style:family="text">
+				  <style:properties fo:font-weight="bold" style:font-weight-asian="bold" style:font-weight-complex="bold"/>
+				</style:style>
+				<style:style style:name="T2" style:family="text">
+				  <style:properties fo:font-style="italic" style:font-style-asian="italic" style:font-style-complex="italic"/>
+				</style:style>
+				<style:style style:name="T3" style:family="text">
+				  <style:properties style:text-underline-color="font-color" style:text-underline="single"/>
+				</style:style>
+    <text:list-style style:name="L1">
+      <text:list-level-style-bullet text:level="1" text:style-name="Bullet Symbols" style:num-suffix="." text:bullet-char="●">
+        <style:properties text:space-before="0.635cm" text:min-label-width="0.635cm" style:font-name="StarSymbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="2" text:style-name="Bullet Symbols" style:num-suffix="." text:bullet-char="○">
+        <style:properties text:space-before="1.27cm" text:min-label-width="0.635cm" style:font-name="StarSymbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="3" text:style-name="Bullet Symbols" style:num-suffix="." text:bullet-char="■">
+        <style:properties text:space-before="1.905cm" text:min-label-width="0.635cm" style:font-name="StarSymbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="4" text:style-name="Bullet Symbols" style:num-suffix="." text:bullet-char="●">
+        <style:properties text:space-before="2.54cm" text:min-label-width="0.635cm" style:font-name="StarSymbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="5" text:style-name="Bullet Symbols" style:num-suffix="." text:bullet-char="○">
+        <style:properties text:space-before="3.175cm" text:min-label-width="0.635cm" style:font-name="StarSymbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="6" text:style-name="Bullet Symbols" style:num-suffix="." text:bullet-char="■">
+        <style:properties text:space-before="3.81cm" text:min-label-width="0.635cm" style:font-name="StarSymbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="7" text:style-name="Bullet Symbols" style:num-suffix="." text:bullet-char="●">
+        <style:properties text:space-before="4.445cm" text:min-label-width="0.635cm" style:font-name="StarSymbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="8" text:style-name="Bullet Symbols" style:num-suffix="." text:bullet-char="○">
+        <style:properties text:space-before="5.08cm" text:min-label-width="0.635cm" style:font-name="StarSymbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="9" text:style-name="Bullet Symbols" style:num-suffix="." text:bullet-char="■">
+        <style:properties text:space-before="5.715cm" text:min-label-width="0.635cm" style:font-name="StarSymbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="10" text:style-name="Bullet Symbols" style:num-suffix="." text:bullet-char="●">
+        <style:properties text:space-before="6.35cm" text:min-label-width="0.635cm" style:font-name="StarSymbol"/>
+      </text:list-level-style-bullet>
+    </text:list-style>
+    <text:list-style style:name="L2">
+      <text:list-level-style-number text:level="1" text:style-name="Numbering Symbols" style:num-suffix="." style:num-format="1">
+        <style:properties text:space-before="0.635cm" text:min-label-width="0.635cm"/>
+      </text:list-level-style-number>
+      <text:list-level-style-number text:level="2" text:style-name="Numbering Symbols" style:num-suffix="." style:num-format="1">
+        <style:properties text:space-before="1.27cm" text:min-label-width="0.635cm"/>
+      </text:list-level-style-number>
+      <text:list-level-style-number text:level="3" text:style-name="Numbering Symbols" style:num-suffix="." style:num-format="1">
+        <style:properties text:space-before="1.905cm" text:min-label-width="0.635cm"/>
+      </text:list-level-style-number>
+      <text:list-level-style-number text:level="4" text:style-name="Numbering Symbols" style:num-suffix="." style:num-format="1">
+        <style:properties text:space-before="2.54cm" text:min-label-width="0.635cm"/>
+      </text:list-level-style-number>
+      <text:list-level-style-number text:level="5" text:style-name="Numbering Symbols" style:num-suffix="." style:num-format="1">
+        <style:properties text:space-before="3.175cm" text:min-label-width="0.635cm"/>
+      </text:list-level-style-number>
+      <text:list-level-style-number text:level="6" text:style-name="Numbering Symbols" style:num-suffix="." style:num-format="1">
+        <style:properties text:space-before="3.81cm" text:min-label-width="0.635cm"/>
+      </text:list-level-style-number>
+      <text:list-level-style-number text:level="7" text:style-name="Numbering Symbols" style:num-suffix="." style:num-format="1">
+        <style:properties text:space-before="4.445cm" text:min-label-width="0.635cm"/>
+      </text:list-level-style-number>
+      <text:list-level-style-number text:level="8" text:style-name="Numbering Symbols" style:num-suffix="." style:num-format="1">
+        <style:properties text:space-before="5.08cm" text:min-label-width="0.635cm"/>
+      </text:list-level-style-number>
+      <text:list-level-style-number text:level="9" text:style-name="Numbering Symbols" style:num-suffix="." style:num-format="1">
+        <style:properties text:space-before="5.715cm" text:min-label-width="0.635cm"/>
+      </text:list-level-style-number>
+      <text:list-level-style-number text:level="10" text:style-name="Numbering Symbols" style:num-suffix="." style:num-format="1">
+        <style:properties text:space-before="6.35cm" text:min-label-width="0.635cm"/>
+      </text:list-level-style-number>
+    </text:list-style>
+			  </office:automatic-styles>
 			<office:body>
 				<text:sequence-decls>
 					<text:sequence-decl text:display-outline-level="0"
@@ -85,12 +174,12 @@
 			<xsl:apply-templates select=".." mode="depthMesurement"/>
 		</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="$depth=0">
-				<text:p text:style-name="P1">
-					<xsl:value-of select="@TEXT"/>
+			<xsl:when test="$depth=0"><!-- Title -->
+				<text:p text:style-name="Heading">
+					<xsl:call-template name="output-nodecontent" />
 				</text:p>
-				
 				<xsl:apply-templates select="hook|@LINK"/>
+				<xsl:call-template name="output-notecontent" />
 				<xsl:apply-templates select="node"/>
 			</xsl:when>
 			<xsl:otherwise>
@@ -99,7 +188,7 @@
 						<xsl:apply-templates select=".." mode="childoutputUnordered">
 							<xsl:with-param name="nodeText">
 								<text:p text:style-name="Standard">
-									<xsl:value-of select="@TEXT"/>
+										<xsl:call-template name="output-nodecontent" />
 								</text:p>	
 							</xsl:with-param>
 						</xsl:apply-templates>						
@@ -110,20 +199,20 @@
 							<xsl:with-param name="nodeText">
 							</xsl:with-param>
 						</xsl:apply-templates> -->
-								<xsl:element name="text:h" namespace="text">
-									<xsl:attribute name="text:style-name"
-										namespace="text">
-										<xsl:text>Heading </xsl:text><xsl:value-of
-											select="$depth"/>
-									</xsl:attribute>
-									<xsl:attribute name="text:level"
-										namespace="text"><xsl:value-of
-											select="$depth"/></xsl:attribute>
-									<xsl:value-of select="@TEXT"/>
-								</xsl:element>
+						<xsl:element name="text:h" namespace="text">
+							<xsl:attribute name="text:style-name"
+								namespace="text">
+								<xsl:text>Heading </xsl:text><xsl:value-of
+									select="$depth"/>
+							</xsl:attribute>
+							<xsl:attribute name="text:level"
+								namespace="text"><xsl:value-of
+									select="$depth"/></xsl:attribute>
+						<xsl:call-template name="output-nodecontent" />								</xsl:element>
 					</xsl:otherwise>
 				</xsl:choose>
 				<xsl:apply-templates select="hook|@LINK"/>
+				<xsl:call-template name="output-notecontent" />
 				<xsl:apply-templates select="node"/>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -132,7 +221,7 @@
 	
 	<xsl:template match="hook"/>
 	
-	<xsl:template match="hook[@NAME='accessories/plugins/NodeNote.properties']">
+<!--	<xsl:template match="hook[@NAME='accessories/plugins/NodeNote.properties']">
 		<xsl:choose>
 			<xsl:when test="./text">
 				<text:p text:style-name="Standard">
@@ -140,7 +229,7 @@
 				</text:p>
 			</xsl:when>
 		</xsl:choose>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="node" mode="childoutputOrdered">
 		<xsl:param name="nodeText"></xsl:param>
@@ -199,5 +288,164 @@
 			</xsl:element>
 		</text:p>
 	</xsl:template>
+
+	<xsl:template name="output-nodecontent">
+			<xsl:choose>
+			<xsl:when test="richcontent[@TYPE='NODE']">
+				<xsl:apply-templates select="richcontent[@TYPE='NODE']/html/body" mode="richcontent" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="textnode" />
+			</xsl:otherwise>
+			</xsl:choose>
+	</xsl:template> <!-- xsl:template name="output-nodecontent" -->
+	
+	<xsl:template name="output-notecontent">
+		<xsl:if test="richcontent[@TYPE='NOTE']">
+			<text:p text:style-name="Standard">
+				<xsl:apply-templates select="richcontent[@TYPE='NOTE']/html/body" mode="richcontent" />
+			</text:p>
+		</xsl:if>
+	</xsl:template> <!-- xsl:template name="output-note" -->
+
+
+	<xsl:template name="textnode">
+		<xsl:call-template name="format_text">
+			<xsl:with-param name="nodetext">
+				<xsl:value-of select="@TEXT" />
+			</xsl:with-param>
+		</xsl:call-template>
+	</xsl:template> <!-- xsl:template name="textnode" -->
+	
+
+	<!-- replace ASCII line breaks through ODF line breaks (br) -->
+	<xsl:template name="format_text">
+		<xsl:param name="nodetext" />
+		<xsl:if test="string-length(substring-after($nodetext,'&#xa;')) = 0">
+			<xsl:value-of select="$nodetext" />
+		</xsl:if>
+		<xsl:if test="string-length(substring-after($nodetext,'&#xa;')) > 0">
+			<xsl:value-of select="substring-before($nodetext,'&#xa;')" />
+			<text:line-break/>
+			<xsl:call-template name="format_text">
+				<xsl:with-param name="nodetext">
+					<xsl:value-of select="substring-after($nodetext,'&#xa;')" />
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template> <!-- xsl:template name="format_text" -->
+
+	<xsl:template match="body" mode="richcontent">
+<!--       <xsl:copy-of select="string(.)"/> -->
+		<xsl:apply-templates select="text()|*" mode="richcontent"/>
+	</xsl:template> 
+	<xsl:template match="text()" mode="richcontent">	<xsl:copy-of select="string(.)"/></xsl:template> 
+	<xsl:template match="br" mode="richcontent">
+		<text:line-break/>
+	</xsl:template> 
+	<xsl:template match="b" mode="richcontent">
+		<text:span text:style-name="T1">
+			<xsl:apply-templates select="text()|*" mode="richcontent"/>
+		</text:span>
+	</xsl:template> 
+	<xsl:template match="i" mode="richcontent">
+		<text:span text:style-name="T2">
+			<xsl:apply-templates select="text()|*" mode="richcontent"/>
+		</text:span>
+	</xsl:template> 
+	<xsl:template match="u" mode="richcontent">
+		<text:span text:style-name="T3">
+			<xsl:apply-templates select="text()|*" mode="richcontent"/>
+		</text:span>
+	</xsl:template> 
+	<xsl:template match="ul" mode="richcontent">
+	<text:ordered-list text:style-name="L1">
+			<xsl:apply-templates select="text()|*" mode="richcontentul"/>
+    </text:ordered-list>
+    <text:p text:style-name="P3"/>
+	</xsl:template> 
+	<xsl:template match="ol" mode="richcontent">
+	<text:ordered-list text:style-name="L2">
+			<xsl:apply-templates select="text()|*" mode="richcontentol"/>
+    </text:ordered-list>
+    <text:p text:style-name="P3"/>
+	</xsl:template> 
+	<xsl:template match="li" mode="richcontentul">
+      <text:list-item>
+        <text:p text:style-name="P1"><!--
+			-->BLA<!--<xsl:apply-templates select="text()|*" mode="richcontent"/>
+		--></text:p>
+      </text:list-item>
+	</xsl:template> 
+	<xsl:template match="li" mode="richcontentol">
+      <text:list-item>
+        <text:p text:style-name="P2"><!--
+			--><xsl:apply-templates select="text()|*" mode="richcontent"/><!--
+		--></text:p>
+      </text:list-item>
+	</xsl:template> 
+	
+<!--
+      <text:list-item>
+        <text:p text:style-name="P1">b
+      </text:list-item>
+      <text:list-item>
+        <text:p text:style-name="P1">c</text:p>
+      </text:list-item>
+    <text:p text:style-name="P2"/>
+	-->
+			<!-- 
+    <text:ordered-list text:style-name="L2">
+      <text:list-item>
+        <text:p text:style-name="P3">1</text:p>
+      </text:list-item>
+      <text:list-item>
+        <text:p text:style-name="P3">2</text:p>
+      </text:list-item>
+      <text:list-item>
+        <text:p text:style-name="P3">3</text:p>
+      </text:list-item>
+    </text:ordered-list>
+    <text:p text:style-name="P2"/>
+-->
+	<!-- Table: 
+		    <table:table table:name="Table1" table:style-name="Table1">
+      <table:table-column table:style-name="Table1.A" table:number-columns-repeated="3"/>
+      <table:table-row>
+        <table:table-cell table:style-name="Table1.A1" table:value-type="string">
+          <text:p text:style-name="Table Contents">T11</text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Table1.A1" table:value-type="string">
+          <text:p text:style-name="Table Contents">T21</text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Table1.C1" table:value-type="string">
+          <text:p text:style-name="Table Contents">T31</text:p>
+        </table:table-cell>
+      </table:table-row>
+      <table:table-row>
+        <table:table-cell table:style-name="Table1.A2" table:value-type="string">
+          <text:p text:style-name="Table Contents">T12</text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Table1.A2" table:value-type="string">
+          <text:p text:style-name="Table Contents">T22</text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Table1.C2" table:value-type="string">
+          <text:p text:style-name="Table Contents">T32</text:p>
+        </table:table-cell>
+      </table:table-row>
+      <table:table-row>
+        <table:table-cell table:style-name="Table1.A2" table:value-type="string">
+          <text:p text:style-name="Table Contents">T13</text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Table1.A2" table:value-type="string">
+          <text:p text:style-name="Table Contents">T23</text:p>
+        </table:table-cell>
+        <table:table-cell table:style-name="Table1.C2" table:value-type="string">
+          <text:p text:style-name="Table Contents">T32</text:p>
+        </table:table-cell>
+      </table:table-row>
+    </table:table>
+-->
+	
 	
 </xsl:stylesheet>
