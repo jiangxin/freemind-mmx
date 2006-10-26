@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNodeMotionListener.java,v 1.1.2.1.2.4 2006-07-25 20:28:29 christianfoltin Exp $ */
+/* $Id: MindMapNodeMotionListener.java,v 1.1.2.1.2.5 2006-10-26 19:14:29 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.listeners;
 
@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import freemind.controller.NodeMotionListener.NodeMotionAdapter;
@@ -165,6 +166,8 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
 
     public void mouseEntered(MouseEvent e) {
         logger.fine("Event: mouseEntered");
+        if(! JOptionPane.getFrameForComponent(e.getComponent()).isFocused())
+            return;
         if (!isActive()) {
             NodeMotionListenerView v = (NodeMotionListenerView) e.getSource();
             v.setMouseEntered();

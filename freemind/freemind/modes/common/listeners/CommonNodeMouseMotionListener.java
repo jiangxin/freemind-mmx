@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: CommonNodeMouseMotionListener.java,v 1.1.2.1.2.2 2006-10-04 20:39:53 dpolivaev Exp $ */
+/* $Id: CommonNodeMouseMotionListener.java,v 1.1.2.1.2.3 2006-10-26 19:14:28 dpolivaev Exp $ */
 
 package freemind.modes.common.listeners;
 
@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import freemind.controller.NodeMouseMotionListener.NodeMouseMotionObserver;
@@ -131,6 +132,8 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
 
     public void mouseEntered(MouseEvent e) {
         logger.finest("Event: mouseEntered");
+        if(! JOptionPane.getFrameForComponent(e.getComponent()).isFocused())
+            return;
         createTimer(e);
         // c.select(e);
     }
