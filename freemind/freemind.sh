@@ -7,6 +7,9 @@
 # 2005-01-16, added usage of FREEMIND_BASE_DIR variable
 # 2005-02-18, add -Dfreemind.base.dir to make plugins work, add some ""
 #             and enhance debug mode.
+# 2005-11-08, adding commons-codec to classpath.
+# 2005-11-09, add some dpkg/rpm information and check for Sun/Blackdown VM.
+# 2006-10-29, follow links to this script using readlink.
 
 _debug() {
 	if [ -n "${DEBUG}" ]
@@ -60,7 +63,18 @@ findjava() {
 		_debug "Using '$JAVACMD' as java virtual machine..."
 		if [ -n "${DEBUG}" ]
 		then
-			"$JAVACMD" -version
+			"$JAVACMD" -version >&2
+		fi
+		if (! "${JAVACMD}" -version 2>&1 | grep -qe \
+			'Java(TM) 2 Runtime Environment, Standard Edition')
+		then
+			_error "Your Java virtual machine is neither Sun nor Blackdown," \
+			       "=======================================" \
+			       "FREEMIND WILL MOST PROBABLY *NOT* WORK," \
+			       "=======================================" \
+			       "define JAVACMD, JAVA_BINDIR, JAVA_HOME or PATH in order" \
+			       "to point to such a VM. See the manpage of freemind(1) for details."
+			return 0
 		fi
 		return 0
 	else
@@ -78,8 +92,25 @@ _source() {
 	fi
 }
 
-_debug "Freemind parameters are '${@}'."
-_debug "$(uname -a)"
+output_info() {
+	if [ -z "${DEBUG}" ]
+	then
+		return 0
+	fi
+	_debug "Freemind parameters are '${@}'."
+	_debug "$(uname -a)"
+	if [ -x $(which dpkg) ]
+	then
+		_debug "The following DEB packages are installed:"
+		COLUMNS=132 dpkg -l \*freemind\* \*j\* | grep -v '<none>' >&2
+	elif [ -x $(which rpm) ]
+	then
+		_debug "The following RPM packages are installed:"
+		rpm -qa | grep -i -e freemind -e j >&2
+	else
+		_debug "Neither dpkg nor rpm is installed."
+	fi
+}
 
 _source /etc/freemind/freemindrc
 _source ~/.freemind/freemindrc
@@ -90,7 +121,18 @@ then
 	exit 1
 fi
 
-freepath=$(dirname "$0")
+output_info
+
+if [ -L "$0" ] && [ -x $(which readlink) ]
+then # if the script is a link and we have 'readlink' to follow it
+	# -m should be faster and link does always resolve, else this script
+	# wouldn't be called, would it?
+	freefile=$(readlink -mn "$0")
+	_debug "Link '$0' resolved to '${freefile}'."
+else
+	freefile="$0"
+fi
+freepath=$(dirname "${freefile}")
 freepath="${freepath%/bin}" # nothing happens if freemind is not installed
                             # under something/bin
 
