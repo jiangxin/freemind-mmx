@@ -175,9 +175,9 @@
 		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$depth=0"><!-- Title -->
-				<text:p text:style-name="Heading">
-					<xsl:call-template name="output-nodecontent" />
-				</text:p>
+				<xsl:call-template name="output-nodecontent">
+					<xsl:with-param name="style">Heading</xsl:with-param>
+				</xsl:call-template>
 				<xsl:apply-templates select="hook|@LINK"/>
 				<xsl:call-template name="output-notecontent" />
 				<xsl:apply-templates select="node"/>
@@ -187,9 +187,9 @@
 					<xsl:when test="ancestor::node[@FOLDED='true']">
 						<xsl:apply-templates select=".." mode="childoutputUnordered">
 							<xsl:with-param name="nodeText">
-								<text:p text:style-name="Standard">
-										<xsl:call-template name="output-nodecontent" />
-								</text:p>	
+								<xsl:call-template name="output-nodecontent">
+									<xsl:with-param name="style">Standard</xsl:with-param>
+								</xsl:call-template>
 							</xsl:with-param>
 						</xsl:apply-templates>						
 					</xsl:when>
@@ -199,16 +199,19 @@
 							<xsl:with-param name="nodeText">
 							</xsl:with-param>
 						</xsl:apply-templates> -->
-						<xsl:element name="text:h" namespace="text">
-							<xsl:attribute name="text:style-name"
-								namespace="text">
-								<xsl:text>Heading </xsl:text><xsl:value-of
-									select="$depth"/>
-							</xsl:attribute>
-							<xsl:attribute name="text:level"
-								namespace="text"><xsl:value-of
+						<xsl:variable name="heading_level"><xsl:text>Heading </xsl:text><xsl:value-of
+									select="$depth"/></xsl:variable>
+						<xsl:element name="text:h">
+							<xsl:attribute name="text:style-name" ><!--
+								--><xsl:value-of select="$heading_level"/><!--
+							--></xsl:attribute>
+							<xsl:attribute name="text:level"><xsl:value-of
 									select="$depth"/></xsl:attribute>
-						<xsl:call-template name="output-nodecontent" />								</xsl:element>
+							<xsl:call-template name="output-nodecontent">
+								<!--No Style for Headings.-->
+								<xsl:with-param name="style"></xsl:with-param>
+							</xsl:call-template>
+						</xsl:element>
 					</xsl:otherwise>
 				</xsl:choose>
 				<xsl:apply-templates select="hook|@LINK"/>
@@ -290,21 +293,35 @@
 	</xsl:template>
 
 	<xsl:template name="output-nodecontent">
+		<xsl:param name="style">Standard</xsl:param>
 			<xsl:choose>
 			<xsl:when test="richcontent[@TYPE='NODE']">
-				<xsl:apply-templates select="richcontent[@TYPE='NODE']/html/body" mode="richcontent" />
+				<xsl:apply-templates select="richcontent[@TYPE='NODE']/html/body" mode="richcontent">
+					<xsl:with-param name="style" select="$style"/>
+				</xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:call-template name="textnode" />
+				<xsl:choose>
+					<xsl:when test="$style = ''">
+						<!--no style for headings. -->
+						<xsl:call-template name="textnode" />
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:element name="text:p">
+							<xsl:attribute name="text:style-name"><xsl:value-of select="$style"/></xsl:attribute>
+							<xsl:call-template name="textnode" />
+						</xsl:element>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:otherwise>
 			</xsl:choose>
 	</xsl:template> <!-- xsl:template name="output-nodecontent" -->
 	
 	<xsl:template name="output-notecontent">
 		<xsl:if test="richcontent[@TYPE='NOTE']">
-			<text:p text:style-name="Standard">
-				<xsl:apply-templates select="richcontent[@TYPE='NOTE']/html/body" mode="richcontent" />
-			</text:p>
+			<xsl:apply-templates select="richcontent[@TYPE='NOTE']/html/body" mode="richcontent" >
+				<xsl:with-param name="style">Standard</xsl:with-param>					
+			</xsl:apply-templates>
 		</xsl:if>
 	</xsl:template> <!-- xsl:template name="output-note" -->
 
@@ -336,51 +353,74 @@
 	</xsl:template> <!-- xsl:template name="format_text" -->
 
 	<xsl:template match="body" mode="richcontent">
+		<xsl:param name="style">Standard</xsl:param>
 <!--       <xsl:copy-of select="string(.)"/> -->
-		<xsl:apply-templates select="text()|*" mode="richcontent"/>
+		<xsl:apply-templates select="text()|*" mode="richcontent"><xsl:with-param name="style" select="$style"></xsl:with-param></xsl:apply-templates>
 	</xsl:template> 
 	<xsl:template match="text()" mode="richcontent">	<xsl:copy-of select="string(.)"/></xsl:template> 
 	<xsl:template match="br" mode="richcontent">
 		<text:line-break/>
 	</xsl:template> 
 	<xsl:template match="b" mode="richcontent">
+		<xsl:param name="style">Standard</xsl:param>
 		<text:span text:style-name="T1">
-			<xsl:apply-templates select="text()|*" mode="richcontent"/>
+			<xsl:apply-templates select="text()|*" mode="richcontent"><xsl:with-param name="style" select="$style"></xsl:with-param></xsl:apply-templates>
 		</text:span>
 	</xsl:template> 
+	<xsl:template match="p" mode="richcontent">
+		<xsl:param name="style">Standard</xsl:param>
+		<xsl:choose>
+			<xsl:when test="$style = ''">
+				<xsl:apply-templates select="text()|*" mode="richcontent"><xsl:with-param name="style" select="$style"></xsl:with-param></xsl:apply-templates>			
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="text:p">
+					<xsl:attribute name="text:style-name"><xsl:value-of select="$style"/></xsl:attribute>
+					<xsl:apply-templates select="text()|*" mode="richcontent"><xsl:with-param name="style" select="$style"></xsl:with-param></xsl:apply-templates>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template> 
+
 	<xsl:template match="i" mode="richcontent">
+		<xsl:param name="style">Standard</xsl:param>
 		<text:span text:style-name="T2">
-			<xsl:apply-templates select="text()|*" mode="richcontent"/>
+			<xsl:apply-templates select="text()|*" mode="richcontent"><xsl:with-param name="style" select="$style"></xsl:with-param></xsl:apply-templates>
 		</text:span>
 	</xsl:template> 
 	<xsl:template match="u" mode="richcontent">
+		<xsl:param name="style">Standard</xsl:param>
 		<text:span text:style-name="T3">
-			<xsl:apply-templates select="text()|*" mode="richcontent"/>
+			<xsl:apply-templates select="text()|*" mode="richcontent"><xsl:with-param name="style" select="$style"></xsl:with-param></xsl:apply-templates>
 		</text:span>
 	</xsl:template> 
 	<xsl:template match="ul" mode="richcontent">
-	<text:ordered-list text:style-name="L1">
-			<xsl:apply-templates select="text()|*" mode="richcontentul"/>
-    </text:ordered-list>
-    <text:p text:style-name="P3"/>
+		<xsl:param name="style">Standard</xsl:param>
+		<text:ordered-list text:style-name="L1">
+			<xsl:apply-templates select="text()|*" mode="richcontentul"><xsl:with-param name="style" select="$style"></xsl:with-param></xsl:apply-templates>
+		</text:ordered-list>
+	    <text:p text:style-name="P3"/>
 	</xsl:template> 
 	<xsl:template match="ol" mode="richcontent">
-	<text:ordered-list text:style-name="L2">
-			<xsl:apply-templates select="text()|*" mode="richcontentol"/>
-    </text:ordered-list>
-    <text:p text:style-name="P3"/>
+		<xsl:param name="style">Standard</xsl:param>
+		<text:ordered-list text:style-name="L2">
+			<xsl:apply-templates select="text()|*" mode="richcontentol"><xsl:with-param name="style" select="$style"></xsl:with-param></xsl:apply-templates>
+		</text:ordered-list>
+		<text:p text:style-name="P3"/>
 	</xsl:template> 
 	<xsl:template match="li" mode="richcontentul">
+		<xsl:param name="style">Standard</xsl:param>
       <text:list-item>
         <text:p text:style-name="P1"><!--
-			-->BLA<!--<xsl:apply-templates select="text()|*" mode="richcontent"/>
+			--><xsl:apply-templates select="text()|*" mode="richcontent"><xsl:with-param name="style" select="$style"></xsl:with-param></xsl:apply-templates><!--			
 		--></text:p>
       </text:list-item>
 	</xsl:template> 
 	<xsl:template match="li" mode="richcontentol">
-      <text:list-item>
+		<xsl:param name="style">Standard</xsl:param>
+	    <text:list-item>
         <text:p text:style-name="P2"><!--
-			--><xsl:apply-templates select="text()|*" mode="richcontent"/><!--
+			--><xsl:apply-templates select="text()|*" mode="richcontent"><xsl:with-param name="style" select="$style"></xsl:with-param></xsl:apply-templates><!--			
 		--></text:p>
       </text:list-item>
 	</xsl:template> 
