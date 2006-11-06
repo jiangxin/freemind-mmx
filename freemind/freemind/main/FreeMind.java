@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.26 2006-10-15 11:10:48 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.27 2006-11-06 19:38:07 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -28,6 +28,8 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -702,6 +704,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		return southPanel;
 	}
 
+	public JSplitPane getSplitPane() {
+		return mSplitPane;
+	}
+	
 	/* (non-Javadoc)
 	 * @see freemind.main.FreeMindMain#getJFrame()
 	 */

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMainMock.java,v 1.1.2.5 2006-10-13 21:55:22 christianfoltin Exp $*/
+/*$Id: FreeMindMainMock.java,v 1.1.2.6 2006-11-06 19:38:07 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 
 import freemind.controller.Controller;
 import freemind.controller.MenuBar;
@@ -173,6 +174,11 @@ public class FreeMindMainMock implements FreeMindMain {
 
 	public ClassLoader getFreeMindClassLoader() {
 		return this.getClass().getClassLoader();
+	}
+
+	public JSplitPane getSplitPane() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

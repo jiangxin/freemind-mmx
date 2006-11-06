@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.8 2006-10-01 11:38:07 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.9 2006-11-06 19:38:07 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -41,6 +41,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -346,6 +347,11 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
 	public ClassLoader getFreeMindClassLoader() {
 		return mFreeMindCommon.getFreeMindClassLoader();
+	}
+
+	public JSplitPane getSplitPane() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

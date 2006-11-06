@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.19 2006-10-12 21:25:36 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.20 2006-11-06 19:38:07 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -397,7 +397,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         // the executor must be the first here, because it is executed last then.
         getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
         getActionFactory().registerHandler(new UndoActionHandler(this, undo, redo));
-        //debug:      getActionFactory().registerHandler(new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
+        //debug:        getActionFactory().registerHandler(new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
 
         cut = new CutAction(this);
         paste = new PasteAction(this);

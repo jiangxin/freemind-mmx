@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12.14.5.2.2 2006-10-01 11:38:07 dpolivaev Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.14.5.2.3 2006-11-06 19:38:07 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -29,6 +29,7 @@ import java.util.ResourceBundle;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 
 import freemind.controller.Controller;
 import freemind.controller.MenuBar;
@@ -105,6 +106,8 @@ public interface FreeMindMain {
     public java.util.logging.Logger getLogger(String forClass);
 
 	public JPanel getSouthPanel();
+	
+	public JSplitPane getSplitPane();
 	
 	/**
 	 * @return a ClassLoader derived from the standard, with 
