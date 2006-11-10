@@ -56,4 +56,29 @@
 		<plugin_property name="copy_map" value="true"/>
 		<plugin_property name="load_file" value="true"/>
 	</plugin_action>
+	<plugin_action documentation="%accessories/plugins/ExportWithXSLT_TASKSTJI.properties_documentation" name="%accessories/plugins/ExportWithXSLT_TASKSTJI.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithXSLT_TASKSTJI.properties" class_name="accessories.plugins.ExportWithXSLT">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/file/export/html/exportTASKSTJI"/>
+		<plugin_property name="file_type" value="tji"/>
+        <plugin_property name="name_extension" value=".tasks"/>
+		<plugin_property name="file_description" value="%accessories/plugins/ExportWithXSLT_Applet.properties_tji"/>
+		<plugin_property name="xslt_file" value="accessories/mm2tjitasks.xsl"/>
+		<plugin_property name="copy_map" value="false"/>
+		<plugin_property name="load_file" value="false"/>
+		<plugin_property name="create_dir" value="false"/>
+		<plugin_property name="create_html_linked_image" value="false"/>
+	</plugin_action>
+        <plugin_action documentation="%accessories/plugins/ExportWithXSLT_RESOURCESTJI.properties_documentation" name="%accessories/plugins/ExportWithXSLT_RESOURCESTJI.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithXSLT_RESOURCESTJI.properties" class_name="accessories.plugins.ExportWithXSLT">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/file/export/html/exportRESOURCESTJI"/>
+		<plugin_property name="file_type" value="tji"/>
+        <plugin_property name="name_extension" value=".resources"/>
+		<plugin_property name="file_description" value="%accessories/plugins/ExportWithXSLT_Applet.properties_tji"/>
+		<plugin_property name="xslt_file" value="accessories/mm2tjiresources.xsl"/>
+		<plugin_property name="copy_map" value="false"/>
+		<plugin_property name="load_file" value="false"/>
+		<plugin_property name="create_dir" value="false"/>
+		<plugin_property name="create_html_linked_image" value="false"/>
+	</plugin_action>
+
 </plugin>

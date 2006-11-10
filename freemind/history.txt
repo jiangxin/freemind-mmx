@@ -13,6 +13,7 @@ Changes made in FreeMind 0.9.0 Beta 9
 * Correct encoding of htmls: Thanks to gulpman.
 * Log of node styles removed.
 * HTML Note window show/hide state is controlled via shift+control LESS (present in view menu and map context popup window).
+* Taskjuggler integration from aki integrated. Thanks to the author.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8

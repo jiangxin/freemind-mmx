@@ -19,7 +19,7 @@
  *
  * Created on 01.11.2004
  */
-/* $Id: ExportSvg.java,v 1.1.4.1.16.2 2006-07-23 20:34:10 christianfoltin Exp $ */
+/* $Id: ExportSvg.java,v 1.1.4.1.16.3 2006-11-10 23:27:59 christianfoltin Exp $ */
 
 package plugins.svg;
 
@@ -58,7 +58,7 @@ public class ExportSvg extends ExportVectorGraphic {
     public void startupMapHook() {
         super.startupMapHook();
         File chosenFile = chooseFile("svg",
-                getResourceString("export_svg_text"));
+                getResourceString("export_svg_text"), null);
         if (chosenFile == null) {
             return;
         }

@@ -19,7 +19,7 @@
  *
  * Created on 01.11.2004
  */
-/* $Id: ExportPdf.java,v 1.1.4.2.2.2 2006-07-23 20:34:10 christianfoltin Exp $ */
+/* $Id: ExportPdf.java,v 1.1.4.2.2.3 2006-11-10 23:27:59 christianfoltin Exp $ */
 
 package plugins.svg;
 
@@ -50,7 +50,7 @@ public class ExportPdf extends ExportVectorGraphic {
     public void startupMapHook() {
         super.startupMapHook();
         File chosenFile = chooseFile("pdf",
-                getResourceString("export_pdf_text"));
+                getResourceString("export_pdf_text"), null);
         if (chosenFile == null) {
             return;
         }

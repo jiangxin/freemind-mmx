@@ -74,7 +74,7 @@ public class ExportToImage extends ExportHook {
 	 * Export image.
 	 */
 	public boolean exportToImage(BufferedImage image, String type, String description) {
-	    File chosenFile = chooseFile(type, description);
+	    File chosenFile = chooseFile(type, description, null);
 	    if(chosenFile==null) {
 	        return false;
 	    }

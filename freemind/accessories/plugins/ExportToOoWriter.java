@@ -63,7 +63,7 @@ public class ExportToOoWriter extends ExportHook {
 	 */
 	public void startupMapHook() {
 		super.startupMapHook();
-		File chosenFile = chooseFile("sxw", null);
+		File chosenFile = chooseFile("sxw", null, null);
 		if (chosenFile == null) {
 			return;
 		}

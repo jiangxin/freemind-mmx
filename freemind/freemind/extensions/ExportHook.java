@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: ExportHook.java,v 1.1.4.7.2.5 2006-10-10 18:51:52 christianfoltin Exp $*/
+/*$Id: ExportHook.java,v 1.1.4.7.2.6 2006-11-10 23:27:59 christianfoltin Exp $*/
 
 package freemind.extensions;
 
@@ -50,8 +50,9 @@ public class ExportHook extends ModeControllerHookAdapter {
 	private MapView view;
 
 	/**
+	 * @param nameExtension TODO
      */
-    protected File chooseFile(String type, String description) {
+    protected File chooseFile(String type, String description, String nameExtension) {
         Container component = getController().getFrame().getContentPane();
 		JFileChooser chooser = null;
 		chooser = new JFileChooser();
@@ -59,7 +60,7 @@ public class ExportHook extends ModeControllerHookAdapter {
         if (mmFile!=null) {
             String proposedName = mmFile.getAbsolutePath().replaceFirst(
                     "\\.[^.]*?$", "")
-                    + "." + type;
+                    + ((nameExtension != null)?nameExtension:"") + "." + type;
             chooser.setSelectedFile(new File(proposedName));
         }
         if (getController().getLastCurrentDir()!= null) {

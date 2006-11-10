@@ -62,13 +62,19 @@ import freemind.modes.ModeController;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class ExportWithXSLT extends ExportHook {
-	/**
+	private static final String NAME_EXTENSION_PROPERTY = "name_extension";
+    /**
 	 * For test purposes. True=no error
 	 */
 	private boolean mTransformResultWithoutError = false;
 	
     protected File chooseFile() {
-        return chooseFile(getResourceString("file_type"), getTranslatableResourceString("file_description"));
+        
+        String nameExtension = null;
+        if (getProperties().containsKey(NAME_EXTENSION_PROPERTY)) {
+            nameExtension = getResourceString(NAME_EXTENSION_PROPERTY);
+        }        
+        return chooseFile(getResourceString("file_type"), getTranslatableResourceString("file_description"), nameExtension);
     }
 
 	private String getTranslatableResourceString(String resourceName) {
