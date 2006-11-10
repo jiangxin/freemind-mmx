@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.10 2006-10-12 20:39:17 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.11 2006-11-10 22:30:39 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -968,7 +968,9 @@ public class OptionPanel implements TextTranslator {
         controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/FormatPaste.properties.properties_key"));
         controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/IconSelectionPlugin.properties.properties_key"));
         controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NewParentNode.properties_key"));
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NodeNote.properties_key"));
+        //controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NodeNote.properties_key"));
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NodeNote_jumpto.keystroke.alt_N"));
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NodeNote_hide_show.keystroke.control_shift_less"));
         controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_PAGE_UP"));
         controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_PAGE_DOWN"));
         controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_HOME"));

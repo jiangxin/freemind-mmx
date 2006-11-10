@@ -17,18 +17,19 @@
 		instanciation="Other">
         <plugin_mode class_name="freemind.modes.mindmapmode"/>
         <plugin_menu location="menu_bar/navigate/notes/note_jumpto"/>
-<!--         <plugin_property name="direction" value="note"/>  -->
+        <plugin_property name="command" value="jump"/>  
     </plugin_action>
-<!--	<plugin_action documentation="%accessories/plugins/NodeNote_jumpfrom.properties_documentation" 
-		name="%accessories/plugins/NodeNote_jumpfrom.properties_name" 
-		key_stroke="%keystroke_accessories/plugins/NodeNote_jumpfrom.keystroke.alt_M" 
+	<plugin_action documentation="%accessories/plugins/NodeNote_hide_show.properties_documentation" 
+		name="%accessories/plugins/NodeNote_hide_show.properties_name" 
+		key_stroke="%keystroke_accessories/plugins/NodeNote_hide_show.keystroke.control_shift_less" 
 		base="freemind.extensions.NodeHookAdapter" 
-		label="accessories/plugins/NodeNote_jumpfrom.properties" 
+		label="accessories/plugins/NodeNote_hide_show.properties" 
 		class_name="accessories.plugins.NodeNote" 
 		instanciation="Other">
         <plugin_mode class_name="freemind.modes.mindmapmode"/>
-        <plugin_menu location="menu_bar/navigate/notes/note_jumpfrom"/>
-        <plugin_property name="direction" value="node"/> 
-    </plugin_action> -->
+        <plugin_menu location="menu_bar/view/note_window/note_hide_show"/>
+        <plugin_menu location="popup/popup/note_hide_show"/>
+        <plugin_property name="command" value="hide_show"/> 
+    </plugin_action> 
 
 </plugin>

@@ -16,15 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.26 2006-11-10 21:22:31 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.27 2006-11-10 22:30:39 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -38,6 +36,7 @@ import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.html.HTMLDocument;
 
 import com.lightdev.app.shtm.SHTMLPanel;
 import com.lightdev.app.shtm.Util;
@@ -117,16 +116,20 @@ public class NodeNote extends MindMapNodeHookAdapter {
 
             public void onReceiveFocusHook(MindMapNode node) {
                 this.node = node;
+                HTMLDocument document = noteViewerComponent.getDocument();
+                // remove listener to avoid unnecessary dirty events.
+                document.removeDocumentListener(
+                        mNoteDocumentListener);
                 // logger.info("onReceiveFocuse for node " + node.toString());
                 String note = node.getNoteText();
                 if (note != null) {
-                    getHtmlEditorPanel().setCurrentDocumentContent(note);
+                    noteViewerComponent.setCurrentDocumentContent(note);
                     mLastContentEmpty = false;
                 } else if (!mLastContentEmpty) {
-                    getHtmlEditorPanel().setCurrentDocumentContent("");
+                    noteViewerComponent.setCurrentDocumentContent("");
                     mLastContentEmpty = true;
                 }
-                noteViewerComponent.getDocument().addDocumentListener(
+                document.addDocumentListener(
                         mNoteDocumentListener);
             }
 
@@ -138,7 +141,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
                     return;
                 }
                 boolean editorContentEmpty = true;
-                String documentText = getHtmlEditorPanel().getDocumentText();
+                String documentText = noteViewerComponent.getDocumentText();
                 // editorContentEmpty =
                 // HtmlTools.removeAllTagsFromString(documentText).matches("[\\s\\n]*");
                 editorContentEmpty = documentText.equals(EMPTY_EDITOR_STRING)
@@ -147,7 +150,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
                 // documentText.replaceAll("\n", "\\\\n") + "', empty="+
                 // editorContentEmpty);
                 controller.deregisterNodeSelectionListener(this);
-                if (getHtmlEditorPanel().needsSaving()) {
+                if (noteViewerComponent.needsSaving()) {
                     if (editorContentEmpty) {
                         changeNoteText(null, node);
                     } else {
@@ -354,18 +357,14 @@ public class NodeNote extends MindMapNodeHookAdapter {
 
     public void startupMapHook() {
         super.startupMapHook();
-//        String foldingType = getResourceString("direction");
-//        if (foldingType.equals("note")) {
-            // jump to the notes:
-		JSplitPane splitPane = getController().getFrame().getSplitPane();
+        JSplitPane splitPane = getController().getFrame().getSplitPane();
         int maximumDividerLocation = splitPane.getMaximumDividerLocation();
+        String foldingType = getResourceString("command");
+        if (foldingType.equals("jump")) {
+            // jump to the notes:
             int oldSize = splitPane.getDividerLocation();
             if (maximumDividerLocation < oldSize) {
-                int newSize = splitPane.getLastDividerLocation();
-                if(newSize > maximumDividerLocation) {
-                    newSize = maximumDividerLocation;
-                }
-                splitPane.setDividerLocation(newSize);
+                openSplitPane(splitPane, maximumDividerLocation);
                 Registration.sPositionToRecover = new Integer(oldSize);
             } else {
                 Registration.sPositionToRecover = null;
@@ -377,11 +376,25 @@ public class NodeNote extends MindMapNodeHookAdapter {
                     .requestFocus();
                 }                
             });
-//        } else {
-//            // jump back from notes:
-////            getController().getView().requestFocusInWindow();
-//
-//        }
+        } else {
+            // show hide window:
+            if(splitPane.getDividerLocation() > maximumDividerLocation) {
+                // the window is currently hidden. show it:
+                openSplitPane(splitPane, maximumDividerLocation);
+            } else {
+                // it is shown, hide it:
+                splitPane.setDividerLocation(1.0);
+            }
+
+        }
+    }
+
+    private void openSplitPane(JSplitPane splitPane, int maximumDividerLocation) {
+        int newSize = splitPane.getLastDividerLocation();
+        if(newSize > maximumDividerLocation) {
+            newSize = maximumDividerLocation;
+        }
+        splitPane.setDividerLocation(newSize);
     }
 
 }

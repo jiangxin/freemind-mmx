@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.12 2006-10-13 21:35:56 christianfoltin Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.13 2006-11-10 22:30:39 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -26,7 +26,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;

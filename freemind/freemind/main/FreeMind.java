@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.27 2006-11-06 19:38:07 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.28 2006-11-10 22:30:39 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -76,6 +76,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
      }
 
     private static final String SPLIT_PANE_POSITION = "split_pane_position";
+    private static final String SPLIT_PANE_LAST_POSITION = "split_pane_last_position";
 	public static final String RESOURCE_LOOKANDFEEL = "lookandfeel";
     public static final String RESOURCES_SELECTION_METHOD = "selection_method";
     public static final String RESOURCES_NODE_STYLE = "standardnodestyle";
@@ -371,6 +372,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
     public void saveProperties() {
     	//TODO: Move the split pane property to a listener.
     	setProperty(SPLIT_PANE_POSITION, ""+mSplitPane.getDividerLocation());
+    	setProperty(SPLIT_PANE_LAST_POSITION, ""+mSplitPane.getLastDividerLocation());
 	try {
 	    OutputStream out = new FileOutputStream(autoPropertiesFile);
 	    //	    auto.store(out,null);//to save as few props as possible.
@@ -679,7 +681,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
         frame.pack();
         // set divider position:
         int splitPanePosition = frame.getIntProperty(SPLIT_PANE_POSITION, (int) (frame.mSplitPane.getHeight()*0.8));
+        int lastSplitPanePosition = frame.getIntProperty(SPLIT_PANE_LAST_POSITION, splitPanePosition);
         frame.mSplitPane.setDividerLocation(splitPanePosition);
+        frame.mSplitPane.setLastDividerLocation(lastSplitPanePosition);
         feedBack.increase("FreeMind.progress.endStartup");
 
         try {

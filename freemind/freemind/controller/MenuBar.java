@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.5 2006-08-20 19:34:25 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.6 2006-11-10 22:30:39 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -303,6 +303,8 @@ public class MenuBar extends JMenuBar {
 		JMenuItem moveToRoot = menuHolder.addAction(c.moveToRoot, NAVIGATE_MENU+"nodes/moveToRoot");
 		moveToRoot.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_moveToRoot")));
 	
+		menuHolder.addSeparator(VIEW_MENU);
+        menuHolder.addCategory(VIEW_MENU+"note_window");
         menuHolder.addSeparator(VIEW_MENU);
         JMenu attributes = menuHolder.addMenu(new JMenu(c.getResourceString("menu_attributes")), VIEW_MENU+"attributes/.");
         ButtonGroup buttonGroup = new ButtonGroup();
