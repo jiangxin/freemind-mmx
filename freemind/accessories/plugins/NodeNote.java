@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.25 2006-11-06 19:38:07 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.26 2006-11-10 21:22:31 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -71,7 +71,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
 
     // <html>\n <head>\n \n </head>\n <body>\n <p>\n \n </p>\n
     // </body>\n</html>\n
-    public static class Registration implements HookRegistration, ActorXml, PropertyChangeListener {
+    public static class Registration implements HookRegistration, ActorXml {
         
 
 		private final class NoteDocumentListener implements DocumentListener {
@@ -193,6 +193,8 @@ public class NodeNote extends MindMapNodeHookAdapter {
 
         private NoteDocumentListener mNoteDocumentListener;
 
+        private static Integer sPositionToRecover = null;
+        
         public Registration(ModeController controller, MindMap map) {
             this.controller = (MindMapController) controller;
             mMap = map;
@@ -208,6 +210,12 @@ public class NodeNote extends MindMapNodeHookAdapter {
             // register "leave note" action:
             Action jumpToMapAction = new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
+                    JSplitPane splitPane = controller.getFrame().getSplitPane();
+                    if (sPositionToRecover != null) {
+                        splitPane.setDividerLocation(sPositionToRecover
+                                .intValue());
+                        sPositionToRecover = null;
+                    }
                     controller.getView().getSelected().requestFocus();
                 }
             };
@@ -231,12 +239,9 @@ public class NodeNote extends MindMapNodeHookAdapter {
             controller.registerNodeSelectionListener(mNotesManager);
             controller.registerNodeLifetimeListener(mNotesManager);
             mNoteDocumentListener = new NoteDocumentListener();
-            // register listener for split pane changes:
-            controller.getFrame().getSplitPane().addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, this);
         }
 
         public void deRegister() {
-        		controller.getFrame().getSplitPane().removePropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, this);
             controller.deregisterNodeSelectionListener(mNotesManager);
             controller.deregisterNodeLifetimeListener(mNotesManager);
             if (noteViewerComponent != null) {
@@ -345,20 +350,6 @@ public class NodeNote extends MindMapNodeHookAdapter {
             return htmlEditorPanel;
         }
 
-        private static int mLastNonMaxSplitPaneDividerPosition = -1;
-        
-		public void propertyChange(PropertyChangeEvent pChangeEvent) {
-			JSplitPane splitPane = controller.getFrame().getSplitPane();
-			int oldValue = ((Integer) pChangeEvent
-								.getOldValue()).intValue();
-			int newValue = ((Integer) pChangeEvent
-					.getNewValue()).intValue();
-			// now, lets see, whether to new location is max. otherwise, store it.
-			if (splitPane.getMaximumDividerLocation() != newValue) {
-				mLastNonMaxSplitPaneDividerPosition = newValue;
-			}
-
-		}
     }
 
     public void startupMapHook() {
@@ -367,15 +358,18 @@ public class NodeNote extends MindMapNodeHookAdapter {
 //        if (foldingType.equals("note")) {
             // jump to the notes:
 		JSplitPane splitPane = getController().getFrame().getSplitPane();
-		logger.info("Setting divider location?");
-		if(true || splitPane.isMinimumSizeSet()) {
-			int newSize = Registration.mLastNonMaxSplitPaneDividerPosition;
-			if(newSize < 0) {
-				newSize = splitPane.getMaximumDividerLocation() / 2;
-			}
-			logger.info("Setting divider location to :" + newSize);
-			splitPane.setDividerLocation(newSize);
-		}
+        int maximumDividerLocation = splitPane.getMaximumDividerLocation();
+            int oldSize = splitPane.getDividerLocation();
+            if (maximumDividerLocation < oldSize) {
+                int newSize = splitPane.getLastDividerLocation();
+                if(newSize > maximumDividerLocation) {
+                    newSize = maximumDividerLocation;
+                }
+                splitPane.setDividerLocation(newSize);
+                Registration.sPositionToRecover = new Integer(oldSize);
+            } else {
+                Registration.sPositionToRecover = null;
+            }
             KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
             EventQueue.invokeLater(new Runnable(){
                 public void run() {

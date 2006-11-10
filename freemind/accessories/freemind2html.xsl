@@ -66,6 +66,9 @@
 
 <xsl:template match="/">
 <html>
+<!-- Thanks to gulpman: -->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
 <xsl:comment>This file has been created with freemind2html.xsl</xsl:comment>
 <head>
 	<title><xsl:call-template name="output-title" /></title>

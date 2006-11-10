@@ -70,6 +70,9 @@ Todo:
 <xsl:processing-instruction name="xml-stylesheet">href="treestyles.css" type="text/css"</xsl:processing-instruction>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <xsl:comment>This file has been created with toxhtml.xsl</xsl:comment>
+<!-- Thanks to gulpman: -->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
 
 <head>
 	<title><xsl:call-template name="output-title" /></title>
