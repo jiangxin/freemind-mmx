@@ -77,7 +77,8 @@ public class ImportWizard {
 		String classPath = System.getProperty("java.class.path");
 		String classPathSeparator = File.pathSeparator;
         // add the current dir to find more plugins
-        classPath=FreeMindCommon.getFreemindBaseDir()+classPathSeparator+classPath;
+        classPath=mFrame.getFreemindBaseDir()+classPathSeparator+classPath;
+        logger.info("Classpath for plugins:"+classPath);
         // to remove duplicates
         HashSet foundPlugins = new HashSet();
 		StringTokenizer st = new StringTokenizer(classPath, classPathSeparator);
@@ -216,7 +217,10 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.10  2006-09-05 21:17:58  dpolivaev
+ * Revision 1.1.4.6.2.11  2006-11-12 21:07:06  christianfoltin
+ * * Mac bug fixes (class path, error messages, directories)
+ *
+ * Revision 1.1.4.6.2.10  2006/09/05 21:17:58  dpolivaev
  * SimplyHTML
  *
  */

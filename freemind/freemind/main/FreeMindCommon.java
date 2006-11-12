@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.9 2006-10-01 11:38:07 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.10 2006-11-12 21:07:07 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -33,12 +33,18 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+import sun.security.action.GetPropertyAction;
+
 
 /**
  * @author foltin
  * 
  */
 public class FreeMindCommon {
+
+	private static final String FREEMIND_BASE_DIR_PROPERTY = "freemind.base.dir";
+
+	public static final String DEFAULT_FREEMIND_BASE_DIR = ".";
 
 	public static final String FREEMIND_FILE_EXTENSION_WITHOUT_DOT = "mm";
 
@@ -165,8 +171,7 @@ public class FreeMindCommon {
 	public ClassLoader getFreeMindClassLoader() {
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		try {
-			return new URLClassLoader(new URL[] { new File(FreeMindCommon
-					.getFreemindBaseDir()).toURL() }, classLoader);
+			return new URLClassLoader(new URL[] { new File(getFreemindBaseDir()).toURL() }, classLoader);
 		} catch (MalformedURLException e) {
 			freemind.main.Resources.getInstance().logExecption(e);
 			return classLoader;
@@ -175,9 +180,13 @@ public class FreeMindCommon {
 
 	/**
 	 */
-	public static String getFreemindBaseDir() {
-		// logger.info("freemind.base.dir is " + getFreemindBaseDir());
-		return System.getProperty("freemind.base.dir", ".");
+	public String getFreemindBaseDir() {
+		String defaultValue = null;
+		defaultValue = getProperty(FREEMIND_BASE_DIR_PROPERTY);
+		if(defaultValue == null) {
+			defaultValue = DEFAULT_FREEMIND_BASE_DIR;
+		}
+		return System.getProperty(FREEMIND_BASE_DIR_PROPERTY, defaultValue);
 	}
 
 

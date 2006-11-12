@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12.14.5.2.3 2006-11-06 19:38:07 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.14.5.2.4 2006-11-12 21:07:07 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -114,4 +114,9 @@ public interface FreeMindMain {
 	 * freeminds base dir included.
 	 */
 	public ClassLoader getFreeMindClassLoader();
+	
+	/**
+	 * @return default ".", but on different os this differs.
+	 */
+	String getFreemindBaseDir();
 }

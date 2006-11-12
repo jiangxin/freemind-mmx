@@ -19,7 +19,7 @@
  *
  * Created on 18.08.2006
  */
-/*$Id: HookDescriptorBase.java,v 1.1.2.2 2006-10-11 21:32:40 christianfoltin Exp $*/
+/*$Id: HookDescriptorBase.java,v 1.1.2.3 2006-11-12 21:07:06 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -92,7 +92,7 @@ public class HookDescriptorBase {
 	 * @return the relative/absolute(?) position of the plugin xml file.
 	 */
 	private String getPluginDirectory() {
-		return FreeMindCommon.getFreemindBaseDir() + "/"
+		return frame.getFreemindBaseDir() + "/"
 				+ new File(mXmlPluginFile).getParent();
 	}
 

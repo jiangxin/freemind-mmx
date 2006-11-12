@@ -17,10 +17,11 @@
 	<property name="build" value="../bin/classes" />
 	<property name="dist" value="../bin/dist" />
 	<property name="dist.lib" value="${dist}/lib" />
-	<property name="dist_macos_name" value="FreeMind" />
+	<property name="dist_macos_name" value="FreeMind_${ver}" />
 	<property name="dist_macos_base" value="../bin/dist_macos" />
 	<property name="dist_macos" value="${dist_macos_base}/${dist_macos_name}" />
-	<property name="dist_macos_app" value="${dist_macos}/FreeMind.app"/>
+	<property name="dist_macos_app_name" value="FreeMind.app" />
+	<property name="dist_macos_app" value="${dist_macos}/${dist_macos_app_name}"/>
 	<property name="dist_macos_contents" value="${dist_macos_app}/Contents"/>
 	<property name="dist_macos_info" value="${dist_macos_contents}/Info.plist"/>
 	<property name="FM.jar" value="${dist.lib}/freemind.jar"/>
@@ -185,6 +186,8 @@
 		</replaceregexp>
 		<replaceregexp byline="true" file="${dist_macos}/freemind.properties" match="^keystroke(.*)=(.*)\binsert\b" replace="keystroke\1=\2TAB" flags="gim">
 		</replaceregexp>
+		<replaceregexp byline="true" file="${dist_macos}/freemind.properties" match="^#freemind.base.dir.*$" replace="freemind.base.dir=${dist_macos_app_name}" flags="gim">
+		</replaceregexp>
 		<!-- update jar -->
 		<jar file="${FM.jar}" update="true" basedir="${dist_macos}">
 			<fileset dir="${dist_macos}">
@@ -287,10 +290,10 @@
 
 		<exec dir="." executable="bash" os="Mac OS X">
 			<arg value="./mkdmg.sh"/>
-			<arg path="${dist_macos}"/>
+			<arg path="${dist_macos_app}"/>
 		</exec>
 		<exec dir="." executable="mv" os="Mac OS X">
-			<arg path="/tmp/${dist_macos_name} Archive.dmg"/>
+			<arg path="/tmp/${dist_macos_app_name} Archive.dmg"/>
 			<arg path="${post}/${dist_macos_name}.dmg"/>
 		</exec>
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.9 2006-11-06 19:38:07 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.10 2006-11-12 21:07:07 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -347,6 +347,10 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
 	public ClassLoader getFreeMindClassLoader() {
 		return mFreeMindCommon.getFreeMindClassLoader();
+	}
+
+	public String getFreemindBaseDir(){
+		return mFreeMindCommon.getFreemindBaseDir();
 	}
 
 	public JSplitPane getSplitPane() {
