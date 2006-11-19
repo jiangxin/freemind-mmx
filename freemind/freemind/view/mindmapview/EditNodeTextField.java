@@ -19,11 +19,12 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.6 2006-10-23 18:39:55 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.7 2006-11-19 19:07:48 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -114,7 +115,13 @@ public class EditNodeTextField extends EditNodeBase {
         }
 
         textfield.setSize(xSize, nodeView.getMainView().getHeight() + heightAddition);
-        textfield.setFont(nodeView.getFont());
+        Font font = nodeView.getFont();
+        final float zoom = nodeView.getMap().getZoom();
+        if (zoom != 1F) {
+            font = font.deriveFont(font.getSize()*zoom); 
+        }
+        textfield.setFont(font);
+
         textfield.setForeground(nodeView.getForeground());
         final Color backgroundColor = model.getBackgroundColor();
         if(backgroundColor != null){

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.6 2006-10-24 18:51:17 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.7 2006-11-19 19:07:49 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -35,6 +35,7 @@ import java.awt.dnd.DropTargetListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.RepaintManager;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeModelEvent;
@@ -772,6 +774,12 @@ public class MapView extends JPanel implements Printable, Autoscroll {
         getRoot().updateAll();
         getRoot().invalidateDescendantsTreeGeometries();
         revalidate();
+        Runnable callScroll = new Runnable() {
+            public void run() {
+                scrollNodeToVisible(getSelected());
+            }
+        };
+        SwingUtilities.invokeLater(callScroll);
     }
 
     /*****************************************************************

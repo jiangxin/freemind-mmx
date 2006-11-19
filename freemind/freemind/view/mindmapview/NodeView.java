@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.12 2006-10-18 20:05:32 christianfoltin Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.13 2006-11-19 19:07:49 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -35,6 +35,7 @@ import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
+import java.awt.geom.AffineTransform;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -74,7 +75,10 @@ public abstract class NodeView extends JComponent{
     static Dimension maximumSize = new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
     protected class MainView extends JLabel{
         MainView(){
+            isPainting = false;
             setAlignmentX(CENTER_ALIGNMENT);
+            setHorizontalAlignment(CENTER);
+            setVerticalAlignment(CENTER);
         }
         public Dimension getMinimumSize() {
             return minimumSize;
@@ -87,10 +91,62 @@ public abstract class NodeView extends JComponent{
         public Dimension getPreferredSize() {
             return getMainViewPreferredSize();
         }
-        
+        private boolean isPainting;
         Dimension getPreferredLabelSize() {
-            return super.getPreferredSize();
-        }        
+            Dimension prefLabelSize = super.getPreferredSize();
+            final float zoom = map.getZoom();
+            if(zoom != 1F){
+                prefLabelSize.width *= zoom;
+                prefLabelSize.height*= zoom;
+            }
+            return prefLabelSize;
+        }
+        /* (non-Javadoc)
+         * @see javax.swing.JComponent#paint(java.awt.Graphics)
+         */
+        public void paint(Graphics g) {
+            final float zoom = map.getZoom();
+            if(zoom != 1F){
+                Graphics2D g2 = (Graphics2D)g;
+                final AffineTransform transform = g2.getTransform();                
+                g2.scale(zoom, zoom);
+                isPainting = true;
+                super.paint(g);
+                isPainting = false;
+                g2.setTransform(transform);
+            }
+            else{
+                super.paint(g);
+            }
+        }   
+        protected void printComponent(Graphics g){
+            super.paintComponent(g);
+        }
+        /* (non-Javadoc)
+         * @see javax.swing.JComponent#getHeight()
+         */
+        public int getHeight() {
+            if(isPainting){
+                final float zoom = map.getZoom();
+                if(zoom != 1F){
+                    return (int)(super.getHeight()/zoom);
+                }
+            }
+            return super.getHeight();
+        }
+        /* (non-Javadoc)
+         * @see javax.swing.JComponent#getWidth()
+         */
+        public int getWidth() {
+            if(isPainting){
+                final float zoom = map.getZoom();
+                if(zoom != 1F){
+                    return (int)(super.getWidth()/zoom);
+                }
+            }
+            return super.getWidth();
+        }
+        
     }
 	private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
 	private static final int MIN_HOR_NODE_SIZE = 10;
@@ -158,7 +214,6 @@ public abstract class NodeView extends JComponent{
     setLayout(NodeViewLayoutManager.getInstance());
     setFocusCycleRoot(true);
     mainView = new MainView();
-    mainView.setHorizontalAlignment(JLabel.CENTER);
     add(mainView);
 
 	this.model = model;
@@ -367,14 +422,14 @@ public abstract class NodeView extends JComponent{
         }
     	Dimension prefSize = mainView.getPreferredLabelSize();
         if(map.isCurrentlyPrinting() && NEED_PREF_SIZE_BUG_FIX) {
-        	prefSize.width += (int)(10f*map.getZoom());
+        	prefSize.width += map.getZoomed(10);
         }
         prefSize.width = Math.max(map.getZoomed(MIN_HOR_NODE_SIZE), prefSize.width);
         if (isEmpty){
             setText("");
         }
-		prefSize.width += 4;
-		prefSize.height += 4;
+		prefSize.width += map.getZoomed(4);
+		prefSize.height += map.getZoomed(4);
         return prefSize;
     }
 
@@ -881,7 +936,7 @@ public abstract class NodeView extends JComponent{
             // 2) icons left or right?
             getMainView().setHorizontalTextPosition((getModel().isOnLeftSideOfRoot())?SwingConstants.LEADING:SwingConstants.TRAILING);
             // 3) Create the icons:
-            MultipleImage iconImages = new MultipleImage(map.getZoom());
+            MultipleImage iconImages = new MultipleImage(1.0f);
             boolean iconPresent = false;
             /* fc, 06.10.2003: images? */
 
@@ -926,26 +981,28 @@ public abstract class NodeView extends JComponent{
         // we don't want to insert any additional white space.
         setIcon(iconPresent?iconImages:null);
 
-        // 4) Determine font
+        // 4) AttributeView
+        attributeView.update();
+        
+        // 5) Determine font
+        String nodeText = getModel().toString();
+        final boolean isHtml = nodeText.startsWith("<html>");
         Font font = getModel().getFont();
         font = font == null ? map.getController().getDefaultFont() : font;
         if (font != null) {
-           if (map.getZoom() != 1F) {
-              font = font.deriveFont(font.getSize()*map.getZoom()); }
            setFont(font); }
         else {
            // We can survive this trouble.
            System.err.println("NodeView.update(): default font is null."); }
 
-        // 5) Set the text
+        // 6) Set the text
         // Right now, this implementation is quite logical, although it allows
         // for nonconvex feature of nodes starting with <html>.
 
-        String nodeText = getModel().toString();
         // For plain text, tell if node is long and its width has to be restricted
         // boolean isMultiline = nodeText.indexOf("\n") >= 0;
         boolean widthMustBeRestricted = false;
-        if (!nodeText.startsWith("<html>")) {
+        if (!isHtml) {
             String[] lines = nodeText.split("\n");
             for (int line = 0; line < lines.length; line++) {
                 // Compute the width the node would spontaneously take,
@@ -958,7 +1015,7 @@ public abstract class NodeView extends JComponent{
             isLong = widthMustBeRestricted || lines.length > 1;
         }
         
-        if (nodeText.startsWith("<html>")) {
+        if (isHtml) {
             // Make it possible to use relative img references in HTML using tag <base>.
             if (nodeText.indexOf("<img")>=0 && nodeText.indexOf("<base ") < 0 ) {
                 try {
@@ -1009,8 +1066,6 @@ public abstract class NodeView extends JComponent{
         else{
             setText(nodeText);
         }
-        // 6) AttributeView
-        attributeView.update();
         // 7) ToolTips:
         updateToolTip();
         // 8) icons left or right?
@@ -1021,8 +1076,7 @@ public abstract class NodeView extends JComponent{
         // 10) Complete
         revalidate(); // Because of zoom?
     }
-
-    /**
+        /**
      *
      */
      /**
