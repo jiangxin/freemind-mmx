@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.13 2006-11-19 19:07:49 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.14 2006-11-19 19:15:35 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1348,7 +1348,7 @@ public abstract class NodeView extends JComponent{
         if(icon == null){
             return 0;
         }
-        return icon.getIconWidth();
+        return map.getZoomed(icon.getIconWidth());
     }
     public int getTextWidth() {
         return mainView.getWidth()-getIconWidth();
