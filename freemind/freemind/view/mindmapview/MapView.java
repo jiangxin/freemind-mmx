@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.7 2006-11-19 19:07:49 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.8 2006-11-20 21:20:36 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -1008,32 +1008,11 @@ public class MapView extends JPanel implements Printable, Autoscroll {
     // private methods. Internal implementation
     /////////
     int calcYBorderSize() {
-        int yBorderSize;
-            {
-            Dimension visibleSize = getViewportSize();
-            if (visibleSize != null){
-                yBorderSize = Math.max(visibleSize.height, BORDER);
-            }
-            else{
-                yBorderSize = BORDER;
-            }
-        }
-        return yBorderSize;
+        return BORDER;
     }
 
     int calcXBorderSize() {
-        int xBorderSize;
-        {
-            Dimension visibleSize = getViewportSize();
-            if (visibleSize != null){
-                xBorderSize = Math.max(visibleSize.width/2, BORDER + MINIMAL_LEAF_WIDTH);
-            }
-            else{
-                xBorderSize = BORDER + MINIMAL_LEAF_WIDTH;
-                
-            }
-        }
-        return xBorderSize;
+        return BORDER + MINIMAL_LEAF_WIDTH;
     }
 
     private void paintEdges(NodeView source, Graphics2D g) {

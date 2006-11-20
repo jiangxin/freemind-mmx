@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.29 2006-11-12 21:07:06 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.30 2006-11-20 21:20:36 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -51,6 +51,7 @@ import java.util.logging.SimpleFormatter;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -210,7 +211,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	if (Tools.safeEquals(getProperty("no_scrollbar"),"true")) {
            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); }
-
+    ((JComponent)getViewport()).setOpaque(true);
 	southPanel = new SouthPanel();
 	status = new JLabel();
 //	southPanel.add( status, BorderLayout.SOUTH );
@@ -392,6 +393,12 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     public void setView(MapView view) {
         scrollPane.setViewportView(view);
+        if(view != null){
+            getViewport().setBackground(view.getBackground());
+        }
+        else{
+            getViewport().setBackground(null);
+        }
     }
 
     public MenuBar getFreeMindMenuBar() {

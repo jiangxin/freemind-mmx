@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.5.4.6 2006-07-25 20:28:30 christianfoltin Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.5.4.7 2006-11-20 21:20:36 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -294,11 +294,13 @@ public class MindMapLayout implements LayoutManager {
 			int rightTreeShift = calcUpperChildShift(node, rightNodeViews);
 			
 			getRoot().setRootUpperChildShift(leftTreeShift, rightTreeShift);
-
-			int leftTreeHeight = calcTreeHeight(node, leftTreeShift, leftNodeViews);
-			int rightTreeHeight = calcTreeHeight(node, rightTreeShift, rightNodeViews);
-			
-			getRoot().setRootTreeHeights(leftTreeHeight, rightTreeHeight);
+            
+            int minY = calcTopPosition(leftNodeViews, 0);
+            minY = calcTopPosition(rightNodeViews, minY);
+            int maxY = calcBottomPosition(leftNodeViews, node.getPreferredSize().height);
+            maxY = calcBottomPosition(rightNodeViews, maxY);
+            int treeHeight =  maxY - minY;			
+            node.setTreeHeight(treeHeight);			
     	}
     	else{
 			LinkedList childrenViews = node.getChildrenViews(true);
@@ -310,12 +312,38 @@ public class MindMapLayout implements LayoutManager {
 
 			int treeShift = calcUpperChildShift(node, childrenViews);
 			node.setUpperChildShift(treeShift);
-
-			int treeHeight = calcTreeHeight(node, treeShift, childrenViews);        	
-    		node.setTreeHeight(treeHeight);
-    		
+            int minY = calcTopPosition(childrenViews, 0);
+            int maxY = calcBottomPosition(childrenViews, node.getPreferredSize().height);
+			int treeHeight = maxY - minY;        	
+    		node.setTreeHeight(treeHeight);    		
     	}
+    }
 
+    private int calcBottomPosition(LinkedList childrenViews, int maxY) {
+        if(childrenViews.size() > 0){
+        NodeView lastChild = (NodeView) childrenViews.getLast();
+            int leftMaxY = lastChild.relYPos 
+            - lastChild.getUpperChildShift()
+            + lastChild.getTreeHeight() + lastChild.getAdditionalCloudHeigth()/2;
+            if(leftMaxY > maxY){
+                maxY = leftMaxY;
+            }
+        }
+        return maxY;
+    }
+
+    private int calcTopPosition(LinkedList childrenViews, int minY) {
+        if(childrenViews.size() > 0){
+            NodeView firstChild = (NodeView) childrenViews.getFirst();
+            int leftMinY = 
+                firstChild.relYPos 
+                - firstChild.getUpperChildShift()
+                - firstChild.getAdditionalCloudHeigth()/2;
+            if(leftMinY < minY){
+                minY = leftMinY;
+            }
+        }
+        return minY;
     }
 
 	/**
@@ -348,31 +376,6 @@ public class MindMapLayout implements LayoutManager {
        }
        return Math.max(height - vgap - parentHeight, 0) / 2; 
     }
-
-	/**
-	 */
-	private int calcTreeHeight(NodeView parent, int treeShift, LinkedList childrenViews) {
-    	int parentHeight = parent.getPreferredSize().height;
-		try{
-			NodeView firstChild = (NodeView) childrenViews.getFirst();
-			NodeView lastChild = (NodeView) childrenViews.getLast();
-			int minY = Math.min(
-					firstChild.relYPos 
-					- firstChild.getUpperChildShift()
-					- firstChild.getAdditionalCloudHeigth()/2, 
-					0);
-			int maxY = Math.max(
-					lastChild.relYPos 
-					- lastChild.getUpperChildShift()
-					+ lastChild.getTreeHeight() + lastChild.getAdditionalCloudHeigth()/2 
-					, parentHeight);
-			return maxY - minY;
-		}
-		catch(NoSuchElementException e)
-		{
-	           return parentHeight; 
-		}        	        
-  	}
 
 	private int calcTreeWidth(NodeView parent, LinkedList childrenViews) {
 		int treeWidth = 0;
