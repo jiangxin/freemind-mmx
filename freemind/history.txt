@@ -14,6 +14,10 @@ Changes made in FreeMind 0.9.0 Beta 9
 * Log of node styles removed.
 * HTML Note window show/hide state is controlled via shift+control LESS (present in view menu and map context popup window).
 * Taskjuggler integration from aki integrated. Thanks to the author.
+* Bug fix: proper zoom of HTML nodes
+* Bug fix: better "zoom to fit"
+* Bug fix: scroll to selected node after zoom change
+* Improvements in Map Layout
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8
