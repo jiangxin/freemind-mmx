@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.14 2006-11-19 19:15:35 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.15 2006-11-21 22:35:36 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1008,7 +1008,7 @@ public abstract class NodeView extends JComponent{
                 // Compute the width the node would spontaneously take,
                 // by preliminarily setting the text.
                 setText(lines[line]);
-                widthMustBeRestricted = getPreferredSize().width > 
+                widthMustBeRestricted = getMainViewPreferredSize().width > 
                 map.getZoomed(map.getMaxNodeWidth());
                 if (widthMustBeRestricted) {
                     break; }}
@@ -1038,12 +1038,12 @@ public abstract class NodeView extends JComponent{
               //Empirically determined limit, above which we restrict the width without actually checking it.
               //The purpose of that is to speed up rendering of very long nodes.
               setText(nodeText);
-              widthMustBeRestricted = getPreferredSize().width > map.getZoomed(map.getMaxNodeWidth());}
+              widthMustBeRestricted = getMainViewPreferredSize().width > map.getZoomed(map.getMaxNodeWidth());}
            else {
               widthMustBeRestricted = true; }
 
            if (widthMustBeRestricted) {
-              nodeText = nodeText.replaceFirst("(?i)<body>","<body width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">");}
+              nodeText = nodeText.replaceFirst("(?i)<body>","<body width=\""+map.getMaxNodeWidth()+"\">");}
            setText(nodeText); }
         else if (nodeText.startsWith("<table>")) {           	             	  
             String[] lines = nodeText.split("\n");
@@ -1060,7 +1060,7 @@ public abstract class NodeView extends JComponent{
         else if (isLong) {
            String text = HtmlTools.plainToHTML(nodeText);
            if (widthMustBeRestricted) {
-               text = text.replaceFirst("(?i)<body>","<body width=\""+map.getZoomed(map.getMaxNodeWidth())+"\">");}
+               text = text.replaceFirst("(?i)<p>","<p width=\""+map.getMaxNodeWidth()+"\">");}
            setText(text); 
         }
         else{

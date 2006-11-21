@@ -23,8 +23,13 @@
  */
 package accessories.plugins;
 
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Rectangle;
+
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 
 import freemind.extensions.ModeControllerHookAdapter;
 import freemind.modes.NodeAdapter;
@@ -51,35 +56,19 @@ public class FitToPage extends ModeControllerHookAdapter {
     	view = getController().getView();
     	if (view == null)
     		return;
-        final NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
-        zoom(root);
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-               scroll(root);                
-            }
-            
-        });
+        zoom();
     }
     
-    private int shift(int coord1, int size1, int coord2, int size2)
-    {
-        return coord1 - coord2 + (size1 - size2)/ 2;
-    }
-
-	private void scroll(NodeAdapter root) {
-		Rectangle rect = view.getInnerBounds();
-		Rectangle viewer = view.getVisibleRect();
-		view.scrollBy(
-                shift(rect.x, rect.width, viewer.x, viewer.width), 
-                shift(rect.y, rect.height, viewer.y, viewer.height),
-                false);
-	}
-
-	private void zoom(NodeAdapter root) {
+	private void zoom() {        
 		Rectangle rect = view.getInnerBounds();
 		// calculate the zoom:
 		double oldZoom = getController().getView().getZoom();
-		Rectangle viewer = view.getVisibleRect();
+        JViewport viewPort = (JViewport)view.getParent();
+        JScrollPane pane = (JScrollPane)viewPort.getParent();
+        pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        pane.validate();
+        Dimension viewer = viewPort.getExtentSize();
 		logger.info(
 			"Found viewer rect="
 				+ viewer.height
@@ -96,6 +85,8 @@ public class FitToPage extends ModeControllerHookAdapter {
 		}
 		logger.info("Calculated new zoom " + (newZoom));
 		getController().getController().setZoom((float) (newZoom));
+        pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	}
 
 }

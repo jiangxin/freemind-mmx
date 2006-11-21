@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: HierarchicalIcons.java,v 1.1.2.4.2.2 2006-07-25 20:28:19 christianfoltin Exp $ */
+/* $Id: HierarchicalIcons.java,v 1.1.2.4.2.3 2006-11-21 22:35:16 dpolivaev Exp $ */
 
 package accessories.plugins;
 
@@ -93,7 +93,7 @@ public class HierarchicalIcons extends PermanentMindMapNodeHookAdapter implement
         if (dirty) {
             if (iconSet.size() > 0) {
                 // create multiple image:
-                MultipleImage image = new MultipleImage(0.75);
+                MultipleImage image = new MultipleImage(0.75f);
                 for (Iterator i = iconSet.iterator(); i.hasNext();) {
                     String iconName = (String) i.next();
 //                    logger.info("Adding icon "+iconName + " to node "+ node.toString());

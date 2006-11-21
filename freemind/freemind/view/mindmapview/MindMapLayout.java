@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.5.4.7 2006-11-20 21:20:36 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.5.4.8 2006-11-21 22:35:36 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.IllegalComponentStateException;
 import java.awt.LayoutManager;
 import java.awt.Point;
@@ -76,21 +77,26 @@ public class MindMapLayout implements LayoutManager {
      */
 	private void layout() {
         updateTreeHeightsAndRelativeYOfDescendants(getRoot()); 
-		int oldRootX = getRoot().getX();
-		int oldRootY = getRoot().getY();
-        Point oldPoint = new Point(oldRootX, oldRootY);
+		final int oldRootX = getRoot().getX();
+		final int oldRootY = getRoot().getY();
+        final Point oldPoint = new Point(oldRootX, oldRootY);
         SwingUtilities.convertPointToScreen(oldPoint, map);
 		resizeMap(getRoot().getTreeWidth(), getRoot().getTreeHeight());
         layout(map.getRoot());
-		try{
-			int rootX = getRoot().getX();
-			int rootY = getRoot().getY();
-            Point newPoint = new Point(rootX, rootY);
-            SwingUtilities.convertPointToScreen(newPoint, map);
-			getMapView().scrollBy(newPoint.x - oldPoint.x, newPoint.y - oldPoint.y, true );
-		}
-		catch(IllegalComponentStateException e){
-		}
+        int rootX = getRoot().getX();
+        int rootY = getRoot().getY();
+        Point newPoint = new Point(rootX, rootY);
+        SwingUtilities.convertPointToScreen(newPoint, map);
+        final int scrollX = newPoint.x - oldPoint.x;
+        final int scrollY = newPoint.y - oldPoint.y;
+        if(scrollX == 0 && scrollY == 0){
+            return;
+        }
+        try{
+            getMapView().scrollBy(scrollX, scrollY, true );
+        }
+        catch(IllegalComponentStateException e){
+        }
 
 	}
 
@@ -197,23 +203,10 @@ public class MindMapLayout implements LayoutManager {
         // 1) Unfold
         // 2) Insertion of a node
         // 3) Modification of a node in an enlarging way
-            boolean bResized = false;
 			int minXSize = width + map.calcXBorderSize() * 2;
-            int minYSize = height  +  map.calcYBorderSize() * 2;
-
-         	if (minXSize != getXSize()) {
-        		setXSize(minXSize);
-        		bResized = true;
-        	}
-
-        	if (minYSize != getYSize()) {
-        		setYSize(minYSize);
-        		bResized = true;
-        	}
-
-        	if (bResized){
-        		getMapView().setSize(getXSize(), getYSize());
-        	}
+			int minYSize = height  +  map.calcYBorderSize() * 2;
+			setXSize(minXSize);
+			setYSize(minYSize);
     }
 
     //
@@ -223,6 +216,8 @@ public class MindMapLayout implements LayoutManager {
     // Definiton: relative vertical is either relative Y coord or Treeheight.
 
     void updateTreeHeightsAndRelativeYOfDescendants(NodeView node) {
+        if(node.getTreeHeight() != 0)
+            return;
         if (node.getParentView() != null) node.setVisible(node.getModel().isVisible());
         for (ListIterator e = node.getChildrenViews(false).listIterator(); e.hasNext();) {
 	           updateTreeHeightsAndRelativeYOfDescendants((NodeView)e.next()); }
@@ -411,7 +406,10 @@ public class MindMapLayout implements LayoutManager {
     public Dimension minimumLayoutSize(Container parent) {
         return new Dimension(200,200); } //For testing Purposes
 
-    public Dimension preferredLayoutSize(Container parent) {
+    public Dimension preferredLayoutSize(Container c) {
+        if(! c.isValid()){
+            c.validate();
+        }            
         return new Dimension(getXSize(), getYSize()); }
 
 

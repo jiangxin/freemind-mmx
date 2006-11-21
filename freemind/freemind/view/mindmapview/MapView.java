@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.8 2006-11-20 21:20:36 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.9 2006-11-21 22:35:36 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -989,10 +989,13 @@ public class MapView extends JPanel implements Printable, Autoscroll {
     public Rectangle getInnerBounds() {
         int xBorder = calcXBorderSize();
         int yBorder = calcYBorderSize();
-        int width = getWidth();
-        int height = getHeight();
-        final Rectangle innerBounds = new Rectangle(xBorder, yBorder, width-2*xBorder, height-2*yBorder);        
-        final Rectangle maxBounds = new Rectangle(0, 0, width, height);        
+        final int treeWidth = getRoot().getTreeWidth();
+        final int treeHeight = getRoot().getTreeHeight();
+//        logger.info(
+//            "Tree width =" + treeWidth + ":" + treeWidth / getZoom() + ", "
+//            + "Tree height =" + treeHeight +":" + treeHeight / getZoom() + ", ");
+        final Rectangle innerBounds = new Rectangle(xBorder, yBorder, treeWidth, treeHeight);        
+        final Rectangle maxBounds = new Rectangle(0, 0, getWidth(), getHeight());        
         for(int i = 0; i < ArrowLinkViews.size(); ++i) {
             ArrowLinkView arrowView = (ArrowLinkView) ArrowLinkViews.get(i);
             Rectangle arrowViewBigBounds = arrowView.arrowLinkCurve.getBounds();
@@ -1004,15 +1007,12 @@ public class MapView extends JPanel implements Printable, Autoscroll {
         return innerBounds.intersection(maxBounds);
     }
 
-    ///////////
-    // private methods. Internal implementation
-    /////////
     int calcYBorderSize() {
-        return BORDER;
+        return getZoomed(BORDER);
     }
 
     int calcXBorderSize() {
-        return BORDER + MINIMAL_LEAF_WIDTH;
+        return getZoomed(BORDER + MINIMAL_LEAF_WIDTH);
     }
 
     private void paintEdges(NodeView source, Graphics2D g) {
@@ -1262,5 +1262,12 @@ public class MapView extends JPanel implements Printable, Autoscroll {
     public void autoscroll(Point cursorLocn) {
         Rectangle r = new Rectangle((int)cursorLocn.getX() - margin, (int)cursorLocn.getY() - margin, 1+ 2*margin, 1+ 2*margin);
         scrollRectToVisible(r);
+    }
+
+    /* (non-Javadoc)
+     * @see java.awt.Component#setBounds(int, int, int, int)
+     */
+    public void setBounds(int x, int y, int width, int height) {
+        super.setBounds(x, y, width, height);
     }
  }
