@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.15 2006-11-21 22:35:36 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.16 2006-11-21 23:05:58 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -96,8 +96,8 @@ public abstract class NodeView extends JComponent{
             Dimension prefLabelSize = super.getPreferredSize();
             final float zoom = map.getZoom();
             if(zoom != 1F){
-                prefLabelSize.width *= zoom;
-                prefLabelSize.height*= zoom;
+                prefLabelSize.width = (int)(0.99 + prefLabelSize.width * zoom);
+                prefLabelSize.height= (int)(0.99 + prefLabelSize.height *zoom);
             }
             return prefLabelSize;
         }
@@ -141,7 +141,7 @@ public abstract class NodeView extends JComponent{
             if(isPainting){
                 final float zoom = map.getZoom();
                 if(zoom != 1F){
-                    return (int)(super.getWidth()/zoom);
+                    return (int)(0.99f+super.getWidth()/zoom);
                 }
             }
             return super.getWidth();
