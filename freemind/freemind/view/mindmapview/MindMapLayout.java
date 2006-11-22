@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.5.4.8 2006-11-21 22:35:36 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.5.4.9 2006-11-22 22:22:18 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -50,6 +50,10 @@ public class MindMapLayout implements LayoutManager {
     // save root node coordinates
 	private int rootX = 0;
 	private int rootY = 0;
+    final static int BORDER = 30;//width of the border around the map.
+    // minimal width for input field of leaf or folded node (PN)
+    // the MINIMAL_LEAF_WIDTH is reserved by calculation of the map width
+    public final static int MINIMAL_LEAF_WIDTH = 150;
 
     public MindMapLayout(MapView map) {
         this.map = map;
@@ -184,13 +188,13 @@ public class MindMapLayout implements LayoutManager {
     /**
 	 */
 	private int getRootY() {
-		return map.calcYBorderSize() + getRoot().getUpperChildShift();
+		return calcYBorderSize() + getRoot().getUpperChildShift();
 	}
 
 	/**
 	 */
 	private int getRootX() {
-		return map.calcXBorderSize() + getRoot().getLeftTreeWidth();
+		return calcXBorderSize() + getRoot().getLeftTreeWidth();
 	}
 
 	/**
@@ -203,10 +207,13 @@ public class MindMapLayout implements LayoutManager {
         // 1) Unfold
         // 2) Insertion of a node
         // 3) Modification of a node in an enlarging way
-			int minXSize = width + map.calcXBorderSize() * 2;
-			int minYSize = height  +  map.calcYBorderSize() * 2;
+			final int x = calcXBorderSize();
+            int minXSize = width + x * 2;
+			final int y = calcYBorderSize();
+            int minYSize = height  +  y * 2;
 			setXSize(minXSize);
 			setYSize(minYSize);
+            map.setSize(minXSize, minYSize);
     }
 
     //
@@ -405,11 +412,9 @@ public class MindMapLayout implements LayoutManager {
     // This is actually never used.
     public Dimension minimumLayoutSize(Container parent) {
         return new Dimension(200,200); } //For testing Purposes
-
+    
     public Dimension preferredLayoutSize(Container c) {
-        if(! c.isValid()){
-            c.validate();
-        }            
+        layoutContainer(c);
         return new Dimension(getXSize(), getYSize()); }
 
 
@@ -435,5 +440,31 @@ public class MindMapLayout implements LayoutManager {
         ySize = i;
     }
 
+    int calcYBorderSize() {
+        int yBorderSize;
+        final int minBorderHeight = map.getZoomed(MindMapLayout.BORDER);
+        Dimension visibleSize = map.getViewportSize();
+        if (visibleSize != null){
+            yBorderSize = Math.max(visibleSize.height, minBorderHeight);
+        }
+        else{
+            yBorderSize = minBorderHeight;
+        }
+        return yBorderSize;
+    }
+    
+    int calcXBorderSize() {
+        int xBorderSize;
+        Dimension visibleSize = map.getViewportSize();
+        final int minBorderWidth = map.getZoomed(MindMapLayout.BORDER + MindMapLayout.MINIMAL_LEAF_WIDTH);
+        if (visibleSize != null){
+            xBorderSize = Math.max(visibleSize.width/2, minBorderWidth);
+        }
+        else{
+            xBorderSize = minBorderWidth;
+            
+        }
+        return xBorderSize;
+    }
 
 }//class MindMapLayout

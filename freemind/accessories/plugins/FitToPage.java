@@ -84,9 +84,6 @@ public class FitToPage extends ModeControllerHookAdapter {
 		double oldZoom = getController().getView().getZoom();
         JViewport viewPort = (JViewport)view.getParent();
         JScrollPane pane = (JScrollPane)viewPort.getParent();
-        pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        pane.validate();
         Dimension viewer = viewPort.getExtentSize();
 		logger.info(
 			"Found viewer rect="
@@ -104,8 +101,6 @@ public class FitToPage extends ModeControllerHookAdapter {
 		}
 		logger.info("Calculated new zoom " + (newZoom));
 		getController().getController().setZoom((float) (newZoom));
-        pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	}
 
 }

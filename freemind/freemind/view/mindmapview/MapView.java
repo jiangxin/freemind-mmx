@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.9 2006-11-21 22:35:36 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.10 2006-11-22 22:22:18 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -53,6 +53,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.RepaintManager;
+import javax.swing.Scrollable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -77,13 +78,7 @@ import freemind.view.mindmapview.attributeview.AttributeView;
  * This class represents the view of a whole MindMap
  * (in analogy to class JTree).
  */
-public class MapView extends JPanel implements Printable, Autoscroll {
-    private final static int BORDER = 30;//width of the border around the map.
-    // minimal width for input field of leaf or folded node (PN)
-    // the MINIMAL_LEAF_WIDTH is reserved by calculation of the map width
-    public final static int MINIMAL_LEAF_WIDTH = 150;
-    public final static int MINIMAL_WIDTH = 50;
-
+public class MapView extends JPanel implements Printable, Autoscroll{
 	private class Selected {
 		private Vector mySelected = new Vector();
 		public Selected() {};
@@ -987,8 +982,8 @@ public class MapView extends JPanel implements Printable, Autoscroll {
      * Should that be implemented in LayoutManager as minimum size?
      */
     public Rectangle getInnerBounds() {
-        int xBorder = calcXBorderSize();
-        int yBorder = calcYBorderSize();
+        int xBorder = ((MindMapLayout)getLayout()).calcXBorderSize();
+        int yBorder = ((MindMapLayout)getLayout()).calcYBorderSize();
         final int treeWidth = getRoot().getTreeWidth();
         final int treeHeight = getRoot().getTreeHeight();
 //        logger.info(
@@ -1007,14 +1002,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
         return innerBounds.intersection(maxBounds);
     }
 
-    int calcYBorderSize() {
-        return getZoomed(BORDER);
-    }
-
-    int calcXBorderSize() {
-        return getZoomed(BORDER + MINIMAL_LEAF_WIDTH);
-    }
-
+    
     private void paintEdges(NodeView source, Graphics2D g) {
         if (! source.isVisible()) return;
         for(ListIterator e = source.getChildrenViews(true).listIterator(); e.hasNext(); ) {
@@ -1262,12 +1250,5 @@ public class MapView extends JPanel implements Printable, Autoscroll {
     public void autoscroll(Point cursorLocn) {
         Rectangle r = new Rectangle((int)cursorLocn.getX() - margin, (int)cursorLocn.getY() - margin, 1+ 2*margin, 1+ 2*margin);
         scrollRectToVisible(r);
-    }
-
-    /* (non-Javadoc)
-     * @see java.awt.Component#setBounds(int, int, int, int)
-     */
-    public void setBounds(int x, int y, int width, int height) {
-        super.setBounds(x, y, width, height);
     }
  }

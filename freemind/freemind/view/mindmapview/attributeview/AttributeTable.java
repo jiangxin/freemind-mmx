@@ -284,6 +284,9 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         float fontSize = getFontSize();
         float tableRowHeight = fontSize + zoom * TABLE_ROW_HEIGHT;
         int newHeight = (int)((tableRowHeight * rowCount + (zoom - 1)* constHeight) / rowCount);
+        if(newHeight < 1){
+            newHeight = 1;
+        }
         int highRowsNumber = (int)((tableRowHeight - newHeight)* rowCount);
         for (int i = 0; i < highRowsNumber; i++)
         {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.30 2006-11-20 21:20:36 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.31 2006-11-22 22:22:18 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -208,9 +208,15 @@ public class FreeMind extends JFrame implements FreeMindMain {
         win_height = (win_height > 0) ? win_height : 440;
         getRootPane().setPreferredSize(new Dimension( win_width, win_height ));
 
-	if (Tools.safeEquals(getProperty("no_scrollbar"),"true")) {
-           scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-           scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); }
+        if (Tools.safeEquals(getProperty("no_scrollbar"),"true")) {
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); 
+        }
+        else{
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            
+        }
     ((JComponent)getViewport()).setOpaque(true);
 	southPanel = new SouthPanel();
 	status = new JLabel();
