@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.5.4.9 2006-11-22 22:22:18 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.5.4.10 2006-11-23 21:09:44 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -66,11 +66,6 @@ public class MindMapLayout implements LayoutManager {
 
     public void layoutContainer(Container parent) {
        layout(); }
-   
-
-
-
-
     //
     // Absolute positioning
     //
@@ -80,12 +75,12 @@ public class MindMapLayout implements LayoutManager {
      * All tree heights, widths and shifts should be already calculated.
      */
 	private void layout() {
-        updateTreeHeightsAndRelativeYOfDescendants(getRoot()); 
-		final int oldRootX = getRoot().getX();
-		final int oldRootY = getRoot().getY();
-        final Point oldPoint = new Point(oldRootX, oldRootY);
+        final Point oldPoint;
+        final int oldRootX = getRoot().getX();
+        final int oldRootY = getRoot().getY();
+        oldPoint = new Point(oldRootX, oldRootY);
         SwingUtilities.convertPointToScreen(oldPoint, map);
-		resizeMap(getRoot().getTreeWidth(), getRoot().getTreeHeight());
+        preLayout();
         layout(map.getRoot());
         int rootX = getRoot().getX();
         int rootY = getRoot().getY();
@@ -101,8 +96,12 @@ public class MindMapLayout implements LayoutManager {
         }
         catch(IllegalComponentStateException e){
         }
-
 	}
+
+    private void preLayout() {
+        updateTreeHeightsAndRelativeYOfDescendants(getRoot()); 
+		resizeMap(getRoot().getTreeWidth(), getRoot().getTreeHeight());
+    }
 
     /**
      * This places the node's subtree if the relative
@@ -274,13 +273,6 @@ public class MindMapLayout implements LayoutManager {
 	  		return 0;
 	}
     protected void updateTreeGeometry(NodeView node) {
-        
-       //FIXME (Dimitri) workaround: the child components of the node have to be validated 
-//        node.syncronizeAttributeView();
-        
-        if(node.getTreeHeight() != 0)
-            return;
-        
     	if (node.isRoot()){
     		LinkedList leftNodeViews = getRoot().getLeft(true);
 			LinkedList rightNodeViews = getRoot().getRight(true);
@@ -414,8 +406,9 @@ public class MindMapLayout implements LayoutManager {
         return new Dimension(200,200); } //For testing Purposes
     
     public Dimension preferredLayoutSize(Container c) {
-        layoutContainer(c);
-        return new Dimension(getXSize(), getYSize()); }
+        preLayout();
+        return new Dimension(getXSize(), getYSize()); 
+    }
 
 
     private int getXSize() {
