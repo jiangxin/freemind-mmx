@@ -142,18 +142,22 @@ public class EditAction extends AbstractAction implements ActorXml {
 		EventQueue.invokeLater(new DelayedEditor(node, prevSelected, firstEvent, isNewNode, parentFolded, editLong));
 		}
 
-		public void edit(
-				final NodeView node,
-				final NodeView prevSelected,
-				final KeyEvent firstEvent,
-				final boolean isNewNode,
-				final boolean parentFolded,
-				final boolean editLong) {
-				if (node == null) {
-					return;
-				}
-
-		//EditNodeBase.closeEdit();
+	public void edit(
+	        final NodeView node,
+	        final NodeView prevSelected,
+	        final KeyEvent firstEvent,
+	        final boolean isNewNode,
+	        final boolean parentFolded,
+	        final boolean editLong) {
+	    if (node == null) {
+	        return;
+	    }
+	    if(! node.hasFocus()){
+            node.requestFocus();
+            editLater(node, prevSelected, firstEvent, isNewNode, parentFolded, editLong);            
+	        return;
+	    }
+	    //EditNodeBase.closeEdit();
 		c.setBlocked(true); // locally "modal" stated
 
 		String text = node.getModel().toString();

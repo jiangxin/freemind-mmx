@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: NumberProperty.java,v 1.1.2.3.2.3 2006-10-12 20:39:16 christianfoltin Exp $*/
+/*$Id: NumberProperty.java,v 1.1.2.3.2.4 2006-11-26 10:20:38 dpolivaev Exp $*/
 package freemind.common;
 
 import javax.swing.JLabel;
@@ -80,7 +80,7 @@ public class NumberProperty extends PropertyBean implements
                     intValue = min;
                 }
             } catch(NumberFormatException e){
-                freemind.main.Resources.getInstance().logExecption(e);
+                freemind.main.Resources.getInstance().logException(e);
             }
             spinner.setValue(new Integer(intValue));
 	    }

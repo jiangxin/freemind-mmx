@@ -54,7 +54,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import freemind.controller.MapModuleManager.MapModuleChangeOberser;
+import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.main.Resources;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -68,7 +68,7 @@ import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
-public class AssignAttributeDialog extends JDialog implements AttributesListener, MapModuleChangeOberser{
+public class AssignAttributeDialog extends JDialog implements AttributesListener, MapModuleChangeObserver{
     private static class ClonedComboBoxModel extends AbstractListModel implements ComboBoxModel{
         private AbstractListModel sharedListModel;
         private Object selectedItem;

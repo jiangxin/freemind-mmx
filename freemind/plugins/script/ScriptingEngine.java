@@ -19,7 +19,7 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.3 2006-09-07 20:00:25 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.4 2006-11-26 10:21:30 dpolivaev Exp $ */
 package plugins.script;
 
 import java.util.Iterator;
@@ -79,7 +79,7 @@ public class ScriptingEngine extends MindMapHookAdapter  {
             }
         } catch (Exception e) {
             //e.printStackTrace();
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
             getController().getController().errorMessage(e.getClass().getName() + ": " + e.getMessage());
         }
         getController().getFrame().setWaitingCursor(false);

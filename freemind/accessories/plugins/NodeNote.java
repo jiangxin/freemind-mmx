@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.27 2006-11-10 22:30:39 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.28 2006-11-26 10:21:14 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -38,7 +38,9 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.html.HTMLDocument;
 
+import com.lightdev.app.shtm.DefaultTextResources;
 import com.lightdev.app.shtm.SHTMLPanel;
+import com.lightdev.app.shtm.TextResources;
 import com.lightdev.app.shtm.Util;
 
 import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
@@ -340,9 +342,9 @@ public class NodeNote extends MindMapNodeHookAdapter {
         public static SHTMLPanel getHtmlEditorPanel() {
             if (htmlEditorPanel == null) {
                 try {
-                    ResourceBundle resources = ResourceBundle.getBundle(
-                            "accessories.plugins.SimplyHTML", Locale
-                                    .getDefault());
+                    final ResourceBundle resourceBundle = ResourceBundle.getBundle("accessories.plugins.SimplyHTML", 
+                            Locale.getDefault());
+                    final TextResources resources = new DefaultTextResources(resourceBundle);
                     SHTMLPanel.setResources(resources);
                 } catch (MissingResourceException mre) {
                     Util.errMsg(null,

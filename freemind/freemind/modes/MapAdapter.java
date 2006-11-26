@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.13 2006-11-10 22:30:39 christianfoltin Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.14 2006-11-26 10:20:41 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -266,8 +266,8 @@ public abstract class MapAdapter implements MindMap {
          //return new StringSelection(forClipboard); }
 
 
-      catch (UnsupportedFlavorException ex) { freemind.main.Resources.getInstance().logExecption(ex); }
-      catch (IOException ex) { freemind.main.Resources.getInstance().logExecption(ex); }
+      catch (UnsupportedFlavorException ex) { freemind.main.Resources.getInstance().logException(ex); }
+      catch (IOException ex) { freemind.main.Resources.getInstance().logException(ex); }
       return null; }
 
     public String getAsPlainText(List mindMapNodes) {

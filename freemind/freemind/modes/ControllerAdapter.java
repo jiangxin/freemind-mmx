@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.19 2006-10-10 18:51:52 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.20 2006-11-26 10:20:41 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -53,6 +53,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -347,7 +348,7 @@ public abstract class ControllerAdapter implements ModeController {
                     centerNode(getNodeFromID(target));
                     return;
                 } catch (Exception e) {
-                    freemind.main.Resources.getInstance().logExecption(e);
+                    freemind.main.Resources.getInstance().logException(e);
                     // give "not found" message
                 		getFrame().out(Tools.expandPlaceholders(getText("link_not_found"), target));
                 		return;
@@ -386,7 +387,7 @@ public abstract class ControllerAdapter implements ModeController {
                     // jump to link:
                     newModeController.centerNode(newModeController.getNodeFromID(ref));
                 } catch (Exception e) {
-                    freemind.main.Resources.getInstance().logExecption(e);
+                    freemind.main.Resources.getInstance().logException(e);
                     getFrame().out(Tools.expandPlaceholders(getText("link_not_found"), ref));
                     return;
                 }                
@@ -397,11 +398,11 @@ public abstract class ControllerAdapter implements ModeController {
            }
         }
         catch (MalformedURLException ex) {
-	        	freemind.main.Resources.getInstance().logExecption(ex);
+	        	freemind.main.Resources.getInstance().logException(ex);
             getController().errorMessage(getText("url_error")+"\n"+ex);
             return; 
         } catch (Exception e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
         } finally {
             getFrame().setWaitingCursor(false);
         }
@@ -608,7 +609,7 @@ public abstract class ControllerAdapter implements ModeController {
        else if (exceptionType.equals("java.io.FileNotFoundException")) {
           getController().errorMessage(ex.getMessage()); }
        else {
-       	  freemind.main.Resources.getInstance().logExecption(ex);
+       	  freemind.main.Resources.getInstance().logException(ex);
           getController().errorMessage(ex); }
     }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModesCreator.java,v 1.9.18.4.2.3 2006-07-25 20:28:20 christianfoltin Exp $ */
+/* $Id: ModesCreator.java,v 1.9.18.4.2.4 2006-11-26 10:20:41 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -95,7 +95,7 @@ public class ModesCreator {
 				mCreatedModes.put(modeName, mode);
 			} catch (Exception ex) {
 				logger.severe("Mode " + modeName + " could not be loaded.");
-freemind.main.Resources.getInstance().logExecption(				ex);
+freemind.main.Resources.getInstance().logException(				ex);
 			}
 		}
 		return (Mode) mCreatedModes.get(modeName);

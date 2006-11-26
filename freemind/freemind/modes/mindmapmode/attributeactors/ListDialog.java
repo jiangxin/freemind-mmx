@@ -162,7 +162,7 @@ public class ListDialog extends JDialog
             String text = document.getText(0, document.getLength());
             return text;
         } catch (BadLocationException e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
             return "";
         }
     }

@@ -19,7 +19,7 @@
  *
  * Created on 18.08.2006
  */
-/*$Id: HookDescriptorBase.java,v 1.1.2.3 2006-11-12 21:07:06 christianfoltin Exp $*/
+/*$Id: HookDescriptorBase.java,v 1.1.2.4 2006-11-26 10:20:40 dpolivaev Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -164,7 +164,7 @@ public class HookDescriptorBase {
 			classLoaderCache.put(key, loader);
 			return loader;
 		} catch (MalformedURLException e) {
-			freemind.main.Resources.getInstance().logExecption(e);
+			freemind.main.Resources.getInstance().logException(e);
 			return this.getClass().getClassLoader();
 		}
 	}

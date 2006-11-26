@@ -19,7 +19,7 @@
  *
  * Created on 20.09.2004
  */
-/*$Id: UndoAction.java,v 1.1.2.2.2.3 2006-07-25 20:28:22 christianfoltin Exp $*/
+/*$Id: UndoAction.java,v 1.1.2.2.2.4 2006-11-26 10:20:44 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -173,7 +173,7 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
                 maxEntries = new Integer(controller.getFrame().getProperty(
                         "undo_levels")).intValue();
             } catch (NumberFormatException e) {
-                freemind.main.Resources.getInstance().logExecption(e);
+                freemind.main.Resources.getInstance().logException(e);
             }
             while (actionPairList.size()>maxEntries) {
                 actionPairList.remove(actionPairList.size()-1); // remove

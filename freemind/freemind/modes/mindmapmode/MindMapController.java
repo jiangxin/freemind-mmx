@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.20 2006-11-06 19:38:07 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.21 2006-11-26 10:20:43 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -54,6 +54,7 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -360,7 +361,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
             mMenuStructure = updateMenusFromXml(in);
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
         }
 
     	logger.info("MindMapPopupMenu");
@@ -510,7 +511,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 							patternsFile), mPatternsList);
 					success = true;
 				} catch (Exception e) {
-freemind.main.Resources.getInstance().logExecption(					e);
+freemind.main.Resources.getInstance().logException(					e);
 				}
 				if (success) {
 					JOptionPane.showMessageDialog(null,
@@ -612,7 +613,7 @@ freemind.main.Resources.getInstance().logExecption(					e);
 				registrationInstance.register();
 				mRegistrations.add(registrationInstance);
 			} catch (Exception e) {
-				freemind.main.Resources.getInstance().logExecption(				e);
+				freemind.main.Resources.getInstance().logException(				e);
 			}
 		}
 
@@ -815,7 +816,7 @@ freemind.main.Resources.getInstance().logExecption(					e);
         	MenuStructure menus = (MenuStructure) unmarshaller.unmarshalDocument(in, null);
         	return menus;
         } catch (JiBXException e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
             throw new IllegalArgumentException("Menu structure could not be read.");
         }
     }
@@ -860,7 +861,7 @@ freemind.main.Resources.getInstance().logExecption(					e);
 						add(holder, theCategory, theAction, keystroke);
 					}
 				} catch (Exception e1) {
-freemind.main.Resources.getInstance().logExecption(					e1);
+freemind.main.Resources.getInstance().logException(					e1);
 				}
             } else if (obj instanceof MenuSeparator) {
             	holder.addSeparator(categoryCopy);
@@ -1128,7 +1129,7 @@ freemind.main.Resources.getInstance().logExecption(					e1);
                   new URL(getMap().getFile().toURL(), relative); }
             catch (MalformedURLException ex) {
                JOptionPane.showMessageDialog(getView(),"Couldn't create valid URL for:"+getMap().getFile());
-               freemind.main.Resources.getInstance().logExecption(ex);
+               freemind.main.Resources.getInstance().logException(ex);
                return; }
             try {
                MindMapNodeModel node = getMindMapMapModel().loadTree(new File(absolute.getFile()));
@@ -1494,7 +1495,7 @@ freemind.main.Resources.getInstance().logExecption(					e1);
                       }
                    }
                 }
-                catch (MalformedURLException e){ freemind.main.Resources.getInstance().logExecption(e); }
+                catch (MalformedURLException e){ freemind.main.Resources.getInstance().logException(e); }
     }
 
     protected String getLinkByFileChooser(FileFilter fileFilter) {
@@ -1666,7 +1667,7 @@ freemind.main.Resources.getInstance().logExecption(					e1);
 			// and good bye.
 			hook.shutdownMapHook();
 		} catch (Exception e) {
-			freemind.main.Resources.getInstance().logExecption(e);
+			freemind.main.Resources.getInstance().logException(e);
 		}        
     }
 

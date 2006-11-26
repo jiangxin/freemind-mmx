@@ -104,7 +104,7 @@ public class Resources {
         return main.getLogger(forClass);
     }
     
-    public void logExecption(Throwable e) {
+    public void logException(Throwable e) {
     		logExecption(e, "");
 	}
     

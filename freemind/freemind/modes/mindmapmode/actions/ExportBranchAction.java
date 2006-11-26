@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ExportBranchAction.java,v 1.1.2.1 2006-08-20 21:00:08 christianfoltin Exp $*/
+/*$Id: ExportBranchAction.java,v 1.1.2.2 2006-11-26 10:20:43 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -110,7 +110,7 @@ public class ExportBranchAction extends AbstractAction {
                         .toURL(), mMindMapController.getModel().getURL());
                 mMindMapController.setLink(node, linkToNewMapString);
             } catch (MalformedURLException ex) {
-                Resources.getInstance().logExecption(ex);
+                Resources.getInstance().logException(ex);
             }
             int nodePosition = parent.getChildPosition(node);
             mMindMapController.deleteNode(node);
@@ -133,7 +133,7 @@ public class ExportBranchAction extends AbstractAction {
                         .getModel().getURL(), chosenFile.toURL());
                 mMindMapController.setLink(newNode, linkString);
             } catch (MalformedURLException ex) {
-                Resources.getInstance().logExecption(ex);
+                Resources.getInstance().logException(ex);
             }
             mMindMapController.newMap(map);
             // old map should not be save automatically!!

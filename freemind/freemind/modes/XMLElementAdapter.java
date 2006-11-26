@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.9 2006-09-02 22:09:49 christianfoltin Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.10 2006-11-26 10:20:42 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -237,7 +237,7 @@ public abstract class XMLElementAdapter extends XMLElement {
                 // you know exactly what you are doing.
                 hook.setNode(node);
              } catch(Exception e) {
-                 freemind.main.Resources.getInstance().logExecption(e);
+                 freemind.main.Resources.getInstance().logException(e);
                  hook = new PermanentNodeHookSubstituteUnknown(loadName);
              }
  			 hook.loadFrom(xml);

@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.9.2.11 2006-10-04 20:40:30 dpolivaev Exp $ */
+/* $Id: TimeList.java,v 1.1.2.9.2.12 2006-11-26 10:21:31 dpolivaev Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -307,7 +307,7 @@ public class TimeList extends MindMapHookAdapter {
             timeTableModel.fireTableDataChanged();
             mFlatNodeTableFilterModel.resetFilter();
         } catch (BadLocationException e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
         }
 
     }
@@ -547,7 +547,7 @@ public class TimeList extends MindMapHookAdapter {
 	                        String text = getRegularExpression(getText(document));
 	                        mFlatNodeTableFilterModel.setFilter(text);
 	                    } catch (BadLocationException e) {
-	                        freemind.main.Resources.getInstance().logExecption(					e);
+	                        freemind.main.Resources.getInstance().logException(					e);
 	                        mFlatNodeTableFilterModel.resetFilter();
 	                    }
 	                }

@@ -44,7 +44,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
 import freemind.controller.Controller;
-import freemind.controller.MapModuleManager.MapModuleChangeOberser;
+import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.filter.util.SortedListModel;
 import freemind.main.Resources;
 import freemind.modes.MapRegistry;
@@ -57,7 +57,7 @@ import freemind.view.MapModule;
  * @author Dimitri Polivaev
  * 10.07.2005
  */
-public class AttributeManagerDialog extends JDialog implements MapModuleChangeOberser {
+public class AttributeManagerDialog extends JDialog implements MapModuleChangeObserver {
     private JTable view;
     private MapRegistry registry;
     private AttributeRegistry model;

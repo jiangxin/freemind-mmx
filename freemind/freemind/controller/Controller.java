@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.19 2006-10-15 11:10:47 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.20 2006-11-26 10:20:38 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -75,7 +75,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import freemind.controller.MapModuleManager.MapModuleChangeOberser;
+import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.filter.FilterController;
 import freemind.controller.printpreview.PreviewDialog;
 import freemind.main.FreeMind;
@@ -102,7 +102,7 @@ import freemind.view.mindmapview.MapView;
  * Provides the methods to edit/change a Node.
  * Forwards all messages to MapModel(editing) or MapView(navigation).
  */
-public class Controller  implements MapModuleChangeOberser {
+public class Controller  implements MapModuleChangeObserver {
 
     /**
      * Converts from a local link to the real file URL of the
@@ -504,7 +504,13 @@ public class Controller  implements MapModuleChangeOberser {
         Component newLeftToolBar = newModeController.getLeftToolBar();
         if (newLeftToolBar != null) {
             getFrame().getContentPane().add(newLeftToolBar, BorderLayout.WEST);
-            newLeftToolBar.repaint();
+            if(leftToolbarVisible){
+                newLeftToolBar.setVisible(true);
+                newLeftToolBar.repaint();
+            }
+            else{
+                newLeftToolBar.setVisible(false);
+            }
         }
         toolbar.validate();
         toolbar.repaint();
@@ -573,10 +579,14 @@ public class Controller  implements MapModuleChangeOberser {
         return toolbar;
     }
     public void setLeftToolbarVisible(boolean visible) {
-        if (getMode() != null && getModeController().getLeftToolBar() != null) {
+        if (getMode() == null){
+            return;
+        }
+        final Component leftToolBar = getModeController().getLeftToolBar();
+        if (leftToolBar != null) {
            leftToolbarVisible = visible;
-           getModeController().getLeftToolBar().setVisible(leftToolbarVisible);
-           ((JComponent)getModeController().getLeftToolBar().getParent()).revalidate();
+           leftToolBar.setVisible(leftToolbarVisible);
+           ((JComponent)leftToolBar.getParent()).revalidate();
         }
     }
 
@@ -893,7 +903,7 @@ public class Controller  implements MapModuleChangeOberser {
                 try {
                     printerJob.print();
                 } catch (Exception ex) {
-                    freemind.main.Resources.getInstance().logExecption(ex);
+                    freemind.main.Resources.getInstance().logException(ex);
                 }
 				getView().endPrinting();
             }
@@ -1035,7 +1045,7 @@ public class Controller  implements MapModuleChangeOberser {
                 try {
                     url = new URL(map);
                 } catch (MalformedURLException e2) {
-                    freemind.main.Resources.getInstance().logExecption(e2);
+                    freemind.main.Resources.getInstance().logException(e2);
                     return;
                 }
                 final URL endUrl = url;
@@ -1046,7 +1056,7 @@ public class Controller  implements MapModuleChangeOberser {
                             createNewMode(BrowseMode.MODENAME);
                             controller.getModeController().load(endUrl);
                         } catch (Exception e1) {
-                            freemind.main.Resources.getInstance().logExecption(e1);
+                            freemind.main.Resources.getInstance().logException(e1);
                         }
                     }
                 });
@@ -1328,7 +1338,7 @@ public class Controller  implements MapModuleChangeOberser {
 				}
 			});
 			options.buildPanel();
-			options.setProperties(getFrame().getProperties());
+			options.setProperties(getFrame().getProperties(), getFrame().getResources());
 			dialog.setTitle("Freemind Properties");
 			dialog.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			dialog.addWindowListener(new WindowAdapter(){

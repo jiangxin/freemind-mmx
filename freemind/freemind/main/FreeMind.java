@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.31 2006-11-22 22:22:18 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.32 2006-11-26 10:20:40 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -217,7 +217,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
             scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
             
         }
-    ((JComponent)getViewport()).setOpaque(true);
 	southPanel = new SouthPanel();
 	status = new JLabel();
 //	southPanel.add( status, BorderLayout.SOUTH );
@@ -399,12 +398,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     public void setView(MapView view) {
         scrollPane.setViewportView(view);
-        if(view != null){
-            getViewport().setBackground(view.getBackground());
-        }
-        else{
-            getViewport().setBackground(null);
-        }
     }
 
     public MenuBar getFreeMindMenuBar() {
@@ -598,7 +591,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
     }
 
     public static void main(String[] args) {
-    	FreeMind frame = new FreeMind();
+    	final FreeMind frame = new FreeMind();
         FreeMindSplash splash=null;
         FeedBack feedBack;
         // change here, if you don't like the splash
@@ -662,7 +655,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				try {
 					frame.c.getLastOpenedList().open(restoreable);
 				} catch (Exception e) {
-					freemind.main.Resources.getInstance().logExecption(e);
+					freemind.main.Resources.getInstance().logException(e);
 					frame.out("An error occured on opening the file: "
 							+ restoreable + ".");
 				}
@@ -682,7 +675,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
         if (Tools.safeEquals(frame.getProperty("leftToolbarVisible"),"false")) {
            frame.c.setLeftToolbarVisible(false); }
 
-        frame.setVisible(true);
 
         // set the default state (normal/maximized) (PN)
         // (note: this must be done later when partucular
@@ -703,11 +695,13 @@ public class FreeMind extends JFrame implements FreeMindMain {
             if (frame.getView() != null) {
                 // wait until AWT thread starts
                 if (! EventQueue.isDispatchThread()){
-                    EventQueue.invokeAndWait(new Runnable() {public void run(){};});
+                    EventQueue.invokeAndWait(new Runnable() {public void run(){
+                      frame.setVisible(true);
+                    };});
                 }
                 frame.getView().moveToRoot(); }}
         catch (Exception e) {
-            freemind.main.Resources.getInstance().logExecption(e); }
+            freemind.main.Resources.getInstance().logException(e); }
 
         if (splash != null) {
             splash.setVisible(false);

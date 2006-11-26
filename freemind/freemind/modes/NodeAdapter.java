@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.20 2006-10-13 21:55:22 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.21 2006-11-26 10:20:41 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -522,7 +522,7 @@ public abstract class NodeAdapter implements MindMapNode {
 			copy.setFolded(false);
 			return copy;
 		} catch (Exception e) {
-			freemind.main.Resources.getInstance().logExecption(e);			
+			freemind.main.Resources.getInstance().logException(e);			
 			return null;
 		}    	   
 	}
@@ -815,7 +815,7 @@ public abstract class NodeAdapter implements MindMapNode {
 		} catch (Exception e) {
 			//FIXME: Do something special here, but in any case, do not add the hook
 			// to the activatedHooks:
-freemind.main.Resources.getInstance().logExecption(			e);
+freemind.main.Resources.getInstance().logException(			e);
 			return;
 		}
 	    if (hook instanceof PermanentNodeHook) {

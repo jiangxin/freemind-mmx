@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.11 2006-10-10 18:51:52 christianfoltin Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.12 2006-11-26 10:20:41 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -30,6 +30,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.List;
 
+import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 

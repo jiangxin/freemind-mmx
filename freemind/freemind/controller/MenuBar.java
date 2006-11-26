@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.6 2006-11-10 22:30:39 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.7 2006-11-26 10:20:39 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -400,7 +400,7 @@ public class MenuBar extends JMenuBar {
 				c.getLastOpenedList().open(restoreable);
 			} catch (Exception ex) {
 			    c.errorMessage("An error occured on opening the file: "+restoreable + ".");
-		        freemind.main.Resources.getInstance().logExecption(ex);
+		        freemind.main.Resources.getInstance().logException(ex);
 			}
 		}
     }

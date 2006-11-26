@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.8 2006-09-24 19:43:06 christianfoltin Exp $ */
+/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.9 2006-11-26 10:20:45 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.hooks;
 
 import java.io.File;
@@ -138,7 +138,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 				}
 			} catch (ClassNotFoundException e) {
 				logger.severe("Class not found.");
-freemind.main.Resources.getInstance().logExecption(				e);
+freemind.main.Resources.getInstance().logException(				e);
 			}
 		}
 		return returnValue;
@@ -180,7 +180,7 @@ freemind.main.Resources.getInstance().logExecption(				e);
 								null);
 					} catch (Exception e) {
 						// error case
-						freemind.main.Resources.getInstance().logExecption(e);
+						freemind.main.Resources.getInstance().logException(e);
 						continue;
 					}
 					// plugin is loaded.
@@ -337,7 +337,7 @@ freemind.main.Resources.getInstance().logExecption(				e);
 				container.isPluginBase = descriptor.getIsPluginBase();
 				returnValue.add(container);
 			} catch (ClassNotFoundException e) {
-				freemind.main.Resources.getInstance().logExecption(				e);
+				freemind.main.Resources.getInstance().logException(				e);
 			}
 		}
 		return returnValue;

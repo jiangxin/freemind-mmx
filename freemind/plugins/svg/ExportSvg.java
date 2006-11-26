@@ -19,7 +19,7 @@
  *
  * Created on 01.11.2004
  */
-/* $Id: ExportSvg.java,v 1.1.4.1.16.3 2006-11-10 23:27:59 christianfoltin Exp $ */
+/* $Id: ExportSvg.java,v 1.1.4.1.16.4 2006-11-26 10:21:30 dpolivaev Exp $ */
 
 package plugins.svg;
 
@@ -77,7 +77,7 @@ public class ExportSvg extends ExportVectorGraphic {
             bos.flush();
             bos.close();
         } catch (Exception e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
             JOptionPane.showMessageDialog(getController().getFrame().getContentPane(), e.getLocalizedMessage(), null, JOptionPane.ERROR_MESSAGE);
         }
         getController().getFrame().setWaitingCursor(false);

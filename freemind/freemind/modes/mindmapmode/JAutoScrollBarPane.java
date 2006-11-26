@@ -43,10 +43,6 @@ public class JAutoScrollBarPane extends JScrollPane{
     public JAutoScrollBarPane(Component view) {
         super(view, VERTICAL_SCROLLBAR_NEVER , HORIZONTAL_SCROLLBAR_NEVER);
     }
-    
-    public JAutoScrollBarPane() {
-        super(VERTICAL_SCROLLBAR_NEVER , HORIZONTAL_SCROLLBAR_NEVER);
-    }
 
 
     public void doLayout() {
@@ -85,7 +81,18 @@ public class JAutoScrollBarPane extends JScrollPane{
             layoutAgain = true;
         }
         if(layoutAgain){
-            revalidate();
+            doLayout();
         }            
+    }
+
+
+    /* (non-Javadoc)
+     * @see javax.swing.JComponent#getPreferredSize()
+     */
+    public Dimension getPreferredSize() {
+        if(! isValid()){
+            doLayout();
+        }
+        return super.getPreferredSize();
     }
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.16 2006-11-21 23:05:58 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.17 2006-11-26 10:20:46 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -471,7 +471,9 @@ public abstract class NodeView extends JComponent{
    public void requestFocus(){
       mainView. requestFocus();
    }
-
+   public boolean hasFocus(){
+     return mainView.hasFocus();  
+   }
    /** draw folding symbol */
 	public void paintFoldingMark(Graphics2D g){
 	}

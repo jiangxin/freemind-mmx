@@ -24,7 +24,7 @@
 package freemind.controller.filter;
 
 import freemind.controller.Controller;
-import freemind.controller.MapModuleManager.MapModuleChangeOberser;
+import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.filter.condition.Condition;
 import freemind.controller.filter.condition.ConditionFactory;
 import freemind.controller.filter.condition.ConditionRenderer;
@@ -38,7 +38,7 @@ import freemind.view.MapModule;
  * @author dimitri
  *
  */
- public class FilterController implements MapModuleChangeOberser{
+ public class FilterController implements MapModuleChangeObserver{
      private Controller c;
 	private FilterToolbar filterToolbar;
 	static private ConditionRenderer conditionRenderer = null;

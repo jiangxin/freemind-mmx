@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: CutAction.java,v 1.1.2.2.2.3 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: CutAction.java,v 1.1.2.2.2.4 2006-11-26 10:20:43 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -172,9 +172,9 @@ public class CutAction extends AbstractAction implements ActorXml {
 			}
 			return trans;
 		} catch (UnsupportedFlavorException e) {
-freemind.main.Resources.getInstance().logExecption(			e);
+freemind.main.Resources.getInstance().logException(			e);
 		} catch (IOException e) {
-freemind.main.Resources.getInstance().logExecption(			e);
+freemind.main.Resources.getInstance().logException(			e);
 		}
 		return null;
 	}

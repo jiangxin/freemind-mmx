@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.4.2.4 2006-08-20 19:34:25 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4.2.5 2006-11-26 10:20:38 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -51,7 +51,7 @@ import freemind.view.mindmapview.MapView;
      */
     public class MapModuleManager {
     	
-    		public static interface MapModuleChangeOberser {
+    		public static interface MapModuleChangeObserver {
     			/** The params may be null to indicate the there was no previous map,
     			 * or that the last map is closed now.
     			 */
@@ -63,18 +63,18 @@ import freemind.view.mindmapview.MapView;
     			void numberOfOpenMapInformation(int number);
     		}
     	
-    		public static class MapModuleChangeOberserCompound implements MapModuleChangeOberser {
+    		public static class MapModuleChangeObserverCompound implements MapModuleChangeObserver {
     			private HashSet listeners = new HashSet();
-    			public void addListener(MapModuleChangeOberser listener) {
+    			public void addListener(MapModuleChangeObserver listener) {
     				listeners.add(listener);
     			}
-    			public void removeListener(MapModuleChangeOberser listener) {
+    			public void removeListener(MapModuleChangeObserver listener) {
     				listeners.remove(listener);
     			}
 				public boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
 					boolean returnValue = true;
 					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-						MapModuleChangeOberser observer = (MapModuleChangeOberser) iter.next();
+						MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
 						returnValue = observer.isMapModuleChangeAllowed(oldMapModule, oldMode, newMapModule, newMode);
 						if(!returnValue){
 							break;
@@ -84,30 +84,30 @@ import freemind.view.mindmapview.MapView;
 				}
 				public void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
 					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-						MapModuleChangeOberser observer = (MapModuleChangeOberser) iter.next();
+						MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
 						observer.beforeMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
 					}
 				}
 				public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
 					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-						MapModuleChangeOberser observer = (MapModuleChangeOberser) iter.next();
+						MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
 						observer.afterMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
 					}
 				}
 				public void numberOfOpenMapInformation(int number) {
 					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-						MapModuleChangeOberser observer = (MapModuleChangeOberser) iter.next();
+						MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
 						observer.numberOfOpenMapInformation(number);
 					}
 				}
     		}
     		
-    		MapModuleChangeOberserCompound listener = new MapModuleChangeOberserCompound();
+    		MapModuleChangeObserverCompound listener = new MapModuleChangeObserverCompound();
     		
-			public void addListener(MapModuleChangeOberser pListener) {
+			public void addListener(MapModuleChangeObserver pListener) {
 				listener.addListener(pListener);
 			}
-			public void removeListener(MapModuleChangeOberser pListener) {
+			public void removeListener(MapModuleChangeObserver pListener) {
 				listener.removeListener(pListener);
 			}
 

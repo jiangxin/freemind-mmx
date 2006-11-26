@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.12.18.1.12.1 2006-04-05 21:26:27 dpolivaev Exp $*/
+/*$Id: MindMapToolBar.java,v 1.12.18.1.12.2 2006-11-26 10:20:43 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -27,6 +27,7 @@ import java.awt.event.ItemListener;
 
 import javax.swing.Action;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
@@ -41,8 +42,8 @@ public class MindMapToolBar extends FreeMindToolBar {
     private static final String[] sizes = {"8","10","12","14","16","18","20","24","28"};
     private MindMapController c;
     private JComboBox fonts, size;
-    private JAutoScrollBarPane buttonToolBarScrollPane;    
-    private JToolBar buttonToolBar;    
+    private JAutoScrollBarPane iconToolBarScrollPane;    
+    private JToolBar iconToolBar;    
     private boolean fontSize_IgnoreChangeEvent = false;
     private boolean fontFamily_IgnoreChangeEvent = false;
     private ItemListener fontsListener;
@@ -54,8 +55,10 @@ public class MindMapToolBar extends FreeMindToolBar {
         this.setRollover(true);
 		fonts = new JComboBox(Tools.getAvailableFontFamilyNamesAsVector());
 		size = new JComboBox(sizes);
-		buttonToolBar = new FreeMindToolBar();
-		buttonToolBarScrollPane = new JAutoScrollBarPane(buttonToolBar);
+		iconToolBar = new FreeMindToolBar();
+		iconToolBarScrollPane = new JAutoScrollBarPane(iconToolBar);
+        iconToolBar.setOrientation(JToolBar.VERTICAL);
+        iconToolBar.setRollover(true);
 		fontsListener = new ItemListener(){
         	        public void itemStateChanged(ItemEvent e) {
         	            if (e.getStateChange() != ItemEvent.SELECTED) {
@@ -102,24 +105,13 @@ public class MindMapToolBar extends FreeMindToolBar {
 		size.setFocusable(false);
         
         // button tool bar.
-        buttonToolBar.removeAll();
-        buttonToolBar.setRollover(true);
-        buttonToolBar.add(c.removeLastIconAction);
-        buttonToolBar.add(c.removeAllIconsAction);
-        buttonToolBar.addSeparator();
+        iconToolBar.removeAll();
+        iconToolBar.add(c.removeLastIconAction);
+        iconToolBar.add(c.removeAllIconsAction);
+        iconToolBar.addSeparator();
         for(int i = 0; i < c.iconActions.size(); ++i) {
-            buttonToolBar.add((Action) c.iconActions.get(i));
+            iconToolBar.add((Action) c.iconActions.get(i));
         }
-        buttonToolBar.setOrientation(JToolBar.VERTICAL);
-        Dimension buttonToolBarSize = buttonToolBar.getPreferredSize();
-//        buttonToolBarSize.width += 20;
-//		buttonToolBarScrollPane.setPreferredSize(buttonToolBarSize);
-//		buttonToolBarScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		buttonToolBarScrollPane.getViewport().setMinimumSize(buttonToolBarSize);
-		         
-
-
-        //c.getFrame().getContentPane().add( buttonToolBar, BorderLayout.WEST );
    }
 
    // Daniel Polansky: both the following methods trigger item listeners above.
@@ -136,7 +128,7 @@ public class MindMapToolBar extends FreeMindToolBar {
    }
 
    Component getLeftToolBar() {
-       return buttonToolBarScrollPane;
+       return iconToolBarScrollPane;
    }
    
    public void selectFontName(String fontName) // (DiPo)

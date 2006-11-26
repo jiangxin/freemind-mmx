@@ -19,7 +19,7 @@
  *
  * Created on 01.05.2004
  */
-/* $Id: ModeControllerActionHandler.java,v 1.1.2.1.2.2 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: ModeControllerActionHandler.java,v 1.1.2.1.2.3 2006-11-26 10:20:44 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -47,7 +47,7 @@ public class ModeControllerActionHandler implements ActionHandler {
 		try {
             actor.act(pair.getDoAction());
         } catch (Exception e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
         }
 	}
 

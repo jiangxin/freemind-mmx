@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseMode.java,v 1.8.18.3.2.2 2006-07-23 20:34:09 christianfoltin Exp $ */
+/* $Id: BrowseMode.java,v 1.8.18.3.2.3 2006-11-26 10:20:42 dpolivaev Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -63,7 +63,7 @@ public class BrowseMode implements Mode {
             getDefaultModeController().load(new File(restoreable).toURL());
         } catch (Exception e) {
             c.errorMessage("An error occured on opening the file: "+restoreable + ".");
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
         }
     }
 

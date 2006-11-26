@@ -102,7 +102,7 @@ public class ImportExplorerFavoritesAction extends AbstractAction {
                         }
 
                     } catch (Exception e) {
-                        freemind.main.Resources.getInstance().logExecption(e);
+                        freemind.main.Resources.getInstance().logException(e);
                     }
                 }
             }

@@ -16,8 +16,11 @@ Changes made in FreeMind 0.9.0 Beta 9
 * Taskjuggler integration from aki integrated. Thanks to the author.
 * Bug fix: proper zoom of HTML nodes
 * Bug fix: better "zoom to fit"
+# 26.11.06
 * Bug fix: scroll to selected node after zoom change
 * Improvements in Map Layout
+* Local Short Cuts and Properties => Bug Fix for control PLUS etc.
+* Bug Fixes concerning the Left Toolbar
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8

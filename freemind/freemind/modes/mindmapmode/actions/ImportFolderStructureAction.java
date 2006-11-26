@@ -60,7 +60,7 @@ public class ImportFolderStructureAction extends AbstractAction {
                 importFolderStructure(folder, controller.getSelected(),/* redisplay= */
                 true);
             } catch (Exception ex) {
-                freemind.main.Resources.getInstance().logExecption(ex);
+                freemind.main.Resources.getInstance().logException(ex);
             }
             controller.getFrame().out("Folder structure imported.");
         }

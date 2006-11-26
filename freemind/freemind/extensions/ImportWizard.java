@@ -93,7 +93,7 @@ public class ImportWizard {
 				foundPlugins.add(key);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-			    freemind.main.Resources.getInstance().logExecption(				e);
+			    freemind.main.Resources.getInstance().logException(				e);
 			}
 			if (classPathFile.exists()) {
 				String lowerCaseFileName = classPathEntry.toLowerCase();
@@ -217,7 +217,10 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.11  2006-11-12 21:07:06  christianfoltin
+ * Revision 1.1.4.6.2.12  2006-11-26 10:20:40  dpolivaev
+ * LocalProperties, TextResources for SHTML and Bug Fixes
+ *
+ * Revision 1.1.4.6.2.11  2006/11/12 21:07:06  christianfoltin
  * * Mac bug fixes (class path, error messages, directories)
  *
  * Revision 1.1.4.6.2.10  2006/09/05 21:17:58  dpolivaev

@@ -19,13 +19,14 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.11 2006-11-10 22:30:39 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.12 2006-11-26 10:20:45 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -33,7 +34,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.MissingResourceException;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
 
@@ -41,6 +44,7 @@ import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -81,7 +85,9 @@ public class OptionPanel implements TextTranslator {
 	//FIXME: key dialog
 	//FIXME: Translate me and html
 
-	private static final Color MARKED_BUTTON_COLOR = Color.BLUE;
+	private static final String LOCAL_PROPERTIES = "LocalProperties.";
+
+    private static final Color MARKED_BUTTON_COLOR = Color.BLUE;
 
 	private Vector controls;
 
@@ -118,7 +124,11 @@ public class OptionPanel implements TextTranslator {
 		WindowConfigurationStorage storage = XmlBindingTools.getInstance().decorateDialog(fm.getController(),
 				frame, PREFERENCE_STORAGE_PROPERTY);
 		if (storage == null) {
-			frame.getRootPane().setPreferredSize(new Dimension(800, 600));
+			final Frame rootFrame = JOptionPane.getFrameForComponent(frame);
+            final Dimension prefSize = rootFrame.getSize();
+            prefSize.width = prefSize.width * 3 / 4; 
+            prefSize.height = prefSize.height * 3 / 4; 
+            frame.getRootPane().setPreferredSize(prefSize);
 		} else {
 			if (storage instanceof OptionPanelWindowConfigurationStorage) {
 				OptionPanelWindowConfigurationStorage oWindowSettings = (OptionPanelWindowConfigurationStorage) storage;
@@ -141,14 +151,25 @@ public class OptionPanel implements TextTranslator {
 
 	/**
 	 */
-	public void setProperties(Properties properties) {
+	public void setProperties(Properties properties, ResourceBundle resources) {
 		for (Iterator i = controls.iterator(); i.hasNext();) {
 			PropertyControl control = (PropertyControl) i.next();
 			if (control instanceof PropertyBean) {
 				PropertyBean bean = (PropertyBean) control;
 				//				System.out.println("grep -n -e \""+bean.getLabel()+"\" -r * |
 				// grep -e \"\\.(java|xml):\"");
-				String value = properties.getProperty(bean.getLabel());
+				final String label = bean.getLabel();
+				String value = properties.getProperty(label);
+				if(value.startsWith("?")){
+                    // try to look in the language specific properties
+				    try{
+				        value = resources.getString(LOCAL_PROPERTIES + label);
+				    }
+                    // remove leading question mark if not succesful
+				    catch(MissingResourceException ex){
+				        value = value.substring(1).trim();
+				    }
+				}
 				//				System.out.println("Setting property " + bean.getLabel()
 				//						+ " to " + value);
 				bean.setValue(value);

@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.10 2006-11-12 21:07:07 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.11 2006-11-26 10:20:40 dpolivaev Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -106,7 +106,7 @@ public class FreeMindCommon {
 				languageResources = getLanguageResources(lang);
 				defaultResources = getLanguageResources(DEFAULT_LANGUAGE);
 			} catch (Exception ex) {
-			    freemind.main.Resources.getInstance().logExecption(				ex);
+			    freemind.main.Resources.getInstance().logException(				ex);
 				logger.severe("Error loading Resources");
 				return null;
 			}
@@ -141,7 +141,7 @@ public class FreeMindCommon {
             try {
                 return defaultResources.getString(key) + POSTFIX_TRANSLATE_ME;
             } catch (Exception e) {
-                freemind.main.Resources.getInstance().logExecption(e);
+                freemind.main.Resources.getInstance().logException(e);
                 logger
                         .severe("Warning - default resource string not found (even in english):"
                                 + key);
@@ -173,7 +173,7 @@ public class FreeMindCommon {
 		try {
 			return new URLClassLoader(new URL[] { new File(getFreemindBaseDir()).toURL() }, classLoader);
 		} catch (MalformedURLException e) {
-			freemind.main.Resources.getInstance().logExecption(e);
+			freemind.main.Resources.getInstance().logException(e);
 			return classLoader;
 		}
 	}

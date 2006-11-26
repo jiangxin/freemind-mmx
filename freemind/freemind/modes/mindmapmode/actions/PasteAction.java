@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.7 2006-09-02 22:09:49 christianfoltin Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.8 2006-11-26 10:20:44 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -151,9 +151,9 @@ public class PasteAction extends AbstractAction implements ActorXml {
 			pMindMapController.getActionFactory().executeAction(new ActionPair(pasteAction, compound));
 			pMindMapController.getActionFactory().endTransaction(text);
 		} catch (UnsupportedFlavorException e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
         } catch (IOException e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
         }
 	}
 
@@ -434,7 +434,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
             pMindMapController.getAttributeController().performRegistrySubtreeAttributes(child);
         }        
   	   pMindMapController.nodeStructureChanged((MindMapNode) (asSibling ? target.getParent() : target)); }
-	   catch (Exception e) { freemind.main.Resources.getInstance().logExecption(e); }
+	   catch (Exception e) { freemind.main.Resources.getInstance().logException(e); }
 	   pMindMapController.getFrame().setWaitingCursor(false);
 	}
 
@@ -466,7 +466,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 			 insertNodeInto(node, target); }
 		  pMindMapController.invokeHooksRecursively(node, pMindMapController.getModel());
 		  return node; }
-	   catch (IOException ee) { freemind.main.Resources.getInstance().logExecption(ee); return null; }}
+	   catch (IOException ee) { freemind.main.Resources.getInstance().logException(ee); return null; }}
 
     static final Pattern nonLinkCharacter = Pattern.compile("[ \n()'\",;]");
 

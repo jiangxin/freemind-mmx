@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.10 2006-11-12 21:07:07 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.11 2006-11-26 10:20:40 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -187,7 +187,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
              getView().moveToRoot(); }
           else {
              System.err.println("View is null."); }}
-       catch (Exception e) { freemind.main.Resources.getInstance().logExecption(e); }
+       catch (Exception e) { freemind.main.Resources.getInstance().logException(e); }
     }
 
     public void setWaitingCursor(boolean waiting) {
@@ -298,9 +298,9 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 			try {
                 EventQueue.invokeAndWait(new Runnable() {public void run(){};});
             } catch (InterruptedException e) {
-                freemind.main.Resources.getInstance().logExecption(e);
+                freemind.main.Resources.getInstance().logException(e);
             } catch (InvocationTargetException e) {
-                freemind.main.Resources.getInstance().logExecption(e);
+                freemind.main.Resources.getInstance().logException(e);
             }
 		}
     	c.createNewMode(getProperty("initial_mode"));
@@ -325,7 +325,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
                 URL mapUrl = new URL(initialMapName);
                 getController().getModeController().load(mapUrl);
             } catch (Exception e) {
-                freemind.main.Resources.getInstance().logExecption(e);
+                freemind.main.Resources.getInstance().logException(e);
             }
         }
 
