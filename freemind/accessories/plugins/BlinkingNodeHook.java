@@ -75,21 +75,20 @@ public class BlinkingNodeHook extends PermanentMindMapNodeHookAdapter {
 		}
 		/** TimerTask method to enable the selection after a given time.*/
 		public void run() {
-			if(getController().isBlocked()||getNode()==null /*before invocation*/)
-				return;
 			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					Color col = getNode().getColor();
-					int index = -1;
-                    if (col != null && colors.contains(col)) {
-                        index = colors.indexOf(col);
-                    }
-					index++;
-					if (index >= colors.size())
-						index = 0;
-					getNode().setColor((Color) colors.get(index));
-					nodeChanged(getNode());
-				}
+			    public void run() {
+			        if(getNode()==null || getController().isBlocked())
+			            return;
+			        Color col = getNode().getViewer().getForeground();
+			        int index = -1;
+			        if (col != null && colors.contains(col)) {
+			            index = colors.indexOf(col);
+			        }
+			        index++;
+			        if (index >= colors.size())
+			            index = 0;
+			        getNode().getViewer().setForeground((Color) colors.get(index));
+                }
 			});
 		}
 	}
@@ -98,6 +97,7 @@ public class BlinkingNodeHook extends PermanentMindMapNodeHookAdapter {
 	 */
 	public void shutdownMapHook() {
 		timer.cancel();
+        nodeChanged(getNode());
 		timer = null;
 		super.shutdownMapHook();
 	}
