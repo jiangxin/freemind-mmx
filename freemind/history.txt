@@ -22,6 +22,7 @@ Changes made in FreeMind 0.9.0 Beta 9
 * Local Short Cuts and Properties => Bug Fix for control PLUS etc.
 * Bug Fixes concerning the Left Toolbar
 * Blinking Node Hook does not change the model color, only the view color
+* Bug fix on start if the last map has been deleted
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8

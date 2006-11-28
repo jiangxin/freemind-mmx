@@ -105,10 +105,10 @@ public class Resources {
     }
     
     public void logException(Throwable e) {
-    		logExecption(e, "");
+    		logException(e, "");
 	}
     
-    public void logExecption(Throwable e, String comment) {
+    public void logException(Throwable e, String comment) {
 	    	e.printStackTrace();
 	    	logger.log(Level.SEVERE, "An exception occured: "+ comment, e);
     }

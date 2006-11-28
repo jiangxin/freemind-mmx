@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.32 2006-11-26 10:20:40 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.33 2006-11-28 08:25:36 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -654,11 +654,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
 					&& restoreable != null) {
 				try {
 					frame.c.getLastOpenedList().open(restoreable);
-				} catch (Exception e) {
-					freemind.main.Resources.getInstance().logException(e);
-					frame.out("An error occured on opening the file: "
-							+ restoreable + ".");
-				}
+                } catch (Exception e) {
+                    freemind.main.Resources.getInstance().logException(e);
+                    frame.out("An error occured on opening the file: "
+                            + restoreable + ".");
+                }
 			}
 		}
 
@@ -692,13 +692,13 @@ public class FreeMind extends JFrame implements FreeMindMain {
         feedBack.increase("FreeMind.progress.endStartup");
 
         try {
-            if (frame.getView() != null) {
                 // wait until AWT thread starts
                 if (! EventQueue.isDispatchThread()){
                     EventQueue.invokeAndWait(new Runnable() {public void run(){
                       frame.setVisible(true);
                     };});
                 }
+                if (frame.getView() != null) {
                 frame.getView().moveToRoot(); }}
         catch (Exception e) {
             freemind.main.Resources.getInstance().logException(e); }

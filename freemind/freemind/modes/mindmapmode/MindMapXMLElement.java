@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapXMLElement.java,v 1.13.18.2.2.2 2006-08-20 19:34:25 christianfoltin Exp $ */
+/* $Id: MindMapXMLElement.java,v 1.13.18.2.2.3 2006-11-28 08:25:36 dpolivaev Exp $ */
 
 
 package freemind.modes.mindmapmode;
@@ -83,7 +83,7 @@ public class MindMapXMLElement extends XMLElementAdapter {
 				(NodeAdapter) constructor.newInstance(constrObjs);
 			return nodeImplementor;
 		} catch (Exception e) {
-			freemind.main.Resources.getInstance().logExecption(e, "Error occurred loading node implementor: " + nodeClass);
+			freemind.main.Resources.getInstance().logException(e, "Error occurred loading node implementor: " + nodeClass);
 			// the best we can do is to return the normal class:
 			NodeAdapter node = new MindMapNodeModel(frame, getMap());
 			return node ;

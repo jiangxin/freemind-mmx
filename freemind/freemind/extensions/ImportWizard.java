@@ -139,7 +139,7 @@ public class ImportWizard {
 				}
 			}
 		} catch (Exception ex) {
-			freemind.main.Resources.getInstance().logExecption(ex,
+			freemind.main.Resources.getInstance().logException(ex,
 				"Problem opening " + classPathFile + " with zip.");
 		}
 	}
@@ -217,7 +217,10 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.12  2006-11-26 10:20:40  dpolivaev
+ * Revision 1.1.4.6.2.13  2006-11-28 08:25:01  dpolivaev
+ * no message
+ *
+ * Revision 1.1.4.6.2.12  2006/11/26 10:20:40  dpolivaev
  * LocalProperties, TextResources for SHTML and Bug Fixes
  *
  * Revision 1.1.4.6.2.11  2006/11/12 21:07:06  christianfoltin

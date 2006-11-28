@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.20 2006-11-26 10:20:41 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.21 2006-11-28 08:25:36 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -726,6 +726,7 @@ public abstract class ControllerAdapter implements ModeController {
         // controller actions:
         getController().zoomIn.setEnabled(enabled);
         getController().zoomOut.setEnabled(enabled);
+        getController().showFilterToolbarAction.setEnabled(enabled);
     }
 
     //

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.9 2006-11-26 10:20:45 dpolivaev Exp $ */
+/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.10 2006-11-28 08:25:36 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.hooks;
 
 import java.io.File;
@@ -221,7 +221,7 @@ freemind.main.Resources.getInstance().logException(				e);
 			decorateHook(hookName, descriptor, hook);
 			return hook;
 		} catch (Exception e) {
-			freemind.main.Resources.getInstance().logExecption(e, "Error occurred loading hook: "
+			freemind.main.Resources.getInstance().logException(e, "Error occurred loading hook: "
 					+ descriptor.getClassName() + "\nException:");
 			return null;
 		}
