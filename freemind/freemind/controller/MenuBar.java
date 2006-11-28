@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.7 2006-11-26 10:20:39 dpolivaev Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.8 2006-11-28 22:28:41 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -422,4 +422,10 @@ public class MenuBar extends JMenuBar {
         return menuHolder;
     }
 
+    /* (non-Javadoc)
+     * @see javax.swing.JMenuBar#processKeyBinding(javax.swing.KeyStroke, java.awt.event.KeyEvent, int, boolean)
+     */
+    public boolean processKeyBinding(KeyStroke ks, KeyEvent e, int condition, boolean pressed) {
+        return super.processKeyBinding(ks, e, condition, pressed);
+    }
 }

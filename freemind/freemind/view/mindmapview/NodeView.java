@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.17 2006-11-26 10:20:46 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.18 2006-11-28 22:28:59 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -35,6 +35,7 @@ import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.net.MalformedURLException;
 import java.util.Iterator;
@@ -50,9 +51,11 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
 import freemind.controller.Controller;
+import freemind.controller.MenuBar;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
@@ -145,6 +148,16 @@ public abstract class NodeView extends JComponent{
                 }
             }
             return super.getWidth();
+        }
+        /* (non-Javadoc)
+         * @see javax.swing.JComponent#processKeyBinding(javax.swing.KeyStroke, java.awt.event.KeyEvent, int, boolean)
+         */
+        protected boolean processKeyBinding(KeyStroke ks, KeyEvent e, int condition, boolean pressed) {
+            if (super.processKeyBinding(ks, e, condition, pressed))
+                return true;
+            // try key bindings of the menu bar even if the menu bar is not visible
+            final MenuBar freeMindMenuBar = getMap().getController().getFrame().getFreeMindMenuBar();
+            return ! freeMindMenuBar.isVisible() && freeMindMenuBar.processKeyBinding(ks, e, JComponent.WHEN_IN_FOCUSED_WINDOW, pressed); 
         }
         
     }
