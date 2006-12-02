@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.33 2006-11-28 08:25:36 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.34 2006-12-02 22:12:19 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -28,16 +28,12 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -57,7 +53,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.KeyStroke;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -112,6 +108,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	private FreeMindCommon mFreeMindCommon;
 	private static FileHandler mFileHandler;
 	private JSplitPane mSplitPane;
+	private JTabbedPane mTabbedPane;
 	public FreeMind() {
         super("FreeMind");
         // read default properties from jar:
@@ -224,6 +221,12 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	mSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, southPanel);
     mSplitPane.setContinuousLayout(true);
 	mSplitPane.setOneTouchExpandable(true);
+//	mTabbedPane = new JTabbedPane();
+//	JPanel panel = new JPanel();
+//	panel.add(new JLabel("Bla"));
+//	mTabbedPane.add("test", panel);
+//	mTabbedPane.add("MindMap", mSplitPane);
+//	getContentPane().add( mTabbedPane, BorderLayout.CENTER);
 	getContentPane().add( mSplitPane, BorderLayout.CENTER);
 	getContentPane().add( status, BorderLayout.SOUTH);
 
@@ -623,6 +626,15 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     feedBack.increase("FreeMind.progress.startCreateController");
 	ModeController ctrl = frame.c.getModeController();
+	// try to load mac module:
+	try {
+		Class macClass = Class.forName("accessories.plugins.MacChanges");
+		// lazy programming. the mac class has exactly one constructor 
+		// with a modeController.
+		macClass.getConstructors()[0].newInstance(new Object[]{frame});
+	} catch (Exception e1) {
+		//freemind.main.Resources.getInstance().logExecption(e1);
+	}
 	feedBack.increase("FreeMind.progress.loadMaps");
 	//This could be improved.
         boolean fileLoaded = false;
@@ -641,7 +653,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
                  fileLoaded = true;
                  //logger.info("Attempting to load: " + args[i]);
               } catch (Exception ex) {
-                 System.err.println("File "+fileArgument+"not found error");
+                 System.err.println("File "+fileArgument+" not found error");
                  //	    System.exit(1);
               }
            }
@@ -651,7 +663,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 					.getProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED);
 			if (Tools.isPreferenceTrue(frame
 					.getProperty(FreeMindCommon.LOAD_LAST_MAP))
-					&& restoreable != null) {
+					&& restoreable != null && restoreable.length() > 0) {
 				try {
 					frame.c.getLastOpenedList().open(restoreable);
                 } catch (Exception e) {

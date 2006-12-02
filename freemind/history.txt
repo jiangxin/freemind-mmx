@@ -56,6 +56,7 @@ Changes made in FreeMind 0.9.0 Beta 8
 * Title gets a '*', when map gets dirty. Path is added to title.
 * Bug fix: patterns are saved now.
 * Important Bug Fix: Notes are saved in XML now.
+* Mac Changes: integration in system improved.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 7

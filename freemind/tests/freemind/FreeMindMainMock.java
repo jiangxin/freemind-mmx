@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMainMock.java,v 1.1.2.6 2006-11-06 19:38:07 christianfoltin Exp $*/
+/*$Id: FreeMindMainMock.java,v 1.1.2.7 2006-12-02 22:12:19 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -179,6 +179,10 @@ public class FreeMindMainMock implements FreeMindMain {
 	public JSplitPane getSplitPane() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public String getFreemindBaseDir() {
+		return ".";
 	}
 
 }

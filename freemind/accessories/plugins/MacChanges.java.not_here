@@ -19,12 +19,10 @@
  *
  * Created on 25.08.2004
  */
-/*$Id: MacChanges.java.not_here,v 1.1.4.6.2.4 2006-11-12 21:07:06 christianfoltin Exp $*/
+/*$Id: MacChanges.java.not_here,v 1.1.4.6.2.5 2006-12-02 22:12:19 christianfoltin Exp $*/
 package accessories.plugins;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
@@ -35,41 +33,28 @@ import com.apple.eawt.ApplicationEvent;
 
 import freemind.controller.Controller;
 import freemind.controller.Controller.LocalLinkConverter;
-import freemind.extensions.HookRegistration;
+import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
-import freemind.main.XMLParseException;
-import freemind.modes.MindMap;
 import freemind.modes.ModeController;
 
 /** This plugin changes some things for mac users.
  * @author foltin
  */
-public class MacChanges extends ApplicationAdapter implements HookRegistration {
+public class MacChanges extends ApplicationAdapter  {
 
 	private static final String FREE_MIND_JAVA = "FreeMind.app/Contents/Resources/Java";
-
-	private ModeController controller;
-
-	private MindMap mMap;
 
 	private Logger logger;
 	
 	private static Application fmMacApplication;
 
-	public MacChanges(ModeController controller, MindMap map) {
-		this.controller = controller;
-		mMap = map;
-		FreeMindMain frame = controller.getFrame();
-		logger = frame.getLogger(this.getClass().getName());
-		if(fmMacApplication==null){
-			fmMacApplication = Application.getApplication();
-			fmMacApplication.addApplicationListener(this);
-			fmMacApplication.addPreferencesMenuItem();
-			fmMacApplication.addAboutMenuItem();
-			fmMacApplication.setEnabledPreferencesMenu(true);
-//			fmMacApplication.removePreferencesMenuItem();
-		}
-		frame.setProperty("keystroke_add_child", frame.getProperty("keystroke_add_child_mac"));
+	private final FreeMindMain mFrame;
+
+	public MacChanges(FreeMindMain pFrame) {
+		mFrame = pFrame;
+		logger = pFrame.getLogger(this.getClass().getName());
+		logger.info("Performing Mac Changes.");
+		pFrame.setProperty("keystroke_add_child", pFrame.getProperty("keystroke_add_child_mac"));
 		Controller.localDocumentationLinkConverter = new LocalLinkConverter(){
 
 			public String convertLocalLink(String link) {
@@ -78,18 +63,23 @@ public class MacChanges extends ApplicationAdapter implements HookRegistration {
 						+ "/" +
 								FREE_MIND_JAVA + "/" + link;
 			}}; 
+		if(fmMacApplication==null){
+			logger.info("Adding application listener.");
+			fmMacApplication = Application.getApplication();
+			fmMacApplication.addApplicationListener(this);
+			fmMacApplication.addPreferencesMenuItem();
+			fmMacApplication.addAboutMenuItem();
+			fmMacApplication.setEnabledPreferencesMenu(true);
+//			fmMacApplication.removePreferencesMenuItem();
+		}
+		logger.info("Performed Mac Changes.");
 	}
 
-	public void register() {
-	}
-
-	public void deRegister() {
-	}
 
 	public void handleQuit(ApplicationEvent event) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				controller.getController().quit.actionPerformed(null);
+				mFrame.getController().quit.actionPerformed(null);
 			}
 		});
 		event.setHandled(true);
@@ -97,21 +87,29 @@ public class MacChanges extends ApplicationAdapter implements HookRegistration {
 	}
 
 	public void handleAbout(ApplicationEvent event) {
-		controller.getController().about.actionPerformed(null);
+		mFrame.getController().about.actionPerformed(null);
 		event.setHandled(true);
 	}
-	public void handleOpenFile(ApplicationEvent event) {
+	public void handleOpenFile(final ApplicationEvent event) {
 		try {
-			logger.info("Try to load " + event.getFilename());
-			controller.load(new File(event.getFilename()).toURL());
-			event.setHandled(true);
+		logger.info("Later loading " + event.getFilename());
+		// no restore at startup:
+		mFrame.setProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED, "");
+		logger.info("Later loading (2) " + event.getFilename());
+//		SwingUtilities.invokeLater(new Runnable(){
+//
+//			public void run() {
+					logger.info("Try to load " + event.getFilename());
+					mFrame.getController().getModeController().load(new File(event.getFilename()).toURL());
+//			}});
+		event.setHandled(true);
 		} catch (Exception e) {
-			freemind.main.Resources.getInstance().logExecption(e);
+			freemind.main.Resources.getInstance().logException(e);
 		} 
 	}
 	
 	public void handlePreferences(ApplicationEvent event) {
-		controller.getController().propertyAction.actionPerformed(null);
+		mFrame.getController().propertyAction.actionPerformed(null);
 		event.setHandled(true);
 	}
 }

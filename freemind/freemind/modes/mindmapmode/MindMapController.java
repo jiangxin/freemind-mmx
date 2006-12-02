@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.21 2006-11-26 10:20:43 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.22 2006-12-02 22:12:19 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -368,7 +368,6 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         popupmenu = new MindMapPopupMenu(this);
     	logger.info("MindMapToolBar");
         toolbar = new MindMapToolBar(this);
-    	logger.info("setAllActions");
         setAllActions(false);
 
         // addAsChildMode (use old model of handling CtrN) (PN)
@@ -955,6 +954,7 @@ freemind.main.Resources.getInstance().logException(					e1);
      * whether there is a map open or not.
      */
     protected void setAllActions(boolean enabled) {
+    	logger.info("setAllActions:"+enabled);
         super.setAllActions(enabled);
         // own actions
         increaseNodeFont.setEnabled(enabled);
