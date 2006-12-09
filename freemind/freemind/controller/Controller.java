@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.20 2006-11-26 10:20:38 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.21 2006-12-09 16:01:23 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.AccessControlException;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Collections;
@@ -108,10 +109,8 @@ public class Controller  implements MapModuleChangeObserver {
      * Converts from a local link to the real file URL of the
      * documentation map. (Used to change this behaviour under MacOSX).
      */
-    public static LocalLinkConverter localDocumentationLinkConverter = new DefaultLocalLinkConverter();
-
-
     private static Logger logger;
+    public LocalLinkConverter localDocumentationLinkConverter;
     private static JColorChooser colorChooser = new JColorChooser();
 	private LastOpenedList lastOpened;//A list of the pathnames of all the maps that were opened in the last time
     private MapModuleManager mapModuleManager;// new MapModuleManager();
@@ -161,6 +160,7 @@ public class Controller  implements MapModuleChangeObserver {
 
     public Action about;
     public Action faq;
+    public Action webDocu;
     public Action documentation;
     public Action license;
     public Action navigationPreviousMap;
@@ -190,6 +190,8 @@ public class Controller  implements MapModuleChangeObserver {
             logger = frame.getLogger(this.getClass().getName());
         }
 
+        localDocumentationLinkConverter = new DefaultLocalLinkConverter();
+        
         lastOpened = new LastOpenedList(this, getProperty("lastOpened"));
         mapModuleManager = new MapModuleManager(this);
         mapModuleManager.addListener(this);
@@ -212,7 +214,8 @@ public class Controller  implements MapModuleChangeObserver {
         quit = new QuitAction(this);
         background = new BackgroundAction(this,bswatch);
         about = new AboutAction(this);
-        faq = new OpenFAQAction(this);
+        faq = new OpenURLAction(this, getResourceString("FAQ"), getProperty("webFAQLocation"));
+        webDocu = new OpenURLAction(this, getResourceString("webDocu"), getProperty("webDocuLocation"));
         documentation = new DocumentationAction(this);
         license = new LicenseAction(this);
         navigationPreviousMap = new NavigationPreviousMapAction(this);
@@ -1013,14 +1016,14 @@ public class Controller  implements MapModuleChangeObserver {
     		String convertLocalLink(String link);
     }
     
-    private static class DefaultLocalLinkConverter implements LocalLinkConverter {
+    private class DefaultLocalLinkConverter implements LocalLinkConverter {
 
-		public String convertLocalLink(String map) {
+        public String convertLocalLink(String map) {
             /* new handling for relative urls. fc, 29.10.2003.*/
-			return "file:" + System.getProperty("user.dir") + map.substring(1);//remove "." and make url
+            String applicationPath = frame.getFreemindBaseDir();
+            return "file:" + applicationPath + map.substring(1);//remove "." and make url
 			/* end: new handling for relative urls. fc, 29.10.2003.*/
 		}
-    	
     }
     
     //
@@ -1038,7 +1041,13 @@ public class Controller  implements MapModuleChangeObserver {
             // if the current language does not provide its own translation, POSTFIX_TRANSLATE_ME is appended:
             map = Tools.removeTranslateComment(map);
             if (map != null && map.startsWith("."))  {
-                map = localDocumentationLinkConverter.convertLocalLink(map);
+                try{
+                    map = localDocumentationLinkConverter.convertLocalLink(map);
+                }
+                catch(AccessControlException ex){
+                    webDocu.actionPerformed(e);
+                    return;
+                }
             }
             if (map != null && map != "") {
                 URL url = null;
@@ -1459,15 +1468,17 @@ public class Controller  implements MapModuleChangeObserver {
     }
 
     // open faq url from freeminds page:
-    private class OpenFAQAction extends AbstractAction {
+    private class OpenURLAction extends AbstractAction {
         Controller c;
-        OpenFAQAction(Controller controller) {
-            super(controller.getResourceString("FAQ"), new ImageIcon(controller.getResource("images/Link.png")));
+        private final String url;
+        OpenURLAction(Controller controller, String description, String url) {
+            super(description, new ImageIcon(controller.getResource("images/Link.png")));
             c = controller;
+            this.url = url;
         }
         public void actionPerformed(ActionEvent e) {
             try {
-                c.getFrame().openDocument(new URL("http://freemind.sourceforge.net/faq.html"));
+                c.getFrame().openDocument(new URL(url));
             } catch (MalformedURLException ex) {
                 c.errorMessage(c.getResourceString("url_error")+"\n"+ex);
             } catch (Exception ex) {

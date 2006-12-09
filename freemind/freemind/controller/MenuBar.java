@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.8 2006-11-28 22:28:41 dpolivaev Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.9 2006-12-09 16:01:23 dpolivaev Exp $*/
 
 package freemind.controller;
 
+import java.security.AccessControlException;
 import java.util.*;
 import java.awt.Component;
 import java.awt.Color;
@@ -161,7 +162,7 @@ public class MenuBar extends JMenuBar {
 		//JMenu modesmenu = menuHolder.addMenu(new JMenu(c.getResourceString("modes")), MODES_MENU+".");
 	
 		menuHolder.addMenu(new JMenu(c.getResourceString("help")), HELP_MENU+".");
-		menuHolder.addAction(c.documentation, HELP_MENU+"doc/documentation");
+        menuHolder.addAction(c.documentation, HELP_MENU+"doc/documentation");
 		menuHolder.addAction(c.faq, HELP_MENU+"doc/faq");
 		menuHolder.addSeparator(HELP_MENU);
 		menuHolder.addAction(c.license, HELP_MENU+"about/license");

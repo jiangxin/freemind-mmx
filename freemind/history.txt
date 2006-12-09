@@ -24,7 +24,10 @@ Changes made in FreeMind 0.9.0 Beta 9
 * Blinking Node Hook does not change the model color, only the view color
 * Bug fix on start if the last map has been deleted
 * Short cuts are traced to the actions even if menu bar is not visible
-
+#09.12.06
+* FreeMind Base Dir used for searching the plugins is taken from the classpath, not from the properties
+* FreeMind Base Dir is also used for localizing the docu
+* The Internet Docu Version is used if FreeMind Base Dir can not be defined (applet in browser)
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8
 ===============================

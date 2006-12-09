@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.11 2006-11-26 10:20:40 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.12 2006-12-09 16:01:23 dpolivaev Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -42,10 +42,6 @@ import sun.security.action.GetPropertyAction;
  */
 public class FreeMindCommon {
 
-	private static final String FREEMIND_BASE_DIR_PROPERTY = "freemind.base.dir";
-
-	public static final String DEFAULT_FREEMIND_BASE_DIR = ".";
-
 	public static final String FREEMIND_FILE_EXTENSION_WITHOUT_DOT = "mm";
 
 	public static final String FREEMIND_FILE_EXTENSION = "."+FREEMIND_FILE_EXTENSION_WITHOUT_DOT;
@@ -63,6 +59,8 @@ public class FreeMindCommon {
     public static final String DEFAULT_LANGUAGE = "en";
 
 	private final FreeMindMain mFreeMindMain;
+
+    private String baseDir;
 
     /**
      * Holds the last opened map.
@@ -181,12 +179,29 @@ public class FreeMindCommon {
 	/**
 	 */
 	public String getFreemindBaseDir() {
-		String defaultValue = null;
-		defaultValue = getProperty(FREEMIND_BASE_DIR_PROPERTY);
-		if(defaultValue == null) {
-			defaultValue = DEFAULT_FREEMIND_BASE_DIR;
-		}
-		return System.getProperty(FREEMIND_BASE_DIR_PROPERTY, defaultValue);
+        if(baseDir == null){
+            final String classPath = System.getProperty("java.class.path");
+            final String pathSeparator = System.getProperty("path.separator");
+            final String fileSeparator = System.getProperty("file.separator");
+            int lastpos = classPath.indexOf(pathSeparator);
+            int firstpos = 0;
+            if(lastpos == -1){
+                lastpos = classPath.length();
+            }
+            else{
+                firstpos = classPath.lastIndexOf(pathSeparator, lastpos-1) + 1;
+            }
+            baseDir = classPath.substring(firstpos, lastpos-firstpos);
+            if(baseDir.endsWith(".jar")){
+                lastpos = classPath.lastIndexOf(fileSeparator);
+                lastpos = classPath.lastIndexOf(fileSeparator, lastpos-1);
+                baseDir = baseDir.substring(0, lastpos);
+            }
+            else{
+                baseDir = System.getProperty("user.dir");
+            }
+        }
+        return baseDir;
 	}
 
 
