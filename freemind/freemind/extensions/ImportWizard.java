@@ -89,7 +89,7 @@ public class ImportWizard {
 				String key = classPathFile.getCanonicalPath();
 				if(foundPlugins.contains(key))
 					continue;
-				logger.finest("looking for plugins in " + key);
+				logger.info("looking for plugins in " + key);
 				foundPlugins.add(key);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -98,13 +98,13 @@ public class ImportWizard {
 			if (classPathFile.exists()) {
 				String lowerCaseFileName = classPathEntry.toLowerCase();
 				if (lowerCaseFileName.endsWith(".jar")) {
-					logger.finest("searching for plugins in: "+ classPathEntry);
+					logger.info("searching for plugins in: "+ classPathEntry);
 					addClassesFromZip(CLASS_LIST, classPathFile);
 				} else if (lowerCaseFileName.endsWith(".zip")) {
-					logger.finest("searching for plugins in: "+ classPathEntry);
+					logger.info("searching for plugins in: "+ classPathEntry);
 					addClassesFromZip(CLASS_LIST, classPathFile);
 				} else if (classPathFile.isDirectory()) {
-					logger.finest("searching for plugins in: "+ classPathEntry);
+					logger.info("searching for plugins in: "+ classPathEntry);
 					addClassesFromDir(CLASS_LIST, classPathFile, classPathFile, 0);
 				}
 			}
@@ -167,12 +167,13 @@ public class ImportWizard {
 		File rootDir,
 		File currentDir, int recursionLevel) {
 	    if(recursionLevel >= 6){
-            // search only the first two levels
+            // search only the first levels
 	        return;
         }
 		String[] files = currentDir.list();
 		for (int i = 0; i < files.length; i++) {
 			String current = files[i];
+			logger.info("looking at: " + current);
 			if (isInteresting(current)) {
 				String rootPath = rootDir.getPath();
 				String currentPath = currentDir.getPath();
@@ -217,7 +218,10 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.13  2006-11-28 08:25:01  dpolivaev
+ * Revision 1.1.4.6.2.14  2006-12-14 16:45:00  christianfoltin
+ * * Search & Replace Dialog with menu and nicer. Bug fixes...
+ *
+ * Revision 1.1.4.6.2.13  2006/11/28 08:25:01  dpolivaev
  * no message
  *
  * Revision 1.1.4.6.2.12  2006/11/26 10:20:40  dpolivaev

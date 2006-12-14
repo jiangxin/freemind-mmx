@@ -10,7 +10,9 @@
 		name="%plugins/TimeManagement.xml_name" 
 		base="freemind.extensions.ModeControllerHookAdapter" 
 		label="plugins/TimeManagement.xml" 
-		class_name="plugins.time.TimeManagement" key_stroke="control T">
+		class_name="plugins.time.TimeManagement" 
+		key_stroke="%keystroke_plugins/TimeManagement.xml_key"
+		>
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/extras/first/time_management/start"/>
 	</plugin_action>
@@ -26,7 +28,7 @@
 		name="%plugins/NodeList.xml_name" 
 		base="freemind.extensions.ModeControllerHookAdapter" 
 		label="plugins/NodeList.xml" class_name="plugins.time.TimeList"
-		key_stroke="control shift F">
+		key_stroke="%keystroke_plugins/TimeList.xml_key">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 <!-- 		<plugin_menu location="menu_bar/extras/first/time_management/nodelist"/> -->
 		<plugin_menu location="menu_bar/edit/find/nodelist"/>

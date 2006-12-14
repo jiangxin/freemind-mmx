@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.21 2006-12-09 16:01:23 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.22 2006-12-14 16:45:00 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -110,7 +110,8 @@ public class Controller  implements MapModuleChangeObserver {
      * documentation map. (Used to change this behaviour under MacOSX).
      */
     private static Logger logger;
-    public LocalLinkConverter localDocumentationLinkConverter;
+    /** Used for MAC!!! */
+    public  static LocalLinkConverter localDocumentationLinkConverter;
     private static JColorChooser colorChooser = new JColorChooser();
 	private LastOpenedList lastOpened;//A list of the pathnames of all the maps that were opened in the last time
     private MapModuleManager mapModuleManager;// new MapModuleManager();

@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.12 2006-12-09 16:01:23 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.13 2006-12-14 16:45:00 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -192,14 +192,19 @@ public class FreeMindCommon {
                 firstpos = classPath.lastIndexOf(pathSeparator, lastpos-1) + 1;
             }
             baseDir = classPath.substring(firstpos, lastpos-firstpos);
+            logger.info("First basedir is: "+baseDir);
+            /* I suppose, that here, the freemind.jar is removed together with the last path. 
+             * Example: /home/foltin/freemindapp/lib/freemind.jar gives 
+             * /home/foltin/freemindapp */
             if(baseDir.endsWith(".jar")){
-                lastpos = classPath.lastIndexOf(fileSeparator);
-                lastpos = classPath.lastIndexOf(fileSeparator, lastpos-1);
+                lastpos = baseDir.lastIndexOf(fileSeparator);
+                lastpos = baseDir.lastIndexOf(fileSeparator, lastpos-1);
                 baseDir = baseDir.substring(0, lastpos);
             }
             else{
                 baseDir = System.getProperty("user.dir");
             }
+            logger.info("Basedir is: "+baseDir);
         }
         return baseDir;
 	}

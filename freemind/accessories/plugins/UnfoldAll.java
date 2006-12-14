@@ -141,6 +141,28 @@ public class UnfoldAll extends MindMapNodeHookAdapter  {
 		}
 	}
 
+	/**
+	 * Unfolds every node that has only children which themselves have children.
+	 * As this function is a bit difficult to describe and perhaps not so
+	 * useful, it is currently not introduced into the menus.
+	 * 
+	 * @param node
+	 *            node to start from.
+	 */
+	public void foldLastBranches(MindMapNode node) {
+		boolean nodeHasChildWhichIsLeave = false;
+		for (Iterator i = node.childrenUnfolded(); i.hasNext();) {
+			MindMapNode child = (MindMapNode) i.next();
+			if (child.getChildCount() == 0) {
+				nodeHasChildWhichIsLeave = true;
+			}
+		}
+		setFolded(node, nodeHasChildWhichIsLeave);
+		for (Iterator i = node.childrenUnfolded(); i.hasNext();) {
+			foldLastBranches((MindMapNode) i.next());
+		}
+	}
+	
 	protected void setFolded(MindMapNode node, boolean state) {
 		if(node.hasChildren() && (node.isFolded()!=state)) {
 		    getMindMapController().setFolded(node, state);
