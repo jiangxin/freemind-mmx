@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12.14.5.2.4 2006-11-12 21:07:07 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.14.5.2.5 2006-12-16 20:42:31 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -119,4 +119,6 @@ public interface FreeMindMain {
 	 * @return default ".", but on different os this differs.
 	 */
 	String getFreemindBaseDir();
+
+    public String getAdjustableProperty(String label);
 }

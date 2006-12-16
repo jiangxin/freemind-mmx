@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.9 2006-12-09 16:01:23 dpolivaev Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.10 2006-12-16 20:42:31 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -195,7 +195,7 @@ public class MenuBar extends JMenuBar {
             } else  {
             	newItem.setSelected(false);
             }
-        	String keystroke = c.getFrame().getProperty("keystroke_mode_"+key);
+        	String keystroke = c.getFrame().getAdjustableProperty("keystroke_mode_"+key);
         	if (keystroke != null) {
         		newItem.setAccelerator(KeyStroke.getKeyStroke(keystroke));
         	}
@@ -256,16 +256,16 @@ public class MenuBar extends JMenuBar {
 	
 		menuHolder.addAction(c.page, FILE_MENU+"print/pageSetup");
         JMenuItem print = menuHolder.addAction(c.print, FILE_MENU+"print/print");
-        print.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_print")));
+        print.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_print")));
     
         JMenuItem printPreview = menuHolder.addAction(c.printPreview, FILE_MENU+"print/printPreview");
-        printPreview.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_print_preview")));
+        printPreview.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_print_preview")));
     
 		JMenuItem close = menuHolder.addAction(c.close, FILE_MENU+"close/close");
-		close.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_close")));
+		close.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_close")));
 		
 		JMenuItem quit = menuHolder.addAction(c.quit, FILE_MENU+"quit/quit");
-		quit.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_quit")));
+		quit.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_quit")));
 		updateLastOpenedList();
     }
 
@@ -280,7 +280,7 @@ public class MenuBar extends JMenuBar {
                 firstElement = false;
                 item.setAccelerator(
                     KeyStroke.getKeyStroke(
-                        c.getFrame().getProperty(
+                        c.getFrame().getAdjustableProperty(
                             "keystroke_open_first_in_history")));
             }
             item.addActionListener(lastOpenedActionListener);
@@ -296,13 +296,13 @@ public class MenuBar extends JMenuBar {
 		menuHolder.addSeparator(VIEW_MENU);
 		
 		JMenuItem zoomIn = menuHolder.addAction(c.zoomIn, VIEW_MENU+"zoom/zoomIn");
-		zoomIn.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_zoom_in")));
+		zoomIn.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_zoom_in")));
 	
 		JMenuItem zoomOut = menuHolder.addAction(c.zoomOut, VIEW_MENU+"zoom/zoomOut");
-		zoomOut.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_zoom_out")));
+		zoomOut.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_zoom_out")));
 	
 		JMenuItem moveToRoot = menuHolder.addAction(c.moveToRoot, NAVIGATE_MENU+"nodes/moveToRoot");
-		moveToRoot.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_moveToRoot")));
+		moveToRoot.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_moveToRoot")));
 	
 		menuHolder.addSeparator(VIEW_MENU);
         menuHolder.addCategory(VIEW_MENU+"note_window");
@@ -310,25 +310,25 @@ public class MenuBar extends JMenuBar {
         JMenu attributes = menuHolder.addMenu(new JMenu(c.getResourceString("menu_attributes")), VIEW_MENU+"attributes/.");
         ButtonGroup buttonGroup = new ButtonGroup();
         JRadioButtonMenuItem itemShowAll = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(c.showAllAttributes), VIEW_MENU+"attributes/showAllAttributes");
-        itemShowAll.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_show_all_attributes")));
+        itemShowAll.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_show_all_attributes")));
         buttonGroup.add(itemShowAll);
 
         JRadioButtonMenuItem itemShowSelected = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(c.showSelectedAttributes), VIEW_MENU+"attributes/showSelectedAttributes");
-        itemShowSelected.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_show_selected_attributes")));
+        itemShowSelected.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_show_selected_attributes")));
         buttonGroup.add(itemShowSelected);
 
         JRadioButtonMenuItem itemHideAll = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(c.hideAllAttributes), VIEW_MENU+"attributes/hideAllAttributes");
-        itemHideAll.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_hide_all_attributes")));
+        itemHideAll.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_hide_all_attributes")));
         buttonGroup.add(itemHideAll);
         
         
 
 
 		JMenuItem previousMap = menuHolder.addAction(c.navigationPreviousMap, MINDMAP_MENU+"navigate/navigationPreviousMap");
-		previousMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_previousMap")));
+		previousMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_previousMap")));
 	
 		JMenuItem nextMap = menuHolder.addAction(c.navigationNextMap, MINDMAP_MENU+"navigate/navigationNextMap");
-		nextMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_nextMap")));
+		nextMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_nextMap")));
 	
 	
 //		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EXTRAS_MENU+"last/options/.");
@@ -336,7 +336,7 @@ public class MenuBar extends JMenuBar {
         //FIXME it should be initialized through mindmap_menus.xml  
         if(c.getFrame() instanceof JFrame){
             JMenuItem prefDialog = menuHolder.addAction(c.propertyAction, EXTRAS_MENU+"last/option_dialog");
-            prefDialog.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getProperty("keystroke_option_dialog")));
+            prefDialog.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_option_dialog")));
         }
 	
 //	        if (false) {
@@ -362,7 +362,7 @@ public class MenuBar extends JMenuBar {
             item.setSelected(selectedTextID.equals(textIDs[optionIdx])); 
          }
          // keystroke present?
-         String keystroke = c.getFrame().getProperty("keystroke_"+textIDs[optionIdx]);
+         String keystroke = c.getFrame().getAdjustableProperty("keystroke_"+textIDs[optionIdx]);
          if(keystroke != null)
              item.setAccelerator(KeyStroke.getKeyStroke(keystroke));
       }

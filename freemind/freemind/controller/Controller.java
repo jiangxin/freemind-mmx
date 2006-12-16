@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.23 2006-12-16 19:08:49 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.24 2006-12-16 20:42:31 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -1348,7 +1348,7 @@ public class Controller  implements MapModuleChangeObserver {
 				}
 			});
 			options.buildPanel();
-			options.setProperties(getFrame().getProperties(), getFrame().getResources());
+			options.setProperties();
 			dialog.setTitle("Freemind Properties");
 			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			dialog.addWindowListener(new WindowAdapter(){

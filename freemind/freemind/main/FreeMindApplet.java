@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.11 2006-11-26 10:20:40 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.12 2006-12-16 20:42:31 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -354,8 +354,11 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 	}
 
 	public JSplitPane getSplitPane() {
-		// TODO Auto-generated method stub
 		return null;
 	}
+
+    public String getAdjustableProperty( String label) {
+        return mFreeMindCommon.getAdjustableProperty(label);
+    }
 
 }

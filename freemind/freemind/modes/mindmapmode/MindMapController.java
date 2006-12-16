@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.22 2006-12-02 22:12:19 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.23 2006-12-16 20:42:31 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -803,7 +803,7 @@ freemind.main.Resources.getInstance().logException(					e);
                     formatMenuString +"patterns/patterns/" + i);
             item.setAccelerator(
                 KeyStroke.getKeyStroke(
-                    getFrame().getProperty(
+                    getFrame().getAdjustableProperty(
                         "keystroke_apply_pattern_" + (i + 1))));
         }
     }

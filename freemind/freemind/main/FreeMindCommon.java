@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.14 2006-12-16 19:08:49 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.15 2006-12-16 20:42:31 dpolivaev Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -29,9 +29,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+
+import freemind.preferences.layout.OptionPanel;
 
 import sun.security.action.GetPropertyAction;
 
@@ -57,6 +61,8 @@ public class FreeMindCommon {
     public static final String RESOURCE_ANTIALIAS = "antialias";
 
     public static final String DEFAULT_LANGUAGE = "en";
+
+    public static final String LOCAL_PROPERTIES = "LocalProperties.";
 
 	private final FreeMindMain mFreeMindMain;
 
@@ -216,6 +222,24 @@ public class FreeMindCommon {
         }
         return baseDir;
 	}
+
+    public String getAdjustableProperty(final String label) {
+        String value = getProperty(label);
+        if(value == null){
+            return value;
+        }
+        if(value.startsWith("?")){
+            // try to look in the language specific properties
+            try{
+                value = getResources().getString(LOCAL_PROPERTIES + label);
+            }
+            // remove leading question mark if not succesful
+            catch(MissingResourceException ex){
+                value = value.substring(1).trim();
+            }
+        }
+        return value;
+    }
 
 
     

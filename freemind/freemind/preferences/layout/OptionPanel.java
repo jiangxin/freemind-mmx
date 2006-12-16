@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.12 2006-11-26 10:20:45 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.13 2006-12-16 20:42:31 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -34,7 +34,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -84,8 +83,6 @@ public class OptionPanel implements TextTranslator {
 	//TODO: Cancel and windowClose => Are you sure, or save.
 	//FIXME: key dialog
 	//FIXME: Translate me and html
-
-	private static final String LOCAL_PROPERTIES = "LocalProperties.";
 
     private static final Color MARKED_BUTTON_COLOR = Color.BLUE;
 
@@ -151,7 +148,7 @@ public class OptionPanel implements TextTranslator {
 
 	/**
 	 */
-	public void setProperties(Properties properties, ResourceBundle resources) {
+	public void setProperties() {
 		for (Iterator i = controls.iterator(); i.hasNext();) {
 			PropertyControl control = (PropertyControl) i.next();
 			if (control instanceof PropertyBean) {
@@ -159,17 +156,7 @@ public class OptionPanel implements TextTranslator {
 				//				System.out.println("grep -n -e \""+bean.getLabel()+"\" -r * |
 				// grep -e \"\\.(java|xml):\"");
 				final String label = bean.getLabel();
-				String value = properties.getProperty(label);
-				if(value.startsWith("?")){
-                    // try to look in the language specific properties
-				    try{
-				        value = resources.getString(LOCAL_PROPERTIES + label);
-				    }
-                    // remove leading question mark if not succesful
-				    catch(MissingResourceException ex){
-				        value = value.substring(1).trim();
-				    }
-				}
+				String value = fmMain.getAdjustableProperty(label);
 				//				System.out.println("Setting property " + bean.getLabel()
 				//						+ " to " + value);
 				bean.setValue(value);
@@ -177,7 +164,7 @@ public class OptionPanel implements TextTranslator {
 		}
 	}
 
-	private Properties getOptionProperties() {
+    private Properties getOptionProperties() {
 		Properties p = new Properties();
 		for (Iterator i = controls.iterator(); i.hasNext();) {
 			PropertyControl control = (PropertyControl) i.next();

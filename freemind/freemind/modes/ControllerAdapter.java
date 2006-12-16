@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.21 2006-11-28 08:25:36 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.22 2006-12-16 20:42:31 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -516,7 +516,7 @@ public abstract class ControllerAdapter implements ModeController {
     /** @return returns the new JMenuItem.*/
     protected JMenuItem add(JMenu menu, Action action, String keystroke) {
        JMenuItem item = menu.add(action);
-       item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
+       item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getAdjustableProperty(keystroke)));
        return item;
     }
 
@@ -525,7 +525,7 @@ public abstract class ControllerAdapter implements ModeController {
 	protected JMenuItem add(StructuredMenuHolder holder, String category, Action action, String keystroke) {
 	   JMenuItem item = holder.addMenuItem(new JMenuItem(action), category);
 	   if(keystroke != null) {
-		String keyProperty = getFrame().getProperty(keystroke);
+		String keyProperty = getFrame().getAdjustableProperty(keystroke);
 		logger.finest("Found key stroke: " + keyProperty);
 		item.setAccelerator(KeyStroke.getKeyStroke(keyProperty));
 	   }
@@ -537,7 +537,7 @@ public abstract class ControllerAdapter implements ModeController {
 	protected JMenuItem addCheckBox(StructuredMenuHolder holder, String category, Action action, String keystroke) {
 		JCheckBoxMenuItem item = (JCheckBoxMenuItem) holder.addMenuItem(new JCheckBoxMenuItem(action), category);
 	   if(keystroke != null) {
-		item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
+		item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getAdjustableProperty(keystroke)));
 	   }
 	   return item;
 	}
@@ -545,7 +545,7 @@ public abstract class ControllerAdapter implements ModeController {
 	protected JMenuItem addRadioItem(StructuredMenuHolder holder, String category, Action action, String keystroke, boolean isSelected) {
 	    JRadioButtonMenuItem item = (JRadioButtonMenuItem) holder.addMenuItem(new JRadioButtonMenuItem(action), category);
 	    if(keystroke != null) {
-	        item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty(keystroke)));
+	        item.setAccelerator(KeyStroke.getKeyStroke(getFrame().getAdjustableProperty(keystroke)));
 	    }
 	    item.setSelected(isSelected);
 	    return item;

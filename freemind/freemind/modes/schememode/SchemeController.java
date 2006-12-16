@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: SchemeController.java,v 1.10.18.3.2.2 2006-08-20 19:34:25 christianfoltin Exp $ */
+/* $Id: SchemeController.java,v 1.10.18.3.2.3 2006-12-16 20:42:31 dpolivaev Exp $ */
 
 package freemind.modes.schememode;
 
@@ -126,11 +126,11 @@ public class SchemeController extends ViewControllerAdapter {
 		holder.addAction(saveAs, MenuBar.FILE_MENU+"open/saveAs");
 
 //		JMenuItem editItem = holder.addAction(edit, MenuBar.EDIT_MENU+"edit/editItem");
-//		editItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_edit")));
+//		editItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getAdjustableProperty("keystroke_edit")));
 //		JMenuItem addNewItem = holder.addAction(addNew, MenuBar.EDIT_MENU+"edit/newItem");
-//		addNewItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_add")));
+//		addNewItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getAdjustableProperty("keystroke_add")));
 		//JMenuItem removeItem = holder.addAction(remove, MenuBar.EDIT_MENU+"edit/removeItem");
-		//removeItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getProperty("keystroke_remove")));
+		//removeItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getAdjustableProperty("keystroke_remove")));
 		holder.addAction(evaluate, MenuBar.EDIT_MENU+"edit/evaluate");
 		holder.addAction(toggleFolded, MenuBar.EDIT_MENU+"edit/toggleFolded");
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: CommonNodeKeyListener.java,v 1.1.2.1.2.2 2006-07-23 21:23:27 christianfoltin Exp $ */
+/* $Id: CommonNodeKeyListener.java,v 1.1.2.1.2.3 2006-12-16 20:42:31 dpolivaev Exp $ */
 
 package freemind.modes.common;
 
@@ -65,10 +65,10 @@ public class CommonNodeKeyListener implements KeyListener {
 		if (logger == null) {
 			logger = controller.getFrame().getLogger(this.getClass().getName());
 		}
-        up = c.getFrame().getProperty("keystroke_move_up");
-        down = c.getFrame().getProperty("keystroke_move_down");
-        left = c.getFrame().getProperty("keystroke_move_left");
-        right = c.getFrame().getProperty("keystroke_move_right");
+        up = c.getFrame().getAdjustableProperty("keystroke_move_up");
+        down = c.getFrame().getAdjustableProperty("keystroke_move_down");
+        left = c.getFrame().getAdjustableProperty("keystroke_move_left");
+        right = c.getFrame().getAdjustableProperty("keystroke_move_right");
 
         // like in excel - write a letter means edit (PN)
         // on the other hand it doesn't allow key navigation (sdfe)

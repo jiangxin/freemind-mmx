@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.28 2006-11-26 10:21:14 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.29 2006-12-16 20:42:15 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -226,7 +226,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
             };
             String keystroke = controller
                     .getFrame()
-                    .getProperty(
+                    .getAdjustableProperty(
                             "keystroke_accessories/plugins/NodeNote_jumpto.keystroke.alt_N");
             noteViewerComponent.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .put(KeyStroke.getKeyStroke(keystroke), "jumpToMapAction");

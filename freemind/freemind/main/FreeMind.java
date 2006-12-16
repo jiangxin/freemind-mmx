@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.34 2006-12-02 22:12:19 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.35 2006-12-16 20:42:31 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -745,5 +745,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	public String getFreemindBaseDir(){
 		return mFreeMindCommon.getFreemindBaseDir();
 	}
+
+    public String getAdjustableProperty(String label) {
+        return mFreeMindCommon.getAdjustableProperty(label);
+    }
 	
 }
