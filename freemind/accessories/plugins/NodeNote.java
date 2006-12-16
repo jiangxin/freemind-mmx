@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.29 2006-12-16 20:42:15 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.30 2006-12-16 21:47:19 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -159,7 +159,6 @@ public class NodeNote extends MindMapNodeHookAdapter {
                         changeNoteText(documentText, node);
                     }
                     mLastContentEmpty = editorContentEmpty;
-                    setStateIcon(node, !editorContentEmpty);
                 }
                 controller.registerNodeSelectionListener(this);
 
@@ -271,7 +270,6 @@ public class NodeNote extends MindMapNodeHookAdapter {
                     : null);
             // tooltip, first try.
             getMindMapController().setToolTip(node, "nodeNoteText", (enabled)?node.getNoteText():null);
-            getMindMapController().nodeRefresh(node);
         }
 
         public void act(XmlAction action) {
@@ -290,6 +288,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
                         getHtmlEditorPanel().setCurrentDocumentContent(
                                 newText == null ? "" : newText);
                     }
+                    setStateIcon(node, ! (newText == null || newText.equals("")));
                     controller.nodeChanged(node);
                 }
             }
