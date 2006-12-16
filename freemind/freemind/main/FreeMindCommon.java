@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.13 2006-12-14 16:45:00 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.14 2006-12-16 19:08:49 dpolivaev Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -181,29 +181,37 @@ public class FreeMindCommon {
 	public String getFreemindBaseDir() {
         if(baseDir == null){
             final String classPath = System.getProperty("java.class.path");
-            final String pathSeparator = System.getProperty("path.separator");
-            final String fileSeparator = System.getProperty("file.separator");
-            int lastpos = classPath.indexOf(pathSeparator);
+            final String mainJarFile = "freemind.jar";
+            int lastpos = classPath.indexOf(mainJarFile);
             int firstpos = 0;
+            // if freemind.jar is not found in the class path use user.dir as Basedir
             if(lastpos == -1){
-                lastpos = classPath.length();
+                baseDir = System.getProperty("user.dir");
+                logger.info("Basedir is user.dir: "+baseDir);
+                return baseDir;
             }
-            else{
-                firstpos = classPath.lastIndexOf(pathSeparator, lastpos-1) + 1;
-            }
+            firstpos = classPath.lastIndexOf(File.pathSeparator, lastpos) + 1;
+            lastpos += mainJarFile.length();
             baseDir = classPath.substring(firstpos, lastpos-firstpos);
             logger.info("First basedir is: "+baseDir);
             /* I suppose, that here, the freemind.jar is removed together with the last path. 
              * Example: /home/foltin/freemindapp/lib/freemind.jar gives 
              * /home/foltin/freemindapp */
-            if(baseDir.endsWith(".jar")){
-                lastpos = baseDir.lastIndexOf(fileSeparator);
-                lastpos = baseDir.lastIndexOf(fileSeparator, lastpos-1);
-                baseDir = baseDir.substring(0, lastpos);
+            lastpos = baseDir.lastIndexOf(File.separator);
+            if(lastpos == -1){
+                baseDir = "..";
             }
             else{
-                baseDir = System.getProperty("user.dir");
+                lastpos = baseDir.lastIndexOf(File.separator, lastpos-1);
+                if(lastpos == -1){
+                    baseDir = ".";
+                }
+                else{
+                    baseDir = baseDir.substring(0, lastpos);
+                }
             }
+            final File basePath = new File(baseDir);
+            baseDir = basePath.getAbsolutePath();
             logger.info("Basedir is: "+baseDir);
         }
         return baseDir;
