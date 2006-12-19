@@ -19,21 +19,38 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.2.12.2 2006-07-25 20:28:29 christianfoltin Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2.12.3 2006-12-19 22:22:37 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
+import java.awt.BorderLayout;
+import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import javax.swing.text.JTextComponent;
+
+import com.lightdev.app.shtm.SHTMLPanel;
 
 import freemind.controller.Controller;
 import freemind.main.FreeMindMain;
+import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.modes.ModeController;
 
@@ -42,6 +59,87 @@ import freemind.modes.ModeController;
  *
  */
 public class EditNodeBase {
+    abstract class Dialog extends JDialog{
+        class DialogFocusListener extends WindowAdapter{
+            
+            /* (non-Javadoc)
+             * @see java.awt.event.WindowAdapter#windowLostFocus(java.awt.event.WindowEvent)
+             */
+            public void windowLostFocus(WindowEvent e) {
+                if(!isVisible())
+                    return;
+                final Window oppositeWindow = e.getOppositeWindow();
+                if(oppositeWindow instanceof JDialog &&  ((JDialog)oppositeWindow).isModal())
+                    return;
+                final Window oppositeWindowOwner = oppositeWindow.getOwner();
+                if( oppositeWindowOwner == e.getSource())
+                    return;
+                if(oppositeWindowOwner instanceof JDialog &&  ((JDialog)oppositeWindowOwner).isModal())
+                    return;
+                confirmedSubmit();
+            }
+            
+            /* (non-Javadoc)
+             * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
+             */
+            public void windowClosing(WindowEvent e) {
+                if(isVisible())
+                    confirmedSubmit();
+            }                  
+        }
+        class SubmitAction extends AbstractAction{
+            public void actionPerformed(ActionEvent e) {
+                submit();
+            }
+            
+        }
+        class CancelAction extends AbstractAction{
+            public void actionPerformed(ActionEvent e) {
+                confirmedCancel();
+            }                 
+        }
+        private DialogFocusListener dfl;
+        Dialog(){
+            super((JFrame)getFrame(), getText("edit_long_node"), /*modal=*/false);
+            getContentPane().setLayout(new BorderLayout());
+            setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+            dfl = new DialogFocusListener();
+            addWindowListener(dfl);
+            addWindowFocusListener(dfl);
+        }             
+        protected void confirmedSubmit() {
+            if(isChanged()){
+                final int action = JOptionPane.showConfirmDialog(this, getText("long_node_changed_submit"), "", JOptionPane.YES_NO_CANCEL_OPTION);
+                if(action == JOptionPane.CANCEL_OPTION)
+                    return;
+                if(action == JOptionPane.YES_OPTION){               
+                    submit();
+                    return;                
+                }
+            }
+            cancel();
+        }
+        protected void confirmedCancel() {
+            if(isChanged()){
+                final int action = JOptionPane.showConfirmDialog(this, getText("long_node_changed_cancel"), "", JOptionPane.OK_CANCEL_OPTION);
+                if(action == JOptionPane.CANCEL_OPTION)
+                    return;
+            }
+            cancel();
+        }
+        protected void submit() {
+            setVisible(false);
+        }                 
+        protected void cancel() {
+            setVisible(false);
+        }                 
+
+        protected void split() {
+            setVisible(false);
+        }
+        
+        abstract protected boolean isChanged();
+}
 
     public interface EditControl {
     	void cancel();
@@ -59,7 +157,6 @@ public class EditNodeBase {
     private Clipboard clipboard;
     private ModeController controller;
 	protected String text;
-   protected boolean lastEditingWasSuccessful;
 
 	EditNodeBase(final NodeView node,
 	final String text,
@@ -178,10 +275,6 @@ public class EditNodeBase {
      */
     public void setTextFieldListener(FocusListener listener) {
         textFieldListener = listener;
-    }
-
-    public boolean lastEditingWasSuccessful() {
-       return lastEditingWasSuccessful; 
     }
 
 }
