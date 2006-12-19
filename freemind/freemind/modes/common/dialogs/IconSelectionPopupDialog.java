@@ -25,6 +25,8 @@ package freemind.modes.common.dialogs;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -56,6 +58,7 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
   private static Position lastPosition = new Position(0,0);
   private Vector descriptions;
   private FreeMindMain freeMindMain;
+private int mModifiers;
  
   public IconSelectionPopupDialog(JFrame caller, Vector icons, Vector descriptions, FreeMindMain freeMindMain){
 
@@ -173,8 +176,9 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
   }
 
 
-  private void addIcon(){
+  private void addIcon(int pModifiers){
 	result = calculateIndex(getSelectedPosition());
+	mModifiers = pModifiers;
 	this.dispose();
   }
 
@@ -182,11 +186,17 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
 		return result;
 	}
 
+	/** Transfer shift masks from InputEvent to ActionEvent.
+	 * But, why don't they use the same constants???? Java miracle. */
+	public int getModifiers() {
+		return (mModifiers & InputEvent.SHIFT_DOWN_MASK) != 0?ActionEvent.SHIFT_MASK:0;
+	}
+	
   /* (non-Javadoc)
 	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
 	 */
-	public void keyPressed(KeyEvent arg0) {
-		switch (arg0.getKeyCode()){
+	public void keyPressed(KeyEvent keyEvent) {
+		switch (keyEvent.getKeyCode()){
 			case KeyEvent.VK_RIGHT:
 			case KeyEvent.VK_KP_RIGHT:
 				cursorRight();
@@ -204,19 +214,20 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
 				cursorUp();
 				break;
 			case KeyEvent.VK_ESCAPE:
-				arg0.consume();
+				keyEvent.consume();
                 close();
 				break;
 			case KeyEvent.VK_ENTER:
 			case KeyEvent.VK_SPACE:
-				arg0.consume();
-				addIcon();
+				keyEvent.consume();
+				addIcon(keyEvent.getModifiers());
 				break;
 		}
 	}
 
     private void close() {
         result = -1;
+        mModifiers = 0;
         this.dispose();
     }
 
@@ -235,8 +246,8 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
 	 */
-	public void mouseClicked(MouseEvent arg0) {
-		addIcon();
+	public void mouseClicked(MouseEvent mouseEvent) {
+		addIcon(mouseEvent.getModifiers());
 	}
 
 	/* (non-Javadoc)

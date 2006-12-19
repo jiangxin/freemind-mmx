@@ -27,11 +27,14 @@ Changes made in FreeMind 0.9.0 Beta 9
 * FreeMind Base Dir used for searching the plugins is taken from the classpath, not from the properties
 * FreeMind Base Dir is also used for localizing the docu
 * The Internet Docu Version is used if FreeMind Base Dir can not be defined (applet in browser)
+# 13.12.06, fc:
 * Search & Replace Dialog with menu and nicer. Bug fixes...
 # 16.12.06
 * Changes for Java 6.0
 * changes in getFreemindBaseDir (TODO)
 * Local Short Cuts and Properties => Bug Fix for control PLUS etc.
+# 19.12.06, fc:
+* Using Shift+Click on icon bar substitutes the current icons by the new one. (Same with Shift+Enter in the icon selection dialog)
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8
 ===============================

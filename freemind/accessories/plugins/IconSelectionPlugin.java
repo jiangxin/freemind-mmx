@@ -25,6 +25,7 @@
  */
 package accessories.plugins;
 
+import java.awt.event.ActionEvent;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -88,7 +89,7 @@ public class IconSelectionPlugin extends MindMapNodeHookAdapter {
 		int result = selectionDialog.getResult();
         if (result >= 0) {
 			Action action = (Action) actions.get(result);
-			action.actionPerformed(null);
+			action.actionPerformed(new ActionEvent(action, 0, "icon", selectionDialog.getModifiers()));
 		}
 	}
 

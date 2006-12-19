@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.16 2006-12-17 10:29:01 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.17 2006-12-19 20:36:30 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -196,10 +196,14 @@ public class FreeMindCommon {
                 logger.info("Basedir is user.dir: "+baseDir);
                 return baseDir;
             }
+            /* fc: Now, if freemind.jar is the first, firstpos == -1. 
+             * This results in bad results in the substring method, or not??*/
             firstpos = classPath.lastIndexOf(File.pathSeparator, lastpos) + 1;
             lastpos -= 1;
-            if (lastpos > firstpos) 
-                baseDir = classPath.substring(firstpos, lastpos-firstpos);
+            if (lastpos > firstpos) {
+            	logger.info("First " + firstpos +  " and last " + lastpos + " and string " + classPath);
+                baseDir = classPath.substring(firstpos, lastpos);
+            }
             else 
                 baseDir = "";
             final File basePath = new File(baseDir);

@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: IconAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: IconAction.java,v 1.1.2.2.2.3 2006-12-19 20:36:30 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.util.ListIterator;
 
 import javax.swing.Action;
+import javax.swing.SwingConstants;
 
 import freemind.controller.actions.generated.instance.AddIconAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -52,8 +53,14 @@ public class IconAction extends FreemindAction  implements ActorXml{
     }
 
     public void actionPerformed(ActionEvent e) {
+    	   boolean deleteOtherIcons = false;
+    	   if(e != null && (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0) 
+    		   deleteOtherIcons = true;
        for (ListIterator it = modeController.getSelecteds().listIterator();it.hasNext();) {
           MindMapNodeModel selected = (MindMapNodeModel)it.next();
+          if(deleteOtherIcons && selected.getIcons().size() > 0) {
+        	  	modeController.removeAllIcons(selected);
+          }
           addIcon(selected, icon);
         }
     }

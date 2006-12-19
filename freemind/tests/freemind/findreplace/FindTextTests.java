@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FindTextTests.java,v 1.1.2.4 2006-05-30 21:36:17 christianfoltin Exp $*/
+/*$Id: FindTextTests.java,v 1.1.2.5 2006-12-19 20:36:30 christianfoltin Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -82,11 +82,11 @@ public class FindTextTests extends FreeMindTestBase {
     }
     
     public void testPositions() throws Exception {
-        HtmlTools.IndexPair pair1 = new HtmlTools.IndexPair(0,6,0,0);
-        HtmlTools.IndexPair pair2 = new HtmlTools.IndexPair(6,14,0,0);
-        HtmlTools.IndexPair pair3 = new HtmlTools.IndexPair(14,27,0,4);
-        HtmlTools.IndexPair pair4 = new HtmlTools.IndexPair(27,34,4,4);
-        HtmlTools.IndexPair pair5 = new HtmlTools.IndexPair(34,34,4,4);
+        HtmlTools.IndexPair pair1 = new HtmlTools.IndexPair(0,6,0,0, false);
+        HtmlTools.IndexPair pair2 = new HtmlTools.IndexPair(6,14,0,0, false);
+        HtmlTools.IndexPair pair3 = new HtmlTools.IndexPair(14,27,0,4, false);
+        HtmlTools.IndexPair pair4 = new HtmlTools.IndexPair(27,34,4,4, false);
+        HtmlTools.IndexPair pair5 = new HtmlTools.IndexPair(34,34,4,4, false);
         ArrayList list = new ArrayList();
         list.add(pair1);
         list.add(pair2);
@@ -119,10 +119,26 @@ public class FindTextTests extends FreeMindTestBase {
         info = new TestReplaceInputInfo("<html><strong>test</strong></html>",
                 "<html><strong>test</strong></html>");
         TimeList.replace(info, "strong", "strang");
-        // and replaces tex<tag>t</tag> by text<tag></tag>:
+        // and replaces <tag>tes</tag>t by <tag>text</tag>:
         info = new TestReplaceInputInfo("<html><strong>tes</strong>t</html>",
-                "<html>blabla<strong></strong></html>");
+                "<html><strong>blabla</strong></html>");
+        TimeList.replace(info, "test", "blabla");
+        // and replaces tex<tag>t</tag> by text<tag></tag>:
+        info = new TestReplaceInputInfo("<html>tes<strong>t</strong></html>",
+        "<html>blabla<strong></strong></html>");
+        TimeList.replace(info, "test", "blabla");
+        // replace with environment
+        info = new TestReplaceInputInfo("<html>before<strong>tes</strong>tafter</html>",
+        "<html>before<strong>blabla</strong>after</html>");
+        TimeList.replace(info, "test", "blabla");
+        // no replace at all
+        info = new TestReplaceInputInfo("<html><strong>tes</strong>t</html>",
+        		"<html><strong>tes</strong>t</html>" /* No change as search text does not occur */);
         TimeList.replace(info, "text", "blabla");
+        // no html at all
+        info = new TestReplaceInputInfo("beforetestafter",
+        "beforeblablaafter");
+        TimeList.replace(info, "test", "blabla");
     }
 
     private final class TestReplaceInputInfo implements

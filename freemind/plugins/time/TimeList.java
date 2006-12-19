@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.9.2.13 2006-12-14 16:45:01 christianfoltin Exp $ */
+/* $Id: TimeList.java,v 1.1.2.9.2.14 2006-12-19 20:36:30 christianfoltin Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -28,6 +28,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -89,6 +90,9 @@ import freemind.view.mindmapview.MultipleImage;
 /**
  * @author foltin
  *
+ *TODO: 
+ * - Display notes
+ * - correct replace
  */
 public class TimeList extends MindMapHookAdapter {
 
@@ -177,14 +181,32 @@ public class TimeList extends MindMapHookAdapter {
 		contentPane.add(new JLabel(getResourceString("plugins/TimeManagement.xml_Find")), new GridBagConstraints(0,0,1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		mFilterTextSearchField = new JTextField();
 		mFilterTextSearchField.getDocument().addDocumentListener(new FilterTextDocumentListener());
-		contentPane.add(new JScrollPane(mFilterTextSearchField), new GridBagConstraints(0,1, 
+		mFilterTextSearchField.addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent pEvent) {
+//				logger.info("Key event:" + pEvent.getKeyCode());
+				if(pEvent.getKeyCode() == KeyEvent.VK_DOWN) {
+					logger.info("Set Focus to replace fields");
+					mFilterTextReplaceField.requestFocusInWindow();
+				}
+			}});
+		contentPane.add(/*new JScrollPane*/(mFilterTextSearchField), new GridBagConstraints(0,1, 
 					1, 1, 1.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		contentPane.add(new JLabel(getResourceString("plugins/TimeManagement.xml_Replace")), new GridBagConstraints(0,2,1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		mFilterTextReplaceField = new JTextField();
-		contentPane.add(new JScrollPane(mFilterTextReplaceField), new GridBagConstraints(0,3, 
+		contentPane.add(/*new JScrollPane*/(mFilterTextReplaceField), new GridBagConstraints(0,3, 
 				1, 1, 1.0, 0.0, GridBagConstraints.WEST,
 				GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		mFilterTextReplaceField.addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent pEvent) {
+				if(pEvent.getKeyCode() == KeyEvent.VK_DOWN) {
+					logger.info("Set Focus to table");
+					timeTable.requestFocusInWindow();
+				} else if(pEvent.getKeyCode() == KeyEvent.VK_UP) {
+					logger.info("Set Focus to table");
+					mFilterTextSearchField.requestFocusInWindow();
+				} 
+			}});
 		dateRenderer = new DateRenderer();
 		nodeRenderer = new NodeRenderer();
 		iconsRenderer = new IconsRenderer(getController());
@@ -215,7 +237,7 @@ public class TimeList extends MindMapHookAdapter {
 				GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 		final AbstractAction selectAction = new AbstractAction(getResourceString("plugins/TimeManagement.xml_Select")){
 					public void actionPerformed(ActionEvent arg0) {
-						selectSelectedRowsAndClose();
+						selectSelectedRows();
 					}};
 		JButton selectButton = new JButton(selectAction);
         final AbstractAction exportAction = new AbstractAction(getResourceString("plugins/TimeManagement.xml_Export")){
@@ -233,35 +255,37 @@ public class TimeList extends MindMapHookAdapter {
 						replace(new ReplaceSelectedInfo());
 					}};
 		JButton replaceSelectedButton = new JButton(replaceSelectedAction);
-//		AbstractAction gotoAction = new AbstractAction(getResourceString("plugins/TimeManagement.xml_Goto")){
-//					public void actionPerformed(ActionEvent arg0) {
-//						int row = timeTable.getSelectedRow();
-//						if(row>=0) {
-//							gotoNodesAndClose(row, new int[]{row});
-//						}
-//					}};
-//		JButton gotoButton = new JButton(gotoAction);
+		final AbstractAction gotoAction = new AbstractAction(getResourceString("plugins/TimeManagement.xml_Goto")){
+					public void actionPerformed(ActionEvent arg0) {
+						selectSelectedRows();
+						disposeDialog();
+					}};
+		JButton gotoButton = new JButton(gotoAction);
 		AbstractAction disposeAction = new AbstractAction(getResourceString("plugins/TimeManagement.xml_Cancel")){
 					public void actionPerformed(ActionEvent arg0) {
 						disposeDialog();
 					}};
 		JButton cancelButton = new JButton(disposeAction);
-		JPanel bar = ButtonBarFactory.buildLeftAlignedBar(new JButton[]{
+		/* Initial State */
+		selectAction.setEnabled(false);
+		gotoAction.setEnabled(false);
+		exportAction.setEnabled(false);
+		replaceSelectedAction.setEnabled(false);
+		
+		JPanel bar = ButtonBarFactory.buildGrowingBar(new JButton[]{
 				cancelButton,
-				/*gotoButton, */ 
 				exportButton, 
 				replaceAllButton, 
 				replaceSelectedButton, 
+				gotoButton, 
 				selectButton, 
 				});
-		replaceSelectedAction.setEnabled(false);
-		selectAction.setEnabled(false);
-		exportAction.setEnabled(false);
-		contentPane.add(bar, new GridBagConstraints(0,5,1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		contentPane.add(/*new JScrollPane*/(bar), new GridBagConstraints(0,5,1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu(getResourceString("plugins/TimeManagement.xml_menu_actions"));
 		AbstractAction[] actionList = new AbstractAction[] { selectAction,
+				gotoAction, 
 				replaceSelectedAction, replaceAllAction, exportAction,
 				disposeAction };
 		for (int i = 0; i < actionList.length; i++) {
@@ -285,6 +309,7 @@ public class TimeList extends MindMapHookAdapter {
 		        boolean enable = !(lsm.isSelectionEmpty());
 		        replaceSelectedAction.setEnabled(enable);
 		        selectAction.setEnabled(enable);
+		        gotoAction.setEnabled(enable);
 		        exportAction.setEnabled(enable);
 		    }
 		});
@@ -350,6 +375,7 @@ public class TimeList extends MindMapHookAdapter {
             replace(info, searchString, replaceString);
             timeTableModel.fireTableDataChanged();
             mFlatNodeTableFilterModel.resetFilter();
+            mFilterTextSearchField.setText("");
         } catch (BadLocationException e) {
             freemind.main.Resources.getInstance().logException(e);
         }
@@ -359,7 +385,7 @@ public class TimeList extends MindMapHookAdapter {
 	
 	public static void replace(IReplaceInputInformation info, String searchString, String replaceString) {
         String regExp = "(" + getPureRegularExpression(searchString) + ")";
-		Pattern p = Pattern.compile(regExp);
+		Pattern p = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
         String replacement = getPureRegularExpression(replaceString);
 		int length = info.getLength();
 		for (int i = 0; i < length; i++) {
@@ -402,8 +428,16 @@ public class TimeList extends MindMapHookAdapter {
 		}
 	}
 	
-	
+	private void selectSelectedRows() {
+		selectNodes(timeTable.getSelectedRow(), timeTable.getSelectedRows());
+	}
+
 	private void gotoNodesAndClose(int focussedRow, int[] selectedRows) {
+		selectNodes(focussedRow, selectedRows);
+		disposeDialog();
+	}
+
+	private void selectNodes(int focussedRow, int[] selectedRows) {
 		if (focussedRow >= 0) {
 			MindMapNode focussedNode = getMindMapNode(focussedRow);
 //			getController().centerNode(focussedNode);
@@ -413,7 +447,6 @@ public class TimeList extends MindMapHookAdapter {
 				selectedNodes.add(getMindMapNode(row));
 			}
             getMindMapController().selectMultipleNodes(focussedNode, selectedNodes);
-			disposeDialog();
 		}
 	}
 
@@ -519,10 +552,6 @@ public class TimeList extends MindMapHookAdapter {
 		dialog.dispose();
 	}
 
-	private void selectSelectedRowsAndClose() {
-		gotoNodesAndClose(timeTable.getSelectedRow(), timeTable.getSelectedRows());
-	}
-
 	public static String getRegularExpression(String text) throws BadLocationException {
 		text = ".*("+text+").*";
 		return text;
@@ -621,7 +650,8 @@ public class TimeList extends MindMapHookAdapter {
 				disposeDialog();
 			}
 			if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-				selectSelectedRowsAndClose();
+				selectSelectedRows();
+				disposeDialog();
 			}
 		}
 	}
