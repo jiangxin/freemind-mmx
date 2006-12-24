@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.2.12.3 2006-12-19 22:22:37 dpolivaev Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2.12.4 2006-12-24 13:44:45 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -28,29 +28,19 @@ import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
 import javax.swing.text.JTextComponent;
-
-import com.lightdev.app.shtm.SHTMLPanel;
 
 import freemind.controller.Controller;
 import freemind.main.FreeMindMain;
-import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.modes.ModeController;
 
@@ -66,17 +56,29 @@ public class EditNodeBase {
              * @see java.awt.event.WindowAdapter#windowLostFocus(java.awt.event.WindowEvent)
              */
             public void windowLostFocus(WindowEvent e) {
-                if(!isVisible())
+                // call confirmed submit if the new focussed window is a non modal dialog
+                // and it is not owned by this dialog.                
+                final Window sourceWindow = e.getWindow();
+                if(sourceWindow != Dialog.this){
+                    sourceWindow.removeWindowFocusListener(this);
+                }
+                if(!Dialog.this.isVisible())
                     return;
                 final Window oppositeWindow = e.getOppositeWindow();
-                if(oppositeWindow instanceof JDialog &&  ((JDialog)oppositeWindow).isModal())
-                    return;
                 final Window oppositeWindowOwner = oppositeWindow.getOwner();
-                if( oppositeWindowOwner == e.getSource())
+                if( oppositeWindowOwner == Dialog.this){
                     return;
-                if(oppositeWindowOwner instanceof JDialog &&  ((JDialog)oppositeWindowOwner).isModal())
+                }
+                if(oppositeWindow instanceof JDialog &&  ((JDialog)oppositeWindow).isModal()){
+                    oppositeWindow.addWindowFocusListener(this);
                     return;
+                }
+                if(oppositeWindowOwner instanceof JDialog &&  ((JDialog)oppositeWindowOwner).isModal()){
+                    oppositeWindow.addWindowFocusListener(this);
+                    return;
+                }
                 confirmedSubmit();
+                
             }
             
             /* (non-Javadoc)
