@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.2.12.4 2006-12-24 13:44:45 dpolivaev Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2.12.5 2006-12-30 18:35:10 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -50,37 +50,11 @@ import freemind.modes.ModeController;
  */
 public class EditNodeBase {
     abstract class Dialog extends JDialog{
-        class DialogFocusListener extends WindowAdapter{
+        class DialogWindowListener extends WindowAdapter{
             
             /* (non-Javadoc)
              * @see java.awt.event.WindowAdapter#windowLostFocus(java.awt.event.WindowEvent)
              */
-            public void windowLostFocus(WindowEvent e) {
-                // call confirmed submit if the new focussed window is a non modal dialog
-                // and it is not owned by this dialog.                
-                final Window sourceWindow = e.getWindow();
-                if(sourceWindow != Dialog.this){
-                    sourceWindow.removeWindowFocusListener(this);
-                }
-                if(!Dialog.this.isVisible())
-                    return;
-                final Window oppositeWindow = e.getOppositeWindow();
-                final Window oppositeWindowOwner = oppositeWindow.getOwner();
-                if( oppositeWindowOwner == Dialog.this){
-                    return;
-                }
-                if(oppositeWindow instanceof JDialog &&  ((JDialog)oppositeWindow).isModal()){
-                    oppositeWindow.addWindowFocusListener(this);
-                    return;
-                }
-                if(oppositeWindowOwner instanceof JDialog &&  ((JDialog)oppositeWindowOwner).isModal()){
-                    oppositeWindow.addWindowFocusListener(this);
-                    return;
-                }
-                confirmedSubmit();
-                
-            }
-            
             /* (non-Javadoc)
              * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
              */
@@ -100,14 +74,12 @@ public class EditNodeBase {
                 confirmedCancel();
             }                 
         }
-        private DialogFocusListener dfl;
         Dialog(){
-            super((JFrame)getFrame(), getText("edit_long_node"), /*modal=*/false);
+            super((JFrame)getFrame(), getText("edit_long_node"), /*modal=*/true);
             getContentPane().setLayout(new BorderLayout());
             setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-            dfl = new DialogFocusListener();
+            DialogWindowListener dfl = new DialogWindowListener();
             addWindowListener(dfl);
-            addWindowFocusListener(dfl);
         }             
         protected void confirmedSubmit() {
             if(isChanged()){
