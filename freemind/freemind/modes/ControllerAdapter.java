@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.22 2006-12-16 20:42:31 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.23 2007-01-02 22:41:04 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -62,6 +62,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
@@ -917,7 +918,7 @@ public abstract class ControllerAdapter implements ModeController {
             public void actionPerformed(ActionEvent e) {
                 final Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
                 final AttributeView attributeView = getView().getSelected().getAttributeView();
-                boolean attributesClosed = null == AttributeView.getAncestorComponent(focusOwner, AttributeTable.class);
+                boolean attributesClosed = null == SwingUtilities.getAncestorOfClass(AttributeTable.class, focusOwner);
                 if(attributesClosed){
                     attributeView.startEditing();
                 }

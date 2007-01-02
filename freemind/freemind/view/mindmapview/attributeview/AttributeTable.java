@@ -76,9 +76,9 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         public void focusGained(FocusEvent event) { 
             Component source = (Component)event.getSource();
             Component oppositeComponent = event.getOppositeComponent();
-            focusedTable = (AttributeTable)AttributeView.getAncestorComponent(source, AttributeTable.class);
-            Component newNodeViewInFocus = AttributeView.getAncestorComponent(focusedTable, NodeView.class);
-            Component oldNodeViewInFocus = AttributeView.getAncestorComponent(oppositeComponent, NodeView.class);
+            focusedTable = (AttributeTable)SwingUtilities.getAncestorOfClass(AttributeTable.class, source);
+            Component newNodeViewInFocus = SwingUtilities.getAncestorOfClass(NodeView.class, focusedTable);
+            Component oldNodeViewInFocus = SwingUtilities.getAncestorOfClass(NodeView.class, oppositeComponent);
             if(newNodeViewInFocus != oldNodeViewInFocus 
                     && newNodeViewInFocus instanceof NodeView){
                 NodeView viewer = (NodeView)newNodeViewInFocus;
@@ -93,7 +93,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
          */
         public void focusLost(FocusEvent event) {
             Component oppositeComponent = event.getOppositeComponent();
-            Component newTable = AttributeView.getAncestorComponent(oppositeComponent, AttributeTable.class);
+            Component newTable = SwingUtilities.getAncestorOfClass(AttributeTable.class, oppositeComponent);
             if(focusedTable != newTable){
                 if (focusedTable.isEditing()){                
                     focusedTable.getCellEditor().stopCellEditing();

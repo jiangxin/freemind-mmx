@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.6.6 2006-07-25 20:28:30 christianfoltin Exp $*/
+/*$Id: AttributeView.java,v 1.1.6.7 2007-01-02 22:41:05 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -25,6 +25,7 @@ import java.awt.Component;
 import java.awt.EventQueue;
 
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.ChangeEvent;
@@ -255,12 +256,6 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     boolean isPopupShown(){
         return attributeTable != null && tablePopupMenu != null
         && (tablePopupMenu.getTable() == attributeTable);       
-    }
-    static public Component getAncestorComponent(Component object, Class ancestorClass) {
-        if(object == null || ancestorClass.isAssignableFrom(object.getClass())){
-            return object;
-        }
-        return getAncestorComponent(object.getParent(), ancestorClass);
     }
     public void stopEditing() {
         if(attributeTable.isEditing()){

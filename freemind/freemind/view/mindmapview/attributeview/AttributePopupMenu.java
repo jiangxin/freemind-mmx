@@ -35,6 +35,7 @@ import java.awt.event.MouseListener;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
 
 import freemind.main.Resources;
@@ -227,7 +228,7 @@ public class AttributePopupMenu extends JPopupMenu implements MouseListener {
         EventQueue.invokeLater(new Runnable(){
             public void run() {
                 final KeyboardFocusManager focusManager = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager();
-                final Component focusOwner = AttributeView.getAncestorComponent(focusManager.getFocusOwner(), AttributeTable.class);
+                final Component focusOwner = SwingUtilities.getAncestorOfClass(AttributeTable.class, focusManager.getFocusOwner());
                 if(table != focusOwner
                         && focusOwner instanceof JComponent){
                     table.requestFocus(true);
