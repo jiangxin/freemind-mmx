@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FindTextTests.java,v 1.1.2.5 2006-12-19 20:36:30 christianfoltin Exp $*/
+/*$Id: FindTextTests.java,v 1.1.2.6 2007-01-03 21:04:24 christianfoltin Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -103,6 +103,9 @@ public class FindTextTests extends FreeMindTestBase {
         assertEquals("<html><strong>blabla</strong></html>", HtmlTools
                 .getInstance().getReplaceResult(Pattern.compile("test"),
                         "blabla", "<html><strong>test</strong></html>"));
+        assertEquals("<html><strong>blabla und so weiter</strong></html>", HtmlTools
+                .getInstance().getReplaceResult(Pattern.compile("test"),
+                        "blabla", "<html><strong>test und so weiter</strong></html>"));
         assertEquals("<html><strong>blabla</strong></html>", HtmlTools
                 .getInstance().getReplaceResult(Pattern.compile("strong"),
                         "strang", "<html><strong>blabla</strong></html>"));

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.24 2006-12-16 20:42:31 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.25 2007-01-03 21:04:24 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -993,7 +993,7 @@ public class Controller  implements MapModuleChangeObserver {
             dialog.setLocationRelativeTo((JFrame)getFrame());
             dialog.getRootPane().setDefaultButton(okButton);
             dialog.pack();  // calculate the size
-            dialog.show();
+            dialog.setVisible(true);
 
             if (eventSource.getValue() == 1) {
                setProperty("user_zoom", userZoom.getText());
