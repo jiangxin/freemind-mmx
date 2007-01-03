@@ -19,8 +19,8 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeManagement.java,v 1.1.2.6.2.3 2006-07-25 20:28:30 christianfoltin Exp $ */
-package plugins.time;
+/* $Id: TimeManagement.java,v 1.1.2.1 2007-01-03 23:47:43 christianfoltin Exp $ */
+package accessories.plugins.time;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;
@@ -268,7 +268,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 					.hasNext();) {
 				MindMapNode node = (MindMapNode) i.next();
 
-				ReminderHookBase alreadyPresentHook = getHook(node);
+				ReminderHookBase alreadyPresentHook = TimeManagementOrganizer.getHook(node);
 				if (alreadyPresentHook != null) {
 					addHook(node); // means remove hook, as it is already
 					// present.
@@ -285,7 +285,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 				.hasNext();) {
 			MindMapNode node = (MindMapNode) i.next();
 
-			ReminderHookBase alreadyPresentHook = getHook(node);
+			ReminderHookBase alreadyPresentHook = TimeManagementOrganizer.getHook(node);
 			if (alreadyPresentHook != null) {
 				// already present:
 				Object[] messageArguments = {
@@ -306,7 +306,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 			List selected;
 			addHook(node);
 			PermanentNodeHook element;
-			ReminderHookBase rh = getHook(node);
+			ReminderHookBase rh = TimeManagementOrganizer.getHook(node);
 			if (rh == null) {
 				throw new IllegalArgumentException(
 						"hook not found although it is present!!");
@@ -324,18 +324,6 @@ public class TimeManagement extends MindMapHookAdapter implements
 		// add the hook:
 		List selected = Arrays.asList(new MindMapNode[] { node });
         getMindMapController().addHook(node, selected, REMINDER_HOOK_NAME);
-	}
-
-	/**
-	 */
-	public static ReminderHookBase getHook(MindMapNode node) {
-		for (Iterator j = node.getActivatedHooks().iterator(); j.hasNext();) {
-			PermanentNodeHook element = (PermanentNodeHook) j.next();
-			if (element instanceof ReminderHookBase) {
-				return (ReminderHookBase) element;
-			}
-		}
-		return null;
 	}
 
 	/**

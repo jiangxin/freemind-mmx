@@ -16,27 +16,25 @@ Changes made in FreeMind 0.9.0 Beta 9
 * Taskjuggler integration from aki integrated. Thanks to the author.
 * Bug fix: proper zoom of HTML nodes
 * Bug fix: better "zoom to fit"
-# 26.11.06
 * Bug fix: scroll to selected node after zoom change
 * Improvements in Map Layout
 * Bug Fixes concerning the Left Toolbar
 * Blinking Node Hook does not change the model color, only the view color
 * Bug fix on start if the last map has been deleted
 * Short cuts are traced to the actions even if menu bar is not visible
-# 09.12.06
 * FreeMind Base Dir used for searching the plugins is taken from the classpath, not from the properties
 * FreeMind Base Dir is also used for localizing the docu
 * The Internet Docu Version is used if FreeMind Base Dir can not be defined (applet in browser)
-# 13.12.06, fc:
 * Search & Replace Dialog with menu and nicer. Bug fixes...
-# 16.12.06
 * Changes for Java 6.0
 * changes in getFreemindBaseDir (TODO)
 * Local Short Cuts and Properties => Bug Fix for control PLUS etc.
-# 19.12.06, fc:
 * Using Shift+Click on icon bar substitutes the current icons by the new one. (Same with Shift+Enter in the icon selection dialog)
-#19.12.06, dp:
 * user friendly closing of the node edit dialogs
+* moved time management to internal plugins.
+* revised build process for external plugins. 
+* New feature: Sort children nodes added.
+
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8
 ===============================

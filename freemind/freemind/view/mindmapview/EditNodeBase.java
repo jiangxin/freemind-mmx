@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.2.12.5 2006-12-30 18:35:10 dpolivaev Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2.12.6 2007-01-03 23:47:43 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -49,7 +49,7 @@ import freemind.modes.ModeController;
  *
  */
 public class EditNodeBase {
-    abstract class Dialog extends JDialog{
+    abstract class EditDialog extends JDialog{
         class DialogWindowListener extends WindowAdapter{
             
             /* (non-Javadoc)
@@ -74,7 +74,7 @@ public class EditNodeBase {
                 confirmedCancel();
             }                 
         }
-        Dialog(){
+        EditDialog(){
             super((JFrame)getFrame(), getText("edit_long_node"), /*modal=*/true);
             getContentPane().setLayout(new BorderLayout());
             setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);

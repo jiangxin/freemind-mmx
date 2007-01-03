@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1.16.5 2006-12-19 22:22:37 dpolivaev Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.6 2007-01-03 23:47:43 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -67,7 +67,7 @@ public class EditNodeDialog extends EditNodeBase {
         this.firstEvent = firstEvent;
         
     }
-    class LongNodeDialog extends Dialog{
+    class LongNodeDialog extends EditDialog{
         private JTextArea textArea;
         
         LongNodeDialog(){
@@ -300,7 +300,7 @@ public class EditNodeDialog extends EditNodeBase {
         
     }
     public void show() {
-        final Dialog dialog = new LongNodeDialog();
+        final EditDialog dialog = new LongNodeDialog();
         
         dialog.pack(); // calculate the size
         

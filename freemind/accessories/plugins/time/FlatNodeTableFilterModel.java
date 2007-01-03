@@ -19,8 +19,8 @@
  *
  * Created on 02.05.2006
  */
-/*$Id: FlatNodeTableFilterModel.java,v 1.1.2.2 2006-05-06 21:56:37 christianfoltin Exp $*/
-package plugins.time;
+/*$Id: FlatNodeTableFilterModel.java,v 1.1.2.1 2007-01-03 23:47:43 christianfoltin Exp $*/
+package accessories.plugins.time;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -30,7 +30,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
-import plugins.time.TimeList.NodeHolder;
+import accessories.plugins.time.TimeList.NodeHolder;
+
 
 /**
  * @author foltin
@@ -100,6 +101,10 @@ public class FlatNodeTableFilterModel extends AbstractTableModel {
 		return mTableModel.getColumnCount();
 	}
 
+	public String getColumnName(int pColumnIndex) {
+		return mTableModel.getColumnName(pColumnIndex);
+	}
+	
 	public Class getColumnClass(int arg0) {
 		return mTableModel.getColumnClass(arg0);
 	}

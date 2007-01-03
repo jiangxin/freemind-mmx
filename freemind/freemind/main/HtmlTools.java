@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.12 2006-12-19 20:36:30 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.13 2007-01-03 23:47:43 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -400,7 +400,9 @@ public class HtmlTools {
           replaceAll("(?ims)&quot;", "\"").replaceAll("(?ims)&amp;", "&").
           replaceAll("(?ims)&nbsp;", " ").
           // FIXME Dimitry: is removing of all new lines at the begin a good idea? 
-          replaceAll("^\n+", "");
+          replaceAll("^\n+", "").
+          // fc: to remove start and end spaces.
+          trim();
        
        //System.err.println("intermediate:"+intermediate);
        return HtmlTools.unescapeHTMLUnicodeEntity(intermediate); }

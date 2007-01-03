@@ -3,11 +3,19 @@
 	<macrodef name="callant">
 		<attribute name="task"/>
 		<sequential>
+			<subant target="@{task}" inheritall="true">
+				<fileset dir="plugins">
+				    <include name="build_*.xml"/>
+					<!-- The import script can't be executed. -->
+				    <exclude name="build_import.xml"/>
+				    <exclude name="build_jabber.xml"/>
+				</fileset>
+			</subant>
+<!--Temporarily disabled:
 			<ant antfile="plugins/build_help.xml" target="@{task}"/>
 			<ant antfile="plugins/build_svg.xml" target="@{task}"/>
 			<ant antfile="plugins/build_time.xml" target="@{task}"/>
 			<ant antfile="plugins/build_scripting.xml" target="@{task}"/>
-<!--Temporarily disabled:
 			<ant antfile="plugins/build_jabber.xml" target="@{task}"/> -->
 		</sequential>
 	</macrodef>

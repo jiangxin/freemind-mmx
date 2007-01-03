@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FindTextTests.java,v 1.1.2.6 2007-01-03 21:04:24 christianfoltin Exp $*/
+/*$Id: FindTextTests.java,v 1.1.2.7 2007-01-03 23:47:43 christianfoltin Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -25,9 +25,10 @@ import java.util.regex.Pattern;
 
 import javax.swing.table.AbstractTableModel;
 
-import plugins.time.FlatNodeTableFilterModel;
-import plugins.time.TimeList;
-import plugins.time.TimeList.NodeHolder;
+import accessories.plugins.time.FlatNodeTableFilterModel;
+import accessories.plugins.time.TimeList;
+import accessories.plugins.time.TimeList.NodeHolder;
+
 import tests.freemind.FreeMindTestBase;
 import freemind.main.HtmlTools;
 

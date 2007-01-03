@@ -24,7 +24,6 @@
 	<classpathentry kind="lib" path="plugins/svg/xerces_2_5_0.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-awt-util.jar"/>
 	<classpathentry kind="lib" path="plugins/help/jhall.jar"/>
-	<classpathentry kind="lib" path="plugins/time/jcalendar.jar"/>
 	<classpathentry kind="lib" path="lib/jibx/jibx-bind.jar"/>
 	<classpathentry kind="lib" path="lib/bindings.jar"/>
 	<classpathentry kind="lib" path="lib/jibx/jibx-run.jar"/>
@@ -34,6 +33,7 @@
 	<classpathentry kind="lib" path="lib/junit.jar"/>
 	<classpathentry kind="lib" path="lib/SimplyHTML/gnu-regexp-1.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/SimplyHTML/SimplyHTML.jar"/>
+	<classpathentry kind="lib" path="lib/jcalendar.jar"/>
 	<classpathentry kind="lib" path="plugins/script/groovy-all-1.0.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

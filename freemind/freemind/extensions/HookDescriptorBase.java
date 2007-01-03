@@ -19,7 +19,7 @@
  *
  * Created on 18.08.2006
  */
-/*$Id: HookDescriptorBase.java,v 1.1.2.4 2006-11-26 10:20:40 dpolivaev Exp $*/
+/*$Id: HookDescriptorBase.java,v 1.1.2.5 2007-01-03 23:47:43 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -41,6 +41,8 @@ import freemind.main.FreeMindMain;
  * 
  */
 public class HookDescriptorBase {
+	public static final String FREEMIND_BASE_DIR_STRING = "${freemind.base.dir}";
+
 	// Logging:
 	private static java.util.logging.Logger logger = null;
 
@@ -147,15 +149,19 @@ public class HookDescriptorBase {
 			int j = 0;
 			for (Iterator i = pluginClasspathList.iterator(); i.hasNext();) {
 				PluginClasspath classPath = (PluginClasspath) i.next();
+				String jarString = classPath.getJar();
+//				if(jarString.startsWith(FREEMIND_BASE_DIR_STRING)){
+//					jarString = frame.getFreemindBaseDir() + jarString.substring(FREEMIND_BASE_DIR_STRING.length());
+//				}
 				// new version of classpath resolution suggested by ewl under
 				// patch [ 1154510 ] Be able to give absolute classpath entries
 				// in plugin.xml
-				File file = new File(classPath.getJar());
+				File file = new File(jarString);
 				if (!file.isAbsolute()) {
-					file = new File(getPluginDirectory(), classPath.getJar());
+					file = new File(getPluginDirectory(), jarString);
 				}
 				// end new version by ewl.
-				logger.info("file " + file.toString() + " exists = "
+				logger.info("file " + file.toURL() + " exists = "
 						+ file.exists());
 				urls[j++] = file.toURL();
 			}

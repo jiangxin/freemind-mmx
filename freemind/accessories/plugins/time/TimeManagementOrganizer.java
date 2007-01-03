@@ -19,8 +19,8 @@
  *
  * Created on 02.05.2005
  */
-/* $Id: TimeManagementOrganizer.java,v 1.1.2.2.2.1 2006-04-05 21:26:32 dpolivaev Exp $ */
-package plugins.time;
+/* $Id: TimeManagementOrganizer.java,v 1.1.2.1 2007-01-03 23:47:43 christianfoltin Exp $ */
+package accessories.plugins.time;
 
 import java.util.Iterator;
 
@@ -29,9 +29,11 @@ import javax.swing.JMenuItem;
 
 import freemind.controller.MenuItemEnabledListener;
 import freemind.extensions.HookRegistration;
+import freemind.extensions.PermanentNodeHook;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
+import freemind.modes.common.plugins.ReminderHookBase;
 import freemind.modes.mindmapmode.actions.NodeHookAction;
 
 /** Enables the encrypt/decrypt menu item only if the map/node is encrypted.
@@ -66,7 +68,7 @@ public class TimeManagementOrganizer implements HookRegistration, MenuItemEnable
 				boolean visible = false;
 				for (Iterator i = controller.getSelecteds().iterator(); i.hasNext();) {
 					MindMapNode node = (MindMapNode) i.next();
-					if(TimeManagement.getHook(node)!= null) {
+					if(TimeManagementOrganizer.getHook(node)!= null) {
 						visible = true;
 					}
 				}
@@ -74,5 +76,17 @@ public class TimeManagementOrganizer implements HookRegistration, MenuItemEnable
 			}
 		}
 		return true;
+	}
+
+	/**
+	 */
+	public static ReminderHookBase getHook(MindMapNode node) {
+		for (Iterator j = node.getActivatedHooks().iterator(); j.hasNext();) {
+			PermanentNodeHook element = (PermanentNodeHook) j.next();
+			if (element instanceof ReminderHookBase) {
+				return (ReminderHookBase) element;
+			}
+		}
+		return null;
 	}
 }

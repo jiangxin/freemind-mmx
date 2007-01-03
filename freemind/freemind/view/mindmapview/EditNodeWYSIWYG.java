@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.17 2006-12-19 22:22:37 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.18 2007-01-03 23:47:43 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -49,7 +49,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
     private KeyEvent firstEvent;
     
     private static JDialog htmlEditorWindow;
-    private class HTMLDialog extends Dialog{
+    private class HTMLDialog extends EditDialog{
         private SHTMLPanel htmlEditorPanel;
         HTMLDialog() throws Exception {
             super();

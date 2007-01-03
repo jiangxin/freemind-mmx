@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <plugin label="plugins/TimeManagement">
-	<plugin_classpath jar="time/time_plugin.jar"/>
-	<plugin_classpath jar="time/jcalendar.jar"/>
 	<plugin_registration isPluginBase="true" 
-		class_name="plugins.time.TimeManagementOrganizer">
+		class_name="accessories.plugins.time.TimeManagementOrganizer">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 	</plugin_registration>
 	<plugin_action documentation="%plugins/TimeManagement.xml_documentation" 
 		name="%plugins/TimeManagement.xml_name" 
 		base="freemind.extensions.ModeControllerHookAdapter" 
 		label="plugins/TimeManagement.xml" 
-		class_name="plugins.time.TimeManagement" 
+		class_name="accessories.plugins.time.TimeManagement" 
 		key_stroke="%keystroke_plugins/TimeManagement.xml_key"
 		>
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
@@ -19,7 +17,7 @@
 	<plugin_action documentation="%plugins/TimeList.xml_documentation" 
 		name="%plugins/TimeList.xml_name" 
 		base="freemind.extensions.ModeControllerHookAdapter" 
-		label="plugins/TimeList.xml" class_name="plugins.time.TimeList">
+		label="plugins/TimeList.xml" class_name="accessories.plugins.time.TimeList">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/extras/first/time_management/timelist"/>
 		<plugin_property name="show_all_nodes" value="false"/>
@@ -27,7 +25,7 @@
 	<plugin_action documentation="%plugins/NodeList.xml_documentation" 
 		name="%plugins/NodeList.xml_name" 
 		base="freemind.extensions.ModeControllerHookAdapter" 
-		label="plugins/NodeList.xml" class_name="plugins.time.TimeList"
+		label="plugins/NodeList.xml" class_name="accessories.plugins.time.TimeList"
 		key_stroke="%keystroke_plugins/TimeList.xml_key">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 <!-- 		<plugin_menu location="menu_bar/extras/first/time_management/nodelist"/> -->
@@ -39,7 +37,7 @@
 		name="%plugins/TimeManagementReminder.xml_name" 
 		base="freemind.extensions.PermanentNodeHookAdapter" 
 		label="plugins/TimeManagementReminder.xml" 
-		class_name="plugins.time.ReminderHook" instanciation="Once">
+		class_name="accessories.plugins.time.ReminderHook" instanciation="Once">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<!--<plugin_menu location="menu_bar/extras/first/time_management_reminder"/> -->
 	</plugin_action>
@@ -48,7 +46,7 @@
 		name="%plugins/RemoveReminder.xml_name" 
 		base="freemind.extensions.NodeHookAdapter" 
 		label="plugins/time/RemoveReminderHook.java" 
-		class_name="plugins.time.RemoveReminderHook">
+		class_name="accessories.plugins.time.RemoveReminderHook">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu 
 			location="menu_bar/extras/first/time_management/remove_reminder"/>
