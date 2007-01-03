@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.9.2.14 2006-12-19 20:36:30 christianfoltin Exp $ */
+/* $Id: TimeList.java,v 1.1.2.9.2.15 2007-01-03 22:05:28 christianfoltin Exp $ */
 package plugins.time;
 
 import java.awt.Container;
@@ -708,7 +708,7 @@ public class TimeList extends MindMapHookAdapter {
 		}
 
 		public void setValue(Object value) {
-			setText((value == null) ? "" : ((NodeHolder) value).node.getText());
+			setText((value == null) ? "" : ((NodeHolder) value).getUntaggedNodeText());
 		}
 	}
 
@@ -738,7 +738,7 @@ public class TimeList extends MindMapHookAdapter {
             if(untaggedNodeText==null || (originalNodeText != null && !originalNodeText.equals(nodeText))) {
                 originalNodeText = nodeText;
                 // remove tags:
-                untaggedNodeText = HtmlTools.removeHtmlTagsFromString(nodeText);
+                untaggedNodeText = HtmlTools.removeHtmlTagsFromString(nodeText).replaceAll("\\s+", " ");
             }
             return untaggedNodeText;
         }

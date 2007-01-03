@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.18 2007-01-03 21:41:14 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.19 2007-01-03 22:05:27 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -268,6 +268,13 @@ public class FreeMindCommon {
                 }
                 // set the static variable
                 baseDir = file.getCanonicalPath();
+                /* Now, we remove the lib directory:
+                 * Example: /home/foltin/freemindapp/lib/freemind.jar gives 
+                 * /home/foltin/freemindapp */
+                int lastpos = baseDir.lastIndexOf(File.separator);
+                if (lastpos > -1) 
+                    baseDir = baseDir.substring(0, lastpos);
+                logger.info("Basedir is: "+baseDir);
             } catch (Exception e) {
                 Resources.getInstance().logException(e);
                 throw new IllegalArgumentException(
