@@ -1,4 +1,4 @@
-<map version="0.9.0_Beta_6">
+<map version="0.9.0_Beta_8">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <attribute_registry>
 <attribute_name NAME="script1"/>
@@ -36,9 +36,9 @@
 </node>
 <node COLOR="#0033ff" CREATED="1154896180148" ID="Freemind_Link_1350749537" MODIFIED="1154896964659" POSITION="right" TEXT="New Search">
 <font NAME="SansSerif" SIZE="18"/>
-<node COLOR="#00b439" CREATED="1154896159445" ID="Freemind_Link_738550042" MODIFIED="1154896964676" TEXT="Move time management plugin to integrated plugins">
+<node COLOR="#00b439" CREATED="1154896159445" ID="Freemind_Link_738550042" MODIFIED="1167858575000" TEXT="Move time management plugin to integrated plugins">
 <font NAME="SansSerif" SIZE="16"/>
-<icon BUILTIN="full-4"/>
+<icon BUILTIN="button_ok"/>
 </node>
 </node>
 <node COLOR="#0033ff" CREATED="1155478643777" ID="Freemind_Link_696990453" MODIFIED="1155478646348" POSITION="right" TEXT="Deleting">
@@ -605,7 +605,7 @@ existing search function to implement this.
 
   </head>
   <body>
-    Menu points &quot;use rich edit&quot; and &quot;use plain edit&quot; should be moved to Format menu Dan: I would prefer to have the menu item for switching between rich text and plain text in the main context menu of a node (Subjective)
+    Menu points "use rich edit" and "use plain edit" should be moved to Format menu Dan: I would prefer to have the menu item for switching between rich text and plain text in the main context menu of a node (Subjective)
   </body>
 </html>
 </richcontent>
@@ -707,7 +707,7 @@ existing search function to implement this.
   </head>
   <body>
     <p>
-      Use case:<br />1 - create a new map;<br />2 - select root node or create a new one;<br />3 - execute &quot;Use rich formatting command&quot;, either by<br />pressing ALT-R or via right-click menu;<br />4 - execute &quot;Use plain text&quot; command, ALT-P or right<br />click menu;<br /><br />ERROR: Two extra line breaks are created. You can<br />repeat the steps 3-4 indefinitely.
+      Use case:<br/>1 - create a new map;<br/>2 - select root node or create a new one;<br/>3 - execute "Use rich formatting command", either by<br/>pressing ALT-R or via right-click menu;<br/>4 - execute "Use plain text" command, ALT-P or right<br/>click menu;<br/><br/>ERROR: Two extra line breaks are created. You can<br/>repeat the steps 3-4 indefinitely.
     </p>
   </body>
 </html>

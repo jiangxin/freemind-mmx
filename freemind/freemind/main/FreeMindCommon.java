@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.17 2006-12-19 20:36:30 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.18 2007-01-03 21:41:14 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -28,16 +28,12 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLDecoder;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
-
-import freemind.preferences.layout.OptionPanel;
-
-import sun.security.action.GetPropertyAction;
 
 
 /**
@@ -183,8 +179,9 @@ public class FreeMindCommon {
 	}
 
 	/**
+     * Old version using String manipulation out of the classpath to find the base dir.
 	 */
-	public String getFreemindBaseDir() {
+	public String getFreemindBaseDirOld() {
         if(baseDir == null){
             final String classPath = System.getProperty("java.class.path");
             final String mainJarFile = "freemind.jar";
@@ -219,6 +216,69 @@ public class FreeMindCommon {
         }
         return baseDir;
 	}
+    /* We define the base dir of FreeMind either as the directory where the
+     * main jar file is (freemind.jar), or the root of the class hierarchy
+     * (if no jar file is used).
+     * One can overwrite this definition by setting the freemind.base.dir
+     * property.
+     */
+    public String getFreemindBaseDir() {
+        if (baseDir == null) {
+            try {
+                File file;
+                String dir = System.getProperty("freemind.base.dir");
+                if (dir == null) {
+                    // Property isn't set, we try to find the
+                    // base directory ourselves.
+                    // System.err.println("property not set");
+                    // We locate first the current class.
+                    String classname = this.getClass().getName();
+                    URL url = this.getClass().getResource(
+                            classname.replaceFirst("^"
+                                    + this.getClass().getPackage().getName()
+                                    + ".", "")
+                                    + ".class");
+                    // then we create a file out of it, after
+                    // removing file: and jar:, removing everything
+                    // after !, as well as the class name part.
+                    // Finally we decode everything (e.g. %20)
+                    // TODO: is UTF-8 always the right value?
+                    file = new File(URLDecoder.decode(
+                            url.getPath().replaceFirst("^(file:|jar:)+", "")
+                                    .replaceFirst("!.*$", "").replaceFirst(
+                                            classname.replace('.', '/')
+                                                    + ".class$", ""), "UTF-8"));
+                    // if it's a file, we take its parent, a dir
+                    if (file.isFile()) {
+                        file = file.getParentFile();
+                    }
+                } else {
+                    file = new File(dir);
+                }
+                // then we check if the directory exists and is really
+                // a directory.
+                if (!file.exists()) {
+                    throw new IllegalArgumentException("FreeMind base dir '"
+                            + file + "' does not exist.");
+                }
+                if (!file.isDirectory()) {
+                    throw new IllegalArgumentException(
+                            "FreeMind base dir (!) '" + file
+                                    + "' is not a directory.");
+                }
+                // set the static variable
+                baseDir = file.getCanonicalPath();
+            } catch (Exception e) {
+                Resources.getInstance().logException(e);
+                throw new IllegalArgumentException(
+                        "FreeMind base dir can't be determined.");
+            }            
+        }
+        // return the value of the static variable
+        return baseDir;
+    }
+
+    
 
     public String getAdjustableProperty(final String label) {
         String value = getProperty(label);
