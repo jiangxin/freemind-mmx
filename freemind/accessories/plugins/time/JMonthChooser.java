@@ -50,7 +50,9 @@ import javax.swing.event.ChangeListener;
  */
 public class JMonthChooser extends JPanel implements ItemListener,
 		ChangeListener {
-	private static final long serialVersionUID = -2028361332231218527L;
+	public static final String MONTH_PROPERTY = "month";
+
+    private static final long serialVersionUID = -2028361332231218527L;
 
 	/** true, if the month chooser has a spinner component */
 	protected boolean hasSpinner;
@@ -233,7 +235,7 @@ public class JMonthChooser extends JPanel implements ItemListener,
 			dayChooser.setMonth(month);
 		}
 
-		firePropertyChange("month", oldMonth, month);
+		firePropertyChange(MONTH_PROPERTY, oldMonth, month);
 	}
 
 	/**

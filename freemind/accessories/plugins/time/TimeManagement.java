@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeManagement.java,v 1.1.2.2 2007-01-04 00:13:27 christianfoltin Exp $ */
+/* $Id: TimeManagement.java,v 1.1.2.3 2007-01-04 22:51:27 christianfoltin Exp $ */
 package accessories.plugins.time;
 
 import java.awt.Container;
@@ -69,7 +69,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 
 	private static Date lastDate = null;
 
-	private JCalendar calendar;
+	private JTripleCalendar calendar;
 
 	private JDialog dialog;
 
@@ -93,7 +93,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 		};
 		Tools.addEscapeActionToDialog(dialog, action);
 
-		calendar = new JCalendar();
+		calendar = new JTripleCalendar();
 		if (lastDate != null) {
 			calendar.setDate(lastDate);
 		}
@@ -256,7 +256,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 	}
 
 	public void propertyChange(PropertyChangeEvent event) {
-		if (event.getPropertyName().equals("day")) {
+		if (event.getPropertyName().equals(JDayChooser.DAY_PROPERTY)) {
 		}
 	}
 

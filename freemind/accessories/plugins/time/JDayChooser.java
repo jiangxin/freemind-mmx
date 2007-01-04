@@ -54,7 +54,9 @@ import javax.swing.UIManager;
  * @version $LastChangedDate: 2006-06-04 15:20:45 +0200 (So, 04 Jun 2006) $
  */
 public class JDayChooser extends JPanel implements ActionListener, KeyListener, FocusListener {
-	private static final long serialVersionUID = 5876398337018781820L;
+	public static final String DAY_PROPERTY = "day";
+
+    private static final long serialVersionUID = 5876398337018781820L;
 
 	protected JButton[] days;
 
@@ -472,9 +474,9 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 		}
 
 		if (alwaysFireDayProperty) {
-			firePropertyChange("day", 0, day);
+			firePropertyChange(DAY_PROPERTY, 0, day);
 		} else {
-			firePropertyChange("day", oldDay, day);
+			firePropertyChange(DAY_PROPERTY, oldDay, day);
 		}
 	}
 
@@ -639,6 +641,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 	 *            the KeyEvent
 	 */
 	public void keyPressed(KeyEvent e) {
+//        System.out.println("KEY " + e);
 		int offset = (e.getKeyCode() == KeyEvent.VK_UP) ? (-7)
 				: ((e.getKeyCode() == KeyEvent.VK_DOWN) ? (+7)
 						: ((e.getKeyCode() == KeyEvent.VK_LEFT) ? (-1)

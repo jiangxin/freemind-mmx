@@ -32,7 +32,8 @@ import javax.swing.JFrame;
  * @version $LastChangedDate: 2006-04-28 13:50:52 +0200 (Fr, 28 Apr 2006) $
  */
 public class JYearChooser extends JSpinField {
-	private static final long serialVersionUID = 2648810220491090064L;
+	public static final String YEAR_PROPERTY = "year";
+    private static final long serialVersionUID = 2648810220491090064L;
 	protected JDayChooser dayChooser;
     protected int oldYear;
     protected int startYear;
@@ -65,7 +66,7 @@ public class JYearChooser extends JSpinField {
         }
 
         spinner.setValue(new Integer(value));
-        firePropertyChange("year", oldYear, value);
+        firePropertyChange(YEAR_PROPERTY, oldYear, value);
         oldYear = value;
     }
 
