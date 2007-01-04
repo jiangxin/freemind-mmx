@@ -46,7 +46,7 @@
 		<classpath path="${jibxlibs}"/>
 	</taskdef>
 
-	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar:lib/jcalendar.jar"/>
+	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar"/>
 
 	  <target name="xmlbind.checkStatusOfGeneration">
 	    <uptodate property="xmlbind.isUpToDate"
@@ -159,7 +159,6 @@
 				<include name="commons-lang-2.0.jar"/>
 				<include name="forms-1.0.5.jar"/>
 				<include name="bindings.jar"/>
-				<include name="jcalendar.jar"/>
 				<include name="jibx/jibx-run.jar"/>
 				<include name="jibx/xpp3.jar"/>
 				<include name="SimplyHTML/gnu-regexp-1.1.4.jar"/>

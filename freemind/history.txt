@@ -34,6 +34,7 @@ Changes made in FreeMind 0.9.0 Beta 9
 * moved time management to internal plugins.
 * revised build process for external plugins. 
 * New feature: Sort children nodes added.
+* Calendar scrolls with arrow keys through months and years now (JCalendar improvement).
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8

@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeManagement.java,v 1.1.2.1 2007-01-03 23:47:43 christianfoltin Exp $ */
+/* $Id: TimeManagement.java,v 1.1.2.2 2007-01-04 00:13:27 christianfoltin Exp $ */
 package accessories.plugins.time;
 
 import java.awt.Container;
@@ -48,8 +48,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
-
-import com.toedter.calendar.JCalendar;
 
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
