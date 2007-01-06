@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.18 2007-01-03 23:47:43 christianfoltin Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.19 2007-01-06 22:05:52 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -95,18 +95,22 @@ public class EditNodeWYSIWYG extends EditNodeBase {
          * @see freemind.view.mindmapview.EditNodeBase.Dialog#close()
          */
         protected void submit() {
-            super.submit();
             htmlEditorPanel.getDocument().getStyleSheet().removeStyle("body");
             if (htmlEditorPanel.needsSaving()) {
                 getEditControl().ok(HtmlTools.unescapeHTMLUnicodeEntity
                         (htmlEditorPanel.getDocumentText())); }
+            else{
+                getEditControl().cancel();
+            }
+            super.submit();
         }
         /* (non-Javadoc)
          * @see freemind.view.mindmapview.EditNodeBase.Dialog#close()
          */
         protected void cancel() {
-            super.cancel();
             htmlEditorPanel.getDocument().getStyleSheet().removeStyle("body");
+            getEditControl().cancel();
+            super.cancel();
         }
         
         protected boolean isChanged() {
