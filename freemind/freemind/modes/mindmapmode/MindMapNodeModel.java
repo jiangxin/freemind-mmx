@@ -16,12 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.7 2006-09-02 22:09:49 christianfoltin Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.8 2007-01-12 21:45:13 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,10 +32,7 @@ import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import freemind.modes.attributes.Attribute;
-import freemind.modes.attributes.AttributeRegistry;
 
 /**
  * This class represents a single Node of a Tree. It contains direct handles
@@ -63,6 +59,59 @@ public class MindMapNodeModel extends NodeAdapter {
     //
     // The mandatory load and save methods
     //
+    
+    private static String convertSpecialChar(char c)
+    {
+    	String cvt;
+
+//    	try {
+//    		// Create the encoder and decoder for ISO-8859-1
+//    		Charset ansi = Charset.forName("windows-1252");
+//    		CharsetDecoder decoder = ansi.newDecoder();
+//
+//    		Charset utf8 = Charset.forName("UTF-8");
+//    		CharsetEncoder encoder = utf8.newEncoder();
+//
+//    		// The new ByteBuffer is ready to be read.
+//    		ByteBuffer bb = ByteBuffer.allocate(2);
+//    		bb.putChar(c);
+//    		CharBuffer cb = decoder.decode(bb);
+//    		
+//    		cvt = cvt + cb.toString();
+//    	} catch (Exception e) {
+//    		//cvt =  "CHAR ENC FAILED " + e.getMessage();
+//    		cvt = cvt + "&#" + Character.toString(c) + ";";
+//    	}
+    	
+    	switch ((int) c) {
+    	case 0xe4:
+    		cvt = "&auml;";
+    		break;
+    	case 0xf6:
+    		cvt = "&ouml;";
+    		break;
+    	case 0xfc:
+    		cvt = "&uuml;";
+    		break;
+    	case 0xc4:
+    		cvt = "&Auml;";
+    		break;
+    	case 0xd6:
+    		cvt = "&Ouml;";
+    		break;
+    	case 0xdc:
+    		cvt = "&Uuml;";
+    		break;
+    	case 0xdf:
+    		cvt = "&szlig;";
+    		break;
+    	default:
+    		cvt = "&#" + Integer.toString((int) c) + ";";
+		break;
+    	}
+
+    	return cvt;
+    }
 
     public String saveHTML_escapeUnicodeAndSpecialCharacters(String text) {
        int len = text.length();
@@ -74,8 +123,8 @@ public class MindMapNodeModel extends NodeAdapter {
        for (int i = 0; i < len; ++i) {
           myChar = text.charAt(i);
           intValue = (int) text.charAt(i);
-          if (intValue > 128) {
-             result.append("&#").append(intValue).append(';'); }
+          if (intValue >= 128) {
+        	    result.append(convertSpecialChar(myChar)); }
           else {
              spaceOccured = false;
              switch (myChar) {
@@ -91,12 +140,13 @@ public class MindMapNodeModel extends NodeAdapter {
              case ' ':
                 spaceOccured  = true;
                 if (previousSpace) {
-                   result.append("&nbsp;"); }
+                   result.append("&nbsp;"); 
+                }
                 else {
                    result.append(" "); }
                 break;
              case '\n':
-                result.append("\n<br>\n");
+                result.append("\n<br />\n");
                 break;
              default:
                 result.append(myChar); }
@@ -111,8 +161,8 @@ public class MindMapNodeModel extends NodeAdapter {
         for (int i = 0; i < len; ++i) {
             myChar = text.charAt(i);
             intValue = (int) text.charAt(i);
-            if (intValue > 128) {
-                result.append("&#").append(intValue).append(';');
+            if (intValue >= 128) {
+            	result.append(convertSpecialChar(myChar));
             } else {
                 result.append(myChar);
             }
@@ -149,7 +199,7 @@ public class MindMapNodeModel extends NodeAdapter {
               ("<span id=\"show"+localParentID+"\" class=\"foldclosed\" onClick=\"show_folder('"+localParentID+
                "')\" style=\"POSITION: absolute\">+</span> "+
                "<span id=\"hide"+localParentID+"\" class=\"foldopened\" onClick=\"hide_folder('"+localParentID+
-               "')\">-</Span>");
+               "')\">-</span>");
 
            fileout.write("\n"); }
 
@@ -160,7 +210,7 @@ public class MindMapNodeModel extends NodeAdapter {
            String link = getLink();
            if (link.endsWith(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION)) {
               link += ".html"; }
-           fileout.write("<a class=\"mapnode\" href=\""+link+"\" target=\"_blank\"><span class=l>~</span>&nbsp;"); }
+           fileout.write("<a class=\"mapnode\" href=\""+link+"\" target=\"_blank\"><span class=\"l\">~</span>"); }
 
         String fontStyle="";
 
@@ -228,6 +278,7 @@ public class MindMapNodeModel extends NodeAdapter {
 
         if (getFrame().getProperty("html_export_folding").equals("html_export_based_on_headings")) {
            lastChildNumber = saveChildrenHtml(fileout, parentID, lastChildNumber, depth, treatChildrenAsParagraph);
+           if (treatAsParagraph || basedOnHeadings) fileout.write("</p>");
            return lastChildNumber; }
 
         //   Export not based on headings
@@ -260,6 +311,7 @@ public class MindMapNodeModel extends NodeAdapter {
         if (!treatAsParagraph) {
            fileout.write(el+"</li>"+el); }
 
+        if (treatAsParagraph || basedOnHeadings) fileout.write("</p>");
         return lastChildNumber;
     }
 

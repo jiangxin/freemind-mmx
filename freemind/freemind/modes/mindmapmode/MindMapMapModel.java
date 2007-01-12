@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.11 2006-12-02 22:12:19 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.12 2007-01-12 21:45:13 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -315,8 +315,8 @@ public class MindMapMapModel extends MapAdapter  {
 ""+el+
 "</script>"+el);
 
-               fileout.write("<SPAN class=foldspecial onclick=\"fold_document()\">All +</SPAN>"+el);
-               fileout.write("<SPAN class=foldspecial onclick=\"unfold_document()\">All -</SPAN>"+el); }
+               fileout.write("<SPAN class=\"foldspecial\" onclick=\"fold_document()\">All +</SPAN>"+el);
+               fileout.write("<SPAN class=\"foldspecial\" onclick=\"unfold_document()\">All -</SPAN>"+el); }
 
             //fileout.write("<ul>");
 
@@ -325,7 +325,7 @@ public class MindMapMapModel extends MapAdapter  {
             //fileout.write("</ul>");
 
             if (writeFoldingCode) {
-               fileout.write("<SCRIPT language=JavaScript>"+el);
+               fileout.write("<SCRIPT language=\"JavaScript\">"+el);
                fileout.write("fold_document();"+el);
                fileout.write("</SCRIPT>"+el); }
             fileout.write("</body>"+el);
