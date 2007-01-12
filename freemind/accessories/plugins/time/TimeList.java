@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.1 2007-01-03 23:47:43 christianfoltin Exp $ */
+/* $Id: TimeList.java,v 1.1.2.2 2007-01-12 20:42:08 christianfoltin Exp $ */
 package accessories.plugins.time;
 
 import java.awt.Container;
@@ -166,8 +166,14 @@ public class TimeList extends MindMapHookAdapter {
 
 		showAllNodes = Tools.xmlToBoolean(getResourceString("show_all_nodes"));
 		dialog = new JDialog(getController().getFrame().getJFrame(), true /* modal */);
+		String windowTitle;
+		if (showAllNodes) {
+			windowTitle = "plugins/TimeManagement.xml_WindowTitle_All_Nodes";
+		} else {
+			windowTitle = "plugins/TimeManagement.xml_WindowTitle";
+		}
 		dialog
-				.setTitle(getResourceString("plugins/TimeManagement.xml_WindowTitle"));
+				.setTitle(getResourceString(windowTitle));
 		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		dialog.addWindowListener(new WindowAdapter(){
 		    public void windowClosing(WindowEvent event) {

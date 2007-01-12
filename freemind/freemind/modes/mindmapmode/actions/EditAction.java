@@ -28,6 +28,7 @@ package freemind.modes.mindmapmode.actions;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 
@@ -35,7 +36,6 @@ import freemind.controller.actions.generated.instance.EditNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.HtmlTools;
 import freemind.main.Tools;
-import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
@@ -43,9 +43,9 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.view.mindmapview.EditNodeBase;
 import freemind.view.mindmapview.EditNodeDialog;
-import freemind.view.mindmapview.EditNodeWYSIWYG;
 import freemind.view.mindmapview.EditNodeExternalApplication;
 import freemind.view.mindmapview.EditNodeTextField;
+import freemind.view.mindmapview.EditNodeWYSIWYG;
 import freemind.view.mindmapview.NodeView;
 
 
@@ -55,6 +55,7 @@ import freemind.view.mindmapview.NodeView;
 
 public class EditAction extends AbstractAction implements ActorXml {
     private final MindMapController c;
+    private EditNodeBase mCurrentEditDialog = null;
     public EditAction(MindMapController modeController) {
         super(modeController.getText("edit_node"));
         this.c = modeController;
@@ -157,6 +158,11 @@ public class EditAction extends AbstractAction implements ActorXml {
             editLater(node, prevSelected, firstEvent, isNewNode, parentFolded, editLong);            
             return;
         }
+        if(mCurrentEditDialog != null) {
+        		// there was presvious editing.
+        		mCurrentEditDialog.closeEdit();
+        		mCurrentEditDialog = null;
+        }
         //EditNodeBase.closeEdit();
         c.setBlocked(true); // locally "modal" stated
         
@@ -175,16 +181,18 @@ public class EditAction extends AbstractAction implements ActorXml {
                     new EditNodeBase.EditControl() {
                 public void cancel() {
                     c.setBlocked(false);                                        
+                    mCurrentEditDialog = null;
                 }
                 public void ok(String newText) {
                     setNodeText(node.getModel(), newText); 
-                    c.setBlocked(false);                    
+                    cancel();                    
                     }
                 public void split(String newText, int position) {
                     c.splitNode(node.getModel(), position, newText);
                     c.getController().obtainFocusForSelected(); 
-                    c.setBlocked(false);
+                    cancel();                    
                     }}); // focus fix 
+            mCurrentEditDialog = editNodeWYSIWYG;
             editNodeWYSIWYG.show();
             return; 
         }
@@ -195,16 +203,18 @@ public class EditAction extends AbstractAction implements ActorXml {
                     new EditNodeBase.EditControl() {
                 public void cancel() {
                     c.setBlocked(false);                    
+                    mCurrentEditDialog = null;
                 }
                 public void ok(String newText) {
                     setNodeText(node.getModel(), newText);
-                c.setBlocked(false);
+                    cancel();                    
                 }
                 public void split(String newText, int position) {
                     c.splitNode(node.getModel(), position, newText);
                     c.getController().obtainFocusForSelected(); 
-                    c.setBlocked(false);
+                    cancel();                    
                     }}); // focus fix 
+            mCurrentEditDialog = editNodeExternalApplication;
             editNodeExternalApplication.show();
             // We come here before quitting the editor window.
             return; }
@@ -220,20 +230,21 @@ public class EditAction extends AbstractAction implements ActorXml {
                             
                             public void cancel() {
                                 c.setBlocked(false);
+                                mCurrentEditDialog = null;
                             }
                             
                             public void ok(String newText) {
                                 setNodeText(node.getModel(), newText);
-                                c.setBlocked(false);
+                                cancel();
                             }
                             
                             public void split(String newText, int position) {
                                 c.splitNode(node.getModel(), position, newText);
                                 c.getController().obtainFocusForSelected(); // focus fix
-                                c.setBlocked(false);
+                                cancel();
                             }
                         });
-            ;
+            mCurrentEditDialog = nodeEditDialog;
             nodeEditDialog.show();
             return;
         }
@@ -244,7 +255,9 @@ public class EditAction extends AbstractAction implements ActorXml {
                 public void cancel() {
                     if (isNewNode) { // delete also the node and set focus to the parent
                         c.getView().selectAsTheOnlyOneSelected(node);
-                        c.cut();
+                        Vector nodeList = new Vector();
+                        nodeList.add(node.getModel());
+                        c.cut(nodeList);
                         c.select(prevSelected);
                         // include max level for navigation
                         if (parentFolded) {
@@ -262,10 +275,12 @@ public class EditAction extends AbstractAction implements ActorXml {
                 private void endEdit() {
                     c.getController().obtainFocusForSelected();
                     c.setBlocked(false);
+                    mCurrentEditDialog = null;
                 }
                 
                 public void split(String newText, int position) {
                 }});
+        mCurrentEditDialog = textfield;
         textfield.show();
         
     }

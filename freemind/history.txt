@@ -35,6 +35,12 @@ Changes made in FreeMind 0.9.0 Beta 9
 * revised build process for external plugins. 
 * New feature: Sort children nodes added.
 * Calendar scrolls with arrow keys through months and years now (JCalendar improvement).
+* Search&Replace: Title corrected
+* NodeModel: attribute selectors in HashMap style added.
+* Bug fix: double click on root node makes it editable
+* Bug fix: starting edit and continue with long node editor keeps changes
+* Bug fix: null pointer in AttributeTable
+* New feature: Script Editor
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8

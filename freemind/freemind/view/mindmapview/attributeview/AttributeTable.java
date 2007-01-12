@@ -94,7 +94,7 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         public void focusLost(FocusEvent event) {
             Component oppositeComponent = event.getOppositeComponent();
             Component newTable = SwingUtilities.getAncestorOfClass(AttributeTable.class, oppositeComponent);
-            if(focusedTable != newTable){
+            if(focusedTable != null && focusedTable != newTable){
                 if (focusedTable.isEditing()){                
                     focusedTable.getCellEditor().stopCellEditing();
                 } 

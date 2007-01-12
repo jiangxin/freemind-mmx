@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.23 2006-12-16 20:42:31 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.24 2007-01-12 20:42:09 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1622,7 +1622,7 @@ freemind.main.Resources.getInstance().logException(					e1);
             loadURL(); }
         else {
             if (!node.hasChildren()) {
-                // the emulate the plain click.
+                // then emulate the plain click.
                 doubleClick(e);
                 return;
             }
@@ -1733,8 +1733,8 @@ freemind.main.Resources.getInstance().logException(					e1);
         if(getSelecteds().size() != 1)
             return;
         MindMapNode node = ((NodeView)(e.getComponent().getParent())).getModel();
-        // edit the node only if the node is a leaf (fc 0.7.1)
-        if (node.hasChildren()) {
+        // edit the node only if the node is a leaf (fc 0.7.1), or the root node (fc 0.9.0)
+        if (node.hasChildren() && !node.isRoot()) {
             // the emulate the plain click.
             plainClick(e);
             return;

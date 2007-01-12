@@ -11,4 +11,13 @@
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/extras/first/scripting/evaluate"/>
 	</plugin_action>
+	<plugin_action documentation="%plugins/ScriptEditor.xml_documentation" 
+		name="%plugins/ScriptEditor.xml_name" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/ScriptEditor.xml" 
+		class_name="plugins.script.ScriptEditor" 
+		key_stroke="%keystroke_plugins/ScriptEditor.keystroke.evaluate">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/extras/first/scripting/evaluate"/>
+	</plugin_action>
 </plugin>

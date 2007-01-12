@@ -241,6 +241,9 @@ public class NodeAttributeTableModel extends AbstractTableModel implements Attri
         return layout;
     }
 
+    /**
+     * @return a list of Attribute elements.
+     */
     public Vector getAttributes() {
         allocateAttributes(NodeAttributeTableModel.CAPACITY_INCREMENT);
         return attributes;

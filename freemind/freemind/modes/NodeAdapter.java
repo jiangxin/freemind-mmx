@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.21 2006-11-26 10:20:41 dpolivaev Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.22 2007-01-12 20:42:08 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -53,6 +53,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
+import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.NodeView;
 
@@ -1190,7 +1191,60 @@ freemind.main.Resources.getInstance().logException(			e);
         return attributes;
     }
     
-    EventListenerList listenerList = new EventListenerList();
+    public String getAttribute(String pKey) {
+		if (pKey == null)
+			return null;
+		for (Iterator iter = attributes.getAttributes().iterator(); iter
+				.hasNext();) {
+			Attribute attr = (Attribute) iter.next();
+			if (pKey.equals(attr.getName())) {
+				return attr.getValue();
+			}
+		}
+		return null;
+	}
+
+	public List getAttributeKeyList() {
+		Vector returnValue = new Vector();
+		for (Iterator iter = attributes.getAttributes().iterator(); iter.hasNext();) {
+			Attribute attr = (Attribute) iter.next();
+			returnValue.add(attr.getName());
+		}
+		return returnValue;
+	}
+
+	public boolean isAttributeExisting(String pKey) {
+		if (pKey == null)
+			return false;
+		for (Iterator iter = attributes.getAttributes().iterator(); iter
+		.hasNext();) {
+			Attribute attr = (Attribute) iter.next();
+			if (pKey.equals(attr.getName())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void setAttribute(String pKey, String pValue) {
+		if (isAttributeExisting(pKey)) {
+			for (int i = 0; i < attributes.getRowCount(); ++i) {
+				Attribute attribute = attributes.getAttribute(i);
+				if (pKey.equals(attribute.getName())) {
+					attributes.getAttributeController()
+							.performSetValueAt(attributes, pValue, i, 1);
+				}
+			}
+		} else {
+			// new attribute
+			attributes.getAttributeController().performInsertRow(attributes,
+					attributes.getRowCount(), pKey, pValue);
+		}
+	}
+
+
+
+	EventListenerList listenerList = new EventListenerList();
     NodeViewEvent nodeViewEvent = null;
 
     public void addNodeViewEventListener(NodeViewEventListener l) {

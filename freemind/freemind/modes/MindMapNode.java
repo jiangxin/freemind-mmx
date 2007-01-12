@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.9 2006-10-13 21:35:56 christianfoltin Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.10 2007-01-12 20:42:08 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -274,7 +274,34 @@ public interface MindMapNode extends MutableTreeNode {
 
     MindMap getMap();
 
+    /**
+     *  use getAttributeKeyList, getAttribute, isAttributeExisting
+     *  and setAttribute instead, if you want to access the attributes
+     *  like a dictionary. If you want to put several Attribute elements
+     *  with the samw name, you have to use this method.
+     */
     NodeAttributeTableModel getAttributes();
+    
+    //fc, 8.1.2007, Redundancy to faciliate the NodeAttributeTableModel.
+    
+    /**
+     * @return an unmodifiable list of all attribute keys as String. 
+     * There can be double entries.
+     */
+    List getAttributeKeyList();
+    /**
+     * @param key the key identifier. Attention: it returns the FIRST 
+     * element with the given key.
+     * @return the value of key or null, if it doesn't exist.
+     */
+    String getAttribute(String key);
+    boolean isAttributeExisting(String key);
+    /**
+     * Sets the attribute to the given value. 
+     * If the given key exists more than once, the first key/value
+     * pair is adjusted.
+     */
+    void setAttribute(String key, String value);
 
     public void addNodeViewEventListener(NodeViewEventListener l);
 

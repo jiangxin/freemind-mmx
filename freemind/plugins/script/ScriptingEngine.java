@@ -19,7 +19,7 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.4 2006-11-26 10:21:30 dpolivaev Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.5 2007-01-12 20:42:09 christianfoltin Exp $ */
 package plugins.script;
 
 import java.util.Iterator;
@@ -30,60 +30,61 @@ import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
-
 /**
  * @author foltin
- *
+ * 
  */
-public class ScriptingEngine extends MindMapHookAdapter  {
+public class ScriptingEngine extends MindMapHookAdapter {
 
 	public void startupMapHook() {
 		super.startupMapHook();
 		// start calculation:
-			MindMapNode node = getMindMapController().getMap().getRootNode();
-			performScriptOperation(node);
+		MindMapNode node = getMindMapController().getMap().getRootNode();
+		performScriptOperation(node);
 	}
 
 	private void performScriptOperation(MindMapNode node) {
 		getController().getFrame().setWaitingCursor(true);
 		try {
-            // depth first:
-            for (Iterator iter = node.childrenUnfolded(); iter.hasNext();) {
-            	MindMapNode element = (MindMapNode) iter.next();
-            	performScriptOperation(element);
-            }
-            NodeAttributeTableModel attributes = node.getAttributes();
-            if(attributes==null)
-            	return;
-            for(int row = 0 ; row < attributes.getRowCount(); ++row) {
-            	String attrKey = (String) attributes.getName(row);
-            	logger.info("Found key = " + attrKey);
-            	if(attrKey.startsWith("script")) {
-            		Binding binding = new Binding();
-            		binding.setVariable("c", getMindMapController());
-            		binding.setVariable("node", node);
-            		GroovyShell shell = new GroovyShell(binding);
+			// depth first:
+			for (Iterator iter = node.childrenUnfolded(); iter.hasNext();) {
+				MindMapNode element = (MindMapNode) iter.next();
+				performScriptOperation(element);
+			}
+			NodeAttributeTableModel attributes = node.getAttributes();
+			if (attributes == null)
+				return;
+			for (int row = 0; row < attributes.getRowCount(); ++row) {
+				String attrKey = (String) attributes.getName(row);
+				logger.info("Found key = " + attrKey);
+				if (attrKey.startsWith("script")) {
+					Binding binding = new Binding();
+					binding.setVariable("c", getMindMapController());
+					binding.setVariable("node", node);
+					GroovyShell shell = new GroovyShell(binding);
 
-            		String script = (String) attributes.getValue(row);
-                    boolean assignResult = false;
-                    if(script.startsWith("=")){
-                        script = script.substring(1);
-                        assignResult = true;
-                    }
-            		Object value = shell.evaluate(script);
-            		logger.info("Result of executing "+script+" is " + value);
-                    if(assignResult && value != null) {
-                        getMindMapController().setNodeText(node, value.toString());
-                    }
-            	}
-            }
-        } catch (Exception e) {
-            //e.printStackTrace();
-            freemind.main.Resources.getInstance().logException(e);
-            getController().getController().errorMessage(e.getClass().getName() + ": " + e.getMessage());
-        }
-        getController().getFrame().setWaitingCursor(false);
+					String script = (String) attributes.getValue(row);
+					boolean assignResult = false;
+					if (script.startsWith("=")) {
+						script = script.substring(1);
+						assignResult = true;
+					}
+					Object value = shell.evaluate(script);
+					logger.info("Result of executing " + script + " is "
+							+ value);
+					if (assignResult && value != null) {
+						getMindMapController().setNodeText(node,
+								value.toString());
+					}
+				}
+			}
+		} catch (Exception e) {
+			// e.printStackTrace();
+			freemind.main.Resources.getInstance().logException(e);
+			getController().getController().errorMessage(
+					e.getClass().getName() + ": " + e.getMessage());
+		}
+		getController().getFrame().setWaitingCursor(false);
 	}
-
 
 }
