@@ -30,7 +30,7 @@
 	<property name="java_source_version" value="1.4" />
 	<property name="java_target_version" value="1.4" />
 	<property name="build.compiler" value="modern" />
-	<property name="jarbundler.jar" value = "jarbundler-1.4.jar"/>
+	<property name="jarbundler.jar" value = "jarbundler-1.8.1.jar"/>
 
 	<taskdef name="jarbundler"
                classpath="${src}/lib/${jarbundler.jar}"
@@ -200,13 +200,11 @@
 		                    mainclass="freemind.main.FreeMindStarter"
 		                    icon="${src}/images/FreeMindWindowIcon.icns"
 		                    version="${ver}"
-		                    infostring="FreeMind ${ver} application (c) 2006"
-		                    aboutmenuname="FreeMind"
+		                    infostring="FreeMind ${ver} application (c) 2007"
+							shortname="FreeMind"
 		                    bundleid="freemind.main.FreeMind"
 		                    signature="FM"
 		                    jvmversion="1.4+"
-		                    liveresize="true"
-		                    screenmenu="true"
 		  				    >
 			<jarfileset dir="${dist}">
 				<include name="**/*.jar" />
