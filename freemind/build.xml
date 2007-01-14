@@ -34,7 +34,7 @@
 
 	<taskdef name="jarbundler"
                classpath="${src}/lib/${jarbundler.jar}"
-               classname="com.loomcom.ant.tasks.jarbundler.JarBundler" />
+               classname="net.sourceforge.jarbundler.JarBundler" />
 
 
 	<!-- begin generator part -->
