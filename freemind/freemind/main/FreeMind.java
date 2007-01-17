@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.35 2006-12-16 20:42:31 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.36 2007-01-17 23:12:22 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -95,6 +95,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
     //    public static final String defaultPropsURL = "freemind.properties";
     //    public static Properties defaultProps;
     public static Properties props;
+    private static Properties defProps;
     private JScrollPane scrollPane = new JScrollPane();
     private MenuBar menuBar;
     private JLabel status;
@@ -267,6 +268,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
             ex.printStackTrace();
             System.err.println("Panic! Error while loading default properties.");
         }
+        defProps = props;
     }
 
     private void createUserDirectory() {
@@ -374,6 +376,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	props.setProperty(key,value);
     }
 
+    public void setDefaultProperty(String key, String value) {
+        defProps.setProperty(key, value);
+    }
     public String getFreemindDirectory() {
         return System.getProperty("user.home")+File.separator+getProperty("properties_folder");
     }

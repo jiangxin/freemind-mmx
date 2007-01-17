@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.19 2007-01-03 22:05:27 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.20 2007-01-17 23:12:22 dpolivaev Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -86,6 +86,10 @@ public class FreeMindCommon {
 	public String getProperty(String key) {
 		return mFreeMindMain.getProperty(key);
 	}
+    
+    private void setDefaultProperty(String key, String value){
+        mFreeMindMain.setDefaultProperty(key, value);
+    }
 
 	/** Returns the ResourceBundle with the current language */
     public ResourceBundle getResources() {
@@ -301,6 +305,7 @@ public class FreeMindCommon {
             catch(MissingResourceException ex){
                 value = value.substring(1).trim();
             }
+            setDefaultProperty(label, value);
         }
         return value;
     }

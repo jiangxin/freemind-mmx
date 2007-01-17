@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.1 2007-01-12 20:42:09 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.2 2007-01-17 23:12:05 dpolivaev Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -458,6 +458,11 @@ public class ScriptEditorPanel extends JDialog {
 						// TODO Auto-generated method stub
 
 					}
+
+                    public void setDefaultProperty(String key, String value) {
+                        // TODO Auto-generated method stub
+
+                    }
 				});
 		scriptEditor.pack();
 		scriptEditor.setVisible(true);
