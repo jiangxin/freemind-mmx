@@ -52,13 +52,13 @@ import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import freemind.common.NamedObject;
 import freemind.controller.Controller;
 import freemind.controller.filter.condition.Condition;
 import freemind.controller.filter.condition.ConditionNotSatisfiedDecorator;
 import freemind.controller.filter.condition.ConjunctConditions;
 import freemind.controller.filter.condition.DisjunctConditions;
 import freemind.controller.filter.util.ExtendedComboBoxModel;
-import freemind.controller.filter.util.TranslatedString;
 import freemind.main.Resources;
 import freemind.modes.MapRegistry;
 import freemind.modes.MindIcon;
@@ -91,12 +91,12 @@ public class FilterComposerDialog extends JDialog {
             catch(NullPointerException ex){
                 return;
             }
-            TranslatedString simpleCond = (TranslatedString) simpleCondition.getSelectedItem();
+            NamedObject simpleCond = (NamedObject) simpleCondition.getSelectedItem();
             boolean ignoreCase = caseInsensitive.isSelected();
 
             Object selectedItem = attributes.getSelectedItem();
-            if(selectedItem instanceof TranslatedString){
-                TranslatedString attribute = (TranslatedString) selectedItem;
+            if(selectedItem instanceof NamedObject){
+                NamedObject attribute = (NamedObject) selectedItem;
                 newCond = fc.getConditionFactory().createCondition(
                         attribute, simpleCond, value, ignoreCase);
             }
@@ -374,9 +374,9 @@ public class FilterComposerDialog extends JDialog {
         getContentPane().add(simpleConditionBox, BorderLayout.NORTH);
     
         attributes = new JComboBox();
-        filteredAttributeComboBoxModel = new ExtendedComboBoxModel(new TranslatedString[] {
-                        new TranslatedString("filter_node"),
-                        new TranslatedString("filter_icon")
+        filteredAttributeComboBoxModel = new ExtendedComboBoxModel(new NamedObject[] {
+                        Resources.getInstance().createTranslatedString("filter_node"),
+                        Resources.getInstance().createTranslatedString("filter_icon")
                 });
         MapRegistry registry = c.getModel().getRegistry();
         registeredAttributes = registry.getAttributes();

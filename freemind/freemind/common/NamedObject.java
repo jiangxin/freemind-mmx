@@ -21,38 +21,43 @@
  * Created on 08.05.2005
  *
  */
-package freemind.controller.filter.util;
+package freemind.common;
 
-import freemind.main.Resources;
 
 /**
  * @author dimitri
  * 08.05.2005
  */
-public class TranslatedString{
-    private String foreignString;
-    private String key;
-    private TranslatedString(){
+public class NamedObject{
+    private String name;
+    private Object object;
+    private NamedObject(){
     }
-    public TranslatedString(String key) {
-        this.key = key;
-        foreignString =Resources.getInstance().getResourceString(key);
+    public NamedObject(String object, String name) {
+        this.object = object;
+        this.name = name;
+        
     }
-    static public TranslatedString literal(String literal){
-        TranslatedString result = new TranslatedString();
-        result.key = literal;
-        result.foreignString = literal;
+    static public NamedObject literal(String literal){
+        NamedObject result = new NamedObject();
+        result.object = literal;
+        result.name = literal;
         return result;
     }
+
     public boolean equals(Object o){
-        if (o instanceof TranslatedString){
-            TranslatedString ts =  (TranslatedString)o;
-            return key.equals(ts.key);
+        if (o instanceof NamedObject){
+            NamedObject ts =  (NamedObject)o;
+            return object.equals(ts.object);
         }
-        return key.equals(o);
+        return object.equals(o);
     }
 
     public String toString(){
-        return foreignString;
+        return name;
+    }
+    
+    public Object getObject(){
+        return object;
     }
 }

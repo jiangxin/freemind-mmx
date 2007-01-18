@@ -31,6 +31,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import freemind.common.NamedObject;
+
 /**
  * @author Dimitri Polivaev
  * 12.07.2005
@@ -118,7 +120,9 @@ public class Resources {
         String stringResult = formatter.format(messageArguments);
         return stringResult;
 	}
-    
 
-
+    public NamedObject createTranslatedString(String key){
+        String fs = getResourceString(key);
+        return new NamedObject(key, fs);
+    }    
 }

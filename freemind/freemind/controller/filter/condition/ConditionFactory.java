@@ -28,7 +28,7 @@ import java.awt.Color;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import freemind.controller.filter.util.TranslatedString;
+import freemind.common.NamedObject;
 import freemind.main.Resources;
 
 /**
@@ -44,8 +44,8 @@ public class ConditionFactory {
     }
 
     String createDescription(
-            TranslatedString attribute,
-            TranslatedString simpleCondition,
+            NamedObject attribute,
+            NamedObject simpleCondition,
             String value,
             boolean ignoreCase){
         return createDescription(attribute.toString(), simpleCondition, value, ignoreCase);
@@ -53,7 +53,7 @@ public class ConditionFactory {
 
         String createDescription(
                 String attribute,
-                TranslatedString simpleCondition,
+                NamedObject simpleCondition,
                 String value,
                 boolean ignoreCase){
         boolean considerValue = ! simpleCondition.equals("filter_exist") && ! simpleCondition.equals("filter_does_not_exist");
@@ -66,7 +66,7 @@ public class ConditionFactory {
 
     public Condition createAttributeCondition(
             String attribute,
-            TranslatedString simpleCondition,
+            NamedObject simpleCondition,
             String value,
             boolean ignoreCase)
     {
@@ -106,8 +106,8 @@ public class ConditionFactory {
         return null;
     }
     public Condition createCondition(
-            TranslatedString attribute,
-            TranslatedString simpleCondition,
+            NamedObject attribute,
+            NamedObject simpleCondition,
             String value,
             boolean ignoreCase)
     {
@@ -121,42 +121,42 @@ public class ConditionFactory {
         return null;
     }
 
-    public  TranslatedString[] getNodeConditionNames() {
-            return new TranslatedString[] {
-    //                new TranslatedString("filter_exist"),
-    //                new TranslatedString("filter_does_not_exist"),
-                    new TranslatedString("filter_contains"),
-                    new TranslatedString("filter_is_equal_to"),
-                    new TranslatedString("filter_is_not_equal_to"),
-                    TranslatedString.literal(">"),
-                    TranslatedString.literal(">="),
-                    TranslatedString.literal("<="),
-                    TranslatedString.literal("<"),
+    public  NamedObject[] getNodeConditionNames() {
+            return new NamedObject[] {
+    //                TranslatedString.create("filter_exist"),
+    //                TranslatedString.create("filter_does_not_exist"),
+                    Resources.getInstance().createTranslatedString("filter_contains"),
+                    Resources.getInstance().createTranslatedString("filter_is_equal_to"),
+                    Resources.getInstance().createTranslatedString("filter_is_not_equal_to"),
+                    NamedObject.literal(">"),
+                    NamedObject.literal(">="),
+                    NamedObject.literal("<="),
+                    NamedObject.literal("<"),
             };
         }
 
     public Object[] getIconConditionNames() {
-        return new TranslatedString[] {
-                new TranslatedString("filter_contains"),
+        return new NamedObject[] {
+                Resources.getInstance().createTranslatedString("filter_contains"),
         };
     }
-    public  TranslatedString[] getAttributeConditionNames() {
-        return new TranslatedString[] {
-                new TranslatedString("filter_exist"),
-                new TranslatedString("filter_does_not_exist"),
-//                new TranslatedString("filter_contains"),
-                new TranslatedString("filter_is_equal_to"),
-                new TranslatedString("filter_is_not_equal_to"),
-                TranslatedString.literal(">"),
-                TranslatedString.literal(">="),
-                TranslatedString.literal("<="),
-                TranslatedString.literal("<"),
+    public  NamedObject[] getAttributeConditionNames() {
+        return new NamedObject[] {
+                Resources.getInstance().createTranslatedString("filter_exist"),
+                Resources.getInstance().createTranslatedString("filter_does_not_exist"),
+//                TranslatedString.create("filter_contains"),
+                Resources.getInstance().createTranslatedString("filter_is_equal_to"),
+                Resources.getInstance().createTranslatedString("filter_is_not_equal_to"),
+                NamedObject.literal(">"),
+                NamedObject.literal(">="),
+                NamedObject.literal("<="),
+                NamedObject.literal("<"),
         };
     }
 
     protected Condition createNodeCondition(
             String description,
-            TranslatedString simpleCondition,
+            NamedObject simpleCondition,
             String value,
             boolean ignoreCase) {
         if(ignoreCase){
