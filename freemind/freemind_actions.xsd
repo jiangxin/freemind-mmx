@@ -803,6 +803,18 @@
 		</xs:complexType>
 	</xs:element>
 
+	<!-- Script Editor settings: -->
+	<xs:element name="script_editor_window_configuration_storage">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="window_configuration_storage">
+				<xs:attribute use="optional" name="left_ratio" type="xs:int"/>
+				<xs:attribute use="optional" name="top_ratio"  type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
 
 	<!-- ======================================================================================= 
 		 										Patterns

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMainMock.java,v 1.1.2.8 2006-12-19 20:36:30 christianfoltin Exp $*/
+/*$Id: FreeMindMainMock.java,v 1.1.2.9 2007-01-22 21:58:30 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -86,7 +86,7 @@ public class FreeMindMainMock implements FreeMindMain {
     }
 
     public String getResourceString(String key) {
-        return null;
+        return key;
     }
 
     public String getResourceString(String key, String resource) {
@@ -188,6 +188,11 @@ public class FreeMindMainMock implements FreeMindMain {
 	public String getAdjustableProperty(String pLabel) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void setDefaultProperty(String pKey, String pValue) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
