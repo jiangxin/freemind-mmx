@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.3 2007-01-22 21:58:30 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.4 2007-01-23 20:48:34 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -78,28 +78,31 @@ public class ScriptEditorPanel extends JDialog {
 
 	private JSplitPane mCentralPanel;
 
-	private JSplitPane mCentralLowerPanel;
-
-	private JTextArea mScriptOutputField;
-
 	private final class RunAction extends AbstractAction {
 		private RunAction(String pArg0) {
 			super(pArg0);
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
-			// do something
 			storeCurrent();
 			if (!mScriptList.isSelectionEmpty()) {
-				mScriptOutputField.removeAll();
+				mScriptResultField.setText("");
 				String resultString = "";
 				try {
-					resultString = mScriptModel.executeScript(mScriptList
-							.getSelectedIndex(), new PrintStream(new OutputStream(){
+					resultString = "\n"
+							+ mFrame
+									.getResourceString("plugins/ScriptEditor/window.Result")
+							+ mScriptModel.executeScript(mScriptList
+									.getSelectedIndex(), new PrintStream(
+									new OutputStream() {
 
-								public void write(int pByte) throws IOException {
-									mScriptOutputField.append(new String(new byte[]{(byte) pByte}));
-								}}));
+										public void write(int pByte)
+												throws IOException {
+											mScriptResultField
+													.append(new String(
+															new byte[] { (byte) pByte }));
+										}
+									}));
 				} catch (GroovyRuntimeException e) {
 					// freemind.main.Resources.getInstance().logExecption(e);
 					// ByteArrayOutputStream byteArrayOutputStream = new
@@ -110,8 +113,7 @@ public class ScriptEditorPanel extends JDialog {
 					// resultString = byteArrayOutputStream.toString();
 					resultString = e.getMessage();
 				}
-				mScriptResultField.removeAll();
-				mScriptResultField.setText(resultString);
+				mScriptResultField.append(resultString);
 			}
 		}
 	}
@@ -217,14 +219,8 @@ public class ScriptEditorPanel extends JDialog {
 		mScriptResultField = new JTextArea();
 		mScriptResultField.setEditable(false);
 		mScriptResultField.setWrapStyleWord(true);
-		mScriptOutputField = new JTextArea();
-		mScriptOutputField.setEditable(false);
-		mScriptOutputField.setWrapStyleWord(true);
-		mCentralLowerPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				new JScrollPane(mScriptOutputField), new JScrollPane(mScriptResultField));
-		mCentralLowerPanel.setContinuousLayout(true);
 		mCentralPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-				mCentralUpperPanel, mCentralLowerPanel);
+				mCentralUpperPanel, new JScrollPane(mScriptResultField));
 		mCentralPanel.setDividerLocation(0.8);
 		mCentralPanel.setContinuousLayout(true);
 		contentPane.add(mCentralPanel, BorderLayout.CENTER);
@@ -256,7 +252,7 @@ public class ScriptEditorPanel extends JDialog {
 	}
 
 	private void updateFields() {
-		mScriptList.removeAll();
+		mListModel.clear();
 		for (int i = 0; i < mScriptModel.getAmountOfScripts(); ++i) {
 			ScriptHolder script = mScriptModel.getScript(i);
 			mListModel.addElement(script.getScriptName());
