@@ -25,15 +25,17 @@ package freemind.common;
 
 
 /**
- * @author dimitri
- * 08.05.2005
+ * Utility Class for displaying local object names in GUI components.
+ * 
+ * @author Dimitri Polivaev
+ * 18.01.2007
  */
 public class NamedObject{
     private String name;
     private Object object;
     private NamedObject(){
     }
-    public NamedObject(String object, String name) {
+    public NamedObject(Object object, String name) {
         this.object = object;
         this.name = name;
         
