@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.24 2007-01-12 20:42:09 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.25 2007-01-24 22:26:01 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -82,6 +82,7 @@ import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.PatternIcon;
+import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -1857,8 +1858,8 @@ freemind.main.Resources.getInstance().logException(					e1);
         return XmlBindingTools.getInstance().unMarshall(inputString);
 	}
 
-	public void storeDialogPositions(JDialog dialog, TimeWindowConfigurationStorage storage, String window_preference_storage_property) {
-		XmlBindingTools.getInstance().storeDialogPositions(getController(), dialog, storage, window_preference_storage_property);
+	public void storeDialogPositions(JDialog dialog, WindowConfigurationStorage pStorage, String window_preference_storage_property) {
+		XmlBindingTools.getInstance().storeDialogPositions(getController(), dialog, pStorage, window_preference_storage_property);
 	}
 
 	public WindowConfigurationStorage decorateDialog(JDialog dialog, String window_preference_storage_property) {

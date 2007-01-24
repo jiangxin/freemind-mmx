@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.4 2007-01-23 20:48:34 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.5 2007-01-24 22:26:01 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -30,6 +30,9 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListModel;
@@ -45,6 +48,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.Element;
+
+import org.codehaus.groovy.ast.ASTNode;
+import org.codehaus.groovy.ast.ModuleNode;
 
 import freemind.controller.BlindIcon;
 import freemind.controller.StructuredMenuHolder;
@@ -54,10 +61,21 @@ import freemind.main.Tools;
 import groovy.lang.GroovyRuntimeException;
 
 /**
- * @author foltin
- * 
+ * @author foltin 
+ * TODO:
+ * <ul><li> 
+ * </li><li>new script/delete script buttons 
+ * </li><li>rename script button
+ * </li><li>undo feature? 
+ * </li><li>show line/column numbers in status bar
+ * </li></ul>
  */
 public class ScriptEditorPanel extends JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3221975191441136520L;
+
 	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = "plugins.script.ScriptEditorPanel/window_positions";
 
 	private final FreeMindMain mFrame;
@@ -77,6 +95,8 @@ public class ScriptEditorPanel extends JDialog {
 	private JSplitPane mCentralUpperPanel;
 
 	private JSplitPane mCentralPanel;
+
+	private Logger logger;
 
 	private final class RunAction extends AbstractAction {
 		private RunAction(String pArg0) {
@@ -112,9 +132,43 @@ public class ScriptEditorPanel extends JDialog {
 					// e.printStackTrace(writer);
 					// resultString = byteArrayOutputStream.toString();
 					resultString = e.getMessage();
+					logger.info("message: " + resultString);
+					ModuleNode module = e.getModule();
+					ASTNode node = e.getNode();
+					int lineNumber = -1;
+					if (module != null) {
+						lineNumber = module.getLineNumber();
+					} else if (node != null) {
+						lineNumber = node.getLineNumber();
+					} else {
+						lineNumber = findLineNumberInString(resultString, lineNumber);
+					}
+					logger.info("Line number: " + lineNumber);
+					if (lineNumber > 0
+							&& lineNumber <= mScriptTextField.getLineCount()) {
+						Element element3 = mScriptTextField.getDocument()
+								.getDefaultRootElement();
+						Element element4 = element3.getElement(lineNumber-1);
+						if (element4 != null) {
+							mScriptTextField.select(((int) element4
+									.getStartOffset()), element4.getEndOffset());
+						}						
+					}
+				} catch(Exception e){
+					resultString = e.getMessage();
 				}
 				mScriptResultField.append(resultString);
 			}
+		}
+	}
+	private final class ExitAction extends AbstractAction {
+		private ExitAction(String pArg0) {
+			super(pArg0);
+		}
+		
+		public void actionPerformed(ActionEvent arg0) {
+			storeCurrent();
+			disposeDialog();
 		}
 	}
 
@@ -179,6 +233,7 @@ public class ScriptEditorPanel extends JDialog {
 
 	public ScriptEditorPanel(ScriptModel pScriptModel, FreeMindMain pFrame) {
 		super(pFrame.getJFrame(), true /* modal */);
+		logger = pFrame.getLogger(this.getClass().getName());
 		mScriptModel = pScriptModel;
 		mFrame = pFrame;
 		// build the panel:
@@ -232,8 +287,10 @@ public class ScriptEditorPanel extends JDialog {
 				.getResourceString("plugins/ScriptEditor.menu_actions"));
 		AbstractAction runAction = new RunAction(pFrame
 				.getResourceString("plugins/ScriptEditor.run"));
+		AbstractAction exitAction = new ExitAction(pFrame
+				.getResourceString("plugins/ScriptEditor.exit"));
 
-		AbstractAction[] actionList = new AbstractAction[] { runAction };
+		AbstractAction[] actionList = new AbstractAction[] { runAction, exitAction };
 		for (int i = 0; i < actionList.length; i++) {
 			AbstractAction action = actionList[i];
 			JMenuItem item = menu.add(action);
@@ -292,6 +349,15 @@ public class ScriptEditorPanel extends JDialog {
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		this.setVisible(false);
 		this.dispose();
+	}
+
+	public static int findLineNumberInString(String resultString, int lineNumber) {
+		Pattern pattern = Pattern.compile(".*@ line ([0-9]+).*", Pattern.DOTALL);
+		Matcher matcher = pattern.matcher(resultString);
+		if ( matcher.matches() ) {
+			lineNumber = Integer.parseInt(matcher.group(1));
+		}
+		return lineNumber;
 	}
 
 }

@@ -19,7 +19,7 @@
  *
  * Created on 22.01.2007
  */
-/*$Id: ScriptEditorPanelTest.java,v 1.1.2.1 2007-01-22 21:58:30 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanelTest.java,v 1.1.2.2 2007-01-24 22:26:01 christianfoltin Exp $*/
 package tests.freemind;
 
 import java.awt.Dimension;
@@ -97,5 +97,10 @@ public class ScriptEditorPanelTest extends FreeMindTestBase {
 				new TestScriptModel(), new FreeMindMainMock() );
 		scriptEditor.pack();
 		scriptEditor.setVisible(true);
+	}
+	
+	public void testErrorLineNumbers() throws Exception {
+		String error = "startup failed, Script1.groovy: 1: For statement contains unexpected tokens. Possible attempt to use unsupported Java-style for loop. at line: 1 column: 1. File: Script1.groovy @ line 1, column 1.\n1 error";
+		assertEquals("find right line number" , 1 , ScriptEditorPanel.findLineNumberInString(error, -1));
 	}
 }
