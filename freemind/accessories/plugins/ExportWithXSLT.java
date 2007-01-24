@@ -297,7 +297,7 @@ public class ExportWithXSLT extends ExportHook {
     }
 
     private void export(File file) {
-        ExportDialog exp = new ExportDialog(file);
+        ExportDialog exp = new ExportDialog(file, getController());
         exp.setVisible(true);
 	}
 

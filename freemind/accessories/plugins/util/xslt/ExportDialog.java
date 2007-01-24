@@ -41,30 +41,53 @@ import javax.swing.JTextField;
 
 import accessories.plugins.util.window.WindowClosingAdapter;
 import freemind.main.ExampleFileFilter;
+import freemind.modes.ModeController;
 
 public class ExportDialog extends JFrame {
-    protected JTextField field = null;
-    protected JTextField fieldi = null;
+    private static final String ACCESSORIES_PLUGINS_UTIL_XSLT_EXPORT_DIALOG_STORE_TARGET = "accessories.plugins.util.xslt.ExportDialog.store.target";
+	private static final String ACCESSORIES_PLUGINS_UTIL_XSLT_EXPORT_DIALOG_STORE_XSLT = "accessories.plugins.util.xslt.ExportDialog.store.xslt";
+
+	class ExportListener implements ActionListener {
+	    private ExportDialog parent = null;
+	    boolean exitSystem = true;
+	    private boolean cancel = false;
+	    XmlExporter xe = null;
+	    
+	    public ExportListener(ExportDialog m){
+	        parent =m;}
+	    
+	    public ExportListener(ExportDialog m, boolean pCancel){
+	        parent =m;
+	        cancel = pCancel;}
+	    
+	    public void actionPerformed(ActionEvent e) {
+	        if(!cancel){
+	            //System.out.println("voila, export methode");
+	            xe = new XmlExporter();
+	            xe.transForm(parent.xmlFile, new File(parent.fieldXsltFileName.getText()), new File(parent.fieldTargetFileName.getText()));
+	        }
+	        // store values in preferences:
+ 	        mController.getFrame().setProperty(ACCESSORIES_PLUGINS_UTIL_XSLT_EXPORT_DIALOG_STORE_XSLT, fieldXsltFileName.getText());
+	        mController.getFrame().setProperty(ACCESSORIES_PLUGINS_UTIL_XSLT_EXPORT_DIALOG_STORE_TARGET, fieldTargetFileName.getText());
+	        parent.setVisible(false);
+	        parent.dispose();
+	       /* if (exitSystem) {
+	            System.exit(0);
+	        }*/
+	    }
+	    
+	}
+
+	protected JTextField fieldXsltFileName = null;
+    protected JTextField fieldTargetFileName = null;
     protected File xmlFile = null;
-    
-    public static void main(String[] args) {
-        Properties sysprops   = System.getProperties();
-        Enumeration propnames = sysprops.propertyNames();
-        while (propnames.hasMoreElements()) {
-            String propname = (String)propnames.nextElement();
-            System.out.println(
-            propname + "=" + System.getProperty(propname)
-            );
-        };
+	private final ModeController mController;
         
-        ExportDialog wnd = new ExportDialog(new File("/home/testtrans.xml"));
-        wnd.setVisible(true);
-    }
-    
-    public ExportDialog(File nxmlFile) {
+    public ExportDialog(File nxmlFile, ModeController pController) {
         
         super("ExportDialog");
         xmlFile = nxmlFile;
+		mController = pController;
         
         setBackground(Color.lightGray);
         this.addWindowListener(new WindowClosingAdapter(false));
@@ -86,20 +109,25 @@ public class ExportDialog extends JFrame {
         gbl.setConstraints(list, gbc);
         getContentPane().add(list);*/
         
+        // get last value from preferences:
+        String lastXsltFileName = mController.getFrame().getProperty(ACCESSORIES_PLUGINS_UTIL_XSLT_EXPORT_DIALOG_STORE_XSLT);
+        String lastTargetFileName = mController.getFrame().getProperty(ACCESSORIES_PLUGINS_UTIL_XSLT_EXPORT_DIALOG_STORE_TARGET);
         //Zwei Labels und zwei Textfelder
         gbc = makegbc(0, 0, 1, 1);
         gbc.fill = GridBagConstraints.NONE;
-        JLabel label = new JLabel("choose XSL File ");
+        JLabel label = new JLabel("Choose XSL File ");
         gbl.setConstraints(label, gbc);
         getContentPane().add(label);
         //Textfeld
         gbc = makegbc(1, 0, 1, 1);
         gbc.weightx = 300;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        field = new JTextField(" ");
-        field.setColumns(20);
-        gbl.setConstraints(field, gbc);
-        getContentPane().add(field);
+        fieldXsltFileName = new JTextField(lastXsltFileName);
+        fieldXsltFileName.setColumns(20);
+        gbl.setConstraints(fieldXsltFileName, gbc);
+        getContentPane().add(fieldXsltFileName);
+        
+        
         
         gbc = makegbc(0, 1, 1, 1);
         gbc.fill = GridBagConstraints.NONE;
@@ -110,10 +138,10 @@ public class ExportDialog extends JFrame {
         gbc = makegbc(1, 1, 1, 1);
         gbc.weightx = 100;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        fieldi = new JTextField(" ");
-        fieldi.setColumns(20);
-        gbl.setConstraints(fieldi, gbc);
-        getContentPane().add(fieldi);
+        fieldTargetFileName = new JTextField(lastTargetFileName);
+        fieldTargetFileName.setColumns(20);
+        gbl.setConstraints(fieldTargetFileName, gbc);
+        getContentPane().add(fieldTargetFileName);
         
         //XSL-Button
         JButton xslbutton = new JButton("Browse");
@@ -121,14 +149,14 @@ public class ExportDialog extends JFrame {
         gbc.fill = GridBagConstraints.NONE;
         //gbc.anchor = GridBagConstraints.SOUTHEAST;
         gbl.setConstraints(xslbutton, gbc);
-        xslbutton.addActionListener(new FileChooseListener(0, field, xslbutton, xmlFile));
+        xslbutton.addActionListener(new FileChooseListener(0, fieldXsltFileName, xslbutton, xmlFile));
         getContentPane().add(xslbutton);
         //export-Button
         JButton exportbutton = new JButton("Browse");
         gbc = makegbc(2, 1, 1, 1);
         gbc.fill = GridBagConstraints.NONE;
         //gbc.anchor = GridBagConstraints.SOUTHEAST;
-        exportbutton.addActionListener(new FileChooseListener(1, fieldi, exportbutton, xmlFile));
+        exportbutton.addActionListener(new FileChooseListener(1, fieldTargetFileName, exportbutton, xmlFile));
         gbl.setConstraints(exportbutton, gbc);
         getContentPane().add(exportbutton);
         
@@ -243,34 +271,6 @@ class FileChooseListener implements ActionListener{
                     System.out.println("exeption:"+ex); } {
                     }
             }
-    }
-    
-}
-
-class ExportListener implements ActionListener {
-    private ExportDialog parent = null;
-    boolean exitSystem = true;
-    private boolean cancel = false;
-    XmlExporter xe = null;
-    
-    public ExportListener(ExportDialog m){
-        parent =m;}
-    
-    public ExportListener(ExportDialog m, boolean can){
-        parent =m;
-        cancel = can;}
-    
-    public void actionPerformed(ActionEvent e) {
-        if(!cancel){
-            //System.out.println("voila, export methode");
-            xe = new XmlExporter();
-            xe.transForm(parent.xmlFile, new File(parent.field.getText()), new File(parent.fieldi.getText()));
-        }
-        parent.setVisible(false);
-        parent.dispose();
-       /* if (exitSystem) {
-            System.exit(0);
-        }*/
     }
     
 }
