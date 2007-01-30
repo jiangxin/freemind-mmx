@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/* $Id: MindMapActions.java,v 1.1.2.3.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: MindMapActions.java,v 1.1.2.3.2.3 2007-01-30 21:09:49 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
@@ -39,6 +39,7 @@ import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
+import freemind.modes.attributes.Attribute;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 
@@ -223,5 +224,6 @@ public interface MindMapActions {
     void registerMouseWheelEventHandler(MouseWheelEventHandler handler);
     void deRegisterMouseWheelEventHandler(MouseWheelEventHandler handler);
 
+    void setAttribute(MindMapNode node, int pPosition, Attribute pAttribute);
 
 }

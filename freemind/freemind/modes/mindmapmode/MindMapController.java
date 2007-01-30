@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.25 2007-01-24 22:26:01 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.26 2007-01-30 21:09:49 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -111,6 +111,7 @@ import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.NodeDownAction;
 import freemind.modes.StylePatternFactory;
+import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.common.CommonNodeKeyListener;
 import freemind.modes.common.GotoLinkNodeAction;
@@ -1877,5 +1878,10 @@ freemind.main.Resources.getInstance().logException(					e1);
 	public XMLElement createXMLElement() {
 		return new MindMapXMLElement(this);
 	}
+
+    public void setAttribute(MindMapNode pNode, int pPosition, Attribute pAttribute) {
+        pNode.getAttributes().setValueAt(pAttribute.getName(), pPosition, 0);
+        pNode.getAttributes().setValueAt(pAttribute.getValue(), pPosition, 1);
+    }
 
 }

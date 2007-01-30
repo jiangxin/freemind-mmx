@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: TestMindMapNode.java,v 1.1.2.8 2007-01-12 20:42:09 christianfoltin Exp $*/
+/*$Id: TestMindMapNode.java,v 1.1.2.9 2007-01-30 21:09:49 christianfoltin Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -50,6 +50,7 @@ import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeViewEventListener;
+import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.NodeView;
 
@@ -406,23 +407,19 @@ final class TestMindMapNode implements MindMapNode {
     public void setNoteText(String noteText) {
     }
 
-	public String getAttribute(String pKey) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Attribute getAttribute(int pPosition) {
+        return null;
+    }
 
-	public List getAttributeKeyList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public List getAttributeKeyList() {
+        return null;
+    }
 
-	public boolean isAttributeExisting(String pKey) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public boolean isAttributeExisting(String key) {
+        return false;
+    }
 
-	public void setAttribute(String pKey, String pValue) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void setAttribute(int pPosition, Attribute pAttribute) {
+    }
+
 }

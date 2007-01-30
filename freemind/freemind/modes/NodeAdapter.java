@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.22 2007-01-12 20:42:08 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.23 2007-01-30 21:09:49 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -1191,17 +1191,12 @@ freemind.main.Resources.getInstance().logException(			e);
         return attributes;
     }
     
-    public String getAttribute(String pKey) {
-		if (pKey == null)
-			return null;
-		for (Iterator iter = attributes.getAttributes().iterator(); iter
-				.hasNext();) {
-			Attribute attr = (Attribute) iter.next();
-			if (pKey.equals(attr.getName())) {
-				return attr.getValue();
-			}
-		}
-		return null;
+    public int getAttributeTableLength() {
+        return attributes.getRowCount();
+    }
+    
+    public Attribute getAttribute(int pPosition) {
+		return attributes.getAttribute(pPosition);
 	}
 
 	public List getAttributeKeyList() {
@@ -1226,20 +1221,9 @@ freemind.main.Resources.getInstance().logException(			e);
 		return false;
 	}
 
-	public void setAttribute(String pKey, String pValue) {
-		if (isAttributeExisting(pKey)) {
-			for (int i = 0; i < attributes.getRowCount(); ++i) {
-				Attribute attribute = attributes.getAttribute(i);
-				if (pKey.equals(attribute.getName())) {
-					attributes.getAttributeController()
-							.performSetValueAt(attributes, pValue, i, 1);
-				}
-			}
-		} else {
-			// new attribute
-			attributes.getAttributeController().performInsertRow(attributes,
-					attributes.getRowCount(), pKey, pValue);
-		}
+	public void setAttribute(int pPosition, Attribute pAttribute) {
+        attributes.setName(pPosition, pAttribute.getName());
+        attributes.setValue(pPosition, pAttribute.getValue());
 	}
 
 

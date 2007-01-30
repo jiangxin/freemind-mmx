@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditor.java,v 1.1.2.2 2007-01-24 22:26:01 christianfoltin Exp $*/
+/*$Id: ScriptEditor.java,v 1.1.2.3 2007-01-30 21:09:49 christianfoltin Exp $*/
 package plugins.script;
 
 import java.io.PrintStream;
@@ -30,6 +30,8 @@ import plugins.script.ScriptEditorPanel.ScriptHolder;
 import plugins.script.ScriptEditorPanel.ScriptModel;
 import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
 import freemind.modes.MindMapNode;
+import freemind.modes.attributes.Attribute;
+import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -39,11 +41,27 @@ import groovy.lang.GroovyShell;
  * 
  */
 public class ScriptEditor extends MindMapHookAdapter {
+    private final class AttributeHolder {
+        Attribute mAttribute;
+        int mPosition;
+        public AttributeHolder(Attribute pAttribute, int pPosition) {
+            super();
+            mAttribute = pAttribute;
+            mPosition = pPosition;
+        }
+    }
 	private final class NodeScriptModel implements ScriptModel {
+		/**
+		 * Of AttributeHolder
+		 */
 		private final Vector mScripts;
+        private final MindMapNode mNode;
+        private final MindMapController mController;
 
-		private NodeScriptModel(Vector pScripts) {
+		private NodeScriptModel(Vector pScripts, MindMapNode node, MindMapController pController) {
 			mScripts = pScripts;
+            mNode = node;
+            mController = pController;
 		}
 
 		public ScriptEditorWindowConfigurationStorage decorateDialog(
@@ -55,8 +73,8 @@ public class ScriptEditor extends MindMapHookAdapter {
 
 		public String executeScript(int pIndex, PrintStream pOutStream) {
 			Binding binding = new Binding();
-			binding.setVariable("c", null);
-			binding.setVariable("node", null);
+			binding.setVariable("c", mController);
+			binding.setVariable("node", mNode);
 			GroovyShell shell = new GroovyShell(binding);
 
 			String script = getScript(pIndex).getScript();
@@ -77,11 +95,14 @@ public class ScriptEditor extends MindMapHookAdapter {
 		}
 
 		public ScriptHolder getScript(int pIndex) {
-			return (ScriptHolder) mScripts.get(pIndex);
+			Attribute attribute = ((AttributeHolder) mScripts.get(pIndex)).mAttribute;
+            return new ScriptHolder(attribute.getName(), attribute.getValue());
 		}
 
 		public void setScript(int pIndex, ScriptHolder pScript) {
-			mScripts.set(pIndex, pScript);
+            AttributeHolder oldHolder = (AttributeHolder) mScripts.get(pIndex);
+            oldHolder.mAttribute.setName(pScript.mScriptName);
+            oldHolder.mAttribute.setValue(pScript.mScript);
 		}
 
 		public void storeDialogPositions(ScriptEditorPanel pPanel,
@@ -90,24 +111,36 @@ public class ScriptEditor extends MindMapHookAdapter {
 			getMindMapController().storeDialogPositions(pPanel, pStorage,
 					pWindow_preference_storage_property);
 		}
+
+        public void endDialog(boolean pIsCanceled) {
+            if (!pIsCanceled) {
+                // store node attributes back
+                for (Iterator iter = mScripts.iterator(); iter.hasNext();) {
+                    AttributeHolder holder = (AttributeHolder) iter.next();
+                    Attribute attribute = holder.mAttribute;
+                    int position = holder.mPosition;
+                    if(mNode.getAttribute(position).getValue() != attribute.getValue()) {
+//                        logger.info("Setting attribute " + position + " to " + attribute);
+                        mController.setAttribute(mNode, position, attribute);
+                    }
+                }
+            }
+        }
 	}
 
 	public void startupMapHook() {
 		super.startupMapHook();
 		final MindMapNode node = getMindMapController().getSelected();
 		final Vector scripts = new Vector();
-		int position = 0;
-		for (Iterator iter = node.getAttributeKeyList().iterator(); iter
-				.hasNext();) {
-			String element = (String) iter.next();
-			if (element.startsWith("script")) {
-				scripts.add(new ScriptEditorPanel.ScriptHolder(element, node
-						.getAttributes().getAttribute(position).getValue()));
-			}
-			position++;
-		}
-		ScriptEditorPanel scriptEditorPanel = new ScriptEditorPanel(
-				new NodeScriptModel(scripts), getController().getFrame());
+        for (int position = 0; position < node.getAttributeTableLength(); position++) {
+            Attribute attribute = node.getAttribute(position);
+            if (attribute.getName().startsWith("script")) {
+                scripts.add(new AttributeHolder(new Attribute(attribute), position));
+            }
+        }
+		NodeScriptModel nodeScriptModel = new NodeScriptModel(scripts, node, getMindMapController());
+        ScriptEditorPanel scriptEditorPanel = new ScriptEditorPanel(
+				nodeScriptModel, getController().getFrame());
 		scriptEditorPanel.setVisible(true);
 	}
 }

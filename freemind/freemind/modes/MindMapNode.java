@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.10 2007-01-12 20:42:08 christianfoltin Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.11 2007-01-30 21:09:49 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -33,16 +33,14 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import javax.swing.ImageIcon;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
-
 
 import freemind.controller.filter.FilterInfo;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.XMLElement;
+import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.NodeView;
 
@@ -290,18 +288,19 @@ public interface MindMapNode extends MutableTreeNode {
      */
     List getAttributeKeyList();
     /**
-     * @param key the key identifier. Attention: it returns the FIRST 
-     * element with the given key.
-     * @return the value of key or null, if it doesn't exist.
+     * @return the amount of attributes.
      */
-    String getAttribute(String key);
+    int getAttributeTableLength();
+    /**
+     * @param pPosition the null based position.
+     */
+    Attribute getAttribute(int pPosition);
+    
     boolean isAttributeExisting(String key);
     /**
      * Sets the attribute to the given value. 
-     * If the given key exists more than once, the first key/value
-     * pair is adjusted.
      */
-    void setAttribute(String key, String value);
+    void setAttribute(int pPosition, Attribute pAttribute);
 
     public void addNodeViewEventListener(NodeViewEventListener l);
 

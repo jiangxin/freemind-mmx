@@ -40,6 +40,13 @@ public class Attribute {
         this.name = name;
         this.value = value;
     }
+    /**
+     * @param pAttribute deep copy.
+     */
+    public Attribute(Attribute pAttribute) {
+        this.name = pAttribute.name;
+        this.value = pAttribute.value;
+    }
     public String getName() {
         return name;
     }
@@ -51,5 +58,9 @@ public class Attribute {
     }
     public void setValue(String value) {
         this.value = value;
+    }
+    
+    public String toString() {
+        return "[" + name + ", "+ value + "]";
     }
 }

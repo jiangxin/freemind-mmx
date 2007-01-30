@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.5 2007-01-24 22:26:01 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.6 2007-01-30 21:09:49 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -68,6 +68,7 @@ import groovy.lang.GroovyRuntimeException;
  * </li><li>rename script button
  * </li><li>undo feature? 
  * </li><li>show line/column numbers in status bar
+ * </li><li>"Are you sure to cancel..."
  * </li></ul>
  */
 public class ScriptEditorPanel extends JDialog {
@@ -168,7 +169,7 @@ public class ScriptEditorPanel extends JDialog {
 		
 		public void actionPerformed(ActionEvent arg0) {
 			storeCurrent();
-			disposeDialog();
+			disposeDialog(false);
 		}
 	}
 
@@ -229,6 +230,8 @@ public class ScriptEditorPanel extends JDialog {
 		ScriptEditorWindowConfigurationStorage decorateDialog(
 				ScriptEditorPanel pPanel,
 				String pWindow_preference_storage_property);
+        
+        void endDialog(boolean pIsCanceled);
 	}
 
 	public ScriptEditorPanel(ScriptModel pScriptModel, FreeMindMain pFrame) {
@@ -242,12 +245,12 @@ public class ScriptEditorPanel extends JDialog {
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent event) {
-				disposeDialog();
+				disposeDialog(true);
 			}
 		});
 		Tools.addEscapeActionToDialog(this, new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				disposeDialog();
+				disposeDialog(true);
 			}
 		});
 		Container contentPane = this.getContentPane();
@@ -334,9 +337,10 @@ public class ScriptEditorPanel extends JDialog {
 	}
 
 	/**
+	 * @param pIsCanceled TODO
 	 * 
 	 */
-	private void disposeDialog() {
+	private void disposeDialog(boolean pIsCanceled) {
 		// store current script:
 		if (!mScriptList.isSelectionEmpty()) {
 			select(mScriptList.getSelectedIndex());
@@ -349,6 +353,7 @@ public class ScriptEditorPanel extends JDialog {
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		this.setVisible(false);
 		this.dispose();
+        mScriptModel.endDialog(pIsCanceled);
 	}
 
 	public static int findLineNumberInString(String resultString, int lineNumber) {
