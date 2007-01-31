@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.23 2007-01-30 21:09:49 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.24 2007-01-31 20:20:07 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -1196,7 +1196,7 @@ freemind.main.Resources.getInstance().logException(			e);
     }
     
     public Attribute getAttribute(int pPosition) {
-		return attributes.getAttribute(pPosition);
+		return new Attribute(attributes.getAttribute(pPosition));
 	}
 
 	public List getAttributeKeyList() {

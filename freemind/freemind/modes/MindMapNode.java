@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.11 2007-01-30 21:09:49 christianfoltin Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.12 2007-01-31 20:20:07 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -293,6 +293,7 @@ public interface MindMapNode extends MutableTreeNode {
     int getAttributeTableLength();
     /**
      * @param pPosition the null based position.
+     * @return a copy of the node's attribute.
      */
     Attribute getAttribute(int pPosition);
     

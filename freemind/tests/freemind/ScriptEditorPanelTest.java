@@ -19,17 +19,16 @@
  *
  * Created on 22.01.2007
  */
-/*$Id: ScriptEditorPanelTest.java,v 1.1.2.2 2007-01-24 22:26:01 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanelTest.java,v 1.1.2.3 2007-01-31 20:20:07 christianfoltin Exp $*/
 package tests.freemind;
-
-import java.awt.Dimension;
-import java.io.PrintStream;
-
-import org.codehaus.groovy.control.CompilationFailedException;
 
 import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+
+import java.awt.Dimension;
+import java.io.PrintStream;
+
 import plugins.script.ScriptEditorPanel;
 import plugins.script.ScriptEditorPanel.ScriptHolder;
 import plugins.script.ScriptEditorPanel.ScriptModel;
@@ -90,6 +89,9 @@ public class ScriptEditorPanelTest extends FreeMindTestBase {
 			storage.setTopRatio(500);
 			return storage;
 		}
+
+        public void endDialog(boolean pIsCanceled) {
+        }
 	}
 
 	public void testPanel() {
