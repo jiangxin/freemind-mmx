@@ -172,6 +172,7 @@ public class XHTMLWriter extends HTMLWriter {
              || tag.equals("basefont")
              || tag.equals("frame")
              || tag.equals("iframe")
+             || tag.equals("col")
           ) {
             super.write( " /" );    // add slash to the closing bracket
           }

@@ -41,6 +41,8 @@ Changes made in FreeMind 0.9.0 Beta 9
 * Bug fix: starting edit and continue with long node editor keeps changes
 * Bug fix: null pointer in AttributeTable
 * New feature: Script Editor
+* New feature: split of multi paragraph HTML nodes (Edit->Split, plugin)
+* New feature: split of HTML nodes im WYSIWYG Editor
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8

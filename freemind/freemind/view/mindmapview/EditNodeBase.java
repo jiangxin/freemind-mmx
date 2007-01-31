@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.2.12.6 2007-01-03 23:47:43 christianfoltin Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2.12.7 2007-01-31 22:56:33 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -68,6 +68,11 @@ public class EditNodeBase {
                 submit();
             }
             
+        }
+        class SplitAction extends AbstractAction{
+            public void actionPerformed(ActionEvent e) {
+                split();
+            }                 
         }
         class CancelAction extends AbstractAction{
             public void actionPerformed(ActionEvent e) {

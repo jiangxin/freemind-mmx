@@ -17,19 +17,23 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.20 2007-01-23 21:20:37 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.21 2007-01-31 22:56:33 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.text.html.HTMLDocument;
 
@@ -56,6 +60,39 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             createEditorPanel();
             getContentPane().add(htmlEditorPanel, BorderLayout.CENTER);
             adjustKeyBindings();
+            final JButton okButton = new JButton(getText("ok"));
+            final JButton cancelButton = new JButton(getText("cancel"));
+            final JButton splitButton = new JButton(getText("split"));
+
+            okButton.setMnemonic(KeyEvent.VK_O);
+            splitButton.setMnemonic(KeyEvent.VK_S);
+            cancelButton.setMnemonic(KeyEvent.VK_C);
+            
+            okButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    submit();
+                }
+            });
+            
+            cancelButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    cancel();
+                }
+            });
+            
+            splitButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    split();
+                }
+            });
+            
+            JPanel buttonPane = new JPanel();
+            buttonPane.add(okButton);
+            buttonPane.add(cancelButton);
+            buttonPane.add(splitButton);
+            buttonPane.setMaximumSize(new Dimension(1000, 20));
+            getContentPane().add(buttonPane, BorderLayout.SOUTH);
+            
         }
         private SHTMLPanel createEditorPanel() throws Exception {
             if(htmlEditorPanel == null){
@@ -82,14 +119,23 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             InputMap myInputMap = htmlEditorPanel.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
             
             final String submitActionKey = "OK";
-            KeyStroke ok = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.CTRL_MASK);
             myActionMap.put(submitActionKey, new SubmitAction());
+            KeyStroke ok = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.CTRL_MASK);
+            KeyStroke altOk = KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.ALT_MASK);
             myInputMap.put(ok, submitActionKey);
-            
+            myInputMap.put(altOk, submitActionKey);
+
+            final String splitActionKey = "split";
+            myActionMap.put(splitActionKey, new SplitAction());
+            KeyStroke altSplit = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_MASK);
+            myInputMap.put(altSplit, splitActionKey);
+
             final String cancelActionKey = "cancel";
-            KeyStroke cancel = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
             myActionMap.put(cancelActionKey, new CancelAction());
+            KeyStroke cancel = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+            KeyStroke altCancel = KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_MASK);
             myInputMap.put(cancel, cancelActionKey);
+            myInputMap.put(altCancel, cancelActionKey);
         }
         /* (non-Javadoc)
          * @see freemind.view.mindmapview.EditNodeBase.Dialog#close()
@@ -104,6 +150,17 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             }
             super.submit();
         }
+        /* (non-Javadoc)
+         * @see freemind.view.mindmapview.EditNodeBase.Dialog#split()
+         */
+        protected void split() {
+            htmlEditorPanel.getDocument().getStyleSheet().removeStyle("body");
+            getEditControl().split(HtmlTools.unescapeHTMLUnicodeEntity
+                    (htmlEditorPanel.getDocumentText()),
+                    htmlEditorPanel.getCaretPosition());
+            super.split();
+        }
+        
         /* (non-Javadoc)
          * @see freemind.view.mindmapview.EditNodeBase.Dialog#close()
          */

@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1.16.7 2007-01-12 20:42:09 christianfoltin Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.8 2007-01-31 22:56:33 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -126,7 +126,6 @@ public class EditNodeDialog extends EditNodeBase {
             final JPanel panel = new JPanel();
             
             //String performedAction;
-            final Tools.IntHolder eventSource = new Tools.IntHolder();
             final JButton okButton = new JButton(getText("ok"));
             final JButton cancelButton = new JButton(getText("cancel"));
             final JButton splitButton = new JButton(getText("split"));

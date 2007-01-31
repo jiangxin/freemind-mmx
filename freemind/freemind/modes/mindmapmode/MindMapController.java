@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.26 2007-01-30 21:09:49 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.27 2007-01-31 22:56:33 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -65,6 +67,9 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 
 import org.jibx.runtime.IUnmarshallingContext;
 import org.jibx.runtime.JiBXException;
@@ -1692,17 +1697,38 @@ freemind.main.Resources.getInstance().logException(					e1);
             //If there are children, they go to the node below
             String futureText = newText != null ? newText : node.toString();
 
-            String newLowerContent = futureText.substring(caretPosition, futureText.length());
-            String newUpperContent = futureText.substring(0,caretPosition);
+            String newUpperContent = getContent(futureText, 0, caretPosition);
+            String newLowerContent = getContent(futureText, caretPosition, futureText.length());
 
-            setNodeText(node, newLowerContent);
+            setNodeText(node, newUpperContent);
 
             MindMapNode parent = node.getParentNode();
-            MindMapNode upperNode = addNewNode(parent, parent.getChildPosition(node), parent.isLeft());
-            upperNode.setColor(node.getColor());
-            upperNode.setFont(node.getFont());
-            setNodeText(upperNode, newUpperContent);
+            MindMapNode lowerNode = addNewNode(parent, parent.getChildPosition(node) + 1, parent.isLeft());
+            lowerNode.setColor(node.getColor());
+            lowerNode.setFont(node.getFont());
+            setNodeText(lowerNode, newLowerContent);
 
+    }
+
+    private String getContent(String text, int start, int end) {
+        if(text.startsWith("<html>")){
+            HTMLEditorKit kit = new HTMLEditorKit();
+            HTMLDocument doc = new HTMLDocument();
+            StringReader buf = new StringReader(text);
+            StringWriter out = new StringWriter();
+            try {
+                kit.read(buf, doc, 0);
+                kit.write(out, doc, start, end - start);
+                return out.toString();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (BadLocationException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return text.substring(start, end);
     }
 
     protected void updateNode(MindMapNode node) {
