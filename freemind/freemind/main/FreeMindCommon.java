@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.20 2007-01-17 23:12:22 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.21 2007-01-31 20:28:23 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -220,9 +220,11 @@ public class FreeMindCommon {
         }
         return baseDir;
 	}
-    /* We define the base dir of FreeMind either as the directory where the
+    /* We define the base dir of FreeMind as the directory where accessories,
+     * plugins and other things are to be found.
+     * We expect it to be either the directory where the
      * main jar file is (freemind.jar), or the root of the class hierarchy
-     * (if no jar file is used).
+     * (if no jar file is used), after any 'lib' directory is removed.
      * One can overwrite this definition by setting the freemind.base.dir
      * property.
      */
@@ -253,9 +255,13 @@ public class FreeMindCommon {
                                             classname.replace('.', '/')
                                                     + ".class$", ""), "UTF-8"));
                     // if it's a file, we take its parent, a dir
-                    if (file.isFile()) {
+                    if (file.isFile())
                         file = file.getParentFile();
-                    }
+                    /* Now, we remove the lib directory:
+                     * Example: /home/foltin/freemindapp/lib/freemind.jar gives 
+                     * /home/foltin/freemindapp */
+                    if (file.getName().equals("lib"))
+                        file = file.getParentFile();
                 } else {
                     file = new File(dir);
                 }
@@ -272,12 +278,6 @@ public class FreeMindCommon {
                 }
                 // set the static variable
                 baseDir = file.getCanonicalPath();
-                /* Now, we remove the lib directory:
-                 * Example: /home/foltin/freemindapp/lib/freemind.jar gives 
-                 * /home/foltin/freemindapp */
-                int lastpos = baseDir.lastIndexOf(File.separator);
-                if (lastpos > -1) 
-                    baseDir = baseDir.substring(0, lastpos);
                 logger.info("Basedir is: "+baseDir);
             } catch (Exception e) {
                 Resources.getInstance().logException(e);
