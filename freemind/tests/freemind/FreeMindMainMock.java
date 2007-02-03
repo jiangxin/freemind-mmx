@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMainMock.java,v 1.1.2.9 2007-01-22 21:58:30 christianfoltin Exp $*/
+/*$Id: FreeMindMainMock.java,v 1.1.2.10 2007-02-03 23:19:26 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -110,7 +110,7 @@ public class FreeMindMainMock implements FreeMindMain {
     }
 
     public URL getResource(String name) {
-        return null;
+        return ClassLoader.getSystemResource(name);
     }
 
     public int getIntProperty(String key, int defaultValue) {
@@ -161,7 +161,7 @@ public class FreeMindMainMock implements FreeMindMain {
     }
 
     public String getFreemindVersion() {
-        return null;
+        return "1.0 Mock";
     }
 
     public Logger getLogger(String forClass) {

@@ -1,6 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000-2006  Joerg Mueller, Daniel Polansky, Christian Foltin and others.
- *
+ *Copyright (C) 2007  Christian Foltin <christianfoltin@users.sourceforge.net>
  *See COPYING for Details
  *
  *This program is free software; you can redistribute it and/or
@@ -16,19 +15,23 @@
  *You should have received a copy of the GNU General Public License
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- * Created on 03.01.2006
  */
-/*$Id: FeedBack.java,v 1.1.2.1.2.2 2007-02-03 23:19:26 christianfoltin Exp $*/
-package freemind.main;
+/*$Id: SplashTests.java,v 1.1.2.1 2007-02-03 23:19:26 christianfoltin Exp $*/
 
-import java.awt.Image;
+package tests.freemind;
 
-import javax.swing.ImageIcon;
+import freemind.main.FreeMindSplashLightBulb;
 
-public interface FeedBack {
-	void progress(int act, String messageId);
-	int getActualValue();
-	void setMaximumValue(int max);
-	void increase(String messageId);
+/** */
+public class SplashTests extends FreeMindTestBase {
+    public void testLightBuldSplash() throws InterruptedException {
+        FreeMindSplashLightBulb splash = new FreeMindSplashLightBulb(mFreeMindMain);
+        splash.setVisible(true);
+        for(int i = 0; i < 10 ; i++) {
+            splash.getFeedBack().increase("test: " + i);
+            Thread.sleep(1000l);
+        }
+    }
 }
+
+//    private static java.util.logging.Logger logger = freemind.main.Resources.getInstance().getLogger(SplashTests.class.getName());

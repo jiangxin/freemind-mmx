@@ -40,7 +40,7 @@ import javax.swing.SwingUtilities;
  * Class to put a splash before lunch the soft
  */
 
-public class FreeMindSplash extends JFrame implements IFreeMindSplash {
+public class FreeMindSplashLightBulb extends JFrame implements IFreeMindSplash {
 
 	private static final int SPLASH_FONT_SIZE = 16;
 
@@ -84,7 +84,6 @@ public class FreeMindSplash extends JFrame implements IFreeMindSplash {
 		public void increase(String messageId) {
 			progress(getActualValue()+1, messageId);
 		}
-
 		
 	}
 	
@@ -99,7 +98,7 @@ public class FreeMindSplash extends JFrame implements IFreeMindSplash {
 	}
 	
 
-    public FreeMindSplash(final FreeMindMain frame){
+    public FreeMindSplashLightBulb(final FreeMindMain frame){
     	super("FreeMind");
         this.frame = frame;
         if(logger == null) {
@@ -109,13 +108,13 @@ public class FreeMindSplash extends JFrame implements IFreeMindSplash {
 		this.feedBack = new FeedBackImpl();
     	
     	mIcon = new ImageIcon(frame.getResource(
-        			"images/FreeMindWindowIcon.png"));
+        			"images/FreeMindWindowIconLightBulb.png"));
         setIconImage(mIcon.getImage());	//set the ganttproject icon
     	setDefaultLookAndFeelDecorated(false);
     	setUndecorated(true);
     	getRootPane().setWindowDecorationStyle(JRootPane.NONE); //set no border
         
-    	ImageIcon splashImage = new ImageIcon(frame.getResource("images/splash.JPG"));
+    	ImageIcon splashImage = new ImageIcon(frame.getResource("images/splash-light_bulb.png"));
         JLabel l = new JLabel(splashImage) {
         	private Integer mWidth = null;
 
@@ -131,11 +130,11 @@ public class FreeMindSplash extends JFrame implements IFreeMindSplash {
                     mWidth = new Integer(g2.getFontMetrics().stringWidth(
                             freemindVersion));
                 }                
-                int yCoordinate = (int)(getSize().getHeight())-14;
-                int xCoordinate = (int)(getSize().getWidth()/2-mWidth.intValue()/2);
-        		g2.setColor(Color.YELLOW);
+                int yCoordinate = 84; //(int)(getSize().getHeight())-14;
+                int xCoordinate = 145 - mWidth.intValue(); //(int)(getSize().getWidth()/2-mWidth.intValue()/2);
+        		g2.setColor(new Color(113,129,188)); //Color.BLACK);
                 g2.drawString(freemindVersion, xCoordinate , yCoordinate);
-        		g2.setColor(Color.WHITE);
+        		g2.setColor(new Color(61,83,164));
         		g2.drawString(freemindVersion, xCoordinate+1 , yCoordinate+1);
         	}
         };
@@ -168,7 +167,6 @@ public class FreeMindSplash extends JFrame implements IFreeMindSplash {
     public ImageIcon getWindowIcon() {
         return mIcon;
     }
-
 
 }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.36 2007-01-17 23:12:22 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.37 2007-02-03 23:19:26 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -25,6 +25,7 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -47,7 +48,6 @@ import java.util.logging.SimpleFormatter;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -110,6 +110,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	private static FileHandler mFileHandler;
 	private JSplitPane mSplitPane;
 	private JTabbedPane mTabbedPane;
+    private ImageIcon mWindowIcon;
 	public FreeMind() {
         super("FreeMind");
         // read default properties from jar:
@@ -157,9 +158,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	updateLookAndFeel();
 	feedback.increase("FreeMind.progress.createController");
 
-	ImageIcon icon = new ImageIcon(getResource("images/FreeMindWindowIcon.png"));
-	setIconImage(icon.getImage());
-
+	setIconImage(mWindowIcon.getImage());
 	//Layout everything
 	getContentPane().setLayout( new BorderLayout() );
 
@@ -598,15 +597,20 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		return logger2;
     }
 
+    
+    
+    
     public static void main(String[] args) {
     	final FreeMind frame = new FreeMind();
-        FreeMindSplash splash=null;
+        IFreeMindSplash splash=null;
         FeedBack feedBack;
         // change here, if you don't like the splash
         if (true) {
             splash = new FreeMindSplash(frame);
+            splash = new FreeMindSplashLightBulb(frame);
             splash.setVisible(true);
             feedBack = splash.getFeedBack();
+            frame.mWindowIcon = splash.getWindowIcon();
         } else {
             feedBack = new FeedBack(){
                 int value = 0;
@@ -624,6 +628,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
                 public void setMaximumValue(int max) {
                 }};
+                frame.mWindowIcon  = new ImageIcon(frame.getResource("images/FreeMindWindowIcon.png"));
         }
 		feedBack.setMaximumValue(9);
         frame.init(feedBack);
