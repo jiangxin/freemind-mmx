@@ -43,6 +43,8 @@ Changes made in FreeMind 0.9.0 Beta 9
 * New feature: Script Editor
 * New feature: split of multi paragraph HTML nodes (Edit->Split, plugin)
 * New feature: split of HTML nodes im WYSIWYG Editor
+* SimplyHTML Properties integrated
+* Bug Fix in copy to clipboard
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8
