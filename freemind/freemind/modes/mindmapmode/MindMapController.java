@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.27 2007-01-31 22:56:33 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.28 2007-02-04 12:52:56 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1694,23 +1694,33 @@ freemind.main.Resources.getInstance().logException(					e1);
     /**
      */
     public void splitNode(MindMapNode node, int caretPosition, String newText) {
+            if(node.isRoot()){
+                return;
+            }
             //If there are children, they go to the node below
             String futureText = newText != null ? newText : node.toString();
 
-            String newUpperContent = getContent(futureText, 0, caretPosition);
-            String newLowerContent = getContent(futureText, caretPosition, futureText.length());
-
+            String[] strings = getContent(futureText, caretPosition);
+            if(strings == null){ // do nothing
+                return;
+            }
+            String newUpperContent = strings[0];
+            String newLowerContent = strings[1];
             setNodeText(node, newUpperContent);
 
             MindMapNode parent = node.getParentNode();
-            MindMapNode lowerNode = addNewNode(parent, parent.getChildPosition(node) + 1, parent.isLeft());
+            MindMapNode lowerNode = addNewNode(parent, parent.getChildPosition(node) + 1, node.isLeft());
             lowerNode.setColor(node.getColor());
             lowerNode.setFont(node.getFont());
             setNodeText(lowerNode, newLowerContent);
 
     }
 
-    private String getContent(String text, int start, int end) {
+    private String[] getContent(String text, int pos) {
+        if(pos <= 0){
+            return null;
+        }
+        String[] strings = new String[2];
         if(text.startsWith("<html>")){
             HTMLEditorKit kit = new HTMLEditorKit();
             HTMLDocument doc = new HTMLDocument();
@@ -1718,8 +1728,17 @@ freemind.main.Resources.getInstance().logException(					e1);
             StringWriter out = new StringWriter();
             try {
                 kit.read(buf, doc, 0);
-                kit.write(out, doc, start, end - start);
-                return out.toString();
+                final String firstText = doc.getText(0, pos).trim();
+                final String secondText = doc.getText(pos, doc.getLength() - pos).trim();
+                if(firstText.length() == 0 || secondText.length() == 0){
+                    return null;
+                }
+                kit.write(out, doc, 0, pos);
+                strings[0] = out.toString();
+                out.flush();
+                kit.write(out, doc, pos, doc.getLength() - pos);
+                strings[1] = out.toString();
+                return strings;
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -1728,7 +1747,14 @@ freemind.main.Resources.getInstance().logException(					e1);
                 e.printStackTrace();
             }
         }
-        return text.substring(start, end);
+        else{
+            if(pos >= text.length()){
+                return null;
+            }
+            strings[0] = text.substring(0, pos);
+            strings[1] = text.substring(pos);
+        }
+        return strings;
     }
 
     protected void updateNode(MindMapNode node) {

@@ -19,7 +19,7 @@
  *
  * Created on ???
  */
-/*$Id: MindMapNodesSelection.java,v 1.2.18.2.12.1 2006-04-06 21:15:06 dpolivaev Exp $*/
+/*$Id: MindMapNodesSelection.java,v 1.2.18.2.12.2 2007-02-04 12:52:55 dpolivaev Exp $*/
 package freemind.controller;
 import java.awt.datatransfer.*;
 import java.io.*;
@@ -88,7 +88,10 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
       throw new UnsupportedFlavorException(flavor); }
 
    public DataFlavor[] getTransferDataFlavors() {
-      return new DataFlavor[] { DataFlavor.stringFlavor, mindMapNodesFlavor, rtfFlavor, htmlFlavor, dropActionFlavor}; }
+       if(htmlContent != null)
+           return new DataFlavor[] { DataFlavor.stringFlavor, mindMapNodesFlavor, rtfFlavor, htmlFlavor, dropActionFlavor};
+       return new DataFlavor[] { DataFlavor.stringFlavor, mindMapNodesFlavor, rtfFlavor, dropActionFlavor}; 
+   }
 
    public boolean isDataFlavorSupported(DataFlavor flavor) {
        if(flavor.equals(DataFlavor.stringFlavor) && stringContent != null) 

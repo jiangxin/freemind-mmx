@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.30 2006-12-16 21:47:19 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.31 2007-02-04 12:53:22 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -47,6 +47,7 @@ import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -340,15 +341,12 @@ public class NodeNote extends MindMapNodeHookAdapter {
 
         public static SHTMLPanel getHtmlEditorPanel() {
             if (htmlEditorPanel == null) {
-                try {
-                    final ResourceBundle resourceBundle = ResourceBundle.getBundle("accessories.plugins.SimplyHTML", 
-                            Locale.getDefault());
-                    final TextResources resources = new DefaultTextResources(resourceBundle);
-                    SHTMLPanel.setResources(resources);
-                } catch (MissingResourceException mre) {
-                    Util.errMsg(null,
-                            "resources/SimplyHTML.properties not found", mre);
-                }
+                final TextResources resources = new DefaultTextResources(Resources.getInstance().getResources(), Resources.getInstance().getProperties());
+                SHTMLPanel.setResources(new TextResources(){
+                    public String getString(String pKey) {
+                        return resources.getString("simplyhtml." + pKey);
+                    }                        
+                });
                 htmlEditorPanel = SHTMLPanel.createSHTMLPanel();
             }
             return htmlEditorPanel;

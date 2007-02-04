@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.21 2007-01-31 20:28:23 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.22 2007-02-04 12:52:55 dpolivaev Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -29,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
@@ -48,9 +49,79 @@ public class FreeMindCommon {
 
 	public static final String POSTFIX_TRANSLATE_ME = "[translate me]";
 
-    private static PropertyResourceBundle languageResources;
+    private class FreemindResourceBundle extends ResourceBundle{
+        private PropertyResourceBundle languageResources;
+        private PropertyResourceBundle defaultResources;
+        FreemindResourceBundle(){
+            try {
+                String lang = getProperty(RESOURCE_LANGUAGE);
+                if (lang == null || lang.equals("automatic")) {
+                    lang = Locale.getDefault().getLanguage() + "_"
+                            + Locale.getDefault().getCountry();
+                    if (getLanguageResources(lang) == null) {
+                        lang = Locale.getDefault().getLanguage();
+                        if (getLanguageResources(lang) == null) {
+                            // default is english.
+                            lang = DEFAULT_LANGUAGE;
+                        }
+                    }
+                }
+                languageResources = getLanguageResources(lang);
+                defaultResources = getLanguageResources(DEFAULT_LANGUAGE);
+            } catch (Exception ex) {
+                freemind.main.Resources.getInstance().logException(             ex);
+                logger.severe("Error loading Resources");
+            }
+        }
 
-	private PropertyResourceBundle defaultResources;
+        /**
+         * @throws IOException
+         */
+        private PropertyResourceBundle getLanguageResources(String lang)
+                throws IOException {
+            URL systemResource = mFreeMindMain.getResource("Resources_" + lang
+                    + ".properties");
+            if (systemResource == null) {
+                return null;
+            }
+            InputStream in = systemResource.openStream();
+            if (in == null) {
+                return null;
+            }
+            PropertyResourceBundle bundle = new PropertyResourceBundle(in);
+            in.close();
+            return bundle;
+        }
+
+        protected Object handleGetObject(String key) {
+            try {
+                return languageResources.getString(key);
+            } catch (Exception ex) {
+                logger.severe("Warning - resource string not found:" + key);
+                return defaultResources.getString(key) + POSTFIX_TRANSLATE_ME;
+            }
+        }
+
+        public Enumeration getKeys() {
+            return defaultResources.getKeys();
+        }
+        
+        String getResourceString(String key) {
+            try {
+                return getString(key);
+            } catch (Exception ex) {
+                return key;
+            }
+        }
+
+        String getResourceString(String key, String resource) {
+            try {
+                return getString(key);
+            } catch (Exception e) {
+                return resource;
+            }
+        }
+    }
 
 	public static final String RESOURCE_LANGUAGE = "language";
 
@@ -63,6 +134,8 @@ public class FreeMindCommon {
 	private final FreeMindMain mFreeMindMain;
 
     private String baseDir;
+
+    private FreemindResourceBundle resources;
 
     /**
      * Holds the last opened map.
@@ -93,83 +166,22 @@ public class FreeMindCommon {
 
 	/** Returns the ResourceBundle with the current language */
     public ResourceBundle getResources() {
-		if (languageResources == null) {
-			try {
-				String lang = getProperty(RESOURCE_LANGUAGE);
-				if (lang == null || lang.equals("automatic")) {
-					lang = Locale.getDefault().getLanguage() + "_"
-							+ Locale.getDefault().getCountry();
-					if (getLanguageResources(lang) == null) {
-						lang = Locale.getDefault().getLanguage();
-						if (getLanguageResources(lang) == null) {
-							// default is english.
-							lang = DEFAULT_LANGUAGE;
-						}
-					}
-				}
-				languageResources = getLanguageResources(lang);
-				defaultResources = getLanguageResources(DEFAULT_LANGUAGE);
-			} catch (Exception ex) {
-			    freemind.main.Resources.getInstance().logException(				ex);
-				logger.severe("Error loading Resources");
-				return null;
-			}
+		if (resources == null) {
+            resources = new FreemindResourceBundle();
 		}
-		return languageResources;
-	}
-
-	/**
-	 * @throws IOException
-	 */
-	private PropertyResourceBundle getLanguageResources(String lang)
-			throws IOException {
-		URL systemResource = mFreeMindMain.getResource("Resources_" + lang
-				+ ".properties");
-		if (systemResource == null) {
-			return null;
-		}
-		InputStream in = systemResource.openStream();
-		if (in == null) {
-			return null;
-		}
-		PropertyResourceBundle bundle = new PropertyResourceBundle(in);
-		in.close();
-		return bundle;
+		return resources;
 	}
 
     public String getResourceString(String key) {
-        try {
-            return getResources().getString(key);
-        } catch (Exception ex) {
-            logger.severe("Warning - resource string not found:" + key);
-            try {
-                return defaultResources.getString(key) + POSTFIX_TRANSLATE_ME;
-            } catch (Exception e) {
-                freemind.main.Resources.getInstance().logException(e);
-                logger
-                        .severe("Warning - default resource string not found (even in english):"
-                                + key);
-                return key;
-            }
-        }
+        return ((FreemindResourceBundle)getResources()).getResourceString(key);
     }
 
     public String getResourceString(String key, String resource) {
-        try {
-            return getResources().getString(key);
-        } catch (Exception ex) {
-            logger.severe("Warning - resource string not found:" + key);
-            try {
-                logger.severe("Warning - default resource string not found:" + key);
-                return defaultResources.getString(key) + POSTFIX_TRANSLATE_ME;
-            } catch (Exception e) {
-                return resource;
-            }
-        }
+        return ((FreemindResourceBundle)getResources()).getResourceString(key, resource);
     }
 
     public void clearLanguageResources() {
-		languageResources = null;
+		resources = null;
 	}
     
 	public ClassLoader getFreeMindClassLoader() {
