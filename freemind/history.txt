@@ -46,6 +46,8 @@ Changes made in FreeMind 0.9.0 Beta 9
 * SimplyHTML Properties integrated
 * Bug Fix in copy to clipboard
 * MAC Java options include more memory (for graphics export)
+* Writing of HTML refactored out to class MindMapHTMLWriter in package freemind.modes.mindmapmode
+* Copy creates HTML for multiple selection.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8

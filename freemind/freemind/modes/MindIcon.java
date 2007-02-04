@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindIcon.java,v 1.1.18.6.2.5 2006-10-01 11:38:07 dpolivaev Exp $ */
+/* $Id: MindIcon.java,v 1.1.18.6.2.6 2007-02-04 21:43:40 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -112,13 +112,9 @@ public class MindIcon implements Comparable{
     }
 
 
-    /**
-       * Get the value of description (in local language).
-       * @return Value of description.
-       */
-    public String getDescription(FreeMindMain frame) {
+    public String getDescription() {
         String resource = new String("icon_"+getName());
-        return frame.getResourceString(resource, resource);
+        return Resources.getInstance().getResourceString(resource, resource);
     }
 
     public String getIconFileName() {

@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: IconAction.java,v 1.1.2.2.2.3 2006-12-19 20:36:30 christianfoltin Exp $ */
+/* $Id: IconAction.java,v 1.1.2.2.2.4 2007-02-04 21:43:40 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -44,10 +44,10 @@ public class IconAction extends FreemindAction  implements ActorXml{
     private final MindMapController modeController;
     private final RemoveLastIconAction removeLastIconAction;
     public IconAction(MindMapController controller, MindIcon _icon, RemoveLastIconAction removeLastIconAction) {
-        super(_icon.getDescription(controller.getFrame()), _icon.getIcon(), controller);
+        super(_icon.getDescription(), _icon.getIcon(), controller);
         this.modeController = controller;
         this.removeLastIconAction = removeLastIconAction;
-        putValue(Action.SHORT_DESCRIPTION, _icon.getDescription(controller.getFrame()));
+        putValue(Action.SHORT_DESCRIPTION, _icon.getDescription());
         this.icon = _icon;
         controller.getActionFactory().registerActor(this, getDoActionClass());
     }

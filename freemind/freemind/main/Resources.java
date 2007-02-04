@@ -60,6 +60,10 @@ public class Resources {
         return main.getResourceString(resource);
     }
          
+    public String getResourceString(String key, String resource) {
+        return main.getResourceString(key, resource);
+    }
+         
     static public Resources getInstance(){
         return resourcesInstance;
     }

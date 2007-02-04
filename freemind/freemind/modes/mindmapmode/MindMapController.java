@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.28 2007-02-04 12:52:56 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.29 2007-02-04 21:43:40 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -29,16 +29,20 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -100,7 +104,7 @@ import freemind.extensions.UndoEventReceiver;
 import freemind.extensions.HookFactory.RegistrationContainer;
 import freemind.main.ExampleFileFilter;
 import freemind.main.FreeMind;
-import freemind.main.Resources;
+import freemind.main.FreeMindCommon;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.ControllerAdapter;
@@ -1077,27 +1081,38 @@ freemind.main.Resources.getInstance().logException(					e1);
 
     // This may later be moved to ControllerAdapter. So far there is no reason for it.
     protected class ExportToHTMLAction extends AbstractAction {
-	MindMapController c;
-	public ExportToHTMLAction(MindMapController controller) {
-	    super(getText("export_to_html"));
-	    c = controller; }
-	public void actionPerformed(ActionEvent e) {
-           File file = new File(c.getMindMapMapModel().getFile()+".html");
-           if (c.getMindMapMapModel().saveHTML((MindMapNodeModel)c.getMindMapMapModel().getRoot(),file)) {
-              loadURL(file.toString()); }}}
+        MindMapController c;
+        public ExportToHTMLAction(MindMapController controller) {
+            super(getText("export_to_html"));
+            c = controller; }
+        public void actionPerformed(ActionEvent e) {
+            try {
+                File file = new File(c.getMindMapMapModel().getFile() + ".html");
+                saveHTML((MindMapNodeModel) c.getMindMapMapModel().getRoot(), file);
+                loadURL(file.toString());
+            }
+            catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
     protected class ExportBranchToHTMLAction extends AbstractAction {
-	MindMapController c;
-	public ExportBranchToHTMLAction(MindMapController controller) {
-	    super(getText("export_branch_to_html"));
-	    c = controller; }
-	public void actionPerformed(ActionEvent e) {
-           try {
-              File file = File.createTempFile("tmm", ".html");
-              if (c.getMindMapMapModel().saveHTML((MindMapNodeModel)getSelected(),file)) {
-                 loadURL(file.toString()); }}
-           catch (IOException ex) {}}}
-
+        MindMapController c;
+        public ExportBranchToHTMLAction(MindMapController controller) {
+            super(getText("export_branch_to_html"));
+            c = controller; 
+        }
+        public void actionPerformed(ActionEvent e) {
+            try {
+                File file = File.createTempFile("tmm", ".html");
+                saveHTML((MindMapNodeModel)getSelected(),file);
+                loadURL(file.toString()); 
+            }
+            catch (IOException ex) {
+            }
+        }
+    }
 
     private class ImportBranchAction extends AbstractAction {
 	ImportBranchAction() {
@@ -1691,37 +1706,51 @@ freemind.main.Resources.getInstance().logException(					e1);
         }
     }
 
+    static public void saveHTML(MindMapNodeModel rootNodeOfBranch, File file) throws IOException {
+        BufferedWriter fileout = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(file)));
+        MindMapHTMLWriter htmlWriter = new MindMapHTMLWriter(
+                fileout);
+        htmlWriter.saveHTML(rootNodeOfBranch);      
+    }
+    
+    static public void saveHTML(List mindMapNodes, Writer fileout) throws IOException {
+        MindMapHTMLWriter htmlWriter = new MindMapHTMLWriter(
+                fileout);
+        htmlWriter.saveHTML(mindMapNodes);      
+    }   
     /**
      */
     public void splitNode(MindMapNode node, int caretPosition, String newText) {
-            if(node.isRoot()){
-                return;
-            }
-            //If there are children, they go to the node below
-            String futureText = newText != null ? newText : node.toString();
+        if (node.isRoot()) {
+            return;
+        }
+        // If there are children, they go to the node below
+        String futureText = newText != null ? newText : node.toString();
 
-            String[] strings = getContent(futureText, caretPosition);
-            if(strings == null){ // do nothing
-                return;
-            }
-            String newUpperContent = strings[0];
-            String newLowerContent = strings[1];
-            setNodeText(node, newUpperContent);
+        String[] strings = getContent(futureText, caretPosition);
+        if (strings == null) { // do nothing
+            return;
+        }
+        String newUpperContent = strings[0];
+        String newLowerContent = strings[1];
+        setNodeText(node, newUpperContent);
 
-            MindMapNode parent = node.getParentNode();
-            MindMapNode lowerNode = addNewNode(parent, parent.getChildPosition(node) + 1, node.isLeft());
-            lowerNode.setColor(node.getColor());
-            lowerNode.setFont(node.getFont());
-            setNodeText(lowerNode, newLowerContent);
+        MindMapNode parent = node.getParentNode();
+        MindMapNode lowerNode = addNewNode(parent, parent
+                .getChildPosition(node) + 1, node.isLeft());
+        lowerNode.setColor(node.getColor());
+        lowerNode.setFont(node.getFont());
+        setNodeText(lowerNode, newLowerContent);
 
     }
 
     private String[] getContent(String text, int pos) {
-        if(pos <= 0){
+        if (pos <= 0) {
             return null;
         }
         String[] strings = new String[2];
-        if(text.startsWith("<html>")){
+        if (text.startsWith("<html>")) {
             HTMLEditorKit kit = new HTMLEditorKit();
             HTMLDocument doc = new HTMLDocument();
             StringReader buf = new StringReader(text);
@@ -1729,8 +1758,9 @@ freemind.main.Resources.getInstance().logException(					e1);
             try {
                 kit.read(buf, doc, 0);
                 final String firstText = doc.getText(0, pos).trim();
-                final String secondText = doc.getText(pos, doc.getLength() - pos).trim();
-                if(firstText.length() == 0 || secondText.length() == 0){
+                final String secondText = doc.getText(pos,
+                        doc.getLength() - pos).trim();
+                if (firstText.length() == 0 || secondText.length() == 0) {
                     return null;
                 }
                 kit.write(out, doc, 0, pos);
@@ -1739,16 +1769,18 @@ freemind.main.Resources.getInstance().logException(					e1);
                 kit.write(out, doc, pos, doc.getLength() - pos);
                 strings[1] = out.toString();
                 return strings;
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            } catch (BadLocationException e) {
+            }
+            catch (BadLocationException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
-        else{
-            if(pos >= text.length()){
+        else {
+            if (pos >= text.length()) {
                 return null;
             }
             strings[0] = text.substring(0, pos);
@@ -1764,12 +1796,14 @@ freemind.main.Resources.getInstance().logException(					e1);
 
     /**
      */
-    private void recursiveCallUpdateHooks(MindMapNode node, MindMapNode changedNode) {
+    private void recursiveCallUpdateHooks(MindMapNode node,
+            MindMapNode changedNode) {
         // Tell any node hooks that the node is changed:
-        if(node instanceof MindMapNode) {
-            for(Iterator i=  ((MindMapNode)node).getActivatedHooks().iterator(); i.hasNext();) {
+        if (node instanceof MindMapNode) {
+            for (Iterator i = ((MindMapNode) node).getActivatedHooks()
+                    .iterator(); i.hasNext();) {
                 PermanentNodeHook hook = (PermanentNodeHook) i.next();
-                if ( (! isUndoAction())  || hook instanceof UndoEventReceiver) {
+                if ((!isUndoAction()) || hook instanceof UndoEventReceiver) {
                     if (node == changedNode)
                         hook.onUpdateNodeHook();
                     else
@@ -1777,44 +1811,40 @@ freemind.main.Resources.getInstance().logException(					e1);
                 }
             }
         }
-        if(!node.isRoot() && node.getParentNode()!= null)
+        if (!node.isRoot() && node.getParentNode() != null)
             recursiveCallUpdateHooks(node.getParentNode(), changedNode);
     }
 
-
     public void doubleClick(MouseEvent e) {
         /* perform action only if one selected node.*/
-        if(getSelecteds().size() != 1)
+        if (getSelecteds().size() != 1)
             return;
-        MindMapNode node = ((NodeView)(e.getComponent().getParent())).getModel();
+        MindMapNode node = ((NodeView) (e.getComponent().getParent()))
+                .getModel();
         // edit the node only if the node is a leaf (fc 0.7.1), or the root node (fc 0.9.0)
         if (node.hasChildren() && !node.isRoot()) {
             // the emulate the plain click.
             plainClick(e);
             return;
         }
-        if (!e.isAltDown()
-            && !e.isControlDown()
-            && !e.isShiftDown()
-            && !e.isPopupTrigger()
-            && e.getButton() == MouseEvent.BUTTON1
-            && (node.getLink() == null)) {
+        if (!e.isAltDown() && !e.isControlDown() && !e.isShiftDown()
+                && !e.isPopupTrigger() && e.getButton() == MouseEvent.BUTTON1
+                && (node.getLink() == null)) {
             edit(null, false, false);
         }
     }
 
-
-    public void select( NodeView node) {
-    		if(node == null) {
-    			logger.warning("Select with null NodeView called!");
-    			return;
-    		}
+    public void select(NodeView node) {
+        if (node == null) {
+            logger.warning("Select with null NodeView called!");
+            return;
+        }
         getView().scrollNodeToVisible(node);
         getView().selectAsTheOnlyOneSelected(node);
         getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); // this level is default
     }
 
-    public void select( MindMapNode selected) {
+    public void select(MindMapNode selected) {
         // are they visible visible?
         displayNode(selected);
         select(selected.getViewer());
@@ -1841,14 +1871,16 @@ freemind.main.Resources.getInstance().logException(					e1);
     }
 
     public boolean extendSelection(MouseEvent e) {
-        NodeView newlySelectedNodeView = (NodeView)e.getComponent().getParent();
+        NodeView newlySelectedNodeView = (NodeView) e.getComponent()
+                .getParent();
         //MindMapNode newlySelectedNode = newlySelectedNodeView.getModel();
         boolean extend = e.isControlDown();
         boolean range = e.isShiftDown();
         boolean branch = e.isAltGraphDown() || e.isAltDown(); /* windows alt, linux altgraph .... */
         boolean retValue = false;
 
-        if (extend || range || branch || !getView().isSelected(newlySelectedNodeView)) {
+        if (extend || range || branch
+                || !getView().isSelected(newlySelectedNodeView)) {
             if (!range) {
                 if (extend)
                     getView().toggleSelected(newlySelectedNodeView);
@@ -1858,25 +1890,25 @@ freemind.main.Resources.getInstance().logException(					e1);
             }
             else {
                 retValue = getView().selectContinuous(newlySelectedNodeView);
-//                 /* fc, 25.1.2004: replace getView by controller methods.*/
-//                 if (newlySelectedNodeView != getView().getSelected() &&
-//                     newlySelectedNodeView.isSiblingOf(getView().getSelected())) {
-//                     getView().selectContinuous(newlySelectedNodeView);
-//                     retValue = true;
-//                 } else {
-//                     /* if shift was down, but no range can be selected, then the new node is simply selected: */
-//                     if(!getView().isSelected(newlySelectedNodeView)) {
-//                         getView().toggleSelected(newlySelectedNodeView);
-//                         retValue = true;
-//                     }
+                //                 /* fc, 25.1.2004: replace getView by controller methods.*/
+                //                 if (newlySelectedNodeView != getView().getSelected() &&
+                //                     newlySelectedNodeView.isSiblingOf(getView().getSelected())) {
+                //                     getView().selectContinuous(newlySelectedNodeView);
+                //                     retValue = true;
+                //                 } else {
+                //                     /* if shift was down, but no range can be selected, then the new node is simply selected: */
+                //                     if(!getView().isSelected(newlySelectedNodeView)) {
+                //                         getView().toggleSelected(newlySelectedNodeView);
+                //                         retValue = true;
+                //                     }
             }
-            if(branch) {
+            if (branch) {
                 getView().selectBranch(newlySelectedNodeView, extend);
                 retValue = true;
             }
         }
 
-        if(retValue) {
+        if (retValue) {
             e.consume();
 
             // Display link in status line
@@ -1887,37 +1919,41 @@ freemind.main.Resources.getInstance().logException(					e1);
         return retValue;
     }
 
-
-
     public void registerMouseWheelEventHandler(MouseWheelEventHandler handler) {
-        logger.info("Registered   MouseWheelEventHandler "+handler);
+        logger.info("Registered   MouseWheelEventHandler " + handler);
         mRegisteredMouseWheelEventHandler.add(handler);
     }
+
     public void deRegisterMouseWheelEventHandler(MouseWheelEventHandler handler) {
-        logger.info("Deregistered MouseWheelEventHandler "+handler);
+        logger.info("Deregistered MouseWheelEventHandler " + handler);
         mRegisteredMouseWheelEventHandler.remove(handler);
     }
 
     public Set getRegisteredMouseWheelEventHandler() {
-    		return Collections.unmodifiableSet(mRegisteredMouseWheelEventHandler);
+        return Collections.unmodifiableSet(mRegisteredMouseWheelEventHandler);
 
     }
 
     public String marshall(XmlAction action) {
         return XmlBindingTools.getInstance().marshall(action);
-	}
+    }
 
-	public XmlAction unMarshall(String inputString) {
+    public XmlAction unMarshall(String inputString) {
         return XmlBindingTools.getInstance().unMarshall(inputString);
-	}
+    }
 
-	public void storeDialogPositions(JDialog dialog, WindowConfigurationStorage pStorage, String window_preference_storage_property) {
-		XmlBindingTools.getInstance().storeDialogPositions(getController(), dialog, pStorage, window_preference_storage_property);
-	}
+    public void storeDialogPositions(JDialog dialog,
+            WindowConfigurationStorage pStorage,
+            String window_preference_storage_property) {
+        XmlBindingTools.getInstance().storeDialogPositions(getController(),
+                dialog, pStorage, window_preference_storage_property);
+    }
 
-	public WindowConfigurationStorage decorateDialog(JDialog dialog, String window_preference_storage_property) {
-		return XmlBindingTools.getInstance().decorateDialog(getController(), dialog, window_preference_storage_property);
-	}
+    public WindowConfigurationStorage decorateDialog(JDialog dialog,
+            String window_preference_storage_property) {
+        return XmlBindingTools.getInstance().decorateDialog(getController(),
+                dialog, window_preference_storage_property);
+    }
 
     public AttributeController getAttributeController() {
         return attributeController;
@@ -1927,11 +1963,12 @@ freemind.main.Resources.getInstance().logException(					e1);
         return new AttributePopupMenu();
     }
 
-	public XMLElement createXMLElement() {
-		return new MindMapXMLElement(this);
-	}
+    public XMLElement createXMLElement() {
+        return new MindMapXMLElement(this);
+    }
 
-    public void setAttribute(MindMapNode pNode, int pPosition, Attribute pAttribute) {
+    public void setAttribute(MindMapNode pNode, int pPosition,
+            Attribute pAttribute) {
         pNode.getAttributes().setValueAt(pAttribute.getName(), pPosition, 0);
         pNode.getAttributes().setValueAt(pAttribute.getValue(), pPosition, 1);
     }

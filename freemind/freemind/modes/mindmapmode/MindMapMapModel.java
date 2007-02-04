@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.12 2007-01-12 21:45:13 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.13 2007-02-04 21:43:40 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -46,6 +46,8 @@ import java.util.ListIterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+
+import javax.swing.text.html.HTMLWriter;
 
 
 import freemind.controller.MindMapNodesSelection;
@@ -149,196 +151,19 @@ public class MindMapMapModel extends MapAdapter  {
     //
 
    public String getAsHTML(List mindMapNodes) {
-      try {
-         if (mindMapNodes.size() > 1) {
-            return null; } // HTML not supported for multiple nodes
-         MindMapNodeModel node = (MindMapNodeModel) mindMapNodes.get(0);
-         if (node.hasChildren()) {
-            return null; } // HTML not supported for nodes with children
-         if (node.toString().startsWith("<html>")) {
-            String output = node.toString();
-            return HtmlTools.unicodeToHTMLUnicodeEntity(output); }
-         else {
-            return null; }} // No need to support HTML if the node is a plain text node.        
-      catch(Exception e) {
-         freemind.main.Resources.getInstance().logException(e);
-         return null; }}
-
-   public boolean saveHTML(MindMapNodeModel rootNodeOfBranch, File file) {
-        // When isRoot is true, rootNodeOfBranch will be exported as folded
-        // regardless his isFolded state in the mindmap.
-        try {
-            // We do all the HTML saving using just ordinary output.
-
-            //Generating output Stream
-            BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
-
-            String el = System.getProperty("line.separator");
-            fileout.write(
-"<html>"+el+
-"<head>"+el+
-"<title>"+rootNodeOfBranch.saveHTML_escapeUnicodeAndSpecialCharacters(rootNodeOfBranch.getPlainTextContent())+
-"</title>"+el+
-"<style type=\"text/css\">"+el+
-"    span.foldopened { color: white; font-size: xx-small;"+el+
-"    border-width: 1; font-family: monospace; padding: 0em 0.25em 0em 0.25em; background: #e0e0e0;"+el+
-"    VISIBILITY: visible;"+el+
-"    cursor:pointer; }"+el+
-""+el+
-""+el+
-"    span.foldclosed { color: #666666; font-size: xx-small;"+el+
-"    border-width: 1; font-family: monospace; padding: 0em 0.25em 0em 0.25em; background: #e0e0e0;"+el+
-"    VISIBILITY: hidden;"+el+
-"    cursor:pointer; }"+el+
-""+el+
-"    span.foldspecial { color: #666666; font-size: xx-small; border-style: none solid solid none;"+el+
-"    border-color: #CCCCCC; border-width: 1; font-family: sans-serif; padding: 0em 0.1em 0em 0.1em; background: #e0e0e0;"+el+
-"    cursor:pointer; }"+el+
-""+el+
-"    li.mapnode { list-style: none; }"+el+
-""+el+
-"    span.l { color: red; font-weight: bold; }"+el+
-""+el+
-"    a.mapnode:link {text-decoration: none; color: black; }"+el+
-"    a.mapnode:visited {text-decoration: none; color: black; }"+el+
-"    a.mapnode:active {text-decoration: none; color: black; }"+el+
-"    a.mapnode:hover {text-decoration: none; color: black; background: #eeeee0; }"+el+
-""+el+
-"</style>"+el+
-"<!-- ^ Position is not set to relative / absolute here because of Mozilla -->"+el+
-"</head>"+el+
-"<body>"+el);
-
-            String htmlExportFoldingOption = getFrame().getProperty("html_export_folding");
-            boolean writeFoldingCode =
-               ( htmlExportFoldingOption.equals("html_export_fold_currently_folded") &&
-                 rootNodeOfBranch.hasFoldedStrictDescendant() ) ||
-               htmlExportFoldingOption.equals("html_export_fold_all") ;
-
-            if (writeFoldingCode) {
-               fileout.write(
-""+el+
-"<script language=\"JavaScript\">"+el+
-"   // Here we implement folding. It works fine with MSIE5.5, MSIE6.0 and"+el+
-"   // Mozilla 0.9.6."+el+
-""+el+
-"   if (document.layers) {"+el+
-"      //Netscape 4 specific code"+el+
-"      pre = 'document.';"+el+
-"      post = ''; }"+el+
-"   if (document.getElementById) {"+el+
-"      //Netscape 6 specific code"+el+
-"      pre = 'document.getElementById(\"';"+el+
-"      post = '\").style'; }"+el+
-"   if (document.all) {"+el+
-"      //IE4+ specific code"+el+
-"      pre = 'document.all.';"+el+
-"      post = '.style'; }"+el+
-""+el+
-"function layer_exists(layer) {"+el+
-"   try {"+el+
-"      eval(pre + layer + post);"+el+
-"      return true; }"+el+
-"   catch (error) {"+el+
-"      return false; }}"+el+
-""+el+
-"function show_layer(layer) {"+el+
-"   eval(pre + layer + post).position = 'relative'; "+el+
-"   eval(pre + layer + post).visibility = 'visible'; }"+el+
-""+el+
-"function hide_layer(layer) {"+el+
-"   eval(pre + layer + post).visibility = 'hidden';"+el+
-"   eval(pre + layer + post).position = 'absolute'; }"+el+
-""+el+
-"function hide_folder(folder) {"+el+
-"    hide_folding_layer(folder)"+el+
-"    show_layer('show'+folder);"+el+
-""+el+
-"    scrollBy(0,0); // This is a work around to make it work in Browsers (Explorer, Mozilla)"+el+
-"}"+el+
-""+el+
-"function show_folder(folder) {"+el+
-"    // Precondition: all subfolders are folded"+el+
-""+el+
-"    show_layer('hide'+folder);"+el+
-"    hide_layer('show'+folder);"+el+
-"    show_layer('fold'+folder);"+el+
-""+el+
-"    scrollBy(0,0); // This is a work around to make it work in Browsers (Explorer, Mozilla)"+el+
-""+el+
-"    var i;"+el+
-"    for (i=1; layer_exists('fold'+folder+'_'+i); ++i) {"+el+
-"       show_layer('show'+folder+'_'+i); }"+el+
-"}"+el+
-""+
-"function show_folder_completely(folder) {"+el+
-"    // Precondition: all subfolders are folded"+el+
-""+el+
-"    show_layer('hide'+folder);"+el+
-"    hide_layer('show'+folder);"+el+
-"    show_layer('fold'+folder);"+el+
-""+el+
-"    scrollBy(0,0); // This is a work around to make it work in Browsers (Explorer, Mozilla)"+el+
-""+el+
-"    var i;"+el+
-"    for (i=1; layer_exists('fold'+folder+'_'+i); ++i) {"+el+
-"       show_folder_completely(folder+'_'+i); }"+el+
-"}"+el+
-""+el+
-""+el+
-""+el+
-"function hide_folding_layer(folder) {"+el+
-"   var i;"+el+
-"   for (i=1; layer_exists('fold'+folder+'_'+i); ++i) {"+el+
-"       hide_folding_layer(folder+'_'+i); }"+el+
-""+el+
-"   hide_layer('hide'+folder);"+el+
-"   hide_layer('show'+folder);"+el+
-"   hide_layer('fold'+folder);"+el+
-""+el+
-"   scrollBy(0,0); // This is a work around to make it work in Browsers (Explorer, Mozilla)"+el+
-"}"+el+
-""+el+
-"function fold_document() {"+el+
-"   var i;"+el+
-"   var folder = '1';"+el+
-"   for (i=1; layer_exists('fold'+folder+'_'+i); ++i) {"+el+
-"       hide_folder(folder+'_'+i); }"+el+
-"}"+el+
-""+el+
-"function unfold_document() {"+el+
-"   var i;"+el+
-"   var folder = '1';"+el+
-"   for (i=1; layer_exists('fold'+folder+'_'+i); ++i) {"+el+
-"       show_folder_completely(folder+'_'+i); }"+el+
-"}"+el+
-""+el+
-"</script>"+el);
-
-               fileout.write("<SPAN class=\"foldspecial\" onclick=\"fold_document()\">All +</SPAN>"+el);
-               fileout.write("<SPAN class=\"foldspecial\" onclick=\"unfold_document()\">All -</SPAN>"+el); }
-
-            //fileout.write("<ul>");
-
-            rootNodeOfBranch.saveHTML(fileout, "1", 0, /*isRoot*/true, /*treatAsParagraph*/true, /*depth*/1);
-
-            //fileout.write("</ul>");
-
-            if (writeFoldingCode) {
-               fileout.write("<SCRIPT language=\"JavaScript\">"+el);
-               fileout.write("fold_document();"+el);
-               fileout.write("</SCRIPT>"+el); }
-            fileout.write("</body>"+el);
-            fileout.write("</html>"+el);
-            fileout.close();
-            return true;
-
-        } catch(Exception e) {
-            System.err.println("Error in MindMapMapModel.saveHTML(): ");
-            freemind.main.Resources.getInstance().logException(e);
-            return false;
-        }
-    }
+       // Returns success of the operation.
+       try {
+           StringWriter stringWriter = new StringWriter();
+           BufferedWriter fileout = new BufferedWriter(stringWriter);
+           MindMapController.saveHTML(mindMapNodes, fileout);
+           fileout.close();
+           
+           return stringWriter.toString();
+       } catch(Exception e) {
+           freemind.main.Resources.getInstance().logException(e);
+           return null;
+       }
+   }
 
     public String getAsPlainText(List mindMapNodes) {
         // Returns success of the operation.
