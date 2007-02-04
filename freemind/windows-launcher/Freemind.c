@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
+
 char *surround_by_quote(char *in_string) {
    char *result = (char *) malloc((strlen(in_string) + 2 + 1 ) * sizeof(char));
    result[0] = '"';
@@ -24,23 +26,27 @@ int main(int argc, char *argv[])  {
    // Pick the path from argv[0]. This is for the case that the launcher is not
    // started from the folder in which it resides.
 
-   char *full_name = application_name;
-   if (char *pos = strrchr(argv[0],'\\')) {
-      int prefix_length = pos - argv[0] + 1;
-      full_name = (char *) malloc((prefix_length + strlen(application_name) +
-                                   one_for_stopping_null ) * sizeof(char));
-      memcpy(full_name,argv[0],prefix_length);
-      strcpy(full_name + prefix_length, application_name); }
+   char *path_to_launcher = argv[0];
+   if (char *position_of_last_occurrence = strrchr(path_to_launcher,'\\')) {
+      int prefix_length = position_of_last_occurrence - path_to_launcher + 1;
+
+      char *path_to_launcher_without_file = (char *) malloc((prefix_length +
+                                             one_for_stopping_null ) * sizeof(char));
+      strncpy(path_to_launcher_without_file, path_to_launcher, prefix_length);
+      path_to_launcher_without_file[prefix_length] = '\0'; // End the string with null.
+      
+      chdir( path_to_launcher_without_file );
+   }
       
    arguments[0] = "javaw.exe";
    arguments[1] = "-Xmx256M";   // Allow Java to consume as much as 256 MB of memory
    arguments[2] = "-jar";
-   arguments[3] = surround_by_quote(full_name);
+   arguments[3] = surround_by_quote(application_name);
 
    // Surround all the arguments passed by quote
    
    for (int i=1; i <= no_of_passed_arguments_without_caller; ++i) {
-      arguments[no_of_fixed_arguments + i] = surround_by_quote(argv[i]); }
+      arguments[no_of_fixed_arguments + i - 1] = surround_by_quote(argv[i]); }
 
    // Null-terminate the arguments array
 

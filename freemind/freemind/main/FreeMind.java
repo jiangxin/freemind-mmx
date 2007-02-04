@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.37 2007-02-03 23:19:26 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.38 2007-02-04 21:54:28 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -606,7 +606,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
         FeedBack feedBack;
         // change here, if you don't like the splash
         if (true) {
-            splash = new FreeMindSplash(frame);
+            // fc: don't change the following line as it is changed by the build.xml script.
             splash = new FreeMindSplashLightBulb(frame);
             splash.setVisible(true);
             feedBack = splash.getFeedBack();

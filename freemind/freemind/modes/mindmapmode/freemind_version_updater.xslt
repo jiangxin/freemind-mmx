@@ -9,7 +9,7 @@
 	</xsl:template>
 
 	<xsl:template match="map">
-		<!-- versions -->
+		<!-- versions (the version tag is to be found in FreeMind.java as XML_VERSION.-->
 		<xsl:variable name="version"><!--
 			--><xsl:choose><!--
 			--><xsl:when test="@version='0.7.0'"><!--

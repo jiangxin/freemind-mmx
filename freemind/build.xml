@@ -30,6 +30,8 @@
 	<property name="java_source_version" value="1.4" />
 	<property name="java_target_version" value="1.4" />
 	<property name="build.compiler" value="modern" />
+	<!-- if set, the light bulb changes are performed. -->
+	<property name="light_bulb" value="" />
 	<property name="jarbundler.jar" value = "jarbundler-1.8.1.jar"/>
 
 	<taskdef name="jarbundler"
@@ -96,7 +98,19 @@
 
 	<!-- end generator part -->
 
-	<target name="build" depends="gen">
+	<target name="icon_change" if="light_bulb">
+		<replaceregexp file="${src}/freemind/main/FreeMind.java" byline="true" 
+			match="splash = new FreeMindSplash\(frame\);" 
+			replace="splash = new FreeMindSplashLightBulb(frame);"/>
+	</target>
+	
+	<target name="icon_change_butterfly" unless="light_bulb">
+		<replaceregexp file="${src}/freemind/main/FreeMind.java" byline="true" 
+			match="splash = new FreeMindSplashLightBulb\(frame\);" 
+			replace="splash = new FreeMindSplash(frame);"/>
+	</target>
+	
+	<target name="build" depends="gen,icon_change_butterfly,icon_change">
 		<!-- Perform Mac Changes as a plugin. -->
 		<exec dir="${src}/accessories/plugins" executable="ln" os="Mac OS X">
 			<arg value="-s"/>
@@ -109,6 +123,9 @@
 			<arg value="MacChanges.xml"/>
 		</exec>
 		<!-- end mac changes. -->
+		<!-- icon changes -->
+		
+		<!-- end icon changes -->
 		<mkdir dir="${build}"/>
 		<javac	srcdir="${src}"
 			destdir="${build}"
@@ -174,9 +191,15 @@
 		<condition property="isMacOs">
 			<os family="mac"/>
 		</condition>
+		<antcall target="dist_icon"/>
 		<antcall target="dist_macos"/>
 	</target>
 
+	<target name="dist_icon" if="light_bulb"> 
+		<copy file="${src}/windows-launcher/Freemind_light_bulb.exe" 
+			tofile="${dist}/Freemind.exe" overwrite="true"/>
+	</target>
+	
 	<target name="dist_macos" if="isMacOs">
 		<delete dir="${dist_macos}"/>
 		<mkdir dir="${dist_macos}"/>
