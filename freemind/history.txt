@@ -45,6 +45,7 @@ Changes made in FreeMind 0.9.0 Beta 9
 * New feature: split of HTML nodes im WYSIWYG Editor
 * SimplyHTML Properties integrated
 * Bug Fix in copy to clipboard
+* MAC Java options include more memory (for graphics export)
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8
