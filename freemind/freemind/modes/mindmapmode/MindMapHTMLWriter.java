@@ -21,9 +21,13 @@ class MindMapHTMLWriter {
     private static String el = System.getProperty("line.separator");
     private boolean writeFoldingCode;
     private boolean basedOnHeadings;
+    private boolean exportIcons;
 
     MindMapHTMLWriter(Writer fileout) {
         this.fileout = fileout;
+        exportIcons = false;
+        writeFoldingCode = false;
+        basedOnHeadings = true;
     }
 
     private static String convertSpecialChar(char c) {
@@ -125,8 +129,6 @@ class MindMapHTMLWriter {
     }
 
     void saveHTML(List mindMapNodes) throws IOException {
-        writeFoldingCode = false;
-        basedOnHeadings = true;
         fileout.write("<html>" + el + "<head>" + el);
         writeStyle();
         fileout.write(el + "</head>" + el + "<body>" + el);
@@ -153,10 +155,13 @@ class MindMapHTMLWriter {
         basedOnHeadings = (getProperty("html_export_folding")
                 .equals("html_export_based_on_headings"));
 
+        exportIcons = getProperty("export_icons_in_html").equals("true");
+        
         fileout.write("<html>" + el + "<head>" + el);
         fileout.write("<title>"
-                + saveHTML_escapeUnicodeAndSpecialCharacters(rootNodeOfBranch
-                        .getPlainTextContent()) + "</title>" + el);
+                + saveHTML_escapeUnicodeAndSpecialCharacters(
+                        rootNodeOfBranch.getPlainTextContent().replace('\n', ' '))
+                        + "</title>" + el);
 
         writeStyle();
         fileout.write(el + "</head>" + el + "<body>" + el);
@@ -386,7 +391,6 @@ class MindMapHTMLWriter {
 
     private void writeStyle() throws IOException {
         fileout.write("<style type=\"text/css\">" + el);
-        fileout.write("div { margin-left:30px; }"+ el);
         if (writeFoldingCode) {
             fileout
                     .write("    span.foldopened { color: white; font-size: xx-small;"
@@ -464,7 +468,8 @@ class MindMapHTMLWriter {
             fileout.write("<div ");
         }
 
-        if (model.getLink() != null) {
+        boolean hasHtmlLink = model.getLink() != null && ! hasHtml(model);
+        if (hasHtmlLink) {
             String link = model.getLink();
             if (link
                     .endsWith(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION)) {
@@ -487,13 +492,13 @@ class MindMapHTMLWriter {
             writeFoldingButtons(localParentID);
         }
 
-        if (getProperty("export_icons_in_html").equals("true")) {
+        if (exportIcons) {
             writeIcons(model);
         }
 
         writeModelContent(model);
 
-        if (model.getLink() != null) {
+        if (hasHtmlLink) {
             fileout.write("</a>" + el);
         }
 
@@ -569,39 +574,44 @@ class MindMapHTMLWriter {
 
         if (model.getColor() != null) {
             paragraphStyle += "color: " + Tools.colorToXml(model.getColor())
-                    + ";";
+            + ";";
         }
         Font font = model.getFont();
-        int fontsize = font.getSize();
-        if (font != null && fontsize != 0) {
-            int defaultFontSize = Integer
-                    .parseInt(getProperty("defaultfontsize"));
-            if (fontsize != defaultFontSize) {
-                paragraphStyle += "font-size: " + fontsize + "pt;";
+        if (font != null) {        
+            int fontsize = font.getSize();
+            if (fontsize != 0) {
+                int defaultFontSize = Integer
+                .parseInt(getProperty("defaultfontsize"));
+                if (fontsize != defaultFontSize) {
+                    paragraphStyle += "font-size: " + fontsize + "pt;";
+                }
             }
-        }
-
-        if (font != null) {
+            
             String fontFamily = font.getFamily();
             paragraphStyle += "font-family: " + fontFamily + ", sans-serif; ";
         }
-
+        
         if (model.isItalic()) {
             paragraphStyle += "font-style: italic; ";
         }
-
+        
         if (model.isBold()) {
             paragraphStyle += "font-weight: bold; ";
         }
-
+        
         // ------------------------
-
-        fileout.write("style=\"" + paragraphStyle);
+        if(! paragraphStyle.equals("")){
+            fileout.write("style=\"" + paragraphStyle);
+        }
     }
 
     private boolean isHeading(MindMapNodeModel model, int depth) {
         return basedOnHeadings && model.hasChildren() && depth <= 6
-                && !model.getText().startsWith("<html>");
+                && !hasHtml(model);
+    }
+
+    boolean hasHtml(MindMapNodeModel model) {
+        return model.getText().startsWith("<html>");
     }
 
     private String getProperty(String key) {
