@@ -9,6 +9,8 @@ package freemind.main;
  */
 
 import java.io.*;
+import java.util.Enumeration;
+
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 
@@ -21,7 +23,8 @@ import javax.swing.text.html.*;
  *
  * @author    Richard "Shred" Körber
  */
-public class XHTMLWriter extends HTMLWriter {
+public class XHTMLWriter extends FixedHTMLWriter {
+    final private MutableAttributeSet convAttr  = new SimpleAttributeSet();
  
   /**
    * Create a new XHTMLWriter that will write the entire HTMLDocument.
@@ -213,6 +216,5 @@ public class XHTMLWriter extends HTMLWriter {
     throws IOException {
       write( str.toCharArray(), off, len );
     }
-  }
-
+  }  
 }

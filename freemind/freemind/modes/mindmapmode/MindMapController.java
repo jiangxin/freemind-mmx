@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.29 2007-02-04 21:43:40 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.30 2007-02-06 08:42:12 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -60,7 +60,6 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -79,7 +78,6 @@ import org.jibx.runtime.IUnmarshallingContext;
 import org.jibx.runtime.JiBXException;
 
 import freemind.common.XmlBindingTools;
-import freemind.controller.MapModuleManager;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.MenuActionBase;
@@ -91,8 +89,6 @@ import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.PatternIcon;
-import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
-import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookFactory;
@@ -103,9 +99,10 @@ import freemind.extensions.PermanentNodeHook;
 import freemind.extensions.UndoEventReceiver;
 import freemind.extensions.HookFactory.RegistrationContainer;
 import freemind.main.ExampleFileFilter;
+import freemind.main.FixedHTMLWriter;
 import freemind.main.FreeMind;
-import freemind.main.FreeMindCommon;
 import freemind.main.Tools;
+import freemind.main.XHTMLWriter;
 import freemind.main.XMLElement;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.EdgeAdapter;
@@ -1763,10 +1760,11 @@ freemind.main.Resources.getInstance().logException(					e1);
                 if (firstText.length() == 0 || secondText.length() == 0) {
                     return null;
                 }
-                kit.write(out, doc, 0, pos);
+                new FixedHTMLWriter(out, doc, 0, pos).write();                
                 strings[0] = out.toString();
                 out.flush();
                 kit.write(out, doc, pos, doc.getLength() - pos);
+                new XHTMLWriter(out, doc, pos, doc.getLength() - pos).write();
                 strings[1] = out.toString();
                 return strings;
             }

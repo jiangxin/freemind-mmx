@@ -32,10 +32,10 @@ import java.util.ListIterator;
 
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
-import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
+import freemind.main.FixedHTMLWriter;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
@@ -58,9 +58,6 @@ public class SplitNode extends MindMapNodeHookAdapter {
 	 */
 	public void invoke(MindMapNode node) {
         super.invoke(node);
-        if(node.isRoot()){
-            return;
-        }
         final List list = getMindMapController().getSelecteds();
         final ListIterator listIterator = list.listIterator();
         while(listIterator.hasNext()){
@@ -70,6 +67,9 @@ public class SplitNode extends MindMapNodeHookAdapter {
 	}
 
     private void splitNode(MindMapNode node) {
+        if(node.isRoot()){
+            return;
+        }
         String text = node.toString();
         String[] parts = splitNode(text);
         if(parts == null || parts.length == 1){
@@ -120,7 +120,7 @@ public class SplitNode extends MindMapNodeHookAdapter {
                     final String paragraphText = doc.getText(start, end - start).trim();
                     if(paragraphText.length() > 0){
                         StringWriter out = new StringWriter();
-                        kit.write(out, doc, start, end - start);
+                        new FixedHTMLWriter(out, doc, start, end - start).write();                
                         parts[i] = out.toString();
                     }
                 }
