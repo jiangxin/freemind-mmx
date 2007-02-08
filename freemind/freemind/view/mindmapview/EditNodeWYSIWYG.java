@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.22 2007-02-04 12:52:56 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.23 2007-02-08 22:30:56 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -52,17 +52,17 @@ public class EditNodeWYSIWYG extends EditNodeBase {
     
     private KeyEvent firstEvent;
     
-    private static JDialog htmlEditorWindow;
-    private class HTMLDialog extends EditDialog{
+    private static HTMLDialog htmlEditorWindow;
+    private static class HTMLDialog extends EditDialog{
         private SHTMLPanel htmlEditorPanel;
-        HTMLDialog() throws Exception {
-            super();
+        HTMLDialog(EditNodeBase base) throws Exception {
+            super(base);
             createEditorPanel();
             getContentPane().add(htmlEditorPanel, BorderLayout.CENTER);
             adjustKeyBindings();
-            final JButton okButton = new JButton(getText("ok"));
-            final JButton cancelButton = new JButton(getText("cancel"));
-            final JButton splitButton = new JButton(getText("split"));
+            final JButton okButton = new JButton(base.getText("ok"));
+            final JButton cancelButton = new JButton(base.getText("cancel"));
+            final JButton splitButton = new JButton(base.getText("split"));
 
             okButton.setMnemonic(KeyEvent.VK_O);
             splitButton.setMnemonic(KeyEvent.VK_S);
@@ -143,10 +143,10 @@ public class EditNodeWYSIWYG extends EditNodeBase {
         protected void submit() {
             htmlEditorPanel.getDocument().getStyleSheet().removeStyle("body");
             if (htmlEditorPanel.needsSaving()) {
-                getEditControl().ok(HtmlTools.unescapeHTMLUnicodeEntity
+                getBase().getEditControl().ok(HtmlTools.unescapeHTMLUnicodeEntity
                         (htmlEditorPanel.getDocumentText())); }
             else{
-                getEditControl().cancel();
+                getBase().getEditControl().cancel();
             }
             super.submit();
         }
@@ -155,7 +155,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
          */
         protected void split() {
             htmlEditorPanel.getDocument().getStyleSheet().removeStyle("body");
-            getEditControl().split(HtmlTools.unescapeHTMLUnicodeEntity
+            getBase().getEditControl().split(HtmlTools.unescapeHTMLUnicodeEntity
                     (htmlEditorPanel.getDocumentText()),
                     htmlEditorPanel.getCaretPosition());
             super.split();
@@ -166,7 +166,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
          */
         protected void cancel() {
             htmlEditorPanel.getDocument().getStyleSheet().removeStyle("body");
-            getEditControl().cancel();
+            getBase().getEditControl().cancel();
             super.cancel();
         }
         
@@ -187,20 +187,23 @@ public class EditNodeWYSIWYG extends EditNodeBase {
         try {
             final FreeMindMain frame = getFrame();
             if (htmlEditorWindow == null) {             
-                htmlEditorWindow = new HTMLDialog();                          
+                htmlEditorWindow = new HTMLDialog(this);                          
             }
+            htmlEditorWindow.setBase(this);
             final SHTMLPanel htmlEditorPanel = ((HTMLDialog)htmlEditorWindow).getHtmlEditorPanel();
             String rule = "BODY {";
             rule += "font-family: "+node.getFont().getFamily()+";";
             rule += "font-size: "+node.getFont().getSize()+"pt;";
-            rule += "margin-top:0;";            
             if (node.getModel().isItalic()) {
                 rule+="font-style: italic; "; }
             if (node.getModel().isBold()) {
                 rule+="font-weight: bold; "; }
             if (node.getModel().getColor() != null) {
                 rule+="color: "+Tools.colorToXml(node.getModel().getColor())+";"; }
-            rule += "}";
+            rule += "}\n";
+            rule += "p {";
+            rule += "margin-top:0;";            
+            rule += "}\n";
             htmlEditorPanel.getDocument().getStyleSheet().addRule(rule);
             
             EventQueue.invokeLater(new Runnable(){

@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1.16.8 2007-01-31 22:56:33 dpolivaev Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.9 2007-02-08 22:30:56 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -71,7 +71,7 @@ public class EditNodeDialog extends EditNodeBase {
         private JTextArea textArea;
         
         LongNodeDialog(){
-            super();
+            super(EditNodeDialog.this);
             textArea = new JTextArea(getText());
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);

@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.2.12.7 2007-01-31 22:56:33 dpolivaev Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2.12.8 2007-02-08 22:30:56 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -49,7 +49,7 @@ import freemind.modes.ModeController;
  *
  */
 public class EditNodeBase {
-    abstract class EditDialog extends JDialog{
+    abstract static class EditDialog extends JDialog{
         class DialogWindowListener extends WindowAdapter{
             
             /* (non-Javadoc)
@@ -79,8 +79,9 @@ public class EditNodeBase {
                 confirmedCancel();
             }                 
         }
-        EditDialog(){
-            super((JFrame)getFrame(), getText("edit_long_node"), /*modal=*/true);
+        private EditNodeBase base;
+        EditDialog(EditNodeBase base){
+            super((JFrame)base.getFrame(), base.getText("edit_long_node"), /*modal=*/true);
             getContentPane().setLayout(new BorderLayout());
             setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
             DialogWindowListener dfl = new DialogWindowListener();
@@ -88,7 +89,7 @@ public class EditNodeBase {
         }             
         protected void confirmedSubmit() {
             if(isChanged()){
-                final int action = JOptionPane.showConfirmDialog(this, getText("long_node_changed_submit"), "", JOptionPane.YES_NO_CANCEL_OPTION);
+                final int action = JOptionPane.showConfirmDialog(this, base.getText("long_node_changed_submit"), "", JOptionPane.YES_NO_CANCEL_OPTION);
                 if(action == JOptionPane.CANCEL_OPTION)
                     return;
                 if(action == JOptionPane.YES_OPTION){               
@@ -100,7 +101,7 @@ public class EditNodeBase {
         }
         protected void confirmedCancel() {
             if(isChanged()){
-                final int action = JOptionPane.showConfirmDialog(this, getText("long_node_changed_cancel"), "", JOptionPane.OK_CANCEL_OPTION);
+                final int action = JOptionPane.showConfirmDialog(this, base.getText("long_node_changed_cancel"), "", JOptionPane.OK_CANCEL_OPTION);
                 if(action == JOptionPane.CANCEL_OPTION)
                     return;
             }
@@ -118,6 +119,18 @@ public class EditNodeBase {
         }
         
         abstract protected boolean isChanged();
+        /**
+         * @param base The base to set.
+         */
+        void setBase(EditNodeBase base) {
+            this.base = base;
+        }
+        /**
+         * @return Returns the base.
+         */
+        EditNodeBase getBase() {
+            return base;
+        }
 }
 
     public interface EditControl {
