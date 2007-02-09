@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.2.12.8 2007-02-08 22:30:56 dpolivaev Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2.12.9 2007-02-09 17:23:45 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -86,6 +86,7 @@ public class EditNodeBase {
             setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
             DialogWindowListener dfl = new DialogWindowListener();
             addWindowListener(dfl);
+            this.base = base;
         }             
         protected void confirmedSubmit() {
             if(isChanged()){
