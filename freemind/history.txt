@@ -49,6 +49,7 @@ Changes made in FreeMind 0.9.0 Beta 9
 * Writing of HTML refactored out to class MindMapHTMLWriter in package freemind.modes.mindmapmode
 * Copy creates HTML for multiple selection.
 * Light Bulb as icon integrated.
+* new spanish translation of documentation map. Thanks to Natxo.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 8
