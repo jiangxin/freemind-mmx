@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.30 2007-02-06 08:42:12 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.31 2007-02-12 22:17:49 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1751,20 +1751,34 @@ freemind.main.Resources.getInstance().logException(					e1);
             HTMLEditorKit kit = new HTMLEditorKit();
             HTMLDocument doc = new HTMLDocument();
             StringReader buf = new StringReader(text);
-            StringWriter out = new StringWriter();
             try {
                 kit.read(buf, doc, 0);
-                final String firstText = doc.getText(0, pos).trim();
-                final String secondText = doc.getText(pos,
-                        doc.getLength() - pos).trim();
-                if (firstText.length() == 0 || secondText.length() == 0) {
+                final char[] firstText = doc.getText(0, pos).toCharArray();
+                int firstStart = 0;
+                int firstLen = pos;
+                while ((firstStart < firstLen) && (firstText[firstStart] <= ' ')) {
+                    firstStart++;
+                }
+                while ((firstStart < firstLen) && (firstText[firstLen - 1] <= ' ')) {
+                    firstLen--;
+                }
+                int secondStart = 0;
+                int secondLen = doc.getLength() - pos;
+                final char[] secondText = doc.getText(pos, secondLen).toCharArray();
+                while ((secondStart < secondLen) && (secondText[secondStart] <= ' ')) {
+                    secondStart++;
+                }
+                while ((secondStart < secondLen) && (secondText[secondLen - 1] <= ' ')) {
+                    secondLen--;
+                }
+                if (firstStart == firstLen || secondStart == secondLen) {
                     return null;
                 }
-                new FixedHTMLWriter(out, doc, 0, pos).write();                
+                StringWriter out = new StringWriter();
+                new FixedHTMLWriter(out, doc, firstStart, firstLen - firstStart).write();                
                 strings[0] = out.toString();
-                out.flush();
-                kit.write(out, doc, pos, doc.getLength() - pos);
-                new XHTMLWriter(out, doc, pos, doc.getLength() - pos).write();
+                out = new StringWriter();
+                new FixedHTMLWriter(out, doc, pos + secondStart, secondLen - secondStart).write();
                 strings[1] = out.toString();
                 return strings;
             }
