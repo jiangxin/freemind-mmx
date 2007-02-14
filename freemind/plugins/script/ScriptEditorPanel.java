@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.6 2007-01-30 21:09:49 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.7 2007-02-14 21:02:31 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -41,6 +41,7 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
@@ -125,13 +126,6 @@ public class ScriptEditorPanel extends JDialog {
 										}
 									}));
 				} catch (GroovyRuntimeException e) {
-					// freemind.main.Resources.getInstance().logExecption(e);
-					// ByteArrayOutputStream byteArrayOutputStream = new
-					// ByteArrayOutputStream();
-					// PrintStream writer = new
-					// PrintStream(byteArrayOutputStream);
-					// e.printStackTrace(writer);
-					// resultString = byteArrayOutputStream.toString();
 					resultString = e.getMessage();
 					logger.info("message: " + resultString);
 					ModuleNode module = e.getModule();
@@ -232,6 +226,8 @@ public class ScriptEditorPanel extends JDialog {
 				String pWindow_preference_storage_property);
         
         void endDialog(boolean pIsCanceled);
+        
+        boolean isDirty();
 	}
 
 	public ScriptEditorPanel(ScriptModel pScriptModel, FreeMindMain pFrame) {
@@ -344,6 +340,14 @@ public class ScriptEditorPanel extends JDialog {
 		// store current script:
 		if (!mScriptList.isSelectionEmpty()) {
 			select(mScriptList.getSelectedIndex());
+		}
+		if(pIsCanceled && mScriptModel.isDirty()) {
+		    // ask if really cancel:
+		    int action = JOptionPane.showConfirmDialog(this, mFrame
+		            .getResourceString("ScriptEditorPanel.changed_cancel"), "FreeMind",
+		            JOptionPane.OK_CANCEL_OPTION);
+		    if(action == JOptionPane.CANCEL_OPTION)
+		        return;
 		}
 		// store window positions:
 		ScriptEditorWindowConfigurationStorage storage = new ScriptEditorWindowConfigurationStorage();

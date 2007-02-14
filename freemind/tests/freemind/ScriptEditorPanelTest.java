@@ -19,7 +19,7 @@
  *
  * Created on 22.01.2007
  */
-/*$Id: ScriptEditorPanelTest.java,v 1.1.2.3 2007-01-31 20:20:07 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanelTest.java,v 1.1.2.4 2007-02-14 21:02:31 christianfoltin Exp $*/
 package tests.freemind;
 
 import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
@@ -91,6 +91,10 @@ public class ScriptEditorPanelTest extends FreeMindTestBase {
 		}
 
         public void endDialog(boolean pIsCanceled) {
+        }
+
+        public boolean isDirty() {
+            return true;
         }
 	}
 

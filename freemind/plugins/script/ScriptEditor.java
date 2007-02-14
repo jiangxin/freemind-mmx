@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditor.java,v 1.1.2.4 2007-01-31 20:20:07 christianfoltin Exp $*/
+/*$Id: ScriptEditor.java,v 1.1.2.5 2007-02-14 21:02:31 christianfoltin Exp $*/
 package plugins.script;
 
 import java.io.PrintStream;
@@ -57,6 +57,7 @@ public class ScriptEditor extends MindMapHookAdapter {
 		private final Vector mScripts;
         private final MindMapNode mNode;
         private final MindMapController mController;
+        private boolean isDirty = false;
 
 		private NodeScriptModel(Vector pScripts, MindMapNode node, MindMapController pController) {
 			mScripts = pScripts;
@@ -101,6 +102,12 @@ public class ScriptEditor extends MindMapHookAdapter {
 
 		public void setScript(int pIndex, ScriptHolder pScript) {
             AttributeHolder oldHolder = (AttributeHolder) mScripts.get(pIndex);
+            if(!pScript.mScriptName.equals(oldHolder.mAttribute.getName())) {
+                isDirty = true;
+            }
+            if(!pScript.mScript.equals(oldHolder.mAttribute.getValue())) {
+                isDirty = true;
+            }
             oldHolder.mAttribute.setName(pScript.mScriptName);
             oldHolder.mAttribute.setValue(pScript.mScript);
 		}
@@ -125,6 +132,10 @@ public class ScriptEditor extends MindMapHookAdapter {
                     }
                 }
             }
+        }
+
+        public boolean isDirty() {
+            return isDirty;
         }
 	}
 
