@@ -54,7 +54,7 @@ public class ConditionRenderer implements ListCellRenderer {
             return new JLabel(Resources.getInstance().getResourceString("filter_no_filtering"));
         JComponent component;
         if(value instanceof MindIcon){
-            component = ((MindIcon)value).getRendererComponent();
+            component = new JLabel(((MindIcon)value).getIcon());
         }
         else if(value instanceof Condition){ 
             Condition cond = (Condition) value;            
