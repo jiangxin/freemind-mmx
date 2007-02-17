@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLayout.java,v 1.15.14.5.4.10 2006-11-23 21:09:44 dpolivaev Exp $*/
+/*$Id: MindMapLayout.java,v 1.15.14.5.4.11 2007-02-17 16:18:55 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -88,11 +88,15 @@ public class MindMapLayout implements LayoutManager {
         SwingUtilities.convertPointToScreen(newPoint, map);
         final int scrollX = newPoint.x - oldPoint.x;
         final int scrollY = newPoint.y - oldPoint.y;
-        if(scrollX == 0 && scrollY == 0){
-            return;
-        }
         try{
-            getMapView().scrollBy(scrollX, scrollY, true );
+            final MapView mapView = getMapView();
+            if(scrollX != 0 || scrollY != 0){
+                mapView.scrollBy(scrollX, scrollY, true );
+            }
+            EventQueue.invokeLater(new Runnable(){
+                public void run() {
+                    mapView.scrollNodeToVisible(mapView.getSelected());                }                
+            });
         }
         catch(IllegalComponentStateException e){
         }
