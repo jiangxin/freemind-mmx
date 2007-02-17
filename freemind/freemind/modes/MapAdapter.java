@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.14 2006-11-26 10:20:41 dpolivaev Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.15 2007-02-17 16:19:31 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -228,13 +228,13 @@ public abstract class MapAdapter implements MindMap {
     //
     public final Transferable cut(MindMapNode node) {
        // This cut does not need any reimplementation in child Classes!
-       Transferable t = copy(node);
+       Transferable t = copy(node, true);
        removeNodeFromParent(node);
        return t;
     }
 
 
-   public Transferable copy(MindMapNode node) {
+   public Transferable copy(MindMapNode node, boolean saveInvisible) {
 	   throw new IllegalArgumentException("No copy so far.");
    }
 
@@ -257,7 +257,7 @@ public abstract class MapAdapter implements MindMap {
             else {
                forNodesFlavor += "<nodeseparator>"; }
 
-            forNodesFlavor += copy(tmpNode).getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
+            forNodesFlavor += copy(tmpNode, false).getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
          }
 
          String plainText = inPlainText != null ? inPlainText : getAsPlainText(selectedNodes);

@@ -480,7 +480,7 @@ class MindMapHTMLWriter {
         }
 
         writeParagraphStyle(model, depth);
-        fileout.write("\">");
+        fileout.write(">");
 
         String localParentID = parentID;
         if (createFolding) {
@@ -601,7 +601,7 @@ class MindMapHTMLWriter {
         
         // ------------------------
         if(! paragraphStyle.equals("")){
-            fileout.write("style=\"" + paragraphStyle);
+            fileout.write("style=\"" + paragraphStyle + "\"");
         }
     }
 

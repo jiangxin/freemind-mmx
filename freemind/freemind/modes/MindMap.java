@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMap.java,v 1.14.14.8.2.7 2006-10-13 21:35:56 christianfoltin Exp $ */
+/* $Id: MindMap.java,v 1.14.14.8.2.8 2007-02-17 16:19:31 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -51,7 +51,7 @@ public interface MindMap extends TreeModel {
 
     Transferable cut(MindMapNode node);
 
-    Transferable copy(MindMapNode node);
+    Transferable copy(MindMapNode node, boolean saveInvisible);
 
     // ^ Is copy with node really needed? It seems to me, that no.
     Transferable copy();
