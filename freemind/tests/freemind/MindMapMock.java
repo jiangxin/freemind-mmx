@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMock.java,v 1.1.2.4 2006-10-13 21:35:56 christianfoltin Exp $*/
+/*$Id: MindMapMock.java,v 1.1.2.5 2007-02-21 20:24:39 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -204,6 +204,11 @@ public class MindMapMock implements MindMap {
     public boolean isSaved() {
         return false;
     }
+
+	public Transferable copy(MindMapNode node, boolean saveInvisible) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
 

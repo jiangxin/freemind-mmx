@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.7 2007-02-14 21:02:31 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.8 2007-02-21 20:24:39 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -47,8 +48,11 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 
 import org.codehaus.groovy.ast.ASTNode;
@@ -69,7 +73,6 @@ import groovy.lang.GroovyRuntimeException;
  * </li><li>rename script button
  * </li><li>undo feature? 
  * </li><li>show line/column numbers in status bar
- * </li><li>"Are you sure to cancel..."
  * </li></ul>
  */
 public class ScriptEditorPanel extends JDialog {
@@ -99,6 +102,8 @@ public class ScriptEditorPanel extends JDialog {
 	private JSplitPane mCentralPanel;
 
 	private Logger logger;
+
+	private JLabel mStatus;
 
 	private final class RunAction extends AbstractAction {
 		private RunAction(String pArg0) {
@@ -249,6 +254,7 @@ public class ScriptEditorPanel extends JDialog {
 				disposeDialog(true);
 			}
 		});
+		
 		Container contentPane = this.getContentPane();
 
 		contentPane.setLayout(new BorderLayout());
@@ -278,6 +284,21 @@ public class ScriptEditorPanel extends JDialog {
 		mCentralPanel.setDividerLocation(0.8);
 		mCentralPanel.setContinuousLayout(true);
 		contentPane.add(mCentralPanel, BorderLayout.CENTER);
+		mStatus = new JLabel();
+		contentPane.add(mStatus, BorderLayout.SOUTH);
+		mScriptTextField.addCaretListener(new CaretListener(){
+
+			public void caretUpdate(CaretEvent arg0) {
+				int caretPosition = mScriptTextField.getCaretPosition();
+				try {
+					int lineOfOffset = mScriptTextField.getLineOfOffset(caretPosition);
+					mStatus.setText("Line: "+ (lineOfOffset+1) + ", Column: " + (caretPosition-mScriptTextField.getLineStartOffset(lineOfOffset)+1));
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}});
 		updateFields();
 		mScriptTextField.repaint();
 		// menu:
