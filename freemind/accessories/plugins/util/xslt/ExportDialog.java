@@ -91,12 +91,12 @@ public class ExportDialog extends JFrame {
         
         setBackground(Color.lightGray);
         this.addWindowListener(new WindowClosingAdapter(false));
-        //Layout setzen und Komponenten hinzufügen
+        //set layout and add components
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc;
         getContentPane().setLayout(gbl);
         
-        //List hinzufügen
+        //add list 
         
         /*List list = new List();
         for (int i = 0; i < 20; ++i) {
