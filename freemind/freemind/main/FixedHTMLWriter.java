@@ -2,7 +2,7 @@ package freemind.main;
 /*
  * XHTMLWriter -- A simple XHTML document writer
  * 
- * (C) 2004 Richard "Shred" Körber
+ * (C) 2004 Richard "Shred" Koerber
  *   http://www.shredzone.net/
  *
  * This is free software. You can modify and use it at will.
@@ -21,7 +21,7 @@ import javax.swing.text.html.*;
  * will really be XHTML 1.0 transitional conformous. The basic purpose of
  * this class is to give an XSL processor access to plain HTML files.
  *
- * @author    Richard "Shred" Körber
+ * @author    Richard "Shred" Kï¿½rber
  */
 public class FixedHTMLWriter extends HTMLWriter {
     final private MutableAttributeSet convAttr  = new SimpleAttributeSet();

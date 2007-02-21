@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.18 2006-11-28 22:28:59 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.19 2007-02-21 20:31:53 christianfoltin Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1218,8 +1218,8 @@ public abstract class NodeView extends JComponent{
 
 /* http://groups.google.de/groups?hl=de&lr=&ie=UTF-8&threadm=9i5bbo%24h1kmi%243%40ID-77081.news.dfncis.de&rnum=1&prev=/groups%3Fq%3Djava%2520komplement%25C3%25A4rfarbe%2520helligkeit%26hl%3Dde%26lr%3D%26ie%3DUTF-8%26sa%3DN%26as_qdr%3Dall%26tab%3Dwg */
 	/**
-     * Ermittelt zu einer Farbe eine andere Farbe, die sich möglichst gut von
-     * dieser abhebt. Diese Farbe unterscheidet sich auch von
+	 * Determines to a given color a color, that is the best contrary color. 
+	 * It is different from 
      * {@link #getAntiColor2}.
      *
      * @since PPS 1.1.1
@@ -1236,8 +1236,9 @@ public abstract class NodeView extends JComponent{
    }
 
    /**
-    * Ermittelt zu einer Farbe eine andere Farbe, die sich möglichst gut von
-    * dieser abhebt. Diese Farbe unterscheidet sich von {@link #getAntiColor1}.
+	 * Determines to a given color a color, that is the best contrary color. 
+	 * It is different from 
+    * {@link #getAntiColor1}.
     *
     * @since PPS 1.1.1
     */
