@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.14 2007-01-03 22:16:26 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.15 2007-02-25 23:05:41 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -140,11 +140,6 @@ public class OptionPanel implements TextTranslator {
 	}
 
 	public static Vector changeListeners = new Vector();
-
-	private static Properties getProperties() {
-		checkConnectionToFreeMindMain();
-		return fmMain.getProperties();
-	}
 
 	/**
 	 */
