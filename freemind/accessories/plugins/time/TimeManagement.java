@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeManagement.java,v 1.1.2.3 2007-01-04 22:51:27 christianfoltin Exp $ */
+/* $Id: TimeManagement.java,v 1.1.2.4 2007-02-25 21:12:50 christianfoltin Exp $ */
 package accessories.plugins.time;
 
 import java.awt.Container;
@@ -94,9 +94,6 @@ public class TimeManagement extends MindMapHookAdapter implements
 		Tools.addEscapeActionToDialog(dialog, action);
 
 		calendar = new JTripleCalendar();
-		if (lastDate != null) {
-			calendar.setDate(lastDate);
-		}
 		Container contentPane = dialog.getContentPane();
 		contentPane.setLayout(new GridBagLayout());
 		GridBagConstraints gb1 = new GridBagConstraints();
@@ -194,9 +191,13 @@ public class TimeManagement extends MindMapHookAdapter implements
 			});
 			contentPane.add(cancelButton, gb2);
 		}
+		if (lastDate != null) {
+			logger.info("Setting date to " + lastDate);
+			calendar.setDate(lastDate);
+		}
 		dialog.pack();
-		dialog.setVisible(true);
 		calendar.getDayChooser().setFocus();
+		dialog.setVisible(true);
 	}
 
 	/**

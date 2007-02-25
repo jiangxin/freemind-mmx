@@ -821,7 +821,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 	 */
 	public void setFocus() {
 		if (selectedDay != null) {
-			this.selectedDay.requestFocus();
+			this.selectedDay.requestFocusInWindow();
 		}
 	}
 

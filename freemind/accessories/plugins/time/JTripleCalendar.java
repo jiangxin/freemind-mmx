@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: JTripleCalendar.java,v 1.1.2.1 2007-01-04 22:51:27 christianfoltin Exp $*/
+/*$Id: JTripleCalendar.java,v 1.1.2.2 2007-02-25 21:12:50 christianfoltin Exp $*/
 
 package accessories.plugins.time;
 
@@ -149,6 +149,10 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
     public void setCalendar(Calendar c) {
         calendarWidget.setCalendar(c);
     }
+
+	public JYearChooser getYearChooser() {
+		return calendarWidget.getYearChooser();
+	}
 }
 
 // private static java.util.logging.Logger logger =
