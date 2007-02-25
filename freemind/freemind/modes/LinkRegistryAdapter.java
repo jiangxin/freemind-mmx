@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.10.18.3 2005-04-28 21:12:34 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.10.18.3.12.1 2007-02-25 15:57:19 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -362,7 +362,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         }
         // and process my sons:
         for (ListIterator e = target.childrenUnfolded(); e.hasNext(); ) {
-            MindMapNodeModel child = (MindMapNodeModel)e.next();            
+            MindMapNode child = (MindMapNode)e.next();            
             cutNode(child);
         }
         logger.exiting("LinkRegistryAdapter", "cutNode", target);

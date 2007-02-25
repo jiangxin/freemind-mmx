@@ -30,8 +30,6 @@
 	<property name="java_source_version" value="1.4" />
 	<property name="java_target_version" value="1.4" />
 	<property name="build.compiler" value="modern" />
-	<!-- if set, the light bulb changes are performed. -->
-	<property name="light_bulb" value="" /> 
 	<property name="jarbundler.jar" value = "jarbundler-1.8.1.jar"/>
 
 	<taskdef name="jarbundler"
@@ -102,12 +100,15 @@
 		<replaceregexp file="${src}/freemind/main/FreeMind.java" byline="true" 
 			match="splash = new FreeMindSplash\(frame\);" 
 			replace="splash = new FreeMindSplashLightBulb(frame);"/>
+		<property name="file_extension" value="icon_light_bulb"/>
+
 	</target>
 	
 	<target name="icon_change_butterfly" unless="light_bulb">
 		<replaceregexp file="${src}/freemind/main/FreeMind.java" byline="true" 
 			match="splash = new FreeMindSplashLightBulb\(frame\);" 
 			replace="splash = new FreeMindSplash(frame);"/>
+		<property name="file_extension" value="icon_butterfly"/>
 	</target>
 	
 	<target name="build" depends="gen,icon_change_butterfly,icon_change">
@@ -271,36 +272,36 @@
 
 	<target name="post" depends="dist,browser,doc">
 		<mkdir dir="${post}" />
-		<tar tarfile="${post}/freemind-bin.tar"
+<!--		<tar tarfile="${post}/freemind-bin.tar"
 			basedir="${dist}"
 			longfile="gnu"
 			excludes="doc/javadoc/,plugins/**" />
+		<gzip src="${post}/freemind-bin.tar"
+			zipfile="${post}/freemind-bin-${ver}.tar.gz" />
+		<tar tarfile="${post}/freemind-browser.tar"
+			longfile="gnu"
+			basedir="${dist}/browser" />
+		<gzip src="${post}/freemind-browser.tar"
+			zipfile="${post}/freemind-browser-${ver}.tar.gz" /> -->
 		<tar tarfile="${post}/freemind-src.tar"
 			longfile="gnu"
 			basedir="${src_base_for_post}"
 			includes="freemind/**,.classpath,.project" />
-		<tar tarfile="${post}/freemind-browser.tar"
-			longfile="gnu"
-			basedir="${dist}/browser" />
-		<gzip src="${post}/freemind-bin.tar"
-			zipfile="${post}/freemind-bin-${ver}.tar.gz" />
 		<gzip src="${post}/freemind-src.tar"
-			zipfile="${post}/freemind-src-${ver}.tar.gz" />
-		<gzip src="${post}/freemind-browser.tar"
-			zipfile="${post}/freemind-browser-${ver}.tar.gz" />
+			zipfile="${post}/freemind-src-${ver}_${file_extension}.tar.gz" />
 		<delete>
 			<fileset dir="${post}" includes="*.tar" />
 		</delete>
-		<zip destfile="${post}/freemind-bin-${ver}.zip"
+		<zip destfile="${post}/freemind-bin-${ver}_${file_extension}.zip"
 			basedir="${dist}"
 			excludes="doc/javadoc/,plugins/**" />
 		<!-- fc, 14.2.2005: new max export -->
-		<zip destfile="${post}/freemind-bin-max-${ver}.zip"
+		<zip destfile="${post}/freemind-bin-max-${ver}_${file_extension}.zip"
 			basedir="${dist}"
 			excludes="doc/javadoc/" />
-		<zip destfile="${post}/freemind-src-${ver}.zip"
+	<!--	<zip destfile="${post}/freemind-src-${ver}.zip"
 			basedir="${src_base_for_post}"
-			includes="freemind/**,.classpath,.project" />
+			includes="freemind/**,.classpath,.project" /> -->
 		<zip destfile="${post}/freemind-browser-${ver}.zip"
 			basedir="${dist}/browser" />
 		<ant antfile="plugins/build.xml" target="post"/>
@@ -308,6 +309,8 @@
 		</antcall>
 	</target>
 
+	
+	
 	<target name="post_macos">
 
 		<exec dir="." executable="bash" os="Mac OS X">
@@ -458,5 +461,17 @@
 		</xmlvalidate>
 	</target>
 
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: all                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="all">
+    	<antcall target="post"></antcall>
+    	<!-- if set, the light bulb changes are performed. -->
+    	<property name="light_bulb" value="" /> 
+    	<antcall target="post"></antcall>
+
+    </target>
+
+	
 </project>
 
