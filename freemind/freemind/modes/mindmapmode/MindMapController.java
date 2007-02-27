@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.31 2007-02-12 22:17:49 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.32 2007-02-27 21:13:37 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1040,8 +1040,8 @@ freemind.main.Resources.getInstance().logException(					e1);
         }
         useRichFormatting.setEnabled(enabled);
         usePlainText.setEnabled(enabled);
-
-
+        editAttributes.setEnabled(enabled);
+        assignAttributes.setEnabled(enabled);
     }
 
 

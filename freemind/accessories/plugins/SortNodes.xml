@@ -8,6 +8,6 @@
 		label="accessories/plugins/SortNodes.properties"
 		class_name="accessories.plugins.SortNodes">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/extras/first/SortNodes"/>
+		<plugin_menu location="menu_bar/extras/first/nodes/sorting/SortNodes"/>
 	</plugin_action>
 </plugin>

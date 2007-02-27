@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.25 2007-01-03 21:04:24 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.26 2007-02-27 21:13:36 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -778,18 +778,16 @@ public class Controller  implements MapModuleChangeObserver {
     public void setAllActions(boolean enabled) {
         background.setEnabled(enabled);
 
-        if(isPrintingAllowed) {
-            print.setEnabled(enabled);
-            printDirect.setEnabled(enabled);
-            page.setEnabled(enabled);
-        } else {
-            //should only be done once, or?
-            print.setEnabled(false);
-            printDirect.setEnabled(false);
-            page.setEnabled(false);
-        }
+	    print.setEnabled(enabled && isPrintingAllowed);
+	    printDirect.setEnabled(enabled && isPrintingAllowed);
+	    printPreview.setEnabled(enabled && isPrintingAllowed);
+	    page.setEnabled(enabled && isPrintingAllowed);
         close.setEnabled(enabled);
         moveToRoot.setEnabled(enabled);
+        showAllAttributes.setEnabled(enabled);
+        showSelectedAttributes.setEnabled(enabled);
+        hideAllAttributes.setEnabled(enabled);
+        showAttributeManagerAction.setEnabled(enabled);
         ((MainToolBar)getToolBar()).setAllActions(enabled);
     }
 

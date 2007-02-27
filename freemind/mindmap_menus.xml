@@ -175,18 +175,24 @@
 			<menu_category name="first">
 				<menu_category name="nodes">
 					<menu_action field="joinNodes" key_ref="keystroke_join_nodes"/>
+					<menu_category name="sorting"/>
+					<menu_category name="crypto">
+					</menu_category>
 				</menu_category>
 				<menu_separator/>
 				<menu_action name="showAttributeManagerAction" field="showAttributeManagerAction" key_ref="keystroke_show_attribute_manager"/>
 				<menu_action name="assignAttributes" field="assignAttributes" key_ref="keystroke_assign_attributes"/>
 				<menu_separator/>
-				<menu_category name="crypto">
-				</menu_category>
-				<menu_separator/>
 				<menu_category name="time_management">
 				</menu_category>
 				<menu_separator/>
+				<menu_category name="scripting">
+				</menu_category>
+				<menu_separator/>
 				<menu_category name="collaboration">
+				</menu_category>
+				<menu_separator/>
+				<menu_category name="options">
 				</menu_category>
 			</menu_category>
 		</menu_category>	

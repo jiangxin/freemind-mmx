@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.10 2006-12-16 20:42:31 dpolivaev Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.11 2007-02-27 21:13:36 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -333,9 +333,8 @@ public class MenuBar extends JMenuBar {
 	
 //		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EXTRAS_MENU+"last/options/.");
 
-        //FIXME it should be initialized through mindmap_menus.xml  
         if(c.getFrame() instanceof JFrame){
-            JMenuItem prefDialog = menuHolder.addAction(c.propertyAction, EXTRAS_MENU+"last/option_dialog");
+            JMenuItem prefDialog = menuHolder.addAction(c.propertyAction, EXTRAS_MENU+"options/option_dialog");
             prefDialog.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_option_dialog")));
         }
 	
