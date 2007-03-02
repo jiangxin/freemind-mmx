@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 0.9.0 Beta 10
+===============================
+* New option: velocity of mouse wheel movements.
+
+===============================
 Changes made in FreeMind 0.9.0 Beta 9
 ===============================
 * Bug fix: nodes selection does not change if FreeMind is not focused

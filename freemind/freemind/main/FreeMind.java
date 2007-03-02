@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.42 2007-02-27 21:13:37 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.43 2007-03-02 21:20:11 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -85,6 +85,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
     public static final String RESOURCES_CLOUD_COLOR = "standardcloudcolor";
     public static final String RESOURCES_LINK_COLOR = "standardlinkcolor";
     public static final String RESOURCES_BACKGROUND_COLOR = "standardbackgroundcolor";
+    public static final String RESOURCES_WHEEL_VELOCITY = "wheel_velocity";
 
 
     private static Logger logger =null;

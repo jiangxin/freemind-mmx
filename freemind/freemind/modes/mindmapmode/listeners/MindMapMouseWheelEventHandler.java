@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.1.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
+/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.1.2.3 2007-03-02 21:20:11 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.listeners;
 
 import java.awt.event.InputEvent;
@@ -28,8 +28,12 @@ import java.awt.event.MouseWheelListener;
 import java.util.Iterator;
 import java.util.Set;
 
+import freemind.controller.Controller;
+import freemind.main.FreeMind;
+import freemind.main.Tools;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.MindMapActions.MouseWheelEventHandler;
+import freemind.preferences.FreemindPropertyListener;
 import freemind.view.mindmapview.MapView;
 
 /**
@@ -38,8 +42,8 @@ import freemind.view.mindmapview.MapView;
  */
 public class MindMapMouseWheelEventHandler implements MouseWheelListener {
 
-    private static final int SCROLL_SKIPS = 8;
-    private static final int SCROLL_SKIP = 10;
+    private static int SCROLL_SKIPS = 8;
+    private static int SCROLL_SKIP = 10;
     private static final int HORIZONTAL_SCROLL_MASK
        = InputEvent.SHIFT_MASK | InputEvent.BUTTON1_MASK
          | InputEvent.BUTTON2_MASK | InputEvent.BUTTON3_MASK;
@@ -55,6 +59,14 @@ public class MindMapMouseWheelEventHandler implements MouseWheelListener {
 	public MindMapMouseWheelEventHandler(MindMapController controller) {
 		super();
 		this.mController = controller;
+		Controller.addPropertyChangeListener(new FreemindPropertyListener(){
+
+            public void propertyChanged(String propertyName, String newValue, String oldValue) {
+                if(propertyName.equals(FreeMind.RESOURCES_WHEEL_VELOCITY)) {
+                    SCROLL_SKIPS=Integer.parseInt(newValue);
+                }
+            }});
+		SCROLL_SKIPS=controller.getFrame().getIntProperty(FreeMind.RESOURCES_WHEEL_VELOCITY, 8);
 	}
 
 	/*

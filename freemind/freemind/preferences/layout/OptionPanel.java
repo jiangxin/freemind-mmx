@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.15 2007-02-25 23:05:41 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.16 2007-03-02 21:20:11 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -1038,9 +1038,13 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new NumberProperty("time_for_delayed_selection.tooltip",
                 "time_for_delayed_selection", 1, Integer.MAX_VALUE, 1)); // 500
 
-        controls.add(new NextLineProperty());
+		controls.add(new NextLineProperty());
 		controls
-		.add(new SeparatorProperty("undo"));
+		.add(new SeparatorProperty("mouse_wheel"));
+        controls.add(new NumberProperty("wheel_velocity.tooltip", FreeMind.RESOURCES_WHEEL_VELOCITY, 1,50,1));
+        controls.add(new NextLineProperty());
+        controls
+        .add(new SeparatorProperty("undo"));
         controls.add(new NumberProperty("undo_levels.tooltip", "undo_levels", 2,1000,1));
 
 		/***********************************************************************

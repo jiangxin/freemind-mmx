@@ -286,7 +286,7 @@
 		<tar tarfile="${post}/freemind-src.tar"
 			longfile="gnu"
 			basedir="${src_base_for_post}"
-			includes="freemind/**,.classpath,.project" />
+			includes="freemind/**,.classpath,.project" excludes="freemind/bin/**" />
 		<gzip src="${post}/freemind-src.tar"
 			zipfile="${post}/freemind-src-${ver}_${file_extension}.tar.gz" />
 		<delete>
