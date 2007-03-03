@@ -101,6 +101,7 @@
 			match="splash = new FreeMindSplash\(frame\);" 
 			replace="splash = new FreeMindSplashLightBulb(frame);"/>
 		<property name="file_extension" value="icon_light_bulb"/>
+		<property name="icns_extension" value="_light_bulb"/>
 
 	</target>
 	
@@ -109,6 +110,7 @@
 			match="splash = new FreeMindSplashLightBulb\(frame\);" 
 			replace="splash = new FreeMindSplash(frame);"/>
 		<property name="file_extension" value="icon_butterfly"/>
+		<property name="icns_extension" value=""/>
 	</target>
 	
 	<target name="build" depends="gen,icon_change_butterfly,icon_change">
@@ -222,7 +224,7 @@
 		<jarbundler dir="${dist_macos}"
 		                    name="FreeMind"
 		                    mainclass="freemind.main.FreeMindStarter"
-		                    icon="${src}/images/FreeMindWindowIcon.icns"
+		                    icon="${src}/images/FreeMindWindowIcon${icns_extension}.icns"
 		                    version="${ver}"
 		                    infostring="FreeMind ${ver} application (c) 2007"
 							shortname="FreeMind"
@@ -319,7 +321,7 @@
 		</exec>
 		<exec dir="." executable="mv" os="Mac OS X">
 			<arg path="/tmp/${dist_macos_app_name} Archive.dmg"/>
-			<arg path="${post}/${dist_macos_name}.dmg"/>
+			<arg path="${post}/${dist_macos_name}_${file_extension}.dmg"/>
 		</exec>
 
 	</target>
