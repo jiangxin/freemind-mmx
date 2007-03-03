@@ -318,9 +318,12 @@ public class AttributeRegistry{
             toBeSaved = true;
         }
         for (int i = 0; i < size(); i++){
-            XMLElement attributeData = getElement(i).save();
-            attributeRegistry.addChild(attributeData);
-            toBeSaved = true;
+            final AttributeRegistryElement element = getElement(i);
+            if(element.isRestricted()){
+                XMLElement attributeData = element.save();
+                attributeRegistry.addChild(attributeData);
+                toBeSaved = true;
+            }
         }
         if(toBeSaved){
             attributeRegistry.setName(XMLElementAdapter.XML_NODE_ATTRIBUTE_REGISTRY);
