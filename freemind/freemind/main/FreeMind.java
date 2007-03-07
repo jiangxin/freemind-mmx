@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.44 2007-03-03 19:49:47 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.45 2007-03-07 20:41:13 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -25,8 +25,8 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -48,12 +48,14 @@ import java.util.logging.SimpleFormatter;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -222,6 +224,15 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	mSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, southPanel);
     mSplitPane.setContinuousLayout(true);
 	mSplitPane.setOneTouchExpandable(true);
+	// split panes eat F8 and F6. This is corrected here.
+	InputMap map = (InputMap) UIManager.get("SplitPane.ancestorInputMap");
+	 
+	KeyStroke keyStrokeF6 = KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0);
+	KeyStroke keyStrokeF8 = KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0);
+	 
+	map.remove(keyStrokeF6);
+	map.remove(keyStrokeF8);
+	
 //	mTabbedPane = new JTabbedPane();
 //	JPanel panel = new JPanel();
 //	panel.add(new JLabel("Bla"));
