@@ -96,7 +96,7 @@
 
 	<!-- end generator part -->
 
-	<target name="icon_change" if="light_bulb">
+	<target name="icon_change" unless="butterfly">
 		<replaceregexp file="${src}/freemind/main/FreeMind.java" byline="true" 
 			match="splash = new FreeMindSplash\(frame\);" 
 			replace="splash = new FreeMindSplashLightBulb(frame);"/>
@@ -105,7 +105,7 @@
 
 	</target>
 	
-	<target name="icon_change_butterfly" unless="light_bulb">
+	<target name="icon_change_butterfly" if="butterfly">
 		<replaceregexp file="${src}/freemind/main/FreeMind.java" byline="true" 
 			match="splash = new FreeMindSplashLightBulb\(frame\);" 
 			replace="splash = new FreeMindSplash(frame);"/>
@@ -198,7 +198,7 @@
 		<antcall target="dist_macos"/>
 	</target>
 
-	<target name="dist_icon" if="light_bulb"> 
+	<target name="dist_icon" unless="butterfly"> 
 		<copy file="${src}/windows-launcher/Freemind_light_bulb.exe" 
 			tofile="${dist}/Freemind.exe" overwrite="true"/>
 	</target>
@@ -469,7 +469,7 @@
     <target name="all">
     	<antcall target="post"></antcall>
     	<!-- if set, the light bulb changes are performed. -->
-    	<property name="light_bulb" value="" /> 
+    	<property name="butterfly" value="" /> 
     	<antcall target="post"></antcall>
 
     </target>

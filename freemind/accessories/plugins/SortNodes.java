@@ -76,11 +76,6 @@ public class SortNodes extends MindMapNodeHookAdapter {
 			Vector childList = new Vector();
 			childList.add(child);
 			entry.setValue(getMindMapController().cut(childList));
-		}
-		// lets paste them again:
-		for (Iterator iter = sortSet.entrySet().iterator(); iter.hasNext();) {
-			Map.Entry entry = (Map.Entry) iter.next();
-			MindMapNode child = (MindMapNode) entry.getKey();
 			Transferable transf = (Transferable) entry.getValue();
 			getMindMapController().paste(transf, node);
 		}
