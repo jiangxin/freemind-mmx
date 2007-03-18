@@ -70,11 +70,11 @@ Todo:
 <xsl:processing-instruction name="xml-stylesheet">href="treestyles.css" type="text/css"</xsl:processing-instruction>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <xsl:comment>This file has been created with toxhtml.xsl</xsl:comment>
-<!-- Thanks to gulpman: -->
+<!-- Thanks to gulpman, wolfgangradke: -->
+<head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
 
-<head>
 	<title><xsl:call-template name="output-title" /></title>
 	<xsl:element name="link">
 		<xsl:attribute name="rel">stylesheet</xsl:attribute>
