@@ -26,8 +26,7 @@ package accessories.plugins;
 import java.awt.datatransfer.Transferable;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import freemind.modes.MindMapNode;
@@ -50,7 +49,7 @@ public class SortNodes extends MindMapNodeHookAdapter {
 	 */
 	public void invoke(MindMapNode node) {
 		// we want to sort the children of the node:
-		TreeMap sortSet = new TreeMap(new Comparator(){
+		TreeSet sortSet = new TreeSet(new Comparator(){
 
 			public int compare(Object pArg0, Object pArg1) {
 				if (pArg0 instanceof MindMapNode) {
@@ -67,17 +66,16 @@ public class SortNodes extends MindMapNodeHookAdapter {
 		// put in all children of the node
 		for (Iterator iter = node.childrenUnfolded(); iter.hasNext();) {
 			MindMapNode child = (MindMapNode) iter.next();
-			sortSet.put(child , null);
+			sortSet.add(child);
 		}
 		// now, it is already sorted. we cut the children
-		for (Iterator iter = sortSet.entrySet().iterator(); iter.hasNext();) {
-			Map.Entry entry = (Map.Entry) iter.next();
-			MindMapNode child = (MindMapNode) entry.getKey();
+		for (Iterator iter = sortSet.iterator(); iter.hasNext();) {
+			MindMapNode child = (MindMapNode) iter.next();
 			Vector childList = new Vector();
 			childList.add(child);
-			entry.setValue(getMindMapController().cut(childList));
-			Transferable transf = (Transferable) entry.getValue();
-			getMindMapController().paste(transf, node);
+			Transferable cut = getMindMapController().cut(childList);
+			// paste directly again causes that the node is added as the last one.
+			getMindMapController().paste(cut, node);
 		}
 		
 	}

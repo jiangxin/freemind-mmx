@@ -6,6 +6,7 @@ Changes made in FreeMind 0.9.0 Beta 10
 * Bug fix: sorting keeps graphical links now.
 * user_icons is no more required, 
 * all *.png files in .../.freemind/icons are handled as user icons
+* Bug fix: moving of encrypted nodes is working again.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 9

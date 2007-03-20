@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.10 2006-11-26 10:20:42 dpolivaev Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.11 2007-03-20 22:01:41 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -133,10 +133,6 @@ public abstract class XMLElementAdapter extends XMLElement {
 		// Create user object based on name
 		if (name.equals(XML_NODE)) {
 			userObject = createNodeAdapter(frame, null);
-			// unify map child behaviour:
-			if(mapChild==null) {
-				mapChild = (NodeAdapter) userObject;
-			}
 			nodeAttributes.clear();
 		} else if (name.equals("edge")) {
 			userObject = createEdgeAdapter(null, frame);
@@ -268,7 +264,7 @@ public abstract class XMLElementAdapter extends XMLElement {
       if (userObject instanceof NodeAdapter) {
          //
          NodeAdapter node = (NodeAdapter)userObject;
-         setNodeAttribute(name, sValue, node);
+         userObject  = setNodeAttribute(name, sValue, node);
      	nodeAttributes.put(name, sValue);
         return; }
 
@@ -386,7 +382,7 @@ public abstract class XMLElementAdapter extends XMLElement {
       }
   }
 
-   private void setNodeAttribute(String name, String sValue, NodeAdapter node) {
+   private NodeAdapter setNodeAttribute(String name, String sValue, NodeAdapter node) {
      if (name.equals(XML_NODE_TEXT)) {
 			logger.finest("Setting node text content to:" + sValue);
 	    node.setUserObject(sValue); }
@@ -435,6 +431,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 	 else if (name.equals("HGAP")) {
 	   	node.setHGap(Integer.parseInt(sValue));
 	 }
+     return node;
 }
 
 	/** Sets all attributes that were formely applied to the current userObject
@@ -452,7 +449,13 @@ public abstract class XMLElementAdapter extends XMLElement {
 	}
 
     protected void completeElement() {
-      if (getName().equals("font")) {
+		if (getName().equals(XML_NODE)) {
+			// unify map child behaviour:
+			if(mapChild==null) {
+				mapChild = (NodeAdapter) userObject;
+			}
+		}
+    	if (getName().equals("font")) {
          userObject =  frame.getController().getFontThroughMap
             (new Font(fontName, fontStyle, fontSize)); }
       /* icons */
