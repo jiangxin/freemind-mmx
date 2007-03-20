@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.32 2007-02-27 21:13:37 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.33 2007-03-20 19:39:32 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -35,6 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -101,6 +102,7 @@ import freemind.extensions.HookFactory.RegistrationContainer;
 import freemind.main.ExampleFileFilter;
 import freemind.main.FixedHTMLWriter;
 import freemind.main.FreeMind;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XHTMLWriter;
 import freemind.main.XMLElement;
@@ -659,13 +661,21 @@ freemind.main.Resources.getInstance().logException(					e);
 
     private void createIconActions() {
         Vector iconNames = MindIcon.getAllIconNames();
-        String[] userIconArray = getFrame().getProperty("user_icons").split(",");
-        for ( int i = 0 ; i < userIconArray.length; ++i ) {
-           final String iconName = userIconArray[i];
-           if(iconName.equals("")){
-               continue;
-           }
-        iconNames.add(iconName); }
+        File iconDir = new File (Resources.getInstance().getFreemindDirectory(),"icons");
+        if (iconDir.exists()){
+            String[] userIconArray = iconDir.list(new FilenameFilter(){
+                public boolean accept(File dir, String name) {
+                    return name.matches(".*\\.png");
+                }                
+            });
+            for ( int i = 0 ; i < userIconArray.length; ++i ) {
+                String iconName = userIconArray[i];
+                iconName = iconName.substring(0, iconName.length()-4);
+                if(iconName.equals("")){
+                    continue;
+                }
+                iconNames.add(iconName); }
+        }
         for ( int i = 0 ; i < iconNames.size(); ++i ) {
             String iconName = ((String) iconNames.get(i));
             MindIcon myIcon     = MindIcon.factory(iconName);
