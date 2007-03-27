@@ -329,7 +329,10 @@
 	<xsl:template name="textnode">
 		<xsl:call-template name="format_text">
 			<xsl:with-param name="nodetext">
-				<xsl:value-of select="@TEXT" />
+				<xsl:choose>
+					<xsl:when test="@TEXT = ''"><xsl:text> </xsl:text></xsl:when>
+					<xsl:otherwise><xsl:value-of select="@TEXT" /></xsl:otherwise>
+				</xsl:choose>
 			</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template> <!-- xsl:template name="textnode" -->
@@ -337,7 +340,7 @@
 
 	<!-- replace ASCII line breaks through ODF line breaks (br) -->
 	<xsl:template name="format_text">
-		<xsl:param name="nodetext" />
+		<xsl:param name="nodetext"></xsl:param>
 		<xsl:if test="string-length(substring-after($nodetext,'&#xa;')) = 0">
 			<xsl:value-of select="$nodetext" />
 		</xsl:if>
