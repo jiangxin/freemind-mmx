@@ -19,7 +19,7 @@
  *
  * Created on 06.02.2005
  */
-/* $Id: ReminderHookBase.java,v 1.1.2.1.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: ReminderHookBase.java,v 1.1.2.1.2.3 2007-03-27 20:23:30 christianfoltin Exp $ */
 package freemind.modes.common.plugins;
 
 import java.text.MessageFormat;
@@ -106,6 +106,7 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 		if (timer == null) {
 			scheduleTimer(node);
 		}
+		logger.info("Invoke for node: " + node.getObjectId(getController()));
 	}
 
 	/**
@@ -218,28 +219,21 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 
 	}
 
-	private final String STATE_TOOLTIP = TimerBlinkTask.class.getName()
-			+ "_STATE_";
-
-	public String getStateKey() {
-		return STATE_TOOLTIP + getNode().getObjectId(getController());
-	}
-
-	public void displayState(int stateAdded, MindMapNode node, boolean recurse) {
+	public void displayState(int stateAdded, MindMapNode pNode, boolean recurse) {
 		ImageIcon icon = null;
 		if (stateAdded == CLOCK_VISIBLE) {
 			icon = getClockIcon();
 		} else if (stateAdded == CLOCK_INVISIBLE) {
-			if (node == getNode()) {
+			if (pNode == getNode()) {
 				icon = getBellIcon();
 			} else {
 				icon = getFlagIcon();
 			}
 		}
-		node.setStateIcon(getStateKey(), icon);
-		nodeRefresh(node);
-		if (recurse && !node.isRoot()) {
-			displayState(stateAdded, node.getParentNode(), recurse);
+		pNode.setStateIcon(getStateKey(), icon);
+		nodeRefresh(pNode);
+		if (recurse && !pNode.isRoot()) {
+			displayState(stateAdded, pNode.getParentNode(), recurse);
 		}
 	}
 
@@ -254,4 +248,18 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	public void setRemindUserAt(long remindUserAt) {
 		this.remindUserAt = remindUserAt;
 	}
+
+	private final String STATE_TOOLTIP = TimerBlinkTask.class.getName()
+	+ "_STATE_";
+
+	private String mStateTooltipName = null;
+	
+	public String getStateKey() {
+		if (mStateTooltipName == null) {
+			mStateTooltipName = STATE_TOOLTIP
+					+ getNode().getObjectId(getController());
+		}		
+		return mStateTooltipName;
+	}
 }
+

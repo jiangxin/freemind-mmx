@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: DeleteChildAction.java,v 1.1.2.2.2.4 2007-02-17 16:19:31 dpolivaev Exp $ */
+/* $Id: DeleteChildAction.java,v 1.1.2.2.2.5 2007-03-27 20:23:30 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -67,8 +67,6 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
     /**
      */
     public void deleteWithoutUndo(MindMapNode selectedNode) {
-        // deregister node:
-		pMindMapController.getModel().getLinkRegistry().deregisterLinkTarget(selectedNode);
         // remove hooks:
 		long currentRun = 0;
 		// determine timeout:
@@ -81,6 +79,8 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
             }
         }
         pMindMapController.fireNodeDeleteEvent(selectedNode);
+        // deregister node:
+        pMindMapController.getModel().getLinkRegistry().deregisterLinkTarget(selectedNode);
 		pMindMapController.getModel().removeNodeFromParent( selectedNode);
     }
 
