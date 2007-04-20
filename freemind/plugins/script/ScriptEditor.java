@@ -19,12 +19,13 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditor.java,v 1.1.2.5 2007-02-14 21:02:31 christianfoltin Exp $*/
+/*$Id: ScriptEditor.java,v 1.1.2.6 2007-04-20 17:29:59 christianfoltin Exp $*/
 package plugins.script;
 
 import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import plugins.script.ScriptEditorPanel.ScriptHolder;
 import plugins.script.ScriptEditorPanel.ScriptModel;
@@ -81,10 +82,12 @@ public class ScriptEditor extends MindMapHookAdapter {
 			String script = getScript(pIndex).getScript();
 			// redirect output:
 			PrintStream oldOut = System.out;
-			Object value;
+			Object value = null;
 			try {
 				System.setOut(pOutStream);
 				value = shell.evaluate(script);
+			} catch (org.codehaus.groovy.control.CompilationFailedException e) {
+				logger.log(Level.WARNING, "Compilation of script failed.", e);
 			} finally {
 				System.setOut(oldOut);
 			}

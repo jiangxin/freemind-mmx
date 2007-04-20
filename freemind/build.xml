@@ -10,6 +10,7 @@
       	<tokenfilter><replaceregex pattern=" " replace="_" flags="g"/></tokenfilter>
       </filterchain>
     </loadfile>
+	<property name="butterfly" value="" /> 
 
 <!--	<property name="ver" value="0_9_0_beta6" /> -->
 	<property name="src" value="." />
