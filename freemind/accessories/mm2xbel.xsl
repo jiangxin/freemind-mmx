@@ -9,7 +9,7 @@
    : William McVey <wam@cisco.com>
    : September 11, 2003
    :
-   : $Id: mm2xbel.xsl,v 1.1 2003-11-03 11:02:41 sviles Exp $
+   : $Id: mm2xbel.xsl,v 1.1.34.1 2007-04-20 20:31:31 christianfoltin Exp $
    :
   -->
 
@@ -39,7 +39,7 @@
 				</title>
 			</bookmark>
 		</xsl:if>
-		<xsl:if test="count(node) &gt;  0">
+		<xsl:if test="string-length(@LINK) = 0">
 			<folder>
 				<title>
 					<xsl:value-of select="@TEXT" /> 
@@ -48,11 +48,6 @@
 					<xsl:call-template name="node"/>
 				</xsl:for-each>
 			</folder>
-		</xsl:if>
-		<xsl:if test="count(node) = 0">
-			<xsl:for-each select="node">
-				<xsl:call-template name="node"/>
-			</xsl:for-each>
 		</xsl:if>
 	</xsl:template>
 
