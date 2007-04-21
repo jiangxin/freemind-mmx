@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNodeMotionListener.java,v 1.1.2.1.2.5 2006-10-26 19:14:29 dpolivaev Exp $ */
+/* $Id: MindMapNodeMotionListener.java,v 1.1.2.1.2.6 2007-04-21 15:11:22 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.listeners;
 
@@ -27,9 +27,11 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import freemind.controller.NodeMotionListener.NodeMotionAdapter;
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
@@ -68,7 +70,7 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
             final NodeView nodeV = getNodeView(e);
             final MapView mapView = nodeV.getMap();
             Point point = e.getPoint();
-            SwingUtilities.convertPointToScreen(point, nodeV);
+            Tools.convertPointToAncestor(motionListenerView, point, JScrollPane.class);
             if (!isActive()) {
                 setDragStartingPoint(point, nodeV.getModel());
             } else {
@@ -82,11 +84,12 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
                     // FIXME: Replace by nodeRefresh().
                     c.getModeController().nodeChanged(node);
                 } else {
-                    MindMapNode parentNode = nodeV.getModel().getParentNode();
+                    MindMapNode parentNode = nodeV.getVisibleParentView().getModel();
                     parentNode.setVGap(getVGap(dragNextPoint, parentNode,
                             dragStartingPoint));
                     // FIXME: Replace by nodeRefresh().
                     c.getModel().nodeChanged(parentNode);
+                    c.getModel().nodeRefresh(nodeV.getModel());
                 }
                 dragStartingPoint = point;
             }
@@ -122,7 +125,7 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
         int oldHGap = node.getHGap();
         int hGapChange = (int) ((dragNextPoint.x - dragStartingPoint.x) / c
                 .getView().getZoom());
-        if (node.isLeft() != null && node.isLeft().getValue() == true)
+        if (node.isLeft())
             hGapChange = -hGapChange;
         oldHGap += +hGapChange;
         return oldHGap;
@@ -151,7 +154,7 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
             if (e.getModifiersEx() == InputEvent.CTRL_DOWN_MASK) {
                 NodeView nodeV = getNodeView(e);
                 MindMapNode node = nodeV.getModel();
-                c.moveNodePosition(node, MindMapNode.AUTO, node.getHGap(), node
+                c.moveNodePosition(node, NodeAdapter.VGAP, node.getHGap(), node
                         .getShiftY());
                 return;
             }
@@ -195,7 +198,7 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
             return;
         NodeView nodeV = getNodeView(e);
         Point point = e.getPoint();
-        SwingUtilities.convertPointToScreen(point, nodeV);
+        Tools.convertPointToAncestor(nodeV, point, JScrollPane.class);
         // move node to end position.
         MindMapNode node = nodeV.getModel();
         MindMapNode parentNode = nodeV.getModel().getParentNode();

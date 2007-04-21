@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: NewChildAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:28 dpolivaev Exp $ */
+/* $Id: NewChildAction.java,v 1.1.2.2.2.2 2007-04-21 15:11:22 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -41,6 +41,7 @@ import freemind.modes.MindMapLinkRegistry.ID_Registered;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
+import freemind.view.mindmapview.NodeView;
 
 
 public class NewChildAction extends AbstractAction implements ActorXml {
@@ -67,22 +68,19 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		NodeAdapter parent = this.c.getNodeFromID(addNodeAction.getNode());
 		int index = addNodeAction.getIndex();
 		MindMapNode newNode = c.newNode("", parent.getMap());
+        newNode.setLeft(addNodeAction.getPosition().equals("left"));
 		String newId = addNodeAction.getNewId();
 		ID_Registered reg = c.getModel().getLinkRegistry().registerLinkTarget(newNode,newId);
 		if(!reg.getID().equals(newId)) {
 			throw new IllegalArgumentException("Designated id '"+newId+"' was not given to the node. It received '"+reg.getID()+"'.");
 		}
-		if(addNodeAction.getPosition()!= null) {
-			newNode.setLeft(addNodeAction.getPosition().equals("left"));
-		}
-		c.getModel().insertNodeInto(newNode, parent, index);
+		c.insertNodeInto(newNode, parent, index);
 		// call hooks:
 		for (Iterator i = parent.getActivatedHooks().iterator(); i.hasNext();) {
             PermanentNodeHook hook = (PermanentNodeHook) i.next();
             hook.onNewChild(newNode);
         }
 		// done.
-		c.getFrame().repaint();
     }
     /* (non-Javadoc)
      * @see freemind.controller.actions.ActorXml#getDoActionClass()
@@ -100,43 +98,50 @@ public class NewChildAction extends AbstractAction implements ActorXml {
     switch (newNodeMode) {
 		 case MindMapController.NEW_SIBLING_BEFORE:
 		 case MindMapController.NEW_SIBLING_BEHIND:
-		   if (targetNode.isRoot()) {
-			c.getController().errorMessage(c.getText("new_node_as_sibling_not_possible_for_the_root"));
-			c.setBlocked(false);
-			 return null;
-		   }
-		   MindMapNode parent = targetNode.getParentNode();
-		   int childPosition = parent.getChildPosition(targetNode);
-		   if (newNodeMode == MindMapController.NEW_SIBLING_BEHIND) {
-			  childPosition++;
-		   }
-		   newNode = addNewNode(parent, childPosition, target.isLeft());
-		c.select(newNode.getViewer());
-		c.edit.editLater(newNode.getViewer(), target.getViewer(), e, true, false, false);
-		   break;
+            {
+		     if (targetNode.isRoot()) {
+		         c.getController().errorMessage(c.getText("new_node_as_sibling_not_possible_for_the_root"));
+		         c.setBlocked(false);
+		         return null;
+		     }
+		     MindMapNode parent = targetNode.getParentNode();
+		     int childPosition = parent.getChildPosition(targetNode);
+		     if (newNodeMode == MindMapController.NEW_SIBLING_BEHIND) {
+		         childPosition++;
+		     }
+		     newNode = addNewNode(parent, childPosition, parent.isLeft());
+		     final NodeView nodeView = c.getNodeView(newNode);
+		     c.select(nodeView);
+		     c.edit.editLater(nodeView, c.getNodeView(target), e, true, false, false);
+		     break;
+            }
 
 		 case MindMapController.NEW_CHILD:
 		 case MindMapController.NEW_CHILD_WITHOUT_FOCUS:
+         {
 		   final boolean parentFolded = targetNode.isFolded();
 		   if (parentFolded) {
 			c.setFolded(targetNode,false);
 		   }
 		   int position = c.getFrame().getProperty("placenewbranches").equals("last") ?
 			  targetNode.getChildCount() : 0;
-		   // Here the NodeView is created for the node.
-//			 getModel().insertNodeInto(newNode, targetNode, position);
-//			 getFrame().repaint(); //  getLayeredPane().repaint();
-			newNode = addNewNode(targetNode, position, null);
+			newNode = addNewNode(targetNode, position);
+             final NodeView nodeView = c.getNodeView(newNode);
 			   if (newNodeMode == MindMapController.NEW_CHILD) {
-				c.select(newNode.getViewer());
+				c.select(nodeView);
 			   }
-		c.edit.editLater(newNode.getViewer(), target.getViewer(), e, true, parentFolded, false);
+		c.edit.editLater(nodeView, c.getNodeView(target), e, true, parentFolded, false);
 		   break;
+         }
 	   }
     	return newNode;
 	}
 
-	public MindMapNode addNewNode(MindMapNode parent, int index, freemind.main.Tools.BooleanHolder newNodeIsLeft){
+    public MindMapNode addNewNode(MindMapNode parent, int index){
+        return addNewNode(parent, index, parent.isNewChildLeft());
+    }
+    
+	public MindMapNode addNewNode(MindMapNode parent, int index, boolean newNodeIsLeft){
 		// bug fix from Dimitri.
         c.getModel().getLinkRegistry().registerLinkTarget(parent);
         String newId = c.getModel().getLinkRegistry().generateUniqueID("_");
@@ -155,13 +160,9 @@ public class NewChildAction extends AbstractAction implements ActorXml {
         MindMapNode parent,
         int index,
         String newId,
-        freemind.main.Tools.BooleanHolder newNodeIsLeft)
+        boolean newNodeIsLeft)
          {
-        String pos = null;
-
-      	if (newNodeIsLeft!= null) {
-            pos = newNodeIsLeft.getValue() ? "left" : "right";
-        }
+        String pos = newNodeIsLeft ? "left" : "right";
         NewNodeAction newNodeAction = new NewNodeAction();
         newNodeAction.setNode(c.getNodeID(parent));
         newNodeAction.setPosition(pos);

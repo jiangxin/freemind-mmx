@@ -25,8 +25,10 @@ package freemind.controller.filter.condition;
 
 import javax.swing.JComponent;
 
+import freemind.controller.Controller;
 import freemind.main.Resources;
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
 public class SelectedViewCondition implements Condition {
@@ -44,8 +46,8 @@ public class SelectedViewCondition implements Condition {
         }
         return  description;
     }
-    public boolean checkNode(MindMapNode node) {
-        final NodeView viewer = node.getViewer();
+    public boolean checkNode(Controller c, MindMapNode node) {  
+        NodeView viewer = c.getModeController().getNodeView(node);
         return viewer != null && viewer.isSelected();
     }
     public JComponent getListCellRendererComponent() {

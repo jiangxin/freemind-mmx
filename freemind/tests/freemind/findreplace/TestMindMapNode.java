@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: TestMindMapNode.java,v 1.1.2.10 2007-02-03 23:19:26 christianfoltin Exp $*/
+/*$Id: TestMindMapNode.java,v 1.1.2.11 2007-04-21 15:11:24 dpolivaev Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import javax.swing.ImageIcon;
+import javax.swing.event.EventListenerList;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -49,10 +51,10 @@ import freemind.modes.MindMapEdge;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
-import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.NodeView;
+import freemind.view.mindmapview.NodeViewVisitor;
 
 final class TestMindMapNode implements MindMapNode {
     private String text = "";
@@ -150,11 +152,11 @@ final class TestMindMapNode implements MindMapNode {
         return null;
     }
 
-    public NodeView getViewer() {
+    public Collection getViewers() {
         return null;
     }
 
-    public void setViewer(NodeView viewer) {
+    public void addViewer(NodeView viewer) {
     }
 
     public String getPlainTextContent() {
@@ -177,8 +179,8 @@ final class TestMindMapNode implements MindMapNode {
         return false;
     }
 
-    public BooleanHolder isLeft() {
-        return null;
+    public boolean isLeft() {
+        return false;
     }
 
     public boolean isOnLeftSideOfRoot() {
@@ -327,10 +329,10 @@ final class TestMindMapNode implements MindMapNode {
         return null;
     }
 
-    public void addNodeViewEventListener(NodeViewEventListener l) {
+    public void addTreeModelListener(TreeModelListener l) {
     }
 
-    public void removeNodeViewEventListener(NodeViewEventListener l) {
+    public void removeTreeModelListener(TreeModelListener l) {
     }
 
     public void insert(MutableTreeNode child, int index) {
@@ -424,6 +426,26 @@ final class TestMindMapNode implements MindMapNode {
 
     public int getAttributeTableLength() {
         return 0;
+    }
+
+    public void removeViewer(NodeView viewer) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void acceptViewVisitor(NodeViewVisitor visitor) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public EventListenerList getListeners() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean isNewChildLeft() {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

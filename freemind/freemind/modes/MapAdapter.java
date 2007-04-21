@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.15 2007-02-17 16:19:31 dpolivaev Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.16 2007-04-21 15:11:21 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -36,6 +37,7 @@ import java.util.logging.Logger;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -50,9 +52,8 @@ import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
 
-public abstract class MapAdapter implements MindMap {
+public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 
-    private MindMapNode root;
     private EventListenerList treeModelListeners = new EventListenerList();
     /**
 	 * denotes the amount of changes since the last save. The initial value is
@@ -71,6 +72,7 @@ public abstract class MapAdapter implements MindMap {
 
 
     public MapAdapter (FreeMindMain frame, ModeController modeController) {
+        super(null);
 		this.frame = frame;
 		this.mModeController = modeController;
 		mModeController.setModel(this);
@@ -180,16 +182,12 @@ public abstract class MapAdapter implements MindMap {
 	nodeChanged(getRootNode());//update view anyhow
     }
 
-    public Object getRoot() {
-	return root;
-    }
-
     public MindMapNode getRootNode() {
-        return root;
+        return (MindMapNode)getRoot();
     }
     
     public void setRoot(MindMapNode root) {
-	this.root = root;
+        super.setRoot(root);
     }
 
     /**
@@ -217,21 +215,6 @@ public abstract class MapAdapter implements MindMap {
     //
     // Node editing
     //
-
-
-    public Object[] getPathToRoot( TreeNode node ) {
-	return ( ((MindMapNode)node).getPath() ).getPath();//Create Object[] from TreePath
-    }
-
-    //
-    // cut'n'paste
-    //
-    public final Transferable cut(MindMapNode node) {
-       // This cut does not need any reimplementation in child Classes!
-       Transferable t = copy(node, true);
-       removeNodeFromParent(node);
-       return t;
-    }
 
 
    public Transferable copy(MindMapNode node, boolean saveInvisible) {
@@ -286,61 +269,6 @@ public abstract class MapAdapter implements MindMap {
 
     public MindMapLinkRegistry getLinkRegistry() { return null; }
 
-
-    public void insertNodeIntoNoEvent(MindMapNode newChild, MindMapNode parent) {
-       insertNodeIntoNoEvent(newChild, parent, false); }
-
-    public void insertNodeIntoNoEvent(MindMapNode newChild, MindMapNode parent,
-                                      boolean asSibling){
-        // Daniel: This is a hackery in the sense that I don't
-        // understand the method "nodesWereInserted".
-
-        // This code is based on empirical observation that in
-        // some cases avoiding the mentioned method does not throw
-        // exception.
-
-        // The reason why we do such a thing at all is that calling the
-        // method "nodesWereInserted" dramatically lowers the performance.
-
-        // The default position is after the last node
-        if (asSibling) {
-            MindMapNode oldpa = parent.getParentNode();
-            oldpa.insert(newChild, oldpa.getChildPosition(parent));
-            recursiveCallAddChildren(oldpa, newChild);
-        }
-        else {
-            parent.insert(newChild, parent.getChildCount());
-            recursiveCallAddChildren(parent, newChild);
-        }
-
-    }
-
-    public void insertNodeInto(MindMapNode newChild,
-			       MindMapNode parent){
-        // The default position is after the last node
-        insertNodeInto(newChild, parent, parent.getChildCount());
-    }
-
-	public void insertNodeInto(
-		MindMapNode newChild,
-		MindMapNode parent,
-		int index) {
-		insertNodeInto((MutableTreeNode) newChild, (MutableTreeNode) parent, index);
-		recursiveCallAddChildren(parent, newChild);
-	}
-
-    /**
-     * Use this method to add children because it will cause the appropriate event.
-     */
-    public void insertNodeInto(MutableTreeNode newChild,
-			       MutableTreeNode parent, int index){
-        parent.insert(newChild, index);
-	nodesWereInserted(parent, new int[]{ index });
-        // ^ Daniel: I don't understand the reason why this is here.  But it
-        // is necessary, because user's action "New Node" throws
-        // an exception otherwise.
-    }
-
 	/**URGENT: This method must be moved to the ControllerAdapter.
 	 */
 	private void recursiveCallAddChildren(MindMapNode node, MindMapNode addedChild) {
@@ -358,118 +286,6 @@ public abstract class MapAdapter implements MindMap {
 		    recursiveCallAddChildren(node.getParentNode(), addedChild);
 	}
 
-
-    /**
-     * Joerg: Message this to remove node from its parent. This will message
-     * nodesWereRemoved to create the appropriate event. This is the
-     * preferred way to remove a node as it handles the event creation
-     * for you.
-     */
-    public void removeNodeFromParent(MutableTreeNode node) {
-        removeNodeFromParent(node, /*notify=*/ true); }
-
-    public void removeNodeFromParent(MutableTreeNode node, boolean notify) {
-	MutableTreeNode parent = (MutableTreeNode)node.getParent();
-
-	if (parent == null)
-           throw new IllegalArgumentException("node does not have a parent.");
-
-	int[] childIndex = new int[1];
-	Object[] removedArray = new Object[1];
-
-	childIndex[0] = parent.getIndex(node);
-	parent.remove(node);
-        if (notify) {
-           removedArray[0] = node;
-           nodesWereRemoved(parent, childIndex, removedArray); }}
-
-//    public void changeNode(MindMapNode node, String newText) {
-//	node.setUserObject(newText);
-//	nodeChanged(node);
-//    }
-
-    //
-    // Interface TreeModel
-    //
-
-    public Object getChild( Object parent, int index ) {
-	return ( (TreeNode)parent ).getChildAt( index );
-    }
-
-    public int getChildCount( Object parent ) {
-	return ( (TreeNode)parent ).getChildCount();
-    }
-
-    public int getIndexOfChild( Object parent, Object child ) {
-	return ( (TreeNode)parent ).getIndex( (TreeNode)child );
-    }
-
-    public boolean isLeaf( Object node ) {
-	return ( (TreeNode)node ).isLeaf();
-    }
-
-    public void addTreeModelListener( TreeModelListener l ) {
-	treeModelListeners.add( TreeModelListener.class, l );
-    }
-
-    public void removeTreeModelListener( TreeModelListener l ) {
-	treeModelListeners.remove( TreeModelListener.class, l );
-    }
-
-    public void valueForPathChanged( TreePath path, Object newValue ) {
-	( (MutableTreeNode)path.getLastPathComponent() ).setUserObject( newValue );
-    }
-
-
-    //
-    // API for updating the view.
-    //
-
-    //
-    // TreeNodesRemoved
-    //
-
-    /**
-     * Invoke this method after you've removed some TreeNodes from
-     * node.  childIndices should be the index of the removed elements and
-     * must be sorted in ascending order. And removedChildren should be
-     * the array of the children objects that were removed.
-     */
-    protected void nodesWereRemoved(TreeNode parent, int[] childIndices,
-				 Object[] removedChildren) {
-	setSaved(false);
-	if(parent != null && childIndices != null) {
-	    fireTreeNodesRemoved(this, getPathToRoot( (MindMapNode)parent ), childIndices,
-				 removedChildren);
-	}
-    }
-
-    //
-    // TreeNodesInserted
-    //
-
-    /**
-     * Invoke this method after you've inserted some TreeNodes into
-     * node.  childIndices should be the index of the new elements and
-     * must be sorted in ascending order.
-     */
-    protected void nodesWereInserted(TreeNode node, int[] childIndices) {
-       if (treeModelListeners != null && node != null &&
-           childIndices != null && childIndices.length > 0) {
-          setSaved(false);
-
-	  Object[] newChildren = new Object[childIndices.length];
-          for(int counter = 0; counter < childIndices.length; counter++) {
-             newChildren[counter] = node.getChildAt(childIndices[counter]); }
-
-          fireTreeNodesInserted(this, getPathToRoot( (MindMapNode)node ), childIndices, newChildren);
-	}
-    }
-
-    //
-    // TreeNodesChanged
-    //
-
     /**
       * This method should not be called directly!
       */
@@ -478,187 +294,131 @@ public abstract class MapAdapter implements MindMap {
     }
 
     public void nodeRefresh(TreeNode node) {
-        frame.getController().getModeController().nodeRefresh((MindMapNode)node);
+        getModeController().nodeRefresh((MindMapNode)node);
     }
-
-	public void nodeChangedMapInternal(TreeNode node) {
-		if (treeModelListeners != null && node != null) {
-			TreeNode parent = node.getParent();
-
-			if (parent != null) {
-				int anIndex = parent.getIndex(node);
-				if (anIndex != -1) {
-					int[] cIndexs = new int[1];
-
-					cIndexs[0] = anIndex;
-					nodesChanged(parent, cIndexs);
-				}
-			}
-			else if (((MindMapNode)node).isRoot()) {
-				nodesChanged(node, null);
-			}
-		}
-	}
-
-
-	/**
-      * Invoke this method after you've changed how the children identified by
-      * childIndicies are to be represented in the tree.
-      */
-    protected void nodesChanged(TreeNode node, int[] childIndices) {
-
-       if (node != null) {
-          if (childIndices != null) {
-             int cCount = childIndices.length;
-
-             if (cCount > 0) {
-                Object[] cChildren = new Object[cCount];
-
-                for(int counter = 0; counter < cCount; counter++) {
-                   cChildren[counter] = node.getChildAt
-                      (childIndices[counter]);
-                   logger.finest("Children array at "+counter+" = "+ cChildren[counter]);
-                }
-                fireTreeNodesChanged(this, getPathToRoot(node), childIndices, cChildren);
-             }
-          }
-          else if (((MindMapNode)node).isRoot()) {
-             fireTreeNodesChanged(this, getPathToRoot(node), null, null);
-          }
-       }
-    }
-
-    //
-    // TreeStructureChanged
-    //
-
     /**
-      * Invoke this method if you've totally changed the children of
-      * node and its childrens children...  This will post a
-      * treeStructureChanged event.
-      */
-    public void nodeStructureChanged(MindMapNode node) {
-        setSaved(false);
-        if (node != null) {
-           fireTreeStructureChanged(this, getPathToRoot(node), null, null); }}
-
-    /**
-     * Invoke this method if you've modified the TreeNodes upon which this
-     * model depends.  The model will notify all of its listeners that the
-     * model has changed below the node <code>node</code> (PENDING).
+     * Invoke this method if you've totally changed the children of
+     * node and its childrens children...  This will post a
+     * treeStructureChanged event.
      */
-    protected void reload(TreeNode node) {
-        if (node != null) {
-           fireTreeStructureChanged(this, getPathToRoot(node), null, null); }}
-
-
-    /////////
-    // private methods. Internal implementation.
-    ////////
-
-    /*
-     * Notify all listeners that have registered interest for
-     * notification on this event type.  The event instance
-     * is lazily created using the parameters passed into
+    void nodeChangedInternal(TreeNode node){
+        if(node != null) {
+            fireTreeNodesChanged(this, getPathToRoot(node), null, null);
+         }
+    }
+    /**
+     * Notifies all listeners that have registered interest for
+     * notification on this event type.  The event instance 
+     * is lazily created using the parameters passed into 
      * the fire method.
+     *
+     * @param source the node being changed
+     * @param path the path to the root node
+     * @param childIndices the indices of the changed elements
+     * @param children the changed elements
      * @see EventListenerList
      */
-    private void fireTreeNodesRemoved(Object source, Object[] path,
-					int[] childIndices,
-					Object[] children) {
-	// Guaranteed to return a non-null array
-	Object[] listeners = treeModelListeners.getListenerList();
-	TreeModelEvent e = null;
-	// Process the listeners last to first, notifying
-	// those that are interested in this event
-	for (int i = listeners.length-2; i>=0; i-=2) {
-	    if (listeners[i]==TreeModelListener.class) {
-		// Lazily create the event:
-		if (e == null)
-		    e = new TreeModelEvent(source, path,
-					   childIndices, children);
-		((TreeModelListener)listeners[i+1]).treeNodesRemoved(e);
-	    }
-	}
+    protected void fireTreeNodesInserted(Object source, Object[] path, 
+                                        int[] childIndices, 
+                                        Object[] children) {
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        TreeModelEvent e = null;
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        e = fireTreeNodesInserted(source, path, childIndices, children, listeners, e);
+        MindMapNode node = (MindMapNode) path[path.length-1];
+        fireTreeNodesInserted(source, path, childIndices, children, node.getListeners().getListenerList(), e);
     }
 
-    /**
-     * Notify all listeners that have registered interest for
-     * notification on this event type.  The event instance
-     * is lazily created using the parameters passed into
-     * the fire method.
-     * @see EventListenerList
-     */
-    private void fireTreeNodesInserted(Object source, Object[] path,
-					 int[] childIndices,
-					 Object[] children) {
-	// Guaranteed to return a non-null array
-	Object[] listeners = treeModelListeners.getListenerList();
-	TreeModelEvent e = null;
-	// Process the listeners last to first, notifying
-	// those that are interested in this event
-	for (int i = listeners.length-2; i>=0; i-=2) {
+    private TreeModelEvent fireTreeNodesInserted(Object source, Object[] path, int[] childIndices, Object[] children, Object[] listeners, TreeModelEvent e) {
+        for (int i = listeners.length-2; i>=0; i-=2) {
             if (listeners[i]==TreeModelListener.class) {
                 // Lazily create the event:
                 if (e == null)
-                    e = new TreeModelEvent(source, path,
-                                           childIndices, children);
+                    e = new TreeModelEvent(source, path, 
+                            childIndices, children);
                 ((TreeModelListener)listeners[i+1]).treeNodesInserted(e);
-            }
+            }          
         }
+        return e;
     }
-
-    /*
-     * Notify all listeners that have registered interest for
-     * notification on this event type.  The event instance
-     * is lazily created using the parameters passed into
-     * the fire method.
-     * @see EventListenerList
-     */
-    private void fireTreeNodesChanged(Object source, Object[] path,
-                                        int[] childIndices,
-                                        Object[] children) {
-        // Guaranteed to return a non-null array
-        Object[] listeners = treeModelListeners.getListenerList();
+    
+    protected void fireTreeNodesRemoved(Object source, Object[] path, 
+            int[] childIndices, 
+            Object[] children) {
+//      Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
         TreeModelEvent e = null;
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
+//      Process the listeners last to first, notifying
+//      those that are interested in this event
+        e = fireTreeNodesRemoved(source, path, childIndices, children, listeners, e);
+        MindMapNode node = (MindMapNode) path[path.length-1];
+        fireTreeNodesRemoved(source, path, childIndices, children, node.getListeners().getListenerList(), e);
+    }
+    
+    private TreeModelEvent fireTreeNodesRemoved(Object source, Object[] path, int[] childIndices, Object[] children, Object[] listeners, TreeModelEvent e) {
         for (int i = listeners.length-2; i>=0; i-=2) {
             if (listeners[i]==TreeModelListener.class) {
-                // Lazily create the event:
+//              Lazily create the event:
                 if (e == null)
-                    e = new TreeModelEvent(source, path,
-                                           childIndices, children);
-                ((TreeModelListener)listeners[i+1]).treeNodesChanged(e);
-            }
+                    e = new TreeModelEvent(source, path, 
+                            childIndices, children);
+                ((TreeModelListener)listeners[i+1]).treeNodesRemoved(e);
+            }          
         }
+        return e;
     }
-
-    /*
-     * Notify all listeners that have registered interest for
-     * notification on this event type.  The event instance
-     * is lazily created using the parameters passed into
-     * the fire method.
-     * @see EventListenerList
-     */
-    private void fireTreeStructureChanged(Object source, Object[] path,
-                                        int[] childIndices,
-                                        Object[] children) {
-        // Guaranteed to return a non-null array
-        Object[] listeners = treeModelListeners.getListenerList();
+    protected void fireTreeStructureChanged(Object source, Object[] path, 
+            int[] childIndices, 
+            Object[] children) {
+//      Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
         TreeModelEvent e = null;
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
+//      Process the listeners last to first, notifying
+//      those that are interested in this event
+        e = fireTreeStructureChanged(source, path, childIndices, children, listeners, e);
+        MindMapNode node = (MindMapNode) path[path.length-1];
+        fireTreeStructureChanged(source, path, childIndices, children, node.getListeners().getListenerList(), e);
+    }
+    
+    private TreeModelEvent fireTreeStructureChanged(Object source, Object[] path, int[] childIndices, Object[] children, Object[] listeners, TreeModelEvent e) {
         for (int i = listeners.length-2; i>=0; i-=2) {
             if (listeners[i]==TreeModelListener.class) {
-                // Lazily create the event:
+//              Lazily create the event:
                 if (e == null)
-                    e = new TreeModelEvent(source, path, childIndices, children);
+                    e = new TreeModelEvent(source, path, 
+                            childIndices, children);
                 ((TreeModelListener)listeners[i+1]).treeStructureChanged(e);
-            }
+            }          
         }
+        return e;
     }
-
+    protected void fireTreeNodesChanged(Object source, Object[] path, 
+            int[] childIndices, 
+            Object[] children) {
+//      Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        TreeModelEvent e = null;
+//      Process the listeners last to first, notifying
+//      those that are interested in this event
+        e = fireTreeNodesChanged(source, path, childIndices, children, listeners, e);
+        MindMapNode node = (MindMapNode) path[path.length-1];
+        fireTreeNodesChanged(source, path, childIndices, children, node.getListeners().getListenerList(), e);
+    }
+    
+    private TreeModelEvent fireTreeNodesChanged(Object source, Object[] path, int[] childIndices, Object[] children, Object[] listeners, TreeModelEvent e) {
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==TreeModelListener.class) {
+//              Lazily create the event:
+                if (e == null)
+                    e = new TreeModelEvent(source, path, 
+                            childIndices, children);
+                ((TreeModelListener)listeners[i+1]).treeNodesChanged(e);
+            }          
+        }
+        return e;
+    }
     public MapRegistry getRegistry() {
         return registry;
     }
@@ -668,6 +428,6 @@ public abstract class MapAdapter implements MindMap {
     public void setFilter(Filter filter) {
         this.filter = filter;
     }
-
+        
 }
 

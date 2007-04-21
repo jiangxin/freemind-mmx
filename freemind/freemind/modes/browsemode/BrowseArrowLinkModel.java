@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseArrowLinkModel.java,v 1.1.18.1 2004-10-17 20:22:45 dpolivaev Exp $*/
+/*$Id: BrowseArrowLinkModel.java,v 1.1.18.1.16.1 2007-04-21 15:11:21 dpolivaev Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -27,6 +27,7 @@ import freemind.main.Tools;
 import java.awt.Color;
 
 import freemind.main.XMLElement;
+import freemind.view.mindmapview.MapView;
 
 public class BrowseArrowLinkModel extends ArrowLinkAdapter {
 
@@ -46,9 +47,9 @@ public class BrowseArrowLinkModel extends ArrowLinkAdapter {
     public String toString() { return "Source="+getSource()+", target="+getTarget(); }
 
     /**
-     * @see freemind.modes.MindMapArrowLink#changeInclination(int, int, int, int)
+     * @see freemind.modes.MindMapArrowLink#changeInclination(MapView, int, int, int, int)
      */
-    public void changeInclination(int oldX, int oldY, int deltaX, int deltaY) {
+    public void changeInclination(MapView map, int oldX, int oldY, int deltaX, int deltaY) {
         
     }
 

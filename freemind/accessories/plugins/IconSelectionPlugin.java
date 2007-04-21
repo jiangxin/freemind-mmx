@@ -39,6 +39,7 @@ import freemind.modes.common.dialogs.IconSelectionPopupDialog;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.IconAction;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
+import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -57,7 +58,7 @@ public class IconSelectionPlugin extends MindMapNodeHookAdapter {
 	
 	public void invoke(MindMapNode rootNode) {
 		// we dont need node. 
-		MindMapNode focussed = getController().getSelected();
+		NodeView focussed = getController().getSelectedView();
 		Vector actions = new Vector();
 		Vector items = new Vector();
 		Vector itemdescriptions = new Vector();
@@ -80,9 +81,9 @@ public class IconSelectionPlugin extends MindMapNodeHookAdapter {
 				itemdescriptions,
 				frame);
 
-		NodeView node = focussed.getViewer();
-		controller.getView().scrollNodeToVisible(node, 0);
-		Tools.moveDialogToPosition(frame, selectionDialog, node.getLocationOnScreen());
+		final MapView mapView = controller.getView();
+        mapView.scrollNodeToVisible(focussed, 0);
+		Tools.moveDialogToPosition(frame, selectionDialog, focussed.getLocationOnScreen());
 		selectionDialog.setModal(true);
 		selectionDialog.show();
 		// process result:

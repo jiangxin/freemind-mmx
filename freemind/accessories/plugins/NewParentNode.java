@@ -29,6 +29,7 @@ import java.util.List;
 
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
+import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
@@ -107,8 +108,8 @@ public class NewParentNode extends MindMapNodeHookAdapter {
 		nodeChanged(selectedParent);
 
 		// Start editing new node
-		getMindMapController().getView().selectAsTheOnlyOneSelected(
-			newNode.getViewer());
+		final MapView mapView = getMindMapController().getView();
+        mapView.selectAsTheOnlyOneSelected(mapView.getNodeView(newNode));
 		getMindMapController().getFrame().repaint();
 		// edit is not necessary, as the new text can directly entered and editing is starting automatically.
 		//getMindMapController().edit(newNode.getViewer(), selectedParent.getViewer(), null, false, false, false);

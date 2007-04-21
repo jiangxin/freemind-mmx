@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: EncryptNode.java,v 1.1.2.8.2.3 2006-07-25 20:28:19 christianfoltin Exp $ */
+/* $Id: EncryptNode.java,v 1.1.2.8.2.4 2007-04-21 15:11:20 dpolivaev Exp $ */
 
 /*
  * Created on 14.12.2004
@@ -42,6 +42,7 @@ import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapController.NewNodeCreator;
 import freemind.modes.mindmapmode.actions.NodeHookAction;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
+import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
@@ -191,6 +192,7 @@ public class EncryptNode extends MindMapNodeHookAdapter {
     /**
      */
     private void toggleCryptState(MindMapNode node) {
+        final MindMapController mindMapController = getMindMapController();
         if (node instanceof EncryptedMindMapNode) {
             EncryptedMindMapNode encNode = (EncryptedMindMapNode) node;
             if (encNode.isAccessable()) {
@@ -200,15 +202,16 @@ public class EncryptNode extends MindMapNodeHookAdapter {
             } else {
                 doPasswordCheckAndDecryptNode(encNode);
             }
-            getMindMapController().nodeStructureChanged(encNode);
-            getMindMapController().getView().selectAsTheOnlyOneSelected(encNode.getViewer());
+            mindMapController.nodeStructureChanged(encNode);
+            final MapView mapView = mindMapController.getView();
+            mapView.selectAsTheOnlyOneSelected(mapView.getNodeView(encNode));
             encNode.setShuttingDown(false);
         } else {
             // box:
             JOptionPane
                     .showMessageDialog(
-                            getMindMapController().getFrame().getContentPane(),
-                            getMindMapController()
+                            mindMapController.getFrame().getContentPane(),
+                            mindMapController
                                     .getText(
                                             "accessories/plugins/EncryptNode.properties_insert_encrypted_node_first"),
                             "Freemind", JOptionPane.INFORMATION_MESSAGE);

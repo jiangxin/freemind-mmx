@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: CloudView.java,v 1.1.16.2 2005-04-27 21:45:30 christianfoltin Exp $*/
+/*$Id: CloudView.java,v 1.1.16.2.12.1 2007-04-21 15:11:22 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapCloud;
@@ -59,7 +59,6 @@ public class CloudView {
     protected int getIterativeLevel() {
     	return cloudModel.getIterativeLevel();
     }
-    static final Stroke DEF_STROKE = new BasicStroke(3);
     static private CloudView heightCalculator = new CloudView(null, null);
 
     protected CloudView(MindMapCloud cloudModel, NodeView source) {
@@ -165,8 +164,6 @@ public class CloudView {
 
     public Stroke getStroke() {
         Stroke result = getModel().getStroke();
-        if (result==null)
-            return DEF_STROKE;
         return result;
     }
 

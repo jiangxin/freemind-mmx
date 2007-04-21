@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ChangeNodeLevelAction.java,v 1.1.2.2.2.1 2006-04-05 21:26:24 dpolivaev Exp $ */
+/* $Id: ChangeNodeLevelAction.java,v 1.1.2.2.2.2 2007-04-21 15:11:20 dpolivaev Exp $ */
 
 /*
  * Created on 19.02.2006
@@ -27,6 +27,7 @@ package accessories.plugins;
 
 import java.awt.datatransfer.Transferable;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
@@ -73,7 +74,7 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 		}
 
 		boolean upwards = Tools.safeEquals("left",
-				getResourceString("action_type")) != getLeft(selectedNode);
+				getResourceString("action_type")) != selectedNode.isLeft();
 		// Make sure the selected nodes all have the same parent
 		// (this restriction is to simplify the action, and could
 		// possibly be removed in the future, when we have undo)
@@ -105,7 +106,7 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 		if (upwards) {
 			if (selectedParent.isRoot()) {
 				// change side of the items:
-				boolean isLeft = getLeft(selectedNode);
+				boolean isLeft = selectedNode.isLeft();
 				Transferable copy = getMindMapController().cut(selectedNodes);
 				getMindMapController().paste(copy, selectedParent, false, !isLeft);
 				select(selectedNodeId, selectedNodesId);
@@ -114,7 +115,7 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 			// determine child pos of parent
 			MindMapNode grandParent = selectedParent.getParentNode();
 			int parentPosition = grandParent.getChildPosition(selectedParent);
-			boolean isLeft = getLeft(selectedParent);
+			boolean isLeft = selectedParent.isLeft();
 			Transferable copy = getMindMapController().cut(selectedNodes);
 			if (parentPosition == grandParent.getChildCount() - 1) {
 				getMindMapController().paste(copy, grandParent, false, isLeft);
@@ -133,7 +134,7 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 			for(int i = ownPosition - 1; i >= 0; --i) {
 				MindMapNode sibling = (MindMapNode) selectedParent.getChildAt(i);
 				if((! selectedNodes.contains(sibling)) &&
-                        Tools.safeEquals(selectedNode.isLeft(), sibling.isLeft())){
+                        selectedNode.isLeft() == sibling.isLeft()){
 					directSibling = sibling;
 					break;
 				}
@@ -143,7 +144,7 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
                 for(int i = ownPosition + 1; i < selectedParent.getChildCount() ; ++i) {
                     MindMapNode sibling = (MindMapNode) selectedParent.getChildAt(i);
                     if((! selectedNodes.contains(sibling)) &&
-                            Tools.safeEquals(selectedNode.isLeft(), sibling.isLeft())){
+                            selectedNode.isLeft() == sibling.isLeft()){
                         directSibling = sibling;
                         break;
                     }
@@ -152,7 +153,7 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 			if(directSibling != null){
 				// sibling on the same side found:
 				Transferable copy = getMindMapController().cut(selectedNodes);
-				getMindMapController().paste(copy, directSibling, false, getLeft(directSibling));
+				getMindMapController().paste(copy, directSibling, false, directSibling.isLeft());
 				select(selectedNodeId, selectedNodesId);
 				return;
             }
@@ -162,18 +163,12 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 	private void select(String selectedNodeId, List selectedNodesIds) {
 		// get new nodes by object id:
 		MindMapNode newInstanceOfSelectedNode = getMindMapController().getNodeFromID(selectedNodeId);
-		Vector newSelecteds = new Vector();
+		List newSelecteds = new LinkedList();
 		for (Iterator iter = selectedNodesIds.iterator(); iter.hasNext();) {
 			String nodeId = (String) iter.next();
 			newSelecteds.add(getMindMapController().getNodeFromID(nodeId));
 		}
-		getMindMapController().nodeStructureChanged(newInstanceOfSelectedNode.getParentNode());
 		getMindMapController().selectMultipleNodes(newInstanceOfSelectedNode, newSelecteds);
-	}
-
-	private boolean getLeft(MindMapNode selectedParent) {
-		return (selectedParent.isLeft() != null) ? selectedParent
-				.isLeft().getValue() : true;
 	}
 
 }

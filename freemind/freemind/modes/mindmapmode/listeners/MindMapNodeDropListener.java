@@ -19,6 +19,7 @@
 
 package freemind.modes.mindmapmode.listeners;
 
+import java.awt.Component;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
@@ -36,6 +37,7 @@ import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
+import freemind.view.mindmapview.MainView;
 import freemind.view.mindmapview.NodeView;
 
 // import ublic class MindMapNodesSelection implements Transferable,
@@ -62,8 +64,8 @@ public class MindMapNodeDropListener implements DropTargetListener {
     }
 
     private boolean isDropAcceptable(DropTargetDropEvent event) {
-        MindMapNode node = ((NodeView) event.getDropTargetContext()
-                .getComponent().getParent()).getModel();
+        MindMapNode node = ((MainView) event.getDropTargetContext()
+                .getComponent()).getNodeView().getModel();
         MindMapNode selected = mMindMapController.getView().getSelected()
                 .getModel();
         return ((node != selected) && !node.isDescendantOf(selected));
@@ -75,8 +77,8 @@ public class MindMapNodeDropListener implements DropTargetListener {
             int dropAction = dtde.getDropAction();
             Transferable t = dtde.getTransferable();
 
-            NodeView targetNodeView = (NodeView) dtde.getDropTargetContext()
-                    .getComponent().getParent();
+            final MainView mainView = (MainView)dtde.getDropTargetContext()                    .getComponent();
+            NodeView targetNodeView =  mainView.getNodeView();
             MindMapNode targetNode = targetNodeView.getModel();
             MindMapNodeModel targetNodeModel = (MindMapNodeModel) targetNode;
 
@@ -105,8 +107,8 @@ public class MindMapNodeDropListener implements DropTargetListener {
                 }
             }
 
-            targetNodeView.setDraggedOver(NodeView.DRAGGED_OVER_NO);
-            targetNodeView.repaint();
+            mainView.setDraggedOver(NodeView.DRAGGED_OVER_NO);
+            mainView.repaint();
 
             if (dtde.isLocalTransfer()
                     && (dropAction == DnDConstants.ACTION_MOVE)
@@ -122,9 +124,9 @@ public class MindMapNodeDropListener implements DropTargetListener {
                 // (dtde.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor))
                 // {
                 // System.err.println("filelist");
-                mMindMapController.paste(t, targetNode, targetNodeView
-                        .dropAsSibling(dtde.getLocation().getX()),
-                        targetNodeView.dropPosition(dtde.getLocation().getX()));
+                mMindMapController.paste(t, targetNode, 
+                        mainView.dropAsSibling(dtde.getLocation().getX()),
+                        mainView.dropPosition(dtde.getLocation().getX()));
                 dtde.dropComplete(true);
                 return;
             }
@@ -206,10 +208,9 @@ public class MindMapNodeDropListener implements DropTargetListener {
                 }
 
                 mMindMapController.getView().selectAsTheOnlyOneSelected(
-                        targetNodeModel.getViewer());
-                mMindMapController.paste(trans, targetNode, targetNode
-                        .getViewer().dropAsSibling(dtde.getLocation().getX()),
-                        targetNode.getViewer().dropPosition(
+                        targetNodeView);
+                mMindMapController.paste(trans, targetNode, mainView.dropAsSibling(dtde.getLocation().getX()),
+                        mainView.dropPosition(
                                 dtde.getLocation().getX()));
             }
         } catch (Exception e) {
@@ -241,8 +242,8 @@ public class MindMapNodeDropListener implements DropTargetListener {
     }
 
     public void dragOver(DropTargetDragEvent e) {
-        NodeView draggedNode = (NodeView) e.getDropTargetContext()
-                .getComponent().getParent();
+        MainView draggedNode = (MainView) e.getDropTargetContext()
+                .getComponent();
         int oldDraggedOver = draggedNode.getDraggedOver();
         // let the node decide, which dragged over type it is:
         draggedNode.setDraggedOver(e.getLocation());
@@ -254,8 +255,8 @@ public class MindMapNodeDropListener implements DropTargetListener {
     }
 
     public void dragExit(DropTargetEvent e) {
-        NodeView draggedNode = (NodeView) e.getDropTargetContext()
-                .getComponent().getParent();
+        MainView draggedNode = (MainView) e.getDropTargetContext()
+                .getComponent();
         draggedNode.setDraggedOver(NodeView.DRAGGED_OVER_NO);
         draggedNode.repaint();
     }

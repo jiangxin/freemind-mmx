@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/* $Id: MindMapActions.java,v 1.1.2.3.2.3 2007-01-30 21:09:49 christianfoltin Exp $ */
+/* $Id: MindMapActions.java,v 1.1.2.3.2.4 2007-04-21 15:11:22 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
@@ -81,7 +81,7 @@ public interface MindMapActions {
 	 * this method is easier to use. Moreover, it does not automatically start an editor.
 	 * @param newNodeIsLeft here, normally parent.isLeft() or null is used.
 	 * @return returns the new node. */
-	MindMapNode addNewNode(MindMapNode parent, int index, freemind.main.Tools.BooleanHolder newNodeIsLeft);
+	MindMapNode addNewNode(MindMapNode parent, int index, boolean newNodeIsLeft);
 
 	public void deleteNode(MindMapNode selectedNode);
 	public Transferable cut();
@@ -192,20 +192,6 @@ public interface MindMapActions {
 	 * @param value null if you want to delete this tooltip.
 	 */
 	public void setToolTip(MindMapNode node, String key, String value);
-
-    /** Multiple selection.
-     * @param focussed will be focussed afterwards
-     * @param selecteds are all nodes that are selected (the focussed has not to be contained).
-     */
-    public void selectMultipleNodes(MindMapNode focussed, Collection selecteds) ;
-
-    /** The branch that starts from selected is added to the selection.
-     *
-     * On extend = false clear up the previous selection.
-     * if extend is false, the past selection will be empty.
-     * if yes, the selection will extended with this node and its children
-     */
-    public void selectBranch( MindMapNode selected, boolean extend);
 
 
 	/** Moves the node to a new position.

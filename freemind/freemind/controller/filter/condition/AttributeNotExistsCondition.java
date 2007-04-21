@@ -23,6 +23,7 @@
  */
 package freemind.controller.filter.condition;
 
+import freemind.controller.Controller;
 import freemind.modes.MindMapNode;
 import freemind.modes.attributes.AttributeTableModel;
 
@@ -41,7 +42,7 @@ private String attribute;
     /* (non-Javadoc)
      * @see freemind.controller.filter.condition.Condition#checkNode(freemind.modes.MindMapNode)
      */
-    public boolean checkNode(MindMapNode node) {
+    public boolean checkNode(Controller c, MindMapNode node) {
         AttributeTableModel attributes = node.getAttributes();
         for(int i = 0; i < attributes.getRowCount(); i++){
             if (attributes.getValueAt(i, 0).equals(attribute))

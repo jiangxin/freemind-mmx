@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.5 2006-11-26 10:20:42 dpolivaev Exp $ */
+/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.6 2007-04-21 15:11:21 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
 import java.io.IOException;
@@ -114,8 +114,8 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 				NodeAdapter node = (NodeAdapter) browseController.createNodeTreeFromXml(new StringReader(string));
 				// now, the import is finished. We can inform others about
 				// the new nodes:
-				MapAdapter model = browseController.getModel();
-				model.insertNodeInto(node, this);
+                browseController.insertNodeInto(node, this);
+                MapAdapter model = browseController.getModel();
 				browseController.invokeHooksRecursively(node, model);
 				super.setFolded(folded);
 				browseController.nodeChanged(this);

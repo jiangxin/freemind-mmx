@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.2 2007-01-12 20:42:08 christianfoltin Exp $ */
+/* $Id: TimeList.java,v 1.1.2.3 2007-04-21 15:11:20 dpolivaev Exp $ */
 package accessories.plugins.time;
 
 import java.awt.Container;
@@ -366,8 +366,7 @@ public class TimeList extends MindMapHookAdapter {
 //            newMindMapController.setNodeText(newNode, node.getText());
             MindMapNode copy = node.shallowCopy();
             if(copy != null) {
-            	  newMindMapController.getMap().insertNodeInto(copy, newMap.getRootNode());
-            	  copy.setLeft(false);
+            	  newMindMapController.insertNodeInto(copy, newMap.getRootNode());
             }
         }
         disposeDialog();

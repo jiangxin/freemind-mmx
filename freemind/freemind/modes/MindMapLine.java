@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLine.java,v 1.2 2003-11-29 17:12:33 christianfoltin Exp $*/
+/*$Id: MindMapLine.java,v 1.2.34.1 2007-04-21 15:11:21 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -30,6 +30,7 @@ public interface MindMapLine extends Cloneable {
     public String getStyle();
     public Stroke getStroke();
     public int getWidth();
+    public int getRealWidth();
     public String toString();
     /** The node to which this line is associated. */
     public void setTarget(MindMapNode node);

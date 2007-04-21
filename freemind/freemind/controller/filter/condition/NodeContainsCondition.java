@@ -23,6 +23,7 @@
  */
 package freemind.controller.filter.condition;
 
+import freemind.controller.Controller;
 import freemind.modes.MindMapNode;
 
 
@@ -35,7 +36,7 @@ class NodeContainsCondition extends NodeCondition{
             this.value = value; 
         }
         
-        public boolean checkNode(MindMapNode node) {
+        public boolean checkNode(Controller c, MindMapNode node) {
             return node.getText().indexOf(value) > -1;
         }
 }

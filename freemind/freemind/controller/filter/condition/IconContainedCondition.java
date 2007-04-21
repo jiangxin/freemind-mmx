@@ -31,6 +31,7 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import freemind.controller.Controller;
 import freemind.main.Resources;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
@@ -41,7 +42,7 @@ public class IconContainedCondition implements Condition {
 		this.iconName = iconName;
 	}
 
-	public boolean checkNode(MindMapNode node) {
+	public boolean checkNode(Controller c, MindMapNode node) {
 		List icons = node.getIcons();
 		for (ListIterator i=icons.listIterator(); i.hasNext(); ) {
 			MindIcon nextIcon = (MindIcon) i.next() ;

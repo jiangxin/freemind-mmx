@@ -19,7 +19,7 @@
  *
  * Created on 10.10.2006
  */
-/*$Id: MindMapControllerMock.java,v 1.1.2.1 2006-10-11 21:42:40 christianfoltin Exp $*/
+/*$Id: MindMapControllerMock.java,v 1.1.2.2 2007-04-21 15:11:23 dpolivaev Exp $*/
 package tests.freemind;
 
 import java.awt.Color;
@@ -69,10 +69,14 @@ public class MindMapControllerMock implements ModeController {
 	/* (non-Javadoc)
 	 * @see freemind.modes.ModeController#centerNode(freemind.modes.MindMapNode)
 	 */
-	public void centerNode(MindMapNode node) {
-		// TODO Auto-generated method stub
+    public void centerNode(MindMapNode node) {
+        // TODO Auto-generated method stub
 
-	}
+    }
+    public void centerNode(NodeView node) {
+        // TODO Auto-generated method stub
+
+    }
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.ModeController#close(boolean, freemind.controller.MapModuleManager)
@@ -110,7 +114,7 @@ public class MindMapControllerMock implements ModeController {
 	/* (non-Javadoc)
 	 * @see freemind.modes.ModeController#displayNode(freemind.modes.MindMapNode)
 	 */
-	public void displayNode(MindMapNode node) {
+	public void displayNode(NodeView node) {
 		// TODO Auto-generated method stub
 
 	}
@@ -531,5 +535,20 @@ public class MindMapControllerMock implements ModeController {
 		// TODO Auto-generated method stub
 
 	}
+
+    public NodeView getSelectedView() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public NodeView getNodeView(MindMapNode node) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void refreshMap() {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

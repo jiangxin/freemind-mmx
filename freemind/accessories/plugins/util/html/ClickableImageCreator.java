@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ClickableImageCreator.java,v 1.1.2.1.12.4 2006-10-10 18:51:52 christianfoltin Exp $ */
+/* $Id: ClickableImageCreator.java,v 1.1.2.1.12.5 2007-04-21 15:11:20 dpolivaev Exp $ */
 
 package accessories.plugins.util.html;
 
@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.view.mindmapview.MapView;
+import freemind.view.mindmapview.NodeView;
 
 /** */
 public class ClickableImageCreator {
@@ -66,6 +67,9 @@ public class ClickableImageCreator {
 
     private final String regExpLinkReplacement;
 
+
+    private MapView mapView;
+
     /**
      * @param regExpLinkReplacement if for example the link abc must be replaced with FMabcFM,
      * then this string has to be FM$1FM.
@@ -75,9 +79,9 @@ public class ClickableImageCreator {
         super();
         this.root = root;
         this.regExpLinkReplacement = regExpLinkReplacement;
-		MapView view = modeController.getView();
-		if (view != null) {
-			innerBounds = view.getInnerBounds();
+		mapView = modeController.getView();
+        if (mapView != null) {
+			innerBounds = mapView.getInnerBounds();
 		} else {
 			// test case: give any bounds:
 			innerBounds = new Rectangle(0,0,100,100);
@@ -110,15 +114,16 @@ public class ClickableImageCreator {
     /**
      */
     private void createArea(MindMapNode node) {
-        if (node != null && node.getViewer() != null) {
+        final NodeView nodeView = mapView.getNodeView(node);
+        if (nodeView != null) {
             AreaHolder holder = new AreaHolder();
             holder.title = node.getShortText(modeController);
             holder.alt = node.getShortText(modeController);
             holder.href = node.getObjectId(modeController);
-            holder.coordinates.x = (int) (node.getViewer().getX()-innerBounds.getMinX());
-            holder.coordinates.y = (int) (node.getViewer().getY()-innerBounds.getMinY());
-            holder.coordinates.width = node.getViewer().getWidth();
-            holder.coordinates.height = node.getViewer().getHeight();
+            holder.coordinates.x = (int) (nodeView.getX()-innerBounds.getMinX());
+            holder.coordinates.y = (int) (nodeView.getY()-innerBounds.getMinY());
+            holder.coordinates.width = nodeView.getWidth();
+            holder.coordinates.height = nodeView.getHeight();
             area.add(holder);
             for (Iterator i = node.childrenUnfolded(); i.hasNext();) {
                 MindMapNode child = (MindMapNode) i.next();

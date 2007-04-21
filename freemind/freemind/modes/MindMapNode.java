@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.12 2007-01-31 20:20:07 christianfoltin Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.13 2007-04-21 15:11:21 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import javax.swing.ImageIcon;
+import javax.swing.event.EventListenerList;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -43,6 +45,7 @@ import freemind.main.XMLElement;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.NodeView;
+import freemind.view.mindmapview.NodeViewVisitor;
 
 public interface MindMapNode extends MutableTreeNode {
 
@@ -53,8 +56,6 @@ public interface MindMapNode extends MutableTreeNode {
 	public static final String[] NODE_STYLES = new String[] { STYLE_FORK,
 		STYLE_BUBBLE, STYLE_AS_PARENT,
 		STYLE_COMBINED };
-
-	static final int AUTO = -1;
 
 	/**
 	 * @return the text representation of the nodes content. HTML is represented as <html>....</html>
@@ -122,9 +123,6 @@ public interface MindMapNode extends MutableTreeNode {
 	/** @return -1 if the argument childNode is not a child. */
     int getChildPosition(MindMapNode childNode);
 
-    MindMapNode getPreferredChild();
-    void setPreferredChild(MindMapNode node);
-
     int getNodeLevel();
 
     String getLink();
@@ -154,9 +152,10 @@ public interface MindMapNode extends MutableTreeNode {
 
 	String getFontFamilyName();
 
-    NodeView getViewer();
+    Collection getViewers();
 
-    void setViewer( NodeView viewer );
+    void addViewer(NodeView viewer );
+    void removeViewer( NodeView viewer );
 
     String toString();
 
@@ -170,11 +169,7 @@ public interface MindMapNode extends MutableTreeNode {
 
     boolean isFolded();
 
-    freemind.main.Tools.BooleanHolder isLeft();
-
-    /** Root is on the right side.
-     */
-    boolean isOnLeftSideOfRoot();
+    boolean isLeft();
 
     void setLeft(boolean isLeft);
 
@@ -187,7 +182,6 @@ public interface MindMapNode extends MutableTreeNode {
 
  	void setVGap(int i);
 	int getVGap();
-	int calcVGap();
 	void setHGap(int i);
 	int getHGap();
     void setLink(String link);
@@ -303,8 +297,12 @@ public interface MindMapNode extends MutableTreeNode {
      */
     void setAttribute(int pPosition, Attribute pAttribute);
 
-    public void addNodeViewEventListener(NodeViewEventListener l);
+    public void addTreeModelListener(TreeModelListener l);
 
-    public void removeNodeViewEventListener(NodeViewEventListener l);
+    public void removeTreeModelListener(TreeModelListener l);
 
+    public void acceptViewVisitor(NodeViewVisitor visitor);
+    
+    EventListenerList getListeners();
+    boolean isNewChildLeft();
 }

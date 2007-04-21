@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: DeleteChildAction.java,v 1.1.2.2.2.5 2007-03-27 20:23:30 christianfoltin Exp $ */
+/* $Id: DeleteChildAction.java,v 1.1.2.2.2.6 2007-04-21 15:11:21 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -81,7 +81,7 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
         pMindMapController.fireNodeDeleteEvent(selectedNode);
         // deregister node:
         pMindMapController.getModel().getLinkRegistry().deregisterLinkTarget(selectedNode);
-		pMindMapController.getModel().removeNodeFromParent( selectedNode);
+		pMindMapController.removeNodeFromParent( selectedNode);
     }
 
     /* (non-Javadoc)
@@ -97,7 +97,7 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
         MindMapNode parent = selectedNode.getParentNode();
 
         Transferable copy = pMindMapController.getModel().copy(selectedNode, true);
-        NodeCoordinate coord = new NodeCoordinate(selectedNode, selectedNode.isLeft().getValue());
+        NodeCoordinate coord = new NodeCoordinate(selectedNode, selectedNode.isLeft());
         // Undo-action
         PasteNodeAction pasteNodeAction=null;
         pasteNodeAction = pMindMapController.paste.getPasteNodeAction(copy, coord);

@@ -23,6 +23,7 @@
  */
 package freemind.controller.filter.condition;
 
+import freemind.controller.Controller;
 import freemind.modes.MindMapNode;
 
 
@@ -42,7 +43,7 @@ class NodeCompareCondition extends CompareConditionAdapter{
         this.succeed = succeed;
     }
     
-    public boolean checkNode(MindMapNode node) {
+    public boolean checkNode(Controller c, MindMapNode node) {
         try{
             return succeed == (compareTo(node.getText()) == comparationResult);
         }

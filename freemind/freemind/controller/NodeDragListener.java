@@ -20,6 +20,7 @@
 package freemind.controller;
 
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.MainView;
 import freemind.view.mindmapview.NodeView;
 // Drag & Drop
 import java.awt.dnd.*;
@@ -53,7 +54,7 @@ public class NodeDragListener implements DragGestureListener {
    public void dragGestureRecognized(DragGestureEvent e) {
       if(!c.getFrame().getProperty("draganddrop").equals("true")) return;
 
-      MindMapNode node = ((NodeView)e.getComponent().getParent()).getModel();
+      MindMapNode node = ((MainView)e.getComponent()).getNodeView().getModel();
       if (node.isRoot()) return;
 
       //Transferable t; // = new StringSelection("");

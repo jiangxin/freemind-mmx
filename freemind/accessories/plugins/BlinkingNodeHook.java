@@ -29,6 +29,8 @@ import javax.swing.SwingUtilities;
 
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
+import freemind.view.mindmapview.NodeView;
+import freemind.view.mindmapview.NodeViewVisitor;
 
 /**
  * @author christianfoltin
@@ -79,15 +81,23 @@ public class BlinkingNodeHook extends PermanentMindMapNodeHookAdapter {
 			    public void run() {
 			        if(getNode()==null || getController().isBlocked())
 			            return;
-			        Color col = getNode().getViewer().getForeground();
-			        int index = -1;
-			        if (col != null && colors.contains(col)) {
-			            index = colors.indexOf(col);
-			        }
-			        index++;
-			        if (index >= colors.size())
-			            index = 0;
-			        getNode().getViewer().setForeground((Color) colors.get(index));
+                    getNode().acceptViewVisitor(new NodeViewVisitor(){
+                        public void visit(NodeView view) {
+                            if(! view.isVisible()){
+                                return;
+                            }
+                            Color col = view.getMainViewForeground();
+                            int index = -1;
+                            if (col != null && colors.contains(col)) {
+                                index = colors.indexOf(col);
+                            }
+                            index++;
+                            if (index >= colors.size())
+                                index = 0;
+                            view.setMainViewForeground((Color) colors.get(index));
+                        }
+                        
+                    });
                 }
 			});
 		}

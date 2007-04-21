@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMap.java,v 1.14.14.8.2.8 2007-02-17 16:19:31 dpolivaev Exp $ */
+/* $Id: MindMap.java,v 1.14.14.8.2.9 2007-04-21 15:11:21 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -29,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
@@ -49,8 +50,6 @@ public interface MindMap extends TreeModel {
 
 	void nodeRefresh(TreeNode node);
 
-    Transferable cut(MindMapNode node);
-
     Transferable copy(MindMapNode node, boolean saveInvisible);
 
     // ^ Is copy with node really needed? It seems to me, that no.
@@ -63,21 +62,6 @@ public interface MindMap extends TreeModel {
     String getAsPlainText(List mindMapNodes);
     String getAsRTF(List mindMapNodes);
     String getAsHTML(List mindMapNodes);
-
-	void insertNodeInto(
-			MindMapNode newChild,
-			MindMapNode parent,
-			int index);
-
-//    void paste(Transferable t, MindMapNode parent);
-//    /** @param isLeft determines, whether or not the node is placed on the left or right. **/
-//    void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft);
-//
-    //    void paste(MindMapNode node, MindMapNode parent);
-
-
-
-
     /**
      * Returns the file name of the map edited or null if not possible.
      */
@@ -106,7 +90,7 @@ public interface MindMap extends TreeModel {
      */
     String getRestoreable();
 
-    Object[] getPathToRoot( TreeNode node );
+    TreeNode[] getPathToRoot( TreeNode node );
 
     Color getBackgroundColor();
 
@@ -135,11 +119,8 @@ public interface MindMap extends TreeModel {
     /**
      */
     void setFilter(Filter inactiveFilter);
-
-	void insertNodeInto(MindMapNode copy, MindMapNode rootNode);
-
-	void nodeStructureChanged(MindMapNode node);
-
+    
+	void nodeStructureChanged(TreeNode node);
 	/**
 	 * Use this method to make the map dirty/clean.
 	 * @param isSaved

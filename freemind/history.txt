@@ -1,4 +1,26 @@
 ===============================
+Changes made in FreeMind 0.9.1 Alpha 1
+===============================
+* Class hierarchy of descendands of NodeView removed
+* NodeView is made responsible for painting of its cloud, children edges and folding marks
+* Class hierarchy for MainView introduced
+* All own components of NodeView (MainView and AttributeTable) are put inside of JComponent,
+which can be obtained using NodeView.getContent().
+* New classes for NodeView Layout, MindMapLayout and Viewport Layout introduced
+* NodeViewLayout sets locations of NodeView Content and all its direct children
+  and NodeView size
+* NodeViewFactory for putting NodeView components and LayoutManager together
+* EdgeView is no more part of NodeView, it is managed by NodeViewFactory
+* setLeft is no more initiated by view
+* multiple map views for map are allowed by the new design, but only one NodeView for Node on each MapView
+* NodeView implements TreeModelListener
+* standard TreeModelEvents are used for communicating the map changes
+* If only MainView exists, getContent() returns the MainView. 
+* If some special node has its own content component, it can be added to Component given by 
+  NodeView.getContentPane(). Futher efforts are needed to make such contents like e.g. 
+  math formulas possible
+
+===============================
 Changes made in FreeMind 0.9.0 Beta 10
 ===============================
 * New option: velocity of mouse wheel movements.

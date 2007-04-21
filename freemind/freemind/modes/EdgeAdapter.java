@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EdgeAdapter.java,v 1.14.18.5 2006-03-14 21:56:27 christianfoltin Exp $ */
+/* $Id: EdgeAdapter.java,v 1.14.18.5.2.1 2007-04-21 15:11:21 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -41,6 +41,8 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
     public static final int WIDTH_PARENT = -1;
 
     public static final int WIDTH_THIN = 0;
+    
+    static final Stroke DEF_STROKE = new BasicStroke();
     
     public final static String EDGESTYLE_LINEAR = "linear";
     public final static String EDGESTYLE_BEZIER = "bezier";
@@ -95,16 +97,27 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
         return width;
     }
 
+    /**
+     * Get the width in pixels rather than in width constant (like -1)
+     */
+    public int getRealWidth() {
+       int width = getWidth();
+       return (width < 1) ? 1 : width; }
+    
     public Stroke getStroke() {
         if (width == WIDTH_THIN)
-            return null;
+            return getDefaultStroke();
         if (stroke == null) {
             if (getTarget().isRoot()) {
-                return null;
+                return getDefaultStroke();
             }
             return getSource().getEdge().getStroke();
         }
         return stroke;
+    }
+
+    private Stroke getDefaultStroke() {
+       return DEF_STROKE;
     }
 
     public void setWidth(int width) {
@@ -112,10 +125,6 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
         stroke = ((width == WIDTH_PARENT) || (width == WIDTH_THIN)) ? null
                 : new BasicStroke(getWidth(), BasicStroke.CAP_BUTT,
                         BasicStroke.JOIN_MITER);
-    }
-
-    public int getRealWidth() {
-        return width;
     }
 
     public String getStyle() {

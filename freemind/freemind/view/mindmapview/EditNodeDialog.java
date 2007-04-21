@@ -19,12 +19,13 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1.16.9 2007-02-08 22:30:56 dpolivaev Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.10 2007-04-21 15:11:22 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,6 +33,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -67,11 +70,12 @@ public class EditNodeDialog extends EditNodeBase {
         this.firstEvent = firstEvent;
         
     }
-    class LongNodeDialog extends EditDialog{
+    class LongNodeDialog extends EditDialog implements WindowListener{
         private JTextArea textArea;
         
         LongNodeDialog(){
             super(EditNodeDialog.this);
+            addWindowListener(this);
             textArea = new JTextArea(getText());
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
@@ -226,8 +230,9 @@ public class EditNodeDialog extends EditNodeBase {
                 }
             });
             
-            textArea.setFont(getNode().getFont());
-            textArea.setForeground(getNode().getForeground());
+            final Font nodeFont = getNode().getMainViewFont();
+            textArea.setFont(nodeFont);
+            textArea.setForeground(getNode().getMainViewForeground());
             final Color backgroundColor = getNode().getModel().getBackgroundColor();
             if(backgroundColor != null){
                 textArea.setBackground(backgroundColor);
@@ -295,6 +300,28 @@ public class EditNodeDialog extends EditNodeBase {
          */
         protected boolean isChanged() {
             return ! getText().equals(textArea.getText());
+        }
+
+        public void windowOpened(WindowEvent e) {
+        }
+
+        public void windowClosing(WindowEvent e) {
+        }
+
+        public void windowClosed(WindowEvent e) {
+        }
+
+        public void windowIconified(WindowEvent e) {
+        }
+
+        public void windowDeiconified(WindowEvent e) {
+        }
+
+        public void windowActivated(WindowEvent e) {
+            textArea.requestFocus();
+       }
+
+        public void windowDeactivated(WindowEvent e) {
         }
         
     }

@@ -17,15 +17,18 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.14 2006-11-26 10:20:41 dpolivaev Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.15 2007-04-21 15:11:20 dpolivaev Exp $ */
 
 package freemind.main;
 
 //maybe move this class to another package like tools or something...
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GraphicsEnvironment;
+import java.awt.IllegalComponentStateException;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -67,12 +70,15 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
+import freemind.view.mindmapview.NodeMotionListenerView;
 
 public class Tools {
 
@@ -919,5 +925,37 @@ public class Tools {
 		out.close();
 	}
 
+    public static void convertPointToAncestor(Component c, Point p, Component destination){
+        int x,y;
+        while(c != destination) {
+            x = c.getX();
+            y = c.getY();
+
+            p.x += x;
+            p.y += y;
+
+            c = c.getParent();
+        } ;
+        
+    }
+
+    public static void convertPointFromAncestor(Component source, Point p, Component c){
+        int x,y;
+        while(c != source) {
+            x = c.getX();
+            y = c.getY();
+
+            p.x -= x;
+            p.y -= y;
+
+            c = c.getParent();
+        } ;
+        
+    }
+
+    public static void convertPointToAncestor(Component source, Point point, Class ancestorClass) {
+        Component destination = SwingUtilities.getAncestorOfClass(ancestorClass, source);
+        convertPointToAncestor(source, point, destination);
+    }
 }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: SelectAllAction.java,v 1.1.2.1.2.2 2006-08-27 20:29:36 christianfoltin Exp $ */
+/* $Id: SelectAllAction.java,v 1.1.2.1.2.3 2007-04-21 15:11:22 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -36,7 +36,7 @@ public class SelectAllAction  extends NodeGeneralAction {
         super(modeController, "select_all", null, new SingleNodeOperation(){
 
             public void apply(MindMapMapModel map, MindMapNodeModel node) {
-                modeController.selectBranch( map.getRootNode(), false);
+                modeController.selectBranch( modeController.getView().getRoot(), false);
             }});
     }
 

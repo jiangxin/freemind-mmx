@@ -75,7 +75,7 @@ public class UnfoldAll extends MindMapNodeHookAdapter  {
                     hookInstance.unfoldOneStage(rootNode);
                 } else {
                     // this is to avoid having selected nodes getting folded.
-                    controller.select(rootNode);
+                    controller.select(controller.getView().getRoot());
                     hookInstance.foldOneStage(rootNode);
                 }
                 return true;

@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/* $Id: ViewControllerAdapter.java,v 1.1.2.2.2.3 2006-09-02 22:09:49 christianfoltin Exp $ */
+/* $Id: ViewControllerAdapter.java,v 1.1.2.2.2.4 2007-04-21 15:11:22 dpolivaev Exp $ */
 package freemind.modes.viewmodes;
 
 import java.awt.event.KeyEvent;
@@ -36,6 +36,7 @@ import freemind.modes.common.actions.FindAction;
 import freemind.modes.common.actions.FindAction.FindNextAction;
 import freemind.modes.common.listeners.CommonMouseMotionManager;
 import freemind.modes.common.listeners.CommonNodeMouseMotionListener;
+import freemind.view.mindmapview.MainView;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -70,7 +71,7 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 
 	public boolean extendSelection(MouseEvent e) {
 		//FIXME: Remove double code
-        NodeView newlySelectedNodeView = (NodeView)e.getComponent().getParent();
+        NodeView newlySelectedNodeView = ((MainView)e.getComponent()).getNodeView();
         //MindMapNode newlySelectedNode = newlySelectedNodeView.getModel();
         boolean extend = e.isControlDown();
         boolean range = e.isShiftDown();

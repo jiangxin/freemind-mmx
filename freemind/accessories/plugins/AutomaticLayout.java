@@ -86,20 +86,20 @@ public class AutomaticLayout extends PermanentMindMapNodeHookAdapter {
             modeController = (MindMapController) controller;
         }
 
+        static class MyFreemindPropertyListener implements FreemindPropertyListener{
+            public void propertyChanged(String propertyName,
+                    String newValue, String oldValue) {
+                if (propertyName.startsWith(AUTOMATIC_FORMAT_LEVEL)) {
+                    patterns = null;
+                }
+            }
+        };
         public void register() {
             // add listener:
             if (listener == null) {
-                FreemindPropertyListener listener = new FreemindPropertyListener() {
-
-                    public void propertyChanged(String propertyName,
-                            String newValue, String oldValue) {
-                        if (propertyName.startsWith(AUTOMATIC_FORMAT_LEVEL)) {
-                            patterns = null;
-                        }
-                    }
-                };
-                Controller.addPropertyChangeListener(listener);
+                listener = new MyFreemindPropertyListener();
             }
+            Controller.addPropertyChangeListener(listener);
 
             mAutomaticLayoutPropertyContributor = new AutomaticLayoutPropertyContributor(
                     modeController);
@@ -108,6 +108,7 @@ public class AutomaticLayout extends PermanentMindMapNodeHookAdapter {
 
         public void deRegister() {
             OptionPanel.removeContributor(mAutomaticLayoutPropertyContributor);
+            Controller.removePropertyChangeListener(listener);
         }
 
     }

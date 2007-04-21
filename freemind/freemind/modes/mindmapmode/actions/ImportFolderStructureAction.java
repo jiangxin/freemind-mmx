@@ -97,7 +97,7 @@ public class ImportFolderStructureAction extends AbstractAction {
      */
     private MindMapNode addNode(MindMapNode target, String nodeContent, String link) {
         MindMapNode node = controller.addNewNode(target,
-                target.getChildCount(), target.isLeft());
+                target.getChildCount(), target.isNewChildLeft());
         controller.setNodeText(node, nodeContent);
         controller.setLink(node, link);
         return node;

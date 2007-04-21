@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapArrowLinkModel.java,v 1.5.18.4 2005-01-10 07:29:07 christianfoltin Exp $*/
+/*$Id: MindMapArrowLinkModel.java,v 1.5.18.4.12.1 2007-04-21 15:11:21 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -28,6 +28,7 @@ import java.awt.Color;
 import java.awt.Point;
 
 import freemind.main.XMLElement;
+import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
 public class MindMapArrowLinkModel extends ArrowLinkAdapter {
@@ -46,26 +47,26 @@ public class MindMapArrowLinkModel extends ArrowLinkAdapter {
     /* (non-Javadoc)
      * @see freemind.modes.MindMapArrowLink#changeInclination(int, int, int, int)
      */
-    public void changeInclination(int originX, int originY, int deltaX, int deltaY) {
-		NodeView targetNode = getTarget().getViewer();
-		NodeView sourceNode = getSource().getViewer();
+    public void changeInclination(MapView map, int originX, int originY, int deltaX, int deltaY) {
 		double distSqToTarget = 0;
 		double distSqToSource = 0;
-		if(targetNode != null && sourceNode != null){
-			Point targetLinkPoint =  targetNode.getLinkPoint(getEndInclination());
-			Point sourceLinkPoint =  sourceNode.getLinkPoint(getStartInclination());
+        NodeView targetView = map.getNodeView(getTarget());
+        NodeView sourceView = map.getNodeView(getSource());
+        if(targetView != null && sourceView != null){
+			Point targetLinkPoint =  targetView.getLinkPoint(getEndInclination());
+			Point sourceLinkPoint =  sourceView.getLinkPoint(getStartInclination());
 			distSqToTarget = targetLinkPoint.distanceSq(originX, originY);
 			distSqToSource = sourceLinkPoint.distanceSq(originX, originY);
 		}
-		if((targetNode == null || sourceNode != null) && distSqToSource < distSqToTarget * 2.25){
+		if((targetView == null || sourceView != null) && distSqToSource < distSqToTarget * 2.25){
 			Point changedInclination = getStartInclination();
-            changeInclination(deltaX, deltaY, sourceNode, changedInclination);
+            changeInclination(deltaX, deltaY, sourceView, changedInclination);
             setStartInclination(changedInclination);
 		}
 
-		if((sourceNode == null || targetNode != null) && distSqToTarget < distSqToSource * 2.25){
+		if((sourceView == null || targetView != null) && distSqToTarget < distSqToSource * 2.25){
 			Point changedInclination = getEndInclination();
-			changeInclination(deltaX, deltaY, targetNode, changedInclination);
+			changeInclination(deltaX, deltaY, targetView, changedInclination);
 			setEndInclination(changedInclination);
 		}
         
@@ -76,7 +77,7 @@ public class MindMapArrowLinkModel extends ArrowLinkAdapter {
         int deltaY,
         NodeView linkedNodeView,
         Point changedInclination) {
-        if(linkedNodeView.isLeft() || linkedNodeView.isRoot()){
+        if(linkedNodeView.isLeft()){
 			deltaX = - deltaX;
         }
 		changedInclination.translate(deltaX, deltaY);			

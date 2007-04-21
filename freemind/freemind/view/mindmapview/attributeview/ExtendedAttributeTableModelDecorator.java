@@ -28,6 +28,7 @@ import javax.swing.event.ChangeEvent;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author Dimitri Polivaev
@@ -36,10 +37,8 @@ import freemind.modes.attributes.NodeAttributeTableModel;
 class ExtendedAttributeTableModelDecorator extends AttributeTableModelDecoratorAdapter{
     int newRow;
     private static final int AFTER_LAST_ROW = Integer.MAX_VALUE;
-    public ExtendedAttributeTableModelDecorator(
-            NodeAttributeTableModel nodeAttributeModel,
-            AttributeRegistry attributeRegistry) {
-        super(nodeAttributeModel, attributeRegistry);
+    public ExtendedAttributeTableModelDecorator(AttributeView attrView) {
+        super(attrView);
         newRow = AFTER_LAST_ROW;
     }
     public int getRowCount() {

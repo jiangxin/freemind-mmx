@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.7 2006-11-26 10:20:42 dpolivaev Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.8 2007-04-21 15:11:21 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -101,7 +101,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
                 //FIXME: This code smells:
                 ((MindMapController) getFrame().getController()
                         .getModeController()).paste.pasteXMLWithoutRedisplay(
-                        string, this, false);
+                        string, this, false, false, false);
 
             }
             isDecrypted = true;

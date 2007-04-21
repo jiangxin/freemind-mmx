@@ -26,6 +26,7 @@ package freemind.controller.filter.condition;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import freemind.controller.Controller;
 import freemind.main.Resources;
 import freemind.modes.MindMapNode;
 
@@ -46,11 +47,11 @@ public class ConjunctConditions implements Condition {
     /* (non-Javadoc)
      * @see freemind.controller.filter.condition.Condition#checkNode(freemind.modes.MindMapNode)
      */
-    public boolean checkNode(MindMapNode node) {
+    public boolean checkNode(Controller c, MindMapNode node) {
         int i;
         for(i=0; i<conditions.length; i++){
             Condition cond = (Condition)conditions[i];
-            if (! cond.checkNode(node)) return false;
+            if (! cond.checkNode(c, node)) return false;
         }
         return true;
     }

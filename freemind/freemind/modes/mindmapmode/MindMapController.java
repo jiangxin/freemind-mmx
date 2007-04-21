@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.33 2007-03-20 19:39:32 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.34 2007-04-21 15:11:21 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -74,6 +74,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.tree.MutableTreeNode;
 
 import org.jibx.runtime.IUnmarshallingContext;
 import org.jibx.runtime.JiBXException;
@@ -192,6 +193,7 @@ import freemind.modes.mindmapmode.listeners.MindMapMouseMotionManager;
 import freemind.modes.mindmapmode.listeners.MindMapMouseWheelEventHandler;
 import freemind.modes.mindmapmode.listeners.MindMapNodeDropListener;
 import freemind.modes.mindmapmode.listeners.MindMapNodeMotionListener;
+import freemind.view.mindmapview.MainView;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.attributeview.AttributePopupMenu;
 
@@ -650,10 +652,11 @@ freemind.main.Resources.getInstance().logException(					e);
         mRegistrations.clear();
         // deregister motion handler
         getController().getMapMouseMotionListener().deregister();
+        getController().getMapMouseWheelListener().deregister();
         getController().getNodeDropListener().deregister();
         getController().getNodeKeyListener().deregister();
         getController().getNodeMotionListener().deregister();
-        getController().getMapMouseWheelListener().deregister();
+        getController().getNodeMouseMotionListener().deregister();
     }
 
 	public MapAdapter newModel(ModeController modeController) {
@@ -1430,10 +1433,7 @@ freemind.main.Resources.getInstance().logException(					e1);
         return cut.cut(nodeList);
     }
     public void paste(Transferable t, MindMapNode parent) {
-        boolean isLeft = false;
-        if(parent.isLeft()!= null)
-            isLeft = parent.isLeft().getValue();
-        paste(t, /*target=*/parent, /*asSibling=*/ false, isLeft); }
+        paste(t, /*target=*/parent, /*asSibling=*/ false, parent.isNewChildLeft()); }
 
     /** @param isLeft determines, whether or not the node is placed on the left or right. **/
     public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
@@ -1448,7 +1448,7 @@ freemind.main.Resources.getInstance().logException(					e1);
         return newChild.addNew(target, newNodeMode, e);
     }
 
-    public  MindMapNode addNewNode(MindMapNode parent, int index, freemind.main.Tools.BooleanHolder newNodeIsLeft) {
+    public  MindMapNode addNewNode(MindMapNode parent, int index, boolean newNodeIsLeft) {
         return newChild.addNewNode(parent, index, newNodeIsLeft);
     }
 
@@ -1646,7 +1646,7 @@ freemind.main.Resources.getInstance().logException(					e1);
         /* perform action only if one selected node.*/
         if(getSelecteds().size() != 1)
             return;
-        MindMapNode node = ((NodeView)(e.getComponent().getParent())).getModel();
+        MindMapNode node = ((MainView)e.getComponent()).getNodeView().getModel();
         if (getView().getSelected().isInFollowLinkRegion(e.getX())) {
             loadURL(); }
         else {
@@ -1841,14 +1841,8 @@ freemind.main.Resources.getInstance().logException(					e1);
         /* perform action only if one selected node.*/
         if (getSelecteds().size() != 1)
             return;
-        MindMapNode node = ((NodeView) (e.getComponent().getParent()))
-                .getModel();
+        MindMapNode node = ((MainView)e.getComponent()).getNodeView().getModel();
         // edit the node only if the node is a leaf (fc 0.7.1), or the root node (fc 0.9.0)
-        if (node.hasChildren() && !node.isRoot()) {
-            // the emulate the plain click.
-            plainClick(e);
-            return;
-        }
         if (!e.isAltDown() && !e.isControlDown() && !e.isShiftDown()
                 && !e.isPopupTrigger() && e.getButton() == MouseEvent.BUTTON1
                 && (node.getLink() == null)) {
@@ -1866,35 +1860,44 @@ freemind.main.Resources.getInstance().logException(					e1);
         getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); // this level is default
     }
 
-    public void select(MindMapNode selected) {
-        // are they visible visible?
-        displayNode(selected);
-        select(selected.getViewer());
+    public void selectMultipleNodes(NodeView focussed, Collection selecteds) {
+        selectMultipleNodesImpl(focussed, selecteds);
     }
-
     public void selectMultipleNodes(MindMapNode focussed, Collection selecteds) {
+        selectMultipleNodesImpl(focussed, selecteds);
+    }
+    private void selectMultipleNodesImpl(Object focussed, Collection selecteds) {
         // are they visible visible?
         for (Iterator i = selecteds.iterator(); i.hasNext();) {
-            MindMapNode node = (MindMapNode) i.next();
+            NodeView node = getNodeView(i.next());
             displayNode(node);
         }
         // this one must be visible.
-        select(focussed);
+        select(getNodeView(focussed));
         for (Iterator i = selecteds.iterator(); i.hasNext();) {
-            MindMapNode node = (MindMapNode) i.next();
-            getView().makeTheSelected(node.getViewer());
+            NodeView node = getNodeView(i.next());
+            getView().makeTheSelected(node);
         }
         getController().obtainFocusForSelected(); // focus fix
     }
 
-    public void selectBranch(MindMapNode selected, boolean extend) {
+    private NodeView getNodeView(Object object) {
+        if(object instanceof NodeView){
+            return (NodeView)object;
+        }
+        if(object instanceof MindMapNode){
+            return getView().getNodeView((MindMapNode)object);
+        }
+        throw new ClassCastException();
+    }
+
+    public void selectBranch(NodeView selected, boolean extend) {
         displayNode(selected);
-        getView().selectBranch(selected.getViewer(), extend);
+        getView().selectBranch(selected, extend);
     }
 
     public boolean extendSelection(MouseEvent e) {
-        NodeView newlySelectedNodeView = (NodeView) e.getComponent()
-                .getParent();
+        NodeView newlySelectedNodeView = ((MainView) e.getComponent()).getNodeView();
         //MindMapNode newlySelectedNode = newlySelectedNodeView.getModel();
         boolean extend = e.isControlDown();
         boolean range = e.isShiftDown();
@@ -1993,6 +1996,17 @@ freemind.main.Resources.getInstance().logException(					e1);
             Attribute pAttribute) {
         pNode.getAttributes().setValueAt(pAttribute.getName(), pPosition, 0);
         pNode.getAttributes().setValueAt(pAttribute.getValue(), pPosition, 1);
+    }
+
+    public void insertNodeInto(MindMapNode newNode, MindMapNode parent, int index) {
+        getModel().setSaved(false);
+        super.insertNodeInto(newNode, parent, index);
+    }
+    
+    public void removeNodeFromParent(MindMapNode selectedNode) {
+        getModel().setSaved(false);
+        getModel().removeNodeFromParent(selectedNode);
+        
     }
 
 }

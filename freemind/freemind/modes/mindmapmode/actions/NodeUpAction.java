@@ -19,7 +19,7 @@
  *
  * Created on 21.08.2004
  */
-/* $Id: NodeUpAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: NodeUpAction.java,v 1.1.2.2.2.3 2007-04-21 15:11:22 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -42,6 +42,8 @@ import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
+import freemind.view.mindmapview.MapView;
+import freemind.view.mindmapview.NodeView;
 
 
 public class NodeUpAction extends AbstractAction implements ActorXml{
@@ -105,15 +107,17 @@ public class NodeUpAction extends AbstractAction implements ActorXml{
                 MindMapNode node = (MindMapNode) sortedChildren.get(position.intValue());
                 moveNodeTo(node, parent, direction);
             }
-            modeController.getView().selectAsTheOnlyOneSelected(
-                  selected.getViewer());
-            modeController.getView().scrollNodeToVisible(
-                  selected.getViewer());
+            final MapView mapView = modeController.getView();
+            final NodeView selectedNodeView = mapView.getNodeView(selected);
+            mapView.selectAsTheOnlyOneSelected(
+                    selectedNodeView);
+            mapView.scrollNodeToVisible(selectedNodeView);
             for (Iterator i = range.iterator(); i.hasNext();) {
                 Integer position = (Integer) i.next();
                 // from above:
                 MindMapNode node = (MindMapNode) sortedChildren.get(position.intValue());
-                modeController.getView().makeTheSelected(node.getViewer());
+                final NodeView nodeView = mapView.getNodeView(node);
+                mapView.makeTheSelected(nodeView);
             }
             modeController.getController().obtainFocusForSelected(); // focus fix
         }
@@ -127,23 +131,19 @@ public class NodeUpAction extends AbstractAction implements ActorXml{
         MapAdapter model = modeController.getModel();
         int index = model.getIndexOfChild(parent, newChild);
         int newIndex = index;
-        if(newChild.isLeft() != null) {
-            int maxIndex = parent.getChildCount();
-            Vector sortedNodesIndices = getSortedSiblings(parent);
-            int newPositionInVector = sortedNodesIndices.indexOf(newChild) + direction;
-            if(newPositionInVector < 0) {
-                newPositionInVector = maxIndex-1;
-            }
-            if(newPositionInVector  >= maxIndex) {
-                newPositionInVector = 0;
-            }
-            MindMapNode destinationNode =(MindMapNode) sortedNodesIndices.get(newPositionInVector);
-            newIndex = model.getIndexOfChild(parent, destinationNode);
-            newChild.setLeft(destinationNode.isLeft().getValue());
-            model.removeNodeFromParent(newChild);
-            model.insertNodeInto(newChild,parent,newIndex);
-            modeController.nodeStructureChanged(parent);
+        int maxIndex = parent.getChildCount();
+        Vector sortedNodesIndices = getSortedSiblings(parent);
+        int newPositionInVector = sortedNodesIndices.indexOf(newChild) + direction;
+        if(newPositionInVector < 0) {
+            newPositionInVector = maxIndex-1;
         }
+        if(newPositionInVector  >= maxIndex) {
+            newPositionInVector = 0;
+        }
+        MindMapNode destinationNode =(MindMapNode) sortedNodesIndices.get(newPositionInVector);
+        newIndex = model.getIndexOfChild(parent, destinationNode);
+        model.removeNodeFromParent(newChild);
+        model.insertNodeInto(newChild,parent,newIndex);
         return newIndex;
     }
 
@@ -161,12 +161,10 @@ public class NodeUpAction extends AbstractAction implements ActorXml{
                     MindMapNode n1 = (MindMapNode) o1;
                     if (o2 instanceof MindMapNode) {
                         MindMapNode n2 = (MindMapNode) o2;
-                        if(n1.isLeft() != null && n2.isLeft()!= null) {
-                            // left is less than right
-                            int b1 = (n1.isLeft().getValue())?0:1;
-                            int b2 = (n2.isLeft().getValue())?0:1;
-                            return b1 - b2;
-                        }
+                        // left is less than right
+                        int b1 = n1.isLeft()?0:1;
+                        int b2 = n2.isLeft()?0:1;
+                        return b1 - b2;
                     }
                 }
                 throw new IllegalArgumentException("Elements in LeftRightComparator are not comparable.");

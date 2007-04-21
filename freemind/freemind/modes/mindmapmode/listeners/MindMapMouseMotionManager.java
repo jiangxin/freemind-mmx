@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMouseMotionManager.java,v 1.1.2.1.2.3 2006-09-02 22:09:49 christianfoltin Exp $ */
+/* $Id: MindMapMouseMotionManager.java,v 1.1.2.1.2.4 2007-04-21 15:11:22 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.listeners;
 
@@ -64,12 +64,12 @@ public class MindMapMouseMotionManager implements MapMouseMotionReceiver {
 						.getView().getZoom());
 				int deltaY = (int) ((e.getY() - originY) / mController
 						.getView().getZoom());
-				draggedLink.changeInclination(originX, originY, deltaX, deltaY);
+				draggedLink.changeInclination(mapView, originX, originY, deltaX, deltaY);
 				originX = e.getX();
 				originY = e.getY();
 				mController.getView().repaint();
 			} else {
-				 mapView.scrollBy(originX - e.getX(), originY - e.getY(), false);
+				 mapView.scrollBy(originX - e.getX(), originY - e.getY());
 			} 
 		}
     }

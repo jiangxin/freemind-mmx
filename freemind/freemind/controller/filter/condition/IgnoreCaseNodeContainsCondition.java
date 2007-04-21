@@ -23,6 +23,7 @@
  */
 package freemind.controller.filter.condition;
 
+import freemind.controller.Controller;
 import freemind.modes.MindMapNode;
 
 
@@ -36,7 +37,7 @@ class IgnoreCaseNodeContainsCondition extends NodeCondition{
         this.value = value.toLowerCase(); 
     }
     
-    public boolean checkNode(MindMapNode node) {
+    public boolean checkNode(Controller c, MindMapNode node) {
         return node.getText().toLowerCase().indexOf(value) > -1;
     }
 }

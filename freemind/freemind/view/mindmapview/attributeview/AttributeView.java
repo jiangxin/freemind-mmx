@@ -16,16 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.6.7 2007-01-02 22:41:05 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.6.8 2007-04-21 15:11:23 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.EventQueue;
 
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.ChangeEvent;
@@ -36,8 +34,6 @@ import javax.swing.table.JTableHeader;
 
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
-import freemind.modes.NodeViewEvent;
-import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.attributes.AttributeTableModel;
@@ -51,7 +47,7 @@ import freemind.view.mindmapview.NodeView;
  * This class represents a single Node of a MindMap (in analogy to
  * TreeCellRenderer).
  */
-public class AttributeView implements ChangeListener, NodeViewEventListener, TableModelListener {    
+public class AttributeView implements ChangeListener, TableModelListener {    
     private AttributeTable attributeTable;
     private ReducedAttributeTableModelDecorator reducedAttributeTableModel;
     private ExtendedAttributeTableModelDecorator extendedAttributeTableModel = null;
@@ -66,14 +62,12 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     public AttributeView(NodeView nodeView) {
         super();
         this.nodeView = nodeView;
-        nodeView.getModel().addNodeViewEventListener(this);
-        NodeAttributeTableModel attributes = getAttributes();
-        AttributeRegistry attributeRegistry = getAttributeRegistry();
-        reducedAttributeTableModel = new ReducedAttributeTableModelDecorator(attributes, attributeRegistry);
+        reducedAttributeTableModel = new ReducedAttributeTableModelDecorator(this);
         currentAttributeTableModel = reducedAttributeTableModel;
         setViewType(getAttributeRegistry().getAttributeViewType());
+        addListeners();
     }
-    private AttributeRegistry getAttributeRegistry() {
+    AttributeRegistry getAttributeRegistry() {
         return getNode().getMap().getRegistry().getAttributes();
     }
     public NodeAttributeTableModel getAttributes() {
@@ -91,7 +85,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
             tableHeader.setBackground(HEADER_BACKGROUND);
             addTableModelListeners();
             attributeViewScrollPane = new AttributeViewScrollPane(attributeTable);
-            getNodeView().add(attributeViewScrollPane);
+            getNodeView().getContentPane().add(attributeViewScrollPane);
             getAttributes().removeTableModelListener(this);
             setViewType(getAttributeRegistry().getAttributeViewType());
         }
@@ -128,7 +122,6 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         getAttributeRegistry().removeChangeListener(this);
         if(attributeTable != null)
             getAttributes().getLayout().removeColumnWidthChangeListener(attributeTable);
-        nodeView.getModel().removeNodeViewEventListener(this);
         if(attributeTable != null){
             attributeTable.getParent().remove(attributeTable);
             attributeTable.getModel().removeTableModelListener(attributeTable);
@@ -158,9 +151,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
      */
     private ExtendedAttributeTableModelDecorator getExtendedAttributeTableModel() {
         if(extendedAttributeTableModel == null){
-            extendedAttributeTableModel = new ExtendedAttributeTableModelDecorator(
-                    getAttributes(),
-                    getAttributeRegistry());
+            extendedAttributeTableModel = new ExtendedAttributeTableModelDecorator(this);
         }
         return extendedAttributeTableModel;
     }
@@ -193,6 +184,7 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     public void stateChanged(ChangeEvent event){
         setViewType(getAttributeRegistry().getAttributeViewType());
         reducedAttributeTableModel.stateChanged(null);
+        getNodeView().revalidate();
     }
     /**
      */
@@ -205,16 +197,13 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
         return getNodeView().getMap();
     }
     /* (non-Javadoc)
-     * @see javax.swing.event.AncestorListener#ancestorAdded(javax.swing.event.AncestorEvent)
-     */
-    public void nodeViewCreated(NodeViewEvent event){
-        addListeners();        
-    }
-    /* (non-Javadoc)
      * @see javax.swing.event.AncestorListener#ancestorRemoved(javax.swing.event.AncestorEvent)
      */
-    public void nodeViewRemoved(NodeViewEvent event) {
+    public void viewRemoved() {
         removeListeners();        
+        if(reducedAttributeTableModel != null) reducedAttributeTableModel.viewRemoved();          
+        if(extendedAttributeTableModel != null) extendedAttributeTableModel.viewRemoved();          
+        if(attributeTable != null) attributeTable.viewRemoved();                
     }
     /* (non-Javadoc)
      * @see javax.swing.event.AncestorListener#ancestorMoved(javax.swing.event.AncestorEvent)
@@ -232,9 +221,8 @@ public class AttributeView implements ChangeListener, NodeViewEventListener, Tab
     }
     public void startEditing() {
         provideAttributeTable();
-        final String registryAttributeViewType = getAttributeRegistry().getAttributeViewType();
-        if(registryAttributeViewType == AttributeTableLayoutModel.SHOW_SELECTED
-                || registryAttributeViewType == AttributeTableLayoutModel.HIDE_ALL){
+        if(currentAttributeTableModel == reducedAttributeTableModel){
+            getExtendedAttributeTableModel();
             setViewType(AttributeTableLayoutModel.SHOW_ALL);
         }
         EventQueue.invokeLater(new Runnable() {

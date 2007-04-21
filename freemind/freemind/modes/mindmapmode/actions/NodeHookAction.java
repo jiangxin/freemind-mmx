@@ -19,7 +19,7 @@
  *
  * Created on 26.07.2004
  */
-/* $Id: NodeHookAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: NodeHookAction.java,v 1.1.2.2.2.3 2007-04-21 15:11:22 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -46,6 +46,7 @@ import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
+import freemind.view.mindmapview.NodeView;
 
 
 public class NodeHookAction extends FreemindAction implements ActorXml, MenuItemEnabledListener {
@@ -165,15 +166,17 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 			MindMapNode adaptedFocussedNode, Collection destinationNodes) {
 			// select all destination nodes:
 			// fc, 25.8.2004: The following code snippet should be moved to a more general place.
-			if (focussed.getViewer() != null) {
+			final NodeView focussedNodeView = controller.getNodeView(focussed);
+            if (focussedNodeView != null) {
 				getController().getView().selectAsTheOnlyOneSelected(
-						focussed.getViewer());
+                        focussedNodeView);
 				getController().getView().scrollNodeToVisible(
-						focussed.getViewer());
+                        focussedNodeView);
 				for (Iterator i = selecteds.iterator(); i.hasNext();) {
 					MindMapNode node = (MindMapNode) i.next();
-					if(node.getViewer() != null) {
-						getController().getView().makeTheSelected(node.getViewer());
+                    final NodeView nodeView = controller.getNodeView(node);
+					if(nodeView != null) {
+						getController().getView().makeTheSelected(nodeView);
 					}
 				}
 			}

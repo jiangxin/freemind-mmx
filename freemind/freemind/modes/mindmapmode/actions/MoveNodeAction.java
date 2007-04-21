@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: MoveNodeAction.java,v 1.1.2.2.2.4 2006-10-10 18:51:53 christianfoltin Exp $ */
+/* $Id: MoveNodeAction.java,v 1.1.2.2.2.5 2007-04-21 15:11:22 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import freemind.controller.actions.generated.instance.MoveNodeXmlAction;
@@ -62,7 +62,7 @@ public class MoveNodeAction extends NodeGeneralAction implements NodeActorXml {
         if(selected.isRoot())
             return null;
         return getActionPair(selected, 
-                MindMapNode.AUTO, 
+                NodeAdapter.VGAP, 
                 NodeAdapter.HGAP, 0);
     }
 

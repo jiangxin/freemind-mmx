@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.7 2006-11-19 19:07:48 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.8 2007-04-21 15:11:22 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -91,8 +91,8 @@ public class EditNodeTextField extends EditNodeBase {
 
         final NodeView nodeView = getNode();
         final MindMapNode model = nodeView.getModel();
-        int xSize = nodeView.getTextWidth() + widthAddition;
-        xOffset += nodeView.getTextX();
+        int xSize = nodeView.getMainView().getTextWidth() + widthAddition;
+        xOffset += nodeView.getMainView().getTextX();
         int xExtraWidth = 0;
         if (MINIMAL_LEAF_WIDTH > xSize
             && (model.isFolded()
@@ -115,14 +115,14 @@ public class EditNodeTextField extends EditNodeBase {
         }
 
         textfield.setSize(xSize, nodeView.getMainView().getHeight() + heightAddition);
-        Font font = nodeView.getFont();
+        Font font = nodeView.getMainViewFont();
         final float zoom = nodeView.getMap().getZoom();
         if (zoom != 1F) {
             font = font.deriveFont(font.getSize()*zoom); 
         }
         textfield.setFont(font);
 
-        textfield.setForeground(nodeView.getForeground());
+        textfield.setForeground(nodeView.getMainViewForeground());
         final Color backgroundColor = model.getBackgroundColor();
         if(backgroundColor != null){
             textfield.setBackground(backgroundColor);
@@ -302,7 +302,7 @@ public class EditNodeTextField extends EditNodeBase {
         // NOTE: this must be calculated after scroll because the pane location changes
         Point frameScreenLocation =
             getFrame().getLayeredPane().getLocationOnScreen();
-        Point nodeScreenLocation = nodeView.getLocationOnScreen();
+        Point nodeScreenLocation = nodeView.getMainView().getLocationOnScreen();
 
         int xLeft =
             (int) (nodeScreenLocation.getX()

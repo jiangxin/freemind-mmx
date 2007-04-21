@@ -33,6 +33,7 @@ import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.view.MapModule;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author dimitri
@@ -80,9 +81,7 @@ import freemind.view.MapModule;
         refreshMap();        
     }
     void refreshMap() {
-        MindMapNode root = map.getRootNode();
-        root.getViewer().invalidateDescendantsTreeGeometries();         
-        map.nodeRefresh(root);
+        c.getModeController().refreshMap();
     }
     public ConditionFactory getConditionFactory(){
         if(conditionFactory == null)
@@ -111,15 +110,13 @@ import freemind.view.MapModule;
     }
 
     public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
-        if(newMapModule != null) {
-            MindMap newMap = newMapModule.getModel();
+            MindMap newMap = newMapModule != null ? newMapModule.getModel() : null;
             FilterComposerDialog fd = getFilterToolbar().getFilterDialog();
             if (fd != null){
                 fd.mapChanged(newMap);
             }
             map = newMap;
             getFilterToolbar().mapChanged(newMap);
-        }
     }
 
     public void numberOfOpenMapInformation(int number) {

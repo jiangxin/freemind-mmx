@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.view.mindmapview.MapView;
 
 public class JoinNodesAction extends AbstractAction {
     private final MindMapController controller;
@@ -51,10 +52,11 @@ public class JoinNodesAction extends AbstractAction {
         boolean firstLoop = true;
 
         // Make sure the selected node do not have children
+        final MapView mapView = controller.getView();
         for (Iterator it = selectedNodes.iterator(); it.hasNext();) {
             MindMapNode node = (MindMapNode) it.next();
             if (node.hasChildren()) {
-                JOptionPane.showMessageDialog(node.getViewer(), controller
+                JOptionPane.showMessageDialog(mapView, controller
                         .getText("cannot_join_nodes_with_children"),
                         "FreeMind", JOptionPane.WARNING_MESSAGE);
                 return;
@@ -75,8 +77,8 @@ public class JoinNodesAction extends AbstractAction {
             }
         }
 
-        controller.getView().selectAsTheOnlyOneSelected(
-                selectedNode.getViewer());
+        mapView.selectAsTheOnlyOneSelected(
+                mapView.getNodeView(selectedNode));
         controller.setNodeText(selectedNode, newContent);
     }
 }

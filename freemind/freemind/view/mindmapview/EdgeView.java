@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeView.java,v 1.13.14.2.4.1 2006-04-05 21:26:31 dpolivaev Exp $*/
+/*$Id: EdgeView.java,v 1.13.14.2.4.2 2007-04-21 15:11:22 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -29,103 +29,52 @@ import javax.swing.JLabel;
  * This class represents a single Edge of a MindMap.
  */
 public abstract class EdgeView {
-    protected NodeView source,target;
-    private JLabel label = new JLabel();
+    private NodeView target;
+    private NodeView source;
     protected Point start, end;
     private static int i;
 
-    static final Stroke DEF_STROKE = new BasicStroke();
     static Stroke ECLIPSED_STROKE = null;
-	
-    protected EdgeView(NodeView source, NodeView target) {
-	this.source = source;
-	this.target = target;
-	label.setFont(getMap().getController().getFontThroughMap
-                      (new Font("Sans Serif",0,10)));
-
-	label.setText(getModel().toString());//Calling update() crashes BezierEdgeView
-
-	getMap().add(label);
-    }
-
 
     /**
      * This should be a task of MindMapLayout
      * start,end must be initialized...
+     * @param target TODO
      */
-    public void update() {
-	label.setText(getModel().toString());	
+    public void paint(NodeView target, Graphics2D g) {
+        this.source = target.getVisibleParentView();
+        this.target = target;
+        end = getTarget().getInPoint(source);
+        start = getSource().getOutPoint(end, source);
+        paint(g);
+        this.source = null;
+        this.target = null;
     }
 
-    public void paint(Graphics2D g) {
-	//	label.repaint();
-		target.paintFoldingMark(g);
-        // if node is folded, then add a plus sign:
-        // feature not approved by Daniel. Disabled, fc, 10.1.2004.
-//         if(target.getModel().isFolded()) {
-//             int height = target.getSize().height/2;
-//             // implement a maximum:
-//             final int MAX_HEIGHT = 50;
-//             if(height > MAX_HEIGHT)
-//                 height = MAX_HEIGHT;
-//             g.drawArc( end.x - height/2 , end.y - height/2, height,   height,(target.isLeft())?270:90,180);
-//         }
-        
-    }
+    abstract protected void paint(Graphics2D g);
 
-    public JLabel getLabel() {
-	return label;
-    }
-
-    void remove() {
-	getMap().remove(label);
+    protected void reset() {
+        this.source = null;
+        this.target = null;
     }
 
     public abstract Color getColor();
 
     public Stroke getStroke() {
        Stroke result = getModel().getStroke();
-       if (result==null)
-          return DEF_STROKE;
        return result; }
 
     public int getWidth() {
        return getModel().getWidth(); }
 
-    /**
-     * Get the width in pixels rather than in width constant (like -1)
-     */
-    public int getRealWidth() {
-       int width = getWidth();
-       return (width < 1) ? 1 : width; }
 
     protected MindMapEdge getModel() {
-       return target.getModel().getEdge(); }
+       return getTarget().getModel().getEdge(); }
 
     protected MapView getMap() {
-       return source.getMap(); }
+       return getTarget().getMap(); }
 
 	
-   /**
-    *  Get the vertical shift due to alignment of node connexion and edge width.
-    *  Bold edges are centered by Graphic. Applies this shift to change this.
-    */
-   protected int getNodeShift(NodeView node) {
-      if (node.getAlignment()==NodeView.ALIGN_CENTER) return 0;
-      // ALIGN_BOTTOM is the case of fork style nodes.
-      if (node.getAlignment()==NodeView.ALIGN_BOTTOM) return -getRealWidth()/2+1;
-      //if(node.getAlignment()==NodeView.ALIGN_TOP) return w/2; // Daniel: probably never used
-      return 0;
-   }
-	
-   protected int getTargetShift() {
-      return getNodeShift(target);
-   }
-	
-   protected int getSourceShift() {
-      return getNodeShift(source);
-   }
-
    protected void setRendering(Graphics2D g) {
       if (getMap().getController().getAntialiasEdges() || getMap().getController().getAntialiasAll()) {
          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
@@ -142,11 +91,27 @@ public abstract class EdgeView {
    }
 
    protected boolean isTargetEclipsed(Graphics2D g) {
-       if( target.isParentHidden()){
+       if( getTarget().isParentHidden()){
            g.setColor(g.getBackground());
            g.setStroke(getEclipsedStroke());
 	    return true;
        }
        return false;
    }
+
+
+
+/**
+ * @return Returns the source.
+ */
+protected NodeView getSource() {
+    return source.getModel().isVisible() ? source : source.getVisibleParentView();
+}
+
+/**
+ * @return Returns the target.
+ */
+protected NodeView getTarget() {
+    return target;
+}
 }

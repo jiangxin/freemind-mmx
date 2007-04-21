@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.12 2006-11-26 10:20:41 dpolivaev Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.13 2007-04-21 15:11:21 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -102,12 +103,8 @@ public interface ModeController  {
      */
     public void select( NodeView node) ;
 
-    /**Single selection: the node is the only one selected after calling this method.
-     */
-    public void select( MindMapNode selected);
-
-
     MindMapNode getSelected();
+    NodeView getSelectedView();
 	/**
 	 * @return a List of MindMapNode s.
 	 */
@@ -201,11 +198,12 @@ public interface ModeController  {
     void setFolded(MindMapNode node, boolean folded);
 	/** Unfolds a node if necessary.
 	 */
-	void displayNode(MindMapNode node);
+	void displayNode(NodeView node);
 	/** Node is displayed and selected as the only one selected. It is moved to the center of the
 	 *  screen.
 	 */
-	void centerNode(MindMapNode node);
+    void centerNode(NodeView node);
+    void centerNode(MindMapNode node);
 	String getLinkShortText(MindMapNode node);
 
     public JToolBar getModeToolBar();
@@ -245,4 +243,9 @@ public interface ModeController  {
 
     AttributeController getAttributeController();
     void nodeRefresh(MindMapNode node);
+
+    NodeView getNodeView(MindMapNode node);
+
+    void refreshMap();
+
 }

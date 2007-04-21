@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.26 2007-02-27 21:13:36 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.27 2007-04-21 15:11:20 dpolivaev Exp $*/
 
 package freemind.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -483,7 +484,6 @@ public class Controller  implements MapModuleChangeObserver {
             getFrame().setView(newMapModule.getView());
             setAllActions(true);
             if (getView().getSelected() == null) {
-                // Only for the new modules move to root
                 moveToRoot();
             }
             lastOpened.mapOpened(newMapModule);
@@ -1287,6 +1287,10 @@ public class Controller  implements MapModuleChangeObserver {
 
     public static void addPropertyChangeListener(FreemindPropertyListener listener) {
         Controller.propertyChangeListeners.add(listener);
+    }
+
+    public static void removePropertyChangeListener(FreemindPropertyListener listener) {
+        Controller.propertyChangeListeners.remove(listener);
     }
 	/**
 	 * @author foltin

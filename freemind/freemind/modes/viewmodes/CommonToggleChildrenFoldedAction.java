@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/* $Id: CommonToggleChildrenFoldedAction.java,v 1.1.2.1.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
+/* $Id: CommonToggleChildrenFoldedAction.java,v 1.1.2.1.2.2 2007-04-21 15:11:22 dpolivaev Exp $ */
 package freemind.modes.viewmodes;
 
 import java.awt.event.ActionEvent;
@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
@@ -46,9 +47,9 @@ public class CommonToggleChildrenFoldedAction extends AbstractAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-        MindMapNode selected = modeController.getSelected();
-        modeController.toggleFolded.toggleFolded(selected.childrenUnfolded());
-        modeController.getView().selectAsTheOnlyOneSelected(selected.getViewer());
+        NodeView selected = modeController.getSelectedView();
+        modeController.toggleFolded.toggleFolded(selected.getModel().childrenUnfolded());
+        modeController.getView().selectAsTheOnlyOneSelected(selected);
         modeController.getController().obtainFocusForSelected();
 	}
 

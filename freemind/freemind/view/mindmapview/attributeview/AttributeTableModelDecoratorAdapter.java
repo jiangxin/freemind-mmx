@@ -26,33 +26,29 @@ package freemind.view.mindmapview.attributeview;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import freemind.modes.MindMapNode;
-import freemind.modes.NodeViewEvent;
-import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableModel;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author Dimitri Polivaev
  * 18.06.2005
  */
-abstract class AttributeTableModelDecoratorAdapter extends AbstractTableModel  implements AttributeTableModel, TableModelListener, ChangeListener, NodeViewEventListener{
+abstract class AttributeTableModelDecoratorAdapter extends AbstractTableModel  implements AttributeTableModel, TableModelListener, ChangeListener{
     protected NodeAttributeTableModel nodeAttributeModel;
     protected AttributeRegistry attributeRegistry;
-    public AttributeTableModelDecoratorAdapter(
-            NodeAttributeTableModel nodeAttributeModel,
-            AttributeRegistry attributeRegistry) {
+    public AttributeTableModelDecoratorAdapter(AttributeView attrView) {
         super();
-        this.nodeAttributeModel = nodeAttributeModel;
-        this.attributeRegistry = attributeRegistry;
+        this.nodeAttributeModel = attrView.getAttributes();
+        this.attributeRegistry = attrView.getAttributeRegistry();
         MindMapNode node = nodeAttributeModel.getNode();
-        if(node.getViewer() != null){
-            addListeners();
-        }
-        node.addNodeViewEventListener(this);        
+        addListeners();
     }
     public MindMapNode getNode() {
         return nodeAttributeModel.getNode();
@@ -80,13 +76,9 @@ abstract class AttributeTableModelDecoratorAdapter extends AbstractTableModel  i
     private void removeListeners() {
         nodeAttributeModel.removeTableModelListener(this);
         this.attributeRegistry.removeChangeListener(this);
-        nodeAttributeModel.getNode().removeNodeViewEventListener(this);        
     }
 
-    public void nodeViewCreated(NodeViewEvent event) {
-        addListeners();
-    }
-    public void nodeViewRemoved(NodeViewEvent event) {
+    public void viewRemoved() {
         removeListeners();
     }
     /* (non-Javadoc)

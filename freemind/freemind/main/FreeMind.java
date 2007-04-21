@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.46 2007-04-20 17:29:59 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.47 2007-04-21 15:11:20 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -64,6 +64,7 @@ import freemind.controller.MenuBar;
 import freemind.modes.ModeController;
 import freemind.preferences.FreemindPropertyListener;
 import freemind.view.mindmapview.MapView;
+import freemind.view.mindmapview.MapViewportLayout;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
@@ -93,7 +94,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
     private static Logger logger =null;
 
     private static final String DEFAULT_LANGUAGE = "en";
-    public static final String VERSION = "0.9.0 Beta 9";
+    public static final String VERSION = "0.9.0 Beta 10";
 	public static final String XML_VERSION = "0.9.0_Beta_8";
     //    public static final String defaultPropsURL = "freemind.properties";
     //    public static Properties defaultProps;
@@ -217,6 +218,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
             scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
             
         }
+        scrollPane.getViewport().setLayout(new MapViewportLayout());         
 	southPanel = new SouthPanel();
 	status = new JLabel();
 //	southPanel.add( status, BorderLayout.SOUTH );
@@ -612,10 +614,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
     
     
     
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
     	final FreeMind frame = new FreeMind();
         IFreeMindSplash splash=null;
-        FeedBack feedBack;
+        final FeedBack feedBack;
         // change here, if you don't like the splash
         if (true) {
             // fc: don't change the following line as it is changed by the build.xml script.
@@ -642,8 +644,12 @@ public class FreeMind extends JFrame implements FreeMindMain {
                 }};
                 frame.mWindowIcon  = new ImageIcon(frame.getResource("images/FreeMindWindowIcon.png"));
         }
-		feedBack.setMaximumValue(9);
+        feedBack.setMaximumValue(9);
         frame.init(feedBack);
+        try {
+            // wait until AWT thread starts
+            if (! EventQueue.isDispatchThread()){
+                EventQueue.invokeAndWait(new Runnable() {public void run(){
 
 
     feedBack.increase("FreeMind.progress.startCreateController");
@@ -717,7 +723,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
         int win_state  = Integer.parseInt(FreeMind.props.getProperty("appwindow_state","0"));
         win_state = ((win_state & ICONIFIED) != 0) ? NORMAL : win_state;
         frame.setExtendedState(win_state);
-        frame.pack();
         // set divider position:
         int splitPanePosition = frame.getIntProperty(SPLIT_PANE_POSITION, (int) (frame.mSplitPane.getHeight()*0.8));
         int lastSplitPanePosition = frame.getIntProperty(SPLIT_PANE_LAST_POSITION, splitPanePosition);
@@ -725,15 +730,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
         frame.mSplitPane.setLastDividerLocation(lastSplitPanePosition);
         feedBack.increase("FreeMind.progress.endStartup");
 
-        try {
-                // wait until AWT thread starts
-                if (! EventQueue.isDispatchThread()){
-                    EventQueue.invokeAndWait(new Runnable() {public void run(){
-                      frame.setVisible(true);
-                    };});
-                }
-                if (frame.getView() != null) {
-                frame.getView().moveToRoot(); }}
+                    frame.pack();
+                    frame.setVisible(true);
+//                    EventQueue.invokeLater(new Runnable(){
+//                        public void run() {
+//                            if (frame.getView() != null) {
+//                                frame.getView().moveToRoot(); }
+//                        }
+//                        
+//                    });
+                };});
+            }
+        }
         catch (Exception e) {
             freemind.main.Resources.getInstance().logException(e); }
 

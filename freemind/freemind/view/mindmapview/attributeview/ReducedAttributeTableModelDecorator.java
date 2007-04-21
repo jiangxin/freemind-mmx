@@ -30,6 +30,7 @@ import javax.swing.event.ChangeEvent;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author Dimitri Polivaev
@@ -38,10 +39,8 @@ import freemind.modes.attributes.NodeAttributeTableModel;
 class ReducedAttributeTableModelDecorator extends AttributeTableModelDecoratorAdapter{
     private Vector index = null;
     private int visibleRowCount;
-    ReducedAttributeTableModelDecorator(
-            NodeAttributeTableModel nodeAttributeModel,
-            AttributeRegistry attributeRegistry) {
-        super(nodeAttributeModel, attributeRegistry);
+    ReducedAttributeTableModelDecorator(AttributeView attrView) {
+        super(attrView);
         rebuildTableModel();
     }
 

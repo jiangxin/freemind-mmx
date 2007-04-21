@@ -39,6 +39,7 @@ import freemind.main.FixedHTMLWriter;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
+import freemind.view.mindmapview.MapView;
 
 /**
  * @author Dimitri Polivaev
@@ -96,7 +97,8 @@ public class SplitNode extends MindMapNodeHookAdapter {
             c.setNodeText(lowerNode, part);
             EventQueue.invokeLater(new Runnable(){
                 public void run() {
-                    c.getView().toggleSelected(lowerNode.getViewer());
+                    final MapView mapView = c.getView();
+                    mapView.toggleSelected(mapView.getNodeView(lowerNode));
                 }                
             });
         }

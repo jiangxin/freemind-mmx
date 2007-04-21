@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: SchemeMapModel.java,v 1.11.18.4.2.3 2006-11-26 10:20:45 dpolivaev Exp $ */
+/* $Id: SchemeMapModel.java,v 1.11.18.4.2.4 2007-04-21 15:11:22 dpolivaev Exp $ */
 
 package freemind.modes.schememode;
 
@@ -100,7 +100,7 @@ public class SchemeMapModel extends MapAdapter {
 	    if (tok.ttype == 40) {    //"("
 		//		System.out.println("Token starts with (");
 		SchemeNodeModel newNode = new SchemeNodeModel(getFrame(), this);
-		insertNodeInto(newNode, node);
+		insertNodeInto(newNode, node, node.getChildCount());
 		node = newNode;
 	    } else if (tok.ttype == 41) {    //")"
 		//		System.out.println("Token starts with )");
@@ -114,7 +114,7 @@ public class SchemeMapModel extends MapAdapter {
 		    node.setUserObject(token);
 		} else {
 		    SchemeNodeModel newNode = new SchemeNodeModel(getFrame(), this);
-		    insertNodeInto(newNode, node);
+		    insertNodeInto(newNode, node, node.getChildCount());
 		    newNode.setUserObject(token);
 		}
 	    }/* else if (tok.ttype == tok.TT_NUMBER) {

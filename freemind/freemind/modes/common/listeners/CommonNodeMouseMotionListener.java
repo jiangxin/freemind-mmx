@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: CommonNodeMouseMotionListener.java,v 1.1.2.1.2.3 2006-10-26 19:14:28 dpolivaev Exp $ */
+/* $Id: CommonNodeMouseMotionListener.java,v 1.1.2.1.2.4 2007-04-21 15:11:21 dpolivaev Exp $ */
 
 package freemind.modes.common.listeners;
 
@@ -35,6 +35,7 @@ import javax.swing.SwingUtilities;
 import freemind.controller.NodeMouseMotionListener.NodeMouseMotionObserver;
 import freemind.main.Tools;
 import freemind.modes.ModeController;
+import freemind.view.mindmapview.MainView;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -98,7 +99,7 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
         logger.finest("Event: mouseMoved");
         // Invoked when the mouse button has been moved on a component (with no
         // buttons down).
-        NodeView node = (NodeView) e.getComponent().getParent();
+        NodeView node = ((MainView) e.getComponent()).getNodeView();
         boolean isLink = (node).updateCursor(e.getX());
         // links are displayed in the status bar:
         if (isLink) {
@@ -120,7 +121,7 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
         logger.fine("Event: mouseDragged");
         // first stop the timer and select the node:
         stopTimerForDelayedSelection();
-        NodeView nodeV = (NodeView) (e.getComponent()).getParent();
+        NodeView nodeV = ((MainView) e.getComponent()).getNodeView();
 
         // if dragged for the first time, select the node:
         if (!c.getView().isSelected(nodeV))
@@ -169,11 +170,12 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
         }
 
         if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
-            if (e.getClickCount() % 2 == 0) {
-                c.doubleClick(e);
-            } else {
+// FIXME Dimitry: Double Click comes after Plain Click combining (un)folding with editing            
+//            if (e.getClickCount() % 2 == 0) {
+//                c.doubleClick(e);
+//            } else {
                 c.plainClick(e);
-            }
+//            }
             e.consume();
         }
     }

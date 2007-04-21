@@ -65,7 +65,7 @@ public class DefaultFilter implements Filter{
             MapView mapView = c.getView();
             MindMapNode root = map.getRootNode();
             resetFilter(root);
-            if (filterChildren(root, condition.checkNode(root), false)){
+            if (filterChildren(root, c, condition.checkNode(c, root), false)){
                 addFilterResult(root, FILTER_SHOW_ANCESTOR);
             }
             selectVisibleNode(mapView);
@@ -97,21 +97,22 @@ public class DefaultFilter implements Filter{
         return getNearestVisibleParent(selectedNode.getParentView());
     }
     /**
+     * @param c TODO
      */
-    private boolean filterChildren(MindMapNode parent, boolean isAncestorSelected, boolean isAncestorEclipsed) {
+    private boolean filterChildren(MindMapNode parent, Controller c, boolean isAncestorSelected, boolean isAncestorEclipsed) {
         ListIterator iterator = parent.childrenUnfolded();
         boolean isDescendantSelected = false;
         while(iterator.hasNext()){
             MindMapNode node = (MindMapNode)iterator.next();
-            isDescendantSelected = applyFilter(node, isAncestorSelected, isAncestorEclipsed, isDescendantSelected);            
+            isDescendantSelected = applyFilter(node, c, isAncestorSelected, isAncestorEclipsed, isDescendantSelected);            
         }
         return isDescendantSelected;
     }
     
-    private boolean applyFilter(MindMapNode node, boolean isAncestorSelected, boolean isAncestorEclipsed, boolean isDescendantSelected) {
+    private boolean applyFilter(MindMapNode node, Controller c, boolean isAncestorSelected, boolean isAncestorEclipsed, boolean isDescendantSelected) {
         resetFilter(node);
         if (isAncestorSelected) addFilterResult(node, FILTER_SHOW_DESCENDANT);
-        boolean conditionSatisfied = condition.checkNode(node);
+        boolean conditionSatisfied = condition.checkNode(c, node);
         if (conditionSatisfied){
             isDescendantSelected = true;
             addFilterResult(node, FILTER_SHOW_MATCHED);
@@ -123,7 +124,7 @@ public class DefaultFilter implements Filter{
         if (isAncestorEclipsed){
             addFilterResult(node, FILTER_SHOW_ECLIPSED);               
         }
-        if(filterChildren(node, conditionSatisfied || isAncestorSelected, !conditionSatisfied || isAncestorEclipsed)){
+        if(filterChildren(node, c, conditionSatisfied || isAncestorSelected, !conditionSatisfied || isAncestorEclipsed)){
             addFilterResult(node, FILTER_SHOW_ANCESTOR);
             isDescendantSelected = true;
         }

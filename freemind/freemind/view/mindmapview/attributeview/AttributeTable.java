@@ -43,6 +43,8 @@ import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
@@ -50,8 +52,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import freemind.modes.MindMapNode;
-import freemind.modes.NodeViewEvent;
-import freemind.modes.NodeViewEventListener;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.attributes.AttributeTableLayoutModel;
@@ -65,7 +65,7 @@ import freemind.view.mindmapview.NodeView;
  * @author dimitri
  * 12.06.2005
  */
-public class AttributeTable extends JTable implements NodeViewEventListener, ColumnWidthChangeListener{
+public class AttributeTable extends JTable implements ColumnWidthChangeListener{
     private static final int MAX_HEIGTH = 300;
     private static final int MAX_WIDTH = 600;
     static private class MyFocusListener implements FocusListener{
@@ -76,7 +76,12 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         public void focusGained(FocusEvent event) { 
             Component source = (Component)event.getSource();
             Component oppositeComponent = event.getOppositeComponent();
-            focusedTable = (AttributeTable)SwingUtilities.getAncestorOfClass(AttributeTable.class, source);
+            if(source instanceof AttributeTable){
+                focusedTable = (AttributeTable)source;
+            }
+            else{
+                focusedTable = (AttributeTable)SwingUtilities.getAncestorOfClass(AttributeTable.class, source);
+            }
             Component newNodeViewInFocus = SwingUtilities.getAncestorOfClass(NodeView.class, focusedTable);
             Component oldNodeViewInFocus = SwingUtilities.getAncestorOfClass(NodeView.class, oppositeComponent);
             if(newNodeViewInFocus != oldNodeViewInFocus 
@@ -145,7 +150,6 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         this.attributeView = attributeView;
         addFocusListener(focusListener);
         final MindMapNode model = attributeView.getNodeView().getModel();
-        model.addNodeViewEventListener(this);
         final AttributeController attributeController = model.getMap().getRegistry().getModeController().getAttributeController();
         if(attributeController != null){
             getTableHeader().addMouseListener(componentListener);
@@ -341,22 +345,20 @@ public class AttributeTable extends JTable implements NodeViewEventListener, Col
         map.getModel().nodeChanged(getAttributeView().getNode());
     }
     
-    /* (non-Javadoc)
-     * @see javax.swing.event.AncestorListener#ancestorAdded(javax.swing.event.AncestorEvent)
-     */
-    public void nodeViewCreated(NodeViewEvent event) {
-        getModel().addTableModelListener(this);
-    }
-    
-    /* (non-Javadoc)
-     * @see javax.swing.event.AncestorListener#ancestorRemoved(javax.swing.event.AncestorEvent)
-     */
-    public void nodeViewRemoved(NodeViewEvent event) {
+    public void viewRemoved() {
         getModel().removeTableModelListener(this);
-        attributeView.getNodeView().getModel().removeNodeViewEventListener(this);
     }
     
     
+    /* (non-Javadoc)
+     * @see javax.swing.JTable#removeNotify()
+     */
+    public void removeNotify() {
+        // TODO Auto-generated method stub
+        super.removeNotify();
+    }
+
+
     private float getFontSize() {
         float zoom = getZoom();
         return (attributeView.getNodeView().getModel().getMap().getRegistry().getAttributes().getFontSize() * zoom);

@@ -34,6 +34,7 @@ import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.main.HtmlTools;
+import freemind.view.mindmapview.NodeView;
 
 public class FindAction extends AbstractAction {
 	private final ControllerAdapter controller;

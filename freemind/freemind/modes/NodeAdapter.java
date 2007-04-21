@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.24 2007-01-31 20:20:07 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.25 2007-04-21 15:11:21 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -40,9 +41,13 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.event.EventListenerList;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 import freemind.controller.filter.Filter;
 import freemind.controller.filter.FilterInfo;
@@ -56,6 +61,7 @@ import freemind.main.XMLElement;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.NodeView;
+import freemind.view.mindmapview.NodeViewVisitor;
 
 /**
  * This class represents a single Node of a Tree. It contains direct handles
@@ -66,6 +72,10 @@ public abstract class NodeAdapter implements MindMapNode {
     final static int SHIFT = -2;//height of the vertical shift between node and its closest child
     public final static int HGAP = 20;//width of the horizontal gap that contains the edges
     public final static int VGAP = 3;//height of the vertical gap between nodes
+    
+    public final static int LEFT_POSITION = -1;
+    public final static int RIGHT_POSITION = 1;
+    public final static int UNKNOWN_POSITION = 0;
 
     private HashSet activatedHooks;
 	private List hooks;
@@ -90,9 +100,9 @@ public abstract class NodeAdapter implements MindMapNode {
     protected Color color;
     protected Color backgroundColor;
     protected boolean folded;
-    private Tools.BooleanHolder left;
+    private int position = UNKNOWN_POSITION;
 
-	private int vGap = AUTO;
+	private int vGap = VGAP;
 	private int hGap = HGAP;
     private int shiftY = 0;
 
@@ -109,7 +119,7 @@ public abstract class NodeAdapter implements MindMapNode {
     private MindMapEdge edge;//the edge which leads to this node, only root has none
     //In future it has to hold more than one view, maybe with a Vector in which the index specifies
     //the MapView which contains the NodeViews
-    private NodeView viewer = null;
+    private Collection views = null;
     private FreeMindMain frame;
     private static final boolean ALLOWSCHILDREN = true;
     private static final boolean ISLEAF = false; //all nodes may have children
@@ -252,16 +262,20 @@ public abstract class NodeAdapter implements MindMapNode {
     // get/set methods
     //
 
-    public NodeView getViewer() {
-	return viewer;
+    public Collection getViewers() {
+        if(views == null){
+            views = new LinkedList();
+        }
+	return views;
     }
 
-    public void setViewer( NodeView viewer ) {
-        if(this.viewer != null)
-            fireNodeViewRemoved();
-        this.viewer = viewer;
-        if(this.viewer != null)
-            fireNodeViewCreated();
+    public void addViewer( NodeView viewer ) {
+        getViewers().add(viewer);
+        addTreeModelListener(viewer);
+    }
+    public void removeViewer( NodeView viewer ) {
+        getViewers().remove(viewer);
+        removeTreeModelListener(viewer);
     }
 
     /** Creates the TreePath recursively */
@@ -643,29 +657,36 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
     // fc, 16.12.2003 left-right bug:
-    public Tools.BooleanHolder isLeft() {
-        return left;
+    public boolean isLeft() {
+        if(position == UNKNOWN_POSITION && ! isRoot()){
+            setLeft(getParentNode().isLeft());
+        }
+        return position == LEFT_POSITION;
     }
 
 
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.MindMapNode#isOneLeftSideOfRoot()
-	 */
-	public boolean isOnLeftSideOfRoot() {
-		if(isRoot())
-			return false;
-		// now, the node has a parent:
-		if(getParentNode().isRoot()) {
-			return (isLeft() == null)?false:isLeft().getValue();
-		}
-		return getParentNode().isOnLeftSideOfRoot();
-	}
-
 	public void setLeft(boolean isLeft){
-        if(left == null)
-            left = new Tools.BooleanHolder();
-        left.setValue(isLeft);
+        position = isLeft ? LEFT_POSITION : RIGHT_POSITION;
+        if(! isRoot()){
+            for(int i = 0; i < getChildCount(); i++){
+                final NodeAdapter child = (NodeAdapter) getChildAt(i);
+                child.position = position;
+            }
+        }
+    }
+    
+    public boolean isNewChildLeft(){
+        if(! isRoot()){
+            return isLeft();
+        }
+        int rightChildrenCount = 0;
+        for(int i = 0; i < getChildCount(); i++){
+            if(! ((MindMapNode)getChildAt(i)).isLeft()) rightChildrenCount++;
+            if(rightChildrenCount > getChildCount()/2){
+                return true;
+            }
+        }
+        return false;
     }
 
     //
@@ -677,13 +698,14 @@ public abstract class NodeAdapter implements MindMapNode {
 
     public void insert( MutableTreeNode child, int index) {
         logger.finest("Insert at " + index + " the node "+child);
+        final MindMapNode childNode = (MindMapNode)child;
         if (index < 0) { // add to the end (used in xml load) (PN)
           index = getChildCount();
           children.add( index, child );
         }
         else {           // mind preferred child :-)
           children.add( index, child );
-          preferredChild = (MindMapNode)child;
+        preferredChild = childNode;
         }
     	child.setParent( this );
     }
@@ -728,35 +750,6 @@ public abstract class NodeAdapter implements MindMapNode {
 		    recursiveCallRemoveChildren(node.getParentNode(), removedChild, oldDad);
 	}
 
-
-
-    public MindMapNode getPreferredChild() { // mind preferred child :-) (PN)
-        MindMapNode preferredChild;  
-      if (this.children.contains(this.preferredChild)) {
-          preferredChild =  this.preferredChild;
-      }
-      else if (!isLeaf()) {
-          preferredChild = (MindMapNode)(this.children.get((getChildCount() + 1) / 2 - 1));
-      }
-      else {
-        return null;
-      }
-      while(! preferredChild.isVisible()) {
-          preferredChild = preferredChild.getParentNode();
-      }
-      return preferredChild;
-      
-    }
-    public void setPreferredChild(MindMapNode node) {
-      this.preferredChild = node;
-      if (node == null) {
-        return;
-      }
-      else if (this.parent != null) {
-        // set also preffered child of parents...
-        this.parent.setPreferredChild(this);
-      }
-    }
 
     public void removeFromParent() {
     	parent.remove( this );
@@ -985,8 +978,8 @@ freemind.main.Resources.getInstance().logException(			e);
 
         // fc, 17.12.2003: Remove the left/right bug.
         //                       VVV  save if and only if parent is root.
-    	if ((isLeft()!= null) && !(isRoot()) && (getParentNode().isRoot())) {
-            node.setAttribute("POSITION",(isLeft().getValue())?"left":"right");
+    	if (!(isRoot()) && (getParentNode().isRoot())) {
+            node.setAttribute("POSITION", isLeft()?"left":"right");
         }
 
         String label = registry.getLabel(this); /* Puh... */
@@ -1009,7 +1002,7 @@ freemind.main.Resources.getInstance().logException(			e);
     	    //  MindMapNode.STYLE_BUBBLE, which is not what we want to save.
 
     	//layout
-        if(vGap != AUTO) {
+        if(vGap != VGAP) {
         	node.setAttribute("VGAP",Integer.toString(vGap));
         }
         if(hGap != HGAP) {
@@ -1089,7 +1082,7 @@ freemind.main.Resources.getInstance().logException(			e);
     }
 
 	public int getShiftY() {
-			return shiftY ;
+            return shiftY;
 	}
 
 
@@ -1105,7 +1098,8 @@ freemind.main.Resources.getInstance().logException(			e);
 
 	public int calcShiftY() {
 		try{
-			return shiftY + (parent.hasOneVisibleChild() ? SHIFT:0);
+		    //return 0;
+            return shiftY + (parent.hasOneVisibleChild() ? SHIFT:0);
 		}
 		catch(NullPointerException e){
 			return 0;
@@ -1166,20 +1160,9 @@ freemind.main.Resources.getInstance().logException(			e);
 	public int getVGap() {
 		return vGap;
 }
-	public int calcVGap() {
-		if (vGap != AUTO)
-			return vGap;
-/*
-//		double delta = 8.0 / Math.pow(1.5, 1 + getNodeLevel()); // to expensive...
-		double delta = 8.0 / Math.pow(1 + getNodeLevel(), 1.5);
-        return (int ) ((1 + delta) * VGAP );
-*/
-		return VGAP;
-	}
 
 	public void setVGap(int gap) {
-		if (gap == AUTO) vGap = AUTO;
-		else vGap = Math.max(gap, 0);
+	    vGap = Math.max(gap, 0);
 	}
 
     public boolean isVisible() {
@@ -1229,47 +1212,31 @@ freemind.main.Resources.getInstance().logException(			e);
 
 
 	EventListenerList listenerList = new EventListenerList();
-    NodeViewEvent nodeViewEvent = null;
 
-    public void addNodeViewEventListener(NodeViewEventListener l) {
-        listenerList.add(NodeViewEventListener.class, l);
+    public void addTreeModelListener(TreeModelListener l) {
+        listenerList.add(TreeModelListener.class, l);
     }
 
-    public void removeNodeViewEventListener(NodeViewEventListener l) {
-        listenerList.remove(NodeViewEventListener.class, l);
+    public void removeTreeModelListener(TreeModelListener l) {
+        listenerList.remove(TreeModelListener.class, l);
     }
 
+    public EventListenerList getListeners(){
+        return listenerList;
+    }
 
-    /** Notify all listeners that have registered interest for
-     notification on this event type.  The event instance
-     is lazily created using the parameters passed into
-     the fire method.*/
-    protected void fireNodeViewCreated() {
-        // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==NodeViewEventListener.class) {
-                // Lazily create the event:
-                if (nodeViewEvent == null)
-                    nodeViewEvent = new NodeViewEvent(this);
-                ((NodeViewEventListener)listeners[i+1]).nodeViewCreated(nodeViewEvent);
-            }
+    /* (non-Javadoc)
+     * @see freemind.modes.MindMapNode#acceptViewVisitor(freemind.view.mindmapview.NodeViewVisitor)
+     */
+    public void acceptViewVisitor(NodeViewVisitor visitor) {
+        final Iterator iterator = views.iterator();
+        while(iterator.hasNext()){
+            visitor.visit((NodeView)iterator.next());
         }
+        
     }
-    protected void fireNodeViewRemoved() {
-        // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==NodeViewEventListener.class) {
-                // Lazily create the event:
-                if (nodeViewEvent == null)
-                    nodeViewEvent = new NodeViewEvent(this);
-                ((NodeViewEventListener)listeners[i+1]).nodeViewRemoved(nodeViewEvent);
-            }
-        }
-    }
+    //
+    //  Events
+    //
+
 }

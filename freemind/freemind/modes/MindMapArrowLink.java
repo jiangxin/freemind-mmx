@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapArrowLink.java,v 1.2.18.2.16.1 2006-07-25 20:28:20 christianfoltin Exp $*/
+/*$Id: MindMapArrowLink.java,v 1.2.18.2.16.2 2007-04-21 15:11:21 dpolivaev Exp $*/
 
 package freemind.modes;
 
 import java.awt.Point;
 
 import freemind.main.XMLElement;
+import freemind.view.mindmapview.MapView;
 
 public interface MindMapArrowLink extends MindMapLink {
 
@@ -44,8 +45,9 @@ public interface MindMapArrowLink extends MindMapLink {
     /** the type of the end arrow: currently "None" and "Default". */
     public String getEndArrow();
     /**
+     * @param map TODO
      */
-    public void changeInclination(int originX, int originY, int deltaX, int deltaY);
+    public void changeInclination(MapView map, int originX, int originY, int deltaX, int deltaY);
     public void showControlPoints(boolean bShowControlPointsFlag);
 	public boolean getShowControlPointsFlag();
     public XMLElement save();

@@ -26,6 +26,7 @@ package freemind.controller.filter.condition;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import freemind.controller.Controller;
 import freemind.main.Resources;
 import freemind.modes.MindMapNode;
 
@@ -44,7 +45,7 @@ public class NoFilteringCondition implements Condition {
         }
         return  description;
     }
-    public boolean checkNode(MindMapNode node) {
+    public boolean checkNode(Controller c, MindMapNode node) {
         return true;
     }
     public JComponent getListCellRendererComponent() {

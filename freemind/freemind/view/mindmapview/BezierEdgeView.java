@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BezierEdgeView.java,v 1.13.18.1.2.1 2006-04-05 21:26:31 dpolivaev Exp $*/
+/*$Id: BezierEdgeView.java,v 1.13.18.1.2.2 2007-04-21 15:11:22 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -34,39 +34,30 @@ public class BezierEdgeView extends EdgeView {
     private static final int XCTRL = 12;//the distance between endpoint and controlpoint
     private static final int CHILD_XCTRL = 20; // -||- at the child's end
    
-    public BezierEdgeView(NodeView source, NodeView target) {
-	super(source,target);
-	//	update();
+    public BezierEdgeView() {
+	super();
     }
 
-    public void update() {
-        super.update();
+    private void update() {
 
 	//YCTRL could be implemented but then we had to check whether target is above or below source.
-        int sign = (target.isLeft())? -1 : 1;
+        int sign = (getTarget().isLeft())? -1 : 1;
         int sourceSign = 1;
-        if(source.isRoot()){
+        if(getSource().isRoot()){
         		sourceSign = 0;
         }
         int xctrl = getMap().getZoomed(sourceSign * sign * XCTRL);
         int childXctrl = getMap().getZoomed(- 1 * sign * CHILD_XCTRL);
 
-	int dy1=getSourceShift();
-	int dy2=getTargetShift();
-
-        int endXCorrection = target.isLeft() ? -1 : 0; // This is a workaround, which
-                                                       // makes sure, that egde touches
-                                                       // the node.
-
-	graph.setCurve(start.x,                   start.y + dy1,
-                       start.x + xctrl,           start.y + dy1,
-                       end.x   + childXctrl,      end.y   + dy2,
-                       end.x   + endXCorrection,  end.y   + dy2);
+	graph.setCurve(start.x,                   start.y,
+                       start.x + xctrl,           start.y,
+                       end.x   + childXctrl,      end.y,
+                       end.x,  end.y);
     }
 
 
-    public void paint(Graphics2D g) {
-        update();
+    protected void paint(Graphics2D g) {
+    update();
 	g.setColor(getColor());
 	g.setStroke(getStroke());
         setRendering(g);
@@ -75,8 +66,6 @@ public class BezierEdgeView extends EdgeView {
 	if(isTargetEclipsed(g)){
 		g.draw(graph);
 	}
-	
-	super.paint(g);
     }
 
     public Color getColor() {

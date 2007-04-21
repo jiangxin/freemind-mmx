@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.31 2007-02-04 12:53:22 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.32 2007-04-21 15:11:20 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -206,6 +206,17 @@ public class NodeNote extends MindMapNodeHookAdapter {
             logger = controller.getFrame().getLogger(this.getClass().getName());
         }
 
+        class JumpToMapAction extends AbstractAction{
+            public void actionPerformed(ActionEvent e) {
+                JSplitPane splitPane = controller.getFrame().getSplitPane();
+                if (sPositionToRecover != null) {
+                    splitPane.setDividerLocation(sPositionToRecover
+                            .intValue());
+                    sPositionToRecover = null;
+                }
+                controller.getView().getSelected().requestFocus();
+            }
+        };
         public void register() {
             logger.info("Registration of note handler.");
             controller.getActionFactory().registerActor(this,
@@ -213,17 +224,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
             // moved to registration:
             noteViewerComponent = getNoteViewerComponent();
             // register "leave note" action:
-            Action jumpToMapAction = new AbstractAction() {
-                public void actionPerformed(ActionEvent e) {
-                    JSplitPane splitPane = controller.getFrame().getSplitPane();
-                    if (sPositionToRecover != null) {
-                        splitPane.setDividerLocation(sPositionToRecover
-                                .intValue());
-                        sPositionToRecover = null;
-                    }
-                    controller.getView().getSelected().requestFocus();
-                }
-            };
+            Action jumpToMapAction = new JumpToMapAction();
             String keystroke = controller
                     .getFrame()
                     .getAdjustableProperty(
@@ -249,6 +250,8 @@ public class NodeNote extends MindMapNodeHookAdapter {
         public void deRegister() {
             controller.deregisterNodeSelectionListener(mNotesManager);
             controller.deregisterNodeLifetimeListener(mNotesManager);
+            noteViewerComponent.getActionMap().remove("jumpToMapAction");
+
             if (noteViewerComponent != null) {
                 // shut down the display:
                 noteViewerComponent.setVisible(false);
