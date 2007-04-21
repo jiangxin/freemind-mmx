@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.11 2007-04-21 15:11:23 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.12 2007-04-21 16:10:59 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -746,6 +746,18 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         mustScrollSelectedNodeToVisible  = true;
     }
 
+
+        /* (non-Javadoc)
+     * @see java.awt.Container#validateTree()
+     */
+    protected void validateTree() {
+        super.validateTree();
+        if(mustScrollSelectedNodeToVisible){
+            scrollNodeToVisible(getSelected());
+            mustScrollSelectedNodeToVisible = false;
+        }
+    }
+
         /*****************************************************************
          **             P A I N T I N G                                 **
          *****************************************************************/
@@ -759,13 +771,6 @@ public class MapView extends JPanel implements Printable, Autoscroll{
             getRoot().getContent().getLocation(rootContentLocation);
             SwingUtilities.convertPointToScreen(rootContentLocation, getRoot());
             super.paint(g);
-        }
-
-        void scrollSelectedNodeToVisible() {
-            if(mustScrollSelectedNodeToVisible){
-                scrollNodeToVisible(getSelected());
-                mustScrollSelectedNodeToVisible = false;
-            }
         }
 
     public void paintChildren(Graphics graphics) {
