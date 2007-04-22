@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.6.8 2007-04-21 15:11:23 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.6.9 2007-04-22 19:35:06 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -120,13 +120,13 @@ public class AttributeView implements ChangeListener, TableModelListener {
         if(getNodeView().getModel().getMap().isReadOnly())
             return;
         getAttributeRegistry().removeChangeListener(this);
-        if(attributeTable != null)
-            getAttributes().getLayout().removeColumnWidthChangeListener(attributeTable);
         if(attributeTable != null){
+            getAttributes().getLayout().removeColumnWidthChangeListener(attributeTable);
             attributeTable.getParent().remove(attributeTable);
             attributeTable.getModel().removeTableModelListener(attributeTable);
             attributeTable.removeMouseListener(tablePopupMenu);                
             tableHeader.removeMouseListener(tablePopupMenu);
+            tablePopupMenu = null;
         }
         else {
             getAttributes().removeTableModelListener(this);

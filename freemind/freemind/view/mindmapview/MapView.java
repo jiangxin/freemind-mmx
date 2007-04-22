@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.13 2007-04-22 17:53:13 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.14 2007-04-22 19:35:06 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -133,37 +133,6 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 	//	Logging:
 	private static java.util.logging.Logger logger;
 
-	private class DelayedScroller extends ComponentAdapter{
-		/**
-		 * the only one interface method.
-		 */
-		public void componentMoved(ComponentEvent e){
-			if (m_map != null) { // fc, 22.2.2005: bug fix.
-                m_map.scrollNodeToVisible(m_node, m_extraWidth);
-            }
-			m_map = null;
-			m_node = null;
-		}
-
-		public void scrollNodeToVisible(MapView map, NodeView node, int extraWidth){
-			deactivate();
-			m_map = map;
-			m_node = node;
-			m_extraWidth = extraWidth;
-			node.addComponentListener(this);
-		}
-
-		public void deactivate(){
-			if (m_node != null)
-				m_node.removeComponentListener(this);
-		}
-		MapView m_map = null;
-		NodeView m_node = null;
-		int m_extraWidth = 0;
-	}
-
-	private DelayedScroller m_delayedScroller = new DelayedScroller();
-
     private MindMap model;
     private NodeView rootView = null;
     private Selected selected = new Selected();
@@ -184,7 +153,9 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
     private Point rootContentLocation;
 
-    private boolean mustScrollSelectedNodeToVisible = false;
+    private NodeView nodeToBeVisible = null;
+
+    private int extraWidth;
     //
     // Constructors
     //
@@ -278,11 +249,11 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     //      fit the input field into the screen
     public void scrollNodeToVisible( NodeView node, int extraWidth) {
         //see centerNode()
-		if (! node.isValid()){
-			m_delayedScroller.scrollNodeToVisible(this, node, extraWidth);
+		if (! isValid()){
+            nodeToBeVisible = node;
+            this.extraWidth = extraWidth;
 			return;
 		}
-		m_delayedScroller.deactivate();
         final int HORIZ_SPACE  = 10;
         final int HORIZ_SPACE2 = 20;
         final int VERT_SPACE   = 5;
@@ -293,11 +264,11 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         int width = nodeContent.getWidth();
         if (extraWidth < 0) { // extra left width
 			width -= extraWidth;
+            nodeContent.scrollRectToVisible( new Rectangle(- HORIZ_SPACE + extraWidth, - VERT_SPACE,
+                    width + HORIZ_SPACE2, nodeContent.getHeight() + VERT_SPACE2) );
         }
         else {                // extra right width
             width += extraWidth;
-        }
-        if (node != null) {
             nodeContent.scrollRectToVisible( new Rectangle(- HORIZ_SPACE, - VERT_SPACE,
                     width + HORIZ_SPACE2, nodeContent.getHeight() + VERT_SPACE2) );
         }
@@ -743,7 +714,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         this.zoom = zoom;
         getRoot().updateAll();
         revalidate();
-        mustScrollSelectedNodeToVisible  = true;
+        nodeToBeVisible  = getSelected();
     }
 
 
@@ -779,12 +750,12 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         {
             vp.repaint();
         }
-        if(mustScrollSelectedNodeToVisible){
+        if(nodeToBeVisible != null){
             final int scrollMode = vp.getScrollMode();
             vp.setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
-            scrollNodeToVisible(getSelected());
+            scrollNodeToVisible(nodeToBeVisible, extraWidth);
             vp.setScrollMode(scrollMode);
-            mustScrollSelectedNodeToVisible = false;
+            nodeToBeVisible = null;
         }
     }
 

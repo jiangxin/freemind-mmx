@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.47 2007-04-21 15:11:20 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.48 2007-04-22 19:35:06 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -64,7 +64,6 @@ import freemind.controller.MenuBar;
 import freemind.modes.ModeController;
 import freemind.preferences.FreemindPropertyListener;
 import freemind.view.mindmapview.MapView;
-import freemind.view.mindmapview.MapViewportLayout;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
@@ -218,7 +217,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
             scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
             
         }
-        scrollPane.getViewport().setLayout(new MapViewportLayout());         
 	southPanel = new SouthPanel();
 	status = new JLabel();
 //	southPanel.add( status, BorderLayout.SOUTH );

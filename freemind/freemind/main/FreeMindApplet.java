@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.14 2007-04-21 15:11:20 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.15 2007-04-22 19:35:06 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -48,7 +48,6 @@ import javax.swing.UIManager;
 import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.view.mindmapview.MapView;
-import freemind.view.mindmapview.MapViewportLayout;
 
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 
@@ -285,7 +284,6 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
 	//Create the scroll pane.
 		
-    scrollPane.getViewport().setLayout(new MapViewportLayout());         
 	getContentPane().add( scrollPane, BorderLayout.CENTER );
 	// taken from Lukasz Pekacki, NodeText version:
 	southPanel = new JPanel(new BorderLayout());
