@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.12 2007-04-21 16:10:59 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.13 2007-04-22 17:53:13 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -752,8 +752,38 @@ public class MapView extends JPanel implements Printable, Autoscroll{
      */
     protected void validateTree() {
         super.validateTree();
+        setViewPositionAfterValidate();
+    }
+
+    private void setViewPositionAfterValidate() {
+        JViewport vp = (JViewport)getParent();
+        Point viewPosition = vp.getViewPosition();    
+        Point oldRootContentLocation = rootContentLocation;
+        final NodeView root = getRoot();
+        Point newRootContentLocation = root.getContent().getLocation();
+        SwingUtilities.convertPointToScreen(newRootContentLocation, root);
+        
+        final int deltaX = newRootContentLocation.x - oldRootContentLocation.x ;
+        final int deltaY = newRootContentLocation.y - oldRootContentLocation.y;
+        if(deltaX != 0 || deltaY != 0)
+        {
+            viewPosition.x += deltaX;
+            viewPosition.y += deltaY;
+            final int scrollMode = vp.getScrollMode();
+            //avoid immediate scrolling here:
+            vp.setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+            vp.setViewPosition(viewPosition);
+            vp.setScrollMode(scrollMode);
+        }
+        else
+        {
+            vp.repaint();
+        }
         if(mustScrollSelectedNodeToVisible){
+            final int scrollMode = vp.getScrollMode();
+            vp.setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
             scrollNodeToVisible(getSelected());
+            vp.setScrollMode(scrollMode);
             mustScrollSelectedNodeToVisible = false;
         }
     }
@@ -1029,13 +1059,6 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         }
         return null;
     }
-    /**
-     * @return Returns the rootContentLocation.
-     */
-    Point getRootContentLocation() {
-        return rootContentLocation;
-    }
-
     /* (non-Javadoc)
      * @see javax.swing.JComponent#getPreferredSize()
      */
