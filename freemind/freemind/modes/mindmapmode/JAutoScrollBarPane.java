@@ -48,19 +48,13 @@ public class JAutoScrollBarPane extends JScrollPane{
     public void doLayout() {
         super.doLayout();
     	Insets insets = getInsets();
-    	int insetWidth = insets.left + insets.right;
     	int insetHeight = insets.top + insets.bottom;
         Dimension prefSize = getViewport().getPreferredSize();
-        int width = getWidth() - insetWidth;
-        if(getVerticalScrollBar().isVisible()){
-            width -= getVerticalScrollBar().getWidth();
-        }
         int height = getHeight() - insetHeight;
         if(getHorizontalScrollBar().isVisible()){
             height -= getHorizontalScrollBar().getHeight();
         }
         boolean isVsbNeeded = height < prefSize.height;
-        boolean isHsbNeeded = width < prefSize.width;
         boolean layoutAgain = false;
         
         if(isVsbNeeded && getVerticalScrollBarPolicy() == VERTICAL_SCROLLBAR_NEVER){
@@ -72,16 +66,8 @@ public class JAutoScrollBarPane extends JScrollPane{
             layoutAgain = true;
         }
         
-        if(isHsbNeeded && getHorizontalScrollBarPolicy() == HORIZONTAL_SCROLLBAR_NEVER){
-            setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_ALWAYS);
-            layoutAgain = true;
-        }
-        else if(! isHsbNeeded && getHorizontalScrollBarPolicy() == HORIZONTAL_SCROLLBAR_ALWAYS){
-            setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
-            layoutAgain = true;
-        }
         if(layoutAgain){
-            doLayout();
+            super.doLayout();
         }            
     }
 

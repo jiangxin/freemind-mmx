@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.2 2007-04-21 15:11:23 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.3 2007-04-25 08:12:21 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -92,16 +92,16 @@ public abstract class MainView extends JLabel{
             if (isEmpty){
                 setText("");
             }
-            prefSize.width += getNodeView().getMap().getZoomed(4);
-            prefSize.height += getNodeView().getMap().getZoomed(4);
-            return prefSize;
+             prefSize.width += getNodeView().getMap().getZoomed(4);
+             prefSize.height += getNodeView().getMap().getZoomed(4);
+             return prefSize;
         }
         
         /* (non-Javadoc)
          * @see javax.swing.JComponent#paint(java.awt.Graphics)
          */
         public void paint(Graphics g) {
-            final float zoom = getNodeView().getMap().getZoom();
+            float zoom = getZoom();
             if(zoom != 1F){
                 Graphics2D g2 = (Graphics2D)g;
                 final AffineTransform transform = g2.getTransform();                
@@ -114,6 +114,25 @@ public abstract class MainView extends JLabel{
             else{
                 super.paint(g);
             }
+        }
+
+        private float getZoom() {
+            float zoom = getNodeView().getMap().getZoom();
+            
+            // Dimitry: workaround because of j2se can not calculate font size properly
+            // in case of small zoom values.
+            // This work around does not help in case of html nodes,
+            // thats why text may be truncated there. 
+            if(zoom < 1 && getClientProperty("html") == null){
+                int w = super.getWidth();
+                int charCount = getText().length();
+                w *= zoom;
+                if(charCount > 0 && charCount < w){
+                    zoom *= w;
+                    zoom /= (w + charCount);
+                }
+            }
+            return zoom;
         }   
         protected void printComponent(Graphics g){
             super.paintComponent(g);
@@ -194,7 +213,7 @@ public abstract class MainView extends JLabel{
          */
         public int getHeight() {
             if(isPainting){
-                final float zoom = getNodeView().getMap().getZoom();
+                final float zoom = getZoom();
                 if(zoom != 1F){
                     return (int)(super.getHeight()/zoom);
                 }
@@ -206,7 +225,7 @@ public abstract class MainView extends JLabel{
          */
         public int getWidth() {
             if(isPainting){
-                final float zoom = getNodeView().getMap().getZoom();
+                final float zoom = getZoom();
                 if(zoom != 1F){
                     return (int)(0.99f+super.getWidth()/zoom);
                 }
