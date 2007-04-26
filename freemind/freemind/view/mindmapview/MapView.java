@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.14 2007-04-22 19:35:06 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.15 2007-04-26 07:37:26 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -685,15 +685,45 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
      /**
      * @return an ArrayList of MindMapNode objects.
+     * If both ancestor and descandant node are selected, only the ancestor ist returned
      */
     public ArrayList /*of MindMapNodes*/ getSelectedNodesSortedByY() {
-        TreeMap sortedNodes = new TreeMap();
+        final HashSet selectedNodesSet = new HashSet();
         for (int i=0; i<selected.size();i++) {
-            sortedNodes.put(new Integer(getSelected(i).getY()), getSelected(i).getModel()); }
-
+            selectedNodesSet.add(getSelected(i).getModel()); 
+        }
+        TreeMap sortedNodes = new TreeMap();
+        
+        Point point = new Point();
+        iteration:
+            for (int i=0; i<selected.size();i++) {
+                final NodeView view = getSelected(i); 
+                final MindMapNode node = view.getModel();
+                for(MindMapNode parent = node.getParentNode(); parent != null; parent = parent.getParentNode()){
+                    if(selectedNodesSet.contains(parent)){
+                        continue iteration;
+                    }
+                }
+                view.getContent().getLocation(point);
+                Tools.convertPointToAncestor(view, point, this);
+                sortedNodes.put(new Integer(point.y), node);
+            }
+        
         ArrayList selectedNodes = new ArrayList();
         for(Iterator it = sortedNodes.entrySet().iterator();it.hasNext();) {
             selectedNodes.add( ((Map.Entry)it.next()).getValue() ); }
+
+        return selectedNodes;
+    }
+
+    /**
+     * @return an ArrayList of MindMapNode objects.
+     * If both ancestor and descandant node are selected, only the ancestor ist returned
+     */
+    public ArrayList /*of MindMapNodes*/ getSingleSelectedNodes() {
+        ArrayList selectedNodes = new ArrayList(selected.size());
+        for (int i=selected.size()-1; i >= 0; i--) {
+            selectedNodes.add(getSelected(i).getModel().shallowCopy()); }
 
         return selectedNodes;
     }

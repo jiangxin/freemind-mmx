@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.16 2007-04-21 15:11:21 dpolivaev Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.17 2007-04-26 07:37:26 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -222,14 +222,14 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
    }
 
    public Transferable copy() {
-      return copy(getFrame().getView().getSelectedNodesSortedByY(), null); }
+      return copy(getFrame().getView().getSelectedNodesSortedByY()); }
 
-   public Transferable copySingle(MindMapNode pSelectedNode) {
-      ArrayList selectedNodes  = new ArrayList();
-      selectedNodes.add(pSelectedNode.shallowCopy());
-      return copy(selectedNodes, pSelectedNode.toString()); }
+   public Transferable copySingle() {
+       
+      final ArrayList selectedNodes  = getFrame().getView().getSingleSelectedNodes();
+      return copy(selectedNodes); }
 
-   public Transferable copy(List selectedNodes, String inPlainText) {
+   public Transferable copy(List selectedNodes) {
       try {
          String forNodesFlavor = "";
          boolean firstLoop = true;
@@ -243,7 +243,7 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
             forNodesFlavor += copy(tmpNode, false).getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
          }
 
-         String plainText = inPlainText != null ? inPlainText : getAsPlainText(selectedNodes);
+         String plainText = getAsPlainText(selectedNodes);
          return new MindMapNodesSelection
             (forNodesFlavor, plainText, getAsRTF(selectedNodes), getAsHTML(selectedNodes), null, null); }
          //return new StringSelection(forClipboard); }

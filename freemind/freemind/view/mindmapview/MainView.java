@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.3 2007-04-25 08:12:21 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.4 2007-04-26 07:37:26 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
