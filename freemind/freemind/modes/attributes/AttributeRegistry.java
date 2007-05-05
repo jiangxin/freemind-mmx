@@ -54,7 +54,6 @@ public class AttributeRegistry{
     }
 
     private static final int CAPACITY_INCREMENT = 10;
-    protected boolean isAttributeLayoutChanged;
     protected int visibleElementsNumber;
     protected MapRegistry registry;
     protected SortedMapVector elements;
@@ -67,7 +66,7 @@ public class AttributeRegistry{
     static public final int GLOBAL = -1;
     private static final int TABLE_FONT_SIZE = 12;
     private int fontSize = TABLE_FONT_SIZE;
-    private boolean isAttributeLayoutFired = false;
+    protected boolean isAttributeLayoutChanged;
     private ChangeEvent changeEvent;
     private ChangeEvent attributesEvent;
     private String attributeViewType;
@@ -162,17 +161,7 @@ public class AttributeRegistry{
     }
 
     public void fireAttributeLayoutChanged() {
-        if(isAttributeLayoutFired  == false){
-            isAttributeLayoutFired  = true;
-            EventQueue.invokeLater(new Runnable(){
-                public void run() {
-                    if(isAttributeLayoutFired){
-                        fireStateChanged();
-                        isAttributeLayoutFired = false;
-                    }
-                }                
-            });
-        }
+        setAttributeLayoutChanged();
     }
 
     protected void fireStateChanged() {
@@ -319,7 +308,7 @@ public class AttributeRegistry{
         }
         for (int i = 0; i < size(); i++){
             final AttributeRegistryElement element = getElement(i);
-            if(element.isRestricted()){
+            if(element.isRestricted()|| element.isVisible()){
                 XMLElement attributeData = element.save();
                 attributeRegistry.addChild(attributeData);
                 toBeSaved = true;
@@ -354,6 +343,7 @@ public class AttributeRegistry{
             getAttributeController().performSetVisibility(i, element.getVisibilityModel().booleanValue());
             getAttributeController().performSetRestriction(i, element.getRestriction().booleanValue());
         }
+        fireStateChanged();
         isAttributeLayoutChanged = false;
     }
 
@@ -426,6 +416,6 @@ public class AttributeRegistry{
 
     public void setAttributeViewType(String attributeViewType) {
         this.attributeViewType = attributeViewType;
-        fireAttributeLayoutChanged();
+        fireStateChanged();
     }
 }

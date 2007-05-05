@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.11 2007-03-20 22:01:41 christianfoltin Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.12 2007-05-05 08:36:57 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -368,12 +368,9 @@ public abstract class XMLElementAdapter extends XMLElement {
               attributeName = sValue;
               getMap().getRegistry().getAttributes().registry(attributeName);
           }
-          if (name.equals("VISIBLE")) {
-              getMap().getRegistry().getAttributes().getElement(attributeName).setVisibility(true);
-          }
-          if (name.equals("RESTRICTED")) {
-              getMap().getRegistry().getAttributes().getElement(attributeName).setRestriction(true);
-          }
+          else{
+              super.setAttribute(name, sValue);
+          }              
       }
       else if (getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)) {
           if (name.equals("VALUE")) {
@@ -382,7 +379,7 @@ public abstract class XMLElementAdapter extends XMLElement {
       }
   }
 
-   private NodeAdapter setNodeAttribute(String name, String sValue, NodeAdapter node) {
+private NodeAdapter setNodeAttribute(String name, String sValue, NodeAdapter node) {
      if (name.equals(XML_NODE_TEXT)) {
 			logger.finest("Setting node text content to:" + sValue);
 	    node.setUserObject(sValue); }
@@ -448,23 +445,39 @@ public abstract class XMLElementAdapter extends XMLElement {
         }
 	}
 
-    protected void completeElement() {
-		if (getName().equals(XML_NODE)) {
-			// unify map child behaviour:
-			if(mapChild==null) {
-				mapChild = (NodeAdapter) userObject;
-			}
-		}
-    	if (getName().equals("font")) {
-         userObject =  frame.getController().getFontThroughMap
-            (new Font(fontName, fontStyle, fontSize)); }
-      /* icons */
-            if (getName().equals("icon")) {
-         userObject =  MindIcon.factory(iconName); }
-      /* attributes */
-      if (getName().equals(XML_NODE_ATTRIBUTE)) {
-          userObject = new Attribute(attributeName, attributeValue);}
-   }
+	protected void completeElement() {
+	    if (getName().equals(XML_NODE)) {
+            // unify map child behaviour:
+            if (mapChild == null) {
+                mapChild = (NodeAdapter) userObject;
+            }
+            return;
+        }
+        if (getName().equals("font")) {
+            userObject = frame.getController().getFontThroughMap(
+                    new Font(fontName, fontStyle, fontSize));
+            return;
+        }
+        /* icons */
+        if (getName().equals("icon")) {
+            userObject = MindIcon.factory(iconName);
+            return;
+        }
+        /* attributes */
+        if (getName().equals(XML_NODE_ATTRIBUTE)) {
+            userObject = new Attribute(attributeName, attributeValue);
+            return;
+        }
+        if (getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_NAME)) {
+            if(null != getAttribute("VISIBLE")) {
+                  getMap().getRegistry().getAttributes().getElement(attributeName).setVisibility(true);
+              }
+              if(null != getAttribute("RESTRICTED")) {
+                  getMap().getRegistry().getAttributes().getElement(attributeName).setRestriction(true);
+              }
+            return;
+        }
+    }
 
     /** Completes the links within the getMap(). They are registered in the registry.*/
     public void processUnfinishedLinks(MindMapLinkRegistry registry) {

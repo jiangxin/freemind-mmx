@@ -113,12 +113,12 @@ public class AttributeRegistryElement {
         }
         if(isRestricted()){
             element.setAttribute("RESTRICTED", "true");
-        }
-        for (int i = 0; i < values.getSize(); i++){
-            XMLElement value = new XMLElement();
-            value.setName(XMLElementAdapter.XML_NODE_REGISTERED_ATTRIBUTE_VALUE);
-            value.setAttribute("VALUE", values.getElementAt(i).toString());
-            element.addChild(value);
+            for (int i = 0; i < values.getSize(); i++){
+                XMLElement value = new XMLElement();
+                value.setName(XMLElementAdapter.XML_NODE_REGISTERED_ATTRIBUTE_VALUE);
+                value.setAttribute("VALUE", values.getElementAt(i).toString());
+                element.addChild(value);
+            }
         }
         element.setName(XMLElementAdapter.XML_NODE_REGISTERED_ATTRIBUTE_NAME);
         element.setAttribute("NAME", key.toString());
