@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNodeMotionListener.java,v 1.1.2.1.2.6 2007-04-21 15:11:22 dpolivaev Exp $ */
+/* $Id: MindMapNodeMotionListener.java,v 1.1.2.1.2.7 2007-05-06 12:09:41 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.listeners;
 
@@ -82,13 +82,13 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
                     node.setHGap(getHGap(dragNextPoint, node,
                             dragStartingPoint));
                     // FIXME: Replace by nodeRefresh().
-                    c.getModeController().nodeChanged(node);
+                    c.getModeController().nodeRefresh(node);
                 } else {
                     MindMapNode parentNode = nodeV.getVisibleParentView().getModel();
                     parentNode.setVGap(getVGap(dragNextPoint, parentNode,
                             dragStartingPoint));
                     // FIXME: Replace by nodeRefresh().
-                    c.getModel().nodeChanged(parentNode);
+                    c.getModel().nodeRefresh(parentNode);
                     c.getModel().nodeRefresh(nodeV.getModel());
                 }
                 dragStartingPoint = point;

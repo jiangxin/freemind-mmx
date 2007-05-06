@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.20 2007-04-21 15:11:23 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.21 2007-05-06 12:09:41 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1088,21 +1088,10 @@ public class NodeView extends JComponent implements TreeModelListener{
      * @see javax.swing.event.TreeModelListener#treeStructureChanged(javax.swing.event.TreeModelEvent)
      */
     public void treeStructureChanged(TreeModelEvent e) {
-        if(getModel().isRoot()){
-            remove();
-            getMap().initRoot();
-            getMap().selectAsTheOnlyOneSelected(getMap().getRoot());
-        }
-        else{
-            int position = model.getParentNode().getChildPosition(model);
-            final NodeView parentView = getParentView();
-            final NodeView oldView = (NodeView)parentView.getComponent(position);
-            oldView.remove();
-            NodeView newView = parentView.insert(model, position);
-            getMap().selectAsTheOnlyOneSelected(newView);
+            for(ListIterator i = getChildrenViews().listIterator();i.hasNext();) {
+                ((NodeView)i.next()).remove(); }
+            insert();
             revalidate();
-        }
-        
     }
     public int getZoomedFoldingSymbolHalfWidth() {
        if (FOLDING_SYMBOL_WIDTH == -1)

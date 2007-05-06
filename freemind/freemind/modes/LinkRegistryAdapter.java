@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.10.18.3.12.1 2007-02-25 15:57:19 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.10.18.3.12.2 2007-05-06 12:09:40 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -83,6 +83,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     ////////////////////////////////////////////////////////////////////////////////////////
 
     protected HashMap /* MindMapNode = Target -> ID_BasicState. */ TargetToID;
+    protected HashMap /* MindMapNode = ID_BasicState -> ID. */ IDToTarget;
     protected HashMap /* id -> vector of links whose TargetToID.get(target) == id.*/  IDToLinks;
     protected HashMap /* id -> vector of links whose TargetToID.get(target) == id and who are cutted recently.*/  IDToCuttedLinks;
     protected HashMap /* id -> link */ IDToLink;
@@ -100,6 +101,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     public LinkRegistryAdapter(/*MindMap map*/) {
 //         this.map = map;
         TargetToID      = new HashMap();
+        IDToTarget      = new HashMap();
         IDToLinks       = new HashMap();
         IDToCuttedLinks = new HashMap();
         IDToLink 		= new HashMap();
@@ -156,6 +158,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         String newID = generateUniqueID(proposedID);
         ID_Registered state = new ID_RegisteredAdapter(target, newID);
         TargetToID.put(target,state);
+        IDToTarget.put(newID, target);
         
         logger.info("Register target node:"+target+", with ID="+newID);
         getAssignedLinksVector(state);/* This is to allocate the link target in the IDToLinks map!.*/
@@ -170,13 +173,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 
 
     public MindMapNode getTargetForID(String ID){
-        for(Iterator i = TargetToID.keySet().iterator(); i.hasNext();) {
-            MindMapNode target = (MindMapNode) i.next();
-            ID_BasicState state = (ID_BasicState) TargetToID.get(target);
-            if((state instanceof ID_Registered) && (state.getID().equals(ID)))
-                return target;
-        }
-        return null;
+        final Object target = IDToTarget.get(ID);
+        return (MindMapNode)target;
     }
 
     
@@ -209,6 +207,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
                 //             throw new java.lang.IllegalArgumentException("Cannot remove a link target, if there are sources pointing to.");
                 logger.info("Deregister target node:"+target);
                 TargetToID.remove(target);
+                IDToTarget.remove(state.getID());
                 IDToLinks.remove(state.getID());
             }
     }
