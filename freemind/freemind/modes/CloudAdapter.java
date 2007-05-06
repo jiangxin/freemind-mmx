@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: CloudAdapter.java,v 1.1.16.3.4.1 2007-04-21 15:11:20 dpolivaev Exp $*/
+/*$Id: CloudAdapter.java,v 1.1.16.3.4.2 2007-05-06 21:12:19 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -29,27 +29,24 @@ import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
+import freemind.preferences.FreemindPropertyListener;
 
 public abstract class CloudAdapter extends LineAdapter implements MindMapCloud {
 
-    private static Color standardColor = null;
+    public static final String RESOURCES_STANDARDCLOUDSTYLE = "standardcloudstyle";
+	private static Color standardColor = null;
     private static String standardStyle = null;
-    private static LineAdapterListener listener = null;
+    private static CloudAdapterListener listener = null;
     static final Stroke DEF_STROKE = new BasicStroke(3);
     //
     // Constructors
     //
     public CloudAdapter(MindMapNode target,FreeMindMain frame) {
-        this(target, frame, FreeMind.RESOURCES_CLOUD_COLOR, "standardcloudstyle");
-    }
-
-    /** For derived classes.*/
-    protected  CloudAdapter(MindMapNode target,FreeMindMain frame, String standardColorPropertyString, String standardStylePropertyString)  {
-        super(target, frame, standardColorPropertyString, standardStylePropertyString);
+        super(target, frame);
         NORMAL_WIDTH = 3;
         iterativeLevel = -1;
         if(listener == null) {
-            listener = new LineAdapterListener(); 
+            listener = new CloudAdapterListener(); 
             Controller.addPropertyChangeListener(listener);
         }
         
@@ -137,6 +134,25 @@ public abstract class CloudAdapter extends LineAdapter implements MindMapCloud {
             return DEF_STROKE;
         return result;
     }
+
+	protected String getStandardColorPropertyString() {
+		return FreeMind.RESOURCES_CLOUD_COLOR;
+	}
+
+	protected String getStandardStylePropertyString() {
+		return RESOURCES_STANDARDCLOUDSTYLE;
+	}
     
+    protected static class CloudAdapterListener implements FreemindPropertyListener {
+        public void propertyChanged(String propertyName,
+                String newValue, String oldValue) {
+            if (propertyName.equals(FreeMind.RESOURCES_CLOUD_COLOR)) {
+                CloudAdapter.standardColor = Tools.xmlToColor(newValue);
+            }
+            if (propertyName.equals(RESOURCES_STANDARDCLOUDSTYLE)) {
+                CloudAdapter.standardStyle = newValue;
+            }
+        }
+    }
     
 }

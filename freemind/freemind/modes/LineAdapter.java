@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LineAdapter.java,v 1.2.18.2.4.2 2007-04-21 15:11:21 dpolivaev Exp $*/
+/*$Id: LineAdapter.java,v 1.2.18.2.4.3 2007-05-06 21:12:19 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -32,8 +32,6 @@ public abstract class LineAdapter implements MindMapLine {
 
     protected FreeMindMain frame;
     protected MindMapNode target;
-    protected String standardColorPropertyString;
-    protected String standardStylePropertyString;
     
 	public static final int DEFAULT_WIDTH = -1;
 	protected int NORMAL_WIDTH = 1;
@@ -47,11 +45,9 @@ public abstract class LineAdapter implements MindMapLine {
     //
     // Constructors
     //
-    public LineAdapter(MindMapNode target,FreeMindMain frame, String standardColorPropertyString, String standardStylePropertyString) {
+    public LineAdapter(MindMapNode target,FreeMindMain frame) {
         this.frame = frame;
         this.target = target;
-        this.standardColorPropertyString = standardColorPropertyString;
-        this.standardStylePropertyString = standardStylePropertyString;
         width = DEFAULT_WIDTH;
         stroke = null;
         updateStandards();
@@ -67,7 +63,7 @@ public abstract class LineAdapter implements MindMapLine {
     protected void updateStandards() {
         if (getStandardColor() == null) {
             String stdColor = getFrame().getProperty(
-                    standardColorPropertyString);
+                    getStandardColorPropertyString());
             if (stdColor != null && stdColor.length() == 7) {
                 setStandardColor(Tools.xmlToColor(stdColor));
             } else {
@@ -76,7 +72,7 @@ public abstract class LineAdapter implements MindMapLine {
         }
         if (getStandardStyle() == null) {
             String stdStyle = getFrame().getProperty(
-                    standardStylePropertyString);
+                    getStandardStylePropertyString());
             if (stdStyle != null ) {
                 setStandardStyle(stdStyle);
             } else {
@@ -176,16 +172,8 @@ public abstract class LineAdapter implements MindMapLine {
 
     protected abstract String getStandardStyle() ;
 
-    protected class LineAdapterListener implements FreemindPropertyListener {
-        public void propertyChanged(String propertyName,
-                String newValue, String oldValue) {
-            if (propertyName.equals(standardColorPropertyString)) {
-                setStandardColor(Tools.xmlToColor(newValue));
-            }
-            if (propertyName.equals(standardStylePropertyString)) {
-                setStandardStyle(newValue);
-            }
-        }
-    }
+    protected abstract String getStandardStylePropertyString() ;
+    protected abstract String getStandardColorPropertyString() ;
+    
     
 }

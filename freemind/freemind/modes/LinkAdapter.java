@@ -16,22 +16,23 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkAdapter.java,v 1.3.18.2 2005-06-14 20:38:07 christianfoltin Exp $*/
+/*$Id: LinkAdapter.java,v 1.3.18.2.4.1 2007-05-06 21:12:19 christianfoltin Exp $*/
 
 package freemind.modes;
 import java.awt.Color;
 
 import freemind.controller.Controller;
-import freemind.modes.LineAdapter;
-import freemind.modes.LineAdapter.LineAdapterListener;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
+import freemind.main.Tools;
+import freemind.preferences.FreemindPropertyListener;
 
 public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
 
-    private static Color standardColor = null;
+    public static final String RESOURCES_STANDARDLINKSTYLE = "standardlinkstyle";
+	private static Color standardColor = null;
     private static String standardStyle = null;
-    private static LineAdapterListener listener = null;
+    private static LinkAdapterListener listener = null;
 
     String destinationLabel;
     String referenceText;
@@ -39,17 +40,12 @@ public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
     private String uniqueID;
 
     public LinkAdapter(MindMapNode source,MindMapNode target,FreeMindMain frame)  {
-        this(source,target, frame, FreeMind.RESOURCES_LINK_COLOR, "standardlinkstyle");
-    }
-
-    /** For derived classes.*/
-    protected  LinkAdapter(MindMapNode source,MindMapNode target,FreeMindMain frame, String standardColorPropertyString, String standardStylePropertyString)  {
-        super(target, frame, standardColorPropertyString, standardStylePropertyString);
+        super(target, frame);
         this.source=source;
         destinationLabel = null;
         referenceText = null;
         if(listener == null) {
-            listener = new LineAdapterListener(); 
+            listener = new LinkAdapterListener(); 
             Controller.addPropertyChangeListener(listener);
         }
     }
@@ -94,5 +90,25 @@ public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
     }
     protected void setStandardStyle(String standardStyle) {
         LinkAdapter.standardStyle = standardStyle;
+    }
+    
+	protected String getStandardColorPropertyString() {
+		return FreeMind.RESOURCES_LINK_COLOR;
+	}
+
+	protected String getStandardStylePropertyString() {
+		return RESOURCES_STANDARDLINKSTYLE;
+	}
+    
+	protected static class LinkAdapterListener implements FreemindPropertyListener {
+        public void propertyChanged(String propertyName,
+                String newValue, String oldValue) {
+            if (propertyName.equals(FreeMind.RESOURCES_LINK_COLOR)) {
+                LinkAdapter.standardColor = Tools.xmlToColor(newValue);
+            }
+            if (propertyName.equals(RESOURCES_STANDARDLINKSTYLE)) {
+                LinkAdapter.standardStyle = newValue;
+            }
+        }
     }
 }

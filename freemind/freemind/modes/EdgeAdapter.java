@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EdgeAdapter.java,v 1.14.18.5.2.1 2007-04-21 15:11:21 dpolivaev Exp $ */
+/* $Id: EdgeAdapter.java,v 1.14.18.5.2.2 2007-05-06 21:12:19 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -29,6 +29,7 @@ import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
+import freemind.preferences.FreemindPropertyListener;
 
 public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
 
@@ -36,7 +37,7 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
     public static final String EDGE_WIDTH_THIN_STRING = "thin";
     private static Color standardColor = null;
     private static String standardStyle = null;
-    private static LineAdapterListener listener = null;
+    private static EdgeAdapterListener listener = null;
 
     public static final int WIDTH_PARENT = -1;
 
@@ -50,21 +51,13 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
     public final static String EDGESTYLE_SHARP_BEZIER = "sharp_bezier";
 
 
-    private static Color standardEdgeColor = new Color(0);
+//    private static Color standardEdgeColor = new Color(0);
 
     public EdgeAdapter(MindMapNode target, FreeMindMain frame) {
-        this(target, frame, FreeMind.RESOURCES_EDGE_COLOR, FreeMind.RESOURCES_EDGE_STYLE);
-    }
-
-    /** For derived classes. */
-    protected EdgeAdapter(MindMapNode target, FreeMindMain frame,
-            String standardColorPropertyString,
-            String standardStylePropertyString) {
-        super(target, frame, standardColorPropertyString,
-                standardStylePropertyString);
+        super(target, frame);
         NORMAL_WIDTH = WIDTH_PARENT;
         if(listener == null) {
-            listener = new LineAdapterListener(); 
+            listener = new EdgeAdapterListener(); 
             Controller.addPropertyChangeListener(listener);
         }
     }
@@ -130,7 +123,7 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
     public String getStyle() {
         if (style == null) {
             if (getTarget().isRoot()) {
-                return getFrame().getProperty(standardStylePropertyString);
+                return getFrame().getProperty(getStandardStylePropertyString());
             }
             return getSource().getEdge().getStyle();
         }
@@ -178,4 +171,26 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
     protected void setStandardStyle(String standardStyle) {
         EdgeAdapter.standardStyle = standardStyle;
     }
+    
+	protected String getStandardColorPropertyString() {
+		return FreeMind.RESOURCES_EDGE_COLOR;
+	}
+
+	protected String getStandardStylePropertyString() {
+		return FreeMind.RESOURCES_EDGE_STYLE;
+	}
+    
+    protected static class EdgeAdapterListener implements FreemindPropertyListener {
+        public void propertyChanged(String propertyName,
+                String newValue, String oldValue) {
+            if (propertyName.equals(FreeMind.RESOURCES_EDGE_COLOR)) {
+                EdgeAdapter.standardColor = Tools.xmlToColor(newValue);
+            }
+            if (propertyName.equals(FreeMind.RESOURCES_EDGE_STYLE)) {
+                EdgeAdapter.standardStyle = newValue;
+            }
+        }
+    }
+
+	
 }
