@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.4.2.5 2006-11-26 10:20:38 dpolivaev Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4.2.6 2007-05-27 20:47:55 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -57,6 +57,7 @@ import freemind.view.mindmapview.MapView;
     			 */
     			boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
     			void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
+    			void beforeMapClose(MapModule oldMapModule, Mode oldMode);
     			void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
     			/** To enable/disable the previous/next map actions.
     			 */
@@ -98,6 +99,12 @@ import freemind.view.mindmapview.MapView;
 					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
 						MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
 						observer.numberOfOpenMapInformation(number);
+					}
+				}
+				public void beforeMapClose(MapModule pOldMapModule, Mode pOldMode) {
+					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+						MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
+						observer.beforeMapClose(pOldMapModule, pOldMode);
 					}
 				}
     		}
@@ -204,7 +211,7 @@ import freemind.view.mindmapview.MapView;
         }
         
         
-        void changeToMapModule(String mapModule) {
+        public void changeToMapModule(String mapModule) {
             MapModule map = (MapModule)(getMapModules().get(mapModule));
             setMapModule(map, map.getMode()); 
         }
@@ -275,6 +282,7 @@ import freemind.view.mindmapview.MapView;
             
             String toBeClosed = getMapModule().toString();
             mapModules.remove(toBeClosed);
+            listener.beforeMapClose(module, module.getMode());
             if (mapModules.isEmpty()) {
 			/*Keep the current running mode*/
 			setMapModule(null, module.getMode());

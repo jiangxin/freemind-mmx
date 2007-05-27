@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.16.14.2.4.2 2006-09-24 19:43:06 christianfoltin Exp $*/
+/*$Id: MainToolBar.java,v 1.16.14.2.4.3 2007-05-27 20:47:55 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -91,7 +91,7 @@ public class MainToolBar extends FreeMindToolBar {
        return (int)(f*100F)+"%"; }
 
     public void setZoomComboBox(float f) {
-        logger.info("setZoomComboBox is called with "+f+".");
+        logger.fine("setZoomComboBox is called with "+f+".");
         String toBeFound = getItemForZoom(f);
         for(int i = 0; i < zoom.getItemCount(); ++i) {
             if(toBeFound.equals((String) zoom.getItemAt(i))) {

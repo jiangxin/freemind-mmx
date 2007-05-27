@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.24 2007-04-21 15:11:20 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.25 2007-05-27 20:47:55 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -711,7 +711,7 @@ public abstract class ControllerAdapter implements ModeController {
 			if (node != null) {
                 onLooseFocusHook(node);
             }
-            getView().getRootPane().requestFocus();
+            // TODO: fc, 21.5.07 Do we need this? getView().getRootPane().requestFocus();
 		}
 	}
 

@@ -109,6 +109,10 @@ import freemind.view.mindmapview.NodeView;
     public void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
     }
 
+	public void beforeMapClose(MapModule pOldMapModule, Mode pOldMode) {
+	}
+
+
     public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
             MindMap newMap = newMapModule != null ? newMapModule.getModel() : null;
             FilterComposerDialog fd = getFilterToolbar().getFilterDialog();
@@ -127,4 +131,5 @@ import freemind.view.mindmapview.NodeView;
         return inactiveFilter;
 
     }
+
 }

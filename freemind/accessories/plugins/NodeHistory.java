@@ -93,7 +93,7 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 					logger.info("Avoid duplicate " + pNode);
 					return;
 				} else {
-					logger.info("Adding " + pNode);
+//					logger.info("Adding " + pNode);
 					mNodeVector.add(pNode);
 					mCurrentPosition++;
 					// only the last 100 nodes

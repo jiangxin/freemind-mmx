@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.27 2007-04-21 15:11:20 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.28 2007-05-27 20:47:55 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -335,7 +335,7 @@ public class Controller  implements MapModuleChangeObserver {
 
     //
 
-    private MapModule getMapModule() {
+    public MapModule getMapModule() {
         return getMapModuleManager().getMapModule();
     }
 
@@ -452,6 +452,9 @@ public class Controller  implements MapModuleChangeObserver {
 	 public boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
 		return true;
 	}
+
+	 public void beforeMapClose(MapModule pOldMapModule, Mode pOldMode) {
+	 }
 
 	 public void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
         ModeController oldModeController;

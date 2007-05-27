@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.34 2007-04-21 15:11:21 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.35 2007-05-27 20:47:55 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -605,7 +605,7 @@ freemind.main.Resources.getInstance().logException(					e);
 		super.startupController();
 		HookFactory hookFactory = getHookFactory();
 		List pluginRegistrations = hookFactory.getRegistrations();
-		logger.info("mScheduledActions are executed: "
+		logger.fine("mScheduledActions are executed: "
 				+ pluginRegistrations.size());
 		for (Iterator i = pluginRegistrations.iterator(); i.hasNext();) {
 			// call constructor:
@@ -975,7 +975,7 @@ freemind.main.Resources.getInstance().logException(					e1);
      * whether there is a map open or not.
      */
     protected void setAllActions(boolean enabled) {
-    	logger.info("setAllActions:"+enabled);
+    	logger.fine("setAllActions:"+enabled);
         super.setAllActions(enabled);
         // own actions
         increaseNodeFont.setEnabled(enabled);
@@ -1945,12 +1945,12 @@ freemind.main.Resources.getInstance().logException(					e1);
     }
 
     public void registerMouseWheelEventHandler(MouseWheelEventHandler handler) {
-        logger.info("Registered   MouseWheelEventHandler " + handler);
+        logger.fine("Registered   MouseWheelEventHandler " + handler);
         mRegisteredMouseWheelEventHandler.add(handler);
     }
 
     public void deRegisterMouseWheelEventHandler(MouseWheelEventHandler handler) {
-        logger.info("Deregistered MouseWheelEventHandler " + handler);
+        logger.fine("Deregistered MouseWheelEventHandler " + handler);
         mRegisteredMouseWheelEventHandler.remove(handler);
     }
 

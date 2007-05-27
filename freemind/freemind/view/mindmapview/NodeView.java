@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.21 2007-05-06 12:09:41 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.22 2007-05-27 20:47:56 christianfoltin Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -794,8 +794,8 @@ public class NodeView extends JComponent implements TreeModelListener{
            // Set user HTML head
            String htmlLongNodeHead = map.getController().getFrame().getProperty("html_long_node_head");
            if (htmlLongNodeHead != null && !htmlLongNodeHead.equals("")) {
-              if (nodeText.matches("(?ims)<head>")) {
-                 nodeText = nodeText.replaceFirst("(?ims)<head>","<head>"+htmlLongNodeHead); }
+           if (nodeText.matches("(?ims).*<head>.*")) {
+                 nodeText = nodeText.replaceFirst("(?ims).*<head>.*","<head>"+htmlLongNodeHead); }
               else {
                  nodeText = nodeText.replaceFirst("(?ims)<html>","<html><head>"+htmlLongNodeHead+"</head>"); }}
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.32 2007-04-21 15:11:20 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.33 2007-05-27 20:47:54 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -218,7 +218,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
             }
         };
         public void register() {
-            logger.info("Registration of note handler.");
+            logger.fine("Registration of note handler.");
             controller.getActionFactory().registerActor(this,
                     getDoActionClass());
             // moved to registration:
@@ -260,7 +260,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
                 southPanel.revalidate();
                 noteViewerComponent = null;
             }
-            logger.info("Deregistration of note undo handler.");
+            logger.fine("Deregistration of note undo handler.");
             controller.getActionFactory().deregisterActor(getDoActionClass());
         }
 

@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.17 2007-05-16 20:20:43 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.18 2007-05-27 20:47:56 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -611,6 +611,10 @@ public class OptionPanel implements TextTranslator {
 		}
 		controls.add(new ComboProperty("lookandfeel.tooltip",
 				FreeMind.RESOURCE_LOOKANDFEEL, lafNames, translatedLafNames)); //  default
+		controls.add(new BooleanProperty(
+
+				"use_tabbed_pane.tooltip", FreeMind.RESOURCES_USE_TABBED_PANE)); //  true
+
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("anti_alias"));
