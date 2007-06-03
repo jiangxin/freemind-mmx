@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.4.2.6 2007-05-27 20:47:55 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4.2.7 2007-06-03 21:01:29 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -211,9 +211,9 @@ import freemind.view.mindmapview.MapView;
         }
         
         
-        public void changeToMapModule(String mapModule) {
+        public boolean changeToMapModule(String mapModule) {
             MapModule map = (MapModule)(getMapModules().get(mapModule));
-            setMapModule(map, map.getMode()); 
+            return setMapModule(map, map.getMode()); 
         }
 
 
