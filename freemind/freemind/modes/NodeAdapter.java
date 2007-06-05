@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.25 2007-04-21 15:11:21 dpolivaev Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.26 2007-06-05 20:41:36 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -41,13 +41,10 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.event.EventListenerList;
-import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 import freemind.controller.filter.Filter;
 import freemind.controller.filter.FilterInfo;
