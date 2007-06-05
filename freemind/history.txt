@@ -30,7 +30,7 @@ which can be obtained using NodeView.getContent().
   math formulas possible
 
 * focus in the long node editor goes to the text area after the dialog is opened
-* Back and forward added
+* Back and forward added: Even between different maps.
 * Tabbed mind maps added (it is possible to switch it off in the preferences -> appereance)
 
 ===============================
