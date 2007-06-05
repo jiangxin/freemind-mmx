@@ -475,6 +475,43 @@
 
     </target>
 
+	<!-- ================================= 
+          target: installers, for Chris' computes              
+         ================================= -->
+    <target name="installers" depends="" description="--> Creates all installers. This is a task that only works on Chris laptops. But it should be informative to others who want to build the installers">
+        <property name="inst.dir" location="/tmp/fm_installer"/>
+        <property name="inst.dest.dir" location="../installers"/>
+    	<mkdir dir="${inst.dest.dir}"/>
+    	<delete dir="${inst.dir}" failonerror="false"/>
+    	<mkdir dir="${inst.dir}"/>
+		<cvs  cvsRoot=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"
+		       package="freemind"
+		       dest="${inst.dir}"
+			  command="checkout -P -r fm_060405_integration"></cvs> 
+		<cvs  cvsRoot=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"
+		       package="admin"
+		       dest="${inst.dir}"></cvs>
+    	<ant dir="${inst.dir}/freemind" target="post" ></ant>
+    	<exec dir="${inst.dir}/admin/installer/windows/" executable="wine" os="Linux">
+			<arg value="/home/foltin/.wine/drive_c/Programme/Inno Setup 5/ISCC.exe"/>
+			<arg value="Freemind.iss"/>
+    	</exec>
+    	<copy todir="${inst.dest.dir}">
+    		<fileset dir="${inst.dir}/admin/installer/windows/Output/">
+			    <include name="*.exe"/>
+			</fileset>
+		</copy>
+    	<exec dir="." executable="ssh" os="Linux">
+    		<arg value="foltin@192.168.2.100"/>
+    		<arg value="cd /tmp ; mkdir fm_installers ; cd fm_installers ; cvs -d:pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind login ; cvs -d:pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind co -P -r fm_060405_integration freemind ; cd freemind ; ant post"/>
+    	</exec>
+    	<exec dir="." executable="scp" os="Linux">
+    		<arg value="foltin@192.168.2.100:/tmp/fm_installers/post/*.dmg"/>
+    		<arg value="${inst.dest.dir}/"/>
+    	</exec>
+    	<delete dir="${inst.dir}" failonerror="false"/>
+    </target>
+
 	
 </project>
 
