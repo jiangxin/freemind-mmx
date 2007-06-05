@@ -150,10 +150,10 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 			controller.deregisterNodeSelectionListener(this);
 		}
 
-		public void onLooseFocusHook(MindMapNode pNode) {
+		public void onDeselectHook(NodeView pNode) {
 		}
 
-		public void onReceiveFocusHook(MindMapNode pNode) {
+		public void onSelectHook(NodeView pNode) {
 			/*******************************************************************
 			 * don't denote positions, if somebody navigates through them. *
 			 */

@@ -43,7 +43,8 @@ import javax.swing.text.BadLocationException;
 
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
-import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
+import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;import freemind.view.mindmapview.NodeView;
+
 
 /**
  * @author foltin
@@ -330,10 +331,16 @@ freemind.main.Resources.getInstance().logException(						e1);
 	}
 
 	/* (non-Javadoc)
-	 * @see freemind.extensions.PermanentNodeHook#onLooseFocusHook()
+	 * @see freemind.extensions.PermanentNodeHook#onDeselectHook()
 	 */
-	public void onLooseFocusHook() {
-		super.onLooseFocusHook();
+	public void onDeselectHook(NodeView nodeView) {
+		super.onDeselectHook(nodeView);
+		shutDownDisplay();
+	}
+
+
+
+	private void shutDownDisplay() {
 		if (panel != null) {
 //			int y =0;
 //			// remove all display components
@@ -352,10 +359,10 @@ freemind.main.Resources.getInstance().logException(						e1);
 	}
 
 	/* (non-Javadoc)
-	 * @see freemind.extensions.PermanentNodeHook#onReceiveFocusHook()
+	 * @see freemind.extensions.PermanentNodeHook#onSelectHook()
 	 */
-	public void onReceiveFocusHook() {
-		super.onReceiveFocusHook();
+	public void onSelectHook(NodeView nodeView) {
+		super.onSelectHook(nodeView);
 		if(panel==null) {
 			// panel:
 			panel = new JPanel(null);
@@ -378,7 +385,7 @@ freemind.main.Resources.getInstance().logException(						e1);
 	 * @see freemind.extensions.MindMapHook#shutdownMapHook()
 	 */
 	public void shutdownMapHook() {
-		onLooseFocusHook();
+		shutDownDisplay();
 		super.shutdownMapHook();
 	}
 

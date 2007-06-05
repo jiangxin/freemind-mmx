@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.33 2007-05-27 20:47:54 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.34 2007-06-05 21:01:24 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -58,6 +58,7 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
@@ -106,19 +107,19 @@ public class NodeNote extends MindMapNodeHookAdapter {
             public NotesManager() {
             }
 
-            public void onLooseFocusHook(MindMapNode node) {
+            public void onDeselectHook(NodeView node) {
                 // logger.info("onLooseFocuse for node " + node.toString() + "
                 // and noteViewerComponent=" + noteViewerComponent);
                 noteViewerComponent.getDocument().removeDocumentListener(
                         mNoteDocumentListener);
                 // store its content:
-                onSaveNode(node);
+                onSaveNode(node.getModel());
                 this.node = null;
                 // getHtmlEditorPanel().setCurrentDocumentContent("Note", "");
             }
 
-            public void onReceiveFocusHook(MindMapNode node) {
-                this.node = node;
+            public void onSelectHook(NodeView nodeView) {
+                this.node = nodeView.getModel();
                 HTMLDocument document = noteViewerComponent.getDocument();
                 // remove listener to avoid unnecessary dirty events.
                 document.removeDocumentListener(
