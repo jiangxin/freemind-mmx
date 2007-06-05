@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.5 2006-10-13 21:35:56 christianfoltin Exp $ */
+/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.6 2007-06-05 20:53:30 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
 import java.awt.BorderLayout;
@@ -32,6 +32,7 @@ import javax.swing.JScrollPane;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController.NodeSelectionListener;
 import freemind.modes.common.plugins.NodeNoteBase;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
@@ -67,15 +68,15 @@ public class NodeNoteViewer extends NodeNoteBase implements
 		return noteScrollPane;
 	}
 
-	public void onLooseFocusHook(MindMapNode pNode) {
+	public void onDeselectHook(NodeView pNode) {
 			JPanel southPanel = getSouthPanel();
 			southPanel.remove(getNoteViewerComponent(""));
 			southPanel.revalidate();
 	}
 
-	public void onReceiveFocusHook(MindMapNode pNode) {
+	public void onSelectHook(NodeView pNode) {
 		// logger.info("Panel added");
-		String noteText = pNode.getNoteText();
+		String noteText = pNode.getModel().getNoteText();
 		if (noteText != null) {
 			JPanel southPanel = getSouthPanel();
 			Container noteViewer = getNoteViewerComponent(noteText);

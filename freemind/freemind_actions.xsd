@@ -33,6 +33,7 @@
 					<xs:element ref="fold_action"/>
 					<xs:element ref="move_nodes_action"/>
 					<xs:element ref="hook_node_action"/>
+					<xs:element ref="hook_content_node_action"/>
 					<xs:element ref="add_icon_action"/>
 					<xs:element ref="remove_last_icon_xml_action"/>
 					<xs:element ref="remove_all_icons_xml_action"/>
@@ -558,7 +559,19 @@
     	      <xs:element ref="node_list_member" maxOccurs="unbounded" minOccurs="1"/>
           </xs:sequence>
 		      <xs:attribute name="hook_name" use="required" type="xs:string"/>
-		      <xs:attribute name="content" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Change hook attribute content-->
+	<xs:element name="hook_content_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="hook_name" use="required" type="xs:string"/>
+		      <xs:attribute name="attribute_name" use="optional" type="xs:string"/>
+		      <xs:attribute name="content" use="required" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

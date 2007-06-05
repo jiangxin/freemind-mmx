@@ -19,7 +19,7 @@
  *
  * Created on 26.07.2004
  */
-/* $Id: NodeHookAction.java,v 1.1.2.2.2.3 2007-04-21 15:11:22 dpolivaev Exp $ */
+/* $Id: NodeHookAction.java,v 1.1.2.2.2.4 2007-06-05 20:53:30 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -42,6 +42,7 @@ import freemind.extensions.HookFactory;
 import freemind.extensions.HookInstanciationMethod;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
+import freemind.extensions.StatefulNodeHook;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
@@ -84,7 +85,7 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
         undoAction = new CompoundAction();
 	    if (getInstanciationMethod(hookName).isPermanent()) {
             // double application = remove.
-            undoAction = createHookNodeAction(focussed,
+            undoAction = createHookNodeUndoAction(focussed,
                     selecteds, hookName);
         }
 	    if (getInstanciationMethod(hookName).isUndoable()) {
@@ -95,6 +96,42 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
             // direct invocation without undo and such stuff.
             invoke(focussed, selecteds, hookName);
         }
+	}
+
+	private XmlAction createHookNodeUndoAction(MindMapNode focussed, List selecteds, String hookName) {
+		CompoundAction undoAction = new CompoundAction();
+		undoAction.addChoice(createHookNodeAction(focussed, selecteds, hookName));
+		HookInstanciationMethod instMethod = getInstanciationMethod(hookName);
+		// get destination nodes
+		Collection destinationNodes = instMethod.getDestinationNodes(controller, focussed, selecteds);
+		MindMapNode adaptedFocussedNode = instMethod.getCenterNode(controller, focussed, selecteds);
+		// test if hook already present
+		if(instMethod.isAlreadyPresent(controller, hookName, adaptedFocussedNode)){
+			// remove the hook:
+			for (Iterator i = destinationNodes.iterator(); i.hasNext();) {
+				MindMapNode currentDestinationNode = (MindMapNode) i.next();
+				// find the hook ini the current node, if present:
+				for (Iterator j = currentDestinationNode.getActivatedHooks().iterator(); j
+				.hasNext();) {
+					PermanentNodeHook hook = (PermanentNodeHook) j.next();
+					if(hook.getName().equals(hookName)) {
+						if(hook instanceof StatefulNodeHook){
+							StatefulNodeHook stateHook = (StatefulNodeHook)hook;
+							XmlAction choice = getController().undoableHookContentActor.createHookContentNodeAction(focussed, hookName, null, stateHook.getContent());
+							undoAction.addChoice(choice);
+						}
+					}
+					/* fc, 30.7.2004:
+					 * we have to break. otherwise the collection is modified
+					 * at two points (i.e., the collection is not valid anymore after removing
+					 * one element).
+					 * But this is no problem, as there exist only "once" plugins currently.
+					 */
+					break;
+				}
+				}
+			}
+		return undoAction;
 	}
 
 	public void invoke(MindMapNode focussed, List selecteds) {
@@ -108,7 +145,7 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 		Collection destinationNodes = instMethod.getDestinationNodes(controller, focussed, selecteds);
 		MindMapNode adaptedFocussedNode = instMethod.getCenterNode(controller, focussed, selecteds);
 		// test if hook already present
-		if(instMethod.isAlreadyPresent(controller, hookName, adaptedFocussedNode, destinationNodes)){
+		if(instMethod.isAlreadyPresent(controller, hookName, adaptedFocussedNode)){
 			// remove the hook:
 			for (Iterator i = destinationNodes.iterator(); i.hasNext();) {
 				MindMapNode currentDestinationNode = (MindMapNode) i.next();
@@ -143,7 +180,7 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 					logger.finest("This is a permanent hook "+ hookName);
 					// the focussed receives the focus:
 					if (currentDestinationNode == adaptedFocussedNode) {
-						permHook.onReceiveFocusHook();
+						permHook.onSelectHook(controller.getNodeView(currentDestinationNode));
 					}
 					// using this method, the map is dirty now. This is important to
 					// guarantee, that the hooks are saved.
@@ -220,7 +257,7 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 		Collection destinationNodes = instMethod.getDestinationNodes(controller, focussed, selecteds);
 		MindMapNode adaptedFocussedNode = instMethod.getCenterNode(controller, focussed, selecteds);
 		// test if hook already present
-		boolean isActionSelected = instMethod.isAlreadyPresent(controller, _hookName, adaptedFocussedNode, destinationNodes);
+		boolean isActionSelected = instMethod.isAlreadyPresent(controller, _hookName, adaptedFocussedNode);
 		setSelected(item, isActionSelected);
 
 		return true;

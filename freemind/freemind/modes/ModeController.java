@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.13 2007-04-21 15:11:21 dpolivaev Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.14 2007-06-05 20:53:30 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -126,12 +126,18 @@ public interface ModeController  {
     /**
      * Is called when a node is selected.
      */
-    void onReceiveFocusHook(MindMapNode node);
+    void onSelectHook(NodeView node);
     /**
      * Is called when a node is deselected.
      */
-    void onLooseFocusHook(MindMapNode node);
+    void onDeselectHook(NodeView node);
     
+
+	void onViewCreatedHook(NodeView newView);
+	
+
+	void onViewRemovedHook(NodeView newView);
+	
     /** */
     public interface NodeSelectionListener {
 
@@ -142,11 +148,11 @@ public interface ModeController  {
 
         /** Is sent when a node is selected.
          */
-        void onReceiveFocusHook(MindMapNode node);
+        void onSelectHook(NodeView node);
         /**
          * Is sent when a node is deselected.
          */
-        void onLooseFocusHook(MindMapNode node);
+        void onDeselectHook(NodeView node);
 
 		/**
 		 * Is issued before a node is saved (eg. to save its notes, too, even if the notes is currently edited).

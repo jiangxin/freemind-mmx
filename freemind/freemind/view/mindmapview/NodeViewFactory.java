@@ -16,10 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeViewFactory.java,v 1.1.4.2 2007-04-21 15:11:23 dpolivaev Exp $ */
+/* $Id: NodeViewFactory.java,v 1.1.4.3 2007-06-05 20:53:31 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.LayoutManager;
 
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -28,6 +32,54 @@ import freemind.modes.EdgeAdapter;
 import freemind.modes.MindMapNode;
 
 class NodeViewFactory {
+	
+	private static class ContentPane extends JComponent{
+		static private LayoutManager layoutManager = new ContentPaneLayout();
+
+		ContentPane(){
+			setLayout(layoutManager );
+		}
+		
+	}
+	
+	private static class ContentPaneLayout implements LayoutManager{
+	
+		public void addLayoutComponent(String name, Component comp) {
+		}
+	
+		public void layoutContainer(Container parent) {
+			final int componentCount = parent.getComponentCount();
+			final int width = parent.getWidth();
+			int y = 0;
+			for(int i = 0; i < componentCount; i++){
+				final Component component = parent.getComponent(i);
+				final Dimension preferredCompSize = component.getPreferredSize();
+				int x = (int)(component.getAlignmentX() * (width - preferredCompSize.width));
+				component.setBounds(x, y, preferredCompSize.width, preferredCompSize.height);
+				y += preferredCompSize.height;
+				
+			}
+		}
+	
+		public Dimension minimumLayoutSize(Container parent) {
+			return preferredLayoutSize(parent);
+		}
+	
+		public Dimension preferredLayoutSize(Container parent) {
+			final Dimension prefSize = new Dimension(0, 0);
+			final int componentCount = parent.getComponentCount();
+			for(int i = 0; i < componentCount; i++){
+				final Dimension preferredCompSize = parent.getComponent(i).getPreferredSize();
+				prefSize.height += preferredCompSize.height;
+				prefSize.width = Math.max(prefSize.width, preferredCompSize.width);
+			}
+			return prefSize;
+		}
+	
+		public void removeLayoutComponent(Component comp) {
+		}
+		
+	}
 
     private static NodeViewFactory factory;
     private EdgeView sharpBezierEdgeView;
@@ -127,11 +179,17 @@ class NodeViewFactory {
         
         model.addViewer(newView);
         newView.update();
+        fireNodeViewCreated(newView);
         return newView;
     }
 
 
-    JComponent newContentPane(NodeView view) {
-        return Box.createVerticalBox();
+    private void fireNodeViewCreated(NodeView newView) {
+		newView.getMap().getModel().getModeController().onViewCreatedHook(newView);		
+	}
+
+
+	JComponent newContentPane(NodeView view) {
+        return new ContentPane();
     }
 }

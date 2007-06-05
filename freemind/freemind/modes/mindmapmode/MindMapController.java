@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.35 2007-05-27 20:47:55 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.36 2007-06-05 20:53:30 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -185,6 +185,7 @@ import freemind.modes.mindmapmode.actions.UsePlainTextAction;
 import freemind.modes.mindmapmode.actions.UseRichFormattingAction;
 import freemind.modes.mindmapmode.actions.NodeBackgroundColorAction.RemoveNodeBackgroundColorAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
+import freemind.modes.mindmapmode.actions.xml.NodeHookUndoableContentActor;
 import freemind.modes.mindmapmode.actions.xml.UndoActionHandler;
 import freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog;
 import freemind.modes.mindmapmode.attributeactors.MindMapModeAttributeController;
@@ -339,6 +340,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
     // Extension Actions
     public Vector iconActions = new Vector(); //fc
+    public NodeHookUndoableContentActor undoableHookContentActor = null;
 
     FileFilter filefilter = new MindMapFilter();
 
@@ -485,6 +487,8 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         revertAction = new RevertAction(this);
         selectBranchAction = new SelectBranchAction(this);
         selectAllAction = new SelectAllAction(this);
+        
+        undoableHookContentActor = new NodeHookUndoableContentActor(this);
     }
 
 	/**
@@ -731,9 +735,9 @@ freemind.main.Resources.getInstance().logException(					e);
 		}
 	 }
 
-    public void onReceiveFocusHook(MindMapNode n) {
-       super.onReceiveFocusHook(n);
-       updateToolbar(n); 
+    public void onSelectHook(NodeView n) {
+       super.onSelectHook(n);
+       updateToolbar(n.getModel()); 
     }
 
     private void updateToolbar(MindMapNode n) {

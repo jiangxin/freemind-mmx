@@ -27,6 +27,7 @@ package freemind.extensions;
 
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
@@ -36,11 +37,21 @@ import freemind.modes.MindMapNode;
  */
 public interface PermanentNodeHook extends NodeHook {
 	
-	void onReceiveFocusHook();
-	void onMouseOverHook();
+	void onSelectHook(NodeView nodeView);
 	/** 
 	 * If the node I belong to is changed, I get this notification.
 	 * */
+	/**
+	 * @param nodeView TODO
+	 * 
+	 */
+	void onDeselectHook(NodeView nodeView);
+	
+
+	void onViewCreatedHook(NodeView nodeView);
+	
+	void onViewRemovedHook(NodeView nodeView);
+	
 	void onUpdateNodeHook();
 
 	/** Is called if the addedChildNode is inserted as a direct child of the node,
@@ -82,10 +93,4 @@ public interface PermanentNodeHook extends NodeHook {
 	/**
 	 */
 	void loadFrom(XMLElement child);
-	/**
-	 * 
-	 */
-	void onLooseFocusHook();
-	
-
 }

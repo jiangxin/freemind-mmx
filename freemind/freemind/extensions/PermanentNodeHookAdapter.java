@@ -30,6 +30,7 @@ import java.util.Iterator;
 
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
@@ -63,12 +64,6 @@ public class PermanentNodeHookAdapter
 		setNode(null);
 		setMap(null);
 		super.shutdownMapHook();
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#onMouseOverHook()
-	 */
-	public void onMouseOverHook() {
 	}
 
 	/* (non-Javadoc)
@@ -118,18 +113,18 @@ public class PermanentNodeHookAdapter
 	}
 
 	/* (non-Javadoc)
-	 * @see freemind.modes.NodeHook#onReceiveFocusHook()
+	 * @see freemind.modes.NodeHook#onSelectHook()
 	 */
-	public void onReceiveFocusHook() {
-		logger.finest("onReceiveFocusHook");
+	public void onSelectHook(NodeView nodeView) {
+		logger.finest("onSelectHook");
 
 	}
 
 	/* (non-Javadoc)
-	 * @see freemind.extensions.PermanentNodeHook#onLooseFocusHook()
+	 * @see freemind.extensions.PermanentNodeHook#onDeselectHook()
 	 */
-	public void onLooseFocusHook() {
-		logger.finest("onLooseFocusHook");
+	public void onDeselectHook(NodeView nodeView) {
+		logger.finest("onDeselectHook");
 	}
 
     /* (non-Javadoc)
@@ -172,6 +167,14 @@ public class PermanentNodeHookAdapter
     public void onRemoveChildren(MindMapNode oldChildNode, MindMapNode oldDad) {
 		logger.finest("onRemoveChildren");
     }
+
+
+	public void onViewCreatedHook(NodeView nodeView) {
+	}
+
+
+	public void onViewRemovedHook(NodeView nodeView) {
+	}
 
 
 

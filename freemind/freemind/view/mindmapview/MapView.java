@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.15 2007-04-26 07:37:26 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.16 2007-06-05 20:53:31 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -101,10 +101,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 		private void removeSelectionForHooks(NodeView node) {
 		    if(node.getModel() == null)
 		        return;
-		    getModel().getModeController().onLooseFocusHook(node.getModel());
+		    getModel().getModeController().onDeselectHook(node);
 		}
 		private void addSelectionForHooks(NodeView node) {
-            getModel().getModeController().onReceiveFocusHook(node.getModel());
+            getModel().getModeController().onSelectHook(node);
 		}
 		public NodeView get(int i) { return (NodeView) mySelected.get(i);
 		}
@@ -464,7 +464,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         if(requestFocus)
             newSelected.requestFocus();
         
-//        getController().getMode().getDefaultModeController().onReceiveFocusHook(newSelected.getModel());
+//        getController().getMode().getDefaultModeController().onSelectHook(newSelected.getModel());
         // set last focused as preferred (PN)
         if (newSelected.getModel().getParentNode() != null) {
             ((NodeView)newSelected.getParent()).setPreferredChild(newSelected);

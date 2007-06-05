@@ -19,7 +19,7 @@
  *
  * Created on 22.07.2004
  */
-/*$Id: HookInstanciationMethod.java,v 1.1.4.1.16.2 2006-08-27 20:29:35 christianfoltin Exp $*/
+/*$Id: HookInstanciationMethod.java,v 1.1.4.1.16.3 2007-06-05 20:53:30 dpolivaev Exp $*/
 package freemind.extensions;
 
 import java.util.Collection;
@@ -123,7 +123,7 @@ public class HookInstanciationMethod {
 	}
 	/**
 	 */
-	public boolean isAlreadyPresent(ModeController controller, String hookName, MindMapNode focussed, Collection destinationNodes) {
+	public boolean isAlreadyPresent(ModeController controller, String hookName, MindMapNode focussed) {
 		for (Iterator i = focussed.getActivatedHooks().iterator(); i.hasNext();) {
 			PermanentNodeHook hook = (PermanentNodeHook) i.next();
 			if(hookName.equals(hook.getName())) {

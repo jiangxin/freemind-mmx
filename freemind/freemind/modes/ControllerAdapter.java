@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.25 2007-05-27 20:47:55 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.26 2007-06-05 20:53:30 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -204,31 +204,31 @@ public abstract class ControllerAdapter implements ModeController {
         }
     }
 
-    public void onReceiveFocusHook(MindMapNode node) {
+    public void onSelectHook(NodeView node) {
         // select the new node:
         for (Iterator iter = mNodeSelectionListeners.iterator(); iter.hasNext();) {
             NodeSelectionListener listener = (NodeSelectionListener) iter.next();
-            listener.onReceiveFocusHook(node);
+            listener.onSelectHook(node);
         }
-        for(Iterator i= node.getActivatedHooks().iterator(); i.hasNext();){
+        for(Iterator i= node.getModel().getActivatedHooks().iterator(); i.hasNext();){
             PermanentNodeHook hook = (PermanentNodeHook) i.next();
-            hook.onReceiveFocusHook();
+            hook.onSelectHook(node);
         }
 
     }
     
-    public void onLooseFocusHook(MindMapNode node) {
+    public void onDeselectHook(NodeView node) {
         try {
 			// deselect the old node:
         	    HashSet copy = new HashSet(mNodeSelectionListeners);
         	    // we copied the set to be able to remove listeners during a listener method.
 			for (Iterator iter = copy.iterator(); iter.hasNext();) {
 			    NodeSelectionListener listener = (NodeSelectionListener) iter.next();
-			    listener.onLooseFocusHook(node);
+			    listener.onDeselectHook(node);
 			}
-			for(Iterator i= node.getActivatedHooks().iterator(); i.hasNext();){
+			for(Iterator i= node.getModel().getActivatedHooks().iterator(); i.hasNext();){
 			    PermanentNodeHook hook = (PermanentNodeHook) i.next();
-			    hook.onLooseFocusHook();
+			    hook.onDeselectHook(node);
 			}
 		} catch (RuntimeException e) {
 			logger.log(Level.SEVERE, "Error in node selection listeners", e);
@@ -236,7 +236,21 @@ public abstract class ControllerAdapter implements ModeController {
 
     }
 
-    public void registerNodeSelectionListener(NodeSelectionListener listener) {
+    public void onViewCreatedHook(NodeView node) {
+        for(Iterator i= node.getModel().getActivatedHooks().iterator(); i.hasNext();){
+            PermanentNodeHook hook = (PermanentNodeHook) i.next();
+            hook.onViewCreatedHook(node);
+        }
+	}
+
+	public void onViewRemovedHook(NodeView node) {
+        for(Iterator i= node.getModel().getActivatedHooks().iterator(); i.hasNext();){
+            PermanentNodeHook hook = (PermanentNodeHook) i.next();
+            hook.onViewRemovedHook(node);
+        }
+	}
+
+	public void registerNodeSelectionListener(NodeSelectionListener listener) {
         mNodeSelectionListeners.add(listener);
     }
     
@@ -703,13 +717,13 @@ public abstract class ControllerAdapter implements ModeController {
 	 */
 	public void setVisible(boolean visible) {
 		if (visible) {
-			MindMapNode node = getSelected();
-            onReceiveFocusHook(node);
+			NodeView node = getSelectedView();
+            onSelectHook(node);
 		} else {
-			MindMapNode node = getSelected();
+			NodeView node = getSelectedView();
 			// bug fix, fc 18.5.2004. This should not be here.
 			if (node != null) {
-                onLooseFocusHook(node);
+                onDeselectHook(node);
             }
             // TODO: fc, 21.5.07 Do we need this? getView().getRootPane().requestFocus();
 		}

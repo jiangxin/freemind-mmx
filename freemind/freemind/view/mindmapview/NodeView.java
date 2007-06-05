@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.22 2007-05-27 20:47:56 christianfoltin Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.23 2007-06-05 20:53:31 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -198,7 +198,7 @@ public class NodeView extends JComponent implements TreeModelListener{
     }
     
     protected void removeFromMap(){
-        setFocusCycleRoot(false);
+         setFocusCycleRoot(false);
     	getParent().remove(this);
         if(motionListenerView != null){
             map.remove(motionListenerView);
@@ -667,6 +667,7 @@ public class NodeView extends JComponent implements TreeModelListener{
      * removed (it needs to stay in memory)
      */
     void remove() {
+       	getMap().getModel().getModeController().onViewRemovedHook(this);
         removeFromMap();
         attributeView.viewRemoved();
         getModel().removeViewer(this); // Let the model know he is invisible
