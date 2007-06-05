@@ -160,7 +160,7 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 			if (!NodeHistory.sPreventRegistration) {
 				// no duplicates:
 				if (sCurrentPosition > 0
-						&& ((NodeHolder) sNodeVector.get(sCurrentPosition - 1)).isIdentical(pNode, controller)) {
+						&& ((NodeHolder) sNodeVector.get(sCurrentPosition - 1)).isIdentical(pNode.getModel(), controller)) {
 //					logger.info("Avoid duplicate " + pNode + " at " + sCurrentPosition);
 					return;
 				} 
@@ -174,7 +174,7 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 					}
 				}
 //				logger.info("Adding " + pNode + " at " + sCurrentPosition);
-				sNodeVector.add(new NodeHolder(pNode, controller));
+				sNodeVector.add(new NodeHolder(pNode.getModel(), controller));
 				sCurrentPosition++;
 				// only the last 100 nodes
 				while (sNodeVector.size() > 100) {
