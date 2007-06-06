@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.49 2007-05-27 20:47:55 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.50 2007-06-06 20:31:44 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -940,15 +940,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 								.setLastDividerLocation(lastSplitPanePosition);
 						feedBack.increase("FreeMind.progress.endStartup");
 
-						frame.pack();
-						frame.setVisible(true);
-						// EventQueue.invokeLater(new Runnable(){
-						// public void run() {
-						// if (frame.getView() != null) {
-						// frame.getView().moveToRoot(); }
-						// }
-						//                        
-						// });
 					};
 				});
 			}
@@ -960,6 +951,23 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			splash.setVisible(false);
 		}
 
+		frame.pack();
+		frame.setVisible(true);
+		
+		// work around because of the Note edit event on start:
+		EventQueue.invokeLater(new Runnable(){
+			public void run() {
+				frame.getController().getMap().setSaved(true);
+			}
+		});
+		
+		// EventQueue.invokeLater(new Runnable(){
+		// public void run() {
+		// if (frame.getView() != null) {
+		// frame.getView().moveToRoot(); }
+		// }
+		//                        
+		// });
 	}
 
 	/**
