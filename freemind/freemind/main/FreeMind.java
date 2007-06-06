@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.51 2007-06-06 20:33:00 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.52 2007-06-06 20:36:24 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -947,15 +947,17 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			freemind.main.Resources.getInstance().logException(e);
 		}
 
-		if (splash != null) {
-			splash.setVisible(false);
-		}
 		
-		// work around because of the Note edit event on start:
+		final IFreeMindSplash splash2 = splash;
 		EventQueue.invokeLater(new Runnable(){
 			public void run() {
+				// work around because of the Note edit event on start:
 				frame.getController().getMap().setSaved(true);
+				
 				frame.pack();
+				if (splash2 != null) {
+					splash2.setVisible(false);
+				}
 				frame.setVisible(true);
 			}
 		});
