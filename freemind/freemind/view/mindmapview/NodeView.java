@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.23 2007-06-05 20:53:31 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.24 2007-06-06 19:34:55 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1074,7 +1074,36 @@ public class NodeView extends JComponent implements TreeModelListener{
         final int[] childIndices = e.getChildIndices();
         
         for(int i = childIndices.length-1; i>=0 ; i--){
-            ((NodeView) getComponent(childIndices[i])).remove();            
+            final int index = childIndices[i];
+            final NodeView node = (NodeView) getComponent(index);
+            if (node == this.preferredChild) { // mind preferred child :-) (PN)
+            	this.preferredChild = null;
+                for(int j = index+1; j < getComponentCount(); j++){
+                	final Component c = getComponent(j);
+                	if(! (c instanceof NodeView)){
+                		break;
+                	}
+                	NodeView candidate = (NodeView)c;
+                	if(candidate.isVisible()){
+                		this.preferredChild = candidate;
+                		break;
+                	}
+                }
+                if (this.preferredChild == null){
+                	for(int j = index-1; j >=0; j--){
+                		final Component c = getComponent(j);
+                		if(! (c instanceof NodeView)){
+                			break;
+                		}
+                		NodeView candidate = (NodeView)c;
+                		if(candidate.isVisible()){
+                			this.preferredChild = candidate;
+                			break;
+                		}
+                	}
+                }
+            }
+			(node).remove();            
         }
         NodeView preferred = getPreferredChild();
         if (preferred != null) { // after delete focus on a brother (PN)
