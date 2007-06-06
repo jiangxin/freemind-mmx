@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.50 2007-06-06 20:31:44 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.51 2007-06-06 20:33:00 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -950,14 +950,13 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		if (splash != null) {
 			splash.setVisible(false);
 		}
-
-		frame.pack();
-		frame.setVisible(true);
 		
 		// work around because of the Note edit event on start:
 		EventQueue.invokeLater(new Runnable(){
 			public void run() {
 				frame.getController().getMap().setSaved(true);
+				frame.pack();
+				frame.setVisible(true);
 			}
 		});
 		
