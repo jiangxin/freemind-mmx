@@ -80,5 +80,17 @@
 		<plugin_property name="create_dir" value="false"/>
 		<plugin_property name="create_html_linked_image" value="false"/>
 	</plugin_action>
+    <plugin_action documentation="%accessories/plugins/ExportWithTWiki.properties_documentation" name="%accessories/plugins/ExportWithTWiki.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithTWiki.properties" class_name="accessories.plugins.ExportWithXSLT">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/file/export/html/exportTWiki"/>
+		<plugin_property name="file_type" value="twi"/>
+        <plugin_property name="name_extension" value=""/>
+		<plugin_property name="file_description" value="%accessories/plugins/ExportWithTWiki.properties"/>
+		<plugin_property name="xslt_file" value="accessories/mm2twiki.xsl"/>
+		<plugin_property name="copy_map" value="false"/>
+		<plugin_property name="load_file" value="false"/>
+		<plugin_property name="create_dir" value="false"/>
+		<plugin_property name="create_html_linked_image" value="false"/>
+	</plugin_action>
 
 </plugin>
