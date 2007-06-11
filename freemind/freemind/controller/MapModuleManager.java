@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.4.2.7 2007-06-03 21:01:29 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4.2.8 2007-06-11 19:47:40 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -57,7 +57,7 @@ import freemind.view.mindmapview.MapView;
     			 */
     			boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
     			void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
-    			void beforeMapClose(MapModule oldMapModule, Mode oldMode);
+    			void afterMapClose(MapModule oldMapModule, Mode oldMode);
     			void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
     			/** To enable/disable the previous/next map actions.
     			 */
@@ -101,10 +101,10 @@ import freemind.view.mindmapview.MapView;
 						observer.numberOfOpenMapInformation(number);
 					}
 				}
-				public void beforeMapClose(MapModule pOldMapModule, Mode pOldMode) {
+				public void afterMapClose(MapModule pOldMapModule, Mode pOldMode) {
 					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
 						MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
-						observer.beforeMapClose(pOldMapModule, pOldMode);
+						observer.afterMapClose(pOldMapModule, pOldMode);
 					}
 				}
     		}
@@ -282,14 +282,15 @@ import freemind.view.mindmapview.MapView;
             
             String toBeClosed = getMapModule().toString();
             mapModules.remove(toBeClosed);
-            listener.beforeMapClose(module, module.getMode());
             if (mapModules.isEmpty()) {
 			/*Keep the current running mode*/
 			setMapModule(null, module.getMode());
 		} else {
 			changeToMapModule((String) mapModules.keySet().iterator().next());
 		}
-            return true; }
+            listener.afterMapClose(module, module.getMode());
+            return true; 
+            }
 
        // }}
 

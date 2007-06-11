@@ -224,13 +224,13 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 //		printVector();
 		NodeHolder nodeHolder = (NodeHolder) sNodeVector
 						.get(sCurrentPosition - 1);
-		final Controller controller2 = getController().getController();
-		final MindMapNode toBeSelected = (nodeHolder).getNode(controller2);
+		final Controller mainController = getController().getController();
+		final MindMapNode toBeSelected = (nodeHolder).getNode(mainController);
 		boolean changeModule = false;
 		MapModule newModule = null;
-		if(nodeHolder.getModeController(controller2) != getMindMapController()){
+		if(nodeHolder.getModeController(mainController) != getMindMapController()){
 			changeModule = true;
-			newModule = nodeHolder.getMapModule(controller2);
+			newModule = nodeHolder.getMapModule(mainController);
 		}
 		final boolean fChangeModule = changeModule;
 		final MapModule fNewModule = newModule;
@@ -245,7 +245,7 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 			public void run() {
 				ModeController c = modeController;
 				if(fChangeModule){
-					boolean res = controller2.getMapModuleManager().changeToMapModule(fNewModule.toString());
+					boolean res = mainController.getMapModuleManager().changeToMapModule(fNewModule.toString());
 					if(!res){
 						logger.warning("Can't change to map module " + fNewModule);
 						sPreventRegistration = false;

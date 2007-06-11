@@ -508,6 +508,6 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
     public void numberOfOpenMapInformation(int number) {
     }
 
-	public void beforeMapClose(MapModule pOldMapModule, Mode pOldMode) {
+	public void afterMapClose(MapModule pOldMapModule, Mode pOldMode) {
 	}
 }

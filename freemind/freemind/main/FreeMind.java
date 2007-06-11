@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.52 2007-06-06 20:36:24 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.53 2007-06-11 19:47:40 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -283,31 +283,28 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		if (shouldUseTabbedPane) {
 			mTabbedPane = new JTabbedPane();
 			mTabbedPane.addChangeListener(new ChangeListener() {
-				int mLastSelected = -2;
 
-				public void stateChanged(ChangeEvent pE) {
+				public synchronized void stateChanged(ChangeEvent pE) {
+//					logger.info("State changed:"+pE);
 					int selectedIndex = mTabbedPane.getSelectedIndex();
+					// display nothing on the other tabs:
+					for(int j = 0 ; j < mTabbedPane.getTabCount(); j++) {
+						if(j != selectedIndex)
+							mTabbedPane.setComponentAt(j, new JPanel());
+					}
 					if (selectedIndex < 0) {
 						// nothing selected. probably, the last map was closed
-						mLastSelected = -1;
 						return;
 					}
-					if (mLastSelected != selectedIndex) {
-						if (mLastSelected >= 0) {
-							mTabbedPane.setComponentAt(mLastSelected,
-									new JPanel());
-						}
-						mLastSelected = selectedIndex;
-						String selectedTitle = mTabbedPane
-								.getTitleAt(selectedIndex);
-						if (!selectedTitle.equals(controller.getMapModule()
-								.toString())) {
-							// we have to change the active map actively:
-							controller.getMapModuleManager().changeToMapModule(
-									selectedTitle);
-						}
-						mTabbedPane.setComponentAt(mLastSelected, mSplitPane);
+					String selectedTitle = mTabbedPane
+							.getTitleAt(selectedIndex);
+					if (!selectedTitle.equals(controller.getMapModule()
+							.toString())) {
+						// we have to change the active map actively:
+						controller.getMapModuleManager().changeToMapModule(
+								selectedTitle);
 					}
+					mTabbedPane.setComponentAt(selectedIndex, mSplitPane);
 				}
 
 			});
@@ -359,11 +356,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
 						public void numberOfOpenMapInformation(int pNumber) {
 						}
 
-						public void beforeMapClose(MapModule pOldMapModule,
+						public void afterMapClose(MapModule pOldMapModule,
 								Mode pOldMode) {
-							int selectedIndex = mTabbedPane.getSelectedIndex();
-							if (selectedIndex >= 0) {
-								mTabbedPane.removeTabAt(selectedIndex);
+							for (int i = 0; i < mTabbedPane.getTabCount(); ++i) {
+								if (mTabbedPane.getTitleAt(i).equals(
+										pOldMapModule.toString())) {
+									mTabbedPane.removeTabAt(i);
+									return;
+								}
 							}
 						}
 					});
