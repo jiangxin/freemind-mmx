@@ -34,6 +34,7 @@ which can be obtained using NodeView.getContent().
 * Tabbed mind maps added (it is possible to switch it off in the preferences -> appereance)
 * New translations. Thanks to the authors.
 * Integrated the TWiki export. Thanks to the author scf_code.
+* Integrated html to plain patch from Dan. Thanks.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 9

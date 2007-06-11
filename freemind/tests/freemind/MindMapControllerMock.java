@@ -19,7 +19,7 @@
  *
  * Created on 10.10.2006
  */
-/*$Id: MindMapControllerMock.java,v 1.1.2.2 2007-04-21 15:11:23 dpolivaev Exp $*/
+/*$Id: MindMapControllerMock.java,v 1.1.2.3 2007-06-11 21:05:14 christianfoltin Exp $*/
 package tests.freemind;
 
 import java.awt.Color;
@@ -550,5 +550,25 @@ public class MindMapControllerMock implements ModeController {
         // TODO Auto-generated method stub
         
     }
+
+	public void onDeselectHook(NodeView pNode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onSelectHook(NodeView pNode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onViewCreatedHook(NodeView pNewView) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onViewRemovedHook(NodeView pNewView) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

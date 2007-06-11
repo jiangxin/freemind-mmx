@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.13 2007-01-03 23:47:43 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.14 2007-06-11 21:05:13 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -370,42 +370,48 @@ public class HtmlTools {
     }
 
     public static String htmlToPlain(String text) {
-       // 0. remove all newlines
-       // 1. replace newlines, paragraphs, and table rows
-       // 2. remove XML tags
-       // 3. replace HTML entities including &nbsp;
-       // 4. unescape unicode entities
-       // This is a very basic conversion, fixing the most annoying
-       // inconvenience.  You can imagine much better conversion of
-       // HTML to plain text. Most of HTML tags can be handled
-       // sensibly, like web browsers do it.
-       if (!isHtmlNode(text)) {
-          return text; }
-       //System.err.println("base:"+text);
-       String intermediate = text.
-          replaceAll("(?ims)[\n\t]","").        // Remove newlines
-          replaceAll("(?ims) +"," ").           // Condense spaces
-          replaceAll("(?ims)<br.*?>","\n").
-          replaceAll("(?ims)<p.*?>","\n\n").    // Paragraph
-          replaceAll("(?ims)<div.*?>","\n").  // Div - block
-          replaceAll("(?ims)<tr.*?>","\n").
-          replaceAll("(?ims)<dt.*?>","\n").     // Defined term
-          replaceAll("(?ims)<dd.*?>","\n   ").  // Definition of defined term
-          replaceAll("(?ims)<td.*?>"," ").
-          replaceAll("(?ims)<[uo]l.*?>","\n").  // Beginning of a list
-          replaceAll("(?ims)<li.*?>","\n   * ").
-          replaceAll("(?ims) *</[^>]*>","").    // Remaining closing HTML tags
-          replaceAll("(?ims)<[^/][^>]*> *",""). // Remaining opening HTML tags
-          replaceAll("(?ims)&lt;", "<").replaceAll("(?ims)&gt;", ">").
-          replaceAll("(?ims)&quot;", "\"").replaceAll("(?ims)&amp;", "&").
-          replaceAll("(?ims)&nbsp;", " ").
-          // FIXME Dimitry: is removing of all new lines at the begin a good idea? 
-          replaceAll("^\n+", "").
-          // fc: to remove start and end spaces.
-          trim();
-       
-       //System.err.println("intermediate:"+intermediate);
-       return HtmlTools.unescapeHTMLUnicodeEntity(intermediate); }
+        return htmlToPlain(text, /*strictHTMLOnly=*/true); }
+
+     public static String htmlToPlain(String text, boolean strictHTMLOnly) {
+         // 0. remove all newlines
+         // 1. replace newlines, paragraphs, and table rows
+         // 2. remove XML tags
+         // 3. replace HTML entities including &nbsp;
+         // 4. unescape unicode entities
+         // This is a very basic conversion, fixing the most annoying
+         // inconvenience.  You can imagine much better conversion of
+         // HTML to plain text. Most of HTML tags can be handled
+         // sensibly, like web browsers do it.
+         if (strictHTMLOnly && !isHtmlNode(text)) {
+            return text; }
+         //System.err.println("base:"+text);
+         String intermediate = text.
+            replaceAll("(?ims)[\n\t]","").        // Remove newlines
+            replaceAll("(?ims) +"," ").           // Condense spaces
+            replaceAll("(?ims)<br.*?>","\n").
+            replaceAll("(?ims)<p.*?>","\n\n").    // Paragraph
+            replaceAll("(?ims)<div.*?>","\n").    // Div - block
+            replaceAll("(?ims)<tr.*?>","\n").
+            replaceAll("(?ims)<dt.*?>","\n").     // Defined term
+            replaceAll("(?ims)<dd.*?>","\n   ").  // Definition of defined term
+            replaceAll("(?ims)<td.*?>"," ").
+            replaceAll("(?ims)<[uo]l.*?>","\n").  // Beginning of a list
+            replaceAll("(?ims)<li.*?>","\n   * ").
+            replaceAll("(?ims) *</[^>]*>","").    // Remaining closing HTML tags
+            replaceAll("(?ims)<[^/][^>]*> *",""). // Remaining opening HTML tags
+            // FIXME Dimitry: is removing of all new lines at the begin a good idea? 
+            replaceAll("^\n+", "");
+
+         intermediate = HtmlTools.unescapeHTMLUnicodeEntity(intermediate);
+
+         // Entities, with the exception of &.
+
+         intermediate = intermediate.
+            replaceAll("(?ims)&lt;", "<").replaceAll("(?ims)&gt;", ">").
+            replaceAll("(?ims)&quot;", "\"").
+            replaceAll("(?ims)&nbsp;", " ");
+         //System.err.println("intermediate:"+intermediate);
+         return intermediate.replaceAll("(?ims)&amp;", "&"); }
 
     public static String plainToHTML(String text) {
        char myChar;
