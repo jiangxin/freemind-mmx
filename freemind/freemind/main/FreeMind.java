@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.53 2007-06-11 19:47:40 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.54 2007-06-14 23:03:09 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -26,6 +26,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -64,6 +65,7 @@ import javax.swing.event.ChangeListener;
 import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
+import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.preferences.FreemindPropertyListener;
@@ -281,7 +283,12 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				.getProperty(RESOURCES_USE_TABBED_PANE));
 
 		if (shouldUseTabbedPane) {
+			// tabbed panes eat control up. This is corrected here.
+			map = (InputMap) UIManager.get("TabbedPane.ancestorInputMap");
+			KeyStroke keyStrokeCtrlUp = KeyStroke.getKeyStroke( KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK);
+			map.remove(keyStrokeCtrlUp);
 			mTabbedPane = new JTabbedPane();
+//			mTabbedPane.setFocusable(false);
 			mTabbedPane.addChangeListener(new ChangeListener() {
 
 				public synchronized void stateChanged(ChangeEvent pE) {
@@ -952,8 +959,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		EventQueue.invokeLater(new Runnable(){
 			public void run() {
 				// work around because of the Note edit event on start:
-				frame.getController().getMap().setSaved(true);
-				
+				// fc: but only, if a map is open
+				if (frame.getController().getMapModule() != null) {
+					frame.getController().getMap().setSaved(true);
+				}				
 				frame.pack();
 				if (splash2 != null) {
 					splash2.setVisible(false);

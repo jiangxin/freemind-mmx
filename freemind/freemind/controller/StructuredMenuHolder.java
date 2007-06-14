@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.1 2006-07-25 20:28:19 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.2 2007-06-14 23:03:09 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -186,6 +186,7 @@ public class StructuredMenuHolder {
     	updateMenus(new MenuAdder() {
 
             public void addMenuItem(StructuredMenuItemHolder holder) {
+        		setLabelAndMnemonic(holder.getMenuItem(), null);
             	myItem.add(holder.getMenuItem());
             }
 
@@ -473,6 +474,25 @@ public class StructuredMenuHolder {
         return false;
     }
 
+    /**
+	 * Ampersand indicates that the character after it is a mnemo, unless the
+	 * character is a space. In "Find & Replace", ampersand does not label
+	 * mnemo, while in "&About", mnemo is "Alt + A".
+	 */
+    public void setLabelAndMnemonic(JMenuItem item, String inLabel) {
+		String rawLabel = inLabel;
+		if (rawLabel == null)
+			rawLabel = item.getText();
+		if (rawLabel == null)
+			return;
+		item.setText(rawLabel.replaceAll("&([a-zA-Z])", "$1"));
+		int mnemoSignIndex = rawLabel.indexOf("&");
+		if (mnemoSignIndex >= 0 && mnemoSignIndex + 1 < rawLabel.length()) {
+			char charAfterMnemoSign = rawLabel.charAt(mnemoSignIndex + 1);
+			if (charAfterMnemoSign != ' ')
+				item.setMnemonic(charAfterMnemoSign);
+		}
+	}
 
 
 }
