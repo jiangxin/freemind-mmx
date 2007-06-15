@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.25 2007-06-15 18:15:51 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.26 2007-06-15 20:32:20 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -255,7 +255,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 	        
 	        // consider existing clouds of children
 	        if (byChildren && cloud != null){
-	            additionalDistanceForConvexHull  += CloudView.getAdditionalHeigth(cloud, this) / 2;
+	            additionalDistanceForConvexHull  += CloudView.getAdditionalHeigth(cloud, this) / 5;
 	        }
 	        final int x = transX + getContent().getX()- getDeltaX();
 	        final int y = transY + getContent().getY()- getDeltaY();

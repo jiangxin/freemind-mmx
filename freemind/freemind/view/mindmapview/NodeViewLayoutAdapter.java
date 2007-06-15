@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeViewLayoutAdapter.java,v 1.1.4.2 2007-04-21 15:11:23 dpolivaev Exp $ */
+/* $Id: NodeViewLayoutAdapter.java,v 1.1.4.3 2007-06-15 20:32:20 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Component;
@@ -29,7 +29,8 @@ import javax.swing.JComponent;
 import freemind.modes.MindMapNode;
 
 abstract public class NodeViewLayoutAdapter implements NodeViewLayout{
-    protected final int LISTENER_VIEW_WIDTH = 10;
+    private static final int SPACE_AROUND = 50;
+	protected final int LISTENER_VIEW_WIDTH = 10;
     protected Point location = new Point();
     private static Dimension minDimension;
     private NodeView view;
@@ -94,7 +95,7 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout{
         else{
             this.vGap = getView().getVisibleParentView().getVGap();
         }
-        spaceAround = view.getMap().getZoomed(100);
+        spaceAround = view.getMap().getZoomed(SPACE_AROUND);
     }
 
     private void shutDown() {
@@ -140,21 +141,17 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout{
             return 0;
         }
         int height = 0;
-        int additionalCloudHeigth = 0;
         int count = 0;
         for(int i = 0; i < childCount; i++){
             final NodeView child = (NodeView)getView().getComponent(i);
             if(child.isLeft() == isLeft){
-                additionalCloudHeigth = child.getAdditionalCloudHeigth();
-                if(height == 0){
-                    height = - additionalCloudHeigth/2;
-                }
+                final int additionalCloudHeigth = child.getAdditionalCloudHeigth();
                 final int contentHeight = child.getContent().getHeight();
                 height += contentHeight + additionalCloudHeigth;
                 count++;
             }
         }
-        return height + vGap * (count - 1) - additionalCloudHeigth / 2;
+        return height + vGap * (count - 1);
     }
 
     protected int getChildVerticalShift(boolean isLeft) {
@@ -208,9 +205,7 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout{
             }
             child = component;
             final int additionalCloudHeigth = child.getAdditionalCloudHeigth()/ 2;
-            if(i != 0) {
-                y += additionalCloudHeigth;  
-            }
+            y += additionalCloudHeigth;  
             int shiftY = child.getShift();
             final int childHGap = child.getContent().isVisible() ? child.getHGap() : 0;
             int x = baseX + childHGap - child.getContent().getX();
@@ -229,7 +224,7 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout{
         
         if(child != null){
             getView().setSize(right, 
-                    Math.max(bottom, child.getY() + child.getHeight()));
+                    Math.max(bottom, child.getY() + child.getHeight() + child.getAdditionalCloudHeigth()/2));
         }
         else{
             getView().setSize(right, bottom);
@@ -248,9 +243,7 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout{
             }
             child = component;
             final int additionalCloudHeigth = child.getAdditionalCloudHeigth()/ 2;
-            if(i != 0) {
-                y += additionalCloudHeigth;  
-            }
+            y += additionalCloudHeigth;  
             int shiftY = child.getShift();
             final int childHGap = child.getContent().isVisible() ? child.getHGap() : 0;
             int x = baseX - childHGap - child.getContent().getX() - child.getContent().getWidth();
@@ -269,7 +262,7 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout{
         
         if(child != null){
             getView().setSize(right, 
-                    Math.max(bottom, child.getY() + child.getHeight()));
+                    Math.max(bottom, child.getY() + child.getHeight() + child.getAdditionalCloudHeigth()/2));
         }
         else{
             getView().setSize(right, bottom);
