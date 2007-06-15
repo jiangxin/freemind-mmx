@@ -528,7 +528,6 @@ public class FilterComposerDialog extends JDialog {
             int max = conditionList.getMinSelectionIndex();
             if(min == max){
                 applyChanges();
-                ft.getActiveFilterConditionComboBox().setSelectedIndex(min);
                 return true;
             }
         }
