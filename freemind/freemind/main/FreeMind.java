@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.55 2007-06-15 18:15:51 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.56 2007-06-15 19:09:50 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -246,17 +246,23 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 		// set the default size (PN)
 		int win_width = getIntProperty("appwindow_width", 0);
-		int win_height = Integer.parseInt(props.getProperty("appwindow_height",
-				"0"));
+		int win_height =getIntProperty("appwindow_height", 0);
+		int win_x  = getIntProperty("appwindow_x", 0);
+		int win_y  = getIntProperty("appwindow_y", 0);
 		win_width = (win_width > 0) ? win_width : 640;
 		win_height = (win_height > 0) ? win_height : 440;
 		final Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
 		final Insets screenInsets = defaultToolkit.getScreenInsets(getGraphicsConfiguration());
 		Dimension screenSize = defaultToolkit.getScreenSize();
-		win_width = Math.min(win_width, screenSize.width-screenInsets.left-screenInsets.right);
-		win_height = Math.min(win_height, screenSize.height-screenInsets.top-screenInsets.bottom);
-		getRootPane().setPreferredSize(new Dimension(win_width, win_height));
-
+		final int screenWidth = screenSize.width-screenInsets.left-screenInsets.right;
+		win_width = Math.min(win_width, screenWidth);
+		final int screenHeight = screenSize.height-screenInsets.top-screenInsets.bottom;
+		win_height = Math.min(win_height, screenHeight);
+		win_x = Math.max(screenInsets.left, win_x);
+		win_x = Math.min(screenWidth+screenInsets.left-win_width, win_x);
+		win_y = Math.max(screenInsets.top, win_y);
+		win_y = Math.min(screenWidth+screenInsets.top-win_height, win_y);
+		setBounds(win_x, win_y, win_width, win_height);
 		if (Tools.safeEquals(getProperty("no_scrollbar"), "true")) {
 			scrollPane
 					.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
@@ -507,11 +513,19 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	// maintain this methods to keep the last state/size of the window (PN)
 	public int getWinHeight() {
-		return getRootPane().getHeight();
+		return getHeight();
 	}
 
 	public int getWinWidth() {
-		return getRootPane().getWidth();
+		return getWidth();
+	}
+	
+	public int getWinX() {
+		return getX();
+	}
+
+	public int getWinY() {
+		return getY();
 	}
 
 	public int getWinState() {
@@ -970,7 +984,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				if (frame.getController().getMapModule() != null) {
 					frame.getController().getMap().setSaved(true);
 				}				
-				frame.pack();
+				frame.validate();
 				if (splash2 != null) {
 					splash2.setVisible(false);
 				}

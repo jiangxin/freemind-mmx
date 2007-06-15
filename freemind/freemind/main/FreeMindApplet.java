@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.15 2007-04-22 19:35:06 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.16 2007-06-15 19:09:51 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -110,6 +110,13 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
       return 6;  
     }
 
+	public int getWinX() {
+		return 0;
+	}
+
+	public int getWinY() {
+		return 0;
+	}
     /**
      * Returns the ResourceBundle with the current language
      */

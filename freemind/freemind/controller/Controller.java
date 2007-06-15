@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.29 2007-06-11 19:47:40 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.30 2007-06-15 19:09:50 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -824,9 +824,16 @@ public class Controller  implements MapModuleChangeObserver {
         setProperty("leftToolbarVisible", leftToolbarVisible ? "true" : "false");
         setProperty("antialiasEdges", antialiasEdges ? "true" : "false");
         setProperty("antialiasAll", antialiasAll ? "true" : "false");
-        setProperty("appwindow_width", String.valueOf(getFrame().getWinWidth()));
-        setProperty("appwindow_height", String.valueOf(getFrame().getWinHeight()));
-        setProperty("appwindow_state", String.valueOf(getFrame().getWinState()));
+        if(! getFrame().isApplet()) {
+            final int winState = getFrame().getWinState();
+        	if (0 == (winState & JFrame.MAXIMIZED_BOTH)){
+        		setProperty("appwindow_x", String.valueOf(getFrame().getWinX()));
+        		setProperty("appwindow_y", String.valueOf(getFrame().getWinY()));
+        		setProperty("appwindow_width", String.valueOf(getFrame().getWinWidth()));
+        		setProperty("appwindow_height", String.valueOf(getFrame().getWinHeight()));
+        	}
+        	setProperty("appwindow_state", String.valueOf(winState));
+        }
         getFrame().saveProperties();
         //save to properties
         System.exit(0);
