@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.54 2007-06-14 23:03:09 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.55 2007-06-15 18:15:51 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -25,6 +25,8 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -248,6 +250,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				"0"));
 		win_width = (win_width > 0) ? win_width : 640;
 		win_height = (win_height > 0) ? win_height : 440;
+		final Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
+		final Insets screenInsets = defaultToolkit.getScreenInsets(getGraphicsConfiguration());
+		Dimension screenSize = defaultToolkit.getScreenSize();
+		win_width = Math.min(win_width, screenSize.width-screenInsets.left-screenInsets.right);
+		win_height = Math.min(win_height, screenSize.height-screenInsets.top-screenInsets.bottom);
 		getRootPane().setPreferredSize(new Dimension(win_width, win_height));
 
 		if (Tools.safeEquals(getProperty("no_scrollbar"), "true")) {

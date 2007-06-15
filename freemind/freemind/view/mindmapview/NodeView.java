@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.24 2007-06-06 19:34:55 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.25 2007-06-15 18:15:51 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -776,7 +776,7 @@ public class NodeView extends JComponent implements TreeModelListener{
                 // by preliminarily setting the text.
                 setText(lines[line]);
                 widthMustBeRestricted = mainView.getPreferredSize().width > 
-                map.getZoomed(map.getMaxNodeWidth());
+                map.getZoomed(map.getMaxNodeWidth())+ mainView.getIconWidth();
                 if (widthMustBeRestricted) {
                     break; }}
             isLong = widthMustBeRestricted || lines.length > 1;
@@ -805,7 +805,7 @@ public class NodeView extends JComponent implements TreeModelListener{
               //Empirically determined limit, above which we restrict the width without actually checking it.
               //The purpose of that is to speed up rendering of very long nodes.
               setText(nodeText);
-              widthMustBeRestricted = mainView.getPreferredSize().width > map.getZoomed(map.getMaxNodeWidth());}
+              widthMustBeRestricted = mainView.getPreferredSize().width > map.getZoomed(map.getMaxNodeWidth())+ mainView.getIconWidth();}
            else {
               widthMustBeRestricted = true; }
 

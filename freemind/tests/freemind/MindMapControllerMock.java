@@ -19,7 +19,7 @@
  *
  * Created on 10.10.2006
  */
-/*$Id: MindMapControllerMock.java,v 1.1.2.3 2007-06-11 21:05:14 christianfoltin Exp $*/
+/*$Id: MindMapControllerMock.java,v 1.1.2.4 2007-06-15 18:16:10 dpolivaev Exp $*/
 package tests.freemind;
 
 import java.awt.Color;
@@ -369,17 +369,17 @@ public class MindMapControllerMock implements ModeController {
 	}
 
 	/* (non-Javadoc)
-	 * @see freemind.modes.ModeController#onLooseFocusHook(freemind.modes.MindMapNode)
+	 * @see freemind.modes.ModeController#onDeselectHook(freemind.modes.MindMapNode)
 	 */
-	public void onLooseFocusHook(MindMapNode node) {
+	public void onDeselectHook(NodeView node) {
 		// TODO Auto-generated method stub
 
 	}
 
 	/* (non-Javadoc)
-	 * @see freemind.modes.ModeController#onReceiveFocusHook(freemind.modes.MindMapNode)
+	 * @see freemind.modes.ModeController#onSelectHook(freemind.modes.MindMapNode)
 	 */
-	public void onReceiveFocusHook(MindMapNode node) {
+	public void onSelectHook(NodeView node) {
 		// TODO Auto-generated method stub
 
 	}
@@ -551,24 +551,13 @@ public class MindMapControllerMock implements ModeController {
         
     }
 
-	public void onDeselectHook(NodeView pNode) {
+	public void onViewCreatedHook(NodeView newView) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void onSelectHook(NodeView pNode) {
+	public void onViewRemovedHook(NodeView newView) {
 		// TODO Auto-generated method stub
 		
 	}
-
-	public void onViewCreatedHook(NodeView pNewView) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onViewRemovedHook(NodeView pNewView) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
