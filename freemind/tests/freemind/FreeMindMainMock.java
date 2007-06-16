@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMainMock.java,v 1.1.2.10 2007-02-03 23:19:26 christianfoltin Exp $*/
+/*$Id: FreeMindMainMock.java,v 1.1.2.11 2007-06-16 21:28:07 dpolivaev Exp $*/
 
 package tests.freemind;
 
@@ -160,7 +160,15 @@ public class FreeMindMainMock implements FreeMindMain {
         return 0;
     }
 
-    public String getFreemindVersion() {
+	public int getWinX() {
+		return 0;
+	}
+
+	public int getWinY() {
+		return 0;
+	}
+
+	public String getFreemindVersion() {
         return "1.0 Mock";
     }
 
