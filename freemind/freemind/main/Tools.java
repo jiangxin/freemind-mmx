@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.15 2007-04-21 15:11:20 dpolivaev Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.16 2007-06-16 21:21:50 dpolivaev Exp $ */
 
 package freemind.main;
 
@@ -603,8 +603,9 @@ public class Tools {
 					// Create the key
 					KeySpec keySpec = new PBEKeySpec(passPhrase,
 							salt, iterationCount);
+					// Dimitry: PBEWithMD5AndTripleDES has never been supported, it was a bug! 
 					SecretKey key = SecretKeyFactory.getInstance(
-							"PBEWithMD5AndTripleDES").generateSecret(keySpec);
+					"PBEWithMD5AndDES").generateSecret(keySpec);
 					ecipher = Cipher.getInstance(key.getAlgorithm());
 					dcipher = Cipher.getInstance(key.getAlgorithm());
 

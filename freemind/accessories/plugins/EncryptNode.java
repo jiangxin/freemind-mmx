@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: EncryptNode.java,v 1.1.2.8.2.4 2007-04-21 15:11:20 dpolivaev Exp $ */
+/* $Id: EncryptNode.java,v 1.1.2.8.2.5 2007-06-16 21:21:35 dpolivaev Exp $ */
 
 /*
  * Created on 14.12.2004
@@ -113,9 +113,11 @@ public class EncryptNode extends MindMapNodeHookAdapter {
         String actionType = getResourceString("action");
         if (actionType.equals("encrypt")) {
             encrypt(node);
+            getController().nodeRefresh(node);
             return;
         } else if(actionType.equals("toggleCryptState")){
             toggleCryptState(node);
+            getController().nodeRefresh(node);
             return;
         } else if(actionType.equals("encrypted_map")){
             // new map
