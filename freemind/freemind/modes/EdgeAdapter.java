@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EdgeAdapter.java,v 1.14.18.5.2.2 2007-05-06 21:12:19 christianfoltin Exp $ */
+/* $Id: EdgeAdapter.java,v 1.14.18.5.2.3 2007-06-20 21:52:42 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -128,6 +128,10 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
             return getSource().getEdge().getStyle();
         }
         return style;
+    }
+    
+    public boolean hasStyle(){
+    	return style != null;
     }
 
     ///////////

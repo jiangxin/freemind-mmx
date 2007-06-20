@@ -20,7 +20,7 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: NodeStyleAction.java,v 1.1.2.2.2.4 2007-05-06 12:09:41 dpolivaev Exp $ */
+/* $Id: NodeStyleAction.java,v 1.1.2.2.2.5 2007-06-20 21:52:42 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -84,7 +84,7 @@ public class NodeStyleAction extends NodeGeneralAction implements NodeActorXml {
                 if(!Tools.safeEquals(node.getStyle(), style)) {
     //                logger.info("Setting style of " + node + " to "+ style);
                     node.setStyle(style);
-                    modeController.nodeStructureChanged(node.isRoot() ? node : node.getParentNode());
+                    modeController.nodeStyleChanged(node);
                 }
             }
         }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.16 2007-06-05 20:53:31 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.17 2007-06-20 21:52:43 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -156,6 +156,8 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     private NodeView nodeToBeVisible = null;
 
     private int extraWidth;
+
+	private boolean mustUpdateSelecteds = false;
     //
     // Constructors
     //
@@ -752,6 +754,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
      * @see java.awt.Container#validateTree()
      */
     protected void validateTree() {
+    	updateSelectedsImpl();
         super.validateTree();
         setViewPositionAfterValidate();
     }
@@ -1069,6 +1072,57 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         }
         return super.getPreferredSize();
     }
+
+	void updateSelecteds() {
+		mustUpdateSelecteds  = true;
+	}
+	
+	
+	private void updateSelectedsImpl() {
+		if(! mustUpdateSelecteds){
+			return;
+		}
+		mustUpdateSelecteds  = false;
+        // Keep selected nodes
+
+        ArrayList selectedNodes = new ArrayList();
+        for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
+            NodeView nodeView = (NodeView)it.next();
+            if (nodeView != null) {
+                selectedNodes.add(nodeView);
+            }
+        }
+        // Warning, the old views still exist, because JVM has not deleted them. But don't use them!
+        selected.clear();
+        for (ListIterator it = selectedNodes.listIterator();it.hasNext();) {
+        	NodeView oldNodeView = ((NodeView)it.next());
+        	if(oldNodeView.getModel().isVisible())
+        	{
+        		NodeView newNodeView = getNodeView(oldNodeView.getModel());
+//      		test, whether or not the node is still visible:
+        		if (newNodeView != null) {
+        			selected.add(newNodeView);
+        		}
+        	}
+        }
+
+//      if the focussed is deleted:
+        NodeView focussedNodeView = getSelected();
+
+        // determine focussed node:
+        if(focussedNodeView == null) {
+//          if the focussed is deleted:
+            focussedNodeView = getRoot();
+        }
+//      now select focussed:
+        focussedNodeView.requestFocus();
+	}
+
+	public Point getNodeContentLocation(NodeView nodeView) {
+		Point contentXY = new Point(0, 0);
+        Tools.convertPointToAncestor(nodeView.getContent(), contentXY, this);
+        return contentXY;
+	}
     
     
 

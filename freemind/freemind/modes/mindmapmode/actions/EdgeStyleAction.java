@@ -20,7 +20,7 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: EdgeStyleAction.java,v 1.1.2.2.2.1 2006-10-10 18:51:53 christianfoltin Exp $ */
+/* $Id: EdgeStyleAction.java,v 1.1.2.2.2.2 2007-06-20 21:52:42 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -85,7 +85,6 @@ public class EdgeStyleAction extends NodeGeneralAction implements NodeActorXml {
             MindMapNode node = getNodeFromID(edgeStyleAction.getNode());
             if (!Tools.safeEquals(node.getEdge().getStyle(), edgeStyleAction.getStyle())) {
                 ((EdgeAdapter) node.getEdge()).setStyle(edgeStyleAction.getStyle());
-                modeController.nodeStructureChanged(node);
             }
         }
     }

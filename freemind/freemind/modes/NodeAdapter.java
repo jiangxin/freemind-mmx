@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.26 2007-06-05 20:41:36 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.27 2007-06-20 21:52:42 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -359,6 +359,9 @@ public abstract class NodeAdapter implements MindMapNode {
 	}
 
 
+	   public boolean hasStyle(){
+	    	return style != null;
+	    }
 
     /**The Foreground/Font Color*/
     public Color getColor() {

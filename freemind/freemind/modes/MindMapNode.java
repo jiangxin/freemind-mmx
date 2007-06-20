@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.13 2007-04-21 15:11:21 dpolivaev Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.14 2007-06-20 21:52:42 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -138,6 +138,9 @@ public interface MindMapNode extends MutableTreeNode {
     /** currently the style may be one of MindMapNode.STYLE_BUBBLE or MindMapNode.STYLE_FORK.*/
     void setStyle(String style);
 
+    // returns false if and only if the style is inherited from parent
+	boolean hasStyle();
+	
     MindMapNode getParentNode();
 
     boolean isBold();

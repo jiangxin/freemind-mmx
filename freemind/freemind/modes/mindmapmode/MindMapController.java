@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.36 2007-06-05 20:53:30 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.37 2007-06-20 21:52:42 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -196,6 +196,7 @@ import freemind.modes.mindmapmode.listeners.MindMapNodeDropListener;
 import freemind.modes.mindmapmode.listeners.MindMapNodeMotionListener;
 import freemind.view.mindmapview.MainView;
 import freemind.view.mindmapview.NodeView;
+import freemind.view.mindmapview.NodeViewVisitor;
 import freemind.view.mindmapview.attributeview.AttributePopupMenu;
 
 
@@ -2012,5 +2013,16 @@ freemind.main.Resources.getInstance().logException(					e1);
         getModel().removeNodeFromParent(selectedNode);
         
     }
+
+	public void nodeStyleChanged(MindMapNode node) {
+		nodeChanged(node);
+		final ListIterator childrenFolded = node.childrenFolded();
+		while(childrenFolded.hasNext()){
+			MindMapNode child = (MindMapNode) childrenFolded.next();
+			if( ! (child.hasStyle() && child.getEdge().hasStyle())){
+				nodeStyleChanged(child);
+			}
+		}
+	}
 
 }

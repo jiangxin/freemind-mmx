@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeViewFactory.java,v 1.1.4.3 2007-06-05 20:53:31 dpolivaev Exp $ */
+/* $Id: NodeViewFactory.java,v 1.1.4.4 2007-06-20 21:52:43 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Component;
@@ -149,26 +149,14 @@ class NodeViewFactory {
      */
     NodeView newNodeView(MindMapNode model, int position, MapView map, Container parent) {
         NodeView newView = new NodeView( model, position, map, parent);
-        final MainView mainView;
+        
         if (model.isRoot()) {
-            mainView = new RootMainView(); 
+        	final MainView mainView = new RootMainView(); 
             newView.setMainView(mainView);
             newView.setLayout(VerticalRootNodeViewLayout.getInstance());
             
         } else { 
-            if (model.getStyle().equals(MindMapNode.STYLE_FORK) ){
-                mainView = new ForkMainView(); 
-                newView.setMainView(mainView);
-            }
-            else if (model.getStyle().equals(MindMapNode.STYLE_BUBBLE)) {
-                mainView = new BubbleMainView(); 
-                newView.setMainView(mainView);
-            }
-            else {
-                System.err.println("Tried to create a NodeView of unknown Style.");
-                mainView = new ForkMainView(); 
-                newView.setMainView(mainView);
-            }
+		    newView.setMainView(newMainView(model));
             if(newView.isLeft()){
                 newView.setLayout(LeftNodeViewLayout.getInstance());
             }
@@ -182,6 +170,20 @@ class NodeViewFactory {
         fireNodeViewCreated(newView);
         return newView;
     }
+
+
+	MainView newMainView(MindMapNode model) {
+		if (model.getStyle().equals(MindMapNode.STYLE_FORK) ){
+			return new ForkMainView(); 
+		}
+		else if (model.getStyle().equals(MindMapNode.STYLE_BUBBLE)) {
+			return new BubbleMainView(); 
+		}
+		else {
+		    System.err.println("Tried to create a NodeView of unknown Style.");
+		    return new ForkMainView(); 
+		}
+	}
 
 
     private void fireNodeViewCreated(NodeView newView) {

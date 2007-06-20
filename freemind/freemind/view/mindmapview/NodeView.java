@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.26 2007-06-15 20:32:20 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.27 2007-06-20 21:52:43 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -687,6 +688,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 
  
     void update() {
+    	updateStyle();
               if(! model.isVisible()){
                   mainView.setVisible(false);
                   return;
@@ -841,7 +843,19 @@ public class NodeView extends JComponent implements TreeModelListener{
         // 10) Complete        
         revalidate(); // Because of zoom?
     }
-        /**
+        void updateStyle() {
+        	if(mainView != null && mainView.getStyle() == model.getStyle()){
+        		return;
+        	}
+         	final MainView newMainView = NodeViewFactory.getInstance().newMainView(model);
+			setMainView(newMainView);
+			if(map.getSelected() == this){
+				requestFocus();
+			}
+			
+	}
+
+		/**
      *
      */
      /**
@@ -1121,6 +1135,7 @@ public class NodeView extends JComponent implements TreeModelListener{
             for(ListIterator i = getChildrenViews().listIterator();i.hasNext();) {
                 ((NodeView)i.next()).remove(); }
             insert();
+            map.updateSelecteds();
             revalidate();
     }
     public int getZoomedFoldingSymbolHalfWidth() {

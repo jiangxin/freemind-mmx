@@ -16,18 +16,22 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ClickableImageCreator.java,v 1.1.2.1.12.5 2007-04-21 15:11:20 dpolivaev Exp $ */
+/* $Id: ClickableImageCreator.java,v 1.1.2.1.12.6 2007-06-20 21:52:28 dpolivaev Exp $ */
 
 package accessories.plugins.util.html;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.JComponent;
+
 import org.apache.commons.lang.StringEscapeUtils;
 
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.view.mindmapview.MapView;
@@ -120,10 +124,12 @@ public class ClickableImageCreator {
             holder.title = node.getShortText(modeController);
             holder.alt = node.getShortText(modeController);
             holder.href = node.getObjectId(modeController);
-            holder.coordinates.x = (int) (nodeView.getX()-innerBounds.getMinX());
-            holder.coordinates.y = (int) (nodeView.getY()-innerBounds.getMinY());
-            holder.coordinates.width = nodeView.getWidth();
-            holder.coordinates.height = nodeView.getHeight();
+            Point contentXY = mapView.getNodeContentLocation(nodeView);
+            final JComponent content = nodeView.getContent();
+            holder.coordinates.x = (int) (contentXY.x-innerBounds.getMinX());
+            holder.coordinates.y = (int) (contentXY.y-innerBounds.getMinY());
+            holder.coordinates.width = content.getWidth();
+            holder.coordinates.height = content.getHeight();
             area.add(holder);
             for (Iterator i = node.childrenUnfolded(); i.hasNext();) {
                 MindMapNode child = (MindMapNode) i.next();
