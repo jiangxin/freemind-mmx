@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.8 2007-04-21 15:11:22 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.9 2007-06-23 11:18:55 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -232,6 +232,7 @@ public class EditNodeTextField extends EditNodeBase {
                         }
                         hideMe();
                         // hack: to keep the focus
+                        nodeView.requestFocus();
                         break;
 
                     case KeyEvent.VK_SPACE :

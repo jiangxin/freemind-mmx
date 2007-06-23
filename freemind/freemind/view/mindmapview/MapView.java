@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.17 2007-06-20 21:52:43 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.18 2007-06-23 11:18:56 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -157,7 +157,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
     private int extraWidth;
 
-	private boolean mustUpdateSelecteds = false;
+	private boolean selectedsValid = true;
     //
     // Constructors
     //
@@ -754,7 +754,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
      * @see java.awt.Container#validateTree()
      */
     protected void validateTree() {
-    	updateSelectedsImpl();
+    	validateSelecteds();
         super.validateTree();
         setViewPositionAfterValidate();
     }
@@ -1073,16 +1073,16 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         return super.getPreferredSize();
     }
 
-	void updateSelecteds() {
-		mustUpdateSelecteds  = true;
+	void revalidateSelecteds() {
+		selectedsValid  = false;
 	}
 	
 	
-	private void updateSelectedsImpl() {
-		if(! mustUpdateSelecteds){
+	private void validateSelecteds() {
+		if(selectedsValid){
 			return;
 		}
-		mustUpdateSelecteds  = false;
+		selectedsValid  = true;
         // Keep selected nodes
 
         ArrayList selectedNodes = new ArrayList();

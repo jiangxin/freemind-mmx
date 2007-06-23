@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.27 2007-06-20 21:52:43 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.28 2007-06-23 11:18:59 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1135,7 +1135,7 @@ public class NodeView extends JComponent implements TreeModelListener{
             for(ListIterator i = getChildrenViews().listIterator();i.hasNext();) {
                 ((NodeView)i.next()).remove(); }
             insert();
-            map.updateSelecteds();
+            map.revalidateSelecteds();
             revalidate();
     }
     public int getZoomedFoldingSymbolHalfWidth() {
