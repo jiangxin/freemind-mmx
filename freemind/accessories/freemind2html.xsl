@@ -87,8 +87,8 @@
 			<xsl:value-of select="$destination_dir"/>freemind2html.js</xsl:attribute>&#160; 
 	</xsl:element>
 	<script type="text/javascript">
+		<xsl:comment>
           <![CDATA[
-          <!--
                function toggle(id)
                {
                    div_el = document.getElementById(id);
@@ -109,8 +109,8 @@
           <![CDATA[
                    };
                };
-           -->
           ]]>
+          </xsl:comment>
 	</script>
 </head>
 

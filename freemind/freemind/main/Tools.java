@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.16 2007-06-16 21:21:50 dpolivaev Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.17 2007-06-25 19:50:21 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -570,7 +570,7 @@ public class Tools {
     }
 
     /** from: http://javaalmanac.com/egs/javax.crypto/PassKey.html */
-	public static class TripleDesEncrypter {
+	public static class SingleDesEncrypter {
 	    private static final String SALT_PRESENT_INDICATOR = " ";
 	    private static final int SALT_LENGTH=8;
 
@@ -587,7 +587,7 @@ public class Tools {
 
 		private final char[] passPhrase;
 
-	    public TripleDesEncrypter(StringBuffer pPassPhrase) {
+	    public SingleDesEncrypter(StringBuffer pPassPhrase) {
 	    		passPhrase = new char[pPassPhrase.length()];
 	    		pPassPhrase.getChars(0, passPhrase.length, passPhrase, 0);
 	    }

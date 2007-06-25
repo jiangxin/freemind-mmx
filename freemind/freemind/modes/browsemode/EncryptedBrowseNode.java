@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.6 2007-04-21 15:11:21 dpolivaev Exp $ */
+/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.7 2007-06-25 19:50:21 christianfoltin Exp $ */
 package freemind.modes.browsemode;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ import javax.swing.ImageIcon;
 
 import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
-import freemind.main.Tools.TripleDesEncrypter;
+import freemind.main.Tools.SingleDesEncrypter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.ModeController;
@@ -97,7 +97,7 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
         if (pwdDialog.getResult() == EnterPasswordDialog.CANCEL) {
             return;
         }
-		TripleDesEncrypter encrypter = new TripleDesEncrypter(pwdDialog.getPassword());
+		SingleDesEncrypter encrypter = new SingleDesEncrypter(pwdDialog.getPassword());
 		// Decrypt
 		String decrypted = encrypter.decrypt(encryptedContent);
 		if (decrypted == null)

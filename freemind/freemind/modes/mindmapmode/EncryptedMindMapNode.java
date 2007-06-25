@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.8 2007-04-21 15:11:21 dpolivaev Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.9 2007-06-25 19:50:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -31,7 +31,7 @@ import javax.swing.ImageIcon;
 
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
-import freemind.main.Tools.TripleDesEncrypter;
+import freemind.main.Tools.SingleDesEncrypter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapLinkRegistry;
@@ -282,7 +282,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         try {
             // Create encrypter/decrypter class
             //FIXME: Use char[] instead of toString.
-            TripleDesEncrypter encrypter = new TripleDesEncrypter(password);
+            SingleDesEncrypter encrypter = new SingleDesEncrypter(password);
 
             // Encrypt
             String encrypted = encrypter.encrypt(childXml.toString());
@@ -297,7 +297,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
      * @return null if the password is wrong.
      */
     private String decryptXml(String encryptedString, StringBuffer pwd) {
-        TripleDesEncrypter encrypter = new TripleDesEncrypter(pwd);
+        SingleDesEncrypter encrypter = new SingleDesEncrypter(pwd);
 
         //        // Decrypt
         String decrypted = encrypter.decrypt(encryptedString);
