@@ -492,6 +492,11 @@
 		       package="admin"
 		       dest="${inst.dir}"></cvs>
     	<ant dir="${inst.dir}/freemind" target="post" ></ant>
+    	<copy todir="${inst.dest.dir}">
+    		<fileset dir="${inst.dir}/post">
+			    <include name="*"/>
+			</fileset>
+		</copy>
     	<exec dir="${inst.dir}/admin/installer/windows/" executable="wine" os="Linux">
 			<arg value="/home/foltin/.wine/drive_c/Programme/Inno Setup 5/ISCC.exe"/>
 			<arg value="Freemind.iss"/>
@@ -503,7 +508,7 @@
 		</copy>
     	<exec dir="." executable="ssh" os="Linux">
     		<arg value="foltin@192.168.2.100"/>
-    		<arg value="cd /tmp ; mkdir fm_installers ; cd fm_installers ; cvs -d:pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind login ; cvs -d:pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind co -P -r fm_060405_integration freemind ; cd freemind ; ant post"/>
+    		<arg value="cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; cvs -d:pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind login ; cvs -d:pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind co -P -r fm_060405_integration freemind ; cd freemind ; ant post"/>
     	</exec>
     	<exec dir="." executable="scp" os="Linux">
     		<arg value="foltin@192.168.2.100:/tmp/fm_installers/post/*.dmg"/>
