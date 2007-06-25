@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.22 2007-02-04 12:52:55 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.23 2007-06-25 21:42:53 dpolivaev Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -115,11 +115,15 @@ public class FreeMindCommon {
         }
 
         String getResourceString(String key, String resource) {
-            try {
-                return getString(key);
-            } catch (Exception e) {
-                return resource;
-            }
+        	try {
+        		try {
+        			return languageResources.getString(key);
+        		} catch (Exception ex) {
+        			return defaultResources.getString(key) + POSTFIX_TRANSLATE_ME;
+        		}
+        	} catch (Exception e) {
+        		return resource;
+        	}
         }
     }
 
