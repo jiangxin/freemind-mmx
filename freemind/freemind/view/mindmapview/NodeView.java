@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.28 2007-06-23 11:18:59 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.29 2007-06-26 21:42:25 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -75,16 +75,6 @@ public class NodeView extends JComponent implements TreeModelListener{
     protected MapView map;
     private MainView mainView;
     private AttributeView attributeView;
-    /** the Color of the Rectangle of a selected Node */
-	protected final static Color selectedColor = new Color(210,210,210); //Color.lightGray;
-                                                                         // //the
-                                                                         // Color
-                                                                         // of
-                                                                         // the
-                                                                         // Rectangle
-                                                                         // of a
-                                                                         // selected
-                                                                         // Node
     protected final static Color dragColor = Color.lightGray; //the Color of
                                                               // appearing
                                                               // GradientBox on
@@ -111,6 +101,7 @@ public class NodeView extends JComponent implements TreeModelListener{
     //
 
     protected static Color standardSelectColor;
+    protected static Color standardSelectTextColor;
     private static Color standardNodeColor;
     private Object viewDeletionEvent;
     private int maxToolTipWidth;
@@ -128,11 +119,33 @@ public class NodeView extends JComponent implements TreeModelListener{
         
         this.model = model;
         this.map = map;
-        // initialize the standard node color.
+        // initialize the standard node colors.
         if (standardNodeColor == null) {
-            standardNodeColor =
-                Tools.xmlToColor(
-                        map.getController().getProperty(FreeMind.RESOURCES_NODE_COLOR));
+            try{
+                String stdcolor = map.getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR);
+                standardNodeColor = Tools.xmlToColor(stdcolor);
+                }
+                catch(Exception ex){
+                	standardSelectColor = Color.WHITE;
+                }
+
+            // initialize the selectedColor:
+            try{
+            String stdcolor = map.getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR);
+            standardSelectColor = Tools.xmlToColor(stdcolor);
+            }
+            catch(Exception ex){
+            	standardSelectColor = Color.BLUE.darker();
+            }
+
+            // initialize the selectedTextColor:
+            try{
+            String stdtextcolor = map.getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR_TEXT);
+            standardSelectTextColor = Tools.xmlToColor(stdtextcolor);
+            }
+            catch(Exception ex){
+            	standardSelectTextColor = Color.WHITE;
+            }
             propertyChangeListener = new FreemindPropertyListener() {
                             
                             public void propertyChanged(String propertyName,
@@ -145,6 +158,10 @@ public class NodeView extends JComponent implements TreeModelListener{
                                         .equals(FreeMind.RESOURCES_SELECTED_NODE_COLOR)) {
                                     standardSelectColor = Tools.xmlToColor(newValue);
                                 }
+                                if (propertyName
+                                        .equals(FreeMind.RESOURCES_SELECTED_NODE_COLOR_TEXT)) {
+                                	standardSelectTextColor = Tools.xmlToColor(newValue);
+                                }
                             }
                         };
             Controller
@@ -153,15 +170,6 @@ public class NodeView extends JComponent implements TreeModelListener{
         }
         else{
             propertyChangeListener = null;
-        }
-        // initialize the selectedColor:
-        if(standardSelectColor== null) {
-            String stdcolor = map.getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR);
-            if (stdcolor.length() == 7) {
-                standardSelectColor = Tools.xmlToColor(stdcolor);
-            } else {
-                standardSelectColor = new Color(210,210,210);
-            }
         }
         final TreeNode parentNode = model.getParent();
         final int index =  parentNode == null ? 0 : parentNode.getIndex(model);

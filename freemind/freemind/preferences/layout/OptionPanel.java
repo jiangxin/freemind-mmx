@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.18 2007-05-27 20:47:56 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.19 2007-06-26 21:42:25 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -98,7 +98,7 @@ public class OptionPanel implements TextTranslator {
 
 	private final OptionPanelFeedback feedback;
 
-	private static FreeMindMain fmMain;
+	private static FreeMind fmMain;
 
 	private static final String PREFERENCE_STORAGE_PROPERTY = "OptionPanel_Window_Properties";
     private static final String DEFAULT_LAYOUT_FORMAT = "right:max(40dlu;p), 4dlu, 120dlu, 7dlu";
@@ -109,7 +109,7 @@ public class OptionPanel implements TextTranslator {
 	 * @throws IOException
 	 *
 	 */
-	public OptionPanel(FreeMindMain fm, JDialog frame,
+	public OptionPanel(FreeMind fm, JDialog frame,
 			OptionPanelFeedback feedback) {
 		super();
 		if (fmMain == null) {
@@ -527,27 +527,31 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new SeparatorProperty("default_colors"));
 		controls.add(new ColorProperty("standardnodecolor.tooltip",
 
-		FreeMind.RESOURCES_NODE_COLOR, "#000000", this)); //  #000000
+		FreeMind.RESOURCES_NODE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_NODE_COLOR), this)); //  #000000
 
 		controls.add(new ColorProperty("standardselectednodecolor.tooltip",
 
-		FreeMind.RESOURCES_SELECTED_NODE_COLOR, "#D2D2D2", this)); //  #D2D2D2
+		FreeMind.RESOURCES_SELECTED_NODE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR), this)); //  #D2D2D2
+
+		controls.add(new ColorProperty("standardselectednodetextcolor.tooltip",
+
+		FreeMind.RESOURCES_SELECTED_NODE_COLOR_TEXT, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR_TEXT), this)); //  #000000
 
 		controls.add(new ColorProperty("standardedgecolor.tooltip",
 
-		FreeMind.RESOURCES_EDGE_COLOR, "#808080", this)); //  #808080
+		FreeMind.RESOURCES_EDGE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_EDGE_COLOR), this)); //  #808080
 
 		controls.add(new ColorProperty("standardlinkcolor.tooltip",
 
-		FreeMind.RESOURCES_LINK_COLOR, "#b0b0b0", this)); //  #b0b0b0
+		FreeMind.RESOURCES_LINK_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_LINK_COLOR), this)); //  #b0b0b0
 
 		controls.add(new ColorProperty("standardbackgroundcolor.tooltip",
 
-		FreeMind.RESOURCES_BACKGROUND_COLOR, "#ffffff", this)); //  #ffffff
+		FreeMind.RESOURCES_BACKGROUND_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_BACKGROUND_COLOR), this)); //  #ffffff
 
 		controls.add(new ColorProperty("standardcloudcolor.tooltip",
 
-		FreeMind.RESOURCES_CLOUD_COLOR, "#f0f0f0", this)); //  #f0f0f0
+		FreeMind.RESOURCES_CLOUD_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_CLOUD_COLOR), this)); //  #f0f0f0
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("default_fonts"));

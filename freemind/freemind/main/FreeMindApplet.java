@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.16 2007-06-15 19:09:51 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.17 2007-06-26 21:42:25 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -232,6 +232,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 	    defaultProps.load(in);
  	    in.close();
 	    userProps = defaultProps;
+	    mFreeMindCommon.loadSystemProperties(userProps);
  	} catch (Exception ex) {
            System.err.println("Could not load properties.");
  	}

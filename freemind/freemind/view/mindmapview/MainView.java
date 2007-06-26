@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.6 2007-06-25 21:27:09 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.7 2007-06-26 21:42:25 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -103,6 +103,11 @@ public abstract class MainView extends JLabel{
          * @see javax.swing.JComponent#paint(java.awt.Graphics)
          */
         public void paint(Graphics g) {
+        	Color backupTextColor = null; 
+        	if (getNodeView().isSelected() && ! isPrinting){
+        		backupTextColor = getForeground();
+        		setForeground(NodeView.standardSelectTextColor);
+        	}
             float zoom = getZoom();
             if(zoom != 1F){
                 Graphics2D g2 = (Graphics2D)g;
@@ -115,6 +120,9 @@ public abstract class MainView extends JLabel{
             }
             else{
                 super.paint(g);
+            }
+            if(backupTextColor != null){
+            	setForeground(backupTextColor);
             }
         }
 

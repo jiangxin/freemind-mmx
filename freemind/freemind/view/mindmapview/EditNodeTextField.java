@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.9 2007-06-23 11:18:55 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.10 2007-06-26 21:42:25 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -319,7 +319,7 @@ public class EditNodeTextField extends EditNodeBase {
                 - frameScreenLocation.getY()
                 + yOffset));
 
-        getFrame().getLayeredPane().add(textfield); // 2000);
+        getFrame().getLayeredPane().add(textfield, 0); 
         getFrame().repaint();
 
         SwingUtilities.invokeLater(new Runnable() { // PN 0.6.2
@@ -333,7 +333,7 @@ public class EditNodeTextField extends EditNodeBase {
     }
 
     private void hideMe() {
-        getFrame().getLayeredPane().remove(textfield);
+        getFrame().getLayeredPane().remove(0);
         getFrame().repaint(); //  getLayeredPane().repaint();
         textFieldListener = null;
     }

@@ -19,9 +19,10 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.23 2007-06-25 21:42:53 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.24 2007-06-26 21:42:25 dpolivaev Exp $*/
 package freemind.main;
 
+import java.awt.SystemColor;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +33,7 @@ import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -325,6 +327,25 @@ public class FreeMindCommon {
         }
         return value;
     }
+
+	public void loadSystemProperties(Properties props) {
+		if(! props.containsKey(FreeMind.RESOURCES_BACKGROUND_COLOR))
+		{
+			props.put(FreeMind.RESOURCES_BACKGROUND_COLOR, Tools.colorToXml(SystemColor.window));
+		}
+		if(! props.containsKey(FreeMind.RESOURCES_NODE_COLOR))
+		{
+			props.put(FreeMind.RESOURCES_NODE_COLOR, Tools.colorToXml(SystemColor.windowText));
+		}
+		if(! props.containsKey(FreeMind.RESOURCES_SELECTED_NODE_COLOR))
+		{
+			props.put(FreeMind.RESOURCES_SELECTED_NODE_COLOR, Tools.colorToXml(SystemColor.textHighlight));
+		}
+		if(! props.containsKey(FreeMind.RESOURCES_SELECTED_NODE_COLOR_TEXT))
+		{
+			props.put(FreeMind.RESOURCES_SELECTED_NODE_COLOR_TEXT, Tools.colorToXml(SystemColor.textHighlightText));
+		}
+	}
 
 
     

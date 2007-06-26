@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.30 2007-06-15 19:09:50 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.31 2007-06-26 21:42:25 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -1322,7 +1322,7 @@ public class Controller  implements MapModuleChangeObserver {
 			JDialog dialog = new JDialog(getFrame().getJFrame(), true /* modal */);
 			dialog.setResizable(true);
 			dialog.setUndecorated(false);
-			final OptionPanel options = new OptionPanel(getFrame(), dialog, new OptionPanelFeedback() {
+			final OptionPanel options = new OptionPanel((FreeMind)getFrame(), dialog, new OptionPanelFeedback() {
 
 				public void writeProperties(Properties props) {
 					Vector sortedKeys = new Vector();
