@@ -41,6 +41,11 @@ which can be obtained using NodeView.getContent().
 * Plugin API improved, StatefulNodeHook with Undo-Support introduced
 * Window position, size and state are saved and restored correctly
 
+* Adjusting not only the background color of selected node but also its text color. 
+* System colors used instead of FreeMind default colors 
+ for default window background color, default node text color, 
+ default selected node background and text colors.
+
 ===============================
 Changes made in FreeMind 0.9.0 Beta 9
 ===============================
