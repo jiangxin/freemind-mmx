@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: TestMindMapNode.java,v 1.1.2.11 2007-04-21 15:11:24 dpolivaev Exp $*/
+/*$Id: TestMindMapNode.java,v 1.1.2.12 2007-06-26 21:43:56 dpolivaev Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -124,6 +124,10 @@ final class TestMindMapNode implements MindMapNode {
     public void setStyle(String style) {
     }
 
+    public boolean hasStyle(){
+    	return false;
+    }
+    
     public MindMapNode getParentNode() {
         return null;
     }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.34 2007-06-05 21:01:24 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.35 2007-06-26 21:43:45 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -345,17 +345,20 @@ public class NodeNote extends MindMapNodeHookAdapter {
 
         public static SHTMLPanel getHtmlEditorPanel() {
             if (htmlEditorPanel == null) {
-                final TextResources resources = new DefaultTextResources(Resources.getInstance().getResources(), Resources.getInstance().getProperties());
                 SHTMLPanel.setResources(new TextResources(){
                     public String getString(String pKey) {
-                        return resources.getString("simplyhtml." + pKey);
+                    	pKey = "simplyhtml." + pKey;
+                    	String resourceString = Resources.getInstance().getResourceString(pKey, null);
+                    	if(resourceString == null){
+                    		resourceString = Resources.getInstance().getProperty(pKey);
+                    	}
+                    	return resourceString;
                     }                        
                 });
                 htmlEditorPanel = SHTMLPanel.createSHTMLPanel();
             }
             return htmlEditorPanel;
         }
-
     }
 
     public void startupMapHook() {
