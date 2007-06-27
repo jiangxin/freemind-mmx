@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/* $Id: StylePatternFrame.java,v 1.1.2.10.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
+/* $Id: StylePatternFrame.java,v 1.1.2.10.2.3 2007-06-27 07:03:57 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;
@@ -68,6 +68,7 @@ import freemind.controller.actions.generated.instance.PatternNodeFontSize;
 import freemind.controller.actions.generated.instance.PatternNodeStyle;
 import freemind.controller.actions.generated.instance.PatternNodeText;
 import freemind.controller.actions.generated.instance.PatternPropertyBase;
+import freemind.main.FreeMind;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
@@ -89,8 +90,6 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 
 		public static StylePatternFrameType WITH_NAME_AND_CHILDS = new StylePatternFrameType();
 	}
-
-	private static final String DEFAULT_COLOR = "#FFFFFF";
 
 	private static final String[] EDGE_STYLES = new String[] {
 			EdgeAdapter.EDGESTYLE_LINEAR, EdgeAdapter.EDGESTYLE_BEZIER,
@@ -315,15 +314,16 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		mSetNodeColor = new ThreeCheckBoxProperty(SET_NODE_COLOR + ".tooltip",
 				SET_NODE_COLOR);
 		controls.add(mSetNodeColor);
+		FreeMind fmMain = (FreeMind)mMindMapController.getFrame();
 		mNodeColor = new ColorProperty(NODE_COLOR + ".tooltip", NODE_COLOR,
-				"#ffffff", this);
+				fmMain.getDefaultProperty(FreeMind.RESOURCES_NODE_COLOR), this);
 		controls.add(mNodeColor);
 		mSetNodeBackgroundColor = new ThreeCheckBoxProperty(
 				SET_NODE_BACKGROUND_COLOR + ".tooltip",
 				SET_NODE_BACKGROUND_COLOR);
 		controls.add(mSetNodeBackgroundColor);
 		mNodeBackgroundColor = new ColorProperty(NODE_BACKGROUND_COLOR
-				+ ".tooltip", NODE_BACKGROUND_COLOR, DEFAULT_COLOR, this);
+				+ ".tooltip", NODE_BACKGROUND_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_BACKGROUND_COLOR), this);
 		controls.add(mNodeBackgroundColor);
 		controls.add(new SeparatorProperty("NodeStyles"));
 		mSetNodeStyle = new ThreeCheckBoxProperty(SET_NODE_STYLE + ".tooltip",
@@ -403,7 +403,7 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 				SET_EDGE_COLOR);
 		controls.add(mSetEdgeColor);
 		mEdgeColor = new ColorProperty(EDGE_COLOR + ".tooltip", EDGE_COLOR,
-				DEFAULT_COLOR, this);
+				fmMain.getDefaultProperty(FreeMind.RESOURCES_EDGE_COLOR), this);
 		controls.add(mEdgeColor);
 		// fill map;
 		mPropertyChangePropagation.put(mSetNodeColor, mNodeColor);
@@ -440,22 +440,23 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 	}
 
 	public void setPattern(Pattern pattern) {
+		FreeMind fmMain = (FreeMind)mMindMapController.getFrame();
 		setPatternControls(pattern.getPatternNodeColor(), mSetNodeColor,
-				mNodeColor, DEFAULT_COLOR);
+				mNodeColor, fmMain.getDefaultProperty(FreeMind.RESOURCES_NODE_COLOR));
 		setPatternControls(pattern.getPatternNodeBackgroundColor(),
-				mSetNodeBackgroundColor, mNodeBackgroundColor, DEFAULT_COLOR);
+				mSetNodeBackgroundColor, mNodeBackgroundColor, fmMain.getDefaultProperty(FreeMind.RESOURCES_BACKGROUND_COLOR));
 		setPatternControls(pattern.getPatternNodeStyle(), mSetNodeStyle,
 				mNodeStyle, MindMapNode.STYLE_AS_PARENT);
 		setPatternControls(pattern.getPatternNodeText(), mSetNodeText,
 				mNodeText, "");
 		setPatternControls(pattern.getPatternEdgeColor(), mSetEdgeColor,
-				mEdgeColor, DEFAULT_COLOR);
+				mEdgeColor, fmMain.getDefaultProperty(FreeMind.RESOURCES_EDGE_COLOR));
 		setPatternControls(pattern.getPatternEdgeStyle(), mSetEdgeStyle,
 				mEdgeStyle, EDGE_STYLES[0]);
 		setPatternControls(pattern.getPatternEdgeWidth(), mSetEdgeWidth,
 				mEdgeWidth, EDGE_WIDTHS[0], new EdgeWidthTransformer());
 		setPatternControls(pattern.getPatternNodeFontName(), mSetNodeFontName,
-				mNodeFontName, null);
+				mNodeFontName, mMindMapController.getController().getDefaultFontFamilyName());		
 		setPatternControls(pattern.getPatternNodeFontSize(), mSetNodeFontSize,
 				mNodeFontSize, sizes[0]);
 		setPatternControls(pattern.getPatternNodeFontBold(), mSetNodeFontBold,

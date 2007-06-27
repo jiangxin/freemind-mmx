@@ -23,6 +23,7 @@
  */
 package accessories.plugins;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
@@ -296,26 +297,31 @@ public class AutomaticLayout extends PermanentMindMapNodeHookAdapter {
 
         public void valueChanged(ListSelectionEvent e) {
             // construct pattern:
-            Patterns pat = getPatternsFromString();
+            final Patterns pat = getPatternsFromString();
             JList source = (JList)e.getSource();
             if(source.getSelectedIndex() < 0)
                 return;
-            Pattern choice = (Pattern) pat.getChoice(source.getSelectedIndex());
-            ChooseFormatPopupDialog formatDialog = new ChooseFormatPopupDialog(
+            final Pattern choice = (Pattern) pat.getChoice(source.getSelectedIndex());
+            final ChooseFormatPopupDialog formatDialog = new ChooseFormatPopupDialog(
                     mindMapController.getFrame().getJFrame(),
                     mindMapController,
                     "accessories/plugins/AutomaticLayout.properties_StyleDialogTitle",
                     choice);
-            formatDialog.setModal(true);
-            formatDialog.pack();
-            formatDialog.setVisible(true);
-            // process result:
-            if (formatDialog.getResult() == ChooseFormatPopupDialog.OK) {
-                formatDialog.getPattern(choice);
-                patterns = XmlBindingTools.getInstance().marshall(pat);
-                setValue(patterns);
-                firePropertyChangeEvent();
-            }
+            EventQueue.invokeLater(new Runnable(){
+				public void run() {
+		            formatDialog.setModal(true);
+		            formatDialog.pack();
+		            formatDialog.setVisible(true);
+		            // process result:
+		            if (formatDialog.getResult() == ChooseFormatPopupDialog.OK) {
+		                formatDialog.getPattern(choice);
+		                patterns = XmlBindingTools.getInstance().marshall(pat);
+		                setValue(patterns);
+		                firePropertyChangeEvent();
+		            }
+				}
+            	
+            });
         }
 
     }

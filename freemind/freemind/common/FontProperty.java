@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: FontProperty.java,v 1.1.2.4.2.1 2006-07-25 20:28:19 christianfoltin Exp $*/
+/*$Id: FontProperty.java,v 1.1.2.4.2.2 2007-06-27 07:03:57 dpolivaev Exp $*/
 package freemind.common;
 
 import java.awt.Font;
@@ -87,6 +87,7 @@ public class FontProperty extends PropertyBean implements PropertyControl {
             String fontName = mAvailableFontFamilyNames[i];
             if(fontName.equals(pValue)) {
                 mFontComboBox.setSelectedIndex(i);
+                return;
             }
         }
         System.err.println("Unknown value:" + pValue);

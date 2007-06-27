@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.29 2007-06-26 21:42:25 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.30 2007-06-27 07:03:57 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -140,7 +140,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 
             // initialize the selectedTextColor:
             try{
-            String stdtextcolor = map.getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR_TEXT);
+            String stdtextcolor = map.getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR);
             standardSelectTextColor = Tools.xmlToColor(stdtextcolor);
             }
             catch(Exception ex){
@@ -159,7 +159,7 @@ public class NodeView extends JComponent implements TreeModelListener{
                                     standardSelectColor = Tools.xmlToColor(newValue);
                                 }
                                 if (propertyName
-                                        .equals(FreeMind.RESOURCES_SELECTED_NODE_COLOR_TEXT)) {
+                                        .equals(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR)) {
                                 	standardSelectTextColor = Tools.xmlToColor(newValue);
                                 }
                             }

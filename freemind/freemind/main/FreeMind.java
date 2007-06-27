@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.57 2007-06-26 21:42:25 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.58 2007-06-27 07:03:57 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -99,7 +99,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public static final String RESOURCES_SELECTED_NODE_COLOR = "standardselectednodecolor";
 
-	public static final String RESOURCES_SELECTED_NODE_COLOR_TEXT = "standardselectednodecolortext";
+	public static final String RESOURCES_SELECTED_NODE_TEXT_COLOR = "standardselectednodetextcolor";
 
 	public static final String RESOURCES_EDGE_COLOR = "standardedgecolor";
 
