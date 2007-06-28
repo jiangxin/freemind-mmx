@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.7 2007-06-26 21:42:25 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.8 2007-06-28 21:53:05 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -45,7 +45,7 @@ public abstract class MainView extends JLabel{
     static Dimension maximumSize = new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
         private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
         private static final int MIN_HOR_NODE_SIZE = 10;
-        private boolean isPrinting = false;
+        static private boolean isPrinting = false;
         
         int getZoomedFoldingSymbolHalfWidth(){
             return getNodeView().getZoomedFoldingSymbolHalfWidth();
@@ -104,7 +104,7 @@ public abstract class MainView extends JLabel{
          */
         public void paint(Graphics g) {
         	Color backupTextColor = null; 
-        	if (getNodeView().isSelected() && ! isPrinting){
+        	if (NodeView.standardChangeColorForSelection && getNodeView().isSelected() && ! isPrinting){
         		backupTextColor = getForeground();
         		setForeground(NodeView.standardSelectTextColor);
         	}
@@ -148,7 +148,7 @@ public abstract class MainView extends JLabel{
             super.paintComponent(g);
         }
         public void paintSelected(Graphics2D graphics) {
-            if (getNodeView().isSelected() && ! isPrinting) {
+            if (NodeView.standardChangeColorForSelection && getNodeView().isSelected() && ! isPrinting) {
                 paintBackground(graphics, getNodeView().getSelectedColor());
             } else if (getNodeView().getModel().getBackgroundColor() != null) {
                 paintBackground(graphics, getNodeView().getModel().getBackgroundColor());

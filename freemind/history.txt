@@ -45,6 +45,7 @@ which can be obtained using NodeView.getContent().
 * System colors used instead of FreeMind default colors 
  for default window background color, default node text color, 
  default selected node background and text colors.
+* Alternative displaying of selected nodes showing rounded rectangle around the node (may be set in preferences)
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 9

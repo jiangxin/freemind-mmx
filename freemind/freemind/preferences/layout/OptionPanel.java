@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.20 2007-06-27 07:03:57 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.21 2007-06-28 21:53:05 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -529,14 +529,6 @@ public class OptionPanel implements TextTranslator {
 
 		FreeMind.RESOURCES_NODE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_NODE_COLOR), this)); //  #000000
 
-		controls.add(new ColorProperty("standardselectednodecolor.tooltip",
-
-		FreeMind.RESOURCES_SELECTED_NODE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR), this)); //  #D2D2D2
-
-		controls.add(new ColorProperty("standardselectednodetextcolor.tooltip",
-
-		FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR), this)); //  #000000
-
 		controls.add(new ColorProperty("standardedgecolor.tooltip",
 
 		FreeMind.RESOURCES_EDGE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_EDGE_COLOR), this)); //  #808080
@@ -552,6 +544,15 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new ColorProperty("standardcloudcolor.tooltip",
 
 		FreeMind.RESOURCES_CLOUD_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_CLOUD_COLOR), this)); //  #f0f0f0
+
+		controls.add(new SeparatorProperty("selection_colors"));
+		controls.add(new BooleanProperty(FreeMind.RESOURCE_CHANGE_COLOR_FOR_SELECTION+".tooltip",
+                FreeMind.RESOURCE_CHANGE_COLOR_FOR_SELECTION)); // true
+		
+		controls.add(new ColorProperty("standardselectednodecolor.tooltip",
+		FreeMind.RESOURCES_SELECTED_NODE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR), this)); //  #D2D2D2
+		controls.add(new ColorProperty("standardselectednodetextcolor.tooltip",
+		FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR), this)); //  #000000
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("default_fonts"));

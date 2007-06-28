@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.30 2007-06-27 07:03:57 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.31 2007-06-28 21:53:05 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -30,6 +31,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
@@ -100,9 +102,11 @@ public class NodeView extends JComponent implements TreeModelListener{
     // Constructors
     //
 
-    protected static Color standardSelectColor;
-    protected static Color standardSelectTextColor;
-    private static Color standardNodeColor;
+    static Color standardSelectColor;
+    static Color standardSelectTextColor;
+    static Color standardNodeColor;
+    static boolean standardChangeColorForSelection;
+    
     private Object viewDeletionEvent;
     private int maxToolTipWidth;
     private NodeView preferredChild;
@@ -110,6 +114,10 @@ public class NodeView extends JComponent implements TreeModelListener{
     protected NodeMotionListenerView motionListenerView;
 
     private FreemindPropertyListener propertyChangeListener;
+
+	static private boolean isPrinting = false;
+
+	private static Stroke standardSelectionStroke;
     protected NodeView(MindMapNode model, int position, MapView map, Container parent) {
         if(logger == null) {
             logger = map.getController().getFrame().getLogger(this.getClass().getName());
@@ -146,6 +154,13 @@ public class NodeView extends JComponent implements TreeModelListener{
             catch(Exception ex){
             	standardSelectTextColor = Color.WHITE;
             }
+            try{
+                String changeColor = map.getController().getFrame().getProperty(FreeMind.RESOURCE_CHANGE_COLOR_FOR_SELECTION);
+                standardChangeColorForSelection = Tools.xmlToBoolean(changeColor);
+                }
+                catch(Exception ex){
+                	standardChangeColorForSelection = true;
+                }
             propertyChangeListener = new FreemindPropertyListener() {
                             
                             public void propertyChanged(String propertyName,
@@ -153,14 +168,22 @@ public class NodeView extends JComponent implements TreeModelListener{
                                 if (propertyName
                                         .equals(FreeMind.RESOURCES_NODE_COLOR)) {
                                     standardNodeColor = Tools.xmlToColor(newValue);
+                                    repaint();
                                 }
-                                if (propertyName
+                                else if (propertyName
                                         .equals(FreeMind.RESOURCES_SELECTED_NODE_COLOR)) {
                                     standardSelectColor = Tools.xmlToColor(newValue);
+                                    repaint();
                                 }
-                                if (propertyName
+                                else if (propertyName
                                         .equals(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR)) {
                                 	standardSelectTextColor = Tools.xmlToColor(newValue);
+                                    repaint();
+                                }
+                                else if (propertyName
+                                        .equals(FreeMind.RESOURCE_CHANGE_COLOR_FOR_SELECTION)) {
+                                	standardChangeColorForSelection = Tools.xmlToBoolean(newValue);
+                                    repaint();
                                 }
                             }
                         };
@@ -931,6 +954,11 @@ public class NodeView extends JComponent implements TreeModelListener{
 
    }
 
+   protected void setRenderingEdges(Graphics2D g) {
+   	if (getMap().getController().getAntialiasEdges() || getMap().getController().getAntialiasAll()) {
+   		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
+   }
+
    String getStyle(){
        return mainView.getStyle();
    }
@@ -1245,6 +1273,7 @@ public class NodeView extends JComponent implements TreeModelListener{
      */
     public void paint(Graphics g) {
         paintCloud(g);
+        paingSelected((Graphics2D)g);
         super.paint(g);
         if(getModel().isVisible()){
             paintFoldingMark((Graphics2D)g);
@@ -1253,7 +1282,35 @@ public class NodeView extends JComponent implements TreeModelListener{
 //        g.drawRect(0, 0, getWidth()-1, getHeight()-1);
     }
 
-    private void paintCloud(Graphics g) {
+    public void print(Graphics g) {
+        isPrinting  = true;
+        super.print(g);
+        isPrinting = false;
+    }
+     
+	   private void paingSelected(Graphics2D g) {
+    	if(standardChangeColorForSelection || ! isSelected() || isPrinting){
+    		return;
+    	}
+		final Color c = g.getColor();
+		final Stroke s = g.getStroke();
+		final Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+		g.setColor(NodeView.standardSelectColor);
+		if(standardSelectionStroke == null){
+			standardSelectionStroke = new BasicStroke(1.0f);
+		}
+		g.setStroke(standardSelectionStroke);
+		setRenderingEdges(g);
+		final int arcWidth = 4;
+		g.drawRoundRect(getContent().getX() - arcWidth, getContent().getY() - arcWidth, 
+				getContent().getWidth() + 2 * arcWidth, getContent().getHeight() +  2 * arcWidth, 
+				15, 15);
+		g.setColor(c);
+		g.setStroke(s);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
+	}
+
+	private void paintCloud(Graphics g) {
         if(model.isVisible() && model.getCloud() != null) {
             CloudView cloud = new CloudView(model.getCloud(), this);
             cloud.paint(g);
