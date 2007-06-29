@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.18 2007-06-23 11:18:56 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.19 2007-06-29 14:01:34 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -59,11 +59,14 @@ import freemind.controller.Controller;
 import freemind.controller.NodeKeyListener;
 import freemind.controller.NodeMotionListener;
 import freemind.controller.NodeMouseMotionListener;
+import freemind.main.FreeMind;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
+import freemind.preferences.FreemindPropertyListener;
 
 
 /**
@@ -71,6 +74,12 @@ import freemind.modes.MindMapNode;
  * (in analogy to class JTree).
  */
 public class MapView extends JPanel implements Printable, Autoscroll{
+    static Color standardSelectColor;
+    static Color standardSelectTextColor;
+    static Color standardNodeColor;
+    static boolean standardDrawRectangleForSelection;
+    static private FreemindPropertyListener propertyChangeListener;
+
 	private class Selected {
 		private Vector mySelected = new Vector();
 		public Selected() {};
@@ -136,7 +145,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     private MindMap model;
     private NodeView rootView = null;
     private Selected selected = new Selected();
-    private Controller controller;
+    static private Controller controller = null;
     private float zoom=1F;
     private boolean disableMoveCursor = true;
     private int siblingMaxLevel;
@@ -164,10 +173,52 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
     public MapView( MindMap model, Controller controller ) {
         super();
-
         this.model = model;
-        this.controller = controller;
-		if(logger == null)
+        if (MapView.controller == null){
+        	MapView.controller= controller;
+        }
+        else if (MapView.controller != controller){
+        	throw new RuntimeException("only one controller instance expected");
+        }
+        // initialize the standard node colors.
+        if (standardNodeColor == null) {
+            try{
+                String stdcolor = getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR);
+                standardNodeColor = Tools.xmlToColor(stdcolor);
+                }
+                catch(Exception ex){
+                	standardSelectColor = Color.WHITE;
+                }
+
+            // initialize the selectedColor:
+            try{
+            String stdcolor = getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR);
+            standardSelectColor = Tools.xmlToColor(stdcolor);
+            }
+            catch(Exception ex){
+            	standardSelectColor = Color.BLUE.darker();
+            }
+
+            // initialize the selectedTextColor:
+            try{
+            String stdtextcolor = getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR);
+            standardSelectTextColor = Tools.xmlToColor(stdtextcolor);
+            }
+            catch(Exception ex){
+            	standardSelectTextColor = Color.WHITE;
+            }
+            try{
+                String drawCircle = getController().getFrame().getProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION);
+                standardDrawRectangleForSelection = Tools.xmlToBoolean(drawCircle);
+                }
+                catch(Exception ex){
+                	standardDrawRectangleForSelection = false;
+                }
+            createPropertyChangeListener();
+            
+        }
+
+ 		if(logger == null)
 			logger = controller.getFrame().getLogger(this.getClass().getName());
 
         this.setAutoscrolls(true);
@@ -194,6 +245,37 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                                              controller.getProperty("disable_cursor_move_paper"),"true");
     }
 
+	static private void createPropertyChangeListener() {
+		propertyChangeListener = new FreemindPropertyListener() {
+		                
+		                public void propertyChanged(String propertyName,
+		                        String newValue, String oldValue) {
+		                    if (propertyName
+		                            .equals(FreeMind.RESOURCES_NODE_COLOR)) {
+		                        standardNodeColor = Tools.xmlToColor(newValue);
+		                        controller.getFrame().getJFrame().repaint();
+		                    }
+		                    else if (propertyName
+		                            .equals(FreeMind.RESOURCES_SELECTED_NODE_COLOR)) {
+		                        standardSelectColor = Tools.xmlToColor(newValue);
+		                        controller.getFrame().getJFrame().repaint();
+		                    }
+		                    else if (propertyName
+		                            .equals(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR)) {
+		                    	standardSelectTextColor = Tools.xmlToColor(newValue);
+		                        controller.getFrame().getJFrame().repaint();
+		                    }
+		                    else if (propertyName
+		                            .equals(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION)) {
+		                    	standardDrawRectangleForSelection = Tools.xmlToBoolean(newValue);
+		                        controller.getFrame().getJFrame().repaint();
+		                    }
+		                }
+		            };
+		Controller
+		.addPropertyChangeListener(propertyChangeListener);
+	}
+	
     public void initRoot() {
         rootContentLocation = new Point();
         rootView = NodeViewFactory.getInstance().newNodeView( getModel().getRootNode(), 0, this, this );

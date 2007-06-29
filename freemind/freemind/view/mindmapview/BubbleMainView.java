@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BubbleMainView.java,v 1.1.4.2 2007-04-21 15:11:22 dpolivaev Exp $ */
+/* $Id: BubbleMainView.java,v 1.1.4.3 2007-06-29 14:01:34 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -80,7 +80,7 @@ class BubbleMainView extends MainView{
         public void paintSelected(Graphics2D graphics) {
             super.paintSelected(graphics);
             if (getNodeView().isSelected()) {
-                graphics.setColor(NodeView.standardSelectColor);
+                graphics.setColor(MapView.standardSelectColor);
                 graphics.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 10, 10);
             }
         }

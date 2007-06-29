@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.8 2007-06-28 21:53:05 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.9 2007-06-29 14:01:34 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -45,7 +45,6 @@ public abstract class MainView extends JLabel{
     static Dimension maximumSize = new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
         private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
         private static final int MIN_HOR_NODE_SIZE = 10;
-        static private boolean isPrinting = false;
         
         int getZoomedFoldingSymbolHalfWidth(){
             return getNodeView().getZoomedFoldingSymbolHalfWidth();
@@ -87,7 +86,7 @@ public abstract class MainView extends JLabel{
                 prefSize.height= (int)(0.99 + prefSize.height *zoom);
             }
             
-            if(getNodeView().getMap().isCurrentlyPrinting() && NEED_PREF_SIZE_BUG_FIX) {
+            if(isCurrentlyPrinting() && NEED_PREF_SIZE_BUG_FIX) {
                 prefSize.width += getNodeView().getMap().getZoomed(10);
             }
             prefSize.width = Math.max(getNodeView().getMap().getZoomed(MIN_HOR_NODE_SIZE), prefSize.width);
@@ -104,9 +103,9 @@ public abstract class MainView extends JLabel{
          */
         public void paint(Graphics g) {
         	Color backupTextColor = null; 
-        	if (NodeView.standardChangeColorForSelection && getNodeView().isSelected() && ! isPrinting){
+        	if (! MapView.standardDrawRectangleForSelection && getNodeView().isSelected() && ! isCurrentlyPrinting()){
         		backupTextColor = getForeground();
-        		setForeground(NodeView.standardSelectTextColor);
+        		setForeground(MapView.standardSelectTextColor);
         	}
             float zoom = getZoom();
             if(zoom != 1F){
@@ -125,6 +124,10 @@ public abstract class MainView extends JLabel{
             	setForeground(backupTextColor);
             }
         }
+
+		private boolean isCurrentlyPrinting() {
+			return getNodeView().getMap().isCurrentlyPrinting();
+		}
 
         private float getZoom() {
             float zoom = getNodeView().getMap().getZoom();
@@ -148,7 +151,7 @@ public abstract class MainView extends JLabel{
             super.paintComponent(g);
         }
         public void paintSelected(Graphics2D graphics) {
-            if (NodeView.standardChangeColorForSelection && getNodeView().isSelected() && ! isPrinting) {
+            if (! MapView.standardDrawRectangleForSelection && getNodeView().isSelected() && ! isCurrentlyPrinting()) {
                 paintBackground(graphics, getNodeView().getSelectedColor());
             } else if (getNodeView().getModel().getBackgroundColor() != null) {
                 paintBackground(graphics, getNodeView().getModel().getBackgroundColor());
@@ -212,12 +215,6 @@ public abstract class MainView extends JLabel{
         }
         }
 
-       public void print(Graphics g) {
-           isPrinting = true;
-           super.print(g);
-           isPrinting = false;
-       }
-        
         /* (non-Javadoc)
          * @see javax.swing.JComponent#getHeight()
          */
