@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.19 2007-06-29 14:01:34 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.20 2007-07-02 22:25:10 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -980,6 +980,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			isPrinting = true;
 			/* repaint for printing:*/
 			setZoom(getZoom());
+			validate();
 			background = getBackground();
 			boundingRectangle = getInnerBounds();
             fitToPage = Tools.safeEquals(controller.getProperty("fit_to_page"),"true");
@@ -1002,6 +1003,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			isPrinting = false;
 			/* repaint for end printing:*/
 			setZoom(getZoom());
+			validate();
 		}
 	 }
 
