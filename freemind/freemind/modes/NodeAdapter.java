@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.27 2007-06-20 21:52:42 dpolivaev Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.28 2007-07-02 21:49:48 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -708,6 +708,7 @@ public abstract class NodeAdapter implements MindMapNode {
         preferredChild = childNode;
         }
     	child.setParent( this );
+    	recursiveCallAddChildren(this, childNode);
     }
 
 
@@ -734,6 +735,21 @@ public abstract class NodeAdapter implements MindMapNode {
     	// call remove child hook after removal.
     	recursiveCallRemoveChildren(this, (MindMapNode) node, this);
     }
+
+	private void recursiveCallAddChildren(MindMapNode node, MindMapNode addedChild) {
+		// Tell any node hooks that the node is added:
+		if(node instanceof MindMapNode) {
+			for(Iterator i=  ((MindMapNode)node).getActivatedHooks().iterator(); i.hasNext();) {
+				PermanentNodeHook hook = (PermanentNodeHook) i.next();
+                if (addedChild.getParentNode() == node) {
+                    hook.onAddChild(addedChild);
+                }
+                hook.onAddChildren(addedChild);
+			}
+		}
+		if(!node.isRoot() && node.getParentNode()!= null)
+		    recursiveCallAddChildren(node.getParentNode(), addedChild);
+	}
 
 	/**
 	 * @param oldDad the last dad node had.

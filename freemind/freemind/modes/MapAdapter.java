@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.17 2007-04-26 07:37:26 dpolivaev Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.18 2007-07-02 21:49:48 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -268,23 +268,6 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
     }
 
     public MindMapLinkRegistry getLinkRegistry() { return null; }
-
-	/**URGENT: This method must be moved to the ControllerAdapter.
-	 */
-	private void recursiveCallAddChildren(MindMapNode node, MindMapNode addedChild) {
-		// Tell any node hooks that the node is added:
-		if(node instanceof MindMapNode) {
-			for(Iterator i=  ((MindMapNode)node).getActivatedHooks().iterator(); i.hasNext();) {
-				PermanentNodeHook hook = (PermanentNodeHook) i.next();
-                if (addedChild.getParentNode() == node) {
-                    hook.onAddChild(addedChild);
-                }
-                hook.onAddChildren(addedChild);
-			}
-		}
-		if(!node.isRoot() && node.getParentNode()!= null)
-		    recursiveCallAddChildren(node.getParentNode(), addedChild);
-	}
 
     /**
       * This method should not be called directly!

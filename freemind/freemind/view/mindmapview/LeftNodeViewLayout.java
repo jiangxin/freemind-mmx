@@ -77,14 +77,22 @@ public class LeftNodeViewLayout extends NodeViewLayoutAdapter {
     }
 
     public Point getOutPoint(NodeView view, Point destinationPoint) {
-        final Point centerPoint = view.getMainView().getCenterPoint();
-        centerPoint.x =  0;
+        final MainView mainView = view.getMainView();
+		final Point centerPoint = mainView.getCenterPoint();
+	    final JComponent content = view.getContent();
+	    Tools.convertPointToAncestor(mainView, centerPoint, content);
+		centerPoint.x =0;
+	    Tools.convertPointToAncestor(content, centerPoint, view);
         return centerPoint;
     }
 
     public Point getInPoint(NodeView view) {
-        final Point centerPoint = view.getMainView().getCenterPoint();
+        final MainView mainView = view.getMainView();
+		final Point centerPoint = mainView.getCenterPoint();
+	    final JComponent content = view.getContent();
+	    Tools.convertPointToAncestor(mainView, centerPoint, content);
         centerPoint.x = view.getContent().getWidth() - 1;
+	    Tools.convertPointToAncestor(content, centerPoint, view);
         return centerPoint;
     }
 

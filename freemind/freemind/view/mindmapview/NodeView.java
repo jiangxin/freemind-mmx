@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.32 2007-06-29 14:01:34 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.33 2007-07-02 21:49:48 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -362,20 +362,18 @@ public class NodeView extends JComponent implements TreeModelListener{
     /** Returns the point the edge should start given the point of the child node
      * that should be connected.
      */
-    Point getOutPoint(Point destinationPoint, Component c) {
+    Point getOutPoint(Point destinationPoint) {
         final NodeViewLayout layoutManager = (NodeViewLayout)getLayout();
         Point out = layoutManager.getOutPoint(this, destinationPoint);
-        Tools.convertPointToAncestor(mainView, out, c);
         return out;
     }
 
     /**
      * Returns the Point where the InEdge should arrive the Node.
      */
-    Point getInPoint(Component c) {
+    Point getInPoint() {
         final NodeViewLayout layoutManager = (NodeViewLayout)getLayout();
         Point in = layoutManager.getInPoint(this);
-        Tools.convertPointToAncestor(mainView, in, c);
         return in;
     }
 
@@ -1099,7 +1097,7 @@ public class NodeView extends JComponent implements TreeModelListener{
     }
     public void paintFoldingMark(Graphics2D g){ 
         if(getModel().isFolded()) {
-            Point out = getOutPoint(null, mainView); 
+            Point out = getOutPoint(null); 
             mainView.paintFoldingMark(g, out);
         }
         
@@ -1206,7 +1204,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 		final Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
 		g.setColor(MapView.standardSelectColor);
 		if(standardSelectionStroke == null){
-			standardSelectionStroke = new BasicStroke(1.0f);
+			standardSelectionStroke = new BasicStroke(2.0f);
 		}
 		g.setStroke(standardSelectionStroke);
 		setRenderingEdges(g);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeViewFactory.java,v 1.1.4.4 2007-06-20 21:52:43 dpolivaev Exp $ */
+/* $Id: NodeViewFactory.java,v 1.1.4.5 2007-07-02 21:49:48 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Component;
@@ -53,11 +53,17 @@ class NodeViewFactory {
 			int y = 0;
 			for(int i = 0; i < componentCount; i++){
 				final Component component = parent.getComponent(i);
-				final Dimension preferredCompSize = component.getPreferredSize();
-				int x = (int)(component.getAlignmentX() * (width - preferredCompSize.width));
-				component.setBounds(x, y, preferredCompSize.width, preferredCompSize.height);
-				y += preferredCompSize.height;
-				
+				if(component.isVisible()){
+					final Dimension preferredCompSize = component.getPreferredSize();
+					if(component instanceof MainView){
+						component.setBounds(0, y, width, preferredCompSize.height);
+					}
+					else{
+						int x = (int)(component.getAlignmentX() * (width - preferredCompSize.width));
+						component.setBounds(x, y, preferredCompSize.width, preferredCompSize.height);
+					}
+					y += preferredCompSize.height;
+				}
 			}
 		}
 	
@@ -69,9 +75,12 @@ class NodeViewFactory {
 			final Dimension prefSize = new Dimension(0, 0);
 			final int componentCount = parent.getComponentCount();
 			for(int i = 0; i < componentCount; i++){
-				final Dimension preferredCompSize = parent.getComponent(i).getPreferredSize();
-				prefSize.height += preferredCompSize.height;
-				prefSize.width = Math.max(prefSize.width, preferredCompSize.width);
+				final Component component = parent.getComponent(i);
+				if(component.isVisible()){
+					final Dimension preferredCompSize = component.getPreferredSize();
+					prefSize.height += preferredCompSize.height;
+					prefSize.width = Math.max(prefSize.width, preferredCompSize.width);
+				}
 			}
 			return prefSize;
 		}

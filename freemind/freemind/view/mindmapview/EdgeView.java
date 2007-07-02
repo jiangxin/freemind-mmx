@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeView.java,v 1.13.14.2.4.2 2007-04-21 15:11:22 dpolivaev Exp $*/
+/*$Id: EdgeView.java,v 1.13.14.2.4.3 2007-07-02 21:49:48 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
+import freemind.main.Tools;
 import freemind.modes.MindMapEdge;
 import java.awt.*;
 
@@ -44,8 +45,9 @@ public abstract class EdgeView {
     public void paint(NodeView target, Graphics2D g) {
         this.source = target.getVisibleParentView();
         this.target = target;
-        end = getTarget().getInPoint(source);
-        start = getSource().getOutPoint(end, source);
+        end = getTarget().getInPoint();
+        Tools.convertPointToAncestor(target, end, source);
+        start = getSource().getOutPoint(end);
         paint(g);
         this.source = null;
         this.target = null;
