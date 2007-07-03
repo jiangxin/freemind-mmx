@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.26 2007-06-05 20:53:30 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.27 2007-07-03 20:18:36 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -1084,7 +1084,7 @@ public abstract class ControllerAdapter implements ModeController {
         }
         return adaptedText;
     }
-    public void displayNode(NodeView node){
+    public void displayNode(MindMapNode node){
         displayNode(node, null);
     }
 
@@ -1094,9 +1094,9 @@ public abstract class ControllerAdapter implements ModeController {
      * Display a node in the display (used by find and the goto action by arrow
      * link actions).
      */
-    public void displayNode(NodeView node, ArrayList nodesUnfoldedByDisplay) {
+    public void displayNode(MindMapNode node, ArrayList nodesUnfoldedByDisplay) {
         // Unfold the path to the node
-        Object[] path = getMap().getPathToRoot(node.getModel());
+        Object[] path = getMap().getPathToRoot(node);
         // Iterate the path with the exception of the last node
         for (int i = 0; i < path.length - 1; i++) {
             MindMapNode nodeOnPath = (MindMapNode) path[i];
@@ -1111,10 +1111,7 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
 
-    public void centerNode(NodeView node){
-        if(node==null){
-            displayNode(node);
-        }
+    private void centerNode(NodeView node){
         // Select the node and scroll to it.
         getView().centerNode(node);
         getView().selectAsTheOnlyOneSelected(node);
@@ -1126,7 +1123,11 @@ public abstract class ControllerAdapter implements ModeController {
         if(node!=null){
             view = getController().getView().getNodeView(node);
         }
-        centerNode(view);
+        if(view==null){
+            displayNode(node);
+            view = getController().getView().getNodeView(node);
+        }
+       centerNode(view);
     }
 
     public File getLastCurrentDir()

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.21 2007-07-02 22:26:41 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.22 2007-07-03 20:18:36 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -170,6 +170,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     //
     // Constructors
     //
+	static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
 
     public MapView( MindMap model, Controller controller ) {
         super();
@@ -979,8 +980,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 		if (isPreparedForPrinting == false){
 			isPrinting = true;
 			/* repaint for printing:*/
-			getRoot().updateAll();
-			validate();
+			if(NEED_PREF_SIZE_BUG_FIX){
+				getRoot().updateAll();
+				validate();
+			}
 			background = getBackground();
 			boundingRectangle = getInnerBounds();
             fitToPage = Tools.safeEquals(controller.getProperty("fit_to_page"),"true");
@@ -1002,8 +1005,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			setBackground(background);
 			isPrinting = false;
 			/* repaint for end printing:*/
-			getRoot().updateAll();
-			validate();
+			if(NEED_PREF_SIZE_BUG_FIX){
+				getRoot().updateAll();
+				validate();
+			}
 		}
 	 }
 
@@ -1072,7 +1077,9 @@ public class MapView extends JPanel implements Printable, Autoscroll{
      * Should that be implemented in LayoutManager as minimum size?
      */
     public Rectangle getInnerBounds() {
-        final Rectangle innerBounds = new Rectangle(getRoot().getX(), getRoot().getY(), getRoot().getWidth(), getRoot().getHeight());        
+        final Rectangle innerBounds = getRoot().getInnerBounds();
+        innerBounds.x += getRoot().getX();
+        innerBounds.y += getRoot().getY();
         final Rectangle maxBounds = new Rectangle(0, 0, getWidth(), getHeight());        
         for(int i = 0; i < ArrowLinkViews.size(); ++i) {
             ArrowLinkView arrowView = (ArrowLinkView) ArrowLinkViews.get(i);

@@ -19,7 +19,7 @@
  *
  * Created on 10.10.2006
  */
-/*$Id: MindMapControllerMock.java,v 1.1.2.4 2007-06-15 18:16:10 dpolivaev Exp $*/
+/*$Id: MindMapControllerMock.java,v 1.1.2.5 2007-07-03 20:19:01 dpolivaev Exp $*/
 package tests.freemind;
 
 import java.awt.Color;
@@ -73,12 +73,7 @@ public class MindMapControllerMock implements ModeController {
         // TODO Auto-generated method stub
 
     }
-    public void centerNode(NodeView node) {
-        // TODO Auto-generated method stub
-
-    }
-
-	/* (non-Javadoc)
+ 	/* (non-Javadoc)
 	 * @see freemind.modes.ModeController#close(boolean, freemind.controller.MapModuleManager)
 	 */
 	public boolean close(boolean force, MapModuleManager mapModuleManager) {
@@ -114,7 +109,7 @@ public class MindMapControllerMock implements ModeController {
 	/* (non-Javadoc)
 	 * @see freemind.modes.ModeController#displayNode(freemind.modes.MindMapNode)
 	 */
-	public void displayNode(NodeView node) {
+	public void displayNode(MindMapNode node) {
 		// TODO Auto-generated method stub
 
 	}

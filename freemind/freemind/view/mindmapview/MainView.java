@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.10 2007-07-02 21:49:48 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.11 2007-07-03 20:18:36 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -34,7 +34,6 @@ import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.main.HtmlTools;
 import freemind.main.Resources;
@@ -43,7 +42,6 @@ import freemind.main.Tools;
 public abstract class MainView extends JLabel{
     static Dimension minimumSize = new Dimension(0, 0);
     static Dimension maximumSize = new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        private static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION.compareTo("1.5.0") < 0;
         private static final int MIN_HOR_NODE_SIZE = 10;
         
         int getZoomedFoldingSymbolHalfWidth(){
@@ -86,7 +84,7 @@ public abstract class MainView extends JLabel{
                 prefSize.height= (int)(0.99 + prefSize.height *zoom);
             }
             
-            if(isCurrentlyPrinting() && NEED_PREF_SIZE_BUG_FIX) {
+            if(isCurrentlyPrinting() && MapView.NEED_PREF_SIZE_BUG_FIX) {
                 prefSize.width += getNodeView().getMap().getZoomed(10);
             }
             prefSize.width = Math.max(getNodeView().getMap().getZoomed(MIN_HOR_NODE_SIZE), prefSize.width);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.37 2007-06-20 21:52:42 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.38 2007-07-03 20:18:36 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1874,7 +1874,7 @@ freemind.main.Resources.getInstance().logException(					e1);
     private void selectMultipleNodesImpl(Object focussed, Collection selecteds) {
         // are they visible visible?
         for (Iterator i = selecteds.iterator(); i.hasNext();) {
-            NodeView node = getNodeView(i.next());
+            MindMapNode node = (MindMapNode)(i.next());
             displayNode(node);
         }
         // this one must be visible.
@@ -1897,7 +1897,7 @@ freemind.main.Resources.getInstance().logException(					e1);
     }
 
     public void selectBranch(NodeView selected, boolean extend) {
-        displayNode(selected);
+        displayNode(selected.getModel());
         getView().selectBranch(selected, extend);
     }
 

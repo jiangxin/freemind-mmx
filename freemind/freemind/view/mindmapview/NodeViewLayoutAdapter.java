@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeViewLayoutAdapter.java,v 1.1.4.3 2007-06-15 20:32:20 dpolivaev Exp $ */
+/* $Id: NodeViewLayoutAdapter.java,v 1.1.4.4 2007-07-03 20:18:36 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Component;
@@ -29,8 +29,7 @@ import javax.swing.JComponent;
 import freemind.modes.MindMapNode;
 
 abstract public class NodeViewLayoutAdapter implements NodeViewLayout{
-    private static final int SPACE_AROUND = 50;
-	protected final int LISTENER_VIEW_WIDTH = 10;
+    protected final int LISTENER_VIEW_WIDTH = 10;
     protected Point location = new Point();
     private static Dimension minDimension;
     private NodeView view;
@@ -95,7 +94,7 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout{
         else{
             this.vGap = getView().getVisibleParentView().getVGap();
         }
-        spaceAround = view.getMap().getZoomed(SPACE_AROUND);
+        spaceAround = view.getMap().getZoomed(NodeView.SPACE_AROUND);
     }
 
     private void shutDown() {

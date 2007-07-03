@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.33 2007-07-02 21:49:48 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.34 2007-07-03 20:18:36 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -30,6 +30,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.dnd.DnDConstants;
@@ -108,6 +109,8 @@ public class NodeView extends JComponent implements TreeModelListener{
     private NodeView preferredChild;
     private JComponent contentPane;
     protected NodeMotionListenerView motionListenerView;
+
+	static final int SPACE_AROUND = 50;
 
 	private static Stroke standardSelectionStroke;
     protected NodeView(MindMapNode model, int position, MapView map, Container parent) {
@@ -1230,6 +1233,12 @@ public class NodeView extends JComponent implements TreeModelListener{
     public String toString() {
         return getModel().toString() + ", " +super.toString();
     }
+
+
+	Rectangle getInnerBounds() {
+		final int space = getMap().getZoomed(SPACE_AROUND) - 2 * getZoomedFoldingSymbolHalfWidth();
+		return new Rectangle(space, space, getWidth() - 2 * space, getHeight() - 2 * space);
+	}
     
     
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.14 2007-06-05 20:53:30 dpolivaev Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.15 2007-07-03 20:18:36 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -204,11 +204,10 @@ public interface ModeController  {
     void setFolded(MindMapNode node, boolean folded);
 	/** Unfolds a node if necessary.
 	 */
-	void displayNode(NodeView node);
+	void displayNode(MindMapNode node);
 	/** Node is displayed and selected as the only one selected. It is moved to the center of the
 	 *  screen.
 	 */
-    void centerNode(NodeView node);
     void centerNode(MindMapNode node);
 	String getLinkShortText(MindMapNode node);
 
