@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.11 2007-07-03 20:18:36 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.12 2007-07-04 22:13:33 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -100,11 +100,6 @@ public abstract class MainView extends JLabel{
          * @see javax.swing.JComponent#paint(java.awt.Graphics)
          */
         public void paint(Graphics g) {
-        	Color backupTextColor = null; 
-        	if (! MapView.standardDrawRectangleForSelection && getNodeView().isSelected() && ! isCurrentlyPrinting()){
-        		backupTextColor = getForeground();
-        		setForeground(MapView.standardSelectTextColor);
-        	}
             float zoom = getZoom();
             if(zoom != 1F){
                 Graphics2D g2 = (Graphics2D)g;
@@ -118,10 +113,15 @@ public abstract class MainView extends JLabel{
             else{
                 super.paint(g);
             }
-            if(backupTextColor != null){
-            	setForeground(backupTextColor);
-            }
         }
+
+        
+		public Color getForeground() {
+        	if (getNodeView() != null && ! MapView.standardDrawRectangleForSelection && getNodeView().isSelected() && ! isCurrentlyPrinting()){
+        		return MapView.standardSelectTextColor;
+        	}
+			return super.getForeground();
+		}
 
 		protected boolean isCurrentlyPrinting() {
 			return getNodeView().getMap().isCurrentlyPrinting();
