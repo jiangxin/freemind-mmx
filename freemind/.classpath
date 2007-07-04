@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="**/build*.xml|**/build.xml|**/cvs/|plugins/collaboration/**" kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="plugins/svg/xml-apis.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-bridge.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-css.jar"/>
@@ -30,10 +31,8 @@
 	<classpathentry kind="lib" path="lib/commons-lang-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/junit.jar"/>
 	<classpathentry kind="lib" path="lib/SimplyHTML/gnu-regexp-1.1.4.jar"/>
-	<classpathentry kind="lib" path="lib/SimplyHTML/SimplyHTML.jar" sourcepath="C:/JavaPro/shtm_r/src"/>
+	<classpathentry kind="lib" path="lib/SimplyHTML/SimplyHTML.jar"/>
 	<classpathentry kind="lib" path="plugins/script/groovy-all-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jarbundler-1.8.1.jar"/>
-	<classpathentry kind="lib" path="plugins/latex/HotEqn.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/j2sdk1.4.2_13"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
