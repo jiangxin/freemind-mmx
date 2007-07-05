@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.12 2007-07-04 22:13:33 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.13 2007-07-05 20:26:33 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -336,4 +336,25 @@ public abstract class MainView extends JLabel{
             g.setColor(color);
             g.drawOval(p.x , p.y , zoomedFoldingSymbolHalfWidth * 2, zoomedFoldingSymbolHalfWidth * 2);
         }
+
+		public void requestFocus() {
+			// TODO Auto-generated method stub
+			super.requestFocus();
+		}
+
+		public boolean requestFocus(boolean temporary) {
+			// TODO Auto-generated method stub
+			return super.requestFocus(temporary);
+		}
+
+		public boolean requestFocusInWindow() {
+			// TODO Auto-generated method stub
+			return super.requestFocusInWindow();
+		}
+
+		protected boolean requestFocusInWindow(boolean temporary) {
+			// TODO Auto-generated method stub
+			return super.requestFocusInWindow(temporary);
+		}
+        
 }
