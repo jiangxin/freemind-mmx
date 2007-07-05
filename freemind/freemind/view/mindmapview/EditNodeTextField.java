@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.12 2007-06-26 22:38:37 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.13 2007-07-05 19:20:31 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -124,7 +124,7 @@ public class EditNodeTextField extends EditNodeBase {
         }
         textfield.setFont(font);
 
-        textfield.setForeground(nodeView.getMainViewForeground());
+        textfield.setForeground(model.getColor());
         final Color backgroundColor = model.getBackgroundColor();
         if(backgroundColor != null){
             textfield.setBackground(backgroundColor);
