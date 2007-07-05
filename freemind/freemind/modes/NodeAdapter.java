@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.28 2007-07-02 21:49:48 dpolivaev Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.29 2007-07-05 20:02:57 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -373,7 +373,27 @@ public abstract class NodeAdapter implements MindMapNode {
     /////
 
     public void setStyle(String style) {
-	this.style = style;
+    	if(style == null){
+    		this.style = style;
+    		return;
+    	}
+    	if(style.equals(MindMapNode.STYLE_AS_PARENT)){
+    		this.style = MindMapNode.STYLE_AS_PARENT;
+    		return;
+    	}
+    	if(style.equals(MindMapNode.STYLE_BUBBLE)){
+    		this.style = MindMapNode.STYLE_BUBBLE;
+    		return;
+    	}
+    	if(style.equals(MindMapNode.STYLE_COMBINED)){
+    		this.style = MindMapNode.STYLE_COMBINED;
+    		return;
+    	}
+    	if(style.equals(MindMapNode.STYLE_FORK)){
+    		this.style = MindMapNode.STYLE_FORK;
+    		return;
+    	}
+    	throw new RuntimeException("bad node style " + style);
     }
 
     public void setColor(Color color) {
