@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.35 2007-06-26 21:43:45 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.36 2007-07-06 22:10:29 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -47,6 +47,7 @@ import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMindMain;
+import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
@@ -335,7 +336,12 @@ public class NodeNote extends MindMapNodeHookAdapter {
                 MindMapNode node, String text) {
             EditNoteToNodeAction nodeAction = new EditNoteToNodeAction();
             nodeAction.setNode(node.getObjectId(controller));
-            nodeAction.setText(text);
+            if (text != null && HtmlTools.htmlToPlain(text).length() != 0){
+            	nodeAction.setText(text);
+            }
+            else{
+            	nodeAction.setText(null);
+            }
             return nodeAction;
         }
 
