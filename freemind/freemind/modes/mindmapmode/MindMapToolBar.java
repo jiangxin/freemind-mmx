@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.12.18.1.12.2 2006-11-26 10:20:43 dpolivaev Exp $*/
+/*$Id: MindMapToolBar.java,v 1.12.18.1.12.3 2007-07-07 21:29:48 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -68,7 +68,9 @@ public class MindMapToolBar extends FreeMindToolBar {
         	               //fc, 27.8.2004: I don't understand, why the ignore type is resetted here. 
         	                // let's see: fontFamily_IgnoreChangeEvent = false;
         	               return; }
+        	            fontFamily_IgnoreChangeEvent = true;
         	            c.fontFamily.actionPerformed((String)e.getItem());
+        	            fontFamily_IgnoreChangeEvent = false;
         	         }
         	      };
 		fonts.addItemListener(fontsListener);
@@ -97,12 +99,10 @@ public class MindMapToolBar extends FreeMindToolBar {
 
 		fonts.setMaximumRowCount(9);
 		add(fonts);
-		fonts.setFocusable(false);
 	
 		size.setEditor(new BasicComboBoxEditor());
 		size.setEditable(true);
 		add(size);
-		size.setFocusable(false);
         
         // button tool bar.
         iconToolBar.removeAll();
@@ -133,11 +133,14 @@ public class MindMapToolBar extends FreeMindToolBar {
    
    public void selectFontName(String fontName) // (DiPo)
    {
-      fontFamily_IgnoreChangeEvent = true;
-      fonts.setEditable(true);
-      fonts.setSelectedItem(fontName) ;
-      fonts.setEditable(false);
-      fontFamily_IgnoreChangeEvent = false;
+	   if (fontFamily_IgnoreChangeEvent) {
+		   return; 
+	   }
+	   fontFamily_IgnoreChangeEvent = true;
+	   fonts.setEditable(true);
+	   fonts.setSelectedItem(fontName) ;
+	   fonts.setEditable(false);
+	   fontFamily_IgnoreChangeEvent = false;
    }
     
     void setAllActions(boolean enabled) {

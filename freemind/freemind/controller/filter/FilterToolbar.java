@@ -226,7 +226,7 @@ class FilterToolbar extends JToolBar {
     /**
      */
     void mapChanged(MindMap newMap) {
-        if(!isVisible())
+        if(newMap == null || !isVisible())
             return;
         Filter filter = newMap.getFilter();
         if(filter != activeFilter){
