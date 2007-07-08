@@ -19,11 +19,12 @@
  *
  * Created on 10.10.2006
  */
-/*$Id: MindMapControllerMock.java,v 1.1.2.5 2007-07-03 20:19:01 dpolivaev Exp $*/
+/*$Id: MindMapControllerMock.java,v 1.1.2.6 2007-07-08 10:09:41 dpolivaev Exp $*/
 package tests.freemind;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -362,6 +363,30 @@ public class MindMapControllerMock implements ModeController {
 		// TODO Auto-generated method stub
 
 	}
+
+    public Transferable cut(MindMapNode node) {
+        return null;
+    }
+
+	public Transferable copy(MindMapNode node, boolean saveInvisible) {
+		return null;
+	}
+
+    public Transferable copy(MindMapNode node) {
+        return null;
+    }
+
+    public Transferable copy() {
+        return null;
+    }
+
+    public Transferable copySingle() {
+        return null;
+    }
+
+    public Transferable copy(List selectedNodes) {
+        return null;
+    }
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.ModeController#onDeselectHook(freemind.modes.MindMapNode)
