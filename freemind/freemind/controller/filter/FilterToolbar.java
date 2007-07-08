@@ -80,11 +80,14 @@ class FilterToolbar extends JToolBar {
                 filterChanged();
         }
         private void filterChanged() {
-            resetFilter();
-            setMapFilter();
-            activeFilter.applyFilter(c);
-            refreshMap();
-            DefaultFilter.selectVisibleNode(c.getView());
+        	resetFilter();
+        	setMapFilter();
+        	final MindMap map = fc.getMap();
+        	if(map != null){
+        		activeFilter.applyFilter(c);
+        		refreshMap();
+        		DefaultFilter.selectVisibleNode(c.getView());
+        	}
         }
         public void propertyChange(PropertyChangeEvent evt) {
             if(evt.getPropertyName().equals("model")){
@@ -214,7 +217,10 @@ class FilterToolbar extends JToolBar {
                     showAncestors.getModel().isSelected(),
                     showDescendants.getModel().isSelected()
             );
-        fc.getMap().setFilter(activeFilter);
+        final MindMap map = fc.getMap();
+        if(map != null){
+        	map.setFilter(activeFilter);
+        }
     }
     
     /**
@@ -226,15 +232,22 @@ class FilterToolbar extends JToolBar {
     /**
      */
     void mapChanged(MindMap newMap) {
-        if(newMap == null || !isVisible())
+        if(!isVisible())
             return;
-        Filter filter = newMap.getFilter();
-        if(filter != activeFilter){
-            activeFilter = filter;
-            activeFilterConditionComboBox.setSelectedItem(filter.getCondition());
-            showAncestors.setSelected(filter.areAncestorsShown());
-            showDescendants.setSelected(filter.areDescendantsShown());
-        }
+    	Filter filter;
+    	if(newMap != null){
+    		filter = newMap.getFilter();
+            if(filter != activeFilter){
+                activeFilter = filter;
+                activeFilterConditionComboBox.setSelectedItem(filter.getCondition());
+                showAncestors.setSelected(filter.areAncestorsShown());
+                showDescendants.setSelected(filter.areDescendantsShown());
+            }
+    	}
+    	else{
+    		filter = null;
+    		activeFilterConditionComboBox.setSelectedIndex(0);
+    	}
     }
 
     private void refreshMap() {

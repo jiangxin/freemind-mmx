@@ -506,20 +506,28 @@ public class FilterComposerDialog extends JDialog {
     /**
      */
     void mapChanged(MindMap newMap) {
-        icons.setExtensionList(newMap.getRegistry().getIcons());
-        if(icons.getSize() >= 1 && values.getModel()==icons){
-            values.setSelectedIndex(0);
-        }
-        else{
-            values.setSelectedIndex(-1);
-            if(values.getModel()==icons){
-                values.setSelectedItem(null);
-            }
-        }
-        if(attributes.getSelectedIndex() > 1)
-            attributes.setSelectedIndex(0);
-        registeredAttributes = newMap.getRegistry().getAttributes();
-        filteredAttributeComboBoxModel.setExtensionList(registeredAttributes.getListBoxModel());
+    	if(newMap != null){
+    		icons.setExtensionList(newMap.getRegistry().getIcons());
+    		if(icons.getSize() >= 1 && values.getModel()==icons){
+    			values.setSelectedIndex(0);
+    		}
+    		else{
+    			values.setSelectedIndex(-1);
+    			if(values.getModel()==icons){
+    				values.setSelectedItem(null);
+    			}
+    		}
+    		if(attributes.getSelectedIndex() > 1)
+    			attributes.setSelectedIndex(0);
+    		registeredAttributes = newMap.getRegistry().getAttributes();
+    		filteredAttributeComboBoxModel.setExtensionList(registeredAttributes.getListBoxModel());
+    	}
+    	else{
+    		icons.setExtensionList(null);
+    		values.setSelectedIndex(-1);
+    		attributes.setSelectedIndex(0);
+    		filteredAttributeComboBoxModel.setExtensionList(null);
+    	}
     }
 
     private boolean selectCondition() {
