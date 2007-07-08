@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapMock.java,v 1.1.2.8 2007-07-08 10:09:41 dpolivaev Exp $*/
+/*$Id: MindMapMock.java,v 1.1.2.9 2007-07-08 16:27:06 dpolivaev Exp $*/
 
 package tests.freemind;
 
@@ -167,18 +167,12 @@ public class MindMapMock implements MindMap {
 	}
 
 	public void insertNodeInto(MindMapNode copy, MindMapNode rootNode) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void nodeStructureChanged(TreeNode node) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void setSaved(boolean isSaved) {
-		// TODO Auto-generated method stub
-		
 	}
 
     public boolean isSaved() {
