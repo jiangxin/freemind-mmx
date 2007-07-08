@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.28 2007-07-08 08:37:22 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.29 2007-07-08 16:10:25 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -1026,14 +1026,14 @@ public abstract class ControllerAdapter implements ModeController {
         }
 
         public Transferable copy() {
-           return copy(getView().getSelectedNodesSortedByY()); }
+           return copy(getView().getSelectedNodesSortedByY(), false); }
 
         public Transferable copySingle() {
             
            final ArrayList selectedNodes  = getView().getSingleSelectedNodes();
-           return copy(selectedNodes); }
+           return copy(selectedNodes, false); }
 
-        public Transferable copy(List selectedNodes) {
+        public Transferable copy(List selectedNodes, boolean copyInvisible) {
            try {
               String forNodesFlavor = "";
               boolean firstLoop = true;
@@ -1044,7 +1044,7 @@ public abstract class ControllerAdapter implements ModeController {
                  else {
                     forNodesFlavor += "<nodeseparator>"; }
 
-                 forNodesFlavor += copy(tmpNode, false).getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
+                 forNodesFlavor += copy(tmpNode, copyInvisible).getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
               }
 
               String plainText = getMap().getAsPlainText(selectedNodes);

@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: CutAction.java,v 1.1.2.2.2.8 2007-07-08 08:37:24 dpolivaev Exp $ */
+/* $Id: CutAction.java,v 1.1.2.2.2.9 2007-07-08 16:10:25 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -62,6 +62,11 @@ public class CutAction extends AbstractAction implements ActorXml {
 		this.controller.getActionFactory().registerActor(this, getDoActionClass());
     }
     public void actionPerformed(ActionEvent e) {
+    	if (controller.getView().getRoot().isSelected()){
+    		controller.getController().errorMessage(
+    				controller.getFrame().getResourceString("cannot_delete_root"));
+    		return;
+    	}
 		Transferable copy = controller.cut();
 		// and set it.
 		controller.getClipboard().setContents(copy, null);
@@ -89,7 +94,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 
     public Transferable cut(List nodeList) {
 	controller.sortNodesByDepth(nodeList);
-    	Transferable totalCopy = controller.copy(nodeList);
+    	Transferable totalCopy = controller.copy(nodeList, true);
 		// Do-action
         CompoundAction doAction = new CompoundAction();
         // Undo-action

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.16 2007-07-08 08:37:23 dpolivaev Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.17 2007-07-08 16:10:25 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -257,6 +257,6 @@ public interface ModeController  {
     Transferable copy(MindMapNode node, boolean saveInvisible);
     Transferable copy();
     Transferable copySingle();
-    public Transferable copy(List selectedNodes);
+    public Transferable copy(List selectedNodes, boolean copyInvisible);
     
 }
