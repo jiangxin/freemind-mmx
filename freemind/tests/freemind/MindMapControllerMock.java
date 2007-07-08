@@ -19,7 +19,7 @@
  *
  * Created on 10.10.2006
  */
-/*$Id: MindMapControllerMock.java,v 1.1.2.6 2007-07-08 10:09:41 dpolivaev Exp $*/
+/*$Id: MindMapControllerMock.java,v 1.1.2.7 2007-07-08 16:10:38 dpolivaev Exp $*/
 package tests.freemind;
 
 import java.awt.Color;
@@ -384,7 +384,7 @@ public class MindMapControllerMock implements ModeController {
         return null;
     }
 
-    public Transferable copy(List selectedNodes) {
+    public Transferable copy(List selectedNodes, boolean copyInvisible) {
         return null;
     }
 
