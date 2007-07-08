@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: CutAction.java,v 1.1.2.2.2.7 2007-04-26 07:37:26 dpolivaev Exp $ */
+/* $Id: CutAction.java,v 1.1.2.2.2.8 2007-07-08 08:37:24 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -89,7 +89,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 
     public Transferable cut(List nodeList) {
 	controller.sortNodesByDepth(nodeList);
-    	Transferable totalCopy = controller.getModel().copy(nodeList);
+    	Transferable totalCopy = controller.copy(nodeList);
 		// Do-action
         CompoundAction doAction = new CompoundAction();
         // Undo-action
@@ -98,7 +98,7 @@ public class CutAction extends AbstractAction implements ActorXml {
         for (Iterator i = nodeList.iterator(); i.hasNext();) {
         	MindMapNode node = (MindMapNode) i.next();
         	if(node.getParentNode() == null) continue;
-        	Transferable copy = controller.getModel().copy(node, true);
+        	Transferable copy = controller.copy(node, true);
         	NodeCoordinate coord = new NodeCoordinate(node, node.isLeft());
             CutNodeAction cutNodeAction = getCutNodeAction( copy, coord);
         	doAction.addChoice(cutNodeAction);

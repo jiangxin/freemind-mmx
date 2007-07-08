@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.38 2007-07-03 20:18:36 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.39 2007-07-08 08:37:23 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -81,6 +81,7 @@ import org.jibx.runtime.JiBXException;
 
 import freemind.common.XmlBindingTools;
 import freemind.controller.MenuBar;
+import freemind.controller.MindMapNodesSelection;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.MenuActionBase;
 import freemind.controller.actions.generated.instance.MenuCategoryBase;
@@ -1428,8 +1429,17 @@ freemind.main.Resources.getInstance().logException(					e1);
     public void setNodeStyle(MindMapNode node, String style) {
         fork.setStyle(node, style);
     }
+    
+    public Transferable copy(MindMapNode node, boolean saveInvisible) {
+        StringWriter stringWriter = new StringWriter();
+        try {
+           ((MindMapNodeModel)node).save(stringWriter, getMap().getLinkRegistry(), saveInvisible, true); }
+        catch (IOException e) {}
+        return new MindMapNodesSelection(stringWriter.toString(), null, null, null, null, null); 
+    }
+
      public Transferable cut() {
-        return cut(getSelecteds());
+        return cut(getView().getSelectedNodesSortedByY());
     }
 
 

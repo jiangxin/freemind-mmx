@@ -19,11 +19,12 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.13 2007-07-05 19:20:31 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.14 2007-07-08 08:37:25 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.SystemColor;
@@ -118,7 +119,8 @@ public class EditNodeTextField extends EditNodeBase {
 
         textfield.setSize(xSize, nodeView.getMainView().getHeight() + heightAddition);
         Font font = nodeView.getMainViewFont();
-        final float zoom = nodeView.getMap().getZoom();
+        final MapView mapView = nodeView.getMap();
+		final float zoom = mapView.getZoom();
         if (zoom != 1F) {
             font = font.deriveFont(font.getSize()*zoom); 
         }
@@ -130,7 +132,7 @@ public class EditNodeTextField extends EditNodeBase {
             textfield.setBackground(backgroundColor);
         }
         else{
-            textfield.setBackground(nodeView.getMap().getBackground());            
+            textfield.setBackground(mapView.getBackground());            
         }
         textfield.setSelectedTextColor(SystemColor.textHighlightText);
         textfield.setSelectionColor(SystemColor.textHighlight);
@@ -303,26 +305,17 @@ public class EditNodeTextField extends EditNodeBase {
         getView().scrollNodeToVisible(nodeView, xExtraWidth);
 
         // NOTE: this must be calculated after scroll because the pane location changes
-        Point frameScreenLocation =
-            getFrame().getLayeredPane().getLocationOnScreen();
-        Point nodeScreenLocation = nodeView.getMainView().getLocationOnScreen();
+        Point textFieldLocation = new Point();
 
-        int xLeft =
-            (int) (nodeScreenLocation.getX()
-                - frameScreenLocation.getX()
-                + xOffset);
+        Tools.convertPointToAncestor(nodeView.getMainView(), textFieldLocation, mapView);
         if (xExtraWidth < 0) {
-            xLeft += xExtraWidth;
+        	textFieldLocation.x += xExtraWidth;
         }
+        textFieldLocation.y += yOffset;
+        textfield.setLocation(textFieldLocation);
 
-        textfield.setLocation(
-            xLeft,
-            (int) (nodeScreenLocation.getY()
-                - frameScreenLocation.getY()
-                + yOffset));
-
-        getFrame().getLayeredPane().add(textfield, JLayeredPane.MODAL_LAYER); 
-        getFrame().repaint();
+        mapView.add(textfield, 0); 
+        textfield.repaint();
 
         SwingUtilities.invokeLater(new Runnable() { // PN 0.6.2
             public void run() {
@@ -335,8 +328,9 @@ public class EditNodeTextField extends EditNodeBase {
     }
 
     private void hideMe() {
-        getFrame().getLayeredPane().remove(textfield);
-        getFrame().repaint(); //  getLayeredPane().repaint();
+    	final Container parent = textfield.getParent();
+		parent.remove(0);
+		parent.repaint();
         textFieldListener = null;
     }
     

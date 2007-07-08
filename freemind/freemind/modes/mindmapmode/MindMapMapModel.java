@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.14 2007-02-17 16:19:31 dpolivaev Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.15 2007-07-08 08:37:23 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -435,13 +435,6 @@ freemind.main.Resources.getInstance().logException(			e);
     }
 
 
-
-    public Transferable copy(MindMapNode node, boolean saveInvisible) {
-       StringWriter stringWriter = new StringWriter();
-       try {
-          ((MindMapNodeModel)node).save(stringWriter, this.getLinkRegistry(), saveInvisible, true); }
-       catch (IOException e) {}
-       return new MindMapNodesSelection(stringWriter.toString(), null, null, null, null, null); }
 
     private class LockManager extends TimerTask {
         File lockedSemaphoreFile = null;

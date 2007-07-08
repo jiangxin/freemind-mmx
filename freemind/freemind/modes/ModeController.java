@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.15 2007-07-03 20:18:36 dpolivaev Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.16 2007-07-08 08:37:23 dpolivaev Exp $ */
 
 package freemind.modes;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -253,4 +254,9 @@ public interface ModeController  {
 
     void refreshMap();
 
+    Transferable copy(MindMapNode node, boolean saveInvisible);
+    Transferable copy();
+    Transferable copySingle();
+    public Transferable copy(List selectedNodes);
+    
 }

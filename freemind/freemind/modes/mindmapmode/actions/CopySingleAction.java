@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/* $Id: CopySingleAction.java,v 1.1.2.1.2.3 2007-04-26 07:37:26 dpolivaev Exp $ */
+/* $Id: CopySingleAction.java,v 1.1.2.1.2.4 2007-07-08 08:37:24 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.datatransfer.Transferable;
@@ -40,7 +40,7 @@ public class CopySingleAction extends AbstractAction {
 
 	public void actionPerformed(ActionEvent e) {
 		if (controller.getMap() != null) {
-			Transferable copy = controller.getModel().copySingle();
+			Transferable copy = controller.copySingle();
 			if (copy != null) {
 				controller.getClipboard().setContents(copy, null);
 			}

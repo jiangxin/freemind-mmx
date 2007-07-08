@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.18 2007-07-02 21:49:48 dpolivaev Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.19 2007-07-08 08:37:22 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -216,42 +216,6 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
     // Node editing
     //
 
-
-   public Transferable copy(MindMapNode node, boolean saveInvisible) {
-	   throw new IllegalArgumentException("No copy so far.");
-   }
-
-   public Transferable copy() {
-      return copy(getFrame().getView().getSelectedNodesSortedByY()); }
-
-   public Transferable copySingle() {
-       
-      final ArrayList selectedNodes  = getFrame().getView().getSingleSelectedNodes();
-      return copy(selectedNodes); }
-
-   public Transferable copy(List selectedNodes) {
-      try {
-         String forNodesFlavor = "";
-         boolean firstLoop = true;
-         for(Iterator it = selectedNodes.iterator();it.hasNext();) {
-            MindMapNode tmpNode =  (MindMapNode)it.next();
-            if (firstLoop) {
-               firstLoop = false; }
-            else {
-               forNodesFlavor += "<nodeseparator>"; }
-
-            forNodesFlavor += copy(tmpNode, false).getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
-         }
-
-         String plainText = getAsPlainText(selectedNodes);
-         return new MindMapNodesSelection
-            (forNodesFlavor, plainText, getAsRTF(selectedNodes), getAsHTML(selectedNodes), null, null); }
-         //return new StringSelection(forClipboard); }
-
-
-      catch (UnsupportedFlavorException ex) { freemind.main.Resources.getInstance().logException(ex); }
-      catch (IOException ex) { freemind.main.Resources.getInstance().logException(ex); }
-      return null; }
 
     public String getAsPlainText(List mindMapNodes) {
        return ""; }

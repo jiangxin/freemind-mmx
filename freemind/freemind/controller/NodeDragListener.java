@@ -72,7 +72,7 @@ public class NodeDragListener implements DragGestureListener {
          cursor = DragSource.DefaultCopyDrop;
          dragAction = "COPY"; }
 
-      Transferable t = c.getModel().copy();
+      Transferable t = c.getModeController().copy();
       //new MindMapNodesSelection("Ahoj","Ahoj","Ahoj", dragAction);
       ((MindMapNodesSelection)t).setDropAction(dragAction);
       //public void setDropAction(String dropActionContent) {     

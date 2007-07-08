@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMap.java,v 1.14.14.8.2.10 2007-04-26 07:37:26 dpolivaev Exp $ */
+/* $Id: MindMap.java,v 1.14.14.8.2.11 2007-07-08 08:37:22 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -50,14 +50,6 @@ public interface MindMap extends TreeModel {
 
 	void nodeRefresh(TreeNode node);
 
-    Transferable copy(MindMapNode node, boolean saveInvisible);
-
-    // ^ Is copy with node really needed? It seems to me, that no.
-    Transferable copy();
-    Transferable copySingle();
-    /**
-     */
-    public Transferable copy(List selectedNodes);
     String getAsPlainText(List mindMapNodes);
     String getAsRTF(List mindMapNodes);
     String getAsHTML(List mindMapNodes);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.27 2007-07-03 20:18:36 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.28 2007-07-08 08:37:22 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -24,6 +24,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
@@ -69,6 +71,7 @@ import javax.swing.filechooser.FileFilter;
 
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
+import freemind.controller.MindMapNodesSelection;
 import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMindMain;
@@ -1018,6 +1021,41 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
 
+        public Transferable copy(MindMapNode node, boolean saveInvisible) {
+     	   throw new IllegalArgumentException("No copy so far.");
+        }
+
+        public Transferable copy() {
+           return copy(getView().getSelectedNodesSortedByY()); }
+
+        public Transferable copySingle() {
+            
+           final ArrayList selectedNodes  = getView().getSingleSelectedNodes();
+           return copy(selectedNodes); }
+
+        public Transferable copy(List selectedNodes) {
+           try {
+              String forNodesFlavor = "";
+              boolean firstLoop = true;
+              for(Iterator it = selectedNodes.iterator();it.hasNext();) {
+                 MindMapNode tmpNode =  (MindMapNode)it.next();
+                 if (firstLoop) {
+                    firstLoop = false; }
+                 else {
+                    forNodesFlavor += "<nodeseparator>"; }
+
+                 forNodesFlavor += copy(tmpNode, false).getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
+              }
+
+              String plainText = getMap().getAsPlainText(selectedNodes);
+              return new MindMapNodesSelection
+                 (forNodesFlavor, plainText, getMap().getAsRTF(selectedNodes), getMap().getAsHTML(selectedNodes), null, null); }
+              //return new StringSelection(forClipboard); }
+
+
+           catch (UnsupportedFlavorException ex) { freemind.main.Resources.getInstance().logException(ex); }
+           catch (IOException ex) { freemind.main.Resources.getInstance().logException(ex); }
+           return null; }
     /**
      */
     public Color getSelectionColor() {

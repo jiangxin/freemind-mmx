@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: DeleteChildAction.java,v 1.1.2.2.2.6 2007-04-21 15:11:21 dpolivaev Exp $ */
+/* $Id: DeleteChildAction.java,v 1.1.2.2.2.7 2007-07-08 08:37:24 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -96,7 +96,7 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
         pMindMapController.getActionFactory().startTransaction(text);
         MindMapNode parent = selectedNode.getParentNode();
 
-        Transferable copy = pMindMapController.getModel().copy(selectedNode, true);
+        Transferable copy = pMindMapController.copy(selectedNode, true);
         NodeCoordinate coord = new NodeCoordinate(selectedNode, selectedNode.isLeft());
         // Undo-action
         PasteNodeAction pasteNodeAction=null;

@@ -204,7 +204,7 @@ public class MindMapNodeDropListener implements DropTargetListener {
                     } while (actualNode != null);
                     trans = mMindMapController.cut();
                 } else {
-                    trans = mMindMapController.getModel().copy();
+                    trans = mMindMapController.copy();
                 }
 
                 mMindMapController.getView().selectAsTheOnlyOneSelected(
