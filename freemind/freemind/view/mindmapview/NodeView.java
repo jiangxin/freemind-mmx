@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.35 2007-07-05 20:26:33 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.36 2007-07-11 21:37:51 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -636,81 +636,28 @@ public class NodeView extends JComponent implements TreeModelListener{
  
     void update() {
     	updateStyle();
-              if(! model.isVisible()){
-                  mainView.setVisible(false);
-                  return;
-              }
-              mainView.setVisible(true);
-            //System.err.println("update");
-            // 1) Set color
-            Color color = getModel().getColor();
-            if (color==null) {
-            	color = MapView.standardNodeColor;
-            }
-            mainView.setForeground(color);
-
-            // 2) icons left or right?
-            getMainView().setHorizontalTextPosition(isLeft()?SwingConstants.LEADING:SwingConstants.TRAILING);
-            // 3) Create the icons:
-            MultipleImage iconImages = new MultipleImage(1.0f);
-            boolean iconPresent = false;
-            /* fc, 06.10.2003: images? */
-
-        FreeMindMain frame = map.getController().getFrame();
-        Map stateIcons = (getModel()).getStateIcons();
-        for (Iterator i = stateIcons.keySet().iterator(); i.hasNext();) {
-            String key = (String) i.next();
-            iconPresent = true;
-            ImageIcon myIcon = (ImageIcon) stateIcons.get(key);
-            iconImages.addImage(myIcon);
-
-        }
-
-        List icons = (getModel()).getIcons();
-        	for (Iterator i = icons.iterator(); i.hasNext();) {
-			MindIcon myIcon = (MindIcon) i.next();
-            iconPresent = true;
-            //System.out.println("print the icon " + myicon.toString());
-            iconImages.addImage(myIcon.getIcon());
-        }
-        String link = ((NodeAdapter)getModel()).getLink();
-        if (link != null) {
-			iconPresent = true;
-			String iconPath = "images/Link.png";
-			if (link.startsWith("#")) {
-				iconPath = "images/LinkLocal.png";
-			} else if (link.startsWith("mailto:")) {
-				iconPath = "images/Mail.png";
-			} else if (Tools.executableByExtension(link)) {
-				iconPath = "images/Executable.png";
-			}
-			ImageIcon icon = new ImageIcon(frame.getResource(iconPath));
-			iconImages.addImage(icon);
-		}
-// /* Folded icon by Matthias Schade (mascha2), fc, 20.12.2003*/
-// if (((NodeAdapter)getModel()).isFolded()) {
-//             iconPresent = true;
-//             ImageIcon icon = new ImageIcon(((NodeAdapter)getModel()).getFrame().getResource("images/Folded.png"));
-//             iconImages.addImage(icon);
-//         }
-        // DanielPolansky: set icon only if icon is present, because
-        // we don't want to insert any additional white space.
-        setIcon(iconPresent?iconImages:null);
-
-        // 4) AttributeView
+    	if(! model.isVisible()){
+    		mainView.setVisible(false);
+    		return;
+    	}
+    	mainView.setVisible(true);
+    	updateTextColor();
+        updateFont();
+    	updateIcons();
         attributeView.update();
-        
-        // 5) Determine font
-        String nodeText = getModel().toString();
-        final boolean isHtml = nodeText.startsWith("<html>");
-        Font font = getModel().getFont();
-        font = font == null ? map.getController().getDefaultFont() : font;
-        if (font != null) {
-           mainView.setFont(font); }
-        else {
-           // We can survive this trouble.
-           System.err.println("NodeView.update(): default font is null."); }
+        updateText();
+        updateToolTip();
+        revalidate(); // Because of zoom?
+    }
 
+    void repaintSelected(){
+    	updateTextColor();
+    	repaint();
+    }
+    
+	private void updateText() {
+		String nodeText = getModel().toString();
+        final boolean isHtml = nodeText.startsWith("<html>");
         // 6) Set the text
         // Right now, this implementation is quite logical, although it allows
         // for nonconvex feature of nodes starting with <html>.
@@ -782,14 +729,88 @@ public class NodeView extends JComponent implements TreeModelListener{
         else{
             setText(nodeText);
         }
-        // 7) ToolTips:
-        updateToolTip();
-        // 8) icons left or right?
-        //URGENT: Discuss with Dan.
-        mainView.setHorizontalTextPosition((getModel().isLeft())?SwingConstants.LEADING:SwingConstants.TRAILING);
-        // 10) Complete        
-        revalidate(); // Because of zoom?
-    }
+	}
+
+
+	private void updateFont() {
+		Font font = getModel().getFont();
+        font = font == null ? map.getController().getDefaultFont() : font;
+        if (font != null) {
+           mainView.setFont(font); }
+        else {
+           // We can survive this trouble.
+           System.err.println("NodeView.update(): default font is null."); }
+	}
+
+
+	private void updateIcons() {
+        updateIconPosition();
+		MultipleImage iconImages = new MultipleImage(1.0f);
+		boolean iconPresent = false;
+		/* fc, 06.10.2003: images? */
+
+      FreeMindMain frame = map.getController().getFrame();
+      Map stateIcons = (getModel()).getStateIcons();
+      for (Iterator i = stateIcons.keySet().iterator(); i.hasNext();) {
+		String key = (String) i.next();
+		iconPresent = true;
+		ImageIcon myIcon = (ImageIcon) stateIcons.get(key);
+		iconImages.addImage(myIcon);
+
+      }
+
+      List icons = (getModel()).getIcons();
+		for (Iterator i = icons.iterator(); i.hasNext();) {
+		MindIcon myIcon = (MindIcon) i.next();
+		iconPresent = true;
+		//System.out.println("print the icon " + myicon.toString());
+		iconImages.addImage(myIcon.getIcon());
+      }
+      String link = ((NodeAdapter)getModel()).getLink();
+      if (link != null) {
+		iconPresent = true;
+		String iconPath = "images/Link.png";
+		if (link.startsWith("#")) {
+			iconPath = "images/LinkLocal.png";
+		} else if (link.startsWith("mailto:")) {
+			iconPath = "images/Mail.png";
+		} else if (Tools.executableByExtension(link)) {
+			iconPath = "images/Executable.png";
+		}
+		ImageIcon icon = new ImageIcon(frame.getResource(iconPath));
+		iconImages.addImage(icon);
+}
+// /* Folded icon by Matthias Schade (mascha2), fc, 20.12.2003*/
+// if (((NodeAdapter)getModel()).isFolded()) {
+//             iconPresent = true;
+//             ImageIcon icon = new ImageIcon(((NodeAdapter)getModel()).getFrame().getResource("images/Folded.png"));
+//             iconImages.addImage(icon);
+//         }
+      // DanielPolansky: set icon only if icon is present, because
+      // we don't want to insert any additional white space.
+      setIcon(iconPresent?iconImages:null);
+	}
+
+
+	private void updateIconPosition() {
+		getMainView().setHorizontalTextPosition(isLeft()?SwingConstants.LEADING:SwingConstants.TRAILING);
+	}
+
+
+	private void updateTextColor() {
+		Color color;
+		if(! isSelected() || getMap().isCurrentlyPrinting())
+		{
+		color= getModel().getColor();
+		if (color==null) {
+			color = MapView.standardNodeColor;
+		}
+		}
+		else{
+			color = MapView.standardSelectTextColor;
+		}
+		mainView.setForeground(color);
+	}
         void updateStyle() {
         	if(mainView != null && mainView.getStyle().equals(model.getStyle())){
         		return;

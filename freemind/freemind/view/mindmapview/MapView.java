@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.23 2007-07-11 21:37:50 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.24 2007-07-11 21:40:46 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -583,7 +583,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         getSelected().requestFocus();
         getSelected().repaintSelected();
         if(oldSelected != null)
-            oldSelected.repaint();
+            oldSelected.repaintSelected();
     }
 
     /**
