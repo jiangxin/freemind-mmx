@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.60 2007-06-29 14:01:34 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.61 2007-07-11 22:35:20 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -870,113 +870,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			if (!EventQueue.isDispatchThread()) {
 				EventQueue.invokeAndWait(new Runnable() {
 					public void run() {
-
-						feedBack
-								.increase("FreeMind.progress.startCreateController");
-						ModeController ctrl = frame.controller
-								.getModeController();
-						// try to load mac module:
-						try {
-							Class macClass = Class
-									.forName("accessories.plugins.MacChanges");
-							// lazy programming. the mac class has exactly one
-							// constructor
-							// with a modeController.
-							macClass.getConstructors()[0]
-									.newInstance(new Object[] { frame });
-						} catch (Exception e1) {
-							// freemind.main.Resources.getInstance().logExecption(e1);
-						}
-						feedBack.increase("FreeMind.progress.loadMaps");
-						// This could be improved.
-						boolean fileLoaded = false;
-						for (int i = 0; i < args.length; i++) {
-							// JOptionPane.showMessageDialog(null,i+":"+args[i]);
-							String fileArgument = args[i];
-							if (fileArgument
-									.toLowerCase()
-									.endsWith(
-											freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION)) {
-
-								if (!Tools.isAbsolutePath(fileArgument)) {
-									fileArgument = System
-											.getProperty("user.dir")
-											+ System
-													.getProperty("file.separator")
-											+ fileArgument;
-								}
-								// fin = ;
-								try {
-									ctrl.load(new File(fileArgument).toURL());
-									fileLoaded = true;
-									// logger.info("Attempting to load: " +
-									// args[i]);
-								} catch (Exception ex) {
-									System.err.println("File " + fileArgument
-											+ " not found error");
-									// System.exit(1);
-								}
-							}
-						}
-						if (!fileLoaded) {
-							String restoreable = frame
-									.getProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED);
-							if (Tools.isPreferenceTrue(frame
-									.getProperty(FreeMindCommon.LOAD_LAST_MAP))
-									&& restoreable != null
-									&& restoreable.length() > 0) {
-								try {
-									frame.controller.getLastOpenedList().open(
-											restoreable);
-								} catch (Exception e) {
-									freemind.main.Resources.getInstance()
-											.logException(e);
-									frame
-											.out("An error occured on opening the file: "
-													+ restoreable + ".");
-								}
-							}
-						}
-
 						feedBack.increase("FreeMind.progress.buildScreen");
-
-						// if
-						// (frame.getProperty("menubarVisible").equals("false"))
-						// {
-						// frame.c.setMenubarVisible(false); }
-						// ^ Not allowed in application because of problems with
-						// not working key shortcuts
-
-						if (Tools.safeEquals(frame
-								.getProperty("toolbarVisible"), "false")) {
-							frame.controller.setToolbarVisible(false);
-						}
-
-						if (Tools.safeEquals(frame
-								.getProperty("leftToolbarVisible"), "false")) {
-							frame.controller.setLeftToolbarVisible(false);
-						}
-
-						// set the default state (normal/maximized) (PN)
-						// (note: this must be done later when partucular
-						// initalizations of the windows are ready,
-						// perhaps after setVisible is it enough... :-?
-						int win_state = Integer.parseInt(FreeMind.props
-								.getProperty("appwindow_state", "0"));
-						win_state = ((win_state & ICONIFIED) != 0) ? NORMAL
-								: win_state;
-						frame.setExtendedState(win_state);
-						// set divider position:
-						int splitPanePosition = frame.getIntProperty(
-								SPLIT_PANE_POSITION, (int) (frame.mSplitPane
-										.getHeight() * 0.8));
-						int lastSplitPanePosition = frame.getIntProperty(
-								SPLIT_PANE_LAST_POSITION, splitPanePosition);
-						frame.mSplitPane.setDividerLocation(splitPanePosition);
-						frame.mSplitPane
-								.setLastDividerLocation(lastSplitPanePosition);
-						feedBack.increase("FreeMind.progress.endStartup");
-
+						frame.setScreenBounds();
 					};
 				});
 			}
@@ -993,23 +888,123 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				if (frame.getController().getMapModule() != null) {
 					frame.getController().getMap().setSaved(true);
 				}				
-				frame.validate();
+				feedBack
+				.increase("FreeMind.progress.startCreateController");
+				ModeController ctrl = frame.createModeController(args);
+				feedBack.increase("FreeMind.progress.loadMaps");
+				// This could be improved.
+				frame.loadMaps(args, ctrl);
+
+				feedBack.increase("FreeMind.progress.endStartup");
+				
 				if (splash2 != null) {
 					splash2.setVisible(false);
 				}
 				frame.setVisible(true);
 			}
 		});
-		
-		// EventQueue.invokeLater(new Runnable(){
-		// public void run() {
-		// if (frame.getView() != null) {
-		// frame.getView().moveToRoot(); }
-		// }
-		//                        
-		// });
 	}
 
+	private void setScreenBounds() {
+		// if
+		// (frame.getProperty("menubarVisible").equals("false"))
+		// {
+		// frame.c.setMenubarVisible(false); }
+		// ^ Not allowed in application because of problems with
+		// not working key shortcuts
+
+		if (Tools.safeEquals(getProperty("toolbarVisible"), "false")) {
+			controller.setToolbarVisible(false);
+		}
+
+		if (Tools.safeEquals(getProperty("leftToolbarVisible"), "false")) {
+			controller.setLeftToolbarVisible(false);
+		}
+
+		// set the default state (normal/maximized) (PN)
+		// (note: this must be done later when partucular
+		// initalizations of the windows are ready,
+		// perhaps after setVisible is it enough... :-?
+		int win_state = Integer.parseInt(FreeMind.props
+				.getProperty("appwindow_state", "0"));
+		win_state = ((win_state & ICONIFIED) != 0) ? NORMAL
+				: win_state;
+		setExtendedState(win_state);
+		// set divider position:
+		int splitPanePosition = getIntProperty(
+				SPLIT_PANE_POSITION, (int) (mSplitPane.getHeight() * 0.8));
+		int lastSplitPanePosition = getIntProperty(
+				SPLIT_PANE_LAST_POSITION, splitPanePosition);
+		mSplitPane.setDividerLocation(splitPanePosition);
+		mSplitPane
+				.setLastDividerLocation(lastSplitPanePosition);
+	}
+	
+	 private ModeController createModeController(final String[] args) {
+		ModeController ctrl = controller
+		.getModeController();
+		// try to load mac module:
+		try {
+			Class macClass = Class
+			.forName("accessories.plugins.MacChanges");
+			// lazy programming. the mac class has exactly one
+			// constructor
+			// with a modeController.
+			macClass.getConstructors()[0]
+			                           .newInstance(new Object[] { this });
+		} catch (Exception e1) {
+			// freemind.main.Resources.getInstance().logExecption(e1);
+		}
+		return ctrl;
+	}
+
+	private void loadMaps(final String[] args, ModeController ctrl) {
+		boolean fileLoaded = false;
+		for (int i = 0; i < args.length; i++) {
+			// JOptionPane.showMessageDialog(null,i+":"+args[i]);
+			String fileArgument = args[i];
+			if (fileArgument
+					.toLowerCase()
+					.endsWith(
+							freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION)) {
+
+				if (!Tools.isAbsolutePath(fileArgument)) {
+					fileArgument = System
+					.getProperty("user.dir")
+					+ System
+					.getProperty("file.separator")
+					+ fileArgument;
+				}
+				// fin = ;
+				try {
+					ctrl.load(new File(fileArgument).toURL());
+					fileLoaded = true;
+					// logger.info("Attempting to load: " +
+					// args[i]);
+				} catch (Exception ex) {
+					System.err.println("File " + fileArgument
+							+ " not found error");
+					// System.exit(1);
+				}
+			}
+		}
+		if (!fileLoaded) {
+			String restoreable = getProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED);
+			if (Tools.isPreferenceTrue(getProperty(FreeMindCommon.LOAD_LAST_MAP))
+					&& restoreable != null
+					&& restoreable.length() > 0) {
+				try {
+					controller.getLastOpenedList().open(
+							restoreable);
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance()
+					.logException(e);
+					out("An error occured on opening the file: "
+							+ restoreable + ".");
+				}
+			}
+		}
+	}
 	/**
 	 */
 	public JPanel getSouthPanel() {
