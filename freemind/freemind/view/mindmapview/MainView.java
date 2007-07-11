@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.14 2007-07-05 20:27:03 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.15 2007-07-11 21:37:50 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -96,31 +96,20 @@ public abstract class MainView extends JLabel{
              return prefSize;
         }
         
-        /* (non-Javadoc)
-         * @see javax.swing.JComponent#paint(java.awt.Graphics)
-         */
         public void paint(Graphics g) {
-            float zoom = getZoom();
-            if(zoom != 1F){
-                Graphics2D g2 = (Graphics2D)g;
-                final AffineTransform transform = g2.getTransform();                
-                g2.scale(zoom, zoom);
-                isPainting = true;
-                super.paint(g);
-                isPainting = false;
-                g2.setTransform(transform);
-            }
-            else{
-                super.paint(g);
-            }
-        }
-
-        
-		public Color getForeground() {
-        	if (getNodeView() != null && ! MapView.standardDrawRectangleForSelection && getNodeView().isSelected() && ! isCurrentlyPrinting()){
-        		return MapView.standardSelectTextColor;
-        	}
-			return super.getForeground();
+		    float zoom = getZoom();
+		    if(zoom != 1F){
+		        Graphics2D g2 = (Graphics2D)g;
+		        final AffineTransform transform = g2.getTransform();                
+		        g2.scale(zoom, zoom);
+		        isPainting = true;
+		        super.paint(g);
+		        isPainting = false;
+		        g2.setTransform(transform);
+		    }
+		    else{
+		        super.paint(g);
+		    }
 		}
 
 		protected boolean isCurrentlyPrinting() {

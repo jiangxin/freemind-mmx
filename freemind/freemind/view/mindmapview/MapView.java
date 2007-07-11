@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.22 2007-07-03 20:18:36 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.23 2007-07-11 21:37:50 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -556,12 +556,12 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         }
 
         scrollNodeToVisible(newSelected);
-        newSelected.repaint();
+        newSelected.repaintSelected();
 
         for(ListIterator e = oldSelecteds.listIterator();e.hasNext();) {
             NodeView oldSelected = (NodeView)e.next();
             if (oldSelected != null) {
-                oldSelected.repaint();
+                oldSelected.repaintSelected();
             }
         }
     }
@@ -581,7 +581,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
             selected.add(newSelected);
         }
         getSelected().requestFocus();
-        getSelected().repaint();
+        getSelected().repaintSelected();
         if(oldSelected != null)
             oldSelected.repaint();
     }
@@ -597,12 +597,12 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			selected.add(newSelected);
         }
         getSelected().requestFocus();
-        getSelected().repaint(); }
+        getSelected().repaintSelected(); }
 
     public void deselect(NodeView newSelected) {
         if (isSelected(newSelected)) {
             selected.remove(newSelected);
-            newSelected.repaint();
+            newSelected.repaintSelected();
         }
     }
 
@@ -984,9 +984,20 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 				getRoot().updateAll();
 				validate();
 			}
+			else{
+				repaintSelecteds();
+			}
 			background = getBackground();
 			boundingRectangle = getInnerBounds();
             fitToPage = Tools.safeEquals(controller.getProperty("fit_to_page"),"true");
+		}
+	}
+
+	private void repaintSelecteds() {
+		final Iterator iterator = getSelecteds().iterator();
+		while(iterator.hasNext()){
+			NodeView next = (NodeView)iterator.next();
+			next.repaintSelected();
 		}
 	}
 
@@ -1008,6 +1019,9 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			if(NEED_PREF_SIZE_BUG_FIX){
 				getRoot().updateAll();
 				validate();
+			}
+			else{
+				repaintSelecteds();
 			}
 		}
 	 }
