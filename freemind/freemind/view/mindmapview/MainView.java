@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.15 2007-07-11 21:37:50 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.16 2007-07-12 06:39:41 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -138,7 +138,7 @@ public abstract class MainView extends JLabel{
             super.paintComponent(g);
         }
         public void paintSelected(Graphics2D graphics) {
-            if (! MapView.standardDrawRectangleForSelection && getNodeView().isSelected() && ! isCurrentlyPrinting()) {
+            if (getNodeView().useSelectionColors()) {
                 paintBackground(graphics, getNodeView().getSelectedColor());
             } else if (getNodeView().getModel().getBackgroundColor() != null) {
                 paintBackground(graphics, getNodeView().getModel().getBackgroundColor());

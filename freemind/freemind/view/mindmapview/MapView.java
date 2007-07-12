@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.24 2007-07-11 21:40:46 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.25 2007-07-12 06:39:41 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -254,22 +254,22 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 		                    if (propertyName
 		                            .equals(FreeMind.RESOURCES_NODE_COLOR)) {
 		                        standardNodeColor = Tools.xmlToColor(newValue);
-		                        controller.getFrame().getJFrame().repaint();
+		                        controller.getMapModule().getView().repaintSelecteds();
 		                    }
 		                    else if (propertyName
 		                            .equals(FreeMind.RESOURCES_SELECTED_NODE_COLOR)) {
 		                        standardSelectColor = Tools.xmlToColor(newValue);
-		                        controller.getFrame().getJFrame().repaint();
+		                        controller.getMapModule().getView().repaintSelecteds();
 		                    }
 		                    else if (propertyName
 		                            .equals(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR)) {
 		                    	standardSelectTextColor = Tools.xmlToColor(newValue);
-		                        controller.getFrame().getJFrame().repaint();
+		                    	controller.getMapModule().getView().repaintSelecteds();
 		                    }
 		                    else if (propertyName
 		                            .equals(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION)) {
 		                    	standardDrawRectangleForSelection = Tools.xmlToBoolean(newValue);
-		                        controller.getFrame().getJFrame().repaint();
+		                    	controller.getMapModule().getView().repaintSelecteds();
 		                    }
 		                }
 		            };

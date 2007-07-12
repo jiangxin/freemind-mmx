@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.36 2007-07-11 21:37:51 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.37 2007-07-12 06:39:42 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -799,28 +799,38 @@ public class NodeView extends JComponent implements TreeModelListener{
 
 	private void updateTextColor() {
 		Color color;
-		if(! isSelected() || getMap().isCurrentlyPrinting())
+		if(useSelectionColors())
 		{
-		color= getModel().getColor();
-		if (color==null) {
-			color = MapView.standardNodeColor;
-		}
+			color = MapView.standardSelectTextColor;
 		}
 		else{
-			color = MapView.standardSelectTextColor;
+			color= getModel().getColor();
+			if (color==null) {
+				color = MapView.standardNodeColor;
+			}
 		}
 		mainView.setForeground(color);
 	}
-        void updateStyle() {
-        	if(mainView != null && mainView.getStyle().equals(model.getStyle())){
-        		return;
-        	}
-         	final MainView newMainView = NodeViewFactory.getInstance().newMainView(model);
-			setMainView(newMainView);
-			if(map.getSelected() == this){
-				requestFocus();
-			}
-			
+
+
+	boolean useSelectionColors() {
+		return  isSelected() && !MapView.standardDrawRectangleForSelection &&  !map.isCurrentlyPrinting();
+	}
+
+	private boolean drawSelectionRectangle() {
+		return isSelected() && MapView.standardDrawRectangleForSelection && ! map.isCurrentlyPrinting();
+	}
+
+	void updateStyle() {
+		if(mainView != null && mainView.getStyle().equals(model.getStyle())){
+			return;
+		}
+		final MainView newMainView = NodeViewFactory.getInstance().newMainView(model);
+		setMainView(newMainView);
+		if(map.getSelected() == this){
+			requestFocus();
+		}
+
 	}
 
 		/**
@@ -1219,27 +1229,28 @@ public class NodeView extends JComponent implements TreeModelListener{
 //        g.drawRect(0, 0, getWidth()-1, getHeight()-1);
     }
 
-	   private void paingSelected(Graphics2D g) {
-    	if(!MapView.standardDrawRectangleForSelection || ! isSelected() || map.isCurrentlyPrinting()){
-    		return;
-    	}
-		final Color c = g.getColor();
-		final Stroke s = g.getStroke();
-		final Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-		g.setColor(MapView.standardSelectColor);
-		if(standardSelectionStroke == null){
-			standardSelectionStroke = new BasicStroke(2.0f);
+	         private void paingSelected(Graphics2D g) {
+			if(! drawSelectionRectangle()){
+				return;
+			}
+			final Color c = g.getColor();
+			final Stroke s = g.getStroke();
+			final Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+			g.setColor(MapView.standardSelectColor);
+			if(standardSelectionStroke == null){
+				standardSelectionStroke = new BasicStroke(2.0f);
+			}
+			g.setStroke(standardSelectionStroke);
+			setRenderingEdges(g);
+			final int arcWidth = 4;
+			g.drawRoundRect(getContent().getX() - arcWidth, getContent().getY() - arcWidth, 
+					getContent().getWidth() + 2 * arcWidth, getContent().getHeight() +  2 * arcWidth, 
+					15, 15);
+			g.setColor(c);
+			g.setStroke(s);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
 		}
-		g.setStroke(standardSelectionStroke);
-		setRenderingEdges(g);
-		final int arcWidth = 4;
-		g.drawRoundRect(getContent().getX() - arcWidth, getContent().getY() - arcWidth, 
-				getContent().getWidth() + 2 * arcWidth, getContent().getHeight() +  2 * arcWidth, 
-				15, 15);
-		g.setColor(c);
-		g.setStroke(s);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
-	}
+
 
 	private void paintCloud(Graphics g) {
         if(model.isVisible() && model.getCloud() != null) {
