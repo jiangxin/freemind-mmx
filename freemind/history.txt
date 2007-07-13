@@ -3,6 +3,7 @@ Changes made in FreeMind 0.9.0 Beta 10
 ===============================
 * New menu option: Display Selection as Rectangle
 * Standard colors are taken from Look&Feel settings
+* Node is unfolded on paste or drop
 * New option: velocity of mouse wheel movements.
 * Bug fix: F6 and F8 can be used for formats again.
 * Bug fix: sorting keeps graphical links now.
