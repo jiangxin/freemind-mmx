@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.39 2007-07-08 08:37:23 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.40 2007-07-13 21:22:58 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1313,7 +1313,7 @@ freemind.main.Resources.getInstance().logException(					e1);
         Color nodeColor = node.getColor();
         if (nodeColor == null) {
             nodeColor = Tools.xmlToColor(getFrame().getProperty(
-                    FreeMind.RESOURCES_NODE_COLOR));
+                    FreeMind.RESOURCES_NODE_TEXT_COLOR));
         }
         setNodeColor(node, new Color(
                 (3 * mapColor.getRed() + nodeColor.getRed()) / 4, (3 * mapColor
@@ -1452,6 +1452,9 @@ freemind.main.Resources.getInstance().logException(					e1);
 
     /** @param isLeft determines, whether or not the node is placed on the left or right. **/
     public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
+    	if (target.isFolded()) {
+			setFolded(target, false);
+		   }
         paste.paste(t, target, asSibling, isLeft);
     }
 

@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.26 2007-07-09 21:53:54 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.27 2007-07-13 21:22:58 dpolivaev Exp $*/
 package freemind.main;
 
 import java.awt.SystemColor;
@@ -37,6 +37,8 @@ import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+
+import javax.swing.UIManager;
 
 
 /**
@@ -328,11 +330,11 @@ public class FreeMindCommon {
         return value;
     }
 
-	public void loadSystemProperties(Properties props) {
-//		props.put(FreeMind.RESOURCES_BACKGROUND_COLOR, Tools.colorToXml(SystemColor.window));
-//		props.put(FreeMind.RESOURCES_NODE_COLOR, Tools.colorToXml(SystemColor.windowText));
-//		props.put(FreeMind.RESOURCES_SELECTED_NODE_COLOR, Tools.colorToXml(SystemColor.textHighlight));
-//		props.put(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR, Tools.colorToXml(SystemColor.textHighlightText));
+	public void loadUIProperties(Properties props) {
+		props.put(FreeMind.RESOURCES_BACKGROUND_COLOR, Tools.colorToXml(UIManager.getColor("text")));
+		props.put(FreeMind.RESOURCES_NODE_TEXT_COLOR, Tools.colorToXml(UIManager.getColor("textText")));
+		props.put(FreeMind.RESOURCES_SELECTED_NODE_COLOR, Tools.colorToXml(UIManager.getColor("textHighlight")));
+		props.put(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR, Tools.colorToXml(UIManager.getColor("textHighlightText")));
 	}
 
 

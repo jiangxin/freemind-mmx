@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/* $Id: StylePatternFrame.java,v 1.1.2.10.2.3 2007-06-27 07:03:57 dpolivaev Exp $ */
+/* $Id: StylePatternFrame.java,v 1.1.2.10.2.4 2007-07-13 21:22:58 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;
@@ -316,7 +316,7 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		controls.add(mSetNodeColor);
 		FreeMind fmMain = (FreeMind)mMindMapController.getFrame();
 		mNodeColor = new ColorProperty(NODE_COLOR + ".tooltip", NODE_COLOR,
-				fmMain.getDefaultProperty(FreeMind.RESOURCES_NODE_COLOR), this);
+				fmMain.getDefaultProperty(FreeMind.RESOURCES_NODE_TEXT_COLOR), this);
 		controls.add(mNodeColor);
 		mSetNodeBackgroundColor = new ThreeCheckBoxProperty(
 				SET_NODE_BACKGROUND_COLOR + ".tooltip",
@@ -442,7 +442,7 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 	public void setPattern(Pattern pattern) {
 		FreeMind fmMain = (FreeMind)mMindMapController.getFrame();
 		setPatternControls(pattern.getPatternNodeColor(), mSetNodeColor,
-				mNodeColor, fmMain.getDefaultProperty(FreeMind.RESOURCES_NODE_COLOR));
+				mNodeColor, fmMain.getDefaultProperty(FreeMind.RESOURCES_NODE_TEXT_COLOR));
 		setPatternControls(pattern.getPatternNodeBackgroundColor(),
 				mSetNodeBackgroundColor, mNodeBackgroundColor, fmMain.getDefaultProperty(FreeMind.RESOURCES_BACKGROUND_COLOR));
 		setPatternControls(pattern.getPatternNodeStyle(), mSetNodeStyle,

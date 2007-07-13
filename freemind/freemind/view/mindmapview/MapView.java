@@ -16,9 +16,10 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.25 2007-07-12 06:39:41 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.26 2007-07-13 21:22:59 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -29,6 +30,8 @@ import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.dnd.Autoscroll;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DropTargetListener;
@@ -76,8 +79,9 @@ import freemind.preferences.FreemindPropertyListener;
 public class MapView extends JPanel implements Printable, Autoscroll{
     static Color standardSelectColor;
     static Color standardSelectTextColor;
-    static Color standardNodeColor;
+    static Color standardNodeTextColor;
     static boolean standardDrawRectangleForSelection;
+	private static Stroke standardSelectionStroke;
     static private FreemindPropertyListener propertyChangeListener;
 
 	private class Selected {
@@ -182,10 +186,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         	throw new RuntimeException("only one controller instance expected");
         }
         // initialize the standard node colors.
-        if (standardNodeColor == null) {
+        if (standardNodeTextColor == null) {
             try{
-                String stdcolor = getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR);
-                standardNodeColor = Tools.xmlToColor(stdcolor);
+                String stdcolor = getController().getFrame().getProperty(FreeMind.RESOURCES_NODE_TEXT_COLOR);
+                standardNodeTextColor = Tools.xmlToColor(stdcolor);
                 }
                 catch(Exception ex){
                 	standardSelectColor = Color.WHITE;
@@ -252,8 +256,8 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 		                public void propertyChanged(String propertyName,
 		                        String newValue, String oldValue) {
 		                    if (propertyName
-		                            .equals(FreeMind.RESOURCES_NODE_COLOR)) {
-		                        standardNodeColor = Tools.xmlToColor(newValue);
+		                            .equals(FreeMind.RESOURCES_NODE_TEXT_COLOR)) {
+		                        standardNodeTextColor = Tools.xmlToColor(newValue);
 		                        controller.getMapModule().getView().repaintSelecteds();
 		                    }
 		                    else if (propertyName
@@ -901,10 +905,50 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         collectLabels(rootView, labels);
         super.paintChildren(graphics);
         paintLinks(rootView, (Graphics2D)graphics, labels, null);
+        paintSelecteds((Graphics2D)graphics);
     }
 
 
-    /** collect all existing labels in the current map.*/
+    void setRenderingEdges(Graphics2D g) {
+    	if (getController().getAntialiasEdges() ||getController().getAntialiasAll()) {
+    		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
+    }
+    private void paintSelecteds(Graphics2D g) {
+		if (!standardDrawRectangleForSelection || isCurrentlyPrinting()){
+			return;
+		}
+		final Color c = g.getColor();
+		final Stroke s = g.getStroke();
+		final Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+		g.setColor(MapView.standardSelectColor);
+		if(standardSelectionStroke == null){
+			standardSelectionStroke = new BasicStroke(2.0f);
+		}
+		g.setStroke(standardSelectionStroke);
+		setRenderingEdges(g);
+		final Iterator i = getSelecteds().iterator();
+		while(i.hasNext()){
+			NodeView selected = (NodeView) i.next();
+			paintSelected(g, selected);
+		}
+		g.setColor(c);
+		g.setStroke(s);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
+
+		
+	}
+
+	private void paintSelected(Graphics2D g, NodeView selected) {
+		final int arcWidth = 4;
+		final JComponent content = selected.getContent();
+		Point contentLocation = new Point();
+		Tools.convertPointToAncestor(content, contentLocation, this);
+		g.drawRoundRect(contentLocation.x - arcWidth, contentLocation.y - arcWidth, 
+				content.getWidth() + 2 * arcWidth, content.getHeight() +  2 * arcWidth, 
+				15, 15);
+	}
+
+	/** collect all existing labels in the current map.*/
     protected void collectLabels(NodeView source, HashMap labels) {
         // check for existing registry:
         if(getModel().getLinkRegistry()==null)
@@ -999,6 +1043,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			NodeView next = (NodeView)iterator.next();
 			next.repaintSelected();
 		}
+		// repaint();
 	}
 
 	 /**

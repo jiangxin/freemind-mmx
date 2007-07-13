@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.17 2007-06-26 21:42:25 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.18 2007-07-13 21:22:57 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -232,50 +232,19 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 	    defaultProps.load(in);
  	    in.close();
 	    userProps = defaultProps;
-	    mFreeMindCommon.loadSystemProperties(userProps);
  	} catch (Exception ex) {
            System.err.println("Could not load properties.");
  	}
+
+ 	updateLookAndFeel();
 
         //try to overload some properties with given command-line (html tag) Arguments
         Enumeration allKeys = userProps.propertyNames();
         while (allKeys.hasMoreElements()) {
            String key = (String)allKeys.nextElement();
-           String val = getParameter(key);
-           //	    System.out.println("Got prop:"+key+":"+val);
-           if (val != null  &&  val != "") {
-              userProps.setProperty(key,val);
-           }
+           setPropertyByParameter(key);
         }
             
-        //set Look&Feel
-        String lookAndFeel = "";
-        try {
-           lookAndFeel = userProps.getProperty("lookandfeel");
-           if (lookAndFeel.equals("windows")) {
-              UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-           } else if (lookAndFeel.equals("motif")) {
-              UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-           } else if (lookAndFeel.equals("mac")) {
-              //Only available on macOS
-              UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
-           } else if (lookAndFeel.equals("metal")) {
-              UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-           } else if (lookAndFeel.equals("gtk")) {
-	   	        UIManager
-	                    .setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-	        } else if (lookAndFeel.equals("nothing")) {
-	        } else if (lookAndFeel.indexOf('.') != -1) { // string contains a
-	            // dot
-	            UIManager.setLookAndFeel(lookAndFeel);
-	            //	         we assume class name
-	        } else {
-               // default.
-               UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-           }
-        } catch (Exception ex) {
-           System.err.println("Error while setting Look&Feel"+lookAndFeel);
-        }
 
  	//Layout everything
  	getContentPane().setLayout( new BorderLayout() );
@@ -342,6 +311,47 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
         }
 
     }
+
+	private void setPropertyByParameter(String key) {
+		String val = getParameter(key);
+           //	    System.out.println("Got prop:"+key+":"+val);
+           if (val != null  &&  val != "") {
+              userProps.setProperty(key,val);
+           }
+	}
+
+	private void updateLookAndFeel() {
+		//set Look&Feel
+        String lookAndFeel = "";
+        try {
+        	setPropertyByParameter("lookandfeel");	
+           lookAndFeel = userProps.getProperty("lookandfeel");
+           if (lookAndFeel.equals("windows")) {
+              UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+           } else if (lookAndFeel.equals("motif")) {
+              UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+           } else if (lookAndFeel.equals("mac")) {
+              //Only available on macOS
+              UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
+           } else if (lookAndFeel.equals("metal")) {
+              UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+           } else if (lookAndFeel.equals("gtk")) {
+	   	        UIManager
+	                    .setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+	        } else if (lookAndFeel.equals("nothing")) {
+	        } else if (lookAndFeel.indexOf('.') != -1) { // string contains a
+	            // dot
+	            UIManager.setLookAndFeel(lookAndFeel);
+	            //	         we assume class name
+	        } else {
+               // default.
+               UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+           }
+        } catch (Exception ex) {
+           System.err.println("Error while setting Look&Feel"+lookAndFeel);
+        }
+	    mFreeMindCommon.loadUIProperties(userProps);
+	}
 
 	/* (non-Javadoc)
 	 * @see freemind.main.FreeMindMain#getSouthPanel()

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.31 2007-06-26 21:42:25 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.32 2007-07-13 21:22:56 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -77,6 +77,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import freemind.common.BooleanProperty;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.filter.FilterController;
 import freemind.controller.printpreview.PreviewDialog;
@@ -177,6 +178,8 @@ public class Controller  implements MapModuleChangeObserver {
 
     public Action zoomIn;
     public Action zoomOut;
+    
+    public Action showSelectionAsRectangle;
     public PropertyAction propertyAction;
 
 	// this values better suit at least the test purposes
@@ -234,6 +237,8 @@ public class Controller  implements MapModuleChangeObserver {
         zoomIn = new ZoomInAction(this);
         zoomOut = new ZoomOutAction(this);
         propertyAction = new PropertyAction(this);
+        
+        showSelectionAsRectangle = new ShowSelectionAsRectangleAction(this);
 
         moveToRoot = new MoveToRootAction(this);
 
@@ -266,7 +271,23 @@ public class Controller  implements MapModuleChangeObserver {
 	   return frame.getIntProperty(property, defaultValue); }
 
     public void setProperty(String property, String value) {
-       frame.setProperty(property, value); }
+		String oldValue = getProperty(property);
+		firePropertyChanged(property, value, oldValue);
+
+    }
+
+	private void firePropertyChanged(String property, String value,
+			String oldValue) {
+		if(! oldValue.equals(value))
+		{
+			frame.setProperty(property, value);			
+			for (Iterator i = Controller.getPropertyChangeListeners().iterator(); i.hasNext();) {
+				FreemindPropertyListener listener = (FreemindPropertyListener) i
+				.next();
+				listener.propertyChanged(property, value, oldValue);
+			}
+		}
+	}
 
     public FreeMindMain getFrame() {
         return frame;
@@ -1231,7 +1252,16 @@ public class Controller  implements MapModuleChangeObserver {
             logger.info("ZoomOutAction actionPerformed");
            ((MainToolBar)toolbar).zoomOut(); }}
 
-    private class ShowAllAttributesAction extends AbstractAction {
+    protected class ShowSelectionAsRectangleAction extends AbstractAction {
+        public ShowSelectionAsRectangleAction(Controller controller) {
+           super(controller.getResourceString("selection_as_rectangle")); }
+        public void actionPerformed(ActionEvent e) {
+            logger.info("ShowSelectionAsRectangleAction action Performed");
+            showSelectionAsRectangle();
+           }
+        }
+
+     private class ShowAllAttributesAction extends AbstractAction {
         public ShowAllAttributesAction(){
             super(Resources.getInstance().getResourceString("attributes_show_all"));
         };
@@ -1289,7 +1319,16 @@ public class Controller  implements MapModuleChangeObserver {
     public static Collection getPropertyChangeListeners() {
         return Collections.unmodifiableCollection(propertyChangeListeners);
     }
-    /**
+    void showSelectionAsRectangle() {
+    	if(getProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION).equalsIgnoreCase(BooleanProperty.TRUE_VALUE)){
+    		setProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION, BooleanProperty.FALSE_VALUE);
+    	}
+    	else{
+    		setProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION, BooleanProperty.TRUE_VALUE);
+    	}
+	}
+
+	/**
      */
     public MindMap getMap() {
         return getMapModule().getModel();
@@ -1328,29 +1367,16 @@ public class Controller  implements MapModuleChangeObserver {
 					Vector sortedKeys = new Vector();
 					sortedKeys.addAll(props.keySet());
 					Collections.sort(sortedKeys);
-					HashMap oldProperties = new HashMap();
+					boolean propertiesChanged = false;
 					for (Iterator i = sortedKeys.iterator(); i.hasNext();) {
 						String key = (String) i.next();
 						// save only changed keys:
-						String oldProperty = controller.getProperty(key);
                         String newProperty = props.getProperty(key);
-                        if (!oldProperty.equals(newProperty)) {
-						    oldProperties.put(key, oldProperty);
-							controller.setProperty(key, newProperty);
-						}
+                        propertiesChanged = propertiesChanged || ! newProperty.equals(controller.getProperty(key));
+						controller.setProperty(key, newProperty);
 					}
 
-					for (Iterator i = Controller.getPropertyChangeListeners().iterator(); i.hasNext();) {
-						FreemindPropertyListener listener = (FreemindPropertyListener) i
-								.next();
-						for (Iterator j = oldProperties.keySet().iterator(); j
-                                .hasNext();) {
-                            String key = (String) j.next();
-    						listener.propertyChanged(key, controller.getProperty(key), (String) oldProperties.get(key));
-                        }
-					}
-
-					if (oldProperties.size() > 0) {
+					if (propertiesChanged ) {
                         JOptionPane
                                 .showMessageDialog(
                                         null,

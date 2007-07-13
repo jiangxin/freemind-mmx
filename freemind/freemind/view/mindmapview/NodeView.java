@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.37 2007-07-12 06:39:42 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.38 2007-07-13 21:22:59 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -112,7 +112,6 @@ public class NodeView extends JComponent implements TreeModelListener{
 
 	static final int SPACE_AROUND = 50;
 
-	private static Stroke standardSelectionStroke;
     protected NodeView(MindMapNode model, int position, MapView map, Container parent) {
         if(logger == null) {
             logger = map.getController().getFrame().getLogger(this.getClass().getName());
@@ -806,7 +805,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 		else{
 			color= getModel().getColor();
 			if (color==null) {
-				color = MapView.standardNodeColor;
+				color = MapView.standardNodeTextColor;
 			}
 		}
 		mainView.setForeground(color);
@@ -816,10 +815,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 	boolean useSelectionColors() {
 		return  isSelected() && !MapView.standardDrawRectangleForSelection &&  !map.isCurrentlyPrinting();
 	}
-
-	private boolean drawSelectionRectangle() {
-		return isSelected() && MapView.standardDrawRectangleForSelection && ! map.isCurrentlyPrinting();
-	}
+		
 
 	void updateStyle() {
 		if(mainView != null && mainView.getStyle().equals(model.getStyle())){
@@ -902,8 +898,7 @@ public class NodeView extends JComponent implements TreeModelListener{
    }
 
    protected void setRenderingEdges(Graphics2D g) {
-   	if (getMap().getController().getAntialiasEdges() || getMap().getController().getAntialiasAll()) {
-   		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
+	   getMap().setRenderingEdges(g);
    }
 
    String getStyle(){
@@ -1055,6 +1050,9 @@ public class NodeView extends JComponent implements TreeModelListener{
      * @see javax.swing.event.TreeModelListener#treeNodesInserted(javax.swing.event.TreeModelEvent)
      */
     public void treeNodesInserted(TreeModelEvent e) {
+    	if (getModel().isFolded()){
+    		return;
+    	}
         final int[] childIndices = e.getChildIndices();
         
         for(int i = 0; i < childIndices.length; i++){
@@ -1068,7 +1066,11 @@ public class NodeView extends JComponent implements TreeModelListener{
      * @see javax.swing.event.TreeModelListener#treeNodesRemoved(javax.swing.event.TreeModelEvent)
      */
     public void treeNodesRemoved(TreeModelEvent e) {
-        final int[] childIndices = e.getChildIndices();
+    	if (getModel().isFolded()){
+    		return;
+    	}
+    	
+       final int[] childIndices = e.getChildIndices();
         
         for(int i = childIndices.length-1; i>=0 ; i--){
             final int index = childIndices[i];
@@ -1220,7 +1222,6 @@ public class NodeView extends JComponent implements TreeModelListener{
      */
     public void paint(Graphics g) {
         paintCloud(g);
-        paingSelected((Graphics2D)g);
         super.paint(g);
         if(getModel().isVisible()){
             paintFoldingMark((Graphics2D)g);
@@ -1228,29 +1229,6 @@ public class NodeView extends JComponent implements TreeModelListener{
         }
 //        g.drawRect(0, 0, getWidth()-1, getHeight()-1);
     }
-
-	         private void paingSelected(Graphics2D g) {
-			if(! drawSelectionRectangle()){
-				return;
-			}
-			final Color c = g.getColor();
-			final Stroke s = g.getStroke();
-			final Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-			g.setColor(MapView.standardSelectColor);
-			if(standardSelectionStroke == null){
-				standardSelectionStroke = new BasicStroke(2.0f);
-			}
-			g.setStroke(standardSelectionStroke);
-			setRenderingEdges(g);
-			final int arcWidth = 4;
-			g.drawRoundRect(getContent().getX() - arcWidth, getContent().getY() - arcWidth, 
-					getContent().getWidth() + 2 * arcWidth, getContent().getHeight() +  2 * arcWidth, 
-					15, 15);
-			g.setColor(c);
-			g.setStroke(s);
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
-		}
-
 
 	private void paintCloud(Graphics g) {
         if(model.isVisible() && model.getCloud() != null) {

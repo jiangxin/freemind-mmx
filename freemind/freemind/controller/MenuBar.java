@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.12 2007-06-14 23:03:09 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.13 2007-07-13 21:22:57 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -169,6 +169,7 @@ public class MenuBar extends JMenuBar {
 		menuHolder.addAction(c.about, HELP_MENU+"about/about");
 
 		updateFileMenu();
+		updateViewMenu();
 		updateEditMenu();
 		updateModeMenu();
 		updateMapsMenu(menuHolder, MENU_MINDMAP_CATEGORY+"/");
@@ -290,40 +291,9 @@ public class MenuBar extends JMenuBar {
     }
 
     private void updateEditMenu() {
-		JMenuItem toggleToolbar = menuHolder.addAction(c.toggleToolbar, VIEW_MENU+"toolbars/toggleToolbar");
-		JMenuItem toggleLeftToolbar = menuHolder.addAction(c.toggleLeftToolbar, VIEW_MENU+"toolbars/toggleLeftToolbar");
-		
-		menuHolder.addSeparator(VIEW_MENU);
-		
-		JMenuItem zoomIn = menuHolder.addAction(c.zoomIn, VIEW_MENU+"zoom/zoomIn");
-		zoomIn.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_zoom_in")));
-	
-		JMenuItem zoomOut = menuHolder.addAction(c.zoomOut, VIEW_MENU+"zoom/zoomOut");
-		zoomOut.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_zoom_out")));
-	
 		JMenuItem moveToRoot = menuHolder.addAction(c.moveToRoot, NAVIGATE_MENU+"nodes/moveToRoot");
 		moveToRoot.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_moveToRoot")));
 	
-		menuHolder.addSeparator(VIEW_MENU);
-        menuHolder.addCategory(VIEW_MENU+"note_window");
-        menuHolder.addSeparator(VIEW_MENU);
-        JMenu attributes = menuHolder.addMenu(new JMenu(c.getResourceString("menu_attributes")), VIEW_MENU+"attributes/.");
-        ButtonGroup buttonGroup = new ButtonGroup();
-        JRadioButtonMenuItem itemShowAll = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(c.showAllAttributes), VIEW_MENU+"attributes/showAllAttributes");
-        itemShowAll.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_show_all_attributes")));
-        buttonGroup.add(itemShowAll);
-
-        JRadioButtonMenuItem itemShowSelected = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(c.showSelectedAttributes), VIEW_MENU+"attributes/showSelectedAttributes");
-        itemShowSelected.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_show_selected_attributes")));
-        buttonGroup.add(itemShowSelected);
-
-        JRadioButtonMenuItem itemHideAll = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(c.hideAllAttributes), VIEW_MENU+"attributes/hideAllAttributes");
-        itemHideAll.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_hide_all_attributes")));
-        buttonGroup.add(itemHideAll);
-        
-        
-
-
 		JMenuItem previousMap = menuHolder.addAction(c.navigationPreviousMap, MINDMAP_MENU+"navigate/navigationPreviousMap");
 		previousMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_previousMap")));
 	
@@ -348,6 +318,39 @@ public class MenuBar extends JMenuBar {
 	
 	
     }
+
+
+	private void updateViewMenu() {
+		JMenuItem toggleToolbar = menuHolder.addAction(c.toggleToolbar, VIEW_MENU+"toolbars/toggleToolbar");
+		JMenuItem toggleLeftToolbar = menuHolder.addAction(c.toggleLeftToolbar, VIEW_MENU+"toolbars/toggleLeftToolbar");
+		
+		menuHolder.addSeparator(VIEW_MENU);
+		
+		JMenuItem showSelectionAsRectangle = menuHolder.addAction(c.showSelectionAsRectangle, VIEW_MENU+"general/selectionAsRectangle");
+
+		JMenuItem zoomIn = menuHolder.addAction(c.zoomIn, VIEW_MENU+"zoom/zoomIn");
+		zoomIn.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_zoom_in")));
+	
+		JMenuItem zoomOut = menuHolder.addAction(c.zoomOut, VIEW_MENU+"zoom/zoomOut");
+		zoomOut.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_zoom_out")));
+	
+		menuHolder.addSeparator(VIEW_MENU);
+        menuHolder.addCategory(VIEW_MENU+"note_window");
+        menuHolder.addSeparator(VIEW_MENU);
+        JMenu attributes = menuHolder.addMenu(new JMenu(c.getResourceString("menu_attributes")), VIEW_MENU+"attributes/.");
+        ButtonGroup buttonGroup = new ButtonGroup();
+        JRadioButtonMenuItem itemShowAll = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(c.showAllAttributes), VIEW_MENU+"attributes/showAllAttributes");
+        itemShowAll.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_show_all_attributes")));
+        buttonGroup.add(itemShowAll);
+
+        JRadioButtonMenuItem itemShowSelected = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(c.showSelectedAttributes), VIEW_MENU+"attributes/showSelectedAttributes");
+        itemShowSelected.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_show_selected_attributes")));
+        buttonGroup.add(itemShowSelected);
+
+        JRadioButtonMenuItem itemHideAll = (JRadioButtonMenuItem) menuHolder.addMenuItem(new JRadioButtonMenuItem(c.hideAllAttributes), VIEW_MENU+"attributes/hideAllAttributes");
+        itemHideAll.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_hide_all_attributes")));
+        buttonGroup.add(itemHideAll);
+	}
 
    private void addOptionSet(Action action, String[] textIDs, JMenu menu, String selectedTextID) {
       ButtonGroup group = new ButtonGroup();
