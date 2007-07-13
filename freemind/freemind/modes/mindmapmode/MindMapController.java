@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.40 2007-07-13 21:22:58 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.41 2007-07-13 22:01:23 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1452,7 +1452,7 @@ freemind.main.Resources.getInstance().logException(					e1);
 
     /** @param isLeft determines, whether or not the node is placed on the left or right. **/
     public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
-    	if (target.isFolded()) {
+    	if (! asSibling && target.isFolded()) {
 			setFolded(target, false);
 		   }
         paste.paste(t, target, asSibling, isLeft);
