@@ -500,6 +500,7 @@
 		<cvs  cvsRoot=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"
 		       package="admin"
 		       dest="${inst.dir}"></cvs>
+    	<ant dir="${inst.dir}/freemind" target="clean" ></ant>
     	<ant dir="${inst.dir}/freemind" target="post" ></ant>
     	<copy todir="${inst.dest.dir}">
     		<fileset dir="${inst.dir}/post">
