@@ -10,7 +10,7 @@
       	<tokenfilter><replaceregex pattern=" " replace="_" flags="g"/></tokenfilter>
       </filterchain>
     </loadfile>
-	<property name="butterfly" value="" /> 
+	<property name="butterfly" value="" />
 
 <!--	<property name="ver" value="0_9_0_beta6" /> -->
 	<property name="src" value="." />
@@ -98,22 +98,22 @@
 	<!-- end generator part -->
 
 	<target name="icon_change" unless="butterfly">
-		<replaceregexp file="${src}/freemind/main/FreeMind.java" byline="true" 
-			match="splash = new FreeMindSplash\(frame\);" 
+		<replaceregexp file="${src}/freemind/main/FreeMind.java" byline="true"
+			match="splash = new FreeMindSplash\(frame\);"
 			replace="splash = new FreeMindSplashLightBulb(frame);"/>
 		<property name="file_extension" value="icon_light_bulb"/>
 		<property name="icns_extension" value="_light_bulb"/>
 
 	</target>
-	
+
 	<target name="icon_change_butterfly" if="butterfly">
-		<replaceregexp file="${src}/freemind/main/FreeMind.java" byline="true" 
-			match="splash = new FreeMindSplashLightBulb\(frame\);" 
+		<replaceregexp file="${src}/freemind/main/FreeMind.java" byline="true"
+			match="splash = new FreeMindSplashLightBulb\(frame\);"
 			replace="splash = new FreeMindSplash(frame);"/>
 		<property name="file_extension" value="icon_butterfly"/>
 		<property name="icns_extension" value=""/>
 	</target>
-	
+
 	<target name="build" depends="gen,icon_change_butterfly,icon_change">
 		<!-- Perform Mac Changes as a plugin. -->
 		<exec dir="${src}/accessories/plugins" executable="ln" os="Mac OS X">
@@ -128,7 +128,7 @@
 		</exec>
 		<!-- end mac changes. -->
 		<!-- icon changes -->
-		
+
 		<!-- end icon changes -->
 		<mkdir dir="${build}"/>
 		<javac	srcdir="${src}"
@@ -199,11 +199,11 @@
 		<antcall target="dist_macos"/>
 	</target>
 
-	<target name="dist_icon" unless="butterfly"> 
-		<copy file="${src}/windows-launcher/Freemind_light_bulb.exe" 
+	<target name="dist_icon" unless="butterfly">
+		<copy file="${src}/windows-launcher/Freemind_light_bulb.exe"
 			tofile="${dist}/Freemind.exe" overwrite="true"/>
 	</target>
-	
+
 	<target name="dist_macos" if="isMacOs">
 		<delete dir="${dist_macos}"/>
 		<mkdir dir="${dist_macos}"/>
@@ -312,8 +312,8 @@
 		</antcall>
 	</target>
 
-	
-	
+
+
 	<target name="post_macos">
 
 		<exec dir="." executable="bash" os="Mac OS X">
@@ -464,21 +464,69 @@
 		</xmlvalidate>
 	</target>
 
-	<!-- - - - - - - - - - - - - - - - - - 
-          target: all                      
+	<!-- - - - - - - - - - - - - - - - - -
+          target: all
          - - - - - - - - - - - - - - - - - -->
     <target name="all">
     	<antcall target="post"></antcall>
     	<!-- if set, the light bulb changes are performed. -->
-    	<property name="butterfly" value="" /> 
+    	<property name="butterfly" value="" />
     	<antcall target="post"></antcall>
 
     </target>
 
-	<!-- ================================= 
-          target: installers, for Chris' computes              
+	<!-- =================================
+          target: installers for everybody
          ================================= -->
-    <target name="installers" depends="" description="--> Creates all installers. This is a task that only works on Chris laptops. But it should be informative to others who want to build the installers">
+    <target name="installers_all" depends="" description="--> Creates all installers.">
+    	<property name="cvstag" value="fm_060405_integration" />
+
+    	<property name="InnoSetup" location="D:/Programme/Inno Setup 5/ISCC.exe" />
+<!--
+    	<property name="InnoSetup" location="/home/foltin/.wine/drive_c/Programme/Inno Setup 5/ISCC.exe" />
+-->
+        <property name="inst.dir" location="../tmp/fm_installer"/>
+        <property name="inst.dest.dir" location="../installers"/>
+    	<delete dir="${inst.dest.dir}" failonerror="false"/>
+<!--
+    	<delete dir="${inst.dir}" failonerror="false"/>
+-->
+    	<mkdir dir="${inst.dest.dir}"/>
+    	<mkdir dir="${inst.dir}"/>
+		<cvs  cvsRoot=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"
+		       package="freemind"
+		       dest="${inst.dir}"
+			  command="checkout -P -r ${cvstag}"></cvs>
+		<cvs  cvsRoot=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"
+		       package="admin"
+		       dest="${inst.dir}"></cvs>
+    	<ant dir="${inst.dir}/freemind" target="post" ></ant>
+    	<copy todir="${inst.dest.dir}">
+    		<fileset dir="${inst.dir}/post">
+			    <include name="*"/>
+			</fileset>
+		</copy>
+    	<exec dir="${inst.dir}/admin/installer/windows/" executable="${InnoSetup}" osfamily="Windows">
+			<arg value="Freemind.iss"/>
+    	</exec>
+    	<exec dir="${inst.dir}/admin/installer/windows/" executable="wine" os="Linux">
+			<arg value="${InnoSetup}"/>
+			<arg value="Freemind.iss"/>
+    	</exec>
+    	<copy todir="${inst.dest.dir}">
+    		<fileset dir="${inst.dir}/admin/installer/windows/Output/">
+			    <include name="*.exe"/>
+			</fileset>
+		</copy>
+    	<!--
+    	<delete dir="${inst.dir}" failonerror="false"/>
+    	-->
+    </target>
+
+	<!-- =================================
+          target: installers, for Chris' computes
+         ================================= -->
+    <target name="installers_chris" depends="" description="--> Creates all installers. This is a task that only works on Chris laptops. But it should be informative to others who want to build the installers">
         <property name="inst.dir" location="/tmp/fm_installer"/>
         <property name="inst.dest.dir" location="../installers"/>
     	<mkdir dir="${inst.dest.dir}"/>
@@ -487,7 +535,7 @@
 		<cvs  cvsRoot=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"
 		       package="freemind"
 		       dest="${inst.dir}"
-			  command="checkout -P -r fm_060405_integration"></cvs> 
+			  command="checkout -P -r fm_060405_integration"></cvs>
 		<cvs  cvsRoot=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"
 		       package="admin"
 		       dest="${inst.dir}"></cvs>
@@ -517,6 +565,6 @@
     	<delete dir="${inst.dir}" failonerror="false"/>
     </target>
 
-	
+
 </project>
 
