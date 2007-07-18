@@ -12,7 +12,6 @@
     </loadfile>
 	<property name="butterfly" value="" />
 
-<!--	<property name="ver" value="0_9_0_beta6" /> -->
 	<property name="src" value="." />
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
