@@ -6,6 +6,7 @@ Changes made in FreeMind 0.9.0 Beta 11
 * Node is unfolded on paste or drop
 * In-place node editor scrolls with the map
 * Bug fix in note editor: space does not fold/unfold the node
+* Bug fix: tab closing fixed for java4+5
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 10

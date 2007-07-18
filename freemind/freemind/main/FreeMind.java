@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.63 2007-07-15 19:11:53 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.64 2007-07-18 20:40:59 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -121,7 +121,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private static final String DEFAULT_LANGUAGE = "en";
 
-	public static final String VERSION = "0.9.0 Beta 11";
+	public static final String VERSION = "0.9.0 Beta 10";
 
 	public static final String XML_VERSION = "0.9.0_Beta_8";
 
@@ -156,6 +156,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	private JSplitPane mSplitPane;
 
 	private JTabbedPane mTabbedPane;
+	private boolean mTabbedPaneSelectionUpdate = true;
 
 	private ImageIcon mWindowIcon;
 
@@ -171,6 +172,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		Resources.createInstance(this);
 	}
 
+	
 	void init(FeedBack feedback) {
 		/* This is only for apple but does not harm for the others. */
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -309,27 +311,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			mTabbedPane.addChangeListener(new ChangeListener() {
 
 				public synchronized void stateChanged(ChangeEvent pE) {
-//					logger.info("State changed:"+pE);
-					int selectedIndex = mTabbedPane.getSelectedIndex();
-					// display nothing on the other tabs:
-					for(int j = 0 ; j < mTabbedPane.getTabCount(); j++) {
-						if(j != selectedIndex)
-							mTabbedPane.setComponentAt(j, new JPanel());
-					}
-					if (selectedIndex < 0) {
-						// nothing selected. probably, the last map was closed
-						return;
-					}
-					String selectedTitle = mTabbedPane
-							.getTitleAt(selectedIndex);
-					if (!selectedTitle.equals(controller.getMapModule()
-							.toString())) {
-						// we have to change the active map actively:
-						controller.getMapModuleManager().changeToMapModule(
-								selectedTitle);
-					}
-					mTabbedPane.setComponentAt(selectedIndex, mSplitPane);
+					tabSelectionChanged();
 				}
+
 
 			});
 			controller.getMapModuleManager().addListener(
@@ -385,10 +369,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
 							for (int i = 0; i < mTabbedPane.getTabCount(); ++i) {
 								if (mTabbedPane.getTitleAt(i).equals(
 										pOldMapModule.toString())) {
+									logger.fine("Remove tab:" + i + " with title:" + mTabbedPane.getTitleAt(i));
+									mTabbedPaneSelectionUpdate = false;
 									mTabbedPane.removeTabAt(i);
+									mTabbedPaneSelectionUpdate = true;
+									tabSelectionChanged();
 									return;
 								}
-							}
+							}							
 						}
 					});
 			getContentPane().add(mTabbedPane, BorderLayout.CENTER);
@@ -1034,6 +1022,39 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public String getAdjustableProperty(String label) {
 		return mFreeMindCommon.getAdjustableProperty(label);
+	}
+
+
+	private void tabSelectionChanged() {
+		if(!mTabbedPaneSelectionUpdate)
+			return;
+//					logger.info("State changed:"+pE);
+//					try {
+//						throw new IllegalArgumentException("Bla");
+//					} catch (Exception e) {
+//						// TODO: handle exception
+//						e.printStackTrace();
+//					}
+		int selectedIndex = mTabbedPane.getSelectedIndex();
+		// display nothing on the other tabs:
+		for(int j = 0 ; j < mTabbedPane.getTabCount(); j++) {
+			if(j != selectedIndex)
+				mTabbedPane.setComponentAt(j, new JPanel());
+		}
+		if (selectedIndex < 0) {
+			// nothing selected. probably, the last map was closed
+			return;
+		}
+		String selectedTitle = mTabbedPane
+				.getTitleAt(selectedIndex);
+		logger.fine("Selected index of tab is now: " + selectedIndex + " with title:"+selectedTitle);
+		if (!selectedTitle.equals(controller.getMapModule()
+				.toString())) {
+			// we have to change the active map actively:
+			controller.getMapModuleManager().changeToMapModule(
+					selectedTitle);
+		}
+		mTabbedPane.setComponentAt(selectedIndex, mSplitPane);
 	}
 
 }
