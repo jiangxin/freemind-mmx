@@ -129,6 +129,7 @@
 					<menu_action field="nodeColorBlend" key_ref="keystroke_node_color_blend"/>
 					<menu_action field="nodeBackgroundColor"/>
 					<menu_action field="removeNodeBackgroundColor"/>
+					<menu_action field="mapBackgroundColor"/>
 				</menu_category>
 				<menu_category name="position">
 					<menu_action field="moveNodeAction"/>

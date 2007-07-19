@@ -61,6 +61,7 @@
 					<xs:element ref="set_attribute_visible_elementary_action"/>
 					<xs:element ref="set_attribute_restricted_elementary_action"/>
 					<xs:element ref="edit_note_to_node_action"/>
+					<xs:element ref="map_background_color_xml_action"/>
 
 				</xs:choice>
 			</xs:extension>
@@ -81,9 +82,7 @@
 	<!-- File Transferable List Element -->
 	<xs:element name="transferable_file">
 	  <xs:complexType>
-		<xs:complexContent>
-		      <xs:attribute name="file_name" use="required" type="xs:string"/>
-		</xs:complexContent>
+	      <xs:attribute name="file_name" use="required" type="xs:string"/>
 	  </xs:complexType>
 	</xs:element>
 
@@ -155,6 +154,18 @@
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
+	</xs:element>
+
+	<!-- Map actions. These actions involve whole map.-->
+	<xs:element name="map_background_color_xml_action">
+		<xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="color" use="required"
+					type="xs:string" />
+			</xs:extension>
+		</xs:complexContent>
+		</xs:complexType>
 	</xs:element>
 
 	<!-- Node actions. These actions involve exactly one node.-->
@@ -835,7 +846,7 @@
 
 				
 
-	<xs:complexType name="pattern_property_base"><xs:complexContent><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>  </xs:complexContent>  </xs:complexType>
+	<xs:complexType name="pattern_property_base"><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/> </xs:complexType>
     <xs:element name="pattern_node_background_color"> <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
     <xs:element name="pattern_node_color">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
     <xs:element name="pattern_node_style">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
