@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.17 2007-07-08 16:10:25 dpolivaev Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.18 2007-07-19 21:31:29 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -237,6 +237,7 @@ public interface ModeController  {
 	Controller getController();
 	HookFactory getHookFactory();
 	Color getSelectionColor();
+    void setBackgroundColor(Color color);
     /**
      * Get text from resource file
      */

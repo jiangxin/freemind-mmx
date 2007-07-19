@@ -16,10 +16,11 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.12 2007-05-05 08:36:57 dpolivaev Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.13 2007-07-19 21:31:29 dpolivaev Exp $ */
 
 package freemind.modes;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ import java.util.Vector;
 
 import freemind.extensions.PermanentNodeHook;
 import freemind.extensions.PermanentNodeHookSubstituteUnknown;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
@@ -377,9 +379,18 @@ public abstract class XMLElementAdapter extends XMLElement {
               attributeValue = sValue;
           }
       }
-  }
+      else if (getName().equals("map") && name.equals("BACKGROUND_COLOR")){
+    	  Color bgcolor = null;
+    	  try{
+     		  bgcolor = Tools.xmlToColor(sValue);
+    	  }
+    	  catch(Exception ex){
+          }
+    	  mModeController.getMap().setBackgroundColor(bgcolor);
+ 	 }
+   }
 
-private NodeAdapter setNodeAttribute(String name, String sValue, NodeAdapter node) {
+   private NodeAdapter setNodeAttribute(String name, String sValue, NodeAdapter node) {
      if (name.equals(XML_NODE_TEXT)) {
 			logger.finest("Setting node text content to:" + sValue);
 	    node.setUserObject(sValue); }

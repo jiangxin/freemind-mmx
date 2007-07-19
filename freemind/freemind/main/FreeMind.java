@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.65 2007-07-18 21:09:02 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.66 2007-07-19 21:31:29 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -81,6 +81,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			super(new BorderLayout());
 			setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		}
+		
+		protected boolean processKeyBinding(KeyStroke ks, KeyEvent e, int condition, boolean pressed) {
+			return super.processKeyBinding(ks, e, condition, pressed) || e.getKeyChar() == KeyEvent.VK_SPACE;			
+		}
 	}
 
 	private static final String SPLIT_PANE_POSITION = "split_pane_position";
@@ -121,7 +125,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private static final String DEFAULT_LANGUAGE = "en";
 
-	public static final String VERSION = "0.9.0 Beta 11";
+	public static final String VERSION = "0.9.0 Beta 12";
 
 	public static final String XML_VERSION = "0.9.0_Beta_8";
 
@@ -244,166 +248,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		controller.optionAntialiasAction
 				.changeAntialias(getProperty(FreeMindCommon.RESOURCE_ANTIALIAS));
 
-		// Create the MenuBar
-		menuBar = new MenuBar(controller);
-		setJMenuBar(menuBar);
 
-		// Create the scroll pane
-
-		// set the default size (PN)
-		int win_width = getIntProperty("appwindow_width", 0);
-		int win_height =getIntProperty("appwindow_height", 0);
-		int win_x  = getIntProperty("appwindow_x", 0);
-		int win_y  = getIntProperty("appwindow_y", 0);
-		win_width = (win_width > 0) ? win_width : 640;
-		win_height = (win_height > 0) ? win_height : 440;
-		final Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
-		final Insets screenInsets = defaultToolkit.getScreenInsets(getGraphicsConfiguration());
-		Dimension screenSize = defaultToolkit.getScreenSize();
-		final int screenWidth = screenSize.width-screenInsets.left-screenInsets.right;
-		win_width = Math.min(win_width, screenWidth);
-		final int screenHeight = screenSize.height-screenInsets.top-screenInsets.bottom;
-		win_height = Math.min(win_height, screenHeight);
-		win_x = Math.max(screenInsets.left, win_x);
-		win_x = Math.min(screenWidth+screenInsets.left-win_width, win_x);
-		win_y = Math.max(screenInsets.top, win_y);
-		win_y = Math.min(screenWidth+screenInsets.top-win_height, win_y);
-		setBounds(win_x, win_y, win_width, win_height);
-		if (Tools.safeEquals(getProperty("no_scrollbar"), "true")) {
-			scrollPane
-					.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-			scrollPane
-					.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		} else {
-			scrollPane
-					.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-			scrollPane
-					.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-
-		}
-		southPanel = new SouthPanel();
-		status = new JLabel();
-		// southPanel.add( status, BorderLayout.SOUTH );
-
-		mSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane,
-				southPanel);
-		mSplitPane.setContinuousLayout(true);
-		mSplitPane.setOneTouchExpandable(true);
-		// split panes eat F8 and F6. This is corrected here.
-		InputMap map = (InputMap) UIManager.get("SplitPane.ancestorInputMap");
-
-		KeyStroke keyStrokeF6 = KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0);
-		KeyStroke keyStrokeF8 = KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0);
-
-		map.remove(keyStrokeF6);
-		map.remove(keyStrokeF8);
-
-		boolean shouldUseTabbedPane = "true".equals(controller.getFrame()
-				.getProperty(RESOURCES_USE_TABBED_PANE));
-
-		if (shouldUseTabbedPane) {
-			// tabbed panes eat control up. This is corrected here.
-			map = (InputMap) UIManager.get("TabbedPane.ancestorInputMap");
-			KeyStroke keyStrokeCtrlUp = KeyStroke.getKeyStroke( KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK);
-			map.remove(keyStrokeCtrlUp);
-			mTabbedPane = new JTabbedPane();
-//			mTabbedPane.setFocusable(false);
-			mTabbedPane.addChangeListener(new ChangeListener() {
-
-				public synchronized void stateChanged(ChangeEvent pE) {
-					tabSelectionChanged();
-				}
-
-
-			});
-			controller.getMapModuleManager().addListener(
-					new MapModuleChangeObserver() {
-
-						public void afterMapModuleChange(
-								MapModule pOldMapModule, Mode pOldMode,
-								MapModule pNewMapModule, Mode pNewMode) {
-							int selectedIndex = mTabbedPane.getSelectedIndex();
-							if (pNewMapModule == null) {
-								return;
-							}
-							// detect rename:
-							if (pOldMapModule == pNewMapModule
-									&& selectedIndex >= 0) {
-								// map was renamed.
-								mTabbedPane.setTitleAt(selectedIndex,
-										pNewMapModule.toString());
-							}
-							// search, if already present:
-							for (int i = 0; i < mTabbedPane.getTabCount(); ++i) {
-								if (mTabbedPane.getTitleAt(i).equals(
-										pNewMapModule.toString())) {
-									if (selectedIndex != i) {
-										mTabbedPane.setSelectedIndex(i);
-									}
-									return;
-								}
-							}
-							// create new tab:
-							mTabbedPane.addTab(pNewMapModule.toString(),
-									new JPanel());
-							mTabbedPane.setSelectedIndex(mTabbedPane
-									.getTabCount() - 1);
-						}
-
-						public void beforeMapModuleChange(
-								MapModule pOldMapModule, Mode pOldMode,
-								MapModule pNewMapModule, Mode pNewMode) {
-						}
-
-						public boolean isMapModuleChangeAllowed(
-								MapModule pOldMapModule, Mode pOldMode,
-								MapModule pNewMapModule, Mode pNewMode) {
-							return true;
-						}
-
-						public void numberOfOpenMapInformation(int pNumber) {
-						}
-
-						public void afterMapClose(MapModule pOldMapModule,
-								Mode pOldMode) {
-							for (int i = 0; i < mTabbedPane.getTabCount(); ++i) {
-								if (mTabbedPane.getTitleAt(i).equals(
-										pOldMapModule.toString())) {
-									logger.fine("Remove tab:" + i + " with title:" + mTabbedPane.getTitleAt(i));
-									mTabbedPaneSelectionUpdate = false;
-									mTabbedPane.removeTabAt(i);
-									mTabbedPaneSelectionUpdate = true;
-									tabSelectionChanged();
-									return;
-								}
-							}							
-						}
-					});
-			getContentPane().add(mTabbedPane, BorderLayout.CENTER);
-		} else {
-			// don't use tabbed panes.
-			getContentPane().add(mSplitPane, BorderLayout.CENTER);
-		}
-		getContentPane().add(status, BorderLayout.SOUTH);
-
-		// Disable the default close button, instead use windowListener
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				controller.quit
-						.actionPerformed(new ActionEvent(this, 0, "quit"));
-			}
-
-			public void windowActivated(WindowEvent e) {
-				// This doesn't work the first time, it's called too early to
-				// get Focus
-				if ((getView() != null) && (getView().getSelected() != null)) {
-					getView().getSelected().requestFocus();
-				}
-			}
-		});
-
+		feedback.increase("FreeMind.progress.buildScreen");
+		setScreenBounds();
+		
 		feedback.increase("FreeMind.progress.propageteLookAndFeel");
 		SwingUtilities.updateComponentTreeUI(this); // Propagate LookAndFeel to
 		// JComponents
@@ -858,8 +706,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			if (!EventQueue.isDispatchThread()) {
 				EventQueue.invokeAndWait(new Runnable() {
 					public void run() {
-						feedBack.increase("FreeMind.progress.buildScreen");
-						frame.setScreenBounds();
 					};
 				});
 			}
@@ -894,12 +740,165 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	}
 
 	private void setScreenBounds() {
-		// if
-		// (frame.getProperty("menubarVisible").equals("false"))
-		// {
-		// frame.c.setMenubarVisible(false); }
-		// ^ Not allowed in application because of problems with
-		// not working key shortcuts
+		// Create the MenuBar
+		menuBar = new MenuBar(controller);
+		setJMenuBar(menuBar);
+
+		// Create the scroll pane
+
+		// set the default size (PN)
+		int win_width = getIntProperty("appwindow_width", 0);
+		int win_height =getIntProperty("appwindow_height", 0);
+		int win_x  = getIntProperty("appwindow_x", 0);
+		int win_y  = getIntProperty("appwindow_y", 0);
+		win_width = (win_width > 0) ? win_width : 640;
+		win_height = (win_height > 0) ? win_height : 440;
+		final Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
+		final Insets screenInsets = defaultToolkit.getScreenInsets(getGraphicsConfiguration());
+		Dimension screenSize = defaultToolkit.getScreenSize();
+		final int screenWidth = screenSize.width-screenInsets.left-screenInsets.right;
+		win_width = Math.min(win_width, screenWidth);
+		final int screenHeight = screenSize.height-screenInsets.top-screenInsets.bottom;
+		win_height = Math.min(win_height, screenHeight);
+		win_x = Math.max(screenInsets.left, win_x);
+		win_x = Math.min(screenWidth+screenInsets.left-win_width, win_x);
+		win_y = Math.max(screenInsets.top, win_y);
+		win_y = Math.min(screenWidth+screenInsets.top-win_height, win_y);
+		setBounds(win_x, win_y, win_width, win_height);
+		if (Tools.safeEquals(getProperty("no_scrollbar"), "true")) {
+			scrollPane
+					.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+			scrollPane
+					.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		} else {
+			scrollPane
+					.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+			scrollPane
+					.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+		}
+		southPanel = new SouthPanel();
+		status = new JLabel();
+		// southPanel.add( status, BorderLayout.SOUTH );
+
+		mSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane,
+				southPanel);
+		mSplitPane.setContinuousLayout(true);
+		mSplitPane.setOneTouchExpandable(true);
+		// split panes eat F8 and F6. This is corrected here.
+		InputMap map = (InputMap) UIManager.get("SplitPane.ancestorInputMap");
+
+		KeyStroke keyStrokeF6 = KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0);
+		KeyStroke keyStrokeF8 = KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0);
+
+		map.remove(keyStrokeF6);
+		map.remove(keyStrokeF8);
+
+		boolean shouldUseTabbedPane = "true".equals(controller.getFrame()
+				.getProperty(RESOURCES_USE_TABBED_PANE));
+
+		if (shouldUseTabbedPane) {
+			// tabbed panes eat control up. This is corrected here.
+			map = (InputMap) UIManager.get("TabbedPane.ancestorInputMap");
+			KeyStroke keyStrokeCtrlUp = KeyStroke.getKeyStroke( KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK);
+			map.remove(keyStrokeCtrlUp);
+			mTabbedPane = new JTabbedPane();
+//			mTabbedPane.setFocusable(false);
+			mTabbedPane.addChangeListener(new ChangeListener() {
+
+				public synchronized void stateChanged(ChangeEvent pE) {
+					tabSelectionChanged();
+				}
+
+
+			});
+			controller.getMapModuleManager().addListener(
+					new MapModuleChangeObserver() {
+
+						public void afterMapModuleChange(
+								MapModule pOldMapModule, Mode pOldMode,
+								MapModule pNewMapModule, Mode pNewMode) {
+							int selectedIndex = mTabbedPane.getSelectedIndex();
+							if (pNewMapModule == null) {
+								return;
+							}
+							// detect rename:
+							if (pOldMapModule == pNewMapModule
+									&& selectedIndex >= 0) {
+								// map was renamed.
+								mTabbedPane.setTitleAt(selectedIndex,
+										pNewMapModule.toString());
+							}
+							// search, if already present:
+							for (int i = 0; i < mTabbedPane.getTabCount(); ++i) {
+								if (mTabbedPane.getTitleAt(i).equals(
+										pNewMapModule.toString())) {
+									if (selectedIndex != i) {
+										mTabbedPane.setSelectedIndex(i);
+									}
+									return;
+								}
+							}
+							// create new tab:
+							mTabbedPane.addTab(pNewMapModule.toString(),
+									new JPanel());
+							mTabbedPane.setSelectedIndex(mTabbedPane
+									.getTabCount() - 1);
+						}
+
+						public void beforeMapModuleChange(
+								MapModule pOldMapModule, Mode pOldMode,
+								MapModule pNewMapModule, Mode pNewMode) {
+						}
+
+						public boolean isMapModuleChangeAllowed(
+								MapModule pOldMapModule, Mode pOldMode,
+								MapModule pNewMapModule, Mode pNewMode) {
+							return true;
+						}
+
+						public void numberOfOpenMapInformation(int pNumber) {
+						}
+
+						public void afterMapClose(MapModule pOldMapModule,
+								Mode pOldMode) {
+							for (int i = 0; i < mTabbedPane.getTabCount(); ++i) {
+								if (mTabbedPane.getTitleAt(i).equals(
+										pOldMapModule.toString())) {
+									logger.fine("Remove tab:" + i + " with title:" + mTabbedPane.getTitleAt(i));
+									mTabbedPaneSelectionUpdate = false;
+									mTabbedPane.removeTabAt(i);
+									mTabbedPaneSelectionUpdate = true;
+									tabSelectionChanged();
+									return;
+								}
+							}							
+						}
+					});
+			getContentPane().add(mTabbedPane, BorderLayout.CENTER);
+		} else {
+			// don't use tabbed panes.
+			getContentPane().add(mSplitPane, BorderLayout.CENTER);
+		}
+		getContentPane().add(status, BorderLayout.SOUTH);
+
+		// Disable the default close button, instead use windowListener
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				controller.quit
+						.actionPerformed(new ActionEvent(this, 0, "quit"));
+			}
+
+			public void windowActivated(WindowEvent e) {
+				// This doesn't work the first time, it's called too early to
+				// get Focus
+				if ((getView() != null) && (getView().getSelected() != null)) {
+					getView().getSelected().requestFocus();
+				}
+			}
+		});
 
 		if (Tools.safeEquals(getProperty("toolbarVisible"), "false")) {
 			controller.setToolbarVisible(false);
@@ -920,12 +919,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		setExtendedState(win_state);
 		// set divider position:
 		int splitPanePosition = getIntProperty(
-				SPLIT_PANE_POSITION, (int) (mSplitPane.getHeight() * 0.8));
+				SPLIT_PANE_POSITION,  -1);
 		int lastSplitPanePosition = getIntProperty(
-				SPLIT_PANE_LAST_POSITION, splitPanePosition);
-		mSplitPane.setDividerLocation(splitPanePosition);
-		mSplitPane
-				.setLastDividerLocation(lastSplitPanePosition);
+				SPLIT_PANE_LAST_POSITION, -1);
+		mSplitPane.setResizeWeight(0.8);
+		if(splitPanePosition != -1 && lastSplitPanePosition != -1){
+			mSplitPane.setDividerLocation(splitPanePosition);
+			mSplitPane.setLastDividerLocation(lastSplitPanePosition);
+		}
 	}
 	
 	 private ModeController createModeController(final String[] args) {

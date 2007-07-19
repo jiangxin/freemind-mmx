@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.42 2007-07-18 20:40:59 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.43 2007-07-19 21:31:29 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -155,6 +155,7 @@ import freemind.modes.mindmapmode.actions.ImportExplorerFavoritesAction;
 import freemind.modes.mindmapmode.actions.ImportFolderStructureAction;
 import freemind.modes.mindmapmode.actions.ItalicAction;
 import freemind.modes.mindmapmode.actions.JoinNodesAction;
+import freemind.modes.mindmapmode.actions.MapBackgroundColorAction;
 import freemind.modes.mindmapmode.actions.MindMapActions;
 import freemind.modes.mindmapmode.actions.ModeControllerActionHandler;
 import freemind.modes.mindmapmode.actions.MoveNodeAction;
@@ -196,6 +197,7 @@ import freemind.modes.mindmapmode.listeners.MindMapMouseWheelEventHandler;
 import freemind.modes.mindmapmode.listeners.MindMapNodeDropListener;
 import freemind.modes.mindmapmode.listeners.MindMapNodeMotionListener;
 import freemind.view.mindmapview.MainView;
+import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.NodeViewVisitor;
 import freemind.view.mindmapview.attributeview.AttributePopupMenu;
@@ -318,6 +320,8 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     public ChangeArrowsInArrowLinkAction changeArrowsInArrowLinkAction = null;
     public NodeBackgroundColorAction nodeBackgroundColor = null;
     public RemoveNodeBackgroundColorAction removeNodeBackgroundColor = null;
+    
+    public MapBackgroundColorAction mapBackgroundColor = null;
 
     public IconAction unknownIconAction = null;
     public RemoveLastIconAction removeLastIconAction = null;
@@ -435,6 +439,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         nodeDown = new NodeDownAction(this);
         edgeColor = new EdgeColorAction(this);
         nodeColor = new NodeColorAction(this);
+        mapBackgroundColor = new MapBackgroundColorAction(this);
         nodeColorBlend = new NodeColorBlendAction(this);
         fork = new NodeStyleAction(this, MindMapNode.STYLE_FORK);
         bubble = new NodeStyleAction(this, MindMapNode.STYLE_BUBBLE);
@@ -1309,11 +1314,10 @@ freemind.main.Resources.getInstance().logException(					e1);
         nodeBackgroundColor.setNodeBackgroundColor(node, color);
     }
     public void blendNodeColor(MindMapNode node) {
-        Color mapColor = getMap().getBackgroundColor();
+        Color mapColor = getView().getBackground();
         Color nodeColor = node.getColor();
         if (nodeColor == null) {
-            nodeColor = Tools.xmlToColor(getFrame().getProperty(
-                    FreeMind.RESOURCES_NODE_TEXT_COLOR));
+            nodeColor = MapView.standardNodeTextColor;
         }
         setNodeColor(node, new Color(
                 (3 * mapColor.getRed() + nodeColor.getRed()) / 4, (3 * mapColor

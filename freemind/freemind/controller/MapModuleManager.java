@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.4.2.8 2007-06-11 19:47:40 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4.2.9 2007-07-19 21:31:29 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -280,7 +280,7 @@ import freemind.view.mindmapview.MapView;
             if (!closingNotCancelled) {
                return false; }	
             
-            String toBeClosed = getMapModule().toString();
+            String toBeClosed = module.toString();
             mapModules.remove(toBeClosed);
             if (mapModules.isEmpty()) {
 			/*Keep the current running mode*/

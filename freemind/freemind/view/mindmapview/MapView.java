@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.26 2007-07-13 21:22:59 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.27 2007-07-19 21:31:29 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -77,9 +77,9 @@ import freemind.preferences.FreemindPropertyListener;
  * (in analogy to class JTree).
  */
 public class MapView extends JPanel implements Printable, Autoscroll{
-    static Color standardSelectColor;
-    static Color standardSelectTextColor;
-    static Color standardNodeTextColor;
+	static Color standardSelectColor;
+	static Color standardSelectTextColor;
+	public static Color standardNodeTextColor;
     static boolean standardDrawRectangleForSelection;
 	private static Stroke standardSelectionStroke;
     static private FreemindPropertyListener propertyChangeListener;
@@ -194,7 +194,6 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                 catch(Exception ex){
                 	standardSelectColor = Color.WHITE;
                 }
-
             // initialize the selectedColor:
             try{
             String stdcolor = getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR);
@@ -219,10 +218,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                 catch(Exception ex){
                 	standardDrawRectangleForSelection = false;
                 }
+                
             createPropertyChangeListener();
             
         }
-
  		if(logger == null)
 			logger = controller.getFrame().getLogger(this.getClass().getName());
 
@@ -232,7 +231,8 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
         initRoot();
 
-        setBackground(getModel().getBackgroundColor());
+        final Color backgroundColor = getModel().getBackgroundColor();
+		setBackground(backgroundColor);
 
         addMouseListener( controller.getMapMouseMotionListener() );
         addMouseMotionListener( controller.getMapMouseMotionListener() );
@@ -1218,7 +1218,8 @@ public class MapView extends JPanel implements Printable, Autoscroll{
      */
     public Dimension getPreferredSize() {
         if(! getParent().isValid()){
-            return getLayout().preferredLayoutSize(this);
+            final Dimension preferredLayoutSize = getLayout().preferredLayoutSize(this);
+			return preferredLayoutSize;
         }
         return super.getPreferredSize();
     }

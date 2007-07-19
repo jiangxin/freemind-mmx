@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.15 2007-07-08 08:37:23 dpolivaev Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.16 2007-07-19 21:31:29 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -291,7 +291,13 @@ public class MindMapMapModel extends MapAdapter  {
 	 * @throws IOException
 	 */
 	private void getXml(Writer fileout, boolean saveInvisible) throws IOException {
-		fileout.write("<map version=\""+FreeMind.XML_VERSION+"\">\n");
+		fileout.write("<map ");
+		fileout.write("version=\""+FreeMind.XML_VERSION+"\"");
+		final Color backgroundColor = getBackgroundColor();
+		if(backgroundColor != null){
+			fileout.write(" background_color=\""+Tools.colorToXml(backgroundColor)+"\"");
+		}
+		fileout.write(">\n");
 		fileout.write("<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->\n");
 		getRegistry().save(fileout);
 		(getRootNode()).save(fileout, this.getLinkRegistry(), saveInvisible, true);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.32 2007-07-13 21:22:56 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.33 2007-07-19 21:31:29 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -151,7 +151,6 @@ public class Controller  implements MapModuleChangeObserver {
     public Action printPreview;
     public Action page;
     public Action quit;
-    public Action background;
 
     public Action showAllAttributes = new ShowAllAttributesAction();
     public Action showSelectedAttributes = new ShowSelectedAttributesAction();
@@ -217,7 +216,6 @@ public class Controller  implements MapModuleChangeObserver {
         printPreview = new PrintPreviewAction(this);
         page = new PageAction(this);
         quit = new QuitAction(this);
-        background = new BackgroundAction(this,bswatch);
         about = new AboutAction(this);
         faq = new OpenURLAction(this, getResourceString("FAQ"), getProperty("webFAQLocation"));
         webDocu = new OpenURLAction(this, getResourceString("webDocu"), getProperty("webDocuLocation"));
@@ -257,6 +255,7 @@ public class Controller  implements MapModuleChangeObserver {
            logger.warning("Warning: the font you have set as standard - "+getProperty("defaultfont")+
                               " - is not available.");
            frame.setProperty("defaultfont","SansSerif"); }
+        
     }
 
     //
@@ -278,7 +277,7 @@ public class Controller  implements MapModuleChangeObserver {
 
 	private void firePropertyChanged(String property, String value,
 			String oldValue) {
-		if(! oldValue.equals(value))
+		if(oldValue == null || ! oldValue.equals(value))
 		{
 			frame.setProperty(property, value);			
 			for (Iterator i = Controller.getPropertyChangeListeners().iterator(); i.hasNext();) {
@@ -800,8 +799,6 @@ public class Controller  implements MapModuleChangeObserver {
      * of whether there is a map or not
      */
     public void setAllActions(boolean enabled) {
-        background.setEnabled(enabled);
-
 	    print.setEnabled(enabled && isPrintingAllowed);
 	    printDirect.setEnabled(enabled && isPrintingAllowed);
 	    printPreview.setEnabled(enabled && isPrintingAllowed);
@@ -1413,26 +1410,7 @@ public class Controller  implements MapModuleChangeObserver {
 
 	private class BackgroundSwatch extends ColorSwatch {
         Color getColor() {
-            return getModel().getBackgroundColor();
-        }
-    }
-
-    /** Seems to be obsolete, but we add the property listener here. fc, 14.6.2005*/
-    private class BackgroundAction extends AbstractAction {
-        BackgroundAction(Controller controller, Icon icon) {
-            super(controller.getResourceString("background"),icon);
-            Controller.addPropertyChangeListener(new FreemindPropertyListener(){
-
-                public void propertyChanged(String propertyName, String newValue, String oldValue) {
-                    if(propertyName.equals(FreeMind.RESOURCES_BACKGROUND_COLOR)) {
-                        getModel().setBackgroundColor(Tools.xmlToColor(newValue));
-                    }
-                }});
-        }
-        public void actionPerformed(ActionEvent e) {
-            Color color = showCommonJColorChooserDialog(getView(),getResourceString("choose_background_color"),getView().getBackground() );
-            getModel().setBackgroundColor(color);
-
+            return getView().getBackground();
         }
     }
 
