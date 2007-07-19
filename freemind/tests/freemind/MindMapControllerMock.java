@@ -19,7 +19,7 @@
  *
  * Created on 10.10.2006
  */
-/*$Id: MindMapControllerMock.java,v 1.1.2.7 2007-07-08 16:10:38 dpolivaev Exp $*/
+/*$Id: MindMapControllerMock.java,v 1.1.2.8 2007-07-19 21:35:02 dpolivaev Exp $*/
 package tests.freemind;
 
 import java.awt.Color;
@@ -577,6 +577,11 @@ public class MindMapControllerMock implements ModeController {
 	}
 
 	public void onViewRemovedHook(NodeView newView) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setBackgroundColor(Color color) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -3,6 +3,7 @@ Changes made in FreeMind 0.9.0 Beta 12
 ===============================
 * Map background color may be set via Format menu and saved with the map.
 * Bug fixes: problems if auto.properties does not exist 
+* FreeMind Accelerators work from Note Editor
 ===============================
 Changes made in FreeMind 0.9.0 Beta 11
 ===============================
