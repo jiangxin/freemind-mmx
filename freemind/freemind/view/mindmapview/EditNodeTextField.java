@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.15 2007-07-22 09:53:15 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.16 2007-07-22 14:06:20 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -118,7 +118,7 @@ public class EditNodeTextField extends EditNodeBase {
         }
 
         textfield.setSize(xSize, nodeView.getMainView().getHeight() + heightAddition);
-        Font font = nodeView.getMainViewFont();
+        Font font = nodeView.getTextFont();
         final MapView mapView = nodeView.getMap();
 		final float zoom = mapView.getZoom();
         if (zoom != 1F) {
@@ -126,10 +126,12 @@ public class EditNodeTextField extends EditNodeBase {
         }
         textfield.setFont(font);
 
-        textfield.setForeground(model.getColor());
-        final Color backgroundColor = nodeView.getBackgroundColor();
-        textfield.setSelectedTextColor(SystemColor.textHighlightText);
-        textfield.setSelectionColor(SystemColor.textHighlight);
+// Dimitry: Should the colors be identical to the map colors? Possible not.        
+//        textfield.setForeground(nodeView.getTextColor());
+//        textfield.setBackground(nodeView.getTextBackground());
+//        textfield.setSelectedTextColor(MapView.standardSelectTextColor);
+//        textfield.setSelectionColor(MapView.standardSelectColor);
+        
         // textField.selectAll(); // no selection on edit (PN)
 
         final int INIT = 0;

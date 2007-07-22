@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.26 2007-07-22 09:53:15 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.27 2007-07-22 14:06:20 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -193,7 +193,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             htmlEditorWindow.setBase(this);
             final SHTMLPanel htmlEditorPanel = ((HTMLDialog)htmlEditorWindow).getHtmlEditorPanel();
             String rule = "BODY {";
-            final Font font = node.getMainViewFont();
+            final Font font = node.getTextFont();
             rule += "font-family: "+font.getFamily()+";";
             rule += "font-size: "+font.getSize()+"pt;";
             if (node.getModel().isItalic()) {
@@ -201,8 +201,8 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             if (node.getModel().isBold()) {
                 rule+="font-weight: bold; "; }
             if (node.getModel().getColor() != null) {
-                rule+="color: "+Tools.colorToXml(node.getModel().getColor())+";"; }
-            rule+="background-color: "+Tools.colorToXml(node.getBackgroundColor())+";";
+                rule+="color: "+Tools.colorToXml(node.getTextColor())+";"; }
+            rule+="background-color: "+Tools.colorToXml(node.getTextBackground())+";";
             rule += "}\n";
             rule += "p {";
             rule += "margin-top:0;";            

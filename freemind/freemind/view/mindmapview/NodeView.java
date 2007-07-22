@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.39 2007-07-22 09:53:15 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.40 2007-07-22 14:06:20 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -997,14 +997,19 @@ public class NodeView extends JComponent implements TreeModelListener{
     void syncronizeAttributeView() {
         attributeView.syncronizeAttributeView();
     }
-    public void setMainViewForeground(Color c) {
+    public void setTextFont(Color c) {
         mainView.setForeground(c);
     }
-    public Font getMainViewFont() {
+    public Font getTextFont() {
         return mainView.getFont();
     }
-    public Color getMainViewForeground() {
-        return mainView.getForeground();
+    public Color getTextColor() {
+        Color color= getModel().getColor();
+		if (color==null) {
+			color = MapView.standardNodeTextColor;
+		}
+		return color;
+
     }
     /**
      */
@@ -1251,7 +1256,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 	}
 
 
-	public Color getBackgroundColor() {
+	public Color getTextBackground() {
 		final Color modelBackgroundColor = getModel().getBackgroundColor();
 		if(modelBackgroundColor != null) {
 			return modelBackgroundColor;
@@ -1263,7 +1268,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 		if(isRoot()){
 			return getMap().getBackground();
 		}
-		return getParentView().getBackgroundColor();
+		return getParentView().getTextBackground();
 	}
     
     
