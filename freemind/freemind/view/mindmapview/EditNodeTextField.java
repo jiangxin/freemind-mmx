@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.14 2007-07-08 08:37:25 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.15 2007-07-22 09:53:15 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -127,13 +127,7 @@ public class EditNodeTextField extends EditNodeBase {
         textfield.setFont(font);
 
         textfield.setForeground(model.getColor());
-        final Color backgroundColor = model.getBackgroundColor();
-        if(backgroundColor != null){
-            textfield.setBackground(backgroundColor);
-        }
-        else{
-            textfield.setBackground(mapView.getBackground());            
-        }
+        final Color backgroundColor = nodeView.getBackgroundColor();
         textfield.setSelectedTextColor(SystemColor.textHighlightText);
         textfield.setSelectionColor(SystemColor.textHighlight);
         // textField.selectAll(); // no selection on edit (PN)

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.38 2007-07-13 21:22:59 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.39 2007-07-22 09:53:15 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1248,6 +1248,22 @@ public class NodeView extends JComponent implements TreeModelListener{
 	Rectangle getInnerBounds() {
 		final int space = getMap().getZoomed(SPACE_AROUND) - 2 * getZoomedFoldingSymbolHalfWidth();
 		return new Rectangle(space, space, getWidth() - 2 * space, getHeight() - 2 * space);
+	}
+
+
+	public Color getBackgroundColor() {
+		final Color modelBackgroundColor = getModel().getBackgroundColor();
+		if(modelBackgroundColor != null) {
+			return modelBackgroundColor;
+		}
+		final MindMapCloud cloud = getModel().getCloud();
+		if (cloud != null){
+			return cloud.getColor();
+		}
+		if(isRoot()){
+			return getMap().getBackground();
+		}
+		return getParentView().getBackgroundColor();
 	}
     
     
