@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.27 2007-07-19 21:31:29 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.28 2007-07-22 12:07:29 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -308,12 +308,27 @@ public class MapView extends JPanel implements Printable, Autoscroll{
      */
     public void centerNode( final NodeView node ) {
         JViewport viewPort = (JViewport)getParent();
-        if(! (isValid() &&viewPort.isValid())){
-            EventQueue.invokeLater(new Runnable(){
-                public void run() {
-                    centerNode(node) ;
+        if(! (isValid())){        	
+        // Dimitry: workaround: the window size could be changed 
+        // twice for maximized windows.
+        // Run centerNode afterwards anyway.
+        	class CenterNodeRunnable implements Runnable{
+                private int counter;
+				public CenterNodeRunnable() {
+					this.counter = 1;
+				}
+
+				public void run() {
+					if(counter-- == 0) {
+						centerNode(node) ;
+					}
+					else{
+						EventQueue.invokeLater(this);
+					}
                 }
-            });
+            };
+            
+            EventQueue.invokeLater(new CenterNodeRunnable());
             return;
         }
         Dimension d = viewPort.getExtentSize();
