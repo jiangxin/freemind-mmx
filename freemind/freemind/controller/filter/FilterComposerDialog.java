@@ -313,7 +313,7 @@ public class FilterComposerDialog extends JDialog {
 			if (!canonicalPath.endsWith(suffix)){
 				canonicalPath = canonicalPath + suffix;
 			}
-			fc.saveConditions(canonicalPath);
+			fc.saveConditions(internalConditionsModel, canonicalPath);
             } catch (Exception ex) {
                 handleSavingException (ex);
              }
@@ -333,7 +333,7 @@ public class FilterComposerDialog extends JDialog {
             if (returnVal==JFileChooser.APPROVE_OPTION) {
                 try {
                     File theFile = chooser.getSelectedFile();
-                    fc.loadConditions(theFile.getCanonicalPath());
+                    fc.loadConditions(internalConditionsModel, theFile.getCanonicalPath());
                 } catch (Exception ex) {
                    handleLoadingException (ex); } {
                 }
@@ -550,16 +550,6 @@ public class FilterComposerDialog extends JDialog {
         btnCancel.addActionListener(closeAction);
         btnCancel.setMaximumSize(maxButtonDimension);
 
-        ActionListener saveAction = new SaveAction();
-        btnSave = new JButton(Resources.getInstance().getResourceString("save"));
-        btnSave.addActionListener(saveAction);
-        btnSave.setMaximumSize(maxButtonDimension);
-
-        ActionListener loadAction = new LoadAction();
-        btnLoad = new JButton(Resources.getInstance().getResourceString("load"));
-        btnLoad.addActionListener(loadAction);
-        btnLoad.setMaximumSize(maxButtonDimension);
-
         controllerBox.add(Box.createHorizontalGlue());
         controllerBox.add(btnOK);
         controllerBox.add(Box.createHorizontalGlue());
@@ -567,11 +557,23 @@ public class FilterComposerDialog extends JDialog {
         controllerBox.add(Box.createHorizontalGlue());
         controllerBox.add(btnCancel);
         controllerBox.add(Box.createHorizontalGlue());
-        controllerBox.add(btnSave);
-        controllerBox.add(Box.createHorizontalGlue());
-        controllerBox.add(btnLoad);
-        controllerBox.add(Box.createHorizontalGlue());
-    
+
+        if(! c.getFrame().isApplet()){
+        	ActionListener saveAction = new SaveAction();
+        	btnSave = new JButton(Resources.getInstance().getResourceString("save"));
+        	btnSave.addActionListener(saveAction);
+        	btnSave.setMaximumSize(maxButtonDimension);
+
+        	ActionListener loadAction = new LoadAction();
+        	btnLoad = new JButton(Resources.getInstance().getResourceString("load"));
+        	btnLoad.addActionListener(loadAction);
+        	btnLoad.setMaximumSize(maxButtonDimension);
+
+        	controllerBox.add(btnSave);
+        	controllerBox.add(Box.createHorizontalGlue());
+        	controllerBox.add(btnLoad);
+        	controllerBox.add(Box.createHorizontalGlue());
+        }
         conditionList = new JList();
         conditionList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         conditionList.setCellRenderer(fc.getConditionRenderer());

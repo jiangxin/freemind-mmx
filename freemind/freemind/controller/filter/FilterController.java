@@ -31,6 +31,7 @@ import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Vector;
@@ -171,17 +172,7 @@ import freemind.view.mindmapview.NodeView;
 		filterToolbar.setFilterConditionModel(filterConditionModel);
 	}
 
-    void addStandardConditions() {
-    	final Condition noFiltering = NoFilteringCondition.createCondition();
-		filterConditionModel.insertElementAt(noFiltering, 0);
-    	filterConditionModel.insertElementAt(SelectedViewCondition.CreateCondition(), 1);
-        if(filterConditionModel.getSelectedItem()== null){
-        	filterConditionModel.setSelectedItem(noFiltering);
-        }
-    }
-    
-	void saveConditions(String pathToFilterFile){
-    	try{
+	void saveConditions(DefaultComboBoxModel filterConditionModel, String pathToFilterFile) throws IOException{
     		XMLElement saver = new XMLElement();
     		saver.setName("filter_conditions");
     		Writer writer = new FileWriter(pathToFilterFile);
@@ -191,16 +182,10 @@ import freemind.view.mindmapview.NodeView;
     		}
     		saver.write(writer);
     		writer.close();
-    	}
-    	catch (Exception ex){
-            freemind.main.Resources.getInstance().logException(ex);
-    	}
     }
 
-   void loadConditions(String pathToFilterFile){
-    	try{
-     		filterConditionModel.removeAllElements();
-    		addStandardConditions();
+	void loadConditions(DefaultComboBoxModel filterConditionModel, String pathToFilterFile) throws IOException{
+		    filterConditionModel.removeAllElements();
      		XMLElement loader = new XMLElement();
     		Reader reader = new FileReader(pathToFilterFile);
     		loader.parseFromReader(reader);
@@ -210,11 +195,4 @@ import freemind.view.mindmapview.NodeView;
     			filterConditionModel.addElement(FilterController.getConditionFactory().loadCondition((XMLElement)conditions.get(i)));
     		}
     	}
-    	catch (FileNotFoundException ex){
-    		
-    	}
-    	catch (Exception ex){
-            freemind.main.Resources.getInstance().logException(ex);
-    	}
     }
-}

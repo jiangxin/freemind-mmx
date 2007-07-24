@@ -30,10 +30,12 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -43,6 +45,8 @@ import javax.swing.JToolBar;
 
 import freemind.controller.Controller;
 import freemind.controller.filter.condition.Condition;
+import freemind.controller.filter.condition.NoFilteringCondition;
+import freemind.controller.filter.condition.SelectedViewCondition;
 import freemind.main.Resources;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -92,7 +96,7 @@ class FilterToolbar extends JToolBar {
         }
         public void propertyChange(PropertyChangeEvent evt) {
             if(evt.getPropertyName().equals("model")){
-                fc.addStandardConditions();
+                addStandardConditions();
                 filterChanged();                            
             }
         }
@@ -189,8 +193,23 @@ class FilterToolbar extends JToolBar {
         showDescendants.getModel().addActionListener(filterChangeListener);
     }
 
+    void addStandardConditions() {
+    	DefaultComboBoxModel filterConditionModel = fc.getFilterConditionModel();
+    	final Condition noFiltering = NoFilteringCondition.createCondition();
+		filterConditionModel.insertElementAt(noFiltering, 0);
+    	filterConditionModel.insertElementAt(SelectedViewCondition.CreateCondition(), 1);
+        if(filterConditionModel.getSelectedItem()== null){
+        	filterConditionModel.setSelectedItem(noFiltering);
+        }
+    }
+    
 	void initConditions() {
-		fc.loadConditions(pathToFilterFile);
+		try {
+			fc.loadConditions(fc.getFilterConditionModel(), pathToFilterFile);
+    		addStandardConditions();
+
+		} catch (IOException e) {
+		}
         activeFilterConditionComboBox.setSelectedIndex(0);
         activeFilterConditionComboBox.setRenderer(fc.getConditionRenderer());
         add(activeFilterConditionComboBox);
@@ -255,7 +274,10 @@ class FilterToolbar extends JToolBar {
     }
 
 	void saveConditions(){
-		fc.saveConditions(pathToFilterFile);
+		try {
+			fc.saveConditions(fc.getFilterConditionModel(), pathToFilterFile);
+		} catch (IOException e) {
+		}
 	}
 	
 	ComboBoxModel getFilterConditionModel() {
