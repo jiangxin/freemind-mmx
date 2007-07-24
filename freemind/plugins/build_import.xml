@@ -11,16 +11,16 @@
 				<path path="${classpath}"/>
 				<path path="${additional.lib}"/>
 			</classpath>
-			
+
 		</javac>
 	</target>
 
 	<target name="dist">
 		<mkdir dir="${dist}/${plugin.dir}" />
-		<copy todir="${build}"> 
-			<fileset dir="${src}">
-				<include name="${plugin.dir}/**"/>
-				<exclude name="**/*.java"/>
+		<copy todir="${build}">
+			<fileset dir="${src}"
+				includes = "${plugin.dir}/**"
+				excludes = "**/*.java,${additional.lib.pattern}">
 			</fileset>
 			<fileset file="${plugin.xml}"/>
 		</copy>
@@ -32,16 +32,16 @@
 		</jar>
 		<!-- xml -->
 		<mkdir dir="${dist}/plugins" />
-		<copy todir="${dist}"> 
+		<copy todir="${dist}">
 			<fileset dir="${src}">
 				<include name="${plugin.xml}"/>
 			</fileset>
 		</copy>
 		<!-- additional libs  -->
 		<mkdir dir="${dist}" />
-		<copy todir="${dist}" flatten="false"> 
-			<fileset dir="${src}">
-				<include name="${additional.lib.pattern}"/>
+		<copy todir="${dist}" flatten="false">
+			<fileset dir="${src}"
+				includes ="${additional.lib.pattern}">
 			</fileset>
 		</copy>
 	</target>
@@ -51,7 +51,7 @@
 			basedir="${dist}"
 			includes="${plugin.dir}/**,${plugin.xml}"
 			>
-				
-		</zip>		
+
+		</zip>
 	</target>
 </project>
