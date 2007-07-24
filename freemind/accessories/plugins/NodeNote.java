@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.36 2007-07-06 22:10:29 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.37 2007-07-24 18:35:13 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
+import java.net.MalformedURLException;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -125,6 +126,11 @@ public class NodeNote extends MindMapNodeHookAdapter {
                 // remove listener to avoid unnecessary dirty events.
                 document.removeDocumentListener(
                         mNoteDocumentListener);
+    			try {
+    				document.setBase(node.getMap().getURL());
+    			}
+    			catch (MalformedURLException e) {} 
+
                 // logger.info("onReceiveFocuse for node " + node.toString());
                 String note = node.getNoteText();
                 if (note != null) {

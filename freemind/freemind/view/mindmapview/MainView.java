@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.16 2007-07-12 06:39:41 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.17 2007-07-24 18:34:50 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -73,7 +73,7 @@ public abstract class MainView extends JLabel{
          */
         public Dimension getPreferredSize() {
             final String text = getText();
-			boolean isEmpty = text.length() == 0 || HtmlTools.isHtmlNode(text) && HtmlTools.htmlToPlain(text).length() == 0;
+			boolean isEmpty = text.length() == 0 || HtmlTools.isHtmlNode(text) && text.indexOf("<img") < 0 && HtmlTools.htmlToPlain(text).length() == 0;
             if(isEmpty){
                 setText("!");
             }

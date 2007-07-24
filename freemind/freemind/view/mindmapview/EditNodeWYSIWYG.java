@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.27 2007-07-22 14:06:20 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.28 2007-07-24 18:34:50 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -28,6 +28,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.net.MalformedURLException;
 
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
@@ -207,7 +208,12 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             rule += "p {";
             rule += "margin-top:0;";            
             rule += "}\n";
-            htmlEditorPanel.getDocument().getStyleSheet().addRule(rule);
+            final HTMLDocument document = htmlEditorPanel.getDocument();
+			document.getStyleSheet().addRule(rule);
+			try {
+				document.setBase(node.getMap().getModel().getURL());
+			}
+			catch (MalformedURLException e) {} 
             
             EventQueue.invokeLater(new Runnable(){
                 
