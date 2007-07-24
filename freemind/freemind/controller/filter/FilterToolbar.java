@@ -208,7 +208,7 @@ class FilterToolbar extends JToolBar {
 			fc.loadConditions(fc.getFilterConditionModel(), pathToFilterFile);
     		addStandardConditions();
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 		}
         activeFilterConditionComboBox.setSelectedIndex(0);
         activeFilterConditionComboBox.setRenderer(fc.getConditionRenderer());
@@ -276,7 +276,7 @@ class FilterToolbar extends JToolBar {
 	void saveConditions(){
 		try {
 			fc.saveConditions(fc.getFilterConditionModel(), pathToFilterFile);
-		} catch (IOException e) {
+		} catch (Exception e) {
 		}
 	}
 	
