@@ -206,10 +206,10 @@ class FilterToolbar extends JToolBar {
 	void initConditions() {
 		try {
 			fc.loadConditions(fc.getFilterConditionModel(), pathToFilterFile);
-    		addStandardConditions();
 
 		} catch (Exception e) {
 		}
+		addStandardConditions();
         activeFilterConditionComboBox.setSelectedIndex(0);
         activeFilterConditionComboBox.setRenderer(fc.getConditionRenderer());
         add(activeFilterConditionComboBox);

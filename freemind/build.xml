@@ -354,6 +354,7 @@
 		<jar jarfile="${dist}/browser/freemindbrowser.jar" >
 			<fileset dir="${build}">
 
+				<include name="freemind/common/NamedObject.class"/>
 				<include name="freemind/view/*"/>
 				<include name="freemind/view/mindmapview/*"/>
 				<include name="freemind/view/mindmapview/attributeview/*"/>
