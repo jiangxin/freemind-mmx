@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.37 2007-07-24 18:35:13 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.38 2007-07-24 22:53:45 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -342,7 +342,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
                 MindMapNode node, String text) {
             EditNoteToNodeAction nodeAction = new EditNoteToNodeAction();
             nodeAction.setNode(node.getObjectId(controller));
-            if (text != null && HtmlTools.htmlToPlain(text).length() != 0){
+            if (text != null &&  (HtmlTools.htmlToPlain(text).length() != 0 || text.indexOf("<img") >= 0 )){
             	nodeAction.setText(text);
             }
             else{
