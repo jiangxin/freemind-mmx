@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.67 2007-07-22 14:15:05 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.68 2007-07-24 06:10:13 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -422,6 +422,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			out.close();
 		} catch (Exception ex) {
 		}
+		getController().getFilterController().saveConditions();
 	}
 
 	public MapView getView() {

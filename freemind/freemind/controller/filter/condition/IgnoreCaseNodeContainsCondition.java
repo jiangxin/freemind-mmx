@@ -24,12 +24,15 @@
 package freemind.controller.filter.condition;
 
 import freemind.controller.Controller;
+import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 
 
 class IgnoreCaseNodeContainsCondition extends NodeCondition{
     
-    private String value;
+    static final String VALUE = "value";
+	static final String NAME = "ignore_case_node_contains_condition";
+	private String value;
     IgnoreCaseNodeContainsCondition(
             String description,
             String value) {
@@ -40,4 +43,18 @@ class IgnoreCaseNodeContainsCondition extends NodeCondition{
     public boolean checkNode(Controller c, MindMapNode node) {
         return node.getText().toLowerCase().indexOf(value) > -1;
     }
+	public void save(XMLElement element) {
+		XMLElement child = new XMLElement();
+		child.setName(NAME);
+		super.saveAttributes(child);
+		child.setAttribute(VALUE, value);
+		element.addChild(child);		
+	}
+
+	static Condition load(XMLElement element) {
+		return new IgnoreCaseNodeContainsCondition(
+				element.getStringAttribute(IgnoreCaseNodeContainsCondition.DESCRIPTION),
+				element.getStringAttribute(VALUE)
+				);
+	}
 }

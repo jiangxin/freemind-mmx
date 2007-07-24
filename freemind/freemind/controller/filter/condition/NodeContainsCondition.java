@@ -24,11 +24,14 @@
 package freemind.controller.filter.condition;
 
 import freemind.controller.Controller;
+import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 
 
 class NodeContainsCondition extends NodeCondition{
-        private String value;
+        static final String VALUE = "value";
+		static final String NAME = "node_contains_condition";
+		private String value;
         NodeContainsCondition(
                 String description,
                 String value) {
@@ -39,4 +42,18 @@ class NodeContainsCondition extends NodeCondition{
         public boolean checkNode(Controller c, MindMapNode node) {
             return node.getText().indexOf(value) > -1;
         }
+    	public void save(XMLElement element) {
+    		XMLElement child = new XMLElement();
+    		child.setName(NAME);
+    		super.saveAttributes(child);
+    		child.setAttribute(VALUE, value);
+    		element.addChild(child);		
+    	}
+
+		static Condition load(XMLElement element) {
+			return new NodeContainsCondition(
+					element.getStringAttribute(NodeContainsCondition.DESCRIPTION),
+					element.getStringAttribute(VALUE)
+					);
+		}
 }

@@ -24,6 +24,8 @@
 package freemind.controller.filter.condition;
 
 import freemind.controller.Controller;
+import freemind.main.Tools;
+import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.attributes.AttributeTableModel;
 
@@ -32,6 +34,10 @@ import freemind.modes.attributes.AttributeTableModel;
  * 12.07.2005
  */
 public class AttributeCompareCondition extends CompareConditionAdapter {
+static final String COMPARATION_RESULT = "comparation_result";
+static final String ATTRIBUTE = "attribute";
+static final String NAME = "attribute_compare_condition";
+static final String SUCCEED = "succeed";
 private String attribute;
 private int comparationResult;
 private boolean succeed;
@@ -61,4 +67,24 @@ private boolean succeed;
         }
         return false;
     }
+	public void save(XMLElement element) {
+		XMLElement child = new XMLElement();
+		child.setName(NAME);
+		super.saveAttributes(child);
+		child.setAttribute(ATTRIBUTE, attribute);
+		child.setIntAttribute(COMPARATION_RESULT, comparationResult);
+		child.setAttribute(SUCCEED, Tools.BooleanToXml(succeed));
+		element.addChild(child);
+		
+	}
+	static Condition load(XMLElement element) {
+		return new AttributeCompareCondition(
+				element.getStringAttribute(AttributeCompareCondition.DESCRIPTION),
+				element.getStringAttribute(ATTRIBUTE),
+				element.getStringAttribute(AttributeCompareCondition.VALUE),
+				Tools.xmlToBoolean(element.getStringAttribute(AttributeCompareCondition.IGNORE_CASE)),
+				element.getIntAttribute(COMPARATION_RESULT),
+				Tools.xmlToBoolean(element.getStringAttribute(SUCCEED))
+				);
+	}
 }

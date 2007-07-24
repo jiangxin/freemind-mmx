@@ -19,7 +19,7 @@
  *
  * Created on 10.10.2006
  */
-/*$Id: MindMapControllerMock.java,v 1.1.2.8 2007-07-19 21:35:02 dpolivaev Exp $*/
+/*$Id: MindMapControllerMock.java,v 1.1.2.9 2007-07-24 06:11:04 dpolivaev Exp $*/
 package tests.freemind;
 
 import java.awt.Color;
@@ -33,8 +33,10 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.List;
 
+import javax.swing.JFileChooser;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
+import javax.swing.filechooser.FileFilter;
 
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
@@ -584,5 +586,10 @@ public class MindMapControllerMock implements ModeController {
 	public void setBackgroundColor(Color color) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public JFileChooser getFileChooser(FileFilter filter) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

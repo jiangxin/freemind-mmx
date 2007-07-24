@@ -23,11 +23,16 @@
  */
 package freemind.controller.filter.condition;
 
+import freemind.main.Tools;
+import freemind.main.XMLElement;
+
 
 
 abstract class CompareConditionAdapter extends NodeCondition{
     
-    private String conditionValue;
+    static final String IGNORE_CASE = "ignore_case";
+	static final String VALUE = "value";
+	private String conditionValue;
     private boolean ignoreCase;
     
     CompareConditionAdapter(String description, 
@@ -57,6 +62,12 @@ abstract class CompareConditionAdapter extends NodeCondition{
         };
         double d1 = Double.parseDouble(nodeValue);
         return Double.compare(d1, d2);
+    }
+    
+    public void saveAttributes(XMLElement child) {
+		super.saveAttributes(child);
+		child.setAttribute(VALUE, conditionValue);
+		child.setAttribute(IGNORE_CASE, Tools.BooleanToXml(ignoreCase));
     }
     
 }

@@ -24,6 +24,7 @@
 package freemind.controller.filter.condition;
 
 import freemind.controller.Controller;
+import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.attributes.AttributeTableModel;
 
@@ -32,6 +33,8 @@ import freemind.modes.attributes.AttributeTableModel;
  * 12.07.2005
  */
 public class AttributeNotExistsCondition extends NodeCondition {
+static final String ATTRIBUTE = "attribute";
+static final String NAME = "attribute_not_exists_condition";
 private String attribute;
     /**
      */
@@ -50,4 +53,16 @@ private String attribute;
         }
         return true;
     }
+	public void save(XMLElement element) {
+		XMLElement child = new XMLElement();
+		child.setName(NAME);
+		super.saveAttributes(child);
+		child.setAttribute(ATTRIBUTE, attribute);
+		element.addChild(child);		
+	}
+	static  Condition load(XMLElement element) {
+		return new AttributeNotExistsCondition(
+				element.getStringAttribute(AttributeNotExistsCondition.DESCRIPTION),
+				element.getStringAttribute(ATTRIBUTE));
+	}
 }

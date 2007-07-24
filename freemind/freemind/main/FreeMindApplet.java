@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.18 2007-07-13 21:22:57 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.19 2007-07-24 06:10:13 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -351,6 +351,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
            System.err.println("Error while setting Look&Feel"+lookAndFeel);
         }
 	    mFreeMindCommon.loadUIProperties(userProps);
+	    userProps.put(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION, Tools.BooleanToXml(true));
 	}
 
 	/* (non-Javadoc)

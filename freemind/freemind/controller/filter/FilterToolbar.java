@@ -29,10 +29,11 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.Iterator;
 
 import javax.swing.AbstractAction;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.ComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -42,8 +43,6 @@ import javax.swing.JToolBar;
 
 import freemind.controller.Controller;
 import freemind.controller.filter.condition.Condition;
-import freemind.controller.filter.condition.NoFilteringCondition;
-import freemind.controller.filter.condition.SelectedViewCondition;
 import freemind.main.Resources;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -59,6 +58,8 @@ class FilterToolbar extends JToolBar {
     private JButton btnUnfoldAncestors;
     private Controller c;
     private static Color filterInactiveColor = null;
+	private String pathToFilterFile;
+	private FilterChangeListener filterChangeListener;
     
     private class FilterChangeListener extends AbstractAction implements ItemListener, PropertyChangeListener{
         /* (non-Javadoc)
@@ -91,7 +92,7 @@ class FilterToolbar extends JToolBar {
         }
         public void propertyChange(PropertyChangeEvent evt) {
             if(evt.getPropertyName().equals("model")){
-                addStandardConditions();
+                fc.addStandardConditions();
                 filterChanged();                            
             }
         }
@@ -114,7 +115,7 @@ class FilterToolbar extends JToolBar {
             return filterDialog;
         }
         public void actionPerformed(ActionEvent arg0) {
-            Object selectedItem = getActiveFilterConditionComboBox().getSelectedItem();
+            Object selectedItem = getFilterConditionModel().getSelectedItem();
             if(selectedItem != null){
                 getFilterDialog().setSelectedItem(selectedItem);
             }
@@ -162,21 +163,15 @@ class FilterToolbar extends JToolBar {
         this.c = c;
         setVisible(false);
         setFocusable(false);
-        FilterChangeListener filterChangeListener = new FilterChangeListener();
-        
-        add(new JLabel(Resources.getInstance().getResourceString("filter_toolbar") + " "));
+        filterChangeListener = new FilterChangeListener();
+		add(new JLabel(Resources.getInstance().getResourceString("filter_toolbar") + " "));
         
         
         activeFilter = null;
         activeFilterConditionComboBox = new JComboBox();
         activeFilterConditionComboBox.setFocusable(false);        
         activeFilterConditionComboBox.setPrototypeDisplayValue("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-        addStandardConditions();
-        activeFilterConditionComboBox.setSelectedIndex(0);
-        activeFilterConditionComboBox.setRenderer(fc.getConditionRenderer());
-        add(activeFilterConditionComboBox);
-        activeFilterConditionComboBox.addItemListener(filterChangeListener);
-        activeFilterConditionComboBox.addPropertyChangeListener(filterChangeListener);
+		pathToFilterFile = c.getFrame().getFreemindDirectory() + File.separator + "auto." + FilterController.FREEMIND_FILTER_EXTENSION_WITHOUT_DOT;
         
         btnEdit = new JButton(new EditFilterAction());
         add(btnEdit);
@@ -193,6 +188,15 @@ class FilterToolbar extends JToolBar {
         add(showDescendants);
         showDescendants.getModel().addActionListener(filterChangeListener);
     }
+
+	void initConditions() {
+		fc.loadConditions(pathToFilterFile);
+        activeFilterConditionComboBox.setSelectedIndex(0);
+        activeFilterConditionComboBox.setRenderer(fc.getConditionRenderer());
+        add(activeFilterConditionComboBox);
+        activeFilterConditionComboBox.addItemListener(filterChangeListener);
+        activeFilterConditionComboBox.addPropertyChangeListener(filterChangeListener);
+	}
     
     /**
      *
@@ -204,10 +208,6 @@ class FilterToolbar extends JToolBar {
     
     private Condition getSelectedCondition() {
         return (Condition)activeFilterConditionComboBox.getSelectedItem();
-    }
-    
-    JComboBox getActiveFilterConditionComboBox() {
-        return activeFilterConditionComboBox;
     }
     
     void setMapFilter(){
@@ -254,12 +254,15 @@ class FilterToolbar extends JToolBar {
         fc.refreshMap();
     }
 
-    private void addStandardConditions() {
-        final DefaultComboBoxModel model = (DefaultComboBoxModel)activeFilterConditionComboBox.getModel();
-        model.insertElementAt(NoFilteringCondition.createCondition(), 0);
-        model.insertElementAt(SelectedViewCondition.CreateCondition(), 1);
-        if(activeFilterConditionComboBox.getSelectedItem()== null){
-            activeFilterConditionComboBox.setSelectedIndex(0);
-        }
-    }
+	void saveConditions(){
+		fc.saveConditions(pathToFilterFile);
+	}
+	
+	ComboBoxModel getFilterConditionModel() {
+		return activeFilterConditionComboBox.getModel();
+	}
+
+	void setFilterConditionModel(ComboBoxModel filterConditionModel) {
+		activeFilterConditionComboBox.setModel(filterConditionModel);		
+	}
 }

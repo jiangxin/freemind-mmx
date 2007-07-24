@@ -28,6 +28,7 @@ import javax.swing.JLabel;
 
 import freemind.controller.Controller;
 import freemind.main.Resources;
+import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 
 public class NoFilteringCondition implements Condition {
@@ -61,5 +62,8 @@ public class NoFilteringCondition implements Condition {
         }
         return condition;
     }
+    
+	public void save(XMLElement element) {
+	}
 
 }

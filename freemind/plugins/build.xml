@@ -17,9 +17,7 @@
 			<ant antfile="plugins/build_time.xml" target="@{task}"/>
 			<ant antfile="plugins/build_scripting.xml" target="@{task}"/>
 			<ant antfile="plugins/build_jabber.xml" target="@{task}"/>-->
-
-<!--Latex temporarily disabled:
-			<ant antfile="plugins/build_latex.xml" target="@{task}"/>-->
+			<ant antfile="plugins/build_latex.xml" target="@{task}"/>
 		</sequential>
 	</macrodef>
 

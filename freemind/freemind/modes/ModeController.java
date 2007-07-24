@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.18 2007-07-19 21:31:29 dpolivaev Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.19 2007-07-24 06:10:13 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -33,8 +33,10 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
+import javax.swing.filechooser.FileFilter;
 
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
@@ -259,5 +261,7 @@ public interface ModeController  {
     Transferable copy();
     Transferable copySingle();
     public Transferable copy(List selectedNodes, boolean copyInvisible);
+
+	JFileChooser getFileChooser(FileFilter filter);
     
 }

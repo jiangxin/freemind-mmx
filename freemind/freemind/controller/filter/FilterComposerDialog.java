@@ -33,8 +33,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -42,6 +44,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -51,6 +54,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
 
 import freemind.common.NamedObject;
 import freemind.controller.Controller;
@@ -60,9 +64,11 @@ import freemind.controller.filter.condition.ConjunctConditions;
 import freemind.controller.filter.condition.DisjunctConditions;
 import freemind.controller.filter.util.ExtendedComboBoxModel;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.modes.MapRegistry;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
+import freemind.modes.ModeController;
 import freemind.modes.attributes.AttributeRegistry;
 
 /**
@@ -265,7 +271,83 @@ public class FilterComposerDialog extends JDialog {
         }
     }
 
-    private static final int NODE_POSITION = 0;
+    static private class MindMapFilterFileFilter extends FileFilter {
+    	static FileFilter filter = new MindMapFilterFileFilter();
+
+		public boolean accept(File f) {
+  	      if (f.isDirectory()) return true;
+  	      String extension = Tools.getExtension(f.getName());
+  	      if (extension != null) {
+  		  if (extension.equals(FilterController.FREEMIND_FILTER_EXTENSION_WITHOUT_DOT)) {
+  		     return true;
+  		  } else {
+  		     return false;
+  		  }
+  	      }
+  	      return false;
+         }
+
+ 	   public String getDescription() {
+ 	      return Resources.getInstance().getResourceString("mindmaps_filter_desc");
+ 	   }
+    }
+   protected JFileChooser getFileChooser() {
+        final ModeController modeController = fc.getMap().getModeController();
+		JFileChooser chooser = modeController.getFileChooser(MindMapFilterFileFilter.filter);
+        return chooser;
+    }
+    private class SaveAction implements ActionListener {
+    	public void actionPerformed(ActionEvent e) {
+            JFileChooser chooser = getFileChooser();
+            chooser.setDialogTitle(Resources.getInstance().getResourceString("save_as"));
+            int returnVal = chooser.showSaveDialog(FilterComposerDialog.this);
+            if (returnVal != JFileChooser.APPROVE_OPTION) {// not ok pressed
+            	return ; 
+            }
+
+            // |= Pressed O.K.
+            try {
+            File f = chooser.getSelectedFile();
+            String canonicalPath = f.getCanonicalPath();
+            final String suffix = '.' + FilterController.FREEMIND_FILTER_EXTENSION_WITHOUT_DOT;
+			if (!canonicalPath.endsWith(suffix)){
+				canonicalPath = canonicalPath + suffix;
+			}
+			fc.saveConditions(canonicalPath);
+            } catch (Exception ex) {
+                handleSavingException (ex);
+             }
+   	}
+
+		private void handleSavingException(Exception ex) {
+			// TODO Auto-generated method stub
+			
+		}
+
+    }
+
+    private class LoadAction implements ActionListener {
+    	public void actionPerformed(ActionEvent e) {
+            JFileChooser chooser = getFileChooser();
+            int returnVal = chooser.showOpenDialog(FilterComposerDialog.this);
+            if (returnVal==JFileChooser.APPROVE_OPTION) {
+                try {
+                    File theFile = chooser.getSelectedFile();
+                    fc.loadConditions(theFile.getCanonicalPath());
+                } catch (Exception ex) {
+                   handleLoadingException (ex); } {
+                }
+            }
+    	}
+
+		private void handleLoadingException(Exception ex) {
+			// TODO Auto-generated method stub
+			
+		}
+
+    }
+
+   private static final int NODE_POSITION = 0;
     private static final int ICON_POSITION = 1;
     private class SimpleConditionChangeListener implements ItemListener {
         public void itemStateChanged(ItemEvent e) {
@@ -357,10 +439,12 @@ public class FilterComposerDialog extends JDialog {
     private DefaultComboBoxModel simpleAttributeConditionComboBoxModel;
     private ExtendedComboBoxModel filteredAttributeComboBoxModel;
     private DefaultComboBoxModel internalConditionsModel;
-    private JComboBox externalFilterConditionComboBox;
+    private ComboBoxModel externalConditionsModel;
     private JButton btnOK;
     private JButton btnApply;
     private JButton btnCancel;
+    private JButton btnSave;
+    private JButton btnLoad;
     private ConditionListSelectionListener conditionListListener;   
     public FilterComposerDialog(Controller c, final FilterToolbar ft) {
         super(c.getJFrame(),
@@ -466,12 +550,26 @@ public class FilterComposerDialog extends JDialog {
         btnCancel.addActionListener(closeAction);
         btnCancel.setMaximumSize(maxButtonDimension);
 
+        ActionListener saveAction = new SaveAction();
+        btnSave = new JButton(Resources.getInstance().getResourceString("save"));
+        btnSave.addActionListener(saveAction);
+        btnSave.setMaximumSize(maxButtonDimension);
+
+        ActionListener loadAction = new LoadAction();
+        btnLoad = new JButton(Resources.getInstance().getResourceString("load"));
+        btnLoad.addActionListener(loadAction);
+        btnLoad.setMaximumSize(maxButtonDimension);
+
         controllerBox.add(Box.createHorizontalGlue());
         controllerBox.add(btnOK);
         controllerBox.add(Box.createHorizontalGlue());
         controllerBox.add(btnApply);
         controllerBox.add(Box.createHorizontalGlue());
         controllerBox.add(btnCancel);
+        controllerBox.add(Box.createHorizontalGlue());
+        controllerBox.add(btnSave);
+        controllerBox.add(Box.createHorizontalGlue());
+        controllerBox.add(btnLoad);
         controllerBox.add(Box.createHorizontalGlue());
     
         conditionList = new JList();
@@ -557,8 +655,7 @@ public class FilterComposerDialog extends JDialog {
     }
 
     private void initInternalConditionModel() {
-        externalFilterConditionComboBox = ft.getActiveFilterConditionComboBox();
-        ComboBoxModel externalConditionsModel = externalFilterConditionComboBox.getModel();
+    	externalConditionsModel = fc.getFilterConditionModel();
         if(internalConditionsModel == null){
             internalConditionsModel = new DefaultComboBoxModel();
             internalConditionsModel.addListDataListener(conditionListListener);
@@ -575,7 +672,7 @@ public class FilterComposerDialog extends JDialog {
     private void applyChanges() {
         internalConditionsModel.setSelectedItem(conditionList.getSelectedValue());
         internalConditionsModel.removeListDataListener(conditionListListener);
-        externalFilterConditionComboBox.setModel(internalConditionsModel);
+        fc.setFilterConditionModel(internalConditionsModel);
         internalConditionsModel = null;
     }    
 }

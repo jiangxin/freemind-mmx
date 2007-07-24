@@ -23,11 +23,15 @@
  */
 package freemind.controller.filter.condition;
 
+import java.util.Vector;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import freemind.controller.Controller;
+import freemind.controller.filter.FilterController;
 import freemind.main.Resources;
+import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 
 /**
@@ -36,7 +40,8 @@ import freemind.modes.MindMapNode;
  */
 public class ConditionNotSatisfiedDecorator implements Condition {
 
-    private Condition originalCondition;
+    static final String NAME = "negate_condition";
+	private Condition originalCondition;
     /**
      *
      */
@@ -62,5 +67,17 @@ public class ConditionNotSatisfiedDecorator implements Condition {
         component.add(originalCondition.getListCellRendererComponent());
         return component;
     }
+	public void save(XMLElement element) {
+		XMLElement child = new XMLElement();
+		child.setName(NAME);
+		originalCondition.save(child);
+		element.addChild(child);		
+	}
+
+	static Condition load(XMLElement element) {
+		final Vector children = element.getChildren();
+		Condition cond = FilterController.getConditionFactory().loadCondition((XMLElement)children.get(0));
+		return new ConditionNotSatisfiedDecorator(cond);
+	}
 
 }

@@ -26,9 +26,11 @@ package freemind.controller.filter.condition;
 import javax.swing.JComponent;
 
 import freemind.controller.Controller;
+import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 
 public interface Condition{
 	boolean checkNode(Controller c, MindMapNode node);	
     public JComponent getListCellRendererComponent();
+    void save(XMLElement element);
 }

@@ -23,11 +23,15 @@
  */
 package freemind.controller.filter.condition;
 
+import java.util.Vector;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import freemind.controller.Controller;
+import freemind.controller.filter.FilterController;
 import freemind.main.Resources;
+import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 
 /**
@@ -36,7 +40,8 @@ import freemind.modes.MindMapNode;
  */
 public class ConjunctConditions implements Condition {
 
-    private Object[] conditions;
+    static final String NAME = "conjunct_condition";
+	private Object[] conditions;
     /**
      *
      */
@@ -78,4 +83,23 @@ public class ConjunctConditions implements Condition {
         component.add(new JLabel(")"));
         return component;
     }
+	public void save(XMLElement element) {
+		XMLElement child = new XMLElement();
+		child.setName(NAME);
+		for(int i = 0; i < conditions.length; i++){
+            Condition cond = (Condition)conditions[i];
+            cond.save(child);
+		}
+		element.addChild(child);		
+	}
+
+	static Condition load(XMLElement element) {
+		final Vector children = element.getChildren();
+		Object[] conditions = new Object[children.size()]; 
+		for(int i = 0; i < conditions.length; i++){
+			Condition cond = FilterController.getConditionFactory().loadCondition((XMLElement)children.get(i));
+			conditions[i] = cond;
+		}
+		return new ConjunctConditions(conditions);
+	}
 }

@@ -26,13 +26,17 @@ package freemind.controller.filter.condition;
 
 import javax.swing.JComponent;
 
+import freemind.main.Tools;
+import freemind.main.XMLElement;
+
 /**
  * @author dimitri
  * 15.05.2005
  */
 public abstract class NodeCondition implements Condition {
 
-    private String description;
+    static final String DESCRIPTION = "description";
+	private String description;
     private JComponent renderer;
     
     protected NodeCondition (String description) {
@@ -51,4 +55,8 @@ public abstract class NodeCondition implements Condition {
         return description;
     }
 
+    public void saveAttributes(XMLElement child) {
+		child.setAttribute(DESCRIPTION, description);
+    }
+    
 }

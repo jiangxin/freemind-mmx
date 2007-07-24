@@ -33,10 +33,13 @@ import javax.swing.JLabel;
 
 import freemind.controller.Controller;
 import freemind.main.Resources;
+import freemind.main.XMLElement;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
 
 public class IconContainedCondition implements Condition {
+	static final String ICON = "icon";
+	static final String NAME = "icon_contained_condition";
 	private String iconName;
 	public IconContainedCondition(String iconName){
 		this.iconName = iconName;
@@ -73,4 +76,15 @@ public class IconContainedCondition implements Condition {
     private String getIconName() {
         return iconName;
     }
+	public void save(XMLElement element) {
+		XMLElement child = new XMLElement();
+		child.setName(NAME);
+		child.setAttribute(ICON, iconName);
+		element.addChild(child);		
+	}
+
+	static Condition load(XMLElement element) {
+		return new IconContainedCondition(
+				element.getStringAttribute(ICON));
+	}
 }

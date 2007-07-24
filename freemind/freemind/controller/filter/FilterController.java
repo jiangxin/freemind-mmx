@@ -23,12 +23,30 @@
  */
 package freemind.controller.filter;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.Vector;
+
+import javax.swing.AbstractAction;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.filter.condition.Condition;
 import freemind.controller.filter.condition.ConditionFactory;
 import freemind.controller.filter.condition.ConditionRenderer;
 import freemind.controller.filter.condition.NoFilteringCondition;
+import freemind.controller.filter.condition.SelectedViewCondition;
+import freemind.main.XMLElement;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
@@ -42,9 +60,11 @@ import freemind.view.mindmapview.NodeView;
  public class FilterController implements MapModuleChangeObserver{
      private Controller c;
 	private FilterToolbar filterToolbar;
+	private DefaultComboBoxModel filterConditionModel;
 	static private ConditionRenderer conditionRenderer = null;
 	static private ConditionFactory conditionFactory;
     private MindMap map;
+	static final String FREEMIND_FILTER_EXTENSION_WITHOUT_DOT = "mmfilter";
     private static Filter inactiveFilter;
 	
 	public FilterController(Controller c){
@@ -61,8 +81,11 @@ import freemind.view.mindmapview.NodeView;
      /**
      */
     public FilterToolbar getFilterToolbar() {
-        if(filterToolbar == null)
-            filterToolbar  = new FilterToolbar(c);
+    	if(filterToolbar == null){        	
+    		filterToolbar  = new FilterToolbar(c);
+    		filterConditionModel = (DefaultComboBoxModel)filterToolbar.getFilterConditionModel();
+    		filterToolbar.initConditions();
+    	}
         return filterToolbar;
     }
     /**
@@ -83,7 +106,7 @@ import freemind.view.mindmapview.NodeView;
     void refreshMap() {
         c.getModeController().refreshMap();
     }
-    public ConditionFactory getConditionFactory(){
+    static public ConditionFactory getConditionFactory(){
         if(conditionFactory == null)
             conditionFactory = new ConditionFactory();
         return conditionFactory;
@@ -131,5 +154,67 @@ import freemind.view.mindmapview.NodeView;
         return inactiveFilter;
 
     }
+    
+    public void saveConditions(){
+    	if(filterToolbar != null){
+    		filterToolbar.saveConditions();
+    	}
+    }
 
+	public DefaultComboBoxModel getFilterConditionModel() {
+		return filterConditionModel;
+	}
+
+	
+	public void setFilterConditionModel(DefaultComboBoxModel filterConditionModel) {
+		this.filterConditionModel = filterConditionModel;
+		filterToolbar.setFilterConditionModel(filterConditionModel);
+	}
+
+    void addStandardConditions() {
+    	final Condition noFiltering = NoFilteringCondition.createCondition();
+		filterConditionModel.insertElementAt(noFiltering, 0);
+    	filterConditionModel.insertElementAt(SelectedViewCondition.CreateCondition(), 1);
+        if(filterConditionModel.getSelectedItem()== null){
+        	filterConditionModel.setSelectedItem(noFiltering);
+        }
+    }
+    
+	void saveConditions(String pathToFilterFile){
+    	try{
+    		XMLElement saver = new XMLElement();
+    		saver.setName("filter_conditions");
+    		Writer writer = new FileWriter(pathToFilterFile);
+    		for(int i = 0; i < filterConditionModel.getSize(); i++){
+    			Condition cond = (Condition)filterConditionModel.getElementAt(i);
+    			cond.save(saver);
+    		}
+    		saver.write(writer);
+    		writer.close();
+    	}
+    	catch (Exception ex){
+            freemind.main.Resources.getInstance().logException(ex);
+    	}
+    }
+
+   void loadConditions(String pathToFilterFile){
+    	try{
+     		filterConditionModel.removeAllElements();
+    		addStandardConditions();
+     		XMLElement loader = new XMLElement();
+    		Reader reader = new FileReader(pathToFilterFile);
+    		loader.parseFromReader(reader);
+    		reader.close();
+    		final Vector conditions = loader.getChildren();
+    		for(int i = 0; i < conditions.size(); i++){
+    			filterConditionModel.addElement(FilterController.getConditionFactory().loadCondition((XMLElement)conditions.get(i)));
+    		}
+    	}
+    	catch (FileNotFoundException ex){
+    		
+    	}
+    	catch (Exception ex){
+            freemind.main.Resources.getInstance().logException(ex);
+    	}
+    }
 }

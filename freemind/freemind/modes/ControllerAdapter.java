@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.30 2007-07-19 21:31:29 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.31 2007-07-24 06:10:13 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -316,15 +316,6 @@ public abstract class ControllerAdapter implements ModeController {
     public MindMap newMap() {
         ModeController newModeController = getMode().createModeController();
 		MapAdapter newModel = newModel(newModeController);
-		Color bgcolor;
-        try{
-        	String stdcolor = getFrame().getProperty(FreeMind.RESOURCES_BACKGROUND_COLOR);
-        	bgcolor = Tools.xmlToColor(stdcolor);
-        }
-        catch(Exception ex){
-        	bgcolor = Color.WHITE;
-        }
-        newModel.setBackgroundColor(bgcolor);
         newMap(newModel);
         return newModel;
     }
@@ -601,7 +592,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     /** Creates a file chooser with the last selected directory as default.
      */
-    protected JFileChooser getFileChooser() {
+    public JFileChooser getFileChooser(FileFilter filter) {
         JFileChooser chooser = new JFileChooser();
         File parentFile = getMapsParentFile();
         // choose new lastCurrentDir only, if not previously set.
@@ -611,11 +602,15 @@ public abstract class ControllerAdapter implements ModeController {
         if (lastCurrentDir!= null) {
             chooser.setCurrentDirectory(lastCurrentDir);
         }
-        if (getFileFilter() != null) {
-            chooser.addChoosableFileFilter(getFileFilter());
+        if (filter != null) {
+            chooser.addChoosableFileFilter(filter);
         }
         return chooser;
     }
+
+    protected JFileChooser getFileChooser() {
+    	return getFileChooser(getFileFilter());
+     }
 
     private File getMapsParentFile(){
         if ((getMap() != null) && (getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {

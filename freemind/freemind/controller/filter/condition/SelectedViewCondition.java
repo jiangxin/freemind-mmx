@@ -27,6 +27,7 @@ import javax.swing.JComponent;
 
 import freemind.controller.Controller;
 import freemind.main.Resources;
+import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -63,4 +64,6 @@ public class SelectedViewCondition implements Condition {
         }
         return condition;
     }
+	public void save(XMLElement element) {
+	}
 }

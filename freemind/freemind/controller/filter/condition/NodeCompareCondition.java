@@ -24,12 +24,18 @@
 package freemind.controller.filter.condition;
 
 import freemind.controller.Controller;
+import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
+import freemind.main.Tools;
 
 
 class NodeCompareCondition extends CompareConditionAdapter{
     
-    private String conditionValue;
+    static final String COMPARATION_RESULT = "comparation_result";
+	static final String VALUE = "value";
+	static final String NAME = "node_compare_condition";
+	static final String SUCCEED = "succeed";
+	private String conditionValue;
     private int comparationResult;
     private boolean succeed;
      NodeCompareCondition(
@@ -52,4 +58,23 @@ class NodeCompareCondition extends CompareConditionAdapter{
             return false;
         }
     }
+	public void save(XMLElement element) {
+		XMLElement child = new XMLElement();
+		child.setName(NAME);
+		super.saveAttributes(child);
+		child.setAttribute(VALUE, conditionValue);
+		child.setIntAttribute(COMPARATION_RESULT, comparationResult);
+		child.setAttribute(SUCCEED, Tools.BooleanToXml(succeed));
+		element.addChild(child);		
+	}
+
+	static Condition load(XMLElement element) {
+		return new NodeCompareCondition(
+				element.getStringAttribute(NodeCompareCondition.DESCRIPTION),
+				element.getStringAttribute(VALUE),
+				Tools.xmlToBoolean(element.getStringAttribute(NodeCompareCondition.IGNORE_CASE)),
+				element.getIntAttribute(COMPARATION_RESULT),
+				Tools.xmlToBoolean(element.getStringAttribute(SUCCEED))
+				);
+	}
 }
