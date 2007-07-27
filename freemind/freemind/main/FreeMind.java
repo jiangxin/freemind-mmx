@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.68 2007-07-24 06:10:13 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.69 2007-07-27 22:14:05 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -117,6 +117,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public static final String RESOURCES_BACKGROUND_COLOR = "standardbackgroundcolor";
 
+	public static final String RESOURCE_PRINT_ON_WHITE_BACKGROUND = "printonwhitebackground";
+
 	public static final String RESOURCES_WHEEL_VELOCITY = "wheel_velocity";
 
 	public static final String RESOURCES_USE_TABBED_PANE = "use_tabbed_pane";
@@ -128,6 +130,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	public static final String VERSION = "0.9.0 Beta 13";
 
 	public static final String XML_VERSION = "0.9.0_Beta_8";
+
 
 	// public static final String defaultPropsURL = "freemind.properties";
 	// public static Properties defaultProps;

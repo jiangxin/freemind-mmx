@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.23 2007-07-13 21:22:58 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.24 2007-07-27 22:14:06 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -540,6 +540,9 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new ColorProperty("standardbackgroundcolor.tooltip",
 
 		FreeMind.RESOURCES_BACKGROUND_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_BACKGROUND_COLOR), this)); //  #ffffff
+
+		controls.add(new BooleanProperty(FreeMind.RESOURCE_PRINT_ON_WHITE_BACKGROUND+".tooltip",
+                FreeMind.RESOURCE_PRINT_ON_WHITE_BACKGROUND)); // true
 
 		controls.add(new ColorProperty("standardcloudcolor.tooltip",
 

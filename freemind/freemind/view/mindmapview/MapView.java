@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.28 2007-07-22 12:07:29 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.29 2007-07-27 22:14:06 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -77,6 +77,7 @@ import freemind.preferences.FreemindPropertyListener;
  * (in analogy to class JTree).
  */
 public class MapView extends JPanel implements Printable, Autoscroll{
+	static boolean printOnWhiteBackground;
 	static Color standardSelectColor;
 	static Color standardSelectTextColor;
 	public static Color standardNodeTextColor;
@@ -219,6 +220,14 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                 	standardDrawRectangleForSelection = false;
                 }
                 
+                try{
+                    String printOnWhite = getController().getFrame().getProperty(FreeMind.RESOURCE_PRINT_ON_WHITE_BACKGROUND);
+                    printOnWhiteBackground = Tools.xmlToBoolean(printOnWhite);
+                    }
+                    catch(Exception ex){
+                    	standardDrawRectangleForSelection = false;
+                    }
+                    
             createPropertyChangeListener();
             
         }
@@ -274,6 +283,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 		                            .equals(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION)) {
 		                    	standardDrawRectangleForSelection = Tools.xmlToBoolean(newValue);
 		                    	controller.getMapModule().getView().repaintSelecteds();
+		                    }
+		                    else if (propertyName
+		                            .equals(FreeMind.RESOURCE_PRINT_ON_WHITE_BACKGROUND)) {
+		                    	printOnWhiteBackground = Tools.xmlToBoolean(newValue);
 		                    }
 		                }
 		            };
@@ -1046,7 +1059,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			else{
 				repaintSelecteds();
 			}
-			background = getBackground();
+			if(printOnWhiteBackground){
+				background = getBackground();
+				setBackground(Color.WHITE);
+			}
 			boundingRectangle = getInnerBounds();
             fitToPage = Tools.safeEquals(controller.getProperty("fit_to_page"),"true");
 		}
