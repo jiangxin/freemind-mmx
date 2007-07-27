@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.29 2007-07-27 22:14:06 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.30 2007-07-27 22:18:59 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -1089,7 +1089,9 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
 	 private void _endPrinting() {
 		if (isPreparedForPrinting == false){
-			setBackground(background);
+			if(printOnWhiteBackground){
+				setBackground(background);
+			}
 			isPrinting = false;
 			/* repaint for end printing:*/
 			if(NEED_PREF_SIZE_BUG_FIX){
