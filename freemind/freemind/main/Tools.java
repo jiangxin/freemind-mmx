@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.17 2007-06-25 19:50:21 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.18 2007-07-27 20:52:22 dpolivaev Exp $ */
 
 package freemind.main;
 
@@ -826,11 +826,12 @@ public class Tools {
 	 *  updates the version to the current.
 	 * @throws IOException
 	 */
-	public static Reader getUpdateReader(File file, String xsltScript, FreeMindMain frame) throws IOException {
+	public static Reader getUpdateReader(final File file, String xsltScript, FreeMindMain frame) throws IOException {
 	    StringWriter writer = null;
 	    InputStream inputStream = null;
 	    java.util.logging.Logger logger = frame.getLogger(Tools.class.getName());
 	    logger.info("Updating the file "+file.getName()+" to the current version.");
+        boolean successful = false;
 	    try{
 	        // try to convert map with xslt:
 	        URL updaterUrl=null;
@@ -838,21 +839,40 @@ public class Tools {
 	        if(updaterUrl == null) {
 	            throw new IllegalArgumentException(xsltScript+" not found.");
 	        }
-	        Source xsltSource=null;
 	        inputStream = updaterUrl.openStream();
-	        xsltSource = new StreamSource(inputStream);
+	        final Source xsltSource = new StreamSource(inputStream);
 	        // get output:
 	        writer = new StringWriter();
-	        Result result = new StreamResult(writer);
-	        // create an instance of TransformerFactory
-	        TransformerFactory transFact = TransformerFactory.newInstance();
-	        Transformer trans = transFact.newTransformer(xsltSource);
-	        trans.transform(new StreamSource(file), result);
+	        final Result result = new StreamResult(writer);
+	        
+	        // Dimitry: to avoid a memory leak and properly release resources after the XSLT transformation
+	        // everything should run in own thread. Only after the thread dies the resources are released.
+	        class TransformerRunnable implements Runnable{
+	        	private boolean successful = false;
+	        	public void run() {
+	        		// create an instance of TransformerFactory
+	        		TransformerFactory transFact = TransformerFactory.newInstance();
+	        		Transformer trans;
+	        		try {
+	        			trans = transFact.newTransformer(xsltSource);
+
+	        			trans.transform(new StreamSource(file), result);
+	        			successful = true;
+	        		} catch (Exception ex) {
+	        			freemind.main.Resources.getInstance().logException(ex);
+	        		}
+				}
+				public boolean isSuccessful() {
+					return successful;
+				}
+	        }
+	        final TransformerRunnable transformer = new TransformerRunnable();
+			Thread transformerThread = new Thread(transformer, "XSLT");
+			transformerThread.start();
+			transformerThread.join();
 	        logger.info("Updating the file "+file.getName()+" to the current version. Done." ); //+ writer.getBuffer().toString());
+	        successful = transformer.isSuccessful();
 	    } catch(Exception ex) {
-	        freemind.main.Resources.getInstance().logException(ex);
-	        // exception: we take the file itself:
-	        return getActualReader(file);
 	    } finally {
 	        if(inputStream!= null) {
 	            inputStream.close();
@@ -861,9 +881,13 @@ public class Tools {
 	            writer.close();
 	        }
 	    }
-	    return new StringReader(writer.getBuffer().toString());
+	    if(successful){
+		    return new StringReader(writer.getBuffer().toString());
+	    }
+	    else{
+	        return getActualReader(file);
+	    }
 	}
-
 	/** Creates a default reader that just reads the given file.
 	 * @throws FileNotFoundException
 	 */
