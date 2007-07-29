@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.27 2007-07-13 21:22:58 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.28 2007-07-29 08:58:21 dpolivaev Exp $*/
 package freemind.main;
 
 import java.awt.SystemColor;
@@ -318,14 +318,9 @@ public class FreeMindCommon {
         }
         if(value.startsWith("?")){
             // try to look in the language specific properties
-            try{
-                value = getResources().getString(LOCAL_PROPERTIES + label);
-            }
-            // remove leading question mark if not succesful
-            catch(MissingResourceException ex){
-                value = value.substring(1).trim();
-            }
-            setDefaultProperty(label, value);
+        	String localValue = ((FreemindResourceBundle)getResources()).getResourceString(LOCAL_PROPERTIES + label, null);
+        	value = localValue == null ? value.substring(1).trim() : localValue;
+        	setDefaultProperty(label, value);
         }
         return value;
     }

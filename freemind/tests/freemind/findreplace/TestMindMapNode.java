@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: TestMindMapNode.java,v 1.1.2.12 2007-06-26 21:43:56 dpolivaev Exp $*/
+/*$Id: TestMindMapNode.java,v 1.1.2.13 2007-07-29 08:58:22 dpolivaev Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -242,10 +242,10 @@ final class TestMindMapNode implements MindMapNode {
         return null;
     }
 
-    public void addIcon(MindIcon icon) {
+    public void addIcon(MindIcon icon, int position) {
     }
 
-    public int removeLastIcon() {
+    public int removeIcon(int position) {
         return 0;
     }
 

@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: RemoveAllIconsAction.java,v 1.1.2.2.2.3 2006-10-10 18:51:53 christianfoltin Exp $ */
+/* $Id: RemoveAllIconsAction.java,v 1.1.2.2.2.4 2007-07-29 08:58:22 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -54,7 +54,7 @@ public class RemoveAllIconsAction extends NodeGeneralAction implements NodeActor
         CompoundAction undoAction = new CompoundAction();
         for (Iterator i = selected.getIcons().iterator(); i.hasNext();) {
             MindIcon icon = (MindIcon) i.next();
-            undoAction.addChoice(addIconAction.createAddIconAction(selected, icon));
+            undoAction.addChoice(addIconAction.createAddIconAction(selected, icon, MindIcon.LAST));
         }
         return new ActionPair(createRemoveAllIconsXmlAction(selected), undoAction);
     }
@@ -70,7 +70,7 @@ public class RemoveAllIconsAction extends NodeGeneralAction implements NodeActor
             RemoveAllIconsXmlAction removeAction = (RemoveAllIconsXmlAction) action;
             MindMapNode node = modeController.getNodeFromID(removeAction.getNode());
             while(node.getIcons().size()>0) {
-                node.removeLastIcon();
+                node.removeIcon(MindIcon.LAST);
             }
             modeController.nodeChanged(node);
         }

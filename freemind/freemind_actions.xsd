@@ -35,7 +35,7 @@
 					<xs:element ref="hook_node_action"/>
 					<xs:element ref="hook_content_node_action"/>
 					<xs:element ref="add_icon_action"/>
-					<xs:element ref="remove_last_icon_xml_action"/>
+					<xs:element ref="remove_icon_xml_action"/>
 					<xs:element ref="remove_all_icons_xml_action"/>
 					<xs:element ref="move_node_xml_action"/>
 					<xs:element ref="add_cloud_xml_action"/>
@@ -183,16 +183,19 @@
 		<xs:complexContent>
 			<xs:extension base="node_action">
 		      <xs:attribute name="icon_name" use="required" type="xs:string"/>
+		      <xs:attribute name="icon_position" use="required" type="xs:int"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
 
 	<!-- Remove last Icon Action -->
-	<xs:element name="remove_last_icon_xml_action">
+	<xs:element name="remove_icon_xml_action">
 	  <xs:complexType>
 		<xs:complexContent>
-			<xs:extension base="node_action"/>
+			<xs:extension base="node_action">
+		      <xs:attribute name="icon_position" use="required" type="xs:int"/>
+			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>

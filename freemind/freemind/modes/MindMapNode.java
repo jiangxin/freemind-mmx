@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.14 2007-06-20 21:52:42 dpolivaev Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.15 2007-07-29 08:58:22 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -197,10 +197,10 @@ public interface MindMapNode extends MutableTreeNode {
     /** Is a vector of MindIcon s*/
     List getIcons();
 
-    void   addIcon(MindIcon icon);
+    void   addIcon(MindIcon icon, int position);
 
     /* @return returns the new amount of icons.*/
-    int   removeLastIcon();
+    int   removeIcon(int position);
     // end, fc, 24.9.2003
 
     // clouds, fc, 08.11.2003:

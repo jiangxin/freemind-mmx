@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.13 2007-07-19 21:31:29 dpolivaev Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.14 2007-07-29 08:58:22 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -206,7 +206,7 @@ public abstract class XMLElementAdapter extends XMLElement {
              layout.setColumnWidth(1, ((XMLElementAdapter)child).attributeValueWidth);
              }
           else if (child.getName().equals("icon")) {
-             node.addIcon((MindIcon)child.getUserObject()); }
+             node.addIcon((MindIcon)child.getUserObject(), MindIcon.LAST); }
           else if (child.getName().equals(XML_NODE_XHTML_CONTENT_TAG)) {
 				String xmlText = ((XMLElement) child).getContent();
 				Object typeAttribute = child

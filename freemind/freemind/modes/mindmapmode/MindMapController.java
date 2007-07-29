@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.43 2007-07-19 21:31:29 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.44 2007-07-29 08:58:22 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -173,7 +173,7 @@ import freemind.modes.mindmapmode.actions.PasteAction;
 import freemind.modes.mindmapmode.actions.RedoAction;
 import freemind.modes.mindmapmode.actions.RemoveAllIconsAction;
 import freemind.modes.mindmapmode.actions.RemoveArrowLinkAction;
-import freemind.modes.mindmapmode.actions.RemoveLastIconAction;
+import freemind.modes.mindmapmode.actions.RemoveIconAction;
 import freemind.modes.mindmapmode.actions.RevertAction;
 import freemind.modes.mindmapmode.actions.SelectAllAction;
 import freemind.modes.mindmapmode.actions.SelectBranchAction;
@@ -324,7 +324,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     public MapBackgroundColorAction mapBackgroundColor = null;
 
     public IconAction unknownIconAction = null;
-    public RemoveLastIconAction removeLastIconAction = null;
+    public RemoveIconAction removeLastIconAction = null;
     public RemoveAllIconsAction removeAllIconsAction = null;
     public SetLinkByTextFieldAction setLinkByTextField = null;
     public AddLocalLinkAction addLocalLinkAction = null;
@@ -444,7 +444,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         fork = new NodeStyleAction(this, MindMapNode.STYLE_FORK);
         bubble = new NodeStyleAction(this, MindMapNode.STYLE_BUBBLE);
         // this is an unknown icon and thus corrected by mindicon:
-        removeLastIconAction = new RemoveLastIconAction(this);
+        removeLastIconAction = new RemoveIconAction(this);
         // this action handles the xml stuff: (undo etc.)
         unknownIconAction = new IconAction(this, MindIcon.factory((String) MindIcon
                 .getAllIconNames().get(0)), removeLastIconAction);

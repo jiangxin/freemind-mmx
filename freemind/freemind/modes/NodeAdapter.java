@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.30 2007-07-05 20:26:33 dpolivaev Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.31 2007-07-29 08:58:22 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -471,17 +471,24 @@ public abstract class NodeAdapter implements MindMapNode {
     public MindMap getMap() {
         return map;
     }
-    public void   addIcon(MindIcon _icon) {
+    public void   addIcon(MindIcon _icon, int position) {
     		createIcons();
-    		icons.add(_icon);
+    		if(position == MindIcon.LAST){
+    			icons.add(_icon);
+    		}
+    		else{
+    			icons.add(position, _icon);
+    		}
             getMap().getRegistry().addIcon(_icon);
     	}
 
     /** @return returns the number of remaining icons. */
-	public int removeLastIcon() {
+	public int removeIcon(int position) {
 		createIcons();
-		if (icons.size() > 0)
-			icons.setSize(icons.size() - 1);
+		if (position == MindIcon.LAST ){
+			position = icons.size() - 1;
+		}
+		icons.remove(position);
 		int returnSize = icons.size();
 		if(returnSize==0) {
 			icons = null;

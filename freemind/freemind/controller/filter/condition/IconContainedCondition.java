@@ -46,11 +46,20 @@ public class IconContainedCondition implements Condition {
 	}
 
 	public boolean checkNode(Controller c, MindMapNode node) {
+		return iconIndex(node, iconName) != -1 || isStateIconContained(node, iconName);
+	}
+
+	static public int iconIndex(MindMapNode node, String iconName) {
 		List icons = node.getIcons();
 		for (ListIterator i=icons.listIterator(); i.hasNext(); ) {
 			MindIcon nextIcon = (MindIcon) i.next() ;
-			if (iconName.equals(nextIcon.getName())) return true;
+			if (iconName.equals(nextIcon.getName())) return i.previousIndex();
 		}
+		return -1;
+		
+	}
+
+	private static boolean isStateIconContained(MindMapNode node, String iconName) {
 		Set stateIcons = node.getStateIcons().keySet();
 		for(Iterator stateIcon = stateIcons.iterator(); stateIcon.hasNext();){
 			String nextIcon = (String) stateIcon.next() ;
