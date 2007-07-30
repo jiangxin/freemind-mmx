@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.24 2007-07-27 22:14:06 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.25 2007-07-30 20:46:07 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -29,6 +29,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JDialog;
@@ -72,7 +74,10 @@ import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.modes.IconInformation;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
+import freemind.modes.mindmapmode.MindMapController;
 import freemind.preferences.FreemindPropertyContributor;
 
 /**
@@ -165,7 +170,8 @@ public class OptionPanel implements TextTranslator {
 			PropertyControl control = (PropertyControl) i.next();
 			if (control instanceof PropertyBean) {
 				PropertyBean bean = (PropertyBean) control;
-				p.setProperty(bean.getLabel(), bean.getValue());
+				final String value = bean.getValue();
+				if(value != null) p.setProperty(bean.getLabel(), value);
 			}
 		}
 		return p;
@@ -341,11 +347,14 @@ public class OptionPanel implements TextTranslator {
 
 	private static class KeyProperty extends PropertyBean implements
 			PropertyControl {
+		private int modifierMask = 0;
         String description;
 
 		String label;
 
 		JButton mButton = new JButton();
+		private String labelText;
+		private ImageIcon icon;
 
         private static RowSpec rowSpec;
 		/**
@@ -362,7 +371,7 @@ public class OptionPanel implements TextTranslator {
 					GrabKeyDialog dialog = new GrabKeyDialog(fmMain, frame,
 							new GrabKeyDialog.KeyBinding(getLabel(),
 									getLabel(), getValue(), false),
-							allKeybindings, null);
+							allKeybindings, null, modifierMask);
 					if (dialog.isOK()) {
 						setValue(dialog.getShortcut());
                         firePropertyChangeEvent();
@@ -371,6 +380,10 @@ public class OptionPanel implements TextTranslator {
 			});
 		}
 
+		public void disableModifiers(){
+			modifierMask = KeyEvent.ALT_MASK | KeyEvent.CTRL_MASK;
+		}
+		
 		public String getDescription() {
 			return description;
 		}
@@ -389,7 +402,10 @@ public class OptionPanel implements TextTranslator {
 		}
 
 		public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
-        	JLabel label = new JLabel(pTranslator.getText(getLabel()));
+			if (labelText == null)   
+				labelText = pTranslator.getText(getLabel());
+			
+        	JLabel label = new JLabel(labelText, icon, JLabel.RIGHT);
             label.setToolTipText(pTranslator.getText(getDescription()));
             if(rowSpec == null){
                 rowSpec = new RowSpec("fill:20dlu");
@@ -408,6 +424,15 @@ public class OptionPanel implements TextTranslator {
 		}
 		public void setEnabled(boolean pEnabled) {
 		    mButton.setEnabled(pEnabled);
+		}
+
+		public void setLabelText(String labelText) {
+			this.labelText = labelText;			
+		}
+
+		public void setImageIcon(ImageIcon icon) {
+			this.icon = icon;
+			
 		}
 	}
 	//
@@ -1002,6 +1027,27 @@ public class OptionPanel implements TextTranslator {
         controls.add(new KeyProperty(frame, null, "keystroke_assign_attributes")); //  control
         controls.add(new KeyProperty(frame, null, "keystroke_plugins/ScriptingEngine.keystroke.evaluate"));
 
+        final ModeController modeController = fmMain.getController().getModeController();
+        if(modeController instanceof MindMapController){
+    		MindMapController controller = (MindMapController)modeController;
+    		Vector iconActions = controller.iconActions;
+    		Vector actions = new Vector();
+    		actions.addAll(iconActions);
+    		actions.add(controller.removeLastIconAction);
+    		actions.add(controller.removeAllIconsAction);
+            controls.add(new NextLineProperty());
+            controls.add(new SeparatorProperty("icons"));
+            final Iterator iterator = actions.iterator();
+            while(iterator.hasNext()){
+            	IconInformation info = (IconInformation) iterator.next();
+                final KeyProperty keyProperty = new KeyProperty(frame, null, info.getKeystrokeResourceName());
+                keyProperty.setLabelText(info.getDescription());
+                keyProperty.setImageIcon(info.getIcon());
+                keyProperty.disableModifiers();
+				controls.add(keyProperty);
+            }
+            
+        }
 
 
 		/***********************************************************************

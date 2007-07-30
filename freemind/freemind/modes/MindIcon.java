@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindIcon.java,v 1.1.18.6.2.7 2007-07-29 08:58:22 dpolivaev Exp $ */
+/* $Id: MindIcon.java,v 1.1.18.6.2.8 2007-07-30 20:46:06 dpolivaev Exp $ */
 
 package freemind.modes;
 
 import java.awt.Component;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.io.File;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.KeyStroke;
 
 import freemind.controller.Controller;
 import freemind.main.FreeMindMain;
@@ -250,5 +252,9 @@ public class MindIcon implements Comparable{
         }
         return component;
     }
+
+	public String getKeystrokeResourceName() {
+		return "keystroke_icon_" + name;
+	}
 
 }

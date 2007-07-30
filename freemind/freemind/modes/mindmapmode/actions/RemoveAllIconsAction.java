@@ -19,15 +19,23 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: RemoveAllIconsAction.java,v 1.1.2.2.2.4 2007-07-29 08:58:22 dpolivaev Exp $ */
+/* $Id: RemoveAllIconsAction.java,v 1.1.2.2.2.5 2007-07-30 20:46:06 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
+import java.awt.event.KeyEvent;
+import java.io.ObjectInputStream.GetField;
 import java.util.Iterator;
+
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.KeyStroke;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.RemoveAllIconsXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Resources;
+import freemind.modes.IconInformation;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -38,7 +46,7 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
  * @author foltin
  *
  */
-public class RemoveAllIconsAction extends NodeGeneralAction implements NodeActorXml {
+public class RemoveAllIconsAction extends NodeGeneralAction implements NodeActorXml , IconInformation{
 
     private final IconAction addIconAction;
 
@@ -89,4 +97,19 @@ public class RemoveAllIconsAction extends NodeGeneralAction implements NodeActor
         return RemoveAllIconsXmlAction.class;
     }
 
+	public String getDescription() {
+		return (String)getValue(Action.SHORT_DESCRIPTION);
+	}
+
+	public ImageIcon getIcon() {
+		return (ImageIcon)getValue(Action.SMALL_ICON);
+	}
+
+	public KeyStroke getKeyStroke() {
+		return IconAction.getKeyStroke(getMindMapController().getFrame().getAdjustableProperty(getKeystrokeResourceName()));
+	}
+
+	public String getKeystrokeResourceName() {
+		return "keystroke_" + (String) getValue(NAME);
+	}
 }

@@ -19,15 +19,22 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: RemoveLastIconAction.java,v 1.1.2.2.2.3 2006-10-10 18:51:53 christianfoltin Exp $ */
+/* $Id: RemoveIconAction.java,v 1.1.2.1 2007-07-30 20:46:06 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
+import java.awt.event.KeyEvent;
 import java.util.List;
 
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.KeyStroke;
+
 import freemind.controller.actions.generated.instance.AddIconAction;
-import freemind.controller.actions.generated.instance.RemoveLastIconXmlAction;
+import freemind.controller.actions.generated.instance.RemoveIconXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Resources;
+import freemind.modes.IconInformation;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -38,12 +45,12 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
  * @author foltin
  *
  */
-public class RemoveLastIconAction extends NodeGeneralAction implements NodeActorXml{
+public class RemoveIconAction extends NodeGeneralAction implements NodeActorXml, IconInformation{
 
     private IconAction iconAction;
     /**
      */
-    public RemoveLastIconAction(MindMapController modeController) {
+    public RemoveIconAction(MindMapController modeController) {
         super(modeController, "remove_last_icon", "images/remove.png");
         addActor(this);
     }
@@ -52,17 +59,18 @@ public class RemoveLastIconAction extends NodeGeneralAction implements NodeActor
         List icons = selected.getIcons();
 		if(icons.size()==0)
             return null;
-        AddIconAction undoAction = iconAction.createAddIconAction(selected, (MindIcon) icons.get(icons.size()-1));
-        return new ActionPair(createRemoveLastIconXmlAction(selected), undoAction);
+        AddIconAction undoAction = iconAction.createAddIconAction(selected, (MindIcon) icons.get(icons.size()-1), MindIcon.LAST);
+        return new ActionPair(createRemoveIconXmlAction(selected, MindIcon.LAST), undoAction);
     }
 
     public Class getDoActionClass() {
-        return RemoveLastIconXmlAction.class;
+        return RemoveIconXmlAction.class;
     }
 
-    public RemoveLastIconXmlAction createRemoveLastIconXmlAction(MindMapNode node)  {
-        RemoveLastIconXmlAction action = new RemoveLastIconXmlAction();
+    public RemoveIconXmlAction createRemoveIconXmlAction(MindMapNode node, int iconPosition)  {
+        RemoveIconXmlAction action = new RemoveIconXmlAction();
         action.setNode(node.getObjectId(modeController));
+        action.setIconPosition(iconPosition);
         return action;
     }
 
@@ -82,11 +90,12 @@ public class RemoveLastIconAction extends NodeGeneralAction implements NodeActor
     */
 
    public void act(XmlAction action) {
-        if (action instanceof freemind.controller.actions.generated.instance.RemoveLastIconXmlAction) {
-            freemind.controller.actions.generated.instance.RemoveLastIconXmlAction removeAction = (freemind.controller.actions.generated.instance.RemoveLastIconXmlAction) action;
+        if (action instanceof freemind.controller.actions.generated.instance.RemoveIconXmlAction) {
+            freemind.controller.actions.generated.instance.RemoveIconXmlAction removeAction = (freemind.controller.actions.generated.instance.RemoveIconXmlAction) action;
             MindMapNode node = modeController.getNodeFromID(removeAction
                     .getNode());
-            node.removeLastIcon();
+            int position = removeAction.getIconPosition();
+            node.removeIcon(position);
             modeController.nodeChanged(node);
         }
     }
@@ -98,4 +107,20 @@ public class RemoveLastIconAction extends NodeGeneralAction implements NodeActor
     public void setIconAction(IconAction iconAction) {
         this.iconAction = iconAction;
     }
+
+	public String getDescription() {
+		return (String)getValue(Action.SHORT_DESCRIPTION);
+	}
+
+	public ImageIcon getIcon() {
+		return (ImageIcon)getValue(Action.SMALL_ICON);
+	}
+
+	public KeyStroke getKeyStroke() {
+		return IconAction.getKeyStroke(getMindMapController().getFrame().getAdjustableProperty(getKeystrokeResourceName()));
+	}
+
+	public String getKeystrokeResourceName() {
+		return "keystroke_" + (String) getValue(NAME);
+	}
 }

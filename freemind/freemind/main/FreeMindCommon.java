@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.28 2007-07-29 08:58:21 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.29 2007-07-30 20:46:05 dpolivaev Exp $*/
 package freemind.main;
 
 import java.awt.SystemColor;
@@ -316,7 +316,7 @@ public class FreeMindCommon {
         if(value == null){
             return value;
         }
-        if(value.startsWith("?")){
+        if(value.startsWith("?") && ! value.equals("?")){
             // try to look in the language specific properties
         	String localValue = ((FreemindResourceBundle)getResources()).getResourceString(LOCAL_PROPERTIES + label, null);
         	value = localValue == null ? value.substring(1).trim() : localValue;

@@ -41,9 +41,11 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
 
 import freemind.main.FreeMindMain;
+import freemind.modes.IconInformation;
 
 public class IconSelectionPopupDialog extends JDialog implements KeyListener, MouseListener{
   private Vector icons;
@@ -56,15 +58,13 @@ public class IconSelectionPopupDialog extends JDialog implements KeyListener, Mo
   private int yDimension;
   private Position selected = new Position(0,0);
   private static Position lastPosition = new Position(0,0);
-  private Vector descriptions;
   private FreeMindMain freeMindMain;
 private int mModifiers;
  
-  public IconSelectionPopupDialog(JFrame caller, Vector icons, Vector descriptions, FreeMindMain freeMindMain){
+  public IconSelectionPopupDialog(JFrame caller, Vector icons, FreeMindMain freeMindMain){
 
 	super(caller, "select icon");
 	getContentPane().setLayout(new BorderLayout());
-		this.descriptions = descriptions;
 	this.freeMindMain = freeMindMain;
 	this.icons = icons;
 
@@ -90,7 +90,8 @@ private int mModifiers;
 
 	  iconLabels = new JLabel[numOfIcons];
 	  for (int i=0; i<numOfIcons; ++i) {          
-		iconPanel.add(iconLabels[i] = new JLabel((Icon)icons.get(i)));
+		final IconInformation icon = (IconInformation)icons.get(i);
+		iconPanel.add(iconLabels[i] = new JLabel(icon.getIcon()));
 		iconLabels[i].setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 		iconLabels[i].addMouseListener(this);
 	  }
@@ -141,7 +142,15 @@ private int mModifiers;
 	unhighlight(getSelectedPosition());
 	setSelectedPosition(position);
 	highlight(position);
-	descriptionLabel.setText((String)descriptions.get(calculateIndex(position)));
+	final int index = calculateIndex(position);
+	final IconInformation iconInformation = (IconInformation)icons.get(index);
+	final KeyStroke keyStroke = iconInformation.getKeyStroke();
+	if(keyStroke != null){
+		descriptionLabel.setText(iconInformation.getDescription() + " " + keyStroke);
+	}
+	else{
+		descriptionLabel.setText(iconInformation.getDescription());
+	}
   }
   
   private void unhighlight(Position position){
@@ -200,32 +209,60 @@ private int mModifiers;
 			case KeyEvent.VK_RIGHT:
 			case KeyEvent.VK_KP_RIGHT:
 				cursorRight();
-				break;
+				return;
 			case KeyEvent.VK_LEFT:
 			case KeyEvent.VK_KP_LEFT:
 				cursorLeft();
-				break;
+				return;
 			case KeyEvent.VK_DOWN:
 			case KeyEvent.VK_KP_DOWN:
 				cursorDown();
-				break;
+				return;
 			case KeyEvent.VK_UP:
 			case KeyEvent.VK_KP_UP:
 				cursorUp();
-				break;
+				return;
 			case KeyEvent.VK_ESCAPE:
 				keyEvent.consume();
                 close();
-				break;
+				return;
 			case KeyEvent.VK_ENTER:
 			case KeyEvent.VK_SPACE:
 				keyEvent.consume();
 				addIcon(keyEvent.getModifiers());
-				break;
+				return;
+		}
+		int index = findIndexByKeyEvent(keyEvent);
+		if(index != -1){
+			result = index;
+			mModifiers = keyEvent.getModifiers();
+			keyEvent.consume();
+			this.dispose();
 		}
 	}
 
-    private void close() {
+    private KeyStroke getKeyStrokeForEvent(KeyEvent keyEvent) {
+    	if(keyEvent.getKeyChar() != 0){
+    		return KeyStroke.getKeyStroke(keyEvent.getKeyChar());
+    	}
+    	return KeyStroke.getKeyStroke(keyEvent.getKeyCode(), 0);
+	}
+
+	private int findIndexByKeyEvent(KeyEvent keyEvent) {
+    	for(int i = 0; i < icons.size(); i++){
+    		IconInformation info = (IconInformation) icons.get(i);
+    		final KeyStroke iconKeyStroke = info.getKeyStroke();
+			if(iconKeyStroke != null 
+					&& (keyEvent.getKeyCode() == iconKeyStroke.getKeyCode() && keyEvent.getKeyCode() != 0 
+							&& (iconKeyStroke.getModifiers() & KeyEvent.SHIFT_MASK) == (keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) 
+					|| keyEvent.getKeyChar() == iconKeyStroke.getKeyChar()) &&  keyEvent.getKeyChar() != 0){
+    			return i;
+    		}
+    	}
+		return -1;
+	}
+
+	private void close() {
         result = -1;
         mModifiers = 0;
         this.dispose();

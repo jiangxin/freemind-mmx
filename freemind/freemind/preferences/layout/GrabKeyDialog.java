@@ -129,10 +129,15 @@ public class GrabKeyDialog extends JDialog
 	 * @since jEdit 4.1pre7
 	 */
 	public GrabKeyDialog(FreeMindMain fmMain, Dialog parent, KeyBinding binding,
-		Vector allBindings, Buffer debugBuffer)
+			Vector allBindings, Buffer debugBuffer){
+		this(fmMain, parent, binding, allBindings, debugBuffer, 0);
+	}
+	public GrabKeyDialog(FreeMindMain fmMain, Dialog parent, KeyBinding binding,
+		Vector allBindings, Buffer debugBuffer, int modifierMask)
 	{
 		super(parent,(/*FIXME: getText*/("grab-key.title")),true);
         this.fmMain = fmMain;
+        this.modifierMask = modifierMask;
         setTitle(getText("grab-key.title"));
 
 		init(binding,allBindings,debugBuffer);
@@ -201,6 +206,7 @@ public class GrabKeyDialog extends JDialog
 	private KeyBinding binding;
 	private Vector allBindings;
 	private Buffer debugBuffer;
+	private int modifierMask;
 	//}}}
 	public final static String MODIFIER_SEPARATOR = " ";
 
@@ -439,6 +445,15 @@ public class GrabKeyDialog extends JDialog
 		//{{{ processKeyEvent() method
 		protected void processKeyEvent(KeyEvent _evt)
 		{
+			if((getModifierMask() & _evt.getModifiers()) != 0){
+				KeyEvent evt = new KeyEvent(_evt.getComponent(), _evt.getID(), _evt.getWhen(),
+						~getModifierMask() & _evt.getModifiers(), _evt.getKeyCode(), _evt.getKeyChar(),_evt.getKeyLocation());
+				processKeyEvent(evt);
+				if(evt.isConsumed()){
+					_evt.consume();
+				}
+				return;
+			}
 			KeyEvent evt = KeyEventWorkaround.processKeyEvent(_evt);
 			if(debugBuffer != null)
 			{
@@ -597,6 +612,10 @@ public class GrabKeyDialog extends JDialog
 		return fmMain.getResourceString("GrabKeyDialog."+resourceString);
 	}
 
+	private int getModifierMask() {
+		return modifierMask;
+	}
+	
 	/**FIXME: make method here.
 	 */
 	public static boolean isMacOS() {

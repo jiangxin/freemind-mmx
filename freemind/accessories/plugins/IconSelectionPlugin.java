@@ -33,6 +33,7 @@ import javax.swing.Action;
 
 import freemind.main.FreeMind;
 import freemind.main.Tools;
+import freemind.modes.IconInformation;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
 import freemind.modes.common.dialogs.IconSelectionPopupDialog;
@@ -60,25 +61,17 @@ public class IconSelectionPlugin extends MindMapNodeHookAdapter {
 		// we dont need node. 
 		NodeView focussed = getController().getSelectedView();
 		Vector actions = new Vector();
-		Vector items = new Vector();
-		Vector itemdescriptions = new Vector();
 		MindMapController controller = getMindMapController();
 		Vector iconActions = controller.iconActions;
-		for (Enumeration e = iconActions.elements(); e.hasMoreElements();) {
-			IconAction action =
-				((IconAction) e.nextElement());
-			addActionToActionVector(actions, items, itemdescriptions, action);
-		}
-		// And add the remove action, too:
-		addActionToActionVector(actions, items, itemdescriptions, controller.removeLastIconAction);
-		addActionToActionVector(actions, items, itemdescriptions, controller.removeAllIconsAction);
+		actions.addAll(iconActions);
+		actions.add(controller.removeLastIconAction);
+		actions.add(controller.removeAllIconsAction);
 
 		FreeMind frame = (FreeMind) getController().getFrame();
 		IconSelectionPopupDialog selectionDialog =
 			new IconSelectionPopupDialog(
 				frame.getJFrame(),
-				items,
-				itemdescriptions,
+				actions,
 				frame);
 
 		final MapView mapView = controller.getView();
@@ -93,14 +86,6 @@ public class IconSelectionPlugin extends MindMapNodeHookAdapter {
 			action.actionPerformed(new ActionEvent(action, 0, "icon", selectionDialog.getModifiers()));
 		}
 	}
-
-	/**
-     */
-    private void addActionToActionVector(Vector actions, Vector items, Vector itemdescriptions, Action action) {
-        actions.add(action);
-        items.add(action.getValue(Action.SMALL_ICON));
-        itemdescriptions.add(action.getValue(Action.SHORT_DESCRIPTION));
-    }
 
 //	/* (non-Javadoc)
 //	 * @see freemind.extensions.NodeHook#invoke()

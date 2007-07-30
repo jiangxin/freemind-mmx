@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: IconProperty.java,v 1.1.2.1.2.1 2006-07-25 20:28:19 christianfoltin Exp $*/
+/*$Id: IconProperty.java,v 1.1.2.1.2.2 2007-07-30 20:46:05 dpolivaev Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -35,6 +35,7 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.modes.MindIcon;
 import freemind.modes.common.dialogs.IconSelectionPopupDialog;
 
 public class IconProperty extends PropertyBean implements PropertyControl,
@@ -52,26 +53,7 @@ public class IconProperty extends PropertyBean implements PropertyControl,
 	 */
 	private final Vector mIcons;
 
-	private IconInformation mActualIcon = null;
-
-	public static class IconInformation {
-		public Icon icon;
-
-		public String iconDescription;
-
-		/** The name stored in .mm files for example */
-		public String iconName;
-
-		/**
-		 */
-		public IconInformation(Icon icon, String iconDescription,
-				String iconName) {
-			super();
-			this.icon = icon;
-			this.iconDescription = iconDescription;
-			this.iconName = iconName;
-		}
-	}
+	private MindIcon mActualIcon = null;
 
 	public IconProperty(String description, String label, FreeMindMain frame,
 			Vector icons) {
@@ -94,21 +76,21 @@ public class IconProperty extends PropertyBean implements PropertyControl,
 
 	public void setValue(String value) {
 		for (Iterator iter = mIcons.iterator(); iter.hasNext();) {
-			IconInformation info = (IconInformation) iter.next();
-			if (info.iconName.equals(value)) {
-				mActualIcon = info;
+			MindIcon icon = (MindIcon) iter.next();
+			if (icon.getName().equals(value)) {
+				mActualIcon = icon;
 				setIcon(mActualIcon);
 			}
 		}
 	}
 
-	private void setIcon(IconInformation actualIcon) {
-		mButton.setIcon(actualIcon.icon);
-		mButton.setToolTipText(actualIcon.iconDescription);
+	private void setIcon(MindIcon actualIcon) {
+		mButton.setIcon(actualIcon.getIcon());
+		mButton.setToolTipText(actualIcon.getDescription());
 	}
 
 	public String getValue() {
-		return mActualIcon.iconName;
+		return mActualIcon.getName();
 	}
 
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
@@ -120,20 +102,20 @@ public class IconProperty extends PropertyBean implements PropertyControl,
 		Vector icons = new Vector();
 		Vector descriptions = new Vector();
 		for (Iterator iter = mIcons.iterator(); iter.hasNext();) {
-			IconInformation info = (IconInformation) iter.next();
-			icons.add(info.icon);
-			descriptions.add(info.iconDescription);
+			MindIcon icon = (MindIcon) iter.next();
+			icons.add(icon);
+			descriptions.add(icon.getDescription());
 		}
 		IconSelectionPopupDialog dialog = new IconSelectionPopupDialog(
-				mFreeMindMain.getJFrame(), icons, descriptions, mFreeMindMain);
+				mFreeMindMain.getJFrame(), icons, mFreeMindMain);
 		Tools.moveDialogToPosition(mFreeMindMain, dialog, mButton
 				.getLocationOnScreen());
 		dialog.setModal(true);
 		dialog.setVisible(true);
 		int result = dialog.getResult();
 		if (result >= 0) {
-			IconInformation info = (IconInformation) mIcons.get(result);
-			setValue(info.iconName);
+			MindIcon icon = (MindIcon) mIcons.get(result);
+			setValue(icon.getName());
 			firePropertyChangeEvent();
 		}
 	}

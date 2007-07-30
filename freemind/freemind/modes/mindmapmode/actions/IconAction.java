@@ -19,19 +19,23 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: IconAction.java,v 1.1.2.2.2.5 2007-07-29 08:58:22 dpolivaev Exp $ */
+/* $Id: IconAction.java,v 1.1.2.2.2.6 2007-07-30 20:46:06 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.util.ListIterator;
 
 import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
 import freemind.controller.actions.generated.instance.AddIconAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.controller.filter.condition.IconContainedCondition;
+import freemind.modes.IconInformation;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
@@ -40,7 +44,7 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 
-public class IconAction extends FreemindAction  implements ActorXml{
+public class IconAction extends FreemindAction  implements ActorXml, IconInformation{
     public MindIcon icon;
     private final MindMapController modeController;
     private final RemoveIconAction removeLastIconAction;
@@ -54,25 +58,25 @@ public class IconAction extends FreemindAction  implements ActorXml{
     }
 
     public void actionPerformed(ActionEvent e) {
- 	   if(e == null || (e.getModifiers() & ~ActionEvent.SHIFT_MASK & ActionEvent.CTRL_MASK & ~ActionEvent.ALT_MASK) != 0){
+  	   if(e.getID() == ActionEvent.ACTION_FIRST && (e.getModifiers() & ActionEvent.SHIFT_MASK & ~ActionEvent.CTRL_MASK & ~ActionEvent.ALT_MASK) != 0) 
+ 	   {
+ 		   removeAllIcons();
+ 		   addLastIcon();
+ 		   return;
+ 	   }
+ 	   if(e == null || (e.getModifiers() & (ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK)) == 0){
  	 	   addLastIcon();
  	 	   return;
  	   }
  	   // e != null
- 	   if((e.getModifiers() & (ActionEvent.SHIFT_MASK | ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK)) == 0) 
+ 	   if((e.getModifiers() & ~ActionEvent.SHIFT_MASK & ~ActionEvent.CTRL_MASK & ActionEvent.ALT_MASK) != 0) 
  	   {
  		   toggleIcon();
  		   return;
  	   }
- 	   if((e.getModifiers() & ~ActionEvent.SHIFT_MASK & ~ActionEvent.CTRL_MASK & ActionEvent.ALT_MASK) != 0) 
+ 	   if((e.getModifiers() & ~ActionEvent.SHIFT_MASK &  ActionEvent.CTRL_MASK & ~ActionEvent.ALT_MASK) != 0) 
  	   {
  		   removeIcon();
- 		   return;
- 	   }
- 	   if((e.getModifiers() & ActionEvent.SHIFT_MASK & ~ActionEvent.CTRL_MASK & ~ActionEvent.ALT_MASK) != 0) 
- 	   {
- 		   removeAllIcons();
- 		   addLastIcon();
  		   return;
  	   }
     }
@@ -201,5 +205,36 @@ public class IconAction extends FreemindAction  implements ActorXml{
         action.setIconPosition(iconPosition);
         return action;
     }
+
+	public MindIcon getMindIcon() {
+		return icon;
+	}
+
+	public KeyStroke getKeyStroke() {
+		final String keystrokeResourceName = icon.getKeystrokeResourceName();
+		final String keyStrokeDescription = getMindMapController().getFrame().getAdjustableProperty(keystrokeResourceName);
+		return getKeyStroke(keyStrokeDescription);
+	}
+
+	static KeyStroke getKeyStroke(final String keyStrokeDescription) {
+		if(keyStrokeDescription == null){
+			return null;
+		}
+		final KeyStroke keyStroke = KeyStroke.getKeyStroke(keyStrokeDescription);
+		if(keyStroke != null) return keyStroke;
+		return  KeyStroke.getKeyStroke("typed " + keyStrokeDescription);
+	}
+
+	public String getDescription() {
+		return icon.getDescription();
+	}
+
+	public ImageIcon getIcon() {
+		return icon.getIcon();
+	}
+
+	public String getKeystrokeResourceName() {
+		return icon.getKeystrokeResourceName();
+	}
 
 }

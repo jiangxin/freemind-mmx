@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/* $Id: StylePatternFrame.java,v 1.1.2.10.2.4 2007-07-13 21:22:58 dpolivaev Exp $ */
+/* $Id: StylePatternFrame.java,v 1.1.2.10.2.5 2007-07-30 20:46:07 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;
@@ -51,7 +51,6 @@ import freemind.common.PropertyControl;
 import freemind.common.SeparatorProperty;
 import freemind.common.StringProperty;
 import freemind.common.ThreeCheckBoxProperty;
-import freemind.common.IconProperty.IconInformation;
 import freemind.common.PropertyControl.TextTranslator;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.PatternChild;
@@ -70,6 +69,7 @@ import freemind.controller.actions.generated.instance.PatternNodeText;
 import freemind.controller.actions.generated.instance.PatternPropertyBase;
 import freemind.main.FreeMind;
 import freemind.modes.EdgeAdapter;
+import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.ApplyPatternAction;
@@ -337,9 +337,7 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		Vector iconActions = controller.iconActions;
 		for (Enumeration e = iconActions.elements(); e.hasMoreElements();) {
 			IconAction action = ((IconAction) e.nextElement());
-			IconInformation info = new IconInformation((Icon) action
-					.getValue(Action.SMALL_ICON), (String) action
-					.getValue(Action.SHORT_DESCRIPTION), action.icon.getName());
+			MindIcon info = action.getMindIcon();
 			mIconInformationVector.add(info);
 		}
 		mSetIcon = new ThreeCheckBoxProperty(SET_ICON + ".tooltip", SET_ICON);
@@ -463,10 +461,10 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 				mNodeFontBold, BooleanProperty.TRUE_VALUE);
 		setPatternControls(pattern.getPatternNodeFontItalic(),
 				mSetNodeFontItalic, mNodeFontItalic, BooleanProperty.TRUE_VALUE);
-		IconInformation firstInfo = (IconInformation) mIconInformationVector
+		MindIcon firstInfo = (MindIcon) mIconInformationVector
 				.get(0);
 		setPatternControls(pattern.getPatternIcon(), mSetIcon, mIcon,
-				firstInfo.iconName);
+				firstInfo.getName());
 		if (StylePatternFrameType.WITH_NAME_AND_CHILDS.equals(mType)) {
 			mName.setValue(pattern.getName());
 			setPatternControls(pattern.getPatternChild(), mSetChildPattern,
