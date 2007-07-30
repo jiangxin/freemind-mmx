@@ -144,9 +144,9 @@ private int mModifiers;
 	highlight(position);
 	final int index = calculateIndex(position);
 	final IconInformation iconInformation = (IconInformation)icons.get(index);
-	final KeyStroke keyStroke = iconInformation.getKeyStroke();
+	final String keyStroke = freeMindMain.getAdjustableProperty(iconInformation.getKeystrokeResourceName());
 	if(keyStroke != null){
-		descriptionLabel.setText(iconInformation.getDescription() + " " + keyStroke);
+		descriptionLabel.setText(iconInformation.getDescription() + ", " + keyStroke);
 	}
 	else{
 		descriptionLabel.setText(iconInformation.getDescription());
@@ -255,7 +255,8 @@ private int mModifiers;
 			if(iconKeyStroke != null 
 					&& (keyEvent.getKeyCode() == iconKeyStroke.getKeyCode() && keyEvent.getKeyCode() != 0 
 							&& (iconKeyStroke.getModifiers() & KeyEvent.SHIFT_MASK) == (keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) 
-					|| keyEvent.getKeyChar() == iconKeyStroke.getKeyChar()) &&  keyEvent.getKeyChar() != 0){
+					|| keyEvent.getKeyChar() == iconKeyStroke.getKeyChar()) 
+					&&  keyEvent.getKeyChar() != 0 && keyEvent.getKeyChar() != KeyEvent.CHAR_UNDEFINED){
     			return i;
     		}
     	}
