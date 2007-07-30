@@ -198,7 +198,11 @@ private int mModifiers;
 	/** Transfer shift masks from InputEvent to ActionEvent.
 	 * But, why don't they use the same constants???? Java miracle. */
 	public int getModifiers() {
-		return (mModifiers & InputEvent.SHIFT_DOWN_MASK) != 0?ActionEvent.SHIFT_MASK:0;
+		int m = mModifiers;
+		if((mModifiers & (ActionEvent.SHIFT_MASK | InputEvent.SHIFT_DOWN_MASK)) != 0) m |= ActionEvent.SHIFT_MASK;
+		if((mModifiers & (ActionEvent.CTRL_MASK | InputEvent.CTRL_DOWN_MASK)) != 0) m |= ActionEvent.CTRL_MASK;
+		if((mModifiers & (ActionEvent.ALT_MASK | InputEvent.ALT_DOWN_MASK)) != 0) m |= ActionEvent.ALT_MASK;
+		return m;
 	}
 	
   /* (non-Javadoc)

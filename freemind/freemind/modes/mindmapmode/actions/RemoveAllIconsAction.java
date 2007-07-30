@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: RemoveAllIconsAction.java,v 1.1.2.2.2.5 2007-07-30 20:46:06 dpolivaev Exp $ */
+/* $Id: RemoveAllIconsAction.java,v 1.1.2.2.2.6 2007-07-30 21:33:04 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -110,6 +110,6 @@ public class RemoveAllIconsAction extends NodeGeneralAction implements NodeActor
 	}
 
 	public String getKeystrokeResourceName() {
-		return "keystroke_" + (String) getValue(NAME);
+		return "keystroke_remove_all_icons";
 	}
 }
