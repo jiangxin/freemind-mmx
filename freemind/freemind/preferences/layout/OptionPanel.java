@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.25 2007-07-30 20:46:07 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.26 2007-07-31 21:50:22 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -573,15 +573,6 @@ public class OptionPanel implements TextTranslator {
 
 		FreeMind.RESOURCES_CLOUD_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_CLOUD_COLOR), this)); //  #f0f0f0
 
-		controls.add(new SeparatorProperty("selection_colors"));
-		controls.add(new BooleanProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION+".tooltip",
-                FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION)); // false
-		
-		controls.add(new ColorProperty("standardselectednodecolor.tooltip",
-		FreeMind.RESOURCES_SELECTED_NODE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR), this)); //  #D2D2D2
-		controls.add(new ColorProperty("standardselectednodetextcolor.tooltip",
-		FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR), this)); //  #000000
-
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("default_fonts"));
 		controls.add(new StringProperty(
@@ -647,6 +638,17 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new BooleanProperty(
 
 				"use_tabbed_pane.tooltip", FreeMind.RESOURCES_USE_TABBED_PANE)); //  true
+
+		/* ***************************************************************** */
+		controls.add(new NextLineProperty());
+		controls.add(new SeparatorProperty("selection_colors"));
+		controls.add(new BooleanProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION+".tooltip",
+                FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION)); // false
+		
+		controls.add(new ColorProperty("standardselectednodecolor.tooltip",
+		FreeMind.RESOURCES_SELECTED_NODE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR), this)); //  #D2D2D2
+		controls.add(new ColorProperty("standardselectednodetextcolor.tooltip",
+		FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR), this)); //  #000000
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
