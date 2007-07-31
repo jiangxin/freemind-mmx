@@ -6,7 +6,7 @@ Changes made in FreeMind 0.9.0 Beta 13
 * Selection text color no more used for unselected text in Textfield / Textarea
 * Latex plugin added
 * Persistent map filters added
-* Clich on icon with control key hold toggles an icon, with alt key toggles it.
+* Click on icon with control key hold removes the first matched icon, with alt key removes the last one
 * Icon hot keys available in "Select Icon" popup can be set in Preferences 
 * Bug fixes.
 * Displaying Selection as Rectangle as default.

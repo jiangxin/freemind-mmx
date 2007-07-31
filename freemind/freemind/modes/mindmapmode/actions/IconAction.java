@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: IconAction.java,v 1.1.2.2.2.6 2007-07-30 20:46:06 dpolivaev Exp $ */
+/* $Id: IconAction.java,v 1.1.2.2.2.7 2007-07-31 07:04:55 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -71,12 +71,12 @@ public class IconAction extends FreemindAction  implements ActorXml, IconInforma
  	   // e != null
  	   if((e.getModifiers() & ~ActionEvent.SHIFT_MASK & ~ActionEvent.CTRL_MASK & ActionEvent.ALT_MASK) != 0) 
  	   {
- 		   toggleIcon();
+ 		  removeIcon(false);
  		   return;
  	   }
  	   if((e.getModifiers() & ~ActionEvent.SHIFT_MASK &  ActionEvent.CTRL_MASK & ~ActionEvent.ALT_MASK) != 0) 
  	   {
- 		   removeIcon();
+ 		   removeIcon(true);
  		   return;
  	   }
     }
@@ -88,10 +88,10 @@ public class IconAction extends FreemindAction  implements ActorXml, IconInforma
            }
 	}
 
-	private void removeIcon() {
+	private void removeIcon(boolean removeFirst) {
 		for (ListIterator it = modeController.getSelecteds().listIterator();it.hasNext();) {
                MindMapNodeModel selected = (MindMapNodeModel)it.next();
-               removeIcon(selected, icon);
+               removeIcon(selected, icon, removeFirst);
            }
 	}
 
@@ -120,7 +120,7 @@ public class IconAction extends FreemindAction  implements ActorXml, IconInforma
                 (String) getValue(NAME));
     }
 
-    public void toggleIcon(MindMapNode node, MindIcon icon) {
+    private void toggleIcon(MindMapNode node, MindIcon icon) {
         modeController.getActionFactory().startTransaction(
                 (String) getValue(NAME));
         modeController.getActionFactory().executeAction(
@@ -129,8 +129,8 @@ public class IconAction extends FreemindAction  implements ActorXml, IconInforma
                 (String) getValue(NAME));
     }
 
-    public void removeIcon(MindMapNode node, MindIcon icon) {
-        final ActionPair removeIconActionPair = getRemoveIconActionPair(node, icon);
+    private void removeIcon(MindMapNode node, MindIcon icon, boolean removeFirst) {
+        final ActionPair removeIconActionPair = getRemoveIconActionPair(node, icon, removeFirst);
         if(removeIconActionPair == null){
         	return;
         }
@@ -160,7 +160,7 @@ public class IconAction extends FreemindAction  implements ActorXml, IconInforma
     /**
      */
     private ActionPair getToggleIconActionPair(MindMapNode node, MindIcon icon)  {
-    	int iconIndex = IconContainedCondition.iconIndex(node, icon.getName());
+    	int iconIndex = IconContainedCondition.iconFirstIndex(node, icon.getName());
     	if(iconIndex == -1){
     		return getAddLastIconActionPair(node, icon);
     	}
@@ -170,9 +170,12 @@ public class IconAction extends FreemindAction  implements ActorXml, IconInforma
     }
 
     /**
+     * @param removeFirst 
      */
-    private ActionPair getRemoveIconActionPair(MindMapNode node, MindIcon icon)  {
-    	int iconIndex = IconContainedCondition.iconIndex(node, icon.getName());
+    private ActionPair getRemoveIconActionPair(MindMapNode node, MindIcon icon, boolean removeFirst)  {
+    	int iconIndex = removeFirst ? 
+    			IconContainedCondition.iconFirstIndex(node, icon.getName())
+    			:IconContainedCondition.iconLastIndex(node, icon.getName());
         return iconIndex >= 0 ? getRemoveIconActionPair(node, icon, iconIndex) : null;
     }
 
