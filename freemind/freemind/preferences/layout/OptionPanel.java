@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.26 2007-07-31 21:50:22 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.27 2007-08-01 22:46:55 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -1063,15 +1063,15 @@ public class OptionPanel implements TextTranslator {
 				"last" }, this)); //  last
 		controls.add(new BooleanProperty("draganddrop.tooltip", "draganddrop")); //  true
 
-		controls.add(new BooleanProperty(
+		controls.add(new BooleanProperty("unfold_on_paste.tooltip", "unfold_on_paste")); //  true
 
+		controls.add(new BooleanProperty(
 		"disable_cursor_move_paper.tooltip", "disable_cursor_move_paper")); //  false
 
 		controls.add(new BooleanProperty(
-
 		"enable_leaves_folding.tooltip", "enable_leaves_folding")); //  false
+		
 		controls.add(new StringProperty(
-
 		"foldingsymbolwidth.tooltip", "foldingsymbolwidth")); //  6
 
 		controls.add(new NextLineProperty());

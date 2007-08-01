@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.44 2007-07-29 08:58:22 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.45 2007-08-01 22:46:54 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -220,6 +220,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
             assignAttributeDialog.setVisible(true);
         }
      }
+	private static final String RESOURCE_UNFOLD_ON_PASTE = "unfold_on_paste";
 	private static Logger logger;
 	// for MouseEventHandlers
 	private HashSet mRegisteredMouseWheelEventHandler = new HashSet();
@@ -1456,7 +1457,7 @@ freemind.main.Resources.getInstance().logException(					e1);
 
     /** @param isLeft determines, whether or not the node is placed on the left or right. **/
     public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
-    	if (! asSibling && target.isFolded()) {
+    	if (! asSibling && target.isFolded() && Tools.isPreferenceTrue(getFrame().getProperty(RESOURCE_UNFOLD_ON_PASTE))) {
 			setFolded(target, false);
 		   }
         paste.paste(t, target, asSibling, isLeft);
