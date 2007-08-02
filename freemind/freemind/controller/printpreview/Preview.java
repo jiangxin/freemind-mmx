@@ -68,11 +68,9 @@ class Preview extends JComponent {
             previewPageImage = (BufferedImage)createImage(getPageWidth(format) - 1, getPageHeight(format) - 1);
             imageGraphics = previewPageImage.createGraphics();
             imageGraphics.scale(zoom, zoom);
-            view.preparePrinting();
             while(Printable.NO_SUCH_PAGE == view.print(imageGraphics, format, index) && index > 0){
                 index -= 1;
             }
-            view.endPrinting();
         }
         g2d.drawImage(previewPageImage, 0, 0, this);
     }

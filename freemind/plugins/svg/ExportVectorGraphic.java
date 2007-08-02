@@ -19,9 +19,11 @@
  *
  * Created on 10.11.2004
  */
-/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.6 2006-11-26 10:21:30 dpolivaev Exp $ */
+/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.7 2007-08-02 20:56:32 dpolivaev Exp $ */
 package plugins.svg;
 
+//import java.awt.BasicStroke;
+//import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
@@ -58,7 +60,6 @@ public class ExportVectorGraphic extends ExportHook{
 	 */
 	protected SVGGraphics2D fillSVGGraphics2D(MapView view) {
 //		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
-		Rectangle innerBounds = view.getInnerBounds();
 		DOMImplementation impl = GenericDOMImplementation.getDOMImplementation();
 		String namespaceURI = SVGConstants.SVG_NAMESPACE_URI;
 		Document domFactory = impl.createDocument(namespaceURI, "svg", null);
@@ -73,12 +74,17 @@ public class ExportVectorGraphic extends ExportHook{
 		SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
+		view.preparePrinting();
+		Rectangle innerBounds = view.getInnerBounds();
 		g2d.setSVGCanvasSize(new Dimension(innerBounds.width, innerBounds.height));
 		g2d.translate(-innerBounds.x, -innerBounds.y);
 		//
 		// Generate SVG content
 		//
 		view.print(g2d);
+//		g2d.setColor(Color.BLACK);
+//		g2d.setStroke(new BasicStroke(3));
+//		g2d.drawRect(innerBounds.x, innerBounds.y, innerBounds.width - 2, innerBounds.height - 2);
 		return g2d;
 	}
 

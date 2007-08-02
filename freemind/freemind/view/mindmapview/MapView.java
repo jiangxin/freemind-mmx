@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.30 2007-07-27 22:18:59 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.31 2007-08-02 20:56:31 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -1044,11 +1044,6 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 	  * to minimize calculation efforts
 	  */
 	public void preparePrinting() {
-		_preparePrinting();
-		isPreparedForPrinting = true;
-	}
-
-	private void _preparePrinting() {
 		if (isPreparedForPrinting == false){
 			isPrinting = true;
 			/* repaint for printing:*/
@@ -1064,7 +1059,8 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 				setBackground(Color.WHITE);
 			}
 			boundingRectangle = getInnerBounds();
-            fitToPage = Tools.safeEquals(controller.getProperty("fit_to_page"),"true");
+		    fitToPage = Tools.safeEquals(controller.getProperty("fit_to_page"),"true");
+			isPreparedForPrinting = true;
 		}
 	}
 
@@ -1083,16 +1079,11 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 	  * to minimize calculation efforts
 	  */
 	public void endPrinting() {
-		isPreparedForPrinting = false;
-		_endPrinting();
-	}
-
-	 private void _endPrinting() {
-		if (isPreparedForPrinting == false){
+		if (isPreparedForPrinting == true){
+			isPrinting = false;
 			if(printOnWhiteBackground){
 				setBackground(background);
 			}
-			isPrinting = false;
 			/* repaint for end printing:*/
 			if(NEED_PREF_SIZE_BUG_FIX){
 				getRoot().updateAll();
@@ -1102,9 +1093,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 				repaintSelecteds();
 			}
 		}
-	 }
+		isPreparedForPrinting = false;
+	}
 
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
+	 public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
         // TODO:
         // ask user for :
         // - center in page (in page format ?)
@@ -1130,7 +1122,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
         Graphics2D graphics2D = (Graphics2D)graphics;
 
-		_preparePrinting();
+		preparePrinting();
         double zoomFactor = 1;
         if (fitToPage) {
             double zoomFactorX = pageFormat.getImageableWidth()/boundingRectangle.getWidth();
@@ -1157,11 +1149,17 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
 
         print(graphics2D);
-		_endPrinting();
+		endPrinting();
         return Printable.PAGE_EXISTS;
     }
 
-    /** For nodes, they can ask, whether or not the width must be bigger to prevent the "..." at the output. (Bug of java).*/
+    public void print(Graphics g) {
+		preparePrinting();
+		super.print(g);
+		endPrinting();
+	}
+
+	/** For nodes, they can ask, whether or not the width must be bigger to prevent the "..." at the output. (Bug of java).*/
     public boolean isCurrentlyPrinting() { return isPrinting;};
 
     /**
