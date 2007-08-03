@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.10 2007-07-25 22:57:15 dpolivaev Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.11 2007-08-03 19:11:35 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -260,8 +260,12 @@ public class PasteAction extends AbstractAction implements ActorXml {
         }
     }
 
+    private static final Pattern HREF_PATTERN = Pattern.compile(
+   		 "<html>\\s*<body>\\s*<a\\s+href=\"([^>]+)\">(.*)</a>\\s*</body>\\s*</html>"
+   		 );
+    
         private class DirectHtmlFlavorHandler implements DataFlavorHandler {
-           public void paste(Object transferData, MindMapNode target,
+		public void paste(Object transferData, MindMapNode target,
                              boolean asSibling, boolean isLeft, Transferable t)
               throws UnsupportedFlavorException, IOException {
               String textFromClipboard = (String) transferData;              
@@ -282,8 +286,18 @@ public class PasteAction extends AbstractAction implements ActorXml {
                 textFromClipboard = textFromClipboard.replaceAll("(?i)(?s)<img[^>]*>",""); } // Cut out images.
 
              textFromClipboard = HtmlTools.unescapeHTMLUnicodeEntity(textFromClipboard);
-
+             
              MindMapNodeModel node = new MindMapNodeModel(textFromClipboard, pMindMapController.getFrame(), pMindMapController.getMap());
+             // if only one <a>...</a> element found, set link
+             Matcher m = HREF_PATTERN.matcher(textFromClipboard);
+             if(m.matches()){
+            	 final String body = m.group(2);
+            	 if (! body.matches(".*<\\s*a.*")){
+                	 final String href = m.group(1);
+                	 node.setLink(href);
+            	 }
+             }
+             
              insertNodeInto(node, target);
              //nodeStructureChanged(target);
              pMindMapController.getFrame().setWaitingCursor(false); }
