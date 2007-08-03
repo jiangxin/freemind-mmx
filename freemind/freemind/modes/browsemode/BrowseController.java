@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseController.java,v 1.13.18.7.2.8 2007-04-21 15:11:21 dpolivaev Exp $ */
+/* $Id: BrowseController.java,v 1.13.18.7.2.9 2007-08-03 17:24:01 dpolivaev Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -44,6 +44,7 @@ import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.common.GotoLinkNodeAction;
 import freemind.modes.viewmodes.ViewControllerAdapter;
+import freemind.view.mindmapview.MainView;
 import freemind.view.mindmapview.NodeView;
 
 public class BrowseController extends ViewControllerAdapter {
@@ -81,10 +82,11 @@ public class BrowseController extends ViewControllerAdapter {
         /* perform action only if one selected node.*/
         if(getSelecteds().size() != 1)
             return;
-        MindMapNode node = ((NodeView)(e.getComponent().getParent())).getModel();
-        if (getView().getSelected().isInFollowLinkRegion(e.getX())) {
+        final MainView component = (MainView)e.getComponent();
+        if (component.isInFollowLinkRegion(e.getX())) {
             loadURL(); }
         else {
+    		MindMapNode node = (component).getNodeView().getModel();
             if (!node.hasChildren()) {
                 // the emulate the plain click.
                 doubleClick(e);

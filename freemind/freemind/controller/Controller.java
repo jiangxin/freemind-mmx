@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.34 2007-08-02 20:56:30 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.35 2007-08-03 17:24:00 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -25,10 +25,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -378,10 +380,10 @@ public class Controller  implements MapModuleChangeObserver {
     public void setAntialiasAll(boolean antialiasAll) {
        this.antialiasAll = antialiasAll; }
 
-    public boolean getAntialiasEdges() {
+    private boolean getAntialiasEdges() {
        return antialiasEdges; }
 
-    public boolean getAntialiasAll() {
+    private boolean getAntialiasAll() {
        return antialiasAll; }
 
     public Font getDefaultFont() {
@@ -1433,7 +1435,7 @@ public class Controller  implements MapModuleChangeObserver {
 	             setAntialiasEdges(true);
 	             setAntialiasAll(false); }
 	          if (command.equals("antialias_all")) {
-	             setAntialiasEdges(false);
+	             setAntialiasEdges(true);
 	             setAntialiasAll(true); }
 	          if(getView() != null)
 	              getView().repaint();
@@ -1521,6 +1523,24 @@ public class Controller  implements MapModuleChangeObserver {
             ((ShowAllAttributesAction)showAllAttributes).setAttributeViewType(map);
         }
     }
+
+	public void setEdgesRenderingHint(Graphics2D g) {
+		if(getAntialiasEdges()){
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		}
+		else{
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		}
+	}
+
+	public void setTextRenderingHint(Graphics2D g) {
+		if(getAntialiasAll()){
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		}
+		else{
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		}
+	}
 
 
 }

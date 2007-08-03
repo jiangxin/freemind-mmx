@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.42 2007-08-01 22:46:56 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.43 2007-08-03 17:24:03 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -891,19 +891,6 @@ public class NodeView extends JComponent implements TreeModelListener{
     }
     }
 
-   protected void setRendering(Graphics2D g) {
-      if (map.getController().getAntialiasAll()) {
-         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
-//       else
-//          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-// RenderingHints.VALUE_ANTIALIAS_OFF);
-
-   }
-
-   protected void setRenderingEdges(Graphics2D g) {
-	   getMap().setRenderingEdges(g);
-   }
-
    String getStyle(){
        return mainView.getStyle();
    }
@@ -1151,34 +1138,7 @@ public class NodeView extends JComponent implements TreeModelListener{
     }
 
 
-    public boolean isInFollowLinkRegion(double xCoord) {
-        return getModel().getLink() != null &&
-           (getModel().isRoot() || !getModel().hasChildren() || isInVerticalRegion(xCoord, 1./2));
-     }
-
-    /** Determines whether or not the xCoord is in the part p of the node:
-     *  if node is on the left: part [1-p,1]
-     *  if node is on the right: part[  0,p] of the total width.
-     */
-    public boolean isInVerticalRegion(double xCoord, double p) {
-        return isLeft() ?
-           xCoord > getSize().width*(1.0-p) :
-           xCoord < getSize().width*p;
-     }
-
-     /**
-      * @return true if a link is to be displayed and the curser is the hand now.
-      */
-     public boolean updateCursor(double xCoord) {
-       boolean followLink = isInFollowLinkRegion(xCoord);
-     int requiredCursor = followLink ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR;
-       if (getCursor().getType() != requiredCursor) {
-         setCursor(new Cursor(requiredCursor));
-       }
-       return followLink;
-     }
-
-    public JComponent getContent() {
+     public JComponent getContent() {
         return contentPane == null ? mainView : contentPane;
     }
 

@@ -16,14 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeViewFactory.java,v 1.1.4.5 2007-07-02 21:49:48 dpolivaev Exp $ */
+/* $Id: NodeViewFactory.java,v 1.1.4.6 2007-08-03 17:24:03 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+import java.awt.RenderingHints;
 
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -38,6 +41,15 @@ class NodeViewFactory {
 
 		ContentPane(){
 			setLayout(layoutManager );
+		}
+
+		public void paint(Graphics g) {
+            final Graphics2D g2 = (Graphics2D)g;
+            final Object renderingHint = g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+            NodeView nodeView = (NodeView) getParent();
+            nodeView.getMap().getController().setTextRenderingHint(g2);
+            super.paint(g);
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
 		}
 		
 	}

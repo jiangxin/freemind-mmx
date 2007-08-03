@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: CloudView.java,v 1.1.16.2.12.1 2007-04-21 15:11:22 dpolivaev Exp $*/
+/*$Id: CloudView.java,v 1.1.16.2.12.2 2007-08-03 17:24:02 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapCloud;
@@ -68,7 +68,6 @@ public class CloudView {
 
     public void paint(Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics.create();
-        /* antialias */  setRendering(g);
         Graphics2D gstroke = (Graphics2D) g.create();
         g.setColor(getColor());
         /* set a bigger stroke to prevent not filled areas.*/
@@ -198,11 +197,5 @@ public class CloudView {
 
     protected double getZoom() {
        return getMap().getZoom(); }
-
-	
-   protected void setRendering(Graphics2D g) {
-      if (getMap().getController().getAntialiasEdges() || getMap().getController().getAntialiasAll()) {
-         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
-
 
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.31 2007-08-02 20:56:31 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.32 2007-08-03 17:24:03 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -919,7 +919,11 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         public void paint(Graphics g) {
             getRoot().getContent().getLocation(rootContentLocation);
             SwingUtilities.convertPointToScreen(rootContentLocation, getRoot());
+            final Graphics2D g2 = (Graphics2D)g;
+            final Object renderingHint = g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+			getController().setEdgesRenderingHint(g2);
             super.paint(g);
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
         }
 
     public void paintChildren(Graphics graphics) {
@@ -937,23 +941,17 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     }
 
 
-    void setRenderingEdges(Graphics2D g) {
-    	if (getController().getAntialiasEdges() ||getController().getAntialiasAll()) {
-    		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
-    }
     private void paintSelecteds(Graphics2D g) {
 		if (!standardDrawRectangleForSelection || isCurrentlyPrinting()){
 			return;
 		}
 		final Color c = g.getColor();
-		final Stroke s = g.getStroke();
-		final Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+		final Stroke s = g.getStroke();		
 		g.setColor(MapView.standardSelectColor);
 		if(standardSelectionStroke == null){
 			standardSelectionStroke = new BasicStroke(2.0f);
 		}
 		g.setStroke(standardSelectionStroke);
-		setRenderingEdges(g);
 		final Iterator i = getSelecteds().iterator();
 		while(i.hasNext()){
 			NodeView selected = (NodeView) i.next();
@@ -961,9 +959,6 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 		}
 		g.setColor(c);
 		g.setStroke(s);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
-
-		
 	}
 
 	private void paintSelected(Graphics2D g, NodeView selected) {

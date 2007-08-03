@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SharpBezierEdgeView.java,v 1.5.34.1 2007-04-21 15:11:23 dpolivaev Exp $*/
+/*$Id: SharpBezierEdgeView.java,v 1.5.34.2 2007-08-03 17:24:03 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -67,7 +67,6 @@ public class SharpBezierEdgeView extends EdgeView {
 	g.setColor(getColor());
 	g.setPaint(getColor());
 	g.setStroke(getStroke());
-        setRendering(g);
 	g.fill(graph);
 	g.draw(graph);
     }

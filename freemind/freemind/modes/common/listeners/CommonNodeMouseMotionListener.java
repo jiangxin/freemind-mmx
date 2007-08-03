@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: CommonNodeMouseMotionListener.java,v 1.1.2.1.2.4 2007-04-21 15:11:21 dpolivaev Exp $ */
+/* $Id: CommonNodeMouseMotionListener.java,v 1.1.2.1.2.5 2007-08-03 17:24:01 dpolivaev Exp $ */
 
 package freemind.modes.common.listeners;
 
@@ -99,11 +99,11 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
         logger.finest("Event: mouseMoved");
         // Invoked when the mouse button has been moved on a component (with no
         // buttons down).
-        NodeView node = ((MainView) e.getComponent()).getNodeView();
+        MainView node = ((MainView) e.getComponent());
         boolean isLink = (node).updateCursor(e.getX());
         // links are displayed in the status bar:
         if (isLink) {
-            c.getFrame().out(c.getLinkShortText(node.getModel()));
+            c.getFrame().out(c.getLinkShortText(node.getNodeView().getModel()));
         }
         // test if still in selection region:
         if (controlRegionForDelayedSelection != null

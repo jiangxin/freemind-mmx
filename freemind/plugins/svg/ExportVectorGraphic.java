@@ -19,7 +19,7 @@
  *
  * Created on 10.11.2004
  */
-/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.7 2007-08-02 20:56:32 dpolivaev Exp $ */
+/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.8 2007-08-03 17:24:04 dpolivaev Exp $ */
 package plugins.svg;
 
 //import java.awt.BasicStroke;
@@ -72,7 +72,6 @@ public class ExportVectorGraphic extends ExportHook{
 		ctx.setPrecision(12);
 
 		SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);
-		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
 		view.preparePrinting();
 		Rectangle innerBounds = view.getInnerBounds();

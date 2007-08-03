@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinearEdgeView.java,v 1.9.30.2 2007-04-21 15:11:23 dpolivaev Exp $*/
+/*$Id: LinearEdgeView.java,v 1.9.30.3 2007-08-03 17:24:02 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -35,7 +35,6 @@ public class LinearEdgeView extends EdgeView {
     protected void paint(Graphics2D g) {
         g.setColor(getColor());
         g.setStroke(getStroke());
-        setRendering(g);
         int w=getWidth();
         if (w<=1) {
             g.drawLine(start.x,start.y,end.x,end.y);

@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ForkMainView.java,v 1.1.4.2 2007-04-21 15:11:22 dpolivaev Exp $ */
+/* $Id: ForkMainView.java,v 1.1.4.3 2007-08-03 17:24:02 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 
 import freemind.modes.MindMapNode;
 
@@ -34,13 +35,14 @@ class ForkMainView extends MainView{
         final MindMapNode model = nodeView.getModel();
         if (model==null) return;
         
+        final Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+		getController().setEdgesRenderingHint(g);
         paintSelected(g);
         paintDragOver(g);
         
         int edgeWidth = model.getEdge().getRealWidth();
         
         //Draw a standard node
-        nodeView.setRendering(g);
         g.setColor(model.getEdge().getColor());
         g.setStroke(model.getEdge().getStroke());
         g.drawLine(0,          
@@ -48,6 +50,7 @@ class ForkMainView extends MainView{
                 getWidth(), 
                 getHeight()-edgeWidth/2-1);
         super.paint(g);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
     }
 
     void paintFoldingMark(Graphics2D g, Point p) {

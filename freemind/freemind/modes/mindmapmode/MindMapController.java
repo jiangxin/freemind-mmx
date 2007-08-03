@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.45 2007-08-01 22:46:54 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.46 2007-08-03 17:24:02 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1669,10 +1669,11 @@ freemind.main.Resources.getInstance().logException(					e1);
         /* perform action only if one selected node.*/
         if(getSelecteds().size() != 1)
             return;
-        MindMapNode node = ((MainView)e.getComponent()).getNodeView().getModel();
-        if (getView().getSelected().isInFollowLinkRegion(e.getX())) {
+        final MainView component = (MainView)e.getComponent();
+        if (component.isInFollowLinkRegion(e.getX())) {
             loadURL(); }
         else {
+    		MindMapNode node = (component).getNodeView().getModel();
             if (!node.hasChildren()) {
                 // then emulate the plain click.
                 doubleClick(e);

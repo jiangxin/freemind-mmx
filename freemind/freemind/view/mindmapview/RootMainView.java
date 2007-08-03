@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: RootMainView.java,v 1.1.4.2 2007-04-21 15:11:23 dpolivaev Exp $ */
+/* $Id: RootMainView.java,v 1.1.4.3 2007-08-03 17:24:03 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -49,18 +49,18 @@ class RootMainView extends MainView{
         
         if (getNodeView().getModel()==null) return;
 
-            paintSelected(g);
-            paintDragOver(g);
+        final Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+		getController().setEdgesRenderingHint(g);
+		
+		paintSelected(g);
+		paintDragOver(g);
 
         //Draw a root node
         g.setColor(Color.gray);
         g.setStroke(new BasicStroke(1.0f));
-            setRendering(g);
         g.drawOval(1, 1, getWidth()-2, getHeight()-2);
-            if (!getNodeView().getMap().getController().getAntialiasAll()) {
-               g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); }
-
         super.paint(g);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
         }
 
        public void paintDragOver(Graphics2D graphics) {
@@ -96,12 +96,6 @@ class RootMainView extends MainView{
                           getHeight()-1);
             }
         }
-
-
-       protected void setRendering(Graphics2D g) {
-          final Controller controller = getNodeView().getMap().getController();
-        if (controller.getAntialiasEdges() || controller.getAntialiasAll()) {
-             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
 
 
         protected void paintBackground(

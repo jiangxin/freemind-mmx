@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeView.java,v 1.13.14.2.4.3 2007-07-02 21:49:48 dpolivaev Exp $*/
+/*$Id: EdgeView.java,v 1.13.14.2.4.4 2007-08-03 17:24:02 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -77,10 +77,6 @@ public abstract class EdgeView {
        return getTarget().getMap(); }
 
 	
-   protected void setRendering(Graphics2D g) {
-      if (getMap().getController().getAntialiasEdges() || getMap().getController().getAntialiasAll()) {
-         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
-
    protected static Stroke getEclipsedStroke() {
        if(ECLIPSED_STROKE == null){
            float dash[] = {3.0f, 9.0f};           

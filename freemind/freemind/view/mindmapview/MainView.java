@@ -16,15 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.17 2007-07-24 18:34:50 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.18 2007-08-03 17:24:02 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 
@@ -34,10 +36,12 @@ import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.modes.MindMapNode;
 
 public abstract class MainView extends JLabel{
     static Dimension minimumSize = new Dimension(0, 0);
@@ -97,9 +101,12 @@ public abstract class MainView extends JLabel{
         }
         
         public void paint(Graphics g) {
+            final Graphics2D g2 = (Graphics2D)g;
+            final Object renderingHint = g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+			getController().setTextRenderingHint(g2);
+            super.paint(g);
 		    float zoom = getZoom();
 		    if(zoom != 1F){
-		        Graphics2D g2 = (Graphics2D)g;
 		        final AffineTransform transform = g2.getTransform();                
 		        g2.scale(zoom, zoom);
 		        isPainting = true;
@@ -110,6 +117,11 @@ public abstract class MainView extends JLabel{
 		    else{
 		        super.paint(g);
 		    }
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
+		}
+
+		Controller getController() {
+			return getNodeView().getMap().getController();
 		}
 
 		protected boolean isCurrentlyPrinting() {
@@ -233,7 +245,7 @@ public abstract class MainView extends JLabel{
             if (super.processKeyBinding(ks, e, condition, pressed))
                 return true;
             // try key bindings of the menu bar even if the menu bar is not visible
-            final MenuBar freeMindMenuBar = getNodeView().getMap().getController().getFrame().getFreeMindMenuBar();
+            final MenuBar freeMindMenuBar = getController().getFrame().getFreeMindMenuBar();
             return ! freeMindMenuBar.isVisible() && freeMindMenuBar.processKeyBinding(ks, e, JComponent.WHEN_IN_FOCUSED_WINDOW, pressed); 
         }
         
@@ -325,4 +337,22 @@ public abstract class MainView extends JLabel{
             g.setColor(color);
             g.drawOval(p.x , p.y , zoomedFoldingSymbolHalfWidth * 2, zoomedFoldingSymbolHalfWidth * 2);
         }
+        public boolean isInFollowLinkRegion(double xCoord) {
+            final MindMapNode model = getNodeView().getModel();
+			return model.getLink() != null &&
+               (model.isRoot() || !model.hasChildren() || isInVerticalRegion(xCoord, 1./2));
+         }
+
+         /**
+          * @return true if a link is to be displayed and the curser is the hand now.
+          */
+         public boolean updateCursor(double xCoord) {
+           boolean followLink = isInFollowLinkRegion(xCoord);
+         int requiredCursor = followLink ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR;
+           if (getCursor().getType() != requiredCursor) {
+             setCursor(new Cursor(requiredCursor));
+           }
+           return followLink;
+         }
+
 }

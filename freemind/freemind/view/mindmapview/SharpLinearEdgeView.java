@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SharpLinearEdgeView.java,v 1.3.34.1 2007-04-21 15:11:23 dpolivaev Exp $*/
+/*$Id: SharpLinearEdgeView.java,v 1.3.34.2 2007-08-03 17:24:03 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -36,7 +36,6 @@ public class SharpLinearEdgeView extends EdgeView {
 	g.setColor(getColor());
 	g.setPaint(getColor());
 	g.setStroke(getStroke());
-        setRendering(g);
 	int w=getWidth()/2+1;
 	int xs[] = { start.x, end.x, start.x };
 	int ys[] = { start.y+w, end.y, start.y-w };

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BubbleMainView.java,v 1.1.4.5 2007-07-12 06:39:41 dpolivaev Exp $ */
+/* $Id: BubbleMainView.java,v 1.1.4.6 2007-08-03 17:24:02 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -28,6 +28,7 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 
+import freemind.controller.Controller;
 import freemind.modes.MindMapNode;
 
 class BubbleMainView extends MainView{
@@ -47,37 +48,32 @@ class BubbleMainView extends MainView{
     }
     
     public void paint(Graphics graphics) {
-        Graphics2D g = (Graphics2D)graphics;
+       Graphics2D g = (Graphics2D)graphics;
         final NodeView nodeView = getNodeView();
         final MindMapNode model = nodeView.getModel();
         if (model==null) return;
+        final Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+		getController().setEdgesRenderingHint(g);
 
-            paintSelected(g);
-            paintDragOver(g);
+		paintSelected(g);
+		paintDragOver(g);
 
         // change to bold stroke
         //g.setStroke(BOLD_STROKE);                     // Changed by Daniel
-
-            nodeView.setRendering(g);
 
         //Draw a standard node
         g.setColor(model.getEdge().getColor());
         //g.drawOval(0,0,size.width-1,size.height-1);   // Changed by Daniel
 
-            if (nodeView.getMap().getController().getAntialiasEdges()) {
-               g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }
-            g.drawRoundRect(0,0, getWidth()-1, getHeight()-1,10,10);
-            // this disables the font antialias if only AntialiasEdges is requested.
-            if (nodeView.getMap().getController().getAntialiasEdges()) {
-               g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF); }
+        g.drawRoundRect(0,0, getWidth()-1, getHeight()-1,10,10);
 
         // return to std stroke
         g.setStroke(DEF_STROKE);
-
         super.paint(g);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
         }
 
-        public void paintSelected(Graphics2D graphics) {
+	public void paintSelected(Graphics2D graphics) {
             super.paintSelected(graphics);
             if (getNodeView().useSelectionColors()) {
                 graphics.setColor(MapView.standardSelectColor);

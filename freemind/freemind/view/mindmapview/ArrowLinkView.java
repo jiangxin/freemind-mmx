@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.8.14.4.4.3 2007-06-15 16:41:19 dpolivaev Exp $*/
+/*$Id: ArrowLinkView.java,v 1.8.14.4.4.4 2007-08-03 17:24:02 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -85,7 +85,6 @@ public class ArrowLinkView {
 	    boolean targetIsLeft = false;
 	    boolean sourceIsLeft = false;
 	    Graphics2D g = (Graphics2D) graphics.create();
-	    /* antialias */  setRendering(g);
 	    g.setColor(getColor());
 	    /* set stroke.*/
 	    g.setStroke(getStroke());
@@ -284,10 +283,6 @@ public class ArrowLinkView {
        return getMap().getZoom(); }
 
 	
-   protected void setRendering(Graphics2D g) {
-      if (getMap().getController().getAntialiasEdges() || getMap().getController().getAntialiasAll()) {
-         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); }}
-
     /**
      */
     public void changeInclination(int originX, int originY, int newX, int newY) {
