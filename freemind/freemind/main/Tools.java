@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.20 2007-08-05 22:15:22 dpolivaev Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.21 2007-08-05 22:32:40 dpolivaev Exp $ */
 
 package freemind.main;
 
@@ -810,15 +810,13 @@ public class Tools {
 		final Insets screenInsets = defaultToolkit.getScreenInsets(dialog.getGraphicsConfiguration());
 		final Dimension screenSize = defaultToolkit.getScreenSize();
 		
-		final int leftWidth = p.x - screenInsets.left;
 		final int topHeight = p.y - screenInsets.top;
-		final int rightWidth = screenSize.width -(p.x + cw)-screenInsets.right;
 		final int bottomHeight = screenSize.height -(p.y + ch)-screenInsets.top;
 		
 		int dx = 0;
 		int dy = 0;
 		
-		if(bottomHeight >= dh){
+		if(bottomHeight >= topHeight && bottomHeight >= dh){
 			dy = p.y + ch;
 			dx = p.x + (cw- dw) / 2;
 			if(dx < 0) {
@@ -838,29 +836,33 @@ public class Tools {
 				dx = screenSize.width - screenInsets.right - dw;
 			}
 		}
-		else if(rightWidth >= dw){
-			dx = p.x + cw;
-			dy = p.y + (ch- dh) / 2;
-			if(dy < 0) {
-				dy = 0;
+		else {
+			final int leftWidth = p.x - screenInsets.left;
+			final int rightWidth = screenSize.width -(p.x + cw)-screenInsets.right;
+			if(rightWidth >= leftWidth && rightWidth >= dw){
+				dx = p.x + cw;
+				dy = p.y + (ch- dh) / 2;
+				if(dy < 0) {
+					dy = 0;
+				}
+				else if (dy + dh > screenSize.height - screenInsets.bottom){
+					dy = screenSize.height - screenInsets.bottom - dh;
+				}
 			}
-			else if (dy + dh > screenSize.height - screenInsets.bottom){
-				dy = screenSize.height - screenInsets.bottom - dh;
+			else if(leftWidth >= dw){
+				dx = p.x - dw;
+				dy = p.y + (ch- dh) / 2;
+				if(dy < 0) {
+					dy = 0;
+				}
+				else if (dy + dh > screenSize.height - screenInsets.bottom){
+					dy = screenSize.height - screenInsets.bottom - dh;
+				}
 			}
-		}
-		else if(leftWidth >= dw){
-			dx = p.x - dw;
-			dy = p.y + (ch- dh) / 2;
-			if(dy < 0) {
-				dy = 0;
+			else{
+				dialog.setLocationRelativeTo(c);
+				return;
 			}
-			else if (dy + dh > screenSize.height - screenInsets.bottom){
-				dy = screenSize.height - screenInsets.bottom - dh;
-			}
-		}
-		else{
-			dialog.setLocationRelativeTo(c);
-			return;
 		}
 
 		dialog.setLocation(dx, dy);
