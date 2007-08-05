@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.32 2007-08-03 17:24:03 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.33 2007-08-05 13:07:57 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -880,7 +880,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         Point oldRootContentLocation = rootContentLocation;
         final NodeView root = getRoot();
         Point newRootContentLocation = root.getContent().getLocation();
-        SwingUtilities.convertPointToScreen(newRootContentLocation, root);
+        Tools.convertPointToAncestor(getRoot(), newRootContentLocation, getParent());
         
         final int deltaX = newRootContentLocation.x - oldRootContentLocation.x ;
         final int deltaY = newRootContentLocation.y - oldRootContentLocation.y;
@@ -917,8 +917,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
          * @see javax.swing.JComponent#paint(java.awt.Graphics)
          */
         public void paint(Graphics g) {
-            getRoot().getContent().getLocation(rootContentLocation);
-            SwingUtilities.convertPointToScreen(rootContentLocation, getRoot());
+        	if(isValid()){
+        		getRoot().getContent().getLocation(rootContentLocation);
+        		Tools.convertPointToAncestor(getRoot(), rootContentLocation, getParent());
+        	}
             final Graphics2D g2 = (Graphics2D)g;
             final Object renderingHint = g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
 			getController().setEdgesRenderingHint(g2);
