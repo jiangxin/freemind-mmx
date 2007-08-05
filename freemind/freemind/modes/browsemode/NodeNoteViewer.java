@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.6 2007-06-05 20:53:30 dpolivaev Exp $ */
+/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.7 2007-08-05 10:29:09 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
 import java.awt.BorderLayout;
@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController.NodeSelectionListener;
 import freemind.modes.common.plugins.NodeNoteBase;
@@ -44,9 +45,9 @@ public class NodeNoteViewer extends NodeNoteBase implements
 
 	private JLabel noteViewer;
 
-	private final BrowseController mBrowseController;
+	private final ControllerAdapter mBrowseController;
 
-	public NodeNoteViewer(BrowseController pBrowseController) {
+	public NodeNoteViewer(ControllerAdapter pBrowseController) {
 		mBrowseController = pBrowseController;
 		// TODO Auto-generated constructor stub
 	}

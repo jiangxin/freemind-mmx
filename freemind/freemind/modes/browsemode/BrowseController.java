@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseController.java,v 1.13.18.7.2.9 2007-08-03 17:24:01 dpolivaev Exp $ */
+/* $Id: BrowseController.java,v 1.13.18.7.2.10 2007-08-05 10:29:05 dpolivaev Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -235,13 +235,6 @@ public class BrowseController extends ViewControllerAdapter {
 //		}
 //
 //	}
-
-	public void loadURL() {
-		String link = getSelected().getLink();
-		if (link != null) {
-			loadURL(link);
-		}
-	}
 
 	public ModeController load(URL url) throws IOException {
         ModeController newModeController = super.load(url);

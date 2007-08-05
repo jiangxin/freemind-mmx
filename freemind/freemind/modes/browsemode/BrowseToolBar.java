@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseToolBar.java,v 1.6.18.2.2.4 2006-11-26 10:20:42 dpolivaev Exp $ */
+/* $Id: BrowseToolBar.java,v 1.6.18.2.2.5 2007-08-05 10:29:07 dpolivaev Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -27,16 +27,17 @@ import java.net.URL;
 import javax.swing.JLabel;
 import javax.swing.JToolBar;
 
+import freemind.modes.ControllerAdapter;
 import freemind.modes.common.dialogs.PersistentEditableComboBox;
 
 public class BrowseToolBar extends JToolBar {
 
 	public static final String BROWSE_URL_STORAGE_KEY = "browse_url_storage";
 
-	private BrowseController c;
+	private ControllerAdapter c;
     private PersistentEditableComboBox urlfield = null;
 
-    public BrowseToolBar(BrowseController controller) {
+    public BrowseToolBar(ControllerAdapter controller) {
 
 	this.c=controller;
 	urlfield = new PersistentEditableComboBox(controller, BROWSE_URL_STORAGE_KEY);

@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: FileController.java,v 1.11.18.5.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
+/* $Id: FileController.java,v 1.11.18.5.2.2 2007-08-05 10:29:09 dpolivaev Exp $ */
 
 package freemind.modes.filemode;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.io.File;
 
 import javax.swing.AbstractAction;
@@ -38,6 +39,7 @@ import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.common.actions.NewMapAction;
 import freemind.modes.viewmodes.ViewControllerAdapter;
+import freemind.view.mindmapview.MainView;
 
 public class FileController extends ViewControllerAdapter {
 
@@ -118,6 +120,25 @@ public class FileController extends ViewControllerAdapter {
 
 	public HookFactory getHookFactory() {
 		throw new IllegalArgumentException("Not implemented yet.");
+	}
+
+	   public void plainClick(MouseEvent e) {
+	        /* perform action only if one selected node.*/
+	        if(getSelecteds().size() != 1)
+	            return;
+	        final MainView component = (MainView)e.getComponent();
+	        if (component.isInFollowLinkRegion(e.getX())) {
+	            loadURL(); }
+	        else {
+	    		MindMapNode node = (component).getNodeView().getModel();
+	    		toggleFolded(node);
+	        }
+	    }
+
+	private void toggleFolded(MindMapNode node) {
+		if(node.hasChildren() && ! node.isRoot()){
+			setFolded(node, ! node.isFolded());
+		}
 	}
 
 

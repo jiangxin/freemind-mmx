@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowsePopupMenu.java,v 1.4.34.1 2006-12-16 20:42:31 dpolivaev Exp $*/
+/*$Id: BrowsePopupMenu.java,v 1.4.34.2 2007-08-05 10:29:06 dpolivaev Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -25,9 +25,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 
+import freemind.modes.ControllerAdapter;
+
 public class BrowsePopupMenu extends JPopupMenu {
 
-    private BrowseController c;
+    private ControllerAdapter c;
 
     protected void add(Action action, String keystroke) { 
        JMenuItem item = add(action);

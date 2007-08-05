@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileNodeModel.java,v 1.11.18.1.4.1 2006-04-05 21:26:27 dpolivaev Exp $*/
+/*$Id: FileNodeModel.java,v 1.11.18.1.4.2 2007-08-05 10:29:10 dpolivaev Exp $*/
 
 package freemind.modes.filemode;
 
@@ -138,7 +138,9 @@ public class FileNodeModel extends NodeAdapter {
 		for(int i = 0; i < files.length; i++) {
 		    File childFile = new File(path, files[i]);
 		    if (!childFile.isHidden()) {
-			insert(new FileNodeModel(childFile,getFrame(), getMap()),0);
+			final FileNodeModel fileNodeModel = new FileNodeModel(childFile,getFrame(), getMap());
+			fileNodeModel.setLeft(isNewChildLeft());
+			insert(fileNodeModel,getChildCount());
 		    }
 		}
 	    }

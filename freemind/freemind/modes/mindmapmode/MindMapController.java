@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.46 2007-08-03 17:24:02 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.47 2007-08-05 10:29:11 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1612,13 +1612,6 @@ freemind.main.Resources.getInstance().logException(					e1);
             }
          }
         super.loadURL(relative);
-    }
-
-    public void loadURL() {
-        String link = getSelected().getLink();
-        if (link != null) {
-            loadURL(link);
-        }
     }
 
     public void addHook(MindMapNode focussed, List selecteds, String hookName) {

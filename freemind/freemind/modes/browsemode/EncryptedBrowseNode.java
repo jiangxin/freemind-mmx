@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.7 2007-06-25 19:50:21 christianfoltin Exp $ */
+/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.8 2007-08-05 10:29:08 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
 import java.io.IOException;
@@ -30,6 +30,7 @@ import javax.swing.ImageIcon;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
 import freemind.main.Tools.SingleDesEncrypter;
+import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.ModeController;
@@ -88,7 +89,7 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 			super.setFolded(folded);
 			return;
 		}
-		BrowseController browseController = (BrowseController) mModeController;
+		ControllerAdapter browseController = (ControllerAdapter) mModeController;
         // get password:
         final EnterPasswordDialog pwdDialog = new EnterPasswordDialog(
                 null, browseController, false);
