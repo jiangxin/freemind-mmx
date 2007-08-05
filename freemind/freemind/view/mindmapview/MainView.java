@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.19 2007-08-05 16:56:57 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.20 2007-08-05 21:45:45 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -104,7 +104,6 @@ public abstract class MainView extends JLabel{
             final Graphics2D g2 = (Graphics2D)g;
             final Object renderingHint = g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
 			getController().setTextRenderingHint(g2);
-            super.paint(g);
 		    float zoom = getZoom();
 		    if(zoom != 1F){
 		        final AffineTransform transform = g2.getTransform();                
