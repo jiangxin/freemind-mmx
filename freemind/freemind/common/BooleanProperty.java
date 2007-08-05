@@ -20,7 +20,7 @@
  * 
  * Created on 25.02.2006
  */
-/* $Id: BooleanProperty.java,v 1.1.2.3.2.1 2006-07-25 20:28:19 christianfoltin Exp $ */
+/* $Id: BooleanProperty.java,v 1.1.2.3.2.2 2007-08-05 20:33:12 christianfoltin Exp $ */
 package freemind.common;
 
 import java.awt.event.ItemEvent;
@@ -38,6 +38,11 @@ public class BooleanProperty extends PropertyBean implements PropertyControl
     static public final String FALSE_VALUE = "false";
 
     static public final String TRUE_VALUE = "true";
+
+
+    protected String mFalseValue = FALSE_VALUE;
+
+    protected String mTrueValue = TRUE_VALUE;
 
     String    description;
 
@@ -72,18 +77,18 @@ public class BooleanProperty extends PropertyBean implements PropertyControl
     public void setValue(String value)
     {
         if (value == null
-                || !(value.toLowerCase().equals(TRUE_VALUE) || value.toLowerCase()
-                        .equals(FALSE_VALUE)))
+                || !(value.toLowerCase().equals(mTrueValue) || value.toLowerCase()
+                        .equals(mFalseValue)))
         {
             throw new IllegalArgumentException("Cannot set a boolean to "
                     + value);
         }
-        mCheckBox.setSelected(value.toLowerCase().equals(TRUE_VALUE));
+        mCheckBox.setSelected(value.toLowerCase().equals(mTrueValue));
     }
 
     public String getValue()
     {
-        return mCheckBox.isSelected() ? TRUE_VALUE : FALSE_VALUE;
+        return mCheckBox.isSelected() ? mTrueValue : mFalseValue;
     }
 
     public void layout(DefaultFormBuilder builder, TextTranslator pTranslator)

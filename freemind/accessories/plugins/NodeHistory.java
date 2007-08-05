@@ -231,6 +231,11 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 		if(nodeHolder.getModeController(mainController) != getMindMapController()){
 			changeModule = true;
 			newModule = nodeHolder.getMapModule(mainController);
+			if(newModule ==  null) {
+				// the map was apparently closed, we try with the next node. 
+				invoke(node);
+				return;
+			}
 		}
 		final boolean fChangeModule = changeModule;
 		final MapModule fNewModule = newModule;

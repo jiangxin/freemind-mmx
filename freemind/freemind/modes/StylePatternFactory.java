@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePatternFactory.java,v 1.1.2.3.2.3 2006-07-25 20:28:20 christianfoltin Exp $*/
+/*$Id: StylePatternFactory.java,v 1.1.2.3.2.4 2007-08-05 20:33:15 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -28,8 +28,8 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
 
+import freemind.common.TextTranslator;
 import freemind.common.XmlBindingTools;
-import freemind.common.PropertyControl.TextTranslator;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.PatternEdgeColor;
 import freemind.controller.actions.generated.instance.PatternEdgeStyle;

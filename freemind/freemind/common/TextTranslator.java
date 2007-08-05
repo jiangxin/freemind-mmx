@@ -1,5 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000-2006  Christian Foltin.
+ *Copyright (C) 2000-2007  Christian Foltin, Dimitry Polivaev and others.
  *
  *See COPYING for Details
  *
@@ -17,23 +17,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * Created on 26.03.2006
+ * Created on 31.07.2007
  */
-/*$Id: FreemindPropertyContributor.java,v 1.1.2.1.2.1 2007-08-05 20:33:17 christianfoltin Exp $*/
-package freemind.preferences;
+/*$Id: TextTranslator.java,v 1.1.2.1 2007-08-05 20:33:14 christianfoltin Exp $*/
 
-import java.util.List;
+package freemind.common;
 
-import freemind.common.TextTranslator;
-import freemind.preferences.layout.OptionPanel;
-
-/**
- * Implement this interface to take part in the property dialog.
- * @author foltin
- *
- */
-public interface FreemindPropertyContributor {
-	
-	public List getControls(TextTranslator pTextTranslator);
-
+public interface TextTranslator {
+	String getText(String pKey);
 }

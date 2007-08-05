@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: DeleteChildAction.java,v 1.1.2.2.2.7 2007-07-08 08:37:24 dpolivaev Exp $ */
+/* $Id: DeleteChildAction.java,v 1.1.2.2.2.8 2007-08-05 20:33:16 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -28,11 +28,15 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
+import freemind.common.OptionalDontShowMeAgainDialog;
+import freemind.common.TextTranslator;
 import freemind.controller.actions.generated.instance.DeleteNodeAction;
 import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.PermanentNodeHook;
+import freemind.main.FreeMind;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.PasteAction.NodeCoordinate;
@@ -41,7 +45,7 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 
 public class DeleteChildAction extends AbstractAction implements ActorXml {
-    private final MindMapController pMindMapController;
+	private final MindMapController pMindMapController;
     private String text;
     public DeleteChildAction(MindMapController modeController) {
         super(modeController.getText("remove_node"), new ImageIcon(
@@ -52,6 +56,23 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
     }
 
     public void actionPerformed(ActionEvent e) {
+    	// ask user:
+		int showResult = new OptionalDontShowMeAgainDialog(pMindMapController.getController(), "really_remove_node", "confirmation", new TextTranslator(){
+			
+			public String getText(String pKey) {
+				return pMindMapController.getText(pKey);
+			}}, new OptionalDontShowMeAgainDialog.DontShowPropertyHandler(){
+				
+				public String getProperty() {
+					return pMindMapController.getController().getProperty(FreeMind.RESOURCES_DELETE_NODES_WITHOUT_QUESTION);
+				}
+				
+				public void setProperty(String pValue) {
+					pMindMapController.getController().setProperty(FreeMind.RESOURCES_DELETE_NODES_WITHOUT_QUESTION, pValue);
+				}}, OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED).show().getResult();
+		if(showResult != JOptionPane.OK_OPTION) {
+			return;
+		}
         // because of multiple selection, cut is better.
     	pMindMapController.cut();
        //this.c.deleteNode(c.getSelected());

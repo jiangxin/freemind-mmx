@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.27 2007-08-01 22:46:55 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.28 2007-08-05 20:33:17 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -60,14 +60,15 @@ import com.jgoodies.forms.layout.RowSpec;
 import freemind.common.BooleanProperty;
 import freemind.common.ColorProperty;
 import freemind.common.ComboProperty;
+import freemind.common.DontShowNotificationProperty;
 import freemind.common.NextLineProperty;
 import freemind.common.NumberProperty;
 import freemind.common.PropertyBean;
 import freemind.common.PropertyControl;
 import freemind.common.SeparatorProperty;
 import freemind.common.StringProperty;
+import freemind.common.TextTranslator;
 import freemind.common.XmlBindingTools;
-import freemind.common.PropertyControl.TextTranslator;
 import freemind.controller.actions.generated.instance.OptionPanelWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.FreeMind;
@@ -1084,6 +1085,12 @@ public class OptionPanel implements TextTranslator {
 
 		"key_type_adds_new.tooltip", "key_type_adds_new")); //  false
 
+		controls.add(new NextLineProperty());
+		controls.add(new SeparatorProperty("resources_notifications"));
+		controls.add(new DontShowNotificationProperty(
+				"delete_nodes_without_question.tooltip",
+				FreeMind.RESOURCES_DELETE_NODES_WITHOUT_QUESTION)); 
+		
 		controls.add(new NextLineProperty());
 		controls
 				.add(new SeparatorProperty(FreeMind.RESOURCES_SELECTION_METHOD));

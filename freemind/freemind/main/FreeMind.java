@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.69 2007-07-27 22:14:05 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.70 2007-08-05 20:33:14 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -122,6 +122,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	public static final String RESOURCES_WHEEL_VELOCITY = "wheel_velocity";
 
 	public static final String RESOURCES_USE_TABBED_PANE = "use_tabbed_pane";
+
+    public static final String RESOURCES_DELETE_NODES_WITHOUT_QUESTION = "delete_nodes_without_question";
 
 	private static Logger logger = null;
 

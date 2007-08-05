@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.14 2007-07-29 08:58:22 dpolivaev Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.15 2007-08-05 20:33:15 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -386,7 +386,7 @@ public abstract class XMLElementAdapter extends XMLElement {
     	  }
     	  catch(Exception ex){
           }
-    	  mModeController.getMap().setBackgroundColor(bgcolor);
+    	  getMap().setBackgroundColor(bgcolor);
  	 }
    }
 

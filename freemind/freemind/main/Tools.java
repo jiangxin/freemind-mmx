@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.18 2007-07-27 20:52:22 dpolivaev Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.19 2007-08-05 20:33:14 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -69,6 +69,7 @@ import javax.crypto.spec.PBEParameterSpec;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JLayeredPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.xml.transform.Result;
@@ -796,23 +797,23 @@ public class Tools {
 						.getValue());
 	}
 
-	public static void moveDialogToPosition(FreeMindMain frame, JDialog dialog, Point destPosition) {
+	public static void moveDialogToPosition(JLayeredPane pLayeredPane, JDialog dialog, Point destPosition) {
 
 		Point frameScreenLocation =
-			frame.getLayeredPane().getLocationOnScreen();
+			pLayeredPane.getLocationOnScreen();
 		double posX =
 			destPosition.getX() - frameScreenLocation.getX();
 		double posY =
 			destPosition.getY() - frameScreenLocation.getY() + 20;
 		if (posX + dialog.getWidth()
-			> frame.getLayeredPane().getWidth()) {
+			> pLayeredPane.getWidth()) {
 			posX =
-				frame.getLayeredPane().getWidth() - dialog.getWidth();
+				pLayeredPane.getWidth() - dialog.getWidth();
 		}
 		if (posY + dialog.getHeight()
-			> frame.getLayeredPane().getHeight()) {
+			> pLayeredPane.getHeight()) {
 			posY =
-				frame.getLayeredPane().getHeight()
+				pLayeredPane.getHeight()
 					- dialog.getHeight();
 		}
 		posX = ((posX < 0) ? 0 : posX) + frameScreenLocation.getX();

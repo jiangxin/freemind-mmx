@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: IconProperty.java,v 1.1.2.1.2.2 2007-07-30 20:46:05 dpolivaev Exp $*/
+/*$Id: IconProperty.java,v 1.1.2.1.2.3 2007-08-05 20:33:13 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -108,7 +108,7 @@ public class IconProperty extends PropertyBean implements PropertyControl,
 		}
 		IconSelectionPopupDialog dialog = new IconSelectionPopupDialog(
 				mFreeMindMain.getJFrame(), icons, mFreeMindMain);
-		Tools.moveDialogToPosition(mFreeMindMain, dialog, mButton
+		Tools.moveDialogToPosition(mFreeMindMain.getLayeredPane(), dialog, mButton
 				.getLocationOnScreen());
 		dialog.setModal(true);
 		dialog.setVisible(true);

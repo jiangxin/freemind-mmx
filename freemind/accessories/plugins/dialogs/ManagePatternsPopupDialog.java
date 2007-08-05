@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.7 2006-11-26 10:21:15 dpolivaev Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.8 2007-08-05 20:33:11 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -56,8 +56,8 @@ import javax.swing.event.ListSelectionListener;
 
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
+import freemind.common.TextTranslator;
 import freemind.common.XmlBindingTools;
-import freemind.common.PropertyControl.TextTranslator;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.main.Tools;
 import freemind.modes.StylePatternFactory;

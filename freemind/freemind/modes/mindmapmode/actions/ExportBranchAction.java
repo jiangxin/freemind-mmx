@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ExportBranchAction.java,v 1.1.2.3 2007-04-21 15:11:22 dpolivaev Exp $*/
+/*$Id: ExportBranchAction.java,v 1.1.2.4 2007-08-05 20:33:16 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -95,6 +95,17 @@ public class ExportBranchAction extends AbstractAction {
                         "couldn't create valid URL!");
                 return;
             }
+            // Confirm overwrite if file exists.
+            if (chosenFile.exists()) { // If file exists, ask before
+										// overwriting.
+				int overwriteMap = JOptionPane.showConfirmDialog(
+						mMindMapController.getView(), mMindMapController
+								.getText("map_already_exists"), "FreeMind",
+						JOptionPane.YES_NO_OPTION);
+				if (overwriteMap != JOptionPane.YES_OPTION) {
+					return;
+				}
+			}
 
             /*
              * Now make a copy from the node, remove the node from the map and
@@ -115,6 +126,8 @@ public class ExportBranchAction extends AbstractAction {
             mMindMapController.deleteNode(node);
             // save node:
             node.setParent(null);
+            // unfold node
+            node.setFolded(false);
             // construct new controller:
             ModeController newModeController = mMindMapController.getMode()
                     .createModeController();

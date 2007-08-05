@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/* $Id: StylePatternFrame.java,v 1.1.2.10.2.5 2007-07-30 20:46:07 dpolivaev Exp $ */
+/* $Id: StylePatternFrame.java,v 1.1.2.10.2.6 2007-08-05 20:33:16 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;
@@ -50,8 +50,8 @@ import freemind.common.PropertyBean;
 import freemind.common.PropertyControl;
 import freemind.common.SeparatorProperty;
 import freemind.common.StringProperty;
+import freemind.common.TextTranslator;
 import freemind.common.ThreeCheckBoxProperty;
-import freemind.common.PropertyControl.TextTranslator;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.PatternChild;
 import freemind.controller.actions.generated.instance.PatternEdgeColor;

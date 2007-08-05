@@ -19,9 +19,10 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.3 2007-04-21 15:11:20 dpolivaev Exp $ */
+/* $Id: TimeList.java,v 1.1.2.4 2007-08-05 20:33:12 christianfoltin Exp $ */
 package accessories.plugins.time;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -63,6 +64,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -150,6 +153,8 @@ public class TimeList extends MindMapHookAdapter {
 	private JTextField mFilterTextReplaceField;
 
 	private NotesRenderer notesRenderer;
+
+	private JLabel mTreeLabel;
 
 	public void startupMapHook() {
 		super.startupMapHook();
@@ -247,6 +252,12 @@ public class TimeList extends MindMapHookAdapter {
 		contentPane.add(pane, new GridBagConstraints(0,4, 
 				1, 1, 1.0, 10.0, GridBagConstraints.WEST,
 				GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+		
+		mTreeLabel = new JLabel();
+		contentPane.add(new JScrollPane(mTreeLabel), new GridBagConstraints(0,5, 
+				1, 1, 1.0, 1.0, GridBagConstraints.WEST,
+				GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+		// button bar
 		final AbstractAction selectAction = new AbstractAction(getResourceString("plugins/TimeManagement.xml_Select")){
 					public void actionPerformed(ActionEvent arg0) {
 						selectSelectedRows();
@@ -292,7 +303,7 @@ public class TimeList extends MindMapHookAdapter {
 				gotoButton, 
 				selectButton, 
 				});
-		contentPane.add(/*new JScrollPane*/(bar), new GridBagConstraints(0,5,1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		contentPane.add(/*new JScrollPane*/(bar), new GridBagConstraints(0,6,1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu(getResourceString("plugins/TimeManagement.xml_menu_actions"));
@@ -325,8 +336,30 @@ public class TimeList extends MindMapHookAdapter {
 		        exportAction.setEnabled(enable);
 		    }
 		});
+		// table selection listener to display the history of the selected nodes
+		rowSM.addListSelectionListener(new ListSelectionListener() {
+			String getNodeText(MindMapNode node) {
+				return node.getShortText(getController()) 
+				   + ((node.isRoot())?"":
+					   ( " <- " + getNodeText(node.getParentNode())));
+			}
+			public void valueChanged(ListSelectionEvent e) {
+				//Ignore extra messages.
+				if (e.getValueIsAdjusting()) return;
+				
+				ListSelectionModel lsm =
+					(ListSelectionModel)e.getSource();
+				if(lsm.isSelectionEmpty()) {
+					mTreeLabel.setText("");
+					return;
+				}
+				int selectedRow = lsm.getLeadSelectionIndex();
+				MindMapNode mindMapNode = getMindMapNode(selectedRow);
+				mTreeLabel.setText(getNodeText(mindMapNode));
+			}
+		});
 		
-		// restore prefrences:
+		// restore preferences:
 		//Retrieve window size and column positions.
 		WindowConfigurationStorage storage = getMindMapController().decorateDialog(dialog, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		if (storage != null) {
