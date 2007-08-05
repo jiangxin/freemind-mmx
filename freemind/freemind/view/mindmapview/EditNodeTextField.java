@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.16 2007-07-22 14:06:20 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.17 2007-08-05 21:46:43 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -76,14 +76,11 @@ public class EditNodeTextField extends EditNodeBase {
 
         // Set textFields's properties
 
-        /* fc, 12.10.2003: the following method is not correct. Even more with the zoom factors!*/
-        int textFieldBorderWidth = 2;
         int cursorWidth = 1;
-        int xOffset =
-            -1 * textFieldBorderWidth;
+        int xOffset = 0;
         int yOffset = -1; // Optimized for Windows style; basically ad hoc
         int widthAddition =
-            2 * textFieldBorderWidth
+            2 * 0
                 + cursorWidth
                 + 2;
         int heightAddition = 2;
@@ -307,6 +304,7 @@ public class EditNodeTextField extends EditNodeBase {
         if (xExtraWidth < 0) {
         	textFieldLocation.x += xExtraWidth;
         }
+        textFieldLocation.x += xOffset;
         textFieldLocation.y += yOffset;
         textfield.setLocation(textFieldLocation);
 
