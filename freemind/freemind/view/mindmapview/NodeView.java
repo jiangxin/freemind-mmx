@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.44 2007-08-05 09:05:31 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.45 2007-08-05 22:15:22 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -981,7 +981,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 	}
 
 
-    MainView getMainView() {
+    public MainView getMainView() {
         return mainView;
     }
     void syncronizeAttributeView() {

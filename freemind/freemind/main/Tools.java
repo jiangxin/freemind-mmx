@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.19 2007-08-05 20:33:14 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.20 2007-08-05 22:15:22 dpolivaev Exp $ */
 
 package freemind.main;
 
@@ -25,10 +25,13 @@ package freemind.main;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.IllegalComponentStateException;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -69,7 +72,6 @@ import javax.crypto.spec.PBEParameterSpec;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JLayeredPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.xml.transform.Result;
@@ -797,30 +799,71 @@ public class Tools {
 						.getValue());
 	}
 
-	public static void moveDialogToPosition(JLayeredPane pLayeredPane, JDialog dialog, Point destPosition) {
+	public static void setDialogLocationRelativeTo(JDialog dialog, Component c) {
+		final Point p = c.getLocationOnScreen();
+		final int cw = c.getWidth();
+		final int ch = c.getHeight();
+		final int dw = dialog.getWidth();
+		final int dh = dialog.getHeight();
 
-		Point frameScreenLocation =
-			pLayeredPane.getLocationOnScreen();
-		double posX =
-			destPosition.getX() - frameScreenLocation.getX();
-		double posY =
-			destPosition.getY() - frameScreenLocation.getY() + 20;
-		if (posX + dialog.getWidth()
-			> pLayeredPane.getWidth()) {
-			posX =
-				pLayeredPane.getWidth() - dialog.getWidth();
+		final Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
+		final Insets screenInsets = defaultToolkit.getScreenInsets(dialog.getGraphicsConfiguration());
+		final Dimension screenSize = defaultToolkit.getScreenSize();
+		
+		final int leftWidth = p.x - screenInsets.left;
+		final int topHeight = p.y - screenInsets.top;
+		final int rightWidth = screenSize.width -(p.x + cw)-screenInsets.right;
+		final int bottomHeight = screenSize.height -(p.y + ch)-screenInsets.top;
+		
+		int dx = 0;
+		int dy = 0;
+		
+		if(bottomHeight >= dh){
+			dy = p.y + ch;
+			dx = p.x + (cw- dw) / 2;
+			if(dx < 0) {
+				dx = 0;
+			}
+			else if (dx + dw > screenSize.width - screenInsets.right){
+				dx = screenSize.width - screenInsets.right - dw;
+			}
 		}
-		if (posY + dialog.getHeight()
-			> pLayeredPane.getHeight()) {
-			posY =
-				pLayeredPane.getHeight()
-					- dialog.getHeight();
+		else if(topHeight >= dh){
+			dy = p.y - dh;
+			dx = p.x + (cw- dw) / 2;
+			if(dx < 0) {
+				dx = 0;
+			}
+			else if (dx + dw > screenSize.width - screenInsets.right){
+				dx = screenSize.width - screenInsets.right - dw;
+			}
 		}
-		posX = ((posX < 0) ? 0 : posX) + frameScreenLocation.getX();
-		posY = ((posY < 0) ? 0 : posY) + frameScreenLocation.getY();
-		dialog.setLocation(
-			new Double(posX).intValue(),
-			new Double(posY).intValue());
+		else if(rightWidth >= dw){
+			dx = p.x + cw;
+			dy = p.y + (ch- dh) / 2;
+			if(dy < 0) {
+				dy = 0;
+			}
+			else if (dy + dh > screenSize.height - screenInsets.bottom){
+				dy = screenSize.height - screenInsets.bottom - dh;
+			}
+		}
+		else if(leftWidth >= dw){
+			dx = p.x - dw;
+			dy = p.y + (ch- dh) / 2;
+			if(dy < 0) {
+				dy = 0;
+			}
+			else if (dy + dh > screenSize.height - screenInsets.bottom){
+				dy = screenSize.height - screenInsets.bottom - dh;
+			}
+		}
+		else{
+			dialog.setLocationRelativeTo(c);
+			return;
+		}
+
+		dialog.setLocation(dx, dy);
 	}
 
 	/** Creates a reader that pipes the input file through a XSLT-Script that

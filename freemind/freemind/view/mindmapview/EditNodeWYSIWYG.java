@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.29 2007-08-05 20:33:17 christianfoltin Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.30 2007-08-05 22:15:22 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -229,12 +229,12 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             
             
             //{ -- Set size (can be refactored to share code with long node editor)
-            int preferredHeight = (int)(node.getHeight() * 1.2);
+            int preferredHeight = (int)(node.getMainView().getHeight() * 1.2);
             preferredHeight =
                 Math.max (preferredHeight, Integer.parseInt(frame.getProperty("el__min_default_window_height")));
             preferredHeight =
                 Math.min (preferredHeight, Integer.parseInt(frame.getProperty("el__max_default_window_height")));
-            int preferredWidth = (int)(node.getWidth() * 1.2);
+            int preferredWidth = (int)(node.getMainView().getWidth() * 1.2);
             preferredWidth =
                 Math.max (preferredWidth, Integer.parseInt(frame.getProperty("el__min_default_window_width")));
             preferredWidth =
@@ -244,8 +244,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             
             htmlEditorWindow.pack();
             
-            Tools.moveDialogToPosition(frame.getLayeredPane(), htmlEditorWindow, 
-                    node.getContent().getLocationOnScreen());
+            Tools.setDialogLocationRelativeTo(htmlEditorWindow, node.getMainView());
             
             htmlEditorWindow.setVisible(true);
         }
