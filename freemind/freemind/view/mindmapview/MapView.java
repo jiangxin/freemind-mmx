@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.33 2007-08-05 13:07:57 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.34 2007-08-05 16:56:57 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -755,7 +755,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         int requiredCursor = (isHand && !disableMoveCursor)
             ? Cursor.MOVE_CURSOR : Cursor.DEFAULT_CURSOR;
         if (getCursor().getType() != requiredCursor) {
-            setCursor(new Cursor(requiredCursor));
+            setCursor(requiredCursor != Cursor.DEFAULT_CURSOR ? new Cursor(requiredCursor) : null);
         }
     }
 

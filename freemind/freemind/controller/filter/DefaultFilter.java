@@ -61,14 +61,20 @@ public class DefaultFilter implements Filter{
      */
     public void applyFilter(Controller c) {
         if(condition != null){
-            MindMap map = c.getModel();
-            MapView mapView = c.getView();
-            MindMapNode root = map.getRootNode();
-            resetFilter(root);
-            if (filterChildren(root, c, condition.checkNode(c, root), false)){
-                addFilterResult(root, FILTER_SHOW_ANCESTOR);
-            }
-            selectVisibleNode(mapView);
+        	try{
+        		c.getFrame().setWaitingCursor(true);
+        		MindMap map = c.getModel();
+        		MapView mapView = c.getView();
+        		MindMapNode root = map.getRootNode();
+        		resetFilter(root);
+        		if (filterChildren(root, c, condition.checkNode(c, root), false)){
+        			addFilterResult(root, FILTER_SHOW_ANCESTOR);
+        		}
+        		selectVisibleNode(mapView);
+        	}
+        	finally{
+        		c.getFrame().setWaitingCursor(false);
+        	}
         }
     }
 

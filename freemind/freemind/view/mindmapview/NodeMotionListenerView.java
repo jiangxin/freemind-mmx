@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMotionListenerView.java,v 1.1.4.4.4.5 2007-08-03 17:24:03 dpolivaev Exp $*/
+/*$Id: NodeMotionListenerView.java,v 1.1.4.4.4.6 2007-08-05 16:56:57 dpolivaev Exp $*/
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -41,6 +41,8 @@ public class NodeMotionListenerView extends JComponent {
 		MapView map = view.getMap();
 		addMouseListener( map.getNodeMotionListener() );
 		addMouseMotionListener( map.getNodeMotionListener() );
+		//fc, 16.6.2005: to emphasis the possible movement.
+        this.setCursor(new Cursor(Cursor.MOVE_CURSOR));
 	}
 	
 	private NodeView movedView;
@@ -63,8 +65,6 @@ public class NodeMotionListenerView extends JComponent {
                 g.drawOval(0, 0, getWidth()-1, getHeight()-1);
             }
             g2.setColor(color);
-			//fc, 16.6.2005: to emphasis the possible movement.
-            this.setCursor(new Cursor(Cursor.MOVE_CURSOR));
 		}
 	}
 	public boolean isMouseEntered() {

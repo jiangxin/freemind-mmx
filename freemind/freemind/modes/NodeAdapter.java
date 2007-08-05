@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.31 2007-07-29 08:58:22 dpolivaev Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.32 2007-08-05 16:56:54 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -158,7 +158,7 @@ public abstract class NodeAdapter implements MindMapNode {
         map.getRegistry().registrySubtree(this, true);
     }
 
-    public final String getText() {
+    public String getText() {
         String string="";
         if (userObject!=null) {
             string = userObject.toString();

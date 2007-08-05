@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.18 2007-08-03 17:24:02 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.19 2007-08-05 16:56:57 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -350,7 +350,7 @@ public abstract class MainView extends JLabel{
            boolean followLink = isInFollowLinkRegion(xCoord);
          int requiredCursor = followLink ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR;
            if (getCursor().getType() != requiredCursor) {
-             setCursor(new Cursor(requiredCursor));
+             setCursor(requiredCursor != Cursor.DEFAULT_CURSOR ? new Cursor(requiredCursor) : null);
            }
            return followLink;
          }
