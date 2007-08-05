@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.43 2007-08-03 17:24:03 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.44 2007-08-05 09:05:31 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -273,7 +273,7 @@ public class NodeView extends JComponent implements TreeModelListener{
    public void requestFocus(){
       mainView. requestFocus();
    }
-   public boolean hasFocus(){
+   public boolean focused(){
      return mainView.hasFocus();  
    }
 
@@ -1219,6 +1219,12 @@ public class NodeView extends JComponent implements TreeModelListener{
 	Rectangle getInnerBounds() {
 		final int space = getMap().getZoomed(SPACE_AROUND) - 2 * getZoomedFoldingSymbolHalfWidth();
 		return new Rectangle(space, space, getWidth() - 2 * space, getHeight() - 2 * space);
+	}
+
+
+	public boolean contains(int x, int y) {
+		final int space = getMap().getZoomed(SPACE_AROUND) - 2 * getZoomedFoldingSymbolHalfWidth();
+        return (x >= space) && (x < getWidth()-space) && (y >= space) && (y < getHeight()-space);
 	}
 
 

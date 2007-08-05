@@ -153,7 +153,7 @@ public class EditAction extends AbstractAction implements ActorXml {
         if (node == null) {
             return;
         }
-        if(! node.hasFocus()){
+        if(! node.focused()){
             node.requestFocus();
             editLater(node, prevSelected, firstEvent, isNewNode, parentFolded, editLong);            
             return;
