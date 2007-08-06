@@ -136,12 +136,14 @@ public class FilterComposerDialog extends JDialog {
         }
         public void actionPerformed(ActionEvent e) {
             DefaultComboBoxModel model = (DefaultComboBoxModel)conditionList.getModel();
+            final int minSelectionIndex = conditionList.getMinSelectionIndex();
             int selectedIndex;
             while(0 <= (selectedIndex = conditionList.getSelectedIndex())){
                 model.removeElementAt(selectedIndex);
             }
-            if (conditionList.getMinSelectionIndex() == -1 && conditionList.getFirstVisibleIndex() >= 0){
-            	conditionList.setSelectedIndex(conditionList.getFirstVisibleIndex());
+			final int size = conditionList.getModel().getSize();
+			if (size > 0){
+            	conditionList.setSelectedIndex(minSelectionIndex < size ? minSelectionIndex : size - 1);
             }
             validate();
         }
