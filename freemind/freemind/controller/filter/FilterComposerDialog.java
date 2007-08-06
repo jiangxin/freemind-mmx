@@ -140,6 +140,9 @@ public class FilterComposerDialog extends JDialog {
             while(0 <= (selectedIndex = conditionList.getSelectedIndex())){
                 model.removeElementAt(selectedIndex);
             }
+            if (conditionList.getMinSelectionIndex() == -1 && conditionList.getFirstVisibleIndex() >= 0){
+            	conditionList.setSelectedIndex(conditionList.getFirstVisibleIndex());
+            }
             validate();
         }
     }
@@ -230,7 +233,7 @@ public class FilterComposerDialog extends JDialog {
 	            btnNot.setEnabled(false);
 	            btnAnd.setEnabled(true);
 	            btnOr.setEnabled(true);
-	            btnDelete.setEnabled(false);
+	            btnDelete.setEnabled(true);
             }
         }
 
