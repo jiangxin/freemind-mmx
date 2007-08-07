@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.19 2007-07-24 06:10:13 dpolivaev Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.20 2007-08-07 20:09:24 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -29,15 +29,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
-import java.util.Collection;
 import java.util.List;
 
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 import javax.swing.filechooser.FileFilter;
 
+import freemind.common.TextTranslator;
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
 import freemind.controller.StructuredMenuHolder;
@@ -48,7 +47,7 @@ import freemind.modes.attributes.AttributeController;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
-public interface ModeController  {
+public interface ModeController extends TextTranslator  {
 
     public static final String NODESEPARATOR = "<nodeseparator>";
 	/**

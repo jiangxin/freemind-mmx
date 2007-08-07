@@ -20,7 +20,7 @@
  * 
  * Created on 25.02.2006
  */
-/* $Id: ThreeCheckBoxProperty.java,v 1.1.2.1.2.2 2006-10-09 05:44:33 christianfoltin Exp $ */
+/* $Id: ThreeCheckBoxProperty.java,v 1.1.2.1.2.3 2007-08-07 20:09:24 christianfoltin Exp $ */
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -37,17 +37,23 @@ import freemind.controller.BlindIcon;
 
 public class ThreeCheckBoxProperty extends PropertyBean implements
         PropertyControl {
+    protected String mFalseValue = "false";
+
+    protected String mTrueValue = "true";
+
+    protected String mDontTouchValue = "don_t_touch";
+
     static public final String FALSE_VALUE = "false";
-
+    
     static public final String TRUE_VALUE = "true";
-
+    
     public static final String DON_T_TOUCH_VALUE = "don_t_touch";
 
-    private static final int DON_T_TOUCH_VALUE_INT = 2;
+    protected static final int DON_T_TOUCH_VALUE_INT = 2;
 
-    private static final int TRUE_VALUE_INT = 0;
+    protected static final int TRUE_VALUE_INT = 0;
 
-    private static final int FALSE_VALUE_INT = 1;
+    protected static final int FALSE_VALUE_INT = 1;
 
     //FIXME: Choose different icon.
     private static final ImageIcon PLUS_IMAGE = new ImageIcon(ClassLoader.getSystemResource("accessories/plugins/icons/edit_add.png"));
@@ -71,7 +77,7 @@ public class ThreeCheckBoxProperty extends PropertyBean implements
         super();
         this.description = description;
         this.label = label;
-        setState(0);
+//        setState(0);
         mButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -96,9 +102,9 @@ public class ThreeCheckBoxProperty extends PropertyBean implements
 
     public void setValue(String value) {
         if (value == null
-                || !(value.toLowerCase().equals(TRUE_VALUE)
-                        || value.toLowerCase().equals(FALSE_VALUE) || value
-                        .toLowerCase().equals(DON_T_TOUCH_VALUE))) {
+                || !(value.toLowerCase().equals(mTrueValue)
+                        || value.toLowerCase().equals(mFalseValue) || value
+                        .toLowerCase().equals(mDontTouchValue))) {
             throw new IllegalArgumentException("Cannot set a boolean to "
                     + value);
         }
@@ -109,10 +115,10 @@ public class ThreeCheckBoxProperty extends PropertyBean implements
         if (string == null) {
             return DON_T_TOUCH_VALUE_INT;
         }
-        if (string.toLowerCase().equals(TRUE_VALUE)) {
+        if (string.toLowerCase().equals(mTrueValue)) {
             return TRUE_VALUE_INT;
         }
-        if (string.toLowerCase().equals(FALSE_VALUE)) {
+        if (string.toLowerCase().equals(mFalseValue)) {
             return FALSE_VALUE_INT;
         }
         return DON_T_TOUCH_VALUE_INT;
@@ -121,11 +127,11 @@ public class ThreeCheckBoxProperty extends PropertyBean implements
     public String getValue() {
         switch (state) {
         case TRUE_VALUE_INT:
-            return TRUE_VALUE;
+            return mTrueValue;
         case FALSE_VALUE_INT:
-            return FALSE_VALUE;
+            return mFalseValue;
         case DON_T_TOUCH_VALUE_INT:
-            return DON_T_TOUCH_VALUE;
+            return mDontTouchValue;
         }
         return null;
     }
@@ -142,7 +148,7 @@ public class ThreeCheckBoxProperty extends PropertyBean implements
     /**
      * 
      */
-    private void setState(int newState) {
+    protected void setState(int newState) {
         state = newState;
         Icon[] icons;
         icons = new Icon[3]; //{MINUS_IMAGE, PLUS_IMAGE, NO_IMAGE};

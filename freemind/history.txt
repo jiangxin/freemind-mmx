@@ -12,6 +12,7 @@ Changes made in FreeMind 0.9.0 Beta 13
 * Displaying Selection as Rectangle as default.
 * Optional "unfold on paste"
 * Confirmation on delete added.
+* Decision whether or not to take rich text edit added. 
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 12

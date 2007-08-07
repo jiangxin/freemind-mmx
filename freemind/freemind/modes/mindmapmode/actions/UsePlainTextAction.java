@@ -19,7 +19,7 @@
  * 
  * Created on 26.01.2006.
  */
-/* $Id: UsePlainTextAction.java,v 1.1.2.2 2006-08-20 19:34:25 christianfoltin Exp $ */
+/* $Id: UsePlainTextAction.java,v 1.1.2.3 2007-08-07 20:09:24 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import freemind.main.HtmlTools;
@@ -35,8 +35,8 @@ public class UsePlainTextAction extends NodeGeneralAction {
 
 					public void apply(MindMapMapModel map,
 							MindMapNodeModel selected) {
-						modeController.getController().setProperty(
-								"use_rich_text_in_new_long_nodes", "false");
+//						modeController.getController().setProperty(
+//								"use_rich_text_in_new_long_nodes", "false");
 						String nodeText = selected.getText();
 						if (HtmlTools.isHtmlNode(nodeText)) {
 							modeController.setNodeText(selected, HtmlTools

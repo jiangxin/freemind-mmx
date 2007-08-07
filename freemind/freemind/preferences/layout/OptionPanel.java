@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.28 2007-08-05 20:33:17 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.29 2007-08-07 20:09:24 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
 
@@ -65,6 +64,7 @@ import freemind.common.NextLineProperty;
 import freemind.common.NumberProperty;
 import freemind.common.PropertyBean;
 import freemind.common.PropertyControl;
+import freemind.common.RemindValueProperty;
 import freemind.common.SeparatorProperty;
 import freemind.common.StringProperty;
 import freemind.common.TextTranslator;
@@ -73,7 +73,6 @@ import freemind.controller.actions.generated.instance.OptionPanelWindowConfigura
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
-import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.IconInformation;
 import freemind.modes.MindMapNode;
@@ -1090,6 +1089,8 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new DontShowNotificationProperty(
 				"delete_nodes_without_question.tooltip",
 				FreeMind.RESOURCES_DELETE_NODES_WITHOUT_QUESTION)); 
+
+		controls.add(new RemindValueProperty("remind_type_of_new_nodes.tooltip", FreeMind.RESOURCES_REMIND_USE_RICH_TEXT_IN_NEW_LONG_NODES, modeController));
 		
 		controls.add(new NextLineProperty());
 		controls

@@ -19,10 +19,11 @@
  *
  * Created on 31.07.2007
  */
-/*$Id: OptionalDontShowMeAgainDialog.java,v 1.1.2.1 2007-08-05 20:33:13 christianfoltin Exp $*/
+/*$Id: OptionalDontShowMeAgainDialog.java,v 1.1.2.2 2007-08-07 20:09:24 christianfoltin Exp $*/
 
 package freemind.common;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -31,6 +32,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -39,7 +41,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import freemind.controller.Controller;
-import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
+import freemind.main.FreeMind;
+import freemind.main.Resources;
 import freemind.main.Tools;
 
 /**
@@ -51,7 +54,6 @@ import freemind.main.Tools;
 public class OptionalDontShowMeAgainDialog {
 	public final static int ONLY_OK_SELECTION_IS_STORED = 0;
 	public final static int BOTH_OK_AND_CANCEL_OPTIONS_ARE_STORED = 1;
-	private static final String PREFERENCE_STORAGE_PROPERTY = "OptionalDialogPosition";
 	private final String mTitleId;
 	private final String mMessageId;
 	private final TextTranslator mTextTranslator;
@@ -61,7 +63,7 @@ public class OptionalDontShowMeAgainDialog {
 	private JCheckBox mDontShowAgainBox;
 	private final DontShowPropertyHandler mDontShowPropertyHandler;
 	private final int mMessageType;
-	private final Controller mController;
+	private final Component mComponent;
 
 	public interface DontShowPropertyHandler {
 		/**
@@ -74,10 +76,31 @@ public class OptionalDontShowMeAgainDialog {
 		void setProperty(String pValue);
 	}
 	
-	public OptionalDontShowMeAgainDialog(Controller pController, String pMessageId,
+	/**
+	 * Standard property handler, if you have a controller and a property.
+	 *
+	 */
+	public static class StandardPropertyHandler implements DontShowPropertyHandler {
+		private final Controller mController;
+		private String mPropertyName;
+
+		public StandardPropertyHandler(Controller pController, String pPropertyName){
+			mController = pController;
+			mPropertyName = pPropertyName;
+			
+		}
+		public String getProperty() {
+			return mController.getProperty(mPropertyName);
+		}
+		
+		public void setProperty(String pValue) {
+			mController.setProperty(mPropertyName, pValue);
+		}
+	}
+	public OptionalDontShowMeAgainDialog(/*Controller pController*/JFrame pFrame, Component pComponent, String pMessageId,
 			String pTitleId, TextTranslator pTextTranslator, DontShowPropertyHandler pDontShowPropertyHandler, int pMessageType) {
-		mController = pController;
-		mParent = pController.getJFrame();
+		mComponent = pComponent;
+		mParent = pFrame;
 		mMessageId = pMessageId;
 		mTitleId = pTitleId;
 		mTextTranslator = pTextTranslator;
@@ -138,7 +161,9 @@ public class OptionalDontShowMeAgainDialog {
 				new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0,
 						GridBagConstraints.WEST, GridBagConstraints.BOTH,
 						new Insets(5, 5, 0, 0), 0, 0));
-		mDialog.add(new JLabel("?"), new GridBagConstraints(0, 0, 1, 2, 1.0,
+		//TODO: Replace by usual java question mark.
+		ImageIcon questionMark = new ImageIcon(Resources.getInstance().getResource("images/icons/help.png"));
+		mDialog.add(new JLabel(questionMark), new GridBagConstraints(0, 0, 1, 2, 1.0,
 				2.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(
 						5, 5, 0, 0), 0, 0));
 		String boxString;
@@ -166,9 +191,7 @@ public class OptionalDontShowMeAgainDialog {
 						0, 0), 0, 0));
 		mDialog.getRootPane().setDefaultButton(okButton);
 		mDialog.pack();
-		//Retrieve window size and column positions.
-		XmlBindingTools.getInstance().decorateDialog(mController,
-				mDialog, PREFERENCE_STORAGE_PROPERTY);
+		Tools.setDialogLocationRelativeTo(mDialog, mComponent);
 		mDialog.setVisible(true);
 		return this;
 	}
@@ -186,9 +209,6 @@ public class OptionalDontShowMeAgainDialog {
 		} else {
 			mDontShowPropertyHandler.setProperty("");
 		}
-        XmlBindingTools.getInstance().storeDialogPositions(mController, mDialog, new WindowConfigurationStorage(),
-        		PREFERENCE_STORAGE_PROPERTY);
-
 		mDialog.setVisible(false);
 		mDialog.dispose();
 	}
