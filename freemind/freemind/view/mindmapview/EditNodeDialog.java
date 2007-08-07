@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1.16.12 2007-07-22 14:06:20 dpolivaev Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.13 2007-08-07 21:44:45 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -330,30 +330,7 @@ public class EditNodeDialog extends EditNodeBase {
         
         // set position
         getView().scrollNodeToVisible(getNode(), 0);
-        Point frameScreenLocation =
-            getFrame().getLayeredPane().getLocationOnScreen();
-        double posX =
-            getNode().getLocationOnScreen().getX() - frameScreenLocation.getX();
-        double posY =
-            getNode().getLocationOnScreen().getY()
-            - frameScreenLocation.getY()
-            + (binOptionIsTrue("el__position_window_below_node")
-                    ? getNode().getHeight()
-                            : 0);
-        if (posX + dialog.getWidth()
-                > getFrame().getLayeredPane().getWidth()) {
-            posX = getFrame().getLayeredPane().getWidth() - dialog.getWidth();
-        }
-        if (posY + dialog.getHeight()
-                > getFrame().getLayeredPane().getHeight()) {
-            posY = getFrame().getLayeredPane().getHeight() - dialog.getHeight();
-        }
-        posX = ((posX < 0) ? 0 : posX) + frameScreenLocation.getX();
-        posY = ((posY < 0) ? 0 : posY) + frameScreenLocation.getY();
-        dialog.setLocation(
-                new Double(posX).intValue(),
-                new Double(posY).intValue());
-        
+        Tools.setDialogLocationRelativeTo(dialog, getNode().getMainView());
         dialog.show();
     }
     
