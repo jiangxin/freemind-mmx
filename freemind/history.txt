@@ -13,6 +13,7 @@ Changes made in FreeMind 0.9.0 Beta 13
 * Optional "unfold on paste"
 * Confirmation on delete added.
 * Decision whether or not to take rich text edit added. 
+* Icon selection popup, long node editor and WYSIWYG editor do not hide the edited node is possible
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 12
