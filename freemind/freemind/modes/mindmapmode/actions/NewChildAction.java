@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: NewChildAction.java,v 1.1.2.2.2.3 2007-05-12 13:46:47 christianfoltin Exp $ */
+/* $Id: NewChildAction.java,v 1.1.2.2.2.4 2007-08-08 21:10:40 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -37,7 +37,6 @@ import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.PermanentNodeHook;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import freemind.modes.MindMapLinkRegistry.ID_Registered;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
@@ -70,9 +69,9 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		MindMapNode newNode = c.newNode("", parent.getMap());
         newNode.setLeft(addNodeAction.getPosition().equals("left"));
 		String newId = addNodeAction.getNewId();
-		ID_Registered reg = c.getModel().getLinkRegistry().registerLinkTarget(newNode,newId);
-		if(!reg.getID().equals(newId)) {
-			throw new IllegalArgumentException("Designated id '"+newId+"' was not given to the node. It received '"+reg.getID()+"'.");
+		String givenId = c.getModel().getLinkRegistry().registerLinkTarget(newNode,newId);
+		if(!givenId.equals(newId)) {
+			throw new IllegalArgumentException("Designated id '"+newId+"' was not given to the node. It received '"+givenId+"'.");
 		}
 		c.insertNodeInto(newNode, parent, index);
 		// call hooks:

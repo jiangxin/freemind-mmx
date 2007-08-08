@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.34 2007-08-05 16:56:57 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.35 2007-08-08 21:10:40 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -995,6 +995,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         if(LinkAlreadyVisited == null)
             LinkAlreadyVisited = new HashSet();
         // references first
+//        logger.info("Searching for links of " + source.getModel().toString());
         // paint own labels:
         Vector vec = getModel().getLinkRegistry().getAllLinks(source.getModel());
         for(int i = 0; i< vec.size(); ++i) {
@@ -1007,7 +1008,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                     ArrowLinkViews.add(arrowLink);
                     // resize map?
                     // adjust container size
-                    Rectangle rec = arrowLink.getBounds();
+//                    Rectangle rec = arrowLink.getBounds();
                     // the following does not work correctly. fc, 23.10.2003:
 //                     if (rec.x < 0) {
 //                         getMindMapLayout().resizeMap(rec.x);

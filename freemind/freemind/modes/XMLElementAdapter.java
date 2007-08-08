@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.15 2007-08-05 20:33:15 christianfoltin Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.16 2007-08-08 21:10:40 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -28,7 +28,6 @@ import java.util.Vector;
 
 import freemind.extensions.PermanentNodeHook;
 import freemind.extensions.PermanentNodeHookSubstituteUnknown;
-import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
@@ -540,8 +539,7 @@ public abstract class XMLElementAdapter extends XMLElement {
         for(Iterator i = IDToTarget.keySet().iterator(); i.hasNext();) {
             String key = (String) i.next();
             NodeAdapter target = (NodeAdapter) IDToTarget.get(key);
-            MindMapLinkRegistry.ID_Registered newState = registry.registerLinkTarget(target, key /* Proposed name for the target, is changed by the registry, if already present.*/);
-            String newId = newState.getID();
+            String newId = registry.registerLinkTarget(target, key /* Proposed name for the target, is changed by the registry, if already present.*/);
             // and in the cutted case:
             // search for links to this ids that have been cutted earlier:
             Vector cuttedLinks = registry.getCuttedNode(key /* old target id*/);

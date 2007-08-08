@@ -7,7 +7,7 @@
    :
    : Christian Foltin, June, 2005
    :
-   : $Id: mindmanager2mm.xsl,v 1.1.2.3.4.1 2006-04-05 21:26:23 dpolivaev Exp $
+   : $Id: mindmanager2mm.xsl,v 1.1.2.3.4.2 2007-08-08 21:10:40 christianfoltin Exp $
    :
   -->
 
@@ -34,7 +34,7 @@
 			</xsl:attribute>
 			<xsl:attribute name="POSITION">
 				<xsl:choose>
-					<xsl:when test="ap:Offset/@CX &gt; 0"><xsl:text>right</xsl:text></xsl:when>
+					<xsl:when test="ancestor-or-self::ap:Topic/ap:Offset/@CX &gt; 0"><xsl:text>right</xsl:text></xsl:when>
 					<xsl:otherwise><xsl:text>left</xsl:text></xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>

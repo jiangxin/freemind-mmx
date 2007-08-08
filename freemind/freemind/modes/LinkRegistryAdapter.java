@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.10.18.3.12.2 2007-05-06 12:09:40 dpolivaev Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.10.18.3.12.3 2007-08-08 21:10:40 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -27,13 +27,36 @@ import java.util.ListIterator;
 import java.util.Random;
 import java.util.Vector;
 
-import freemind.modes.mindmapmode.MindMapNodeModel;
-
 
 
 /** Interface for the registry, which manages the ids of nodes and the existing links in a map.
     Thus, this interface is bound to a map model, because other maps have a different registry.*/
 public class LinkRegistryAdapter implements MindMapLinkRegistry {
+    /** State parent interface.*/
+    public interface ID_BasicState {
+        /** Returns null for many states.*/
+        public String getID();
+        public String toString();
+    };
+    /** This state interface expresses the state that a node is blank (i.e. without an id, normal state).*/
+    public interface ID_Blank extends ID_BasicState {};
+    /** This state interface expresses the state that a node has an ID, but is abstract.*/
+    public interface ID_UsedState extends ID_BasicState {
+        public MindMapNode getTarget();
+    };
+    /** This state interface expresses the state that a node has an ID.*/
+    public interface ID_Registered extends ID_UsedState {
+    };
+//     /** This state interface expresses the state that a node was recently cutted and waits to be inserted at another place.
+//         After inserting the states changes to ID_Registered.
+//     */
+//     public interface ID_Pending extends ID_UsedState {
+//     };
+
+    /** The main method. Registeres a node with a new (or an existing) node-id. If the state of the id is pending,
+     then it is set to registered again.
+    */
+
     ////////////////////////////////////////////////////////////////////////////////////////
     ////   State Model                                                                 /////
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +108,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     protected HashMap /* MindMapNode = Target -> ID_BasicState. */ TargetToID;
     protected HashMap /* MindMapNode = ID_BasicState -> ID. */ IDToTarget;
     protected HashMap /* id -> vector of links whose TargetToID.get(target) == id.*/  IDToLinks;
-    protected HashMap /* id -> vector of links whose TargetToID.get(target) == id and who are cutted recently.*/  IDToCuttedLinks;
+    protected HashMap /* id -> vector of links whose TargetToID.get(target) == id and who are cut recently.*/  IDToCutLinks;
     protected HashMap /* id -> link */ IDToLink;
     /** The map the registry belongs to.*/
 //     protected MindMap map;
@@ -103,7 +126,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         TargetToID      = new HashMap();
         IDToTarget      = new HashMap();
         IDToLinks       = new HashMap();
-        IDToCuttedLinks = new HashMap();
+        IDToCutLinks = new HashMap();
         IDToLink 		= new HashMap();
         logger.setLevel(java.util.logging.Level.WARNING);
         //logger.setLevel(java.util.logging.Level.FINEST);
@@ -137,15 +160,22 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 
     
     
+    public void registerLinkTarget(MindMapNode pTarget) {
+    	_registerLinkTarget(pTarget);
+    	
+    }
 
+    public String registerLinkTarget(MindMapNode pTarget, String pProposedID) {
+    	return _registerLinkTarget(pTarget, pProposedID).getID();
+    }
     /** The main method. Registeres a node with a new (or an existing) node-id. If the state of the id is pending,
      then it is set to registered again.
     */
-    public ID_Registered registerLinkTarget(MindMapNode target) {
-        return registerLinkTarget(target, null);
+    public ID_Registered _registerLinkTarget(MindMapNode target) {
+        return _registerLinkTarget(target, null);
     }
 
-    public ID_Registered registerLinkTarget(MindMapNode target, String proposedID) {
+    public ID_Registered _registerLinkTarget(MindMapNode target, String proposedID) {
         // id already exists?
         if(TargetToID.containsKey(target)) {
             ID_BasicState state = (ID_BasicState) TargetToID.get(target);
@@ -221,7 +251,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
             throw new java.lang.IllegalArgumentException("Illegal link specification."+link);
         MindMapNode source = link.getSource();
         MindMapNode target = link.getTarget();
-        ID_Registered state = registerLinkTarget(target);
+        ID_Registered state = _registerLinkTarget(target);
         Vector vec = getAssignedLinksVector(state);
         // already present?
         for(int i = 0 ; i < vec.size(); ++i) {
@@ -244,7 +274,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     public void deregisterLink(MindMapLink link){
         MindMapNode source = link.getSource();
         MindMapNode target = link.getTarget();
-        ID_Registered state = registerLinkTarget(target);
+        ID_Registered state = _registerLinkTarget(target);
         Vector vec = getAssignedLinksVector(state);
         for(int i = vec.size() -1 ; i >= 0 ; --i) {
             logger.fine("Test for equal node:"+source+" to vector(i) " + vec.get(i));
@@ -334,13 +364,13 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
             String id = getLabel(target);
             // create new vector to the links:
             Vector vec;
-            if(IDToCuttedLinks.containsKey(id) ) {
-                vec = (Vector) IDToCuttedLinks.get(id);
+            if(IDToCutLinks.containsKey(id) ) {
+                vec = (Vector) IDToCutLinks.get(id);
                 // clear this vector:
                 vec.clear();
             } else { 
                 vec = new Vector();
-                IDToCuttedLinks.put(id,vec);
+                IDToCutLinks.put(id,vec);
             }
             // deregister all links to me:
             Vector links = getAllLinksIntoMe(target);
@@ -367,13 +397,13 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         logger.exiting("LinkRegistryAdapter", "cutNode", target);
     }
     /** Clears the set of recent cutted nodes.*/
-    public void clearCuttedNodeBuffer() { IDToCuttedLinks.clear(); };
+    public void clearCuttedNodeBuffer() { IDToCutLinks.clear(); };
 
     /** @return returns all links that have been cutted out recently.*/
     public Vector /* of MindMapLink s*/  getCuttedNode(String oldTargetID) { 
         Vector vec;
-        if(IDToCuttedLinks.containsKey(oldTargetID) ) {
-            vec = (Vector) IDToCuttedLinks.get(oldTargetID); 
+        if(IDToCutLinks.containsKey(oldTargetID) ) {
+            vec = (Vector) IDToCutLinks.get(oldTargetID); 
             for(int i = 0; i < vec.size(); ++i) {
                 vec.set(i, ((MindMapLink) vec.get(i)).clone());
             }
