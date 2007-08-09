@@ -19,7 +19,7 @@
  *
  * Created on 31.07.2007
  */
-/*$Id: OptionalDontShowMeAgainDialog.java,v 1.1.2.2 2007-08-07 20:09:24 christianfoltin Exp $*/
+/*$Id: OptionalDontShowMeAgainDialog.java,v 1.1.2.3 2007-08-09 06:39:37 dpolivaev Exp $*/
 
 package freemind.common;
 
@@ -156,14 +156,14 @@ public class OptionalDontShowMeAgainDialog {
 				close(JOptionPane.CANCEL_OPTION);
 			}
 		});
-		mDialog.setLayout(new GridBagLayout());
-		mDialog.add(new JLabel(mTextTranslator.getText(mMessageId)),
+		mDialog.getContentPane().setLayout(new GridBagLayout());
+		mDialog.getContentPane().add(new JLabel(mTextTranslator.getText(mMessageId)),
 				new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0,
 						GridBagConstraints.WEST, GridBagConstraints.BOTH,
 						new Insets(5, 5, 0, 0), 0, 0));
 		//TODO: Replace by usual java question mark.
 		ImageIcon questionMark = new ImageIcon(Resources.getInstance().getResource("images/icons/help.png"));
-		mDialog.add(new JLabel(questionMark), new GridBagConstraints(0, 0, 1, 2, 1.0,
+		mDialog.getContentPane().add(new JLabel(questionMark), new GridBagConstraints(0, 0, 1, 2, 1.0,
 				2.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(
 						5, 5, 0, 0), 0, 0));
 		String boxString;
@@ -174,19 +174,19 @@ public class OptionalDontShowMeAgainDialog {
 		}
 		mDontShowAgainBox = new JCheckBox(mTextTranslator
 				.getText(boxString));
-		mDialog.add(mDontShowAgainBox, new GridBagConstraints(0, 2, 3, 1, 1.0, 1.0,
+		mDialog.getContentPane().add(mDontShowAgainBox, new GridBagConstraints(0, 2, 3, 1, 1.0, 1.0,
 				GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5,
 						0, 0), 0, 0));
 		JButton okButton = new JButton(mTextTranslator
 				.getText("OptionalDontShowMeAgainDialog.ok"));
 		okButton.addActionListener(okAction);
-		mDialog.add(okButton, new GridBagConstraints(2, 3, 1, 1, 1.0, 1.0,
+		mDialog.getContentPane().add(okButton, new GridBagConstraints(2, 3, 1, 1, 1.0, 1.0,
 				GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5,
 						0, 0), 0, 0));
 		JButton cancelButton = new JButton(mTextTranslator
 				.getText("OptionalDontShowMeAgainDialog.cancel"));
 		cancelButton.addActionListener(cancelAction);
-		mDialog.add(cancelButton, new GridBagConstraints(3, 3, 1, 1, 1.0, 1.0,
+		mDialog.getContentPane().add(cancelButton, new GridBagConstraints(3, 3, 1, 1, 1.0, 1.0,
 				GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5,
 						0, 0), 0, 0));
 		mDialog.getRootPane().setDefaultButton(okButton);
