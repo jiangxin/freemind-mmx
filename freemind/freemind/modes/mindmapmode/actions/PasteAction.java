@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.11 2007-08-03 19:11:35 dpolivaev Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.12 2007-08-09 20:59:47 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -556,7 +556,6 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				   Tools.firstLetterCapitalized(textParts[textPartIdx].replaceAll("^~*","")); }}
 
 		  MindMapNode node = pMindMapController.newNode(visibleText, parent.getMap());
-          node.setLeft(parent.isNewChildLeft());
 		  if (textLines.length == 1) {
 			 pastedNode = node; }
 
@@ -607,6 +606,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 		pMindMapController.insertNodeInto(node, parent,i);
 	}
 	private void insertNodeInto(MindMapNode node, MindMapNode parent) {
+        node.setLeft(parent.isNewChildLeft());
 		pMindMapController.insertNodeInto(node, parent);
 	}
 
