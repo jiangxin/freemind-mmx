@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseController.java,v 1.13.18.7.2.10 2007-08-05 10:29:05 dpolivaev Exp $ */
+/* $Id: BrowseController.java,v 1.13.18.7.2.11 2007-08-10 20:25:49 dpolivaev Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -25,10 +25,12 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.ListIterator;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
@@ -59,6 +61,7 @@ public class BrowseController extends ViewControllerAdapter {
 	Action nodeDown;
 
 	private HookFactory mBrowseHookFactory;
+	private ImageIcon noteIcon;
 
 	public BrowseController(Mode mode) {
 		super(mode);
@@ -237,10 +240,32 @@ public class BrowseController extends ViewControllerAdapter {
 //	}
 
 	public ModeController load(URL url) throws IOException {
-        ModeController newModeController = super.load(url);
-        // decorator pattern.
-        ((BrowseToolBar) newModeController.getModeToolBar()).setURLField(url.toString());
-        return newModeController;
+	    ModeController newModeController = super.load(url);
+	    // decorator pattern.
+	    ((BrowseToolBar) newModeController.getModeToolBar()).setURLField(url.toString());
+	    return newModeController;
+	}
+
+	public void newMap(MindMap mapModel) {
+		setNoteIcon(mapModel.getRootNode());
+		super.newMap(mapModel);
+	}
+
+	private void setNoteIcon(MindMapNode node) {
+		String noteText = node.getNoteText();
+		if(noteText != null && ! noteText.equals("")){
+            // icon
+            if (noteIcon == null) {
+                noteIcon = new ImageIcon(getController()
+                        .getResource("images/knotes.png"));
+            }
+            node.setStateIcon("accessories.plugins.NodeNote", noteIcon); 			
+		}
+		ListIterator children = node.childrenUnfolded();
+		while(children.hasNext()){
+			setNoteIcon((MindMapNode)children.next());
+		}
+	
 	}
 
 	/**

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.7 2007-08-05 10:29:09 dpolivaev Exp $ */
+/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.8 2007-08-10 20:25:49 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
 import java.awt.BorderLayout;
@@ -65,25 +65,23 @@ public class NodeNoteViewer extends NodeNoteBase implements
 			noteScrollPane = new JScrollPane(noteViewer);
 			noteScrollPane.setPreferredSize(new Dimension(1, 200));
 		}
-		noteViewer.setText(text);
+		noteViewer.setText(text != null ? text : "");
 		return noteScrollPane;
 	}
 
 	public void onDeselectHook(NodeView pNode) {
-			JPanel southPanel = getSouthPanel();
-			southPanel.remove(getNoteViewerComponent(""));
-			southPanel.revalidate();
+		JPanel southPanel = getSouthPanel();
+		southPanel.remove(getNoteViewerComponent(""));
+		southPanel.repaint();
 	}
 
 	public void onSelectHook(NodeView pNode) {
 		// logger.info("Panel added");
 		String noteText = pNode.getModel().getNoteText();
-		if (noteText != null) {
-			JPanel southPanel = getSouthPanel();
-			Container noteViewer = getNoteViewerComponent(noteText);
-			southPanel.add(noteViewer, BorderLayout.CENTER);
-			southPanel.revalidate();
-		}
+		JPanel southPanel = getSouthPanel();
+		Container noteViewer = getNoteViewerComponent(noteText);
+		southPanel.add(noteViewer, BorderLayout.CENTER);
+		southPanel.repaint();
 	}
 
 	public void onSaveNode(MindMapNode pNode) {
