@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: ActionFactory.java,v 1.1.2.2.2.4 2006-11-26 10:20:45 dpolivaev Exp $ */
+/* $Id: ActionFactory.java,v 1.1.2.2.2.5 2007-08-12 08:14:15 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -45,6 +45,7 @@ public class ActionFactory {
 	private Set registeredFilters;
 	/** HashMap of Action class -> actor instance. */
 	private HashMap registeredActors;
+	private UndoActionHandler undoActionHandler;
 
 	/**
 	 *
@@ -99,7 +100,7 @@ public class ActionFactory {
 	public void executeAction(ActionPair pair) {
 	    if(pair == null)
 	        return;
-		ActionPair filteredPair = pair;
+	    ActionPair filteredPair = pair;
 		// first filter:
 		for (Iterator i = registeredFilters.iterator(); i.hasNext();) {
 			ActionFilter filter = (ActionFilter) i.next();
@@ -109,11 +110,19 @@ public class ActionFactory {
 		for (int i = 0; i < aArray.length; i++) {
             ActionHandler handler = (ActionHandler) aArray[i];
 			try {
-                handler.executeAction(filteredPair);
+                handler.executeAction(filteredPair.getDoAction());
             } catch (Exception e) {
                 freemind.main.Resources.getInstance().logException(e);
             }
-        }
+		}
+		if(undoActionHandler != null)
+		{
+			try {
+				undoActionHandler.executeAction(filteredPair);
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
 //		for (Iterator i = registeredHandler.iterator(); i.hasNext();) {
 //			ActionHandler handler = (ActionHandler) i.next();
 			// the executer must not disturb the whole picture if they throw something:
@@ -149,5 +158,9 @@ public class ActionFactory {
 //			return (ActorXml) registeredActors.get(actionClass);
 //		}
 		throw new IllegalArgumentException("No actor present for xmlaction" + action.getClass());
+	}
+
+	public void registerUndoHandler(UndoActionHandler undoActionHandler) {
+		this.undoActionHandler = undoActionHandler;
 	}
 }

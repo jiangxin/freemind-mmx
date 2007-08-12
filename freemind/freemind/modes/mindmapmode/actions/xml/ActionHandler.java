@@ -19,9 +19,11 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: ActionHandler.java,v 1.1.2.1.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
+/* $Id: ActionHandler.java,v 1.1.2.1.2.3 2007-08-12 08:14:15 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
+
+import freemind.controller.actions.generated.instance.XmlAction;
 
 /**
  * @author foltin
@@ -29,7 +31,7 @@ package freemind.modes.mindmapmode.actions.xml;
  */
 public interface ActionHandler {
 
-	void executeAction(ActionPair pair);
+	void executeAction(XmlAction action);
 
 	/**
 	 */

@@ -15,7 +15,11 @@ Changes made in FreeMind 0.9.0 Beta 13
 * Decision whether or not to take rich text edit added. 
 * Icon selection popup, long node editor and WYSIWYG editor do not hide the edited node is possible
 * Bug fix: mind manager import: sides fixed.
-
+* bug fix: strings containing \n must be saved as XML elements, not as attributes
+* bug fixes and necessary refactorings for paste and cut - actions
+	 only UndoActionHandler uses the undo - action from the action pair, 
+	 the undo action is prepared during paste action is executed
+	 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 12
 ===============================

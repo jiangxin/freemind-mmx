@@ -19,17 +19,18 @@
  *
  * Created on 23.09.2004
  */
-/* $Id: UndoActionHandler.java,v 1.1.2.1.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
+/* $Id: UndoActionHandler.java,v 1.1.2.1.2.3 2007-08-12 08:14:16 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
 import freemind.controller.actions.generated.instance.UndoXmlAction;
+import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.RedoAction;
 import freemind.modes.mindmapmode.actions.UndoAction;
 
 
-public class UndoActionHandler implements ActionHandler {
+public class UndoActionHandler{
     private MindMapController controller;
     private final UndoAction undo;
     private final RedoAction redo;
@@ -54,7 +55,7 @@ public class UndoActionHandler implements ActionHandler {
     	}
     }
 
-    public void startTransaction(String name) {
+   public void startTransaction(String name) {
     }
 
     public void endTransaction(String name) {
