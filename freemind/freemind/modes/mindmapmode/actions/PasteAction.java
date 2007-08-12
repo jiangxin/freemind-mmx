@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.13 2007-08-12 08:06:43 dpolivaev Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.14 2007-08-12 14:27:22 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -136,18 +136,16 @@ public class PasteAction extends AbstractAction implements ActorXml{
 			// Undo-action
 			pMindMapController.getActionFactory().startTransaction(text);
 			pMindMapController.getActionFactory().executeAction(new ActionPair(pasteAction, undoAction));
-			addMindMapNodesFlavor();
 			pMindMapController.getActionFactory().endTransaction(text);
 		} catch (Exception e) {
             freemind.main.Resources.getInstance().logException(e);
         }
-		finally{
-			undoAction = null;
-			pasteAction = null;
-		}
 	}
 
 	private void addMindMapNodesFlavor() {
+		if(pasteAction == null){
+			return;
+		}
 		final TransferableContent transferableContent = pasteAction.getTransferableContent();		
 		if(transferableContent.getTransferable() == null){
 			final List nodes = new LinkedList();
@@ -428,17 +426,24 @@ public class PasteAction extends AbstractAction implements ActorXml{
             DataFlavorHandler handler = dataFlavorHandlerList[i];
             DataFlavor 		  flavor  = handler.getDataFlavor();
             if(t.isDataFlavorSupported(flavor)) {
-                handler.paste(t.getTransferData(flavor), target, asSibling, isLeft, t);
-                break;
+            	handler.paste(t.getTransferData(flavor), target, asSibling, isLeft, t);
+            	break;
             }
-        }
-        for (ListIterator e = newNodes.listIterator(); e.hasNext(); ) {
-            final MindMapNodeModel child = (MindMapNodeModel)e.next();
-            pMindMapController.getAttributeController().performRegistrySubtreeAttributes(child);
-        }        
-//  	   pMindMapController.nodeStructureChanged((MindMapNode) (asSibling ? target.getParent() : target));
-        }
+	   	}
+	   	for (ListIterator e = newNodes.listIterator(); e.hasNext(); ) {
+	   		final MindMapNodeModel child = (MindMapNodeModel)e.next();
+	   		pMindMapController.getAttributeController().performRegistrySubtreeAttributes(child);
+	   	}        
+//	   	pMindMapController.nodeStructureChanged((MindMapNode) (asSibling ? target.getParent() : target));
+	   	
+	   	// add information about the new nodes ID:
+	   	addMindMapNodesFlavor();
+	   }
 	   catch (Exception e) { freemind.main.Resources.getInstance().logException(e); }
+	   finally{
+		   undoAction = null;
+		   pasteAction = null;
+	   }
 	   pMindMapController.getFrame().setWaitingCursor(false);
 	}
 
