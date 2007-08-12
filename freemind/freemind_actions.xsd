@@ -90,14 +90,15 @@
 	<xs:element name="transferable_content">
 		<xs:complexType>
 			<xs:sequence>
-					<xs:element ref="transferable_file" minOccurs="0" maxOccurs="unbounded"/>
-<!--				<xs:element name="TransferableAsFileList" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>-->
+				<xs:element ref="transferable_file" minOccurs="0"
+					maxOccurs="unbounded" />
+				<!--				<xs:element name="TransferableAsFileList" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>-->
+				<xs:element name="Transferable" minOccurs="0" maxOccurs="1" type="xs:string"/>
+				<xs:element name="TransferableAsPlainText" minOccurs="0" maxOccurs="1" type="xs:string"/>
+				<xs:element name="TransferableAsRTF" minOccurs="0" maxOccurs="1" type="xs:string"/>
+				<xs:element name="TransferableAsDrop" minOccurs="0" maxOccurs="1" type="xs:string"/>
+				<xs:element name="TransferableAsHtml" minOccurs="0" maxOccurs="1" type="xs:string"/>
 			</xs:sequence>
-	      <xs:attribute name="Transferable" use="optional" type="xs:string"/>
-	      <xs:attribute name="TransferableAsPlainText" use="optional" type="xs:string"/>
-	      <xs:attribute name="TransferableAsRTF" use="optional" type="xs:string"/>
-	      <xs:attribute name="TransferableAsDrop" use="optional" type="xs:string"/>
-	      <xs:attribute name="TransferableAsHtml" use="optional" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 
@@ -109,11 +110,6 @@
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="node_action">
-              <xs:sequence>
-	            <xs:element ref="transferable_content" maxOccurs="1" minOccurs="1"/>
-              </xs:sequence>
-		      <xs:attribute name="isLeft" use="required" type="xs:boolean"/>
-		      <xs:attribute name="asSibling" use="required" type="xs:boolean"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
@@ -273,7 +269,7 @@
 					<xs:attribute name="endArrow"    use="optional" type="xs:string"/>
 					<!--Currently not used:
 						<xs:attribute name="style"    use="optional" type="xs:string"/>
-					  <xs:attribute name="referenceText"    use="optional" type="xs:string"/>
+						<xs:element name="referenceText" minOccurs="0" maxOccurs="1" type="xs:string"/>
 						-->
 				</xs:extension>
 		</xs:complexContent>
@@ -471,13 +467,14 @@
 	</xs:element>
 
 	<!-- Text node Action (Base for edit and "new node" actions) -->
-	  <xs:complexType name="text_node_action">
+	<xs:complexType name="text_node_action">
 		<xs:complexContent>
 			<xs:extension base="node_action">
-		      <xs:attribute name="text" use="optional" type="xs:string"/>
-			</xs:extension>
+				<xs:sequence>
+					<xs:element name="text" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+				</xs:sequence>			</xs:extension>
 		</xs:complexContent>
-	  </xs:complexType>
+	</xs:complexType>
 
 	<!-- Edit node Action -->
 	<xs:element name="edit_node_action">
@@ -515,14 +512,16 @@
 	<!-- Undo Action -->
 	<xs:element name="undo_xml_action">
 	  <xs:complexType>
-		<xs:complexContent>
-			<xs:extension base="xml_action">
-				<!-- description contains the marshalled doAction for this undoAction. The doAction is performed by undo. -->
-		      <xs:attribute name="description" use="required" type="xs:string"/>
-				<!-- remedia contains the marshalled redoAction for this undoAction. The redoAction is performed by redo following undo. -->
-		      <xs:attribute name="remedia" use="optional" type="xs:string"/>
-			</xs:extension>
-		</xs:complexContent>
+	  	<xs:complexContent>
+	  		<xs:extension base="xml_action">
+	  			<xs:sequence>
+	  			<!-- description contains the marshalled doAction for this undoAction. The doAction is performed by undo. -->
+	  				<xs:element name="description" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+	  			<!-- remedia contains the marshalled redoAction for this undoAction. The redoAction is performed by redo following undo. -->
+	  				<xs:element name="remedia" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+	  			</xs:sequence>
+	  		</xs:extension>
+	  	</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
 
@@ -581,13 +580,17 @@
 	<!-- Change hook attribute content-->
 	<xs:element name="hook_content_node_action">
 	  <xs:complexType>
-		<xs:complexContent>
-			<xs:extension base="node_action">
-		      <xs:attribute name="hook_name" use="required" type="xs:string"/>
-		      <xs:attribute name="attribute_name" use="optional" type="xs:string"/>
-		      <xs:attribute name="content" use="required" type="xs:string"/>
-			</xs:extension>
-		</xs:complexContent>
+	  	<xs:complexContent>
+	  		<xs:extension base="node_action">
+	  			<xs:sequence>
+	  				<xs:element name="content" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+	  			</xs:sequence>
+	  			<xs:attribute name="hook_name" use="required"
+	  				type="xs:string" />
+	  			<xs:attribute name="attribute_name" use="optional"
+	  				type="xs:string" />
+	  		</xs:extension>
+	  	</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
 
@@ -606,12 +609,15 @@
 	<!-- Set attribute value Action -->
 	<xs:element name="set_attribute_value_elementary_action">
 	  <xs:complexType>
-		<xs:complexContent>
-			<xs:extension base="node_action">
-				<xs:attribute name="row"    use="optional" type="xs:int"/>
-				<xs:attribute name="value"   use="optional" type="xs:string"/>
-			</xs:extension>
-		</xs:complexContent>
+	  	<xs:complexContent>
+	  		<xs:extension base="node_action">
+	  			<xs:sequence>
+	  				<xs:element name="value" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+	  			</xs:sequence>
+	  			<xs:attribute name="row" type="xs:int" />
+
+	  		</xs:extension>
+	  	</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
 
@@ -620,9 +626,11 @@
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="node_action">
+	  			<xs:sequence>
+	  				<xs:element name="value" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+	  			</xs:sequence>
 				<xs:attribute name="row"    use="optional" type="xs:int"/>
 				<xs:attribute name="name"   use="optional" type="xs:string"/>
-				<xs:attribute name="value"   use="optional" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
@@ -678,8 +686,10 @@
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="xml_action">
+	  			<xs:sequence>
+	  				<xs:element name="value" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+	  			</xs:sequence>
 				<xs:attribute name="name"  use="optional" type="xs:string"/>
-				<xs:attribute name="value" use="optional" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
@@ -688,12 +698,13 @@
 	<!-- Unregistry attribute value Action -->
 	<xs:element name="unregistry_attribute_value_elementary_action">
 	  <xs:complexType>
-		<xs:complexContent>
-			<xs:extension base="xml_action">
-				<xs:attribute name="name"  use="optional" type="xs:string"/>
-				<xs:attribute name="value" use="optional" type="xs:string"/>
-			</xs:extension>
-		</xs:complexContent>
+	  	<xs:complexContent>
+	  		<xs:extension base="xml_action">
+	  			<xs:sequence>
+	  				<xs:element name="value" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+	  			</xs:sequence>
+	  			<xs:attribute name="name" use="optional" type="xs:string" />	  		</xs:extension>
+	  	</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
 
@@ -702,9 +713,11 @@
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="xml_action">
+	  			<xs:sequence>
+	  				<xs:element name="old_value" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+	  				<xs:element name="new_value" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+	  			</xs:sequence>
 				<xs:attribute name="name"  use="optional" type="xs:string"/>
-				<xs:attribute name="old_value" use="optional" type="xs:string"/>
-				<xs:attribute name="new_value" use="optional" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
@@ -849,8 +862,12 @@
 
 				
 
-	<xs:complexType name="pattern_property_base"><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/> </xs:complexType>
-    <xs:element name="pattern_node_background_color"> <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+	<xs:complexType name="pattern_property_base"><!-- if value is not present, the attribute is cleared. -->
+		<xs:sequence>
+			<xs:element name="value" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="pattern_node_background_color"> <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
     <xs:element name="pattern_node_color">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
     <xs:element name="pattern_node_style">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
     <xs:element name="pattern_node_text">             <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
