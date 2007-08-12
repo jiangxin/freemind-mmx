@@ -111,28 +111,40 @@ public class SplitNode extends MindMapNodeHookAdapter {
             HTMLDocument doc = new HTMLDocument();
             StringReader buf = new StringReader(text);
             try {
-                kit.read(buf, doc, 0);
-                Element parent = getParentElement(doc);
-                final int elementCount = parent.getElementCount();
-                parts = new String[elementCount];
-                for(int i = 0; i < elementCount; i++){
-                    Element current = parent.getElement(i);
-                    final int start = current.getStartOffset();
-                    final int end = current.getEndOffset();
-                    final String paragraphText = doc.getText(start, end - start).trim();
-                    if(paragraphText.length() > 0){
-                        StringWriter out = new StringWriter();
-                        new FixedHTMLWriter(out, doc, start, end - start).write();                
-                        parts[i] = out.toString();
-                    }
-                }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (BadLocationException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+				kit.read(buf, doc, 0);
+				Element parent = getParentElement(doc);
+				if(parent == null){
+					return null;
+				}
+				final int elementCount = parent.getElementCount();
+				int notEmptyElementCount = 0;
+				parts = new String[elementCount];
+				for(int i = 0; i < elementCount; i++){
+				    Element current = parent.getElement(i);
+				    final int start = current.getStartOffset();
+				    final int end = current.getEndOffset();
+				    final String paragraphText = doc.getText(start, end - start).trim();
+				    if(paragraphText.length() > 0){
+				        StringWriter out = new StringWriter();
+				        new FixedHTMLWriter(out, doc, start, end - start).write();                
+				        final String string = out.toString();
+				        if(! string.equals("")){
+						parts[i] = string;
+						notEmptyElementCount ++;
+				        }
+				        else{
+				        	parts[i] = null;
+				        }
+				    }
+				}
+				if(notEmptyElementCount <= 1){
+					return null;
+				}
+			} catch (IOException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			} catch (BadLocationException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
             return parts;
         }
         return text.split("\n");
