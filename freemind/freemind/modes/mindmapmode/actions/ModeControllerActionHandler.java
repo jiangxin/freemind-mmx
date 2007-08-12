@@ -19,13 +19,13 @@
  *
  * Created on 01.05.2004
  */
-/* $Id: ModeControllerActionHandler.java,v 1.1.2.1.2.3 2006-11-26 10:20:44 dpolivaev Exp $ */
+/* $Id: ModeControllerActionHandler.java,v 1.1.2.1.2.4 2007-08-12 08:06:43 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
+import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.mindmapmode.actions.xml.ActionHandler;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 /**
@@ -42,10 +42,10 @@ public class ModeControllerActionHandler implements ActionHandler {
 	/* (non-Javadoc)
 	 * @see freemind.controller.actions.ActionHandler#executeAction(freemind.controller.actions.ActionPair)
 	 */
-	public void executeAction(ActionPair pair) {
-		ActorXml actor = factory.getActor(pair.getDoAction());
+	public void executeAction(XmlAction action) {
+		ActorXml actor = factory.getActor(action);
 		try {
-            actor.act(pair.getDoAction());
+            actor.act(action);
         } catch (Exception e) {
             freemind.main.Resources.getInstance().logException(e);
         }

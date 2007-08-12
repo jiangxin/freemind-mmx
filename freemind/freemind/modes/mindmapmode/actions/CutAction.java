@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: CutAction.java,v 1.1.2.2.2.9 2007-07-08 16:10:25 dpolivaev Exp $ */
+/* $Id: CutAction.java,v 1.1.2.2.2.10 2007-08-12 08:06:43 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -73,24 +73,12 @@ public class CutAction extends AbstractAction implements ActorXml {
 		controller.getController().obtainFocusForSelected();
     }
 
-	public CutNodeAction getCutNodeAction(Transferable t, MindMapNode node){
-		return getCutNodeAction(t, new NodeCoordinate(node, node.isLeft()));
+	public CutNodeAction getCutNodeAction(MindMapNode node){
+        CutNodeAction cutAction =            new CutNodeAction();
+        cutAction.setNode(controller.getNodeID(node));
+        return cutAction;
 	}
 
-
-    /**
-    */
-    public CutNodeAction getCutNodeAction(Transferable t, NodeCoordinate coord)
-         {
-        CutNodeAction cutAction =
-            new CutNodeAction();
-        cutAction.setTransferableContent(getTransferableContent(t));
-        cutAction.setNode(controller.getNodeID(coord.target));
-		cutAction.setAsSibling(coord.asSibling);
-		cutAction.setIsLeft(coord.isLeft);
-
-        return cutAction;
-    }
 
     public Transferable cut(List nodeList) {
 	controller.sortNodesByDepth(nodeList);
@@ -103,13 +91,12 @@ public class CutAction extends AbstractAction implements ActorXml {
         for (Iterator i = nodeList.iterator(); i.hasNext();) {
         	MindMapNode node = (MindMapNode) i.next();
         	if(node.getParentNode() == null) continue;
-        	Transferable copy = controller.copy(node, true);
-        	NodeCoordinate coord = new NodeCoordinate(node, node.isLeft());
-            CutNodeAction cutNodeAction = getCutNodeAction( copy, coord);
+            CutNodeAction cutNodeAction = getCutNodeAction(node);
         	doAction.addChoice(cutNodeAction);
 
-        	PasteNodeAction pasteNodeAction=null;
-            pasteNodeAction = controller.paste.getPasteNodeAction(copy, coord);
+        	NodeCoordinate coord = new NodeCoordinate(node, node.isLeft());
+        	Transferable copy = controller.copy(node, true);
+        	XmlAction pasteNodeAction = controller.paste.getPasteNodeAction(copy, coord);
             // The paste actions are reversed because of the strange coordinates.
         	undo.addAtChoice(0,pasteNodeAction);
 
@@ -128,81 +115,11 @@ public class CutAction extends AbstractAction implements ActorXml {
         CutNodeAction cutAction = (CutNodeAction) action;
         // clear all recently cutted links from the registry:
         controller.getModel().getLinkRegistry().clearCuttedNodeBuffer();
-		NodeCoordinate coord = new NodeCoordinate(controller.getNodeFromID(cutAction.getNode()), cutAction.getAsSibling(), cutAction.getIsLeft());
-        MindMapNode selectedNode = coord.getNode();
+        MindMapNode selectedNode = controller.getNodeFromID(cutAction.getNode());
 		controller.getModel().getLinkRegistry().cutNode(selectedNode);
 		controller.deleteChild.deleteWithoutUndo(selectedNode);
     }
 
-	public TransferableContent getTransferableContent(
-		Transferable t)  {
-
-		try {
-			TransferableContent trans =
-					new TransferableContent();
-			if (t.isDataFlavorSupported(MindMapNodesSelection.mindMapNodesFlavor)) {
-				String textFromClipboard;
-				textFromClipboard =
-					(String) t.getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
-				trans.setTransferable(textFromClipboard);
-			}
-			if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-				String textFromClipboard;
-				textFromClipboard =
-					(String) t.getTransferData(DataFlavor.stringFlavor);
-				trans.setTransferableAsPlainText(textFromClipboard);
-			}
-			if (t.isDataFlavorSupported(MindMapNodesSelection.rtfFlavor)) {
-//				byte[] textFromClipboard = (byte[]) t.getTransferData(MindMapNodesSelection.rtfFlavor);
-//				trans.setTransferableAsRTF(textFromClipboard.toString());
-			}
-			if(t.isDataFlavorSupported(MindMapNodesSelection.htmlFlavor)) {
-				String textFromClipboard;
-				textFromClipboard =
-					(String) t.getTransferData(MindMapNodesSelection.htmlFlavor);
-				trans.setTransferableAsHtml(textFromClipboard);
-			}
-			if(t.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
-				/* Since the JAXB-generated interface TransferableContent doesn't supply
-				  a setTranserableAsFileList method, we have to get the fileList, clear it,
-				  and then set it to the new value.
-				*/
-	            List fileList = (List)t.getTransferData(MindMapNodesSelection.fileListFlavor);
-                for (Iterator iter = fileList.iterator(); iter.hasNext();) {
-                    File fileName = (File) iter.next();
-                    TransferableFile transferableFile = new TransferableFile();
-                    transferableFile.setFileName(fileName.getAbsolutePath());
-                    trans.addTransferableFile(transferableFile);
-                }
-			}
-			return trans;
-		} catch (UnsupportedFlavorException e) {
-freemind.main.Resources.getInstance().logException(			e);
-		} catch (IOException e) {
-freemind.main.Resources.getInstance().logException(			e);
-		}
-		return null;
-	}
-
-    public Transferable getTransferable(TransferableContent trans) {
-        // create Transferable:
-        //Add file list to this selection.
-        Vector fileList = new Vector();
-        for (Iterator iter = trans.getListTransferableFileList().iterator(); iter.hasNext();)
-        {
-            TransferableFile tFile = (TransferableFile) iter.next();
-            fileList.add(new File(tFile.getFileName()));
-        }
-        Transferable copy =
-            new MindMapNodesSelection(
-                trans.getTransferable(),
-        		trans.getTransferableAsPlainText(),
-                trans.getTransferableAsRTF(),
-                trans.getTransferableAsHtml(),
-                trans.getTransferableAsDrop(),
-                fileList);
-        return copy;
-    }
     /* (non-Javadoc)
      * @see freemind.controller.actions.ActorXml#getDoActionClass()
      */

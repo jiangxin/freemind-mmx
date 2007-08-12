@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.32 2007-08-05 10:29:03 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.33 2007-08-12 08:03:52 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -1041,17 +1041,8 @@ public abstract class ControllerAdapter implements ModeController {
 
         public Transferable copy(List selectedNodes, boolean copyInvisible) {
            try {
-              String forNodesFlavor = "";
-              boolean firstLoop = true;
-              for(Iterator it = selectedNodes.iterator();it.hasNext();) {
-                 MindMapNode tmpNode =  (MindMapNode)it.next();
-                 if (firstLoop) {
-                    firstLoop = false; }
-                 else {
-                    forNodesFlavor += "<nodeseparator>"; }
-
-                 forNodesFlavor += copy(tmpNode, copyInvisible).getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
-              }
+              String forNodesFlavor = createForNodesFlavor(selectedNodes,
+					copyInvisible);
 
               String plainText = getMap().getAsPlainText(selectedNodes);
               return new MindMapNodesSelection
@@ -1062,6 +1053,23 @@ public abstract class ControllerAdapter implements ModeController {
            catch (UnsupportedFlavorException ex) { freemind.main.Resources.getInstance().logException(ex); }
            catch (IOException ex) { freemind.main.Resources.getInstance().logException(ex); }
            return null; }
+
+		public String createForNodesFlavor(List selectedNodes,
+				boolean copyInvisible) throws UnsupportedFlavorException,
+				IOException {
+			String forNodesFlavor = "";
+              boolean firstLoop = true;
+              for(Iterator it = selectedNodes.iterator();it.hasNext();) {
+                 MindMapNode tmpNode =  (MindMapNode)it.next();
+                 if (firstLoop) {
+                    firstLoop = false; }
+                 else {
+                    forNodesFlavor += "<nodeseparator>"; }
+
+                 forNodesFlavor += copy(tmpNode, copyInvisible).getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
+              }
+			return forNodesFlavor;
+		}
     /**
      */
     public Color getSelectionColor() {

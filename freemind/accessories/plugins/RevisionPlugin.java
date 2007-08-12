@@ -30,7 +30,6 @@ import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.actions.xml.ActionHandler;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
 /**
@@ -71,8 +70,7 @@ public class RevisionPlugin extends PermanentMindMapNodeHookAdapter implements A
     /* (non-Javadoc)
      * @see freemind.controller.actions.ActionHandler#executeAction(freemind.controller.actions.ActionPair)
      */
-    public void executeAction(ActionPair pair) {
-    	XmlAction action = pair.getDoAction();
+    public void executeAction(XmlAction action) {
     	if(action instanceof EditNodeAction) {
     		// there is an edit action.
 			EditNodeAction editAction = (EditNodeAction) action;

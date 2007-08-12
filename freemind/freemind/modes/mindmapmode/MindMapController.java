@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.47 2007-08-05 10:29:11 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.48 2007-08-12 08:04:40 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -300,6 +300,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     public EdgeColorAction edgeColor = null;
     public EdgeWidthAction EdgeWidth_WIDTH_PARENT = null;
     public EdgeWidthAction EdgeWidth_WIDTH_THIN = null;
+//    public EdgeWidthAction EdgeWidth_WIDTH_HIDDEN = null;
     public EdgeWidthAction EdgeWidth_1 = null;
     public EdgeWidthAction EdgeWidth_2 = null;
     public EdgeWidthAction EdgeWidth_4 = null;
@@ -417,7 +418,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         // register default action handler:
         // the executor must be the first here, because it is executed last then.
         getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
-        getActionFactory().registerHandler(new UndoActionHandler(this, undo, redo));
+        getActionFactory().registerUndoHandler(new UndoActionHandler(this, undo, redo));
         //debug:        getActionFactory().registerHandler(new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
 
         cut = new CutAction(this);
@@ -454,6 +455,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         // load pattern actions:
         loadPatternActions();
         EdgeWidth_WIDTH_PARENT = new EdgeWidthAction(this, EdgeAdapter.WIDTH_PARENT);
+//        EdgeWidth_WIDTH_HIDDEN = new EdgeWidthAction(this, EdgeAdapter.WIDTH_HIDDEN);
         EdgeWidth_WIDTH_THIN = new EdgeWidthAction(this, EdgeAdapter.WIDTH_THIN);
         EdgeWidth_1 = new EdgeWidthAction(this, 1);
         EdgeWidth_2 = new EdgeWidthAction(this, 2);
@@ -2035,6 +2037,10 @@ freemind.main.Resources.getInstance().logException(					e1);
 				nodeStyleChanged(child);
 			}
 		}
+	}
+
+	public void repaintMap() {
+		 getView().repaint();		
 	}
 
 }

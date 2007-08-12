@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/* $Id: FormatNewNodes.java,v 1.1.4.3.2.2 2006-07-25 20:28:19 christianfoltin Exp $ */
+/* $Id: FormatNewNodes.java,v 1.1.4.3.2.3 2007-08-12 08:03:07 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.util.HashMap;
@@ -71,9 +71,9 @@ public class FormatNewNodes implements ActionHandler, ActionFilter,
 		controller.getActionFactory().deregisterFilter(this);
 	}
 
-	public void executeAction(ActionPair pair) {
+	public void executeAction(XmlAction action) {
 		// detect format changes:
-		detectFormatChanges(pair.getDoAction());
+		detectFormatChanges(action);
 	}
 
 	/**
