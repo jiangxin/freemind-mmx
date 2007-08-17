@@ -862,11 +862,7 @@
 
 				
 
-	<xs:complexType name="pattern_property_base"><!-- if value is not present, the attribute is cleared. -->
-		<xs:sequence>
-			<xs:element name="value" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
-		</xs:sequence>
-	</xs:complexType>
+	<xs:complexType name="pattern_property_base"><xs:complexContent><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>  </xs:complexContent>  </xs:complexType>
 	<xs:element name="pattern_node_background_color"> <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
     <xs:element name="pattern_node_color">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
     <xs:element name="pattern_node_style">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>

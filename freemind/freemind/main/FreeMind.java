@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.71 2007-08-07 20:09:24 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.72 2007-08-17 20:41:57 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -1037,13 +1037,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	private void tabSelectionChanged() {
 		if(!mTabbedPaneSelectionUpdate)
 			return;
-//					logger.info("State changed:"+pE);
-//					try {
-//						throw new IllegalArgumentException("Bla");
-//					} catch (Exception e) {
-//						// TODO: handle exception
-//						e.printStackTrace();
-//					}
 		int selectedIndex = mTabbedPane.getSelectedIndex();
 		// display nothing on the other tabs:
 		for(int j = 0 ; j < mTabbedPane.getTabCount(); j++) {

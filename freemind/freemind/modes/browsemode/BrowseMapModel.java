@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseMapModel.java,v 1.9.18.5.2.3 2006-09-02 22:09:49 christianfoltin Exp $ */
+/* $Id: BrowseMapModel.java,v 1.9.18.5.2.4 2007-08-17 20:41:57 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -39,7 +39,7 @@ import freemind.modes.ModeController;
 public class BrowseMapModel extends MapAdapter {
 
     private URL url;
-    private LinkRegistryAdapter linkRegistry;
+    private MindMapLinkRegistry linkRegistry;
 
     //
     // Constructors

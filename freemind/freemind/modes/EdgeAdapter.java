@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EdgeAdapter.java,v 1.14.18.5.2.3 2007-06-20 21:52:42 dpolivaev Exp $ */
+/* $Id: EdgeAdapter.java,v 1.14.18.5.2.4 2007-08-17 20:41:57 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -90,12 +90,10 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
         return width;
     }
 
-    /**
-     * Get the width in pixels rather than in width constant (like -1)
-     */
+    
     public int getRealWidth() {
-       int width = getWidth();
-       return (width < 1) ? 1 : width; }
+       return width;
+    }
     
     public Stroke getStroke() {
         if (width == WIDTH_THIN)

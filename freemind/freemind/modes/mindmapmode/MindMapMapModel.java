@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.16 2007-07-19 21:31:29 dpolivaev Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.17 2007-08-17 20:41:57 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -69,7 +69,7 @@ public class MindMapMapModel extends MapAdapter  {
 
     private static final String FREEMIND_VERSION_UPDATER_XSLT = "freemind/modes/mindmapmode/freemind_version_updater.xslt";
 	LockManager lockManager;
-    private LinkRegistryAdapter linkRegistry;
+    private MindMapLinkRegistry linkRegistry;
     private Timer timerForAutomaticSaving;
     private static final String EXPECTED_START_STRINGS[] = {
             "<map version=\"" + FreeMind.XML_VERSION + "\"",

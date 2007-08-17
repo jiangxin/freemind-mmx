@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.8 2007-02-21 20:24:39 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.9 2007-08-17 20:41:58 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -295,7 +295,7 @@ public class ScriptEditorPanel extends JDialog {
 					mStatus.setText("Line: "+ (lineOfOffset+1) + ", Column: " + (caretPosition-mScriptTextField.getLineStartOffset(lineOfOffset)+1));
 				} catch (BadLocationException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					freemind.main.Resources.getInstance().logException(e);
 				}
 				
 			}});

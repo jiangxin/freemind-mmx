@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BubbleMainView.java,v 1.1.4.6 2007-08-03 17:24:02 dpolivaev Exp $ */
+/* $Id: BubbleMainView.java,v 1.1.4.7 2007-08-17 20:41:58 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -35,7 +35,7 @@ class BubbleMainView extends MainView{
     private final static Stroke BOLD_STROKE =
         new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
                     1f, new float[] {2f, 2f}, 0f);  
-    private final static Stroke DEF_STROKE = new BasicStroke();
+    final static Stroke DEF_STROKE = new BasicStroke();
     
 
     /* (non-Javadoc)
@@ -65,10 +65,10 @@ class BubbleMainView extends MainView{
         g.setColor(model.getEdge().getColor());
         //g.drawOval(0,0,size.width-1,size.height-1);   // Changed by Daniel
 
-        g.drawRoundRect(0,0, getWidth()-1, getHeight()-1,10,10);
-
         // return to std stroke
         g.setStroke(DEF_STROKE);
+        g.drawRoundRect(0,0, getWidth()-1, getHeight()-1,10,10);
+
         super.paint(g);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
         }

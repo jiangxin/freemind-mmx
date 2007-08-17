@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ForkMainView.java,v 1.1.4.3 2007-08-03 17:24:02 dpolivaev Exp $ */
+/* $Id: ForkMainView.java,v 1.1.4.4 2007-08-17 20:41:58 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -40,7 +40,10 @@ class ForkMainView extends MainView{
         paintSelected(g);
         paintDragOver(g);
         
-        int edgeWidth = model.getEdge().getRealWidth();
+        int edgeWidth = model.getEdge().getWidth();
+        if(edgeWidth==0) {
+        	edgeWidth = 1;
+        }
         
         //Draw a standard node
         g.setColor(model.getEdge().getColor());
@@ -103,7 +106,10 @@ class ForkMainView extends MainView{
     }
 
     Point getCenterPoint() {
-        int edgeWidth = getNodeView().getModel().getEdge().getRealWidth();
+        int edgeWidth = getNodeView().getModel().getEdge().getWidth();
+        if(edgeWidth==0) {
+        	edgeWidth = 1;
+        }
         Point in= new Point(getWidth() / 2, getHeight() - edgeWidth/2 - 1);
         return in;
     }

@@ -20,7 +20,7 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: NodeStyleAction.java,v 1.1.2.2.2.5 2007-06-20 21:52:42 dpolivaev Exp $ */
+/* $Id: NodeStyleAction.java,v 1.1.2.2.2.6 2007-08-17 20:41:58 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -81,8 +81,8 @@ public class NodeStyleAction extends NodeGeneralAction implements NodeActorXml {
                 NodeStyleFormatAction nodeStyleAction = (NodeStyleFormatAction) action;
                 MindMapNode node = getNodeFromID(nodeStyleAction.getNode());
                 String style = nodeStyleAction.getStyle();
-                if(!Tools.safeEquals(node.getStyle(), style)) {
-    //                logger.info("Setting style of " + node + " to "+ style);
+                if(!Tools.safeEquals(node.hasStyle()?node.getStyle():null, style)) {
+//                    logger.info("Setting style of " + node + " to "+ style + " and was " + node.getStyle());
                     node.setStyle(style);
                     modeController.nodeStyleChanged(node);
                 }

@@ -20,7 +20,7 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: EdgeWidthAction.java,v 1.1.2.2.2.1 2006-10-10 18:51:53 christianfoltin Exp $ */
+/* $Id: EdgeWidthAction.java,v 1.1.2.2.2.2 2007-08-17 20:41:57 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -83,8 +83,9 @@ public class EdgeWidthAction extends NodeGeneralAction implements NodeActorXml {
             EdgeWidthFormatAction edgeWithAction = (EdgeWidthFormatAction) action;
             MindMapNode node = getNodeFromID(edgeWithAction.getNode());
             int width = edgeWithAction.getWidth();
-            if (((EdgeAdapter) node.getEdge()).getRealWidth() != width) {
-                ((EdgeAdapter) node.getEdge()).setWidth(width);
+            EdgeAdapter edge = (EdgeAdapter) node.getEdge();
+			if (edge.getRealWidth() != width) {
+                edge.setWidth(width);
                 modeController.nodeChanged(node);
             }
         }

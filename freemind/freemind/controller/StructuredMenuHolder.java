@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.2 2007-06-14 23:03:09 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.3 2007-08-17 20:41:57 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -210,6 +210,7 @@ public class StructuredMenuHolder {
 			StructuredMenuListener listener = new StructuredMenuListener();
 			
             public void addMenuItem(StructuredMenuItemHolder holder) {
+        		setLabelAndMnemonic(holder.getMenuItem(), null);
             	JMenuItem menuItem = holder.getMenuItem();
             	adjustMenuItem(menuItem);
              myItem.add(menuItem);
@@ -281,6 +282,7 @@ public class StructuredMenuHolder {
 		}
 
 		public void addMenuItem(StructuredMenuItemHolder holder) {
+    		setLabelAndMnemonic(holder.getMenuItem(), null);
 			JMenuItem item = holder.getMenuItem();
 			adjustMenuItem(item);
 			listener.addItem(holder);
@@ -479,12 +481,13 @@ public class StructuredMenuHolder {
 	 * character is a space. In "Find & Replace", ampersand does not label
 	 * mnemo, while in "&About", mnemo is "Alt + A".
 	 */
-    public void setLabelAndMnemonic(JMenuItem item, String inLabel) {
+    public static void setLabelAndMnemonic(JMenuItem item, String inLabel) {
 		String rawLabel = inLabel;
 		if (rawLabel == null)
 			rawLabel = item.getText();
 		if (rawLabel == null)
 			return;
+		// TODO: Replace a-z by a unicode variant.
 		item.setText(rawLabel.replaceAll("&([a-zA-Z])", "$1"));
 		int mnemoSignIndex = rawLabel.indexOf("&");
 		if (mnemoSignIndex >= 0 && mnemoSignIndex + 1 < rawLabel.length()) {

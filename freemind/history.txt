@@ -19,6 +19,9 @@ Changes made in FreeMind 0.9.0 Beta 13
 * bug fixes and necessary refactorings for paste and cut - actions
 	 only UndoActionHandler uses the undo - action from the action pair, 
 	 the undo action is prepared during paste action is executed
+* Bug fix: patterns repaired
+* Bug fix: edge properties in patterns
+
 	 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 12
