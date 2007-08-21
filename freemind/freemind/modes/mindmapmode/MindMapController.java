@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.49 2007-08-17 20:41:57 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.50 2007-08-21 21:45:20 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -300,7 +300,6 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     public EdgeColorAction edgeColor = null;
     public EdgeWidthAction EdgeWidth_WIDTH_PARENT = null;
     public EdgeWidthAction EdgeWidth_WIDTH_THIN = null;
-//    public EdgeWidthAction EdgeWidth_WIDTH_HIDDEN = null;
     public EdgeWidthAction EdgeWidth_1 = null;
     public EdgeWidthAction EdgeWidth_2 = null;
     public EdgeWidthAction EdgeWidth_4 = null;
@@ -455,7 +454,6 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         // load pattern actions:
         loadPatternActions();
         EdgeWidth_WIDTH_PARENT = new EdgeWidthAction(this, EdgeAdapter.WIDTH_PARENT);
-//        EdgeWidth_WIDTH_HIDDEN = new EdgeWidthAction(this, EdgeAdapter.WIDTH_HIDDEN);
         EdgeWidth_WIDTH_THIN = new EdgeWidthAction(this, EdgeAdapter.WIDTH_THIN);
         EdgeWidth_1 = new EdgeWidthAction(this, 1);
         EdgeWidth_2 = new EdgeWidthAction(this, 2);
