@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.35 2007-08-08 21:10:40 christianfoltin Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.36 2007-08-21 21:37:02 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -924,8 +924,18 @@ public class MapView extends JPanel implements Printable, Autoscroll{
             final Graphics2D g2 = (Graphics2D)g;
             final Object renderingHint = g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
 			getController().setEdgesRenderingHint(g2);
+			final Object oldRenderingHintFM = g2.getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS);
+			final Object newRenderingHintFM = getZoom() != 1F ? RenderingHints.VALUE_FRACTIONALMETRICS_ON : RenderingHints.VALUE_FRACTIONALMETRICS_OFF;
+			if(oldRenderingHintFM != newRenderingHintFM)
+			{
+				g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, newRenderingHintFM );
+			}
             super.paint(g);
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
+			if(oldRenderingHintFM != newRenderingHintFM)
+			{
+				g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, oldRenderingHintFM);
+			}
         }
 
     public void paintChildren(Graphics graphics) {

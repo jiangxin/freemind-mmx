@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.20 2007-08-05 21:45:45 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.21 2007-08-21 21:37:02 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -129,21 +129,7 @@ public abstract class MainView extends JLabel{
 
         private float getZoom() {
             float zoom = getNodeView().getMap().getZoom();
-            
-            // Dimitry: workaround because of j2se can not calculate font size properly
-            // in case of small zoom values.
-            // This work around does not help in case of html nodes,
-            // thats why text may be truncated there. 
-            if(zoom < 1 && getClientProperty("html") == null){
-                int w = super.getWidth();
-                int charCount = getText().length();
-                w *= zoom;
-                if(charCount > 0 && charCount < w){
-                    zoom *= w;
-                    zoom /= (w + charCount);
-                }
-            }
-            return zoom;
+             return zoom;
         }   
         protected void printComponent(Graphics g){
             super.paintComponent(g);
