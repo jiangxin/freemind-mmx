@@ -19,7 +19,7 @@
  *
  * Created on 31.07.2007
  */
-/*$Id: OptionalDontShowMeAgainDialog.java,v 1.1.2.3 2007-08-09 06:39:37 dpolivaev Exp $*/
+/*$Id: OptionalDontShowMeAgainDialog.java,v 1.1.2.4 2007-08-21 19:54:00 christianfoltin Exp $*/
 
 package freemind.common;
 
@@ -174,17 +174,20 @@ public class OptionalDontShowMeAgainDialog {
 		}
 		mDontShowAgainBox = new JCheckBox(mTextTranslator
 				.getText(boxString));
+		Tools.setLabelAndMnemonic(mDontShowAgainBox, null);
 		mDialog.getContentPane().add(mDontShowAgainBox, new GridBagConstraints(0, 2, 3, 1, 1.0, 1.0,
 				GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5,
 						0, 0), 0, 0));
 		JButton okButton = new JButton(mTextTranslator
 				.getText("OptionalDontShowMeAgainDialog.ok"));
+		Tools.setLabelAndMnemonic(okButton, null);
 		okButton.addActionListener(okAction);
 		mDialog.getContentPane().add(okButton, new GridBagConstraints(2, 3, 1, 1, 1.0, 1.0,
 				GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5,
 						0, 0), 0, 0));
 		JButton cancelButton = new JButton(mTextTranslator
 				.getText("OptionalDontShowMeAgainDialog.cancel"));
+		Tools.setLabelAndMnemonic(cancelButton, null);
 		cancelButton.addActionListener(cancelAction);
 		mDialog.getContentPane().add(cancelButton, new GridBagConstraints(3, 3, 1, 1, 1.0, 1.0,
 				GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5,

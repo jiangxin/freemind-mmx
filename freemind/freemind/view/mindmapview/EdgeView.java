@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeView.java,v 1.13.14.2.4.4 2007-08-03 17:24:02 dpolivaev Exp $*/
+/*$Id: EdgeView.java,v 1.13.14.2.4.5 2007-08-21 19:54:10 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
 import freemind.main.Tools;
+import freemind.modes.EdgeAdapter;
 import freemind.modes.MindMapEdge;
 import java.awt.*;
 
@@ -31,9 +32,10 @@ import javax.swing.JLabel;
  */
 public abstract class EdgeView {
     private NodeView target;
-    private NodeView source;
+    protected NodeView source;
     protected Point start, end;
     private static int i;
+    private static final BasicStroke DEF_STROKE = new BasicStroke();
 
     static Stroke ECLIPSED_STROKE = null;
 
@@ -63,8 +65,13 @@ public abstract class EdgeView {
     public abstract Color getColor();
 
     public Stroke getStroke() {
-       Stroke result = getModel().getStroke();
-       return result; }
+    	int width = getWidth();
+    	if(width == EdgeAdapter.WIDTH_THIN) {
+			return DEF_STROKE;
+    	}
+    	return new BasicStroke(width*getMap().getZoom(), BasicStroke.CAP_BUTT,
+                BasicStroke.JOIN_MITER);
+    }
 
     public int getWidth() {
        return getModel().getWidth(); }

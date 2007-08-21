@@ -16,19 +16,16 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLine.java,v 1.2.34.1 2007-04-21 15:11:21 dpolivaev Exp $*/
+/*$Id: MindMapLine.java,v 1.2.34.2 2007-08-21 19:54:08 christianfoltin Exp $*/
 
 package freemind.modes;
 
 import java.awt.Color;
-import java.awt.Stroke;
-import freemind.modes.MindMapNode;
 
 public interface MindMapLine extends Cloneable {
 
     public Color getColor();
     public String getStyle();
-    public Stroke getStroke();
     public int getWidth();
     public int getRealWidth();
     public String toString();

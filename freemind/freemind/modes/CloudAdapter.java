@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: CloudAdapter.java,v 1.1.16.3.4.2 2007-05-06 21:12:19 christianfoltin Exp $*/
+/*$Id: CloudAdapter.java,v 1.1.16.3.4.3 2007-08-21 19:54:05 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -123,16 +123,6 @@ public abstract class CloudAdapter extends LineAdapter implements MindMapCloud {
     }
     protected void setStandardStyle(String standardStyle) {
         CloudAdapter.standardStyle = standardStyle;
-    }
-
-    /* (non-Javadoc)
-     * @see freemind.modes.LineAdapter#getStroke()
-     */
-    public Stroke getStroke() {
-        Stroke result = super.getStroke();
-        if (result==null)
-            return DEF_STROKE;
-        return result;
     }
 
 	protected String getStandardColorPropertyString() {

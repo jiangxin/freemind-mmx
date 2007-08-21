@@ -232,6 +232,8 @@ public class AutomaticLayout extends PermanentMindMapNodeHookAdapter {
         String patterns;
 
         JList mList;
+        
+        boolean mDialogIsShown=false;
 
         private final TextTranslator mTranslator;
 
@@ -309,16 +311,24 @@ public class AutomaticLayout extends PermanentMindMapNodeHookAdapter {
                     choice);
             EventQueue.invokeLater(new Runnable(){
 				public void run() {
-		            formatDialog.setModal(true);
-		            formatDialog.pack();
-		            formatDialog.setVisible(true);
-		            // process result:
-		            if (formatDialog.getResult() == ChooseFormatPopupDialog.OK) {
-		                formatDialog.getPattern(choice);
-		                patterns = XmlBindingTools.getInstance().marshall(pat);
-		                setValue(patterns);
-		                firePropertyChangeEvent();
-		            }
+					if(mDialogIsShown)
+						return;
+					mDialogIsShown = true;
+		            try {
+						formatDialog.setModal(true);
+						formatDialog.pack();
+						formatDialog.setVisible(true);
+						// process result:
+						if (formatDialog.getResult() == ChooseFormatPopupDialog.OK) {
+							formatDialog.getPattern(choice);
+							patterns = XmlBindingTools.getInstance().marshall(
+									pat);
+							setValue(patterns);
+							firePropertyChangeEvent();
+						}
+					} finally {
+						mDialogIsShown = false;
+					}
 				}
             	
             });

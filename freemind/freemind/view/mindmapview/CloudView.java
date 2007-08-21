@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: CloudView.java,v 1.1.16.2.12.2 2007-08-03 17:24:02 dpolivaev Exp $*/
+/*$Id: CloudView.java,v 1.1.16.2.12.3 2007-08-21 19:54:10 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapCloud;
@@ -53,6 +53,7 @@ import java.awt.RenderingHints;
  * This class represents a Cloud around a node.
  */
 public class CloudView {
+	static final Stroke DEF_STROKE = new BasicStroke(1);
     protected MindMapCloud cloudModel;
     protected NodeView source;
     /** getIterativeLevel() describes the n-th nested cloud that is to be painted.*/
@@ -162,10 +163,14 @@ public class CloudView {
     }
 
     public Stroke getStroke() {
-        Stroke result = getModel().getStroke();
-        return result;
+    	int width = getWidth();
+    	if(width < 1){
+    		return DEF_STROKE;
+    	}
+    	return new BasicStroke(width, BasicStroke.CAP_BUTT,
+                BasicStroke.JOIN_MITER);
     }
-
+    
     public int getWidth() {
         return getModel().getWidth(); 
     }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.36 2007-08-05 20:33:14 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.37 2007-08-21 19:54:01 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -1239,21 +1239,21 @@ public class Controller  implements MapModuleChangeObserver {
         public ZoomInAction(Controller controller) {
            super(controller.getResourceString("zoom_in")); }
         public void actionPerformed(ActionEvent e) {
-            logger.info("ZoomInAction actionPerformed");
+//            logger.info("ZoomInAction actionPerformed");
            ((MainToolBar)toolbar).zoomIn(); }}
 
     protected class ZoomOutAction extends AbstractAction {
         public ZoomOutAction(Controller controller) {
            super(controller.getResourceString("zoom_out")); }
         public void actionPerformed(ActionEvent e) {
-            logger.info("ZoomOutAction actionPerformed");
+//            logger.info("ZoomOutAction actionPerformed");
            ((MainToolBar)toolbar).zoomOut(); }}
 
     protected class ShowSelectionAsRectangleAction extends AbstractAction {
         public ShowSelectionAsRectangleAction(Controller controller) {
            super(controller.getResourceString("selection_as_rectangle")); }
         public void actionPerformed(ActionEvent e) {
-            logger.info("ShowSelectionAsRectangleAction action Performed");
+//            logger.info("ShowSelectionAsRectangleAction action Performed");
             showSelectionAsRectangle();
            }
         }

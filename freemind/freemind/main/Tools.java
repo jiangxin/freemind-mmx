@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.21 2007-08-05 22:32:40 dpolivaev Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.22 2007-08-21 19:54:03 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -69,6 +69,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -1028,5 +1029,27 @@ public class Tools {
         Component destination = SwingUtilities.getAncestorOfClass(ancestorClass, source);
         convertPointToAncestor(source, point, destination);
     }
+
+	/**
+	 * Ampersand indicates that the character after it is a mnemo, unless the
+	 * character is a space. In "Find & Replace", ampersand does not label
+	 * mnemo, while in "&About", mnemo is "Alt + A".
+	 */
+	public static void setLabelAndMnemonic(AbstractButton item, String inLabel) {
+		String rawLabel = inLabel;
+		if (rawLabel == null)
+			rawLabel = item.getText();
+		if (rawLabel == null)
+			return;
+		item.setText(rawLabel.replaceAll("&([^ ])", "$1"));
+		int mnemoSignIndex = rawLabel.indexOf("&");
+		if (mnemoSignIndex >= 0 && mnemoSignIndex + 1 < rawLabel.length()) {
+			char charAfterMnemoSign = rawLabel.charAt(mnemoSignIndex + 1);
+			if (charAfterMnemoSign != ' ')
+				item.setMnemonic(charAfterMnemoSign);
+			// sets the underline to exactly this character.
+			item.setDisplayedMnemonicIndex(mnemoSignIndex);
+		}
+	}
 }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.8.14.4.4.4 2007-08-03 17:24:02 dpolivaev Exp $*/
+/*$Id: ArrowLinkView.java,v 1.8.14.4.4.5 2007-08-21 19:54:08 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -254,10 +254,12 @@ public class ArrowLinkView {
     }
 
     public Stroke getStroke() {
-        Stroke result = getModel().getStroke();
-        if (result==null)
-            return DEF_STROKE;
-        return result;
+    	int width = getWidth();
+    	if(width < 1){
+    		return DEF_STROKE;
+    	}
+    	return new BasicStroke(width, BasicStroke.CAP_BUTT,
+                BasicStroke.JOIN_MITER);
     }
 
     public int getWidth() {

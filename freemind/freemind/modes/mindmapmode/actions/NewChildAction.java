@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: NewChildAction.java,v 1.1.2.2.2.4 2007-08-08 21:10:40 christianfoltin Exp $ */
+/* $Id: NewChildAction.java,v 1.1.2.2.2.5 2007-08-21 19:54:08 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -89,7 +89,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
     }
 
 
-	public MindMapNode addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e) {
+	public MindMapNode addNew(final MindMapNode target, int newNodeMode, final KeyEvent e) {
 	   final MindMapNode targetNode = target;
 	   MindMapNode newNode = null;
 
@@ -98,11 +98,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		 case MindMapController.NEW_SIBLING_BEFORE:
 		 case MindMapController.NEW_SIBLING_BEHIND:
             {
-		     if (targetNode.isRoot()) {
-		         c.getController().errorMessage(c.getText("new_node_as_sibling_not_possible_for_the_root"));
-		         c.setBlocked(false);
-		         return null;
-		     }
+		     if (!targetNode.isRoot()) {
 		     MindMapNode parent = targetNode.getParentNode();
 		     int childPosition = parent.getChildPosition(targetNode);
 		     if (newNodeMode == MindMapController.NEW_SIBLING_BEHIND) {
@@ -113,6 +109,13 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		     c.select(nodeView);
 		     c.edit.editLater(nodeView, c.getNodeView(target), e, true, false, false);
 		     break;
+		     } else {
+		    	 // fc, 21.8.07: we don't do anything here and get a new child instead.
+		    	 newNodeMode = MindMapController.NEW_CHILD;
+//		         c.getController().errorMessage(c.getText("new_node_as_sibling_not_possible_for_the_root"));
+//		         c.setBlocked(false);
+//		         return null;
+		     }
             }
 
 		 case MindMapController.NEW_CHILD:

@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EdgeAdapter.java,v 1.14.18.5.2.4 2007-08-17 20:41:57 christianfoltin Exp $ */
+/* $Id: EdgeAdapter.java,v 1.14.18.5.2.5 2007-08-21 19:54:05 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -42,8 +42,6 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
     public static final int WIDTH_PARENT = -1;
 
     public static final int WIDTH_THIN = 0;
-    
-    static final Stroke DEF_STROKE = new BasicStroke();
     
     public final static String EDGESTYLE_LINEAR = "linear";
     public final static String EDGESTYLE_BEZIER = "bezier";
@@ -95,27 +93,8 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
        return width;
     }
     
-    public Stroke getStroke() {
-        if (width == WIDTH_THIN)
-            return getDefaultStroke();
-        if (stroke == null) {
-            if (getTarget().isRoot()) {
-                return getDefaultStroke();
-            }
-            return getSource().getEdge().getStroke();
-        }
-        return stroke;
-    }
-
-    private Stroke getDefaultStroke() {
-       return DEF_STROKE;
-    }
-
     public void setWidth(int width) {
         this.width = width;
-        stroke = ((width == WIDTH_PARENT) || (width == WIDTH_THIN)) ? null
-                : new BasicStroke(getWidth(), BasicStroke.CAP_BUTT,
-                        BasicStroke.JOIN_MITER);
     }
 
     public String getStyle() {

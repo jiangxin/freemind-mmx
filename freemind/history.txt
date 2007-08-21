@@ -21,7 +21,9 @@ Changes made in FreeMind 0.9.0 Beta 13
 	 the undo action is prepared during paste action is executed
 * Bug fix: patterns repaired
 * Bug fix: edge properties in patterns
-
+* Mnemonics for english and german completed
+* Enter on root gives a new child
+* Bug fix: edges scale now with zoom.
 	 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 12

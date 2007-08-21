@@ -16,17 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LineAdapter.java,v 1.2.18.2.4.3 2007-05-06 21:12:19 christianfoltin Exp $*/
+/*$Id: LineAdapter.java,v 1.2.18.2.4.4 2007-08-21 19:54:06 christianfoltin Exp $*/
 
 package freemind.modes;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Stroke;
 
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
-import freemind.preferences.FreemindPropertyListener;
 
 public abstract class LineAdapter implements MindMapLine {
 
@@ -40,7 +37,6 @@ public abstract class LineAdapter implements MindMapLine {
     protected Color color; 
     protected String style;
     protected int width;
-	protected Stroke stroke;
 
     //
     // Constructors
@@ -49,7 +45,6 @@ public abstract class LineAdapter implements MindMapLine {
         this.frame = frame;
         this.target = target;
         width = DEFAULT_WIDTH;
-        stroke = null;
         updateStandards();
 
     }
@@ -112,13 +107,8 @@ public abstract class LineAdapter implements MindMapLine {
     }
     
     
-    public Stroke getStroke() {
-        return stroke;
-    }
-		
     public void setWidth(int width) {
         this.width = width;
-        stroke = new BasicStroke(getWidth(),BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER); 
     }
 
     public String getStyle() {
