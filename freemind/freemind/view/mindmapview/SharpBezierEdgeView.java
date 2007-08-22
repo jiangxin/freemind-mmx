@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SharpBezierEdgeView.java,v 1.5.34.3 2007-08-21 19:54:11 christianfoltin Exp $*/
+/*$Id: SharpBezierEdgeView.java,v 1.5.34.4 2007-08-22 13:23:54 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -45,29 +45,29 @@ public class SharpBezierEdgeView extends EdgeView {
     private void update() {
     	float zoom = getMap().getZoom();
     	float xctrlRelative =   XCTRL*zoom ;
-	//YCTRL could be implemented but then we had to check whether target is above or below source.
-	if(getTarget().isLeft()) {
-	    one = new Point2D.Float(start.x-xctrlRelative, start.y);
-	    two = new Point2D.Float(end.x+xctrlRelative, end.y);
-	} else {
-	    one = new Point2D.Float(start.x+xctrlRelative, start.y);
-	    two = new Point2D.Float(end.x-xctrlRelative, end.y);
-	}
-	float w = (getWidth()/2+1)*zoom;
-	float w2 = w/2;
-	line1.setCurve(start.x,start.y-w,one.x,one.y-w,two.x,two.y-w2,end.x,end.y);
-	line2.setCurve(end.x,end.y,two.x,two.y+w2,one.x,one.y+w,start.x,start.y+w);
-	graph.reset();
-	graph.append(line1,true);
-	graph.append(line2,true);
-	graph.closePath();
+    	//YCTRL could be implemented but then we had to check whether target is above or below source.
+    	if(getTarget().isLeft()) {
+    		one = new Point2D.Float(start.x-xctrlRelative, start.y);
+    		two = new Point2D.Float(end.x+xctrlRelative, end.y);
+    	} else {
+    		one = new Point2D.Float(start.x+xctrlRelative, start.y);
+    		two = new Point2D.Float(end.x-xctrlRelative, end.y);
+    	}
+    	float w = (getWidth()/2+1)*zoom;
+    	float w2 = w/2;
+    	line1.setCurve(start.x,start.y-w,one.x,one.y-w,two.x,two.y-w2,end.x,end.y);
+    	line2.setCurve(end.x,end.y,two.x,two.y+w2,one.x,one.y+w,start.x,start.y+w);
+    	graph.reset();
+    	graph.append(line1,true);
+    	graph.append(line2,true);
+    	graph.closePath();
     }
 
     protected void paint(Graphics2D g) {
     update();
 	g.setColor(getColor());
 	g.setPaint(getColor());
-	g.setStroke(getStroke());
+	g.setStroke(DEF_STROKE);
 	g.fill(graph);
 	g.draw(graph);
     }

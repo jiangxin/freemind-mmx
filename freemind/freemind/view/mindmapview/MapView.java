@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.36 2007-08-21 21:37:02 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.37 2007-08-22 13:23:54 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -523,28 +523,31 @@ public class MapView extends JPanel implements Printable, Autoscroll{
             if (shiftSelectionOrigin == null) {
                 shiftSelectionOrigin = getSelected(); }
 
-            int deltaY = newlySelectedNodeView.getY() - shiftSelectionOrigin.getY();
-
-            // page up and page down
+            final int newY = getMainViewY(newlySelectedNodeView);            
+			final int selectionOriginY = getMainViewY(shiftSelectionOrigin);
+			int deltaY = newY - selectionOriginY;
             NodeView currentSelected = getSelected();
-            if (e.getKeyCode() == KeyEvent.VK_PAGE_UP) {
+            final int currentSelectedY = getMainViewY(currentSelected);
+            
+            // page up and page down
+			if (e.getKeyCode() == KeyEvent.VK_PAGE_UP) {
                 for (;;) {
-                    if (currentSelected.getY() > shiftSelectionOrigin.getY())
+                    if (currentSelectedY > selectionOriginY)
                         deselect(currentSelected);
                     else
                         makeTheSelected(currentSelected);
-                    if (currentSelected.getY() <= newlySelectedNodeView.getY())
+                    if (currentSelectedY <= newY)
                         break;
                     currentSelected = currentSelected.getPreviousSibling(); }
                 return; }
 
             if (e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
                 for (;;) {
-                    if (currentSelected.getY() < shiftSelectionOrigin.getY())
+                    if (currentSelectedY < selectionOriginY)
                         deselect(currentSelected);
                     else
                         makeTheSelected(currentSelected);
-                    if (currentSelected.getY() >= newlySelectedNodeView.getY())
+                    if (currentSelectedY >= newY)
                         break;
                     currentSelected = currentSelected.getNextSibling(); }
                 return; }
@@ -560,6 +563,13 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         else {
             shiftSelectionOrigin = null;
             selectAsTheOnlyOneSelected(newlySelectedNodeView); }}
+
+	private int getMainViewY(NodeView node) {
+		Point newSelectedLocation = new Point();
+		Tools.convertPointToAncestor(node.getMainView(), newSelectedLocation, this);
+		final int newY = newSelectedLocation.y;
+		return newY;
+	}
 
     public void moveToRoot() {
         selectAsTheOnlyOneSelected( getRoot() );

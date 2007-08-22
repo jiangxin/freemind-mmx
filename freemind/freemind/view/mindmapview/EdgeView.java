@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeView.java,v 1.13.14.2.4.5 2007-08-21 19:54:10 christianfoltin Exp $*/
+/*$Id: EdgeView.java,v 1.13.14.2.4.6 2007-08-22 13:23:54 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -35,7 +35,7 @@ public abstract class EdgeView {
     protected NodeView source;
     protected Point start, end;
     private static int i;
-    private static final BasicStroke DEF_STROKE = new BasicStroke();
+    protected static final BasicStroke DEF_STROKE = new BasicStroke();
 
     static Stroke ECLIPSED_STROKE = null;
 
