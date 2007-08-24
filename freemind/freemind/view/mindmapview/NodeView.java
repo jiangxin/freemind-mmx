@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.46 2007-08-17 20:41:58 christianfoltin Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.47 2007-08-24 22:10:24 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -123,7 +123,7 @@ public class NodeView extends JComponent implements TreeModelListener{
         this.map = map;
         final TreeNode parentNode = model.getParent();
         final int index =  parentNode == null ? 0 : parentNode.getIndex(model);
-        attributeView = new AttributeView(this);
+        createAttributeView();
         
         parent.add(this, index);
         
@@ -632,7 +632,9 @@ public class NodeView extends JComponent implements TreeModelListener{
         }
        	getMap().getModel().getModeController().onViewRemovedHook(this);
         removeFromMap();
-        attributeView.viewRemoved();
+        if(attributeView != null){
+        	attributeView.viewRemoved();
+        }
         getModel().removeViewer(this); // Let the model know he is invisible
     }
  
@@ -646,11 +648,22 @@ public class NodeView extends JComponent implements TreeModelListener{
     	updateTextColor();
         updateFont();
     	updateIcons();
-        attributeView.update();
+    	createAttributeView();
+      	if(attributeView != null)
+    	{
+    		attributeView.update();
+    	}
         updateText();
         updateToolTip();
         revalidate(); // Because of zoom?
     }
+
+
+	public void createAttributeView() {
+		if(attributeView == null && model.getAttributes().getNode() != null){
+    		attributeView = new AttributeView(this);
+    	}
+	}
 
     void repaintSelected(){
     	updateTextColor();
@@ -985,7 +998,9 @@ public class NodeView extends JComponent implements TreeModelListener{
         return mainView;
     }
     void syncronizeAttributeView() {
-        attributeView.syncronizeAttributeView();
+    	if(attributeView != null){
+    		attributeView.syncronizeAttributeView();
+    	}
     }
     public void setTextFont(Color c) {
         mainView.setForeground(c);
@@ -1004,6 +1019,12 @@ public class NodeView extends JComponent implements TreeModelListener{
     /**
      */
     public AttributeView getAttributeView() {
+        if(attributeView == null)
+        {
+        	model.createAttributeTableModel();
+        	attributeView = new AttributeView(this);
+        }
+
         return attributeView;
     }        
 

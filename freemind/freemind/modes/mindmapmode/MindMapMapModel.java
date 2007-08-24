@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.17 2007-08-17 20:41:57 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.18 2007-08-24 22:10:24 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -96,31 +96,12 @@ public class MindMapMapModel extends MapAdapter  {
             root = new MindMapNodeModel( frame.getResourceString("new_mindmap"), frame, this);
         setRoot(root);
         readOnly = false;
+        // automatic save: start timer after the map is completely loaded
+        EventQueue.invokeLater(new Runnable(){
 
-        // automatic save:
-        timerForAutomaticSaving = new Timer();
-        int delay = Integer.parseInt(getFrame().getProperty("time_for_automatic_save"));
-        int numberOfTempFiles = Integer.parseInt(getFrame().getProperty("number_of_different_files_for_automatic_save"));
-        boolean filesShouldBeDeletedAfterShutdown = Tools.safeEquals(getFrame().getProperty("delete_automatic_saves_at_exit"),"true");
-        String path = getFrame().getProperty("path_to_automatic_saves");
-        /* two standard values: */
-        if(Tools.safeEquals(path, "default")) {
-            path = null;
-        }
-        if(Tools.safeEquals(path, "freemind_home")) {
-            path = getFrame().getFreemindDirectory();
-        }
-        File dirToStore = null;
-        if(path!=null) {
-            dirToStore = new File(path);
-            /* existence? */
-            if(! dirToStore.isDirectory()) {
-                dirToStore = null;
-                System.err.println("Temporary directory " + path + " not found. Disabling automatic store.");
-                delay = Integer.MAX_VALUE;
-            }
-        }
-        timerForAutomaticSaving.schedule(new doAutomaticSave(this, numberOfTempFiles, filesShouldBeDeletedAfterShutdown, dirToStore), delay, delay);
+			public void run() {
+		        scheduleTimerForAutomaticSaving();
+			}});
     }
 
     //
@@ -264,6 +245,9 @@ public class MindMapMapModel extends MapAdapter  {
             return false; }
         try {
             //Generating output Stream
+        	if(timerForAutomaticSaving != null) {
+        		timerForAutomaticSaving.cancel();
+        	}
             BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
             getXml(fileout);
 
@@ -278,12 +262,12 @@ public class MindMapMapModel extends MapAdapter  {
                 getFrame().getController().errorMessage(message);
             else
                 getFrame().out(message);
-            return false;
         } catch(Exception e) {
             System.err.println("Error in MindMapMapModel.save(): ");
             freemind.main.Resources.getInstance().logException(e);
-            return false;
         }
+        scheduleTimerForAutomaticSaving();
+        return false;
     }
 
 
@@ -382,7 +366,7 @@ public class MindMapMapModel extends MapAdapter  {
         // the resulting file is accessed by the reader:
         Reader reader = null;
         for(int i = 0; i < EXPECTED_START_STRINGS.length; i++){
-            if (mapStart.equals(EXPECTED_START_STRINGS[i])) {
+            if (mapStart.startsWith(EXPECTED_START_STRINGS[i])) {
                 // actual version:
                 reader = Tools.getActualReader(file);
                 break;
@@ -442,7 +426,36 @@ freemind.main.Resources.getInstance().logException(			e);
 
 
 
-    private class LockManager extends TimerTask {
+    private void scheduleTimerForAutomaticSaving() {
+		int numberOfTempFiles = Integer.parseInt(getFrame().getProperty("number_of_different_files_for_automatic_save"));
+		boolean filesShouldBeDeletedAfterShutdown = Tools.safeEquals(getFrame().getProperty("delete_automatic_saves_at_exit"),"true");
+		String path = getFrame().getProperty("path_to_automatic_saves");
+		/* two standard values: */
+		if(Tools.safeEquals(path, "default")) {
+		    path = null;
+		}
+		if(Tools.safeEquals(path, "freemind_home")) {
+		    path = getFrame().getFreemindDirectory();
+		}
+		int delay = Integer.parseInt(getFrame().getProperty("time_for_automatic_save"));
+		File dirToStore = null;
+		if(path!=null) {
+		    dirToStore = new File(path);
+		    /* existence? */
+		    if(! dirToStore.isDirectory()) {
+		        dirToStore = null;
+		        System.err.println("Temporary directory " + path + " not found. Disabling automatic store.");
+		        delay = Integer.MAX_VALUE;
+		        return;
+		    }
+		}
+		timerForAutomaticSaving = new Timer();
+		timerForAutomaticSaving.schedule(new doAutomaticSave(MindMapMapModel.this, numberOfTempFiles, filesShouldBeDeletedAfterShutdown, dirToStore), delay);
+	}
+
+
+
+	private class LockManager extends TimerTask {
         File lockedSemaphoreFile = null;
         Timer lockTimer = null;
         final long lockUpdatePeriod = 4*60*1000; // four minutes

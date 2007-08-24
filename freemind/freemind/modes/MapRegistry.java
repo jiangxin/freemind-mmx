@@ -80,6 +80,9 @@ public class MapRegistry {
 
     private void registryAttributes(MindMapNode node) {
         NodeAttributeTableModel model = node.getAttributes();
+        if(model == null){
+        	return;
+        }
         for (int i = 0; i < model.getRowCount(); i++){
             attributes.registry(model.getAttribute(i));
         }

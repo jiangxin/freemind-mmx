@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.33 2007-08-05 20:33:15 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.34 2007-08-24 22:10:23 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -120,6 +120,7 @@ public abstract class NodeAdapter implements MindMapNode {
     private FreeMindMain frame;
     private static final boolean ALLOWSCHILDREN = true;
     private static final boolean ISLEAF = false; //all nodes may have children
+	private static final NodeAttributeTableModel EMTPY_ATTRIBUTES = new NodeAttributeTableModel(null);
 
     private HistoryInformation historyInformation = null;
 	// Logging:
@@ -148,7 +149,7 @@ public abstract class NodeAdapter implements MindMapNode {
 		// create creation time:
 		setHistoryInformation(new HistoryInformation());
 		this.map = map;
-		this.attributes = new NodeAttributeTableModel(this);
+		this.attributes = EMTPY_ATTRIBUTES;
     }
 
     /**
@@ -187,7 +188,7 @@ public abstract class NodeAdapter implements MindMapNode {
 
     /** \0 is not allowed: */
     private String makeValidXml(String pXmlNoteText) {
-        return pXmlNoteText.replaceAll("\0", "");
+        return pXmlNoteText.replace('\0', ' ');
     }
     /* ************************************************************
      * ********     Notes                                   *******
@@ -1078,7 +1079,7 @@ freemind.main.Resources.getInstance().logException(			e);
             node.addChild(hookElement);
         }
 
-        attributes.save(node);
+    	attributes.save(node);
         if (saveChildren && childrenUnfolded().hasNext()) {
             node.writeWithoutClosingTag(writer);
             //recursive
@@ -1197,6 +1198,18 @@ freemind.main.Resources.getInstance().logException(			e);
         return attributes;
     }
     
+	public void createAttributeTableModel() {
+		if(attributes == EMTPY_ATTRIBUTES){
+			attributes = new NodeAttributeTableModel(this);
+			final Iterator iterator = views.iterator();
+			while(iterator.hasNext()){
+				NodeView view = (NodeView)iterator.next();
+				view.createAttributeView();
+			}
+		}
+		
+	}
+
     public int getAttributeTableLength() {
         return attributes.getRowCount();
     }
@@ -1207,9 +1220,12 @@ freemind.main.Resources.getInstance().logException(			e);
 
 	public List getAttributeKeyList() {
 		Vector returnValue = new Vector();
-		for (Iterator iter = attributes.getAttributes().iterator(); iter.hasNext();) {
-			Attribute attr = (Attribute) iter.next();
-			returnValue.add(attr.getName());
+		if(attributes != null)
+		{
+			for (Iterator iter = attributes.getAttributes().iterator(); iter.hasNext();) {
+				Attribute attr = (Attribute) iter.next();
+				returnValue.add(attr.getName());
+			}
 		}
 		return returnValue;
 	}
@@ -1228,6 +1244,7 @@ freemind.main.Resources.getInstance().logException(			e);
 	}
 
 	public void setAttribute(int pPosition, Attribute pAttribute) {
+		createAttributeTableModel();
         attributes.setName(pPosition, pAttribute.getName());
         attributes.setValue(pPosition, pAttribute.getValue());
 	}
@@ -1261,5 +1278,4 @@ freemind.main.Resources.getInstance().logException(			e);
     //
     //  Events
     //
-
 }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.15 2007-06-14 23:03:09 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.16 2007-08-24 22:10:23 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -41,13 +41,20 @@ import org.xml.sax.helpers.DefaultHandler;
 /** */
 public class HtmlTools {
 
-    private static final String FIND_TAGS_PATTERN = "([^<]*)(<[^>]+>)";
-
     private static Logger logger;
 
     private static HtmlTools sInstance = new HtmlTools();
 
-    
+	private static final Pattern HTML_PATTERN = Pattern.compile("(?s)^\\s*<\\s*html.*?>.*");
+    private static final Pattern FIND_TAGS_PATTERN = Pattern.compile("([^<]*)(<[^>]+>)");
+    private static final Pattern SLASHED_TAGS_PATTERN = Pattern.compile("<(("+
+    "br|area|base|basefont|"+
+    "bgsound|button|col|colgroup|embed|hr"+
+    "|img|input|isindex|keygen|link|meta"+
+    "|object|plaintext|spacer|wbr"+
+    ")(\\s[^>]*)?)/>");
+
+    private static final Pattern TAGS_PATTERN = Pattern.compile("(?s)<[^><]*>");
     /**
      * 
      */
@@ -87,13 +94,7 @@ public class HtmlTools {
 
     public String toHtml(String xhtmlText) {
         // Remove '/' from <.../> of elements that do not have '/' there in HTML
-        return xhtmlText.replaceAll("<(("+
-                    "br|area|base|basefont|"+
-                    "bgsound|button|col|colgroup|embed|hr"+
-                    "|img|input|isindex|keygen|link|meta"+
-                    "|object|plaintext|spacer|wbr"+
-                    ")(\\s[^>]*)?)/>",
-                    "<$1>");
+        return SLASHED_TAGS_PATTERN.matcher(xhtmlText).replaceAll("<$1>");
     }
 
     public static class IndexPair {
@@ -147,8 +148,7 @@ public class HtmlTools {
         // remove tags and denote their positions:
         {
 	        	StringBuffer sb = new StringBuffer();
-            Pattern p = Pattern.compile(FIND_TAGS_PATTERN);
-            Matcher matcher = p.matcher(text);
+            Matcher matcher = FIND_TAGS_PATTERN.matcher(text);
             int lastMatchEnd = 0;
             while (matcher.find())
             {
@@ -307,7 +307,16 @@ public class HtmlTools {
     /**
      */
     public static boolean isHtmlNode(String text) {
-        return text.toLowerCase(Locale.ENGLISH).matches("(?s)^\\s*<\\s*html.*?>.*");
+    	for(int i = 0; i < text.length(); i++){
+    		final char ch = text.charAt(i);
+			if(ch == '<'){
+    			break;
+    		}
+    		if(! Character.isWhitespace(ch) || i == text.length()){
+    			return false;
+    		}
+    	}
+    	return HTML_PATTERN.matcher(text.toLowerCase(Locale.ENGLISH)).matches();        
     }
 
     public static String unicodeToHTMLUnicodeEntity(String text) {
@@ -366,7 +375,7 @@ public class HtmlTools {
     }
 
     public static String removeAllTagsFromString(String text) {
-        return text.replaceAll("(?s)<[^><]*>", "");
+        return TAGS_PATTERN.matcher(text).replaceAll("");
     }
 
     public static String htmlToPlain(String text) {

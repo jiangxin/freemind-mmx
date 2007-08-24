@@ -116,7 +116,7 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
     private abstract class IteratingAction implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             try{
-                if(selectedBtn.getModel().isSelected()){
+				if(selectedBtn.getModel().isSelected()){
                     LinkedList selecteds = mapView.getSelecteds();
                     ListIterator iterator = selecteds.listIterator();
                     while(iterator.hasNext()){
@@ -125,18 +125,26 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
                     }
                     return;
                 }
-                int n = mapView.getComponentCount();
-                for(int i = 0; i < n; i++){
-                    Component component = mapView.getComponent(i);
-                    if(component instanceof NodeView && component.isVisible()){
-                        performAction((NodeView)component);
-                    }
-                }
+                final NodeView nodeView = mapView.getRoot();
+                iterate(nodeView);
             }
             catch(NullPointerException ex){
                 
             }
         }
+        private void iterate(final NodeView nodeView) {
+        	int n = nodeView.getComponentCount();
+        	if(nodeView.isVisible()){
+        		performAction(nodeView);
+        	}
+        	for(int i = 0; i < n; i++){
+        		Component component = nodeView.getComponent(i);
+        		if(component instanceof NodeView){
+        			iterate((NodeView)component);
+        		}
+        	}
+        }
+
         private void performAction(NodeView selectedNodeView) {
             if(! selectedNodeView.isRoot() || ! skipRootBtn.isSelected())
             performAction(selectedNodeView.getModel());
@@ -155,6 +163,7 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
         private String value;
 
         protected void performAction(MindMapNode model) {
+        	model.createAttributeTableModel();
             NodeAttributeTableModel attributes = model.getAttributes();                         
             attributes.getAttributeController().performInsertRow(attributes, attributes.getRowCount(), name, value);
        }

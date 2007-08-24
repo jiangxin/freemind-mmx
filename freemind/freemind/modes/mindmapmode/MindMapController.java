@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.50 2007-08-21 21:45:20 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.51 2007-08-24 22:10:24 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -2021,8 +2021,7 @@ freemind.main.Resources.getInstance().logException(					e1);
     
     public void removeNodeFromParent(MindMapNode selectedNode) {
         getModel().setSaved(false);
-        getModel().removeNodeFromParent(selectedNode);
-        
+        getModel().removeNodeFromParent(selectedNode);        
     }
 
 	public void nodeStyleChanged(MindMapNode node) {

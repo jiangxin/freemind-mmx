@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.15 2007-07-29 08:58:22 dpolivaev Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.16 2007-08-24 22:10:23 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -276,6 +276,7 @@ public interface MindMapNode extends MutableTreeNode {
      *  with the samw name, you have to use this method.
      */
     NodeAttributeTableModel getAttributes();
+	void createAttributeTableModel();
     
     //fc, 8.1.2007, Redundancy to faciliate the NodeAttributeTableModel.
     

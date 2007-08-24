@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.16 2007-08-08 21:10:40 christianfoltin Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.17 2007-08-24 22:10:24 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -198,6 +198,7 @@ public abstract class XMLElementAdapter extends XMLElement {
          else if (child.getName().equals("font")) {
              node.setFont((Font)child.getUserObject()); }
          else if (child.getName().equals(XML_NODE_ATTRIBUTE)) {
+        	 node.createAttributeTableModel();
              node.getAttributes().addRowNoUndo((Attribute)child.getUserObject()); }
          else if (child.getName().equals(XML_NODE_ATTRIBUTE_LAYOUT)) {
              AttributeTableLayoutModel layout = node.getAttributes().getLayout();
