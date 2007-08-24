@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.47 2007-08-24 22:10:24 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.48 2007-08-24 22:41:03 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -834,7 +834,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 		
 
 	void updateStyle() {
-		if(mainView != null && mainView.getStyle().equals(model.getStyle())){
+		if(mainView != null && (mainView.getStyle().equals(model.getStyle()) || model.isRoot())){
 			return;
 		}
 		final MainView newMainView = NodeViewFactory.getInstance().newMainView(model);

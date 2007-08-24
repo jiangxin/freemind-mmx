@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeViewFactory.java,v 1.1.4.6 2007-08-03 17:24:03 dpolivaev Exp $ */
+/* $Id: NodeViewFactory.java,v 1.1.4.7 2007-08-24 22:41:03 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Component;
@@ -194,6 +194,9 @@ class NodeViewFactory {
 
 
 	MainView newMainView(MindMapNode model) {
+		if (model.isRoot()) {
+        	return new RootMainView();             
+        } 
 		if (model.getStyle().equals(MindMapNode.STYLE_FORK) ){
 			return new ForkMainView(); 
 		}
