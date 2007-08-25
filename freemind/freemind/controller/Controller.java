@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.37 2007-08-21 19:54:01 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.38 2007-08-25 19:30:43 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -1163,7 +1163,7 @@ public class Controller  implements MapModuleChangeObserver {
 
     private class ShowFilterToolbarAction extends AbstractAction {
         ShowFilterToolbarAction(Controller controller) {
-            super("",
+            super(null,
                   new ImageIcon(getResource("images/filter.gif")));
         }
         public void actionPerformed(ActionEvent event) {
