@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.34 2007-08-24 22:10:23 dpolivaev Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.35 2007-08-25 14:13:13 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -1201,6 +1201,9 @@ freemind.main.Resources.getInstance().logException(			e);
 	public void createAttributeTableModel() {
 		if(attributes == EMTPY_ATTRIBUTES){
 			attributes = new NodeAttributeTableModel(this);
+			if(views == null){
+				return;
+			}
 			final Iterator iterator = views.iterator();
 			while(iterator.hasNext()){
 				NodeView view = (NodeView)iterator.next();

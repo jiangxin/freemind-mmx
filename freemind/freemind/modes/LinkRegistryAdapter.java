@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.10.18.3.12.3 2007-08-08 21:10:40 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.10.18.3.12.4 2007-08-25 14:13:13 dpolivaev Exp $*/
 
 package freemind.modes;
 
@@ -218,7 +218,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
             vec = new Vector();
             IDToLinks.put(id,vec);
         }
-        logger.fine("getAssignedLinksVector "+vec);
+        // Dimitry : logger is a performance killer here
+        // logger.fine("getAssignedLinksVector "+vec);
         return vec;
     }
 
@@ -259,14 +260,19 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
                 return;
         }
         vec.add(link);
-        if(IDToLink.containsKey(link.getUniqueID())) {
-            if(IDToLink.get(link.getUniqueID()) != link) {
+        String uniqueID = link.getUniqueID();
+        if(uniqueID == null) {
+        	((LinkAdapter) link).setUniqueID(generateUniqueLinkID(uniqueID));
+        	uniqueID = link.getUniqueID();
+        }
+		if(IDToLink.containsKey(uniqueID)) {
+            if(IDToLink.get(uniqueID) != link) {
                 logger.warning("link with duplicated unique id found:" +link);
                 // new id:
-                ((LinkAdapter) link).setUniqueID(generateUniqueLinkID(link.getUniqueID()));
+                ((LinkAdapter) link).setUniqueID(generateUniqueLinkID(uniqueID));
             }
         }
-        IDToLink.put(link.getUniqueID(), link);
+        IDToLink.put(uniqueID, link);
         logger.info("Register link ("+link+") from source node:"+source+" to target " + target);
     };
 
@@ -315,7 +321,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
         Vector returnValue = new Vector();
         returnValue.addAll(getAllLinksIntoMe( node ));
         returnValue.addAll(getAllLinksFromMe( node ));
-        logger.fine("All links  ("+returnValue+") from  node:"+node);
+        // Dimitry : logger is a performance killer here
+        // logger.fine("All links  ("+returnValue+") from  node:"+node);
         return returnValue;
     };
 

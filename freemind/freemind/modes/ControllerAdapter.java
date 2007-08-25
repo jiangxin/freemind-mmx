@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.33 2007-08-12 08:03:52 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.34 2007-08-25 14:13:13 dpolivaev Exp $ */
 
 package freemind.modes;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.KeyboardFocusManager;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -320,8 +321,13 @@ public abstract class ControllerAdapter implements ModeController {
         return newModel;
     }
 
-    public void newMap(MindMap mapModel) {
+    public void newMap(final MindMap mapModel) {
         getController().getMapModuleManager().newMapModule(mapModel, mapModel.getModeController());
+        EventQueue.invokeLater(new Runnable(){
+     	   public void run() {
+     		  mapModel.setSaved(true); 
+     	   }});
+
     }
 
     /**

@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.18 2007-08-24 22:10:24 dpolivaev Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.19 2007-08-25 14:13:13 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -343,7 +343,8 @@ public class MindMapMapModel extends MapAdapter  {
 
        }
        setFile(file);
-       setSaved(true); }
+	   setSaved(true); 
+    }
 
     /** When a map is closed, this method is called. */
     public void destroy() {
