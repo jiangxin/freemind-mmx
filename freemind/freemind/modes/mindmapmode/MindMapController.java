@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.51 2007-08-24 22:10:24 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.52 2007-08-25 19:34:22 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -83,6 +83,7 @@ import freemind.common.XmlBindingTools;
 import freemind.controller.MenuBar;
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.StructuredMenuHolder;
+import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
 import freemind.controller.actions.generated.instance.MenuActionBase;
 import freemind.controller.actions.generated.instance.MenuCategoryBase;
 import freemind.controller.actions.generated.instance.MenuCheckedAction;
@@ -91,7 +92,18 @@ import freemind.controller.actions.generated.instance.MenuSeparator;
 import freemind.controller.actions.generated.instance.MenuStructure;
 import freemind.controller.actions.generated.instance.MenuSubmenu;
 import freemind.controller.actions.generated.instance.Pattern;
+import freemind.controller.actions.generated.instance.PatternEdgeColor;
+import freemind.controller.actions.generated.instance.PatternEdgeStyle;
+import freemind.controller.actions.generated.instance.PatternEdgeWidth;
 import freemind.controller.actions.generated.instance.PatternIcon;
+import freemind.controller.actions.generated.instance.PatternNodeBackgroundColor;
+import freemind.controller.actions.generated.instance.PatternNodeColor;
+import freemind.controller.actions.generated.instance.PatternNodeFontBold;
+import freemind.controller.actions.generated.instance.PatternNodeFontItalic;
+import freemind.controller.actions.generated.instance.PatternNodeFontName;
+import freemind.controller.actions.generated.instance.PatternNodeFontSize;
+import freemind.controller.actions.generated.instance.PatternNodeStyle;
+import freemind.controller.actions.generated.instance.PatternNodeText;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookFactory;
@@ -104,6 +116,7 @@ import freemind.extensions.HookFactory.RegistrationContainer;
 import freemind.main.ExampleFileFilter;
 import freemind.main.FixedHTMLWriter;
 import freemind.main.FreeMind;
+import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XHTMLWriter;
@@ -187,6 +200,7 @@ import freemind.modes.mindmapmode.actions.UsePlainTextAction;
 import freemind.modes.mindmapmode.actions.UseRichFormattingAction;
 import freemind.modes.mindmapmode.actions.NodeBackgroundColorAction.RemoveNodeBackgroundColorAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.NodeHookUndoableContentActor;
 import freemind.modes.mindmapmode.actions.xml.UndoActionHandler;
 import freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog;
@@ -209,7 +223,9 @@ import freemind.view.mindmapview.attributeview.AttributePopupMenu;
 public class MindMapController extends ControllerAdapter implements MindMapActions{
 
 
-    protected class AssignAttributesAction extends AbstractAction {
+    private static final String ACCESSORIES_PLUGINS_NODE_NOTE = "accessories.plugins.NodeNote";
+
+	protected class AssignAttributesAction extends AbstractAction {
         public AssignAttributesAction() {
             super(getText("attributes_assign_dialog"));
         }
@@ -2037,6 +2053,62 @@ freemind.main.Resources.getInstance().logException(					e1);
 
 	public void repaintMap() {
 		 getView().repaint();		
+	}
+
+	public void clearNodeContents(MindMapNode pNode) {
+		Pattern erasePattern = new Pattern();
+		erasePattern.setPatternEdgeColor(new PatternEdgeColor());
+		erasePattern.setPatternEdgeStyle(new PatternEdgeStyle());
+		erasePattern.setPatternEdgeWidth(new PatternEdgeWidth());
+		erasePattern.setPatternIcon(new PatternIcon());
+		erasePattern.setPatternNodeBackgroundColor(new PatternNodeBackgroundColor());
+		erasePattern.setPatternNodeColor(new PatternNodeColor());
+		erasePattern.setPatternNodeFontBold(new PatternNodeFontBold());
+		erasePattern.setPatternNodeFontItalic(new PatternNodeFontItalic());
+		erasePattern.setPatternNodeFontName(new PatternNodeFontName());
+		erasePattern.setPatternNodeFontSize(new PatternNodeFontSize());
+		erasePattern.setPatternNodeStyle(new PatternNodeStyle());
+		erasePattern.setPatternNodeText(new PatternNodeText());
+		applyPattern(pNode, erasePattern);
+		List attributeKeyList = pNode.getAttributeKeyList();
+		for (Iterator iterator = attributeKeyList.iterator(); iterator
+				.hasNext();) {
+			String key = (String) iterator.next();
+			this.getAttributeController().performRemoveAttribute(key);
+			
+		}
+		setNoteText(pNode, null);
+	}
+    public EditNoteToNodeAction createEditNoteToNodeAction(
+            MindMapNode node, String text) {
+        EditNoteToNodeAction nodeAction = new EditNoteToNodeAction();
+        nodeAction.setNode(node.getObjectId(this));
+        if (text != null &&  (HtmlTools.htmlToPlain(text).length() != 0 || text.indexOf("<img") >= 0 )){
+        	nodeAction.setText(text);
+        }
+        else{
+        	nodeAction.setText(null);
+        }
+        return nodeAction;
+    }
+
+	public void setNoteText(MindMapNode node, String text) {
+        String oldNoteText = node.getNoteText();
+        if(Tools.safeEquals(text, oldNoteText)) {
+            // they are equal.
+            return;
+        }
+        EditNoteToNodeAction doAction = createEditNoteToNodeAction(node,
+                text);
+        EditNoteToNodeAction undoAction = createEditNoteToNodeAction(node,
+                oldNoteText);
+        getActionFactory().startTransaction(
+                ACCESSORIES_PLUGINS_NODE_NOTE);
+        getActionFactory().executeAction(
+                new ActionPair(doAction, undoAction));
+        getActionFactory().endTransaction(
+        		ACCESSORIES_PLUGINS_NODE_NOTE);
+
 	}
 
 }

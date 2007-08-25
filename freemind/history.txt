@@ -24,6 +24,7 @@ Changes made in FreeMind 0.9.0 Beta 13
 * Mnemonics for english and german completed
 * Enter on root gives a new child
 * Bug fix: edges scale now with zoom.
+* Enter on root gives new child, shift-enter on root causes root to get a child of a new root node.
 	 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 12

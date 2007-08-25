@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.16 2007-08-24 22:10:23 dpolivaev Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.17 2007-08-25 19:34:22 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -239,6 +239,10 @@ public interface MindMapNode extends MutableTreeNode {
 	void setAdditionalInfo(String info);
 	public String getAdditionalInfo();
 
+    /**
+     * @return a flat copy of this node including all extras like notes, etc.
+     * But the children are not copied!
+     */
     MindMapNode shallowCopy();
     /**
      * @param saveHidden TODO: Seems not to be used. Remove or fill with live.

@@ -26,6 +26,7 @@ package accessories.plugins;
 import java.awt.datatransfer.Transferable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
@@ -62,6 +63,7 @@ public class NewParentNode extends MindMapNodeHookAdapter {
 	 * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode, java.util.List)
 	 */
 	public void invoke(MindMapNode rootNode) {
+		final MapView mapView = getMindMapController().getView();
 		// we dont need node. 
 		MindMapNode focussed = getMindMapController().getSelected();
 		List selecteds = getMindMapController().getSelecteds();
@@ -72,33 +74,67 @@ public class NewParentNode extends MindMapNodeHookAdapter {
 		getMindMapController().sortNodesByDepth(selectedNodes);
 
 		if(focussed.isRoot()) {
+			if(selecteds.size() == 1) {
+				// only root is selected. we try to create a new root:
+				MindMapNode rootCopy = rootNode.shallowCopy();
+				// delete root node content:
+				getMindMapController().clearNodeContents(rootNode);
+				// children list must be able to modify, thus we copy it deeply.
+				Vector children = new Vector(rootNode.getChildren());
+				moveToOtherNode(rootNode, children, rootNode, rootCopy);
+				getMindMapController().insertNodeInto(rootCopy, rootNode);
+				getMindMapController().nodeChanged(rootCopy);
+				mapView.selectAsTheOnlyOneSelected(mapView.getNodeView(rootNode));
+				getMindMapController().getFrame().repaint();
+				
+				return;
+			}
 			getMindMapController().getController().errorMessage(
 					getResourceString("cannot_add_parent_to_root"));
 			return;
 		}
 
+		MindMapNode newNode = moveToNewParent(rootNode, selectedNode,
+				selectedNodes);
+		if(newNode == null) {
+			return;
+		}
+		// Start editing new node
+        mapView.selectAsTheOnlyOneSelected(mapView.getNodeView(newNode));
+		getMindMapController().getFrame().repaint();
+		// edit is not necessary, as the new text can directly entered and editing is starting automatically.
+		//getMindMapController().edit(newNode.getViewer(), selectedParent.getViewer(), null, false, false, false);
+	}
+
+	private MindMapNode moveToNewParent(MindMapNode rootNode,
+			MindMapNode selectedNode, List selectedNodes) {
+		// Create new node in the position of the selectedNode
+		MindMapNode selectedParent = selectedNode.getParentNode();
+		int childPosition = selectedParent.getChildPosition(selectedNode);
+		MindMapNode newNode = getMindMapController().addNewNode(selectedParent, childPosition, selectedNode.isLeft());
+		return moveToOtherNode(rootNode, selectedNodes, selectedParent, newNode);
+	}
+
+	private MindMapNode moveToOtherNode(MindMapNode rootNode, List selectedNodes,
+			MindMapNode selectedParent, MindMapNode newNode) {
 		// Make sure the selected nodes all have the same parent
 		// (this restriction is to simplify the action, and could
 		//    possibly be removed in the future, when we have undo)
 		// Also make sure that none of the selected nodes are the root node
-		MindMapNode selectedParent = selectedNode.getParentNode();
 		for (Iterator it = selectedNodes.iterator(); it.hasNext();) {
 			MindMapNode node = (MindMapNode) it.next();
 			if (node.getParentNode() != selectedParent) {
 				getMindMapController().getController().errorMessage(
 					getResourceString("cannot_add_parent_diff_parents"));
-				return;
+				return null;
 			}
 			if (node == rootNode) {
 				getMindMapController().getController().errorMessage(
 					getResourceString("cannot_add_parent_to_root"));
-				return;
+				return null;
 			}
 		}
 
-		// Create new node in the position of the selectedNode
-		int childPosition = selectedParent.getChildPosition(selectedNode);
-		MindMapNode newNode = getMindMapController().addNewNode(selectedParent, childPosition, selectedNode.isLeft());
 		//MindMapNode newNode = getMindMapController().newNode();
 		//getMap().insertNodeInto(newNode, selectedParent, childPosition);
 
@@ -106,13 +142,7 @@ public class NewParentNode extends MindMapNodeHookAdapter {
 		Transferable copy = getMindMapController().cut(selectedNodes);
 		getMindMapController().paste(copy, newNode);
 		nodeChanged(selectedParent);
-
-		// Start editing new node
-		final MapView mapView = getMindMapController().getView();
-        mapView.selectAsTheOnlyOneSelected(mapView.getNodeView(newNode));
-		getMindMapController().getFrame().repaint();
-		// edit is not necessary, as the new text can directly entered and editing is starting automatically.
-		//getMindMapController().edit(newNode.getViewer(), selectedParent.getViewer(), null, false, false, false);
+		return newNode;
 	}
 
 }

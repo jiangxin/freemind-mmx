@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.38 2007-07-24 22:53:45 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.39 2007-08-25 19:34:22 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -315,21 +315,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
          * 
          */
         public void changeNoteText(String text, MindMapNode node) {
-            String oldNoteText = node.getNoteText();
-            if(Tools.safeEquals(text, oldNoteText)) {
-                // they are equal.
-                return;
-            }
-            EditNoteToNodeAction doAction = createEditNoteToNodeAction(node,
-                    text);
-            EditNoteToNodeAction undoAction = createEditNoteToNodeAction(node,
-                    oldNoteText);
-            getMindMapController().getActionFactory().startTransaction(
-                    this.getClass().getName());
-            getMindMapController().getActionFactory().executeAction(
-                    new ActionPair(doAction, undoAction));
-            getMindMapController().getActionFactory().endTransaction(
-                    this.getClass().getName());
+        	getMindMapController().setNoteText(node, text);        	
         }
 
         /**
@@ -338,18 +324,6 @@ public class NodeNote extends MindMapNodeHookAdapter {
             return controller;
         }
 
-        public EditNoteToNodeAction createEditNoteToNodeAction(
-                MindMapNode node, String text) {
-            EditNoteToNodeAction nodeAction = new EditNoteToNodeAction();
-            nodeAction.setNode(node.getObjectId(controller));
-            if (text != null &&  (HtmlTools.htmlToPlain(text).length() != 0 || text.indexOf("<img") >= 0 )){
-            	nodeAction.setText(text);
-            }
-            else{
-            	nodeAction.setText(null);
-            }
-            return nodeAction;
-        }
 
         protected SHTMLPanel getNoteViewerComponent() {
             return getHtmlEditorPanel();

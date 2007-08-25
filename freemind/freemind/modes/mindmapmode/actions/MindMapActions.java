@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/* $Id: MindMapActions.java,v 1.1.2.3.2.4 2007-04-21 15:11:22 dpolivaev Exp $ */
+/* $Id: MindMapActions.java,v 1.1.2.3.2.5 2007-08-25 19:34:22 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
@@ -76,6 +76,7 @@ public interface MindMapActions {
 	 * */
 	public void edit(KeyEvent e, boolean addNew, boolean editLong);
 	public void setNodeText(MindMapNode selected, String newText);
+	public void setNoteText(MindMapNode selected, String newText);
 	public MindMapNode addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e);
 	/** Another variant of addNew. If the index of the new node as a child of parent is known,
 	 * this method is easier to use. Moreover, it does not automatically start an editor.
@@ -211,5 +212,9 @@ public interface MindMapActions {
     void deRegisterMouseWheelEventHandler(MouseWheelEventHandler handler);
 
     void setAttribute(MindMapNode node, int pPosition, Attribute pAttribute);
+    
+    /** Erases all content of the node as text, colors, fonts, etc.
+     */
+    void clearNodeContents(MindMapNode pNode);
 
 }
