@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeView.java,v 1.13.14.2.4.6 2007-08-22 13:23:54 dpolivaev Exp $*/
+/*$Id: EdgeView.java,v 1.13.14.2.4.7 2007-08-26 09:05:27 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -47,13 +47,22 @@ public abstract class EdgeView {
     public void paint(NodeView target, Graphics2D g) {
         this.source = target.getVisibleParentView();
         this.target = target;
-        end = getTarget().getInPoint();
-        Tools.convertPointToAncestor(target, end, source);
-        start = getSource().getOutPoint(end);
+        createEnd();
+        createStart();
         paint(g);
         this.source = null;
         this.target = null;
     }
+
+	protected void createEnd() {
+		end = getTarget().getMainViewInPoint();
+        Tools.convertPointToAncestor(this.target.getMainView(), end, source);
+	}
+
+	protected void createStart() {
+		start = source.getMainViewOutPoint(end);
+        Tools.convertPointToAncestor(source.getMainView(), start, source);
+	}
 
     abstract protected void paint(Graphics2D g);
 
@@ -110,7 +119,7 @@ public abstract class EdgeView {
  * @return Returns the source.
  */
 protected NodeView getSource() {
-    return source.getModel().isVisible() ? source : source.getVisibleParentView();
+    return source;
 }
 
 /**

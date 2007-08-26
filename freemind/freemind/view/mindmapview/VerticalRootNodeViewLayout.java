@@ -89,13 +89,13 @@ public void layoutNodeMotionListenerView(NodeMotionListenerView view) {
     view.setSize(content.getWidth(), LISTENER_VIEW_WIDTH);
 }
 
-public Point getOutPoint(NodeView view, Point destinationPoint) {
+public Point getMainViewOutPoint(NodeView view, Point destinationPoint) {
     final MainView mainView = view.getMainView();
     final Point p = new Point(destinationPoint);
     Tools.convertPointFromAncestor(view, p, mainView);  
-    double nWidth = mainView.getWidth();
-    double nHeight = mainView.getHeight();
-    final Point centerPoint = new Point((int) (nWidth / 2f), (int) (nHeight / 2f));
+    double nWidth = mainView.getWidth()/ 2f;
+    double nHeight = mainView.getHeight()/ 2f;
+    final Point centerPoint = new Point((int) nWidth , (int) nHeight );
     // assume, that destinationPoint is on the right:
     double angle = Math.atan((p.y - centerPoint.y + 0f)
             / (p.x - centerPoint.x + 0f));
@@ -103,14 +103,13 @@ public Point getOutPoint(NodeView view, Point destinationPoint) {
         angle += Math.PI;
     }
     // now determine point on ellipsis corresponding to that angle:
-    final Point out = new Point(centerPoint.x
-            + (int) (Math.cos(angle) * nWidth / 2f), centerPoint.y
-            + (int) (Math.sin(angle) * (nHeight) / 2f));
-    Tools.convertPointToAncestor(mainView, out, view);
+    final Point out = new Point(centerPoint.x + (int) (Math.cos(angle) * nWidth), 
+    		centerPoint.y + (int) (Math.sin(angle) * nHeight)
+            );
     return out;
 }
 
-public Point getInPoint(NodeView view) {
+public Point getMainViewInPoint(NodeView view) {
     final Point centerPoint = view.getMainView().getCenterPoint();
     return centerPoint;
 }

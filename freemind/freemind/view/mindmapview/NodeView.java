@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.48 2007-08-24 22:41:03 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.49 2007-08-26 09:05:27 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -364,18 +364,18 @@ public class NodeView extends JComponent implements TreeModelListener{
     /** Returns the point the edge should start given the point of the child node
      * that should be connected.
      */
-    Point getOutPoint(Point destinationPoint) {
+    Point getMainViewOutPoint(Point destinationPoint) {
         final NodeViewLayout layoutManager = (NodeViewLayout)getLayout();
-        Point out = layoutManager.getOutPoint(this, destinationPoint);
+        Point out = layoutManager.getMainViewOutPoint(this, destinationPoint);
         return out;
     }
 
     /**
      * Returns the Point where the InEdge should arrive the Node.
      */
-    Point getInPoint() {
+    Point getMainViewInPoint() {
         final NodeViewLayout layoutManager = (NodeViewLayout)getLayout();
-        Point in = layoutManager.getInPoint(this);
+        Point in = layoutManager.getMainViewInPoint(this);
         return in;
     }
 
@@ -1152,7 +1152,8 @@ public class NodeView extends JComponent implements TreeModelListener{
     }
     public void paintFoldingMark(Graphics2D g){ 
         if(getModel().isFolded()) {
-            Point out = getOutPoint(null); 
+            Point out = getMainViewOutPoint(null); 
+            Tools.convertPointToAncestor(getMainView(), out, this);
             mainView.paintFoldingMark(g, out);
         }
         
