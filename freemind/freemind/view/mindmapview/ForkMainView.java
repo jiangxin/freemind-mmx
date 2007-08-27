@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ForkMainView.java,v 1.1.4.5 2007-08-21 19:54:11 christianfoltin Exp $ */
+/* $Id: ForkMainView.java,v 1.1.4.6 2007-08-27 18:23:19 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -60,10 +60,10 @@ class ForkMainView extends MainView{
     void paintFoldingMark(Graphics2D g, Point p) {
         final int zoomedFoldingSymbolHalfWidth = getZoomedFoldingSymbolHalfWidth();
         if(p.x == -1){
-            p.x -= zoomedFoldingSymbolHalfWidth;
+            p.x -= 2 * zoomedFoldingSymbolHalfWidth;
         }
         else if(p.x == getWidth()){
-            p.x += zoomedFoldingSymbolHalfWidth;
+            p.x += 2 * zoomedFoldingSymbolHalfWidth;
         }        
         super.paintFoldingMark(g, p);
     }
@@ -106,13 +106,29 @@ class ForkMainView extends MainView{
         return NodeView.ALIGN_BOTTOM;
     }
 
-    Point getCenterPoint() {
+    
+    Point getLeftPoint() {
         int edgeWidth = getNodeView().getModel().getEdge().getWidth();
         if(edgeWidth==0) {
         	edgeWidth = 1;
         }
-        Point in= new Point(getWidth() / 2, getHeight() - edgeWidth/2 - 1);
+        Point in= new Point(0, getHeight() - edgeWidth/2 - 1);
+        return in;
+	}
+
+    Point getCenterPoint() {
+        Point in= new Point(getWidth()/2, getHeight()/2);
         return in;
     }
+    
+    Point getRightPoint() {
+        int edgeWidth = getNodeView().getModel().getEdge().getWidth();
+        if(edgeWidth==0) {
+        	edgeWidth = 1;
+        }
+        Point in= new Point(getWidth(), getHeight() - edgeWidth/2 - 1);
+        return in;
+    }
+
     
 }

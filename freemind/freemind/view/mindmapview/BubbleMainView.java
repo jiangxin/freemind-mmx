@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BubbleMainView.java,v 1.1.4.7 2007-08-17 20:41:58 christianfoltin Exp $ */
+/* $Id: BubbleMainView.java,v 1.1.4.8 2007-08-27 18:23:19 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -88,12 +88,24 @@ class BubbleMainView extends MainView{
                 graphics.fillRoundRect(0,0, getWidth()-1, getHeight()-1,10,10);
         }
 
+        Point getLeftPoint() {
+            Point in= new Point(0, getHeight() / 2);
+            return in;
+		}
+
         Point getCenterPoint() {
-            Point in= new Point(getWidth() / 2, getHeight() / 2);
+            Point in= getLeftPoint();
+            in.x = getWidth() / 2;
             return in;
         }
+        
+        Point getRightPoint() {
+        	Point in= getLeftPoint();
+        	in.x = getWidth();
+        	return in;
+        }
 
-        protected int getMainViewWidthWithFoldingMark()
+		protected int getMainViewWidthWithFoldingMark()
         {
             int width = getWidth();
             int dW = getZoomedFoldingSymbolHalfWidth() * 2;

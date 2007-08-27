@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.21 2007-08-21 21:37:02 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.22 2007-08-27 18:23:19 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -235,6 +235,8 @@ public abstract class MainView extends JLabel{
         }
         
         abstract Point getCenterPoint() ;
+        abstract Point getLeftPoint() ;
+        abstract Point getRightPoint() ;
         
         /** get x coordinate including folding symbol */
         public int getDeltaX()

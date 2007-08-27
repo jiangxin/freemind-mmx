@@ -79,22 +79,13 @@ public void layoutNodeMotionListenerView(NodeMotionListenerView view) {
 
 public Point getMainViewOutPoint(NodeView view, Point destinationPoint) {
     final MainView mainView = view.getMainView();
-	final Point centerPoint = mainView.getCenterPoint();
-    final JComponent content = view.getContent();
-    Tools.convertPointToAncestor(mainView, centerPoint, content);
-	centerPoint.x = content.getWidth() - 1;
-    Tools.convertPointFromAncestor(content, centerPoint, mainView);
-    return centerPoint;
+    return mainView.getRightPoint();
 }
 
 public Point getMainViewInPoint(NodeView view) {
     final MainView mainView = view.getMainView();
-	final Point centerPoint = mainView.getCenterPoint();
-    final JComponent content = view.getContent();
-    Tools.convertPointToAncestor(mainView, centerPoint, content);
-	centerPoint.x = 0;
-    Tools.convertPointFromAncestor(content, centerPoint, mainView);
-    return centerPoint;
+    return mainView.getLeftPoint();
 }
+
 
 }

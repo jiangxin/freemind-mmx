@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.50 2007-08-27 17:55:30 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.51 2007-08-27 18:23:19 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1207,9 +1207,9 @@ public class NodeView extends JComponent implements TreeModelListener{
     /* (non-Javadoc)
      * @see javax.swing.JComponent#paint(java.awt.Graphics)
      */
-    public void paintComponent(Graphics g) {
+    public void paint(Graphics g) {
         paintCloud(g);
-        super.paintComponent(g);
+        super.paint(g);
         if(getModel().isVisible()){
             Graphics2D g2d = (Graphics2D) g;
 			paintEdges(g2d);
