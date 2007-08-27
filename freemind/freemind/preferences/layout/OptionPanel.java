@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.29 2007-08-07 20:09:24 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.30 2007-08-27 17:55:29 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -644,11 +644,11 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new SeparatorProperty("selection_colors"));
 		controls.add(new BooleanProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION+".tooltip",
                 FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION)); // false
+		controls.add(new ColorProperty("standardselectednodetextcolor.tooltip",
+				FreeMind.RESOURCES_SELECTED_NODE_RECTANGLE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_RECTANGLE_COLOR), this)); //  #000000
 		
 		controls.add(new ColorProperty("standardselectednodecolor.tooltip",
 		FreeMind.RESOURCES_SELECTED_NODE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR), this)); //  #D2D2D2
-		controls.add(new ColorProperty("standardselectednodetextcolor.tooltip",
-		FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR), this)); //  #000000
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());

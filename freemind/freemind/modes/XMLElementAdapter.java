@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.17 2007-08-24 22:10:24 dpolivaev Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.18 2007-08-27 17:55:27 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -379,15 +379,6 @@ public abstract class XMLElementAdapter extends XMLElement {
               attributeValue = sValue;
           }
       }
-      else if (getName().equals("map") && name.equals("BACKGROUND_COLOR")){
-    	  Color bgcolor = null;
-    	  try{
-     		  bgcolor = Tools.xmlToColor(sValue);
-    	  }
-    	  catch(Exception ex){
-          }
-    	  getMap().setBackgroundColor(bgcolor);
- 	 }
    }
 
    private NodeAdapter setNodeAttribute(String name, String sValue, NodeAdapter node) {

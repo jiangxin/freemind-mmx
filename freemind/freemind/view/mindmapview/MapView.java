@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.37 2007-08-22 13:23:54 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.38 2007-08-27 17:55:29 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -78,8 +78,9 @@ import freemind.preferences.FreemindPropertyListener;
  */
 public class MapView extends JPanel implements Printable, Autoscroll{
 	static boolean printOnWhiteBackground;
+	static Color standardMapBackgroundColor;
 	static Color standardSelectColor;
-	static Color standardSelectTextColor;
+	static Color standardSelectRectangleColor;
 	public static Color standardNodeTextColor;
     static boolean standardDrawRectangleForSelection;
 	private static Stroke standardSelectionStroke;
@@ -186,15 +187,22 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         else if (MapView.controller != controller){
         	throw new RuntimeException("only one controller instance expected");
         }
-        // initialize the standard node colors.
+        // initialize the standard colors.
         if (standardNodeTextColor == null) {
             try{
-                String stdcolor = getController().getFrame().getProperty(FreeMind.RESOURCES_NODE_TEXT_COLOR);
-                standardNodeTextColor = Tools.xmlToColor(stdcolor);
+                String stdcolor = getController().getFrame().getProperty(FreeMind.RESOURCES_BACKGROUND_COLOR);
+                standardMapBackgroundColor = Tools.xmlToColor(stdcolor);
                 }
                 catch(Exception ex){
-                	standardSelectColor = Color.WHITE;
+                	standardMapBackgroundColor = Color.WHITE;
                 }
+                try{
+                    String stdcolor = getController().getFrame().getProperty(FreeMind.RESOURCES_NODE_TEXT_COLOR);
+                    standardNodeTextColor = Tools.xmlToColor(stdcolor);
+                    }
+                    catch(Exception ex){
+                    	standardSelectColor = Color.WHITE;
+                    }
             // initialize the selectedColor:
             try{
             String stdcolor = getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR);
@@ -206,11 +214,11 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
             // initialize the selectedTextColor:
             try{
-            String stdtextcolor = getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR);
-            standardSelectTextColor = Tools.xmlToColor(stdtextcolor);
+            String stdtextcolor = getController().getFrame().getProperty(FreeMind.RESOURCES_SELECTED_NODE_RECTANGLE_COLOR);
+            standardSelectRectangleColor = Tools.xmlToColor(stdtextcolor);
             }
             catch(Exception ex){
-            	standardSelectTextColor = Color.WHITE;
+            	standardSelectRectangleColor = Color.WHITE;
             }
             try{
                 String drawCircle = getController().getFrame().getProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION);
@@ -240,9 +248,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
         initRoot();
 
-        final Color backgroundColor = getModel().getBackgroundColor();
-		setBackground(backgroundColor);
-
+		setBackground(standardMapBackgroundColor);
         addMouseListener( controller.getMapMouseMotionListener() );
         addMouseMotionListener( controller.getMapMouseMotionListener() );
         addMouseWheelListener( controller.getMapMouseWheelListener() );
@@ -270,13 +276,18 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 		                        controller.getMapModule().getView().repaintSelecteds();
 		                    }
 		                    else if (propertyName
+		                            .equals(FreeMind.RESOURCES_BACKGROUND_COLOR)) {
+		                        standardMapBackgroundColor = Tools.xmlToColor(newValue);
+		                        controller.getMapModule().getView().setBackground(standardMapBackgroundColor);
+		                    }
+		                    else if (propertyName
 		                            .equals(FreeMind.RESOURCES_SELECTED_NODE_COLOR)) {
 		                        standardSelectColor = Tools.xmlToColor(newValue);
 		                        controller.getMapModule().getView().repaintSelecteds();
 		                    }
 		                    else if (propertyName
-		                            .equals(FreeMind.RESOURCES_SELECTED_NODE_TEXT_COLOR)) {
-		                    	standardSelectTextColor = Tools.xmlToColor(newValue);
+		                            .equals(FreeMind.RESOURCES_SELECTED_NODE_RECTANGLE_COLOR)) {
+		                    	standardSelectRectangleColor = Tools.xmlToColor(newValue);
 		                    	controller.getMapModule().getView().repaintSelecteds();
 		                    }
 		                    else if (propertyName
@@ -969,7 +980,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 		}
 		final Color c = g.getColor();
 		final Stroke s = g.getStroke();		
-		g.setColor(MapView.standardSelectColor);
+		g.setColor(MapView.standardSelectRectangleColor);
 		if(standardSelectionStroke == null){
 			standardSelectionStroke = new BasicStroke(2.0f);
 		}

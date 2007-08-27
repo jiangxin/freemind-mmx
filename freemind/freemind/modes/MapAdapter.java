@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.21 2007-07-24 06:10:13 dpolivaev Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.22 2007-08-27 17:55:27 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -62,7 +62,6 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 	 */
     protected int changesPerformedSinceLastSave = 0;
     protected boolean readOnly = true;
-    private Color backgroundColor;
     private File file;
     private FreeMindMain frame;
     static protected Logger logger;
@@ -76,17 +75,6 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
         super(null);
 		this.frame = frame;
 		this.mModeController = modeController;
-		
-		Color bgcolor;
-        try{
-        	String stdcolor = getFrame().getProperty(FreeMind.RESOURCES_BACKGROUND_COLOR);
-        	bgcolor = Tools.xmlToColor(stdcolor);
-        }
-        catch(Exception ex){
-        	bgcolor = Color.WHITE;
-        }
-        setBackgroundColor(bgcolor);
-
 		mModeController.setModel(this);
 		if(logger == null) {
 		    logger = frame.getLogger(this.getClass().getName());
@@ -180,14 +168,6 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 
     protected int getNumberOfChangesSinceLastSave() {
         return changesPerformedSinceLastSave;
-    }
-
-    public Color getBackgroundColor() {
-	return backgroundColor;
-    }
-
-    public void setBackgroundColor(Color backgroundColor) {
-    	this.backgroundColor = backgroundColor;
     }
 
     public MindMapNode getRootNode() {

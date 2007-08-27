@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.34 2007-08-25 14:13:13 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.35 2007-08-27 17:55:27 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -1081,14 +1081,6 @@ public abstract class ControllerAdapter implements ModeController {
     public Color getSelectionColor() {
         return selectionColor;
     }
-
-    public void setBackgroundColor(Color color){
-    	getMap().setBackgroundColor(color);
-    	getMap().setSaved(false);
-    	getView().setBackground(color);
-    }
-
-
 
     /* (non-Javadoc)
      * @see freemind.modes.ModeController#updatePopupMenu(freemind.controller.StructuredMenuHolder)

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.49 2007-08-26 09:05:27 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.50 2007-08-27 17:55:30 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -814,15 +814,9 @@ public class NodeView extends JComponent implements TreeModelListener{
 
 	private void updateTextColor() {
 		Color color;
-		if(useSelectionColors())
-		{
-			color = MapView.standardSelectTextColor;
-		}
-		else{
-			color= getModel().getColor();
-			if (color==null) {
-				color = MapView.standardNodeTextColor;
-			}
+		color= getModel().getColor();
+		if (color==null) {
+			color = MapView.standardNodeTextColor;
 		}
 		mainView.setForeground(color);
 	}

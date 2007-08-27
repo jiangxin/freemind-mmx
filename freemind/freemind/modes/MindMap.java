@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMap.java,v 1.14.14.8.2.11 2007-07-08 08:37:22 dpolivaev Exp $ */
+/* $Id: MindMap.java,v 1.14.14.8.2.12 2007-08-27 17:55:27 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -82,11 +82,6 @@ public interface MindMap extends TreeModel {
     String getRestoreable();
 
     TreeNode[] getPathToRoot( TreeNode node );
-
-    Color getBackgroundColor();
-
-    void setBackgroundColor(Color color);
-
 
     /** @return returns the link registry associated with this mode, or null, if no registry is present.*/
     MindMapLinkRegistry getLinkRegistry();

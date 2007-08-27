@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.20 2007-08-07 20:09:24 christianfoltin Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.21 2007-08-27 17:55:27 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -238,7 +238,6 @@ public interface ModeController extends TextTranslator  {
 	Controller getController();
 	HookFactory getHookFactory();
 	Color getSelectionColor();
-    void setBackgroundColor(Color color);
     /**
      * Get text from resource file
      */

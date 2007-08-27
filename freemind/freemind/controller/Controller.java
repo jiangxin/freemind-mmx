@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.38 2007-08-25 19:30:43 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.39 2007-08-27 17:55:23 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -1321,7 +1321,7 @@ public class Controller  implements MapModuleChangeObserver {
     		setProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION, BooleanProperty.FALSE_VALUE);
     	}
     	else{
-    		setProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION, BooleanProperty.FALSE_VALUE);
+    		setProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION, BooleanProperty.TRUE_VALUE);
     	}
 	}
 

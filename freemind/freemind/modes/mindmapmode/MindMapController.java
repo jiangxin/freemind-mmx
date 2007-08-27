@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.52 2007-08-25 19:34:22 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.53 2007-08-27 17:55:28 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -168,7 +168,6 @@ import freemind.modes.mindmapmode.actions.ImportExplorerFavoritesAction;
 import freemind.modes.mindmapmode.actions.ImportFolderStructureAction;
 import freemind.modes.mindmapmode.actions.ItalicAction;
 import freemind.modes.mindmapmode.actions.JoinNodesAction;
-import freemind.modes.mindmapmode.actions.MapBackgroundColorAction;
 import freemind.modes.mindmapmode.actions.MindMapActions;
 import freemind.modes.mindmapmode.actions.ModeControllerActionHandler;
 import freemind.modes.mindmapmode.actions.MoveNodeAction;
@@ -337,8 +336,6 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     public ChangeArrowsInArrowLinkAction changeArrowsInArrowLinkAction = null;
     public NodeBackgroundColorAction nodeBackgroundColor = null;
     public RemoveNodeBackgroundColorAction removeNodeBackgroundColor = null;
-    
-    public MapBackgroundColorAction mapBackgroundColor = null;
 
     public IconAction unknownIconAction = null;
     public RemoveIconAction removeLastIconAction = null;
@@ -456,7 +453,6 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         nodeDown = new NodeDownAction(this);
         edgeColor = new EdgeColorAction(this);
         nodeColor = new NodeColorAction(this);
-        mapBackgroundColor = new MapBackgroundColorAction(this);
         nodeColorBlend = new NodeColorBlendAction(this);
         fork = new NodeStyleAction(this, MindMapNode.STYLE_FORK);
         bubble = new NodeStyleAction(this, MindMapNode.STYLE_BUBBLE);
