@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.39 2007-08-25 19:34:22 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.40 2007-08-27 21:07:49 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -375,18 +375,23 @@ public class NodeNote extends MindMapNodeHookAdapter {
                 openSplitPane(splitPane, maximumDividerLocation);
             } else {
                 // it is shown, hide it:
-                splitPane.setDividerLocation(1.0);
+            	int newLoc = splitPane.getHeight() - splitPane.getDividerSize();
+            	int currentLoc = splitPane.getDividerLocation();
+            	splitPane.setDividerLocation(newLoc);
+            	splitPane.setLastDividerLocation(currentLoc);
             }
 
         }
     }
 
     private void openSplitPane(JSplitPane splitPane, int maximumDividerLocation) {
-        int newSize = splitPane.getLastDividerLocation();
-        if(newSize > maximumDividerLocation) {
-            newSize = maximumDividerLocation;
+        int newLoc = splitPane.getLastDividerLocation();
+        int currentLoc = splitPane.getDividerLocation();
+        if(newLoc > maximumDividerLocation) {
+            newLoc = maximumDividerLocation;
         }
-        splitPane.setDividerLocation(newSize);
+        splitPane.setDividerLocation(newLoc);
+        splitPane.setLastDividerLocation(currentLoc);
     }
 
 }
