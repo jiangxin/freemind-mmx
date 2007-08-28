@@ -19,16 +19,18 @@
  *
  * Created on 23.06.2004
  */
-/*$Id: XmlBindingTools.java,v 1.1.2.2.2.3 2006-11-26 10:20:38 dpolivaev Exp $*/
+/*$Id: XmlBindingTools.java,v 1.1.2.2.2.4 2007-08-28 21:27:41 dpolivaev Exp $*/
 
 package freemind.common;
 
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 import org.jibx.runtime.BindingDirectory;
 import org.jibx.runtime.IBindingFactory;
@@ -108,10 +110,17 @@ public class XmlBindingTools {
 			WindowConfigurationStorage storage = (WindowConfigurationStorage) unMarshall(marshalled);
 			if (storage != null) {
 				dialog.setLocation(storage.getX(), storage.getY());
-				dialog.getRootPane().setPreferredSize(new Dimension(storage.getWidth(), storage.getHeight()));
+				dialog.setSize(new Dimension(storage.getWidth(), storage.getHeight()));
+				return storage;
 			}
-			return storage;
 		}
+		
+		// set standard dialog size of no size is stored
+		final Frame rootFrame = JOptionPane.getFrameForComponent(dialog);
+		final Dimension prefSize = rootFrame.getSize();
+		prefSize.width = prefSize.width * 3 / 4; 
+		prefSize.height = prefSize.height * 3 / 4; 
+		dialog.setSize(prefSize);
 		return null;
     }
 

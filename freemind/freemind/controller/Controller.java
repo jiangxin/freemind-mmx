@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.39 2007-08-27 17:55:23 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.40 2007-08-28 21:27:42 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -1398,9 +1398,6 @@ public class Controller  implements MapModuleChangeObserver {
 				}
 			};
 			Tools.addEscapeActionToDialog(dialog, action);
-
-
-			dialog.pack();
 			dialog.setVisible(true);
 
 		}

@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.4 2007-08-05 20:33:12 christianfoltin Exp $ */
+/* $Id: TimeList.java,v 1.1.2.5 2007-08-28 21:27:41 dpolivaev Exp $ */
 package accessories.plugins.time;
 
 import java.awt.Color;
@@ -373,7 +373,6 @@ public class TimeList extends MindMapHookAdapter {
                 column++;
             }
 		}
-		dialog.pack();
 		dialog.setVisible(true);
 	}
 

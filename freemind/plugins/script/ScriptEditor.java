@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditor.java,v 1.1.2.6 2007-04-20 17:29:59 christianfoltin Exp $*/
+/*$Id: ScriptEditor.java,v 1.1.2.7 2007-08-28 21:27:42 dpolivaev Exp $*/
 package plugins.script;
 
 import java.io.PrintStream;
@@ -155,7 +155,6 @@ public class ScriptEditor extends MindMapHookAdapter {
 		NodeScriptModel nodeScriptModel = new NodeScriptModel(scripts, node, getMindMapController());
         ScriptEditorPanel scriptEditorPanel = new ScriptEditorPanel(
 				nodeScriptModel, getController().getFrame());
-        scriptEditorPanel.pack();
 		scriptEditorPanel.setVisible(true);
 	}
 }

@@ -19,7 +19,7 @@
  *
  * Created on 22.01.2007
  */
-/*$Id: ScriptEditorPanelTest.java,v 1.1.2.4 2007-02-14 21:02:31 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanelTest.java,v 1.1.2.5 2007-08-28 21:27:42 dpolivaev Exp $*/
 package tests.freemind;
 
 import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
@@ -101,7 +101,6 @@ public class ScriptEditorPanelTest extends FreeMindTestBase {
 	public void testPanel() {
 		ScriptEditorPanel scriptEditor = new ScriptEditorPanel(
 				new TestScriptModel(), new FreeMindMainMock() );
-		scriptEditor.pack();
 		scriptEditor.setVisible(true);
 	}
 	

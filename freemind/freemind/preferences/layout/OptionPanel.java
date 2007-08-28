@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.30 2007-08-27 17:55:29 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.31 2007-08-28 21:27:42 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -125,19 +125,10 @@ public class OptionPanel implements TextTranslator {
 		//Retrieve window size and column positions.
 		WindowConfigurationStorage storage = XmlBindingTools.getInstance().decorateDialog(fm.getController(),
 				frame, PREFERENCE_STORAGE_PROPERTY);
-		if (storage == null) {
-			final Frame rootFrame = JOptionPane.getFrameForComponent(frame);
-            final Dimension prefSize = rootFrame.getSize();
-            prefSize.width = prefSize.width * 3 / 4; 
-            prefSize.height = prefSize.height * 3 / 4; 
-            frame.getRootPane().setPreferredSize(prefSize);
-		} else {
-			if (storage instanceof OptionPanelWindowConfigurationStorage) {
+		if (storage != null && storage instanceof OptionPanelWindowConfigurationStorage) {
 				OptionPanelWindowConfigurationStorage oWindowSettings = (OptionPanelWindowConfigurationStorage) storage;
 				selectedPanel = oWindowSettings.getPanel();
-			}
 		}
-
 	}
 
 	public interface OptionPanelFeedback {
