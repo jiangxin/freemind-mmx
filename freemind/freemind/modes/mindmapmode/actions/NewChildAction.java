@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: NewChildAction.java,v 1.1.2.2.2.5 2007-08-21 19:54:08 christianfoltin Exp $ */
+/* $Id: NewChildAction.java,v 1.1.2.2.2.6 2007-08-30 19:43:09 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -146,7 +146,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 	public MindMapNode addNewNode(MindMapNode parent, int index, boolean newNodeIsLeft){
 		// bug fix from Dimitri.
         c.getModel().getLinkRegistry().registerLinkTarget(parent);
-        String newId = c.getModel().getLinkRegistry().generateUniqueID("_");
+        String newId = c.getModel().getLinkRegistry().generateUniqueID(null);
         c.getActionFactory().startTransaction(c.getText("new_child"));
         NewNodeAction newNodeAction =
             getAddNodeAction(parent, index, newId, newNodeIsLeft);
