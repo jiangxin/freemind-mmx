@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.73 2007-08-27 17:55:24 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.74 2007-08-30 17:59:19 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -424,6 +425,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				+ mSplitPane.getLastDividerLocation());
 		try {
 			OutputStream out = new FileOutputStream(autoPropertiesFile);
+			final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, "8859_1");
+			outputStreamWriter.write("#FreeMind ");
+			outputStreamWriter.write(VERSION);
+			outputStreamWriter.write('\n');
+			outputStreamWriter.flush();
 			// auto.store(out,null);//to save as few props as possible.
 			props.store(out, null);
 			out.close();
