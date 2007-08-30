@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: ActionFactory.java,v 1.1.2.2.2.5 2007-08-12 08:14:15 dpolivaev Exp $ */
+/* $Id: ActionFactory.java,v 1.1.2.2.2.6 2007-08-30 07:01:31 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -106,6 +106,17 @@ public class ActionFactory {
 			ActionFilter filter = (ActionFilter) i.next();
 			filteredPair = filter.filterAction(filteredPair);
 		}
+		
+		// register for undo
+		if(undoActionHandler != null)
+		{
+			try {
+				undoActionHandler.executeAction(filteredPair);
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
+		
 		Object[] aArray = registeredHandler.toArray();
 		for (int i = 0; i < aArray.length; i++) {
             ActionHandler handler = (ActionHandler) aArray[i];
@@ -114,14 +125,6 @@ public class ActionFactory {
             } catch (Exception e) {
                 freemind.main.Resources.getInstance().logException(e);
             }
-		}
-		if(undoActionHandler != null)
-		{
-			try {
-				undoActionHandler.executeAction(filteredPair);
-			} catch (Exception e) {
-				freemind.main.Resources.getInstance().logException(e);
-			}
 		}
 //		for (Iterator i = registeredHandler.iterator(); i.hasNext();) {
 //			ActionHandler handler = (ActionHandler) i.next();
