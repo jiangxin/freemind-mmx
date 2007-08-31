@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.40 2007-08-27 21:07:49 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.41 2007-08-31 21:17:29 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.BorderLayout;
@@ -24,9 +24,6 @@ import java.awt.EventQueue;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.net.MalformedURLException;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -39,16 +36,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.html.HTMLDocument;
 
-import com.lightdev.app.shtm.DefaultTextResources;
 import com.lightdev.app.shtm.SHTMLPanel;
 import com.lightdev.app.shtm.TextResources;
-import com.lightdev.app.shtm.Util;
 
 import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMindMain;
-import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
@@ -57,7 +51,6 @@ import freemind.modes.ModeController;
 import freemind.modes.ModeController.NodeLifetimeListener;
 import freemind.modes.ModeController.NodeSelectionListener;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 import freemind.view.mindmapview.NodeView;
@@ -369,7 +362,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
                 }                
             });
         } else {
-            // show hide window:
+            // show hidden window:
             if(splitPane.getDividerLocation() > maximumDividerLocation) {
                 // the window is currently hidden. show it:
                 openSplitPane(splitPane, maximumDividerLocation);
@@ -379,7 +372,23 @@ public class NodeNote extends MindMapNodeHookAdapter {
             	int currentLoc = splitPane.getDividerLocation();
             	splitPane.setDividerLocation(newLoc);
             	splitPane.setLastDividerLocation(currentLoc);
-            }
+            	/* the problem is that the location of the divider
+            	 * is not maintained on resizing the window.
+            	 * This can be solved with the following code but
+            	 * I think it is to ugly to use. 
+            	 */
+/*            	Object ui = splitPane.getUI();
+				if (ui instanceof javax.swing.plaf.basic.BasicSplitPaneUI)
+					try {
+						java.lang.reflect.Method set_keep_hidden = javax.swing.plaf.basic.BasicSplitPaneUI.class
+								.getDeclaredMethod("setKeepHidden",
+										new Class[] { boolean.class });
+						set_keep_hidden.setAccessible(true);
+						set_keep_hidden.invoke(ui, new Object[] { new Boolean(
+								true) });
+					} catch (Exception e) {
+					}*/
+			}
 
         }
     }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.74 2007-08-30 17:59:19 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.75 2007-08-31 21:17:30 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -799,6 +799,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				southPanel);
 		mSplitPane.setContinuousLayout(true);
 		mSplitPane.setOneTouchExpandable(true);
+		/* This means that the mind map aera gets all the space that
+		 * results from resizing the window.*/
+		mSplitPane.setResizeWeight(1.0d);
 		// split panes eat F8 and F6. This is corrected here.
 		InputMap map = (InputMap) UIManager.get("SplitPane.ancestorInputMap");
 
@@ -936,7 +939,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				SPLIT_PANE_POSITION,  -1);
 		int lastSplitPanePosition = getIntProperty(
 				SPLIT_PANE_LAST_POSITION, -1);
-		mSplitPane.setResizeWeight(0.8);
 		if(splitPanePosition != -1 && lastSplitPanePosition != -1){
 			mSplitPane.setDividerLocation(splitPanePosition);
 			mSplitPane.setLastDividerLocation(lastSplitPanePosition);

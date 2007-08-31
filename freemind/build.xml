@@ -424,9 +424,11 @@
 	</target>
 
 	<target name="run" depends="dist">
+		<!-- failonerror is false here, as we want to 
+		     make runWithoutPreferences safe. -->
 		<java classname="freemind.main.FreeMindStarter"
           fork="yes"
-          dir="${dist}">
+          dir="${dist}" failonerror="false">
 			<!--    <jvmarg value="-Djava.util.logging.config.file=logging.properties" /> -->
 			<classpath>
 				<!--<pathelement location="${dist}"/>-->
@@ -437,6 +439,17 @@
 		</java>
 	</target>
 
+	<!-- ================================= 
+          target: runWithoutPreferences              
+         ================================= -->
+    <target name="runWithoutPreferences">
+    	<rename dest="${user.home}/.freemind_bak" src="${user.home}/.freemind"/>
+    	<antcall target="run"></antcall>
+    	<delete dir="${user.home}/.freemind" failonerror="false"></delete>
+        <rename src="${user.home}/.freemind_bak" dest="${user.home}/.freemind" replace="yes"></rename>
+    </target>
+
+	
 	<property name="log_file" location="${user.home}/.freemind/log.0"/>
 
 	<target name="runmac" depends="dist">
