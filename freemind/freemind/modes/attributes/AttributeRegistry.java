@@ -164,7 +164,7 @@ public class AttributeRegistry{
         setAttributeLayoutChanged();
     }
 
-    protected void fireStateChanged() {
+    public void fireStateChanged() {
         // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();
         // Process the listeners last to first, notifying
@@ -343,7 +343,6 @@ public class AttributeRegistry{
             getAttributeController().performSetVisibility(i, element.getVisibilityModel().booleanValue());
             getAttributeController().performSetRestriction(i, element.getRestriction().booleanValue());
         }
-        fireStateChanged();
         isAttributeLayoutChanged = false;
     }
 

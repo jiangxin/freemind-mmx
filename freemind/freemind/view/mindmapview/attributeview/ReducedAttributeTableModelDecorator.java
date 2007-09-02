@@ -26,6 +26,7 @@ package freemind.view.mindmapview.attributeview;
 import java.util.Vector;
 
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.TableModelEvent;
 
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeRegistry;
@@ -115,7 +116,12 @@ class ReducedAttributeTableModelDecorator extends AttributeTableModelDecoratorAd
         }
     }
 
-    /* (non-Javadoc)
+    public void tableChanged(TableModelEvent e) {
+		super.tableChanged(e);
+		 rebuildTableModel();
+	}
+
+	/* (non-Javadoc)
      * @see freemind.view.mindmapview.attributeview.AttributeTableModelDecoratorAdapter#areAttributesVisible()
      */
     public boolean areAttributesVisible() {

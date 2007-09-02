@@ -60,6 +60,7 @@ public class SetAttributeVisibleActor extends AbstractActorXml {
 
     private void act(int index, boolean value) {
        getAttributeRegistry().getElement(index).setVisibility(value);
+       getAttributeRegistry().fireStateChanged();
     }
 
     public Class getDoActionClass() {
