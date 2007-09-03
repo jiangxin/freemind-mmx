@@ -17,11 +17,12 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.30 2007-08-05 22:15:22 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.31 2007-09-03 20:26:06 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -195,20 +196,24 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             final SHTMLPanel htmlEditorPanel = ((HTMLDialog)htmlEditorWindow).getHtmlEditorPanel();
             String rule = "BODY {";
             final Font font = node.getTextFont();
+            final Color nodeTextBackground = node.getTextBackground();
             rule += "font-family: "+font.getFamily()+";";
             rule += "font-size: "+font.getSize()+"pt;";
             if (node.getModel().isItalic()) {
                 rule+="font-style: italic; "; }
             if (node.getModel().isBold()) {
                 rule+="font-weight: bold; "; }
-            if (node.getModel().getColor() != null) {
-                rule+="color: "+Tools.colorToXml(node.getTextColor())+";"; }
-            rule+="background-color: "+Tools.colorToXml(node.getTextBackground())+";";
+            rule+="color: "+Tools.colorToXml(node.getTextColor())+";"; 
+			rule+="background-color: "+Tools.colorToXml(nodeTextBackground)+";";
             rule += "}\n";
             rule += "p {";
             rule += "margin-top:0;";            
             rule += "}\n";
             final HTMLDocument document = htmlEditorPanel.getDocument();
+            final int r = nodeTextBackground.getRed();
+            final int g = nodeTextBackground.getGreen();
+            final int b = nodeTextBackground.getBlue();            
+            htmlEditorPanel.getEditorPane().setCaretColor(r*r+g*g+b*b > 3*255*255/2 ? Color.BLACK : Color.WHITE);
 			document.getStyleSheet().addRule(rule);
 			try {
 				document.setBase(node.getMap().getModel().getURL());

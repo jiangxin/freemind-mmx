@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.51 2007-08-27 18:23:19 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.52 2007-09-03 20:26:06 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1093,7 +1093,7 @@ public class NodeView extends JComponent implements TreeModelListener{
                 		break;
                 	}
                 	NodeView candidate = (NodeView)c;
-                	if(candidate.isVisible()){
+                	if(candidate.isVisible() && node.isLeft() == candidate.isLeft()){
                 		this.preferredChild = candidate;
                 		break;
                 	}
@@ -1105,7 +1105,7 @@ public class NodeView extends JComponent implements TreeModelListener{
                 			break;
                 		}
                 		NodeView candidate = (NodeView)c;
-                		if(candidate.isVisible()){
+                		if(candidate.isVisible()&& node.isLeft() == candidate.isLeft()){
                 			this.preferredChild = candidate;
                 			break;
                 		}
