@@ -13,7 +13,7 @@
 	xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
 	xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
-	xmlns:meta="mm2ourn:oasis:names:tc:opendocument:xmlns:meta:1.0"
+	xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0"
 	xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0"
 	xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0"
 	xmlns:chart="urn:oasis:names:tc:opendocument:xmlns:chart:1.0"
