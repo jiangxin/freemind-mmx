@@ -19,12 +19,14 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: DeleteChildAction.java,v 1.1.2.2.2.9 2007-08-07 20:09:24 christianfoltin Exp $ */
+/* $Id: DeleteChildAction.java,v 1.1.2.2.2.10 2007-09-04 19:56:54 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -56,7 +58,12 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
     }
 
     public void actionPerformed(ActionEvent e) {
-    	// ask user:
+    	// ask user if not root is selected:
+    	for (Iterator iterator = mMindMapController.getSelecteds().iterator(); iterator.hasNext();) {
+			MindMapNode node = (MindMapNode) iterator.next();
+			if(node.isRoot())
+				return;
+		}
 		int showResult = new OptionalDontShowMeAgainDialog(mMindMapController
 				.getFrame().getJFrame(), mMindMapController.getSelectedView(),
 				"really_remove_node", "confirmation", mMindMapController,
