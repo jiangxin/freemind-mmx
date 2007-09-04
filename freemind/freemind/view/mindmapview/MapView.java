@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.38 2007-08-27 17:55:29 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.39 2007-09-04 21:59:44 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -273,7 +273,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 		                    if (propertyName
 		                            .equals(FreeMind.RESOURCES_NODE_TEXT_COLOR)) {
 		                        standardNodeTextColor = Tools.xmlToColor(newValue);
-		                        controller.getMapModule().getView().repaintSelecteds();
+		                        controller.getMapModule().getView().getRoot().updateAll();
 		                    }
 		                    else if (propertyName
 		                            .equals(FreeMind.RESOURCES_BACKGROUND_COLOR)) {
@@ -952,8 +952,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 				g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, newRenderingHintFM );
 			}
             super.paint(g);
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
-			if(oldRenderingHintFM != newRenderingHintFM)
+            if(RenderingHints.KEY_ANTIALIASING.isCompatibleValue(renderingHint)){
+            	g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
+            }
+			if(oldRenderingHintFM != newRenderingHintFM && RenderingHints.KEY_FRACTIONALMETRICS.isCompatibleValue(oldRenderingHintFM))
 			{
 				g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, oldRenderingHintFM);
 			}
