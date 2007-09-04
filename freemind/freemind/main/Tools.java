@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.22 2007-08-21 19:54:03 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.23 2007-09-04 19:48:48 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -530,6 +530,10 @@ public class Tools {
         public BooleanHolder() {
         }
 
+        public BooleanHolder(boolean initialValue) {
+        	value = initialValue;
+        }
+        
         public void setValue(boolean value) {
             this.value = value;
         }

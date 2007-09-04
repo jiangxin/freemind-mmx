@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.32 2007-08-30 17:49:08 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.33 2007-09-04 19:48:48 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -1052,6 +1052,7 @@ public class OptionPanel implements TextTranslator {
 
 		"placenewbranches.tooltip", "placenewbranches", new String[] { "first",
 				"last" }, this)); //  last
+		controls.add(new RemindValueProperty("remind_type_of_new_nodes.tooltip", FreeMind.RESOURCES_REMIND_USE_RICH_TEXT_IN_NEW_LONG_NODES, modeController));
 		controls.add(new BooleanProperty("draganddrop.tooltip", "draganddrop")); //  true
 
 		controls.add(new BooleanProperty("unfold_on_paste.tooltip", "unfold_on_paste")); //  true
@@ -1080,8 +1081,10 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new DontShowNotificationProperty(
 				"delete_nodes_without_question.tooltip",
 				FreeMind.RESOURCES_DELETE_NODES_WITHOUT_QUESTION)); 
+		controls.add(new DontShowNotificationProperty(
+				"execute_scripts_without_asking.tooltip",
+				FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_ASKING));
 
-		controls.add(new RemindValueProperty("remind_type_of_new_nodes.tooltip", FreeMind.RESOURCES_REMIND_USE_RICH_TEXT_IN_NEW_LONG_NODES, modeController));
 		
 		controls.add(new NextLineProperty());
 		controls

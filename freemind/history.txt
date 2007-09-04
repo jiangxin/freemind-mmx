@@ -1,4 +1,11 @@
 ===============================
+Changes made in FreeMind 0.9.0 RC1
+===============================
+* Open Office Export now for the ODT format.
+* Nicer automatic format with sharp bezier curves.
+* Security question for script execution.
+
+===============================
 Changes made in FreeMind 0.9.0 Beta 13
 ===============================
 * Menu Item to show SimplyHTML about box 

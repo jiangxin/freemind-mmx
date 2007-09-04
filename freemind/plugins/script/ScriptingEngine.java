@@ -19,11 +19,16 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.5 2007-01-12 20:42:09 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.6 2007-09-04 19:48:48 christianfoltin Exp $ */
 package plugins.script;
 
 import java.util.Iterator;
 
+import javax.swing.JOptionPane;
+
+import freemind.common.OptionalDontShowMeAgainDialog;
+import freemind.main.FreeMind;
+import freemind.main.Tools.BooleanHolder;
 import freemind.modes.MindMapNode;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
@@ -40,16 +45,16 @@ public class ScriptingEngine extends MindMapHookAdapter {
 		super.startupMapHook();
 		// start calculation:
 		MindMapNode node = getMindMapController().getMap().getRootNode();
-		performScriptOperation(node);
+		performScriptOperation(node, new BooleanHolder(false));
 	}
 
-	private void performScriptOperation(MindMapNode node) {
+	private void performScriptOperation(MindMapNode node, BooleanHolder pAlreadyAScriptExecuted) {
 		getController().getFrame().setWaitingCursor(true);
 		try {
 			// depth first:
 			for (Iterator iter = node.childrenUnfolded(); iter.hasNext();) {
 				MindMapNode element = (MindMapNode) iter.next();
-				performScriptOperation(element);
+				performScriptOperation(element, pAlreadyAScriptExecuted);
 			}
 			NodeAttributeTableModel attributes = node.getAttributes();
 			if (attributes == null)
@@ -58,6 +63,21 @@ public class ScriptingEngine extends MindMapHookAdapter {
 				String attrKey = (String) attributes.getName(row);
 				logger.info("Found key = " + attrKey);
 				if (attrKey.startsWith("script")) {
+					// ask user if first script:
+					if(!pAlreadyAScriptExecuted.getValue()){
+						int showResult = new OptionalDontShowMeAgainDialog(getMindMapController()
+								.getFrame().getJFrame(), getMindMapController().getSelectedView(),
+								"really_execute_script", "confirmation", getMindMapController(),
+								new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
+										getMindMapController().getController(),
+										FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_ASKING),
+								OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
+								.show().getResult();
+						if(showResult != JOptionPane.OK_OPTION) {
+							return;
+						}
+					}
+					pAlreadyAScriptExecuted.setValue(true);
 					Binding binding = new Binding();
 					binding.setVariable("c", getMindMapController());
 					binding.setVariable("node", node);
