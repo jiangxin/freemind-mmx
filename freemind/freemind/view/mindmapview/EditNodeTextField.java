@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.17 2007-08-05 21:46:43 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.18 2007-09-07 18:47:21 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -123,11 +123,11 @@ public class EditNodeTextField extends EditNodeBase {
         }
         textfield.setFont(font);
 
-// Dimitry: Should the colors be identical to the map colors? Possible not.        
-//        textfield.setForeground(nodeView.getTextColor());
-//        textfield.setBackground(nodeView.getTextBackground());
-//        textfield.setSelectedTextColor(MapView.standardSelectTextColor);
-//        textfield.setSelectionColor(MapView.standardSelectColor);
+        final Color nodeTextColor = nodeView.getTextColor();
+		textfield.setForeground(nodeTextColor);
+        final Color nodeTextBackground = nodeView.getTextBackground();
+		textfield.setBackground(nodeTextBackground);
+		textfield.setCaretColor(nodeTextColor);
         
         // textField.selectAll(); // no selection on edit (PN)
 

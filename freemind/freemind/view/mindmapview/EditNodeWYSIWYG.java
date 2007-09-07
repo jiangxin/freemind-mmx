@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.31 2007-09-03 20:26:06 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.32 2007-09-07 18:47:21 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -36,6 +36,7 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.text.html.HTMLDocument;
@@ -203,17 +204,16 @@ public class EditNodeWYSIWYG extends EditNodeBase {
                 rule+="font-style: italic; "; }
             if (node.getModel().isBold()) {
                 rule+="font-weight: bold; "; }
-            rule+="color: "+Tools.colorToXml(node.getTextColor())+";"; 
+            final Color nodeTextColor = node.getTextColor();
+			rule+="color: "+Tools.colorToXml(nodeTextColor)+";"; 
 			rule+="background-color: "+Tools.colorToXml(nodeTextBackground)+";";
             rule += "}\n";
             rule += "p {";
             rule += "margin-top:0;";            
             rule += "}\n";
             final HTMLDocument document = htmlEditorPanel.getDocument();
-            final int r = nodeTextBackground.getRed();
-            final int g = nodeTextBackground.getGreen();
-            final int b = nodeTextBackground.getBlue();            
-            htmlEditorPanel.getEditorPane().setCaretColor(r*r+g*g+b*b > 3*255*255/2 ? Color.BLACK : Color.WHITE);
+            final JEditorPane editorPane = htmlEditorPanel.getEditorPane();
+            editorPane.setCaretColor(nodeTextColor);
 			document.getStyleSheet().addRule(rule);
 			try {
 				document.setBase(node.getMap().getModel().getURL());
@@ -257,8 +257,6 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             freemind.main.Resources.getInstance().logException(ex);
             System.err.println("Loading of WYSIWYG HTML editor failed. Use the other editors instead."); 
         }}
-    // return false; }}
-    
     protected KeyEvent getFirstEvent() {
         return firstEvent; 
     }

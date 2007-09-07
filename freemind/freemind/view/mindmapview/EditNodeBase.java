@@ -19,11 +19,12 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.2.12.9 2007-02-09 17:23:45 dpolivaev Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2.12.10 2007-09-07 18:47:21 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;

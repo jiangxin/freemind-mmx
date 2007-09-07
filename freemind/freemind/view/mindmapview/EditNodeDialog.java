@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1.16.13 2007-08-07 21:44:45 dpolivaev Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.14 2007-09-07 18:47:21 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -233,11 +233,11 @@ public class EditNodeDialog extends EditNodeBase {
             final Font nodeFont = getNode().getTextFont();
             textArea.setFont(nodeFont);
             
-// Dimitry: Should the colors be identical to the map colors? Possible not.        
-//            textArea.setForeground(getNode().getTextColor());
-//            textArea.setBackground(getNode().getTextBackground());
-//            textArea.setSelectedTextColor(MapView.standardSelectTextColor);
-//            textArea.setSelectionColor(MapView.standardSelectColor);
+            final Color nodeTextColor = getNode().getTextColor();
+			textArea.setForeground(nodeTextColor);
+            final Color nodeTextBackground = getNode().getTextBackground();
+            textArea.setBackground(nodeTextBackground);
+            textArea.setCaretColor(nodeTextColor);
             
             //panel.setPreferredSize(new Dimension(500, 160));
             //editorScrollPane.setPreferredSize(new Dimension(500, 160));
