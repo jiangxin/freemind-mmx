@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.23 2007-09-07 18:32:15 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.24 2007-09-07 18:51:56 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -108,7 +108,7 @@ public abstract class MainView extends JLabel{
 		    if(zoom != 1F){
 		    	// Dimitry: Workaround because Swing do not use fractional metrics 
 		    	// for laying JLabels out 
-		    	zoom *= 0.97;
+		    	zoom *= ZOOM_CORRECTION_FACTOR;
 		        final AffineTransform transform = g2.getTransform();                
 		        g2.scale(zoom, zoom);
 		        isPainting = true;
@@ -274,6 +274,7 @@ public abstract class MainView extends JLabel{
         }
         
         protected int isDraggedOver = NodeView.DRAGGED_OVER_NO;
+		static final float ZOOM_CORRECTION_FACTOR = 0.97F;
         public void setDraggedOver(int draggedOver) {
            isDraggedOver = draggedOver; }
         public void setDraggedOver(Point p) {
