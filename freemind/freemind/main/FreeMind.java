@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.77 2007-09-04 19:48:48 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.78 2007-09-09 19:10:25 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -733,11 +733,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		final IFreeMindSplash splash2 = splash;
 		EventQueue.invokeLater(new Runnable(){
 			public void run() {
-				// work around because of the Note edit event on start:
-				// fc: but only, if a map is open
-				if (frame.getController().getMapModule() != null) {
-					frame.getController().getMap().setSaved(true);
-				}				
 				feedBack
 				.increase("FreeMind.progress.startCreateController");
 				ModeController ctrl = frame.createModeController(args);
