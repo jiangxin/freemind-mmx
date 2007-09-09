@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeViewFactory.java,v 1.1.4.7 2007-08-24 22:41:03 dpolivaev Exp $ */
+/* $Id: NodeViewFactory.java,v 1.1.4.8 2007-09-09 11:59:52 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Component;
@@ -122,13 +122,14 @@ class NodeViewFactory {
     }
     
     EdgeView getEdge(NodeView newView) {
-        if (newView.getModel().getEdge().getStyle().equals(EdgeAdapter.EDGESTYLE_LINEAR)) {
+        final String edgeStyle = newView.getModel().getEdge().getStyle();
+		if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_LINEAR)) {
             return getLinearEdgeView();
-        } else if (newView.getModel().getEdge().getStyle().equals(EdgeAdapter.EDGESTYLE_BEZIER)) {
+        } else if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_BEZIER)) {
             return getBezierEdgeView();
-        } else if (newView.getModel().getEdge().getStyle().equals(EdgeAdapter.EDGESTYLE_SHARP_LINEAR)) {
+        } else if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_SHARP_LINEAR)) {
             return getSharpEdgeView();
-        } else if (newView.getModel().getEdge().getStyle().equals(EdgeAdapter.EDGESTYLE_SHARP_BEZIER)) {
+        } else if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_SHARP_BEZIER)) {
             return getSharpBezierEdgeView();
         } else {
             System.err.println("Unknown Edge Type.");

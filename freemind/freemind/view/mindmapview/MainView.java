@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.24 2007-09-07 18:51:56 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.25 2007-09-09 11:59:52 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -325,8 +325,9 @@ public abstract class MainView extends JLabel{
             final Color color = g.getColor();
             g.setColor(Color.WHITE);
             g.fillOval(p.x , p.y , zoomedFoldingSymbolHalfWidth * 2, zoomedFoldingSymbolHalfWidth * 2);
-            g.setColor(color);
+            g.setColor(getNodeView().getModel().getEdge().getColor());
             g.drawOval(p.x , p.y , zoomedFoldingSymbolHalfWidth * 2, zoomedFoldingSymbolHalfWidth * 2);
+            g.setColor(color);
         }
         public boolean isInFollowLinkRegion(double xCoord) {
             final MindMapNode model = getNodeView().getModel();
