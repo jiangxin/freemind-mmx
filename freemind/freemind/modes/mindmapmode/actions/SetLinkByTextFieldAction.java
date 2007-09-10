@@ -49,9 +49,10 @@ public class SetLinkByTextFieldAction extends FreemindAction implements ActorXml
     }
 
     public void actionPerformed(ActionEvent e) {
-        String inputValue = JOptionPane.showInputDialog(controller
-                .getText("edit_link_manually"), controller.getSelected()
-                .getLink());
+        String inputValue = JOptionPane.showInputDialog(
+        		controller.getView().getSelected(), 
+        		controller.getText("edit_link_manually"), 
+        		controller.getSelected().getLink());
         if (inputValue != null) {
             if (inputValue.equals("")) {
                 inputValue = null; // In case of no entry unset link

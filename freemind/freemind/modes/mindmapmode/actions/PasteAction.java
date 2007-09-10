@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.14 2007-08-12 14:27:22 dpolivaev Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.15 2007-09-10 17:46:22 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -346,8 +346,9 @@ public class PasteAction extends AbstractAction implements ActorXml{
                         // Either invalid URL or relative URL
                         if (referenceURL == null && !baseUrlCanceled) {
                             String referenceURLString = JOptionPane
-                                    .showInputDialog(pMindMapController
-                                            .getText("enter_base_url"));
+                                    .showInputDialog(
+                                    		pMindMapController.getView().getSelected(), 
+                                    		pMindMapController.getText("enter_base_url"));
                             if (referenceURLString == null) {
                                 baseUrlCanceled = true;
                             } else {
