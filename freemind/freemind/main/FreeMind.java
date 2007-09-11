@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.79 2007-09-11 07:21:51 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.80 2007-09-11 19:58:21 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -130,7 +130,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private static final String DEFAULT_LANGUAGE = "en";
 
-	public static final String VERSION = "0.9.0 Beta 14";
+	public static final String VERSION = "0.9.0 Beta 13";
 
 	public static final String XML_VERSION = "0.9.0_Beta_8";
 
@@ -262,6 +262,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		feedback.increase("FreeMind.progress.buildScreen");
 		setScreenBounds();
 		
+		feedback.increase("FreeMind.progress.propageteLookAndFeel");
+		SwingUtilities.updateComponentTreeUI(this); // Propagate LookAndFeel to
+		// JComponents
+
 		feedback.increase("FreeMind.progress.createInitialMode");
 		controller.createNewMode(getProperty("initial_mode"));
 
@@ -741,10 +745,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				if (splash2 != null) {
 					splash2.setVisible(false);
 				}
-				feedBack.increase("FreeMind.progress.propageteLookAndFeel");
-				SwingUtilities.updateComponentTreeUI(frame); // Propagate LookAndFeel to
-				// JComponents
-
 				frame.setVisible(true);
 			}
 		});
