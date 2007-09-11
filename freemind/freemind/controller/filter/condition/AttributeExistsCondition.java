@@ -24,6 +24,7 @@
 package freemind.controller.filter.condition;
 
 import freemind.controller.Controller;
+import freemind.main.Resources;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.attributes.AttributeTableModel;
@@ -38,8 +39,8 @@ static final String NAME = "attribute_exists_condition";
 private String attribute;
     /**
      */
-    public AttributeExistsCondition(String description, String attribute) {
-        super(description);
+    public AttributeExistsCondition(String attribute) {
+        super();
         this.attribute = attribute;
     }
     /* (non-Javadoc)
@@ -62,7 +63,10 @@ private String attribute;
 	}
 	static Condition load(XMLElement element) {
 		return new AttributeExistsCondition(
-				element.getStringAttribute(AttributeExistsCondition.DESCRIPTION),
 				element.getStringAttribute(ATTRIBUTE));
+	}
+	protected String createDesctiption() {
+		final String simpleCondition = Resources.getInstance().getResourceString(ConditionFactory.FILTER_EXIST);
+		return ConditionFactory.createDescription(attribute, simpleCondition , null, false);
 	}
 }

@@ -671,8 +671,19 @@ public class FilterComposerDialog extends JDialog {
         else{
             internalConditionsModel.removeAllElements();
         }
+        int index = -1;
         for (int i = 2; i < externalConditionsModel.getSize(); i++){
-            internalConditionsModel.addElement(externalConditionsModel.getElementAt(i));
+            final Object element = externalConditionsModel.getElementAt(i);
+			internalConditionsModel.addElement(element);
+			if(element == externalConditionsModel.getSelectedItem()){
+				index = i - 2;
+			}
+        }
+        if(index >= 0){
+        	conditionList.setSelectedIndex(index);
+        }
+        else{
+        	conditionList.clearSelection();
         }
     }
 

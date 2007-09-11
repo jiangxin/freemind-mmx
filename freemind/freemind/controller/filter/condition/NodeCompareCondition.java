@@ -24,6 +24,7 @@
 package freemind.controller.filter.condition;
 
 import freemind.controller.Controller;
+import freemind.main.Resources;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.main.Tools;
@@ -35,16 +36,14 @@ class NodeCompareCondition extends CompareConditionAdapter{
 	static final String VALUE = "value";
 	static final String NAME = "node_compare_condition";
 	static final String SUCCEED = "succeed";
-	private String conditionValue;
     private int comparationResult;
     private boolean succeed;
      NodeCompareCondition(
-            String description,
-            String value,
+    		 String value,
             boolean ignoreCase,
             int comparationResult,
             boolean succeed) {
-        super(description, value, ignoreCase);   
+        super(value, ignoreCase);   
         this.comparationResult = comparationResult;
         this.succeed = succeed;
     }
@@ -62,7 +61,6 @@ class NodeCompareCondition extends CompareConditionAdapter{
 		XMLElement child = new XMLElement();
 		child.setName(NAME);
 		super.saveAttributes(child);
-		child.setAttribute(VALUE, conditionValue);
 		child.setIntAttribute(COMPARATION_RESULT, comparationResult);
 		child.setAttribute(SUCCEED, Tools.BooleanToXml(succeed));
 		element.addChild(child);		
@@ -70,11 +68,14 @@ class NodeCompareCondition extends CompareConditionAdapter{
 
 	static Condition load(XMLElement element) {
 		return new NodeCompareCondition(
-				element.getStringAttribute(NodeCompareCondition.DESCRIPTION),
 				element.getStringAttribute(VALUE),
 				Tools.xmlToBoolean(element.getStringAttribute(NodeCompareCondition.IGNORE_CASE)),
 				element.getIntAttribute(COMPARATION_RESULT),
 				Tools.xmlToBoolean(element.getStringAttribute(SUCCEED))
 				);
+	}
+	protected String createDesctiption() {
+		final String nodeCondition = Resources.getInstance().getResourceString(ConditionFactory.FILTER_NODE);
+		return super.createDescription(nodeCondition, comparationResult, succeed);
 	}
 }

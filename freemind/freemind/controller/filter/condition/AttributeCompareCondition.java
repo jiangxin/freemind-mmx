@@ -43,9 +43,8 @@ private int comparationResult;
 private boolean succeed;
     /**
      */
-    public AttributeCompareCondition(String description, String attribute, String value,
-            boolean ignoreCase, int comparationResult, boolean succeed) {
-        super(description, value, ignoreCase);
+    public AttributeCompareCondition(String attribute, String value,  boolean ignoreCase, int comparationResult, boolean succeed) {
+        super(value, ignoreCase);
         this.attribute = attribute;
         this.comparationResult = comparationResult;
         this.succeed = succeed;
@@ -79,12 +78,14 @@ private boolean succeed;
 	}
 	static Condition load(XMLElement element) {
 		return new AttributeCompareCondition(
-				element.getStringAttribute(AttributeCompareCondition.DESCRIPTION),
 				element.getStringAttribute(ATTRIBUTE),
 				element.getStringAttribute(AttributeCompareCondition.VALUE),
 				Tools.xmlToBoolean(element.getStringAttribute(AttributeCompareCondition.IGNORE_CASE)),
 				element.getIntAttribute(COMPARATION_RESULT),
 				Tools.xmlToBoolean(element.getStringAttribute(SUCCEED))
 				);
+	}
+	protected String createDesctiption() {
+		return super.createDescription(attribute, comparationResult, succeed);
 	}
 }

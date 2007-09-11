@@ -24,6 +24,7 @@
 package freemind.controller.filter.condition;
 
 import freemind.controller.Controller;
+import freemind.main.Resources;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 
@@ -33,9 +34,8 @@ class NodeContainsCondition extends NodeCondition{
 		static final String NAME = "node_contains_condition";
 		private String value;
         NodeContainsCondition(
-                String description,
                 String value) {
-            super(description);   
+            super();   
             this.value = value; 
         }
         
@@ -52,8 +52,13 @@ class NodeContainsCondition extends NodeCondition{
 
 		static Condition load(XMLElement element) {
 			return new NodeContainsCondition(
-					element.getStringAttribute(NodeContainsCondition.DESCRIPTION),
 					element.getStringAttribute(VALUE)
 					);
+		}
+
+		protected String createDesctiption() {
+			final String nodeCondition = Resources.getInstance().getResourceString(ConditionFactory.FILTER_NODE);
+			final String simpleCondition = Resources.getInstance().getResourceString(ConditionFactory.FILTER_CONTAINS);
+			return ConditionFactory.createDescription(nodeCondition, simpleCondition , value, false);
 		}
 }

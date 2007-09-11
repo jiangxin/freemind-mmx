@@ -34,29 +34,29 @@ import freemind.main.XMLElement;
  * 15.05.2005
  */
 public abstract class NodeCondition implements Condition {
-
-    static final String DESCRIPTION = "description";
-	private String description;
     private JComponent renderer;
+	private String description;
     
-    protected NodeCondition (String description) {
-        super();
-        this.description = description;
+    protected NodeCondition () {
     }
     
     public JComponent getListCellRendererComponent() {
         if(renderer == null){
-            renderer = ConditionFactory.createCellRendererComponent(description);
+            renderer = ConditionFactory.createCellRendererComponent(toString());
         }
         return renderer;
     }
     
     public String toString(){
+    	if(description == null){
+    		description = createDesctiption();
+    	}
         return description;
     }
 
-    public void saveAttributes(XMLElement child) {
-		child.setAttribute(DESCRIPTION, description);
+    abstract protected String createDesctiption() ;
+
+	public void saveAttributes(XMLElement child) {
     }
     
 }

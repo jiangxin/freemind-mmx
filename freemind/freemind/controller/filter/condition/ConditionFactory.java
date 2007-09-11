@@ -38,31 +38,36 @@ import freemind.main.XMLElement;
  */
 public class ConditionFactory {
 
-    /**
+	static final String FILTER_ICON = "filter_icon";
+    static final String FILTER_NODE = "filter_node";
+    
+	static final String FILTER_DOES_NOT_EXIST = "filter_does_not_exist";
+	static final String FILTER_EXIST = "filter_exist";
+	static final String FILTER_CONTAINS = "filter_contains";
+	static final String FILTER_IS_NOT_EQUAL_TO = "filter_is_not_equal_to";
+	static final String FILTER_IS_EQUAL_TO = "filter_is_equal_to";
+	static final String FILTER_LE = "<=";
+	static final String FILTER_LT = "<";
+	static final String FILTER_GE = ">=";
+	static final String FILTER_GT = ">";
+	static final String FILTER_IGNORE_CASE = "filter_ignore_case";
+
+	/**
      *
      */
     public ConditionFactory() {
     }
 
-    String createDescription(
-            NamedObject attribute,
-            NamedObject simpleCondition,
-            String value,
-            boolean ignoreCase){
-        return createDescription(attribute.toString(), simpleCondition, value, ignoreCase);
-    }
-
-        String createDescription(
-                String attribute,
-                NamedObject simpleCondition,
-                String value,
-                boolean ignoreCase){
-        boolean considerValue = ! simpleCondition.equals("filter_exist") && ! simpleCondition.equals("filter_does_not_exist");
-        String description = attribute + " "
-        + simpleCondition.toString() + " "
-        + (considerValue ?  "\"" + value + "\"": "")
-        + (considerValue && ignoreCase ? ", " + Resources.getInstance().getResourceString("filter_ignore_case") : "");
-        return description;
+    static String createDescription(
+    		String attribute,
+    		String simpleCondition,
+    		String value,
+    		boolean ignoreCase){
+    	String description = attribute + " "
+    	+ simpleCondition
+    	+ (value != null ?  " \"" + value + "\"": "")
+    	+ (ignoreCase && value != null ? ", " + Resources.getInstance().getResourceString(FILTER_IGNORE_CASE) : "");
+    	return description;
     }
 
     public Condition loadCondition(XMLElement element){
@@ -98,38 +103,37 @@ public class ConditionFactory {
             String value,
             boolean ignoreCase)
     {
-    	String description   = createDescription(attribute, simpleCondition, value, ignoreCase);
-        if(simpleCondition.equals("filter_exist"))
-            return new AttributeExistsCondition(description, attribute);
-        if(simpleCondition.equals("filter_does_not_exist"))
-            return new AttributeNotExistsCondition(description, attribute);
+        if(simpleCondition.equals(FILTER_EXIST))
+            return new AttributeExistsCondition(attribute);
+        if(simpleCondition.equals(FILTER_DOES_NOT_EXIST))
+            return new AttributeNotExistsCondition(attribute);
         if(ignoreCase){
-            if(simpleCondition.equals("filter_is_equal_to"))
-                return new AttributeCompareCondition(description, attribute,value, true, 0, true);
-            if(simpleCondition.equals("filter_is_not_equal_to"))
-                return new AttributeCompareCondition(description, attribute,value,  true, 0, false);
-            if(simpleCondition.equals(">"))
-                return  new AttributeCompareCondition(description, attribute,value,  true, 1, true);
-            if(simpleCondition.equals(">="))
-                return new AttributeCompareCondition(description, attribute,value,  true, -1, false);
-            if(simpleCondition.equals("<"))
-                return new AttributeCompareCondition(description, attribute,value,  true, -1, true);
-            if(simpleCondition.equals("<="))
-                return new AttributeCompareCondition(description, attribute,value,  true, 1, false);
+            if(simpleCondition.equals(FILTER_IS_EQUAL_TO))
+                return new AttributeCompareCondition(attribute,value, true, 0, true);
+            if(simpleCondition.equals(FILTER_IS_NOT_EQUAL_TO))
+                return new AttributeCompareCondition(attribute,value,  true, 0, false);
+            if(simpleCondition.equals(FILTER_GT))
+                return  new AttributeCompareCondition(attribute,value,  true, 1, true);
+            if(simpleCondition.equals(FILTER_GE))
+                return new AttributeCompareCondition(attribute,value,  true, -1, false);
+            if(simpleCondition.equals(FILTER_LT))
+                return new AttributeCompareCondition(attribute,value,  true, -1, true);
+            if(simpleCondition.equals(FILTER_LE))
+                return new AttributeCompareCondition(attribute,value,  true, 1, false);
         }
         else{
-            if(simpleCondition.equals("filter_is_equal_to"))
-                return new AttributeCompareCondition(description, attribute,value, false, 0, true);
-            if(simpleCondition.equals("filter_is_not_equal_to"))
-                return new AttributeCompareCondition(description, attribute,value, false, 0, false);
-            if(simpleCondition.equals(">"))
-                return  new AttributeCompareCondition(description, attribute,value, false, 1, true);
-            if(simpleCondition.equals(">="))
-                return new AttributeCompareCondition(description, attribute,value, false, -1, false);
-            if(simpleCondition.equals("<"))
-                return new AttributeCompareCondition(description, attribute,value, false, -1, true);
-            if(simpleCondition.equals("<="))
-                return new AttributeCompareCondition(description, attribute,value, false, 1, false);
+            if(simpleCondition.equals(FILTER_IS_EQUAL_TO))
+                return new AttributeCompareCondition(attribute,value, false, 0, true);
+            if(simpleCondition.equals(FILTER_IS_NOT_EQUAL_TO))
+                return new AttributeCompareCondition(attribute,value, false, 0, false);
+            if(simpleCondition.equals(FILTER_GT))
+                return  new AttributeCompareCondition(attribute,value, false, 1, true);
+            if(simpleCondition.equals(FILTER_GE))
+                return new AttributeCompareCondition(attribute,value, false, -1, false);
+            if(simpleCondition.equals(FILTER_LT))
+                return new AttributeCompareCondition(attribute,value, false, -1, true);
+            if(simpleCondition.equals(FILTER_LE))
+                return new AttributeCompareCondition(attribute,value, false, 1, false);
         }
         return null;
     }
@@ -139,12 +143,11 @@ public class ConditionFactory {
             String value,
             boolean ignoreCase)
     {
-        if (attribute.equals("filter_icon")
-            && simpleCondition.equals("filter_contains")    )
+        if (attribute.equals(FILTER_ICON)
+            && simpleCondition.equals(FILTER_CONTAINS)    )
             return new IconContainedCondition(value);
-        if (attribute.equals("filter_node")){
-            	String description   = createDescription(attribute, simpleCondition, value, ignoreCase);
-                return createNodeCondition(description, simpleCondition, value, ignoreCase);
+        if (attribute.equals(FILTER_NODE)){
+                return createNodeCondition(simpleCondition, value, ignoreCase);
         }
         return null;
     }
@@ -153,77 +156,76 @@ public class ConditionFactory {
             return new NamedObject[] {
     //                TranslatedString.create("filter_exist"),
     //                TranslatedString.create("filter_does_not_exist"),
-                    Resources.getInstance().createTranslatedString("filter_contains"),
-                    Resources.getInstance().createTranslatedString("filter_is_equal_to"),
-                    Resources.getInstance().createTranslatedString("filter_is_not_equal_to"),
-                    NamedObject.literal(">"),
-                    NamedObject.literal(">="),
-                    NamedObject.literal("<="),
-                    NamedObject.literal("<"),
+                    Resources.getInstance().createTranslatedString(FILTER_CONTAINS),
+                    Resources.getInstance().createTranslatedString(FILTER_IS_EQUAL_TO),
+                    Resources.getInstance().createTranslatedString(FILTER_IS_NOT_EQUAL_TO),
+                    NamedObject.literal(FILTER_GT),
+                    NamedObject.literal(FILTER_GE),
+                    NamedObject.literal(FILTER_LE),
+                    NamedObject.literal(FILTER_LT),
             };
         }
 
     public Object[] getIconConditionNames() {
         return new NamedObject[] {
-                Resources.getInstance().createTranslatedString("filter_contains"),
+                Resources.getInstance().createTranslatedString(FILTER_CONTAINS),
         };
     }
     public  NamedObject[] getAttributeConditionNames() {
         return new NamedObject[] {
-                Resources.getInstance().createTranslatedString("filter_exist"),
-                Resources.getInstance().createTranslatedString("filter_does_not_exist"),
+                Resources.getInstance().createTranslatedString(FILTER_EXIST),
+                Resources.getInstance().createTranslatedString(FILTER_DOES_NOT_EXIST),
 //                TranslatedString.create("filter_contains"),
-                Resources.getInstance().createTranslatedString("filter_is_equal_to"),
-                Resources.getInstance().createTranslatedString("filter_is_not_equal_to"),
-                NamedObject.literal(">"),
-                NamedObject.literal(">="),
-                NamedObject.literal("<="),
-                NamedObject.literal("<"),
+                Resources.getInstance().createTranslatedString(FILTER_IS_EQUAL_TO),
+                Resources.getInstance().createTranslatedString(FILTER_IS_NOT_EQUAL_TO),
+                NamedObject.literal(FILTER_GT),
+                NamedObject.literal(FILTER_GE),
+                NamedObject.literal(FILTER_LE),
+                NamedObject.literal(FILTER_LT),
         };
     }
 
     protected Condition createNodeCondition(
-            String description,
             NamedObject simpleCondition,
             String value,
             boolean ignoreCase) {
         if(ignoreCase){
-            if(simpleCondition.equals("filter_contains")){
+            if(simpleCondition.equals(FILTER_CONTAINS)){
                 if (value.equals(""))
                     return null;
-                return new IgnoreCaseNodeContainsCondition(description, value);
+                return new IgnoreCaseNodeContainsCondition(value);
             }
-            if(simpleCondition.equals("filter_is_equal_to"))
-                return new NodeCompareCondition(description, value, true, 0, true);
-            if(simpleCondition.equals("filter_is_not_equal_to"))
-                return new NodeCompareCondition(description, value,  true, 0, false);
-            if(simpleCondition.equals(">"))
-                return  new NodeCompareCondition(description, value,  true, 1, true);
-            if(simpleCondition.equals(">="))
-                return new NodeCompareCondition(description, value,  true, -1, false);
-            if(simpleCondition.equals("<"))
-                return new NodeCompareCondition(description, value,  true, -1, true);
-            if(simpleCondition.equals("<="))
-                return new NodeCompareCondition(description, value,  true, 1, false);
+            if(simpleCondition.equals(FILTER_IS_EQUAL_TO))
+                return new NodeCompareCondition(value, true, 0, true);
+            if(simpleCondition.equals(FILTER_IS_NOT_EQUAL_TO))
+                return new NodeCompareCondition(value,  true, 0, false);
+            if(simpleCondition.equals(FILTER_GT))
+                return  new NodeCompareCondition(value,  true, 1, true);
+            if(simpleCondition.equals(FILTER_GE))
+                return new NodeCompareCondition(value,  true, -1, false);
+            if(simpleCondition.equals(FILTER_LT))
+                return new NodeCompareCondition(value,  true, -1, true);
+            if(simpleCondition.equals(FILTER_LE))
+                return new NodeCompareCondition(value,  true, 1, false);
         }
         else{
-            if(simpleCondition.equals("filter_contains")){
+            if(simpleCondition.equals(FILTER_CONTAINS)){
                 if (value.equals(""))
                     return null;
-                return new NodeContainsCondition(description, value);
+                return new NodeContainsCondition(value);
             }
-            if(simpleCondition.equals("filter_is_equal_to"))
-                return new NodeCompareCondition(description, value, false, 0, true);
-            if(simpleCondition.equals("filter_is_not_equal_to"))
-                return new NodeCompareCondition(description, value, false, 0, false);
-            if(simpleCondition.equals(">"))
-                return  new NodeCompareCondition(description, value, false, 1, true);
-            if(simpleCondition.equals(">="))
-                return new NodeCompareCondition(description, value, false, -1, false);
-            if(simpleCondition.equals("<"))
-                return new NodeCompareCondition(description, value, false, -1, true);
-            if(simpleCondition.equals("<="))
-                return new NodeCompareCondition(description, value, false, 1, false);
+            if(simpleCondition.equals(FILTER_IS_EQUAL_TO))
+                return new NodeCompareCondition(value, false, 0, true);
+            if(simpleCondition.equals(FILTER_IS_NOT_EQUAL_TO))
+                return new NodeCompareCondition(value, false, 0, false);
+            if(simpleCondition.equals(FILTER_GT))
+                return  new NodeCompareCondition(value, false, 1, true);
+            if(simpleCondition.equals(FILTER_GE))
+                return new NodeCompareCondition(value, false, -1, false);
+            if(simpleCondition.equals(FILTER_LT))
+                return new NodeCompareCondition(value, false, -1, true);
+            if(simpleCondition.equals(FILTER_LE))
+                return new NodeCompareCondition(value, false, 1, false);
         }
         return null;
     }

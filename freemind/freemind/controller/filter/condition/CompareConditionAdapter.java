@@ -23,6 +23,7 @@
  */
 package freemind.controller.filter.condition;
 
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 
@@ -35,10 +36,8 @@ abstract class CompareConditionAdapter extends NodeCondition{
 	private String conditionValue;
     private boolean ignoreCase;
     
-    CompareConditionAdapter(String description, 
-            String value,
-            boolean ignoreCase) {
-        super(description);   
+    CompareConditionAdapter(String value, boolean ignoreCase) {
+        super();   
         this.conditionValue = value; 
         this.ignoreCase=ignoreCase;
     }
@@ -69,5 +68,23 @@ abstract class CompareConditionAdapter extends NodeCondition{
 		child.setAttribute(VALUE, conditionValue);
 		child.setAttribute(IGNORE_CASE, Tools.BooleanToXml(ignoreCase));
     }
+
+	public String createDescription(String attribute, int comparationResult, boolean succeed) {
+		String simpleCondition;
+		switch(comparationResult){
+		case -1:
+			simpleCondition = succeed ? ConditionFactory.FILTER_LT :ConditionFactory.FILTER_GE;
+			break;
+		case 0:
+			simpleCondition = Resources.getInstance().getResourceString(succeed ? ConditionFactory.FILTER_IS_EQUAL_TO :ConditionFactory.FILTER_IS_NOT_EQUAL_TO);  
+			break;
+		case 1:
+			simpleCondition = succeed ? ConditionFactory.FILTER_GT :ConditionFactory.FILTER_LE;  
+			break;
+		default:
+			throw new IllegalArgumentException();	
+		}
+		return ConditionFactory.createDescription(attribute, simpleCondition, conditionValue, ignoreCase);
+	}
     
 }

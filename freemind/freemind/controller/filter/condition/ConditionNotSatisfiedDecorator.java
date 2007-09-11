@@ -64,7 +64,9 @@ public class ConditionNotSatisfiedDecorator implements Condition {
         JCondition component = new JCondition();   
         String text = Resources.getInstance().getResourceString("filter_not") + ' ';
         component.add(new JLabel(text));
-        component.add(originalCondition.getListCellRendererComponent());
+        final JComponent renderer = originalCondition.getListCellRendererComponent();
+        renderer.setOpaque(false);
+		component.add(renderer);
         return component;
     }
 	public void save(XMLElement element) {
