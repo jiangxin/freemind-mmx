@@ -39,6 +39,7 @@ import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
@@ -47,7 +48,9 @@ import freemind.controller.filter.condition.ConditionFactory;
 import freemind.controller.filter.condition.ConditionRenderer;
 import freemind.controller.filter.condition.NoFilteringCondition;
 import freemind.controller.filter.condition.SelectedViewCondition;
+import freemind.main.Resources;
 import freemind.main.XMLElement;
+import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
@@ -85,6 +88,15 @@ import freemind.view.mindmapview.NodeView;
     	if(filterToolbar == null){        	
     		filterToolbar  = new FilterToolbar(c);
     		filterConditionModel = (DefaultComboBoxModel)filterToolbar.getFilterConditionModel();
+    		
+    		//FIXME state icons should be created on order to make possible 
+    		// their use in the filter component.
+    		// It should not happen here.
+    		MindIcon.factory("AttributeExist", new ImageIcon(Resources.getInstance().getResource("images/showAttributes.gif")));
+    		MindIcon.factory("accessories.plugins.NodeNote", new ImageIcon(Resources.getInstance().getResource("images/knotes.png")));
+    		MindIcon.factory("encrypted");
+    		MindIcon.factory("decrypted");
+    		
     		filterToolbar.initConditions();
     	}
         return filterToolbar;
