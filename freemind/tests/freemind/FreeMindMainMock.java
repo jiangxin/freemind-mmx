@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMainMock.java,v 1.1.2.11 2007-06-16 21:28:07 dpolivaev Exp $*/
+/*$Id: FreeMindMainMock.java,v 1.1.2.12 2007-09-12 20:27:13 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -176,17 +177,9 @@ public class FreeMindMainMock implements FreeMindMain {
         return java.util.logging.Logger.getLogger(forClass);
     }
 
-    public JPanel getSouthPanel() {
-        return null;
-    }
 
 	public ClassLoader getFreeMindClassLoader() {
 		return this.getClass().getClassLoader();
-	}
-
-	public JSplitPane getSplitPane() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public String getFreemindBaseDir() {
@@ -199,6 +192,16 @@ public class FreeMindMainMock implements FreeMindMain {
 	}
 
 	public void setDefaultProperty(String pKey, String pValue) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public JSplitPane insertComponentIntoSplitPane(JComponent pMindMapComponent) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void removeSplitPane() {
 		// TODO Auto-generated method stub
 		
 	}

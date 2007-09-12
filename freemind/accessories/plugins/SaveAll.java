@@ -29,6 +29,7 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import freemind.controller.Controller;
 import freemind.extensions.ModeControllerHookAdapter;
 import freemind.view.MapModule;
 
@@ -47,21 +48,27 @@ public class SaveAll extends ModeControllerHookAdapter {
 
     public void startupMapHook() {
         super.startupMapHook();
+        // store initial mapModule:
+        Controller mainController = getController().getController();
+		MapModule initialMapModule = mainController.getMapModule();
         Map modules = getMapModules();
         // to prevent concurrent modification:
         Vector v = new Vector();
         v.addAll(modules.values());
         for (Iterator iter = v.iterator(); iter.hasNext();) {
             MapModule module = (MapModule) iter.next();
+            // change to module to display map properly.
+            mainController.getMapModuleManager().changeToMapModule(module.toString());
             if (!module.getModeController().save()) {
                 // if not successfully, break the action.
                 JOptionPane.showMessageDialog(getController().getFrame()
                         .getContentPane(),
                         "FreeMind",
                         getResourceString("accessories/plugins/SaveAll.properties_save_all_cancelled"), JOptionPane.ERROR_MESSAGE);
-                break;
+                return;
             }
         }
+        mainController.getMapModuleManager().changeToMapModule(initialMapModule.toString());
     }
 
     /**

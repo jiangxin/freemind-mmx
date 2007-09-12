@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.80 2007-09-11 19:58:21 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.81 2007-09-12 20:27:12 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import java.util.Vector;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -53,6 +54,7 @@ import java.util.logging.SimpleFormatter;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -66,6 +68,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import freemind.controller.Controller;
+import freemind.controller.MapModuleManager;
 import freemind.controller.MenuBar;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.modes.MindMap;
@@ -76,17 +79,6 @@ import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
-
-	private static class SouthPanel extends JPanel {
-		public SouthPanel() {
-			super(new BorderLayout());
-			setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
-		}
-		
-		protected boolean processKeyBinding(KeyStroke ks, KeyEvent e, int condition, boolean pressed) {
-			return super.processKeyBinding(ks, e, condition, pressed) || e.getKeyChar() == KeyEvent.VK_SPACE;			
-		}
-	}
 
 	private static final String SPLIT_PANE_POSITION = "split_pane_position";
 
@@ -123,6 +115,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	public static final String RESOURCES_WHEEL_VELOCITY = "wheel_velocity";
 
 	public static final String RESOURCES_USE_TABBED_PANE = "use_tabbed_pane";
+	
+	public static final String RESOURCES_USE_SPLIT_PANE = "use_split_pane";
 
     public static final String RESOURCES_DELETE_NODES_WITHOUT_QUESTION = "delete_nodes_without_question";
 
@@ -163,16 +157,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private static FileHandler mFileHandler;
 
-	private JPanel southPanel;
-
-	private JScrollPane scrollPane = new JScrollPane();
+	private JScrollPane mScrollPane = new JScrollPane();
 
 	private JSplitPane mSplitPane;
 
-	private JTabbedPane mTabbedPane;
+	private JComponent mContentComponent = null;
+
+	private JTabbedPane mTabbedPane = null;
 	private boolean mTabbedPaneSelectionUpdate = true;
 
 	private ImageIcon mWindowIcon;
+
+	private Vector mTabbedPaneMapModules;
 
 	public FreeMind() {
 		super("FreeMind");
@@ -355,7 +351,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	}
 
 	public Container getViewport() {
-		return scrollPane.getViewport();
+		return mScrollPane.getViewport();
 	}
 
 	public String getFreemindVersion() {
@@ -421,10 +417,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	}
 
 	public void saveProperties() {
-		// TODO: Move the split pane property to a listener.
-		setProperty(SPLIT_PANE_POSITION, "" + mSplitPane.getDividerLocation());
-		setProperty(SPLIT_PANE_LAST_POSITION, ""
-				+ mSplitPane.getLastDividerLocation());
 		try {
 			OutputStream out = new FileOutputStream(autoPropertiesFile);
 			final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, "8859_1");
@@ -449,7 +441,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	}
 
 	public void setView(MapView view) {
-		scrollPane.setViewportView(view);
+		mScrollPane.setViewportView(view);
 	}
 
 	public MenuBar getFreeMindMenuBar() {
@@ -777,47 +769,33 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		win_y = Math.min(screenWidth+screenInsets.top-win_height, win_y);
 		setBounds(win_x, win_y, win_width, win_height);
 		if (Tools.safeEquals(getProperty("no_scrollbar"), "true")) {
-			scrollPane
+			mScrollPane
 					.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-			scrollPane
+			mScrollPane
 					.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		} else {
-			scrollPane
+			mScrollPane
 					.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-			scrollPane
+			mScrollPane
 					.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		}
-		southPanel = new SouthPanel();
 		status = new JLabel();
-		// southPanel.add( status, BorderLayout.SOUTH );
-
-		mSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane,
-				southPanel);
-		mSplitPane.setContinuousLayout(true);
-		mSplitPane.setOneTouchExpandable(true);
-		/* This means that the mind map area gets all the space that
-		 * results from resizing the window.*/
-		mSplitPane.setResizeWeight(1.0d);
-		// split panes eat F8 and F6. This is corrected here.
-		InputMap map = (InputMap) UIManager.get("SplitPane.ancestorInputMap");
-
-		KeyStroke keyStrokeF6 = KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0);
-		KeyStroke keyStrokeF8 = KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0);
-
-		map.remove(keyStrokeF6);
-		map.remove(keyStrokeF8);
+		mContentComponent = mScrollPane;
 
 		boolean shouldUseTabbedPane = "true".equals(controller.getFrame()
 				.getProperty(RESOURCES_USE_TABBED_PANE));
 
+
 		if (shouldUseTabbedPane) {
 			// tabbed panes eat control up. This is corrected here.
+			InputMap map;
 			map = (InputMap) UIManager.get("TabbedPane.ancestorInputMap");
 			KeyStroke keyStrokeCtrlUp = KeyStroke.getKeyStroke( KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK);
 			map.remove(keyStrokeCtrlUp);
 			mTabbedPane = new JTabbedPane();
-//			mTabbedPane.setFocusable(false);
+			mTabbedPaneMapModules = new Vector();
+			//			mTabbedPane.setFocusable(false);
 			mTabbedPane.addChangeListener(new ChangeListener() {
 
 				public synchronized void stateChanged(ChangeEvent pE) {
@@ -836,17 +814,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 							if (pNewMapModule == null) {
 								return;
 							}
-							// detect rename:
-							if (pOldMapModule == pNewMapModule
-									&& selectedIndex >= 0) {
-								// map was renamed.
-								mTabbedPane.setTitleAt(selectedIndex,
-										pNewMapModule.toString());
-							}
 							// search, if already present:
-							for (int i = 0; i < mTabbedPane.getTabCount(); ++i) {
-								if (mTabbedPane.getTitleAt(i).equals(
-										pNewMapModule.toString())) {
+							for (int i = 0; i < mTabbedPaneMapModules.size(); ++i) {
+								if (mTabbedPaneMapModules.get(i) ==
+										pNewMapModule) {
 									if (selectedIndex != i) {
 										mTabbedPane.setSelectedIndex(i);
 									}
@@ -854,6 +825,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 								}
 							}
 							// create new tab:
+							mTabbedPaneMapModules.add(pNewMapModule);
 							mTabbedPane.addTab(pNewMapModule.toString(),
 									new JPanel());
 							mTabbedPane.setSelectedIndex(mTabbedPane
@@ -876,12 +848,12 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 						public void afterMapClose(MapModule pOldMapModule,
 								Mode pOldMode) {
-							for (int i = 0; i < mTabbedPane.getTabCount(); ++i) {
-								if (mTabbedPane.getTitleAt(i).equals(
-										pOldMapModule.toString())) {
+							for (int i = 0; i < mTabbedPaneMapModules.size(); ++i) {
+								if (mTabbedPaneMapModules.get(i) ==	pOldMapModule) {
 									logger.fine("Remove tab:" + i + " with title:" + mTabbedPane.getTitleAt(i));
 									mTabbedPaneSelectionUpdate = false;
 									mTabbedPane.removeTabAt(i);
+									mTabbedPaneMapModules.remove(i);
 									mTabbedPaneSelectionUpdate = true;
 									tabSelectionChanged();
 									return;
@@ -889,10 +861,21 @@ public class FreeMind extends JFrame implements FreeMindMain {
 							}							
 						}
 					});
+			controller.registerMapTitleChangeListener(new MapModuleManager.MapTitleChangeListener(){
+
+				public void setMapTitle(String pNewMapTitle,
+						MapModule pMapModule, MindMap pModel) {
+					for (int i = 0; i < mTabbedPaneMapModules.size(); ++i) {
+						if (mTabbedPaneMapModules.get(i) ==	pMapModule) {
+							mTabbedPane.setTitleAt(i, pNewMapTitle + ((pModel.isSaved())?"":"*"));
+						}
+					}
+				}
+			});
 			getContentPane().add(mTabbedPane, BorderLayout.CENTER);
 		} else {
 			// don't use tabbed panes.
-			getContentPane().add(mSplitPane, BorderLayout.CENTER);
+			getContentPane().add(mContentComponent, BorderLayout.CENTER);
 		}
 		getContentPane().add(status, BorderLayout.SOUTH);
 
@@ -931,15 +914,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		win_state = ((win_state & ICONIFIED) != 0) ? NORMAL
 				: win_state;
 		setExtendedState(win_state);
-		// set divider position:
-		int splitPanePosition = getIntProperty(
-				SPLIT_PANE_POSITION,  -1);
-		int lastSplitPanePosition = getIntProperty(
-				SPLIT_PANE_LAST_POSITION, -1);
-		if(splitPanePosition != -1 && lastSplitPanePosition != -1){
-			mSplitPane.setDividerLocation(splitPanePosition);
-			mSplitPane.setLastDividerLocation(lastSplitPanePosition);
-		}
 	}
 	
 	 private ModeController createModeController(final String[] args) {
@@ -1007,16 +981,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			}
 		}
 	}
-	/**
-	 */
-	public JPanel getSouthPanel() {
-		return southPanel;
-	}
-
-	public JSplitPane getSplitPane() {
-		return mSplitPane;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1052,16 +1016,81 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			// nothing selected. probably, the last map was closed
 			return;
 		}
-		String selectedTitle = mTabbedPane
-				.getTitleAt(selectedIndex);
-		logger.fine("Selected index of tab is now: " + selectedIndex + " with title:"+selectedTitle);
-		if (!selectedTitle.equals(controller.getMapModule()
-				.toString())) {
+		MapModule module = (MapModule) mTabbedPaneMapModules.get(selectedIndex);
+		logger.fine("Selected index of tab is now: " + selectedIndex + " with title:"+module.toString());
+		if (module != controller.getMapModule()) {
 			// we have to change the active map actively:
-			controller.getMapModuleManager().changeToMapModule(
-					selectedTitle);
+			controller.getMapModuleManager().changeToMapModule(module.toString());
 		}
-		mTabbedPane.setComponentAt(selectedIndex, mSplitPane);
+		mTabbedPane.setComponentAt(selectedIndex, mContentComponent);
 	}
 
+
+
+	public JSplitPane insertComponentIntoSplitPane(JComponent pMindMapComponent) {
+		if(mSplitPane != null) {
+			// already present:
+			return mSplitPane;
+		}
+		removeContentComponent();
+		mSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, mScrollPane,
+				pMindMapComponent);
+		mSplitPane.setContinuousLayout(true);
+		mSplitPane.setOneTouchExpandable(true);
+		/* This means that the mind map area gets all the space that
+		 * results from resizing the window.*/
+		mSplitPane.setResizeWeight(1.0d);
+		// split panes eat F8 and F6. This is corrected here.
+		InputMap map = (InputMap) UIManager.get("SplitPane.ancestorInputMap");
+		KeyStroke keyStrokeF6 = KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0);
+		KeyStroke keyStrokeF8 = KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0);
+		map.remove(keyStrokeF6);
+		map.remove(keyStrokeF8);
+		mContentComponent = mSplitPane;
+		setContentComponent();
+		// set divider position:
+		int splitPanePosition = getIntProperty(SPLIT_PANE_POSITION, -1);
+		int lastSplitPanePosition = getIntProperty(
+				SPLIT_PANE_LAST_POSITION, -1);
+		if (splitPanePosition != -1 && lastSplitPanePosition != -1) {
+			mSplitPane.setDividerLocation(splitPanePosition);
+			mSplitPane.setLastDividerLocation(lastSplitPanePosition);
+		}
+		return mSplitPane;
+	}
+
+
+
+	public void removeSplitPane() {
+		if (mSplitPane != null) {
+			setProperty(SPLIT_PANE_POSITION, ""
+					+ mSplitPane.getDividerLocation());
+			setProperty(SPLIT_PANE_LAST_POSITION, ""
+					+ mSplitPane.getLastDividerLocation());
+			removeContentComponent();
+			mContentComponent = mScrollPane;
+			setContentComponent();
+			mSplitPane = null;
+		}
+	}
+
+	private void removeContentComponent(){
+		if(mTabbedPane != null) {
+			mTabbedPane.setComponentAt(mTabbedPane.getSelectedIndex(), new JPanel());
+		} else {
+			getContentPane().remove(mContentComponent);
+			getRootPane().revalidate();
+		}
+		
+	}
+	
+	private void setContentComponent() {
+		if(mTabbedPane != null) {
+			mTabbedPane.setComponentAt(mTabbedPane.getSelectedIndex(), mContentComponent);
+		} else {
+			getContentPane().add(mContentComponent, BorderLayout.CENTER);			
+			getRootPane().revalidate();
+		}
+	}
+	
 }

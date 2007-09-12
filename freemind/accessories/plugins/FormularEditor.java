@@ -352,8 +352,7 @@ freemind.main.Resources.getInstance().logException(						e1);
 			// shut down the display:
 			panel.setVisible(false);
 			FreeMindMain frame = getController().getFrame();
-			frame.getSouthPanel().remove(panel);
-			frame.getSouthPanel().validate();
+			frame.removeSplitPane();
 			panel = null;
 		}
 	}
@@ -375,8 +374,7 @@ freemind.main.Resources.getInstance().logException(						e1);
 			}
 			panel.setLayout(gridbag);
 			FreeMindMain frame = getController().getFrame();
-			frame.getSouthPanel().add(panel, BorderLayout.CENTER);
-			frame.getSouthPanel().validate();
+			frame.insertComponentIntoSplitPane(panel);
 		}
 	}
 

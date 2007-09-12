@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.19 2007-07-24 06:10:13 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.20 2007-09-12 20:27:12 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -36,6 +36,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.swing.JApplet;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -376,12 +377,17 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 		return mFreeMindCommon.getFreemindBaseDir();
 	}
 
-	public JSplitPane getSplitPane() {
-		return null;
-	}
-
     public String getAdjustableProperty( String label) {
         return mFreeMindCommon.getAdjustableProperty(label);
     }
+
+	public JSplitPane insertComponentIntoSplitPane(JComponent pMindMapComponent) {
+		throw new IllegalArgumentException("The method insertComponentIntoSplitPane is not implemented for the applet.");
+	}
+
+	public void removeSplitPane() {
+		throw new IllegalArgumentException("The method removeSplitPane is not implemented for the applet.");
+		
+	}
 
 }

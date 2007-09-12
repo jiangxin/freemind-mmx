@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.8 2007-08-10 20:25:49 dpolivaev Exp $ */
+/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.9 2007-09-12 20:27:12 christianfoltin Exp $ */
 package freemind.modes.browsemode;
 
 import java.awt.BorderLayout;
@@ -52,11 +52,7 @@ public class NodeNoteViewer extends NodeNoteBase implements
 		// TODO Auto-generated constructor stub
 	}
 
-	private JPanel getSouthPanel() {
-		return mBrowseController.getFrame().getSouthPanel();
-	}
-
-	protected Container getNoteViewerComponent(String text) {
+	protected JComponent getNoteViewerComponent(String text) {
 		if (noteViewer == null) {
 			noteViewer = new JLabel();
 			noteViewer.setBackground(Color.WHITE);
@@ -70,18 +66,13 @@ public class NodeNoteViewer extends NodeNoteBase implements
 	}
 
 	public void onDeselectHook(NodeView pNode) {
-		JPanel southPanel = getSouthPanel();
-		southPanel.remove(getNoteViewerComponent(""));
-		southPanel.repaint();
+		mBrowseController.getFrame().removeSplitPane();
 	}
 
 	public void onSelectHook(NodeView pNode) {
 		// logger.info("Panel added");
 		String noteText = pNode.getModel().getNoteText();
-		JPanel southPanel = getSouthPanel();
-		Container noteViewer = getNoteViewerComponent(noteText);
-		southPanel.add(noteViewer, BorderLayout.CENTER);
-		southPanel.repaint();
+		mBrowseController.getFrame().insertComponentIntoSplitPane(getNoteViewerComponent(noteText));
 	}
 
 	public void onSaveNode(MindMapNode pNode) {

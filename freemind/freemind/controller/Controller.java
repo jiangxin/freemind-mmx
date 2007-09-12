@@ -16,14 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.40 2007-08-28 21:27:42 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.41 2007-09-12 20:27:12 christianfoltin Exp $*/
 
 package freemind.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -43,8 +42,6 @@ import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -53,6 +50,7 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -88,7 +86,6 @@ import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
-import freemind.main.XMLParseException;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
@@ -109,6 +106,7 @@ import freemind.view.mindmapview.MapView;
  */
 public class Controller  implements MapModuleChangeObserver {
 
+	private HashSet mMapTitleChangeListenerSet = new HashSet();
     /**
      * Converts from a local link to the real file URL of the
      * documentation map. (Used to change this behaviour under MacOSX).
@@ -780,9 +778,13 @@ public class Controller  implements MapModuleChangeObserver {
 		MessageFormat formatter = new MessageFormat
 		   (getResourceString("mode_title"));
 		String title = formatter.format(messageArguments);
-		if (getMapModule() != null) {
-			MindMap model = getMapModule().getModel();
-            title = getMapModule().toString() + (model.isSaved()?"":"*") + " - " + title +
+		String rawTitle = "";
+		MindMap model = null;
+		MapModule mapModule = getMapModule();
+		if (mapModule != null) {
+			model = mapModule.getModel();
+            rawTitle = mapModule.toString();
+			title = rawTitle + (model.isSaved()?"":"*") + " - " + title +
 			  ( model.isReadOnly() ?
 				" ("+getResourceString("read_only")+")" : "");
             File file = model.getFile();
@@ -791,7 +793,19 @@ public class Controller  implements MapModuleChangeObserver {
             }            
 		}
 		getFrame().setTitle(title);
+		for (Iterator iterator = mMapTitleChangeListenerSet.iterator(); iterator.hasNext();) {
+			MapModuleManager.MapTitleChangeListener listener = (MapModuleManager.MapTitleChangeListener) iterator.next();
+			listener.setMapTitle(rawTitle, mapModule, model);
+		}
 	}
+	
+	public void registerMapTitleChangeListener(MapModuleManager.MapTitleChangeListener pMapTitleChangeListener){
+		mMapTitleChangeListenerSet.add(pMapTitleChangeListener);
+	}
+	public void deregisterMapTitleChangeListener(MapModuleManager.MapTitleChangeListener pMapTitleChangeListener){
+		mMapTitleChangeListenerSet.remove(pMapTitleChangeListener);
+	}
+	
     //
     // Actions management
     //

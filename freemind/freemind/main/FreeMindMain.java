@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12.14.5.2.7 2007-06-15 19:09:51 dpolivaev Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.14.5.2.8 2007-09-12 20:27:12 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -107,9 +108,9 @@ public interface FreeMindMain {
     /* To obtain a logging element, ask here. */
     public java.util.logging.Logger getLogger(String forClass);
 
-	public JPanel getSouthPanel();
-	
-	public JSplitPane getSplitPane();
+
+	public JSplitPane insertComponentIntoSplitPane(JComponent pMindMapComponent);
+	public void 	  removeSplitPane();
 	
 	/**
 	 * @return a ClassLoader derived from the standard, with 

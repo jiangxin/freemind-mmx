@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <plugin label="accessories/plugins/NodeNote">
-	<plugin_registration class_name="accessories.plugins.NodeNote$Registration" isPluginBase="true">
+	<plugin_registration class_name="accessories.plugins.NodeNoteRegistration" isPluginBase="true">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 	</plugin_registration>
 	<!--fc, 23.7.06: notes are now integrated.

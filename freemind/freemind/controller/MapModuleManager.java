@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.4.2.9 2007-07-19 21:31:29 dpolivaev Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4.2.10 2007-09-12 20:27:12 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -41,82 +41,89 @@ import freemind.view.mindmapview.MapView;
 
 
 /**
-     * Manages the list of MapModules.
-     * As this task is very complex, I exported it
-     * from Controller to this class to keep Controller
-     * simple.
-     * 
-     * The information exchange between controller and this class is managed by oberser pattern (the controller observes
-     * changes to the map modules here).
-     */
-    public class MapModuleManager {
-    	
-    		public static interface MapModuleChangeObserver {
-    			/** The params may be null to indicate the there was no previous map,
-    			 * or that the last map is closed now.
-    			 */
-    			boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
-    			void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
-    			void afterMapClose(MapModule oldMapModule, Mode oldMode);
-    			void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
-    			/** To enable/disable the previous/next map actions.
-    			 */
-    			void numberOfOpenMapInformation(int number);
-    		}
-    	
-    		public static class MapModuleChangeObserverCompound implements MapModuleChangeObserver {
-    			private HashSet listeners = new HashSet();
-    			public void addListener(MapModuleChangeObserver listener) {
-    				listeners.add(listener);
-    			}
-    			public void removeListener(MapModuleChangeObserver listener) {
-    				listeners.remove(listener);
-    			}
-				public boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
-					boolean returnValue = true;
-					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-						MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
-						returnValue = observer.isMapModuleChangeAllowed(oldMapModule, oldMode, newMapModule, newMode);
-						if(!returnValue){
-							break;
-						}
-					}
-					return returnValue;
-				}
-				public void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
-					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-						MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
-						observer.beforeMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
-					}
-				}
-				public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
-					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-						MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
-						observer.afterMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
-					}
-				}
-				public void numberOfOpenMapInformation(int number) {
-					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-						MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
-						observer.numberOfOpenMapInformation(number);
-					}
-				}
-				public void afterMapClose(MapModule pOldMapModule, Mode pOldMode) {
-					for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-						MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
-						observer.afterMapClose(pOldMapModule, pOldMode);
-					}
-				}
-    		}
-    		
-    		MapModuleChangeObserverCompound listener = new MapModuleChangeObserverCompound();
-    		
-			public void addListener(MapModuleChangeObserver pListener) {
-				listener.addListener(pListener);
+ * Manages the list of MapModules.
+ * As this task is very complex, I exported it
+ * from Controller to this class to keep Controller
+ * simple.
+ * 
+ * The information exchange between controller and this class is managed by oberser pattern (the controller observes
+ * changes to the map modules here).
+ */
+public class MapModuleManager {
+	
+		public static interface MapModuleChangeObserver {
+			/** The params may be null to indicate the there was no previous map,
+			 * or that the last map is closed now.
+			 */
+			boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
+			void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
+			void afterMapClose(MapModule oldMapModule, Mode oldMode);
+			void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
+			/** To enable/disable the previous/next map actions.
+			 */
+			void numberOfOpenMapInformation(int number);
+		}
+	
+		public static class MapModuleChangeObserverCompound implements MapModuleChangeObserver {
+			private HashSet listeners = new HashSet();
+			public void addListener(MapModuleChangeObserver listener) {
+				listeners.add(listener);
 			}
-			public void removeListener(MapModuleChangeObserver pListener) {
-				listener.removeListener(pListener);
+			public void removeListener(MapModuleChangeObserver listener) {
+				listeners.remove(listener);
 			}
+			public boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+				boolean returnValue = true;
+				for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+					MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
+					returnValue = observer.isMapModuleChangeAllowed(oldMapModule, oldMode, newMapModule, newMode);
+					if(!returnValue){
+						break;
+					}
+				}
+				return returnValue;
+			}
+			public void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+				for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+					MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
+					observer.beforeMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
+				}
+			}
+			public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
+				for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+					MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
+					observer.afterMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
+				}
+			}
+			public void numberOfOpenMapInformation(int number) {
+				for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+					MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
+					observer.numberOfOpenMapInformation(number);
+				}
+			}
+			public void afterMapClose(MapModule pOldMapModule, Mode pOldMode) {
+				for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+					MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
+					observer.afterMapClose(pOldMapModule, pOldMode);
+				}
+			}
+		}
+		
+		/**
+		 * You can register yourself to this listener at the main controller.
+		 */
+		public static interface MapTitleChangeListener {
+			void setMapTitle(String pNewMapTitle, MapModule pMapModule, MindMap pModel);
+		}
+
+		MapModuleChangeObserverCompound listener = new MapModuleChangeObserverCompound();
+		
+		public void addListener(MapModuleChangeObserver pListener) {
+			listener.addListener(pListener);
+		}
+		public void removeListener(MapModuleChangeObserver pListener) {
+			listener.removeListener(pListener);
+		}
 
         /** Contains pairs String (key+extension) => MapModule instances.
          * The instances of mode, ie. the Model/View pairs. Normally, the
