@@ -190,7 +190,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
     }
 
     public AttributeManagerDialog(Controller c){
-        super(c.getJFrame(), Resources.getInstance().getResourceString("attributes_dialog"), true);
+        super(c.getJFrame(), Resources.getInstance().getResourceString("attributes_dialog_title"), true);
         this.c = c;
         view = new AttributeRegistryTable(new EditListAction());
         registry = c.getMap().getRegistry();

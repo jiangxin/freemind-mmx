@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeViewLayoutAdapter.java,v 1.1.4.4 2007-07-03 20:18:36 dpolivaev Exp $ */
+/* $Id: NodeViewLayoutAdapter.java,v 1.1.4.5 2007-09-12 05:50:03 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Component;
@@ -217,7 +217,7 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout{
                 child.setLocation(x, y);
             }
             y += child.getHeight() - 2 * getSpaceAround() + getVGap() + additionalCloudHeigth;  
-            right = Math.max(right, x + child.getWidth());
+            right = Math.max(right, x + child.getWidth() + additionalCloudHeigth);
         }
         final int bottom = getContent().getY() + getContent().getHeight() + getSpaceAround();
         

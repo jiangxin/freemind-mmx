@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.52 2007-09-03 20:26:06 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.53 2007-09-12 05:50:01 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1217,6 +1217,7 @@ public class NodeView extends JComponent implements TreeModelListener{
             g2d.setStroke(BubbleMainView.DEF_STROKE);
             paintFoldingMark(g2d);
         }
+//        g.setColor(Color.BLACK);
 //        g.drawRect(0, 0, getWidth()-1, getHeight()-1);
     }
 
@@ -1236,7 +1237,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 
 
 	Rectangle getInnerBounds() {
-		final int space = getMap().getZoomed(SPACE_AROUND) - 2 * getZoomedFoldingSymbolHalfWidth();
+		final int space = getMap().getZoomed(SPACE_AROUND);
 		return new Rectangle(space, space, getWidth() - 2 * space, getHeight() - 2 * space);
 	}
 
