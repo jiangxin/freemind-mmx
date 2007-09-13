@@ -283,9 +283,12 @@ public class AutomaticLayout extends PermanentMindMapNodeHookAdapter {
 
         public void layout(DefaultFormBuilder builder,
                 TextTranslator pTranslator) {
-            JLabel label = builder.append(pTranslator.getText(getLabel()),
-                    new JScrollPane(mList));
+            JLabel label = builder.append(pTranslator.getText(getLabel()));
+            builder.append(new JLabel());
             label.setToolTipText(pTranslator.getText(getDescription()));
+            builder.appendSeparator();
+            builder.append(new JScrollPane(mList), 3);
+//            builder.append(mList);
         }
 
 

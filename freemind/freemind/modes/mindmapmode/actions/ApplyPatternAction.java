@@ -27,6 +27,8 @@
 
 package freemind.modes.mindmapmode.actions;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 
 import freemind.controller.actions.generated.instance.Pattern;
@@ -77,11 +79,26 @@ public class ApplyPatternAction extends NodeGeneralAction implements
             getMindMapController().setNodeStyle(node, pattern.getPatternNodeStyle().getValue());
         }
         if (pattern.getPatternIcon() != null) {
-            if (pattern.getPatternIcon().getValue() == null) {
+            String iconName = pattern.getPatternIcon().getValue();
+			if (iconName == null) {
                 while (getMindMapController().removeLastIcon(node) > 0) {
                 }
             } else {
-                getMindMapController().addIcon(node, MindIcon.factory(pattern.getPatternIcon().getValue()));
+            	// check if icon is already present:
+            	List icons = node.getIcons();
+            	boolean found = false;
+            	for (Iterator iterator = icons.iterator(); iterator.hasNext();) {
+					MindIcon icon = (MindIcon) iterator.next();
+					if(icon.getName()!= null && icon.getName().equals(iconName)) {
+						found = true;
+						break;
+					}
+				}
+                if (!found) {
+					getMindMapController().addIcon(
+							node,
+							MindIcon.factory(iconName));
+				}
             }
         } // fc, 28.9.2003
         if (pattern.getPatternNodeFontName() != null) {

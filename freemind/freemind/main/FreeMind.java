@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.81 2007-09-12 20:27:12 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.82 2007-09-13 20:33:01 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -1076,7 +1076,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private void removeContentComponent(){
 		if(mTabbedPane != null) {
-			mTabbedPane.setComponentAt(mTabbedPane.getSelectedIndex(), new JPanel());
+			if (mTabbedPane.getSelectedIndex()>= 0) {
+				mTabbedPane.setComponentAt(mTabbedPane.getSelectedIndex(),
+						new JPanel());
+			}
 		} else {
 			getContentPane().remove(mContentComponent);
 			getRootPane().revalidate();
@@ -1086,7 +1089,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	
 	private void setContentComponent() {
 		if(mTabbedPane != null) {
-			mTabbedPane.setComponentAt(mTabbedPane.getSelectedIndex(), mContentComponent);
+			if (mTabbedPane.getSelectedIndex()>= 0) {
+				mTabbedPane.setComponentAt(mTabbedPane.getSelectedIndex(), mContentComponent);
+			}
 		} else {
 			getContentPane().add(mContentComponent, BorderLayout.CENTER);			
 			getRootPane().revalidate();

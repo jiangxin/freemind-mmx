@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.1 2007-09-12 20:27:12 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.2 2007-09-13 20:33:01 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -204,20 +204,18 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml {
 
     static Integer sPositionToRecover = null;
     
-    private boolean mShouldUseSplitPane ;
-
 	private JSplitPane mSplitPane = null;
-
-	private JComponent mScrollPane;
-
     
     public NodeNoteRegistration(ModeController controller, MindMap map) {
         this.controller = (MindMapController) controller;
         mMap = map;
         logger = controller.getFrame().getLogger(this.getClass().getName());
-		mShouldUseSplitPane = "true".equals(controller.getFrame()
-				.getProperty(FreeMind.RESOURCES_USE_SPLIT_PANE));
 
+    }
+    
+    public boolean shouldUseSplitPane() {
+    	return "true".equals(controller.getFrame()
+    			.getProperty(FreeMind.RESOURCES_USE_SPLIT_PANE));
     }
 
     class JumpToMapAction extends AbstractAction{
@@ -251,7 +249,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml {
 		noteViewerComponent.getActionMap().put("jumpToMapAction",
 				jumpToMapAction);
 
-        if (mShouldUseSplitPane) {
+        if (shouldUseSplitPane()) {
 			showNotesPanel();
 		}
 		mNotesManager = new NotesManager();
@@ -265,7 +263,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml {
         controller.deregisterNodeLifetimeListener(mNotesManager);
         noteViewerComponent.getActionMap().remove("jumpToMapAction");
 
-        if (noteViewerComponent != null && mShouldUseSplitPane) {
+        if (noteViewerComponent != null && shouldUseSplitPane()) {
             hideNotesPanel();
             noteViewerComponent = null;
         }

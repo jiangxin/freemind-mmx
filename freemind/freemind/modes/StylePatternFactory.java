@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StylePatternFactory.java,v 1.1.2.3.2.4 2007-08-05 20:33:15 christianfoltin Exp $*/
+/*$Id: StylePatternFactory.java,v 1.1.2.3.2.5 2007-09-13 20:33:07 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -166,19 +166,40 @@ public class StylePatternFactory {
 						+ translator.getText("PatternToString.backgroundColor");
 			}
 		}
-		if (pPattern.getPatternNodeFontSize() != null) {
+		result = addSubPatternToString(translator, result, pPattern.getPatternNodeFontSize(),
+				"PatternToString.NodeFontSize");
+		result = addSubPatternToString(translator, result, pPattern.getPatternNodeFontName(),
+		"PatternToString.FontName");
+		result = addSubPatternToString(translator, result, pPattern.getPatternNodeFontBold(),
+		"PatternToString.FontBold");
+		result = addSubPatternToString(translator, result, pPattern.getPatternNodeFontItalic(),
+		"PatternToString.FontItalic");
+		result = addSubPatternToString(translator, result, pPattern.getPatternEdgeStyle(),
+		"PatternToString.EdgeStyle");
+		result = addSubPatternToString(translator, result, pPattern.getPatternEdgeColor(),
+		"PatternToString.EdgeColor");
+		result = addSubPatternToString(translator, result, pPattern.getPatternEdgeWidth(),
+		"PatternToString.EdgeWidth");
+		result = addSubPatternToString(translator, result, pPattern.getPatternIcon(),
+		"PatternToString.Icon");
+		result = addSubPatternToString(translator, result, pPattern.getPatternChild(),
+		"PatternToString.Child");
+		return result;
+	}
+
+	private static String addSubPatternToString(TextTranslator translator,
+			String result, PatternPropertyBase patternType, String patternString) {
+		if (patternType != null) {
 			result = addSeparatorIfNecessary(result);
-			if (pPattern.getPatternNodeFontSize().getValue() == null) {
+			if (patternType.getValue() == null) {
 				result += "-"
-						+ translator.getText("PatternToString.NodeFontSize");
+						+ translator.getText(patternString);
 			} else {
 				result += "+"
-						+ translator.getText("PatternToString.NodeFontSize") + " "
-						+ pPattern.getPatternNodeFontSize().getValue();
+						+ translator.getText(patternString) + " "
+						+ patternType.getValue();
 			}
 		}
-		// TODO: Add rest here.
-		result += " ...";
 		return result;
 	}
 

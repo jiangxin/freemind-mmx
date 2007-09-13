@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: StylePattern.java,v 1.5.18.8.2.3 2006-07-25 20:28:20 christianfoltin Exp $ */
+/* $Id: StylePattern.java,v 1.5.18.8.2.4 2007-09-13 20:33:06 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -38,6 +38,8 @@ import freemind.main.XMLElement;
 // than of that what it actually does.
 
 /**
+ * THIS CLASS IS NO LONGER USED!
+ * 
  * This class represents a StylePattern than can be applied
  * to a node or a whole branch. The properties of the
  * nodes are replaced with the properties saved in the
