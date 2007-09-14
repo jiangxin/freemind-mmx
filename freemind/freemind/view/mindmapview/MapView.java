@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.39 2007-09-04 21:59:44 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.40 2007-09-14 19:54:02 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -38,6 +38,7 @@ import java.awt.dnd.DropTargetListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
+import java.awt.geom.CubicCurve2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.util.ArrayList;
@@ -959,6 +960,9 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			{
 				g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, oldRenderingHintFM);
 			}
+			
+//			final Rectangle rect = getInnerBounds();
+//			g2.drawRect(rect.x, rect.y, rect.width, rect.height);
         }
 
     public void paintChildren(Graphics graphics) {
@@ -1204,9 +1208,13 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         final Rectangle maxBounds = new Rectangle(0, 0, getWidth(), getHeight());        
         for(int i = 0; i < ArrowLinkViews.size(); ++i) {
             ArrowLinkView arrowView = (ArrowLinkView) ArrowLinkViews.get(i);
-            Rectangle arrowViewBigBounds = arrowView.arrowLinkCurve.getBounds();
+            final CubicCurve2D arrowLinkCurve = arrowView.arrowLinkCurve;
+            if(arrowLinkCurve == null){
+            	continue;
+            }
+			Rectangle arrowViewBigBounds = arrowLinkCurve.getBounds();
             if (! innerBounds.contains(arrowViewBigBounds)){
-                Rectangle arrowViewBounds =PathBBox.getBBox(arrowView.arrowLinkCurve).getBounds();
+                Rectangle arrowViewBounds =PathBBox.getBBox(arrowLinkCurve).getBounds();
                 innerBounds.add(arrowViewBounds);
             }
         }

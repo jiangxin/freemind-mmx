@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.53 2007-09-12 05:50:01 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.54 2007-09-14 19:54:02 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -891,12 +891,13 @@ public class NodeView extends JComponent implements TreeModelListener{
         mainView.setIcon(image);
     }
     void updateAll() {
-    update();
-    for(ListIterator e = getChildrenViews().listIterator();e.hasNext();) {
-        NodeView child = (NodeView)e.next();
-        child.updateAll();
-    }
-    }
+	update();
+	invalidate();
+	for(ListIterator e = getChildrenViews().listIterator();e.hasNext();) {
+	    NodeView child = (NodeView)e.next();
+	    child.updateAll();
+	}
+	}
 
    String getStyle(){
        return mainView.getStyle();
