@@ -7,6 +7,8 @@ import java.util.logging.Level;
  * Class defining 2 new Logging levels, one for STDOUT, one for STDERR,
  * used when multiplexing STDOUT and STDERR into the same rolling log file
  * via the Java Logging APIs.
+ * 
+ * See http://blogs.sun.com/nickstephen/entry/java_redirecting_system_out_and
  */
 public class StdOutErrLevel extends Level {
    
