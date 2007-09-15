@@ -115,7 +115,6 @@ public class Resources {
 	}
     
     public void logException(Throwable e, String comment) {
-	    	e.printStackTrace();
 	    	logger.log(Level.SEVERE, "An exception occured: "+ comment, e);
     }
 

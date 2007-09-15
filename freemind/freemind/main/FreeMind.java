@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.82 2007-09-13 20:33:01 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.83 2007-09-15 22:03:23 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -47,7 +48,9 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -657,10 +660,32 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	public java.util.logging.Logger getLogger(String forClass) {
 		Logger logger2 = java.util.logging.Logger.getLogger(forClass);
 		if (mFileHandler == null) {
+			// initialize handlers using an old System.err:
+			logger2.getParent().getHandlers();
+
 			try {
 				mFileHandler = new FileHandler(getFreemindDirectory()
 						+ File.separator + "log", 1400000, 5, false);
-				mFileHandler.setFormatter(new SimpleFormatter());
+				mFileHandler.setFormatter(new StdFormatter());
+
+				final ConsoleHandler stdConsoleHandler = new ConsoleHandler();
+				stdConsoleHandler.setFormatter(new StdFormatter());
+
+				LoggingOutputStream los;
+				logger = Logger.getLogger(StdOutErrLevel.STDOUT.getName());
+				logger.addHandler(stdConsoleHandler);
+				logger.addHandler(mFileHandler);
+				logger.setUseParentHandlers(false);
+				los = new LoggingOutputStream(logger, StdOutErrLevel.STDOUT);
+				System.setOut(new PrintStream(los, true));
+
+				logger = Logger.getLogger(StdOutErrLevel.STDERR.getName());
+				logger.addHandler(stdConsoleHandler);
+				logger.addHandler(mFileHandler);
+				logger.setUseParentHandlers(false);
+				los= new LoggingOutputStream(logger, StdOutErrLevel.STDERR);
+				System.setErr(new PrintStream(los, true));
+
 			} catch (Exception e) {
 				System.err.println("Error creating logging File Handler");
 				e.printStackTrace();
