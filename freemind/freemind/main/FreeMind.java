@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.83 2007-09-15 22:03:23 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.84 2007-09-18 21:55:25 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -50,11 +50,9 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
-import java.util.logging.LogManager;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
@@ -657,7 +655,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		return mFreeMindCommon.getResourceString(key, resource);
 	}
 
-	public java.util.logging.Logger getLogger(String forClass) {
+	public Logger getLogger(String forClass) {
 		Logger logger2 = java.util.logging.Logger.getLogger(forClass);
 		if (mFileHandler == null) {
 			// initialize handlers using an old System.err:
@@ -672,18 +670,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				stdConsoleHandler.setFormatter(new StdFormatter());
 
 				LoggingOutputStream los;
-				logger = Logger.getLogger(StdOutErrLevel.STDOUT.getName());
+				logger = Logger.getLogger(StdFormatter.STDOUT.getName());
 				logger.addHandler(stdConsoleHandler);
 				logger.addHandler(mFileHandler);
 				logger.setUseParentHandlers(false);
-				los = new LoggingOutputStream(logger, StdOutErrLevel.STDOUT);
+				los = new LoggingOutputStream(logger, StdFormatter.STDOUT);
 				System.setOut(new PrintStream(los, true));
 
-				logger = Logger.getLogger(StdOutErrLevel.STDERR.getName());
+				logger = Logger.getLogger(StdFormatter.STDERR.getName());
 				logger.addHandler(stdConsoleHandler);
 				logger.addHandler(mFileHandler);
 				logger.setUseParentHandlers(false);
-				los= new LoggingOutputStream(logger, StdOutErrLevel.STDERR);
+				los= new LoggingOutputStream(logger, StdFormatter.STDERR);
 				System.setErr(new PrintStream(los, true));
 
 			} catch (Exception e) {
