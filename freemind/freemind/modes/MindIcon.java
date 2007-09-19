@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindIcon.java,v 1.1.18.6.2.8 2007-07-30 20:46:06 dpolivaev Exp $ */
+/* $Id: MindIcon.java,v 1.1.18.6.2.9 2007-09-19 22:54:12 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -41,7 +41,7 @@ import freemind.main.Resources;
  * This class represents a MindIcon than can be applied
  * to a node or a whole branch.
  */
-public class MindIcon implements Comparable{
+public class MindIcon implements Comparable, IconInformation{
     private String name;
     private String description;
     private int number = UNKNOWN;
@@ -255,6 +255,10 @@ public class MindIcon implements Comparable{
 
 	public String getKeystrokeResourceName() {
 		return "keystroke_icon_" + name;
+	}
+
+	public KeyStroke getKeyStroke() {
+		return null;
 	}
 
 }
