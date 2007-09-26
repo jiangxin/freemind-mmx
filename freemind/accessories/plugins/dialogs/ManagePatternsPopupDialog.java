@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.8 2007-08-05 20:33:11 christianfoltin Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.9 2007-09-26 16:23:34 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -30,24 +30,30 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractListModel;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.ListModel;
+import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -58,6 +64,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 
 import freemind.common.TextTranslator;
 import freemind.common.XmlBindingTools;
+import freemind.controller.actions.generated.instance.ManageStyleEditorWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.main.Tools;
 import freemind.modes.StylePatternFactory;
@@ -68,19 +75,19 @@ import freemind.modes.mindmapmode.dialogs.StylePatternFrame.StylePatternFrameTyp
 /** */
 public class ManagePatternsPopupDialog extends JDialog implements
 		TextTranslator, KeyListener {
-	private static Integer sLastSelectedIndex = null;
+	private static Pattern sLastSelectedPattern = null;
 
 	private static final String STACK_PATTERN_FRAME = "PATTERN";
 
 	private static final String EMPTY_FRAME = "EMPTY_FRAME";
 
-	private Integer mLastSelectedPatternIndex = null;
+	private Pattern mLastSelectedPattern = null;
 
 	private final class PatternListSelectionListener implements
 			ListSelectionListener {
 
 		public void valueChanged(ListSelectionEvent e) {
-			if (e.getValueIsAdjusting())
+			if (e.getValueIsAdjusting() || mIsDragging)
 				return;
 			// save old list:
 			writePatternBackToModel();
@@ -89,9 +96,9 @@ public class ManagePatternsPopupDialog extends JDialog implements
 				mCardLayout.show(mRightStack, EMPTY_FRAME);
 			} else {
 				int index = theList.getSelectedIndex();
-				setLastSelectedPatternIndex(new Integer(index));
-				// write pattern:
 				Pattern p = mPatternListModel.getPatternAt(index);
+				setLastSelectedPattern(p);
+				// write pattern:
 				mStylePatternFrame.setPatternList(mPatternListModel
 						.getPatternList());
 				mStylePatternFrame.setPattern(p);
@@ -100,16 +107,16 @@ public class ManagePatternsPopupDialog extends JDialog implements
 		}
 	}
 
-	protected final class PatternListModel implements ListModel {
+	protected final class PatternListModel extends AbstractListModel {
 		private final List mPatternList;
 
-		private final List mListeners;
+//		private final List mListeners;
 
 		public PatternListModel(List patternList) {
 			// we take a copy of the list as it may came from the patterns xml
 			// element and would be read-only
 			this.mPatternList = new Vector(patternList);
-			this.mListeners = new Vector();
+//			this.mListeners = new Vector();
 		}
 
 		public int getSize() {
@@ -130,16 +137,8 @@ public class ManagePatternsPopupDialog extends JDialog implements
 			return ((Pattern) mPatternList.get(index));
 		}
 
-		public void addListDataListener(ListDataListener l) {
-			mListeners.add(l);
-		}
-
-		public void removeListDataListener(ListDataListener l) {
-			mListeners.remove(l);
-		}
-
 		public List getPatternList() {
-			return mPatternList;
+			return Collections.unmodifiableList(mPatternList);
 		}
 
 		public void removePattern(int index) {
@@ -148,24 +147,26 @@ public class ManagePatternsPopupDialog extends JDialog implements
 						"try to delete in pattern list with an index out of range: "
 								+ index);
 			}
+			logger.info("Pattern " + ((Pattern) mPatternList.get(index)).getName() + " should be removed at "+index);
 			mPatternList.remove(index);
-			for (Iterator iter = mListeners.iterator(); iter.hasNext();) {
-				ListDataListener listener = (ListDataListener) iter.next();
-				listener.intervalRemoved(new ListDataEvent(mList,
-						ListDataEvent.INTERVAL_REMOVED, index, index));
-			}
+			fireIntervalRemoved(mList, index, index);
 		}
 
 		public void addPattern(Pattern newPattern, int selectedIndex) {
+			logger.info("Pattern " + newPattern.getName()+ " should be added at "+selectedIndex);
 			mPatternList.add(selectedIndex, newPattern);
-			for (Iterator iter = mListeners.iterator(); iter.hasNext();) {
-				ListDataListener listener = (ListDataListener) iter.next();
-				listener.intervalRemoved(new ListDataEvent(mList,
-						ListDataEvent.INTERVAL_ADDED, selectedIndex,
-						selectedIndex));
-			}
+			fireIntervalAdded(mList, selectedIndex, selectedIndex);
 		}
 
+		private void printPatterns() {
+			int i = 0;
+			for (Iterator iter = mPatternList.iterator(); iter.hasNext();) {
+				Pattern pattern = (Pattern) iter.next();
+				logger.info("Pattern " + i + " = " + pattern.getName());
+				i++;
+			}
+		}
+		
 		public Pattern getPatternByName(String name) {
 			for (Iterator iter = mPatternList.iterator(); iter.hasNext();) {
 				Pattern pattern = (Pattern) iter.next();
@@ -190,6 +191,8 @@ public class ManagePatternsPopupDialog extends JDialog implements
 			removePattern(i);
 		}
 	}
+
+	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = "accessories.plugins.dialogs.ManagePatternsPopupDialog/window_positions";
 
 	public static final int CANCEL = -1;
 
@@ -216,8 +219,14 @@ public class ManagePatternsPopupDialog extends JDialog implements
 	private StylePatternFrame mStylePatternFrame;
 
 	private JList mList;
+	
+	private boolean mIsDragging = false;
 
 	private accessories.plugins.dialogs.ArrayListTransferHandler mArrayListHandler;
+
+	private JSplitPane mSplitPane;
+
+	private static Logger logger = null;
 
 	/**
 	 * This is the default constructor
@@ -225,12 +234,16 @@ public class ManagePatternsPopupDialog extends JDialog implements
 	public ManagePatternsPopupDialog(JFrame caller, MindMapController controller) {
 		super(caller);
 		this.mController = controller;
+		if (logger == null) {
+			logger = mController.getFrame()
+					.getLogger(this.getClass().getName());
+		}
 		List patternList = new Vector();
 		try {
 			patternList = StylePatternFactory.loadPatterns(controller
 					.getPatternReader());
 		} catch (Exception e) {
-freemind.main.Resources.getInstance().logException(			e);
+			freemind.main.Resources.getInstance().logException(			e);
 			JOptionPane.showMessageDialog(this, getDialogTitle(), controller
 					.getText("accessories/plugins/ManagePatterns.not_found"),
 					JOptionPane.ERROR_MESSAGE);
@@ -254,19 +267,29 @@ freemind.main.Resources.getInstance().logException(			e);
 				cancelPressed();
 			}
 		});
-		Action action = new AbstractAction() {
+		Action cancelAction = new AbstractAction() {
 
 			public void actionPerformed(ActionEvent arg0) {
 		        cancelPressed();
 			}
 		};
-		Tools.addEscapeActionToDialog(this, action);
-		// recover latest index:
-		if (sLastSelectedIndex != null) {
-			int lastIndex = sLastSelectedIndex.intValue();
-			if (lastIndex < mPatternListModel.getSize()) {
-				mList.setSelectedIndex(lastIndex);
+		Tools.addEscapeActionToDialog(this, cancelAction);
+//		// recover latest pattern:
+		int i = 0;
+		if (sLastSelectedPattern != null) {
+			for (Iterator iterator = mPatternListModel.getPatternList().iterator(); iterator.hasNext();) {
+				Pattern pattern = (Pattern) iterator.next();
+				if(pattern.getName().equals(sLastSelectedPattern.getName())){
+					mList.setSelectedIndex(i);
+					break;
+				}
+				++i;
 			}
+		}
+		ManageStyleEditorWindowConfigurationStorage decorateDialog = (ManageStyleEditorWindowConfigurationStorage) mController
+				.decorateDialog(this, WINDOW_PREFERENCE_STORAGE_PROPERTY);
+		if(decorateDialog!= null) {
+			mSplitPane.setDividerLocation(decorateDialog.getDividerPosition());
 		}
 	}
 
@@ -278,6 +301,9 @@ freemind.main.Resources.getInstance().logException(			e);
 	}
 
 	private void close() {
+		ManageStyleEditorWindowConfigurationStorage storage = new ManageStyleEditorWindowConfigurationStorage();
+		storage.setDividerPosition(mSplitPane.getDividerLocation());
+		mController.storeDialogPositions(this, storage, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		this.dispose();
 
 	}
@@ -310,21 +336,51 @@ freemind.main.Resources.getInstance().logException(			e);
 			mList.setModel(mPatternListModel);
 			mList.setTransferHandler(mArrayListHandler);
 			mList.setDragEnabled(true);
-			jContentPane.add(new JScrollPane(mList), new GridBagConstraints(0,
-					0, 1, 1, 1.0, 8.0, GridBagConstraints.WEST,
-					GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 			mList.addListSelectionListener(new PatternListSelectionListener());
+			mList.addMouseMotionListener(new MouseMotionListener(){
+
+				public void mouseDragged(MouseEvent pE) {
+					// TODO Auto-generated method stub
+					mIsDragging = true;
+				}
+
+				public void mouseMoved(MouseEvent pE) {
+					// TODO Auto-generated method stub
+					mIsDragging = false;
+				}});
+			/* Some common action listeners */
+			ActionListener addPatternActionListener = new ActionListener() {
+				public void actionPerformed(ActionEvent actionEvent) {
+					addPattern(actionEvent);
+				}
+			};
+			ActionListener fromNodesActionListener = new ActionListener() {
+				public void actionPerformed(ActionEvent actionEvent) {
+					insertPatternFromNode(actionEvent);
+				}
+			};
+			/** Menu **/
+			JMenuBar menu = new JMenuBar();
+			JMenu mainItem = new JMenu(mController
+					.getText("ManagePatternsPopupDialog.Actions"));
+			Tools.setLabelAndMnemonic(mainItem, null);
+			menu.add(mainItem);
+			JMenuItem menuItemAddPattern = new JMenuItem(mController
+					.getText("ManagePatternsPopupDialog.add"));
+			menuItemAddPattern.addActionListener(addPatternActionListener);
+			mainItem.add(menuItemAddPattern);
+			JMenuItem menuItemPatternFromNodes = new JMenuItem(mController
+					.getText("ManagePatternsPopupDialog.from_nodes"));
+			menuItemPatternFromNodes.addActionListener(fromNodesActionListener);
+			mainItem.add(menuItemPatternFromNodes);
+			this.setJMenuBar(menu);
 			/* Popup menu */
 			popupMenu = new JPopupMenu();
 			// popupMenu.add(new JPopupMenu.Separator());
 			JMenuItem menuItemAdd = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.add"));
 			popupMenu.add(menuItemAdd);
-			menuItemAdd.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent actionEvent) {
-					addPattern(actionEvent);
-				}
-			});
+			menuItemAdd.addActionListener(addPatternActionListener);
 			JMenuItem menuItemDuplicate = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.duplicate"));
 			popupMenu.add(menuItemDuplicate);
@@ -336,11 +392,7 @@ freemind.main.Resources.getInstance().logException(			e);
 			JMenuItem menuItemFromNodes = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.from_nodes"));
 			popupMenu.add(menuItemFromNodes);
-			menuItemFromNodes.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent actionEvent) {
-					insertPatternFromNode(actionEvent);
-				}
-			});
+			menuItemFromNodes.addActionListener(fromNodesActionListener);
 			popupMenu.add(new JPopupMenu.Separator());
 			JMenuItem menuItemRemove = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.remove"));
@@ -355,7 +407,7 @@ freemind.main.Resources.getInstance().logException(			e);
 					showPopup(mList, me);
 				}
 
-				/** For linux */
+				/** For Linux */
 				public void mousePressed(MouseEvent me) {
 					showPopup(mList, me);
 				}
@@ -380,9 +432,11 @@ freemind.main.Resources.getInstance().logException(			e);
 			mStylePatternFrame.addListeners();
 			mRightStack.add(new JScrollPane(mStylePatternFrame),
 					STACK_PATTERN_FRAME);
-			jContentPane.add(mRightStack, new GridBagConstraints(1, 0, 2, 1,
-					8.0, 8.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-					new Insets(0, 0, 0, 0), 0, 0));
+			JScrollPane leftPane = new JScrollPane(mList);
+			mSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, leftPane, mRightStack);
+			jContentPane.add(mSplitPane, new GridBagConstraints(0,
+					0, 2, 1, 1.0, 8.0, GridBagConstraints.WEST,
+					GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 			jContentPane.add(ButtonBarFactory.buildOKCancelBar(getJCancelButton(), getJOKButton()),
 					new GridBagConstraints(1, 1, 1, 1,
 					1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.NONE,
@@ -400,10 +454,13 @@ freemind.main.Resources.getInstance().logException(			e);
 
 	private void addPattern(ActionEvent actionEvent) {
 		writePatternBackToModel();
-		setLastSelectedPatternIndex(null);
+		setLastSelectedPattern(null);
 		Pattern newPattern = new Pattern();
 		newPattern.setName(searchForNameForNewPattern());
 		int selectedIndex = mList.getSelectedIndex();
+		if(selectedIndex < 0) {
+			selectedIndex = mList.getModel().getSize();
+		}
 		mPatternListModel.addPattern(newPattern, selectedIndex);
 		mList.setSelectedIndex(selectedIndex);
 	}
@@ -411,7 +468,7 @@ freemind.main.Resources.getInstance().logException(			e);
 	private void duplicatePattern(ActionEvent actionEvent) {
 		int selectedIndex = mList.getSelectedIndex();
 		writePatternBackToModel();
-		setLastSelectedPatternIndex(null);
+		setLastSelectedPattern(null);
 		Pattern oldPattern = mPatternListModel.getPatternAt(selectedIndex);
 		// deep copy via xml:
 		XmlBindingTools instance = XmlBindingTools.getInstance();
@@ -422,11 +479,14 @@ freemind.main.Resources.getInstance().logException(			e);
 	}
 
 	private void insertPatternFromNode(ActionEvent actionEvent) {
-		int selectedIndex = mList.getSelectedIndex();
 		writePatternBackToModel();
-		setLastSelectedPatternIndex(null);
+		setLastSelectedPattern(null);
 		Pattern newPattern = StylePatternFactory.createPatternFromSelected(mController.getSelected(), mController.getSelecteds());
 		newPattern.setName(searchForNameForNewPattern());
+		int selectedIndex = mList.getSelectedIndex();
+		if(selectedIndex < 0) {
+			selectedIndex = mList.getModel().getSize();
+		}
 		mPatternListModel.addPattern(newPattern, selectedIndex);
 		mList.setSelectedIndex(selectedIndex);
 	}
@@ -452,7 +512,7 @@ freemind.main.Resources.getInstance().logException(			e);
 	
 	private void removePattern(ActionEvent actionEvent) {
 		int selectedIndex = mList.getSelectedIndex();
-		setLastSelectedPatternIndex(null);
+		setLastSelectedPattern(null);
 		mPatternListModel.removePattern(selectedIndex);
 		if (mPatternListModel.getSize() > selectedIndex) {
 			mList.setSelectedIndex(selectedIndex);
@@ -522,10 +582,9 @@ freemind.main.Resources.getInstance().logException(			e);
 	}
 
 	private void writePatternBackToModel() {
-		if (getLastSelectedPatternIndex() != null) {
+		if (getLastSelectedPattern() != null) {
 			// save pattern:
-			Pattern pattern = mPatternListModel
-					.getPatternAt(getLastSelectedPatternIndex().intValue());
+			Pattern pattern = getLastSelectedPattern();
 			Pattern resultPatternCopy = mStylePatternFrame.getResultPattern();
 			// check for name change:
 			String oldPatternName = pattern.getName();
@@ -603,13 +662,14 @@ freemind.main.Resources.getInstance().logException(			e);
 		System.out.println("keyTyped: " + keyEvent);
 	}
 
-	private void setLastSelectedPatternIndex(Integer mLastSelectedPatternIndex) {
-		this.mLastSelectedPatternIndex = mLastSelectedPatternIndex;
-		sLastSelectedIndex = mLastSelectedPatternIndex;
+	public Pattern getLastSelectedPattern() {
+		return mLastSelectedPattern;
 	}
 
-	private Integer getLastSelectedPatternIndex() {
-		return mLastSelectedPatternIndex;
+	public void setLastSelectedPattern(Pattern pLastSelectedPattern) {
+		mLastSelectedPattern = pLastSelectedPattern;
+		sLastSelectedPattern = pLastSelectedPattern;
 	}
+
 
 }

@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.21 2007-09-09 19:10:27 dpolivaev Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.22 2007-09-26 16:23:34 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -71,10 +71,11 @@ public class MindMapMapModel extends MapAdapter  {
 	LockManager lockManager;
     private MindMapLinkRegistry linkRegistry;
     private Timer timerForAutomaticSaving;
+    /** The current version and all other version that don't need 
+     * XML update for sure. */
     private static final String EXPECTED_START_STRINGS[] = {
             "<map version=\"" + FreeMind.XML_VERSION + "\"",
-            "<map version=\"0.7.1\"",
-            "<map version=\"0.8.0\""};
+            "<map version=\"0.7.1\""};
 
     //
     // Constructors
@@ -351,17 +352,18 @@ public class MindMapMapModel extends MapAdapter  {
     }
 
     MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
-        // FIXME: fc, 27.8.2005: this is for 0.8.0 only. Remove me ASAP.
-        int versionInfoLength = EXPECTED_START_STRINGS[0].length();
+        int versionInfoLength;
+		versionInfoLength = EXPECTED_START_STRINGS[0].length();
         // reading the start of the file:
         StringBuffer buffer = readFileStart(file, versionInfoLength);
-        String mapStart = "";
-        if(buffer.length() >= versionInfoLength){
-        		mapStart = buffer.substring(0, versionInfoLength);
-        }
         // the resulting file is accessed by the reader:
         Reader reader = null;
         for(int i = 0; i < EXPECTED_START_STRINGS.length; i++){
+        	versionInfoLength = EXPECTED_START_STRINGS[i].length();
+        	String mapStart = "";
+        	if(buffer.length() >= versionInfoLength){
+        		mapStart = buffer.substring(0, versionInfoLength);
+        	}
             if (mapStart.startsWith(EXPECTED_START_STRINGS[i])) {
                 // actual version:
                 reader = Tools.getActualReader(file);

@@ -844,6 +844,17 @@
 	  </xs:complexType>
 	</xs:element>
 
+	<!-- Manage Style Editor settings: -->
+	<xs:element name="manage_style_editor_window_configuration_storage">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="window_configuration_storage">
+				<xs:attribute use="optional" name="divider_position"  type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
 
 	<!-- ======================================================================================= 
 		 										Patterns
