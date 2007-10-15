@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.84 2007-09-18 21:55:25 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.85 2007-10-15 21:24:59 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -50,6 +50,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -67,6 +68,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import plugins.feedbackcenter.xmlrpc.ReportFieldBean;
 
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
@@ -178,6 +181,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		createUserDirectory();
 		if (logger == null) {
 			logger = getLogger(FreeMind.class.getName());
+			StringBuffer info = new StringBuffer();
+			info.append("java_version = ");
+			info.append(System.getProperty("java.version"));
+			info.append("; os_name = ");
+			info.append(System.getProperty("os.name"));
+			info.append("; os_version = ");
+			info.append(System.getProperty("os.version"));
+			logger.info(info.toString());
 		}
 		mFreeMindCommon = new FreeMindCommon(this);
 		Resources.createInstance(this);
@@ -659,28 +670,31 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		Logger logger2 = java.util.logging.Logger.getLogger(forClass);
 		if (mFileHandler == null) {
 			// initialize handlers using an old System.err:
-			logger2.getParent().getHandlers();
+			final Logger parentLogger = logger2.getParent();
+			final Handler[] handlers = parentLogger.getHandlers();
+			for(int i = 0; i < handlers.length; i++){
+				final Handler handler = handlers[i];
+				if(handler instanceof ConsoleHandler){
+					parentLogger.removeHandler(handler);
+				}
+			}
 
 			try {
 				mFileHandler = new FileHandler(getFreemindDirectory()
 						+ File.separator + "log", 1400000, 5, false);
 				mFileHandler.setFormatter(new StdFormatter());
-
+				parentLogger.addHandler(mFileHandler);
+				
 				final ConsoleHandler stdConsoleHandler = new ConsoleHandler();
 				stdConsoleHandler.setFormatter(new StdFormatter());
+				parentLogger.addHandler(stdConsoleHandler);
 
 				LoggingOutputStream los;
 				logger = Logger.getLogger(StdFormatter.STDOUT.getName());
-				logger.addHandler(stdConsoleHandler);
-				logger.addHandler(mFileHandler);
-				logger.setUseParentHandlers(false);
 				los = new LoggingOutputStream(logger, StdFormatter.STDOUT);
 				System.setOut(new PrintStream(los, true));
 
 				logger = Logger.getLogger(StdFormatter.STDERR.getName());
-				logger.addHandler(stdConsoleHandler);
-				logger.addHandler(mFileHandler);
-				logger.setUseParentHandlers(false);
 				los= new LoggingOutputStream(logger, StdFormatter.STDERR);
 				System.setErr(new PrintStream(los, true));
 
@@ -691,8 +705,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				// freemind.main.Resources.getInstance().logExecption(e);
 			}
 		}
-		if (mFileHandler != null)
-			logger2.addHandler(mFileHandler);
 		return logger2;
 	}
 
