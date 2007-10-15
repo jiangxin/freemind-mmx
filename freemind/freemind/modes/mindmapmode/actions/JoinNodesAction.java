@@ -23,10 +23,13 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import freemind.main.HtmlTools;
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.mindmapview.MapView;
@@ -49,8 +52,6 @@ public class JoinNodesAction extends AbstractAction {
 
     public void joinNodes(MindMapNode selectedNode, List selectedNodes) {
         String newContent = "";
-        boolean firstLoop = true;
-
         // Make sure the selected node do not have children
         final MapView mapView = controller.getView();
         for (Iterator it = selectedNodes.iterator(); it.hasNext();) {
@@ -64,22 +65,46 @@ public class JoinNodesAction extends AbstractAction {
         }
 
         // Join
+        boolean isHtml = false;
         for (Iterator it = selectedNodes.iterator(); it.hasNext();) {
-            if (firstLoop) {
-                firstLoop = false;
-            } else {
-                newContent += " ";
-            }
-            MindMapNode node = (MindMapNode) it.next();
-            newContent += node.toString();
+            final MindMapNode node = (MindMapNode) it.next();
+            final String nodeContent = node.toString();
+            final boolean isHtmlNode = HtmlTools.isHtmlNode(nodeContent); 
+            newContent = addContent(newContent, isHtml,  nodeContent, isHtmlNode);            
             if (node != selectedNode) {
                 controller.deleteNode(node);
             }
+            isHtml = isHtml || isHtmlNode;
         }
 
         mapView.selectAsTheOnlyOneSelected(
                 mapView.getNodeView(selectedNode));
         controller.setNodeText(selectedNode, newContent);
     }
+
+    final static Pattern BODY_START = Pattern.compile("<body>", Pattern.CASE_INSENSITIVE);
+    final static Pattern BODY_END = Pattern.compile("</body>", Pattern.CASE_INSENSITIVE);
+	private String addContent(String content, boolean isHtml, String nodeContent, boolean isHtmlNode) {
+		if(isHtml){
+			final String start[] = BODY_END.split(content, -2);
+			content = start[0];
+			if(! isHtmlNode){
+				final String end[] = BODY_START.split(content, 2);
+				nodeContent = end[0] + "<body><p>" + nodeContent + "</p>";
+			}
+		}		
+		if (isHtmlNode & ! content.equals("")){
+			final String end[] = BODY_START.split(nodeContent, 2);
+			nodeContent = end[1];
+			if(! isHtml){
+				content = end[0] + "<body><p>" + content + "</p>";
+			}
+		}
+		if (! (isHtml || isHtmlNode || content.equals(""))){
+			content += " ";
+		}
+		content += nodeContent;
+		return content;
+	}
 }
 
