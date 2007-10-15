@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.40 2007-09-14 19:54:02 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.41 2007-10-15 21:27:03 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -532,7 +532,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                 makeTheSelected(toBeNewSelected);
                 return; }
 
-            if (shiftSelectionOrigin == null) {
+            if (shiftSelectionOrigin == null || shiftSelectionOrigin.getParent() == null) {
                 shiftSelectionOrigin = getSelected(); }
 
             final int newY = getMainViewY(newlySelectedNodeView);            
