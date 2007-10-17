@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.35 2007-08-25 14:13:13 dpolivaev Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.36 2007-10-17 19:54:38 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -113,9 +113,10 @@ public abstract class NodeAdapter implements MindMapNode {
 
 
     private MindMapNode parent;
-    private MindMapEdge edge;//the edge which leads to this node, only root has none
-    //In future it has to hold more than one view, maybe with a Vector in which the index specifies
-    //the MapView which contains the NodeViews
+    /**the edge which leads to this node, only root has none
+       In future it has to hold more than one view, maybe with a Vector in which the index specifies
+       the MapView which contains the NodeViews */
+    private MindMapEdge edge;
     private Collection views = null;
     private FreeMindMain frame;
     private static final boolean ALLOWSCHILDREN = true;
@@ -555,18 +556,7 @@ public abstract class NodeAdapter implements MindMapNode {
     //
 
     public String toString() {
-	String string="";
-    if (userObject!=null) {
-        string = userObject.toString();
-    }
-// (PN) %%%
-// Why? If because of presentation, this level shall be self responsible...
-// Model shall NOT change the real data!!!
-//
-//	if (string.equals("")) {
-//	    string = "   ";
-//	}
-	return string;
+    	return getText();
     }
 
     /**

@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.9 2007-06-25 19:50:21 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.10 2007-10-17 19:54:38 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -30,6 +30,7 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 
 import freemind.main.FreeMindMain;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.main.Tools.SingleDesEncrypter;
 import freemind.modes.MindIcon;
@@ -126,7 +127,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         // new password:
         String decryptedNode = decryptXml(encryptedContent, givenPassword);
         // FIXME: Better test needed.
-        if (decryptedNode == null || (!decryptedNode.startsWith("<node ") && decryptedNode.length() != 0)) {
+        if (decryptedNode == null || decryptedNode.isEmpty() || !decryptedNode.startsWith("<node ")) {
             logger.warning("Wrong password supplied (stored!=given).");
             return false;
         }
@@ -302,6 +303,12 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         //        // Decrypt
         String decrypted = encrypter.decrypt(encryptedString);
 
+        // fc, only in case, it is needed, we can activate this code.
+//        if (decrypted == null || decrypted.isEmpty()) { 
+//            logger.warning("Perhaps wrong algorithm used (due to a Java bug, in FreeMind 0.8.0 and Java4-5 DES whereas with Java6 Triple DES was used. Trying Triple DES...");
+//            decrypted = new Tools.TripleDesEncrypter(pwd).decrypt(encryptedString);
+//        }
+        
         return decrypted;
     }
 

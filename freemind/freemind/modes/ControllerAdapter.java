@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.36 2007-09-09 19:10:26 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.37 2007-10-17 19:54:37 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -926,8 +926,12 @@ public abstract class ControllerAdapter implements ModeController {
             mc = modeController;
         }
         public void actionPerformed(ActionEvent e) {
-            mc.save();
-            getFrame().out(getText("saved")); // perhaps... (PN)
+            boolean success = mc.save();
+            if (success) {
+				getFrame().out(getText("saved")); // perhaps... (PN)
+			} else {
+				getController().errorMessage("Saving failed.");
+			}
 			getController().setTitle(); // Possible update of read-only
         }
     }

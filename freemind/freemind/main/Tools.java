@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.23 2007-09-04 19:48:48 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.24 2007-10-17 19:54:37 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -578,7 +578,7 @@ public class Tools {
     }
 
     /** from: http://javaalmanac.com/egs/javax.crypto/PassKey.html */
-	public static class SingleDesEncrypter {
+	public static class DesEncrypter {
 	    private static final String SALT_PRESENT_INDICATOR = " ";
 	    private static final int SALT_LENGTH=8;
 
@@ -594,10 +594,12 @@ public class Tools {
 	    int iterationCount = 19;
 
 		private final char[] passPhrase;
+		private String mAlgorithm;
 
-	    public SingleDesEncrypter(StringBuffer pPassPhrase) {
+	    public DesEncrypter(StringBuffer pPassPhrase, String pAlgorithm) {
 	    		passPhrase = new char[pPassPhrase.length()];
 	    		pPassPhrase.getChars(0, passPhrase.length, passPhrase, 0);
+				mAlgorithm = pAlgorithm;
 	    }
 
 	    /**
@@ -611,11 +613,10 @@ public class Tools {
 					// Create the key
 					KeySpec keySpec = new PBEKeySpec(passPhrase,
 							salt, iterationCount);
-					// Dimitry: PBEWithMD5AndTripleDES has never been supported, it was a bug! 
 					SecretKey key = SecretKeyFactory.getInstance(
-					"PBEWithMD5AndDES").generateSecret(keySpec);
-					ecipher = Cipher.getInstance(key.getAlgorithm());
-					dcipher = Cipher.getInstance(key.getAlgorithm());
+							mAlgorithm).generateSecret(keySpec);
+					ecipher = Cipher.getInstance(mAlgorithm);
+					dcipher = Cipher.getInstance(mAlgorithm);
 
 					// Prepare the parameter to the ciphers
 					AlgorithmParameterSpec paramSpec = new PBEParameterSpec(
@@ -689,6 +690,21 @@ public class Tools {
 	    }
 	}
 
+	public static class SingleDesEncrypter extends DesEncrypter {
+
+		public SingleDesEncrypter(StringBuffer pPassPhrase) {
+			super(pPassPhrase, "PBEWithMD5AndDES");
+		}
+		
+	}
+	public static class TripleDesEncrypter extends DesEncrypter {
+		
+		public TripleDesEncrypter(StringBuffer pPassPhrase) {
+			super(pPassPhrase, "PBEWithMD5AndTripleDES");
+		}
+		
+	}
+	
 	/**
      */
     public static String toBase64(byte[] byteBuffer) {

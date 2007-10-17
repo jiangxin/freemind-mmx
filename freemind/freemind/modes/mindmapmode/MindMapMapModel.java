@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.22 2007-09-26 16:23:34 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.23 2007-10-17 19:54:38 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -264,7 +264,7 @@ public class MindMapMapModel extends MapAdapter  {
             else
                 getFrame().out(message);
         } catch(Exception e) {
-            System.err.println("Error in MindMapMapModel.save(): ");
+            logger.severe("Error in MindMapMapModel.save(): ");
             freemind.main.Resources.getInstance().logException(e);
         }
         scheduleTimerForAutomaticSaving();

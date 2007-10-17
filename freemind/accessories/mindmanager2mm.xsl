@@ -7,7 +7,7 @@
    :
    : Christian Foltin, June, 2005
    :
-   : $Id: mindmanager2mm.xsl,v 1.1.2.3.4.2 2007-08-08 21:10:40 christianfoltin Exp $
+   : $Id: mindmanager2mm.xsl,v 1.1.2.3.4.3 2007-10-17 19:54:36 christianfoltin Exp $
    :
   -->
 
@@ -16,13 +16,14 @@
  xmlns:ap="http://schemas.mindjet.com/MindManager/Application/2003" 
 	xmlns:cor="http://schemas.mindjet.com/MindManager/Core/2003" 
 	xmlns:pri="http://schemas.mindjet.com/MindManager/Primitive/2003" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xhtml="http://www.w3.org/1999/xhtml" >
 
 	<xsl:strip-space elements="*" /> 
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" />
 
 	<xsl:template match="/ap:Map">
-		<map version="0.8.0">
+		<map version="0.9.0">
 			<xsl:apply-templates select="ap:OneTopic/ap:Topic"/>
 		</map>
 	</xsl:template>
@@ -68,13 +69,11 @@
 	</xsl:template>
 
 	<xsl:template match="ap:NotesGroup">
-		<xsl:element name="hook">
-			<xsl:attribute name="NAME">
-				<xsl:text>accessories/plugins/NodeNote.properties</xsl:text>
+		<xsl:element name="richcontent">
+			<xsl:attribute name="TYPE">
+				<xsl:text>NOTE</xsl:text>
 			</xsl:attribute>
-			<xsl:element name="text">
-				<xsl:value-of select="ap:NotesXhtmlData/@PreviewPlainText"/>
-			</xsl:element>
+			<xsl:copy-of select="ap:NotesXhtmlData/xhtml:html"/>
 		</xsl:element>
 	</xsl:template>
 
