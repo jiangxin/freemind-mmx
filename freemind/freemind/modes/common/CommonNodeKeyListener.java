@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: CommonNodeKeyListener.java,v 1.1.2.1.2.3 2006-12-16 20:42:31 dpolivaev Exp $ */
+/* $Id: CommonNodeKeyListener.java,v 1.1.2.1.2.4 2007-10-18 21:23:23 dpolivaev Exp $ */
 
 package freemind.modes.common;
 
@@ -167,5 +167,8 @@ public class CommonNodeKeyListener implements KeyListener {
     }
 
     public void keyReleased(KeyEvent e) {
+    	if(e.getKeyCode() == KeyEvent.VK_SHIFT){
+    		c.getView().resetShiftSelectionOrigin();
+    	}
     }
 }

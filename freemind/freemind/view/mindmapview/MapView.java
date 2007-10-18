@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.41 2007-10-15 21:27:03 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.42 2007-10-18 21:23:07 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -520,6 +520,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         }
     }
 
+    public void resetShiftSelectionOrigin(){
+    	shiftSelectionOrigin = null;
+    }
+    
     private void extendSelectionWithKeyMove(NodeView newlySelectedNodeView, KeyEvent e) {
         if (e.isShiftDown()) {
             // left or right
@@ -532,18 +536,18 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                 makeTheSelected(toBeNewSelected);
                 return; }
 
-            if (shiftSelectionOrigin == null || shiftSelectionOrigin.getParent() == null) {
+            if (shiftSelectionOrigin == null) {
                 shiftSelectionOrigin = getSelected(); }
 
             final int newY = getMainViewY(newlySelectedNodeView);            
 			final int selectionOriginY = getMainViewY(shiftSelectionOrigin);
 			int deltaY = newY - selectionOriginY;
             NodeView currentSelected = getSelected();
-            final int currentSelectedY = getMainViewY(currentSelected);
             
             // page up and page down
 			if (e.getKeyCode() == KeyEvent.VK_PAGE_UP) {
                 for (;;) {
+                    final int currentSelectedY = getMainViewY(currentSelected);
                     if (currentSelectedY > selectionOriginY)
                         deselect(currentSelected);
                     else
@@ -555,6 +559,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
             if (e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
                 for (;;) {
+                    final int currentSelectedY = getMainViewY(currentSelected);
                     if (currentSelectedY < selectionOriginY)
                         deselect(currentSelected);
                     else
