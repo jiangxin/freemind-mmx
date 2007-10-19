@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMotionListenerView.java,v 1.1.4.4.4.6 2007-08-05 16:56:57 dpolivaev Exp $*/
+/*$Id: NodeMotionListenerView.java,v 1.1.4.4.4.7 2007-10-19 17:24:55 dpolivaev Exp $*/
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -29,6 +29,9 @@ import java.awt.RenderingHints;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+
+import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 
 /**
  * @author Dimitri
@@ -43,6 +46,8 @@ public class NodeMotionListenerView extends JComponent {
 		addMouseMotionListener( map.getNodeMotionListener() );
 		//fc, 16.6.2005: to emphasis the possible movement.
         this.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+		final String helpMsg = Resources.getInstance().getResourceString("node_location_help");
+        this.setToolTipText(helpMsg);
 	}
 	
 	private NodeView movedView;
@@ -72,6 +77,7 @@ public class NodeMotionListenerView extends JComponent {
 	}
 	public void setMouseEntered() {
 		this.isMouseEntered = true;
+		final FreeMindMain frame = movedView.getMap().getModel().getModeController().getFrame();
 		repaint();
 	}
 
