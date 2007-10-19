@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.54 2007-09-14 19:54:02 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.55 2007-10-19 16:24:34 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1077,6 +1077,7 @@ public class NodeView extends JComponent implements TreeModelListener{
      * @see javax.swing.event.TreeModelListener#treeNodesRemoved(javax.swing.event.TreeModelEvent)
      */
     public void treeNodesRemoved(TreeModelEvent e) {
+    	getMap().resetShiftSelectionOrigin();
     	if (getModel().isFolded()){
     		return;
     	}
@@ -1128,6 +1129,7 @@ public class NodeView extends JComponent implements TreeModelListener{
      * @see javax.swing.event.TreeModelListener#treeStructureChanged(javax.swing.event.TreeModelEvent)
      */
     public void treeStructureChanged(TreeModelEvent e) {
+        	getMap().resetShiftSelectionOrigin();
             for(ListIterator i = getChildrenViews().listIterator();i.hasNext();) {
                 ((NodeView)i.next()).remove(); }
             insert();
