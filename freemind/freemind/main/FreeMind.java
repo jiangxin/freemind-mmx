@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.85 2007-10-15 21:24:59 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.86 2007-10-19 17:05:44 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -128,7 +128,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private static final String DEFAULT_LANGUAGE = "en";
 
-	public static final String VERSION = "0.9.0 Beta 13";
+	public static final String VERSION = "0.9.0 Beta 14";
 
 	public static final String XML_VERSION = "0.9.0_Beta_8";
 
@@ -267,11 +267,12 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				.changeAntialias(getProperty(FreeMindCommon.RESOURCE_ANTIALIAS));
 
 
+		feedback.increase("FreeMind.progress.propageteLookAndFeel");
+		SwingUtilities.updateComponentTreeUI(this); // Propagate LookAndFeel to
+
 		feedback.increase("FreeMind.progress.buildScreen");
 		setScreenBounds();
 		
-		feedback.increase("FreeMind.progress.propageteLookAndFeel");
-		SwingUtilities.updateComponentTreeUI(this); // Propagate LookAndFeel to
 		// JComponents
 
 		feedback.increase("FreeMind.progress.createInitialMode");
@@ -815,7 +816,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 					.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		}
-		status = new JLabel();
+		status = new JLabel("!");
+		status.setPreferredSize(status.getPreferredSize());
+		status.setText("");
 		mContentComponent = mScrollPane;
 
 		boolean shouldUseTabbedPane = "true".equals(controller.getFrame()
