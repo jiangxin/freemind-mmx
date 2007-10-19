@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.10 2007-10-17 19:54:38 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.11 2007-10-19 17:48:05 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -127,7 +127,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         // new password:
         String decryptedNode = decryptXml(encryptedContent, givenPassword);
         // FIXME: Better test needed.
-        if (decryptedNode == null || decryptedNode.isEmpty() || !decryptedNode.startsWith("<node ")) {
+        if (decryptedNode == null || decryptedNode.equals("") || !decryptedNode.startsWith("<node ")) {
             logger.warning("Wrong password supplied (stored!=given).");
             return false;
         }
