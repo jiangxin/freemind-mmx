@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.86 2007-10-19 17:05:44 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.87 2007-10-19 17:52:56 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -51,7 +51,6 @@ import java.util.Vector;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
@@ -68,8 +67,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import plugins.feedbackcenter.xmlrpc.ReportFieldBean;
 
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
