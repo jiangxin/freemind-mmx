@@ -24,7 +24,8 @@ Changes made in FreeMind 0.9.0 Beta 14
 * Bug fix: join for rich text nodes.
 * Display help message for node movement as tool tip.
 * Bug fix: nodes cut when zoom not 100%.
-
+* Menu item "Split" moved to menu item "Join nodes"
+ 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 13
 ===============================

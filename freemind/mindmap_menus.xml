@@ -173,8 +173,10 @@
 			
 		<menu_category name="extras">
 			<menu_category name="first">
-				<menu_category name="nodes">
+				<menu_category name="join">
 					<menu_action field="joinNodes" key_ref="keystroke_join_nodes"/>
+				</menu_category>
+				<menu_category name="nodes">
 					<menu_category name="sorting"/>
 					<menu_category name="crypto">
 					</menu_category>
