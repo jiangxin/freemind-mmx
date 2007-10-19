@@ -1,5 +1,5 @@
 ===============================
-Changes made in FreeMind 0.9.0 RC1
+Changes made in FreeMind 0.9.0 Beta 14
 ===============================
 * Open Office Export now for the ODT format.
 * Nicer automatic format with sharp bezier curves.
@@ -9,6 +9,20 @@ Changes made in FreeMind 0.9.0 RC1
 * Bug fix: Automatic layout with icons.
 * Bug fix: Drag&Drop in Pattern Dialog
 * Bug fix: Map conversion of version 0.8.0 fixed.
+* bug fix for export to PDF (SVG).
+* Bug fix : update all nodes if standard text color has been changed.
+* Use node text and background colors in editors.
+* Bug fix: use edge color for folding mark.
+* Bug fix: new maps should not have "saved" attribute set.
+* Bug fix: FreeMind non-responsive after application focus change.
+* Bug fixes in filter management.
+* Bug fix: export to PNG.
+* Bug fix: mnemonics for starting Attribute Manager Dialog.
+* Bug fix: layout after zoom change.
+* Bug fix: printing of filtered maps with hidden links.
+* System.out and System.err redirected to special logger.
+* Bug fix: join for rich text nodes.
+* Display help message for node movement as tool tip.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 13
