@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.24 2007-10-17 19:54:37 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.25 2007-10-20 20:33:37 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -821,6 +821,10 @@ public class Tools {
 	}
 
 	public static void setDialogLocationRelativeTo(JDialog dialog, Component c) {
+		if(c==null){
+			// perhaps, the component is not yet existing.
+			return;
+		}
 		final Point p = c.getLocationOnScreen();
 		final int cw = c.getWidth();
 		final int ch = c.getHeight();

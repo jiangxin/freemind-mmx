@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.34 2007-09-12 20:27:12 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.35 2007-10-20 20:33:41 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -1081,6 +1081,9 @@ public class OptionPanel implements TextTranslator {
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("resources_notifications"));
+		controls.add(new DontShowNotificationProperty(
+				"resources_convert_to_current_version.tooltip",
+				FreeMind.RESOURCES_CONVERT_TO_CURRENT_VERSION));
 		controls.add(new DontShowNotificationProperty(
 				"delete_nodes_without_question.tooltip",
 				FreeMind.RESOURCES_DELETE_NODES_WITHOUT_QUESTION)); 

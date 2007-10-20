@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.23 2007-10-17 19:54:38 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.24 2007-10-20 20:33:38 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -47,9 +47,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
 import javax.swing.text.html.HTMLWriter;
 
 
+import freemind.common.OptionalDontShowMeAgainDialog;
 import freemind.controller.MindMapNodesSelection;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
@@ -371,8 +373,19 @@ public class MindMapMapModel extends MapAdapter  {
             }
         }
         if (reader == null) {
-            // other version:
-            reader = Tools.getUpdateReader(file, FREEMIND_VERSION_UPDATER_XSLT, getFrame());
+            int showResult = new OptionalDontShowMeAgainDialog(mModeController
+					.getFrame().getJFrame(), mModeController.getSelectedView(),
+					"really_convert_to_current_version", "confirmation", mModeController,
+					new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
+							mModeController.getController(),
+							FreeMind.RESOURCES_CONVERT_TO_CURRENT_VERSION),
+					OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
+					.show().getResult();
+			if(showResult != JOptionPane.OK_OPTION) {
+				reader = Tools.getActualReader(file);
+			} else {
+				reader = Tools.getUpdateReader(file, FREEMIND_VERSION_UPDATER_XSLT, getFrame());
+			}
         }
         try {
         	    return (MindMapNodeModel) mModeController.createNodeTreeFromXml(reader);
