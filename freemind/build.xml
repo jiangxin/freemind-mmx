@@ -424,7 +424,7 @@
 	</target>
 
 	<target name="run" depends="dist">
-		<!-- failonerror is false here, as we want to 
+		<!-- failonerror is false here, as we want to
 		     make runWithoutPreferences safe. -->
 		<java classname="freemind.main.FreeMindStarter"
           fork="yes"
@@ -439,8 +439,8 @@
 		</java>
 	</target>
 
-	<!-- ================================= 
-          target: runWithoutPreferences              
+	<!-- =================================
+          target: runWithoutPreferences
          ================================= -->
     <target name="runWithoutPreferences">
     	<rename dest="${user.home}/.freemind_bak" src="${user.home}/.freemind"/>
@@ -449,7 +449,7 @@
         <rename src="${user.home}/.freemind_bak" dest="${user.home}/.freemind" replace="yes"></rename>
     </target>
 
-	
+
 	<property name="log_file" location="${user.home}/.freemind/log.0"/>
 
 	<target name="runmac" depends="dist">
@@ -510,9 +510,14 @@
 		<cvs  cvsRoot=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"
 		       package="freemind"
 		       dest="${inst.dir}"
+		       compressionlevel="9"
 			  command="checkout -P -r ${cvstag}"></cvs>
+		<cvs  dest="${inst.dir}/freemind"
+		       compressionlevel="9"
+			  command="update -k b -P -- freemind.sh "></cvs>
 		<cvs  cvsRoot=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"
 		       package="admin"
+		       compressionlevel="9"
 		       dest="${inst.dir}"></cvs>
     	<ant dir="${inst.dir}/freemind" target="clean" ></ant>
     	<ant dir="${inst.dir}/freemind" target="post" ></ant>
