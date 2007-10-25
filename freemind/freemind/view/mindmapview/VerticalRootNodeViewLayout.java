@@ -31,6 +31,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
+import freemind.main.Resources;
 import freemind.main.Tools;
 
 /**
@@ -38,6 +39,10 @@ import freemind.main.Tools;
  * 05.06.2005
  */
 public class VerticalRootNodeViewLayout extends NodeViewLayoutAdapter {
+	private static final String USE_COMMON_OUT_POINT_FOR_ROOT_NODE_STRING = "use_common_out_point_for_root_node";
+	static boolean USE_COMMON_OUT_POINT_FOR_ROOT_NODE = Tools.isPreferenceTrue(
+				Resources.getInstance().getProperty(USE_COMMON_OUT_POINT_FOR_ROOT_NODE_STRING));
+	
     static private VerticalRootNodeViewLayout instance = null;
     
     protected void layout() {
@@ -89,8 +94,16 @@ public void layoutNodeMotionListenerView(NodeMotionListenerView view) {
     view.setSize(content.getWidth(), LISTENER_VIEW_WIDTH);
 }
 
-public Point getMainViewOutPoint(NodeView view, Point destinationPoint) {
+public Point getMainViewOutPoint(NodeView view, NodeView targetView, Point destinationPoint) {
     final MainView mainView = view.getMainView();
+	if(USE_COMMON_OUT_POINT_FOR_ROOT_NODE){
+		if(targetView.isLeft()){
+	        return mainView.getLeftPoint();
+		}
+		else{
+	        return mainView.getRightPoint();
+		}
+	}
     final Point p = new Point(destinationPoint);
     Tools.convertPointFromAncestor(view, p, mainView);  
     double nWidth = mainView.getWidth()/ 2f;

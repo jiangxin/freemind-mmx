@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeView.java,v 1.13.14.2.4.7 2007-08-26 09:05:27 dpolivaev Exp $*/
+/*$Id: EdgeView.java,v 1.13.14.2.4.8 2007-10-25 15:32:59 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -60,7 +60,7 @@ public abstract class EdgeView {
 	}
 
 	protected void createStart() {
-		start = source.getMainViewOutPoint(end);
+		start = source.getMainViewOutPoint(getTarget(), end);
         Tools.convertPointToAncestor(source.getMainView(), start, source);
 	}
 

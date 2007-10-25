@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BezierEdgeView.java,v 1.13.18.1.2.3 2007-08-03 17:24:02 dpolivaev Exp $*/
+/*$Id: BezierEdgeView.java,v 1.13.18.1.2.4 2007-10-25 15:32:59 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -43,13 +43,13 @@ public class BezierEdgeView extends EdgeView {
 	//YCTRL could be implemented but then we had to check whether target is above or below source.
         int sign = (getTarget().isLeft())? -1 : 1;
         int sourceSign = 1;
-        if(getSource().isRoot()){
+        if(getSource().isRoot()&& ! VerticalRootNodeViewLayout.USE_COMMON_OUT_POINT_FOR_ROOT_NODE){
         		sourceSign = 0;
         }
         int xctrl = getMap().getZoomed(sourceSign * sign * XCTRL);
         int childXctrl = getMap().getZoomed(- 1 * sign * CHILD_XCTRL);
 
-	graph.setCurve(start.x,                   start.y,
+	graph.setCurve(start.x,                start.y,
                        start.x + xctrl,           start.y,
                        end.x   + childXctrl,      end.y,
                        end.x,  end.y);

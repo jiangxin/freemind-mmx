@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeViewLayout.java,v 1.1.4.3 2007-08-26 09:05:27 dpolivaev Exp $ */
+/* $Id: NodeViewLayout.java,v 1.1.4.4 2007-10-25 15:32:59 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.LayoutManager;
@@ -25,7 +25,7 @@ import java.awt.Point;
 public interface NodeViewLayout extends LayoutManager {
     void layoutNodeMotionListenerView(NodeMotionListenerView view);
 
-    Point getMainViewOutPoint(NodeView view, Point destinationPoint);
+    Point getMainViewOutPoint(NodeView view, NodeView targetView, Point destinationPoint);
 
     Point getMainViewInPoint(NodeView view);
 }

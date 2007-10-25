@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ForkMainView.java,v 1.1.4.6 2007-08-27 18:23:19 dpolivaev Exp $ */
+/* $Id: ForkMainView.java,v 1.1.4.7 2007-10-25 15:32:59 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -126,7 +126,7 @@ class ForkMainView extends MainView{
         if(edgeWidth==0) {
         	edgeWidth = 1;
         }
-        Point in= new Point(getWidth(), getHeight() - edgeWidth/2 - 1);
+        Point in= new Point(getWidth()-1, getHeight() - edgeWidth/2 - 1);
         return in;
     }
 

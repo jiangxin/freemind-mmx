@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: RootMainView.java,v 1.1.4.4 2007-08-27 18:23:19 dpolivaev Exp $ */
+/* $Id: RootMainView.java,v 1.1.4.5 2007-10-25 15:32:59 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -58,7 +58,7 @@ class RootMainView extends MainView{
         //Draw a root node
         g.setColor(Color.gray);
         g.setStroke(new BasicStroke(1.0f));
-        g.drawOval(1, 1, getWidth()-2, getHeight()-2);
+        g.drawOval(0, 0, getWidth()-1, getHeight()-1);
         super.paint(g);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
         }
@@ -121,46 +121,11 @@ class RootMainView extends MainView{
         
         Point getRightPoint() {
         	Point in= getLeftPoint();
-        	in.x = getWidth();
+        	in.x = getWidth()-1;
         	return in;
         }
         
-        /* fc, 26.06.2005 */
-        /** Returns the point the edge should start given the index of the child node 
-         * that should be connected.
-         */
-        Point getOutPoint(Point destinationPoint, boolean isLeft) {
-            Point p = new Point(destinationPoint);
-            convertPointFromMap(p);
-            double nWidth = getWidth();
-            double nHeight = getHeight();
-            Point centerPoint = new Point((int) (nWidth / 2f), (int) (nHeight / 2f));
-            // assume, that destinationPoint is on the right:
-            double angle = Math.atan((p.y - centerPoint.y + 0f)
-                    / (p.x - centerPoint.x + 0f));
-            if (p.x < centerPoint.x) {
-                angle += Math.PI;
-            }
-            // now determine point on ellipsis corresponding to that angle:
-            Point out = new Point(centerPoint.x
-                    + (int) (Math.cos(angle) * nWidth / 2f), centerPoint.y
-                    + (int) (Math.sin(angle) * (nHeight) / 2f));
-            convertPointToMap(out);
-            return out;
-        }
-        /* end fc, 26.06.2005 */
-
-        /**
-         * Returns the Point where the InEdge
-         * should arrive the Node.
-         */
-        Point getInPoint() {
-            Point in =  new Point(0, getHeight() / 2);
-            convertPointToMap(in);
-            return in;
-        }
-
-        public void setDraggedOver(Point p) {
+         public void setDraggedOver(Point p) {
             setDraggedOver ((dropPosition(p.getX())) ? NodeView.DRAGGED_OVER_SON_LEFT : NodeView.DRAGGED_OVER_SON); 
         }
 

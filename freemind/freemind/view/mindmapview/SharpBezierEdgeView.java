@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SharpBezierEdgeView.java,v 1.5.34.5 2007-08-26 09:05:27 dpolivaev Exp $*/
+/*$Id: SharpBezierEdgeView.java,v 1.5.34.6 2007-10-25 15:32:59 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -83,7 +83,7 @@ public class SharpBezierEdgeView extends EdgeView {
 
 	protected void createStart() {
 		if(source.isRoot()){
-			start = source.getMainViewOutPoint(end);
+			start = source.getMainViewOutPoint(getTarget(), end);
 	        final MainView mainView = source.getMainView();
 	        final double w = mainView.getWidth() / 2;
 	        final double x0 = start.x - w;

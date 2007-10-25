@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BubbleMainView.java,v 1.1.4.8 2007-08-27 18:23:19 dpolivaev Exp $ */
+/* $Id: BubbleMainView.java,v 1.1.4.9 2007-10-25 15:32:59 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -101,7 +101,7 @@ class BubbleMainView extends MainView{
         
         Point getRightPoint() {
         	Point in= getLeftPoint();
-        	in.x = getWidth();
+        	in.x = getWidth()-1;
         	return in;
         }
 

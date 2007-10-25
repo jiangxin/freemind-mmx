@@ -77,7 +77,7 @@ public void layoutNodeMotionListenerView(NodeMotionListenerView view) {
     view.setSize(LISTENER_VIEW_WIDTH, content.getHeight());
 }
 
-public Point getMainViewOutPoint(NodeView view, Point destinationPoint) {
+public Point getMainViewOutPoint(NodeView view, NodeView targetView, Point destinationPoint) {
     final MainView mainView = view.getMainView();
     return mainView.getRightPoint();
 }

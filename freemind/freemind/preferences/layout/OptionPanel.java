@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.35 2007-10-20 20:33:41 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.36 2007-10-25 15:32:59 dpolivaev Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -107,8 +107,6 @@ public class OptionPanel implements TextTranslator {
 
 	private static final String PREFERENCE_STORAGE_PROPERTY = "OptionPanel_Window_Properties";
     private static final String DEFAULT_LAYOUT_FORMAT = "right:max(40dlu;p), 4dlu, 120dlu, 7dlu";
-
-
 
 	/**
 	 * @throws IOException
@@ -646,6 +644,13 @@ public class OptionPanel implements TextTranslator {
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
+		final String RESOURCE_ROOT_NODE = "root_node_appearance";
+		final String RESOURCE_USE_COMMON_OUT_POINT_FOR_ROOT_NODE = "use_common_out_point_for_root_node";
+		controls.add(new SeparatorProperty(RESOURCE_ROOT_NODE));
+		controls.add(new BooleanProperty(RESOURCE_USE_COMMON_OUT_POINT_FOR_ROOT_NODE+".tooltip",
+                RESOURCE_USE_COMMON_OUT_POINT_FOR_ROOT_NODE)); // false
+		/* ***************************************************************** */
+		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("anti_alias"));
 		controls.add(new ComboProperty("antialias.tooltip",
 				FreeMindCommon.RESOURCE_ANTIALIAS, new String[] { "antialias_edges",
@@ -1008,6 +1013,7 @@ public class OptionPanel implements TextTranslator {
         //controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NodeNote.properties_key"));
         controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NodeNote_jumpto.keystroke.alt_N"));
         controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NodeNote_hide_show.keystroke.control_shift_less"));
+        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/RemoveNote.properties.properties_key"));
         controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_PAGE_UP"));
         controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_PAGE_DOWN"));
         controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_HOME"));
