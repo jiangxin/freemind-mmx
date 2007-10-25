@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.2 2007-09-13 20:33:01 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.3 2007-10-25 16:27:01 dpolivaev Exp $*/
 
 package accessories.plugins;
 
@@ -69,7 +69,9 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml {
 		}
 		
 		protected boolean processKeyBinding(KeyStroke ks, KeyEvent e, int condition, boolean pressed) {
-			return super.processKeyBinding(ks, e, condition, pressed) || e.getKeyChar() == KeyEvent.VK_SPACE;			
+			return super.processKeyBinding(ks, e, condition, pressed) 
+			|| e.getKeyChar() == KeyEvent.VK_SPACE
+			|| e.getKeyChar() == KeyEvent.VK_ALT;			
 		}
 	}
 
