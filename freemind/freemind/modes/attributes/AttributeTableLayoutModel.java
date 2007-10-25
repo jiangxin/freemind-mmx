@@ -41,7 +41,10 @@ public class AttributeTableLayoutModel {
     ChangeEvent changeEvent = null;
     ColumnWidthChangeEvent[] layoutChangeEvent = {null, null};
     
-    public int getColumnWidth(int col) {
+    public AttributeTableLayoutModel() {
+		super();
+	}
+	public int getColumnWidth(int col) {
         return width[col];
     }
     public void setColumnWidth(int col, int width) {
