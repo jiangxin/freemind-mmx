@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.42 2007-10-18 21:23:07 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.43 2007-10-25 20:55:33 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -152,7 +152,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     private MindMap model;
     private NodeView rootView = null;
     private Selected selected = new Selected();
-    static private Controller controller = null;
+    private Controller controller = null;
     private float zoom=1F;
     private boolean disableMoveCursor = true;
     private int siblingMaxLevel;
@@ -182,12 +182,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     public MapView( MindMap model, Controller controller ) {
         super();
         this.model = model;
-        if (MapView.controller == null){
-        	MapView.controller= controller;
-        }
-        else if (MapView.controller != controller){
-        	throw new RuntimeException("only one controller instance expected");
-        }
+    	this.controller= controller;
         // initialize the standard colors.
         if (standardNodeTextColor == null) {
             try{
@@ -266,7 +261,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                                              controller.getProperty("disable_cursor_move_paper"),"true");
     }
 
-	static private void createPropertyChangeListener() {
+	private void createPropertyChangeListener() {
 		propertyChangeListener = new FreemindPropertyListener() {
 		                
 		                public void propertyChanged(String propertyName,

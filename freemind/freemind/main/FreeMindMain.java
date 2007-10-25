@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12.14.5.2.8 2007-09-12 20:27:12 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.14.5.2.9 2007-10-25 20:55:32 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -102,14 +102,24 @@ public interface FreeMindMain {
 	public int getWinX();
 	public int getWinY();
 
-    // version info:
+    /** version info:*/
     public String getFreemindVersion();
 
-    /* To obtain a logging element, ask here. */
+    /** To obtain a logging element, ask here. */
     public java.util.logging.Logger getLogger(String forClass);
 
 
+	/**
+	 * Inserts a (south) component into the split pane. If the
+	 * screen isn't split yet, a split pane should be created on the fly.
+	 * 
+	 * @param pMindMapComponent south panel to be inserted
+	 * @return the split pane in order to move the dividers.
+	 */
 	public JSplitPane insertComponentIntoSplitPane(JComponent pMindMapComponent);
+	/**
+	 *  Indicates that the south panel should be made invisible.
+	 */
 	public void 	  removeSplitPane();
 	
 	/**

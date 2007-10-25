@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.20 2007-09-12 20:27:12 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.21 2007-10-25 20:55:32 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -25,11 +25,8 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -63,6 +60,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
     Controller c;//the one and only controller
 	private FreeMindCommon mFreeMindCommon;
 	private JPanel southPanel;
+	private JComponent mComponentInSplitPane;
 
 
     public FreeMindApplet() {
@@ -382,12 +380,18 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
     }
 
 	public JSplitPane insertComponentIntoSplitPane(JComponent pMindMapComponent) {
-		throw new IllegalArgumentException("The method insertComponentIntoSplitPane is not implemented for the applet.");
+		mComponentInSplitPane = pMindMapComponent;
+		southPanel.add(pMindMapComponent, BorderLayout.CENTER);
+		southPanel.revalidate();
+		return null;
 	}
 
 	public void removeSplitPane() {
-		throw new IllegalArgumentException("The method removeSplitPane is not implemented for the applet.");
-		
+		if(mComponentInSplitPane != null){
+			southPanel.remove(mComponentInSplitPane);
+			southPanel.revalidate();
+			mComponentInSplitPane = null;
+		}
 	}
 
 }
