@@ -1,9 +1,17 @@
 ===============================
 Changes made in FreeMind 0.9.0 RC1
 ===============================
+* Option added that map conversions are confirmed.
 * Option added that map conversions are confirmed
 * Bug fix: Browser applet can be started twice
 * Bug fix: alt+i in English
+* Bug fix: save and use setting "left toolbar invisible" in auto.properties.
+* Bug fix in writing content of HTML nodes into clipboard.
+* Bug fixes in rich text editor component (Version shtml_0_12_2_beta3).
+* Enable main menu mnemonics for note editor.
+* Bug fix: attribute table column width not retrieved.
+* Item "Remove Notes" in the "Tools" menu.
+* OPTION "OLD_ROUTING_OF_ROOT_EDGES" configurable from Preferences->Appearance.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta 14
