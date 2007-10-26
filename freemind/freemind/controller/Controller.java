@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.41 2007-09-12 20:27:12 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.42 2007-10-26 15:11:23 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -606,12 +606,12 @@ public class Controller  implements MapModuleChangeObserver {
         return toolbar;
     }
     public void setLeftToolbarVisible(boolean visible) {
+        leftToolbarVisible = visible;
         if (getMode() == null){
             return;
         }
         final Component leftToolBar = getModeController().getLeftToolBar();
         if (leftToolBar != null) {
-           leftToolbarVisible = visible;
            leftToolBar.setVisible(leftToolbarVisible);
            ((JComponent)leftToolBar.getParent()).revalidate();
         }
