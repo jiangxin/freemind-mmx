@@ -535,10 +535,21 @@ class MindMapHTMLWriter {
         }
         else if (model.toString().startsWith("<html>")) {
             String output = model.toString().substring(6); // do not write
-            // <html>
-            if (output.endsWith("</html>")) {
-                output = output.substring(0, output.length() - 7);
+            int start = output.indexOf("<body>");
+            if(start == -1){
+            	start = 7;
             }
+            else{
+            	start += 6;
+            }
+            int end = output.indexOf("</body>");
+            if(end == -1){
+            	end = output.indexOf("</html>");
+            }
+            if(end == -1){
+            	end = output.length();
+            }
+            output = output.substring(start, end);
             fileout.write(HtmlTools.unicodeToHTMLUnicodeEntity(output));
         }
         else {
