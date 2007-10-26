@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: ExportHook.java,v 1.1.4.7.2.8 2007-09-12 05:50:01 dpolivaev Exp $*/
+/*$Id: ExportHook.java,v 1.1.4.7.2.9 2007-10-26 19:39:53 dpolivaev Exp $*/
 
 package freemind.extensions;
 
@@ -28,6 +28,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,6 +41,7 @@ import javax.swing.filechooser.FileFilter;
 
 import freemind.main.Tools;
 import freemind.modes.NodeAdapter;
+import freemind.modes.mindmapmode.actions.RedoAction;
 import freemind.view.mindmapview.MapView;
 
 /**
@@ -183,5 +185,33 @@ public class ExportHook extends ModeControllerHookAdapter {
         
     }
 
+    /**
+     */
+    protected void copyFromFile(String dir, String fileName, String destinationDirectory)
+    {
+        // adapted from http://javaalmanac.com/egs/java.io/CopyFile.html
+        // Copies src file to dst file.
+        // If the dst file does not exist, it is created
+            try {
+                logger.finest("searching for " + dir + fileName);
+                File resource = new File(dir, fileName);
+                if(resource==null){
+                		logger.severe("Cannot find resource: "+ dir+fileName);
+                		return;
+                }
+                InputStream in  = new FileInputStream(resource);
+                OutputStream out = new FileOutputStream(destinationDirectory
+                        + "/" + fileName);
+    
+                // Transfer bytes from in to out
+                Tools.copyStream(in, out);
+            } catch (Exception e) {
+                logger.severe("File not found or could not be copied. " +
+                		"Was earching for " + dir + fileName + " and should go to "+destinationDirectory);
+                freemind.main.Resources.getInstance().logException(e);
+            }
+    
+        
+    }
 
 }
