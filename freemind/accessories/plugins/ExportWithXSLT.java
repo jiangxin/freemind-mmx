@@ -29,11 +29,13 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -50,6 +52,7 @@ import javax.xml.transform.stream.StreamSource;
 import accessories.plugins.util.html.ClickableImageCreator;
 import accessories.plugins.util.xslt.ExportDialog;
 import freemind.extensions.ExportHook;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
@@ -227,6 +230,22 @@ public class ExportWithXSLT extends ExportHook {
             MindIcon myIcon     = MindIcon.factory(iconName);
             copyFromResource(MindIcon.getIconsPath(), myIcon.getIconBaseFileName(), directoryName2); 
         }
+        File iconDir = new File (Resources.getInstance().getFreemindDirectory(),"icons");
+        if (iconDir.exists()){
+            String[] userIconArray = iconDir.list(new FilenameFilter(){
+                public boolean accept(File dir, String name) {
+                    return name.matches(".*\\.png");
+                }                
+            });
+            for ( int i = 0 ; i < userIconArray.length; ++i ) {
+                String iconName = userIconArray[i];
+                if(iconName.length() == 4){
+                    continue;
+                }
+                copyFromFile(iconDir.getAbsolutePath(), iconName, directoryName2);
+            }
+        }
+
     }
 
     /**
