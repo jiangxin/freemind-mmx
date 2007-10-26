@@ -533,14 +533,14 @@ class MindMapHTMLWriter {
         if (model.toString().matches(" *")) {
             fileout.write("&nbsp;");
         }
-        else if (model.toString().startsWith("<html>")) {
+        else if (model.toString().startsWith("<html")) {
             String output = model.toString().substring(6); // do not write
-            int start = output.indexOf("<body>");
+            int start = output.indexOf("<body");
             if(start == -1){
-            	start = 7;
+            	start = output.indexOf('>') + 1;
             }
             else{
-            	start += 6;
+            	start = output.indexOf('>', start+5) + 1;
             }
             int end = output.indexOf("</body>");
             if(end == -1){
