@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.88 2007-10-20 20:33:36 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.89 2007-10-29 20:43:58 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -51,6 +51,7 @@ import java.util.Vector;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
@@ -121,7 +122,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     public static final String RESOURCES_DELETE_NODES_WITHOUT_QUESTION = "delete_nodes_without_question";
 
-	private static Logger logger = null;
+	private Logger logger = null;
 
 	private static final String DEFAULT_LANGUAGE = "en";
 
@@ -667,10 +668,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	}
 
 	public Logger getLogger(String forClass) {
-		Logger logger2 = java.util.logging.Logger.getLogger(forClass);
+		Logger loggerForClass = java.util.logging.Logger.getLogger(forClass);
 		if (mFileHandler == null) {
 			// initialize handlers using an old System.err:
-			final Logger parentLogger = logger2.getParent();
+			final Logger parentLogger = loggerForClass.getParent();
 			final Handler[] handlers = parentLogger.getHandlers();
 			for(int i = 0; i < handlers.length; i++){
 				final Handler handler = handlers[i];
@@ -683,14 +684,16 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				mFileHandler = new FileHandler(getFreemindDirectory()
 						+ File.separator + "log", 1400000, 5, false);
 				mFileHandler.setFormatter(new StdFormatter());
+				mFileHandler.setLevel(Level.INFO);
 				parentLogger.addHandler(mFileHandler);
 				
 				final ConsoleHandler stdConsoleHandler = new ConsoleHandler();
 				stdConsoleHandler.setFormatter(new StdFormatter());
+				stdConsoleHandler.setLevel(Level.WARNING);
 				parentLogger.addHandler(stdConsoleHandler);
 
 				LoggingOutputStream los;
-				logger = Logger.getLogger(StdFormatter.STDOUT.getName());
+				Logger logger = Logger.getLogger(StdFormatter.STDOUT.getName());
 				los = new LoggingOutputStream(logger, StdFormatter.STDOUT);
 				System.setOut(new PrintStream(los, true));
 
@@ -705,7 +708,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				// freemind.main.Resources.getInstance().logExecption(e);
 			}
 		}
-		return logger2;
+		return loggerForClass;
 	}
 
 	public static void main(final String[] args) {
@@ -733,7 +736,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				}
 
 				public void progress(int act, String messageId) {
-					logger.info("Beginnig task:" + messageId);
+					frame.logger.info("Beginnig task:" + messageId);
 				}
 
 				public void setMaximumValue(int max) {

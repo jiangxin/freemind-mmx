@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StdFormatter.java,v 1.1.2.2 2007-09-18 21:55:25 dpolivaev Exp $*/
+/*$Id: StdFormatter.java,v 1.1.2.3 2007-10-29 20:43:59 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -35,7 +35,7 @@ class StdFormatter extends SimpleFormatter {
 	 * Level for STDOUT activity.
 	 */
 	final static Level STDOUT =
-	    new StdOutErrLevel("STDOUT", Level.INFO.intValue()+53);
+	    new StdOutErrLevel("STDOUT", Level.WARNING.intValue()+53);
 
 	/**
 	 * Level for STDERR activity
