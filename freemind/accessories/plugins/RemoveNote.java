@@ -19,7 +19,7 @@
  *
  * Created on 06.10.2004
  */
-/* $Id: RemoveNote.java,v 1.1.2.1 2007-10-25 15:33:43 dpolivaev Exp $ */
+/* $Id: RemoveNote.java,v 1.1.2.2 2007-11-01 16:10:17 dpolivaev Exp $ */
 
 package accessories.plugins;
 
@@ -41,7 +41,9 @@ public class RemoveNote extends MindMapNodeHookAdapter {
 
     public void invoke(MindMapNode node) {
 		super.invoke(node);
+		if(getMindMapController().getSelected() == node){
+			NodeNoteRegistration.getHtmlEditorPanel().setCurrentDocumentContent("");
+		}			
 		getMindMapController().setNoteText(node, null);
 	}
-
 }
