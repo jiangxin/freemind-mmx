@@ -27,7 +27,7 @@ class MindMapHTMLWriter {
         this.fileout = fileout;
         exportIcons = false;
         writeFoldingCode = false;
-        basedOnHeadings = true;
+        basedOnHeadings =  (getProperty("html_export_folding").equals("html_export_based_on_headings"));
     }
 
     private static String convertSpecialChar(char c) {
@@ -135,7 +135,7 @@ class MindMapHTMLWriter {
         Iterator iterator = mindMapNodes.iterator();
         while (iterator.hasNext()) {
             MindMapNodeModel node = (MindMapNodeModel) iterator.next();
-            saveHTML(node, "1", 0, /* isRoot */true, /* depth */1);
+            saveHTML(node, "1", 0, /* isRoot */true, true, /* depth */1);
         }
         fileout.write("</body>" + el);
         fileout.write("</html>" + el);
@@ -152,8 +152,6 @@ class MindMapHTMLWriter {
                 .equals("html_export_fold_currently_folded") && rootNodeOfBranch
                 .hasFoldedStrictDescendant())
                 || htmlExportFoldingOption.equals("html_export_fold_all");
-        basedOnHeadings = (getProperty("html_export_folding")
-                .equals("html_export_based_on_headings"));
 
         exportIcons = getProperty("export_icons_in_html").equals("true");
         
@@ -170,7 +168,7 @@ class MindMapHTMLWriter {
             writeBodyWithFolding(rootNodeOfBranch);
         }
         else {
-            saveHTML(rootNodeOfBranch, "1", 0, /* isRoot */true, /* depth */1);
+            saveHTML(rootNodeOfBranch, "1", 0, /* isRoot */true, true, /* depth */1);
         }
         fileout.write("</body>" + el);
         fileout.write("</html>" + el);
@@ -190,7 +188,7 @@ class MindMapHTMLWriter {
 
         // fileout.write("<ul>");
 
-        saveHTML(rootNodeOfBranch, "1", 0, /* isRoot */true, /* depth */1);
+        saveHTML(rootNodeOfBranch, "1", 0, /* isRoot */true, true, /* depth */1);
 
         // fileout.write("</ul>");
 
@@ -391,6 +389,9 @@ class MindMapHTMLWriter {
 
     private void writeStyle() throws IOException {
         fileout.write("<style type=\"text/css\">" + el);
+        fileout.write("    li { list-style: none;  margin: 0; }"+el);
+        fileout.write("    p { margin: 0; }"+el);
+
         if (writeFoldingCode) {
             fileout
                     .write("    span.foldopened { color: white; font-size: xx-small;"
@@ -442,92 +443,191 @@ class MindMapHTMLWriter {
     }
 
     private int saveHTML(MindMapNodeModel model, String parentID,
-            int lastChildNumber, boolean isRoot, int depth) throws IOException {
-        // return lastChildNumber
-        // Not very beautiful solution, but working at least and logical
-        // too.
+			int lastChildNumber, boolean isRoot, boolean treatAsParagraph,
+			int depth) throws IOException {
+		// return lastChildNumber
+		// Not very beautiful solution, but working at least and logical too.
 
-        boolean createFolding = false;
-        if (writeFoldingCode) {
-            createFolding = model.isFolded();
-            if (getProperty("html_export_folding").equals(
-                    "html_export_fold_all")) {
-                createFolding = model.hasChildren();
-            }
-            if (getProperty("html_export_folding").equals(
-                    "html_export_no_folding")
-                    || basedOnHeadings || isRoot) {
-                createFolding = false;
-            }
-        }
+		boolean createFolding = model.isFolded();
+		if (getProperty("html_export_folding").equals("html_export_fold_all")) {
+			createFolding = model.hasChildren();
+		}
+		if (getProperty("html_export_folding").equals("html_export_no_folding")
+				|| basedOnHeadings || isRoot) {
+			createFolding = false;
+		}
 
-        if (isHeading(model, depth)) {
-            fileout.write("<h" + depth + " ");
-        }
-        else {
-            fileout.write("<div ");
-        }
+		final boolean heading = isHeading(model, depth);
+		if (!treatAsParagraph && !basedOnHeadings) fileout.write("<li>");
+		else {
+			if (heading){
+				fileout.write("<h" + depth + ">");
+			}
+			else{
+				fileout.write("<p>");
+			}
+		}
+		String localParentID = parentID;
+		if (createFolding) {
+			// lastChildNumber = new Integer lastChildNumber.intValue() + 1;
+			// Change value of an integer
+			lastChildNumber++;
 
-        boolean hasHtmlLink = model.getLink() != null && ! hasHtml(model);
-        if (hasHtmlLink) {
-            String link = model.getLink();
-            if (link
-                    .endsWith(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION)) {
-                link += ".html";
-            }
-            fileout.write("<a class=\"mapnode\" href=\"" + link
-                    + "\" target=\"_blank\"><span class=\"l\">~</span>");
-        }
+			localParentID = parentID + "_" + lastChildNumber;
+			writeFoldingButtons(localParentID);
+		}
 
-        writeParagraphStyle(model, depth);
-        fileout.write(">");
 
-        String localParentID = parentID;
-        if (createFolding) {
-            // lastChildNumber = new Integer lastChildNumber.intValue() + 1;
-            // Change value of an integer
-            lastChildNumber++;
+		String link = model.getLink();
+		if (link != null) {
+			if (link.endsWith(".mm")) {
+				link += ".html";
+			}
+			fileout.write("<a href=\"" + link
+					+ "\" target=\"_blank\"><span class=l>~</span>&nbsp;");
+		}
 
-            localParentID = parentID + "_" + lastChildNumber;
-            writeFoldingButtons(localParentID);
-        }
+		String fontStyle = fontStyle(model);
+		if (!fontStyle.equals("")) {
+			fileout.write("<span style=\"" + fontStyle + "\">");
+		}
 
-        if (exportIcons) {
-            writeIcons(model);
-        }
+		if (getProperty("export_icons_in_html").equals("true")) {
+			writeIcons(model);
+		}
 
-        writeModelContent(model);
+		writeModelContent(model);
 
-        if (hasHtmlLink) {
-            fileout.write("</a>" + el);
-        }
+		if (fontStyle != "") {
+			fileout.write("</span>");
+		}
 
-        if (isHeading(model, depth)) {
-            fileout.write("</h" + depth + ">");
-        }
-        else {
-            fileout.write("</div>");
-        }
+		fileout.write(el);
 
-        // Write the children
+		if (link != null) {
+			fileout.write("</a>" + el);
+		}
 
-        if (createFolding && model.hasChildren()) {
-            fileout.write("<div id=\"fold"
-                    + localParentID
-                    + "\" style=\"POSITION: relative; VISIBILITY: visible;\">");
-            int localLastChildNumber = 0;
-            saveChildrenHtml(model, fileout, localParentID,
-                    localLastChildNumber, depth);
-            fileout.write(el);
-            fileout.write("</div>");
-        }
-        else {
-            lastChildNumber = saveChildrenHtml(model, fileout,
-                    parentID, lastChildNumber, depth);
-        }
-        // End up the node
-        return lastChildNumber;
-    }
+		if (heading) {
+			fileout.write("</h" + depth + ">" + el);
+		}
+
+		// Are the children to be treated as paragraphs?
+
+		boolean treatChildrenAsParagraph = false;
+		for (ListIterator e = model.childrenUnfolded(); e.hasNext();) {
+			if (((MindMapNodeModel) e.next()).toString().length() > 100) { // TODO:
+																			// replace
+																			// heuristic
+																			// constant
+				treatChildrenAsParagraph = true;
+				break;
+			}
+		}
+
+		// Write the children
+
+		// Export based on headings
+
+		if (getProperty("html_export_folding").equals(
+				"html_export_based_on_headings")) {
+			for (ListIterator e = model.childrenUnfolded(); e.hasNext();) {
+				MindMapNodeModel child = (MindMapNodeModel) e.next();
+				lastChildNumber = saveHTML(child, parentID, lastChildNumber,/* isRoot= */
+						false, treatChildrenAsParagraph, depth + 1);
+			}
+			return lastChildNumber;
+		}
+
+		// Export not based on headings
+
+		if (model.hasChildren()) {
+			if (getProperty("html_export_folding").equals(
+					"html_export_based_on_headings")) {
+				for (ListIterator e = model.childrenUnfolded(); e.hasNext();) {
+					MindMapNodeModel child = (MindMapNodeModel) e.next();
+					lastChildNumber = saveHTML(child, parentID,
+							lastChildNumber,/* isRoot= */false,
+							treatChildrenAsParagraph, depth + 1);
+				}
+			}
+			else if (createFolding) {
+				fileout
+						.write("<ul id=\"fold"
+								+ localParentID
+								+ "\" style=\"POSITION: relative; VISIBILITY: visible;\">");
+				if (treatChildrenAsParagraph) {
+					fileout.write("<li>");
+				}
+				int localLastChildNumber = 0;
+				for (ListIterator e = model.childrenUnfolded(); e.hasNext();) {
+					MindMapNodeModel child = (MindMapNodeModel) e.next();
+					localLastChildNumber = saveHTML(child, localParentID,
+							localLastChildNumber,/* isRoot= */false,
+							treatChildrenAsParagraph, depth + 1);
+				}
+			}
+			else {
+				fileout.write("<ul>");
+				if (treatChildrenAsParagraph) {
+					fileout.write("<li>");
+				}
+				for (ListIterator e = model.childrenUnfolded(); e.hasNext();) {
+					MindMapNodeModel child = (MindMapNodeModel) e.next();
+					lastChildNumber = saveHTML(child, parentID,
+							lastChildNumber,/* isRoot= */false,
+							treatChildrenAsParagraph, depth + 1);
+				}
+			}
+			if (treatChildrenAsParagraph) {
+				fileout.write("</li>");
+			}
+			fileout.write(el);
+			fileout.write("</ul>");
+		}
+
+		// End up the node
+
+		if (!treatAsParagraph) {
+			fileout.write(el + "</li>" + el);
+		}
+
+		return lastChildNumber;
+	}
+
+	private String fontStyle(MindMapNodeModel model) throws IOException {
+		String fontStyle = "";
+
+		if (model.getColor() != null) {
+			fontStyle += "color: " + Tools.colorToXml(model.getColor()) + ";";
+		}
+
+		if (model.getFont() != null && model.getFont().getSize() != 0) {
+			int defaultFontSize = Integer
+					.parseInt(getProperty("defaultfontsize"));
+			int procentSize = (int) (model.getFont().getSize() * 100 / defaultFontSize);
+			if (procentSize != 100) {
+				fontStyle += "font-size: " + procentSize + "%;";
+			}
+		}
+
+		if (model.getFont() != null) {
+			String fontFamily = model.getFont().getFamily();
+			fontStyle += "font-family: " + fontFamily + ", sans-serif; ";
+		}
+
+		if (model.isItalic()) {
+			fontStyle += "font-style: italic; ";
+		}
+
+		if (model.isBold()) {
+			fontStyle += "font-weight: bold; ";
+		}
+
+		// ------------------------
+
+		return fontStyle;
+	}
 
     private void writeModelContent(MindMapNodeModel model) throws IOException {
         if (model.toString().matches(" *")) {
@@ -579,42 +679,6 @@ class MindMapHTMLWriter {
         fileout.write("\n");
     }
 
-    private void writeParagraphStyle(MindMapNodeModel model, int depth)
-            throws IOException {
-        String paragraphStyle = "";
-
-        if (model.getColor() != null) {
-            paragraphStyle += "color: " + Tools.colorToXml(model.getColor())
-            + ";";
-        }
-        Font font = model.getFont();
-        if (font != null) {        
-            int fontsize = font.getSize();
-            if (fontsize != 0) {
-                int defaultFontSize = Integer
-                .parseInt(getProperty("defaultfontsize"));
-                if (fontsize != defaultFontSize) {
-                    paragraphStyle += "font-size: " + fontsize + "pt;";
-                }
-            }
-            
-            String fontFamily = font.getFamily();
-            paragraphStyle += "font-family: " + fontFamily + ", sans-serif; ";
-        }
-        
-        if (model.isItalic()) {
-            paragraphStyle += "font-style: italic; ";
-        }
-        
-        if (model.isBold()) {
-            paragraphStyle += "font-weight: bold; ";
-        }
-        
-        // ------------------------
-        if(! paragraphStyle.equals("")){
-            fileout.write("style=\"" + paragraphStyle + "\"");
-        }
-    }
 
     private boolean isHeading(MindMapNodeModel model, int depth) {
         return basedOnHeadings && model.hasChildren() && depth <= 6
@@ -627,22 +691,6 @@ class MindMapHTMLWriter {
 
     private String getProperty(String key) {
         return Resources.getInstance().getProperty(key);
-    }
-
-    private int saveChildrenHtml(MindMapNodeModel model, Writer fileout,
-            String parentID, int lastChildNumber, int depth) throws IOException {
-        for (ListIterator e = model.childrenUnfolded(); e.hasNext();) {
-            MindMapNodeModel child = (MindMapNodeModel) e.next();
-            if (child.isVisible()) {
-                lastChildNumber = saveHTML(child, parentID, lastChildNumber,/* isRoot= */
-                        false, depth + 1);
-            }
-            else {
-                lastChildNumber = saveChildrenHtml(child, fileout, parentID,
-                        lastChildNumber, depth);
-            }
-        }
-        return lastChildNumber;
     }
 
 }
