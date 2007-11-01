@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.10 2007-10-25 20:55:32 christianfoltin Exp $ */
+/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.11 2007-11-01 16:11:55 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
 import java.awt.BorderLayout;
@@ -71,7 +71,7 @@ public class NodeNoteViewer extends NodeNoteBase implements
 
 	public void onSelectHook(NodeView pNode) {
 		String noteText = pNode.getModel().getNoteText();
-		if(noteText != null && !noteText.isEmpty()){
+		if(noteText != null && !noteText.equals("")){
 //			 logger.info("Panel added");
 			mBrowseController.getFrame().insertComponentIntoSplitPane(getNoteViewerComponent(noteText));
 		}
