@@ -10,6 +10,6 @@
 			class_name="plugins.latex.LatexNodeHook" 
 			instanciation="Once">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/insert/image/LatexNodeHook"/>
+		<plugin_menu location="menu_bar/insert/other/LatexNodeHook"/>
 	</plugin_action>
 </plugin>

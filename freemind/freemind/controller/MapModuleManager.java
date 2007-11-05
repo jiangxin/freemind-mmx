@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.4.2.10 2007-09-12 20:27:12 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4.2.11 2007-11-05 21:43:19 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Vector;
 
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
@@ -74,7 +75,7 @@ public class MapModuleManager {
 			}
 			public boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
 				boolean returnValue = true;
-				for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+				for (Iterator iter = new Vector(listeners).iterator(); iter.hasNext();) {
 					MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
 					returnValue = observer.isMapModuleChangeAllowed(oldMapModule, oldMode, newMapModule, newMode);
 					if(!returnValue){
@@ -84,25 +85,25 @@ public class MapModuleManager {
 				return returnValue;
 			}
 			public void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
-				for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+				for (Iterator iter = new Vector(listeners).iterator(); iter.hasNext();) {
 					MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
 					observer.beforeMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
 				}
 			}
 			public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
-				for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+				for (Iterator iter = new Vector(listeners).iterator(); iter.hasNext();) {
 					MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
 					observer.afterMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
 				}
 			}
 			public void numberOfOpenMapInformation(int number) {
-				for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+				for (Iterator iter = new Vector(listeners).iterator(); iter.hasNext();) {
 					MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
 					observer.numberOfOpenMapInformation(number);
 				}
 			}
 			public void afterMapClose(MapModule pOldMapModule, Mode pOldMode) {
-				for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+				for (Iterator iter = new Vector(listeners).iterator(); iter.hasNext();) {
 					MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
 					observer.afterMapClose(pOldMapModule, pOldMode);
 				}

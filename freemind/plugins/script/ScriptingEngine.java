@@ -19,7 +19,7 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.6 2007-09-04 19:48:48 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.7 2007-11-05 21:43:20 christianfoltin Exp $ */
 package plugins.script;
 
 import java.util.Iterator;
@@ -27,10 +27,14 @@ import java.util.Iterator;
 import javax.swing.JOptionPane;
 
 import freemind.common.OptionalDontShowMeAgainDialog;
+import freemind.extensions.HookRegistration;
 import freemind.main.FreeMind;
 import freemind.main.Tools.BooleanHolder;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -40,6 +44,27 @@ import groovy.lang.GroovyShell;
  * 
  */
 public class ScriptingEngine extends MindMapHookAdapter {
+    public static class Registration implements HookRegistration{
+
+        private final MindMapController controller;
+        private final MindMap mMap;
+        private final java.util.logging.Logger logger;
+
+        public Registration(ModeController controller, MindMap map) {
+            this.controller = (MindMapController) controller;
+            mMap = map;
+            logger = controller.getFrame().getLogger(this.getClass().getName());
+        }
+        
+        public void register() {
+//            controller.patterns[0].registerExternalPatternAction(this);
+        }
+
+        public void deRegister() {
+        }
+
+    }
+    
 
 	public void startupMapHook() {
 		super.startupMapHook();

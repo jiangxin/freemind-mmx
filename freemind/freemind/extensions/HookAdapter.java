@@ -102,7 +102,7 @@ public class HookAdapter implements MindMapHook {
 	public void setController(ModeController controller) {
 		this.controller = controller;
 		if(logger == null)
-			logger = getController().getFrame().getLogger(this.getClass().getName());
+			logger = controller.getFrame().getLogger(this.getClass().getName());
 	}
 	/* (non-Javadoc)
 	 * @see freemind.extensions.MindMapHook#getResourceString(java.lang.String)

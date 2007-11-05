@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeManagement.java,v 1.1.2.4 2007-02-25 21:12:50 christianfoltin Exp $ */
+/* $Id: TimeManagement.java,v 1.1.2.5 2007-11-05 21:43:19 christianfoltin Exp $ */
 package accessories.plugins.time;
 
 import java.awt.Container;
@@ -40,30 +40,33 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
+import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
+import freemind.modes.Mode;
 import freemind.modes.common.plugins.ReminderHookBase;
+import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
+import freemind.view.MapModule;
 
 //FIXME: REminder: more than once. (later)
 //FIXME: Button shortcuts (difficult?)
+//FIXME: Only one open dialog possible.
 
 /**
  * @author foltin
  *
  */
 public class TimeManagement extends MindMapHookAdapter implements
-		PropertyChangeListener, ActionListener {
+		PropertyChangeListener, ActionListener, MapModuleChangeObserver {
 
 	public final static String REMINDER_HOOK_NAME = "plugins/TimeManagementReminder.xml";
 
@@ -79,9 +82,20 @@ public class TimeManagement extends MindMapHookAdapter implements
 
 	private JTextField minuteField;
 
+	private MindMapController mController;
+	
+	private static TimeManagement sCurrentlyOpenTimeManagement = null;
+
 	public void startupMapHook() {
 		super.startupMapHook();
-		dialog = new JDialog(getController().getFrame().getJFrame(), true /* modal */);
+		if(sCurrentlyOpenTimeManagement != null) {
+			sCurrentlyOpenTimeManagement.dialog.getContentPane().setVisible(true);
+			return;
+		}
+		sCurrentlyOpenTimeManagement = this;
+		this.mController = getMindMapController();
+		mController.getController().getMapModuleManager().addListener(this);
+		dialog = new JDialog(mController.getFrame().getJFrame(), false /* not modal */);
 		dialog
 				.setTitle(getResourceString("plugins/TimeManagement.xml_WindowTitle"));
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -121,14 +135,14 @@ public class TimeManagement extends MindMapHookAdapter implements
 			appendButton.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent arg0) {
-					disposeDialog();
-					for (Iterator i = getController().getSelecteds().iterator(); i
+//					disposeDialog();
+					for (Iterator i = mController.getSelecteds().iterator(); i
 							.hasNext();) {
 						MindMapNode element = (MindMapNode) i.next();
 						DateFormat df = DateFormat
 								.getDateInstance(DateFormat.SHORT);
 						String dateAsString = df.format(getCalendarDate());
-                        getMindMapController().setNodeText(element,
+                        mController.setNodeText(element,
 								element.getText() + " " + dateAsString);
 					}
 
@@ -263,7 +277,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 
 	private final class RemoveReminders implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			for (Iterator i = getController().getSelecteds().iterator(); i
+			for (Iterator i = mController.getSelecteds().iterator(); i
 					.hasNext();) {
 				MindMapNode node = (MindMapNode) i.next();
 
@@ -280,7 +294,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 		Date date = getCalendarDate();
 		// add permanent node hook to the nodes and this hook checks
 		// permanently.
-		for (Iterator i = getController().getSelecteds().iterator(); i
+		for (Iterator i = mController.getSelecteds().iterator(); i
 				.hasNext();) {
 			MindMapNode node = (MindMapNode) i.next();
 
@@ -293,7 +307,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 						getResourceString("plugins/TimeManagement.xml_reminderNode_onlyOneDate"));
 				String message = formatter.format(messageArguments);
 				logger.info(messageArguments.length + ", " + message);
-				int result = JOptionPane.showConfirmDialog(getController()
+				int result = JOptionPane.showConfirmDialog(mController
 						.getFrame().getJFrame(), message, "FreeMind",
 						JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.NO_OPTION)
@@ -312,9 +326,9 @@ public class TimeManagement extends MindMapHookAdapter implements
 			}
 			rh.setRemindUserAt(date.getTime());
 			node.invokeHook(rh);
-			getController().nodeChanged(node);
+			mController.nodeChanged(node);
 		}
-		disposeDialog();
+//		disposeDialog();
 	}
 
 	/**
@@ -322,7 +336,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 	private void addHook(MindMapNode node) {
 		// add the hook:
 		List selected = Arrays.asList(new MindMapNode[] { node });
-        getMindMapController().addHook(node, selected, REMINDER_HOOK_NAME);
+        mController.addHook(node, selected, REMINDER_HOOK_NAME);
 	}
 
 	/**
@@ -332,6 +346,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 		dialog.setVisible(false);
 		dialog.dispose();
 		lastDate = getCalendarDate();
+		sCurrentlyOpenTimeManagement = null;
 	}
 
 	/**
@@ -348,5 +363,26 @@ public class TimeManagement extends MindMapHookAdapter implements
 		} catch (Exception e) {
 		}
 		return cal.getTime();
+	}
+
+	public void afterMapClose(MapModule oldMapModule, Mode oldMode) {
+	}
+
+	public void afterMapModuleChange(MapModule oldMapModule, Mode oldMode,
+			MapModule newMapModule, Mode newMode) {
+	}
+
+	public void beforeMapModuleChange(MapModule oldMapModule, Mode oldMode,
+			MapModule newMapModule, Mode newMode) {
+		mController.getController().getMapModuleManager().removeListener(this);
+		disposeDialog();
+	}
+
+	public boolean isMapModuleChangeAllowed(MapModule oldMapModule,
+			Mode oldMode, MapModule newMapModule, Mode newMode) {
+		return true;
+	}
+
+	public void numberOfOpenMapInformation(int number) {
 	}
 }

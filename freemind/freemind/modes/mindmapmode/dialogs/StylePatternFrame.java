@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/* $Id: StylePatternFrame.java,v 1.1.2.10.2.6 2007-08-05 20:33:16 christianfoltin Exp $ */
+/* $Id: StylePatternFrame.java,v 1.1.2.10.2.7 2007-11-05 21:43:19 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;
@@ -641,6 +641,10 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		return baseProperty;
 	}
 
+	/**
+	 * Used to enable/disable the attribute controls,
+	 * if the check boxes are changed.
+	 */
 	public void propertyChange(PropertyChangeEvent pEvt) {
 		// System.out.println("Propagation of "+ pEvt.getPropertyName()
 		// + " with value " + pEvt.getNewValue() + " and source " +

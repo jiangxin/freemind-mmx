@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.9 2007-09-26 16:23:34 christianfoltin Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.10 2007-11-05 21:43:19 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -55,8 +55,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -67,6 +65,7 @@ import freemind.common.XmlBindingTools;
 import freemind.controller.actions.generated.instance.ManageStyleEditorWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.main.Tools;
+import freemind.modes.MindMapNode;
 import freemind.modes.StylePatternFactory;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame;
@@ -359,12 +358,21 @@ public class ManagePatternsPopupDialog extends JDialog implements
 					insertPatternFromNode(actionEvent);
 				}
 			};
+			ActionListener applyActionListener = new ActionListener() {
+				public void actionPerformed(ActionEvent actionEvent) {
+					applyToNode(actionEvent);
+				}
+			};
 			/** Menu **/
 			JMenuBar menu = new JMenuBar();
 			JMenu mainItem = new JMenu(mController
 					.getText("ManagePatternsPopupDialog.Actions"));
 			Tools.setLabelAndMnemonic(mainItem, null);
 			menu.add(mainItem);
+			JMenuItem menuItemApplyPattern = new JMenuItem(mController
+					.getText("ManagePatternsPopupDialog.apply"));
+			menuItemApplyPattern.addActionListener(applyActionListener);
+			mainItem.add(menuItemApplyPattern);
 			JMenuItem menuItemAddPattern = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.add"));
 			menuItemAddPattern.addActionListener(addPatternActionListener);
@@ -377,6 +385,10 @@ public class ManagePatternsPopupDialog extends JDialog implements
 			/* Popup menu */
 			popupMenu = new JPopupMenu();
 			// popupMenu.add(new JPopupMenu.Separator());
+			JMenuItem menuItemApply = new JMenuItem(mController
+					.getText("ManagePatternsPopupDialog.apply"));
+			popupMenu.add(menuItemApply);
+			menuItemApply.addActionListener(applyActionListener);
 			JMenuItem menuItemAdd = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.add"));
 			popupMenu.add(menuItemAdd);
@@ -489,6 +501,17 @@ public class ManagePatternsPopupDialog extends JDialog implements
 		}
 		mPatternListModel.addPattern(newPattern, selectedIndex);
 		mList.setSelectedIndex(selectedIndex);
+	}
+	
+	private void applyToNode(ActionEvent actionEvent) {
+		int selectedIndex = mList.getSelectedIndex();
+		writePatternBackToModel();
+		setLastSelectedPattern(null);
+		Pattern pattern = mPatternListModel.getPatternAt(selectedIndex);
+		for (Iterator iterator = mController.getSelecteds().iterator(); iterator.hasNext();) {
+			MindMapNode node = (MindMapNode) iterator.next();
+			mController.applyPattern(node, pattern);
+		}
 	}
 	
 	private String searchForNameForNewPattern() {

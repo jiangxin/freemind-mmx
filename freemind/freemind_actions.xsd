@@ -876,6 +876,7 @@
     <xs:element name="pattern_edge_style">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
     <xs:element name="pattern_edge_width">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
     <xs:element name="pattern_child">                 <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_script">                <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
 
 	<xs:element name="pattern">
 		<xs:complexType>
@@ -895,6 +896,7 @@
 						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_edge_style"/>
 						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_edge_width"/>
 						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_child"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_script"/>
 					</xs:choice>
 				    <xs:attribute name="name" use="required" type="xs:string"/>
 				</xs:extension>
