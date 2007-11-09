@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/* $Id: StylePatternFrame.java,v 1.1.2.10.2.7 2007-11-05 21:43:19 christianfoltin Exp $ */
+/* $Id: StylePatternFrame.java,v 1.1.2.10.2.8 2007-11-09 22:23:09 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;
@@ -33,8 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.Action;
-import javax.swing.Icon;
 import javax.swing.JPanel;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -48,6 +46,7 @@ import freemind.common.IconProperty;
 import freemind.common.NextLineProperty;
 import freemind.common.PropertyBean;
 import freemind.common.PropertyControl;
+import freemind.common.ScriptEditorProperty;
 import freemind.common.SeparatorProperty;
 import freemind.common.StringProperty;
 import freemind.common.TextTranslator;
@@ -67,6 +66,7 @@ import freemind.controller.actions.generated.instance.PatternNodeFontSize;
 import freemind.controller.actions.generated.instance.PatternNodeStyle;
 import freemind.controller.actions.generated.instance.PatternNodeText;
 import freemind.controller.actions.generated.instance.PatternPropertyBase;
+import freemind.controller.actions.generated.instance.PatternScript;
 import freemind.main.FreeMind;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MindIcon;
@@ -158,6 +158,10 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 
 	private static final String CHILD_PATTERN = "childpattern";
 
+	private static final String SET_SCRIPT = "setscript";
+
+	private static final String SCRIPT = "script";
+
 	private final TextTranslator mTranslator;
 
 	private Vector mControls;
@@ -214,6 +218,10 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 
 	private ComboProperty mChildPattern;
 
+	private ThreeCheckBoxProperty mSetScriptPattern;
+	
+	private ScriptEditorProperty mScriptPattern;
+	
 	private StringProperty mName;
 
 	private Vector mIconInformationVector;
@@ -403,6 +411,13 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		mEdgeColor = new ColorProperty(EDGE_COLOR + ".tooltip", EDGE_COLOR,
 				fmMain.getDefaultProperty(FreeMind.RESOURCES_EDGE_COLOR), this);
 		controls.add(mEdgeColor);
+		/* **** */
+		mSetScriptPattern = new ThreeCheckBoxProperty(SET_SCRIPT + ".tooltip",
+				SET_SCRIPT);
+		controls.add(mSetScriptPattern);
+		mScriptPattern = new ScriptEditorProperty(SCRIPT + ".tooltip", SCRIPT,
+				mMindMapController);
+		controls.add(mScriptPattern);
 		// fill map;
 		mPropertyChangePropagation.put(mSetNodeColor, mNodeColor);
 		mPropertyChangePropagation.put(mSetNodeBackgroundColor,
@@ -417,6 +432,7 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		mPropertyChangePropagation.put(mSetEdgeStyle, mEdgeStyle);
 		mPropertyChangePropagation.put(mSetEdgeWidth, mEdgeWidth);
 		mPropertyChangePropagation.put(mSetIcon, mIcon);
+		mPropertyChangePropagation.put(mSetScriptPattern, mScriptPattern);
 		if (StylePatternFrameType.WITH_NAME_AND_CHILDS.equals(mType)) {
 			// child pattern
 			mPropertyChangePropagation.put(mSetChildPattern, mChildPattern);
@@ -465,6 +481,8 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 				.get(0);
 		setPatternControls(pattern.getPatternIcon(), mSetIcon, mIcon,
 				firstInfo.getName());
+		setPatternControls(pattern.getPatternScript(), mSetScriptPattern, mScriptPattern,
+				"");
 		if (StylePatternFrameType.WITH_NAME_AND_CHILDS.equals(mType)) {
 			mName.setValue(pattern.getName());
 			setPatternControls(pattern.getPatternChild(), mSetChildPattern,
@@ -604,6 +622,8 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 						mNodeFontItalic));
 		pattern.setPatternIcon((PatternIcon) getPatternResult(
 				new PatternIcon(), mSetIcon, mIcon));
+		pattern.setPatternScript((PatternScript) getPatternResult(
+				new PatternScript(), mSetScriptPattern, mScriptPattern));
 		if (StylePatternFrameType.WITH_NAME_AND_CHILDS.equals(mType)) {
 			pattern.setName(mName.getValue());
 			pattern.setPatternChild((PatternChild) getPatternResult(

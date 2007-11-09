@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.10 2007-11-05 21:43:19 christianfoltin Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.11 2007-11-09 22:23:08 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -505,6 +505,8 @@ public class ManagePatternsPopupDialog extends JDialog implements
 	
 	private void applyToNode(ActionEvent actionEvent) {
 		int selectedIndex = mList.getSelectedIndex();
+		if(selectedIndex<0)
+			return;
 		writePatternBackToModel();
 		setLastSelectedPattern(null);
 		Pattern pattern = mPatternListModel.getPatternAt(selectedIndex);

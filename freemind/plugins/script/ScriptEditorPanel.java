@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.9 2007-08-17 20:41:58 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.10 2007-11-09 22:23:10 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -31,8 +31,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListModel;
@@ -55,25 +53,22 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 
-import org.codehaus.groovy.ast.ASTNode;
-import org.codehaus.groovy.ast.ModuleNode;
-
+import plugins.script.ScriptingEngine.ErrorHandler;
 import freemind.controller.BlindIcon;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
-import groovy.lang.GroovyRuntimeException;
 
 /**
- * @author foltin 
- * TODO:
- * <ul><li> 
- * </li><li>new script/delete script buttons 
- * </li><li>rename script button
- * </li><li>undo feature? 
- * </li><li>show line/column numbers in status bar
- * </li></ul>
+ * @author foltin TODO:
+ *         <ul>
+ *         <li> </li>
+ *         <li>new script/delete script buttons </li>
+ *         <li>rename script button </li>
+ *         <li>undo feature? </li>
+ *         <li>show line/column numbers in status bar </li>
+ *         </ul>
  */
 public class ScriptEditorPanel extends JDialog {
 	/**
@@ -105,6 +100,16 @@ public class ScriptEditorPanel extends JDialog {
 
 	private JLabel mStatus;
 
+	private final class ResultFieldStream extends OutputStream {
+		public void write(int pByte) throws IOException {
+			mScriptResultField.append(new String(new byte[] { (byte) pByte }));
+		}
+
+		public void write(byte[] pB) throws IOException {
+			mScriptResultField.append(new String(pB));
+		}
+	}
+
 	private final class RunAction extends AbstractAction {
 		private RunAction(String pArg0) {
 			super(pArg0);
@@ -114,58 +119,26 @@ public class ScriptEditorPanel extends JDialog {
 			storeCurrent();
 			if (!mScriptList.isSelectionEmpty()) {
 				mScriptResultField.setText("");
-				String resultString = "";
-				try {
-					resultString = "\n"
-							+ mFrame
-									.getResourceString("plugins/ScriptEditor/window.Result")
-							+ mScriptModel.executeScript(mScriptList
-									.getSelectedIndex(), new PrintStream(
-									new OutputStream() {
-
-										public void write(int pByte)
-												throws IOException {
-											mScriptResultField
-													.append(new String(
-															new byte[] { (byte) pByte }));
-										}
-									}));
-				} catch (GroovyRuntimeException e) {
-					resultString = e.getMessage();
-					logger.info("message: " + resultString);
-					ModuleNode module = e.getModule();
-					ASTNode node = e.getNode();
-					int lineNumber = -1;
-					if (module != null) {
-						lineNumber = module.getLineNumber();
-					} else if (node != null) {
-						lineNumber = node.getLineNumber();
-					} else {
-						lineNumber = findLineNumberInString(resultString, lineNumber);
-					}
-					logger.info("Line number: " + lineNumber);
-					if (lineNumber > 0
-							&& lineNumber <= mScriptTextField.getLineCount()) {
-						Element element3 = mScriptTextField.getDocument()
-								.getDefaultRootElement();
-						Element element4 = element3.getElement(lineNumber-1);
-						if (element4 != null) {
-							mScriptTextField.select(((int) element4
-									.getStartOffset()), element4.getEndOffset());
-						}						
-					}
-				} catch(Exception e){
-					resultString = e.getMessage();
-				}
-				mScriptResultField.append(resultString);
+				mScriptModel.executeScript(mScriptList.getSelectedIndex(),
+						getPrintStream(), getErrorHandler());
 			}
+		}
+	}
+
+	private final class CancelAction extends AbstractAction {
+		private CancelAction(String pArg0) {
+			super(pArg0);
+		}
+		
+		public void actionPerformed(ActionEvent arg0) {
+			disposeDialog(false);
 		}
 	}
 	private final class ExitAction extends AbstractAction {
 		private ExitAction(String pArg0) {
 			super(pArg0);
 		}
-		
+
 		public void actionPerformed(ActionEvent arg0) {
 			storeCurrent();
 			disposeDialog(false);
@@ -220,7 +193,8 @@ public class ScriptEditorPanel extends JDialog {
 
 		void setScript(int pIndex, ScriptHolder pScript);
 
-		String executeScript(int pIndex, PrintStream outStream);
+		boolean executeScript(int pIndex, PrintStream outStream,
+				ErrorHandler pErrorHandler);
 
 		void storeDialogPositions(ScriptEditorPanel pPanel,
 				ScriptEditorWindowConfigurationStorage pStorage,
@@ -229,10 +203,10 @@ public class ScriptEditorPanel extends JDialog {
 		ScriptEditorWindowConfigurationStorage decorateDialog(
 				ScriptEditorPanel pPanel,
 				String pWindow_preference_storage_property);
-        
-        void endDialog(boolean pIsCanceled);
-        
-        boolean isDirty();
+
+		void endDialog(boolean pIsCanceled);
+
+		boolean isDirty();
 	}
 
 	public ScriptEditorPanel(ScriptModel pScriptModel, FreeMindMain pFrame) {
@@ -254,7 +228,7 @@ public class ScriptEditorPanel extends JDialog {
 				disposeDialog(true);
 			}
 		});
-		
+
 		Container contentPane = this.getContentPane();
 
 		contentPane.setLayout(new BorderLayout());
@@ -286,34 +260,46 @@ public class ScriptEditorPanel extends JDialog {
 		contentPane.add(mCentralPanel, BorderLayout.CENTER);
 		mStatus = new JLabel();
 		contentPane.add(mStatus, BorderLayout.SOUTH);
-		mScriptTextField.addCaretListener(new CaretListener(){
+		mScriptTextField.addCaretListener(new CaretListener() {
 
 			public void caretUpdate(CaretEvent arg0) {
 				int caretPosition = mScriptTextField.getCaretPosition();
 				try {
-					int lineOfOffset = mScriptTextField.getLineOfOffset(caretPosition);
-					mStatus.setText("Line: "+ (lineOfOffset+1) + ", Column: " + (caretPosition-mScriptTextField.getLineStartOffset(lineOfOffset)+1));
+					int lineOfOffset = mScriptTextField
+							.getLineOfOffset(caretPosition);
+					mStatus
+							.setText("Line: "
+									+ (lineOfOffset + 1)
+									+ ", Column: "
+									+ (caretPosition
+											- mScriptTextField
+													.getLineStartOffset(lineOfOffset) + 1));
 				} catch (BadLocationException e) {
-					// TODO Auto-generated catch block
 					freemind.main.Resources.getInstance().logException(e);
 				}
-				
-			}});
+
+			}
+		});
 		updateFields();
 		mScriptTextField.repaint();
 		// menu:
 		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu(pFrame
+		JMenu menu = new JMenu();
+		Tools.setLabelAndMnemonic(menu, pFrame
 				.getResourceString("plugins/ScriptEditor.menu_actions"));
 		AbstractAction runAction = new RunAction(pFrame
 				.getResourceString("plugins/ScriptEditor.run"));
+		AbstractAction cancelAction = new CancelAction(pFrame
+				.getResourceString("plugins/ScriptEditor.cancel"));
 		AbstractAction exitAction = new ExitAction(pFrame
 				.getResourceString("plugins/ScriptEditor.exit"));
 
-		AbstractAction[] actionList = new AbstractAction[] { runAction, exitAction };
+		AbstractAction[] actionList = new AbstractAction[] { runAction,
+				cancelAction, exitAction };
 		for (int i = 0; i < actionList.length; i++) {
 			AbstractAction action = actionList[i];
 			JMenuItem item = menu.add(action);
+			Tools.setLabelAndMnemonic(item, (String) action.getValue(AbstractAction.NAME));
 			item.setIcon(new BlindIcon(StructuredMenuHolder.ICON_SIZE));
 		}
 		menuBar.add(menu);
@@ -354,7 +340,8 @@ public class ScriptEditorPanel extends JDialog {
 	}
 
 	/**
-	 * @param pIsCanceled TODO
+	 * @param pIsCanceled
+	 *            TODO
 	 * 
 	 */
 	private void disposeDialog(boolean pIsCanceled) {
@@ -362,13 +349,13 @@ public class ScriptEditorPanel extends JDialog {
 		if (!mScriptList.isSelectionEmpty()) {
 			select(mScriptList.getSelectedIndex());
 		}
-		if(pIsCanceled && mScriptModel.isDirty()) {
-		    // ask if really cancel:
-		    int action = JOptionPane.showConfirmDialog(this, mFrame
-		            .getResourceString("ScriptEditorPanel.changed_cancel"), "FreeMind",
-		            JOptionPane.OK_CANCEL_OPTION);
-		    if(action == JOptionPane.CANCEL_OPTION)
-		        return;
+		if (pIsCanceled && mScriptModel.isDirty()) {
+			// ask if really cancel:
+			int action = JOptionPane.showConfirmDialog(this, mFrame
+					.getResourceString("ScriptEditorPanel.changed_cancel"),
+					"FreeMind", JOptionPane.OK_CANCEL_OPTION);
+			if (action == JOptionPane.CANCEL_OPTION)
+				return;
 		}
 		// store window positions:
 		ScriptEditorWindowConfigurationStorage storage = new ScriptEditorWindowConfigurationStorage();
@@ -378,16 +365,29 @@ public class ScriptEditorPanel extends JDialog {
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		this.setVisible(false);
 		this.dispose();
-        mScriptModel.endDialog(pIsCanceled);
+		mScriptModel.endDialog(pIsCanceled);
 	}
 
-	public static int findLineNumberInString(String resultString, int lineNumber) {
-		Pattern pattern = Pattern.compile(".*@ line ([0-9]+).*", Pattern.DOTALL);
-		Matcher matcher = pattern.matcher(resultString);
-		if ( matcher.matches() ) {
-			lineNumber = Integer.parseInt(matcher.group(1));
-		}
-		return lineNumber;
+	PrintStream getPrintStream() {
+		return new PrintStream(new ResultFieldStream());
+	}
+
+	ErrorHandler getErrorHandler() {
+		return new ErrorHandler() {
+			public void gotoLine(int pLineNumber) {
+				logger.info("Line number: " + pLineNumber);
+				if (pLineNumber > 0
+						&& pLineNumber <= mScriptTextField.getLineCount()) {
+					Element element3 = mScriptTextField.getDocument()
+							.getDefaultRootElement();
+					Element element4 = element3.getElement(pLineNumber - 1);
+					if (element4 != null) {
+						mScriptTextField.select(((int) element4
+								.getStartOffset()), element4.getEndOffset());
+					}
+				}
+			}
+		};
 	}
 
 }

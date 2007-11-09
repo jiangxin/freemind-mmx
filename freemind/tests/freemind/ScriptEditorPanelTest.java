@@ -19,7 +19,7 @@
  *
  * Created on 22.01.2007
  */
-/*$Id: ScriptEditorPanelTest.java,v 1.1.2.5 2007-08-28 21:27:42 dpolivaev Exp $*/
+/*$Id: ScriptEditorPanelTest.java,v 1.1.2.6 2007-11-09 22:23:11 christianfoltin Exp $*/
 package tests.freemind;
 
 import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
@@ -30,8 +30,10 @@ import java.awt.Dimension;
 import java.io.PrintStream;
 
 import plugins.script.ScriptEditorPanel;
+import plugins.script.ScriptingEngine;
 import plugins.script.ScriptEditorPanel.ScriptHolder;
 import plugins.script.ScriptEditorPanel.ScriptModel;
+import plugins.script.ScriptingEngine.ErrorHandler;
 
 /**
  * @author foltin
@@ -56,7 +58,7 @@ public class ScriptEditorPanelTest extends FreeMindTestBase {
 			scripts[pIndex] = pScript.getScript();
 		}
 
-		public String executeScript(int pIndex, PrintStream outStream) {
+		public boolean executeScript(int pIndex, PrintStream outStream, ErrorHandler pErrorHandler) {
 			Binding binding = new Binding();
 			binding.setVariable("c", null);
 			binding.setVariable("node", null);
@@ -72,7 +74,7 @@ public class ScriptEditorPanelTest extends FreeMindTestBase {
 			} finally {
 				System.setOut(oldOut);
 			}
-			return (value!= null)?value.toString():null;
+			return true;
 		}
 
 		public void storeDialogPositions(ScriptEditorPanel pPanel, ScriptEditorWindowConfigurationStorage pStorage, String pWindow_preference_storage_property) {
@@ -106,6 +108,6 @@ public class ScriptEditorPanelTest extends FreeMindTestBase {
 	
 	public void testErrorLineNumbers() throws Exception {
 		String error = "startup failed, Script1.groovy: 1: For statement contains unexpected tokens. Possible attempt to use unsupported Java-style for loop. at line: 1 column: 1. File: Script1.groovy @ line 1, column 1.\n1 error";
-		assertEquals("find right line number" , 1 , ScriptEditorPanel.findLineNumberInString(error, -1));
+		assertEquals("find right line number" , 1 , ScriptingEngine.findLineNumberInString(error, -1));
 	}
 }

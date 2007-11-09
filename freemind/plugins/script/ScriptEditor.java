@@ -19,23 +19,22 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditor.java,v 1.1.2.7 2007-08-28 21:27:42 dpolivaev Exp $*/
+/*$Id: ScriptEditor.java,v 1.1.2.8 2007-11-09 22:23:10 christianfoltin Exp $*/
 package plugins.script;
 
 import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.logging.Level;
 
 import plugins.script.ScriptEditorPanel.ScriptHolder;
 import plugins.script.ScriptEditorPanel.ScriptModel;
+import plugins.script.ScriptingEngine.ErrorHandler;
 import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
+import freemind.main.Tools.BooleanHolder;
 import freemind.modes.MindMapNode;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
 
 /**
  * @author foltin
@@ -73,25 +72,10 @@ public class ScriptEditor extends MindMapHookAdapter {
 					.decorateDialog(pPanel, pWindow_preference_storage_property);
 		}
 
-		public String executeScript(int pIndex, PrintStream pOutStream) {
-			Binding binding = new Binding();
-			binding.setVariable("c", mController);
-			binding.setVariable("node", mNode);
-			GroovyShell shell = new GroovyShell(binding);
-
+		public boolean executeScript(int pIndex, PrintStream pOutStream, ErrorHandler pErrorHandler) {
 			String script = getScript(pIndex).getScript();
-			// redirect output:
-			PrintStream oldOut = System.out;
-			Object value = null;
-			try {
-				System.setOut(pOutStream);
-				value = shell.evaluate(script);
-			} catch (org.codehaus.groovy.control.CompilationFailedException e) {
-				logger.log(Level.WARNING, "Compilation of script failed.", e);
-			} finally {
-				System.setOut(oldOut);
-			}
-			return (value != null) ? value.toString() : null;
+			return ScriptingEngine.executeScript(mController.getSelected(),
+					new BooleanHolder(true), script, mController, pErrorHandler, pOutStream);
 		}
 
 		public int getAmountOfScripts() {

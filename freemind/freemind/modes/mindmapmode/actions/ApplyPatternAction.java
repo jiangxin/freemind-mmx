@@ -30,7 +30,6 @@ package freemind.modes.mindmapmode.actions;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Vector;
 
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.PatternEdgeWidth;
@@ -42,14 +41,13 @@ import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
+import freemind.modes.mindmapmode.MindMapController.MindMapControllerPlugin;
 
 public class ApplyPatternAction extends NodeGeneralAction implements
         SingleNodeOperation {
-	public interface ExternalPatternAction {
+	public interface ExternalPatternAction extends MindMapControllerPlugin {
 		public void act(MindMapNode node, Pattern pattern);
 	}
-	
-	private Vector mExternalPatternActions = new Vector();
 	
     private Pattern mpattern;
 
@@ -172,9 +170,12 @@ public class ApplyPatternAction extends NodeGeneralAction implements
                 }
             }
         }
-        for (Iterator i = mExternalPatternActions.iterator(); i.hasNext();) {
-			ExternalPatternAction action = (ExternalPatternAction) i.next();
-			action.act(node, pattern);
+        for (Iterator i = getMindMapController().getPlugins().iterator(); i.hasNext();) {
+        	MindMapControllerPlugin action = (MindMapControllerPlugin) i.next();
+        	if (action instanceof ExternalPatternAction) {
+				ExternalPatternAction externalAction = (ExternalPatternAction) action;
+				externalAction.act(node, pattern);
+			}
 		}
     }
 
@@ -209,10 +210,4 @@ public class ApplyPatternAction extends NodeGeneralAction implements
         return mpattern;
     }
     
-    public void registerExternalPatternAction(ExternalPatternAction pExternalPatternAction){
-    	mExternalPatternActions.add(pExternalPatternAction);
-    }
-    public void deregisterExternalPatternAction(ExternalPatternAction pExternalPatternAction){
-    	mExternalPatternActions.remove(pExternalPatternAction);
-    }
 }

@@ -2,7 +2,7 @@
 <plugin label="plugins/ScriptingEngine">
 	<plugin_classpath jar="script/scripting_plugin.jar"/>
 	<plugin_classpath jar="script/groovy-all-1.0.jar"/>
-	<plugin_registration class_name="plugins.script.ScriptingEngine$Registration">
+	<plugin_registration class_name="plugins.script.ScriptingRegistration">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 	</plugin_registration>
 	<plugin_action documentation="%plugins/ScriptingEngine.xml_documentation" 

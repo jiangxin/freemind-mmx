@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.53 2007-08-27 17:55:28 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.54 2007-11-09 22:23:09 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -74,7 +74,6 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.tree.MutableTreeNode;
 
 import org.jibx.runtime.IUnmarshallingContext;
 import org.jibx.runtime.JiBXException;
@@ -115,11 +114,9 @@ import freemind.extensions.UndoEventReceiver;
 import freemind.extensions.HookFactory.RegistrationContainer;
 import freemind.main.ExampleFileFilter;
 import freemind.main.FixedHTMLWriter;
-import freemind.main.FreeMind;
 import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
-import freemind.main.XHTMLWriter;
 import freemind.main.XMLElement;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.EdgeAdapter;
@@ -212,7 +209,6 @@ import freemind.modes.mindmapmode.listeners.MindMapNodeMotionListener;
 import freemind.view.mindmapview.MainView;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
-import freemind.view.mindmapview.NodeViewVisitor;
 import freemind.view.mindmapview.attributeview.AttributePopupMenu;
 
 
@@ -235,6 +231,10 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
             assignAttributeDialog.setVisible(true);
         }
      }
+	public interface MindMapControllerPlugin {
+		
+	}
+
 	private static final String RESOURCE_UNFOLD_ON_PASTE = "unfold_on_paste";
 	private static Logger logger;
 	// for MouseEventHandlers
@@ -768,6 +768,9 @@ freemind.main.Resources.getInstance().logException(					e);
     // fc, 14.12.2004: changes, such that different models can be used:
     private NewNodeCreator myNewNodeCreator = null;
     private MindMapModeAttributeController attributeController;
+    /** A general list of MindMapControllerPlugin s. Members need to be 
+     * tested for the right class and casted to be applied. */
+	private HashSet mPlugins = new HashSet();
 
     public interface NewNodeCreator {
         MindMapNode createNode(Object userObject, MindMap map);
@@ -2107,4 +2110,15 @@ freemind.main.Resources.getInstance().logException(					e1);
 
 	}
 
+	public void registerPlugin(MindMapControllerPlugin pPlugin){
+		mPlugins.add(pPlugin);
+	}
+	public void deregisterPlugin(MindMapControllerPlugin pPlugin){
+		mPlugins.remove(pPlugin);
+	}
+
+	public Set getPlugins() {
+		return Collections.unmodifiableSet(mPlugins);
+	}
+	
 }
