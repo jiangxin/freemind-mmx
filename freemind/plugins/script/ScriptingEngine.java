@@ -19,7 +19,7 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.8 2007-11-09 22:23:10 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.9 2007-11-13 21:20:12 christianfoltin Exp $ */
 package plugins.script;
 
 import java.io.PrintStream;
@@ -104,7 +104,7 @@ public class ScriptingEngine extends MindMapHookAdapter {
 	 * @param script
 	 * @param pMindMapController
 	 * @return true, if further scripts can be executed, false, if the user
-	 *         canceled.
+	 *         canceled or an error occurred.
 	 */
 	static boolean executeScript(MindMapNode node,
 			BooleanHolder pAlreadyAScriptExecuted, String script,
@@ -142,7 +142,7 @@ public class ScriptingEngine extends MindMapHookAdapter {
 				assignResult = true;
 			}
 			Object value = shell.evaluate(script);
-			pOutStream.append(pMindMapController.getFrame().getResourceString(
+			pOutStream.print(pMindMapController.getFrame().getResourceString(
 					"plugins/ScriptEditor/window.Result")
 					+ value);
 			if (assignResult && value != null) {
@@ -151,7 +151,7 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			return true;
 		} catch (GroovyRuntimeException e) {
 			String resultString = e.getMessage();
-			pOutStream.append("message: " + resultString);
+			pOutStream.print("message: " + resultString);
 			ModuleNode module = e.getModule();
 			ASTNode astNode = e.getNode();
 			int lineNumber = -1;
@@ -162,12 +162,12 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			} else {
 				lineNumber = findLineNumberInString(resultString, lineNumber);
 			}
-			pOutStream.append("Line number: " + lineNumber);
+			pOutStream.print("Line number: " + lineNumber);
 			pErrorHandler.gotoLine(lineNumber);
 			return false;
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
-			pOutStream.append(e.getMessage());
+			pOutStream.print(e.getMessage());
 			pMindMapController.getController().errorMessage(
 					e.getClass().getName() + ": " + e.getMessage());
 			return false;

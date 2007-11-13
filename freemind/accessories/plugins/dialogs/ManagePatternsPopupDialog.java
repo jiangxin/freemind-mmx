@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.11 2007-11-09 22:23:08 christianfoltin Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.12 2007-11-13 21:20:11 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -62,6 +62,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 
 import freemind.common.TextTranslator;
 import freemind.common.XmlBindingTools;
+import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.ManageStyleEditorWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.main.Tools;
@@ -285,6 +286,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 				++i;
 			}
 		}
+		this.pack();
 		ManageStyleEditorWindowConfigurationStorage decorateDialog = (ManageStyleEditorWindowConfigurationStorage) mController
 				.decorateDialog(this, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		if(decorateDialog!= null) {
@@ -365,37 +367,38 @@ public class ManagePatternsPopupDialog extends JDialog implements
 			};
 			/** Menu **/
 			JMenuBar menu = new JMenuBar();
+			StructuredMenuHolder menuHolder = new StructuredMenuHolder();
 			JMenu mainItem = new JMenu(mController
 					.getText("ManagePatternsPopupDialog.Actions"));
-			Tools.setLabelAndMnemonic(mainItem, null);
-			menu.add(mainItem);
+			menuHolder.addMenu(mainItem, "main/actions/.");
 			JMenuItem menuItemApplyPattern = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.apply"));
 			menuItemApplyPattern.addActionListener(applyActionListener);
-			mainItem.add(menuItemApplyPattern);
+			menuHolder.addMenuItem(menuItemApplyPattern, "main/actions/apply");
 			JMenuItem menuItemAddPattern = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.add"));
 			menuItemAddPattern.addActionListener(addPatternActionListener);
-			mainItem.add(menuItemAddPattern);
+			menuHolder.addMenuItem(menuItemAddPattern, "main/actions/add");
 			JMenuItem menuItemPatternFromNodes = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.from_nodes"));
 			menuItemPatternFromNodes.addActionListener(fromNodesActionListener);
-			mainItem.add(menuItemPatternFromNodes);
+			menuHolder.addMenuItem(menuItemPatternFromNodes, "main/actions/from_nodes");
+			menuHolder.updateMenus(menu, "main/");
 			this.setJMenuBar(menu);
 			/* Popup menu */
 			popupMenu = new JPopupMenu();
-			// popupMenu.add(new JPopupMenu.Separator());
+			// menuHolder.addMenuItem(new JPopupMenu.Separator());
 			JMenuItem menuItemApply = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.apply"));
-			popupMenu.add(menuItemApply);
+			menuHolder.addMenuItem(menuItemApply, "popup/apply");
 			menuItemApply.addActionListener(applyActionListener);
 			JMenuItem menuItemAdd = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.add"));
-			popupMenu.add(menuItemAdd);
+			menuHolder.addMenuItem(menuItemAdd, "popup/add");
 			menuItemAdd.addActionListener(addPatternActionListener);
 			JMenuItem menuItemDuplicate = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.duplicate"));
-			popupMenu.add(menuItemDuplicate);
+			menuHolder.addMenuItem(menuItemDuplicate, "popup/duplicate");
 			menuItemDuplicate.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
 					duplicatePattern(actionEvent);
@@ -403,17 +406,18 @@ public class ManagePatternsPopupDialog extends JDialog implements
 			});
 			JMenuItem menuItemFromNodes = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.from_nodes"));
-			popupMenu.add(menuItemFromNodes);
+			menuHolder.addMenuItem(menuItemFromNodes, "popup/from_nodes");
 			menuItemFromNodes.addActionListener(fromNodesActionListener);
-			popupMenu.add(new JPopupMenu.Separator());
+			menuHolder.addSeparator("popup/sep");
 			JMenuItem menuItemRemove = new JMenuItem(mController
 					.getText("ManagePatternsPopupDialog.remove"));
-			popupMenu.add(menuItemRemove);
 			menuItemRemove.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
 					removePattern(actionEvent);
 				}
 			});
+			menuHolder.addMenuItem(menuItemRemove, "popup/remove");
+			menuHolder.updateMenus(popupMenu, "popup/");
 			mList.addMouseListener(new MouseAdapter() {
 				public void mouseReleased(MouseEvent me) {
 					showPopup(mList, me);
@@ -660,7 +664,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
 	 */
 	public void keyPressed(KeyEvent keyEvent) {
-		System.out.println("key pressed: " + keyEvent);
+//		System.out.println("key pressed: " + keyEvent);
 		switch (keyEvent.getKeyCode()) {
 		case KeyEvent.VK_ESCAPE:
 			keyEvent.consume();
@@ -675,7 +679,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
 	 */
 	public void keyReleased(KeyEvent keyEvent) {
-		System.out.println("keyReleased: " + keyEvent);
+//		System.out.println("keyReleased: " + keyEvent);
 	}
 
 	/*
@@ -684,7 +688,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
 	 */
 	public void keyTyped(KeyEvent keyEvent) {
-		System.out.println("keyTyped: " + keyEvent);
+//		System.out.println("keyTyped: " + keyEvent);
 	}
 
 	public Pattern getLastSelectedPattern() {

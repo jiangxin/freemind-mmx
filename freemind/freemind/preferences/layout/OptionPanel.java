@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.36 2007-10-25 15:32:59 dpolivaev Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.37 2007-11-13 21:20:12 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -944,6 +944,7 @@ public class OptionPanel implements TextTranslator {
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("patterns"));
+		controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/ManagePatterns_manage_patterns_dialog")); //  control shift F1
 		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_1")); //  F1
 
 		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_2")); //  control
