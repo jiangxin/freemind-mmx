@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.56 2007-10-25 15:32:59 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.57 2007-11-17 16:23:41 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1257,6 +1257,11 @@ public class NodeView extends JComponent implements TreeModelListener{
 		if(modelBackgroundColor != null) {
 			return modelBackgroundColor;
 		}
+		return getBackgroundColor();
+	}
+
+
+	private Color getBackgroundColor() {
 		final MindMapCloud cloud = getModel().getCloud();
 		if (cloud != null){
 			return cloud.getColor();
@@ -1264,7 +1269,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 		if(isRoot()){
 			return getMap().getBackground();
 		}
-		return getParentView().getTextBackground();
+		return getParentView().getBackgroundColor();
 	}
     
     
