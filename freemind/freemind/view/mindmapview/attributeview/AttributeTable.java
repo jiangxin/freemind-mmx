@@ -85,6 +85,8 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener{
             Component newNodeViewInFocus = SwingUtilities.getAncestorOfClass(NodeView.class, focusedTable);
             Component oldNodeViewInFocus = SwingUtilities.getAncestorOfClass(NodeView.class, oppositeComponent);
             if(newNodeViewInFocus != oldNodeViewInFocus 
+            		// Dimitry workaround: ignore focus change caused by node deletion or node move
+            		&& (oldNodeViewInFocus == null || oldNodeViewInFocus.getParent() != null)
                     && newNodeViewInFocus instanceof NodeView){
                 NodeView viewer = (NodeView)newNodeViewInFocus;
                 if(! viewer.isSelected()){
