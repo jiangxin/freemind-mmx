@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.42 2007-10-26 15:11:23 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.43 2007-11-17 16:39:00 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -963,7 +963,7 @@ public class Controller  implements MapModuleChangeObserver {
         public void actionPerformed(ActionEvent e) {
             if (!acquirePrinterJobAndPageFormat()) {
                return; }
-            PreviewDialog previewDialog = new PreviewDialog(controller.getResourceString("print_preview"), getView());
+            PreviewDialog previewDialog = new PreviewDialog(controller.getResourceString("print_preview_title"), getView());
             previewDialog.pack();
             previewDialog.setLocationRelativeTo(JOptionPane.getFrameForComponent(getView()));
             previewDialog.setVisible(true);
