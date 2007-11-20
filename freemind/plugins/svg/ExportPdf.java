@@ -19,10 +19,11 @@
  *
  * Created on 01.11.2004
  */
-/* $Id: ExportPdf.java,v 1.1.4.2.2.4 2006-11-26 10:21:30 dpolivaev Exp $ */
+/* $Id: ExportPdf.java,v 1.1.4.2.2.5 2007-11-20 22:15:34 dpolivaev Exp $ */
 
 package plugins.svg;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -70,7 +71,8 @@ public class ExportPdf extends ExportVectorGraphic {
             g2d.getRoot(rootE);
             TranscoderInput input = new TranscoderInput(doc);
             final FileOutputStream ostream = new FileOutputStream(chosenFile);
-			TranscoderOutput output = new TranscoderOutput(ostream);
+            final BufferedOutputStream bufStream = new BufferedOutputStream(ostream);
+			TranscoderOutput output = new TranscoderOutput(bufStream);
             // save the image
             pdfTranscoder.transcode(input, output);
             // flush and close the stream then exit

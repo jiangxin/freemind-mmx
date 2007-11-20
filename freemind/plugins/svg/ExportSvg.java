@@ -19,7 +19,7 @@
  *
  * Created on 01.11.2004
  */
-/* $Id: ExportSvg.java,v 1.1.4.1.16.4 2006-11-26 10:21:30 dpolivaev Exp $ */
+/* $Id: ExportSvg.java,v 1.1.4.1.16.5 2007-11-20 22:15:34 dpolivaev Exp $ */
 
 package plugins.svg;
 
@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -71,7 +72,8 @@ public class ExportSvg extends ExportVectorGraphic {
 
             SVGGraphics2D g2d = fillSVGGraphics2D(view);
             FileOutputStream bos = new FileOutputStream(chosenFile);
-            OutputStreamWriter osw = new OutputStreamWriter(bos, "UTF-8");
+            final BufferedOutputStream bufStream = new BufferedOutputStream(bos);
+            OutputStreamWriter osw = new OutputStreamWriter(bufStream, "UTF-8");
             g2d.stream(osw);
             osw.flush();
             bos.flush();
