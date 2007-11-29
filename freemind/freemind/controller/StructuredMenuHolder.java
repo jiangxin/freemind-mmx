@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.4 2007-08-21 19:54:03 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.5 2007-11-29 21:41:05 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -43,6 +43,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import freemind.main.Resources;
 import freemind.main.Tools;
 
 
@@ -429,20 +430,22 @@ public class StructuredMenuHolder {
 			//System.out.println("Selected menu items " + item);
 			for (Iterator i = menuItemHolder.iterator(); i.hasNext();) {
 				StructuredMenuItemHolder holder = (StructuredMenuItemHolder) i.next();
+				Action action = holder.getAction();
 				if(holder.getEnabledListener() != null) {
 					boolean isEnabled = false;
                     try {
                         isEnabled = holder.getEnabledListener().isEnabled(
-                                holder.getMenuItem(), holder.getAction());
+                                holder.getMenuItem(), action);
                     } catch (Exception e) {
-                        // TODO: handle exception
+                    	Resources.getInstance().logException(e);
                     }
+                    //action.setEnabled(isEnabled);
                     holder.getMenuItem().setEnabled(isEnabled);
 				}
 				if(holder.getSelectedListener() != null) {
 					if (holder.getMenuItem() instanceof JCheckBoxMenuItem) {
 						JCheckBoxMenuItem checkItem = (JCheckBoxMenuItem) holder.getMenuItem();
-						checkItem.setSelected(holder.getSelectedListener().isSelected(checkItem, holder.getAction()));
+						checkItem.setSelected(holder.getSelectedListener().isSelected(checkItem, action));
 					}
 				}
 			}

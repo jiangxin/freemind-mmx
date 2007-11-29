@@ -28,13 +28,18 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.swing.Action;
+import javax.swing.JMenuItem;
+
 import freemind.controller.Controller;
+import freemind.controller.MenuItemEnabledListener;
 import freemind.extensions.HookRegistration;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.ModeController.NodeSelectionListener;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.NodeHookAction;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.NodeView;
@@ -127,14 +132,13 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 	}
 
 	public static class Registration implements HookRegistration,
-			NodeSelectionListener {
+			NodeSelectionListener, MenuItemEnabledListener {
 
 		private final MindMapController controller;
 
 		private final MindMap mMap;
 
 		private final java.util.logging.Logger logger;
-
 
 		public Registration(ModeController controller, MindMap map) {
 			this.controller = (MindMapController) controller;
@@ -188,6 +192,16 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 		}
 
 		public void onUpdateNodeHook(MindMapNode pNode) {
+		}
+
+		public boolean isEnabled(JMenuItem pItem, Action pAction) {
+			String hookName = ((NodeHookAction)pAction).getHookName();
+		    if("accessories/plugins/NodeHistoryBack.properties".equals(hookName)){
+		    	// back is only enabled if there are already some nodes to go back ;-)
+		    	return sCurrentPosition>1;
+		    } else {
+		    	return sCurrentPosition < sNodeVector.size();
+	    	}
 		}
 
 	}

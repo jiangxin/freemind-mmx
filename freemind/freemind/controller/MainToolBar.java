@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.16.14.2.4.4 2007-08-25 19:30:43 dpolivaev Exp $*/
+/*$Id: MainToolBar.java,v 1.16.14.2.4.5 2007-11-29 21:41:05 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -31,32 +31,32 @@ import javax.swing.JToggleButton;
 
 public class MainToolBar extends FreeMindToolBar {
     private JComboBox zoom;	    
-    Controller c;
+    Controller controller;
     String userDefinedZoom;
     private static Logger logger= null;
 	
-    public MainToolBar(final Controller c) {
+    public MainToolBar(final Controller controller) {
     	super();
         this.setRollover(true);
-        this.c = c;
+        this.controller = controller;
         if(logger == null) {
-            logger = c.getFrame().getLogger(this.getClass().getName());
+            logger = controller.getFrame().getLogger(this.getClass().getName());
         }
-        userDefinedZoom = c.getResourceString("user_defined_zoom");
+        userDefinedZoom = controller.getResourceString("user_defined_zoom");
 	JButton button;
 
-	button = add(c.navigationPreviousMap);
-	button = add(c.navigationNextMap);
-	button = add(c.printDirect);
-	JToggleButton btnFilter = new JToggleButton (c.showFilterToolbarAction);
+	button = add(controller.navigationPreviousMap);
+	button = add(controller.navigationNextMap);
+	button = add(controller.printDirect);
+	JToggleButton btnFilter = new JToggleButton (controller.showFilterToolbarAction);
 	// don't paint the border, in order to look like every other toolbar item.
 	//btnFilter.setBorderPainted(false);
 	// set null margin, in order to look like every other toolbar item.
 	btnFilter.setMargin(new Insets(0, 0, 0, 0));
-	btnFilter.setToolTipText(c.getResourceString("filter_toolbar"));
+	btnFilter.setToolTipText(controller.getResourceString("filter_toolbar"));
 	add(btnFilter);
 
-        zoom = new JComboBox(c.getZooms());
+        zoom = new JComboBox(controller.getZooms());
         zoom.setSelectedItem("100%");
         zoom.addItem(userDefinedZoom);
         add(zoom);
@@ -78,7 +78,7 @@ public class MainToolBar extends FreeMindToolBar {
       String dirty = (String)item;
       String cleaned = dirty.substring(0,dirty.length()-1);
       //change representation ("125" to 1.25)
-      c.setZoom(Integer.parseInt(cleaned,10)/100F); }
+      controller.setZoom(Integer.parseInt(cleaned,10)/100F); }
 
     public void zoomOut() {
        if (zoom.getSelectedIndex() > 0) {
