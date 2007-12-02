@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.9 2007-02-04 21:43:40 dpolivaev Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.10 2007-12-02 16:19:44 dpolivaev Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -188,9 +188,9 @@ public class MindMapNodeModel extends NodeAdapter {
             fileout.write("o");
         }
         else {
-            String text = saveRFT_escapeUnicodeAndSpecialCharacters(this
-                    .toString());
-            if (getLink() != null) {
+			String text = saveRFT_escapeUnicodeAndSpecialCharacters(
+					this.getPlainTextContent());
+			if (getLink() != null) {
                 String link = saveRFT_escapeUnicodeAndSpecialCharacters(getLink());
                 if (link.equals(this.toString())) {
                     fileout.write(pre + "<{\\ul\\cf1 " + link + "}>" + "}");
