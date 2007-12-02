@@ -66,8 +66,10 @@ public class FreeMindToolBar extends JToolBar {
 	 * @see javax.swing.JToolBar#add(javax.swing.Action)
 	 */
 	public JButton add(Action arg0) {
-		arg0.putValue(Action.SHORT_DESCRIPTION, arg0.getValue(Action.NAME));
+		final Object actionName = arg0.getValue(Action.NAME);
+		arg0.putValue(Action.SHORT_DESCRIPTION, actionName);
 		JButton returnValue = super.add(arg0);
+		returnValue.setName(actionName.toString());
 		returnValue.setText("");
 		returnValue.setMargin(nullInsets);
 		returnValue.setFocusable(false);
