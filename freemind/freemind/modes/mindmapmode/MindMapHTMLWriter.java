@@ -463,7 +463,7 @@ class MindMapHTMLWriter {
 			if (heading){
 				fileout.write("<h" + depth + ">");
 			}
-			else{
+			else if(!hasHtml(model)){
 				fileout.write("<p>");
 			}
 		}
