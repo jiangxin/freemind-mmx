@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: RootMainView.java,v 1.1.4.5 2007-10-25 15:32:59 dpolivaev Exp $ */
+/* $Id: RootMainView.java,v 1.1.4.6 2007-12-03 19:30:13 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -98,14 +98,23 @@ class RootMainView extends MainView{
         }
 
 
-        protected void paintBackground(
+       public void paintSelected(Graphics2D graphics) {
+    	   if (getNodeView().useSelectionColors()) {
+    		   paintBackground(graphics, getNodeView().getSelectedColor());
+    	   }
+    	   else {
+    		   paintBackground(graphics, getNodeView().getTextBackground());
+    	   }
+       }
+
+		protected void paintBackground(
             Graphics2D graphics,
             Color color) {
             graphics.setColor(color);
             graphics.fillOval(1,
                     1,
-                    getWidth()-1,
-                    getHeight()-1);
+                    getWidth()-2,
+                    getHeight()-2);
         }
 
         Point getLeftPoint() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.57 2007-11-17 16:23:41 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.58 2007-12-03 19:30:08 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1213,17 +1213,26 @@ public class NodeView extends JComponent implements TreeModelListener{
      */
     public void paint(Graphics g) {
         paintCloud(g);
-        super.paint(g);
         if(getModel().isVisible()){
             Graphics2D g2d = (Graphics2D) g;
 			paintEdges(g2d);
+	        super.paint(g);
             // return to std stroke
             g2d.setStroke(BubbleMainView.DEF_STROKE);
             paintFoldingMark(g2d);
         }
+        else{
+        	super.paint(g);
+        }
 //        g.setColor(Color.BLACK);
 //        g.drawRect(0, 0, getWidth()-1, getHeight()-1);
     }
+
+	protected void paintChildren(Graphics g) {
+		// TODO Auto-generated method stub
+		super.paintChildren(g);
+	}
+
 
 	private void paintCloud(Graphics g) {
         if(model.isVisible() && model.getCloud() != null) {
