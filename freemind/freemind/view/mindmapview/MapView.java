@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.43 2007-10-25 20:55:33 christianfoltin Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.44 2007-12-03 19:30:57 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -453,7 +453,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
             } else {
                 if (oldSelected.getModel().isFolded()) { // If folded in the direction, unfold
                     model.getModeController().setFolded(oldSelected.getModel(), false);
-                    return null;
+                    return oldSelected;
                 }
 
                 if (oldSelected.getChildrenViews().size() == 0) return null;
@@ -478,7 +478,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 //                  URGENT: Change to controller setFolded.
 //                    getModel().setFolded(oldSelected.getModel(), false);
                     getController().getModeController().setFolded(oldSelected.getModel(), false);
-                    return null;
+                    return oldSelected;
                 }
 
                 if (oldSelected.getChildrenViews().size() == 0) return null;
@@ -503,14 +503,16 @@ public class MapView extends JPanel implements Printable, Autoscroll{
             newSelected = oldSelected.getNextPage();
             break;
         }
-        return newSelected;
+        return newSelected != oldSelected ? newSelected : null;
     }
 
     public void move(KeyEvent e) {
         NodeView newSelected = getNeighbour(e.getKeyCode());
         if (newSelected != null) {
-            extendSelectionWithKeyMove(newSelected, e);
-            scrollNodeToVisible( newSelected );
+        	if(! (newSelected == getSelected())){
+        		extendSelectionWithKeyMove(newSelected, e);
+        		scrollNodeToVisible( newSelected );
+        	}
             e.consume();
         }
     }
@@ -939,10 +941,11 @@ public class MapView extends JPanel implements Printable, Autoscroll{
          * @see javax.swing.JComponent#paint(java.awt.Graphics)
          */
         public void paint(Graphics g) {
-        	if(isValid()){
-        		getRoot().getContent().getLocation(rootContentLocation);
-        		Tools.convertPointToAncestor(getRoot(), rootContentLocation, getParent());
+        	if(!isValid()){
+        		return;
         	}
+    		getRoot().getContent().getLocation(rootContentLocation);
+    		Tools.convertPointToAncestor(getRoot(), rootContentLocation, getParent());
             final Graphics2D g2 = (Graphics2D)g;
             final Object renderingHint = g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
 			getController().setEdgesRenderingHint(g2);
@@ -1344,7 +1347,5 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         Tools.convertPointToAncestor(nodeView.getContent(), contentXY, this);
         return contentXY;
 	}
-    
-    
 
 }
