@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.25 2007-09-09 11:59:52 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.26 2007-12-03 19:28:51 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -140,8 +140,12 @@ public abstract class MainView extends JLabel{
         public void paintSelected(Graphics2D graphics) {
             if (getNodeView().useSelectionColors()) {
                 paintBackground(graphics, getNodeView().getSelectedColor());
-            } else if (getNodeView().getModel().getBackgroundColor() != null) {
-                paintBackground(graphics, getNodeView().getModel().getBackgroundColor());
+            }
+            else {
+            	final Color backgroundColor = getNodeView().getModel().getBackgroundColor();
+				if (backgroundColor != null) {
+            		paintBackground(graphics, backgroundColor);
+            	}
             }
         }
 
