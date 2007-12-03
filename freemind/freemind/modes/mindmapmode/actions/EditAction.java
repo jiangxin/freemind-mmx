@@ -29,6 +29,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -58,7 +59,8 @@ import freemind.view.mindmapview.NodeView;
 //
 
 public class EditAction extends AbstractAction implements ActorXml {
-    private final MindMapController mMindMapController;
+    private static final Pattern HTML_HEAD = Pattern.compile("\\s*<head>.*</head>", Pattern.DOTALL);
+	private final MindMapController mMindMapController;
     private EditNodeBase mCurrentEditDialog = null;
     public EditAction(MindMapController modeController) {
         super(modeController.getText("edit_node"));
@@ -212,8 +214,8 @@ public class EditAction extends AbstractAction implements ActorXml {
                     mCurrentEditDialog = null;
                 }
                 public void ok(String newText) {
-                    setNodeText(node.getModel(), newText); 
-                    cancel();                    
+                    setHtmlText(node, newText);                    
+            		cancel();
                     }
                 public void split(String newText, int position) {
                     mMindMapController.splitNode(node.getModel(), position, newText);
@@ -234,8 +236,8 @@ public class EditAction extends AbstractAction implements ActorXml {
                     mCurrentEditDialog = null;
                 }
                 public void ok(String newText) {
-                    setNodeText(node.getModel(), newText);
-                    cancel();                    
+                    setHtmlText(node, newText);                    
+            		cancel();
                 }
                 public void split(String newText, int position) {
                     mMindMapController.splitNode(node.getModel(), position, newText);
@@ -333,6 +335,10 @@ public class EditAction extends AbstractAction implements ActorXml {
     protected MindMapController getMindMapController() {
         return mMindMapController;
     }
+	private void setHtmlText(final NodeView node, String newText) {
+		final String body = HTML_HEAD.matcher(newText).replaceFirst("");
+		setNodeText(node.getModel(), body); 
+	}
     
     
     
