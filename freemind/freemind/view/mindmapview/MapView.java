@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.44 2007-12-03 19:30:57 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.45 2007-12-04 20:58:40 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -1192,9 +1192,13 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     }
 
     public void print(Graphics g) {
-		preparePrinting();
-		super.print(g);
-		endPrinting();
+		try{
+			preparePrinting();
+			super.print(g);
+		}
+		finally{
+			endPrinting();
+		}
 	}
 
 	/** For nodes, they can ask, whether or not the width must be bigger to prevent the "..." at the output. (Bug of java).*/
