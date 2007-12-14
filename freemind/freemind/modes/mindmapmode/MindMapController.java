@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.55 2007-12-14 22:11:05 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.56 2007-12-14 22:38:47 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -206,6 +206,7 @@ import freemind.modes.mindmapmode.listeners.MindMapMouseMotionManager;
 import freemind.modes.mindmapmode.listeners.MindMapMouseWheelEventHandler;
 import freemind.modes.mindmapmode.listeners.MindMapNodeDropListener;
 import freemind.modes.mindmapmode.listeners.MindMapNodeMotionListener;
+import freemind.view.MapModule;
 import freemind.view.mindmapview.MainView;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -750,7 +751,8 @@ freemind.main.Resources.getInstance().logException(					e);
     public void nodeChanged(MindMapNode n) {
     	super.nodeChanged(n);
     	// only for the selected node (fc, 2.5.2004)
-		if (n == getSelected()) {
+		final MapModule mapModule = getController().getMapModule();
+		if (mapModule != null && n == mapModule.getView().getSelected()) {
 			updateToolbar(n);
 		}
 	 }
