@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.54 2007-11-09 22:23:09 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.55 2007-12-14 22:11:05 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1483,6 +1483,7 @@ freemind.main.Resources.getInstance().logException(					e1);
     }
 
     public MindMapNode addNew(final MindMapNode target, final int newNodeMode, final KeyEvent e) {
+    	edit.stopEditing();
         return newChild.addNew(target, newNodeMode, e);
     }
 

@@ -164,12 +164,8 @@ public class EditAction extends AbstractAction implements ActorXml {
             editLater(node, prevSelected, firstEvent, isNewNode, parentFolded, editLong);            
             return;
         }
-        if(mCurrentEditDialog != null) {
-        		// there was presvious editing.
-        		mCurrentEditDialog.closeEdit();
-        		mCurrentEditDialog = null;
-        }
-        //EditNodeBase.closeEdit();
+        stopEditing();
+         //EditNodeBase.closeEdit();
         mMindMapController.setBlocked(true); // locally "modal" stated
         
         String text = node.getModel().toString();
@@ -338,6 +334,13 @@ public class EditAction extends AbstractAction implements ActorXml {
 	private void setHtmlText(final NodeView node, String newText) {
 		final String body = HTML_HEAD.matcher(newText).replaceFirst("");
 		setNodeText(node.getModel(), body); 
+	}
+	public void stopEditing() {
+	       if(mCurrentEditDialog != null) {
+       		// there was presvious editing.
+       		mCurrentEditDialog.closeEdit();
+       		mCurrentEditDialog = null;
+       }
 	}
     
     
