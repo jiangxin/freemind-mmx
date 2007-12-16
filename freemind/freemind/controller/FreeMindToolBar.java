@@ -67,7 +67,7 @@ public class FreeMindToolBar extends JToolBar {
 	 */
 	public JButton add(Action arg0) {
 		final Object actionName = arg0.getValue(Action.NAME);
-		arg0.putValue(Action.SHORT_DESCRIPTION, actionName);
+		arg0.putValue(Action.SHORT_DESCRIPTION, actionName.toString().replaceFirst("&", ""));
 		JButton returnValue = super.add(arg0);
 		returnValue.setName(actionName.toString());
 		returnValue.setText("");

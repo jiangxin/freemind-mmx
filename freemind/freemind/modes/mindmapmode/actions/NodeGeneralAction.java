@@ -77,7 +77,7 @@ public class NodeGeneralAction extends AbstractXmlAction {
     protected void setName(String name) {
         if (name != null) {
             putValue(Action.NAME, name);
-            putValue(Action.SHORT_DESCRIPTION, name);
+            putValue(Action.SHORT_DESCRIPTION, name.replaceFirst("&", ""));
         }
 
     }
