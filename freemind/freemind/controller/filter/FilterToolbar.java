@@ -24,6 +24,8 @@
 package freemind.controller.filter;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -34,6 +36,8 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -44,6 +48,7 @@ import javax.swing.JLabel;
 import javax.swing.JToolBar;
 
 import freemind.controller.Controller;
+import freemind.controller.FreeMindToolBar;
 import freemind.controller.filter.condition.Condition;
 import freemind.controller.filter.condition.NoFilteringCondition;
 import freemind.controller.filter.condition.SelectedViewCondition;
@@ -51,7 +56,7 @@ import freemind.main.Resources;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 
-class FilterToolbar extends JToolBar {
+class FilterToolbar extends FreeMindToolBar {
     private FilterController fc;
     private FilterComposerDialog filterDialog = null;
     private JComboBox activeFilterConditionComboBox;
@@ -105,7 +110,7 @@ class FilterToolbar extends JToolBar {
     
     private class EditFilterAction extends AbstractAction {
         EditFilterAction() {
-            super(Resources.getInstance().getResourceString("filter_edit"));
+            super("", new ImageIcon(Resources.getInstance().getResource("images/Btn_edit.gif")));
             putValue(SHORT_DESCRIPTION, Resources.getInstance().getResourceString("filter_edit_description"));
         }
         /* (non-Javadoc)
@@ -167,20 +172,20 @@ class FilterToolbar extends JToolBar {
         this.c = c;
         setVisible(false);
         setFocusable(false);
+        setRollover(true);
         filterChangeListener = new FilterChangeListener();
 		add(new JLabel(Resources.getInstance().getResourceString("filter_toolbar") + " "));
         
         
         activeFilter = null;
-        activeFilterConditionComboBox = new JComboBox();
+        activeFilterConditionComboBox = new JComboBox(){public Dimension getMaximumSize(){return getPreferredSize();}};
         activeFilterConditionComboBox.setFocusable(false);        
-        activeFilterConditionComboBox.setPrototypeDisplayValue("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		pathToFilterFile = c.getFrame().getFreemindDirectory() + File.separator + "auto." + FilterController.FREEMIND_FILTER_EXTENSION_WITHOUT_DOT;
         
-        btnEdit = new JButton(new EditFilterAction());
+        btnEdit = add(new EditFilterAction());
         add(btnEdit);
         
-        btnUnfoldAncestors = new JButton(new UnfoldAncestorsAction());
+        btnUnfoldAncestors = add(new UnfoldAncestorsAction());
         btnUnfoldAncestors.setToolTipText(Resources.getInstance().getResourceString("filter_unfold_ancestors"));
         add(btnUnfoldAncestors);
         
@@ -191,6 +196,7 @@ class FilterToolbar extends JToolBar {
         showDescendants = new JCheckBox(Resources.getInstance().getResourceString("filter_show_descendants"), false);
         add(showDescendants);
         showDescendants.getModel().addActionListener(filterChangeListener);
+        
     }
 
     void addStandardConditions() {
@@ -212,7 +218,10 @@ class FilterToolbar extends JToolBar {
 		addStandardConditions();
         activeFilterConditionComboBox.setSelectedIndex(0);
         activeFilterConditionComboBox.setRenderer(fc.getConditionRenderer());
+
         add(activeFilterConditionComboBox);
+        add(Box.createHorizontalGlue());
+
         activeFilterConditionComboBox.addItemListener(filterChangeListener);
         activeFilterConditionComboBox.addPropertyChangeListener(filterChangeListener);
 	}
