@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.90 2007-11-30 21:58:11 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.91 2007-12-16 21:43:49 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -1076,7 +1076,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		mSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, mScrollPane,
 				pMindMapComponent);
 		mSplitPane.setContinuousLayout(true);
-		mSplitPane.setOneTouchExpandable(true);
+		mSplitPane.setOneTouchExpandable(false);
 		/* This means that the mind map area gets all the space that
 		 * results from resizing the window.*/
 		mSplitPane.setResizeWeight(1.0d);
