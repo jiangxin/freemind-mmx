@@ -19,7 +19,7 @@
  *
  * Created on 07.08.2007
  */
-/*$Id: RemindValueProperty.java,v 1.1.2.1 2007-08-07 20:09:24 christianfoltin Exp $*/
+/*$Id: RemindValueProperty.java,v 1.1.2.2 2007-12-16 22:05:13 dpolivaev Exp $*/
 
 package freemind.common;
 
@@ -46,9 +46,9 @@ public class RemindValueProperty extends ThreeCheckBoxProperty {
         state = newState;
         String[] strings;
         strings = new String[3]; //{MINUS_IMAGE, PLUS_IMAGE, NO_IMAGE};
-        strings[TRUE_VALUE_INT] =  mTextTranslator.getText("OptionalDontShowMeAgainDialog.ok");
-        strings[FALSE_VALUE_INT] = mTextTranslator.getText("OptionalDontShowMeAgainDialog.cancel");
-        strings[DON_T_TOUCH_VALUE_INT] = mTextTranslator.getText("OptionPanel.ask");
+        strings[TRUE_VALUE_INT] =  mTextTranslator.getText("OptionalDontShowMeAgainDialog.ok").replaceFirst("&", "");
+        strings[FALSE_VALUE_INT] = mTextTranslator.getText("OptionalDontShowMeAgainDialog.cancel").replaceFirst("&", "");
+        strings[DON_T_TOUCH_VALUE_INT] = mTextTranslator.getText("OptionPanel.ask").replaceFirst("&", "");
         mButton.setText(strings[state]);
     }
 	
