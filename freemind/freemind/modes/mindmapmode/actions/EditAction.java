@@ -183,7 +183,7 @@ public class EditAction extends AbstractAction implements ActorXml {
 					mMindMapController.getFrame().getJFrame(),
 					mMindMapController.getSelectedView(),
 					"edit.edit_rich_text",
-					"edit.desicion",
+					"edit.decision",
 					mMindMapController,
 					new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
 							mMindMapController.getController(),
