@@ -19,8 +19,8 @@
 */
 /* XMLElement.java
  *
- * $Revision: 1.7.18.4.2.5 $
- * $Date: 2006-07-25 20:28:20 $
+ * $Revision: 1.7.18.4.2.6 $
+ * $Date: 2007-12-18 21:47:08 $
  * $Name:  $
  *
  * This file is part of NanoXML 2 Lite.
@@ -125,7 +125,7 @@ import java.util.regex.Pattern;
  *
  * @author Marc De Scheemaecker
  *         &lt;<A href="mailto:cyberelf@mac.com">cyberelf@mac.com</A>&gt;
- * @version $Name:  $, $Revision: 1.7.18.4.2.5 $
+ * @version $Name:  $, $Revision: 1.7.18.4.2.6 $
  */
 public class XMLElement
 {
@@ -2631,7 +2631,7 @@ public class XMLElement
     protected void scanElement(XMLElement elt)
         throws IOException
     {
-        boolean isCollecctionMode = false;
+        boolean isCollectionMode = false;
         StringBuffer buf = new StringBuffer();
         this.scanIdentifier(buf);
         String name = buf.toString();
@@ -2639,7 +2639,7 @@ public class XMLElement
         if(XML_NODE_XHTML_CONTENT_TAG.equals(name)) {
             /* special case of html content tag:
                collect chars until </...> occurs. */
-            isCollecctionMode = true;
+            isCollectionMode = true;
         }
         char ch = this.scanWhitespace();
 
@@ -2670,7 +2670,7 @@ public class XMLElement
         }
 
         // special collection mode:
-        if(isCollecctionMode) {
+        if(isCollectionMode) {
             StringBuffer waitingBuf = new StringBuffer();
             int lastOpeningBreak = -1;
             for(;;) {
@@ -2690,12 +2690,16 @@ public class XMLElement
                     if(matcher.matches()) {
                         // end found, remove the end tag:
                         content = content.substring(0, lastOpeningBreak);
-                        // PCDATA         
-                        if (this.ignoreWhitespace) {
-                            elt.setContent(content.trim());
-                        } else {
-                            elt.setContent(content);
-                        }
+                     // Dimitry: begin
+//                      // PCDATA         
+//                      if (this.ignoreWhitespace) {
+//                          elt.setContent(content.trim());
+//                      } else {
+//                          elt.setContent(content);
+//                      }
+                     // Dimitry: always remove spaces around the rich content block because it should be valid xml.                         
+                        elt.setContent(content.trim());
+                     // Dimitry: end                         
                         elt.completeElement();
                         return;
                     }
