@@ -127,15 +127,10 @@ public class ApplyPatternAction extends NodeGeneralAction implements
         if (pattern.getPatternNodeFontItalic() != null) {
             getMindMapController().setItalic(node,"true".equals(
                     pattern.getPatternNodeFontItalic().getValue()));
-        } else {
-            getMindMapController().setItalic(node,false);
-            
         }
         if (pattern.getPatternNodeFontBold() != null) {
             getMindMapController().setBold(node,
                     "true".equals(pattern.getPatternNodeFontBold().getValue()));
-        } else {
-            getMindMapController().setBold(node,false);
         }
 
         if(pattern.getPatternEdgeColor() != null) {

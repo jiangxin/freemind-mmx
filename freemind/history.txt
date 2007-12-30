@@ -2,6 +2,7 @@
 Changes made in FreeMind 0.9.0 Beta16
 ===============================
 * Filter toolbar looks similar to the other toolbars.
+* Bug fix: italic and bold handling in patterns (eg. automatic layout)
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta15
