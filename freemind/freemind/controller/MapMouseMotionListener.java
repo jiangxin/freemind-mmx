@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MapMouseMotionListener.java,v 1.7.16.5 2006-01-12 23:10:12 christianfoltin Exp $*/
+/*$Id: MapMouseMotionListener.java,v 1.7.16.5.2.1 2008-01-04 22:52:30 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -72,6 +72,7 @@ public class MapMouseMotionListener implements MouseMotionListener,
                 popup = c.getFrame().getFreeMindMenuBar().getMapsPopupMenu();
             }
             popup.show(e.getComponent(), e.getX(), e.getY());
+            popup.setVisible(true);
         }
     }
 

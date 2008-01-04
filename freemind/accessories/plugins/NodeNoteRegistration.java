@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.3 2007-10-25 16:27:01 dpolivaev Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.4 2008-01-04 22:52:30 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -34,6 +34,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
@@ -45,6 +46,8 @@ import javax.swing.text.html.HTMLDocument;
 import com.lightdev.app.shtm.SHTMLPanel;
 import com.lightdev.app.shtm.TextResources;
 
+import freemind.controller.MenuItemEnabledListener;
+import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
@@ -61,7 +64,7 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.view.mindmapview.NodeView;
 
-public class NodeNoteRegistration implements HookRegistration, ActorXml {
+public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuItemSelectedListener {
 	private static class SouthPanel extends JPanel {
 		public SouthPanel() {
 			super(new BorderLayout());
@@ -365,5 +368,9 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml {
 
 	public JSplitPane getSplitPane() {
 		return mSplitPane;
+	}
+
+	public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+		return getSplitPane() != null;
 	}
 }

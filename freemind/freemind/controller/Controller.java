@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.43 2007-11-17 16:39:00 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.44 2008-01-04 22:52:30 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -69,6 +69,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -329,9 +330,9 @@ public class Controller  implements MapModuleChangeObserver {
         if (getMapModule() != null) {
             return getMapModule().getView();
         } else {
-           System.err.println("[Freemind-Developer-Internal-Warning (do not write a bug report, please)]: Tried to get view without being able to get map module.");
+//           System.err.println("[Freemind-Developer-Internal-Warning (do not write a bug report, please)]: Tried to get view without being able to get map module.");
+           return null;
         }
-        return null;
     }
 
     Set getModes() {
@@ -826,6 +827,7 @@ public class Controller  implements MapModuleChangeObserver {
         hideAllAttributes.setEnabled(enabled);
         showAttributeManagerAction.setEnabled(enabled);
         ((MainToolBar)getToolBar()).setAllActions(enabled);
+        showSelectionAsRectangle.setEnabled(enabled);
     }
 
     //
@@ -1216,7 +1218,7 @@ public class Controller  implements MapModuleChangeObserver {
         }
     }
 
-    private class ToggleMenubarAction extends AbstractAction {
+    private class ToggleMenubarAction extends AbstractAction  implements MenuItemSelectedListener  {
         ToggleMenubarAction(Controller controller) {
            super(controller.getResourceString("toggle_menubar"));
            setEnabled(true);
@@ -1225,9 +1227,12 @@ public class Controller  implements MapModuleChangeObserver {
            menubarVisible=!menubarVisible;
            setMenubarVisible(menubarVisible);
         }
+		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+			return menubarVisible;
+		}
     }
 
-    private class ToggleToolbarAction extends AbstractAction {
+    private class ToggleToolbarAction extends AbstractAction implements MenuItemSelectedListener {
         ToggleToolbarAction(Controller controller) {
            super(controller.getResourceString("toggle_toolbar"));
            setEnabled(true);
@@ -1236,9 +1241,13 @@ public class Controller  implements MapModuleChangeObserver {
            toolbarVisible=!toolbarVisible;
            setToolbarVisible(toolbarVisible);
         }
+		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+			logger.info("ToggleToolbar was asked for selectedness.");
+			return toolbarVisible;
+		}
     }
 
-    private class ToggleLeftToolbarAction extends AbstractAction {
+    private class ToggleLeftToolbarAction extends AbstractAction implements MenuItemSelectedListener {
         ToggleLeftToolbarAction(Controller controller) {
            super(controller.getResourceString("toggle_left_toolbar"));
            setEnabled(true);
@@ -1247,6 +1256,9 @@ public class Controller  implements MapModuleChangeObserver {
            leftToolbarVisible=!leftToolbarVisible;
            setLeftToolbarVisible(leftToolbarVisible);
         }
+		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+			return leftToolbarVisible;
+		}
     }
 
     protected class ZoomInAction extends AbstractAction {
@@ -1263,14 +1275,17 @@ public class Controller  implements MapModuleChangeObserver {
 //            logger.info("ZoomOutAction actionPerformed");
            ((MainToolBar)toolbar).zoomOut(); }}
 
-    protected class ShowSelectionAsRectangleAction extends AbstractAction {
+    protected class ShowSelectionAsRectangleAction extends AbstractAction implements MenuItemSelectedListener{
         public ShowSelectionAsRectangleAction(Controller controller) {
            super(controller.getResourceString("selection_as_rectangle")); }
         public void actionPerformed(ActionEvent e) {
 //            logger.info("ShowSelectionAsRectangleAction action Performed");
             showSelectionAsRectangle();
            }
-        }
+		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+			return isSelectionAsRectangle();
+		}
+    }
 
      private class ShowAllAttributesAction extends AbstractAction {
         public ShowAllAttributesAction(){
@@ -1331,12 +1346,16 @@ public class Controller  implements MapModuleChangeObserver {
         return Collections.unmodifiableCollection(propertyChangeListeners);
     }
     void showSelectionAsRectangle() {
-    	if(getProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION).equalsIgnoreCase(BooleanProperty.TRUE_VALUE)){
+    	if(isSelectionAsRectangle()){
     		setProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION, BooleanProperty.FALSE_VALUE);
     	}
     	else{
     		setProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION, BooleanProperty.TRUE_VALUE);
     	}
+	}
+
+	private boolean isSelectionAsRectangle() {
+		return getProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION).equalsIgnoreCase(BooleanProperty.TRUE_VALUE);
 	}
 
 	/**

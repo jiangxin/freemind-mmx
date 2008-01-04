@@ -20,13 +20,13 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: UnderlinedAction.java,v 1.1.2.2.2.2 2006-10-10 18:51:53 christianfoltin Exp $ */
+/* $Id: UnderlinedAction.java,v 1.1.2.2.2.3 2008-01-04 22:52:31 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import javax.swing.Action;
 import javax.swing.JMenuItem;
 
-import freemind.controller.MenuItemEnabledListener;
+import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.actions.generated.instance.UnderlinedNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MindMap;
@@ -36,7 +36,7 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 
-public class UnderlinedAction extends NodeGeneralAction implements NodeActorXml, MenuItemEnabledListener{
+public class UnderlinedAction extends NodeGeneralAction implements NodeActorXml, MenuItemSelectedListener{
 	private final MindMapController modeController;
 	/**
 	 */
@@ -85,10 +85,8 @@ public class UnderlinedAction extends NodeGeneralAction implements NodeActorXml,
 		execute(getActionPair(node, underlined));
 	}
 
-    public boolean isEnabled(JMenuItem item, Action action) {
-		boolean underlined = modeController.getSelected().isUnderlined();
-		setSelected(item, underlined);
-        return true;
+    public boolean isSelected(JMenuItem item, Action action) {
+		return modeController.getSelected().isUnderlined();
     }
 
 

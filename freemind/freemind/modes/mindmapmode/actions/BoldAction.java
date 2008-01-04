@@ -28,7 +28,7 @@ package freemind.modes.mindmapmode.actions;
 import javax.swing.Action;
 import javax.swing.JMenuItem;
 
-import freemind.controller.MenuItemEnabledListener;
+import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.actions.generated.instance.BoldNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MindMap;
@@ -38,7 +38,7 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 
-public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuItemEnabledListener{
+public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuItemSelectedListener{
 	/**
 	 */
 	public BoldAction(MindMapController modeController) {
@@ -87,9 +87,8 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuI
 		execute(getActionPair(node, bold));
 	}
 
-    public boolean isEnabled(JMenuItem item, Action action) {
-		setSelected(item, modeController.getSelected().isBold());
-        return true;
+    public boolean isSelected(JMenuItem item, Action action) {
+		return modeController.getSelected().isBold();
     }
 
 

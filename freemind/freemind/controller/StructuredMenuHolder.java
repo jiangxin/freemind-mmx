@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.5 2007-11-29 21:41:05 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.6 2008-01-04 22:52:30 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -31,15 +31,14 @@ import java.util.Vector;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
@@ -59,6 +58,7 @@ public class StructuredMenuHolder {
 	public static final int ICON_SIZE = 16;
     private String mOutputString;
 	private static Icon blindIcon = new BlindIcon(ICON_SIZE);
+    private static final String SELECTED_ICON_PATH = "images/icons/button_ok.png";
 
 
     private static final String SEPARATOR_TEXT = "000";
@@ -66,10 +66,15 @@ public class StructuredMenuHolder {
 	Map menuMap; 
 
 	private int mIndent;
+	private static ImageIcon sSelectedIcon;
     public StructuredMenuHolder() {
 		menuMap = new HashMap();
 		Vector order = new Vector();
-		menuMap.put(ORDER_NAME, order); 
+		menuMap.put(ORDER_NAME, order);
+        if(sSelectedIcon == null){
+            sSelectedIcon = new ImageIcon(Resources.getInstance().getResource(SELECTED_ICON_PATH));
+        }
+
 	}
    
     /**
@@ -431,21 +436,33 @@ public class StructuredMenuHolder {
 			for (Iterator i = menuItemHolder.iterator(); i.hasNext();) {
 				StructuredMenuItemHolder holder = (StructuredMenuItemHolder) i.next();
 				Action action = holder.getAction();
+				boolean isEnabled = false;
+				JMenuItem menuItem = holder.getMenuItem();
 				if(holder.getEnabledListener() != null) {
-					boolean isEnabled = false;
                     try {
                         isEnabled = holder.getEnabledListener().isEnabled(
-                                holder.getMenuItem(), action);
+                                menuItem, action);
                     } catch (Exception e) {
                     	Resources.getInstance().logException(e);
                     }
                     //action.setEnabled(isEnabled);
-                    holder.getMenuItem().setEnabled(isEnabled);
+                    menuItem.setEnabled(isEnabled);
 				}
-				if(holder.getSelectedListener() != null) {
-					if (holder.getMenuItem() instanceof JCheckBoxMenuItem) {
-						JCheckBoxMenuItem checkItem = (JCheckBoxMenuItem) holder.getMenuItem();
-						checkItem.setSelected(holder.getSelectedListener().isSelected(checkItem, action));
+				isEnabled = menuItem.isEnabled();
+				if(isEnabled && holder.getSelectedListener() != null) {
+					boolean selected = false;
+					try {
+						selected = holder.getSelectedListener().isSelected(
+								menuItem, action);
+					} catch (Exception e) {
+						Resources.getInstance().logException(e);
+					}
+					if (menuItem instanceof JCheckBoxMenuItem) {
+						JCheckBoxMenuItem checkItem = (JCheckBoxMenuItem) menuItem;
+						checkItem.setSelected(selected);
+					} else {
+						//Do icon change if not a check box menu!
+						setSelected(menuItem, selected);
 					}
 				}
 			}
@@ -481,6 +498,16 @@ public class StructuredMenuHolder {
 	    }
         return false;
     }
+
+    private static void setSelected(JMenuItem menuItem, boolean state) {
+		if (state) {
+			menuItem.setIcon(sSelectedIcon);
+		} else {
+			menuItem.setIcon((Icon) menuItem.getAction().getValue(
+					Action.SMALL_ICON));
+		}
+	}
+
 
 
 }

@@ -19,7 +19,7 @@
  *
  * Created on 19.07.2004
  */
-/* $Id: FreemindAction.java,v 1.1.2.1.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: FreemindAction.java,v 1.1.2.1.2.3 2008-01-04 22:52:30 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -28,6 +28,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 
+import freemind.controller.MenuItemSelectedListener;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
@@ -42,8 +43,7 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 public abstract class FreemindAction extends AbstractAction {
 
     private Icon actionIcon;
-    private static Icon enabledIcon;
-    private static final String ENABLED_ICON_PATH = "images/icons/button_ok.png";
+    private static Icon selectedIcon;
     private final MindMapController pMindMapController;
 
     /**
@@ -53,9 +53,6 @@ public abstract class FreemindAction extends AbstractAction {
         super(title, icon);
         this.actionIcon = icon;
         this.pMindMapController = mindMapController;
-        if(enabledIcon == null){
-            enabledIcon = new ImageIcon(mindMapController.getFrame().getResource(ENABLED_ICON_PATH));
-        }
 
     }
 
@@ -67,19 +64,6 @@ public abstract class FreemindAction extends AbstractAction {
         this(mindMapController.getText(title),
             (iconPath==null)?null: new ImageIcon(mindMapController.getResource(iconPath)),
                 mindMapController);
-    }
-
-    protected void setSelected(JMenuItem menuItem, boolean state) {
-    		// prevents that icons set after the construction is forgotten to
-    		// recover.
-    		if(actionIcon == null && menuItem.getIcon() != enabledIcon) {
-    			actionIcon = menuItem.getIcon();
-    		}
-		if(state) {
-		    menuItem.setIcon(enabledIcon);
-		} else {
-		    menuItem.setIcon(actionIcon);
-		}
     }
 
     public void addActor(ActorXml actor) {

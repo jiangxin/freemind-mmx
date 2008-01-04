@@ -549,17 +549,20 @@
     <target name="installers_chris" depends="" description="--> Creates all installers. This is a task that only works on Chris laptops. But it should be informative to others who want to build the installers">
         <property name="inst.dir" location="/tmp/fm_installer"/>
         <property name="inst.dest.dir" location="../installers"/>
+    	<property name="branch" value="fm-0-8-1"/>
+<!--    	<property name="branch" value="fm_060405_integration"/> -->
+
     	<mkdir dir="${inst.dest.dir}"/>
     	<delete dir="${inst.dir}" failonerror="false"/>
     	<mkdir dir="${inst.dir}"/>
 		<cvs  cvsRoot=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"
 		       package="freemind"
 		       dest="${inst.dir}"
-			  command="checkout -P -r fm_060405_integration"></cvs>
+			  command="checkout -P -r ${branch}"></cvs>
 		<cvs  cvsRoot=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"
 		       package="admin"
 		       dest="${inst.dir}"></cvs>
-    	<ant dir="${inst.dir}/freemind" target="post" ></ant>
+    	<ant dir="${inst.dir}/freemind" target="post" inheritall="false"></ant>
     	<copy todir="${inst.dest.dir}">
     		<fileset dir="${inst.dir}/post">
 			    <include name="*"/>
@@ -576,7 +579,7 @@
 		</copy>
     	<exec dir="." executable="ssh" os="Linux">
     		<arg value="foltin@192.168.2.100"/>
-    		<arg value="cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; cvs -d:pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind login ; cvs -d:pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind co -P -r fm_060405_integration freemind ; cd freemind ; ant post"/>
+    		<arg value="cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; cvs -d:pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind login ; cvs -d:pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind co -P -r ${branch} freemind ; cd freemind ; ant post"/>
     	</exec>
     	<exec dir="." executable="scp" os="Linux">
     		<arg value="foltin@192.168.2.100:/tmp/fm_installers/post/*.dmg"/>

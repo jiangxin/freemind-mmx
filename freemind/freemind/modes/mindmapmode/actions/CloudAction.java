@@ -19,12 +19,16 @@
  *
  * Created on 06.10.2004
  */
-/* $Id: CloudAction.java,v 1.1.2.2.2.2 2006-10-10 18:51:53 christianfoltin Exp $ */
+/* $Id: CloudAction.java,v 1.1.2.2.2.3 2008-01-04 22:52:30 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
 
+import javax.swing.Action;
+import javax.swing.JMenuItem;
+
+import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.actions.generated.instance.AddCloudXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
@@ -38,7 +42,7 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
  * @author foltin
  *
  */
-public class CloudAction extends NodeGeneralAction implements NodeActorXml {
+public class CloudAction extends NodeGeneralAction implements NodeActorXml, MenuItemSelectedListener {
 
 	public CloudAction(MindMapController controller) {
 		super(controller, "cloud", "images/Cloud24.gif");
@@ -109,6 +113,10 @@ public class CloudAction extends NodeGeneralAction implements NodeActorXml {
 				modeController.nodeChanged(node);
 			}
 		}
+	}
+
+	public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+		return modeController.getSelected().getCloud() != null;
 	}
 
 }

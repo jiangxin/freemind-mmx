@@ -30,13 +30,11 @@ import java.util.logging.Logger;
 import javax.swing.JPopupMenu;
 import javax.swing.event.MenuListener;
 
+import freemind.controller.FreeMindPopupMenu;
 import freemind.controller.StructuredMenuHolder;
 
-public class MindMapPopupMenu extends JPopupMenu implements
-		StructuredMenuHolder.MenuEventSupplier {
+public class MindMapPopupMenu extends FreeMindPopupMenu {
 
-	private HashSet listeners = new HashSet();
-	
 	private static final String MINDMAPMODE_POPUP = "mindmapmode_popup/";
 
 	private static Logger logger = null;
@@ -44,6 +42,7 @@ public class MindMapPopupMenu extends JPopupMenu implements
 	private MindMapController c;
 
 	public MindMapPopupMenu(MindMapController c) {
+		super();
 		this.c = c;
 		if (logger == null) {
 			logger = c.getFrame().getLogger(this.getClass().getName());
@@ -60,36 +59,4 @@ public class MindMapPopupMenu extends JPopupMenu implements
 		
 	}
 
-	protected void firePopupMenuWillBecomeVisible() {
-		super.firePopupMenuWillBecomeVisible();
-		logger.info("Popup firePopupMenuWillBecomeVisible called.");
-		for (Iterator i = listeners.iterator(); i.hasNext();) {
-			MenuListener listener = (MenuListener) i.next();
-			listener.menuSelected(null);
-		}
-	}
-
-	public void addMenuListener(MenuListener listener) {
-		listeners.add(listener);
-	}
-
-	public void removeMenuListener(MenuListener listener) {
-		listeners.remove(listener);
-	}
-	protected void firePopupMenuCanceled() {
-		super.firePopupMenuCanceled();
-		logger.info("Popup firePopupMenuCanceled called.");
-		for (Iterator i = listeners.iterator(); i.hasNext();) {
-			MenuListener listener = (MenuListener) i.next();
-			listener.menuCanceled(null);
-		}
-	}
-	protected void firePopupMenuWillBecomeInvisible() {
-		super.firePopupMenuWillBecomeInvisible();
-		logger.info("Popup firePopupMenuWillBecomeInvisible called.");
-		for (Iterator i = listeners.iterator(); i.hasNext();) {
-			MenuListener listener = (MenuListener) i.next();
-			listener.menuDeselected(null);
-		}
-	}
 }

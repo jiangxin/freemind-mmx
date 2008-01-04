@@ -16,24 +16,31 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.13 2007-07-13 21:22:57 dpolivaev Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.14 2008-01-04 22:52:30 christianfoltin Exp $*/
 
 package freemind.controller;
 
-import java.security.AccessControlException;
-import java.util.*;
-import java.awt.Component;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
-import java.awt.event.ActionListener;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.ButtonGroup;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
-import freemind.main.XMLParseException;
 import freemind.modes.ModeController;
 
 /**This is the menu bar for FreeMind. Actions are defined in MenuListener.
@@ -153,7 +160,8 @@ public class MenuBar extends JMenuBar {
 		menuHolder.addCategory(MODES_MENU);	
 
 		// maps popup menu
-		mapsPopupMenu = new JPopupMenu(c.getResourceString("mindmaps"));
+		mapsPopupMenu = new FreeMindPopupMenu();
+		mapsPopupMenu.setName(c.getResourceString("mindmaps"));
 		menuHolder.addCategory(POPUP_MENU+"navigate");	
 		//menuHolder.addSeparator(POPUP_MENU);	
 
@@ -209,17 +217,19 @@ public class MenuBar extends JMenuBar {
 		menuHolder.addSeparator(POPUP_MENU);
         JMenuItem newPopupItem;
         
-        newPopupItem = new JMenuItem(c.toggleMenubar);
-        newPopupItem.setForeground(new Color(100,80,80));
-        newPopupItem.setEnabled(c.getFrame().isApplet());
-        // We have enabled hiding of menubar only in applets. It it because
-        // when we hide menubar in application, the key accelerators from
-        // menubar do not work.
-        menuHolder.addMenuItem(newPopupItem, POPUP_MENU+"toggleMenubar");
-        
-        newPopupItem = new JMenuItem(c.toggleToolbar);
-        newPopupItem.setForeground(new Color(100,80,80));
-        menuHolder.addMenuItem(newPopupItem, POPUP_MENU+"toggleToolbar");
+        if (c.getFrame().isApplet()) {
+        	// We have enabled hiding of menubar only in applets. It it because
+        	// when we hide menubar in application, the key accelerators from
+        	// menubar do not work.
+			newPopupItem = new JMenuItem(c.toggleMenubar);
+			newPopupItem.setForeground(new Color(100, 80, 80));
+//        newPopupItem.setEnabled(c.getFrame().isApplet());
+			menuHolder.addMenuItem(newPopupItem, POPUP_MENU + "toggleMenubar");
+		}
+
+		newPopupItem = new JMenuItem(c.toggleToolbar);
+		newPopupItem.setForeground(new Color(100, 80, 80));
+		menuHolder.addMenuItem(newPopupItem, POPUP_MENU + "toggleToolbar");
         
         newPopupItem = new JMenuItem(c.toggleLeftToolbar);
         newPopupItem.setForeground(new Color(100,80,80));
