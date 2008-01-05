@@ -19,11 +19,12 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.4 2008-01-04 22:52:30 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.5 2008-01-05 10:06:19 dpolivaev Exp $*/
 
 package accessories.plugins;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.net.MalformedURLException;
@@ -362,6 +363,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
                 }                        
             });
             htmlEditorPanel = SHTMLPanel.createSHTMLPanel();
+            htmlEditorPanel.setMinimumSize(new Dimension(100, 100));
         }
         return htmlEditorPanel;
     }
