@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: CutAction.java,v 1.1.2.2.2.10 2007-08-12 08:06:43 dpolivaev Exp $ */
+/* $Id: CutAction.java,v 1.1.2.2.2.11 2008-01-08 22:16:15 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -35,7 +35,9 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
+import freemind.common.OptionalDontShowMeAgainDialog;
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.CutNodeAction;
@@ -43,6 +45,7 @@ import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.TransferableContent;
 import freemind.controller.actions.generated.instance.TransferableFile;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.FreeMind;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.PasteAction.NodeCoordinate;
@@ -51,38 +54,49 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 public class CutAction extends AbstractAction implements ActorXml {
     private String text;
-    private final MindMapController controller;
+    private final MindMapController mMindMapController;
     public CutAction(MindMapController c) {
         super(
             c.getText("cut"),
             new ImageIcon(c.getResource("images/editcut.png")));
-        this.controller = c;
+        this.mMindMapController = c;
         this.text = c.getText("cut");
         setEnabled(false);
-		this.controller.getActionFactory().registerActor(this, getDoActionClass());
+		this.mMindMapController.getActionFactory().registerActor(this, getDoActionClass());
     }
     public void actionPerformed(ActionEvent e) {
-    	if (controller.getView().getRoot().isSelected()){
-    		controller.getController().errorMessage(
-    				controller.getFrame().getResourceString("cannot_delete_root"));
+    	if (mMindMapController.getView().getRoot().isSelected()){
+    		mMindMapController.getController().errorMessage(
+    				mMindMapController.getFrame().getResourceString("cannot_delete_root"));
     		return;
     	}
-		Transferable copy = controller.cut();
+		int showResult = new OptionalDontShowMeAgainDialog(mMindMapController
+				.getFrame().getJFrame(), mMindMapController.getSelectedView(),
+				"really_cut_node", "confirmation", mMindMapController,
+				new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
+						mMindMapController.getController(),
+						FreeMind.RESOURCES_CUT_NODES_WITHOUT_QUESTION),
+				OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
+				.show().getResult();
+		if(showResult != JOptionPane.OK_OPTION) {
+			return;
+		}
+		Transferable copy = mMindMapController.cut();
 		// and set it.
-		controller.getClipboard().setContents(copy, null);
-		controller.getController().obtainFocusForSelected();
+		mMindMapController.getClipboard().setContents(copy, null);
+		mMindMapController.getController().obtainFocusForSelected();
     }
 
 	public CutNodeAction getCutNodeAction(MindMapNode node){
         CutNodeAction cutAction =            new CutNodeAction();
-        cutAction.setNode(controller.getNodeID(node));
+        cutAction.setNode(mMindMapController.getNodeID(node));
         return cutAction;
 	}
 
 
     public Transferable cut(List nodeList) {
-	controller.sortNodesByDepth(nodeList);
-    	Transferable totalCopy = controller.copy(nodeList, true);
+	mMindMapController.sortNodesByDepth(nodeList);
+    	Transferable totalCopy = mMindMapController.copy(nodeList, true);
 		// Do-action
         CompoundAction doAction = new CompoundAction();
         // Undo-action
@@ -95,16 +109,16 @@ public class CutAction extends AbstractAction implements ActorXml {
         	doAction.addChoice(cutNodeAction);
 
         	NodeCoordinate coord = new NodeCoordinate(node, node.isLeft());
-        	Transferable copy = controller.copy(node, true);
-        	XmlAction pasteNodeAction = controller.paste.getPasteNodeAction(copy, coord);
+        	Transferable copy = mMindMapController.copy(node, true);
+        	XmlAction pasteNodeAction = mMindMapController.paste.getPasteNodeAction(copy, coord);
             // The paste actions are reversed because of the strange coordinates.
         	undo.addAtChoice(0,pasteNodeAction);
 
         }
         if (doAction.sizeChoiceList() > 0){
-            controller.getActionFactory().startTransaction(text);
-            controller.getActionFactory().executeAction(new ActionPair(doAction, undo));
-            controller.getActionFactory().endTransaction(text);
+            mMindMapController.getActionFactory().startTransaction(text);
+            mMindMapController.getActionFactory().executeAction(new ActionPair(doAction, undo));
+            mMindMapController.getActionFactory().endTransaction(text);
         }
         return totalCopy;
     }
@@ -114,10 +128,10 @@ public class CutAction extends AbstractAction implements ActorXml {
     public void act(XmlAction action) {
         CutNodeAction cutAction = (CutNodeAction) action;
         // clear all recently cutted links from the registry:
-        controller.getModel().getLinkRegistry().clearCuttedNodeBuffer();
-        MindMapNode selectedNode = controller.getNodeFromID(cutAction.getNode());
-		controller.getModel().getLinkRegistry().cutNode(selectedNode);
-		controller.deleteChild.deleteWithoutUndo(selectedNode);
+        mMindMapController.getModel().getLinkRegistry().clearCuttedNodeBuffer();
+        MindMapNode selectedNode = mMindMapController.getNodeFromID(cutAction.getNode());
+		mMindMapController.getModel().getLinkRegistry().cutNode(selectedNode);
+		mMindMapController.deleteChild.deleteWithoutUndo(selectedNode);
     }
 
     /* (non-Javadoc)

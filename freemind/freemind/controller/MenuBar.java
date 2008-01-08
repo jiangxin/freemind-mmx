@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.14 2008-01-04 22:52:30 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.15 2008-01-08 22:16:14 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -32,6 +32,7 @@ import java.util.ListIterator;
 
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;

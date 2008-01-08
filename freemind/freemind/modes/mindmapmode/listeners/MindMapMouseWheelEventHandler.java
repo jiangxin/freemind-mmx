@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.1.2.4 2007-04-21 15:11:22 dpolivaev Exp $ */
+/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.1.2.5 2008-01-08 22:16:16 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.listeners;
 
 import java.awt.event.InputEvent;
@@ -43,7 +43,6 @@ import freemind.view.mindmapview.MapView;
 public class MindMapMouseWheelEventHandler implements MouseWheelListener {
 
     private static int SCROLL_SKIPS = 8;
-    private static int SCROLL_SKIP = 10;
     private static final int HORIZONTAL_SCROLL_MASK
        = InputEvent.SHIFT_MASK | InputEvent.BUTTON1_MASK
          | InputEvent.BUTTON2_MASK | InputEvent.BUTTON3_MASK;
@@ -101,15 +100,11 @@ public class MindMapMouseWheelEventHandler implements MouseWheelListener {
 			mController.getController().setZoom(newZoom);
 			// end zoomchange
 		} else if ((e.getModifiers() & HORIZONTAL_SCROLL_MASK) != 0) {
-			for (int i = 0; i < SCROLL_SKIPS; i++) {
-				((MapView) e.getComponent()).scrollBy(SCROLL_SKIP
-						* e.getWheelRotation(), 0);
-			}
+			((MapView) e.getComponent()).scrollBy(SCROLL_SKIPS
+					* e.getWheelRotation(), 0);
 		} else {
-			for (int i = 0; i < SCROLL_SKIPS; i++) {
-				((MapView) e.getComponent()).scrollBy(0, SCROLL_SKIP
-						* e.getWheelRotation());
-			}
+			((MapView) e.getComponent()).scrollBy(0, SCROLL_SKIPS
+					* e.getWheelRotation());
 		}
 	}
 
