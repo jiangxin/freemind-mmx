@@ -6,6 +6,7 @@ Changes made in FreeMind 0.9.0 Beta16
 * Check marks for a lot of menu items added
 * Changed mouse wheel behaviour.
 * Cut gets a confirmation window, too. See https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1846766&group_id=7118
+* Bug fix: Hyperlink action renamed and it is only enabled, when there is actually a hyperlink. See https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1846702&group_id=7118
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta15

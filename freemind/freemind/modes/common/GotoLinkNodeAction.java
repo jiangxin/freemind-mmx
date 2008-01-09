@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/* $Id: GotoLinkNodeAction.java,v 1.1.2.1.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
+/* $Id: GotoLinkNodeAction.java,v 1.1.2.1.2.2 2008-01-09 21:31:15 christianfoltin Exp $ */
 
 package freemind.modes.common;
 
@@ -32,6 +32,7 @@ import javax.swing.ImageIcon;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 
+/** Follow a graphical link (AKA connector) action.*/
 public class GotoLinkNodeAction extends AbstractAction {
 	MindMapNode source;
 
@@ -47,7 +48,7 @@ public class GotoLinkNodeAction extends AbstractAction {
 		// source is for the controllerAdapter == null,
 		if (source != null) {
 			String adaptedText = source.getShortText(controller);
-			putValue(Action.NAME, controller.getText("follow_link")
+			putValue(Action.NAME, controller.getText("follow_graphical_link")
 					+ adaptedText);
 			putValue(Action.SHORT_DESCRIPTION, source.toString());
 		}

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.57 2007-12-18 21:58:41 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.58 2008-01-09 21:31:15 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -80,6 +80,7 @@ import org.jibx.runtime.JiBXException;
 
 import freemind.common.XmlBindingTools;
 import freemind.controller.MenuBar;
+import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
@@ -1655,13 +1656,19 @@ freemind.main.Resources.getInstance().logException(					e1);
         }
     }
 
-    protected class FollowLinkAction extends AbstractAction {
+    protected class FollowLinkAction extends AbstractAction implements MenuItemEnabledListener {
         public FollowLinkAction() {
             super(getText("follow_link"));
         }
         public void actionPerformed(ActionEvent e) {
             loadURL();
         }
+		public boolean isEnabled(JMenuItem pItem, Action pAction) {
+			MindMapNode selected = getSelected();
+			if(selected == null)
+				return false;
+			return selected.getLink() != null;
+		}
     }
 
 
