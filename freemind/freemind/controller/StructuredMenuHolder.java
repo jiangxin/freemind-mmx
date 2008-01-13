@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.6 2008-01-04 22:52:30 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.7 2008-01-13 20:55:34 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -101,7 +101,14 @@ public class StructuredMenuHolder {
 		StringTokenizer tokens = new StringTokenizer(category, "/");
 		StructuredMenuItemHolder holder = new StructuredMenuItemHolder();
 		holder.setAction(item);
-		holder.setMenuItem(new JMenuItem(item));
+		/* Dimitry, Eric and Dan requested to have the check marks with
+		 * the original JCheckBoxMenuItem.
+		 */
+		if (item instanceof MenuItemSelectedListener) { 
+			holder.setMenuItem(new JCheckBoxMenuItem(item));
+		} else {
+			holder.setMenuItem(new JMenuItem(item));
+		}
 		addMenu(holder, tokens);
 		return holder.getMenuItem();
 	}
@@ -449,10 +456,10 @@ public class StructuredMenuHolder {
                     menuItem.setEnabled(isEnabled);
 				}
 				isEnabled = menuItem.isEnabled();
-				if(isEnabled && holder.getSelectedListener() != null) {
+				if(isEnabled && holder.getSelectionListener() != null) {
 					boolean selected = false;
 					try {
-						selected = holder.getSelectedListener().isSelected(
+						selected = holder.getSelectionListener().isSelected(
 								menuItem, action);
 					} catch (Exception e) {
 						Resources.getInstance().logException(e);

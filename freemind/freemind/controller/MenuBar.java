@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.15 2008-01-08 22:16:14 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.16 2008-01-13 20:55:33 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -222,19 +222,15 @@ public class MenuBar extends JMenuBar {
         	// We have enabled hiding of menubar only in applets. It it because
         	// when we hide menubar in application, the key accelerators from
         	// menubar do not work.
-			newPopupItem = new JMenuItem(c.toggleMenubar);
+			newPopupItem = menuHolder.addAction(c.toggleMenubar, POPUP_MENU + "toggleMenubar");
 			newPopupItem.setForeground(new Color(100, 80, 80));
-//        newPopupItem.setEnabled(c.getFrame().isApplet());
-			menuHolder.addMenuItem(newPopupItem, POPUP_MENU + "toggleMenubar");
 		}
 
-		newPopupItem = new JMenuItem(c.toggleToolbar);
+		newPopupItem = menuHolder.addAction(c.toggleToolbar, POPUP_MENU + "toggleToolbar");
 		newPopupItem.setForeground(new Color(100, 80, 80));
-		menuHolder.addMenuItem(newPopupItem, POPUP_MENU + "toggleToolbar");
         
-        newPopupItem = new JMenuItem(c.toggleLeftToolbar);
+        newPopupItem = menuHolder.addAction(c.toggleLeftToolbar, POPUP_MENU+"toggleLeftToolbar");
         newPopupItem.setForeground(new Color(100,80,80));
-        menuHolder.addMenuItem(newPopupItem, POPUP_MENU+"toggleLeftToolbar");
     }
 	
     private void updateMapsMenu(StructuredMenuHolder holder, String basicKey) {

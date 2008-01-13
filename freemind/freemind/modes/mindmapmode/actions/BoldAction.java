@@ -91,5 +91,4 @@ public class BoldAction extends NodeGeneralAction implements NodeActorXml, MenuI
 		return modeController.getSelected().isBold();
     }
 
-
 }

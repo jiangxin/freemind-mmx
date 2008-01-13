@@ -1,5 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000-2004  Joerg Mueller, Daniel Polansky, Christian Foltin and others.
+ *Copyright (C) 2000-2008 Christian Foltin and others.
  *
  *See COPYING for Details
  *
@@ -17,15 +17,16 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * Created on 15.07.2004
+ * Created on 10.01.2008
  */
-/*$Id: MenuItemEnabledListener.java,v 1.1.4.1.16.1 2008-01-13 20:55:34 christianfoltin Exp $*/
-package freemind.controller;
+/*$Id: HookAction.java,v 1.1.2.1 2008-01-13 20:55:35 christianfoltin Exp $*/
 
-import javax.swing.Action;
-import javax.swing.JMenuItem;
+package freemind.modes.mindmapmode.actions;
 
-
-public interface MenuItemEnabledListener {
-		boolean isEnabled(JMenuItem pItem, Action pAction);
+/**
+ * @author foltin
+ *
+ */
+public interface HookAction {
+	String getHookName();
 }

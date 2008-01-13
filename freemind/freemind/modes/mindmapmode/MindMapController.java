@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.58 2008-01-09 21:31:15 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.59 2008-01-13 20:55:34 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -161,12 +161,14 @@ import freemind.modes.mindmapmode.actions.EditAction;
 import freemind.modes.mindmapmode.actions.ExportBranchAction;
 import freemind.modes.mindmapmode.actions.FontFamilyAction;
 import freemind.modes.mindmapmode.actions.FontSizeAction;
+import freemind.modes.mindmapmode.actions.HookAction;
 import freemind.modes.mindmapmode.actions.IconAction;
 import freemind.modes.mindmapmode.actions.ImportExplorerFavoritesAction;
 import freemind.modes.mindmapmode.actions.ImportFolderStructureAction;
 import freemind.modes.mindmapmode.actions.ItalicAction;
 import freemind.modes.mindmapmode.actions.JoinNodesAction;
 import freemind.modes.mindmapmode.actions.MindMapActions;
+import freemind.modes.mindmapmode.actions.MindMapControllerHookAction;
 import freemind.modes.mindmapmode.actions.ModeControllerActionHandler;
 import freemind.modes.mindmapmode.actions.MoveNodeAction;
 import freemind.modes.mindmapmode.actions.NewChildAction;
@@ -244,8 +246,6 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
     private ActionFactory actionFactory;
 	private Vector hookActions;
-	/** Stores the menu items belonging to the given action. */
-	private HashMap actionToMenuPositions;
 	//    Mode mode;
     private MindMapPopupMenu popupmenu;
     //private JToolBar toolbar;
@@ -717,28 +717,23 @@ freemind.main.Resources.getInstance().logException(					e);
 	 *
 	 */
 	private void createNodeHookActions() {
-		actionToMenuPositions = new HashMap();
         if (hookActions == null) {
             hookActions = new Vector();
             // HOOK TEST
             MindMapHookFactory factory = (MindMapHookFactory) getHookFactory();
-            List list = factory.getPossibleNodeHooks();
-            for (Iterator i = list.iterator(); i.hasNext();) {
-                String desc = (String) i.next();
+            List nodeHookNames = factory.getPossibleNodeHooks();
+            for (Iterator i = nodeHookNames.iterator(); i.hasNext();) {
+                String hookName = (String) i.next();
                 // create hook action.
-                NodeHookAction action = new NodeHookAction(desc, this);
-                factory.decorateAction(desc, action);
-                actionToMenuPositions.put(action, factory.getHookMenuPositions(desc));
+                NodeHookAction action = new NodeHookAction(hookName, this);
                 hookActions.add(action);
             }
-            List hooks =
+            List modeControllerHookNames =
                 factory.getPossibleModeControllerHooks();
-            for (Iterator i = hooks.iterator(); i.hasNext();) {
-                String desc = (String) i.next();
-                ModeControllerHookAction action =
-                    new ModeControllerHookAction(desc, this);
-                factory.decorateAction(desc, action);
-			   actionToMenuPositions.put(action, factory.getHookMenuPositions(desc));
+            for (Iterator i = modeControllerHookNames.iterator(); i.hasNext();) {
+                String hookName = (String) i.next();
+                MindMapControllerHookAction action =
+                    new MindMapControllerHookAction(hookName, this);
                 hookActions.add(action);
             }
             //HOOK TEST END
@@ -812,13 +807,16 @@ freemind.main.Resources.getInstance().logException(					e);
 		processMenuCategory(holder, mMenuStructure.getListChoiceList(), ""); /*MenuBar.MENU_BAR_PREFIX*/
 		// add hook actions to this holder.
 		// hooks, fc, 1.3.2004:
+		MindMapHookFactory hookFactory = (MindMapHookFactory) getHookFactory();
 		for (int i = 0; i < hookActions.size(); ++i) {
-			Action hookAction = (Action) hookActions.get(i);
-			List positions = (List) actionToMenuPositions.get(hookAction);
-			for (Iterator j = positions.iterator(); j.hasNext();) {
-                String pos = (String) j.next();
-                holder.addAction(hookAction, pos);
-            }
+			AbstractAction hookAction = (AbstractAction) hookActions.get(i);
+			String hookName = ((HookAction) hookAction).getHookName();
+			hookFactory.decorateAction(hookName, hookAction);
+			List hookMenuPositions = hookFactory.getHookMenuPositions(hookName);
+			for (Iterator j = hookMenuPositions.iterator(); j.hasNext();) {
+				String pos = (String) j.next();
+				holder.addMenuItem(hookFactory.getMenuItem(hookName, hookAction), pos);
+			}
 		}
 		// update popup and toolbar:
 		popupmenu.update(holder);
@@ -1093,31 +1091,6 @@ freemind.main.Resources.getInstance().logException(					e1);
     //
     //      Actions
     //_______________________________________________________________________________
-
-    protected class ModeControllerHookAction extends AbstractAction {
-        String hookName;
-        ModeController controller;
-        public ModeControllerHookAction(String hookName, ModeController controller) {
-            super(hookName);
-            this.hookName = hookName;
-            this.controller = controller;
-        }
-
-        public void actionPerformed(ActionEvent arg0) {
-            HookFactory hookFactory = getHookFactory();
-            // two different invocation methods:single or selecteds
-            ModeControllerHook hook = hookFactory.createModeControllerHook(hookName);
-            hook.setController(controller);
-            invokeHook(hook);
-        }
-
-    }
-
-
-
-    // Export and Import
-    // _________________
-
 
     // This may later be moved to ControllerAdapter. So far there is no reason for it.
     protected class ExportToHTMLAction extends AbstractAction {

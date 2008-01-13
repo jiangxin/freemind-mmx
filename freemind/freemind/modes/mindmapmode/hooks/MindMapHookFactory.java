@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.10 2006-11-28 08:25:36 dpolivaev Exp $ */
+/* $Id: MindMapHookFactory.java,v 1.1.2.2.2.11 2008-01-13 20:55:35 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.hooks;
 
 import java.io.File;
@@ -33,6 +33,8 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import org.jibx.runtime.IUnmarshallingContext;
@@ -374,6 +376,15 @@ freemind.main.Resources.getInstance().logException(				e);
 		if (hookName == null || descriptor == null)
 			throw new IllegalArgumentException("Unknown hook name " + hookName);
 		return descriptor;
+	}
+
+	public JMenuItem getMenuItem(String pHookName, AbstractAction pHookAction) {
+		HookDescriptorPluginAction descriptor = getHookDescriptor(pHookName);
+		if(descriptor.isSelectable()) {
+			return new JCheckBoxMenuItem(pHookAction);
+		} else {
+			return new JMenuItem(pHookAction);
+		}
 	}
 
 

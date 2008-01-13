@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2005
  */
-/* $Id: TimeManagementOrganizer.java,v 1.1.2.1 2007-01-03 23:47:43 christianfoltin Exp $ */
+/* $Id: TimeManagementOrganizer.java,v 1.1.2.2 2008-01-13 20:55:33 christianfoltin Exp $ */
 package accessories.plugins.time;
 
 import java.util.Iterator;
@@ -77,6 +77,7 @@ public class TimeManagementOrganizer implements HookRegistration, MenuItemEnable
 		}
 		return true;
 	}
+	
 
 	/**
 	 */

@@ -19,7 +19,7 @@
  *
  * Created on 15.07.2004
  */
-/*$Id: StructuredMenuItemHolder.java,v 1.1.4.1 2004-10-17 23:00:07 dpolivaev Exp $*/
+/*$Id: StructuredMenuItemHolder.java,v 1.1.4.1.16.1 2008-01-13 20:55:34 christianfoltin Exp $*/
 package freemind.controller;
 
 import javax.swing.Action;
@@ -30,7 +30,7 @@ public class StructuredMenuItemHolder {
 		private JMenuItem menuItem;
 		private Action action;
 		private MenuItemEnabledListener   enabledListener;
-		private MenuItemSelectedListener selectedListener;
+		private MenuItemSelectedListener selectionListener;
 		
 	public StructuredMenuItemHolder() {
 	}
@@ -61,11 +61,11 @@ public class StructuredMenuItemHolder {
 		public void setMenuItem(JMenuItem menuItem) {
 			this.menuItem = menuItem;
 		}
-		public MenuItemSelectedListener getSelectedListener() {
-			return selectedListener;
+		public MenuItemSelectedListener getSelectionListener() {
+			return selectionListener;
 		}
 		public void setSelectedListener(
-				MenuItemSelectedListener selectedListener) {
-			this.selectedListener = selectedListener;
+				MenuItemSelectedListener selectionListener) {
+			this.selectionListener = selectionListener;
 		}
 }

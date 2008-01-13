@@ -1013,6 +1013,7 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
+			<xs:attribute name="isSelectable" use="optional" type="xs:boolean" default="false"/>		
 		</xs:complexType>
   </xs:element>
 

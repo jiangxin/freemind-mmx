@@ -19,7 +19,7 @@
  *
  * Created on 26.07.2004
  */
-/* $Id: NodeHookAction.java,v 1.1.2.2.2.5 2008-01-04 22:52:31 christianfoltin Exp $ */
+/* $Id: NodeHookAction.java,v 1.1.2.2.2.6 2008-01-13 20:55:35 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -51,7 +51,7 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.view.mindmapview.NodeView;
 
 
-public class NodeHookAction extends FreemindAction implements ActorXml, MenuItemEnabledListener, MenuItemSelectedListener {
+public class NodeHookAction extends FreemindAction implements HookAction, ActorXml, MenuItemEnabledListener, MenuItemSelectedListener {
 	String _hookName;
 	MindMapController mMindMapController;
 	public MindMapController getController() {
@@ -59,7 +59,6 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 	}
 	private static Logger logger;
 	public NodeHookAction(String hookName, MindMapController controller) {
-	    //URGENT: hookName must be translated!!
 		super(hookName, (ImageIcon) null, null);
 		this._hookName = hookName;
 		this.mMindMapController = controller;
@@ -250,7 +249,7 @@ public class NodeHookAction extends FreemindAction implements ActorXml, MenuItem
 		if(baseClass != null) {
 			if (baseClass instanceof MenuItemEnabledListener) {
 				MenuItemEnabledListener listener = (MenuItemEnabledListener) baseClass;
-				return listener.isEnabled(item, this);
+				return listener.isEnabled(item, action);
 			}
 		}
 

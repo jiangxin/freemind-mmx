@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.37 2007-10-17 19:54:37 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.38 2008-01-13 20:55:34 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -545,7 +545,7 @@ public abstract class ControllerAdapter implements ModeController {
 	/** @return returns the new JMenuItem.
 	 * @param keystroke can be null, if no keystroke should be assigned. */
 	protected JMenuItem add(StructuredMenuHolder holder, String category, Action action, String keystroke) {
-	   JMenuItem item = holder.addMenuItem(new JMenuItem(action), category);
+	   JMenuItem item = holder.addAction(action, category);
 	   if(keystroke != null) {
 		String keyProperty = getFrame().getAdjustableProperty(keystroke);
 		logger.finest("Found key stroke: " + keyProperty);

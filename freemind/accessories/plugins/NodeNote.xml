@@ -25,7 +25,8 @@
 		base="freemind.extensions.NodeHookAdapter" 
 		label="accessories/plugins/NodeNote_hide_show.properties" 
 		class_name="accessories.plugins.NodeNote" 
-		instanciation="Other">
+		instanciation="Other"
+		isSelectable="true">
         <plugin_mode class_name="freemind.modes.mindmapmode"/>
         <plugin_menu location="menu_bar/view/note_window/note_hide_show"/>
         <plugin_menu location="popup/popup/note_hide_show"/>

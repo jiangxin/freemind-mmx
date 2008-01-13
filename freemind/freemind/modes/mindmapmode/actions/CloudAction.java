@@ -19,7 +19,7 @@
  *
  * Created on 06.10.2004
  */
-/* $Id: CloudAction.java,v 1.1.2.2.2.3 2008-01-04 22:52:30 christianfoltin Exp $ */
+/* $Id: CloudAction.java,v 1.1.2.2.2.4 2008-01-13 20:55:35 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -118,5 +118,4 @@ public class CloudAction extends NodeGeneralAction implements NodeActorXml, Menu
 	public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
 		return modeController.getSelected().getCloud() != null;
 	}
-
 }

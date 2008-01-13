@@ -19,7 +19,7 @@
  *
  * Created on 22.07.2004
  */
-/*$Id: HookDescriptorPluginAction.java,v 1.1.2.1 2006-08-20 19:34:25 christianfoltin Exp $*/
+/*$Id: HookDescriptorPluginAction.java,v 1.1.2.2 2008-01-13 20:55:34 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.util.HashMap;
@@ -119,6 +119,13 @@ public class HookDescriptorPluginAction  extends HookDescriptorBase {
 	 */
 	public Properties getProperties() {
 		return properties;
+	}
+	/**
+	 * @return whether or not the plugin can be on/off and this
+	 * should be displayed in the menus.
+	 */
+	public boolean isSelectable() {
+		return pluginAction.getIsSelectable();
 	}
 	
 }

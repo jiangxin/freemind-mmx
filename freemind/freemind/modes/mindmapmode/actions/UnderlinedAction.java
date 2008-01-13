@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: UnderlinedAction.java,v 1.1.2.2.2.3 2008-01-04 22:52:31 christianfoltin Exp $ */
+/* $Id: UnderlinedAction.java,v 1.1.2.2.2.4 2008-01-13 20:55:35 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import javax.swing.Action;
@@ -88,6 +88,4 @@ public class UnderlinedAction extends NodeGeneralAction implements NodeActorXml,
     public boolean isSelected(JMenuItem item, Action action) {
 		return modeController.getSelected().isUnderlined();
     }
-
-
 }

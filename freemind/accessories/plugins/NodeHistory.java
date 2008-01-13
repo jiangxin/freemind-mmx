@@ -204,6 +204,7 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 	    	}
 		}
 
+
 	}
 
 	/**
