@@ -10,6 +10,7 @@ Changes made in FreeMind 0.9.0 Beta16
 * Updated to Batik 1.6 (for Eric, as this version is already integrated in Debian)
 * Script Editor now has "Add new Script" and is able to assign the script results 
   to an (new) attribute using "attr_name=<script>".
+* Updated groovy to version 1.5.1
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta15
