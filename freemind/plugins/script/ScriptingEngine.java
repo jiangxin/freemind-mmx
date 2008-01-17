@@ -19,7 +19,7 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.9 2007-11-13 21:20:12 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.10 2008-01-17 20:27:40 christianfoltin Exp $ */
 package plugins.script;
 
 import java.io.PrintStream;
@@ -47,6 +47,7 @@ import groovy.lang.GroovyShell;
  * 
  */
 public class ScriptingEngine extends MindMapHookAdapter {
+	public static final String SCRIPT_PREFIX = "script";
 	static java.util.logging.Logger logger;
 
 	public interface ErrorHandler {
@@ -75,7 +76,7 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			String attrKey = (String) attributes.getName(row);
 			String script = (String) attributes.getValue(row);
 			logger.info("Found key = " + attrKey);
-			if (attrKey.startsWith("script")) {
+			if (attrKey.startsWith(SCRIPT_PREFIX)) {
 				boolean result = executeScript(node, pAlreadyAScriptExecuted,
 						script, getMindMapController(), new ErrorHandler(){
 							public void gotoLine(int pLineNumber) {
@@ -137,8 +138,14 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			GroovyShell shell = new GroovyShell(binding);
 
 			boolean assignResult = false;
+			String assignTo = null;
 			if (script.startsWith("=")) {
 				script = script.substring(1);
+				assignResult = true;
+			} else if(script.matches("[a-zA-Z0-9]*=.*")) {
+				int indexOfEquals = script.indexOf('=');
+				assignTo = script.substring(0,indexOfEquals);
+				script = script.substring(indexOfEquals+1);
 				assignResult = true;
 			}
 			Object value = shell.evaluate(script);
@@ -146,7 +153,11 @@ public class ScriptingEngine extends MindMapHookAdapter {
 					"plugins/ScriptEditor/window.Result")
 					+ value);
 			if (assignResult && value != null) {
-				pMindMapController.setNodeText(node, value.toString());
+				if (assignTo==null) {
+					pMindMapController.setNodeText(node, value.toString());
+				} else {
+					pMindMapController.editAttribute(node, assignTo, value.toString());
+				}
 			}
 			return true;
 		} catch (GroovyRuntimeException e) {

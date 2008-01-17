@@ -8,6 +8,8 @@ Changes made in FreeMind 0.9.0 Beta16
 * Cut gets a confirmation window, too. See https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1846766&group_id=7118
 * Bug fix: Hyperlink action renamed and it is only enabled, when there is actually a hyperlink. See https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1846702&group_id=7118
 * Updated to Batik 1.6 (for Eric, as this version is already integrated in Debian)
+* Script Editor now has "Add new Script" and is able to assign the script results 
+  to an (new) attribute using "attr_name=<script>".
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta15

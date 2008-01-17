@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditor.java,v 1.1.2.8 2007-11-09 22:23:10 christianfoltin Exp $*/
+/*$Id: ScriptEditor.java,v 1.1.2.9 2008-01-17 20:27:40 christianfoltin Exp $*/
 package plugins.script;
 
 import java.io.PrintStream;
@@ -56,13 +56,13 @@ public class ScriptEditor extends MindMapHookAdapter {
 		 */
 		private final Vector mScripts;
         private final MindMapNode mNode;
-        private final MindMapController mController;
+        private final MindMapController mMindMapController;
         private boolean isDirty = false;
 
-		private NodeScriptModel(Vector pScripts, MindMapNode node, MindMapController pController) {
+		private NodeScriptModel(Vector pScripts, MindMapNode node, MindMapController pMindMapController) {
 			mScripts = pScripts;
             mNode = node;
-            mController = pController;
+            mMindMapController = pMindMapController;
 		}
 
 		public ScriptEditorWindowConfigurationStorage decorateDialog(
@@ -74,8 +74,8 @@ public class ScriptEditor extends MindMapHookAdapter {
 
 		public boolean executeScript(int pIndex, PrintStream pOutStream, ErrorHandler pErrorHandler) {
 			String script = getScript(pIndex).getScript();
-			return ScriptingEngine.executeScript(mController.getSelected(),
-					new BooleanHolder(true), script, mController, pErrorHandler, pOutStream);
+			return ScriptingEngine.executeScript(mMindMapController.getSelected(),
+					new BooleanHolder(true), script, mMindMapController, pErrorHandler, pOutStream);
 		}
 
 		public int getAmountOfScripts() {
@@ -108,14 +108,19 @@ public class ScriptEditor extends MindMapHookAdapter {
 
         public void endDialog(boolean pIsCanceled) {
             if (!pIsCanceled) {
+            	// read length only once, as new attributes get this number as position.
+            	int attributeTableLength = mNode.getAttributeTableLength();
                 // store node attributes back
                 for (Iterator iter = mScripts.iterator(); iter.hasNext();) {
                     AttributeHolder holder = (AttributeHolder) iter.next();
                     Attribute attribute = holder.mAttribute;
                     int position = holder.mPosition;
-                    if(mNode.getAttribute(position).getValue() != attribute.getValue()) {
+					if(attributeTableLength <= position) {
+                    	// add new attribute
+                    	mMindMapController.addAttribute(mNode, attribute);
+                    } else if(mNode.getAttribute(position).getValue() != attribute.getValue()) {
 //                        logger.info("Setting attribute " + position + " to " + attribute);
-                        mController.setAttribute(mNode, position, attribute);
+                        mMindMapController.setAttribute(mNode, position, attribute);
                     }
                 }
             }
@@ -124,6 +129,28 @@ public class ScriptEditor extends MindMapHookAdapter {
         public boolean isDirty() {
             return isDirty;
         }
+
+		public int addNewScript() {
+			int index = mScripts.size();
+			/** is in general different from index, as not all attributes need to be scripts. */
+			int attributeIndex = mNode.getAttributeTableLength();
+			String scriptName = ScriptingEngine.SCRIPT_PREFIX;
+			int scriptNameSuffix = 1;
+			boolean found;
+			do {
+				found = false;
+				for (Iterator iterator = mScripts.iterator(); iterator.hasNext();) {
+					AttributeHolder holder = (AttributeHolder) iterator.next();
+					if((scriptName+scriptNameSuffix).equals(holder.mAttribute.getName())) {
+						found = true;
+						scriptNameSuffix++;
+						break;
+					}
+				}
+			} while(found); 
+			mScripts.add(new AttributeHolder(new Attribute(scriptName+scriptNameSuffix, ""), attributeIndex));
+			return index;
+		}
 	}
 
 	public void startupMapHook() {
@@ -132,13 +159,13 @@ public class ScriptEditor extends MindMapHookAdapter {
 		final Vector scripts = new Vector();
         for (int position = 0; position < node.getAttributeTableLength(); position++) {
             Attribute attribute = node.getAttribute(position);
-            if (attribute.getName().startsWith("script")) {
+            if (attribute.getName().startsWith(ScriptingEngine.SCRIPT_PREFIX)) {
                 scripts.add(new AttributeHolder(attribute, position));
             }
         }
 		NodeScriptModel nodeScriptModel = new NodeScriptModel(scripts, node, getMindMapController());
         ScriptEditorPanel scriptEditorPanel = new ScriptEditorPanel(
-				nodeScriptModel, getController().getFrame());
+				nodeScriptModel, getController().getFrame(), true);
 		scriptEditorPanel.setVisible(true);
 	}
 }

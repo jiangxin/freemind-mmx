@@ -77,6 +77,10 @@ public class ScriptingRegistration implements HookRegistration,
 		public String getScript() {
 			return mScript;
 		}
+
+		public int addNewScript() {
+			return 0;
+		}
 	}
 
 	private final MindMapController controller;
@@ -98,7 +102,7 @@ public class ScriptingRegistration implements HookRegistration,
 				PatternScriptModel patternScriptModel = new PatternScriptModel(
 						pScriptInput);
 				ScriptEditorPanel scriptEditorPanel = new ScriptEditorPanel(
-						patternScriptModel, controller.getFrame());
+						patternScriptModel, controller.getFrame(), false);
 				scriptEditorPanel.setVisible(true);
 				return patternScriptModel.getScript();
 			}

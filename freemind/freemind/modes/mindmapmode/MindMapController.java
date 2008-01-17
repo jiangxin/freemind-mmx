@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.59 2008-01-13 20:55:34 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.60 2008-01-17 20:27:40 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -134,6 +134,7 @@ import freemind.modes.NodeDownAction;
 import freemind.modes.StylePatternFactory;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeController;
+import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.common.CommonNodeKeyListener;
 import freemind.modes.common.GotoLinkNodeAction;
 import freemind.modes.common.CommonNodeKeyListener.EditHandler;
@@ -2008,10 +2009,32 @@ freemind.main.Resources.getInstance().logException(					e1);
 
     public void setAttribute(MindMapNode pNode, int pPosition,
             Attribute pAttribute) {
+    	pNode.createAttributeTableModel();
         pNode.getAttributes().setValueAt(pAttribute.getName(), pPosition, 0);
         pNode.getAttributes().setValueAt(pAttribute.getValue(), pPosition, 1);
     }
+    
+    public int addAttribute(MindMapNode node, Attribute pAttribute){
+    	node.createAttributeTableModel();
+        NodeAttributeTableModel attributes = node.getAttributes();                         
+        int rowCount = attributes.getRowCount();
+		attributes.getAttributeController().performInsertRow(attributes, rowCount, pAttribute.getName(), pAttribute.getValue());
+		return rowCount;
+    }
 
+    public int editAttribute(MindMapNode pNode, String pName, String pNewValue){
+    	pNode.createAttributeTableModel();
+    	Attribute newAttribute = new Attribute(pName, pNewValue);
+    	NodeAttributeTableModel attributes = pNode.getAttributes();
+    	for (int i = 0; i < attributes.getRowCount(); i++) {
+			if(pName.equals(attributes.getAttribute(i).getName())) {
+				setAttribute(pNode, i, newAttribute);
+				return i;
+			}
+		}
+    	return addAttribute(pNode, newAttribute);
+    }
+    
     public void insertNodeInto(MindMapNode newNode, MindMapNode parent, int index) {
         getModel().setSaved(false);
         super.insertNodeInto(newNode, parent, index);

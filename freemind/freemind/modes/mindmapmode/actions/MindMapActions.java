@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/* $Id: MindMapActions.java,v 1.1.2.3.2.5 2007-08-25 19:34:22 christianfoltin Exp $ */
+/* $Id: MindMapActions.java,v 1.1.2.3.2.6 2008-01-17 20:27:40 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
@@ -212,6 +212,23 @@ public interface MindMapActions {
     void deRegisterMouseWheelEventHandler(MouseWheelEventHandler handler);
 
     void setAttribute(MindMapNode node, int pPosition, Attribute pAttribute);
+    /** Inserts a new attribute at the end of the attributes table.
+     * @param node to which the attribute is added
+     * @param pAttribute itself
+     * @return the index of the new attribute.
+     */
+    int addAttribute(MindMapNode node, Attribute pAttribute);
+
+    /**
+     * If an attribute with the same name exists, its value is changed.
+     * Otherwise an attribute is created.
+     * If several attributes with the same name exist, only the first is changed.
+     * @param pNode to which the attribute is associated
+     * @param pName the name of the attribute
+     * @param pNewValue its new value
+     * @return the index of the attribute
+     */
+    int editAttribute(MindMapNode pNode, String pName, String pNewValue);
     
     /** Erases all content of the node as text, colors, fonts, etc.
      */

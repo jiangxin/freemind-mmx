@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.10 2007-11-09 22:23:10 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.11 2008-01-17 20:27:40 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -100,6 +100,8 @@ public class ScriptEditorPanel extends JDialog {
 
 	private JLabel mStatus;
 
+	private AbstractAction mRunAction;
+
 	private final class ResultFieldStream extends OutputStream {
 		public void write(int pByte) throws IOException {
 			mScriptResultField.append(new String(new byte[] { (byte) pByte }));
@@ -145,6 +147,19 @@ public class ScriptEditorPanel extends JDialog {
 		}
 	}
 
+	private final class NewScriptAction extends AbstractAction {
+		private NewScriptAction(String pArg0) {
+			super(pArg0);
+		}
+		
+		public void actionPerformed(ActionEvent arg0) {
+			storeCurrent();
+			int scriptIndex = mScriptModel.addNewScript();
+			updateFields();
+			select(scriptIndex);
+		}
+	}
+	
 	public static class ScriptHolder {
 		String mScript;
 
@@ -152,7 +167,7 @@ public class ScriptEditorPanel extends JDialog {
 
 		/**
 		 * @param pScriptName
-		 *            script name (starting with "script")
+		 *            script name (starting with "script" (ScriptingEngine.SCRIPT_PREFIX))
 		 * @param pScript
 		 *            script content
 		 */
@@ -207,9 +222,14 @@ public class ScriptEditorPanel extends JDialog {
 		void endDialog(boolean pIsCanceled);
 
 		boolean isDirty();
+		/** 
+		 *
+		 * @return the index of the new script.
+		 */
+		int addNewScript();
 	}
 
-	public ScriptEditorPanel(ScriptModel pScriptModel, FreeMindMain pFrame) {
+	public ScriptEditorPanel(ScriptModel pScriptModel, FreeMindMain pFrame, boolean pHasNewScriptFunctionality) {
 		super(pFrame.getJFrame(), true /* modal */);
 		logger = pFrame.getLogger(this.getClass().getName());
 		mScriptModel = pScriptModel;
@@ -238,14 +258,15 @@ public class ScriptEditorPanel extends JDialog {
 		mScriptList.addListSelectionListener(new ListSelectionListener() {
 
 			public void valueChanged(ListSelectionEvent pEvent) {
-				System.out.println("List selection:" + pEvent);
 				if (pEvent.getValueIsAdjusting())
 					return;
+//				System.out.println("List selection:" + pEvent);
 				select(mScriptList.getSelectedIndex());
 			}
 		});
 		// add(mScriptList, BorderLayout.WEST);
 		mScriptTextField = new JTextArea();
+		mScriptTextField.setEnabled(false);
 		mScriptTextField.setTabSize(2);
 		mCentralUpperPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				mScriptList, new JScrollPane(mScriptTextField));
@@ -287,21 +308,20 @@ public class ScriptEditorPanel extends JDialog {
 		JMenu menu = new JMenu();
 		Tools.setLabelAndMnemonic(menu, pFrame
 				.getResourceString("plugins/ScriptEditor.menu_actions"));
-		AbstractAction runAction = new RunAction(pFrame
+		if(pHasNewScriptFunctionality){
+			addAction(menu, new NewScriptAction(pFrame
+					.getResourceString("plugins/ScriptEditor.new_script")));
+		}
+		mRunAction = new RunAction(pFrame
 				.getResourceString("plugins/ScriptEditor.run"));
+		mRunAction.setEnabled(false);
+		addAction(menu, mRunAction);
 		AbstractAction cancelAction = new CancelAction(pFrame
 				.getResourceString("plugins/ScriptEditor.cancel"));
+		addAction(menu, cancelAction);
 		AbstractAction exitAction = new ExitAction(pFrame
 				.getResourceString("plugins/ScriptEditor.exit"));
-
-		AbstractAction[] actionList = new AbstractAction[] { runAction,
-				cancelAction, exitAction };
-		for (int i = 0; i < actionList.length; i++) {
-			AbstractAction action = actionList[i];
-			JMenuItem item = menu.add(action);
-			Tools.setLabelAndMnemonic(item, (String) action.getValue(AbstractAction.NAME));
-			item.setIcon(new BlindIcon(StructuredMenuHolder.ICON_SIZE));
-		}
+		addAction(menu, exitAction);
 		menuBar.add(menu);
 		this.setJMenuBar(menuBar);
 		// Retrieve window size and column positions.
@@ -314,6 +334,12 @@ public class ScriptEditorPanel extends JDialog {
 
 	}
 
+	private void addAction(JMenu menu, AbstractAction action) {
+		JMenuItem item = menu.add(action);
+		Tools.setLabelAndMnemonic(item, (String) action.getValue(AbstractAction.NAME));
+		item.setIcon(new BlindIcon(StructuredMenuHolder.ICON_SIZE));
+	}
+
 	private void updateFields() {
 		mListModel.clear();
 		for (int i = 0; i < mScriptModel.getAmountOfScripts(); ++i) {
@@ -323,11 +349,20 @@ public class ScriptEditorPanel extends JDialog {
 	}
 
 	private void select(int pIndex) {
+		mScriptTextField.setEnabled(pIndex >= 0);
+		mRunAction.setEnabled(pIndex >= 0);
+		if(pIndex < 0) {
+			mScriptTextField.setText("");
+			return;
+		}
 		storeCurrent();
 		// set new script
 		mScriptTextField.setText(mScriptModel.getScript(pIndex).getScript());
 		// set last one:
 		mLastSelected = new Integer(pIndex);
+		if(pIndex >= 0 && mScriptList.getSelectedIndex() != pIndex) {
+			mScriptList.setSelectedIndex(pIndex);
+		}
 	}
 
 	private void storeCurrent() {
