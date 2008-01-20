@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.17 2007-08-25 19:34:22 christianfoltin Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.18 2008-01-20 21:53:12 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -44,6 +44,7 @@ import freemind.extensions.PermanentNodeHook;
 import freemind.main.XMLElement;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.modes.mindmapmode.actions.MindMapActions;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.NodeViewVisitor;
 
@@ -299,7 +300,22 @@ public interface MindMapNode extends MutableTreeNode {
      */
     Attribute getAttribute(int pPosition);
     
-    boolean isAttributeExisting(String key);
+    /**Searches for the first attribute with the given key. This is 
+     * a convenience function.
+     * 
+     * @param pKey is the name of the attribute
+     * @return the value of the attribute or null, if not found.
+     * @see MindMapActions.editAttribute to set the value to 
+     * a different one.
+     */
+    String getAttribute(String pKey);
+    
+    /**
+     * @param key the name of the attribute
+     * @return the index of the first occurence of an attribute with this 
+     * key, or -1 if not found.
+     */
+    int getAttributePosition(String key);
     /**
      * Sets the attribute to the given value. 
      */

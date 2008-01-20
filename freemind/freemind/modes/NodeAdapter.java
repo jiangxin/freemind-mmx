@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.36 2007-10-17 19:54:38 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.37 2008-01-20 21:53:12 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -1223,17 +1223,27 @@ freemind.main.Resources.getInstance().logException(			e);
 		return returnValue;
 	}
 
-	public boolean isAttributeExisting(String pKey) {
+	public int getAttributePosition(String pKey) {
 		if (pKey == null)
-			return false;
+			return -1;
+		int pos = 0;
 		for (Iterator iter = attributes.getAttributes().iterator(); iter
 		.hasNext();) {
 			Attribute attr = (Attribute) iter.next();
 			if (pKey.equals(attr.getName())) {
-				return true;
+				return pos;
 			}
+			pos++;
 		}
-		return false;
+		return -1;
+	}
+
+	public String getAttribute(String pKey){
+		int attributePosition = getAttributePosition(pKey);
+		if(attributePosition < 0) {
+			return null;
+		} 
+		return getAttribute(attributePosition).getValue();
 	}
 
 	public void setAttribute(int pPosition, Attribute pAttribute) {
