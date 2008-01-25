@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.19 2007-09-07 18:51:56 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.20 2008-01-25 18:16:28 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -323,6 +323,9 @@ public class EditNodeTextField extends EditNodeBase {
 
     private void hideMe() {
     	final Container parent = textfield.getParent();
+        textfield.removeFocusListener(textFieldListener);
+        textfield.removeKeyListener((KeyListener) textFieldListener);
+        textfield.removeMouseListener((MouseListener) textFieldListener);
 		parent.remove(0);
 		parent.repaint();
         textFieldListener = null;
