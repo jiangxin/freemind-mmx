@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.20 2008-01-25 18:16:28 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.21 2008-01-28 13:12:15 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -139,7 +139,7 @@ public class EditNodeTextField extends EditNodeBase {
 
         // listener class
         class TextFieldListener
-            implements KeyListener, FocusListener, MouseListener, ComponentListener {
+            implements KeyListener, FocusListener, MouseListener, ComponentListener{
 
             public void focusGained(FocusEvent e) {
                 // the first time the edit field gains a focus
@@ -192,8 +192,7 @@ public class EditNodeTextField extends EditNodeBase {
                 // - scrolling while in editing mode (it can behave just like other viewers)
                 // - block selected events while in editing mode
                 if(! textfield.isVisible())
-                    return;
-                getNode().removeComponentListener(this);
+                    return;                
                 if (e == null) { // can be when called explicitly
                     getEditControl().ok(textfield.getText());
                     hideMe();
@@ -326,6 +325,7 @@ public class EditNodeTextField extends EditNodeBase {
         textfield.removeFocusListener(textFieldListener);
         textfield.removeKeyListener((KeyListener) textFieldListener);
         textfield.removeMouseListener((MouseListener) textFieldListener);
+        getNode().removeComponentListener((ComponentListener) textFieldListener);
 		parent.remove(0);
 		parent.repaint();
         textFieldListener = null;
