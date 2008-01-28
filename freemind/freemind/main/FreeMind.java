@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.93 2008-01-28 10:30:35 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.94 2008-01-28 13:09:43 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -787,8 +787,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		menuBar = new MenuBar(controller);
 		setJMenuBar(menuBar);
 
-		// Create the scroll pane
-		mScrollPane =  new JScrollPane();
 		// set the default size (PN)
 		int win_width = getIntProperty("appwindow_width", 0);
 		int win_height =getIntProperty("appwindow_height", 0);
@@ -808,6 +806,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		win_y = Math.max(screenInsets.top, win_y);
 		win_y = Math.min(screenWidth+screenInsets.top-win_height, win_y);
 		setBounds(win_x, win_y, win_width, win_height);
+		// Create the scroll pane
+		mScrollPane =  new JScrollPane();
 		if (Tools.safeEquals(getProperty("no_scrollbar"), "true")) {
 			mScrollPane
 					.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
