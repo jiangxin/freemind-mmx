@@ -19,12 +19,13 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.2.12.10 2007-09-07 18:47:21 dpolivaev Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2.12.11 2008-01-28 15:11:09 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -148,7 +149,6 @@ public class EditNodeBase {
     protected static  final int BUTTON_SPLIT = 2;
     protected NodeView node;
     private EditControl editControl;
-    private Clipboard clipboard;
     private ModeController controller;
 	protected String text;
 
@@ -208,7 +208,7 @@ public class EditNodeBase {
 		public void actionPerformed(ActionEvent e) {
 			String selection = textComponent.getSelectedText();
 			if (selection != null) {
-				clipboard.setContents(new StringSelection(selection), null);
+				getClipboard().setContents(new StringSelection(selection), null);
 			}
 		}
 	}
@@ -238,7 +238,7 @@ public class EditNodeBase {
     /**
      */
     public Clipboard getClipboard() {
-        return clipboard;
+        return Toolkit.getDefaultToolkit().getSystemClipboard();
     }
 
     /**
