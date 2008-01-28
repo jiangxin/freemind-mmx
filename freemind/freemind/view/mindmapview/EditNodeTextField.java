@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.22 2008-01-28 15:11:44 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.23 2008-01-28 15:29:49 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -193,13 +193,13 @@ public class EditNodeTextField extends EditNodeBase {
                 // - adding of a child to the rightmost node
                 // - scrolling while in editing mode (it can behave just like other viewers)
                 // - block selected events while in editing mode
-                if(! textfield.isVisible())
+                if(! textfield.isVisible() || eventSource.getValue() == CANCEL)
                     return;                
                 if (e == null) { // can be when called explicitly
                     getEditControl().ok(textfield.getText());
                     hideMe();
                     eventSource.setValue(CANCEL); // disallow real focus lost
-                } else if (eventSource.getValue() != CANCEL) {
+                } else {
                     // always confirm the text if not yet
                     getEditControl().ok(textfield.getText());
                     hideMe();
@@ -209,7 +209,7 @@ public class EditNodeTextField extends EditNodeBase {
             public void keyPressed(KeyEvent e) {
 
                 // add to check meta keydown by koh 2004.04.16
-                if (e.isAltDown() || e.isControlDown() || e.isMetaDown()) {
+                if (e.isAltDown() || e.isControlDown() || e.isMetaDown() || eventSource.getValue() == CANCEL) {
                     return;
                 }
 
