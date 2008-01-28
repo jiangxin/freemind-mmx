@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StdFormatter.java,v 1.1.2.3 2007-10-29 20:43:59 christianfoltin Exp $*/
+/*$Id: StdFormatter.java,v 1.1.2.4 2008-01-28 13:07:14 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -54,8 +54,8 @@ class StdFormatter extends SimpleFormatter {
      * @return a formatted log record
      */
     public synchronized String format(LogRecord record) {
-    	if(! record.getLoggerName().equals(STDERR.getName())
-    			&& ! record.getLoggerName().equals(STDOUT.getName())){
+    	if(! STDERR.getName().equals(record.getLoggerName())
+    			&& ! STDOUT.getName().equals(record.getLoggerName())){
     		return super.format(record);
     	}
     	StringBuffer sb = new StringBuffer();
