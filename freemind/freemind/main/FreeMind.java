@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.92 2008-01-08 22:16:14 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.93 2008-01-28 10:30:35 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -163,7 +163,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private static FileHandler mFileHandler;
 
-	private JScrollPane mScrollPane = new JScrollPane();
+	private JScrollPane mScrollPane = null;
 
 	private JSplitPane mSplitPane;
 
@@ -788,7 +788,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		setJMenuBar(menuBar);
 
 		// Create the scroll pane
-
+		mScrollPane =  new JScrollPane();
 		// set the default size (PN)
 		int win_width = getIntProperty("appwindow_width", 0);
 		int win_height =getIntProperty("appwindow_height", 0);
