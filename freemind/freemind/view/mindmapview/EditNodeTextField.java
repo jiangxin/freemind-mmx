@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.21 2008-01-28 13:12:15 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.22 2008-01-28 15:11:44 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -27,6 +27,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.SystemColor;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -37,6 +38,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
@@ -321,13 +323,15 @@ public class EditNodeTextField extends EditNodeBase {
     }
 
     private void hideMe() {
-    	final Container parent = textfield.getParent();
+    	final JComponent parent = (JComponent) textfield.getParent();
+    	final Rectangle bounds = textfield.getBounds();
         textfield.removeFocusListener(textFieldListener);
         textfield.removeKeyListener((KeyListener) textFieldListener);
         textfield.removeMouseListener((MouseListener) textFieldListener);
         getNode().removeComponentListener((ComponentListener) textFieldListener);
 		parent.remove(0);
-		parent.repaint();
+		parent.revalidate();
+		parent.repaint(bounds);
         textFieldListener = null;
     }
     
