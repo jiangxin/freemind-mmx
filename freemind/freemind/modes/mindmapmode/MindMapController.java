@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.60 2008-01-17 20:27:40 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.61 2008-01-29 10:46:49 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -142,6 +142,7 @@ import freemind.modes.common.actions.FindAction;
 import freemind.modes.common.actions.NewMapAction;
 import freemind.modes.common.actions.FindAction.FindNextAction;
 import freemind.modes.common.listeners.CommonNodeMouseMotionListener;
+import freemind.modes.common.listeners.MindMapMouseWheelEventHandler;
 import freemind.modes.mindmapmode.actions.AddArrowLinkAction;
 import freemind.modes.mindmapmode.actions.AddLocalLinkAction;
 import freemind.modes.mindmapmode.actions.ApplyPatternAction;
@@ -207,7 +208,6 @@ import freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog;
 import freemind.modes.mindmapmode.attributeactors.MindMapModeAttributeController;
 import freemind.modes.mindmapmode.hooks.MindMapHookFactory;
 import freemind.modes.mindmapmode.listeners.MindMapMouseMotionManager;
-import freemind.modes.mindmapmode.listeners.MindMapMouseWheelEventHandler;
 import freemind.modes.mindmapmode.listeners.MindMapNodeDropListener;
 import freemind.modes.mindmapmode.listeners.MindMapNodeMotionListener;
 import freemind.view.MapModule;
@@ -666,7 +666,6 @@ freemind.main.Resources.getInstance().logException(					e);
 			}}));
         getController().getNodeMotionListener().register(new MindMapNodeMotionListener(this));
         getController().getNodeMouseMotionListener().register(new CommonNodeMouseMotionListener(this));
-        getController().getMapMouseWheelListener().register(new MindMapMouseWheelEventHandler(this));
 	}
 
     public void shutdownController() {
@@ -679,7 +678,6 @@ freemind.main.Resources.getInstance().logException(					e);
         mRegistrations.clear();
         // deregister motion handler
         getController().getMapMouseMotionListener().deregister();
-        getController().getMapMouseWheelListener().deregister();
         getController().getNodeDropListener().deregister();
         getController().getNodeKeyListener().deregister();
         getController().getNodeMotionListener().deregister();
@@ -1134,20 +1132,20 @@ freemind.main.Resources.getInstance().logException(					e1);
 	public void actionPerformed(ActionEvent e) {
 	    MindMapNodeModel parent = (MindMapNodeModel)getSelected();
 	    if (parent == null) {
-               return; }
-            JFileChooser chooser = new JFileChooser();
-            //chooser.setLocale(currentLocale);
-            if (getFileFilter() != null) {
-               chooser.addChoosableFileFilter(getFileFilter()); }
-            int returnVal = chooser.showOpenDialog(getFrame().getContentPane());
-            if (returnVal==JFileChooser.APPROVE_OPTION) {
-               try {
-                  MindMapNodeModel node = getMindMapMapModel().loadTree(chooser.getSelectedFile());
-                  paste(node, parent);
- 				  invokeHooksRecursively(node, getMindMapMapModel());
-               }
-               catch (Exception ex) {
-                  handleLoadingException(ex); }}}}
+	           return; }
+	        JFileChooser chooser = new JFileChooser();
+	        //chooser.setLocale(currentLocale);
+	        if (getFileFilter() != null) {
+	           chooser.addChoosableFileFilter(getFileFilter()); }
+	        int returnVal = chooser.showOpenDialog(getFrame().getContentPane());
+	        if (returnVal==JFileChooser.APPROVE_OPTION) {
+	           try {
+	              MindMapNodeModel node = getMindMapMapModel().loadTree(chooser.getSelectedFile());
+	              paste(node, parent);
+				  invokeHooksRecursively(node, getMindMapMapModel());
+	           }
+	           catch (Exception ex) {
+	              handleLoadingException(ex); }}}}
 
     private class ImportLinkedBranchAction extends AbstractAction {
 	ImportLinkedBranchAction() {

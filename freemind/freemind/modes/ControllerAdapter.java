@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.38 2008-01-13 20:55:34 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.39 2008-01-29 10:46:48 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -51,6 +51,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javax.swing.AbstractAction;
@@ -83,6 +84,7 @@ import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.main.XMLParseException;
 import freemind.modes.attributes.AttributeController;
+import freemind.modes.common.listeners.MindMapMouseWheelEventHandler;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.attributeview.AttributeTable;
@@ -1099,6 +1101,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     public void shutdownController() {
         setAllActions(false);
+        getController().getMapMouseWheelListener().deregister();
     }
 
     /** This method is called after and before a change of the map module.
@@ -1112,6 +1115,7 @@ public abstract class ControllerAdapter implements ModeController {
             DropTarget dropTarget = new DropTarget(getFrame().getView(),
                                 fileOpener);
         }
+        getController().getMapMouseWheelListener().register(new MindMapMouseWheelEventHandler(this));
     }
 
     /** Don't call me directly!!!
@@ -1232,6 +1236,10 @@ public abstract class ControllerAdapter implements ModeController {
 		if (link != null) {
 			loadURL(link);
 		}
+	}
+
+	public Set getRegisteredMouseWheelEventHandler() {
+		return Collections.EMPTY_SET;
 	}
     
 

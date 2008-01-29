@@ -19,8 +19,8 @@
  *
  * Created on 09.11.2005
  */
-/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.1.2.5 2008-01-08 22:16:16 christianfoltin Exp $ */
-package freemind.modes.mindmapmode.listeners;
+/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.1 2008-01-29 10:46:49 dpolivaev Exp $ */
+package freemind.modes.common.listeners;
 
 import java.awt.event.InputEvent;
 import java.awt.event.MouseWheelEvent;
@@ -31,6 +31,8 @@ import java.util.Set;
 import freemind.controller.Controller;
 import freemind.main.FreeMind;
 import freemind.main.Tools;
+import freemind.modes.ControllerAdapter;
+import freemind.modes.ModeController;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.MindMapActions.MouseWheelEventHandler;
 import freemind.preferences.FreemindPropertyListener;
@@ -50,19 +52,18 @@ public class MindMapMouseWheelEventHandler implements MouseWheelListener {
        = InputEvent.CTRL_MASK;
       // |=   oldX >=0 iff we are in the drag
 
-
 	/**
 	 *
 	 */
-	public MindMapMouseWheelEventHandler(MindMapController controller) {
+	public MindMapMouseWheelEventHandler(ControllerAdapter controller) {
 		super();
 		Controller.addPropertyChangeListener(new FreemindPropertyListener(){
 
-            public void propertyChanged(String propertyName, String newValue, String oldValue) {
-                if(propertyName.equals(FreeMind.RESOURCES_WHEEL_VELOCITY)) {
-                    SCROLL_SKIPS=Integer.parseInt(newValue);
-                }
-            }});
+           public void propertyChanged(String propertyName, String newValue, String oldValue) {
+               if(propertyName.equals(FreeMind.RESOURCES_WHEEL_VELOCITY)) {
+                   SCROLL_SKIPS=Integer.parseInt(newValue);
+               }
+           }});
 		SCROLL_SKIPS=controller.getFrame().getIntProperty(FreeMind.RESOURCES_WHEEL_VELOCITY, 8);
 	}
 
@@ -73,7 +74,7 @@ public class MindMapMouseWheelEventHandler implements MouseWheelListener {
 	 */
 	public void mouseWheelMoved(MouseWheelEvent e) {
         MapView mapView = (MapView) e.getSource();
-        MindMapController mController = (MindMapController)mapView.getModel().getModeController();
+        ControllerAdapter mController = (ControllerAdapter)mapView.getModel().getModeController();
 		if (mController.isBlocked()) {
 			return; // block the scroll during edit (PN)
 		}
