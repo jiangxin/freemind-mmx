@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: TestMindMapNode.java,v 1.1.2.15 2008-01-20 21:53:13 christianfoltin Exp $*/
+/*$Id: TestMindMapNode.java,v 1.1.2.16 2008-01-30 21:39:54 dpolivaev Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -422,7 +422,7 @@ final class TestMindMapNode implements MindMapNode {
     }
 
     public int getAttributePosition(String key) {
-        return false;
+        return 0;
     }
 
     public void setAttribute(int pPosition, Attribute pAttribute) {
@@ -455,6 +455,11 @@ final class TestMindMapNode implements MindMapNode {
 	public void createAttributeTableModel() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public String getAttribute(String key) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
