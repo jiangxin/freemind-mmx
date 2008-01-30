@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.61 2008-01-29 10:46:49 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.62 2008-01-30 20:44:48 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -49,7 +49,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;

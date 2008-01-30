@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatterns.java,v 1.1.2.4 2006-03-26 20:58:42 christianfoltin Exp $*/
+/*$Id: ManagePatterns.java,v 1.1.2.4.2.1 2008-01-30 20:44:47 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -49,9 +49,9 @@ public class ManagePatterns extends MindMapHookAdapter {
 		FreeMind frame = (FreeMind) getController().getFrame();
 		ManagePatternsPopupDialog formatDialog = new ManagePatternsPopupDialog(
 				frame.getJFrame(), getMindMapController());
-		formatDialog.pack();
+//		formatDialog.pack();
 		formatDialog.setModal(true);
-		formatDialog.show();
+		formatDialog.setVisible(true);
 		// process result:
 		if (formatDialog.getResult() == ChooseFormatPopupDialog.OK) {
 			try {

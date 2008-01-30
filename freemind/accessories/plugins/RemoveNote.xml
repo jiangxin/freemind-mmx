@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 <plugin label="accessories/plugins/RemoveNote">
+	<plugin_registration 
+		class_name="accessories.plugins.RemoveNote$Registration" 
+		isPluginBase="true">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+	</plugin_registration>
     <plugin_action
     	base="freemind.extensions.NodeHookAdapter"
     	label="accessories/plugins/RemoveNote.properties"

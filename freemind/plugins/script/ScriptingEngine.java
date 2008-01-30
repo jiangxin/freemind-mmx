@@ -19,7 +19,7 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.11 2008-01-20 21:53:12 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.12 2008-01-30 20:44:48 christianfoltin Exp $ */
 package plugins.script;
 
 import java.io.PrintStream;
@@ -144,11 +144,13 @@ public class ScriptingEngine extends MindMapHookAdapter {
 				assignResult = true;
 			} else{
 				int indexOfEquals = script.indexOf('=');
-				String start = script.substring(0,indexOfEquals);
-				if(start.matches("[a-zA-Z0-9]+")) {
-					assignTo = start;
-					script = script.substring(indexOfEquals+1);
-					assignResult = true;
+				if (indexOfEquals > 0) {
+					String start = script.substring(0, indexOfEquals);
+					if (start.matches("[a-zA-Z0-9]+")) {
+						assignTo = start;
+						script = script.substring(indexOfEquals + 1);
+						assignResult = true;
+					}
 				}
 			}
 			Object value = shell.evaluate(script);

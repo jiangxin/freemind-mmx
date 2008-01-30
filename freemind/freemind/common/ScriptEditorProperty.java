@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ScriptEditorProperty.java,v 1.1.2.1 2007-11-13 21:20:12 christianfoltin Exp $*/
+/*$Id: ScriptEditorProperty.java,v 1.1.2.2 2008-01-30 20:44:48 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.Color;
@@ -117,6 +117,7 @@ public class ScriptEditorProperty extends PropertyBean implements
 			result = "";
 		}
 		script = result;
+		System.out.println("Setting script to " + result);
 		mButton.setText(script);
 	}
 

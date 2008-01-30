@@ -98,7 +98,7 @@ public class ScriptingRegistration implements HookRegistration,
 		mScriptEditorStarter = new ScriptEditorProperty.ScriptEditorStarter() {
 
 			public String startEditor(String pScriptInput) {
-				ScriptingEngine.logger.info("Start to edit script...");
+				ScriptingEngine.logger.info("Start to edit script..."+pScriptInput);
 				PatternScriptModel patternScriptModel = new PatternScriptModel(
 						pScriptInput);
 				ScriptEditorPanel scriptEditorPanel = new ScriptEditorPanel(

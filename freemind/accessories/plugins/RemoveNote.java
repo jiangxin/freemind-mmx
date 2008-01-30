@@ -19,31 +19,75 @@
  *
  * Created on 06.10.2004
  */
-/* $Id: RemoveNote.java,v 1.1.2.2 2007-11-01 16:10:17 dpolivaev Exp $ */
+/* $Id: RemoveNote.java,v 1.1.2.3 2008-01-30 20:44:47 christianfoltin Exp $ */
 
 package accessories.plugins;
 
-import javax.swing.JOptionPane;
+import java.util.Iterator;
 
-import freemind.controller.actions.generated.instance.Pattern;
+import javax.swing.Action;
+import javax.swing.JMenuItem;
+
+import freemind.controller.MenuItemEnabledListener;
+import freemind.extensions.HookRegistration;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
-import freemind.modes.StylePatternFactory;
+import freemind.modes.ModeController;
+import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class RemoveNote extends MindMapNodeHookAdapter {
-    public RemoveNote() {
-        super();
-    }
+	public RemoveNote() {
+		super();
+	}
 
-    public void invoke(MindMapNode node) {
+	public void invoke(MindMapNode node) {
 		super.invoke(node);
-		if(getMindMapController().getSelected() == node){
-			NodeNoteRegistration.getHtmlEditorPanel().setCurrentDocumentContent("");
-		}			
+		if (getMindMapController().getSelected() == node) {
+			NodeNoteRegistration.getHtmlEditorPanel()
+					.setCurrentDocumentContent("");
+		}
 		getMindMapController().setNoteText(node, null);
+	}
+
+	public static class Registration implements HookRegistration,
+			MenuItemEnabledListener {
+
+		private final MindMapController controller;
+
+		private final MindMap mMap;
+
+		private final java.util.logging.Logger logger;
+
+		public Registration(ModeController controller, MindMap map) {
+			this.controller = (MindMapController) controller;
+			mMap = map;
+			logger = controller.getFrame().getLogger(this.getClass().getName());
+		}
+
+		public boolean isEnabled(JMenuItem pItem, Action pAction) {
+			if (controller == null)
+				return false;
+			boolean foundNote = false;
+			for (Iterator iterator = controller.getSelecteds()
+					.iterator(); iterator.hasNext();) {
+				MindMapNode node = (MindMapNode) iterator.next();
+				if (node.getNoteText() != null) {
+					foundNote = true;
+					break;
+				}
+			}
+			return foundNote;
+		}
+
+		public void deRegister() {
+		}
+
+		public void register() {
+		}
 	}
 }
