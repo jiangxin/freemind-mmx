@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.95 2008-01-28 17:17:44 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.96 2008-01-30 21:40:56 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -126,7 +126,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private static final String DEFAULT_LANGUAGE = "en";
 
-	public static final String VERSION = "0.9.0 Beta 15";
+	public static final String VERSION = "0.9.0 Beta 16";
 
 	public static final String XML_VERSION = "0.9.0_Beta_8";
 
@@ -184,7 +184,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		if (logger == null) {
 			logger = getLogger(FreeMind.class.getName());
 			StringBuffer info = new StringBuffer();
-			info.append("java_version = ");
+			info.append("freemind_version = ");
+			info.append(VERSION);
+			info.append("; freemind_xml_version = ");
+			info.append(XML_VERSION);
+			info.append("\njava_version = ");
 			info.append(System.getProperty("java.version"));
 			info.append("; os_name = ");
 			info.append(System.getProperty("os.name"));
