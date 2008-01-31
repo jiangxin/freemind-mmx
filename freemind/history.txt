@@ -1,6 +1,23 @@
 ===============================
 Changes made in FreeMind 0.9.0 Beta16
 ===============================
+* Bug fix: do not add new <p> for HTML nodes copied as HTML
+* Bug fix: remove HTML tags by generating RTF
+* Bug fix: Overlapping edges of the root node
+* Bug fix: Map movements after folding
+* Bug fix: Avoid storing style element in rich text nodes
+* Bug fix: not possible to pick / fold / unfold nodes after exception in SVG/PDF Plugin
+* Bug fix: Edit box for new child node can appear in the wrong location
+* Disable small buggy hide/open - arrows for split pane
+* Bug fix: Remove '&' character from tooltips and ui elements
+* Link connectors - new arrows in popup menu changed as proposed by Dan
+* Bug fix for "Java exception entering text"
+* Bug fix Look and feel - no propagation into scroll bar
+* Bug fix: copy text field selection to clipboard
+* Bug fix: repaint after text field is removed
+* Bug fix: Map hidden after switching from docs (JRE 6)
+* New version of SimplyHTML with some bug fixes
+* Bug fix: In browse mode and file mode, scroll wheel AKA mouse wheel 
 * Filter toolbar looks similar to the other toolbars.
 * Bug fix: italic and bold handling in patterns (eg. automatic layout)
 * Check marks for a lot of menu items added
