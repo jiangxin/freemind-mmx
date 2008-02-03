@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: StdFormatter.java,v 1.1.2.4 2008-01-28 13:07:14 dpolivaev Exp $*/
+/*$Id: StdFormatter.java,v 1.1.2.5 2008-02-03 21:50:04 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -45,8 +45,7 @@ class StdFormatter extends SimpleFormatter {
 
     // Line separator string.  This is the value of the line.separator
     // property at the moment that the SimpleFormatter was created.
-    private String lineSeparator = (String) java.security.AccessController.doPrivileged(
-               new sun.security.action.GetPropertyAction("line.separator"));
+    private String lineSeparator = System.getProperty("line.separator");
 
     /**
      * Format the given LogRecord.
