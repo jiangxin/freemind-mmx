@@ -28,6 +28,8 @@ Changes made in FreeMind 0.9.0 Beta16
 * Script Editor now has "Add new Script" and is able to assign the script results 
   to an (new) attribute using "attr_name=<script>".
 * Updated groovy to version 1.5.1
+* RemoveNote is automatically disabled when no notes found
+* fold/unfoldall at toolbar is applied to current node as before.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta15
