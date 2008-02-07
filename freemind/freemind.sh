@@ -10,6 +10,17 @@
 # 2005-11-08, adding commons-codec to classpath.
 # 2005-11-09, add some dpkg/rpm information and check for Sun/Blackdown VM.
 # 2006-10-29, follow links to this script using readlink.
+# 2008-02-02, improve Java recognition, add lsb_release, fix -x which being empty
+#             add -Dgnu.java.awt.peer.gtk.Graphics=Graphics2D for non-Sun JREs
+# 2008-02-03, add debug values script and exit
+
+# we only want to test the script, not FreeMind itself
+if ( echo "${DEBUG}" | grep -qe "script" )
+then
+	set -x
+fi
+
+########## FUNCTIONS DEFINITIONS #######################################
 
 _debug() {
 	if [ -n "${DEBUG}" ]
@@ -65,16 +76,17 @@ findjava() {
 		then
 			"$JAVACMD" -version >&2
 		fi
-		if (! "${JAVACMD}" -version 2>&1 | grep -qe \
-			'Java(TM) 2 Runtime Environment, Standard Edition')
+		if (! "${JAVACMD}" -version 2>&1 | grep -qe 'Java(TM)')
 		then
-			_error "Your Java virtual machine is neither Sun nor Blackdown," \
+			_error "Your Java is not a derivative from Sun's code," \
 			       "=======================================" \
 			       "FREEMIND WILL MOST PROBABLY *NOT* WORK," \
 			       "=======================================" \
 			       "define JAVACMD, JAVA_BINDIR, JAVA_HOME or PATH in order" \
 			       "to point to such a VM. See the manpage of freemind(1) for details."
-			return 0
+			JAVA_TYPE=other
+		else
+			JAVA_TYPE=sun
 		fi
 		return 0
 	else
@@ -92,25 +104,35 @@ _source() {
 	fi
 }
 
-output_info() {
+output_debug_info() {
 	if [ -z "${DEBUG}" ]
 	then
 		return 0
 	fi
 	_debug "Freemind parameters are '${@}'."
 	_debug "$(uname -a)"
-	if [ -x $(which dpkg) ]
+	if [ -x "$(which lsb_release 2>/dev/null)" ]
+	then
+		_debug "$(lsb_release -a)"
+	else
+		_debug "System is not LSB conform, 'lsb_release' does not exist."
+	fi
+	if [ -x "$(which dpkg 2>/dev/null)" ]
 	then
 		_debug "The following DEB packages are installed:"
-		COLUMNS=132 dpkg -l \*freemind\* \*j\* | grep -v '<none>' >&2
-	elif [ -x $(which rpm) ]
+		COLUMNS=132 dpkg -l | grep -i -e freemind >&2
+	elif [ -x "$(which rpm 2>/dev/null)" ]
 	then
 		_debug "The following RPM packages are installed:"
-		rpm -qa | grep -i -e freemind -e j >&2
+		rpm -qa | grep -i -e freemind >&2
 	else
 		_debug "Neither dpkg nor rpm is installed."
 	fi
 }
+
+########## START MAIN PART #############################################
+
+#--------- Put the environment together --------------------------------
 
 _source /etc/freemind/freemindrc
 _source ~/.freemind/freemindrc
@@ -121,7 +143,7 @@ then
 	exit 1
 fi
 
-output_info
+output_debug_info
 
 if [ -L "$0" ] && [ -x $(which readlink) ]
 then # if the script is a link and we have 'readlink' to follow it
@@ -165,6 +187,8 @@ then
 	cp /etc/freemind/patterns.xml ~/.freemind/patterns.xml
 fi
 
+#--------- Call (at last) FreeMind -------------------------------------
+
 # The CLASSPATH also lets one specify additional jars, which is good, if
 # you want to add a new Look&Feel jar (the motif one is so ugly...).
 # 
@@ -175,5 +199,13 @@ ${freedir}/lib/bindings.jar:\
 ${freedir}/lib/commons-lang-2.0.jar:\
 ${freedir}/lib/forms-1.0.5.jar:\
 ${freedir}"
-_debug "Calling: '${JAVACMD} -Dfreemind.base.dir=${freedir} -cp ${CLASSPATH} freemind.main.FreeMindStarter  $@'."
-"${JAVACMD}" -Dfreemind.base.dir="${freedir}" -cp "${CLASSPATH}" freemind.main.FreeMindStarter "$@"
+if [ "${JAVA_TYPE}" = "sun" ]
+then
+	_debug "Calling: '${JAVACMD} -Dfreemind.base.dir=${freedir} -cp ${CLASSPATH} freemind.main.FreeMindStarter  $@'."
+	( echo "${DEBUG}" | grep -qe "exit" ) && exit 0 # do not start FreeMind
+	"${JAVACMD}" -Dfreemind.base.dir="${freedir}" -cp "${CLASSPATH}" freemind.main.FreeMindStarter "$@"
+else # non-Sun environments don't work currently.
+	_debug "Calling: '${JAVACMD} -Dgnu.java.awt.peer.gtk.Graphics=Graphics2D -Dfreemind.base.dir=${freedir} -cp ${CLASSPATH} freemind.main.FreeMindStarter  $@'."
+	( echo "${DEBUG}" | grep -qe "exit" ) && exit 0 # do not start FreeMind
+	"${JAVACMD}" -Dgnu.java.awt.peer.gtk.Graphics=Graphics2D -Dfreemind.base.dir="${freedir}" -cp "${CLASSPATH}" freemind.main.FreeMindStarter "$@"
+fi
