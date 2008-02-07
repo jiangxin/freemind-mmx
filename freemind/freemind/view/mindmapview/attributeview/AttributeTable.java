@@ -25,6 +25,7 @@ package freemind.view.mindmapview.attributeview;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -73,26 +74,28 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener{
         /* (non-Javadoc)
          * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
          */
-        public void focusGained(FocusEvent event) { 
-            Component source = (Component)event.getSource();
-            Component oppositeComponent = event.getOppositeComponent();
+        public void focusGained(final FocusEvent event) { 
+            final Component source = (Component)event.getSource();
+            final Component oppositeComponent = event.getOppositeComponent();
             if(source instanceof AttributeTable){
                 focusedTable = (AttributeTable)source;
             }
             else{
                 focusedTable = (AttributeTable)SwingUtilities.getAncestorOfClass(AttributeTable.class, source);
             }
-            Component newNodeViewInFocus = SwingUtilities.getAncestorOfClass(NodeView.class, focusedTable);
-            Component oldNodeViewInFocus = SwingUtilities.getAncestorOfClass(NodeView.class, oppositeComponent);
-            if(newNodeViewInFocus != oldNodeViewInFocus 
-            		// Dimitry workaround: ignore focus change caused by node deletion or node move
-            		&& (oldNodeViewInFocus == null || oldNodeViewInFocus.getParent() != null)
-                    && newNodeViewInFocus instanceof NodeView){
-                NodeView viewer = (NodeView)newNodeViewInFocus;
-                if(! viewer.isSelected()){
-                    viewer.getMap().selectAsTheOnlyOneSelected(viewer, false);
-                }
-            }
+            EventQueue.invokeLater(new Runnable(){
+				public void run() {
+					if(focusedTable != null){
+						final Component newNodeViewInFocus = SwingUtilities.getAncestorOfClass(NodeView.class, focusedTable);
+						if(newNodeViewInFocus != null){
+							NodeView viewer = (NodeView)newNodeViewInFocus;
+							if(viewer != viewer.getMap().getSelected()){
+								viewer.getMap().selectAsTheOnlyOneSelected(viewer, false);
+							}
+						}
+					}
+				}
+            });
         }
         
         /* (non-Javadoc)
