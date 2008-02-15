@@ -4,6 +4,7 @@
 package plugins.script;
 
 import java.io.PrintStream;
+import java.util.HashMap;
 
 import plugins.script.ScriptEditorPanel.ScriptHolder;
 import plugins.script.ScriptEditorPanel.ScriptModel;
@@ -48,7 +49,7 @@ public class ScriptingRegistration implements HookRegistration,
 
 		public boolean executeScript(int pIndex, PrintStream pOutStream, ErrorHandler pErrorHandler) {
 			return ScriptingEngine.executeScript(controller.getSelected(),
-					new BooleanHolder(true), mScript, controller, pErrorHandler, pOutStream);
+					new BooleanHolder(true), mScript, controller, pErrorHandler, pOutStream, getScriptCookies());
 		}
 
 		public int getAmountOfScripts() {
@@ -86,6 +87,7 @@ public class ScriptingRegistration implements HookRegistration,
 	private final MindMapController controller;
 	private final MindMap mMap;
 	private ScriptEditorProperty.ScriptEditorStarter mScriptEditorStarter;
+	private HashMap mScriptCookies = new HashMap();
 
 	public ScriptingRegistration(ModeController controller, MindMap map) {
 		this.controller = (MindMapController) controller;
@@ -122,8 +124,12 @@ public class ScriptingRegistration implements HookRegistration,
 					.getPatternScript().getValue(), controller, new ErrorHandler(){
 
 						public void gotoLine(int pLineNumber) {
-						}}, System.out);
+						}}, System.out, getScriptCookies());
 		}
+	}
+
+	public HashMap getScriptCookies() {
+		return mScriptCookies;
 	}
 
 }

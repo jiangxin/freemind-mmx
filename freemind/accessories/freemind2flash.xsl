@@ -45,16 +45,7 @@
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-        <!-- look if there is any node inside the map (there should never be none, but who knows?) 
-             and take its text as the title -->
-        <xsl:choose>
-          <xsl:when test="/map/node">
-            <title><xsl:value-of select="/map/node/@TEXT" /></title>
-          </xsl:when>
-          <xsl:otherwise>
-            <title>FreeMind2HTML Mindmap</title>
-          </xsl:otherwise>
-        </xsl:choose>
+		<title><xsl:call-template name="output-title" /></title>
         <xsl:element name="script">
             <xsl:attribute name="type">text/javascript</xsl:attribute>
             <xsl:attribute name="src">./<xsl:value-of select="$destination_dir"/>flashobject.js</xsl:attribute>
@@ -100,6 +91,29 @@
    		</body>
     </html>
   </xsl:template>
+
+<!-- from toxhtml.xsl -->
+
+<xsl:template name="output-title">
+	<!-- look if there is any node inside the map (there should never be
+		none, but who knows?) and take its text as the title -->
+	<xsl:choose>
+	<xsl:when test="/map/node/@TEXT">
+		<xsl:value-of select="/map/node/@TEXT" />
+	</xsl:when>
+	<xsl:when test="/map/node/richcontent[@TYPE='NODE']">
+		<xsl:apply-templates select="/map/node/richcontent[@TYPE='NODE']/html/body" mode="strip-tags" />
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:text>FreeMind2HTML Mindmap</xsl:text>
+	</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
+	
+	<xsl:template match="text()|@*"  mode="strip-tags">
+		  <xsl:value-of select="string(.)"/>
+	</xsl:template>
 
 
 </xsl:stylesheet>

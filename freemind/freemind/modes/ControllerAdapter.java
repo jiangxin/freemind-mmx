@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.39 2008-01-29 10:46:48 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.40 2008-02-15 21:56:04 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -269,6 +269,7 @@ public abstract class ControllerAdapter implements ModeController {
     public void registerNodeLifetimeListener(NodeLifetimeListener listener) {
         mNodeLifetimeListeners.add(listener);
         // call create node for all:
+        // TODO: fc, 10.2.08: this event goes to all listeners. It should be for the new listener only? 
         fireRecursiveNodeCreateEvent(getRootNode());
     }
     

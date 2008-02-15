@@ -24,6 +24,7 @@
 package accessories.plugins;
 
 import java.awt.datatransfer.Transferable;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -37,6 +38,21 @@ import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
  */
 public class SortNodes extends MindMapNodeHookAdapter {
 
+	private final class NodeTextComparator implements Comparator {
+		public int compare(Object pArg0, Object pArg1) {
+			if (pArg0 instanceof MindMapNode) {
+				MindMapNode node1 = (MindMapNode) pArg0;
+				if (pArg1 instanceof MindMapNode) {
+					MindMapNode node2 = (MindMapNode) pArg1;
+					String nodeText1 = node1.getPlainTextContent();
+					String nodeText2 = node2.getPlainTextContent();
+					return nodeText1.compareToIgnoreCase(nodeText2);
+				}
+			}
+			return 0;
+		}
+	}
+
 	/**
 	 * 
 	 */
@@ -49,27 +65,12 @@ public class SortNodes extends MindMapNodeHookAdapter {
 	 */
 	public void invoke(MindMapNode node) {
 		// we want to sort the children of the node:
-		TreeSet sortSet = new TreeSet(new Comparator(){
-
-			public int compare(Object pArg0, Object pArg1) {
-				if (pArg0 instanceof MindMapNode) {
-					MindMapNode node1 = (MindMapNode) pArg0;
-					if (pArg1 instanceof MindMapNode) {
-						MindMapNode node2 = (MindMapNode) pArg1;
-						String nodeText1 = node1.getPlainTextContent();
-						String nodeText2 = node2.getPlainTextContent();
-						return nodeText1.compareToIgnoreCase(nodeText2);
-					}
-				}
-				return 0;
-			}});
+		Vector sortVector = new Vector();
 		// put in all children of the node
-		for (Iterator iter = node.childrenUnfolded(); iter.hasNext();) {
-			MindMapNode child = (MindMapNode) iter.next();
-			sortSet.add(child);
-		}
-		// now, it is already sorted. we cut the children
-		for (Iterator iter = sortSet.iterator(); iter.hasNext();) {
+		sortVector.addAll(node.getChildren());
+		Collections.sort(sortVector, new NodeTextComparator());
+		// now, as it is sorted. we cut the children
+		for (Iterator iter = sortVector.iterator(); iter.hasNext();) {
 			MindMapNode child = (MindMapNode) iter.next();
 			Vector childList = new Vector();
 			childList.add(child);

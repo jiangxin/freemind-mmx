@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditor.java,v 1.1.2.9 2008-01-17 20:27:40 christianfoltin Exp $*/
+/*$Id: ScriptEditor.java,v 1.1.2.10 2008-02-15 21:56:05 christianfoltin Exp $*/
 package plugins.script;
 
 import java.io.PrintStream;
@@ -74,8 +74,10 @@ public class ScriptEditor extends MindMapHookAdapter {
 
 		public boolean executeScript(int pIndex, PrintStream pOutStream, ErrorHandler pErrorHandler) {
 			String script = getScript(pIndex).getScript();
+			// get cookies from base plugin:
+			ScriptingRegistration reg = (ScriptingRegistration) getPluginBaseClass();
 			return ScriptingEngine.executeScript(mMindMapController.getSelected(),
-					new BooleanHolder(true), script, mMindMapController, pErrorHandler, pOutStream);
+					new BooleanHolder(true), script, mMindMapController, pErrorHandler, pOutStream, reg.getScriptCookies());
 		}
 
 		public int getAmountOfScripts() {

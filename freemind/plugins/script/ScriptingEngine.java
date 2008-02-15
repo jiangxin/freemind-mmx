@@ -19,10 +19,11 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.13 2008-02-07 21:34:29 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.14 2008-02-15 21:56:05 christianfoltin Exp $ */
 package plugins.script;
 
 import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 
@@ -48,6 +49,7 @@ import groovy.lang.GroovyShell;
  */
 public class ScriptingEngine extends MindMapHookAdapter {
 	public static final String SCRIPT_PREFIX = "script";
+	private static final HashMap sScriptCookies = new HashMap();
 	static java.util.logging.Logger logger;
 
 	public interface ErrorHandler {
@@ -77,10 +79,13 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			String script = (String) attributes.getValue(row);
 			logger.info("Found key = " + attrKey);
 			if (attrKey.startsWith(SCRIPT_PREFIX)) {
+				// get cookies from base plugin:
+				ScriptingRegistration reg = (ScriptingRegistration) getPluginBaseClass();
+				
 				boolean result = executeScript(node, pAlreadyAScriptExecuted,
 						script, getMindMapController(), new ErrorHandler(){
 							public void gotoLine(int pLineNumber) {
-							}}, System.out);
+							}}, System.out, reg.getScriptCookies());
 				if (!result) {
 					break;
 				}
@@ -104,13 +109,14 @@ public class ScriptingEngine extends MindMapHookAdapter {
 	 * @param pAlreadyAScriptExecuted
 	 * @param script
 	 * @param pMindMapController
+	 * @param pScriptCookies TODO
 	 * @return true, if further scripts can be executed, false, if the user
 	 *         canceled or an error occurred.
 	 */
 	static boolean executeScript(MindMapNode node,
 			BooleanHolder pAlreadyAScriptExecuted, String script,
 			MindMapController pMindMapController, ErrorHandler pErrorHandler,
-			PrintStream pOutStream) {
+			PrintStream pOutStream, HashMap pScriptCookies) {
 		PrintStream oldOut = System.out;
 		try {
 			System.setOut(pOutStream);
@@ -135,6 +141,7 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			Binding binding = new Binding();
 			binding.setVariable("c", pMindMapController);
 			binding.setVariable("node", node);
+			binding.setVariable("cookies", sScriptCookies);
 			GroovyShell shell = new GroovyShell(binding);
 
 			boolean assignResult = false;
