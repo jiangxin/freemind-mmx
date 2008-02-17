@@ -30,6 +30,7 @@ Changes made in FreeMind 0.9.0 Beta16
 * Updated groovy to version 1.5.1
 * RemoveNote is automatically disabled when no notes found
 * fold/unfoldall at toolbar is applied to current node as before.
+* Format node window has now scroll bars if needed.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta15
@@ -403,6 +404,9 @@ Changes made in Freemind 0.8.1:
 * Bug fix: Menu bars are displayed correctly when all (browse) maps are closed.
 * Local links get local arrows and are supported in the browser.
 * Bug fix: folded empty nodes have the bubble symbol. Thanks to Dimitri.
+* flash export when title is html corrected [ 1893891 ] flash export not visible in IE7
+* script cookies added
+* sort nodes: bug fix for nodes with same text
 
 Beta 2:
 -------

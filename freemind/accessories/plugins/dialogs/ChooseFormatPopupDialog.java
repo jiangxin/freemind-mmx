@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ChooseFormatPopupDialog.java,v 1.1.2.6.2.5 2007-08-05 20:33:11 christianfoltin Exp $ */
+/* $Id: ChooseFormatPopupDialog.java,v 1.1.2.6.2.6 2008-02-17 14:28:27 christianfoltin Exp $ */
 
 package accessories.plugins.dialogs;
 
@@ -36,6 +36,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import freemind.common.TextTranslator;
 import freemind.controller.actions.generated.instance.Pattern;
@@ -135,7 +136,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 			 * fill, Insets insets, int ipadx, int ipady)
 			 *
 			 */
-			jContentPane.add(getStylePatternFrame(), new GridBagConstraints(0, 0, 2, 1,
+			jContentPane.add(new JScrollPane(getStylePatternFrame()), new GridBagConstraints(0, 0, 2, 1,
 					2.0, 8.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0, 0));
 			jContentPane.add(getJOKButton(), new GridBagConstraints(0, 1, 1, 1,
 					1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0, 0));
