@@ -19,7 +19,7 @@
  *
  * Created on 06.02.2005
  */
-/* $Id: ReminderHookBase.java,v 1.1.2.1.2.3 2007-03-27 20:23:30 christianfoltin Exp $ */
+/* $Id: ReminderHookBase.java,v 1.1.2.1.2.4 2008-02-20 20:57:58 christianfoltin Exp $ */
 package freemind.modes.common.plugins;
 
 import java.text.MessageFormat;
@@ -256,8 +256,8 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	
 	public String getStateKey() {
 		if (mStateTooltipName == null) {
-			mStateTooltipName = STATE_TOOLTIP
-					+ getNode().getObjectId(getController());
+			mStateTooltipName = STATE_TOOLTIP;
+					//+ getNode().getObjectId(getController());
 		}		
 		return mStateTooltipName;
 	}

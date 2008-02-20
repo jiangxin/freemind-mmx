@@ -32,6 +32,7 @@ Changes made in FreeMind 0.9.0 Beta16
 * fold/unfoldall at toolbar is applied to current node as before.
 * Format node window has now scroll bars if needed.
 * Option to store ids only, when needed added.
+* Patch: [ 1897283 ] Multiple reminders added up in parent nodes
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta15
