@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLinkRegistry.java,v 1.6.18.1.16.2 2007-08-17 20:41:57 christianfoltin Exp $*/
+/*$Id: MindMapLinkRegistry.java,v 1.6.18.1.16.3 2008-02-20 20:54:05 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -62,5 +62,7 @@ public interface MindMapLinkRegistry {
     /** @return returns all links from this node.*/
     public Vector /* of MindMapLink s */ getAllLinksFromMe(MindMapNode source);
 
+    public void registerLocalHyperlinkId(String pTargetId);
+    public boolean isTargetOfLocalHyperlinks(String pTargetId);
 
 }

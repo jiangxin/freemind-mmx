@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.39 2008-01-08 22:16:16 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.40 2008-02-20 20:54:06 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -520,6 +520,12 @@ public class OptionPanel implements TextTranslator {
 
 		"path_to_automatic_saves.tooltip", "path_to_automatic_saves")); // freemind_home
 
+		controls.add(new NextLineProperty());
+		controls.add(new SeparatorProperty("save"));
+		
+		controls.add(new BooleanProperty(
+				"save_only_intrisically_needed_ids.tooltip",
+				FreeMindCommon.SAVE_ONLY_INTRISICALLY_NEEDED_IDS)); // false
 		/***********************************************************************
 		 * Defaults
 		 * ****************************************************************

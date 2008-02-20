@@ -19,7 +19,7 @@
  *
  * Created on 07.10.2004
  */
-/* $Id: AddLocalLinkAction.java,v 1.1.2.1.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: AddLocalLinkAction.java,v 1.1.2.1.2.3 2008-02-20 20:54:05 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -51,8 +51,11 @@ public class AddLocalLinkAction extends FreemindAction  {
             modeController.getController().errorMessage(modeController.getText("less_than_two_selected_nodes"));
             return;
         }
+        MindMapNode target = (MindMapNode) selecteds.get(0);
+        String targetId = (target).getObjectId(modeController);
         for (int i = 1; i < selecteds.size(); i++) {
-            modeController.setLink((MindMapNode) selecteds.get(i), "#"+((MindMapNode) selecteds.get(0)).getObjectId(modeController));
+        	MindMapNode source = (MindMapNode) selecteds.get(i);
+			modeController.setLink(source, "#"+targetId);
         }
     }
 

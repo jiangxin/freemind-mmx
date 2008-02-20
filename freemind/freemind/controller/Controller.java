@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.44 2008-01-04 22:52:30 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.45 2008-02-20 20:54:03 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -1368,6 +1368,19 @@ public class Controller  implements MapModuleChangeObserver {
         Controller.propertyChangeListeners.add(listener);
     }
 
+    /**
+     * @param listener The new listener. All currently available properties are sent to 
+     * the listener after registration. Here, the oldValue parameter is set to null.
+     */
+    public static void addPropertyChangeListenerAndPropagate(FreemindPropertyListener listener) {
+    	Controller.addPropertyChangeListener(listener);
+    	Properties properties = Resources.getInstance().getProperties();
+    	for (Iterator it = properties.keySet().iterator(); it.hasNext();) {
+    		String key = (String) it.next();
+    		listener.propertyChanged(key, properties.getProperty(key), null);
+    	}
+    }
+    
     public static void removePropertyChangeListener(FreemindPropertyListener listener) {
         Controller.propertyChangeListeners.remove(listener);
     }

@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.30 2007-08-27 17:55:26 dpolivaev Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.31 2008-02-20 20:54:03 christianfoltin Exp $*/
 package freemind.main;
 
 import java.awt.SystemColor;
@@ -150,6 +150,7 @@ public class FreeMindCommon {
      */
     public static final String ON_START_IF_NOT_SPECIFIED = "onStartIfNotSpecified";
     public static final String LOAD_LAST_MAP = "loadLastMap";
+    public static final String SAVE_ONLY_INTRISICALLY_NEEDED_IDS = "save_only_intrisically_needed_ids";
 
 	private static Logger logger = null;
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.37 2008-01-20 21:53:12 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.38 2008-02-20 20:54:05 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -46,17 +46,20 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import freemind.controller.Controller;
 import freemind.controller.filter.Filter;
 import freemind.controller.filter.FilterInfo;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMind;
+import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.preferences.FreemindPropertyListener;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.NodeViewVisitor;
 
@@ -130,7 +133,8 @@ public abstract class NodeAdapter implements MindMapNode {
     private NodeAttributeTableModel attributes;
     private String noteText;
 	private String xmlNoteText;
-
+	private static FreemindPropertyListener sSaveIdPropertyChangeListener;
+	private static boolean sSaveOnlyIntrinsicallyNeededIds = false;
 
     //
     // Constructors
@@ -151,6 +155,21 @@ public abstract class NodeAdapter implements MindMapNode {
 		setHistoryInformation(new HistoryInformation());
 		this.map = map;
 		this.attributes = EMTPY_ATTRIBUTES;
+		if (sSaveIdPropertyChangeListener == null) {
+			sSaveIdPropertyChangeListener = new FreemindPropertyListener() {
+
+				public void propertyChanged(String propertyName,
+						String newValue, String oldValue) {
+					if (propertyName
+							.equals(FreeMindCommon.SAVE_ONLY_INTRISICALLY_NEEDED_IDS)) {
+						sSaveOnlyIntrinsicallyNeededIds = Boolean
+								.parseBoolean(newValue);
+					}
+				}
+			};
+			Controller.addPropertyChangeListenerAndPropagate(sSaveIdPropertyChangeListener);
+		}
+
     }
 
     /**
@@ -242,7 +261,10 @@ public abstract class NodeAdapter implements MindMapNode {
     }
 
     public void setLink(String link) {
- 	this.link = link;
+    	if (link != null && link.startsWith("#")) {
+			getMap().getLinkRegistry().registerLocalHyperlinkId(link.substring(1));
+		}
+    	this.link = link;
     }
 
     public FilterInfo getFilterInfo(){
@@ -996,11 +1018,14 @@ freemind.main.Resources.getInstance().logException(			e);
             node.setAttribute("POSITION", isLeft()?"left":"right");
         }
 
-        String label = registry.getLabel(this); /* Puh... */
-    	if (label!=null) {
-               node.setAttribute("ID",label); }
-
-    	if (color != null) {
+    	// the id is used, if there is a local hyperlink pointing to me or a real link.
+    	String label = registry.getLabel(this); 
+        if (!sSaveOnlyIntrinsicallyNeededIds || (registry.isTargetOfLocalHyperlinks(label) || (registry.getAllLinksIntoMe(this).size()>0))) {
+			if (label != null) {
+				node.setAttribute("ID", label);
+			}
+		}
+		if (color != null) {
                node.setAttribute("COLOR", Tools.colorToXml(getColor())); }
 
     	// new background color.
