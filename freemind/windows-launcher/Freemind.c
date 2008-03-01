@@ -16,9 +16,16 @@ int main(int argc, char *argv[])  {
     // argv[0] - caller name, argv[argc -1] == last argument,
 
    int no_of_fixed_arguments = 4;
+   char *application_name = "lib\\freemind.jar";
+   char *standard_javaw_path = "javaw.exe";
+   char *alternative_javaw_path = "jre\\bin\\javaw.exe";
+   char *argument_allowing_more_memory = "-Xmx256M";
+   int /*bool*/ take_standard_javaw_path = 1; // 1 - true; 0 - false.
+
    int one_for_stopping_null = 1;
    int no_of_passed_arguments_without_caller = argc - 1;
-   char *application_name = "lib\\freemind.jar";
+   char *javaw_path = take_standard_javaw_path ? standard_javaw_path : alternative_javaw_path;
+   
    char **arguments = (char **) malloc(( no_of_fixed_arguments +
                                          no_of_passed_arguments_without_caller + 
                                          one_for_stopping_null) * sizeof(char*));
@@ -38,8 +45,8 @@ int main(int argc, char *argv[])  {
       chdir( path_to_launcher_without_file );
    }
       
-   arguments[0] = "javaw.exe";
-   arguments[1] = "-Xmx256M";   // Allow Java to consume as much as 256 MB of memory
+   arguments[0] = javaw_path; 
+   arguments[1] = argument_allowing_more_memory;
    arguments[2] = "-jar";
    arguments[3] = surround_by_quote(application_name);
 
@@ -58,7 +65,7 @@ int main(int argc, char *argv[])  {
    
    // Replace current process by a new one running our application
 
-   execvp("javaw.exe", arguments);
+   execvp(javaw_path, arguments);
   
    return 0; 
 }

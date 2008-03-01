@@ -554,19 +554,6 @@
 			<arg value="Freemind.iss"/>
     	</exec>
     </target>
-
-	<!-- - - - - - - - - - - - - - - - - - 
-          target: create_windows_java_embedded_installer                      
-         - - - - - - - - - - - - - - - - - -->
-    <target name="create_windows_java_embedded_installer">
-        <property name="inst.dir" location="../"/>
-        <property name="inst.dest.dir" location="../installers"/>
-    	<property name="inst.windows.installer" location="${inst.dir}/admin/installer/windows"/>
-    	<antcall target="create_windows_installer" >
-    		<param name="inst.windows.variant" value="installer_java_embedded"/>
-    	</antcall>
-    </target>
-
 	
 	<!-- =================================
           target: installers, for Chris' computes
@@ -601,18 +588,14 @@
     	-->
     	<property name="freemind.version" value="${ver}"/>  
     	<antcall target="create_windows_installer">
-    		<param name="inst.windows.variant" expression="installer"/>
+    		<param name="inst.windows.variant" value="installer"/>
     	</antcall>
-    	<ant dir="${inst.windows.installer}" target="installer"></ant>
-    	<exec dir="${inst.windows.installer}" executable="wine" os="Linux">
-			<arg value="/home/foltin/.wine/drive_c/Programme/Inno Setup 5/ISCC.exe"/>
-			<arg value="Freemind.iss"/>
-    	</exec>
-    	<ant dir="${inst.windows.installer}" target="installer_min"></ant>
-    	<exec dir="${inst.windows.installer}" executable="wine" os="Linux">
-			<arg value="/home/foltin/.wine/drive_c/Programme/Inno Setup 5/ISCC.exe"/>
-			<arg value="Freemind.iss"/>
-    	</exec>
+    	<antcall target="create_windows_installer">
+    		<param name="inst.windows.variant" value="installer_min"/>
+    	</antcall>
+    	<antcall target="create_windows_installer">
+    		<param name="inst.windows.variant" value="installer_java_embedded"/>
+    	</antcall>
     	<copy todir="${inst.dest.dir}">
     		<fileset dir="${inst.windows.installer}/Output/">
 			    <include name="*.exe"/>
