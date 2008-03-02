@@ -1,10 +1,4 @@
 ===============================
-Changes made in FreeMind 0.9.0 Beta17
-===============================
-* New installer variant "Java embedded" started, but this 
-  variant will not be released soon due to open license questions
-
-===============================
 Changes made in FreeMind 0.9.0 Beta16
 ===============================
 * Bug fix: do not add new <p> for HTML nodes copied as HTML
@@ -39,6 +33,8 @@ Changes made in FreeMind 0.9.0 Beta16
 * Format node window has now scroll bars if needed.
 * Option to store ids only, when needed added.
 * Patch: [ 1897283 ] Multiple reminders added up in parent nodes
+* New installer variant "Java embedded" started, but this 
+  variant will not be released soon due to open license questions
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta15
