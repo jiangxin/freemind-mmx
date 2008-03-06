@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.45 2008-02-20 20:54:03 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.46 2008-03-06 20:34:24 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -934,8 +934,9 @@ public class Controller  implements MapModuleChangeObserver {
         Controller controller;
         boolean isDlg;
         PrintAction(Controller controller, boolean isDlg) {
-            super(controller.getResourceString("print"),
-                  new ImageIcon(getResource("images/fileprint.png")));
+            super(isDlg ? controller.getResourceString("print_dialog")
+					: controller.getResourceString("print"), 
+					new ImageIcon(getResource("images/fileprint.png")));
             this.controller = controller;
             setEnabled(false);
             this.isDlg = isDlg;
