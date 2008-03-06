@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.24 2007-10-20 20:33:38 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.25 2008-03-06 19:40:32 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -258,6 +258,7 @@ public class MindMapMapModel extends MapAdapter  {
                 setFile(file);
                 setSaved(true);
             }
+            scheduleTimerForAutomaticSaving();
             return true;
         } catch (FileNotFoundException e ) {
             String message = Tools.expandPlaceholders(getText("save_failed"),file.getName());
@@ -461,7 +462,7 @@ freemind.main.Resources.getInstance().logException(			e);
 		    }
 		}
 		timerForAutomaticSaving = new Timer();
-		timerForAutomaticSaving.schedule(new doAutomaticSave(MindMapMapModel.this, numberOfTempFiles, filesShouldBeDeletedAfterShutdown, dirToStore), delay);
+		timerForAutomaticSaving.schedule(new doAutomaticSave(MindMapMapModel.this, numberOfTempFiles, filesShouldBeDeletedAfterShutdown, dirToStore), delay, delay);
 	}
 
 
@@ -569,7 +570,7 @@ freemind.main.Resources.getInstance().logException(			e);
         public synchronized void run() {}
     }
 
-    private class doAutomaticSave  extends TimerTask {
+    static private class doAutomaticSave  extends TimerTask {
         private MindMapMapModel model;
         private Vector tempFileStack;
         private int numberOfFiles;
@@ -584,18 +585,19 @@ freemind.main.Resources.getInstance().logException(			e);
             numberOfFiles = ((numberOfTempFiles > 0)? numberOfTempFiles: 1);
             this.filesShouldBeDeletedAfterShutdown = filesShouldBeDeletedAfterShutdown;
             this.pathToStore = pathToStore;
-            changeState = 0;
+            changeState = model.getNumberOfChangesSinceLastSave();
         }
         public void run() {
             /* Map is dirty enough? */
             if(model.getNumberOfChangesSinceLastSave() == changeState)
                 return;
             changeState = model.getNumberOfChangesSinceLastSave();
-            if(model.getNumberOfChangesSinceLastSave() == 0) {
+            if(changeState == 0) {
                 /* map was recently saved.*/
                 return;
             }
             try {
+            	cancel();
                 EventQueue.invokeAndWait(new Runnable(){
                     public void run() {
                         /* Now, it is dirty, we save it.*/
