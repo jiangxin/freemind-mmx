@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.58 2007-12-03 19:30:08 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.59 2008-03-06 19:59:34 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1208,6 +1208,15 @@ public class NodeView extends JComponent implements TreeModelListener{
         }
     }
 
+    private void paintParentEdge(Graphics g) {
+    	NodeView parent = getVisibleParentView();
+    	EdgeView edge = NodeViewFactory.getInstance().getEdge(this);
+    	Point p = new Point();
+    	Tools.convertPointToAncestor(this, p, parent);
+    	g.translate(-p.x, -p.y);
+    	edge.paint(this, (Graphics2D)g);
+       	g.translate(p.x, p.y);
+    }
     /* (non-Javadoc)
      * @see javax.swing.JComponent#paint(java.awt.Graphics)
      */
@@ -1238,6 +1247,7 @@ public class NodeView extends JComponent implements TreeModelListener{
         if(model.isVisible() && model.getCloud() != null) {
             CloudView cloud = new CloudView(model.getCloud(), this);
             cloud.paint(g);
+            paintParentEdge(g);
         }
     }
 
