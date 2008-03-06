@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: CloudView.java,v 1.1.16.2.12.3 2007-08-21 19:54:10 christianfoltin Exp $*/
+/*$Id: CloudView.java,v 1.1.16.2.12.4 2008-03-06 20:00:07 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapCloud;
@@ -131,6 +131,7 @@ public class CloudView {
             }
             x0 = x1; y0 = y1;
         }
+        g.dispose();
     }
 
     private void paintClouds(Graphics2D g, Graphics2D gstroke, double x0,double y0,double x1,double y1, double distanceToConvexHull) {
