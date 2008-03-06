@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.59 2008-03-06 19:59:34 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.60 2008-03-06 21:41:14 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1191,7 +1191,7 @@ public class NodeView extends JComponent implements TreeModelListener{
         }
     }
 
-    private void paintEdges(Graphics2D g) {
+    private void paintCloudsAndEdges(Graphics2D g) {
         for(int i = 0; i < getComponentCount(); i++){
             final Component component = getComponent(i);
             if (!(component instanceof NodeView)) {
@@ -1199,32 +1199,30 @@ public class NodeView extends JComponent implements TreeModelListener{
             }
             NodeView nodeView = (NodeView) component;
             if(nodeView.getModel().isVisible()){
+            	Point p = new Point();
+            	Tools.convertPointToAncestor(nodeView, p, this);
+            	g.translate(p.x, p.y);
+            	nodeView.paintCloud(g);
+            	g.translate(-p.x, -p.y);
                 EdgeView edge = NodeViewFactory.getInstance().getEdge(nodeView);
                 edge.paint(nodeView, g);
             }
             else{
-                nodeView.paintEdges(g);
+                nodeView.paintCloudsAndEdges(g);
             }
         }
     }
 
-    private void paintParentEdge(Graphics g) {
-    	NodeView parent = getVisibleParentView();
-    	EdgeView edge = NodeViewFactory.getInstance().getEdge(this);
-    	Point p = new Point();
-    	Tools.convertPointToAncestor(this, p, parent);
-    	g.translate(-p.x, -p.y);
-    	edge.paint(this, (Graphics2D)g);
-       	g.translate(p.x, p.y);
-    }
     /* (non-Javadoc)
      * @see javax.swing.JComponent#paint(java.awt.Graphics)
      */
     public void paint(Graphics g) {
-        paintCloud(g);
+        if(isRoot()){
+			paintCloud(g);
+		}
         if(getModel().isVisible()){
             Graphics2D g2d = (Graphics2D) g;
-			paintEdges(g2d);
+			paintCloudsAndEdges(g2d);
 	        super.paint(g);
             // return to std stroke
             g2d.setStroke(BubbleMainView.DEF_STROKE);
@@ -1237,7 +1235,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 //        g.drawRect(0, 0, getWidth()-1, getHeight()-1);
     }
 
-	protected void paintChildren(Graphics g) {
+    protected void paintChildren(Graphics g) {
 		// TODO Auto-generated method stub
 		super.paintChildren(g);
 	}
@@ -1247,7 +1245,6 @@ public class NodeView extends JComponent implements TreeModelListener{
         if(model.isVisible() && model.getCloud() != null) {
             CloudView cloud = new CloudView(model.getCloud(), this);
             cloud.paint(g);
-            paintParentEdge(g);
         }
     }
 
