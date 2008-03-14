@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeManagement.java,v 1.1.2.5 2007-11-05 21:43:19 christianfoltin Exp $ */
+/* $Id: TimeManagement.java,v 1.1.2.6 2008-03-14 21:15:18 christianfoltin Exp $ */
 package accessories.plugins.time;
 
 import java.awt.Container;
@@ -27,6 +27,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
@@ -98,7 +100,12 @@ public class TimeManagement extends MindMapHookAdapter implements
 		dialog = new JDialog(mController.getFrame().getJFrame(), false /* not modal */);
 		dialog
 				.setTitle(getResourceString("plugins/TimeManagement.xml_WindowTitle"));
-		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		dialog.addWindowListener(new WindowAdapter(){
+		    public void windowClosing(WindowEvent event) {
+		        disposeDialog();
+		    }
+		});
 		Action action = new AbstractAction() {
 
 			public void actionPerformed(ActionEvent arg0) {

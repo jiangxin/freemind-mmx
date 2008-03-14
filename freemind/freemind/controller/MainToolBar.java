@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.16.14.2.4.5 2007-11-29 21:41:05 christianfoltin Exp $*/
+/*$Id: MainToolBar.java,v 1.16.14.2.4.6 2008-03-14 21:15:19 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -43,16 +43,17 @@ public class MainToolBar extends FreeMindToolBar {
             logger = controller.getFrame().getLogger(this.getClass().getName());
         }
         userDefinedZoom = controller.getResourceString("user_defined_zoom");
-	JButton button;
 
-	button = add(controller.navigationPreviousMap);
-	button = add(controller.navigationNextMap);
-	button = add(controller.printDirect);
+	add(controller.navigationPreviousMap);
+	add(controller.navigationNextMap);
+	add(controller.printDirect);
 	JToggleButton btnFilter = new JToggleButton (controller.showFilterToolbarAction);
 	// don't paint the border, in order to look like every other toolbar item.
 	//btnFilter.setBorderPainted(false);
 	// set null margin, in order to look like every other toolbar item.
 	btnFilter.setMargin(new Insets(0, 0, 0, 0));
+	btnFilter.setFocusable(false);
+	btnFilter.setContentAreaFilled(false);
 	btnFilter.setToolTipText(controller.getResourceString("filter_toolbar"));
 	add(btnFilter);
 

@@ -1,4 +1,18 @@
 ===============================
+Changes made in FreeMind 0.9.0 Beta17
+===============================
+* Scripts can be installed as menu functions (look into ScriptingEngine.xml).
+* Security Enhancements for Scripting Engine.
+* Fixed "Cannot follow links if new/unsaved map is open" https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1900401&group_id=7118
+* Fixed "typo: estabilishOwnFont()" https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1889819&group_id=7118
+* Fixed "Focus changed after window switching" https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1872277&group_id=7118
+* Fixed "Calendar can only be opened once" https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1911717&group_id=7118
+* Fixed "Clouds on root node are not displayed" https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1911883&group_id=7118
+  and https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1911883&group_id=7118
+
+
+
+===============================
 Changes made in FreeMind 0.9.0 Beta16
 ===============================
 * Bug fix: do not add new <p> for HTML nodes copied as HTML

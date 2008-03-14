@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.45 2007-12-04 20:58:40 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.46 2008-03-14 21:15:25 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -598,6 +598,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         selectAsTheOnlyOneSelected(newSelected, true);
     }
     public void selectAsTheOnlyOneSelected(NodeView newSelected, boolean requestFocus) {
+    	logger.finest("selectAsTheOnlyOneSelected");
         LinkedList oldSelecteds = getSelecteds();
         //select new node
         this.selected.clear();
@@ -626,6 +627,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
      * Add the node to the selection if it is not yet there, remove it otherwise.
      */
     public void toggleSelected(NodeView newSelected) {
+    	logger.finest("toggleSelected");
         NodeView oldSelected = getSelected();
         if (isSelected(newSelected)) {
             if (selected.size() > 1) {
@@ -647,6 +649,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
      */
 
     public void makeTheSelected(NodeView newSelected) {
+    	logger.finest("makeTheSelected");
         if (isSelected(newSelected)) {
             selected.moveToFirst(newSelected);
         } else {
@@ -1312,7 +1315,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 		}
 		selectedsValid  = true;
         // Keep selected nodes
-
+		logger.finest("validateSelecteds");
         ArrayList selectedNodes = new ArrayList();
         for (ListIterator it = getSelecteds().listIterator();it.hasNext();) {
             NodeView nodeView = (NodeView)it.next();

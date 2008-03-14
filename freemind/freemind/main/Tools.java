@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.25 2007-10-20 20:33:37 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.26 2008-03-14 21:15:22 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -84,6 +84,10 @@ import javax.xml.transform.stream.StreamSource;
 
 import freemind.view.mindmapview.NodeMotionListenerView;
 
+/**
+ * @author foltin
+ *
+ */
 public class Tools {
 
     //public static final Set executableExtensions = new HashSet ({ "exe",
@@ -966,6 +970,37 @@ public class Tools {
 	    return new BufferedReader(new FileReader(file));
 	}
 
+	
+	/**
+	 * In case of trouble, the method returns null.
+	 * @param pInputFile the file to read.
+ 	 * @return the complete content of the file. or null if an exception has occured.
+	 */
+	public static String getFile(File pInputFile) {
+        StringBuffer lines = new StringBuffer();
+        BufferedReader bufferedReader = null;
+        try {
+			bufferedReader = new BufferedReader(new FileReader(
+					pInputFile));
+			final String endLine = System.getProperty("line.separator");
+			String line;
+			while ((line = bufferedReader.readLine()) != null) {
+				lines.append(line).append(endLine);
+			}
+			bufferedReader.close();
+		} catch (Exception e) {
+		    freemind.main.Resources.getInstance().logException(e);
+			if(bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (Exception ex) {
+					freemind.main.Resources.getInstance().logException(ex);
+				}
+			}
+			return null;
+		}
+		return lines.toString();
+	}
 
    public static void logTransferable(Transferable t) {
       System.err.println();

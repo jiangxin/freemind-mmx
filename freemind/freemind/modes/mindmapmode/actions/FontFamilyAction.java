@@ -19,7 +19,7 @@
  *
  * Created on 27.08.2004
  */
-/* $Id: FontFamilyAction.java,v 1.1.2.2.2.3 2006-10-10 18:51:53 christianfoltin Exp $ */
+/* $Id: FontFamilyAction.java,v 1.1.2.2.2.4 2008-03-14 21:15:24 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -99,7 +99,7 @@ public class FontFamilyAction extends NodeGeneralAction implements NodeActorXml 
             MindMapNode node = getNodeFromID(fontFamilyAction.getNode());
             String fontFamily = fontFamilyAction.getFont();
             if(!Tools.safeEquals(node.getFontFamilyName(),fontFamily)) {
-                ((NodeAdapter) node).estabilishOwnFont();
+                ((NodeAdapter) node).establishOwnFont();
                 node.setFont(modeController.getController().getFontThroughMap
                         (new Font(fontFamily,node.getFont().getStyle(),node.getFont().getSize())));
                 modeController.nodeChanged(node);

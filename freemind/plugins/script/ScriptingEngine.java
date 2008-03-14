@@ -19,9 +19,10 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.14 2008-02-15 21:56:05 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.15 2008-03-14 21:15:28 christianfoltin Exp $ */
 package plugins.script;
 
+import java.io.File;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,6 +35,9 @@ import org.codehaus.groovy.ast.ModuleNode;
 
 import freemind.common.OptionalDontShowMeAgainDialog;
 import freemind.main.FreeMind;
+import freemind.main.FreeMindMain;
+import freemind.main.FreeMindSecurityManager;
+import freemind.main.Tools;
 import freemind.main.Tools.BooleanHolder;
 import freemind.modes.MindMapNode;
 import freemind.modes.attributes.NodeAttributeTableModel;
@@ -58,9 +62,30 @@ public class ScriptingEngine extends MindMapHookAdapter {
 
 	public void startupMapHook() {
 		super.startupMapHook();
-		// start calculation:
 		MindMapNode node = getMindMapController().getMap().getRootNode();
-		performScriptOperation(node, new BooleanHolder(false));
+		BooleanHolder booleanHolder = new BooleanHolder(false);
+		// check for installed script:
+		String scriptLocation = getResourceString("ScriptLocation");
+		if(scriptLocation != null && scriptLocation.length() != 0){
+			performExternalScript(scriptLocation, node, booleanHolder);
+			return;
+		}
+		// start calculation:
+		performScriptOperation(node, booleanHolder);
+	}
+
+	private void performExternalScript(String pScriptLocation, MindMapNode pNode,
+			BooleanHolder pBooleanHolder) {
+		// get cookies from base plugin:
+		ScriptingRegistration reg = (ScriptingRegistration) getPluginBaseClass();
+		String scriptContent = Tools.getFile(new File(pScriptLocation));
+		if(scriptContent == null) {
+			return;
+		}
+		executeScript(pNode, pBooleanHolder,
+				scriptContent, getMindMapController(), new ErrorHandler(){
+			public void gotoLine(int pLineNumber) {
+			}}, System.out, reg.getScriptCookies());
 	}
 
 	private void performScriptOperation(MindMapNode node,
@@ -117,66 +142,92 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			BooleanHolder pAlreadyAScriptExecuted, String script,
 			MindMapController pMindMapController, ErrorHandler pErrorHandler,
 			PrintStream pOutStream, HashMap pScriptCookies) {
+		// ask user if first script:
+		FreeMindMain frame = pMindMapController.getFrame();
+		if (!pAlreadyAScriptExecuted.getValue()) {
+			int showResult = new OptionalDontShowMeAgainDialog(
+					frame.getJFrame(),
+					pMindMapController.getSelectedView(),
+					"really_execute_script",
+					"confirmation",
+					pMindMapController,
+					new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
+							pMindMapController.getController(),
+							FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_ASKING),
+							OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
+			.show().getResult();
+			if (showResult != JOptionPane.OK_OPTION) {
+				return false;
+			}
+		}
+		pAlreadyAScriptExecuted.setValue(true);
+		Binding binding = new Binding();
+		binding.setVariable("c", pMindMapController);
+		binding.setVariable("node", node);
+		binding.setVariable("cookies", sScriptCookies);
+		GroovyShell shell = new GroovyShell(binding);
+		
+		boolean assignResult = false;
+		String assignTo = null;
+		if (script.startsWith("=")) {
+			script = script.substring(1);
+			assignResult = true;
+		} else{
+			int indexOfEquals = script.indexOf('=');
+			if (indexOfEquals > 0) {
+				String start = script.substring(0, indexOfEquals);
+				if (start.matches("[a-zA-Z0-9_]+")) {
+					assignTo = start;
+					script = script.substring(indexOfEquals + 1);
+					assignResult = true;
+				}
+			}
+		}
+		/* get preferences (and store them again after the script execution, such that
+		 * the scripts are not able to change them).
+		 */		
+		String executeWithoutAsking = frame.getProperty(FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_ASKING);
+		String executeWithoutFileRestriction = frame.getProperty(FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_FILE_RESTRICTION);
+		String executeWithoutNetworkRestriction = frame.getProperty(FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_NETWORK_RESTRICTION);
+		String executeWithoutExecRestriction = frame.getProperty(FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_EXEC_RESTRICTION);
 		PrintStream oldOut = System.out;
+		Object value = null;
+		GroovyRuntimeException e1 = null;
+		Exception e2 = null;
+		ScriptingSecurityManager scriptingSecurityManager = new ScriptingSecurityManager(
+				Tools.isPreferenceTrue(executeWithoutFileRestriction), Tools
+						.isPreferenceTrue(executeWithoutNetworkRestriction), Tools
+						.isPreferenceTrue(executeWithoutExecRestriction));
+		FreeMindSecurityManager securityManager = (FreeMindSecurityManager) System
+				.getSecurityManager();
 		try {
 			System.setOut(pOutStream);
-			// ask user if first script:
-			if (!pAlreadyAScriptExecuted.getValue()) {
-				int showResult = new OptionalDontShowMeAgainDialog(
-						pMindMapController.getFrame().getJFrame(),
-						pMindMapController.getSelectedView(),
-						"really_execute_script",
-						"confirmation",
-						pMindMapController,
-						new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
-								pMindMapController.getController(),
-								FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_ASKING),
-						OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
-						.show().getResult();
-				if (showResult != JOptionPane.OK_OPTION) {
-					return false;
-				}
-			}
-			pAlreadyAScriptExecuted.setValue(true);
-			Binding binding = new Binding();
-			binding.setVariable("c", pMindMapController);
-			binding.setVariable("node", node);
-			binding.setVariable("cookies", sScriptCookies);
-			GroovyShell shell = new GroovyShell(binding);
-
-			boolean assignResult = false;
-			String assignTo = null;
-			if (script.startsWith("=")) {
-				script = script.substring(1);
-				assignResult = true;
-			} else{
-				int indexOfEquals = script.indexOf('=');
-				if (indexOfEquals > 0) {
-					String start = script.substring(0, indexOfEquals);
-					if (start.matches("[a-zA-Z0-9_]+")) {
-						assignTo = start;
-						script = script.substring(indexOfEquals + 1);
-						assignResult = true;
-					}
-				}
-			}
-			Object value = shell.evaluate(script);
-			pOutStream.print(pMindMapController.getFrame().getResourceString(
-					"plugins/ScriptEditor/window.Result")
-					+ value);
-			if (assignResult && value != null) {
-				if (assignTo==null) {
-					pMindMapController.setNodeText(node, value.toString());
-				} else {
-					pMindMapController.editAttribute(node, assignTo, value.toString());
-				}
-			}
-			return true;
+			// exchange security manager to prevent scripts from doing nasty things.
+			securityManager.setFinalSecurityManager(scriptingSecurityManager);
+			value = shell.evaluate(script);
 		} catch (GroovyRuntimeException e) {
-			String resultString = e.getMessage();
+			e1 = e;
+		} catch (Exception e) {
+			e2 = e;
+		} finally {
+			// setting the same security manager the second time causes it to be removed.
+			securityManager.setFinalSecurityManager(scriptingSecurityManager);
+			System.setOut(oldOut);
+			/* restore preferences (and assure that the values are unchanged!). */
+			frame.setProperty(FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_ASKING, executeWithoutAsking);
+			frame.setProperty(FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_FILE_RESTRICTION, executeWithoutFileRestriction);
+			frame.setProperty(FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_NETWORK_RESTRICTION, executeWithoutNetworkRestriction);
+			frame.setProperty(FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_EXEC_RESTRICTION, executeWithoutExecRestriction);
+		}
+		/*
+		 * Cover exceptions in normal security context (ie. no problem with
+		 * (log) file writing etc.)
+		 */
+		if(e1 != null) {
+			String resultString = e1.getMessage();
 			pOutStream.print("message: " + resultString);
-			ModuleNode module = e.getModule();
-			ASTNode astNode = e.getNode();
+			ModuleNode module = e1.getModule();
+			ASTNode astNode = e1.getNode();
 			int lineNumber = -1;
 			if (module != null) {
 				lineNumber = module.getLineNumber();
@@ -188,15 +239,26 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			pOutStream.print("Line number: " + lineNumber);
 			pErrorHandler.gotoLine(lineNumber);
 			return false;
-		} catch (Exception e) {
-			freemind.main.Resources.getInstance().logException(e);
-			pOutStream.print(e.getMessage());
-			pMindMapController.getController().errorMessage(
-					e.getClass().getName() + ": " + e.getMessage());
-			return false;
-		} finally {
-			System.setOut(oldOut);
+			
 		}
+		if(e2 != null) {
+			freemind.main.Resources.getInstance().logException(e2);
+			pOutStream.print(e2.getMessage());
+			pMindMapController.getController().errorMessage(
+					e2.getClass().getName() + ": " + e2.getMessage());
+			return false;
+		}
+		pOutStream.print(frame.getResourceString(
+				"plugins/ScriptEditor/window.Result")
+				+ value);
+		if (assignResult && value != null) {
+			if (assignTo==null) {
+				pMindMapController.setNodeText(node, value.toString());
+			} else {
+				pMindMapController.editAttribute(node, assignTo, value.toString());
+			}
+		}
+		return true;
 	}
 
 }

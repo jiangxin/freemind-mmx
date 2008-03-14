@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.26 2007-12-03 19:28:51 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.27 2008-03-14 21:15:25 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -43,6 +43,9 @@ import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 
+/** 
+ * Base class for all node views. 
+ * */
 public abstract class MainView extends JLabel{
     static Dimension minimumSize = new Dimension(0, 0);
     static Dimension maximumSize = new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);

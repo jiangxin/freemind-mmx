@@ -33,6 +33,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.logging.Logger;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
@@ -52,6 +53,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
+import freemind.main.Resources;
 import freemind.modes.MindMapNode;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.attributes.AttributeRegistry;
@@ -150,9 +152,14 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener{
     private static final int EXTRA_HEIGHT = 4;
     private static final float TABLE_ROW_HEIGHT = 4;
     private static final Dimension prefHeaderSize = new Dimension(1, 8);
+	private static Logger mLogger = null;
     AttributeTable(AttributeView attributeView) {
         super();
-        this.attributeView = attributeView;
+        if (mLogger == null) {
+			mLogger = Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
+		this.attributeView = attributeView;
         addFocusListener(focusListener);
         final MindMapNode model = attributeView.getNodeView().getModel();
         final AttributeController attributeController = model.getMap().getRegistry().getModeController().getAttributeController();
@@ -472,6 +479,7 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener{
     
     protected boolean processKeyBinding(KeyStroke ks, KeyEvent e,
             int condition, boolean pressed) {
+    	mLogger.info("AttributeTable.processKeyBinding");
         if( ks.getKeyCode() == KeyEvent.VK_TAB
                 && e.getModifiers() == 0
                 && pressed

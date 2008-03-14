@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.46 2008-03-06 20:34:24 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.47 2008-03-14 21:15:18 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -717,6 +717,7 @@ public class Controller  implements MapModuleChangeObserver {
        JOptionPane.showMessageDialog(component, message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }
 
     public void obtainFocusForSelected() {
+    	logger.finest("obtainFocusForSelected");
         SwingUtilities.invokeLater( new Runnable() {
                 public void run () {
                     if (getView() != null) { // is null if the last map was closed.
@@ -862,7 +863,7 @@ public class Controller  implements MapModuleChangeObserver {
         setProperty("antialiasAll", antialiasAll ? "true" : "false");
         if(! getFrame().isApplet()) {
             final int winState = getFrame().getWinState();
-        	if (0 == (winState & JFrame.MAXIMIZED_BOTH)){
+        	if (JFrame.MAXIMIZED_BOTH != (winState & JFrame.MAXIMIZED_BOTH)){
         		setProperty("appwindow_x", String.valueOf(getFrame().getWinX()));
         		setProperty("appwindow_y", String.valueOf(getFrame().getWinY()));
         		setProperty("appwindow_width", String.valueOf(getFrame().getWinWidth()));

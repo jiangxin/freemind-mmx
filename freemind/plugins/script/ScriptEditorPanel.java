@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.11 2008-01-17 20:27:40 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.12 2008-03-14 21:15:27 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -133,7 +133,7 @@ public class ScriptEditorPanel extends JDialog {
 		}
 		
 		public void actionPerformed(ActionEvent arg0) {
-			disposeDialog(false);
+			disposeDialog(true);
 		}
 	}
 	private final class ExitAction extends AbstractAction {

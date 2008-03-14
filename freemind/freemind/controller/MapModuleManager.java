@@ -19,7 +19,7 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.4.2.11 2007-11-05 21:43:19 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4.2.12 2008-03-14 21:15:20 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -212,7 +212,8 @@ public class MapModuleManager {
         		for (Iterator iter = getMapModules().entrySet().iterator(); iter.hasNext();) {
 					Map.Entry mapEntry = (Map.Entry) iter.next();
 					MapModule module = (MapModule) mapEntry.getValue();
-					if (module.getModel() != null && urlToCheck.sameFile(module.getModel().getURL()))
+					if (module.getModel() != null && module.getModel().getURL() != null &&
+							urlToCheck.sameFile(module.getModel().getURL()))
 						return (String) mapEntry.getKey();
 				}
         		return null;

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.99 2008-03-02 14:05:40 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.100 2008-03-14 21:15:20 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -134,10 +134,15 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public static final String RESOURCES_EXECUTE_SCRIPTS_WITHOUT_ASKING = "resources_execute_scripts_without_asking";
 
+	public static final String RESOURCES_EXECUTE_SCRIPTS_WITHOUT_FILE_RESTRICTION = "resources_execute_scripts_without_file_restriction";
+	
+	public static final String RESOURCES_EXECUTE_SCRIPTS_WITHOUT_NETWORK_RESTRICTION = "resources_execute_scripts_without_network_restriction";
+
+	public static final String RESOURCES_EXECUTE_SCRIPTS_WITHOUT_EXEC_RESTRICTION = "resources_execute_scripts_without_exec_restriction";
+
 	public static final String RESOURCES_CONVERT_TO_CURRENT_VERSION = "resources_convert_to_current_version";
 
 	public static final String RESOURCES_CUT_NODES_WITHOUT_QUESTION = "resources_cut_nodes_without_question";
-
 
 	// public static final String defaultPropsURL = "freemind.properties";
 	// public static Properties defaultProps;
@@ -178,6 +183,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public FreeMind() {
 		super("FreeMind");
+		System.setSecurityManager(new FreeMindSecurityManager());
 		// read default properties from jar:
 		readDefaultProperties();
 		createUserDirectory();
@@ -795,25 +801,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		menuBar = new MenuBar(controller);
 		setJMenuBar(menuBar);
 
-		// set the default size (PN)
-		int win_width = getIntProperty("appwindow_width", 0);
-		int win_height =getIntProperty("appwindow_height", 0);
-		int win_x  = getIntProperty("appwindow_x", 0);
-		int win_y  = getIntProperty("appwindow_y", 0);
-		win_width = (win_width > 0) ? win_width : 640;
-		win_height = (win_height > 0) ? win_height : 440;
-		final Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
-		final Insets screenInsets = defaultToolkit.getScreenInsets(getGraphicsConfiguration());
-		Dimension screenSize = defaultToolkit.getScreenSize();
-		final int screenWidth = screenSize.width-screenInsets.left-screenInsets.right;
-		win_width = Math.min(win_width, screenWidth);
-		final int screenHeight = screenSize.height-screenInsets.top-screenInsets.bottom;
-		win_height = Math.min(win_height, screenHeight);
-		win_x = Math.max(screenInsets.left, win_x);
-		win_x = Math.min(screenWidth+screenInsets.left-win_width, win_x);
-		win_y = Math.max(screenInsets.top, win_y);
-		win_y = Math.min(screenWidth+screenInsets.top-win_height, win_y);
-		setBounds(win_x, win_y, win_width, win_height);
 		// Create the scroll pane
 		mScrollPane =  new JScrollPane();
 		if (Tools.safeEquals(getProperty("no_scrollbar"), "true")) {
@@ -844,8 +831,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			KeyStroke keyStrokeCtrlUp = KeyStroke.getKeyStroke( KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK);
 			map.remove(keyStrokeCtrlUp);
 			mTabbedPane = new JTabbedPane();
+			mTabbedPane.setFocusable(false);
 			mTabbedPaneMapModules = new Vector();
-			//			mTabbedPane.setFocusable(false);
 			mTabbedPane.addChangeListener(new ChangeListener() {
 
 				public synchronized void stateChanged(ChangeEvent pE) {
@@ -938,13 +925,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
 						.actionPerformed(new ActionEvent(this, 0, "quit"));
 			}
 
-			public void windowActivated(WindowEvent e) {
-				// This doesn't work the first time, it's called too early to
-				// get Focus
-				if ((getView() != null) && (getView().getSelected() != null)) {
-					getView().getSelected().requestFocus();
-				}
-			}
+			/* fc, 14.3.2008: Completely removed, as it
+			 * damaged the focus if for example the note
+			 * window was active.
+			 */ 
+//			public void windowActivated(WindowEvent e) {
+//				// This doesn't work the first time, it's called too early to
+//				// get Focus
+//				logger.info("windowActivated");
+//				if ((getView() != null) && (getView().getSelected() != null)) {
+//					getView().getSelected().requestFocus();
+//				}
+//			}
 		});
 
 		if (Tools.safeEquals(getProperty("toolbarVisible"), "false")) {
@@ -955,6 +947,29 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			controller.setLeftToolbarVisible(false);
 		}
 
+		// first define the final layout of the screen:
+		setFocusTraversalKeysEnabled(false);
+		pack();
+		// and now, determine size, position and state.
+		// set the default size (PN)
+		int win_width = getIntProperty("appwindow_width", 0);
+		int win_height =getIntProperty("appwindow_height", 0);
+		int win_x  = getIntProperty("appwindow_x", 0);
+		int win_y  = getIntProperty("appwindow_y", 0);
+		win_width = (win_width > 0) ? win_width : 640;
+		win_height = (win_height > 0) ? win_height : 440;
+		final Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
+		final Insets screenInsets = defaultToolkit.getScreenInsets(getGraphicsConfiguration());
+		Dimension screenSize = defaultToolkit.getScreenSize();
+		final int screenWidth = screenSize.width-screenInsets.left-screenInsets.right;
+		win_width = Math.min(win_width, screenWidth);
+		final int screenHeight = screenSize.height-screenInsets.top-screenInsets.bottom;
+		win_height = Math.min(win_height, screenHeight);
+		win_x = Math.max(screenInsets.left, win_x);
+		win_x = Math.min(screenWidth+screenInsets.left-win_width, win_x);
+		win_y = Math.max(screenInsets.top, win_y);
+		win_y = Math.min(screenWidth+screenInsets.top-win_height, win_y);
+		setBounds(win_x, win_y, win_width, win_height);
 		// set the default state (normal/maximized) (PN)
 		// (note: this must be done later when partucular
 		// initalizations of the windows are ready,

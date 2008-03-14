@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMotionListenerView.java,v 1.1.4.4.4.7 2007-10-19 17:24:55 dpolivaev Exp $*/
+/*$Id: NodeMotionListenerView.java,v 1.1.4.4.4.8 2008-03-14 21:15:25 christianfoltin Exp $*/
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -77,7 +77,8 @@ public class NodeMotionListenerView extends JComponent {
 	}
 	public void setMouseEntered() {
 		this.isMouseEntered = true;
-		final FreeMindMain frame = movedView.getMap().getModel().getModeController().getFrame();
+// fc, 13.3.2008: variable is not used:
+		//final FreeMindMain frame = movedView.getMap().getModel().getModeController().getFrame();
 		repaint();
 	}
 

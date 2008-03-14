@@ -19,34 +19,16 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeExternalApplication.java,v 1.1.4.2 2006-04-06 21:15:07 dpolivaev Exp $*/
+/*$Id: EditNodeExternalApplication.java,v 1.1.4.3 2008-03-14 21:15:24 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.text.MessageFormat;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
 
 import freemind.main.Tools;
 import freemind.modes.ModeController;
@@ -76,7 +58,6 @@ public class EditNodeExternalApplication extends EditNodeBase {
       //mainWindow.setEnabled(false);
       new Thread() { public void run() {
          FileWriter writer = null;
-         BufferedReader bufferedReader = null;
          try {
 
             File temporaryFile = File.createTempFile("tmm", ".html");
@@ -90,7 +71,7 @@ public class EditNodeExternalApplication extends EditNodeBase {
             String htmlEditingCommand = getFrame().getProperty("html_editing_command");
             String expandedHtmlEditingCommand = 
                new MessageFormat(htmlEditingCommand).format(new String[]{ temporaryFile.toString() });
-            //System.err.println("External application:"+expandedHtmlEditingCommand);
+//            System.out.println("External application:"+expandedHtmlEditingCommand);
             Process htmlEditorProcess = Runtime.getRuntime().exec(expandedHtmlEditingCommand);
             int result = htmlEditorProcess.waitFor(); // Here we wait until the editor ends up itself
             // Waiting does not work if the process starts another process,
@@ -98,26 +79,28 @@ public class EditNodeExternalApplication extends EditNodeBase {
             // and with Vim though.
                  
             // c. Get the text from the temporary file
-            StringBuffer lines = new StringBuffer();
-            bufferedReader = new BufferedReader(new FileReader(temporaryFile));
-            final String endLine = System.getProperty("line.separator");
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-               lines.append(line).append(endLine); }
-            bufferedReader.close();
-            getEditControl().ok(lines.toString());
-            lastEditingWasSuccessful = true; }
-         catch (Exception e) {
-            try {
-               if (writer != null) {
-                  writer.close(); }
-               if (bufferedReader != null) {
-                  bufferedReader.close(); }}
-            catch (Exception e1 ) {}}
-         //setBlocked(false);
+            String content = Tools.getFile(temporaryFile);
+            if(content == null) {
+            	getEditControl().cancel();
+            }
+            getEditControl().ok(content);
+					lastEditingWasSuccessful = true;
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logException(e);
+					try {
+						if (writer != null) {
+							writer.close();
+						}
+						// if (bufferedReader != null) {
+						// bufferedReader.close();
+						// }
+					} catch (Exception e1) {
+					}
+				}
+         // setBlocked(false);
          //mainWindow.setEnabled(true); // Not used as it loses focus on the window
          //controller.obtainFocusForSelected(); }
-      }
+      		}
       }.start();
       return; }
 

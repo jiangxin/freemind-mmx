@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12.14.5.2.9 2007-10-25 20:55:32 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.14.5.2.10 2008-03-14 21:15:20 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -80,6 +80,14 @@ public interface FreeMindMain {
 	/** @return returns the list of all properties. */
 	public Properties getProperties();
 
+    /**
+     * Properties are stored in freemind.properties (internally) and ~/.freemind/auto.properties
+     * for user changed values. 
+     * This method returns the user value (if changed) or the original.
+     * 
+     * @param key The property key as specified in freemind.properties
+     * @return the value of the property or null, if not found.
+     */
     public String getProperty(String key);
 
     public void setProperty(String key, String value);
