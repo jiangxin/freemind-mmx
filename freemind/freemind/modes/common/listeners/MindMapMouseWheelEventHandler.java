@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.1 2008-01-29 10:46:49 dpolivaev Exp $ */
+/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.2 2008-03-15 23:01:05 christianfoltin Exp $ */
 package freemind.modes.common.listeners;
 
 import java.awt.event.InputEvent;
@@ -95,7 +95,7 @@ public class MindMapMouseWheelEventHandler implements MouseWheelListener {
 			if (e.getWheelRotation() < 0)
 				newZoomFactor = 1 / newZoomFactor;
 			float newZoom = ((MapView) e.getComponent()).getZoom()
-					* newZoomFactor;
+					/ newZoomFactor;
 			// round the value due to possible rounding problems.
 			newZoom = (float) Math.rint(newZoom * 1000f) / 1000f;
 			mController.getController().setZoom(newZoom);
