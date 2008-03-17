@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.46 2008-03-14 21:15:25 christianfoltin Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.47 2008-03-17 20:30:22 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -944,11 +944,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
          * @see javax.swing.JComponent#paint(java.awt.Graphics)
          */
         public void paint(Graphics g) {
-        	if(!isValid()){
-        		return;
+        	if(isValid()){
+        		getRoot().getContent().getLocation(rootContentLocation);
+        		Tools.convertPointToAncestor(getRoot(), rootContentLocation, getParent());
         	}
-    		getRoot().getContent().getLocation(rootContentLocation);
-    		Tools.convertPointToAncestor(getRoot(), rootContentLocation, getParent());
             final Graphics2D g2 = (Graphics2D)g;
             final Object renderingHint = g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
 			getController().setEdgesRenderingHint(g2);
