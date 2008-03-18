@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.47 2008-03-17 20:30:22 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.48 2008-03-18 07:44:29 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -1353,5 +1353,11 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         Tools.convertPointToAncestor(nodeView.getContent(), contentXY, this);
         return contentXY;
 	}
+
+	public boolean isValidateRoot() {
+		return true;
+	}
+	
+	
 
 }
