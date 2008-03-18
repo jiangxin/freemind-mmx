@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.21 2007-10-25 20:55:32 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.22 2008-03-18 18:32:15 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -54,7 +54,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
     public URL defaultPropsURL;
     public static Properties defaultProps;
     public static Properties userProps;
-    private JScrollPane scrollPane = new JScrollPane();
+    private JScrollPane scrollPane = new MapView.ScrollPane();
     private MenuBar menuBar;
     private JLabel status;
     Controller c;//the one and only controller

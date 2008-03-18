@@ -16,11 +16,12 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.48 2008-03-18 07:44:29 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.49 2008-03-18 18:31:49 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -78,6 +79,16 @@ import freemind.preferences.FreemindPropertyListener;
  * (in analogy to class JTree).
  */
 public class MapView extends JPanel implements Printable, Autoscroll{
+	static public class ScrollPane extends JScrollPane{
+		protected void validateTree() {
+			final Component view = getViewport().getView();
+			if(view != null){
+				view.validate();
+			}
+			super.validateTree();
+		}
+		
+	}
 	static boolean printOnWhiteBackground;
 	static Color standardMapBackgroundColor;
 	static Color standardSelectColor;
@@ -1353,11 +1364,4 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         Tools.convertPointToAncestor(nodeView.getContent(), contentXY, this);
         return contentXY;
 	}
-
-	public boolean isValidateRoot() {
-		return true;
-	}
-	
-	
-
 }

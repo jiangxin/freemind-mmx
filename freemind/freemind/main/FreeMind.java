@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.100 2008-03-14 21:15:20 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.101 2008-03-18 18:32:12 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -802,7 +802,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		setJMenuBar(menuBar);
 
 		// Create the scroll pane
-		mScrollPane =  new JScrollPane();
+		mScrollPane =  new MapView.ScrollPane();
 		if (Tools.safeEquals(getProperty("no_scrollbar"), "true")) {
 			mScrollPane
 					.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
