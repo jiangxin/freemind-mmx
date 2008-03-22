@@ -12,6 +12,7 @@ Changes made in FreeMind 0.9.0 Beta17
 * Inverted the mouse wheel zoom direction to make it compatible with e.g. OpenOffice.
 * Fixed: Large mind maps produce invalid PDF https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1921334&group_id=7118
 * Fixed: Following of connectors - dedicated text required https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1846702&group_id=7118
+* new base 64 coding compatible with gplv2+
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta16
