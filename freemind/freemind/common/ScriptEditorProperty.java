@@ -19,25 +19,19 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ScriptEditorProperty.java,v 1.1.2.2 2008-01-30 20:44:48 christianfoltin Exp $*/
+/*$Id: ScriptEditorProperty.java,v 1.1.2.3 2008-03-22 16:45:23 christianfoltin Exp $*/
 package freemind.common;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Iterator;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
-import freemind.controller.Controller;
-import freemind.main.Tools;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapController.MindMapControllerPlugin;
 
@@ -59,6 +53,8 @@ public class ScriptEditorProperty extends PropertyBean implements
 
 	private final MindMapController mMindMapController;
 
+	private static java.util.logging.Logger logger = null;
+
 	/**
 	 */
 	public ScriptEditorProperty(String description, String label,
@@ -67,6 +63,10 @@ public class ScriptEditorProperty extends PropertyBean implements
 		this.description = description;
 		this.label = label;
 		mMindMapController = pMindMapController;
+		if (logger == null) {
+			logger = mMindMapController.getFrame().getLogger(
+					this.getClass().getName());
+		}
 		mButton = new JButton();
 		mButton.addActionListener(this);
 		script = "";
@@ -117,7 +117,7 @@ public class ScriptEditorProperty extends PropertyBean implements
 			result = "";
 		}
 		script = result;
-		System.out.println("Setting script to " + result);
+		logger.info("Setting script to " +result);
 		mButton.setText(script);
 	}
 

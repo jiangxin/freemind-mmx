@@ -19,7 +19,7 @@
  *
  * Created on 01.11.2004
  */
-/* $Id: ExportPdf.java,v 1.1.4.2.2.5 2007-11-20 22:15:34 dpolivaev Exp $ */
+/* $Id: ExportPdf.java,v 1.1.4.2.2.6 2008-03-22 16:45:24 christianfoltin Exp $ */
 
 package plugins.svg;
 
@@ -66,6 +66,16 @@ public class ExportPdf extends ExportVectorGraphic {
 
 
             PDFTranscoder pdfTranscoder = new PDFTranscoder();
+            /*
+			 * according to
+			 * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1921334&group_id=7118
+			 * 
+			 * Submitted By: Frank Spangenberg (f_spangenberg) Summary: Large
+			 * mind maps produce invalid PDF
+			 */
+            pdfTranscoder.addTranscodingHint(PDFTranscoder.KEY_MAX_HEIGHT, new Float(19200));
+            pdfTranscoder.addTranscodingHint(PDFTranscoder.KEY_MAX_WIDTH, new Float(19200));
+            /* end patch*/
             Document doc = g2d.getDOMFactory();
             Element rootE = doc.getDocumentElement();
             g2d.getRoot(rootE);
