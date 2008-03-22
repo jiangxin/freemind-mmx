@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.26 2008-03-14 21:15:22 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.27 2008-03-22 20:30:00 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -27,14 +27,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
-import java.awt.IllegalComponentStateException;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.io.BufferedReader;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -81,8 +79,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import freemind.view.mindmapview.NodeMotionListenerView;
 
 /**
  * @author foltin
@@ -712,14 +708,16 @@ public class Tools {
 	/**
      */
     public static String toBase64(byte[] byteBuffer) {
-        return new String(CommonsCodecBase64.encodeBase64(byteBuffer));
+        return new String(Base64Coding.encode64(byteBuffer));
+//        return new String(CommonsCodecBase64.encodeBase64(byteBuffer));
     }
 
     /**
      * @throws IOException
      */
     public static byte[] fromBase64(String base64String)  {
-        return CommonsCodecBase64.decodeBase64(base64String.getBytes());
+        return Base64Coding.decode64(base64String);
+//        return CommonsCodecBase64.decodeBase64(base64String.getBytes());
     }
 
     public static String compress(String message) {
