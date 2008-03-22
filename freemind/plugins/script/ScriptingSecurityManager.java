@@ -19,7 +19,7 @@
  *
  * Created on 06.03.2008
  */
-/*$Id: ScriptingSecurityManager.java,v 1.1.2.1 2008-03-14 21:15:29 christianfoltin Exp $*/
+/*$Id: ScriptingSecurityManager.java,v 1.1.2.2 2008-03-22 07:21:58 christianfoltin Exp $*/
 
 package plugins.script;
 
@@ -139,7 +139,7 @@ public class ScriptingSecurityManager extends SecurityManager {
 	private SecurityException getException(int pPermissionGroup, int pPermission) {
 		return new SecurityException(Resources.getInstance().format(
 				"plugins/ScriptEditor.FORBIDDEN_ACTION",
-				new Integer[] { Integer.valueOf(pPermissionGroup), Integer.valueOf(pPermission) }));
+				new Integer[] { new Integer(pPermissionGroup), new Integer(pPermission) }));
 	}
 
 	public void checkAccess(Thread pT) {

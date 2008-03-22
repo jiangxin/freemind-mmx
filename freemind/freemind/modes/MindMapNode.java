@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.18 2008-01-20 21:53:12 christianfoltin Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.19 2008-03-22 07:21:57 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -302,11 +302,11 @@ public interface MindMapNode extends MutableTreeNode {
     
     /**Searches for the first attribute with the given key. This is 
      * a convenience function.
-     * 
+     * see MindMapActions.editAttribute to set the value to 
+     * a different one.
+
      * @param pKey is the name of the attribute
      * @return the value of the attribute or null, if not found.
-     * @see MindMapActions.editAttribute to set the value to 
-     * a different one.
      */
     String getAttribute(String pKey);
     
