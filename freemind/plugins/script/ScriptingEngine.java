@@ -19,7 +19,7 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.15 2008-03-14 21:15:28 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.16 2008-03-26 21:25:35 christianfoltin Exp $ */
 package plugins.script;
 
 import java.io.File;
@@ -193,7 +193,7 @@ public class ScriptingEngine extends MindMapHookAdapter {
 		PrintStream oldOut = System.out;
 		Object value = null;
 		GroovyRuntimeException e1 = null;
-		Exception e2 = null;
+		Throwable e2 = null;
 		ScriptingSecurityManager scriptingSecurityManager = new ScriptingSecurityManager(
 				Tools.isPreferenceTrue(executeWithoutFileRestriction), Tools
 						.isPreferenceTrue(executeWithoutNetworkRestriction), Tools
@@ -205,11 +205,18 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			// exchange security manager to prevent scripts from doing nasty things.
 			securityManager.setFinalSecurityManager(scriptingSecurityManager);
 			value = shell.evaluate(script);
+			System.out.println("Scripts done....");
 		} catch (GroovyRuntimeException e) {
+			System.out.println("GroovyRuntimeException");
 			e1 = e;
 		} catch (Exception e) {
+			System.out.println("Exception");
+			e2 = e;
+		} catch (Throwable e) {
+			System.out.println("Throwable");
 			e2 = e;
 		} finally {
+			System.out.println("Scripts done. finally...");
 			// setting the same security manager the second time causes it to be removed.
 			securityManager.setFinalSecurityManager(scriptingSecurityManager);
 			System.setOut(oldOut);
@@ -244,8 +251,11 @@ public class ScriptingEngine extends MindMapHookAdapter {
 		if(e2 != null) {
 			freemind.main.Resources.getInstance().logException(e2);
 			pOutStream.print(e2.getMessage());
+			String cause = ((e2.getCause() != null) ? e2.getCause()
+					.getMessage() : "");
+			String message = ((e2.getMessage() != null) ? e2.getMessage() : "");
 			pMindMapController.getController().errorMessage(
-					e2.getClass().getName() + ": " + e2.getMessage());
+					e2.getClass().getName() + ": " + cause + ((!cause.isEmpty() && !message.isEmpty())?", ":"") + message);
 			return false;
 		}
 		pOutStream.print(frame.getResourceString(

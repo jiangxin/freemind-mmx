@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeManagement.java,v 1.1.2.6 2008-03-14 21:15:18 christianfoltin Exp $ */
+/* $Id: TimeManagement.java,v 1.1.2.7 2008-03-26 21:25:35 christianfoltin Exp $ */
 package accessories.plugins.time;
 
 import java.awt.Container;
@@ -203,7 +203,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 			gb2.gridy = 2;
 			gb2.fill = GridBagConstraints.HORIZONTAL;
 			JButton cancelButton = new JButton(
-					getResourceString("plugins/TimeManagement.xml_cancelButton"));
+					getResourceString("plugins/TimeManagement.xml_closeButton"));
 			cancelButton.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent arg0) {

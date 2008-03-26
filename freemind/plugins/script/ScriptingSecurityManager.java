@@ -19,10 +19,11 @@
  *
  * Created on 06.03.2008
  */
-/*$Id: ScriptingSecurityManager.java,v 1.1.2.2 2008-03-22 07:21:58 christianfoltin Exp $*/
+/*$Id: ScriptingSecurityManager.java,v 1.1.2.3 2008-03-26 21:25:35 christianfoltin Exp $*/
 
 package plugins.script;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.net.InetAddress;
 import java.security.Permission;
@@ -103,6 +104,14 @@ public class ScriptingSecurityManager extends SecurityManager {
 
 	public void checkLink(String pLib) {
 		if(mWithoutExecRestriction) return;
+		/* TODO: This should permit system libraries to be loaded.
+		 * But the check needs to be refined.
+		 */ 
+		int classLoaderDepth = this.classLoaderDepth();
+		if(classLoaderDepth == -1) {
+			// this is a system call. We allow this. 
+			return;
+		}
 		throw getException(PERM_GROUP_EXEC, PERM_Link);
 	}
 
