@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.103 2008-03-22 16:45:24 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.104 2008-03-30 20:39:57 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -1018,7 +1018,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				}
 				// fin = ;
 				try {
-					ctrl.load(new File(fileArgument).toURL());
+					ctrl.load(new File(fileArgument).toURI().toURL());
 					fileLoaded = true;
 					// logger.info("Attempting to load: " +
 					// args[i]);

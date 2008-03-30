@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindIcon.java,v 1.1.18.6.2.9 2007-09-19 22:54:12 dpolivaev Exp $ */
+/* $Id: MindIcon.java,v 1.1.18.6.2.10 2008-03-30 20:39:57 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -143,7 +143,7 @@ public class MindIcon implements Comparable, IconInformation{
            URL imageURL = Resources.getInstance().getResource(getIconFileName());
            if (imageURL == null) {       //As standard icon not found, try user's
               try {
-                 imageURL = new File (Resources.getInstance().getFreemindDirectory(),"icons/"+getName()+".png").toURL(); }
+                 imageURL = new File (Resources.getInstance().getFreemindDirectory(),"icons/"+getName()+".png").toURI().toURL(); }
               catch (Exception e) {}}
            ImageIcon icon = imageURL == null ? iconNotFound : new ImageIcon(imageURL);
            setIcon(icon);

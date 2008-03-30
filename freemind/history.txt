@@ -17,6 +17,7 @@ Changes made in FreeMind 0.9.0 Beta17
 * Fixed: Script exceptions are now displayed in any case.
 * Fixed: Scripts with multiples lines supported in patterns.
 * Fixed: Layout of pattern manager.
+* Fixed: .toURL() is deprecated in Java 1.6 https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1812246&group_id=7118
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta16

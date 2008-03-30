@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ExportBranchAction.java,v 1.1.2.4 2007-08-05 20:33:16 christianfoltin Exp $*/
+/*$Id: ExportBranchAction.java,v 1.1.2.5 2008-03-30 20:39:58 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -89,7 +89,7 @@ public class ExportBranchAction extends AbstractAction {
                         + freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION);
             }
             try {
-                link = chosenFile.toURL();
+                link = chosenFile.toURI().toURL();
             } catch (MalformedURLException ex) {
                 JOptionPane.showMessageDialog(mMindMapController.getView(),
                         "couldn't create valid URL!");
@@ -117,7 +117,7 @@ public class ExportBranchAction extends AbstractAction {
             try {
                 // set a link from the new root to the old map
                 String linkToNewMapString = Tools.toRelativeURL(chosenFile
-                        .toURL(), mMindMapController.getModel().getURL());
+                        .toURI().toURL(), mMindMapController.getModel().getURL());
                 mMindMapController.setLink(node, linkToNewMapString);
             } catch (MalformedURLException ex) {
                 Resources.getInstance().logException(ex);
@@ -142,7 +142,7 @@ public class ExportBranchAction extends AbstractAction {
 
             try {
                 String linkString = Tools.toRelativeURL(mMindMapController
-                        .getModel().getURL(), chosenFile.toURL());
+                        .getModel().getURL(), chosenFile.toURI().toURL());
                 mMindMapController.setLink(newNode, linkString);
             } catch (MalformedURLException ex) {
                 Resources.getInstance().logException(ex);

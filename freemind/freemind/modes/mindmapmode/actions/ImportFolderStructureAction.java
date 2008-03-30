@@ -77,7 +77,7 @@ public class ImportFolderStructureAction extends AbstractAction {
                 if (list[i].isDirectory()) {
                     // Insert a new node
 
-                    MindMapNode node = addNode(target, list[i].getName(), list[i].toURL().toString());
+                    MindMapNode node = addNode(target, list[i].getName(), list[i].toURI().toURL().toString());
                     importFolderStructure(list[i], node, false);
                 }
             }
@@ -85,7 +85,7 @@ public class ImportFolderStructureAction extends AbstractAction {
             // For each file: add it
             for (int i = 0; i < list.length; i++) {
                 if (!list[i].isDirectory()) {
-                    addNode(target, list[i].getName(), list[i].toURL().toString());
+                    addNode(target, list[i].getName(), list[i].toURI().toURL().toString());
                 }
             }
         }

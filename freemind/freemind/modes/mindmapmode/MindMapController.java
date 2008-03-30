@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.62 2008-01-30 20:44:48 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.63 2008-03-30 20:39:58 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1158,8 +1158,8 @@ freemind.main.Resources.getInstance().logException(					e1);
             URL absolute = null;
             try {
                String relative = selected.getLink();
-               absolute = Tools.isAbsolutePath(relative) ? new File(relative).toURL() :
-                  new URL(getMap().getFile().toURL(), relative); }
+               absolute = Tools.isAbsolutePath(relative) ? new File(relative).toURI().toURL() :
+                  new URL(getMap().getFile().toURI().toURL(), relative); }
             catch (MalformedURLException ex) {
                JOptionPane.showMessageDialog(getView(),"Couldn't create valid URL for:"+getMap().getFile());
                freemind.main.Resources.getInstance().logException(ex);
@@ -1187,8 +1187,8 @@ freemind.main.Resources.getInstance().logException(					e1);
             URL absolute = null;
             try {
                String relative = selected.getLink();
-               absolute = Tools.isAbsolutePath(relative) ? new File(relative).toURL() :
-                  new URL(getMap().getFile().toURL(), relative); }
+               absolute = Tools.isAbsolutePath(relative) ? new File(relative).toURI().toURL() :
+                  new URL(getMap().getFile().toURI().toURL(), relative); }
             catch (MalformedURLException ex) {
                JOptionPane.showMessageDialog(getView(),"Couldn't create valid URL.");
                return; }
@@ -1520,7 +1520,7 @@ freemind.main.Resources.getInstance().logException(					e1);
                          if (node.getLink() != null) {
                             String possiblyRelative = node.getLink();
                             String relative = Tools.isAbsolutePath(possiblyRelative) ?
-                               new File(possiblyRelative).toURL().toString() : possiblyRelative;
+                               new File(possiblyRelative).toURI().toURL().toString() : possiblyRelative;
                             if (relative != null) {
                                String strText = "<html><img src=\"" + relative + "\">";
                                setLink(node, null);
@@ -1573,7 +1573,7 @@ freemind.main.Resources.getInstance().logException(					e1);
             input = chooser.getSelectedFile();
             setLastCurrentDir(input.getParentFile());
             try {
-                link = input.toURL();
+                link = input.toURI().toURL();
                 relative = link.toString();
             } catch (MalformedURLException ex) {
                 getController().errorMessage(getText("url_error"));
@@ -1582,7 +1582,7 @@ freemind.main.Resources.getInstance().logException(					e1);
             if (getFrame().getProperty("links").equals("relative")) {
                 //Create relative URL
                 try {
-                    relative = Tools.toRelativeURL(getMap().getFile().toURL(), link);
+                    relative = Tools.toRelativeURL(getMap().getFile().toURI().toURL(), link);
                 } catch (MalformedURLException ex) {
                     getController().errorMessage(getText("url_error"));
                     return null;

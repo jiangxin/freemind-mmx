@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMode.java,v 1.17.18.2.2.3 2006-08-20 19:34:25 christianfoltin Exp $ */
+/* $Id: MindMapMode.java,v 1.17.18.2.2.4 2008-03-30 20:39:58 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -78,7 +78,7 @@ public class MindMapMode implements Mode {
     }
 
     public void restore(String restoreable) throws FileNotFoundException, XMLParseException, MalformedURLException, IOException {
-	    getDefaultModeController().load(new File(restoreable).toURL());
+	    getDefaultModeController().load(new File(restoreable).toURI().toURL());
     }
 
     public Controller getController() {

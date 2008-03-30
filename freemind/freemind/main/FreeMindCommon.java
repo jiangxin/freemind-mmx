@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.31 2008-02-20 20:54:03 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.32 2008-03-30 20:39:57 christianfoltin Exp $*/
 package freemind.main;
 
 import java.awt.SystemColor;
@@ -196,7 +196,7 @@ public class FreeMindCommon {
 	public ClassLoader getFreeMindClassLoader() {
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		try {
-			return new URLClassLoader(new URL[] { new File(getFreemindBaseDir()).toURL() }, classLoader);
+			return new URLClassLoader(new URL[] { new File(getFreemindBaseDir()).toURI().toURL() }, classLoader);
 		} catch (MalformedURLException e) {
 			freemind.main.Resources.getInstance().logException(e);
 			return classLoader;

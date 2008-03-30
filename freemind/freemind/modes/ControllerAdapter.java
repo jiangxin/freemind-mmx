@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.40 2008-02-15 21:56:04 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.41 2008-03-30 20:39:57 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -370,7 +370,7 @@ public abstract class ControllerAdapter implements ModeController {
               // it works on Windows and Linux.
 
               //absolute = new URL("file://"+relative); }
-              absolute = new File(relative).toURL(); }
+              absolute = new File(relative).toURI().toURL(); }
             else if(relative.startsWith("#")){
                 // inner map link, fc, 12.10.2004
                 logger.finest("found relative link to "+relative);
@@ -591,7 +591,7 @@ public abstract class ControllerAdapter implements ModeController {
             try {
                 File theFile = chooser.getSelectedFile();
                 lastCurrentDir = theFile.getParentFile();
-                load(theFile.toURL());
+                load(theFile.toURI().toURL());
             } catch (Exception ex) {
                handleLoadingException (ex); } {
             }
@@ -1012,7 +1012,7 @@ public abstract class ControllerAdapter implements ModeController {
                 Iterator iterator = ((List)data).iterator();
                 while (iterator.hasNext()) {
                     File file = (File)iterator.next();
-                    load(file.toURL());
+                    load(file.toURI().toURL());
                 }
             }
             catch (Exception e) {

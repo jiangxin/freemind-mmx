@@ -19,7 +19,7 @@
  *
  * Created on 11.03.2005
  */
-/* $Id: RevertAction.java,v 1.1.2.2.2.6 2006-11-26 10:20:44 dpolivaev Exp $ */
+/* $Id: RevertAction.java,v 1.1.2.2.2.7 2008-03-30 20:39:58 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -152,7 +152,7 @@ freemind.main.Resources.getInstance().logException(			e);
 				// close the old map.
 				controller.getController().close(true);
 				if (revertAction.getLocalFileName() != null) {
-					controller.load(new File(revertAction.getLocalFileName()).toURL());
+					controller.load(new File(revertAction.getLocalFileName()).toURI().toURL());
 				} else {
 					// the map is given by xml. we store it and open it.
 					String filePrefix = controller.getText("freemind_reverted");
@@ -165,7 +165,7 @@ freemind.main.Resources.getInstance().logException(			e);
 					FileWriter fw = new FileWriter(tempFile);
 					fw.write(revertAction.getMap());
 					fw.close();
-					controller.load(tempFile.toURL());
+					controller.load(tempFile.toURI().toURL());
 				}
 			} catch (Exception e) {
 freemind.main.Resources.getInstance().logException(				e);
