@@ -19,7 +19,7 @@
  *
  * Created on 31.07.2007
  */
-/*$Id: OptionalDontShowMeAgainDialog.java,v 1.1.2.4 2007-08-21 19:54:00 christianfoltin Exp $*/
+/*$Id: OptionalDontShowMeAgainDialog.java,v 1.1.2.5 2008-03-30 20:34:45 christianfoltin Exp $*/
 
 package freemind.common;
 
@@ -97,7 +97,7 @@ public class OptionalDontShowMeAgainDialog {
 			mController.setProperty(mPropertyName, pValue);
 		}
 	}
-	public OptionalDontShowMeAgainDialog(/*Controller pController*/JFrame pFrame, Component pComponent, String pMessageId,
+	public OptionalDontShowMeAgainDialog(JFrame pFrame, Component pComponent, String pMessageId,
 			String pTitleId, TextTranslator pTextTranslator, DontShowPropertyHandler pDontShowPropertyHandler, int pMessageType) {
 		mComponent = pComponent;
 		mParent = pFrame;
@@ -128,14 +128,6 @@ public class OptionalDontShowMeAgainDialog {
 		}
 		mDialog = null;
 		mDialog = new JDialog(mParent, mTextTranslator.getText(mTitleId));
-//		}
-//		if (mParent instanceof Window) {
-//			Window window = (Window) mParent;
-//			mDialog = new JDialog(window, mTextTranslator.getText(mTitleId));
-//		}
-		if (mDialog == null) {
-			throw new IllegalArgumentException("Not right base class given");
-		}
 		mDialog.setModal(true);
 		mDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		AbstractAction cancelAction = new AbstractAction() {

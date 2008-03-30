@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.12 2007-11-13 21:20:11 christianfoltin Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.13 2008-03-30 20:34:45 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -455,7 +455,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 					GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 			jContentPane.add(ButtonBarFactory.buildOKCancelBar(getJCancelButton(), getJOKButton()),
 					new GridBagConstraints(1, 1, 1, 1,
-					1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+					0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE,
 					new Insets(0, 0, 0, 0), 0, 0));
 //			jContentPane.add(getJOKButton(), new GridBagConstraints(1, 1, 1, 1,
 //					1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.NONE,

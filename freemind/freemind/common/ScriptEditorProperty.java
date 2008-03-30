@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ScriptEditorProperty.java,v 1.1.2.3 2008-03-22 16:45:23 christianfoltin Exp $*/
+/*$Id: ScriptEditorProperty.java,v 1.1.2.4 2008-03-30 20:34:45 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -32,6 +32,7 @@ import javax.swing.JPopupMenu;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
+import freemind.main.HtmlTools;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapController.MindMapControllerPlugin;
 
@@ -85,7 +86,7 @@ public class ScriptEditorProperty extends PropertyBean implements
 	}
 
 	public String getValue() {
-		return script;
+		return HtmlTools.unicodeToHTMLUnicodeEntity(script);
 	}
 
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
@@ -101,9 +102,9 @@ public class ScriptEditorProperty extends PropertyBean implements
 					.next();
 			if (plugin instanceof ScriptEditorStarter) {
 				ScriptEditorStarter starter = (ScriptEditorStarter) plugin;
-				String resultScript = starter.startEditor(getValue());
+				String resultScript = starter.startEditor(script);
 				if (resultScript != null) {
-					setScriptValue(resultScript);
+					script = resultScript;
 					firePropertyChangeEvent();
 				}
 			}
@@ -116,8 +117,8 @@ public class ScriptEditorProperty extends PropertyBean implements
 		if (result == null) {
 			result = "";
 		}
-		script = result;
-		logger.info("Setting script to " +result);
+		script = HtmlTools.unescapeHTMLUnicodeEntity(result);
+		logger.info("Setting script to " +script);
 		mButton.setText(script);
 	}
 

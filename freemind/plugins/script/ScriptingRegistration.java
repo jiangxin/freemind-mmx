@@ -19,6 +19,8 @@ import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMind;
+import freemind.main.HtmlTools;
+import freemind.main.Tools;
 import freemind.main.Tools.BooleanHolder;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -97,7 +99,7 @@ public class ScriptingRegistration implements HookRegistration,
 		}
 
 		public boolean isDirty() {
-			return false;
+			return !Tools.safeEquals(mScript, mOriginalScript);
 		}
 
 		public void setScript(int pIndex, ScriptHolder pScript) {
@@ -160,11 +162,13 @@ public class ScriptingRegistration implements HookRegistration,
 	public void act(MindMapNode node, Pattern pattern) {
 		if (pattern.getPatternScript() != null
 				&& pattern.getPatternScript().getValue() != null) {
-			ScriptingEngine.executeScript(node, new BooleanHolder(false), pattern
-					.getPatternScript().getValue(), controller, new ErrorHandler(){
-
+			ScriptingEngine.executeScript(node, new BooleanHolder(false),
+					HtmlTools.unescapeHTMLUnicodeEntity(pattern
+							.getPatternScript().getValue()), controller,
+					new ErrorHandler() {
 						public void gotoLine(int pLineNumber) {
-						}}, System.out, getScriptCookies());
+						}
+					}, System.out, getScriptCookies());
 		}
 	}
 

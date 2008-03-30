@@ -19,7 +19,7 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.16 2008-03-26 21:25:35 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.17 2008-03-30 20:34:45 christianfoltin Exp $ */
 package plugins.script;
 
 import java.io.File;
@@ -195,9 +195,10 @@ public class ScriptingEngine extends MindMapHookAdapter {
 		GroovyRuntimeException e1 = null;
 		Throwable e2 = null;
 		ScriptingSecurityManager scriptingSecurityManager = new ScriptingSecurityManager(
-				Tools.isPreferenceTrue(executeWithoutFileRestriction), Tools
+				Tools.isPreferenceTrue(executeWithoutFileRestriction),
+				Tools
 						.isPreferenceTrue(executeWithoutNetworkRestriction), Tools
-						.isPreferenceTrue(executeWithoutExecRestriction));
+				.isPreferenceTrue(executeWithoutExecRestriction));
 		FreeMindSecurityManager securityManager = (FreeMindSecurityManager) System
 				.getSecurityManager();
 		try {
@@ -205,18 +206,11 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			// exchange security manager to prevent scripts from doing nasty things.
 			securityManager.setFinalSecurityManager(scriptingSecurityManager);
 			value = shell.evaluate(script);
-			System.out.println("Scripts done....");
 		} catch (GroovyRuntimeException e) {
-			System.out.println("GroovyRuntimeException");
 			e1 = e;
-		} catch (Exception e) {
-			System.out.println("Exception");
-			e2 = e;
 		} catch (Throwable e) {
-			System.out.println("Throwable");
 			e2 = e;
 		} finally {
-			System.out.println("Scripts done. finally...");
 			// setting the same security manager the second time causes it to be removed.
 			securityManager.setFinalSecurityManager(scriptingSecurityManager);
 			System.setOut(oldOut);

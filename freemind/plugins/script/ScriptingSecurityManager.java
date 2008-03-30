@@ -19,7 +19,7 @@
  *
  * Created on 06.03.2008
  */
-/*$Id: ScriptingSecurityManager.java,v 1.1.2.3 2008-03-26 21:25:35 christianfoltin Exp $*/
+/*$Id: ScriptingSecurityManager.java,v 1.1.2.4 2008-03-30 20:34:45 christianfoltin Exp $*/
 
 package plugins.script;
 
@@ -28,7 +28,12 @@ import java.io.FileDescriptor;
 import java.net.InetAddress;
 import java.security.Permission;
 
+import javax.swing.JOptionPane;
+
+import freemind.common.OptionalDontShowMeAgainDialog;
+import freemind.main.FreeMind;
 import freemind.main.Resources;
+import freemind.modes.mindmapmode.MindMapController;
 
 /**
  * @author foltin
@@ -54,12 +59,17 @@ public class ScriptingSecurityManager extends SecurityManager {
 	private static final int PERM_GROUP_FILE=0;
 	private static final int PERM_GROUP_NETWORK=1;
 	private static final int PERM_GROUP_EXEC=2;
+	private static java.util.logging.Logger logger = null;
 
-	public ScriptingSecurityManager(boolean pWithoutFileRestriction,
-			boolean pWithoutNetworkRestriction, boolean pWithoutExecRestriction) {
-				mWithoutFileRestriction = pWithoutFileRestriction;
-				mWithoutNetworkRestriction = pWithoutNetworkRestriction;
-				mWithoutExecRestriction = pWithoutExecRestriction;
+	public ScriptingSecurityManager(boolean pWithoutFileRestriction, boolean pWithoutNetworkRestriction,
+			boolean pWithoutExecRestriction) {
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
+		mWithoutFileRestriction = pWithoutFileRestriction;
+		mWithoutNetworkRestriction = pWithoutNetworkRestriction;
+		mWithoutExecRestriction = pWithoutExecRestriction;
 	}
 
 	public void checkAccept(String pHost, int pPort) {
@@ -104,14 +114,8 @@ public class ScriptingSecurityManager extends SecurityManager {
 
 	public void checkLink(String pLib) {
 		if(mWithoutExecRestriction) return;
-		/* TODO: This should permit system libraries to be loaded.
-		 * But the check needs to be refined.
-		 */ 
-		int classLoaderDepth = this.classLoaderDepth();
-		if(classLoaderDepth == -1) {
-			// this is a system call. We allow this. 
-			return;
-		}
+		/* FIXME: This should permit system libraries to be loaded.
+		 */
 		throw getException(PERM_GROUP_EXEC, PERM_Link);
 	}
 

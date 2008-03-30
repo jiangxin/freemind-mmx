@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.16 2007-08-24 22:10:23 dpolivaev Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.17 2008-03-30 20:34:45 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -326,8 +326,8 @@ public class HtmlTools {
        for (int i = 0; i < text.length(); ++i) {
           myChar = text.charAt(i);
           intValue = (int) text.charAt(i);
-          if (intValue > 128) {
-             result.append("&#").append(intValue).append(';'); }
+          if (intValue < 32 || intValue > 126) {
+             result.append("&#x").append(Integer.toString(intValue, 16)).append(';'); }
           else {
              result.append(myChar); }}
        return result.toString(); }
