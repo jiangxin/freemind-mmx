@@ -19,7 +19,7 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.17 2008-03-30 20:34:45 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.18 2008-04-02 20:02:37 christianfoltin Exp $ */
 package plugins.script;
 
 import java.io.File;
@@ -249,7 +249,7 @@ public class ScriptingEngine extends MindMapHookAdapter {
 					.getMessage() : "");
 			String message = ((e2.getMessage() != null) ? e2.getMessage() : "");
 			pMindMapController.getController().errorMessage(
-					e2.getClass().getName() + ": " + cause + ((!cause.isEmpty() && !message.isEmpty())?", ":"") + message);
+					e2.getClass().getName() + ": " + cause + ((cause.length() != 0 && message.length() != 0)?", ":"") + message);
 			return false;
 		}
 		pOutStream.print(frame.getResourceString(

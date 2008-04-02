@@ -1,4 +1,4 @@
-#include <C:/Dev-Cpp/include/windows.h>
+#include <C:/Programme/Dev-Cpp/include/windows.h>
 
 100 ICON "FreeMind-butterfly.ico"
 //100 ICON "FreeMind.ico"

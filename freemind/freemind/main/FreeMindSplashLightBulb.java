@@ -39,7 +39,7 @@ import javax.swing.SwingUtilities;
 
 
 /**
- * Class to put a splash during lounching the application.
+ * Class to put a splash during launching the application.
  */
 
 public class FreeMindSplashLightBulb extends JFrame implements IFreeMindSplash {

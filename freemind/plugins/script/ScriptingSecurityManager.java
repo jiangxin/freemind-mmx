@@ -19,21 +19,16 @@
  *
  * Created on 06.03.2008
  */
-/*$Id: ScriptingSecurityManager.java,v 1.1.2.4 2008-03-30 20:34:45 christianfoltin Exp $*/
+/*$Id: ScriptingSecurityManager.java,v 1.1.2.5 2008-04-02 20:02:37 christianfoltin Exp $*/
 
 package plugins.script;
 
-import java.io.File;
 import java.io.FileDescriptor;
 import java.net.InetAddress;
 import java.security.Permission;
+import java.util.HashSet;
 
-import javax.swing.JOptionPane;
-
-import freemind.common.OptionalDontShowMeAgainDialog;
-import freemind.main.FreeMind;
 import freemind.main.Resources;
-import freemind.modes.mindmapmode.MindMapController;
 
 /**
  * @author foltin
@@ -71,7 +66,7 @@ public class ScriptingSecurityManager extends SecurityManager {
 		mWithoutNetworkRestriction = pWithoutNetworkRestriction;
 		mWithoutExecRestriction = pWithoutExecRestriction;
 	}
-
+	
 	public void checkAccept(String pHost, int pPort) {
 		if(mWithoutNetworkRestriction) return;
 		throw getException(PERM_GROUP_NETWORK, PERM_Accept);
@@ -113,9 +108,14 @@ public class ScriptingSecurityManager extends SecurityManager {
 	}
 
 	public void checkLink(String pLib) {
-		if(mWithoutExecRestriction) return;
-		/* FIXME: This should permit system libraries to be loaded.
+		/* This should permit system libraries to be loaded.
 		 */
+		HashSet set = new HashSet();
+		set.add("awt");
+		set.add("net");
+		set.add("jpeg");
+		set.add("fontmanager");
+		if(mWithoutExecRestriction || set.contains(pLib)) return;
 		throw getException(PERM_GROUP_EXEC, PERM_Link);
 	}
 
@@ -180,9 +180,11 @@ public class ScriptingSecurityManager extends SecurityManager {
 	}
 
 	public void checkPermission(Permission pPerm, Object pContext) {
+		logger.info("Check Permission with Context: " + pPerm.getClass());
 	}
 
 	public void checkPermission(Permission pPerm) {
+		logger.info("Check Permission: " + pPerm.getClass());
 	}
 
 	public void checkPrintJobAccess() {
