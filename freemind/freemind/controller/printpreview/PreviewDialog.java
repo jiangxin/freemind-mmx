@@ -24,6 +24,7 @@ package freemind.controller.printpreview;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
@@ -37,6 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
+import freemind.main.Tools;
 import freemind.view.mindmapview.MapView;
 
 public class PreviewDialog extends JDialog implements ActionListener {
@@ -69,6 +71,10 @@ public class PreviewDialog extends JDialog implements ActionListener {
         ok.addActionListener(this);
         dialog.add(ok);
         getContentPane().add(dialog, "South");
+        Tools.addEscapeActionToDialog(this, new AbstractAction(){
+			public void actionPerformed(ActionEvent pE) {
+				dispose();
+			}});
     }
 
 

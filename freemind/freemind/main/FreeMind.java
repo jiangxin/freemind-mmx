@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.104 2008-03-30 20:39:57 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.105 2008-04-04 19:26:14 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -999,7 +999,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		return ctrl;
 	}
 
-	private void loadMaps(final String[] args, ModeController ctrl) {
+	private void loadMaps(final String[] args, ModeController pModeController) {
 		boolean fileLoaded = false;
 		for (int i = 0; i < args.length; i++) {
 			// JOptionPane.showMessageDialog(null,i+":"+args[i]);
@@ -1018,7 +1018,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				}
 				// fin = ;
 				try {
-					ctrl.load(new File(fileArgument).toURI().toURL());
+					pModeController.load(new File(fileArgument).toURI().toURL());
 					fileLoaded = true;
 					// logger.info("Attempting to load: " +
 					// args[i]);
@@ -1037,6 +1037,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				try {
 					controller.getLastOpenedList().open(
 							restoreable);
+					fileLoaded = true;
 				} catch (Exception e) {
 					freemind.main.Resources.getInstance()
 					.logException(e);
@@ -1044,6 +1045,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
 							+ restoreable + ".");
 				}
 			}
+		}
+		if(!fileLoaded){
+			/* nothing loaded so far. Perhaps, we should display a new map...
+			 * According to 
+			 * Summary: On first start FreeMind should show new map to newbies
+			 * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1752516&group_id=7118
+			 */
+			pModeController.newMap();
 		}
 	}
 	/*
