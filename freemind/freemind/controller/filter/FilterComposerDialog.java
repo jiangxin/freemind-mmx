@@ -251,7 +251,7 @@ public class FilterComposerDialog extends JDialog {
 
     }
     private class ConditionListMouseListener extends MouseAdapter{
-        
+
          public void mouseClicked(MouseEvent e) {
              if(e.getClickCount() == 2){
                  EventQueue.invokeLater(new Runnable(){
@@ -307,7 +307,7 @@ public class FilterComposerDialog extends JDialog {
             chooser.setDialogTitle(Resources.getInstance().getResourceString("save_as"));
             int returnVal = chooser.showSaveDialog(FilterComposerDialog.this);
             if (returnVal != JFileChooser.APPROVE_OPTION) {// not ok pressed
-            	return ; 
+            	return ;
             }
 
             // |= Pressed O.K.
@@ -326,7 +326,7 @@ public class FilterComposerDialog extends JDialog {
 
 		private void handleSavingException(Exception ex) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
     }
@@ -347,7 +347,7 @@ public class FilterComposerDialog extends JDialog {
 
 		private void handleLoadingException(Exception ex) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
     }
@@ -413,7 +413,7 @@ public class FilterComposerDialog extends JDialog {
                     }
                     if(simpleCondition.getSelectedIndex() == 0){
                         caseInsensitive.setEnabled(false);
-                        values.setEnabled(false);                        
+                        values.setEnabled(false);
                     }
                     values.setEditable(true);
                     simpleCondition.setEnabled(true);
@@ -450,18 +450,18 @@ public class FilterComposerDialog extends JDialog {
     private JButton btnCancel;
     private JButton btnSave;
     private JButton btnLoad;
-    private ConditionListSelectionListener conditionListListener;   
+    private ConditionListSelectionListener conditionListListener;
     public FilterComposerDialog(Controller c, final FilterToolbar ft) {
         super(c.getJFrame(),
                 c.getResourceString("filter_dialog"));
         this.c = c;
         this.fc = c.getFilterController();
         this.ft = ft;
-    
+
         final Box simpleConditionBox = Box.createHorizontalBox();
-        simpleConditionBox.setBorder(new EmptyBorder(5, 0, 5, 0));        
+        simpleConditionBox.setBorder(new EmptyBorder(5, 0, 5, 0));
         getContentPane().add(simpleConditionBox, BorderLayout.NORTH);
-    
+
         attributes = new JComboBox();
         filteredAttributeComboBoxModel = new ExtendedComboBoxModel(new NamedObject[] {
                         Resources.getInstance().createTranslatedString("filter_node"),
@@ -475,7 +475,7 @@ public class FilterComposerDialog extends JDialog {
         simpleConditionBox.add(Box.createHorizontalGlue());
         simpleConditionBox.add(attributes);
         attributes.setRenderer(fc.getConditionRenderer());
-    
+
         simpleNodeConditionComboBoxModel = new DefaultComboBoxModel(fc.getConditionFactory().getNodeConditionNames());
         simpleIconConditionComboBoxModel = new DefaultComboBoxModel(fc.getConditionFactory().getIconConditionNames());
 
@@ -485,7 +485,7 @@ public class FilterComposerDialog extends JDialog {
         simpleConditionBox.add(Box.createHorizontalGlue());
         simpleConditionBox.add(simpleCondition);
         simpleCondition.setRenderer(fc.getConditionRenderer());
-    
+
         simpleAttributeConditionComboBoxModel = new DefaultComboBoxModel(fc.getConditionFactory().getAttributeConditionNames());
         values = new JComboBox();
         nodes = new ExtendedComboBoxModel();
@@ -494,64 +494,67 @@ public class FilterComposerDialog extends JDialog {
         simpleConditionBox.add(values);
         values.setRenderer(fc.getConditionRenderer());
         values.setEditable(true);
-    
+
         icons = new ExtendedComboBoxModel();
         icons.setExtensionList(registry.getIcons());
-    
+
         caseInsensitive = new JCheckBox();
         simpleConditionBox.add(Box.createHorizontalGlue());
         simpleConditionBox.add(caseInsensitive);
         caseInsensitive.setText(Resources.getInstance().getResourceString("filter_ignore_case"));
-        
+
         final Box conditionButtonBox = Box.createVerticalBox();
-        conditionButtonBox.setBorder(new EmptyBorder(0, 10, 0, 10));        
+        conditionButtonBox.setBorder(new EmptyBorder(0, 10, 0, 10));
         getContentPane().add(conditionButtonBox, BorderLayout.EAST);
-    
+
         btnAdd = new JButton(new AddConditionAction());
         btnAdd.setMaximumSize(maxButtonDimension);
         conditionButtonBox.add(Box.createVerticalGlue());
         conditionButtonBox.add(btnAdd);
-        
+
         btnNot = new JButton(new CreateNotSatisfiedConditionAction());
         conditionButtonBox.add(Box.createVerticalGlue());
         btnNot.setMaximumSize(maxButtonDimension);
         conditionButtonBox.add(btnNot);
         btnNot.setEnabled(false);
-    
+
         btnAnd = new JButton(new CreateConjunctConditionAction());
         conditionButtonBox.add(Box.createVerticalGlue());
         btnAnd.setMaximumSize(maxButtonDimension);
         conditionButtonBox.add(btnAnd);
         btnAnd.setEnabled(false);
-    
+
         btnOr = new JButton(new CreateDisjunctConditionAction());
         conditionButtonBox.add(Box.createVerticalGlue());
         btnOr.setMaximumSize(maxButtonDimension);
         conditionButtonBox.add(btnOr);
         btnOr.setEnabled(false);
-    
+
         btnDelete = new JButton(new DeleteConditionAction());
         btnDelete.setEnabled(false);
         conditionButtonBox.add(Box.createVerticalGlue());
         btnDelete.setMaximumSize(maxButtonDimension);
         conditionButtonBox.add(btnDelete);
         conditionButtonBox.add(Box.createVerticalGlue());
-    
-        final Box controllerBox = Box.createHorizontalBox();
-        controllerBox.setBorder(new EmptyBorder(5, 0, 5, 0));        
-        getContentPane().add(controllerBox, BorderLayout.SOUTH);
-    
-        CloseAction closeAction = new CloseAction();        
 
-        btnOK = new JButton(Resources.getInstance().getResourceString("ok"));
+        final Box controllerBox = Box.createHorizontalBox();
+        controllerBox.setBorder(new EmptyBorder(5, 0, 5, 0));
+        getContentPane().add(controllerBox, BorderLayout.SOUTH);
+
+        CloseAction closeAction = new CloseAction();
+
+        btnOK = new JButton();
+        Tools.setLabelAndMnemonic(btnOK, Resources.getInstance().getResourceString("ok"));
         btnOK.addActionListener(closeAction);
         btnOK.setMaximumSize(maxButtonDimension);
 
-        btnApply = new JButton(Resources.getInstance().getResourceString("apply"));
+        btnApply = new JButton();
+        Tools.setLabelAndMnemonic(btnApply, Resources.getInstance().getResourceString("apply"));
         btnApply.addActionListener(closeAction);
         btnApply.setMaximumSize(maxButtonDimension);
 
-        btnCancel = new JButton(Resources.getInstance().getResourceString("cancel"));
+        btnCancel = new JButton();
+        Tools.setLabelAndMnemonic(btnCancel, Resources.getInstance().getResourceString("cancel"));
         btnCancel.addActionListener(closeAction);
         btnCancel.setMaximumSize(maxButtonDimension);
 
@@ -586,16 +589,16 @@ public class FilterComposerDialog extends JDialog {
         conditionList.setAlignmentX(Component.LEFT_ALIGNMENT);
         conditionListListener = new ConditionListSelectionListener();
         conditionList.addListSelectionListener(conditionListListener);
-        
+
         conditionList.addMouseListener(new ConditionListMouseListener());
-    
+
         final JScrollPane conditionScrollPane = new JScrollPane(conditionList);
         JLabel conditionColumnHeader = new JLabel(Resources.getInstance().getResourceString("filter_conditions"));
         conditionColumnHeader.setHorizontalAlignment(JLabel.CENTER);
         conditionScrollPane.setColumnHeaderView(conditionColumnHeader);
         conditionScrollPane.setPreferredSize(new Dimension(500, 200));
         getContentPane().add(conditionScrollPane, BorderLayout.CENTER);
-        
+
         pack();
     }
 
@@ -651,7 +654,7 @@ public class FilterComposerDialog extends JDialog {
      */
     public void setSelectedItem(Object selectedItem) {
         conditionList.setSelectedValue(selectedItem, true);
-        
+
     }
 
     public void setVisible(boolean b) {
@@ -692,5 +695,5 @@ public class FilterComposerDialog extends JDialog {
         internalConditionsModel.removeListDataListener(conditionListListener);
         fc.setFilterConditionModel(internalConditionsModel);
         internalConditionsModel = null;
-    }    
+    }
 }

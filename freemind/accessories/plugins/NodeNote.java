@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.43 2007-09-13 20:33:01 christianfoltin Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.44 2008-04-10 20:49:20 dpolivaev Exp $ */
 package accessories.plugins;
 
 import java.awt.EventQueue;
@@ -62,7 +62,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
             EventQueue.invokeLater(new Runnable(){
                 public void run() {
                     NodeNoteRegistration.getHtmlEditorPanel()
-                    .requestFocus();
+                    	.getMostRecentFocusOwner().requestFocus();
                 }                
             });
         } else {

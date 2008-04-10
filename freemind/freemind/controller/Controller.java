@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.47 2008-03-14 21:15:18 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.48 2008-04-10 20:49:20 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -156,7 +156,7 @@ public class Controller  implements MapModuleChangeObserver {
     public Action showAllAttributes = new ShowAllAttributesAction();
     public Action showSelectedAttributes = new ShowSelectedAttributesAction();
     public Action hideAllAttributes = new HideAllAttributesAction();
-    
+
     public OptionAntialiasAction optionAntialiasAction;
     public Action optionHTMLExportFoldingAction;
     public Action optionSelectionMechanismAction;
@@ -178,7 +178,7 @@ public class Controller  implements MapModuleChangeObserver {
 
     public Action zoomIn;
     public Action zoomOut;
-    
+
     public Action showSelectionAsRectangle;
     public PropertyAction propertyAction;
 
@@ -196,7 +196,7 @@ public class Controller  implements MapModuleChangeObserver {
         }
 
         localDocumentationLinkConverter = new DefaultLocalLinkConverter();
-        
+
         lastOpened = new LastOpenedList(this, getProperty("lastOpened"));
         mapModuleManager = new MapModuleManager(this);
         mapModuleManager.addListener(this);
@@ -236,7 +236,7 @@ public class Controller  implements MapModuleChangeObserver {
         zoomIn = new ZoomInAction(this);
         zoomOut = new ZoomOutAction(this);
         propertyAction = new PropertyAction(this);
-        
+
         showSelectionAsRectangle = new ShowSelectionAsRectangleAction(this);
 
         moveToRoot = new MoveToRootAction(this);
@@ -256,7 +256,7 @@ public class Controller  implements MapModuleChangeObserver {
            logger.warning("Warning: the font you have set as standard - "+getProperty("defaultfont")+
                               " - is not available.");
            frame.setProperty("defaultfont","SansSerif"); }
-        
+
     }
 
     //
@@ -280,7 +280,7 @@ public class Controller  implements MapModuleChangeObserver {
 			String oldValue) {
 		if(oldValue == null || ! oldValue.equals(value))
 		{
-			frame.setProperty(property, value);			
+			frame.setProperty(property, value);
 			for (Iterator i = Controller.getPropertyChangeListeners().iterator(); i.hasNext();) {
 				FreemindPropertyListener listener = (FreemindPropertyListener) i
 				.next();
@@ -298,7 +298,7 @@ public class Controller  implements MapModuleChangeObserver {
         if (f instanceof JFrame) return (JFrame) f;
         return null;
     }
-    
+
     public URL getResource(String resource) {
         return getFrame().getResource(resource);
     }
@@ -792,7 +792,7 @@ public class Controller  implements MapModuleChangeObserver {
             File file = model.getFile();
             if (file != null) {
                 title += " " + file.getAbsolutePath();
-            }            
+            }
 		}
 		getFrame().setTitle(title);
 		for (Iterator iterator = mMapTitleChangeListenerSet.iterator(); iterator.hasNext();) {
@@ -800,14 +800,14 @@ public class Controller  implements MapModuleChangeObserver {
 			listener.setMapTitle(rawTitle, mapModule, model);
 		}
 	}
-	
+
 	public void registerMapTitleChangeListener(MapModuleManager.MapTitleChangeListener pMapTitleChangeListener){
 		mMapTitleChangeListenerSet.add(pMapTitleChangeListener);
 	}
 	public void deregisterMapTitleChangeListener(MapModuleManager.MapTitleChangeListener pMapTitleChangeListener){
 		mMapTitleChangeListenerSet.remove(pMapTitleChangeListener);
 	}
-	
+
     //
     // Actions management
     //
@@ -845,7 +845,7 @@ public class Controller  implements MapModuleChangeObserver {
 						return;
 					}
 				} else {
-					// map module without view open. 
+					// map module without view open.
 					// FIXME: This seems to be a bad hack. correct me!
 					getMapModuleManager().nextMapModule();
 				}
@@ -936,7 +936,7 @@ public class Controller  implements MapModuleChangeObserver {
         boolean isDlg;
         PrintAction(Controller controller, boolean isDlg) {
             super(isDlg ? controller.getResourceString("print_dialog")
-					: controller.getResourceString("print"), 
+					: controller.getResourceString("print"),
 					new ImageIcon(getResource("images/fileprint.png")));
             this.controller = controller;
             setEnabled(false);
@@ -993,7 +993,8 @@ public class Controller  implements MapModuleChangeObserver {
             final JLabel userZoomL = new JLabel(getResourceString("user_zoom"));
             final JTextField userZoom = new JTextField(getProperty("user_zoom"),3);
             userZoom.setEditable(!fitToPage.isSelected());
-            final JButton okButton = new JButton(getResourceString("ok"));
+            final JButton okButton = new JButton();
+            Tools.setLabelAndMnemonic(okButton, getResourceString("ok"));
             final Tools.IntHolder eventSource = new Tools.IntHolder();
             JPanel panel = new JPanel();
 
@@ -1060,7 +1061,7 @@ public class Controller  implements MapModuleChangeObserver {
     public interface LocalLinkConverter {
     		String convertLocalLink(String link);
     }
-    
+
     private class DefaultLocalLinkConverter implements LocalLinkConverter {
 
         public String convertLocalLink(String map) {
@@ -1070,7 +1071,7 @@ public class Controller  implements MapModuleChangeObserver {
 			/* end: new handling for relative urls. fc, 29.10.2003.*/
 		}
     }
-    
+
     //
     // Help
     //
@@ -1303,7 +1304,7 @@ public class Controller  implements MapModuleChangeObserver {
                 attributes.setAttributeViewType(AttributeTableLayoutModel.SHOW_ALL);
             }
         }
-    }    
+    }
     private class HideAllAttributesAction extends AbstractAction {
         public HideAllAttributesAction(){
             super(Resources.getInstance().getResourceString("attributes_hide_all"));
@@ -1371,7 +1372,7 @@ public class Controller  implements MapModuleChangeObserver {
     }
 
     /**
-     * @param listener The new listener. All currently available properties are sent to 
+     * @param listener The new listener. All currently available properties are sent to
      * the listener after registration. Here, the oldValue parameter is set to null.
      */
     public static void addPropertyChangeListenerAndPropagate(FreemindPropertyListener listener) {
@@ -1382,7 +1383,7 @@ public class Controller  implements MapModuleChangeObserver {
     		listener.propertyChanged(key, properties.getProperty(key), null);
     	}
     }
-    
+
     public static void removePropertyChangeListener(FreemindPropertyListener listener) {
         Controller.propertyChangeListeners.remove(listener);
     }

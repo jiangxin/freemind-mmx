@@ -19,11 +19,12 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1.16.14 2007-09-07 18:47:21 dpolivaev Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.15 2008-04-10 20:49:21 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
@@ -44,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 
 import freemind.main.Tools;
 import freemind.modes.ModeController;
@@ -70,29 +72,15 @@ public class EditNodeDialog extends EditNodeBase {
         this.firstEvent = firstEvent;
         
     }
-    class LongNodeDialog extends EditDialog implements WindowListener{
+    class LongNodeDialog extends EditDialog{
         private JTextArea textArea;
         
         LongNodeDialog(){
             super(EditNodeDialog.this);
-            addWindowListener(this);
             textArea = new JTextArea(getText());
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
             // wrap around words rather than characters
-            if (firstEvent != null) {
-                switch (firstEvent.getKeyCode()) {
-                case KeyEvent.VK_HOME :
-                    textArea.setCaretPosition(0);
-                    break;
-                    
-                default :
-                    textArea.setCaretPosition(getText().length());
-                break;
-                }
-            } else {
-                textArea.setCaretPosition(getText().length());
-            }
             
             final JScrollPane editorScrollPane = new JScrollPane(textArea);
             editorScrollPane.setVerticalScrollBarPolicy(
@@ -130,13 +118,18 @@ public class EditNodeDialog extends EditNodeBase {
             final JPanel panel = new JPanel();
             
             //String performedAction;
-            final JButton okButton = new JButton(getText("ok"));
-            final JButton cancelButton = new JButton(getText("cancel"));
-            final JButton splitButton = new JButton(getText("split"));
+            final JButton okButton = new JButton();
+            final JButton cancelButton = new JButton();
+            final JButton splitButton = new JButton();
             final JCheckBox enterConfirms =
                 new JCheckBox(
-                        getText("enter_confirms"),
+                        "",
                         binOptionIsTrue("el__enter_confirms_by_default"));
+
+            Tools.setLabelAndMnemonic(okButton, getText("ok"));
+            Tools.setLabelAndMnemonic(cancelButton, getText("cancel"));
+            Tools.setLabelAndMnemonic(splitButton, getText("split"));
+            Tools.setLabelAndMnemonic(enterConfirms, getText("enter_confirms"));
             
             if (booleanHolderForConfirmState == null) {
                 booleanHolderForConfirmState = new Tools.BooleanHolder();
@@ -144,12 +137,7 @@ public class EditNodeDialog extends EditNodeBase {
             } else {
                 enterConfirms.setSelected(booleanHolderForConfirmState.getValue());
             }
-            
-            okButton.setMnemonic(KeyEvent.VK_O);
-            enterConfirms.setMnemonic(KeyEvent.VK_E);
-            splitButton.setMnemonic(KeyEvent.VK_S);
-            cancelButton.setMnemonic(KeyEvent.VK_C);
-            
+ 
             okButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     submit();
@@ -259,8 +247,12 @@ public class EditNodeDialog extends EditNodeBase {
             
             panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
             setContentPane(panel);
+            redispatchKeyEvents(textArea, firstEvent);
         }
-        
+        public void show(){
+            textArea.requestFocus();
+        	super.show();
+        }
         /* (non-Javadoc)
          * @see freemind.view.mindmapview.EditNodeBase.Dialog#cancel()
          */
@@ -286,41 +278,20 @@ public class EditNodeDialog extends EditNodeBase {
         }
 
         /* (non-Javadoc)
-         * @see java.awt.Dialog#show()
-         */
-        public void show() {
-            super.show();
-            textArea.requestFocus();
-        }
-
-        /* (non-Javadoc)
          * @see freemind.view.mindmapview.EditNodeBase.Dialog#isChanged()
          */
         protected boolean isChanged() {
             return ! getText().equals(textArea.getText());
         }
 
-        public void windowOpened(WindowEvent e) {
-        }
-
-        public void windowClosing(WindowEvent e) {
-        }
-
-        public void windowClosed(WindowEvent e) {
-        }
-
-        public void windowIconified(WindowEvent e) {
-        }
-
-        public void windowDeiconified(WindowEvent e) {
-        }
-
-        public void windowActivated(WindowEvent e) {
-            textArea.requestFocus();
-       }
-
-        public void windowDeactivated(WindowEvent e) {
-        }
+		public Component getMostRecentFocusOwner() {
+			if (isFocused()) {
+				return getFocusOwner();
+			}
+			else {
+				return textArea;
+			}
+		}
         
     }
     public void show() {
@@ -332,14 +303,5 @@ public class EditNodeDialog extends EditNodeBase {
         getView().scrollNodeToVisible(getNode(), 0);
         Tools.setDialogLocationRelativeTo(dialog, getNode().getMainView());
         dialog.show();
-    }
-    
-    
-    /**
-     */
-    protected KeyEvent getFirstEvent() {
-        return firstEvent;
-    }
-    
-    
+    }    
 }

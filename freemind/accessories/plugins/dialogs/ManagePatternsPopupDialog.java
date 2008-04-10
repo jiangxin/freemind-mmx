@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.13 2008-03-30 20:34:45 christianfoltin Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.14 2008-04-10 20:49:20 dpolivaev Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -166,7 +166,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 				i++;
 			}
 		}
-		
+
 		public Pattern getPatternByName(String name) {
 			for (Iterator iter = mPatternList.iterator(); iter.hasNext();) {
 				Pattern pattern = (Pattern) iter.next();
@@ -219,7 +219,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 	private StylePatternFrame mStylePatternFrame;
 
 	private JList mList;
-	
+
 	private boolean mIsDragging = false;
 
 	private accessories.plugins.dialogs.ArrayListTransferHandler mArrayListHandler;
@@ -253,8 +253,8 @@ public class ManagePatternsPopupDialog extends JDialog implements
 
 	/**
 	 * This method initializes this
-	 * 
-	 * 
+	 *
+	 *
 	 * @return void
 	 */
 	private void initialize(List patternList) {
@@ -322,8 +322,8 @@ public class ManagePatternsPopupDialog extends JDialog implements
 
 	/**
 	 * This method initializes jContentPane
-	 * 
-	 * 
+	 *
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private javax.swing.JPanel getJContentPane(List patternList) {
@@ -506,7 +506,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 		mPatternListModel.addPattern(newPattern, selectedIndex);
 		mList.setSelectedIndex(selectedIndex);
 	}
-	
+
 	private void applyToNode(ActionEvent actionEvent) {
 		int selectedIndex = mList.getSelectedIndex();
 		if(selectedIndex<0)
@@ -519,7 +519,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 			mController.applyPattern(node, pattern);
 		}
 	}
-	
+
 	private String searchForNameForNewPattern() {
 		// give it a good name:
 		String newName = mController.getText("PatternNewNameProperty");
@@ -538,7 +538,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 		}
 		return toGiveName;
 	}
-	
+
 	private void removePattern(ActionEvent actionEvent) {
 		int selectedIndex = mList.getSelectedIndex();
 		setLastSelectedPattern(null);
@@ -555,7 +555,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 
 	/**
 	 * This method initializes jButton
-	 * 
+	 *
 	 * @return javax.swing.JButton
 	 */
 	private JButton getJOKButton() {
@@ -578,7 +578,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 
 	/**
 	 * This method initializes jButton1
-	 * 
+	 *
 	 * @return javax.swing.JButton
 	 */
 	private JButton getJCancelButton() {
@@ -590,7 +590,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 					cancelPressed();
 				}
 			});
-			jCancelButton.setText(mController.getText("cancel"));
+			Tools.setLabelAndMnemonic(jCancelButton, getText("cancel"));
 		}
 		return jCancelButton;
 	}
@@ -660,7 +660,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
 	 */
 	public void keyPressed(KeyEvent keyEvent) {
@@ -675,7 +675,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
 	 */
 	public void keyReleased(KeyEvent keyEvent) {
@@ -684,7 +684,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
 	 */
 	public void keyTyped(KeyEvent keyEvent) {

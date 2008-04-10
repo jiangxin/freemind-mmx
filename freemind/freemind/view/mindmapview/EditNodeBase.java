@@ -19,26 +19,34 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.2.12.11 2008-01-28 15:11:09 dpolivaev Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2.12.12 2008-04-10 20:49:21 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import javax.swing.text.JTextComponent;
 
 import freemind.controller.Controller;
@@ -270,5 +278,54 @@ public class EditNodeBase {
     public void setTextFieldListener(FocusListener listener) {
         textFieldListener = listener;
     }
-
+	protected void redispatchKeyEvents(final JTextComponent textComponent,
+			KeyEvent firstKeyEvent) {
+		if(textComponent.hasFocus()){
+			return;
+		}
+		final KeyboardFocusManager currentKeyboardFocusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+		class KeyEventQueue implements KeyEventDispatcher, FocusListener{
+			LinkedList events = new LinkedList(); 
+			public boolean dispatchKeyEvent(KeyEvent e) {
+				events.add(e);
+				return true;
+			}
+			public void focusGained(FocusEvent e) {
+				e.getComponent().removeFocusListener(this);
+				currentKeyboardFocusManager.removeKeyEventDispatcher(this);
+				final Iterator iterator = events.iterator();
+				while(iterator.hasNext()){
+					final KeyEvent ke = (KeyEvent)iterator.next();
+					ke.setSource(textComponent);
+					textComponent.dispatchEvent(ke);
+				}
+				
+			}
+			public void focusLost(FocusEvent e) {
+				
+			}
+			
+		};
+		final KeyEventQueue keyEventDispatcher = new KeyEventQueue();
+		currentKeyboardFocusManager.addKeyEventDispatcher(keyEventDispatcher);
+		textComponent.addFocusListener(keyEventDispatcher);
+		if (firstKeyEvent == null){
+			return;
+		}
+		if(firstKeyEvent.getKeyChar() == KeyEvent.CHAR_UNDEFINED) {
+			switch (firstKeyEvent.getKeyCode()) {
+			case KeyEvent.VK_HOME :
+				textComponent.setCaretPosition(0);
+				break;
+			case KeyEvent.VK_END :
+				textComponent.setCaretPosition(
+						textComponent.getDocument().getLength());
+				break;
+			}
+		} else {
+			textComponent.selectAll(); // to enable overwrite
+			// redispath all key events
+			textComponent.dispatchEvent(firstKeyEvent);
+		}
+	}
 }

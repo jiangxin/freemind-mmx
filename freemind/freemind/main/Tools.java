@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.27 2008-03-22 20:30:00 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.28 2008-04-10 20:49:20 dpolivaev Exp $ */
 
 package freemind.main;
 
@@ -1107,6 +1107,15 @@ public class Tools {
 			// sets the underline to exactly this character.
 			item.setDisplayedMnemonicIndex(mnemoSignIndex);
 		}
+	}
+
+	public static KeyStroke getKeyStroke(final String keyStrokeDescription) {
+		if(keyStrokeDescription == null){
+			return null;
+		}
+		final KeyStroke keyStroke = KeyStroke.getKeyStroke(keyStrokeDescription);
+		if(keyStroke != null) return keyStroke;
+		return  KeyStroke.getKeyStroke("typed " + keyStrokeDescription);
 	}
 }
 

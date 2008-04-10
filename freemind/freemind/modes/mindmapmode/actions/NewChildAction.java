@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: NewChildAction.java,v 1.1.2.2.2.6 2007-08-30 19:43:09 dpolivaev Exp $ */
+/* $Id: NewChildAction.java,v 1.1.2.2.2.7 2008-04-10 20:49:21 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -107,7 +107,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		     newNode = addNewNode(parent, childPosition, targetNode.isLeft());
 		     final NodeView nodeView = c.getNodeView(newNode);
 		     c.select(nodeView);
-		     c.edit.editLater(nodeView, c.getNodeView(target), e, true, false, false);
+		     c.edit.edit(nodeView, c.getNodeView(target), e, true, false, false);
 		     break;
 		     } else {
 		    	 // fc, 21.8.07: we don't do anything here and get a new child instead.
@@ -132,7 +132,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 			   if (newNodeMode == MindMapController.NEW_CHILD) {
 				c.select(nodeView);
 			   }
-		c.edit.editLater(nodeView, c.getNodeView(target), e, true, parentFolded, false);
+		c.edit.edit(nodeView, c.getNodeView(target), e, true, parentFolded, false);
 		   break;
          }
 	   }

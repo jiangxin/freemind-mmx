@@ -66,10 +66,10 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
     private ImportAttributesDialog importDialog = null;
     private Controller c;
     static final Icon editButtonImage = new ImageIcon(Resources.getInstance().getResource("images/edit12.png"));
-    
+
     private class ApplyAction extends AbstractAction{
         ApplyAction(){
-            super(Resources.getInstance().getResourceString("apply"));
+            super(Resources.getInstance().getResourceString("apply").replaceFirst("&", ""));
         }
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -86,7 +86,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
         model.applyChanges();
     }
 
-    private void resetChanges() {        
+    private void resetChanges() {
         int iSize = model.getFontSize();
         size.setSelectedItem(Integer.toString(iSize));
         model.resetChanges();
@@ -94,7 +94,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
 
     private class OKAction extends AbstractAction{
         OKAction(){
-            super(Resources.getInstance().getResourceString("ok"));
+            super(Resources.getInstance().getResourceString("ok").replaceFirst("&", ""));
         }
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -107,7 +107,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
 
     private class CancelAction extends AbstractAction{
         CancelAction(){
-            super(Resources.getInstance().getResourceString("cancel"));
+            super(Resources.getInstance().getResourceString("cancel").replaceFirst("&", ""));
         }
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -117,7 +117,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
             setVisible(false);
         }
     }
-    
+
     private class ImportAction extends AbstractAction{
         ImportAction(){
             super(Resources.getInstance().getResourceString("attributes_import"));
@@ -132,8 +132,8 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
             importDialog.setVisible(true);
         }
     }
-    
-    
+
+
 
 //    private class RefreshAction extends AbstractAction{
 //        RefreshAction(){
@@ -146,7 +146,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
 //            registry.refresh();
 //        }
 //    }
-    
+
     class EditListAction extends AbstractAction{
         public EditListAction() {
             super("", editButtonImage);
@@ -154,7 +154,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
         private int row = 0;
         private SortedListModel listBoxModel;
         private String title;
-        private String labelText;       
+        private String labelText;
         public void actionPerformed(ActionEvent e) {
             ListDialog.showDialog(
                     (Component)e.getSource(),
@@ -165,7 +165,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
                     "xxxxxxxxxxxxxxxxxxxxx"
                     );
         }
-        
+
         public int getRow() {
             return row;
         }
@@ -178,7 +178,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
             this.listBoxModel = listBoxModel;
         }
     }
-    
+
     private class ClosingListener extends WindowAdapter{
 
         public void windowClosing(WindowEvent e) {
@@ -186,7 +186,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
             super.windowClosing(e);
             setVisible(false);
         }
-        
+
     }
 
     public AttributeManagerDialog(Controller c){
@@ -204,7 +204,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
 
         final Box southButtons = Box.createHorizontalBox();
         southButtons.setBorder(new EmptyBorder(5, 5, 5, 5));
-        
+
         getContentPane().add(southButtons, BorderLayout.SOUTH);
         southButtons.add(Box.createHorizontalGlue());
         JButton ok = new JButton(new OKAction());
@@ -224,7 +224,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
             public void itemStateChanged(ItemEvent e) {
                 model.setAttributeLayoutChanged();
             }
-    	    
+
     	});
     	size.setToolTipText(Resources.getInstance().getResourceString("attribute_font_size_tooltip"));
     	southButtons.add(size);
@@ -234,7 +234,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
         southButtons.add(importBtn);
         southButtons.add(Box.createHorizontalGlue());
 
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); 
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new ClosingListener());
         c.getMapModuleManager().addListener(this);
     }

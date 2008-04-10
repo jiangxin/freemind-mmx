@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.41 2008-03-30 20:39:57 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.42 2008-04-10 20:49:20 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -121,8 +121,8 @@ public abstract class ControllerAdapter implements ModeController {
         	logger = getFrame().getLogger(this.getClass().getName());
         }
         // for updates of nodes:
-        // FIXME 
-        // do not associate each new ControllerAdapter 
+        // FIXME
+        // do not associate each new ControllerAdapter
         // with the only one application viewport
 //        DropTarget dropTarget = new DropTarget(getFrame().getViewport(),
 //                                               new FileOpener());
@@ -137,7 +137,7 @@ public abstract class ControllerAdapter implements ModeController {
     //
 
     public abstract MindMapNode newNode(Object userObject, MindMap map);
-    
+
     public abstract XMLElement  createXMLElement();
 
     /**
@@ -193,7 +193,7 @@ public abstract class ControllerAdapter implements ModeController {
             refreshMapFrom(child);
         }
         ((MapAdapter) getMap()).nodeChangedInternal(node);
-        
+
     }
 
     /**
@@ -224,7 +224,7 @@ public abstract class ControllerAdapter implements ModeController {
         }
 
     }
-    
+
     public void onDeselectHook(NodeView node) {
         try {
 			// deselect the old node:
@@ -261,22 +261,22 @@ public abstract class ControllerAdapter implements ModeController {
 	public void registerNodeSelectionListener(NodeSelectionListener listener) {
         mNodeSelectionListeners.add(listener);
     }
-    
+
     public void deregisterNodeSelectionListener(NodeSelectionListener listener) {
         mNodeSelectionListeners.remove(listener);
     }
-    
+
     public void registerNodeLifetimeListener(NodeLifetimeListener listener) {
         mNodeLifetimeListeners.add(listener);
         // call create node for all:
-        // TODO: fc, 10.2.08: this event goes to all listeners. It should be for the new listener only? 
+        // TODO: fc, 10.2.08: this event goes to all listeners. It should be for the new listener only?
         fireRecursiveNodeCreateEvent(getRootNode());
     }
-    
+
     public void deregisterNodeLifetimeListener(NodeLifetimeListener listener) {
         mNodeLifetimeListeners.remove(listener);
     }
-    
+
     public HashSet getNodeLifetimeListeners() {
         return mNodeLifetimeListeners;
     }
@@ -288,7 +288,7 @@ public abstract class ControllerAdapter implements ModeController {
             listener.onDeleteNodeHook(node);
         }
     }
-    
+
     public void fireRecursiveNodeCreateEvent(MindMapNode node) {
         for(Iterator i = node.childrenUnfolded(); i.hasNext();) {
             NodeAdapter child = (NodeAdapter) i.next();
@@ -300,7 +300,7 @@ public abstract class ControllerAdapter implements ModeController {
             listener.onCreateNodeHook(node);
         }
     }
-    
+
     public void firePreSaveEvent(MindMapNode node) {
         // copy to prevent concurrent modification.
         HashSet listenerCopy = new HashSet(mNodeSelectionListeners);
@@ -309,7 +309,7 @@ public abstract class ControllerAdapter implements ModeController {
 				listener.onSaveNode(node);
 			}
     }
-    
+
     //
     // Map Management
     //
@@ -326,7 +326,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     public void newMap(final MindMap mapModel) {
         getController().getMapModuleManager().newMapModule(mapModel, mapModel.getModeController());
-        mapModel.setSaved(false); 
+        mapModel.setSaved(false);
     }
 
     /**
@@ -340,7 +340,7 @@ public abstract class ControllerAdapter implements ModeController {
 		newMap(model);
         EventQueue.invokeLater(new Runnable(){
       	   public void run() {
-      		 model.setSaved(true); 
+      		 model.setSaved(true);
       	   }});
         return newModeController;
     }
@@ -407,7 +407,7 @@ public abstract class ControllerAdapter implements ModeController {
               String mapExtensionKey = mapModuleManager.checkIfFileIsAlreadyOpened(absolute);
               if(mapExtensionKey == null) {
                  getFrame().setWaitingCursor(true);
-                 load(absolute); 
+                 load(absolute);
               } else {
             	  mapModuleManager.tryToChangeToMapModule(mapExtensionKey);
               }
@@ -421,17 +421,17 @@ public abstract class ControllerAdapter implements ModeController {
                     freemind.main.Resources.getInstance().logException(e);
                     getFrame().out(Tools.expandPlaceholders(getText("link_not_found"), ref));
                     return;
-                }                
-            }              
-           } else {                                                 
+                }
+            }
+           } else {
         	   // ---- Open URL in browser
-              getFrame().openDocument(originalURL); 
+              getFrame().openDocument(originalURL);
            }
         }
         catch (MalformedURLException ex) {
 	        	freemind.main.Resources.getInstance().logException(ex);
             getController().errorMessage(getText("url_error")+"\n"+ex);
-            return; 
+            return;
         } catch (Exception e) {
             freemind.main.Resources.getInstance().logException(e);
         } finally {
@@ -447,7 +447,7 @@ public abstract class ControllerAdapter implements ModeController {
 		MindMapNode node = element.getMapChild();
 		return node;
 	}
-    
+
     /**
      *
      */
@@ -698,7 +698,7 @@ public abstract class ControllerAdapter implements ModeController {
      *
      *
      * Keywords: suggest file name.
-     * 
+     *
      */
     private String getFileNameProposal() {
         String rootText = (getMap().getRootNode()).getPlainTextContent();
@@ -710,9 +710,9 @@ public abstract class ControllerAdapter implements ModeController {
      * Return false if user has canceled.
      */
     public boolean close(boolean force, MapModuleManager mapModuleManager) {
-        String[] options = {getText("yes"),
-                            getText("no"),
-                            getText("cancel")};
+        String[] options = {getText("yes").replaceFirst("&", ""),
+                            getText("no").replaceFirst("&", ""),
+                            getText("cancel").replaceFirst("&", "")};
         if (!force && !getModel().isSaved()) {
             String text = getText("save_unsaved")+"\n"+mapModuleManager.getMapModule().toString();
             String title = getText("save");
@@ -967,8 +967,8 @@ public abstract class ControllerAdapter implements ModeController {
                 }
             }
         }
-        
-        
+
+
         protected class FileOpener implements DropTargetListener {
         private boolean isDragAcceptable(DropTargetDragEvent event) {
             // check if there is at least one File Type in the list
@@ -1048,7 +1048,7 @@ public abstract class ControllerAdapter implements ModeController {
            return copy(getView().getSelectedNodesSortedByY(), false); }
 
         public Transferable copySingle() {
-            
+
            final ArrayList selectedNodes  = getView().getSingleSelectedNodes();
            return copy(selectedNodes, false); }
 
@@ -1216,7 +1216,7 @@ public abstract class ControllerAdapter implements ModeController {
     public void insertNodeInto(MindMapNode newNode, MindMapNode parent, int index) {
         getModel().insertNodeInto(newNode, parent, index);
     }
-    
+
     public void insertNodeInto(MindMapNode node, MindMapNode parent, boolean asSibling) {
         if(asSibling){
             insertNodeInto(node, parent.getParentNode());
@@ -1242,6 +1242,6 @@ public abstract class ControllerAdapter implements ModeController {
 	public Set getRegisteredMouseWheelEventHandler() {
 		return Collections.EMPTY_SET;
 	}
-    
+
 
 }

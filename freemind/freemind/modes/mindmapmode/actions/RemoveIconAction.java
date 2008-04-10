@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: RemoveIconAction.java,v 1.1.2.2 2007-07-30 21:33:04 dpolivaev Exp $ */
+/* $Id: RemoveIconAction.java,v 1.1.2.3 2008-04-10 20:49:21 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -34,6 +34,7 @@ import freemind.controller.actions.generated.instance.AddIconAction;
 import freemind.controller.actions.generated.instance.RemoveIconXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.modes.IconInformation;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
@@ -117,7 +118,7 @@ public class RemoveIconAction extends NodeGeneralAction implements NodeActorXml,
 	}
 
 	public KeyStroke getKeyStroke() {
-		return IconAction.getKeyStroke(getMindMapController().getFrame().getAdjustableProperty(getKeystrokeResourceName()));
+		return Tools.getKeyStroke(getMindMapController().getFrame().getAdjustableProperty(getKeystrokeResourceName()));
 	}
 
 	public String getKeystrokeResourceName() {

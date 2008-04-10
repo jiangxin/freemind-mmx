@@ -17,17 +17,24 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.33 2007-09-08 09:40:11 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.34 2008-04-10 20:49:21 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.net.MalformedURLException;
 
@@ -39,6 +46,7 @@ import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTMLDocument;
 
 import com.lightdev.app.shtm.SHTMLPanel;
@@ -63,15 +71,14 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             super(base);
             createEditorPanel();
             getContentPane().add(htmlEditorPanel, BorderLayout.CENTER);
-            adjustKeyBindings();
-            final JButton okButton = new JButton(base.getText("ok"));
-            final JButton cancelButton = new JButton(base.getText("cancel"));
-            final JButton splitButton = new JButton(base.getText("split"));
+            final JButton okButton = new JButton();
+            final JButton cancelButton = new JButton();
+            final JButton splitButton = new JButton();
 
-            okButton.setMnemonic(KeyEvent.VK_O);
-            splitButton.setMnemonic(KeyEvent.VK_S);
-            cancelButton.setMnemonic(KeyEvent.VK_C);
-            
+            Tools.setLabelAndMnemonic(okButton, base.getText("ok"));
+            Tools.setLabelAndMnemonic(cancelButton, base.getText("cancel"));
+            Tools.setLabelAndMnemonic(splitButton, base.getText("split"));
+             
             okButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     submit();
@@ -110,38 +117,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
         public SHTMLPanel getHtmlEditorPanel() {
             return htmlEditorPanel;
         }
-        /**
-         * adjust the key bindings of the key map existing for this
-         * editor pane to our needs (i.e. add actions to certain keys
-         * such as tab/shift tab for caret movement inside tables, etc.)
-         *
-         * This method had to be redone for using InputMap / ActionMap
-         * instead of Keymap.
-         */
-        private void adjustKeyBindings() {
-            ActionMap myActionMap = htmlEditorPanel.getActionMap();
-            InputMap myInputMap = htmlEditorPanel.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
-            
-            final String submitActionKey = "OK";
-            myActionMap.put(submitActionKey, new SubmitAction());
-            KeyStroke ok = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.CTRL_MASK);
-            KeyStroke altOk = KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.ALT_MASK);
-            myInputMap.put(ok, submitActionKey);
-            myInputMap.put(altOk, submitActionKey);
-
-            final String splitActionKey = "split";
-            myActionMap.put(splitActionKey, new SplitAction());
-            KeyStroke altSplit = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_MASK);
-            myInputMap.put(altSplit, splitActionKey);
-
-            final String cancelActionKey = "cancel";
-            myActionMap.put(cancelActionKey, new CancelAction());
-            KeyStroke cancel = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-            KeyStroke altCancel = KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_MASK);
-            myInputMap.put(cancel, cancelActionKey);
-            myInputMap.put(altCancel, cancelActionKey);
-        }
-        /* (non-Javadoc)
+         /* (non-Javadoc)
          * @see freemind.view.mindmapview.EditNodeBase.Dialog#close()
          */
         protected void submit() {
@@ -177,6 +153,14 @@ public class EditNodeWYSIWYG extends EditNodeBase {
         protected boolean isChanged() {
             return htmlEditorPanel.needsSaving();
         }
+		public Component getMostRecentFocusOwner() {
+			if (isFocused()) {
+				return getFocusOwner();
+			}
+			else {
+				return htmlEditorPanel.getMostRecentFocusOwner();
+			}
+		}
     }
     public EditNodeWYSIWYG
     (final NodeView node,
@@ -221,19 +205,6 @@ public class EditNodeWYSIWYG extends EditNodeBase {
 			}
 			catch (MalformedURLException e) {} 
             
-            EventQueue.invokeLater(new Runnable(){
-                
-                public void run() {
-                    String content = node.getModel().toString();
-                    if (!HtmlTools.isHtmlNode(content)) {
-                        content = HtmlTools.plainToHTML(content);
-                    }
-                    htmlEditorPanel.setCurrentDocumentContent(content); 
-                    htmlEditorPanel.requestFocus();
-                    }
-            });
-            
-            
             //{ -- Set size (can be refactored to share code with long node editor)
             int preferredHeight = (int)(node.getMainView().getHeight() * 1.2);
             preferredHeight =
@@ -252,15 +223,24 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             
             Tools.setDialogLocationRelativeTo(htmlEditorWindow, node.getMainView());
             
-            htmlEditorWindow.setVisible(true);
+    		String content = node.getModel().toString();
+    		if (!HtmlTools.isHtmlNode(content)) {
+    			content = HtmlTools.plainToHTML(content);
+    		}
+    		htmlEditorPanel.setCurrentDocumentContent(content); 
+    		if (firstEvent instanceof KeyEvent) {
+    			final KeyEvent firstKeyEvent = (KeyEvent) firstEvent;
+    			final JTextComponent currentPane = htmlEditorPanel.getEditorPane();
+    			if(currentPane == htmlEditorPanel.getMostRecentFocusOwner()){
+    				redispatchKeyEvents(currentPane, firstKeyEvent);
+    			}
+    		} // 1st key event defined
+    		htmlEditorPanel.getMostRecentFocusOwner().requestFocus();
+            htmlEditorWindow.show();
         }
         catch (Exception ex) { // Probably class not found exception
-            freemind.main.Resources.getInstance().logException(ex);
-            System.err.println("Loading of WYSIWYG HTML editor failed. Use the other editors instead."); 
+        	freemind.main.Resources.getInstance().logException(ex);
+        	System.err.println("Loading of WYSIWYG HTML editor failed. Use the other editors instead."); 
         }}
-    protected KeyEvent getFirstEvent() {
-        return firstEvent; 
-    }
-    
 }
 

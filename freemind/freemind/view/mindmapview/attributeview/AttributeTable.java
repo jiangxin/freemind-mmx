@@ -176,7 +176,7 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener{
         getTableHeader().setReorderingAllowed(false);
         getTableHeader().setPreferredSize(prefHeaderSize);
         int h = getRowHeight();
-        setRowHeight(highRowIndex, h + EXTRA_HEIGHT);
+        updateRowHeights();
         setRowSelectionAllowed(false);
         putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
     }

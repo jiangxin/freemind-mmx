@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.27 2008-03-14 21:15:25 christianfoltin Exp $ */
+/* $Id: MainView.java,v 1.1.4.28 2008-04-10 20:49:21 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -316,7 +316,12 @@ public abstract class MainView extends JLabel{
         }
         
         public int getTextX() {
-            return getNodeView().isLeft() && ! getNodeView().isRoot() ? 0 :getIconWidth();
+        	int gap = (getWidth() - getPreferredSize().width) / 2;        	
+            final boolean isLeft = getNodeView().isLeft();
+            if(isLeft){
+            	gap = - gap;
+            }
+			return gap + (isLeft && ! getNodeView().isRoot() ? 0 :getIconWidth());
         }
         protected int getIconWidth() {
             final Icon icon = getIcon();

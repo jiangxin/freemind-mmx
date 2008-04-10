@@ -51,6 +51,7 @@ import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
 import freemind.controller.filter.util.SortedComboBoxModel;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.attributes.AttributeRegistry;
@@ -67,26 +68,26 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
         static private final int FULL_SELECTED = 0;
         static private final int PARTIAL_SELECTED = 1;
         static private final int NOT_SELECTED = 2;
-        
+
         private int selected;
-        
+
         public TreeNodeInfo(String info) {
             this.info = info;
             this.selected = NOT_SELECTED;
         }
-        
+
         int getSelected() {
             return selected;
         }
-        
+
         void setSelected(int selected) {
             this.selected = selected;
         }
-        
+
         String getInfo() {
             return info;
         }
-        
+
          public String toString(){
             return info;
         }
@@ -104,12 +105,12 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
 
     }
     static private class MyRenderer extends DefaultTreeCellRenderer {
-        static final Icon iconFull = MindIcon.factory("button_ok").getIcon(); 
-        static final Icon iconPartial = MindIcon.factory("forward").getIcon(); 
-        static final Icon iconNotSelected = MindIcon.factory("button_cancel").getIcon(); 
+        static final Icon iconFull = MindIcon.factory("button_ok").getIcon();
+        static final Icon iconPartial = MindIcon.factory("forward").getIcon();
+        static final Icon iconNotSelected = MindIcon.factory("button_cancel").getIcon();
         public MyRenderer() {
         }
-        
+
         public Component getTreeCellRendererComponent(
                 JTree tree,
                 Object value,
@@ -118,12 +119,12 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
                 boolean leaf,
                 int row,
                 boolean hasFocus) {
-            
+
             super.getTreeCellRendererComponent(
                     tree, value, false,
                     expanded, leaf, row,
                     false);
-            
+
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
             TreeNodeInfo info = (TreeNodeInfo) node.getUserObject() ;
             switch(info.getSelected()){
@@ -140,7 +141,7 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
             return this;
         }
     }
-    
+
     MyRenderer renderer = null;
     private DefaultTreeModel treeModel;
     private Component parentComponent;
@@ -155,43 +156,45 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
         tree = new JTree(treeModel);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(this);
-        
-        scrollPane = new JScrollPane();        
+
+        scrollPane = new JScrollPane();
         scrollPane.setViewportView(tree);
         scrollPane.setPreferredSize(new Dimension(600, 300));
         getContentPane().add(scrollPane, BorderLayout.CENTER);
-        
+
         Box buttons = Box.createHorizontalBox();
         buttons.setBorder(new EmptyBorder(5, 5, 5, 5));
-        
-        JButton okBtn = new JButton(Resources.getInstance().getResourceString("ok"));
+
+        JButton okBtn = new JButton();
+        Tools.setLabelAndMnemonic(okBtn, Resources.getInstance().getResourceString("ok"));
         okBtn.addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e) {
                 performImport(topNode);
-                setVisible(false);                
+                setVisible(false);
             }
-            
+
         });
-        
-        JButton cancelBtn = new JButton(Resources.getInstance().getResourceString("cancel"));
+
+        JButton cancelBtn = new JButton();
+        Tools.setLabelAndMnemonic(cancelBtn, Resources.getInstance().getResourceString("cancel"));
         cancelBtn.addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e) {
-                setVisible(false);                
+                setVisible(false);
             }
-            
+
         });
         buttons.add(Box.createHorizontalGlue());
         buttons.add(okBtn);
         buttons.add(Box.createHorizontalGlue());
         buttons.add(cancelBtn);
         buttons.add(Box.createHorizontalGlue());
-        
+
         getContentPane().add(buttons, BorderLayout.SOUTH);
 
     }
-    
+
     private void performImport(DefaultMutableTreeNode node) {
         TreeNodeInfo info = (TreeNodeInfo) node.getUserObject();
         if(info.getSelected() == TreeNodeInfo.NOT_SELECTED){
@@ -214,13 +217,13 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
                 if(childInfo.getSelected() == TreeNodeInfo.FULL_SELECTED){
                     String value = childInfo.getInfo();
                     currentAttributes.getAttributeController().performRegistryAttributeValue(name, value);
-                }                
+                }
             }
             else{
                 performImport(childNode);
             }
         }
-        
+
     }
 
     public void setVisible(boolean b) {
@@ -230,7 +233,7 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
         if(b){
             createMapSubTrees(topNode);
             if(topNode.getChildCount() == 0){
-                JOptionPane.showMessageDialog(parentComponent, 
+                JOptionPane.showMessageDialog(parentComponent,
                         Resources.getInstance().getResourceString("atributes_no_import_candidates_found"),
                         getTitle(),
                         JOptionPane.INFORMATION_MESSAGE);
@@ -246,7 +249,7 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
         }
         super.setVisible(b);
     }
-    
+
     private void createMapSubTrees(DefaultMutableTreeNode top) {
         top.removeAllChildren();
         TreeNodeInfo topInfo = (TreeNodeInfo) top.getUserObject();
@@ -270,14 +273,14 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
                 top.add(mapInfo);
             }
         }
-        
-        
+
+
     }
     private void createAttributeSubTrees(DefaultMutableTreeNode mapInfo, AttributeRegistry attributes) {
         for(int i = 0; i < attributes.size();i++){
             AttributeRegistryElement element = attributes.getElement(i);
             TreeNodeInfo treeNodeInfo = new AttributeTreeNodeInfo(element.getKey().toString(), element.isRestricted());
-            DefaultMutableTreeNode attributeInfo = new DefaultMutableTreeNode(treeNodeInfo);  
+            DefaultMutableTreeNode attributeInfo = new DefaultMutableTreeNode(treeNodeInfo);
             createValueSubTrees(attributeInfo, element, currentAttributes);
             if(attributeInfo.getChildCount() != 0){
                 mapInfo.add(attributeInfo);
@@ -291,7 +294,7 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
             Object nextElement = values.getElementAt(i);
             if(! currentAttributes.exist(attributeName, nextElement)){
                 TreeNodeInfo treeNodeInfo = new TreeNodeInfo(nextElement.toString());
-                DefaultMutableTreeNode valueInfo = new DefaultMutableTreeNode(treeNodeInfo);  
+                DefaultMutableTreeNode valueInfo = new DefaultMutableTreeNode(treeNodeInfo);
                 attributeInfo.add(valueInfo);
             }
         }
@@ -359,6 +362,6 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
         for(int i = 0; i < selectedNode.getChildCount(); i++){
             setSelectionType(selectedNode.getChildAt(i), newSelectionType);
         }
-        
-    }    
+
+    }
 }

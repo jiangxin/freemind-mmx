@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ChooseFormatPopupDialog.java,v 1.1.2.6.2.6 2008-02-17 14:28:27 christianfoltin Exp $ */
+/* $Id: ChooseFormatPopupDialog.java,v 1.1.2.6.2.7 2008-04-10 20:49:20 dpolivaev Exp $ */
 
 package accessories.plugins.dialogs;
 
@@ -173,8 +173,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 			});
 
-			jOKButton.setText(controller
-					.getText("ok"));
+			Tools.setLabelAndMnemonic(jOKButton, controller.getText("ok"));
 		}
 		return jOKButton;
 	}
@@ -193,8 +192,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 					cancelPressed();
 				}
 			});
-			jCancelButton.setText(controller
-					.getText("cancel"));
+			Tools.setLabelAndMnemonic(jCancelButton, controller.getText(("cancel")));
 		}
 		return jCancelButton;
 	}
@@ -217,7 +215,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 	public Pattern getPattern(Pattern copyIntoPattern) {
 	    return mStylePatternFrame.getResultPattern(copyIntoPattern);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 *

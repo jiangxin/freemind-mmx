@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.23 2008-01-28 15:29:49 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.24 2008-04-10 20:49:21 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -133,58 +133,16 @@ public class EditNodeTextField extends EditNodeBase {
         
         // textField.selectAll(); // no selection on edit (PN)
 
-        final int INIT = 0;
         final int EDIT = 1;
         final int CANCEL = 2;
         final Tools.IntHolder eventSource = new Tools.IntHolder();
-        eventSource.setValue(INIT);
+        eventSource.setValue(EDIT);
 
         // listener class
         class TextFieldListener
             implements KeyListener, FocusListener, MouseListener, ComponentListener{
 
             public void focusGained(FocusEvent e) {
-                // the first time the edit field gains a focus
-                // process the predefined first key (if any)
-
-                if (eventSource.getValue() == INIT) {
-                    eventSource.setValue(EDIT);
-                    if (firstEvent instanceof KeyEvent) {
-                        KeyEvent firstKeyEvent = (KeyEvent) firstEvent;
-                        if (firstKeyEvent.getKeyChar()
-                            == KeyEvent.CHAR_UNDEFINED) {
-                            // for the char_undefined the scenario with dispatching 
-                            // doesn't work => hard code dispatching :-(
-                            // // dispatch action key events as it came
-                            // textField.dispatchEvent(firstKeyEvent);
-
-                            // dispatch 2 known events (+ special for insert:) (hardcoded)
-                            switch (firstKeyEvent.getKeyCode()) {
-                                case KeyEvent.VK_HOME :
-                                    textfield.setCaretPosition(0);
-                                    break;
-                                case KeyEvent.VK_END :
-                                    textfield.setCaretPosition(
-                                        textfield.getText().length());
-                                    break;
-                            }
-                        } else {
-                            // or create new "key type" event for printable key
-                            KeyEvent keyEv;
-                            keyEv =
-                                new KeyEvent(
-                                    textfield,	//firstKeyEvent.getComponent(),
-                                    KeyEvent.KEY_TYPED,
-                                    firstKeyEvent.getWhen(),
-                                    firstKeyEvent.getModifiers(),
-                                    KeyEvent.VK_UNDEFINED,
-                                    firstKeyEvent.getKeyChar(),
-                                    KeyEvent.KEY_LOCATION_UNKNOWN);
-                            textfield.selectAll(); // to enable overwrite
-                            textfield.dispatchEvent(keyEv);
-                        }
-                    } // 1st key event defined
-                } // first focus
             } // focus gained
 
             public void focusLost(FocusEvent e) {
@@ -311,15 +269,11 @@ public class EditNodeTextField extends EditNodeBase {
 
         mapView.add(textfield, 0); 
         textfield.repaint();
+        redispatchKeyEvents(textfield, firstEvent);
 
-        SwingUtilities.invokeLater(new Runnable() { // PN 0.6.2
-            public void run() {
-                textfield.requestFocus();
-                // Add listeners
-                getNode().addComponentListener(textFieldListener);
-
-            }
-        });
+        getNode().addComponentListener(textFieldListener);
+        textfield.requestFocus();
+        // Add listeners
     }
 
     private void hideMe() {

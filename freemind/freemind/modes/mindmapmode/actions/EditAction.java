@@ -25,6 +25,7 @@
  */
 package freemind.modes.mindmapmode.actions;
 
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -32,6 +33,7 @@ import java.util.Vector;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 import freemind.common.OptionalDontShowMeAgainDialog;
@@ -51,6 +53,7 @@ import freemind.view.mindmapview.EditNodeDialog;
 import freemind.view.mindmapview.EditNodeExternalApplication;
 import freemind.view.mindmapview.EditNodeTextField;
 import freemind.view.mindmapview.EditNodeWYSIWYG;
+import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
 
@@ -104,51 +107,6 @@ public class EditAction extends AbstractAction implements ActorXml {
         }
     }
     
-    
-    /**
-     * @param prevSelected when new->esc: node be selected
-     * @param isNewNode when new->esc: cut the node
-     * @param parentFolded when new->esc: fold prevSelected
-     */
-    public void editLater(
-            final NodeView node,
-            final NodeView prevSelected,
-            final KeyEvent firstEvent,
-            final boolean isNewNode,
-            final boolean parentFolded,
-            final boolean editLong) {
-        class DelayedEditor implements Runnable {
-            
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
-            final NodeView node;
-            final NodeView prevSelected;
-            final KeyEvent firstEvent;
-            final boolean isNewNode;
-            final boolean parentFolded;
-            final boolean editLong;
-            DelayedEditor(
-                    final NodeView node,
-                    final NodeView prevSelected,
-                    final KeyEvent firstEvent,
-                    final boolean isNewNode,
-                    final boolean parentFolded,
-                    final boolean editLong){
-                this.node = node;
-                this.prevSelected = prevSelected;
-                this.firstEvent = firstEvent;
-                this.isNewNode = isNewNode;
-                this.parentFolded = parentFolded;
-                this.editLong = editLong;
-            }
-            public void run() {
-                edit(node, prevSelected, firstEvent, isNewNode, parentFolded, editLong);				
-            }
-        };
-        EventQueue.invokeLater(new DelayedEditor(node, prevSelected, firstEvent, isNewNode, parentFolded, editLong));
-    }
-    
     public void edit(
             final NodeView node,
             final NodeView prevSelected,
@@ -159,11 +117,13 @@ public class EditAction extends AbstractAction implements ActorXml {
         if (node == null) {
             return;
         }
+    	final MapView map = node.getMap();
+		map.validate();
+		map.invalidate();
+    	
         if(! node.focused()){
             node.requestFocus();
-            editLater(node, prevSelected, firstEvent, isNewNode, parentFolded, editLong);            
-            return;
-        }
+         }
         stopEditing();
          //EditNodeBase.closeEdit();
         mMindMapController.setBlocked(true); // locally "modal" stated

@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: IconAction.java,v 1.1.2.2.2.7 2007-07-31 07:04:55 dpolivaev Exp $ */
+/* $Id: IconAction.java,v 1.1.2.2.2.8 2008-04-10 20:49:21 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -35,6 +35,7 @@ import javax.swing.SwingConstants;
 import freemind.controller.actions.generated.instance.AddIconAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.controller.filter.condition.IconContainedCondition;
+import freemind.main.Tools;
 import freemind.modes.IconInformation;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
@@ -216,16 +217,7 @@ public class IconAction extends FreemindAction  implements ActorXml, IconInforma
 	public KeyStroke getKeyStroke() {
 		final String keystrokeResourceName = icon.getKeystrokeResourceName();
 		final String keyStrokeDescription = getMindMapController().getFrame().getAdjustableProperty(keystrokeResourceName);
-		return getKeyStroke(keyStrokeDescription);
-	}
-
-	static KeyStroke getKeyStroke(final String keyStrokeDescription) {
-		if(keyStrokeDescription == null){
-			return null;
-		}
-		final KeyStroke keyStroke = KeyStroke.getKeyStroke(keyStrokeDescription);
-		if(keyStroke != null) return keyStroke;
-		return  KeyStroke.getKeyStroke("typed " + keyStrokeDescription);
+		return Tools.getKeyStroke(keyStrokeDescription);
 	}
 
 	public String getDescription() {
