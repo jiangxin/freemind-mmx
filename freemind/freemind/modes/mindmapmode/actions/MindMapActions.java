@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/* $Id: MindMapActions.java,v 1.1.2.3.2.6 2008-01-17 20:27:40 christianfoltin Exp $ */
+/* $Id: MindMapActions.java,v 1.1.2.3.2.7 2008-04-11 16:58:32 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
@@ -218,15 +218,22 @@ public interface MindMapActions {
      * @return the index of the new attribute.
      */
     int addAttribute(MindMapNode node, Attribute pAttribute);
+    /** 
+     * Removes the attribute at the given position 
+     * @param pPosition the position to delete.
+     * */
+    void removeAttribute(MindMapNode node, int pPosition);
 
     /**
      * If an attribute with the same name exists, its value is changed.
+     * If the new value is null, the attribute is deleted.
      * Otherwise an attribute is created.
      * If several attributes with the same name exist, only the first is changed.
      * @param pNode to which the attribute is associated
      * @param pName the name of the attribute
      * @param pNewValue its new value
-     * @return the index of the attribute
+     * @return the index of the attribute, or -1 if an attribute
+     * 	should be deleted, but wasn't found.
      */
     int editAttribute(MindMapNode pNode, String pName, String pNewValue);
     

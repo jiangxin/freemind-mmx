@@ -94,9 +94,10 @@ public class EditAction extends AbstractAction implements ActorXml {
     
     // edit begins with home/end or typing (PN 6.2)
     public void edit(KeyEvent e, boolean addNew, boolean editLong) {
-        if (mMindMapController.getView().getSelected() != null) {
+        NodeView selectedNodeView = mMindMapController.getView().getSelected();
+		if (selectedNodeView != null) {
             if (e == null || !addNew) {
-                edit(mMindMapController.getView().getSelected(),mMindMapController.getView().getSelected(), e, false, false, editLong);
+                edit(selectedNodeView,selectedNodeView, e, false, false, editLong);
             }
             else if (!mMindMapController.isBlocked()) {
                 mMindMapController.addNew(mMindMapController.getSelected(), MindMapController.NEW_SIBLING_BEHIND, e);

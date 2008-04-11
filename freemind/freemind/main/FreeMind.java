@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.105 2008-04-04 19:26:14 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.106 2008-04-11 16:58:31 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -143,6 +143,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	public static final String RESOURCES_CONVERT_TO_CURRENT_VERSION = "resources_convert_to_current_version";
 
 	public static final String RESOURCES_CUT_NODES_WITHOUT_QUESTION = "resources_cut_nodes_without_question";
+
+	public static final String RESOURCES_DON_T_SHOW_NOTE_ICONS = "resources_don_t_show_note_icons";
 
 	// public static final String defaultPropsURL = "freemind.properties";
 	// public static Properties defaultProps;

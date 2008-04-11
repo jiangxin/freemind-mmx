@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ChooseFormatPopupDialog.java,v 1.1.2.6.2.7 2008-04-10 20:49:20 dpolivaev Exp $ */
+/* $Id: ChooseFormatPopupDialog.java,v 1.1.2.6.2.8 2008-04-11 16:58:31 christianfoltin Exp $ */
 
 package accessories.plugins.dialogs;
 
@@ -40,6 +40,7 @@ import javax.swing.JScrollPane;
 
 import freemind.common.TextTranslator;
 import freemind.controller.actions.generated.instance.Pattern;
+import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.Tools;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame;
@@ -52,11 +53,13 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	public static final int OK = 1;
 
+	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = "accessories.plugins.dialogs.ChooseFormatPopupDialog.window_storage";
+
 	private int result = CANCEL;
 
 	private javax.swing.JPanel jContentPane = null;
 
-	private MindMapController controller;
+	private MindMapController mController;
 
 	private JButton jCancelButton;
 
@@ -71,7 +74,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 	public ChooseFormatPopupDialog(JFrame caller, MindMapController controller,
 			String dialogTitle, Pattern pattern) {
 		super(caller);
-		this.controller = controller;
+		this.mController = controller;
 		initialize(dialogTitle);
 		mStylePatternFrame.setPattern(pattern);
         mStylePatternFrame.addListeners();
@@ -84,7 +87,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 	 */
 	private void initialize(String dialogTitle) {
 
-		this.setTitle(controller
+		this.setTitle(mController
 				.getText(dialogTitle));
 		JPanel contentPane = getJContentPane();
         this.setContentPane(contentPane);
@@ -102,13 +105,16 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 			}
 		};
 		Tools.addEscapeActionToDialog(this, action);
+		pack();
+		mController.decorateDialog(this, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 
 	}
 
 	private void close() {
+		WindowConfigurationStorage storage = new WindowConfigurationStorage();
+		mController.storeDialogPositions(this, storage, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		setVisible(false);
 		this.dispose();
-
 	}
 
 	private void okPressed() {
@@ -139,9 +145,9 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 			jContentPane.add(new JScrollPane(getStylePatternFrame()), new GridBagConstraints(0, 0, 2, 1,
 					2.0, 8.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0, 0));
 			jContentPane.add(getJOKButton(), new GridBagConstraints(0, 1, 1, 1,
-					1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0, 0));
+					1.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0, 0));
 			jContentPane.add(getJCancelButton(), new GridBagConstraints(1, 1, 1, 1,
-					1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0, 0));
+					1.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0, 0));
 			getRootPane().setDefaultButton(getJOKButton());
 		}
 		return jContentPane;
@@ -149,7 +155,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	private Component getStylePatternFrame() {
 		if(mStylePatternFrame == null) {
-			mStylePatternFrame = new StylePatternFrame(this, controller, StylePatternFrameType.WITHOUT_NAME_AND_CHILDS);
+			mStylePatternFrame = new StylePatternFrame(this, mController, StylePatternFrameType.WITHOUT_NAME_AND_CHILDS);
 			mStylePatternFrame.init();
 
 		}
@@ -173,7 +179,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 			});
 
-			Tools.setLabelAndMnemonic(jOKButton, controller.getText("ok"));
+			Tools.setLabelAndMnemonic(jOKButton, mController.getText("ok"));
 		}
 		return jOKButton;
 	}
@@ -192,7 +198,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 					cancelPressed();
 				}
 			});
-			Tools.setLabelAndMnemonic(jCancelButton, controller.getText(("cancel")));
+			Tools.setLabelAndMnemonic(jCancelButton, mController.getText(("cancel")));
 		}
 		return jCancelButton;
 	}
@@ -205,7 +211,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 	}
 
 	public String getText(String pKey) {
-        return controller.getText(pKey);
+        return mController.getText(pKey);
 	}
 
 	public Pattern getPattern() {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.16 2008-01-13 20:55:33 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.17 2008-04-11 16:58:31 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -25,14 +25,13 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -43,6 +42,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import freemind.modes.ModeController;
+import freemind.view.MapModule;
 
 /**This is the menu bar for FreeMind. Actions are defined in MenuListener.
  * Moreover, the StructuredMenuHolder of all menus are hold here.
@@ -234,27 +234,29 @@ public class MenuBar extends JMenuBar {
     }
 	
     private void updateMapsMenu(StructuredMenuHolder holder, String basicKey) {
-		if (c.getMapModuleManager().getMapModules() == null) {
+		MapModuleManager mapModuleManager = c.getMapModuleManager();
+		List mapModuleVector = mapModuleManager.getMapModuleVector();
+		if (mapModuleVector == null) {
 		    return;
 		}
-		List keys = new LinkedList(c.getMapModuleManager().getMapModules().keySet());
-        Collections.sort(keys);
 		ButtonGroup group = new ButtonGroup();
-		for (ListIterator i = keys.listIterator(); i.hasNext();) {
-		    String key = (String)i.next();
-		    JRadioButtonMenuItem newItem = new JRadioButtonMenuItem(key);
+		for (Iterator iterator = mapModuleVector.iterator(); iterator.hasNext();) {
+			MapModule mapModule = (MapModule) iterator.next();
+		    String displayName = mapModule.getDisplayName();
+			JRadioButtonMenuItem newItem = new JRadioButtonMenuItem(displayName);
 			newItem.setSelected(false);
 		    group.add(newItem);
 	
 		    newItem.addActionListener(mapsMenuActionListener);
-            newItem.setMnemonic(key.charAt(0));
+            newItem.setMnemonic(displayName.charAt(0));
 	
-		    if (c.getMapModuleManager().getMapModule() != null) {
-				if (key.equals(c.getMapModuleManager().getMapModule().toString())) {
+		    MapModule currentMapModule = mapModuleManager.getMapModule();
+			if (currentMapModule != null) {
+				if (mapModule == currentMapModule) {
 					newItem.setSelected(true);
 				}
 			}
-			holder.addMenuItem(newItem, basicKey+key);
+			holder.addMenuItem(newItem, basicKey+displayName);
 		}
     }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ImportMindmanagerFiles.java,v 1.1.2.2.2.5 2008-03-30 20:39:57 christianfoltin Exp $ */
+/* $Id: ImportMindmanagerFiles.java,v 1.1.2.2.2.6 2008-04-11 16:58:30 christianfoltin Exp $ */
 
 package accessories.plugins;
 
@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -41,6 +42,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import freemind.extensions.ExportHook;
 import freemind.extensions.ModeControllerHookAdapter;
+import freemind.main.XMLParseException;
 
 /**
  * Applies an XSLT to the Document.xml file of MindManager(c) files.
@@ -115,7 +117,11 @@ public class ImportMindmanagerFiles extends ModeControllerHookAdapter {
             }
         } catch (IOException e) {
             freemind.main.Resources.getInstance().logException(e);
-        }
+        } catch (XMLParseException e) {
+        	freemind.main.Resources.getInstance().logException(e);
+		} catch (URISyntaxException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
     }
 
     public String transForm(Source xmlSource, InputStream xsltStream) {

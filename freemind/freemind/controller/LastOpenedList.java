@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LastOpenedList.java,v 1.8.18.2.2.1 2006-08-20 19:34:25 christianfoltin Exp $*/
+/*$Id: LastOpenedList.java,v 1.8.18.2.2.2 2008-04-11 16:58:31 christianfoltin Exp $*/
 package freemind.controller;
 
 import freemind.main.XMLParseException;
@@ -25,6 +25,7 @@ import freemind.view.MapModule;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.*;
 
 /**
@@ -91,7 +92,7 @@ public class LastOpenedList {
 	}
     }
 
-    public void open(String restoreable) throws FileNotFoundException, XMLParseException, MalformedURLException, IOException {
+    public void open(String restoreable) throws FileNotFoundException, XMLParseException, MalformedURLException, IOException, URISyntaxException {
 		boolean changedToMapModule = c.getMapModuleManager()
 				.tryToChangeToMapModule(
 						(String) mRestorableToMapName.get(restoreable));

@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.5 2008-01-05 10:06:19 dpolivaev Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.6 2008-04-11 16:58:30 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -293,13 +293,18 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
 		mSplitPane = null;
 	}
 
-    private void setStateIcon(MindMapNode node, boolean enabled) {
+    protected void setStateIcon(MindMapNode node, boolean enabled) {
         // icon
         if (noteIcon == null) {
             noteIcon = new ImageIcon(controller
                     .getResource("images/knotes.png"));
         }
-        node.setStateIcon(this.getClass().getName(), (enabled) ? noteIcon
+        boolean showIcon = enabled;
+        if (Tools.isPreferenceTrue(Resources.getInstance().getProperty(
+				FreeMind.RESOURCES_DON_T_SHOW_NOTE_ICONS))) {
+			showIcon = false;
+		}
+        node.setStateIcon(this.getClass().getName(), (showIcon) ? noteIcon
                 : null);
         // tooltip, first try.
         getMindMapController().setToolTip(node, "nodeNoteText", (enabled)?node.getNoteText():null);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.63 2008-03-30 20:39:58 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.64 2008-04-11 16:58:31 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -2010,6 +2010,12 @@ freemind.main.Resources.getInstance().logException(					e1);
         pNode.getAttributes().setValueAt(pAttribute.getName(), pPosition, 0);
         pNode.getAttributes().setValueAt(pAttribute.getValue(), pPosition, 1);
     }
+
+    public void removeAttribute(MindMapNode pNode, int pPosition){
+    	pNode.createAttributeTableModel();
+    	pNode.getAttributes().getAttributeController().performRemoveRow(pNode.getAttributes(), pPosition);
+    }
+
     
     public int addAttribute(MindMapNode node, Attribute pAttribute){
     	node.createAttributeTableModel();
@@ -2025,10 +2031,19 @@ freemind.main.Resources.getInstance().logException(					e1);
     	NodeAttributeTableModel attributes = pNode.getAttributes();
     	for (int i = 0; i < attributes.getRowCount(); i++) {
 			if(pName.equals(attributes.getAttribute(i).getName())) {
-				setAttribute(pNode, i, newAttribute);
+				if (pNewValue != null) {
+					setAttribute(pNode, i, newAttribute);
+				} else {
+					// remove the attribute:
+					removeAttribute(pNode, i);
+				}
 				return i;
 			}
 		}
+    	if(pNewValue == null) {
+    		// nothing to remove found.
+    		return -1;
+    	}
     	return addAttribute(pNode, newAttribute);
     }
     

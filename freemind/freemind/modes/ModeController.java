@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.21 2007-08-27 17:55:27 dpolivaev Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.22 2008-04-11 16:58:31 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
@@ -56,8 +57,9 @@ public interface ModeController extends TextTranslator  {
      * @throws IOException
      * @throws XMLParseException
      * @return returns the new mode controller created for this url.
+	 * @throws URISyntaxException 
      */
-    ModeController load(URL file) throws FileNotFoundException, IOException, XMLParseException;
+    ModeController load(URL file) throws FileNotFoundException, IOException, XMLParseException, URISyntaxException;
     
     /**
      * Opens a link in

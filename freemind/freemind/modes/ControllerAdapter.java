@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.42 2008-04-10 20:49:20 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.43 2008-04-11 16:58:31 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -40,6 +40,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -333,7 +334,7 @@ public abstract class ControllerAdapter implements ModeController {
      * You may decide to overload this or take the default
      * and implement the functionality in your MapModel (implements MindMap)
      */
-    public ModeController load (URL file) throws FileNotFoundException, IOException, XMLParseException {
+    public ModeController load (URL file) throws FileNotFoundException, IOException, XMLParseException, URISyntaxException {
 	    final ModeController newModeController = getMode().createModeController();
 	    final MapAdapter model = newModel(newModeController);
 		model.load(file);

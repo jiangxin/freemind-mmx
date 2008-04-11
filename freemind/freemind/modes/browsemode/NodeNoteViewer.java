@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.11 2007-11-01 16:11:55 dpolivaev Exp $ */
+/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.12 2008-04-11 16:58:31 christianfoltin Exp $ */
 package freemind.modes.browsemode;
 
 import java.awt.BorderLayout;
@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -46,10 +47,11 @@ public class NodeNoteViewer extends NodeNoteBase implements
 	private JLabel noteViewer;
 
 	private final ControllerAdapter mBrowseController;
+	
+    private static ImageIcon noteIcon = null;
 
 	public NodeNoteViewer(ControllerAdapter pBrowseController) {
 		mBrowseController = pBrowseController;
-		// TODO Auto-generated constructor stub
 	}
 
 	protected JComponent getNoteViewerComponent(String text) {
@@ -81,5 +83,18 @@ public class NodeNoteViewer extends NodeNoteBase implements
 	}
 
 	public void onUpdateNodeHook(MindMapNode pNode) {
+		setStateIcon(pNode, true);
 	}
+	
+	/** Copied from NodeNoteRegistration.*/
+    protected void setStateIcon(MindMapNode node, boolean enabled) {
+        // icon
+        if (noteIcon == null) {
+            noteIcon = new ImageIcon(mBrowseController
+                    .getResource("images/knotes.png"));
+        }
+        node.setStateIcon(this.getClass().getName(), (enabled) ? noteIcon
+                : null);
+    }
+
 }

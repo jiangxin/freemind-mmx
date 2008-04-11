@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.23 2008-03-30 20:39:57 christianfoltin Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.24 2008-04-11 16:58:31 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,7 +94,7 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 
     public abstract boolean save(File file);
 
-    public abstract void load(URL file) throws FileNotFoundException, IOException, XMLParseException ;
+    public abstract void load(URL file) throws FileNotFoundException, IOException, XMLParseException, URISyntaxException ;
 
 	/**
 	 * Attempts to lock the map using semaphore file.

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.17 2008-03-30 20:34:45 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.18 2008-04-11 16:58:31 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -71,6 +71,7 @@ public class HtmlTools {
         if(! isHtmlNode(htmlText)){
             return null;
         }
+        logger.fine("Enter toXhtml with " + htmlText);
         StringReader reader = new StringReader(htmlText);
         StringWriter writer = new StringWriter();
         try {
@@ -80,6 +81,7 @@ public class HtmlTools {
             if(!isWellformedXml(resultXml)) {
                 return toXMLEscapedText(htmlText);
             }
+            logger.fine("Leave toXhtml with " + resultXml);
             return resultXml;
         } catch (IOException e) {
             freemind.main.Resources.getInstance().logException(e);
@@ -89,6 +91,7 @@ public class HtmlTools {
         // fallback:
         htmlText = htmlText.replaceAll("<", "&gt;");
         htmlText = htmlText.replaceAll(">", "&lt;");
+        logger.fine("Leave toXhtml with fallback " + htmlText);
         return htmlText;
     }
 

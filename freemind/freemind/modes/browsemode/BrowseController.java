@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseController.java,v 1.13.18.7.2.11 2007-08-10 20:25:49 dpolivaev Exp $ */
+/* $Id: BrowseController.java,v 1.13.18.7.2.12 2008-04-11 16:58:31 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.ListIterator;
@@ -38,6 +39,7 @@ import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.HookFactory;
 import freemind.main.XMLElement;
+import freemind.main.XMLParseException;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -239,7 +241,7 @@ public class BrowseController extends ViewControllerAdapter {
 //
 //	}
 
-	public ModeController load(URL url) throws IOException {
+	public ModeController load(URL url) throws IOException, XMLParseException, URISyntaxException {
 	    ModeController newModeController = super.load(url);
 	    // decorator pattern.
 	    ((BrowseToolBar) newModeController.getModeToolBar()).setURLField(url.toString());

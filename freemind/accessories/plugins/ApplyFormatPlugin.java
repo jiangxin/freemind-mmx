@@ -56,7 +56,6 @@ public class ApplyFormatPlugin extends MindMapNodeHookAdapter {
 				"accessories/plugins/ApplyFormatPlugin.dialog.title",
 				nodePattern);
 		formatDialog.setModal(true);
-		formatDialog.pack();
 		formatDialog.setVisible(true);
 		// process result:
 		if (formatDialog.getResult() == ChooseFormatPopupDialog.OK) {

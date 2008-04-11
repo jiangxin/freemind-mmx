@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapModule.java,v 1.4.18.2.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
+/* $Id: MapModule.java,v 1.4.18.2.2.2 2008-04-11 16:58:32 christianfoltin Exp $ */
 
 package freemind.view;
 
@@ -35,6 +35,8 @@ public class MapModule {
     private MapView view;
     private Mode mode;
     private ModeController modeController;
+    /** Contains an extension if a map with same file name is already opened.*/
+    private String displayName;
     private static int unnamedMapsNumber = 1;//used to give unique names to maps
 
     public MapModule(MindMap model, MapView view, Mode mode, ModeController modeController) {
@@ -50,19 +52,19 @@ public class MapModule {
      * must be notified.
      */
     public String toString() {
-	if (name == null) {
-	    rename();
-	}
-	return name;
+		if (name == null) {
+		    rename();
+		}
+		return name;
     }
 
     public void rename() {
-	if (getModel().toString() != null) {
-	    name = getModel().toString();
-	} else {
-	    name = mode.getController().getFrame().getResourceString("mindmap")
-		       +unnamedMapsNumber++;
-	}
+		if (getModel().toString() != null) {
+		    name = getModel().toString();
+		} else {
+		    name = mode.getController().getFrame().getResourceString("mindmap")
+			       +unnamedMapsNumber++;
+		}
     }
 
     public MindMap getModel() {
@@ -83,5 +85,17 @@ public class MapModule {
 
 	public ModeController getModeController() {
 		return modeController;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String pDisplayName) {
+		displayName = pDisplayName;
 	}
 }

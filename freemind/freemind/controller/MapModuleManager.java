@@ -19,12 +19,13 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.4.2.12 2008-03-14 21:15:20 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4.2.13 2008-04-11 16:58:31 christianfoltin Exp $*/
 
 package freemind.controller;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,6 +35,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Vector;
 
+import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
@@ -49,6 +51,8 @@ import freemind.view.mindmapview.MapView;
  * 
  * The information exchange between controller and this class is managed by oberser pattern (the controller observes
  * changes to the map modules here).
+ * 
+ * TODO: Use an vector with the map modules ordered by the screen order. 
  */
 public class MapModuleManager {
 	
@@ -126,12 +130,15 @@ public class MapModuleManager {
 			listener.removeListener(pListener);
 		}
 
-        /** Contains pairs String (key+extension) => MapModule instances.
-         * The instances of mode, ie. the Model/View pairs. Normally, the
-        * order should be the order of insertion, but such a Map is not
-        * available. */
-        private Map mapModules = new HashMap();
+//        /** Contains pairs String (key+extension) => MapModule instances.
+//         * The instances of mode, ie. the Model/View pairs. Normally, the
+//        * order should be the order of insertion, but such a Map is not
+//        * available. */
+//        private Map mapModules = new HashMap();
 
+		/** A vector of MapModule instances. They are ordered according to their screen order. */
+		private Vector mapModuleVector = new Vector();
+		
         /** reference to the current mapmodule; null is allowed, too. */
         private MapModule mapModule;
         /**
@@ -146,57 +153,91 @@ public class MapModuleManager {
            this.mController=c;
         }
 
-        /**
-         * @return a map of String to MapModule elements.
-         */
-        public Map getMapModules() {
-           return mapModules; }
-        
+    /**
+	 * @return a map of String to MapModule elements.
+	 * @deprecated use getMapModuleVector instead (and get the displayname as MapModule.getDisplayName().
+	 */
+	public Map getMapModules() {
+		HashMap returnValue = new HashMap();
+		for (Iterator iterator = mapModuleVector.iterator(); iterator.hasNext();) {
+			MapModule module = (MapModule) iterator.next();
+			returnValue.put(module.getDisplayName(), module);
+		}
+		return Collections.unmodifiableMap(returnValue);
+	}
+
+	public List getMapModuleVector() {
+		return Collections.unmodifiableList(mapModuleVector);
+	}
+	
+	/** @return an unmodifiable set of all display names of current opened maps.*/
+	public List getMapKeys() {
+		LinkedList returnValue = new LinkedList();
+		for (Iterator iterator = mapModuleVector.iterator(); iterator.hasNext();) {
+			MapModule module = (MapModule) iterator.next();
+			returnValue.add(module.getDisplayName());
+		}
+		return Collections.unmodifiableList(returnValue);
+	}
+	
         public MapModule getMapModule() {
            return mapModule; }
 
         public void newMapModule(MindMap map, ModeController modeController) {
             MapModule mapModule = new MapModule(map, new MapView(map, mController),
 				modeController.getMode(), modeController);
-            addToMapModules(mapModule.toString(), mapModule);
+            addToOrChangeInMapModules(mapModule.toString(), mapModule);
             setMapModule(mapModule, modeController.getMode());
         }
 
         public void updateMapModuleName() {
-            getMapModules().remove(getMapModule().toString());
             //removeFromViews() doesn't work because MapModuleChanged()
             //must not be called at this state
             getMapModule().rename();
-            addToMapModules(getMapModule().toString(),getMapModule());
+            addToOrChangeInMapModules(getMapModule().toString(),getMapModule());
             setMapModule(getMapModule(), getMapModule().getMode());
         }
 
-        void nextMapModule() {
-            List keys = new LinkedList(getMapModules().keySet());
-            int index = (getMapModule()!=null)?keys.indexOf(getMapModule().toString()):keys.size()-1;
-            ListIterator i = keys.listIterator(index+1);
-            if (i.hasNext()) {
-               changeToMapModule((String)i.next()); }
-            else if (keys.iterator().hasNext()) {
-               // Change to the first in the list
-               changeToMapModule((String)keys.iterator().next()); }}
+    void nextMapModule() {
+		int index;
+		int size = mapModuleVector.size();
+		if (getMapModule() != null)
+			index = mapModuleVector.indexOf(getMapModule());
+		else
+			index = size - 1;
 
-        void previousMapModule() {
-            List keys = new LinkedList(getMapModules().keySet());
-            int index = (getMapModule()!=null)?keys.indexOf(getMapModule().toString()):0;
-            ListIterator i = keys.listIterator(index);
-            if (i.hasPrevious()) {
-               changeToMapModule((String)i.previous()); }
-            else {
-               Iterator last = keys.listIterator(keys.size()-1);
-               if (last.hasNext()) {
-                  changeToMapModule((String)last.next()); }}}
+		if (index + 1 < size && index >= 0) {
+			changeToMapModule((MapModule) mapModuleVector.get(index + 1));
+		} else if (size > 0) {
+			// Change to the first in the list
+			changeToMapModule((MapModule) mapModuleVector.get(0));
+		}
+	}
 
-        //Change MapModules
-		/** This is the question whether the map is already opened. If this is the case,
-		 * the map is automatically opened + returns true. Otherwise does nothing + returns false.*/
+	void previousMapModule() {
+		int index;
+		int size = mapModuleVector.size();
+		if (getMapModule() != null)
+			index = mapModuleVector.indexOf(getMapModule());
+		else
+			index = 0;
+		if (index > 0) {
+			changeToMapModule((MapModule) mapModuleVector.get(index - 1));
+		} else {
+			if (size > 0) {
+				changeToMapModule((MapModule) mapModuleVector.get(size - 1));
+			}
+		}
+	}
+
+        // Change MapModules
+		/**
+		 * This is the question whether the map is already opened. If this is
+		 * the case, the map is automatically opened + returns true. Otherwise
+		 * does nothing + returns false.
+		 */
         public boolean tryToChangeToMapModule(String mapModule) {
-            if (mapModule != null && getMapModules().containsKey(mapModule)) {
+            if (mapModule != null && getMapKeys().contains(mapModule)) {
                 changeToMapModule(mapModule);
                 return true; }
             else {
@@ -209,28 +250,40 @@ public class MapModuleManager {
          * @return null, if not found, the map+extension identifier otherwise.
          */
         public String checkIfFileIsAlreadyOpened(URL urlToCheck) throws MalformedURLException{
-        		for (Iterator iter = getMapModules().entrySet().iterator(); iter.hasNext();) {
-					Map.Entry mapEntry = (Map.Entry) iter.next();
-					MapModule module = (MapModule) mapEntry.getValue();
+        		for (Iterator iter = mapModuleVector.iterator(); iter.hasNext();) {
+					MapModule module = (MapModule) iter.next();
 					if (module.getModel() != null && module.getModel().getURL() != null &&
 							urlToCheck.sameFile(module.getModel().getURL()))
-						return (String) mapEntry.getKey();
+						return module.getDisplayName();
 				}
         		return null;
         }
         
         
-        public boolean changeToMapModule(String mapModule) {
-            MapModule map = (MapModule)(getMapModules().get(mapModule));
-            return setMapModule(map, map.getMode()); 
+        public boolean changeToMapModule(String mapModuleDisplayName) {
+            MapModule mapModuleCandidate = null;
+            for (Iterator iterator = mapModuleVector.iterator(); iterator.hasNext();) {
+				MapModule mapMod = (MapModule) iterator.next();
+				if(Tools.safeEquals(mapModuleDisplayName, mapMod.getDisplayName())) {
+					mapModuleCandidate = mapMod;
+					break;
+				}
+			}
+            if(mapModuleCandidate == null) {
+            	throw new IllegalArgumentException("Map module " + mapModuleDisplayName + " not found.");
+            }
+            return changeToMapModule(mapModuleCandidate); 
         }
+		private boolean changeToMapModule(MapModule mapModuleCandidate) {
+			return setMapModule(mapModuleCandidate, mapModuleCandidate.getMode());
+		}
 
 
     public void changeToMapOfMode(Mode mode) {
-		for (Iterator i = getMapModules().keySet().iterator(); i.hasNext();) {
-			String keyString = (String) i.next();
-			if (((MapModule) getMapModules().get(keyString)).getMode() == mode) {
-				changeToMapModule(keyString);
+    	for (Iterator iterator = mapModuleVector.iterator(); iterator.hasNext();) {
+    		MapModule mapMod = (MapModule) iterator.next();
+			if (mapMod.getMode() == mode) {
+				changeToMapModule(mapMod);
 				return;
 			}
 		}
@@ -255,31 +308,35 @@ public class MapModuleManager {
 		this.mapModule = newMapModule;
 		this.mCurrentMode = newMode;
 		listener.afterMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
-		listener.numberOfOpenMapInformation(getMapModules().keySet().size());
+		listener.numberOfOpenMapInformation(mapModuleVector.size());
 		return true;
 	}
 
 
         //private
 
-        private void addToMapModules(String key, MapModule newMapModule) {
+        private void addToOrChangeInMapModules(String key, MapModule newOrChangedMapModule) {
             // begin bug fix, 20.12.2003, fc.
             // check, if already present:
             String extension = "";
             int count = 1;
-            while (mapModules.containsKey(key+extension)) {
+            List mapKeys = getMapKeys();
+            while (mapKeys.contains(key+extension)) {
                 extension = "<"+(++count)+">";
             }
             // rename map:
-            newMapModule.setName(key+extension);
-            mapModules.put(key+extension,newMapModule);
+            newOrChangedMapModule.setName(key+extension);
+            newOrChangedMapModule.setDisplayName(key+extension);
+            if(!mapModuleVector.contains(newOrChangedMapModule)) {
+            	mapModuleVector.add(newOrChangedMapModule);
+            }
             // end bug fix, 20.12.2003, fc.
        }
 
         /**
-        *  Close the currently active map, return false if closing cancelled.
+        *  Close the currently active map, return false if closing canceled.
          * @param force forces the closing without any save actions.
-        */
+        */             
        public boolean close(boolean force) {
        	    // (DP) The mode controller does not close the map
     	   		MapModule module = getMapModule();
@@ -289,14 +346,17 @@ public class MapModuleManager {
             if (!closingNotCancelled) {
                return false; }	
             
-            String toBeClosed = module.toString();
-            mapModules.remove(toBeClosed);
-            if (mapModules.isEmpty()) {
-			/*Keep the current running mode*/
-			setMapModule(null, module.getMode());
-		} else {
-			changeToMapModule((String) mapModules.keySet().iterator().next());
-		}
+            int index = mapModuleVector.indexOf(module);
+            mapModuleVector.remove(module);
+            if (mapModuleVector.isEmpty()) {
+				/* Keep the current running mode */
+				setMapModule(null, module.getMode());
+			} else {
+				if(index >= mapModuleVector.size() || index < 0) {
+					index = mapModuleVector.size()-1;
+				}
+				changeToMapModule((MapModule)mapModuleVector.get(index));
+			}
             listener.afterMapClose(module, module.getMode());
             return true; 
             }

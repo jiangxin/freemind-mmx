@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.40 2008-02-20 20:54:06 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.41 2008-04-11 16:58:32 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -694,6 +694,8 @@ public class OptionPanel implements TextTranslator {
 
         controls
                 .add(new BooleanProperty(null, "el__enter_confirms_by_default")); //  true
+
+        controls.add(new BooleanProperty(null, FreeMind.RESOURCES_DON_T_SHOW_NOTE_ICONS)); 
 
         controls
                 .add(new BooleanProperty(null, "el__show_icon_for_attributes")); //  true
