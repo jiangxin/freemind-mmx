@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.26 2008-04-11 16:58:32 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.27 2008-04-11 19:34:12 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -36,6 +36,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileLock;
@@ -315,7 +316,7 @@ public class MindMapMapModel extends MapAdapter  {
 
     public void load(URL url) throws FileNotFoundException, IOException, XMLParseException, URISyntaxException {
     		logger.info("Loading file: " + url.toString());
-        File file = new File(url.toURI());
+       File file = new File(new URI (url.toString()));
        if (!file.exists()) {
           throw new FileNotFoundException(Tools.expandPlaceholders(getText("file_not_found"), file.getPath())); }
        if (!file.canWrite()) {
