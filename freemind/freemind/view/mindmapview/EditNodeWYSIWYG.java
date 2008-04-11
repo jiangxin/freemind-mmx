@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.35 2008-04-11 06:25:26 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.36 2008-04-11 18:34:21 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -55,6 +55,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.modes.ModeController;
+import freemind.view.mindmapview.EditNodeBase.EditDialog.CancelAction;
 
 /**
  * @author Daniel Polansky
@@ -71,7 +72,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             super(base);
             createEditorPanel();
             getContentPane().add(htmlEditorPanel, BorderLayout.CENTER);
-            adjustKeyBindings();
+            Tools.addEscapeActionToDialog(this, new CancelAction());
             final JButton okButton = new JButton();
             final JButton cancelButton = new JButton();
             final JButton splitButton = new JButton();
@@ -118,24 +119,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
         public SHTMLPanel getHtmlEditorPanel() {
             return htmlEditorPanel;
         }
-        /**
-         * adjust the key bindings of the key map existing for this
-         * editor pane to our needs (i.e. add actions to certain keys
-         * such as tab/shift tab for caret movement inside tables, etc.)
-         *
-         * This method had to be redone for using InputMap / ActionMap
-         * instead of Keymap.
-         */
-        private void adjustKeyBindings() {
-            ActionMap myActionMap = htmlEditorPanel.getActionMap();
-            InputMap myInputMap = htmlEditorPanel.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
-            
-            final String cancelActionKey = "cancel";
-            myActionMap.put(cancelActionKey, new CancelAction());
-            KeyStroke cancel = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-            myInputMap.put(cancel, cancelActionKey);
-        }
-         /* (non-Javadoc)
+        /* (non-Javadoc)
          * @see freemind.view.mindmapview.EditNodeBase.Dialog#close()
          */
         protected void submit() {
