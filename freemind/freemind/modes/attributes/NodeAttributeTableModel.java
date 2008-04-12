@@ -40,7 +40,7 @@ import freemind.modes.XMLElementAdapter;
  */
 public class NodeAttributeTableModel extends AbstractTableModel implements AttributeTableModel{
     private static boolean SHOW_ATTRIBUTE_ICON = 
-        Tools.safeEquals("true", Resources.getInstance().getProperty("el__show_icon_for_attributes"));
+        Resources.getInstance().getBoolProperty("el__show_icon_for_attributes");
     private MindMapNode node;
     private Vector attributes = null;
     private AttributeTableLayoutModel layout = null;

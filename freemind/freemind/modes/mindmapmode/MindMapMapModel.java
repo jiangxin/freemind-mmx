@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.27 2008-04-11 19:34:12 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.28 2008-04-12 21:46:03 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -91,7 +91,7 @@ public class MindMapMapModel extends MapAdapter  {
 
     public MindMapMapModel( MindMapNodeModel root, FreeMindMain frame, ModeController modeController ) {
         super(frame, modeController);
-        lockManager = frame.getProperty("experimental_file_locking_on").equals("true") ?
+        lockManager = Resources.getInstance().getBoolProperty("experimental_file_locking_on") ?
            new LockManager() : new DummyLockManager();
 
         // register new LinkRegistryAdapter
@@ -442,7 +442,7 @@ freemind.main.Resources.getInstance().logException(			e);
 
     private void scheduleTimerForAutomaticSaving() {
 		int numberOfTempFiles = Integer.parseInt(getFrame().getProperty("number_of_different_files_for_automatic_save"));
-		boolean filesShouldBeDeletedAfterShutdown = Tools.safeEquals(getFrame().getProperty("delete_automatic_saves_at_exit"),"true");
+		boolean filesShouldBeDeletedAfterShutdown = Resources.getInstance().getBoolProperty("delete_automatic_saves_at_exit");
 		String path = getFrame().getProperty("path_to_automatic_saves");
 		/* two standard values: */
 		if(Tools.safeEquals(path, "default")) {

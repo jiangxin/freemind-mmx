@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.49 2008-04-12 20:11:38 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.50 2008-04-12 21:46:00 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -991,7 +991,7 @@ public class Controller  implements MapModuleChangeObserver {
 
             // Ask about custom printing settings
             final JDialog dialog = new JDialog((JFrame)getFrame(), getResourceString("printing_settings"), /*modal=*/true);
-            final JCheckBox fitToPage = new JCheckBox(getResourceString("fit_to_page"), Tools.safeEquals("true", getProperty("fit_to_page")));
+            final JCheckBox fitToPage = new JCheckBox(getResourceString("fit_to_page"), Resources.getInstance().getBoolProperty("fit_to_page"));
             final JLabel userZoomL = new JLabel(getResourceString("user_zoom"));
             final JTextField userZoom = new JTextField(getProperty("user_zoom"),3);
             userZoom.setEditable(!fitToPage.isSelected());

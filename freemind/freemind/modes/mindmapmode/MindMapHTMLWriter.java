@@ -153,7 +153,7 @@ class MindMapHTMLWriter {
                 .hasFoldedStrictDescendant())
                 || htmlExportFoldingOption.equals("html_export_fold_all");
 
-        exportIcons = getProperty("export_icons_in_html").equals("true");
+        exportIcons = Resources.getInstance().getBoolProperty("export_icons_in_html");
         
         fileout.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">" 
         		+el + "<html>" + el + "<head>" + el);
@@ -493,7 +493,7 @@ class MindMapHTMLWriter {
 			fileout.write("<span style=\"" + fontStyle + "\">");
 		}
 
-		if (getProperty("export_icons_in_html").equals("true")) {
+		if (Resources.getInstance().getBoolProperty("export_icons_in_html")) {
 			writeIcons(model);
 		}
 

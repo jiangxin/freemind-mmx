@@ -19,7 +19,7 @@
  *
  * Created on 12.08.2004
  */
-/* $Id: ToggleFoldedAction.java,v 1.1.2.2.2.2 2006-07-25 20:28:22 christianfoltin Exp $ */
+/* $Id: ToggleFoldedAction.java,v 1.1.2.2.2.3 2008-04-12 21:46:04 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -32,6 +32,8 @@ import javax.swing.AbstractAction;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.FoldAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.FreeMind;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.common.CommonToggleFoldedAction;
@@ -130,6 +132,9 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
 					.getNode());
 			boolean fold = foldAction.getFolded();
 			modeController._setFolded(node, fold);
+			if(Resources.getInstance().getBoolProperty(FreeMind.RESOURCES_SAVE_FOLDING_STATE)){
+				modeController.nodeChanged(node);
+			}
 		}
 	}
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.49 2008-03-18 18:31:49 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.50 2008-04-12 21:46:06 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -268,8 +268,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
         // like in excel - write a letter means edit (PN)
         // on the other hand it doesn't allow key navigation (sdfe)
-        disableMoveCursor = Tools.safeEquals(
-                                             controller.getProperty("disable_cursor_move_paper"),"true");
+        disableMoveCursor = Resources.getInstance().getBoolProperty("disable_cursor_move_paper");
     }
 
 	private void createPropertyChangeListener() {
@@ -1110,7 +1109,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 				setBackground(Color.WHITE);
 			}
 			boundingRectangle = getInnerBounds();
-		    fitToPage = Tools.safeEquals(controller.getProperty("fit_to_page"),"true");
+		    fitToPage = Resources.getInstance().getBoolProperty("fit_to_page");
 			isPreparedForPrinting = true;
 		}
 	}

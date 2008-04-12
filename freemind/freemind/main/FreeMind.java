@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.107 2008-04-12 20:11:38 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.108 2008-04-12 21:46:01 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -147,6 +147,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	public static final String RESOURCES_DON_T_SHOW_NOTE_ICONS = "resources_don_t_show_note_icons";
 
 	public static final String RESOURCES_REMOVE_NOTES_WITHOUT_QUESTION = "resources_remove_notes_without_question";
+
+	public static final String RESOURCES_SAVE_FOLDING_STATE = "resources_save_folding_state";
 
 	// public static final String defaultPropsURL = "freemind.properties";
 	// public static Properties defaultProps;
@@ -807,7 +809,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 		// Create the scroll pane
 		mScrollPane =  new MapView.ScrollPane();
-		if (Tools.safeEquals(getProperty("no_scrollbar"), "true")) {
+		if (Resources.getInstance().getBoolProperty("no_scrollbar")) {
 			mScrollPane
 					.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 			mScrollPane
@@ -824,8 +826,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		status.setText("");
 		mContentComponent = mScrollPane;
 
-		boolean shouldUseTabbedPane = "true".equals(controller.getFrame()
-				.getProperty(RESOURCES_USE_TABBED_PANE));
+		boolean shouldUseTabbedPane = Resources.getInstance().getBoolProperty(RESOURCES_USE_TABBED_PANE);
 
 
 		if (shouldUseTabbedPane) {

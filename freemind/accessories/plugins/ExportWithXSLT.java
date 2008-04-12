@@ -133,7 +133,7 @@ public class ExportWithXSLT extends ExportHook {
         		mTransformResultWithoutError=true;
             // get AREA:
             // create HTML image?
-            boolean create_image = Tools.safeEquals(getResourceString("create_html_linked_image"), "true");
+            boolean create_image = Resources.getInstance().getBoolProperty("create_html_linked_image");
             String areaCode = getAreaCode(create_image);
             // XSLT Transformation
             String xsltFileName = getResourceString("xslt_file");
@@ -145,7 +145,7 @@ public class ExportWithXSLT extends ExportHook {
 				return;
 			}
             // create directory?
-            if(success && Tools.safeEquals(getResourceString("create_dir"), "true")) {
+            if(success && Resources.getInstance().getBoolProperty("create_dir")) {
                 String directoryName = saveFile.getAbsolutePath()+"_files";
                 success = createDirectory(directoryName);
                 
@@ -156,10 +156,10 @@ public class ExportWithXSLT extends ExportHook {
                     copyFilesFromResourcesToDirectory(directoryName, files, filePrefix);
                 }
                 // copy icons?
-                if(success && Tools.safeEquals(getResourceString("copy_icons"),"true")) {
+                if(success && Resources.getInstance().getBoolProperty("copy_icons")) {
                     success = copyIcons(directoryName);
                 }
-                if(success && Tools.safeEquals(getResourceString("copy_map"),"true")) {
+                if(success && Resources.getInstance().getBoolProperty("copy_map")) {
                     success = copyMap(directoryName);
                 }
                 if(success && create_image) {
@@ -170,7 +170,7 @@ public class ExportWithXSLT extends ExportHook {
                 JOptionPane.showMessageDialog(null, getResourceString("error_creating_directory"), "Freemind", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if(Tools.safeEquals(getResourceString("load_file"), "true")) {
+            if(Resources.getInstance().getBoolProperty("load_file")) {
                 getController().getFrame().openDocument(saveFile.toURI().toURL());
             }
         } catch (Exception e) {

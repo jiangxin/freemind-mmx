@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.6 2008-04-11 16:58:30 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.7 2008-04-12 21:46:00 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -300,8 +300,8 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
                     .getResource("images/knotes.png"));
         }
         boolean showIcon = enabled;
-        if (Tools.isPreferenceTrue(Resources.getInstance().getProperty(
-				FreeMind.RESOURCES_DON_T_SHOW_NOTE_ICONS))) {
+        if (Resources.getInstance().getBoolProperty(
+				FreeMind.RESOURCES_DON_T_SHOW_NOTE_ICONS)) {
 			showIcon = false;
 		}
         node.setStateIcon(this.getClass().getName(), (showIcon) ? noteIcon

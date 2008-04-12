@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.42 2008-04-12 20:11:39 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.43 2008-04-12 21:46:05 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -523,6 +523,9 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("save"));
 		
+		controls.add(new BooleanProperty(
+				"resources_save_folding_state.tooltip",
+				FreeMind.RESOURCES_SAVE_FOLDING_STATE)); // true
 		controls.add(new BooleanProperty(
 				"save_only_intrisically_needed_ids.tooltip",
 				FreeMindCommon.SAVE_ONLY_INTRISICALLY_NEEDED_IDS)); // false

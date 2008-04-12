@@ -80,6 +80,15 @@ public class Resources {
         return main.getIntProperty(key, defaultValue);
     }
 
+    /**
+     * @param key Property key
+     * @return the boolean value of the property resp. the default.
+     */
+    public boolean getBoolProperty(String key) { 
+    	String boolProperty = getProperty(key);
+		return Tools.safeEquals("true", boolProperty);
+    }
+    
     public Properties getProperties() {
         return main.getProperties();
     }

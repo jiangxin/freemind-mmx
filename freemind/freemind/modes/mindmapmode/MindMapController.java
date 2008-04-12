@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.64 2008-04-11 16:58:31 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.65 2008-04-12 21:46:03 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -408,7 +408,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
         // addAsChildMode (use old model of handling CtrN) (PN)
         addAsChildMode =
-            Tools.safeEquals(getFrame().getProperty("add_as_child"), "true");
+            Resources.getInstance().getBoolProperty("add_as_child");
         mRegistrations = new Vector();
         Toolkit toolkit = getFrame().getViewport().getToolkit();
 		clipboard = toolkit.getSystemSelection();
@@ -1446,7 +1446,7 @@ freemind.main.Resources.getInstance().logException(					e1);
 
     /** @param isLeft determines, whether or not the node is placed on the left or right. **/
     public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
-    	if (! asSibling && target.isFolded() && Tools.isPreferenceTrue(getFrame().getProperty(RESOURCE_UNFOLD_ON_PASTE))) {
+    	if (! asSibling && target.isFolded() && Resources.getInstance().getBoolProperty(RESOURCE_UNFOLD_ON_PASTE)) {
 			setFolded(target, false);
 		   }
         paste.paste(t, target, asSibling, isLeft);
