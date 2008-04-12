@@ -12,7 +12,7 @@
     	documentation="%accessories/plugins/RemoveNote.properties_documentation"
     	key_stroke="%keystroke_accessories/plugins/RemoveNote.properties.properties_key"
     	class_name="accessories.plugins.RemoveNote"
-    	instanciation="Other">
+    	instanciation="OnceForRoot">
     	<plugin_mode class_name="freemind.modes.mindmapmode" />
     	<plugin_menu location="menu_bar/extras/first/nodes/RemoveNote" />
     	<plugin_property value="remove_note" name="actionType" />

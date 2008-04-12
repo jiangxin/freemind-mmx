@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.48 2008-04-10 20:49:20 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.49 2008-04-12 20:11:38 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -181,6 +181,7 @@ public class Controller  implements MapModuleChangeObserver {
 
     public Action showSelectionAsRectangle;
     public PropertyAction propertyAction;
+	public OpenURLAction freemindUrl;
 
 	// this values better suit at least the test purposes
     private static final String[] zooms = {"25%","50%","75%","100%","150%","200%","300%","400%"};
@@ -218,6 +219,7 @@ public class Controller  implements MapModuleChangeObserver {
         page = new PageAction(this);
         quit = new QuitAction(this);
         about = new AboutAction(this);
+        freemindUrl = new OpenURLAction(this, getResourceString("FreeMind"), getProperty("webFreeMindLocation"));
         faq = new OpenURLAction(this, getResourceString("FAQ"), getProperty("webFAQLocation"));
         webDocu = new OpenURLAction(this, getResourceString("webDocu"), getProperty("webDocuLocation"));
         documentation = new DocumentationAction(this);

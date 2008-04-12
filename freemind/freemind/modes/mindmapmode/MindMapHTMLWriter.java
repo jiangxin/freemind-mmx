@@ -155,7 +155,8 @@ class MindMapHTMLWriter {
 
         exportIcons = getProperty("export_icons_in_html").equals("true");
         
-        fileout.write("<html>" + el + "<head>" + el);
+        fileout.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">" 
+        		+el + "<html>" + el + "<head>" + el);
         fileout.write("<title>"
                 + saveHTML_escapeUnicodeAndSpecialCharacters(
                         rootNodeOfBranch.getPlainTextContent().replace('\n', ' '))
@@ -192,7 +193,7 @@ class MindMapHTMLWriter {
 
         // fileout.write("</ul>");
 
-        fileout.write("<SCRIPT language=\"JavaScript\">" + el);
+        fileout.write("<SCRIPT type=\"text/javascript\">" + el);
         fileout.write("fold_document();" + el);
         fileout.write("</SCRIPT>" + el);
     }
@@ -201,7 +202,7 @@ class MindMapHTMLWriter {
         fileout
                 .write(""
                         + el
-                        + "<script language=\"JavaScript\">"
+                        + "<script type=\"text/javascript\">"
                         + el
                         + "   // Here we implement folding. It works fine with MSIE5.5, MSIE6.0 and"
                         + el

@@ -19,7 +19,7 @@
  *
  * Created on 06.10.2004
  */
-/* $Id: RemoveNote.java,v 1.1.2.3 2008-01-30 20:44:47 christianfoltin Exp $ */
+/* $Id: RemoveNote.java,v 1.1.2.4 2008-04-12 20:11:37 christianfoltin Exp $ */
 
 package accessories.plugins;
 
@@ -27,9 +27,12 @@ import java.util.Iterator;
 
 import javax.swing.Action;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
+import freemind.common.OptionalDontShowMeAgainDialog;
 import freemind.controller.MenuItemEnabledListener;
 import freemind.extensions.HookRegistration;
+import freemind.main.FreeMind;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
@@ -45,8 +48,30 @@ public class RemoveNote extends MindMapNodeHookAdapter {
 		super();
 	}
 
-	public void invoke(MindMapNode node) {
-		super.invoke(node);
+	public void invoke(MindMapNode rootNode) {
+		super.invoke(rootNode);
+		int showResult = new OptionalDontShowMeAgainDialog(getMindMapController()
+				.getFrame().getJFrame(), getMindMapController().getSelectedView(),
+				"really_remove_notes", "confirmation", getMindMapController(),
+				new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
+						getMindMapController().getController(),
+						FreeMind.RESOURCES_REMOVE_NOTES_WITHOUT_QUESTION),
+				OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
+				.show().getResult();
+		if(showResult != JOptionPane.OK_OPTION) {
+			return;
+		}
+		
+		for (Iterator iterator = getMindMapController().getSelecteds()
+				.iterator(); iterator.hasNext();) {
+			MindMapNode node = (MindMapNode) iterator.next();
+			if (node.getNoteText() != null) {
+				removeNote(node);
+			}
+		}
+	}
+
+	private void removeNote(MindMapNode node) {
 		if (getMindMapController().getSelected() == node) {
 			NodeNoteRegistration.getHtmlEditorPanel()
 					.setCurrentDocumentContent("");

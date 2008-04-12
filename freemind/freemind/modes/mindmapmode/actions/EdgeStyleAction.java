@@ -20,7 +20,7 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: EdgeStyleAction.java,v 1.1.2.2.2.3 2007-08-17 20:41:57 christianfoltin Exp $ */
+/* $Id: EdgeStyleAction.java,v 1.1.2.2.2.4 2008-04-12 20:11:39 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -67,8 +67,12 @@ public class EdgeStyleAction extends NodeGeneralAction implements NodeActorXml {
              {
         EdgeStyleFormatAction styleAction = createNodeStyleFormatAction(
                 selected, style);
-        EdgeStyleFormatAction undoStyleAction = createNodeStyleFormatAction(
-                selected, selected.getEdge().getStyle());
+        String oldStyle = selected.getEdge().getStyle();
+        if(!selected.getEdge().hasStyle()){
+        	oldStyle = null;
+        }
+		EdgeStyleFormatAction undoStyleAction = createNodeStyleFormatAction(
+                selected, oldStyle);
         return new ActionPair(styleAction, undoStyleAction);
     }
 
