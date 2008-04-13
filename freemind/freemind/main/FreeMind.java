@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.108 2008-04-12 21:46:01 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.109 2008-04-13 19:49:14 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -572,8 +572,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				browser_command = formatter.format(messageArguments);
 
 				if (url.getProtocol().equals("file")) {
-					command = "rundll32 url.dll,FileProtocolHandler "
-							+ Tools.urlGetFile(url);
+//					command = "rundll32 url.dll,FileProtocolHandler "+ Tools.urlGetFile(url);
+					// bug fix by Dan:
+					command = "rundll32 url.dll,FileProtocolHandler "+ url.toString();
 				} else if (url.toString().startsWith("mailto:")) {
 					command = "rundll32 url.dll,FileProtocolHandler "
 							+ url.toString();
