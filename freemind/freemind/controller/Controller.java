@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.50 2008-04-12 21:46:00 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.51 2008-04-14 19:22:02 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -925,7 +925,7 @@ public class Controller  implements MapModuleChangeObserver {
     public static class CloseAction extends AbstractAction {
         private final Controller controller;
 		CloseAction(Controller controller) {
-            super(controller.getResourceString("close"));
+            Tools.setLabelAndMnemonic(this, controller.getResourceString("close"));
 			this.controller = controller;
         }
         public void actionPerformed(ActionEvent e) {
@@ -1177,7 +1177,7 @@ public class Controller  implements MapModuleChangeObserver {
 		     if (getAttributeDialog().isVisible() == false && getMapModule() != null)
 		     {
 		         getAttributeDialog().pack();
-		         getAttributeDialog().setVisible(true);
+		         getAttributeDialog().show();
 		     }
 		}
     }

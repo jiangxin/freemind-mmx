@@ -56,6 +56,7 @@ import javax.swing.event.ListDataListener;
 
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
@@ -305,20 +306,24 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
     private JCheckBox skipRootBtn;
 
     public AssignAttributeDialog(MapView mapView){
-        super(JOptionPane.getFrameForComponent(mapView), Resources.getInstance().getResourceString("attributes_assign_dialog"), false);
+        super(JOptionPane.getFrameForComponent(mapView), 
+        		Tools.removeMnemonic(Resources.getInstance().getResourceString("attributes_assign_dialog")), false);
         
         final Border actionBorder = new MatteBorder(2, 2, 2, 2, Color.BLACK);
         final Border emptyBorder = new EmptyBorder(5, 5, 5, 5);
         final Border btnBorder = new EmptyBorder(2, 2, 2, 2);
         
-        selectedBtn = new JRadioButton(Resources.getInstance().getResourceString("attributes_for_selected"));
+        selectedBtn = new JRadioButton();
+        Tools.setLabelAndMnemonic(selectedBtn, Resources.getInstance().getResourceString("attributes_for_selected"));
         selectedBtn.setSelected(true);
-        visibleBtn = new JRadioButton(Resources.getInstance().getResourceString("attributes_for_visible"));
+        visibleBtn = new JRadioButton();
+        Tools.setLabelAndMnemonic(visibleBtn, Resources.getInstance().getResourceString("attributes_for_visible"));
         final ButtonGroup group = new ButtonGroup();
         group.add(selectedBtn);
         group.add(visibleBtn);
         
-        skipRootBtn = new JCheckBox(Resources.getInstance().getResourceString("attributes_skip_root"));
+        skipRootBtn = new JCheckBox();
+        Tools.setLabelAndMnemonic(skipRootBtn, Resources.getInstance().getResourceString("attributes_skip_root"));
         skipRootBtn.setSelected(true);
         
         final Box selectionBox = Box.createHorizontalBox();
@@ -333,19 +338,27 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
         
         getContentPane().add(selectionBox, BorderLayout.NORTH);
         
-        final JButton addBtn = new JButton(Resources.getInstance().getResourceString("filter_add"));
+        final JButton addBtn = new JButton();
+        Tools.setLabelAndMnemonic(addBtn, Resources.getInstance().getResourceString("filter_add"));
         addBtn.addActionListener(new AddAction());
         addBtn.setMaximumSize(maxButtonDimension);
-        JButton deleteAttributeBtn = new JButton(Resources.getInstance().getResourceString("attribute_delete"));
+        
+        JButton deleteAttributeBtn = new JButton();
+        Tools.setLabelAndMnemonic(addBtn, Resources.getInstance().getResourceString("attribute_delete"));
         deleteAttributeBtn.addActionListener(new DeleteAttributeAction());
         deleteAttributeBtn.setMaximumSize(maxButtonDimension);
-        JButton deleteAttributeValueBtn = new JButton(Resources.getInstance().getResourceString("attribute_delete_value"));
+        
+        JButton deleteAttributeValueBtn = new JButton();
+        Tools.setLabelAndMnemonic(deleteAttributeValueBtn, Resources.getInstance().getResourceString("attribute_delete_value"));
         deleteAttributeValueBtn.addActionListener(new DeleteValueAction());
         deleteAttributeValueBtn.setMaximumSize(maxButtonDimension);
-        JButton replaceBtn = new JButton(Resources.getInstance().getResourceString("attribute_replace"));
+        
+        JButton replaceBtn = new JButton();
+        Tools.setLabelAndMnemonic(replaceBtn, Resources.getInstance().getResourceString("attribute_replace"));
         replaceBtn.addActionListener(new ReplaceValueAction());
         replaceBtn.setMaximumSize(maxButtonDimension);
         
+        Tools.addEscapeActionToDialog(this);
 
         final String pattern = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
         final JLabel patternLabel = new JLabel(pattern);
@@ -419,11 +432,12 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
         actionBox.add(Box.createVerticalGlue());
         getContentPane().add(actionBox, BorderLayout.CENTER);
         
-        final JButton closeBtn = new JButton(Resources.getInstance().getResourceString("close"));
+        final JButton closeBtn = new JButton();
+        Tools.setLabelAndMnemonic(closeBtn, Resources.getInstance().getResourceString("close"));
         closeBtn.addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e) {
-               setVisible(false);
+               dispose();
             }
             
         });

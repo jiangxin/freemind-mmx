@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.65 2008-04-12 21:46:03 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.66 2008-04-14 19:22:03 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -232,7 +232,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
              if(assignAttributeDialog == null){
                 assignAttributeDialog = new AssignAttributeDialog(getView());
             }
-            assignAttributeDialog.setVisible(true);
+            assignAttributeDialog.show();
         }
      }
 	public interface MindMapControllerPlugin {

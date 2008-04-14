@@ -26,6 +26,8 @@ package freemind.modes.mindmapmode.attributeactors;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
@@ -47,8 +49,8 @@ import freemind.controller.Controller;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.filter.util.SortedListModel;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.modes.MapRegistry;
-import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.attributes.AttributeRegistry;
 import freemind.view.MapModule;
@@ -69,7 +71,8 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
 
     private class ApplyAction extends AbstractAction{
         ApplyAction(){
-            super(Resources.getInstance().getResourceString("apply").replaceFirst("&", ""));
+            super();
+            Tools.setLabelAndMnemonic(this, Resources.getInstance().getResourceString("apply"));
         }
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -94,7 +97,8 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
 
     private class OKAction extends AbstractAction{
         OKAction(){
-            super(Resources.getInstance().getResourceString("ok").replaceFirst("&", ""));
+            super();
+            Tools.setLabelAndMnemonic(this, Resources.getInstance().getResourceString("ok"));
         }
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -107,7 +111,8 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
 
     private class CancelAction extends AbstractAction{
         CancelAction(){
-            super(Resources.getInstance().getResourceString("cancel").replaceFirst("&", ""));
+            super();
+            Tools.setLabelAndMnemonic(this, Resources.getInstance().getResourceString("cancel"));
         }
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -129,7 +134,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
             if(importDialog == null){
                 importDialog = new ImportAttributesDialog(c, AttributeManagerDialog.this);
             }
-            importDialog.setVisible(true);
+            importDialog.show();
         }
     }
 
@@ -234,17 +239,18 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
         southButtons.add(importBtn);
         southButtons.add(Box.createHorizontalGlue());
 
+        Tools.addEscapeActionToDialog(this);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new ClosingListener());
         c.getMapModuleManager().addListener(this);
-    }
 
-    public void setVisible(boolean b) {
-        if(b){
-            size.setSelectedItem(Integer.toString(model.getFontSize()));
-        }
-        super.setVisible(b);
-    }
+        addComponentListener(new ComponentAdapter(){
+
+        	public void componentShown(ComponentEvent e) {
+                size.setSelectedItem(Integer.toString(model.getFontSize()));
+         	}
+        });
+   }
 
     public boolean isMapModuleChangeAllowed(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode) {
         return ! isVisible();

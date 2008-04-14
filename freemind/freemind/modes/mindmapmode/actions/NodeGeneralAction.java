@@ -19,7 +19,7 @@
 */
 /*
  * Created on 05.05.2004
- * 
+ *
  * To change the template for this generated file go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
@@ -34,6 +34,7 @@ import javax.swing.ImageIcon;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
@@ -77,7 +78,7 @@ public class NodeGeneralAction extends AbstractXmlAction {
     protected void setName(String name) {
         if (name != null) {
             putValue(Action.NAME, name);
-            putValue(Action.SHORT_DESCRIPTION, name.replaceFirst("&", ""));
+            putValue(Action.SHORT_DESCRIPTION, Tools.removeMnemonic(name));
         }
 
     }
@@ -131,7 +132,7 @@ public class NodeGeneralAction extends AbstractXmlAction {
                         selected);
                 if (pair != null) {
                     doAction
-                            
+
                             .addChoice(pair.getDoAction());
                     undo
                             .addAtChoice(0, pair.getUndoAction());
@@ -155,7 +156,7 @@ public class NodeGeneralAction extends AbstractXmlAction {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see freemind.controller.actions.FreeMindAction#act(freemind.controller.actions.generated.instance.XmlAction)
      */
     public void act(XmlAction action) {

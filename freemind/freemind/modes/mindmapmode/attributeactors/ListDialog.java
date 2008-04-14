@@ -26,6 +26,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import freemind.controller.filter.util.SortedListModel;
+import freemind.main.Resources;
+import freemind.main.Tools;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -117,7 +119,7 @@ public class ListDialog extends JDialog
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent e) {
-            ListDialog.dialog.setVisible(false);           
+            ListDialog.dialog.dispose();           
         }
     }
     
@@ -141,7 +143,8 @@ public class ListDialog extends JDialog
                 title,
                 possibleValues,
                 longValue);
-        dialog.setVisible(true);
+        Tools.addEscapeActionToDialog(dialog);
+        dialog.show();
     }
     
     /**
@@ -181,19 +184,22 @@ public class ListDialog extends JDialog
         super(frame, title, true);
         this.data = data;
         //Create and initialize the buttons.
-        final JButton closeButton = new JButton("Close");
-        closeButton.setActionCommand("Close");
+        final JButton closeButton = new JButton();
+        Tools.setLabelAndMnemonic(closeButton, Resources.getInstance().getResourceString("close"));
         closeButton.addActionListener(new CloseAction());
         getRootPane().setDefaultButton(closeButton);
         
-        addButton = new JButton("Add");
+        addButton = new JButton();
+        Tools.setLabelAndMnemonic(closeButton, Resources.getInstance().getResourceString("add"));
         AddAction addAction = new AddAction();
         addButton.addActionListener(addAction);
         
-        renameButton = new JButton("Rename");
+        renameButton = new JButton();
+        Tools.setLabelAndMnemonic(renameButton, Resources.getInstance().getResourceString("rename"));
         renameButton.addActionListener(new RenameAction());
         
-        deleteButton = new JButton("Delete");
+        deleteButton = new JButton();
+        Tools.setLabelAndMnemonic(deleteButton, Resources.getInstance().getResourceString("delete"));
         deleteButton.addActionListener(new DeleteAction());
         textField = new JTextField(20);
         textField.getDocument().addDocumentListener(new TextChangeListener());

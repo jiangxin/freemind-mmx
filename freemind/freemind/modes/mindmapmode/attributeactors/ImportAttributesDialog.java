@@ -28,6 +28,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -146,7 +148,7 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
     private DefaultTreeModel treeModel;
     private Component parentComponent;
     private Controller c;
-    public ImportAttributesDialog(Controller c, Component parentComponent){
+    public ImportAttributesDialog(final Controller c, final Component parentComponent){
         super(c.getJFrame(), Resources.getInstance().getResourceString("attributes_import"), true);
         this.c = c;
         this.parentComponent = parentComponent;
@@ -171,7 +173,7 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
 
             public void actionPerformed(ActionEvent e) {
                 performImport(topNode);
-                setVisible(false);
+                dispose();
             }
 
         });
@@ -181,7 +183,7 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
         cancelBtn.addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e) {
-                setVisible(false);
+            	dispose();
             }
 
         });
@@ -192,8 +194,31 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
         buttons.add(Box.createHorizontalGlue());
 
         getContentPane().add(buttons, BorderLayout.SOUTH);
+        
+        Tools.addEscapeActionToDialog(this);
 
+        addComponentListener(new ComponentAdapter(){
+
+        	public void componentShown(ComponentEvent e) {
+        		createMapSubTrees(topNode);
+        		if(topNode.getChildCount() == 0){
+        			JOptionPane.showMessageDialog(parentComponent,
+        					Resources.getInstance().getResourceString("atributes_no_import_candidates_found"),
+        					getTitle(),
+        					JOptionPane.INFORMATION_MESSAGE);
+        			return;
+        		}
+        		treeModel.reload();
+        		if(renderer == null){
+        			renderer = new MyRenderer();
+        		}
+        		tree.setCellRenderer(renderer);
+        		setLocationRelativeTo(parentComponent);
+        		pack();
+        	}
+        });
     }
+    
 
     private void performImport(DefaultMutableTreeNode node) {
         TreeNodeInfo info = (TreeNodeInfo) node.getUserObject();
@@ -224,30 +249,6 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
             }
         }
 
-    }
-
-    public void setVisible(boolean b) {
-        if(b == isVisible()){
-            return;
-        }
-        if(b){
-            createMapSubTrees(topNode);
-            if(topNode.getChildCount() == 0){
-                JOptionPane.showMessageDialog(parentComponent,
-                        Resources.getInstance().getResourceString("atributes_no_import_candidates_found"),
-                        getTitle(),
-                        JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
-            treeModel.reload();
-            if(renderer == null){
-                renderer = new MyRenderer();
-            }
-            tree.setCellRenderer(renderer);
-            setLocationRelativeTo(parentComponent);
-            pack();
-        }
-        super.setVisible(b);
     }
 
     private void createMapSubTrees(DefaultMutableTreeNode top) {

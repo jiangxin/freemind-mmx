@@ -29,6 +29,8 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 
+import freemind.main.Tools;
+
 /**
  * @author Stefan Zechmeister
  */
@@ -67,7 +69,7 @@ public class FreeMindToolBar extends JToolBar {
 	 */
 	public JButton add(Action arg0) {
 		final Object actionName = arg0.getValue(Action.NAME);
-		arg0.putValue(Action.SHORT_DESCRIPTION, actionName.toString().replaceFirst("&", ""));
+		arg0.putValue(Action.SHORT_DESCRIPTION, Tools.removeMnemonic(actionName.toString()));
 		JButton returnValue = super.add(arg0);
 		returnValue.setName(actionName.toString());
 		returnValue.setText("");

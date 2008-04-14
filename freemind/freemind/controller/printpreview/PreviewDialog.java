@@ -71,10 +71,7 @@ public class PreviewDialog extends JDialog implements ActionListener {
         ok.addActionListener(this);
         dialog.add(ok);
         getContentPane().add(dialog, "South");
-        Tools.addEscapeActionToDialog(this, new AbstractAction(){
-			public void actionPerformed(ActionEvent pE) {
-				dispose();
-			}});
+        Tools.addEscapeActionToDialog(this);
     }
 
 

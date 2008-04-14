@@ -48,6 +48,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListDataEvent;
@@ -86,7 +87,8 @@ public class FilterComposerDialog extends JDialog {
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         AddConditionAction(){
-            super(Resources.getInstance().getResourceString("filter_add"));
+        	super();
+            Tools.setLabelAndMnemonic(this, Resources.getInstance().getResourceString("filter_add"));
         }
         public void actionPerformed(ActionEvent e) {
             Condition newCond ;
@@ -132,7 +134,8 @@ public class FilterComposerDialog extends JDialog {
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         DeleteConditionAction(){
-            super(Resources.getInstance().getResourceString("filter_delete"));
+        	super();
+            Tools.setLabelAndMnemonic(this, Resources.getInstance().getResourceString("filter_delete"));
         }
         public void actionPerformed(ActionEvent e) {
             DefaultComboBoxModel model = (DefaultComboBoxModel)conditionList.getModel();
@@ -154,7 +157,8 @@ public class FilterComposerDialog extends JDialog {
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         CreateNotSatisfiedConditionAction(){
-            super(Resources.getInstance().getResourceString("filter_not"));
+        	super();
+            Tools.setLabelAndMnemonic(this, Resources.getInstance().getResourceString("filter_not"));
         }
         public void actionPerformed(ActionEvent e) {
             int min = conditionList.getMinSelectionIndex();
@@ -178,7 +182,8 @@ public class FilterComposerDialog extends JDialog {
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         CreateConjunctConditionAction(){
-            super(Resources.getInstance().getResourceString("filter_and"));
+        	super();
+            Tools.setLabelAndMnemonic(this, Resources.getInstance().getResourceString("filter_and"));
         }
         public void actionPerformed(ActionEvent e) {
             Object[] selectedValues = conditionList.getSelectedValues() ;
@@ -197,7 +202,8 @@ public class FilterComposerDialog extends JDialog {
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         CreateDisjunctConditionAction(){
-            super(Resources.getInstance().getResourceString("filter_or"));
+        	super();
+            Tools.setLabelAndMnemonic(this, Resources.getInstance().getResourceString("filter_or"));
         }
         public void actionPerformed(ActionEvent e) {
             Object[] selectedValues = conditionList.getSelectedValues() ;
@@ -257,7 +263,7 @@ public class FilterComposerDialog extends JDialog {
                  EventQueue.invokeLater(new Runnable(){
                      public void run(){
                          if(selectCondition()){
-                             setVisible(false);
+                             dispose();
                          }
                      }
                  });
@@ -270,7 +276,7 @@ public class FilterComposerDialog extends JDialog {
             if(source == btnOK ||source == btnApply)
                 applyChanges();
             if(source == btnOK ||source == btnCancel)
-                setVisible(false);
+                dispose();
             else
                 initInternalConditionModel();
         }
@@ -568,13 +574,15 @@ public class FilterComposerDialog extends JDialog {
 
         if(! c.getFrame().isApplet()){
         	ActionListener saveAction = new SaveAction();
-        	btnSave = new JButton(Resources.getInstance().getResourceString("save"));
+        	btnSave = new JButton();
+        	Tools.setLabelAndMnemonic(btnSave, Resources.getInstance().getResourceString("save"));
         	btnSave.addActionListener(saveAction);
         	btnSave.setMaximumSize(maxButtonDimension);
 
         	ActionListener loadAction = new LoadAction();
-        	btnLoad = new JButton(Resources.getInstance().getResourceString("load"));
-        	btnLoad.addActionListener(loadAction);
+           	btnLoad = new JButton();
+           	Tools.setLabelAndMnemonic(btnLoad, Resources.getInstance().getResourceString("load"));
+           	btnLoad.addActionListener(loadAction);
         	btnLoad.setMaximumSize(maxButtonDimension);
 
         	controllerBox.add(btnSave);
@@ -599,6 +607,7 @@ public class FilterComposerDialog extends JDialog {
         conditionScrollPane.setPreferredSize(new Dimension(500, 200));
         getContentPane().add(conditionScrollPane, BorderLayout.CENTER);
 
+        Tools.addEscapeActionToDialog(this);
         pack();
     }
 
@@ -657,11 +666,9 @@ public class FilterComposerDialog extends JDialog {
 
     }
 
-    public void setVisible(boolean b) {
-        if(b){
-            initInternalConditionModel();
-        }
-        super.setVisible(b);
+    public void show() {
+    	initInternalConditionModel();
+        super.show();
     }
 
     private void initInternalConditionModel() {

@@ -128,9 +128,7 @@ class FilterToolbar extends FreeMindToolBar {
             if(selectedItem != null){
                 getFilterDialog().setSelectedItem(selectedItem);
             }
-            if(getFilterDialog().isVisible() == false){
-                getFilterDialog().setVisible(true);
-            }
+            getFilterDialog().show();
         }
         
     }

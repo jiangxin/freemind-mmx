@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.43 2008-04-11 16:58:31 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.44 2008-04-14 19:22:03 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -711,12 +711,12 @@ public abstract class ControllerAdapter implements ModeController {
      * Return false if user has canceled.
      */
     public boolean close(boolean force, MapModuleManager mapModuleManager) {
-        String[] options = {getText("yes").replaceFirst("&", ""),
-                            getText("no").replaceFirst("&", ""),
-                            getText("cancel").replaceFirst("&", "")};
+        String[] options = {Tools.removeMnemonic(getText("yes")),
+        		Tools.removeMnemonic(getText("no")),
+        		Tools.removeMnemonic(getText("cancel"))};
         if (!force && !getModel().isSaved()) {
             String text = getText("save_unsaved")+"\n"+mapModuleManager.getMapModule().toString();
-            String title = getText("save");
+            String title = Tools.removeMnemonic(getText("save"));
             int returnVal = JOptionPane.showOptionDialog(getFrame().getContentPane(),text,title,JOptionPane.YES_NO_CANCEL_OPTION,
                                                          JOptionPane.QUESTION_MESSAGE,null,options,options[0]);
             if (returnVal==JOptionPane.YES_OPTION) {
@@ -926,7 +926,7 @@ public abstract class ControllerAdapter implements ModeController {
     public class SaveAction extends AbstractAction {
         ControllerAdapter mc;
         public SaveAction(ControllerAdapter modeController) {
-            super(getText("save"), new ImageIcon(getResource("images/filesave.png")));
+            super(Tools.removeMnemonic(getText("save")), new ImageIcon(getResource("images/filesave.png")));
             mc = modeController;
         }
         public void actionPerformed(ActionEvent e) {
