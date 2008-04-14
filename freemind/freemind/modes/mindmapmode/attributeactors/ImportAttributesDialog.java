@@ -196,29 +196,26 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
         getContentPane().add(buttons, BorderLayout.SOUTH);
         
         Tools.addEscapeActionToDialog(this);
-
-        addComponentListener(new ComponentAdapter(){
-
-        	public void componentShown(ComponentEvent e) {
-        		createMapSubTrees(topNode);
-        		if(topNode.getChildCount() == 0){
-        			JOptionPane.showMessageDialog(parentComponent,
-        					Resources.getInstance().getResourceString("atributes_no_import_candidates_found"),
-        					getTitle(),
-        					JOptionPane.INFORMATION_MESSAGE);
-        			return;
-        		}
-        		treeModel.reload();
-        		if(renderer == null){
-        			renderer = new MyRenderer();
-        		}
-        		tree.setCellRenderer(renderer);
-        		setLocationRelativeTo(parentComponent);
-        		pack();
-        	}
-        });
-    }
+     }
     
+	public void show() {
+		createMapSubTrees(topNode);
+		if(topNode.getChildCount() == 0){
+			JOptionPane.showMessageDialog(parentComponent,
+					Resources.getInstance().getResourceString("atributes_no_import_candidates_found"),
+					getTitle(),
+					JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		treeModel.reload();
+		if(renderer == null){
+			renderer = new MyRenderer();
+		}
+		tree.setCellRenderer(renderer);
+		setLocationRelativeTo(parentComponent);
+		pack();
+		super.show();
+	}
 
     private void performImport(DefaultMutableTreeNode node) {
         TreeNodeInfo info = (TreeNodeInfo) node.getUserObject();

@@ -86,7 +86,7 @@ public class BlinkingNodeHook extends PermanentMindMapNodeHookAdapter {
                             if(! view.isVisible()){
                                 return;
                             }
-                            Color col = view.getTextColor();
+                            Color col = view.getMainView().getForeground();
                             int index = -1;
                             if (col != null && colors.contains(col)) {
                                 index = colors.indexOf(col);
@@ -94,7 +94,7 @@ public class BlinkingNodeHook extends PermanentMindMapNodeHookAdapter {
                             index++;
                             if (index >= colors.size())
                                 index = 0;
-                            view.setTextFont((Color) colors.get(index));
+                            view.getMainView().setForeground((Color) colors.get(index));
                         }
                         
                     });

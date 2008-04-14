@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.60 2008-03-06 21:41:14 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.61 2008-04-14 20:40:46 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -998,12 +998,11 @@ public class NodeView extends JComponent implements TreeModelListener{
     		attributeView.syncronizeAttributeView();
     	}
     }
-    public void setTextFont(Color c) {
-        mainView.setForeground(c);
-    }
+
     public Font getTextFont() {
-        return mainView.getFont();
+        return getMainView().getFont();
     }
+    
     public Color getTextColor() {
         Color color= getModel().getColor();
 		if (color==null) {

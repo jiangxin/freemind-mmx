@@ -125,7 +125,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
 
     private class ImportAction extends AbstractAction{
         ImportAction(){
-            super(Resources.getInstance().getResourceString("attributes_import"));
+        	Tools.setLabelAndMnemonic(this, Resources.getInstance().getResourceString("attributes_import"));
         }
         /* (non-Javadoc)
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
