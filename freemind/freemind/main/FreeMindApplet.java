@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.22 2008-03-18 18:32:15 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.23 2008-04-17 19:32:26 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -49,7 +49,7 @@ import freemind.view.mindmapview.MapView;
 
 public class FreeMindApplet extends JApplet implements FreeMindMain {
 
-	public static final String version = FreeMind.VERSION;
+	public static final VersionInformation version = FreeMind.VERSION;
     //    public static final String defaultPropsURL;
     public URL defaultPropsURL;
     public static Properties defaultProps;
@@ -94,7 +94,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 		return scrollPane.getViewport();
     }
 
-    public String getFreemindVersion() {
+    public VersionInformation getFreemindVersion() {
         return version;
     }
 

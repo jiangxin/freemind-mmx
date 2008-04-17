@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: EncryptNode.java,v 1.1.2.8.2.5 2007-06-16 21:21:35 dpolivaev Exp $ */
+/* $Id: EncryptNode.java,v 1.1.2.8.2.6 2008-04-17 19:32:24 christianfoltin Exp $ */
 
 /*
  * Created on 14.12.2004
@@ -228,7 +228,7 @@ public class EncryptNode extends MindMapNodeHookAdapter {
             final EnterPasswordDialog pwdDialog = new EnterPasswordDialog(
                     (JFrame) getMindMapController().getFrame(), getMindMapController(), false);
             pwdDialog.setModal(true);
-            pwdDialog.show();
+            pwdDialog.setVisible(true);
             if (pwdDialog.getResult() == EnterPasswordDialog.CANCEL) {
                 return;
             }

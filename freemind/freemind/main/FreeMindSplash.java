@@ -142,7 +142,7 @@ public class FreeMindSplash extends JFrame implements IFreeMindSplash {
                 g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
                 g2.setFont(versionTextFont);
                 // Determine width of string to center it
-                String freemindVersion = frame.getFreemindVersion();
+                String freemindVersion = frame.getFreemindVersion().toString();
                 if (mWidth == null) {
                     mWidth = new Integer(g2.getFontMetrics().stringWidth(freemindVersion));
                 }

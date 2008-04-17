@@ -19,7 +19,7 @@
 */
 /*
  * Created on 12.07.2005
- * Copyright (C) 2005 Dimitri Polivaev
+ * Copyright (C) 2005-2008 Dimitri Polivaev, Christian Foltin
  */
 package freemind.main;
 
@@ -32,12 +32,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import freemind.common.NamedObject;
+import freemind.common.TextTranslator;
+import freemind.main.FreeMindMain.VersionInformation;
 
 /**
  * @author Dimitri Polivaev
  * 12.07.2005
  */
-public class Resources {
+public class Resources implements TextTranslator {
     private FreeMindMain main;
     static Resources resourcesInstance = null;
     private HashMap countryMap;
@@ -72,7 +74,7 @@ public class Resources {
         return main.getFreemindDirectory();
     }
 
-    public String getFreemindVersion() {
+    public VersionInformation getFreemindVersion() {
         return main.getFreemindVersion();
     }
 
@@ -136,5 +138,9 @@ public class Resources {
     public NamedObject createTranslatedString(String key){
         String fs = getResourceString(key);
         return new NamedObject(key, fs);
-    }    
+    }
+
+	public String getText(String pKey) {
+		return getResourceString(pKey);
+	}    
 }

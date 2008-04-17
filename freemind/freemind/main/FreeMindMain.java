@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12.14.5.2.10 2008-03-14 21:15:20 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.14.5.2.11 2008-04-17 19:32:27 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -25,11 +25,12 @@ import java.io.File;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import freemind.controller.Controller;
@@ -109,9 +110,92 @@ public interface FreeMindMain {
     public int getWinState();
 	public int getWinX();
 	public int getWinY();
+	
+	public static final int VERSION_TYPE_ALPHA=0;
+	public static final int VERSION_TYPE_BETA=1;
+	public static final int VERSION_TYPE_RC=2;
+	public static final int VERSION_TYPE_RELEASE=3;
+	
+	public static class VersionInformation {
+		public int mMaj = 0;
+		public int mMid = 9;
+		public int mMin = 0;
+		public int mType = VERSION_TYPE_BETA;
+		public int mNum = 17;
+		public VersionInformation(int pMaj, int pMid, int pMin, int pType,
+				int pNum) {
+			super();
+			mMaj = pMaj;
+			mMid = pMid;
+			mMin = pMin;
+			mType = pType;
+			mNum = pNum;
+		}
+		public VersionInformation(String pString) {
+			StringTokenizer t = new StringTokenizer(pString, ". ", false);
+			String[] info = new String[t.countTokens()];
+			int i=0;
+			while(t.hasMoreTokens()) {
+				info[i++]=t.nextToken();
+			}
+			if(info.length != 3 && info.length != 5)
+				throw new IllegalArgumentException("Wrong number of tokens for version information: " + pString);
+			mMaj = Integer.parseInt(info[0]);
+			mMid = Integer.parseInt(info[1]);
+			mMin = Integer.parseInt(info[2]);
+			if(info.length == 3){
+				// release.
+				mType = VERSION_TYPE_RELEASE;
+				mNum = 0;
+				return;
+			}
+			// here,we have info.length == 5!
+			Vector types = new Vector();
+			types.add("Alpha");
+			types.add("Beta");
+			types.add("RC");
+			int typeIndex = types.indexOf(info[3]);
+			if(typeIndex < 0){
+				throw new IllegalArgumentException("Wrong version type for version information: " + info[4]);
+			}
+			mType = typeIndex;
+			mNum = Integer.parseInt(info[4]);
+		}
+		public String toString() {
+			StringBuffer buf = new StringBuffer();
+			buf.append(mMaj);
+			buf.append('.');
+			buf.append(mMid);
+			buf.append('.');
+			buf.append(mMin);
+			switch(mType){
+			case VERSION_TYPE_ALPHA:
+				buf.append(' ');
+				buf.append("Alpha");
+				break;
+			case VERSION_TYPE_BETA:
+				buf.append(' ');
+				buf.append("Beta");
+				break;
+			case VERSION_TYPE_RC:
+				buf.append(' ');
+				buf.append("RC");
+				break;
+			case VERSION_TYPE_RELEASE:
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown version type " +mType);
+			}
+			if(mType != VERSION_TYPE_RELEASE){
+				buf.append(' ');
+				buf.append(mNum);
+			}
+			return buf.toString();
+		}
+	}
 
     /** version info:*/
-    public String getFreemindVersion();
+    public VersionInformation getFreemindVersion();
 
     /** To obtain a logging element, ask here. */
     public java.util.logging.Logger getLogger(String forClass);

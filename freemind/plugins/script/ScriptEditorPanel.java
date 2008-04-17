@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.12 2008-03-14 21:15:27 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.13 2008-04-17 19:32:28 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -58,6 +58,7 @@ import freemind.controller.BlindIcon;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
 import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 import freemind.main.Tools;
 
 /**
@@ -102,6 +103,8 @@ public class ScriptEditorPanel extends JDialog {
 
 	private AbstractAction mRunAction;
 
+	private SignAction mSignAction;
+
 	private final class ResultFieldStream extends OutputStream {
 		public void write(int pByte) throws IOException {
 			mScriptResultField.append(new String(new byte[] { (byte) pByte }));
@@ -127,6 +130,24 @@ public class ScriptEditorPanel extends JDialog {
 		}
 	}
 
+	private final class SignAction extends AbstractAction {
+		private SignAction(String pArg0) {
+			super(pArg0);
+		}
+		
+		public void actionPerformed(ActionEvent arg0) {
+			storeCurrent();
+			if (!mScriptList.isSelectionEmpty()) {
+				int selectedIndex = mScriptList.getSelectedIndex();
+				ScriptHolder script = mScriptModel.getScript(selectedIndex);
+				String signedScript = new SignedScriptHandler().signScript(script.mScript, Resources.getInstance(), mFrame);
+				script.setScript(signedScript);
+				mScriptModel.setScript(selectedIndex, script);
+				mScriptTextField.setText(signedScript);
+			}
+		}
+	}
+	
 	private final class CancelAction extends AbstractAction {
 		private CancelAction(String pArg0) {
 			super(pArg0);
@@ -316,6 +337,10 @@ public class ScriptEditorPanel extends JDialog {
 				.getResourceString("plugins/ScriptEditor.run"));
 		mRunAction.setEnabled(false);
 		addAction(menu, mRunAction);
+		mSignAction = new SignAction(pFrame
+				.getResourceString("plugins/ScriptEditor.sign"));
+		mSignAction.setEnabled(false);
+		addAction(menu, mSignAction);
 		AbstractAction cancelAction = new CancelAction(pFrame
 				.getResourceString("plugins/ScriptEditor.cancel"));
 		addAction(menu, cancelAction);
@@ -351,6 +376,7 @@ public class ScriptEditorPanel extends JDialog {
 	private void select(int pIndex) {
 		mScriptTextField.setEnabled(pIndex >= 0);
 		mRunAction.setEnabled(pIndex >= 0);
+		mSignAction.setEnabled(pIndex >= 0);
 		if(pIndex < 0) {
 			mScriptTextField.setText("");
 			return;

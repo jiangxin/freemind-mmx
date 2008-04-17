@@ -4,7 +4,7 @@
       <filterchain>
         <tokenfilter>
           <filetokenizer/>
-          <replaceregex pattern='.*public static final String VERSION = "(.*?)".*' replace="\1" flags="s" />
+          <replaceregex pattern='.*new VersionInformation\("(.*?)".*' replace="\1" flags="s" />
         </tokenfilter>
       	<!-- Replace spaces by underscores. -->
       	<tokenfilter><replaceregex pattern=" " replace="_" flags="g"/></tokenfilter>
@@ -115,6 +115,7 @@
 	</target>
 
 	<target name="build" depends="gen,icon_change_butterfly,icon_change">
+	  <echo>FreeMind Version = ${ver}.</echo>
 		<!-- Perform Mac Changes as a plugin. -->
 		<exec dir="${src}/accessories/plugins" executable="ln" os="Mac OS X">
 			<arg value="-s"/>

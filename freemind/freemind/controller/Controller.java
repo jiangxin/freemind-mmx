@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.51 2008-04-14 19:22:02 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.52 2008-04-17 19:32:25 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -1128,7 +1128,7 @@ public class Controller  implements MapModuleChangeObserver {
             this.controller = controller;
         }
         public void actionPerformed(ActionEvent e) {
-           JOptionPane.showMessageDialog(getFrame().getViewport(),controller.getResourceString("about_text")+FreeMind.VERSION);
+           JOptionPane.showMessageDialog(getFrame().getViewport(),controller.getResourceString("about_text")+getFrame().getFreemindVersion());
         }
     }
 

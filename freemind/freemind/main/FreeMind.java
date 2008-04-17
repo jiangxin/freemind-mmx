@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.109 2008-04-13 19:49:14 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.110 2008-04-17 19:32:25 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -73,6 +73,7 @@ import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
 import freemind.controller.MenuBar;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
+import freemind.main.FreeMindMain.VersionInformation;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
@@ -123,10 +124,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
     public static final String RESOURCES_DELETE_NODES_WITHOUT_QUESTION = "delete_nodes_without_question";
 
 	private Logger logger = null;
-
-	private static final String DEFAULT_LANGUAGE = "en";
-
-	public static final String VERSION = "0.9.0 Beta 17";
+	
+	protected static final VersionInformation VERSION = new VersionInformation("0.9.0 Beta 17");
+	
+//	public static final String VERSION = "0.9.0 Beta 17";
 
 	public static final String XML_VERSION = "0.9.0_Beta_8";
 
@@ -385,7 +386,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		return mScrollPane.getViewport();
 	}
 
-	public String getFreemindVersion() {
+	public VersionInformation getFreemindVersion() {
 		return VERSION;
 	}
 
@@ -452,7 +453,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			OutputStream out = new FileOutputStream(autoPropertiesFile);
 			final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, "8859_1");
 			outputStreamWriter.write("#FreeMind ");
-			outputStreamWriter.write(VERSION);
+			outputStreamWriter.write(VERSION.toString());
 			outputStreamWriter.write('\n');
 			outputStreamWriter.flush();
 			// auto.store(out,null);//to save as few props as possible.

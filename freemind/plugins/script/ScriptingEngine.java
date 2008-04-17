@@ -19,7 +19,7 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.18 2008-04-02 20:02:37 christianfoltin Exp $ */
+/* $Id: ScriptingEngine.java,v 1.1.2.19 2008-04-17 19:32:29 christianfoltin Exp $ */
 package plugins.script;
 
 import java.io.File;
@@ -190,15 +190,27 @@ public class ScriptingEngine extends MindMapHookAdapter {
 		String executeWithoutFileRestriction = frame.getProperty(FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_FILE_RESTRICTION);
 		String executeWithoutNetworkRestriction = frame.getProperty(FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_NETWORK_RESTRICTION);
 		String executeWithoutExecRestriction = frame.getProperty(FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_EXEC_RESTRICTION);
+		/* *************** */
+		/* **Signature  ** */
+		/* *************** */
+		boolean isSigned = new SignedScriptHandler().isScriptSigned(script);
 		PrintStream oldOut = System.out;
 		Object value = null;
 		GroovyRuntimeException e1 = null;
 		Throwable e2 = null;
+		boolean filePerm = Tools
+				.isPreferenceTrue(executeWithoutFileRestriction);
+		boolean networkPerm = Tools
+				.isPreferenceTrue(executeWithoutNetworkRestriction);
+		boolean execPerm = Tools
+				.isPreferenceTrue(executeWithoutExecRestriction);
+		if(isSigned) {
+			filePerm = true;
+			networkPerm = true;
+			execPerm = true;
+		}
 		ScriptingSecurityManager scriptingSecurityManager = new ScriptingSecurityManager(
-				Tools.isPreferenceTrue(executeWithoutFileRestriction),
-				Tools
-						.isPreferenceTrue(executeWithoutNetworkRestriction), Tools
-				.isPreferenceTrue(executeWithoutExecRestriction));
+				filePerm, networkPerm, execPerm);
 		FreeMindSecurityManager securityManager = (FreeMindSecurityManager) System
 				.getSecurityManager();
 		try {

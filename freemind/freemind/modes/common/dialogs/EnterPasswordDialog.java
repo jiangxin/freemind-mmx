@@ -16,28 +16,25 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: EnterPasswordDialog.java,v 1.1.2.1.2.2 2006-07-25 20:28:21 christianfoltin Exp $ */
+/* $Id: EnterPasswordDialog.java,v 1.1.2.1.2.3 2008-04-17 19:32:28 christianfoltin Exp $ */
 
 package freemind.modes.common.dialogs;
 
-import javax.swing.JDialog;
-
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 
-import freemind.modes.ModeController;
+import freemind.common.TextTranslator;
 
 /** */
 public class EnterPasswordDialog extends JDialog {
@@ -64,11 +61,11 @@ public class EnterPasswordDialog extends JDialog {
 
     private JButton jCancelButton = null;
 
-    private ModeController controller;
-
     private StringBuffer password = null;
 
     private boolean enterTwoPasswords = true;
+
+	private TextTranslator mTranslator;
 
     /**
      * @deprecated do not use. This is for visual editor only.
@@ -80,10 +77,10 @@ public class EnterPasswordDialog extends JDialog {
     /**
      * This is the default constructor
      */
-    public EnterPasswordDialog(JFrame caller, ModeController controller,
+    public EnterPasswordDialog(JFrame caller, TextTranslator pTranslator,
             boolean enterTwoPasswords) {
         super(caller, "", true /*=modal*/);
-        this.controller = controller;
+        this.mTranslator = pTranslator;
         this.enterTwoPasswords = enterTwoPasswords;
         initialize();
     }
@@ -94,7 +91,7 @@ public class EnterPasswordDialog extends JDialog {
      * @return void
      */
     private void initialize() {
-        this.setTitle(controller
+        this.setTitle(mTranslator
                 .getText("accessories/plugins/EncryptNode.properties_0")); //$NON-NLS-1$
         this.setSize(300, 200);
         this.setContentPane(getJContentPane());
@@ -116,7 +113,7 @@ public class EnterPasswordDialog extends JDialog {
     private void okPressed() {
         // check if equal:
         if (!checkEqualAndMinimumSize()) {
-            JOptionPane.showMessageDialog(this, controller
+            JOptionPane.showMessageDialog(this, mTranslator
                     .getText("accessories/plugins/EncryptNode.properties_1")); //$NON-NLS-1$
             return;
         }
@@ -179,12 +176,12 @@ public class EnterPasswordDialog extends JDialog {
             gridBagConstraints1.gridx = 0;
             gridBagConstraints1.gridy = 1;
             gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            jLabel.setText(controller
+            jLabel.setText(mTranslator
                     .getText("accessories/plugins/EncryptNode.properties_2")); //$NON-NLS-1$
             gridBagConstraints2.gridx = 0;
             gridBagConstraints2.gridy = 2;
             gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            jLabel1.setText(controller
+            jLabel1.setText(mTranslator
                     .getText("accessories/plugins/EncryptNode.properties_3")); //$NON-NLS-1$
             gridBagConstraints3.gridx = 1;
             gridBagConstraints3.gridy = 1;
@@ -200,9 +197,9 @@ public class EnterPasswordDialog extends JDialog {
             gridBagConstraints5.fill = java.awt.GridBagConstraints.HORIZONTAL;
             gridBagConstraints5.anchor = java.awt.GridBagConstraints.CENTER;
             gridBagConstraints5.insets = new java.awt.Insets(0, 0, 20, 0);
-            jLabel2.setText(controller
+            jLabel2.setText(mTranslator
                     .getText("accessories/plugins/EncryptNode.properties_4")); //$NON-NLS-1$
-            jLabel2.setToolTipText(controller
+            jLabel2.setToolTipText(mTranslator
                     .getText("accessories/plugins/EncryptNode.properties_5")); //$NON-NLS-1$
             gridBagConstraints6.gridx = 0;
             gridBagConstraints6.gridy = 3;
@@ -265,7 +262,7 @@ public class EnterPasswordDialog extends JDialog {
 
             });
 
-            jOKButton.setText(controller
+            jOKButton.setText(mTranslator
                     .getText("accessories/plugins/EncryptNode.properties_6")); //$NON-NLS-1$
         }
         return jOKButton;
@@ -285,7 +282,7 @@ public class EnterPasswordDialog extends JDialog {
                     cancelPressed();
                 }
             });
-            jCancelButton.setText(controller
+            jCancelButton.setText(mTranslator
                     .getText("accessories/plugins/EncryptNode.properties_7")); //$NON-NLS-1$
         }
         return jCancelButton;

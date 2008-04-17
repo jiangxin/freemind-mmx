@@ -19,9 +19,12 @@
  *
  * Created on 22.03.2008
  */
-/*$Id: Base64Tests.java,v 1.1.2.1 2008-03-22 20:30:00 christianfoltin Exp $*/
+/*$Id: Base64Tests.java,v 1.1.2.2 2008-04-17 19:32:30 christianfoltin Exp $*/
 
 package tests.freemind;
+
+import java.io.File;
+import java.net.URL;
 
 import freemind.main.Base64Coding;
 
@@ -43,4 +46,5 @@ public class Base64Tests extends FreeMindTestBase {
 		String back = new String(Base64Coding.decode64(output));
 		assertEquals(input, back);
 	}
+	
 }

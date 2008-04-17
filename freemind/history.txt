@@ -38,8 +38,9 @@ Changes made in FreeMind 0.9.0 Beta17
 * Fixed: Issues with action "Clear note" * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1842855&group_id=7118
 * A link to the FreeMind's webpage is available in Help Menu
 * Fixed: Folding not saved * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1938342&group_id=7118
-  
-
+* Scripts can be signed by a FreeMind key (it is planned to be able to use user keys, too)
+  and have then full rights.  
+* FreeMind version is now a structure that can be used by scripts or plugins to guarantee compatibility.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta16
