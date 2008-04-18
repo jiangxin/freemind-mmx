@@ -14,6 +14,7 @@ import plugins.script.ScriptingEngine.ErrorHandler;
 import freemind.common.BooleanProperty;
 import freemind.common.ScriptEditorProperty;
 import freemind.common.SeparatorProperty;
+import freemind.common.StringProperty;
 import freemind.common.TextTranslator;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
@@ -57,6 +58,9 @@ public class ScriptingRegistration implements HookRegistration,
 					FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_NETWORK_RESTRICTION));
 			controls.add(new BooleanProperty(FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_EXEC_RESTRICTION+".tooltip",
 					FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_EXEC_RESTRICTION));
+			controls.add(new BooleanProperty(FreeMind.RESOURCES_SIGNED_SCRIPT_ARE_TRUSTED+".tooltip",
+					FreeMind.RESOURCES_SIGNED_SCRIPT_ARE_TRUSTED));
+			controls.add(new StringProperty(FreeMind.RESOURCES_SCRIPT_USER_KEY_NAME_FOR_SIGNING+".tooltip", FreeMind.RESOURCES_SCRIPT_USER_KEY_NAME_FOR_SIGNING));
 			return controls;
 		}
 	}

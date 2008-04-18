@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.110 2008-04-17 19:32:25 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.111 2008-04-18 21:18:24 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -141,6 +141,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public static final String RESOURCES_EXECUTE_SCRIPTS_WITHOUT_EXEC_RESTRICTION = "resources_execute_scripts_without_exec_restriction";
 
+	public static final String RESOURCES_SCRIPT_USER_KEY_NAME_FOR_SIGNING = "resources_script_user_key_name_for_signing";
+
 	public static final String RESOURCES_CONVERT_TO_CURRENT_VERSION = "resources_convert_to_current_version";
 
 	public static final String RESOURCES_CUT_NODES_WITHOUT_QUESTION = "resources_cut_nodes_without_question";
@@ -150,6 +152,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	public static final String RESOURCES_REMOVE_NOTES_WITHOUT_QUESTION = "resources_remove_notes_without_question";
 
 	public static final String RESOURCES_SAVE_FOLDING_STATE = "resources_save_folding_state";
+
+	public static final String RESOURCES_SIGNED_SCRIPT_ARE_TRUSTED = "resources_signed_script_are_trusted";
 
 	// public static final String defaultPropsURL = "freemind.properties";
 	// public static Properties defaultProps;

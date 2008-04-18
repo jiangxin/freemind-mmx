@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.13 2008-04-17 19:32:28 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.14 2008-04-18 21:18:26 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -134,29 +134,31 @@ public class ScriptEditorPanel extends JDialog {
 		private SignAction(String pArg0) {
 			super(pArg0);
 		}
-		
+
 		public void actionPerformed(ActionEvent arg0) {
 			storeCurrent();
 			if (!mScriptList.isSelectionEmpty()) {
 				int selectedIndex = mScriptList.getSelectedIndex();
 				ScriptHolder script = mScriptModel.getScript(selectedIndex);
-				String signedScript = new SignedScriptHandler().signScript(script.mScript, Resources.getInstance(), mFrame);
+				String signedScript = new SignedScriptHandler().signScript(
+						script.mScript, Resources.getInstance(), mFrame);
 				script.setScript(signedScript);
 				mScriptModel.setScript(selectedIndex, script);
 				mScriptTextField.setText(signedScript);
 			}
 		}
 	}
-	
+
 	private final class CancelAction extends AbstractAction {
 		private CancelAction(String pArg0) {
 			super(pArg0);
 		}
-		
+
 		public void actionPerformed(ActionEvent arg0) {
 			disposeDialog(true);
 		}
 	}
+
 	private final class ExitAction extends AbstractAction {
 		private ExitAction(String pArg0) {
 			super(pArg0);
@@ -172,7 +174,7 @@ public class ScriptEditorPanel extends JDialog {
 		private NewScriptAction(String pArg0) {
 			super(pArg0);
 		}
-		
+
 		public void actionPerformed(ActionEvent arg0) {
 			storeCurrent();
 			int scriptIndex = mScriptModel.addNewScript();
@@ -180,7 +182,7 @@ public class ScriptEditorPanel extends JDialog {
 			select(scriptIndex);
 		}
 	}
-	
+
 	public static class ScriptHolder {
 		String mScript;
 
@@ -188,7 +190,8 @@ public class ScriptEditorPanel extends JDialog {
 
 		/**
 		 * @param pScriptName
-		 *            script name (starting with "script" (ScriptingEngine.SCRIPT_PREFIX))
+		 *            script name (starting with "script"
+		 *            (ScriptingEngine.SCRIPT_PREFIX))
 		 * @param pScript
 		 *            script content
 		 */
@@ -243,14 +246,16 @@ public class ScriptEditorPanel extends JDialog {
 		void endDialog(boolean pIsCanceled);
 
 		boolean isDirty();
-		/** 
-		 *
+
+		/**
+		 * 
 		 * @return the index of the new script.
 		 */
 		int addNewScript();
 	}
 
-	public ScriptEditorPanel(ScriptModel pScriptModel, FreeMindMain pFrame, boolean pHasNewScriptFunctionality) {
+	public ScriptEditorPanel(ScriptModel pScriptModel, FreeMindMain pFrame,
+			boolean pHasNewScriptFunctionality) {
 		super(pFrame.getJFrame(), true /* modal */);
 		logger = pFrame.getLogger(this.getClass().getName());
 		mScriptModel = pScriptModel;
@@ -281,7 +286,7 @@ public class ScriptEditorPanel extends JDialog {
 			public void valueChanged(ListSelectionEvent pEvent) {
 				if (pEvent.getValueIsAdjusting())
 					return;
-//				System.out.println("List selection:" + pEvent);
+				// System.out.println("List selection:" + pEvent);
 				select(mScriptList.getSelectedIndex());
 			}
 		});
@@ -329,7 +334,7 @@ public class ScriptEditorPanel extends JDialog {
 		JMenu menu = new JMenu();
 		Tools.setLabelAndMnemonic(menu, pFrame
 				.getResourceString("plugins/ScriptEditor.menu_actions"));
-		if(pHasNewScriptFunctionality){
+		if (pHasNewScriptFunctionality) {
 			addAction(menu, new NewScriptAction(pFrame
 					.getResourceString("plugins/ScriptEditor.new_script")));
 		}
@@ -361,7 +366,8 @@ public class ScriptEditorPanel extends JDialog {
 
 	private void addAction(JMenu menu, AbstractAction action) {
 		JMenuItem item = menu.add(action);
-		Tools.setLabelAndMnemonic(item, (String) action.getValue(AbstractAction.NAME));
+		Tools.setLabelAndMnemonic(item, (String) action
+				.getValue(AbstractAction.NAME));
 		item.setIcon(new BlindIcon(StructuredMenuHolder.ICON_SIZE));
 	}
 
@@ -377,7 +383,7 @@ public class ScriptEditorPanel extends JDialog {
 		mScriptTextField.setEnabled(pIndex >= 0);
 		mRunAction.setEnabled(pIndex >= 0);
 		mSignAction.setEnabled(pIndex >= 0);
-		if(pIndex < 0) {
+		if (pIndex < 0) {
 			mScriptTextField.setText("");
 			return;
 		}
@@ -386,7 +392,7 @@ public class ScriptEditorPanel extends JDialog {
 		mScriptTextField.setText(mScriptModel.getScript(pIndex).getScript());
 		// set last one:
 		mLastSelected = new Integer(pIndex);
-		if(pIndex >= 0 && mScriptList.getSelectedIndex() != pIndex) {
+		if (pIndex >= 0 && mScriptList.getSelectedIndex() != pIndex) {
 			mScriptList.setSelectedIndex(pIndex);
 		}
 	}

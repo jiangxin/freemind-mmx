@@ -11,13 +11,6 @@
 				    <exclude name="build_jabber.xml"/>
 				</fileset>
 			</subant>
-<!--Temporarily disabled:
-			<ant antfile="plugins/build_help.xml" target="@{task}"/>
-			<ant antfile="plugins/build_svg.xml" target="@{task}"/>
-			<ant antfile="plugins/build_time.xml" target="@{task}"/>
-			<ant antfile="plugins/build_scripting.xml" target="@{task}"/>
-			<ant antfile="plugins/build_jabber.xml" target="@{task}"/>-->
-			<ant antfile="plugins/build_latex.xml" target="@{task}"/>
 		</sequential>
 	</macrodef>
 
