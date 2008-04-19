@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.111 2008-04-18 21:18:24 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.112 2008-04-19 22:29:23 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -73,7 +73,6 @@ import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
 import freemind.controller.MenuBar;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
-import freemind.main.FreeMindMain.VersionInformation;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
@@ -745,9 +744,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		final FeedBack feedBack;
 		// change here, if you don't like the splash
 		if (true) {
-			// fc: don't change the following line as it is changed by the
-			// build.xml script.
-			splash = new FreeMindSplash(frame);
+			splash = new FreeMindSplashModern(frame);
 			splash.setVisible(true);
 			feedBack = splash.getFeedBack();
 			frame.mWindowIcon = splash.getWindowIcon();

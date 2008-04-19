@@ -10,7 +10,6 @@
       	<tokenfilter><replaceregex pattern=" " replace="_" flags="g"/></tokenfilter>
       </filterchain>
     </loadfile>
-	<property name="butterfly" value="" />
 
 	<property name="freemind.installer_year" value="2008"/>
 	<property name="src" value="." />
@@ -25,6 +24,7 @@
 	<property name="dist_macos_app" value="${dist_macos}/${dist_macos_app_name}"/>
 	<property name="dist_macos_contents" value="${dist_macos_app}/Contents"/>
 	<property name="dist_macos_info" value="${dist_macos_contents}/Info.plist"/>
+	<property name="icns_extension" value=""/>
 	<property name="FM.jar" value="${dist.lib}/freemind.jar"/>
 	<property name="post" value="../post" />
 	<property name="debug" value="on" />
@@ -97,24 +97,7 @@
 
 	<!-- end generator part -->
 
-	<target name="icon_change" unless="butterfly">
-		<replaceregexp file="${src}/freemind/main/FreeMind.java" byline="true"
-			match="splash = new FreeMindSplash\(frame\);"
-			replace="splash = new FreeMindSplashLightBulb(frame);"/>
-		<property name="file_extension" value="icon_light_bulb"/>
-		<property name="icns_extension" value="_light_bulb"/>
-
-	</target>
-
-	<target name="icon_change_butterfly" if="butterfly">
-		<replaceregexp file="${src}/freemind/main/FreeMind.java" byline="true"
-			match="splash = new FreeMindSplashLightBulb\(frame\);"
-			replace="splash = new FreeMindSplash(frame);"/>
-		<property name="file_extension" value="icon_butterfly"/>
-		<property name="icns_extension" value=""/>
-	</target>
-
-	<target name="build" depends="gen,icon_change_butterfly,icon_change">
+	<target name="build" depends="gen">
 	  <echo>FreeMind Version = ${ver}.</echo>
 		<!-- Perform Mac Changes as a plugin. -->
 		<exec dir="${src}/accessories/plugins" executable="ln" os="Mac OS X">
@@ -128,9 +111,6 @@
 			<arg value="MacChanges.xml"/>
 		</exec>
 		<!-- end mac changes. -->
-		<!-- icon changes -->
-
-		<!-- end icon changes -->
 		<mkdir dir="${build}"/>
 		<javac	srcdir="${src}"
 			destdir="${build}"
@@ -200,9 +180,9 @@
 		<antcall target="dist_macos"/>
 	</target>
 
-	<target name="dist_icon" unless="butterfly">
-		<copy file="${src}/windows-launcher/Freemind_light_bulb.exe"
-			tofile="${dist}/Freemind.exe" overwrite="true"/>
+	<target name="dist_icon">
+<!--		<copy file="${src}/windows-launcher/Freemind_light_bulb.exe"
+			tofile="${dist}/Freemind.exe" overwrite="true"/> -->
 	</target>
 
 	<target name="dist_macos" if="isMacOs">
@@ -292,15 +272,15 @@
 			basedir="${src_base_for_post}"
 			includes="freemind/**,.classpath,.project" excludes="freemind/bin/**" />
 		<gzip src="${post}/freemind-src.tar"
-			zipfile="${post}/freemind-src-${ver}_${file_extension}.tar.gz" />
+			zipfile="${post}/freemind-src-${ver}.tar.gz" />
 		<delete>
 			<fileset dir="${post}" includes="*.tar" />
 		</delete>
-		<zip destfile="${post}/freemind-bin-${ver}_${file_extension}.zip"
+		<zip destfile="${post}/freemind-bin-${ver}.zip"
 			basedir="${dist}"
 			excludes="doc/javadoc/,plugins/**" />
 		<!-- fc, 14.2.2005: new max export -->
-		<zip destfile="${post}/freemind-bin-max-${ver}_${file_extension}.zip"
+		<zip destfile="${post}/freemind-bin-max-${ver}.zip"
 			basedir="${dist}"
 			excludes="doc/javadoc/" />
 	<!--	<zip destfile="${post}/freemind-src-${ver}.zip"
@@ -323,7 +303,7 @@
 		</exec>
 		<exec dir="." executable="mv" os="Mac OS X">
 			<arg path="/tmp/${dist_macos_app_name} Archive.dmg"/>
-			<arg path="${post}/${dist_macos_name}_${file_extension}.dmg"/>
+			<arg path="${post}/${dist_macos_name}.dmg"/>
 		</exec>
 
 	</target>
@@ -381,7 +361,9 @@
 				<exclude name="Resources_*.properties"/>
 				<!--				<include name="*.xml"/>
 				<exclude name="build.xml"/> -->
+				<exclude name="images/*.svg"/>
 				<exclude name="images/splash.JPG"/>
+				<exclude name="images/Freemind_Splash_Butterfly_Modern.png"/>
 				<exclude name="images/FreeMindWindowIcon.icns"/>
 
 			</fileset>
@@ -484,9 +466,6 @@
           target: all
          - - - - - - - - - - - - - - - - - -->
     <target name="all">
-    	<antcall target="post"></antcall>
-    	<!-- if set, the light bulb changes are performed. -->
-    	<property name="butterfly" value="" />
     	<antcall target="post"></antcall>
 
     </target>

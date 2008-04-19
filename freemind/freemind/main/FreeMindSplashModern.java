@@ -3,7 +3,7 @@
  *   FreeMindSplash, taken from GanttSplash.java.
  *
  *   Copyright (C) 2002 by Thomas Alexandre (alexthomas(at)ganttproject.org)
- *   Copyright (C) 2005-2007 by Christian Foltin and Daniel Polansky
+ *   Copyright (C) 2005-2008 by Christian Foltin and Daniel Polansky
  *    
  ***************************************************************************/
 
@@ -42,7 +42,7 @@ import javax.swing.SwingUtilities;
  * Class to put a splash during launching the application.
  */
 
-public class FreeMindSplashLightBulb extends JFrame implements IFreeMindSplash {
+public class FreeMindSplashModern extends JFrame implements IFreeMindSplash {
 
     private static final int SPLASH_FONT_SIZE = 16;
 
@@ -109,7 +109,7 @@ public class FreeMindSplashLightBulb extends JFrame implements IFreeMindSplash {
     }
     
 
-    public FreeMindSplashLightBulb(final FreeMindMain frame){
+    public FreeMindSplashModern(final FreeMindMain frame){
         super("FreeMind");
         this.frame = frame;
         if(logger == null) {
@@ -118,14 +118,16 @@ public class FreeMindSplashLightBulb extends JFrame implements IFreeMindSplash {
 
         this.feedBack = new FeedBackImpl();
         
+        //http://www.kde-look.org/content/show.php?content=76812
+        //License GPLV2+
         mIcon = new ImageIcon(frame.getResource(
-                    "images/FreeMindWindowIconLightBulb.png"));
+                    "images/76812-freemind_v0.4.png"));
         setIconImage(mIcon.getImage()); //Set the icon
         setDefaultLookAndFeelDecorated(false);
         setUndecorated(true);
         getRootPane().setWindowDecorationStyle(JRootPane.NONE); // Set no border
         
-        ImageIcon splashImage = new ImageIcon(frame.getResource("images/splash-light_bulb.png"));
+        ImageIcon splashImage = new ImageIcon(frame.getResource("images/Freemind_Splash_Butterfly_Modern.png"));
         JLabel splashImageLabel = new JLabel(splashImage) {
             private Integer mWidth = null;
             private final Font progressFont = new Font("SansSerif", Font.PLAIN, 10);
@@ -145,28 +147,30 @@ public class FreeMindSplashLightBulb extends JFrame implements IFreeMindSplash {
                 if (mWidth == null) {
                     mWidth = new Integer(g2.getFontMetrics().stringWidth(freemindVersion));
                 }
-                int yCoordinate = 80; //84; //(int)(getSize().getHeight())-14;
-                int xCoordinate = 148/*145*/ - mWidth.intValue(); //(int)(getSize().getWidth()/2-mWidth.intValue()/2);
+                int yCoordinate = 58; 
+                int xCoordinate = (int)(getSize().getWidth()/2-mWidth.intValue()/2);
                 g2.setColor(new Color(0x4d,0x63,0xb4));
                 g2.drawString(freemindVersion, xCoordinate , yCoordinate);
                 // Draw progress bar
                 String progressString = (String)getClientProperty("progressString");
                 if (progressString!=null) {
                    Double percent = (Double)getClientProperty("progressPercent");
-                   int xBase = 21;
-                   int yBase = 220-5;
-                   int width = 430-xBase;
+                   int xBase = 7;
+                   int yBase = 185;
+                   int width = 281;
                    g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
                    g2.setFont(progressFont);
-                   g2.setColor(new Color(0x80,0x80,0x80));
+//                   g2.setColor(new Color(0x80,0x80,0x80));
+                   g2.setColor(new Color(0xff,0xff,0xff));
                    g2.drawString(progressString, xBase+1, yBase-4);
-                   g2.setColor(new Color(0xf0,0xf0,0xf0));
+                   g2.setColor(new Color(0xc8,0xdf,0x8b));
                    g2.draw(new Rectangle(xBase+2, yBase, width, 3));
-                   g2.setColor(new Color(0xd0,0xd0,0xd0));
-                   g2.draw(new Rectangle(xBase+1, yBase+1, width, 2));
-                   g2.setColor(new Color(0xf4,0xf4,0xf4));
-                   g2.fill(new Rectangle(xBase+1, yBase+1, width-1, 2));
-                   g2.setColor(new Color(0x4d,0x63,0xb4));
+//                   g2.setColor(new Color(0xd0,0xd0,0xd0));
+//                   g2.draw(new Rectangle(xBase+1, yBase+1, width, 2));
+//                   g2.setColor(new Color(0xf4,0xf4,0xf4));
+//                   g2.fill(new Rectangle(xBase+1, yBase+1, width-1, 2));
+//                   g2.setColor(new Color(0x4d,0x63,0xb4));
+                   g2.setColor(new Color(0xff,0xff,0xff));
                    g2.fill(new Rectangle(xBase+1, yBase+1, (int)(width*percent.doubleValue()), 2));
                 }
             }

@@ -16,16 +16,17 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SplashTests.java,v 1.1.2.2 2007-04-20 17:29:59 christianfoltin Exp $*/
+/*$Id: SplashTests.java,v 1.1.2.3 2008-04-19 22:29:23 christianfoltin Exp $*/
 
 package tests.freemind;
 
-import freemind.main.FreeMindSplash;
+import freemind.main.FreeMindSplashModern;
+import freemind.main.IFreeMindSplash;
 
 /** */
 public class SplashTests extends FreeMindTestBase {
     public void testLightBuldSplash() throws InterruptedException {
-        FreeMindSplash splash = new FreeMindSplash(mFreeMindMain);
+        IFreeMindSplash splash = new FreeMindSplashModern(mFreeMindMain);
         splash.setVisible(true);
         splash.getFeedBack().setMaximumValue(11);
         for(int i = 0; i < 10 ; i++) {

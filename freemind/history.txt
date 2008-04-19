@@ -41,7 +41,7 @@ Changes made in FreeMind 0.9.0 Beta17
 * Scripts can be signed by a FreeMind key or with a user key (specified in the options)
   and have then full rights.  
 * FreeMind version is now a structure that can be used by scripts or plugins to guarantee compatibility.
-
+* New design of logo (thanks to mmeitzner) and splash (thanks to bernardlang) integrated
 ===============================
 Changes made in FreeMind 0.9.0 Beta16
 ===============================
