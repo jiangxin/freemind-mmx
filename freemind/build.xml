@@ -24,7 +24,7 @@
 	<property name="dist_macos_app" value="${dist_macos}/${dist_macos_app_name}"/>
 	<property name="dist_macos_contents" value="${dist_macos_app}/Contents"/>
 	<property name="dist_macos_info" value="${dist_macos_contents}/Info.plist"/>
-	<property name="icns_extension" value=""/>
+	<property name="icns_extension" value="Modern"/>
 	<property name="FM.jar" value="${dist.lib}/freemind.jar"/>
 	<property name="post" value="../post" />
 	<property name="debug" value="on" />
