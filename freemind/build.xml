@@ -139,9 +139,9 @@
 		</copy>
 		<chmod file="${dist}/freemind.sh" perm="u+rx"/>
 		<copy todir="${dist}">
-			<fileset dir="${src}/windows-launcher"
-				includes="Freemind.exe"
-			/>
+			<fileset dir="${src}/windows-launcher">
+			  <include name="FreeMind.exe"/>
+			</fileset>
 		</copy>
 		<mkdir dir="${dist}/doc" />
 		<copy todir="${dist}/doc">

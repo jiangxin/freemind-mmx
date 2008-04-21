@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.43 2008-04-12 21:46:05 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.44 2008-04-21 17:44:12 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -439,7 +439,7 @@ public class OptionPanel implements TextTranslator {
 				/** For the codes see http://www.loc.gov/standards/iso639-2/php/English_list.php */
 		"language.tooltip", FreeMindCommon.RESOURCE_LANGUAGE, new String[] {
 				"automatic", "ar", "cs", "de", "dk", "en", "es", "fr", "gl", "hr", "hu", "it",
-				"ja", "kr", "lt", "nl", "nn", "no", "pl", "pt_BR", "pt_PT", "ru", "se", "sl", "tr",
+				"ja", "kr", "lt", "nl", "nn", "nb", "pl", "pt_BR", "pt_PT", "ru", "se", "sl", "tr",
 				"zh", "zh_CN" }, new TextTranslator(){
 
                     public String getText(String pKey) {

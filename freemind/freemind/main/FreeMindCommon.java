@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.32 2008-03-30 20:39:57 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.33 2008-04-21 17:44:12 christianfoltin Exp $*/
 package freemind.main;
 
 import java.awt.SystemColor;
@@ -70,7 +70,12 @@ public class FreeMindCommon {
                         }
                     }
                 }
+                if("no".equals(lang)){
+                	//Bugs item #1935818
+                	lang="nb";
+                }
                 languageResources = getLanguageResources(lang);
+                if(languageResources == null)
                 defaultResources = getLanguageResources(DEFAULT_LANGUAGE);
             } catch (Exception ex) {
                 freemind.main.Resources.getInstance().logException(             ex);
