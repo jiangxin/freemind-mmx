@@ -16,22 +16,71 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: AttributeTableCellRenderer.java,v 1.1.2.1 2006-06-09 19:53:06 dpolivaev Exp $ */
+/* $Id: AttributeTableCellRenderer.java,v 1.1.2.2 2008-04-24 19:25:57 dpolivaev Exp $ */
 package freemind.view.mindmapview.attributeview;
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class AttributeTableCellRenderer extends DefaultTableCellRenderer {
     
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+	static final float ZOOM_CORRECTION_FACTOR = 0.97F;
+    private boolean isPainting;
+	private float zoom;
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         final Component rendererComponent = super.getTableCellRendererComponent(table, value, hasFocus, false,
                 row, column);
         if(hasFocus){
             setBorder( UIManager.getBorder("Table.focusCellHighlightBorder") );
         }
+        zoom = ((AttributeTable)table).getZoom();
         return rendererComponent;
     }
 
+    public void paint(Graphics g) {
+        final Graphics2D g2 = (Graphics2D)g;
+	    if(zoom != 1F){
+	    	// Dimitry: Workaround because Swing do not use fractional metrics 
+	    	// for laying JLabels out 
+	    	zoom *= ZOOM_CORRECTION_FACTOR;
+	        final AffineTransform transform = g2.getTransform();                
+	        g2.scale(zoom, zoom);
+	        isPainting = true;
+	        super.paint(g);
+	        isPainting = false;
+	        g2.setTransform(transform);
+	    }
+	    else{
+	        super.paint(g);
+	    }
+	}
+
+    /* (non-Javadoc)
+     * @see javax.swing.JComponent#getHeight()
+     */
+    public int getHeight() {
+        if(isPainting){
+            if(zoom != 1F){
+                return (int)(super.getHeight()/zoom);
+            }
+        }
+        return super.getHeight();
+    }
+    /* (non-Javadoc)
+     * @see javax.swing.JComponent#getWidth()
+     */
+    public int getWidth() {
+        if(isPainting){
+            if(zoom != 1F){
+                return (int)(0.99f+super.getWidth()/zoom);
+            }
+        }
+        return super.getWidth();
+    }
 }

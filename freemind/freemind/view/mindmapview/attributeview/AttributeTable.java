@@ -170,7 +170,7 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener{
             getTableHeader().setResizingAllowed(false);
         }
         setModel(attributeView.getCurrentAttributeTableModel());
-        updateFontSize(this);
+        updateFontSize(this, 1F);
         updateColumnWidths();       
         setAutoResizeMode(AUTO_RESIZE_OFF);
         getTableHeader().setReorderingAllowed(false);
@@ -227,7 +227,7 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener{
         comboBox.addFocusListener(focusListener);
         comboBox.getEditor().getEditorComponent().addFocusListener(focusListener);
         Component editor = super.prepareEditor(tce, row, col);
-        updateFontSize(editor);
+        updateFontSize(editor, getZoom());
         return editor;
     }
     
@@ -277,7 +277,7 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener{
      * 
      */
     void updateAttributeTable() {
-        updateFontSize(this);
+        updateFontSize(this, 1F);
         updateRowHeights();
         updateColumnWidths();       
     }
@@ -320,12 +320,12 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener{
         return tableHeader != null ? tableHeader.getPreferredSize().height : 0;
     }
     
-    private void updateFontSize(Component c) {
+    private void updateFontSize(Component c, float zoom) {
         // 1) Determine font
         Font font = c.getFont();
         if (font != null) {
             float oldFontSize = font.getSize2D();
-            float newFontSize = getFontSize();
+            float newFontSize = getFontSize() * zoom;
             if(oldFontSize != newFontSize)
             {
                 font = font.deriveFont(newFontSize);
@@ -333,7 +333,7 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener{
             }
         }
     }
-    private float getZoom() {
+    float getZoom() {
         return attributeView.getMapView().getZoom();
     }
     
@@ -372,8 +372,7 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener{
 
 
     private float getFontSize() {
-        float zoom = getZoom();
-        return (attributeView.getNodeView().getModel().getMap().getRegistry().getAttributes().getFontSize() * zoom);
+        return (attributeView.getNodeView().getModel().getMap().getRegistry().getAttributes().getFontSize());
     }
     public void setModel(TableModel dataModel) {
         super.setModel(dataModel);
@@ -410,7 +409,7 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener{
     public void setOptimalColumnWidths() {
         Component comp = null;
         int cellWidth = 0;
-        int maxCellWidth = 0;
+        int maxCellWidth = 2 * (int)(Math.ceil(getFontSize() + TABLE_ROW_HEIGHT));
         for (int col = 0; col < 2; col++) {
             for(int row = 0; row < getRowCount(); row++){
                 comp = dtcr.getTableCellRendererComponent(
@@ -470,10 +469,11 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener{
         }
     }
     public void columnWidthChanged(ColumnWidthChangeEvent event) {
+    	float zoom = getZoom();
         int col = event.getColumnNumber();
         AttributeTableLayoutModel layoutModel = (AttributeTableLayoutModel) event.getSource();
         int width = layoutModel.getColumnWidth(col);
-        getColumnModel().getColumn(col).setPreferredWidth(width);
+        getColumnModel().getColumn(col).setPreferredWidth((int)(width * zoom));
         getAttributeView().getNode().getMap().nodeChanged(getAttributeView().getNode());
     }
     
