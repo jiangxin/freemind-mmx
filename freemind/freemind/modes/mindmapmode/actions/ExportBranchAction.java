@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ExportBranchAction.java,v 1.1.2.5 2008-03-30 20:39:58 christianfoltin Exp $*/
+/*$Id: ExportBranchAction.java,v 1.1.2.6 2008-04-25 20:10:39 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -42,7 +42,7 @@ public class ExportBranchAction extends AbstractAction {
     private final MindMapController mMindMapController;
 
     public ExportBranchAction(MindMapController pMindMapController) {
-        super(pMindMapController.getText("export_branch"));
+        super(pMindMapController.getText("export_branch_new"));
         mMindMapController = pMindMapController;
     }
 

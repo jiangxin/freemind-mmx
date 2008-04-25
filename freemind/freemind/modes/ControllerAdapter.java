@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.44 2008-04-14 19:22:03 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.45 2008-04-25 20:10:38 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -587,15 +587,26 @@ public abstract class ControllerAdapter implements ModeController {
 
     public void open() {
         JFileChooser chooser = getFileChooser();
+        // fc, 24.4.2008: multi selection has problems as setTitle in Controller doesn't works
+//        chooser.setMultiSelectionEnabled(true);
         int returnVal = chooser.showOpenDialog(getView());
         if (returnVal==JFileChooser.APPROVE_OPTION) {
-            try {
-                File theFile = chooser.getSelectedFile();
-                lastCurrentDir = theFile.getParentFile();
-                load(theFile.toURI().toURL());
-            } catch (Exception ex) {
-               handleLoadingException (ex); } {
-            }
+        	File[] selectedFiles;
+			if (chooser.isMultiSelectionEnabled()) {
+				selectedFiles = chooser.getSelectedFiles();
+			} else {
+				selectedFiles = new File[]{chooser.getSelectedFile()};
+			}
+			for (int i = 0; i < selectedFiles.length; i++) {
+				File theFile = selectedFiles[i];
+	            try {
+	                lastCurrentDir = theFile.getParentFile();
+	                load(theFile.toURI().toURL());
+	            } catch (Exception ex) {
+	               handleLoadingException (ex); 
+	               break;
+	            } 
+			}
         }
         getController().setTitle();
     }

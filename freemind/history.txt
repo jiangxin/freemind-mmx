@@ -42,7 +42,7 @@ Changes made in FreeMind 0.9.0 Beta17
   and have then full rights.  
 * FreeMind version is now a structure that can be used by scripts or plugins to guarantee compatibility.
 * New design of logo (thanks to mmeitzner) and splash (thanks to bernardlang) integrated
-* Wrong language name for Norwegian * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1935818&group_id=7118
+* Fixed: Wrong language name for Norwegian * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1935818&group_id=7118
 
 
 ===============================
