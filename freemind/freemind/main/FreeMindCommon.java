@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.33 2008-04-21 17:44:12 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.34 2008-04-26 21:21:25 christianfoltin Exp $*/
 package freemind.main;
 
 import java.awt.SystemColor;
@@ -75,7 +75,11 @@ public class FreeMindCommon {
                 	lang="nb";
                 }
                 languageResources = getLanguageResources(lang);
-                if(languageResources == null)
+                /* fc, 26.4.2008. the following line is a bug, as the defaultResources are used,
+                 * even, when a single string is missing inside a bundle and not only, 
+                 * when the complete bundle is missing.
+                 */ 
+//                if(languageResources == null)
                 defaultResources = getLanguageResources(DEFAULT_LANGUAGE);
             } catch (Exception ex) {
                 freemind.main.Resources.getInstance().logException(             ex);
