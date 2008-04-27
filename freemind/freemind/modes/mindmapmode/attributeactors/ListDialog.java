@@ -190,7 +190,7 @@ public class ListDialog extends JDialog
         getRootPane().setDefaultButton(closeButton);
         
         addButton = new JButton();
-        Tools.setLabelAndMnemonic(closeButton, Resources.getInstance().getResourceString("add"));
+        Tools.setLabelAndMnemonic(addButton, Resources.getInstance().getResourceString("add"));
         AddAction addAction = new AddAction();
         addButton.addActionListener(addAction);
         
