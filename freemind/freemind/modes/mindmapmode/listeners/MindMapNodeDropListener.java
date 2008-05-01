@@ -66,8 +66,7 @@ public class MindMapNodeDropListener implements DropTargetListener {
     private boolean isDropAcceptable(DropTargetDropEvent event) {
         MindMapNode node = ((MainView) event.getDropTargetContext()
                 .getComponent()).getNodeView().getModel();
-        MindMapNode selected = mMindMapController.getView().getSelected()
-                .getModel();
+        MindMapNode selected = mMindMapController.getSelected();
         return ((node != selected) && !node.isDescendantOf(selected));
         // I think (node!=selected) is a hack for windows
     }

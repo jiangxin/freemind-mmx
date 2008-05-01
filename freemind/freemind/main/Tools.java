@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.29 2008-04-14 19:22:02 dpolivaev Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.30 2008-05-01 12:41:43 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -1221,11 +1221,24 @@ public class Tools {
 		int mnemoSignIndex = rawLabel.indexOf("&");
 		if (mnemoSignIndex >= 0 && mnemoSignIndex + 1 < rawLabel.length()) {
 			char charAfterMnemoSign = rawLabel.charAt(mnemoSignIndex + 1);
-			if (charAfterMnemoSign != ' ')
-				item.setMnemonic(charAfterMnemoSign);
-			// sets the underline to exactly this character.
-			item.setDisplayedMnemonicIndex(mnemoSignIndex);
+			if (charAfterMnemoSign != ' '){
+				// no mnemonics under Mac OS:
+				if(!isMacOsX()) {
+					item.setMnemonic(charAfterMnemoSign);
+					// sets the underline to exactly this character.
+					item.setDisplayedMnemonicIndex(mnemoSignIndex);
+				}
+			}
 		}
+	}
+
+	public static boolean isMacOsX() {
+		boolean underMac = false;
+		String osName = System.getProperty("os.name");
+		if (osName.startsWith("Mac OS")) {
+			underMac = true;
+		}
+		return underMac;
 	}
 
 	public static String removeMnemonic(String rawLabel) {

@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.11 2007-10-19 17:48:05 dpolivaev Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.12 2008-05-01 12:41:43 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -28,6 +28,7 @@ import java.util.ListIterator;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
+import javax.swing.tree.MutableTreeNode;
 
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
@@ -41,7 +42,7 @@ import freemind.modes.ModeController;
 
 public class EncryptedMindMapNode extends MindMapNodeModel {
 
-    private boolean isAccessable = true;
+	private boolean isAccessible = true;
 
     /**
      * is only set to false by the load mechanism. 
@@ -107,7 +108,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
             }
             isDecrypted = true;
         }
-        setAccessable(true);
+        setAccessible(true);
         setFolded(false);
         getMap().getRegistry().registrySubtree(this, false);
         return true;
@@ -152,32 +153,32 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     public void encrypt() {
         // FIXME: Sync.
         setFolded(true);
-        setAccessable(false);
+        setAccessible(false);
     }
 
     public int getChildCount() {
-        if (isAccessable()) {
+        if (isAccessible()) {
             return super.getChildCount();
         }
         return 0;
     }
 
     public ListIterator childrenFolded() {
-        if (isAccessable()) {
+        if (isAccessible()) {
             return super.childrenFolded();
         }
         return new Vector().listIterator();
     }
 
     public ListIterator childrenUnfolded() {
-        if (isAccessable() || isShuttingDown) {
+        if (isAccessible() || isShuttingDown) {
             return super.childrenUnfolded();
         }
         return new Vector().listIterator();
     }
 
     public boolean hasChildren() {
-        if (isAccessable()) {
+        if (isAccessible()) {
             return super.hasChildren();
         }
         return false;
@@ -189,7 +190,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
      * @see freemind.modes.MindMapNode#getIcons()
      */
     public void updateIcon() {
-        if(isAccessable()){
+        if(isAccessible()){
             setStateIcon("encrypted", null);
             setStateIcon("decrypted", decryptedIcon);
         }
@@ -208,7 +209,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
      */
 
     public boolean isFolded() {
-        if (isAccessable()) {
+        if (isAccessible()) {
             return super.isFolded();
         }
         return true;
@@ -219,7 +220,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
      */
 
     public void setFolded(boolean folded) {
-        if (isAccessable()) {
+        if (isAccessible()) {
             super.setFolded(folded);
         } else {
             super.setFolded(true);
@@ -232,7 +233,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
     public void setAdditionalInfo(String info) {
         encryptedContent = info;
-        setAccessable(false);
+        setAccessible(false);
         isDecrypted = false;
     }
 
@@ -249,15 +250,15 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         if (isDecrypted) {
             generateEncryptedContent(registry);
         }
-        boolean oldIsVisible = isAccessable();
-        setAccessable(false);
+        boolean oldIsVisible = isAccessible();
+        setAccessible(false);
         XMLElement ret = null;
         try {
             ret = super.save(writer, registry, saveHidden, saveChildren);
         } catch (Exception e) {
             freemind.main.Resources.getInstance().logException(e);
         }
-        setAccessable(oldIsVisible);
+        setAccessible(oldIsVisible);
         return ret;
     }
 
@@ -322,17 +323,28 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     }
  
     /**
-     * @param isVisible The isVisible to set.
+     * @param isAccessible The isAccessible to set.
      */
-    private void setAccessable(boolean isAccessable) {
-        this.isAccessable = isAccessable;
+    private void setAccessible(boolean isAccessible) {
+        this.isAccessible = isAccessible;
         updateIcon();
     }
 
     /**
      * @return Returns the isVisible.
      */
-    public boolean isAccessable() {
-        return isAccessable;
+    public boolean isAccessible() {
+        return isAccessible;
     }
+
+//    public void insert(MutableTreeNode pChild, int pIndex) {
+//    	if(isAccessible()) {
+//    		super.insert(pChild, pIndex);
+//    	} else {
+//    		throw new IllegalArgumentException("Trying to insert nodes into ciphered node.");
+//    	}
+//    	
+//	}
+
+
 }

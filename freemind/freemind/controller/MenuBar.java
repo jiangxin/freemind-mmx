@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.18 2008-04-12 20:11:38 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.19 2008-05-01 12:41:43 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -100,7 +100,7 @@ public class MenuBar extends JMenuBar {
 
 		// filemenu
 		filemenu = menuHolder.addMenu(new JMenu(c.getResourceString("file")), FILE_MENU+".");
-		filemenu.setMnemonic(KeyEvent.VK_F);
+//		filemenu.setMnemonic(KeyEvent.VK_F);
 
 		menuHolder.addCategory(FILE_MENU+"open");	
 		menuHolder.addCategory(FILE_MENU+"close");	
@@ -152,7 +152,7 @@ public class MenuBar extends JMenuBar {
 
 		//Mapsmenu
 		mapsmenu = menuHolder.addMenu(new JMenu(c.getResourceString("mindmaps")), MINDMAP_MENU+".");
-		mapsmenu.setMnemonic(KeyEvent.VK_M);
+//		mapsmenu.setMnemonic(KeyEvent.VK_M);
 		menuHolder.addCategory(MINDMAP_MENU+"navigate");	
 		menuHolder.addSeparator(MINDMAP_MENU);	
 		menuHolder.addCategory(MENU_MINDMAP_CATEGORY);	

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindIcon.java,v 1.1.18.6.2.10 2008-03-30 20:39:57 christianfoltin Exp $ */
+/* $Id: MindIcon.java,v 1.1.18.6.2.11 2008-05-01 12:41:43 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -26,6 +26,7 @@ import java.net.URL;
 import java.io.File;
 import java.util.HashMap;
 import java.util.MissingResourceException;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -163,40 +164,11 @@ public class MindIcon implements Comparable, IconInformation{
         if (mAllIconNames != null)
             return mAllIconNames;
         Vector mAllIconNames = new Vector();
-        mAllIconNames.add("help");
-        mAllIconNames.add("messagebox_warning");
-        mAllIconNames.add("idea");
-        mAllIconNames.add("button_ok");
-        mAllIconNames.add("button_cancel");
-        mAllIconNames.add("full-1");
-        mAllIconNames.add("full-2");
-        mAllIconNames.add("full-3");
-        mAllIconNames.add("full-4");
-        mAllIconNames.add("full-5");
-        mAllIconNames.add("full-6");
-        mAllIconNames.add("full-7");
-        mAllIconNames.add("back");
-        mAllIconNames.add("forward");
-        mAllIconNames.add("attach");
-        mAllIconNames.add("ksmiletris");
-        mAllIconNames.add("smily_bad");
-        mAllIconNames.add("clanbomber");
-        mAllIconNames.add("desktop_new");
-        mAllIconNames.add("flag");
-        mAllIconNames.add("gohome");
-        mAllIconNames.add("kaddressbook");
-        mAllIconNames.add("knotify");
-        mAllIconNames.add("korn");
-        mAllIconNames.add("Mail");
-        mAllIconNames.add("password");
-        mAllIconNames.add("pencil");
-        mAllIconNames.add("stop");
-        mAllIconNames.add("wizard");
-        mAllIconNames.add("xmag");
-        mAllIconNames.add("bell");
-        mAllIconNames.add("bookmark");
-        mAllIconNames.add("penguin");
-        mAllIconNames.add("licq");
+        String icons = Resources.getInstance().getProperty("icons.list");
+        StringTokenizer tokenizer = new StringTokenizer(icons, ";");
+        while(tokenizer.hasMoreTokens()){
+        	mAllIconNames.add(tokenizer.nextToken());
+        }
         return mAllIconNames;
     }
 
