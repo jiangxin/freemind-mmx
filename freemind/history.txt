@@ -47,7 +47,7 @@ Changes made in FreeMind 0.9.0 Beta17
 * Fixed: When pressing Option+F in Mac OS X, the Format->Node color dialog should show up, but instead the File menu does (in a weird position) * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1947269&group_id=7118
 * Icon order moved to properties.
 * Fixed: encrypted node just looks to be locked * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1945302&group_id=7118
-
+* New icons from Predrag (put under GPLV2+ via private mail from 2.5.2008). Thanks to the author.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta16
