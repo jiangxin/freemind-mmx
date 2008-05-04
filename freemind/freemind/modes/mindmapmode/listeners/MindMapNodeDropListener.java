@@ -185,8 +185,8 @@ public class MindMapNodeDropListener implements DropTargetListener {
             } else {
                 Transferable trans = null;
                 // if move, verify, that the target is not a son of the sources.
+                List selecteds = mMindMapController.getSelecteds();
                 if (DnDConstants.ACTION_MOVE == dropAction) {
-                    List selecteds = mMindMapController.getSelecteds();
                     MindMapNode actualNode = targetNode;
                     do {
                         if (selecteds.contains(actualNode)) {
@@ -201,16 +201,21 @@ public class MindMapNodeDropListener implements DropTargetListener {
                         actualNode = (actualNode.isRoot()) ? null : actualNode
                                 .getParentNode();
                     } while (actualNode != null);
-                    trans = mMindMapController.cut();
-                } else {
-                    trans = mMindMapController.copy();
                 }
+                trans = mMindMapController.copy();
 
                 mMindMapController.getView().selectAsTheOnlyOneSelected(
                         targetNodeView);
-                mMindMapController.paste(trans, targetNode, mainView.dropAsSibling(dtde.getLocation().getX()),
+                boolean result = mMindMapController.paste(trans, targetNode, mainView.dropAsSibling(dtde.getLocation().getX()),
                         mainView.dropPosition(
                                 dtde.getLocation().getX()));
+                if (result && DnDConstants.ACTION_MOVE == dropAction) {
+                	/* actually do the cut later, if the paste operation for example throws an
+                	 * error. */
+                	trans = mMindMapController.cut(selecteds);
+                } else {
+                	// an error occured. we don't execute the cut anymore.
+                }
             }
         } catch (Exception e) {
             System.err.println("Drop exception:" + e);

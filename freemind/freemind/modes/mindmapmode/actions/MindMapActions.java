@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/* $Id: MindMapActions.java,v 1.1.2.3.2.7 2008-04-11 16:58:32 christianfoltin Exp $ */
+/* $Id: MindMapActions.java,v 1.1.2.3.2.8 2008-05-04 15:05:13 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
@@ -86,6 +86,10 @@ public interface MindMapActions {
 
 	public void deleteNode(MindMapNode selectedNode);
 	public Transferable cut();
+	/**
+	 * @param nodeList a list of MindMapNode elements
+	 * @return the result of the cut operation. 
+	 */
 	public Transferable cut(List nodeList);
 	/**
 	 * moves selected and selecteds (if they are child of the same parent and adjacent)
@@ -154,8 +158,9 @@ public interface MindMapActions {
 	public void joinNodes(MindMapNode selectedNode, List selectedNodes);
 
 	public void paste(Transferable t, MindMapNode parent);
-	/** @param isLeft determines, whether or not the node is placed on the left or right. */
-	public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft);
+	/** @param isLeft determines, whether or not the node is placed on the left or right. 
+	 * @return true, if successfully.*/
+	public boolean paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft);
 	public void paste(MindMapNode node, MindMapNode parent);
 
     //hooks, fc 28.2.2004:

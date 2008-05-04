@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: ActionFactory.java,v 1.1.2.2.2.6 2007-08-30 07:01:31 dpolivaev Exp $ */
+/* $Id: ActionFactory.java,v 1.1.2.2.2.7 2008-05-04 15:05:13 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -96,10 +96,12 @@ public class ActionFactory {
 	}
 
 	/**
+	 *  @return the success of the action. If an exception arises, the method returns false. 
 	 */
-	public void executeAction(ActionPair pair) {
+	public boolean executeAction(ActionPair pair) {
 	    if(pair == null)
-	        return;
+	        return false;
+	    boolean returnValue = true;
 	    ActionPair filteredPair = pair;
 		// first filter:
 		for (Iterator i = registeredFilters.iterator(); i.hasNext();) {
@@ -114,6 +116,7 @@ public class ActionFactory {
 				undoActionHandler.executeAction(filteredPair);
 			} catch (Exception e) {
 				freemind.main.Resources.getInstance().logException(e);
+				returnValue = false;
 			}
 		}
 		
@@ -124,12 +127,11 @@ public class ActionFactory {
                 handler.executeAction(filteredPair.getDoAction());
             } catch (Exception e) {
                 freemind.main.Resources.getInstance().logException(e);
+                returnValue = false;
+                // to break or not to break. this is the question here...
             }
 		}
-//		for (Iterator i = registeredHandler.iterator(); i.hasNext();) {
-//			ActionHandler handler = (ActionHandler) i.next();
-			// the executer must not disturb the whole picture if they throw something:
-//		}
+		return returnValue;
 	}
 
 	/**

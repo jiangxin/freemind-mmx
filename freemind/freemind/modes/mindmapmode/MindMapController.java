@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.66 2008-04-14 19:22:03 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.67 2008-05-04 15:05:13 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1444,12 +1444,13 @@ freemind.main.Resources.getInstance().logException(					e1);
     public void paste(Transferable t, MindMapNode parent) {
         paste(t, /*target=*/parent, /*asSibling=*/ false, parent.isNewChildLeft()); }
 
-    /** @param isLeft determines, whether or not the node is placed on the left or right. **/
-    public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
+    /** @param isLeft determines, whether or not the node is placed on the left or right. 
+     * @return true, if successfully. **/
+    public boolean paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
     	if (! asSibling && target.isFolded() && Resources.getInstance().getBoolProperty(RESOURCE_UNFOLD_ON_PASTE)) {
 			setFolded(target, false);
 		   }
-        paste.paste(t, target, asSibling, isLeft);
+        return paste.paste(t, target, asSibling, isLeft);
     }
 
     public void paste(MindMapNode node, MindMapNode parent) {

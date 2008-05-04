@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.15 2007-09-10 17:46:22 dpolivaev Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.16 2008-05-04 15:05:13 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -53,6 +53,7 @@ import freemind.controller.actions.generated.instance.TransferableContent;
 import freemind.controller.actions.generated.instance.TransferableFile;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.HtmlTools;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.MindMapNode;
@@ -129,17 +130,21 @@ public class PasteAction extends AbstractAction implements ActorXml{
 	}
 
 
-	public void paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
-		try {
-			pasteAction = getPasteNodeAction(t,new NodeCoordinate(target,asSibling, isLeft));
-			undoAction = new CompoundAction();
-			// Undo-action
-			pMindMapController.getActionFactory().startTransaction(text);
-			pMindMapController.getActionFactory().executeAction(new ActionPair(pasteAction, undoAction));
-			pMindMapController.getActionFactory().endTransaction(text);
-		} catch (Exception e) {
-            freemind.main.Resources.getInstance().logException(e);
-        }
+	/**
+	 * @param t the content
+	 * @param target where to add the content
+	 * @param asSibling if true, the content is added beside the target, otherwise as new children
+	 * @param isLeft if something is pasted as a sibling to root, it must be decided on which side of root
+	 * @return true, if successfully executed.
+	 */
+	public boolean paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
+		pasteAction = getPasteNodeAction(t,new NodeCoordinate(target,asSibling, isLeft));
+		undoAction = new CompoundAction();
+		// Undo-action
+		pMindMapController.getActionFactory().startTransaction(text);
+		boolean result = pMindMapController.getActionFactory().executeAction(new ActionPair(pasteAction, undoAction));
+		pMindMapController.getActionFactory().endTransaction(text);
+		return result;
 	}
 
 	private void addMindMapNodesFlavor() {
@@ -439,13 +444,16 @@ public class PasteAction extends AbstractAction implements ActorXml{
 	   	
 	   	// add information about the new nodes ID:
 	   	addMindMapNodesFlavor();
-	   }
-	   catch (Exception e) { freemind.main.Resources.getInstance().logException(e); }
+	   } catch (UnsupportedFlavorException e) {
+			Resources.getInstance().logException(e);
+		} catch (IOException e) {
+			Resources.getInstance().logException(e);
+		}
 	   finally{
 		   undoAction = null;
 		   pasteAction = null;
+		   pMindMapController.getFrame().setWaitingCursor(false);
 	   }
-	   pMindMapController.getFrame().setWaitingCursor(false);
 	}
 
     /**

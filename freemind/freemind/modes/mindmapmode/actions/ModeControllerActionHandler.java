@@ -19,7 +19,7 @@
  *
  * Created on 01.05.2004
  */
-/* $Id: ModeControllerActionHandler.java,v 1.1.2.1.2.4 2007-08-12 08:06:43 dpolivaev Exp $ */
+/* $Id: ModeControllerActionHandler.java,v 1.1.2.1.2.5 2008-05-04 15:05:13 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -44,11 +44,8 @@ public class ModeControllerActionHandler implements ActionHandler {
 	 */
 	public void executeAction(XmlAction action) {
 		ActorXml actor = factory.getActor(action);
-		try {
-            actor.act(action);
-        } catch (Exception e) {
-            freemind.main.Resources.getInstance().logException(e);
-        }
+		// exception handling is done by the caller.
+        actor.act(action);
 	}
 
 	/* (non-Javadoc)

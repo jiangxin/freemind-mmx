@@ -19,10 +19,9 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.34 2008-04-26 21:21:25 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.35 2008-05-04 15:05:13 christianfoltin Exp $*/
 package freemind.main;
 
-import java.awt.SystemColor;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,15 +29,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Locale;
-import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Logger;
-
-import javax.swing.UIManager;
 
 
 /**
@@ -85,7 +85,24 @@ public class FreeMindCommon {
                 freemind.main.Resources.getInstance().logException(             ex);
                 logger.severe("Error loading Resources");
             }
+//            printResourceTable();
         }
+
+        /** This is useful, if you want to see all resource strings in a HTML table.
+         * Just rename the log file to log.0.html, open in a browser and set the 
+         * coding to UTF-8 */
+		private void printResourceTable() {
+			StringBuffer b = new StringBuffer("<html><body><table>");
+            Set keySet = languageResources.keySet();
+            Vector keys = new Vector(keySet);
+            Collections.sort(keys);
+			for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
+				String key = (String) iterator.next();
+				b.append("<tr><td>" + key + "</td><td>" + languageResources.getString(key)+"</td></tr>\n");
+			}
+            b.append("</table></body></html>");
+            logger.info(b.toString());
+		}
 
         /**
          * @throws IOException

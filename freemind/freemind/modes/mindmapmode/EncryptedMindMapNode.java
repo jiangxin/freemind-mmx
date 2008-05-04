@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.12 2008-05-01 12:41:43 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.13 2008-05-04 15:05:13 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -92,23 +92,28 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
             return false;
         }
         if (!isDecrypted) {
-            String childXml = decryptXml(encryptedContent, password);
-            String[] childs = childXml.split(ModeController.NODESEPARATOR);
-            // and now? paste it:
-            for (int i = childs.length-1; i >=0; i--) {
-                String string = childs[i];
-                // if the encrypted node is empty, we skip the insert.
-                if(string.length() == 0)
-                	 continue;
-                //FIXME: This code smells:
-                ((MindMapController) getFrame().getController()
-                        .getModeController()).paste.pasteXMLWithoutRedisplay(
-                        string, this, false, false, false);
-
-            }
-            isDecrypted = true;
+        	setAccessible(true);
+        	try {
+	            String childXml = decryptXml(encryptedContent, password);
+	            String[] childs = childXml.split(ModeController.NODESEPARATOR);
+	            // and now? paste it:
+	            for (int i = childs.length-1; i >=0; i--) {
+	                String string = childs[i];
+	                // if the encrypted node is empty, we skip the insert.
+	                if(string.length() == 0)
+	                	 continue;
+	                //FIXME: This code smells:
+	                ((MindMapController) getFrame().getController()
+	                        .getModeController()).paste.pasteXMLWithoutRedisplay(
+	                        string, this, false, false, false);
+	
+	            }
+	            isDecrypted = true;
+        	} catch(Exception e){
+        		freemind.main.Resources.getInstance().logException(e);
+        		setAccessible(false);
+        	}
         }
-        setAccessible(true);
         setFolded(false);
         getMap().getRegistry().registrySubtree(this, false);
         return true;
@@ -337,14 +342,14 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         return isAccessible;
     }
 
-//    public void insert(MutableTreeNode pChild, int pIndex) {
-//    	if(isAccessible()) {
-//    		super.insert(pChild, pIndex);
-//    	} else {
-//    		throw new IllegalArgumentException("Trying to insert nodes into ciphered node.");
-//    	}
-//    	
-//	}
+    public void insert(MutableTreeNode pChild, int pIndex) {
+    	if(isAccessible()) {
+    		super.insert(pChild, pIndex);
+    	} else {
+    		throw new IllegalArgumentException("Trying to insert nodes into a ciphered node.");
+    	}
+    	
+	}
 
 
 }
