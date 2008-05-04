@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.35 2008-05-04 15:05:13 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.36 2008-05-04 16:22:57 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -88,21 +88,21 @@ public class FreeMindCommon {
 //            printResourceTable();
         }
 
-        /** This is useful, if you want to see all resource strings in a HTML table.
-         * Just rename the log file to log.0.html, open in a browser and set the 
-         * coding to UTF-8 */
-		private void printResourceTable() {
-			StringBuffer b = new StringBuffer("<html><body><table>");
-            Set keySet = languageResources.keySet();
-            Vector keys = new Vector(keySet);
-            Collections.sort(keys);
-			for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
-				String key = (String) iterator.next();
-				b.append("<tr><td>" + key + "</td><td>" + languageResources.getString(key)+"</td></tr>\n");
-			}
-            b.append("</table></body></html>");
-            logger.info(b.toString());
-		}
+//        /** This is useful, if you want to see all resource strings in a HTML table.
+//         * Just rename the log file to log.0.html, open in a browser and set the 
+//         * coding to UTF-8 */
+//		private void printResourceTable() {
+//			StringBuffer b = new StringBuffer("<html><body><table>");
+//            Set keySet = languageResources.keySet();
+//            Vector keys = new Vector(keySet);
+//            Collections.sort(keys);
+//			for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
+//				String key = (String) iterator.next();
+//				b.append("<tr><td>" + key + "</td><td>" + languageResources.getString(key)+"</td></tr>\n");
+//			}
+//            b.append("</table></body></html>");
+//            logger.info(b.toString());
+//		}
 
         /**
          * @throws IOException
