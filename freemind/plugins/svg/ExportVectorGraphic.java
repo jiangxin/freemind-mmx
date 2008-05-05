@@ -19,7 +19,7 @@
  *
  * Created on 10.11.2004
  */
-/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.8 2007-08-03 17:24:04 dpolivaev Exp $ */
+/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.9 2008-05-05 18:56:51 christianfoltin Exp $ */
 package plugins.svg;
 
 //import java.awt.BasicStroke;
@@ -72,7 +72,9 @@ public class ExportVectorGraphic extends ExportHook{
 		ctx.setPrecision(12);
 
 		SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);
-
+		// TODO: Test, if this prevents the "null incompatible with text-specific antialiasing enable key" error
+//		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
+//		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
 		view.preparePrinting();
 		Rectangle innerBounds = view.getInnerBounds();
 		g2d.setSVGCanvasSize(new Dimension(innerBounds.width, innerBounds.height));
