@@ -426,7 +426,7 @@
 	<!-- =================================
           target: runWithoutPreferences
          ================================= -->
-    <target name="runWithoutPreferences">
+    <target name="runWithoutPreferences" description="Starts the application moving the current preferences temporarily away.">
     	<rename dest="${user.home}/.freemind_bak" src="${user.home}/.freemind"/>
     	<antcall target="run"></antcall>
     	<delete dir="${user.home}/.freemind" failonerror="false"></delete>
@@ -436,7 +436,7 @@
 
 	<property name="log_file" location="${user.home}/.freemind/log.0"/>
 
-	<target name="runmac" depends="dist">
+	<target name="runmac" depends="dist" description="Starts the application under Mac (using the open method).">
 		<move file="${log_file}" tofile="${log_file}.bak"></move>
 		<exec dir="." executable="open" os="Mac OS X">
 			<arg path="${dist_macos_app}"/>
