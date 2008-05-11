@@ -344,7 +344,7 @@ public class AssignAttributeDialog extends JDialog implements AttributesListener
         addBtn.setMaximumSize(maxButtonDimension);
         
         JButton deleteAttributeBtn = new JButton();
-        Tools.setLabelAndMnemonic(addBtn, Resources.getInstance().getResourceString("attribute_delete"));
+        Tools.setLabelAndMnemonic(deleteAttributeBtn, Resources.getInstance().getResourceString("attribute_delete"));
         deleteAttributeBtn.addActionListener(new DeleteAttributeAction());
         deleteAttributeBtn.setMaximumSize(maxButtonDimension);
         
