@@ -20,10 +20,14 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: NodeStyleAction.java,v 1.1.2.2.2.6 2007-08-17 20:41:58 christianfoltin Exp $ */
+/* $Id: NodeStyleAction.java,v 1.1.2.2.2.7 2008-05-13 18:58:10 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
+import javax.swing.Action;
+import javax.swing.JMenuItem;
+
+import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.actions.generated.instance.NodeStyleFormatAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
@@ -32,7 +36,7 @@ import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
-public class NodeStyleAction extends NodeGeneralAction implements NodeActorXml {
+public class NodeStyleAction extends NodeGeneralAction implements NodeActorXml, MenuItemSelectedListener {
     private final String mStyle;
 
 
@@ -42,9 +46,16 @@ public class NodeStyleAction extends NodeGeneralAction implements NodeActorXml {
         addActor(this);
     }
 
-    public ActionPair apply(MindMap model, MindMapNode selected)
+    public ActionPair apply(MindMap model, MindMapNode node)
             {
-        return getActionPair(selected, mStyle);
+    	String newStyle = null;
+    	MindMapNode selected = modeController.getSelected();
+    	if(selected.hasStyle() && Tools.safeEquals(mStyle, selected.getStyle())) {
+    		newStyle = null;
+    	} else {
+    		newStyle = mStyle;
+    	}
+		return getActionPair(node, newStyle);
     }
 
     public Class getDoActionClass() {
@@ -88,4 +99,11 @@ public class NodeStyleAction extends NodeGeneralAction implements NodeActorXml {
                 }
             }
         }
+
+		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+			MindMapNode selected = modeController.getSelected();
+			if(!selected.hasStyle())
+				return false;
+			return Tools.safeEquals(mStyle,selected.getStyle());
+		}
 }

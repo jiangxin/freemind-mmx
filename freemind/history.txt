@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 0.9.0 Beta18
+===============================
+* Fixed: bubble / fork style not correctly cascading * http://sf.net/tracker/index.php?func=detail&aid=1822099&group_id=7118&atid=107118
+
+===============================
 Changes made in FreeMind 0.9.0 Beta17
 ===============================
 * Scripts can be installed as menu functions (look into ScriptingEngine.xml).
