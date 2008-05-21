@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.112 2008-04-19 22:29:23 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.113 2008-05-21 19:15:21 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -124,11 +124,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private Logger logger = null;
 	
-	protected static final VersionInformation VERSION = new VersionInformation("0.9.0 Beta 17");
+	protected static final VersionInformation VERSION = new VersionInformation("0.9.0 Beta 18");
 	
-//	public static final String VERSION = "0.9.0 Beta 17";
-
-	public static final String XML_VERSION = "0.9.0_Beta_8";
+	public static final String XML_VERSION = "0.9.0";
 
 	public static final String RESOURCES_REMIND_USE_RICH_TEXT_IN_NEW_LONG_NODES = "remind_use_rich_text_in_new_long_nodes";
 

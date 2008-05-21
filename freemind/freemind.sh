@@ -13,6 +13,7 @@
 # 2008-02-02, improve Java recognition, add lsb_release, fix -x which being empty
 #             add -Dgnu.java.awt.peer.gtk.Graphics=Graphics2D for non-Sun JREs
 # 2008-02-03, add debug values script and exit
+# 2008-05-20 (fc): -Xmx256M added
 
 # we only want to test the script, not FreeMind itself
 if ( echo "${DEBUG}" | grep -qe "script" )
@@ -203,9 +204,9 @@ if [ "${JAVA_TYPE}" = "sun" ]
 then
 	_debug "Calling: '${JAVACMD} -Dfreemind.base.dir=${freedir} -cp ${CLASSPATH} freemind.main.FreeMindStarter  $@'."
 	( echo "${DEBUG}" | grep -qe "exit" ) && exit 0 # do not start FreeMind
-	"${JAVACMD}" -Dfreemind.base.dir="${freedir}" -cp "${CLASSPATH}" freemind.main.FreeMindStarter "$@"
+	"${JAVACMD}" -Xmx256M -Dfreemind.base.dir="${freedir}" -cp "${CLASSPATH}" freemind.main.FreeMindStarter "$@"
 else # non-Sun environments don't work currently.
 	_debug "Calling: '${JAVACMD} -Dgnu.java.awt.peer.gtk.Graphics=Graphics2D -Dfreemind.base.dir=${freedir} -cp ${CLASSPATH} freemind.main.FreeMindStarter  $@'."
 	( echo "${DEBUG}" | grep -qe "exit" ) && exit 0 # do not start FreeMind
-	"${JAVACMD}" -Dgnu.java.awt.peer.gtk.Graphics=Graphics2D -Dfreemind.base.dir="${freedir}" -cp "${CLASSPATH}" freemind.main.FreeMindStarter "$@"
+	"${JAVACMD}" -Xmx256M -Dgnu.java.awt.peer.gtk.Graphics=Graphics2D -Dfreemind.base.dir="${freedir}" -cp "${CLASSPATH}" freemind.main.FreeMindStarter "$@"
 fi

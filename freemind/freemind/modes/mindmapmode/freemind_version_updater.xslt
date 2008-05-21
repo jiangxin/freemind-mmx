@@ -62,6 +62,9 @@
 			--><xsl:when test="@version='0.9.0_Beta_8'"><!--
 			-->0900080<!-- 
 			--></xsl:when><!--
+			--><xsl:when test="@version='0.9.0'"><!--
+			-->0901000<!-- 
+			--></xsl:when><!--
 			--><xsl:otherwise><!--
 			-->-1<!--
 			--></xsl:otherwise><!--
@@ -97,6 +100,11 @@
 		<xsl:param name="version">-1</xsl:param>
   		<xsl:copy>
 			<xsl:choose>
+				<xsl:when test="$version &lt; 0901000 and @LINK">
+					<xsl:attribute name="LINK">
+						<!--replace space by %20 --><xsl:value-of select="@LINK"/>
+					</xsl:attribute>
+				</xsl:when>
 				<!-- move the attributes CREATED and MODIFIED into the node tag as of version 0.8.0RC3-->
 				<xsl:when test="$version &lt; 0800300 and hook[@NAME='accessories/plugins/CreationModificationPlugin.properties']">
 					<xsl:attribute name="CREATED">

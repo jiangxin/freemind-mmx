@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.14 2008-04-18 21:18:26 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.15 2008-05-21 19:15:24 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -177,6 +177,7 @@ public class ScriptEditorPanel extends JDialog {
 
 		public void actionPerformed(ActionEvent arg0) {
 			storeCurrent();
+			mLastSelected = null;
 			int scriptIndex = mScriptModel.addNewScript();
 			updateFields();
 			select(scriptIndex);

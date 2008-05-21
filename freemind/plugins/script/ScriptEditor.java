@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditor.java,v 1.1.2.10 2008-02-15 21:56:05 christianfoltin Exp $*/
+/*$Id: ScriptEditor.java,v 1.1.2.11 2008-05-21 19:15:23 christianfoltin Exp $*/
 package plugins.script;
 
 import java.io.PrintStream;
@@ -151,6 +151,7 @@ public class ScriptEditor extends MindMapHookAdapter {
 				}
 			} while(found); 
 			mScripts.add(new AttributeHolder(new Attribute(scriptName+scriptNameSuffix, ""), attributeIndex));
+			isDirty = true;
 			return index;
 		}
 	}
