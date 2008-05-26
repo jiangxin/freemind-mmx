@@ -67,6 +67,8 @@ public class MindMapNodeDropListener implements DropTargetListener {
         MindMapNode node = ((MainView) event.getDropTargetContext()
                 .getComponent()).getNodeView().getModel();
         MindMapNode selected = mMindMapController.getSelected();
+        if(!node.isWriteable())
+        	return false;
         return ((node != selected) && !node.isDescendantOf(selected));
         // I think (node!=selected) is a hack for windows
     }
@@ -183,6 +185,14 @@ public class MindMapNodeDropListener implements DropTargetListener {
                     }
                 }
             } else {
+            	if(!targetNode.isWriteable()){
+            		String message = mMindMapController
+							.getText("node_is_write_protected");
+					JOptionPane.showMessageDialog(mMindMapController.getFrame()
+							.getContentPane(), message, "Freemind",
+							JOptionPane.ERROR_MESSAGE);
+            		return;
+            	}
                 Transferable trans = null;
                 // if move, verify, that the target is not a son of the sources.
                 List selecteds = mMindMapController.getSelecteds();
@@ -201,20 +211,19 @@ public class MindMapNodeDropListener implements DropTargetListener {
                         actualNode = (actualNode.isRoot()) ? null : actualNode
                                 .getParentNode();
                     } while (actualNode != null);
+                    trans = mMindMapController.cut();
+                } else {
+                	trans = mMindMapController.copy();
                 }
-                trans = mMindMapController.copy();
 
                 mMindMapController.getView().selectAsTheOnlyOneSelected(
                         targetNodeView);
                 boolean result = mMindMapController.paste(trans, targetNode, mainView.dropAsSibling(dtde.getLocation().getX()),
                         mainView.dropPosition(
                                 dtde.getLocation().getX()));
-                if (result && DnDConstants.ACTION_MOVE == dropAction) {
-                	/* actually do the cut later, if the paste operation for example throws an
-                	 * error. */
-                	trans = mMindMapController.cut(selecteds);
-                } else {
-                	// an error occured. we don't execute the cut anymore.
+                if (!result && DnDConstants.ACTION_MOVE == dropAction) {
+                	// an error occured. how to react?
+                	
                 }
             }
         } catch (Exception e) {

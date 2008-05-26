@@ -428,7 +428,11 @@
          ================================= -->
     <target name="runWithoutPreferences" description="Starts the application moving the current preferences temporarily away.">
     	<rename dest="${user.home}/.freemind_bak" src="${user.home}/.freemind"/>
-    	<antcall target="run"></antcall>
+    	<mkdir dir="${user.home}/.freemind"/>
+     	<antcall target="run"></antcall>
+    	<exec dir="${user.home}/.freemind" executable="cat" os="Linux" failifexecutionfails="no" failonerror="false">
+			<arg value="auto.properties"/>
+    	</exec>
     	<delete dir="${user.home}/.freemind" failonerror="false"></delete>
         <rename src="${user.home}/.freemind_bak" dest="${user.home}/.freemind" replace="yes"></rename>
     </target>

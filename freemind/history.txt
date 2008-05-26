@@ -3,6 +3,10 @@ Changes made in FreeMind 0.9.0 Beta18
 ===============================
 * Fixed: bubble / fork style not correctly cascading * http://sf.net/tracker/index.php?func=detail&aid=1822099&group_id=7118&atid=107118
 * Fixed: java.lang.OutOfMemoryError: Java heap space * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1965270&group_id=7118
+* new translations. Thanks to the authors.
+* bug fixes in the "new script" action.
+* Bug fix: Script editor divider locations start with some reasonable values.
+* Fixed URL handling for older mm files
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta17

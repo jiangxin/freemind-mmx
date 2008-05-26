@@ -100,11 +100,6 @@
 		<xsl:param name="version">-1</xsl:param>
   		<xsl:copy>
 			<xsl:choose>
-				<xsl:when test="$version &lt; 0901000 and @LINK">
-					<xsl:attribute name="LINK">
-						<!--replace space by %20 --><xsl:value-of select="@LINK"/>
-					</xsl:attribute>
-				</xsl:when>
 				<!-- move the attributes CREATED and MODIFIED into the node tag as of version 0.8.0RC3-->
 				<xsl:when test="$version &lt; 0800300 and hook[@NAME='accessories/plugins/CreationModificationPlugin.properties']">
 					<xsl:attribute name="CREATED">
@@ -158,4 +153,52 @@
 			</xsl:choose>
 		</xsl:copy>
 	</xsl:template>
+	
+	<xsl:template match="@LINK">
+		<xsl:param name="version">-1</xsl:param>
+		<xsl:choose>
+			<xsl:when test="$version &lt; 0901000">
+				<!--replace space by %20 -->
+				<xsl:attribute name="LINK">
+					<xsl:call-template name="str-replace">
+						<xsl:with-param name="input" select="."/>
+						<xsl:with-param name="search-string" select="' '"/>
+						<xsl:with-param name="replace-string" select="'%20'"/>
+					</xsl:call-template>
+				</xsl:attribute>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy></xsl:copy>		
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="str-replace">
+		<xsl:param name="input"/>
+		<xsl:param name="search-string"/>
+		<xsl:param name="replace-string"/>
+		<xsl:choose>
+			<!-- See if the input contains the search string -->
+			<xsl:when test="contains($input,$search-string)">
+			<!-- If so, then concatenate the substring before the search
+			string to the replacement string and to the result of
+			recursively applying this template to the remaining sub-string.
+			-->
+				<xsl:value-of select="substring-before($input,$search-string)"/>
+				<xsl:value-of select="$replace-string"/>
+				<xsl:call-template name="str-replace">
+					<xsl:with-param name="input" select="substring-after($input,$search-string)"/>
+					<xsl:with-param name="search-string" select="$search-string"/>
+					<xsl:with-param name="replace-string" select="$replace-string"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- There are no more occurences of the search string so 
+				just return the current input string -->
+				<xsl:value-of select="$input"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	
 </xsl:stylesheet>

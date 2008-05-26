@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.19 2008-03-22 07:21:57 christianfoltin Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.20 2008-05-26 19:25:07 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -329,4 +329,6 @@ public interface MindMapNode extends MutableTreeNode {
     
     EventListenerList getListeners();
     boolean isNewChildLeft();
+    /** Some nodes can't get new children or have other changes (encrypted nodes for example).*/
+	boolean isWriteable();
 }

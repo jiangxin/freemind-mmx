@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.10 2007-12-02 16:19:44 dpolivaev Exp $*/
+/*$Id: MindMapNodeModel.java,v 1.21.14.4.4.11 2008-05-26 19:25:09 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -223,5 +223,9 @@ public class MindMapNodeModel extends NodeAdapter {
             }
         }
     }
+
+	public boolean isWriteable() {
+		return true;
+	}
 
 }

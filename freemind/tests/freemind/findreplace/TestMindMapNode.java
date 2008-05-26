@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: TestMindMapNode.java,v 1.1.2.16 2008-01-30 21:39:54 dpolivaev Exp $*/
+/*$Id: TestMindMapNode.java,v 1.1.2.17 2008-05-26 19:25:09 christianfoltin Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -460,6 +460,10 @@ final class TestMindMapNode implements MindMapNode {
 	public String getAttribute(String key) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public boolean isWriteable() {
+		return true;
 	}
 
 }

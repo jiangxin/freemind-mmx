@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileNodeModel.java,v 1.11.18.1.4.3 2007-08-05 16:56:56 dpolivaev Exp $*/
+/*$Id: FileNodeModel.java,v 1.11.18.1.4.4 2008-05-26 19:25:08 christianfoltin Exp $*/
 
 package freemind.modes.filemode;
 
@@ -160,5 +160,9 @@ public class FileNodeModel extends NodeAdapter {
     public String getLink() {
 	return file.toString();
     }
+
+	public boolean isWriteable() {
+		return false;
+	}
 
 }

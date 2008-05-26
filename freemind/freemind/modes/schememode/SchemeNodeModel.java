@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: SchemeNodeModel.java,v 1.8.32.1 2006-04-05 21:26:31 dpolivaev Exp $*/
+/*$Id: SchemeNodeModel.java,v 1.8.32.2 2008-05-26 19:25:09 christianfoltin Exp $*/
 
 package freemind.modes.schememode;
 
@@ -103,4 +103,8 @@ public class SchemeNodeModel extends NodeAdapter {
 	}
 	return code;
     }
+
+	public boolean isWriteable() {
+		return true;
+	}
 }

@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.13 2008-05-04 15:05:13 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.14 2008-05-26 19:25:08 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -91,8 +91,8 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         if (!checkPassword(givenPassword)) {
             return false;
         }
+        setAccessible(true);
         if (!isDecrypted) {
-        	setAccessible(true);
         	try {
 	            String childXml = decryptXml(encryptedContent, password);
 	            String[] childs = childXml.split(ModeController.NODESEPARATOR);
@@ -103,8 +103,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 	                if(string.length() == 0)
 	                	 continue;
 	                //FIXME: This code smells:
-	                ((MindMapController) getFrame().getController()
-	                        .getModeController()).paste.pasteXMLWithoutRedisplay(
+	                ((MindMapController) getModeController()).paste.pasteXMLWithoutRedisplay(
 	                        string, this, false, false, false);
 	
 	            }
@@ -336,8 +335,9 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     }
 
     /**
-     * @return Returns the isVisible.
-     */
+	 * @return Returns the isAccessible (ie. if the node is decrypted
+	 *         (isAccessible==true) or not).
+	 */
     public boolean isAccessible() {
         return isAccessible;
     }
@@ -350,6 +350,11 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     	}
     	
 	}
+
+	public boolean isWriteable() {
+		return isAccessible() && super.isWriteable();
+	}
+
 
 
 }

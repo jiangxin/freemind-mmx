@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BrowseNodeModel.java,v 1.7.18.1.14.1 2006-04-05 21:26:26 dpolivaev Exp $*/
+/*$Id: BrowseNodeModel.java,v 1.7.18.1.14.2 2008-05-26 19:25:07 christianfoltin Exp $*/
 
 package freemind.modes.browsemode;
 
@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 
 /**
@@ -56,4 +55,8 @@ public class BrowseNodeModel extends NodeAdapter {
     public XMLElement save() {
 	return null;
     }
+
+	public boolean isWriteable() {
+		return false;
+	}
 }

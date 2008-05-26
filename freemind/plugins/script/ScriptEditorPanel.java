@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.15 2008-05-21 19:15:24 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.16 2008-05-26 19:25:09 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -361,6 +361,10 @@ public class ScriptEditorPanel extends JDialog {
 		if (storage != null) {
 			mCentralUpperPanel.setDividerLocation(storage.getLeftRatio());
 			mCentralPanel.setDividerLocation(storage.getTopRatio());
+		} else {
+			// bug fix: for new users, this is set to some reasonable values.
+			mCentralUpperPanel.setDividerLocation(100);
+			mCentralPanel.setDividerLocation(240);
 		}
 
 	}
