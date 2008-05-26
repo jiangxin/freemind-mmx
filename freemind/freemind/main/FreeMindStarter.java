@@ -19,8 +19,15 @@
  *
  * Created on 06.07.2006
  */
-/*$Id: FreeMindStarter.java,v 1.1.2.1 2006-07-07 04:26:26 christianfoltin Exp $*/
+/*$Id: FreeMindStarter.java,v 1.1.2.2 2008-05-26 20:50:25 dpolivaev Exp $*/
 package freemind.main;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Locale;
+import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
@@ -50,6 +57,48 @@ public class FreeMindStarter {
 	public static void main(String[] args) {
 		// First check version of Java
 		FreeMindStarter.checkJavaVersion();
+		setDefaultLocale();
 		FreeMind.main(args);
 	}
+
+	/**
+	 */
+	private static void setDefaultLocale() {
+		String propsLoc = "freemind.properties";
+		URL defaultPropsURL = ClassLoader.getSystemResource(propsLoc);
+		Properties props = new Properties();
+		try {
+			InputStream in = null;
+			in = defaultPropsURL.openStream();
+			props.load(in);
+			in.close();
+			String freemindDirectory = System.getProperty("user.home") + File.separator +  props.getProperty("properties_folder");
+			File userPropertiesFolder = new File(freemindDirectory);
+			File autoPropertiesFile = new File(userPropertiesFolder, props.getProperty("autoproperties"));
+			in = new FileInputStream(autoPropertiesFile);
+			Properties auto = new Properties(props);
+			auto.load(in);
+			in.close();
+			String lang = auto.getProperty(FreeMindCommon.RESOURCE_LANGUAGE);
+			if(lang == null){
+				return;
+			}
+			Locale localeDef = null;
+			switch(lang.length()){
+			case 2:
+				localeDef = new Locale(lang);
+				break;
+			case 5:
+				localeDef =new Locale(lang.substring(0, 1), lang.substring(3, 4));
+				break;
+			default:
+				return;	
+			}
+			Locale.setDefault(localeDef);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.err
+					.println("Panic! Error while loading default properties.");
+		}
+		}
 }
