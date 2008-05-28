@@ -118,7 +118,11 @@ class ReducedAttributeTableModelDecorator extends AttributeTableModelDecoratorAd
 
     public void tableChanged(TableModelEvent e) {
 		super.tableChanged(e);
-		 rebuildTableModel();
+		 if(e.getType() !=  TableModelEvent.UPDATE || e.getColumn() != 0)
+		 {
+			 rebuildTableModel();
+			 fireTableDataChanged();
+		 }
 	}
 
 	/* (non-Javadoc)
