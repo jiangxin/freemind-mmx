@@ -19,7 +19,7 @@
  *
  * Created on 06.07.2006
  */
-/*$Id: FreeMindStarter.java,v 1.1.2.2 2008-05-26 20:50:25 dpolivaev Exp $*/
+/*$Id: FreeMindStarter.java,v 1.1.2.3 2008-05-28 19:39:15 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -40,7 +40,17 @@ public class FreeMindStarter {
 	public static final String JAVA_VERSION = System
 			.getProperty("java.version");
 
-	public static void checkJavaVersion() {
+	public static void main(String[] args) {
+		// First check version of Java
+		FreeMindStarter.checkJavaVersion();
+		Properties defaultPreferences = readDefaultPreferences();
+		createUserDirectory(defaultPreferences);
+		Properties userPreferences = readUsersPreferences(defaultPreferences);
+		setDefaultLocale(userPreferences);
+		FreeMind.main(args, defaultPreferences, userPreferences, getUserPreferencesFile(defaultPreferences));
+	}
+	
+	private static void checkJavaVersion() {
 		System.out.println("Checking Java Version...");
 		if (JAVA_VERSION.compareTo("1.4.0") < 0) {
 			String message = "Warning: FreeMind requires version Java 1.4.0 or higher (your version: "
@@ -54,16 +64,81 @@ public class FreeMindStarter {
 		}
 	}
 
-	public static void main(String[] args) {
-		// First check version of Java
-		FreeMindStarter.checkJavaVersion();
-		setDefaultLocale();
-		FreeMind.main(args);
+	
+	
+	
+	private static void createUserDirectory(Properties pDefaultProperties) {
+		File userPropertiesFolder = new File(getFreeMindDirectory(pDefaultProperties));
+		try {
+			// create user directory:
+			if (!userPropertiesFolder.exists()) {
+				userPropertiesFolder.mkdir();
+			}
+		} catch (Exception e) {
+			// exception is logged to console as we don't have a logger
+			e.printStackTrace();
+			System.err
+					.println("Cannot create folder for user properties and logging: '"
+							+ userPropertiesFolder.getAbsolutePath() + "'");
+
+		}
 	}
 
+
+	
 	/**
+	 * @param pProperties 
 	 */
-	private static void setDefaultLocale() {
+	private static void setDefaultLocale(Properties pProperties) {
+		String lang = pProperties.getProperty(FreeMindCommon.RESOURCE_LANGUAGE);
+		if(lang == null){
+			return;
+		}
+		Locale localeDef = null;
+		switch(lang.length()){
+		case 2:
+			localeDef = new Locale(lang);
+			break;
+		case 5:
+			localeDef =new Locale(lang.substring(0, 1), lang.substring(3, 4));
+			break;
+		default:
+			return;	
+		}
+		Locale.setDefault(localeDef);
+	}
+
+	private static Properties readUsersPreferences(Properties defaultPreferences) {
+		Properties auto = null;
+		auto = new Properties(defaultPreferences);
+		try {
+			InputStream in = null;
+			File autoPropertiesFile = getUserPreferencesFile(defaultPreferences);
+			in = new FileInputStream(autoPropertiesFile);
+			auto.load(in);
+			in.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.err
+			.println("Panic! Error while loading default properties.");
+		}
+		return auto;
+	}
+
+	private static File getUserPreferencesFile(Properties defaultPreferences) {
+		String freemindDirectory = getFreeMindDirectory(defaultPreferences);
+		File userPropertiesFolder = new File(freemindDirectory);
+		File autoPropertiesFile = new File(userPropertiesFolder, defaultPreferences.getProperty("autoproperties"));
+		return autoPropertiesFile;
+	}
+
+
+
+	private static String getFreeMindDirectory(Properties defaultPreferences) {
+		return System.getProperty("user.home") + File.separator +  defaultPreferences.getProperty("properties_folder");
+	}
+
+	private static Properties readDefaultPreferences() {
 		String propsLoc = "freemind.properties";
 		URL defaultPropsURL = ClassLoader.getSystemResource(propsLoc);
 		Properties props = new Properties();
@@ -72,33 +147,11 @@ public class FreeMindStarter {
 			in = defaultPropsURL.openStream();
 			props.load(in);
 			in.close();
-			String freemindDirectory = System.getProperty("user.home") + File.separator +  props.getProperty("properties_folder");
-			File userPropertiesFolder = new File(freemindDirectory);
-			File autoPropertiesFile = new File(userPropertiesFolder, props.getProperty("autoproperties"));
-			in = new FileInputStream(autoPropertiesFile);
-			Properties auto = new Properties(props);
-			auto.load(in);
-			in.close();
-			String lang = auto.getProperty(FreeMindCommon.RESOURCE_LANGUAGE);
-			if(lang == null){
-				return;
-			}
-			Locale localeDef = null;
-			switch(lang.length()){
-			case 2:
-				localeDef = new Locale(lang);
-				break;
-			case 5:
-				localeDef =new Locale(lang.substring(0, 1), lang.substring(3, 4));
-				break;
-			default:
-				return;	
-			}
-			Locale.setDefault(localeDef);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			System.err
-					.println("Panic! Error while loading default properties.");
+			.println("Panic! Error while loading default properties.");
 		}
-		}
+		return props;
+	}
 }

@@ -7,6 +7,8 @@ Changes made in FreeMind 0.9.0 Beta18
 * bug fixes in the "new script" action.
 * Bug fix: Script editor divider locations start with some reasonable values.
 * Fixed URL handling for older mm files
+* Fixed URL handling for file: type under Windows 2000.
+* Refactoring of FreeMindStarter such that preferences are only read once.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta17
