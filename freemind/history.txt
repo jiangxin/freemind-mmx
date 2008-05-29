@@ -8,7 +8,12 @@ Changes made in FreeMind 0.9.0 Beta18
 * Bug fix: Script editor divider locations start with some reasonable values.
 * Fixed URL handling for older mm files
 * Fixed URL handling for file: type under Windows 2000.
+* Fixed: button "Add" "assign attributes" dialog.
+* Fixed: displaying of accelerator keys in selected language.
+* Fixed: Mnenonics for yes/no/cancel buttons in "Save" Dialog.
+* Fixed: displaying of changes made using "Assign attributes" dialog if only selected attributes are visible.
 * Refactoring of FreeMindStarter such that preferences are only read once.
+* Fixed: confirmation dialogs were placed outside of the screen
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta17
