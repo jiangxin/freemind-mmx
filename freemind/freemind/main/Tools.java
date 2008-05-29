@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.30 2008-05-01 12:41:43 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.31 2008-05-29 20:16:21 dpolivaev Exp $ */
 
 package freemind.main;
 
@@ -839,8 +839,22 @@ public class Tools {
 		final Insets screenInsets = defaultToolkit.getScreenInsets(dialog.getGraphicsConfiguration());
 		final Dimension screenSize = defaultToolkit.getScreenSize();
 		
+		if(p.y > screenSize.height - screenInsets.bottom){
+			p.y = screenSize.height - screenInsets.bottom;			
+		}
+		else if (p.y + ch < screenInsets.top){
+			p.y = screenInsets.top - ch ;
+		}
+		
+		if(p.x > screenSize.width - screenInsets.right){
+			p.x = screenSize.width - screenInsets.right;			
+		}
+		else if (p.x + cw < screenInsets.left){
+			p.x = screenInsets.left - cw ;
+		}
+		
 		final int topHeight = p.y - screenInsets.top;
-		final int bottomHeight = screenSize.height -(p.y + ch)-screenInsets.top;
+		final int bottomHeight = screenSize.height - screenInsets.top -(p.y + ch);
 		
 		int dx = 0;
 		int dy = 0;
@@ -867,7 +881,7 @@ public class Tools {
 		}
 		else {
 			final int leftWidth = p.x - screenInsets.left;
-			final int rightWidth = screenSize.width -(p.x + cw)-screenInsets.right;
+			final int rightWidth = screenSize.width - screenInsets.right - (p.x + cw);
 			if(rightWidth >= leftWidth && rightWidth >= dw){
 				dx = p.x + cw;
 				dy = p.y + (ch- dh) / 2;
