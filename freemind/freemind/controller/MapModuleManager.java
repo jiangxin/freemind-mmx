@@ -19,10 +19,11 @@
  *
  * Created on 08.08.2004
  */
-/*$Id: MapModuleManager.java,v 1.1.4.4.2.13 2008-04-11 16:58:31 christianfoltin Exp $*/
+/*$Id: MapModuleManager.java,v 1.1.4.4.2.14 2008-05-31 10:55:04 dpolivaev Exp $*/
 
 package freemind.controller;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -249,15 +250,27 @@ public class MapModuleManager {
          * it does not consider the map+extension identifiers nor switches to the module.
          * @return null, if not found, the map+extension identifier otherwise.
          */
-        public String checkIfFileIsAlreadyOpened(URL urlToCheck) throws MalformedURLException{
-        		for (Iterator iter = mapModuleVector.iterator(); iter.hasNext();) {
-					MapModule module = (MapModule) iter.next();
-					if (module.getModel() != null && module.getModel().getURL() != null &&
-							urlToCheck.sameFile(module.getModel().getURL()))
-						return module.getDisplayName();
-				}
-        		return null;
-        }
+        public String checkIfFileIsAlreadyOpened(URL urlToCheck)
+			throws MalformedURLException {
+		for (Iterator iter = mapModuleVector.iterator(); iter.hasNext();) {
+			MapModule module = (MapModule) iter.next();
+			if (module.getModel() != null) {
+				final URL moduleUrl = module.getModel().getURL();
+				if (sameFile(urlToCheck, moduleUrl))
+					return module.getDisplayName();
+			}
+		}
+		return null;
+	}
+		private boolean sameFile(URL urlToCheck, final URL moduleUrl) {
+			if( moduleUrl == null){
+				return false; 
+			}
+			if(urlToCheck.getProtocol().equals("file") && moduleUrl.getProtocol().equals("file")){
+				return (new File (urlToCheck.getFile())).equals(new File (moduleUrl.getFile()));
+			}
+			return urlToCheck.sameFile(moduleUrl);
+		}
         
         
         public boolean changeToMapModule(String mapModuleDisplayName) {
