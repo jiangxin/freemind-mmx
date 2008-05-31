@@ -15,6 +15,8 @@ Changes made in FreeMind 0.9.0 Beta18
 * Refactoring of FreeMindStarter such that preferences are only read once.
 * Fixed: confirmation dialogs were placed outside of the screen
 * Fixed: position of files dragged to a node
+* Splash updated by Predrag via mail from 28.05.2008 (GPLv2+). Many thanks.
+* Icon taken form Predrag. FreeMind started recompiled. Thank you.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta17
