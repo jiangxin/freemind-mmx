@@ -567,6 +567,12 @@
 			    <include name="*"/>
 			</fileset>
 		</copy>
+    	<copy todir="${inst.windows.installer}">
+    		<fileset dir="../admin/installer/windows/">
+			    <include name="jre_installer.exe"/>
+			    <include name="jre/**"/>
+			</fileset>
+		</copy>
 <!--
     	<property name="freemind.version" value="0.8.1"/>
     	-->
