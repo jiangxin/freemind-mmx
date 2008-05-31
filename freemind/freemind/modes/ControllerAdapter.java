@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.46 2008-05-26 20:51:22 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.47 2008-05-31 08:16:33 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -1226,15 +1226,7 @@ public abstract class ControllerAdapter implements ModeController {
         getModel().insertNodeInto(newNode, parent, index);
     }
 
-    public void insertNodeInto(MindMapNode node, MindMapNode parent, boolean asSibling) {
-        if(asSibling){
-            insertNodeInto(node, parent.getParentNode());
-        }
-        else{
-            insertNodeInto(node, parent);
-        }
-    }
-    /* (non-Javadoc)
+     /* (non-Javadoc)
      * @see freemind.modes.MindMap#insertNodeInto(javax.swing.tree.MutableTreeNode, javax.swing.tree.MutableTreeNode)
      */
     public void insertNodeInto(MindMapNode newChild, MindMapNode parent) {

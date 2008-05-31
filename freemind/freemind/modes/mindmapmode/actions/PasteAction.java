@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.16 2008-05-04 15:05:13 christianfoltin Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.17 2008-05-31 08:16:33 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -228,7 +228,7 @@ public class PasteAction extends AbstractAction implements ActorXml{
                 MindMapNode node = pMindMapController.newNode(file.getName(), target.getMap());
                 node.setLeft(isLeft);
                 node.setLink(file.getAbsolutePath());
-                insertNodeInto(node, target, asSibling);
+                insertNodeInto((MindMapNodeModel) node, target, asSibling, isLeft, false);
                 addUndoAction(node);
             }
         }
@@ -467,30 +467,44 @@ public class PasteAction extends AbstractAction implements ActorXml{
                     new StringFlavorHandler() };
         return dataFlavorHandlerList;
     }
- 	public MindMapNodeModel pasteXMLWithoutRedisplay(String pasted, MindMapNode target, boolean asSibling, boolean changeSide, boolean isLeft)
-	   throws XMLParseException {
-	   // Call nodeStructureChanged(target) after this function.
-	   try {
-		   MindMapNodeModel node = (MindMapNodeModel) pMindMapController.createNodeTreeFromXml(new StringReader(pasted));
-		   MindMapNode parent;
-		   if (asSibling) {
-			   parent = target.getParentNode();
-		   }
-		   else {
-			   parent = target;
-		   }
-           if(changeSide) {
-        	   node.setParent(parent);
-               node.setLeft(isLeft);
-           }
-		  // now, the import is finished. We can inform others about the new nodes:
-		  if (asSibling) {
-			 insertNodeInto(node, parent, parent.getChildPosition(target)); }
-		  else {
-			 insertNodeInto(node, target); }
-		  pMindMapController.invokeHooksRecursively(node, pMindMapController.getModel());
-		  return node; }
-	   catch (IOException ee) { freemind.main.Resources.getInstance().logException(ee); return null; }}
+
+	public MindMapNodeModel pasteXMLWithoutRedisplay(String pasted,
+			MindMapNode target, boolean asSibling, boolean changeSide,
+			boolean isLeft) throws XMLParseException {
+		// Call nodeStructureChanged(target) after this function.
+		try {
+			MindMapNodeModel node = (MindMapNodeModel) pMindMapController
+					.createNodeTreeFromXml(new StringReader(pasted));
+			insertNodeInto(node, target, asSibling, isLeft, changeSide);
+			pMindMapController.invokeHooksRecursively(node, pMindMapController
+					.getModel());
+			return node;
+		}
+		catch (IOException ee) {
+			freemind.main.Resources.getInstance().logException(ee);
+			return null;
+		}
+	}
+
+	private void insertNodeInto(MindMapNodeModel node, MindMapNode target,
+			boolean asSibling, boolean isLeft, boolean changeSide) {
+		MindMapNode parent;
+ 		if (asSibling) {
+ 			parent = target.getParentNode();
+ 		}
+ 		else {
+ 			parent = target;
+ 		}
+ 		if(changeSide) {
+ 			node.setParent(parent);
+ 			node.setLeft(isLeft);
+ 		}
+ 		// now, the import is finished. We can inform others about the new nodes:
+ 		if (asSibling) {
+ 			insertNodeInto(node, parent, parent.getChildPosition(target)); }
+ 		else {
+ 			insertNodeInto(node, target); }
+ 	}
 
     static final Pattern nonLinkCharacter = Pattern.compile("[ \n()'\",;]");
 	private CompoundAction undoAction;
@@ -614,12 +628,6 @@ public class PasteAction extends AbstractAction implements ActorXml{
 		}
 	   return pastedNode;
 	}
-     /**
-     */
-    private void insertNodeInto(MindMapNode node, MindMapNode realParent, boolean asSibling) {
-    	pMindMapController.insertNodeInto(node, realParent, asSibling);
-    }
-
 	/**
 	 */
 	private void insertNodeInto(MindMapNodeModel node, MindMapNode parent, int i) {

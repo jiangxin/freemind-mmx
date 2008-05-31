@@ -14,6 +14,7 @@ Changes made in FreeMind 0.9.0 Beta18
 * Fixed: displaying of changes made using "Assign attributes" dialog if only selected attributes are visible.
 * Refactoring of FreeMindStarter such that preferences are only read once.
 * Fixed: confirmation dialogs were placed outside of the screen
+* Fixed: position of files dragged to a node
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta17
