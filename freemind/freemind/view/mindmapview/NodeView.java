@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.63 2008-06-08 14:00:41 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.64 2008-06-08 20:32:07 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -440,18 +440,18 @@ public class NodeView extends JComponent implements TreeModelListener{
       if (getModel().isRoot()) {
         return this; // I'm root
       }
-      NodeView sibling = getNextSibling();
+      NodeView sibling = getNextVisibleSibling();
       if (sibling == this) {
         return this; // at the end
       }
 //      if (sibling.getParentView() != this.getParentView()) {
 //        return sibling; // sibling on another page (has different parent)
 //      }
-      NodeView nextSibling = sibling.getNextSibling();
+      NodeView nextSibling = sibling.getNextVisibleSibling();
       while (nextSibling != sibling
               && sibling.getParentView() == nextSibling.getParentView()) {
         sibling = nextSibling;
-        nextSibling = nextSibling.getNextSibling();
+        nextSibling = nextSibling.getNextVisibleSibling();
       }
       return sibling; // last on the page
     }
@@ -460,23 +460,23 @@ public class NodeView extends JComponent implements TreeModelListener{
       if (getModel().isRoot()) {
         return this; // I'm root
       }
-      NodeView sibling = getPreviousSibling();
+      NodeView sibling = getPreviousVisibleSibling();
       if (sibling == this) {
         return this; // at the end
       }
 //      if (sibling.getParentView() != this.getParentView()) {
 //        return sibling; // sibling on another page (has different parent)
 //      }
-      NodeView previousSibling = sibling.getPreviousSibling();
+      NodeView previousSibling = sibling.getPreviousVisibleSibling();
       while (previousSibling != sibling
               && sibling.getParentView() == previousSibling.getParentView()) {
         sibling = previousSibling;
-        previousSibling = previousSibling.getPreviousSibling();
+        previousSibling = previousSibling.getPreviousVisibleSibling();
       }
       return sibling; // last on the page
     }
 
-    protected NodeView getNextSibling() {
+    protected NodeView getNextVisibleSibling() {
       NodeView sibling;
       NodeView lastSibling = this;
       // get next sibling even in higher levels
@@ -592,7 +592,7 @@ public class NodeView extends JComponent implements TreeModelListener{
         return right;
         }
 
-    protected NodeView getPreviousSibling() {
+    protected NodeView getPreviousVisibleSibling() {
       NodeView sibling;
       NodeView previousSibling = this;
 
@@ -1099,7 +1099,7 @@ public class NodeView extends JComponent implements TreeModelListener{
         return attributeView;
     }        
 
-    public NodeView getPreferredChild(boolean left) { // mind preferred child
+    public NodeView getPreferredVisibleChild(boolean left) { // mind preferred child
 		// :-) (PN)
 		if (preferredChild != null && (left == preferredChild.isLeft())
 				&& this.preferredChild.getParent() == this) {
@@ -1107,7 +1107,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 				return preferredChild;
 			}
 			else{
-				NodeView newSelected = preferredChild.getPreferredChild(left);
+				NodeView newSelected = preferredChild.getPreferredVisibleChild(left);
 				if(newSelected != null){
 					return newSelected;
 				}
@@ -1134,7 +1134,7 @@ public class NodeView extends JComponent implements TreeModelListener{
     				continue;
     			}
     			if(! childView.isContentVisible()){
-    				childView = childView.getPreferredChild(left);
+    				childView = childView.getPreferredVisibleChild(left);
     				if(childView == null){
     					continue;
     				}
@@ -1234,7 +1234,7 @@ public class NodeView extends JComponent implements TreeModelListener{
             }
 			(node).remove();            
         }
-        NodeView preferred = getPreferredChild(preferredChildIsLeft);
+        NodeView preferred = getPreferredVisibleChild(preferredChildIsLeft);
         if (preferred != null) { // after delete focus on a brother (PN)
             getMap().selectAsTheOnlyOneSelected(preferred);
         }

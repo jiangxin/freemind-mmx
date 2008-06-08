@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.51 2008-06-08 14:00:39 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.52 2008-06-08 20:32:06 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -444,10 +444,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     // Node Navigation
     //
 
-	private NodeView getLeft(NodeView oldSelected) {
+	private NodeView getVisibleLeft(NodeView oldSelected) {
 		NodeView newSelected = oldSelected;
 		if (oldSelected.getModel().isRoot()) {
-			newSelected = oldSelected.getPreferredChild(true);
+			newSelected = oldSelected.getPreferredVisibleChild(true);
 		}
 		else if (!oldSelected.isLeft()) {
 			newSelected = oldSelected.getVisibleParentView();
@@ -459,21 +459,18 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 				return oldSelected;
 			}
 
-			newSelected = oldSelected.getPreferredChild(true);
+			newSelected = oldSelected.getPreferredVisibleChild(true);
 			while (newSelected != null && !newSelected.isContentVisible()) {
-				newSelected = newSelected.getPreferredChild(true);
+				newSelected = newSelected.getPreferredVisibleChild(true);
 			}
-		}
-		if (newSelected == null) {
-			return oldSelected;
 		}
 		return newSelected;
 	}
 
-	private NodeView getRight(NodeView oldSelected) {
+	private NodeView getVisibleRight(NodeView oldSelected) {
 		NodeView newSelected = oldSelected;
 		if (oldSelected.getModel().isRoot()) {
-			newSelected = oldSelected.getPreferredChild(false);
+			newSelected = oldSelected.getPreferredVisibleChild(false);
 		}
 		else if (oldSelected.isLeft()) {
 			newSelected = oldSelected.getVisibleParentView();
@@ -485,38 +482,39 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 				return oldSelected;
 			}
 
-			newSelected = oldSelected.getPreferredChild(false);
+			newSelected = oldSelected.getPreferredVisibleChild(false);
 			while (newSelected != null && !newSelected.isContentVisible()) {
-				newSelected = newSelected.getPreferredChild(false);
+				newSelected = newSelected.getPreferredVisibleChild(false);
 			}
-		}
-		if (newSelected == null) {
-			return oldSelected;
 		}
 		return newSelected;
     }
 
-    private NodeView getNeighbour(int directionCode) {
+    private NodeView getVisibleNeighbour(int directionCode) {
         NodeView oldSelected = getSelected();
         NodeView newSelected = null;
 
         switch (directionCode) {
         case KeyEvent.VK_LEFT:
-        	newSelected = getLeft(oldSelected);
-        	setSiblingMaxLevel(newSelected.getModel().getNodeLevel());
-            break;
+        	newSelected = getVisibleLeft(oldSelected);
+        	if(newSelected != null){
+        		setSiblingMaxLevel(newSelected.getModel().getNodeLevel());
+        	}
+            return newSelected;
 
         case KeyEvent.VK_RIGHT:
-        	newSelected = getRight(oldSelected);
-        	setSiblingMaxLevel(newSelected.getModel().getNodeLevel());
-            break;
+        	newSelected = getVisibleRight(oldSelected);
+        	if(newSelected != null){
+        		setSiblingMaxLevel(newSelected.getModel().getNodeLevel());
+        	}
+            return newSelected;
 
         case KeyEvent.VK_UP:
-            newSelected = oldSelected.getPreviousSibling();
+            newSelected = oldSelected.getPreviousVisibleSibling();
             break;
 
         case KeyEvent.VK_DOWN:
-            newSelected = oldSelected.getNextSibling();
+            newSelected = oldSelected.getNextVisibleSibling();
             break;
 
         case KeyEvent.VK_PAGE_UP:
@@ -531,7 +529,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     }
 
     public void move(KeyEvent e) {
-        NodeView newSelected = getNeighbour(e.getKeyCode());
+        NodeView newSelected = getVisibleNeighbour(e.getKeyCode());
         if (newSelected != null) {
         	if(! (newSelected == getSelected())){
         		extendSelectionWithKeyMove(newSelected, e);
@@ -575,7 +573,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                         makeTheSelected(currentSelected);
                     if (currentSelectedY <= newY)
                         break;
-                    currentSelected = currentSelected.getPreviousSibling(); }
+                    currentSelected = currentSelected.getPreviousVisibleSibling(); }
                 return; }
 
             if (e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
@@ -587,7 +585,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                         makeTheSelected(currentSelected);
                     if (currentSelectedY >= newY)
                         break;
-                    currentSelected = currentSelected.getNextSibling(); }
+                    currentSelected = currentSelected.getNextVisibleSibling(); }
                 return; }
 
             boolean enlargingMove = (deltaY > 0) && (e.getKeyCode() == KeyEvent.VK_DOWN) ||
