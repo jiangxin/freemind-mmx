@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import freemind.controller.Controller;
 import freemind.controller.filter.FilterController;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 
@@ -73,7 +74,8 @@ public class ConjunctConditions implements Condition {
         component.add(rendererComponent);
         int i;
         for(i=1; i<conditions.length; i++){
-            String text = ' ' + Resources.getInstance().getResourceString("filter_and") + ' ';
+            final String and = Tools.removeMnemonic(Resources.getInstance().getResourceString("filter_and"));
+			String text = ' ' + and + ' ';
             component.add(new JLabel(text));
             cond = (Condition)conditions[i];
             rendererComponent = cond.getListCellRendererComponent();

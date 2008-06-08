@@ -93,8 +93,10 @@ public class DefaultFilter implements Filter{
         }
         NodeView selected = mapView.getSelected();
         if(! selected.getModel().isVisible()){
-            mapView.selectAsTheOnlyOneSelected(getNearestVisibleParent(selected));
+        	selected = getNearestVisibleParent(selected);
+            mapView.selectAsTheOnlyOneSelected(selected);
         }
+       	mapView.setSiblingMaxLevel(selected.getModel().getNodeLevel());
     }
     
     static private NodeView getNearestVisibleParent(NodeView selectedNode) {

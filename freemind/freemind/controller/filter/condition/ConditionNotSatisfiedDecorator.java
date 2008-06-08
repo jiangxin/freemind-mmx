@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import freemind.controller.Controller;
 import freemind.controller.filter.FilterController;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 
@@ -62,7 +63,8 @@ public class ConditionNotSatisfiedDecorator implements Condition {
      */
     public JComponent getListCellRendererComponent() {
         JCondition component = new JCondition();   
-        String text = Resources.getInstance().getResourceString("filter_not") + ' ';
+        final String not = Tools.removeMnemonic(Resources.getInstance().getResourceString("filter_not"));
+		String text = not + ' ';
         component.add(new JLabel(text));
         final JComponent renderer = originalCondition.getListCellRendererComponent();
         renderer.setOpaque(false);
