@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1.16.15 2008-04-10 20:49:21 dpolivaev Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.16 2008-06-08 14:00:34 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -301,7 +301,7 @@ public class EditNodeDialog extends EditNodeBase {
         
         // set position
         getView().scrollNodeToVisible(getNode(), 0);
-        Tools.setDialogLocationRelativeTo(dialog, getNode().getMainView());
+        Tools.setDialogLocationRelativeTo(dialog, getNode());
         dialog.show();
     }    
 }

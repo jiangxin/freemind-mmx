@@ -44,7 +44,7 @@ public class RightNodeViewLayout extends NodeViewLayoutAdapter {
         int childVerticalShift =  getChildVerticalShift(false);
         final int childHorizontalShift = getChildHorizontalShift();
         
-        if(getView().getModel().isVisible()){
+        if(getView().isContentVisible()){
             getContent().setVisible(true);
             final Dimension contentPreferredSize = getContent().getPreferredSize();
             final int x = Math.max(getSpaceAround(), -contentPreferredSize.width -childHorizontalShift);

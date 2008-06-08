@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinearEdgeView.java,v 1.9.30.3 2007-08-03 17:24:02 dpolivaev Exp $*/
+/*$Id: LinearEdgeView.java,v 1.9.30.4 2008-06-08 14:00:35 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.Graphics2D;
 import java.awt.Color;
+import java.awt.Stroke;
 
 /**
  * This class represents a single Edge of a MindMap.
@@ -34,12 +35,14 @@ public class LinearEdgeView extends EdgeView {
 
     protected void paint(Graphics2D g) {
         g.setColor(getColor());
-        g.setStroke(getStroke());
+        final Stroke stroke = getStroke();
+		g.setStroke(stroke);
         int w=getWidth();
         if (w<=1) {
             g.drawLine(start.x,start.y,end.x,end.y);
             if(isTargetEclipsed(g)){
                 g.drawLine(start.x,start.y,end.x,end.y);
+                g.setStroke(stroke);
             }
         }
         else {
@@ -51,6 +54,7 @@ public class LinearEdgeView extends EdgeView {
             g.drawPolyline(xs,ys,4);
             if(isTargetEclipsed(g)){
                 g.drawPolyline(xs,ys,4);
+                g.setStroke(stroke);
             }
         }
     }

@@ -45,7 +45,7 @@ public class LeftNodeViewLayout extends NodeViewLayoutAdapter {
         final int childHorizontalShift = getChildHorizontalShift();
         
         final int x = Math.max(getSpaceAround(), -childHorizontalShift);
-        if(getView().getModel().isVisible()){
+        if(getView().isContentVisible()){
             getContent().setVisible(true);
             final Dimension contentPreferredSize = getContent().getPreferredSize();
             childVerticalShift += (contentPreferredSize.height - contentHeight) / 2;

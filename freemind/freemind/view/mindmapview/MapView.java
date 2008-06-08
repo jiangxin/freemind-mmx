@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.50 2008-04-12 21:46:06 christianfoltin Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.51 2008-06-08 14:00:39 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -444,57 +444,71 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     // Node Navigation
     //
 
+	private NodeView getLeft(NodeView oldSelected) {
+		NodeView newSelected = oldSelected;
+		if (oldSelected.getModel().isRoot()) {
+			newSelected = oldSelected.getPreferredChild(true);
+		}
+		else if (!oldSelected.isLeft()) {
+			newSelected = oldSelected.getVisibleParentView();
+		}
+		else {
+			// If folded in the direction, unfold
+			if (oldSelected.getModel().isFolded()) {
+				model.getModeController().setFolded(oldSelected.getModel(), false);
+				return oldSelected;
+			}
+
+			newSelected = oldSelected.getPreferredChild(true);
+			while (newSelected != null && !newSelected.isContentVisible()) {
+				newSelected = newSelected.getPreferredChild(true);
+			}
+		}
+		if (newSelected == null) {
+			return oldSelected;
+		}
+		return newSelected;
+	}
+
+	private NodeView getRight(NodeView oldSelected) {
+		NodeView newSelected = oldSelected;
+		if (oldSelected.getModel().isRoot()) {
+			newSelected = oldSelected.getPreferredChild(false);
+		}
+		else if (oldSelected.isLeft()) {
+			newSelected = oldSelected.getVisibleParentView();
+		}
+		else {
+			// If folded in the direction, unfold
+			if (oldSelected.getModel().isFolded()) { 
+				model.getModeController().setFolded(oldSelected.getModel(), false);
+				return oldSelected;
+			}
+
+			newSelected = oldSelected.getPreferredChild(false);
+			while (newSelected != null && !newSelected.isContentVisible()) {
+				newSelected = newSelected.getPreferredChild(false);
+			}
+		}
+		if (newSelected == null) {
+			return oldSelected;
+		}
+		return newSelected;
+    }
+
     private NodeView getNeighbour(int directionCode) {
         NodeView oldSelected = getSelected();
         NodeView newSelected = null;
 
         switch (directionCode) {
         case KeyEvent.VK_LEFT:
-            setSiblingMaxLevel(oldSelected.getModel().getNodeLevel()); // for case of return
-            if(oldSelected.getModel().isRoot()){
-                LinkedList left = (oldSelected).getLeft(true);
-                if (left.size() == 0) return null;
-                newSelected = oldSelected.getPreferredChild();
-                if (!left.contains(newSelected)) {
-                    newSelected = (NodeView)left.getFirst();
-                }
-            } else if(!oldSelected.isLeft()) {
-                newSelected = oldSelected.getParentView();
-            } else {
-                if (oldSelected.getModel().isFolded()) { // If folded in the direction, unfold
-                    model.getModeController().setFolded(oldSelected.getModel(), false);
-                    return oldSelected;
-                }
-
-                if (oldSelected.getChildrenViews().size() == 0) return null;
-                newSelected = oldSelected.getPreferredChild();
-            }
-            setSiblingMaxLevel(newSelected.getModel().getNodeLevel());
+        	newSelected = getLeft(oldSelected);
+        	setSiblingMaxLevel(newSelected.getModel().getNodeLevel());
             break;
 
         case KeyEvent.VK_RIGHT:
-            setSiblingMaxLevel(oldSelected.getModel().getNodeLevel()); // for case of return
-            if(oldSelected.isRoot()) {
-                LinkedList right = (oldSelected).getRight(true);
-                if (right.size() == 0) return null;
-                newSelected = oldSelected.getPreferredChild();
-                if (!right.contains(newSelected)) {
-                    newSelected = (NodeView)right.getFirst();
-                }
-            } else if(oldSelected.isLeft()) {
-                newSelected = oldSelected.getParentView();
-            } else {
-                if (oldSelected.getModel().isFolded()) { // If folded in the direction, unfold
-//                  URGENT: Change to controller setFolded.
-//                    getModel().setFolded(oldSelected.getModel(), false);
-                    getController().getModeController().setFolded(oldSelected.getModel(), false);
-                    return oldSelected;
-                }
-
-                if (oldSelected.getChildrenViews().size() == 0) return null;
-                newSelected = oldSelected.getPreferredChild();
-            }
-            setSiblingMaxLevel(newSelected.getModel().getNodeLevel());
+        	newSelected = getRight(oldSelected);
+        	setSiblingMaxLevel(newSelected.getModel().getNodeLevel());
             break;
 
         case KeyEvent.VK_UP:
@@ -686,7 +700,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         //    toggleSelected(newlySelectedNodeView);
         if (!extend) {
             selectAsTheOnlyOneSelected(newlySelectedNodeView); }
-        else if (!isSelected(newlySelectedNodeView)) {
+        else if (!isSelected(newlySelectedNodeView) && newlySelectedNodeView.isContentVisible()) {
             toggleSelected(newlySelectedNodeView); }
         //select(newSelected,extend);
         for (ListIterator e = newlySelectedNodeView.getChildrenViews().listIterator(); e.hasNext(); ) {
@@ -710,7 +724,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         }
         // no such sibling found. select the new one, and good bye.
         if(oldSelected == null) {
-            if(!isSelected(newSelected)) {
+            if(!isSelected(newSelected) && newSelected.isContentVisible()) {
                 toggleSelected(newSelected);
                 return true;
             }
@@ -759,7 +773,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         while (i.hasNext()) {
             NodeView nodeView = (NodeView)i.next();
             if ( nodeView == newSelected || nodeView == oldSelected ) {
-                if( ! isSelected(nodeView) )
+                if( ! isSelected(nodeView) && nodeView.isContentVisible())
                     toggleSelected(nodeView);
                 break;
             }
@@ -767,7 +781,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         /* select all up to the end point.*/
         while (i.hasNext()) {
             NodeView nodeView = (NodeView)i.next();
-            if( (nodeView.isLeft() == oldPositionLeft || nodeView.isLeft() == newPositionLeft) && ! isSelected(nodeView) )
+            if( (nodeView.isLeft() == oldPositionLeft || nodeView.isLeft() == newPositionLeft) && ! isSelected(nodeView) && nodeView.isContentVisible())
                 toggleSelected(nodeView);
             if ( nodeView == newSelected || nodeView == oldSelected ) {
                 break;
@@ -1336,7 +1350,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         selected.clear();
         for (ListIterator it = selectedNodes.listIterator();it.hasNext();) {
         	NodeView oldNodeView = ((NodeView)it.next());
-        	if(oldNodeView.getModel().isVisible())
+        	if(oldNodeView.isContentVisible())
         	{
         		NodeView newNodeView = getNodeView(oldNodeView.getModel());
 //      		test, whether or not the node is still visible:

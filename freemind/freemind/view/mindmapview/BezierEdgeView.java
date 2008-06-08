@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: BezierEdgeView.java,v 1.13.18.1.2.4 2007-10-25 15:32:59 dpolivaev Exp $*/
+/*$Id: BezierEdgeView.java,v 1.13.18.1.2.5 2008-06-08 14:00:33 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.CubicCurve2D;
 
 
@@ -59,11 +60,13 @@ public class BezierEdgeView extends EdgeView {
     protected void paint(Graphics2D g) {
     update();
 	g.setColor(getColor());
-	g.setStroke(getStroke());
+	final Stroke stroke = getStroke();
+	g.setStroke(stroke);
 	g.draw(graph);
 	
 	if(isTargetEclipsed(g)){
 		g.draw(graph);
+		g.setStroke(stroke);
 	}
     }
 

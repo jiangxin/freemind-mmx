@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.62 2008-04-29 19:08:13 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.63 2008-06-08 14:00:41 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -209,7 +209,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 	private void getCoordinates(LinkedList inList, int additionalDistanceForConvexHull, boolean byChildren, int transX, int transY) {
 	    if (! isVisible()) return;
 
-	    if(getModel().isVisible())
+	    if(isContentVisible())
 	    {
 	        MindMapCloud cloud = getModel().getCloud();
 	        
@@ -285,7 +285,7 @@ public class NodeView extends JComponent implements TreeModelListener{
      * Calculates the tree height increment because of the clouds.
      */
 	public int getAdditionalCloudHeigth() {
-        if(! getModel().isVisible()){
+        if(! isContentVisible()){
             return 0;
         }
             
@@ -320,7 +320,7 @@ public class NodeView extends JComponent implements TreeModelListener{
         if(! (parent instanceof NodeView)) 
             return false;
         NodeView parentView = (NodeView)parent;
-        return ! parentView.getModel().isVisible();
+        return ! parentView.isContentVisible();
     }
 
     public NodeView getParentView() {
@@ -335,7 +335,7 @@ public class NodeView extends JComponent implements TreeModelListener{
         if(! (parent instanceof NodeView)) 
             return null;
         NodeView parentView = (NodeView)parent;
-        if(parentView.getModel().isVisible()){
+        if(parentView.isContentVisible()){
             return parentView;
         }
         return parentView.getVisibleParentView();
@@ -478,34 +478,99 @@ public class NodeView extends JComponent implements TreeModelListener{
 
     protected NodeView getNextSibling() {
       NodeView sibling;
-      NodeView nextSibling = this;
-
+      NodeView lastSibling = this;
       // get next sibling even in higher levels
       for (sibling = this; !sibling.getModel().isRoot(); sibling = sibling.getParentView()) {
-        nextSibling = sibling.getNextSiblingSingle();
-        if (sibling != nextSibling) {
-          break; // found sibling
-        }
-      }
-
-      if (sibling.isRoot()) {
-        return this;  // didn't find (we are at the end)
+    	  lastSibling = sibling;
+    	  sibling = sibling.getNextSiblingSingle();
+    	  if (sibling != lastSibling) {
+    		  break; // found sibling
+    	  }
       }
 
       // we have the nextSibling, search in childs
       // untill: leaf, closed node, max level
-      sibling = nextSibling;
       while (sibling.getModel().getNodeLevel() < getMap().getSiblingMaxLevel()) {
         // can we drill down?
-        if (sibling.getChildrenViews().size() <= 0) {
-          break; // no
+        NodeView first = sibling.getFirst(sibling.isRoot() ? lastSibling : null, this.isLeft(), ! this.isLeft());
+        if(first == null){
+        	break;
         }
-        sibling = (NodeView)(sibling.getChildrenViews().getFirst());
+        sibling = first;
       }
+      if (sibling.isRoot()) {
+          return this;  // didn't find (we are at the end)
+        }
+
       return sibling;
     }
 
-    LinkedList getLeft(boolean onlyVisible) {
+    /**
+     * @param startAfter TODO
+	 */
+	NodeView getFirst(Component startAfter, boolean leftOnly, boolean rightOnly) {
+        final Component[] components = getComponents();
+        for(int i = 0; i < components.length; i++){
+        	if(startAfter != null){
+        		if(components[i] == startAfter){
+        			startAfter = null;
+        		}
+        		continue;
+        	}
+            if(! (components[i] instanceof NodeView)){
+                continue;
+            }
+            NodeView view = (NodeView)components[i];
+            if(leftOnly && ! view.isLeft() || rightOnly && view.isLeft()){
+            	continue;
+            }
+            if(view.isContentVisible()){
+            	return view;
+            }
+            NodeView child = view.getFirst(null, leftOnly, rightOnly);
+            if(child != null){
+            	return child;
+            }
+        }
+        return null;
+	}
+
+	/**
+	 */
+	public boolean isContentVisible() {
+		return getModel().isVisible();
+	}
+
+
+	private NodeView getLast(Component startBefore, boolean leftOnly, boolean rightOnly) {
+        final Component[] components = getComponents();
+        for(int i = components.length - 1; i >= 0 ; i--){
+           	if(startBefore != null){
+        		if(components[i] == startBefore){
+        			startBefore = null;
+        		}
+        		continue;
+        	}
+            if(! (components[i] instanceof NodeView)){
+                continue;
+            }
+            NodeView view = (NodeView)components[i];
+            if(leftOnly && ! view.isLeft() || rightOnly && view.isLeft()){
+            	continue;
+            }
+            if(view.isContentVisible()){
+            	return view;
+            }
+            NodeView child = view.getLast(null, leftOnly, rightOnly);
+            if(child != null){
+            	return child;
+            }
+        }
+        return null;
+	}
+
+
+	LinkedList getLeft(boolean onlyVisible) {
         LinkedList all = getChildrenViews();
         LinkedList left = new LinkedList();
         for (ListIterator e = all.listIterator();e.hasNext();) {
@@ -533,26 +598,25 @@ public class NodeView extends JComponent implements TreeModelListener{
 
       // get Previous sibling even in higher levels
       for (sibling = this; !sibling.getModel().isRoot(); sibling = sibling.getParentView()) {
-        previousSibling = sibling.getPreviousSiblingSingle();
+    	  previousSibling = sibling;
+    	  sibling = sibling.getPreviousSiblingSingle();
         if (sibling != previousSibling) {
           break; // found sibling
         }
       }
-
-      if (sibling.isRoot()) {
-        return this;  // didn't find (we are at the end)
-      }
-
       // we have the PreviousSibling, search in childs
       // untill: leaf, closed node, max level
-      sibling = previousSibling;
       while (sibling.getModel().getNodeLevel() < getMap().getSiblingMaxLevel()) {
-        // can we drill down?
-        if (sibling.getChildrenViews().size() <= 0) {
-          break; // no
-        }
-        sibling = (NodeView)(sibling.getChildrenViews().getLast());
+          NodeView last = sibling.getLast(sibling.isRoot() ? previousSibling : null, this.isLeft(), ! this.isLeft());
+          if(last == null){
+          	break;
+          }
+          sibling = last;
       }
+      if (sibling.isRoot()) {
+          return this;  // didn't find (we are at the end)
+        }
+
       return sibling;
     }
 
@@ -567,14 +631,20 @@ public class NodeView extends JComponent implements TreeModelListener{
 	} else {
 	    v = getParentView().getChildrenViews();
 	}
-	NodeView sibling;
-	if (v.size()-1 == v.indexOf(this)) { //this is last, return first
-//	    sibling = (NodeView)v.getFirst(); // loop
-            sibling = this;
-	} else {
-	    sibling = (NodeView)v.get(v.indexOf(this)+1);
+	final int index = v.indexOf(this);
+	for(int i = index + 1; i < v.size(); i++){
+	    final NodeView nextView = (NodeView)v.get(i);
+		if(nextView.isContentVisible()){
+			return nextView;
+		}
+		else{
+			final NodeView first = nextView.getFirst(null, false, false);
+			if(first != null){
+				return first;
+			}
+		}
 	}
-	return sibling;
+	return this;
     }
 
     protected NodeView getPreviousSiblingSingle() {
@@ -588,14 +658,20 @@ public class NodeView extends JComponent implements TreeModelListener{
 	} else {
 	    v = getParentView().getChildrenViews();
 	}
-	NodeView sibling;
-	if (v.indexOf(this) <= 0) {//this is first, return last
-//	    sibling = (NodeView)v.getLast(); // loop
-          sibling = this;
-	} else {
-	    sibling = (NodeView)v.get(v.indexOf(this)-1);
+	final int index = v.indexOf(this);
+	for(int i = index - 1; i >= 0; i--){
+	    final NodeView nextView = (NodeView)v.get(i);
+		if(nextView.isContentVisible()){
+			return nextView;
+		}
+		else{
+			final NodeView last = nextView.getLast(null, false, false);
+			if(last != null){
+				return last;
+			}
+		}
 	}
-	return sibling;
+	return this;
     }
 
     //
@@ -641,7 +717,7 @@ public class NodeView extends JComponent implements TreeModelListener{
  
     void update() {
     	updateStyle();
-    	if(! model.isVisible()){
+    	if(! isContentVisible()){
     		mainView.setVisible(false);
     		return;
     	}
@@ -1023,33 +1099,74 @@ public class NodeView extends JComponent implements TreeModelListener{
         return attributeView;
     }        
 
-    public NodeView getPreferredChild() { // mind preferred child :-) (PN)
-      if (preferredChild != null && this.preferredChild.getParent() == this) {
-          return this.preferredChild;
-      }
-      else if (!getModel().isLeaf()) {
-          final int preferredComponentNumber = (getModel().getChildCount() + 1) / 2 - 1;
-        preferredChild = (NodeView)(this.getComponent(preferredComponentNumber));
-      }
-      else {
-        return null;
-      }
-      while(! preferredChild.getModel().isVisible()) {
-          preferredChild = (NodeView)preferredChild.getParent();
-      }
-      return preferredChild;
-      
+    public NodeView getPreferredChild(boolean left) { // mind preferred child
+		// :-) (PN)
+		if (preferredChild != null && (left == preferredChild.isLeft())
+				&& this.preferredChild.getParent() == this) {
+			if(preferredChild.isContentVisible()){
+				return preferredChild;
+			}
+			else{
+				NodeView newSelected = preferredChild.getPreferredChild(left);
+				if(newSelected != null){
+					return newSelected;
+				}
+			}
+		}
+    	if (!getModel().isLeaf()) {
+    		int yGap = Integer.MAX_VALUE;
+    		final NodeView baseComponent;
+    		if(isContentVisible()){
+    			baseComponent = this;
+    		}
+    		else{
+    			baseComponent = getVisibleParentView();
+    		}
+    		int ownY = baseComponent.getMainView().getY() + baseComponent.getMainView().getHeight() / 2;
+    		NodeView newSelected = null;
+    		for (int i = 0; i < getComponentCount(); i++) {
+    			Component c = getComponent(i);
+    			if (!(c instanceof NodeView)) {
+    				continue;
+    			}
+    			NodeView childView = (NodeView) c;
+    			if (!(childView.isLeft() == left)) {
+    				continue;
+    			}
+    			if(! childView.isContentVisible()){
+    				childView = childView.getPreferredChild(left);
+    				if(childView == null){
+    					continue;
+    				}
+    			}
+    			Point childPoint = new Point(0, childView.getMainView()
+    					.getHeight() / 2);
+    			Tools.convertPointToAncestor(childView.getMainView(),
+    					childPoint, baseComponent);
+    			final int gapToChild = Math.abs(childPoint.y - ownY);
+    			if (gapToChild < yGap) {
+    				newSelected = childView;
+    				preferredChild = (NodeView) c;
+    				yGap = gapToChild;
+    			}
+    			else {
+    				break;
+    			}
+    		}
+    		return newSelected;
+    	}
+    	return null;
     }
     public void setPreferredChild(NodeView view) {
-      this.preferredChild = view;
-      final Container parent = this.getParent();
-    if (view == null) {
-        return;
-      }
-      else if (parent instanceof NodeView) {
-        // set also preffered child of parents...
-        ((NodeView)parent).setPreferredChild(this);
-      }
+    	this.preferredChild = view;
+    	final Container parent = this.getParent();
+    	if (view == null) {
+    		return;
+    	}
+    	else if (parent instanceof NodeView) {
+    		// set also preffered child of parents...
+    		((NodeView)parent).setPreferredChild(this);
+    	}
     }
     /* (non-Javadoc)
      * @see javax.swing.event.TreeModelListener#treeNodesChanged(javax.swing.event.TreeModelEvent)
@@ -1083,6 +1200,7 @@ public class NodeView extends JComponent implements TreeModelListener{
     	}
     	
        final int[] childIndices = e.getChildIndices();
+       boolean preferredChildIsLeft = preferredChild != null && preferredChild.isLeft();
         
         for(int i = childIndices.length-1; i>=0 ; i--){
             final int index = childIndices[i];
@@ -1116,7 +1234,7 @@ public class NodeView extends JComponent implements TreeModelListener{
             }
 			(node).remove();            
         }
-        NodeView preferred = getPreferredChild();
+        NodeView preferred = getPreferredChild(preferredChildIsLeft);
         if (preferred != null) { // after delete focus on a brother (PN)
             getMap().selectAsTheOnlyOneSelected(preferred);
         }
@@ -1197,7 +1315,7 @@ public class NodeView extends JComponent implements TreeModelListener{
                 continue;
             }
             NodeView nodeView = (NodeView) component;
-            if(nodeView.getModel().isVisible()){
+            if(nodeView.isContentVisible()){
             	Point p = new Point();
             	Tools.convertPointToAncestor(nodeView, p, this);
             	g.translate(p.x, p.y);
@@ -1220,7 +1338,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 		if(isRoot){
 			paintCloud(g);
 		}
-        if(getModel().isVisible()){
+        if(isContentVisible()){
             Graphics2D g2d = (Graphics2D) g;
 			paintCloudsAndEdges(g2d);
 	        super.paint(g);
@@ -1244,7 +1362,7 @@ public class NodeView extends JComponent implements TreeModelListener{
 
 
 	private void paintCloud(Graphics g) {
-        if(model.isVisible() && model.getCloud() != null) {
+        if(isContentVisible() && model.getCloud() != null) {
             CloudView cloud = new CloudView(model.getCloud(), this);
             cloud.paint(g);
         }

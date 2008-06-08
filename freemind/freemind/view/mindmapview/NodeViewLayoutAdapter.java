@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeViewLayoutAdapter.java,v 1.1.4.5 2007-09-12 05:50:03 dpolivaev Exp $ */
+/* $Id: NodeViewLayoutAdapter.java,v 1.1.4.6 2008-06-08 14:00:42 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Component;
@@ -177,13 +177,13 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout{
             int shiftCandidate;
             if(child.isLeft()){
                 shiftCandidate = - child.getContent().getX() - child.getContent().getWidth();
-                if(child.getModel().isVisible()){
+                if(child.isContentVisible()){
                     shiftCandidate -= child.getHGap()  + child.getAdditionalCloudHeigth() / 2; 
                 }
             }
             else{
                 shiftCandidate = - child.getContent().getX();
-                if(child.getModel().isVisible()){
+                if(child.isContentVisible()){
                     shiftCandidate += child.getHGap(); 
                 }
             }

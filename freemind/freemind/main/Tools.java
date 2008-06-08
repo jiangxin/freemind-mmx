@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.31 2008-05-29 20:16:21 dpolivaev Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.32 2008-06-08 14:00:30 dpolivaev Exp $ */
 
 package freemind.main;
 
@@ -25,6 +25,7 @@ package freemind.main;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
@@ -81,6 +82,8 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
@@ -829,86 +832,92 @@ public class Tools {
 			// perhaps, the component is not yet existing.
 			return;
 		}
-		final Point p = c.getLocationOnScreen();
+		if(c instanceof NodeView){
+			final NodeView nodeView = (NodeView)c;
+			nodeView.getMap().scrollNodeToVisible(nodeView);
+			c = nodeView.getMainView();
+		}
+		final Point compLocation = c.getLocationOnScreen();
 		final int cw = c.getWidth();
 		final int ch = c.getHeight();
+		
+		final Container parent = dialog.getParent();
+		final Point parentLocation = parent.getLocationOnScreen();
+		final int pw = parent.getWidth();
+		final int ph = parent.getHeight();
+		
 		final int dw = dialog.getWidth();
 		final int dh = dialog.getHeight();
-
+		
 		final Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
 		final Insets screenInsets = defaultToolkit.getScreenInsets(dialog.getGraphicsConfiguration());
 		final Dimension screenSize = defaultToolkit.getScreenSize();
 		
-		if(p.y > screenSize.height - screenInsets.bottom){
-			p.y = screenSize.height - screenInsets.bottom;			
-		}
-		else if (p.y + ch < screenInsets.top){
-			p.y = screenInsets.top - ch ;
-		}
+		final int minX = Math.max(parentLocation.x, screenInsets.left);
+		final int minY = Math.max(parentLocation.y, screenInsets.top);
 		
-		if(p.x > screenSize.width - screenInsets.right){
-			p.x = screenSize.width - screenInsets.right;			
-		}
-		else if (p.x + cw < screenInsets.left){
-			p.x = screenInsets.left - cw ;
-		}
+		final int maxX = Math.min(parentLocation.x + pw, screenSize.width - screenInsets.right);
+		final int maxY = Math.min(parentLocation.y + ph, screenSize.height - screenInsets.bottom);
+				
+		int dx, dy;
 		
-		final int topHeight = p.y - screenInsets.top;
-		final int bottomHeight = screenSize.height - screenInsets.top -(p.y + ch);
-		
-		int dx = 0;
-		int dy = 0;
-		
-		if(bottomHeight >= topHeight && bottomHeight >= dh){
-			dy = p.y + ch;
-			dx = p.x + (cw- dw) / 2;
-			if(dx < 0) {
-				dx = 0;
-			}
-			else if (dx + dw > screenSize.width - screenInsets.right){
-				dx = screenSize.width - screenInsets.right - dw;
-			}
+		if (compLocation.x + cw < minX){
+			dx = minX;
 		}
-		else if(topHeight >= dh){
-			dy = p.y - dh;
-			dx = p.x + (cw- dw) / 2;
-			if(dx < 0) {
-				dx = 0;
-			}
-			else if (dx + dw > screenSize.width - screenInsets.right){
-				dx = screenSize.width - screenInsets.right - dw;
-			}
-		}
-		else {
-			final int leftWidth = p.x - screenInsets.left;
-			final int rightWidth = screenSize.width - screenInsets.right - (p.x + cw);
-			if(rightWidth >= leftWidth && rightWidth >= dw){
-				dx = p.x + cw;
-				dy = p.y + (ch- dh) / 2;
-				if(dy < 0) {
-					dy = 0;
+		else if(compLocation.x > maxX){
+			dx = maxX - dw;
+		} 
+		else // component X on screen
+		{
+			final int leftSpace = compLocation.x - minX;
+			final int rightSpace = maxX - (compLocation.x + cw);
+			if(leftSpace > rightSpace){
+				if(leftSpace > dw){
+					dx = compLocation.x - dw;
 				}
-				else if (dy + dh > screenSize.height - screenInsets.bottom){
-					dy = screenSize.height - screenInsets.bottom - dh;
-				}
-			}
-			else if(leftWidth >= dw){
-				dx = p.x - dw;
-				dy = p.y + (ch- dh) / 2;
-				if(dy < 0) {
-					dy = 0;
-				}
-				else if (dy + dh > screenSize.height - screenInsets.bottom){
-					dy = screenSize.height - screenInsets.bottom - dh;
+				else{
+					dx = minX;
 				}
 			}
 			else{
-				dialog.setLocationRelativeTo(c);
-				return;
+				if(rightSpace > dw){
+					dx = compLocation.x + cw;
+				}
+				else{
+					dx = maxX - dw;
+				}
 			}
 		}
-
-		dialog.setLocation(dx, dy);
+		
+		if (compLocation.y + ch < minY){
+			dy = minY;
+		}
+		else if(compLocation.y > maxY){
+			dy = maxY - dh;
+		} 
+		else // component Y on screen
+		{
+			final int topSpace = compLocation.y - minY;
+			final int bottomSpace = maxY - (compLocation.y + ch);
+			if(topSpace > bottomSpace){
+				if(topSpace > dh){
+					dy = compLocation.y - dh;
+				}
+				else{
+					dy = minY;
+				}
+			}
+			else{
+				if(bottomSpace > dh){
+					dy = compLocation.y + ch;
+				}
+				else{
+					dy = maxY - dh;
+				}
+			}
+		}
+		
+		dialog.setLocation(dx , dy );
 	}
 
 	/** Creates a reader that pipes the input file through a XSLT-Script that

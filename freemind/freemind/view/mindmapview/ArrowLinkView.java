@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ArrowLinkView.java,v 1.8.14.4.4.5 2007-08-21 19:54:08 christianfoltin Exp $*/
+/*$Id: ArrowLinkView.java,v 1.8.14.4.4.6 2008-06-08 14:00:32 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 import freemind.modes.MindMapArrowLink;
@@ -163,13 +163,13 @@ public class ArrowLinkView {
     /**
      */
     private boolean isTargetVisible() {
-        return (target != null && target.getModel().isVisible());
+        return (target != null && target.isContentVisible());
     }
 
     /**
      */
     private boolean isSourceVisible() {
-        return (source != null && source.getModel().isVisible());
+        return (source != null && source.isContentVisible());
     }
 
     /**

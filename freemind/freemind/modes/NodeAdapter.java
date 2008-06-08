@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.40 2008-03-14 21:15:23 christianfoltin Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.41 2008-06-08 14:00:31 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -819,7 +819,9 @@ public abstract class NodeAdapter implements MindMapNode {
       int level = 0;
       MindMapNode parent;
       for (parent = this; !parent.isRoot(); parent = parent.getParentNode()) {
-        level++;
+        if(parent.isVisible()) {
+        	level++;
+        }
       }
       return level;
     }
