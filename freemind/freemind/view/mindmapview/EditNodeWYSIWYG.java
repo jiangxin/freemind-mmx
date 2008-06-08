@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.37 2008-06-08 14:00:34 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.38 2008-06-08 14:28:10 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -237,6 +237,9 @@ public class EditNodeWYSIWYG extends EditNodeBase {
     				redispatchKeyEvents(currentPane, firstKeyEvent);
     			}
     		} // 1st key event defined
+    		else{
+        		editorPane.setCaretPosition(htmlEditorPanel.getDocument().getLength());
+    		}
     		htmlEditorPanel.getMostRecentFocusOwner().requestFocus();
             htmlEditorWindow.show();
         }

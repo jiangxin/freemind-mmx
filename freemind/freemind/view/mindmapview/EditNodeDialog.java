@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1.16.16 2008-06-08 14:00:34 dpolivaev Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.17 2008-06-08 14:28:10 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -46,6 +46,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.text.JTextComponent;
 
 import freemind.main.Tools;
 import freemind.modes.ModeController;
@@ -247,7 +248,14 @@ public class EditNodeDialog extends EditNodeBase {
             
             panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
             setContentPane(panel);
-            redispatchKeyEvents(textArea, firstEvent);
+
+    		if (firstEvent instanceof KeyEvent) {
+                redispatchKeyEvents(textArea, firstEvent);
+    		} // 1st key event defined
+    		else{
+    			textArea.setCaretPosition(getText().length());
+    		}
+
         }
         public void show(){
             textArea.requestFocus();
