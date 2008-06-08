@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindIcon.java,v 1.1.18.6.2.11 2008-05-01 12:41:43 christianfoltin Exp $ */
+/* $Id: MindIcon.java,v 1.1.18.6.2.12 2008-06-08 21:23:13 dpolivaev Exp $ */
 
 package freemind.modes;
 
@@ -141,22 +141,37 @@ public class MindIcon implements Comparable, IconInformation{
         if (associatedIcon != null)
             return associatedIcon;
         if ( name != null ) {
-           URL imageURL = Resources.getInstance().getResource(getIconFileName());
-           if (imageURL == null) {       //As standard icon not found, try user's
-              try {
-                 imageURL = new File (Resources.getInstance().getFreemindDirectory(),"icons/"+getName()+".png").toURI().toURL(); }
-              catch (Exception e) {}}
-           ImageIcon icon = imageURL == null ? iconNotFound : new ImageIcon(imageURL);
-           setIcon(icon);
-           return icon; }
-        else {
-           setIcon(iconNotFound);
-           return iconNotFound; }}
+           URL imageURL = Resources.getInstance().getResource(
+					getIconFileName());
+			if (imageURL == null) { // As standard icon not found, try user's
+				try {
+					final File file = new File(Resources.getInstance()
+							.getFreemindDirectory(), "icons/" + getName()
+							+ ".png");
+					if (file.canRead()) {
+						imageURL = file.toURI().toURL();
+					}
+				}
+				catch (Exception e) {
+				}
+			}
+			ImageIcon icon = imageURL == null ? iconNotFound : new ImageIcon(
+					imageURL);
+			setIcon(icon);
+			return icon;
+		}
+		else {
+			setIcon(iconNotFound);
+			return iconNotFound;
+		}
+	}
 
     /**
-       * Set the value of icon.
-       * @param _associatedIcon  Value to assign to icon.
-       */
+	 * Set the value of icon.
+	 * 
+	 * @param _associatedIcon
+	 *            Value to assign to icon.
+	 */
     protected void setIcon(ImageIcon  _associatedIcon) {
        this.associatedIcon = _associatedIcon; }
 

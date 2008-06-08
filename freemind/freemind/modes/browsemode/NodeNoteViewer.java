@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.12 2008-04-11 16:58:31 christianfoltin Exp $ */
+/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.13 2008-06-08 21:23:13 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
 import java.awt.BorderLayout;
@@ -93,7 +93,7 @@ public class NodeNoteViewer extends NodeNoteBase implements
             noteIcon = new ImageIcon(mBrowseController
                     .getResource("images/knotes.png"));
         }
-        node.setStateIcon(this.getClass().getName(), (enabled) ? noteIcon
+        node.setStateIcon(NODE_NOTE_ICON, (enabled) ? noteIcon
                 : null);
     }
 

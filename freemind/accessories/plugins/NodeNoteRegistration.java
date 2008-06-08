@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.7 2008-04-12 21:46:00 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.8 2008-06-08 21:23:13 dpolivaev Exp $*/
 
 package accessories.plugins;
 
@@ -61,6 +61,7 @@ import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.ModeController.NodeLifetimeListener;
 import freemind.modes.ModeController.NodeSelectionListener;
+import freemind.modes.common.plugins.NodeNoteBase;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.view.mindmapview.NodeView;
@@ -304,7 +305,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
 				FreeMind.RESOURCES_DON_T_SHOW_NOTE_ICONS)) {
 			showIcon = false;
 		}
-        node.setStateIcon(this.getClass().getName(), (showIcon) ? noteIcon
+        node.setStateIcon(NodeNoteBase.NODE_NOTE_ICON, (showIcon) ? noteIcon
                 : null);
         // tooltip, first try.
         getMindMapController().setToolTip(node, "nodeNoteText", (enabled)?node.getNoteText():null);

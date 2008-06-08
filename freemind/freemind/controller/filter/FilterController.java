@@ -54,6 +54,7 @@ import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
+import freemind.modes.common.plugins.NodeNoteBase;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.NodeView;
 
@@ -93,7 +94,7 @@ import freemind.view.mindmapview.NodeView;
     		// their use in the filter component.
     		// It should not happen here.
     		MindIcon.factory("AttributeExist", new ImageIcon(Resources.getInstance().getResource("images/showAttributes.gif")));
-    		MindIcon.factory("accessories.plugins.NodeNote", new ImageIcon(Resources.getInstance().getResource("images/knotes.png")));
+    		MindIcon.factory(NodeNoteBase.NODE_NOTE_ICON, new ImageIcon(Resources.getInstance().getResource("images/knotes.png")));
     		MindIcon.factory("encrypted");
     		MindIcon.factory("decrypted");
     		

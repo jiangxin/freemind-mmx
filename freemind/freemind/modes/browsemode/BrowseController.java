@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseController.java,v 1.13.18.7.2.12 2008-04-11 16:58:31 christianfoltin Exp $ */
+/* $Id: BrowseController.java,v 1.13.18.7.2.13 2008-06-08 21:23:13 dpolivaev Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -47,6 +47,7 @@ import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.common.GotoLinkNodeAction;
+import freemind.modes.common.plugins.NodeNoteBase;
 import freemind.modes.viewmodes.ViewControllerAdapter;
 import freemind.view.mindmapview.MainView;
 import freemind.view.mindmapview.NodeView;
@@ -261,7 +262,7 @@ public class BrowseController extends ViewControllerAdapter {
                 noteIcon = new ImageIcon(getController()
                         .getResource("images/knotes.png"));
             }
-            node.setStateIcon("accessories.plugins.NodeNote", noteIcon); 			
+            node.setStateIcon(NodeNoteBase.NODE_NOTE_ICON, noteIcon); 			
 		}
 		ListIterator children = node.childrenUnfolded();
 		while(children.hasNext()){
