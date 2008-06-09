@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: EdgeView.java,v 1.13.14.2.4.8 2007-10-25 15:32:59 dpolivaev Exp $*/
+/*$Id: EdgeView.java,v 1.13.14.2.4.9 2008-06-09 21:01:15 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -104,13 +104,8 @@ public abstract class EdgeView {
        return ECLIPSED_STROKE;
    }
 
-   protected boolean isTargetEclipsed(Graphics2D g) {
-       if( getTarget().isParentHidden()){
-           g.setColor(g.getBackground());
-           g.setStroke(getEclipsedStroke());
-	    return true;
-       }
-       return false;
+   protected boolean isTargetEclipsed() {
+       return getTarget().isParentHidden();
    }
 
 

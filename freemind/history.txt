@@ -7,6 +7,7 @@ Changes made in FreeMind 0.9.0 Beta19
 * Fixed: calculation of dialog position relative to nodes.
 * Fixed: text in filter descriptions.
 * Fixed: [ 1984842 ] Cursor in long node editor set to the last position.
+* Fixed: export of filtered maps to PDF
  
 ===============================
 ===============================
