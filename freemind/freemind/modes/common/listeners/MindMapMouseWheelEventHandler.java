@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.2 2008-03-15 23:01:05 christianfoltin Exp $ */
+/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.3 2008-06-10 20:55:53 dpolivaev Exp $ */
 package freemind.modes.common.listeners;
 
 import java.awt.event.InputEvent;
@@ -92,13 +92,18 @@ public class MindMapMouseWheelEventHandler implements MouseWheelListener {
 		if ((e.getModifiers() & ZOOM_MASK) != 0) {
 			// fc, 18.11.2003: when control pressed, then the zoom is changed.
 			float newZoomFactor = 1f + Math.abs((float) e.getWheelRotation()) / 10f;
-			if (e.getWheelRotation() < 0)
+			if (e.getWheelRotation() > 0)
 				newZoomFactor = 1 / newZoomFactor;
-			float newZoom = ((MapView) e.getComponent()).getZoom()
+			final float oldZoom = ((MapView) e.getComponent()).getZoom();
+			float newZoom = oldZoom
 					/ newZoomFactor;
 			// round the value due to possible rounding problems.
 			newZoom = (float) Math.rint(newZoom * 1000f) / 1000f;
-			mController.getController().setZoom(newZoom);
+			newZoom = Math.max(1f/32f, newZoom);
+			newZoom = Math.min(32f, newZoom);
+			if(newZoom != oldZoom){
+				mController.getController().setZoom(newZoom);
+			}
 			// end zoomchange
 		} else if ((e.getModifiers() & HORIZONTAL_SCROLL_MASK) != 0) {
 			((MapView) e.getComponent()).scrollBy(SCROLL_SKIPS

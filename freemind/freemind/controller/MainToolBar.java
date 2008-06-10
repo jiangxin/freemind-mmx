@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MainToolBar.java,v 1.16.14.2.4.6 2008-03-14 21:15:19 christianfoltin Exp $*/
+/*$Id: MainToolBar.java,v 1.16.14.2.4.7 2008-06-10 20:55:53 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -73,23 +73,49 @@ public class MainToolBar extends FreeMindToolBar {
 	}
 
     private void setZoomByItem(Object item) {
-        if(((String) item).equals(userDefinedZoom))
-            return; // nothing to do...
-       //remove '%' sign
-      String dirty = (String)item;
-      String cleaned = dirty.substring(0,dirty.length()-1);
-      //change representation ("125" to 1.25)
-      controller.setZoom(Integer.parseInt(cleaned,10)/100F); }
+		if (((String) item).equals(userDefinedZoom))
+			return; // nothing to do...
+		// remove '%' sign
+		final float zoomValue = getZoomValue(item);
+		controller.setZoom(zoomValue);
+	}
+
+	private float getZoomValue(Object item) {
+		String dirty = (String)item;
+		  String cleaned = dirty.substring(0,dirty.length()-1);
+		  //change representation ("125" to 1.25)
+		  final float zoomValue = Integer.parseInt(cleaned,10)/100F;
+		return zoomValue;
+	}
 
     public void zoomOut() {
-       if (zoom.getSelectedIndex() > 0) {
-          setZoomByItem(zoom.getItemAt(zoom.getSelectedIndex() - 1));
-          /*zoom.setSelectedItem(zoom.getItemAt(zoom.getSelectedIndex() - 1));*/ }}
+		final float currentZoomIndex = getCurrentZoomIndex();
+		if (currentZoomIndex > 0) {
+			setZoomByItem(zoom.getItemAt((int) (currentZoomIndex - 0.5f)));
+		}
+	}
 
-    public void zoomIn() {
-       if (zoom.getSelectedIndex() < zoom.getItemCount() - 1) {
-          setZoomByItem(zoom.getItemAt(zoom.getSelectedIndex() + 1));
-          /*zoom.setSelectedItem(zoom.getItemAt(zoom.getSelectedIndex() + 1));*/ }}
+	private float getCurrentZoomIndex() {
+		final int selectedIndex = zoom.getSelectedIndex();
+		final int itemCount = zoom.getItemCount();
+		if(selectedIndex != itemCount - 1){
+			return selectedIndex;
+		}
+		final float userZoom = controller.getView().getZoom();
+		for(int i = 0; i < itemCount - 1; i++){
+			if (userZoom < getZoomValue(zoom.getItemAt(i))){
+				return i - 0.5f;
+			}
+		}
+		return itemCount - 0.5f;
+	}
+
+	public void zoomIn() {
+		final float currentZoomIndex = getCurrentZoomIndex();
+		if (currentZoomIndex < zoom.getItemCount() - 1) {
+			setZoomByItem(zoom.getItemAt((int) (currentZoomIndex + 1f)));
+		}
+	}
 
     public String getItemForZoom(float f) {
        return (int)(f*100F)+"%"; }
