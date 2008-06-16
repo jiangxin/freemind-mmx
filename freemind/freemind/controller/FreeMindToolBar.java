@@ -61,7 +61,7 @@ public class FreeMindToolBar extends JToolBar {
 	public FreeMindToolBar(String arg0, int arg1) {
 		super(arg0, arg1);
 		this.setMargin(nullInsets);
-
+		setFloatable(false);
 	}
 
 	/* (non-Javadoc)
