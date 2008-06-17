@@ -202,7 +202,7 @@ class ImportAttributesDialog extends JDialog implements TreeSelectionListener {
 		createMapSubTrees(topNode);
 		if(topNode.getChildCount() == 0){
 			JOptionPane.showMessageDialog(parentComponent,
-					Resources.getInstance().getResourceString("atributes_no_import_candidates_found"),
+					Resources.getInstance().getResourceString("attributes_no_import_candidates_found"),
 					getTitle(),
 					JOptionPane.INFORMATION_MESSAGE);
 			return;
