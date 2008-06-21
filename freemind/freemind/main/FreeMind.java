@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.115 2008-06-08 14:07:20 dpolivaev Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.116 2008-06-21 20:46:54 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -217,6 +217,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	void init(FeedBack feedback) {
 		/* This is only for apple but does not harm for the others. */
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
+        patternsFile = new File (getFreemindDirectory(),getDefaultProperty("patternsfile"));
 
 		feedback.increase("FreeMind.progress.updateLookAndFeel");
 

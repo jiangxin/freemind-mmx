@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ScriptEditorProperty.java,v 1.1.2.4 2008-03-30 20:34:45 christianfoltin Exp $*/
+/*$Id: ScriptEditorProperty.java,v 1.1.2.5 2008-06-21 20:46:54 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -118,7 +118,7 @@ public class ScriptEditorProperty extends PropertyBean implements
 			result = "";
 		}
 		script = HtmlTools.unescapeHTMLUnicodeEntity(result);
-		logger.info("Setting script to " +script);
+		logger.fine("Setting script to " +script);
 		mButton.setText(script);
 	}
 

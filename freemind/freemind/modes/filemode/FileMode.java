@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: FileMode.java,v 1.14.18.2.2.1 2006-04-05 21:26:27 dpolivaev Exp $ */
+/* $Id: FileMode.java,v 1.14.18.2.2.2 2008-06-21 20:46:54 christianfoltin Exp $ */
 
 package freemind.modes.filemode;
 
@@ -55,11 +55,11 @@ public class FileMode implements Mode {
      * (updates Actions etc.)
      */
     public void activate() {
+    	getDefaultModeController().newMap();
+    	c.getMapModuleManager().changeToMapOfMode(this);
         if (!isRunning) {
-            getDefaultModeController().newMap();
             isRunning = true;
         } else {
-            c.getMapModuleManager().changeToMapOfMode(this);
         }
     }
 

@@ -19,7 +19,7 @@
  *
  * Created on 06.07.2006
  */
-/*$Id: FreeMindStarter.java,v 1.1.2.3 2008-05-28 19:39:15 christianfoltin Exp $*/
+/*$Id: FreeMindStarter.java,v 1.1.2.4 2008-06-21 20:46:54 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -126,6 +126,11 @@ public class FreeMindStarter {
 	}
 
 	private static File getUserPreferencesFile(Properties defaultPreferences) {
+		if(defaultPreferences == null) {
+			System.err
+			.println("Panic! Error while loading default properties.");
+			System.exit(1);
+		}
 		String freemindDirectory = getFreeMindDirectory(defaultPreferences);
 		File userPropertiesFolder = new File(freemindDirectory);
 		File autoPropertiesFile = new File(userPropertiesFolder, defaultPreferences.getProperty("autoproperties"));

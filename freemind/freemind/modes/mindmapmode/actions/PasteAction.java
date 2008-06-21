@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.17 2008-05-31 08:16:33 dpolivaev Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.18 2008-06-21 20:46:54 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -293,7 +293,7 @@ public class PasteAction extends AbstractAction implements ActorXml{
 
              textFromClipboard = HtmlTools.unescapeHTMLUnicodeEntity(textFromClipboard);
              
-             MindMapNodeModel node = new MindMapNodeModel(textFromClipboard, pMindMapController.getFrame(), pMindMapController.getMap());
+             MindMapNode node = pMindMapController.newNode(textFromClipboard,  pMindMapController.getMap());
              // if only one <a>...</a> element found, set link
              Matcher m = HREF_PATTERN.matcher(textFromClipboard);
              if(m.matches()){
@@ -538,7 +538,7 @@ public class PasteAction extends AbstractAction implements ActorXml{
 	   if (asSibling) {
 		  // When pasting as sibling, we use virtual node as parent. When the pasting to
 		  // virtual node is completed, we insert the children of that virtual node to
-		  // the parrent of real parent.
+		  // the parent of real parent.
 		  realParent = parent;
 		  parent = new MindMapNodeModel(pMindMapController.getFrame(), pMindMapController.getMap()); }
 

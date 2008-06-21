@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.47 2008-05-31 08:16:33 dpolivaev Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.48 2008-06-21 20:46:54 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -1224,6 +1224,11 @@ public abstract class ControllerAdapter implements ModeController {
 
     public void insertNodeInto(MindMapNode newNode, MindMapNode parent, int index) {
         getModel().insertNodeInto(newNode, parent, index);
+        // call hooks
+        for (Iterator iterator = mNodeLifetimeListeners.iterator(); iterator.hasNext();) {
+			NodeLifetimeListener listener = (NodeLifetimeListener) iterator.next();
+			listener.onCreateNodeHook(newNode);
+		}
     }
 
      /* (non-Javadoc)

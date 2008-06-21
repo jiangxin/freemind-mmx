@@ -38,11 +38,7 @@ import freemind.view.mindmapview.NodeView;
 public interface PermanentNodeHook extends NodeHook {
 	
 	void onSelectHook(NodeView nodeView);
-	/** 
-	 * If the node I belong to is changed, I get this notification.
-	 * */
 	/**
-	 * @param nodeView TODO
 	 * 
 	 */
 	void onDeselectHook(NodeView nodeView);
@@ -52,6 +48,9 @@ public interface PermanentNodeHook extends NodeHook {
 	
 	void onViewRemovedHook(NodeView nodeView);
 	
+	/** 
+	 * If the node I belong to is changed, I get this notification.
+	 * */
 	void onUpdateNodeHook();
 
 	/** Is called if the addedChildNode is inserted as a direct child of the node,

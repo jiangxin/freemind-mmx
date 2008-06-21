@@ -1,5 +1,5 @@
 # Project: FreeMind
-# Makefile created by Dev-C++ 4.9.9.2
+# Makefile created by Dev-C++ 4.9.8.0
 
 CPP  = g++.exe
 CC   = gcc.exe
@@ -7,13 +7,12 @@ WINDRES = windres.exe
 RES  = FreeMind_private.res
 OBJ  = Freemind.o $(RES)
 LINKOBJ  = Freemind.o $(RES)
-LIBS =  -L"C:/Programme/Dev-Cpp/lib"  
-INCS =  -I"C:/Programme/Dev-Cpp/include" 
-CXXINCS =  -I"C:/Programme/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Programme/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Programme/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Programme/Dev-Cpp/include/c++/3.4.2"  -I"C:/Programme/Dev-Cpp/include" 
+LIBS =  -L"C:/Programme/Dev-Cpp_4_9_8_0/lib" 
+INCS =  -I"C:/Programme/Dev-Cpp_4_9_8_0/include" 
+CXXINCS =  -I"C:/Programme/Dev-Cpp_4_9_8_0/include/c++"  -I"C:/Programme/Dev-Cpp_4_9_8_0/include/c++/mingw32"  -I"C:/Programme/Dev-Cpp_4_9_8_0/include/c++/backward"  -I"C:/Programme/Dev-Cpp_4_9_8_0/include" 
 BIN  = FreeMind.exe
-CXXFLAGS = $(CXXINCS)  
-CFLAGS = $(INCS)  
-RM = rm -f
+CXXFLAGS = $(CXXINCS) 
+CFLAGS = $(INCS) 
 
 .PHONY: all all-before all-after clean clean-custom
 
@@ -21,13 +20,13 @@ all: all-before FreeMind.exe all-after
 
 
 clean: clean-custom
-	${RM} $(OBJ) $(BIN)
+	rm -f $(OBJ) $(BIN)
 
-$(BIN): $(OBJ)
+$(BIN): $(LINKOBJ)
 	$(CPP) $(LINKOBJ) -o "FreeMind.exe" $(LIBS)
 
 Freemind.o: Freemind.c
 	$(CPP) -c Freemind.c -o Freemind.o $(CXXFLAGS)
 
 FreeMind_private.res: FreeMind_private.rc Icon1.rc 
-	$(WINDRES) -i FreeMind_private.rc --input-format=rc -o FreeMind_private.res -O coff 
+	$(WINDRES) -i FreeMind_private.rc -I rc -o FreeMind_private.res -O coff 
