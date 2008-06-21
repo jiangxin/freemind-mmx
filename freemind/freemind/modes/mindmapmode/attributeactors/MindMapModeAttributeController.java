@@ -189,9 +189,9 @@ public class MindMapModeAttributeController implements AttributeController{
         switch(col){
         case 0:
         {
-            if(attribute.getName().equals(o))
+            String name = o.toString().trim();
+            if(attribute.getName().equals(name))
                 return;
-            String name = o.toString();
             final ActionPair setAttributeNameActionPair = setAttributeNameActor.createActionPair(model, row, name);
             controller.getActionFactory().executeAction(setAttributeNameActionPair);
             try{
@@ -214,10 +214,10 @@ public class MindMapModeAttributeController implements AttributeController{
         }
         case 1:
         {
-            if(attribute.getValue().equals(o))
-                return;
-            String value = o.toString();
-            final ActionPair setValueActionPair = setAttributeValueActor.createActionPair(model, row, value);
+        	String value = o.toString().trim();
+        	if(attribute.getValue().equals(value))
+        		return;
+        	final ActionPair setValueActionPair = setAttributeValueActor.createActionPair(model, row, value);
             controller.getActionFactory().executeAction(setValueActionPair);
             String name = model.getValueAt(row, 0).toString();
             AttributeRegistryElement element = attributes.getElement(name);

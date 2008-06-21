@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: AttributeView.java,v 1.1.6.9 2007-04-22 19:35:06 dpolivaev Exp $*/
+/*$Id: AttributeView.java,v 1.1.6.10 2008-06-21 13:56:44 dpolivaev Exp $*/
 
 package freemind.view.mindmapview.attributeview;
 
@@ -220,6 +220,9 @@ public class AttributeView implements ChangeListener, TableModelListener {
         : AttributeTableLayoutModel.SHOW_ALL;
     }
     public void startEditing() {
+    	if(getNode().getMap().isReadOnly()){
+    		return;
+    	}
         provideAttributeTable();
         if(currentAttributeTableModel == reducedAttributeTableModel){
             getExtendedAttributeTableModel();
