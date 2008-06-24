@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.8 2008-06-08 21:23:13 dpolivaev Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.9 2008-06-24 19:54:00 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -182,8 +182,11 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
             }
         }
 
-        public void onDeleteNodeHook(MindMapNode node) {
+        public void onPreDeleteNode(MindMapNode node) {
         }
+
+		public void onPostDeleteNode(MindMapNode pNode, MindMapNode pParent) {
+		}
     }
 
     private static SHTMLPanel htmlEditorPanel;

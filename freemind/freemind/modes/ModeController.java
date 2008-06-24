@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.22 2008-04-11 16:58:31 christianfoltin Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.23 2008-06-24 19:54:00 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -183,9 +183,12 @@ public interface ModeController extends TextTranslator  {
          * */
         void onCreateNodeHook(MindMapNode node);
 
-        /** Is sent when a node is deleted (on map shutdown, too).
+        /** Is sent before a node is deleted (on map shutdown, too).
          */
-        void onDeleteNodeHook(MindMapNode node);
+        void onPreDeleteNode(MindMapNode node);
+        /** Is sent before after a node is deleted (on map shutdown, this event is *not* send).
+         */
+        void onPostDeleteNode(MindMapNode node, MindMapNode parent);
 
     }
 
@@ -198,7 +201,7 @@ public interface ModeController extends TextTranslator  {
      * Is issued before a node is deleted.
      * It is issued via NodeLifetimeListener.
      */
-    void fireNodeDeleteEvent(MindMapNode node);
+    void fireNodePreDeleteEvent(MindMapNode node);
     
      /** The position of this method is an exception. Normally, every method that changes
      *  nodes must be contained in the specific mode controllers but as this method

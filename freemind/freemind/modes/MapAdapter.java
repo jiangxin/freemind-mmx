@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.24 2008-04-11 16:58:31 christianfoltin Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.25 2008-06-24 19:54:00 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -124,7 +124,7 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 			PermanentNodeHook hook = (PermanentNodeHook) node.getHooks().get(0);
 			node.removeHook(hook);
 		}
-        mModeController.fireNodeDeleteEvent(node);
+        mModeController.fireNodePreDeleteEvent(node);
 		// and all children:
 		for(Iterator i= node.childrenUnfolded(); i.hasNext();) {
 			MindMapNode child = (MindMapNode) i.next();

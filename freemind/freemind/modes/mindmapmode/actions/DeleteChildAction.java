@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: DeleteChildAction.java,v 1.1.2.2.2.10 2007-09-04 19:56:54 christianfoltin Exp $ */
+/* $Id: DeleteChildAction.java,v 1.1.2.2.2.11 2008-06-24 19:54:00 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -31,6 +31,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.tree.TreeNode;
 
 import freemind.common.OptionalDontShowMeAgainDialog;
 import freemind.common.TextTranslator;
@@ -101,10 +102,13 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
                 throw new IllegalStateException("Timeout reached shutting down the hooks.");
             }
         }
-        mMindMapController.fireNodeDeleteEvent(selectedNode);
+        MindMapNode parent = selectedNode.getParentNode();
+        mMindMapController.fireNodePreDeleteEvent(selectedNode);
         // deregister node:
         mMindMapController.getModel().getLinkRegistry().deregisterLinkTarget(selectedNode);
 		mMindMapController.removeNodeFromParent( selectedNode);
+		// post event
+		mMindMapController.fireNodePostDeleteEvent(selectedNode, parent);
     }
 
     /* (non-Javadoc)

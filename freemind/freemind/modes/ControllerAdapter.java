@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.48 2008-06-21 20:46:54 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.49 2008-06-24 19:54:00 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -282,14 +282,22 @@ public abstract class ControllerAdapter implements ModeController {
         return mNodeLifetimeListeners;
     }
 
-    public void fireNodeDeleteEvent(MindMapNode node) {
+    public void fireNodePreDeleteEvent(MindMapNode node) {
         // call lifetime listeners:
         for (Iterator iter = mNodeLifetimeListeners.iterator(); iter.hasNext();) {
             NodeLifetimeListener listener = (NodeLifetimeListener) iter.next();
-            listener.onDeleteNodeHook(node);
+            listener.onPreDeleteNode(node);
         }
     }
 
+    public void fireNodePostDeleteEvent(MindMapNode node, MindMapNode parent) {
+    	// call lifetime listeners:
+    	for (Iterator iter = mNodeLifetimeListeners.iterator(); iter.hasNext();) {
+    		NodeLifetimeListener listener = (NodeLifetimeListener) iter.next();
+    		listener.onPostDeleteNode(node, parent);
+    	}
+    }
+    
     public void fireRecursiveNodeCreateEvent(MindMapNode node) {
         for(Iterator i = node.childrenUnfolded(); i.hasNext();) {
             NodeAdapter child = (NodeAdapter) i.next();
@@ -463,12 +471,6 @@ public abstract class ControllerAdapter implements ModeController {
             hook.setMap(map);
             node.invokeHook(hook);
         }
-        // call lifetime listeners:
-        for (Iterator iter = getNodeLifetimeListeners().iterator(); iter.hasNext();) {
-            NodeLifetimeListener listener = (NodeLifetimeListener) iter.next();
-            listener.onCreateNodeHook(node);
-        }
-
    }
 
     /** fc, 24.1.2004: having two methods getSelecteds with different return values

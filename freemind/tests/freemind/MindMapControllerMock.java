@@ -19,7 +19,7 @@
  *
  * Created on 10.10.2006
  */
-/*$Id: MindMapControllerMock.java,v 1.1.2.9 2007-07-24 06:11:04 dpolivaev Exp $*/
+/*$Id: MindMapControllerMock.java,v 1.1.2.10 2008-06-24 19:54:01 christianfoltin Exp $*/
 package tests.freemind;
 
 import java.awt.Color;
@@ -136,7 +136,7 @@ public class MindMapControllerMock implements ModeController {
 	/* (non-Javadoc)
 	 * @see freemind.modes.ModeController#fireNodeDeleteEvent(freemind.modes.MindMapNode)
 	 */
-	public void fireNodeDeleteEvent(MindMapNode node) {
+	public void fireNodePreDeleteEvent(MindMapNode node) {
 		// TODO Auto-generated method stub
 
 	}
