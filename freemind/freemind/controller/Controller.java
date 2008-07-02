@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.52 2008-04-17 19:32:25 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.53 2008-07-02 20:22:06 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -1285,7 +1285,7 @@ public class Controller  implements MapModuleChangeObserver {
            super(controller.getResourceString("selection_as_rectangle")); }
         public void actionPerformed(ActionEvent e) {
 //            logger.info("ShowSelectionAsRectangleAction action Performed");
-            showSelectionAsRectangle();
+            toggleSelectionAsRectangle();
            }
 		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
 			return isSelectionAsRectangle();
@@ -1350,7 +1350,7 @@ public class Controller  implements MapModuleChangeObserver {
     public static Collection getPropertyChangeListeners() {
         return Collections.unmodifiableCollection(propertyChangeListeners);
     }
-    void showSelectionAsRectangle() {
+    public void toggleSelectionAsRectangle() {
     	if(isSelectionAsRectangle()){
     		setProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION, BooleanProperty.FALSE_VALUE);
     	}
