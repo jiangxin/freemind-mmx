@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlConversionTests.java,v 1.1.2.9 2008-04-11 16:58:32 christianfoltin Exp $*/
+/*$Id: HtmlConversionTests.java,v 1.1.2.10 2008-07-04 20:44:04 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -95,6 +95,17 @@ public class HtmlConversionTests extends FreeMindTestBase {
         "</html>";
         String result = HtmlTools.getInstance().toHtml(input);
         assertFalse ( " no > occurs  in " + result, result.matches("^.*&gt;.*$"));
+    }
+
+    public void testUnicodeHandling() {
+    	String input = "if (myOldValue != null && myText.startsWith(myOldValue) == true) { \nmyText = myText.substring(myOldValue.length() + terminator.length());\n};\n";
+    	String escapedText = HtmlTools.toXMLEscapedText(input);
+		String unicodeToHTMLUnicodeEntity = HtmlTools.unicodeToHTMLUnicodeEntity(escapedText);
+		System.out.println(unicodeToHTMLUnicodeEntity);
+    	String unescapeHTMLUnicodeEntity = HtmlTools.unescapeHTMLUnicodeEntity(unicodeToHTMLUnicodeEntity);
+		String back = HtmlTools.toXMLUnescapedText(unescapeHTMLUnicodeEntity);
+    	System.out.println(back);
+    	assertEquals("unicode conversion", input, back);
     }
     
 }

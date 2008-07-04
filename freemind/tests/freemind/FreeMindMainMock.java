@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMainMock.java,v 1.1.2.13 2008-04-17 19:32:30 christianfoltin Exp $*/
+/*$Id: FreeMindMainMock.java,v 1.1.2.14 2008-07-04 20:44:03 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -120,7 +120,7 @@ public class FreeMindMainMock implements FreeMindMain {
     }
 
     public Properties getProperties() {
-        return null;
+        return new Properties();
     }
 
     public String getProperty(String key) {

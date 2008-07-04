@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ScriptEditorProperty.java,v 1.1.2.5 2008-06-21 20:46:54 christianfoltin Exp $*/
+/*$Id: ScriptEditorProperty.java,v 1.1.2.6 2008-07-04 20:44:02 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -86,7 +86,7 @@ public class ScriptEditorProperty extends PropertyBean implements
 	}
 
 	public String getValue() {
-		return HtmlTools.unicodeToHTMLUnicodeEntity(script);
+		return HtmlTools.unicodeToHTMLUnicodeEntity(HtmlTools.toXMLEscapedText(script));
 	}
 
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
@@ -117,7 +117,7 @@ public class ScriptEditorProperty extends PropertyBean implements
 		if (result == null) {
 			result = "";
 		}
-		script = HtmlTools.unescapeHTMLUnicodeEntity(result);
+		script = HtmlTools.toXMLUnescapedText(HtmlTools.unescapeHTMLUnicodeEntity(result));
 		logger.fine("Setting script to " +script);
 		mButton.setText(script);
 	}

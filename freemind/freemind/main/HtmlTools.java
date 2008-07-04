@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.18 2008-04-11 16:58:31 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.19 2008-07-04 20:44:03 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -323,49 +323,67 @@ public class HtmlTools {
     }
 
     public static String unicodeToHTMLUnicodeEntity(String text) {
-       StringBuffer result = new StringBuffer((int)(text.length()*1.2)); // Heuristic reserve for expansion: factor 1.2
-       int intValue;
-       char myChar;
-       for (int i = 0; i < text.length(); ++i) {
-          myChar = text.charAt(i);
-          intValue = (int) text.charAt(i);
-          if (intValue < 32 || intValue > 126) {
-             result.append("&#x").append(Integer.toString(intValue, 16)).append(';'); }
-          else {
-             result.append(myChar); }}
-       return result.toString(); }
+    	/*
+		 * Heuristic reserve for expansion : factor 1.2
+		 */
+		StringBuffer result = new StringBuffer((int) (text.length() * 1.2)); 
+		int intValue;
+		char myChar;
+		for (int i = 0; i < text.length(); ++i) {
+			myChar = text.charAt(i);
+			intValue = (int) text.charAt(i);
+			if (intValue < 32 || intValue > 126) {
+				result.append("&#x").append(Integer.toString(intValue, 16))
+						.append(';');
+			} else {
+				result.append(myChar);
+			}
+		}
+		return result.toString();
+	}
 
     public static String unescapeHTMLUnicodeEntity(String text) {
-       StringBuffer result = new StringBuffer(text.length());
-       StringBuffer entity = new StringBuffer();
-       boolean readingEntity = false;
-       char myChar;
-       for (int i = 0; i < text.length(); ++i) {
-          myChar = text.charAt(i);
-          if (readingEntity) {
-             if (myChar == ';') {
-                if (entity.charAt(0) == '#') {
-                   try {
-                      if (entity.charAt(1) == 'x') {
-                         result.append((char) Integer.parseInt(entity.substring(2), 16)); }
-                      else {
-                         result.append((char) Integer.parseInt(entity.substring(1), 10)); }}
-                   catch (NumberFormatException e) {
-                      result.append('&').append(entity).append(';'); }}
-                else {
-                   result.append('&').append(entity).append(';'); }
-                entity.setLength(0);
-                readingEntity = false; }
-             else {
-                entity.append(myChar); }}
-          else {
-             if (myChar == '&') {
-                readingEntity = true; }
-             else {
-                result.append(myChar); }}}
-       if (entity.length() > 0) {
-          result.append('&').append(entity); }
-       return result.toString(); }
+		StringBuffer result = new StringBuffer(text.length());
+		StringBuffer entity = new StringBuffer();
+		boolean readingEntity = false;
+		char myChar;
+		for (int i = 0; i < text.length(); ++i) {
+			myChar = text.charAt(i);
+			if (readingEntity) {
+				if (myChar == ';') {
+					if (entity.charAt(0) == '#') {
+						try {
+							if (entity.charAt(1) == 'x') {
+								result.append((char) Integer.parseInt(entity
+										.substring(2), 16));
+							} else {
+								result.append((char) Integer.parseInt(entity
+										.substring(1), 10));
+							}
+						} catch (NumberFormatException e) {
+							result.append('&').append(entity).append(';');
+						}
+					} else {
+						result.append('&').append(entity).append(';');
+					}
+					entity.setLength(0);
+					readingEntity = false;
+				} else {
+					entity.append(myChar);
+				}
+			} else {
+				if (myChar == '&') {
+					readingEntity = true;
+				} else {
+					result.append(myChar);
+				}
+			}
+		}
+		if (entity.length() > 0) {
+			result.append('&').append(entity);
+		}
+		return result.toString();
+	}
 
     /** Removes all tags (<..>) from a string if it starts with "<html>..." to make it compareable.
      */
