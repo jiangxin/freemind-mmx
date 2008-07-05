@@ -259,7 +259,7 @@
 		<!-- Done. -->
 	</target>
 
-	<target name="post" depends="dist,browser,doc">
+	<target name="post" depends="dist,browser">
 		<mkdir dir="${post}" />
 <!--		<tar tarfile="${post}/freemind-bin.tar"
 			basedir="${dist}"
