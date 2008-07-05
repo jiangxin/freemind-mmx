@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2007
  */
-/*$Id: ScriptEditorPanel.java,v 1.1.2.17 2008-07-02 20:22:07 christianfoltin Exp $*/
+/*$Id: ScriptEditorPanel.java,v 1.1.2.18 2008-07-05 20:40:10 christianfoltin Exp $*/
 package plugins.script;
 
 import java.awt.BorderLayout;
@@ -294,7 +294,7 @@ public class ScriptEditorPanel extends JDialog {
 		});
 		// add(mScriptList, BorderLayout.WEST);
 		mScriptTextField = new JTextArea();
-		mScriptTextField.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+		mScriptTextField.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		mScriptTextField.setEnabled(false);
 		mScriptTextField.setTabSize(2);
 		mCentralUpperPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
