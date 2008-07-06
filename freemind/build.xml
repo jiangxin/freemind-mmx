@@ -150,7 +150,11 @@
 		</copy>
 		<mkdir dir="${dist}/doc" />
 		<copy todir="${dist}/doc">
-			<fileset dir="${src}/doc/" includes="freemind*.mm"/>
+			<fileset dir="${src}/doc/">
+				<include name="freemind*.mm"/>
+				<include name="FM_Key_Mappings_Quick_Guide*.pdf"/>
+				<include name="FM_Key_Mappings_Quick_Guide*.odt"/>
+			</fileset>
 		</copy>
 		<mkdir dir="${dist}/accessories" />
 		<mkdir dir="${dist}/plugins" />

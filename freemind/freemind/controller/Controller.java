@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.53 2008-07-02 20:22:06 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.54 2008-07-06 13:01:50 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -163,6 +163,7 @@ public class Controller  implements MapModuleChangeObserver {
 
     public Action about;
     public Action faq;
+    public Action keyDocumentation;
     public Action webDocu;
     public Action documentation;
     public Action license;
@@ -221,6 +222,7 @@ public class Controller  implements MapModuleChangeObserver {
         about = new AboutAction(this);
         freemindUrl = new OpenURLAction(this, getResourceString("FreeMind"), getProperty("webFreeMindLocation"));
         faq = new OpenURLAction(this, getResourceString("FAQ"), getProperty("webFAQLocation"));
+        keyDocumentation = new KeyDocumentationAction(this);
         webDocu = new OpenURLAction(this, getResourceString("webDocu"), getProperty("webDocuLocation"));
         documentation = new DocumentationAction(this);
         license = new LicenseAction(this);
@@ -1121,6 +1123,32 @@ public class Controller  implements MapModuleChangeObserver {
         }
     }
 
+    private class KeyDocumentationAction extends AbstractAction {
+    	Controller controller;
+    	KeyDocumentationAction(Controller controller) {
+    		super(controller.getResourceString("KeyDoc"));
+    		this.controller = controller;
+    	}
+    	public void actionPerformed(ActionEvent e) {
+    		String urlText = controller.getFrame().getResourceString("pdfKeyDocLocation");
+    		// if the current language does not provide its own translation, POSTFIX_TRANSLATE_ME is appended:
+    		urlText = Tools.removeTranslateComment(urlText);
+    		try{
+	    		if (urlText != null && urlText.startsWith("."))  {
+	    				urlText = localDocumentationLinkConverter.convertLocalLink(urlText);
+	    		}
+	    		if (urlText != null && urlText != "") {
+	    			URL url = null;
+	    				url = new URL(urlText);
+	    				controller.getFrame().openDocument(url);
+	    		}
+    		} catch (Exception e2) {
+    			freemind.main.Resources.getInstance().logException(e2);
+    			return;
+    		}
+    	}
+    }
+    
     private class AboutAction extends AbstractAction {
         Controller controller;
         AboutAction(Controller controller) {
