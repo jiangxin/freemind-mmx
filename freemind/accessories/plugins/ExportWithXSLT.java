@@ -171,7 +171,7 @@ public class ExportWithXSLT extends ExportHook {
                 return;
             }
             if(Tools.safeEquals(getResourceString("load_file"), "true")) {
-                getController().getFrame().openDocument(saveFile.toURI().toURL());
+                getController().getFrame().openDocument(Tools.fileToUrl(saveFile));
             }
         } catch (Exception e) {
             freemind.main.Resources.getInstance().logException(e);

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.25 2008-06-24 19:54:00 christianfoltin Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.26 2008-07-09 20:01:06 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -190,7 +190,7 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
      * Return URL of the map (whether as local file or a web location)
      */
     public URL getURL() throws MalformedURLException {
-       return getFile() != null ? getFile().toURI().toURL() : null;
+       return getFile() != null ? Tools.fileToUrl(getFile()) : null;
     }
 
 

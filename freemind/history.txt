@@ -13,6 +13,7 @@ Changes made in FreeMind 0.9.0 Beta19
 * FreeMind includes document icons now. Thanks to Predrag.
 * Bug fix: storing of scripts in patterns corrected.
 * Key documentation added. Thanks to Ryan.
+* New icons (thanks to Predrag), Icons and their order is customizable in preferences, now.
  
 ===============================
 Changes made in FreeMind 0.9.0 Beta18

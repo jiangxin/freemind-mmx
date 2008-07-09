@@ -16,16 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindIcon.java,v 1.1.18.6.2.12 2008-06-08 21:23:13 dpolivaev Exp $ */
+/* $Id: MindIcon.java,v 1.1.18.6.2.13 2008-07-09 20:01:08 christianfoltin Exp $ */
 
 package freemind.modes;
 
-import java.awt.Component;
-import java.awt.event.KeyEvent;
-import java.net.URL;
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
-import java.util.MissingResourceException;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -34,16 +31,16 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 
-import freemind.controller.Controller;
-import freemind.main.FreeMindMain;
 import freemind.main.Resources;
+import freemind.main.Tools;
 
 /**
  * This class represents a MindIcon than can be applied
  * to a node or a whole branch.
  */
 public class MindIcon implements Comparable, IconInformation{
-    private String name;
+    public static final String PROPERTY_STRING_ICONS_LIST = "icons.list";
+	private String name;
     private String description;
     private int number = UNKNOWN;
     /**
@@ -149,7 +146,7 @@ public class MindIcon implements Comparable, IconInformation{
 							.getFreemindDirectory(), "icons/" + getName()
 							+ ".png");
 					if (file.canRead()) {
-						imageURL = file.toURI().toURL();
+						imageURL = Tools.fileToUrl(file);
 					}
 				}
 				catch (Exception e) {
@@ -179,7 +176,7 @@ public class MindIcon implements Comparable, IconInformation{
         if (mAllIconNames != null)
             return mAllIconNames;
         Vector mAllIconNames = new Vector();
-        String icons = Resources.getInstance().getProperty("icons.list");
+        String icons = Resources.getInstance().getProperty(PROPERTY_STRING_ICONS_LIST);
         StringTokenizer tokenizer = new StringTokenizer(icons, ";");
         while(tokenizer.hasMoreTokens()){
         	mAllIconNames.add(tokenizer.nextToken());

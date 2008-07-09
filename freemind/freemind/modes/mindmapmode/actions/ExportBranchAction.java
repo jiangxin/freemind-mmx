@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ExportBranchAction.java,v 1.1.2.6 2008-04-25 20:10:39 christianfoltin Exp $*/
+/*$Id: ExportBranchAction.java,v 1.1.2.7 2008-07-09 20:01:16 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -89,7 +89,7 @@ public class ExportBranchAction extends AbstractAction {
                         + freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION);
             }
             try {
-                link = chosenFile.toURI().toURL();
+                link = Tools.fileToUrl(chosenFile);
             } catch (MalformedURLException ex) {
                 JOptionPane.showMessageDialog(mMindMapController.getView(),
                         "couldn't create valid URL!");
@@ -116,8 +116,8 @@ public class ExportBranchAction extends AbstractAction {
             MindMapNodeModel parent = (MindMapNodeModel) node.getParentNode();
             try {
                 // set a link from the new root to the old map
-                String linkToNewMapString = Tools.toRelativeURL(chosenFile
-                        .toURI().toURL(), mMindMapController.getModel().getURL());
+                String linkToNewMapString = Tools.toRelativeURL(Tools.fileToUrl(chosenFile), 
+                		mMindMapController.getModel().getURL());
                 mMindMapController.setLink(node, linkToNewMapString);
             } catch (MalformedURLException ex) {
                 Resources.getInstance().logException(ex);
@@ -142,7 +142,7 @@ public class ExportBranchAction extends AbstractAction {
 
             try {
                 String linkString = Tools.toRelativeURL(mMindMapController
-                        .getModel().getURL(), chosenFile.toURI().toURL());
+                        .getModel().getURL(), Tools.fileToUrl(chosenFile));
                 mMindMapController.setLink(newNode, linkString);
             } catch (MalformedURLException ex) {
                 Resources.getInstance().logException(ex);

@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.36 2008-05-04 16:22:57 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.37 2008-07-09 20:01:03 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -152,6 +152,7 @@ public class FreeMindCommon {
         			return defaultResources.getString(key) + POSTFIX_TRANSLATE_ME;
         		}
         	} catch (Exception e) {
+//        		logger.info(key+" not found.");
         		return resource;
         	}
         }
@@ -222,7 +223,7 @@ public class FreeMindCommon {
 	public ClassLoader getFreeMindClassLoader() {
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		try {
-			return new URLClassLoader(new URL[] { new File(getFreemindBaseDir()).toURI().toURL() }, classLoader);
+			return new URLClassLoader(new URL[] { Tools.fileToUrl(new File(getFreemindBaseDir())) }, classLoader);
 		} catch (MalformedURLException e) {
 			freemind.main.Resources.getInstance().logException(e);
 			return classLoader;

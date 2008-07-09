@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 
@@ -77,7 +78,7 @@ public class ImportFolderStructureAction extends AbstractAction {
                 if (list[i].isDirectory()) {
                     // Insert a new node
 
-                    MindMapNode node = addNode(target, list[i].getName(), list[i].toURI().toURL().toString());
+                    MindMapNode node = addNode(target, list[i].getName(), Tools.fileToUrl(list[i]).toString());
                     importFolderStructure(list[i], node, false);
                 }
             }
@@ -85,7 +86,7 @@ public class ImportFolderStructureAction extends AbstractAction {
             // For each file: add it
             for (int i = 0; i < list.length; i++) {
                 if (!list[i].isDirectory()) {
-                    addNode(target, list[i].getName(), list[i].toURI().toURL().toString());
+                    addNode(target, list[i].getName(), Tools.fileToUrl(list[i]).toString());
                 }
             }
         }

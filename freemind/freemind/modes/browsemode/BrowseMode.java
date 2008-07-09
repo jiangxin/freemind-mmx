@@ -16,13 +16,14 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseMode.java,v 1.8.18.3.2.4 2008-03-30 20:39:57 christianfoltin Exp $ */
+/* $Id: BrowseMode.java,v 1.8.18.3.2.5 2008-07-09 20:01:10 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
 import java.io.File;
 
 import freemind.controller.Controller;
+import freemind.main.Tools;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 
@@ -60,7 +61,7 @@ public class BrowseMode implements Mode {
 
     public void restore(String restoreable) {
         try {
-            getDefaultModeController().load(new File(restoreable).toURI().toURL());
+            getDefaultModeController().load(Tools.fileToUrl(new File(restoreable)));
         } catch (Exception e) {
             c.errorMessage("An error occured on opening the file: "+restoreable + ".");
             freemind.main.Resources.getInstance().logException(e);

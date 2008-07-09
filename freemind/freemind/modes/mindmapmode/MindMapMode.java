@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMode.java,v 1.17.18.2.2.5 2008-04-11 16:58:32 christianfoltin Exp $ */
+/* $Id: MindMapMode.java,v 1.17.18.2.2.6 2008-07-09 20:01:12 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
 import freemind.controller.Controller;
 import freemind.controller.StructuredMenuHolder;
+import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
@@ -79,7 +80,7 @@ public class MindMapMode implements Mode {
     }
 
     public void restore(String restoreable) throws FileNotFoundException, XMLParseException, MalformedURLException, IOException, URISyntaxException {
-	    getDefaultModeController().load(new File(restoreable).toURI().toURL());
+	    getDefaultModeController().load(Tools.fileToUrl(new File(restoreable)));
     }
 
     public Controller getController() {

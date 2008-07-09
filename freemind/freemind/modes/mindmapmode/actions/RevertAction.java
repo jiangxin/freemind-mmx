@@ -19,7 +19,7 @@
  *
  * Created on 11.03.2005
  */
-/* $Id: RevertAction.java,v 1.1.2.2.2.7 2008-03-30 20:39:58 christianfoltin Exp $ */
+/* $Id: RevertAction.java,v 1.1.2.2.2.8 2008-07-09 20:01:18 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -33,6 +33,7 @@ import javax.swing.JOptionPane;
 
 import freemind.controller.actions.generated.instance.RevertXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
@@ -152,7 +153,7 @@ freemind.main.Resources.getInstance().logException(			e);
 				// close the old map.
 				controller.getController().close(true);
 				if (revertAction.getLocalFileName() != null) {
-					controller.load(new File(revertAction.getLocalFileName()).toURI().toURL());
+					controller.load(Tools.fileToUrl(new File(revertAction.getLocalFileName())));
 				} else {
 					// the map is given by xml. we store it and open it.
 					String filePrefix = controller.getText("freemind_reverted");
@@ -165,7 +166,7 @@ freemind.main.Resources.getInstance().logException(			e);
 					FileWriter fw = new FileWriter(tempFile);
 					fw.write(revertAction.getMap());
 					fw.close();
-					controller.load(tempFile.toURI().toURL());
+					controller.load(Tools.fileToUrl(tempFile));
 				}
 			} catch (Exception e) {
 freemind.main.Resources.getInstance().logException(				e);

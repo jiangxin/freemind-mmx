@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.32 2008-06-08 14:00:30 dpolivaev Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.33 2008-07-09 20:01:03 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -1275,6 +1275,11 @@ public class Tools {
 		final KeyStroke keyStroke = KeyStroke.getKeyStroke(keyStrokeDescription);
 		if(keyStroke != null) return keyStroke;
 		return  KeyStroke.getKeyStroke("typed " + keyStrokeDescription);
+	}
+
+	public static URL fileToUrl(File pFile) throws MalformedURLException {
+		// TODO Auto-generated method stub
+		return pFile.toURI().toURL();
 	}
 }
 

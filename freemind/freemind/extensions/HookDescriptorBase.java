@@ -19,7 +19,7 @@
  *
  * Created on 18.08.2006
  */
-/*$Id: HookDescriptorBase.java,v 1.1.2.6 2008-03-30 20:39:57 christianfoltin Exp $*/
+/*$Id: HookDescriptorBase.java,v 1.1.2.7 2008-07-09 20:01:00 christianfoltin Exp $*/
 package freemind.extensions;
 
 import java.io.File;
@@ -35,6 +35,7 @@ import freemind.controller.actions.generated.instance.Plugin;
 import freemind.controller.actions.generated.instance.PluginClasspath;
 import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
+import freemind.main.Tools;
 
 /**
  * @author foltin
@@ -161,9 +162,9 @@ public class HookDescriptorBase {
 					file = new File(getPluginDirectory(), jarString);
 				}
 				// end new version by ewl.
-				logger.info("file " + file.toURI().toURL() + " exists = "
+				logger.info("file " + Tools.fileToUrl(file) + " exists = "
 						+ file.exists());
-				urls[j++] = file.toURI().toURL();
+				urls[j++] = Tools.fileToUrl(file);
 			}
 			ClassLoader loader = new URLClassLoader(urls,
 					frame.getFreeMindClassLoader());

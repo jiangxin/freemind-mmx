@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.45 2008-05-04 15:05:14 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.46 2008-07-09 20:01:20 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -75,6 +75,7 @@ import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
 import freemind.main.Tools;
 import freemind.modes.IconInformation;
+import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.mindmapmode.MindMapController;
@@ -698,11 +699,13 @@ public class OptionPanel implements TextTranslator {
         controls
                 .add(new BooleanProperty(null, "el__enter_confirms_by_default")); //  true
 
-        controls.add(new BooleanProperty(null, FreeMind.RESOURCES_DON_T_SHOW_NOTE_ICONS)); 
 
         controls
                 .add(new BooleanProperty(null, "el__show_icon_for_attributes")); //  true
 
+        controls.add(new SeparatorProperty("icon_properties"));
+        controls.add(new BooleanProperty(null, FreeMind.RESOURCES_DON_T_SHOW_NOTE_ICONS));
+        controls.add(new StringProperty("icon_order_description", MindIcon.PROPERTY_STRING_ICONS_LIST));
 		/***********************************************************************
 		 * Keystrokes
 		 * ****************************************************************
