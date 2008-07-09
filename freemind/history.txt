@@ -14,7 +14,8 @@ Changes made in FreeMind 0.9.0 Beta19
 * Bug fix: storing of scripts in patterns corrected.
 * Key documentation added. Thanks to Ryan.
 * New icons (thanks to Predrag), Icons and their order is customizable in preferences, now.
- 
+* Fixed: Error opening files from network PCs in Windows * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1984395&group_id=7118
+
 ===============================
 Changes made in FreeMind 0.9.0 Beta18
 ===============================

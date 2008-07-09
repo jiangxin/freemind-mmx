@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.33 2008-07-09 20:01:03 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.34 2008-07-09 20:32:51 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -1278,8 +1278,13 @@ public class Tools {
 	}
 
 	public static URL fileToUrl(File pFile) throws MalformedURLException {
-		// TODO Auto-generated method stub
-		return pFile.toURI().toURL();
+		try {
+			return pFile.toURI().toURL();
+		} catch (IllegalArgumentException e){
+			Resources.getInstance().logException(e);
+			// fix for java1.4 and java5 only.
+			return pFile.toURL();
+		}
 	}
 }
 
