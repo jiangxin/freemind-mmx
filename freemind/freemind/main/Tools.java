@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.34 2008-07-09 20:32:51 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.35 2008-07-13 10:04:00 dpolivaev Exp $ */
 
 package freemind.main;
 
@@ -47,6 +47,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
@@ -1276,15 +1278,20 @@ public class Tools {
 		if(keyStroke != null) return keyStroke;
 		return  KeyStroke.getKeyStroke("typed " + keyStrokeDescription);
 	}
-
+	public static final String JAVA_VERSION = System.getProperty("java.version");
 	public static URL fileToUrl(File pFile) throws MalformedURLException {
-		try {
-			return pFile.toURI().toURL();
-		} catch (IllegalArgumentException e){
-			Resources.getInstance().logException(e);
-			// fix for java1.4 and java5 only.
+		// fix for java1.4 and java5 only.
+		if (JAVA_VERSION.compareTo("1.6.0") < 0) {
 			return pFile.toURL();
 		}
+		return pFile.toURI().toURL();
+	}
+	public static File urlToFile(URL pUrl) throws URISyntaxException{
+		// fix for java1.4 and java5 only.
+		if (JAVA_VERSION.compareTo("1.6.0") < 0) {
+			return new File (urlGetFile(pUrl));
+		}
+		return new File(new URI (pUrl.toString()));
 	}
 }
 
