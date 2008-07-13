@@ -19,7 +19,7 @@
  *
  * Created on 06.07.2006
  */
-/*$Id: FreeMindStarter.java,v 1.1.2.5 2008-07-13 10:04:00 dpolivaev Exp $*/
+/*$Id: FreeMindStarter.java,v 1.1.2.6 2008-07-13 10:08:24 dpolivaev Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -51,7 +51,7 @@ public class FreeMindStarter {
 		System.out.println("Checking Java Version...");
 		if (Tools.JAVA_VERSION.compareTo("1.4.0") < 0) {
 			String message = "Warning: FreeMind requires version Java 1.4.0 or higher (your version: "
-					+ System.getProperty("java.version")
+					+ Tools.JAVA_VERSION
 					+ ", installed in "
 					+ System.getProperty("java.home") + ").";
 			System.err.println(message);
