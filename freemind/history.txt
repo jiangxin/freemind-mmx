@@ -26,6 +26,11 @@ Changes made in FreeMind 0.9.0 Beta19
 * Updated portugese translation. Thanks to Luis Valente - alvalente.
 * New freemind documentation in french. Thanks to rickenbroc - rickenbroc.
 * Updated french translation. Thanks to Sébastien Rombauts - srombauts.
+* Updated korean translation. Thanks to Yang gyu, Lee - lyg73.
+* Updated japonese translation. Thanks to Tomohiro Sembongi - tomophy.
+* New indonesian translation. Thanks to Perry Harahap - permataharahap.
+* Updated slovenian translation. Thanks to Martin Srebotnjak - filmsi.
+* New indonesian documentation. Thanks to Perry Harahap - permataharahap.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta18
