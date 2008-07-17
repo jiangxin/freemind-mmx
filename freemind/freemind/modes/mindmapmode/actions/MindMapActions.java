@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/* $Id: MindMapActions.java,v 1.1.2.3.2.8 2008-05-04 15:05:13 christianfoltin Exp $ */
+/* $Id: MindMapActions.java,v 1.1.2.3.2.9 2008-07-17 19:16:36 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
@@ -117,7 +117,8 @@ public interface MindMapActions {
 		MindMapNode node,
 		String fontFamily);
 	public void setFontSize(MindMapNode node, String fontSizeValue);
-	/** This method is nice, but how to get a MindIcon ? */
+	/** This method is nice, but how to get a MindIcon ? 
+	 * see freemind.modes.MindIcon.factory(String)*/
 	public void addIcon(MindMapNode node, MindIcon icon);
 	public int removeLastIcon(MindMapNode node);
 	public void removeAllIcons(MindMapNode node);

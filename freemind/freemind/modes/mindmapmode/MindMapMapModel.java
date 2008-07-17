@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.29 2008-07-13 10:04:01 dpolivaev Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.30 2008-07-17 19:16:35 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -36,7 +36,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileLock;
@@ -347,7 +346,7 @@ public class MindMapMapModel extends MapAdapter  {
        setFile(file);
     }
 
-    /** When a map is closed, this method is called. */
+	/** When a map is closed, this method is called. */
     public void destroy() {
        super.destroy();
        lockManager.releaseLock();

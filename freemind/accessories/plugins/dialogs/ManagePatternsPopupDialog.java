@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.14 2008-04-10 20:49:20 dpolivaev Exp $*/
+/*$Id: ManagePatternsPopupDialog.java,v 1.1.2.4.2.15 2008-07-17 19:16:32 christianfoltin Exp $*/
 
 package accessories.plugins.dialogs;
 
@@ -128,6 +128,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 		 */
 		public Object getElementAt(int index) {
 			return getPatternAt(index).getName();
+//			return "<html><table width=\"100\"><tr><td>"+getPatternAt(index).getName()+"</td><td align=\"right\">TEST</td></tr></table></html>";
 		}
 
 		/**

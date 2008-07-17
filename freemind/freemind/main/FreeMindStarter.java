@@ -19,7 +19,7 @@
  *
  * Created on 06.07.2006
  */
-/*$Id: FreeMindStarter.java,v 1.1.2.6 2008-07-13 10:08:24 dpolivaev Exp $*/
+/*$Id: FreeMindStarter.java,v 1.1.2.7 2008-07-17 19:16:34 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -32,10 +32,19 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 /**
+ * This class should check the java version and start freemind.
+ * In order to be able to check, it must be startable with
+ * java versions < 1.4. We have therefore a section in the 
+ * build.xml that explicitly compiles this class for java 1.1
+ * compatibility. Currently, it is unclear, if this works
+ * as expected. But in any case, almost no dependencies to
+ * other FreeMind sources should be used here.
  * @author foltin
  * 
  */
 public class FreeMindStarter {
+	/** Doubled variable on purpose. See header of this class.*/
+	static final String JAVA_VERSION = System.getProperty("java.version");
 
 	public static void main(String[] args) {
 		// First check version of Java
@@ -49,9 +58,9 @@ public class FreeMindStarter {
 	
 	private static void checkJavaVersion() {
 		System.out.println("Checking Java Version...");
-		if (Tools.JAVA_VERSION.compareTo("1.4.0") < 0) {
+		if (JAVA_VERSION.compareTo("1.4.0") < 0) {
 			String message = "Warning: FreeMind requires version Java 1.4.0 or higher (your version: "
-					+ Tools.JAVA_VERSION
+					+ JAVA_VERSION
 					+ ", installed in "
 					+ System.getProperty("java.home") + ").";
 			System.err.println(message);

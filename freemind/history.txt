@@ -15,6 +15,15 @@ Changes made in FreeMind 0.9.0 Beta19
 * Key documentation added. Thanks to Ryan.
 * New icons (thanks to Predrag), Icons and their order is customizable in preferences, now.
 * Fixed: Error opening files from network PCs in Windows * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1984395&group_id=7118
+* New translation from Krymmel. Thanks to the author.
+* New slovak translation. Thanks to the author Viliam Bur - viliambur.
+* Updates czech translation. Thanks to the author.
+* Updated translation norsk from Larsa - larslem. Thanks to the author.
+* Updated dutch translation. Thanks to the author Walter Huwels - kiwaki.
+* New translation from jmasesch - jmases1. Thank you.
+* New translation to greek from sarikoudis - sarikoudis. Thank you.
+* New ukranian translation. Thanks to Serhij Dubyk - dubyk.
+* Updated portugese translation. Thanks to Luis Valente - alvalente.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta18

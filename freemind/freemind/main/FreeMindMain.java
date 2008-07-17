@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMain.java,v 1.12.14.5.2.11 2008-04-17 19:32:27 christianfoltin Exp $*/
+/*$Id: FreeMindMain.java,v 1.12.14.5.2.12 2008-07-17 19:16:33 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -225,6 +225,10 @@ public interface FreeMindMain {
 	 */
 	String getFreemindBaseDir();
 
+    /** Makes it possible to have a property different for different localizations.
+     * Common example is to put keystrokes to different keys as some are better 
+     * reachable than others depending on the locale.
+     */
     public String getAdjustableProperty(String label);
 
     public void setDefaultProperty(String key, String value);
