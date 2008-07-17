@@ -31,6 +31,7 @@ Changes made in FreeMind 0.9.0 Beta19
 * New indonesian translation. Thanks to Perry Harahap - permataharahap.
 * Updated slovenian translation. Thanks to Martin Srebotnjak - filmsi.
 * New indonesian documentation. Thanks to Perry Harahap - permataharahap.
+* New vietnamese translation and documentation. Thanks to Nguyen Dinh Trung - dinhtrung.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta18
