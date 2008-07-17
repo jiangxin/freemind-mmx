@@ -32,6 +32,11 @@ Changes made in FreeMind 0.9.0 Beta19
 * Updated slovenian translation. Thanks to Martin Srebotnjak - filmsi.
 * New indonesian documentation. Thanks to Perry Harahap - permataharahap.
 * New vietnamese translation and documentation. Thanks to Nguyen Dinh Trung - dinhtrung.
+* Updated chinese translation. Thanks to willyann - willyann.
+* New estonian translation and documentation. Thanks to Edmund Laugasson - elaugasson.
+* Updated russian translation. Thanks to ksd - sergeykotkin.
+* New key mappings in russian. Thanks to ksd - sergeykotkin.
+
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta18
