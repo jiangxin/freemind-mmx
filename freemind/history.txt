@@ -24,6 +24,8 @@ Changes made in FreeMind 0.9.0 Beta19
 * New translation to greek from sarikoudis - sarikoudis. Thank you.
 * New ukranian translation. Thanks to Serhij Dubyk - dubyk.
 * Updated portugese translation. Thanks to Luis Valente - alvalente.
+* New freemind documentation in french. Thanks to rickenbroc - rickenbroc.
+* Updated french translation. Thanks to Sébastien Rombauts - srombauts.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta18
