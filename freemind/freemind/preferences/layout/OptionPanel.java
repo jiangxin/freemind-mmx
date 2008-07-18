@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.49 2008-07-17 19:44:01 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.50 2008-07-18 16:14:26 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -437,16 +437,22 @@ public class OptionPanel implements TextTranslator {
 		//TODO: Search class path for translations.
 		controls.add(new ComboProperty(
 
-				/** For the codes see http://www.loc.gov/standards/iso639-2/php/English_list.php */
+		/**
+		 * For the codes see
+		 * http://www.loc.gov/standards/iso639-2/php/English_list.php
+		 */
 		"language.tooltip", FreeMindCommon.RESOURCE_LANGUAGE, new String[] {
-				"automatic", "ar", "cs", "de", "dk", "en", "el", "es", "fr", "gl", "hr", "hu", "id", "it",
-				"ja", "kr", "lt", "nl", "nn", "nb", "pl", "pt_BR", "pt_PT", "ru", "sk", "se", "sl", "tr", "uk_UA", 
-				"vi", "zh", "zh_CN" }, new TextTranslator(){
+				"automatic", "ar", "cs", "de", "dk", "en", "el", "es", "et",
+				"fr", "gl", "hr", "hu", "id", "it", "ja", "kr", "lt", "nl",
+				"nn", "nb", "pl", "pt_BR", "pt_PT", "ru", "sk", "se", "sl",
+				"tr", "uk_UA", "vi", "zh_TW", "zh_CN" }, new TextTranslator() {
 
-                    public String getText(String pKey) {
-                        // decorator, that removes "TranslateMe" comments.
-                        return Tools.removeTranslateComment(OptionPanel.this.getText(pKey));
-                    }})); //  automatic
+			public String getText(String pKey) {
+				// decorator, that removes "TranslateMe" comments.
+				return Tools.removeTranslateComment(OptionPanel.this
+						.getText(pKey));
+			}
+		})); // automatic
 
 		//INTERNAL PROPERTY.
 		//		controls

@@ -160,7 +160,7 @@ public class ImportWizard {
 	 *
 	 * @param classList the Vector to add the classes to
 	 * @param currentDir the File to recursively scan as a directory
-	 * @param recursionLevel TODO
+	 * @param recursionLevel To ensure that after a certain depth the recursive directory search stops
 	 */
 	public void addClassesFromDir(
 		Vector classList,
@@ -218,7 +218,11 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.14  2006-12-14 16:45:00  christianfoltin
+ * Revision 1.1.4.6.2.15  2008-07-18 16:14:25  christianfoltin
+ * * Renamed zh into zh_TW (patch from willyann
+ * * Reverted changes to Tools.
+ *
+ * Revision 1.1.4.6.2.14  2006/12/14 16:45:00  christianfoltin
  * * Search & Replace Dialog with menu and nicer. Bug fixes...
  *
  * Revision 1.1.4.6.2.13  2006/11/28 08:25:01  dpolivaev

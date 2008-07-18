@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.36 2008-07-17 18:16:38 dpolivaev Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.37 2008-07-18 16:14:25 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -1280,28 +1280,18 @@ public class Tools {
 	}
 	public static final String JAVA_VERSION = System.getProperty("java.version");
 	public static URL fileToUrl(File pFile) throws MalformedURLException {
-	// Dimitry: images referenced from documents with bases given by 
-	//		pFile.toURI().toURL() are  not shown in SimplyHTML
-	// (bug [ freemind-Bugs-2019223 ] Images are not shown in the Notes view)
-	// => the old method pFile.toURL() MUST be used.		
-		return pFile.toURL();
-// correctly for URLs returned by pFile.toURI().toURL().
-// As a consequence  		
-//		// fix for java1.4 and java5 only.
-//		if (JAVA_VERSION.compareTo("1.6.0") < 0) {
-//			return pFile.toURL();
-//		}
-//		return pFile.toURI().toURL();
+		// fix for java1.4 and java5 only.
+		if (JAVA_VERSION.compareTo("1.6.0") < 0) {
+			return pFile.toURL();
+		}
+		return pFile.toURI().toURL();
 	}
 	public static File urlToFile(URL pUrl) throws URISyntaxException{
-	// Dimitry: File(new URI (pUrl.toString())) does not work for
-	// URL returned by File.toURL()
-		return new File (urlGetFile(pUrl));
-//		// fix for java1.4 and java5 only.
-//		if (JAVA_VERSION.compareTo("1.6.0") < 0) {
-//			return new File (urlGetFile(pUrl));
-//		}
-//		return new File(new URI (pUrl.toString()));
+		// fix for java1.4 and java5 only.
+		if (JAVA_VERSION.compareTo("1.6.0") < 0) {
+			return new File (urlGetFile(pUrl));
+		}
+		return new File(new URI (pUrl.toString()));
 	}
 }
 
