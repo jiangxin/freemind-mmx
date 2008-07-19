@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.9 2008-06-24 19:54:00 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.10 2008-07-19 09:09:25 dpolivaev Exp $*/
 
 package accessories.plugins;
 
@@ -130,9 +130,14 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
             document.removeDocumentListener(
                     mNoteDocumentListener);
 			try {
-				document.setBase(node.getMap().getURL());
+//	Dimitry:
+//				Images referenced from documents with bases given by 
+//				pFile.toURI().toURL() are  not shown in SimplyHTML
+//				(bug [ freemind-Bugs-2019223 ] Images are not shown in the Notes view)
+//				=> the old method File.toURL() must be used again.
+				document.setBase(node.getMap().getFile().toURL());
 			}
-			catch (MalformedURLException e) {} 
+			catch (Exception e) {} 
 
             // logger.info("onReceiveFocuse for node " + node.toString());
             String note = node.getNoteText();
