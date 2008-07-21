@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: RootMainView.java,v 1.1.4.6 2007-12-03 19:30:13 dpolivaev Exp $ */
+/* $Id: RootMainView.java,v 1.1.4.7 2008-07-21 21:57:51 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -49,9 +49,6 @@ class RootMainView extends MainView{
         
         if (getNodeView().getModel()==null) return;
 
-        final Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-		getController().setEdgesRenderingHint(g);
-		
 		paintSelected(g);
 		paintDragOver(g);
 
@@ -60,7 +57,6 @@ class RootMainView extends MainView{
         g.setStroke(new BasicStroke(1.0f));
         g.drawOval(0, 0, getWidth()-1, getHeight()-1);
         super.paint(g);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
         }
 
        public void paintDragOver(Graphics2D graphics) {

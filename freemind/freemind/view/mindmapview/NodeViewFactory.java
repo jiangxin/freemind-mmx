@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeViewFactory.java,v 1.1.4.8 2007-09-09 11:59:52 dpolivaev Exp $ */
+/* $Id: NodeViewFactory.java,v 1.1.4.9 2008-07-21 21:57:51 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Component;
@@ -42,16 +42,6 @@ class NodeViewFactory {
 		ContentPane(){
 			setLayout(layoutManager );
 		}
-
-		public void paint(Graphics g) {
-            final Graphics2D g2 = (Graphics2D)g;
-            final Object renderingHint = g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-            NodeView nodeView = (NodeView) getParent();
-            nodeView.getMap().getController().setTextRenderingHint(g2);
-            super.paint(g);
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
-		}
-		
 	}
 	
 	private static class ContentPaneLayout implements LayoutManager{

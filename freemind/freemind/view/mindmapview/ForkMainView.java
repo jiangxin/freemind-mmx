@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ForkMainView.java,v 1.1.4.7 2007-10-25 15:32:59 dpolivaev Exp $ */
+/* $Id: ForkMainView.java,v 1.1.4.8 2008-07-21 21:57:51 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -36,8 +36,6 @@ class ForkMainView extends MainView{
         final MindMapNode model = nodeView.getModel();
         if (model==null) return;
         
-        final Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-		getController().setEdgesRenderingHint(g);
         paintSelected(g);
         paintDragOver(g);
         
@@ -54,7 +52,6 @@ class ForkMainView extends MainView{
                 getHeight()-edgeWidth/2-1);
         g.setColor(oldColor);
         super.paint(g);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
     }
 
     void paintFoldingMark(Graphics2D g, Point p) {

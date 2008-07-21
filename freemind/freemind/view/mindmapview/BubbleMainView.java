@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BubbleMainView.java,v 1.1.4.9 2007-10-25 15:32:59 dpolivaev Exp $ */
+/* $Id: BubbleMainView.java,v 1.1.4.10 2008-07-21 21:57:51 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -52,8 +52,6 @@ class BubbleMainView extends MainView{
         final NodeView nodeView = getNodeView();
         final MindMapNode model = nodeView.getModel();
         if (model==null) return;
-        final Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-		getController().setEdgesRenderingHint(g);
 
 		paintSelected(g);
 		paintDragOver(g);
@@ -70,7 +68,6 @@ class BubbleMainView extends MainView{
         g.drawRoundRect(0,0, getWidth()-1, getHeight()-1,10,10);
 
         super.paint(g);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
         }
 
 	public void paintSelected(Graphics2D graphics) {

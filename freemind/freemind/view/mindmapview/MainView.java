@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.28 2008-04-10 20:49:21 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.29 2008-07-21 21:57:51 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -98,15 +98,13 @@ public abstract class MainView extends JLabel{
             if (isEmpty){
                 setText("");
             }
-             prefSize.width += getNodeView().getMap().getZoomed(4);
+             prefSize.width += getNodeView().getMap().getZoomed(12);
              prefSize.height += getNodeView().getMap().getZoomed(4);
              return prefSize;
         }
         
         public void paint(Graphics g) {
             final Graphics2D g2 = (Graphics2D)g;
-            final Object renderingHint = g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-			getController().setTextRenderingHint(g2);
 		    float zoom = getZoom();
 		    if(zoom != 1F){
 		    	// Dimitry: Workaround because Swing do not use fractional metrics 
@@ -122,7 +120,6 @@ public abstract class MainView extends JLabel{
 		    else{
 		        super.paint(g);
 		    }
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
 		}
 
 		Controller getController() {

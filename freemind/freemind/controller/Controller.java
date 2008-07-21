@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.54 2008-07-06 13:01:50 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.55 2008-07-21 21:57:51 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -1611,10 +1611,10 @@ public class Controller  implements MapModuleChangeObserver {
 
 	public void setTextRenderingHint(Graphics2D g) {
 		if(getAntialiasAll()){
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		}
 		else{
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		}
 	}
 
