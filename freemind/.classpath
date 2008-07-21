@@ -33,11 +33,7 @@
 	<classpathentry kind="lib" path="lib/SimplyHTML/SimplyHTML.jar" sourcepath="/simplyHtml/src"/>
 	<classpathentry kind="lib" path="lib/jarbundler-1.8.1.jar"/>
 	<classpathentry kind="lib" path="plugins/latex/HotEqn.jar"/>
+	<classpathentry kind="lib" path="plugins/script/groovy-all-1.5.6.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="plugins/script/groovy-all-1.5.1.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/home/foltin/java/groovy/groovy-docs-1.5.2.zip!/groovy-1.5.2/html/api"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
