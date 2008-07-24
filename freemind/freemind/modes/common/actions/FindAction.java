@@ -77,7 +77,8 @@ public class FindAction extends AbstractAction {
 
 	public void actionPerformed(ActionEvent e) {
 		String what = JOptionPane.showInputDialog(controller.getView()
-				.getSelected(), controller.getText("find_what"));
+				.getSelected(), controller.getText("find_what"), controller
+				.getText("find"), JOptionPane.QUESTION_MESSAGE);
 		if (what == null || what.equals("")) {
 			return;
 		}

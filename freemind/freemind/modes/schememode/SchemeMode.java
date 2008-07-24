@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: SchemeMode.java,v 1.8.18.2.2.1 2006-04-05 21:26:31 dpolivaev Exp $ */
+/* $Id: SchemeMode.java,v 1.8.18.2.2.2 2008-07-24 03:10:38 christianfoltin Exp $ */
 
 package freemind.modes.schememode;
 
@@ -27,7 +27,7 @@ import freemind.main.FreeMindMain;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 
-public class SchemeMode implements Mode {
+public class SchemeMode extends Mode {
 
     private Controller c;
     private SchemeController modecontroller;

@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: ColorProperty.java,v 1.1.2.4.2.1 2006-07-25 20:28:19 christianfoltin Exp $*/
+/*$Id: ColorProperty.java,v 1.1.2.4.2.2 2008-07-24 03:10:36 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.Color;
@@ -117,7 +117,7 @@ public class ColorProperty extends PropertyBean implements
 
 	public void actionPerformed(ActionEvent arg0) {
 		Color result = Controller.showCommonJColorChooserDialog(
-				mButton.getRootPane(), getLabel(), getColorValue());
+				mButton.getRootPane(), mTranslator.getText(getLabel()), getColorValue());
 		if (result != null) {
 			setColorValue(result);
 			firePropertyChangeEvent();

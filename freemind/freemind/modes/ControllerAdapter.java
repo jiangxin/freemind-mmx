@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.50 2008-07-09 20:01:04 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.51 2008-07-24 03:10:37 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -114,7 +114,7 @@ public abstract class ControllerAdapter implements ModeController {
     private HashSet mNodeLifetimeListeners=new HashSet();
     private static File lastCurrentDir =  null;
 
-    /** Instanciation order: first me and then the model.
+    /** Instantiation order: first me and then the model.
      */
     public ControllerAdapter(Mode mode) {
         this.setMode(mode);

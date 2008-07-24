@@ -1,33 +1,32 @@
-<map version="0.9.0 Beta 5">
+<map version="0.9.0">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
-<node COLOR="#993300" CREATED="1124560950701" MODIFIED="1124560950701">
-<richcontent><html>
+<node COLOR="#993300" CREATED="1124560950701" ID="ID_911274459" MODIFIED="1216753542772">
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body width="">
     <p align="center">
-      FreeMind<br /><small>- free mind mapping software -</small>&#160;
+      FreeMind<br/><small>- free mind mapping software -</small> 
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <font BOLD="true" NAME="Dialog" SIZE="18"/>
 <node CREATED="1124560950701" LINK="http://freemind.sourceforge.net" MODIFIED="1124560950701" POSITION="left" TEXT="Home page of FreeMind">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1091417446" MODIFIED="1125175911388" POSITION="left" TEXT="Table of key mappings">
-<node CREATED="1124560950701" MODIFIED="1124560950701" TEXT="File commands:&#xa;New map      - Ctrl+N&#xa;Open map     - Ctrl+O&#xa;Save map     - Ctrl+S&#xa;Save as      - Ctrl+A&#xa;Print        - Ctrl+P&#xa;Close        - Ctrl+W&#xa;Quit         - Ctrl+Q&#xa;Previous map - Ctrl+LEFT&#xa;Next Map     - Ctrl+RIGHT&#xa;Export file to HTML          - Ctrl+E&#xa;Export branch to HTML        - Ctrl+H&#xa;Export branch to new MM file - Alt+A&#xa;Open first file in history   - Ctrl+Shift+W&#xa;&#xa;Edit commands:&#xa;Find        - Ctrl+F&#xa;Find next   - Ctrl+G&#xa;Cut         - Ctrl+X&#xa;Copy        - Ctrl+C&#xa;Copy single - Ctrl+Y&#xa;Paste       - Ctrl+V&#xa;&#xa;Mode commands:&#xa;MindMap mode - Alt+1&#xa;Browse mode  - Alt+2 &#xa;File mode    - Alt+3&#xa;&#xa;Node formatting commands:&#xa;Italicize                 - Ctrl+I&#xa;Bold                      - Ctrl+B&#xa;Cloud                     - Ctrl+Shift+B&#xa;Change node color         - Alt+C&#xa;Blend node color          - Alt+B&#xa;Change node edge color    - Alt+E&#xa;Increase node font size   - Ctrl+L&#xa;decrease node font size   - Ctrl+M&#xa;Increase branch font size - Ctrl+Shift+L&#xa;Decrease branch font size - Ctrl+Shift+M&#xa;&#xa;Node navigation commands:&#xa;Go to root  - ESCAPE&#xa;Move up     - UP&#xa;Move down   - DOWN&#xa;Move left   - LEFT&#xa;Move right  - RIGHT&#xa;Follow link - Ctrl+ENTER&#xa;Zoom out    - Alt+UP&#xa;Zoom in     - Alt+DOWN&#xa;&#xa;New node commands:&#xa;Add sibling node   - ENTER&#xa;Add child node     - INSERT&#xa;Add sibling before - Shift+ENTER&#xa;&#xa;Node editing commands:&#xa;Edit selected node        - F2&#xa;Edit long node            - Alt+ENTER&#xa;Join nodes                - Ctrl+J&#xa;Toggle folded             - SPACE&#xa;Toggle children folded    - Ctrl+SPACE&#xa;Set link by filechooser   - Ctrl+Shift+K&#xa;Set link by text entry    - Ctrl+K&#xa;Set image by filechooser  - Alt+K&#xa;Move node up              - Ctrl+UP&#xa;Move node down            - Ctrl+DOWN&#xa;">
+<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1091417446" MODIFIED="1216754025644" POSITION="left" TEXT="Table of key mappings">
+<node CREATED="1124560950701" ID="ID_1069493165" MODIFIED="1124560950701" TEXT="File commands:&#xa;New map      - Ctrl+N&#xa;Open map     - Ctrl+O&#xa;Save map     - Ctrl+S&#xa;Save as      - Ctrl+A&#xa;Print        - Ctrl+P&#xa;Close        - Ctrl+W&#xa;Quit         - Ctrl+Q&#xa;Previous map - Ctrl+LEFT&#xa;Next Map     - Ctrl+RIGHT&#xa;Export file to HTML          - Ctrl+E&#xa;Export branch to HTML        - Ctrl+H&#xa;Export branch to new MM file - Alt+A&#xa;Open first file in history   - Ctrl+Shift+W&#xa;&#xa;Edit commands:&#xa;Find        - Ctrl+F&#xa;Find next   - Ctrl+G&#xa;Cut         - Ctrl+X&#xa;Copy        - Ctrl+C&#xa;Copy single - Ctrl+Y&#xa;Paste       - Ctrl+V&#xa;&#xa;Mode commands:&#xa;MindMap mode - Alt+1&#xa;Browse mode  - Alt+2 &#xa;File mode    - Alt+3&#xa;&#xa;Node formatting commands:&#xa;Italicize                 - Ctrl+I&#xa;Bold                      - Ctrl+B&#xa;Cloud                     - Ctrl+Shift+B&#xa;Change node color         - Alt+C&#xa;Blend node color          - Alt+B&#xa;Change node edge color    - Alt+E&#xa;Increase node font size   - Ctrl+L&#xa;decrease node font size   - Ctrl+M&#xa;Increase branch font size - Ctrl+Shift+L&#xa;Decrease branch font size - Ctrl+Shift+M&#xa;&#xa;Node navigation commands:&#xa;Go to root  - ESCAPE&#xa;Move up     - UP&#xa;Move down   - DOWN&#xa;Move left   - LEFT&#xa;Move right  - RIGHT&#xa;Follow link - Ctrl+ENTER&#xa;Zoom out    - Alt+UP&#xa;Zoom in     - Alt+DOWN&#xa;&#xa;New node commands:&#xa;Add sibling node   - ENTER&#xa;Add child node     - INSERT&#xa;Add sibling before - Shift+ENTER&#xa;&#xa;Node editing commands:&#xa;Edit selected node        - F2&#xa;Edit long node            - Alt+ENTER&#xa;Join nodes                - Ctrl+J&#xa;Toggle folded             - SPACE&#xa;Toggle children folded    - Ctrl+SPACE&#xa;Set link by filechooser   - Ctrl+Shift+K&#xa;Set link by text entry    - Ctrl+K&#xa;Set image by filechooser  - Alt+K&#xa;Move node up              - Ctrl+UP&#xa;Move node down            - Ctrl+DOWN&#xa;">
 <font NAME="Courier New" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#006633" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_904501221" MODIFIED="1124560950701" POSITION="left" TEXT="Installation">
+<node COLOR="#006633" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_904501221" MODIFIED="1216753628909" POSITION="left" TEXT="Installation">
 <node COLOR="#006699" CREATED="1124560950701" ID="_Freemind_Link_1911559485" MODIFIED="1124560950701" TEXT="Links">
-<node CREATED="1124560950701" LINK="http://java.sun.com/j2se" MODIFIED="1124560950701" TEXT="Download the Java Runtime Environment (at least J2RE1.4)">
+<node CREATED="1124560950701" ID="ID_1620747952" LINK="http://java.sun.com/javase/downloads/index.jsp" MODIFIED="1216753565196" TEXT="Download the Java Runtime Environment (at least J2RE1.4)">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1124560950701" ID="_Freemind_Link_1612101865" LINK="http://sourceforge.net/project/showfiles.php?project_id=7118" MODIFIED="1124560950701" TEXT="Download the Application">
+<node CREATED="1124560950701" ID="_Freemind_Link_1612101865" LINK="http://freemind.sourceforge.net/wiki/index.php/Download#Download" MODIFIED="1216753620941" TEXT="Download the Application">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -43,7 +42,7 @@
 <node CREATED="1124560950701" MODIFIED="1124560950701" TEXT="To view, edit or execute a file, follow the link of its node."/>
 <node CREATED="1124560950701" ID="_Freemind_Link_279880616" MODIFIED="1124560950701" TEXT="The file mode is currently not very useful. It is a demonstration that it&apos;s not too difficult to feed data into the tree from other source than mind map. There is no evidence that people would actually use this mode."/>
 </node>
-<node COLOR="#407000" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1530607683" MODIFIED="1124560950701" POSITION="left" TEXT="Browsing mind maps">
+<node COLOR="#407000" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1530607683" MODIFIED="1216753508538" POSITION="left" TEXT="Browsing mind maps">
 <node CREATED="1124560950701" MODIFIED="1124560950701" TEXT="To browse mind maps rather than to edit them, switch to browse mode in pull-down menu using Modes &gt; Browse. Unless used in FreeMind applet, this function is useless."/>
 <node CREATED="1124560950701" MODIFIED="1124560950701" TEXT="The reasons for having a separate browsing mode are technical. Browsing is the only thing you can do in FreeMind applet which can be put to your website. Normally, you would not use browse mode in FreeMind."/>
 </node>
@@ -81,7 +80,7 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_784043927" MODIFIED="1124560950701" POSITION="left" TEXT="Credits">
+<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_784043927" MODIFIED="1216753652715" POSITION="left" TEXT="Credits">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#006699" CREATED="1124560950701" ID="Freemind_Link_415458128" MODIFIED="1124560950701" TEXT="Authors">
@@ -95,7 +94,7 @@
 <font NAME="Dialog" SIZE="10"/>
 </node>
 </node>
-<node COLOR="#996600" CREATED="1124560950701" ID="_Freemind_Link_984984595" LINK="http://mujweb.cz/www/danielpolansky" MODIFIED="1124560950701" TEXT="Daniel Polansky">
+<node COLOR="#996600" CREATED="1124560950701" ID="_Freemind_Link_984984595" LINK="http://danpolansky.blogspot.com/" MODIFIED="1216753531920" TEXT="Daniel Polansky">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -118,7 +117,7 @@
 <node COLOR="#006699" CREATED="1124560950701" ID="Freemind_Link_816166020" MODIFIED="1124560950701" TEXT="Smaller contributions">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
-<node COLOR="#996600" CREATED="1124560950701" MODIFIED="1124560950701" TEXT="Andrew Iggleden">
+<node COLOR="#996600" CREATED="1124560950701" ID="ID_805941234" MODIFIED="1124560950701" TEXT="Andrew Iggleden">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#999999" CREATED="1124560950701" MODIFIED="1124560950701" TEXT="Installer Windows">
@@ -151,7 +150,7 @@
 </node>
 </node>
 </node>
-<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="Freemind_Link_360501151" MODIFIED="1124560950701" TEXT="Translations">
+<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="Freemind_Link_360501151" LINK="http://freemind.sourceforge.net/wiki/index.php/Translation" MODIFIED="1216753650369" TEXT="Translations">
 <node COLOR="#996600" CREATED="1124560950701" ID="Freemind_Link_807977431" MODIFIED="1124560950701" TEXT="Bob Alexander">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
@@ -246,8 +245,8 @@
 </node>
 </node>
 </node>
-<node COLOR="#0033ff" CREATED="1124560950701" MODIFIED="1124560950701" POSITION="right" TEXT="Press Ctrl + F to search. Press Ctrl + G to find next. To make the search global, press Esc before searching."/>
-<node COLOR="#0033ff" CREATED="1124560950701" MODIFIED="1124560950701" POSITION="right" TEXT=" Press right arrow to unfold a text box."/>
+<node COLOR="#0033ff" CREATED="1124560950701" ID="ID_1238769160" MODIFIED="1124560950701" POSITION="right" TEXT="Press Ctrl + F to search. Press Ctrl + G to find next. To make the search global, press Esc before searching."/>
+<node COLOR="#0033ff" CREATED="1124560950701" ID="ID_182998712" MODIFIED="1124560950701" POSITION="right" TEXT=" Press right arrow to unfold a text box."/>
 <node COLOR="#407000" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1596161299" MODIFIED="1124560950701" POSITION="right" TEXT="Introduction">
 <node CREATED="1124560950701" MODIFIED="1124560950701" TEXT="FreeMind makes it possible to create so called mind maps. Still, many people use it as an alternative to a tabbed notebook or a personal information manager."/>
 <node CREATED="1124560950701" MODIFIED="1124560950701" TEXT="Information is stored in text boxes, called nodes. Nodes are connected together using curved lines called edges."/>
@@ -363,7 +362,7 @@
 </node>
 <node COLOR="#006699" CREATED="1124560950701" MODIFIED="1124560950701" TEXT="Local folders">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950701" LINK="C:/Program Files/" MODIFIED="1124560950701" TEXT="C:/Program Files/">
+<node CREATED="1124560950701" LINK="C:/Program%20Files/" MODIFIED="1124560950701" TEXT="C:/Program Files/">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 <node CREATED="1124560950701" LINK="/home/" MODIFIED="1124560950701" TEXT="/home/">
@@ -444,7 +443,7 @@
 </node>
 <node COLOR="#407000" CREATED="1124560950717" ID="_Freemind_Link_1750585847" MODIFIED="1124560950717" TEXT="You can have graphical links">
 <node CREATED="1124560950717" ID="_Freemind_Link_1212380407" MODIFIED="1124560950717" TEXT="Connecting node">
-<arrowlink DESTINATION="_Freemind_Link_1249400461" ENDARROW="Default" ENDINCLINATION="41;0;" STARTARROW="None" STARTINCLINATION="41;0;"/>
+<arrowlink DESTINATION="_Freemind_Link_1249400461" ENDARROW="Default" ENDINCLINATION="41;0;" ID="Arrow_ID_854000001" STARTARROW="None" STARTINCLINATION="41;0;"/>
 </node>
 <node CREATED="1124560950717" ID="_Freemind_Link_1249400461" MODIFIED="1124560950717" TEXT="To another">
 <arrowlink COLOR="#6600ff" DESTINATION="_Freemind_Link_880551392" ENDARROW="Default" ENDINCLINATION="47;0;" ID="Freemind_Arrow_Link_85185909" STARTARROW="None" STARTINCLINATION="47;0;"/>
@@ -513,15 +512,14 @@
 <node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To apply a physical style, in node context menu use Physical Style &gt; Style of Your Choice. To speedup applying physical styles, use keyboard shortcuts as shown in the node context menu."/>
 <node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To add your own physical style, given that you are a technical user, edit them in the file &quot;patterns.xml&quot; located at the folder &quot;.freemind&quot; in your home directory."/>
 <node CREATED="1124560950717" ID="Freemind_Link_1514218661" MODIFIED="1150322826740">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    [This paragraph is outdated.] A remark on the file patterns.xml follows. Physical style applies to node, if there is a &lt;node&gt; tag. It applies to edge, if there is an &lt;edge&gt; tag. &lt;node&gt; tag can have <font>tag as a child. Study the file &quot;patterns.xml&quot; supplied with FreeMind.</font>
+    [This paragraph is outdated.] A remark on the file patterns.xml follows. Physical style applies to node, if there is a &lt;node&gt; tag. It applies to edge, if there is an &lt;edge&gt; tag. &lt;node&gt; tag can have <font>tag as a child. Study the file "patterns.xml" supplied with FreeMind.</font>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_1697687428" MODIFIED="1124560950717" POSITION="right" TEXT="Highlighting nodes with clouds">
@@ -539,28 +537,26 @@
 <node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To add a hyperlink to a node, press Ctrl + K or in node context menu use Insert &gt; Hyperlink."/>
 <node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To remove a hyperlink, set the hyperlink to empty after pressing Ctrl + K."/>
 <node CREATED="1124560950717" MODIFIED="1124560950717">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
     To link to a mail address, set the hyperlink as <i>mailto:don.bonton@supermail.com</i>.
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 <node CREATED="1124560950717" MODIFIED="1124560950717">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
     To link to a mail address with giving a subject, set the hyperlink as <i>mailto:don.bonton@supermail.com?subject=Last phone call</i>.
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="Hyperlinks can link to web pages, local files, or email addresses."/>
 </node>
@@ -603,20 +599,20 @@
 <icon BUILTIN="licq"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="_Freemind_Link_1996597932" MODIFIED="1124560950717" POSITION="right" TEXT="Adding graphical links">
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To create a graphical link between two nodes, drag a node and drop it to another node holding both shift and control keys; release the mouse button before releasing shift and control keys.">
+<node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="_Freemind_Link_1996597932" MODIFIED="1216753823750" POSITION="right" TEXT="Adding graphical links">
+<node CREATED="1124560950717" ID="ID_985897417" MODIFIED="1124560950717" TEXT="To create a graphical link between two nodes, drag a node and drop it to another node holding both shift and control keys; release the mouse button before releasing shift and control keys.">
 <arrowlink DESTINATION="_Freemind_Link_266716332" ENDARROW="Default" ENDINCLINATION="255;0;" ID="Freemind_Arrow_Link_1428344028" STARTARROW="None" STARTINCLINATION="255;0;"/>
 </node>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT=" Alternatively, drag and drop using right mouse button."/>
+<node CREATED="1216753755454" ID="ID_1564001222" MODIFIED="1216753819530" TEXT="Alternatively, you can select two nodes using Ctrl and to choose &quot;Add graphical link&quot; from the &quot;Insert&quot; menu or its shortcut Ctrl+L"/>
 <node CREATED="1124560950717" ID="_Freemind_Link_208378337" MODIFIED="1124560950717" TEXT="To change the color of the link, use link context menu, by right-clicking the graphical link."/>
 <node CREATED="1124560950717" ID="_Freemind_Link_1484370636" MODIFIED="1124560950717" TEXT="To change the arrows of the link, use link context menu."/>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To delete a link, use link context menu,"/>
+<node CREATED="1124560950717" ID="ID_1970882825" MODIFIED="1124560950717" TEXT="To delete a link, use link context menu,"/>
 <node CREATED="1124560950717" ID="_Freemind_Link_266716332" MODIFIED="1124560950717" TEXT="To navitage to one of the end nodes of the link, use link context menu."/>
 <node CREATED="1124560950717" ID="_Freemind_Link_1015289745" MODIFIED="1124560950717" TEXT="To change the routing of an arrow link, drag it and move it.">
 <arrowlink DESTINATION="_Freemind_Link_266716332" ENDARROW="Default" ENDINCLINATION="256;22;" ID="Freemind_Arrow_Link_1273596772" STARTARROW="None" STARTINCLINATION="244;32;"/>
 </node>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="An example of graphical link follows."/>
-<node COLOR="#996600" CREATED="1124560950717" MODIFIED="1124560950717" TEXT="Example">
+<node CREATED="1124560950717" ID="ID_1872914317" MODIFIED="1124560950717" TEXT="An example of graphical link follows."/>
+<node COLOR="#996600" CREATED="1124560950717" ID="ID_46167995" MODIFIED="1124560950717" TEXT="Example">
 <node COLOR="#996600" CREATED="1124560950717" ID="_Freemind_Link_1170112929" MODIFIED="1124560950717" TEXT="Link to another part">
 <arrowlink COLOR="#9999ff" DESTINATION="_Freemind_Link_1492563156" ENDARROW="Default" ID="Freemind_Arrow_Link_33407992" STARTARROW="Default" STARTINCLINATION="30;0;"/>
 </node>
@@ -628,33 +624,31 @@
 </node>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_423038022" MODIFIED="1124560950717" POSITION="right" TEXT="Searching">
+<node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_423038022" MODIFIED="1216754019526" POSITION="right" TEXT="Searching">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To find text in a node and all its descendant nodes, press Ctrl + F or in node context menu use Node &gt; Find.">
-<font NAME="SansSerif" SIZE="12"/>
-</node>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To find next match of your previous search, press Ctrl + G or in node context menu use Node &gt; Find Next.">
+<node CREATED="1124560950717" ID="ID_966700848" MODIFIED="1216753988326" TEXT="To find text in a node and all its descendant nodes, press Ctrl + F or in the &quot;edit&quot; menu use Find.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To search the whole map, position the node to the central node by pressing Escape before searching."/>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="The search is a breadth-first search. That corresponds to the idea that the deeper a node, the greater the detail described in the node."/>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="Remember that not the whole map is searched, only the node and its descendants."/>
-</node>
-<node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_653540280" MODIFIED="1124560950717" POSITION="right" TEXT="Selecting multiple nodes">
-<font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To select multiple nodes, hold control or shift while clicking. ">
+<node CREATED="1124560950717" ID="ID_1646223708" MODIFIED="1216754004967" TEXT="To find next match of your previous search, press Ctrl + G or in the &quot;edit&quot; menu Find Next.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To add single nodes to already selected nodes, hold control when clicking.">
+<node CREATED="1124560950717" ID="ID_488311689" MODIFIED="1124560950717" TEXT="To search the whole map, position the node to the central node by pressing Escape before searching."/>
+<node CREATED="1124560950717" ID="ID_829330412" MODIFIED="1124560950717" TEXT="The search is a breadth-first search. That corresponds to the idea that the deeper a node, the greater the detail described in the node."/>
+<node CREATED="1124560950717" ID="ID_779591913" MODIFIED="1124560950717" TEXT="Remember that not the whole map is searched, only the node and its descendants."/>
+</node>
+<node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_653540280" MODIFIED="1216754424034" POSITION="right" TEXT="Selecting multiple nodes">
+<font NAME="SansSerif" SIZE="12"/>
+<node CREATED="1124560950717" ID="ID_1435652978" MODIFIED="1124560950717" TEXT="To select multiple nodes, hold control or shift while clicking. ">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To select a continuous range of nodes, hold shift when clicking, or hold shift while moving around with arrow keys.">
+<node CREATED="1124560950717" ID="ID_741729737" MODIFIED="1124560950717" TEXT="To add single nodes to already selected nodes, hold control when clicking.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To select a complete subtree, hold Alt while clicking, or hold shift while moving with arrow keys from a node to its parent."/>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To cancel the selection of multiple nodes, click on the map background or onto an unselected node."/>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To select all visible nodes, in pull-down menu use Select All Visible."/>
-<node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="To select all visible nodes of a branch, in pull-down menu use Select Visible Branch."/>
+<node CREATED="1124560950717" ID="ID_133089768" MODIFIED="1124560950717" TEXT="To select a continuous range of nodes, hold shift when clicking, or hold shift while moving around with arrow keys.">
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node CREATED="1124560950717" ID="ID_350782537" MODIFIED="1216754181690" TEXT="To select a complete subtree, hold AltGr while clicking, or hold shift while moving with arrow keys from a node to its parent. Finally Ctrl+Shift+A does the same via the keyboard."/>
+<node CREATED="1124560950717" ID="ID_451303534" MODIFIED="1124560950717" TEXT="To cancel the selection of multiple nodes, click on the map background or onto an unselected node."/>
 </node>
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_1024903226" MODIFIED="1124560950717" POSITION="right" TEXT="Dragging and dropping">
 <edge WIDTH="thin"/>
@@ -791,57 +785,56 @@
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To export the map to another XML format for that you have an XSLT transformation sheet, in pull-down menu use File &gt; Export &gt; Using XSLT."/>
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To export the map to an OpenOffice 1.4 Writer document, in pull-down menu use File &gt; Export &gt; As OpenOffice Writer Document."/>
 </node>
-<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1841136119" MODIFIED="1124560950732" POSITION="right" TEXT="Importing folder structure">
+<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1841136119" MODIFIED="1216754611034" POSITION="right" TEXT="Importing folder structure">
 <font NAME="Dialog" SIZE="12"/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To import folder structure, in node context menu use Branch &gt; Import Folder Structure. You will be asked for the folder whose structure you want to import. By structure we mean the tree of all (not necessarily direct) subfolders with the links to the files in these subfolders. An example of inserted structure follows."/>
+<node CREATED="1124560950732" ID="ID_141591900" MODIFIED="1216754551594" TEXT="To import folder structure, in node context menu use File &gt; Import &gt; Folder Structure. You will be asked for the folder whose structure you want to import. By structure we mean the tree of all (not necessarily direct) subfolders with the links to the files in these subfolders. An example of inserted structure follows."/>
 <node COLOR="#996600" CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Example">
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#996600" CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Selected folder">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950732" LINK="C:\Program Files\Microsoft Office\Office\Bitmaps" MODIFIED="1124560950732" TEXT="C:\Program Files\Microsoft Office\Office\Bitmaps">
+<node CREATED="1124560950732" LINK="C:\Program%20Files\Microsoft%20Office\Office\Bitmaps" MODIFIED="1124560950732" TEXT="C:\Program Files\Microsoft Office\Office\Bitmaps">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/" MODIFIED="1124560950732" TEXT="Dbwiz">
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/ASSETS.GIF" MODIFIED="1124560950732" TEXT="ASSETS.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/CONTACTS.GIF" MODIFIED="1124560950732" TEXT="CONTACTS.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/EVTMGMT.GIF" MODIFIED="1124560950732" TEXT="EVTMGMT.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/EXPENSES.GIF" MODIFIED="1124560950732" TEXT="EXPENSES.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/INVENTRY.GIF" MODIFIED="1124560950732" TEXT="INVENTRY.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/LEDGER.GIF" MODIFIED="1124560950732" TEXT="LEDGER.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/ORDPROC.GIF" MODIFIED="1124560950732" TEXT="ORDPROC.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/RESOURCE.GIF" MODIFIED="1124560950732" TEXT="RESOURCE.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/SERVICE.GIF" MODIFIED="1124560950732" TEXT="SERVICE.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/TIMEBILL.GIF" MODIFIED="1124560950732" TEXT="TIMEBILL.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/" MODIFIED="1124560950732" TEXT="Dbwiz">
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/ASSETS.GIF" MODIFIED="1124560950732" TEXT="ASSETS.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/CONTACTS.GIF" MODIFIED="1124560950732" TEXT="CONTACTS.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/EVTMGMT.GIF" MODIFIED="1124560950732" TEXT="EVTMGMT.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/EXPENSES.GIF" MODIFIED="1124560950732" TEXT="EXPENSES.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/INVENTRY.GIF" MODIFIED="1124560950732" TEXT="INVENTRY.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/LEDGER.GIF" MODIFIED="1124560950732" TEXT="LEDGER.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/ORDPROC.GIF" MODIFIED="1124560950732" TEXT="ORDPROC.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/RESOURCE.GIF" MODIFIED="1124560950732" TEXT="RESOURCE.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/SERVICE.GIF" MODIFIED="1124560950732" TEXT="SERVICE.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/TIMEBILL.GIF" MODIFIED="1124560950732" TEXT="TIMEBILL.GIF"/>
 </node>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/" MODIFIED="1124560950732" TEXT="Styles">
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLENDS.GIF" MODIFIED="1124560950732" TEXT="ACBLENDS.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLUPRT.GIF" MODIFIED="1124560950732" TEXT="ACBLUPRT.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACEXPDTN.GIF" MODIFIED="1124560950732" TEXT="ACEXPDTN.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACINDSTR.GIF" MODIFIED="1124560950732" TEXT="ACINDSTR.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACRICEPR.GIF" MODIFIED="1124560950732" TEXT="ACRICEPR.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSNDSTN.GIF" MODIFIED="1124560950732" TEXT="ACSNDSTN.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSUMIPT.GIF" MODIFIED="1124560950732" TEXT="ACSUMIPT.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/GLOBE.WMF" MODIFIED="1124560950732" TEXT="GLOBE.WMF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/STONE.BMP" MODIFIED="1124560950732" TEXT="STONE.BMP"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/" MODIFIED="1124560950732" TEXT="Styles">
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACBLENDS.GIF" MODIFIED="1124560950732" TEXT="ACBLENDS.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACBLUPRT.GIF" MODIFIED="1124560950732" TEXT="ACBLUPRT.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACEXPDTN.GIF" MODIFIED="1124560950732" TEXT="ACEXPDTN.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACINDSTR.GIF" MODIFIED="1124560950732" TEXT="ACINDSTR.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACRICEPR.GIF" MODIFIED="1124560950732" TEXT="ACRICEPR.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACSNDSTN.GIF" MODIFIED="1124560950732" TEXT="ACSNDSTN.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACSUMIPT.GIF" MODIFIED="1124560950732" TEXT="ACSUMIPT.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/GLOBE.WMF" MODIFIED="1124560950732" TEXT="GLOBE.WMF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/STONE.BMP" MODIFIED="1124560950732" TEXT="STONE.BMP"/>
 </node>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_269203785" MODIFIED="1124560950732" POSITION="right" TEXT="Importing Internet Explorer favorites">
+<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_269203785" MODIFIED="1216754098551" POSITION="right" TEXT="Importing Internet Explorer favorites">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1124560950732" ID="Freemind_Link_260446736" MODIFIED="1150322748620">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    To import Internet Explorer favorites into FreeMind, in pull-down menu use File &gt; Import &gt; Explorer Favorites. You'll be asked to enter the path to the folder where the favorites are stored. The folder's name is &quot;Favorites&quot; and you can find on it your disk. On Windows 2000, the path is C:\Documents and Settings\&lt;user&gt;\Favorites.
+    To import Internet Explorer favorites into FreeMind, in pull-down menu use File &gt; Import &gt; Explorer Favorites. You'll be asked to enter the path to the folder where the favorites are stored. The folder's name is "Favorites" and you can find on it your disk. On Windows 2000, the path is C:\Documents and Settings\&lt;user&gt;\Favorites.
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node COLOR="#999999" CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Key words: Microsoft Internet Explorer, MSIE, MS IE.">
+<node COLOR="#999999" CREATED="1124560950732" ID="ID_41235661" MODIFIED="1124560950732" TEXT="Key words: Microsoft Internet Explorer, MSIE, MS IE.">
 <font NAME="Dialog" SIZE="10"/>
 </node>
 </node>
@@ -856,7 +849,7 @@
 <node CREATED="1124560950732" LINK="mailto:don.bonton@supermail.com" MODIFIED="1124560950732" TEXT="Clicking a mail link (mailto:don.bonton@supermail.com) will open Outlook for creating a new message, if not set otherwise in Windows.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1124560950732" LINK="mailto:don.bonton@supermail.com?subject=Last phone call" MODIFIED="1124560950732" TEXT="You can use subject in mail link"/>
+<node CREATED="1124560950732" LINK="mailto:don.bonton@supermail.com?subject=Last%20phone%20call" MODIFIED="1124560950732" TEXT="You can use subject in mail link"/>
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="An alternative way of pasting mind map into Microsoft Word is by exporting it to HTML based on headings, copying the HTML and pasting it into Word."/>
 </node>
 <node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1822195277" MODIFIED="1124560950732" POSITION="right" TEXT="Setting preferences">
@@ -881,7 +874,7 @@
 <node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_841140408" MODIFIED="1124560950732" POSITION="right" TEXT="Using rich text by means of HTML in nodes">
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Nodes starting with &lt;html&gt; are rendered using HTML contained in them. This feature is helful only for technically minded people. An example follows."/>
 <node CREATED="1124560950732" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
@@ -930,11 +923,10 @@
       </tr>
     </table>
     <p class="msonormal">
-      &#160;We can have various <font color="#999900">foreground</font> <font color="#336600">colors</font>.
+       We can have various <font color="#999900">foreground</font> <font color="#336600">colors</font>.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="There is no support for HTML nodes and pictures in exporting to text or RTF (Word, Wordpad). At least, using HTML is convenient for publication on the Web using Freemind&apos;s Applet.">
 <font NAME="SansSerif" SIZE="12"/>
@@ -958,84 +950,77 @@
 <node COLOR="#996600" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1825247742" MODIFIED="1124560950732" TEXT="Example of pictures, working on some Windows distributions">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <node CREATED="1124560950732" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLENDS.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLENDS.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node CREATED="1124560950732" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLUPRT.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLUPRT.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node CREATED="1124560950732" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACEXPDTN.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACEXPDTN.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <node CREATED="1124560950732" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACINDSTR.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACINDSTR.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
 <node CREATED="1124560950732" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACRICEPR.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACRICEPR.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <node CREATED="1124560950732" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSNDSTN.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSNDSTN.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <node CREATED="1124560950732" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSUMIPT.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSUMIPT.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
 </node>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/GLOBE.WMF" MODIFIED="1124560950732" TEXT="GLOBE.WMF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/STONE.BMP" MODIFIED="1124560950732" TEXT="STONE.BMP"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/GLOBE.WMF" MODIFIED="1124560950732" TEXT="GLOBE.WMF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/STONE.BMP" MODIFIED="1124560950732" TEXT="STONE.BMP"/>
 </node>
 </node>
 <node COLOR="#407000" CREATED="1124560950732" FOLDED="true" MODIFIED="1124560950732" POSITION="right" TEXT="Using experimental file locking">

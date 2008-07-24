@@ -63,7 +63,7 @@ private int mModifiers;
  
   public IconSelectionPopupDialog(JFrame caller, Vector icons, FreeMindMain freeMindMain){
 
-	super(caller, "select icon");
+	super(caller, freeMindMain.getResourceString("select_icon"));
 	getContentPane().setLayout(new BorderLayout());
 	this.freeMindMain = freeMindMain;
 	this.icons = icons;

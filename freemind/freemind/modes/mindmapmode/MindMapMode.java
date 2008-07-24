@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMode.java,v 1.17.18.2.2.6 2008-07-09 20:01:12 christianfoltin Exp $ */
+/* $Id: MindMapMode.java,v 1.17.18.2.2.7 2008-07-24 03:10:38 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 import javax.swing.JMenu;
 import javax.swing.JToolBar;
 
-public class MindMapMode implements Mode {
+public class MindMapMode extends Mode {
 
     private Controller c;
     private MindMapController modecontroller;

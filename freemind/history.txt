@@ -1,4 +1,12 @@
 ===============================
+Changes made in FreeMind 0.9.0 Beta20
+===============================
+* Fixed some documentation bugs reported by Edmund Laugasson. Thanks.
+* Bug fix: Untranslatable strings and places * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2020259&group_id=7118
+* Documentation fixes.
+* Mac: Spaces in files names corrected.
+
+===============================
 Changes made in FreeMind 0.9.0 Beta19
 ===============================
 * Fixed: in key based navigation in filtered maps.

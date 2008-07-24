@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: FileMode.java,v 1.14.18.2.2.2 2008-06-21 20:46:54 christianfoltin Exp $ */
+/* $Id: FileMode.java,v 1.14.18.2.2.3 2008-07-24 03:10:38 christianfoltin Exp $ */
 
 package freemind.modes.filemode;
 
@@ -28,7 +28,7 @@ import freemind.controller.StructuredMenuHolder;
 import javax.swing.JMenu;
 import javax.swing.JToolBar;
 
-public class FileMode implements Mode {
+public class FileMode extends Mode {
 
     private Controller c;
     private FileController modecontroller;

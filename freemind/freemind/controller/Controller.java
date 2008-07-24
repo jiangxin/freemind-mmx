@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.55 2008-07-21 21:57:51 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.56 2008-07-24 03:10:36 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -585,7 +585,7 @@ public class Controller  implements MapModuleChangeObserver {
         getMode().activate();
 
         Object[] messageArguments = {
-        		getMode().toString()
+        		getMode().toLocalizedString()
         };
         MessageFormat formatter = new MessageFormat(getResourceString("mode_status"));
         getFrame().out(formatter.format(messageArguments));
@@ -779,7 +779,7 @@ public class Controller  implements MapModuleChangeObserver {
 	 */
 	public void setTitle() {
 		Object[] messageArguments = {
-			getMode().toString()
+			getMode().toLocalizedString()
 		};
 		MessageFormat formatter = new MessageFormat
 		   (getResourceString("mode_title"));
@@ -1156,7 +1156,11 @@ public class Controller  implements MapModuleChangeObserver {
             this.controller = controller;
         }
         public void actionPerformed(ActionEvent e) {
-           JOptionPane.showMessageDialog(getFrame().getViewport(),controller.getResourceString("about_text")+getFrame().getFreemindVersion());
+           JOptionPane.showMessageDialog(getFrame().getViewport(), controller
+					.getResourceString("about_text")
+					+ getFrame().getFreemindVersion(), controller
+					.getResourceString("about"),
+					JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -1167,7 +1171,10 @@ public class Controller  implements MapModuleChangeObserver {
             this.controller = controller;
         }
         public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(getView(),controller.getResourceString("license_text"));
+            JOptionPane.showMessageDialog(getView(), controller
+					.getResourceString("license_text"), controller
+					.getResourceString("license"),
+					JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseMode.java,v 1.8.18.3.2.5 2008-07-09 20:01:10 christianfoltin Exp $ */
+/* $Id: BrowseMode.java,v 1.8.18.3.2.6 2008-07-24 03:10:37 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -27,7 +27,7 @@ import freemind.main.Tools;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 
-public class BrowseMode implements Mode {
+public class BrowseMode extends Mode {
 
     private Controller c;
     private BrowseController modecontroller;
