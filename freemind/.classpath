@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**/build*.xml|**/build.xml|**/cvs/|plugins/collaboration/**" kind="src" path=""/>
+	<classpathentry excluding="**/build*.xml|**/build.xml|**/cvs/|plugins/collaboration/**|windows-launcher/**" kind="src" path=""/>
 	<classpathentry kind="lib" path="plugins/svg/xml-apis.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-bridge.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-css.jar"/>

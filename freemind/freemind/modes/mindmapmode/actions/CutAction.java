@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: CutAction.java,v 1.1.2.2.2.11 2008-01-08 22:16:15 christianfoltin Exp $ */
+/* $Id: CutAction.java,v 1.1.2.2.2.12 2008-07-26 12:01:32 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -83,7 +83,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 		}
 		Transferable copy = mMindMapController.cut();
 		// and set it.
-		mMindMapController.getClipboard().setContents(copy, null);
+		mMindMapController.setClipboardContents(copy);
 		mMindMapController.getController().obtainFocusForSelected();
     }
 

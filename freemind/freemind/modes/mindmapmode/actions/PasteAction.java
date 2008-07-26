@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.18 2008-06-21 20:46:54 christianfoltin Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.19 2008-07-26 12:01:33 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -84,11 +84,9 @@ public class PasteAction extends AbstractAction implements ActorXml{
 
     }
     public void actionPerformed(ActionEvent e) {
-	    if (this.pMindMapController.getClipboard() != null) {
 	        this.pMindMapController.paste(
-	            this.pMindMapController.getClipboard().getContents(pMindMapController),
+	            this.pMindMapController.getClipboardContents(),
 	            this.pMindMapController.getView().getSelected().getModel());
-	    }
 	}
 
     /* (non-Javadoc)

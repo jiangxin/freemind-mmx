@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * Created on 05.05.2004
  */
-/* $Id: MindMapActions.java,v 1.1.2.3.2.9 2008-07-17 19:16:36 christianfoltin Exp $ */
+/* $Id: MindMapActions.java,v 1.1.2.3.2.10 2008-07-26 12:01:33 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.Color;
@@ -188,9 +188,6 @@ public interface MindMapActions {
 
     /** undo in progress? */
     boolean isUndoAction();
-
-	public Clipboard getClipboard();
-
 
     public MindMapNode getRootNode();
 

@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: CopyAction.java,v 1.1.2.1.2.1 2007-07-08 08:37:24 dpolivaev Exp $ */
+/* $Id: CopyAction.java,v 1.1.2.1.2.2 2008-07-26 12:01:32 dpolivaev Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.datatransfer.Transferable;
@@ -45,7 +45,7 @@ public class CopyAction extends AbstractAction {
 		if (controller.getMap() != null) {
 			Transferable copy = controller.copy();
 			if (copy != null) {
-				controller.getClipboard().setContents(copy, null);
+				controller.setClipboardContents(copy);
 			}
 		}
 	}

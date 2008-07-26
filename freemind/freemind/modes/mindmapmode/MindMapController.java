@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.68 2008-07-09 20:01:11 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.69 2008-07-26 12:01:32 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -252,6 +252,8 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     private MindMapToolBar toolbar;
     private boolean addAsChildMode = false;
     private Clipboard clipboard;
+    private Clipboard selection;
+    
     private HookFactory nodeHookFactory;
 
     /**
@@ -259,7 +261,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
      */
     private CompoundActionHandler compound = null;
 
-    public ApplyPatternAction patterns[] = new ApplyPatternAction[0]; // Make sure it is initialized
+   public ApplyPatternAction patterns[] = new ApplyPatternAction[0]; // Make sure it is initialized
    public Action newMap = new NewMapAction(this);
    public Action open = new OpenAction(this);
    public Action save = new SaveAction(this);
@@ -411,15 +413,8 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
             Resources.getInstance().getBoolProperty("add_as_child");
         mRegistrations = new Vector();
         Toolkit toolkit = getFrame().getViewport().getToolkit();
-		clipboard = toolkit.getSystemSelection();
-
-        // SystemSelection is a strange clipboard used for instance on
-        // Linux. To get data into this clipboard user just selects the area
-        // without pressing Ctrl+C like on Windows.
-
-        if (clipboard == null) {
-           clipboard = toolkit.getSystemClipboard();
-        }
+		selection = toolkit.getSystemSelection();
+		clipboard = toolkit.getSystemClipboard();
 
         attributeController = new MindMapModeAttributeController(this);
         showAttributeManagerAction = getController().showAttributeManagerAction;
@@ -581,12 +576,7 @@ freemind.main.Resources.getInstance().logException(					e);
         return reader;
     }
 
-    /**
-     */
-    public Clipboard getClipboard() {
-        return clipboard;
-    }
-
+    
     public boolean isUndoAction() {
         return undo.isUndoAction() || redo.isUndoAction();
     }
@@ -2138,6 +2128,21 @@ freemind.main.Resources.getInstance().logException(					e1);
 
 	public Set getPlugins() {
 		return Collections.unmodifiableSet(mPlugins);
+	}
+
+	/**
+	 */
+	public Transferable getClipboardContents() {
+		return clipboard.getContents(this);
+	}
+
+	/**
+	 */
+	public void setClipboardContents(Transferable t) {
+		clipboard.setContents(t, null);
+		if(selection != null){
+			selection.setContents(t, null);
+		}
 	}
 	
 }
