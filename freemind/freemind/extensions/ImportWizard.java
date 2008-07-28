@@ -171,44 +171,46 @@ public class ImportWizard {
 	        return;
         }
 		String[] files = currentDir.list();
-		for (int i = 0; i < files.length; i++) {
-			String current = files[i];
-			logger.info("looking at: " + current);
-			if (isInteresting(current)) {
-				String rootPath = rootDir.getPath();
-				String currentPath = currentDir.getPath();
-				if (! currentPath.startsWith(rootPath)) {
-					logger.severe(
-						"currentPath doesn't start with rootPath!\n"
-							+ "rootPath: "
-							+ rootPath
-							+ "\n"
-							+ "currentPath: "
-							+ currentPath
-							+ "\n");
-				} else {
-					current =
-						current.substring(
-							0,
-							current.length() - lookFor.length());
-					String packageName =
-						currentPath.substring(rootPath.length());
-					String fileName;
-					if (packageName.length() > 0) {
-						// Not the current directory
-						fileName = packageName.substring(1) + File.separator + current;
+		if(files != null) { 
+			for (int i = 0; i < files.length; i++) {
+				String current = files[i];
+				logger.info("looking at: " + current);
+				if (isInteresting(current)) {
+					String rootPath = rootDir.getPath();
+					String currentPath = currentDir.getPath();
+					if (! currentPath.startsWith(rootPath)) {
+						logger.severe(
+							"currentPath doesn't start with rootPath!\n"
+								+ "rootPath: "
+								+ rootPath
+								+ "\n"
+								+ "currentPath: "
+								+ currentPath
+								+ "\n");
 					} else {
-						// The current directory
-						fileName = current;
+						current =
+							current.substring(
+								0,
+								current.length() - lookFor.length());
+						String packageName =
+							currentPath.substring(rootPath.length());
+						String fileName;
+						if (packageName.length() > 0) {
+							// Not the current directory
+							fileName = packageName.substring(1) + File.separator + current;
+						} else {
+							// The current directory
+							fileName = current;
+						}
+						classList.addElement(fileName);
+						logger.info("Found: " + fileName);
 					}
-					classList.addElement(fileName);
-					logger.info("Found: " + fileName);
-				}
-			} else {
-				// Check if it's a directory to recurse into
-				File currentFile = new File(currentDir, current);
-				if (currentFile.isDirectory()) {
-					addClassesFromDir(classList, rootDir, currentFile, recursionLevel+1);
+				} else {
+					// Check if it's a directory to recurse into
+					File currentFile = new File(currentDir, current);
+					if (currentFile.isDirectory()) {
+						addClassesFromDir(classList, rootDir, currentFile, recursionLevel+1);
+					}
 				}
 			}
 		}
@@ -218,7 +220,11 @@ public class ImportWizard {
 
 /*
  * $Log: ImportWizard.java,v $
- * Revision 1.1.4.6.2.15  2008-07-18 16:14:25  christianfoltin
+ * Revision 1.1.4.6.2.16  2008-07-28 03:06:01  christianfoltin
+ * * Bug fix: B19 startup fails with "Mode not available: Mindmap" * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2025279&group_id=7118
+ * * FreeMind Starter: no more statics.
+ *
+ * Revision 1.1.4.6.2.15  2008/07/18 16:14:25  christianfoltin
  * * Renamed zh into zh_TW (patch from willyann
  * * Reverted changes to Tools.
  *

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.69 2008-07-26 12:01:32 dpolivaev Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.70 2008-07-28 03:06:02 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -685,13 +685,14 @@ freemind.main.Resources.getInstance().logException(					e);
                     return name.matches(".*\\.png");
                 }                
             });
-            for ( int i = 0 ; i < userIconArray.length; ++i ) {
-                String iconName = userIconArray[i];
-                iconName = iconName.substring(0, iconName.length()-4);
-                if(iconName.equals("")){
-                    continue;
-                }
-                iconNames.add(iconName); }
+            if(userIconArray != null)
+	            for ( int i = 0 ; i < userIconArray.length; ++i ) {
+	                String iconName = userIconArray[i];
+	                iconName = iconName.substring(0, iconName.length()-4);
+	                if(iconName.equals("")){
+	                    continue;
+	                }
+	                iconNames.add(iconName); }
         }
         for ( int i = 0 ; i < iconNames.size(); ++i ) {
             String iconName = ((String) iconNames.get(i));

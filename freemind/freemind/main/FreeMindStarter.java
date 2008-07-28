@@ -19,7 +19,7 @@
  *
  * Created on 06.07.2006
  */
-/*$Id: FreeMindStarter.java,v 1.1.2.7 2008-07-17 19:16:34 christianfoltin Exp $*/
+/*$Id: FreeMindStarter.java,v 1.1.2.8 2008-07-28 03:06:02 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -47,16 +47,18 @@ public class FreeMindStarter {
 	static final String JAVA_VERSION = System.getProperty("java.version");
 
 	public static void main(String[] args) {
+		FreeMindStarter starter = new FreeMindStarter();
 		// First check version of Java
-		FreeMindStarter.checkJavaVersion();
-		Properties defaultPreferences = readDefaultPreferences();
-		createUserDirectory(defaultPreferences);
-		Properties userPreferences = readUsersPreferences(defaultPreferences);
-		setDefaultLocale(userPreferences);
-		FreeMind.main(args, defaultPreferences, userPreferences, getUserPreferencesFile(defaultPreferences));
+		starter.checkJavaVersion();
+		Properties defaultPreferences = starter.readDefaultPreferences();
+		starter.createUserDirectory(defaultPreferences);
+		Properties userPreferences = starter.readUsersPreferences(defaultPreferences);
+		starter.setDefaultLocale(userPreferences);
+		//TODO: use reflection to call FreeMind.main
+		FreeMind.main(args, defaultPreferences, userPreferences, starter.getUserPreferencesFile(defaultPreferences));
 	}
 	
-	private static void checkJavaVersion() {
+	private void checkJavaVersion() {
 		System.out.println("Checking Java Version...");
 		if (JAVA_VERSION.compareTo("1.4.0") < 0) {
 			String message = "Warning: FreeMind requires version Java 1.4.0 or higher (your version: "
@@ -73,7 +75,7 @@ public class FreeMindStarter {
 	
 	
 	
-	private static void createUserDirectory(Properties pDefaultProperties) {
+	private void createUserDirectory(Properties pDefaultProperties) {
 		File userPropertiesFolder = new File(getFreeMindDirectory(pDefaultProperties));
 		try {
 			// create user directory:
@@ -95,7 +97,7 @@ public class FreeMindStarter {
 	/**
 	 * @param pProperties 
 	 */
-	private static void setDefaultLocale(Properties pProperties) {
+	private void setDefaultLocale(Properties pProperties) {
 		String lang = pProperties.getProperty(FreeMindCommon.RESOURCE_LANGUAGE);
 		if(lang == null){
 			return;
@@ -114,7 +116,7 @@ public class FreeMindStarter {
 		Locale.setDefault(localeDef);
 	}
 
-	private static Properties readUsersPreferences(Properties defaultPreferences) {
+	private Properties readUsersPreferences(Properties defaultPreferences) {
 		Properties auto = null;
 		auto = new Properties(defaultPreferences);
 		try {
@@ -131,7 +133,7 @@ public class FreeMindStarter {
 		return auto;
 	}
 
-	private static File getUserPreferencesFile(Properties defaultPreferences) {
+	private File getUserPreferencesFile(Properties defaultPreferences) {
 		if(defaultPreferences == null) {
 			System.err
 			.println("Panic! Error while loading default properties.");
@@ -145,11 +147,11 @@ public class FreeMindStarter {
 
 
 
-	private static String getFreeMindDirectory(Properties defaultPreferences) {
+	private String getFreeMindDirectory(Properties defaultPreferences) {
 		return System.getProperty("user.home") + File.separator +  defaultPreferences.getProperty("properties_folder");
 	}
 
-	private static Properties readDefaultPreferences() {
+	private Properties readDefaultPreferences() {
 		String propsLoc = "freemind.properties";
 		URL defaultPropsURL = ClassLoader.getSystemResource(propsLoc);
 		Properties props = new Properties();
