@@ -25,6 +25,7 @@ import javax.swing.text.html.*;
  */
 public class XHTMLWriter extends FixedHTMLWriter {
     final private MutableAttributeSet convAttr  = new SimpleAttributeSet();
+	private boolean writeLineSeparatorEnabled = true;
  
   /**
    * Create a new XHTMLWriter that will write the entire HTMLDocument.
@@ -64,6 +65,20 @@ public class XHTMLWriter extends FixedHTMLWriter {
 //    writeLineSeparator();
     super.write();
   }
+
+	protected void writeOption(Option option) throws IOException {
+		writeLineSeparatorEnabled = false;
+		super.writeOption(option);
+		writeLineSeparatorEnabled = true;
+		write("</option>");
+		writeLineSeparator();
+	}    
+
+
+	protected void writeLineSeparator() throws IOException {
+		if(writeLineSeparatorEnabled )
+			super.writeLineSeparator();
+	}
 
   /**
    * Read HTML from the Reader, and send XHTML to the writer. Common mistakes
@@ -216,5 +231,6 @@ public class XHTMLWriter extends FixedHTMLWriter {
     throws IOException {
       write( str.toCharArray(), off, len );
     }
+    
   }  
 }
