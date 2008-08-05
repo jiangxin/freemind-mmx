@@ -19,12 +19,14 @@
  *
  * Created on 06.07.2006
  */
-/*$Id: FreeMindStarter.java,v 1.1.2.8 2008-07-28 03:06:02 christianfoltin Exp $*/
+/*$Id: FreeMindStarter.java,v 1.1.2.9 2008-08-05 20:29:18 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Locale;
 import java.util.Properties;
@@ -54,8 +56,17 @@ public class FreeMindStarter {
 		starter.createUserDirectory(defaultPreferences);
 		Properties userPreferences = starter.readUsersPreferences(defaultPreferences);
 		starter.setDefaultLocale(userPreferences);
-		//TODO: use reflection to call FreeMind.main
-		FreeMind.main(args, defaultPreferences, userPreferences, starter.getUserPreferencesFile(defaultPreferences));
+		//use reflection to call :
+//		FreeMind.main(args, defaultPreferences, userPreferences, starter.getUserPreferencesFile(defaultPreferences));
+		try {
+			Class mainClass = Class.forName("freemind.main.FreeMind");
+			Method mainMethod = mainClass.getMethod("main", new Class[]{String[].class, Properties.class, Properties.class, File.class});
+			mainMethod.invoke(null, new Object[]{args, defaultPreferences, userPreferences, starter.getUserPreferencesFile(defaultPreferences)});
+		
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "freemind.main.FreeMind can't be started", "Startup problem", JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
+		}
 	}
 	
 	private void checkJavaVersion() {

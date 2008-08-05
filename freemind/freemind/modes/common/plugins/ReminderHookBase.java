@@ -19,7 +19,7 @@
  *
  * Created on 06.02.2005
  */
-/* $Id: ReminderHookBase.java,v 1.1.2.1.2.4 2008-02-20 20:57:58 christianfoltin Exp $ */
+/* $Id: ReminderHookBase.java,v 1.1.2.1.2.5 2008-08-05 20:29:18 christianfoltin Exp $ */
 package freemind.modes.common.plugins;
 
 import java.text.MessageFormat;
@@ -132,7 +132,7 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	private ImageIcon getClockIcon() {
 		// icon
 		if (clockIcon == null) {
-			clockIcon = MindIcon.factory("clock").getIcon();
+			clockIcon = MindIcon.factory("clock2").getIcon();
 		}
 		return clockIcon;
 	}

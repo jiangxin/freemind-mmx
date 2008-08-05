@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.7 2008-01-13 20:55:34 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.8 2008-08-05 20:29:15 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -58,7 +58,7 @@ public class StructuredMenuHolder {
 	public static final int ICON_SIZE = 16;
     private String mOutputString;
 	private static Icon blindIcon = new BlindIcon(ICON_SIZE);
-    private static final String SELECTED_ICON_PATH = "images/icons/button_ok.png";
+    private static final String SELECTED_ICON_PATH = "images/button_ok.png";
 
 
     private static final String SEPARATOR_TEXT = "000";

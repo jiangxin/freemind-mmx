@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.70 2008-07-28 03:06:02 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.71 2008-08-05 20:29:18 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1624,13 +1624,20 @@ freemind.main.Resources.getInstance().logException(					e1);
             super(getText("follow_link"));
         }
         public void actionPerformed(ActionEvent e) {
-            loadURL();
+        	for (Iterator iterator = getSelecteds().iterator(); iterator.hasNext();) {
+				MindMapNode selNode = (MindMapNode) iterator.next();
+				if(selNode.getLink() != null) {
+					loadURL(selNode.getLink());
+				}
+			}
         }
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {
-			MindMapNode selected = getSelected();
-			if(selected == null)
-				return false;
-			return selected.getLink() != null;
+			for (Iterator iterator = getSelecteds().iterator(); iterator.hasNext();) {
+				MindMapNode selNode = (MindMapNode) iterator.next();
+				if( selNode.getLink() != null ) 
+					return true;
+			}			
+			return false;
 		}
     }
 

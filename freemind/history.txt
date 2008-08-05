@@ -6,6 +6,9 @@ Changes made in FreeMind 0.9.0 Beta20
 * Documentation fixes.
 * Mac: Spaces in files names corrected.
 * Bug fix: B19 startup fails with "Mode not available: Mindmap" * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2025279&group_id=7118
+* "Open hyperlink" works for multiple selected nodes.
+* FreeMindStarter uses reflection. Thus, it can detect java < 1.4.
+* Icons revised. Thanks to Predrag.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta19
