@@ -9,6 +9,10 @@ Changes made in FreeMind 0.9.0 Beta20
 * "Open hyperlink" works for multiple selected nodes.
 * FreeMindStarter uses reflection. Thus, it can detect java < 1.4.
 * Icons revised. Thanks to Predrag.
+* Fixed: copying to clipboard for Linux.
+* Fixed: saving of xhtml - tag <option>.
+* Application type of freemind.exe changed to Win32 GUI to prevent DOS box.
+* Fixed: images in notes. 
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta19
