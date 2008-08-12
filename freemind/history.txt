@@ -13,6 +13,12 @@ Changes made in FreeMind 0.9.0 Beta20
 * Fixed: saving of xhtml - tag <option>.
 * Application type of freemind.exe changed to Win32 GUI to prevent DOS box.
 * Fixed: images in notes. 
+* Added translations (thanks to all authors): 
+- 2034191 	French - 0.9.0 Beta 19 - FM_Key_Mappings_Quick_Guide_fr.pdf by 	dberthereau
+- 2034187 	French - 0.9.0 Beta 19 - FM_Key_Mappings_Quick_Guide by 	dberthereau
+- 2031743 	Russian 0.9.0 - beta 19 - full
+* Integrated [ 2025876 ] MS Project export with dependencies + example
+* Integrated [ 2027826 ] Word export with notes - Thanks to Eric.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta19
