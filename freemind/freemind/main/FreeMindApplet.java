@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.23 2008-04-17 19:32:26 christianfoltin Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.24 2008-08-15 10:01:24 dpolivaev Exp $*/
 
 package freemind.main;
 
@@ -210,7 +210,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 
     public URL getResource(String name) {
     final URL resourceURL = this.getClass().getResource("/"+name);
-    if(resourceURL == null || ! resourceURL.getProtocol().equals("jar"))
+    if(resourceURL == null || ! resourceURL.getProtocol().equals("jar") && System.getProperty("freemind.debug", null)== null)
         return null;
     return resourceURL;
     }
@@ -380,6 +380,10 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
     }
 
 	public JSplitPane insertComponentIntoSplitPane(JComponent pMindMapComponent) {
+		if(mComponentInSplitPane == pMindMapComponent){
+			return null;
+		}
+		removeSplitPane() ;
 		mComponentInSplitPane = pMindMapComponent;
 		southPanel.add(pMindMapComponent, BorderLayout.CENTER);
 		southPanel.revalidate();

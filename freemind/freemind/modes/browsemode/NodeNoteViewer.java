@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.13 2008-06-08 21:23:13 dpolivaev Exp $ */
+/* $Id: NodeNoteViewer.java,v 1.1.2.1.2.14 2008-08-15 10:01:24 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
 import java.awt.BorderLayout;
@@ -63,7 +63,6 @@ public class NodeNoteViewer extends NodeNoteBase implements
 			noteScrollPane = new JScrollPane(noteViewer);
 			noteScrollPane.setPreferredSize(new Dimension(1, 200));
 		}
-		noteViewer.setText(text != null ? text : "");
 		return noteScrollPane;
 	}
 
@@ -76,6 +75,7 @@ public class NodeNoteViewer extends NodeNoteBase implements
 		if(noteText != null && !noteText.equals("")){
 //			 logger.info("Panel added");
 			mBrowseController.getFrame().insertComponentIntoSplitPane(getNoteViewerComponent(noteText));
+			noteViewer.setText(noteText != null ? noteText : "");
 		}
 	}
 

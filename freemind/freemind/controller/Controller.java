@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.56 2008-07-24 03:10:36 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.57 2008-08-15 10:01:20 dpolivaev Exp $*/
 
 package freemind.controller;
 
@@ -548,7 +548,7 @@ public class Controller  implements MapModuleChangeObserver {
         toolbar.repaint();
         MenuBar menuBar = getFrame().getFreeMindMenuBar();
         menuBar.updateMenus(newModeController);
-        menuBar.validate();
+        menuBar.revalidate();
         menuBar.repaint();
 
     }
