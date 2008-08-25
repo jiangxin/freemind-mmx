@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.50 2008-07-18 16:14:26 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.51 2008-08-25 19:40:19 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -586,7 +586,8 @@ public class OptionPanel implements TextTranslator {
 
 		controls.add(new StringProperty(null, "defaultfontstyle")); //  0
 
-		controls.add(new StringProperty(null, "defaultfontsize")); //  12
+		controls.add(new NumberProperty("defaultfontsize.tooltip", "defaultfontsize",1,Integer.MAX_VALUE,1)); //  12
+//		controls.add(new StringProperty(null, "defaultfontsize")); //  12
 
 		controls.add(new NumberProperty("max_node_width.tooltip",
 				"max_node_width", 1, Integer.MAX_VALUE, 1)); //  600

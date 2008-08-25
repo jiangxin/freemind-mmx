@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.57 2008-08-15 10:01:20 dpolivaev Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.58 2008-08-25 19:40:19 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -409,14 +409,14 @@ public class Controller  implements MapModuleChangeObserver {
     /**
      */
     public int getDefaultFontStyle() {
-        int fontStyle = Integer.parseInt(getFrame().getProperty("defaultfontstyle"));
+        int fontStyle = frame.getIntProperty("defaultfontstyle",0);
         return fontStyle;
     }
 
     /**
      */
     public int getDefaultFontSize() {
-        int fontSize = Integer.parseInt(getFrame().getProperty("defaultfontsize"));
+        int fontSize = frame.getIntProperty("defaultfontsize",12);
         return fontSize;
     }
 
