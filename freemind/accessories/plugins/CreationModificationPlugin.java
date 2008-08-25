@@ -125,4 +125,13 @@ public class CreationModificationPlugin extends PermanentMindMapNodeHookAdapter 
 		}
 	}
 
+	public void onAddChildren(MindMapNode pAddedChild) {
+		setStyleRecursive(pAddedChild);
+	}
+
+	public void onNewChild(MindMapNode pNewChildNode) {
+		setStyleRecursive(pNewChildNode);
+	}
+
+
 }

@@ -19,6 +19,7 @@ Changes made in FreeMind 0.9.0 Beta20
 - 2031743 	Russian 0.9.0 - beta 19 - full
 * Integrated [ 2025876 ] MS Project export with dependencies + example
 * Integrated [ 2027826 ] Word export with notes - Thanks to Eric.
+* Fixed: [ 1405101 ] Node move looses timestamp * http://sourceforge.net/tracker/index.php?func=detail&aid=1405101&group_id=7118&atid=107118
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta19
