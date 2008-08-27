@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.30 2008-07-17 19:16:35 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.31 2008-08-27 19:05:39 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -316,35 +316,39 @@ public class MindMapMapModel extends MapAdapter  {
     public void load(URL url) throws FileNotFoundException, IOException, XMLParseException, URISyntaxException {
     		logger.info("Loading file: " + url.toString());
        File file = Tools.urlToFile(url);
-       if (!file.exists()) {
-          throw new FileNotFoundException(Tools.expandPlaceholders(getText("file_not_found"), file.getPath())); }
-       if (!file.canWrite()) {
-          readOnly = true; }
-       else {
-          // try to lock the map
-          try {
-             String lockingUser = tryToLock(file);
-             if (lockingUser != null) {
-               getFrame().getController().informationMessage(
-                 Tools.expandPlaceholders(getText("map_locked_by_open"), file.getName(), lockingUser));
-               readOnly = true; }
-             else {
-               readOnly = false; }}
-          catch (Exception e){ // Throwed by tryToLock
-             freemind.main.Resources.getInstance().logException(e);
-             getFrame().getController().informationMessage(
-               Tools.expandPlaceholders(getText("locking_failed_by_open"), file.getName()));
-             readOnly = true; }}
-
-       MindMapNodeModel root = loadTree(file);
-       if (root != null) {
-          setRoot(root);
-          ((MindMapController) mModeController).invokeHooksRecursively(
-                  root, this);
-
-       }
-       setFile(file);
+       load(file);
     }
+
+	public void load(File file) throws FileNotFoundException, IOException {
+		if (!file.exists()) {
+		      throw new FileNotFoundException(Tools.expandPlaceholders(getText("file_not_found"), file.getPath())); }
+		   if (!file.canWrite()) {
+		      readOnly = true; }
+		   else {
+		      // try to lock the map
+		      try {
+		         String lockingUser = tryToLock(file);
+		         if (lockingUser != null) {
+		           getFrame().getController().informationMessage(
+		             Tools.expandPlaceholders(getText("map_locked_by_open"), file.getName(), lockingUser));
+		           readOnly = true; }
+		         else {
+		           readOnly = false; }}
+		      catch (Exception e){ // Throwed by tryToLock
+		         freemind.main.Resources.getInstance().logException(e);
+		         getFrame().getController().informationMessage(
+		           Tools.expandPlaceholders(getText("locking_failed_by_open"), file.getName()));
+		         readOnly = true; }}
+
+		   MindMapNodeModel root = loadTree(file);
+		   if (root != null) {
+		      setRoot(root);
+		      ((MindMapController) mModeController).invokeHooksRecursively(
+		              root, this);
+
+		   }
+		   setFile(file);
+	}
 
 	/** When a map is closed, this method is called. */
     public void destroy() {

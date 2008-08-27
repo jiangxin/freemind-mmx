@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.51 2008-07-24 03:10:37 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.52 2008-08-27 19:05:36 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -354,6 +354,22 @@ public abstract class ControllerAdapter implements ModeController {
         return newModeController;
     }
 
+    /**
+     * You may decide to overload this or take the default
+     * and implement the functionality in your MapModel (implements MindMap)
+     */
+    public ModeController load (File file) throws FileNotFoundException, IOException{
+    	final ModeController newModeController = getMode().createModeController();
+    	final MapAdapter model = newModel(newModeController);
+    	model.load(file);
+    	newMap(model);
+    	EventQueue.invokeLater(new Runnable(){
+    		public void run() {
+    			model.setSaved(true);
+    		}});
+    	return newModeController;
+    }
+    
     public boolean save() {
         if (getModel().isSaved()) return true;
         if (getModel().getFile() == null || getModel().isReadOnly()) {
@@ -603,7 +619,7 @@ public abstract class ControllerAdapter implements ModeController {
 				File theFile = selectedFiles[i];
 	            try {
 	                lastCurrentDir = theFile.getParentFile();
-	                load(Tools.fileToUrl(theFile));
+	                load(theFile);
 	            } catch (Exception ex) {
 	               handleLoadingException (ex); 
 	               break;
@@ -1023,7 +1039,7 @@ public abstract class ControllerAdapter implements ModeController {
                 Iterator iterator = ((List)data).iterator();
                 while (iterator.hasNext()) {
                     File file = (File)iterator.next();
-                    load(Tools.fileToUrl(file));
+                    load(file);
                 }
             }
             catch (Exception e) {

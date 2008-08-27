@@ -71,7 +71,7 @@
 				<style:tab-stops />
 			</style:paragraph-properties>
 			<style:text-properties style:use-window-font-color="true"
-				fo:font-size="12pt" fo:language="de" fo:country="DE"
+				fo:font-size="12pt"
 				style:font-size-asian="12pt" style:language-asian="de"
 				style:country-asian="DE" style:font-size-complex="12pt"
 				style:language-complex="de" style:country-complex="DE" />
@@ -83,8 +83,8 @@
 				style:punctuation-wrap="hanging" style:line-break="strict"
 				style:tab-stop-distance="1.251cm" style:writing-mode="page" />
 			<style:text-properties style:use-window-font-color="true"
-				style:font-name="DejaVu Sans" fo:font-size="12pt" fo:language="de"
-				fo:country="DE" style:font-name-asian="DejaVu Sans2"
+				style:font-name="DejaVu Sans" fo:font-size="12pt"
+				style:font-name-asian="DejaVu Sans2"
 				style:font-size-asian="12pt" style:language-asian="de"
 				style:country-asian="DE" style:font-name-complex="DejaVu Sans2"
 				style:font-size-complex="12pt" style:language-complex="de"

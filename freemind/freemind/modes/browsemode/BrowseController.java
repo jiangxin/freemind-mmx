@@ -16,12 +16,13 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseController.java,v 1.13.18.7.2.13 2008-06-08 21:23:13 dpolivaev Exp $ */
+/* $Id: BrowseController.java,v 1.13.18.7.2.14 2008-08-27 19:05:38 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -38,6 +39,7 @@ import javax.swing.JToolBar;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.HookFactory;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.main.XMLParseException;
 import freemind.modes.MapAdapter;
@@ -45,12 +47,10 @@ import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
-import freemind.modes.NodeAdapter;
 import freemind.modes.common.GotoLinkNodeAction;
 import freemind.modes.common.plugins.NodeNoteBase;
 import freemind.modes.viewmodes.ViewControllerAdapter;
 import freemind.view.mindmapview.MainView;
-import freemind.view.mindmapview.NodeView;
 
 public class BrowseController extends ViewControllerAdapter {
 
@@ -249,6 +249,13 @@ public class BrowseController extends ViewControllerAdapter {
 	    return newModeController;
 	}
 
+	public ModeController load(File url) throws IOException {
+		ModeController newModeController = super.load(url);
+		// decorator pattern.
+		((BrowseToolBar) newModeController.getModeToolBar()).setURLField(Tools.fileToUrl(url).toString());
+		return newModeController;
+	}
+	
 	public void newMap(MindMap mapModel) {
 		setNoteIcon(mapModel.getRootNode());
 		super.newMap(mapModel);

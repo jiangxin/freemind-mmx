@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ImportMindmanagerFiles.java,v 1.1.2.2.2.7 2008-07-09 20:01:00 christianfoltin Exp $ */
+/* $Id: ImportMindmanagerFiles.java,v 1.1.2.2.2.8 2008-08-27 19:05:34 christianfoltin Exp $ */
 
 package accessories.plugins;
 
@@ -112,7 +112,7 @@ public class ImportMindmanagerFiles extends ModeControllerHookAdapter {
                     FileWriter fw = new FileWriter(tempFile);
                     fw.write(xml);
                     fw.close();
-                    getController().load(Tools.fileToUrl(tempFile));
+                    getController().load(tempFile);
                 }
                 break;
             }
@@ -120,9 +120,7 @@ public class ImportMindmanagerFiles extends ModeControllerHookAdapter {
             freemind.main.Resources.getInstance().logException(e);
         } catch (XMLParseException e) {
         	freemind.main.Resources.getInstance().logException(e);
-		} catch (URISyntaxException e) {
-			freemind.main.Resources.getInstance().logException(e);
-		}
+        }
     }
 
     public String transForm(Source xmlSource, InputStream xsltStream) {
