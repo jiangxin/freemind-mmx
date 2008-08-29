@@ -19,7 +19,7 @@
  *
  * Created on 10.10.2006
  */
-/*$Id: MindMapControllerMock.java,v 1.1.2.10 2008-06-24 19:54:01 christianfoltin Exp $*/
+/*$Id: MindMapControllerMock.java,v 1.1.2.11 2008-08-29 03:10:01 christianfoltin Exp $*/
 package tests.freemind;
 
 import java.awt.Color;
@@ -589,6 +589,12 @@ public class MindMapControllerMock implements ModeController {
 	}
 
 	public JFileChooser getFileChooser(FileFilter filter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ModeController load(File pFile) throws FileNotFoundException,
+			IOException {
 		// TODO Auto-generated method stub
 		return null;
 	}
