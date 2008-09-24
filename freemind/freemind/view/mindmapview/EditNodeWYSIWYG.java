@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.38 2008-06-08 14:28:10 dpolivaev Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.39 2008-09-24 20:27:11 dpolivaev Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -99,6 +99,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
                 }
             });
             
+            Tools.addKeyActionToDialog(this, new SubmitAction(), "alt ENTER", "submit");
             JPanel buttonPane = new JPanel();
             buttonPane.add(okButton);
             buttonPane.add(cancelButton);

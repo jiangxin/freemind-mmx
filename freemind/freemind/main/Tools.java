@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.37 2008-07-18 16:14:25 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.38 2008-09-24 20:27:09 dpolivaev Exp $ */
 
 package freemind.main;
 
@@ -1049,10 +1049,14 @@ public class Tools {
 		addEscapeActionToDialog(dialog, new EscapeAction());
    }
    public static void addEscapeActionToDialog(JDialog dialog, Action action) {
-       action.putValue(Action.NAME, "end_dialog");
+       addKeyActionToDialog(dialog, action, "ESCAPE", "end_dialog");
+   }
+
+   public static void addKeyActionToDialog(JDialog dialog, Action action, String keyStroke, String actionId) {
+       action.putValue(Action.NAME, actionId);
        // Register keystroke
        dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-               .put(KeyStroke.getKeyStroke("ESCAPE"),
+               .put(KeyStroke.getKeyStroke(keyStroke),
                        action.getValue(Action.NAME));
 
        // Register action
