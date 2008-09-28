@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.19 2008-07-26 12:01:33 dpolivaev Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.20 2008-09-28 20:55:02 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -272,7 +272,13 @@ public class PasteAction extends AbstractAction implements ActorXml{
 		public void paste(Object transferData, MindMapNode target,
                              boolean asSibling, boolean isLeft, Transferable t)
               throws UnsupportedFlavorException, IOException {
-              String textFromClipboard = (String) transferData;              
+              String textFromClipboard = (String) transferData;
+  			// workaround for java decoding bug 
+  			// http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6740877
+              if(textFromClipboard.charAt(0) == 65533)
+              {
+            	  throw new UnsupportedFlavorException(MindMapNodesSelection.htmlFlavor);
+              }
               // ^ This outputs transfer data to standard output. I don't know
               // why.
              //{ Alternative pasting of HTML
@@ -411,47 +417,48 @@ public class PasteAction extends AbstractAction implements ActorXml{
 	 *
 	 */
 	private void _paste(Transferable t, MindMapNode target, boolean asSibling, boolean isLeft) {
-	   if (t == null) {
-		  return; }
-	   try {
-		   // Uncomment to print obtained data flavours
+		if (t == null) {
+			return; }
+		try {
+			// Uncomment to print obtained data flavours
 
-		   /*
+			/*
 		   DataFlavor[] fl = t.getTransferDataFlavors();
 		   for (int i = 0; i < fl.length; i++) {
 			  System.out.println(fl[i]); }
-		   */
-        if(newNodes == null){
-            newNodes = new LinkedList();
-        }
-	    newNodes.clear();   
-	   	DataFlavorHandler[] dataFlavorHandlerList = getFlavorHandlers();
-	   	for (int i = 0; i < dataFlavorHandlerList.length; i++) {
-            DataFlavorHandler handler = dataFlavorHandlerList[i];
-            DataFlavor 		  flavor  = handler.getDataFlavor();
-            if(t.isDataFlavorSupported(flavor)) {
-            	handler.paste(t.getTransferData(flavor), target, asSibling, isLeft, t);
-            	break;
-            }
-	   	}
-	   	for (ListIterator e = newNodes.listIterator(); e.hasNext(); ) {
-	   		final MindMapNodeModel child = (MindMapNodeModel)e.next();
-	   		pMindMapController.getAttributeController().performRegistrySubtreeAttributes(child);
-	   	}        
-//	   	pMindMapController.nodeStructureChanged((MindMapNode) (asSibling ? target.getParent() : target));
-	   	
-	   	// add information about the new nodes ID:
-	   	addMindMapNodesFlavor();
-	   } catch (UnsupportedFlavorException e) {
-			Resources.getInstance().logException(e);
+			 */
+			if(newNodes == null){
+				newNodes = new LinkedList();
+			}
+			newNodes.clear();   
+			DataFlavorHandler[] dataFlavorHandlerList = getFlavorHandlers();
+			for (int i = 0; i < dataFlavorHandlerList.length; i++) {
+				DataFlavorHandler handler = dataFlavorHandlerList[i];
+				DataFlavor 		  flavor  = handler.getDataFlavor();
+				if(t.isDataFlavorSupported(flavor)) {
+					try {
+						handler.paste(t.getTransferData(flavor), target, asSibling, isLeft, t);
+						break;
+					} catch (UnsupportedFlavorException e) {
+					}
+				}
+			}
+			for (ListIterator e = newNodes.listIterator(); e.hasNext(); ) {
+				final MindMapNodeModel child = (MindMapNodeModel)e.next();
+				pMindMapController.getAttributeController().performRegistrySubtreeAttributes(child);
+			}        
+			//	   	pMindMapController.nodeStructureChanged((MindMapNode) (asSibling ? target.getParent() : target));
+
+			// add information about the new nodes ID:
+			addMindMapNodesFlavor();
 		} catch (IOException e) {
 			Resources.getInstance().logException(e);
 		}
-	   finally{
-		   undoAction = null;
-		   pasteAction = null;
-		   pMindMapController.getFrame().setWaitingCursor(false);
-	   }
+		finally{
+			undoAction = null;
+			pasteAction = null;
+			pMindMapController.getFrame().setWaitingCursor(false);
+		}
 	}
 
     /**
