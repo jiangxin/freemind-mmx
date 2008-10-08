@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.29 2008-07-21 21:57:51 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.30 2008-10-08 18:36:19 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -104,11 +104,11 @@ public abstract class MainView extends JLabel{
         }
         
         public void paint(Graphics g) {
-            final Graphics2D g2 = (Graphics2D)g;
 		    float zoom = getZoom();
 		    if(zoom != 1F){
 		    	// Dimitry: Workaround because Swing do not use fractional metrics 
 		    	// for laying JLabels out 
+		    	final Graphics2D g2 = (Graphics2D)g;
 		    	zoom *= ZOOM_CORRECTION_FACTOR;
 		        final AffineTransform transform = g2.getTransform();                
 		        g2.scale(zoom, zoom);
