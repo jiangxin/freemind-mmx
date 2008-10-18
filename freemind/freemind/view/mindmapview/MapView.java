@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.54 2008-08-27 19:05:40 christianfoltin Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.55 2008-10-18 20:09:43 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -89,6 +89,8 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 		}
 		
 	}
+	int mPaintingTime;
+	int mPaintingAmount;
 	static boolean printOnWhiteBackground;
 	static Color standardMapBackgroundColor;
 	static Color standardSelectColor;
@@ -966,14 +968,14 @@ public class MapView extends JPanel implements Printable, Autoscroll{
          * @see javax.swing.JComponent#paint(java.awt.Graphics)
          */
         public void paint(Graphics g) {
-//        	long startMilli = System.currentTimeMillis();
+        	long startMilli = System.currentTimeMillis();
         	if(isValid()){
         		getRoot().getContent().getLocation(rootContentLocation);
         		Tools.convertPointToAncestor(getRoot(), rootContentLocation, getParent());
         	}
             final Graphics2D g2 = (Graphics2D)g;
             final Object renderingHint = g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-			getController().setEdgesRenderingHint(g2);
+            final Object renderingTextHint = g2.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING);
 			getController().setTextRenderingHint(g2);
 			final Object oldRenderingHintFM = g2.getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS);
 			final Object newRenderingHintFM = getZoom() != 1F ? RenderingHints.VALUE_FRACTIONALMETRICS_ON : RenderingHints.VALUE_FRACTIONALMETRICS_OFF;
@@ -982,17 +984,23 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 				g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, newRenderingHintFM );
 			}
             super.paint(g);
-            if(RenderingHints.KEY_ANTIALIASING.isCompatibleValue(renderingHint)){
-            	g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
-            }
 			if(oldRenderingHintFM != newRenderingHintFM && RenderingHints.KEY_FRACTIONALMETRICS.isCompatibleValue(oldRenderingHintFM))
 			{
 				g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, oldRenderingHintFM);
 			}
+			if(RenderingHints.KEY_ANTIALIASING.isCompatibleValue(renderingHint)){
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
+			}
+			if(RenderingHints.KEY_TEXT_ANTIALIASING.isCompatibleValue(renderingTextHint)){
+				g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, renderingTextHint);
+			}
 			
 //			final Rectangle rect = getInnerBounds();
 //			g2.drawRect(rect.x, rect.y, rect.width, rect.height);
-//			logger.info("End paint in "+(System.currentTimeMillis()-startMilli));
+			long localTime = System.currentTimeMillis()-startMilli;
+			mPaintingAmount++;
+			mPaintingTime += localTime;
+			logger.info("End paint in "+localTime+ ". Mean time:" + (mPaintingTime/mPaintingAmount));
         }
 
     public void paintChildren(Graphics graphics) {

@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.38 2008-09-24 20:27:09 dpolivaev Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.39 2008-10-18 20:09:43 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -27,9 +27,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -1297,5 +1299,11 @@ public class Tools {
 		}
 		return new File(new URI (pUrl.toString()));
 	}
+	public static void restoreAntialiasing(Graphics2D g, Object renderingHint) {
+		if(RenderingHints.KEY_ANTIALIASING.isCompatibleValue(renderingHint)){
+        	g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
+        }
+	}
+
 }
 

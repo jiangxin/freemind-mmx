@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.58 2008-08-25 19:40:19 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.59 2008-10-18 20:09:43 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -1607,24 +1607,18 @@ public class Controller  implements MapModuleChangeObserver {
         }
     }
 
-	public void setEdgesRenderingHint(Graphics2D g) {
-		if(getAntialiasEdges()){
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		}
-		else{
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-		}
+	public Object setEdgesRenderingHint(Graphics2D g) {
+		Object renderingHint = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, (getAntialiasEdges())?RenderingHints.VALUE_ANTIALIAS_ON:RenderingHints.VALUE_ANTIALIAS_OFF);
+		return renderingHint; 
 	}
 
 	public void setTextRenderingHint(Graphics2D g) {
-		if(getAntialiasAll()){
-			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		}
-		else{
-			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-		}
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, (getAntialiasAll())?RenderingHints.VALUE_TEXT_ANTIALIAS_ON:RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, (getAntialiasAll())?RenderingHints.VALUE_ANTIALIAS_ON:RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
+	
 
 }
 

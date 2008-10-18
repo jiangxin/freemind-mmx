@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.64 2008-06-08 20:32:07 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.65 2008-10-18 20:09:43 christianfoltin Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1309,6 +1309,7 @@ public class NodeView extends JComponent implements TreeModelListener{
     }
 
     private void paintCloudsAndEdges(Graphics2D g) {
+    	Object renderingHint = map.getController().setEdgesRenderingHint(g);
         for(int i = 0; i < getComponentCount(); i++){
             final Component component = getComponent(i);
             if (!(component instanceof NodeView)) {
@@ -1328,7 +1329,10 @@ public class NodeView extends JComponent implements TreeModelListener{
                 nodeView.paintCloudsAndEdges(g);
             }
         }
+        Tools.restoreAntialiasing(g, renderingHint);
     }
+
+
 
     /* (non-Javadoc)
      * @see javax.swing.JComponent#paint(java.awt.Graphics)
@@ -1354,12 +1358,6 @@ public class NodeView extends JComponent implements TreeModelListener{
 //        g.setColor(Color.BLACK);
 //        g.drawRect(0, 0, getWidth()-1, getHeight()-1);
     }
-
-    protected void paintChildren(Graphics g) {
-		// TODO Auto-generated method stub
-		super.paintChildren(g);
-	}
-
 
 	private void paintCloud(Graphics g) {
         if(isContentVisible() && model.getCloud() != null) {

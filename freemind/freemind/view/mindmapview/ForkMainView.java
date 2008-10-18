@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ForkMainView.java,v 1.1.4.8 2008-07-21 21:57:51 dpolivaev Exp $ */
+/* $Id: ForkMainView.java,v 1.1.4.9 2008-10-18 20:09:43 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -26,6 +26,7 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 
 class ForkMainView extends MainView{
@@ -36,6 +37,7 @@ class ForkMainView extends MainView{
         final MindMapNode model = nodeView.getModel();
         if (model==null) return;
         
+    	Object renderingHint = getController().setEdgesRenderingHint(g);
         paintSelected(g);
         paintDragOver(g);
         
@@ -51,6 +53,7 @@ class ForkMainView extends MainView{
                 getWidth(), 
                 getHeight()-edgeWidth/2-1);
         g.setColor(oldColor);
+        Tools.restoreAntialiasing(g, renderingHint);
         super.paint(g);
     }
 
