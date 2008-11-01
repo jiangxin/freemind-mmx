@@ -82,7 +82,7 @@ public class JabberSender implements ActionFilter {
             chat = this.session.getChatService();
             mapShared = false;
         } catch (Exception e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
         }
     }
 
@@ -108,7 +108,7 @@ public class JabberSender implements ActionFilter {
             action.setMap(stringWriter.getBuffer().toString());
             sendMessage(requestReceiverUser, action);
         } catch (Exception e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
         }
     }
 
@@ -123,7 +123,7 @@ public class JabberSender implements ActionFilter {
             String message = marshal(action);
             sendMessage(sendToUser, action);
         } catch (Exception e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
         }
     }
 
@@ -177,7 +177,7 @@ public class JabberSender implements ActionFilter {
             }
             sendMessage(sendToUser, action);
         } catch (Exception e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
         }
     }
 
@@ -250,9 +250,9 @@ public class JabberSender implements ActionFilter {
                     pair.getUndoAction());
             sendMessage(sendToUser, eAction);
         } catch (SendMessageFailedException e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
         } catch (ParseException e) {
-            freemind.main.Resources.getInstance().logExecption(e);
+            freemind.main.Resources.getInstance().logException(e);
         }
         return pair;
     }
