@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2006
  */
-/*$Id: FlatNodeTableFilterModel.java,v 1.1.2.1 2007-01-03 23:47:43 christianfoltin Exp $*/
+/*$Id: FlatNodeTableFilterModel.java,v 1.1.2.2 2008-11-01 21:11:42 christianfoltin Exp $*/
 package accessories.plugins.time;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class FlatNodeTableFilterModel extends AbstractTableModel {
 
 	public void setFilter(String filterRegexp){
 		this.mFilterRegexp = filterRegexp;
-		System.out.println("Setting filter to '"+mFilterRegexp+"'");
+//		System.out.println("Setting filter to '"+mFilterRegexp+"'");
 		mPattern = Pattern.compile(mFilterRegexp, Pattern.CASE_INSENSITIVE);
 		updateIndexArray();
 		fireTableDataChanged();

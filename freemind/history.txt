@@ -1,4 +1,10 @@
 ===============================
+Changes made in FreeMind 0.9.0 Beta21
+===============================
+* Integrated [ freemind-Patches-2187629 ] Public domain icons to replace unfree ones. Thanks to Eric.
+* Integrated [ freemind-Patches-2189454 ] Corrected XSLT sheet for Excel export. Again thanks to Eric.
+
+===============================
 Changes made in FreeMind 0.9.0 Beta20
 ===============================
 * Fixed some documentation bugs reported by Edmund Laugasson. Thanks.

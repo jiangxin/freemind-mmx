@@ -16,17 +16,19 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FileNodeModel.java,v 1.11.18.1.4.4 2008-05-26 19:25:08 christianfoltin Exp $*/
+/*$Id: FileNodeModel.java,v 1.11.18.1.4.5 2008-11-01 21:11:43 christianfoltin Exp $*/
 
 package freemind.modes.filemode;
 
 import java.awt.Color;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
 import freemind.main.FreeMindMain;
+import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
@@ -158,7 +160,12 @@ public class FileNodeModel extends NodeAdapter {
     }
 
     public String getLink() {
-	return file.toString();
+    	try {
+			return Tools.fileToUrl(file).toString();
+		} catch (MalformedURLException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+		return file.toString();
     }
 
 	public boolean isWriteable() {

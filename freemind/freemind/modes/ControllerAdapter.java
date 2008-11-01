@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.52 2008-08-27 19:05:36 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.53 2008-11-01 21:11:42 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -379,6 +379,7 @@ public abstract class ControllerAdapter implements ModeController {
 
     public void loadURL(String relative) {
         try {
+        	logger.info("Trying to open " + relative);
         		URL absolute = null;
            if (Tools.isAbsolutePath(relative)) {
               // Protocol can be identified by rexep pattern "[a-zA-Z]://.*".
@@ -426,6 +427,7 @@ public abstract class ControllerAdapter implements ModeController {
            }
            String extension = Tools.getExtension(absolute.toString());
            if ((extension != null) && extension.equals(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT)) {   // ---- Open Mind Map
+        	   logger.info("Trying to open mind map " + absolute);
               MapModuleManager mapModuleManager = getController().getMapModuleManager();
 			/*this can lead to confusion if the user handles multiple maps with the same name.
                * Obviously, this is wrong. Get a better check whether or not the file is already opened.*/

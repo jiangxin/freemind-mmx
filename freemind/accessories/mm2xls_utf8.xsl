@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    (c) by Naoki Nose, Eric Lavarde 2006
-    This code is licensed under the GPL.
+    (c) by Naoki Nose, Eric Lavarde 2006-2008
+    This code is licensed under the GPLv2 or later.
     (http://www.gnu.org/copyleft/gpl.html)
+    Stylesheet to transform a FreeMind map into an Excel sheet, use menu point
+    File -> Export -> Using XSLT... to choose this XSL file, and name the
+    ExportFile Something.xls or Something.xml.
     2006-12-10: added support for notes and attributes (EWL)
+    2008-10-23: corrected issue with ss namespace not being output (EWL)
 -->
 <xsl:stylesheet version="1.0"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns="urn:schemas-microsoft-com:office:spreadsheet"
  xmlns:o="urn:schemas-microsoft-com:office:office"
  xmlns:x="urn:schemas-microsoft-com:office:excel"
- xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:duss="urn:schemas-microsoft-com:office:dummyspreadsheet">
   <xsl:output method="xml" indent="yes" encoding="UTF-8" standalone="yes"/>
+  <!-- the duss namespace alias is required in order to be able to output
+  	ss:Data properly, Excel ignores the extraneous dummy namespace. -->
+  <xsl:namespace-alias stylesheet-prefix="duss" result-prefix="ss"/>
 
   <xsl:template match="/map">
     <xsl:processing-instruction name="mso-application"> progid="Excel.Sheet"</xsl:processing-instruction>
@@ -35,6 +43,8 @@
 	<Font ss:Bold="1"/>
 	</Style>
       </Styles>
+      <!-- we could probably put something more intelligent as worksheet name,
+      	but it would require name mangling to avoid unallowed characters -->
       <Worksheet ss:Name="FreeMind Sheet">
         <Table>
 		<xsl:apply-templates select="node">
@@ -79,7 +89,8 @@
 <xsl:template name="output-node-text-as-data">
 	<xsl:choose>
 	<xsl:when test="richcontent[@TYPE='NODE']">
-		<ss:Data ss:Type="String" xmlns="http://www.w3.org/TR/REC-html40"><xsl:copy-of select="richcontent[@TYPE='NODE']/html/body/*" /></ss:Data>
+	<!-- see comments about rich text and HTML format below -->
+		<duss:Data ss:Type="String" xmlns="http://www.w3.org/TR/REC-html40"><xsl:copy-of select="richcontent[@TYPE='NODE']/html/body/*" /></duss:Data>
 	</xsl:when>
 	<xsl:otherwise>
 	      <Data ss:Type="String"><xsl:value-of select="@TEXT"/></Data>
@@ -89,10 +100,14 @@
 	<xsl:call-template name="output-note-text-as-comment" />
 </xsl:template>
 
+<!-- export of rich text in HTML format should work, but formatting is lost
+	because Excel understands only HTML tags in capitals, whereas
+	FreeMind exports in small caps. This can probably be solved but would
+	require some more tweaking -->
 <xsl:template name="output-note-text-as-comment">
 	<xsl:if test="richcontent[@TYPE='NOTE']">
-	<Comment><ss:Data xmlns="http://www.w3.org/TR/REC-html40"><xsl:copy-of
-			select="richcontent[@TYPE='NOTE']/html/body/*" /></ss:Data></Comment>
+	<Comment><duss:Data xmlns="http://www.w3.org/TR/REC-html40"><xsl:copy-of
+			select="richcontent[@TYPE='NOTE']/html/body/*" /></duss:Data></Comment>
 	</xsl:if>
 </xsl:template>
 
