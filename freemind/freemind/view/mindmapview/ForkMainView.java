@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ForkMainView.java,v 1.1.4.9 2008-10-18 20:09:43 christianfoltin Exp $ */
+/* $Id: ForkMainView.java,v 1.1.4.10 2008-11-06 21:09:04 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -59,12 +59,12 @@ class ForkMainView extends MainView{
 
     void paintFoldingMark(Graphics2D g, Point p) {
         final int zoomedFoldingSymbolHalfWidth = getZoomedFoldingSymbolHalfWidth();
-        if(p.x == -1){
-            p.x -= 2 * zoomedFoldingSymbolHalfWidth;
-        }
-        else if(p.x == getWidth()){
-            p.x += 2 * zoomedFoldingSymbolHalfWidth;
-        }        
+//        if(p.x == -1){
+//            p.x -= 2 * zoomedFoldingSymbolHalfWidth;
+//        }
+//        else if(p.x == getWidth()){
+//            p.x += 2 * zoomedFoldingSymbolHalfWidth;
+//        }        
         super.paintFoldingMark(g, p);
     }
     
