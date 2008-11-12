@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MenuBar.java,v 1.24.14.17.2.21 2008-07-24 03:10:36 christianfoltin Exp $*/
+/*$Id: MenuBar.java,v 1.24.14.17.2.22 2008-11-12 21:44:33 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -147,8 +147,6 @@ public class MenuBar extends JMenuBar {
         //extras menu
         menuHolder.addMenu(new JMenu(c.getResourceString("menu_extras")), EXTRAS_MENU+".");
         menuHolder.addCategory(EXTRAS_MENU+"first");    
-        menuHolder.addSeparator(EXTRAS_MENU);   
-        menuHolder.addCategory(EXTRAS_MENU+"last"); 
 
 		//Mapsmenu
 		mapsmenu = menuHolder.addMenu(new JMenu(c.getResourceString("mindmaps")), MINDMAP_MENU+".");
@@ -314,12 +312,7 @@ public class MenuBar extends JMenuBar {
 		nextMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_nextMap")));
 	
 	
-//		JMenu preferences = menuHolder.addMenu(new JMenu(c.getResourceString("preferences")), EXTRAS_MENU+"last/options/.");
-
-        if(c.getFrame() instanceof JFrame){
-            JMenuItem prefDialog = menuHolder.addAction(c.propertyAction, EXTRAS_MENU+"options/option_dialog");
-            prefDialog.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_option_dialog")));
-        }
+		// option menu item moved to mindmap_menus.xml
 	
 //	        if (false) {
 //	           preferences.add(c.background);

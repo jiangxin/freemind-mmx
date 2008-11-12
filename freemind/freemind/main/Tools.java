@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.39 2008-10-18 20:09:43 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.40 2008-11-12 21:44:33 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -87,6 +87,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -1303,6 +1304,12 @@ public class Tools {
 		if(RenderingHints.KEY_ANTIALIASING.isCompatibleValue(renderingHint)){
         	g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, renderingHint);
         }
+	}
+
+	public static String getFileNameProposal(MindMapNode node) {
+		String rootText = node.getPlainTextContent();
+	    rootText = rootText.replaceAll("[&:/\\\\\0%$#~\\?\\*]+", "");
+		return rootText;
 	}
 
 }

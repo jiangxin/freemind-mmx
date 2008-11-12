@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.71 2008-08-05 20:29:18 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.72 2008-11-12 21:44:34 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -284,6 +284,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
    public Action importLinkedBranchWithoutRoot = new ImportLinkedBranchWithoutRootAction();
 
    public Action showAttributeManagerAction = null;
+   public Action propertyAction = null;
 
 
     public Action increaseNodeFont = new NodeGeneralAction (this, "increase_node_font_size", null,
@@ -418,6 +419,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
         attributeController = new MindMapModeAttributeController(this);
         showAttributeManagerAction = getController().showAttributeManagerAction;
+        propertyAction = getController().propertyAction;
     }
 
     private void createStandardActions() {

@@ -3,7 +3,10 @@ Changes made in FreeMind 0.9.0 Beta21
 ===============================
 * Integrated [ freemind-Patches-2187629 ] Public domain icons to replace unfree ones. Thanks to Eric.
 * Integrated [ freemind-Patches-2189454 ] Corrected XSLT sheet for Excel export. Again thanks to Eric.
-
+* Export branch gets a file name proposal.
+* Not integrated, but simplified: 'Preferences' should be under 'Edit' and not under 'Tools' (2135518)
+* Fixed position of folding symbol
+ 
 ===============================
 Changes made in FreeMind 0.9.0 Beta20
 ===============================

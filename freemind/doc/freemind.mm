@@ -766,8 +766,7 @@
       </li>
     </ul>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <node CREATED="1225992295568" ID="ID_1824791396" MODIFIED="1225992320146" TEXT="Using CONTROL+SHIFT+F you&apos;ll see the new search and replace dialog"/>
 <node CREATED="1225992321346" ID="ID_1972806259" MODIFIED="1225992332265" TEXT="It searches the whole mindmap."/>
 <node CREATED="1225992332834" ID="ID_680695596" MODIFIED="1225992346044" TEXT="It supports regular expressions."/>
@@ -959,7 +958,7 @@
 </node>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950732" ID="Freemind_Link_269203785" MODIFIED="1225993175383" POSITION="right" TEXT="Importing Internet Explorer favorites">
+<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_269203785" MODIFIED="1226522318586" POSITION="right" TEXT="Importing Internet Explorer favorites">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1124560950732" ID="Freemind_Link_260446736" MODIFIED="1150322748620">
@@ -976,42 +975,43 @@
 <font NAME="Dialog" SIZE="10"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1709974530" MODIFIED="1124560950732" POSITION="right" TEXT="Importing MindManager X5 mind map">
+<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1709974530" MODIFIED="1226522334074" POSITION="right" TEXT="Importing MindManager X5 mind map">
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To import MindManager X5 mind map, in pull-down menu use File &gt; Import &gt; MindManager X5 map."/>
 </node>
-<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_913645795" MODIFIED="1124560950732" POSITION="right" TEXT="Integration with Word or Outlook">
+<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_913645795" MODIFIED="1226522354447" POSITION="right" TEXT="Integration with Word or Outlook">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="You can paste maps or branches into Microsoft Word, Wordpad or Outlook messages. In general, you can paste it into any application that understands rich text format. The text formatting and links are pasted too.">
-<font NAME="SansSerif" SIZE="12"/>
-</node>
-<node CREATED="1124560950732" LINK="mailto:don.bonton@supermail.com" MODIFIED="1124560950732" TEXT="Clicking a mail link (mailto:don.bonton@supermail.com) will open Outlook for creating a new message, if not set otherwise in Windows.">
+<node CREATED="1124560950732" ID="ID_64023792" MODIFIED="1124560950732" TEXT="You can paste maps or branches into Microsoft Word, Wordpad or Outlook messages. In general, you can paste it into any application that understands rich text format. The text formatting and links are pasted too.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1124560950732" LINK="mailto:don.bonton@supermail.com?subject=Last%20phone%20call" MODIFIED="1124560950732" TEXT="You can use subject in mail link"/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="An alternative way of pasting mind map into Microsoft Word is by exporting it to HTML based on headings, copying the HTML and pasting it into Word."/>
+<node CREATED="1124560950732" ID="ID_606888787" LINK="mailto:don.bonton@supermail.com" MODIFIED="1124560950732" TEXT="Clicking a mail link (mailto:don.bonton@supermail.com) will open Outlook for creating a new message, if not set otherwise in Windows.">
+<font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1822195277" MODIFIED="1124560950732" POSITION="right" TEXT="Setting preferences">
+<node CREATED="1124560950732" ID="ID_195184912" LINK="mailto:don.bonton@supermail.com?subject=Last%20phone%20call" MODIFIED="1124560950732" TEXT="You can use subject in mail link"/>
+<node CREATED="1124560950732" ID="ID_1025260611" MODIFIED="1124560950732" TEXT="An alternative way of pasting mind map into Microsoft Word is by exporting it to HTML based on headings, copying the HTML and pasting it into Word."/>
+</node>
+<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1822195277" MODIFIED="1226522375677" POSITION="right" TEXT="Setting preferences">
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To edit preferences, in pull-down menu use Tools &gt; Preferences. Most of the changes take effect only after you restart FreeMind."/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Preferences include keyboard mappings, behavior when exporting HTML, the way node selection with mouse occurs, choice of antialiasing, and more."/>
-<node COLOR="#999999" CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Key words: customizing.">
+<node CREATED="1124560950732" ID="ID_403382871" MODIFIED="1124560950732" TEXT="Preferences include keyboard mappings, behavior when exporting HTML, the way node selection with mouse occurs, choice of antialiasing, and more."/>
+<node COLOR="#999999" CREATED="1124560950732" ID="ID_1142643149" MODIFIED="1124560950732" TEXT="Key words: customizing.">
 <font NAME="Dialog" SIZE="10"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1528828442" MODIFIED="1124560950732" POSITION="right" TEXT="Printing">
+<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1528828442" MODIFIED="1226522527988" POSITION="right" TEXT="Printing">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="You can print either by fitting the whole map into one page, or by printing the map to several sheets of paper. This choice you can set in menu: File &gt; Page Setup &gt; ... ."/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To make better use of space, choose landscape in Page Setup.">
-<font NAME="SansSerif" SIZE="12"/>
-</node>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Previewing your map before printing is not straightforward. If you have a postscript printer or a generic postsript driver, you can print the map into file and view the postscript file using Ghostview or similar software. If you try to print the map with a printer that does not understand postscript, the resulting file will not be postscript but probably PCL, which is unusable for you."/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="You can also print from your browser after exporting map to HTML, or from Word or Wordpad after copying and pasting the map into it. You can also export the map into HTML with headings, copy and paste it into Microsoft Word and print it from there. That way you can change styles as you want.">
+<node CREATED="1124560950732" ID="ID_251988552" MODIFIED="1124560950732" TEXT="You can print either by fitting the whole map into one page, or by printing the map to several sheets of paper. This choice you can set in menu: File &gt; Page Setup &gt; ... ."/>
+<node CREATED="1124560950732" ID="ID_1007091684" MODIFIED="1124560950732" TEXT="To make better use of space, choose landscape in Page Setup.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
+<node CREATED="1124560950732" ID="ID_2221451" MODIFIED="1226522451497" TEXT="Previewing your map before printing using File &gt; Print Preview."/>
+<node CREATED="1226522472728" ID="ID_1163262790" MODIFIED="1226522524578" TEXT="If you aren&apos;t satisfied with the printing build in into FreeMind (which is in fact improvable), you may want to use Export &gt; As PDF and print the PDF document."/>
+<node CREATED="1124560950732" ID="ID_518241544" MODIFIED="1124560950732" TEXT="You can also print from your browser after exporting map to HTML, or from Word or Wordpad after copying and pasting the map into it. You can also export the map into HTML with headings, copy and paste it into Microsoft Word and print it from there. That way you can change styles as you want.">
+<font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_841140408" MODIFIED="1124560950732" POSITION="right" TEXT="Using rich text by means of HTML in nodes">
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Nodes starting with &lt;html&gt; are rendered using HTML contained in them. This feature is helful only for technically minded people. An example follows."/>
-<node CREATED="1124560950732" MODIFIED="1124560950732">
+</node>
+<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_841140408" MODIFIED="1226523475924" POSITION="right" TEXT="Using rich text by means of HTML in nodes">
+<node CREATED="1124560950732" ID="ID_1604967346" MODIFIED="1226522642254" TEXT="Nodes can be entered as rich text nodes using the new Rich Text Editor &quot;SimplyHTML&quot;. If you start to edit a long node, you&apos;ll get asked whether or not you want to use formattings in your node. &quot;Yes&quot; opens the rich text editor. Moreover, it is automatically opened, if the node is already a rich text node."/>
+<node CREATED="1124560950732" ID="ID_1110927645" MODIFIED="1124560950732">
 <richcontent TYPE="NODE"><html>
   <head>
     
@@ -1066,26 +1066,26 @@
   </body>
 </html></richcontent>
 </node>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="There is no support for HTML nodes and pictures in exporting to text or RTF (Word, Wordpad). At least, using HTML is convenient for publication on the Web using Freemind&apos;s Applet.">
+<node CREATED="1124560950732" ID="ID_538807612" MODIFIED="1226522678653" TEXT="There is on very limited support for HTML nodes and pictures in exporting to text or RTF (Word, Wordpad). At least, using HTML is convenient for publication on the Web using Freemind&apos;s Applet.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_271176250" MODIFIED="1124560950732" POSITION="right" TEXT="Using pictures in nodes">
+<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_271176250" MODIFIED="1226523520619" POSITION="right" TEXT="Using pictures in nodes">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To insert a picture into FreeMind, press Alt + K, or in node context menu use Insert &gt; Image. By inserting a picture, you lose all the text you had in the node. Images inserted in this way are not correctly pasted outside FreeMind and they need not to be correctly exported to HTML. Pictures in FreeMind are a preliminary feature."/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Supported picture formats are PNG, JPEG and GIF."/>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To turn links to images into visible images, press Alt + K. You can drag and drop several image files into FreeMind, select them as multiple nodes, and turn them into images by pressing Alt + K."/>
-<node COLOR="#000000" CREATED="1124560950732" MODIFIED="1124560950732" TEXT="A more technical and not so user friendly way to insert an image follows. It is possible to include HTML in nodes. You have to start the node content with the tag &lt;html&gt;. This way, you can have pictures in the nodes.">
-<font NAME="SansSerif" SIZE="12"/>
-</node>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="For example&#xa;  &lt;html&gt;&lt;img src=&quot;linked/Apple.png&quot;&gt;&#xa;  &lt;html&gt;&lt;img src=&quot;file://C:/Users/My Documents/Mind Maps/Linked/Apple.png&quot;&gt;&#xa;">
+<node CREATED="1124560950732" ID="ID_379945000" MODIFIED="1226522707281" TEXT="To insert a picture into FreeMind, press Alt + K, or in node context menu use Insert &gt; Image. By inserting a picture, you loose all the text you had in the node. Images inserted in this way are not correctly pasted outside FreeMind and they need not to be correctly exported to HTML. Pictures in FreeMind are a preliminary feature."/>
+<node CREATED="1124560950732" ID="ID_1852594271" MODIFIED="1124560950732" TEXT="Supported picture formats are PNG, JPEG and GIF."/>
+<node CREATED="1124560950732" ID="ID_1470160159" MODIFIED="1124560950732" TEXT="To turn links to images into visible images, press Alt + K. You can drag and drop several image files into FreeMind, select them as multiple nodes, and turn them into images by pressing Alt + K."/>
+<node COLOR="#000000" CREATED="1124560950732" ID="ID_974514047" MODIFIED="1124560950732" TEXT="A more technical and not so user friendly way to insert an image follows. It is possible to include HTML in nodes. You have to start the node content with the tag &lt;html&gt;. This way, you can have pictures in the nodes.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="You can use relative links in the images.">
+<node CREATED="1124560950732" ID="ID_1720461225" MODIFIED="1124560950732" TEXT="For example&#xa;  &lt;html&gt;&lt;img src=&quot;linked/Apple.png&quot;&gt;&#xa;  &lt;html&gt;&lt;img src=&quot;file://C:/Users/My Documents/Mind Maps/Linked/Apple.png&quot;&gt;&#xa;">
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node CREATED="1124560950732" ID="ID_542611066" MODIFIED="1124560950732" TEXT="You can use relative links in the images.">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#996600" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1825247742" MODIFIED="1124560950732" TEXT="Example of pictures, working on some Windows distributions">
+<node COLOR="#996600" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1825247742" MODIFIED="1226523518906" TEXT="Example of pictures, working on some Windows distributions">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <node CREATED="1124560950732" MODIFIED="1124560950732">
 <richcontent TYPE="NODE"><html>
@@ -1161,7 +1161,7 @@
 <node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/STONE.BMP" MODIFIED="1124560950732" TEXT="STONE.BMP"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="ID_733394968" MODIFIED="1124560950732" POSITION="right" TEXT="Using experimental file locking">
+<node COLOR="#407000" CREATED="1124560950732" ID="ID_733394968" MODIFIED="1226523525582" POSITION="right" TEXT="Using experimental file locking">
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Current version of FreeMind has experimental file locking, disabled by default. Current implementation does not perfectly prevent race conditions, but it should be fine for most of practical purposes."/>
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="File locking makes sure that more users do not edit the same map at the same time, preventing them from incidentally overwriting the information from each other."/>
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To enable experimental file locking, in pull-down menu use Tools &gt; Preferences."/>

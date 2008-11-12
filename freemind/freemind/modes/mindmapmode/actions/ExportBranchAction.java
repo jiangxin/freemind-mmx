@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: ExportBranchAction.java,v 1.1.2.7 2008-07-09 20:01:16 christianfoltin Exp $*/
+/*$Id: ExportBranchAction.java,v 1.1.2.8 2008-11-12 21:44:34 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode.actions;
 
@@ -76,6 +76,7 @@ public class ExportBranchAction extends AbstractAction {
         if (mMindMapController.getFileFilter() != null) {
             chooser.addChoosableFileFilter(mMindMapController.getFileFilter());
         }
+        chooser.setSelectedFile(new File(Tools.getFileNameProposal(node) + freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION));
         int returnVal = chooser.showSaveDialog(mMindMapController.getSelectedView());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File chosenFile = chooser.getSelectedFile();
