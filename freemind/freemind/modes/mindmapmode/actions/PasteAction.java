@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.20 2008-09-28 20:55:02 dpolivaev Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.21 2008-11-13 19:12:40 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -477,6 +477,7 @@ public class PasteAction extends AbstractAction implements ActorXml{
 			MindMapNode target, boolean asSibling, boolean changeSide,
 			boolean isLeft) throws XMLParseException {
 		// Call nodeStructureChanged(target) after this function.
+		logger.info("Pasting " + pasted + " to " + target);
 		try {
 			MindMapNodeModel node = (MindMapNodeModel) pMindMapController
 					.createNodeTreeFromXml(new StringReader(pasted));

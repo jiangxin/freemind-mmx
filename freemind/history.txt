@@ -6,7 +6,8 @@ Changes made in FreeMind 0.9.0 Beta21
 * Export branch gets a file name proposal.
 * Not integrated, but simplified: 'Preferences' should be under 'Edit' and not under 'Tools' (2135518)
 * Fixed position of folding symbol
- 
+* Fixed [ freemind-Bugs-2273721 ] "Insert new parent node" action is incorrectly undone.
+
 ===============================
 Changes made in FreeMind 0.9.0 Beta20
 ===============================

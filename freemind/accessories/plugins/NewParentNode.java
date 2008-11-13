@@ -76,17 +76,32 @@ public class NewParentNode extends MindMapNodeHookAdapter {
 		if(focussed.isRoot()) {
 			if(selecteds.size() == 1) {
 				// only root is selected. we try to create a new root:
-				MindMapNode rootCopy = rootNode.shallowCopy();
+				Vector children = new Vector(rootNode.getChildren());
+				// copy only root.
+				Transferable rootContent = getMindMapController().copySingle();
+				// and paste it directly again.
+				getMindMapController().paste(rootContent, rootNode);
+				Vector childrenNew = new Vector(rootNode.getChildren());
+				/* look for the new node 
+				 *  as the difference between former children and new children.
+				 */
+				MindMapNode rootCopy = null;
+				boolean found = false;
+				for (Iterator it = childrenNew.iterator(); it.hasNext();) {
+					rootCopy = (MindMapNode) it.next();
+					if (!children.contains(rootCopy)) {
+						found = true;
+						break;
+					}
+				}
+				if(!found) {
+					logger.warning("New node not found in list of all children. Strange...");
+					return;
+				}
 				// delete root node content:
 				getMindMapController().clearNodeContents(rootNode);
 				// children list must be able to modify, thus we copy it deeply.
-				Vector children = new Vector(rootNode.getChildren());
 				moveToOtherNode(rootNode, children, rootNode, rootCopy);
-				getMindMapController().insertNodeInto(rootCopy, rootNode);
-				getMindMapController().nodeChanged(rootCopy);
-				mapView.selectAsTheOnlyOneSelected(mapView.getNodeView(rootNode));
-				getMindMapController().getFrame().repaint();
-				
 				return;
 			}
 			getMindMapController().getController().errorMessage(
@@ -115,13 +130,17 @@ public class NewParentNode extends MindMapNodeHookAdapter {
 		return moveToOtherNode(rootNode, selectedNodes, selectedParent, newNode);
 	}
 
-	private MindMapNode moveToOtherNode(MindMapNode rootNode, List selectedNodes,
+	private MindMapNode moveToOtherNode(MindMapNode rootNode, List nodesToBeMoved,
 			MindMapNode selectedParent, MindMapNode newNode) {
+		if(nodesToBeMoved.size()==0){
+			// nothing to do.
+			return newNode;
+		}
 		// Make sure the selected nodes all have the same parent
 		// (this restriction is to simplify the action, and could
 		//    possibly be removed in the future, when we have undo)
 		// Also make sure that none of the selected nodes are the root node
-		for (Iterator it = selectedNodes.iterator(); it.hasNext();) {
+		for (Iterator it = nodesToBeMoved.iterator(); it.hasNext();) {
 			MindMapNode node = (MindMapNode) it.next();
 			if (node.getParentNode() != selectedParent) {
 				getMindMapController().getController().errorMessage(
@@ -139,7 +158,7 @@ public class NewParentNode extends MindMapNodeHookAdapter {
 		//getMap().insertNodeInto(newNode, selectedParent, childPosition);
 
 		// Move selected nodes to become children of new node
-		Transferable copy = getMindMapController().cut(selectedNodes);
+		Transferable copy = getMindMapController().cut(nodesToBeMoved);
 		getMindMapController().paste(copy, newNode);
 		nodeChanged(selectedParent);
 		return newNode;
