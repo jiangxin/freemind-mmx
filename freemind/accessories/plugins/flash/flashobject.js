@@ -119,6 +119,8 @@ function getFlashVersion() {
 		if(x && x.description) {
 			var y = x.description;
    			flashversion = y.charAt(y.indexOf('.')-1);
+			var aux= y.charAt(y.indexOf('.')-2);
+			if("0123456789".indexOf(aux)!=-1) flashversion=aux+flashversion;
 		}
 	} else {
 		result = false;
