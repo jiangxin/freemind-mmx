@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseMapModel.java,v 1.9.18.5.2.4 2007-08-17 20:41:57 christianfoltin Exp $ */
+/* $Id: BrowseMapModel.java,v 1.9.18.5.2.5 2008-12-09 21:09:43 christianfoltin Exp $ */
 
 package freemind.modes.browsemode;
 
@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.io.Writer;
 import java.net.URL;
 import java.security.AccessControlException;
+import java.util.HashMap;
 
 import freemind.main.FreeMindMain;
 import freemind.modes.ControllerAdapter;
@@ -136,7 +137,8 @@ public class BrowseMapModel extends MapAdapter {
         }
 
 	try {
-		root = (BrowseNodeModel) getModeController().createNodeTreeFromXml(urlStreamReader);
+    	HashMap IDToTarget = new HashMap();
+		root = (BrowseNodeModel) getModeController().createNodeTreeFromXml(urlStreamReader, IDToTarget);
 	    urlStreamReader.close();
 	    return root;
 	} catch (Exception ex) {

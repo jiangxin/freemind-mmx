@@ -19,7 +19,7 @@
  *
  * Created on 10.10.2006
  */
-/*$Id: MindMapControllerMock.java,v 1.1.2.11 2008-08-29 03:10:01 christianfoltin Exp $*/
+/*$Id: MindMapControllerMock.java,v 1.1.2.12 2008-12-09 21:09:43 christianfoltin Exp $*/
 package tests.freemind;
 
 import java.awt.Color;
@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -87,7 +88,7 @@ public class MindMapControllerMock implements ModeController {
 	/* (non-Javadoc)
 	 * @see freemind.modes.ModeController#createNodeTreeFromXml(java.io.Reader)
 	 */
-	public MindMapNode createNodeTreeFromXml(Reader pReader)
+	public MindMapNode createNodeTreeFromXml(Reader pReader, HashMap pIDToTarget)
 			throws XMLParseException, IOException {
 		// TODO Auto-generated method stub
 		return null;

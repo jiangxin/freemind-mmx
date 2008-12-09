@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.55 2008-10-18 20:09:43 christianfoltin Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.56 2008-12-09 21:09:43 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -36,8 +36,6 @@ import java.awt.Stroke;
 import java.awt.dnd.Autoscroll;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DropTargetListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.geom.CubicCurve2D;
 import java.awt.print.PageFormat;
@@ -45,6 +43,7 @@ import java.awt.print.Printable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -58,7 +57,6 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
-import javax.swing.SwingUtilities;
 
 import freemind.controller.Controller;
 import freemind.controller.NodeKeyListener;
@@ -67,6 +65,7 @@ import freemind.controller.NodeMouseMotionListener;
 import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.main.Tools.Pair;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
@@ -853,14 +852,14 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
      /**
      * @return an ArrayList of MindMapNode objects.
-     * If both ancestor and descandant node are selected, only the ancestor ist returned
+     * If both ancestor and descendant node are selected, only the ancestor is returned
      */
     public ArrayList /*of MindMapNodes*/ getSelectedNodesSortedByY() {
         final HashSet selectedNodesSet = new HashSet();
         for (int i=0; i<selected.size();i++) {
             selectedNodesSet.add(getSelected(i).getModel()); 
         }
-        TreeMap sortedNodes = new TreeMap();
+        LinkedList pointNodePairs = new LinkedList();
         
         Point point = new Point();
         iteration:
@@ -874,13 +873,33 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                 }
                 view.getContent().getLocation(point);
                 Tools.convertPointToAncestor(view, point, this);
-                sortedNodes.put(new Integer(point.y), node);
+                pointNodePairs.add(new Pair(new Integer(point.y), node));
             }
+        // do the sorting:
+        Collections.sort(pointNodePairs, new Comparator(){
+
+			public int compare(Object arg0, Object arg1) {
+				if (arg0 instanceof Pair) {
+					Pair pair0 = (Pair) arg0;
+					if (arg1 instanceof Pair) {
+						Pair pair1 = (Pair) arg1;
+						Integer int0 = (Integer)pair0.getFirst();
+						Integer int1 = (Integer)pair1.getFirst();
+						return int0.compareTo(int1);
+					}
+				}
+				throw new IllegalArgumentException("Wrong compare arguments "+arg0 + ", " + arg1);
+			}});
         
         ArrayList selectedNodes = new ArrayList();
-        for(Iterator it = sortedNodes.entrySet().iterator();it.hasNext();) {
-            selectedNodes.add( ((Map.Entry)it.next()).getValue() ); }
+        for(Iterator it = pointNodePairs.iterator();it.hasNext();) {
+            selectedNodes.add( ((Pair)it.next()).getSecond() ); }
 
+//        logger.info("Cutting #" + selectedNodes.size());
+//        for (Iterator it = selectedNodes.iterator(); it.hasNext();) {
+//        	MindMapNode node = (MindMapNode) it.next();
+//        	logger.info("Cutting " + node);
+//        }
         return selectedNodes;
     }
 

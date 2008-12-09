@@ -719,7 +719,7 @@
 </node>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_423038022" MODIFIED="1225992766814" POSITION="right" TEXT="Searching">
+<node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_423038022" MODIFIED="1226986740919" POSITION="right" TEXT="Searching">
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1124560950717" ID="ID_966700848" MODIFIED="1216753988326" TEXT="To find text in a node and all its descendant nodes, press Ctrl + F or in the &quot;edit&quot; menu use Find.">
 <font NAME="SansSerif" SIZE="12"/>
@@ -730,6 +730,28 @@
 <node CREATED="1124560950717" ID="ID_488311689" MODIFIED="1124560950717" TEXT="To search the whole map, position the node to the central node by pressing Escape before searching."/>
 <node CREATED="1124560950717" ID="ID_829330412" MODIFIED="1124560950717" TEXT="The search is a breadth-first search. That corresponds to the idea that the deeper a node, the greater the detail described in the node."/>
 <node CREATED="1124560950717" ID="ID_779591913" MODIFIED="1124560950717" TEXT="Remember that not the whole map is searched, only the node and its descendants."/>
+<node CREATED="1226637605339" ID="ID_1101500438" MODIFIED="1226638002746" TEXT="If you enter multiple words into the find dialog, then each word must occur (but not necessarily in that order)"/>
+<node CREATED="1226637638394" ID="ID_411031708" MODIFIED="1226638251632" TEXT="If you want to search for a given sentence then put it into quotation marks.">
+<node CREATED="1226637681207" ID="ID_2993422" MODIFIED="1226637683498" TEXT="Example">
+<node CREATED="1226637700062" ID="ID_1547412773" MODIFIED="1226637700062" TEXT="one">
+<node CREATED="1226637700063" MODIFIED="1226637700063" TEXT="one one"/>
+<node CREATED="1226637700063" ID="ID_7046300" MODIFIED="1226638280369" TEXT="one two">
+<arrowlink DESTINATION="ID_1194260195" ENDARROW="None" ENDINCLINATION="233;0;" ID="Arrow_ID_229096619" STARTARROW="Default" STARTINCLINATION="233;0;"/>
+</node>
+</node>
+<node CREATED="1226637700064" ID="ID_1598660477" MODIFIED="1226637700064" TEXT="two">
+<node CREATED="1226637700064" ID="ID_210133237" MODIFIED="1226638276527" TEXT="two one">
+<arrowlink DESTINATION="ID_1194260195" ENDARROW="None" ENDINCLINATION="226;0;" ID="Arrow_ID_836438693" STARTARROW="Default" STARTINCLINATION="226;0;"/>
+</node>
+<node CREATED="1226637700065" MODIFIED="1226637700065" TEXT="two two"/>
+</node>
+</node>
+<node CREATED="1226638251611" ID="ID_1059444785" MODIFIED="1226638262979" TEXT="Searching for ...">
+<node CREATED="1226637703016" ID="ID_677636492" MODIFIED="1226638246061" TEXT="one one (without quotations), you&apos;ll get four hits."/>
+<node CREATED="1226637912635" ID="ID_1194260195" MODIFIED="1226638280370" TEXT="one two (without quotations), you&apos;ll get two hits."/>
+<node CREATED="1226637732850" ID="ID_1924951486" MODIFIED="1226638246062" TEXT="&quot;one one&quot;, you&apos;ll get only one hit."/>
+</node>
+</node>
 <node CREATED="1225992288920" ID="ID_1494764055" MODIFIED="1225992763939" TEXT="New interactive search">
 <richcontent TYPE="NOTE"><html>
   <head>
@@ -1161,7 +1183,7 @@
 <node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/STONE.BMP" MODIFIED="1124560950732" TEXT="STONE.BMP"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950732" ID="ID_733394968" MODIFIED="1226523525582" POSITION="right" TEXT="Using experimental file locking">
+<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="ID_733394968" MODIFIED="1226637562101" POSITION="right" TEXT="Using experimental file locking">
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Current version of FreeMind has experimental file locking, disabled by default. Current implementation does not perfectly prevent race conditions, but it should be fine for most of practical purposes."/>
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="File locking makes sure that more users do not edit the same map at the same time, preventing them from incidentally overwriting the information from each other."/>
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To enable experimental file locking, in pull-down menu use Tools &gt; Preferences."/>

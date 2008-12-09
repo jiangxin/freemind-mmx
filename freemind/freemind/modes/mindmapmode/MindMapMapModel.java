@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.31 2008-08-27 19:05:39 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.32 2008-12-09 21:09:43 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -394,7 +394,8 @@ public class MindMapMapModel extends MapAdapter  {
 			}
         }
         try {
-        	    return (MindMapNodeModel) mModeController.createNodeTreeFromXml(reader);
+        	HashMap IDToTarget = new HashMap();
+        	return (MindMapNodeModel) mModeController.createNodeTreeFromXml(reader, IDToTarget);
 //	        	MindMapXMLElement mapElement = new MindMapXMLElement(mModeController);
 //            mapElement.parseFromReader(reader);
 //            // complete the arrow links:

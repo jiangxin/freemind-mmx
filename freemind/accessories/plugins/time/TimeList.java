@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.5 2007-08-28 21:27:41 dpolivaev Exp $ */
+/* $Id: TimeList.java,v 1.1.2.6 2008-12-09 21:09:43 christianfoltin Exp $ */
 package accessories.plugins.time;
 
 import java.awt.Color;
@@ -429,7 +429,8 @@ public class TimeList extends MindMapHookAdapter {
 	public static void replace(IReplaceInputInformation info, String searchString, String replaceString) {
         String regExp = "(" + getPureRegularExpression(searchString) + ")";
 		Pattern p = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
-        String replacement = getPureRegularExpression(replaceString);
+//        String replacement = getPureRegularExpression(replaceString);
+        String replacement = (replaceString);
 		int length = info.getLength();
 		for (int i = 0; i < length; i++) {
 			NodeHolder nodeHolder = info.getNodeHolderAt(i);
@@ -612,10 +613,12 @@ public class TimeList extends MindMapHookAdapter {
     }
 
     /**
+     * Removes all regular expression stuff with exception of "*",
+     * which is replaced by ".*".
      */
     public static String getPureRegularExpression(String text) {
         // remove regexp:
-		text=text.replaceAll("([()\\.\\[\\]^$|])", "\\\\\\1");
+		text=text.replaceAll("([().\\[\\]^$|])", "\\\\$1");
 		text=text.replaceAll("\\*", ".*");
         return text;
     }

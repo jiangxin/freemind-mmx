@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.21 2008-11-13 19:12:40 christianfoltin Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.22 2008-12-09 21:09:43 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -33,6 +33,7 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,7 +62,6 @@ import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapNodeModel;
-import freemind.modes.mindmapmode.MindMapXMLElement;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
@@ -242,6 +242,7 @@ public class PasteAction extends AbstractAction implements ActorXml{
 
         public void paste(Object TransferData, MindMapNode target, boolean asSibling, boolean isLeft, Transferable t) {
 			  //System.err.println("mindMapNodesFlavor");
+        	HashMap IDToTarget = new HashMap();
 			 String textFromClipboard =
 				(String)TransferData;
 			 if (textFromClipboard != null) {
@@ -252,7 +253,7 @@ public class PasteAction extends AbstractAction implements ActorXml{
                for (int i = 0; i < textLines.length; ++i) {
                    //logger.info(textLines[i]+", "+ target+", "+ asSibling);
                    MindMapNodeModel newModel = pasteXMLWithoutRedisplay(
-                           textLines[i], target, asSibling, true, isLeft);
+                           textLines[i], target, asSibling, true, isLeft, IDToTarget);
                    newModel.setLeft(isLeft);
                    addUndoAction(newModel);
                }
@@ -475,12 +476,12 @@ public class PasteAction extends AbstractAction implements ActorXml{
 
 	public MindMapNodeModel pasteXMLWithoutRedisplay(String pasted,
 			MindMapNode target, boolean asSibling, boolean changeSide,
-			boolean isLeft) throws XMLParseException {
+			boolean isLeft, HashMap pIDToTarget) throws XMLParseException {
 		// Call nodeStructureChanged(target) after this function.
-		logger.info("Pasting " + pasted + " to " + target);
+		logger.fine("Pasting " + pasted + " to " + target);
 		try {
 			MindMapNodeModel node = (MindMapNodeModel) pMindMapController
-					.createNodeTreeFromXml(new StringReader(pasted));
+					.createNodeTreeFromXml(new StringReader(pasted), pIDToTarget);
 			insertNodeInto(node, target, asSibling, isLeft, changeSide);
 			pMindMapController.invokeHooksRecursively(node, pMindMapController
 					.getModel());

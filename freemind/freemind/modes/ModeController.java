@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ModeController.java,v 1.14.14.9.2.24 2008-08-27 19:05:37 christianfoltin Exp $ */
+/* $Id: ModeController.java,v 1.14.14.9.2.25 2008-12-09 21:09:43 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -85,7 +86,7 @@ public interface ModeController extends TextTranslator  {
     /** Given a valid Xml parameterization of a node (tree),
      * this method returns freshly created nodes.
      */
-    MindMapNode createNodeTreeFromXml(Reader pReader)
+    MindMapNode createNodeTreeFromXml(Reader pReader, HashMap pIDToTarget)
 		throws XMLParseException, IOException;
     // activation methods:
     void startupController();

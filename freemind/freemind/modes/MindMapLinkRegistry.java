@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapLinkRegistry.java,v 1.6.18.1.16.3 2008-02-20 20:54:05 christianfoltin Exp $*/
+/*$Id: MindMapLinkRegistry.java,v 1.6.18.1.16.4 2008-12-09 21:09:43 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -51,7 +51,7 @@ public interface MindMapLinkRegistry {
     /** Clears the set of recent cut nodes.*/
     public void clearCuttedNodeBuffer();
     /** @return returns all links that have been cut out recently.*/
-    public Vector /* of MindMapLink s*/  getCuttedNode(String oldTargetID);
+    public Vector /* of MindMapLink s*/  getCuttedLinks(String oldTargetID);
 // fc, 9.8.: apparently not used.
 //    /** Returns a Vector of Nodes that point to the given node.*/
 //    public Vector /* of MindMapNode s */ getAllSources(MindMapNode target);

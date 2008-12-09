@@ -19,11 +19,12 @@
  *
  * Created on 10.01.2006
  */
-/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.8 2007-08-05 10:29:08 dpolivaev Exp $ */
+/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.9 2008-12-09 21:09:43 christianfoltin Exp $ */
 package freemind.modes.browsemode;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 
@@ -103,6 +104,7 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 		String decrypted = encrypter.decrypt(encryptedContent);
 		if (decrypted == null)
 			return;
+    	HashMap IDToTarget = new HashMap();
 		String[] childs = decrypted.split(ModeController.NODESEPARATOR);
 		// and now? paste it:
 		for (int i = childs.length - 1; i >= 0; i--) {
@@ -112,7 +114,7 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 			if (string.length() == 0)
 				continue;
 			try {
-				NodeAdapter node = (NodeAdapter) browseController.createNodeTreeFromXml(new StringReader(string));
+				NodeAdapter node = (NodeAdapter) browseController.createNodeTreeFromXml(new StringReader(string), IDToTarget);
 				// now, the import is finished. We can inform others about
 				// the new nodes:
                 browseController.insertNodeInto(node, this);

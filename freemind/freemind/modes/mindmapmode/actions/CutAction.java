@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: CutAction.java,v 1.1.2.2.2.12 2008-07-26 12:01:32 dpolivaev Exp $ */
+/* $Id: CutAction.java,v 1.1.2.2.2.13 2008-12-09 21:09:43 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -55,10 +55,15 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 public class CutAction extends AbstractAction implements ActorXml {
     private String text;
     private final MindMapController mMindMapController;
+    private static java.util.logging.Logger logger = null;
     public CutAction(MindMapController c) {
         super(
             c.getText("cut"),
             new ImageIcon(c.getResource("images/editcut.png")));
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
         this.mMindMapController = c;
         this.text = c.getText("cut");
         setEnabled(false);
@@ -111,6 +116,7 @@ public class CutAction extends AbstractAction implements ActorXml {
         	NodeCoordinate coord = new NodeCoordinate(node, node.isLeft());
         	Transferable copy = mMindMapController.copy(node, true);
         	XmlAction pasteNodeAction = mMindMapController.paste.getPasteNodeAction(copy, coord);
+        	logger.info("Undo for cut: " + mMindMapController.marshall(pasteNodeAction));
             // The paste actions are reversed because of the strange coordinates.
         	undo.addAtChoice(0,pasteNodeAction);
 

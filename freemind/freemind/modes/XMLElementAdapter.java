@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.19 2007-10-25 16:15:43 dpolivaev Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.20 2008-12-09 21:09:43 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -502,7 +502,7 @@ public abstract class XMLElementAdapter extends XMLElement {
                 target = (NodeAdapter) registry.getTargetForID(oldID);
                 if(target == null) {
                     // link target is in nowhere-land
-                    System.err.println("Cannot find the label " + oldID + " in the getMap(). The link "+arrowLink+" is not restored.");
+                    System.err.println("Found the label " + oldID + ", but not the corresponding node in the map. The link "+arrowLink+" is not restored.");
                     continue;
                 }
                 newID = registry.getLabel(target);
@@ -512,7 +512,12 @@ public abstract class XMLElementAdapter extends XMLElement {
                 }
             } else {
                 // link target is in nowhere-land
-                System.err.println("Cannot find the label " + oldID + " in the getMap(). The link "+arrowLink+" is not restored.");
+                System.err.println("Cannot find the label " + oldID + " in the map. The link "+arrowLink+" is not restored.");
+                for (Iterator iterator = IDToTarget.keySet().iterator(); iterator
+						.hasNext();) {
+					String id = (String) iterator.next();
+					System.err.println("Old-Id: " + id + " = new id: " + ((MindMapNode)IDToTarget.get(id)).getObjectId(mModeController));
+				}
                 continue;
             }
             // set the new ID:
@@ -535,14 +540,12 @@ public abstract class XMLElementAdapter extends XMLElement {
             String newId = registry.registerLinkTarget(target, key /* Proposed name for the target, is changed by the registry, if already present.*/);
             // and in the cutted case:
             // search for links to this ids that have been cutted earlier:
-            Vector cuttedLinks = registry.getCuttedNode(key /* old target id*/);
+            Vector cuttedLinks = registry.getCuttedLinks(key /* old target id*/);
             for(int j=0; j < cuttedLinks.size(); ++j) {
                 ArrowLinkAdapter link = (ArrowLinkAdapter) cuttedLinks.get(j);
                 // repair link
                 link.setTarget(target);
                 link.setDestinationLabel(newId);
-                // and set it:
-                registry.registerLink(link);
             }
         }
     }
@@ -551,4 +554,12 @@ public abstract class XMLElementAdapter extends XMLElement {
     protected MindMap getMap() {
         return mModeController.getMap();
     }
+
+	public HashMap getIDToTarget() {
+		return IDToTarget;
+	}
+
+	public void setIDToTarget(HashMap pToTarget) {
+		IDToTarget = pToTarget;
+	}
 }

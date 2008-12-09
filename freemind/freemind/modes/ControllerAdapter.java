@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.54 2008-11-12 21:44:34 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.55 2008-12-09 21:09:43 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -46,12 +46,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -59,7 +59,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -78,7 +77,6 @@ import freemind.controller.MapModuleManager;
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.PermanentNodeHook;
-import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
@@ -466,9 +464,10 @@ public abstract class ControllerAdapter implements ModeController {
         }
     }
 
-    public MindMapNode createNodeTreeFromXml(Reader pReader)
+    public MindMapNode createNodeTreeFromXml(Reader pReader, HashMap pIDToTarget)
 			throws XMLParseException, IOException {
 		XMLElementAdapter element = (XMLElementAdapter) createXMLElement();
+		element.setIDToTarget(pIDToTarget);
 		element.parseFromReader(pReader);
 		element.processUnfinishedLinks(getModel().getLinkRegistry());
 		MindMapNode node = element.getMapChild();

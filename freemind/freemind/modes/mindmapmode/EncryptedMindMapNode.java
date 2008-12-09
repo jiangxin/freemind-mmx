@@ -16,13 +16,14 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.14 2008-05-26 19:25:08 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.15 2008-12-09 21:09:43 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Vector;
@@ -94,6 +95,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         setAccessible(true);
         if (!isDecrypted) {
         	try {
+            	HashMap IDToTarget = new HashMap();
 	            String childXml = decryptXml(encryptedContent, password);
 	            String[] childs = childXml.split(ModeController.NODESEPARATOR);
 	            // and now? paste it:
@@ -104,7 +106,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 	                	 continue;
 	                //FIXME: This code smells:
 	                ((MindMapController) getModeController()).paste.pasteXMLWithoutRedisplay(
-	                        string, this, false, false, false);
+	                        string, this, false, false, false, IDToTarget);
 	
 	            }
 	            isDecrypted = true;

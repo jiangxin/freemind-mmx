@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FindTextTests.java,v 1.1.2.7 2007-01-03 23:47:43 christianfoltin Exp $*/
+/*$Id: FindTextTests.java,v 1.1.2.8 2008-12-09 21:09:43 christianfoltin Exp $*/
 
 package tests.freemind.findreplace;
 
@@ -113,6 +113,19 @@ public class FindTextTests extends FreeMindTestBase {
 
     }
 
+    public void testGetPureRegularExpression(){
+    	executeRegExpRemovalAndTest("input", "input");
+    	executeRegExpRemovalAndTest("aaa.*bb", "aaa\\..*bb");
+    	executeRegExpRemovalAndTest("aaa(.*)bb", "aaa\\(\\..*\\)bb");
+    	executeRegExpRemovalAndTest("$aaa*bb^", "\\$aaa.*bb\\^");
+    }
+
+	private void executeRegExpRemovalAndTest(String input, String outputExpected) {
+		String result = TimeList.getPureRegularExpression(input);
+		assertEquals("remove regexp from '" + input + "' has lead to '" + result
+				+ "' but expected was '" + outputExpected + "'", outputExpected, result);
+	}
+    
     public void testReplaceNodeText() throws Exception {
         // normal text is replaced,
         TimeList.IReplaceInputInformation info = new TestReplaceInputInfo(

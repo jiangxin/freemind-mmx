@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: LinkRegistryAdapter.java,v 1.10.18.3.12.5 2008-02-20 20:54:04 christianfoltin Exp $*/
+/*$Id: LinkRegistryAdapter.java,v 1.10.18.3.12.6 2008-12-09 21:09:43 christianfoltin Exp $*/
 
 package freemind.modes;
 
@@ -248,6 +248,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
             throw new java.lang.IllegalArgumentException("Illegal link specification."+link);
         MindMapNode source = link.getSource();
         MindMapNode target = link.getTarget();
+        logger.info("Register link ("+link+") from source node:"+source+" to target " + target);
         ID_Registered state = _registerLinkTarget(target);
         Vector vec = getAssignedLinksVector(state);
         // already present?
@@ -269,7 +270,6 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
             }
         }
         IDToLink.put(uniqueID, link);
-        //logger.fine("Register link ("+link+") from source node:"+source+" to target " + target);
     };
 
         
@@ -403,13 +403,13 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
     public void clearCuttedNodeBuffer() { IDToCutLinks.clear(); };
 
     /** @return returns all links that have been cutted out recently.*/
-    public Vector /* of MindMapLink s*/  getCuttedNode(String oldTargetID) { 
+    public Vector /* of MindMapLink s*/  getCuttedLinks(String oldTargetID) { 
         Vector vec;
         if(IDToCutLinks.containsKey(oldTargetID) ) {
             vec = (Vector) IDToCutLinks.get(oldTargetID); 
-            for(int i = 0; i < vec.size(); ++i) {
-                vec.set(i, ((MindMapLink) vec.get(i)).clone());
-            }
+//            for(int i = 0; i < vec.size(); ++i) {
+//                vec.set(i, ((MindMapLink) vec.get(i)).clone());
+//            }
             //logger.fine("returning link repository ("+vec+") the cutted nodes with old id " + oldTargetID);
         } else { 
             // error case?

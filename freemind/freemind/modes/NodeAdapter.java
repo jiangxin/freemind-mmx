@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeAdapter.java,v 1.20.16.20.2.41 2008-06-08 14:00:31 dpolivaev Exp $ */
+/* $Id: NodeAdapter.java,v 1.20.16.20.2.42 2008-12-09 21:09:43 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -29,6 +29,7 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -564,7 +565,8 @@ public abstract class NodeAdapter implements MindMapNode {
 			StringWriter writer = new StringWriter();
 			this.save(writer, this.getMap().getLinkRegistry(), true, false);
 			String result = writer.toString();
-			MindMapNode copy = this.getModeController().createNodeTreeFromXml(new StringReader(result));
+        	HashMap IDToTarget = new HashMap();
+			MindMapNode copy = this.getModeController().createNodeTreeFromXml(new StringReader(result), IDToTarget);
 			copy.setFolded(false);
 			return copy;
 		} catch (Exception e) {
