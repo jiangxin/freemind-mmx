@@ -10,7 +10,7 @@ Changes made in FreeMind 0.9.0 Beta21
 * Fixed: cut of several nodes on the same y hight only cutted one of them.
 * Fixed: Moving graphical links.
 * Fixed: Search&Replace RegExp handling fixed.
-
+* Integrated: LookAndFeel https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2420027&group_id=7118. Thanks to the author.
 
 ===============================
 Changes made in FreeMind 0.9.0 Beta20

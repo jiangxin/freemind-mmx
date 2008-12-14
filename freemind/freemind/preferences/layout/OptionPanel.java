@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.51 2008-08-25 19:40:19 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.52 2008-12-14 21:13:25 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -619,7 +619,8 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new NewTabProperty("Appearance"));
 		controls.add(new SeparatorProperty("look_and_feel"));
 		LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
-		String[] lafNames = new String[lafInfo.length + 5];
+		int reservedCount = 6;
+		String[] lafNames = new String[lafInfo.length + reservedCount];
 		Vector translatedLafNames = new Vector();
 		lafNames[0] = "default";
 		translatedLafNames.add(getText("default"));
@@ -636,7 +637,7 @@ public class OptionPanel implements TextTranslator {
 		for (int i = 0; i < lafInfo.length; i++) {
 			LookAndFeelInfo info = lafInfo[i];
 			String className = info.getClassName();
-			lafNames[i + 5] = className;
+			lafNames[i + reservedCount] = className;
 			translatedLafNames.add(info.getName());
 		}
 		controls.add(new ComboProperty("lookandfeel.tooltip",
