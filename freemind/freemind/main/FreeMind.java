@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.120 2008-10-08 20:00:36 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.121 2008-12-14 21:05:29 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -726,19 +726,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		final IFreeMindSplash splash2 = splash;
 		EventQueue.invokeLater(new Runnable(){
 			public void run() {
-				feedBack
-				.increase("FreeMind.progress.startCreateController");
+				feedBack.increase("FreeMind.progress.startCreateController");
 				ModeController ctrl = frame.createModeController(args);
+				
+				frame.setVisible(true);
 				feedBack.increase("FreeMind.progress.loadMaps");
 				// This could be improved.
 				frame.loadMaps(args, ctrl);
-
-				feedBack.increase("FreeMind.progress.endStartup");
 				
+				feedBack.increase("FreeMind.progress.endStartup");
 				if (splash2 != null) {
 					splash2.setVisible(false);
 				}
-				frame.setVisible(true);
 			}
 		});
 	}
@@ -1077,6 +1076,12 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		if (splitPanePosition != -1 && lastSplitPanePosition != -1) {
 			mSplitPane.setDividerLocation(splitPanePosition);
 			mSplitPane.setLastDividerLocation(lastSplitPanePosition);
+//			try {
+//				throw new IllegalArgumentException("");
+//			} catch (Exception e) {
+//				freemind.main.Resources.getInstance().logException(e);
+//				// TODO: handle exception
+//			}
 		}
 		return mSplitPane;
 	}

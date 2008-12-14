@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlConversionTests.java,v 1.1.2.11 2008-12-10 21:29:20 christianfoltin Exp $*/
+/*$Id: HtmlConversionTests.java,v 1.1.2.12 2008-12-14 21:05:29 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -109,23 +109,23 @@ public class HtmlConversionTests extends FreeMindTestBase {
      * @throws Exception
      */
     public void testSpaceHandling() throws Exception {
-		String input = getInputStringWithManySpaces();
+		String input = getInputStringWithManySpaces("&#160;");
 		assertEquals(input, HtmlTools.getInstance().toXhtml(input));
 	}
-    public void testSpaceHandlingInShtml() throws Exception {
-    	String input = getInputStringWithManySpaces();
-    	SHTMLPanel panel = SHTMLPanel.createSHTMLPanel();
-    	panel.setCurrentDocumentContent(input);
-    	assertEquals(input, panel.getDocumentText());
-    	panel.setVisible(false);
-    }
+//    public void testSpaceHandlingInShtml() throws Exception {
+//    	String input = getInputStringWithManySpaces(" ");
+//    	SHTMLPanel panel = SHTMLPanel.createSHTMLPanel();
+//    	panel.setCurrentDocumentContent(input);
+//    	assertEquals(input, panel.getDocumentText());
+//    	panel.setVisible(false);
+//    }
     /**
      * Set the panel to a text, read this text from the panel
      * and set it again. Then, setting and getting this text to the panel
      * must give the same. 
      */
     public void testSpaceHandlingInShtmlIdempotency() throws Exception {
-    	String input = getInputStringWithManySpaces();
+    	String input = getInputStringWithManySpaces(" ");
     	SHTMLPanel panel = SHTMLPanel.createSHTMLPanel();
     	panel.setCurrentDocumentContent(input);
     	// set the value of the panel itself again.
@@ -134,27 +134,294 @@ public class HtmlConversionTests extends FreeMindTestBase {
     	assertEquals("Setting the input to its output should cause the same output.", input, panel.getDocumentText());
     	panel.setVisible(false);
     }
+    public void testSpaceRemovalInShtml() throws Exception {
+    	String input = getInputStringWithManySpaces("&#160;");
+    	SHTMLPanel panel = SHTMLPanel.createSHTMLPanel();
+    	panel.setCurrentDocumentContent(input);
+    	// set the value of the panel itself again (twice)
+    	input = panel.getDocumentText();
+    	panel.setCurrentDocumentContent(input);
+    	input = panel.getDocumentText();
+    	panel.setCurrentDocumentContent(input);
+    	assertEquals("Setting the input to its output should cause the same output.", input, panel.getDocumentText());
+    	panel.setVisible(false);
+    }
 
-	private String getInputStringWithManySpaces() {
-		String input = "<html>\n"
-+"  <head>\n"
-+"    \n"
-+"  </head>\n"
-+"  <body>\n"
-+"    <p>\n"
-+"      Using&#160;Filters&#160;the&#160;current&#160;mindmap&#160;can&#160;be&#160;reduced&#160;to&#160;nodes&#160;satisfying&#160;certain&#160;criteria.&#160;For&#160;example,&#160;if&#160;you&#160;only&#160;want&#160;to&#160;see&#160;every&#160;node&#160;containing&#160;&quot;TODO&quot;,&#160;then&#160;you&#160;have&#160;to&#160;press&#160;on&#160;the&#160;filter&#160;symbol&#160;(the&#160;funnel&#160;beside&#160;the&#160;zoom&#160;box),&#160;the&#160;filter&#160;toolbar&#160;appears,&#160;choose&#160;&quot;edit&quot;&#160;and&#160;add&#160;the&#160;condition&#160;that&#160;the&#160;node&#160;content&#160;contains&#160;&quot;TODO&quot;.&#160;Then&#160;select&#160;the&#160;filter&#160;in&#160;the&#160;filter&#160;toolbar.&#160;Now,&#160;only&#160;the&#160;filtered&#160;nodes&#160;and&#160;its&#160;ancestors&#160;are&#160;displayed&#160;unless&#160;you&#160;choose&#160;&quot;No&#160;filtering&quot;&#160;in&#160;the&#160;toolbar.&#160;\n"
-+"    </p>\n"
-+"    <p>\n"
-+"      Using&#160;the&#160;settings&#160;&quot;Show&#160;ancestors&quot;&#160;and&#160;&quot;Show&#160;descendants&quot;&#160;you&#160;can&#160;influence&#160;the&#160;apperance&#160;of&#160;the&#160;parent&#160;and&#160;child&#160;nodes&#160;that&#160;are&#160;connected&#160;with&#160;the&#160;nodes&#160;being&#160;filtered.\n"
-+"    </p>\n"
-+"    <p>\n"
-+"      There&#160;are&#160;many&#160;different&#160;criteria&#160;filters&#160;can&#160;be&#160;based&#160;on&#160;such&#160;as&#160;a&#160;set&#160;of&#160;selected&#160;nodes,&#160;a&#160;specific&#160;icon&#160;and&#160;some&#160;attributes.\n"
-+"    </p>\n"
-+"    <p>\n"
-+"      &#160;\n"
-+"    </p>\n"
-+"  </body>\n"
-+"</html>\n";
+	private String getInputStringWithManySpaces(String pSpaceString) {
+		String input = "<html>\n" + "  <head>\n" + "    \n" + "  </head>\n"
+				+ "  <body>\n" + "    <p>\n" + "      Using"
+				+ pSpaceString
+				+ "Filters"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "current"
+				+ pSpaceString
+				+ "mindmap"
+				+ pSpaceString
+				+ "can"
+				+ pSpaceString
+				+ "be"
+				+ pSpaceString
+				+ "reduced"
+				+ pSpaceString
+				+ "to"
+				+ pSpaceString
+				+ "nodes"
+				+ pSpaceString
+				+ "satisfying"
+				+ pSpaceString
+				+ "certain"
+				+ pSpaceString
+				+ "criteria."
+				+ pSpaceString
+				+ "For"
+				+ pSpaceString
+				+ "example,"
+				+ pSpaceString
+				+ "if"
+				+ pSpaceString
+				+ "you"
+				+ pSpaceString
+				+ "only"
+				+ pSpaceString
+				+ "want"
+				+ pSpaceString
+				+ "to"
+				+ pSpaceString
+				+ "see"
+				+ pSpaceString
+				+ "every"
+				+ pSpaceString
+				+ "node"
+				+ pSpaceString
+				+ "containing"
+				+ pSpaceString
+				+ "&quot;TODO&quot;,"
+				+ pSpaceString
+				+ "then"
+				+ pSpaceString
+				+ "you"
+				+ pSpaceString
+				+ "have"
+				+ pSpaceString
+				+ "to"
+				+ pSpaceString
+				+ "press"
+				+ pSpaceString
+				+ "on"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "filter"
+				+ pSpaceString
+				+ "symbol"
+				+ pSpaceString
+				+ "(the"
+				+ pSpaceString
+				+ "funnel"
+				+ pSpaceString
+				+ "beside"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "zoom"
+				+ pSpaceString
+				+ "box),"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "filter"
+				+ pSpaceString
+				+ "toolbar"
+				+ pSpaceString
+				+ "appears,"
+				+ pSpaceString
+				+ "choose"
+				+ pSpaceString
+				+ "&quot;edit&quot;"
+				+ pSpaceString
+				+ "and"
+				+ pSpaceString
+				+ "add"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "condition"
+				+ pSpaceString
+				+ "that"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "node"
+				+ pSpaceString
+				+ "content"
+				+ pSpaceString
+				+ "contains"
+				+ pSpaceString
+				+ "&quot;TODO&quot;."
+				+ pSpaceString
+				+ "Then"
+				+ pSpaceString
+				+ "select"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "filter"
+				+ pSpaceString
+				+ "in"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "filter"
+				+ pSpaceString
+				+ "toolbar."
+				+ pSpaceString
+				+ "Now,"
+				+ pSpaceString
+				+ "only"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "filtered"
+				+ pSpaceString
+				+ "nodes"
+				+ pSpaceString
+				+ "and"
+				+ pSpaceString
+				+ "its"
+				+ pSpaceString
+				+ "ancestors"
+				+ pSpaceString
+				+ "are"
+				+ pSpaceString
+				+ "displayed"
+				+ pSpaceString
+				+ "unless"
+				+ pSpaceString
+				+ "you"
+				+ pSpaceString
+				+ "choose"
+				+ pSpaceString
+				+ "&quot;No"
+				+ pSpaceString
+				+ "filtering&quot;"
+				+ pSpaceString
+				+ "in"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "toolbar."
+				+ pSpaceString
+				+ "\n"
+				+ "    </p>\n"
+				+ "    <p>\n"
+				+ "      Using"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "settings"
+				+ pSpaceString
+				+ "&quot;Show"
+				+ pSpaceString
+				+ "ancestors&quot;"
+				+ pSpaceString
+				+ "and"
+				+ pSpaceString
+				+ "&quot;Show"
+				+ pSpaceString
+				+ "descendants&quot;"
+				+ pSpaceString
+				+ "you"
+				+ pSpaceString
+				+ "can"
+				+ pSpaceString
+				+ "influence"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "apperance"
+				+ pSpaceString
+				+ "of"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "parent"
+				+ pSpaceString
+				+ "and"
+				+ pSpaceString
+				+ "child"
+				+ pSpaceString
+				+ "nodes"
+				+ pSpaceString
+				+ "that"
+				+ pSpaceString
+				+ "are"
+				+ pSpaceString
+				+ "connected"
+				+ pSpaceString
+				+ "with"
+				+ pSpaceString
+				+ "the"
+				+ pSpaceString
+				+ "nodes"
+				+ pSpaceString
+				+ "being"
+				+ pSpaceString
+				+ "filtered.\n"
+				+ "    </p>\n"
+				+ "    <p>\n"
+				+ "      There"
+				+ pSpaceString
+				+ "are"
+				+ pSpaceString
+				+ "many"
+				+ pSpaceString
+				+ "different"
+				+ pSpaceString
+				+ "criteria"
+				+ pSpaceString
+				+ "filters"
+				+ pSpaceString
+				+ "can"
+				+ pSpaceString
+				+ "be"
+				+ pSpaceString
+				+ "based"
+				+ pSpaceString
+				+ "on"
+				+ pSpaceString
+				+ "such"
+				+ pSpaceString
+				+ "as"
+				+ pSpaceString
+				+ "a"
+				+ pSpaceString
+				+ "set"
+				+ pSpaceString
+				+ "of"
+				+ pSpaceString
+				+ "selected"
+				+ pSpaceString
+				+ "nodes,"
+				+ pSpaceString
+				+ "a"
+				+ pSpaceString
+				+ "specific"
+				+ pSpaceString
+				+ "icon"
+				+ pSpaceString
+				+ "and"
+				+ pSpaceString
+				+ "some"
+				+ pSpaceString
+				+ "attributes.\n"
+				+ "    </p>\n"
+				+ "    <p>\n"
+				+ "      "
+				+ pSpaceString
+				+ "\n"
+				+ "    </p>\n" + "  </body>\n" + "</html>\n";
 		return input;
 	}
 
