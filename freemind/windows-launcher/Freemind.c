@@ -66,6 +66,11 @@ int main(int argc, char *argv[])  {
    // Replace current process by a new one running our application
 
    execvp(javaw_path, arguments);
+   // the following patch seems useful for vista but needs additional testing.
+   // https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2350483&group_id=7118
+   // Submitted By: Mario Valle (mvalle58)
+   // Summary: Windows launcher does nothing (+ solution)
+   // _spawnvp(_P_DETACH, arguments[0], arguments);
   
    return 0; 
 }

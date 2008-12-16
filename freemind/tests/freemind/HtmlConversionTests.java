@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlConversionTests.java,v 1.1.2.12 2008-12-14 21:05:29 christianfoltin Exp $*/
+/*$Id: HtmlConversionTests.java,v 1.1.2.13 2008-12-16 21:57:02 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -148,281 +148,286 @@ public class HtmlConversionTests extends FreeMindTestBase {
     }
 
 	private String getInputStringWithManySpaces(String pSpaceString) {
-		String input = "<html>\n" + "  <head>\n" + "    \n" + "  </head>\n"
-				+ "  <body>\n" + "    <p>\n" + "      Using"
-				+ pSpaceString
-				+ "Filters"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "current"
-				+ pSpaceString
-				+ "mindmap"
-				+ pSpaceString
-				+ "can"
-				+ pSpaceString
-				+ "be"
-				+ pSpaceString
-				+ "reduced"
-				+ pSpaceString
-				+ "to"
-				+ pSpaceString
-				+ "nodes"
-				+ pSpaceString
-				+ "satisfying"
-				+ pSpaceString
-				+ "certain"
-				+ pSpaceString
-				+ "criteria."
-				+ pSpaceString
-				+ "For"
-				+ pSpaceString
-				+ "example,"
-				+ pSpaceString
-				+ "if"
-				+ pSpaceString
-				+ "you"
-				+ pSpaceString
-				+ "only"
-				+ pSpaceString
-				+ "want"
-				+ pSpaceString
-				+ "to"
-				+ pSpaceString
-				+ "see"
-				+ pSpaceString
-				+ "every"
-				+ pSpaceString
-				+ "node"
-				+ pSpaceString
-				+ "containing"
-				+ pSpaceString
-				+ "&quot;TODO&quot;,"
-				+ pSpaceString
-				+ "then"
-				+ pSpaceString
-				+ "you"
-				+ pSpaceString
-				+ "have"
-				+ pSpaceString
-				+ "to"
-				+ pSpaceString
-				+ "press"
-				+ pSpaceString
-				+ "on"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "filter"
-				+ pSpaceString
-				+ "symbol"
-				+ pSpaceString
-				+ "(the"
-				+ pSpaceString
-				+ "funnel"
-				+ pSpaceString
-				+ "beside"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "zoom"
-				+ pSpaceString
-				+ "box),"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "filter"
-				+ pSpaceString
-				+ "toolbar"
-				+ pSpaceString
-				+ "appears,"
-				+ pSpaceString
-				+ "choose"
-				+ pSpaceString
-				+ "&quot;edit&quot;"
-				+ pSpaceString
-				+ "and"
-				+ pSpaceString
-				+ "add"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "condition"
-				+ pSpaceString
-				+ "that"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "node"
-				+ pSpaceString
-				+ "content"
-				+ pSpaceString
-				+ "contains"
-				+ pSpaceString
-				+ "&quot;TODO&quot;."
-				+ pSpaceString
-				+ "Then"
-				+ pSpaceString
-				+ "select"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "filter"
-				+ pSpaceString
-				+ "in"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "filter"
-				+ pSpaceString
-				+ "toolbar."
-				+ pSpaceString
-				+ "Now,"
-				+ pSpaceString
-				+ "only"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "filtered"
-				+ pSpaceString
-				+ "nodes"
-				+ pSpaceString
-				+ "and"
-				+ pSpaceString
-				+ "its"
-				+ pSpaceString
-				+ "ancestors"
-				+ pSpaceString
-				+ "are"
-				+ pSpaceString
-				+ "displayed"
-				+ pSpaceString
-				+ "unless"
-				+ pSpaceString
-				+ "you"
-				+ pSpaceString
-				+ "choose"
-				+ pSpaceString
-				+ "&quot;No"
-				+ pSpaceString
-				+ "filtering&quot;"
-				+ pSpaceString
-				+ "in"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "toolbar."
-				+ pSpaceString
-				+ "\n"
-				+ "    </p>\n"
-				+ "    <p>\n"
-				+ "      Using"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "settings"
-				+ pSpaceString
-				+ "&quot;Show"
-				+ pSpaceString
-				+ "ancestors&quot;"
-				+ pSpaceString
-				+ "and"
-				+ pSpaceString
-				+ "&quot;Show"
-				+ pSpaceString
-				+ "descendants&quot;"
-				+ pSpaceString
-				+ "you"
-				+ pSpaceString
-				+ "can"
-				+ pSpaceString
-				+ "influence"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "apperance"
-				+ pSpaceString
-				+ "of"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "parent"
-				+ pSpaceString
-				+ "and"
-				+ pSpaceString
-				+ "child"
-				+ pSpaceString
-				+ "nodes"
-				+ pSpaceString
-				+ "that"
-				+ pSpaceString
-				+ "are"
-				+ pSpaceString
-				+ "connected"
-				+ pSpaceString
-				+ "with"
-				+ pSpaceString
-				+ "the"
-				+ pSpaceString
-				+ "nodes"
-				+ pSpaceString
-				+ "being"
-				+ pSpaceString
-				+ "filtered.\n"
-				+ "    </p>\n"
-				+ "    <p>\n"
-				+ "      There"
-				+ pSpaceString
-				+ "are"
-				+ pSpaceString
-				+ "many"
-				+ pSpaceString
-				+ "different"
-				+ pSpaceString
-				+ "criteria"
-				+ pSpaceString
-				+ "filters"
-				+ pSpaceString
-				+ "can"
-				+ pSpaceString
-				+ "be"
-				+ pSpaceString
-				+ "based"
-				+ pSpaceString
-				+ "on"
-				+ pSpaceString
-				+ "such"
-				+ pSpaceString
-				+ "as"
-				+ pSpaceString
-				+ "a"
-				+ pSpaceString
-				+ "set"
-				+ pSpaceString
-				+ "of"
-				+ pSpaceString
-				+ "selected"
-				+ pSpaceString
-				+ "nodes,"
-				+ pSpaceString
-				+ "a"
-				+ pSpaceString
-				+ "specific"
-				+ pSpaceString
-				+ "icon"
-				+ pSpaceString
-				+ "and"
-				+ pSpaceString
-				+ "some"
-				+ pSpaceString
-				+ "attributes.\n"
-				+ "    </p>\n"
-				+ "    <p>\n"
-				+ "      "
-				+ pSpaceString
-				+ "\n"
-				+ "    </p>\n" + "  </body>\n" + "</html>\n";
+		String body = getHtmlBody(pSpaceString);
+		String input = "<html>\n" + "  <head>\n" + "    \n" + "  </head>\n" + "  <body>" + body + "</body>\n" + "</html>\n";
 		return input;
+	}
+
+	private String getHtmlBody(String pSpaceString) {
+		String body = "\n    <p>\n" + "      Using"
+						+ pSpaceString
+						+ "Filters"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "current"
+						+ pSpaceString
+						+ "mindmap"
+						+ pSpaceString
+						+ "can"
+						+ pSpaceString
+						+ "be"
+						+ pSpaceString
+						+ "reduced"
+						+ pSpaceString
+						+ "to"
+						+ pSpaceString
+						+ "nodes"
+						+ pSpaceString
+						+ "satisfying"
+						+ pSpaceString
+						+ "certain"
+						+ pSpaceString
+						+ "criteria."
+						+ pSpaceString
+						+ "For"
+						+ pSpaceString
+						+ "example,"
+						+ pSpaceString
+						+ "if"
+						+ pSpaceString
+						+ "you"
+						+ pSpaceString
+						+ "only"
+						+ pSpaceString
+						+ "want"
+						+ pSpaceString
+						+ "to"
+						+ pSpaceString
+						+ "see"
+						+ pSpaceString
+						+ "every"
+						+ pSpaceString
+						+ "node"
+						+ pSpaceString
+						+ "containing"
+						+ pSpaceString
+						+ "&quot;TODO&quot;,"
+						+ pSpaceString
+						+ "then"
+						+ pSpaceString
+						+ "you"
+						+ pSpaceString
+						+ "have"
+						+ pSpaceString
+						+ "to"
+						+ pSpaceString
+						+ "press"
+						+ pSpaceString
+						+ "on"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "filter"
+						+ pSpaceString
+						+ "symbol"
+						+ pSpaceString
+						+ "(the"
+						+ pSpaceString
+						+ "funnel"
+						+ pSpaceString
+						+ "beside"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "zoom"
+						+ pSpaceString
+						+ "box),"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "filter"
+						+ pSpaceString
+						+ "toolbar"
+						+ pSpaceString
+						+ "appears,"
+						+ pSpaceString
+						+ "choose"
+						+ pSpaceString
+						+ "&quot;edit&quot;"
+						+ pSpaceString
+						+ "and"
+						+ pSpaceString
+						+ "add"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "condition"
+						+ pSpaceString
+						+ "that"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "node"
+						+ pSpaceString
+						+ "content"
+						+ pSpaceString
+						+ "contains"
+						+ pSpaceString
+						+ "&quot;TODO&quot;."
+						+ pSpaceString
+						+ "Then"
+						+ pSpaceString
+						+ "select"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "filter"
+						+ pSpaceString
+						+ "in"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "filter"
+						+ pSpaceString
+						+ "toolbar."
+						+ pSpaceString
+						+ "Now,"
+						+ pSpaceString
+						+ "only"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "filtered"
+						+ pSpaceString
+						+ "nodes"
+						+ pSpaceString
+						+ "and"
+						+ pSpaceString
+						+ "its"
+						+ pSpaceString
+						+ "ancestors"
+						+ pSpaceString
+						+ "are"
+						+ pSpaceString
+						+ "displayed"
+						+ pSpaceString
+						+ "unless"
+						+ pSpaceString
+						+ "you"
+						+ pSpaceString
+						+ "choose"
+						+ pSpaceString
+						+ "&quot;No"
+						+ pSpaceString
+						+ "filtering&quot;"
+						+ pSpaceString
+						+ "in"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "toolbar."
+						+ pSpaceString
+						+ "\n"
+						+ "    </p>\n"
+						+ "    <p>\n"
+						+ "      Using"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "settings"
+						+ pSpaceString
+						+ "&quot;Show"
+						+ pSpaceString
+						+ "ancestors&quot;"
+						+ pSpaceString
+						+ "and"
+						+ pSpaceString
+						+ "&quot;Show"
+						+ pSpaceString
+						+ "descendants&quot;"
+						+ pSpaceString
+						+ "you"
+						+ pSpaceString
+						+ "can"
+						+ pSpaceString
+						+ "influence"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "apperance"
+						+ pSpaceString
+						+ "of"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "parent"
+						+ pSpaceString
+						+ "and"
+						+ pSpaceString
+						+ "child"
+						+ pSpaceString
+						+ "nodes"
+						+ pSpaceString
+						+ "that"
+						+ pSpaceString
+						+ "are"
+						+ pSpaceString
+						+ "connected"
+						+ pSpaceString
+						+ "with"
+						+ pSpaceString
+						+ "the"
+						+ pSpaceString
+						+ "nodes"
+						+ pSpaceString
+						+ "being"
+						+ pSpaceString
+						+ "filtered.\n"
+						+ "    </p>\n"
+						+ "    <p>\n"
+						+ "      There"
+						+ pSpaceString
+						+ "are"
+						+ pSpaceString
+						+ "many"
+						+ pSpaceString
+						+ "different"
+						+ pSpaceString
+						+ "criteria"
+						+ pSpaceString
+						+ "filters"
+						+ pSpaceString
+						+ "can"
+						+ pSpaceString
+						+ "be"
+						+ pSpaceString
+						+ "based"
+						+ pSpaceString
+						+ "on"
+						+ pSpaceString
+						+ "such"
+						+ pSpaceString
+						+ "as"
+						+ pSpaceString
+						+ "a"
+						+ pSpaceString
+						+ "set"
+						+ pSpaceString
+						+ "of"
+						+ pSpaceString
+						+ "selected"
+						+ pSpaceString
+						+ "nodes,"
+						+ pSpaceString
+						+ "a"
+						+ pSpaceString
+						+ "specific"
+						+ pSpaceString
+						+ "icon"
+						+ pSpaceString
+						+ "and"
+						+ pSpaceString
+						+ "some"
+						+ pSpaceString
+						+ "attributes.\n"
+						+ "    </p>\n"
+						+ "    <p>\n"
+						+ "      "
+						+ pSpaceString
+						+ "\n"
+						+ "    </p>\n  ";
+		return body;
 	}
 
     public void testUnicodeHandling() {
@@ -434,6 +439,13 @@ public class HtmlConversionTests extends FreeMindTestBase {
 		String back = HtmlTools.toXMLUnescapedText(unescapeHTMLUnicodeEntity);
     	System.out.println(back);
     	assertEquals("unicode conversion", input, back);
+    }
+
+    public void testHtmlBodyExtraction() {
+    	String input = getInputStringWithManySpaces(" ");
+    	String expectedOutput = getHtmlBody(" ");
+    	assertTrue(HtmlTools.isHtmlNode(input));
+    	assertEquals(expectedOutput, HtmlTools.extractHtmlBody(input));
     }
     
 }

@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeBase.java,v 1.1.4.2.12.13 2008-04-12 21:46:05 christianfoltin Exp $*/
+/*$Id: EditNodeBase.java,v 1.1.4.2.12.14 2008-12-16 21:57:01 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -192,7 +192,7 @@ public class EditNodeBase {
     /**
     	 */
     protected String getText(String string) {
-    	return controller.getController().getResourceString(string);
+    	return controller.getText(string);
     }
 
     /**

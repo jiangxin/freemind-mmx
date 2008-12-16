@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.19 2008-07-04 20:44:03 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.20 2008-12-16 21:57:01 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -524,6 +524,28 @@ public class HtmlTools {
         }
         return false;
     }
+
+	public static String extractHtmlBody(String output) {
+		if(output.startsWith("<html")) {
+			output = output.substring(6); // do not write
+		}
+		int start = output.indexOf("<body");
+		if(start == -1){
+			start = output.indexOf('>') + 1;
+		}
+		else{
+			start = output.indexOf('>', start+5) + 1;
+		}
+		int end = output.indexOf("</body>");
+		if(end == -1){
+			end = output.indexOf("</html>");
+		}
+		if(end == -1){
+			end = output.length();
+		}
+		output = output.substring(start, end);
+		return output;
+	}
     
 
 }

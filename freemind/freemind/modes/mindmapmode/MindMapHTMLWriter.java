@@ -634,32 +634,28 @@ class MindMapHTMLWriter {
         if (model.toString().matches(" *")) {
             fileout.write("&nbsp;");
         }
-        else if (model.toString().startsWith("<html")) {
-            String output = model.toString().substring(6); // do not write
-            int start = output.indexOf("<body");
-            if(start == -1){
-            	start = output.indexOf('>') + 1;
-            }
-            else{
-            	start = output.indexOf('>', start+5) + 1;
-            }
-            int end = output.indexOf("</body>");
-            if(end == -1){
-            	end = output.indexOf("</html>");
-            }
-            if(end == -1){
-            	end = output.length();
-            }
-            output = output.substring(start, end);
-            fileout.write(HtmlTools.unicodeToHTMLUnicodeEntity(output));
+        else{
+        	String output = model.toString();
+        	if (HtmlTools.isHtmlNode(output)) {
+        		output = HtmlTools.extractHtmlBody(output);
+	            fileout.write(HtmlTools.unicodeToHTMLUnicodeEntity(output));
+	        }
+	        else {
+	            fileout.write(saveHTML_escapeUnicodeAndSpecialCharacters(model
+	                    .toString()));
+	        }
         }
-        else {
-            fileout.write(saveHTML_escapeUnicodeAndSpecialCharacters(model
-                    .toString()));
-        }
+        // note output has to be investigated.
+//        if(model.getNoteText() != null){
+//        	// there is a note. give it out:
+//        	writeFoldingButtons("note_"+Math.random());
+//        	String output = model.getNoteText();
+//    		output = HtmlTools.extractHtmlBody(output);
+//    		fileout.write(HtmlTools.unicodeToHTMLUnicodeEntity(output));
+//        }
     }
 
-    private void writeIcons(MindMapNodeModel model) throws IOException {
+	private void writeIcons(MindMapNodeModel model) throws IOException {
         for (int i = 0; i < model.getIcons().size(); ++i) {
             fileout.write("<img src=\""
                     + ((MindIcon) model.getIcons().get(i)).getIconFileName()
