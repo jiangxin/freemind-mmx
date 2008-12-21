@@ -608,11 +608,11 @@
 			</fileset>
 		</copy>
     	<exec dir="." executable="ssh" os="Linux">
-    		<arg value="foltin@mac"/>
+    		<arg value="foltin@noname"/>
     		<arg value="cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; cvs -d${cvsRoot} login ; cvs -d${cvsRoot} co -P -r ${branch} freemind ; cd freemind ; ant post"/>
     	</exec>
     	<exec dir="." executable="scp" os="Linux">
-    		<arg value="foltin@mac:/tmp/fm_installers/post/*.dmg"/>
+    		<arg value="foltin@noname:/tmp/fm_installers/post/*.dmg"/>
     		<arg value="${inst.dest.dir}/"/>
     	</exec>
     	<delete dir="${inst.dir}" failonerror="false"/>
