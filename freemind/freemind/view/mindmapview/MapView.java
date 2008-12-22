@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.56 2008-12-09 21:09:43 christianfoltin Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.57 2008-12-22 20:52:21 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -1048,11 +1048,13 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			standardSelectionStroke = new BasicStroke(2.0f);
 		}
 		g.setStroke(standardSelectionStroke);
+    	Object renderingHint = getController().setEdgesRenderingHint(g);
 		final Iterator i = getSelecteds().iterator();
 		while(i.hasNext()){
 			NodeView selected = (NodeView) i.next();
 			paintSelected(g, selected);
 		}
+        Tools.restoreAntialiasing(g, renderingHint);
 		g.setColor(c);
 		g.setStroke(s);
 	}

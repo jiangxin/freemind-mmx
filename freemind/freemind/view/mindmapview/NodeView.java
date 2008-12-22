@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.65 2008-10-18 20:09:43 christianfoltin Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.66 2008-12-22 20:52:21 dpolivaev Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -1269,7 +1269,10 @@ public class NodeView extends JComponent implements TreeModelListener{
         if(getModel().isFolded()) {
             Point out = getMainViewOutPoint(null, null); 
             Tools.convertPointToAncestor(getMainView(), out, this);
+        	final Controller controller = getMap().getController();
+			Object renderingHint = controller.setEdgesRenderingHint(g);
             mainView.paintFoldingMark(g, out);
+            Tools.restoreAntialiasing(g, renderingHint);
         }
         
     }
