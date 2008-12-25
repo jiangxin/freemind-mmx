@@ -14,6 +14,7 @@
 #             add -Dgnu.java.awt.peer.gtk.Graphics=Graphics2D for non-Sun JREs
 # 2008-02-03, add debug values script and exit
 # 2008-05-20 (fc): -Xmx256M added
+# 2008-08-08 (ewl) accept OpenJDK as valid VM to run FreeMind.
 
 # we only want to test the script, not FreeMind itself
 if ( echo "${DEBUG}" | grep -qe "script" )
@@ -77,9 +78,10 @@ findjava() {
 		then
 			"$JAVACMD" -version >&2
 		fi
-		if (! "${JAVACMD}" -version 2>&1 | grep -qe 'Java(TM)')
+		if (! "${JAVACMD}" -version 2>&1 | grep -qe 'Java(TM)' \
+							-e 'OpenJDK')
 		then
-			_error "Your Java is not a derivative from Sun's code," \
+			_error "Your Java VM is not a complete implementation," \
 			       "=======================================" \
 			       "FREEMIND WILL MOST PROBABLY *NOT* WORK," \
 			       "=======================================" \
