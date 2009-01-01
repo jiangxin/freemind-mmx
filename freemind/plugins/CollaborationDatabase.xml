@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin label="/collaboration/database/database">
+	<plugin_classpath jar="collaboration/database/hsqldb.jar"  />
+	<plugin_classpath jar="collaboration/database/database_plugin.jar"/>
+	<plugin_action 
+		documentation="TODO" 
+		name="Start Collaboration Master" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/collaboration/database/database_master_plugin" 
+		class_name="plugins.collaboration.database.DatabaseStarter">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/extras/first/collaboration/database_master"/>
+	</plugin_action>
+	<plugin_action 
+		documentation="TODO" 
+		name="Start Collaboration Slave" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/collaboration/database/database_slave_plugin" 
+		class_name="plugins.collaboration.database.DatabaseConnector">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/extras/first/collaboration/database_slave"/>
+	</plugin_action>
+</plugin>

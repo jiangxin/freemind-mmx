@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**/build*.xml|**/build.xml|**/cvs/|plugins/collaboration/**|windows-launcher/**" kind="src" path=""/>
+	<classpathentry excluding="**/build*.xml|**/build.xml|**/cvs/|plugins/collaboration/jabber/**|windows-launcher/**" kind="src" path=""/>
 	<classpathentry kind="lib" path="plugins/svg/xml-apis.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-bridge.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-css.jar"/>
@@ -33,6 +33,7 @@
 	<classpathentry kind="lib" path="lib/SimplyHTML/SimplyHTML.jar" sourcepath="/simplyHtml/src"/>
 	<classpathentry kind="lib" path="plugins/latex/HotEqn.jar"/>
 	<classpathentry kind="lib" path="plugins/script/groovy-all-1.5.6.jar"/>
+	<classpathentry kind="lib" path="plugins/collaboration/database/hsqldb.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

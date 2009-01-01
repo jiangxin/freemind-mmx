@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.66 2008-12-22 20:52:21 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.67 2009-01-01 21:33:48 christianfoltin Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -764,9 +764,11 @@ public class NodeView extends JComponent implements TreeModelListener{
                 // by preliminarily setting the text.
                 setText(lines[line]);
                 widthMustBeRestricted = mainView.getPreferredSize().width > 
-                map.getZoomed(map.getMaxNodeWidth())+ mainView.getIconWidth();
+                	map.getZoomed(map.getMaxNodeWidth())+ mainView.getIconWidth();
                 if (widthMustBeRestricted) {
-                    break; }}
+                    break; 
+                }
+            }
             isLong = widthMustBeRestricted || lines.length > 1;
         }
         

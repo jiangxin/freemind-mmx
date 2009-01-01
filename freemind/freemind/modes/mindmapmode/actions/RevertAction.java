@@ -19,7 +19,7 @@
  *
  * Created on 11.03.2005
  */
-/* $Id: RevertAction.java,v 1.1.2.2.2.9 2008-08-27 19:05:39 christianfoltin Exp $ */
+/* $Id: RevertAction.java,v 1.1.2.2.2.10 2009-01-01 21:33:48 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
@@ -169,7 +169,7 @@ freemind.main.Resources.getInstance().logException(			e);
 					controller.load(tempFile);
 				}
 			} catch (Exception e) {
-freemind.main.Resources.getInstance().logException(				e);
+				freemind.main.Resources.getInstance().logException(e);
 			}
 		}
 	}

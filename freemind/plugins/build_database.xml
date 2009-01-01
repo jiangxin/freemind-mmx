@@ -1,0 +1,13 @@
+<project name="freemind_plugins" default="dist" basedir=".">
+	
+	<property name="plugin.xml" value="plugins/CollaborationDatabase.xml" />
+	<property name="plugin.dir" value="plugins/collaboration/database"/>
+	<property name="plugin.jar" value="database_plugin.jar" />
+	<property name="plugin.zip" value="database_plugin-${ver}.zip" />
+	<property name="additional.lib" value="${plugin.dir}/hsqldb.jar:${plugin.dir}/database_plugin.jar"/>
+	<property name="additional.lib.pattern" value="${plugin.dir}/*.jar"/>
+
+	<import file="build_import.xml" />
+
+
+</project>
