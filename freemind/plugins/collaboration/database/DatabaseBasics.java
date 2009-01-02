@@ -19,7 +19,7 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: DatabaseBasics.java,v 1.1.2.1 2009-01-01 21:33:48 christianfoltin Exp $ */
+/* $Id: DatabaseBasics.java,v 1.1.2.2 2009-01-02 08:01:25 christianfoltin Exp $ */
 package plugins.collaboration.database;
 
 import java.io.StringReader;
@@ -201,7 +201,7 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 						private void executeTransaction(final ActionPair pair) throws InterruptedException, InvocationTargetException {
 							mFilterEnabled = false;
 							try {
-								SwingUtilities.invokeAndWait(new Runnable() {
+								SwingUtilities.invokeLater(new Runnable() {
 									public void run() {
 										mController.getActionFactory()
 												.startTransaction("update");
