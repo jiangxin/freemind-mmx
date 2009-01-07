@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1.16.17 2008-06-08 14:28:10 dpolivaev Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.18 2009-01-07 21:20:38 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -81,6 +81,8 @@ public class EditNodeDialog extends EditNodeBase {
             textArea = new JTextArea(getText());
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
+            // wish from https://sourceforge.net/forum/message.php?msg_id=5923410
+//            textArea.setTabSize(4);
             // wrap around words rather than characters
             
             final JScrollPane editorScrollPane = new JScrollPane(textArea);
