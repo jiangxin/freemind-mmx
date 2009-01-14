@@ -63,3 +63,14 @@ table.attributes caption {
 	font-style:italic;
 	text-align:center;
 }
+/* Thanks to wolfgangradke, https://sourceforge.net/forum/message.php?msg_id=5991663 */
+div.nodecontent > p {
+	margin-top:0pt;
+	margin-bottom:0pt;
+	display:inline;
+}
+
+p + p { 
+ 	margin-top: 0.5em !important;
+	display:block !important;
+}

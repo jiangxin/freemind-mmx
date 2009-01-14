@@ -15,9 +15,9 @@
 <node CREATED="1124560950701" ID="ID_228039332" LINK="http://freemind.sourceforge.net/" MODIFIED="1216250158741" POSITION="left" TEXT="FreeMind-i koduleht">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1091417446" MODIFIED="1216258652672" POSITION="left" TEXT="Kiirklahvikombinatsioonid">
+<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1091417446" MODIFIED="1231887626533" POSITION="left" TEXT="Kiirklahvikombinatsioonid">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950701" ID="ID_908986002" MODIFIED="1216258628092">
+<node CREATED="1124560950701" ID="ID_908986002" MODIFIED="1231887612241">
 <richcontent TYPE="NODE"><html>
   <head>
     
@@ -30,43 +30,43 @@
       ***********
     </p>
     <p>
-      Uus kaart CTRL+N
+      Uus kaart <b>CTRL+N</b>
     </p>
     <p>
-      Ava kaart CTRL+O
+      Ava kaart <b>CTRL+O</b>
     </p>
     <p>
-      Salvesta kaart CTRL+S
+      Salvesta kaart <b>CTRL+S</b>
     </p>
     <p>
-      Salvesta kaart kui CTRL+SHIFT+S
+      Salvesta kaart kui <b>CTRL+SHIFT+S</b>
     </p>
     <p>
-      Tr&#252;ki CTRL+P
+      Tr&#252;ki <b>CTRL+P</b>
     </p>
     <p>
-      Sulge CTRL+W
+      Sulge <b>CTRL+W</b>
     </p>
     <p>
-      V&#228;lju CTRL+Q
+      V&#228;lju <b>CTRL+Q</b>
     </p>
     <p>
-      Eelmine kaart ALT+SHIFT+nool vasakule
+      Eelmine kaart <b>ALT+SHIFT+nool vasakule</b>
     </p>
     <p>
-      J&#228;rgmine kaart ALT+SHIFT+nool paremale
+      J&#228;rgmine kaart<b>&#160;ALT+SHIFT+nool paremale</b>
     </p>
     <p>
-      Ekspordi HTML-ina CTRL+E
+      Ekspordi HTML-ina <b>CTRL+E</b>
     </p>
     <p>
-      Ekspordi haru HTML-ina CTRL+H
+      Ekspordi haru HTML-ina <b>CTRL+H</b>
     </p>
     <p>
-      Ekspordi haru uude MM-faili ALT+SHIFT+A
+      Ekspordi haru uude .mm faili <b>ALT+SHIFT+A</b>
     </p>
     <p>
-      Ava esimene fail ajaloost CTRL+SHIFT+W
+      Ava esimene fail ajaloost <b>CTRL+SHIFT+W </b>
     </p>
     <p>
       
@@ -81,40 +81,40 @@
       ***************
     </p>
     <p>
-      Otsi CTRL+F
+      Otsi <b>CTRL+F</b>
     </p>
     <p>
-      Otsi j&#228;rgmine CTRL+G
+      Otsi j&#228;rgmine <b>CTRL+G</b>
     </p>
     <p>
-      L&#245;ika CTRL+X
+      L&#245;ika <b>CTRL+X</b>
     </p>
     <p>
-      Vali k&#245;ik CTRL+A
+      Vali k&#245;ik <b>CTRL+A</b>
     </p>
     <p>
-      Vali haru CTRL+SHIFT+A
+      Vali haru <b>CTRL+SHIFT+A</b>
     </p>
     <p>
-      Kopeeri CTRL+C
+      Kopeeri <b>CTRL+C</b>
     </p>
     <p>
-      Kopeeri &#252;ksik CTRL+Y
+      Kopeeri &#252;ksik <b>CTRL+Y</b>
     </p>
     <p>
-      Aseta CTRL+V
+      Aseta <b>CTRL+V</b>
     </p>
     <p>
-      V&#245;ta tagasi CTRL+Z
+      V&#245;ta tagasi <b>CTRL+Z</b>
     </p>
     <p>
-      Tee uuesti CTRL+Y
+      Tee uuesti <b>CTRL+Y</b>
     </p>
     <p>
-      Suurenda ALT+nool alla
+      Suurenda <b>ALT+nool alla</b>
     </p>
     <p>
-      V&#228;henda ALT + nool &#252;les
+      V&#228;henda <b>ALT + nool &#252;les</b>
     </p>
     <p>
       
@@ -126,37 +126,37 @@
       ***************************
     </p>
     <p>
-      Kaldkiri CTRL+I
+      Kaldkiri<b>&#160;CTRL+I</b>
     </p>
     <p>
-      Rasvane kiri CTRL+B
+      Rasvane kiri <b>CTRL+B</b>
     </p>
     <p>
-      Allajoonitud kiri CTRL+U
+      Allajoonitud kiri <b>CTRL+U</b>
     </p>
     <p>
-      Pilv &#252;mber s&#245;lme CTRL+SHIFT+B
+      Pilv &#252;mber s&#245;lme <b>CTRL+SHIFT+B</b>
     </p>
     <p>
-      S&#245;lme v&#228;rvi muutmine ALT+C
+      S&#245;lme v&#228;rvi muutmine <b>ALT+C</b>
     </p>
     <p>
-      S&#245;lme v&#228;rvi segamine ALT+B
+      S&#245;lme v&#228;rvi segamine <b>ALT+B</b>
     </p>
     <p>
-      S&#245;lme serva v&#228;rvi muutmine ALT+E
+      S&#245;lme serva v&#228;rvi muutmine <b>ALT+E</b>
     </p>
     <p>
-      Suurenda s&#245;lme kirjakuju suurust CTRL+L
+      Suurenda s&#245;lme kirjakuju suurust <b>CTRL+L</b>
     </p>
     <p>
-      V&#228;henda s&#245;lme kirjakuju suurust CTRL+M
+      V&#228;henda s&#245;lme kirjakuju suurust <b>CTRL+M</b>
     </p>
     <p>
-      Suurenda s&#245;lmede haru kirjakuju suurust CTRL+SHIFT+L
+      Suurenda s&#245;lmede haru kirjakuju suurust <b>CTRL+SHIFT+L</b>
     </p>
     <p>
-      V&#228;henda s&#245;lmede haru kirjakuju suurust CTRL+SHIFT+M
+      V&#228;henda s&#245;lmede haru kirjakuju suurust <b>CTRL+SHIFT+M</b>
     </p>
     <p>
       
@@ -168,28 +168,28 @@
       ****************************
     </p>
     <p>
-      Mine juurs&#245;lme juurde ESCAPE
+      Mine juurs&#245;lme juurde <b>ESCAPE</b>
     </p>
     <p>
-      Liigu &#252;les nooleklahv &#252;les
+      Liigu &#252;les <b>nooleklahv &#252;les</b>
     </p>
     <p>
-      Liigu alla nooleklahv alla
+      Liigu alla <b>nooleklahv alla</b>
     </p>
     <p>
-      Liigu vasakule nooleklahv vasakule
+      Liigu vasakule <b>nooleklahv vasakule</b>
     </p>
     <p>
-      Liigu paremale nooleklahv paremale
+      Liigu paremale <b>nooleklahv paremale</b>
     </p>
     <p>
-      Ava internetiviide CTRL+ENTER
+      Ava h&#252;perlink <b>CTRL+ENTER</b>
     </p>
     <p>
-      V&#228;henda ALT+NOOL &#220;LES
+      V&#228;henda<b>&#160;ALT+NOOL &#220;LES</b>
     </p>
     <p>
-      Suurenda ALT+NOOL ALLA
+      Suurenda <b>ALT+NOOL ALLA</b>
     </p>
     <p>
       
@@ -201,13 +201,13 @@
       ****************
     </p>
     <p>
-      Uus s&#245;lm peas&#245;lme k&#252;lge ENTER
+      Uus s&#245;lm peas&#245;lme k&#252;lge <b>ENTER</b>
     </p>
     <p>
-      Uus s&#245;lm olemasoleva alla INSERT
+      Uus s&#245;lm olemasoleva alla <b>INSERT</b>
     </p>
     <p>
-      Uus s&#245;lm olemasoleva ette SHIFT+ENTER
+      Uus naabers&#245;lm <b>SHIFT+ENTER</b>
     </p>
     <p>
       
@@ -219,52 +219,53 @@
       *********************
     </p>
     <p>
-      Muuda valitud s&#245;lme F2
+      Muuda valitud s&#245;lme <b>F2</b>
     </p>
     <p>
-      Muuda h&#252;pikaknas koos lisav&#245;imalustega ALT+ENTER
+      Muuda h&#252;pikaknas koos lisav&#245;imalustega <b>ALT+ENTER</b>
     </p>
     <p>
-      &#220;henda s&#245;lmed CTRL+J
+      &#220;henda s&#245;lmed <b>CTRL+J</b>
     </p>
     <p>
-      L&#252;lita s&#245;lmede voltimist T&#220;HIK
+      L&#252;lita s&#245;lmede voltimist <b>T&#220;HIK</b>
     </p>
     <p>
-      L&#252;lita alams&#245;lmede voltimist CTRL+T&#220;HIK
+      L&#252;lita alams&#245;lmede voltimist <b>CTRL+T&#220;HIK</b>
     </p>
     <p>
-      Lisa viide lehitsemisakna kaudu CTRL+SHIFT+K
+      Lisa viide lehitsemisakna kaudu <b>CTRL+SHIFT+K</b>
     </p>
     <p>
-      Lisa viide k&#228;sitsi aadressi sisestades CTRL+K
+      Lisa viide k&#228;sitsi aadressi sisestades <b>CTRL+K</b>
     </p>
     <p>
-      Lisa pilt lehitsemisakna kaudu ALT+K
+      Lisa pilt lehitsemisakna kaudu&#160; <b>ALT+K</b>
     </p>
     <p>
-      Liiguta s&#245;lme &#252;lespoole CTRL+nooleklahv &#252;les
+      Liiguta s&#245;lme &#252;lespoole <b>CTRL+nooleklahv &#252;les</b>
     </p>
     <p>
-      Liiguta s&#245;lme allapoole CTRL+nooleklahv alla
+      Liiguta s&#245;lme allapoole <b>CTRL+nooleklahv alla</b>
     </p>
     <p>
-      Liiguta s&#245;lme vasakule CTRL+nooleklahv vasakule
+      Liiguta s&#245;lme vasakule <b>CTRL+nooleklahv vasakule</b>
     </p>
     <p>
-      Liiguta s&#245;lme paremale CTRL+nooleklahv paremale
+      Liiguta s&#245;lme paremale <b>CTRL+nooleklahv paremale</b>
     </p>
     <p>
-      Kustuta s&#245;lm DELETE
+      Kustuta s&#245;lm <b>DELETE</b>
     </p>
   </body>
-</html></richcontent>
+</html>
+</richcontent>
 <font NAME="Courier New" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#006633" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_904501221" MODIFIED="1216201160402" POSITION="left" TEXT="Paigaldamine">
+<node COLOR="#006633" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_904501221" MODIFIED="1231888280460" POSITION="left" TEXT="Paigaldamine">
 <font NAME="SansSerif" SIZE="12"/>
-<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1911559485" MODIFIED="1216200835990" TEXT="Viited">
+<node COLOR="#006699" CREATED="1124560950701" ID="_Freemind_Link_1911559485" MODIFIED="1231887087175" TEXT="Viited">
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1124560950701" ID="ID_568439776" LINK="http://java.sun.com/javase/downloads/index.jsp" MODIFIED="1216187545266" TEXT="Laadi alla Java Runtime Environment (v&#xe4;hemalt JRE1.4 v&#xf5;i uuem)">
 <edge WIDTH="thin"/>
@@ -288,17 +289,18 @@
 </html></richcontent>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1124560950701" ID="_Freemind_Link_1380352758" MODIFIED="1216187545266">
+<node CREATED="1124560950701" ID="_Freemind_Link_1380352758" MODIFIED="1231887295628">
 <richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
     <p>
-      FreeMind-i paigaldamiseks Linuxis, paigalda esmalt Sun-i Java Runtime Environment (JRE) ning siis peale lahtipakkimist k&#228;ivita FreeMind failist freemind.sh
+      FreeMind-i paigaldamiseks Linuxis, paigalda esmalt Sun-i Java Runtime Environment (JRE) ning siis peale lahtipakkimist k&#228;ivita FreeMind failist freemind.sh. N&#228;iteks kui pakkisid selle lahti kausta <i>/home/kasutaja/freemind/</i>&#160; siis <b>sh /home/kasutaja/freemind/freemind.sh</b>
     </p>
   </body>
-</html></richcontent>
+</html>
+</richcontent>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 <node CREATED="1124560950701" ID="_Freemind_Link_1808511462" MODIFIED="1216187545266">
@@ -315,15 +317,30 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_353522063" MODIFIED="1216201160403" POSITION="left" TEXT="Failide lehitsemine arvutist">
+<node CREATED="1231887803083" FOLDED="true" ID="ID_1057290431" MODIFIED="1231891977891" POSITION="left" TEXT="Re&#x17e;iimid">
+<node COLOR="#407000" CREATED="1124560950701" ID="_Freemind_Link_353522063" MODIFIED="1231887870403" TEXT="Failide lehitsemine arvutist">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950701" ID="ID_649040499" MODIFIED="1216187545265" TEXT="Failide lehitsemiseks oma arvutist l&#xfc;litu &#xfc;mber failire&#x17e;iimile, valides rippmen&#xfc;&#xfc;st Kaardid &gt; Fail.">
+<node CREATED="1124560950701" ID="ID_649040499" MODIFIED="1231888473392">
+<richcontent TYPE="NODE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Failide lehitsemiseks oma arvutist l&#252;litu &#252;mber failire&#382;iimile, valides rippmen&#252;&#252;st
+    </p>
+    <p>
+      <b>M&#245;ttekaardid &gt; Failire&#382;iim</b>
+    </p>
+  </body>
+</html>
+</richcontent>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 <node CREATED="1124560950701" ID="ID_1036346569" MODIFIED="1216187545265" TEXT="Sa lehitsed failipuud nagu see oleks m&#xf5;ttekaart.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1124560950701" ID="ID_1489978112" MODIFIED="1216187545265" TEXT="Kataloogi m&#xe4;&#xe4;ramiseks keskele k&#xf5;ige suuremaks s&#xf5;lmeks, vali s&#xf5;lme h&#xfc;pikmen&#xfc;&#xfc;st Keskele.">
+<node CREATED="1124560950701" ID="ID_1489978112" MODIFIED="1231888592986" TEXT="Kataloogi m&#xe4;&#xe4;ramiseks keskele peas&#xf5;lmeks, vali s&#xf5;lme h&#xfc;pikmen&#xfc;&#xfc;st Keskele.">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 <node CREATED="1124560950701" ID="ID_1505912742" MODIFIED="1216187545265" TEXT="Faili vaatamiseks, muutmiseks v&#xf5;i k&#xe4;ivitamiseks j&#xe4;rgi s&#xf5;lmes olevat viidet.">
@@ -343,19 +360,20 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1530607683" MODIFIED="1216250753465" POSITION="left" TEXT="M&#xf5;ttekaartide lehitsemine">
+<node COLOR="#407000" CREATED="1124560950701" ID="_Freemind_Link_1530607683" MODIFIED="1231888620622" TEXT="M&#xf5;ttekaartide lehitsemine">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950701" ID="ID_904930134" MODIFIED="1216187545264">
+<node CREATED="1124560950701" ID="ID_904930134" MODIFIED="1231888673026">
 <richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
     <p>
-      M&#245;ttekaartide lehitsemiseks (mitte muutmiseks) l&#252;litu lehitsemise re&#382;iimi, valides rippmen&#252;&#252;st Kaardid &gt; Lehitse. Kuniks ei kasutata FreeMind-i appletit, on see funktsioon kasutu.
+      M&#245;ttekaartide lehitsemiseks (mitte muutmiseks) l&#252;litu lehitsemise re&#382;iimi, valides rippmen&#252;&#252;st <b>M&#245;ttekaardid &gt; Failire&#382;iim</b>. Kuniks ei kasutata FreeMind-i appletit, on see funktsioon kasutu.
     </p>
   </body>
-</html></richcontent>
+</html>
+</richcontent>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 <node CREATED="1124560950701" ID="ID_747061558" MODIFIED="1216187545264">
@@ -372,7 +390,7 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1136088046" MODIFIED="1216201160404" POSITION="left" TEXT="Erinevad re&#x17e;iimid">
+<node COLOR="#407000" CREATED="1124560950701" ID="_Freemind_Link_1136088046" MODIFIED="1231888622816" TEXT="Erinevad re&#x17e;iimid">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1124560950701" ID="_Freemind_Link_1713057526" MODIFIED="1216187545264">
@@ -402,7 +420,8 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1525986009" MODIFIED="1216201160404" POSITION="left" TEXT="FreeMind-i appleti paigaldamine kodulehele">
+</node>
+<node COLOR="#407000" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1525986009" MODIFIED="1231887753096" POSITION="left" TEXT="FreeMind-i appleti paigaldamine kodulehele">
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#000000" CREATED="1124560950701" ID="ID_833832653" MODIFIED="1216187545263" TEXT="Sa v&#xf5;id paigaldada appleti oma veebilehele nii, et teised kasutajad saavad lehitseda Sinu m&#xf5;ttekaarte.">
 <font NAME="Dialog" SIZE="12"/>
@@ -437,7 +456,7 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1083756111" MODIFIED="1216201160404" POSITION="left" TEXT="FreeMind appleti kasutamine">
+<node COLOR="#407000" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1083756111" MODIFIED="1231887769268" POSITION="left" TEXT="FreeMind appleti kasutamine">
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1124560950701" ID="_Freemind_Link_514864900" MODIFIED="1216187545262">
 <richcontent TYPE="NODE"><html>
@@ -473,11 +492,11 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_784043927" MODIFIED="1216272432955" POSITION="left" TEXT="T&#xe4;nud">
+<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_784043927" MODIFIED="1231892658922" POSITION="left" TEXT="T&#xe4;nud">
 <font NAME="SansSerif" SIZE="12"/>
-<node COLOR="#006699" CREATED="1124560950701" ID="Freemind_Link_415458128" MODIFIED="1216272329963" TEXT="Autorid">
+<node COLOR="#006699" CREATED="1124560950701" ID="Freemind_Link_415458128" MODIFIED="1231892420616" TEXT="Autorid">
 <font NAME="SansSerif" SIZE="12"/>
-<node COLOR="#996600" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1896457660" MODIFIED="1216187545261" TEXT="Joerg Mueller">
+<node COLOR="#996600" CREATED="1124560950701" ID="_Freemind_Link_1896457660" MODIFIED="1231892007981" TEXT="Joerg Mueller">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#558000" CREATED="1124560950701" ID="ID_1354886892" LINK="mailto:ponders@t-online.de" MODIFIED="1216187545261" TEXT="ponders@t-online.de">
@@ -495,7 +514,7 @@
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#996600" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_875814410" MODIFIED="1216272344134" TEXT="Christian Foltin">
+<node COLOR="#996600" CREATED="1124560950701" ID="_Freemind_Link_875814410" MODIFIED="1231892011782" TEXT="Christian Foltin">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#558000" CREATED="1124560950701" ID="ID_326360391" LINK="mailto:christian.foltin@gmx.de" MODIFIED="1216187545261" TEXT="christian.foltin@gmx.de">
@@ -506,8 +525,15 @@
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
+<node COLOR="#996600" CREATED="1225908784937" ID="ID_1518099786" MODIFIED="1225908813653" STYLE="fork" TEXT="Eric Lavarde">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<node COLOR="#558000" CREATED="1225908790680" ID="ID_300895949" MODIFIED="1231892088078" STYLE="fork" TEXT="Linuxi versiooni pakendamine">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="Dialog" SIZE="10"/>
 </node>
-<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="Freemind_Link_816166020" MODIFIED="1216272427853" TEXT="V&#xe4;iksemad panustajad">
+</node>
+</node>
+<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="Freemind_Link_816166020" MODIFIED="1231892397710" TEXT="V&#xe4;iksemad panustajad">
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#996600" CREATED="1124560950701" ID="ID_1613097663" MODIFIED="1216272349630" TEXT="Andrew Iggleden">
@@ -543,7 +569,7 @@
 </node>
 </node>
 </node>
-<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="Freemind_Link_360501151" LINK="http://freemind.sourceforge.net/wiki/index.php/Translation" MODIFIED="1216272426323" TEXT="T&#xf5;lkijad">
+<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="Freemind_Link_360501151" LINK="http://freemind.sourceforge.net/wiki/index.php/Translation" MODIFIED="1231892656995" TEXT="T&#xf5;lkijad">
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#996600" CREATED="1124561374999" ID="ID_180090574" MODIFIED="1216272357942" TEXT="Edmund Laugasson">
 <font NAME="SansSerif" SIZE="12"/>
@@ -609,6 +635,12 @@
 <font NAME="SansSerif" SIZE="10"/>
 </node>
 </node>
+<node COLOR="#996600" CREATED="1124561242082" ID="ID_682397068" LINK="http://fromtw.blogspot.com/" MODIFIED="1231892299891" TEXT="William Chen">
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#999999" CREATED="1124561245957" ID="ID_1903817938" MODIFIED="1231892279699" TEXT="Hiina keele t&#xf5;lge">
+<font NAME="SansSerif" SIZE="10"/>
+</node>
+</node>
 <node COLOR="#996600" CREATED="1124561374999" ID="Freemind_Link_235962981" MODIFIED="1216272366953" TEXT="Rafal Kraik">
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#999999" CREATED="1124561377702" ID="Freemind_Link_459079511" MODIFIED="1216187545260" TEXT="Poola keele t&#xf5;lge">
@@ -627,6 +659,18 @@
 <font NAME="SansSerif" SIZE="10"/>
 </node>
 </node>
+<node COLOR="#996600" CREATED="1124561374999" ID="ID_726223734" MODIFIED="1231892372937" TEXT="Matti Lassila">
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#999999" CREATED="1124561377702" ID="ID_195296251" MODIFIED="1231892357948" TEXT="Soome keele t&#xf5;lge">
+<font NAME="SansSerif" SIZE="10"/>
+</node>
+</node>
+<node COLOR="#996600" CREATED="1124561374999" ID="ID_198480280" MODIFIED="1231892438643" TEXT="Christian Foltin">
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#999999" CREATED="1124561377702" ID="ID_1189589576" MODIFIED="1231892415159" TEXT="Saksa keele t&#xf5;lge">
+<font NAME="SansSerif" SIZE="10"/>
+</node>
+</node>
 <node COLOR="#996600" CREATED="1124561814721" ID="Freemind_Link_1008886206" MODIFIED="1216272380101" TEXT="William Chen">
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#999999" CREATED="1124561497308" ID="Freemind_Link_1960552629" MODIFIED="1216187545258" TEXT="Hiina keele t&#xf5;lge">
@@ -639,7 +683,7 @@
 <font NAME="SansSerif" SIZE="10"/>
 </node>
 </node>
-<node COLOR="#996600" CREATED="1124562250475" ID="Freemind_Link_901975324" MODIFIED="1216272380882" TEXT="Bal&#xe1;zs M&#xe1;rton">
+<node COLOR="#996600" CREATED="1124562250475" ID="Freemind_Link_901975324" LINK="http://documan.sourceforge.net/" MODIFIED="1231892557284" TEXT="Bal&#xe1;zs M&#xe1;rton (documan)">
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#999999" CREATED="1124562252585" ID="Freemind_Link_557911120" MODIFIED="1216187545257" TEXT="Ungari keele t&#xf5;lge">
 <font NAME="SansSerif" SIZE="10"/>
@@ -3059,3 +3103,5 @@
 </node>
 </node>
 </map>
+
+ 	  	 

@@ -19,17 +19,24 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: DatabaseConnector.java,v 1.1.2.1 2009-01-01 21:33:48 christianfoltin Exp $ */
+/* $Id: DatabaseConnector.java,v 1.1.2.2 2009-01-14 21:18:36 christianfoltin Exp $ */
 
 package plugins.collaboration.database;
 
 import java.sql.DriverManager;
+import java.util.Vector;
+
+import plugins.collaboration.database.DatabaseBasics.FormDialog;
+import freemind.common.NumberProperty;
+import freemind.common.StringProperty;
 
 /**
  * @author foltin
  * 
  */
-public class DatabaseConnector extends DatabaseBasics  {
+public class DatabaseConnector extends DatabaseBasics {
+
+	private static final String HOST_PROPERTY = "plugins.collaboration.database.host";
 
 	/**
      *
@@ -37,12 +44,31 @@ public class DatabaseConnector extends DatabaseBasics  {
 
 	public void startupMapHook() {
 		super.startupMapHook();
+		mController = getMindMapController();
 		try {
 			logger.info("Connect...");
 			Class.forName("org.hsqldb.jdbcDriver");
-			mConnection = DriverManager.getConnection(
-					"jdbc:hsqldb:hsql://localhost/xdb", "sa", "");
-			mController = getMindMapController();
+			StringProperty passwordProperty = new StringProperty(
+					"The password needed to connect", "Password");
+			StringProperty hostProperty = new StringProperty(
+					"The host to connect to (IP or name possible)", "Host");
+			NumberProperty portProperty = getPortProperty();
+			hostProperty.setValue(mController.getFrame().getProperty(
+					HOST_PROPERTY));
+			Vector controls = new Vector();
+			controls.add(passwordProperty);
+			controls.add(hostProperty);
+			controls.add(portProperty);
+			FormDialog dialog = new FormDialog(mController);
+			dialog.setUp(controls);
+			if (!dialog.isSuccess())
+				return;
+			setPortProperty(portProperty);
+			mController.getFrame().setProperty(HOST_PROPERTY,
+					hostProperty.getValue());
+			String password = passwordProperty.getValue();
+			mConnection = DriverManager.getConnection("jdbc:hsqldb:hsql://"
+					+ hostProperty.getValue() + "/xdb", "sa", password);
 			logger.info("Starting update thread...");
 			mUpdateThread = new Thread(this);
 			mUpdateThread.start();
@@ -51,6 +77,5 @@ public class DatabaseConnector extends DatabaseBasics  {
 			return;
 		}
 	}
-
 
 }

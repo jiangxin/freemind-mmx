@@ -19,9 +19,14 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: DatabaseBasics.java,v 1.1.2.2 2009-01-02 08:01:25 christianfoltin Exp $ */
+/* $Id: DatabaseBasics.java,v 1.1.2.3 2009-01-14 21:18:36 christianfoltin Exp $ */
 package plugins.collaboration.database;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
@@ -30,10 +35,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Vector;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.layout.FormLayout;
+
+import freemind.common.NumberProperty;
+import freemind.common.PropertyControl;
+import freemind.common.StringProperty;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Tools;
 import freemind.modes.MapAdapter;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
@@ -55,8 +75,9 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 	protected static final String TABLE_XML_ACTIONS = "XmlActions";
 	protected static final String ROW_UNDOACTION = "undo_action";
 	protected static final String ROW_MAP = "map";
+	private static final String PORT_PROPERTY = "plugins.collaboration.database.port";
 	protected static java.util.logging.Logger logger = null;
-	protected Connection mConnection;
+	protected Connection mConnection = null;
 	protected BigInteger mPrimaryKeyMutex = BigInteger.valueOf(0);
 	protected long mPrimaryKey = 1l;
 	protected MindMapController mController;
@@ -186,10 +207,15 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 														(NodeAdapter) rootNode,
 														newModel);
 										// deregister from old controller:
-										mController.getActionFactory().deregisterFilter(DatabaseBasics.this);
+										mController.getActionFactory()
+												.deregisterFilter(
+														DatabaseBasics.this);
 										mController = newModeController;
-										// register as listener, as I am a slave.
-										mController.getActionFactory().registerFilter(DatabaseBasics.this);
+										// register as listener, as I am a
+										// slave.
+										mController.getActionFactory()
+												.registerFilter(
+														DatabaseBasics.this);
 									}
 								}
 							} catch (Exception e) {
@@ -198,22 +224,24 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 							}
 						}
 
-						private void executeTransaction(final ActionPair pair) throws InterruptedException, InvocationTargetException {
-							mFilterEnabled = false;
-							try {
-								SwingUtilities.invokeLater(new Runnable() {
-									public void run() {
+						private void executeTransaction(final ActionPair pair)
+								throws InterruptedException,
+								InvocationTargetException {
+							SwingUtilities.invokeLater(new Runnable() {
+								public void run() {
+									mFilterEnabled = false;
+									try {
 										mController.getActionFactory()
 												.startTransaction("update");
 										mController.getActionFactory()
 												.executeAction(pair);
 										mController.getActionFactory()
 												.endTransaction("update");
+									} finally {
+										mFilterEnabled = true;
 									}
-								});
-							} finally {
-								mFilterEnabled = true;
-							}
+								}
+							});
 						}
 					});
 				}
@@ -222,6 +250,119 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 			} catch (Exception e) {
 				freemind.main.Resources.getInstance().logException(e);
 			}
+		}
+
+	}
+
+	protected void setPortProperty(final NumberProperty portProperty) {
+		mController.getFrame().setProperty(PORT_PROPERTY,
+				portProperty.getValue());
+	}
+
+	protected NumberProperty getPortProperty() {
+		final NumberProperty portProperty = new NumberProperty(
+				"The port to open", "Port", 1024, 32767, 1);
+		// fill values:
+		portProperty.setValue(""
+				+ mController.getFrame().getIntProperty(PORT_PROPERTY, 9001));
+		return portProperty;
+	}
+
+	public static abstract class FormDialogValidator {
+		/**
+		 * @return true, if ok should be enabled.
+		 */
+		public abstract boolean isValid();
+	}
+	public static class FormDialog extends JDialog {
+		private final MindMapController mController2;
+		private boolean mSuccess = false;
+
+		public boolean isSuccess() {
+			return mSuccess;
+		}
+
+		public FormDialog(MindMapController pController) {
+			super(pController.getFrame().getJFrame());
+			mController2 = pController;
+		}
+
+		public void setUp(Vector controls) {
+			setUp(controls, new FormDialogValidator(){
+
+				public boolean isValid() {
+					return true;
+				}});
+		}
+		
+		public void setUp(Vector controls, FormDialogValidator pValidator) {
+			setModal(true);
+			getContentPane().setLayout(new BorderLayout());
+			FormLayout formLayout = new FormLayout(
+					"right:max(40dlu;p), 4dlu, 80dlu, 7dlu", "");
+			DefaultFormBuilder builder = new DefaultFormBuilder(formLayout);
+			builder.setDefaultDialogBorder();
+			for (Iterator it = controls.iterator(); it.hasNext();) {
+				PropertyControl prop = (PropertyControl) it.next();
+				prop.layout(builder, mController2);
+				
+			}
+			getContentPane().add(builder.getPanel(), BorderLayout.CENTER);
+			JButton cancelButton = new JButton(getText("Cancel"));
+			cancelButton.addActionListener(new ActionListener() {
+
+				public void actionPerformed(ActionEvent arg0) {
+					closeWindow();
+				}
+
+			});
+			JButton okButton = new JButton(getText("OK"));
+			okButton.addActionListener(new ActionListener() {
+
+				public void actionPerformed(ActionEvent arg0) {
+					mSuccess = true;
+					closeWindow();
+				}
+
+			});
+			getRootPane().setDefaultButton(okButton);
+			getContentPane().add(
+					ButtonBarFactory.buildOKCancelBar(cancelButton, okButton),
+					BorderLayout.SOUTH);
+			setTitle("Enter Password Dialog");
+			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent event) {
+					closeWindow();
+				}
+			});
+			Action action = new AbstractAction() {
+
+				public void actionPerformed(ActionEvent arg0) {
+					closeWindow();
+				}
+			};
+			Action actionSuccess = new AbstractAction() {
+				
+				public void actionPerformed(ActionEvent arg0) {
+					mSuccess = true;
+					closeWindow();
+				}
+			};
+			Tools.addEscapeActionToDialog(this, action);
+		    Tools.addKeyActionToDialog(this, actionSuccess, "RETURN", "ok_dialog");
+
+			pack();
+			setVisible(true);
+
+		}
+
+		private void closeWindow() {
+			setVisible(false);
+		}
+
+		String getText(String text) {
+			return text;
 		}
 
 	}

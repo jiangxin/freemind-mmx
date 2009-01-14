@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: NumberProperty.java,v 1.1.2.3.2.4 2006-11-26 10:20:38 dpolivaev Exp $*/
+/*$Id: NumberProperty.java,v 1.1.2.3.2.5 2009-01-14 21:18:36 christianfoltin Exp $*/
 package freemind.common;
 
 import javax.swing.JLabel;
@@ -71,9 +71,10 @@ public class NumberProperty extends PropertyBean implements
 	    }
 	    
 	    public void setValue(String value) {
-            int intValue = 100;
+            int intValue = min;
             try {
-                intValue = Integer.parseInt(value);
+            	int parsedIntValue = Integer.parseInt(value);
+				intValue = parsedIntValue;
                 int stepModul = (intValue-min) % step;
                 if(intValue < min || intValue > max || (stepModul != 0)) {
                     System.err.println("Actual value of property " + getLabel() + " is not in the allowed range: "+ value);

@@ -19,14 +19,23 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: DatabaseStarter.java,v 1.1.2.1 2009-01-01 21:33:48 christianfoltin Exp $ */
+/* $Id: DatabaseStarter.java,v 1.1.2.2 2009-01-14 21:18:36 christianfoltin Exp $ */
 
 package plugins.collaboration.database;
 
+import java.io.File;
 import java.io.StringWriter;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Vector;
+
+import javax.swing.JOptionPane;
+
+import plugins.collaboration.database.DatabaseBasics.FormDialog;
+import freemind.common.NumberProperty;
+import freemind.common.StringProperty;
+import freemind.main.Tools;
 
 /**
  * @author foltin
@@ -40,26 +49,51 @@ public class DatabaseStarter extends DatabaseBasics  {
 
 	public void startupMapHook() {
 		super.startupMapHook();
+		mController = getMindMapController();
+		final StringProperty passwordProperty = new StringProperty(
+				"The password needed to connect", "Password");
+		final StringProperty passwordProperty2 = new StringProperty(
+				"Enter the password twice to make sure that it is correct.", "Password again");
+//		StringProperty bindProperty = new StringProperty(
+//				"IP address of the local machine, or 0.0.0.0 if ", "Host");
+		final NumberProperty portProperty = getPortProperty();
+		Vector controls = new Vector();
+		controls.add(passwordProperty);
+		controls.add(passwordProperty2);
+//		controls.add(bindProperty);
+		controls.add(portProperty);
+		FormDialog dialog = new FormDialog(mController);
+		dialog.setUp(controls, new FormDialogValidator(){
+
+			public boolean isValid() {
+				return Tools.safeEquals(passwordProperty.getValue(), passwordProperty2.getValue());
+			}});
+		if(!dialog.isSuccess())
+			return;
+		String password = passwordProperty.getValue();
+		setPortProperty(portProperty);
 		// start server:
 		logger.info("Start server...");
-		Thread server = new Thread(new Runnable() {
-
-			public void run() {
-				org.hsqldb.Server.main(new String[] { "-database.0",
-						"file:mydb", "-dbname.0", "xdb", "-no_system_exit"});
-			}
-		});
-		server.start();
 		try {
+			final File tempDbFile = File.createTempFile("collaboration_database", ".hsqldb", new File(mController.getFrame().getFreemindDirectory()));
+			tempDbFile.deleteOnExit();
+			logger.info("Start server in directory " + tempDbFile);
+			Thread server = new Thread(new Runnable() {
+	
+				public void run() {
+					org.hsqldb.Server.main(new String[] { "-database.0",
+							"file:"+tempDbFile, "-dbname.0", "xdb", "-no_system_exit", "-port", portProperty.getValue()});
+				}
+			});
+			server.start();
 			Thread.sleep(1000);
 			logger.info("Connect...");
 			Class.forName("org.hsqldb.jdbcDriver");
 			mConnection = DriverManager.getConnection(
 					"jdbc:hsqldb:hsql://localhost/xdb", "sa", "");
-			mController = getMindMapController();
 			// create tables
 			logger.info("Create tables...");
-			createTables();
+			createTables(password);
 			// register as listener:
 			mController.getActionFactory().registerFilter(this);
 			// send first action:
@@ -80,7 +114,8 @@ public class DatabaseStarter extends DatabaseBasics  {
 		}
 	}
 
-	protected void createTables() throws SQLException {
+	protected void createTables(String pPassword) throws SQLException {
+		update("ALTER USER sa SET PASSWORD \"" + pPassword + "\"");
 		update("DROP TABLE " + TABLE_XML_ACTIONS + " IF EXISTS");
 		update("CREATE TABLE " + TABLE_XML_ACTIONS + " (" + ROW_PK
 				+ " IDENTITY, " + ROW_ACTION + " VARCHAR, " + ROW_UNDOACTION
@@ -89,9 +124,11 @@ public class DatabaseStarter extends DatabaseBasics  {
 
 	public void shutdown() {
 		try {
-			Statement st = mConnection.createStatement();
-			st.execute("SHUTDOWN");
-			mConnection.close();
+			if (mConnection != null) {
+				Statement st = mConnection.createStatement();
+				st.execute("SHUTDOWN");
+				mConnection.close();
+			}
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
