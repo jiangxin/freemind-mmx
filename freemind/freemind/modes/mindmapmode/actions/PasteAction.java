@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: PasteAction.java,v 1.1.2.2.2.22 2008-12-09 21:09:43 christianfoltin Exp $ */
+/* $Id: PasteAction.java,v 1.1.2.2.2.23 2009-01-16 23:10:45 dpolivaev Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -254,6 +254,10 @@ public class PasteAction extends AbstractAction implements ActorXml{
                    //logger.info(textLines[i]+", "+ target+", "+ asSibling);
                    MindMapNodeModel newModel = pasteXMLWithoutRedisplay(
                            textLines[i], target, asSibling, true, isLeft, IDToTarget);
+                   ListIterator childrenUnfolded = newModel.childrenUnfolded();
+                   while(childrenUnfolded.hasNext()){
+                	   pMindMapController.fireRecursiveNodeCreateEvent((MindMapNode) childrenUnfolded.next());
+                   }
                    newModel.setLeft(isLeft);
                    addUndoAction(newModel);
                }
